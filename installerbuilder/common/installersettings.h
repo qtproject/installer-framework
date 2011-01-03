@@ -70,6 +70,7 @@ namespace QInstaller {
         QString targetDir() const;
         QString adminTargetDir() const;
 
+        QString removeTargetDir() const;
         QString uninstallerName() const;
         QString uninstallerIniFile() const;
 

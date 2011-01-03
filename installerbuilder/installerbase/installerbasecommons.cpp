@@ -107,6 +107,9 @@ bool TargetDirectoryPageImpl::validatePage()
                                     QMessageBox::Ok);
         return false;
     }
+    QString remove = installer()->value(QLatin1String("RemoveTargetDir"));
+    if (!QVariant(remove).toBool())
+        return true;
 
     const QFileInfo targetDirInfo = QFileInfo(targetDir());
     const QDir dir( targetDir() );

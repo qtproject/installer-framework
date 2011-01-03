@@ -636,7 +636,8 @@ void Installer::Private::initialize()
         m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_settings.adminTargetDir()));
     else
 #endif
-        m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_settings.targetDir()));
+    m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_settings.targetDir()));
+    m_vars.insert(QLatin1String("RemoveTargetDir"), replaceVariables(m_settings.removeTargetDir()));
 
     QSettings creatorSettings(QSettings::IniFormat, QSettings::UserScope, QLatin1String("Nokia"),
         QLatin1String("QtCreator"));
@@ -1665,7 +1666,9 @@ void Installer::Private::runInstaller()
                 if (!q->gainAdminRights() || !performOperationThreaded(mkdirOp.data()))
                     throw Error(mkdirOp->errorString());
             }
-            addPerformed(mkdirOp.take());
+            QString remove = q->value(QLatin1String("RemoveTargetDir"));
+            if (QVariant(remove).toBool())
+                addPerformed(mkdirOp.take());
         } else {
             QTemporaryFile tempAdminFile(target + QLatin1String("/adminrights"));
             if (!tempAdminFile.open() || !tempAdminFile.isWritable())
@@ -2150,19 +2153,22 @@ void Installer::Private::runUninstaller()
                 packages->removePackage((*it)->name());
                 (*it)->setValue(QLatin1String("CurrentState"), QLatin1String("Uninstalled"));
             }
-
-            // on !Windows, we need to remove TargetDir manually
-            packageManagingMode = ! m_completeUninstall;
-            verbose() << "Complete Uninstallation is chosen" << std::endl;
-            const QString target = targetDir();
-            if (!target.isEmpty()) {
-                if (engineClientHandler->isServerRunning() && !engineClientHandler->isActive()) {
-                    // we were root at least once, so we remove the target dir as root
-                    q->gainAdminRights();
-                    removeDirectoryThreaded(target, true);
-                    q->dropAdminRights();
-                } else {
-                    removeDirectoryThreaded(target, true);
+            QString remove = q->value(QLatin1String("RemoveTargetDir"));
+            if(QVariant(remove).toBool())
+            {
+                // on !Windows, we need to remove TargetDir manually
+                packageManagingMode = ! m_completeUninstall;
+                verbose() << "Complete Uninstallation is chosen" << std::endl;
+                const QString target = targetDir();
+                if (!target.isEmpty()) {
+                    if (engineClientHandler->isServerRunning() && !engineClientHandler->isActive()) {
+                        // we were root at least once, so we remove the target dir as root
+                        q->gainAdminRights();
+                        removeDirectoryThreaded(target, true);
+                        q->dropAdminRights();
+                    } else {
+                        removeDirectoryThreaded(target, true);
+                    }
                 }
             }
 
