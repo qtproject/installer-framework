@@ -113,7 +113,7 @@ static void initEngineHandler(/*QInstaller::*/FSEngineClientHandler *handler)
 static /*QInstaller::*/FSEngineClientHandler* createEngineClientHandler()
 {
     static FSEngineClientHandler* clientHandlerInstance = 0;
-    if(clientHandlerInstance == 0) {
+    if (clientHandlerInstance == 0) {
         clientHandlerInstance = new FSEngineClientHandler;
         initEngineHandler(clientHandlerInstance);
     }
