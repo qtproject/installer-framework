@@ -32,6 +32,7 @@ include(kdtools/KDToolsCore/KDToolsCore.pri)
 include(kdtools/KDUpdater/KDUpdater.pri)
 
 HEADERS += $$PWD/qinstaller.h \
+    $$PWD/qinstaller_p.h \
     $$PWD/qinstallergui.h \
     ../common/binaryformat.h \
     ../common/binaryformatengine.h \
@@ -93,6 +94,7 @@ HEADERS += $$PWD/qinstaller.h \
     licenseoperation.h
 
 SOURCES += $$PWD/qinstaller.cpp \
+    $$PWD/qinstaller_p.cpp \
     $$PWD/qinstallergui.cpp \
     ../common/binaryformat.cpp \
     ../common/binaryformatengine.cpp \

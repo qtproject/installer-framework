@@ -63,6 +63,7 @@ namespace QInstaller {
 
 class Component;
 class GetRepositoriesMetaInfoJob;
+class InstallerPrivate;
 class InstallerSettings;
 class MessageBoxHandler;
 
@@ -254,9 +255,10 @@ private:
         const QString &arg2 = QString(), bool withRetry = true);
 
 private:
-    class Private;
-    Private* const d;
     friend class Component;
+
+    InstallerPrivate* const d;
+    friend class InstallerPrivate;
 };
 
 }

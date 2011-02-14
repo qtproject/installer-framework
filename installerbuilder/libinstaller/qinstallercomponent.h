@@ -170,7 +170,7 @@ public:
     QList<Component*> dependees() const;
 
     friend class ::QInstaller::Installer;
-    friend class ::QInstaller::Installer::Private;
+    friend class QInstaller::InstallerPrivate;
 
 Q_SIGNALS:
     void valueChanged( const QString& key, const QString& value );

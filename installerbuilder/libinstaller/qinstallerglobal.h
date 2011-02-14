@@ -31,8 +31,6 @@
 #include <QtGlobal>
 #include <qnamespace.h>
 
-#define ifVerbose(s) if (!installer()->isVerbose()) {} else { qDebug() << s; }
-
 class QIODevice;
 class QFile;
 template <typename T> class QList;
