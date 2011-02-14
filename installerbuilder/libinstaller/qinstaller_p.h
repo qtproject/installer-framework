@@ -33,6 +33,8 @@
 #ifndef QINSTALLER_P_H
 #define QINSTALLER_P_H
 
+#include <KDToolsCore/KDSysInfo>
+
 #include <QtCore/QHash>
 #include <QtCore/QObject>
 #include <QtCore/QPair>
@@ -67,6 +69,9 @@ public:
     explicit InstallerPrivate(Installer *q, qint64 magicInstallerMaker,
         const QVector<KDUpdater::UpdateOperation*> &performedOperations);
     ~InstallerPrivate();
+
+    static bool isProcessRunning(const QString &name,
+        const QList<KDSysInfo::ProcessInfo> &processes);
 
     static bool performOperationThreaded(KDUpdater::UpdateOperation *op,
         InstallerPrivate::OperationType type = InstallerPrivate::Perform);

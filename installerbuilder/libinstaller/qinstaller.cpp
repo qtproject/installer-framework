@@ -1272,28 +1272,12 @@ void Installer::dropAdminRights()
 }
 
 /*!
-    Return true, if a process with \a name is running. On Windows, the comparision is case-insensitive.
+    Return true, if a process with \a name is running. On Windows, the comparision
+    is case-insensitive.
 */
 bool Installer::isProcessRunning(const QString &name) const
 {
-    QList<KDSysInfo::ProcessInfo>::const_iterator it;
-    const QList<KDSysInfo::ProcessInfo> processes = KDSysInfo::runningProcesses();
-    for (it = processes.begin(); it != processes.end(); ++it) {
-#ifndef Q_WS_WIN
-        if (it->name == name)
-            return true;
-        const QFileInfo fi(it->name);
-        if (fi.fileName() == name || fi.baseName() == name)
-            return true;
-#else
-        if (it->name.toLower() == name.toLower())
-            return true;
-        const QFileInfo fi(it->name);
-        if (fi.fileName().toLower() == name.toLower() || fi.baseName().toLower() == name.toLower())
-            return true;
-#endif
-    }
-    return false;
+    return InstallerPrivate::isProcessRunning(name, KDSysInfo::runningProcesses());
 }
 
 /*!
