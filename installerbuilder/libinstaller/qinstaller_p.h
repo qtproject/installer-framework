@@ -120,7 +120,7 @@ public:
 
     KDUpdater::UpdateOperation* createPathOperation(const QFileInfo &fileInfo,
         const QString &componentName);
-    void registerPathesForUninstallation(const QList<QPair<QString, bool>> &pathesForUninstallation,
+    void registerPathesForUninstallation(const QList<QPair<QString, bool> > &pathesForUninstallation,
         const QString &componentName);
 
     void addPerformed(KDUpdater::UpdateOperation* op) {

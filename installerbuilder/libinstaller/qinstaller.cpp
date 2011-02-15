@@ -384,7 +384,7 @@ int Installer::downloadNeededArchives(RunModes runMode, double partProgressSize)
     Q_ASSERT(partProgressSize >= 0 && partProgressSize <= 1);
 
     QList<Component*> neededComponents;
-    QList<QPair<QString, QString>> archivesToDownload;
+    QList<QPair<QString, QString> > archivesToDownload;
 
     QList<Component*>::const_iterator it;
     const QList<Component*> availableComponents = components(true, runMode);

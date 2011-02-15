@@ -549,12 +549,12 @@ KDUpdater::UpdateOperation* InstallerPrivate::createPathOperation(const QFileInf
     This creates fake operations which remove stuff which was registered for uninstallation afterwards
 */
 void InstallerPrivate::registerPathesForUninstallation(
-    const QList<QPair<QString, bool>> &pathesForUninstallation, const QString &componentName)
+    const QList<QPair<QString, bool> > &pathesForUninstallation, const QString &componentName)
 {
     if (pathesForUninstallation.isEmpty())
         return;
 
-    QList<QPair<QString, bool>>::const_iterator it;
+    QList<QPair<QString, bool> >::const_iterator it;
     for (it = pathesForUninstallation.begin(); it != pathesForUninstallation.end(); ++it) {
         const bool wipe = it->second;
         const QString path = replaceVariables(it->first);
