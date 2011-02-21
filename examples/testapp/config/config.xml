@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<Installer>
+    <Name>Test App</Name>
+    <Version>1</Version>
+    <Title>Test App</Title>
+    <Publisher>Nokia</Publisher>
+    <ProductUrl>http://qt.nokia.com</ProductUrl>
+
+    <PublicKey>
+        -----BEGIN PUBLIC KEY-----
+        MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDzdb8ti9Ss5kmEY5rGf2HFEsj0
+        W6dXOXRIO4W3XXr37Rzc8JI4UMZd6lEcxF9mdnoqOOyhHQABI8/CB2t9HTsZPRPC
+        TCq43QLMfVMgI6A5Cgetv6osvZFgNG3nFAlRkLHw2gLO/zxoblY0wPq5p4xmYRh4
+        f/YjsgYeA2v9V9FBAQIDAQAB
+        -----END PUBLIC KEY-----
+    </PublicKey>
+
+    <!-- @homeDir@ and @rootDir@ are some of the supported vars -->
+    <TargetDir>@homeDir@/testinstall</TargetDir>
+</Installer>

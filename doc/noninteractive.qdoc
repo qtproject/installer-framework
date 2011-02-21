@@ -1,0 +1,127 @@
+/*!
+    \contentspage{index.html}{InstallerFramework}
+    \page noninteractive.html
+
+    \title Non Interactive Installation
+
+    \section1 Installer Page Callbacks
+
+    \section2 builtinpages Built-in pages
+
+    \section3 IntroductionPageCallback
+    Wizard buttons:
+    \list
+    \o  Next
+    \o  Cancel
+    \endlist
+
+    \section3 LicenseAgreementPageCallback
+    Wizard buttons:
+    \list
+    \o Next
+    \o Cancel
+    \o Back
+    \endlist
+
+    Radio buttons:
+    \list
+    \o acceptLicenseRB (radio button): Accepts the license Agreement (unchecked by default)
+    \o rejectLicenseRB (radio button): Rejects the license Agreement (checked by default)
+    \endlist
+
+    \section3 TargetDirectoryPageCallback
+    Wizard buttons:
+    \list
+    \o Next
+    \o Cancel
+    \o Back
+    \endlist
+
+    targetDirectoryLE (line edit): The target directory for installation
+
+    \section3 ComponentSelectionPageCallback
+    Wizard buttons:
+    \list
+    \o Next
+    \o Cancel
+    \o Back
+    \endlist
+
+    Methods:
+    \list
+    \o selectComponent( id ): selects the component with the ID id (string)
+    \o deselectComponent( id ): deselects the component with the ID id (string)
+    \endlist
+
+    In uninstallation mode, additional controls are available:
+    \list
+    \o uninstallAllComponentsRB (radio button): Uninstall all components (default)
+    \o keepSelectedComponentsRB (radio button): Uninstall only unselected components (deselectComponent/selectComponent to modify them)
+    \endlist
+
+    \section3 ReadyForInstallationPageCallback
+    Wizard buttons:
+    \list
+    \o Next ("Install")
+    \o Cancel
+    \o Back
+    \endlist
+
+    \section3 PerformInstallationPage
+
+    details.button (push button): Shows/hides installation details
+
+    Wizard buttons:
+    \list
+    \o Cancel
+    \endlist
+
+    \section3 FinishedPageCallback
+
+    Wizard buttons:
+    \list
+    \o Finish
+    \endlist
+
+    \section2 Custom Pages
+
+    Custom pages are registered as \a{Dynamic${ObjectName}}, where \a{${ObjectName}}
+    is the object name set in the UI file.
+    Thus the callback called is \a{Dynamic${ObjectName}Callback()}. Widgets can
+    be addressed using their object names (from the UI file):
+    \code
+    var page = pageWidgetByObjectName( "DynamicSomePage" )
+    page.myButton.click //direct child of the UI file's widgte
+    page.someFancyWidget.subWidget.setText( "foobar" ) // nested widget
+    \endcode
+
+
+    \section1 Message Boxes
+    \table
+    \header
+                      \o Identifier
+                      \o Possible Answers
+                      \o Description
+    \row
+                      \o cancelInstallation
+                      \o Yes, No
+                      \o Confirmation for canceling the installation (Cancel button in the wizard)
+    \row
+                      \o overwriteTargetDirectory
+                      \o Yes, No
+                      \o Confirmation to use an already existing directory as target
+    \row
+                      \o installationError
+                      \o Ok
+                      \o A fatal error occurred while performing the installation
+    \row
+                      \o installationErrorWithRetry
+                      \o Retry, Ignore, Cancel
+                      \o An error occurred while performing the installation, Retry possible
+    \row
+                      \o metaInfoJobError
+                      \o Ok
+                      \o Error occurred retrieving meta information (online installer)
+    \endtable
+
+*/

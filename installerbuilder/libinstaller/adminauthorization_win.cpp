@@ -1,0 +1,154 @@
+/**************************************************************************
+**
+** This file is part of Qt SDK**
+**
+** Copyright (c) 2011 Nokia Corporation and/or its subsidiary(-ies).*
+**
+** Contact:  Nokia Corporation qt-info@nokia.com**
+**
+** No Commercial Usage
+**
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the Technology Preview License Agreement accompanying
+** this package.
+**
+** GNU Lesser General Public License Usage
+**
+** This file may be used under the terms of the GNU Lesser General Public
+** License version 2.1 as published by the Free Software Foundation and
+** appearing in the file LICENSE.LGPL included in the packaging of this file.
+** Please review the following information to ensure the GNU Lesser General
+** Public License version 2.1 requirements will be met:
+** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain additional
+** rights. These rights are described in the Nokia Qt LGPL Exception version
+** 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+**
+** If you are unsure which license is appropriate for your use, please contact
+** (qt-info@nokia.com).
+**
+**************************************************************************/
+#include "adminauthorization.h"
+
+#include "windows.h"
+
+#include <QDir>
+#include <QStringList>
+#include <QVector>
+#include <QDebug>
+
+// from qprocess_win.cpp
+static QString qt_create_commandline(const QString &program, const QStringList &arguments)
+{
+    QString args;
+    if (!program.isEmpty()) {
+        QString programName = program;
+        if (!programName.startsWith(QLatin1Char('\"')) && !programName.endsWith(QLatin1Char('\"')) && programName.contains(QLatin1Char(' ')))
+            programName = QLatin1Char('\"') + programName + QLatin1Char('\"');
+        programName.replace(QLatin1Char('/'), QLatin1Char('\\'));
+
+        // add the prgram as the first arg ... it works better
+        args = programName + QLatin1Char(' ');
+    }
+
+    for (int i=0; i<arguments.size(); ++i) {
+        QString tmp = arguments.at(i);
+        // in the case of \" already being in the string the \ must also be escaped
+        tmp.replace( QLatin1String("\\\""), QLatin1String("\\\\\"") );
+        // escape a single " because the arguments will be parsed
+        tmp.replace( QLatin1Char('\"'), QLatin1String("\\\"") );
+        if (tmp.isEmpty() || tmp.contains(QLatin1Char(' ')) || tmp.contains(QLatin1Char('\t'))) {
+            // The argument must not end with a \ since this would be interpreted
+            // as escaping the quote -- rather put the \ behind the quote: e.g.
+            // rather use "foo"\ than "foo\"
+            QString endQuote(QLatin1Char('\"'));
+            int i = tmp.length();
+            while (i>0 && tmp.at(i-1) == QLatin1Char('\\')) {
+                --i;
+                endQuote += QLatin1Char('\\');
+            }
+            args += QLatin1String(" \"") + tmp.left(i) + endQuote;
+        } else {
+            args += QLatin1Char(' ') + tmp;
+        }
+    }
+    return args;
+}
+
+
+class AdminAuthorization::Private
+{
+public:
+    Private()
+    {
+    }
+};
+
+AdminAuthorization::AdminAuthorization()
+{
+}
+
+AdminAuthorization::~AdminAuthorization()
+{
+}
+
+bool AdminAuthorization::authorize()
+{
+    setAuthorized();
+    emit authorized();
+    return true;
+}
+
+bool AdminAuthorization::hasAdminRights()
+{
+    SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
+    PSID adminGroup;
+    // Initialize SID.
+    if( !AllocateAndInitializeSid( &authority,
+                                   2,
+                                   SECURITY_BUILTIN_DOMAIN_RID,
+                                   DOMAIN_ALIAS_RID_ADMINS,
+                                   0, 0, 0, 0, 0, 0,
+                                   &adminGroup))
+        return false;
+
+    BOOL isInAdminGroup = FALSE;
+    if( !CheckTokenMembership( 0, adminGroup, &isInAdminGroup ))
+        isInAdminGroup = FALSE;
+
+    FreeSid( adminGroup );
+    return isInAdminGroup;
+}
+
+bool AdminAuthorization::execute( QWidget*, const QString& program, const QStringList& arguments )
+{
+    qDebug() << Q_FUNC_INFO;
+    //const QString file = qt_create_commandline( program, QStringList() );
+    const QString args = qt_create_commandline( QString(), arguments );
+    const QString file = QDir::toNativeSeparators( program );
+
+    const int len = GetShortPathNameW( (wchar_t*)file.utf16(), 0, 0 );
+    if( len == 0 )
+        return false;
+    wchar_t* const buffer = new wchar_t[ len ];
+    GetShortPathName( (wchar_t*)file.utf16(), buffer, len );
+
+    SHELLEXECUTEINFOW TempInfo = { 0 };
+    TempInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
+    TempInfo.fMask = 0;
+    TempInfo.hwnd = 0;
+    TempInfo.lpVerb = L"runas";
+    TempInfo.lpFile = buffer;
+    TempInfo.lpParameters = (wchar_t*)args.utf16();
+    TempInfo.lpDirectory = 0;
+    TempInfo.nShow = SW_NORMAL;
+
+    
+    qDebug() << QLatin1String("\t starting elevated process with ::ShellExecuteExW( &TempInfo );");
+    const bool result = ::ShellExecuteExW( &TempInfo );
+    qDebug() << QLatin1String("\t after starting elevated process");
+    delete[] buffer;
+    return result;
+}

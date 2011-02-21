@@ -1,0 +1,85 @@
+These are instructions for the Nokia SDK installer.
+
+== Qt configuration ==
+
+Recommended configure options:
+
+Windows static/release:
+
+configure -static -release -no-webkit -platform win32-msvc2008 -no-phonon -fast -no-dbus -no-opengl -exceptions -nomake demos -nomake examples -confirm-license -commercial
+
+
+
+== Tested Platforms ==
+
+Platforms tested so far:
+
+On all platforms: Qt 4.5.2
+
+Linux 32bit, gcc 4.3.3: CI, tested, works
+Linux 64bit, gcc 4.3.3: CI, tested, works
+OS X 10.5 32 bit, gcc 4.0.1: CI, tested, works
+OS X 10.6 32 bit: not tested
+OS X 10.6 64 bit: not tested
+Windows 32 bit XP, MSVC 2005/2008: CI, tested, works
+Windows Vista 32 bit: not tested
+Windows Vista 64 bit: not tested
+
+
+== Build ==
+
+Shared build of the actual installer lib is not supported any longer. 
+Only examples/updaterplugin, the Qt Creator plugin, is build shared.
+
+Note: To build the Qt Creator plugin, an environment variable QTCREATOR_SOURCE_PATH 
+containing the path to the Qt Creator source directory needs to be set:
+
+export QTCREATOR_SOURCE_PATH=~/Downloads/qt-creator-1.3.0/
+or
+set QTCREATOR_SOURCE_PATH=C:\Downloads\qt-creator-1.3.0\
+
+To build an installer, it is advised to use a statically linked Qt. The Creator plugin
+needs to be linked against a shared Qt, though.
+
+
+=== Static/Debug/Unix ===
+
+cd installer/kdtools/kdtools
+./configure.sh -static -debug
+make
+cd /path/to/installer
+./configure.sh -static -debug
+make
+
+== Static/Debug/Windows ==
+
+cd installer\kdtools\kdtools 
+configure.bat -static -debug
+nmake
+cd P:\ath\to\installer
+configure.bat -static -debug
+nmake
+
+== Create an Installer ==
+
+To create an installer, use binarycreator:
+ 
+in windows;
+cd installerbuilder
+bin\binarycreator.exe -t bin\installerbase.exe -p ..\examples\packages -c ..\examples\config createdinstaller.exe com.nokia.sdk
+
+in unix;
+cd installerbuilder
+bin/binarycreator -t bin/installerbase -p ../examples/packages -c ../examples/config createdinstaller com.nokia.sdk
+
+This creates an installer "createdinstaller.exe" from the installerbase binary and the components required by the com.nokia.sdk package.
+
+
+== Create an Archive ==
+
+To create an 7zip archive named qt-copy.7z that contains the directory qt-copy use:
+
+cd /path/where/qt-copy/is/located
+7z a -t7z -mx=9 -ms=off -l qt-copy.7z qt-copy
+
+

@@ -1,0 +1,83 @@
+/*!
+    \contentspage index.html
+    \previouspage ifw-tools.html
+    \page ifw-tutorial.html
+    \nextpage ifw-online-installers.html
+
+    \title Tutorial
+
+    This tutorial is designed to guide through the first steps to create
+    a simple installer for a small project.
+
+    \section1 Directory structure
+
+    First, we create a directory structure which will reflect the design
+    of the installer as well as allow extensibility.
+
+    In this example, it will look like this:
+
+    \code
+    - tutorial
+        - config
+        - packages
+            - com.vendor.product
+                - data
+                - meta
+    \endcode
+
+    \section1 Global configuration
+
+    Inside the \a config directory we create a config.xml file, which contains
+    the following data:
+
+    \quotefile ../examples/tutorial/config/config.xml
+
+    The \a license section describes the location of the license file. This
+    license will be displayed when the user starts the installer.
+
+    \quotefile ../examples/tutorial/config/license.txt
+
+    \note If you aim for installers on multiple platforms including Windows
+    please make sure that the lineendings of the license file is in CRLF
+    format. While the linux version manages to display windows lineending
+    correctly, this does not apply the other way around.
+
+    \section1 Meta package information
+
+    In this easy scenario the installer handles only one component, which is
+    named \a{com.vendor.product}. The installer needs to know a couple of
+    information about this component, which is stored in a file called
+    \a{packages.xml} inside the meta directory. It has the following shape:
+
+    \quotefile ../examples/tutorial/packages/com.vendor.product/meta/packages.xml
+
+    \section1 Installer content
+
+    Content to be installed is stored inside the data directory of each
+    component. As in this tutorial there is only one component, we place the
+    data into \a{packages/com.vendor.product/data}. The example already contains
+    a file for testing purposes, but you can place basically anything inside
+    there. For packaging rules and options, please read the
+    \l{Contents of the data directory}{detailed information}.
+
+    \section1 Creating the installer binary
+
+    Now everything is prepared to create the first installer. Switch to the
+    \a tutorial directory in your command line. Enter the following command:
+
+    \section2 Windows
+    \code
+    <location-of-the-ifw>\binarycreator.exe -t <location-of-the-ifw>\installerbase.exe -p packages -c config YourInstaller.exe com.vendor.product
+    \endcode
+
+    \section2 Linux / Mac OS-X
+    \code
+    <location-of-the-ifw>/binarycreator -t <location-of-the-ifw>/installerbase -p packages -c config YourInstaller com.vendor.product
+    \endcode
+
+    Afterwards the installer has been created in the current directory and you
+    ship those binaries.
+
+*/
+
+

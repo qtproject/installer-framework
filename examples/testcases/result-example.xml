@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8""?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:tf="http://sdk.nokia.com/test-framework/ns/1.0">
+	<entry>
+	    <title>ab12cd34ef - installer-20090310.exe - checks failed :-(</title>
+	    <updated>2010-03-10T14:00Z</updated>
+	    <tf:host>test-machine_1.local</tf:host>
+	    <tf:testStart>2010-03-10T13:00Z</tf:testStart>
+        <tf:testEnd>2010-03-10T13:49Z</tf:testEnd>
+
+        <tf:installer>
+            <tf:sourceUrl>ftp://buildmachine/installers/installer-20090310.exe</tf:sourceUrl>
+            <tf:revision>ab12cd34ef</tf:revision> <!-- if we have sth like that -->
+            <tf:platform>windows</tf:platform>
+        </tf:installer>
+	    <tf:virtualMachine>
+	        <tf:path>/home/testuser/VMs/WindowsXp/WindowsXp.vmx</tf:path>
+	        <tf:platform>windows</tf:platform>
+	        <tf:snapshot>base</tf:snapshot>
+	    </tf:virtualMachine>
+	    <tf:testCase>
+	        <tf:name>Basic Installation</tf:name>
+	        <tf:path>/home/testuser/testcases/basic/basic.cfg</tf:path>
+	        <tf:installScript>/home/testuser/testcases/basic/testscript.qs</tf:installScript>
+	    </tf:testCase>
+	    <tf:installationResult>
+	        <tf:exitCode>0</tf:exitCode>
+	        <tf:exitStatus>normal</tf:exitStatus>
+	        <tf:summary>NoError</tf:summary>
+	    </tf:installationResult>
+	    <tf:checkerResult>
+	        <tf:item type="files">c:\sdk\bin\qmake.exe: md5 sum mismatch: expected: abcd1234 actual: 1234abcd</tf:item>
+	        <tf:summary>InstallerError</tf:summary>
+	    </tf:checkerResult>
+	    <tf:internalErrors/>
+	    <tf:errorSummary>InstallerError</tf:summary>
+	</entry>
+</feed>

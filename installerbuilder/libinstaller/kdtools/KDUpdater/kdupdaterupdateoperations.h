@@ -1,0 +1,184 @@
+/****************************************************************************
+** Copyright (C) 2001-2010 Klaralvdalens Datakonsult AB.  All rights reserved.
+**
+** This file is part of the KD Tools library.
+**
+** Licensees holding valid commercial KD Tools licenses may use this file in
+** accordance with the KD Tools Commercial License Agreement provided with
+** the Software.
+**
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU Lesser General Public License version 2 and version 3 as published by the
+** Free Software Foundation and appearing in the file LICENSE.LGPL included.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+** Contact info@kdab.com if any conditions of this licensing are not
+** clear to you.
+**
+**********************************************************************/
+
+#ifndef KD_UPDATER_UPDATE_OPERATIONS_H
+#define KD_UPDATER_UPDATE_OPERATIONS_H
+
+#include "kdupdaterupdateoperation.h"
+
+#include <QDir>
+#include <QObject>
+#include <QProcess>
+
+namespace KDUpdater
+{
+
+    class KDTOOLS_UPDATER_EXPORT CopyOperation : public UpdateOperation
+    {
+    public:
+        CopyOperation();
+        ~CopyOperation();
+
+        void backup();
+        bool performOperation();
+        bool undoOperation();
+        bool testOperation();
+        CopyOperation* clone() const;
+        
+        QDomDocument toXml() const;
+    };
+
+    class KDTOOLS_UPDATER_EXPORT MoveOperation : public UpdateOperation
+    {
+    public:
+        MoveOperation();
+        ~MoveOperation();
+
+        void backup();
+        bool performOperation();
+        bool undoOperation();
+        bool testOperation();
+        MoveOperation* clone() const;
+    };
+
+    class KDTOOLS_UPDATER_EXPORT DeleteOperation : public UpdateOperation
+    {
+    public:
+        DeleteOperation();
+        ~DeleteOperation();
+
+        void backup();
+        bool performOperation();
+        bool undoOperation();
+        bool testOperation();
+        DeleteOperation* clone() const;
+        
+        QDomDocument toXml() const;
+    };
+
+    class KDTOOLS_UPDATER_EXPORT MkdirOperation : public UpdateOperation
+    {
+    public:
+        MkdirOperation();
+        ~MkdirOperation();
+
+        void backup();
+        bool performOperation();
+        bool undoOperation();
+        bool testOperation();
+        MkdirOperation* clone() const;
+    };
+
+    class KDTOOLS_UPDATER_EXPORT RmdirOperation : public UpdateOperation
+    {
+    public:
+        RmdirOperation();
+        ~RmdirOperation();
+
+        void backup();
+        bool performOperation();
+        bool undoOperation();
+        bool testOperation();
+        RmdirOperation* clone() const;
+    };
+
+    class KDTOOLS_UPDATER_EXPORT AppendFileOperation : public UpdateOperation
+    {
+    public:
+        AppendFileOperation();
+        ~AppendFileOperation();
+
+        void backup();
+        bool performOperation();
+        bool undoOperation();
+        bool testOperation();
+        AppendFileOperation* clone() const;
+    };
+
+    class KDTOOLS_UPDATER_EXPORT PrependFileOperation : public UpdateOperation
+    {
+    public:
+        PrependFileOperation();
+        ~PrependFileOperation();
+
+        void backup();
+        bool performOperation();
+        bool undoOperation();
+        bool testOperation();
+        PrependFileOperation* clone() const;
+    };
+
+    class KDTOOLS_UPDATER_EXPORT ExecuteOperation : public QObject, public UpdateOperation
+    {
+        Q_OBJECT
+    public:
+        ExecuteOperation();
+        ~ExecuteOperation();
+
+        void backup();
+        bool performOperation();
+        bool undoOperation();
+        bool testOperation();
+        ExecuteOperation* clone() const;
+
+    public Q_SLOTS:
+        void cancelOperation();
+
+    private Q_SLOTS:
+        void readProcessOutput();
+
+    Q_SIGNALS:
+        void outputTextChanged(const QString &text);
+
+    private:
+        QProcess process;
+    };
+
+    class KDTOOLS_UPDATER_EXPORT UpdatePackageOperation : public UpdateOperation
+    {
+    public:
+        UpdatePackageOperation();
+        ~UpdatePackageOperation();
+
+        void backup();
+        bool performOperation();
+        bool undoOperation();
+        bool testOperation();
+        UpdatePackageOperation* clone() const;
+    };
+
+    class KDTOOLS_UPDATER_EXPORT UpdateCompatOperation : public UpdateOperation
+    {
+    public:
+        UpdateCompatOperation();
+        ~UpdateCompatOperation();
+
+        void backup();
+        bool performOperation();
+        bool undoOperation();
+        bool testOperation();
+        UpdateCompatOperation* clone() const;
+    };
+
+};
+
+#endif

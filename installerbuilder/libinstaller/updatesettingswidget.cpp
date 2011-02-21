@@ -1,0 +1,161 @@
+/**************************************************************************
+**
+** This file is part of Qt SDK**
+**
+** Copyright (c) 2011 Nokia Corporation and/or its subsidiary(-ies).*
+**
+** Contact:  Nokia Corporation qt-info@nokia.com**
+**
+** No Commercial Usage
+**
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the Technology Preview License Agreement accompanying
+** this package.
+**
+** GNU Lesser General Public License Usage
+**
+** This file may be used under the terms of the GNU Lesser General Public
+** License version 2.1 as published by the Free Software Foundation and
+** appearing in the file LICENSE.LGPL included in the packaging of this file.
+** Please review the following information to ensure the GNU Lesser General
+** Public License version 2.1 requirements will be met:
+** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain additional
+** rights. These rights are described in the Nokia Qt LGPL Exception version
+** 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+**
+** If you are unsure which license is appropriate for your use, please contact
+** (qt-info@nokia.com).
+**
+**************************************************************************/
+#include "updatesettingswidget.h"
+#include "ui_updatesettingswidget.h"
+
+#include "common/repository.h"
+
+#include "updatesettings.h"
+
+#include <QDateTime>
+#include <QStringListModel>
+
+using namespace QInstaller;
+
+class UpdateSettingsWidget::Private
+{
+public:
+    Private( UpdateSettingsWidget* qq )
+        : q( qq ),
+          initialized( false )
+    {
+        ui.setupUi( q );
+    }
+
+    void addUpdateSource()
+    {
+        const int newRow = model.rowCount();
+        if( model.insertRow( newRow ) )
+            ui.treeViewUpdateSources->edit( model.index( newRow, 0 ) );
+    }
+    
+    void removeUpdateSource()
+    {
+        model.removeRow( ui.treeViewUpdateSources->currentIndex().row() );
+    }
+
+private:
+    UpdateSettingsWidget* const q;
+
+public:
+    bool initialized;
+    Ui::UpdateSettingsWidget ui;
+    UpdateSettings settings;
+    QStringListModel model;
+};
+
+UpdateSettingsWidget::UpdateSettingsWidget( QWidget* parent )
+    : QWidget( parent ),
+      d( new Private( this ) )
+{
+}
+
+UpdateSettingsWidget::~UpdateSettingsWidget()
+{
+}
+
+/*!
+ \reimpl
+*/
+void UpdateSettingsWidget::showEvent( QShowEvent* event )
+{
+    Q_UNUSED( event )
+    if( d->initialized )
+        return;
+
+    d->ui.checkBoxCheckForUpdates->setChecked( d->settings.updateInterval() > 0 );
+    d->ui.checkBoxCheckOnlyImportant->setChecked( d->settings.checkOnlyImportantUpdates() );
+    switch( qAbs( d->settings.updateInterval() ) )
+    {
+    case UpdateSettings::Daily:
+        d->ui.comboBoxFrequency->setCurrentIndex( 0 );
+        break;
+    case UpdateSettings::Weekly:
+        d->ui.comboBoxFrequency->setCurrentIndex( 1 );
+        break;
+    case UpdateSettings::Monthly:
+        d->ui.comboBoxFrequency->setCurrentIndex( 2 );
+        break;
+    }
+
+    connect( d->ui.buttonAddUpdateSource, SIGNAL( clicked() ), this, SLOT( addUpdateSource() ) );
+    connect( d->ui.buttonRemoveUpdateSource, SIGNAL( clicked() ), this, SLOT( removeUpdateSource() ) );
+
+    connect( d->ui.buttonCheckNow, SIGNAL( clicked() ), this, SIGNAL( checkForUpdates() ) );
+
+    QStringList reps;
+    const QList< Repository > repositories = d->settings.repositories();
+    for( QList< Repository >::const_iterator it = repositories.begin(); it != repositories.end(); ++it )
+        reps.push_back( it->url().toString() );
+    d->model.setStringList( reps );
+    d->ui.treeViewUpdateSources->setModel( &d->model );
+
+    d->ui.labelLastUpdateResult->clear();
+    if( d->settings.lastResult().isEmpty() )
+        d->ui.labelLastCheck->clear();
+    else
+        d->ui.labelLastUpdateResult->setText( d->settings.lastResult() + QLatin1Char( '\n' ) + d->settings.lastCheck().toString() );
+
+    d->initialized = true;
+}
+
+void UpdateSettingsWidget::accept()
+{
+    switch( d->ui.comboBoxFrequency->currentIndex() )
+    {
+    case 0:
+        d->settings.setUpdateInterval( UpdateSettings::Daily );
+        break;
+    case 1:
+        d->settings.setUpdateInterval( UpdateSettings::Weekly );
+        break;
+    case 2:
+        d->settings.setUpdateInterval( UpdateSettings::Monthly );
+        break;
+    }
+    if( !d->ui.checkBoxCheckForUpdates->isChecked() )
+        d->settings.setUpdateInterval( -d->settings.updateInterval() );
+    d->settings.setCheckOnlyImportantUpdates( d->ui.checkBoxCheckOnlyImportant->isChecked() );
+
+    const QStringList reps = d->model.stringList();
+    QList< Repository > repositories;
+    Repository rep;
+    for( QStringList::const_iterator it = reps.begin(); it != reps.end(); ++it )
+    {
+        rep.setUrl( QUrl( *it ) );
+        repositories.push_back( rep );
+    }
+    d->settings.setRepositories( repositories );
+}
+
+#include "moc_updatesettingswidget.cpp"

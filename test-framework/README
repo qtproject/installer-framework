@@ -1,0 +1,312 @@
+= Testing Framework =
+
+== Overview ==
+
+The "testing framework" was developed to continuously run automated, non-interactive tests for the Nokia NDK installers on a set of test systems.
+It uses remote-controlled VMWare virtual machines (VMs) to execute the tests on. Both the actual controlling process and the post installation checks on the VMs are implemented in Python.
+Additionally, a set of test cases is created and configured.
+A test case consists of a) a QtScript script specifying the user input for non-interactive installation and b) post-installation checks to perform after installation. This way various user behaviour can be tested (e.g. different component selections) and whether installation succeeds and certain post-conditions are met (e.g. files end up in in specific locations). A test case can also contain additional steps to test updating and package management.
+For each compatible VM/Test case combination, the VM is reset to a predefined state, the installer is run using the QtScript script and the post-installation checks are performed.
+The test results are aggregated and submitted to a CDash dashboard.
+
+== Setup at Nokia ==
+
+
+The VMs run on a VMWare server installation on bersrv16723. The VMWare server web frontend requires a IE (32-bit) plugin to get the guest system's shell.
+(Nokia internal: http://hegel.europe.nokia.com/binaries/vmware_client_plugin/vmware-vmrc-win32-x86.exe).
+As far as I know there is no way atm to get it running on other platforms.
+
+Web frontend URL: http://bersrv16723:8222/ui (redirect to https://bersrv16723:8333/ui, but in some cases it is not working without this redirection)
+
+The testing framework itself is configured and runs on the controller VM. It it supposed to be accessed via ssh.
+
+Controller VM: 172.25.167.111 [get a fixed IP/hostname].
+
+Attach/Start a screen session:
+
+ screen -D -R
+
+Start the test runner:
+
+ cd $HOME/test/installerfw/installer/test-framework
+ vmware/run.py -s 2010-05-17 site/host-config.cfg # insert your date here
+
+For more explanations on run.py see below.
+
+The CDash location presenting the build results is http://172.25.167.111/CDash (the controller VM). The project used is NDKInstallerTests (TODO: actually use that one).
+
+The current setup with working examples of configuration files is in $TODO:/home/kdab/test/ (TODO: commit to repo)
+
+
+== run.py ==
+
+The central python script executing test runs is vmware/run.py.
+
+Usage:run.py [options] host-config
+
+Options:
+    -s | --only-since YYYY-MM-DD when checking
+
+ /path/to/vmware/run.py -s 2010-05-14 host-config.cfg
+
+run.py does the following: It collects the information about configured VMs and test cases from the host configuration file.
+It then checks the configured installer sources for new installers, and sequentially executes the test for each new installer on all VM/test case combinations that apply to the installer (there can be specific tests cases for certain platforms only). For each installer x VM x test case run, the result is added to CDash.
+Once all installers on the FTP server (or the ones matching the --only-since restriction) were tested, the process goes to sleep and checks every hour for new installers.
+
+run.py only executes all test runs sequentially, with a single test at a time. If this turns out to be too much of a bottleneck, multiple run.py instances in different working directories and with different
+host-config files could be run in parallel (e.g. each one monitoring a different path on the FTP server).
+
+== Virtual Machine Setup ==
+
+Any VMWare virtual machine can be used for testing, if some preparations are made:
+
+ * Add a virtual CD/DVD drive (for VMWare Tools; Choose a random ISO file when asked)
+ * Install VMWare Tools (important: The test run might just hang and do nothing if the VM has no VMWare tools installed)
+ * Install Python 2.6
+ * Create a snapshot of the VM in the state that should be used as initial state for each test run [TODO: relate to UI]
+ * Create a configuration file for the VM. The configuration file provides information to run.py about the VM, such as the user/password combination to use to login, the location of the python installation or the
+   path in the VM to use for temporary files, such as the downloaded installer and result output files.
+ (See Virtual Machine Configuration File Options for details)
+ * To enable the VM, add the path to the VM config file to the host config file (See Host Configuration File Options).
+
+
+== Virtual Machine Configuration File Options ==
+
+Example:
+    TODO
+    
+=== Section: General ===
+
+snapshot: identifier (Default: "base")
+
+The baseline snapshot to revert to when start a test run.
+This option is only relevant VMWare Fusion and Workstation (as Server/ESX only support a single unnamed snapshot)
+
+username: string
+password: string
+
+The username and password to authenticate with inside the VM.
+
+vmx: string
+
+The path to the VM's vmx file. Relative paths are understood relative to the configuration file.
+For remote setups, the name as listed by the TODO tool must be used.
+TODO: explain how to list snapshots.
+
+tempDir: guest path
+
+Path inside the VM to use for temporary data (installer, checker copy, test script...).
+It must be writable by the user.
+
+os: windows|linux|mac
+
+The OS running inside the VM
+
+python: guest path (Default: "python")
+
+The path to the installed python executable inside the VM.
+
+== Test Cases ==
+
+=== Configuration File  ===
+
+General/platforms: string list
+
+comma-separated list of platforms the testcase should be run on.
+Valid platform names are "windows", "linux", "mac"
+
+General/targetDirectory: guest path
+
+The target directory to use for the post-installation checks (see below). Note that the actual installation directory is specified in the
+installscript and must be kept in sync.
+
+
+See the section on post-installation checks for details.
+
+General/maintenanceToolLocation
+
+The path to the maintenance tool (updater/package manager) after installation. Required for multi-step tests
+
+==== Steps ====
+
+Each test case can consist of of n steps and must have at least one.
+The first step is the actual installation and will execute the installer, the following steps will start the maintenance tool.
+Step section must be consecutive and start at 0: Step0, Step1, Step2 etc.
+
+StepN/installscript: path
+
+The path to the QtScript used for non-interactive execution of the installer/maintenance tool.
+relative paths are interpreted relative to the configuration file.
+
+StepN/checkerTestDir: string
+
+The path to a directory containing a set of tests to perform after a successful installer/maintenance tool run.
+relative paths are interpreted relative to the configuration file.
+
+Example:
+
+[General]
+
+platforms=windows,linux
+targetDirectory=c:\testinstall
+maintenanceToolLocation=c:\testInstall\TestUninstaller.exe
+
+[Step0]
+installscript=testscript.qs
+checkerTestDir=checker
+
+=== Install scripts ===
+
+see non-interactive installation section in installerbuilder/installerbuilder.dox
+TODO: merge
+
+=== Post-installation checks ===
+
+The framework can execute post-installation tests on the VM to check if the installation is in the expected state.
+The python code executing those checks is called "checker".
+Each testcase can contain a "checker test directory" to contain checks to be executed.
+The framework copies both the checker code and the test case into the VM, executes the checks and reports the results.
+
+Currently, the following checks are supported:
+
+==== Files ====
+
+It can be checked for files to exist in the installation and their file size and md5sum.
+To add such a check, place a file with extension .filelist in the test directory.
+
+The format of a .filelist file is:
+
+filename; file size; md5sum 
+
+file size and md5sum are optional and can be empty.
+
+Example:
+
+components.xml; 2050; 6813144fd09f7d39764702e5adb91679wrong
+index.html; 46; fd40a94472ea1d13d93221c5ce62c321
+include\QtGui\qwidget.h; 108; 67dc776dd5aa66741dab6a2eeec4ac3c
+
+Relative paths are understood relative to the targetDirectory.
+Such files can be generated using the script test-framework/checker/scripts/generate-filelist.py
+
+==== Windows Registry ====
+
+Similar to .filelist, .registrylist files can be used to check for the existance and content of windows registry keys.
+
+The format is
+
+<path>; <key>; <value>
+
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion; SM_GamesName; Games
+
+==== Arbitrary python code ====
+
+Not yet done but easy to implement: Run tests from python code from .py files in the test dir.
+
+== Host Configuration File Options ==
+
+=== Section: General ===
+
+vmrun: path (Default: "vmrun")
+
+vmrun specifies the location of the vmrun executable to use. vmrun is part of VMRun Workstation, Fusion, Server and ESX. If the 
+framework not on the same system as the VMWare server, you must sure that the executable installed supports the VMWare edition used
+(At the time of writing, this is VMWare Server).
+
+checkerInstallation: path
+
+The path to the "checker" python files which will be copied to each VM and executed to perform postinstallation checks.
+
+Example:
+
+checkerInstallation=/home/kdab/test/installerfw/installer/test-framework/checker
+
+testcase{0..n}: path
+
+The configuration files of the test cases to use. 
+Relative paths are understood relative to the configuration file.
+
+vm{0..n}: path
+
+n configuration files of the virtual machines to use.
+Relative paths are understood relative to the configuration file.
+
+gui: True|False (default: False TODO: ensure)
+
+Whether VMWare/vmrun should bring up  . Only relevant when used with VMWare Workstation or Fusion.
+
+createErrorSnapshots True|False (default: False TODO: ensure)
+
+Specifies if the framework should create error snapshots if the installation or post-installation checks fail. 
+This is currently only supported for VMWare Workstation and Fusion (the server editions unfortunately only support a single snapshot per VM,
+which is reserved for the baseline.
+
+=== Section: Host ===
+
+This section is optional. It is used if the VMWare host is different from the local machine (VMWare Server or esx).
+
+type: string
+
+The VMWare edition to talk against, one of "server" and "esx"
+
+location: URL
+
+The URL of the server/esx installation to talk to
+
+Example:
+
+location=https://172.25.167.23:8333/sdk
+
+username: string
+
+The user used to login on the VMWare server
+
+password: string
+
+The user used to login on the VMWare server
+
+=== Section: CDash ===
+
+The framework is able to generate test reports in CDash format. If this section does not exist, the results are just printed to stdout.
+
+host: hostname
+
+The host of the CDash installation
+
+location:
+
+The path to the CDash installation on host
+
+
+project
+
+The CDash project to report the test results to.
+
+Example:
+
+[Host]
+
+host=localhost
+location=/CDash
+project=NokiaSDKInstallerTest
+
+=== Section: Source{0..n} ===
+
+
+Each source provides installers to be tested, for a specific platform.
+Currently, FTP is assumed and the only supported protocol.
+The 
+
+Example:
+
+[Source0]
+host=hegel
+path=/projects/ndk/installers/windows
+platform=windows
+
+[Source1]
+host=hegel
+path=/projects/ndk/installers/linux
+platform=linux
+
+

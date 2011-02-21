@@ -1,0 +1,98 @@
+/**************************************************************************
+**
+** This file is part of Qt SDK**
+**
+** Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).*
+**
+** Contact:  Nokia Corporation qt-info@nokia.com**
+**
+** GNU Lesser General Public License Usage
+**
+** This file may be used under the terms of the GNU Lesser General Public
+** License version 2.1 as published by the Free Software Foundation and
+** appearing in the file LICENSE.LGPL included in the packaging of this file.
+** Please review the following information to ensure the GNU Lesser General
+** Public License version 2.1 requirements will be met:
+** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain additional
+** rights. These rights are described in the Nokia Qt LGPL Exception version
+** 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+**
+** If you are unsure which license is appropriate for your use, please contact
+** (qt-info@nokia.com).
+**
+**************************************************************************/
+#ifndef DOWNLOADARCHIVESJOB_H
+#define DOWNLOADARCHIVESJOB_H
+
+#include <KDToolsCore/KDJob>
+
+#include <QPair>
+#include <QStringList>
+
+namespace KDUpdater 
+{
+    class FileDownloader;
+}
+
+class QTimer;
+
+namespace QInstaller 
+{
+
+class MessageBoxHandler;
+class Installer;
+
+class DownloadArchivesJob : public KDJob
+{
+    Q_OBJECT
+public:
+    enum Error 
+    {
+        InvalidUrl = KDJob::UserDefinedError,
+        Timeout,
+        DownloadError
+    };
+
+    explicit DownloadArchivesJob(const QByteArray& publicKey, Installer* parent = 0 );
+    ~DownloadArchivesJob();
+
+    void setArchivesToDownload( const QList< QPair< QString, QString > >& archives );
+
+Q_SIGNALS:
+    void progressChanged( double progress );
+    void outputTextChanged( const QString& progress );
+
+protected:
+    void doStart();
+    void doCancel();
+    void timerEvent(QTimerEvent *event);
+
+protected Q_SLOTS:
+    void registerFile();
+    void downloadCanceled();
+    void downloadFailed( const QString& error );
+    void finishWithError( const QString& error );
+    void fetchNextArchive();
+    void fetchNextArchiveHash();
+    void finishedHashDownload();
+    void emitDownloadProgress( double progress );
+
+private:
+    bool cancelled;
+    QList< QPair< QString, QString > > archives;
+    const QByteArray publicKey;
+    KDUpdater::FileDownloader* downloader;
+    QStringList temporaryFiles;
+    int filesToDownload;
+    int filesDownloaded;
+    Installer* parent;
+    QByteArray currentHash;
+    double lastFileProgress;
+    int progressChangedTimerId;
+};
+
+}
+
+#endif

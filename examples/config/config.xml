@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<Installer>
+    <Name>Test App</Name>
+    <Version>1.0.0</Version>
+    <Title>Test App_Hurra</Title>
+	<MaintenanceTitle>Test App_MAN</MaintenanceTitle>
+    <Publisher>Nokia</Publisher>
+    <ProductUrl>http://qt.nokia.com</ProductUrl>
+    <Icon>qticon</Icon>
+	<Watermark>watermark.png</Watermark>
+    <UninstallerName>TestAppUninstaller</UninstallerName>
+	<RemoteRepositories>
+		<Repository>
+			<Url>http://www.kdab.com/~bjoern/sha1repo</Url>
+			<Required>false</Required>
+		</Repository>
+	</RemoteRepositories>
+
+    <!-- @homeDir@ and @rootDir@ are some of the supported vars -->
+    <TargetDir>@homeDir@/testinstall</TargetDir>
+    <AdminTargetDir>/opt</AdminTargetDir>
+</Installer>

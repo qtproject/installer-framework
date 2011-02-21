@@ -1,0 +1,190 @@
+#!/bin/bash
+
+PRODUCT=SDKINSTALLER
+Product=SDKInstaller
+product=sdkinstaller
+
+VERSION=0.0.1
+
+default_prefix=/usr/local/KDAB/$Product-$VERSION
+
+hide_symbols=yes
+shared=yes
+debug=no
+release=yes
+prefix=
+unittests=no
+
+STATIC_BUILD_SUPPORTED=false
+
+function die {
+    echo "$1" 1>&2
+    exit 1
+}
+
+
+function usage {
+    [ -z "$1" ] || echo "$0: unknown option \"$1\"" 1>&2
+    echo "usage: $0 [options]" 1>&2
+    cat <<EOF 1>&2
+where options include:
+
+EOF
+if [ "$INSTALLATION_SUPPORTED" = "true" ]; then
+    cat <<EOF 1>&2
+  -prefix <path>
+      install $Product into <path>
+EOF
+fi  
+cat <<EOF 1>&2
+
+  -release / -debug
+      build in debug/release mode
+EOF
+if [ "$STATIC_BUILD_SUPPORTED" = "true" ]; then
+  cat <<EOF 1>&2
+
+  -static / -shared
+      build static/shared libraries
+EOF
+fi
+cat <<EOF 1>&2
+
+  -[no-]hide-symbols (Unix only)
+      reduce the number of exported symbols
+
+  -[no-]unittests
+      enable/disable compiled-in unittests
+
+EOF
+    exit 1
+}
+
+if [ -z "$QTDIR" ] ;  then
+    QTDIR="$(qmake -query QT_INSTALL_PREFIX)"
+    if [ $? -ne 0 ] ; then
+	QTDIR=
+    fi
+fi
+
+[ -z "$QTDIR" ] && die "You need QTDIR defined, or qmake in the PATH"
+
+while [ $# -ne 0 ] ; do
+    case "$1" in
+	-prefix)
+	    shift
+            if [ $# -eq 0 ] ; then
+		    echo "-prefix needs an argument" 2>&1
+		    usage
+	    fi
+            prefix="$1"
+	    ;;
+        -no-hide-symbols)
+            hide_symbols=no
+            ;;
+        -hide-symbols)
+            hide_symbols=yes
+            ;;
+	-no-unittests)
+	    unittests=no
+	    ;;
+	-unittests)
+	    unittests=yes
+	    ;;
+        -shared)
+            shared=yes
+            ;;
+        -static)
+            if [ "$STATIC_BUILD_SUPPORTED" != "true" ]; then
+                echo "Static build not supported, -static option not allowed" 2>&1
+                usage
+            fi
+            shared=no
+            ;;
+        -debug)
+            debug=yes
+            release=no
+            ;;
+        -release)
+            debug=no
+            release=yes
+            ;;
+        *)
+            usage "$1"
+            ;;
+    esac
+    shift
+done
+
+find . -name debug -o -name release -o -name Makefile\* | xargs rm -rf
+
+if [ -f src/src.pro ] ; then
+    rm -rf lib bin
+fi
+
+if [ -z "$prefix" ] ; then
+    prefix="$default_prefix"
+fi
+
+echo -n > ".qmake.cache"
+(
+    echo "CONFIG += ${product}_target"
+
+# The following disabled to make debug builds work again:
+#    echo '!contains($$list($$[QT_VERSION]), 4.2.*):CONFIG += debug_and_release build_all'
+#    [ "$debug" = "yes"   ] && echo "else:CONFIG -=release += debug"
+#    [ "$release" = "yes" ] && echo "else:CONFIG -=debug += release"
+
+    if [ "$debug" = "yes" ]; then
+      echo "CONFIG -= release"
+      echo "CONFIG += debug"
+      echo "CONFIG -= debug_and_release"
+    fi
+
+    if [ "$release" = "yes" ]; then
+      echo "CONFIG += release"
+      echo "CONFIG -= debug"
+      echo "CONFIG -= debug_and_release"
+    fi
+
+    [ "$hide_symbols" = "yes" ] &&  echo "CONFIG += hide_symbols"
+    [ "$unittests" = "yes" ] && echo "CONFIG += unittests"
+
+    if [ "$shared" = "yes" ]; then
+      echo "CONFIG -= static"
+      echo "CONFIG -= staticlib"
+      echo "CONFIG += shared"
+    else
+      echo "CONFIG += static"
+      echo "CONFIG += staticlib"
+      echo "CONFIG -= shared"
+    fi
+
+    if [ -d "$QTDIR/include/Qt/private" ] ; then
+	echo "CONFIG += have_private_qt_headers"
+	echo "INCLUDEPATH += $QTDIR/include/Qt/private"
+    #else
+        #echo "QTDIR must point to an installation that has private headers installed."
+        #echo "Some features will not be available."    
+    fi
+echo "${PRODUCT}_INSTALL_PREFIX = $prefix"
+echo "${PRODUCT}_BASE = `pwd`"
+
+) >> ".qmake.cache"
+
+cat <<EOF 1>&2
+$Product v$VERSION configuration:
+
+  Install Prefix.............: $prefix
+    (default: $default_prefix)
+  Debug......................: $debug (default: no)
+  Release....................: $release (default: yes)
+  Compiled-In Unit Tests.....: $unittests (default: no)
+  Restricted symbol export
+    (shared build only)......: $hide_symbols (default: yes)
+
+EOF
+
+$QTDIR/bin/qmake $product.pro -recursive "CONFIG+=pk7zip_library"  || die "qmake failed"
+
+echo "Ok, now run make, then make install to install into $prefix"

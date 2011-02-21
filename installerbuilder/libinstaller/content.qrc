@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/licensepart">
+        <file>NQSDevAgreement.txt</file>
+        <file>NQSThirdPartyAgreement.txt</file>
+    </qresource>
+</RCC>

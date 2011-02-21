@@ -1,0 +1,11 @@
+To exchange an online repository during update process do the following steps.
+
+1. navigate to the source folder of installerbase ( from trunk this is installerbuilder/installerbase )
+2. open the installerbase.qrc and add an entry pointing to overrideconfig.xml
+3. copy the config.xml file in the installerbase source folder rename it to overrideconfig.xml
+4. rebuild installerbase
+
+The override config is now shipped with the installerbase.exe and always overrides the old given config until
+a new installerbase.exe is shipped without this resource.
+
+
