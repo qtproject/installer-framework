@@ -41,6 +41,7 @@
 #include <QtCore/QVector>
 
 class FSEngineClientHandler;
+class QFileInfo;
 
 namespace KDUpdater {
     class Application;
@@ -116,6 +117,9 @@ public:
     int countProgressOperations(const QList<KDUpdater::UpdateOperation*> &operations);
     void connectOperationToInstaller(KDUpdater::UpdateOperation* const operation,
         double progressOperationPartSize);
+
+    KDUpdater::UpdateOperation* createPathOperation(const QFileInfo &fileInfo,
+        const QString &componentName);
     void registerPathesForUninstallation(const QList<QPair<QString, bool>> &pathesForUninstallation,
         const QString &componentName);
 

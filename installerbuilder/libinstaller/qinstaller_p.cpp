@@ -530,6 +530,21 @@ void InstallerPrivate::connectOperationToInstaller(KDUpdater::UpdateOperation* c
     }
 }
 
+KDUpdater::UpdateOperation* InstallerPrivate::createPathOperation(const QFileInfo &fileInfo,
+    const QString &componentName)
+{
+    const bool isDir = fileInfo.isDir();
+    // create an operation with the dir/ file as target, it will get deleted on undo
+    KDUpdater::UpdateOperation *op = createOwnedOperation(QLatin1String(isDir
+        ? "Mkdir" : "Copy"));
+    if (isDir)
+        op->setValue(QLatin1String("createddir"), fileInfo.absoluteFilePath());
+    op->setValue(QLatin1String("component"), componentName);
+    op->setArguments(isDir ? QStringList() << fileInfo.absoluteFilePath()
+        : QStringList() << QString() << fileInfo.absoluteFilePath());
+    return op;
+}
+
 /*!
     This creates fake operations which remove stuff which was registered for uninstallation afterwards
 */
@@ -541,21 +556,16 @@ void InstallerPrivate::registerPathesForUninstallation(
 
     QList<QPair<QString, bool>>::const_iterator it;
     for (it = pathesForUninstallation.begin(); it != pathesForUninstallation.end(); ++it) {
-        const QString path = replaceVariables(it->first);
         const bool wipe = it->second;
-        const QFileInfo fi(path);
+        const QString path = replaceVariables(it->first);
 
+        const QFileInfo fi(path);
         // create a copy operation with the file as target -> it will get deleted on undo
-        KDUpdater::UpdateOperation* const op = createOwnedOperation(QLatin1String(fi.isDir()
-            ? "Mkdir" : "Copy"));
+        KDUpdater::UpdateOperation* const op = createPathOperation(fi, componentName);
         if (fi.isDir()) {
-            op->setValue(QLatin1String("createddir"), fi.absoluteFilePath());
             op->setValue(QLatin1String("forceremoval"), wipe ? QLatin1String("true")
                 : QLatin1String("false"));
         }
-        op->setArguments(fi.isDir() ? QStringList() << fi.absoluteFilePath()
-            : QStringList() << QString() << fi.absoluteFilePath());
-        op->setValue(QLatin1String("component"), componentName);
         addPerformed(op);
 
         // get recursive afterwards
@@ -564,21 +574,7 @@ void InstallerPrivate::registerPathesForUninstallation(
                 | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
             while (dirIt.hasNext()) {
                 dirIt.next();
-                const QFileInfo fi = dirIt.fileInfo();
-                if (fi.isDir()) {
-                    // create an mkdir operation with the dir as target -> it will get deleted on undo
-                    KDUpdater::UpdateOperation* const op = createOwnedOperation(QLatin1String("Mkdir"));
-                    op->setArguments(QStringList() << fi.absoluteFilePath());
-                    op->setValue(QLatin1String("createddir"), fi.absoluteFilePath());
-                    op->setValue(QLatin1String("component"), componentName);
-                    addPerformed(op);
-                } else {
-                    // create a copy operation with the file as target -> it will get deleted on undo
-                    KDUpdater::UpdateOperation* const op = createOwnedOperation(QLatin1String("Copy"));
-                    op->setArguments(QStringList() << QString() << fi.absoluteFilePath());
-                    op->setValue(QLatin1String("component"), componentName);
-                    addPerformed(op);
-                }
+                addPerformed(createPathOperation(dirIt.fileInfo(), componentName));
             }
         }
     }
