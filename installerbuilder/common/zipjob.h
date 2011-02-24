@@ -29,12 +29,16 @@
 #include <QProcess>
 #include <QRunnable>
 
+QT_BEGIN_NAMESPACE
 class QDir;
 class QIODevice;
 class QStringList;
+QT_END_NAMESPACE
 
-class ZipJob : public QObject, public QRunnable {
+class ZipJob : public QObject, public QRunnable
+{
     Q_OBJECT
+
 public:
     ZipJob();
     ~ZipJob();

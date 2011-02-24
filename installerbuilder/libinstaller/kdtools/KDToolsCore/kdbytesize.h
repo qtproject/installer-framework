@@ -45,7 +45,10 @@ KDTOOLSCORE_EXPORT KDByteSize operator*( const KDByteSize& lhs, int rhs );
 
 KDTOOLS_MAKE_RELATION_OPERATORS( KDByteSize, static inline )
 
+QT_BEGIN_NAMESPACE
 class QDebug;
+QT_END_NAMESPACE
+
 KDTOOLSCORE_EXPORT QDebug operator<<( QDebug dbg, const KDByteSize& size );
 
 #endif

@@ -31,12 +31,14 @@
 #include <QtGlobal>
 #include <qnamespace.h>
 
+QT_BEGIN_NAMESPACE
 class QIODevice;
 class QFile;
 template <typename T> class QList;
 class QScriptContext;
 class QScriptEngine;
 class QScriptValue;
+QT_END_NAMESPACE
 
 namespace QInstaller {
 

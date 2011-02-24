@@ -28,8 +28,7 @@
 
 #include <QString>
 #include <QStringList>
-
-template <typename T> class QVector;
+#include <QVector>
 
 namespace QInstaller {
     struct PackageInfo {

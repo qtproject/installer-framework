@@ -32,9 +32,13 @@
 
 #ifdef FSENGINE_TCP
 #include <QtNetwork/QHostAddress>
+QT_BEGIN_NAMESPACE
 class QTcpSocket;
+QT_END_NAMESPACE
 #else
+QT_BEGIN_NAMESPACE
 class QLocalSocket;
+QT_END_NAMESPACE
 #endif
 
 #include "installer_global.h"

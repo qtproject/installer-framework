@@ -35,6 +35,7 @@
 #include "messageboxhandler.h"
 
 // FIXME: move to private classes
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QLabel;
 class QLineEdit;
@@ -45,6 +46,7 @@ class QRadioButton;
 class QTextBrowser;
 class QTreeView;
 class QScriptEngine;
+QT_END_NAMESPACE
 
 namespace QInstaller {
 

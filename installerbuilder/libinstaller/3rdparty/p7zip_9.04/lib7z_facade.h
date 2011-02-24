@@ -17,8 +17,10 @@
 
 #include "../../installerbuilder/libinstaller/installer_global.h"
 
+QT_BEGIN_NAMESPACE
 class QStringList;
 template <typename T> class QVector;
+QT_END_NAMESPACE
 
 namespace Lib7z {
 

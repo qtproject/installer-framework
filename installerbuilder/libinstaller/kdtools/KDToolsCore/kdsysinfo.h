@@ -106,7 +106,9 @@ public:
     static QList< ProcessInfo > runningProcesses();
 };
 
+QT_BEGIN_NAMESPACE
 class QDebug;
+QT_END_NAMESPACE
 
 QDebug operator<<( QDebug dbg, KDSysInfo::OperatingSystemType type );
 QDebug operator<<( QDebug dbg, KDSysInfo::ArchitectureType type );

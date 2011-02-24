@@ -25,10 +25,12 @@
 
 #include "kdupdater.h"
 
+#include <KDToolsCore/pimpl_ptr.h>
+
+QT_BEGIN_NAMESPACE
 class QByteArray;
 class QIODevice;
-
-#include <KDToolsCore/pimpl_ptr.h>
+QT_END_NAMESPACE
 
 /**
  * Class that provides cryptographic functionality like signing and verifying

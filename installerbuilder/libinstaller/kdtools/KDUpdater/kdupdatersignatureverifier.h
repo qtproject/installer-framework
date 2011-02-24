@@ -25,9 +25,11 @@
 
 #include "kdupdater.h"
 
+QT_BEGIN_NAMESPACE
 class QByteArray;
 class QIODevice;
 class QString;
+QT_END_NAMESPACE
 
 namespace KDUpdater {
 

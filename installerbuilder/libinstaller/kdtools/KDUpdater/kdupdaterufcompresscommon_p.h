@@ -31,8 +31,10 @@
 #include <QtCore/QByteArray>
 #include <QtCore/QVector>
 
+QT_BEGIN_NAMESPACE
 class QCryptographicHash;
 class QDataStream;
+QT_END_NAMESPACE
 
 namespace KDUpdater
 {

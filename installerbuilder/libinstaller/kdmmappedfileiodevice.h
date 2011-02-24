@@ -30,10 +30,14 @@
 
 #include "installer_global.h"
 
+QT_BEGIN_NAMESPACE
 class QFile;
+QT_END_NAMESPACE
 
-class INSTALLER_EXPORT KDMMappedFileIODevice : public QIODevice {
+class INSTALLER_EXPORT KDMMappedFileIODevice : public QIODevice
+{
     Q_OBJECT
+
 public:
     KDMMappedFileIODevice( QFile* file, qint64 offset, qint64 length, QObject* parent=0 );
     KDMMappedFileIODevice( const QString& filename, qint64 offset, qint64 length, QObject* parent=0 );

@@ -33,8 +33,6 @@
 #include <QMessageBox>
 #include <QHash>
 
-class QString;
-
 namespace QInstaller {
 
 QScriptValue registerMessageBox( QScriptEngine* scriptEngine );

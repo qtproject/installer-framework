@@ -27,10 +27,12 @@
 #include <QtCore/QGenericArgument>
 #include <QtCore/QRunnable>
 
+QT_BEGIN_NAMESPACE
 class QByteArray;
 class QIODevice;
 class QObject;
 template <typename T> class QVector;
+QT_END_NAMESPACE
 
 namespace KDUpdater {
     class SignatureVerifier;

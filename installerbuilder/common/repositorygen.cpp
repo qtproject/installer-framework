@@ -46,6 +46,7 @@
 #include <QDomAttr>
 #include <QDomDocument>
 #include <QTemporaryFile>
+#include <QVector>
 
 #include "lib7z_facade.h"
 
@@ -53,10 +54,12 @@
 
 using namespace QInstaller;
 
+QT_BEGIN_NAMESPACE
 static bool operator==(const PackageInfo& lhs, const PackageInfo& rhs)
 {
     return lhs.name == rhs.name && lhs.version == rhs.version;
 }
+QT_END_NAMESPACE
 
 static QVector<PackageInfo> collectAvailablePackages(const QString& packagesDirectory)
 {

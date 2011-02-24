@@ -32,8 +32,6 @@
 
 #include "qinstaller.h" // friend QInstaller::Private
 
-class QDir;
-
 namespace KDUpdater {
     class Update;
     class UpdateOperation;

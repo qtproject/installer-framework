@@ -5,8 +5,10 @@
 
 #include <QString>
 
+QT_BEGIN_NAMESPACE
 class QProcess;
 class QProcessEnvironment;
+QT_END_NAMESPACE
 
 namespace KDUpdater {
 

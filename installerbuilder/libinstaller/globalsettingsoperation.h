@@ -29,7 +29,6 @@
 #include <KDUpdater/UpdateOperation>
 
 class QSettingsWrapper;
-class QStringList;
 
 namespace QInstaller {
 

@@ -37,11 +37,12 @@
 
 using namespace QInstaller;
 
+QT_BEGIN_NAMESPACE
 uint qHash(QPointer<QObject> key)
 {
     return qHash(key.data());
 }
-
+QT_END_NAMESPACE
 
 ProgressCoordninator::ProgressCoordninator(QObject *parent) :
     QObject(parent),

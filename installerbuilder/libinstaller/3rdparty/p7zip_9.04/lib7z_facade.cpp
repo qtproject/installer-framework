@@ -24,14 +24,13 @@
 #include "7zip/UI/Common/Extract.h"
 #include "7zip/UI/Common/Update.h"
 #include "7zip/UI/Common/ArchiveExtractCallback.h"
+#include "7zip/UI/Common/LoadCodecs.h"
+#include "7zip/UI/Common/PropIDUtils.h"
 
 #include "Windows/Defs.h"
 #include "Windows/Error.h"
 #include "Windows/FileDir.h"
 #include "Windows/FileName.h"
-
-#include "7zip/UI/Common/LoadCodecs.h"
-#include "7zip/UI/Common/PropIDUtils.h"
 #include "Windows/PropVariant.h"
 #include "Windows/PropVariantConversions.h"
 

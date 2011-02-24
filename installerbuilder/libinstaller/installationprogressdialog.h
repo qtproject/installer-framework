@@ -28,26 +28,34 @@
 
 #include <QtGui/QDialog>
 
+QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
+QT_END_NAMESPACE
 
 namespace QInstaller {
 
 class PerformInstallationForm;
 
-class InstallationProgressDialog : public QDialog{
+class InstallationProgressDialog : public QDialog
+{
     Q_OBJECT
+
 public:
     explicit InstallationProgressDialog( QWidget* parent=0 );
     ~InstallationProgressDialog();
     //bool isShowingDetails() const;
+
 Q_SIGNALS:
     void canceled();
 
 private Q_SLOTS:
     void finished();
+
 private:
     PerformInstallationForm *m_performInstallationForm;
     QDialogButtonBox* m_dialogBtns;
 };
-} //namespace QInstaller
+
+} // namespace QInstaller
+
 #endif

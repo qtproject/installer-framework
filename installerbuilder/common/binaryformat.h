@@ -40,7 +40,6 @@
 #include "binaryformatenginehandler.h"
 #include "installer_global.h"
 
-class QFile;
 class KD7zEngineHandler;
 
 namespace KDUpdater

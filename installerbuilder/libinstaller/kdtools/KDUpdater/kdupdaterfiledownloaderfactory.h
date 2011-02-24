@@ -30,7 +30,9 @@
 #include <QtCore/QStringList>
 #include <QtCore/QUrl>
 
+QT_BEGIN_NAMESPACE
 class QObject;
+QT_END_NAMESPACE
 
 namespace KDUpdater
 {

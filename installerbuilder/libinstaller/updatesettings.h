@@ -30,10 +30,12 @@
 
 #include "installer_global.h"
 
+QT_BEGIN_NAMESPACE
 class QDateTime;
 template< typename T >
 class QList;
 class QSettings;
+QT_END_NAMESPACE
 
 namespace QInstaller
 {

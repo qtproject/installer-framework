@@ -26,7 +26,9 @@
 #include "kdupdater.h"
 #include <QObject>
 
+QT_BEGIN_NAMESPACE
 class QUrl;
+QT_END_NAMESPACE
 
 namespace KDUpdater
 {
@@ -34,7 +36,8 @@ namespace KDUpdater
     class SignatureVerifier;
     class UpdateSourcesInfo;
 
-    class ConfigurationInterface {
+    class ConfigurationInterface
+    {
     public:
         virtual ~ConfigurationInterface();
         virtual QVariant value( const QString& key ) const = 0;

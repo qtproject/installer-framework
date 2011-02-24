@@ -29,7 +29,9 @@
 #include <QtCore/QCryptographicHash>
 #include <QtNetwork/QNetworkReply>
 
+QT_BEGIN_NAMESPACE
 class QIODevice;
+QT_END_NAMESPACE
 
 // these classes are not a part of the public API
 

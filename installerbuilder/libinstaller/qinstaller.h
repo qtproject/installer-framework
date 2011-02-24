@@ -48,9 +48,11 @@ namespace KDUpdater {
     class UpdateOperation;
 }
 
+QT_BEGIN_NAMESPACE
 class QDir;
 class QFile;
 class QIODevice;
+QT_END_NAMESPACE
 
 class KDJob;
 

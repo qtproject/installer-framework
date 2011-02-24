@@ -28,6 +28,7 @@
 
 #include <QtCore/QCryptographicHash>
 #include <QtCore/QFile>
+#include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QBuffer>
 #include <QtCore/QUrl>
@@ -35,16 +36,6 @@
 #include "installer_global.h"
 
 #include <ostream>
-
-class QByteArray;
-class QIODevice;
-class QString;
-class QUrl;
-
-template< typename T >
-class QList;
-
-template<typename K, typename V> class QHash;
 
 namespace QInstaller
 {

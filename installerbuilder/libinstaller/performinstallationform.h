@@ -30,11 +30,13 @@
 
 class LazyPlainTextEdit;
 
+QT_BEGIN_NAMESPACE
 class QWidget;
 class QPushButton;
 class QProgressBar;
 class QLabel;
 class QTimer;
+QT_END_NAMESPACE
 
 namespace QInstaller {
 

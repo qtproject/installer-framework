@@ -30,11 +30,12 @@
 #include <qinstallergui.h>
 
 
-
+QT_BEGIN_NAMESPACE
 class QFileInfo;
 class QLabel;
 class QString;
-//class
+QT_END_NAMESPACE
+
 
 namespace QInstaller{
     class Installer;

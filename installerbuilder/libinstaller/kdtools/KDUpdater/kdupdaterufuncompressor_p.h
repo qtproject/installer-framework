@@ -27,7 +27,9 @@
 
 #include <QtCore/QCoreApplication>
 
+QT_BEGIN_NAMESPACE
 class QString;
+QT_END_NAMESPACE
 
 namespace KDUpdater
 {

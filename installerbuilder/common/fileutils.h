@@ -31,9 +31,11 @@
 
 #include "installer_global.h"
 
+QT_BEGIN_NAMESPACE
 class QByteArray;
 class QIODevice;
 class QUrl;
+QT_END_NAMESPACE
 
 namespace QInstaller {
     void INSTALLER_EXPORT openForWrite(QIODevice* dev, const QString& name);
