@@ -2494,7 +2494,7 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
                     == QLatin1String("Installed");
                 const bool isNewComponent = tmpComponent->value(QLatin1String("NewComponent"))
                     == QLatin1String("true") ? true : false;
-                const bool newPackageForUpdater = !isInstalled && isNewComponent;
+                const bool newPackageForUpdater = !isInstalled && isNewComponent && !isInstaller();
                 isUpdate = isUpdate && isInstalled;
 
                 if (newPackageForUpdater) {
