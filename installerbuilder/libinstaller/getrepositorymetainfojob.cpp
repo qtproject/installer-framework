@@ -248,7 +248,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 
 void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
 {
-    if (m_retriesLeft == 0) {
+    if (m_retriesLeft <= 0) {
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
         QString packageManagerMessage;
         if (m_packageManager) {
@@ -395,7 +395,7 @@ void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
     if (err == QObject::tr("Bad hash"))
         emit infoMessage(this, tr("The hash of one component does not match the expected one."));
 
-    if (m_retriesLeft == 0) {
+    if (m_retriesLeft <= 0) {
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
         QString packageManagerMessage;
         if (m_packageManager) {
