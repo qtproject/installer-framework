@@ -164,6 +164,7 @@ void QtInstallerGui::init()
 QtUninstallerGui::QtUninstallerGui(Installer *installer)
     : Gui(installer, 0)
 {
+    setPage(Installer::Introduction, new IntroductionPage(installer));
     setPage(Installer::ComponentSelection, new ComponentSelectionPage(m_installer));
     setPage(Installer::LicenseCheck, new LicenseAgreementPage(installer));
     setPage(Installer::ReadyForInstallation, new ReadyForInstallationPage(installer));
