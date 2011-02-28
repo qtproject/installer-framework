@@ -660,6 +660,7 @@ IntroductionPage::IntroductionPage(Installer *inst)
     QVBoxLayout *layout = new QVBoxLayout( this );
     setLayout(layout);
     layout->addWidget( m_msgLabel );
+    layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 }
 
 void IntroductionPage::setText(const QString &text)
