@@ -87,7 +87,7 @@ private Q_SLOTS:
     void close();
 
 private:
-    void init(Tabs curTab);
+    void init();
 
 private:
     class Private;

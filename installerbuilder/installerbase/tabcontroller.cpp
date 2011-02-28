@@ -182,9 +182,9 @@ void TabController::setControlScript (const QString &script)
     d->m_controlScript = script;
 }
 
-void TabController::init(Tabs curTab)
+void TabController::init()
 {
-    if (d->m_updaterGuiWidget && !d->m_init) {
+    if (!d->m_installer->isInstaller() && !d->m_init) {
         d->m_updater.reset(new Updater);
         d->m_updater->setInstaller(d->m_installer);
 
@@ -212,7 +212,7 @@ void TabController::init(Tabs curTab)
 
 void TabController::close()
 {
-    if (d->m_updaterGuiWidget && !d->m_gui.isNull())
+    if (!d->m_installer->isInstaller() && !d->m_gui.isNull())
         d->m_gui->cancelButtonClicked();
 }
 
@@ -250,7 +250,7 @@ void TabController::updaterFinishedWithError()
     d->m_installer->writeUninstaller();
     d->m_state = CANCELED;
 
-    if (d->m_updaterGuiWidget && !d->m_gui.isNull())
+    if (!d->m_installer->isInstaller() && !d->m_gui.isNull())
         d->m_gui->rejectWithoutPrompt();
 
     finished();
@@ -396,7 +396,7 @@ void TabController::updaterFinished(bool error)
 void TabController::updaterFinished(int val)
 {
     if (val != QDialog::Accepted) {
-        if (d->m_updaterGuiWidget && !d->m_gui.isNull())
+        if (!d->m_installer->isInstaller() && !d->m_gui.isNull())
             d->m_gui->rejectWithoutPrompt();
         finished();
     }
@@ -410,7 +410,7 @@ void TabController::canceled()
 
 int TabController::initUpdater()
 {
-    init(UPDATER_TAB);
+    init();
 
     if (d->m_repoUpdateNeeded) {
         int result = checkRepositories();
@@ -433,7 +433,7 @@ int TabController::initUpdater()
 
 int TabController::initPackageManager()
 {
-    init(PACKAGE_MANAGER_TAB);
+    init();
 
     // this should called as early as possible, to handle checkRepositories error messageboxes for
     // example
