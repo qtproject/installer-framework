@@ -41,7 +41,7 @@
 #include <QtCore/QVector>
 
 class FSEngineClientHandler;
-class QFileInfo;
+QT_FORWARD_DECLARE_CLASS(QFileInfo)
 
 namespace KDUpdater {
     class Application;
