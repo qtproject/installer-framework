@@ -308,10 +308,12 @@ int TabController::checkRepositories()
     GetMetaInfoProgressWidget *metaProgress = 0;
     QScopedPointer<QProgressDialog> progressDialog(0);
     if (isInstaller) {
-        metaProgress = new GetMetaInfoProgressWidget(d->m_gui->introductionPage());
-        d->m_gui->introductionPage()->setWidget(metaProgress);
+        IntroductionPage *page =
+            qobject_cast<IntroductionPage*>(d->m_gui->page(Installer::Introduction));
+        metaProgress = new GetMetaInfoProgressWidget(page);
+        page->setWidget(metaProgress);
         // disable the 'next' button while performing update
-        d->m_gui->introductionPage()->setComplete(false);
+        page->setComplete(false);
         metaInfoJob.connect(&metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), metaProgress,
             SLOT(message(KDJob*, QString)));
 
@@ -513,9 +515,10 @@ int TabController::initPackageManager()
     if (d->m_installer->isPackageManager())
         d->preselectInstalledPackages();
 
+    // everything done, enable the 'next' button
     if (d->m_installer->isInstaller()) {
-         // everything done, enable the 'next' button
-        d->m_gui->introductionPage()->setComplete(true);
+        using namespace QInstaller;
+        qobject_cast<IntroductionPage*>(d->m_gui->page(Installer::Introduction))->setComplete(true);
     }
 
     d->m_packageManagerInitialized = true;

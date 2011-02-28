@@ -131,6 +131,7 @@ bool TargetDirectoryPageImpl::validatePage()
 QtInstallerGui::QtInstallerGui(Installer *installer)
     : Gui(installer, 0)
 {
+    setPage(Installer::Introduction, new IntroductionPage(installer));
     setPage(Installer::TargetDirectory, new TargetDirectoryPageImpl(installer));
     setPage(Installer::ComponentSelection, new ComponentSelectionPage(m_installer));
     setPage(Installer::LicenseCheck, new LicenseAgreementPage(installer));
@@ -163,7 +164,6 @@ void QtInstallerGui::init()
 QtUninstallerGui::QtUninstallerGui(Installer *installer)
     : Gui(installer, 0)
 {
-    using namespace QInstaller;
     setPage(Installer::ComponentSelection, new ComponentSelectionPage(m_installer));
     setPage(Installer::LicenseCheck, new LicenseAgreementPage(installer));
     setPage(Installer::ReadyForInstallation, new ReadyForInstallationPage(installer));

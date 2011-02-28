@@ -86,7 +86,6 @@ public:
     explicit Gui(Installer *installer, QWidget *parent = 0);
     ~Gui();
     virtual void init() = 0;
-    IntroductionPage* introductionPage() const;
 
     void loadControlScript( const QString& scriptPath );
     void callControlScriptMethod( const QString& methodName );
@@ -94,6 +93,7 @@ public:
 
     QScriptEngine* controlScriptEngine() const;
 
+    Q_INVOKABLE Page* page(int pageId) const;
     Q_INVOKABLE QWidget* pageWidgetByObjectName( const QString& name ) const;
     Q_INVOKABLE QWidget* currentPageWidget() const;
     Q_INVOKABLE void clickButton( int wizardButton, int delayInMs=0 );
@@ -130,7 +130,6 @@ protected:
 private:
     class Private;
     Private* const d;
-    QInstaller::IntroductionPage *m_introPage;
     QMap< int, QWizardPage* > defaultPages;
 };
 

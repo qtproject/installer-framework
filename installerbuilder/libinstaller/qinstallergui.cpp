@@ -210,7 +210,6 @@ Gui::Gui(Installer *installer, QWidget *parent)
     : QWizard(parent)
     , m_installer( installer )
     , d( new Private )
-    , m_introPage( new IntroductionPage( installer ) )
 {
     if ( installer->isInstaller() )
         setWindowTitle(tr("%1 Setup").arg(m_installer->value(QLatin1String( "Title" ) ) ) );
@@ -227,8 +226,6 @@ Gui::Gui(Installer *installer, QWidget *parent)
     setOption(QWizard::NoBackButtonOnLastPage);
 //    setOption(QWizard::IndependentPages);
     setLayout( new QVBoxLayout( this ) );
-    if ( installer->isInstaller() )
-        setPage( Installer::Introduction, m_introPage );
 
     connect(this, SIGNAL(interrupted()), installer, SLOT(interrupt()));
     connect(this, SIGNAL(rejected()), installer, SLOT(setCanceled()) );
@@ -390,12 +387,6 @@ void Gui::delayedControlScriptExecution( int id )
     callControlScriptMethod( methodName );
 }
 
-
-IntroductionPage* Gui::introductionPage() const
-{
-    return m_introPage;
-}
-
 bool Gui::event( QEvent* event )
 {
     switch( event->type() )
@@ -462,6 +453,11 @@ void Gui::wizardPageVisibilityChangeRequested( bool visible, int p )
         defaultPages[ p ] = page( p );
         removePage( p );
     }
+}
+
+Page* Gui::page(int pageId) const
+{
+    return qobject_cast<Page*>(QWizard::page(pageId));
 }
 
 QWidget* Gui::pageWidgetByObjectName( const QString& name ) const
