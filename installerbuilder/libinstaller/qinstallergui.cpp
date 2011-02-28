@@ -976,7 +976,7 @@ void ComponentSelectionPage::entering()
             verbose() << "connect Models" << std::endl;
             connect( d->m_model, SIGNAL( workRequested( bool ) ), par, SLOT( setModified( bool ) ), Qt::QueuedConnection );
             connect( d->m_model, SIGNAL( workRequested( bool ) ), this, SLOT( setModified( bool ) ), Qt::QueuedConnection );
-            connect( d.get(), SIGNAL( workRequested( bool) ), par, SLOT( setModified( bool ) ), Qt::QueuedConnection );
+            connect( d, SIGNAL( workRequested( bool) ), par, SLOT( setModified( bool ) ), Qt::QueuedConnection );
             connect( d->m_model, SIGNAL( modelReset() ), this, SLOT( modelWasReseted() ), Qt::QueuedConnection );
             d->connected = true;            
         }        
@@ -1010,6 +1010,7 @@ ComponentSelectionPage::ComponentSelectionPage( Installer* installer )
 
 ComponentSelectionPage::~ComponentSelectionPage()
 {
+    delete d;
 }
 
 void ComponentSelectionPage::modelWasReseted()

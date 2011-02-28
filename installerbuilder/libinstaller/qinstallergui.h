@@ -29,8 +29,6 @@
 #include <QtGui/QWizard>
 #include <QtCore/QMetaType>
 
-#include <KDToolsCore/pimpl_ptr>
-
 #include "qinstaller.h"
 #include "messageboxhandler.h"
 
@@ -237,7 +235,7 @@ private Q_SLOTS:
 
 private:
     class Private;
-    kdtools::pimpl_ptr< Private > d;
+    Private *d;
 };
 
 class INSTALLER_EXPORT TargetDirectoryPage : public Page
