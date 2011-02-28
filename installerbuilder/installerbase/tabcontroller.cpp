@@ -121,7 +121,8 @@ void TabController::Private::preselectInstalledPackages()
     for (it = components.begin(); it != components.end(); ++it) {
         QInstaller::Component* const comp = *it;
         const bool selected = m_app->packagesInfo()->findPackageInfo(comp->name()) > -1;
-        comp->setSelected(selected, InstallerMode, Component::InitializeComponentTreeSelectMode);
+        comp->setSelected(selected, QInstaller::InstallerMode,
+            QInstaller::Component::InitializeComponentTreeSelectMode);
         comp->setEnabled(m_repoReached || selected);
     }
 }
@@ -206,7 +207,8 @@ void TabController::init(Tabs curTab)
         d->m_updater.reset(new Updater);
         d->m_updater->setInstaller(d->m_installer);
 
-        ComponentSelectionDialog* w = new ComponentSelectionDialog(d->m_installer);
+        QInstaller::ComponentSelectionDialog* w =
+            new QInstaller::ComponentSelectionDialog(d->m_installer);
         d->m_updater->setUpdaterGui(w);
         d->m_updater->init();
         d->m_Tab_Pos_Updater = d->m_updaterGuiWidget->addTab(w, QLatin1String("Updater"));
@@ -214,13 +216,13 @@ void TabController::init(Tabs curTab)
             QLatin1String("Package manager"));
 
         if (d->m_updaterGuiWidget->widget(d->m_Tab_Pos_Updater)->layout())
-            verbose() << " tab widget updater tab has layout " << std::endl;
+            QInstaller::verbose() << " tab widget updater tab has layout " << std::endl;
 
         if (d->m_updaterGuiWidget->widget(d->m_Tab_Pos_PackageManager)->layout())
-            verbose() << " tab widget package tab has layout " << std::endl;
+            QInstaller::verbose() << " tab widget package tab has layout " << std::endl;
 
         if (d->m_updaterGuiWidget->layout())
-            verbose() << " tab has layout " << std::endl;
+            QInstaller::verbose() << " tab has layout " << std::endl;
 
         if (curTab == PACKAGE_MANAGER_TAB)
             d->m_updaterGuiWidget->setCurrentIndex(d->m_Tab_Pos_PackageManager);
@@ -274,7 +276,7 @@ void TabController::finished()
     d->m_updaterGuiWidget->setCloseWithoutWarning(true);
     bool res = d->m_updaterGuiWidget->close();
     bool res2 = d->m_updaterGuiWidget->close();
-    verbose() << " widget was closed ? : " << res << " " << res2 << std::endl;
+    QInstaller::verbose() << " widget was closed ? : " << res << " " << res2 << std::endl;
 }
 
 void TabController::updaterFinishedWithError()
@@ -474,8 +476,8 @@ int TabController::initPackageManager()
     // this should called as early as possible, to handle checkRepositories error messageboxes for
     // example
     if (!d->m_controlScript.isEmpty()) {
-        verbose() << "Non-interactive installation using script: " << qPrintable(d->m_controlScript)
-            << std::endl;
+        QInstaller::verbose() << "Non-interactive installation using script: "
+            << qPrintable(d->m_controlScript) << std::endl;
         d->m_gui->loadControlScript(d->m_controlScript);
         QScriptEngine* engine = d->m_gui->controlScriptEngine();
         QScriptValue tabControllerValues = engine->newArray();

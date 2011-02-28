@@ -26,9 +26,7 @@
 #ifndef INSTALLERBASECOMMONS_H
 #define INSTALLERBASECOMMONS_H
 
-#include <QObject>
 #include <qinstallergui.h>
-
 
 QT_BEGIN_NAMESPACE
 class QFileInfo;
@@ -36,42 +34,32 @@ class QLabel;
 class QString;
 QT_END_NAMESPACE
 
-
 namespace QInstaller{
     class Installer;
 }
 
-using namespace QInstaller;
-//using namespace QInstallerCreator;
 
-// A custom target directory selection based due to the no-space
-// restriction...
+// --TargetDirectoryPageImpl
 
 class TargetDirectoryPageImpl : public QInstaller::TargetDirectoryPage
 {
     Q_OBJECT
+
 public:
     explicit TargetDirectoryPageImpl(QInstaller::Installer *installer);
 
     QString targetDirWarning() const;
-
     bool isComplete() const;
-
-    bool askQuestion( const QString& identifier, const QString& message );
-
-    bool failWithWarning( const QString& identifier, const QString& message );
-
+    bool askQuestion(const QString &identifier, const QString &message);
+    bool failWithWarning(const QString &identifier, const QString &message);
     bool validatePage();
 
 private:
     QLabel *m_warningLabel;
 };
 
-////////////////////////////////////////////////////////////////////
-//
-// QtInstallerGui
-//
-////////////////////////////////////////////////////////////////////
+
+// -- QtInstallerGui
 
 class QtInstallerGui : public QInstaller::Gui
 {
@@ -84,11 +72,7 @@ public:
 };
 
 
-////////////////////////////////////////////////////////////////////
-//
-// QtUninstallerGui
-//
-////////////////////////////////////////////////////////////////////
+// -- QtUninstallerGui
 
 class QtUninstallerGui : public QInstaller::Gui
 {
@@ -101,16 +85,19 @@ public:
     virtual int nextId() const;
 };
 
+
+// -- GetMetaInfoProgressWidget
+
 class GetMetaInfoProgressWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit GetMetaInfoProgressWidget( QWidget* parent = 0 );
+    explicit GetMetaInfoProgressWidget(QWidget* parent = 0);
     QString text() const;
 
 public Q_SLOTS:
-    void message(KDJob*, const QString & msg);
+    void message(KDJob*, const QString &msg);
 
 private:
     QLabel *m_label;

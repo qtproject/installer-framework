@@ -32,20 +32,27 @@
 **************************************************************************/
 #include "installerbasecommons.h"
 
+#include <messageboxhandler.h>
 #include <qinstaller.h>
-#include <qinstallergui.h>
-#include <QFileInfo>
-#include <QLabel>
-#include <QDir>
-#include <QTimer>
-#include <QVBoxLayout>
-
 #include <qinstallercomponent.h>
 
-#include "installerbasecommons.h"
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QTimer>
 
-TargetDirectoryPageImpl::TargetDirectoryPageImpl(QInstaller::Installer *installer)
-  : QInstaller::TargetDirectoryPage(installer)
+#include <QtGui/QLabel>
+#include <QtGui/QVBoxLayout>
+
+using namespace QInstaller;
+
+
+// -- TargetDirectoryPageImpl
+
+/*!
+    A custom target directory selection based due to the no-space restriction...
+*/
+TargetDirectoryPageImpl::TargetDirectoryPageImpl(Installer *installer)
+  : TargetDirectoryPage(installer)
 {
     QPalette palette;
     palette.setColor(QPalette::WindowText, Qt::red);
@@ -53,19 +60,13 @@ TargetDirectoryPageImpl::TargetDirectoryPageImpl(QInstaller::Installer *installe
     m_warningLabel = new QLabel(this);
     m_warningLabel->setPalette(palette);
 
-    insertWidget(m_warningLabel, QLatin1String( "MessageLabel" ), 2);
+    insertWidget(m_warningLabel, QLatin1String("MessageLabel"), 2);
 }
 
-QString TargetDirectoryPageImpl::targetDirWarning() const {
-    const QString td = targetDir();
-    if ( td.contains( QLatin1Char( ' ' ) ) )
+QString TargetDirectoryPageImpl::targetDirWarning() const
+{
+    if (targetDir().contains(QLatin1Char(' ')))
         return TargetDirectoryPageImpl::tr("The installation path must not contain any space.");
-    const QFileInfo targetDirInfo = QFileInfo( td );
-//        if ( targetDirInfo.isDir() && !targetDirInfo.isWritable() )
-//            return TargetDirectoryPageImpl::tr("Cannot write to folder %1.").arg( td );
-    const QString parentDir = QFileInfo( td ).dir().absolutePath();
-//        if ( !targetDirInfo.exists() && !QFileInfo( parentDir ).isWritable() )
-//            return TargetDirectoryPageImpl::tr("Cannot write to folder %1.").arg( parentDir );
     return QString();
 }
 
@@ -77,130 +78,128 @@ bool TargetDirectoryPageImpl::isComplete() const
     return warning.isEmpty();
 }
 
-bool TargetDirectoryPageImpl::askQuestion( const QString& identifier, const QString& message ) {
-    QMessageBox::StandardButton bt = MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-                                                                identifier,
-                                                                TargetDirectoryPageImpl::tr("Warning"),
-                                                                message,
-                                                                QMessageBox::Yes | QMessageBox::No);
-    QTimer::singleShot( 100, wizard()->page( nextId() ), SLOT( repaint() ) );
+bool TargetDirectoryPageImpl::askQuestion(const QString &identifier, const QString &message)
+{
+    QMessageBox::StandardButton bt =
+        MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(), identifier,
+        TargetDirectoryPageImpl::tr("Warning"), message, QMessageBox::Yes | QMessageBox::No);
+    QTimer::singleShot(100, wizard()->page(nextId()), SLOT(repaint()));
     return bt == QMessageBox::Yes;
 }
 
-bool TargetDirectoryPageImpl::failWithWarning( const QString& identifier, const QString& message ) {
-    MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                                identifier,
-                                TargetDirectoryPageImpl::tr("Warning"),
-                                message);
-    QTimer::singleShot( 100, wizard()->page( nextId() ), SLOT( repaint() ) );
+bool TargetDirectoryPageImpl::failWithWarning(const QString &identifier, const QString &message)
+{
+    MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), identifier,
+        TargetDirectoryPageImpl::tr("Warning"), message);
+    QTimer::singleShot(100, wizard()->page(nextId()), SLOT(repaint()));
     return false;
 }
 
 bool TargetDirectoryPageImpl::validatePage()
 {
-    if ( !isVisible() )
+    if (!isVisible())
         return true;
 
-    const QFileInfo targetDirInfo = QFileInfo(targetDir());
-    const QDir dir( targetDir() );
-    if (targetDirInfo.isDir()) {
+    if (QFileInfo(targetDir()).isDir()) {
         QFileInfo fi2(targetDir() + QDir::separator() + installer()->uninstallerName());
-        if ( dir == QDir::root() )
-        {
+        if (QDir(targetDir()) == QDir::root()) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                                        QLatin1String("forbiddenTargetDirectory"),
-                                        tr( "Error" ),
-                                        tr( "As the install directory is completely deleted installing in %1 is forbidden" ).arg( QDir::rootPath() ),
-                                        QMessageBox::Ok);
+                QLatin1String("forbiddenTargetDirectory"), tr("Error"),
+                tr("As the install directory is completely deleted installing in %1 is forbidden")
+                .arg(QDir::rootPath()), QMessageBox::Ok);
             return false;
         }
-        if (fi2.exists())
-            return askQuestion( QLatin1String("overwriteTargetDirectory"), TargetDirectoryPageImpl::tr("The folder you selected exists already and "
-                "contains an installation.\nDo you want to overwrite it?") );
-        else
-            return askQuestion( QLatin1String("overwriteTargetDirectory"),
-                                          tr( "You have selected an existing, non-empty folder for installation.\n"
-                                              "Note that it will be completely wiped on uninstallation of this application.\n"
-                                              "It is not advisable to install into this folder as installation might fail.\n"
-                                              "Do you want to continue?" ) );
+
+        if (fi2.exists()) {
+            return askQuestion(QLatin1String("overwriteTargetDirectory"),
+                TargetDirectoryPageImpl::tr("The folder you selected exists already and "
+                "contains an installation.\nDo you want to overwrite it?"));
+        }
+
+        return askQuestion(QLatin1String("overwriteTargetDirectory"),
+            tr("You have selected an existing, non-empty folder for installation.\n"
+            "Note that it will be completely wiped on uninstallation of this application.\n"
+            "It is not advisable to install into this folder as installation might fail.\n"
+            "Do you want to continue?"));
     }
     return true;
 }
 
-QtInstallerGui::QtInstallerGui(QInstaller::Installer *installer)
-    : QInstaller::Gui(installer, 0)
+
+// -- QtInstallerGui
+
+QtInstallerGui::QtInstallerGui(Installer *installer)
+    : Gui(installer, 0)
 {
-    //addPage(new QInstaller::TargetDirectoryPage(installer));
-    setPage( QInstaller::Installer::TargetDirectory, new TargetDirectoryPageImpl( installer ) );
-    setPage( QInstaller::Installer::ComponentSelection, new QInstaller::ComponentSelectionPage( m_installer ) );
-    setPage( QInstaller::Installer::LicenseCheck, new QInstaller::LicenseAgreementPage( installer ) );
+    setPage(Installer::TargetDirectory, new TargetDirectoryPageImpl(installer));
+    setPage(Installer::ComponentSelection, new ComponentSelectionPage(m_installer));
+    setPage(Installer::LicenseCheck, new LicenseAgreementPage(installer));
 #ifdef Q_OS_WIN
-    setPage( QInstaller::Installer::StartMenuSelection, new QInstaller::StartMenuDirectoryPage( installer ) );
+    setPage(Installer::StartMenuSelection, new StartMenuDirectoryPage(installer));
 #endif
-    setPage( QInstaller::Installer::ReadyForInstallation, new QInstaller::ReadyForInstallationPage( installer ) );
-    setPage( QInstaller::Installer::PerformInstallation, new QInstaller::PerformInstallationPage( installer ) );
-    setPage( QInstaller::Installer::InstallationFinished, new QInstaller::FinishedPage( installer ) );    
+    setPage(Installer::ReadyForInstallation, new ReadyForInstallationPage(installer));
+    setPage(Installer::PerformInstallation, new PerformInstallationPage(installer));
+    setPage(Installer::InstallationFinished, new FinishedPage(installer));
 
     bool ok = false;
-    const int startPage = installer->value( QLatin1String( "GuiStartPage" ) ).toInt( &ok );
-    if( ok )
-        setStartId( startPage );
+    const int startPage = installer->value(QLatin1String("GuiStartPage")).toInt(&ok);
+    if(ok)
+        setStartId(startPage);
 }
 
 void QtInstallerGui::init()
 {
-    if( m_installer->components( true ).count() == 1 )
-    {
-        wizardPageVisibilityChangeRequested( false, QInstaller::Installer::ComponentSelection );
-        Q_ASSERT( ! m_installer->components().isEmpty() );
-        m_installer->components().first()->setSelected( true );
+    if(m_installer->components(true).count() == 1) {
+        wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
+
+        Q_ASSERT(!m_installer->components().isEmpty());
+        m_installer->components().first()->setSelected(true);
     }
 }
 
+
 // -- QtUninstallerGui
 
-QtUninstallerGui::QtUninstallerGui(QInstaller::Installer *installer)
-    : QInstaller::Gui(installer, 0)
+QtUninstallerGui::QtUninstallerGui(Installer *installer)
+    : Gui(installer, 0)
 {
-    setPage(QInstaller::Installer::ComponentSelection,
-        new QInstaller::ComponentSelectionPage(m_installer));
-    setPage(QInstaller::Installer::LicenseCheck, new QInstaller::LicenseAgreementPage(installer));
-    setPage(QInstaller::Installer::ReadyForInstallation,
-        new QInstaller::ReadyForInstallationPage(installer));
-    setPage(QInstaller::Installer::PerformInstallation,
-        new QInstaller::PerformInstallationPage(installer));
-    setPage(QInstaller::Installer::InstallationFinished, new QInstaller::FinishedPage(installer));
-    
+    using namespace QInstaller;
+    setPage(Installer::ComponentSelection, new ComponentSelectionPage(m_installer));
+    setPage(Installer::LicenseCheck, new LicenseAgreementPage(installer));
+    setPage(Installer::ReadyForInstallation, new ReadyForInstallationPage(installer));
+    setPage(Installer::PerformInstallation, new PerformInstallationPage(installer));
+    setPage(Installer::InstallationFinished, new FinishedPage(installer));
+
     if (installer->isPackageManager()) {
-        RestartPage* p = new QInstaller::RestartPage(installer);
+        RestartPage *p = new RestartPage(installer);
         connect(p, SIGNAL(restart()), this, SIGNAL(gotRestarted()));
-        setPage(QInstaller::Installer::InstallationFinished + 1, p);
-        setPage(QInstaller::Installer::InstallationFinished + 2, new QInstaller::Page(installer));
+        setPage(Installer::InstallationFinished + 1, p);
+        setPage(Installer::InstallationFinished + 2, new Page(installer));
     }
 }
 
 void QtUninstallerGui::init()
 {
     if(m_installer->components().isEmpty()) {
-        wizardPageVisibilityChangeRequested(false, QInstaller::Installer::ComponentSelection);
-        wizardPageVisibilityChangeRequested(false, QInstaller::Installer::LicenseCheck);
+        wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
+        wizardPageVisibilityChangeRequested(false, Installer::LicenseCheck);
     }
 }
 
 int QtUninstallerGui::nextId() const
 {
     const int next = QWizard::nextId();
-    if (next == QInstaller::Installer::LicenseCheck) {
+    if (next == Installer::LicenseCheck) {
         const int nextNextId = pageIds().value(pageIds().indexOf(next)+ 1, -1);
         if (!m_installer->isPackageManager() && !m_installer->isUpdater())
             return nextNextId;
 
-        QList<QInstaller::Component*> components = m_installer->componentsToInstall(true);
+        QList<Component*> components = m_installer->componentsToInstall(true);
         if (components.isEmpty())
             return nextNextId;
 
         bool foundLicense = false;
-        foreach (QInstaller::Component* component, components) {
+        foreach (Component* component, components) {
             if (component->isInstalled())
                 continue;
             foundLicense |= !component->licenses().isEmpty();
@@ -210,23 +209,26 @@ int QtUninstallerGui::nextId() const
     return next;
 }
 
+
 // -- GetMetaInfoProgressWidget
 
-GetMetaInfoProgressWidget::GetMetaInfoProgressWidget( QWidget* parent )
-    : QWidget( parent )
+GetMetaInfoProgressWidget::GetMetaInfoProgressWidget(QWidget *parent)
+    : QWidget(parent)
 {
-    QVBoxLayout* layout = new QVBoxLayout( this );
+    QVBoxLayout* layout = new QVBoxLayout(this);
     setLayout(layout);
     m_label = new QLabel;
-    m_label->setWordWrap( true );
-    m_label->setText( tr("Retrieving information from remote installation sources...") );
-    layout->addWidget( m_label );
+    m_label->setWordWrap(true);
+    m_label->setText(tr("Retrieving information from remote installation sources..."));
+    layout->addWidget(m_label);
 }
+
 QString GetMetaInfoProgressWidget::text() const
 {
     return m_label->text();
 }
-void GetMetaInfoProgressWidget::message( KDJob*, const QString& msg )
+
+void GetMetaInfoProgressWidget::message(KDJob *, const QString &msg)
 {
-    m_label->setText( msg );
+    m_label->setText(msg);
 }
