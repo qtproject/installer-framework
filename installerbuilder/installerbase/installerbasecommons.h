@@ -29,14 +29,37 @@
 #include <qinstallergui.h>
 
 QT_BEGIN_NAMESPACE
-class QFileInfo;
 class QLabel;
 class QString;
+class QStackedWidget;
 QT_END_NAMESPACE
 
-namespace QInstaller{
-    class Installer;
-}
+
+// -- IntroductionPageImpl
+
+class IntroductionPageImpl : public QInstaller::IntroductionPage
+{
+    Q_OBJECT
+
+public:
+    explicit IntroductionPageImpl(QInstaller::Installer *installer);
+
+    int nextId() const;
+
+    void clearPage();
+    void showMetaInfoUdate();
+    void showMaintenanceTools();
+
+public Q_SLOTS:
+    void message(KDJob *job, const QString &msg);
+
+private:
+    QLabel *m_label;
+    QStackedWidget *m_stack;
+    QRadioButton *m_packageManager;
+    QRadioButton *m_updateComponents;
+    QRadioButton *m_removeAllComponents;
+};
 
 
 // --TargetDirectoryPageImpl

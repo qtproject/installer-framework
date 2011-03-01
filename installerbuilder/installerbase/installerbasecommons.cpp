@@ -41,9 +41,97 @@
 #include <QtCore/QTimer>
 
 #include <QtGui/QLabel>
+#include <QtGui/QProgressBar>
+#include <QtGui/QRadioButton>
+#include <QtGui/QStackedWidget>
 #include <QtGui/QVBoxLayout>
 
 using namespace QInstaller;
+
+
+// -- IntroductionPageImpl
+
+IntroductionPageImpl::IntroductionPageImpl(QInstaller::Installer *installer)
+    : QInstaller::IntroductionPage(installer)
+    , m_stack(new QStackedWidget)
+{
+    // empty page
+    QWidget *page = new QWidget;
+    m_stack->addWidget(page);
+
+    // meta info update
+    page = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout(page);
+    layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    m_label = new QLabel;
+    m_label->setWordWrap(true);
+    m_label->setText(tr("Retrieving information from remote installation sources..."));
+    layout->addWidget(m_label);
+
+    QProgressBar *progressBar = new QProgressBar;
+    progressBar->setRange(0, 0);
+    layout->addWidget(progressBar);
+
+    layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    m_stack->addWidget(page);
+
+    // naintenance page
+    page = new QWidget;
+    layout = new QVBoxLayout(page);
+
+    m_packageManager = new QRadioButton(tr("Package manager"), page);
+    m_packageManager->setChecked(true);
+    layout->addWidget(m_packageManager);
+
+    m_updateComponents = new QRadioButton(tr("Update components"), page);
+    layout->addWidget(m_updateComponents);
+
+    m_removeAllComponents = new QRadioButton(tr("Remove all components"), page);
+    layout->addWidget(m_removeAllComponents);
+    m_removeAllComponents->setChecked(installer->isUninstaller());
+    connect(m_removeAllComponents, SIGNAL(toggled(bool)), installer,
+        SLOT(setCompleteUninstallation(bool)));
+
+    layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    m_stack->addWidget(page);
+
+    setWidget(m_stack);
+    installer->setCompleteUninstallation(installer->isUninstaller());
+}
+
+int IntroductionPageImpl::nextId() const
+{
+    if (installer()->isPackageManager())
+        return Installer::ComponentSelection;
+
+    if (installer()->isUninstaller())
+        return Installer::ReadyForInstallation;
+
+    // TODO: implement for updater
+    return QInstaller::IntroductionPage::nextId();
+}
+
+void IntroductionPageImpl::clearPage()
+{
+    m_stack->setCurrentIndex(0);
+}
+
+void IntroductionPageImpl::showMetaInfoUdate()
+{
+    m_stack->setCurrentIndex(1);
+}
+
+void IntroductionPageImpl::showMaintenanceTools()
+{
+    m_stack->setCurrentIndex(2);
+}
+
+void IntroductionPageImpl::message(KDJob *job, const QString &msg)
+{
+    Q_UNUSED(job)
+    m_label->setText(msg);
+}
 
 
 // -- TargetDirectoryPageImpl
