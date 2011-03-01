@@ -271,11 +271,11 @@ int TabController::checkRepositories()
     if ((isInstaller && !d->m_installer->isOfflineOnly()) || (d->m_installer->isPackageManager()))
         metaInfoJob.setRepositories(d->m_installer->settings().repositories());
 
-    IntroductionPage *page = qobject_cast<IntroductionPage*>(d->m_gui->page(Installer::Introduction));
-    GetMetaInfoProgressWidget *metaProgress = new GetMetaInfoProgressWidget(page);
-    page->setComplete(false);
-    page->setWidget(metaProgress);
-    metaInfoJob.connect(&metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), metaProgress,
+    IntroductionPageImpl *introPage =
+        qobject_cast<IntroductionPageImpl*>(d->m_gui->page(Installer::Introduction));
+    introPage->setComplete(false);
+    introPage->showMetaInfoUdate();
+    metaInfoJob.connect(&metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), introPage,
         SLOT(message(KDJob*, QString)));
 
     // show the wizard-gui as early as possible
@@ -379,7 +379,11 @@ int TabController::checkRepositories()
         Q_ASSERT(!d->m_installer->components().isEmpty());
     d->m_repoUpdateNeeded = false;
 
-    metaProgress->close();
+    if (!d->m_installer->isInstaller())
+        introPage->showMaintenanceTools();
+    else
+        introPage->clearPage();
+
     emit refresh();
 
     return INST_SUCCESS;

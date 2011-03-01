@@ -187,13 +187,6 @@ bool TargetDirectoryPageImpl::validatePage()
 {
     if (!isVisible())
         return true;
-    if (targetDir().isEmpty()) {
-        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                                    QLatin1String("forbiddenTargetDirectory"), tr("Error"),
-                                    tr( "The install directory cannot be empty, please specify a valid folder"),
-                                    QMessageBox::Ok);
-        return false;
-    }
 
     if (QFileInfo(targetDir()).isDir()) {
         QFileInfo fi2(targetDir() + QDir::separator() + installer()->uninstallerName());
@@ -226,7 +219,7 @@ bool TargetDirectoryPageImpl::validatePage()
 QtInstallerGui::QtInstallerGui(Installer *installer)
     : Gui(installer, 0)
 {
-    setPage(Installer::Introduction, new IntroductionPage(installer));
+    setPage(Installer::Introduction, new IntroductionPageImpl(installer));
     setPage(Installer::TargetDirectory, new TargetDirectoryPageImpl(installer));
     setPage(Installer::ComponentSelection, new ComponentSelectionPage(m_installer));
     setPage(Installer::LicenseCheck, new LicenseAgreementPage(installer));
@@ -259,7 +252,7 @@ void QtInstallerGui::init()
 QtUninstallerGui::QtUninstallerGui(Installer *installer)
     : Gui(installer, 0)
 {
-    setPage(Installer::Introduction, new IntroductionPage(installer));
+    setPage(Installer::Introduction, new IntroductionPageImpl(installer));
     setPage(Installer::ComponentSelection, new ComponentSelectionPage(m_installer));
     setPage(Installer::LicenseCheck, new LicenseAgreementPage(installer));
     setPage(Installer::ReadyForInstallation, new ReadyForInstallationPage(installer));
@@ -303,28 +296,4 @@ int QtUninstallerGui::nextId() const
         return foundLicense ? next : nextNextId;
     }
     return next;
-}
-
-
-// -- GetMetaInfoProgressWidget
-
-GetMetaInfoProgressWidget::GetMetaInfoProgressWidget(QWidget *parent)
-    : QWidget(parent)
-{
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    setLayout(layout);
-    m_label = new QLabel;
-    m_label->setWordWrap(true);
-    m_label->setText(tr("Retrieving information from remote installation sources..."));
-    layout->addWidget(m_label);
-}
-
-QString GetMetaInfoProgressWidget::text() const
-{
-    return m_label->text();
-}
-
-void GetMetaInfoProgressWidget::message(KDJob *, const QString &msg)
-{
-    m_label->setText(msg);
 }

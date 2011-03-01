@@ -109,24 +109,6 @@ public:
 };
 
 
-// -- GetMetaInfoProgressWidget
-
-class GetMetaInfoProgressWidget : public QWidget
-{
-    Q_OBJECT
-
-public:
-    explicit GetMetaInfoProgressWidget(QWidget* parent = 0);
-    QString text() const;
-
-public Q_SLOTS:
-    void message(KDJob*, const QString &msg);
-
-private:
-    QLabel *m_label;
-};
-
-
 const int INST_SUCCESS = 0;
 const int INST_FAILED = 1;
 const int INST_CANCELED = 2;
