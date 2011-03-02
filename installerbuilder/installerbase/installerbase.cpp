@@ -152,8 +152,18 @@ int main(int argc, char *argv[])
                 return app.exec();
             }
 
-            if (args.contains(QLatin1String("--proxy")))
-                QNetworkProxyFactory::setUseSystemConfiguration(true);
+            // Make sure we honor the system's proxy settings
+            #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+                QUrl proxyUrl(QString::fromLatin1(qgetenv("http_proxy")));
+                if (proxyUrl.isValid()) {
+                    QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxyUrl.host(),
+                    proxyUrl.port(), proxyUrl.userName(), proxyUrl.password());
+                    QNetworkProxy::setApplicationProxy(proxy);
+                }
+            #else
+                if (args.contains(QLatin1String("--proxy")))
+                    QNetworkProxyFactory::setUseSystemConfiguration(true);
+            #endif
 
             if (args.contains(QLatin1String("--checkupdates"))) {
                 if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
@@ -304,6 +314,16 @@ int main(int argc, char *argv[])
                 return INST_FAILED;
             }
         }
+
+        // Make sure we honor the system's proxy settings
+        #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+            QUrl proxyUrl(QString::fromLatin1(qgetenv("http_proxy")));
+            if (proxyUrl.isValid()) {
+                QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxyUrl.host(),
+                proxyUrl.port(), proxyUrl.userName(), proxyUrl.password());
+                QNetworkProxy::setApplicationProxy(proxy);
+            }
+        #endif
 
         if (!installer.isInstaller())
             installer.setPackageManager();
