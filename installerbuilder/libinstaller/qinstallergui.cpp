@@ -149,7 +149,7 @@ public:
 protected:
     bool eventFilter(QObject* obj, QEvent* event)
     {
-        if(obj == m_widget) {
+        if (obj == m_widget) {
             switch(event->type()) {
             case QEvent::WindowTitleChange:
                 setTitle(m_widget->windowTitle());
@@ -157,7 +157,7 @@ protected:
 
             case QEvent::DynamicPropertyChange:
                 emit completeChanged();
-                if(m_widget->property("final").toBool() != isFinalPage())
+                if (m_widget->property("final").toBool() != isFinalPage())
                     setFinalPage(m_widget->property("final").toBool());
                 break;
 
@@ -298,7 +298,7 @@ void Gui::clickButton(int wb, int delay)
 void Gui::loadControlScript(const QString& scriptPath)
 {
     QFile file(scriptPath);
-    if(!file.open(QIODevice::ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly)) {
         throw Error(QObject::tr("Could not open the requested script file at %1: %2")
             .arg(scriptPath, file.errorString()));
     }
@@ -329,13 +329,13 @@ void Gui::loadControlScript(const QString& scriptPath)
     d->controlScriptEngine.globalObject().setProperty(QLatin1String("buttons"), buttons);
 
     d->controlScriptEngine.evaluate(QLatin1String(file.readAll()), scriptPath);
-    if(d->controlScriptEngine.hasUncaughtException()) {
+    if (d->controlScriptEngine.hasUncaughtException()) {
         throw Error(QObject::tr("Exception while loading the control script %1")
             .arg(uncaughtExceptionString(&(d->controlScriptEngine)/*, scriptPath*/)));
     }
 
     QScriptValue comp = d->controlScriptEngine.evaluate(QLatin1String("Controller"));
-    if(d->controlScriptEngine.hasUncaughtException()) {
+    if (d->controlScriptEngine.hasUncaughtException()) {
         throw Error(QObject::tr("Exception while loading the control script %1")
             .arg(uncaughtExceptionString(&(d->controlScriptEngine)/*, scriptPath*/)));
     }
@@ -371,7 +371,7 @@ void Gui::callControlScriptMethod(const QString& methodName)
 
     method.call(d->controlScript);
 
-    if(d->controlScriptEngine.hasUncaughtException()) {
+    if (d->controlScriptEngine.hasUncaughtException()) {
         qCritical() << uncaughtExceptionString(&(d->controlScriptEngine)
             /*, QLatin1String("control script")*/);
         //TODO handle error
@@ -405,7 +405,7 @@ void Gui::wizardPageInsertionRequested(QWidget* widget, Installer::WizardPage pa
 
     // now find a suitable ID lower than page
     int p = static_cast<int>(page) - 1;
-    while(QWizard::page(p) != 0)
+    while (QWizard::page(p) != 0)
         --p;
     // add it
     setPage(p, new DynamicInstallerPage(widget, m_installer));
@@ -414,12 +414,12 @@ void Gui::wizardPageInsertionRequested(QWidget* widget, Installer::WizardPage pa
 void Gui::wizardPageRemovalRequested(QWidget* widget)
 {
     const QList<int> pages = pageIds();
-    for(QList<int>::const_iterator it = pages.begin(); it != pages.end(); ++it) {
+    for (QList<int>::const_iterator it = pages.begin(); it != pages.end(); ++it) {
         QWizardPage* const p = page(*it);
         DynamicInstallerPage* const dynamicPage = dynamic_cast<DynamicInstallerPage*>(p);
-        if(dynamicPage == 0)
+        if (dynamicPage == 0)
             continue;
-        if(dynamicPage->widget() != widget)
+        if (dynamicPage->widget() != widget)
             continue;
         removePage(*it);
     }
@@ -440,9 +440,9 @@ void Gui::wizardWidgetRemovalRequested(QWidget* widget)
 
 void Gui::wizardPageVisibilityChangeRequested(bool visible, int p)
 {
-    if(visible && page(p) == 0) {
+    if (visible && page(p) == 0) {
         setPage(p, defaultPages[p]);
-    } else if(!visible && page(p) != 0) {
+    } else if (!visible && page(p) != 0) {
         defaultPages[p] = page(p);
         removePage(p);
     }
@@ -456,7 +456,7 @@ Page* Gui::page(int pageId) const
 QWidget* Gui::pageWidgetByObjectName(const QString& name) const
 {
     const QList<int> ids = pageIds();
-    Q_FOREACH(const int i, ids) {
+    foreach (const int i, ids) {
         Page* const p = qobject_cast<Page*>(page(i));
         if (p && p->objectName() == name) {
             // For dynamic pages, return the contained widget (as read from the UI file), not the
@@ -580,13 +580,13 @@ void Page::setComplete(bool complete)
 {
     m_complete = complete;
     emit completeChanged();
-    if(wizard() == 0)
+    if (wizard() == 0)
         return;
-    if(wizard()->button(QWizard::CancelButton) == 0)
+    if (wizard()->button(QWizard::CancelButton) == 0)
         return;
-    if(wizard()->button(QWizard::NextButton) == 0)
+    if (wizard()->button(QWizard::NextButton) == 0)
         return;
-    if(wizard()->button(QWizard::CancelButton)->hasFocus())
+    if (wizard()->button(QWizard::CancelButton)->hasFocus())
         wizard()->button(QWizard::NextButton)->setFocus();
 }
 
@@ -661,12 +661,12 @@ void IntroductionPage::setText(const QString &text)
 
 void IntroductionPage::setWidget(QWidget *w)
 {
-    if(m_widget) {
+    if (m_widget) {
         layout()->removeWidget(m_widget);
         delete m_widget;
     }
     m_widget = w;
-    if(m_widget)
+    if (m_widget)
         static_cast<QVBoxLayout*>(layout())->addWidget(m_widget, 1);
 }
 
@@ -830,7 +830,7 @@ inline QString unitSizeText(const qint64 size)
 static QString niceSizeText(const QString &str)
 {
     const qint64 size = str.toLongLong();
-    if(size == 0)
+    if (size == 0)
         return QString();
 
     QString msg = ComponentSelectionPage::tr(
@@ -860,7 +860,7 @@ public:
         m_treeView->setHeaderHidden(true);
 
         m_treeView->setModel(m_model);
-        for(int i = 1; i < m_treeView->model()->columnCount(); ++i)
+        for (int i = 1; i < m_treeView->model()->columnCount(); ++i)
             m_treeView->setColumnHidden(i, true);
 
         m_descriptionLabel = new QLabel(q);
@@ -870,7 +870,7 @@ public:
         m_sizeLabel->setWordWrap(true);
 
         QVBoxLayout *layout = new QVBoxLayout(q);
-        if(!installer->isInstaller()) {
+        if (!installer->isInstaller()) {
             QRadioButton* const uninstallAll = new QRadioButton(tr("Remove all components"));
             uninstallAll->setObjectName(QLatin1String("uninstallAllComponentsRB"));
             QRadioButton* const keepChecked = new QRadioButton(installer->isUninstaller()
@@ -912,14 +912,14 @@ protected Q_SLOTS:
     void selectionChanged()
     {
         const QModelIndex index = m_treeView->currentIndex();
-        if(!index.isValid()) {
+        if (!index.isValid()) {
             m_descriptionLabel->clear();
             m_sizeLabel->clear();
             return;
         }
 
         m_descriptionLabel->setText(index.data(Qt::ToolTipRole).toString());
-        if(!m_installer->isUninstaller()) {
+        if (!m_installer->isUninstaller()) {
             m_sizeLabel->setText(niceSizeText(qVariantValue<Component*>(index
                 .data(Qt::UserRole))->value(QString::fromLatin1("UncompressedSize"))));
         }
@@ -969,7 +969,7 @@ ComponentSelectionPage::ComponentSelectionPage(Installer* installer)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ComponentSelectionPage"));
 
-    if(!installer->isUninstaller())
+    if (!installer->isUninstaller())
         setSubTitle(tr("Please select the components you want to install."));
     else
         setSubTitle(tr("Please select the components you want to uninstall."));
@@ -983,7 +983,7 @@ ComponentSelectionPage::~ComponentSelectionPage()
 void ComponentSelectionPage::entering()
 {
     wizard()->button(QWizard::CancelButton)->setEnabled(true);
-    if(!d->connected) {
+    if (!d->connected) {
         if (Gui* par = dynamic_cast<Gui*> (wizard())) {
             verbose() << "connect Models" << std::endl;
             connect(d->m_model, SIGNAL(workRequested(bool)), par, SLOT(setModified(bool)),
@@ -1003,7 +1003,7 @@ void ComponentSelectionPage::entering()
 
 void ComponentSelectionPage::modelWasReseted()
 {
-    if(d->m_treeView->model()->rowCount() == 1) {
+    if (d->m_treeView->model()->rowCount() == 1) {
         d->wasshown = true;
         d->m_treeView->setExpanded(d->m_treeView->model()->index(0, 0), true);
     }
@@ -1011,7 +1011,7 @@ void ComponentSelectionPage::modelWasReseted()
 
 void ComponentSelectionPage::showEvent(QShowEvent* event)
 {
-    if(!d->wasshown)
+    if (!d->wasshown)
         modelWasReseted();
     Page::showEvent(event);
 }
@@ -1051,10 +1051,10 @@ void ComponentSelectionPage::setModified(bool value)
 bool ComponentSelectionPage::isComplete() const
 {
     // uninstall all
-    if(!d->m_treeView->isEnabled())
+    if (!d->m_treeView->isEnabled())
         return true;
 
-    if(d->m_installer->isPackageManager()) {
+    if (d->m_installer->isPackageManager()) {
         // at least component should be different from its previous state
         if (d->modified)
             return true;
@@ -1063,8 +1063,8 @@ bool ComponentSelectionPage::isComplete() const
 
     // at least one component needs to be selected for (un)installation
     const QList<Component*> components = d->m_installer->components(true);
-    for(QList<Component*>::const_iterator it = components.begin(); it != components.end(); ++it) {
-        if((*it)->isSelected() == d->m_installer->isInstaller())
+    for (QList<Component*>::const_iterator it = components.begin(); it != components.end(); ++it) {
+        if ((*it)->isSelected() == d->m_installer->isInstaller())
             return true;
     }
     return false;
@@ -1119,10 +1119,10 @@ void TargetDirectoryPage::setTargetDir(const QString &dirName)
 void TargetDirectoryPage::initializePage()
 {
     QString targetDir = installer()->value(QLatin1String("TargetDir"));
-    if(targetDir.isEmpty()) {
+    if (targetDir.isEmpty()) {
         targetDir = QDir::homePath() + QDir::separator();
         // prevent spaces in the default target directory
-        if(targetDir.contains(QLatin1Char(' ')))
+        if (targetDir.contains(QLatin1Char(' ')))
             targetDir = QDir::rootPath();
         targetDir += productName().remove(QLatin1Char(' '));
     }
@@ -1142,9 +1142,9 @@ bool TargetDirectoryPage::validatePage()
     }
     const QDir dir(targetDir());
     // it exists, but is empty (might be created by the Browse button (getExistingDirectory)
-    if(dir.exists() && dir.entryList(QDir::NoDotAndDotDot).isEmpty()) {
+    if (dir.exists() && dir.entryList(QDir::NoDotAndDotDot).isEmpty()) {
         return true;
-    } else if(dir.exists() && dir.isReadable()) {
+    } else if (dir.exists() && dir.isReadable()) {
         // it exists, but is not empty
         if (dir == QDir::root()) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -1312,7 +1312,7 @@ void ReadyForInstallationPage::initializePage()
 {
     setCommitPage(true);
 
-    if(installer()->isUninstaller()) {
+    if (installer()->isUninstaller()) {
         setTitle(tr("Ready to Uninstall"));
         setButtonText(QWizard::CommitButton, tr("Uninstall"));
         msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.\nThe "
@@ -1320,7 +1320,7 @@ void ReadyForInstallationPage::initializePage()
             .arg(productName(),
             QDir::toNativeSeparators(QDir(installer()->value(QLatin1String("TargetDir")))
             .absolutePath())));
-    } else if(installer()->isPackageManager()) {
+    } else if (installer()->isPackageManager()) {
         setTitle(tr("Ready to Update Packages"));
         setButtonText(QWizard::CommitButton, tr("Update"));
         msgLabel->setText(tr("Setup is now ready to begin installing the additional components you "
@@ -1341,7 +1341,7 @@ void ReadyForInstallationPage::entering()
 {
     initializePage();
 
-    if(installer()->isUninstaller())
+    if (installer()->isUninstaller())
         return;
 
     const QString target = installer()->value(QLatin1String("TargetDir"));
@@ -1384,7 +1384,7 @@ void ReadyForInstallationPage::entering()
     }
 
     // error on not enough space
-    if(available < required || tempInstFailure) {
+    if (available < required || tempInstFailure) {
         if (tempOnSameVolume) {
             msgLabel->setText(tempString);
         } else {
@@ -1393,12 +1393,12 @@ void ReadyForInstallationPage::entering()
                 .arg(required.toString()) + tempString);
         }
         setCommitPage(false);
-    } else if(available - required < 0.01 * vol.size()) {
+    } else if (available - required < 0.01 * vol.size()) {
         // warn for less than 1% of the volume's space being free
         msgLabel->setText(tr("The volume you selected for installation seems to have sufficient "
             "space for installation,\nbut there will not more than 1% of the volume's space "
             "available afterwards.\n\n%1").arg(msgLabel->text()));
-    } else if(available - required < 100*1024*1024LL) {
+    } else if (available - required < 100*1024*1024LL) {
         // warn for less than 100MB being free
         msgLabel->setText(tr("The volume you selected for installation seems to have sufficient "
             "space for installation,\nbut there will not more than 100 MB available afterwards.\n\n%1")
@@ -1461,10 +1461,10 @@ void PerformInstallationPage::entering()
 {
     setComplete(false);
 
-    if(installer()->isUninstaller()) {
+    if (installer()->isUninstaller()) {
         setTitle(tr("Uninstalling %1").arg(installer()->value(QLatin1String("ProductName"))));
         setButtonText(QWizard::CommitButton, tr("Uninstall"));
-    } else if(installer()->isPackageManager()) {
+    } else if (installer()->isPackageManager()) {
         setTitle(tr("Updating component configuration of %1")
             .arg(installer()->value(QLatin1String("ProductName"))));
         setButtonText(QWizard::CommitButton, tr("Update"));
@@ -1480,14 +1480,14 @@ void PerformInstallationPage::entering()
 void PerformInstallationPage::initializePage()
 {
     QWizardPage::initializePage();
-    if(installer()->isUninstaller()) {
+    if (installer()->isUninstaller()) {
         wizard()->removePage(QInstaller::Installer::InstallationFinished + 1);
         wizard()->removePage(QInstaller::Installer::InstallationFinished + 2);
         setTitle(tr("Uninstalling %1").arg(installer()->value(QLatin1String("ProductName"))));
         m_commitBtnText = tr("Uninstall");
         setButtonText(QWizard::CommitButton, m_commitBtnText);
         QTimer::singleShot(30, installer(), SLOT(runUninstaller()));
-    } else if(installer()->isPackageManager()) {
+    } else if (installer()->isPackageManager()) {
         setTitle(tr("Updating components of %1").arg(installer()->value(QLatin1String("ProductName"))));
         m_commitBtnText = tr ("Update");
         setButtonText(QWizard::CommitButton, m_commitBtnText);
@@ -1587,7 +1587,7 @@ void FinishedPage::entering()
 
     if (installer()->status() == Installer::InstallerSucceeded) {
         const QString finishedtext = installer()->value(QLatin1String("FinishedText"));
-        if(!finishedtext.isEmpty())
+        if (!finishedtext.isEmpty())
             m_msgLabel->setText(finishedtext);
 
         if (!installer()->value(QLatin1String("RunProgram")).isEmpty()) {
