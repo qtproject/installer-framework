@@ -936,7 +936,7 @@ protected Q_SLOTS:
         if ( value )
         {
             emit workRequested( value );
-            q->setModified( value );            
+            q->setModified( value );
         }
         else
         {
@@ -951,7 +951,7 @@ Q_SIGNALS:
 
 public:
     ComponentSelectionPage* const q;
-    
+
     bool wasshown;
     bool modified;
     bool connected;
@@ -975,8 +975,8 @@ void ComponentSelectionPage::entering()
             connect( d->m_model, SIGNAL( workRequested( bool ) ), this, SLOT( setModified( bool ) ), Qt::QueuedConnection );
             connect( d, SIGNAL( workRequested( bool) ), par, SLOT( setModified( bool ) ), Qt::QueuedConnection );
             connect( d->m_model, SIGNAL( modelReset() ), this, SLOT( modelWasReseted() ), Qt::QueuedConnection );
-            d->connected = true;            
-        }        
+            d->connected = true;
+        }
         if ( !d->m_installer->isInstaller() )
             setButtonText( QWizard::CancelButton, tr( "Close" ) );
     }
@@ -1158,7 +1158,7 @@ bool TargetDirectoryPage::validatePage()
         return false;
     }
     const QDir dir( targetDir() );
-    
+
     if( dir.exists() && dir.entryList( QDir::NoDotAndDotDot ).isEmpty() ) // it exists, but is empty (might be created by the Browse button (getExistingDirectory)
     {
         return true;
@@ -1345,7 +1345,7 @@ ReadyForInstallationPage::ReadyForInstallationPage( Installer* installer )
 void ReadyForInstallationPage::initializePage()
 {
     setCommitPage( true );
-    
+
     if( installer()->isUninstaller() )
     {
         setTitle(tr("Ready to Uninstall"));
@@ -1356,13 +1356,13 @@ void ReadyForInstallationPage::initializePage()
             "all content in that directory!").arg( productName(),
                                                    QDir::toNativeSeparators( QDir( installer()->value( QLatin1String( "TargetDir" ) ) ).absolutePath() ) ) );
     }
-    else if( installer()->isPackageManager() ) 
+    else if( installer()->isPackageManager() )
     {
         setTitle( tr( "Ready to Update Packages" ) );
         setButtonText( QWizard::CommitButton, tr( "Update" ) );
         msgLabel->setText( tr( "Setup is now ready to begin installing the additional components you selected." ) );
-    } 
-    else 
+    }
+    else
     {
         Q_ASSERT(installer()->isInstaller());
         setTitle(tr("Ready to Install"));
