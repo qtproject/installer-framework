@@ -234,7 +234,9 @@ QScriptValue QInstaller::qDesktopServicesOpenUrl(QScriptContext* context, QScrip
     const QScriptValue check = checkArguments(context, 1, 1);
     if (check.isError())
         return check;
-    const QString url = context->argument(0).toString();
+    QString url = context->argument(0).toString();
+    url.replace(QLatin1String("\\\\"), QLatin1String("/"));
+    url.replace(QLatin1String("\\"), QLatin1String("/"));
     return QDesktopServices::openUrl(QUrl::fromUserInput(url));
 }
 
