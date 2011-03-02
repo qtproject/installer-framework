@@ -1284,8 +1284,7 @@ void ReadyForInstallationPage::initializePage()
     } else if (installer()->isPackageManager()) {
         setTitle(tr("Ready to Update Packages"));
         setButtonText(QWizard::CommitButton, tr("Update"));
-        msgLabel->setText(tr("Setup is now ready to begin installing the additional components you "
-            "selected."));
+        msgLabel->setText(tr("Setup is now ready to begin updating your installation."));
     } else {
         Q_ASSERT(installer()->isInstaller());
         setTitle(tr("Ready to Install"));
