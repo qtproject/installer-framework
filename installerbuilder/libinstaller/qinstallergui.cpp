@@ -855,90 +855,57 @@ public:
         m_installer(installer),
         m_treeView(new QTreeView(q))
     {
-        m_treeView->setObjectName(QLatin1String("TreeView"));
-        m_treeView->setMouseTracking(true);
-        m_treeView->setHeaderHidden(true);
-
         m_treeView->setModel(m_model);
+        m_treeView->setHeaderHidden(true);
+        m_treeView->setMouseTracking(true);
+        m_treeView->setObjectName(QLatin1String("ComponentTreeView"));
+
         for (int i = 1; i < m_treeView->model()->columnCount(); ++i)
             m_treeView->setColumnHidden(i, true);
 
+        QHBoxLayout *hlayout = new QHBoxLayout;
+        hlayout->addWidget(m_treeView, 3);
+
         m_descriptionLabel = new QLabel(q);
         m_descriptionLabel->setWordWrap(true);
+        m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
+
+        QVBoxLayout *vlayout = new QVBoxLayout;
+        vlayout->addWidget(m_descriptionLabel);
 
         m_sizeLabel = new QLabel(q);
         m_sizeLabel->setWordWrap(true);
-
-        QVBoxLayout *layout = new QVBoxLayout(q);
-        if (!installer->isInstaller()) {
-            QRadioButton* const uninstallAll = new QRadioButton(tr("Remove all components"));
-            uninstallAll->setObjectName(QLatin1String("uninstallAllComponentsRB"));
-            QRadioButton* const keepChecked = new QRadioButton(installer->isUninstaller()
-                ? tr("Keep selected components") : tr("Install selected components"));
-            keepChecked->setObjectName(QLatin1String("keepSelectedComponentsRB"));
-            layout->addWidget(uninstallAll);
-            layout->addWidget(keepChecked);
-            connect(uninstallAll, SIGNAL(toggled(bool)), m_treeView, SLOT(setDisabled(bool)));
-            connect(uninstallAll, SIGNAL(toggled(bool)), m_descriptionLabel, SLOT(setDisabled(bool)));
-            connect(uninstallAll, SIGNAL(toggled(bool)), m_installer,
-                SLOT(setCompleteUninstallation(bool)));
-            connect(uninstallAll, SIGNAL(toggled(bool)), q, SIGNAL(completeChanged()),
-                Qt::QueuedConnection);
-            connect(uninstallAll, SIGNAL(toggled(bool)), this, SLOT(fullUninstallToggled(bool)),
-                Qt::QueuedConnection);
-            uninstallAll->setChecked(installer->isUninstaller());
-            keepChecked->setChecked(installer->isPackageManager());
-            m_installer->setCompleteUninstallation(installer->isUninstaller());
-        }
-
-        QHBoxLayout *hlayout = new QHBoxLayout;
-        hlayout->addWidget(m_treeView, 3);
-        QVBoxLayout *vlayout = new QVBoxLayout;
-        vlayout->addWidget(m_descriptionLabel);
         vlayout->addWidget(m_sizeLabel);
+        m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
+
         vlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
             QSizePolicy::MinimumExpanding));
         hlayout->addLayout(vlayout, 2);
-        layout->addLayout(hlayout);
 
-        connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(selectionChanged()));
+        QVBoxLayout *layout = new QVBoxLayout(q);
+        layout->addLayout(hlayout);
 
         connect(m_treeView->model(), SIGNAL(dataChanged(QModelIndex, QModelIndex)), q,
             SIGNAL(completeChanged()), Qt::QueuedConnection);
+        connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(selectionChanged()));
     }
 
 protected Q_SLOTS:
     void selectionChanged()
     {
+        m_sizeLabel->clear();
+        m_descriptionLabel->clear();
+
         const QModelIndex index = m_treeView->currentIndex();
-        if (!index.isValid()) {
-            m_descriptionLabel->clear();
-            m_sizeLabel->clear();
-            return;
-        }
-
-        m_descriptionLabel->setText(index.data(Qt::ToolTipRole).toString());
-        if (!m_installer->isUninstaller()) {
-            m_sizeLabel->setText(niceSizeText(qVariantValue<Component*>(index
-                .data(Qt::UserRole))->value(QString::fromLatin1("UncompressedSize"))));
+        if (index.isValid()) {
+            m_descriptionLabel->setText(index.data(Qt::ToolTipRole).toString());
+            if (!m_installer->isUninstaller()) {
+                m_sizeLabel->setText(niceSizeText(qVariantValue<Component*>(index
+                    .data(Qt::UserRole))->value(QString::fromLatin1("UncompressedSize"))));
+            }
         }
     }
-
-    void fullUninstallToggled(bool value)
-    {
-        if (value) {
-            emit workRequested(value);
-            q->setModified(value);
-        } else {
-            const QModelIndex index = m_model->index(0, 0);
-            const QVariant data = m_model->data(index, Qt::CheckStateRole);
-            m_model->setData(index, data, Qt::CheckStateRole);
-        }
-    }
-
-Q_SIGNALS:
-    void workRequested(bool);
 
 public:
     ComponentSelectionPage* const q;
@@ -969,10 +936,12 @@ ComponentSelectionPage::ComponentSelectionPage(Installer* installer)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ComponentSelectionPage"));
 
-    if (!installer->isUninstaller())
+    if (installer->isInstaller())
         setSubTitle(tr("Please select the components you want to install."));
-    else
+    if (installer->isUninstaller())
         setSubTitle(tr("Please select the components you want to uninstall."));
+    if (installer->isPackageManager())
+        setSubTitle(tr("Please (de)select the components you want to (un)install."));
 }
 
 ComponentSelectionPage::~ComponentSelectionPage()
@@ -985,16 +954,13 @@ void ComponentSelectionPage::entering()
     wizard()->button(QWizard::CancelButton)->setEnabled(true);
     if (!d->connected) {
         if (Gui* par = dynamic_cast<Gui*> (wizard())) {
-            verbose() << "connect Models" << std::endl;
+            d->connected = true;
             connect(d->m_model, SIGNAL(workRequested(bool)), par, SLOT(setModified(bool)),
                 Qt::QueuedConnection);
             connect(d->m_model, SIGNAL(workRequested(bool)), this, SLOT(setModified(bool)),
                 Qt::QueuedConnection);
-            connect(d, SIGNAL(workRequested(bool)), par, SLOT(setModified(bool)),
-                Qt::QueuedConnection);
             connect(d->m_model, SIGNAL(modelReset()), this, SLOT(modelWasReseted()),
                 Qt::QueuedConnection);
-            d->connected = true;
         }
         if (!d->m_installer->isInstaller())
             setButtonText(QWizard::CancelButton, tr("Close"));
@@ -1015,7 +981,6 @@ void ComponentSelectionPage::showEvent(QShowEvent* event)
         modelWasReseted();
     Page::showEvent(event);
 }
-
 
 /*!
     Selects the component with /a id in the component tree.
@@ -1050,10 +1015,6 @@ void ComponentSelectionPage::setModified(bool value)
 
 bool ComponentSelectionPage::isComplete() const
 {
-    // uninstall all
-    if (!d->m_treeView->isEnabled())
-        return true;
-
     if (d->m_installer->isPackageManager()) {
         // at least component should be different from its previous state
         if (d->modified)
