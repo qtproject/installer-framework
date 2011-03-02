@@ -49,27 +49,51 @@ QT_END_NAMESPACE
 namespace QInstaller {
 
 class Installer;
-class Page;
 class IntroductionPage;
+class Page;
 class PerformInstallationForm;
 
-class INSTALLER_EXPORT MessageBoxHandlerImpl : public MessageBoxHandler {
-public:
-    explicit MessageBoxHandlerImpl( QWidget* parentWidget );
-    void setAutomaticAnswer( const QString& identifier, QMessageBox::StandardButton answer );
-    void setDefaultAction( DefaultAction da );
 
-    QMessageBox::StandardButton critical( const QString& identifier, const QString& title, const QString& text, QMessageBox::StandardButtons buttons=QMessageBox::Ok, QMessageBox::StandardButton button=QMessageBox::NoButton ) const;
-    QMessageBox::StandardButton information( const QString& identifier, const QString& title, const QString& text, QMessageBox::StandardButtons buttons=QMessageBox::Ok, QMessageBox::StandardButton button=QMessageBox::NoButton ) const;
-    QMessageBox::StandardButton question( const QString& identifier, const QString& title, const QString& text, QMessageBox::StandardButtons buttons=QMessageBox::Yes|QMessageBox::No, QMessageBox::StandardButton button=QMessageBox::NoButton ) const;
-    QMessageBox::StandardButton warning( const QString& identifier, const QString& title, const QString& text, QMessageBox::StandardButtons buttons=QMessageBox::Ok, QMessageBox::StandardButton button=QMessageBox::NoButton ) const;
-    QMessageBox::StandardButton critical( QWidget* parent, const QString& identifier, const QString& title, const QString& text, QMessageBox::StandardButtons buttons=QMessageBox::Ok, QMessageBox::StandardButton button=QMessageBox::NoButton ) const;
-    QMessageBox::StandardButton information( QWidget* parent, const QString& identifier, const QString& title, const QString& text, QMessageBox::StandardButtons buttons=QMessageBox::Ok, QMessageBox::StandardButton button=QMessageBox::NoButton ) const;
-    QMessageBox::StandardButton question( QWidget* parent, const QString& identifier, const QString& title, const QString& text, QMessageBox::StandardButtons buttons=QMessageBox::Yes|QMessageBox::No, QMessageBox::StandardButton button=QMessageBox::NoButton ) const;
-    QMessageBox::StandardButton warning( QWidget* parent, const QString& identifier, const QString& title, const QString& text, QMessageBox::StandardButtons buttons=QMessageBox::Ok, QMessageBox::StandardButton button=QMessageBox::NoButton ) const;
+// -- MessageBoxHandlerImpl
+
+class INSTALLER_EXPORT MessageBoxHandlerImpl : public MessageBoxHandler
+{
+public:
+    explicit MessageBoxHandlerImpl(QWidget* parentWidget);
+    void setAutomaticAnswer(const QString& identifier, QMessageBox::StandardButton answer);
+    void setDefaultAction(DefaultAction da);
+
+    QMessageBox::StandardButton critical(const QString& identifier, const QString& title,
+        const QString& text, QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+    QMessageBox::StandardButton information(const QString& identifier, const QString& title,
+        const QString& text, QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+    QMessageBox::StandardButton question(const QString& identifier, const QString& title,
+        const QString& text, QMessageBox::StandardButtons buttons = QMessageBox::Yes|QMessageBox::No,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+    QMessageBox::StandardButton warning(const QString& identifier, const QString& title,
+        const QString& text, QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+    QMessageBox::StandardButton critical(QWidget* parent, const QString& identifier,
+        const QString& title, const QString& text,
+        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+    QMessageBox::StandardButton information(QWidget* parent, const QString& identifier,
+        const QString& title, const QString& text,
+        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+    QMessageBox::StandardButton question(QWidget* parent, const QString& identifier,
+        const QString& title, const QString& text,
+        QMessageBox::StandardButtons buttons = QMessageBox::Yes|QMessageBox::No,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+    QMessageBox::StandardButton warning(QWidget* parent, const QString& identifier,
+        const QString& title, const QString& text,
+        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
 
 private:
-    QMessageBox::StandardButton autoReply( QMessageBox::StandardButtons buttons ) const;
+    QMessageBox::StandardButton autoReply(QMessageBox::StandardButtons buttons) const;
 
 private:
     QList<QMessageBox::Button> m_buttonOrder;
@@ -77,6 +101,9 @@ private:
     DefaultAction m_defaultAction;
     QHash<QString,QMessageBox::StandardButton> m_automaticAnswers;
 };
+
+
+// -- Gui
 
 class INSTALLER_EXPORT Gui : public QWizard
 {
@@ -87,16 +114,16 @@ public:
     ~Gui();
     virtual void init() = 0;
 
-    void loadControlScript( const QString& scriptPath );
-    void callControlScriptMethod( const QString& methodName );
+    void loadControlScript(const QString& scriptPath);
+    void callControlScriptMethod(const QString& methodName);
     void triggerControlScriptForCurrentPage();
 
     QScriptEngine* controlScriptEngine() const;
 
     Q_INVOKABLE Page* page(int pageId) const;
-    Q_INVOKABLE QWidget* pageWidgetByObjectName( const QString& name ) const;
+    Q_INVOKABLE QWidget* pageWidgetByObjectName(const QString& name) const;
     Q_INVOKABLE QWidget* currentPageWidget() const;
-    Q_INVOKABLE void clickButton( int wizardButton, int delayInMs=0 );
+    Q_INVOKABLE void clickButton(int wizardButton, int delayInMs=0);
 
 Q_SIGNALS:
     void interrupted();
@@ -109,21 +136,21 @@ public slots:
     void reject();
     void rejectWithoutPrompt();
     void showFinishedPage();
-    void setModified( bool value );
+    void setModified(bool value);
 
 protected Q_SLOTS:
-    void wizardPageInsertionRequested( QWidget* widget, Installer::WizardPage page );
-    void wizardPageRemovalRequested( QWidget* widget );
-    void wizardWidgetInsertionRequested( QWidget* widget, Installer::WizardPage page );
-    void wizardWidgetRemovalRequested( QWidget* widget );
-    void wizardPageVisibilityChangeRequested( bool visible, int page );
-    void slotCurrentPageChanged( int id );
-    void delayedControlScriptExecution( int id );
+    void wizardPageInsertionRequested(QWidget* widget, Installer::WizardPage page);
+    void wizardPageRemovalRequested(QWidget* widget);
+    void wizardWidgetInsertionRequested(QWidget* widget, Installer::WizardPage page);
+    void wizardWidgetRemovalRequested(QWidget* widget);
+    void wizardPageVisibilityChangeRequested(bool visible, int page);
+    void slotCurrentPageChanged(int id);
+    void delayedControlScriptExecution(int id);
 
-    void setAutomatedPageSwitchEnabled( bool request );
+    void setAutomatedPageSwitchEnabled(bool request);
 
 protected:
-    bool event( QEvent* event );
+    bool event(QEvent* event);
     Installer *m_installer;
 
 
@@ -133,6 +160,8 @@ private:
     QMap< int, QWizardPage* > defaultPages;
 };
 
+
+// -- Page
 
 class INSTALLER_EXPORT Page : public QWizardPage
 {
@@ -154,8 +183,7 @@ protected:
 
     // Inserts widget into the same layout like a sibling identified
     // by its name. Default position is just behind the sibling.
-    virtual void insertWidget(QWidget *widget, const QString &siblingName,
-        int offset = 1);
+    virtual void insertWidget(QWidget *widget, const QString &siblingName, int offset = 1);
     virtual QWidget *findWidget(const QString &objectName) const;
 
     virtual void setVisible(bool visible); // reimp
@@ -175,18 +203,24 @@ private:
 };
 
 
+// -- IntroductionPage
+
 class INSTALLER_EXPORT IntroductionPage : public Page
 {
     Q_OBJECT
+
 public:
     explicit IntroductionPage(Installer *installer);
     void setText(const QString &text);
     void setWidget(QWidget *w);
+
 private:
     QLabel *m_msgLabel;
     QWidget *m_widget;
 };
 
+
+// -- LicenseAgreementPage
 
 class INSTALLER_EXPORT LicenseAgreementPage : public Page
 {
@@ -213,6 +247,8 @@ private:
 };
 
 
+// -- ComponentSelectionPage
+
 class INSTALLER_EXPORT ComponentSelectionPage : public Page
 {
     Q_OBJECT
@@ -222,20 +258,24 @@ public:
     ~ComponentSelectionPage();
     bool isComplete() const;
 
-    Q_INVOKABLE void selectComponent( const QString& id );
-    Q_INVOKABLE void deselectComponent( const QString& id );
+    Q_INVOKABLE void selectComponent(const QString& id);
+    Q_INVOKABLE void deselectComponent(const QString& id);
 
 protected:
-    void showEvent( QShowEvent* event );
     void entering();
+    void showEvent(QShowEvent* event);
+
 private Q_SLOTS:
-    void setModified( bool value );
     void modelWasReseted();
+    void setModified(bool value);
 
 private:
     class Private;
     Private *d;
 };
+
+
+// -- TargetDirectoryPage
 
 class INSTALLER_EXPORT TargetDirectoryPage : public Page
 {
@@ -262,6 +302,8 @@ private:
 };
 
 
+// -- StartMenuDirectoryPage
+
 class INSTALLER_EXPORT StartMenuDirectoryPage : public Page
 {
     Q_OBJECT
@@ -285,6 +327,8 @@ private:
 };
 
 
+// -- ReadyForInstallationPage
+
 class INSTALLER_EXPORT ReadyForInstallationPage : public Page
 {
     Q_OBJECT
@@ -299,6 +343,8 @@ private:
     QLabel* const msgLabel;
 };
 
+
+// -- PerformInstallationPage
 
 class INSTALLER_EXPORT PerformInstallationPage : public Page
 {
@@ -315,11 +361,11 @@ protected:
     bool isInterruptible() const { return true; }
 
 public Q_SLOTS:
-    void setTitleMessage( const QString& title );
+    void setTitleMessage(const QString& title);
 
 Q_SIGNALS:
     void installationRequested();
-    void setAutomatedPageSwitchEnabled( bool request );
+    void setAutomatedPageSwitchEnabled(bool request);
 
 private Q_SLOTS:
     void installationStarted();
@@ -330,6 +376,9 @@ private:
     QString m_commitBtnText;
     PerformInstallationForm *m_performInstallationForm;
 };
+
+
+// -- FinishedPage
 
 class INSTALLER_EXPORT FinishedPage : public Page
 {
@@ -354,6 +403,9 @@ private:
     QCheckBox *m_runItCheckBox;
 };
 
+
+// -- RestartPage
+
 class INSTALLER_EXPORT RestartPage : public Page
 {
     Q_OBJECT
@@ -364,6 +416,7 @@ public:
 protected:
     void entering();
     void leaving();
+
 Q_SIGNALS:
     void restart();
 };
