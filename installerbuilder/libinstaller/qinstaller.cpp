@@ -235,7 +235,7 @@ QScriptValue QInstaller::qDesktopServicesOpenUrl(QScriptContext* context, QScrip
     if (check.isError())
         return check;
     const QString url = context->argument(0).toString();
-    return QDesktopServices::openUrl(QUrl(url));
+    return QDesktopServices::openUrl(QUrl::fromUserInput(url));
 }
 
 QScriptValue QInstaller::qDesktopServicesDisplayName(QScriptContext* context, QScriptEngine* engine)
