@@ -34,6 +34,7 @@
 
 #include "common/binaryformat.h"
 #include "common/errors.h"
+#include "common/utils.h"
 #include "componentselectiondialog.h"
 #include "init.h"
 #include "installationprogressdialog.h"
@@ -50,8 +51,6 @@
 #include <QtGui/QProgressDialog>
 
 #include <QtXml/QDomDocument>
-
-#include <iostream>
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -168,7 +167,7 @@ bool Updater::checkForUpdates(bool checkonly)
             update.setAttribute(QLatin1String("size"), (*it)->value(QLatin1String("UncompressedSize")));
             root.appendChild(update);
         }
-        std::cout << doc.toString(4).toStdString() << std::endl;
+        verbose() << doc.toString(4).toStdString() << std::endl;
         return true;
     }
 
