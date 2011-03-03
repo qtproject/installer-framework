@@ -53,54 +53,42 @@ using namespace QInstaller;
 
 IntroductionPageImpl::IntroductionPageImpl(QInstaller::Installer *installer)
     : QInstaller::IntroductionPage(installer)
-    , m_stack(new QStackedWidget)
 {
-    // empty page
-    QWidget *page = new QWidget;
-    m_stack->addWidget(page);
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
 
-    // meta info update
-    page = new QWidget;
-    QVBoxLayout *layout = new QVBoxLayout(page);
-    layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
-
-    m_label = new QLabel;
-    m_label->setWordWrap(true);
-    m_label->setText(tr("Retrieving information from remote installation sources..."));
-    layout->addWidget(m_label);
-
-    QProgressBar *progressBar = new QProgressBar;
-    progressBar->setRange(0, 0);
-    layout->addWidget(progressBar);
-
-    layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    m_stack->addWidget(page);
-
-    // naintenance page
-    page = new QWidget;
-    layout = new QVBoxLayout(page);
-
-    m_packageManager = new QRadioButton(tr("Package manager"), page);
+    m_packageManager = new QRadioButton(tr("Package manager"), this);
     layout->addWidget(m_packageManager);
     m_packageManager->setChecked(installer->isPackageManager());
     connect(m_packageManager, SIGNAL(toggled(bool)), this, SLOT(setPackageManager(bool)));
 
-    m_updateComponents = new QRadioButton(tr("Update components"), page);
+    m_updateComponents = new QRadioButton(tr("Update components"), this);
     layout->addWidget(m_updateComponents);
     m_updateComponents->setChecked(installer->isUpdater());
     connect(m_updateComponents, SIGNAL(toggled(bool)), this, SLOT(setUpdater(bool)));
 
-    m_removeAllComponents = new QRadioButton(tr("Remove all components"), page);
+    m_removeAllComponents = new QRadioButton(tr("Remove all components"), this);
     layout->addWidget(m_removeAllComponents);
     m_removeAllComponents->setChecked(installer->isUninstaller());
     connect(m_removeAllComponents, SIGNAL(toggled(bool)), this, SLOT(setUninstaller(bool)));
     connect(m_removeAllComponents, SIGNAL(toggled(bool)), installer,
         SLOT(setCompleteUninstallation(bool)));
 
-    layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    m_stack->addWidget(page);
+    layout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
-    setWidget(m_stack);
+    m_label = new QLabel(this);
+    m_label->setWordWrap(true);
+    m_label->setText(tr("Retrieving information from remote installation sources..."));
+    layout->addWidget(m_label);
+
+    m_progressBar = new QProgressBar(this);
+    m_progressBar->setRange(0, 0);
+    layout->addWidget(m_progressBar);
+
+    layout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    widget->setLayout(layout);
+    setWidget(widget);
+
     installer->setCompleteUninstallation(installer->isUninstaller());
 }
 
@@ -120,19 +108,28 @@ int IntroductionPageImpl::nextId() const
     return QInstaller::IntroductionPage::nextId();
 }
 
-void IntroductionPageImpl::clearPage()
+void IntroductionPageImpl::showAll()
 {
-    m_stack->setCurrentIndex(0);
+    showWidgets(true);
+}
+
+void IntroductionPageImpl::hideAll()
+{
+    showWidgets(false);
 }
 
 void IntroductionPageImpl::showMetaInfoUdate()
 {
-    m_stack->setCurrentIndex(1);
+    showWidgets(false);
+    m_label->setVisible(true);
+    m_progressBar->setVisible(true);
 }
 
 void IntroductionPageImpl::showMaintenanceTools()
 {
-    m_stack->setCurrentIndex(2);
+    showWidgets(true);
+    m_label->setVisible(false);
+    m_progressBar->setVisible(false);
 }
 
 void IntroductionPageImpl::message(KDJob *job, const QString &msg)
@@ -163,6 +160,14 @@ void IntroductionPageImpl::setPackageManager(bool value)
     }
 }
 
+void IntroductionPageImpl::showWidgets(bool show)
+{
+    m_label->setVisible(show);
+    m_progressBar->setVisible(show);
+    m_packageManager->setVisible(show);
+    m_updateComponents->setVisible(show);
+    m_removeAllComponents->setVisible(show);
+}
 
 // -- TargetDirectoryPageImpl
 

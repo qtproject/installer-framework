@@ -290,6 +290,9 @@ int TabController::checkRepositories()
         qobject_cast<IntroductionPageImpl*>(d->m_gui->page(Installer::Introduction));
     introPage->setComplete(false);
     introPage->showMetaInfoUdate();
+    if (needsRepoCheck)
+        introPage->showAll();
+
     metaInfoJob.connect(&metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), introPage,
         SLOT(message(KDJob*, QString)));
 
@@ -397,7 +400,7 @@ int TabController::checkRepositories()
     if (!d->m_installer->isInstaller())
         introPage->showMaintenanceTools();
     else
-        introPage->clearPage();
+        introPage->hideAll();
 
     return INST_SUCCESS;
 }

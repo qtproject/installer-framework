@@ -31,7 +31,7 @@
 QT_BEGIN_NAMESPACE
 class QLabel;
 class QString;
-class QStackedWidget;
+class QProgressBar;
 QT_END_NAMESPACE
 
 
@@ -46,7 +46,8 @@ public:
 
     int nextId() const;
 
-    void clearPage();
+    void showAll();
+    void hideAll();
     void showMetaInfoUdate();
     void showMaintenanceTools();
 
@@ -63,8 +64,11 @@ private Q_SLOTS:
     void setPackageManager(bool value);
 
 private:
+    void showWidgets(bool show);
+
+private:
     QLabel *m_label;
-    QStackedWidget *m_stack;
+    QProgressBar *m_progressBar;
     QRadioButton *m_packageManager;
     QRadioButton *m_updateComponents;
     QRadioButton *m_removeAllComponents;
