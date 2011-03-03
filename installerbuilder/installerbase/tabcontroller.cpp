@@ -74,7 +74,7 @@ public:
     bool m_packageManagerInitialized;
     bool m_init;
     QPointer<QInstaller::Gui> m_gui;
-    QScopedPointer <Updater> m_updater;
+    QScopedPointer <QInstaller::Updater> m_updater;
     QInstaller::Installer *m_installer;
     KDUpdater::Application *m_app;
     QString m_controlScript;

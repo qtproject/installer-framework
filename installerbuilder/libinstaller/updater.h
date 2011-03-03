@@ -29,36 +29,39 @@
 #include "installer_global.h"
 
 #include <QtCore/QObject>
-#include <KDToolsCore/pimpl_ptr.h>
-#include <QSharedPointer>
 
-namespace QInstaller
-{
-    class ComponentSelectionDialog;
-    class Installer;
-}
+namespace QInstaller {
+
+class ComponentSelectionDialog;
+class Installer;
 
 class INSTALLER_EXPORT Updater : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
+
 public:
-    explicit Updater( QObject* parent = 0 );
+    explicit Updater(QObject* parent = 0);
     ~Updater();
+
     void init();
-    QInstaller::ComponentSelectionDialog* updaterGui() const;
-    void setUpdaterGui( QInstaller::ComponentSelectionDialog * gui );
-//    QInstaller::Installer* getInstaller();
-    void setInstaller( QInstaller::Installer * installer );
-    bool checkForUpdates( bool checkonly = false );
+    bool checkForUpdates(bool checkonly = false);
+    void setInstaller(Installer *installer);
+
+    ComponentSelectionDialog* updaterGui() const;
+    void setUpdaterGui(ComponentSelectionDialog *gui);
+
 public Q_SLOTS:
     bool searchForUpdates();
     bool update();
+
 Q_SIGNALS:
-    void updateFinished( bool error );
+    void updateFinished(bool error);
 
 private:
     class Private;
-    kdtools::pimpl_ptr< Private > d;
+    Private *d;
 };
+
+}   // namespace QInstaller
 
 #endif
