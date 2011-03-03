@@ -68,10 +68,11 @@ namespace QInstaller
     QStringList INSTALLER_EXPORT retrieveStringList(QIODevice *in);
     QHash<QString,QString> INSTALLER_EXPORT retrieveDictionary(QIODevice *in);
 
-    //static qint64 magicInstallerMarker   = (0xdea0d345UL << 32) + 0x12023233UL;
-    //static qint64 magicUninstallerMarker = (0xdea0d345UL << 32) + 0x12023234UL;
     static const qint64 MagicInstallerMarker      =  0x12023233UL;
     static const qint64 MagicUninstallerMarker    =  0x12023234UL;
+
+    static const qint64 MagicUpdaterMarker        =  0x12023235UL;
+    static const qint64 MagicPackageManagerMarker =  0x12023236UL;
 
     // this cookie is put at the end of the file to determine wheter we have data
     static const quint64 MagicCookie = 0xc2630a1c99d668f8LL;
