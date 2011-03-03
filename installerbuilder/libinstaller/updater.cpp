@@ -86,7 +86,7 @@ void Updater::init()
 
 Updater::Updater( QObject* parent )
     : QObject( parent )
-{	
+{
 }
 
 void Updater::setInstaller( QInstaller::Installer * installer )
@@ -169,7 +169,7 @@ bool Updater::update()
         dialog->setModal( true );
         dialog->setFixedSize( 480, 360 );
         dialog->show();
-        connect( dialog, SIGNAL( canceled() ), d->installer_shared, SLOT( interrupt() ) );        
+        connect( dialog, SIGNAL( canceled() ), d->installer_shared, SLOT( interrupt() ) );
         connect( d->installer_shared, SIGNAL( updateFinished() ), dialog, SLOT( finished() ) );
         d->installer_shared->installSelectedComponents();
         QEventLoop loop;
@@ -211,7 +211,7 @@ bool Updater::checkForUpdates( bool checkonly )
     BinaryContent content = BinaryContent::readFromApplicationFile();
     Installer installer( content.magicmaker, content.performedOperations );
     QInstaller::init();
-    installer.setUpdaterApplication( &updaterapp );    
+    installer.setUpdaterApplication( &updaterapp );
     installer.setPackageManager();
     installer.setLinearComponentList( true );
 
@@ -234,7 +234,7 @@ bool Updater::checkForUpdates( bool checkonly )
             progress->setRange( 0, 0 );
             progress->show();
         }
-        
+
         settings.setLastCheck( QDateTime::currentDateTime() );
         installer.setRemoteRepositories( settings.repositories() );
         if ( installer.status() == QInstaller::Installer::InstallerFailed )
