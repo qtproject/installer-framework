@@ -133,12 +133,8 @@ int main(int argc, char *argv[])
                 if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
                     return 0;
 
-                QInstaller::setVerbose(args.contains(QLatin1String("--verbose")));
-                QInstaller::init();
-                // load the embedded binary resource
-                BinaryContent content = BinaryContent::readFromApplicationFile();
-                content.registerEmbeddedQResources();
                 Updater u;
+                u.setVerbose(args.contains(QLatin1String("--verbose")));
                 return u.checkForUpdates(true) ? 0 : 1;
             }
         }

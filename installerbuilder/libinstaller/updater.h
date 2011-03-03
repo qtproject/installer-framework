@@ -44,8 +44,9 @@ public:
     ~Updater();
 
     void init();
-    bool checkForUpdates(bool checkonly = false);
+    void setVerbose(bool verbose);
     void setInstaller(Installer *installer);
+    bool checkForUpdates(bool checkonly = false);
 
     ComponentSelectionDialog* updaterGui() const;
     void setUpdaterGui(ComponentSelectionDialog *gui);

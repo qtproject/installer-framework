@@ -701,7 +701,7 @@ bool Installer::removeWizardPageItem(Component *component, const QString &name)
 void Installer::setRemoteRepositories(const QList<Repository> &repositories)
 {
     GetRepositoriesMetaInfoJob metaInfoJob(d->m_installerSettings->publicKey(),
-        isPackageManager());
+        (isPackageManager() || isUpdater()));
     metaInfoJob.setRepositories(repositories);
 
     // start...

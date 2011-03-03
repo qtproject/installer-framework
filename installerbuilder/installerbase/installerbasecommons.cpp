@@ -294,7 +294,7 @@ QtUninstallerGui::QtUninstallerGui(Installer *installer)
     setPage(Installer::PerformInstallation, new PerformInstallationPage(installer));
     setPage(Installer::InstallationFinished, new FinishedPage(installer));
 
-    if (installer->isPackageManager()) {
+    if (installer->isPackageManager() || installer->isUpdater()) {
         RestartPage *p = new RestartPage(installer);
         connect(p, SIGNAL(restart()), this, SIGNAL(gotRestarted()));
         setPage(Installer::InstallationFinished + 1, p);

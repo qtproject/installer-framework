@@ -92,18 +92,29 @@ void Updater::init()
         QSharedPointer<BinaryFormatEngineHandler> (new BinaryFormatEngineHandler(ComponentIndex()));
 }
 
+void Updater::setVerbose(bool verbose)
+{
+    QInstaller::setVerbose(verbose);
+}
+
+void Updater::setInstaller(QInstaller::Installer *installer)
+{
+    d->installer_shared = installer;
+}
+
 bool Updater::checkForUpdates(bool checkonly)
 {
     KDUpdater::Application updaterapp;
     BinaryContent content = BinaryContent::readFromApplicationFile();
+    content.registerEmbeddedQResources();
 
     Installer installer(content.magicmaker, content.performedOperations);
 
     QInstaller::init();
 
-    installer.setUpdaterApplication(&updaterapp);
     installer.setPackageManager();
     installer.setLinearComponentList(true);
+    installer.setUpdaterApplication(&updaterapp);
 
     QScopedPointer<BinaryFormatEngineHandler> handler(new BinaryFormatEngineHandler(ComponentIndex()));
     handler->setComponentIndex(QInstallerCreator::ComponentIndex());
@@ -210,11 +221,6 @@ bool Updater::checkForUpdates(bool checkonly)
     }
 
     return true;
-}
-
-void Updater::setInstaller(QInstaller::Installer *installer)
-{
-    d->installer_shared = installer;
 }
 
 ComponentSelectionDialog* Updater::updaterGui() const
