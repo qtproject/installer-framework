@@ -54,10 +54,9 @@ void SelfRestartOperation::backup()
 bool SelfRestartOperation::performOperation()
 {
     const Installer* const installer = qVariantValue< Installer* >( value( QLatin1String( "installer" ) ) );
-    if( !installer->isUpdater() )
-    {
-        setError( UserDefinedError );
-        setErrorString ( tr("Self Restart: Only valid within Updater.") );
+    if(!installer->isUpdater() && !installer->isPackageManager()) {
+        setError(UserDefinedError);
+        setErrorString (tr("Self Restart: Only valid within updater or packagemanager mode."));
         return false;
     }
 

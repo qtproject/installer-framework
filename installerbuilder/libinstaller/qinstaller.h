@@ -153,12 +153,16 @@ public:
 
     // convenience
     Q_INVOKABLE bool isInstaller() const;
-    Q_INVOKABLE bool isUninstaller() const;
-    Q_INVOKABLE bool isUpdater() const;
-    Q_INVOKABLE bool isPackageManager() const;
     Q_INVOKABLE bool isOfflineOnly() const;
 
-    void setPackageManager();
+    Q_INVOKABLE void setUninstaller();
+    Q_INVOKABLE bool isUninstaller() const;
+
+    Q_INVOKABLE void setUpdater();
+    Q_INVOKABLE bool isUpdater() const;
+
+    Q_INVOKABLE void setPackageManager();
+    Q_INVOKABLE bool isPackageManager() const;
 
     bool isVerbose() const;
     void setVerbose(bool on);

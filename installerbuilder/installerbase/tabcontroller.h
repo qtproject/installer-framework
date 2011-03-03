@@ -59,8 +59,8 @@ public:
 
     explicit TabController(QObject *parent = 0);
     ~TabController();
-    int initUpdater();
-    int initPackageManager();
+
+    int init();
     int checkRepositories();
     void setInstaller(QInstaller::Installer *installer);
     void setTabWidget(MainTabWidget *widget);
@@ -70,9 +70,6 @@ public:
     void setInstallerParams(const QHash<QString, QString> &params);
     Status getState() const;
     Q_INVOKABLE void setCurrentTab(int tab);
-
-Q_SIGNALS:
-    void refresh();
 
 private Q_SLOTS:
     void changeCurrentTab(int index);
@@ -86,8 +83,11 @@ private Q_SLOTS:
     void updaterFinishedWithError();
     void close();
 
+    int initUpdater();
+    int initPackageManager();
+
 private:
-    void init();
+    int initUninstaller();
 
 private:
     class Private;

@@ -53,6 +53,15 @@ public:
 public Q_SLOTS:
     void message(KDJob *job, const QString &msg);
 
+Q_SIGNALS:
+    void initUpdater();
+    void initPackageManager();
+
+private Q_SLOTS:
+    void setUpdater(bool value);
+    void setUninstaller(bool value);
+    void setPackageManager(bool value);
+
 private:
     QLabel *m_label;
     QStackedWidget *m_stack;

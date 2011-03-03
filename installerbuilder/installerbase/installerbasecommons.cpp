@@ -81,15 +81,19 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::Installer *installer)
     layout = new QVBoxLayout(page);
 
     m_packageManager = new QRadioButton(tr("Package manager"), page);
-    m_packageManager->setChecked(true);
     layout->addWidget(m_packageManager);
+    m_packageManager->setChecked(installer->isPackageManager());
+    connect(m_packageManager, SIGNAL(toggled(bool)), this, SLOT(setPackageManager(bool)));
 
     m_updateComponents = new QRadioButton(tr("Update components"), page);
     layout->addWidget(m_updateComponents);
+    m_updateComponents->setChecked(installer->isUpdater());
+    connect(m_updateComponents, SIGNAL(toggled(bool)), this, SLOT(setUpdater(bool)));
 
     m_removeAllComponents = new QRadioButton(tr("Remove all components"), page);
     layout->addWidget(m_removeAllComponents);
     m_removeAllComponents->setChecked(installer->isUninstaller());
+    connect(m_removeAllComponents, SIGNAL(toggled(bool)), this, SLOT(setUninstaller(bool)));
     connect(m_removeAllComponents, SIGNAL(toggled(bool)), installer,
         SLOT(setCompleteUninstallation(bool)));
 
@@ -102,13 +106,17 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::Installer *installer)
 
 int IntroductionPageImpl::nextId() const
 {
+    if (installer()->isUpdater()) {
+        // TODO: modify page
+        return Installer::ComponentSelection;
+    }
+
     if (installer()->isPackageManager())
         return Installer::ComponentSelection;
 
     if (installer()->isUninstaller())
         return Installer::ReadyForInstallation;
 
-    // TODO: implement for updater
     return QInstaller::IntroductionPage::nextId();
 }
 
@@ -131,6 +139,28 @@ void IntroductionPageImpl::message(KDJob *job, const QString &msg)
 {
     Q_UNUSED(job)
     m_label->setText(msg);
+}
+
+void IntroductionPageImpl::setUpdater(bool value)
+{
+    if (value) {
+        installer()->setUpdater();
+        emit initUpdater();
+    }
+}
+
+void IntroductionPageImpl::setUninstaller(bool value)
+{
+    if (value)
+        installer()->setUninstaller();
+}
+
+void IntroductionPageImpl::setPackageManager(bool value)
+{
+    if (value) {
+        installer()->setPackageManager();
+        emit initPackageManager();
+    }
 }
 
 
@@ -239,10 +269,10 @@ QtInstallerGui::QtInstallerGui(Installer *installer)
 void QtInstallerGui::init()
 {
     if(m_installer->components(true).count() == 1) {
-        wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
-
         Q_ASSERT(!m_installer->components().isEmpty());
         m_installer->components().first()->setSelected(true);
+
+        wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
     }
 }
 

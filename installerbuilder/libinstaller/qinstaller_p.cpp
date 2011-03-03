@@ -188,7 +188,7 @@ InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMa
     , m_needToWriteUninstaller(false)
     , m_performedOperationsOld(performedOperations)
     , q(installer)
-    , m_magicInstallerMarker(magicInstallerMaker)
+    , m_magicBinaryMarker(magicInstallerMaker)
 {
     connect(this, SIGNAL(installationStarted()), q, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), q, SIGNAL(installationFinished()));
@@ -347,17 +347,22 @@ QString InstallerPrivate::installerBinaryPath() const
 
 bool InstallerPrivate::isInstaller() const
 {
-    return m_magicInstallerMarker == MagicInstallerMarker;
+    return m_magicBinaryMarker == MagicInstallerMarker;
 }
 
 bool InstallerPrivate::isUninstaller() const
 {
-    return m_magicInstallerMarker == MagicUninstallerMarker && !m_packageManagingMode;
+    return m_magicBinaryMarker == MagicUninstallerMarker;
+}
+
+bool InstallerPrivate::isUpdater() const
+{
+    return m_magicBinaryMarker == MagicUpdaterMarker;
 }
 
 bool InstallerPrivate::isPackageManager() const
 {
-    return m_magicInstallerMarker == MagicUninstallerMarker && m_packageManagingMode;
+    return m_magicBinaryMarker == MagicPackageManagerMarker;
 }
 
 bool InstallerPrivate::statusCanceledOrFailed() const

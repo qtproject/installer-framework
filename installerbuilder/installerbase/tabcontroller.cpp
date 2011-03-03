@@ -33,7 +33,6 @@
 #include "tabcontroller.h"
 
 #include "installerbasecommons.h"
-#include "maintabwidget.h"
 
 #include <KDUpdater/Application>
 #include <KDUpdater/UpdateFinder>
@@ -76,7 +75,6 @@ public:
     bool m_init;
     QPointer<QInstaller::Gui> m_gui;
     QScopedPointer <Updater> m_updater;
-    MainTabWidget* m_updaterGuiWidget;
     QInstaller::Installer *m_installer;
     KDUpdater::Application *m_app;
     QString m_controlScript;
@@ -94,7 +92,6 @@ TabController::Private::Private()
     m_init(false),
     m_gui(0),
     m_updater(0),
-    m_updaterGuiWidget(0),
     m_installer(0),
     m_app(0),
     m_Tab_Pos_Updater(0),
@@ -107,7 +104,6 @@ TabController::Private::Private()
 
 TabController::Private::~Private()
 {
-    delete m_updaterGuiWidget;
     delete m_gui;
 }
 
@@ -140,15 +136,60 @@ TabController::~TabController()
     delete d;
 }
 
+int TabController::init()
+{
+    if (!d->m_installer->isInstaller()) {
+        connect(d->m_gui, SIGNAL(accepted()), this, SLOT(finished()));
+        connect(d->m_gui, SIGNAL(rejected()), this, SLOT(finished()));
+        d->m_gui->setWindowTitle(d->m_installer->value(QLatin1String("MaintenanceTitle")));
+    }
+
+    IntroductionPageImpl *introPage =
+        qobject_cast<IntroductionPageImpl*>(d->m_gui->page(QInstaller::Installer::Introduction));
+    connect(introPage, SIGNAL(initUpdater()), this, SLOT(initUpdater()));
+    connect(introPage, SIGNAL(initPackageManager()), this, SLOT(initPackageManager()));
+
+    //if (!d->m_installer->isInstaller() && !d->m_init) {
+        //d->m_updater.reset(new Updater);
+        //d->m_updater->setInstaller(d->m_installer);
+
+        //QInstaller::ComponentSelectionDialog* w =
+        //    new QInstaller::ComponentSelectionDialog(d->m_installer);
+        //d->m_updater->setUpdaterGui(w);
+        //d->m_updater->init();
+
+        //connect(d->m_updater.data(), SIGNAL(updateFinished(bool)), this, SLOT(updaterFinished(bool)));
+        //connect(d->m_updater.data(), SIGNAL(updateFinished(bool)), w, SLOT(refreshDialog()));
+        //connect(w, SIGNAL(rejected()), this, SLOT(updaterFinishedWithError()));
+        //connect(w, SIGNAL(finished(int)), this, SLOT(updaterFinished(int)));
+        //connect(this, SIGNAL(refresh()), w, SLOT(refreshDialog()));
+        //connect(d->m_updaterGuiWidget, SIGNAL(currentChanged(int)), this, SLOT(changeCurrentTab(int)));
+        //connect(d->m_updaterGuiWidget, SIGNAL(closeRequested()), this, SLOT(close()),
+        //    Qt::QueuedConnection);
+        //connect(d->m_installer, SIGNAL(installationStarted()), this, SLOT(disableUpdaterTab()));
+        //connect(d->m_installer, SIGNAL(uninstallationStarted()), this, SLOT(disableUpdaterTab()));
+        //d->m_init = true;
+        //d->m_gui->setWindowTitle(d->m_installer->value(QLatin1String("MaintenanceTitle")));
+    //}
+
+    if (d->m_installer->isUpdater())
+        return initUpdater();
+
+    if (d->m_installer->isUninstaller())
+        return initUninstaller();
+
+    return initPackageManager();
+}
+
 void TabController::setCurrentTab(int tab)
 {
-    if (!d->m_updaterGuiWidget)
-        return;
+    //if (!d->m_updaterGuiWidget)
+    //    return;
 
-    d->m_updaterGuiWidget->setCurrentIndex((tab == PACKAGE_MANAGER_TAB)
-        ? d->m_Tab_Pos_PackageManager : d->m_Tab_Pos_Updater);
-    d->m_gui->callControlScriptMethod(QLatin1String((tab == PACKAGE_MANAGER_TAB)
-        ? "PackageManagerSelectedCallback" : "UpdaterSelectedCallback"));
+    //d->m_updaterGuiWidget->setCurrentIndex((tab == PACKAGE_MANAGER_TAB)
+    //    ? d->m_Tab_Pos_PackageManager : d->m_Tab_Pos_Updater);
+    //d->m_gui->callControlScriptMethod(QLatin1String((tab == PACKAGE_MANAGER_TAB)
+    //    ? "PackageManagerSelectedCallback" : "UpdaterSelectedCallback"));
 }
 
 void TabController::setInstallerParams(const QHash<QString, QString> &params)
@@ -169,7 +210,7 @@ void TabController::setInstaller(QInstaller::Installer *installer)
 
 void TabController::setTabWidget(MainTabWidget *widget)
 {
-    d->m_updaterGuiWidget = widget;
+    //d->m_updaterGuiWidget = widget;
 }
 
 void TabController::setApplication(KDUpdater::Application *app)
@@ -182,34 +223,6 @@ void TabController::setControlScript (const QString &script)
     d->m_controlScript = script;
 }
 
-void TabController::init()
-{
-    if (!d->m_installer->isInstaller() && !d->m_init) {
-        d->m_updater.reset(new Updater);
-        d->m_updater->setInstaller(d->m_installer);
-
-        QInstaller::ComponentSelectionDialog* w =
-            new QInstaller::ComponentSelectionDialog(d->m_installer);
-        d->m_updater->setUpdaterGui(w);
-        d->m_updater->init();
-
-        connect(d->m_updater.data(), SIGNAL(updateFinished(bool)), this, SLOT(updaterFinished(bool)));
-        connect(d->m_updater.data(), SIGNAL(updateFinished(bool)), w, SLOT(refreshDialog()));
-        connect(w, SIGNAL(rejected()), this, SLOT(updaterFinishedWithError()));
-        connect(w, SIGNAL(finished(int)), this, SLOT(updaterFinished(int)));
-        connect(this, SIGNAL(refresh()), w, SLOT(refreshDialog()));
-        connect(d->m_gui, SIGNAL(accepted()), this, SLOT(finished()));
-        connect(d->m_gui, SIGNAL(rejected()), this, SLOT(finished()));
-        connect(d->m_updaterGuiWidget, SIGNAL(currentChanged(int)), this, SLOT(changeCurrentTab(int)));
-        connect(d->m_updaterGuiWidget, SIGNAL(closeRequested()), this, SLOT(close()),
-            Qt::QueuedConnection);
-        connect(d->m_installer, SIGNAL(installationStarted()), this, SLOT(disableUpdaterTab()));
-        connect(d->m_installer, SIGNAL(uninstallationStarted()), this, SLOT(disableUpdaterTab()));
-        d->m_init = true;
-        d->m_gui->setWindowTitle(d->m_installer->value(QLatin1String("MaintenanceTitle")));
-    }
-}
-
 void TabController::close()
 {
     if (!d->m_installer->isInstaller() && !d->m_gui.isNull())
@@ -218,17 +231,18 @@ void TabController::close()
 
 void TabController::disableUpdaterTab()
 {
-    d->m_updaterGuiWidget->setTabEnabled(d->m_Tab_Pos_Updater, false);
+    //d->m_updaterGuiWidget->setTabEnabled(d->m_Tab_Pos_Updater, false);
 }
 
 void TabController::enableUpdaterTab()
 {
-    d->m_updaterGuiWidget->setTabEnabled(d->m_Tab_Pos_Updater, true);
+    //d->m_updaterGuiWidget->setTabEnabled(d->m_Tab_Pos_Updater, true);
 }
 
 void TabController::restartWizard()
 {
-    enableUpdaterTab();
+    // TODO: How useful is this, should we do this for the updater as well?
+    //enableUpdaterTab();
     d->m_installer->reset(d->m_params);
     checkRepositories();
 
@@ -239,10 +253,10 @@ void TabController::restartWizard()
 void TabController::finished()
 {
     d->m_installer->writeUninstaller();
-    d->m_updaterGuiWidget->setCloseWithoutWarning(true);
-    bool res = d->m_updaterGuiWidget->close();
-    bool res2 = d->m_updaterGuiWidget->close();
-    QInstaller::verbose() << " widget was closed ? : " << res << " " << res2 << std::endl;
+    //d->m_updaterGuiWidget->setCloseWithoutWarning(true);
+    //bool res = d->m_updaterGuiWidget->close();
+    //bool res2 = d->m_updaterGuiWidget->close();
+    //QInstaller::verbose() << " widget was closed ? : " << res << " " << res2 << std::endl;
 }
 
 void TabController::updaterFinishedWithError()
@@ -266,9 +280,10 @@ int TabController::checkRepositories()
     using namespace QInstaller;
 
     const bool isInstaller = d->m_installer->isInstaller();
-    GetRepositoriesMetaInfoJob metaInfoJob(d->m_installer->settings().publicKey(),
-        d->m_installer->isPackageManager());
-    if ((isInstaller && !d->m_installer->isOfflineOnly()) || (d->m_installer->isPackageManager()))
+    const bool needsRepoCheck = d->m_installer->isPackageManager() || d->m_installer->isUpdater();
+
+    GetRepositoriesMetaInfoJob metaInfoJob(d->m_installer->settings().publicKey(), needsRepoCheck);
+    if ((isInstaller && !d->m_installer->isOfflineOnly()) || needsRepoCheck)
         metaInfoJob.setRepositories(d->m_installer->settings().repositories());
 
     IntroductionPageImpl *introPage =
@@ -384,8 +399,6 @@ int TabController::checkRepositories()
     else
         introPage->clearPage();
 
-    emit refresh();
-
     return INST_SUCCESS;
 }
 
@@ -409,12 +422,13 @@ void TabController::updaterFinished(int val)
 void TabController::canceled()
 {
     d->m_installer->writeUninstaller();
-    d->m_updaterGuiWidget->setCloseWithoutWarning(true);
+    //d->m_updaterGuiWidget->setCloseWithoutWarning(true);
 }
 
 int TabController::initUpdater()
 {
-    init();
+    if (d->m_updaterInitialized)
+        return INST_SUCCESS;
 
     if (d->m_repoUpdateNeeded) {
         int result = checkRepositories();
@@ -423,7 +437,8 @@ int TabController::initUpdater()
     }
     d->m_updaterInitialized = true;
 
-    // initialize the gui.
+    // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
+    // hide of pages depenging on the components.
     d->m_gui->init();
 
     using namespace QInstaller;
@@ -435,9 +450,23 @@ int TabController::initUpdater()
     return INST_SUCCESS;
 }
 
+int TabController::initUninstaller()
+{
+    IntroductionPageImpl *introPage =
+        qobject_cast<IntroductionPageImpl*>(d->m_gui->page(QInstaller::Installer::Introduction));
+    introPage->setComplete(true);
+    introPage->showMaintenanceTools();
+
+    d->m_gui->setWindowModality(Qt::WindowModal);
+    d->m_gui->show();
+
+    return INST_SUCCESS;
+}
+
 int TabController::initPackageManager()
 {
-    init();
+    if (d->m_packageManagerInitialized)
+        return INST_SUCCESS;
 
     // this should called as early as possible, to handle checkRepositories error messageboxes for
     // example
@@ -474,7 +503,8 @@ int TabController::initPackageManager()
     }
     d->m_packageManagerInitialized = true;
 
-    // initialize the gui.
+    // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
+    // hide of pages depenging on the components.
     d->m_gui->init();
 
     if (d->m_installer->isPackageManager())

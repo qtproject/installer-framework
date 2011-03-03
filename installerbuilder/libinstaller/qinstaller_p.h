@@ -85,9 +85,6 @@ public:
     QString targetDir() const;
     QString registerPath() const;
 
-    void runUninstaller();
-    bool isUninstaller() const;
-
     void deleteUninstaller();
     void registerUninstaller();
     void unregisterUninstaller();
@@ -104,6 +101,12 @@ public:
 
     void runInstaller();
     bool isInstaller() const;
+
+    void runUninstaller();
+    bool isUninstaller() const;
+
+    void runUpdater();
+    bool isUpdater() const;
 
     void runPackageUpdater();
     bool isPackageManager() const;
@@ -179,7 +182,7 @@ public:
 
 private:
     Installer *q;
-    qint64 m_magicInstallerMarker;
+    qint64 m_magicBinaryMarker;
 };
 
 }   // QInstaller

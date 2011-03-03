@@ -33,6 +33,7 @@
 #include "qinstaller.h"
 
 #include "adminauthorization.h"
+#include "common/binaryformat.h"
 #include "common/errors.h"
 #include "common/installersettings.h"
 #include "common/utils.h"
@@ -315,7 +316,7 @@ void Installer::installSelectedComponents()
         Component* const currentComponent = *it;
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nRemoving the old "
             "version of: %1").arg(currentComponent->name()));
-        if (isUpdater() && currentComponent->removeBeforeUpdate()) {
+        if ((isUpdater() || isPackageManager()) && currentComponent->removeBeforeUpdate()) {
             // undo all operations done by this component upon installation
             for (int i = d->m_performedOperationsOld.count() - 1; i >= 0; --i) {
                 KDUpdater::UpdateOperation* const op = d->m_performedOperationsOld[i];
@@ -1587,23 +1588,6 @@ bool Installer::isInstaller() const
 }
 
 /*!
-    Returns true when this is the uninstaller running.
-*/
-bool Installer::isUninstaller() const
-{
-    return d->isUninstaller();
-}
-
-/*!
-    Returns true when this is the package manager running.
-*/
-bool Installer::isPackageManager() const
-{
-    return d->isPackageManager();
-}
-
-
-/*!
     Returns true if this is an offline-only installer.
 */
 bool Installer::isOfflineOnly() const
@@ -1612,18 +1596,44 @@ bool Installer::isOfflineOnly() const
     return confInternal.value(QLatin1String("offlineOnly")).toBool();
 }
 
-void Installer::setPackageManager()
+void Installer::setUninstaller()
 {
-    d->m_packageManagingMode = true;
+    d->m_magicBinaryMarker = QInstaller::MagicUninstallerMarker;
 }
 
 /*!
-    Returns thrue when this is neither an installer nor an uninstaller running.
+    Returns true when this is the uninstaller running.
+*/
+bool Installer::isUninstaller() const
+{
+    return d->isUninstaller();
+}
+
+void Installer::setUpdater()
+{
+    d->m_magicBinaryMarker = QInstaller::MagicUpdaterMarker;
+}
+
+/*!
+    Returns true when this is neither an installer nor an uninstaller running.
     Must be an updater, then.
 */
 bool Installer::isUpdater() const
 {
-    return !d->isInstaller() && !d->isUninstaller();
+    return d->isUpdater();
+}
+
+void Installer::setPackageManager()
+{
+    d->m_magicBinaryMarker = QInstaller::MagicPackageManagerMarker;
+}
+
+/*!
+    Returns true when this is the package manager running.
+*/
+bool Installer::isPackageManager() const
+{
+    return d->isPackageManager();
 }
 
 /*!

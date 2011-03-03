@@ -30,73 +30,37 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-
-// This file contains the base part of the installer.
-// It lists the files and features the installer should handle.
-
 #include "qinstaller.h"
-#include "qinstallercomponentmodel.h"
-#include "qinstallercomponent.h"
-#include "qinstallergui.h"
-#include "qinstallerglobal.h"
-#include "init.h"
-#include "lib7z_facade.h"
-#include "common/installersettings.h"
+
+#include "common/binaryformat.h"
+#include "common/errors.h"
 #include "common/fileutils.h"
+#include "common/installersettings.h"
 #include "common/utils.h"
 #include "fsengineserver.h"
+#include "init.h"
+#include "installerbasecommons.h"
+#include "lib7z_facade.h"
+#include "qinstallercomponentmodel.h"
+#include "qinstallerglobal.h"
+#include "qinstallergui.h"
+#include "tabcontroller.h"
 #include "updater.h"
 
-#include <QtCore/QBuffer>
-#include <QtCore/QDir>
-#include <QtCore/QDirIterator>
-#include <QtCore/QFileInfo>
-#include <QtCore/QResource>
-#include <QtCore/QObject>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QTimer>
 #include <QtCore/QTranslator>
-#include <QtCore/QUrl>
-#include <QtCore/QPointer>
-#include <QtCore/QSettings>
 #include <QtCore/QThread>
 
 #include <QtGui/QApplication>
-#include <QtGui/QTabWidget>
-#include <QtGui/QLabel>
-#include <QtGui/QMessageBox>
-#include <QtGui/QVBoxLayout>
 
 #include <QtNetwork/QNetworkProxyFactory>
+
+#include <KDUpdater/Application>
+#include <KDUpdater/PackagesInfo>
 
 #include <KDToolsCore/KDSelfRestarter>
 #include <KDToolsCore/KDRunOnceChecker>
 
-#include <KDUpdater/Application>
-#include <KDUpdater/UpdateSourcesInfo>
-#include <KDUpdater/PackagesInfo>
-#include <KDUpdater/Update>
-#include <KDUpdater/UpdateFinder>
-#include <KDUpdater/UpdateOperationFactory>
-
-#include <KDUpdater/UpdateOperation>
-
-// QInstallerGui is base of the Gui part of an installer, i.e.
-// the "main installer wizard". In the simplest case it's just
-// a sequence of "standard" wizard pages. A few commonly used
-// ones are provided already in qinstallergui.h.
-
-#include "common/binaryformat.h"
-#include "common/binaryformatenginehandler.h"
-#include "common/errors.h"
-#include "common/range.h"
-
 #include <iostream>
-#include <memory>
-
-#include "installerbasecommons.h"
-#include "maintabwidget.h"
-#include "tabcontroller.h"
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -249,7 +213,6 @@ int main(int argc, char *argv[])
         const QString productName = installer.value(QLatin1String("ProductName"));
 
         QString controlScript;
-        bool isUpdater = false;
         QHash<QString, QString> params;
         for (int i = 1; i < args.size(); ++i) {
             const QString &argument = args.at(i);
@@ -280,11 +243,12 @@ int main(int argc, char *argv[])
                      QFont f;
                      f.setItalic(true);
                      QInstaller::ComponentModel::setVirtualComponentsFont(f);
-            } else if (argument == QLatin1String("--manage-packages")
-                || argument == QLatin1String("ManagePackages")) {
+            } else if ((argument == QLatin1String("--updater")
+                || argument == QLatin1String("Updater")) && installer.isUninstaller()) {
+                    installer.setUpdater();
+            } else if ((argument == QLatin1String("--manage-packages")
+                || argument == QLatin1String("ManagePackages")) && installer.isUninstaller()) {
                     installer.setPackageManager();
-            } else if (argument == QLatin1String("--updater") || argument == QLatin1String("Updater")) {
-                isUpdater = true && !installer.isInstaller();
             } else if (argument == QLatin1String("--help") || argument == QLatin1String("-h")) {
                 return INST_SUCCESS;
             } else if (argument == QLatin1String("--addTempRepository")
@@ -344,11 +308,10 @@ int main(int argc, char *argv[])
         if (installer.isInstaller()) {
             controller.setInstallerGui(new QtInstallerGui(&installer));
         } else {
-            controller.setTabWidget(new MainTabWidget());
             controller.setInstallerGui(new QtUninstallerGui(&installer));
         }
 
-        int val = isUpdater ? controller.initUpdater() : controller.initPackageManager();
+        int val = controller.init();
         if (val != TabController::SUCCESS)
             return val;
 
