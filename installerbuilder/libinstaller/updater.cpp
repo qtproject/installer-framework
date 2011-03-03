@@ -178,7 +178,7 @@ bool Updater::checkForUpdates(bool checkonly)
             update.setAttribute(QLatin1String("size"), (*it)->value(QLatin1String("UncompressedSize")));
             root.appendChild(update);
         }
-        verbose() << doc.toString(4).toStdString() << std::endl;
+        verbose() << doc.toString(4) << std::endl;
         return true;
     }
 

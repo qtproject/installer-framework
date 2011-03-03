@@ -45,6 +45,7 @@
 #include "qinstallercomponent.h"
 
 #include <KDToolsCore/KDSaveFile>
+#include <KDToolsCore/KDSelfRestarter>
 
 #include <KDUpdater/KDUpdater>
 
@@ -55,6 +56,8 @@
 #include <QtCore/QFuture>
 #include <QtCore/QFutureWatcher>
 #include <QtCore/QTemporaryFile>
+
+#include <errno.h>
 
 namespace QInstaller {
 
