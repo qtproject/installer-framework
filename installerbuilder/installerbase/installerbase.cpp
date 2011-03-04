@@ -149,13 +149,9 @@ int main(int argc, char *argv[])
         }
 
         const QStringList args = app.arguments();
-
         // from here, the "normal" installer binary is running
         if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("Verbose")))
             QInstaller::setVerbose(true);
-
-        verbose() << "This is installerbase version " << INSTALLERBASE_VERSION << std::endl;
-        verbose() << "ARGS: " << args << std::endl;
 
         // install the default translator
         const QString localeFile =
@@ -176,37 +172,41 @@ int main(int argc, char *argv[])
             app.installTranslator(translator);
         }
 
-        verbose() << "resource tree before loading the in-binary resource: " << std::endl;
+        if (QInstaller::isVerbose()) {
+            verbose() << "This is installerbase version " << INSTALLERBASE_VERSION << std::endl;
+            verbose() << "ARGS: " << args << std::endl;
 
-        QDir dir(QLatin1String(":/"));
-        Q_FOREACH (const QString &i, dir.entryList()) {
-            const QByteArray ba = i.toUtf8();
-            verbose() << ba.constData() << std::endl;
+            verbose() << "resource tree before loading the in-binary resource: " << std::endl;
+
+            QDir dir(QLatin1String(":/"));
+            foreach (const QString &i, dir.entryList()) {
+                const QByteArray ba = i.toUtf8();
+                verbose() << ba.constData() << std::endl;
+            }
         }
 
         // register custom operations before reading the binary content cause they may used in
-        // the uninstaller for the recorded list of during the installation performed operations.
+        // the uninstaller for the recorded list of during the installation performed operations
         QInstaller::init();
 
         // load the embedded binary resource
         BinaryContent content = BinaryContent::readFromApplicationFile();
         content.registerEmbeddedQResources();
 
-        verbose() << "resource tree after loading the in-binary resource: " << std::endl;
-
-        dir = QDir(QLatin1String(":/"));
-        Q_FOREACH (const QString &i, dir.entryList())
-            verbose() << QString::fromLatin1(":/%1").arg(i) << std::endl;
-
-        dir = QDir(QLatin1String(":/metadata/"));
-        Q_FOREACH (const QString &i, dir.entryList())
-            verbose() << QString::fromLatin1(":/metadata/%1").arg(i) << std::endl;
-
-        KDUpdater::Application updaterapp;
+        // instantiate the installer we are actually going to use
         QInstaller::Installer installer(content.magicmaker, content.performedOperations);
-        installer.setUpdaterApplication(&updaterapp);
 
-        const QString productName = installer.value(QLatin1String("ProductName"));
+        if (QInstaller::isVerbose()) {
+            verbose() << "resource tree after loading the in-binary resource: " << std::endl;
+
+            QDir dir = QDir(QLatin1String(":/"));
+            foreach (const QString &i, dir.entryList())
+                verbose() << QString::fromLatin1(":/%1").arg(i) << std::endl;
+
+            dir = QDir(QLatin1String(":/metadata/"));
+            foreach (const QString &i, dir.entryList())
+                verbose() << QString::fromLatin1(":/metadata/%1").arg(i) << std::endl;
+        }
 
         QString controlScript;
         QHash<QString, QString> params;
@@ -285,11 +285,14 @@ int main(int argc, char *argv[])
             }
         #endif
 
+        KDUpdater::Application updaterapp;
+        const QString &productName = installer.value(QLatin1String("ProductName"));
         updaterapp.packagesInfo()->setApplicationName(productName);
         updaterapp.packagesInfo()->setApplicationVersion(installer
             .value(QLatin1String("ProductVersion")));
         updaterapp.addUpdateSource(productName, productName, QString(),
             QUrl(QLatin1String("resource://metadata/")), 0);
+        installer.setUpdaterApplication(&updaterapp);
 
         // Create the wizard gui
         TabController controller(0);
