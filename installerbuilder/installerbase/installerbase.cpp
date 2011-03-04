@@ -285,9 +285,6 @@ int main(int argc, char *argv[])
             }
         #endif
 
-        if (!installer.isInstaller())
-            installer.setPackageManager();
-
         updaterapp.packagesInfo()->setApplicationName(productName);
         updaterapp.packagesInfo()->setApplicationVersion(installer
             .value(QLatin1String("ProductVersion")));
