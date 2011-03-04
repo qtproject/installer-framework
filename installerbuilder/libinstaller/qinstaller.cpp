@@ -794,7 +794,7 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     KDUpdater::Application &updaterApp = *d->m_app;
     KDUpdater::PackagesInfo &packagesInfo = *updaterApp.packagesInfo();
 
-    if (isUninstaller() || isPackageManager()) {
+    if (isUninstaller() || isPackageManager() || isUpdater()) {
         if (!setAndParseLocalComponentsFile(packagesInfo))
             return;
         packagesInfo.setApplicationName(d->m_installerSettings->applicationName());
@@ -943,7 +943,7 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
                     components.insert(newComponentName, component.take());
                 }
 
-                if (isPackageManager() && (isUpdate || newPackageForUpdater)) {
+                if ((isPackageManager() || isUpdater()) && (isUpdate || newPackageForUpdater)) {
                     if (update->data(QLatin1String("Important")).toBool())
                         containsImportantUpdates = true;
                     componentsToSelectUpdater.append(tmpComponent);

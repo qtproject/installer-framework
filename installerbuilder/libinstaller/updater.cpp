@@ -112,7 +112,7 @@ bool Updater::checkForUpdates(bool checkonly)
 
     QInstaller::init();
 
-    installer.setPackageManager();
+    installer.setUpdater();
     installer.setLinearComponentList(true);
     installer.setUpdaterApplication(&updaterapp);
 
