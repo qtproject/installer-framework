@@ -55,7 +55,7 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::Installer *installer)
     : QInstaller::IntroductionPage(installer)
 {
     QWidget *widget = new QWidget(this);
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout(widget);
 
     m_packageManager = new QRadioButton(tr("Package manager"), this);
     layout->addWidget(m_packageManager);
