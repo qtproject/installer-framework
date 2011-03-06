@@ -185,32 +185,40 @@ void QInstaller::blockingCopy( QIODevice* in, QIODevice* out, qint64 size )
     }
 }
 
-void QInstaller::removeDirectory( const QString& path, bool ignoreErrors )
+void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
 {
-    if ( path.isEmpty() ) // QDir( "" ) points to the working directory! We never want to remove that one.
-        return;
-
-    QDirIterator it( path, QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden );
-    while( it.hasNext() )
-    {
-        it.next();
-        const QFileInfo fi = it.fileInfo();
-
-        if( fi.isDir() && !fi.isSymLink() )
-        {
-            removeDirectory( fi.filePath(), ignoreErrors );
-        }
-        else
-        {
-            QFile f( fi.filePath() );
-            if( !f.remove() && !ignoreErrors )
-                throw Error( QObject::tr("Could not remove file %1: %2").arg( f.fileName(), f.errorString() ) );
+    const QFileInfoList entries = QDir(path).entryInfoList(QDir::AllEntries | QDir::Hidden);
+    foreach (const QFileInfo &fi, entries) {
+        if (fi.isSymLink() || fi.isFile()) {
+            QFile f(fi.filePath());
+            if (!f.remove() && !ignoreErrors)
+                throw Error(QObject::tr("Could not remove file %1: %2").arg(f.fileName(), f.errorString()));
         }
     }
+}
 
-    errno = 0;
-    if ( !QDir().rmdir( path ) && !ignoreErrors )
-        throw Error( QObject::tr("Could not remove folder %1: %2").arg( path, QLatin1String(strerror(errno)) ) );
+void QInstaller::removeDirectory(const QString& path, bool ignoreErrors)
+{
+    if (path.isEmpty()) // QDir("") points to the working directory! We never want to remove that one.
+        return;
+
+    QStringList dirs;
+    QDirIterator it(path, QDir::NoDotAndDotDot | QDir::Dirs | QDir::NoSymLinks | QDir::Hidden,
+        QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        it.next();
+        dirs.prepend(it.filePath());
+        removeFiles(dirs.at(0), ignoreErrors);
+    }
+
+    QDir d;
+    dirs.append(path);
+    removeFiles(path, ignoreErrors);
+    foreach (const QString &dir, dirs) {
+        errno = 0;
+        if (!d.rmdir(dir) && !ignoreErrors)
+            throw Error(QObject::tr("Could not remove folder %1: %2").arg(dir, QLatin1String(strerror(errno))));
+    }
 }
 
 /*!

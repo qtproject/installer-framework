@@ -53,6 +53,7 @@ namespace QInstaller {
      *
      * @throws QInstaller::Error if the directory cannot be removed and ignoreErrors is @p false
      */
+    void INSTALLER_EXPORT removeFiles(const QString &path, bool ignoreErrors = false);
     void INSTALLER_EXPORT removeDirectory( const QString& path, bool ignoreErrors = false );
     void INSTALLER_EXPORT removeDirectoryThreaded( const QString& path, bool ignoreErrors = false );
 
