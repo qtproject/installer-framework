@@ -736,7 +736,7 @@ void Installer::setRemoteRepositories(const QList<Repository> &repositories)
     // The changes done above by adding update source don't count as modification that
     // need to be saved cause they will be re-set on the next start anyway. This does
     // prevent creating of xml files not needed atm. We can still set the modified
-    // state later once real things changed that we like to restore at the  next startup.
+    // state later once real things changed that we like to restore at the next startup.
     updaterApp.updateSourcesInfo()->setModified(false);
 
     // create the packages info
@@ -1390,18 +1390,6 @@ QString Installer::findLibrary(const QString &name, const QStringList &pathes)
     QStringList findPathes = pathes;
 #if defined(Q_WS_WIN)
     return findPath(QString::fromLatin1("%1.lib").arg(name), findPathes);
-#elif defined(Q_WS_MAC)
-    if (findPathes.isEmpty()) {
-        findPathes.push_back(QLatin1String("/lib"));
-        findPathes.push_back(QLatin1String("/usr/lib"));
-        findPathes.push_back(QLatin1String("/usr/local/lib"));
-        findPathes.push_back(QLatin1String("/opt/local/lib"));
-    }
-
-    const QString dynamic = findPath(QString::fromLatin1("lib%1.dylib").arg(name), findPathes);
-    if (!dynamic.isEmpty())
-        return dynamic;
-    return findPath(QString::fromLatin1("lib%1.a").arg(name), findPathes);
 #else
     if (findPathes.isEmpty()) {
         findPathes.push_back(QLatin1String("/lib"));
@@ -1409,7 +1397,11 @@ QString Installer::findLibrary(const QString &name, const QStringList &pathes)
         findPathes.push_back(QLatin1String("/usr/local/lib"));
         findPathes.push_back(QLatin1String("/opt/local/lib"));
     }
+#if defined(Q_WS_MAC)
+    const QString dynamic = findPath(QString::fromLatin1("lib%1.dylib").arg(name), findPathes);
+#else
     const QString dynamic = findPath(QString::fromLatin1("lib%1.so*").arg(name), findPathes);
+#endif
     if (!dynamic.isEmpty())
         return dynamic;
     return findPath(QString::fromLatin1("lib%1.a").arg(name), findPathes);
@@ -1465,8 +1457,7 @@ QString Installer::value(const QString &key, const QString &defaultValue) const
         const QString dir = d->m_vars.value(key, defaultValue);
         if (dir.startsWith(QLatin1String("~/")))
             return QDir::home().absoluteFilePath(dir.mid(2));
-        else
-            return dir;
+        return dir;
     }
 #endif
     return d->m_vars.value(key, defaultValue);
