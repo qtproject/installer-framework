@@ -139,10 +139,12 @@ static int assemble(Input input, const QString &configdir)
         QInstaller::mkpath(fi.filePath() + QLatin1String("/Contents/MacOS"));
         QInstaller::mkpath(fi.filePath() + QLatin1String("/Contents/Resources"));
 
-        QFile pkgInfo(fi.filePath() + QLatin1String("/Contents/PkgInfo"));
-        pkgInfo.open(QIODevice::WriteOnly);
-        QTextStream pkgInfoStream(&pkgInfo);
-        pkgInfoStream << QLatin1String("APPL????") << endl;
+        {
+            QFile pkgInfo(fi.filePath() + QLatin1String("/Contents/PkgInfo"));
+            pkgInfo.open(QIODevice::WriteOnly);
+            QTextStream pkgInfoStream(&pkgInfo);
+            pkgInfoStream << QLatin1String("APPL????") << endl;
+        }
 
         const QString iconFile = QFile::exists(settings.icon()) ? settings.icon()
             : QString::fromLatin1(":/resources/default_icon_mac.icns");
