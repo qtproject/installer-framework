@@ -104,16 +104,22 @@ void Updater::setInstaller(QInstaller::Installer *installer)
 
 bool Updater::checkForUpdates(bool checkonly)
 {
-    KDUpdater::Application updaterapp;
+    QInstaller::init();
+
     BinaryContent content = BinaryContent::readFromApplicationFile();
     content.registerEmbeddedQResources();
 
+    if (content.magicmaker == MagicInstallerMarker) {
+        QMessageBox::information(0, tr("Check for Updates"),
+            tr("Impossible to use an installer to check for updates!"));
+        return false;
+    }
+
     Installer installer(content.magicmaker, content.performedOperations);
-
-    QInstaller::init();
-
     installer.setUpdater();
     installer.setLinearComponentList(true);
+
+    KDUpdater::Application updaterapp;
     installer.setUpdaterApplication(&updaterapp);
 
     QScopedPointer<BinaryFormatEngineHandler> handler(new BinaryFormatEngineHandler(ComponentIndex()));
@@ -139,19 +145,16 @@ bool Updater::checkForUpdates(bool checkonly)
         installer.setRemoteRepositories(settings.repositories());
         if (installer.status() == QInstaller::Installer::InstallerFailed)
             return false;
-        installer.setValue(QLatin1String("TargetDir"), QFileInfo(updaterapp.packagesInfo()->fileName()).absolutePath());
+        installer.setValue(QLatin1String("TargetDir"),
+            QFileInfo(updaterapp.packagesInfo()->fileName()).absolutePath());
     } catch (const Error& error) {
-        if (!checkonly) {
-            QMessageBox::critical(dialog.data(), tr("Check for Updates"),
-                tr("Error while checking for updates:\n%1").arg(QString::fromStdString(error.what())));
-        }
+        QMessageBox::critical(dialog.data(), tr("Check for Updates"),
+            tr("Error while checking for updates:\n%1").arg(QString::fromStdString(error.what())));
         settings.setLastResult(tr("Software Update failed."));
         return false;
     } catch (...) {
-        if (!checkonly) {
-            QMessageBox::critical(dialog.data(), tr("Check for Updates"),
-                tr("Unknown error while checking for updates."));
-        }
+        QMessageBox::critical(dialog.data(), tr("Check for Updates"),
+            tr("Unknown error while checking for updates."));
         settings.setLastResult(tr("Software Update failed."));
         return false;
     }
@@ -159,7 +162,7 @@ bool Updater::checkForUpdates(bool checkonly)
     const QList<QInstaller::Component*> components = installer.components(true, UpdaterMode);
 
     // no updates for us
-    if (components.isEmpty() && !checkonly) {
+    if (components.isEmpty()) {
         QMessageBox::information(dialog.data(), tr("Check for Updates"),
             tr("There are currently no updates available."));
         return false;
@@ -178,7 +181,7 @@ bool Updater::checkForUpdates(bool checkonly)
             update.setAttribute(QLatin1String("size"), (*it)->value(QLatin1String("UncompressedSize")));
             root.appendChild(update);
         }
-        verbose() << doc.toString(4) << std::endl;
+        QMessageBox::information(dialog.data(), tr("Check for Updates"), doc.toString(4));
         return true;
     }
 
