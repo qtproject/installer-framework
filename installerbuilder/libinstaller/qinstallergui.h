@@ -256,6 +256,7 @@ class INSTALLER_EXPORT ComponentSelectionPage : public Page
 public:
     explicit ComponentSelectionPage(Installer *installer);
     ~ComponentSelectionPage();
+
     bool isComplete() const;
 
     Q_INVOKABLE void selectComponent(const QString& id);

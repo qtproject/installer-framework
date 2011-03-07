@@ -851,17 +851,24 @@ public:
         wasshown(false),
         modified(false),
         connected(false),
-        m_model(new ComponentModel(installer)),
+        m_model(0),
         m_installer(installer),
         m_treeView(new QTreeView(q))
     {
+        const bool updaterMode = installer->isUpdater();
+        m_model = new ComponentModel(installer, updaterMode ? UpdaterMode : InstallerMode);
         m_treeView->setModel(m_model);
-        m_treeView->setHeaderHidden(true);
-        m_treeView->setMouseTracking(true);
         m_treeView->setObjectName(QLatin1String("ComponentTreeView"));
 
-        for (int i = 1; i < m_treeView->model()->columnCount(); ++i)
-            m_treeView->setColumnHidden(i, true);
+        if (updaterMode) {
+            m_treeView->header()->setStretchLastSection(true);
+            for (int i = 0; i < m_treeView->model()->columnCount(); ++i)
+                m_treeView->resizeColumnToContents(i);
+        } else {
+            m_treeView->setHeaderHidden(true);
+            for (int i = 1; i < m_treeView->model()->columnCount(); ++i)
+                m_treeView->setColumnHidden(i, true);
+        }
 
         QHBoxLayout *hlayout = new QHBoxLayout;
         hlayout->addWidget(m_treeView, 3);
@@ -899,10 +906,15 @@ protected Q_SLOTS:
 
         const QModelIndex index = m_treeView->currentIndex();
         if (index.isValid()) {
-            m_descriptionLabel->setText(index.data(Qt::ToolTipRole).toString());
-            if (!m_installer->isUninstaller()) {
-                m_sizeLabel->setText(niceSizeText(qVariantValue<Component*>(index
-                    .data(Qt::UserRole))->value(QString::fromLatin1("UncompressedSize"))));
+            m_descriptionLabel->setText(m_model->data(m_model->index(index.row(),
+                ComponentModel::NameColumn, index.parent()), Qt::ToolTipRole).toString());
+            if (m_installer->isUpdater() || m_installer->isPackageManager()) {
+                m_sizeLabel->setText(tr("This component will occupy approximately %1 on your "
+                    "harddisk.").arg(m_model->data(m_model->index(index.row(),
+                    ComponentModel::SizeColumn, index.parent())).toString()));
+            } else if (m_installer->isInstaller()) {
+                if (Component *c = index.data(Qt::UserRole).value<Component*>())
+                    m_sizeLabel->setText(niceSizeText(c->value(QLatin1String("UncompressedSize"))));
             }
         }
     }
@@ -913,7 +925,7 @@ public:
     bool wasshown;
     bool modified;
     bool connected;
-    ComponentModel* const m_model;
+    ComponentModel *m_model;
     Installer* const m_installer;
     QTreeView* const m_treeView;
     QLabel *m_descriptionLabel;
@@ -940,6 +952,9 @@ ComponentSelectionPage::ComponentSelectionPage(Installer* installer)
         setSubTitle(tr("Please select the components you want to install."));
     if (installer->isUninstaller())
         setSubTitle(tr("Please select the components you want to uninstall."));
+
+    if (installer->isUpdater())
+        setSubTitle(tr("Please select the components you want to update."));
     if (installer->isPackageManager())
         setSubTitle(tr("Please (de)select the components you want to (un)install."));
 }
@@ -962,8 +977,11 @@ void ComponentSelectionPage::entering()
             connect(d->m_model, SIGNAL(modelReset()), this, SLOT(modelWasReseted()),
                 Qt::QueuedConnection);
         }
-        if (!d->m_installer->isInstaller())
+        if (!d->m_installer->isInstaller()) {
+            if (installer()->isUpdater())
+                d->m_treeView->header()->resizeSection(0, 100);
             setButtonText(QWizard::CancelButton, tr("Close"));
+        }
     }
 }
 
