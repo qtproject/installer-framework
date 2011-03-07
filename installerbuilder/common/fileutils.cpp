@@ -216,7 +216,7 @@ void QInstaller::removeDirectory(const QString& path, bool ignoreErrors)
     removeFiles(path, ignoreErrors);
     foreach (const QString &dir, dirs) {
         errno = 0;
-        if (!d.rmdir(dir) && !ignoreErrors)
+        if (d.exists(path) && !d.rmdir(dir) && !ignoreErrors)
             throw Error(QObject::tr("Could not remove folder %1: %2").arg(dir, QLatin1String(strerror(errno))));
     }
 }
