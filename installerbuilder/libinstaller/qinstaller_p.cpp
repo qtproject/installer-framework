@@ -81,9 +81,11 @@ template <typename T>
 void letTheUiRunTillFinished(const QFuture<T>& f)
 {
     QFutureWatcher<T> futureWatcher;
-    futureWatcher.setFuture(f);
+
     QEventLoop loop;
     loop.connect(&futureWatcher, SIGNAL(finished()), SLOT(quit()), Qt::QueuedConnection);
+    futureWatcher.setFuture(f);
+
     if (!f.isFinished())
         loop.exec();
 }

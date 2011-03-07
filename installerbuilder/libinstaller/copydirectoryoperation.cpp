@@ -60,9 +60,11 @@ void CopyDirectoryOperation::letTheUiRunTillFinished(const QFuture<void> &future
 {
     if (!future.isFinished()) {
         QFutureWatcher<void> futureWatcher;
-        futureWatcher.setFuture(future);
+
         QEventLoop loop;
         connect(&futureWatcher, SIGNAL(finished()), &loop, SLOT(quit()), Qt::QueuedConnection);
+        futureWatcher.setFuture(future);
+
         if (!future.isFinished())
             loop.exec();
     }
