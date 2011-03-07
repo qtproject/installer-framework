@@ -8,5 +8,5 @@ QT += gui
 
 CONFIG += uitools
 
-SOURCES += main.cpp
+SOURCES += main.cpp updater.cpp
 RESOURCES += updater.qrc

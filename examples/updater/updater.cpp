@@ -66,7 +66,7 @@ public:
 Updater::Updater( QObject* parent )
     : QObject( parent )
 {
-	QInstaller::init();
+    QInstaller::init();
 }
 
 Updater::~Updater()
@@ -76,6 +76,7 @@ Updater::~Updater()
 bool Updater::checkForUpdates( bool checkonly )
 {
     d->installer.setLinearComponentList( true );
+    d->installer.setUpdaterApplication(&d->updaterapp);
 
     std::auto_ptr< QInstallerCreator::BinaryFormatEngineHandler > handler( new QInstallerCreator::BinaryFormatEngineHandler( QInstallerCreator::ComponentIndex() ) );
     handler->setComponentIndex( QInstallerCreator::ComponentIndex() );
@@ -96,7 +97,7 @@ bool Updater::checkForUpdates( bool checkonly )
             progress->setRange( 0, 0 );
             progress->show();
         }
-        
+
         settings.setLastCheck( QDateTime::currentDateTime() );
         d->installer.setRemoteRepositories( settings.repositories() );
         d->installer.setValue( QLatin1String( "TargetDir" ), QFileInfo( d->updaterapp.packagesInfo()->fileName() ).absolutePath() );
