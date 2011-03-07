@@ -33,28 +33,14 @@
 #include <QApplication>
 #include <QStringList>
 
-#include "updater.h"
+#include <updater.h>
 #include "common/utils.h"
 
-int main( int argc, char* argv[] )
+int main(int argc, char* argv[])
 {
-    bool checkonly = false;
-    {
-        QCoreApplication app( argc, argv );
-        checkonly = app.arguments().contains( QLatin1String( "--check-only" ) );
-        QInstaller::setVerbose( app.arguments().contains( QLatin1String( "--verbose" ) ) );
-    }
+    QApplication app(argc, argv);
 
-    if( checkonly )
-    {
-        QCoreApplication app( argc, argv );
-        Updater u;
-        return u.checkForUpdates( true ) ? 0 : 1;
-    }
-    else
-    {
-        QApplication app( argc, argv );
-        Updater u;
-        return u.checkForUpdates( false ) ? 0 : 1;
-     }
+    QInstaller::Updater u;
+    u.setVerbose(app.arguments().contains(QLatin1String("--verbose")));
+    return u.checkForUpdates(app.arguments().contains(QLatin1String("--check-only"))) ? 0 : 1;
 }
