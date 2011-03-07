@@ -759,19 +759,19 @@ void Installer::setTemporaryRepositories(const QList<Repository> &repositories, 
 }
 
 /*!
+    checks if the downloader should try to download sha1 checksums for archives
+*/
+bool Installer::testChecksum() const
+{
+    return d->m_testChecksum;
+}
+
+/*!
     Defines if the downloader should try to download sha1 checksums for archives
 */
 void Installer::setTestChecksum(bool test)
 {
     d->m_testChecksum = test;
-}
-
-/*!
-    checks if the downloader should try to download sha1 checksums for archives
-*/
-bool Installer::testChecksum()
-{
-    return d->m_testChecksum;
 }
 
 /*!
@@ -1121,14 +1121,14 @@ static Component* subComponentByName(const Installer *installer, const QString &
     return 0;
 }
 
-void Installer::setLinearComponentList(bool showlinear)
-{
-    d->m_linearComponentList = showlinear;
-}
-
 bool Installer::hasLinearComponentList() const
 {
     return d->m_linearComponentList;
+}
+
+void Installer::setLinearComponentList(bool showlinear)
+{
+    d->m_linearComponentList = showlinear;
 }
 
 /*!

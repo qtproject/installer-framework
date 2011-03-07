@@ -73,16 +73,14 @@ class INSTALLER_EXPORT Installer : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(int status READ status NOTIFY statusChanged)
     Q_ENUMS(Status WizardPage)
+    Q_PROPERTY(int status READ status NOTIFY statusChanged)
 
 public:
     explicit Installer(qint64 magicmaker = 0,
         const QVector<KDUpdater::UpdateOperation*> &performedOperations
             = QVector< KDUpdater::UpdateOperation*>());
     ~Installer();
-
-    void writeUninstaller();
 
     bool run();
     void reset(const QHash<QString, QString> &params);
@@ -106,19 +104,19 @@ public:
     Q_INVOKABLE bool containsValue(const QString &key) const;
 
     //a way to have global flags share able from a component script to another one
-    Q_INVOKABLE void setSharedFlag(const QString &key, bool value = true);
     Q_INVOKABLE bool sharedFlag(const QString &key) const;
+    Q_INVOKABLE void setSharedFlag(const QString &key, bool value = true);
 
     QString replaceVariables(const QString &str) const;
-    QStringList replaceVariables(const QStringList &str) const;
     QByteArray replaceVariables(const QByteArray &str) const;
-    QString installerBinaryPath() const;
+    QStringList replaceVariables(const QStringList &str) const;
+
+    void writeUninstaller();
     QString uninstallerName() const;
+    QString installerBinaryPath() const;
 
-    bool isRemoteRepositoryMetaInfoRetrieved() const;
-
+    bool testChecksum() const;
     void setTestChecksum(bool test);
-    bool testChecksum();
 
     KDUpdater::Application &updaterApplication() const;
     void setUpdaterApplication(KDUpdater::Application *app);
@@ -212,11 +210,11 @@ public:
     QList<Component*> calculateComponentOrder(RunModes runMode = InstallerMode) const;
     void installComponent(Component *comp, double progressOperationSize);
 
-    void setLinearComponentList(bool showlinear);
     bool hasLinearComponentList() const;
+    void setLinearComponentList(bool showlinear);
 
-    bool finishedWithSuccess() const;
     bool needsRestart() const;
+    bool finishedWithSuccess() const;
 
 public Q_SLOTS:
     bool runInstaller();
