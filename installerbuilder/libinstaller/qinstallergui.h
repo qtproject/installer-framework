@@ -259,15 +259,16 @@ public:
 
     bool isComplete() const;
 
+    Q_INVOKABLE void selectAll();
+    Q_INVOKABLE void deselectAll();
+    Q_INVOKABLE void selectDefault();
     Q_INVOKABLE void selectComponent(const QString& id);
     Q_INVOKABLE void deselectComponent(const QString& id);
 
 protected:
     void entering();
-    void showEvent(QShowEvent* event);
 
 private Q_SLOTS:
-    void modelWasReseted();
     void setModified(bool value);
 
 private:

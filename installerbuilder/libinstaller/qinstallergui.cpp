@@ -851,24 +851,12 @@ public:
         wasshown(false),
         modified(false),
         connected(false),
-        m_model(0),
+        m_model(new ComponentModel(installer, installer->isUpdater() ? UpdaterMode : InstallerMode)),
         m_installer(installer),
         m_treeView(new QTreeView(q))
     {
-        const bool updaterMode = installer->isUpdater();
-        m_model = new ComponentModel(installer, updaterMode ? UpdaterMode : InstallerMode);
         m_treeView->setModel(m_model);
         m_treeView->setObjectName(QLatin1String("ComponentTreeView"));
-
-        if (updaterMode) {
-            m_treeView->header()->setStretchLastSection(true);
-            for (int i = 0; i < m_treeView->model()->columnCount(); ++i)
-                m_treeView->resizeColumnToContents(i);
-        } else {
-            m_treeView->setHeaderHidden(true);
-            for (int i = 1; i < m_treeView->model()->columnCount(); ++i)
-                m_treeView->setColumnHidden(i, true);
-        }
 
         QHBoxLayout *hlayout = new QHBoxLayout;
         hlayout->addWidget(m_treeView, 3);
@@ -892,13 +880,29 @@ public:
         QVBoxLayout *layout = new QVBoxLayout(q);
         layout->addLayout(hlayout);
 
-        connect(m_treeView->model(), SIGNAL(dataChanged(QModelIndex, QModelIndex)), q,
+        QPushButton *button;
+        hlayout = new QHBoxLayout;
+        if (m_installer->isInstaller()) {
+            hlayout->addWidget(button = new QPushButton(tr("Default")));
+            connect(button, SIGNAL(clicked()), this, SLOT(selectDefault()));
+        }
+        hlayout->addWidget(button = new QPushButton(tr("Select All")));
+        connect(button, SIGNAL(clicked()), this, SLOT(selectAll()));
+        hlayout->addWidget(button = new QPushButton(tr("Deselect All")));
+        connect(button, SIGNAL(clicked()), this, SLOT(deselectAll()));
+        hlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
+            QSizePolicy::MinimumExpanding));
+        layout->addLayout(hlayout);
+
+        connect(m_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), q,
             SIGNAL(completeChanged()), Qt::QueuedConnection);
+        connect(m_model, SIGNAL(modelReset()), this, SLOT(modelWasReseted()),
+            Qt::QueuedConnection);
         connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(selectionChanged()));
     }
 
-protected Q_SLOTS:
+public slots:
     void selectionChanged()
     {
         m_sizeLabel->clear();
@@ -917,6 +921,61 @@ protected Q_SLOTS:
                     m_sizeLabel->setText(niceSizeText(c->value(QLatin1String("UncompressedSize"))));
             }
         }
+    }
+
+    void selectAll()
+    {
+        if (!m_installer->isUpdater()) {
+            QList<Component*> components = m_installer->components(false, AllMode);
+            foreach (Component *comp, components)
+                comp->setSelected(true, InstallerMode);
+        } else {
+            selectDefault();
+        }
+    }
+
+    void deselectAll()
+    {
+        select(false, m_installer->isUpdater() ? UpdaterMode : InstallerMode);
+    }
+
+    void selectDefault()
+    {
+        RunModes runMode = m_installer->isUpdater() ? UpdaterMode : InstallerMode;
+        select(false, runMode); // TODO: remove after we have reworked dependency handling
+        select(true, runMode);
+    }
+
+    void modelWasReseted()
+    {
+        wasshown = true;
+        if (m_installer->isUpdater()) {
+            m_treeView->header()->resizeSection(0, 150);
+            m_treeView->header()->setStretchLastSection(true);
+            for (int i = 0; i < m_treeView->model()->columnCount(); ++i)
+                m_treeView->resizeColumnToContents(i);
+        } else {
+            m_treeView->setHeaderHidden(true);
+            for (int i = 1; i < m_treeView->model()->columnCount(); ++i)
+                m_treeView->setColumnHidden(i, true);
+        }
+
+        bool hasChildren = false;
+        const int rowCount = m_model->rowCount();
+        for(int row = 0; row < rowCount && !hasChildren; ++row)
+            hasChildren = m_model->hasChildren(m_model->index(row, 0));
+
+        m_treeView->setRootIsDecorated(hasChildren);
+        m_treeView->setCurrentIndex(m_model->index(0, 0));
+        m_treeView->setExpanded(m_model->index(0, 0), true);
+    }
+
+private:
+    void select(bool select, RunModes runMode)
+    {
+        QList<Component*> components = m_installer->components(false, runMode);
+        foreach (Component *comp, components)
+            comp->setSelected(select, runMode);
     }
 
 public:
@@ -966,7 +1025,6 @@ ComponentSelectionPage::~ComponentSelectionPage()
 
 void ComponentSelectionPage::entering()
 {
-    wizard()->button(QWizard::CancelButton)->setEnabled(true);
     if (!d->connected) {
         if (Gui* par = dynamic_cast<Gui*> (wizard())) {
             d->connected = true;
@@ -974,30 +1032,26 @@ void ComponentSelectionPage::entering()
                 Qt::QueuedConnection);
             connect(d->m_model, SIGNAL(workRequested(bool)), this, SLOT(setModified(bool)),
                 Qt::QueuedConnection);
-            connect(d->m_model, SIGNAL(modelReset()), this, SLOT(modelWasReseted()),
-                Qt::QueuedConnection);
-        }
-        if (!d->m_installer->isInstaller()) {
-            if (installer()->isUpdater())
-                d->m_treeView->header()->resizeSection(0, 100);
-            setButtonText(QWizard::CancelButton, tr("Close"));
         }
     }
+    setModified(d->modified);
+    wizard()->button(QWizard::CancelButton)->setEnabled(true);
 }
 
-void ComponentSelectionPage::modelWasReseted()
+void ComponentSelectionPage::selectAll()
 {
-    if (d->m_treeView->model()->rowCount() == 1) {
-        d->wasshown = true;
-        d->m_treeView->setExpanded(d->m_treeView->model()->index(0, 0), true);
-    }
+    d->selectAll();
 }
 
-void ComponentSelectionPage::showEvent(QShowEvent* event)
+void ComponentSelectionPage::deselectAll()
 {
-    if (!d->wasshown)
-        modelWasReseted();
-    Page::showEvent(event);
+    d->deselectAll();
+}
+
+void ComponentSelectionPage::selectDefault()
+{
+    if (installer()->isInstaller())
+        d->selectDefault();
 }
 
 /*!
@@ -1025,15 +1079,21 @@ void ComponentSelectionPage::deselectComponent(const QString& id)
 void ComponentSelectionPage::setModified(bool value)
 {
     d->modified = value;
-    if (d->m_installer->isInstaller() || value)
-        setButtonText(QWizard::CancelButton, tr("Cancel"));
-    else
-        setButtonText(QWizard::CancelButton, tr("Close"));
+    setButtonText(QWizard::CancelButton, isComplete() ? tr("Cancel") : tr("Close"));
 }
 
 bool ComponentSelectionPage::isComplete() const
 {
-    if (d->m_installer->isPackageManager()) {
+    if (installer()->isUpdater()) {
+        const QList<Component*> components = installer()->components(true, UpdaterMode);
+        foreach (Component *component, components) {
+            if (component->isSelected(UpdaterMode))
+                return true;
+        }
+        return false;
+    }
+
+    if (installer()->isPackageManager()) {
         // at least component should be different from its previous state
         if (d->modified)
             return true;
@@ -1042,8 +1102,8 @@ bool ComponentSelectionPage::isComplete() const
 
     // at least one component needs to be selected for (un)installation
     const QList<Component*> components = d->m_installer->components(true);
-    for (QList<Component*>::const_iterator it = components.begin(); it != components.end(); ++it) {
-        if ((*it)->isSelected() == d->m_installer->isInstaller())
+    foreach (Component *component, components) {
+        if (component->isSelected() == installer()->isInstaller())
             return true;
     }
     return false;
