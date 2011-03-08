@@ -302,7 +302,7 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &data, int
     if (!index.isValid())
         return false;
 
-    switch(role) {
+    switch (role) {
     case Qt::CheckStateRole: {
         if (!(flags(index) & Qt::ItemIsUserCheckable))
             return false;
@@ -431,9 +431,9 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
         
     Component *const component = reinterpret_cast<Component*>(index.internalPointer());
 
-    switch(index.column()) {
+    switch (index.column()) {
     case NameColumn:
-        switch(role)
+        switch (role)
         {
         case Qt::EditRole:
         case Qt::DisplayRole:
@@ -494,7 +494,7 @@ QVariant ComponentModel::headerData(int section, Qt::Orientation orientation, in
     if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
         return QAbstractItemModel::headerData(section, orientation, role);
     
-    switch(section) {
+    switch (section) {
     case NameColumn:
         return tr("Name");
 
