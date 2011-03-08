@@ -677,13 +677,12 @@ LicenseAgreementPage::LicenseAgreementPage(Installer *inst)
     : Page(inst)
 {
     setTitle(tr("License Agreement"));
+    setSubTitle(tr("Please read the following license agreement(s). You must accept the terms contained "
+        "in these agreement(s) before continuing with the installation."));
+
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("LicenseAgreementPage"));
-
-    QLabel *msgLabel = new QLabel(tr("Please read the following license agreement(s). You must "
-        "accept the terms contained in these agreement(s) before continuing with the installation."));
-    msgLabel->setWordWrap(true);
 
     QGroupBox *licenseBox = new QGroupBox(this);
     licenseBox->setObjectName(QString::fromUtf8("licenseBox"));
@@ -735,7 +734,6 @@ LicenseAgreementPage::LicenseAgreementPage(Installer *inst)
     QFont labelFont(font());
     labelFont.setPixelSize(9);
 
-    msgLabel->setFont(labelFont);
     acceptLabel->setFont(labelFont);
     rejectLabel->setFont(labelFont);
 #endif
@@ -748,7 +746,6 @@ LicenseAgreementPage::LicenseAgreementPage(Installer *inst)
     gridLayout->addWidget(rejectLabel, 1, 1);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(msgLabel);
     layout->addWidget(licenseBox);
     layout->addLayout(gridLayout);
 
