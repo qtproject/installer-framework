@@ -962,7 +962,7 @@ public slots:
 
         bool hasChildren = false;
         const int rowCount = m_model->rowCount();
-        for(int row = 0; row < rowCount && !hasChildren; ++row)
+        for (int row = 0; row < rowCount && !hasChildren; ++row)
             hasChildren = m_model->hasChildren(m_model->index(row, 0));
 
         m_treeView->setRootIsDecorated(hasChildren);
