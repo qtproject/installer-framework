@@ -760,7 +760,7 @@ LicenseAgreementPage::LicenseAgreementPage(Installer *inst)
     m_rejectRadioButton->setChecked(true);
 }
 
-void LicenseAgreementPage::initializePage()
+void LicenseAgreementPage::entering()
 {
     m_licenseListWidget->clear();
     m_textBrowser->setText(QLatin1String(""));

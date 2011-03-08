@@ -228,7 +228,8 @@ class INSTALLER_EXPORT LicenseAgreementPage : public Page
 
 public:
     explicit LicenseAgreementPage(Installer *installer);
-    void initializePage();
+
+    void entering();
     bool isComplete() const;
 
 private Q_SLOTS:
