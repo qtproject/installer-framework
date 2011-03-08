@@ -94,16 +94,11 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::Installer *installer)
 
 int IntroductionPageImpl::nextId() const
 {
-    if (installer()->isUpdater()) {
-        // TODO: modify page
-        return Installer::ComponentSelection;
-    }
-
-    if (installer()->isPackageManager())
-        return Installer::ComponentSelection;
-
     if (installer()->isUninstaller())
         return Installer::ReadyForInstallation;
+
+    if (installer()->isUpdater() || installer()->isPackageManager())
+        return Installer::ComponentSelection;
 
     return QInstaller::IntroductionPage::nextId();
 }
