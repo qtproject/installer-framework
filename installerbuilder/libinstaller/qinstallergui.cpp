@@ -684,10 +684,12 @@ LicenseAgreementPage::LicenseAgreementPage(Installer *inst)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("LicenseAgreementPage"));
 
+#if !defined(Q_WS_MAC)
     QGroupBox *licenseBox = new QGroupBox(this);
     licenseBox->setObjectName(QString::fromUtf8("licenseBox"));
+#endif
 
-    m_licenseListWidget = new QListWidget(licenseBox);
+    m_licenseListWidget = new QListWidget(this);
     connect(m_licenseListWidget, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
         this, SLOT(currentItemChanged(QListWidgetItem *)));
 
@@ -695,19 +697,27 @@ LicenseAgreementPage::LicenseAgreementPage(Installer *inst)
     sizePolicy.setHeightForWidth(m_licenseListWidget->sizePolicy().hasHeightForWidth());
     m_licenseListWidget->setSizePolicy(sizePolicy);
 
-    m_textBrowser = new QTextBrowser(licenseBox);
+    m_textBrowser = new QTextBrowser(this);
     m_textBrowser->setReadOnly(true);
-    m_textBrowser->setOpenExternalLinks(true);
     m_textBrowser->setOpenLinks(false);
+    m_textBrowser->setOpenExternalLinks(true);
     connect(m_textBrowser, SIGNAL(anchorClicked(QUrl)), this, SLOT(openLicenseUrl(QUrl)));
 
     QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Expanding);
     sizePolicy2.setHeightForWidth(m_textBrowser->sizePolicy().hasHeightForWidth());
     m_textBrowser->setSizePolicy(sizePolicy2);
 
-    QHBoxLayout *licenseBoxLayout = new QHBoxLayout(licenseBox);
+    QHBoxLayout *licenseBoxLayout = new QHBoxLayout();
     licenseBoxLayout->addWidget(m_licenseListWidget);
     licenseBoxLayout->addWidget(m_textBrowser);
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+#if !defined(Q_WS_MAC)
+    layout->addWidget(licenseBox);
+    licenseBox->setLayout(licenseBoxLayout);
+#else
+    layout->addLayout(licenseBoxLayout);
+#endif
 
     m_acceptRadioButton = new QRadioButton(this);
     QLabel *acceptLabel = new QLabel(tr("I have read and agree to the following terms contained in "
@@ -744,15 +754,10 @@ LicenseAgreementPage::LicenseAgreementPage(Installer *inst)
     gridLayout->addWidget(acceptLabel, 0, 1);
     gridLayout->addWidget(m_rejectRadioButton, 1, 0);
     gridLayout->addWidget(rejectLabel, 1, 1);
-
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(licenseBox);
     layout->addLayout(gridLayout);
 
-    connect(m_acceptRadioButton, SIGNAL(toggled(bool)), this,
-        SIGNAL(completeChanged()));
-    connect(m_rejectRadioButton, SIGNAL(toggled(bool)), this,
-        SIGNAL(completeChanged()));
+    connect(m_acceptRadioButton, SIGNAL(toggled(bool)), this, SIGNAL(completeChanged()));
+    connect(m_rejectRadioButton, SIGNAL(toggled(bool)), this, SIGNAL(completeChanged()));
 
     m_rejectRadioButton->setChecked(true);
 }
