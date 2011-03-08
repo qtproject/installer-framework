@@ -122,14 +122,15 @@ bool Updater::checkForUpdates(bool checkonly)
     KDUpdater::Application updaterapp;
     installer.setUpdaterApplication(&updaterapp);
 
-    QScopedPointer<BinaryFormatEngineHandler> handler(new BinaryFormatEngineHandler(ComponentIndex()));
-    handler->setComponentIndex(QInstallerCreator::ComponentIndex());
-
-    UpdateSettings settings;
+    QSharedPointer<UpdateSettings> settings = QSharedPointer<UpdateSettings> (new UpdateSettings());;
     QScopedPointer<ComponentSelectionDialog> dialog(checkonly
         ? 0 : new ComponentSelectionDialog(&installer));
-    if (!checkonly)
+    if (!checkonly) {
+        d->settings = settings;
+        setInstaller(&installer);
+        setUpdaterGui(dialog.data());
         dialog->show();
+    }
 
     ComponentModel::setVirtualComponentsVisible(true);
 
@@ -141,8 +142,8 @@ bool Updater::checkForUpdates(bool checkonly)
             progress->show();
         }
 
-        settings.setLastCheck(QDateTime::currentDateTime());
-        installer.setRemoteRepositories(settings.repositories());
+        settings->setLastCheck(QDateTime::currentDateTime());
+        installer.setRemoteRepositories(settings->repositories());
         if (installer.status() == QInstaller::Installer::InstallerFailed)
             return false;
         installer.setValue(QLatin1String("TargetDir"),
@@ -150,12 +151,12 @@ bool Updater::checkForUpdates(bool checkonly)
     } catch (const Error& error) {
         QMessageBox::critical(dialog.data(), tr("Check for Updates"),
             tr("Error while checking for updates:\n%1").arg(QString::fromStdString(error.what())));
-        settings.setLastResult(tr("Software Update failed."));
+        settings->setLastResult(tr("Software Update failed."));
         return false;
     } catch (...) {
         QMessageBox::critical(dialog.data(), tr("Check for Updates"),
             tr("Unknown error while checking for updates."));
-        settings.setLastResult(tr("Software Update failed."));
+        settings->setLastResult(tr("Software Update failed."));
         return false;
     }
 
@@ -213,13 +214,13 @@ bool Updater::checkForUpdates(bool checkonly)
                 tr("Error while installing updates:\n%1").arg(QString::fromStdString(error.what())));
         }
         installer.rollBackInstallation();
-        settings.setLastResult(tr("Software Update failed."));
+        settings->setLastResult(tr("Software Update failed."));
         return false;
     } catch (...) {
         QMessageBox::critical(dialog.data(), tr("Check for Updates"),
             tr("Unknown error while installing updates."));
         installer.rollBackInstallation();
-        settings.setLastResult(tr("Software Update failed."));
+        settings->setLastResult(tr("Software Update failed."));
         return false;
     }
 
