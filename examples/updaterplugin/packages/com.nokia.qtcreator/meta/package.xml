@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<Package>
-    <DisplayName>Qt Creator</DisplayName>
-    <Description>Installs Qt Creator.</Description>
-    <Version>1</Version>
-    <ReleaseDate>2009-12-03</ReleaseDate>
-    <Name>com.nokia.qtcreator</Name>
-    <Script>installscript.js</Script>
-</Package>

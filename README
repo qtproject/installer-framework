@@ -1,64 +1,37 @@
-These are instructions for the Nokia SDK installer.
-
-== Qt configuration ==
-
-Recommended configure options:
-
-Windows static/release:
-
-configure -static -release -no-webkit -platform win32-msvc2008 -no-phonon -fast -no-dbus -no-opengl -exceptions -nomake demos -nomake examples -confirm-license -commercial
-
-
-
-== Tested Platforms ==
-
-Platforms tested so far:
-
-On all platforms: Qt 4.5.2
-
-Linux 32bit, gcc 4.3.3: CI, tested, works
-Linux 64bit, gcc 4.3.3: CI, tested, works
-OS X 10.5 32 bit, gcc 4.0.1: CI, tested, works
-OS X 10.6 32 bit: not tested
-OS X 10.6 64 bit: not tested
-Windows 32 bit XP, MSVC 2005/2008: CI, tested, works
-Windows Vista 32 bit: not tested
-Windows Vista 64 bit: not tested
-
+These are instructions to create the installer framework
 
 == Build ==
+To build an installer, it is advised to use a statically linked Qt.
 
-Shared build of the actual installer lib is not supported any longer. 
-Only examples/updaterplugin, the Qt Creator plugin, is build shared.
+== Qt configuration under Windows ==
+- adjust the qmake.conf to have a real stand alone working installer(at the moment we are using msvc2005, but it should work with msvc2008 aswell)
 
-Note: To build the Qt Creator plugin, an environment variable QTCREATOR_SOURCE_PATH 
-containing the path to the Qt Creator source directory needs to be set:
+--- a/mkspecs/win32-msvc20XX/qmake.conf
++++ b/mkspecs/win32-msvc20XX/qmake.conf
+@@ -6,7 +6,7 @@
+ 
+ MAKEFILE_GENERATOR      = MSVC.NET
+ TEMPLATE                = app
+-CONFIG                  += qt warn_on release incremental flat link_prl precompile_header autogen_precompile_source copy_dir_files debug_and_release debug_and_release_target embed_manifest_dll embed_manifest_exe
++CONFIG                  += qt warn_on release incremental flat link_prl precompile_header autogen_precompile_source copy_dir_files debug_and_release debug_and_release_target
+ QT                      += core gui
+ DEFINES                 += UNICODE WIN32 QT_LARGEFILE_SUPPORT
+ QMAKE_COMPILER_DEFINES  += _MSC_VER=1400 WIN32
+@@ -19,9 +19,9 @@ QMAKE_YACCFLAGS         = -d
+ QMAKE_CFLAGS            = -nologo -Zm200 -Zc:wchar_t-
+ QMAKE_CFLAGS_WARN_ON    = -W3
+ QMAKE_CFLAGS_WARN_OFF   = -W0
+-QMAKE_CFLAGS_RELEASE    = -O2 -MD
+-QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO += -O2 -MD -Zi
+-QMAKE_CFLAGS_DEBUG      = -Zi -MDd
++QMAKE_CFLAGS_RELEASE    = -O2 -MT
++QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO += -O2 -MT -Zi
++QMAKE_CFLAGS_DEBUG      = -Zi -MTd
+ QMAKE_CFLAGS_YACC       =
+ QMAKE_CFLAGS_LTCG       = -GL
 
-export QTCREATOR_SOURCE_PATH=~/Downloads/qt-creator-1.3.0/
-or
-set QTCREATOR_SOURCE_PATH=C:\Downloads\qt-creator-1.3.0\
-
-To build an installer, it is advised to use a statically linked Qt. The Creator plugin
-needs to be linked against a shared Qt, though.
-
-
-=== Static/Debug/Unix ===
-
-cd installer/kdtools/kdtools
-./configure.sh -static -debug
-make
-cd /path/to/installer
-./configure.sh -static -debug
-make
-
-== Static/Debug/Windows ==
-
-cd installer\kdtools\kdtools 
-configure.bat -static -debug
-nmake
-cd P:\ath\to\installer
-configure.bat -static -debug
-nmake
+Recommended configure options:
+configure.exe -debug -static -no-webkit -no-qt3support -no-dbus -no-multimedia -no-phonon -fast -no-opengl -exceptions -nomake demos -nomake examples -qt-sql-sqlite -plugin-sql-sqlite 
 
 == Create an Installer ==
 
@@ -66,20 +39,17 @@ To create an installer, use binarycreator:
  
 in windows;
 cd installerbuilder
-bin\binarycreator.exe -t bin\installerbase.exe -p ..\examples\packages -c ..\examples\config createdinstaller.exe com.nokia.sdk
+create-test-installer.bat
 
 in unix;
 cd installerbuilder
-bin/binarycreator -t bin/installerbase -p ../examples/packages -c ../examples/config createdinstaller com.nokia.sdk
+create-test-installer.sh
 
-This creates an installer "createdinstaller.exe" from the installerbase binary and the components required by the com.nokia.sdk package.
-
+This creates an installer "test-installer.exe"/"test-installer" from the installerbase binary and the components required by the com.nokia.testapp package(examples\testapp\packages\com.nokia.testapp).
 
 == Create an Archive ==
-
 To create an 7zip archive named qt-copy.7z that contains the directory qt-copy use:
 
 cd /path/where/qt-copy/is/located
 7z a -t7z -mx=9 -ms=off -l qt-copy.7z qt-copy
-
 

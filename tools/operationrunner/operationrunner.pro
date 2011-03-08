@@ -1,16 +1,16 @@
 TEMPLATE = app
 TARGET = operationrunner
-DEPENDPATH += . .. ../common
+DEPENDPATH += . .. ../../installerbuilder/common
 INCLUDEPATH += . ..
 
-DESTDIR = ../bin
+DESTDIR = ../../installerbuilder/bin
 
 CONFIG += console
 CONFIG -= app_bundle
 
 QT += xml
 
-include(../libinstaller/libinstaller.pri)
+include(../../installerbuilder/libinstaller/libinstaller.pri)
 
 # Input
 SOURCES += operationrunner.cpp

@@ -49,7 +49,7 @@ int main( int argc, char** argv ) {
     if ( ok )
         return num;
     if ( arg == QLatin1String("crash") ) {
-        std::cout << "Yeth, mather. I Crath." << std::endl;
+        std::cout << "Yeth, mather. I Crash." << std::endl;
         crash();
     }
     if ( arg == QLatin1String("--script") ) {

@@ -1,1 +1,1 @@
-./bin/binarycreator -t bin/installerbase -v -p ../examples/packages -c ../examples/config test-installer -e com.nokia.sdk.installerbase --offline-only com.nokia.sdk
+./bin/binarycreator -t bin/installerbase -v -p ../examples/testapp/packages -c ../examples/testapp/config test-installer --offline-only com.nokia.testapp
