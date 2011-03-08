@@ -63,11 +63,29 @@ public:
     Component( KDUpdater::Update* update, Installer* installer );
     ~Component();
 
-    struct PriorityLessThan
+    struct IsVirtual
     {
-        bool operator()( const Component* lhs, const Component* rhs )
+        bool operator() (const Component *comp) const
         {
-            return lhs->value( QLatin1String( "InstallPriority" ) ).toInt() < rhs->value( QLatin1String( "InstallPriority" ) ).toInt();
+            return comp->value(QLatin1String("Virtual"), QLatin1String("false")).toLower() == QLatin1String("true");
+        }
+    };
+
+    struct InstallPriorityLessThan
+    {
+        bool operator() (const Component *lhs, const Component *rhs)
+        {
+            const QLatin1String priority("InstallPriority");
+            return lhs->value(priority).toInt() < rhs->value(priority).toInt();
+        }
+    };
+
+    struct SortingPriorityLessThan
+    {
+        bool operator() (const Component *lhs, const Component *rhs) const
+        {
+            const QLatin1String priority("SortingPriority");
+            return lhs->value(priority).toInt() < rhs->value(priority).toInt();
         }
     };
 

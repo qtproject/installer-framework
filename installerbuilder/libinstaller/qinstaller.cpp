@@ -1064,7 +1064,7 @@ QList<Component*> Installer::componentsToInstall(bool recursive, bool sort, RunM
     QList<Component*> availableComponents = components(recursive, runMode);
     if (sort) {
         std::sort(availableComponents.begin(), availableComponents.end(),
-            Component::PriorityLessThan());
+            Component::InstallPriorityLessThan());
     }
 
     QList<Component*>::const_iterator it;

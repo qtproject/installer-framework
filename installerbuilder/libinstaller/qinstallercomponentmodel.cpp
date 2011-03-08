@@ -42,23 +42,6 @@
 
 using namespace QInstaller;
 
-struct ComponentIsVirtual
-{
-    bool operator() (const Component *comp) const
-    {
-        return comp->value(QLatin1String("Virtual"), QLatin1String("false")).toLower() == QLatin1String("true");
-    }
-};
-
-struct ComponentPriorityLessThan
-{
-    bool operator() (const Component *lhs, const Component *rhs) const
-    {
-        const QLatin1String priority("SortingPriority");
-        return lhs->value(priority).toInt() < rhs->value(priority).toInt();
-    }
-};
-
 bool checkCompleteUninstallation(const Component *component)
 {
     bool nonSelected = true;
@@ -193,12 +176,12 @@ QModelIndex ComponentModel::index(int row, int column, const QModelIndex &parent
 
     // don't count virtual components
     if (!virtualComponentsVisible() && m_runMode == InstallerMode) {
-        components.erase(std::remove_if(components.begin(), components.end(), ComponentIsVirtual()),
+        components.erase(std::remove_if(components.begin(), components.end(), Component::IsVirtual()),
             components.end());
     }
 
     // sort by priority
-    std::sort(components.begin(), components.end(), ComponentPriorityLessThan());
+    std::sort(components.begin(), components.end(), Component::SortingPriorityLessThan());
 
     Component *const component = components[row];
 
@@ -231,11 +214,11 @@ QModelIndex ComponentModel::parent(const QModelIndex &index) const
     // don't count virtual components
     if (!virtualComponentsVisible() && m_runMode == InstallerMode) {
         parentSiblings.erase(std::remove_if(parentSiblings.begin(), parentSiblings.end(),
-            ComponentIsVirtual()), parentSiblings.end());
+            Component::IsVirtual()), parentSiblings.end());
     }
 
     // sort by priority
-    std::sort(parentSiblings.begin(), parentSiblings.end(), ComponentPriorityLessThan());
+    std::sort(parentSiblings.begin(), parentSiblings.end(), Component::SortingPriorityLessThan());
 
     return createIndex(parentSiblings.indexOf(parentComponent), 0, parentComponent);
 }
@@ -262,7 +245,7 @@ int ComponentModel::rowCount(const QModelIndex &parent) const
 
     // don't count virtual components
     if (!virtualComponentsVisible() && m_runMode == InstallerMode) {
-        components.erase(std::remove_if (components.begin(), components.end(), ComponentIsVirtual()),
+        components.erase(std::remove_if (components.begin(), components.end(), Component::IsVirtual()),
             components.end());
     }
     return components.count();
@@ -384,7 +367,7 @@ Qt::CheckState QInstaller::componentCheckState(const Component *component, RunMo
     // TODO: check why we use the function from Component instead of QInstaller
     QList<Component*> children = component->components(true, runMode);
     // don't count virtual components
-    children.erase(std::remove_if(children.begin(), children.end(), ComponentIsVirtual()), children.end());
+    children.erase(std::remove_if(children.begin(), children.end(), Component::IsVirtual()), children.end());
 
     bool foundChecked = false;
     bool foundUnchecked = false;
