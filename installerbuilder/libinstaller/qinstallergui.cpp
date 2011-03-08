@@ -875,7 +875,7 @@ public:
         hlayout->addLayout(vlayout, 2);
 
         QVBoxLayout *layout = new QVBoxLayout(q);
-        layout->addLayout(hlayout);
+        layout->addLayout(hlayout, 1);
 
         QPushButton *button;
         hlayout = new QHBoxLayout;
