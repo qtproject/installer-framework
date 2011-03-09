@@ -8,7 +8,6 @@ To build an installer, it is advised to use a statically linked Qt.
 
 --- a/mkspecs/win32-msvc20XX/qmake.conf
 +++ b/mkspecs/win32-msvc20XX/qmake.conf
-@@ -6,7 +6,7 @@
  
  MAKEFILE_GENERATOR      = MSVC.NET
  TEMPLATE                = app
@@ -17,7 +16,7 @@ To build an installer, it is advised to use a statically linked Qt.
  QT                      += core gui
  DEFINES                 += UNICODE WIN32 QT_LARGEFILE_SUPPORT
  QMAKE_COMPILER_DEFINES  += _MSC_VER=1400 WIN32
-@@ -19,9 +19,9 @@ QMAKE_YACCFLAGS         = -d
+ QMAKE_YACCFLAGS         = -d
  QMAKE_CFLAGS            = -nologo -Zm200 -Zc:wchar_t-
  QMAKE_CFLAGS_WARN_ON    = -W3
  QMAKE_CFLAGS_WARN_OFF   = -W0
