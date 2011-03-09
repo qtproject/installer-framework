@@ -608,6 +608,12 @@ QWidget *Page::findWidget(const QString &objectName) const
     return findChild<QWidget *>(objectName);
 }
 
+/*!
+    \reimp
+    \Overwritten to support some kind of initializePage() in the case the wizard has been set
+    to QWizard::IndependentPages. If that option has been set, initializePage() would be only called
+    once. So we provide entering() and leaving() based on this overwritten function.
+*/
 void Page::setVisible(bool visible)
 {
     QWizardPage::setVisible(visible);
