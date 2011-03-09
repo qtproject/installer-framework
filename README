@@ -30,8 +30,11 @@ To build an installer, it is advised to use a statically linked Qt.
  QMAKE_CFLAGS_YACC       =
  QMAKE_CFLAGS_LTCG       = -GL
 
-Recommended configure options:
-configure.exe -debug -static -no-webkit -no-qt3support -no-dbus -no-multimedia -no-phonon -fast -no-opengl -exceptions -nomake demos -nomake examples -qt-sql-sqlite -plugin-sql-sqlite 
+Recommended configure options for windows:
+configure.exe -platform win32-msvc2005 -release -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-multimedia -no-declarative -no-declarative-debug -nomake examples -nomake demos -qt-sql-sqlite -plugin-sql-sqlite -opensource
+
+Recommended configure options for Linux:
+configure -release -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -nomake examples -nomake demos -qt-zlib -qt-gif -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg-no-xmlpatterns -no-svg
 
 == Create an Installer ==
 
