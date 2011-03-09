@@ -167,13 +167,13 @@ int main( int argc, char** argv ) {
         int argsPosition = 0;
         bool needPrintUsage = false;
         if (packagesDir.isEmpty()) {
-            std::cout << "- A stand alone package directory argument is deprecated. Please use the pre argument." << std::endl;
+            std::cout << "!!! A stand alone package directory argument is deprecated. Please use the pre argument." << std::endl;
             needPrintUsage |= true;
             packagesDir = makeAbsolute( args[argsPosition++] );
         }
 
         if (configDir.isEmpty()) {
-            std::cout << "- A stand alone config directory argument is deprecated. Please use the pre argument." << std::endl;
+            std::cout << "!!! A stand alone config directory argument is deprecated. Please use the pre argument." << std::endl;
             needPrintUsage |= true;
             configDir = makeAbsolute( args[argsPosition++] );
         }
