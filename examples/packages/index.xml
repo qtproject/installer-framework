@@ -1,9 +1,0 @@
-<Components>
-<Component>./qtcore</Component>
-<Component>./qtgui</Component>
-<Component>./qt</Component>
-<Component>./qtcreator</Component>
-<Component>./dbus4win</Component>
-<Component>./nokiasdk</Component>
-<Component>./python</Component>
-</Components>
