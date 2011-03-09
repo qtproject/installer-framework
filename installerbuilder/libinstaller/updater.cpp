@@ -39,6 +39,7 @@
 #include "init.h"
 #include "installationprogressdialog.h"
 #include "messageboxhandler.h"
+#include "qinstaller.h"
 #include "qinstallercomponent.h"
 #include "qinstallercomponentmodel.h"
 #include "updatesettings.h"

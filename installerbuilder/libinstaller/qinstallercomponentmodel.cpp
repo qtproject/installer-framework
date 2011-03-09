@@ -33,6 +33,7 @@
 #include "qinstallercomponentmodel.h"
 
 #include "common/utils.h"
+#include "qinstaller.h"
 #include "qinstallercomponent.h"
 #include "qinstallerglobal.h"
 
