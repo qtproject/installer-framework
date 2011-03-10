@@ -241,6 +241,8 @@ Q_SIGNALS:
     void startUpdaterComponentsReset();
     void finishUpdaterComponentsReset();
 
+    void cancelUpdaterInfoJob();
+    void updaterInfoMessage(KDJob* job, const QString &message);
 
     void installationStarted();
     void installationInterrupted();

@@ -444,10 +444,8 @@ int TabController::initUpdater()
 
     connect(d->m_installer, SIGNAL(updaterInfoMessage(KDJob*, QString)), introPage,
         SLOT(message(KDJob*, QString)));
-
-    // TODO: find a way to be able to cancel the meta info job
-    //d->m_gui->connect(d->m_gui, SIGNAL(rejected()), &metaInfoJob, SLOT(doCancel()),
-    //    Qt::QueuedConnection);
+    d->m_gui->connect(d->m_gui, SIGNAL(rejected()), d->m_installer, SIGNAL(cancelUpdaterInfoJob()),
+        Qt::QueuedConnection);
 
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();

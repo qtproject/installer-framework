@@ -642,6 +642,11 @@ bool Installer::fetchUpdaterPackages()
     GetRepositoriesMetaInfoJob metaInfoJob(settings.publicKey(), true);
     metaInfoJob.setRepositories(settings.repositories());
 
+    connect(&metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this,
+        SIGNAL(updaterInfoMessage(KDJob*, QString)));
+    connect(this, SIGNAL(cancelUpdaterInfoJob()), &metaInfoJob, SLOT(doCancel()),
+        Qt::QueuedConnection);
+
     try {
         metaInfoJob.setAutoDelete(false);
         metaInfoJob.start();
