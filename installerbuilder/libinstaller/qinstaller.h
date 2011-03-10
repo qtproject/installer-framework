@@ -82,7 +82,7 @@ public:
             = QVector< KDUpdater::UpdateOperation*>());
     ~Installer();
 
-    bool fetchUpdaterComponents();
+    bool fetchUpdaterPackages();
 
     bool run();
     void reset(const QHash<QString, QString> &params);

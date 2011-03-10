@@ -633,13 +633,14 @@ Installer::~Installer()
     delete d;
 }
 
-bool Installer::fetchUpdaterComponents()
+bool Installer::fetchUpdaterPackages()
 {
     if (!isUpdater())
         return false;
 
-    GetRepositoriesMetaInfoJob metaInfoJob(settings().publicKey(), true);
-    metaInfoJob.setRepositories(settings().repositories());
+    const QInstaller::InstallerSettings &settings = *d->m_installerSettings;
+    GetRepositoriesMetaInfoJob metaInfoJob(settings.publicKey(), true);
+    metaInfoJob.setRepositories(settings.repositories());
 
     try {
         metaInfoJob.setAutoDelete(false);
@@ -656,13 +657,12 @@ bool Installer::fetchUpdaterComponents()
     }
 
     KDUpdater::Application &updaterApp = *d->m_app;
+    const QString &appName = settings.applicationName();
     const QStringList tempDirs = metaInfoJob.temporaryDirectories();
     foreach (const QString &tmpDir, tempDirs) {
         if (tmpDir.isEmpty())
             continue;
-
-        const QString &name = settings().applicationName();
-        updaterApp.addUpdateSource(name, name, QString(), QUrl::fromLocalFile(tmpDir), 1);
+        updaterApp.addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
     }
 
     if (updaterApp.updateSourcesInfo()->updateSourceInfoCount() == 0) {
@@ -690,6 +690,15 @@ bool Installer::fetchUpdaterComponents()
     QMap<QInstaller::Component*, QString> scripts;
     QMap<QString, QInstaller::Component*> components;
 
+    KDUpdater::PackagesInfo &packagesInfo = *updaterApp.packagesInfo();
+    if (!setAndParseLocalComponentsFile(packagesInfo)) {
+        verbose() << tr("Could not parse local components xml file: %1")
+            .arg(d->localComponentsXmlPath());
+        return false;
+    }
+    packagesInfo.setApplicationName(appName);
+    packagesInfo.setApplicationVersion(settings.applicationVersion());
+
     foreach (KDUpdater::Update * const update, updates) {
         const QString isNew = update->data(QLatin1String("NewComponent")).toString();
         if (isNew.toLower() != QLatin1String("true"))
@@ -703,12 +712,12 @@ bool Installer::fetchUpdaterComponents()
         }
 
         QString state = QLatin1String("Uninstalled");
-        const int indexOfPackage = updaterApp.packagesInfo()->findPackageInfo(name);
+        const int indexOfPackage = packagesInfo.findPackageInfo(name);
         if (indexOfPackage > -1) {
             state = QLatin1String("Installed");
 
             const QString updateVersion = update->data(QLatin1String("Version")).toString();
-            const QString pkgVersion = updaterApp.packagesInfo()->packageInfo(indexOfPackage).version;
+            const QString pkgVersion = packagesInfo.packageInfo(indexOfPackage).version;
             if (KDUpdater::compareVersion(updateVersion, pkgVersion) <= 0)
                 continue;
 
@@ -716,7 +725,7 @@ bool Installer::fetchUpdaterComponents()
             // update date of the package and the release date of the update. This way we can compare and
             // figure out if the update has been installed or not.
             const QDate updateDate = update->data(QLatin1String("ReleaseDate")).toDate();
-            const QDate pkgDate = updaterApp.packagesInfo()->packageInfo(indexOfPackage).lastUpdateDate;
+            const QDate pkgDate = packagesInfo.packageInfo(indexOfPackage).lastUpdateDate;
             if (pkgDate > updateDate)
                 continue;
         }
@@ -728,7 +737,7 @@ bool Installer::fetchUpdaterComponents()
 
         if (indexOfPackage > -1) {
             component->setValue(QLatin1String("InstalledVersion"),
-                updaterApp.packagesInfo()->packageInfo(indexOfPackage).version);
+                packagesInfo.packageInfo(indexOfPackage).version);
         }
 
         const QString localPath = QInstaller::pathFromUrl(update->sourceInfo().url);

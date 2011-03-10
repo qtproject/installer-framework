@@ -430,25 +430,40 @@ void TabController::canceled()
 
 int TabController::initUpdater()
 {
+    using namespace QInstaller;
+
     if (d->m_updaterInitialized)
         return INST_SUCCESS;
 
-    if (d->m_repoUpdateNeeded) {
-        int result = checkRepositories();
-        if (result != INST_SUCCESS && d->m_repoReached)
-            return result;
-    }
     d->m_updaterInitialized = true;
+
+    IntroductionPageImpl *introPage =
+        qobject_cast<IntroductionPageImpl*>(d->m_gui->page(Installer::Introduction));
+    introPage->showAll();
+    introPage->setComplete(false);
+
+    connect(d->m_installer, SIGNAL(updaterInfoMessage(KDJob*, QString)), introPage,
+        SLOT(message(KDJob*, QString)));
+
+    // TODO: find a way to be able to cancel the meta info job
+    //d->m_gui->connect(d->m_gui, SIGNAL(rejected()), &metaInfoJob, SLOT(doCancel()),
+    //    Qt::QueuedConnection);
+
+    d->m_gui->setWindowModality(Qt::WindowModal);
+    d->m_gui->show();
+
+    d->m_installer->setLinearComponentList(true);
+    if (!d->m_installer->fetchUpdaterPackages())
+        return INST_FAILED;
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
     // hide of pages depenging on the components.
     d->m_gui->init();
-
-    using namespace QInstaller;
-    qobject_cast<IntroductionPage*>(d->m_gui->page(Installer::Introduction))->setComplete(true);
-
     d->m_gui->callControlScriptMethod(QLatin1String("UpdaterSelectedCallback"));
     d->m_gui->triggerControlScriptForCurrentPage();
+
+    introPage->setComplete(true);
+    introPage->showMaintenanceTools();
 
     return INST_SUCCESS;
 }
