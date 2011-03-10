@@ -813,7 +813,7 @@ bool Installer::fetchUpdaterPackages()
 
     emit finishUpdaterComponentsReset();
 
-    return !d->m_updaterComponents.isEmpty();
+    return true;
 }
 
 /*!
