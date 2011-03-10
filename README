@@ -8,7 +8,6 @@ To build an installer, it is advised to use a statically linked Qt.
 
 --- a/mkspecs/win32-msvc20XX/qmake.conf
 +++ b/mkspecs/win32-msvc20XX/qmake.conf
-@@ -6,7 +6,7 @@
  
  MAKEFILE_GENERATOR      = MSVC.NET
  TEMPLATE                = app
@@ -17,7 +16,7 @@ To build an installer, it is advised to use a statically linked Qt.
  QT                      += core gui
  DEFINES                 += UNICODE WIN32 QT_LARGEFILE_SUPPORT
  QMAKE_COMPILER_DEFINES  += _MSC_VER=1400 WIN32
-@@ -19,9 +19,9 @@ QMAKE_YACCFLAGS         = -d
+ QMAKE_YACCFLAGS         = -d
  QMAKE_CFLAGS            = -nologo -Zm200 -Zc:wchar_t-
  QMAKE_CFLAGS_WARN_ON    = -W3
  QMAKE_CFLAGS_WARN_OFF   = -W0
@@ -30,9 +29,12 @@ To build an installer, it is advised to use a statically linked Qt.
  QMAKE_CFLAGS_YACC       =
  QMAKE_CFLAGS_LTCG       = -GL
 
-Recommended configure options:
-configure.exe -debug -static -no-webkit -no-qt3support -no-dbus -no-multimedia -no-phonon -fast -no-opengl -exceptions -nomake demos -nomake examples -qt-sql-sqlite -plugin-sql-sqlite 
+Recommended configure options for windows:
+configure.exe -platform win32-msvc20XX -release -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -no-svg -no-multimedia -no-declarative -no-declarative-debug -nomake examples -nomake demos -qt-sql-sqlite -plugin-sql-sqlite -opensource
 
+Recommended configure options for Linux:
+configure -nomake examples -nomake demos -qt-zlib -qt-gif -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -opensource -developer-build -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -no-svg -release
+ 
 == Create an Installer ==
 
 To create an installer, use binarycreator:
