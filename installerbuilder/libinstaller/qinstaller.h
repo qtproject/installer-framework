@@ -82,6 +82,8 @@ public:
             = QVector< KDUpdater::UpdateOperation*>());
     ~Installer();
 
+    bool fetchUpdaterComponents();
+
     bool run();
     void reset(const QHash<QString, QString> &params);
 
@@ -235,6 +237,9 @@ Q_SIGNALS:
     void statusChanged(QInstaller::Installer::Status);
     void currentPageChanged(int page);
     void finishButtonClicked();
+
+    void startUpdaterComponentsReset();
+    void finishUpdaterComponentsReset();
 
 
     void installationStarted();
