@@ -63,7 +63,6 @@ class INSTALLER_EXPORT Component : public QObject, public QScriptable
 public:
     enum SelectMode{NormalSelectMode, InitializeComponentTreeSelectMode};
     explicit Component( Installer *installer );
-    Component( KDUpdater::Update* update, Installer* installer );
     ~Component();
 
     void loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo);

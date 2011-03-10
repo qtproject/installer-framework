@@ -217,22 +217,6 @@ Component::Component(Installer *installer)
     d->init();
 }
 
-Component::Component( KDUpdater::Update* update, Installer* installer )
-  : d( new Private( installer, this ) ) {
-    Q_ASSERT( update );
-    d->init();
-    setValue( QLatin1String( "Name" ), update->data( QLatin1String( "Name" ) ).toString() );
-    setValue( QLatin1String( "DisplayName" ), update->data( QLatin1String( "DisplayName" ) ).toString() );
-    setValue( QLatin1String( "Description" ), update->data( QLatin1String( "Description" ) ).toString() );
-    setValue( QLatin1String( "UncompressedSize" ), QString::number( update->uncompressedSize() ) );
-    setValue( QLatin1String( "Version" ), update->data( QLatin1String( "Version" ) ).toString() );
-    setValue( QLatin1String( "Dependencies" ), update->data( QLatin1String( "Dependencies" ) ).toString() );
-    setValue( QLatin1String( "Virtual" ), update->data( QLatin1String( "Virtual" ) ).toString() );
-    setValue( QLatin1String( "SortingPriority" ), update->data( QLatin1String( "SortingPriority" ) ).toString() );
-    setValue( QLatin1String( "InstallPriority" ), update->data( QLatin1String( "InstallPriority" ) ).toString() );
-    setValue( QLatin1String( "AutoSelectOn" ), update->data( QLatin1String( "AutoSelectOn" ) ).toString() );
-}
-
 /*!
  Destroys the Component.
 */
