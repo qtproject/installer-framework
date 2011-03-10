@@ -37,6 +37,7 @@ class QDir;
 namespace KDUpdater {
     class Update;
     class UpdateOperation;
+    struct PackageInfo;
 }
 
 namespace QInstaller {
@@ -64,6 +65,10 @@ public:
     explicit Component( Installer *installer );
     Component( KDUpdater::Update* update, Installer* installer );
     ~Component();
+
+    void loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo);
+    void loadDataFromUpdate(KDUpdater::Update* update);
+    void updateState(const bool selected);
 
     struct PriorityLessThan
     {
