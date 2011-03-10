@@ -30,8 +30,6 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include "qinstaller.h"
-
 #include "common/binaryformat.h"
 #include "common/errors.h"
 #include "common/fileutils.h"
@@ -46,6 +44,8 @@
 #include "qinstallergui.h"
 #include "tabcontroller.h"
 #include "updater.h"
+
+#include <qinstaller.h>
 
 #include <QtCore/QTranslator>
 #include <QtCore/QThread>
@@ -225,9 +225,9 @@ int main(int argc, char *argv[])
                 if (i < args.size()) {
                     controlScript = args.at(i);
                     if (!QFileInfo(controlScript).exists())
-                        return INST_FAILED;
+                        return Installer::Failure;
                 } else {
-                    return INST_FAILED;
+                    return Installer::Failure;
                 }
              } else if (argument == QLatin1String("--verbose") || argument == QLatin1String("Verbose")) {
                 installer.setVerbose(true);
@@ -246,13 +246,13 @@ int main(int argc, char *argv[])
                 || argument == QLatin1String("ManagePackages")) && installer.isUninstaller()) {
                     installer.setPackageManager();
             } else if (argument == QLatin1String("--help") || argument == QLatin1String("-h")) {
-                return INST_SUCCESS;
+                return Installer::Success;
             } else if (argument == QLatin1String("--addTempRepository")
                 || argument == QLatin1String("--setTempRepository")) {
                     ++i;
                     if (i >= args.size()) {
                         std::cerr << "No repository specified" << std::endl;
-                        return INST_FAILED;
+                        return Installer::Failure;
                     }
 
                     QList<Repository> repoList;
@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
                     installer.setTemporaryRepositories(repoList, replace);
             } else {
                 std::cerr << "Unknown option: " << argument << std::endl;
-                return INST_FAILED;
+                return Installer::Failure;
             }
         }
 
@@ -308,7 +308,7 @@ int main(int argc, char *argv[])
         }
 
         int val = controller.init();
-        if (val != TabController::SUCCESS)
+        if (val != Installer::Success)
             return val;
 
         const int result = app.exec();
@@ -316,29 +316,28 @@ int main(int argc, char *argv[])
             return result;
 
         if (installer.finishedWithSuccess())
-            return INST_SUCCESS;
+            return Installer::Success;
 
-        const int status = installer.status();
-        const TabController::Status controllerState = controller.getState();
+        const Installer::Status status = installer.status();
+        const Installer::Status controllerState = Installer::Status(controller.status());
 
-        Q_ASSERT(status == Installer::InstallerFailed || status == Installer::InstallerSucceeded
-            || status == Installer::InstallerCanceledByUser);
+        Q_ASSERT(status == Installer::Failure || status == Installer::Success
+            || status == Installer::Canceled);
 
-        if (controllerState == TabController::SUCCESS)
-            return INST_SUCCESS;
+        if (controllerState == Installer::Success)
+            return Installer::Success;
 
         switch (status) {
-            case Installer::InstallerSucceeded:
-                return INST_SUCCESS;
+            case Installer::Success:
+                return status;
 
-            case Installer::InstallerCanceledByUser:
-                return INST_CANCELED;
+            case Installer::Canceled:
+                return status;
 
-            case Installer::InstallerFailed:
             default:
                 break;
         }
-        return INST_FAILED;
+        return Installer::Failure;
     } catch(const Error &e) {
         std::cerr << qPrintable(e.message()) << std::endl;
     } catch (const std::exception &e) {
@@ -347,5 +346,5 @@ int main(int argc, char *argv[])
          std::cerr << "Unknown error, aborting." << std::endl;
     }
 
-    return INST_FAILED;
+    return Installer::Failure;
 }

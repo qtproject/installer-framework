@@ -182,7 +182,7 @@ InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMa
     , m_tempDirDeleter(new TempDirDeleter())
     , m_installerSettings(0)
     , m_FSEngineClientHandler(createEngineClientHandler())
-    , m_status(Installer::InstallerUnfinished)
+    , m_status(Installer::Unfinished)
     , m_forceRestart(false)
     , m_silentRetries(3)
     , m_testChecksum(false)
@@ -372,8 +372,8 @@ bool InstallerPrivate::isPackageManager() const
 
 bool InstallerPrivate::statusCanceledOrFailed() const
 {
-    return m_status == Installer::InstallerCanceledByUser
-        || m_status == Installer::InstallerFailed;
+    return m_status == Installer::Canceled
+        || m_status == Installer::Failure;
 }
 
 void InstallerPrivate::setStatus(int status)
@@ -881,7 +881,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
             KDSelfRestarter::setRestartOnQuit(true);
 #endif
     } catch (const Error &err) {
-        setStatus(Installer::InstallerFailed);
+        setStatus(Installer::Failure);
         if (gainedAdminRights)
             q->dropAdminRights();
         m_needToWriteUninstaller = false;
@@ -946,7 +946,7 @@ void InstallerPrivate::unregisterUninstaller()
 void InstallerPrivate::runInstaller()
 {
     try {
-        setStatus(Installer::InstallerRunning);
+        setStatus(Installer::Running);
         emit installationStarted(); //resets also the ProgressCoordninator
 
         //to have some progress for writeUninstaller
@@ -1038,7 +1038,7 @@ void InstallerPrivate::runInstaller()
         //this is the reserved one from the beginning
         ProgressCoordninator::instance()->addManualPercentagePoints(1);
 
-        setStatus(Installer::InstallerSucceeded);
+        setStatus(Installer::Success);
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
 
         emit installationFinished();
@@ -1046,8 +1046,8 @@ void InstallerPrivate::runInstaller()
         // disable the FSEngineClientHandler afterwards
         m_FSEngineClientHandler->setActive(false);
     } catch (const Error &err) {
-        if (q->status() != Installer::InstallerCanceledByUser) {
-            setStatus(Installer::InstallerFailed);
+        if (q->status() != Installer::Canceled) {
+            setStatus(Installer::Failure);
             verbose() << "INSTALLER FAILED: " << err.message() << std::endl;
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
@@ -1141,7 +1141,7 @@ void InstallerPrivate::runPackageUpdater()
             return;
         }
 
-        setStatus(Installer::InstallerRunning);
+        setStatus(Installer::Running);
         emit installationStarted(); //resets also the ProgressCoordninator
 
         //to have some progress for the cleanup/write component.xml step
@@ -1239,7 +1239,7 @@ void InstallerPrivate::runPackageUpdater()
             performOperationThreaded(currentOperation, Undo);
             bool ok = currentOperation->error() == KDUpdater::UpdateOperation::NoError
                 || componentName == QLatin1String("");
-            while (!ok && !ignoreError && q->status() != Installer::InstallerCanceledByUser) {
+            while (!ok && !ignoreError && q->status() != Installer::Canceled) {
                 verbose() << QString(QLatin1String("operation '%1' with arguments: '%2' failed: %3"))
                     .arg(currentOperation->name(), currentOperation->arguments()
                     .join(QLatin1String("; ")), currentOperation->errorString()) << std::endl;;
@@ -1305,15 +1305,15 @@ void InstallerPrivate::runPackageUpdater()
         //this is the reserved one from the beginning
         ProgressCoordninator::instance()->addManualPercentagePoints(1);
 
-        setStatus(Installer::InstallerSucceeded);
+        setStatus(Installer::Success);
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
         emit installationFinished();
 
         // disable the FSEngineClientHandler afterwards
         m_FSEngineClientHandler->setActive(false);
     } catch(const Error &err) {
-        if (q->status() != Installer::InstallerCanceledByUser) {
-            setStatus(Installer::InstallerFailed);
+        if (q->status() != Installer::Canceled) {
+            setStatus(Installer::Failure);
             verbose() << "INSTALLER FAILED: " << err.message() << std::endl;
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
@@ -1390,7 +1390,7 @@ void InstallerPrivate::runUninstaller()
             performOperationThreaded(currentOperation, Undo);
             bool ok = currentOperation->error() == KDUpdater::UpdateOperation::NoError
                 || componentName == QLatin1String("");
-            while (!ok && !ignoreError && q->status() != Installer::InstallerCanceledByUser) {
+            while (!ok && !ignoreError && q->status() != Installer::Canceled) {
                 verbose() << QString(QLatin1String("operation '%1' with arguments: '%2' failed: %3"))
                     .arg(currentOperation->name(), currentOperation->arguments()
                     .join(QLatin1String("; ")), currentOperation->errorString()) << std::endl;;
@@ -1471,13 +1471,13 @@ void InstallerPrivate::runUninstaller()
             writeUninstaller(nonRevertedOperations);
         }
 
-        setStatus(Installer::InstallerSucceeded);
+        setStatus(Installer::Success);
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation finished"));
 
         m_FSEngineClientHandler->setActive(false);
     } catch (const Error &err) {
-        if (q->status() != Installer::InstallerCanceledByUser) {
-            setStatus(Installer::InstallerFailed);
+        if (q->status() != Installer::Canceled) {
+            setStatus(Installer::Failure);
             verbose() << "INSTALLER FAILED: " << err.message() << std::endl;
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());

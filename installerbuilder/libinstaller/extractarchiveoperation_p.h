@@ -83,15 +83,15 @@ public Q_SLOTS:
     void statusChanged( QInstaller::Installer::Status status )
     {
         switch( status ) {
-            case Installer::InstallerCanceledByUser:
+            case Installer::Canceled:
                 state = E_ABORT;
                 break;
-            case Installer::InstallerFailed:
+            case Installer::Failure:
                 state = E_FAIL;
                 break;
-            case Installer::InstallerUnfinished: // fall through
-            case Installer::InstallerSucceeded:
-            case Installer::InstallerRunning:
+            case Installer::Unfinished: // fall through
+            case Installer::Success:
+            case Installer::Running:
                 //state = S_OK;
                 break;
         }

@@ -179,7 +179,7 @@ bool InstallIconsOperation::performOperation()
         qApp->processEvents();
 
         const int status = installer->status();
-        if( status == Installer::InstallerCanceledByUser || status == Installer::InstallerFailed )
+        if( status == Installer::Canceled || status == Installer::Failure )
             return true;
  
         const QString source = it.next();

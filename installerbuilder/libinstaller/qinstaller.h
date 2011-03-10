@@ -74,7 +74,7 @@ class INSTALLER_EXPORT Installer : public QObject
     Q_OBJECT
 
     Q_ENUMS(Status WizardPage)
-    Q_PROPERTY(int status READ status NOTIFY statusChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
 public:
     explicit Installer(qint64 magicmaker = 0,
@@ -179,13 +179,13 @@ public:
 
     // status
     enum Status {
-        InstallerUnfinished,
-        InstallerCanceledByUser,
-        InstallerRunning,
-        InstallerFailed,
-        InstallerSucceeded,
+        Success = EXIT_SUCCESS,
+        Failure = EXIT_FAILURE,
+        Running,
+        Canceled,
+        Unfinished
     };
-    int status() const;
+    Status status() const;
 
     enum WizardPage {
         Introduction = 0x1000,

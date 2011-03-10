@@ -145,7 +145,7 @@ bool Updater::checkForUpdates(bool checkonly)
 
         settings->setLastCheck(QDateTime::currentDateTime());
         installer.setRemoteRepositories(settings->repositories());
-        if (installer.status() == QInstaller::Installer::InstallerFailed)
+        if (installer.status() == QInstaller::Installer::Failure)
             return false;
         installer.setValue(QLatin1String("TargetDir"),
             QFileInfo(updaterapp.packagesInfo()->fileName()).absolutePath());
@@ -210,7 +210,7 @@ bool Updater::checkForUpdates(bool checkonly)
         loop.exec();
     } catch (const Error& error) {
         //if the user clicked the confirm cancel dialog he don't want to see another messagebox
-        if (installer.status() != Installer::InstallerCanceledByUser) {
+        if (installer.status() != Installer::Canceled) {
             QMessageBox::critical(dialog.data(), tr("Check for Updates"),
                 tr("Error while installing updates:\n%1").arg(QString::fromStdString(error.what())));
         }
@@ -260,7 +260,7 @@ bool Updater::update()
         loop.exec();
     } catch (const Error& error) {
         //if the user clicked the confirm cancel dialog he don't want to see another messagebox
-        if (d->installer_shared->status() != Installer::InstallerCanceledByUser) {
+        if (d->installer_shared->status() != Installer::Canceled) {
             MessageBoxHandler::critical(d->dialog, QLatin1String("updaterCriticalInstallError"),
                 tr("Check for Updates"), tr("Error while installing updates:\n%1").arg(error.message()));
         }

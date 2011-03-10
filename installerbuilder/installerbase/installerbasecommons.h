@@ -121,9 +121,4 @@ public:
     virtual int nextId() const;
 };
 
-
-const int INST_SUCCESS = 0;
-const int INST_FAILED = 1;
-const int INST_CANCELED = 2;
-
 #endif // INSTALLERBASECOMMONS_H

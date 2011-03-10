@@ -30,8 +30,8 @@
 #include <QtCore/QObject>
 
 namespace QInstaller {
-    class Installer;
     class Gui;
+    class Installer;
 }
 
 namespace KDUpdater {
@@ -51,12 +51,6 @@ public:
         PACKAGE_MANAGER_TAB
     };
 
-    enum Status {
-        SUCCESS = 0,
-        CANCELED = 1,
-        FAILED = 2
-    };
-
     explicit TabController(QObject *parent = 0);
     ~TabController();
 
@@ -68,7 +62,7 @@ public:
     void setInstallerGui(QInstaller::Gui *gui);
     void setControlScript(const QString &script);
     void setInstallerParams(const QHash<QString, QString> &params);
-    Status getState() const;
+    int status() const;
     Q_INVOKABLE void setCurrentTab(int tab);
 
 private Q_SLOTS:

@@ -256,7 +256,7 @@ void Installer::reset(const QHash<QString, QString> &params)
 {
     d->m_completeUninstall = false;
     d->m_forceRestart = false;
-    d->m_status = Installer::InstallerUnfinished;
+    d->m_status = Installer::Unfinished;
     d->m_installerBaseBinaryUnreplaced.clear();
     d->m_vars.clear();
     d->m_vars = params;
@@ -292,7 +292,7 @@ void Installer::setMessageBoxAutomaticAnswer(const QString &identifier, int butt
 
 void Installer::installSelectedComponents()
 {
-    d->setStatus(InstallerRunning);
+    d->setStatus(Installer::Running);
     // download
 
     double downloadPartProgressSize = double(1)/3;
@@ -342,7 +342,7 @@ void Installer::installSelectedComponents()
         d->m_needToWriteUninstaller = true;
     }
 
-    d->setStatus(InstallerSucceeded);
+    d->setStatus(Installer::Success);
     ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate finished!"));
     emit updateFinished();
 }
@@ -452,7 +452,7 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
 {
     Q_ASSERT(progressOperationSize);
 
-    d->setStatus(InstallerRunning);
+    d->setStatus(Installer::Running);
     const QList<KDUpdater::UpdateOperation*> operations = comp->operations();
 
     // show only component which are doing something, MinimumProgress is only for progress
@@ -486,7 +486,7 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
 
         bool ignoreError = false;
         bool ok = InstallerPrivate::performOperationThreaded(operation);
-        while (!ok && !ignoreError && status() != InstallerCanceledByUser) {
+        while (!ok && !ignoreError && status() != Installer::Canceled) {
             verbose() << QString(QLatin1String("operation '%1' with arguments: '%2' failed: %3"))
                 .arg(operation->name(), operation->arguments().join(QLatin1String("; ")),
                 operation->errorString()) << std::endl;;
@@ -622,7 +622,7 @@ Installer::Installer(qint64 magicmaker,
 
 Installer::~Installer()
 {
-    if (!isUninstaller() && !(isInstaller() && status() == InstallerCanceledByUser)) {
+    if (!isUninstaller() && !(isInstaller() && status() == Installer::Canceled)) {
         QDir targetDir(value(QLatin1String("TargetDir")));
         QString logFileName = targetDir.absoluteFilePath(value(QLatin1String("LogFileName"),
             QLatin1String("InstallationLog.txt")));
@@ -1681,9 +1681,9 @@ void Installer::setVerbose(bool on)
     QInstaller::setVerbose(on);
 }
 
-int Installer::status() const
+Installer::Status Installer::status() const
 {
-    return d->m_status;
+    return Installer::Status(d->m_status);
 }
 /*!
     returns true if at least one complete installation/update
@@ -1692,19 +1692,19 @@ int Installer::status() const
 */
 bool Installer::finishedWithSuccess() const
 {
-    return (d->m_status == InstallerSucceeded) || d->m_needToWriteUninstaller;
+    return (d->m_status == Installer::Success) || d->m_needToWriteUninstaller;
 }
 
 void Installer::interrupt()
 {
     verbose() << "INTERRUPT INSTALLER" << std::endl;
-    d->setStatus(InstallerCanceledByUser);
+    d->setStatus(Installer::Canceled);
     emit installationInterrupted();
 }
 
 void Installer::setCanceled()
 {
-    d->setStatus(InstallerCanceledByUser);
+    d->setStatus(Installer::Canceled);
 }
 
 /*!
@@ -1895,7 +1895,7 @@ bool Installer::setAndParseLocalComponentsFile(KDUpdater::PackagesInfo &packages
             --silentRetries;
         } else {
             Status status = handleComponentsFileSetOrParseError(localComponentsXml);
-            if (status == InstallerCanceledByUser)
+            if (status == Installer::Canceled)
                 return false;
         }
         packagesInfo.setFileName(localComponentsXml);
@@ -1907,7 +1907,7 @@ bool Installer::setAndParseLocalComponentsFile(KDUpdater::PackagesInfo &packages
             --silentRetries;
         } else {
             Status status = handleComponentsFileSetOrParseError(localComponentsXml);
-            if (status == InstallerCanceledByUser)
+            if (status == Installer::Canceled)
                 return false;
         }
         packagesInfo.setFileName(localComponentsXml);
@@ -1925,7 +1925,7 @@ bool Installer::setAndParseLocalComponentsFile(KDUpdater::PackagesInfo &packages
             }
             Status status = handleComponentsFileSetOrParseError(componentFileInfo.fileName(),
                 packagesInfo.errorString(), retry);
-            if (status == InstallerCanceledByUser)
+            if (status == Installer::Canceled)
                 return false;
         }
         packagesInfo.setFileName(localComponentsXml);
@@ -1948,8 +1948,8 @@ Installer::Status Installer::handleComponentsFileSetOrParseError(const QString &
         buttons);
 
     if (button == QMessageBox::Cancel) {
-        d->m_status = InstallerFailed;
-        return InstallerCanceledByUser;
+        d->m_status = Installer::Failure;
+        return Installer::Canceled;
     }
-    return InstallerUnfinished;
+    return Installer::Unfinished;
 }

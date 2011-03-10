@@ -80,7 +80,7 @@ public:
     QString m_controlScript;
     int m_Tab_Pos_Updater;
     int m_Tab_Pos_PackageManager;
-    TabController::Status m_state;
+    QInstaller::Installer::Status m_state;
     bool m_repoReached;
     bool m_repoUpdateNeeded;
 };
@@ -96,7 +96,7 @@ TabController::Private::Private()
     m_app(0),
     m_Tab_Pos_Updater(0),
     m_Tab_Pos_PackageManager(0),
-    m_state(SUCCESS),
+    m_state(QInstaller::Installer::Success),
     m_repoReached(true),
     m_repoUpdateNeeded(true)
 {
@@ -262,7 +262,7 @@ void TabController::finished()
 void TabController::updaterFinishedWithError()
 {
     d->m_installer->writeUninstaller();
-    d->m_state = CANCELED;
+    d->m_state = QInstaller::Installer::Canceled;
 
     if (!d->m_installer->isInstaller() && !d->m_gui.isNull())
         d->m_gui->rejectWithoutPrompt();
@@ -270,7 +270,7 @@ void TabController::updaterFinishedWithError()
     finished();
 }
 
-TabController::Status TabController::getState() const
+int TabController::status() const
 {
     return d->m_state;
 }
@@ -315,14 +315,14 @@ int TabController::checkRepositories()
     }
 
     if (metaInfoJob.isCanceled() || metaInfoJob.error() == KDJob::Canceled)
-        return INST_CANCELED;
+        return QInstaller::Installer::Canceled;
 
     if (metaInfoJob.error() == GetRepositoriesMetaInfoJob::UserIgnoreError) {
         d->m_repoReached = false;
     } else if (metaInfoJob.error() != KDJob::NoError) {
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
             QLatin1String("metaInfoJobError"), QObject::tr("Error"), metaInfoJob.errorString());
-        return INST_FAILED;
+        return QInstaller::Installer::Failure;
     }
 
     const QInstaller::TempDirDeleter tempDirDeleter(metaInfoJob.releaseTemporaryDirectories());
@@ -340,7 +340,7 @@ int TabController::checkRepositories()
         } catch(const Error &e) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("Open error"), tr("Error parsing Updates.xml"), e.message());
-            return INST_FAILED;
+            return QInstaller::Installer::Failure;
         }
 
         verbose() << "Path to Update.xml " << qPrintable(updatesXmlPath) << std::endl;
@@ -354,7 +354,7 @@ int TabController::checkRepositories()
                 QLatin1String("parseError"), tr("Error parsing Updates.xml"),
                 tr("Parse error in File %4 : %1 at line %2 col %3").arg(err, QString::number(line),
                 QString::number(col), updatesFile.fileName()));
-            return INST_FAILED;
+            return QInstaller::Installer::Failure;
         }
 
         const QDomNode checksum = doc.documentElement().firstChildElement(QLatin1String("Checksum"));
@@ -388,8 +388,8 @@ int TabController::checkRepositories()
             QLatin1String("createComponentsError"), QObject::tr("Error"), e.message());
     }
 
-    if (d->m_installer->status() == QInstaller::Installer::InstallerFailed)
-        return INST_FAILED;
+    if (d->m_installer->status() == QInstaller::Installer::Failure)
+        return QInstaller::Installer::Failure;
 
     // we need at least one component else the installer makes no
     // sense cause nothing can be installed.
@@ -402,7 +402,7 @@ int TabController::checkRepositories()
     else
         introPage->hideAll();
 
-    return INST_SUCCESS;
+    return QInstaller::Installer::Success;
 }
 
 void TabController::updaterFinished(bool error)
@@ -433,7 +433,7 @@ int TabController::initUpdater()
     using namespace QInstaller;
 
     if (d->m_updaterInitialized)
-        return INST_SUCCESS;
+        return QInstaller::Installer::Success;
 
     d->m_updaterInitialized = true;
 
@@ -454,7 +454,7 @@ int TabController::initUpdater()
 
     d->m_installer->setLinearComponentList(true);
     if (!d->m_installer->fetchUpdaterPackages())
-        return INST_FAILED;
+        return QInstaller::Installer::Failure;
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
     // hide of pages depenging on the components.
@@ -465,7 +465,7 @@ int TabController::initUpdater()
     introPage->setComplete(true);
     introPage->showMaintenanceTools();
 
-    return INST_SUCCESS;
+    return QInstaller::Installer::Success;
 }
 
 int TabController::initUninstaller()
@@ -478,13 +478,13 @@ int TabController::initUninstaller()
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 
-    return INST_SUCCESS;
+    return QInstaller::Installer::Success;
 }
 
 int TabController::initPackageManager()
 {
     if (d->m_packageManagerInitialized)
-        return INST_SUCCESS;
+        return QInstaller::Installer::Success;
 
     // this should called as early as possible, to handle checkRepositories error messageboxes for
     // example
@@ -516,7 +516,7 @@ int TabController::initPackageManager()
 
     if (d->m_repoUpdateNeeded) {
         int result = checkRepositories();
-        if (result != INST_SUCCESS && d->m_repoReached)
+        if (result != QInstaller::Installer::Success && d->m_repoReached)
             return result;
     }
     d->m_packageManagerInitialized = true;
@@ -534,7 +534,7 @@ int TabController::initPackageManager()
     d->m_gui->callControlScriptMethod(QLatin1String("PackageManagerSelectedCallback"));
     d->m_gui->triggerControlScriptForCurrentPage();
 
-    return INST_SUCCESS;
+    return QInstaller::Installer::Success;
 }
 
 void TabController::changeCurrentTab(int index)

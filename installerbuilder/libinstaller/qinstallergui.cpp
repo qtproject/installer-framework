@@ -478,9 +478,9 @@ QWidget* Gui::currentPageWidget() const
 void Gui::cancelButtonClicked()
 {
     const bool doIgnore = m_installer->isInstaller()
-        ? m_installer->status() == Installer::InstallerCanceledByUser
-            || m_installer->status() == Installer::InstallerSucceeded
-        : m_installer->status() == Installer::InstallerCanceledByUser;
+        ? m_installer->status() == Installer::Canceled
+            || m_installer->status() == Installer::Success
+        : m_installer->status() == Installer::Canceled;
 
     //if the user canceled (all modes) or the installation is finished (installer mode only), ignore
     //clicks on cancel.
@@ -1631,7 +1631,7 @@ void FinishedPage::entering()
         SLOT(handleFinishClicked()));
     wizard()->setOption(QWizard::NoCancelButton, true);
 
-    if (installer()->status() == Installer::InstallerSucceeded) {
+    if (installer()->status() == Installer::Success) {
         const QString finishedtext = installer()->value(QLatin1String("FinishedText"));
         if (!finishedtext.isEmpty())
             m_msgLabel->setText(finishedtext);
