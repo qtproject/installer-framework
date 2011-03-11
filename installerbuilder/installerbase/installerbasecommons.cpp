@@ -299,7 +299,7 @@ QtUninstallerGui::QtUninstallerGui(Installer *installer)
 
 void QtUninstallerGui::init()
 {
-    if(m_installer->components().isEmpty()) {
+    if(m_installer->components(false, m_installer->isUpdater() ? UpdaterMode : AllMode).isEmpty()) {
         wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
         wizardPageVisibilityChangeRequested(false, Installer::LicenseCheck);
     }
