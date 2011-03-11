@@ -47,7 +47,7 @@
 #include <QStringList>
 #include <QTemporaryFile>
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 #include <time.h>
 #define FILE_ATTRIBUTE_UNIX_EXTENSION   0x8000   /* trick for Unix */
 #define S_IFMT  00170000
@@ -718,7 +718,7 @@ public:
                     const QByteArray path = f.readAll();
                     f.close();
                     f.remove();
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
                     if( !CreateHardLinkWrapper(  fi.absoluteFilePath(), QLatin1String( path ) ) )
                         throw SevenZipException( QObject::tr( "Could not create file system lik at %1" ).arg( fi.absoluteFilePath() ) );
 #else
