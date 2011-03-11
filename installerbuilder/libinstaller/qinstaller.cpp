@@ -1017,7 +1017,7 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
 
             component->loadDataFromUpdate(update);
             const Repository currentUsedRepository = metaInfoJob.repositoryForTemporaryDirectory(
-                        QInstaller::pathFromUrl(update->sourceInfo().url));
+                QInstaller::pathFromUrl(update->sourceInfo().url));
             component->setRepositoryUrl(currentUsedRepository.url());
 
             bool isUpdate = true;
@@ -1049,7 +1049,7 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
                 const QString script = update->data(QLatin1String("Script")).toString();
                 if (!script.isEmpty()) {
                     scripts.insert(component.data(), QString::fromLatin1("%1/%2/%3").arg(
-                            QInstaller::pathFromUrl(update->sourceInfo().url), newComponentName, script));
+                        QInstaller::pathFromUrl(update->sourceInfo().url), newComponentName, script));
                 }
 
                 Component *tmpComponent = component.data();
