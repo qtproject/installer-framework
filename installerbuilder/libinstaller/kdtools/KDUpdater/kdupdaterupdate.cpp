@@ -162,11 +162,11 @@ QDate KDUpdater::Update::releaseDate() const
 /*!
    Returns data whose name is given in parameter, or an invalid QVariant if the data doesn't exist.
 */
-QVariant KDUpdater::Update::data( const QString& name ) const
+QVariant KDUpdater::Update::data( const QString& name, const QVariant &defaultValue ) const
 {
     if ( d->data.contains( name ) )
         return d->data.value( name );
-    return QVariant();
+    return defaultValue;
 }
 
 /*!

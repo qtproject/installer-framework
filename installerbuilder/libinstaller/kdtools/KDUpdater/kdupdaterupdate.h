@@ -50,7 +50,7 @@ namespace KDUpdater
         UpdateType type() const;
         QUrl updateUrl() const;
         QDate releaseDate() const;
-        QVariant data( const QString& name ) const;
+        QVariant data( const QString& name, const QVariant &defaultValue = QVariant() ) const;
         UpdateSourceInfo sourceInfo() const;
 
         bool canDownload() const;
