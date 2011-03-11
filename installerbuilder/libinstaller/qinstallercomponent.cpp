@@ -33,6 +33,7 @@
 #include "qinstallercomponent.h"
 
 #include "common/errors.h"
+#include "common/fileutils.h"
 #include "common/utils.h"
 #include "fsengineclient.h"
 #include "lib7z_facade.h"
@@ -41,8 +42,10 @@
 #include "messageboxhandler.h"
 
 #include <KDUpdater/Update>
+#include <KDUpdater/UpdateSourcesInfo>
 #include <KDUpdater/UpdateOperation>
 #include <KDUpdater/UpdateOperationFactory>
+#include <KDUpdater/PackagesInfo>
 
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopServices>
@@ -239,6 +242,110 @@ Component::~Component()
 
     qDeleteAll(d->m_components);
     delete d;
+}
+
+//package info is that what is saved inside the packagemanager on harddisk
+void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo)
+{
+    setValue(QLatin1String("Name"), packageInfo.name);
+    setValue(QLatin1String("DisplayName"), packageInfo.title);
+    setValue(QLatin1String("Description"), packageInfo.description);
+    setValue(QLatin1String("UncompressedSize"),
+        QString::number(packageInfo.uncompressedSize));
+    setValue(QLatin1String("Version"), packageInfo.version);
+    setValue(QLatin1String("Virtual"),
+        packageInfo.virtualComp ? QLatin1String ("true") : QLatin1String ("false"));
+    QString dependstr = QLatin1String("");
+    foreach (const QString& val, packageInfo.dependencies)
+            dependstr += val + QLatin1String(",");
+    if (packageInfo.dependencies.count() > 0)
+        dependstr.chop(1);
+    setValue(QLatin1String("Dependencies"), dependstr);
+    if (packageInfo.forcedInstallation)
+        setValue(QLatin1String("ForcedInstallation"),
+        packageInfo.forcedInstallation ? QLatin1String ("true") : QLatin1String ("false"));
+}
+
+//update means it is the packageinfo from server
+void Component::loadDataFromUpdate(KDUpdater::Update* update)
+{
+    Q_ASSERT(update);
+    Q_ASSERT(!update->name().isEmpty());
+
+    setValue(QLatin1String("Name"),
+             update->data(QLatin1String("Name")).toString());
+    setValue(QLatin1String("DisplayName"),
+             update->data(QLatin1String("DisplayName")).toString());
+    setValue(QLatin1String("Description"),
+             update->data( QLatin1String("Description")).toString());
+    setValue(QLatin1String("UncompressedSize"),
+             QString::number(update->uncompressedSize()));
+    setValue(QLatin1String("Version"),
+             update->data(QLatin1String("Version")).toString());
+    setValue(QLatin1String("Dependencies"),
+             update->data(QLatin1String("Dependencies")).toString());
+    setValue(QLatin1String("Virtual"),
+             update->data(QLatin1String("Virtual")).toString());
+    setValue(QLatin1String("SortingPriority"),
+             update->data(QLatin1String("SortingPriority")).toString());
+    setValue(QLatin1String("InstallPriority"),
+             update->data(QLatin1String("InstallPriority")).toString());
+    setValue(QLatin1String("AutoSelectOn"),
+             update->data(QLatin1String("AutoSelectOn")).toString());
+
+    setValue(QLatin1String("Important"),
+        update->data(QLatin1String("Important")).toString());
+
+    setValue(QLatin1String("ForcedInstallation"),
+        update->data(QLatin1String("ForcedInstallation")).toString());
+
+    setValue(QLatin1String("UpdateText"),
+        update->data(QLatin1String("UpdateText")).toString());
+
+    setValue(QLatin1String("RequiresAdminRights"),
+        update->data(QLatin1String("RequiresAdminRights")).toString());
+
+    setValue(QLatin1String("NewComponent"),
+        update->data(QLatin1String("NewComponent")).toString());
+
+    const QString localPath = QInstaller::pathFromUrl(update->sourceInfo().url);
+
+    //TODO: move this verbose output for the url to a location
+    //where we don't need to check that is a newer url(so it would be better where the updates
+    //are created)
+    static QString lastLocalPath;
+    if (lastLocalPath != localPath)
+        verbose() << "Url is : " << localPath << std::endl;
+    lastLocalPath = localPath;
+
+    const QStringList uis = update->data(QLatin1String("UserInterfaces")).toString()
+        .split(QString::fromLatin1(","), QString::SkipEmptyParts);
+    if (!uis.isEmpty()) {
+        verbose() << "Loading User Interface definitions for component " << name() << std::endl;
+        loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localPath, name())), uis);
+    }
+
+    const QStringList qms = update->data(QLatin1String("Translations")).toString()
+        .split(QString::fromLatin1(","), QString::SkipEmptyParts);
+    if (!qms.isEmpty()) {
+        verbose() << "Loading translations for component " << name() << std::endl;
+        loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localPath, name())), qms);
+    }
+
+    QHash<QString, QVariant> licenseHash = update->data(QLatin1String("Licenses")).toHash();
+    if (!licenseHash.isEmpty()) {
+        verbose() << "Loading licenses for component " << name() << std::endl;
+        loadLicenses(QString::fromLatin1("%1/%2/").arg(localPath, name()), licenseHash);
+    }
+
+}
+
+void Component::updateState(const bool selected)
+{
+    setValue(QLatin1String("PreviousState"),
+        selected ? QLatin1String("Installed") : QLatin1String("Uninstalled"));
+    setValue(QLatin1String("CurrentState"),
+        value(QLatin1String("PreviousState")));
 }
 
 void Component::markAsPerformedInstallation()

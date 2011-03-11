@@ -989,31 +989,18 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     QMap<QString, QInstaller::Component*> components;
     QList<Component*> componentsToSelectUpdater, componentsToSelectInstaller;
 
+    //why do we need to add the components if there was a metaInfoJob.error()?
+    //will this happen if there is no internet connection?
+    //ok usually there should be the installed and the online tree
     if (metaInfoJob.error() == KDJob::UserDefinedError) {
         foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos()) {
             QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
-            component->setValue(QLatin1String("Name"), info.name);
-            component->setValue(QLatin1String("DisplayName"), info.title);
-            component->setValue(QLatin1String("Description"), info.description);
-            component->setValue(QLatin1String("UncompressedSize"),
-                QString::number(info.uncompressedSize));
-            component->setValue(QLatin1String("Version"), info.version);
-            component->setValue(QLatin1String("Virtual"),
-                info.virtualComp ? QLatin1String ("true") : QLatin1String ("false"));
-            QString dependstr = QLatin1String("");
-            foreach (const QString& val, info.dependencies)
-                    dependstr += val + QLatin1String(",");
-            if (info.dependencies.count() > 0)
-                dependstr.chop(1);
-            component->setValue(QLatin1String("Dependencies"), dependstr);
-            if (info.forcedInstallation)
-                component->setValue(QLatin1String("ForcedInstallation"),
-                info.forcedInstallation ? QLatin1String ("true") : QLatin1String ("false"));
 
             if (components.contains(info.name)) {
                 qCritical("Could not register component! Component with identifier %s already "
                     "registered", qPrintable(info.name));
             } else {
+                component->loadDataFromPackageInfo(info);
                 components.insert(info.name, component.take());
             }
         }
@@ -1022,69 +1009,23 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
             const QString newComponentName = update->data(QLatin1String("Name")).toString();
             const int indexOfPackage = packagesInfo.findPackageInfo(newComponentName);
 
-            const QString localPath = QInstaller::pathFromUrl(update->sourceInfo().url);
-            static QString lastLocalPath;
-            if (lastLocalPath != localPath)
-                verbose() << "Url is : " << localPath << std::endl;
-
-            lastLocalPath = localPath;
-            QScopedPointer<QInstaller::Component> component(new QInstaller::Component(update, this));
+            QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
             if (indexOfPackage > -1) {
                 component->setValue(QLatin1String("InstalledVersion"),
                     packagesInfo.packageInfo(indexOfPackage).version);
             }
 
-            const Repository repo = metaInfoJob.repositoryForTemporaryDirectory(localPath);
-            component->setRepositoryUrl(repo.url());
-
-            component->setValue(QLatin1String("Important"),
-                update->data(QLatin1String("Important")).toString());
-
-            component->setValue(QLatin1String("ForcedInstallation"),
-                update->data(QLatin1String("ForcedInstallation")).toString());
-
-            component->setValue(QLatin1String("UpdateText"),
-                update->data(QLatin1String("UpdateText")).toString());
-
-            component->setValue(QLatin1String("RequiresAdminRights"),
-                update->data(QLatin1String("RequiresAdminRights")).toString());
-
-            component->setValue(QLatin1String("NewComponent"),
-                update->data(QLatin1String("NewComponent")).toString());
-
-            const QStringList uis = update->data(QLatin1String("UserInterfaces")).toString()
-                .split(QString::fromLatin1(","), QString::SkipEmptyParts);
-            if (!uis.isEmpty()) {
-                verbose() << "Loading User Interface definitions for component " << newComponentName
-                    << std::endl;
-                component->loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localPath,
-                    newComponentName)), uis);
-            }
-
-            const QStringList qms = update->data(QLatin1String("Translations")).toString()
-                .split(QString::fromLatin1(","), QString::SkipEmptyParts);
-            if (!qms.isEmpty()) {
-                verbose() << "Loading translations for component " << newComponentName << std::endl;
-                component->loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localPath,
-                    newComponentName)), qms);
-            }
-
-            QHash<QString, QVariant> licenseHash = update->data(QLatin1String("Licenses")).toHash();
-            if (!licenseHash.isEmpty()) {
-                verbose() << "Loading licenses for component " << newComponentName << std::endl;
-                component->loadLicenses(QString::fromLatin1("%1/%2/").arg(localPath,
-                    newComponentName), licenseHash);
-            }
+            component->loadDataFromUpdate(update);
+            const Repository currentUsedRepository = metaInfoJob.repositoryForTemporaryDirectory(
+                        QInstaller::pathFromUrl(update->sourceInfo().url));
+            component->setRepositoryUrl(currentUsedRepository.url());
 
             bool isUpdate = true;
             // the package manager should preselect the currently installed packages
             if (isPackageManager()) {
                 const bool selected = indexOfPackage > -1;
 
-                component->setValue(QLatin1String("PreviousState"),
-                    selected ? QLatin1String("Installed") : QLatin1String("Uninstalled"));
-                component->setValue(QLatin1String("CurrentState"),
-                    component->value(QLatin1String("PreviousState")));
+                component->updateState(selected);
 
                 if (selected)
                     componentsToSelectInstaller.append(component.data());
@@ -1107,8 +1048,8 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
             if (!components.contains(newComponentName)) {
                 const QString script = update->data(QLatin1String("Script")).toString();
                 if (!script.isEmpty()) {
-                    scripts.insert(component.data(), QString::fromLatin1("%1/%2/%3").arg(localPath,
-                        newComponentName, script) );
+                    scripts.insert(component.data(), QString::fromLatin1("%1/%2/%3").arg(
+                            QInstaller::pathFromUrl(update->sourceInfo().url), newComponentName, script));
                 }
 
                 Component *tmpComponent = component.data();

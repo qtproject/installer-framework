@@ -529,7 +529,7 @@ int main(int argc, char **argv)
     QString templateBinary = QString::fromLatin1("installerbase");
 #endif
     QString target;
-    QString confdir;
+    QString configDir;
     QString packagesDirectory = QDir::currentPath();
     QStringList excludedPackages;
     bool nodeps = false;
@@ -589,7 +589,7 @@ int main(int argc, char **argv)
                 return printErrorAndUsageAndExit(QObject::tr("Error: Config directory %1 is not "
                     "readable").arg(*it));
             }
-            confdir = *it;
+            configDir = *it;
         } else {
             if (target.isEmpty())
                 target = *it;
@@ -604,7 +604,7 @@ int main(int argc, char **argv)
     if (components.isEmpty())
         return printErrorAndUsageAndExit(QObject::tr("Error: No components selected"));
 
-    if (confdir.isEmpty())
+    if (configDir.isEmpty())
         return printErrorAndUsageAndExit(QObject::tr("Error: No configuration directory selected"));
 
     verbose() << "Parsed arguments, ok." << std::endl;
@@ -613,16 +613,16 @@ int main(int argc, char **argv)
         const PackageInfoVector packageList = createListOfPackages(components, packagesDirectory,
             !nodeps);
         const PackageInfoVector packages = filterBlacklisted(packageList, excludedPackages);
-        const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, confdir);
+        const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configDir);
         {
             QSettings confInternal(metaDir + "/config/config-internal.ini", QSettings::IniFormat);
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
         }
         const QString resourceFile = createBinaryResourceFile(metaDir);
 
-        const QString configfile = QFileInfo(confdir, QLatin1String("config.xml")).absoluteFilePath();
+        const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
         const QInstaller::InstallerSettings settings =
-            QInstaller::InstallerSettings::fromFileAndPrefix(configfile, confdir);
+            QInstaller::InstallerSettings::fromFileAndPrefix(configfile, configDir);
         const QByteArray privateKey = settings.privateKey();
 
         Input input;
@@ -682,7 +682,7 @@ int main(int argc, char **argv)
         }
 
         verbose() << "Creating the binary" << std::endl;
-        const int result = assemble(input, confdir);
+        const int result = assemble(input, configDir);
 
         // cleanup
         verbose() << "Cleaning up..." << std::endl;

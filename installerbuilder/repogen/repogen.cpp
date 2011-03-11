@@ -53,9 +53,14 @@ using namespace Lib7z;
 static void printUsage()
 {
     const QString appName = QFileInfo( QCoreApplication::applicationFilePath() ).fileName();
-    std::cout << "Usage: " << appName << " packages-dir config-dir repository-dir component1 [component2 ...]" << std::endl;
+    //std::cout << "Usage: " << appName << " packages-dir config-dir repository-dir component1 [component2 ...]" << std::endl;
+    std::cout << "Usage: " << appName << " [options] repository-dir package1 [package2 ...]" << std::endl;
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
+    std::cout << "  -p|--packages dir      The directory containing the available packages."
+        << std::endl;
+    std::cout << "  -c|--config dir        The directory containing the installer configuration "
+        "files to use." << std::endl;
     std::cout << "  -e|--exclude p1,...,pn exclude the given packages and their dependencies from the repository" << std::endl;
     std::cout << "  -v|--verbose           Verbose output" << std::endl;
     std::cout << "     --single            Put only the given components (not their dependencies) into the (already existing) repository" << std::endl;
@@ -88,78 +93,122 @@ static QVector<PackageInfo> filterBlacklisted( QVector< PackageInfo > packages, 
 
 int main( int argc, char** argv ) {
     try {
-        QCoreApplication app( argc, argv );
+        QCoreApplication app(argc, argv);
 
         init();
 
-        QStringList args = app.arguments().mid( 1 );
+        QStringList args = app.arguments().mid(1);
 
         QStringList excludedPackages;
         bool replaceSingleComponent = false;
+        QString packagesDir;
+        QString configDir;
 
-        while( !args.isEmpty() && args.first().startsWith( QLatin1String( "-" ) ) )
-        {
-            if( args.first() == QLatin1String( "--verbose" ) || args.first() == QLatin1String( "-v" ) )
-            {
-                args.pop_front();
+        //TODO: use a for loop without removing values from args like it is in binarycreator.cpp
+        //for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
+        while (!args.isEmpty() && args.first().startsWith(QLatin1Char('-'))) {
+            if (args.first() == QLatin1String("--verbose") || args.first() == QLatin1String("-v")) {
+                args.removeFirst();
                 setVerbose( true );
-            }
-            else if( args.first() == QLatin1String( "--exclude" ) || args.first() == QLatin1String( "-e" ) )
-            {
-                args.pop_front();
-                if( args.isEmpty() || args.first().startsWith( QLatin1String( "-" ) ) )
-                    return printErrorAndUsageAndExit( QObject::tr("Error: Package to exclude missing") );
-                excludedPackages = args.first().split( QLatin1Char( ',' ) );
-                args.pop_front();
-            }
-            else if( args.first() == QLatin1String( "--single" ) )
-            {
+            } else if (args.first() == QLatin1String("--exclude") || args.first() == QLatin1String("-e")) {
+                args.removeFirst();
+                if (args.isEmpty() || args.first().startsWith(QLatin1Char('-')))
+                    return printErrorAndUsageAndExit(QObject::tr("Error: Package to exclude missing"));
+                excludedPackages = args.first().split(QLatin1Char(','));
+                args.removeFirst();
+            } else if (args.first() == QLatin1String("--single")) {
+                args.removeFirst();
                 replaceSingleComponent = true;
-                args.pop_front();
-            }
-            else
-            {
+            } else if (args.first() == QString::fromLatin1("-p") || args.first() == QString::fromLatin1("--packages")) {
+                args.removeFirst();
+                if (args.isEmpty()) {
+                    return printErrorAndUsageAndExit(QObject::tr("Error: Packages parameter missing "
+                        "argument"));
+                }
+                if (!QFileInfo(args.first()).exists()) {
+                    return printErrorAndUsageAndExit(QObject::tr("Error: Package directory not found "
+                        "at the specified location"));
+                }
+                packagesDir = args.first();
+                args.removeFirst();
+            } else if (args.first() == QLatin1String("-c") || args.first() == QLatin1String("--config")) {
+                args.removeFirst();
+                if (args.isEmpty())
+                    return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument"));
+                const QFileInfo fi(args.first());
+                if (!fi.exists()) {
+                    return printErrorAndUsageAndExit(QObject::tr("Error: Config directory %1 not found "
+                        "at the specified location").arg(args.first()));
+                }
+                if (!fi.isDir()) {
+                    return printErrorAndUsageAndExit(QObject::tr("Error: Configuration %1 is not a "
+                        "directory").arg(args.first()));
+                }
+                if (!fi.isReadable()) {
+                    return printErrorAndUsageAndExit(QObject::tr("Error: Config directory %1 is not "
+                        "readable").arg(args.first()));
+                }
+                configDir = args.first();
+                args.removeFirst();
+            } else {
                 printUsage();
                 return 1;
             }
         }
 
-        if( args.count() < 4 ) 
-        {
+        //TODO: adjust to the new argument/option usage
+        if ((packagesDir.isEmpty() && configDir.isEmpty() && args.count() < 4) || //use the old check
+            ((packagesDir.isEmpty() || configDir.isEmpty()) && args.count() < 3) || //only one dir set by the new options
+            (args.count() < 2)) { //both dirs set by the new options
             printUsage();
             return 1;
         }
  
-        const QString packageDir = makeAbsolute( args[0] );
-        const QString configDir = makeAbsolute( args[1] );
-        const QString repoDir = makeAbsolute( args[2] );
-        const QStringList components = args.mid( 3 );
-        const InstallerSettings cfg = InstallerSettings::fromFileAndPrefix( configDir + QLatin1String("/config.xml"), configDir );
-        const QString appName = cfg.applicationName();
-        const QString appVersion = cfg.applicationVersion();
+        int argsPosition = 0;
+        bool needPrintUsage = false;
+        if (packagesDir.isEmpty()) {
+            std::cout << "!!! A stand alone package directory argument is deprecated. Please use the pre argument." << std::endl;
+            needPrintUsage |= true;
+            packagesDir = makeAbsolute( args[argsPosition++] );
+        }
 
-        if( !replaceSingleComponent && QFile::exists( repoDir ) )
-            throw QInstaller::Error( QObject::tr("Repository target folder %1 already exists!").arg( repoDir ) );
+        if (configDir.isEmpty()) {
+            std::cout << "!!! A stand alone config directory argument is deprecated. Please use the pre argument." << std::endl;
+            needPrintUsage |= true;
+            configDir = makeAbsolute( args[argsPosition++] );
+        }
+        if (needPrintUsage) {
+            printUsage();
+        }
 
-        const QVector< PackageInfo > packages = filterBlacklisted( createListOfPackages( components, packageDir, !replaceSingleComponent ), excludedPackages );
+        const QString repositoryDir = makeAbsolute( args[argsPosition++] );
+        const QStringList components = args.mid( argsPosition );
+        const InstallerSettings installerSettings = InstallerSettings::fromFileAndPrefix( configDir + QLatin1String("/config.xml"), configDir );
+        const QString appName = installerSettings.applicationName();
+        const QString appVersion = installerSettings.applicationVersion();
+
+        if (!replaceSingleComponent && QFile::exists(repositoryDir))
+            throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!").arg(repositoryDir));
+
+        const QVector<PackageInfo> packages = filterBlacklisted(createListOfPackages(components, packagesDir, !replaceSingleComponent), excludedPackages);
 
         QMap<QString, QString> pathToVersionMapping = buildPathToVersionMap(packages);
 
-        for( QVector< PackageInfo >::const_iterator it = packages.begin(); it != packages.end(); ++it )
-        {
-            const QFileInfo fi( repoDir, it->name );
-            if( fi.exists() )
-                removeDirectory( fi.absoluteFilePath() );
+        for (QVector<PackageInfo>::const_iterator it = packages.begin(); it != packages.end(); ++it ) {
+            const QFileInfo fi( repositoryDir, it->name );
+            if (fi.exists())
+                removeDirectory(fi.absoluteFilePath());
         }
 
-        copyComponentData( packageDir, configDir, repoDir, packages );
+        copyComponentData(packagesDir, configDir, repositoryDir, packages);
         const QString metaTmp = createTemporaryDirectory();
         const TempDirDeleter tmpDeleter( metaTmp );
-        generateMetaDataDirectory( metaTmp, repoDir, packages, appName, appVersion );
-        compressMetaDirectories( configDir, metaTmp, metaTmp, pathToVersionMapping );
+        Q_UNUSED(tmpDeleter);
+        generateMetaDataDirectory(metaTmp, repositoryDir, packages, appName, appVersion);
+        compressMetaDirectories(configDir, metaTmp, metaTmp, pathToVersionMapping);
         
-        QFile::remove( QFileInfo( repoDir, QLatin1String( "Updates.xml" ) ).absoluteFilePath() );
-        moveDirectoryContents( metaTmp, repoDir );
+        QFile::remove(QFileInfo(repositoryDir, QLatin1String("Updates.xml")).absoluteFilePath());
+        moveDirectoryContents(metaTmp,repositoryDir);
         return 0;
     } catch ( const Lib7z::SevenZipException& e ) {
         std::cerr << e.message() << std::endl;

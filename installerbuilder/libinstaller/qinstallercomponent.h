@@ -39,6 +39,7 @@
 namespace KDUpdater {
     class Update;
     class UpdateOperation;
+    struct PackageInfo;
 }
 
 namespace QInstaller {
@@ -101,6 +102,10 @@ public:
             return lhs->value(priority).toInt() < rhs->value(priority).toInt();
         }
     };
+
+    void loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo);
+    void loadDataFromUpdate(KDUpdater::Update* update);
+    void updateState(const bool selected);
 
     QHash<QString, QString> variables() const;
     Q_INVOKABLE void setValue(const QString &key, const QString &value);
