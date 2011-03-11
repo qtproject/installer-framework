@@ -195,11 +195,9 @@ void Component::Private::init()
 void Component::Private::setSelectedOnComponentList(const QList<Component*> &componentList,
     bool selected, RunModes runMode, SelectMode selectMode)
 {
-    for (QList<Component*>::const_iterator it = componentList.begin(); it != componentList.end(); ++it)
-    {
-        Component* const comp = *it;
-        if (!comp->isSelected(runMode))
-            comp->setSelected(selected, runMode, selectMode);
+    foreach (Component *component, componentList) {
+        if (!component->isSelected(runMode))
+            component->setSelected(selected, runMode, selectMode);
     }
 }
 
