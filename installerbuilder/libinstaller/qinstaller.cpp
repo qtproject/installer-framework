@@ -796,11 +796,9 @@ bool Installer::fetchUpdaterPackages()
     }
 
     // append all components w/o parent to the direct list
-    if (d->m_linearComponentList) {
-        foreach (QInstaller::Component *component, updaterComponents) {
-            d->m_updaterComponents.append(component);
-            emit componentAdded(component);
-        }
+    foreach (QInstaller::Component *component, updaterComponents) {
+        d->m_updaterComponents.append(component);
+        emit componentAdded(component);
     }
 
     // after everything is set up, load the scripts
