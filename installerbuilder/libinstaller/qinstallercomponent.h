@@ -67,6 +67,8 @@ public:
 
     void loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo);
     void loadDataFromUpdate(KDUpdater::Update* update);
+
+    //TODO: remove this, it makes no sense
     void updateState(const bool selected);
 
     struct PriorityLessThan
