@@ -481,12 +481,17 @@ int TabController::initUninstaller()
 
 int TabController::initPackageManager()
 {
+    using namespace QInstaller;
+
     if (d->m_packageManagerInitialized)
         return QInstaller::Installer::Success;
+
+    d->m_packageManagerInitialized = true;
 
     // this should called as early as possible, to handle checkRepositories error messageboxes for
     // example
     if (!d->m_controlScript.isEmpty()) {
+        // TODO: Check if we really need from this, or what parts of it.
         QInstaller::verbose() << "Non-interactive installation using script: "
             << qPrintable(d->m_controlScript) << std::endl;
         d->m_gui->loadControlScript(d->m_controlScript);
@@ -512,25 +517,36 @@ int TabController::initPackageManager()
         }
     }
 
-    if (d->m_repoUpdateNeeded) {
-        int result = checkRepositories();
-        if (result != QInstaller::Installer::Success && d->m_repoReached)
-            return result;
-    }
-    d->m_packageManagerInitialized = true;
+    IntroductionPageImpl *introPage =
+        qobject_cast<IntroductionPageImpl*>(d->m_gui->page(Installer::Introduction));
+    introPage->showMetaInfoUdate();
+    if (d->m_installer->isPackageManager())
+        introPage->showAll();
+    introPage->setComplete(false);
+
+    connect(d->m_installer, SIGNAL(allComponentsInfoMessage(KDJob*,QString)), introPage,
+        SLOT(message(KDJob*, QString)));
+    d->m_gui->connect(d->m_gui, SIGNAL(rejected()), d->m_installer, SIGNAL(cancelAllComponentsInfoJob()),
+        Qt::QueuedConnection);
+
+    d->m_gui->setWindowModality(Qt::WindowModal);
+    d->m_gui->show();
+
+    if (!d->m_installer->fetchAllPackages())
+        return QInstaller::Installer::Failure;
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
     // hide of pages depenging on the components.
     d->m_gui->init();
-
-    if (d->m_installer->isPackageManager())
-        d->preselectInstalledPackages();
-
-    using namespace QInstaller;
-    qobject_cast<IntroductionPage*>(d->m_gui->page(Installer::Introduction))->setComplete(true);
-
     d->m_gui->callControlScriptMethod(QLatin1String("PackageManagerSelectedCallback"));
     d->m_gui->triggerControlScriptForCurrentPage();
+
+    introPage->setComplete(true);
+
+    if (d->m_installer->isPackageManager())
+        introPage->showMaintenanceTools();
+    else
+        introPage->hideAll();
 
     return QInstaller::Installer::Success;
 }
