@@ -82,6 +82,7 @@ public:
             = QVector< KDUpdater::UpdateOperation*>());
     ~Installer();
 
+    bool fetchAllPackages();
     bool fetchUpdaterPackages();
 
     bool run();
@@ -238,9 +239,13 @@ Q_SIGNALS:
     void currentPageChanged(int page);
     void finishButtonClicked();
 
+    void startAllComponentsReset();
+    void finishAllComponentsReset();
+    void cancelAllComponentsInfoJob();
+    void allComponentsInfoMessage(KDJob* job, const QString &message);
+
     void startUpdaterComponentsReset();
     void finishUpdaterComponentsReset();
-
     void cancelUpdaterInfoJob();
     void updaterInfoMessage(KDJob* job, const QString &message);
 

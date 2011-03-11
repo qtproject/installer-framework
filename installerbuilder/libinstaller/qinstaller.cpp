@@ -633,6 +633,177 @@ Installer::~Installer()
     delete d;
 }
 
+bool Installer::fetchAllPackages()
+{
+    if (isUninstaller() || isUpdater())
+        return false;
+
+    const QInstaller::InstallerSettings &settings = *d->m_installerSettings;
+    GetRepositoriesMetaInfoJob metaInfoJob(settings.publicKey(), true);
+    if (!isOfflineOnly())
+        metaInfoJob.setRepositories(settings.repositories());
+
+    connect(&metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this,
+        SIGNAL(allComponentsInfoMessage(KDJob*,QString)));
+    connect(this, SIGNAL(cancelAllComponentsInfoJob()), &metaInfoJob, SLOT(doCancel()),
+        Qt::QueuedConnection);
+
+    try {
+        metaInfoJob.setAutoDelete(false);
+        metaInfoJob.start();
+        metaInfoJob.waitForFinished();
+    } catch (Error &error) {
+        verbose() << tr("Could not retrieve components: %1").arg(error.message()) << std::endl;
+        return false;
+    }
+
+    if (metaInfoJob.isCanceled() || metaInfoJob.error() != KDJob::NoError) {
+        verbose() << tr("Could not retrieve components: %1").arg(metaInfoJob.errorString()) << std::endl;
+        return false;
+    }
+
+    KDUpdater::Application &updaterApp = *d->m_app;
+    const QString &appName = settings.applicationName();
+    const QStringList tempDirs = metaInfoJob.temporaryDirectories();
+    foreach (const QString &tmpDir, tempDirs) {
+        if (tmpDir.isEmpty())
+            continue;
+        updaterApp.addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
+    }
+
+    if (updaterApp.updateSourcesInfo()->updateSourceInfoCount() == 0) {
+        verbose() << tr("Could not find any component source infos.") << std::endl;
+        return false;
+    }
+    updaterApp.updateSourcesInfo()->setModified(false);
+
+    KDUpdater::UpdateFinder updateFinder(&updaterApp);
+    updateFinder.setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
+    updateFinder.run();
+
+    const QList<KDUpdater::Update*> &packages = updateFinder.updates();
+    if (packages.isEmpty()) {
+        verbose() << tr("Could not retrieve components: %1").arg(updateFinder.errorString());
+        return false;
+    }
+
+    emit startAllComponentsReset();
+
+    qDeleteAll(d->m_components);
+    d->m_components.clear();
+
+    QMap<QInstaller::Component*, QString> scripts;
+    QMap<QString, QInstaller::Component*> components;
+
+    KDUpdater::PackagesInfo &packagesInfo = *updaterApp.packagesInfo();
+    if (isPackageManager()) {
+        if (!setAndParseLocalComponentsFile(packagesInfo)) {
+            verbose() << tr("Could not parse local components xml file: %1")
+                .arg(d->localComponentsXmlPath());
+            return false;
+        }
+        packagesInfo.setApplicationName(appName);
+        packagesInfo.setApplicationVersion(settings.applicationVersion());
+    }
+
+    foreach (KDUpdater::Update *package, packages) {
+        const QString name = package->data(QLatin1String("Name")).toString();
+        if (components.contains(name)) {
+            qCritical("Could not register component! Component with identifier %s already registered.",
+                qPrintable(name));
+            continue;
+        }
+
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(package, this));
+
+        QString state = QLatin1String("Uninstalled");
+        const int indexOfPackage = packagesInfo.findPackageInfo(name);
+        if (indexOfPackage > -1) {
+            state = QLatin1String("Installed");
+            component->setValue(QLatin1String("InstalledVersion"),
+                packagesInfo.packageInfo(indexOfPackage).version);
+        }
+        component->setValue(QLatin1String("CurrentState"), state);
+        component->setValue(QLatin1String("PreviousState"), state);
+
+        const QString localPath = QInstaller::pathFromUrl(package->sourceInfo().url);
+        const Repository repo = metaInfoJob.repositoryForTemporaryDirectory(localPath);
+        component->setRepositoryUrl(repo.url());
+
+        static QLatin1String newComponent("NewComponent");
+        component->setValue(newComponent, package->data(newComponent).toString());
+
+        static const QLatin1String important("Important");
+        component->setValue(important, package->data(important).toString());
+
+        static const QLatin1String forcedInstallation("ForcedInstallation");
+        component->setValue(forcedInstallation, package->data(forcedInstallation).toString());
+
+        static const QLatin1String updateText("UpdateText");
+        component->setValue(updateText, package->data(updateText).toString());
+
+        static const QLatin1String requiresAdminRights("RequiresAdminRights");
+        component->setValue(requiresAdminRights, package->data(requiresAdminRights).toString());
+
+        const QStringList uis = package->data(QLatin1String("UserInterfaces")).toString()
+            .split(QString::fromLatin1(","), QString::SkipEmptyParts);
+        if (!uis.isEmpty()) {
+            if (uis.contains(QLatin1String("installationkind.ui"))) {
+                int index = uis.indexOf(QLatin1String("installationkind.ui"));
+                index = index;
+            }
+            component->loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localPath, name)), uis);
+        }
+        const QStringList qms = package->data(QLatin1String("Translations")).toString()
+            .split(QString::fromLatin1(","), QString::SkipEmptyParts);
+        if (!qms.isEmpty())
+            component->loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localPath, name)), qms);
+
+        QHash<QString, QVariant> licenseHash = package->data(QLatin1String("Licenses")).toHash();
+        if (!licenseHash.isEmpty())
+            component->loadLicenses(QString::fromLatin1("%1/%2/").arg(localPath, name), licenseHash);
+
+        const QString script = package->data(QLatin1String("Script")).toString();
+        if (!script.isEmpty())
+            scripts.insert(component.data(), QString::fromLatin1("%1/%2/%3").arg(localPath, name, script));
+
+        components.insert(name, component.take());
+    }
+
+    // now append all components to their respective parents
+    QMap<QString, QInstaller::Component*>::const_iterator it;
+    for (it = components.begin(); it != components.end(); ++it) {
+        QString id = it.key();
+        QInstaller::Component *component = it.value();
+        while (!id.isEmpty() && component->parentComponent() == 0) {
+            id = id.section(QLatin1Char('.'), 0, -2);
+            if (components.contains(id))
+                components[id]->appendComponent(component);
+        }
+    }
+
+    // append all components w/o parent to the direct list
+    foreach (QInstaller::Component *component, components) {
+        if (component->parentComponent() == 0) {
+            d->m_components.append(component);
+            emit componentAdded(component);
+        }
+    }
+
+    // after everything is set up, load the scripts
+    QList<QInstaller::Component*> keys = scripts.keys();
+    foreach (QInstaller::Component *component, keys) {
+        const QString &script = scripts.value(component);
+        verbose() << "Loading script for component " << component->name() << " (" << script << ")"
+            << std::endl;
+        component->loadComponentScript(script);
+    }
+
+    emit finishAllComponentsReset();
+
+    return true;
+}
+
 bool Installer::fetchUpdaterPackages()
 {
     if (!isUpdater())
