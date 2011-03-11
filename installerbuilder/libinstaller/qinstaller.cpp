@@ -804,9 +804,11 @@ bool Installer::fetchUpdaterPackages()
     // after everything is set up, load the scripts
     foreach (QInstaller::Component *component, d->m_updaterComponents) {
         const QString &script = scripts.value(component);
-        verbose() << "Loading script for component " << component->name() << " (" << script << ")"
-            << std::endl;
-        component->loadComponentScript(script);
+        if (script.isEmpty()) {
+            verbose() << "Loading script for component " << component->name() << " (" << script << ")"
+                << std::endl;
+            component->loadComponentScript(script);
+        }
     }
 
     emit finishUpdaterComponentsReset();
