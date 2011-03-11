@@ -139,12 +139,12 @@ public:
 public:
     // component handling
     void appendComponent(Component *components);
-    int componentCount(RunModes runMode = InstallerMode) const;
-    Component *component(int i, RunModes runMode = InstallerMode) const;
+    int componentCount(RunModes runMode = AllMode) const;
+    Component *component(int i, RunModes runMode = AllMode) const;
     Component *component(const QString &name) const;
-    QList<Component*> components(bool recursive = false, RunModes runMode = InstallerMode) const;
+    QList<Component*> components(bool recursive = false, RunModes runMode = AllMode) const;
     QList<Component*> componentsToInstall(bool recursive = false, bool sort = true,
-        RunModes runMode = InstallerMode) const;
+        RunModes runMode = AllMode) const;
 
     Component *componentByName(const QString &identifier) const;
     QList<Component*> dependencies(const Component *component,
@@ -210,7 +210,7 @@ public:
     void rollBackInstallation();
 
     int downloadNeededArchives(RunModes runMode, double partProgressSize/* = double(1)/3 */);
-    QList<Component*> calculateComponentOrder(RunModes runMode = InstallerMode) const;
+    QList<Component*> calculateComponentOrder(RunModes runMode = AllMode) const;
     void installComponent(Component *comp, double progressOperationSize);
 
     bool hasLinearComponentList() const;

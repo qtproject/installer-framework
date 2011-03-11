@@ -52,7 +52,7 @@ public:
         SizeColumn
     };
 
-    explicit ComponentModel(Installer *parent, RunModes runMode = InstallerMode);
+    explicit ComponentModel(Installer *parent, RunModes runMode = AllMode);
     ~ComponentModel();
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;

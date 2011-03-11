@@ -115,8 +115,8 @@ public:
     Installer *installer() const;
 
     void appendComponent(Component *component);
-    Component *parentComponent(RunModes runMode = InstallerMode) const;
-    QList<Component*> components(bool recursive = false, RunModes runMode = InstallerMode) const;
+    Component *parentComponent(RunModes runMode = AllMode) const;
+    QList<Component*> components(bool recursive = false, RunModes runMode = AllMode) const;
 
     void loadComponentScript(const QString &fileName);
     void loadTranslations(const QDir &directory, const QStringList &qms);
@@ -175,7 +175,7 @@ public:
     QStringList dependencies() const;
 
     bool autoCreateOperations() const;
-    bool isSelected(RunModes runMode = InstallerMode) const;
+    bool isSelected(RunModes runMode = AllMode) const;
     Q_INVOKABLE bool isInstalled() const;
     Q_INVOKABLE bool installationRequested() const;
     Q_INVOKABLE bool uninstallationRequested() const;
@@ -186,7 +186,7 @@ public:
 
     bool operationsCreatedSuccessfully() const;
 
-    Qt::CheckState checkState(RunModes runMode = InstallerMode) const;
+    Qt::CheckState checkState(RunModes runMode = AllMode) const;
 
     void languageChanged();
 
@@ -194,7 +194,7 @@ public:
 
 public Q_SLOTS:
     void setAutoCreateOperations(bool autoCreateOperations);
-    void setSelected(bool selected, RunModes runMode = InstallerMode, SelectMode selectMode = NormalSelectMode);
+    void setSelected(bool selected, RunModes runMode = AllMode, SelectMode selectMode = NormalSelectMode);
 
 Q_SIGNALS:
     void loaded();

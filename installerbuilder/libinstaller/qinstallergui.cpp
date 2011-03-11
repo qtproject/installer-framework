@@ -859,7 +859,7 @@ public:
         wasshown(false),
         modified(false),
         connected(false),
-        m_model(new ComponentModel(installer, installer->isUpdater() ? UpdaterMode : InstallerMode)),
+        m_model(new ComponentModel(installer, installer->isUpdater() ? UpdaterMode : AllMode)),
         m_installer(installer),
         m_treeView(new QTreeView(q))
     {
@@ -936,7 +936,7 @@ public slots:
         if (!m_installer->isUpdater()) {
             QList<Component*> components = m_installer->components(false, AllMode);
             foreach (Component *comp, components)
-                comp->setSelected(true, InstallerMode);
+                comp->setSelected(true, AllMode);
         } else {
             selectDefault();
         }
@@ -944,12 +944,12 @@ public slots:
 
     void deselectAll()
     {
-        select(false, m_installer->isUpdater() ? UpdaterMode : InstallerMode);
+        select(false, m_installer->isUpdater() ? UpdaterMode : AllMode);
     }
 
     void selectDefault()
     {
-        RunModes runMode = m_installer->isUpdater() ? UpdaterMode : InstallerMode;
+        RunModes runMode = m_installer->isUpdater() ? UpdaterMode : AllMode;
         select(false, runMode); // TODO: remove after we have reworked dependency handling
         select(true, runMode);
     }

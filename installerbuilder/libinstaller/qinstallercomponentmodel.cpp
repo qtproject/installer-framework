@@ -85,7 +85,7 @@ ComponentModel::ComponentModel(Installer *installer, RunModes runMode)
     : QAbstractItemModel(installer)
     , m_runMode(runMode)
 {
-    if (runMode == InstallerMode) {
+    if (runMode == AllMode) {
         connect(installer, SIGNAL(componentsAdded(QList<QInstaller::Component*>)), this,
             SLOT(addComponents(QList<QInstaller::Component*>)));
     } else {
@@ -176,7 +176,7 @@ QModelIndex ComponentModel::index(int row, int column, const QModelIndex &parent
         : reinterpret_cast<Component*>(parent.internalPointer())->components(false, m_runMode);
 
     // don't count virtual components
-    if (!virtualComponentsVisible() && m_runMode == InstallerMode) {
+    if (!virtualComponentsVisible() && m_runMode == AllMode) {
         components.erase(std::remove_if(components.begin(), components.end(), Component::IsVirtual()),
             components.end());
     }
@@ -213,7 +213,7 @@ QModelIndex ComponentModel::parent(const QModelIndex &index) const
         : parentComponent->parentComponent()->components(false, m_runMode);
 
     // don't count virtual components
-    if (!virtualComponentsVisible() && m_runMode == InstallerMode) {
+    if (!virtualComponentsVisible() && m_runMode == AllMode) {
         parentSiblings.erase(std::remove_if(parentSiblings.begin(), parentSiblings.end(),
             Component::IsVirtual()), parentSiblings.end());
     }
@@ -245,7 +245,7 @@ int ComponentModel::rowCount(const QModelIndex &parent) const
         : reinterpret_cast<Component*>(parent.internalPointer())->components(false, m_runMode);
 
     // don't count virtual components
-    if (!virtualComponentsVisible() && m_runMode == InstallerMode) {
+    if (!virtualComponentsVisible() && m_runMode == AllMode) {
         components.erase(std::remove_if (components.begin(), components.end(), Component::IsVirtual()),
             components.end());
     }
@@ -270,7 +270,7 @@ Qt::ItemFlags ComponentModel::flags(const QModelIndex &index) const
     if (!component->isEnabled())
         result &= Qt::ItemIsDropEnabled;
 
-    if (m_runMode == InstallerMode && forcedInstallation) {
+    if (m_runMode == AllMode && forcedInstallation) {
         //now it should look like a disabled item
         result &= ~Qt::ItemIsEnabled;
     }
@@ -307,7 +307,7 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &data, int
                 nonSelected = false;
         }
 
-        if (m_runMode == InstallerMode) {
+        if (m_runMode == AllMode) {
             Installer *installer = qobject_cast< Installer*> (QObject::parent());
             installer->setCompleteUninstallation(nonSelected);
         }

@@ -396,7 +396,7 @@ int Installer::downloadNeededArchives(RunModes runMode, double partProgressSize)
         if (!comp->isSelected(runMode))
             continue;
         if (comp->value(QLatin1String("PreviousState")) == QLatin1String("Installed")
-            && runMode == InstallerMode) {
+            && runMode == AllMode) {
                 continue;
         }
         appendComponentAndMissingDependencies(neededComponents, comp);
@@ -691,6 +691,7 @@ bool Installer::fetchAllPackages()
 
     qDeleteAll(d->m_components);
     d->m_components.clear();
+    d->m_componentHash.clear();
 
     QMap<QInstaller::Component*, QString> scripts;
     QMap<QString, QInstaller::Component*> components;
@@ -784,10 +785,8 @@ bool Installer::fetchAllPackages()
 
     // append all components w/o parent to the direct list
     foreach (QInstaller::Component *component, components) {
-        if (component->parentComponent() == 0) {
-            d->m_components.append(component);
-            emit componentAdded(component);
-        }
+        if (component->parentComponent() == 0)
+            appendComponent(component);
     }
 
     // after everything is set up, load the scripts
@@ -800,6 +799,7 @@ bool Installer::fetchAllPackages()
     }
 
     emit finishAllComponentsReset();
+    emit componentsAdded(d->m_components);
 
     return true;
 }
@@ -983,6 +983,7 @@ bool Installer::fetchUpdaterPackages()
     }
 
     emit finishUpdaterComponentsReset();
+    emit updaterComponentsAdded(d->m_updaterComponents);
 
     return true;
 }
@@ -1297,7 +1298,7 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
 
     // select all components in the package manager model
     foreach (QInstaller::Component* const i, componentsToSelectInstaller)
-        i->setSelected(true, InstallerMode, Component::InitializeComponentTreeSelectMode);
+        i->setSelected(true, AllMode, Component::InitializeComponentTreeSelectMode);
 
     emit updaterComponentsAdded(d->m_packageManagerComponents);
     emit componentsAdded(d->m_components);
@@ -1313,14 +1314,14 @@ void Installer::appendComponent(Component *component)
 int Installer::componentCount(RunModes runMode) const
 {
     if (runMode == UpdaterMode)
-        return d->m_packageManagerComponents.size();
+        return d->m_updaterComponents.size();
     return d->m_components.size();
 }
 
 Component *Installer::component(int i, RunModes runMode) const
 {
     if (runMode == UpdaterMode)
-        return d->m_packageManagerComponents.at(i);
+        return d->m_updaterComponents.at(i);
     return d->m_components.at(i);
 }
 
@@ -1332,23 +1333,15 @@ Component *Installer::component(const QString &name) const
 QList<Component*> Installer::components(bool recursive, RunModes runMode) const
 {
     if (runMode == UpdaterMode)
-        return d->m_packageManagerComponents;
+        return d->m_updaterComponents;
 
     if (!recursive)
         return d->m_components;
 
     QList<Component*> result;
-    QList<Component*>::const_iterator it;
-    for (it = d->m_components.begin(); it != d->m_components.end(); ++it) {
-        result.push_back(*it);
-        result += (*it)->components(true);
-    }
-
-    if (runMode == AllMode) {
-        for (it = d->m_updaterComponents.begin(); it != d->m_updaterComponents.end(); ++it) {
-            result.push_back(*it);
-            result += (*it)->components(false);
-        }
+    foreach (QInstaller::Component *component, d->m_components) {
+        result.push_back(component);
+        result += component->components(true);
     }
 
     return result;
@@ -1362,19 +1355,17 @@ QList<Component*> Installer::componentsToInstall(bool recursive, bool sort, RunM
             Component::InstallPriorityLessThan());
     }
 
-    QList<Component*>::const_iterator it;
     QList<Component*> componentsToInstall;
-    for (it = availableComponents.begin(); it != availableComponents.end(); ++it) {
-        Component* const comp = *it;
-        if (!comp->isSelected(runMode))
+    foreach (QInstaller::Component *component, availableComponents) {
+        if (!component->isSelected(runMode))
             continue;
 
         // it was already installed before, so don't add it
-        if (comp->value(QLatin1String("PreviousState")) == QLatin1String("Installed")
-            && runMode == InstallerMode)    // TODO: is the last condition right ????
+        if (component->value(QLatin1String("PreviousState")) == QLatin1String("Installed")
+            && runMode == AllMode)    // TODO: is the last condition right ????
             continue;
 
-        appendComponentAndMissingDependencies(componentsToInstall, comp);
+        appendComponentAndMissingDependencies(componentsToInstall, component);
     }
 
     return componentsToInstall;

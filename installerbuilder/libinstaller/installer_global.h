@@ -39,13 +39,13 @@
 #endif
 
 namespace QInstaller {
-    enum RunModes
-    {
-        UpdaterMode,
-        InstallerMode,
-        AllMode //this is a kind of doesn't matter mode
-    };
-    //Q_ENUMS(InstallerMode)
+
+enum RunModes
+{
+    AllMode,
+    UpdaterMode
+};
+
 }
 
 #endif //INSTALLER_GLOBAL_H

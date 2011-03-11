@@ -69,7 +69,7 @@ static void appendFileData(QIODevice *out, const QString &fileName)
     
     QScriptValue qInstallerComponentByName( QScriptContext* context, QScriptEngine* engine );
 
-    Qt::CheckState componentCheckState( const Component* component, RunModes runMode = InstallerMode );
+    Qt::CheckState componentCheckState( const Component* component, RunModes runMode = AllMode );
     QString uncaughtExceptionString(QScriptEngine *scriptEngine/*, const QString &context*/);
 }
 

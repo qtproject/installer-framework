@@ -1003,7 +1003,7 @@ void InstallerPrivate::runInstaller()
 
         const double downloadPartProgressSize = double(1) / 3;
         double componentsInstallPartProgressSize = double(2) / 3;
-        const int downloadedArchivesCount = q->downloadNeededArchives(InstallerMode,
+        const int downloadedArchivesCount = q->downloadNeededArchives(AllMode,
             downloadPartProgressSize);
 
         //if there was no download we have the whole progress for installing components
@@ -1161,11 +1161,11 @@ void InstallerPrivate::runPackageUpdater()
 
         // first check, if we need admin rights for the installation part
         QList<Component*>::const_iterator it;
-        QList<Component*> availableComponents = q->components(true, InstallerMode);
+        QList<Component*> availableComponents = q->components(true, AllMode);
         for (it = availableComponents.begin(); it != availableComponents.end(); ++it) {
             // check if we need admin rights and ask before the action happens
             Component* const currentComponent = *it;
-            if (!currentComponent->isSelected(InstallerMode))
+            if (!currentComponent->isSelected(AllMode))
                 continue;
 
             // we only need the uninstalled components
@@ -1187,7 +1187,7 @@ void InstallerPrivate::runPackageUpdater()
         //to have 1/5 for undoOperationProgressSize and 2/5 for componentsInstallPartProgressSize
         const double downloadPartProgressSize = double(2) / 5;
         // following, we download the needed archives
-        q->downloadNeededArchives(InstallerMode, downloadPartProgressSize);
+        q->downloadNeededArchives(AllMode, downloadPartProgressSize);
 
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Removing deselected components..."));
         QVector< KDUpdater::UpdateOperation* > nonRevertedOperations;
@@ -1264,7 +1264,7 @@ void InstallerPrivate::runPackageUpdater()
             delete currentOperation;
         }
 
-        const QList<Component*> allComponents = q->components(true, InstallerMode);
+        const QList<Component*> allComponents = q->components(true, AllMode);
         foreach (Component *comp, allComponents) {
             if (!comp->isSelected())
                 uninstalledComponents |= comp;

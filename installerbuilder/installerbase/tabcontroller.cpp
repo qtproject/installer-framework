@@ -117,7 +117,7 @@ void TabController::Private::preselectInstalledPackages()
     for (it = components.begin(); it != components.end(); ++it) {
         QInstaller::Component* const comp = *it;
         const bool selected = m_app->packagesInfo()->findPackageInfo(comp->name()) > -1;
-        comp->setSelected(selected, QInstaller::InstallerMode,
+        comp->setSelected(selected, QInstaller::AllMode,
             QInstaller::Component::InitializeComponentTreeSelectMode);
         comp->setEnabled(m_repoReached || selected);
     }
