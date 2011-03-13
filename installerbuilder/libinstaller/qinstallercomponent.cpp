@@ -435,7 +435,7 @@ void Component::appendComponent(Component* component)
     Returns a list of child components. If \a recursive is set to true, the returned list
     contains not only the direct children, but all ancestors.
 */
-QList<Component*> Component::components(bool recursive, RunModes runMode) const
+QList<Component*> Component::childComponents(bool recursive, RunModes runMode) const
 {
     if (runMode == UpdaterMode)
         return QList<Component*>();
@@ -446,7 +446,7 @@ QList<Component*> Component::components(bool recursive, RunModes runMode) const
     QList<Component*> result;
     foreach (Component *component, d->m_components) {
         result.append(component);
-        result += component->components(true);
+        result += component->childComponents(true);
     }
     return result;
 }
@@ -1098,7 +1098,7 @@ void Component::setSelected(bool selected, RunModes runMode, SelectMode selectMo
 
         // and all children
         if (selectMode == NormalSelectMode) {
-            const QList<Component*> children = components(true);
+            const QList<Component*> children = childComponents(true);
             foreach (Component *child, children) {
                 child->setValue(QString::fromLatin1("WantedState"),
                     selected ? QString::fromLatin1("Installed") : QString::fromLatin1("Uninstalled"));

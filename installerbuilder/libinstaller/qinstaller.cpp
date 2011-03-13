@@ -1341,7 +1341,7 @@ QList<Component*> Installer::components(bool recursive, RunModes runMode) const
     QList<Component*> result;
     foreach (QInstaller::Component *component, d->m_components) {
         result.push_back(component);
-        result += component->components(true);
+        result += component->childComponents(true);
     }
 
     return result;
@@ -1389,7 +1389,7 @@ static Component* subComponentByName(const Installer *installer, const QString &
     if (check != 0 && componentMatches(check, name, version))
         return check;
 
-    const QList<Component*> comps = check == 0 ? installer->components() : check->components();
+    const QList<Component*> comps = check == 0 ? installer->components() : check->childComponents();
     for (QList<Component*>::const_iterator it = comps.begin(); it != comps.end(); ++it) {
         Component* const result = subComponentByName(installer, name, version, *it);
         if (result != 0)
@@ -1397,7 +1397,7 @@ static Component* subComponentByName(const Installer *installer, const QString &
     }
 
     const QList<Component*> uocomps =
-        check == 0 ? installer->components(false, UpdaterMode) : check->components(false, UpdaterMode);
+        check == 0 ? installer->components(false, UpdaterMode) : check->childComponents(false, UpdaterMode);
     for (QList<Component*>::const_iterator it = uocomps.begin(); it != uocomps.end(); ++it) {
         Component* const result = subComponentByName(installer, name, version, *it);
         if (result != 0)

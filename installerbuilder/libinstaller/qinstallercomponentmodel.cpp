@@ -46,7 +46,7 @@ using namespace QInstaller;
 bool checkCompleteUninstallation(const Component *component)
 {
     bool nonSelected = true;
-    const QList<Component*> components = component->components(true);
+    const QList<Component*> components = component->childComponents(true);
     foreach (const Component *comp, components) {
         if (comp->isSelected())
             nonSelected = false;
@@ -70,7 +70,7 @@ bool checkWorkRequest(const Component *component)
     }
 
     //now checkWorkRequest for all childs
-    const QList<Component*> components = component->components(true);
+    const QList<Component*> components = component->childComponents(true);
     foreach (const Component *component, components) {
         if (checkWorkRequest(component))
             return true;
@@ -138,7 +138,7 @@ void ComponentModel::selectedChanged(bool checked)
     Q_ASSERT(comp);
 
     bool requestWork = false;
-    foreach (Component *component, comp->components(false, m_runMode)) {
+    foreach (Component *component, comp->childComponents(false, m_runMode)) {
         if (!m_seenComponents.contains(component)) {
             m_seenComponents.push_back(component);
             connect(component, SIGNAL(selectedChanged(bool)), this, SLOT(selectedChanged(bool)));
@@ -173,7 +173,7 @@ QModelIndex ComponentModel::index(int row, int column, const QModelIndex &parent
         return QModelIndex();
 
     QList<Component*> components = !parent.isValid() ? m_components
-        : reinterpret_cast<Component*>(parent.internalPointer())->components(false, m_runMode);
+        : reinterpret_cast<Component*>(parent.internalPointer())->childComponents(false, m_runMode);
 
     // don't count virtual components
     if (!virtualComponentsVisible() && m_runMode == AllMode) {
@@ -210,7 +210,7 @@ QModelIndex ComponentModel::parent(const QModelIndex &index) const
         return QModelIndex();
 
     QList<Component*> parentSiblings = parentComponent->parentComponent() == 0 ? m_components
-        : parentComponent->parentComponent()->components(false, m_runMode);
+        : parentComponent->parentComponent()->childComponents(false, m_runMode);
 
     // don't count virtual components
     if (!virtualComponentsVisible() && m_runMode == AllMode) {
@@ -242,7 +242,7 @@ int ComponentModel::rowCount(const QModelIndex &parent) const
         return 0;
 
     QList<Component*> components = !parent.isValid() ? m_components
-        : reinterpret_cast<Component*>(parent.internalPointer())->components(false, m_runMode);
+        : reinterpret_cast<Component*>(parent.internalPointer())->childComponents(false, m_runMode);
 
     // don't count virtual components
     if (!virtualComponentsVisible() && m_runMode == AllMode) {
@@ -366,7 +366,7 @@ Qt::CheckState QInstaller::componentCheckState(const Component *component, RunMo
     // to set the state to either checked if all children are selected or to unchecked
     // if no children are selected or otherwise to partially checked.
     // TODO: check why we use the function from Component instead of QInstaller
-    QList<Component*> children = component->components(true, runMode);
+    QList<Component*> children = component->childComponents(true, runMode);
     // don't count virtual components
     children.erase(std::remove_if(children.begin(), children.end(), Component::IsVirtual()), children.end());
 

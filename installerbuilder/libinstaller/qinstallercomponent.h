@@ -113,7 +113,7 @@ public:
 
     void appendComponent(Component *component);
     Component *parentComponent(RunModes runMode = AllMode) const;
-    QList<Component*> components(bool recursive = false, RunModes runMode = AllMode) const;
+    QList<Component*> childComponents(bool recursive = false, RunModes runMode = AllMode) const;
 
     void loadComponentScript(const QString &fileName);
     void loadTranslations(const QDir &directory, const QStringList &qms);
