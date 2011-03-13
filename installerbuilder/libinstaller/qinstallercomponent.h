@@ -44,11 +44,12 @@ namespace KDUpdater {
 
 namespace QInstaller {
 class Installer;
-class InstallerPrivate;
 
 class INSTALLER_EXPORT Component : public QObject, public QScriptable
 {
     Q_OBJECT
+    Q_DISABLE_COPY(Component);
+
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QString displayName READ displayName)
     Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
@@ -61,10 +62,6 @@ class INSTALLER_EXPORT Component : public QObject, public QScriptable
     Q_PROPERTY(bool removeBeforeUpdate READ removeBeforeUpdate WRITE setRemoveBeforeUpdate)
     Q_PROPERTY(bool installed READ isInstalled)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
-
-    Q_DISABLE_COPY(Component);
-    friend class QInstaller::Installer;
-    friend class QInstaller::InstallerPrivate;
 
 public:
     explicit Component(Installer *installer);
