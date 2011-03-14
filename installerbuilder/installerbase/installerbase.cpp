@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
     try {
 
         {
-            QApplication app(argc, argv);
+            QCoreApplication app(argc, argv);
             const QStringList args = app.arguments();
 
             // this isthe FSEngineServer as an admin rights process upon request:
