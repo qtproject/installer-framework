@@ -38,50 +38,36 @@ namespace KDUpdater {
     class Application;
 }
 
-class MainTabWidget;
-
 class TabController : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(TabController)
 
 public:
-    enum Tabs {
-        UPDATER_TAB,
-        PACKAGE_MANAGER_TAB
-    };
-
     explicit TabController(QObject *parent = 0);
     ~TabController();
 
     int init();
-    int checkRepositories();
-    void setInstaller(QInstaller::Installer *installer);
-    void setTabWidget(MainTabWidget *widget);
-    void setApplication(KDUpdater::Application *app);
+
     void setInstallerGui(QInstaller::Gui *gui);
     void setControlScript(const QString &script);
+    void setApplication(KDUpdater::Application *app);
+    void setInstaller(QInstaller::Installer *installer);
     void setInstallerParams(const QHash<QString, QString> &params);
-    int status() const;
-    Q_INVOKABLE void setCurrentTab(int tab);
 
 private Q_SLOTS:
-    void changeCurrentTab(int index);
-    void canceled();
-    void finished();
+    void accepted();
+    void rejected();
     void restartWizard();
-    void disableUpdaterTab();
-    void enableUpdaterTab();
-    void updaterFinished(int val = 0);
-    void updaterFinished(bool error);
-    void updaterFinishedWithError();
-    void close();
 
-    int initUpdater();
-    int initPackageManager();
+    void updaterFinishedWithError();
+    void updaterFinished(bool error);
+    void updaterFinished(int val = 0);
 
 private:
+    int initUpdater();
     int initUninstaller();
+    int initPackageManager();
 
 private:
     class Private;

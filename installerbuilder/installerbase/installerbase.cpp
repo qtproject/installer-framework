@@ -307,9 +307,9 @@ int main(int argc, char *argv[])
             controller.setInstallerGui(new QtUninstallerGui(&installer));
         }
 
-        int val = controller.init();
-        if (val != Installer::Success)
-            return val;
+        Installer::Status status = Installer::Status(controller.init());
+        if (status != Installer::Success)
+            return status;
 
         const int result = app.exec();
         if (result != 0)
@@ -318,15 +318,7 @@ int main(int argc, char *argv[])
         if (installer.finishedWithSuccess())
             return Installer::Success;
 
-        const Installer::Status status = installer.status();
-        const Installer::Status controllerState = Installer::Status(controller.status());
-
-        Q_ASSERT(status == Installer::Failure || status == Installer::Success
-            || status == Installer::Canceled);
-
-        if (controllerState == Installer::Success)
-            return Installer::Success;
-
+        status = installer.status();
         switch (status) {
             case Installer::Success:
                 return status;
