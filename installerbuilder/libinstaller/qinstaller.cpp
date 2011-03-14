@@ -668,6 +668,32 @@ bool Installer::fetchAllPackages()
     foreach (const QString &tmpDir, tempDirs) {
         if (tmpDir.isEmpty())
             continue;
+
+        const QString updatesXmlPath = tmpDir + QLatin1String("/Updates.xml");
+        QFile updatesFile(updatesXmlPath);
+        try {
+            openForRead(&updatesFile, updatesFile.fileName());
+        } catch(const Error &e) {
+            verbose() << tr("Error opening Updates.xml: ") << e.message() << std::endl;
+            return false;
+        }
+
+        int line = 0;
+        int column = 0;
+        QString error;
+        QDomDocument doc;
+        if (!doc.setContent(&updatesFile, &error, &line, &column)) {
+            verbose() << tr("Parse error in File %4 : %1 at line %2 col %3").arg(error,
+                QString::number(line), QString::number(column), updatesFile.fileName()) << std::endl;
+            return false;
+        }
+
+        const QDomNode checksum = doc.documentElement().firstChildElement(QLatin1String("Checksum"));
+        if (!checksum.isNull()) {
+            const QDomElement checksumElem = checksum.toElement();
+            setTestChecksum(checksumElem.text().toLower() == QLatin1String("true"));
+        }
+
         updaterApp.addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
     }
 
@@ -838,6 +864,32 @@ bool Installer::fetchUpdaterPackages()
     foreach (const QString &tmpDir, tempDirs) {
         if (tmpDir.isEmpty())
             continue;
+
+        const QString updatesXmlPath = tmpDir + QLatin1String("/Updates.xml");
+        QFile updatesFile(updatesXmlPath);
+        try {
+            openForRead(&updatesFile, updatesFile.fileName());
+        } catch(const Error &e) {
+            verbose() << tr("Error opening Updates.xml: ") << e.message() << std::endl;
+            return false;
+        }
+
+        int line = 0;
+        int column = 0;
+        QString error;
+        QDomDocument doc;
+        if (!doc.setContent(&updatesFile, &error, &line, &column)) {
+            verbose() << tr("Parse error in File %4 : %1 at line %2 col %3").arg(error,
+                QString::number(line), QString::number(column), updatesFile.fileName()) << std::endl;
+            return false;
+        }
+
+        const QDomNode checksum = doc.documentElement().firstChildElement(QLatin1String("Checksum"));
+        if (!checksum.isNull()) {
+            const QDomElement checksumElem = checksum.toElement();
+            setTestChecksum(checksumElem.text().toLower() == QLatin1String("true"));
+        }
+
         updaterApp.addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
     }
 
