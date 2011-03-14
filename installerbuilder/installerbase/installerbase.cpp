@@ -97,10 +97,11 @@ int main(int argc, char *argv[])
     const KDSelfRestarter restarter(argc, argv);
     KDRunOnceChecker runCheck(QLatin1String("lockmyApp1234865.lock"));
 
+    QApplication app(argc, argv);
+
     try {
 
         {
-            QCoreApplication app(argc, argv);
             const QStringList args = app.arguments();
 
             // this isthe FSEngineServer as an admin rights process upon request:
@@ -139,7 +140,6 @@ int main(int argc, char *argv[])
             }
         }
 
-        QApplication app(argc, argv);
         if (runCheck.isRunning(KDRunOnceChecker::ProcessList)) {
             if (runCheck.isRunning(KDRunOnceChecker::Lockfile))
                 return 0;

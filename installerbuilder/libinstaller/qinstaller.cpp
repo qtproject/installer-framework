@@ -1184,6 +1184,149 @@ void Installer::setTestChecksum(bool test)
 /*!
     Creates components from the \a updates found by KDUpdater.
 */
+void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
+    const GetRepositoriesMetaInfoJob &metaInfoJob)
+{
+    verbose() << "entered create components V2 in installer" << std::endl;
+
+    emit componentsAboutToBeCleared();
+
+    qDeleteAll(d->m_componentHash);
+    d->m_components.clear();
+    d->m_updaterComponents.clear();
+    d->m_componentHash.clear();
+    QStringList importantUpdates;
+
+    KDUpdater::Application &updaterApp = *d->m_app;
+    KDUpdater::PackagesInfo &packagesInfo = *updaterApp.packagesInfo();
+
+    if (isUninstaller() || isPackageManager()) {
+        //reads all installed components from components.xml
+        if (!setAndParseLocalComponentsFile(packagesInfo))
+            return;
+        packagesInfo.setApplicationName(d->m_installerSettings->applicationName());
+        packagesInfo.setApplicationVersion(d->m_installerSettings->applicationVersion());
+    }
+
+    QHash<QString, KDUpdater::PackageInfo> alreadyInstalledPackagesHash;
+    foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos()) {
+        alreadyInstalledPackagesHash.insert(info.name, info);
+    }
+
+    QStringList globalUnNeededList;
+    QList<Component*> componentsToSelectInPackagemanager;
+    foreach (KDUpdater::Update * const update, updates) {
+        const QString name = update->data(QLatin1String("Name")).toString();
+        Q_ASSERT(!name.isEmpty());
+        QInstaller::Component* component(new QInstaller::Component(this));
+        component->loadDataFromUpdate(update);
+
+        QString installedVersion;
+
+        //to find the installed version number we need to check for all possible names
+        QStringList possibleInstalledNameList;
+        if (!update->data(QLatin1String("Replaces")).toString().isEmpty()) {
+            QString replacesAsString = update->data(QLatin1String("Replaces")).toString();
+            QStringList replaceList(replacesAsString.split(QLatin1String(","),
+                QString::SkipEmptyParts));
+            possibleInstalledNameList.append(replaceList);
+            globalUnNeededList.append(replaceList);
+        }
+        if (alreadyInstalledPackagesHash.contains(name)) {
+            possibleInstalledNameList.append(name);
+        }
+        foreach(const QString &possibleName, possibleInstalledNameList) {
+            if (alreadyInstalledPackagesHash.contains(possibleName)) {
+                if (!installedVersion.isEmpty()) {
+                    qCritical("If installed version is not empty there are more then one package " \
+                              "which would be replaced and this is completly wrong");
+                    Q_ASSERT(false);
+                }
+                installedVersion = alreadyInstalledPackagesHash.value(possibleName).version;
+            }
+            //if we have newer data in the repository we don't need the data from harddisk
+            alreadyInstalledPackagesHash.remove(name);
+        }
+
+        const Repository currentUsedRepository = metaInfoJob.repositoryForTemporaryDirectory(
+                    QInstaller::pathFromUrl(update->sourceInfo().url));
+        component->setRepositoryUrl(currentUsedRepository.url());
+
+        // the package manager should preselect the currently installed packages
+        if (isPackageManager()) {
+
+            //reset PreviousState and CurrentState to have a chance to get a diff, after the user
+            //changed something
+            if (installedVersion.isEmpty()) {
+                setValue(QLatin1String("PreviousState"), QLatin1String("Uninstalled"));
+                setValue(QLatin1String("CurrentState"), QLatin1String("Uninstalled"));
+                if (component->value(QLatin1String("NewComponent")) == QLatin1String("true")) {
+                    d->m_updaterComponents.append(component);
+                }
+            } else {
+                setValue(QLatin1String("PreviousState"), QLatin1String("Installed"));
+                setValue(QLatin1String("CurrentState"), QLatin1String("Installed"));
+                const QString updateVersion = update->data(QLatin1String("Version")).toString();
+                //check if it is an update
+                if (KDUpdater::compareVersion(installedVersion, updateVersion) >= 0) {
+                    d->m_updaterComponents.append(component);
+                }
+                if (update->data(QLatin1String("Important"), false).toBool())
+                    importantUpdates.append(name);
+                componentsToSelectInPackagemanager.append(component);
+            }
+        }
+
+        d->m_componentHash[name] = component;
+    } //foreach (KDUpdater::Update * const update, updates)
+
+    if (!importantUpdates.isEmpty()) {
+        //ups, there was an important update - then we only want to show these
+        d->m_updaterComponents.clear();
+        //maybe in future we have more then one
+        foreach (const QString &importantUpdate, importantUpdates) {
+            d->m_updaterComponents.append(d->m_componentHash[importantUpdate]);
+        }
+    }
+    //globalUnNeededList
+
+    // now append all components to their respective parents
+    QHash<QString, QInstaller::Component*>::iterator it;
+    for (it = d->m_componentHash.begin(); it != d->m_componentHash.end(); ++it) {
+        QInstaller::Component* const currentComponent = *it;
+        QString id = it.key();
+        while (!id.isEmpty() && currentComponent->parentComponent() == 0) {
+            id = id.section(QChar::fromLatin1('.'), 0, -2);
+            //is there a component which is called like a parent
+            if (d->m_componentHash.contains(id))
+                d->m_componentHash[id]->appendComponent(currentComponent);
+        }
+    }
+
+//    //foreach component instead of every update or so
+//    const QString script = update->data(QLatin1String("Script")).toString();
+//    if (!script.isEmpty()) {
+//        scripts.insert(component.data(), QString::fromLatin1("%1/%2/%3").arg(
+//                QInstaller::pathFromUrl(update->sourceInfo().url), newComponentName, script));
+//    }
+
+    // select all components in the updater model
+    foreach (QInstaller::Component* const i, d->m_updaterComponents)
+        i->setSelected(true, UpdaterMode, Component::InitializeComponentTreeSelectMode);
+
+    // select all components in the package manager model
+    foreach (QInstaller::Component* const i, componentsToSelectInPackagemanager)
+        i->setSelected(true, AllMode, Component::InitializeComponentTreeSelectMode);
+
+    d->m_components = d->m_componentHash.values();
+    //signals for the qinstallermodel
+    emit componentsAdded(d->m_components);
+    emit updaterComponentsAdded(d->m_updaterComponents);
+}
+
+/*!
+    Creates components from the \a updates found by KDUpdater.
+*/
 void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     const GetRepositoriesMetaInfoJob &metaInfoJob)
 {

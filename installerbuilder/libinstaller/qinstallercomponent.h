@@ -102,7 +102,10 @@ public:
 
     void loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo);
     void loadDataFromUpdate(KDUpdater::Update* update);
+
+    //TODO: remove this, it makes no sense
     void updateState(const bool selected);
+
 
     QHash<QString, QString> variables() const;
     Q_INVOKABLE void setValue(const QString &key, const QString &value);

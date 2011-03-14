@@ -284,6 +284,10 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
         update->data(QLatin1String("Version")).toString());
     setValue(QLatin1String("Dependencies"),
         update->data(QLatin1String("Dependencies")).toString());
+    setValue(QLatin1String("ReleaseDate"),
+        update->data(QLatin1String("ReleaseDate")).toString());
+    setValue(QLatin1String("Replaces"),
+        update->data(QLatin1String("Replaces")).toString());
     setValue(QLatin1String("Virtual"),
         update->data(QLatin1String("Virtual")).toString());
     setValue(QLatin1String("SortingPriority"),
@@ -292,21 +296,18 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
         update->data(QLatin1String("InstallPriority")).toString());
     setValue(QLatin1String("AutoSelectOn"),
         update->data(QLatin1String("AutoSelectOn")).toString());
-
     setValue(QLatin1String("Important"),
         update->data(QLatin1String("Important")).toString());
-
     setValue(QLatin1String("ForcedInstallation"),
         update->data(QLatin1String("ForcedInstallation")).toString());
-
     setValue(QLatin1String("UpdateText"),
         update->data(QLatin1String("UpdateText")).toString());
-
     setValue(QLatin1String("RequiresAdminRights"),
         update->data(QLatin1String("RequiresAdminRights")).toString());
-
     setValue(QLatin1String("NewComponent"),
         update->data(QLatin1String("NewComponent")).toString());
+    setValue(QLatin1String("Script"),
+        update->data(QLatin1String("Script")).toString());
 
     const QString localPath = QInstaller::pathFromUrl(update->sourceInfo().url);
 
