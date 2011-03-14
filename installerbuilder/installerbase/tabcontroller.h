@@ -55,6 +55,11 @@ public:
     void setInstaller(QInstaller::Installer *installer);
     void setInstallerParams(const QHash<QString, QString> &params);
 
+public Q_SLOTS:
+    int initUpdater();
+    int initUninstaller();
+    int initPackageManager();
+
 private Q_SLOTS:
     void accepted();
     void rejected();
@@ -63,11 +68,6 @@ private Q_SLOTS:
     void updaterFinishedWithError();
     void updaterFinished(bool error);
     void updaterFinished(int val = 0);
-
-private:
-    int initUpdater();
-    int initUninstaller();
-    int initPackageManager();
 
 private:
     class Private;

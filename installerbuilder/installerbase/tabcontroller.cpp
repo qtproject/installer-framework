@@ -180,52 +180,7 @@ void TabController::setInstallerParams(const QHash<QString, QString> &params)
     d->m_params = params;
 }
 
-// -- private slots
-
-void TabController::accepted()
-{
-    d->m_installer->writeUninstaller();
-}
-
-void TabController::rejected()
-{
-    d->m_installer->writeUninstaller();
-}
-
-void TabController::restartWizard()
-{
-    d->m_installer->reset(d->m_params);
-    init(); // restart and switch back to intro page
-}
-
-void TabController::updaterFinishedWithError()
-{
-    d->m_installer->writeUninstaller();
-
-    if (!d->m_installer->isInstaller() && !d->m_gui.isNull())
-        d->m_gui->rejectWithoutPrompt();
-
-    rejected();
-}
-
-void TabController::updaterFinished(bool error)
-{
-    if (d->m_installer->needsRestart())
-        updaterFinishedWithError();
-    //else if (!error)
-    //    checkRepositories();
-}
-
-void TabController::updaterFinished(int val)
-{
-    if (val != QDialog::Accepted) {
-        if (!d->m_installer->isInstaller() && !d->m_gui.isNull())
-            d->m_gui->rejectWithoutPrompt();
-        accepted();
-    }
-}
-
-// -- private
+// -- public slots
 
 int TabController::initUpdater()
 {
@@ -315,3 +270,49 @@ int TabController::initPackageManager()
 
     return Installer::Success;
 }
+
+// -- private slots
+
+void TabController::accepted()
+{
+    d->m_installer->writeUninstaller();
+}
+
+void TabController::rejected()
+{
+    d->m_installer->writeUninstaller();
+}
+
+void TabController::restartWizard()
+{
+    d->m_installer->reset(d->m_params);
+    init(); // restart and switch back to intro page
+}
+
+void TabController::updaterFinishedWithError()
+{
+    d->m_installer->writeUninstaller();
+
+    if (!d->m_installer->isInstaller() && !d->m_gui.isNull())
+        d->m_gui->rejectWithoutPrompt();
+
+    rejected();
+}
+
+void TabController::updaterFinished(bool error)
+{
+    if (d->m_installer->needsRestart())
+        updaterFinishedWithError();
+    //else if (!error)
+    //    checkRepositories();
+}
+
+void TabController::updaterFinished(int val)
+{
+    if (val != QDialog::Accepted) {
+        if (!d->m_installer->isInstaller() && !d->m_gui.isNull())
+            d->m_gui->rejectWithoutPrompt();
+        accepted();
+    }
+}
+
