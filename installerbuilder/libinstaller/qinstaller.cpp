@@ -2444,7 +2444,7 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
             d->m_updaterComponents.append(d->m_componentHash[importantUpdate]);
         }
     }
-    globalUnNeededList
+    //globalUnNeededList
 
     // now append all components to their respective parents
     QHash<QString, QInstaller::Component*>::iterator it;
