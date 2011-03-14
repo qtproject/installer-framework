@@ -123,6 +123,8 @@ public:
     void setRemoteRepositories(const QList<Repository> &repositories);
     void setTemporaryRepositories(const QList<Repository> &repositories, bool replace = false);
 
+    void createComponentsV2(const QList<KDUpdater::Update*> &updates,
+        const GetRepositoriesMetaInfoJob& metaInfoJob);
     void createComponents(const QList<KDUpdater::Update*> &updates,
         const GetRepositoriesMetaInfoJob& metaInfoJob);
 
