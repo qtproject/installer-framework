@@ -513,9 +513,9 @@ Installer::Private::Private(Installer *q, qint64 magicmaker,
 
 Installer::Private::~Private()
 {
-    qDeleteAll(m_rootComponents);
-    qDeleteAll(m_updaterComponents);
-    m_rootComponents.clear();
+//    qDeleteAll(m_components);
+//    qDeleteAll(m_updaterComponents);
+//    m_components.clear();
     qDeleteAll(m_performedOperationsOld);
     qDeleteAll(m_performedOperationsCurrentSession);
 }
@@ -2309,7 +2309,7 @@ void Installer::setRemoteRepositories(const QList<Repository> &repositories)
     updateFinder->run();
 
     // now create installable componets
-    createComponents(updateFinder->updates(), metaInfoJob);
+    createComponentsV2(updateFinder->updates(), metaInfoJob);
 }
 
 /*!
@@ -2655,6 +2655,7 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     emit componentsAdded(d->m_rootComponents);
 }
 
+//TODO: remove this unused function
 void Installer::appendComponent(Component *component)
 {
     d->m_rootComponents.append(component);
