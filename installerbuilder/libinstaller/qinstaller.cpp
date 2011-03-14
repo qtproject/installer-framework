@@ -469,7 +469,7 @@ public:
     KDUpdater::Application * m_app;
 
     // Owned. Indexed by component name
-    QList<Component*> m_components;
+    QList<Component*> m_rootComponents;
     QHash<QString, Component*> m_componentHash;
 
     QList<Component*> m_updaterComponents;
@@ -513,9 +513,9 @@ Installer::Private::Private(Installer *q, qint64 magicmaker,
 
 Installer::Private::~Private()
 {
-    qDeleteAll(m_components);
+    qDeleteAll(m_rootComponents);
     qDeleteAll(m_updaterComponents);
-    m_components.clear();
+    m_rootComponents.clear();
     qDeleteAll(m_performedOperationsOld);
     qDeleteAll(m_performedOperationsCurrentSession);
 }
@@ -2348,7 +2348,7 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
     emit componentsAboutToBeCleared();
 
     qDeleteAll(d->m_componentHash);
-    d->m_components.clear();
+    d->m_rootComponents.clear();
     d->m_updaterComponents.clear();
     d->m_componentHash.clear();
     QStringList importantUpdates;
@@ -2474,9 +2474,9 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
     foreach (QInstaller::Component* const i, componentsToSelectInPackagemanager)
         i->setSelected(true, InstallerMode, Component::InitializeComponentTreeSelectMode);
 
-    d->m_components = d->m_componentHash.values();
+    d->m_rootComponents = d->m_componentHash.values();
     //signals for the qinstallermodel
-    emit componentsAdded(d->m_components);
+    emit componentsAdded(d->m_rootComponents);
     emit updaterComponentsAdded(d->m_updaterComponents);
 }
 
@@ -2490,9 +2490,9 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
 
     emit componentsAboutToBeCleared();
 
-    qDeleteAll(d->m_components);
+    qDeleteAll(d->m_rootComponents);
     qDeleteAll(d->m_updaterComponents);
-    d->m_components.clear();
+    d->m_rootComponents.clear();
     d->m_updaterComponents.clear();
     d->m_packageManagerComponents.clear();
     d->m_componentHash.clear();
@@ -2652,12 +2652,12 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
         i->setSelected(true, InstallerMode, Component::InitializeComponentTreeSelectMode);
 
     emit updaterComponentsAdded(d->m_packageManagerComponents);
-    emit componentsAdded(d->m_components);
+    emit componentsAdded(d->m_rootComponents);
 }
 
 void Installer::appendComponent(Component *component)
 {
-    d->m_components.append(component);
+    d->m_rootComponents.append(component);
     d->m_componentHash[component->name()] = component;
     emit componentAdded(component);
 }
@@ -2666,14 +2666,14 @@ int Installer::componentCount(RunModes runMode) const
 {
     if (runMode == UpdaterMode)
         return d->m_packageManagerComponents.size();
-    return d->m_components.size();
+    return d->m_rootComponents.size();
 }
 
 Component *Installer::component(int i, RunModes runMode) const
 {
     if (runMode == UpdaterMode)
         return d->m_packageManagerComponents.at(i);
-    return d->m_components.at(i);
+    return d->m_rootComponents.at(i);
 }
 
 Component *Installer::component(const QString &name) const
@@ -2687,11 +2687,11 @@ QList<Component*> Installer::components(bool recursive, RunModes runMode) const
         return d->m_packageManagerComponents;
 
     if (!recursive)
-        return d->m_components;
+        return d->m_rootComponents;
 
     QList<Component*> result;
     QList<Component*>::const_iterator it;
-    for (it = d->m_components.begin(); it != d->m_components.end(); ++it) {
+    for (it = d->m_rootComponents.begin(); it != d->m_rootComponents.end(); ++it) {
         result.push_back(*it);
         result += (*it)->components(true);
     }
