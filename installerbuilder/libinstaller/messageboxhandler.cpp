@@ -36,6 +36,8 @@
 #include <QScriptValue>
 #include <QScriptEngine>
 #include <QDebug>
+#include <QPushButton>
+#include <QDialogButtonBox>
 
 QScriptValue QInstaller::registerMessageBox( QScriptEngine* scriptEngine ) {
     QScriptValue messageBox = scriptEngine->newQObject(MessageBoxHandler::instance());
@@ -140,6 +142,39 @@ QWidget* MessageBoxHandler::currentBestSuitParent()
     return qApp->activeWindow();
 }
 
+// taken from Qt
+static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBox::Icon icon,
+    const QString& title, const QString& text, QMessageBox::StandardButtons buttons,
+    QMessageBox::StandardButton defaultButton)
+{
+    QMessageBox msgBox(icon, title, text, QMessageBox::NoButton, parent);
+    QDialogButtonBox *buttonBox = msgBox.findChild<QDialogButtonBox*>();
+    Q_ASSERT(buttonBox != 0);
+
+    uint mask = QMessageBox::FirstButton;
+    while (mask <= QMessageBox::LastButton) {
+        uint sb = buttons & mask;
+        mask <<= 1;
+        if (!sb)
+            continue;
+        QPushButton *button = msgBox.addButton((QMessageBox::StandardButton)sb);
+        // Choose the first accept role as the default
+        if (msgBox.defaultButton())
+            continue;
+        if ((defaultButton == QMessageBox::NoButton
+            && buttonBox->buttonRole(button) == QDialogButtonBox::AcceptRole)
+            || (defaultButton != QMessageBox::NoButton && sb == uint(defaultButton))) {
+                msgBox.setDefaultButton(button);
+        }
+    }
+#if Q_WS_MAC
+    msgBox.setWindowModality(Qt::WindowModal);
+#endif
+    if (msgBox.exec() == -1)
+        return QMessageBox::Cancel;
+    return msgBox.standardButton(msgBox.clickedButton());
+}
+
 QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messageType, QWidget* parent, const QString& identifier, const QString& title, const QString& text,
                                      QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
 {
@@ -152,13 +187,13 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
             qDebug() << QString(QLatin1String("create message box with identifier: '%1'")).arg(identifier);
         switch( messageType ) {
         case criticalType:
-            return QMessageBox::critical( parent, title, text, buttons, button );
+            return showNewMessageBox( parent, QMessageBox::Critical, title, text, buttons, button );
         case informationType:
-            return QMessageBox::information( parent, title, text, buttons, button );
+            return showNewMessageBox( parent, QMessageBox::Information, title, text, buttons, button );
         case questionType:
-            return QMessageBox::question( parent, title, text, buttons, button );
+            return showNewMessageBox( parent, QMessageBox::Question, title, text, buttons, button );
         case warningType:
-            return QMessageBox::warning( parent, title, text, buttons, button );
+            return showNewMessageBox( parent, QMessageBox::Warning, title, text, buttons, button );
         }
     }
     else
