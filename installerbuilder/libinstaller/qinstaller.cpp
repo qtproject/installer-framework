@@ -2444,13 +2444,15 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
             d->m_updaterComponents.append(d->m_componentHash[importantUpdate]);
         }
     }
-    //globalUnNeededList
 
     // now append all components to their respective parents
+    // except the components which are aimed for replace to another name(globalUnNeededList)
     QHash<QString, QInstaller::Component*>::iterator it;
     for (it = d->m_componentHash.begin(); it != d->m_componentHash.end(); ++it) {
         QInstaller::Component* const currentComponent = *it;
         QString id = it.key();
+        if (globalUnNeededList.contains(id))
+            continue; //we don't want to append the unneeded components
         while (!id.isEmpty() && currentComponent->parentComponent() == 0) {
             id = id.section(QChar::fromLatin1('.'), 0, -2);
             //is there a component which is called like a parent
