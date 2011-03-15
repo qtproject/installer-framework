@@ -906,6 +906,12 @@ public:
             SIGNAL(completeChanged()), Qt::QueuedConnection);
         connect(m_model, SIGNAL(modelReset()), this, SLOT(modelWasReseted()),
             Qt::QueuedConnection);
+
+        connect(m_installer, SIGNAL(finishAllComponentsReset()), this, SLOT(componentsChanged()),
+            Qt::QueuedConnection);
+        connect(m_installer, SIGNAL(finishUpdaterComponentsReset()), this, SLOT(componentsChanged()),
+            Qt::QueuedConnection);
+
         connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(selectionChanged()));
     }
@@ -978,6 +984,15 @@ public slots:
         m_treeView->setExpanded(m_model->index(0, 0), true);
     }
 
+    void componentsChanged()
+    {
+        RunModes mode = m_installer->isUpdater() ? UpdaterMode : AllMode;
+
+        m_model->clear();
+        m_model->setRunMode(mode);
+        m_model->addComponents(m_installer->components(false, mode));
+    }
+
 private:
     void select(bool select, RunModes runMode)
     {
@@ -1042,6 +1057,7 @@ void ComponentSelectionPage::entering()
                 Qt::QueuedConnection);
         }
     }
+    d->componentsChanged();
     setModified(d->modified);
     wizard()->button(QWizard::CancelButton)->setEnabled(true);
 }

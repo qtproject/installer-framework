@@ -85,17 +85,16 @@ ComponentModel::ComponentModel(Installer *installer, RunModes runMode)
     : QAbstractItemModel(installer)
     , m_runMode(runMode)
 {
-    if (runMode == AllMode) {
-        connect(installer, SIGNAL(componentsAdded(QList<QInstaller::Component*>)), this,
-            SLOT(addComponents(QList<QInstaller::Component*>)));
-    } else {
-        connect(installer, SIGNAL(updaterComponentsAdded(QList<QInstaller::Component*>)),
-            this, SLOT(addComponents(QList<QInstaller::Component*>)));
-    }
+    connect(installer, SIGNAL(startAllComponentsReset()), this, SLOT(clear()));
+    connect(installer, SIGNAL(componentsAdded(QList<QInstaller::Component*>)), this,
+        SLOT(addComponents(QList<QInstaller::Component*>)));
+
+    connect(installer, SIGNAL(startUpdaterComponentsReset()), this, SLOT(clear()));
+    connect(installer, SIGNAL(updaterComponentsAdded(QList<QInstaller::Component*>)),
+        this, SLOT(addComponents(QList<QInstaller::Component*>)));
 
     connect(installer, SIGNAL(componentAdded(QInstaller::Component*)), this,
         SLOT(componentAdded(QInstaller::Component*)));
-    connect(installer, SIGNAL(componentsAboutToBeCleared()), this, SLOT(clear()));
 }
 
 ComponentModel::~ComponentModel()
@@ -129,6 +128,11 @@ void ComponentModel::clear()
     m_seenComponents.clear();
 
     endResetModel();
+}
+
+void ComponentModel::setRunMode(RunModes runMode)
+{
+    m_runMode = runMode;
 }
 
 void ComponentModel::selectedChanged(bool checked)
