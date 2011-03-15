@@ -107,6 +107,7 @@ public:
     QMap< QString, QWidget* > userInterfaces;
 
     QUrl repositoryUrl;
+    QString localTempPath;
     QStringList downloadableArchives;
     QStringList stopProcessForUpdateRequests;
 
@@ -460,6 +461,15 @@ QString Component::name() const
 QString Component::displayName() const
 {
     return value( QLatin1String( "DisplayName" ) );
+}
+
+void Component::loadComponentScript()
+{
+    const QString script = value(QLatin1String("Script"));
+    if (!localTempPath().isEmpty() && !script.isEmpty()) {
+        loadComponentScript(QString::fromLatin1("%1/%2/%3").arg(
+            d->localTempPath, name(), script));
+    }
 }
 
 /*!
@@ -1194,4 +1204,15 @@ QUrl Component::repositoryUrl() const
 void Component::setRepositoryUrl( const QUrl& url )
 {
     d->repositoryUrl = url;
+}
+
+
+QString Component::localTempPath() const
+{
+    return d->localTempPath;
+}
+
+void Component::setLocalTempPath(const QString &tempLocalPath)
+{
+    d->localTempPath = tempLocalPath;
 }
