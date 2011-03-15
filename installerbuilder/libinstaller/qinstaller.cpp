@@ -475,6 +475,9 @@ public:
     QList<Component*> m_updaterComponents;
     QList<Component*> m_packageManagerComponents;
 
+    //a hack to get the will be replaced components extra
+    QList<QInstaller::Component*> willBeReplacedComponents;
+
     QList<KDUpdater::UpdateOperation*> ownedOperations;
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsOld;
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsCurrentSession;
@@ -2510,6 +2513,15 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     QMap<QString, QInstaller::Component*> components;
     QList<Component*> componentsToSelectUpdater, componentsToSelectInstaller;
 
+// new from createComponentV2
+    //use this hash instead of the plain list of packageinfos
+    QHash<QString, KDUpdater::PackageInfo> alreadyInstalledPackagesHash;
+    foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos()) {
+        alreadyInstalledPackagesHash.insert(info.name, info);
+    }
+    QStringList globalUnNeededList;
+// END -  new from createComponentV2
+
     //why do we need to add the components if there was a metaInfoJob.error()?
     //will this happen if there is no internet connection?
     //ok usually there should be the installed and the online tree
@@ -2528,13 +2540,45 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     } else {
         foreach (KDUpdater::Update * const update, updates) {
             const QString newComponentName = update->data(QLatin1String("Name")).toString();
+
+// new from createComponentV2
+            const QString name(newComponentName);
+            QString installedVersion;
+
+            //to find the installed version number we need to check for all possible names
+            QStringList possibleInstalledNameList;
+            if (!update->data(QLatin1String("Replaces")).toString().isEmpty()) {
+                QString replacesAsString = update->data(QLatin1String("Replaces")).toString();
+                QStringList replaceList(replacesAsString.split(QLatin1String(","),
+                    QString::SkipEmptyParts));
+                possibleInstalledNameList.append(replaceList);
+                globalUnNeededList.append(replaceList);
+            }
+            if (alreadyInstalledPackagesHash.contains(name)) {
+                possibleInstalledNameList.append(name);
+            }
+            foreach(const QString &possibleName, possibleInstalledNameList) {
+                if (alreadyInstalledPackagesHash.contains(possibleName)) {
+                    if (!installedVersion.isEmpty()) {
+                        qCritical("If installed version is not empty there are more then one package " \
+                                  "which would be replaced and this is completly wrong");
+                        Q_ASSERT(false);
+                    }
+                    installedVersion = alreadyInstalledPackagesHash.value(possibleName).version;
+                }
+            }
+// END -  new from createComponentV2
+
+
+
+/////////// old code as a check that the new one is working
             const int indexOfPackage = packagesInfo.findPackageInfo(newComponentName);
 
             QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
             if (indexOfPackage > -1) {
-                component->setValue(QLatin1String("InstalledVersion"),
-                    packagesInfo.packageInfo(indexOfPackage).version);
+                Q_ASSERT(packagesInfo.packageInfo(indexOfPackage).version == installedVersion);
             }
+/////////// END - old code as a check that the new one is working
 
             component->loadDataFromUpdate(update);
             const Repository currentUsedRepository = metaInfoJob.repositoryForTemporaryDirectory(
@@ -2617,6 +2661,8 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     for (it = components.begin(); !d->linearComponentList && it != components.end(); ++it) {
         QInstaller::Component* const comp = *it;
         QString id = it.key();
+        if (globalUnNeededList.contains(id))
+            continue; //we don't want to append the unneeded components
         while (!id.isEmpty() && comp->parentComponent() == 0) {
             id = id.section(QChar::fromLatin1('.'), 0, -2);
             if (components.contains(id))
@@ -2626,6 +2672,12 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
 
     // append all components w/o parent to the direct list
     for (it = components.begin(); it != components.end(); ++it) {
+        if (globalUnNeededList.contains((*it)->name())) {
+            //yes const cast is bad, but it is only a hack
+            QInstaller::Component* yeahComponent(*it);
+            d->willBeReplacedComponents.append(yeahComponent);
+            continue; //we don't want to append the unneeded components
+        }
         if (d->linearComponentList || (*it)->parentComponent() == 0)
             appendComponent(*it);
     }
