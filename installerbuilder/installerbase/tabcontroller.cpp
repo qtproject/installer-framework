@@ -416,7 +416,7 @@ int TabController::checkRepositories()
 
     try {
         // now create installable components
-        d->m_installer->createComponentsV2(updateFinder->updates(), metaInfoJob);
+        d->m_installer->createComponents(updateFinder->updates(), metaInfoJob);
     } catch (const Error &e) {
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
             QLatin1String("createComponentsError"), QObject::tr("Error"), e.message());

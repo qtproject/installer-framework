@@ -2309,7 +2309,7 @@ void Installer::setRemoteRepositories(const QList<Repository> &repositories)
     updateFinder->run();
 
     // now create installable componets
-    createComponentsV2(updateFinder->updates(), metaInfoJob);
+    createComponents(updateFinder->updates(), metaInfoJob);
 }
 
 /*!
