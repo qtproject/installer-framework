@@ -824,8 +824,8 @@ bool Installer::fetchAllPackages()
         component->loadComponentScript(script);
     }
 
-    emit finishAllComponentsReset();
     emit componentsAdded(d->m_components);
+    emit finishAllComponentsReset();
 
     return true;
 }
@@ -1034,8 +1034,8 @@ bool Installer::fetchUpdaterPackages()
         }
     }
 
-    emit finishUpdaterComponentsReset();
     emit updaterComponentsAdded(d->m_updaterComponents);
+    emit finishUpdaterComponentsReset();
 
     return true;
 }
