@@ -53,7 +53,6 @@ class TabController::Private
 public:
     Private();
     ~Private();
-    void preselectInstalledPackages();
 
     QHash<QString, QString> m_params;
     bool m_updaterInitialized;
@@ -79,20 +78,6 @@ TabController::Private::Private()
 TabController::Private::~Private()
 {
     delete m_gui;
-}
-
-// the package manager should preselect the currently installed packages
-void TabController::Private::preselectInstalledPackages()
-{
-    Q_ASSERT(m_installer->isPackageManager());
-
-    const QList<QInstaller::Component*> components = m_installer->components(true);
-    foreach (QInstaller::Component *comp, components) {
-        const bool selected = m_app->packagesInfo()->findPackageInfo(comp->name()) > -1;
-        comp->setSelected(selected, QInstaller::AllMode,
-            QInstaller::Component::InitializeComponentTreeSelectMode);
-        comp->setEnabled(selected);
-    }
 }
 
 

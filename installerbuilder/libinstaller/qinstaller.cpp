@@ -749,6 +749,7 @@ bool Installer::fetchAllPackages()
             state = QLatin1String("Installed");
             component->setValue(QLatin1String("InstalledVersion"),
                 packagesInfo.packageInfo(indexOfPackage).version);
+            component->setSelected(true, AllMode, Component::InitializeComponentTreeSelectMode);
         }
         component->setValue(QLatin1String("CurrentState"), state);
         component->setValue(QLatin1String("PreviousState"), state);
