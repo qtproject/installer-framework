@@ -252,7 +252,7 @@ void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInf
     setValue(QLatin1String("Dependencies"), dependstr);
     if (packageInfo.forcedInstallation)
         setValue(QLatin1String("ForcedInstallation"),
-        packageInfo.forcedInstallation ? QLatin1String ("true") : QLatin1String ("false"));
+                 packageInfo.forcedInstallation ? QLatin1String ("true") : QLatin1String ("false"));
 }
 
 //update means it is the packageinfo from server
@@ -287,8 +287,13 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
              update->data(QLatin1String("AutoSelectOn")).toString());
     setValue(QLatin1String("Important"),
         update->data(QLatin1String("Important")).toString());
-    setValue(QLatin1String("ForcedInstallation"),
-        update->data(QLatin1String("ForcedInstallation")).toString());
+
+    if (qApp->arguments().contains(QLatin1String("--no-force-installations")))
+        setValue(QLatin1String("ForcedInstallation"), QLatin1String("false"));
+    else
+        setValue(QLatin1String("ForcedInstallation"),
+            update->data(QLatin1String("ForcedInstallation")).toString());
+
     setValue(QLatin1String("UpdateText"),
         update->data(QLatin1String("UpdateText")).toString());
     setValue(QLatin1String("RequiresAdminRights"),
