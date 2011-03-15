@@ -2425,7 +2425,7 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
                 setValue(QLatin1String("CurrentState"), QLatin1String("Installed"));
                 const QString updateVersion = update->data(QLatin1String("Version")).toString();
                 //check if it is an update
-                if (KDUpdater::compareVersion(installedVersion, updateVersion) >= 0) {
+                if (KDUpdater::compareVersion(installedVersion, updateVersion) > 0) {
                     d->m_updaterComponents.append(component);
                 }
                 if (update->data(QLatin1String("Important"), false).toBool())
