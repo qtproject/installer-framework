@@ -102,22 +102,22 @@ ComponentModel::ComponentModel( Installer* parent, RunModes runMode )
 {
 
     if ( runMode == InstallerMode )
-        connect( parent, SIGNAL( componentsAdded( QList< QInstaller::Component* > ) ), this, SLOT( addComponents(QList< QInstaller::Component* > ) ) );
+        connect( parent, SIGNAL( rootComponentsAdded( QList< QInstaller::Component* > ) ), this, SLOT( addRootComponents(QList< QInstaller::Component* > ) ) );
     else
-        connect( parent, SIGNAL( updaterComponentsAdded( QList< QInstaller::Component* > ) ), this, SLOT( addComponents(QList< QInstaller::Component* > ) ) );
+        connect( parent, SIGNAL( updaterComponentsAdded( QList< QInstaller::Component* > ) ), this, SLOT( addRootComponents(QList< QInstaller::Component* > ) ) );
     connect( parent, SIGNAL( componentsAboutToBeCleared() ), this, SLOT( clear() ) );
     connect( parent, SIGNAL( componentAdded( QInstaller::Component* ) ), this, SLOT( componentAdded( QInstaller::Component* ) ) );
 }
 
-void ComponentModel::addComponents( QList< Component* > components )
+void ComponentModel::addRootComponents( QList< Component* > rootComponents )
 {
     beginResetModel();
     bool requestWork = false;
-    Q_FOREACH( Component* currentComponent, components )
+    Q_FOREACH( Component* currentRootComponent, rootComponents )
     {
-        if ( !this->components.contains( currentComponent ) )
-            this->components.push_back( currentComponent );
-        if ( checkWorkRequest( currentComponent ) ) {
+        if ( !m_components.contains( currentRootComponent ) )
+            m_components.push_back( currentRootComponent );
+        if ( checkWorkRequest( currentRootComponent ) ) {
             requestWork = true;
             break;
         }
@@ -128,7 +128,7 @@ void ComponentModel::addComponents( QList< Component* > components )
 void ComponentModel::clear()
 {
     beginResetModel();
-    components.clear();
+    m_components.clear();
     seenComponents.clear();
     endResetModel();
 }
@@ -150,7 +150,7 @@ void ComponentModel::selectedChanged( bool checked )
             seenComponents.push_back( c );            
         }        
     }
-    Q_FOREACH( const Component * currentComponent, components )
+    Q_FOREACH( const Component * currentComponent, m_components )
     {
         if ( checkWorkRequest( currentComponent ) ) {
             requestWork = true;
@@ -177,7 +177,7 @@ QModelIndex ComponentModel::index( int row, int column, const QModelIndex& paren
     if( column < 0 || column >= columnCount( parent ) )
         return QModelIndex();
 
-    QList< Component* > components = !parent.isValid() ? this->components
+    QList< Component* > components = !parent.isValid() ? m_components
                                                          : reinterpret_cast< Component* >( parent.internalPointer() )->components( false, m_runMode );
     // don't count virtual components
     if( !virtualComponentsVisible() && m_runMode == InstallerMode )
@@ -210,7 +210,7 @@ QModelIndex ComponentModel::parent( const QModelIndex& index ) const
     Component* const parentComponent = component->parentComponent( m_runMode );
     if( parentComponent == 0 )
         return QModelIndex();
-    QList< Component* > parentSiblings = parentComponent->parentComponent() == 0 ? this->components
+    QList< Component* > parentSiblings = parentComponent->parentComponent() == 0 ? m_components
                                                                                  : parentComponent->parentComponent()->components( false, m_runMode );
     // don't count virtual components
     if( !virtualComponentsVisible() && m_runMode == InstallerMode )
@@ -239,7 +239,7 @@ int ComponentModel::rowCount( const QModelIndex& parent ) const
     if( parent.column() > 0 )
         return 0;
 
-    QList< Component* > components = !parent.isValid() ? this->components
+    QList< Component* > components = !parent.isValid() ? m_components
                                                          : reinterpret_cast< Component* >( parent.internalPointer() )->components( false, m_runMode );
 
     // don't count virtual components
@@ -288,7 +288,7 @@ bool ComponentModel::setData( const QModelIndex& index, const QVariant& data, in
         component->setSelected( check, m_runMode );
         bool requestWork = false;
         bool nonSelected = true;
-        Q_FOREACH( const QInstaller::Component* currentComponent, components )
+        Q_FOREACH( const QInstaller::Component* currentComponent, m_components )
         {
             if ( checkWorkRequest( currentComponent ) ) {
                 requestWork |= true;

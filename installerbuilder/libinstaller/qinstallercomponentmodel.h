@@ -77,7 +77,7 @@ Q_SIGNALS:
     void workRequested( bool value );
 
 public Q_SLOTS:
-    void addComponents(QList< QInstaller::Component* > components );
+    void addRootComponents(QList< QInstaller::Component* > components );
     void clear();
 
 private Q_SLOTS:
@@ -86,7 +86,7 @@ private Q_SLOTS:
 
 private:
     mutable QList< Component* > seenComponents;
-    QList< Component* > components;
+    QList< Component* > m_components;
     RunModes m_runMode;
 };
 
