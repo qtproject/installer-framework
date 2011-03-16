@@ -40,7 +40,7 @@
 
 namespace QInstaller {
 
-enum RunModes
+enum INSTALLER_EXPORT RunModes
 {
     AllMode,
     UpdaterMode

@@ -646,6 +646,11 @@ Installer::~Installer()
     delete d;
 }
 
+RunModes Installer::runMode() const
+{
+    return isUpdater() ? UpdaterMode : AllMode;
+}
+
 bool Installer::fetchAllPackages()
 {
     if (isUninstaller() || isUpdater())

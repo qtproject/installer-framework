@@ -86,6 +86,7 @@ public:
     bool fetchUpdaterPackages();
 
     bool run();
+    RunModes runMode() const;
     void reset(const QHash<QString, QString> &params);
 
     Q_INVOKABLE QList<QVariant> execute(const QString &program,
