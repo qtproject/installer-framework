@@ -120,9 +120,12 @@ void TabController::Private::preselectInstalledPackages()
     const QList<QInstaller::Component*> components = m_installer->components(true);
     for (it = components.begin(); it != components.end(); ++it) {
         QInstaller::Component* const comp = *it;
-        const bool selected = m_app->packagesInfo()->findPackageInfo(comp->name()) > -1;
-        comp->setSelected(selected, InstallerMode, Component::InitializeComponentTreeSelectMode);
-        comp->setEnabled(m_repoReached || selected);
+
+        //selection is allready done in QInstaller::createComponent method
+        //const bool selected = m_app->packagesInfo()->findPackageInfo(comp->name()) > -1;
+        //comp->setSelected(selected, InstallerMode, Component::InitializeComponentTreeSelectMode);
+        if (!m_repoReached)
+            comp->setEnabled(false);
     }
 }
 

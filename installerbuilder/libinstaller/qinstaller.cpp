@@ -1315,7 +1315,14 @@ void Installer::installSelectedComponents()
     double downloadPartProgressSize = double(1)/3;
     double componentsInstallPartProgressSize = double(2)/3;
     // get the list of packages we need to install in proper order and do it for the updater
-    downloadNeededArchives(UpdaterMode, downloadPartProgressSize);
+    const int downloadedArchivesCount = downloadNeededArchives(UpdaterMode, downloadPartProgressSize);
+
+    //if there was no download we have the whole progress for installing components
+    if (!downloadedArchivesCount) {
+         //componentsInstallPartProgressSize + downloadPartProgressSize;
+        componentsInstallPartProgressSize = double(1);
+    }
+
     // get the list of packages we need to install in proper order
     const QList<Component*> components = calculateComponentOrder(UpdaterMode);
 
@@ -1334,10 +1341,14 @@ void Installer::installSelectedComponents()
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nRemoving the old "
             "version of: %1").arg(currentComponent->name()));
         if (isUpdater() && currentComponent->removeBeforeUpdate()) {
+            QString replacesAsString = currentComponent->value(QLatin1String("Replaces"));
+            QStringList possibleNames(replacesAsString.split(QLatin1String(","),
+                QString::SkipEmptyParts));
+            possibleNames.append(currentComponent->name());
             // undo all operations done by this component upon installation
             for (int i = d->m_performedOperationsOld.count() - 1; i >= 0; --i) {
                 KDUpdater::UpdateOperation* const op = d->m_performedOperationsOld[i];
-                if (op->value(QLatin1String("component")) != currentComponent->name())
+                if (!possibleNames.contains(op->value(QLatin1String("component")).toString()))
                     continue;
                 const bool becameAdmin = !d->engineClientHandler->isActive()
                     && op->value(QLatin1String("admin")).toBool() && gainAdminRights();
@@ -1347,7 +1358,8 @@ void Installer::installSelectedComponents()
                 d->m_performedOperationsOld.remove(i);
                 delete op;
             }
-            d->m_app->packagesInfo()->removePackage(currentComponent->name());
+            foreach(const QString possilbeName, possibleNames)
+                d->m_app->packagesInfo()->removePackage(possilbeName);
             d->m_app->packagesInfo()->writeToDisk();
         }
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(
@@ -2543,6 +2555,8 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
 
 // new from createComponentV2
             const QString name(newComponentName);
+
+            //TODO: use installed version on component
             QString installedVersion;
 
             //to find the installed version number we need to check for all possible names
@@ -2569,8 +2583,6 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
             }
 // END -  new from createComponentV2
 
-
-
 /////////// old code as a check that the new one is working
             const int indexOfPackage = packagesInfo.findPackageInfo(newComponentName);
 
@@ -2581,6 +2593,7 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
 /////////// END - old code as a check that the new one is working
 
             component->loadDataFromUpdate(update);
+            component->setValue(QLatin1String("InstalledVersion"), installedVersion);
             const Repository currentUsedRepository = metaInfoJob.repositoryForTemporaryDirectory(
                         QInstaller::pathFromUrl(update->sourceInfo().url));
             component->setRepositoryUrl(currentUsedRepository.url());
@@ -2588,13 +2601,32 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
             bool isUpdate = true;
             // the package manager should preselect the currently installed packages
             if (isPackageManager()) {
-                const bool selected = indexOfPackage > -1;
 
-                component->updateState(selected);
+// new from createComponentV2
+                bool newSelect = false;
+                foreach(const QString &possibleName, possibleInstalledNameList) {
+                    if (alreadyInstalledPackagesHash.contains(possibleName)) {
+                        newSelect = true;
+                        break;
+                    }
+                }
+// END -  new from createComponentV2
 
-                if (selected)
-                    componentsToSelectInstaller.append(component.data());
+/////////// old code as a check that the new one is working
+                {
+                    const bool selected = indexOfPackage > -1;
+                    if (possibleInstalledNameList.count() == 1 &&
+                        possibleInstalledNameList.at(0) == newComponentName) {
+                        Q_ASSERT(newSelect == selected);
+                    }
+                    /////////// END - old code as a check that the new one is working
 
+                    component->updateState(newSelect);
+
+                    if (newSelect)
+                        componentsToSelectInstaller.append(component.data());
+                }
+/////////// END - old code as a check that the new one is working
                 const QString pkgVersion = packagesInfo.packageInfo(indexOfPackage).version;
                 const QString updateVersion = update->data(QLatin1String("Version")).toString();
                 if (KDUpdater::compareVersion(updateVersion, pkgVersion) <= 0)
@@ -2698,8 +2730,9 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
         i->setSelected(true, UpdaterMode, Component::InitializeComponentTreeSelectMode);
 
     // select all components in the package manager model
-    foreach (QInstaller::Component* const i, componentsToSelectInstaller)
+    foreach (QInstaller::Component* const i, componentsToSelectInstaller) {
         i->setSelected(true, InstallerMode, Component::InitializeComponentTreeSelectMode);
+    }
 
     emit updaterComponentsAdded(d->m_packageManagerComponents);
     emit rootComponentsAdded(d->m_rootComponents);
