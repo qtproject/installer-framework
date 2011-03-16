@@ -268,7 +268,7 @@ QtInstallerGui::QtInstallerGui(Installer *installer)
 
 void QtInstallerGui::init()
 {
-    if(m_installer->components(true, AllMode).count() == 1) {
+    if (m_installer->components(true, AllMode).count() == 1) {
         Q_ASSERT(!m_installer->components(false, AllMode).isEmpty());
         m_installer->components(false, AllMode).first()->setSelected(true);
 
@@ -299,7 +299,7 @@ QtUninstallerGui::QtUninstallerGui(Installer *installer)
 
 void QtUninstallerGui::init()
 {
-    if(m_installer->components(false, m_installer->runMode()).isEmpty()) {
+    if (m_installer->components(false, m_installer->runMode()).isEmpty()) {
         wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
         wizardPageVisibilityChangeRequested(false, Installer::LicenseCheck);
     }
