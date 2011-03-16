@@ -1249,8 +1249,9 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
             alreadyInstalledPackagesHash.remove(name);
         }
 
+        component->setLocalTempPath(QInstaller::pathFromUrl(update->sourceInfo().url));
         const Repository currentUsedRepository = metaInfoJob.repositoryForTemporaryDirectory(
-                    QInstaller::pathFromUrl(update->sourceInfo().url));
+                    component->localTempPath());
         component->setRepositoryUrl(currentUsedRepository.url());
 
         // the package manager should preselect the currently installed packages
@@ -1290,11 +1291,11 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
         }
     }
 
-    // now append all components to their respective parents
+    // now append all components to their respective parents and loads the scripts,
     // except the components which are aimed for replace to another name(globalUnNeededList)
     QHash<QString, QInstaller::Component*>::iterator it;
     for (it = d->m_componentHash.begin(); it != d->m_componentHash.end(); ++it) {
-        QInstaller::Component* const currentComponent = *it;
+        QInstaller::Component* currentComponent = *it;
         QString id = it.key();
         if (globalUnNeededList.contains(id))
             continue; //we don't want to append the unneeded components
@@ -1306,14 +1307,8 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
             else
                 d->m_rootComponents.append(currentComponent);
         }
+        currentComponent->loadComponentScript();
     }
-
-//    //foreach component instead of every update or so
-//    const QString script = update->data(QLatin1String("Script")).toString();
-//    if (!script.isEmpty()) {
-//        scripts.insert(component.data(), QString::fromLatin1("%1/%2/%3").arg(
-//                QInstaller::pathFromUrl(update->sourceInfo().url), newComponentName, script));
-//    }
 
     // select all components in the updater model
     foreach (QInstaller::Component* const i, d->m_updaterComponents)

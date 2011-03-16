@@ -118,6 +118,9 @@ public:
     Component *parentComponent(RunModes runMode = AllMode) const;
     QList<Component*> childComponents(bool recursive = false, RunModes runMode = AllMode) const;
 
+    void loadComponentScript();
+
+    //move this to private
     void loadComponentScript(const QString &fileName);
     void loadTranslations(const QDir &directory, const QStringList &qms);
     void loadUserInterfaces(const QDir &directory, const QStringList &uis);
@@ -167,6 +170,9 @@ public:
     QUrl repositoryUrl() const;
     void setRepositoryUrl(const QUrl &url);
 
+    QString localTempPath() const;
+    void setLocalTempPath(const QString &tempPath);
+   
     bool removeBeforeUpdate() const;
     void setRemoveBeforeUpdate(bool removeBeforeUpdate);
 
