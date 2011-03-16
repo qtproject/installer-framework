@@ -233,7 +233,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void componentAdded(QInstaller::Component *comp);
-    void componentsAdded(QList<QInstaller::Component*> components);
+    void rootComponentsAdded(QList<QInstaller::Component*> components);
     void updaterComponentsAdded(QList<QInstaller::Component*> components);
     void componentsAboutToBeCleared();
     void valueChanged(const QString &key, const QString &value);

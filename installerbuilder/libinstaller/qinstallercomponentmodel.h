@@ -78,7 +78,7 @@ public:
 public Q_SLOTS:
     void clear();
     void setRunMode(RunModes runMode);
-    void addComponents(QList<QInstaller::Component* > components);
+    void addRootComponents(QList<QInstaller::Component*> components);
 
 Q_SIGNALS:
     void workRequested(bool value);

@@ -825,7 +825,7 @@ bool Installer::fetchAllPackages()
         component->loadComponentScript(script);
     }
 
-    emit componentsAdded(d->m_rootComponents);
+    emit rootComponentsAdded(d->m_rootComponents);
     emit finishAllComponentsReset();
 
     return true;
@@ -1301,6 +1301,8 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
             //is there a component which is called like a parent
             if (d->m_componentHash.contains(id))
                 d->m_componentHash[id]->appendComponent(currentComponent);
+            else
+                d->m_rootComponents.append(currentComponent);
         }
     }
 
@@ -1319,9 +1321,8 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
     foreach (QInstaller::Component* const i, componentsToSelectInPackagemanager)
         i->setSelected(true, AllMode, Component::InitializeComponentTreeSelectMode);
 
-    d->m_rootComponents = d->m_componentHash.values();
     //signals for the qinstallermodel
-    emit componentsAdded(d->m_rootComponents);
+    emit rootComponentsAdded(d->m_rootComponents);
     emit updaterComponentsAdded(d->m_updaterComponents);
 }
 
@@ -1497,10 +1498,9 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
         i->setSelected(true, AllMode, Component::InitializeComponentTreeSelectMode);
 
     emit updaterComponentsAdded(d->m_packageManagerComponents);
-    emit componentsAdded(d->m_rootComponents);
+    emit rootComponentsAdded(d->m_rootComponents);
 }
 
-//TODO: remove this unused function
 void Installer::appendComponent(Component *component)
 {
     d->m_rootComponents.append(component);

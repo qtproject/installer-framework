@@ -990,7 +990,7 @@ public slots:
 
         m_model->clear();
         m_model->setRunMode(mode);
-        m_model->addComponents(m_installer->components(false, mode));
+        m_model->addRootComponents(m_installer->components(false, mode));
     }
 
 private:

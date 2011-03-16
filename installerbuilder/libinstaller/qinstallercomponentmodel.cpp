@@ -86,12 +86,12 @@ ComponentModel::ComponentModel(Installer *installer, RunModes runMode)
     , m_runMode(runMode)
 {
     connect(installer, SIGNAL(startAllComponentsReset()), this, SLOT(clear()));
-    connect(installer, SIGNAL(componentsAdded(QList<QInstaller::Component*>)), this,
-        SLOT(addComponents(QList<QInstaller::Component*>)));
+    connect(installer, SIGNAL(rootComponentsAdded(QList<QInstaller::Component*>)),
+        this, SLOT(addRootComponents(QList<QInstaller::Component*>)));
 
     connect(installer, SIGNAL(startUpdaterComponentsReset()), this, SLOT(clear()));
     connect(installer, SIGNAL(updaterComponentsAdded(QList<QInstaller::Component*>)),
-        this, SLOT(addComponents(QList<QInstaller::Component*>)));
+        this, SLOT(addRootComponents(QList<QInstaller::Component*>)));
 
     connect(installer, SIGNAL(componentAdded(QInstaller::Component*)), this,
         SLOT(componentAdded(QInstaller::Component*)));
@@ -101,12 +101,12 @@ ComponentModel::~ComponentModel()
 {
 }
 
-void ComponentModel::addComponents(QList<QInstaller::Component*> newComponents)
+void ComponentModel::addRootComponents(QList<Component*> rootComponents)
 {
     beginResetModel();
 
     bool requestWork = false;
-    foreach (Component *component, newComponents) {
+    foreach (Component *component, rootComponents) {
         if (!m_components.contains(component))
             m_components.push_back(component);
 
@@ -126,7 +126,6 @@ void ComponentModel::clear()
 
     m_components.clear();
     m_seenComponents.clear();
-
     endResetModel();
 }
 
@@ -178,7 +177,6 @@ QModelIndex ComponentModel::index(int row, int column, const QModelIndex &parent
 
     QList<Component*> components = !parent.isValid() ? m_components
         : reinterpret_cast<Component*>(parent.internalPointer())->childComponents(false, m_runMode);
-
     // don't count virtual components
     if (!virtualComponentsVisible() && m_runMode == AllMode) {
         components.erase(std::remove_if(components.begin(), components.end(), Component::IsVirtual()),
@@ -189,9 +187,7 @@ QModelIndex ComponentModel::index(int row, int column, const QModelIndex &parent
     std::sort(components.begin(), components.end(), Component::SortingPriorityLessThan());
 
     Component *const component = components[row];
-
     QModelIndex index = createIndex(row, column, component);
-
     if (!m_seenComponents.contains(component)) {
         connect(component, SIGNAL(selectedChanged(bool)), this, SLOT(selectedChanged(bool)));
         m_seenComponents.push_back(component);
@@ -215,7 +211,6 @@ QModelIndex ComponentModel::parent(const QModelIndex &index) const
 
     QList<Component*> parentSiblings = parentComponent->parentComponent() == 0 ? m_components
         : parentComponent->parentComponent()->childComponents(false, m_runMode);
-
     // don't count virtual components
     if (!virtualComponentsVisible() && m_runMode == AllMode) {
         parentSiblings.erase(std::remove_if(parentSiblings.begin(), parentSiblings.end(),
@@ -247,7 +242,6 @@ int ComponentModel::rowCount(const QModelIndex &parent) const
 
     QList<Component*> components = !parent.isValid() ? m_components
         : reinterpret_cast<Component*>(parent.internalPointer())->childComponents(false, m_runMode);
-
     // don't count virtual components
     if (!virtualComponentsVisible() && m_runMode == AllMode) {
         components.erase(std::remove_if (components.begin(), components.end(), Component::IsVirtual()),
@@ -300,6 +294,7 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &data, int
 
         bool requestWork = false;
         bool nonSelected = true;
+
         foreach (const Component *currentComponent, m_components) {
             if (checkWorkRequest(currentComponent))
                 requestWork |= true;
