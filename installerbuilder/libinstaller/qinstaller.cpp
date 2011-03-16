@@ -361,35 +361,34 @@ void Installer::installSelectedComponents()
     emit updateFinished();
 }
 
+quint64 size(QInstaller::Component *component, const QString &value)
+{
+    if (!component->isSelected())
+        return quint64(0);
+    if (component->value(QLatin1String("PreviousState")) == QLatin1String("Installed"))
+        return quint64(0);
+    return component->value(value).toLongLong();
+}
+
 quint64 Installer::requiredDiskSpace() const
 {
     quint64 result = 0;
-    QList<Component*>::const_iterator it;
-    const QList<Component*> availableComponents = components(true);
-    for (it = availableComponents.begin(); it != availableComponents.end(); ++it) {
-        Component* const comp = *it;
-        if (!comp->isSelected())
-            continue;
-        if (comp->value(QLatin1String("PreviousState")) == QLatin1String("Installed"))
-            continue;
-        result += comp->value(QLatin1String("UncompressedSize")).toLongLong();
-    }
+
+    const QList<Component*> availableComponents = components(true, runMode());
+    foreach (QInstaller::Component *component, availableComponents)
+        result += size(component, QLatin1String("UncompressedSize"));
+
     return result;
 }
 
 quint64 Installer::requiredTemporaryDiskSpace() const
 {
     quint64 result = 0;
-    QList<Component*>::const_iterator it;
-    const QList<Component*> availableComponents = components(true);
-    for (it = availableComponents.begin(); it != availableComponents.end(); ++it) {
-        Component* const comp = *it;
-        if (!comp->isSelected())
-            continue;
-        if (comp->value(QLatin1String("PreviousState")) == QLatin1String("Installed"))
-            continue;
-        result += comp->value(QLatin1String("CompressedSize")).toLongLong();
-    }
+
+    const QList<Component*> availableComponents = components(true, runMode());
+    foreach (QInstaller::Component *component, availableComponents)
+        result += size(component, QLatin1String("CompressedSize"));
+
     return result;
 }
 
