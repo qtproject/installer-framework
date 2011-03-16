@@ -95,8 +95,8 @@ static void appendComponentAndMissingDependencies(QList<Component*>& components,
 }
 
 /*!
- Scriptable version of Installer::componentByName(QString).
- \sa Installer::componentByName
+    Scriptable version of Installer::componentByName(QString).
+    \sa Installer::componentByName
  */
 QScriptValue QInstaller::qInstallerComponentByName(QScriptContext* context, QScriptEngine* engine)
 {
@@ -265,9 +265,9 @@ void Installer::reset(const QHash<QString, QString> &params)
 }
 
 /*!
- * Sets the uninstallation to be \a complete. If \a complete is false, only components deselected
- * by the user will be uninstalled.
- * This option applies only on uninstallation.
+    Sets the uninstallation to be \a complete. If \a complete is false, only components deselected
+    by the user will be uninstalled.
+    This option applies only on uninstallation.
  */
 void Installer::setCompleteUninstallation(bool complete)
 {
