@@ -210,6 +210,7 @@ QString QInstaller::uncaughtExceptionString(QScriptEngine *scriptEngine/*, const
   Non-existing page - this value has to be used if you want to insert a page after \a InstallationFinished
  */
 
+
 KDUpdater::Application& Installer::updaterApplication() const
 {
     return *d->m_app;
@@ -1153,7 +1154,7 @@ void Installer::setRemoteRepositories(const QList<Repository> &repositories)
     updateFinder->run();
 
     // now create installable componets
-    createComponents(updateFinder->updates(), metaInfoJob);
+    createComponentsV2(updateFinder->updates(), metaInfoJob);
 }
 
 /*!
@@ -1499,6 +1500,7 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     emit componentsAdded(d->m_rootComponents);
 }
 
+//TODO: remove this unused function
 void Installer::appendComponent(Component *component)
 {
     d->m_rootComponents.append(component);
