@@ -299,7 +299,14 @@ void Installer::installSelectedComponents()
     double downloadPartProgressSize = double(1)/3;
     double componentsInstallPartProgressSize = double(2)/3;
     // get the list of packages we need to install in proper order and do it for the updater
-    downloadNeededArchives(UpdaterMode, downloadPartProgressSize);
+    const int downloadedArchivesCount = downloadNeededArchives(UpdaterMode, downloadPartProgressSize);
+
+    //if there was no download we have the whole progress for installing components
+    if (!downloadedArchivesCount) {
+         //componentsInstallPartProgressSize + downloadPartProgressSize;
+        componentsInstallPartProgressSize = double(1);
+    }
+
     // get the list of packages we need to install in proper order
     const QList<Component*> components = calculateComponentOrder(UpdaterMode);
 
@@ -318,10 +325,15 @@ void Installer::installSelectedComponents()
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nRemoving the old "
             "version of: %1").arg(currentComponent->name()));
         if ((isUpdater() || isPackageManager()) && currentComponent->removeBeforeUpdate()) {
+            QString replacesAsString = currentComponent->value(QLatin1String("Replaces"));
+            QStringList possibleNames(replacesAsString.split(QLatin1String(","),
+                QString::SkipEmptyParts));
+            possibleNames.append(currentComponent->name());
+
             // undo all operations done by this component upon installation
             for (int i = d->m_performedOperationsOld.count() - 1; i >= 0; --i) {
                 KDUpdater::UpdateOperation* const op = d->m_performedOperationsOld[i];
-                if (op->value(QLatin1String("component")) != currentComponent->name())
+                if (!possibleNames.contains(op->value(QLatin1String("component")).toString()))
                     continue;
                 const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
                     && op->value(QLatin1String("admin")).toBool() && gainAdminRights();
@@ -331,7 +343,8 @@ void Installer::installSelectedComponents()
                 d->m_performedOperationsOld.remove(i);
                 delete op;
             }
-            d->m_app->packagesInfo()->removePackage(currentComponent->name());
+            foreach(const QString possilbeName, possibleNames)
+                d->m_app->packagesInfo()->removePackage(possilbeName);
             d->m_app->packagesInfo()->writeToDisk();
         }
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(
@@ -1154,7 +1167,7 @@ void Installer::setRemoteRepositories(const QList<Repository> &repositories)
     updateFinder->run();
 
     // now create installable componets
-    createComponentsV2(updateFinder->updates(), metaInfoJob);
+    createComponents(updateFinder->updates(), metaInfoJob);
 }
 
 /*!
@@ -1270,7 +1283,7 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
                 setValue(QLatin1String("CurrentState"), QLatin1String("Installed"));
                 const QString updateVersion = update->data(QLatin1String("Version")).toString();
                 //check if it is an update
-                if (KDUpdater::compareVersion(installedVersion, updateVersion) >= 0) {
+                if (KDUpdater::compareVersion(installedVersion, updateVersion) > 0) {
                     d->m_updaterComponents.append(component);
                 }
                 if (update->data(QLatin1String("Important"), false).toBool())
@@ -1355,6 +1368,15 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     QMap<QString, QInstaller::Component*> components;
     QList<Component*> componentsToSelectUpdater, componentsToSelectInstaller;
 
+// new from createComponentV2
+    //use this hash instead of the plain list of packageinfos
+    QHash<QString, KDUpdater::PackageInfo> alreadyInstalledPackagesHash;
+    foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos()) {
+        alreadyInstalledPackagesHash.insert(info.name, info);
+    }
+    QStringList globalUnNeededList;
+// END -  new from createComponentV2
+
     //why do we need to add the components if there was a metaInfoJob.error()?
     //will this happen if there is no internet connection?
     //ok usually there should be the installed and the online tree
@@ -1373,15 +1395,48 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     } else {
         foreach (KDUpdater::Update * const update, updates) {
             const QString newComponentName = update->data(QLatin1String("Name")).toString();
+
+// new from createComponentV2
+            const QString name(newComponentName);
+
+            //TODO: use installed version on component
+            QString installedVersion;
+
+            //to find the installed version number we need to check for all possible names
+            QStringList possibleInstalledNameList;
+            if (!update->data(QLatin1String("Replaces")).toString().isEmpty()) {
+                QString replacesAsString = update->data(QLatin1String("Replaces")).toString();
+                QStringList replaceList(replacesAsString.split(QLatin1String(","),
+                    QString::SkipEmptyParts));
+                possibleInstalledNameList.append(replaceList);
+                globalUnNeededList.append(replaceList);
+            }
+            if (alreadyInstalledPackagesHash.contains(name)) {
+                possibleInstalledNameList.append(name);
+            }
+            foreach(const QString &possibleName, possibleInstalledNameList) {
+                if (alreadyInstalledPackagesHash.contains(possibleName)) {
+                    if (!installedVersion.isEmpty()) {
+                        qCritical("If installed version is not empty there are more then one package " \
+                                  "which would be replaced and this is completly wrong");
+                        Q_ASSERT(false);
+                    }
+                    installedVersion = alreadyInstalledPackagesHash.value(possibleName).version;
+                }
+            }
+// END -  new from createComponentV2
+
+/////////// old code as a check that the new one is working
             const int indexOfPackage = packagesInfo.findPackageInfo(newComponentName);
 
             QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
             if (indexOfPackage > -1) {
-                component->setValue(QLatin1String("InstalledVersion"),
-                    packagesInfo.packageInfo(indexOfPackage).version);
+                Q_ASSERT(packagesInfo.packageInfo(indexOfPackage).version == installedVersion);
             }
+/////////// END - old code as a check that the new one is working
 
             component->loadDataFromUpdate(update);
+            component->setValue(QLatin1String("InstalledVersion"), installedVersion);
             const Repository currentUsedRepository = metaInfoJob.repositoryForTemporaryDirectory(
                 QInstaller::pathFromUrl(update->sourceInfo().url));
             component->setRepositoryUrl(currentUsedRepository.url());
@@ -1389,13 +1444,32 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
             bool isUpdate = true;
             // the package manager should preselect the currently installed packages
             if (isPackageManager()) {
-                const bool selected = indexOfPackage > -1;
 
-                component->updateState(selected);
+// new from createComponentV2
+                bool newSelect = false;
+                foreach(const QString &possibleName, possibleInstalledNameList) {
+                    if (alreadyInstalledPackagesHash.contains(possibleName)) {
+                        newSelect = true;
+                        break;
+                    }
+                }
+// END -  new from createComponentV2
 
-                if (selected)
-                    componentsToSelectInstaller.append(component.data());
+/////////// old code as a check that the new one is working
+                {
+                    const bool selected = indexOfPackage > -1;
+                    if (possibleInstalledNameList.count() == 1 &&
+                        possibleInstalledNameList.at(0) == newComponentName) {
+                        Q_ASSERT(newSelect == selected);
+                    }
+                    /////////// END - old code as a check that the new one is working
 
+                    component->updateState(newSelect);
+
+                    if (newSelect)
+                        componentsToSelectInstaller.append(component.data());
+                }
+/////////// END - old code as a check that the new one is working
                 const QString pkgVersion = packagesInfo.packageInfo(indexOfPackage).version;
                 const QString updateVersion = update->data(QLatin1String("Version")).toString();
                 if (KDUpdater::compareVersion(updateVersion, pkgVersion) <= 0)
@@ -1462,6 +1536,8 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     for (it = components.begin(); !d->m_linearComponentList && it != components.end(); ++it) {
         QInstaller::Component* const comp = *it;
         QString id = it.key();
+        if (globalUnNeededList.contains(id))
+            continue; //we don't want to append the unneeded components
         while (!id.isEmpty() && comp->parentComponent() == 0) {
             id = id.section(QChar::fromLatin1('.'), 0, -2);
             if (components.contains(id))
@@ -1471,6 +1547,12 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
 
     // append all components w/o parent to the direct list
     for (it = components.begin(); it != components.end(); ++it) {
+        if (globalUnNeededList.contains((*it)->name())) {
+            //yes const cast is bad, but it is only a hack
+            QInstaller::Component* yeahComponent(*it);
+            d->willBeReplacedComponents.append(yeahComponent);
+            continue; //we don't want to append the unneeded components
+        }
         if (d->m_linearComponentList || (*it)->parentComponent() == 0)
             appendComponent(*it);
     }

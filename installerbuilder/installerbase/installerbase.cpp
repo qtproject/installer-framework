@@ -269,6 +269,8 @@ int main(int argc, char *argv[])
                     // tries to get the data from server and this isn't what we want at this point
                     const bool replace = (argument == QLatin1String("--setTempRepository"));
                     installer.setTemporaryRepositories(repoList, replace);
+            } else if (argument == QLatin1String("--no-force-installations")) {
+                verbose() << "Use no-force-installations" << std::endl;
             } else {
                 std::cerr << "Unknown option: " << argument << std::endl;
                 return Installer::Failure;

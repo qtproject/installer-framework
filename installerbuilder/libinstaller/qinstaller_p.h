@@ -176,6 +176,9 @@ public:
     QList<Component*> m_updaterComponents;
     QList<Component*> m_packageManagerComponents;
 
+    //a hack to get the will be replaced components extra
+    QList<QInstaller::Component*> willBeReplacedComponents;
+
     QList<KDUpdater::UpdateOperation*> ownedOperations;
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsOld;
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsCurrentSession;
