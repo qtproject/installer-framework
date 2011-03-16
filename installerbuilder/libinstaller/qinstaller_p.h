@@ -170,7 +170,7 @@ public:
     qint64 m_firstComponentDictStart;
     qint64 m_componentDictOffsetTableStart;
 
-    QList<Component*> m_components;
+    QList<Component*> m_rootComponents;
     QHash<QString, Component*> m_componentHash;
 
     QList<Component*> m_updaterComponents;

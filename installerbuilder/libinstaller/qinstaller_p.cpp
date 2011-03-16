@@ -203,7 +203,7 @@ InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMa
 
 InstallerPrivate::~InstallerPrivate()
 {
-    qDeleteAll(m_components);
+    qDeleteAll(m_rootComponents);
     qDeleteAll(m_updaterComponents);
     qDeleteAll(m_performedOperationsOld);
     qDeleteAll(m_performedOperationsCurrentSession);
