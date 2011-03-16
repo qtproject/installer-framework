@@ -104,7 +104,7 @@ void MainWindow::checkForUpdates() {
         settings.setLastCheck( QDateTime::currentDateTime() );
         
         // no updates for us
-        if( m_installer.components().isEmpty() )
+        if( m_installer.components(false, UpdaterMode).isEmpty() )
         {
             QMessageBox::information( this, tr( "Check for Updates" ), tr( "There are currently no updates available for you." ) );
             return;

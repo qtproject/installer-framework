@@ -306,7 +306,7 @@ bool Updater::searchForUpdates()
         return false;
     }
 
-    d->components = d->installer_shared->components(true);
+    d->components = d->installer_shared->components(true, UpdaterMode);
 
     // no updates for us
     if (d->components.isEmpty()) {

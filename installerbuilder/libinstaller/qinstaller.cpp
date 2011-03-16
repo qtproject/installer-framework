@@ -1677,17 +1677,18 @@ static Component* subComponentByName(const Installer *installer, const QString &
     if (check != 0 && componentMatches(check, name, version))
         return check;
 
-    const QList<Component*> comps = check == 0 ? installer->components() : check->childComponents();
-    for (QList<Component*>::const_iterator it = comps.begin(); it != comps.end(); ++it) {
-        Component* const result = subComponentByName(installer, name, version, *it);
+    const QList<Component*> rootComponents =
+        check == 0 ? installer->components(false, AllMode) : check->childComponents();
+    foreach (QInstaller::Component* component, rootComponents) {
+        Component* const result = subComponentByName(installer, name, version, component);
         if (result != 0)
             return result;
     }
 
-    const QList<Component*> uocomps =
-        check == 0 ? installer->components(false, UpdaterMode) : check->childComponents(false, UpdaterMode);
-    for (QList<Component*>::const_iterator it = uocomps.begin(); it != uocomps.end(); ++it) {
-        Component* const result = subComponentByName(installer, name, version, *it);
+    const QList<Component*> updaterComponents = check == 0
+        ? installer->components(false, UpdaterMode) : check->childComponents(false, UpdaterMode);
+    foreach (QInstaller::Component* component, updaterComponents) {
+        Component* const result = subComponentByName(installer, name, version, component);
         if (result != 0)
             return result;
     }
@@ -1718,13 +1719,6 @@ Component* Installer::componentByName(const QString &name) const
         const QString version = name.section(QLatin1Char('-'), 1);
         return subComponentByName(this, name.section(QLatin1Char('-'), 0, 0), version);
     }
-
-    QHash< QString, QInstaller::Component* >::ConstIterator it = d->m_componentHash.constFind(name);
-    Component * comp = 0;
-    if (it != d->m_componentHash.constEnd())
-        comp = *it;
-    if (d->m_updaterComponents.contains(comp))
-        return comp;
 
     return subComponentByName(this, name);
 }
@@ -1799,7 +1793,7 @@ QList<Component*> Installer::missingDependencies(const Component *component) con
         const QString name = containsVersionString ? it->section(dash, 0, 0) : *it;
 
         bool installed = false;
-        const QList<Component*> compList = components(true);
+        QList<Component*> compList = components(true, AllMode);
         foreach (const Component* comp, compList) {
             if (!name.isEmpty() && comp->name() == name && !version.isEmpty()) {
                 if (Installer::versionMatches(comp->value(QLatin1String("InstalledVersion")), version))
@@ -1809,7 +1803,8 @@ QList<Component*> Installer::missingDependencies(const Component *component) con
             }
         }
 
-        foreach (const Component *comp,  d->m_updaterComponents) {
+        compList = components(true, UpdaterMode);
+        foreach (const Component *comp, d->m_updaterComponents) {
             if (!name.isEmpty() && comp->name() == name && !version.isEmpty()) {
                 if (Installer::versionMatches(comp->value(QLatin1String("InstalledVersion")), version))
                     installed = true;
@@ -2246,7 +2241,7 @@ bool Installer::runPackageUpdater()
 */
 void Installer::languageChanged()
 {
-    const QList<Component*> comps = components(true);
+    const QList<Component*> comps = components(true, runMode());
     foreach (Component* component, comps)
         component->languageChanged();
 }

@@ -268,9 +268,9 @@ QtInstallerGui::QtInstallerGui(Installer *installer)
 
 void QtInstallerGui::init()
 {
-    if(m_installer->components(true).count() == 1) {
-        Q_ASSERT(!m_installer->components().isEmpty());
-        m_installer->components().first()->setSelected(true);
+    if(m_installer->components(true, AllMode).count() == 1) {
+        Q_ASSERT(!m_installer->components(false, AllMode).isEmpty());
+        m_installer->components(false, AllMode).first()->setSelected(true);
 
         wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
     }
@@ -299,7 +299,7 @@ QtUninstallerGui::QtUninstallerGui(Installer *installer)
 
 void QtUninstallerGui::init()
 {
-    if(m_installer->components(false, m_installer->isUpdater() ? UpdaterMode : AllMode).isEmpty()) {
+    if(m_installer->components(false, m_installer->runMode()).isEmpty()) {
         wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
         wizardPageVisibilityChangeRequested(false, Installer::LicenseCheck);
     }
@@ -313,7 +313,8 @@ int QtUninstallerGui::nextId() const
         if (!m_installer->isPackageManager() && !m_installer->isUpdater())
             return nextNextId;
 
-        QList<Component*> components = m_installer->componentsToInstall(true);
+        QList<Component*> components = m_installer->componentsToInstall(true, true,
+            m_installer->runMode());
         if (components.isEmpty())
             return nextNextId;
 

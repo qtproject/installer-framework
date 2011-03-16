@@ -80,7 +80,7 @@ public:
                 
                 Installer installer;
                 installer.setRemoteRepositories( settings.repositories() );
-                QList< Component* > components = installer.components();
+                QList< Component* > components = installer.components(false, UpdaterMode);
             
                 // remove all unimportant updates
                 if( settings.checkOnlyImportantUpdates() )

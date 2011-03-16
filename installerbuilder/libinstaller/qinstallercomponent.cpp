@@ -504,7 +504,7 @@ void Component::loadComponentScript(const QString &fileName)
             .arg(uncaughtExceptionString(&(d->scriptEngine)/*, QFileInfo(file).absoluteFilePath()*/)));
     }
 
-    const QList<Component*> components = d->m_installer->components(true);
+    const QList<Component*> components = d->m_installer->components(true, d->m_installer->runMode());
     QScriptValue comps = d->scriptEngine.newArray(components.count());
     for (int i = 0; i < components.count(); ++i)
         comps.setProperty(i, d->scriptEngine.newQObject(components[i]));
@@ -1092,7 +1092,7 @@ void Component::setSelected(bool selected, RunModes runMode, SelectMode selectMo
         }
     } else {
         QMap<Component*, Qt::CheckState> previousStates;
-        const QList<Component*> allComponents = d->m_installer->components(true);
+        const QList<Component*> allComponents = d->m_installer->components(true, AllMode);
         foreach (Component *component, allComponents)
             previousStates[component] = component->checkState();
 

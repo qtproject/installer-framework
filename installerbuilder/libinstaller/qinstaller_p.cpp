@@ -1350,7 +1350,6 @@ void InstallerPrivate::runUninstaller()
         packages->setApplicationVersion(m_installerSettings->applicationVersion());
 
         // iterate over all components - if they're all marked for uninstall, it's a complete uninstall
-        const QList<Component*> allComponents = q->components(true);
         bool allMarkedForUninstall = true;
 
         QList<KDUpdater::UpdateOperation*> uninstallOperations;
@@ -1414,6 +1413,7 @@ void InstallerPrivate::runUninstaller()
                 delete currentOperation;
         }
 
+        const QList<Component*> allComponents = q->components(true, AllMode);
         if (!m_completeUninstall) {
             QList<Component*>::const_iterator it;
             for (it = allComponents.begin(); it != allComponents.end(); ++it) {

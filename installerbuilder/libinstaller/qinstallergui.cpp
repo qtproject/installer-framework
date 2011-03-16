@@ -773,9 +773,12 @@ void LicenseAgreementPage::entering()
     m_licenseListWidget->clear();
     m_textBrowser->setText(QLatin1String(""));
 
-    // TODO: this needs to be fixed once we support several root components
+    RunModes runMode = installer()->runMode();
+    QList<QInstaller::Component*> components = installer()->components(false, runMode);
+
     QInstaller::Component *rootComponent = 0;
-    foreach (QInstaller::Component* root, installer()->components()) {
+    // TODO: this needs to be fixed once we support several root components
+    foreach (QInstaller::Component* root, components) {
         if (root->isInstalled())
             continue;
 
@@ -786,7 +789,7 @@ void LicenseAgreementPage::entering()
         }
     }
 
-    QList<QInstaller::Component*> components = installer()->componentsToInstall(true);
+    components = installer()->componentsToInstall(true, true, runMode);
     foreach (QInstaller::Component* component, components) {
         if (rootComponent != component && !component->isInstalled())
             addLicenseItem(component->licenses());
@@ -859,7 +862,7 @@ public:
         wasshown(false),
         modified(false),
         connected(false),
-        m_model(new ComponentModel(installer, installer->isUpdater() ? UpdaterMode : AllMode)),
+        m_model(new ComponentModel(installer, installer->runMode())),
         m_installer(installer),
         m_treeView(new QTreeView(q))
     {
@@ -950,12 +953,12 @@ public slots:
 
     void deselectAll()
     {
-        select(false, m_installer->isUpdater() ? UpdaterMode : AllMode);
+        select(false, m_installer->runMode());
     }
 
     void selectDefault()
     {
-        RunModes runMode = m_installer->isUpdater() ? UpdaterMode : AllMode;
+        RunModes runMode = m_installer->runMode();
         select(false, runMode); // TODO: remove after we have reworked dependency handling
         select(true, runMode);
     }
@@ -986,11 +989,9 @@ public slots:
 
     void componentsChanged()
     {
-        RunModes mode = m_installer->isUpdater() ? UpdaterMode : AllMode;
-
         m_model->clear();
-        m_model->setRunMode(mode);
-        m_model->addRootComponents(m_installer->components(false, mode));
+        m_model->setRunMode(m_installer->runMode());
+        m_model->addRootComponents(m_installer->components(false, m_installer->runMode()));
     }
 
 private:
@@ -1108,15 +1109,6 @@ void ComponentSelectionPage::setModified(bool value)
 
 bool ComponentSelectionPage::isComplete() const
 {
-    if (installer()->isUpdater()) {
-        const QList<Component*> components = installer()->components(true, UpdaterMode);
-        foreach (Component *component, components) {
-            if (component->isSelected(UpdaterMode))
-                return true;
-        }
-        return false;
-    }
-
     if (installer()->isPackageManager()) {
         // at least component should be different from its previous state
         if (d->modified)
@@ -1124,8 +1116,16 @@ bool ComponentSelectionPage::isComplete() const
         return false;
     }
 
+    const QList<Component*> components = installer()->components(true, installer()->runMode());
+    if (installer()->isUpdater()) {
+        foreach (Component *component, components) {
+            if (component->isSelected(UpdaterMode))
+                return true;
+        }
+        return false;
+    }
+
     // at least one component needs to be selected for (un)installation
-    const QList<Component*> components = d->m_installer->components(true);
     foreach (Component *component, components) {
         if (component->isSelected() == installer()->isInstaller())
             return true;
