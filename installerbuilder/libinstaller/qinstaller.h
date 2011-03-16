@@ -141,10 +141,10 @@ public:
 
 public:
     // component handling
-    void appendComponent(Component *components);
-    int componentCount(RunModes runMode = AllMode) const;
-    Component *component(int i, RunModes runMode = AllMode) const;
-    Component *component(const QString &name) const;
+    int rootComponentCount(RunModes runMode = AllMode) const;
+    void appendRootComponent(Component *components, RunModes runMode = AllMode);
+    Component *rootComponent(int i, RunModes runMode = AllMode) const;
+
     QList<Component*> components(bool recursive = false, RunModes runMode = AllMode) const;
     QList<Component*> componentsToInstall(bool recursive = false, bool sort = true,
         RunModes runMode = AllMode) const;

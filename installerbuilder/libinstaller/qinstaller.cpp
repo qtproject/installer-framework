@@ -733,7 +733,6 @@ bool Installer::fetchAllPackages()
 
     emit startAllComponentsReset();
 
-    d->m_componentHash.clear();
     qDeleteAll(d->m_rootComponents);
     d->m_rootComponents.clear();
 
@@ -831,7 +830,7 @@ bool Installer::fetchAllPackages()
     // append all components w/o parent to the direct list
     foreach (QInstaller::Component *component, components) {
         if (component->parentComponent() == 0)
-            appendComponent(component);
+            appendRootComponent(component, AllMode);
     }
 
     // after everything is set up, load the scripts
@@ -1038,10 +1037,8 @@ bool Installer::fetchUpdaterPackages()
     }
 
     // append all components w/o parent to the direct list
-    foreach (QInstaller::Component *component, updaterComponents) {
-        d->m_updaterComponents.append(component);
-        emit componentAdded(component);
-    }
+    foreach (QInstaller::Component *component, updaterComponents)
+        appendRootComponent(component, UpdaterMode);
 
     // after everything is set up, load the scripts
     foreach (QInstaller::Component *component, d->m_updaterComponents) {
@@ -1558,8 +1555,11 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
             d->willBeReplacedComponents.append(yeahComponent);
             continue; //we don't want to append the unneeded components
         }
-        if (d->m_linearComponentList || (*it)->parentComponent() == 0)
-            appendComponent(*it);
+        if (d->m_linearComponentList || (*it)->parentComponent() == 0) {
+            d->m_componentHash.insert((*it)->name(), *it);
+            // TODO: fix this (d->m_linearComponentList ? UpdaterMode : AllMode)
+            appendRootComponent(*it, d->m_linearComponentList ? UpdaterMode : AllMode);
+        }
     }
 
     // after everything is set up, load the scripts
@@ -1585,30 +1585,38 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     emit rootComponentsAdded(d->m_rootComponents);
 }
 
-void Installer::appendComponent(Component *component)
+/*!
+    Appends a new root components \a component based on the current run mode \a runMode to the
+    installers internal lists of components.
+*/
+void Installer::appendRootComponent(Component *component, RunModes runMode)
 {
-    d->m_rootComponents.append(component);
-    d->m_componentHash[component->name()] = component;
+    if (runMode == AllMode)
+        d->m_rootComponents.append(component);
+    else
+        d->m_updaterComponents.append(component);
     emit componentAdded(component);
 }
 
-int Installer::componentCount(RunModes runMode) const
+/*!
+    Returns the number of components in the list depending on the run mode \a runMode.
+*/
+int Installer::rootComponentCount(RunModes runMode) const
 {
     if (runMode == UpdaterMode)
         return d->m_updaterComponents.size();
     return d->m_rootComponents.size();
 }
 
-Component *Installer::component(int i, RunModes runMode) const
+/*!
+    Returns the component at index position i in the components list. i must be a valid index
+    position in the list (i.e., 0 <= i < rootComponentCount(...)).
+*/
+Component *Installer::rootComponent(int i, RunModes runMode) const
 {
     if (runMode == UpdaterMode)
-        return d->m_updaterComponents.at(i);
-    return d->m_rootComponents.at(i);
-}
-
-Component *Installer::component(const QString &name) const
-{
-    return d->m_componentHash.contains(name) ? d->m_componentHash[name] : 0;
+        return d->m_updaterComponents.value(i, 0);
+    return d->m_rootComponents.value(i, 0);
 }
 
 QList<Component*> Installer::components(bool recursive, RunModes runMode) const
