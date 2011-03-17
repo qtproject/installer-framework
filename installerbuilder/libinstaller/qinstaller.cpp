@@ -650,38 +650,45 @@ RunModes Installer::runMode() const
     return isUpdater() ? UpdaterMode : AllMode;
 }
 
+GetRepositoriesMetaInfoJob* Installer::fetchMetaInformation(const QInstaller::InstallerSettings &settings)
+{
+    const bool needsRepoCheck = isUpdater() || isPackageManager();
+    GetRepositoriesMetaInfoJob *metaInfoJob = new GetRepositoriesMetaInfoJob(settings.publicKey(),
+        needsRepoCheck);
+    if ((isInstaller() && !isOfflineOnly()) || needsRepoCheck)
+        metaInfoJob->setRepositories(settings.repositories());
+
+    connect(metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this,
+        SIGNAL(metaJobInfoMessage(KDJob*,QString)));
+    connect(this, SIGNAL(cancelMetaInfoJob()), metaInfoJob, SLOT(doCancel()),
+        Qt::QueuedConnection);
+
+    try {
+        metaInfoJob->setAutoDelete(false);
+        metaInfoJob->start();
+        metaInfoJob->waitForFinished();
+    } catch (Error &error) {
+        verbose() << tr("Could not retrieve meta information: %1").arg(error.message()) << std::endl;
+    }
+
+    return metaInfoJob;
+}
+
 bool Installer::fetchAllPackages()
 {
     if (isUninstaller() || isUpdater())
         return false;
 
     const QInstaller::InstallerSettings &settings = *d->m_installerSettings;
-    GetRepositoriesMetaInfoJob metaInfoJob(settings.publicKey(), true);
-    if (!isOfflineOnly())
-        metaInfoJob.setRepositories(settings.repositories());
-
-    connect(&metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this,
-        SIGNAL(allComponentsInfoMessage(KDJob*,QString)));
-    connect(this, SIGNAL(cancelAllComponentsInfoJob()), &metaInfoJob, SLOT(doCancel()),
-        Qt::QueuedConnection);
-
-    try {
-        metaInfoJob.setAutoDelete(false);
-        metaInfoJob.start();
-        metaInfoJob.waitForFinished();
-    } catch (Error &error) {
-        verbose() << tr("Could not retrieve components: %1").arg(error.message()) << std::endl;
-        return false;
-    }
-
-    if (metaInfoJob.isCanceled() || metaInfoJob.error() != KDJob::NoError) {
-        verbose() << tr("Could not retrieve components: %1").arg(metaInfoJob.errorString()) << std::endl;
+    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(settings));
+    if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
+        verbose() << tr("Could not retrieve components: %1").arg(metaInfoJob->errorString()) << std::endl;
         return false;
     }
 
     KDUpdater::Application &updaterApp = *d->m_app;
     const QString &appName = settings.applicationName();
-    const QStringList tempDirs = metaInfoJob.temporaryDirectories();
+    const QStringList tempDirs = metaInfoJob->temporaryDirectories();
     foreach (const QString &tmpDir, tempDirs) {
         if (tmpDir.isEmpty())
             continue;
@@ -777,7 +784,7 @@ bool Installer::fetchAllPackages()
         }
         component->setValue(QLatin1String("CurrentState"), state);
         component->setValue(QLatin1String("PreviousState"), state);
-        component->setRepositoryUrl(metaInfoJob.repositoryForTemporaryDirectory(localPath).url());
+        component->setRepositoryUrl(metaInfoJob->repositoryForTemporaryDirectory(localPath).url());
 
         components.insert(name, component.take());
     }
@@ -816,31 +823,15 @@ bool Installer::fetchUpdaterPackages()
         return false;
 
     const QInstaller::InstallerSettings &settings = *d->m_installerSettings;
-    GetRepositoriesMetaInfoJob metaInfoJob(settings.publicKey(), true);
-    metaInfoJob.setRepositories(settings.repositories());
-
-    connect(&metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this,
-        SIGNAL(updaterInfoMessage(KDJob*, QString)));
-    connect(this, SIGNAL(cancelUpdaterInfoJob()), &metaInfoJob, SLOT(doCancel()),
-        Qt::QueuedConnection);
-
-    try {
-        metaInfoJob.setAutoDelete(false);
-        metaInfoJob.start();
-        metaInfoJob.waitForFinished();
-    } catch (Error &error) {
-        verbose() << tr("Could not retrieve updates: %1").arg(error.message()) << std::endl;
-        return false;
-    }
-
-    if (metaInfoJob.isCanceled() || metaInfoJob.error() != KDJob::NoError) {
-        verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob.errorString()) << std::endl;
+    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(settings));
+    if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
+        verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
         return false;
     }
 
     KDUpdater::Application &updaterApp = *d->m_app;
     const QString &appName = settings.applicationName();
-    const QStringList tempDirs = metaInfoJob.temporaryDirectories();
+    const QStringList tempDirs = metaInfoJob->temporaryDirectories();
     foreach (const QString &tmpDir, tempDirs) {
         if (tmpDir.isEmpty())
             continue;
@@ -952,7 +943,7 @@ bool Installer::fetchUpdaterPackages()
             component->setValue(QLatin1String("InstalledVersion"), installedPackages.value(name).version);
         component->setValue(QLatin1String("CurrentState"), state);
         component->setValue(QLatin1String("PreviousState"), state);
-        component->setRepositoryUrl(metaInfoJob.repositoryForTemporaryDirectory(localPath).url());
+        component->setRepositoryUrl(metaInfoJob->repositoryForTemporaryDirectory(localPath).url());
 
         components.insert(name, component.take());
     }

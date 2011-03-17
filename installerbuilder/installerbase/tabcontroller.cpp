@@ -179,9 +179,9 @@ int TabController::initUpdater()
     introPage->showAll();
     introPage->setComplete(false);
 
-    connect(d->m_installer, SIGNAL(updaterInfoMessage(KDJob*, QString)), introPage,
+    connect(d->m_installer, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
         SLOT(message(KDJob*, QString)));
-    connect(d->m_gui, SIGNAL(rejected()), d->m_installer, SIGNAL(cancelUpdaterInfoJob()),
+    connect(d->m_gui, SIGNAL(rejected()), d->m_installer, SIGNAL(cancelMetaInfoJob()),
         Qt::QueuedConnection);
 
     d->m_gui->setWindowModality(Qt::WindowModal);
@@ -229,9 +229,9 @@ int TabController::initPackageManager()
         introPage->showAll();
     introPage->setComplete(false);
 
-    connect(d->m_installer, SIGNAL(allComponentsInfoMessage(KDJob*,QString)), introPage,
+    connect(d->m_installer, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
         SLOT(message(KDJob*, QString)));
-    connect(d->m_gui, SIGNAL(rejected()), d->m_installer, SIGNAL(cancelAllComponentsInfoJob()),
+    connect(d->m_gui, SIGNAL(rejected()), d->m_installer, SIGNAL(cancelMetaInfoJob()),
         Qt::QueuedConnection);
 
     d->m_gui->setWindowModality(Qt::WindowModal);

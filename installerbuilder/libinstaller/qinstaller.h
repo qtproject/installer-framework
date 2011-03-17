@@ -82,6 +82,8 @@ public:
             = QVector< KDUpdater::UpdateOperation*>());
     ~Installer();
 
+    GetRepositoriesMetaInfoJob* fetchMetaInformation(const QInstaller::InstallerSettings &settings);
+
     bool fetchAllPackages();
     bool fetchUpdaterPackages();
 
@@ -242,15 +244,14 @@ Q_SIGNALS:
     void currentPageChanged(int page);
     void finishButtonClicked();
 
+    void cancelMetaInfoJob();
+    void metaJobInfoMessage(KDJob* job, const QString &message);
+
     void startAllComponentsReset();
     void finishAllComponentsReset();
-    void cancelAllComponentsInfoJob();
-    void allComponentsInfoMessage(KDJob* job, const QString &message);
 
     void startUpdaterComponentsReset();
     void finishUpdaterComponentsReset();
-    void cancelUpdaterInfoJob();
-    void updaterInfoMessage(KDJob* job, const QString &message);
 
     void installationStarted();
     void installationInterrupted();
