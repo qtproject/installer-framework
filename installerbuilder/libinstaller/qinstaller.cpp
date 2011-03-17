@@ -735,7 +735,6 @@ bool Installer::fetchAllPackages()
     qDeleteAll(d->m_rootComponents);
     d->m_rootComponents.clear();
 
-    QMap<QInstaller::Component*, QString> scripts;
     QMap<QString, QInstaller::Component*> components;
 
     KDUpdater::PackagesInfo &packagesInfo = *updaterApp.packagesInfo();
@@ -757,7 +756,14 @@ bool Installer::fetchAllPackages()
             continue;
         }
 
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(package, this));
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+        component->loadDataFromUpdate(package);
+
+        const QString localPath = QInstaller::pathFromUrl(package->sourceInfo().url);
+        static QString lastLocalPath;
+        if (lastLocalPath != localPath)
+            verbose() << "Url is : " << localPath << std::endl;
+        lastLocalPath = localPath;
 
         QString state = QLatin1String("Uninstalled");
         const int indexOfPackage = packagesInfo.findPackageInfo(name);
@@ -769,47 +775,7 @@ bool Installer::fetchAllPackages()
         }
         component->setValue(QLatin1String("CurrentState"), state);
         component->setValue(QLatin1String("PreviousState"), state);
-
-        const QString localPath = QInstaller::pathFromUrl(package->sourceInfo().url);
-        const Repository repo = metaInfoJob.repositoryForTemporaryDirectory(localPath);
-        component->setRepositoryUrl(repo.url());
-
-        static QLatin1String newComponent("NewComponent");
-        component->setValue(newComponent, package->data(newComponent).toString());
-
-        static const QLatin1String important("Important");
-        component->setValue(important, package->data(important).toString());
-
-        static const QLatin1String forcedInstallation("ForcedInstallation");
-        component->setValue(forcedInstallation, package->data(forcedInstallation).toString());
-
-        static const QLatin1String updateText("UpdateText");
-        component->setValue(updateText, package->data(updateText).toString());
-
-        static const QLatin1String requiresAdminRights("RequiresAdminRights");
-        component->setValue(requiresAdminRights, package->data(requiresAdminRights).toString());
-
-        const QStringList uis = package->data(QLatin1String("UserInterfaces")).toString()
-            .split(QString::fromLatin1(","), QString::SkipEmptyParts);
-        if (!uis.isEmpty()) {
-            if (uis.contains(QLatin1String("installationkind.ui"))) {
-                int index = uis.indexOf(QLatin1String("installationkind.ui"));
-                index = index;
-            }
-            component->loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localPath, name)), uis);
-        }
-        const QStringList qms = package->data(QLatin1String("Translations")).toString()
-            .split(QString::fromLatin1(","), QString::SkipEmptyParts);
-        if (!qms.isEmpty())
-            component->loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localPath, name)), qms);
-
-        QHash<QString, QVariant> licenseHash = package->data(QLatin1String("Licenses")).toHash();
-        if (!licenseHash.isEmpty())
-            component->loadLicenses(QString::fromLatin1("%1/%2/").arg(localPath, name), licenseHash);
-
-        const QString script = package->data(QLatin1String("Script")).toString();
-        if (!script.isEmpty())
-            scripts.insert(component.data(), QString::fromLatin1("%1/%2/%3").arg(localPath, name, script));
+        component->setRepositoryUrl(metaInfoJob.repositoryForTemporaryDirectory(localPath).url());
 
         components.insert(name, component.take());
     }
@@ -833,13 +799,8 @@ bool Installer::fetchAllPackages()
     }
 
     // after everything is set up, load the scripts
-    QList<QInstaller::Component*> keys = scripts.keys();
-    foreach (QInstaller::Component *component, keys) {
-        const QString &script = scripts.value(component);
-        verbose() << "Loading script for component " << component->name() << " (" << script << ")"
-            << std::endl;
-        component->loadComponentScript(script);
-    }
+    foreach (QInstaller::Component *component, components)
+        component->loadComponentScript();
 
     emit rootComponentsAdded(d->m_rootComponents);
     emit finishAllComponentsReset();
