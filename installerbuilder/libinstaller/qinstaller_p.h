@@ -38,6 +38,7 @@
 #include <QtCore/QHash>
 #include <QtCore/QObject>
 #include <QtCore/QPair>
+#include <QtCore/QPointer>
 #include <QtCore/QVector>
 
 class FSEngineClientHandler;
@@ -178,6 +179,8 @@ public:
 
     //a hack to get the will be replaced components extra
     QList<QInstaller::Component*> willBeReplacedComponents;
+    //this is a Hack, we don't need this in the refactor branch
+    QList< QPointer<QInstaller::Component> > componentDeleteList;
 
     QList<KDUpdater::UpdateOperation*> ownedOperations;
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsOld;
