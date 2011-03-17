@@ -727,17 +727,23 @@ LicenseAgreementPage::LicenseAgreementPage(Installer *inst)
     licenseBoxLayout->addWidget(m_textBrowser);
 
     m_acceptRadioButton = new QRadioButton(this);
-    QLabel *acceptLabel = new QLabel(tr("I have read and agree to the following terms contained in "
+    m_acceptRadioButton->setShortcut(QKeySequence(tr("Alt+A", "agree license")));
+    QLabel *acceptLabel = new QLabel(tr("I h<u>a</u>ve read and agree to the following terms contained in "
         "the license agreements accompanying the Qt SDK and additional items. I agree that my use of "
         "the Qt SDK is governed by the terms and conditions contained in these license agreements."));
     acceptLabel->setWordWrap(true);
+    ClickForwarder* acceptClickForwarder = new ClickForwarder(m_acceptRadioButton);
+    acceptLabel->installEventFilter(acceptClickForwarder);
 
     m_rejectRadioButton = new QRadioButton(this);
-    QLabel *rejectLabel = new QLabel(tr("I do not accept the terms and conditions of the above "
+    m_rejectRadioButton->setShortcut(QKeySequence(tr("Alt+N", "do not agree license")));
+    QLabel *rejectLabel = new QLabel(tr("I do <u>n</u>ot accept the terms and conditions of the above "
         "listed license agreements. Please note by checking the box, you must cancel the "
         "installation or downloading the Qt SDK and must destroy all copies, or portions thereof, "
         "of the Qt SDK in your possessions."));
     rejectLabel->setWordWrap(true);
+    ClickForwarder* rejectClickForwarder = new ClickForwarder(m_rejectRadioButton);
+    rejectLabel->installEventFilter(rejectClickForwarder);
 
     QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Minimum);
     sizePolicy3.setHeightForWidth(rejectLabel->sizePolicy().hasHeightForWidth());

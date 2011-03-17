@@ -29,6 +29,9 @@
 #include <QtGui/QWizard>
 #include <QtCore/QMetaType>
 
+#include <QtCore/QEvent>
+#include <QtGui/QAbstractButton>
+
 #include <KDToolsCore/pimpl_ptr>
 
 #include "qinstaller.h"
@@ -370,5 +373,25 @@ Q_SIGNALS:
 };
 
 } //namespace QInstaller
+
+class ClickForwarder : public QObject
+{
+    Q_OBJECT
+public:
+    explicit ClickForwarder(QAbstractButton* button) : m_abstractButton(button) {}
+
+protected:
+    bool eventFilter(QObject *object, QEvent *event)
+    {
+        if (event->type() == QEvent::MouseButtonRelease) {
+            m_abstractButton->click();
+            return true;
+        }
+        // standard event processing
+        return QObject::eventFilter(object, event);
+    }
+private:
+    QAbstractButton* m_abstractButton;
+};
 
 #endif // QINSTALLER_GUI_H
