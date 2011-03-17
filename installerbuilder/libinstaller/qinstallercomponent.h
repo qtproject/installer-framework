@@ -170,9 +170,6 @@ public:
     QUrl repositoryUrl() const;
     void setRepositoryUrl(const QUrl &url);
 
-    QString localTempPath() const;
-    void setLocalTempPath(const QString &tempPath);
-   
     bool removeBeforeUpdate() const;
     void setRemoveBeforeUpdate(bool removeBeforeUpdate);
 
@@ -212,6 +209,9 @@ protected:
         const QScriptValueList &parameters = QScriptValueList());
 
 private:
+    QString localTempPath() const;
+    void setLocalTempPath(const QString &tempPath);
+
     KDUpdater::UpdateOperation *createOperation(const QString &operation,
         const QString &parameter1 = QString(), const QString &parameter2 = QString(),
         const QString &parameter3 = QString(), const QString &parameter4 = QString(),

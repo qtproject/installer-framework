@@ -1263,9 +1263,13 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
             alreadyInstalledPackagesHash.remove(name);
         }
 
-        component->setLocalTempPath(QInstaller::pathFromUrl(update->sourceInfo().url));
-        const Repository currentUsedRepository = metaInfoJob.repositoryForTemporaryDirectory(
-                    component->localTempPath());
+        const QString localPath = QInstaller::pathFromUrl(update->sourceInfo().url);
+        static QString lastLocalPath;
+        if (lastLocalPath != localPath)
+            verbose() << "Url is : " << localPath << std::endl;
+        lastLocalPath = localPath;
+
+        const Repository currentUsedRepository = metaInfoJob.repositoryForTemporaryDirectory(localPath);
         component->setRepositoryUrl(currentUsedRepository.url());
 
         // the package manager should preselect the currently installed packages

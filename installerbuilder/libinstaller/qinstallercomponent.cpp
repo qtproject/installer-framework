@@ -56,6 +56,26 @@
 
 using namespace QInstaller;
 
+static const QLatin1String skName("Name");
+static const QLatin1String skDisplayName("DisplayName");
+static const QLatin1String skDescription("Description");
+static const QLatin1String skCompressedSize("CompressedSize");
+static const QLatin1String skUncompressedSize("UncompressedSize");
+static const QLatin1String skVersion("Version");
+static const QLatin1String skDependencies("Dependencies");
+static const QLatin1String skReleaseDate("ReleaseDate");
+static const QLatin1String skReplaces("Replaces");
+static const QLatin1String skVirtual("Virtual");
+static const QLatin1String skSortingPriority("SortingPriority");
+static const QLatin1String skInstallPriority("InstallPriority");
+static const QLatin1String skAutoSelectOn("AutoSelectOn");
+static const QLatin1String skImportant("Important");
+static const QLatin1String skForcedInstallation("ForcedInstallation");
+static const QLatin1String skUpdateText("UpdateText");
+static const QLatin1String skRequiresAdminRights("RequiresAdminRights");
+static const QLatin1String skNewComponent("NewComponent");
+static const QLatin1String skScript("Script");
+
 /*
     TRANSLATOR QInstaller::Component
 */
@@ -216,16 +236,16 @@ Component::Component(KDUpdater::Update* update, Installer* installer)
 {
     Q_ASSERT(update);
     d->init();
-    setValue(QLatin1String("Name"), update->data(QLatin1String("Name")).toString());
-    setValue(QLatin1String("DisplayName"), update->data(QLatin1String("DisplayName")).toString());
-    setValue(QLatin1String("Description"), update->data(QLatin1String("Description")).toString());
-    setValue(QLatin1String("UncompressedSize"), QString::number(update->uncompressedSize()));
-    setValue(QLatin1String("Version"), update->data(QLatin1String("Version")).toString());
-    setValue(QLatin1String("Dependencies"), update->data(QLatin1String("Dependencies")).toString());
-    setValue(QLatin1String("Virtual"), update->data(QLatin1String("Virtual")).toString());
-    setValue(QLatin1String("SortingPriority"), update->data(QLatin1String("SortingPriority")).toString());
-    setValue(QLatin1String("InstallPriority"), update->data(QLatin1String("InstallPriority")).toString());
-    setValue(QLatin1String("AutoSelectOn"), update->data(QLatin1String("AutoSelectOn")).toString());
+    setValue(skName, update->data(skName).toString());
+    setValue(skDisplayName, update->data(skDisplayName).toString());
+    setValue(skDescription, update->data(skDescription).toString());
+    setValue(skUncompressedSize, QString::number(update->uncompressedSize()));
+    setValue(skVersion, update->data(skVersion).toString());
+    setValue(skDependencies, update->data(skDependencies).toString());
+    setValue(skVirtual, update->data(skVirtual).toString());
+    setValue(skSortingPriority, update->data(skSortingPriority).toString());
+    setValue(skInstallPriority, update->data(skInstallPriority).toString());
+    setValue(skAutoSelectOn, update->data(skAutoSelectOn).toString());
 }
 
 /*!
@@ -246,13 +266,12 @@ Component::~Component()
 //package info is that what is saved inside the packagemanager on harddisk
 void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo)
 {
-    setValue(QLatin1String("Name"), packageInfo.name);
-    setValue(QLatin1String("DisplayName"), packageInfo.title);
-    setValue(QLatin1String("Description"), packageInfo.description);
-    setValue(QLatin1String("UncompressedSize"), QString::number(packageInfo.uncompressedSize));
-    setValue(QLatin1String("Version"), packageInfo.version);
-    setValue(QLatin1String("Virtual"),
-        packageInfo.virtualComp ? QLatin1String ("true") : QLatin1String ("false"));
+    setValue(skName, packageInfo.name);
+    setValue(skDisplayName, packageInfo.title);
+    setValue(skDescription, packageInfo.description);
+    setValue(skUncompressedSize, QString::number(packageInfo.uncompressedSize));
+    setValue(skVersion, packageInfo.version);
+    setValue(skVirtual, packageInfo.virtualComp ? QLatin1String ("true") : QLatin1String ("false"));
 
     QString dependstr = QLatin1String("");
     foreach (const QString& val, packageInfo.dependencies)
@@ -260,10 +279,10 @@ void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInf
 
     if (packageInfo.dependencies.count() > 0)
         dependstr.chop(1);
-    setValue(QLatin1String("Dependencies"), dependstr);
+    setValue(skDependencies, dependstr);
 
     if (packageInfo.forcedInstallation) {
-        setValue(QLatin1String("ForcedInstallation"),
+        setValue(skForcedInstallation,
             packageInfo.forcedInstallation ? QLatin1String ("true") : QLatin1String ("false"));
     }
 }
@@ -274,75 +293,46 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
     Q_ASSERT(update);
     Q_ASSERT(!update->name().isEmpty());
 
-    setValue(QLatin1String("Name"),
-        update->data(QLatin1String("Name")).toString());
-    setValue(QLatin1String("DisplayName"),
-        update->data(QLatin1String("DisplayName")).toString());
-    setValue(QLatin1String("Description"),
-        update->data( QLatin1String("Description")).toString());
-    setValue(QLatin1String("UncompressedSize"),
-        QString::number(update->uncompressedSize()));
-    setValue(QLatin1String("Version"),
-        update->data(QLatin1String("Version")).toString());
-    setValue(QLatin1String("Dependencies"),
-        update->data(QLatin1String("Dependencies")).toString());
-    setValue(QLatin1String("ReleaseDate"),
-        update->data(QLatin1String("ReleaseDate")).toString());
-    setValue(QLatin1String("Replaces"),
-        update->data(QLatin1String("Replaces")).toString());
-    setValue(QLatin1String("Virtual"),
-        update->data(QLatin1String("Virtual")).toString());
-    setValue(QLatin1String("SortingPriority"),
-        update->data(QLatin1String("SortingPriority")).toString());
-    setValue(QLatin1String("InstallPriority"),
-        update->data(QLatin1String("InstallPriority")).toString());
-    setValue(QLatin1String("AutoSelectOn"),
-        update->data(QLatin1String("AutoSelectOn")).toString());
-    setValue(QLatin1String("Important"),
-        update->data(QLatin1String("Important")).toString());
+    setValue(skName, update->data(skName).toString());
+    setValue(skDisplayName, update->data(skDisplayName).toString());
+    setValue(skDescription, update->data(skDescription).toString());
+    setValue(skCompressedSize, QString::number(update->compressedSize()));
+    setValue(skUncompressedSize, QString::number(update->uncompressedSize()));
+    setValue(skVersion, update->data(skVersion).toString());
+    setValue(skDependencies, update->data(skDependencies).toString());
+    setValue(skVirtual, update->data(skVirtual).toString());
+    setValue(skSortingPriority, update->data(skSortingPriority).toString());
+    setValue(skInstallPriority, update->data(skInstallPriority).toString());
+    setValue(skAutoSelectOn, update->data(skAutoSelectOn).toString());
 
-    QString forced = update->data(QLatin1String("ForcedInstallation")).toString();
+    setValue(skImportant, update->data(skImportant).toString());
+    setValue(skUpdateText, update->data(skUpdateText).toString());
+    setValue(skNewComponent, update->data(skNewComponent).toString());
+    setValue(skRequiresAdminRights, update->data(skRequiresAdminRights).toString());
+
+    setValue(skScript, update->data(skScript).toString());
+    setValue(skReplaces, update->data(skReplaces).toString());
+    setValue(skReleaseDate, update->data(skReleaseDate).toString());
+
+    QString forced = update->data(skForcedInstallation).toString();
     if (qApp->arguments().contains(QLatin1String("--no-force-installations")))
         forced = QLatin1String("false");
-    setValue(QLatin1String("ForcedInstallation"), forced);
+    setValue(skForcedInstallation, forced);
 
-    setValue(QLatin1String("UpdateText"),
-        update->data(QLatin1String("UpdateText")).toString());
-    setValue(QLatin1String("RequiresAdminRights"),
-        update->data(QLatin1String("RequiresAdminRights")).toString());
-    setValue(QLatin1String("NewComponent"),
-        update->data(QLatin1String("NewComponent")).toString());
-    setValue(QLatin1String("Script"),
-        update->data(QLatin1String("Script")).toString());
-
-    const QString localPath = QInstaller::pathFromUrl(update->sourceInfo().url);
-
-    // TODO: move this verbose output for the url to a location where we don't need to check that
-    // is a newer url(so it would be better where the updates are created)
-    static QString lastLocalPath;
-    if (lastLocalPath != localPath)
-        verbose() << "Url is : " << localPath << std::endl;
-    lastLocalPath = localPath;
-
+    setLocalTempPath(QInstaller::pathFromUrl(update->sourceInfo().url));
     const QStringList uis = update->data(QLatin1String("UserInterfaces")).toString()
         .split(QString::fromLatin1(","), QString::SkipEmptyParts);
-    if (!uis.isEmpty()) {
-        verbose() << "Loading User Interface definitions for component " << name() << std::endl;
-        loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localPath, name())), uis);
-    }
+    if (!uis.isEmpty())
+        loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), uis);
 
     const QStringList qms = update->data(QLatin1String("Translations")).toString()
         .split(QString::fromLatin1(","), QString::SkipEmptyParts);
-    if (!qms.isEmpty()) {
-        verbose() << "Loading translations for component " << name() << std::endl;
-        loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localPath, name())), qms);
-    }
+    if (!qms.isEmpty())
+        loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), qms);
 
     QHash<QString, QVariant> licenseHash = update->data(QLatin1String("Licenses")).toHash();
-    if (!licenseHash.isEmpty()) {
-        verbose() << "Loading licenses for component " << name() << std::endl;
-        loadLicenses(QString::fromLatin1("%1/%2/").arg(localPath, name()), licenseHash);
-    }
+    if (!licenseHash.isEmpty())
+        loadLicenses(QString::fromLatin1("%1/%2/").arg(localTempPath(), name()), licenseHash);
 }
 
 void Component::updateState(const bool selected)
@@ -463,7 +453,7 @@ QList<Component*> Component::childComponents(bool recursive, RunModes runMode) c
 */
 QString Component::name() const
 {
-    return value(QLatin1String("Name"));
+    return value(skName);
 }
 
 /*!
@@ -471,16 +461,14 @@ QString Component::name() const
 */
 QString Component::displayName() const
 {
-    return value(QLatin1String("DisplayName"));
+    return value(skDisplayName);
 }
 
 void Component::loadComponentScript()
 {
-    const QString script = value(QLatin1String("Script"));
-    if (!localTempPath().isEmpty() && !script.isEmpty()) {
-        loadComponentScript(QString::fromLatin1("%1/%2/%3").arg(
-            d->localTempPath, name(), script));
-    }
+    const QString script = value(skScript);
+    if (!localTempPath().isEmpty() && !script.isEmpty())
+        loadComponentScript(QString::fromLatin1("%1/%2/%3").arg(localTempPath(), name(), script));
 }
 
 /*!
@@ -790,7 +778,7 @@ void Component::addDownloadableArchive(const QString &path)
 {
     Q_ASSERT(isFromOnlineRepository());
 
-    const QString versionPrefix = value(QLatin1String("Version"));
+    const QString versionPrefix = value(skVersion);
     verbose() << "addDownloadable " << path << std::endl;
     d->downloadableArchives.append(versionPrefix + path);
 }
@@ -1138,7 +1126,7 @@ void Component::setSelected(bool selected, RunModes runMode, SelectMode selectMo
 */
 QStringList Component::dependencies() const
 {
-    return value(QLatin1String("Dependencies")).split(QLatin1Char(','));
+    return value(skDependencies).split(QLatin1Char(','));
 }
 
 /*!
@@ -1218,7 +1206,6 @@ QUrl Component::repositoryUrl() const
 }
 
 /*!
-    \internal
     Sets this components #repositoryUrl.
 */
 void Component::setRepositoryUrl(const QUrl& url)
