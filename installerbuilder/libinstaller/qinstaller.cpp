@@ -748,6 +748,10 @@ bool Installer::fetchAllPackages()
         packagesInfo.setApplicationVersion(settings.applicationVersion());
     }
 
+    QHash<QString, KDUpdater::PackageInfo> installedPackages;
+    foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
+        installedPackages.insert(info.name, info);
+
     foreach (KDUpdater::Update *package, packages) {
         const QString name = package->data(QLatin1String("Name")).toString();
         if (components.contains(name)) {
@@ -766,12 +770,10 @@ bool Installer::fetchAllPackages()
         lastLocalPath = localPath;
 
         QString state = QLatin1String("Uninstalled");
-        const int indexOfPackage = packagesInfo.findPackageInfo(name);
-        if (indexOfPackage > -1) {
+        if (installedPackages.contains(name)) {
             state = QLatin1String("Installed");
-            component->setValue(QLatin1String("InstalledVersion"),
-                packagesInfo.packageInfo(indexOfPackage).version);
             component->setSelected(true, AllMode, Component::InitializeComponentTreeSelectMode);
+            component->setValue(QLatin1String("InstalledVersion"), installedPackages.value(name).version);
         }
         component->setValue(QLatin1String("CurrentState"), state);
         component->setValue(QLatin1String("PreviousState"), state);
@@ -904,6 +906,10 @@ bool Installer::fetchUpdaterPackages()
     packagesInfo.setApplicationName(appName);
     packagesInfo.setApplicationVersion(settings.applicationVersion());
 
+    QHash<QString, KDUpdater::PackageInfo> installedPackages;
+    foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
+        installedPackages.insert(info.name, info);
+
     foreach (KDUpdater::Update * const update, updates) {
         const QString isNew = update->data(QLatin1String("NewComponent")).toString();
         if (isNew.toLower() != QLatin1String("true"))
@@ -917,21 +923,19 @@ bool Installer::fetchUpdaterPackages()
         }
 
         QString state = QLatin1String("Uninstalled");
-        const int indexOfPackage = packagesInfo.findPackageInfo(name);
-        if (indexOfPackage > -1) {
+        if (installedPackages.contains(name)) {
             state = QLatin1String("Installed");
 
+            const KDUpdater::PackageInfo &info = installedPackages.value(name);
             const QString updateVersion = update->data(QLatin1String("Version")).toString();
-            const QString pkgVersion = packagesInfo.packageInfo(indexOfPackage).version;
-            if (KDUpdater::compareVersion(updateVersion, pkgVersion) <= 0)
+            if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)
                 continue;
 
             // It is quite possible that we may have already installed the update. Lets check the last
             // update date of the package and the release date of the update. This way we can compare and
             // figure out if the update has been installed or not.
             const QDate updateDate = update->data(QLatin1String("ReleaseDate")).toDate();
-            const QDate pkgDate = packagesInfo.packageInfo(indexOfPackage).lastUpdateDate;
-            if (pkgDate > updateDate)
+            if (info.lastUpdateDate > updateDate)
                 continue;
         }
 
@@ -944,10 +948,8 @@ bool Installer::fetchUpdaterPackages()
             verbose() << "Url is : " << localPath << std::endl;
         lastLocalPath = localPath;
 
-        if (indexOfPackage > -1) {
-            component->setValue(QLatin1String("InstalledVersion"),
-                packagesInfo.packageInfo(indexOfPackage).version);
-        }
+        if (installedPackages.contains(name))
+            component->setValue(QLatin1String("InstalledVersion"), installedPackages.value(name).version);
         component->setValue(QLatin1String("CurrentState"), state);
         component->setValue(QLatin1String("PreviousState"), state);
         component->setRepositoryUrl(metaInfoJob.repositoryForTemporaryDirectory(localPath).url());
