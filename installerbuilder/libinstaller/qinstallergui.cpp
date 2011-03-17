@@ -497,16 +497,16 @@ void Gui::cancelButtonClicked()
     verbose() << "CANCEL CLICKED" << currentPage() << page << std::endl;
     if (page && page->isInterruptible()) {
         const QMessageBox::StandardButton bt =
-            MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("cancelInstallation"), tr("Warning"),
+            MessageBoxHandler::question(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("cancelInstallation"), tr("Question"),
             tr("Do you want to abort the %1 process?").arg(m_installer->isUninstaller()
                 ? tr("uninstallation") : tr("installation")), QMessageBox::Yes | QMessageBox::No);
         if (bt == QMessageBox::Yes)
             emit interrupted();
     } else {
         const QMessageBox::StandardButton bt =
-            MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("cancelInstallation"), tr("Warning"),
+            MessageBoxHandler::question(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("cancelInstallation"), tr("Question"),
             tr("Do you want to abort the %1 application?").arg(m_installer->isUninstaller()
                 ? tr("uninstaller") : tr("installer")), QMessageBox::Yes | QMessageBox::No);
         if (bt == QMessageBox::Yes)
