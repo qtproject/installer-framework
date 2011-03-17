@@ -468,6 +468,9 @@ public:
 
     KDUpdater::Application * m_app;
 
+    //this is a Hack, we don't need this in the refactor branch
+    QList< QPointer<QInstaller::Component> > componentDeleteList;
+
     // Owned. Indexed by component name
     QList<Component*> m_rootComponents;
     QHash<QString, Component*> m_componentHash;
@@ -516,9 +519,9 @@ Installer::Private::Private(Installer *q, qint64 magicmaker,
 
 Installer::Private::~Private()
 {
-//    qDeleteAll(m_components);
-//    qDeleteAll(m_updaterComponents);
-//    m_components.clear();
+    qDeleteAll(componentDeleteList);
+    componentDeleteList.clear();
+
     qDeleteAll(m_performedOperationsOld);
     qDeleteAll(m_performedOperationsCurrentSession);
 }
@@ -2390,6 +2393,7 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
         const QString name = update->data(QLatin1String("Name")).toString();
         Q_ASSERT(!name.isEmpty());
         QInstaller::Component* component(new QInstaller::Component(this));
+        d->componentDeleteList.append(component);
         component->loadDataFromUpdate(update);
 
         QString installedVersion;
@@ -2503,8 +2507,9 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
 
     emit componentsAboutToBeCleared();
 
-    qDeleteAll(d->m_rootComponents);
-    qDeleteAll(d->m_updaterComponents);
+    qDeleteAll(d->componentDeleteList);
+    d->componentDeleteList.clear();
+
     d->m_rootComponents.clear();
     d->m_updaterComponents.clear();
     d->m_packageManagerComponents.clear();
@@ -2540,6 +2545,7 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
     if (metaInfoJob.error() == KDJob::UserDefinedError) {
         foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos()) {
             QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+            d->componentDeleteList.append(component.data());
 
             if (components.contains(info.name)) {
                 qCritical("Could not register component! Component with identifier %s already "
@@ -2587,6 +2593,8 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
             const int indexOfPackage = packagesInfo.findPackageInfo(newComponentName);
 
             QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+            d->componentDeleteList.append(component.data());
+
             if (indexOfPackage > -1) {
                 Q_ASSERT(packagesInfo.packageInfo(indexOfPackage).version == installedVersion);
             }
@@ -2654,12 +2662,13 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
                     == QLatin1String("Installed");
                 const bool isNewComponent = tmpComponent->value(QLatin1String("NewComponent"))
                     == QLatin1String("true") ? true : false;
-                const bool newPackageForUpdater = !isInstalled && isNewComponent && !isInstaller();
+                const bool newPackageForUpdater = !isInstalled && isNewComponent;
                 isUpdate = isUpdate && isInstalled;
 
                 if (newPackageForUpdater) {
                     d->m_updaterComponents.push_back(component.take());
                     d->m_componentHash[newComponentName] = tmpComponent;
+                    components.insert(newComponentName, component.data());
                 } else {
                     components.insert(newComponentName, component.take());
                 }
