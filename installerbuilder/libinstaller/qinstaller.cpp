@@ -893,7 +893,6 @@ bool Installer::fetchUpdaterPackages()
     d->m_updaterComponents.clear();
 
     bool importantUpdates = false;
-    QMap<QInstaller::Component*, QString> scripts;
     QMap<QString, QInstaller::Component*> components;
 
     KDUpdater::PackagesInfo &packagesInfo = *updaterApp.packagesInfo();
@@ -937,49 +936,21 @@ bool Installer::fetchUpdaterPackages()
         }
 
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(update, this));
-        component->setValue(QLatin1String("NewComponent"), isNew);
-        component->setValue(QLatin1String("CurrentState"), state);
-        component->setValue(QLatin1String("PreviousState"), state);
+        component->loadDataFromUpdate(update);
+
+        const QString localPath = QInstaller::pathFromUrl(update->sourceInfo().url);
+        static QString lastLocalPath;
+        if (lastLocalPath != localPath)
+            verbose() << "Url is : " << localPath << std::endl;
+        lastLocalPath = localPath;
 
         if (indexOfPackage > -1) {
             component->setValue(QLatin1String("InstalledVersion"),
                 packagesInfo.packageInfo(indexOfPackage).version);
         }
-
-        const QString localPath = QInstaller::pathFromUrl(update->sourceInfo().url);
-        const Repository repo = metaInfoJob.repositoryForTemporaryDirectory(localPath);
-        component->setRepositoryUrl(repo.url());
-
-        static const QLatin1String important("Important");
-        component->setValue(important, update->data(important).toString());
-        importantUpdates |= update->data(important).toString().toLower() == QLatin1String("true");
-
-        static const QLatin1String forcedInstallation("ForcedInstallation");
-        component->setValue(forcedInstallation, update->data(forcedInstallation).toString());
-
-        static const QLatin1String updateText("UpdateText");
-        component->setValue(updateText, update->data(updateText).toString());
-
-        static const QLatin1String requiresAdminRights("RequiresAdminRights");
-        component->setValue(requiresAdminRights, update->data(requiresAdminRights).toString());
-
-        const QStringList uis = update->data(QLatin1String("UserInterfaces")).toString()
-            .split(QString::fromLatin1(","), QString::SkipEmptyParts);
-        if (!uis.isEmpty())
-            component->loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localPath, name)), uis);
-
-        const QStringList qms = update->data(QLatin1String("Translations")).toString()
-            .split(QString::fromLatin1(","), QString::SkipEmptyParts);
-        if (!qms.isEmpty())
-            component->loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localPath, name)), qms);
-
-        QHash<QString, QVariant> licenseHash = update->data(QLatin1String("Licenses")).toHash();
-        if (!licenseHash.isEmpty())
-            component->loadLicenses(QString::fromLatin1("%1/%2/").arg(localPath, name), licenseHash);
-
-        const QString script = update->data(QLatin1String("Script")).toString();
-        if (!script.isEmpty())
-            scripts.insert(component.data(), QString::fromLatin1("%1/%2/%3").arg(localPath, name, script));
+        component->setValue(QLatin1String("CurrentState"), state);
+        component->setValue(QLatin1String("PreviousState"), state);
+        component->setRepositoryUrl(metaInfoJob.repositoryForTemporaryDirectory(localPath).url());
 
         components.insert(name, component.take());
     }
@@ -1001,14 +972,8 @@ bool Installer::fetchUpdaterPackages()
         appendRootComponent(component, UpdaterMode);
 
     // after everything is set up, load the scripts
-    foreach (QInstaller::Component *component, d->m_updaterComponents) {
-        const QString &script = scripts.value(component);
-        if (script.isEmpty()) {
-            verbose() << "Loading script for component " << component->name() << " (" << script << ")"
-                << std::endl;
-            component->loadComponentScript(script);
-        }
-    }
+    foreach (QInstaller::Component *component, updaterComponents)
+        component->loadComponentScript();
 
     emit updaterComponentsAdded(d->m_updaterComponents);
     emit finishUpdaterComponentsReset();
