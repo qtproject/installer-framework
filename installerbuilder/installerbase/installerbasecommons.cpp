@@ -127,6 +127,13 @@ void IntroductionPageImpl::showMaintenanceTools()
     m_progressBar->setVisible(false);
 }
 
+void IntroductionPageImpl::setMaintenanceToolsEnabled(bool enable)
+{
+    m_packageManager->setEnabled(enable);
+    m_updateComponents->setEnabled(enable);
+    m_removeAllComponents->setEnabled(enable);
+}
+
 void IntroductionPageImpl::message(KDJob *job, const QString &msg)
 {
     Q_UNUSED(job)
@@ -299,10 +306,10 @@ QtUninstallerGui::QtUninstallerGui(Installer *installer)
 
 void QtUninstallerGui::init()
 {
-    if (m_installer->components(false, m_installer->runMode()).isEmpty()) {
-        wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
-        wizardPageVisibilityChangeRequested(false, Installer::LicenseCheck);
-    }
+    const bool visible = !m_installer->components(false, m_installer->runMode()).isEmpty();
+
+    wizardPageVisibilityChangeRequested(visible, Installer::ComponentSelection);
+    wizardPageVisibilityChangeRequested(visible, Installer::LicenseCheck);
 }
 
 int QtUninstallerGui::nextId() const

@@ -169,8 +169,10 @@ void TabController::setInstallerParams(const QHash<QString, QString> &params)
 
 int TabController::initUpdater()
 {
-    if (d->m_updaterInitialized)
+    if (d->m_updaterInitialized) {
+        d->m_gui->init();
         return Installer::Success;
+    }
 
     d->m_updaterInitialized = true;
 
@@ -178,6 +180,7 @@ int TabController::initUpdater()
         qobject_cast<IntroductionPageImpl*>(d->m_gui->page(Installer::Introduction));
     introPage->showAll();
     introPage->setComplete(false);
+    introPage->setMaintenanceToolsEnabled(false);
 
     connect(d->m_installer, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
         SLOT(message(KDJob*, QString)));
@@ -187,8 +190,7 @@ int TabController::initUpdater()
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 
-    if (!d->m_installer->fetchUpdaterPackages())
-        return Installer::Failure;
+    d->m_installer->fetchUpdaterPackages();
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
     // hide of pages depenging on the components.
@@ -198,6 +200,7 @@ int TabController::initUpdater()
 
     introPage->setComplete(true);
     introPage->showMaintenanceTools();
+    introPage->setMaintenanceToolsEnabled(true);
 
     return Installer::Success;
 }
@@ -217,16 +220,19 @@ int TabController::initUninstaller()
 
 int TabController::initPackageManager()
 {
-    if (d->m_packageManagerInitialized)
+    if (d->m_packageManagerInitialized) {
+        d->m_gui->init();
         return Installer::Success;
-
+    }
     d->m_packageManagerInitialized = true;
 
     IntroductionPageImpl *introPage =
         qobject_cast<IntroductionPageImpl*>(d->m_gui->page(Installer::Introduction));
     introPage->showMetaInfoUdate();
-    if (d->m_installer->isPackageManager())
+    if (d->m_installer->isPackageManager()) {
         introPage->showAll();
+        introPage->setMaintenanceToolsEnabled(false);
+    }
     introPage->setComplete(false);
 
     connect(d->m_installer, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
@@ -237,8 +243,7 @@ int TabController::initPackageManager()
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 
-    if (!d->m_installer->fetchAllPackages())
-        return Installer::Failure;
+    d->m_installer->fetchAllPackages();
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
     // hide of pages depenging on the components.
@@ -248,10 +253,12 @@ int TabController::initPackageManager()
 
     introPage->setComplete(true);
 
-    if (d->m_installer->isPackageManager())
+    if (d->m_installer->isPackageManager()) {
         introPage->showMaintenanceTools();
-    else
+        introPage->setMaintenanceToolsEnabled(true);
+    } else {
         introPage->hideAll();
+    }
 
     return Installer::Success;
 }

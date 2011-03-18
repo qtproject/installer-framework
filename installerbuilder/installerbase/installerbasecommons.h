@@ -50,6 +50,7 @@ public:
     void hideAll();
     void showMetaInfoUdate();
     void showMaintenanceTools();
+    void setMaintenanceToolsEnabled(bool enable);
 
 public Q_SLOTS:
     void message(KDJob *job, const QString &msg);
