@@ -681,9 +681,9 @@ GetRepositoriesMetaInfoJob* Installer::fetchMetaInformation(const QInstaller::In
     if ((isInstaller() && !isOfflineOnly()) || (isUpdater() || isPackageManager()))
         metaInfoJob->setRepositories(settings.repositories());
 
-    connect(metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this,
+    connect (metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this,
         SIGNAL(metaJobInfoMessage(KDJob*, QString)));
-    connect(this, SIGNAL(cancelMetaInfoJob()), metaInfoJob, SLOT(doCancel()),
+    connect (this, SIGNAL(cancelMetaInfoJob()), metaInfoJob, SLOT(doCancel()),
         Qt::QueuedConnection);
 
     try {
