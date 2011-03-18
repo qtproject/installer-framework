@@ -82,7 +82,9 @@ public:
             = QVector< KDUpdater::UpdateOperation*>());
     ~Installer();
 
-    GetRepositoriesMetaInfoJob* fetchMetaInformation(const QInstaller::InstallerSettings &settings);
+    GetRepositoriesMetaInfoJob* fetchMetaInformation(const InstallerSettings &settings);
+    bool addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *metaInfoJob, const InstallerSettings &settings,
+        bool parseChecksum);
 
     bool fetchAllPackages();
     bool fetchUpdaterPackages();

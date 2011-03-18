@@ -674,60 +674,72 @@ GetRepositoriesMetaInfoJob* Installer::fetchMetaInformation(const QInstaller::In
     return metaInfoJob;
 }
 
-bool Installer::fetchAllPackages()
+bool Installer::addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *metaInfoJob, const InstallerSettings &settings,
+    bool parseChecksum)
 {
-    if (isUninstaller() || isUpdater())
-        return false;
-
-    const QInstaller::InstallerSettings &settings = *d->m_installerSettings;
-    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(settings));
-    if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
-        verbose() << tr("Could not retrieve components: %1").arg(metaInfoJob->errorString()) << std::endl;
-        return false;
-    }
-
-    KDUpdater::Application &updaterApp = *d->m_app;
     const QString &appName = settings.applicationName();
     const QStringList tempDirs = metaInfoJob->temporaryDirectories();
     foreach (const QString &tmpDir, tempDirs) {
         if (tmpDir.isEmpty())
             continue;
 
-        const QString updatesXmlPath = tmpDir + QLatin1String("/Updates.xml");
-        QFile updatesFile(updatesXmlPath);
-        try {
-            openForRead(&updatesFile, updatesFile.fileName());
-        } catch(const Error &e) {
-            verbose() << tr("Error opening Updates.xml: ") << e.message() << std::endl;
-            return false;
-        }
+        if (parseChecksum) {
+            const QString updatesXmlPath = tmpDir + QLatin1String("/Updates.xml");
+            QFile updatesFile(updatesXmlPath);
+            try {
+                openForRead(&updatesFile, updatesFile.fileName());
+            } catch(const Error &e) {
+                verbose() << tr("Error opening Updates.xml: ") << e.message() << std::endl;
+                return false;
+            }
 
-        int line = 0;
-        int column = 0;
-        QString error;
-        QDomDocument doc;
-        if (!doc.setContent(&updatesFile, &error, &line, &column)) {
-            verbose() << tr("Parse error in File %4 : %1 at line %2 col %3").arg(error,
-                QString::number(line), QString::number(column), updatesFile.fileName()) << std::endl;
-            return false;
-        }
+            int line = 0;
+            int column = 0;
+            QString error;
+            QDomDocument doc;
+            if (!doc.setContent(&updatesFile, &error, &line, &column)) {
+                verbose() << tr("Parse error in File %4 : %1 at line %2 col %3").arg(error,
+                    QString::number(line), QString::number(column), updatesFile.fileName()) << std::endl;
+                return false;
+            }
 
-        const QDomNode checksum = doc.documentElement().firstChildElement(QLatin1String("Checksum"));
-        if (!checksum.isNull()) {
-            const QDomElement checksumElem = checksum.toElement();
-            setTestChecksum(checksumElem.text().toLower() == QLatin1String("true"));
+            const QDomNode checksum = doc.documentElement().firstChildElement(QLatin1String("Checksum"));
+            if (!checksum.isNull()) {
+                const QDomElement checksumElem = checksum.toElement();
+                setTestChecksum(checksumElem.text().toLower() == QLatin1String("true"));
+            }
         }
-
-        updaterApp.addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
+        d->m_app->addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
     }
+    d->m_app->updateSourcesInfo()->setModified(false);
 
-    if (updaterApp.updateSourcesInfo()->updateSourceInfoCount() == 0) {
-        verbose() << tr("Could not find any component source infos.") << std::endl;
+    return true;
+}
+
+bool Installer::fetchAllPackages()
+{
+    if (isUninstaller() || isUpdater())
+        return false;
+
+    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
+    if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
+        verbose() << tr("Could not retrieve components: %1").arg(metaInfoJob->errorString()) << std::endl;
         return false;
     }
-    updaterApp.updateSourcesInfo()->setModified(false);
 
-    KDUpdater::UpdateFinder updateFinder(&updaterApp);
+    if (!metaInfoJob->temporaryDirectories().isEmpty()) {
+        if (!addUpdateResourcesFrom(metaInfoJob.data(), *d->m_installerSettings, true)) {
+            verbose() << tr("Could not add temorary upade source information.") << std::endl;
+            return false;
+        }
+    }
+
+    if (d->m_app->updateSourcesInfo()->updateSourceInfoCount() == 0) {
+        verbose() << tr("Could not find any update source information.") << std::endl;
+        return false;
+    }
+
+    KDUpdater::UpdateFinder updateFinder(d->m_app);
     updateFinder.setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
     updateFinder.run();
 
@@ -744,15 +756,15 @@ bool Installer::fetchAllPackages()
 
     QMap<QString, QInstaller::Component*> components;
 
-    KDUpdater::PackagesInfo &packagesInfo = *updaterApp.packagesInfo();
+    KDUpdater::PackagesInfo &packagesInfo = *d->m_app->packagesInfo();
     if (isPackageManager()) {
         if (!setAndParseLocalComponentsFile(packagesInfo)) {
             verbose() << tr("Could not parse local components xml file: %1")
                 .arg(d->localComponentsXmlPath());
             return false;
         }
-        packagesInfo.setApplicationName(appName);
-        packagesInfo.setApplicationVersion(settings.applicationVersion());
+        packagesInfo.setApplicationName(d->m_installerSettings->applicationName());
+        packagesInfo.setApplicationVersion(d->m_installerSettings->applicationVersion());
     }
 
     QHash<QString, KDUpdater::PackageInfo> installedPackages;
@@ -822,55 +834,25 @@ bool Installer::fetchUpdaterPackages()
     if (!isUpdater())
         return false;
 
-    const QInstaller::InstallerSettings &settings = *d->m_installerSettings;
-    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(settings));
+    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
         verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
         return false;
     }
 
-    KDUpdater::Application &updaterApp = *d->m_app;
-    const QString &appName = settings.applicationName();
-    const QStringList tempDirs = metaInfoJob->temporaryDirectories();
-    foreach (const QString &tmpDir, tempDirs) {
-        if (tmpDir.isEmpty())
-            continue;
-
-        const QString updatesXmlPath = tmpDir + QLatin1String("/Updates.xml");
-        QFile updatesFile(updatesXmlPath);
-        try {
-            openForRead(&updatesFile, updatesFile.fileName());
-        } catch(const Error &e) {
-            verbose() << tr("Error opening Updates.xml: ") << e.message() << std::endl;
+    if (!metaInfoJob->temporaryDirectories().isEmpty()) {
+        if (!addUpdateResourcesFrom(metaInfoJob.data(), *d->m_installerSettings, true)) {
+            verbose() << tr("Could not add temorary upade source information.") << std::endl;
             return false;
         }
-
-        int line = 0;
-        int column = 0;
-        QString error;
-        QDomDocument doc;
-        if (!doc.setContent(&updatesFile, &error, &line, &column)) {
-            verbose() << tr("Parse error in File %4 : %1 at line %2 col %3").arg(error,
-                QString::number(line), QString::number(column), updatesFile.fileName()) << std::endl;
-            return false;
-        }
-
-        const QDomNode checksum = doc.documentElement().firstChildElement(QLatin1String("Checksum"));
-        if (!checksum.isNull()) {
-            const QDomElement checksumElem = checksum.toElement();
-            setTestChecksum(checksumElem.text().toLower() == QLatin1String("true"));
-        }
-
-        updaterApp.addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
     }
 
-    if (updaterApp.updateSourcesInfo()->updateSourceInfoCount() == 0) {
-        verbose() << tr("Could not find any update source infos.") << std::endl;
+    if (d->m_app->updateSourcesInfo()->updateSourceInfoCount() == 0) {
+        verbose() << tr("Could not find any update source information.") << std::endl;
         return false;
     }
-    updaterApp.updateSourcesInfo()->setModified(false);
 
-    KDUpdater::UpdateFinder updateFinder(&updaterApp);
+    KDUpdater::UpdateFinder updateFinder(d->m_app);
     updateFinder.setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
     updateFinder.run();
 
@@ -888,14 +870,14 @@ bool Installer::fetchUpdaterPackages()
     bool importantUpdates = false;
     QMap<QString, QInstaller::Component*> components;
 
-    KDUpdater::PackagesInfo &packagesInfo = *updaterApp.packagesInfo();
+    KDUpdater::PackagesInfo &packagesInfo = *d->m_app->packagesInfo();
     if (!setAndParseLocalComponentsFile(packagesInfo)) {
         verbose() << tr("Could not parse local components xml file: %1")
             .arg(d->localComponentsXmlPath());
         return false;
     }
-    packagesInfo.setApplicationName(appName);
-    packagesInfo.setApplicationVersion(settings.applicationVersion());
+    packagesInfo.setApplicationName(d->m_installerSettings->applicationName());
+    packagesInfo.setApplicationVersion(d->m_installerSettings->applicationVersion());
 
     QHash<QString, KDUpdater::PackageInfo> installedPackages;
     foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
