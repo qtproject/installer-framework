@@ -26,6 +26,11 @@
 #ifndef QINSTALLER_H
 #define QINSTALLER_H
 
+#include "installer_global.h"
+#include "common/repository.h"
+
+#include <KDUpdater/KDUpdater>
+
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
@@ -36,10 +41,6 @@
 
 #include <QtScript/QScriptable>
 #include <QtScript/QScriptValue>
-
-#include "common/repository.h"
-
-#include "installer_global.h"
 
 namespace KDUpdater {
     class Application;
@@ -82,6 +83,7 @@ public:
             = QVector< KDUpdater::UpdateOperation*>());
     ~Installer();
 
+    QHash<QString, KDUpdater::PackageInfo> localInstalledPackages();
     GetRepositoriesMetaInfoJob* fetchMetaInformation(const InstallerSettings &settings);
     bool addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *metaInfoJob, const InstallerSettings &settings,
         bool parseChecksum);

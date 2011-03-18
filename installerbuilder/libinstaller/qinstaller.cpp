@@ -55,8 +55,6 @@
 
 #include <KDToolsCore/KDSysInfo>
 
-#include <KDUpdater/KDUpdater>
-
 #ifdef Q_OS_WIN
 #include "qt_windows.h"
 #endif
@@ -650,6 +648,32 @@ RunModes Installer::runMode() const
     return isUpdater() ? UpdaterMode : AllMode;
 }
 
+/*!
+    Returns a hash containing the installed package name and it's associated package information. If
+    the application is runing in installer mode or the local components file could not be parsed, the
+    hash is empty.
+*/
+QHash<QString, KDUpdater::PackageInfo> Installer::localInstalledPackages()
+{
+    QHash<QString, KDUpdater::PackageInfo> installedPackages;
+
+    if (!isInstaller()) {
+        KDUpdater::PackagesInfo &packagesInfo = *d->m_app->packagesInfo();
+        if (!setAndParseLocalComponentsFile(packagesInfo)) {
+            verbose() << tr("Could not parse local components xml file: %1")
+                .arg(d->localComponentsXmlPath());
+            return installedPackages;
+        }
+        packagesInfo.setApplicationName(d->m_installerSettings->applicationName());
+        packagesInfo.setApplicationVersion(d->m_installerSettings->applicationVersion());
+
+        foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
+            installedPackages.insert(info.name, info);
+     }
+
+    return installedPackages;
+}
+
 GetRepositoriesMetaInfoJob* Installer::fetchMetaInformation(const QInstaller::InstallerSettings &settings)
 {
     const bool needsRepoCheck = isUpdater() || isPackageManager();
@@ -749,28 +773,14 @@ bool Installer::fetchAllPackages()
         return false;
     }
 
+    QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
+
     emit startAllComponentsReset();
 
     qDeleteAll(d->m_rootComponents);
     d->m_rootComponents.clear();
 
     QMap<QString, QInstaller::Component*> components;
-
-    KDUpdater::PackagesInfo &packagesInfo = *d->m_app->packagesInfo();
-    if (isPackageManager()) {
-        if (!setAndParseLocalComponentsFile(packagesInfo)) {
-            verbose() << tr("Could not parse local components xml file: %1")
-                .arg(d->localComponentsXmlPath());
-            return false;
-        }
-        packagesInfo.setApplicationName(d->m_installerSettings->applicationName());
-        packagesInfo.setApplicationVersion(d->m_installerSettings->applicationVersion());
-    }
-
-    QHash<QString, KDUpdater::PackageInfo> installedPackages;
-    foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
-        installedPackages.insert(info.name, info);
-
     foreach (KDUpdater::Update *package, packages) {
         const QString name = package->data(QLatin1String("Name")).toString();
         if (components.contains(name)) {
@@ -862,6 +872,8 @@ bool Installer::fetchUpdaterPackages()
         return false;
     }
 
+    QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
+
     emit startUpdaterComponentsReset();
 
     qDeleteAll(d->m_updaterComponents);
@@ -869,20 +881,6 @@ bool Installer::fetchUpdaterPackages()
 
     bool importantUpdates = false;
     QMap<QString, QInstaller::Component*> components;
-
-    KDUpdater::PackagesInfo &packagesInfo = *d->m_app->packagesInfo();
-    if (!setAndParseLocalComponentsFile(packagesInfo)) {
-        verbose() << tr("Could not parse local components xml file: %1")
-            .arg(d->localComponentsXmlPath());
-        return false;
-    }
-    packagesInfo.setApplicationName(d->m_installerSettings->applicationName());
-    packagesInfo.setApplicationVersion(d->m_installerSettings->applicationVersion());
-
-    QHash<QString, KDUpdater::PackageInfo> installedPackages;
-    foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
-        installedPackages.insert(info.name, info);
-
     foreach (KDUpdater::Update * const update, updates) {
         const QString isNew = update->data(QLatin1String("NewComponent")).toString();
         if (isNew.toLower() != QLatin1String("true"))
@@ -1105,6 +1103,8 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
 {
     verbose() << "entered create components V2 in installer" << std::endl;
 
+    QHash<QString, KDUpdater::PackageInfo> alreadyInstalledPackagesHash = localInstalledPackages();
+
     emit componentsAboutToBeCleared();
 
     qDeleteAll(d->m_componentHash);
@@ -1112,22 +1112,6 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
     d->m_updaterComponents.clear();
     d->m_componentHash.clear();
     QStringList importantUpdates;
-
-    KDUpdater::Application &updaterApp = *d->m_app;
-    KDUpdater::PackagesInfo &packagesInfo = *updaterApp.packagesInfo();
-
-    if (isUninstaller() || isPackageManager()) {
-        //reads all installed components from components.xml
-        if (!setAndParseLocalComponentsFile(packagesInfo))
-            return;
-        packagesInfo.setApplicationName(d->m_installerSettings->applicationName());
-        packagesInfo.setApplicationVersion(d->m_installerSettings->applicationVersion());
-    }
-
-    QHash<QString, KDUpdater::PackageInfo> alreadyInstalledPackagesHash;
-    foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos()) {
-        alreadyInstalledPackagesHash.insert(info.name, info);
-    }
 
     QStringList globalUnNeededList;
     QList<Component*> componentsToSelectInPackagemanager;
@@ -1149,9 +1133,10 @@ void Installer::createComponentsV2(const QList<KDUpdater::Update*> &updates,
             possibleInstalledNameList.append(replaceList);
             globalUnNeededList.append(replaceList);
         }
-        if (alreadyInstalledPackagesHash.contains(name)) {
+
+        if (alreadyInstalledPackagesHash.contains(name))
             possibleInstalledNameList.append(name);
-        }
+
         foreach(const QString &possibleName, possibleInstalledNameList) {
             if (alreadyInstalledPackagesHash.contains(possibleName)) {
                 if (!installedVersion.isEmpty()) {
