@@ -504,8 +504,9 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
             const QMessageBox::StandardButton button =
                 MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
-                tr("Error during installation process:\n%1").arg(operation->errorString()),
-                QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel, QMessageBox::Retry);
+                tr("Error during installation process (%1):\n%2").arg(comp->name(),
+                operation->errorString()), QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel,
+                QMessageBox::Retry);
 
             if (button == QMessageBox::Retry)
                 ok = InstallerPrivate::performOperationThreaded(operation);
@@ -1395,11 +1396,11 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
                 isUpdate = isUpdate && isInstalled;
 
                 if (newPackageForUpdater) {
-                    d->m_updaterComponents.push_back(component.take());
+                    d->m_updaterComponents.push_back(component.data());
                     d->m_componentHash[newComponentName] = tmpComponent;
                     components.insert(newComponentName, component.data());
                 } else {
-                    components.insert(newComponentName, component.take());
+                    components.insert(newComponentName, component.data());
                 }
 
                 if ((isPackageManager() || isUpdater()) && (isUpdate || newPackageForUpdater)) {
@@ -1412,6 +1413,7 @@ void Installer::createComponents(const QList<KDUpdater::Update*> &updates,
                 qCritical("Could not register component! Component with identifier %s already "
                     "registered", qPrintable(newComponentName));
             }
+            component.take();
         }
     }
 
