@@ -676,14 +676,12 @@ QHash<QString, KDUpdater::PackageInfo> Installer::localInstalledPackages()
 
 GetRepositoriesMetaInfoJob* Installer::fetchMetaInformation(const QInstaller::InstallerSettings &settings)
 {
-    const bool needsRepoCheck = isUpdater() || isPackageManager();
-    GetRepositoriesMetaInfoJob *metaInfoJob = new GetRepositoriesMetaInfoJob(settings.publicKey(),
-        needsRepoCheck);
-    if ((isInstaller() && !isOfflineOnly()) || needsRepoCheck)
+    GetRepositoriesMetaInfoJob *metaInfoJob = new GetRepositoriesMetaInfoJob(settings.publicKey(), false);
+    if ((isInstaller() && !isOfflineOnly()) || (isUpdater() || isPackageManager()))
         metaInfoJob->setRepositories(settings.repositories());
 
     connect(metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this,
-        SIGNAL(metaJobInfoMessage(KDJob*,QString)));
+        SIGNAL(metaJobInfoMessage(KDJob*, QString)));
     connect(this, SIGNAL(cancelMetaInfoJob()), metaInfoJob, SLOT(doCancel()),
         Qt::QueuedConnection);
 
@@ -748,7 +746,8 @@ bool Installer::fetchAllPackages()
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
         verbose() << tr("Could not retrieve components: %1").arg(metaInfoJob->errorString()) << std::endl;
-        return false;
+        if (isInstaller())
+            return false;
     }
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {
@@ -893,22 +892,22 @@ bool Installer::fetchUpdaterPackages()
             continue;
         }
 
-        QString state = QLatin1String("Uninstalled");
-        if (installedPackages.contains(name)) {
-            state = QLatin1String("Installed");
-
-            const KDUpdater::PackageInfo &info = installedPackages.value(name);
-            const QString updateVersion = update->data(QLatin1String("Version")).toString();
-            if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)
-                continue;
-
-            // It is quite possible that we may have already installed the update. Lets check the last
-            // update date of the package and the release date of the update. This way we can compare and
-            // figure out if the update has been installed or not.
-            const QDate updateDate = update->data(QLatin1String("ReleaseDate")).toDate();
-            if (info.lastUpdateDate > updateDate)
-                continue;
+        if (!installedPackages.contains(name)) {
+            verbose() << tr("Update for not installed package found, will skip it.") << std::endl;
+            continue;
         }
+
+        const KDUpdater::PackageInfo &info = installedPackages.value(name);
+        const QString updateVersion = update->data(QLatin1String("Version")).toString();
+        if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)
+            continue;
+
+        // It is quite possible that we may have already installed the update. Lets check the last
+        // update date of the package and the release date of the update. This way we can compare and
+        // figure out if the update has been installed or not.
+        const QDate updateDate = update->data(QLatin1String("ReleaseDate")).toDate();
+        if (info.lastUpdateDate > updateDate)
+            continue;
 
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(update, this));
         component->loadDataFromUpdate(update);
@@ -919,10 +918,9 @@ bool Installer::fetchUpdaterPackages()
             verbose() << "Url is : " << localPath << std::endl;
         lastLocalPath = localPath;
 
-        if (installedPackages.contains(name))
-            component->setValue(QLatin1String("InstalledVersion"), installedPackages.value(name).version);
-        component->setValue(QLatin1String("CurrentState"), state);
-        component->setValue(QLatin1String("PreviousState"), state);
+        component->setValue(QLatin1String("InstalledVersion"), info.version);
+        component->setValue(QLatin1String("CurrentState"), QLatin1String("Installed"));
+        component->setValue(QLatin1String("PreviousState"), QLatin1String("Installed"));
         component->setRepositoryUrl(metaInfoJob->repositoryForTemporaryDirectory(localPath).url());
 
         components.insert(name, component.take());
