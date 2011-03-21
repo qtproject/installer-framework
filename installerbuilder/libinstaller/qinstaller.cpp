@@ -790,13 +790,6 @@ bool Installer::fetchAllPackages()
         }
 
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
-        component->loadDataFromUpdate(package);
-
-        const QString localPath = QInstaller::pathFromUrl(package->sourceInfo().url);
-        static QString lastLocalPath;
-        if (lastLocalPath != localPath)
-            verbose() << "Url is : " << localPath << std::endl;
-        lastLocalPath = localPath;
 
         QString state = QLatin1String("Uninstalled");
         if (installedPackages.contains(name)) {
@@ -806,6 +799,14 @@ bool Installer::fetchAllPackages()
         }
         component->setValue(QLatin1String("CurrentState"), state);
         component->setValue(QLatin1String("PreviousState"), state);
+
+        const QString &localPath = component->localTempPath();
+        if (isVerbose()) {
+            static QString lastLocalPath;
+            if (lastLocalPath != localPath)
+                verbose() << "Url is : " << localPath << std::endl;
+            lastLocalPath = localPath;
+        }
         component->setRepositoryUrl(metaInfoJob->repositoryForTemporaryDirectory(localPath).url());
 
         components.insert(name, component.take());
@@ -911,17 +912,18 @@ bool Installer::fetchUpdaterPackages()
             continue;
 
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(update, this));
-        component->loadDataFromUpdate(update);
-
-        const QString localPath = QInstaller::pathFromUrl(update->sourceInfo().url);
-        static QString lastLocalPath;
-        if (lastLocalPath != localPath)
-            verbose() << "Url is : " << localPath << std::endl;
-        lastLocalPath = localPath;
 
         component->setValue(QLatin1String("InstalledVersion"), info.version);
         component->setValue(QLatin1String("CurrentState"), QLatin1String("Installed"));
         component->setValue(QLatin1String("PreviousState"), QLatin1String("Installed"));
+
+        const QString &localPath = component->localTempPath();
+        if (isVerbose()) {
+            static QString lastLocalPath;
+            if (lastLocalPath != localPath)
+                verbose() << "Url is : " << localPath << std::endl;
+            lastLocalPath = localPath;
+        }
         component->setRepositoryUrl(metaInfoJob->repositoryForTemporaryDirectory(localPath).url());
 
         components.insert(name, component.take());

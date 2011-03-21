@@ -173,9 +173,11 @@ public:
     bool removeBeforeUpdate() const;
     void setRemoveBeforeUpdate(bool removeBeforeUpdate);
 
+    QString localTempPath() const;
     Q_INVOKABLE bool isFromOnlineRepository() const;
 
     QStringList dependencies() const;
+    QList<Component*> dependees() const;
 
     bool autoCreateOperations() const;
     bool isSelected(RunModes runMode = AllMode) const;
@@ -193,8 +195,6 @@ public:
 
     void languageChanged();
 
-    QList<Component*> dependees() const;
-
 public Q_SLOTS:
     void setAutoCreateOperations(bool autoCreateOperations);
     void setSelected(bool selected, RunModes runMode = AllMode, SelectMode selectMode = NormalSelectMode);
@@ -209,7 +209,6 @@ protected:
         const QScriptValueList &parameters = QScriptValueList());
 
 private:
-    QString localTempPath() const;
     void setLocalTempPath(const QString &tempPath);
 
     KDUpdater::UpdateOperation *createOperation(const QString &operation,

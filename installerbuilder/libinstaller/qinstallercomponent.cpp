@@ -235,17 +235,9 @@ Component::Component(KDUpdater::Update* update, Installer* installer)
     : d(new Private(installer, this))
 {
     Q_ASSERT(update);
+
     d->init();
-    setValue(skName, update->data(skName).toString());
-    setValue(skDisplayName, update->data(skDisplayName).toString());
-    setValue(skDescription, update->data(skDescription).toString());
-    setValue(skUncompressedSize, QString::number(update->uncompressedSize()));
-    setValue(skVersion, update->data(skVersion).toString());
-    setValue(skDependencies, update->data(skDependencies).toString());
-    setValue(skVirtual, update->data(skVirtual).toString());
-    setValue(skSortingPriority, update->data(skSortingPriority).toString());
-    setValue(skInstallPriority, update->data(skInstallPriority).toString());
-    setValue(skAutoSelectOn, update->data(skAutoSelectOn).toString());
+    loadDataFromUpdate(update);
 }
 
 /*!
