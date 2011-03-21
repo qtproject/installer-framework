@@ -789,7 +789,7 @@ bool Installer::fetchAllPackages()
             continue;
         }
 
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(package, this));
 
         QString state = QLatin1String("Uninstalled");
         if (installedPackages.contains(name)) {
