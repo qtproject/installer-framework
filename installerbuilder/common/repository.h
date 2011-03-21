@@ -26,34 +26,31 @@
 #ifndef REPOSITORY_H
 #define REPOSITORY_H
 
-#include <QUrl>
-
 #include "installer_global.h"
 
+#include <QtCore/QUrl>
+
 namespace QInstaller {
-    class INSTALLER_EXPORT Repository
-    {
-    public:
-        Repository();
 
-        void setUrl( const QUrl& url );
-        QUrl url() const;
+class INSTALLER_EXPORT Repository
+{
+public:
+    Repository();
+    explicit Repository(const QUrl &url);
 
-        bool isValid() const;
+    bool isValid() const;
 
-        void setRequired( bool r );
+    QUrl url() const;
+    void setUrl(const QUrl& url);
 
-        /**
-         * returns whether the repository is required for installation. If a
-         * required repository cannot be reached or an error occurrs accessing
-         * it, the installer will fail.
-         */
-        bool required() const;
+    bool required() const;
+    void setRequired(bool required);
 
-    private:
-        bool m_required;
-        QUrl m_url;
-    };
-}
+private:
+    QUrl m_url;
+    bool m_required;
+};
+
+}   // namespace QInstaller
 
 #endif // REPOSITORY_H
