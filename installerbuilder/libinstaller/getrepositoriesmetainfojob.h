@@ -52,14 +52,14 @@ class INSTALLER_EXPORT GetRepositoriesMetaInfoJob : public KDJob
 
 public:
     enum Error {
-        UserIgnoreError=KDJob::UserDefinedError + 1
+        UserIgnoreError = KDJob::UserDefinedError + 1
     };
 
     explicit GetRepositoriesMetaInfoJob(const QByteArray &publicKey, bool packageManager = false,
         QObject *parent = 0);
 
-    QList< Repository > repositories() const;
-    void setRepositories(const QList<Repository> &repos);
+    QList<Repository> repositories() const;
+    void setRepositories(const QList<Repository> &repositories);
 
     QStringList temporaryDirectories() const;
     QStringList releaseTemporaryDirectories() const;

@@ -119,6 +119,7 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
         emitFinished();
         return;
     }
+
     if (m_repositories.isEmpty()) {
         if (m_haveIgnoredError)
             emitFinishedWithError(UserIgnoreError, m_errorString);
@@ -126,11 +127,10 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
             emitFinished();
         return;
     }
-    const Repository r = m_repositories.back();
-    m_repositories.pop_back();
+
     m_job = new GetRepositoryMetaInfoJob(m_publicKey, m_packageManager, this);
-    m_job->setRepository(r);
     m_job->setSilentRetries(silentRetries());
+    m_job->setRepository(m_repositories.takeLast());
     connect(m_job, SIGNAL(finished(KDJob*)), this, SLOT(jobFinished(KDJob*)));
     m_job->start();
 }
@@ -144,6 +144,7 @@ void GetRepositoriesMetaInfoJob::jobFinished(KDJob* j)
 {
     const GetRepositoryMetaInfoJob* const job = qobject_cast<const GetRepositoryMetaInfoJob*>(j);
     assert(job);
+
     if(job->error() != KDJob::NoError && !job->temporaryDirectory().isEmpty()) {
         try {
             removeDirectory(job->temporaryDirectory());
