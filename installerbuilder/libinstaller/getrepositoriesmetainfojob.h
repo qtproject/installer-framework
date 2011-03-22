@@ -87,6 +87,7 @@ private:
     int m_silentRetries;
     bool m_packageManager;
     QList<Repository> m_repositories;
+    QList<Repository> m_tmpRepositories;
     QHash<QString, Repository> m_repositoryByTemporaryDirectory;
     bool m_haveIgnoredError;
     QString m_errorString;

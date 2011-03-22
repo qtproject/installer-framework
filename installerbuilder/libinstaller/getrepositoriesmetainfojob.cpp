@@ -58,6 +58,7 @@ QList< Repository > GetRepositoriesMetaInfoJob::repositories() const
 void GetRepositoriesMetaInfoJob::setRepositories(const QList<Repository>& repos)
 {
     m_repositories = repos;
+    m_tmpRepositories = repos;
 }
 
 QStringList GetRepositoriesMetaInfoJob::temporaryDirectories() const
@@ -120,7 +121,7 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
         return;
     }
 
-    if (m_repositories.isEmpty()) {
+    if (m_tmpRepositories.isEmpty()) {
         if (m_haveIgnoredError)
             emitFinishedWithError(UserIgnoreError, m_errorString);
         else
@@ -130,7 +131,7 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
 
     m_job = new GetRepositoryMetaInfoJob(m_publicKey, m_packageManager, this);
     m_job->setSilentRetries(silentRetries());
-    m_job->setRepository(m_repositories.takeLast());
+    m_job->setRepository(m_tmpRepositories.takeLast());
     connect(m_job, SIGNAL(finished(KDJob*)), this, SLOT(jobFinished(KDJob*)));
     m_job->start();
 }
