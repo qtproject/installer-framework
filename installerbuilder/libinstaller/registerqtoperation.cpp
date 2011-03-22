@@ -96,22 +96,35 @@ bool RegisterQtInCreatorOperation::performOperation()
                         QSettings::IniFormat );
 #endif
 
-    QString newVersions = settings.value(QLatin1String("NewQtVersions")).toString();
-    if (!newVersions.isEmpty())
-        newVersions.append(QLatin1Char(';'));
+    QString newVersions;
+    QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")
+                                                  ).toString().split(QLatin1String(";"));
+
+    //remove not existing Qt versions
+    if (!oldNewQtVersions.isEmpty()) {
+        foreach (const QString &qtVersion, oldNewQtVersions) {
+            QStringList splitedQtConfiguration = qtVersion.split(QLatin1String("="));
+            if (splitedQtConfiguration.count() > 1
+                && splitedQtConfiguration.at(1).contains(QLatin1String("qmake"), Qt::CaseInsensitive)) {
+                    QString qmakePath = splitedQtConfiguration.at(1);
+                    if (QFile::exists(qmakePath))
+                        newVersions.append(qtVersion + QLatin1String(";"));
+            }
+        }
+    }
 #if defined ( Q_OS_WIN )
     QString addedVersion = versionName + QLatin1Char('=') +
                            QDir(path).absoluteFilePath(QLatin1String("bin/qmake.exe")).replace(QLatin1String("/"), QLatin1String("\\"));
+#elif defined( Q_OS_UNIX )
+    QString addedVersion = versionName + QLatin1Char('=') +
+                           QDir(path).absoluteFilePath(QLatin1String("bin/qmake"));
+#endif
     addedVersion += QLatin1Char('=') + mingwPath.replace(QLatin1String("/"), QLatin1String("\\"));
     addedVersion += QLatin1Char('=') + s60SdkPath.replace(QLatin1String("/"), QLatin1String("\\"));
     addedVersion += QLatin1Char('=') + gccePath.replace(QLatin1String("/"), QLatin1String("\\"));
     addedVersion += QLatin1Char('=') + carbidePath.replace(QLatin1String("/"), QLatin1String("\\"));
     addedVersion += QLatin1Char('=') + msvcPath.replace(QLatin1String("/"), QLatin1String("\\"));
     addedVersion += QLatin1Char('=') + sbsPath.replace(QLatin1String("/"), QLatin1String("\\"));
-#elif defined( Q_OS_UNIX )
-    QString addedVersion = versionName + QLatin1Char('=') +
-                           QDir(path).absoluteFilePath(QLatin1String("bin/qmake"));
-#endif
     newVersions += addedVersion;
     settings.setValue(QLatin1String("NewQtVersions"), newVersions);
 
