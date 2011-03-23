@@ -387,10 +387,15 @@ public:
     void writeUninstaller(QVector<KDUpdater::UpdateOperation*> performedOperations);
     QString targetDir() const { return q->value(QLatin1String("TargetDir")); }
 
+    QString configurationFileName() const {
+        return q->value(QLatin1String("TargetConfigurationFile"),
+                        QString::fromLatin1("components.xml"));
+    }
+
     QString componentsXmlPath() const
     {
         return QDir::toNativeSeparators(QDir(QDir::cleanPath(targetDir()))
-            .absoluteFilePath(QLatin1String("components.xml")));
+            .absoluteFilePath(configurationFileName()));
     }
 
     QString localComponentsXmlPath() const
@@ -398,7 +403,7 @@ public:
         const QString &appDirPath = QCoreApplication::applicationDirPath();
         if (QFileInfo(appDirPath + QLatin1String("/../..")).isBundle()) {
             return QDir::toNativeSeparators(QFileInfo(QDir::cleanPath(appDirPath
-                + QLatin1String("/../../../components.xml"))).absoluteFilePath());
+                + QLatin1String("/../../../") + configurationFileName())).absoluteFilePath());
         }
         return componentsXmlPath();
     }
@@ -621,6 +626,7 @@ void Installer::Private::initialize()
     m_vars.insert(QLatin1String("LogoSmallPixmap"), m_settings.logoSmall());
     m_vars.insert(QLatin1String("WatermarkPixmap"), m_settings.watermark());
 
+    m_vars.insert(QLatin1String("TargetConfigurationFile"), m_settings.configurationFileName());
     m_vars.insert(QLatin1String("RunProgram"), replaceVariables(m_settings.runProgram()));
     const QString desc = m_settings.runProgramDescription();
     if (!desc.isEmpty())
@@ -1808,14 +1814,14 @@ void Installer::Private::deleteUninstaller()
     if (QFileInfo(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath()).isBundle()) {
         removeDirectoryThreaded(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath());
         QFile::remove(QFileInfo(installerBinaryPath() + cdUp).absolutePath()
-            + QLatin1String("/components.xml"));
+            + QLatin1String("/") + configurationFileName());
     }
     else
 #endif
 #endif
     {
         // finally remove the components.xml, since it still exists now
-        QFile::remove(QFileInfo(installerBinaryPath()).absolutePath() + QLatin1String("/components.xml"));
+        QFile::remove(QFileInfo(installerBinaryPath()).absolutePath() + QLatin1String("/") + configurationFileName());
     }
 }
 

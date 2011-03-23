@@ -70,6 +70,7 @@ public:
     QString icon;
     QString uninstallerName;
     QString uninstallerIniFile;
+    QString configurationFileName;
     QList<Repository> repositories;
     QStringList certificateFiles;
     QByteArray privateKey;
@@ -166,6 +167,7 @@ InstallerSettings InstallerSettings::fromFileAndPrefix( const QString& path, con
     s.d->uninstallerIniFile = readChild( root, QLatin1String("UninstallerIniFile"), s.d->uninstallerName + QLatin1String(".ini") );
     s.d->privateKey = splitTrimmed( readChild( root, QLatin1String( "PrivateKey" ) ) ).toLatin1();
     s.d->publicKey = splitTrimmed( readChild( root, QLatin1String( "PublicKey" ) ) ).toLatin1();
+    s.d->configurationFileName = readChild( root, QLatin1String( "TargetConfigurationFile"), QLatin1String("components.xml"));
 
     const QDomNodeList reposTags = root.elementsByTagName( QLatin1String("RemoteRepositories") );
     if ( reposTags.size() > 1 )
@@ -285,6 +287,10 @@ QString InstallerSettings::targetDir() const {
 
 QString InstallerSettings::adminTargetDir() const {
     return d->adminTargetDir;
+}
+
+QString InstallerSettings::configurationFileName() const {
+    return d->configurationFileName;
 }
 
 QList<Repository> InstallerSettings::repositories() const {
