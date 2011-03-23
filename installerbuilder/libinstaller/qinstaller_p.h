@@ -95,6 +95,7 @@ public:
     void readUninstallerIniFile(const QString &targetDir);
     void writeUninstaller(QVector<KDUpdater::UpdateOperation*> performedOperations);
 
+    QString configurationFileName() const;
     QString componentsXmlPath() const;
     QString localComponentsXmlPath() const;
 

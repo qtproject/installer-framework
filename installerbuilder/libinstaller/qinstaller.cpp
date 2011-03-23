@@ -505,8 +505,8 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
                 MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
                 tr("Error during installation process (%1):\n%2").arg(comp->name(),
-                operation->errorString()), QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel,
-                QMessageBox::Retry);
+                operation->errorString()),
+                QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel, QMessageBox::Retry);
 
             if (button == QMessageBox::Retry)
                 ok = InstallerPrivate::performOperationThreaded(operation);

@@ -76,6 +76,8 @@ namespace QInstaller {
         QByteArray privateKey() const;
         QByteArray publicKey() const;
 
+        QString configurationFileName() const;
+
         QList<Repository> repositories() const;
         void setTemporaryRepositories(const QList<Repository> &repos, bool replace);
 
