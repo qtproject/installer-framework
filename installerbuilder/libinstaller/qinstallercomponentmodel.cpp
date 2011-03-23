@@ -78,7 +78,7 @@ QModelIndex InstallerComponentModel::parent(const QModelIndex &child) const
      if (Component *childComponent = componentFromIndex(child)) {
          if (Component *parent = childComponent->parentComponent()) {
              if (parent != m_headerComponent)
-                 return createIndex(parent->childIndex(), 0, parent);
+                 return createIndex(parent->indexInParent(), 0, parent);
          }
      }
      return QModelIndex();
@@ -90,8 +90,8 @@ QModelIndex InstallerComponentModel::index(int row, int column, const QModelInde
          return QModelIndex();
 
     if (Component *parentComponent = componentFromIndex(parent)) {
-        if (Component *childCmponent = parentComponent->childAt(row))
-            return createIndex(row, column, childCmponent);
+        if (Component *childComponent = parentComponent->childAt(row))
+            return createIndex(row, column, childComponent);
     }
     return QModelIndex();
 }
@@ -665,7 +665,8 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
         case Qt::DisplayRole:
             return component->displayName();
         case Qt::CheckStateRole:
-            return component->checkState(m_runMode);
+            return component->checkState();
+            // return component->checkState(m_runMode);
         case Qt::ToolTipRole: {
             return component->value(QString::fromLatin1("Description"))
                 + QLatin1String("<br><br> Update Info: ") + component->value(QLatin1String ("UpdateText"));

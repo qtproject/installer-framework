@@ -27,6 +27,7 @@
 #define QINSTALLER_COMPONENT_H
 
 #include "qinstallerglobal.h"
+#include "qinstallercomponent_p.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QMetaType>
@@ -43,10 +44,9 @@ namespace KDUpdater {
 }
 
 namespace QInstaller {
-class ComponentPrivate;
 class Installer;
 
-class INSTALLER_EXPORT Component : public QObject, public QScriptable
+class INSTALLER_EXPORT Component : public QObject, public QScriptable, public ComponentModelHelper
 {
     Q_OBJECT
     Q_DISABLE_COPY(Component);
@@ -189,32 +189,9 @@ public:
     Q_INVOKABLE bool wasUninstalled() const;
     Q_INVOKABLE bool isFromOnlineRepository() const;
 
-    // model like handling
-    int childIndex() const;
-    int childCount() const;
-    Component* childAt(int index) const;
-
-    bool isEnabled() const;
-    void setEnabled(bool enabled);
-
-    bool isTristate() const;
-    void setTristate(bool tristate);
-
-    bool isCheckable() const;
-    void setCheckable(bool checkable);
-
-    bool isSelectable() const;
-    void setSelectable(bool selectable);
-
-    Qt::ItemFlags flags() const;
-    void setFlags(Qt::ItemFlags flags);
-
-    Qt::CheckState checkState() const;
-    void setCheckState(Qt::CheckState state);
-
     // TODO: remove the selected stuff
     bool isSelected(RunModes runMode = AllMode) const;
-    Qt::CheckState checkState(RunModes runMode) const;
+    //Qt::CheckState checkState(RunModes runMode) const;
 
 public Q_SLOTS:
     void setAutoCreateOperations(bool autoCreateOperations);
@@ -231,7 +208,6 @@ protected:
 
 private:
     void setLocalTempPath(const QString &tempPath);
-    void changeFlags(bool enable, Qt::ItemFlags itemFlags);
 
     KDUpdater::UpdateOperation *createOperation(const QString &operation,
         const QString &parameter1 = QString(), const QString &parameter2 = QString(),

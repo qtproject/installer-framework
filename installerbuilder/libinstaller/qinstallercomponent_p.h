@@ -106,6 +106,48 @@ public:
     KDUpdater::UpdateOperation *m_licenseOperation;
 };
 
+
+// -- ComponentModelHelper
+
+class ComponentModelHelper
+{
+public:
+    explicit ComponentModelHelper();
+    ~ComponentModelHelper();
+
+    int childCount() const;
+    int indexInParent() const;
+    Component* childAt(int index) const;
+
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
+
+    bool isTristate() const;
+    void setTristate(bool tristate);
+
+    bool isCheckable() const;
+    void setCheckable(bool checkable);
+
+    bool isSelectable() const;
+    void setSelectable(bool selectable);
+
+    Qt::ItemFlags flags() const;
+    void setFlags(Qt::ItemFlags flags);
+
+    Qt::CheckState checkState() const;
+    void setCheckState(Qt::CheckState state);
+
+protected:
+    void setPrivate(ComponentPrivate *componentPrivate);
+
+private:
+    void changeFlags(bool enable, Qt::ItemFlags itemFlags);
+
+private:
+    ComponentPrivate *m_componentPrivate;
+};
+
+
 }   // namespace QInstaller
 
 #endif  // QINSTALLER_COMPONENT_P_H

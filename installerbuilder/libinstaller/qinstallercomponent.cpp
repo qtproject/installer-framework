@@ -93,6 +93,7 @@ Component::Component(Installer *installer)
     : d(new ComponentPrivate(installer, this))
 {
     d->init();
+    setPrivate(d);
 }
 
 Component::Component(KDUpdater::Update* update, Installer* installer)
@@ -101,6 +102,7 @@ Component::Component(KDUpdater::Update* update, Installer* installer)
     Q_ASSERT(update);
 
     d->init();
+    setPrivate(d);
     loadDataFromUpdate(update);
 }
 
@@ -854,20 +856,20 @@ void Component::setAutoCreateOperations(bool autoCreateOperations)
     d->autoCreateOperations = autoCreateOperations;
 }
 
-Qt::CheckState Component::checkState(RunModes runMode) const
-{
-    if (runMode == UpdaterMode)
-        return d->isCheckedFromUpdater  ? Qt::Checked : Qt::Unchecked;
-
-    const QMap<const Component*, Qt::CheckState>::const_iterator it =
-        ComponentPrivate::cachedCheckStates.find(this);
-    if (it != ComponentPrivate::cachedCheckStates.end())
-        return *it;
-
-    const Qt::CheckState state = componentCheckState(this, runMode);
-    ComponentPrivate::cachedCheckStates[this] = state;
-    return state;
-}
+//Qt::CheckState Component::checkState(RunModes runMode) const
+//{
+//    if (runMode == UpdaterMode)
+//        return d->isCheckedFromUpdater  ? Qt::Checked : Qt::Unchecked;
+//
+//    const QMap<const Component*, Qt::CheckState>::const_iterator it =
+//        ComponentPrivate::cachedCheckStates.find(this);
+//    if (it != ComponentPrivate::cachedCheckStates.end())
+//        return *it;
+//
+//    const Qt::CheckState state = componentCheckState(this, runMode);
+//    ComponentPrivate::cachedCheckStates[this] = state;
+//    return state;
+//}
 
 /*!
     \property Component::selected
@@ -876,7 +878,8 @@ Qt::CheckState Component::checkState(RunModes runMode) const
 */
 bool Component::isSelected(RunModes runMode) const
 {
-    const Qt::CheckState state = checkState(runMode);
+    const Qt::CheckState state = checkState();
+    // const Qt::CheckState state = checkState(runMode);
     return state != Qt::Unchecked;
 }
 
@@ -908,7 +911,8 @@ void Component::setSelected(bool selected, RunModes runMode, SelectMode selectMo
             verbose() << "No Error occured" << std::endl;
         }
 
-        const Qt::CheckState previousState = checkState(UpdaterMode);
+        const Qt::CheckState previousState = checkState();
+        // const Qt::CheckState previousState = checkState(UpdaterMode);
         const Qt::CheckState newState = selected ? Qt::Checked : Qt::Unchecked;
         d->isCheckedFromUpdater = selected;
 
@@ -1026,90 +1030,6 @@ bool Component::wasUninstalled() const
     return QLatin1String("Installed") == value(QLatin1String("PreviousState")) && !isInstalled();
 }
 
-int Component::childIndex() const
-{
-     if (d->m_parent)
-         return d->m_parent->d->m_components.indexOf(const_cast<Component*>(this));
-     return 0;
-}
-
-int Component::childCount() const
-{
-    return d->m_components.count();
-}
-
-Component* Component::childAt(int index) const
-{
-    if (index >= 0 && index < d->m_components.count())
-        return d->m_components.value(index, 0);
-    return 0;
-}
-
-/*!
-    Determines if the components installations status can be changed.
-*/
-bool Component::isEnabled() const
-{
-    return (flags() & Qt::ItemIsEnabled) != 0;
-}
-/*!
-    Enables oder disables ability to change the components installations status.
-*/
-void Component::setEnabled(bool enabled)
-{
-    changeFlags(enabled, Qt::ItemIsEnabled);
-}
-
-bool Component::isTristate() const
-{
-    return (flags() & Qt::ItemIsTristate) != 0;
-}
-
-void Component::setTristate(bool tristate)
-{
-    changeFlags(tristate, Qt::ItemIsTristate);
-}
-
-bool Component::isCheckable() const
-{
-    return (flags() & Qt::ItemIsUserCheckable) != 0;
-}
-
-void Component::setCheckable(bool checkable)
-{
-    changeFlags(checkable, Qt::ItemIsUserCheckable);
-}
-
-bool Component::isSelectable() const
-{
-    return (flags() & Qt::ItemIsSelectable) != 0;
-}
-
-void Component::setSelectable(bool selectable)
-{
-    changeFlags(selectable, Qt::ItemIsSelectable);
-}
-
-Qt::ItemFlags Component::flags() const
-{
-    return d->m_flags;
-}
-
-void Component::setFlags(Qt::ItemFlags flags)
-{
-    d->m_flags = flags;
-}
-
-Qt::CheckState Component::checkState() const
-{
-    return d->m_checkState;
-}
-
-void Component::setCheckState(Qt::CheckState state)
-{
-    d->m_checkState = state;
-}
-
 /*!
     \property Component::fromOnlineRepository
 
@@ -1147,9 +1067,4 @@ QString Component::localTempPath() const
 void Component::setLocalTempPath(const QString &tempLocalPath)
 {
     d->localTempPath = tempLocalPath;
-}
-
-void Component::changeFlags(bool enable, Qt::ItemFlags itemFlags)
-{
-    setFlags(enable ? flags() |= itemFlags : flags() &= ~itemFlags);
 }

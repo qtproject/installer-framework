@@ -129,4 +129,119 @@ void ComponentPrivate::setSelectedOnComponentList(const QList<Component*> &compo
     }
 }
 
+
+// -- ComponentModelHelper
+
+ComponentModelHelper::ComponentModelHelper()
+{
+}
+
+ComponentModelHelper::~ComponentModelHelper()
+{
+}
+
+/*!
+    Returns the number of child components.
+*/
+int ComponentModelHelper::childCount() const
+{
+    return m_componentPrivate->m_components.count();
+}
+
+/*!
+    Returns the index of this component as seen from it's parent.
+*/
+int ComponentModelHelper::indexInParent() const
+{
+    if (Component *parent = m_componentPrivate->m_parent->parentComponent())
+        return parent->childComponents().indexOf(m_componentPrivate->m_parent);
+    return 0;
+}
+
+/*!
+    Returns the component at index position in the list. Index must be a valid position in
+    the list (i.e., index >= 0 && index < childCount()). Otherwise it returns 0.
+*/
+Component* ComponentModelHelper::childAt(int index) const
+{
+    if (index >= 0 && index < childCount())
+        return m_componentPrivate->m_components.value(index, 0);
+    return 0;
+}
+
+/*!
+    Determines if the components installations status can be changed.
+*/
+bool ComponentModelHelper::isEnabled() const
+{
+    return (flags() & Qt::ItemIsEnabled) != 0;
+}
+/*!
+    Enables oder disables ability to change the components installations status.
+*/
+void ComponentModelHelper::setEnabled(bool enabled)
+{
+    changeFlags(enabled, Qt::ItemIsEnabled);
+}
+
+bool ComponentModelHelper::isTristate() const
+{
+    return (flags() & Qt::ItemIsTristate) != 0;
+}
+
+void ComponentModelHelper::setTristate(bool tristate)
+{
+    changeFlags(tristate, Qt::ItemIsTristate);
+}
+
+bool ComponentModelHelper::isCheckable() const
+{
+    return (flags() & Qt::ItemIsUserCheckable) != 0;
+}
+
+void ComponentModelHelper::setCheckable(bool checkable)
+{
+    changeFlags(checkable, Qt::ItemIsUserCheckable);
+}
+
+bool ComponentModelHelper::isSelectable() const
+{
+    return (flags() & Qt::ItemIsSelectable) != 0;
+}
+
+void ComponentModelHelper::setSelectable(bool selectable)
+{
+    changeFlags(selectable, Qt::ItemIsSelectable);
+}
+
+Qt::ItemFlags ComponentModelHelper::flags() const
+{
+    return m_componentPrivate->m_flags;
+}
+
+void ComponentModelHelper::setFlags(Qt::ItemFlags flags)
+{
+    m_componentPrivate->m_flags = flags;
+}
+
+Qt::CheckState ComponentModelHelper::checkState() const
+{
+    return m_componentPrivate->m_checkState;
+}
+
+void ComponentModelHelper::setCheckState(Qt::CheckState state)
+{
+    m_componentPrivate->m_checkState = state;
+}
+
+void ComponentModelHelper::setPrivate(ComponentPrivate *componentPrivate)
+{
+    m_componentPrivate = componentPrivate;
+}
+
+void ComponentModelHelper::changeFlags(bool enable, Qt::ItemFlags itemFlags)
+{
+    setFlags(enable ? flags() |= itemFlags : flags() &= ~itemFlags);
+}
+
 }   // namespace QInstaller
