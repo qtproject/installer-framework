@@ -189,6 +189,10 @@ public:
     Q_INVOKABLE bool isFromOnlineRepository() const;
 
     // model like handling
+    int childIndex() const;
+    int childCount() const;
+    Component* childAt(int index) const;
+
     bool isEnabled() const;
     void setEnabled(bool enabled);
 

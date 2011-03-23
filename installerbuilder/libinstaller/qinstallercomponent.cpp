@@ -1165,6 +1165,25 @@ bool Component::wasUninstalled() const
     return QLatin1String("Installed") == value(QLatin1String("PreviousState")) && !isInstalled();
 }
 
+int Component::childIndex() const
+{
+     if (d->m_parent)
+         return d->m_parent->d->m_components.indexOf(const_cast<Component*>(this));
+     return 0;
+}
+
+int Component::childCount() const
+{
+    return d->m_components.count();
+}
+
+Component* Component::childAt(int index) const
+{
+    if (index >= 0 && index < d->m_components.count())
+        return d->m_components.value(index, 0);
+    return 0;
+}
+
 /*!
     Determines if the components installations status can be changed.
 */
