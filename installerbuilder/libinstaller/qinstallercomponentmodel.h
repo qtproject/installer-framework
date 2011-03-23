@@ -35,6 +35,60 @@ namespace QInstaller {
 class Component;
 class Installer;
 
+typedef QMap<Component*, QPersistentModelIndex> ComponentModelIndexCache;
+
+class INSTALLER_EXPORT InstallerComponentModel : public QAbstractItemModel
+{
+    Q_OBJECT
+
+public:
+
+    enum Column {
+        NameColumn = 0,
+        InstalledVersionColumn,
+        VersionColumn,
+        SizeColumn
+    };
+
+    explicit InstallerComponentModel(int columns, Installer *parent = 0);
+    ~InstallerComponentModel();
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+
+    QModelIndex parent(const QModelIndex &child) const;
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
+        int role = Qt::EditRole);
+
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+
+    void setRootComponents(QList<Component*> rootComponents);
+    void appendRootComponents(QList<Component*> rootComponents);
+
+    QModelIndex indexFromComponent(Component *component) const;
+    Component* componentFromIndex(const QModelIndex &index) const;
+
+    static QFont virtualComponentsFont();
+    static void setVirtualComponentsFont(const QFont &font);
+
+private:
+    void setupCache(const QModelIndex &parent);
+    QModelIndexList collectComponents(const QModelIndex &parent) const;
+
+private:
+    int m_columns;
+    ComponentModelIndexCache m_cache;
+
+    Installer *m_installer;
+    Component *m_headerComponent;
+};
+
 class INSTALLER_EXPORT ComponentModel : public QAbstractItemModel
 {
     Q_OBJECT
