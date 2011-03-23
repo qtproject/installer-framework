@@ -106,7 +106,6 @@ public:
     //TODO: remove this, it makes no sense
     void updateState(const bool selected);
 
-
     QHash<QString, QString> variables() const;
     Q_INVOKABLE void setValue(const QString &key, const QString &value);
     Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString()) const;
@@ -173,27 +172,44 @@ public:
     bool removeBeforeUpdate() const;
     void setRemoveBeforeUpdate(bool removeBeforeUpdate);
 
-    QString localTempPath() const;
-    Q_INVOKABLE bool isFromOnlineRepository() const;
-
     QStringList dependencies() const;
     QList<Component*> dependees() const;
 
+    void languageChanged();
+    QString localTempPath() const;
+
     bool autoCreateOperations() const;
-    bool isSelected(RunModes runMode = AllMode) const;
+    bool operationsCreatedSuccessfully() const;
+
     Q_INVOKABLE bool isInstalled() const;
     Q_INVOKABLE bool installationRequested() const;
     Q_INVOKABLE bool uninstallationRequested() const;
     Q_INVOKABLE bool wasInstalled() const;
     Q_INVOKABLE bool wasUninstalled() const;
+    Q_INVOKABLE bool isFromOnlineRepository() const;
+
+    // model like handling
     bool isEnabled() const;
     void setEnabled(bool enabled);
 
-    bool operationsCreatedSuccessfully() const;
+    bool isTristate() const;
+    void setTristate(bool tristate);
 
-    Qt::CheckState checkState(RunModes runMode = AllMode) const;
+    bool isCheckable() const;
+    void setCheckable(bool checkable);
 
-    void languageChanged();
+    bool isSelectable() const;
+    void setSelectable(bool selectable);
+
+    Qt::ItemFlags flags() const;
+    void setFlags(Qt::ItemFlags flags);
+
+    Qt::CheckState checkState() const;
+    void setCheckState(Qt::CheckState state);
+
+    // TODO: remove the selected stuff
+    bool isSelected(RunModes runMode = AllMode) const;
+    Qt::CheckState checkState(RunModes runMode) const;
 
 public Q_SLOTS:
     void setAutoCreateOperations(bool autoCreateOperations);
@@ -210,6 +226,7 @@ protected:
 
 private:
     void setLocalTempPath(const QString &tempPath);
+    void changeFlags(bool enable, Qt::ItemFlags itemFlags);
 
     KDUpdater::UpdateOperation *createOperation(const QString &operation,
         const QString &parameter1 = QString(), const QString &parameter2 = QString(),

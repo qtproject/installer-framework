@@ -91,13 +91,14 @@ class QInstaller::Component::Private
 public:
     Private(Installer* installer, QInstaller::Component* qq)
         : q(qq),
+        m_flags(Qt::ItemIsEnabled | Qt::ItemIsSelectable| Qt::ItemIsUserCheckable),
+        m_checkState(Qt::Unchecked),
         m_installer(installer),
         m_parent(0),
         m_offsetInInstaller(0),
         autoCreateOperations(true),
         operationsCreated(false),
         removeBeforeUpdate(true),
-        enabled(true),
         isCheckedFromUpdater(false),
         m_newlyInstalled (false),
         operationsCreatedSuccessfully(true),
@@ -105,6 +106,9 @@ public:
         m_licenseOperation(0)
     {
     }
+
+    Qt::ItemFlags m_flags;
+    Qt::CheckState m_checkState;
 
     static QMap<const Component*, Qt::CheckState> cachedCheckStates;
 
@@ -132,7 +136,6 @@ public:
 
     bool removeBeforeUpdate;
 
-    bool enabled;
     bool isCheckedFromUpdater;
 
     bool m_newlyInstalled;
@@ -1167,14 +1170,64 @@ bool Component::wasUninstalled() const
 */
 bool Component::isEnabled() const
 {
-    return d->enabled;
+    return (flags() & Qt::ItemIsEnabled) != 0;
 }
 /*!
     Enables oder disables ability to change the components installations status.
 */
 void Component::setEnabled(bool enabled)
 {
-    d->enabled = enabled;
+    changeFlags(enabled, Qt::ItemIsEnabled);
+}
+
+bool Component::isTristate() const
+{
+    return (flags() & Qt::ItemIsTristate) != 0;
+}
+
+void Component::setTristate(bool tristate)
+{
+    changeFlags(tristate, Qt::ItemIsTristate);
+}
+
+bool Component::isCheckable() const
+{
+    return (flags() & Qt::ItemIsUserCheckable) != 0;
+}
+
+void Component::setCheckable(bool checkable)
+{
+    changeFlags(checkable, Qt::ItemIsUserCheckable);
+}
+
+bool Component::isSelectable() const
+{
+    return (flags() & Qt::ItemIsSelectable) != 0;
+}
+
+void Component::setSelectable(bool selectable)
+{
+    changeFlags(selectable, Qt::ItemIsSelectable);
+}
+
+Qt::ItemFlags Component::flags() const
+{
+    return d->m_flags;
+}
+
+void Component::setFlags(Qt::ItemFlags flags)
+{
+    d->m_flags = flags;
+}
+
+Qt::CheckState Component::checkState() const
+{
+    return d->m_checkState;
+}
+
+void Component::setCheckState(Qt::CheckState state)
+{
+    d->m_checkState = state;
 }
 
 /*!
@@ -1214,4 +1267,9 @@ QString Component::localTempPath() const
 void Component::setLocalTempPath(const QString &tempLocalPath)
 {
     d->localTempPath = tempLocalPath;
+}
+
+void Component::changeFlags(bool enable, Qt::ItemFlags itemFlags)
+{
+    setFlags(enable ? flags() |= itemFlags : flags() &= ~itemFlags);
 }
