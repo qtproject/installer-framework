@@ -26,7 +26,7 @@
 #ifndef QINSTALLER_COMPONENT_H
 #define QINSTALLER_COMPONENT_H
 
-#include "installer_global.h"
+#include "qinstallerglobal.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QMetaType>
@@ -43,6 +43,7 @@ namespace KDUpdater {
 }
 
 namespace QInstaller {
+class ComponentPrivate;
 class Installer;
 
 class INSTALLER_EXPORT Component : public QObject, public QScriptable
@@ -240,8 +241,7 @@ private:
         const QString &parameter9 = QString(), const QString &parameter10 = QString());
 
 private:
-    class Private;
-    Private *const d;
+    ComponentPrivate *d;
 };
 
 }   // namespace QInstaller

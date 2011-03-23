@@ -38,6 +38,7 @@
 #include "fsengineclient.h"
 #include "lib7z_facade.h"
 #include "qinstaller.h"
+#include "qinstallercomponent_p.h"
 #include "qinstallerglobal.h"
 #include "messageboxhandler.h"
 
@@ -47,11 +48,11 @@
 #include <KDUpdater/UpdateOperationFactory>
 #include <KDUpdater/PackagesInfo>
 
-#include <QtGui/QApplication>
-#include <QtGui/QDesktopServices>
 #include <QtCore/QDirIterator>
-#include <QtScript/QScriptEngine>
 #include <QtCore/QTranslator>
+
+#include <QtGui/QApplication>
+
 #include <QtUiTools/QUiLoader>
 
 using namespace QInstaller;
@@ -85,157 +86,17 @@ static const QLatin1String skScript("Script");
     Component describes a component within the installer.
 */
 
-class QInstaller::Component::Private
-{
-    QInstaller::Component* const q;
-public:
-    Private(Installer* installer, QInstaller::Component* qq)
-        : q(qq),
-        m_flags(Qt::ItemIsEnabled | Qt::ItemIsSelectable| Qt::ItemIsUserCheckable),
-        m_checkState(Qt::Unchecked),
-        m_installer(installer),
-        m_parent(0),
-        m_offsetInInstaller(0),
-        autoCreateOperations(true),
-        operationsCreated(false),
-        removeBeforeUpdate(true),
-        isCheckedFromUpdater(false),
-        m_newlyInstalled (false),
-        operationsCreatedSuccessfully(true),
-        minimumProgressOperation(0),
-        m_licenseOperation(0)
-    {
-    }
-
-    Qt::ItemFlags m_flags;
-    Qt::CheckState m_checkState;
-
-    static QMap<const Component*, Qt::CheckState> cachedCheckStates;
-
-    Installer *m_installer;
-    QHash<QString,QString> m_vars;
-    QList<Component*> m_components;
-    QList<KDUpdater::UpdateOperation* > operations;
-
-    QList<QPair<QString, bool> > pathesForUninstallation;
-
-    QMap<QString, QWidget*> userInterfaces;
-
-    QUrl repositoryUrl;
-    QString localTempPath;
-    QStringList downloadableArchives;
-    QStringList stopProcessForUpdateRequests;
-
-    Component* m_parent;
-
-    // filled before intaller runs
-    qint64 m_offsetInInstaller;
-
-    bool autoCreateOperations;
-    bool operationsCreated;
-
-    bool removeBeforeUpdate;
-
-    bool isCheckedFromUpdater;
-
-    bool m_newlyInstalled;
-
-    bool operationsCreatedSuccessfully;
-
-    QScriptEngine scriptEngine;
-    QScriptValue scriptComponent;
-
-    QHash< QString, bool > unexistingScriptMethods;
-
-    void init();
-    void setSelectedOnComponentList(const QList<Component*> &componentList,
-        bool selected, RunModes runMode, SelectMode selectMode);
-    KDUpdater::UpdateOperation* minimumProgressOperation;
-
-    // < display name, < file name, file content > >
-    QHash<QString, QPair<QString, QString> > m_licenses;
-    KDUpdater::UpdateOperation *m_licenseOperation;
-};
-
-QMap<const Component*, Qt::CheckState> Component::Private::cachedCheckStates;
-
-void Component::Private::init()
-{
-    // register translation stuff
-    scriptEngine.installTranslatorFunctions();
-
-    // register QMessageBox::StandardButton enum in the script connection
-    registerMessageBox(&scriptEngine);
-
-    // register QDesktopServices in the script connection
-    QScriptValue desktopServices = scriptEngine.newArray();
-    desktopServices.setProperty(QLatin1String("DesktopLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::DesktopLocation)));
-    desktopServices.setProperty(QLatin1String("DocumentsLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::DocumentsLocation)));
-    desktopServices.setProperty(QLatin1String("FontsLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::FontsLocation)));
-    desktopServices.setProperty(QLatin1String("ApplicationsLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::ApplicationsLocation)));
-    desktopServices.setProperty(QLatin1String("MusicLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::MusicLocation)));
-    desktopServices.setProperty(QLatin1String("MoviesLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::MoviesLocation)));
-    desktopServices.setProperty(QLatin1String("PicturesLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::PicturesLocation)));
-    desktopServices.setProperty(QLatin1String("TempLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::TempLocation)));
-    desktopServices.setProperty(QLatin1String("HomeLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::HomeLocation)));
-    desktopServices.setProperty(QLatin1String("DataLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::DataLocation)));
-    desktopServices.setProperty(QLatin1String("CacheLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::CacheLocation)));
-
-    desktopServices.setProperty(QLatin1String("openUrl"), scriptEngine.newFunction(qDesktopServicesOpenUrl));
-    desktopServices.setProperty(QLatin1String("displayName"), scriptEngine.newFunction(qDesktopServicesDisplayName));
-    desktopServices.setProperty(QLatin1String("storageLocation"), scriptEngine.newFunction(qDesktopServicesStorageLocation));
-    scriptEngine.globalObject().setProperty(QLatin1String("QDesktopServices"), desktopServices);
-
-    // register ::WizardPage enum in the script connection
-    QScriptValue qinstaller = scriptEngine.newArray();
-    qinstaller.setProperty(QLatin1String("Introduction"), scriptEngine.newVariant(static_cast< int >(Installer::Introduction)));
-    qinstaller.setProperty(QLatin1String("LicenseCheck"), scriptEngine.newVariant(static_cast< int >(Installer::LicenseCheck)));
-    qinstaller.setProperty(QLatin1String("TargetDirectory"), scriptEngine.newVariant(static_cast< int >(Installer::TargetDirectory)));
-    qinstaller.setProperty(QLatin1String("ComponentSelection"), scriptEngine.newVariant(static_cast< int >(Installer::ComponentSelection)));
-    qinstaller.setProperty(QLatin1String("StartMenuSelection"), scriptEngine.newVariant(static_cast< int >(Installer::StartMenuSelection)));
-    qinstaller.setProperty(QLatin1String("ReadyForInstallation"), scriptEngine.newVariant(static_cast< int >(Installer::ReadyForInstallation)));
-    qinstaller.setProperty(QLatin1String("PerformInstallation"), scriptEngine.newVariant(static_cast< int >(Installer::PerformInstallation)));
-    qinstaller.setProperty(QLatin1String("InstallationFinished"), scriptEngine.newVariant(static_cast< int >(Installer::InstallationFinished)));
-    qinstaller.setProperty(QLatin1String("End"), scriptEngine.newVariant(static_cast< int >(Installer::End)));
-
-    // register ::Status enum in the script connection
-    qinstaller.setProperty(QLatin1String("InstallerSuccess"), scriptEngine.newVariant(static_cast< int >(Installer::Success)));
-    qinstaller.setProperty(QLatin1String("InstallerSucceeded"), scriptEngine.newVariant(static_cast< int >(Installer::Success)));
-    qinstaller.setProperty(QLatin1String("InstallerFailed"), scriptEngine.newVariant(static_cast< int >(Installer::Failure)));
-    qinstaller.setProperty(QLatin1String("InstallerFailure"), scriptEngine.newVariant(static_cast< int >(Installer::Failure)));
-    qinstaller.setProperty(QLatin1String("InstallerRunning"), scriptEngine.newVariant(static_cast< int >(Installer::Running)));
-    qinstaller.setProperty(QLatin1String("InstallerCanceled"), scriptEngine.newVariant(static_cast< int >(Installer::Canceled)));
-    qinstaller.setProperty(QLatin1String("InstallerCanceledByUser"), scriptEngine.newVariant(static_cast< int >(Installer::Canceled)));
-    qinstaller.setProperty(QLatin1String("InstallerUnfinished"), scriptEngine.newVariant(static_cast< int >(Installer::Unfinished)));
-
-
-    scriptEngine.globalObject().setProperty(QLatin1String("QInstaller"), qinstaller);
-    scriptEngine.globalObject().setProperty(QLatin1String("component"), scriptEngine.newQObject(q));
-    QScriptValue installerObject = scriptEngine.newQObject(m_installer);
-    installerObject.setProperty(QLatin1String("componentByName"), scriptEngine.newFunction(qInstallerComponentByName, 1));
-    scriptEngine.globalObject().setProperty(QLatin1String("installer"), installerObject);
-}
-
-void Component::Private::setSelectedOnComponentList(const QList<Component*> &componentList,
-    bool selected, RunModes runMode, SelectMode selectMode)
-{
-    foreach (Component *component, componentList) {
-        if (!component->isSelected(runMode))
-            component->setSelected(selected, runMode, selectMode);
-    }
-}
-
 /*!
     Constructor. Creates a new Component inside of \a installer.
 */
 Component::Component(Installer *installer)
-    : d(new Component::Private(installer, this))
+    : d(new ComponentPrivate(installer, this))
 {
     d->init();
 }
 
 Component::Component(KDUpdater::Update* update, Installer* installer)
-    : d(new Private(installer, this))
+    : d(new ComponentPrivate(installer, this))
 {
     Q_ASSERT(update);
 
@@ -999,12 +860,12 @@ Qt::CheckState Component::checkState(RunModes runMode) const
         return d->isCheckedFromUpdater  ? Qt::Checked : Qt::Unchecked;
 
     const QMap<const Component*, Qt::CheckState>::const_iterator it =
-        Private::cachedCheckStates.find(this);
-    if (it != Private::cachedCheckStates.end())
+        ComponentPrivate::cachedCheckStates.find(this);
+    if (it != ComponentPrivate::cachedCheckStates.end())
         return *it;
 
     const Qt::CheckState state = componentCheckState(this, runMode);
-    Private::cachedCheckStates[this] = state;
+    ComponentPrivate::cachedCheckStates[this] = state;
     return state;
 }
 
@@ -1081,7 +942,7 @@ void Component::setSelected(bool selected, RunModes runMode, SelectMode selectMo
 
         setValue(QString::fromLatin1("WantedState"),
             selected ? QString::fromLatin1("Installed") : QString::fromLatin1("Uninstalled"));
-        Private::cachedCheckStates.clear();
+        ComponentPrivate::cachedCheckStates.clear();
 
         if (selected) {
             verbose() << "Update selected for " << name() << std::endl;

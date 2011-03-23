@@ -42,6 +42,12 @@ QT_END_NAMESPACE
 
 namespace QInstaller {
 
+enum INSTALLER_EXPORT RunModes
+{
+    AllMode,
+    UpdaterMode
+};
+
 class Component;
 
 #if 0

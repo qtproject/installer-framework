@@ -26,7 +26,7 @@
 #ifndef QINSTALLER_COMPONENTMODEL_H
 #define QINSTALLER_COMPONENTMODEL_H
 
-#include "installer_global.h"
+#include "qinstallerglobal.h"
 
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QList>

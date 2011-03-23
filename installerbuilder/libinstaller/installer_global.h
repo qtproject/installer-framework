@@ -38,14 +38,4 @@
 #define INSTALLER_EXPORT
 #endif
 
-namespace QInstaller {
-
-enum INSTALLER_EXPORT RunModes
-{
-    AllMode,
-    UpdaterMode
-};
-
-}
-
 #endif //INSTALLER_GLOBAL_H

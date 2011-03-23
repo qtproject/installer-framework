@@ -91,7 +91,8 @@ HEADERS += $$PWD/qinstaller.h \
     performinstallationform.h \
     messageboxhandler.h \
     getrepositoriesmetainfojob.h \
-    licenseoperation.h
+    licenseoperation.h \
+    qinstallercomponent_p.h
 
 SOURCES += $$PWD/qinstaller.cpp \
     $$PWD/qinstaller_p.cpp \
@@ -151,7 +152,8 @@ SOURCES += $$PWD/qinstaller.cpp \
     performinstallationform.cpp \
     messageboxhandler.cpp \
     getrepositoriesmetainfojob.cpp \
-    licenseoperation.cpp
+    licenseoperation.cpp \
+    qinstallercomponent_p.cpp
 
 macx {
     HEADERS +=  macrelocateqt.h \

@@ -26,8 +26,8 @@
 #ifndef QINSTALLER_H
 #define QINSTALLER_H
 
-#include "installer_global.h"
 #include "common/repository.h"
+#include "qinstallerglobal.h"
 
 #include <KDUpdater/KDUpdater>
 
