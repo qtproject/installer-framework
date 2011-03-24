@@ -33,17 +33,22 @@
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT ElevatedExecuteOperation : public KDUpdater::ExecuteOperation
+class INSTALLER_EXPORT ElevatedExecuteOperation : public QObject, public KDUpdater::UpdateOperation
 {
     Q_OBJECT
 public:
     ElevatedExecuteOperation();
     ~ElevatedExecuteOperation();
     
-    bool performOperation();
+    virtual void backup();
+    virtual bool performOperation();
+    virtual bool undoOperation();
+    virtual bool testOperation();
+    virtual ElevatedExecuteOperation* clone() const;
 
 Q_SIGNALS:
     void cancelProcess();
+    void outputTextChanged(const QString &text);
 
 public Q_SLOTS:
     void cancelOperation();
