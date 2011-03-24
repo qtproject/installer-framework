@@ -248,7 +248,7 @@ void ElevatedExecuteOperation::Private::readProcessOutput()
 
 bool ElevatedExecuteOperation::undoOperation()
 {
-    QStringList args = arguments();
+    QStringList args;
     bool found = false;
     foreach(const QString &argument, arguments()) {
         if (found)
