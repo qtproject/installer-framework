@@ -80,7 +80,7 @@ bool RegisterToolChainOperation::performOperation()
     int argCounter = 0;
     const QString &rootInstallPath = args.at(argCounter++); //for example "C:\\Nokia_SDK\\"
     const QString &toolChainKey = args.at(argCounter++); //Qt SDK:gccPath
-    const QString &toolChainId = args.at(argCounter++); //GccToolChain
+    const QString &toolChainType = args.at(argCounter++); //where this toolchain is defined in QtCreator
     const QString &displayName = args.at(argCounter++); //nice special Toolchain (Qt SDK)
     const QString &abiString = args.at(argCounter++); //x86-windows-msys-pe-32bit
     const QString &compilerPath = args.at(argCounter++); //gccPath
@@ -142,14 +142,15 @@ bool RegisterToolChainOperation::performOperation()
 
     QVariantMap newToolChainVariantMap;
 
-    newToolChainVariantMap.insert(QLatin1String(ID_KEY), toolChainId);
+    newToolChainVariantMap.insert(QLatin1String(ID_KEY),
+        QString(QLatin1String("%1:%2.%3")).arg(toolChainType, compilerPath, abiString));
     newToolChainVariantMap.insert(QLatin1String(DISPLAY_NAME_KEY), displayName);
     newToolChainVariantMap.insert(QString(QLatin1String("ProjectExplorer.%1.Path")).arg(toolChainKey),
-                                  compilerPath);
+        compilerPath);
     newToolChainVariantMap.insert(QString(QLatin1String("ProjectExplorer.%1.TargetAbi")).arg(toolChainKey),
-                                  abiString);
+        abiString);
     newToolChainVariantMap.insert(QString(QLatin1String("ProjectExplorer.%1.Debugger")).arg(toolChainKey),
-                                  debuggerPath);
+        debuggerPath);
 
     toolChainHash.insert(compilerPath, newToolChainVariantMap);
 

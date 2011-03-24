@@ -33,7 +33,10 @@ namespace QInstaller {
 /** Arguments:
   * SDK Path - to find the QtCreator installation
   * ToolChainKey - is the internal QtCreator settings key usually: GccToolChain
-  * id - means an unique string -> name:compilerpath would be a good idea
+  * toolchain type - where this toolchain is defined in QtCreator
+  *     ProjectExplorer.ToolChain.Gcc ProjectExplorer.ToolChain.Mingw
+  *     ProjectExplorer.ToolChain.LinuxIcc ProjectExplorer.ToolChain.Msvc
+  *     Qt4ProjectManager.ToolChain.GCCE Qt4ProjectManager.ToolChain.Maemo
   * display name - the name how it will be displayed in QtCreator
   * application binary interface - this is an internal creator typ as a String CPU-OS-OS_FLAVOR-BINARY_FORMAT-WORD_WIDTH
   *     CPU: arm x86 mips ppc itanium
