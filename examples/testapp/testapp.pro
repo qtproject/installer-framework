@@ -16,4 +16,4 @@ SOURCES += main.cpp mainwindow.cpp
 RESOURCES += testapp.qrc
 
 macx:QMAKE_POST_LINK = ($$OUT_PWD/../../installerbuilder/bin/binarycreator -p packages -c config -t ../../installerbuilder/bin/installerbase TestAppInstaller.app com.nokia.testapp)
-win32:QMAKE_POST_LINK = ($$OUT_PWD\..\..\installerbuilder\bin\binarycreator.exe -p $$PWD\packages -c $$PWD\config -t $$OUT_PWD\..\..\installerbuilder\bin\installerbase.exe TestAppInstaller.exe com.nokia.testapp)
+win32:QMAKE_POST_LINK = ($$OUT_PWD/../../installerbuilder/bin/binarycreator.exe -p $$PWD/packages -c $$PWD/config -t $$OUT_PWD/../../installerbuilder/bin/installerbase.exe TestAppInstaller.exe com.nokia.testapp)
