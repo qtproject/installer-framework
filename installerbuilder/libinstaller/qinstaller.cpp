@@ -744,6 +744,8 @@ bool Installer::fetchAllPackages()
     if (isUninstaller() || isUpdater())
         return false;
 
+    QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
+
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
         verbose() << tr("Could not retrieve components: %1").arg(metaInfoJob->errorString()) << std::endl;
@@ -772,8 +774,6 @@ bool Installer::fetchAllPackages()
         verbose() << tr("Could not retrieve components: %1").arg(updateFinder.errorString());
         return false;
     }
-
-    QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
 
     emit startAllComponentsReset();
 
@@ -845,6 +845,8 @@ bool Installer::fetchUpdaterPackages()
     if (!isUpdater())
         return false;
 
+    QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
+
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
         verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
@@ -872,8 +874,6 @@ bool Installer::fetchUpdaterPackages()
         verbose() << tr("Could not retrieve updates: %1").arg(updateFinder.errorString());
         return false;
     }
-
-    QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
 
     emit startUpdaterComponentsReset();
 
