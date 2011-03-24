@@ -1,0 +1,62 @@
+/**************************************************************************
+**
+** This file is part of Qt SDK**
+**
+** Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).*
+**
+** Contact:  Nokia Corporation qt-info@nokia.com**
+**
+** GNU Lesser General Public License Usage
+**
+** This file may be used under the terms of the GNU Lesser General Public
+** License version 2.1 as published by the Free Software Foundation and
+** appearing in the file LICENSE.LGPL included in the packaging of this file.
+** Please review the following information to ensure the GNU Lesser General
+** Public License version 2.1 requirements will be met:
+** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain additional
+** rights. These rights are described in the Nokia Qt LGPL Exception version
+** 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+**
+** If you are unsure which license is appropriate for your use, please contact
+** (qt-info@nokia.com).
+**
+**************************************************************************/
+#ifndef REGISTERTOOLCHAINOPERATION_H
+#define REGISTERTOOLCHAINOPERATION_H
+
+#include <KDUpdater/UpdateOperation>
+
+namespace QInstaller {
+
+/** Arguments:
+  * SDK Path - to find the QtCreator installation
+  * ToolChainKey - is the internal QtCreator settings key usually: GccToolChain
+  * id - means an unique string -> name:compilerpath would be a good idea
+  * display name - the name how it will be displayed in QtCreator
+  * application binary interface - this is an internal creator typ as a String CPU-OS-OS_FLAVOR-BINARY_FORMAT-WORD_WIDTH
+  *     CPU: arm x86 mips ppc itanium
+  *     OS: linux macos symbian unix windows
+  *     OS_FLAVOR: generic maemo meego generic device emulator generic msvc2005 msvc2008 msvc2010 msys ce
+  *     BINARY_FORMAT: elf pe mach_o qml_rt
+  *     WORD_WIDTH: 8 16 32 64
+  * compiler path - the binary which is used as the compiler
+  * debugger path - the binary which is used as the debugger
+  */
+class RegisterToolChainOperation : public KDUpdater::UpdateOperation
+{
+public:
+    RegisterToolChainOperation();
+    ~RegisterToolChainOperation();
+
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    KDUpdater::UpdateOperation* clone() const;
+};
+
+}; // namespace
+
+#endif // REGISTERTOOLCHAINOPERATION_H
