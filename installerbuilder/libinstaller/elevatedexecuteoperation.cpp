@@ -254,7 +254,7 @@ bool ElevatedExecuteOperation::undoOperation()
         if (found)
             args.append(argument);
         else
-             found = argument!=QLatin1String("UNDOEXECUTE");
+             found = argument==QLatin1String("UNDOEXECUTE");
     }
     if (args.isEmpty())
         return true;
