@@ -192,8 +192,11 @@ QInstaller::VerboseWriter::~VerboseWriter()
         return;
     }
     QFile output(logFileName);
-    if (!output.open(QIODevice::ReadWrite | QIODevice::Append))
-        qFatal("Could not open logfile!");
+    if (!output.open(QIODevice::ReadWrite | QIODevice::Append)) {
+        qWarning("Could not open logfile");
+        return;
+    }
+
     QString logInfo;
     logInfo += QLatin1String("*************************************");
     logInfo += QString::fromLatin1("Invoked:") + QDateTime::currentDateTime().toString();
