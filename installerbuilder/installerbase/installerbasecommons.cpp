@@ -225,6 +225,17 @@ bool TargetDirectoryPageImpl::validatePage()
     if (!isVisible())
         return true;
 
+    if (targetDir().isEmpty()) {
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("forbiddenTargetDirectory"), tr("Error"),
+            tr( "The install directory cannot be empty, please specify a valid folder"), QMessageBox::Ok);
+        return false;
+    }
+
+    QString remove = installer()->value(QLatin1String("RemoveTargetDir"));
+    if (!QVariant(remove).toBool())
+        return true;
+
     if (QFileInfo(targetDir()).isDir()) {
         QFileInfo fi2(targetDir() + QDir::separator() + installer()->uninstallerName());
         if (QDir(targetDir()) == QDir::root()) {

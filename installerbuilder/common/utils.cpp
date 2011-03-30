@@ -192,14 +192,15 @@ QInstaller::VerboseWriter::~VerboseWriter()
         return;
     }
     QFile output(logFileName);
-    if (!output.open(QIODevice::ReadWrite | QIODevice::Append))
-        qFatal("Could not open logfile!");
-    QString logInfo;
-    logInfo += QLatin1String("*************************************");
-    logInfo += QString::fromLatin1("Invoked:") + QDateTime::currentDateTime().toString();
-    output.write(logInfo.toLocal8Bit());
-    output.write(preFileBuffer.data());
-    output.close();
+    if (output.open(QIODevice::ReadWrite | QIODevice::Append)) {
+        QString logInfo;
+        logInfo += QLatin1String("*************************************");
+        logInfo += QString::fromLatin1("Invoked:") + QDateTime::currentDateTime().toString();
+        output.write(logInfo.toLocal8Bit());
+        output.write(preFileBuffer.data());
+        output.close();
+    }
+    stream.setDevice(0);
 }
 
 void QInstaller::VerboseWriter::setOutputStream(const QString &fileName)

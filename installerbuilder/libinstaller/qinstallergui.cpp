@@ -1223,6 +1223,10 @@ bool TargetDirectoryPage::validatePage()
             return false;
         }
 
+        QString remove = installer()->value(QLatin1String("RemoveTargetDir"));
+        if (!QVariant(remove).toBool())
+            return true;
+
         return MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
             QLatin1String("overwriteTargetDirectory"), tr("Warning"),
             tr("You have selected an existing, non-empty folder for installation.\n"

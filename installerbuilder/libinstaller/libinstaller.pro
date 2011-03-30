@@ -48,6 +48,8 @@ HEADERS += $$PWD/qinstaller.h \
     qinstallercomponentmodel.h \
     qinstallerglobal.h \
     qtpatch.h \
+    persistentsettings.h \
+    projectexplorer_export.h \
     qtpatchoperation.h \
     setdemospathonqtoperation.h \
     setexamplespathonqtoperation.h \
@@ -57,6 +59,7 @@ HEADERS += $$PWD/qinstaller.h \
     linereplaceoperation.h \
     registerdocumentationoperation.h \
     registerqtoperation.h  \
+    registertoolchainoperation.h  \
     setqtcreatorvalueoperation.h \
     copydirectoryoperation.h \
     simplemovefileoperation.h \
@@ -111,6 +114,7 @@ SOURCES += $$PWD/qinstaller.cpp \
     qinstallercomponent.cpp \
     qinstallercomponentmodel.cpp \
     qtpatch.cpp \
+    persistentsettings.cpp \
     qtpatchoperation.cpp  \
     setdemospathonqtoperation.cpp \
     setexamplespathonqtoperation.cpp \
@@ -120,6 +124,7 @@ SOURCES += $$PWD/qinstaller.cpp \
     linereplaceoperation.cpp \
     registerdocumentationoperation.cpp \
     registerqtoperation.cpp \
+    registertoolchainoperation.cpp  \
     setqtcreatorvalueoperation.cpp \
     copydirectoryoperation.cpp \
     simplemovefileoperation.cpp \

@@ -68,6 +68,7 @@ public:
     QString targetDir;
     QString adminTargetDir;
     QString icon;
+    QString removeTargetDir;
     QString uninstallerName;
     QString uninstallerIniFile;
     QString configurationFileName;
@@ -163,6 +164,7 @@ InstallerSettings InstallerSettings::fromFileAndPrefix( const QString& path, con
     s.d->targetDir = readChild( root, QLatin1String("TargetDir") );
     s.d->adminTargetDir = readChild( root, QLatin1String("AdminTargetDir") );
     s.d->icon = readChild( root, QLatin1String( "Icon" ) );
+    s.d->removeTargetDir = readChild(root, QLatin1String("RemoveTargetDir"), QLatin1String("true"));
     s.d->uninstallerName = readChild( root, QLatin1String( "UninstallerName" ), QLatin1String("uninstall") );
     s.d->uninstallerIniFile = readChild( root, QLatin1String("UninstallerIniFile"), s.d->uninstallerName + QLatin1String(".ini") );
     s.d->privateKey = splitTrimmed( readChild( root, QLatin1String( "PrivateKey" ) ) ).toLatin1();
@@ -254,6 +256,11 @@ QString InstallerSettings::icon() const
 #else
     return d->makeAbsolutePath( d->icon ) + QLatin1String( ".png" );
 #endif
+}
+
+QString InstallerSettings::removeTargetDir() const
+{
+    return d->removeTargetDir;
 }
 
 QString InstallerSettings::uninstallerName() const

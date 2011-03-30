@@ -57,6 +57,7 @@
 #include "registerqtoperation.h"
 #include "setqtcreatorvalueoperation.h"
 #include "simplemovefileoperation.h"
+#include "registertoolchainoperation.h"
 
 #include "minimumprogressoperation.h"
 
@@ -175,6 +176,7 @@ void QInstaller::init()
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::CopyDirectoryOperation >( QLatin1String( "CopyDirectory") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::RegisterDocumentationOperation >( QLatin1String( "RegisterDocumentation") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::RegisterQtInCreatorOperation>( QLatin1String( "RegisterQtInCreator") );
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::RegisterToolChainOperation>( QLatin1String( "RegisterToolChain") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetDemosPathOnQtOperation>( QLatin1String( "SetDemosPathOnQt") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetExamplesPathOnQtOperation>( QLatin1String( "SetExamplesPathOnQt") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetPluginPathOnQtCoreOperation>( QLatin1String( "SetPluginPathOnQtCore") );
