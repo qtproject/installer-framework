@@ -252,15 +252,15 @@ Gui::Gui(Installer *installer, QWidget *parent)
         this, SLOT(setAutomatedPageSwitchEnabled(bool)));
 
 #ifdef Q_WS_MAC
-    setButtonText(QWizard::BackButton, tr("Go Back"));
-    setButtonText(QWizard::NextButton, tr("Continue"));
-    setButtonText(QWizard::FinishButton, tr("Done"));
+    setButtonText(QWizard::BackButton, tr("&Go Back"));
+    setButtonText(QWizard::NextButton, tr("&Continue"));
+    setButtonText(QWizard::FinishButton, tr("&Done"));
 #else
-    setButtonText(QWizard::BackButton, tr("Back"));
-    setButtonText(QWizard::NextButton, tr("Next"));
-    setButtonText(QWizard::FinishButton, tr("Finish"));
+    setButtonText(QWizard::BackButton, tr("&Back"));
+    setButtonText(QWizard::NextButton, tr("&Next"));
+    setButtonText(QWizard::FinishButton, tr("&Finish"));
 #endif
-    setButtonText(QWizard::CancelButton, tr("Cancel"));
+    setButtonText(QWizard::CancelButton, tr("&Cancel"));
 
     dynamic_cast<QPushButton*>(button(QWizard::NextButton))->setDefault(true);
 
@@ -1110,7 +1110,7 @@ void ComponentSelectionPage::deselectComponent(const QString& id)
 void ComponentSelectionPage::setModified(bool value)
 {
     d->modified = value;
-    setButtonText(QWizard::CancelButton, isComplete() ? tr("Cancel") : tr("Close"));
+    setButtonText(QWizard::CancelButton, isComplete() ? tr("&Cancel") : tr("&FClose"));
 }
 
 bool ComponentSelectionPage::isComplete() const
@@ -1387,7 +1387,7 @@ void ReadyForInstallationPage::initializePage()
 
     if (installer()->isUninstaller()) {
         setTitle(tr("Ready to Uninstall"));
-        setButtonText(QWizard::CommitButton, tr("Uninstall"));
+        setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.\nThe "
             "program dir %2 will be deleted completely, including all content in that directory!")
             .arg(productName(),
@@ -1395,12 +1395,12 @@ void ReadyForInstallationPage::initializePage()
             .absolutePath())));
     } else if (installer()->isPackageManager() || installer()->isUpdater()) {
         setTitle(tr("Ready to Update Packages"));
-        setButtonText(QWizard::CommitButton, tr("Update"));
+        setButtonText(QWizard::CommitButton, tr("U&pdate"));
         msgLabel->setText(tr("Setup is now ready to begin updating your installation."));
     } else {
         Q_ASSERT(installer()->isInstaller());
         setTitle(tr("Ready to Install"));
-        setButtonText(QWizard::CommitButton, tr("Install"));
+        setButtonText(QWizard::CommitButton, tr("&Install"));
         msgLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
             .arg(productName()));
     }
@@ -1535,15 +1535,15 @@ void PerformInstallationPage::entering()
 
     if (installer()->isUninstaller()) {
         setTitle(tr("Uninstalling %1").arg(installer()->value(QLatin1String("ProductName"))));
-        setButtonText(QWizard::CommitButton, tr("Uninstall"));
+        setButtonText(QWizard::CommitButton, tr("U&ninstall"));
     } else if (installer()->isPackageManager() || installer()->isUpdater()) {
         setTitle(tr("Updating component configuration of %1")
             .arg(installer()->value(QLatin1String("ProductName"))));
-        setButtonText(QWizard::CommitButton, tr("Update"));
+        setButtonText(QWizard::CommitButton, tr("U&pdate"));
     } else {
         Q_ASSERT(installer()->isInstaller());
         setTitle(tr("Installing %1").arg(installer()->value(QLatin1String("ProductName"))));
-        setButtonText(QWizard::CommitButton, tr("Install"));
+        setButtonText(QWizard::CommitButton, tr("&Install"));
     }
     m_performInstallationForm->enableDetails();
     emit setAutomatedPageSwitchEnabled(true);
@@ -1556,18 +1556,18 @@ void PerformInstallationPage::initializePage()
         wizard()->removePage(QInstaller::Installer::InstallationFinished + 1);
         wizard()->removePage(QInstaller::Installer::InstallationFinished + 2);
         setTitle(tr("Uninstalling %1").arg(installer()->value(QLatin1String("ProductName"))));
-        m_commitBtnText = tr("Uninstall");
+        m_commitBtnText = tr("U&ninstall");
         setButtonText(QWizard::CommitButton, m_commitBtnText);
         QTimer::singleShot(30, installer(), SLOT(runUninstaller()));
     } else if (installer()->isPackageManager() || installer()->isUpdater()) {
         setTitle(tr("Updating components of %1").arg(installer()->value(QLatin1String("ProductName"))));
-        m_commitBtnText = tr ("Update");
+        m_commitBtnText = tr ("U&pdate");
         setButtonText(QWizard::CommitButton, m_commitBtnText);
         QTimer::singleShot(30, installer(), SLOT(runPackageUpdater()));
     } else {
         Q_ASSERT(installer()->isInstaller());
         setTitle(tr("Installing %1").arg(installer()->value(QLatin1String("ProductName"))));
-        m_commitBtnText = tr("Install");
+        m_commitBtnText = tr("I&nstall");
         setButtonText(QWizard::CommitButton, m_commitBtnText);
         QTimer::singleShot(30, installer(), SLOT(runInstaller()));
     }
@@ -1584,8 +1584,8 @@ void PerformInstallationPage::installationFinished()
     if (!isAutoSwitching()) {
         m_performInstallationForm->scrollDetailsToTheEnd();
         m_performInstallationForm->setDetailsButtonEnabled(false);
-        setButtonText(QWizard::NextButton, tr("Next"));
-        setButtonText(QWizard::CommitButton, tr("Next"));
+        setButtonText(QWizard::NextButton, tr("&Next"));
+        setButtonText(QWizard::CommitButton, tr("&Next"));
         setComplete(true);
     }
 }
@@ -1598,7 +1598,7 @@ bool PerformInstallationPage::isAutoSwitching() const
 void PerformInstallationPage::toggleDetailsWereChanged()
 {
     const bool needAutoSwitching = isAutoSwitching();
-    setButtonText(QWizard::CommitButton, needAutoSwitching ? m_commitBtnText : tr("Next"));
+    setButtonText(QWizard::CommitButton, needAutoSwitching ? m_commitBtnText : tr("&Next"));
     emit setAutomatedPageSwitchEnabled(needAutoSwitching);
 }
 
@@ -1643,7 +1643,7 @@ void FinishedPage::entering()
         wizard()->button(QWizard::BackButton)->setVisible(false);
 
     if (installer()->isPackageManager() || installer()->isUpdater()) {
-        setButtonText(QWizard::CommitButton, QLatin1String("Finish"));
+        setButtonText(QWizard::CommitButton, QLatin1String("&Finish"));
         wizard()->button(QWizard::CommitButton)->disconnect(this);
         connect(wizard()->button(QWizard::CommitButton), SIGNAL(clicked()), this,
             SLOT(handleFinishClicked()));
@@ -1682,8 +1682,8 @@ void FinishedPage::initializePage()
         wizard()->button(QWizard::BackButton)->setVisible(false);
 
     if (installer()->isPackageManager() || installer()->isUpdater()) {
-        setButtonText(QWizard::CommitButton, QLatin1String("Finish"));
-        setButtonText(QWizard::NextButton, QLatin1String("Finish"));
+        setButtonText(QWizard::CommitButton, QLatin1String("&Finish"));
+        setButtonText(QWizard::NextButton, QLatin1String("&Finish"));
     }
 }
 
