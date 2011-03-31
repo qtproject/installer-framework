@@ -83,6 +83,12 @@ public:
             = QVector< KDUpdater::UpdateOperation*>());
     ~Installer();
 
+    static QFont virtualComponentsFont();
+    static void setVirtualComponentsFont(const QFont &font);
+
+    static bool virtualComponentsVisible();
+    static void setVirtualComponentsVisible(bool visible);
+
     QHash<QString, KDUpdater::PackageInfo> localInstalledPackages();
     GetRepositoriesMetaInfoJob* fetchMetaInformation(const InstallerSettings &settings);
     bool addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *metaInfoJob, const InstallerSettings &settings,

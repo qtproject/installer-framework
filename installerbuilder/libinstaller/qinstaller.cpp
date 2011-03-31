@@ -61,6 +61,9 @@
 
 using namespace QInstaller;
 
+static QFont s_virtualComponentsFont;
+static bool s_virtualComponentsVisible = false;
+
 static QScriptValue checkArguments(QScriptContext* context, int amin, int amax)
 {
     if (context->argumentCount() < amin || context->argumentCount() > amax) {
@@ -642,6 +645,26 @@ Installer::~Installer()
 
     d->m_FSEngineClientHandler->setActive(false);
     delete d;
+}
+
+QFont Installer::virtualComponentsFont()
+{
+    return s_virtualComponentsFont;
+}
+
+void Installer::setVirtualComponentsFont(const QFont &font)
+{
+    s_virtualComponentsFont = font;
+}
+
+bool Installer::virtualComponentsVisible()
+{
+    return s_virtualComponentsVisible;
+}
+
+void Installer::setVirtualComponentsVisible(bool visible)
+{
+    s_virtualComponentsVisible = visible;
 }
 
 RunModes Installer::runMode() const
