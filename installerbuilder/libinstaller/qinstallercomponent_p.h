@@ -35,8 +35,8 @@
 
 #include "qinstallerglobal.h"
 
-#include <QtCore/QUrl>
 #include <QtCore/QStringList>
+#include <QtCore/QUrl>
 
 #include <QtScript/QScriptEngine>
 
@@ -67,6 +67,8 @@ public:
     Installer *m_installer;
     QHash<QString, QString> m_vars;
     QList<Component*> m_components;
+    QList<Component*> m_allComponents;
+    QList<Component*> m_virtualComponents;
     QList<KDUpdater::UpdateOperation* > operations;
 
     QList<QPair<QString, bool> > pathesForUninstallation;

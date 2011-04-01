@@ -55,6 +55,8 @@
 
 #include <QtUiTools/QUiLoader>
 
+#include <algorithm>
+
 using namespace QInstaller;
 
 static const QLatin1String skName("Name");
@@ -112,12 +114,12 @@ Component::Component(KDUpdater::Update* update, Installer* installer)
 Component::~Component()
 {
     if (parentComponent() != 0)
-        d->m_parent->d->m_components.removeAll(this);
+        d->m_parent->d->m_allComponents.removeAll(this);
 
     if (!d->m_newlyInstalled)
         qDeleteAll(d->operations);
 
-    qDeleteAll(d->m_components);
+    qDeleteAll(d->m_allComponents);
     delete d;
 }
 
@@ -280,9 +282,16 @@ Component* Component::parentComponent(RunModes runMode) const
 */
 void Component::appendComponent(Component* component)
 {
-    d->m_components.append(component);
-    if (component->parentComponent() != 0)
-        component->d->m_parent->d->m_components.removeAll(component);
+    if (component->value(skVirtual).toLower() != QLatin1String("true")) {
+        d->m_components.append(component);
+        std::sort(d->m_components.begin(), d->m_components.end(), Component::SortingPriorityLessThan());
+    } else {
+        d->m_virtualComponents.append(component);
+    }
+
+    d->m_allComponents = d->m_components + d->m_virtualComponents;
+    if (Component *parent = component->parentComponent())
+        parent->removeComponent(component);
     component->d->m_parent = this;
 }
 
@@ -296,10 +305,10 @@ QList<Component*> Component::childComponents(bool recursive, RunModes runMode) c
         return QList<Component*>();
 
     if (!recursive)
-        return d->m_components;
+        return d->m_allComponents;
 
     QList<Component*> result;
-    foreach (Component *component, d->m_components) {
+    foreach (Component *component, d->m_allComponents) {
         result.append(component);
         result += component->childComponents(true);
     }
