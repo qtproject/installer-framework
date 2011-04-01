@@ -208,6 +208,9 @@ protected:
     QScriptValue callScriptMethod(const QString &name,
         const QScriptValueList &parameters = QScriptValueList());
 
+private Q_SLOTS:
+    void updateModelData(const QString &key, const QString &value);
+
 private:
     void setLocalTempPath(const QString &tempPath);
 

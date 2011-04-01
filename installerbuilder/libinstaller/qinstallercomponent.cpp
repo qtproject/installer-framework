@@ -78,6 +78,7 @@ static const QLatin1String skUpdateText("UpdateText");
 static const QLatin1String skRequiresAdminRights("RequiresAdminRights");
 static const QLatin1String skNewComponent("NewComponent");
 static const QLatin1String skScript("Script");
+static const QLatin1String skInstalledVersion("InstalledVersion");
 
 /*
     TRANSLATOR QInstaller::Component
@@ -96,6 +97,8 @@ Component::Component(Installer *installer)
 {
     d->init();
     setPrivate(d);
+
+    connect(this, SIGNAL(valueChanged(QString, QString)), this, SLOT(updateModelData(QString, QString)));
 }
 
 Component::Component(KDUpdater::Update* update, Installer* installer)
@@ -105,6 +108,8 @@ Component::Component(KDUpdater::Update* update, Installer* installer)
 
     d->init();
     setPrivate(d);
+    connect(this, SIGNAL(valueChanged(QString, QString)), this, SLOT(updateModelData(QString, QString)));
+
     loadDataFromUpdate(update);
 }
 
@@ -308,6 +313,7 @@ void Component::appendComponent(Component* component)
     if (Component *parent = component->parentComponent())
         parent->removeComponent(component);
     component->d->m_parent = this;
+    setTristate(childCount() > 0);
 }
 
 /*!
@@ -1105,4 +1111,32 @@ QString Component::localTempPath() const
 void Component::setLocalTempPath(const QString &tempLocalPath)
 {
     d->localTempPath = tempLocalPath;
+}
+
+void Component::updateModelData(const QString &key, const QString &data)
+{
+    if (key == skVirtual) {
+        if (data.toLower() == QLatin1String("true"))
+            setData(installer()->virtualComponentsFont(), Qt::FontRole);
+    }
+
+    if (key == skVersion)
+        setData(data, NewVersion);
+
+    if (key == skDisplayName)
+        setData(data, Qt::DisplayRole);
+
+    if (key == skInstalledVersion)
+        setData(data, InstalledVersion);
+
+    if (key == skUncompressedSize)
+        setData(uncompressedSize(), UncompressedSize);
+
+    bool force = value(skForcedInstallation).toLower() == QLatin1String("true");
+    setEnabled(!force);
+    setCheckable(!force);
+    setCheckState(force ? Qt::Checked : Qt::Unchecked);
+
+    setData(value(skDescription) + QLatin1String("<br><br>Update Info: ") + value(skUpdateText),
+        Qt::ToolTipRole);
 }
