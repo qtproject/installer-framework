@@ -45,247 +45,6 @@ using namespace QInstaller;
 
 static QFont s_virtualComponentsFont;
 
-InstallerComponentModel::InstallerComponentModel(int columns, Installer *parent)
-    : QAbstractItemModel(parent)
-    , m_columns(columns)
-    , m_installer(parent)
-    , m_headerComponent(0)
-{
-}
-
-InstallerComponentModel::~InstallerComponentModel()
-{
-}
-
-int InstallerComponentModel::rowCount(const QModelIndex &parent) const
-{
-    if (Component *component = componentFromIndex(parent))
-        return component->childCount();
-    return 0;
-}
-
-int InstallerComponentModel::columnCount(const QModelIndex &parent) const
-{
-    Q_UNUSED(parent)
-    return m_columns;
-}
-
-QModelIndex InstallerComponentModel::parent(const QModelIndex &child) const
-{
-    if (!child.isValid())
-        return QModelIndex();
-
-     if (Component *childComponent = componentFromIndex(child)) {
-         if (Component *parent = childComponent->parentComponent()) {
-             if (parent != m_headerComponent)
-                 return createIndex(parent->indexInParent(), 0, parent);
-         }
-     }
-     return QModelIndex();
-}
-
-QModelIndex InstallerComponentModel::index(int row, int column, const QModelIndex &parent) const
-{
-    if (parent.isValid() && column >= columnCount(parent))
-         return QModelIndex();
-
-    if (Component *parentComponent = componentFromIndex(parent)) {
-        if (Component *childComponent = parentComponent->childAt(row))
-            return createIndex(row, column, childComponent);
-    }
-    return QModelIndex();
-}
-
-QVariant InstallerComponentModel::data(const QModelIndex &index, int role) const
-{
-    if (!index.isValid())
-        return QVariant();
-
-    if (Component *component = componentFromIndex(index)) {
-        switch (index.column()) {
-            case NameColumn: {
-                switch (role) {
-                    case Qt::EditRole:
-                    case Qt::DisplayRole:
-                        return component->displayName();
-                    case Qt::CheckStateRole:
-                        return component->checkState();
-                    case Qt::ToolTipRole: {
-                        return component->value(QLatin1String("Description"))
-                            + QLatin1String("<br><br> Update Info: ")
-                            + component->value(QLatin1String ("UpdateText"));
-                    }
-                    case Qt::FontRole:{
-                        return component->value(QLatin1String("Virtual")).toLower()
-                            == QLatin1String("true") ? virtualComponentsFont() : QFont();
-                    }
-                    default:
-                        return QVariant();
-                }
-            }   break;
-
-            case VersionColumn: {
-                if (role == Qt::DisplayRole)
-                    return component->value(QLatin1String("Version"));
-            }   break;
-
-            case InstalledVersionColumn: {
-                if (role == Qt::DisplayRole)
-                    return component->value(QLatin1String("InstalledVersion"));
-            }   break;
-
-            case SizeColumn: {
-                if (role == Qt::DisplayRole) {
-                    double size = component->value(QLatin1String("UncompressedSize")).toDouble();
-                    if (size < 10000.0)
-                        return tr("%L1 Bytes").arg(size);
-                    size /= 1024.0;
-                    if (size < 10000.0)
-                        return tr("%L1 kB").arg(size, 0, 'f', 1);
-                    size /= 1024.0;
-                    if (size < 10000.0)
-                        return tr("%L1 MB").arg(size, 0, 'f', 1);
-                    size /= 1024.0;
-                    return tr("%L1 GB").arg(size, 0, 'f', 1);
-                }
-            }   break;
-        }
-    }
-    return QVariant();
-}
-
-bool InstallerComponentModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    if (!index.isValid())
-        return false;
-
-    Component *component = componentFromIndex(index);
-    if (!component || component == m_headerComponent)
-        return false;
-
-    switch (role) {
-        case Qt::CheckStateRole: {
-            component->setCheckState(Qt::CheckState(value.toInt()));
-        }   break;
-        default:
-            return false;
-    }
-
-    return true;
-}
-
-QVariant InstallerComponentModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        switch (section) {
-            case NameColumn:
-                return tr("Name");
-            case InstalledVersionColumn:
-                return tr("Installed Version");
-            case VersionColumn:
-                return tr("New Version");
-            case SizeColumn:
-                return tr("Size");
-            default:
-                return QAbstractItemModel::headerData(section, orientation, role);
-        }
-    }
-    return QAbstractItemModel::headerData(section, orientation, role);
-}
-
-bool InstallerComponentModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
-    int role)
-{
-    // TODO: implement
-    return true;
-}
-
-Qt::ItemFlags InstallerComponentModel::flags(const QModelIndex &index) const
-{
-    if (!index.isValid())
-        return m_headerComponent->flags();
-
-    if (Component *component = componentFromIndex(index))
-        return component->flags();
-
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable| Qt::ItemIsUserCheckable;
-}
-
-void InstallerComponentModel::setRootComponents(QList<Component*> rootComponents)
-{
-    beginResetModel();
-
-    m_cache.clear();
-    // delete m_headerComponent;
-
-    m_headerComponent = new Component(0);
-    foreach (Component *component, rootComponents)
-        m_headerComponent->appendComponent(component);
-
-    const QModelIndex &root = index(0,0, QModelIndex());
-    setupCache(root);
-    m_cache.insert(static_cast<Component*> (root.internalPointer()), root);
-
-    endResetModel();
-}
-
-void InstallerComponentModel::appendRootComponents(QList<Component*> rootComponents)
-{
-    // TODO: implement
-}
-
-QModelIndex InstallerComponentModel::indexFromComponent(Component *component) const
-{
-    return m_cache.value(component, QModelIndex());
-}
-
-Component* InstallerComponentModel::componentFromIndex(const QModelIndex &index) const
-{
-    if (index.isValid())
-         return static_cast<Component*>(index.internalPointer());
-     return m_headerComponent;
-}
-
-QFont InstallerComponentModel::virtualComponentsFont()
-{
-    return s_virtualComponentsFont;
-}
-
-void InstallerComponentModel::setVirtualComponentsFont(const QFont &font)
-{
-    s_virtualComponentsFont = font;
-}
-
-void InstallerComponentModel::setupCache(const QModelIndex &parent)
-{
-    const QModelIndexList &list = collectComponents(parent);
-    foreach (const QModelIndex &index, list)
-        m_cache.insert(componentFromIndex(index), index);
-}
-
-QModelIndexList InstallerComponentModel::collectComponents(const QModelIndex &parent) const
-{
-    QModelIndexList list;
-    for (int i = rowCount(parent) - 1; i >= 0 ; --i) {
-        const QModelIndex &next = index(i, 0, parent);
-        if (Component *component = componentFromIndex(next)) {
-            verbose() << "Name: " << component->name() << ", Children: "
-                << component->childCount() << std::endl;
-            if (component->childCount() > 0)
-                list += collectComponents(next);
-        }
-        list.append(next);
-    }
-    return list;
-}
-
-
-
-
-
-
-
-
 bool checkCompleteUninstallation(const Component *component)
 {
     bool nonSelected = true;
@@ -603,7 +362,7 @@ Qt::CheckState QInstaller::componentCheckState(const Component *component, RunMo
         if (state == Qt::Checked)
             return state;
     }
-    
+
     // if the component has children then we need to check if all children are selected
     // to set the state to either checked if all children are selected or to unchecked
     // if no children are selected or otherwise to partially checked.
@@ -630,7 +389,7 @@ Qt::CheckState QInstaller::componentCheckState(const Component *component, RunMo
         if (foundUnchecked && ! foundChecked)
             return Qt::Unchecked;
     }
-    
+
     // explicitely selected
     if (component->value(QString::fromLatin1("WantedState")) == QString::fromLatin1("Installed"))
         return Qt::Checked;
@@ -638,7 +397,7 @@ Qt::CheckState QInstaller::componentCheckState(const Component *component, RunMo
     // explicitely unselected
     else if (component->value(QString::fromLatin1("WantedState")) == QString::fromLatin1("Uninstalled"))
         return Qt::Unchecked;
-    
+
     // no decision made, use the predefined:
     const QString suggestedState = component->value(QString::fromLatin1("SuggestedState"));
     if (suggestedState == QString::fromLatin1("Installed"))
@@ -654,7 +413,7 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
-        
+
     Component *const component = reinterpret_cast<Component*>(index.internalPointer());
 
     switch (index.column()) {
@@ -720,7 +479,7 @@ QVariant ComponentModel::headerData(int section, Qt::Orientation orientation, in
 {
     if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
         return QAbstractItemModel::headerData(section, orientation, role);
-    
+
     switch (section) {
     case NameColumn:
         return tr("Name");

@@ -23,13 +23,14 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#ifndef QINSTALLER_COMPONENTMODEL_H
-#define QINSTALLER_COMPONENTMODEL_H
+#ifndef COMPONENTMODEL_H
+#define COMPONENTMODEL_H
 
 #include "qinstallerglobal.h"
 
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QList>
+#include <QtCore/QVector>
 
 namespace QInstaller {
 class Component;
@@ -38,61 +39,53 @@ class Installer;
 class INSTALLER_EXPORT ComponentModel : public QAbstractItemModel
 {
     Q_OBJECT
+    typedef QMap<Component*, QPersistentModelIndex> ComponentModelIndexCache;
 
 public:
-    enum Role {
-        ComponentRole = Qt::UserRole,
-        IdRole
-    };
-
-    enum Column {
-        NameColumn = 0,
-        InstalledVersionColumn,
-        VersionColumn,
-        SizeColumn
-    };
-
-    explicit ComponentModel(Installer *parent, RunModes runMode = AllMode);
+    explicit ComponentModel(int columns, Installer *parent = 0);
     ~ComponentModel();
 
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &index) const;
-
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+
+    QModelIndex parent(const QModelIndex &child) const;
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
+        int role = Qt::EditRole);
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
-    bool setData(const QModelIndex &index, const QVariant &data, int role = Qt::CheckStateRole);
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    void setRootComponents(QList<Component*> rootComponents);
+    void appendRootComponents(QList<Component*> rootComponents);
 
-    static bool virtualComponentsVisible();
-    static void setVirtualComponentsVisible(bool visible);
-
-    static QFont virtualComponentsFont();
-    static void setVirtualComponentsFont(const QFont &f);
-
-    QModelIndex findComponent(const QString &id) const;
-
-public Q_SLOTS:
-    void clear();
-    void setRunMode(RunModes runMode);
-    void addRootComponents(QList<QInstaller::Component*> components);
+    Installer* installer() const;
+    QModelIndex indexFromComponent(Component *component);
+    Component* componentFromIndex(const QModelIndex &index) const;
 
 Q_SIGNALS:
-    void workRequested(bool value);
+    void checkStateChanged(const QModelIndex &index);
 
 private Q_SLOTS:
-    void selectedChanged(bool checked);
-    void componentAdded(QInstaller::Component* comp);
+    void slotModelReset();
+    void slotCheckStateChanged(const QModelIndex &index);
 
 private:
-    RunModes m_runMode;
-    QList<Component*> m_components;
-    mutable QList<Component*> m_seenComponents;
+    void updateCache(const QModelIndex &parent);
+    QModelIndexList collectComponents(const QModelIndex &parent) const;
+
+private:
+    QVector<QVariant> m_headerData;
+    ComponentModelIndexCache m_cache;
+
+    Installer *m_installer;
+    Component *m_rootComponent;
 };
 
 }   // namespace QInstaller
 
-#endif // QINSTALLER_COMPONENTMODEL_H
+#endif // COMPONENTMODEL_H
