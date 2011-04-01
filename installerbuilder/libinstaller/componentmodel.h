@@ -67,6 +67,10 @@ public:
     QModelIndex indexFromComponent(Component *component);
     Component* componentFromIndex(const QModelIndex &index) const;
 
+public Q_SLOTS:
+    void selectAll();
+    void deselectAll();
+
 Q_SIGNALS:
     void checkStateChanged(const QModelIndex &index);
 

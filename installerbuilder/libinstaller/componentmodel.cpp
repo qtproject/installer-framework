@@ -207,6 +207,20 @@ Component* ComponentModel::componentFromIndex(const QModelIndex &index) const
      return m_rootComponent;
 }
 
+// -- public slots
+
+void ComponentModel::selectAll()
+{
+    for (int i = 0; i < m_rootComponent->childCount(); ++i)
+        setData(index(i, 0, QModelIndex()), Qt::Checked, Qt::CheckStateRole);
+}
+
+void ComponentModel::deselectAll()
+{
+    for (int i = 0; i < m_rootComponent->childCount(); ++i)
+        setData(index(i, 0, QModelIndex()), Qt::Unchecked, Qt::CheckStateRole);
+}
+
 // -- private slots
 
 void ComponentModel::slotModelReset()
