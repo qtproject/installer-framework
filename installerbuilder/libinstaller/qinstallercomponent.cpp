@@ -195,6 +195,21 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
         loadLicenses(QString::fromLatin1("%1/%2/").arg(localTempPath(), name()), licenseHash);
 }
 
+QString Component::uncompressedSize() const
+{
+    double size = value(skUncompressedSize).toDouble();
+    if (size < 10000.0)
+        return tr("%L1 Bytes").arg(size);
+    size /= 1024.0;
+    if (size < 10000.0)
+        return tr("%L1 kBytes").arg(size, 0, 'f', 1);
+    size /= 1024.0;
+    if (size < 10000.0)
+        return tr("%L1 MBytes").arg(size, 0, 'f', 1);
+    size /= 1024.0;
+    return tr("%L1 GBytes").arg(size, 0, 'f', 1);
+}
+
 void Component::updateState(const bool selected)
 {
     setValue(QLatin1String("PreviousState"),
