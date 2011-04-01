@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 
                 Updater u;
                 u.setVerbose(args.contains(QLatin1String("--verbose")));
-                return u.checkForUpdates(true) ? 0 : 1;
+                return u.checkForUpdates() ? 0 : 1;
             }
         }
 

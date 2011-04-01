@@ -31,8 +31,6 @@
 #include <QtCore/QObject>
 
 namespace QInstaller {
-
-class ComponentSelectionDialog;
 class Installer;
 
 class INSTALLER_EXPORT Updater : public QObject
@@ -40,27 +38,11 @@ class INSTALLER_EXPORT Updater : public QObject
     Q_OBJECT
 
 public:
-    explicit Updater(QObject* parent = 0);
+    explicit Updater();
     ~Updater();
 
-    void init();
+    bool checkForUpdates();
     void setVerbose(bool verbose);
-    void setInstaller(Installer *installer);
-    bool checkForUpdates(bool checkonly = false);
-
-    ComponentSelectionDialog* updaterGui() const;
-    void setUpdaterGui(ComponentSelectionDialog *gui);
-
-public Q_SLOTS:
-    bool searchForUpdates();
-    bool update();
-
-Q_SIGNALS:
-    void updateFinished(bool error);
-
-private:
-    class Private;
-    Private *d;
 };
 
 }   // namespace QInstaller

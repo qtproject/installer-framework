@@ -81,7 +81,6 @@ HEADERS += $$PWD/qinstaller.h \
     updatesettings.h \
     updatesettingsdialog.h \
     updatesettingswidget.h \
-    componentselectiondialog.h \
     adminauthorization.h \
     fsengineclient.h \
     fsengineserver.h \
@@ -144,7 +143,6 @@ SOURCES += $$PWD/qinstaller.cpp \
     updatesettings.cpp \
     updatesettingsdialog.cpp \
     updatesettingswidget.cpp \
-    componentselectiondialog.cpp \
     adminauthorization.cpp \
     fsengineclient.cpp \
     fsengineserver.cpp \
