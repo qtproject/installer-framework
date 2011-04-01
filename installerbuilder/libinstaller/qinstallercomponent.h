@@ -115,6 +115,7 @@ public:
     Installer *installer() const;
 
     void appendComponent(Component *component);
+    void removeComponent(Component *component);
     Component *parentComponent(RunModes runMode = AllMode) const;
     QList<Component*> childComponents(bool recursive = false, RunModes runMode = AllMode) const;
 

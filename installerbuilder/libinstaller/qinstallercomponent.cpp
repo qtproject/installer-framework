@@ -296,6 +296,20 @@ void Component::appendComponent(Component* component)
 }
 
 /*!
+    Removes \a component if it is a child of this component. The component object still exists after the
+    function returns. It's up to the caller to delete the passed component.
+*/
+void Component::removeComponent(Component *component)
+{
+    if (component->parentComponent() == this) {
+        component->d->m_parent = 0;
+        d->m_components.removeAll(component);
+        d->m_virtualComponents.removeAll(component);
+        d->m_allComponents = d->m_components + d->m_virtualComponents;
+    }
+}
+
+/*!
     Returns a list of child components. If \a recursive is set to true, the returned list
     contains not only the direct children, but all ancestors.
 */
