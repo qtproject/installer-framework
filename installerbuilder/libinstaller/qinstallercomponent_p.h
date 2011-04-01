@@ -59,9 +59,6 @@ public:
     void setSelectedOnComponentList(const QList<Component*> &componentList,
         bool selected, RunModes runMode, int selectMode);
 
-    Qt::ItemFlags m_flags;
-    Qt::CheckState m_checkState;
-
     static QMap<const Component*, Qt::CheckState> cachedCheckStates;
 
     Installer *m_installer;
@@ -114,11 +111,26 @@ public:
 class ComponentModelHelper
 {
 public:
+    enum Roles {
+        InstalledVersion = Qt::UserRole,
+        NewVersion = InstalledVersion + 1,
+        UncompressedSize = NewVersion + 1
+    };
+
+    enum Column {
+        NameColumn = 0,
+        InstalledVersionColumn,
+        NewVersionColumn,
+        UncompressedSizeColumn
+    };
+
     explicit ComponentModelHelper();
     ~ComponentModelHelper();
 
     int childCount() const;
     int indexInParent() const;
+
+    QList<Component*> childs() const;
     Component* childAt(int index) const;
 
     bool isEnabled() const;
@@ -139,6 +151,9 @@ public:
     Qt::CheckState checkState() const;
     void setCheckState(Qt::CheckState state);
 
+    QVariant data(int role = Qt::UserRole + 1) const;
+    void setData(const QVariant &value, int role = Qt::UserRole + 1);
+
 protected:
     void setPrivate(ComponentPrivate *componentPrivate);
 
@@ -146,6 +161,8 @@ private:
     void changeFlags(bool enable, Qt::ItemFlags itemFlags);
 
 private:
+    QHash<int, QVariant> m_values;
+
     ComponentPrivate *m_componentPrivate;
 };
 

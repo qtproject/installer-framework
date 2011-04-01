@@ -45,8 +45,6 @@ QMap<const Component*, Qt::CheckState> ComponentPrivate::cachedCheckStates;
 
 ComponentPrivate::ComponentPrivate(Installer* installer, Component* qq)
     : q(qq),
-    m_flags(Qt::ItemIsEnabled | Qt::ItemIsSelectable| Qt::ItemIsUserCheckable),
-    m_checkState(Qt::Unchecked),
     m_installer(installer),
     m_parent(0),
     m_offsetInInstaller(0),
@@ -145,6 +143,8 @@ ComponentModelHelper::~ComponentModelHelper()
 */
 int ComponentModelHelper::childCount() const
 {
+    if (m_componentPrivate->m_installer->virtualComponentsVisible())
+        return m_componentPrivate->m_allComponents.count();
     return m_componentPrivate->m_components.count();
 }
 
@@ -158,14 +158,31 @@ int ComponentModelHelper::indexInParent() const
     return 0;
 }
 
+QList<Component*> ComponentModelHelper::childs() const
+{
+    QList<Component*> *components = &m_componentPrivate->m_components;
+    if (m_componentPrivate->m_installer->virtualComponentsVisible())
+        components = &m_componentPrivate->m_allComponents;
+
+    QList<Component*> result;
+    foreach (Component *component, *components) {
+        result.append(component);
+        result += component->childComponents(true);
+    }
+    return result;
+}
+
 /*!
     Returns the component at index position in the list. Index must be a valid position in
     the list (i.e., index >= 0 && index < childCount()). Otherwise it returns 0.
 */
 Component* ComponentModelHelper::childAt(int index) const
 {
-    if (index >= 0 && index < childCount())
+    if (index >= 0 && index < childCount()) {
+        if (m_componentPrivate->m_installer->virtualComponentsVisible())
+            return m_componentPrivate->m_allComponents.value(index, 0);
         return m_componentPrivate->m_components.value(index, 0);
+    }
     return 0;
 }
 
@@ -184,11 +201,21 @@ void ComponentModelHelper::setEnabled(bool enabled)
     changeFlags(enabled, Qt::ItemIsEnabled);
 }
 
+/*!
+    Returns whether the component is tristate; that is, if it's checkable with three separate states.
+    The default value is false.
+*/
 bool ComponentModelHelper::isTristate() const
 {
     return (flags() & Qt::ItemIsTristate) != 0;
 }
 
+/*!
+    Sets whether the component is tristate. If tristate is true, the item is checkable with three
+    separate states; otherwise, the component is checkable with two states.
+
+    (Note that this also requires that the component is checkable; see isCheckable().)
+*/
 void ComponentModelHelper::setTristate(bool tristate)
 {
     changeFlags(tristate, Qt::ItemIsTristate);
@@ -201,6 +228,11 @@ bool ComponentModelHelper::isCheckable() const
 
 void ComponentModelHelper::setCheckable(bool checkable)
 {
+    if (checkable && !isCheckable()) {
+        // make sure there's data for the checkstate role
+        if (!data(Qt::CheckStateRole).isValid())
+            setData(Qt::Unchecked, Qt::CheckStateRole);
+    }
     changeFlags(checkable, Qt::ItemIsUserCheckable);
 }
 
@@ -216,28 +248,45 @@ void ComponentModelHelper::setSelectable(bool selectable)
 
 Qt::ItemFlags ComponentModelHelper::flags() const
 {
-    return m_componentPrivate->m_flags;
+    QVariant variant = data(Qt::UserRole - 1);
+    if (!variant.isValid())
+        return (Qt::ItemIsEnabled | Qt::ItemIsSelectable| Qt::ItemIsUserCheckable);
+    return Qt::ItemFlags(variant.toInt());
 }
 
 void ComponentModelHelper::setFlags(Qt::ItemFlags flags)
 {
-    m_componentPrivate->m_flags = flags;
+    setData(int(flags), Qt::UserRole - 1);
 }
 
 Qt::CheckState ComponentModelHelper::checkState() const
 {
-    return m_componentPrivate->m_checkState;
+    return Qt::CheckState(qvariant_cast<int>(data(Qt::CheckStateRole)));
 }
 
 void ComponentModelHelper::setCheckState(Qt::CheckState state)
 {
-    m_componentPrivate->m_checkState = state;
+    setData(state, Qt::CheckStateRole);
 }
+
+QVariant ComponentModelHelper::data(int role) const
+{
+    return m_values.value((role == Qt::EditRole ? Qt::DisplayRole : role), QVariant());
+}
+
+void ComponentModelHelper::setData(const QVariant &value, int role)
+{
+    m_values.insert((role == Qt::EditRole ? Qt::DisplayRole : role), value);
+}
+
+// -- protected
 
 void ComponentModelHelper::setPrivate(ComponentPrivate *componentPrivate)
 {
     m_componentPrivate = componentPrivate;
 }
+
+// -- private
 
 void ComponentModelHelper::changeFlags(bool enable, Qt::ItemFlags itemFlags)
 {
