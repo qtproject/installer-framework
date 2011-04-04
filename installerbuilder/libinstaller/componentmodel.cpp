@@ -153,7 +153,7 @@ Qt::ItemFlags ComponentModel::flags(const QModelIndex &index) const
     if (Component *component = componentFromIndex(index))
         return component->flags();
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+    return m_rootComponent->flags();
 }
 
 void ComponentModel::setRootComponents(QList<Component*> rootComponents)

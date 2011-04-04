@@ -132,6 +132,7 @@ void ComponentPrivate::setSelectedOnComponentList(const QList<Component*> &compo
 
 ComponentModelHelper::ComponentModelHelper()
 {
+    setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
 }
 
 ComponentModelHelper::~ComponentModelHelper()
@@ -158,6 +159,9 @@ int ComponentModelHelper::indexInParent() const
     return 0;
 }
 
+/*!
+    Returns all children and whose children depending if virtual components are visible or not.
+*/
 QList<Component*> ComponentModelHelper::childs() const
 {
     QList<Component*> *components = &m_componentPrivate->m_components;
@@ -187,12 +191,13 @@ Component* ComponentModelHelper::childAt(int index) const
 }
 
 /*!
-    Determines if the components installations status can be changed.
+    Determines if the components installations status can be changed. The default value is true.
 */
 bool ComponentModelHelper::isEnabled() const
 {
     return (flags() & Qt::ItemIsEnabled) != 0;
 }
+
 /*!
     Enables oder disables ability to change the components installations status.
 */
@@ -211,7 +216,7 @@ bool ComponentModelHelper::isTristate() const
 }
 
 /*!
-    Sets whether the component is tristate. If tristate is true, the item is checkable with three
+    Sets whether the component is tristate. If tristate is true, the component is checkable with three
     separate states; otherwise, the component is checkable with two states.
 
     (Note that this also requires that the component is checkable; see isCheckable().)
@@ -221,11 +226,19 @@ void ComponentModelHelper::setTristate(bool tristate)
     changeFlags(tristate, Qt::ItemIsTristate);
 }
 
+/*!
+    Returns whether the component is user-checkable. The default value is true.
+*/
 bool ComponentModelHelper::isCheckable() const
 {
     return (flags() & Qt::ItemIsUserCheckable) != 0;
 }
 
+/*!
+    Sets whether the component is user-checkable. If checkable is true, the component can be checked by the
+    user; otherwise, the user cannot check the component. The delegate will render a checkable component
+    with a check box next to the component's text.
+*/
 void ComponentModelHelper::setCheckable(bool checkable)
 {
     if (checkable && !isCheckable()) {
@@ -236,16 +249,27 @@ void ComponentModelHelper::setCheckable(bool checkable)
     changeFlags(checkable, Qt::ItemIsUserCheckable);
 }
 
+/*!
+    Returns whether the component is selectable by the user. The default value is true.
+*/
 bool ComponentModelHelper::isSelectable() const
 {
     return (flags() & Qt::ItemIsSelectable) != 0;
 }
 
+/*!
+    Sets whether the component is selectable. If selectable is true, the component can be selected by the
+    user; otherwise, the user cannot select the component.
+*/
 void ComponentModelHelper::setSelectable(bool selectable)
 {
     changeFlags(selectable, Qt::ItemIsSelectable);
 }
 
+/*!
+    Returns the item flags for the component. The item flags determine how the user can interact with the
+    component.
+*/
 Qt::ItemFlags ComponentModelHelper::flags() const
 {
     QVariant variant = data(Qt::UserRole - 1);
@@ -254,26 +278,42 @@ Qt::ItemFlags ComponentModelHelper::flags() const
     return Qt::ItemFlags(variant.toInt());
 }
 
+/*!
+    Sets the item flags for the component to flags. The item flags determine how the user can interact with
+    the component. This is often used to disable an component.
+*/
 void ComponentModelHelper::setFlags(Qt::ItemFlags flags)
 {
     setData(int(flags), Qt::UserRole - 1);
 }
 
+/*!
+    Returns the checked state of the component.
+*/
 Qt::CheckState ComponentModelHelper::checkState() const
 {
     return Qt::CheckState(qvariant_cast<int>(data(Qt::CheckStateRole)));
 }
 
+/*!
+    Sets the check state of the component to be state.
+*/
 void ComponentModelHelper::setCheckState(Qt::CheckState state)
 {
     setData(state, Qt::CheckStateRole);
 }
 
+/*!
+    Returns the components's data for the given role, or an invalid QVariant if there is no data for role.
+*/
 QVariant ComponentModelHelper::data(int role) const
 {
     return m_values.value((role == Qt::EditRole ? Qt::DisplayRole : role), QVariant());
 }
 
+/*!
+    Sets the component's data for the given role to the specified value.
+*/
 void ComponentModelHelper::setData(const QVariant &value, int role)
 {
     m_values.insert((role == Qt::EditRole ? Qt::DisplayRole : role), value);
