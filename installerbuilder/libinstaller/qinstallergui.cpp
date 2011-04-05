@@ -1110,7 +1110,7 @@ void ComponentSelectionPage::deselectComponent(const QString& id)
 void ComponentSelectionPage::setModified(bool value)
 {
     d->modified = value;
-    setButtonText(QWizard::CancelButton, isComplete() ? tr("&Cancel") : tr("&FClose"));
+    setButtonText(QWizard::CancelButton, isComplete() ? tr("&Cancel") : tr("&Close"));
 }
 
 bool ComponentSelectionPage::isComplete() const
