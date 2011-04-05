@@ -56,8 +56,6 @@ public:
     explicit ComponentPrivate(Installer* installer, Component* qq);
 
     void init();
-    void setSelectedOnComponentList(const QList<Component*> &componentList,
-        bool selected, RunModes runMode, int selectMode);
 
     static QMap<const Component*, Qt::CheckState> cachedCheckStates;
 

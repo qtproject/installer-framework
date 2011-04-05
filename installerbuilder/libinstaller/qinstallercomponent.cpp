@@ -920,11 +920,9 @@ void Component::setAutoCreateOperations(bool autoCreateOperations)
     Specifies wheter this component is selected for installation. Get this property's value by using
     %isSelected(), and set it using %setSelected().
 */
-bool Component::isSelected(RunModes runMode) const
+bool Component::isSelected(RunModes /*runMode*/) const
 {
-    const Qt::CheckState state = checkState();
-    // const Qt::CheckState state = checkState(runMode);
-    return state != Qt::Unchecked;
+    return checkState() != Qt::Unchecked;
 }
 
 /*!
@@ -936,92 +934,92 @@ bool Component::isSelected(RunModes runMode) const
 */
 void Component::setSelected(bool selected, RunModes runMode, SelectMode selectMode)
 {
-    if (runMode == UpdaterMode) {
-        verbose() << "Update selection" << std::endl;
-        QStringList missingNames;
-        d->m_installer->dependencies(this, &missingNames);
+//    if (runMode == UpdaterMode) {
+//        verbose() << "Update selection" << std::endl;
+//        QStringList missingNames;
+//        d->m_installer->dependencies(this, &missingNames);
 
-        if (!missingNames.isEmpty()) {
-            const QString missingPackages = missingNames.join(QLatin1String(" "));
-            if (selectMode == NormalSelectMode) {
-                MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-                    QLatin1String("DependenciesMissingError"), tr("Dependencies Missing"),
-                    tr("The following required packages could not be found : %1!")
-                    .arg(missingPackages), QMessageBox::Ok);
-            }
-            verbose() << "Error occured missing dependencies" << missingPackages << std::endl;
-            return;
-        } else {
-            verbose() << "No Error occured" << std::endl;
-        }
+//        if (!missingNames.isEmpty()) {
+//            const QString missingPackages = missingNames.join(QLatin1String(" "));
+//            if (selectMode == NormalSelectMode) {
+//                MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
+//                    QLatin1String("DependenciesMissingError"), tr("Dependencies Missing"),
+//                    tr("The following required packages could not be found : %1!")
+//                    .arg(missingPackages), QMessageBox::Ok);
+//            }
+//            verbose() << "Error occured missing dependencies" << missingPackages << std::endl;
+//            return;
+//        } else {
+//            verbose() << "No Error occured" << std::endl;
+//        }
 
-        const Qt::CheckState previousState = checkState();
-        // const Qt::CheckState previousState = checkState(UpdaterMode);
-        const Qt::CheckState newState = selected ? Qt::Checked : Qt::Unchecked;
-        d->isCheckedFromUpdater = selected;
+//        const Qt::CheckState previousState = checkState();
+//        // const Qt::CheckState previousState = checkState(UpdaterMode);
+//        const Qt::CheckState newState = selected ? Qt::Checked : Qt::Unchecked;
+//        d->isCheckedFromUpdater = selected;
 
-        // we have to select all dependees as well
-        if (selected) {
-            verbose() << "Update selected for " << name() <<std::endl;
-            const QList<Component*> dependees = d->m_installer->missingDependencies(this);
-            d->setSelectedOnComponentList(dependees, true, runMode, selectMode);
-        }
+//        // we have to select all dependees as well
+//        if (selected) {
+//            verbose() << "Update selected for " << name() <<std::endl;
+//            const QList<Component*> dependees = d->m_installer->missingDependencies(this);
+//            d->setSelectedOnComponentList(dependees, true, runMode, selectMode);
+//        }
 
-        if (!selected) {
-            // if it got deselected, we have to deselect all dependees as well
-            verbose() << "Update deselected" << name() << std::endl;
-            const QList<Component*> dependees = d->m_installer->dependees(this);
-            d->setSelectedOnComponentList(dependees, false, runMode, selectMode);
-        }
+//        if (!selected) {
+//            // if it got deselected, we have to deselect all dependees as well
+//            verbose() << "Update deselected" << name() << std::endl;
+//            const QList<Component*> dependees = d->m_installer->dependees(this);
+//            d->setSelectedOnComponentList(dependees, false, runMode, selectMode);
+//        }
 
-        // we need selectedChanged even it is not in the NormalSelectMode to check the running
-        // processes from script side for installpart it is working because we are selecting the
-        // components in the script as well
-        //TODO: change this ^ behaviour in scripts and code
-        if (newState != previousState) {
-            QMetaObject::invokeMethod(this, "selectedChanged", Qt::QueuedConnection,
-                Q_ARG(bool, newState == Qt::Checked));
-        }
-    } else {
-        QMap<Component*, Qt::CheckState> previousStates;
-        const QList<Component*> allComponents = d->m_installer->components(true, AllMode);
-        foreach (Component *component, allComponents)
-            previousStates[component] = component->checkState();
+//        // we need selectedChanged even it is not in the NormalSelectMode to check the running
+//        // processes from script side for installpart it is working because we are selecting the
+//        // components in the script as well
+//        //TODO: change this ^ behaviour in scripts and code
+//        if (newState != previousState) {
+//            QMetaObject::invokeMethod(this, "selectedChanged", Qt::QueuedConnection,
+//                Q_ARG(bool, newState == Qt::Checked));
+//        }
+//    } else {
+//        QMap<Component*, Qt::CheckState> previousStates;
+//        const QList<Component*> allComponents = d->m_installer->components(true, AllMode);
+//        foreach (Component *component, allComponents)
+//            previousStates[component] = component->checkState();
 
-        setValue(QString::fromLatin1("WantedState"),
-            selected ? QString::fromLatin1("Installed") : QString::fromLatin1("Uninstalled"));
-        ComponentPrivate::cachedCheckStates.clear();
+//        setValue(QString::fromLatin1("WantedState"),
+//            selected ? QString::fromLatin1("Installed") : QString::fromLatin1("Uninstalled"));
+//        ComponentPrivate::cachedCheckStates.clear();
 
-        if (selected) {
-            verbose() << "Update selected for " << name() << std::endl;
-            const QList<Component*> dependees = d->m_installer->missingDependencies(this);
-            d->setSelectedOnComponentList(dependees, true, runMode, selectMode);
-        }
+//        if (selected) {
+//            verbose() << "Update selected for " << name() << std::endl;
+//            const QList<Component*> dependees = d->m_installer->missingDependencies(this);
+//            d->setSelectedOnComponentList(dependees, true, runMode, selectMode);
+//        }
 
-        if (!selected) {
-            // if it got deselected, we have to deselect all dependees as well
-            const QList<Component*> dependees = d->m_installer->dependees(this);
-            d->setSelectedOnComponentList(dependees, false, runMode, selectMode);
-        }
+//        if (!selected) {
+//            // if it got deselected, we have to deselect all dependees as well
+//            const QList<Component*> dependees = d->m_installer->dependees(this);
+//            d->setSelectedOnComponentList(dependees, false, runMode, selectMode);
+//        }
 
-        // and all children
-        if (selectMode == NormalSelectMode) {
-            const QList<Component*> children = childComponents(true);
-            foreach (Component *child, children) {
-                child->setValue(QString::fromLatin1("WantedState"),
-                    selected ? QString::fromLatin1("Installed") : QString::fromLatin1("Uninstalled"));
-            }
+//        // and all children
+//        if (selectMode == NormalSelectMode) {
+//            const QList<Component*> children = childComponents(true);
+//            foreach (Component *child, children) {
+//                child->setValue(QString::fromLatin1("WantedState"),
+//                    selected ? QString::fromLatin1("Installed") : QString::fromLatin1("Uninstalled"));
+//            }
 
-            //now all needed components are selected so we can emit the signals
-            foreach (Component *component, allComponents) {
-                const Qt::CheckState newCheckState = component->checkState();
-                if (previousStates[component] != newCheckState) {
-                    QMetaObject::invokeMethod(component, "selectedChanged", Qt::QueuedConnection,
-                        Q_ARG(bool, newCheckState == Qt::Checked));
-                }
-            }
-        }
-    }
+//            //now all needed components are selected so we can emit the signals
+//            foreach (Component *component, allComponents) {
+//                const Qt::CheckState newCheckState = component->checkState();
+//                if (previousStates[component] != newCheckState) {
+//                    QMetaObject::invokeMethod(component, "selectedChanged", Qt::QueuedConnection,
+//                        Q_ARG(bool, newCheckState == Qt::Checked));
+//                }
+//            }
+//        }
+//    }
 }
 
 /*!

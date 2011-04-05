@@ -116,17 +116,6 @@ void ComponentPrivate::init()
     scriptEngine.globalObject().setProperty(QLatin1String("installer"), installerObject);
 }
 
-void ComponentPrivate::setSelectedOnComponentList(const QList<Component*> &componentList,
-    bool selected, RunModes runMode, int selectMode)
-{
-    foreach (Component *component, componentList) {
-        if (!component->isSelected(runMode)) {
-            // TODO: fix this or remove
-            //component->setSelected(selected, runMode, selectMode);
-        }
-    }
-}
-
 
 // -- ComponentModelHelper
 
