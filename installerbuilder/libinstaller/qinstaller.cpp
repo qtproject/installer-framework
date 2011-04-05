@@ -89,8 +89,9 @@ static void appendComponentAndMissingDependencies(QList<Component*>& components,
         return;
 
     const QList<Component*> deps = comp->installer()->missingDependencies(comp);
-    for (QList<Component*>::const_iterator it = deps.begin(); it != deps.end(); ++it)
-        appendComponentAndMissingDependencies(components, *it);
+    foreach (Component *component, deps)
+        appendComponentAndMissingDependencies(components, component);
+
     if (!components.contains(comp))
         components.push_back(comp);
 }
@@ -319,10 +320,9 @@ void Installer::installSelectedComponents()
     double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
     //TODO: devide this in undo steps and install steps (2 "for" loops) for better progress calculation
-    for (QList<Component*>::const_iterator it = components.begin(); it != components.end(); ++it) {
+    foreach (Component* const currentComponent, components) {
         if (d->statusCanceledOrFailed())
             throw Error(tr("Installation canceled by user"));
-        Component* const currentComponent = *it;
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nRemoving the old "
             "version of: %1").arg(currentComponent->name()));
         if ((isUpdater() || isPackageManager()) && currentComponent->removeBeforeUpdate()) {
@@ -401,31 +401,25 @@ int Installer::downloadNeededArchives(RunModes runMode, double partProgressSize)
     Q_ASSERT(partProgressSize >= 0 && partProgressSize <= 1);
 
     QList<Component*> neededComponents;
-    QList<QPair<QString, QString> > archivesToDownload;
-
-    QList<Component*>::const_iterator it;
     const QList<Component*> availableComponents = components(true, runMode);
-    for (it = availableComponents.begin(); it != availableComponents.end(); ++it) {
-        Component* const comp = *it;
-        if (!comp->isSelected(runMode))
+    foreach (Component *component, availableComponents) {
+        if (!component->isSelected(runMode))
             continue;
-        if (comp->value(QLatin1String("PreviousState")) == QLatin1String("Installed")
+        if (component->value(QLatin1String("PreviousState")) == QLatin1String("Installed")
             && runMode == AllMode) {
                 continue;
         }
-        appendComponentAndMissingDependencies(neededComponents, comp);
+        appendComponentAndMissingDependencies(neededComponents, component);
     }
 
-    for (it = neededComponents.begin(); it != neededComponents.end(); ++it) {
-        Component* const comp = *it;
-
+    QList<QPair<QString, QString> > archivesToDownload;
+    foreach (Component *component, neededComponents) {
         // collect all archives to be downloaded
-        const QStringList toDownload = comp->downloadableArchives();
-        for (QStringList::const_iterator it2 = toDownload.begin(); it2 != toDownload.end(); ++it2) {
-            QString versionFreeString(*it2);
+        const QStringList toDownload = component->downloadableArchives();
+        foreach (const QString &versionFreeString, toDownload) {
             archivesToDownload.push_back(qMakePair(QString::fromLatin1("installer://%1/%2")
-                .arg(comp->name(), versionFreeString), QString::fromLatin1("%1/%2/%3")
-                .arg(comp->repositoryUrl().toString(), comp->name(), versionFreeString)));
+                .arg(component->name(), versionFreeString), QString::fromLatin1("%1/%2/%3")
+                .arg(component->repositoryUrl().toString(), component->name(), versionFreeString)));
         }
     }
 
@@ -1652,17 +1646,15 @@ QList<Component*> Installer::dependees(const Component *component) const
     QList<Component*> result;
 
     const QList<Component*> allComponents = components(true, AllMode);
-    for (QList<Component*>::const_iterator it = allComponents.begin(); it != allComponents.end(); ++it) {
-        Component* const c = *it;
-
+    foreach (Component* const c, allComponents) {
         const QStringList deps = c->value(QString::fromLatin1("Dependencies"))
             .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
 
         const QLatin1Char dash('-');
-        for (QStringList::const_iterator it2 = deps.begin(); it2 != deps.end(); ++it2) {
+        foreach (const QString &dep, deps) {
             // the last part is considered to be the version, then
-            const QString id = it2->contains(dash) ? it2->section(dash, 0, 0) : *it2;
-            const QString version = it2->contains(dash) ? it2->section(dash, 1) : QString();
+            const QString id = dep.contains(dash) ? dep.section(dash, 0, 0) : dep;
+            const QString version = dep.contains(dash) ? dep.section(dash, 1) : QString();
             if (componentMatches(component, id, version))
                 result.push_back(c);
         }
@@ -1687,9 +1679,8 @@ QList<Component*> Installer::dependencies(const Component *component,
     const QStringList deps = component->value(QString::fromLatin1("Dependencies"))
         .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
 
-    for (QStringList::const_iterator it = deps.begin(); it != deps.end(); ++it) {
-        const QString name = *it;
-        Component* comp = componentByName(*it);
+    foreach (const QString &name, deps) {
+        Component* comp = componentByName(name);
         if (!comp && missingPackageNames)
             missingPackageNames->append(name);
         else
@@ -1905,8 +1896,8 @@ QString Installer::findLibrary(const QString &name, const QStringList &pathes)
 */
 QString Installer::findPath(const QString &name, const QStringList &pathes)
 {
-    for (QStringList::const_iterator it = pathes.begin(); it != pathes.end(); ++it) {
-        const QDir dir(*it);
+    foreach (const QString &path, pathes) {
+        const QDir dir(path);
         const QStringList entries = dir.entryList(QStringList() << name, QDir::Files | QDir::Hidden);
         if (entries.isEmpty())
             continue;
@@ -2036,8 +2027,8 @@ QString Installer::replaceVariables(const QString &str) const
 QStringList Installer::replaceVariables(const QStringList &str) const
 {
     QStringList result;
-    for (QStringList::const_iterator it = str.begin(); it != str.end(); ++it)
-        result.push_back(d->replaceVariables(*it));
+    foreach (const QString &s, str)
+        result.push_back(d->replaceVariables(s));
 
     return result;
 }
