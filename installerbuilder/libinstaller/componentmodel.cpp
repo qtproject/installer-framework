@@ -173,7 +173,7 @@ void ComponentModel::appendRootComponents(QList<Component*> rootComponents)
     beginResetModel();
 
     m_cache.clear();
-    m_rootComponentList = rootComponents;
+    m_rootComponentList += rootComponents;
 
     endResetModel();
 }
