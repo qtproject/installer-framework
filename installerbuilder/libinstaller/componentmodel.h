@@ -83,11 +83,11 @@ private:
     QModelIndexList collectComponents(const QModelIndex &parent) const;
 
 private:
+    Installer *m_installer;
+
     QVector<QVariant> m_headerData;
     ComponentModelIndexCache m_cache;
-
-    Installer *m_installer;
-    Component *m_rootComponent;
+    QList<Component*> m_rootComponentList;
 };
 
 }   // namespace QInstaller

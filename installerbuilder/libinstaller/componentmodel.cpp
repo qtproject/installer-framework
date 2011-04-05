@@ -41,7 +41,6 @@ namespace QInstaller {
 ComponentModel::ComponentModel(int columns, Installer *parent)
     : QAbstractItemModel(parent)
     , m_installer(parent)
-    , m_rootComponent(new Component(0))
 {
     m_headerData.insert(0, columns, QVariant());
 
@@ -51,16 +50,13 @@ ComponentModel::ComponentModel(int columns, Installer *parent)
 
 ComponentModel::~ComponentModel()
 {
-    for (int i = m_rootComponent->childCount() - 1; i >= 0; --i)
-        m_rootComponent->removeComponent(m_rootComponent->childAt(i));
-    delete m_rootComponent;
 }
 
 int ComponentModel::rowCount(const QModelIndex &parent) const
 {
     if (Component *component = componentFromIndex(parent))
         return component->childCount();
-    return 0;
+    return m_rootComponentList.count();
 }
 
 int ComponentModel::columnCount(const QModelIndex &parent) const
@@ -74,24 +70,29 @@ QModelIndex ComponentModel::parent(const QModelIndex &child) const
     if (!child.isValid())
         return QModelIndex();
 
-     if (Component *childComponent = componentFromIndex(child)) {
-         if (Component *parent = childComponent->parentComponent()) {
-             if (parent != m_rootComponent)
-                 return createIndex(parent->indexInParent(), 0, parent);
-         }
-     }
-     return QModelIndex();
+    if (Component *childComponent = componentFromIndex(child)) {
+        if (Component *parent = childComponent->parentComponent()) {
+            if (!m_rootComponentList.contains(parent))
+                return createIndex(parent->indexInParent(), 0, parent);
+            return createIndex(child.row(), 0, parent);
+        }
+    }
+
+    return QModelIndex();
 }
 
 QModelIndex ComponentModel::index(int row, int column, const QModelIndex &parent) const
 {
-    if (parent.isValid() && column >= columnCount())
+    if (parent.isValid() && (row >= rowCount(parent) || column >= columnCount()))
          return QModelIndex();
 
     if (Component *parentComponent = componentFromIndex(parent)) {
         if (Component *childComponent = parentComponent->childAt(row))
             return createIndex(row, column, childComponent);
+    } else if (row < m_rootComponentList.count()) {
+        return createIndex(row, column, m_rootComponentList.at(row));
     }
+
     return QModelIndex();
 }
 
@@ -114,7 +115,7 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, in
         return false;
 
     Component *component = componentFromIndex(index);
-    if (!component || component == m_rootComponent)
+    if (!component)
         return false;
 
     component->setData(value, role);
@@ -153,7 +154,7 @@ Qt::ItemFlags ComponentModel::flags(const QModelIndex &index) const
     if (Component *component = componentFromIndex(index))
         return component->flags();
 
-    return m_rootComponent->flags();
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
 }
 
 void ComponentModel::setRootComponents(QList<Component*> rootComponents)
@@ -161,12 +162,8 @@ void ComponentModel::setRootComponents(QList<Component*> rootComponents)
     beginResetModel();
 
     m_cache.clear();
-
-    for (int i = m_rootComponent->childCount() - 1; i >= 0; --i)
-        m_rootComponent->removeComponent(m_rootComponent->childAt(i));
-
-    foreach (Component *component, rootComponents)
-        m_rootComponent->appendComponent(component);
+    m_rootComponentList.clear();
+    m_rootComponentList = rootComponents;
 
     endResetModel();
 }
@@ -176,9 +173,7 @@ void ComponentModel::appendRootComponents(QList<Component*> rootComponents)
     beginResetModel();
 
     m_cache.clear();
-
-    foreach (Component *component, rootComponents)
-        m_rootComponent->appendComponent(component);
+    m_rootComponentList = rootComponents;
 
     endResetModel();
 }
@@ -191,11 +186,8 @@ Installer* ComponentModel::installer() const
 QModelIndex ComponentModel::indexFromComponent(Component *component)
 {
     if (m_cache.isEmpty()) {
-        for (int i = 0; i < m_rootComponent->childCount(); ++i) {
-            const QModelIndex &root = index(i, 0, QModelIndex());
-            updateCache(root);
-            m_cache.insert(static_cast<Component*> (root.internalPointer()), root);
-        }
+        for (int i = 0; i < m_rootComponentList.count(); ++i)
+            updateCache(index(i, 0, QModelIndex()));
     }
     return m_cache.value(component, QModelIndex());
 }
@@ -203,21 +195,21 @@ QModelIndex ComponentModel::indexFromComponent(Component *component)
 Component* ComponentModel::componentFromIndex(const QModelIndex &index) const
 {
     if (index.isValid())
-         return static_cast<Component*>(index.internalPointer());
-     return m_rootComponent;
+        return static_cast<Component*>(index.internalPointer());
+    return 0;
 }
 
 // -- public slots
 
 void ComponentModel::selectAll()
 {
-    for (int i = 0; i < m_rootComponent->childCount(); ++i)
+    for (int i = 0; i < m_rootComponentList.count(); ++i)
         setData(index(i, 0, QModelIndex()), Qt::Checked, Qt::CheckStateRole);
 }
 
 void ComponentModel::deselectAll()
 {
-    for (int i = 0; i < m_rootComponent->childCount(); ++i)
+    for (int i = 0; i < m_rootComponentList.count(); ++i)
         setData(index(i, 0, QModelIndex()), Qt::Unchecked, Qt::CheckStateRole);
 }
 
@@ -225,7 +217,7 @@ void ComponentModel::deselectAll()
 
 void ComponentModel::slotModelReset()
 {
-    for (int i = 0; i < m_rootComponent->childCount(); ++i)
+    for (int i = 0; i < m_rootComponentList.count(); ++i)
         slotCheckStateChanged(index(i, 0, QModelIndex()));
 }
 
@@ -261,7 +253,7 @@ static Qt::CheckState verifyPartiallyChecked(Component *component)
 void ComponentModel::slotCheckStateChanged(const QModelIndex &index)
 {
     Component *component = componentFromIndex(index);
-    if (!component || component == m_rootComponent)
+    if (!component)
         return;
 
     const Qt::CheckState state = component->checkState();
@@ -287,7 +279,7 @@ void ComponentModel::slotCheckStateChanged(const QModelIndex &index)
     } else {
         QList<Component*> parents;
         Component *tmp = component;
-        while (m_rootComponent != tmp->parentComponent()) {
+        while (0 != tmp->parentComponent()) {
             parents.append(tmp->parentComponent());
             tmp = parents.last();
         }
@@ -317,6 +309,7 @@ void ComponentModel::updateCache(const QModelIndex &parent)
     const QModelIndexList &list = collectComponents(parent);
     foreach (const QModelIndex &index, list)
         m_cache.insert(componentFromIndex(index), index);
+    m_cache.insert(static_cast<Component*> (parent.internalPointer()), parent);
 }
 
 QModelIndexList ComponentModel::collectComponents(const QModelIndex &parent) const
