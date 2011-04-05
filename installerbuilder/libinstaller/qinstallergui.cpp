@@ -32,10 +32,10 @@
 **************************************************************************/
 #include "qinstallergui.h"
 
+#include "componentmodel.h"
 #include "qinstaller.h"
 #include "qinstallerglobal.h"
 #include "qinstallercomponent.h"
-#include "qinstallercomponentmodel.h"
 #include "progresscoordinator.h"
 #include "performinstallationform.h"
 
@@ -831,31 +831,6 @@ void LicenseAgreementPage::addLicenseItem(const QHash<QString, QPair<QString, QS
 }
 
 
-// -- ComponentSelectionPage
-
-inline QString unitSizeText(const qint64 size)
-{
-    if (size < 10000)
-        return QString::number(size) + QLatin1Char(' ') + ComponentSelectionPage::tr("Bytes");
-
-    if (size < 1024 * 10000)
-        return QString::number(size / 1024) + QLatin1Char(' ') + ComponentSelectionPage::tr("kBytes");
-
-    return QString::number(size / 1024 / 1024) + QLatin1Char(' ') + ComponentSelectionPage::tr("MBytes");
-}
-
-static QString niceSizeText(const QString &str)
-{
-    const qint64 size = str.toLongLong();
-    if (size == 0)
-        return QString();
-
-    QString msg = ComponentSelectionPage::tr(
-        "This component will occupy approximately %1 on your harddisk.");
-    return msg.arg(unitSizeText(size));
-}
-
-
 // -- ComponentSelectionPage::Private
 
 class ComponentSelectionPage::Private : public QObject
@@ -868,10 +843,16 @@ public:
         wasshown(false),
         modified(false),
         connected(false),
-        m_model(new ComponentModel(installer, installer->runMode())),
+        m_model(new ComponentModel(5, installer)),
         m_installer(installer),
         m_treeView(new QTreeView(q))
     {
+        m_model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal, tr("Name"));
+        m_model->setHeaderData(ComponentModelHelper::InstalledVersionColumn, Qt::Horizontal,
+            tr("Installed Version"));
+        m_model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal, tr("New Version"));
+        m_model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal, tr("Size"));
+
         m_treeView->setModel(m_model);
         m_treeView->setObjectName(QLatin1String("ComponentTreeView"));
 
@@ -922,51 +903,41 @@ public:
             Qt::QueuedConnection);
 
         connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(selectionChanged()));
+            this, SLOT(currentChanged(QModelIndex)));
     }
 
 public slots:
-    void selectionChanged()
+    void currentChanged(const QModelIndex &current)
     {
         m_sizeLabel->clear();
         m_descriptionLabel->clear();
 
-        const QModelIndex index = m_treeView->currentIndex();
-        if (index.isValid()) {
-            m_descriptionLabel->setText(m_model->data(m_model->index(index.row(),
-                ComponentModel::NameColumn, index.parent()), Qt::ToolTipRole).toString());
-            if (m_installer->isUpdater() || m_installer->isPackageManager()) {
+        if (current.isValid()) {
+            m_descriptionLabel->setText(m_model->data(m_model->index(current.row(),
+                ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString());
+            if (!m_installer->isUninstaller()) {
                 m_sizeLabel->setText(tr("This component will occupy approximately %1 on your "
-                    "harddisk.").arg(m_model->data(m_model->index(index.row(),
-                    ComponentModel::SizeColumn, index.parent())).toString()));
-            } else if (m_installer->isInstaller()) {
-                if (Component *c = index.data(Qt::UserRole).value<Component*>())
-                    m_sizeLabel->setText(niceSizeText(c->value(QLatin1String("UncompressedSize"))));
+                    "harddisk.").arg(m_model->data(m_model->index(current.row(),
+                    ComponentModelHelper::UncompressedSizeColumn, current.parent())).toString()));
             }
         }
     }
 
     void selectAll()
     {
-        if (!m_installer->isUpdater()) {
-            QList<Component*> components = m_installer->components(false, AllMode);
-            foreach (Component *comp, components)
-                comp->setSelected(true, AllMode);
-        } else {
-            selectDefault();
-        }
+        m_model->selectAll();
     }
 
     void deselectAll()
     {
-        select(false, m_installer->runMode());
+        m_model->deselectAll();
     }
 
     void selectDefault()
     {
-        RunModes runMode = m_installer->runMode();
-        select(false, runMode); // TODO: remove after we have reworked dependency handling
-        select(true, runMode);
+//        RunModes runMode = m_installer->runMode();
+//        select(false, runMode); // TODO: remove after we have reworked dependency handling
+//        select(true, runMode);
     }
 
     void modelWasReseted()
@@ -995,17 +966,15 @@ public slots:
 
     void componentsChanged()
     {
-        m_model->clear();
-        m_model->setRunMode(m_installer->runMode());
-        m_model->addRootComponents(m_installer->components(false, m_installer->runMode()));
+        m_model->setRootComponents(m_installer->components(false, m_installer->runMode()));
     }
 
 private:
     void select(bool select, RunModes runMode)
     {
-        QList<Component*> components = m_installer->components(false, runMode);
-        foreach (Component *comp, components)
-            comp->setSelected(select, runMode);
+//        QList<Component*> components = m_installer->components(false, runMode);
+//        foreach (Component *comp, components)
+//            comp->setSelected(select, runMode);
     }
 
 public:
@@ -1058,13 +1027,13 @@ void ComponentSelectionPage::entering()
     if (!d->connected) {
         if (Gui* par = dynamic_cast<Gui*> (wizard())) {
             d->connected = true;
-            connect(d->m_model, SIGNAL(workRequested(bool)), par, SLOT(setModified(bool)),
-                Qt::QueuedConnection);
-            connect(d->m_model, SIGNAL(workRequested(bool)), this, SLOT(setModified(bool)),
-                Qt::QueuedConnection);
+//            connect(d->m_model, SIGNAL(workRequested(bool)), par, SLOT(setModified(bool)),
+//                Qt::QueuedConnection);
+//            connect(d->m_model, SIGNAL(workRequested(bool)), this, SLOT(setModified(bool)),
+//                Qt::QueuedConnection);
         }
     }
-    d->componentsChanged();
+    //d->componentsChanged();
     setModified(d->modified);
     wizard()->button(QWizard::CancelButton)->setEnabled(true);
 }
@@ -1090,10 +1059,10 @@ void ComponentSelectionPage::selectDefault()
 */
 void ComponentSelectionPage::selectComponent(const QString& id)
 {
-    const QModelIndex idx = d->m_model->findComponent(id);
-    if (!idx.isValid())
-        return;
-    d->m_model->setData(idx, Qt::Checked);
+    //const QModelIndex idx = d->m_model->findComponent(id);
+    //if (!idx.isValid())
+    //    return;
+    //d->m_model->setData(idx, Qt::Checked);
 }
 
 /*!
@@ -1101,10 +1070,10 @@ void ComponentSelectionPage::selectComponent(const QString& id)
 */
 void ComponentSelectionPage::deselectComponent(const QString& id)
 {
-    const QModelIndex idx = d->m_model->findComponent(id);
-    if (!idx.isValid())
-        return;
-    d->m_model->setData(idx, Qt::Unchecked);
+    //const QModelIndex idx = d->m_model->findComponent(id);
+    //if (!idx.isValid())
+    //    return;
+    //d->m_model->setData(idx, Qt::Unchecked);
 }
 
 void ComponentSelectionPage::setModified(bool value)
@@ -1404,6 +1373,17 @@ void ReadyForInstallationPage::initializePage()
         msgLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
             .arg(productName()));
     }
+}
+
+inline QString unitSizeText(const qint64 size)
+{
+    if (size < 10000)
+        return QString::number(size) + QLatin1Char(' ') + ReadyForInstallationPage::tr("Bytes");
+
+    if (size < 1024 * 10000)
+        return QString::number(size / 1024) + QLatin1Char(' ') + ReadyForInstallationPage::tr("kBytes");
+
+    return QString::number(size / 1024 / 1024) + QLatin1Char(' ') + ReadyForInstallationPage::tr("MBytes");
 }
 
 /*!

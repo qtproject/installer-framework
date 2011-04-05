@@ -45,7 +45,7 @@ HEADERS += $$PWD/qinstaller.h \
     ../common/errors.h \
     kdmmappedfileiodevice.h \
     qinstallercomponent.h \
-    qinstallercomponentmodel.h \
+    componentmodel.h \
     qinstallerglobal.h \
     qtpatch.h \
     persistentsettings.h \
@@ -111,7 +111,7 @@ SOURCES += $$PWD/qinstaller.cpp \
     ../common/utils.cpp \
     kdmmappedfileiodevice.cpp \
     qinstallercomponent.cpp \
-    qinstallercomponentmodel.cpp \
+    componentmodel.cpp \
     qtpatch.cpp \
     persistentsettings.cpp \
     qtpatchoperation.cpp  \
