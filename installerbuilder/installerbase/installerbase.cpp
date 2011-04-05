@@ -235,10 +235,10 @@ int main(int argc, char *argv[])
                 QNetworkProxyFactory::setUseSystemConfiguration(true);
              } else if (argument == QLatin1String("--show-virtual-components")
                  || argument == QLatin1String("ShowVirtualComponents")) {
-                     QInstaller::ComponentModel::setVirtualComponentsVisible(true);
                      QFont f;
                      f.setItalic(true);
-                     QInstaller::ComponentModel::setVirtualComponentsFont(f);
+                     Installer::setVirtualComponentsFont(f);
+                     Installer::setVirtualComponentsVisible(true);
             } else if ((argument == QLatin1String("--updater")
                 || argument == QLatin1String("Updater")) && installer.isUninstaller()) {
                     installer.setUpdater();
