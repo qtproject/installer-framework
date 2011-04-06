@@ -190,4 +190,4 @@ TRANSLATIONS += de_de.ts \
 RESOURCES += ../common/openssl.qrc \
              patch_file_lists.qrc
 
-FORMS += componentselectiondialog.ui updatesettingsdialog.ui updatesettingswidget.ui
+FORMS += updatesettingsdialog.ui updatesettingswidget.ui
