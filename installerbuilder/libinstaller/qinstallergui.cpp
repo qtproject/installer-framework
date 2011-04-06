@@ -935,9 +935,7 @@ public slots:
 
     void selectDefault()
     {
-//        RunModes runMode = m_installer->runMode();
-//        select(false, runMode); // TODO: remove after we have reworked dependency handling
-//        select(true, runMode);
+        m_model->selectDefault();
     }
 
     void modelWasReseted()
@@ -967,14 +965,6 @@ public slots:
     void componentsChanged()
     {
         m_model->setRootComponents(m_installer->components(false, m_installer->runMode()));
-    }
-
-private:
-    void select(bool select, RunModes runMode)
-    {
-//        QList<Component*> components = m_installer->components(false, runMode);
-//        foreach (Component *comp, components)
-//            comp->setSelected(select, runMode);
     }
 
 public:
@@ -1027,10 +1017,10 @@ void ComponentSelectionPage::entering()
     if (!d->connected) {
         if (Gui* par = dynamic_cast<Gui*> (wizard())) {
             d->connected = true;
-//            connect(d->m_model, SIGNAL(workRequested(bool)), par, SLOT(setModified(bool)),
-//                Qt::QueuedConnection);
-//            connect(d->m_model, SIGNAL(workRequested(bool)), this, SLOT(setModified(bool)),
-//                Qt::QueuedConnection);
+            connect(d->m_model, SIGNAL(defaultCheckStateChanged(bool)), par,
+                SLOT(setModified(bool)));
+            connect(d->m_model, SIGNAL(defaultCheckStateChanged(bool)), this,
+                SLOT(setModified(bool)));
         }
     }
     //d->componentsChanged();
@@ -1059,10 +1049,9 @@ void ComponentSelectionPage::selectDefault()
 */
 void ComponentSelectionPage::selectComponent(const QString& id)
 {
-    //const QModelIndex idx = d->m_model->findComponent(id);
-    //if (!idx.isValid())
-    //    return;
-    //d->m_model->setData(idx, Qt::Checked);
+    const QModelIndex &idx = d->m_model->indexFromComponentName(id);
+    if (idx.isValid())
+        d->m_model->setData(idx, Qt::Checked, Qt::CheckStateRole);
 }
 
 /*!
@@ -1070,10 +1059,9 @@ void ComponentSelectionPage::selectComponent(const QString& id)
 */
 void ComponentSelectionPage::deselectComponent(const QString& id)
 {
-    //const QModelIndex idx = d->m_model->findComponent(id);
-    //if (!idx.isValid())
-    //    return;
-    //d->m_model->setData(idx, Qt::Unchecked);
+    const QModelIndex &idx = d->m_model->indexFromComponentName(id);
+    if (idx.isValid())
+        d->m_model->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
 }
 
 void ComponentSelectionPage::setModified(bool value)

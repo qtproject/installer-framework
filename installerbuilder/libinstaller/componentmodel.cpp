@@ -162,8 +162,10 @@ void ComponentModel::setRootComponents(QList<Component*> rootComponents)
 {
     beginResetModel();
 
-    m_cache.clear();
     m_rootComponentList.clear();
+    m_initialCheckedList.clear();
+    m_indexByNameCache.clear();
+    m_indexByComponentCache.clear();
     m_rootComponentList = rootComponents;
 
     endResetModel();
@@ -173,7 +175,8 @@ void ComponentModel::appendRootComponents(QList<Component*> rootComponents)
 {
     beginResetModel();
 
-    m_cache.clear();
+    m_indexByNameCache.clear();
+    m_indexByComponentCache.clear();
     m_rootComponentList += rootComponents;
 
     endResetModel();
@@ -184,13 +187,22 @@ Installer* ComponentModel::installer() const
     return m_installer;
 }
 
-QModelIndex ComponentModel::indexFromComponent(Component *component)
+QModelIndex ComponentModel::indexFromComponent(Component *component) const
 {
-    if (m_cache.isEmpty()) {
+    if (m_indexByComponentCache.isEmpty()) {
         for (int i = 0; i < m_rootComponentList.count(); ++i)
             updateCache(index(i, 0, QModelIndex()));
     }
-    return m_cache.value(component, QModelIndex());
+    return m_indexByComponentCache.value(component, QModelIndex());
+}
+
+QModelIndex ComponentModel::indexFromComponentName(const QString &name) const
+{
+    if (m_indexByNameCache.isEmpty()) {
+        for (int i = 0; i < m_rootComponentList.count(); ++i)
+            updateCache(index(i, 0, QModelIndex()));
+    }
+    return m_indexByNameCache.value(name, QModelIndex());
 }
 
 Component* ComponentModel::componentFromIndex(const QModelIndex &index) const
@@ -204,14 +216,33 @@ Component* ComponentModel::componentFromIndex(const QModelIndex &index) const
 
 void ComponentModel::selectAll()
 {
-    for (int i = 0; i < m_rootComponentList.count(); ++i)
+    for (int i = 0; i < m_rootComponentList.count(); ++i) {
+        const QList<Component*> &children = m_rootComponentList.at(i)->childs();
+        foreach (Component *child, children) {
+            if (child->isCheckable())
+                child->setCheckState(Qt::Checked);
+        }
         setData(index(i, 0, QModelIndex()), Qt::Checked, Qt::CheckStateRole);
+    }
 }
 
 void ComponentModel::deselectAll()
 {
-    for (int i = 0; i < m_rootComponentList.count(); ++i)
+    for (int i = 0; i < m_rootComponentList.count(); ++i) {
+        const QList<Component*> &children = m_rootComponentList.at(i)->childs();
+        foreach (Component *child, children) {
+            if (child->isCheckable())
+                child->setCheckState(Qt::Unchecked);
+        }
         setData(index(i, 0, QModelIndex()), Qt::Unchecked, Qt::CheckStateRole);
+    }
+}
+
+void ComponentModel::selectDefault()
+{
+    deselectAll();
+    foreach (const QString &name, m_initialCheckedList)
+        setData(indexFromComponentName(name), Qt::Checked, Qt::CheckStateRole);
 }
 
 // -- private slots
@@ -220,6 +251,7 @@ void ComponentModel::slotModelReset()
 {
     for (int i = 0; i < m_rootComponentList.count(); ++i)
         slotCheckStateChanged(index(i, 0, QModelIndex()));
+    updateCheckedComponentList(m_initialCheckedList);
 }
 
 static Qt::CheckState verifyPartiallyChecked(Component *component)
@@ -257,6 +289,7 @@ void ComponentModel::slotCheckStateChanged(const QModelIndex &index)
     if (!component)
         return;
 
+    QString name = component->name();
     const Qt::CheckState state = component->checkState();
     if (component->isTristate()) {
         if (state == Qt::PartiallyChecked) {
@@ -264,53 +297,70 @@ void ComponentModel::slotCheckStateChanged(const QModelIndex &index)
             return;
         }
 
-        bool notCheckable = false;
-        const QList<Component*> &children = component->childs();
-        foreach (Component *child, children) {
+        QModelIndexList notCheckable;
+        foreach (Component *child, component->childs()) {
+            const QModelIndex &idx = indexFromComponent(child);
             if (child->isCheckable()) {
-                const QModelIndex &idx = indexFromComponent(child);
-                setData(idx, state, Qt::CheckStateRole);
+                if (child->checkState() != state)
+                    setData(idx, state, Qt::CheckStateRole);
             } else {
-                notCheckable = true;
+                notCheckable.append(idx);
             }
         }
 
-        if (state == Qt::Unchecked && notCheckable)
-            setData(index, Qt::PartiallyChecked, Qt::CheckStateRole);
+        if (state == Qt::Unchecked && !notCheckable.isEmpty()) {
+            foreach (const QModelIndex &idx, notCheckable)
+                setData(idx, idx.data(Qt::CheckStateRole), Qt::CheckStateRole);
+        }
     } else {
         QList<Component*> parents;
-        Component *tmp = component;
-        while (0 != tmp->parentComponent()) {
-            parents.append(tmp->parentComponent());
-            tmp = parents.last();
+        while (0 != component->parentComponent()) {
+            parents.append(component->parentComponent());
+            component = parents.last();
         }
 
         foreach (Component *parent, parents) {
             if (parent->isCheckable()) {
-                Qt::CheckState pState = parent->checkState();
                 const QModelIndex &idx = indexFromComponent(parent);
-                if (pState == Qt::Checked) {
-                    if (state == Qt::Unchecked)
-                        setData(idx, Qt::PartiallyChecked, Qt::CheckStateRole);
-                } else if (pState == Qt::Unchecked) {
-                    if (state == Qt::Checked)
-                        setData(idx, Qt::PartiallyChecked, Qt::CheckStateRole);
-                } else if (pState == Qt::PartiallyChecked) {
+                if (parent->checkState() == Qt::PartiallyChecked) {
                     setData(idx, verifyPartiallyChecked(parent), Qt::CheckStateRole);
+                } else {
+                    setData(idx, Qt::PartiallyChecked, Qt::CheckStateRole);
                 }
             }
         }
     }
+
+    QSet<QString> current;
+    updateCheckedComponentList(current);
+    emit defaultCheckStateChanged(!m_initialCheckedList.contains(current));
 }
 
 // -- private
 
-void ComponentModel::updateCache(const QModelIndex &parent)
+void ComponentModel::updateCache(const QModelIndex &parent) const
 {
     const QModelIndexList &list = collectComponents(parent);
-    foreach (const QModelIndex &index, list)
-        m_cache.insert(componentFromIndex(index), index);
-    m_cache.insert(static_cast<Component*> (parent.internalPointer()), parent);
+    foreach (const QModelIndex &index, list) {
+        if (Component *component = componentFromIndex(index)) {
+            m_indexByComponentCache.insert(component, index);
+            m_indexByNameCache.insert(component->name(), index);
+        }
+    }
+    Component *component = static_cast<Component*> (parent.internalPointer());
+    m_indexByComponentCache.insert(component, parent);
+    m_indexByNameCache.insert(component->name(), parent);
+}
+
+void ComponentModel::updateCheckedComponentList(QSet<QString> &set)
+{
+    foreach (Component *component, m_rootComponentList) {
+        QList<Component*> checkedList;
+        foreach (Component *child, component->childs()) {
+            if (child->checkState() == Qt::Checked)
+                set.insert(child->name());
+        }
+    }
 }
 
 QModelIndexList ComponentModel::collectComponents(const QModelIndex &parent) const

@@ -30,6 +30,7 @@
 
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QList>
+#include <QtCore/QSet>
 #include <QtCore/QVector>
 
 namespace QInstaller {
@@ -39,7 +40,6 @@ class Installer;
 class INSTALLER_EXPORT ComponentModel : public QAbstractItemModel
 {
     Q_OBJECT
-    typedef QMap<Component*, QPersistentModelIndex> ComponentModelIndexCache;
 
 public:
     explicit ComponentModel(int columns, Installer *parent = 0);
@@ -64,14 +64,18 @@ public:
     void appendRootComponents(QList<Component*> rootComponents);
 
     Installer* installer() const;
-    QModelIndex indexFromComponent(Component *component);
+
+    QModelIndex indexFromComponent(Component *component) const;
+    QModelIndex indexFromComponentName(const QString &name) const;
     Component* componentFromIndex(const QModelIndex &index) const;
 
 public Q_SLOTS:
     void selectAll();
     void deselectAll();
+    void selectDefault();
 
 Q_SIGNALS:
+    void defaultCheckStateChanged(bool notDefault);
     void checkStateChanged(const QModelIndex &index);
 
 private Q_SLOTS:
@@ -79,15 +83,19 @@ private Q_SLOTS:
     void slotCheckStateChanged(const QModelIndex &index);
 
 private:
-    void updateCache(const QModelIndex &parent);
+    void updateCache(const QModelIndex &parent) const;
+    void updateCheckedComponentList(QSet<QString> &set);
     QModelIndexList collectComponents(const QModelIndex &parent) const;
 
 private:
     Installer *m_installer;
 
     QVector<QVariant> m_headerData;
-    ComponentModelIndexCache m_cache;
+    QSet<QString> m_initialCheckedList;
     QList<Component*> m_rootComponentList;
+
+    mutable QMap<QString, QPersistentModelIndex> m_indexByNameCache;
+    mutable QMap<Component*, QPersistentModelIndex> m_indexByComponentCache;
 };
 
 }   // namespace QInstaller
