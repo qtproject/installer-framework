@@ -102,7 +102,8 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
         if (index.column() > 0) {
             if (role == Qt::CheckStateRole)
                 return QVariant();
-            return component->data(Qt::UserRole + index.column());
+            if (role == Qt::EditRole || role == Qt::DisplayRole || role == Qt::ToolTipRole)
+                return component->data(Qt::UserRole + index.column());
         }
         return component->data(role);
     }
