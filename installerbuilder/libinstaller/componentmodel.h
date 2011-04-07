@@ -65,7 +65,6 @@ public:
 
     Installer* installer() const;
 
-    QModelIndex indexFromComponent(Component *component) const;
     QModelIndex indexFromComponentName(const QString &name) const;
     Component* componentFromIndex(const QModelIndex &index) const;
 
@@ -83,8 +82,8 @@ private Q_SLOTS:
     void slotCheckStateChanged(const QModelIndex &index);
 
 private:
+    void select(Qt::CheckState state);
     void updateCache(const QModelIndex &parent) const;
-    void updateCheckedComponentList(QSet<QString> &set);
     QModelIndexList collectComponents(const QModelIndex &parent) const;
 
 private:
@@ -92,10 +91,10 @@ private:
 
     QVector<QVariant> m_headerData;
     QSet<QString> m_initialCheckedList;
+    QSet<QString> m_currentCheckedList;
     QList<Component*> m_rootComponentList;
 
     mutable QMap<QString, QPersistentModelIndex> m_indexByNameCache;
-    mutable QMap<Component*, QPersistentModelIndex> m_indexByComponentCache;
 };
 
 }   // namespace QInstaller
