@@ -579,15 +579,15 @@ bool Page::isComplete() const
 void Page::setComplete(bool complete)
 {
     m_complete = complete;
+    if (QWizard *w = wizard()) {
+        if (QAbstractButton *cancel = w->button(QWizard::CancelButton)) {
+            if (cancel->hasFocus()) {
+                if (QAbstractButton *next = w->button(QWizard::NextButton))
+                    next->setFocus();
+            }
+        }
+    }
     emit completeChanged();
-    if (wizard() == 0)
-        return;
-    if (wizard()->button(QWizard::CancelButton) == 0)
-        return;
-    if (wizard()->button(QWizard::NextButton) == 0)
-        return;
-    if (wizard()->button(QWizard::CancelButton)->hasFocus())
-        wizard()->button(QWizard::NextButton)->setFocus();
 }
 
 void Page::insertWidget(QWidget *widget, const QString &siblingName, int offset)
@@ -598,7 +598,7 @@ void Page::insertWidget(QWidget *widget, const QString &siblingName, int offset)
     QBoxLayout *blayout = qobject_cast<QBoxLayout *>(layout);
 
     if (blayout) {
-        int index = blayout->indexOf(sibling) + offset;
+        const int index = blayout->indexOf(sibling) + offset;
         blayout->insertWidget(index, widget);
     }
 }
