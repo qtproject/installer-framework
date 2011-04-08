@@ -187,6 +187,16 @@ Installer* ComponentModel::installer() const
     return m_installer;
 }
 
+bool ComponentModel::defaultCheckState() const
+{
+    return m_initialCheckedList == m_currentCheckedList;
+}
+
+bool ComponentModel::hasCheckedComponents() const
+{
+    return !m_currentCheckedList.isEmpty();
+}
+
 QModelIndex ComponentModel::indexFromComponentName(const QString &name) const
 {
     if (m_indexByNameCache.isEmpty()) {

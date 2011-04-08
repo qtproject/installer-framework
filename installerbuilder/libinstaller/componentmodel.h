@@ -65,6 +65,9 @@ public:
 
     Installer* installer() const;
 
+    bool defaultCheckState() const;
+    bool hasCheckedComponents() const;
+
     QModelIndex indexFromComponentName(const QString &name) const;
     Component* componentFromIndex(const QModelIndex &index) const;
 
