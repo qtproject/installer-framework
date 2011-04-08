@@ -104,7 +104,7 @@ void MainWindow::receiveRepository(QNetworkReply *reply)
 {
     QByteArray data = reply->readAll();
     reply->deleteLater();
-    if(reply == productionReply)
+    if (reply == productionReply)
         createRepositoryMap(data, productionMap);
     else if (reply == updateReply)
         createRepositoryMap(data, updateMap);
@@ -118,7 +118,7 @@ void MainWindow::createRepositoryMap(const QByteArray &data, QMap<QString, Repos
     QXmlStreamReader reader(data);
     QString currentItem;
     RepositoryDescription currentDescription;
-    while(!reader.atEnd()) {
+    while (!reader.atEnd()) {
         QXmlStreamReader::TokenType type = reader.readNext();
         if (type == QXmlStreamReader::StartElement) {
             if (reader.name() == "PackageUpdate") {
