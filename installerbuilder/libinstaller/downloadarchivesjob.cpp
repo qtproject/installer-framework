@@ -283,9 +283,10 @@ void DownloadArchivesJob::registerFile()
             const QByteArray archiveHash = QCryptographicHash::hash( archiveFile.readAll(), QCryptographicHash::Sha1 ).toHex();
             if ( archiveHash != currentHash )
             {
+                //TODO: Maybe we should try to download the file again automatically
                 const QMessageBox::Button res = MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                                                                             QLatin1String( "DownloadError" ),
-                                                                            tr( "Download Error" ), tr( "Hash verification failed for %1: Hashes do not match" ).arg( tempFile ),
+                                                                            tr( "Download Error" ), tr( "Hash verification while downloading failed. This is a temporary error, please retry." ),
                                                                             QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Cancel );
                 if ( res == QMessageBox::Cancel )
                 {
