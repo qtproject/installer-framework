@@ -44,7 +44,7 @@ ComponentModel::ComponentModel(int columns, Installer *parent)
 {
     m_headerData.insert(0, columns, QVariant());
 
-    connect(this, SIGNAL(modelReset()), this, SLOT(slotModelReset()), Qt::QueuedConnection);
+    connect(this, SIGNAL(modelReset()), this, SLOT(slotModelReset()));
     connect(this, SIGNAL(checkStateChanged(QModelIndex)), this, SLOT(slotCheckStateChanged(QModelIndex)));
 }
 
@@ -226,9 +226,6 @@ void ComponentModel::selectDefault()
 
 void ComponentModel::slotModelReset()
 {
-    for (int i = 0; i < m_rootComponentList.count(); ++i)
-        slotCheckStateChanged(index(i, 0, QModelIndex()));
-
     foreach (Component *component, m_rootComponentList) {
         foreach (Component *child, component->childs()) {
             // TODO: this might be wrong in case of append component, we really need a initialCheckState()
@@ -237,6 +234,9 @@ void ComponentModel::slotModelReset()
         }
     }
     m_currentCheckedList += m_initialCheckedList;
+
+    for (int i = 0; i < m_rootComponentList.count(); ++i)
+        slotCheckStateChanged(index(i, 0, QModelIndex()));
 }
 
 static Qt::CheckState verifyPartiallyChecked(Component *component)

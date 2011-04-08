@@ -74,7 +74,7 @@ public Q_SLOTS:
     void selectDefault();
 
 Q_SIGNALS:
-    void defaultCheckStateChanged(bool notDefault);
+    void defaultCheckStateChanged(bool changed);
     void checkStateChanged(const QModelIndex &index);
 
 private Q_SLOTS:
