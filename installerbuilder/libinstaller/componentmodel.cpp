@@ -197,6 +197,14 @@ bool ComponentModel::hasCheckedComponents() const
     return !m_currentCheckedList.isEmpty();
 }
 
+QList<Component*> ComponentModel::checkedComponents() const
+{
+    QList<Component*> list;
+    foreach (const QString &name, m_currentCheckedList)
+        list.append(componentFromIndex(indexFromComponentName(name)));
+    return list;
+}
+
 QModelIndex ComponentModel::indexFromComponentName(const QString &name) const
 {
     if (m_indexByNameCache.isEmpty()) {

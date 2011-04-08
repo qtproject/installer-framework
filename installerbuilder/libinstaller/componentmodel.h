@@ -67,6 +67,7 @@ public:
 
     bool defaultCheckState() const;
     bool hasCheckedComponents() const;
+    QList<Component*> checkedComponents() const;
 
     QModelIndex indexFromComponentName(const QString &name) const;
     Component* componentFromIndex(const QModelIndex &index) const;
