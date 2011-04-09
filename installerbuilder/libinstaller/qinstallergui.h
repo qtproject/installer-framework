@@ -273,7 +273,7 @@ protected:
     void entering();
 
 private Q_SLOTS:
-    void setModified(bool value);
+    void setModified(bool modified);
 
 private:
     class Private;

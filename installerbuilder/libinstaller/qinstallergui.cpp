@@ -839,22 +839,25 @@ class ComponentSelectionPage::Private : public QObject
 
 public:
     Private(ComponentSelectionPage *qq, Installer *installer)
-        : q(qq),
-        wasshown(false),
-        modified(false),
-        connected(false),
-        m_model(new ComponentModel(5, installer)),
-        m_installer(installer),
-        m_treeView(new QTreeView(q))
+        : q(qq)
+        , m_installer(installer)
+        , m_treeView(new QTreeView(q))
+        , m_allModel(new ComponentModel(5, m_installer))
+        , m_updaterModel(new ComponentModel(5, m_installer))
     {
-        m_model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal, tr("Name"));
-        m_model->setHeaderData(ComponentModelHelper::InstalledVersionColumn, Qt::Horizontal,
-            tr("Installed Version"));
-        m_model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal, tr("New Version"));
-        m_model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal, tr("Size"));
-
-        m_treeView->setModel(m_model);
         m_treeView->setObjectName(QLatin1String("ComponentTreeView"));
+
+        int i = 0;
+        m_currentModel = m_allModel;
+        ComponentModel *list[] = { m_allModel, m_updaterModel, 0 };
+        while (ComponentModel *model = list[i++]) {
+            connect(model, SIGNAL(defaultCheckStateChanged(bool)), q, SLOT(setModified(bool)));
+            model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal, tr("Name"));
+            model->setHeaderData(ComponentModelHelper::InstalledVersionColumn, Qt::Horizontal,
+                tr("Installed Version"));
+            model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal, tr("New Version"));
+            model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal, tr("Size"));
+        }
 
         QHBoxLayout *hlayout = new QHBoxLayout;
         hlayout->addWidget(m_treeView, 3);
@@ -892,18 +895,40 @@ public:
             QSizePolicy::MinimumExpanding));
         layout->addLayout(hlayout);
 
-        connect(m_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), q,
-            SIGNAL(completeChanged()), Qt::QueuedConnection);
-        connect(m_model, SIGNAL(modelReset()), this, SLOT(modelWasReseted()),
+        connect(m_installer, SIGNAL(finishAllComponentsReset()), this, SLOT(allComponentsChanged()),
             Qt::QueuedConnection);
+        connect(m_installer, SIGNAL(finishUpdaterComponentsReset()), this, SLOT(updaterComponentsChanged()),
+            Qt::QueuedConnection);
+    }
 
-        connect(m_installer, SIGNAL(finishAllComponentsReset()), this, SLOT(componentsChanged()),
-            Qt::QueuedConnection);
-        connect(m_installer, SIGNAL(finishUpdaterComponentsReset()), this, SLOT(componentsChanged()),
-            Qt::QueuedConnection);
+    void updateTreeView()
+    {
+        m_currentModel = m_installer->isUpdater() ? m_updaterModel : m_allModel;
+        m_treeView->setModel(m_currentModel);
 
+        if (m_installer->isInstaller()) {
+            m_treeView->setHeaderHidden(true);
+            for (int i = 1; i < m_currentModel->columnCount(); ++i)
+                m_treeView->hideColumn(i);
+        } else {
+            m_treeView->header()->setStretchLastSection(true);
+            for (int i = 0; i < m_currentModel->columnCount(); ++i)
+                m_treeView->resizeColumnToContents(i);
+        }
+
+        bool hasChildren = false;
+        const int rowCount = m_currentModel->rowCount();
+        for (int row = 0; row < rowCount && !hasChildren; ++row)
+            hasChildren = m_currentModel->hasChildren(m_currentModel->index(row, 0));
+        m_treeView->setRootIsDecorated(hasChildren);
+
+        disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(currentChanged(QModelIndex)));
         connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(currentChanged(QModelIndex)));
+
+        m_treeView->setCurrentIndex(m_currentModel->index(0, 0));
+        m_treeView->setExpanded(m_currentModel->index(0, 0), true);
     }
 
 public slots:
@@ -913,11 +938,11 @@ public slots:
         m_descriptionLabel->clear();
 
         if (current.isValid()) {
-            m_descriptionLabel->setText(m_model->data(m_model->index(current.row(),
+            m_descriptionLabel->setText(m_currentModel->data(m_currentModel->index(current.row(),
                 ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString());
             if (!m_installer->isUninstaller()) {
                 m_sizeLabel->setText(tr("This component will occupy approximately %1 on your "
-                    "harddisk.").arg(m_model->data(m_model->index(current.row(),
+                    "harddisk.").arg(m_currentModel->data(m_currentModel->index(current.row(),
                     ComponentModelHelper::UncompressedSizeColumn, current.parent())).toString()));
             }
         }
@@ -925,59 +950,39 @@ public slots:
 
     void selectAll()
     {
-        m_model->selectAll();
+        m_currentModel->selectAll();
     }
 
     void deselectAll()
     {
-        m_model->deselectAll();
+        m_currentModel->deselectAll();
     }
 
     void selectDefault()
     {
-        m_model->selectDefault();
+        m_currentModel->selectDefault();
     }
 
-    void modelWasReseted()
+private slots:
+    void allComponentsChanged()
     {
-        wasshown = true;
-        if (m_installer->isUpdater()) {
-            m_treeView->header()->resizeSection(0, 150);
-            m_treeView->header()->setStretchLastSection(true);
-            for (int i = 0; i < m_treeView->model()->columnCount(); ++i)
-                m_treeView->resizeColumnToContents(i);
-        } else {
-            m_treeView->setHeaderHidden(true);
-            for (int i = 1; i < m_treeView->model()->columnCount(); ++i)
-                m_treeView->setColumnHidden(i, true);
-        }
-
-        bool hasChildren = false;
-        const int rowCount = m_model->rowCount();
-        for (int row = 0; row < rowCount && !hasChildren; ++row)
-            hasChildren = m_model->hasChildren(m_model->index(row, 0));
-
-        m_treeView->setRootIsDecorated(hasChildren);
-        m_treeView->setCurrentIndex(m_model->index(0, 0));
-        m_treeView->setExpanded(m_model->index(0, 0), true);
+        m_allModel->setRootComponents(m_installer->components(false, AllMode));
     }
 
-    void componentsChanged()
+    void updaterComponentsChanged()
     {
-        m_model->setRootComponents(m_installer->components(false, m_installer->runMode()));
+        m_updaterModel->setRootComponents(m_installer->components(false, UpdaterMode));
     }
 
 public:
-    ComponentSelectionPage* const q;
-
-    bool wasshown;
-    bool modified;
-    bool connected;
-    ComponentModel *m_model;
-    Installer* const m_installer;
-    QTreeView* const m_treeView;
-    QLabel *m_descriptionLabel;
+    ComponentSelectionPage *q;
+    Installer *m_installer;
+    QTreeView *m_treeView;
+    ComponentModel *m_allModel;
+    ComponentModel *m_updaterModel;
+    ComponentModel *m_currentModel;
     QLabel *m_sizeLabel;
+    QLabel *m_descriptionLabel;
 };
 
 
@@ -988,8 +993,8 @@ public:
     On this page the user can select and deselect what he wants to be installed.
 */
 ComponentSelectionPage::ComponentSelectionPage(Installer* installer)
-    : Page(installer),
-    d(new Private(this, installer))
+    : Page(installer)
+    , d(new Private(this, installer))
 {
     setTitle(tr("Select Components"));
     setPixmap(QWizard::LogoPixmap, logoPixmap());
@@ -1014,17 +1019,9 @@ ComponentSelectionPage::~ComponentSelectionPage()
 
 void ComponentSelectionPage::entering()
 {
-    if (!d->connected) {
-        if (Gui* par = dynamic_cast<Gui*> (wizard())) {
-            d->connected = true;
-            connect(d->m_model, SIGNAL(defaultCheckStateChanged(bool)), par,
-                SLOT(setModified(bool)));
-            connect(d->m_model, SIGNAL(defaultCheckStateChanged(bool)), this,
-                SLOT(setModified(bool)));
-        }
-    }
-    //d->componentsChanged();
-    setModified(d->modified);
+    d->updateTreeView();
+
+    setModified(isComplete());
     wizard()->button(QWizard::CancelButton)->setEnabled(true);
 }
 
@@ -1049,9 +1046,9 @@ void ComponentSelectionPage::selectDefault()
 */
 void ComponentSelectionPage::selectComponent(const QString& id)
 {
-    const QModelIndex &idx = d->m_model->indexFromComponentName(id);
+    const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
     if (idx.isValid())
-        d->m_model->setData(idx, Qt::Checked, Qt::CheckStateRole);
+        d->m_allModel->setData(idx, Qt::Checked, Qt::CheckStateRole);
 }
 
 /*!
@@ -1059,41 +1056,22 @@ void ComponentSelectionPage::selectComponent(const QString& id)
 */
 void ComponentSelectionPage::deselectComponent(const QString& id)
 {
-    const QModelIndex &idx = d->m_model->indexFromComponentName(id);
+    const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
     if (idx.isValid())
-        d->m_model->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
+        d->m_allModel->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
 }
 
-void ComponentSelectionPage::setModified(bool value)
+void ComponentSelectionPage::setModified(bool modified)
 {
-    d->modified = value;
+    setComplete(modified);
     setButtonText(QWizard::CancelButton, isComplete() ? tr("&Cancel") : tr("&Close"));
 }
 
 bool ComponentSelectionPage::isComplete() const
 {
-    if (installer()->isPackageManager()) {
-        // at least component should be different from its previous state
-        if (d->modified)
-            return true;
-        return false;
-    }
-
-    const QList<Component*> components = installer()->components(true, installer()->runMode());
-    if (installer()->isUpdater()) {
-        foreach (Component *component, components) {
-            if (component->isSelected(UpdaterMode))
-                return true;
-        }
-        return false;
-    }
-
-    // at least one component needs to be selected for (un)installation
-    foreach (Component *component, components) {
-        if (component->isSelected() == installer()->isInstaller())
-            return true;
-    }
-    return false;
+    if (installer()->isInstaller() || installer()->isUpdater())
+        return d->m_currentModel->hasCheckedComponents();
+    return !d->m_currentModel->defaultCheckState();
 }
 
 
