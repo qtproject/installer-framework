@@ -798,35 +798,21 @@ bool Installer::fetchAllPackages()
     d->m_rootComponents.clear();
 
     QMap<QString, QInstaller::Component*> components;
+
+    Data data;
+    data.components = &components;
+    data.metaInfoJob = metaInfoJob.data();
+    data.installedPackages = &installedPackages;
+
     foreach (KDUpdater::Update *package, packages) {
-        const QString name = package->data(QLatin1String("Name")).toString();
-        if (components.contains(name)) {
-            qCritical("Could not register component! Component with identifier %s already registered.",
-                qPrintable(name));
-            continue;
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+
+        data.package = package;
+        component->loadDataFromUpdate(package);
+        if (updateComponentData(data, component.data())) {
+            const QString name = component->name();
+            components.insert(name, component.take());
         }
-
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(package, this));
-
-        QString state = QLatin1String("Uninstalled");
-        if (installedPackages.contains(name)) {
-            state = QLatin1String("Installed");
-            component->setSelected(true, AllMode);
-            component->setValue(QLatin1String("InstalledVersion"), installedPackages.value(name).version);
-        }
-        component->setValue(QLatin1String("CurrentState"), state);
-        component->setValue(QLatin1String("PreviousState"), state);
-
-        const QString &localPath = component->localTempPath();
-        if (isVerbose()) {
-            static QString lastLocalPath;
-            if (lastLocalPath != localPath)
-                verbose() << "Url is : " << localPath << std::endl;
-            lastLocalPath = localPath;
-        }
-        component->setRepositoryUrl(metaInfoJob->repositoryForTemporaryDirectory(localPath).url());
-
-        components.insert(name, component.take());
     }
 
     // now append all components to their respective parents
@@ -899,60 +885,48 @@ bool Installer::fetchUpdaterPackages()
     qDeleteAll(d->m_updaterComponentsDeps);
     d->m_updaterComponentsDeps.clear();
 
-    bool importantUpdates = false;
     QMap<QString, QInstaller::Component*> components;
+
+    Data data;
+    data.components = &components;
+    data.metaInfoJob = metaInfoJob.data();
+    data.installedPackages = &installedPackages;
+
+    bool importantUpdates = false;
     foreach (KDUpdater::Update *update, updates) {
-        const QString name = update->data(QLatin1String("Name")).toString();
-        if (components.contains(name)) {
-            qCritical("Could not register component! Component with identifier %s already registered.",
-                qPrintable(name));
-            continue;
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+
+        data.package = update;
+        component->loadDataFromUpdate(update);
+        if (updateComponentData(data, component.data())) {
+            // Keep a reference so we can resolve dependencies during update.
+            d->m_updaterComponentsDeps.append(component.take());
+
+            const QString isNew = update->data(QLatin1String("NewComponent")).toString();
+            if (isNew.toLower() != QLatin1String("true"))
+                continue;
+
+            const QString &name = d->m_updaterComponentsDeps.last()->name();
+            const KDUpdater::PackageInfo &info = installedPackages.value(name);
+
+            // Update for not installed package found, skip it.
+            if (!installedPackages.contains(name))
+                continue;
+
+            const QString updateVersion = update->data(QLatin1String("Version")).toString();
+            if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)
+                continue;
+
+            // It is quite possible that we may have already installed the update. Lets check the last
+            // update date of the package and the release date of the update. This way we can compare and
+            // figure out if the update has been installed or not.
+            const QDate updateDate = update->data(QLatin1String("ReleaseDate")).toDate();
+            if (info.lastUpdateDate > updateDate)
+                continue;
+
+            // this is not a dependency, it is a real update
+            components.insert(name, d->m_updaterComponentsDeps.takeLast());
         }
-
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(update, this));
-
-        QString state = QLatin1String("Uninstalled");
-        const KDUpdater::PackageInfo &info = installedPackages.value(name);
-        if (installedPackages.contains(name)) {
-            state = QLatin1String("Installed");
-            component->setSelected(true, UpdaterMode);
-            component->setValue(QLatin1String("InstalledVersion"), info.version);
-        }
-        component->setValue(QLatin1String("CurrentState"), state);
-        component->setValue(QLatin1String("PreviousState"), state);
-
-        const QString &localPath = component->localTempPath();
-        if (isVerbose()) {
-            static QString lastLocalPath;
-            if (lastLocalPath != localPath)
-                verbose() << "Url is : " << localPath << std::endl;
-            lastLocalPath = localPath;
-        }
-        component->setRepositoryUrl(metaInfoJob->repositoryForTemporaryDirectory(localPath).url());
-
-        // Keep a reference so we can resolve dependencies during update.
-        d->m_updaterComponentsDeps.append(component.take());
-
-        const QString isNew = update->data(QLatin1String("NewComponent")).toString();
-        if (isNew.toLower() != QLatin1String("true"))
-            continue;
-
-        // Update for not installed package found, skip it.
-        if (!installedPackages.contains(name))
-            continue;
-
-        const QString updateVersion = update->data(QLatin1String("Version")).toString();
-        if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)
-            continue;
-
-        // It is quite possible that we may have already installed the update. Lets check the last
-        // update date of the package and the release date of the update. This way we can compare and
-        // figure out if the update has been installed or not.
-        const QDate updateDate = update->data(QLatin1String("ReleaseDate")).toDate();
-        if (info.lastUpdateDate > updateDate)
-            continue;
-
-        components.insert(name, d->m_updaterComponentsDeps.takeLast());
     }
 
     // remove all unimportant components
@@ -2263,4 +2237,38 @@ Installer::Status Installer::handleComponentsFileSetOrParseError(const QString &
         return Installer::Canceled;
     }
     return Installer::Unfinished;
+}
+
+bool Installer::updateComponentData(const struct Data &data, Component *component)
+{
+    try {
+        const QString name = data.package->data(QLatin1String("Name")).toString();
+        if (data.components->contains(name)) {
+            qCritical("Could not register component! Component with identifier %s already registered.",
+                qPrintable(name));
+            return false;
+        }
+
+        QString state = QLatin1String("Uninstalled");
+        if (data.installedPackages->contains(name)) {
+            state = QLatin1String("Installed");
+            component->setSelected(true, AllMode);
+            component->setValue(QLatin1String("InstalledVersion"), data.installedPackages->value(name).version);
+        }
+        component->setValue(QLatin1String("CurrentState"), state);
+        component->setValue(QLatin1String("PreviousState"), state);
+
+        const QString &localPath = component->localTempPath();
+        if (isVerbose()) {
+            static QString lastLocalPath;
+            if (lastLocalPath != localPath)
+                verbose() << "Url is : " << localPath << std::endl;
+            lastLocalPath = localPath;
+        }
+        component->setRepositoryUrl(data.metaInfoJob->repositoryForTemporaryDirectory(localPath).url());
+    } catch (...) {
+        return false;
+    }
+
+    return true;
 }

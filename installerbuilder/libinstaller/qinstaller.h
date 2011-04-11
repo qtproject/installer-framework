@@ -284,6 +284,14 @@ private:
     Installer::Status handleComponentsFileSetOrParseError(const QString &arg1,
         const QString &arg2 = QString(), bool withRetry = true);
 
+    struct Data {
+        KDUpdater::Update *package;
+        QMap<QString, Component*> *components;
+        GetRepositoriesMetaInfoJob *metaInfoJob;
+        QHash<QString, KDUpdater::PackageInfo> *installedPackages;
+    };
+    bool updateComponentData(const struct Data &data, QInstaller::Component *component);
+
 private:
     InstallerPrivate* const d;
     friend class InstallerPrivate;
