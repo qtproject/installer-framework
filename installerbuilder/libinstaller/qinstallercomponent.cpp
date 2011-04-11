@@ -204,7 +204,7 @@ void Component::Private::setSelectedOnComponentList(const QList<Component*> &com
     for( QList< Component* >::const_iterator it = componentList.begin(); it != componentList.end(); ++it )
     {
         Component* const comp = *it;
-        if( !comp->isSelected( runMode ) )
+        if( comp->isSelected( runMode ) != selected)
             comp->setSelected( selected, runMode, selectMode );
     }
 }
@@ -393,7 +393,7 @@ QString Component::value(const QString &key,
 */
 void Component::setValue(const QString &key, const QString &value)
 {
-    if( d->m_vars[ key ] == value )
+    if( d->m_vars.value(key) == value )
         return;
 
     d->m_vars[ key ] = value;
@@ -1094,6 +1094,32 @@ void Component::setSelected(bool selected, RunModes runMode, SelectMode selectMo
             // if it got deselected, we have to deselect all dependees as well
             const QList< Component* > dependees = d->m_installer->dependees( this );
             d->setSelectedOnComponentList(dependees, false, runMode, selectMode);
+
+            //if we are the last visible component, we need to check our virtual siblings
+            if (value(QLatin1String("Virtual"), QLatin1String("false")).toLower()
+                    == QLatin1String("false"))
+            {
+                QList<Component*> virtualSiblingComponents;
+                QString parentComponentName = parentComponent()->name();
+                QList<Component*> siblingComponents = parentComponent()->components(true, runMode);
+                foreach (Component* currentComponent, siblingComponents) {
+                    //if there is one visible selected component, we don't want to unselect other components
+                    if (currentComponent->isSelected() &&
+                            currentComponent->value(QLatin1String("Virtual"), QLatin1String("false"))
+                            .toLower() == QLatin1String("false")) {
+                        virtualSiblingComponents.clear();
+                        break;
+                    }
+                    if (currentComponent->isSelected() &&
+                            currentComponent->value(QLatin1String("Virtual"), QLatin1String("false"))
+                            .toLower() == QLatin1String("true")) {
+                        virtualSiblingComponents.append(currentComponent);
+                    }
+                }
+                d->setSelectedOnComponentList(virtualSiblingComponents, false, runMode,
+                    Component::InitializeComponentTreeSelectMode);
+            }
+
         }
 
         // and all children
