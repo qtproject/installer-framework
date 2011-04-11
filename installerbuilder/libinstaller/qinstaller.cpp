@@ -851,7 +851,6 @@ bool Installer::fetchAllPackages()
     foreach (QInstaller::Component *component, components)
         component->loadComponentScript();
 
-    emit rootComponentsAdded(d->m_rootComponents);
     emit finishAllComponentsReset();
 
     return true;
@@ -966,7 +965,6 @@ bool Installer::fetchUpdaterPackages()
     foreach (QInstaller::Component *component, updaterComponents)
         component->loadComponentScript();
 
-    emit updaterComponentsAdded(d->m_updaterComponents);
     emit finishUpdaterComponentsReset();
 
     return true;
