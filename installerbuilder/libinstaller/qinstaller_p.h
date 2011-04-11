@@ -173,9 +173,10 @@ public:
     qint64 m_componentDictOffsetTableStart;
 
     QList<Component*> m_rootComponents;
-    QHash<QString, Component*> m_componentHash;
-
     QList<Component*> m_updaterComponents;
+    QList<Component*> m_updaterComponentsDeps;
+
+    QHash<QString, Component*> m_componentHash;
     QList<Component*> m_packageManagerComponents;
 
     //a hack to get the will be replaced components extra

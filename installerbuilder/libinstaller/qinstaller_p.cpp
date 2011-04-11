@@ -205,6 +205,8 @@ InstallerPrivate::~InstallerPrivate()
 {
     qDeleteAll(m_rootComponents);
     qDeleteAll(m_updaterComponents);
+    qDeleteAll(m_updaterComponentsDeps);
+
     qDeleteAll(m_performedOperationsOld);
     qDeleteAll(m_performedOperationsCurrentSession);
 

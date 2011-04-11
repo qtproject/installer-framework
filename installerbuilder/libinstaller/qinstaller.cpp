@@ -811,7 +811,7 @@ bool Installer::fetchAllPackages()
         QString state = QLatin1String("Uninstalled");
         if (installedPackages.contains(name)) {
             state = QLatin1String("Installed");
-            component->setSelected(true, AllMode, Component::InitializeComponentTreeSelectMode);
+            component->setSelected(true, AllMode);
             component->setValue(QLatin1String("InstalledVersion"), installedPackages.value(name).version);
         }
         component->setValue(QLatin1String("CurrentState"), state);
@@ -896,13 +896,12 @@ bool Installer::fetchUpdaterPackages()
     qDeleteAll(d->m_updaterComponents);
     d->m_updaterComponents.clear();
 
+    qDeleteAll(d->m_updaterComponentsDeps);
+    d->m_updaterComponentsDeps.clear();
+
     bool importantUpdates = false;
     QMap<QString, QInstaller::Component*> components;
-    foreach (KDUpdater::Update * const update, updates) {
-        const QString isNew = update->data(QLatin1String("NewComponent")).toString();
-        if (isNew.toLower() != QLatin1String("true"))
-            continue;
-
+    foreach (KDUpdater::Update *update, updates) {
         const QString name = update->data(QLatin1String("Name")).toString();
         if (components.contains(name)) {
             qCritical("Could not register component! Component with identifier %s already registered.",
@@ -910,12 +909,38 @@ bool Installer::fetchUpdaterPackages()
             continue;
         }
 
-        if (!installedPackages.contains(name)) {
-            verbose() << tr("Update for not installed package found, will skip it.") << std::endl;
-            continue;
-        }
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(update, this));
 
+        QString state = QLatin1String("Uninstalled");
         const KDUpdater::PackageInfo &info = installedPackages.value(name);
+        if (installedPackages.contains(name)) {
+            state = QLatin1String("Installed");
+            component->setSelected(true, UpdaterMode);
+            component->setValue(QLatin1String("InstalledVersion"), info.version);
+        }
+        component->setValue(QLatin1String("CurrentState"), state);
+        component->setValue(QLatin1String("PreviousState"), state);
+
+        const QString &localPath = component->localTempPath();
+        if (isVerbose()) {
+            static QString lastLocalPath;
+            if (lastLocalPath != localPath)
+                verbose() << "Url is : " << localPath << std::endl;
+            lastLocalPath = localPath;
+        }
+        component->setRepositoryUrl(metaInfoJob->repositoryForTemporaryDirectory(localPath).url());
+
+        // Keep a reference so we can resolve dependencies during update.
+        d->m_updaterComponentsDeps.append(component.take());
+
+        const QString isNew = update->data(QLatin1String("NewComponent")).toString();
+        if (isNew.toLower() != QLatin1String("true"))
+            continue;
+
+        // Update for not installed package found, skip it.
+        if (!installedPackages.contains(name))
+            continue;
+
         const QString updateVersion = update->data(QLatin1String("Version")).toString();
         if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)
             continue;
@@ -927,22 +952,7 @@ bool Installer::fetchUpdaterPackages()
         if (info.lastUpdateDate > updateDate)
             continue;
 
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(update, this));
-
-        component->setValue(QLatin1String("InstalledVersion"), info.version);
-        component->setValue(QLatin1String("CurrentState"), QLatin1String("Installed"));
-        component->setValue(QLatin1String("PreviousState"), QLatin1String("Installed"));
-
-        const QString &localPath = component->localTempPath();
-        if (isVerbose()) {
-            static QString lastLocalPath;
-            if (lastLocalPath != localPath)
-                verbose() << "Url is : " << localPath << std::endl;
-            lastLocalPath = localPath;
-        }
-        component->setRepositoryUrl(metaInfoJob->repositoryForTemporaryDirectory(localPath).url());
-
-        components.insert(name, component.take());
+        components.insert(name, d->m_updaterComponentsDeps.takeLast());
     }
 
     // remove all unimportant components
