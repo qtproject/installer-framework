@@ -146,9 +146,12 @@ void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInf
         dependstr.chop(1);
     setValue(skDependencies, dependstr);
 
+    setValue(skForcedInstallation, packageInfo.forcedInstallation ? QLatin1String ("true")
+        : QLatin1String ("false"));
     if (packageInfo.forcedInstallation) {
-        setValue(skForcedInstallation,
-            packageInfo.forcedInstallation ? QLatin1String ("true") : QLatin1String ("false"));
+        setEnabled(false);
+        setCheckable(false);
+        setCheckState(Qt::Checked);
     }
 }
 
@@ -179,10 +182,15 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
     setValue(skReplaces, update->data(skReplaces).toString());
     setValue(skReleaseDate, update->data(skReleaseDate).toString());
 
-    QString forced = update->data(skForcedInstallation).toString();
+    QString forced = update->data(skForcedInstallation).toString().toLower();
     if (qApp->arguments().contains(QLatin1String("--no-force-installations")))
         forced = QLatin1String("false");
     setValue(skForcedInstallation, forced);
+    if (forced == QLatin1String("true")) {
+        setEnabled(false);
+        setCheckable(false);
+        setCheckState(Qt::Checked);
+    }
 
     setLocalTempPath(QInstaller::pathFromUrl(update->sourceInfo().url));
     const QStringList uis = update->data(QLatin1String("UserInterfaces")).toString()
@@ -1129,11 +1137,6 @@ void Component::updateModelData(const QString &key, const QString &data)
 
     if (key == skUncompressedSize)
         setData(uncompressedSize(), UncompressedSize);
-
-    bool force = value(skForcedInstallation).toLower() == QLatin1String("true");
-    setEnabled(!force);
-    setCheckable(!force);
-    setCheckState(force ? Qt::Checked : Qt::Unchecked);
 
     setData(value(skDescription) + QLatin1String("<br><br>Update Info: ") + value(skUpdateText),
         Qt::ToolTipRole);
