@@ -289,7 +289,7 @@ Installer* Component::installer() const
     Returns the parent of this component. If this component is com.nokia.sdk.qt, its
     parent is com.nokia.sdk, as far as this exists.
 */
-Component* Component::parentComponent(RunModes runMode) const
+Component* Component::parentComponent(RunMode runMode) const
 {
     if (runMode == UpdaterMode)
         return 0;
@@ -334,7 +334,7 @@ void Component::removeComponent(Component *component)
     Returns a list of child components. If \a recursive is set to true, the returned list
     contains not only the direct children, but all ancestors.
 */
-QList<Component*> Component::childComponents(bool recursive, RunModes runMode) const
+QList<Component*> Component::childComponents(bool recursive, RunMode runMode) const
 {
     if (runMode == UpdaterMode)
         return QList<Component*>();
@@ -900,7 +900,7 @@ void Component::setAutoCreateOperations(bool autoCreateOperations)
     d->autoCreateOperations = autoCreateOperations;
 }
 
-//Qt::CheckState Component::checkState(RunModes runMode) const
+//Qt::CheckState Component::checkState(RunMode runMode) const
 //{
 //    if (runMode == UpdaterMode)
 //        return d->isCheckedFromUpdater  ? Qt::Checked : Qt::Unchecked;
@@ -920,7 +920,7 @@ void Component::setAutoCreateOperations(bool autoCreateOperations)
     Specifies wheter this component is selected for installation. Get this property's value by using
     %isSelected(), and set it using %setSelected().
 */
-bool Component::isSelected(RunModes /*runMode*/) const
+bool Component::isSelected(RunMode /*runMode*/) const
 {
     return checkState() != Qt::Unchecked;
 }
@@ -932,7 +932,7 @@ bool Component::isSelected(RunModes /*runMode*/) const
     InitializeComponentTreeSelectMode - no dependency errors(maybe some components are not ready
     initialized), no selectionChanged SIGNAL needed and no recursion
 */
-void Component::setSelected(bool selected, RunModes runMode, SelectMode selectMode)
+void Component::setSelected(bool selected, RunMode runMode, SelectMode selectMode)
 {
 //    if (runMode == UpdaterMode) {
 //        verbose() << "Update selection" << std::endl;

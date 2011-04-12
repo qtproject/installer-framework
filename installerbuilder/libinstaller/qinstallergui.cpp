@@ -783,7 +783,7 @@ void LicenseAgreementPage::entering()
     m_licenseListWidget->clear();
     m_textBrowser->setText(QLatin1String(""));
 
-    RunModes runMode = installer()->runMode();
+    RunMode runMode = installer()->runMode();
     QList<QInstaller::Component*> components = installer()->components(false, runMode);
 
     QInstaller::Component *rootComponent = 0;

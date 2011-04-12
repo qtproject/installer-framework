@@ -396,7 +396,7 @@ quint64 Installer::requiredTemporaryDiskSpace() const
 /*!
     Returns the will be downloaded archives count
 */
-int Installer::downloadNeededArchives(RunModes runMode, double partProgressSize)
+int Installer::downloadNeededArchives(RunMode runMode, double partProgressSize)
 {
     Q_ASSERT(partProgressSize >= 0 && partProgressSize <= 1);
 
@@ -451,7 +451,7 @@ int Installer::downloadNeededArchives(RunModes runMode, double partProgressSize)
     return archivesToDownload.count();
 }
 
-QList<Component*> Installer::calculateComponentOrder(RunModes runMode) const
+QList<Component*> Installer::calculateComponentOrder(RunMode runMode) const
 {
     return componentsToInstall(true, true, runMode);
 }
@@ -661,7 +661,7 @@ void Installer::setVirtualComponentsVisible(bool visible)
     s_virtualComponentsVisible = visible;
 }
 
-RunModes Installer::runMode() const
+RunMode Installer::runMode() const
 {
     return isUpdater() ? UpdaterMode : AllMode;
 }
@@ -1048,7 +1048,7 @@ void Installer::setTestChecksum(bool test)
     Appends a new root components \a component based on the current run mode \a runMode to the
     installers internal lists of components.
 */
-void Installer::appendRootComponent(Component *component, RunModes runMode)
+void Installer::appendRootComponent(Component *component, RunMode runMode)
 {
     if (runMode == AllMode)
         d->m_rootComponents.append(component);
@@ -1060,7 +1060,7 @@ void Installer::appendRootComponent(Component *component, RunModes runMode)
 /*!
     Returns the number of components in the list depending on the run mode \a runMode.
 */
-int Installer::rootComponentCount(RunModes runMode) const
+int Installer::rootComponentCount(RunMode runMode) const
 {
     if (runMode == UpdaterMode)
         return d->m_updaterComponents.size();
@@ -1071,14 +1071,14 @@ int Installer::rootComponentCount(RunModes runMode) const
     Returns the component at index position i in the components list. i must be a valid index
     position in the list (i.e., 0 <= i < rootComponentCount(...)).
 */
-Component *Installer::rootComponent(int i, RunModes runMode) const
+Component *Installer::rootComponent(int i, RunMode runMode) const
 {
     if (runMode == UpdaterMode)
         return d->m_updaterComponents.value(i, 0);
     return d->m_rootComponents.value(i, 0);
 }
 
-QList<Component*> Installer::components(bool recursive, RunModes runMode) const
+QList<Component*> Installer::components(bool recursive, RunMode runMode) const
 {
     if (runMode == UpdaterMode)
         return d->m_updaterComponents;
@@ -1095,7 +1095,7 @@ QList<Component*> Installer::components(bool recursive, RunModes runMode) const
     return result;
 }
 
-QList<Component*> Installer::componentsToInstall(bool recursive, bool sort, RunModes runMode) const
+QList<Component*> Installer::componentsToInstall(bool recursive, bool sort, RunMode runMode) const
 {
     QList<Component*> availableComponents = components(recursive, runMode);
     if (sort) {

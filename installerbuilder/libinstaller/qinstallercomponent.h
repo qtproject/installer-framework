@@ -116,8 +116,8 @@ public:
 
     void appendComponent(Component *component);
     void removeComponent(Component *component);
-    Component *parentComponent(RunModes runMode = AllMode) const;
-    QList<Component*> childComponents(bool recursive = false, RunModes runMode = AllMode) const;
+    Component *parentComponent(RunMode runMode = AllMode) const;
+    QList<Component*> childComponents(bool recursive = false, RunMode runMode = AllMode) const;
 
     void loadComponentScript();
 
@@ -192,12 +192,12 @@ public:
     Q_INVOKABLE bool isFromOnlineRepository() const;
 
     // TODO: remove the selected stuff
-    bool isSelected(RunModes runMode = AllMode) const;
-    //Qt::CheckState checkState(RunModes runMode) const;
+    bool isSelected(RunMode runMode = AllMode) const;
+    //Qt::CheckState checkState(RunMode runMode) const;
 
 public Q_SLOTS:
     void setAutoCreateOperations(bool autoCreateOperations);
-    void setSelected(bool selected, RunModes runMode = AllMode, SelectMode selectMode = NormalSelectMode);
+    void setSelected(bool selected, RunMode runMode = AllMode, SelectMode selectMode = NormalSelectMode);
 
 Q_SIGNALS:
     void loaded();

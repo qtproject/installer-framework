@@ -120,7 +120,7 @@ public:
     bool fetchUpdaterPackages();
 
     bool run();
-    RunModes runMode() const;
+    RunMode runMode() const;
     void reset(const QHash<QString, QString> &params);
 
     Q_INVOKABLE QList<QVariant> execute(const QString &program,
@@ -169,13 +169,12 @@ public:
 
 public:
     // component handling
-    int rootComponentCount(RunModes runMode = AllMode) const;
-    void appendRootComponent(Component *components, RunModes runMode = AllMode);
-    Component *rootComponent(int i, RunModes runMode = AllMode) const;
+    int rootComponentCount(RunMode runMode) const;
+    Component *rootComponent(int i, RunMode runMode) const;
+    void appendRootComponent(Component *components, RunMode runMode);
 
-    QList<Component*> components(bool recursive = false, RunModes runMode = AllMode) const;
-    QList<Component*> componentsToInstall(bool recursive = false, bool sort = true,
-        RunModes runMode = AllMode) const;
+    QList<Component*> components(bool recursive, RunMode runMode) const;
+    QList<Component*> componentsToInstall(bool recursive, bool sort, RunMode runMode) const;
 
     Component *componentByName(const QString &identifier) const;
     QList<Component*> dependencies(const Component *component,
@@ -218,8 +217,8 @@ public:
     void installSelectedComponents();
     void rollBackInstallation();
 
-    int downloadNeededArchives(RunModes runMode, double partProgressSize/* = double(1)/3 */);
-    QList<Component*> calculateComponentOrder(RunModes runMode = AllMode) const;
+    int downloadNeededArchives(RunMode runMode, double partProgressSize/* = double(1)/3 */);
+    QList<Component*> calculateComponentOrder(RunMode runMode = AllMode) const;
     void installComponent(Component *comp, double progressOperationSize);
 
     bool needsRestart() const;

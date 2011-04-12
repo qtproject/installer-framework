@@ -42,7 +42,7 @@ QT_END_NAMESPACE
 
 namespace QInstaller {
 
-enum INSTALLER_EXPORT RunModes
+enum INSTALLER_EXPORT RunMode
 {
     AllMode,
     UpdaterMode
@@ -75,7 +75,7 @@ static void appendFileData(QIODevice *out, const QString &fileName)
     
     QScriptValue qInstallerComponentByName( QScriptContext* context, QScriptEngine* engine );
 
-    Qt::CheckState componentCheckState( const Component* component, RunModes runMode = AllMode );
+    Qt::CheckState componentCheckState( const Component* component, RunMode runMode = AllMode );
     QString uncaughtExceptionString(QScriptEngine *scriptEngine/*, const QString &context*/);
 }
 
