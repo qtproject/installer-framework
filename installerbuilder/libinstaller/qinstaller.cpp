@@ -330,6 +330,7 @@ void Installer::setMessageBoxAutomaticAnswer(const QString &identifier, int butt
         static_cast<QMessageBox::Button>(button));
 }
 
+// TODO: figure out why we have this function at all
 void Installer::installSelectedComponents()
 {
     d->setStatus(Installer::Running);
@@ -338,6 +339,8 @@ void Installer::installSelectedComponents()
     double downloadPartProgressSize = double(1)/3;
     double componentsInstallPartProgressSize = double(2)/3;
     // get the list of packages we need to install in proper order and do it for the updater
+
+    // TODO: why only updater mode???
     const int downloadedArchivesCount = downloadNeededArchives(UpdaterMode, downloadPartProgressSize);
 
     //if there was no download we have the whole progress for installing components
@@ -356,7 +359,7 @@ void Installer::installSelectedComponents()
     int progressOperationCount = d->countProgressOperations(components);
     double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
-    //TODO: devide this in undo steps and install steps (2 "for" loops) for better progress calculation
+    // TODO: devide this in undo steps and install steps (2 "for" loops) for better progress calculation
     foreach (Component* const currentComponent, components) {
         if (d->statusCanceledOrFailed())
             throw Error(tr("Installation canceled by user"));
