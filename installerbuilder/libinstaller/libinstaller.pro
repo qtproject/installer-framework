@@ -78,8 +78,6 @@ HEADERS += $$PWD/qinstaller.h \
     init.h \
     updater.h \
     updatesettings.h \
-    updatesettingsdialog.h \
-    updatesettingswidget.h \
     adminauthorization.h \
     fsengineclient.h \
     fsengineserver.h \
@@ -139,8 +137,6 @@ SOURCES += $$PWD/qinstaller.cpp \
     init.cpp \
     updater.cpp \
     updatesettings.cpp \
-    updatesettingsdialog.cpp \
-    updatesettingswidget.cpp \
     adminauthorization.cpp \
     fsengineclient.cpp \
     fsengineserver.cpp \
@@ -182,10 +178,9 @@ CONFIG( shared, static|shared ): {
 }
 
 macx: LIBS += -framework Security
-    
+
 TRANSLATIONS += de_de.ts \
     sv_se.ts
-RESOURCES += ../common/openssl.qrc \
-             patch_file_lists.qrc
 
-FORMS += updatesettingsdialog.ui updatesettingswidget.ui
+RESOURCES += ../common/openssl.qrc \
+    patch_file_lists.qrc

@@ -39,7 +39,6 @@
 #include "init.h"
 #include "installerbasecommons.h"
 #include "lib7z_facade.h"
-#include "qinstallercomponentmodel.h"
 #include "qinstallerglobal.h"
 #include "qinstallergui.h"
 #include "tabcontroller.h"
