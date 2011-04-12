@@ -251,10 +251,9 @@ void ComponentModel::slotModelReset()
                 m_initialCheckedList.insert(child->name());
         }
     }
-    m_currentCheckedList += m_initialCheckedList;
 
-    for (int i = 0; i < m_rootComponentList.count(); ++i)
-        slotCheckStateChanged(index(i, 0, QModelIndex()));
+    selectDefault();
+    m_currentCheckedList += m_initialCheckedList;
 }
 
 static Qt::CheckState verifyPartiallyChecked(Component *component)

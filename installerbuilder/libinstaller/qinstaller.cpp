@@ -854,6 +854,17 @@ bool Installer::fetchAllPackages()
             appendRootComponent(component, AllMode);
     }
 
+    // now set the checked state for all components without child
+    for (int i = 0; i < rootComponentCount(AllMode); ++i) {
+        QList<Component*> children = rootComponent(i, AllMode)->childs();
+        foreach (Component *child, children) {
+            if (child->isCheckable() && !child->isTristate()) {
+                if (child->value(QLatin1String("CurrentState")) == QLatin1String("Installed"))
+                    child->setCheckState(Qt::Checked);
+            }
+        }
+    }
+
     // after everything is set up, load the scripts
     foreach (QInstaller::Component *component, components)
         component->loadComponentScript();
@@ -1781,7 +1792,6 @@ bool Installer::updateComponentData(const struct Data &data, Component *componen
         QString state = QLatin1String("Uninstalled");
         if (data.installedPackages->contains(name)) {
             state = QLatin1String("Installed");
-            component->setCheckState(Qt::Checked);
             component->setValue(QLatin1String("InstalledVersion"), data.installedPackages->value(name).version);
         }
         component->setValue(QLatin1String("CurrentState"), state);
