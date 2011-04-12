@@ -159,13 +159,7 @@ public:
     KDUpdater::Application &updaterApplication() const;
     void setUpdaterApplication(KDUpdater::Application *app);
 
-    void setRemoteRepositories(const QList<Repository> &repositories);
     void setTemporaryRepositories(const QList<Repository> &repositories, bool replace = false);
-
-    void createComponentsV2(const QList<KDUpdater::Update*> &updates,
-        const GetRepositoriesMetaInfoJob& metaInfoJob);
-    void createComponents(const QList<KDUpdater::Update*> &updates,
-        const GetRepositoriesMetaInfoJob& metaInfoJob);
 
     Q_INVOKABLE void autoAcceptMessageBoxes();
     Q_INVOKABLE void autoRejectMessageBoxes();
@@ -227,9 +221,6 @@ public:
     int downloadNeededArchives(RunModes runMode, double partProgressSize/* = double(1)/3 */);
     QList<Component*> calculateComponentOrder(RunModes runMode = AllMode) const;
     void installComponent(Component *comp, double progressOperationSize);
-
-    bool hasLinearComponentList() const;
-    void setLinearComponentList(bool showlinear);
 
     bool needsRestart() const;
     bool finishedWithSuccess() const;

@@ -77,7 +77,6 @@ HEADERS += $$PWD/qinstaller.h \
     downloadarchivesjob.h \
     init.h \
     updater.h \
-    updateagent.h \
     updatesettings.h \
     updatesettingsdialog.h \
     updatesettingswidget.h \
@@ -139,7 +138,6 @@ SOURCES += $$PWD/qinstaller.cpp \
     downloadarchivesjob.cpp \
     init.cpp \
     updater.cpp \
-    updateagent.cpp \
     updatesettings.cpp \
     updatesettingsdialog.cpp \
     updatesettingswidget.cpp \

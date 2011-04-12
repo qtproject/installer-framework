@@ -189,7 +189,6 @@ InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMa
     , m_launchedAsRoot(AdminAuthorization::hasAdminRights())
     , m_completeUninstall(false)
     , m_packageManagingMode(false)
-    , m_linearComponentList(false)
     , m_needToWriteUninstaller(false)
     , m_performedOperationsOld(performedOperations)
     , q(installer)
