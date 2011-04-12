@@ -401,9 +401,7 @@ void Installer::installSelectedComponents()
 
 quint64 size(QInstaller::Component *component, const QString &value)
 {
-    if (!component->isSelected())
-        return quint64(0);
-    if (component->value(QLatin1String("PreviousState")) == QLatin1String("Installed"))
+    if (!component->isSelected() || component->isInstalled())
         return quint64(0);
     return component->value(value).toLongLong();
 }
@@ -575,7 +573,7 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
         comp->value(QLatin1String("Description")), comp->dependencies(), forcedInstall,
         virtualComponent, comp->value(QLatin1String ("UncompressedSize")).toULongLong());
 
-    comp->setValue(QLatin1String("CurrentState"), QLatin1String("Installed"));
+    comp->setInstalled();
     comp->markAsPerformedInstallation();
 }
 
@@ -859,7 +857,7 @@ bool Installer::fetchAllPackages()
         QList<Component*> children = rootComponent(i, AllMode)->childs();
         foreach (Component *child, children) {
             if (child->isCheckable() && !child->isTristate()) {
-                if (child->value(QLatin1String("CurrentState")) == QLatin1String("Installed"))
+                if (child->isInstalled())
                     child->setCheckState(Qt::Checked);
             }
         }
@@ -1789,13 +1787,12 @@ bool Installer::updateComponentData(const struct Data &data, Component *componen
             return false;
         }
 
-        QString state = QLatin1String("Uninstalled");
         if (data.installedPackages->contains(name)) {
-            state = QLatin1String("Installed");
+            component->setInstalled();
             component->setValue(QLatin1String("InstalledVersion"), data.installedPackages->value(name).version);
+        } else {
+            component->setUninstalled();
         }
-        component->setValue(QLatin1String("CurrentState"), state);
-        component->setValue(QLatin1String("PreviousState"), state);
 
         const QString &localPath = component->localTempPath();
         if (isVerbose()) {

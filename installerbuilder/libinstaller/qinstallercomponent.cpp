@@ -80,6 +80,10 @@ static const QLatin1String skNewComponent("NewComponent");
 static const QLatin1String skScript("Script");
 static const QLatin1String skInstalledVersion("InstalledVersion");
 
+static const QLatin1String skInstalled("Installed");
+static const QLatin1String skUninstalled("Uninstalled");
+static const QLatin1String skCurrentState("CurrentState");
+
 /*
     TRANSLATOR QInstaller::Component
 */
@@ -920,7 +924,7 @@ void Component::setSelected(bool selected)
     const Qt::CheckState newState = selected ? Qt::Checked : Qt::Unchecked;
 
     if (newState != previousState) {
-        setCheckState(newState);
+        // setCheckState(newState); TODO: enable once the scripts fit
         QMetaObject::invokeMethod(this, "selectedChanged", Qt::QueuedConnection,
             Q_ARG(bool, newState == Qt::Checked));
     }
@@ -936,11 +940,19 @@ QStringList Component::dependencies() const
 }
 
 /*!
-    Determines if the component is installed
+    Set's the components state to installed.
+*/
+void Component::setInstalled()
+{
+    setValue(skCurrentState, skInstalled);
+}
+
+/*!
+    Determines if the component is installed.
 */
 bool Component::isInstalled() const
 {
-    return QLatin1String("Installed") == value(QLatin1String("CurrentState"));
+    return skInstalled == value(skCurrentState);
 }
 
 /*!
@@ -952,27 +964,27 @@ bool Component::installationRequested() const
 }
 
 /*!
-    Determines if the user wants to install the component
+    Set's the components state to uninstalled.
+*/
+void Component::setUninstalled()
+{
+    setValue(skCurrentState, skUninstalled);
+}
+
+/*!
+    Determines if the component is uninstalled.
+*/
+bool Component::isUninstalled() const
+{
+    return skUninstalled == value(skCurrentState);
+}
+
+/*!
+    Determines if the user wants to uninstall the component.
 */
 bool Component::uninstallationRequested() const
 {
     return isInstalled() && !isSelected();
-}
-
-/*!
-    Determines if the component was installed recently
-*/
-bool Component::wasInstalled() const
-{
-    return QLatin1String("Uninstalled") == value(QLatin1String("PreviousState")) && isInstalled();
-}
-
-/*!
-    Determines if the component was removed recently
-*/
-bool Component::wasUninstalled() const
-{
-    return QLatin1String("Installed") == value(QLatin1String("PreviousState")) && !isInstalled();
 }
 
 /*!

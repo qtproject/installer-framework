@@ -176,11 +176,14 @@ public:
     bool autoCreateOperations() const;
     bool operationsCreatedSuccessfully() const;
 
+    Q_INVOKABLE void setInstalled();
     Q_INVOKABLE bool isInstalled() const;
     Q_INVOKABLE bool installationRequested() const;
+
+    Q_INVOKABLE void setUninstalled();
+    Q_INVOKABLE bool isUninstalled() const;
     Q_INVOKABLE bool uninstallationRequested() const;
-    Q_INVOKABLE bool wasInstalled() const;
-    Q_INVOKABLE bool wasUninstalled() const;
+
     Q_INVOKABLE bool isFromOnlineRepository() const;
 
     bool isSelected() const;

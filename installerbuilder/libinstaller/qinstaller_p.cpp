@@ -1171,17 +1171,13 @@ void InstallerPrivate::runPackageUpdater()
 
         // first check, if we need admin rights for the installation part
         QList<Component*> availableComponents = q->components(true, AllMode);
-        foreach (Component *currentComponent, availableComponents) {
-            if (!currentComponent->isSelected())
-                continue;
-
-            // we only need the uninstalled components
-            if (currentComponent->value(QLatin1String("PreviousState")) == QLatin1String("Installed"))
+        foreach (Component *component, availableComponents) {
+            if (!component->uninstallationRequested())
                 continue;
 
             bool requiredAdmin = false;
             // check if we need admin rights and ask before the action happens
-            if (currentComponent->value(QLatin1String("RequiresAdminRights"),
+            if (component->value(QLatin1String("RequiresAdminRights"),
                 QLatin1String("false")) == QLatin1String("true")) {
                     requiredAdmin = q->gainAdminRights();
             }
@@ -1279,8 +1275,8 @@ void InstallerPrivate::runPackageUpdater()
         }
 
         foreach (Component* component, uninstalledComponents) {
+            component->setUninstalled();
             packages->removePackage(component->name());
-            component->setValue(QLatin1String("CurrentState"), QLatin1String("Uninstalled"));
         }
 
         // these are all operations left: those which were not reverted
@@ -1426,8 +1422,8 @@ void InstallerPrivate::runUninstaller()
                 if (comp->isSelected()) {
                     allMarkedForUninstall = false;
                 } else {
+                    comp->setUninstalled();
                     packages->removePackage(comp->name());
-                    comp->setValue(QLatin1String("CurrentState"), QLatin1String("Uninstalled"));
                 }
             }
             m_completeUninstall = m_completeUninstall || allMarkedForUninstall;
@@ -1449,8 +1445,8 @@ void InstallerPrivate::runUninstaller()
             // this will also delete the TargetDir on Windows
             deleteUninstaller();
             foreach (Component *component, allComponents) {
+                component->setUninstalled();
                 packages->removePackage(component->name());
-                component->setValue(QLatin1String("CurrentState"), QLatin1String("Uninstalled"));
             }
 
             QString remove = q->value(QLatin1String("RemoveTargetDir"));
