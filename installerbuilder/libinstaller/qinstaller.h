@@ -173,14 +173,13 @@ public:
     Component *rootComponent(int i, RunMode runMode) const;
     void appendRootComponent(Component *components, RunMode runMode);
 
+    Component *componentByName(const QString &identifier) const;
     QList<Component*> components(bool recursive, RunMode runMode) const;
     QList<Component*> componentsToInstall(bool recursive, bool sort, RunMode runMode) const;
 
-    Component *componentByName(const QString &identifier) const;
-    QList<Component*> dependencies(const Component *component,
-        QStringList *missingPackageNames = 0) const;
-    QList<Component*> missingDependencies (const Component *component) const;
     QList<Component*> dependees(const Component *component) const;
+    QList<Component*> missingDependencies (const Component *component) const;
+    QList<Component*> dependencies(const Component *component, QStringList *missingPackageNames = 0) const;
 
     // convenience
     Q_INVOKABLE bool isInstaller() const;

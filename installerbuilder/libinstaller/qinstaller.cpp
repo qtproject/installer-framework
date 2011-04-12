@@ -96,6 +96,43 @@ static void appendComponentAndMissingDependencies(QList<Component*>& components,
         components.push_back(comp);
 }
 
+static bool componentMatches(const Component *component, const QString &name,
+    const QString& version = QString())
+{
+    if (!name.isEmpty() && component->name() != name)
+        return false;
+
+    if (version.isEmpty())
+        return true;
+
+    return Installer::versionMatches(component->value(QLatin1String("Version")), version);
+}
+
+static Component* subComponentByName(const Installer *installer, const QString &name,
+    const QString &version = QString(), Component *check = 0)
+{
+    if (check != 0 && componentMatches(check, name, version))
+        return check;
+
+    const QList<Component*> rootComponents =
+        check == 0 ? installer->components(false, AllMode) : check->childComponents();
+    foreach (QInstaller::Component* component, rootComponents) {
+        Component* const result = subComponentByName(installer, name, version, component);
+        if (result != 0)
+            return result;
+    }
+
+    const QList<Component*> updaterComponents = check == 0
+        ? installer->components(false, UpdaterMode) : check->childComponents(false, UpdaterMode);
+    foreach (QInstaller::Component* component, updaterComponents) {
+        Component* const result = subComponentByName(installer, name, version, component);
+        if (result != 0)
+            return result;
+    }
+
+    return 0;
+}
+
 /*!
     Scriptable version of Installer::componentByName(QString).
     \sa Installer::componentByName
@@ -1045,19 +1082,6 @@ void Installer::setTestChecksum(bool test)
 }
 
 /*!
-    Appends a new root components \a component based on the current run mode \a runMode to the
-    installers internal lists of components.
-*/
-void Installer::appendRootComponent(Component *component, RunMode runMode)
-{
-    if (runMode == AllMode)
-        d->m_rootComponents.append(component);
-    else
-        d->m_updaterComponents.append(component);
-    emit componentAdded(component);
-}
-
-/*!
     Returns the number of components in the list depending on the run mode \a runMode.
 */
 int Installer::rootComponentCount(RunMode runMode) const
@@ -1076,6 +1100,36 @@ Component *Installer::rootComponent(int i, RunMode runMode) const
     if (runMode == UpdaterMode)
         return d->m_updaterComponents.value(i, 0);
     return d->m_rootComponents.value(i, 0);
+}
+
+/*!
+    Appends a new root components \a component based on the current run mode \a runMode to the
+    installers internal lists of components.
+*/
+void Installer::appendRootComponent(Component *component, RunMode runMode)
+{
+    if (runMode == AllMode)
+        d->m_rootComponents.append(component);
+    else
+        d->m_updaterComponents.append(component);
+    emit componentAdded(component);
+}
+
+/*!
+    Returns a component matching \a name. \a name can also contains a version requirement.
+    E.g. "com.nokia.sdk.qt" returns any component with that name, "com.nokia.sdk.qt->=4.5" requires
+    the returned component to have at least version 4.5.
+    If no component matches the requirement, 0 is returned.
+*/
+Component* Installer::componentByName(const QString &name) const
+{
+    if (name.contains(QChar::fromLatin1('-'))) {
+        // the last part is considered to be the version, then
+        const QString version = name.section(QLatin1Char('-'), 1);
+        return subComponentByName(this, name.section(QLatin1Char('-'), 0, 0), version);
+    }
+
+    return subComponentByName(this, name);
 }
 
 QList<Component*> Installer::components(bool recursive, RunMode runMode) const
@@ -1119,60 +1173,6 @@ QList<Component*> Installer::componentsToInstall(bool recursive, bool sort, RunM
     return componentsToInstall;
 }
 
-static bool componentMatches(const Component *component, const QString &name,
-    const QString& version = QString())
-{
-    if (!name.isEmpty() && component->name() != name)
-        return false;
-
-    if (version.isEmpty())
-        return true;
-
-    return Installer::versionMatches(component->value(QLatin1String("Version")), version);
-}
-
-static Component* subComponentByName(const Installer *installer, const QString &name,
-    const QString &version = QString(), Component *check = 0)
-{
-    if (check != 0 && componentMatches(check, name, version))
-        return check;
-
-    const QList<Component*> rootComponents =
-        check == 0 ? installer->components(false, AllMode) : check->childComponents();
-    foreach (QInstaller::Component* component, rootComponents) {
-        Component* const result = subComponentByName(installer, name, version, component);
-        if (result != 0)
-            return result;
-    }
-
-    const QList<Component*> updaterComponents = check == 0
-        ? installer->components(false, UpdaterMode) : check->childComponents(false, UpdaterMode);
-    foreach (QInstaller::Component* component, updaterComponents) {
-        Component* const result = subComponentByName(installer, name, version, component);
-        if (result != 0)
-            return result;
-    }
-
-    return 0;
-}
-
-/*!
-    Returns a component matching \a name. \a name can also contains a version requirement.
-    E.g. "com.nokia.sdk.qt" returns any component with that name, "com.nokia.sdk.qt->=4.5" requires
-    the returned component to have at least version 4.5.
-    If no component matches the requirement, 0 is returned.
-*/
-Component* Installer::componentByName(const QString &name) const
-{
-    if (name.contains(QChar::fromLatin1('-'))) {
-        // the last part is considered to be the version, then
-        const QString version = name.section(QLatin1Char('-'), 1);
-        return subComponentByName(this, name.section(QLatin1Char('-'), 0, 0), version);
-    }
-
-    return subComponentByName(this, name);
-}
-
 /*!
     Returns a list of packages depending on \a component.
 */
@@ -1195,32 +1195,6 @@ QList<Component*> Installer::dependees(const Component *component) const
         }
     }
 
-    return result;
-}
-
-InstallerSettings Installer::settings() const
-{
-    return *d->m_installerSettings;
-}
-
-/*!
-    Returns a list of dependencies for \a component.
-    If there's a dependency which cannot be fullfilled, the list contains 0 values.
-*/
-QList<Component*> Installer::dependencies(const Component *component,
-    QStringList *missingPackageNames) const
-{
-    QList<Component*> result;
-    const QStringList deps = component->value(QString::fromLatin1("Dependencies"))
-        .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
-
-    foreach (const QString &name, deps) {
-        Component* comp = componentByName(name);
-        if (!comp && missingPackageNames)
-            missingPackageNames->append(name);
-        else
-            result.push_back(comp);
-    }
     return result;
 }
 
@@ -1266,6 +1240,32 @@ QList<Component*> Installer::missingDependencies(const Component *component) con
         }
     }
     return result;
+}
+
+/*!
+    Returns a list of dependencies for \a component.
+    If there's a dependency which cannot be fullfilled, the list contains 0 values.
+*/
+QList<Component*> Installer::dependencies(const Component *component,
+    QStringList *missingPackageNames) const
+{
+    QList<Component*> result;
+    const QStringList deps = component->value(QString::fromLatin1("Dependencies"))
+        .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
+
+    foreach (const QString &name, deps) {
+        Component* comp = componentByName(name);
+        if (!comp && missingPackageNames)
+            missingPackageNames->append(name);
+        else
+            result.push_back(comp);
+    }
+    return result;
+}
+
+InstallerSettings Installer::settings() const
+{
+    return *d->m_installerSettings;
 }
 
 /*!
