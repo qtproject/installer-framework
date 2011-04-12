@@ -567,11 +567,11 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
         comp->value(QLatin1String("ForcedInstallation")).toLower() == QLatin1String("true")
         ? true : false;
     const bool virtualComponent =
-        comp->value(QLatin1String ("Virtual")).toLower() == QLatin1String("true") ? true : false;
+        comp->value(QLatin1String("Virtual")).toLower() == QLatin1String("true") ? true : false;
     packages->installPackage(comp->value(QLatin1String("Name")),
         comp->value(QLatin1String("Version")), comp->value(QLatin1String("DisplayName")),
         comp->value(QLatin1String("Description")), comp->dependencies(), forcedInstall,
-        virtualComponent, comp->value(QLatin1String ("UncompressedSize")).toULongLong());
+        virtualComponent, comp->value(QLatin1String("UncompressedSize")).toULongLong());
 
     comp->setInstalled();
     comp->markAsPerformedInstallation();
@@ -964,7 +964,7 @@ bool Installer::fetchUpdaterPackages()
     if (importantUpdates) {
         for (int i = updaterComponents.count() - 1; i >= 0; --i) {
             const QString important = updaterComponents.at(i)->value(QLatin1String("Important"));
-            if (important.toLower() == QLatin1String ("false") || important.isEmpty()) {
+            if (important.toLower() == QLatin1String("false") || important.isEmpty()) {
                 delete updaterComponents[i];
                 updaterComponents.removeAt(i);
             }
