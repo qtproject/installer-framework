@@ -331,8 +331,7 @@ int QtUninstallerGui::nextId() const
         if (!m_installer->isPackageManager() && !m_installer->isUpdater())
             return nextNextId;
 
-        QList<Component*> components = m_installer->componentsToInstall(true, true,
-            m_installer->runMode());
+        QList<Component*> components = m_installer->componentsToInstall(m_installer->runMode());
         if (components.isEmpty())
             return nextNextId;
 

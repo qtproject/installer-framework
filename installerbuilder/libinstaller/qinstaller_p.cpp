@@ -991,7 +991,7 @@ void InstallerPrivate::runInstaller()
         ProgressCoordninator::instance()->addManualPercentagePoints(1);
 
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
-        const QList<Component*> componentsToInstall = q->calculateComponentOrder();
+        const QList<Component*> componentsToInstall = q->componentsToInstall(AllMode);
         verbose() << "Install size: " << componentsToInstall.size() << " components" << std::endl;
 
         // check if we need admin rights and ask before the action happens
@@ -1294,7 +1294,7 @@ void InstallerPrivate::runPackageUpdater()
         packages->writeToDisk();
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
-        const QList<Component*> componentsToInstall = q->calculateComponentOrder();
+        const QList<Component*> componentsToInstall = q->componentsToInstall(q->runMode());
 
         verbose() << "Install size: " << componentsToInstall.size() << " components " << std::endl;
 

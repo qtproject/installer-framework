@@ -799,7 +799,7 @@ void LicenseAgreementPage::entering()
         }
     }
 
-    components = installer()->componentsToInstall(true, true, runMode);
+    components = installer()->componentsToInstall(runMode);
     foreach (QInstaller::Component* component, components) {
         if (rootComponent != component && !component->isInstalled())
             addLicenseItem(component->licenses());

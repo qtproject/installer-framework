@@ -347,7 +347,7 @@ void Installer::installSelectedComponents()
     }
 
     // get the list of packages we need to install in proper order
-    const QList<Component*> components = calculateComponentOrder(UpdaterMode);
+    const QList<Component*> components = componentsToInstall(runMode());
 
     if (!isInstaller() && !QFileInfo(installerBinaryPath()).isWritable())
         gainAdminRights();
@@ -486,11 +486,6 @@ int Installer::downloadNeededArchives(RunMode runMode, double partProgressSize)
         throw Error(tr("Installation canceled by user"));
 
     return archivesToDownload.count();
-}
-
-QList<Component*> Installer::calculateComponentOrder(RunMode runMode) const
-{
-    return componentsToInstall(true, true, runMode);
 }
 
 void Installer::installComponent(Component* comp, double progressOperationSize)
@@ -1149,24 +1144,16 @@ QList<Component*> Installer::components(bool recursive, RunMode runMode) const
     return result;
 }
 
-QList<Component*> Installer::componentsToInstall(bool recursive, bool sort, RunMode runMode) const
+QList<Component*> Installer::componentsToInstall(RunMode runMode) const
 {
-    QList<Component*> availableComponents = components(recursive, runMode);
-    if (sort) {
-        std::sort(availableComponents.begin(), availableComponents.end(),
-            Component::InstallPriorityLessThan());
-    }
+    QList<Component*> availableComponents = components(true, runMode);
+    std::sort(availableComponents.begin(), availableComponents.end(),
+        Component::InstallPriorityLessThan());
 
     QList<Component*> componentsToInstall;
     foreach (QInstaller::Component *component, availableComponents) {
-        if (!component->isSelected())
+        if (!component->installationRequested())
             continue;
-
-        // it was already installed before, so don't add it
-        if (component->value(QLatin1String("PreviousState")) == QLatin1String("Installed")
-            && runMode == AllMode)    // TODO: is the last condition right ????
-            continue;
-
         appendComponentAndMissingDependencies(componentsToInstall, component);
     }
 

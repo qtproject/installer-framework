@@ -175,7 +175,7 @@ public:
 
     Component *componentByName(const QString &identifier) const;
     QList<Component*> components(bool recursive, RunMode runMode) const;
-    QList<Component*> componentsToInstall(bool recursive, bool sort, RunMode runMode) const;
+    QList<Component*> componentsToInstall(RunMode runMode) const;
 
     QList<Component*> dependees(const Component *component) const;
     QList<Component*> missingDependencies (const Component *component) const;
@@ -216,9 +216,8 @@ public:
     void installSelectedComponents();
     void rollBackInstallation();
 
-    int downloadNeededArchives(RunMode runMode, double partProgressSize/* = double(1)/3 */);
-    QList<Component*> calculateComponentOrder(RunMode runMode = AllMode) const;
-    void installComponent(Component *comp, double progressOperationSize);
+    int downloadNeededArchives(RunMode runMode, double partProgressSize);
+    void installComponent(Component *component, double progressOperationSize);
 
     bool needsRestart() const;
     bool finishedWithSuccess() const;
