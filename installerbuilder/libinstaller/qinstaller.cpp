@@ -437,19 +437,8 @@ int Installer::downloadNeededArchives(RunMode runMode, double partProgressSize)
 {
     Q_ASSERT(partProgressSize >= 0 && partProgressSize <= 1);
 
-    QList<Component*> neededComponents;
-    const QList<Component*> availableComponents = components(true, runMode);
-    foreach (Component *component, availableComponents) {
-        if (!component->isSelected())
-            continue;
-        if (component->value(QLatin1String("PreviousState")) == QLatin1String("Installed")
-            && runMode == AllMode) {
-                continue;
-        }
-        appendComponentAndMissingDependencies(neededComponents, component);
-    }
-
     QList<QPair<QString, QString> > archivesToDownload;
+    QList<Component*> neededComponents = componentsToInstall(runMode);
     foreach (Component *component, neededComponents) {
         // collect all archives to be downloaded
         const QStringList toDownload = component->downloadableArchives();
