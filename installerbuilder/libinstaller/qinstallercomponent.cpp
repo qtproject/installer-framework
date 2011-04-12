@@ -223,13 +223,6 @@ QString Component::uncompressedSize() const
     return tr("%L1 GBytes").arg(size, 0, 'f', 1);
 }
 
-void Component::updateState(const bool selected)
-{
-    setValue(QLatin1String("PreviousState"),
-        selected ? QLatin1String("Installed") : QLatin1String("Uninstalled"));
-    setValue(QLatin1String("CurrentState"), value(QLatin1String("PreviousState")));
-}
-
 void Component::markAsPerformedInstallation()
 {
     d->m_newlyInstalled = true;
