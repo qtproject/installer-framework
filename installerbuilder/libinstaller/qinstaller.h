@@ -83,6 +83,28 @@ public:
             = QVector< KDUpdater::UpdateOperation*>());
     ~Installer();
 
+    // status
+    enum Status {
+        Success = EXIT_SUCCESS,
+        Failure = EXIT_FAILURE,
+        Running,
+        Canceled,
+        Unfinished
+    };
+    Status status() const;
+
+    enum WizardPage {
+        Introduction = 0x1000,
+        TargetDirectory = 0x2000,
+        ComponentSelection = 0x3000,
+        LicenseCheck = 0x4000,
+        StartMenuSelection = 0x5000,
+        ReadyForInstallation = 0x6000,
+        PerformInstallation = 0x7000,
+        InstallationFinished = 0x8000,
+        End = 0xffff
+    };
+
     static QFont virtualComponentsFont();
     static void setVirtualComponentsFont(const QFont &font);
 
@@ -192,28 +214,6 @@ public:
     Q_INVOKABLE bool isProcessRunning(const QString &name) const;
 
     InstallerSettings settings() const;
-
-    // status
-    enum Status {
-        Success = EXIT_SUCCESS,
-        Failure = EXIT_FAILURE,
-        Running,
-        Canceled,
-        Unfinished
-    };
-    Status status() const;
-
-    enum WizardPage {
-        Introduction = 0x1000,
-        TargetDirectory = 0x2000,
-        ComponentSelection = 0x3000,
-        LicenseCheck = 0x4000,
-        StartMenuSelection = 0x5000,
-        ReadyForInstallation = 0x6000,
-        PerformInstallation = 0x7000,
-        InstallationFinished = 0x8000,
-        End = 0xffff
-    };
 
     Q_INVOKABLE bool addWizardPage(QInstaller::Component *component, const QString &name, int page);
     Q_INVOKABLE bool removeWizardPage(QInstaller::Component *component, const QString &name);
