@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>virtual subcomponent</DisplayName>
+    <Version>1</Version>
+    <ReleaseDate>2009-12-03</ReleaseDate>
+    <Name>com.nokia.testapp.subcomponent.virtual</Name>
+    <Virtual>true</Virtual>
+</Package>
