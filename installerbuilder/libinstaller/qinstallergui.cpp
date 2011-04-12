@@ -726,6 +726,8 @@ LicenseAgreementPage::LicenseAgreementPage(Installer *inst)
 #endif
 
     m_acceptRadioButton = new QRadioButton(this);
+    m_acceptRadioButton->setObjectName(QString::fromUtf8("acceptLicenseRB"));
+
     m_acceptRadioButton->setShortcut(QKeySequence(tr("Alt+A", "agree license")));
     QLabel *acceptLabel = new QLabel(tr("I h<u>a</u>ve read and agree to the following terms contained in "
         "the license agreements accompanying the Qt SDK and additional items. I agree that my use of "
@@ -735,6 +737,8 @@ LicenseAgreementPage::LicenseAgreementPage(Installer *inst)
     acceptLabel->installEventFilter(acceptClickForwarder);
 
     m_rejectRadioButton = new QRadioButton(this);
+    m_acceptRadioButton->setObjectName(QString::fromUtf8("rejectLicenseRB"));
+
     m_rejectRadioButton->setShortcut(QKeySequence(tr("Alt+N", "do not agree license")));
     QLabel *rejectLabel = new QLabel(tr("I do <u>n</u>ot accept the terms and conditions of the above "
         "listed license agreements. Please note by checking the box, you must cancel the "

@@ -270,7 +270,7 @@ QString Component::value(const QString &key, const QString &defaultValue) const
 */
 void Component::setValue(const QString &key, const QString &value)
 {
-    if (d->m_vars[key] == value)
+    if (d->m_vars.value(key) == value)
         return;
 
     d->m_vars[key] = value;
