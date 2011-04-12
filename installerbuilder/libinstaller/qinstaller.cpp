@@ -478,22 +478,22 @@ int Installer::downloadNeededArchives(RunMode runMode, double partProgressSize)
     return archivesToDownload.count();
 }
 
-void Installer::installComponent(Component* comp, double progressOperationSize)
+void Installer::installComponent(Component *component, double progressOperationSize)
 {
     Q_ASSERT(progressOperationSize);
 
     d->setStatus(Installer::Running);
-    const QList<KDUpdater::UpdateOperation*> operations = comp->operations();
+    const QList<KDUpdater::UpdateOperation*> operations = component->operations();
 
     // show only component which are doing something, MinimumProgress is only for progress
     // calculation safeness
     if (operations.count() > 1
         || (operations.count() == 1 && operations.at(0)->name() != QLatin1String("MinimumProgress"))) {
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1")
-            .arg(comp->displayName()));
+            ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1")
+                .arg(component->displayName()));
     }
 
-    if (!comp->operationsCreatedSuccessfully())
+    if (!component->operationsCreatedSuccessfully())
         setCanceled();
 
     QList<KDUpdater::UpdateOperation*>::const_iterator op;
@@ -523,7 +523,7 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
             const QMessageBox::StandardButton button =
                 MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
-                tr("Error during installation process (%1):\n%2").arg(comp->name(),
+                tr("Error during installation process (%1):\n%2").arg(component->name(),
                 operation->errorString()),
                 QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel, QMessageBox::Retry);
 
@@ -540,7 +540,7 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
             // following operaton fails or if this operation failed but still needs
             // an undo call to cleanup.
             d->addPerformed(operation);
-            operation->setValue(QLatin1String("component"), comp->name());
+            operation->setValue(QLatin1String("component"), component->name());
         }
 
         if (becameAdmin)
@@ -549,35 +549,35 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
         if (!ok && !ignoreError)
             throw Error(operation->errorString());
 
-        if (comp->value(QLatin1String("Important"), QLatin1String("false")) == QLatin1String("true"))
+        if (component->value(QLatin1String("Important"), QLatin1String("false")) == QLatin1String("true"))
             d->m_forceRestart = true;
     }
 
-    d->registerPathesForUninstallation(comp->pathesForUninstallation(), comp->name());
+    d->registerPathesForUninstallation(component->pathesForUninstallation(), component->name());
 
-    if (!comp->stopProcessForUpdateRequests().isEmpty()) {
+    if (!component->stopProcessForUpdateRequests().isEmpty()) {
         KDUpdater::UpdateOperation *stopProcessForUpdatesOp =
             KDUpdater::UpdateOperationFactory::instance().create(QLatin1String("FakeStopProcessForUpdate"));
-        const QStringList arguments(comp->stopProcessForUpdateRequests().join(QLatin1String(",")));
+        const QStringList arguments(component->stopProcessForUpdateRequests().join(QLatin1String(",")));
         stopProcessForUpdatesOp->setArguments(arguments);
         d->addPerformed(stopProcessForUpdatesOp);
-        stopProcessForUpdatesOp->setValue(QLatin1String("component"), comp->name());
+        stopProcessForUpdatesOp->setValue(QLatin1String("component"), component->name());
     }
 
     // now mark the component as installed
     KDUpdater::PackagesInfo* const packages = d->m_app->packagesInfo();
     const bool forcedInstall =
-        comp->value(QLatin1String("ForcedInstallation")).toLower() == QLatin1String("true")
+        component->value(QLatin1String("ForcedInstallation")).toLower() == QLatin1String("true")
         ? true : false;
     const bool virtualComponent =
-        comp->value(QLatin1String ("Virtual")).toLower() == QLatin1String("true") ? true : false;
-    packages->installPackage(comp->value(QLatin1String("Name")),
-        comp->value(QLatin1String("Version")), comp->value(QLatin1String("DisplayName")),
-        comp->value(QLatin1String("Description")), comp->dependencies(), forcedInstall,
-        virtualComponent, comp->value(QLatin1String ("UncompressedSize")).toULongLong());
+        component->value(QLatin1String ("Virtual")).toLower() == QLatin1String("true") ? true : false;
+    packages->installPackage(component->value(QLatin1String("Name")),
+        component->value(QLatin1String("Version")), component->value(QLatin1String("DisplayName")),
+        component->value(QLatin1String("Description")), component->dependencies(), forcedInstall,
+        virtualComponent, component->value(QLatin1String ("UncompressedSize")).toULongLong());
 
-    comp->setInstalled();
-    comp->markAsPerformedInstallation();
+    component->setInstalled();
+    component->markAsPerformedInstallation();
 }
 
 /*!
