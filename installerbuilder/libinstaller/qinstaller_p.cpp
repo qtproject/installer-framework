@@ -188,7 +188,6 @@ InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMa
     , m_testChecksum(false)
     , m_launchedAsRoot(AdminAuthorization::hasAdminRights())
     , m_completeUninstall(false)
-    , m_packageManagingMode(false)
     , m_needToWriteUninstaller(false)
     , m_performedOperationsOld(performedOperations)
     , q(installer)
@@ -1145,8 +1144,6 @@ void InstallerPrivate::runPackageUpdater()
 {
     try {
         if (m_completeUninstall) {
-            // well... I guess we would call that an uninstall, no? :-)
-            m_packageManagingMode = !m_completeUninstall;
             runUninstaller();
             return;
         }
@@ -1427,7 +1424,6 @@ void InstallerPrivate::runUninstaller()
                 }
             }
             m_completeUninstall = m_completeUninstall || allMarkedForUninstall;
-            m_packageManagingMode = ! m_completeUninstall;
         }
 
         const QString startMenuDir = m_vars.value(QLatin1String("StartMenuDir"));
@@ -1452,7 +1448,6 @@ void InstallerPrivate::runUninstaller()
             QString remove = q->value(QLatin1String("RemoveTargetDir"));
             if (QVariant(remove).toBool()) {
                 // on !Windows, we need to remove TargetDir manually
-                m_packageManagingMode = ! m_completeUninstall;
                 verbose() << "Complete Uninstallation is chosen" << std::endl;
                 const QString target = targetDir();
                 if (!target.isEmpty()) {

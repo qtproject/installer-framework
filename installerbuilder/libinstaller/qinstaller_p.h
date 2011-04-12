@@ -155,7 +155,6 @@ public:
     bool m_testChecksum;
     bool m_launchedAsRoot;
     bool m_completeUninstall;
-    bool m_packageManagingMode;
     bool m_needToWriteUninstaller;
     QHash<QString, QString> m_vars;
     QHash<QString, bool> m_sharedFlags;

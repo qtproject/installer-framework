@@ -229,7 +229,6 @@ public Q_SLOTS:
     void interrupt();
     void setCanceled();
     void languageChanged();
-
     void setCompleteUninstallation(bool complete);
 
 Q_SIGNALS:

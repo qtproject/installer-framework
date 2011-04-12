@@ -305,13 +305,11 @@ void Installer::reset(const QHash<QString, QString> &params)
 
 /*!
     Sets the uninstallation to be \a complete. If \a complete is false, only components deselected
-    by the user will be uninstalled.
-    This option applies only on uninstallation.
+    by the user will be uninstalled. This option applies only on uninstallation.
  */
 void Installer::setCompleteUninstallation(bool complete)
 {
     d->m_completeUninstall = complete;
-    d->m_packageManagingMode = !d->m_completeUninstall;
 }
 
 void Installer::autoAcceptMessageBoxes()

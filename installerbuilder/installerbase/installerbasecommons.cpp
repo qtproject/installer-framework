@@ -71,8 +71,7 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::Installer *installer)
     layout->addWidget(m_removeAllComponents);
     m_removeAllComponents->setChecked(installer->isUninstaller());
     connect(m_removeAllComponents, SIGNAL(toggled(bool)), this, SLOT(setUninstaller(bool)));
-    connect(m_removeAllComponents, SIGNAL(toggled(bool)), installer,
-        SLOT(setCompleteUninstallation(bool)));
+    connect(m_removeAllComponents, SIGNAL(toggled(bool)), installer, SLOT(setCompleteUninstallation(bool)));
 
     layout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
