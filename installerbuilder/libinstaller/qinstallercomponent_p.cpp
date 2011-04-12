@@ -121,6 +121,7 @@ void ComponentPrivate::init()
 
 ComponentModelHelper::ComponentModelHelper()
 {
+    setCheckState(Qt::Unchecked);
     setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
 }
 
