@@ -175,14 +175,6 @@ public:
     QList<Component*> m_updaterComponents;
     QList<Component*> m_updaterComponentsDeps;
 
-    QHash<QString, Component*> m_componentHash;
-    QList<Component*> m_packageManagerComponents;
-
-    //a hack to get the will be replaced components extra
-    QList<QInstaller::Component*> willBeReplacedComponents;
-    //this is a Hack, we don't need this in the refactor branch
-    QList< QPointer<QInstaller::Component> > componentDeleteList;
-
     QList<KDUpdater::UpdateOperation*> ownedOperations;
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsOld;
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsCurrentSession;
