@@ -520,8 +520,8 @@ int InstallerPrivate::countProgressOperations(const QList<KDUpdater::UpdateOpera
 int InstallerPrivate::countProgressOperations(const QList<Component*> &components)
 {
     int operationCount = 0;
-    for (QList<Component*>::const_iterator It = components.begin(); It != components.end(); ++It)
-        operationCount = operationCount + countProgressOperations((*It)->operations());
+    foreach (Component* component, components)
+        operationCount += countProgressOperations(component->operations());
 
     return operationCount;
 }
@@ -1033,9 +1033,8 @@ void InstallerPrivate::runInstaller()
         const int progressOperationCount = countProgressOperations(componentsToInstall);
         double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
-        QList<Component*>::const_iterator it;
-        for (it = componentsToInstall.begin(); it != componentsToInstall.end(); ++it)
-            q->installComponent(*it, progressOperationSize);
+        foreach (Component *component, componentsToInstall)
+            q->installComponent(component, progressOperationSize);
 
 
         emit q->titleMessageChanged(tr("Creating Uninstaller"));
@@ -1171,11 +1170,8 @@ void InstallerPrivate::runPackageUpdater()
             q->gainAdminRights();
 
         // first check, if we need admin rights for the installation part
-        QList<Component*>::const_iterator it;
         QList<Component*> availableComponents = q->components(true, AllMode);
-        for (it = availableComponents.begin(); it != availableComponents.end(); ++it) {
-            // check if we need admin rights and ask before the action happens
-            Component* const currentComponent = *it;
+        foreach (Component *currentComponent, availableComponents) {
             if (!currentComponent->isSelected())
                 continue;
 
@@ -1184,6 +1180,7 @@ void InstallerPrivate::runPackageUpdater()
                 continue;
 
             bool requiredAdmin = false;
+            // check if we need admin rights and ask before the action happens
             if (currentComponent->value(QLatin1String("RequiresAdminRights"),
                 QLatin1String("false")) == QLatin1String("true")) {
                     requiredAdmin = q->gainAdminRights();
@@ -1276,15 +1273,14 @@ void InstallerPrivate::runPackageUpdater()
         }
 
         const QList<Component*> allComponents = q->components(true, AllMode);
-        foreach (Component *comp, allComponents) {
-            if (!comp->isSelected())
-                uninstalledComponents |= comp;
+        foreach (Component *component, allComponents) {
+            if (!component->isSelected())
+                uninstalledComponents |= component;
         }
 
-        QSet<Component*>::const_iterator it2;
-        for (it2 = uninstalledComponents.begin(); it2 != uninstalledComponents.end(); ++it2) {
-            packages->removePackage((*it2)->name());
-            (*it2)->setValue(QLatin1String("CurrentState"), QLatin1String("Uninstalled"));
+        foreach (Component* component, uninstalledComponents) {
+            packages->removePackage(component->name());
+            component->setValue(QLatin1String("CurrentState"), QLatin1String("Uninstalled"));
         }
 
         // these are all operations left: those which were not reverted
@@ -1303,8 +1299,8 @@ void InstallerPrivate::runPackageUpdater()
         int progressOperationCount = countProgressOperations(componentsToInstall);
         double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
-        for (it = componentsToInstall.begin(); it != componentsToInstall.end(); ++it)
-            q->installComponent(*it, progressOperationSize);
+        foreach (Component *component, componentsToInstall)
+            q->installComponent(component, progressOperationSize);
 
         packages->writeToDisk();
 
@@ -1426,9 +1422,7 @@ void InstallerPrivate::runUninstaller()
 
         const QList<Component*> allComponents = q->components(true, AllMode);
         if (!m_completeUninstall) {
-            QList<Component*>::const_iterator it;
-            for (it = allComponents.begin(); it != allComponents.end(); ++it) {
-                Component* const comp = *it;
+            foreach (Component *comp, allComponents) {
                 if (comp->isSelected()) {
                     allMarkedForUninstall = false;
                 } else {
@@ -1454,10 +1448,9 @@ void InstallerPrivate::runUninstaller()
         if (m_completeUninstall) {
             // this will also delete the TargetDir on Windows
             deleteUninstaller();
-            QList<Component*>::const_iterator it;
-            for (it = allComponents.begin(); it != allComponents.end(); ++it) {
-                packages->removePackage((*it)->name());
-                (*it)->setValue(QLatin1String("CurrentState"), QLatin1String("Uninstalled"));
+            foreach (Component *component, allComponents) {
+                packages->removePackage(component->name());
+                component->setValue(QLatin1String("CurrentState"), QLatin1String("Uninstalled"));
             }
 
             QString remove = q->value(QLatin1String("RemoveTargetDir"));
