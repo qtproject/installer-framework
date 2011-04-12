@@ -80,6 +80,9 @@ static const QLatin1String skNewComponent("NewComponent");
 static const QLatin1String skScript("Script");
 static const QLatin1String skInstalledVersion("InstalledVersion");
 
+static const QLatin1String skTrue("true");
+static const QLatin1String skFalse("false");
+
 static const QLatin1String skInstalled("Installed");
 static const QLatin1String skUninstalled("Uninstalled");
 static const QLatin1String skCurrentState("CurrentState");
@@ -140,7 +143,7 @@ void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInf
     setValue(skDescription, packageInfo.description);
     setValue(skUncompressedSize, QString::number(packageInfo.uncompressedSize));
     setValue(skVersion, packageInfo.version);
-    setValue(skVirtual, packageInfo.virtualComp ? QLatin1String ("true") : QLatin1String ("false"));
+    setValue(skVirtual, packageInfo.virtualComp ? skTrue : skFalse);
 
     QString dependstr = QLatin1String("");
     foreach (const QString& val, packageInfo.dependencies)
@@ -150,8 +153,7 @@ void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInf
         dependstr.chop(1);
     setValue(skDependencies, dependstr);
 
-    setValue(skForcedInstallation, packageInfo.forcedInstallation ? QLatin1String ("true")
-        : QLatin1String ("false"));
+    setValue(skForcedInstallation, packageInfo.forcedInstallation ? skTrue : skFalse);
     if (packageInfo.forcedInstallation) {
         setEnabled(false);
         setCheckable(false);
@@ -186,11 +188,11 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
     setValue(skReplaces, update->data(skReplaces).toString());
     setValue(skReleaseDate, update->data(skReleaseDate).toString());
 
-    QString forced = update->data(skForcedInstallation).toString().toLower();
+    QString forced = update->data(skForcedInstallation, skFalse).toString().toLower();
     if (qApp->arguments().contains(QLatin1String("--no-force-installations")))
-        forced = QLatin1String("false");
+        forced = skFalse;
     setValue(skForcedInstallation, forced);
-    if (forced == QLatin1String("true")) {
+    if (forced == skTrue) {
         setEnabled(false);
         setCheckable(false);
         setCheckState(Qt::Checked);
@@ -307,7 +309,7 @@ Component* Component::parentComponent(RunMode runMode) const
 */
 void Component::appendComponent(Component* component)
 {
-    if (component->value(skVirtual).toLower() != QLatin1String("true")) {
+    if (component->value(skVirtual).toLower() != skTrue) {
         d->m_components.append(component);
         std::sort(d->m_components.begin(), d->m_components.end(), Component::SortingPriorityLessThan());
     } else {
@@ -1029,7 +1031,7 @@ void Component::setLocalTempPath(const QString &tempLocalPath)
 void Component::updateModelData(const QString &key, const QString &data)
 {
     if (key == skVirtual) {
-        if (data.toLower() == QLatin1String("true"))
+        if (data.toLower() == skTrue)
             setData(installer()->virtualComponentsFont(), Qt::FontRole);
     }
 
