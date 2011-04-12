@@ -1096,7 +1096,7 @@ void Component::setSelected(bool selected, RunModes runMode, SelectMode selectMo
             d->setSelectedOnComponentList(dependees, false, runMode, selectMode);
 
             //if we are the last visible component, we need to check our virtual siblings
-            if (value(QLatin1String("Virtual"), QLatin1String("false")).toLower()
+            if (parentComponent() && value(QLatin1String("Virtual"), QLatin1String("false")).toLower()
                     == QLatin1String("false"))
             {
                 QList<Component*> virtualSiblingComponents;
