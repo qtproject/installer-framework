@@ -440,7 +440,7 @@ int Installer::downloadNeededArchives(RunMode runMode, double partProgressSize)
     QList<Component*> neededComponents;
     const QList<Component*> availableComponents = components(true, runMode);
     foreach (Component *component, availableComponents) {
-        if (!component->isSelected(runMode))
+        if (!component->isSelected())
             continue;
         if (component->value(QLatin1String("PreviousState")) == QLatin1String("Installed")
             && runMode == AllMode) {
@@ -1159,7 +1159,7 @@ QList<Component*> Installer::componentsToInstall(bool recursive, bool sort, RunM
 
     QList<Component*> componentsToInstall;
     foreach (QInstaller::Component *component, availableComponents) {
-        if (!component->isSelected(runMode))
+        if (!component->isSelected())
             continue;
 
         // it was already installed before, so don't add it

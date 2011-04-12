@@ -69,11 +69,6 @@ public:
     explicit Component(KDUpdater::Update *update, Installer *installer);
     ~Component();
 
-    enum SelectMode {
-        NormalSelectMode,
-        InitializeComponentTreeSelectMode
-    };
-
     struct IsVirtual
     {
         bool operator() (const Component *comp) const
@@ -191,13 +186,11 @@ public:
     Q_INVOKABLE bool wasUninstalled() const;
     Q_INVOKABLE bool isFromOnlineRepository() const;
 
-    // TODO: remove the selected stuff
-    bool isSelected(RunMode runMode = AllMode) const;
-    //Qt::CheckState checkState(RunMode runMode) const;
+    bool isSelected() const;
 
 public Q_SLOTS:
+    void setSelected(bool selected);
     void setAutoCreateOperations(bool autoCreateOperations);
-    void setSelected(bool selected, RunMode runMode = AllMode, SelectMode selectMode = NormalSelectMode);
 
 Q_SIGNALS:
     void loaded();

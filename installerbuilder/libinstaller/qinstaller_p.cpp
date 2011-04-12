@@ -1176,7 +1176,7 @@ void InstallerPrivate::runPackageUpdater()
         for (it = availableComponents.begin(); it != availableComponents.end(); ++it) {
             // check if we need admin rights and ask before the action happens
             Component* const currentComponent = *it;
-            if (!currentComponent->isSelected(AllMode))
+            if (!currentComponent->isSelected())
                 continue;
 
             // we only need the uninstalled components
