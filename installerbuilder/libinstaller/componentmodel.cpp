@@ -41,6 +41,7 @@ namespace QInstaller {
 ComponentModel::ComponentModel(int columns, Installer *parent)
     : QAbstractItemModel(parent)
     , m_installer(parent)
+    , m_rootIndex(0)
 {
     m_headerData.insert(0, columns, QVariant());
 
@@ -167,6 +168,7 @@ void ComponentModel::setRootComponents(QList<Component*> rootComponents)
     m_initialCheckedList.clear();
     m_currentCheckedList.clear();
 
+    m_rootIndex = 0;
     m_rootComponentList = rootComponents;
 
     endResetModel();
@@ -177,6 +179,8 @@ void ComponentModel::appendRootComponents(QList<Component*> rootComponents)
     beginResetModel();
 
     m_indexByNameCache.clear();
+
+    m_rootIndex = m_rootComponentList.count() - 1;
     m_rootComponentList += rootComponents;
 
     endResetModel();
@@ -244,16 +248,17 @@ void ComponentModel::selectDefault()
 
 void ComponentModel::slotModelReset()
 {
-    foreach (Component *component, m_rootComponentList) {
-        foreach (Component *child, component->childs()) {
-            // TODO: this might be wrong in case of append component, we really need a initialCheckState()
+    for (int i = m_rootIndex; i < m_rootComponentList.count(); ++i) {
+        foreach (Component *child, m_rootComponentList.at(i)->childs()) {
             if (child->checkState() == Qt::Checked)
                 m_initialCheckedList.insert(child->name());
         }
     }
-
-    selectDefault();
     m_currentCheckedList += m_initialCheckedList;
+
+    select(Qt::Unchecked);
+    foreach (const QString &name, m_currentCheckedList)
+        setData(indexFromComponentName(name), Qt::Checked, Qt::CheckStateRole);
 }
 
 static Qt::CheckState verifyPartiallyChecked(Component *component)

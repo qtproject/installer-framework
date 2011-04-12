@@ -93,6 +93,7 @@ private:
 private:
     Installer *m_installer;
 
+    int m_rootIndex;
     QVector<QVariant> m_headerData;
     QSet<QString> m_initialCheckedList;
     QSet<QString> m_currentCheckedList;
