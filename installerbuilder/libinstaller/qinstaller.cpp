@@ -1191,6 +1191,10 @@ QList<Component*> Installer::dependees(const Component *component) const
 */
 QList<Component*> Installer::missingDependencies(const Component *component) const
 {
+    QList<Component*> allComponents = components(true, runMode());
+    if (runMode() == UpdaterMode)
+        allComponents += d->m_updaterComponentsDeps;
+
     const QStringList dependencies = component->value(QString::fromLatin1("Dependencies"))
         .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
 
@@ -1201,9 +1205,6 @@ QList<Component*> Installer::missingDependencies(const Component *component) con
         const QString name = hasVersionString ? dependency.section(dash, 0, 0) : dependency;
 
         bool installed = false;
-        QList<Component*> allComponents = components(true, runMode());
-        if (runMode() == UpdaterMode)
-            allComponents += d->m_updaterComponentsDeps;
         foreach (Component *comp, allComponents) {
             if (comp->name() == name) {
                 if (hasVersionString) {
