@@ -50,8 +50,8 @@ ComponentPrivate::ComponentPrivate(Installer* installer, Component* qq)
     m_licenseOperation(0),
     m_minimumProgressOperation(0),
     m_newlyInstalled (false),
-    m_removeBeforeUpdate(true),
     m_operationsCreated(false),
+    m_removeBeforeUpdate(true),
     m_autoCreateOperations(true),
     m_operationsCreatedSuccessfully(true)
 {
