@@ -1166,20 +1166,22 @@ QList<Component*> Installer::componentsToInstall(RunMode runMode) const
 */
 QList<Component*> Installer::dependees(const Component *component) const
 {
-    QList<Component*> result;
+    QList<Component*> allComponents = components(true, runMode());
+    if (runMode() == UpdaterMode)
+        allComponents += d->m_updaterComponentsDeps;
 
-    const QList<Component*> allComponents = components(true, AllMode);
-    foreach (Component* const c, allComponents) {
-        const QStringList deps = c->value(QString::fromLatin1("Dependencies"))
+    QList<Component*> result;
+    foreach (Component *comp, allComponents) {
+        const QStringList dependencies = comp->value(QString::fromLatin1("Dependencies"))
             .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
 
         const QLatin1Char dash('-');
-        foreach (const QString &dep, deps) {
+        foreach (const QString &dependency, dependencies) {
             // the last part is considered to be the version, then
-            const QString id = dep.contains(dash) ? dep.section(dash, 0, 0) : dep;
-            const QString version = dep.contains(dash) ? dep.section(dash, 1) : QString();
-            if (componentMatches(component, id, version))
-                result.push_back(c);
+            const QString name = dependency.contains(dash) ? dependency.section(dash, 0, 0) : dependency;
+            const QString version = dependency.contains(dash) ? dependency.section(dash, 1) : QString();
+            if (componentMatches(component, name, version))
+                result.append(comp);
         }
     }
 
