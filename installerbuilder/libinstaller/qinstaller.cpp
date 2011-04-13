@@ -1191,40 +1191,34 @@ QList<Component*> Installer::dependees(const Component *component) const
 */
 QList<Component*> Installer::missingDependencies(const Component *component) const
 {
-    QList<Component*> result;
-    const QStringList deps = component->value(QString::fromLatin1("Dependencies"))
+    const QStringList dependencies = component->value(QString::fromLatin1("Dependencies"))
         .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
 
+    QList<Component*> result;
     const QLatin1Char dash('-');
-    for (QStringList::const_iterator it = deps.begin(); it != deps.end(); ++it) {
-        const bool containsVersionString = it->contains(dash);
-        const QString version =  containsVersionString ? it->section(dash, 1) : QString();
-        const QString name = containsVersionString ? it->section(dash, 0, 0) : *it;
+    foreach (const QString &dependency, dependencies) {
+        const bool hasVersionString = dependency.contains(dash);
+        const QString name = hasVersionString ? dependency.section(dash, 0, 0) : dependency;
 
         bool installed = false;
-        QList<Component*> compList = components(true, AllMode);
-        foreach (const Component* comp, compList) {
-            if (!name.isEmpty() && comp->name() == name && !version.isEmpty()) {
-                if (Installer::versionMatches(comp->value(QLatin1String("InstalledVersion")), version))
+        QList<Component*> allComponents = components(true, runMode());
+        if (runMode() == UpdaterMode)
+            allComponents += d->m_updaterComponentsDeps;
+        foreach (Component *comp, allComponents) {
+            if (comp->name() == name) {
+                if (hasVersionString) {
+                    const QString version = dependency.section(dash, 1);
+                    if (Installer::versionMatches(comp->value(QLatin1String("InstalledVersion")), version))
+                        installed = true;
+                } else if (comp->isInstalled()) {
                     installed = true;
-            } else if (comp->name() == name) {
-                installed = true;
-            }
-        }
-
-        compList = components(true, UpdaterMode);
-        foreach (const Component *comp, d->m_updaterComponents) {
-            if (!name.isEmpty() && comp->name() == name && !version.isEmpty()) {
-                if (Installer::versionMatches(comp->value(QLatin1String("InstalledVersion")), version))
-                    installed = true;
-            } else if (comp->name() == name) {
-                installed = true;
+                }
             }
         }
 
         if (!installed) {
-            if (Component *comp = componentByName(name))
-                result.push_back(comp);
+            if (Component *comp = componentByName(dependency))
+                result.append(comp);
         }
     }
     return result;

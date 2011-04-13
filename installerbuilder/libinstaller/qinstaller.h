@@ -178,7 +178,7 @@ public:
     QList<Component*> componentsToInstall(RunMode runMode) const;
 
     QList<Component*> dependees(const Component *component) const;
-    QList<Component*> missingDependencies (const Component *component) const;
+    QList<Component*> missingDependencies(const Component *component) const;
     QList<Component*> dependencies(const Component *component, QStringList *missingPackageNames = 0) const;
 
     // convenience
