@@ -1225,22 +1225,21 @@ QList<Component*> Installer::missingDependencies(const Component *component) con
 }
 
 /*!
-    Returns a list of dependencies for \a component.
-    If there's a dependency which cannot be fulfilled, the list contains 0 values.
+    Returns a list of dependencies for \a component. If there's a dependency which cannot be fulfilled,
+    \a missingComponents will contain the missing components.
 */
-QList<Component*> Installer::dependencies(const Component *component,
-    QStringList *missingPackageNames) const
+QList<Component*> Installer::dependencies(const Component *component, QStringList &missingComponents) const
 {
     QList<Component*> result;
-    const QStringList deps = component->value(QString::fromLatin1("Dependencies"))
+    const QStringList dependencies = component->value(QString::fromLatin1("Dependencies"))
         .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
 
-    foreach (const QString &name, deps) {
-        Component* comp = componentByName(name);
-        if (!comp && missingPackageNames)
-            missingPackageNames->append(name);
+    foreach (const QString &dependency, dependencies) {
+        Component *component = componentByName(dependency);
+        if (component)
+            result.append(component);
         else
-            result.push_back(comp);
+            missingComponents.append(dependency);
     }
     return result;
 }

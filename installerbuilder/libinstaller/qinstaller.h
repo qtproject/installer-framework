@@ -179,7 +179,7 @@ public:
 
     QList<Component*> dependees(const Component *component) const;
     QList<Component*> missingDependencies(const Component *component) const;
-    QList<Component*> dependencies(const Component *component, QStringList *missingPackageNames = 0) const;
+    QList<Component*> dependencies(const Component *component, QStringList &missingComponents) const;
 
     // convenience
     Q_INVOKABLE bool isInstaller() const;
