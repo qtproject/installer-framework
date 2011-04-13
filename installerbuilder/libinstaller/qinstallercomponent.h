@@ -109,7 +109,7 @@ public:
     Component *parentComponent() const;
     void appendComponent(Component *component);
     void removeComponent(Component *component);
-    QList<Component*> childComponents(bool recursive = false, RunMode runMode = AllMode) const;
+    QList<Component*> childComponents(bool recursive, RunMode runMode) const;
 
     void loadComponentScript();
 

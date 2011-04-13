@@ -114,8 +114,8 @@ static Component* subComponentByName(const Installer *installer, const QString &
     if (check != 0 && componentMatches(check, name, version))
         return check;
 
-    const QList<Component*> rootComponents =
-        check == 0 ? installer->components(false, AllMode) : check->childComponents();
+    const QList<Component*> rootComponents = check == 0 ? installer->components(false, AllMode)
+        : check->childComponents(false, AllMode);
     foreach (QInstaller::Component* component, rootComponents) {
         Component* const result = subComponentByName(installer, name, version, component);
         if (result != 0)
@@ -1139,7 +1139,7 @@ QList<Component*> Installer::components(bool recursive, RunMode runMode) const
     QList<Component*> result;
     foreach (QInstaller::Component *component, d->m_rootComponents) {
         result.push_back(component);
-        result += component->childComponents(true);
+        result += component->childComponents(true, runMode);
     }
 
     return result;

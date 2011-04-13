@@ -339,16 +339,16 @@ void Component::removeComponent(Component *component)
 */
 QList<Component*> Component::childComponents(bool recursive, RunMode runMode) const
 {
+    QList<Component*> result;
     if (runMode == UpdaterMode)
-        return QList<Component*>();
+        return result;
 
     if (!recursive)
         return d->m_allComponents;
 
-    QList<Component*> result;
     foreach (Component *component, d->m_allComponents) {
         result.append(component);
-        result += component->childComponents(true);
+        result += component->childComponents(true, runMode);
     }
     return result;
 }

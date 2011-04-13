@@ -150,9 +150,10 @@ int ComponentModelHelper::childCount() const
 */
 int ComponentModelHelper::indexInParent() const
 {
+    int index = 0;
     if (Component *parent = m_componentPrivate->m_parentComponent->parentComponent())
-        return parent->childComponents().indexOf(m_componentPrivate->m_parentComponent);
-    return 0;
+        index = parent->childComponents(false, AllMode).indexOf(m_componentPrivate->m_parentComponent);
+    return (index >= 0 ? index : 0);
 }
 
 /*!
@@ -167,7 +168,7 @@ QList<Component*> ComponentModelHelper::childs() const
     QList<Component*> result;
     foreach (Component *component, *components) {
         result.append(component);
-        result += component->childComponents(true);
+        result += component->childComponents(true, AllMode);
     }
     return result;
 }
