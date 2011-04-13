@@ -123,10 +123,10 @@ Component::Component(KDUpdater::Update* update, Installer* installer)
 Component::~Component()
 {
     if (parentComponent() != 0)
-        d->m_parent->d->m_allComponents.removeAll(this);
+        d->m_parentComponent->d->m_allComponents.removeAll(this);
 
     if (!d->m_newlyInstalled)
-        qDeleteAll(d->operations);
+        qDeleteAll(d->m_operations);
 
     qDeleteAll(d->m_allComponents);
     delete d;
@@ -240,12 +240,12 @@ void Component::markAsPerformedInstallation()
 */
 bool Component::removeBeforeUpdate() const
 {
-    return d->removeBeforeUpdate;
+    return d->m_removeBeforeUpdate;
 }
 
 void Component::setRemoveBeforeUpdate(bool removeBeforeUpdate)
 {
-    d->removeBeforeUpdate = removeBeforeUpdate;
+    d->m_removeBeforeUpdate = removeBeforeUpdate;
 }
 
 QList<Component*> Component::dependees() const
@@ -294,11 +294,9 @@ Installer* Component::installer() const
     Returns the parent of this component. If this component is com.nokia.sdk.qt, its
     parent is com.nokia.sdk, as far as this exists.
 */
-Component* Component::parentComponent(RunMode runMode) const
+Component* Component::parentComponent() const
 {
-    if (runMode == UpdaterMode)
-        return 0;
-    return d->m_parent;
+    return d->m_parentComponent;
 }
 
 /*!
@@ -317,7 +315,7 @@ void Component::appendComponent(Component* component)
     d->m_allComponents = d->m_components + d->m_virtualComponents;
     if (Component *parent = component->parentComponent())
         parent->removeComponent(component);
-    component->d->m_parent = this;
+    component->d->m_parentComponent = this;
     setTristate(childCount() > 0);
 }
 
@@ -328,7 +326,7 @@ void Component::appendComponent(Component* component)
 void Component::removeComponent(Component *component)
 {
     if (component->parentComponent() == this) {
-        component->d->m_parent = 0;
+        component->d->m_parentComponent = 0;
         d->m_components.removeAll(component);
         d->m_virtualComponents.removeAll(component);
         d->m_allComponents = d->m_components + d->m_virtualComponents;
@@ -393,24 +391,24 @@ void Component::loadComponentScript(const QString &fileName)
             file.errorString()));
     }
 
-    d->scriptEngine.evaluate(QLatin1String(file.readAll()), fileName);
-    if (d->scriptEngine.hasUncaughtException()) {
+    d->m_scriptEngine.evaluate(QLatin1String(file.readAll()), fileName);
+    if (d->m_scriptEngine.hasUncaughtException()) {
         throw Error(QObject::tr("Exception while loading the component script %1")
-            .arg(uncaughtExceptionString(&(d->scriptEngine)/*, QFileInfo(file).absoluteFilePath()*/)));
+            .arg(uncaughtExceptionString(&(d->m_scriptEngine)/*, QFileInfo(file).absoluteFilePath()*/)));
     }
 
     const QList<Component*> components = d->m_installer->components(true, d->m_installer->runMode());
-    QScriptValue comps = d->scriptEngine.newArray(components.count());
+    QScriptValue comps = d->m_scriptEngine.newArray(components.count());
     for (int i = 0; i < components.count(); ++i)
-        comps.setProperty(i, d->scriptEngine.newQObject(components[i]));
+        comps.setProperty(i, d->m_scriptEngine.newQObject(components[i]));
 
-    d->scriptEngine.globalObject().property(QLatin1String("installer"))
+    d->m_scriptEngine.globalObject().property(QLatin1String("installer"))
         .setProperty(QLatin1String("components"), comps);
 
-    QScriptValue comp = d->scriptEngine.evaluate(QLatin1String("Component"));
-    if (!d->scriptEngine.hasUncaughtException()) {
-        d->scriptComponent = comp;
-        d->scriptComponent.construct();
+    QScriptValue comp = d->m_scriptEngine.evaluate(QLatin1String("Component"));
+    if (!d->m_scriptEngine.hasUncaughtException()) {
+        d->m_scriptComponent = comp;
+        d->m_scriptComponent.construct();
     }
 
     emit loaded();
@@ -437,24 +435,24 @@ void Component::languageChanged()
 */
 QScriptValue Component::callScriptMethod(const QString &methodName, const QScriptValueList& arguments)
 {
-    if (!d->unexistingScriptMethods.value(methodName, true))
+    if (!d->m_unexistingScriptMethods.value(methodName, true))
         return QScriptValue();
 
     // don't allow such a recursion
-    if (d->scriptEngine.currentContext()->backtrace().first().startsWith(methodName))
+    if (d->m_scriptEngine.currentContext()->backtrace().first().startsWith(methodName))
         return QScriptValue();
 
-    QScriptValue method = d->scriptComponent.property(QString::fromLatin1("prototype"))
+    QScriptValue method = d->m_scriptComponent.property(QString::fromLatin1("prototype"))
         .property(methodName);
     if (!method.isValid()) // this marks the method to be called not any longer
-        d->unexistingScriptMethods[methodName] = false;
+        d->m_unexistingScriptMethods[methodName] = false;
 
-    const QScriptValue result = method.call(d->scriptComponent, arguments);
+    const QScriptValue result = method.call(d->m_scriptComponent, arguments);
     if (!result.isValid())
         return result;
 
-    if (d->scriptEngine.hasUncaughtException())
-        throw Error(uncaughtExceptionString(&(d->scriptEngine)/*, name()*/));
+    if (d->m_scriptEngine.hasUncaughtException())
+        throw Error(uncaughtExceptionString(&(d->m_scriptEngine)/*, name()*/));
 
     return result;
 }
@@ -502,7 +500,7 @@ void Component::loadUserInterfaces(const QDir& directory, const QStringList& uis
         loader.setTranslationEnabled(true);
         loader.setLanguageChangeEnabled(true);
         QWidget* const w = loader.load(&file);
-        d->userInterfaces[w->objectName()] = w;
+        d->m_userInterfaces.insert(w->objectName(), w);
     }
 }
 
@@ -526,7 +524,7 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
 */
 QStringList Component::userInterfaces() const
 {
-    return d->userInterfaces.keys();
+    return d->m_userInterfaces.keys();
 }
 
 QHash<QString, QPair<QString, QString> > Component::licenses() const
@@ -539,7 +537,7 @@ QHash<QString, QPair<QString, QString> > Component::licenses() const
 */
 QWidget* Component::userInterface(const QString &name) const
 {
-    return d->userInterfaces.value(name);
+    return d->m_userInterfaces.value(name);
 }
 
 /*!
@@ -636,14 +634,14 @@ void Component::createOperations()
 {
     // the script can override this method
     if (callScriptMethod(QLatin1String("createOperations")).isValid()) {
-        d->operationsCreated = true;
+        d->m_operationsCreated = true;
         return;
     }
 
     foreach (const QString &archive, archives())
         createOperationsForArchive(archive);
 
-    d->operationsCreated = true;
+    d->m_operationsCreated = true;
 }
 
 /*!
@@ -653,7 +651,7 @@ void Component::createOperations()
 */
 void Component::registerPathForUninstallation(const QString &path, bool wipe)
 {
-    d->pathesForUninstallation.append(qMakePair(path, wipe));
+    d->m_pathesForUninstallation.append(qMakePair(path, wipe));
 }
 
 /*!
@@ -662,7 +660,7 @@ void Component::registerPathForUninstallation(const QString &path, bool wipe)
 */
 QList<QPair<QString, bool> > Component::pathesForUninstallation() const
 {
-    return d->pathesForUninstallation;
+    return d->m_pathesForUninstallation;
 }
 
 /*!
@@ -687,7 +685,7 @@ void Component::addDownloadableArchive(const QString &path)
 
     const QString versionPrefix = value(skVersion);
     verbose() << "addDownloadable " << path << std::endl;
-    d->downloadableArchives.append(versionPrefix + path);
+    d->m_downloadableArchives.append(versionPrefix + path);
 }
 
 /*!
@@ -699,7 +697,7 @@ void Component::addDownloadableArchive(const QString &path)
 void Component::removeDownloadableArchive(const QString &path)
 {
     Q_ASSERT(isFromOnlineRepository());
-    d->downloadableArchives.removeAll(path);
+    d->m_downloadableArchives.removeAll(path);
 }
 
 /*!
@@ -707,7 +705,7 @@ void Component::removeDownloadableArchive(const QString &path)
 */
 QStringList Component::downloadableArchives() const
 {
-    return d->downloadableArchives;
+    return d->m_downloadableArchives;
 }
 
 /*!
@@ -716,7 +714,7 @@ QStringList Component::downloadableArchives() const
 */
 void Component::addStopProcessForUpdateRequest(const QString &process)
 {
-    d->stopProcessForUpdateRequests.append(process);
+    d->m_stopProcessForUpdateRequests.append(process);
 }
 
 /*!
@@ -724,7 +722,7 @@ void Component::addStopProcessForUpdateRequest(const QString &process)
 */
 void Component::removeStopProcessForUpdateRequest(const QString &process)
 {
-    d->stopProcessForUpdateRequests.removeAll(process);
+    d->m_stopProcessForUpdateRequests.removeAll(process);
 }
 
 /*!
@@ -743,7 +741,7 @@ void Component::setStopProcessForUpdateRequest(const QString &process, bool requ
 */
 QStringList Component::stopProcessForUpdateRequests() const
 {
-    return d->stopProcessForUpdateRequests;
+    return d->m_stopProcessForUpdateRequests;
 }
 
 /*!
@@ -752,13 +750,13 @@ QStringList Component::stopProcessForUpdateRequests() const
 */
 QList<KDUpdater::UpdateOperation*> Component::operations() const
 {
-    if (d->autoCreateOperations && !d->operationsCreated) {
+    if (d->m_autoCreateOperations && !d->m_operationsCreated) {
         const_cast<Component*>(this)->createOperations();
 
-        if (!d->minimumProgressOperation) {
-            d->minimumProgressOperation = KDUpdater::UpdateOperationFactory::instance()
+        if (!d->m_minimumProgressOperation) {
+            d->m_minimumProgressOperation = KDUpdater::UpdateOperationFactory::instance()
                 .create(QLatin1String("MinimumProgress"));
-            d->operations.append(d->minimumProgressOperation);
+            d->m_operations.append(d->m_minimumProgressOperation);
         }
 
         if (!d->m_licenses.isEmpty()) {
@@ -772,10 +770,10 @@ QList<KDUpdater::UpdateOperation*> Component::operations() const
             for (int i = 0; i < values.count(); ++i)
                 licenses.insert(values.at(i).first, values.at(i).second);
             d->m_licenseOperation->setValue(QLatin1String("licenses"), licenses);
-            d->operations.append(d->m_licenseOperation);
+            d->m_operations.append(d->m_licenseOperation);
         }
     }
-    return d->operations;
+    return d->m_operations;
 }
 
 /*!
@@ -783,7 +781,7 @@ QList<KDUpdater::UpdateOperation*> Component::operations() const
 */
 void Component::addOperation(KDUpdater::UpdateOperation* operation)
 {
-    d->operations.append(operation);
+    d->m_operations.append(operation);
     if (FSEngineClientHandler::instance()->isActive())
         operation->setValue(QLatin1String("admin"), true);
 }
@@ -800,7 +798,7 @@ void Component::addElevatedOperation(KDUpdater::UpdateOperation* operation)
 
 bool Component::operationsCreatedSuccessfully() const
 {
-    return d->operationsCreatedSuccessfully;
+    return d->m_operationsCreatedSuccessfully;
 }
 
 KDUpdater::UpdateOperation* Component::createOperation(const QString &operation,
@@ -817,7 +815,7 @@ KDUpdater::UpdateOperation* Component::createOperation(const QString &operation,
             tr("Error: Operation %1 does not exist").arg(operation),
             QMessageBox::Abort | QMessageBox::Ignore);
         if (button == QMessageBox::Abort)
-            d->operationsCreatedSuccessfully = false;
+            d->m_operationsCreatedSuccessfully = false;
         return op;
     }
 
@@ -897,12 +895,12 @@ bool Component::addElevatedOperation(const QString &operation, const QString &pa
 */
 bool Component::autoCreateOperations() const
 {
-    return d->autoCreateOperations;
+    return d->m_autoCreateOperations;
 }
 
 void Component::setAutoCreateOperations(bool autoCreateOperations)
 {
-    d->autoCreateOperations = autoCreateOperations;
+    d->m_autoCreateOperations = autoCreateOperations;
 }
 
 /*!
@@ -1004,7 +1002,7 @@ bool Component::isFromOnlineRepository() const
 */
 QUrl Component::repositoryUrl() const
 {
-    return d->repositoryUrl;
+    return d->m_repositoryUrl;
 }
 
 /*!
@@ -1012,18 +1010,18 @@ QUrl Component::repositoryUrl() const
 */
 void Component::setRepositoryUrl(const QUrl& url)
 {
-    d->repositoryUrl = url;
+    d->m_repositoryUrl = url;
 }
 
 
 QString Component::localTempPath() const
 {
-    return d->localTempPath;
+    return d->m_localTempPath;
 }
 
 void Component::setLocalTempPath(const QString &tempLocalPath)
 {
-    d->localTempPath = tempLocalPath;
+    d->m_localTempPath = tempLocalPath;
 }
 
 void Component::updateModelData(const QString &key, const QString &data)

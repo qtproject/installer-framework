@@ -106,9 +106,9 @@ public:
     QStringList archives() const;
     Installer *installer() const;
 
+    Component *parentComponent() const;
     void appendComponent(Component *component);
     void removeComponent(Component *component);
-    Component *parentComponent(RunMode runMode = AllMode) const;
     QList<Component*> childComponents(bool recursive = false, RunMode runMode = AllMode) const;
 
     void loadComponentScript();
