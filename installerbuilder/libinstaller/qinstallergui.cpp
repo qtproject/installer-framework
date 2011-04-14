@@ -1587,7 +1587,11 @@ void FinishedPage::entering()
         wizard()->button(QWizard::BackButton)->setVisible(false);
 
     if (installer()->isPackageManager() || installer()->isUpdater()) {
-        setButtonText(QWizard::CommitButton, QLatin1String("&Finish"));
+#ifdef Q_WS_MAC
+        setButtonText(QWizard::CommitButton, tr("&Done"));
+#else
+        setButtonText(QWizard::CommitButton, tr("&Finish"));
+#endif
         wizard()->button(QWizard::CommitButton)->disconnect(this);
         connect(wizard()->button(QWizard::CommitButton), SIGNAL(clicked()), this,
             SLOT(handleFinishClicked()));
