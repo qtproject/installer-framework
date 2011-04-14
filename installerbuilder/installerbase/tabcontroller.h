@@ -60,13 +60,8 @@ public Q_SLOTS:
     int initPackageManager();
 
 private Q_SLOTS:
-    void accepted();
-    void rejected();
+    void finished();
     void restartWizard();
-
-    void updaterFinishedWithError();
-    void updaterFinished(bool error);
-    void updaterFinished(int val = 0);
 
 private:
     class Private;

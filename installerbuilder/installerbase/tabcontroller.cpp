@@ -139,8 +139,8 @@ int TabController::init()
         }
 
         if (!d->m_installer->isInstaller()) {
-            connect(d->m_gui, SIGNAL(accepted()), this, SLOT(accepted()));
-            connect(d->m_gui, SIGNAL(rejected()), this, SLOT(rejected()));
+            connect(d->m_gui, SIGNAL(accepted()), this, SLOT(finished()), Qt::QueuedConnection);
+            connect(d->m_gui, SIGNAL(rejected()), this, SLOT(finished()), Qt::QueuedConnection);
             d->m_gui->setWindowTitle(d->m_installer->value(QLatin1String("MaintenanceTitle")));
         }
 
@@ -149,12 +149,6 @@ int TabController::init()
         connect(introPage, SIGNAL(initUpdater()), this, SLOT(initUpdater()));
         connect(introPage, SIGNAL(initPackageManager()), this, SLOT(initPackageManager()));
     }
-
-    //if (!d->m_installer->isInstaller() && !d->m_init) {
-        //connect(d->m_updater.data(), SIGNAL(updateFinished(bool)), this, SLOT(updaterFinished(bool)));
-        //connect(w, SIGNAL(rejected()), this, SLOT(updaterFinishedWithError()));
-        //connect(w, SIGNAL(finished(int)), this, SLOT(updaterFinished(int)));
-    //}
 
     d->m_updaterInitialized = false;
     d->m_packageManagerInitialized = false;
@@ -266,12 +260,7 @@ int TabController::initPackageManager()
 
 // -- private slots
 
-void TabController::accepted()
-{
-    d->m_installer->writeUninstaller();
-}
-
-void TabController::rejected()
+void TabController::finished()
 {
     d->m_installer->writeUninstaller();
 }
@@ -283,31 +272,3 @@ void TabController::restartWizard()
     // restart and switch back to intro page
     QTimer::singleShot(0, this, SLOT(init()));
 }
-
-void TabController::updaterFinishedWithError()
-{
-    d->m_installer->writeUninstaller();
-
-    if (!d->m_installer->isInstaller() && !d->m_gui.isNull())
-        d->m_gui->rejectWithoutPrompt();
-
-    rejected();
-}
-
-void TabController::updaterFinished(bool error)
-{
-    if (d->m_installer->needsRestart())
-        updaterFinishedWithError();
-    //else if (!error)
-    //    checkRepositories();
-}
-
-void TabController::updaterFinished(int val)
-{
-    if (val != QDialog::Accepted) {
-        if (!d->m_installer->isInstaller() && !d->m_gui.isNull())
-            d->m_gui->rejectWithoutPrompt();
-        accepted();
-    }
-}
-
