@@ -282,6 +282,7 @@ QString InstallerPrivate::localComponentsXmlPath() const
 void InstallerPrivate::initialize()
 {
     try {
+        delete m_installerSettings;
         m_installerSettings = new InstallerSettings(InstallerSettings::fromFileAndPrefix(
             QLatin1String(":/metadata/installer-config/config.xml"),
             QLatin1String(":/metadata/installer-config/")));
@@ -348,7 +349,9 @@ void InstallerPrivate::initialize()
 #endif
     }
 
+    disconnect(this, SIGNAL(installationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
     connect(this, SIGNAL(installationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
+    disconnect(this, SIGNAL(uninstallationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
     connect(this, SIGNAL(uninstallationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
 }
 
