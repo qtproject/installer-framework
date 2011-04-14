@@ -41,79 +41,85 @@
 
 namespace QInstaller {
 
-QMap<const Component*, Qt::CheckState> ComponentPrivate::cachedCheckStates;
+// -- ComponentPrivate
 
 ComponentPrivate::ComponentPrivate(Installer* installer, Component* qq)
     : q(qq),
     m_installer(installer),
-    m_parent(0),
-    m_offsetInInstaller(0),
-    autoCreateOperations(true),
-    operationsCreated(false),
-    removeBeforeUpdate(true),
-    isCheckedFromUpdater(false),
+    m_parentComponent(0),
+    m_licenseOperation(0),
+    m_minimumProgressOperation(0),
     m_newlyInstalled (false),
-    operationsCreatedSuccessfully(true),
-    minimumProgressOperation(0),
-    m_licenseOperation(0)
+    m_operationsCreated(false),
+    m_removeBeforeUpdate(true),
+    m_autoCreateOperations(true),
+    m_operationsCreatedSuccessfully(true)
 {
 }
 
 void ComponentPrivate::init()
 {
     // register translation stuff
-    scriptEngine.installTranslatorFunctions();
+    m_scriptEngine.installTranslatorFunctions();
 
     // register QMessageBox::StandardButton enum in the script connection
-    registerMessageBox(&scriptEngine);
+    registerMessageBox(&m_scriptEngine);
 
     // register QDesktopServices in the script connection
-    QScriptValue desktopServices = scriptEngine.newArray();
-    desktopServices.setProperty(QLatin1String("DesktopLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::DesktopLocation)));
-    desktopServices.setProperty(QLatin1String("DocumentsLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::DocumentsLocation)));
-    desktopServices.setProperty(QLatin1String("FontsLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::FontsLocation)));
-    desktopServices.setProperty(QLatin1String("ApplicationsLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::ApplicationsLocation)));
-    desktopServices.setProperty(QLatin1String("MusicLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::MusicLocation)));
-    desktopServices.setProperty(QLatin1String("MoviesLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::MoviesLocation)));
-    desktopServices.setProperty(QLatin1String("PicturesLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::PicturesLocation)));
-    desktopServices.setProperty(QLatin1String("TempLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::TempLocation)));
-    desktopServices.setProperty(QLatin1String("HomeLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::HomeLocation)));
-    desktopServices.setProperty(QLatin1String("DataLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::DataLocation)));
-    desktopServices.setProperty(QLatin1String("CacheLocation"), scriptEngine.newVariant(static_cast< int >(QDesktopServices::CacheLocation)));
+    QScriptValue desktopServices = m_scriptEngine.newArray();
+    setProperty(desktopServices, QLatin1String("DesktopLocation"), QDesktopServices::DesktopLocation);
+    setProperty(desktopServices, QLatin1String("DocumentsLocation"), QDesktopServices::DocumentsLocation);
+    setProperty(desktopServices, QLatin1String("FontsLocation"), QDesktopServices::FontsLocation);
+    setProperty(desktopServices, QLatin1String("ApplicationsLocation"), QDesktopServices::ApplicationsLocation);
+    setProperty(desktopServices, QLatin1String("MusicLocation"), QDesktopServices::MusicLocation);
+    setProperty(desktopServices, QLatin1String("MoviesLocation"), QDesktopServices::MoviesLocation);
+    setProperty(desktopServices, QLatin1String("PicturesLocation"), QDesktopServices::PicturesLocation);
+    setProperty(desktopServices, QLatin1String("TempLocation"), QDesktopServices::TempLocation);
+    setProperty(desktopServices, QLatin1String("HomeLocation"), QDesktopServices::HomeLocation);
+    setProperty(desktopServices, QLatin1String("DataLocation"), QDesktopServices::DataLocation);
+    setProperty(desktopServices, QLatin1String("CacheLocation"), QDesktopServices::CacheLocation);
 
-    desktopServices.setProperty(QLatin1String("openUrl"), scriptEngine.newFunction(qDesktopServicesOpenUrl));
-    desktopServices.setProperty(QLatin1String("displayName"), scriptEngine.newFunction(qDesktopServicesDisplayName));
-    desktopServices.setProperty(QLatin1String("storageLocation"), scriptEngine.newFunction(qDesktopServicesStorageLocation));
-    scriptEngine.globalObject().setProperty(QLatin1String("QDesktopServices"), desktopServices);
+    desktopServices.setProperty(QLatin1String("openUrl"), m_scriptEngine.newFunction(qDesktopServicesOpenUrl));
+    desktopServices.setProperty(QLatin1String("displayName"),
+        m_scriptEngine.newFunction(qDesktopServicesDisplayName));
+    desktopServices.setProperty(QLatin1String("storageLocation"),
+        m_scriptEngine.newFunction(qDesktopServicesStorageLocation));
 
     // register ::WizardPage enum in the script connection
-    QScriptValue qinstaller = scriptEngine.newArray();
-    qinstaller.setProperty(QLatin1String("Introduction"), scriptEngine.newVariant(static_cast< int >(Installer::Introduction)));
-    qinstaller.setProperty(QLatin1String("LicenseCheck"), scriptEngine.newVariant(static_cast< int >(Installer::LicenseCheck)));
-    qinstaller.setProperty(QLatin1String("TargetDirectory"), scriptEngine.newVariant(static_cast< int >(Installer::TargetDirectory)));
-    qinstaller.setProperty(QLatin1String("ComponentSelection"), scriptEngine.newVariant(static_cast< int >(Installer::ComponentSelection)));
-    qinstaller.setProperty(QLatin1String("StartMenuSelection"), scriptEngine.newVariant(static_cast< int >(Installer::StartMenuSelection)));
-    qinstaller.setProperty(QLatin1String("ReadyForInstallation"), scriptEngine.newVariant(static_cast< int >(Installer::ReadyForInstallation)));
-    qinstaller.setProperty(QLatin1String("PerformInstallation"), scriptEngine.newVariant(static_cast< int >(Installer::PerformInstallation)));
-    qinstaller.setProperty(QLatin1String("InstallationFinished"), scriptEngine.newVariant(static_cast< int >(Installer::InstallationFinished)));
-    qinstaller.setProperty(QLatin1String("End"), scriptEngine.newVariant(static_cast< int >(Installer::End)));
+    QScriptValue qinstaller = m_scriptEngine.newArray();
+    setProperty(qinstaller, QLatin1String("Introduction"), Installer::Introduction);
+    setProperty(qinstaller, QLatin1String("LicenseCheck"), Installer::LicenseCheck);
+    setProperty(qinstaller, QLatin1String("TargetDirectory"), Installer::TargetDirectory);
+    setProperty(qinstaller, QLatin1String("ComponentSelection"), Installer::ComponentSelection);
+    setProperty(qinstaller, QLatin1String("StartMenuSelection"), Installer::StartMenuSelection);
+    setProperty(qinstaller, QLatin1String("ReadyForInstallation"), Installer::ReadyForInstallation);
+    setProperty(qinstaller, QLatin1String("PerformInstallation"), Installer::PerformInstallation);
+    setProperty(qinstaller, QLatin1String("InstallationFinished"), Installer::InstallationFinished);
+    setProperty(qinstaller, QLatin1String("End"), Installer::End);
 
     // register ::Status enum in the script connection
-    qinstaller.setProperty(QLatin1String("InstallerSuccess"), scriptEngine.newVariant(static_cast< int >(Installer::Success)));
-    qinstaller.setProperty(QLatin1String("InstallerSucceeded"), scriptEngine.newVariant(static_cast< int >(Installer::Success)));
-    qinstaller.setProperty(QLatin1String("InstallerFailed"), scriptEngine.newVariant(static_cast< int >(Installer::Failure)));
-    qinstaller.setProperty(QLatin1String("InstallerFailure"), scriptEngine.newVariant(static_cast< int >(Installer::Failure)));
-    qinstaller.setProperty(QLatin1String("InstallerRunning"), scriptEngine.newVariant(static_cast< int >(Installer::Running)));
-    qinstaller.setProperty(QLatin1String("InstallerCanceled"), scriptEngine.newVariant(static_cast< int >(Installer::Canceled)));
-    qinstaller.setProperty(QLatin1String("InstallerCanceledByUser"), scriptEngine.newVariant(static_cast< int >(Installer::Canceled)));
-    qinstaller.setProperty(QLatin1String("InstallerUnfinished"), scriptEngine.newVariant(static_cast< int >(Installer::Unfinished)));
+    setProperty(qinstaller, QLatin1String("InstallerSuccess"), Installer::Success);
+    setProperty(qinstaller, QLatin1String("InstallerSucceeded"), Installer::Success);
+    setProperty(qinstaller, QLatin1String("InstallerFailed"), Installer::Failure);
+    setProperty(qinstaller, QLatin1String("InstallerFailure"), Installer::Failure);
+    setProperty(qinstaller, QLatin1String("InstallerRunning"), Installer::Running);
+    setProperty(qinstaller, QLatin1String("InstallerCanceled"), Installer::Canceled);
+    setProperty(qinstaller, QLatin1String("InstallerCanceledByUser"), Installer::Canceled);
+    setProperty(qinstaller, QLatin1String("InstallerUnfinished"), Installer::Unfinished);
 
+    QScriptValue installerObject = m_scriptEngine.newQObject(m_installer);
+    installerObject.setProperty(QLatin1String("componentByName"),
+        m_scriptEngine.newFunction(qInstallerComponentByName, 1));
 
-    scriptEngine.globalObject().setProperty(QLatin1String("QInstaller"), qinstaller);
-    scriptEngine.globalObject().setProperty(QLatin1String("component"), scriptEngine.newQObject(q));
-    QScriptValue installerObject = scriptEngine.newQObject(m_installer);
-    installerObject.setProperty(QLatin1String("componentByName"), scriptEngine.newFunction(qInstallerComponentByName, 1));
-    scriptEngine.globalObject().setProperty(QLatin1String("installer"), installerObject);
+    m_scriptEngine.globalObject().setProperty(QLatin1String("QInstaller"), qinstaller);
+    m_scriptEngine.globalObject().setProperty(QLatin1String("installer"), installerObject);
+    m_scriptEngine.globalObject().setProperty(QLatin1String("QDesktopServices"), desktopServices);
+    m_scriptEngine.globalObject().setProperty(QLatin1String("component"), m_scriptEngine.newQObject(q));
+}
+
+void ComponentPrivate::setProperty(QScriptValue &scriptValue, const QString &propertyName, int value)
+{
+    scriptValue.setProperty(propertyName, m_scriptEngine.newVariant(value));
 }
 
 
@@ -144,9 +150,10 @@ int ComponentModelHelper::childCount() const
 */
 int ComponentModelHelper::indexInParent() const
 {
-    if (Component *parent = m_componentPrivate->m_parent->parentComponent())
-        return parent->childComponents().indexOf(m_componentPrivate->m_parent);
-    return 0;
+    int index = 0;
+    if (Component *parent = m_componentPrivate->m_parentComponent->parentComponent())
+        index = parent->childComponents(false, AllMode).indexOf(m_componentPrivate->m_parentComponent);
+    return (index >= 0 ? index : 0);
 }
 
 /*!
@@ -161,7 +168,7 @@ QList<Component*> ComponentModelHelper::childs() const
     QList<Component*> result;
     foreach (Component *component, *components) {
         result.append(component);
-        result += component->childComponents(true);
+        result += component->childComponents(true, AllMode);
     }
     return result;
 }

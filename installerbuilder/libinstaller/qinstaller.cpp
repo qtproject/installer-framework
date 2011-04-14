@@ -114,8 +114,8 @@ static Component* subComponentByName(const Installer *installer, const QString &
     if (check != 0 && componentMatches(check, name, version))
         return check;
 
-    const QList<Component*> rootComponents =
-        check == 0 ? installer->components(false, AllMode) : check->childComponents();
+    const QList<Component*> rootComponents = check == 0 ? installer->components(false, AllMode)
+        : check->childComponents(false, AllMode);
     foreach (QInstaller::Component* component, rootComponents) {
         Component* const result = subComponentByName(installer, name, version, component);
         if (result != 0)
@@ -193,7 +193,7 @@ QString QInstaller::uncaughtExceptionString(QScriptEngine *scriptEngine/*, const
     //if (!context.isEmpty())
     //    errorString.prepend(context + QLatin1String(": "));
 
-    //usually the linenumber is in the backtrace
+    //usually the line number is in the backtrace
     errorString = errorString.arg(/*QString::number(scriptEngine->uncaughtExceptionLineNumber()),*/
                     scriptEngine->uncaughtException().toString(),
                     scriptEngine->uncaughtExceptionBacktrace().join(QLatin1String("\n")));
@@ -328,6 +328,7 @@ void Installer::setMessageBoxAutomaticAnswer(const QString &identifier, int butt
         static_cast<QMessageBox::Button>(button));
 }
 
+// TODO: figure out why we have this function at all
 void Installer::installSelectedComponents()
 {
     d->setStatus(Installer::Running);
@@ -336,6 +337,8 @@ void Installer::installSelectedComponents()
     double downloadPartProgressSize = double(1)/3;
     double componentsInstallPartProgressSize = double(2)/3;
     // get the list of packages we need to install in proper order and do it for the updater
+
+    // TODO: why only updater mode???
     const int downloadedArchivesCount = downloadNeededArchives(UpdaterMode, downloadPartProgressSize);
 
     //if there was no download we have the whole progress for installing components
@@ -354,7 +357,7 @@ void Installer::installSelectedComponents()
     int progressOperationCount = d->countProgressOperations(components);
     double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
-    //TODO: devide this in undo steps and install steps (2 "for" loops) for better progress calculation
+    // TODO: divide this in undo steps and install steps (2 "for" loops) for better progress calculation
     foreach (Component* const currentComponent, components) {
         if (d->statusCanceledOrFailed())
             throw Error(tr("Installation canceled by user"));
@@ -386,8 +389,8 @@ void Installer::installSelectedComponents()
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(
             tr("\nInstalling the new version of: %1").arg(currentComponent->name()));
         installComponent(currentComponent, progressOperationSize);
-        //commit all operations for this allready updated/installed component
-        //so an undo during the installComponent function only undos the uncomplete installed one
+        //commit all operations for this already updated/installed component
+        //so an undo during the installComponent function only undoes the uncompleted installed one
         d->commitSessionOperations();
         d->m_needToWriteUninstaller = true;
     }
@@ -473,22 +476,22 @@ int Installer::downloadNeededArchives(RunMode runMode, double partProgressSize)
     return archivesToDownload.count();
 }
 
-void Installer::installComponent(Component* comp, double progressOperationSize)
+void Installer::installComponent(Component *component, double progressOperationSize)
 {
     Q_ASSERT(progressOperationSize);
 
     d->setStatus(Installer::Running);
-    const QList<KDUpdater::UpdateOperation*> operations = comp->operations();
+    const QList<KDUpdater::UpdateOperation*> operations = component->operations();
 
     // show only component which are doing something, MinimumProgress is only for progress
     // calculation safeness
     if (operations.count() > 1
         || (operations.count() == 1 && operations.at(0)->name() != QLatin1String("MinimumProgress"))) {
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1")
-            .arg(comp->displayName()));
+            ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1")
+                .arg(component->displayName()));
     }
 
-    if (!comp->operationsCreatedSuccessfully())
+    if (!component->operationsCreatedSuccessfully())
         setCanceled();
 
     QList<KDUpdater::UpdateOperation*>::const_iterator op;
@@ -518,7 +521,7 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
             const QMessageBox::StandardButton button =
                 MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
-                tr("Error during installation process (%1):\n%2").arg(comp->name(),
+                tr("Error during installation process (%1):\n%2").arg(component->name(),
                 operation->errorString()),
                 QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel, QMessageBox::Retry);
 
@@ -532,10 +535,10 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
 
         if (ok || operation->error() > KDUpdater::UpdateOperation::InvalidArguments) {
             // remember that the operation was performed what allows us to undo it if a
-            // following operaton fails or if this operation failed but still needs
+            // following operation fails or if this operation failed but still needs
             // an undo call to cleanup.
             d->addPerformed(operation);
-            operation->setValue(QLatin1String("component"), comp->name());
+            operation->setValue(QLatin1String("component"), component->name());
         }
 
         if (becameAdmin)
@@ -544,35 +547,35 @@ void Installer::installComponent(Component* comp, double progressOperationSize)
         if (!ok && !ignoreError)
             throw Error(operation->errorString());
 
-        if (comp->value(QLatin1String("Important"), QLatin1String("false")) == QLatin1String("true"))
+        if (component->value(QLatin1String("Important"), QLatin1String("false")) == QLatin1String("true"))
             d->m_forceRestart = true;
     }
 
-    d->registerPathesForUninstallation(comp->pathesForUninstallation(), comp->name());
+    d->registerPathesForUninstallation(component->pathesForUninstallation(), component->name());
 
-    if (!comp->stopProcessForUpdateRequests().isEmpty()) {
+    if (!component->stopProcessForUpdateRequests().isEmpty()) {
         KDUpdater::UpdateOperation *stopProcessForUpdatesOp =
             KDUpdater::UpdateOperationFactory::instance().create(QLatin1String("FakeStopProcessForUpdate"));
-        const QStringList arguments(comp->stopProcessForUpdateRequests().join(QLatin1String(",")));
+        const QStringList arguments(component->stopProcessForUpdateRequests().join(QLatin1String(",")));
         stopProcessForUpdatesOp->setArguments(arguments);
         d->addPerformed(stopProcessForUpdatesOp);
-        stopProcessForUpdatesOp->setValue(QLatin1String("component"), comp->name());
+        stopProcessForUpdatesOp->setValue(QLatin1String("component"), component->name());
     }
 
     // now mark the component as installed
     KDUpdater::PackagesInfo* const packages = d->m_app->packagesInfo();
     const bool forcedInstall =
-        comp->value(QLatin1String("ForcedInstallation")).toLower() == QLatin1String("true")
+        component->value(QLatin1String("ForcedInstallation")).toLower() == QLatin1String("true")
         ? true : false;
     const bool virtualComponent =
-        comp->value(QLatin1String("Virtual")).toLower() == QLatin1String("true") ? true : false;
-    packages->installPackage(comp->value(QLatin1String("Name")),
-        comp->value(QLatin1String("Version")), comp->value(QLatin1String("DisplayName")),
-        comp->value(QLatin1String("Description")), comp->dependencies(), forcedInstall,
-        virtualComponent, comp->value(QLatin1String("UncompressedSize")).toULongLong());
+        component->value(QLatin1String("Virtual")).toLower() == QLatin1String("true") ? true : false;
+    packages->installPackage(component->value(QLatin1String("Name")),
+        component->value(QLatin1String("Version")), component->value(QLatin1String("DisplayName")),
+        component->value(QLatin1String("Description")), component->dependencies(), forcedInstall,
+        virtualComponent, component->value(QLatin1String("UncompressedSize")).toULongLong());
 
-    comp->setInstalled();
-    comp->markAsPerformedInstallation();
+    component->setInstalled();
+    component->markAsPerformedInstallation();
 }
 
 /*!
@@ -595,7 +598,7 @@ void Installer::rollBackInstallation()
         d->countProgressOperations(d->m_performedOperationsCurrentSession.toList());
     double progressOperationSize = double(1) / progressOperationCount;
 
-    //reregister all the undooperations with the new size to the ProgressCoordninator
+    //re register all the undo operations with the new size to the ProgressCoordninator
     foreach (KDUpdater::UpdateOperation* const operation, d->m_performedOperationsCurrentSession) {
         QObject* const operationObject = dynamic_cast<QObject*>(operation);
         if (operationObject != 0) {
@@ -685,7 +688,7 @@ RunMode Installer::runMode() const
 
 /*!
     Returns a hash containing the installed package name and it's associated package information. If
-    the application is runing in installer mode or the local components file could not be parsed, the
+    the application is running in installer mode or the local components file could not be parsed, the
     hash is empty.
 */
 QHash<QString, KDUpdater::PackageInfo> Installer::localInstalledPackages()
@@ -789,7 +792,7 @@ bool Installer::fetchAllPackages()
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {
         if (!addUpdateResourcesFrom(metaInfoJob.data(), *d->m_installerSettings, true)) {
-            verbose() << tr("Could not add temorary upade source information.") << std::endl;
+            verbose() << tr("Could not add temporary update source information.") << std::endl;
             return false;
         }
     }
@@ -885,7 +888,7 @@ bool Installer::fetchUpdaterPackages()
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {
         if (!addUpdateResourcesFrom(metaInfoJob.data(), *d->m_installerSettings, true)) {
-            verbose() << tr("Could not add temorary upade source information.") << std::endl;
+            verbose() << tr("Could not add temporary update source information.") << std::endl;
             return false;
         }
     }
@@ -1134,7 +1137,7 @@ QList<Component*> Installer::components(bool recursive, RunMode runMode) const
     QList<Component*> result;
     foreach (QInstaller::Component *component, d->m_rootComponents) {
         result.push_back(component);
-        result += component->childComponents(true);
+        result += component->childComponents(true, runMode);
     }
 
     return result;
@@ -1161,20 +1164,22 @@ QList<Component*> Installer::componentsToInstall(RunMode runMode) const
 */
 QList<Component*> Installer::dependees(const Component *component) const
 {
-    QList<Component*> result;
+    QList<Component*> allComponents = components(true, runMode());
+    if (runMode() == UpdaterMode)
+        allComponents += d->m_updaterComponentsDeps;
 
-    const QList<Component*> allComponents = components(true, AllMode);
-    foreach (Component* const c, allComponents) {
-        const QStringList deps = c->value(QString::fromLatin1("Dependencies"))
+    QList<Component*> result;
+    foreach (Component *comp, allComponents) {
+        const QStringList dependencies = comp->value(QString::fromLatin1("Dependencies"))
             .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
 
         const QLatin1Char dash('-');
-        foreach (const QString &dep, deps) {
+        foreach (const QString &dependency, dependencies) {
             // the last part is considered to be the version, then
-            const QString id = dep.contains(dash) ? dep.section(dash, 0, 0) : dep;
-            const QString version = dep.contains(dash) ? dep.section(dash, 1) : QString();
-            if (componentMatches(component, id, version))
-                result.push_back(c);
+            const QString name = dependency.contains(dash) ? dependency.section(dash, 0, 0) : dependency;
+            const QString version = dependency.contains(dash) ? dependency.section(dash, 1) : QString();
+            if (componentMatches(component, name, version))
+                result.append(comp);
         }
     }
 
@@ -1186,62 +1191,56 @@ QList<Component*> Installer::dependees(const Component *component) const
 */
 QList<Component*> Installer::missingDependencies(const Component *component) const
 {
-    QList<Component*> result;
-    const QStringList deps = component->value(QString::fromLatin1("Dependencies"))
+    QList<Component*> allComponents = components(true, runMode());
+    if (runMode() == UpdaterMode)
+        allComponents += d->m_updaterComponentsDeps;
+
+    const QStringList dependencies = component->value(QString::fromLatin1("Dependencies"))
         .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
 
+    QList<Component*> result;
     const QLatin1Char dash('-');
-    for (QStringList::const_iterator it = deps.begin(); it != deps.end(); ++it) {
-        const bool containsVersionString = it->contains(dash);
-        const QString version =  containsVersionString ? it->section(dash, 1) : QString();
-        const QString name = containsVersionString ? it->section(dash, 0, 0) : *it;
+    foreach (const QString &dependency, dependencies) {
+        const bool hasVersionString = dependency.contains(dash);
+        const QString name = hasVersionString ? dependency.section(dash, 0, 0) : dependency;
 
         bool installed = false;
-        QList<Component*> compList = components(true, AllMode);
-        foreach (const Component* comp, compList) {
-            if (!name.isEmpty() && comp->name() == name && !version.isEmpty()) {
-                if (Installer::versionMatches(comp->value(QLatin1String("InstalledVersion")), version))
+        foreach (Component *comp, allComponents) {
+            if (comp->name() == name) {
+                if (hasVersionString) {
+                    const QString version = dependency.section(dash, 1);
+                    if (Installer::versionMatches(comp->value(QLatin1String("InstalledVersion")), version))
+                        installed = true;
+                } else if (comp->isInstalled()) {
                     installed = true;
-            } else if (comp->name() == name) {
-                installed = true;
-            }
-        }
-
-        compList = components(true, UpdaterMode);
-        foreach (const Component *comp, d->m_updaterComponents) {
-            if (!name.isEmpty() && comp->name() == name && !version.isEmpty()) {
-                if (Installer::versionMatches(comp->value(QLatin1String("InstalledVersion")), version))
-                    installed = true;
-            } else if (comp->name() == name) {
-                installed = true;
+                }
             }
         }
 
         if (!installed) {
-            if (Component *comp = componentByName(name))
-                result.push_back(comp);
+            if (Component *comp = componentByName(dependency))
+                result.append(comp);
         }
     }
     return result;
 }
 
 /*!
-    Returns a list of dependencies for \a component.
-    If there's a dependency which cannot be fullfilled, the list contains 0 values.
+    Returns a list of dependencies for \a component. If there's a dependency which cannot be fulfilled,
+    \a missingComponents will contain the missing components.
 */
-QList<Component*> Installer::dependencies(const Component *component,
-    QStringList *missingPackageNames) const
+QList<Component*> Installer::dependencies(const Component *component, QStringList &missingComponents) const
 {
     QList<Component*> result;
-    const QStringList deps = component->value(QString::fromLatin1("Dependencies"))
+    const QStringList dependencies = component->value(QString::fromLatin1("Dependencies"))
         .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
 
-    foreach (const QString &name, deps) {
-        Component* comp = componentByName(name);
-        if (!comp && missingPackageNames)
-            missingPackageNames->append(name);
+    foreach (const QString &dependency, dependencies) {
+        Component *component = componentByName(dependency);
+        if (component)
+            result.append(component);
         else
-            result.push_back(comp);
+            missingComponents.append(dependency);
     }
     return result;
 }
@@ -1274,7 +1273,7 @@ void Installer::dropAdminRights()
 }
 
 /*!
-    Return true, if a process with \a name is running. On Windows, the comparision
+    Return true, if a process with \a name is running. On Windows, the comparison
     is case-insensitive.
 */
 bool Installer::isProcessRunning(const QString &name) const
@@ -1332,7 +1331,7 @@ QString Installer::environmentVariable(const QString &name) const
 }
 
 /*!
-    Instantly performns an operation \a name with \a arguments.
+    Instantly performs an operation \a name with \a arguments.
     \sa Component::addOperation
 */
 bool Installer::performOperation(const QString &name, const QStringList &arguments)
@@ -1353,7 +1352,7 @@ bool Installer::performOperation(const QString &name, const QStringList &argumen
 
 /*!
     Returns true when \a version matches the \a requirement.
-    \a requirement can be a fixed version number or it can be prefix by the comparaters '>', '>=',
+    \a requirement can be a fixed version number or it can be prefix by the comparators '>', '>=',
     '<', '<=' and '='.
 */
 bool Installer::versionMatches(const QString &version, const QString &requirement)
@@ -1507,9 +1506,8 @@ Installer::Status Installer::status() const
     return Installer::Status(d->m_status);
 }
 /*!
-    returns true if at least one complete installation/update
-    was successfull, even if the user cancelled the newest
-    installation process.
+    Returns true if at least one complete installation/update was successful, even if the user cancelled the
+    newest installation process.
 */
 bool Installer::finishedWithSuccess() const
 {
@@ -1529,8 +1527,7 @@ void Installer::setCanceled()
 }
 
 /*!
-    Replaces all variables within \a str by their respective values and
-    returns the result.
+    Replaces all variables within \a str by their respective values and returns the result.
 */
 QString Installer::replaceVariables(const QString &str) const
 {
@@ -1538,9 +1535,8 @@ QString Installer::replaceVariables(const QString &str) const
 }
 
 /*!
-    Replaces all variables in any of \a str by their respective values and
-    returns the results.
     \overload
+    Replaces all variables in any of \a str by their respective values and returns the results.
 */
 QStringList Installer::replaceVariables(const QStringList &str) const
 {
@@ -1552,9 +1548,8 @@ QStringList Installer::replaceVariables(const QStringList &str) const
 }
 
 /*!
-    Replaces all variables within \a ba by their respective values and
-    returns the result.
     \overload
+    Replaces all variables within \a ba by their respective values and returns the result.
 */
 QByteArray Installer::replaceVariables(const QByteArray &ba) const
 {
@@ -1696,7 +1691,7 @@ bool Installer::run()
 }
 
 /*!
-    Returns the path name of the ininstaller binary.
+    Returns the path name of the uninstaller binary.
 */
 QString Installer::uninstallerName() const
 {
@@ -1708,7 +1703,7 @@ bool Installer::setAndParseLocalComponentsFile(KDUpdater::PackagesInfo &packages
     packagesInfo.setFileName(d->localComponentsXmlPath());
     const QString localComponentsXml = d->localComponentsXmlPath();
 
-    // handle errors occured by loading components.xml
+    // handle errors occurred by loading components.xml
     QFileInfo componentFileInfo(localComponentsXml);
     int silentRetries = d->m_silentRetries;
     while (!componentFileInfo.exists()) {

@@ -56,51 +56,35 @@ public:
     explicit ComponentPrivate(Installer* installer, Component* qq);
 
     void init();
-
-    static QMap<const Component*, Qt::CheckState> cachedCheckStates;
+    void setProperty(QScriptValue &scriptValue, const QString &propertyName, int value);
 
     Installer *m_installer;
+    Component *m_parentComponent;
+    KDUpdater::UpdateOperation *m_licenseOperation;
+    KDUpdater::UpdateOperation *m_minimumProgressOperation;
+
+    bool m_newlyInstalled;
+    bool m_operationsCreated;
+    bool m_removeBeforeUpdate;
+    bool m_autoCreateOperations;
+    bool m_operationsCreatedSuccessfully;
+
+    QUrl m_repositoryUrl;
+    QString m_localTempPath;
+    QScriptEngine m_scriptEngine;
+    QScriptValue m_scriptComponent;
     QHash<QString, QString> m_vars;
     QList<Component*> m_components;
     QList<Component*> m_allComponents;
+    QStringList m_downloadableArchives;
     QList<Component*> m_virtualComponents;
-    QList<KDUpdater::UpdateOperation* > operations;
-
-    QList<QPair<QString, bool> > pathesForUninstallation;
-
-    QMap<QString, QWidget*> userInterfaces;
-
-    QUrl repositoryUrl;
-    QString localTempPath;
-    QStringList downloadableArchives;
-    QStringList stopProcessForUpdateRequests;
-
-    Component* m_parent;
-
-    // filled before intaller runs
-    qint64 m_offsetInInstaller;
-
-    bool autoCreateOperations;
-    bool operationsCreated;
-
-    bool removeBeforeUpdate;
-
-    bool isCheckedFromUpdater;
-
-    bool m_newlyInstalled;
-
-    bool operationsCreatedSuccessfully;
-
-    QScriptEngine scriptEngine;
-    QScriptValue scriptComponent;
-
-    QHash<QString, bool> unexistingScriptMethods;
-
-    KDUpdater::UpdateOperation* minimumProgressOperation;
-
+    QMap<QString, QWidget*> m_userInterfaces;
+    QStringList m_stopProcessForUpdateRequests;
+    QHash<QString, bool> m_unexistingScriptMethods;
+    QList<KDUpdater::UpdateOperation*> m_operations;
     // < display name, < file name, file content > >
     QHash<QString, QPair<QString, QString> > m_licenses;
-    KDUpdater::UpdateOperation *m_licenseOperation;
+    QList<QPair<QString, bool> > m_pathesForUninstallation;
 };
 
 

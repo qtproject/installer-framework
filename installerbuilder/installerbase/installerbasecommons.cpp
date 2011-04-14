@@ -32,6 +32,7 @@
 **************************************************************************/
 #include "installerbasecommons.h"
 
+#include <common/installersettings.h>
 #include <messageboxhandler.h>
 #include <qinstaller.h>
 #include <qinstallercomponent.h>
@@ -235,9 +236,13 @@ bool TargetDirectoryPageImpl::validatePage()
     if (!QVariant(remove).toBool())
         return true;
 
-    if (QFileInfo(targetDir()).isDir()) {
-        QFileInfo fi2(targetDir() + QDir::separator() + installer()->uninstallerName());
-        if (QDir(targetDir()) == QDir::root()) {
+    const QDir dir(targetDir());
+    if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
+        return true;
+
+    QFileInfo fi(targetDir());
+    if (fi.isDir()) {
+        if (dir == QDir::root()) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("forbiddenTargetDirectory"), tr("Error"),
                 tr("As the install directory is completely deleted installing in %1 is forbidden")
@@ -245,6 +250,15 @@ bool TargetDirectoryPageImpl::validatePage()
             return false;
         }
 
+        QString fileName = installer()->settings().uninstallerName();
+#if defined(Q_WS_MAC)
+        if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
+            fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
+#elif defined(Q_OS_WIN)
+        fileName += QLatin1String(".exe");
+#endif
+
+        QFileInfo fi2(targetDir() + QDir::separator() + fileName);
         if (fi2.exists()) {
             return askQuestion(QLatin1String("overwriteTargetDirectory"),
                 TargetDirectoryPageImpl::tr("The folder you selected exists already and "
@@ -256,6 +270,12 @@ bool TargetDirectoryPageImpl::validatePage()
             "Note that it will be completely wiped on uninstallation of this application.\n"
             "It is not advisable to install into this folder as installation might fail.\n"
             "Do you want to continue?"));
+    } else if (fi.isFile() || fi.isSymLink()) {
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("WrongTargetDirectory"), tr("Error"),
+            tr("You have selected an existing file or symlink, please choose a different target for "
+            "installation."), QMessageBox::Ok);
+        return false;
     }
     return true;
 }

@@ -1143,11 +1143,11 @@ bool TargetDirectoryPage::validatePage()
 {
     if (targetDir().isEmpty()) {
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                                    QLatin1String("forbiddenTargetDirectory"), tr("Error"),
-                                    tr( "The install directory cannot be empty, please specify a valid folder"),
-                                    QMessageBox::Ok);
+            QLatin1String("forbiddenTargetDirectory"), tr("Error"),
+            tr( "The install directory cannot be empty, please specify a valid folder"), QMessageBox::Ok);
         return false;
     }
+
     const QDir dir(targetDir());
     // it exists, but is empty (might be created by the Browse button (getExistingDirectory)
     if (dir.exists() && dir.entryList(QDir::NoDotAndDotDot).isEmpty()) {
