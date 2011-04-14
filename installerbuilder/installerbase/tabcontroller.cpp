@@ -41,6 +41,7 @@
 #include <KDUpdater/PackagesInfo>
 
 #include <QtCore/QPointer>
+#include <QtCore/QTimer>
 
 #include <QtScript/QScriptEngine>
 
@@ -94,6 +95,34 @@ TabController::~TabController()
     delete d;
 }
 
+void TabController::setInstallerGui(QInstaller::Gui *gui)
+{
+    d->m_gui = gui;
+    connect(d->m_gui, SIGNAL(gotRestarted()), this, SLOT(restartWizard()));
+}
+
+void TabController::setControlScript (const QString &script)
+{
+    d->m_controlScript = script;
+}
+
+void TabController::setApplication(KDUpdater::Application *app)
+{
+    d->m_app = app;
+}
+
+void TabController::setInstaller(QInstaller::Installer *installer)
+{
+    d->m_installer = installer;
+}
+
+void TabController::setInstallerParams(const QHash<QString, QString> &params)
+{
+    d->m_params = params;
+}
+
+// -- public slots
+
 int TabController::init()
 {
     if (!d->m_init) {
@@ -138,34 +167,6 @@ int TabController::init()
 
     return initPackageManager();
 }
-
-void TabController::setInstallerGui(QInstaller::Gui *gui)
-{
-    d->m_gui = gui;
-    connect(d->m_gui, SIGNAL(gotRestarted()), this, SLOT(restartWizard()));
-}
-
-void TabController::setControlScript (const QString &script)
-{
-    d->m_controlScript = script;
-}
-
-void TabController::setApplication(KDUpdater::Application *app)
-{
-    d->m_app = app;
-}
-
-void TabController::setInstaller(QInstaller::Installer *installer)
-{
-    d->m_installer = installer;
-}
-
-void TabController::setInstallerParams(const QHash<QString, QString> &params)
-{
-    d->m_params = params;
-}
-
-// -- public slots
 
 int TabController::initUpdater()
 {
@@ -278,7 +279,9 @@ void TabController::rejected()
 void TabController::restartWizard()
 {
     d->m_installer->reset(d->m_params);
-    init(); // restart and switch back to intro page
+
+    // restart and switch back to intro page
+    QTimer::singleShot(0, this, SLOT(init()));
 }
 
 void TabController::updaterFinishedWithError()

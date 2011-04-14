@@ -47,8 +47,6 @@ public:
     explicit TabController(QObject *parent = 0);
     ~TabController();
 
-    int init();
-
     void setInstallerGui(QInstaller::Gui *gui);
     void setControlScript(const QString &script);
     void setApplication(KDUpdater::Application *app);
@@ -56,6 +54,7 @@ public:
     void setInstallerParams(const QHash<QString, QString> &params);
 
 public Q_SLOTS:
+    int init();
     int initUpdater();
     int initUninstaller();
     int initPackageManager();

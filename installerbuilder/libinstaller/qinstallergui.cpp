@@ -1673,11 +1673,11 @@ RestartPage::RestartPage(Installer *installer)
 
 void RestartPage::entering()
 {
-    emit restart();
     wizard()->restart();
     if (wizard()->button(QWizard::FinishButton))
         wizard()->button(QWizard::FinishButton)->setVisible(false);
     wizard()->setOption(QWizard::NoCancelButton, false);
+    emit restart();
 }
 
 void RestartPage::leaving()
