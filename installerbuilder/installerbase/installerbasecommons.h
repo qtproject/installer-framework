@@ -57,6 +57,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void initUpdater();
+    void initUninstaller();
     void initPackageManager();
 
 private Q_SLOTS:
@@ -120,6 +121,9 @@ public:
 
     virtual void init();
     virtual int nextId() const;
+
+private Q_SLOTS:
+    void updateRestartPage();
 };
 
 #endif // INSTALLERBASECOMMONS_H

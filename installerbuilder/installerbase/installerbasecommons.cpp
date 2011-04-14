@@ -150,8 +150,10 @@ void IntroductionPageImpl::setUpdater(bool value)
 
 void IntroductionPageImpl::setUninstaller(bool value)
 {
-    if (value)
+    if (value) {
         installer()->setUninstaller();
+        emit initUninstaller();
+    }
 }
 
 void IntroductionPageImpl::setPackageManager(bool value)
@@ -305,12 +307,8 @@ QtInstallerGui::QtInstallerGui(Installer *installer)
 
 void QtInstallerGui::init()
 {
-    if (m_installer->components(true, AllMode).count() == 1) {
-        Q_ASSERT(!m_installer->components(false, AllMode).isEmpty());
-        m_installer->components(false, AllMode).first()->setSelected(true);
-
+    if (m_installer->components(true, m_installer->runMode()).count() == 1)
         wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
-    }
 }
 
 
@@ -319,19 +317,24 @@ void QtInstallerGui::init()
 QtUninstallerGui::QtUninstallerGui(Installer *installer)
     : Gui(installer, 0)
 {
-    setPage(Installer::Introduction, new IntroductionPageImpl(installer));
+    IntroductionPageImpl *intro = new IntroductionPageImpl(installer);
+    connect(intro, SIGNAL(initUpdater()), this, SLOT(updateRestartPage()));
+    connect(intro, SIGNAL(initUninstaller()), this, SLOT(updateRestartPage()));
+    connect(intro, SIGNAL(initPackageManager()), this, SLOT(updateRestartPage()));
+
+    setPage(Installer::Introduction, intro);
     setPage(Installer::ComponentSelection, new ComponentSelectionPage(m_installer));
     setPage(Installer::LicenseCheck, new LicenseAgreementPage(installer));
     setPage(Installer::ReadyForInstallation, new ReadyForInstallationPage(installer));
     setPage(Installer::PerformInstallation, new PerformInstallationPage(installer));
     setPage(Installer::InstallationFinished, new FinishedPage(installer));
 
-    if (installer->isPackageManager() || installer->isUpdater()) {
-        RestartPage *p = new RestartPage(installer);
-        connect(p, SIGNAL(restart()), this, SIGNAL(gotRestarted()));
-        setPage(Installer::InstallationFinished + 1, p);
-        setPage(Installer::InstallationFinished + 2, new Page(installer));
-    }
+    RestartPage *p = new RestartPage(installer);
+    connect(p, SIGNAL(restart()), this, SIGNAL(gotRestarted()));
+    setPage(Installer::InstallationFinished + 1, p);
+
+    if (installer->isUninstaller())
+        wizardPageVisibilityChangeRequested(false, Installer::InstallationFinished + 1);
 }
 
 void QtUninstallerGui::init()
@@ -363,4 +366,10 @@ int QtUninstallerGui::nextId() const
         return foundLicense ? next : nextNextId;
     }
     return next;
+}
+
+void QtUninstallerGui::updateRestartPage()
+{
+    wizardPageVisibilityChangeRequested((m_installer->isUninstaller() ? false : true),
+        Installer::InstallationFinished + 1);
 }
