@@ -255,20 +255,15 @@ Gui::Gui(Installer *installer, QWidget *parent)
     setButtonText(QWizard::BackButton, tr("&Go Back"));
     setButtonText(QWizard::NextButton, tr("&Continue"));
     setButtonText(QWizard::FinishButton, tr("&Done"));
+    resize(sizeHint() * 1.25);
 #else
     setButtonText(QWizard::BackButton, tr("&Back"));
     setButtonText(QWizard::NextButton, tr("&Next"));
     setButtonText(QWizard::FinishButton, tr("&Finish"));
-#endif
-    setButtonText(QWizard::CancelButton, tr("&Cancel"));
-
-    dynamic_cast<QPushButton*>(button(QWizard::NextButton))->setDefault(true);
-
-#ifdef Q_WS_MAC
-    resize(sizeHint() * 1.25);
-#else
     resize(sizeHint());
 #endif
+    setButtonText(QWizard::CancelButton, tr("&Cancel"));
+    dynamic_cast<QPushButton*>(button(QWizard::NextButton))->setDefault(true);
 }
 
 Gui::~Gui()
