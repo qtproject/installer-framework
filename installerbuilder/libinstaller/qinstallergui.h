@@ -363,7 +363,6 @@ public:
 
 protected:
     void entering();
-    void initializePage();
     bool isInterruptible() const { return true; }
 
 public Q_SLOTS:
