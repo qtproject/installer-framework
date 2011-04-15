@@ -341,7 +341,7 @@ class INSTALLER_EXPORT ReadyForInstallationPage : public Page
 
 public:
     explicit ReadyForInstallationPage(Installer *installer);
-    void initializePage();
+
     void entering();
     bool isComplete() const;
 

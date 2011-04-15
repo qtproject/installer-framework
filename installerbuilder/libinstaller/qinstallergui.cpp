@@ -1296,6 +1296,17 @@ void StartMenuDirectoryPage::currentItemChanged(QListWidgetItem* current)
 
 // -- ReadyForInstallationPage
 
+inline QString unitSizeText(const qint64 size)
+{
+    if (size < 10000)
+        return QString::number(size) + QLatin1Char(' ') + ReadyForInstallationPage::tr("Bytes");
+
+    if (size < 1024 * 10000)
+        return QString::number(size / 1024) + QLatin1Char(' ') + ReadyForInstallationPage::tr("kBytes");
+
+    return QString::number(size / 1024 / 1024) + QLatin1Char(' ') + ReadyForInstallationPage::tr("MBytes");
+}
+
 ReadyForInstallationPage::ReadyForInstallationPage(Installer* installer)
     : Page(installer)
     , msgLabel(new QLabel)
@@ -1316,18 +1327,18 @@ ReadyForInstallationPage::ReadyForInstallationPage(Installer* installer)
 /*!
     \reimp
 */
-void ReadyForInstallationPage::initializePage()
+void ReadyForInstallationPage::entering()
 {
     setCommitPage(true);
+    const QString target = installer()->value(QLatin1String("TargetDir"));
 
     if (installer()->isUninstaller()) {
         setTitle(tr("Ready to Uninstall"));
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.\nThe "
             "program dir %2 will be deleted completely, including all content in that directory!")
-            .arg(productName(),
-            QDir::toNativeSeparators(QDir(installer()->value(QLatin1String("TargetDir")))
-            .absolutePath())));
+            .arg(productName(), QDir::toNativeSeparators(QDir(target).absolutePath())));
+        return;
     } else if (installer()->isPackageManager() || installer()->isUpdater()) {
         setTitle(tr("Ready to Update Packages"));
         setButtonText(QWizard::CommitButton, tr("U&pdate"));
@@ -1339,30 +1350,6 @@ void ReadyForInstallationPage::initializePage()
         msgLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
             .arg(productName()));
     }
-}
-
-inline QString unitSizeText(const qint64 size)
-{
-    if (size < 10000)
-        return QString::number(size) + QLatin1Char(' ') + ReadyForInstallationPage::tr("Bytes");
-
-    if (size < 1024 * 10000)
-        return QString::number(size / 1024) + QLatin1Char(' ') + ReadyForInstallationPage::tr("kBytes");
-
-    return QString::number(size / 1024 / 1024) + QLatin1Char(' ') + ReadyForInstallationPage::tr("MBytes");
-}
-
-/*!
-    \reimp
-*/
-void ReadyForInstallationPage::entering()
-{
-    initializePage();
-
-    if (installer()->isUninstaller())
-        return;
-
-    const QString target = installer()->value(QLatin1String("TargetDir"));
 
     const KDSysInfo::Volume vol = KDSysInfo::Volume::fromPath(target);
     const KDSysInfo::Volume tempVolume =
