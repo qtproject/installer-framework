@@ -1500,7 +1500,6 @@ void PerformInstallationPage::initializePage()
     QWizardPage::initializePage();
     if (installer()->isUninstaller()) {
         wizard()->removePage(QInstaller::Installer::InstallationFinished + 1);
-        wizard()->removePage(QInstaller::Installer::InstallationFinished + 2);
         setTitle(tr("Uninstalling %1").arg(installer()->value(QLatin1String("ProductName"))));
         m_commitBtnText = tr("U&ninstall");
         setButtonText(QWizard::CommitButton, m_commitBtnText);
