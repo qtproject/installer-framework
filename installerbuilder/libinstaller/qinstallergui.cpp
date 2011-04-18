@@ -1200,19 +1200,12 @@ void TargetDirectoryPage::dirRequested()
 StartMenuDirectoryPage::StartMenuDirectoryPage(Installer *installer)
     : Page(installer)
 {
-    setObjectName(QLatin1String("StartMenuDirectoryPage"));
     setTitle(tr("Start Menu shortcuts"));
-
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
-
-    QString msg = tr("Select the Start Menu in which you would like to create the program's "
-        "shortcuts. You can also enter a name to create a new folder.");
-
-    QLabel *msgLabel = new QLabel(this);
-    msgLabel->setText(msg);
-    msgLabel->setWordWrap(true);
-    msgLabel->setObjectName(QLatin1String("MessageLabel"));
+    setObjectName(QLatin1String("StartMenuDirectoryPage"));
+    setSubTitle(tr("Select the Start Menu in which you would like to create the program's shortcuts. You can "
+        "also enter a name to create a new folder."));
 
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setObjectName(QLatin1String("LineEdit"));
@@ -1257,7 +1250,6 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(Installer *installer)
     }
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(msgLabel);
     layout->addWidget(m_lineEdit);
     layout->addWidget(m_listWidget);
 

@@ -328,7 +328,7 @@ private Q_SLOTS:
 
 private:
     QString startMenuPath;
-    QLineEdit   *m_lineEdit;
+    QLineEdit *m_lineEdit;
     QListWidget *m_listWidget;
 };
 
