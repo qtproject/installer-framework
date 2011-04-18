@@ -186,6 +186,7 @@ public:
     bool m_modified;
     bool m_autoSwitchPage;
     QMap<int, QWizardPage*> m_defaultPages;
+    QMap<int, QString> m_defaultButtonText;
 
     QScriptValue m_controlScript;
     QScriptEngine m_controlScriptEngine;
@@ -254,6 +255,8 @@ Gui::Gui(Installer *installer, QWidget *parent)
     connect(installer, SIGNAL(setAutomatedPageSwitchEnabled(bool)),
         this, SLOT(setAutomatedPageSwitchEnabled(bool)));
 
+    for (int i = QWizard::BackButton; i < QWizard::CustomButton1; ++i)
+        d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
     setButtonText(QWizard::CancelButton, tr("&Cancel"));
     dynamic_cast<QPushButton*>(button(QWizard::NextButton))->setDefault(true);
 
@@ -278,6 +281,11 @@ Gui::~Gui()
 void Gui::setAutomatedPageSwitchEnabled(bool request)
 {
     d->m_autoSwitchPage = request;
+}
+
+QString Gui::defaultButtonText(int wizardButton) const
+{
+    return d->m_defaultButtonText.value(wizardButton);
 }
 
 void Gui::clickButton(int wb, int delay)

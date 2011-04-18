@@ -126,7 +126,8 @@ public:
     Q_INVOKABLE Page* page(int pageId) const;
     Q_INVOKABLE QWidget* pageWidgetByObjectName(const QString& name) const;
     Q_INVOKABLE QWidget* currentPageWidget() const;
-    Q_INVOKABLE void clickButton(int wizardButton, int delayInMs=0);
+    Q_INVOKABLE QString defaultButtonText(int wizardButton) const;
+    Q_INVOKABLE void clickButton(int wizardButton, int delayInMs = 0);
 
 Q_SIGNALS:
     void interrupted();
@@ -178,6 +179,8 @@ public:
 
     virtual bool isComplete() const;
     void setComplete(bool complete);
+
+    Gui* gui() const { return qobject_cast<Gui*>(wizard()); }
 
 protected:
     Installer *installer() const;
