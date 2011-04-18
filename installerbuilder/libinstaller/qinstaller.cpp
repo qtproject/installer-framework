@@ -650,6 +650,8 @@ Installer::Installer(qint64 magicmaker,
 
 Installer::~Installer()
 {
+    emit aboutToShutdown();
+
     if (!isUninstaller() && !(isInstaller() && status() == Installer::Canceled)) {
         QDir targetDir(value(QLatin1String("TargetDir")));
         QString logFileName = targetDir.absoluteFilePath(value(QLatin1String("LogFileName"),

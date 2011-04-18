@@ -139,8 +139,7 @@ int TabController::init()
         }
 
         if (!d->m_installer->isInstaller()) {
-            connect(d->m_gui, SIGNAL(accepted()), this, SLOT(finished()), Qt::QueuedConnection);
-            connect(d->m_gui, SIGNAL(rejected()), this, SLOT(finished()), Qt::QueuedConnection);
+            connect(d->m_installer, SIGNAL(aboutToShutdown()), this, SLOT(finished()));
             d->m_gui->setWindowTitle(d->m_installer->value(QLatin1String("MaintenanceTitle")));
         }
 
