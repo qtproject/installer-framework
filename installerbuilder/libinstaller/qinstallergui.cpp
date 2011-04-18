@@ -738,7 +738,7 @@ LicenseAgreementPage::LicenseAgreementPage(Installer *inst)
     acceptLabel->installEventFilter(acceptClickForwarder);
 
     m_rejectRadioButton = new QRadioButton(this);
-    m_acceptRadioButton->setObjectName(QString::fromUtf8("rejectLicenseRB"));
+    m_rejectRadioButton->setObjectName(QString::fromUtf8("rejectLicenseRB"));
 
     m_rejectRadioButton->setShortcut(QKeySequence(tr("Alt+N", "do not agree license")));
     QLabel *rejectLabel = new QLabel(tr("I do <u>n</u>ot accept the terms and conditions of the above "
