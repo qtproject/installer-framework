@@ -196,8 +196,6 @@ protected:
     virtual void entering() {} // called on entering
     virtual void leaving() {}  // called on leaving
 
-    virtual void forward() const {} // called when going forwards
-    //virtual void backward() const {}  // called when going back
     bool isConstructing() const { return m_fresh; }
 
 private:
@@ -343,8 +341,11 @@ class INSTALLER_EXPORT ReadyForInstallationPage : public Page
 public:
     explicit ReadyForInstallationPage(Installer *installer);
 
-    void entering();
     bool isComplete() const;
+
+protected:
+    void entering();
+    void leaving();
 
 private:
     QLabel* const msgLabel;
@@ -364,6 +365,7 @@ public:
 
 protected:
     void entering();
+    void leaving();
     bool isInterruptible() const { return true; }
 
 public Q_SLOTS:

@@ -257,18 +257,10 @@ Gui::Gui(Installer *installer, QWidget *parent)
 
     for (int i = QWizard::BackButton; i < QWizard::CustomButton1; ++i)
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
-    setButtonText(QWizard::CancelButton, tr("&Cancel"));
-    dynamic_cast<QPushButton*>(button(QWizard::NextButton))->setDefault(true);
 
 #ifdef Q_WS_MAC
-    setButtonText(QWizard::BackButton, tr("&Go Back"));
-    setButtonText(QWizard::NextButton, tr("&Continue"));
-    setButtonText(QWizard::FinishButton, tr("&Done"));
     resize(sizeHint() * 1.25);
 #else
-    setButtonText(QWizard::BackButton, tr("&Back"));
-    setButtonText(QWizard::NextButton, tr("&Next"));
-    setButtonText(QWizard::FinishButton, tr("&Finish"));
     resize(sizeHint());
 #endif
 }
@@ -541,7 +533,7 @@ void Gui::showFinishedPage()
     if (d->m_autoSwitchPage)
         next();
     else
-        dynamic_cast< QPushButton*>(button(QWizard::CancelButton))->setEnabled(false);
+        qobject_cast<QPushButton*>(button(QWizard::CancelButton))->setEnabled(false);
 }
 
 
@@ -1029,9 +1021,7 @@ ComponentSelectionPage::~ComponentSelectionPage()
 void ComponentSelectionPage::entering()
 {
     d->updateTreeView();
-
     setModified(isComplete());
-    wizard()->button(QWizard::CancelButton)->setEnabled(true);
 }
 
 void ComponentSelectionPage::selectAll()
@@ -1073,7 +1063,6 @@ void ComponentSelectionPage::deselectComponent(const QString& id)
 void ComponentSelectionPage::setModified(bool modified)
 {
     setComplete(modified);
-    setButtonText(QWizard::CancelButton, isComplete() ? tr("&Cancel") : tr("&Close"));
 }
 
 bool ComponentSelectionPage::isComplete() const
@@ -1412,6 +1401,11 @@ void ReadyForInstallationPage::entering()
     }
 }
 
+void ReadyForInstallationPage::leaving()
+{
+    setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
+}
+
 /*!
     \reimp
 */
@@ -1435,7 +1429,6 @@ PerformInstallationPage::PerformInstallationPage(Installer *gui)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
 
     setObjectName(QLatin1String("PerformInstallationPage"));
-    setCommitPage(true);
 
     m_performInstallationForm->setupUi(this);
 
@@ -1473,6 +1466,7 @@ bool PerformInstallationPage::isAutoSwitching() const
 void PerformInstallationPage::entering()
 {
     setComplete(false);
+    setCommitPage(true);
 
     if (installer()->isUninstaller()) {
         m_commitBtnText = tr("&Uninstall");
@@ -1499,6 +1493,11 @@ void PerformInstallationPage::entering()
     emit setAutomatedPageSwitchEnabled(true);
 }
 
+void PerformInstallationPage::leaving()
+{
+    setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
+}
+
 // -- public slots
 
 void PerformInstallationPage::setTitleMessage(const QString& title)
@@ -1519,16 +1518,17 @@ void PerformInstallationPage::installationFinished()
     if (!isAutoSwitching()) {
         m_performInstallationForm->scrollDetailsToTheEnd();
         m_performInstallationForm->setDetailsButtonEnabled(false);
-        setButtonText(QWizard::NextButton, tr("&Next"));
-        setButtonText(QWizard::CommitButton, tr("&Next"));
+
         setComplete(true);
+        setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::NextButton));
     }
 }
 
 void PerformInstallationPage::toggleDetailsWereChanged()
 {
     const bool needAutoSwitching = isAutoSwitching();
-    setButtonText(QWizard::CommitButton, needAutoSwitching ? m_commitBtnText : tr("&Next"));
+    setButtonText(QWizard::CommitButton, needAutoSwitching ? m_commitBtnText
+        : gui()->defaultButtonText(QWizard::NextButton));
     emit setAutomatedPageSwitchEnabled(needAutoSwitching);
 }
 
@@ -1544,12 +1544,13 @@ FinishedPage::FinishedPage(Installer *installer)
     setSubTitle(QString());
 
     m_msgLabel = new QLabel(this);
-    m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
     m_msgLabel->setWordWrap(true);
+    m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
+
 #ifdef Q_WS_MAC
-    m_msgLabel->setText(tr("Click Done to exit the Setup Wizard"));
+    m_msgLabel->setText(tr("Click Done to exit the Wizard"));
 #else
-    m_msgLabel->setText(tr("Click Finish to exit the Setup Wizard"));
+    m_msgLabel->setText(tr("Click Finish to exit the Wizard"));
 #endif
 
     m_runItCheckBox = new QCheckBox(this);
@@ -1566,8 +1567,8 @@ void FinishedPage::entering()
 {
     setCommitPage(true);
 
-    if (wizard()->button(QWizard::BackButton))
-        wizard()->button(QWizard::BackButton)->setVisible(false);
+    if (QAbstractButton* back = wizard()->button(QWizard::BackButton))
+        back->setVisible(false);
     wizard()->setOption(QWizard::NoCancelButton, true);
 
     if (installer()->isPackageManager() || installer()->isUpdater()) {
