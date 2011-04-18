@@ -156,11 +156,9 @@ protected:
     bool event(QEvent* event);
     Installer *m_installer;
 
-
 private:
     class Private;
     Private* const d;
-    QMap< int, QWizardPage* > defaultPages;
 };
 
 

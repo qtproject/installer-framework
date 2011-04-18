@@ -179,13 +179,16 @@ class Gui::Private
 {
 public:
     Private()
-        : autoSwitchPage(true)
-        , modified(false) { }
+        : m_modified(false)
+        , m_autoSwitchPage(true)
+    { }
 
-    QScriptEngine controlScriptEngine;
-    QScriptValue controlScript;
-    bool autoSwitchPage;
-    bool modified;
+    bool m_modified;
+    bool m_autoSwitchPage;
+    QMap<int, QWizardPage*> m_defaultPages;
+
+    QScriptValue m_controlScript;
+    QScriptEngine m_controlScriptEngine;
 };
 
 
@@ -193,7 +196,7 @@ public:
 
 QScriptEngine* Gui::controlScriptEngine() const
 {
-    return &d->controlScriptEngine;
+    return &d->m_controlScriptEngine;
 }
 
 /*!
@@ -274,7 +277,7 @@ Gui::~Gui()
 
 void Gui::setAutomatedPageSwitchEnabled(bool request)
 {
-    d->autoSwitchPage = request;
+    d->m_autoSwitchPage = request;
 }
 
 void Gui::clickButton(int wb, int delay)
@@ -299,17 +302,17 @@ void Gui::loadControlScript(const QString& scriptPath)
             .arg(scriptPath, file.errorString()));
     }
 
-    d->controlScriptEngine.globalObject().setProperty(QLatin1String("installer"),
-        d->controlScriptEngine.newQObject(m_installer));
-    d->controlScriptEngine.globalObject().setProperty(QLatin1String("gui"),
-        d->controlScriptEngine.newQObject(this));
-    registerMessageBox(&d->controlScriptEngine);
+    d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("installer"),
+        d->m_controlScriptEngine.newQObject(m_installer));
+    d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("gui"),
+        d->m_controlScriptEngine.newQObject(this));
+    registerMessageBox(&d->m_controlScriptEngine);
 
 #undef REGISTER_BUTTON
 #define REGISTER_BUTTON(x)    buttons.setProperty(QLatin1String(#x), \
-    d->controlScriptEngine.newVariant(static_cast<int>(QWizard::x)));
+    d->m_controlScriptEngine.newVariant(static_cast<int>(QWizard::x)));
 
-    QScriptValue buttons = d->controlScriptEngine.newArray();
+    QScriptValue buttons = d->m_controlScriptEngine.newArray();
     REGISTER_BUTTON(BackButton)
     REGISTER_BUTTON(NextButton)
     REGISTER_BUTTON(CommitButton)
@@ -322,22 +325,22 @@ void Gui::loadControlScript(const QString& scriptPath)
 
 #undef REGISTER_BUTTON
 
-    d->controlScriptEngine.globalObject().setProperty(QLatin1String("buttons"), buttons);
+    d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("buttons"), buttons);
 
-    d->controlScriptEngine.evaluate(QLatin1String(file.readAll()), scriptPath);
-    if (d->controlScriptEngine.hasUncaughtException()) {
+    d->m_controlScriptEngine.evaluate(QLatin1String(file.readAll()), scriptPath);
+    if (d->m_controlScriptEngine.hasUncaughtException()) {
         throw Error(QObject::tr("Exception while loading the control script %1")
-            .arg(uncaughtExceptionString(&(d->controlScriptEngine)/*, scriptPath*/)));
+            .arg(uncaughtExceptionString(&(d->m_controlScriptEngine)/*, scriptPath*/)));
     }
 
-    QScriptValue comp = d->controlScriptEngine.evaluate(QLatin1String("Controller"));
-    if (d->controlScriptEngine.hasUncaughtException()) {
+    QScriptValue comp = d->m_controlScriptEngine.evaluate(QLatin1String("Controller"));
+    if (d->m_controlScriptEngine.hasUncaughtException()) {
         throw Error(QObject::tr("Exception while loading the control script %1")
-            .arg(uncaughtExceptionString(&(d->controlScriptEngine)/*, scriptPath*/)));
+            .arg(uncaughtExceptionString(&(d->m_controlScriptEngine)/*, scriptPath*/)));
     }
 
-    d->controlScript = comp;
-    d->controlScript.construct();
+    d->m_controlScript = comp;
+    d->m_controlScript.construct();
 
     verbose() << "Loaded control script " << qPrintable(scriptPath) << std::endl;
 }
@@ -355,7 +358,7 @@ void Gui::slotCurrentPageChanged(int id)
 
 void Gui::callControlScriptMethod(const QString& methodName)
 {
-    QScriptValue method = d->controlScript.property(QLatin1String("prototype")).property(methodName);
+    QScriptValue method = d->m_controlScript.property(QLatin1String("prototype")).property(methodName);
 
     if (!method.isValid()) {
         verbose() << "Control script callback " << qPrintable(methodName) << " does not exist."
@@ -365,21 +368,19 @@ void Gui::callControlScriptMethod(const QString& methodName)
 
     verbose() << "Calling control script callback " << qPrintable(methodName) << std::endl;
 
-    method.call(d->controlScript);
+    method.call(d->m_controlScript);
 
-    if (d->controlScriptEngine.hasUncaughtException()) {
-        qCritical() << uncaughtExceptionString(&(d->controlScriptEngine)
-            /*, QLatin1String("control script")*/);
+    if (d->m_controlScriptEngine.hasUncaughtException()) {
+        qCritical()
+            << uncaughtExceptionString(&(d->m_controlScriptEngine) /*, QLatin1String("control script")*/);
         //TODO handle error
     }
 }
 
 void Gui::delayedControlScriptExecution(int id)
 {
-    if (Page* const p = qobject_cast<Page*>(page(id))) {
-        const QString methodName = p->objectName() + QLatin1String("Callback");
-        callControlScriptMethod(methodName);
-    }
+    if (Page* const p = qobject_cast<Page*>(page(id)))
+        callControlScriptMethod(p->objectName() + QLatin1String("Callback"));
 }
 
 bool Gui::event(QEvent* event)
@@ -437,9 +438,9 @@ void Gui::wizardWidgetRemovalRequested(QWidget* widget)
 void Gui::wizardPageVisibilityChangeRequested(bool visible, int p)
 {
     if (visible && page(p) == 0) {
-        setPage(p, defaultPages[p]);
+        setPage(p, d->m_defaultPages[p]);
     } else if (!visible && page(p) != 0) {
-        defaultPages[p] = page(p);
+        d->m_defaultPages[p] = page(p);
         removePage(p);
     }
 }
@@ -484,7 +485,7 @@ void Gui::cancelButtonClicked()
         return;
 
     //close the manager without asking if nothing was modified, always ask for the installer
-    if (!m_installer->isInstaller() && !d->modified) {
+    if (!m_installer->isInstaller() && !d->m_modified) {
         QDialog::reject();
         return;
     }
@@ -523,13 +524,13 @@ void Gui::reject()
 
 void Gui::setModified(bool value)
 {
-    d->modified = value;
+    d->m_modified = value;
 }
 
 void Gui::showFinishedPage()
 {
     verbose() << "SHOW FINISHED PAGE" << std::endl;
-    if (d->autoSwitchPage)
+    if (d->m_autoSwitchPage)
         next();
     else
         dynamic_cast< QPushButton*>(button(QWizard::CancelButton))->setEnabled(false);
