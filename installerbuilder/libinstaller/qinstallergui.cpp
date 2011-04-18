@@ -1555,11 +1555,21 @@ FinishedPage::FinishedPage(Installer *installer)
 
 void FinishedPage::entering()
 {
+    setCommitPage(true);
+
     if (wizard()->button(QWizard::BackButton))
         wizard()->button(QWizard::BackButton)->setVisible(false);
+    wizard()->setOption(QWizard::NoCancelButton, true);
 
     if (installer()->isPackageManager() || installer()->isUpdater()) {
+#ifdef Q_WS_MAC
+        setButtonText(QWizard::NextButton, QLatin1String("&Done"));
+        setButtonText(QWizard::CommitButton, QLatin1String("&Done"));
+#else
+        setButtonText(QWizard::NextButton, QLatin1String("&Finish"));
         setButtonText(QWizard::CommitButton, QLatin1String("&Finish"));
+#endif
+
         wizard()->button(QWizard::CommitButton)->disconnect(this);
         connect(wizard()->button(QWizard::CommitButton), SIGNAL(clicked()), this,
             SLOT(handleFinishClicked()));
@@ -1571,7 +1581,6 @@ void FinishedPage::entering()
 
     connect(wizard()->button(QWizard::FinishButton), SIGNAL(clicked()), this,
         SLOT(handleFinishClicked()));
-    wizard()->setOption(QWizard::NoCancelButton, true);
 
     if (installer()->status() == Installer::Success) {
         const QString finishedtext = installer()->value(QLatin1String("FinishedText"));
@@ -1589,18 +1598,6 @@ void FinishedPage::entering()
     }
     m_runItCheckBox->hide();
     m_runItCheckBox->setChecked(false);
-}
-
-void FinishedPage::initializePage()
-{
-    setCommitPage(true);
-    if (wizard()->button(QWizard::BackButton))
-        wizard()->button(QWizard::BackButton)->setVisible(false);
-
-    if (installer()->isPackageManager() || installer()->isUpdater()) {
-        setButtonText(QWizard::CommitButton, QLatin1String("&Finish"));
-        setButtonText(QWizard::NextButton, QLatin1String("&Finish"));
-    }
 }
 
 void FinishedPage::leaving()

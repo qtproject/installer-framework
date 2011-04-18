@@ -399,7 +399,6 @@ public Q_SLOTS:
     void handleFinishClicked();
 
 protected:
-    void initializePage();
     void entering();
     void leaving();
 
