@@ -395,9 +395,6 @@ class INSTALLER_EXPORT FinishedPage : public Page
 public:
     explicit FinishedPage(Installer *installer);
 
-Q_SIGNALS:
-    void finishClicked();
-
 public Q_SLOTS:
     void handleFinishClicked();
 

@@ -224,36 +224,34 @@ Gui::Gui(Installer *installer, QWidget *parent)
     setOption(QWizard::NoBackButtonOnLastPage);
     setLayout(new QVBoxLayout(this));
 
-    connect(this, SIGNAL(interrupted()), installer, SLOT(interrupt()));
     connect(this, SIGNAL(rejected()), installer, SLOT(setCanceled()));
+    connect(this, SIGNAL(interrupted()), installer, SLOT(interrupt()));
+
     // both queued to show the finished page once everything is done
-    connect(installer, SIGNAL(installationFinished()), this,
-        SLOT(showFinishedPage()), Qt::QueuedConnection);
-    connect(installer, SIGNAL(uninstallationFinished()), this,
-        SLOT(showFinishedPage()), Qt::QueuedConnection);
+    connect(installer, SIGNAL(installationFinished()), this, SLOT(showFinishedPage()), Qt::QueuedConnection);
+    connect(installer, SIGNAL(uninstallationFinished()), this, SLOT(showFinishedPage()), Qt::QueuedConnection);
 
     connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(slotCurrentPageChanged(int)));
     connect(this, SIGNAL(currentIdChanged(int)), m_installer, SIGNAL(currentPageChanged(int)));
     connect(button(QWizard::FinishButton), SIGNAL(clicked()), this, SIGNAL(finishButtonClicked()));
-    connect(this, SIGNAL(finishButtonClicked()), installer, SIGNAL(finishButtonClicked()));
+    connect(button(QWizard::FinishButton), SIGNAL(clicked()), installer, SIGNAL(finishButtonClicked()));
 
     // make sure the QUiLoader's retranslateUi is executed first, then the script
-    connect(this, SIGNAL(languageChanged()),
-        installer, SLOT(languageChanged()), Qt::QueuedConnection);
+    connect(this, SIGNAL(languageChanged()), installer, SLOT(languageChanged()), Qt::QueuedConnection);
 
-    connect(installer, SIGNAL(wizardPageInsertionRequested(QWidget*, Installer::WizardPage)),
-        this, SLOT(wizardPageInsertionRequested(QWidget*, Installer::WizardPage)));
-    connect(installer, SIGNAL(wizardPageRemovalRequested(QWidget*)),
-        this, SLOT(wizardPageRemovalRequested(QWidget*)));
-    connect(installer, SIGNAL(wizardWidgetInsertionRequested(QWidget*, Installer::WizardPage)),
-        this, SLOT(wizardWidgetInsertionRequested(QWidget*, Installer::WizardPage)));
-    connect(installer, SIGNAL(wizardWidgetRemovalRequested(QWidget*)),
-        this, SLOT(wizardWidgetRemovalRequested(QWidget*)));
-    connect(installer, SIGNAL(wizardPageVisibilityChangeRequested(bool, int)),
-        this, SLOT(wizardPageVisibilityChangeRequested(bool, int)), Qt::QueuedConnection);
+    connect(installer, SIGNAL(wizardPageInsertionRequested(QWidget*, Installer::WizardPage)), this,
+        SLOT(wizardPageInsertionRequested(QWidget*, Installer::WizardPage)));
+    connect(installer, SIGNAL(wizardPageRemovalRequested(QWidget*)),this,
+        SLOT(wizardPageRemovalRequested(QWidget*)));
+    connect(installer, SIGNAL(wizardWidgetInsertionRequested(QWidget*, Installer::WizardPage)), this,
+        SLOT(wizardWidgetInsertionRequested(QWidget*, Installer::WizardPage)));
+    connect(installer, SIGNAL(wizardWidgetRemovalRequested(QWidget*)), this,
+        SLOT(wizardWidgetRemovalRequested(QWidget*)));
+    connect(installer, SIGNAL(wizardPageVisibilityChangeRequested(bool, int)), this,
+        SLOT(wizardPageVisibilityChangeRequested(bool, int)), Qt::QueuedConnection);
 
-    connect(installer, SIGNAL(setAutomatedPageSwitchEnabled(bool)),
-        this, SLOT(setAutomatedPageSwitchEnabled(bool)));
+    connect(installer, SIGNAL(setAutomatedPageSwitchEnabled(bool)), this,
+        SLOT(setAutomatedPageSwitchEnabled(bool)));
 
     for (int i = QWizard::BackButton; i < QWizard::CustomButton1; ++i)
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
