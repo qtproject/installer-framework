@@ -417,6 +417,8 @@ class INSTALLER_EXPORT RestartPage : public Page
 public:
     explicit RestartPage(Installer *installer);
 
+    virtual int nextId() const;
+
 protected:
     void entering();
     void leaving();

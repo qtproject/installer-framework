@@ -1638,15 +1638,22 @@ RestartPage::RestartPage(Installer *installer)
     setTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
     setSubTitle(QString());
+
     setFinalPage(false);
+    setCommitPage(false);
+}
+
+int RestartPage::nextId() const
+{
+    return Installer::Introduction;
 }
 
 void RestartPage::entering()
 {
+    if (QAbstractButton *finish = wizard()->button(QWizard::FinishButton))
+        finish->setVisible(false);
+
     wizard()->restart();
-    if (wizard()->button(QWizard::FinishButton))
-        wizard()->button(QWizard::FinishButton)->setVisible(false);
-    wizard()->setOption(QWizard::NoCancelButton, false);
     emit restart();
 }
 
