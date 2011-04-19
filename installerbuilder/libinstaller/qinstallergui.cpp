@@ -1536,7 +1536,7 @@ FinishedPage::FinishedPage(Installer *installer)
     : Page(installer)
 {
     setObjectName(QLatin1String("FinishedPage"));
-    setTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
+    setTitle(tr("Completing the %1 Wizard").arg(productName()));
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
     setSubTitle(QString());
 
@@ -1545,9 +1545,9 @@ FinishedPage::FinishedPage(Installer *installer)
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
 
 #ifdef Q_WS_MAC
-    m_msgLabel->setText(tr("Click Done to exit the Wizard"));
+    m_msgLabel->setText(tr("Click Done to exit the %1 Wizard.").arg(productName()));
 #else
-    m_msgLabel->setText(tr("Click Finish to exit the Wizard"));
+    m_msgLabel->setText(tr("Click Finish to exit the  %1 Wizard.").arg(productName()));
 #endif
 
     m_runItCheckBox = new QCheckBox(this);
@@ -1562,32 +1562,20 @@ FinishedPage::FinishedPage(Installer *installer)
 
 void FinishedPage::entering()
 {
-    setCommitPage(true);
-
-    if (QAbstractButton* back = wizard()->button(QWizard::BackButton))
-        back->setVisible(false);
-    wizard()->setOption(QWizard::NoCancelButton, true);
-
-    if (installer()->isPackageManager() || installer()->isUpdater()) {
-#ifdef Q_WS_MAC
-        setButtonText(QWizard::NextButton, QLatin1String("&Done"));
-        setButtonText(QWizard::CommitButton, QLatin1String("&Done"));
-#else
-        setButtonText(QWizard::NextButton, QLatin1String("&Finish"));
-        setButtonText(QWizard::CommitButton, QLatin1String("&Finish"));
-#endif
-
-        wizard()->button(QWizard::CommitButton)->disconnect(this);
-        connect(wizard()->button(QWizard::CommitButton), SIGNAL(clicked()), this,
-            SLOT(handleFinishClicked()));
-        if (Gui* par = dynamic_cast<Gui*> (wizard()))
-            connect(this, SIGNAL(finishClicked()), par, SIGNAL(finishButtonClicked()));
-    }
-
     verbose() << "FINISHED ENTERING: " << std::endl;
 
-    connect(wizard()->button(QWizard::FinishButton), SIGNAL(clicked()), this,
-        SLOT(handleFinishClicked()));
+    setCommitPage(true);
+    if (installer()->isUpdater() || installer()->isPackageManager()) {
+        setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::NextButton));
+        setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::FinishButton));
+    } else {
+        wizard()->setOption(QWizard::NoCancelButton, true);
+    }
+
+    if (QAbstractButton *commit = wizard()->button(QWizard::CommitButton)) {
+        disconnect(commit, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
+        connect(commit, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
+    }
 
     if (installer()->status() == Installer::Success) {
         const QString finishedtext = installer()->value(QLatin1String("FinishedText"));
@@ -1601,21 +1589,21 @@ void FinishedPage::entering()
             return; // job done
         }
     } else {
-        setTitle(tr("The %1 Setup Wizard failed").arg(productName()));
+        setTitle(tr("The %1 Wizard failed.").arg(productName()));
     }
+
     m_runItCheckBox->hide();
     m_runItCheckBox->setChecked(false);
 }
 
 void FinishedPage::leaving()
 {
+    setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
+    setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
+
+    if (QAbstractButton *commit = wizard()->button(QWizard::CommitButton))
+        disconnect(commit, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
     disconnect(wizard(), SIGNAL(customButtonClicked(int)), this, SLOT(handleFinishClicked()));
-    if (installer()->isPackageManager() || installer()->isUpdater()) {
-        disconnect(wizard()->button(QWizard::CommitButton), SIGNAL(clicked()), this,
-            SLOT(handleFinishClicked()));
-        if (Gui* par = dynamic_cast<Gui*> (wizard()))
-            disconnect(this, SIGNAL(finishClicked()), par, SIGNAL(finishButtonClicked()));
-    }
 }
 
 void FinishedPage::handleFinishClicked()
