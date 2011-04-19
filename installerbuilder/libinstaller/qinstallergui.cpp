@@ -1547,7 +1547,7 @@ FinishedPage::FinishedPage(Installer *installer)
 #ifdef Q_WS_MAC
     m_msgLabel->setText(tr("Click Done to exit the %1 Wizard.").arg(productName()));
 #else
-    m_msgLabel->setText(tr("Click Finish to exit the  %1 Wizard.").arg(productName()));
+    m_msgLabel->setText(tr("Click Finish to exit the %1 Wizard.").arg(productName()));
 #endif
 
     m_runItCheckBox = new QCheckBox(this);
