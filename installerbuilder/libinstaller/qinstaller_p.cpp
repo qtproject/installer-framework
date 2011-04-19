@@ -613,17 +613,18 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
     verbose() << "QInstaller::InstallerPrivate::writeUninstaller uninstaller=" << uninstallerName()
         << std::endl;
 
-    // create the directory containing the uninstaller (like a bundle structor, on Mac...)
-    KDUpdater::UpdateOperation* op = createOwnedOperation(QLatin1String("Mkdir"));
-    op->setArguments(QStringList() << QFileInfo(uninstallerName()).path());
-    performOperationThreaded(op, Backup);
-    performOperationThreaded(op);
-    performedOperations.push_back(op);
+    if (!QDir().exists(QFileInfo(uninstallerName()).path())) {
+        // create the directory containing the uninstaller (like a bundle structor, on Mac...)
+        KDUpdater::UpdateOperation* op = createOwnedOperation(QLatin1String("Mkdir"));
+        op->setArguments(QStringList() << QFileInfo(uninstallerName()).path());
+        performOperationThreaded(op, Backup);
+        performOperationThreaded(op);
+        performedOperations.push_back(op);
+    }
 
     {
         // write current state (variables) to the uninstaller ini file
-        const QString iniPath = targetDir() + QLatin1Char('/')
-            + m_installerSettings->uninstallerIniFile();
+        const QString iniPath = targetDir() + QLatin1Char('/') + m_installerSettings->uninstallerIniFile();
         QSettings cfg(iniPath, QSettings::IniFormat);
         QVariantHash vars;
         QHash<QString, QString>::ConstIterator it = m_vars.constBegin();
@@ -1197,10 +1198,10 @@ void InstallerPrivate::runPackageUpdater()
         }
 
         double undoOperationProgressSize = 0;
-        double componentsInstallPartProgressSize = double(3) / 5;
+        double componentsInstallPartProgressSize = double(3) / double(5);
         if (undoOperations.count() > 0) {
-            undoOperationProgressSize = double(1) / 5;
-            componentsInstallPartProgressSize = double(2) / 5;
+            undoOperationProgressSize = double(1) / double(5);
+            componentsInstallPartProgressSize = double(2) / double(5);
             undoOperationProgressSize /= countProgressOperations(undoOperations);
         }
 
@@ -1273,7 +1274,7 @@ void InstallerPrivate::runPackageUpdater()
 
         stopProcessesForUpdates(componentsToInstall);
 
-        const int progressOperationCount = countProgressOperations(componentsToInstall);
+        const double progressOperationCount = countProgressOperations(componentsToInstall);
         const double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
         foreach (Component *component, componentsToInstall)
