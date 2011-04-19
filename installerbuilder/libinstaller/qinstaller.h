@@ -266,8 +266,6 @@ Q_SIGNALS:
 
     void setAutomatedPageSwitchEnabled(bool request);
 
-    void aboutToShutdown();
-
 private:
     bool setAndParseLocalComponentsFile(KDUpdater::PackagesInfo &packagesInfo);
     Installer::Status handleComponentsFileSetOrParseError(const QString &arg1,

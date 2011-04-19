@@ -92,6 +92,7 @@ TabController::TabController(QObject *parent)
 
 TabController::~TabController()
 {
+    d->m_installer->writeUninstaller();
     delete d;
 }
 
@@ -138,10 +139,8 @@ int TabController::init()
                 engine->newQObject(this));
         }
 
-        if (!d->m_installer->isInstaller()) {
-            connect(d->m_installer, SIGNAL(aboutToShutdown()), this, SLOT(finished()));
+        if (!d->m_installer->isInstaller())
             d->m_gui->setWindowTitle(d->m_installer->value(QLatin1String("MaintenanceTitle")));
-        }
 
         IntroductionPageImpl *introPage =
             qobject_cast<IntroductionPageImpl*>(d->m_gui->page(Installer::Introduction));
@@ -258,11 +257,6 @@ int TabController::initPackageManager()
 }
 
 // -- private slots
-
-void TabController::finished()
-{
-    d->m_installer->writeUninstaller();
-}
 
 void TabController::restartWizard()
 {

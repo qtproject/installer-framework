@@ -60,7 +60,6 @@ public Q_SLOTS:
     int initPackageManager();
 
 private Q_SLOTS:
-    void finished();
     void restartWizard();
 
 private:
