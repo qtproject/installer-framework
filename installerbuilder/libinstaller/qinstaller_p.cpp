@@ -1190,7 +1190,7 @@ void InstallerPrivate::runPackageUpdater()
             updateAdminRights |= op->value(QLatin1String("admin")).toBool();
         }
 
-        // we did not request admin rights till we found out that a to component/ undo needs admin rights
+        // we did not request admin rights till we found out that a component/ undo needs admin rights
         if (updateAdminRights && !adminRightsGained) {
             q->gainAdminRights();
             q->dropAdminRights();

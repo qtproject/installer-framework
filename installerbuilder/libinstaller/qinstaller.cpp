@@ -266,7 +266,7 @@ void Installer::writeUninstaller()
         bool error = false;
         QString errorMsg;
         try {
-            d->writeUninstaller(d->m_performedOperationsOld  + d->m_performedOperationsCurrentSession);
+            d->writeUninstaller(d->m_performedOperationsOld + d->m_performedOperationsCurrentSession);
 
             bool gainedAdminRights = false;
             QTemporaryFile tempAdminFile(d->targetDir()
