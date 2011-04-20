@@ -809,22 +809,22 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         Q_ASSERT(magicmarker == MagicInstallerMarker || magicmarker == MagicUninstallerMarker);
 
 
-
         if (!execIn->seek(0)) {
             throw Error(QObject::tr("Failed to seek in file %1: %2").arg(execIn->fileName(),
                 execIn->errorString()));
         }
         appendData(&out, execIn, execSize);
 
-        // copy the first few bytes to take the executable+resources over to the uninstaller.
-        if (! in.seek(resourceStart)) {
+        // copy the first few bytes to take the executable + resources over to the uninstaller.
+        if (in.seek(resourceStart)) {
             throw Error(QObject::tr("Failed to seek in file %1: %2").arg(in.fileName(),
                 in.errorString()));
         }
         Q_ASSERT(in.pos() == resourceStart && out.pos() == execSize);
 
-        appendData(&out, &in, resourceLength);
         const qint64 uninstallerDataBlockStart = out.pos();
+        appendData(&out, &in, resourceLength);
+
         // compared to the installer we do not have component data but details about
         // the performed operations during the installation to allow to undo them.
         const qint64 operationsStart = out.pos();
