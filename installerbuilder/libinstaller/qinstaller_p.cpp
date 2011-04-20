@@ -794,8 +794,8 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         const qint64 _operationsLength = retrieveInt64(&in);
         Q_UNUSED(_operationsLength);
         Q_ASSERT(_operationsLength >= 0);
-        const qint64 count = retrieveInt64(&in); // atm always "1"
-        Q_ASSERT(count == 1); // we have just 1 resource atm
+        const qint64 resourceCount = retrieveInt64(&in); // atm always "1"
+        Q_ASSERT(resourceCount == 1); // we have just 1 resource atm
         const qint64 dataBlockSize = retrieveInt64(&in);
         const qint64 dataBlockStart = magicCookiePos + sizeof(qint64) - dataBlockSize;
         resourceStart += dataBlockStart;
@@ -808,7 +808,6 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         Q_UNUSED(magicmarker);
         Q_ASSERT(magicmarker == MagicInstallerMarker || magicmarker == MagicUninstallerMarker);
 
-
         if (!execIn->seek(0)) {
             throw Error(QObject::tr("Failed to seek in file %1: %2").arg(execIn->fileName(),
                 execIn->errorString()));
@@ -816,7 +815,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         appendData(&out, execIn, execSize);
 
         // copy the first few bytes to take the executable + resources over to the uninstaller.
-        if (in.seek(resourceStart)) {
+        if (!in.seek(resourceStart)) {
             throw Error(QObject::tr("Failed to seek in file %1: %2").arg(in.fileName(),
                 in.errorString()));
         }
@@ -857,7 +856,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
             .moved(-uninstallerDataBlockStart));
         appendInt64Range(&out, Range<qint64>::fromStartAndEnd(operationsStart, operationsEnd)
             .moved(-uninstallerDataBlockStart));
-        appendInt64(&out, count);
+        appendInt64(&out, resourceCount);
         //data block size, from end of .exe to end of file
         appendInt64(&out, out.pos() + 3 * sizeof(qint64) - uninstallerDataBlockStart);
         appendInt64(&out, MagicUninstallerMarker);
