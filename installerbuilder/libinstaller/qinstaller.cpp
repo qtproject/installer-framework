@@ -720,8 +720,7 @@ GetRepositoriesMetaInfoJob* Installer::fetchMetaInformation(const QInstaller::In
 
     connect(metaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this,
         SIGNAL(metaJobInfoMessage(KDJob*, QString)));
-    connect(this, SIGNAL(cancelMetaInfoJob()), metaInfoJob, SLOT(doCancel()),
-        Qt::QueuedConnection);
+    connect(this, SIGNAL(cancelMetaInfoJob()), metaInfoJob, SLOT(doCancel()));
 
     try {
         metaInfoJob->setAutoDelete(false);
@@ -1528,6 +1527,7 @@ void Installer::interrupt()
 
 void Installer::setCanceled()
 {
+    emit cancelMetaInfoJob();
     d->setStatus(Installer::Canceled);
 }
 
