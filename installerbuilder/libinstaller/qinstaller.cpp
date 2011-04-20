@@ -972,13 +972,19 @@ bool Installer::fetchUpdaterPackages()
         }
     }
 
-    // append all components w/o parent to the direct list
-    foreach (QInstaller::Component *component, updaterComponents)
-        appendRootComponent(component, UpdaterMode);
+    if (!updaterComponents.isEmpty()) {
+        // append all components w/o parent to the direct list
+        foreach (QInstaller::Component *component, updaterComponents)
+            appendRootComponent(component, UpdaterMode);
 
-    // after everything is set up, load the scripts
-    foreach (QInstaller::Component *component, updaterComponents)
-        component->loadComponentScript();
+        // after everything is set up, load the scripts
+        foreach (QInstaller::Component *component, updaterComponents)
+            component->loadComponentScript();
+    } else {
+        // we have no updates, no need to store possible dependencies
+        qDeleteAll(d->m_updaterComponentsDeps);
+        d->m_updaterComponentsDeps.clear();
+    }
 
     emit finishUpdaterComponentsReset();
 
