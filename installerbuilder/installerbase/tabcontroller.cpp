@@ -37,15 +37,13 @@
 #include <qinstaller.h>
 #include <qinstallercomponent.h>
 
-#include <KDUpdater/Application>
-#include <KDUpdater/PackagesInfo>
-
 #include <QtCore/QPointer>
 #include <QtCore/QTimer>
 
 #include <QtScript/QScriptEngine>
 
 using namespace QInstaller;
+
 
 // -- TabController::Private
 
@@ -55,24 +53,22 @@ public:
     Private();
     ~Private();
 
-    QHash<QString, QString> m_params;
+    bool m_init;
     bool m_updaterInitialized;
     bool m_packageManagerInitialized;
-    bool m_init;
     QPointer<QInstaller::Gui> m_gui;
     QInstaller::Installer *m_installer;
-    KDUpdater::Application *m_app;
+
     QString m_controlScript;
+    QHash<QString, QString> m_params;
 };
 
 TabController::Private::Private()
-    :
-    m_updaterInitialized(false),
-    m_packageManagerInitialized(false),
-    m_init(false),
-    m_gui(0),
-    m_installer(0),
-    m_app(0)
+    : m_init(false)
+    , m_updaterInitialized(false)
+    , m_packageManagerInitialized(false)
+    , m_gui(0)
+    , m_installer(0)
 {
 }
 
@@ -105,11 +101,6 @@ void TabController::setInstallerGui(QInstaller::Gui *gui)
 void TabController::setControlScript (const QString &script)
 {
     d->m_controlScript = script;
-}
-
-void TabController::setApplication(KDUpdater::Application *app)
-{
-    d->m_app = app;
 }
 
 void TabController::setInstaller(QInstaller::Installer *installer)

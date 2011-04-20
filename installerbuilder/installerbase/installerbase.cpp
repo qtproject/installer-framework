@@ -299,7 +299,6 @@ int main(int argc, char *argv[])
         TabController controller(0);
         controller.setInstaller(&installer);
         controller.setInstallerParams(params);
-        controller.setApplication(&updaterapp);
         controller.setControlScript(controlScript);
 
         if (installer.isInstaller()) {

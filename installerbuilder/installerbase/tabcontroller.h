@@ -34,10 +34,6 @@ namespace QInstaller {
     class Installer;
 }
 
-namespace KDUpdater {
-    class Application;
-}
-
 class TabController : public QObject
 {
     Q_OBJECT
@@ -49,7 +45,6 @@ public:
 
     void setInstallerGui(QInstaller::Gui *gui);
     void setControlScript(const QString &script);
-    void setApplication(KDUpdater::Application *app);
     void setInstaller(QInstaller::Installer *installer);
     void setInstallerParams(const QHash<QString, QString> &params);
 
