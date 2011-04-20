@@ -938,12 +938,11 @@ bool Installer::fetchUpdaterPackages()
                 continue;
 
             const QString &name = d->m_updaterComponentsDeps.last()->name();
-            const KDUpdater::PackageInfo &info = installedPackages.value(name);
-
             // Update for not installed package found, skip it.
             if (!installedPackages.contains(name))
                 continue;
 
+            const KDUpdater::PackageInfo &info = installedPackages.value(name);
             const QString updateVersion = update->data(QLatin1String("Version")).toString();
             if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)
                 continue;
