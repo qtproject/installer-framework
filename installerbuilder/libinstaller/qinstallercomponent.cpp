@@ -923,10 +923,10 @@ void Component::setSelected(bool selected)
     const Qt::CheckState previousState = checkState();
     const Qt::CheckState newState = selected ? Qt::Checked : Qt::Unchecked;
 
-    if (newState != previousState) {
-        // setCheckState(newState); TODO: enable once the scripts fit
+    if (newState != previousState && !isTristate()) {
+        setCheckState(newState);
         QMetaObject::invokeMethod(this, "selectedChanged", Qt::QueuedConnection,
-            Q_ARG(bool, newState == Qt::Checked));
+        Q_ARG(bool, newState == Qt::Checked));
     }
 }
 
