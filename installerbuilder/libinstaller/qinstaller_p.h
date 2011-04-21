@@ -179,6 +179,10 @@ public:
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsCurrentSession;
 
 private:
+    void runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
+        double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation);
+
+private:
     Installer *q;
     qint64 m_magicBinaryMarker;
 };
