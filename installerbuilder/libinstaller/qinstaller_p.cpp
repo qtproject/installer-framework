@@ -1315,163 +1315,129 @@ void InstallerPrivate::runPackageUpdater()
 
 void InstallerPrivate::runUninstaller()
 {
+    bool adminRightsGained = false;
     try {
+        setStatus(Installer::Running);
         emit uninstallationStarted();
 
-        if (!QFileInfo(installerBinaryPath()).isWritable())
-            q->gainAdminRights();
+        // check if we need administration rights and ask before the action happens
+        if (!QFileInfo(installerBinaryPath()).isWritable() || !QFileInfo(componentsXmlPath()).isWritable())
+            adminRightsGained = q->gainAdminRights();
 
-        const QString packagesXml = componentsXmlPath();
-        if (!QFile(packagesXml).open(QIODevice::Append))
-            q->gainAdminRights();
-
-        KDUpdater::PackagesInfo* const packages = m_app->packagesInfo();
-        packages->setFileName(componentsXmlPath());
-        packages->setApplicationName(m_installerSettings->applicationName());
-        packages->setApplicationVersion(m_installerSettings->applicationVersion());
-
-        // iterate over all components - if they're all marked for uninstall, it's a complete uninstall
-        bool allMarkedForUninstall = true;
-
-        QList<KDUpdater::UpdateOperation*> uninstallOperations;
-        QVector<KDUpdater::UpdateOperation*> nonRevertedOperations;
-
-        // just rollback all operations done before
-        for (int i = m_performedOperationsOld.count() - 1; i >= 0; --i) {
-            KDUpdater::UpdateOperation* const operation = m_performedOperationsOld[i];
-
-            const QString componentName = operation->value(QLatin1String("component")).toString();
-            const Component* const comp = q->componentByName(componentName);
-
-            // if we're _not_ removing everything an this component is still selected, -> next
-            if (!m_completeUninstall && (comp == 0 || !comp->isSelected())) {
-                nonRevertedOperations.push_front(operation);
-                continue;
-            }
-            uninstallOperations.append(operation);
+        bool updateAdminRights = false;
+        QList<KDUpdater::UpdateOperation*> undoOperations;
+        foreach (KDUpdater::UpdateOperation *op, m_performedOperationsOld) {
+            undoOperations.prepend(op);
+            updateAdminRights |= op->value(QLatin1String("admin")).toBool();
         }
 
-        const int progressUninstallOperationCount = countProgressOperations(uninstallOperations);
-        const double progressUninstallOperationSize = double(1) / progressUninstallOperationCount;
+        // we did not request administration rights till we found out that a undo needs administration rights
+        if (updateAdminRights && !adminRightsGained) {
+            q->gainAdminRights();
+            q->dropAdminRights();
+        }
 
-        foreach (KDUpdater::UpdateOperation* const currentOperation, uninstallOperations) {
+        const int uninstallOperationCount = countProgressOperations(undoOperations);
+        const double undoOperationProgressSize = double(1) / double(uninstallOperationCount);
+
+        foreach (KDUpdater::UpdateOperation *undoOperation, undoOperations) {
             if (statusCanceledOrFailed())
                 throw Error(tr("Installation canceled by user"));
 
-            connectOperationToInstaller(currentOperation, progressUninstallOperationSize);
-            verbose() << "undo operation=" << currentOperation->name() << std::endl;
+            bool becameAdmin = false;
+            if (!adminRightsGained && undoOperation->value(QLatin1String("admin")).toBool())
+                becameAdmin = q->gainAdminRights();
 
-            const QString componentName = currentOperation->value(QLatin1String("component")).toString();
+            connectOperationToInstaller(undoOperation, undoOperationProgressSize);
+            verbose() << "undo operation=" << undoOperation->name() << std::endl;
+            performOperationThreaded(undoOperation, InstallerPrivate::Undo);
 
-            const bool becameAdmin = !m_FSEngineClientHandler->isActive()
-                && currentOperation->value(QLatin1String("admin")).toBool() && q->gainAdminRights();
+            const QString componentName = undoOperation->value(QLatin1String("component")).toString();
+            if (undoOperation->error() != KDUpdater::UpdateOperation::NoError) {
+                if (!componentName.isEmpty()) {
+                    bool run = true;
+                    while (run && q->status() != Installer::Canceled) {
+                        const QMessageBox::StandardButton button =
+                            MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
+                            QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
+                            tr("Error during uninstallation process:\n%1").arg(undoOperation->errorString()),
+                            QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Retry);
 
-            bool ignoreError = false;
-            performOperationThreaded(currentOperation, Undo);
-            bool ok = currentOperation->error() == KDUpdater::UpdateOperation::NoError
-                || componentName == QLatin1String("");
-            while (!ok && !ignoreError && q->status() != Installer::Canceled) {
-                verbose() << QString(QLatin1String("operation '%1' with arguments: '%2' failed: %3"))
-                    .arg(currentOperation->name(), currentOperation->arguments()
-                    .join(QLatin1String("; ")), currentOperation->errorString()) << std::endl;;
-                const QMessageBox::StandardButton button =
-                    MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-                    QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
-                    tr("Error during installation process:\n%1").arg(currentOperation->errorString()),
-                    QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Retry);
-
-                if (button == QMessageBox::Retry) {
-                    performOperationThreaded(currentOperation, Undo);
-                    ok = currentOperation->error() == KDUpdater::UpdateOperation::NoError;
-                } else if (button == QMessageBox::Ignore)
-                    ignoreError = true;
-            }
-
-            if (becameAdmin)
-                q->dropAdminRights();
-
-            if (!m_completeUninstall)
-                delete currentOperation;
-        }
-
-        const QList<Component*> allComponents = q->components(true, AllMode);
-        if (!m_completeUninstall) {
-            foreach (Component *comp, allComponents) {
-                if (comp->isSelected()) {
-                    allMarkedForUninstall = false;
-                } else {
-                    comp->setUninstalled();
-                    packages->removePackage(comp->name());
-                }
-            }
-            m_completeUninstall = m_completeUninstall || allMarkedForUninstall;
-        }
-
-        const QString startMenuDir = m_vars.value(QLatin1String("StartMenuDir"));
-        if (!startMenuDir.isEmpty()) {
-            errno = 0;
-            if (!QDir().rmdir(startMenuDir)) {
-                verbose() << "Could not remove " << startMenuDir << " : "
-                    << QLatin1String(strerror(errno)) << std::endl;
-            } else {
-                verbose() << "Start menu dir not set" << std::endl;
-            }
-        }
-
-        if (m_completeUninstall) {
-            // this will also delete the TargetDir on Windows
-            deleteUninstaller();
-            foreach (Component *component, allComponents) {
-                component->setUninstalled();
-                packages->removePackage(component->name());
-            }
-
-            QString remove = q->value(QLatin1String("RemoveTargetDir"));
-            if (QVariant(remove).toBool()) {
-                // on !Windows, we need to remove TargetDir manually
-                verbose() << "Complete Uninstallation is chosen" << std::endl;
-                const QString target = targetDir();
-                if (!target.isEmpty()) {
-                    if (m_FSEngineClientHandler->isServerRunning() && !m_FSEngineClientHandler->isActive()) {
-                        // we were root at least once, so we remove the target dir as root
-                        q->gainAdminRights();
-                        removeDirectoryThreaded(target, true);
-                        q->dropAdminRights();
-                    } else {
-                        removeDirectoryThreaded(target, true);
+                        if (button == QMessageBox::Retry) {
+                            performOperationThreaded(undoOperation, Undo);
+                            if (undoOperation->error() == KDUpdater::UpdateOperation::NoError)
+                                run = false;
+                        } else if (button == QMessageBox::Ignore) {
+                            run = false;
+                        }
                     }
                 }
             }
 
-            unregisterUninstaller();
-            m_needToWriteUninstaller = false;
-        } else {
-            // rewrite the uninstaller with the operation we did not undo
-            writeUninstaller(nonRevertedOperations);
+            if (!componentName.isEmpty()) {
+                if (Component *component = q->componentByName(componentName))
+                    component->setUninstalled();
+            }
+
+            if (becameAdmin)
+                q->dropAdminRights();
+            // no delete here, as the old undo operations are deleted in the destructor.
         }
+
+        const QString startMenuDir = m_vars.value(QLatin1String("StartMenuDir"));
+        if (!startMenuDir.isEmpty()) {
+            try {
+                QInstaller::removeDirectory(startMenuDir);
+            } catch (const Error &error) {
+                verbose() << "Could not remove " << startMenuDir << ": " << error.message() << std::endl;
+            }
+        } else {
+            verbose() << "Start menu dir not set." << std::endl;
+        }
+
+        // this will also delete the TargetDir on Windows
+        deleteUninstaller();
+
+        QString remove = q->value(QLatin1String("RemoveTargetDir"));
+        if (QVariant(remove).toBool()) {
+            // on !Windows, we need to remove TargetDir manually
+            verbose() << "Complete uninstallation is chosen" << std::endl;
+            const QString target = targetDir();
+            if (!target.isEmpty()) {
+                if (updateAdminRights && !adminRightsGained) {
+                    // we were root at least once, so we remove the target dir as root
+                    q->gainAdminRights();
+                    removeDirectoryThreaded(target, true);
+                    q->dropAdminRights();
+                } else {
+                    removeDirectoryThreaded(target, true);
+                }
+            }
+        }
+
+        unregisterUninstaller();
+        m_needToWriteUninstaller = false;
 
         setStatus(Installer::Success);
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation finished"));
-
-        m_FSEngineClientHandler->setActive(false);
+        if (adminRightsGained)
+            q->dropAdminRights();
+        emit uninstallationFinished();
     } catch (const Error &err) {
         if (q->status() != Installer::Canceled) {
             setStatus(Installer::Failure);
             verbose() << "INSTALLER FAILED: " << err.message() << std::endl;
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
-            verbose() << "ROLLING BACK operations=" << m_performedOperationsCurrentSession.count()
-                << std::endl;
         }
 
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Installation aborted"));
+        if (adminRightsGained)
+            q->dropAdminRights();
         emit installationFinished();
 
-        // disable the FSEngineClientHandler afterwards
-        m_FSEngineClientHandler->setActive(false);
         throw;
     }
-    emit uninstallationFinished();
 }
 
 }   // QInstaller
