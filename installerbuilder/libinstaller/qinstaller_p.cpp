@@ -175,7 +175,6 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 // -- InstallerPrivate
 
-
 InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMaker,
         const QVector<KDUpdater::UpdateOperation*> &performedOperations)
     : m_app(0)
@@ -214,7 +213,7 @@ InstallerPrivate::~InstallerPrivate()
 }
 
 /*!
-    Return true, if a process with \a name is running. On Windows, comparision is case-insensitive.
+    Return true, if a process with \a name is running. On Windows, comparison is case-insensitive.
 */
 /* static */
 bool InstallerPrivate::isProcessRunning(const QString &name,
@@ -288,7 +287,7 @@ void InstallerPrivate::initialize()
             QLatin1String(":/metadata/installer-config/")));
     } catch (const Error &e) {
         qCritical("Could not parse Config: %s", qPrintable(e.message()));
-        //TODO try better error handling
+        // TODO: try better error handling
         return;
     }
 
@@ -306,7 +305,7 @@ void InstallerPrivate::initialize()
 #elif defined(Q_WS_QWS)
     m_vars.insert(QLatin1String("os"), QLatin1String("Qtopia"));
 #else
-    //TODO add more platforms as needed...
+    // TODO: add more platforms as needed...
 #endif
 
     // fill the variables defined in the settings
@@ -437,8 +436,8 @@ QByteArray InstallerPrivate::replaceVariables(const QByteArray &ba) const
 }
 
 /*!
- Creates an update operation owned by the installer, not by any component.
- \internal
+    \internal
+    Creates an update operation owned by the installer, not by any component.
  */
 KDUpdater::UpdateOperation* InstallerPrivate::createOwnedOperation(const QString &type)
 {
@@ -802,7 +801,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         if (!haveSeparateExec)
             execSize = dataBlockStart;
 
-        // consider size difference between old and new installerbase executable (if updated)
+        // consider size difference between old and new installer base executable (if updated)
         const qint64 newResourceStart = execSize;
         const qint64 magicmarker = retrieveInt64(&in);
         Q_UNUSED(magicmarker);
@@ -841,10 +840,10 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         appendInt64(&out, performedOperations.count());
         const qint64 operationsEnd = out.pos();
 
-        // we dont save any component-indexes.
+        // we don't save any component-indexes.
         const qint64 numComponents = 0;
         appendInt64(&out, numComponents); // for the indexes
-        // we dont save any components.
+        // we don't save any components.
         const qint64 compIndexStart = out.pos();
         appendInt64(&out, numComponents); // and 2 times number of components,
         appendInt64(&out, numComponents); // one before and one after the components
@@ -870,13 +869,13 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
                 out.errorString()));
         }
 
-        //delete the installerbase binary temporarily installed for the uninstaller update
+        //delete the installer base binary temporarily installed for the uninstaller update
         if (haveSeparateExec) {
             QFile tmp(installerBaseBinary);
             // Is there anything more sensible we can do with this error? I think not.
             // It's not serious enough for throwing/aborting.
             if (!tmp.remove()) {
-                verbose() << "Could not remove installerbase binary (" << installerBaseBinary
+                verbose() << "Could not remove installer base binary (" << installerBaseBinary
                     << ") after updating the uninstaller: " << tmp.errorString() << std::endl;
             }
             m_installerBaseBinaryUnreplaced.clear();
@@ -1018,11 +1017,9 @@ void InstallerPrivate::runInstaller()
         const int downloadedArchivesCount = q->downloadNeededArchives(AllMode,
             downloadPartProgressSize);
 
-        //if there was no download we have the whole progress for installing components
-        if (!downloadedArchivesCount) {
-             //componentsInstallPartProgressSize + downloadPartProgressSize;
+        // if there was no download we have the whole progress for installing components
+        if (!downloadedArchivesCount)
             componentsInstallPartProgressSize = double(1);
-        }
 
         // put the installed packages info into the target dir
         KDUpdater::PackagesInfo* const packages = m_app->packagesInfo();
@@ -1082,7 +1079,7 @@ void InstallerPrivate::deleteUninstaller()
 #ifdef Q_OS_WIN
     // Since Windows does not support that the uninstaller deletes itself we  have to go with a
     // rather dirty hack. What we do is to create a batchfile that will try to remove the uninstaller
-    // once per second. Then we start that batchfile detached, finished our job and close outself.
+    // once per second. Then we start that batchfile detached, finished our job and close ourself.
     // Once that's done the batchfile will succeed in deleting our uninstall.exe and, if the
     // installation directory was created but us and if it's empty after the uninstall, deletes
     // the installation-directory.
@@ -1417,7 +1414,7 @@ void InstallerPrivate::runUninstaller()
                 verbose() << "Could not remove " << startMenuDir << " : "
                     << QLatin1String(strerror(errno)) << std::endl;
             } else {
-                verbose() << "Startmenu dir not set" << std::endl;
+                verbose() << "Start menu dir not set" << std::endl;
             }
         }
 

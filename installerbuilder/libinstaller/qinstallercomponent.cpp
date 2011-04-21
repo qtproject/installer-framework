@@ -135,7 +135,7 @@ Component::~Component()
     delete d;
 }
 
-//package info is that what is saved inside the packagemanager on harddisk
+// package info is that what is saved inside the package manager on hard disk
 void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo)
 {
     setValue(skName, packageInfo.name);
@@ -161,7 +161,7 @@ void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInf
     }
 }
 
-//update means it is the packageinfo from server
+// update means it is the package info from server
 void Component::loadDataFromUpdate(KDUpdater::Update* update)
 {
     Q_ASSERT(update);
@@ -236,9 +236,9 @@ void Component::markAsPerformedInstallation()
 
 /*!
     \property Component::removeBeforeUpdate
-    Specifies wheter this component gets removed by the installer system before it gets updated.
-    Get this property's value by using %removeBeforeUpdate(), and set it
-    using %setRemoveBeforeUpdate(). The default value is true.
+    Specifies whether this component gets removed by the installer system before it gets updated. Get this
+    property's value by using %removeBeforeUpdate(), and set it using %setRemoveBeforeUpdate(). The default
+    value is true.
 */
 bool Component::removeBeforeUpdate() const
 {
@@ -285,7 +285,7 @@ void Component::setValue(const QString &key, const QString &value)
 }
 
 /*!
-    Returnst the installer this component belongs to.
+    Returns the installer this component belongs to.
 */
 Installer* Component::installer() const
 {
@@ -544,14 +544,14 @@ QWidget* Component::userInterface(const QString &name) const
 
 /*!
     Creates all operations needed to install this component's \a path. \a path is a full qualified
-    filename including the component's name. This metods gets called from
+    filename including the component's name. This methods gets called from
     Component::createOperationsForArchive. You can override this method by providing a method with
     the same name in the component script.
 
     \note RSA signature files are omitted by this method.
     \note If you call this method from a script, it won't call the scripts method with the same name.
 
-    The default implemention is recursively creating Copy and Mkdir operations for all files
+    The default implementation is recursively creating Copy and Mkdir operations for all files
     and folders within \a path.
 */
 void Component::createOperationsForPath(const QString &path)
@@ -657,7 +657,7 @@ void Component::registerPathForUninstallation(const QString &path, bool wipe)
 }
 
 /*!
-    Returns the list of pathes previously registered for uninstallation with
+    Returns the list of paths previously registered for uninstallation with
     #registerPathForUninstallation.
 */
 QList<QPair<QString, bool> > Component::pathesForUninstallation() const
@@ -891,7 +891,7 @@ bool Component::addElevatedOperation(const QString &operation, const QString &pa
 }
 
 /*!
-    Specifies wheter operations should be automatically created when the installation starts. This
+    Specifies whether operations should be automatically created when the installation starts. This
     would be done by calling #createOperations. If you set this to false, it's completely up to the
     component's script to create all operations.
 */
@@ -907,7 +907,7 @@ void Component::setAutoCreateOperations(bool autoCreateOperations)
 
 /*!
     \property Component::selected
-    Specifies wheter this component is selected for installation. Get this property's value by using
+    Specifies whether this component is selected for installation. Get this property's value by using
     %isSelected(), and set it using %setSelected().
 */
 bool Component::isSelected() const
@@ -990,8 +990,8 @@ bool Component::uninstallationRequested() const
 /*!
     \property Component::fromOnlineRepository
 
-    Determines wheter this component has been loaded from an online repository. Get this property's
-    value by usinng %isFromOnlineRepository. \sa addDownloadableArchive
+    Determines whether this component has been loaded from an online repository. Get this property's
+    value by using %isFromOnlineRepository. \sa addDownloadableArchive
 */
 bool Component::isFromOnlineRepository() const
 {

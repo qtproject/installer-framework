@@ -173,6 +173,7 @@ void IntroductionPageImpl::showWidgets(bool show)
     m_removeAllComponents->setVisible(show);
 }
 
+
 // -- TargetDirectoryPageImpl
 
 /*!

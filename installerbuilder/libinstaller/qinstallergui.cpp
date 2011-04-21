@@ -283,7 +283,7 @@ void Gui::clickButton(int wb, int delay)
     if (QAbstractButton* b = button(static_cast<QWizard::WizardButton>(wb) )) {
         QTimer::singleShot(delay, b, SLOT(click()));
     } else {
-        //TODO we should probably abort immediately here (faulty test script)
+        // TODO: we should probably abort immediately here (faulty test script)
         verbose() << "Button " << wb << " not found!" << std::endl;
     }
 }
@@ -371,7 +371,7 @@ void Gui::callControlScriptMethod(const QString& methodName)
     if (d->m_controlScriptEngine.hasUncaughtException()) {
         qCritical()
             << uncaughtExceptionString(&(d->m_controlScriptEngine) /*, QLatin1String("control script")*/);
-        //TODO handle error
+        // TODO: handle error
     }
 }
 
@@ -477,12 +477,12 @@ void Gui::cancelButtonClicked()
             || m_installer->status() == Installer::Success
         : m_installer->status() == Installer::Canceled;
 
-    //if the user canceled (all modes) or the installation is finished (installer mode only), ignore
-    //clicks on cancel.
+    // if the user canceled (all modes) or the installation is finished (installer mode only), ignore
+    // clicks on cancel.
     if (doIgnore)
         return;
 
-    //close the manager without asking if nothing was modified, always ask for the installer
+    // close the manager without asking if nothing was modified, always ask for the installer
     if (!m_installer->isInstaller() && !d->m_modified) {
         QDialog::reject();
         return;
@@ -941,7 +941,7 @@ public slots:
                 ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString());
             if (!m_installer->isUninstaller()) {
                 m_sizeLabel->setText(tr("This component will occupy approximately %1 on your "
-                    "harddisk.").arg(m_currentModel->data(m_currentModel->index(current.row(),
+                    "hard disk.").arg(m_currentModel->data(m_currentModel->index(current.row(),
                     ComponentModelHelper::UncompressedSizeColumn, current.parent())).toString()));
             }
         }
@@ -1214,7 +1214,7 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(Installer *installer)
     // grab existing start menu folders
     QSettings user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\"
         "Explorer\\User Shell Folders"), QSettings::NativeFormat);
-    //User Shell Folders uses %USERPROFILE%
+    // User Shell Folders uses %USERPROFILE%
     startMenuPath = replaceWindowsEnvironmentVariables(user.value(QLatin1String("Programs"),
         QString()).toString());
     installer->setValue(QLatin1String("DesktopDir"),
@@ -1344,7 +1344,7 @@ void ReadyForInstallationPage::entering()
         KDSysInfo::Volume::fromPath(QInstaller::generateTemporaryFileName());
     const bool tempOnSameVolume = vol == tempVolume;
 
-    //there is no better way atm to check this
+    // there is no better way atm to check this
     if (vol.size().size() == 0 && vol.availableSpace().size() == 0) {
         verbose() << "Could not determine available space on device " << target
             << ". Continue silently." << std::endl;
@@ -1368,10 +1368,10 @@ void ReadyForInstallationPage::entering()
     QString tempString;
     if (tempAvailable <  realRequiredTempSpace || tempInstFailure) {
         if (tempOnSameVolume) {
-            tempString = tr("Not enough diskspace to store temporary files and the installation, "
+            tempString = tr("Not enough disk space to store temporary files and the installation, "
                 "at least %1 are required").arg(unitSizeText(realRequiredTempSpace + realRequiredSpace));
         } else {
-            tempString = tr("Not enough diskspace to store temporary files, at least %1 are required")
+            tempString = tr("Not enough disk space to store temporary files, at least %1 are required")
                 .arg(unitSizeText(realRequiredTempSpace.size()));
         }
     }
@@ -1417,7 +1417,7 @@ bool ReadyForInstallationPage::isComplete() const
 
 /*!
     \class QInstaller::PerformInstallationPage
-    On this page the user can see on a progressbar how far the current installation is.
+    On this page the user can see on a progress bar how far the current installation is.
 */
 PerformInstallationPage::PerformInstallationPage(Installer *gui)
     : Page(gui)

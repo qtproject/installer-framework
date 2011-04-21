@@ -239,7 +239,7 @@ bool ComponentModelHelper::isCheckable() const
 void ComponentModelHelper::setCheckable(bool checkable)
 {
     if (checkable && !isCheckable()) {
-        // make sure there's data for the checkstate role
+        // make sure there's data for the check state role
         if (!data(Qt::CheckStateRole).isValid())
             setData(Qt::Unchecked, Qt::CheckStateRole);
     }
@@ -301,7 +301,7 @@ void ComponentModelHelper::setCheckState(Qt::CheckState state)
 }
 
 /*!
-    Returns the components's data for the given role, or an invalid QVariant if there is no data for role.
+    Returns the component's data for the given role, or an invalid QVariant if there is no data for role.
 */
 QVariant ComponentModelHelper::data(int role) const
 {
