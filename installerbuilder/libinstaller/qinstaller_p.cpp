@@ -1228,7 +1228,7 @@ void InstallerPrivate::runPackageUpdater()
                         const QMessageBox::StandardButton button =
                             MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
                             QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
-                            tr("Error during installation process:\n%1").arg(undoOperation->errorString()),
+                            tr("Error during uninstallation process:\n%1").arg(undoOperation->errorString()),
                             QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Retry);
 
                         if (button == QMessageBox::Retry) {
@@ -1288,10 +1288,10 @@ void InstallerPrivate::runPackageUpdater()
 
         setStatus(Installer::Success);
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
-        emit installationFinished();
-
         if (adminRightsGained)
             q->dropAdminRights();
+
+        emit installationFinished();
     } catch (const Error &err) {
         if (q->status() != Installer::Canceled) {
             setStatus(Installer::Failure);
@@ -1305,10 +1305,10 @@ void InstallerPrivate::runPackageUpdater()
         q->rollBackInstallation();
 
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Installation aborted"));
-        emit installationFinished();
-
         if (adminRightsGained)
             q->dropAdminRights();
+        emit installationFinished();
+
         throw;
     }
 }
