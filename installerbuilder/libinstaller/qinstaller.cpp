@@ -1677,7 +1677,7 @@ void Installer::languageChanged()
 }
 
 /*!
-    Runs the installer or uninstaller, depending on the type of this binary.
+    Runs the installer, un-installer, updater or package manager, depending on the type of this binary.
 */
 bool Installer::run()
 {
@@ -1686,7 +1686,7 @@ bool Installer::run()
             d->runInstaller();
         else if (isUninstaller())
             d->runUninstaller();
-        else if (isPackageManager())
+        else if (isPackageManager() || isUpdater())
             d->runPackageUpdater();
         return true;
     } catch (const Error &err) {
