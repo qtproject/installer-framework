@@ -923,35 +923,6 @@ QString InstallerPrivate::registerPath() const
 #endif
 }
 
-void InstallerPrivate::registerUninstaller()
-{
-#ifdef Q_OS_WIN
-    QSettings settings(registerPath(), QSettings::NativeFormat);
-    settings.setValue(QLatin1String("DisplayName"), m_vars.value(QLatin1String("ProductName")));
-    settings.setValue(QLatin1String("DisplayVersion"), m_vars.value(QLatin1String("ProductVersion")));
-    const QString uninstaller = QDir::toNativeSeparators(uninstallerName());
-    settings.setValue(QLatin1String("DisplayIcon"), uninstaller);
-    settings.setValue(QLatin1String("Publisher"), m_vars.value(QLatin1String("Publisher")));
-    settings.setValue(QLatin1String("UrlInfoAbout"), m_vars.value(QLatin1String("Url")));
-    settings.setValue(QLatin1String("Comments"), m_vars.value(QLatin1String("Title")));
-    settings.setValue(QLatin1String("InstallDate"), QDateTime::currentDateTime().toString());
-    settings.setValue(QLatin1String("InstallLocation"), QDir::toNativeSeparators(targetDir()));
-    settings.setValue(QLatin1String("UninstallString"), uninstaller);
-    settings.setValue(QLatin1String("ModifyPath"), uninstaller + QLatin1String(" --manage-packages"));
-    settings.setValue(QLatin1String("EstimatedSize"), QFileInfo(installerBinaryPath()).size());
-    settings.setValue(QLatin1String("NoModify"), 1);    // TODO: set to 0 and support modify
-    settings.setValue(QLatin1String("NoRepair"), 1);
-#endif
-}
-
-void InstallerPrivate::unregisterUninstaller()
-{
-#ifdef Q_OS_WIN
-    QSettings settings(registerPath(), QSettings::NativeFormat);
-    settings.remove(QString());
-#endif
-}
-
 void InstallerPrivate::runInstaller()
 {
     try {
@@ -1071,72 +1042,6 @@ void InstallerPrivate::runInstaller()
         // disable the FSEngineClientHandler afterwards
         m_FSEngineClientHandler->setActive(false);
         throw;
-    }
-}
-
-void InstallerPrivate::deleteUninstaller()
-{
-#ifdef Q_OS_WIN
-    // Since Windows does not support that the uninstaller deletes itself we  have to go with a
-    // rather dirty hack. What we do is to create a batchfile that will try to remove the uninstaller
-    // once per second. Then we start that batchfile detached, finished our job and close ourself.
-    // Once that's done the batchfile will succeed in deleting our uninstall.exe and, if the
-    // installation directory was created but us and if it's empty after the uninstall, deletes
-    // the installation-directory.
-    const QString batchfile = QDir::toNativeSeparators(QFileInfo(QDir::tempPath(),
-        QLatin1String("uninstall.vbs")).absoluteFilePath());
-    QFile f(batchfile);
-    if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
-        throw Error(tr("Cannot prepare uninstall"));
-
-    QTextStream batch(&f);
-    batch << "Set fso = WScript.CreateObject(\"Scripting.FileSystemObject\")\n";
-    batch << "file = WScript.Arguments.Item(0)\n";
-    batch << "folderpath = WScript.Arguments.Item(1)\n";
-    batch << "Set folder = fso.GetFolder(folderpath)\n";
-    batch << "on error resume next\n";
-
-    batch << "while fso.FileExists(file)\n";
-    batch << "    fso.DeleteFile(file)\n";
-    batch << "    WScript.Sleep(1000)\n";
-    batch << "wend\n";
-//    batch << "if folder.SubFolders.Count = 0 and folder.Files.Count = 0 then\n";
-    batch << "    Set folder = Nothing\n";
-    batch << "    fso.DeleteFolder folderpath, true\n";
-//    batch << "end if\n";
-    batch << "fso.DeleteFile(WScript.ScriptFullName)\n";
-
-    f.close();
-
-    QStringList arguments;
-    arguments << QLatin1String("//Nologo") << batchfile; // execute the batchfile
-    arguments << QDir::toNativeSeparators(QFileInfo(installerBinaryPath()).absoluteFilePath());
-    if (!m_performedOperationsOld.isEmpty()) {
-        const KDUpdater::UpdateOperation* const op = m_performedOperationsOld.first();
-        if (op->name() == QLatin1String("Mkdir")) // the target directory name
-            arguments << QDir::toNativeSeparators(QFileInfo(op->arguments().first()).absoluteFilePath());
-    }
-
-    if (!QProcess::startDetached(QLatin1String("cscript"), arguments, QDir::rootPath()))
-        throw Error(tr("Cannot start uninstall"));
-#else
-    // every other platform has no problem if we just delete ourself now
-    QFile uninstaller(QFileInfo(installerBinaryPath()).absoluteFilePath());
-    uninstaller.remove();
-#ifdef Q_WS_MAC
-    const QLatin1String cdUp("/../../..");
-    if (QFileInfo(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath()).isBundle()) {
-        removeDirectoryThreaded(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath());
-        QFile::remove(QFileInfo(installerBinaryPath() + cdUp).absolutePath()
-            + QLatin1String("/") + configurationFileName());
-    }
-    else
-#endif
-#endif
-    {
-        // finally remove the components.xml, since it still exists now
-        QFile::remove(QFileInfo(installerBinaryPath()).absolutePath() + QLatin1String("/")
-            + configurationFileName());
     }
 }
 
@@ -1349,6 +1254,101 @@ void InstallerPrivate::runUninstaller()
 
         throw;
     }
+}
+
+// -- private
+
+void InstallerPrivate::deleteUninstaller()
+{
+#ifdef Q_OS_WIN
+    // Since Windows does not support that the uninstaller deletes itself we  have to go with a rather dirty
+    // hack. What we do is to create a batchfile that will try to remove the uninstaller once per second. Then
+    // we start that batchfile detached, finished our job and close ourself. Once that's done the batchfile
+    // will succeed in deleting our uninstall.exe and, if the installation directory was created but us and if
+    // it's empty after the uninstall, deletes the installation-directory.
+    const QString batchfile = QDir::toNativeSeparators(QFileInfo(QDir::tempPath(),
+        QLatin1String("uninstall.vbs")).absoluteFilePath());
+    QFile f(batchfile);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
+        throw Error(tr("Cannot prepare uninstall"));
+
+    QTextStream batch(&f);
+    batch << "Set fso = WScript.CreateObject(\"Scripting.FileSystemObject\")\n";
+    batch << "file = WScript.Arguments.Item(0)\n";
+    batch << "folderpath = WScript.Arguments.Item(1)\n";
+    batch << "Set folder = fso.GetFolder(folderpath)\n";
+    batch << "on error resume next\n";
+
+    batch << "while fso.FileExists(file)\n";
+    batch << "    fso.DeleteFile(file)\n";
+    batch << "    WScript.Sleep(1000)\n";
+    batch << "wend\n";
+//    batch << "if folder.SubFolders.Count = 0 and folder.Files.Count = 0 then\n";
+    batch << "    Set folder = Nothing\n";
+    batch << "    fso.DeleteFolder folderpath, true\n";
+//    batch << "end if\n";
+    batch << "fso.DeleteFile(WScript.ScriptFullName)\n";
+
+    f.close();
+
+    QStringList arguments;
+    arguments << QLatin1String("//Nologo") << batchfile; // execute the batchfile
+    arguments << QDir::toNativeSeparators(QFileInfo(installerBinaryPath()).absoluteFilePath());
+    if (!m_performedOperationsOld.isEmpty()) {
+        const KDUpdater::UpdateOperation* const op = m_performedOperationsOld.first();
+        if (op->name() == QLatin1String("Mkdir")) // the target directory name
+            arguments << QDir::toNativeSeparators(QFileInfo(op->arguments().first()).absoluteFilePath());
+    }
+
+    if (!QProcess::startDetached(QLatin1String("cscript"), arguments, QDir::rootPath()))
+        throw Error(tr("Cannot start uninstall"));
+#else
+    // every other platform has no problem if we just delete ourself now
+    QFile uninstaller(QFileInfo(installerBinaryPath()).absoluteFilePath());
+    uninstaller.remove();
+# ifdef Q_WS_MAC
+    const QLatin1String cdUp("/../../..");
+    if (QFileInfo(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath()).isBundle()) {
+        removeDirectoryThreaded(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath());
+        QFile::remove(QFileInfo(installerBinaryPath() + cdUp).absolutePath()
+            + QLatin1String("/") + configurationFileName());
+    } else
+# endif
+#endif
+    {
+        // finally remove the components.xml, since it still exists now
+        QFile::remove(QFileInfo(installerBinaryPath()).absolutePath() + QLatin1String("/")
+            + configurationFileName());
+    }
+}
+
+void InstallerPrivate::registerUninstaller()
+{
+#ifdef Q_OS_WIN
+    QSettings settings(registerPath(), QSettings::NativeFormat);
+    settings.setValue(QLatin1String("DisplayName"), m_vars.value(QLatin1String("ProductName")));
+    settings.setValue(QLatin1String("DisplayVersion"), m_vars.value(QLatin1String("ProductVersion")));
+    const QString uninstaller = QDir::toNativeSeparators(uninstallerName());
+    settings.setValue(QLatin1String("DisplayIcon"), uninstaller);
+    settings.setValue(QLatin1String("Publisher"), m_vars.value(QLatin1String("Publisher")));
+    settings.setValue(QLatin1String("UrlInfoAbout"), m_vars.value(QLatin1String("Url")));
+    settings.setValue(QLatin1String("Comments"), m_vars.value(QLatin1String("Title")));
+    settings.setValue(QLatin1String("InstallDate"), QDateTime::currentDateTime().toString());
+    settings.setValue(QLatin1String("InstallLocation"), QDir::toNativeSeparators(targetDir()));
+    settings.setValue(QLatin1String("UninstallString"), uninstaller);
+    settings.setValue(QLatin1String("ModifyPath"), uninstaller + QLatin1String(" --manage-packages"));
+    settings.setValue(QLatin1String("EstimatedSize"), QFileInfo(installerBinaryPath()).size());
+    settings.setValue(QLatin1String("NoModify"), 1);    // TODO: set to 0 and support modify
+    settings.setValue(QLatin1String("NoRepair"), 1);
+#endif
+}
+
+void InstallerPrivate::unregisterUninstaller()
+{
+#ifdef Q_OS_WIN
+    QSettings settings(registerPath(), QSettings::NativeFormat);
+    settings.remove(QString());
+#endif
 }
 
 void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
