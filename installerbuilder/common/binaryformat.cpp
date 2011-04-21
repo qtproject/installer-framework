@@ -285,7 +285,7 @@ Archive::~Archive()
 
 /**
  * Copies the archives contents to the path \a name.
- * 
+ *
  * If the archive is a zipped directory, \a name is threated as a directory. The archive
  * gets extracted there.
  *
@@ -316,7 +316,7 @@ bool Archive::copy( const QString& name )
         job.run();
 
         close();
-    
+
         return true;
     }
     else
@@ -361,7 +361,7 @@ bool Archive::isZippedDirectory() const
     {
         // more complex, check the zip header magic
         Archive* const arch = const_cast< Archive* >( this );
-    
+
         const bool opened = !isOpen();
         if( opened )
             arch->open( QIODevice::ReadOnly );
@@ -382,7 +382,7 @@ QByteArray Archive::name() const
 {
     return m_name;
 }
-        
+
 void Archive::setName( const QByteArray& name )
 {
     m_name = name;
@@ -612,7 +612,7 @@ void Component::readData( QIODevice* in, qint64 offset )
 
     in->seek( m_binarySegment.start() );
     const qint64 count = retrieveInt64( in );
-   
+
     QVector< QByteArray > names;
     QVector< Range< qint64 > > ranges;
     for( int i = 0; i < count; ++i )
@@ -688,7 +688,7 @@ void ComponentIndex::insertComponent( const Component& c )
     m_components.insert( c.name(), c );
 }
 
-int ComponentIndex::componentCount() const 
+int ComponentIndex::componentCount() const
 {
     return m_components.size();
 }
@@ -703,11 +703,11 @@ QVector<Component> ComponentIndex::components() const {
 
 void ComponentIndex::writeComponentData( QIODevice* out, qint64 offset ) const {
     appendInt64( out, componentCount() );
-    
+
     for( QHash< QByteArray, Component >::const_iterator it = m_components.begin(); it != m_components.end(); ++it )
         it->writeData( out, offset );
 }
-    
+
 KD7zEngineHandler* ComponentIndex::zipHandler = 0;
 
 ComponentIndex::ComponentIndex()
@@ -798,7 +798,7 @@ BinaryContent BinaryContent::readFromApplicationFile()
 
 /*!
  * \class QInstaller::BinaryContent
- * 
+ *
  * BinaryContent handles binary information embedded into executables.
  * Qt resources as well as component information can be stored.
  *

@@ -79,7 +79,7 @@ namespace QInstaller
 
 }
 
-namespace QInstallerCreator 
+namespace QInstallerCreator
 {
     class Component;
 
@@ -123,7 +123,7 @@ namespace QInstallerCreator
         QByteArray m_name;
     };
 
-    class INSTALLER_EXPORT Component 
+    class INSTALLER_EXPORT Component
     {
         Q_DECLARE_TR_FUNCTIONS(Component);
     public:
@@ -159,7 +159,7 @@ namespace QInstallerCreator
     };
 
 
-    class INSTALLER_EXPORT ComponentIndex 
+    class INSTALLER_EXPORT ComponentIndex
     {
     public:
         ComponentIndex();
