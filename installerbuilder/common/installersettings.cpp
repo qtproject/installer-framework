@@ -104,7 +104,7 @@ static QStringList readChildList(const QDomElement &el, const QString &child)
 
 static QString splitTrimmed(const QString &string)
 {
-    if(string.isEmpty())
+    if (string.isEmpty())
         return QString();
 
     const QStringList input = string.split(QRegExp(QLatin1String("\n|\r\n")));
@@ -290,7 +290,7 @@ QString InstallerSettings::removeTargetDir() const
 
 QString InstallerSettings::uninstallerName() const
 {
-    if(d->uninstallerName.isEmpty())
+    if (d->uninstallerName.isEmpty())
         return QLatin1String("uninstall");
     return d->uninstallerName;
 }
