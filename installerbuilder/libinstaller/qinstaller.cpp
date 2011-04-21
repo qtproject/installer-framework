@@ -481,101 +481,17 @@ void Installer::installComponent(Component *component, double progressOperationS
     Q_ASSERT(progressOperationSize);
 
     d->setStatus(Installer::Running);
-    const QList<KDUpdater::UpdateOperation*> operations = component->operations();
-
-    // show only component which are doing something, MinimumProgress is only for progress
-    // calculation safeness
-    if (operations.count() > 1
-        || (operations.count() == 1 && operations.at(0)->name() != QLatin1String("MinimumProgress"))) {
-            ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1")
-                .arg(component->displayName()));
-    }
-
-    if (!component->operationsCreatedSuccessfully())
-        setCanceled();
-
-    QList<KDUpdater::UpdateOperation*>::const_iterator op;
-    for (op = operations.begin(); op != operations.end(); ++op) {
-        if (d->statusCanceledOrFailed())
-            throw Error(tr("Installation canceled by user"));
-
-        KDUpdater::UpdateOperation* const operation = *op;
-        d->connectOperationToInstaller(operation, progressOperationSize);
-
-        // maybe this operations wants us to be admin...
-        const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
-            && operation->value(QLatin1String("admin")).toBool() && gainAdminRights();
-        // perform the operation
-        if (becameAdmin)
-            verbose() << operation->name() << " as admin: " << becameAdmin << std::endl;
-
-        // allow the operation to backup stuff before performing the operation
-        InstallerPrivate::performOperationThreaded(operation, InstallerPrivate::Backup);
-
-        bool ignoreError = false;
-        bool ok = InstallerPrivate::performOperationThreaded(operation);
-        while (!ok && !ignoreError && status() != Installer::Canceled) {
-            verbose() << QString(QLatin1String("operation '%1' with arguments: '%2' failed: %3"))
-                .arg(operation->name(), operation->arguments().join(QLatin1String("; ")),
-                operation->errorString()) << std::endl;;
-            const QMessageBox::StandardButton button =
-                MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
-                tr("Error during installation process (%1):\n%2").arg(component->name(),
-                operation->errorString()),
-                QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel, QMessageBox::Retry);
-
-            if (button == QMessageBox::Retry)
-                ok = InstallerPrivate::performOperationThreaded(operation);
-            else if (button == QMessageBox::Ignore)
-                ignoreError = true;
-            else if (button == QMessageBox::Cancel)
-                interrupt();
+    try {
+        d->installComponent(component, progressOperationSize);
+        d->setStatus(Installer::Success);
+    } catch (const Error &error) {
+        if (status() != Installer::Canceled) {
+            d->setStatus(Installer::Failure);
+            verbose() << "INSTALLER FAILED: " << error.message() << std::endl;
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+                QLatin1String("installationError"), tr("Error"), error.message());
         }
-
-        if (ok || operation->error() > KDUpdater::UpdateOperation::InvalidArguments) {
-            // remember that the operation was performed what allows us to undo it if a
-            // following operation fails or if this operation failed but still needs
-            // an undo call to cleanup.
-            d->addPerformed(operation);
-            operation->setValue(QLatin1String("component"), component->name());
-        }
-
-        if (becameAdmin)
-            dropAdminRights();
-
-        if (!ok && !ignoreError)
-            throw Error(operation->errorString());
-
-        if (component->value(QLatin1String("Important"), QLatin1String("false")) == QLatin1String("true"))
-            d->m_forceRestart = true;
     }
-
-    d->registerPathesForUninstallation(component->pathesForUninstallation(), component->name());
-
-    if (!component->stopProcessForUpdateRequests().isEmpty()) {
-        KDUpdater::UpdateOperation *stopProcessForUpdatesOp =
-            KDUpdater::UpdateOperationFactory::instance().create(QLatin1String("FakeStopProcessForUpdate"));
-        const QStringList arguments(component->stopProcessForUpdateRequests().join(QLatin1String(",")));
-        stopProcessForUpdatesOp->setArguments(arguments);
-        d->addPerformed(stopProcessForUpdatesOp);
-        stopProcessForUpdatesOp->setValue(QLatin1String("component"), component->name());
-    }
-
-    // now mark the component as installed
-    KDUpdater::PackagesInfo* const packages = d->m_app->packagesInfo();
-    const bool forcedInstall =
-        component->value(QLatin1String("ForcedInstallation")).toLower() == QLatin1String("true")
-        ? true : false;
-    const bool virtualComponent =
-        component->value(QLatin1String("Virtual")).toLower() == QLatin1String("true") ? true : false;
-    packages->installPackage(component->value(QLatin1String("Name")),
-        component->value(QLatin1String("Version")), component->value(QLatin1String("DisplayName")),
-        component->value(QLatin1String("Description")), component->dependencies(), forcedInstall,
-        virtualComponent, component->value(QLatin1String("UncompressedSize")).toULongLong());
-
-    component->setInstalled();
-    component->markAsPerformedInstallation();
 }
 
 /*!
