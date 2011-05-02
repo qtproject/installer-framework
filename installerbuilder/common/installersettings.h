@@ -26,68 +26,67 @@
 #ifndef INSTALLERSETTINGS_H
 #define INSTALLERSETTINGS_H
 
+#include "installer_global.h"
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSharedDataPointer>
 
-#include "installer_global.h"
-
 namespace QInstaller {
+class Repository;
 
-    class Repository;
+class INSTALLER_EXPORT InstallerSettings
+{
+    Q_DECLARE_TR_FUNCTIONS(InstallerSettings)
 
-    class INSTALLER_EXPORT InstallerSettings {
-        Q_DECLARE_TR_FUNCTIONS(InstallerSettings)
-    public:
-        /**
-         * @throws QInstallerError
-         */
-        static InstallerSettings fromFileAndPrefix( const QString& path, const QString& prefix );
-        
-        explicit InstallerSettings();
-        InstallerSettings( const InstallerSettings& other );
-        ~InstallerSettings();
+public:
+    explicit InstallerSettings();
+    ~InstallerSettings();
 
-        InstallerSettings& operator=( const InstallerSettings& other );
+    InstallerSettings(const InstallerSettings &other);
+    InstallerSettings &operator=(const InstallerSettings &other);
 
-        bool isValid() const;
+    static InstallerSettings fromFileAndPrefix(const QString &path, const QString &prefix);
 
-        QString logo() const;
-        QString logoSmall() const;
-        QString title() const;
-        QString maintenanceTitle() const;
-        QString publisher() const;
-        QString url() const;
-        QString watermark() const;
-        QString background() const;
-        QString icon() const;
+    bool isValid() const;
 
-        QString applicationName() const;
-        QString applicationVersion() const;
-        
-        QString runProgram() const;
-        QString runProgramDescription() const;
-        QString startMenuDir() const;
-        QString targetDir() const;
-        QString adminTargetDir() const;
+    QString logo() const;
+    QString logoSmall() const;
+    QString title() const;
+    QString maintenanceTitle() const;
+    QString publisher() const;
+    QString url() const;
+    QString watermark() const;
+    QString background() const;
+    QString icon() const;
 
-        QString removeTargetDir() const;
-        QString uninstallerName() const;
-        QString uninstallerIniFile() const;
+    QString applicationName() const;
+    QString applicationVersion() const;
 
-        QByteArray privateKey() const;
-        QByteArray publicKey() const;
+    QString runProgram() const;
+    QString runProgramDescription() const;
+    QString startMenuDir() const;
+    QString targetDir() const;
+    QString adminTargetDir() const;
 
-        QString configurationFileName() const;
+    QString removeTargetDir() const;
+    QString uninstallerName() const;
+    QString uninstallerIniFile() const;
 
-        QList<Repository> repositories() const;
-        void setTemporaryRepositories(const QList<Repository> &repos, bool replace);
+    QByteArray privateKey() const;
+    QByteArray publicKey() const;
 
-        QStringList certificateFiles() const;
+    QString configurationFileName() const;
 
-    private:
-        class Private;
-        QSharedDataPointer<Private> d;
-    };
+    QList<Repository> repositories() const;
+    void setTemporaryRepositories(const QList<Repository> &repos, bool replace);
+
+    QStringList certificateFiles() const;
+
+private:
+    class Private;
+    QSharedDataPointer<Private> d;
+};
+
 }
 
 #endif // INSTALLERSETTINGS_H

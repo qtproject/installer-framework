@@ -26,10 +26,11 @@
 #ifndef QINSTALLER_FILEUTILS_H
 #define QINSTALLER_FILEUTILS_H
 
+#include "installer_global.h"
+
+#include <QtCore/QSet>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
-
-#include "installer_global.h"
 
 QT_BEGIN_NAMESPACE
 class QByteArray;
@@ -38,69 +39,71 @@ class QUrl;
 QT_END_NAMESPACE
 
 namespace QInstaller {
-    void INSTALLER_EXPORT openForWrite(QIODevice* dev, const QString& name);
-    void INSTALLER_EXPORT openForRead(QIODevice* dev, const QString& name);
+class INSTALLER_EXPORT TempDirDeleter
+{
+public:
+    explicit TempDirDeleter(const QString &path);
+    explicit TempDirDeleter(const QStringList &paths = QStringList());
+    ~TempDirDeleter();
 
-    qint64 INSTALLER_EXPORT blockingRead( QIODevice* in, char *buffer, qint64 size );
-    qint64 INSTALLER_EXPORT blockingWrite( QIODevice* out, const char* buffer, qint64 size);
-    qint64 INSTALLER_EXPORT blockingWrite( QIODevice* out, const QByteArray& ba );
-    void INSTALLER_EXPORT blockingCopy( QIODevice* in, QIODevice* out, qint64 size );
+    QStringList paths() const;
 
-    /**
-     * Removes the directory at \a path recursively.
-     * @param path The directory to remove
-     * @param ignoreErrors if @p true, errors will be silently ignored. Otherwise an exception will be thrown if removing fails.
-     *
-     * @throws QInstaller::Error if the directory cannot be removed and ignoreErrors is @p false
-     */
+    void add(const QString &path);
+    void add(const QStringList &paths);
+
+    void releaseAll();
+    void release(const QString &path);
+    void passAndReleaseAll(TempDirDeleter &tdd);
+    void passAndRelease(TempDirDeleter &tdd, const QString &path);
+
+private:
+    Q_DISABLE_COPY(TempDirDeleter)
+    QSet<QString> m_paths;
+};
+
+    void INSTALLER_EXPORT openForWrite(QIODevice *dev, const QString &name);
+    void INSTALLER_EXPORT openForRead(QIODevice *dev, const QString &name);
+
+    qint64 INSTALLER_EXPORT blockingRead(QIODevice *in, char *buffer, qint64 size);
+    void INSTALLER_EXPORT blockingCopy(QIODevice *in, QIODevice *out, qint64 size);
+    qint64 INSTALLER_EXPORT blockingWrite(QIODevice *out, const char* buffer, qint64 size);
+    qint64 INSTALLER_EXPORT blockingWrite(QIODevice *out, const QByteArray& ba);
+
+    /*!
+        Removes the directory at \a path recursively.
+        @param path The directory to remove
+        @param ignoreErrors if @p true, errors will be silently ignored. Otherwise an exception will be thrown
+            if removing fails.
+
+        @throws QInstaller::Error if the directory cannot be removed and ignoreErrors is @p false
+    */
     void INSTALLER_EXPORT removeFiles(const QString &path, bool ignoreErrors = false);
-    void INSTALLER_EXPORT removeDirectory( const QString& path, bool ignoreErrors = false );
-    void INSTALLER_EXPORT removeDirectoryThreaded( const QString& path, bool ignoreErrors = false );
+    void INSTALLER_EXPORT removeDirectory(const QString &path, bool ignoreErrors = false);
+    void INSTALLER_EXPORT removeDirectoryThreaded(const QString &path, bool ignoreErrors = false);
 
-    /**
-     * Creates a temporary directory
-     * @throws QInstaller::Error if creating the temporary directory fails
-     */
-     QString INSTALLER_EXPORT createTemporaryDirectory( const QString& templ=QString() );
+    /*!
+        Creates a temporary directory
+        @throws QInstaller::Error if creating the temporary directory fails
+    */
+    QString INSTALLER_EXPORT createTemporaryDirectory(const QString &templ=QString());
 
-     QString INSTALLER_EXPORT generateTemporaryFileName( const QString& templ=QString() );
+    QString INSTALLER_EXPORT generateTemporaryFileName(const QString &templ=QString());
 
-     void INSTALLER_EXPORT moveDirectoryContents( const QString& sourceDir, const QString& targetDir );
-     void INSTALLER_EXPORT copyDirectoryContents( const QString& sourceDir, const QString& targetDir );
+    void INSTALLER_EXPORT moveDirectoryContents(const QString &sourceDir, const QString &targetDir);
+    void INSTALLER_EXPORT copyDirectoryContents(const QString &sourceDir, const QString &targetDir);
 
-     bool INSTALLER_EXPORT isLocalUrl( const QUrl& url );
-     QString INSTALLER_EXPORT pathFromUrl( const QUrl& url );
+    bool INSTALLER_EXPORT isLocalUrl(const QUrl &url);
+    QString INSTALLER_EXPORT pathFromUrl(const QUrl &url);
 
-     void INSTALLER_EXPORT mkdir( const QString& path );
-     void INSTALLER_EXPORT mkpath( const QString& path );
+    void INSTALLER_EXPORT mkdir(const QString &path);
+    void INSTALLER_EXPORT mkpath(const QString &path);
 
 #ifdef Q_WS_WIN
-     /**
-       * Sets the .ico file at \a icon as application icon for \a application.
-       */
-     void INSTALLER_EXPORT setApplicationIcon( const QString& application, const QString& icon );
-
+    /*!
+        Sets the .ico file at \a icon as application icon for \a application.
+    */
+    void INSTALLER_EXPORT setApplicationIcon(const QString &application, const QString &icon);
 #endif
-
-    class INSTALLER_EXPORT TempDirDeleter
-    {
-    public:
-        explicit TempDirDeleter( const QString& path );
-        explicit TempDirDeleter( const QStringList& paths = QStringList() );
-        ~TempDirDeleter();
-        void releaseAll();
-        void release( const QString& path );
-        void passAndReleaseAll( TempDirDeleter& tdd );
-        void passAndRelease( TempDirDeleter& tdd, const QString& path );
-
-        void add( const QString& path );
-        void add( const QStringList& paths );
-        QStringList paths() const;
-
-    private:
-        Q_DISABLE_COPY(TempDirDeleter)
-        QStringList m_paths;
-    };
 }
 
 #endif // QINSTALLER_FILEUTILS_H

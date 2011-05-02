@@ -250,7 +250,7 @@ void ComponentModel::slotModelReset()
 {
     for (int i = m_rootIndex; i < m_rootComponentList.count(); ++i) {
         foreach (Component *child, m_rootComponentList.at(i)->childs()) {
-            if (child->checkState() == Qt::Checked)
+            if (child->checkState() == Qt::Checked && !child->isTristate())
                 m_initialCheckedList.insert(child->name());
         }
     }
@@ -296,9 +296,9 @@ void ComponentModel::slotCheckStateChanged(const QModelIndex &index)
     if (!component)
         return;
 
-    if (component->checkState() == Qt::Checked)
+    if (component->checkState() == Qt::Checked && !component->isTristate())
         m_currentCheckedList.insert(component->name());
-    else if (component->checkState() == Qt::Unchecked)
+    else if (component->checkState() == Qt::Unchecked && !component->isTristate())
         m_currentCheckedList.remove(component->name());
     emit defaultCheckStateChanged(m_initialCheckedList != m_currentCheckedList);
 

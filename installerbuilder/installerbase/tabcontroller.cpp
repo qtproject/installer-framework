@@ -37,15 +37,13 @@
 #include <qinstaller.h>
 #include <qinstallercomponent.h>
 
-#include <KDUpdater/Application>
-#include <KDUpdater/PackagesInfo>
-
 #include <QtCore/QPointer>
 #include <QtCore/QTimer>
 
 #include <QtScript/QScriptEngine>
 
 using namespace QInstaller;
+
 
 // -- TabController::Private
 
@@ -55,24 +53,22 @@ public:
     Private();
     ~Private();
 
-    QHash<QString, QString> m_params;
+    bool m_init;
     bool m_updaterInitialized;
     bool m_packageManagerInitialized;
-    bool m_init;
     QPointer<QInstaller::Gui> m_gui;
     QInstaller::Installer *m_installer;
-    KDUpdater::Application *m_app;
+
     QString m_controlScript;
+    QHash<QString, QString> m_params;
 };
 
 TabController::Private::Private()
-    :
-    m_updaterInitialized(false),
-    m_packageManagerInitialized(false),
-    m_init(false),
-    m_gui(0),
-    m_installer(0),
-    m_app(0)
+    : m_init(false)
+    , m_updaterInitialized(false)
+    , m_packageManagerInitialized(false)
+    , m_gui(0)
+    , m_installer(0)
 {
 }
 
@@ -92,6 +88,7 @@ TabController::TabController(QObject *parent)
 
 TabController::~TabController()
 {
+    d->m_installer->writeUninstaller();
     delete d;
 }
 
@@ -104,11 +101,6 @@ void TabController::setInstallerGui(QInstaller::Gui *gui)
 void TabController::setControlScript (const QString &script)
 {
     d->m_controlScript = script;
-}
-
-void TabController::setApplication(KDUpdater::Application *app)
-{
-    d->m_app = app;
 }
 
 void TabController::setInstaller(QInstaller::Installer *installer)
@@ -138,11 +130,8 @@ int TabController::init()
                 engine->newQObject(this));
         }
 
-        if (!d->m_installer->isInstaller()) {
-            connect(d->m_gui, SIGNAL(accepted()), this, SLOT(finished()), Qt::QueuedConnection);
-            connect(d->m_gui, SIGNAL(rejected()), this, SLOT(finished()), Qt::QueuedConnection);
+        if (!d->m_installer->isInstaller())
             d->m_gui->setWindowTitle(d->m_installer->value(QLatin1String("MaintenanceTitle")));
-        }
 
         IntroductionPageImpl *introPage =
             qobject_cast<IntroductionPageImpl*>(d->m_gui->page(Installer::Introduction));
@@ -179,8 +168,6 @@ int TabController::initUpdater()
 
     connect(d->m_installer, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
         SLOT(message(KDJob*, QString)));
-    connect(d->m_gui, SIGNAL(rejected()), d->m_installer, SIGNAL(cancelMetaInfoJob()),
-        Qt::QueuedConnection);
 
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
@@ -232,8 +219,6 @@ int TabController::initPackageManager()
 
     connect(d->m_installer, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
         SLOT(message(KDJob*, QString)));
-    connect(d->m_gui, SIGNAL(rejected()), d->m_installer, SIGNAL(cancelMetaInfoJob()),
-        Qt::QueuedConnection);
 
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
@@ -259,11 +244,6 @@ int TabController::initPackageManager()
 }
 
 // -- private slots
-
-void TabController::finished()
-{
-    d->m_installer->writeUninstaller();
-}
 
 void TabController::restartWizard()
 {

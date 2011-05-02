@@ -217,7 +217,11 @@ void ProgressCoordninator::addManualPercentagePoints(int value)
         //we don't do other things in the undomode, maybe later if the last percentage point comes to early
         return;
     }
+
     m_currentCompletePercentage = m_currentCompletePercentage + value;
+    if (m_currentCompletePercentage > 100.0)
+        m_currentCompletePercentage = 100.0;
+
     qApp->processEvents(); //makes the result available in the ui
 }
 

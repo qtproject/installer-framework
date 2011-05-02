@@ -66,7 +66,7 @@ static void printUsage()
     std::cout << "     --single            Put only the given components (not their dependencies) into the (already existing) repository" << std::endl;
     std::cout << std::endl;
     std::cout << "Example:" << std::endl;
-    std::cout << "  " << appName << " ../examples/packages ../examples/config repository/ com.nokia.sdk" << std::endl;
+    std::cout << "  " << appName << " -p ../examples/packages -c ../examples/config repository/ com.nokia.sdk" << std::endl;
 }
 
 static int printErrorAndUsageAndExit( const QString& err ) 

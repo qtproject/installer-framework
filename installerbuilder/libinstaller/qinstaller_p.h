@@ -86,10 +86,6 @@ public:
     QString targetDir() const;
     QString registerPath() const;
 
-    void deleteUninstaller();
-    void registerUninstaller();
-    void unregisterUninstaller();
-
     QString uninstallerName() const;
     QString installerBinaryPath() const;
     void readUninstallerIniFile(const QString &targetDir);
@@ -137,6 +133,8 @@ public:
         m_performedOperationsCurrentSession.clear();
     }
 
+    void installComponent(Component *component, double progressOperationSize, bool adminRightsGained = false);
+
 signals:
     void installationStarted();
     void installationFinished();
@@ -177,6 +175,14 @@ public:
     QList<KDUpdater::UpdateOperation*> ownedOperations;
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsOld;
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsCurrentSession;
+
+private:
+    void deleteUninstaller();
+    void registerUninstaller();
+    void unregisterUninstaller();
+
+    void runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
+        double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation);
 
 private:
     Installer *q;

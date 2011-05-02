@@ -126,7 +126,8 @@ public:
     Q_INVOKABLE Page* page(int pageId) const;
     Q_INVOKABLE QWidget* pageWidgetByObjectName(const QString& name) const;
     Q_INVOKABLE QWidget* currentPageWidget() const;
-    Q_INVOKABLE void clickButton(int wizardButton, int delayInMs=0);
+    Q_INVOKABLE QString defaultButtonText(int wizardButton) const;
+    Q_INVOKABLE void clickButton(int wizardButton, int delayInMs = 0);
 
 Q_SIGNALS:
     void interrupted();
@@ -156,11 +157,9 @@ protected:
     bool event(QEvent* event);
     Installer *m_installer;
 
-
 private:
     class Private;
     Private* const d;
-    QMap< int, QWizardPage* > defaultPages;
 };
 
 
@@ -181,6 +180,8 @@ public:
     virtual bool isComplete() const;
     void setComplete(bool complete);
 
+    Gui* gui() const { return qobject_cast<Gui*>(wizard()); }
+
 protected:
     Installer *installer() const;
 
@@ -195,8 +196,6 @@ protected:
     virtual void entering() {} // called on entering
     virtual void leaving() {}  // called on leaving
 
-    virtual void forward() const {} // called when going forwards
-    //virtual void backward() const {}  // called when going back
     bool isConstructing() const { return m_fresh; }
 
 private:
@@ -328,7 +327,7 @@ private Q_SLOTS:
 
 private:
     QString startMenuPath;
-    QLineEdit   *m_lineEdit;
+    QLineEdit *m_lineEdit;
     QListWidget *m_listWidget;
 };
 
@@ -341,9 +340,12 @@ class INSTALLER_EXPORT ReadyForInstallationPage : public Page
 
 public:
     explicit ReadyForInstallationPage(Installer *installer);
-    void initializePage();
-    void entering();
+
     bool isComplete() const;
+
+protected:
+    void entering();
+    void leaving();
 
 private:
     QLabel* const msgLabel;
@@ -363,7 +365,7 @@ public:
 
 protected:
     void entering();
-    void initializePage();
+    void leaving();
     bool isInterruptible() const { return true; }
 
 public Q_SLOTS:
@@ -393,14 +395,10 @@ class INSTALLER_EXPORT FinishedPage : public Page
 public:
     explicit FinishedPage(Installer *installer);
 
-Q_SIGNALS:
-    void finishClicked();
-
 public Q_SLOTS:
     void handleFinishClicked();
 
 protected:
-    void initializePage();
     void entering();
     void leaving();
 
@@ -418,6 +416,8 @@ class INSTALLER_EXPORT RestartPage : public Page
 
 public:
     explicit RestartPage(Installer *installer);
+
+    virtual int nextId() const;
 
 protected:
     void entering();
