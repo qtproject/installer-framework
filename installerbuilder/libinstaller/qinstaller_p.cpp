@@ -914,9 +914,8 @@ QString InstallerPrivate::registerPath() const
 
     return path + QLatin1String("\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\")
         + productName;
-#else
-    return QString();
 #endif
+    return QString();
 }
 
 void InstallerPrivate::runInstaller()

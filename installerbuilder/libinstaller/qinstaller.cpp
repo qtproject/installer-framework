@@ -263,8 +263,6 @@ void Installer::setUpdaterApplication(KDUpdater::Application *app)
 void Installer::writeUninstaller()
 {
     if (d->m_needToWriteUninstaller) {
-        bool error = false;
-        QString errorMsg;
         try {
             d->writeUninstaller(d->m_performedOperationsOld + d->m_performedOperationsCurrentSession);
 
@@ -279,14 +277,9 @@ void Installer::writeUninstaller()
             if (gainedAdminRights)
                 dropAdminRights();
             d->m_needToWriteUninstaller = false;
-        } catch (const Error& e) {
-            error = true;
-            errorMsg = e.message();
-        }
-
-        if (error) {
+        } catch (const Error &error) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("WriteError"), tr("Error writing Uninstaller"), errorMsg,
+                QLatin1String("WriteError"), tr("Error writing Uninstaller"), error.message(),
                 QMessageBox::Ok, QMessageBox::Ok);
         }
     }
