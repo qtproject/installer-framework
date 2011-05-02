@@ -1566,6 +1566,9 @@ void FinishedPage::entering()
 
     setCommitPage(true);
     if (installer()->isUpdater() || installer()->isPackageManager()) {
+#ifdef Q_WS_MAC
+        wizard()->setOption(QWizard::NoCancelButton, false);
+#endif
         setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::NextButton));
         setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::FinishButton));
     } else {
