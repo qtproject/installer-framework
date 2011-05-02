@@ -646,7 +646,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
     // if it is a bundle, we need some stuff in it...
     if (isInstaller()
         && QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle()) {
-        op = createOwnedOperation(QLatin1String("Copy"));
+        KDUpdater::UpdateOperation* op = createOwnedOperation(QLatin1String("Copy"));
         op->setArguments(QStringList() << (QCoreApplication::applicationDirPath()
             + QLatin1String("/../PkgInfo")) << (QFileInfo(uninstallerName()).path()
             + QLatin1String("/../PkgInfo")));

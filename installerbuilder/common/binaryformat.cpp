@@ -45,6 +45,8 @@
 #include <QtCore/QResource>
 #include <QtCore/QTemporaryFile>
 
+#include <errno.h>
+
 using namespace QInstaller;
 using namespace QInstallerCreator;
 
@@ -566,7 +568,7 @@ void Component::writeData(QIODevice *out, qint64 offset) const
     qint64 start = out->pos() + offset;
 
     // Why 16 + 16? This is 24, not 32???
-    const int foo = 3 * sizeof qint64;
+    const int foo = 3 * sizeof(qint64);
     // add 16 + 16 + number of name characters for each archive (the size of the table)
     foreach (const QSharedPointer<Archive> &archive, m_archives)
         start += foo + archive->name().count();

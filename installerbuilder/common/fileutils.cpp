@@ -42,6 +42,8 @@
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QThread>
 
+#include <errno.h>
+
 using namespace QInstaller;
 
 
