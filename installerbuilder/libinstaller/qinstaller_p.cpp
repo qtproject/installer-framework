@@ -504,12 +504,9 @@ void InstallerPrivate::stopProcessesForUpdates(const QList<Component*> &componen
 int InstallerPrivate::countProgressOperations(const QList<KDUpdater::UpdateOperation*> &operations)
 {
     int operationCount = 0;
-    QList<KDUpdater::UpdateOperation*>::const_iterator oIt;
-    for (oIt = operations.constBegin(); oIt != operations.constEnd(); oIt++) {
-        KDUpdater::UpdateOperation* const operation = *oIt;
-        QObject* const operationObject = dynamic_cast< QObject* >(operation);
-        if (operationObject != 0) {
-            const QMetaObject* const mo = operationObject->metaObject();
+    foreach (KDUpdater::UpdateOperation *operation, operations) {
+        if (QObject *operationObject = dynamic_cast<QObject*> (operation)) {
+            const QMetaObject *const mo = operationObject->metaObject();
             if (mo->indexOfSignal(QMetaObject::normalizedSignature("progressChanged(double)")) > -1)
                 operationCount++;
         }
