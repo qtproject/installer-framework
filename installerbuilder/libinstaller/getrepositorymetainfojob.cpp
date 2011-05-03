@@ -53,8 +53,6 @@
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 
-#include <cassert>
-
 using namespace KDUpdater;
 using namespace QInstaller;
 
@@ -163,9 +161,9 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadCanceled()
 void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 {
     const QString fn = m_downloader->downloadedFileName();
+    Q_ASSERT(!fn.isEmpty());
+    Q_ASSERT(QFile::exists(fn));
 
-    assert(!fn.isEmpty());
-    assert(QFile::exists(fn));
     try {
         m_temporaryDirectory = createTemporaryDirectory(QLatin1String("remoterepo"));
         m_tempDirDeleter.add(m_temporaryDirectory);
@@ -350,7 +348,7 @@ void GetRepositoryMetaInfoJob::metaDownloadCanceled()
 void GetRepositoryMetaInfoJob::metaDownloadFinished()
 {
     const QString fn = m_downloader->downloadedFileName();
-    assert(!fn.isEmpty());
+    Q_ASSERT(!fn.isEmpty());
 
     QFile arch(fn);
     if (!arch.open(QIODevice::ReadOnly)) {

@@ -33,8 +33,6 @@
 #include "getrepositoriesmetainfojob.h"
 #include "getrepositorymetainfojob.h"
 
-#include <cassert>
-
 using namespace KDUpdater;
 using namespace QInstaller;
 
@@ -144,7 +142,7 @@ void GetRepositoriesMetaInfoJob::slotInfoMessage(KDJob*, const QString& msg)
 void GetRepositoriesMetaInfoJob::jobFinished(KDJob* j)
 {
     const GetRepositoryMetaInfoJob* const job = qobject_cast<const GetRepositoryMetaInfoJob*>(j);
-    assert(job);
+    Q_ASSERT(job);
 
     if(job->error() != KDJob::NoError && !job->temporaryDirectory().isEmpty()) {
         try {
