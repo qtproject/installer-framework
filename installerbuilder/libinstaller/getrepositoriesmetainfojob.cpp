@@ -131,12 +131,8 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
     m_job->setSilentRetries(silentRetries());
     m_job->setRepository(m_tmpRepositories.takeLast());
     connect(m_job, SIGNAL(finished(KDJob*)), this, SLOT(jobFinished(KDJob*)));
+    connect(m_job, SIGNAL(infoMessage(KDJob*, QString)), this, SIGNAL(infoMessage(KDJob*, QString)));
     m_job->start();
-}
-
-void GetRepositoriesMetaInfoJob::slotInfoMessage(KDJob*, const QString& msg)
-{
-    emit infoMessage(this, msg);
 }
 
 void GetRepositoriesMetaInfoJob::jobFinished(KDJob* j)

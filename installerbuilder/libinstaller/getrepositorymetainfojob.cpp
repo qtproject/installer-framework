@@ -160,6 +160,8 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadCanceled()
 
 void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 {
+    emit infoMessage(this, tr("Retrieving component meta information..."));
+
     const QString fn = m_downloader->downloadedFileName();
     Q_ASSERT(!fn.isEmpty());
     Q_ASSERT(QFile::exists(fn));
@@ -216,6 +218,8 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         //    .arg(QString::number(line), QString::number(col), err));
     }
 
+    emit infoMessage(this, tr("Parsing component meta information..."));
+
     const QDomElement root = doc.documentElement();
     const QDomNodeList children = root.childNodes();
     for (int i = 0; i < children.count(); ++i) {
@@ -240,7 +244,9 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         emitFinished();
         return;
     }
-    emit infoMessage(this, tr("Retrieving component meta information..."));
+
+    emit infoMessage(this, tr("Finished updating component meta information..."));
+
     fetchNextMetaInfo();
 }
 
@@ -278,6 +284,8 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
 
 void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
 {
+    emit infoMessage(this, tr("Retrieving component information from remote repository..."));
+
     if (m_canceled)
         return;
 
@@ -336,8 +344,6 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
         Qt::QueuedConnection);
 
     m_downloader->download();
-
-    emit infoMessage(this, tr("Retrieving component information from remote repositories..."));
 }
 
 void GetRepositoryMetaInfoJob::metaDownloadCanceled()

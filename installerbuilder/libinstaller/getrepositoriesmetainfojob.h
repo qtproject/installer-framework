@@ -78,7 +78,6 @@ private Q_SLOTS:
 
     void fetchNextRepo();
     void jobFinished(KDJob*);
-    void slotInfoMessage(KDJob*, const QString&);
 
 private:
     QPointer<GetRepositoryMetaInfoJob> m_job;
