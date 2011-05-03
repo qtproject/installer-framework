@@ -331,7 +331,7 @@ void InstallerPrivate::initialize()
         m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_installerSettings->adminTargetDir()));
     else
 #endif
-    m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_installerSettings->targetDir()));
+        m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_installerSettings->targetDir()));
     m_vars.insert(QLatin1String("RemoveTargetDir"), replaceVariables(m_installerSettings->removeTargetDir()));
 
     QSettings creatorSettings(QSettings::IniFormat, QSettings::UserScope, QLatin1String("Nokia"),
@@ -381,8 +381,7 @@ bool InstallerPrivate::isPackageManager() const
 
 bool InstallerPrivate::statusCanceledOrFailed() const
 {
-    return m_status == Installer::Canceled
-        || m_status == Installer::Failure;
+    return m_status == Installer::Canceled || m_status == Installer::Failure;
 }
 
 void InstallerPrivate::setStatus(int status)
