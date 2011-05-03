@@ -297,11 +297,9 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     QString next = m_currentPackageName;
     QString nextVersion = m_currentPackageVersion;
     if (next.isEmpty()) {
-        next = m_packageNames.back();
-        m_packageNames.pop_back();
         m_retriesLeft = m_silentRetries;
-        nextVersion = m_packageVersions.back();
-        m_packageVersions.pop_back();
+        next = m_packageNames.takeLast();
+        nextVersion = m_packageVersions.takeLast();
     }
 
     verbose() << "fetching metadata of " << next << " in version " << nextVersion << std::endl;
@@ -348,7 +346,7 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
 
 void GetRepositoryMetaInfoJob::metaDownloadCanceled()
 {
-    updatesXmlDownloadCanceled();
+    emitFinishedWithError(Canceled, m_downloader->errorString());
 }
 
 void GetRepositoryMetaInfoJob::metaDownloadFinished()
