@@ -701,8 +701,7 @@ bool Installer::fetchAllPackages()
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
         verbose() << tr("Could not retrieve components: %1").arg(metaInfoJob->errorString()) << std::endl;
-        if (isInstaller())
-            return false;
+        return false;
     }
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {
@@ -1436,15 +1435,14 @@ bool Installer::finishedWithSuccess() const
 
 void Installer::interrupt()
 {
-    verbose() << "INTERRUPT INSTALLER" << std::endl;
-    d->setStatus(Installer::Canceled);
+    setCanceled();
     emit installationInterrupted();
 }
 
 void Installer::setCanceled()
 {
-    emit cancelMetaInfoJob();
     d->setStatus(Installer::Canceled);
+    emit cancelMetaInfoJob();
 }
 
 /*!

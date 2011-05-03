@@ -184,6 +184,8 @@ int TabController::initUpdater()
     introPage->showMaintenanceTools();
     introPage->setMaintenanceToolsEnabled(true);
 
+    if (d->m_installer->status() == Installer::Canceled)
+        return Installer::Canceled;
     return Installer::Success;
 }
 
@@ -240,6 +242,8 @@ int TabController::initPackageManager()
         introPage->hideAll();
     }
 
+    if (d->m_installer->status() == Installer::Canceled)
+        return Installer::Canceled;
     return Installer::Success;
 }
 

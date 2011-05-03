@@ -472,40 +472,32 @@ QWidget* Gui::currentPageWidget() const
 
 void Gui::cancelButtonClicked()
 {
-    const bool doIgnore = m_installer->isInstaller()
-        ? m_installer->status() == Installer::Canceled
-            || m_installer->status() == Installer::Success
-        : m_installer->status() == Installer::Canceled;
+    if (currentId() != Installer::InstallationFinished) {
+        Page* const page = qobject_cast<Page*>(currentPage());
+        if (page && page->isInterruptible()) {
+            const QMessageBox::StandardButton bt =
+                MessageBoxHandler::question(MessageBoxHandler::currentBestSuitParent(),
+                QLatin1String("cancelInstallation"), tr("Question"),
+                tr("Do you want to abort the %1 process?").arg(m_installer->isUninstaller()
+                    ? tr("uninstallation") : tr("installation")), QMessageBox::Yes | QMessageBox::No);
+            if (bt == QMessageBox::Yes)
+                emit interrupted();
+        } else {
+            QString app = tr("installer");
+            if (m_installer->isUninstaller())
+                app = tr("uninstaller");
+            if (m_installer->isUpdater() || m_installer->isPackageManager())
+                app = tr("maintenance");
 
-    // if the user canceled (all modes) or the installation is finished (installer mode only), ignore
-    // clicks on cancel.
-    if (doIgnore)
-        return;
-
-    // close the manager without asking if nothing was modified, always ask for the installer
-    if (!m_installer->isInstaller() && !d->m_modified) {
-        QDialog::reject();
-        return;
-    }
-
-    Page* const page = qobject_cast<Page*>(currentPage());
-    verbose() << "CANCEL CLICKED" << currentPage() << page << std::endl;
-    if (page && page->isInterruptible()) {
-        const QMessageBox::StandardButton bt =
-            MessageBoxHandler::question(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("cancelInstallation"), tr("Question"),
-            tr("Do you want to abort the %1 process?").arg(m_installer->isUninstaller()
-                ? tr("uninstallation") : tr("installation")), QMessageBox::Yes | QMessageBox::No);
-        if (bt == QMessageBox::Yes)
-            emit interrupted();
+            const QMessageBox::StandardButton bt =
+                MessageBoxHandler::question(MessageBoxHandler::currentBestSuitParent(),
+                QLatin1String("cancelInstallation"), tr("Question"),
+                tr("Do you want to abort the %1 application?").arg(app), QMessageBox::Yes | QMessageBox::No);
+            if (bt == QMessageBox::Yes)
+                QDialog::reject();
+        }
     } else {
-        const QMessageBox::StandardButton bt =
-            MessageBoxHandler::question(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("cancelInstallation"), tr("Question"),
-            tr("Do you want to abort the %1 application?").arg(m_installer->isUninstaller()
-                ? tr("uninstaller") : tr("installer")), QMessageBox::Yes | QMessageBox::No);
-        if (bt == QMessageBox::Yes)
-            QDialog::reject();
+        QDialog::reject();
     }
 }
 
