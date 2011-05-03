@@ -235,7 +235,7 @@
     \list
     \o \bold{VisibleName} The human readable name of the component - required.
     \o \bold{Description} The human readable description of the component - required.
-    \o \bold{Version} The version number of the component - required.
+    \o \bold{Version} The version number of the component needs the following format: [0-9]+((\.|-)[0-9]+)* such as 1-1; 1.2-2; 3.4.7 - required.
     \o \bold{ReleaseDate} The day this component version was released - optional.
     \o \bold{Name} domain-like identification for this component - required.
     \o \bold{Dependencies} Comma-separated list of dependencies - optional.
@@ -250,6 +250,7 @@
     \o \bold{Important} The package is marked as important. This is relevant for updates found with UpdateAgent.
     \o \bold{ForcedInstallation} This packages must always be installed and can't get unchecked by the user.
     \o \bold{AutoSelectOn} Define boolean expressions with other components names to define when this components gets autoselected.
+    \o \bold{Replaces} Comma-separated list of components to replace - optional.
     \endlist
 
     \section2 Additional features
