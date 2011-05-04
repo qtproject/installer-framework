@@ -60,11 +60,3 @@ void AdminAuthorizationBase::setAuthorized()
 {
     d->authorized = true;
 }
-
-#ifdef Q_WS_MAC
-bool AdminAuthorization::hasAdminRights()
-{
-    // as this is only required on Windows
-    return false;
-}
-#endif

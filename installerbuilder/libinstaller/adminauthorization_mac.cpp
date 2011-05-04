@@ -35,70 +35,85 @@
 #include <Security/Authorization.h>
 #include <Security/AuthorizationTags.h>
 
+#include <QtCore/QStringList>
+#include <QtCore/QVector>
+
 #include <unistd.h>
 
-#include <QStringList>
-#include <QVector>
+
+// -- AdminAuthorization::Private
 
 class AdminAuthorization::Private
 {
 public:
     Private()
-        : auth( 0 )
-    {
-    }
+        : auth(0) { }
 
     AuthorizationRef auth;
 };
 
+
+// -- AdminAuthorization
+
 AdminAuthorization::AdminAuthorization()
 {
-    AuthorizationCreate( 0, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &d->auth );
+    AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &d->auth);
 }
 
 AdminAuthorization::~AdminAuthorization()
 {
-    AuthorizationFree( d->auth, kAuthorizationFlagDestroyRights );
+    AuthorizationFree(d->auth, kAuthorizationFlagDestroyRights);
 }
 
 bool AdminAuthorization::authorize()
 {
-    if( geteuid() == 0 )
+    if(geteuid() == 0)
         setAuthorized();
 
-    if( isAuthorized() )
+    if(isAuthorized())
         return true;
 
-    AuthorizationItem item = { kAuthorizationRightExecute, 0, NULL, 0 };
-    const AuthorizationRights rights = { 1, &item };
-    
-    const AuthorizationFlags flags = kAuthorizationFlagDefaults | kAuthorizationFlagInteractionAllowed | kAuthorizationFlagPreAuthorize | kAuthorizationFlagExtendRights;
-    
-    const int result = AuthorizationCopyRights( d->auth, &rights, 0, flags, 0 );
-    if( result != 0 )
+    AuthorizationItem item;
+    item.name = kAuthorizationRightExecute;
+    item.valueLength = 0;
+    item.value = NULL;
+    item.flags = 0;
+
+    AuthorizationRights rights;
+    rights.count = 1;
+    rights.items = &item;
+
+    const AuthorizationFlags flags = kAuthorizationFlagDefaults | kAuthorizationFlagInteractionAllowed
+        | kAuthorizationFlagPreAuthorize | kAuthorizationFlagExtendRights;
+
+    const OSStatus result = AuthorizationCopyRights(d->auth, &rights, kAuthorizationEmptyEnvironment,
+        flags, 0);
+    if(result != errAuthorizationSuccess)
         return false;
 
-    seteuid( 0 );
+    seteuid(0);
     setAuthorized();
     emit authorized();
     return true;
 }
-   
-bool AdminAuthorization::execute( QWidget*, const QString& program, const QStringList& arguments )
-{
-    const QByteArray utf8Program = program.toUtf8();
-    const char* const prog = utf8Program.data();
-    QVector< QByteArray > utf8Args;
-    QVector< char* > args;
-    for( QStringList::const_iterator it = arguments.begin(); it != arguments.end(); ++it )
-    {
-        utf8Args.push_back( it->toUtf8() );
-        args.push_back( utf8Args.last().data() );
-    }
-    args.push_back( 0 );
 
-    const AuthorizationFlags flags = kAuthorizationFlagDefaults;
-    
-    const int result = AuthorizationExecuteWithPrivileges( d->auth, prog, flags, args.data(), 0 );
-    return result == 0;
+bool AdminAuthorization::execute(QWidget*, const QString& program, const QStringList& arguments)
+{
+    QVector<char* > args;
+    QVector<QByteArray> utf8Args;
+    foreach (const QString &argument, arguments) {
+        utf8Args.push_back(argument.toUtf8());
+        args.push_back(utf8Args.last().data());
+    }
+    args.push_back(0);
+
+    const QByteArray utf8Program = program.toUtf8();
+    const OSStatus result = AuthorizationExecuteWithPrivileges(d->auth, utf8Program.data(),
+        kAuthorizationFlagDefaults, args.data(), 0);
+    return result == errAuthorizationSuccess;
+}
+
+bool AdminAuthorization::hasAdminRights()
+{
+    return geteuid() == 0;
 }
