@@ -259,7 +259,16 @@ void FSEngineServer::incomingConnection( quintptr socketDescriptor )
     watchdog.resetTimeoutTimer();
 }
 #endif
-   
+
+void FSEngineServer::enableTestMode()
+{
+    setAuthorizationKey(QLatin1String("testAuthorizationKey"));
+    //we don't want to kill the server,
+    //maybe we should introduce a call where the client can kill the server
+    watchdog.disconnect();
+}
+
+
 /*!
  Sets the authorization key this server is asking the clients for to \a authorizationKey.
  */

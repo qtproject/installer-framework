@@ -61,6 +61,7 @@ public:
 
     QAbstractFileEngine* create( const QString& fileName ) const;
 
+    void enableTestMode();
     void setActive( bool active );
     bool isActive() const;
     bool isServerRunning() const;

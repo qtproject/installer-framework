@@ -642,6 +642,12 @@ FSEngineClientHandler::FSEngineClientHandler( quint16 port, const QHostAddress& 
     Private::instance = this;
 }
 
+void FSEngineClientHandler::enableTestMode()
+{
+    d->key = QLatin1String("testAuthorizationKey");
+    d->serverStarted = true;
+}
+
 void FSEngineClientHandler::init( quint16 port, const QHostAddress& a )
 {
     d->address = a;

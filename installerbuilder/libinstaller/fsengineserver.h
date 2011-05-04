@@ -42,6 +42,7 @@ public:
     FSEngineServer( const QHostAddress& address, quint16 port, QObject* parent = 0 );
     ~FSEngineServer();
     
+    void enableTestMode();
     void setAuthorizationKey( const QString& key );
     QString authorizationKey() const;
 
