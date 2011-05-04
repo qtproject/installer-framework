@@ -37,8 +37,6 @@
 #include <QtCore/QVector>
 #include <QtCore/QSharedPointer>
 
-class KD7zEngineHandler;
-
 namespace KDUpdater {
     class UpdateOperation;
 }
@@ -163,9 +161,6 @@ public:
     void removeComponent(const QByteArray &name);
     QVector<Component> components() const;
     int componentCount() const;
-
-protected:
-    static KD7zEngineHandler *zipHandler;
 
 private:
     QHash<QByteArray, Component> m_components;

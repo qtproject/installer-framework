@@ -32,7 +32,6 @@
 **************************************************************************/
 #include "binaryformat.h"
 
-#include "common/kd7zenginehandler.h"
 #include "errors.h"
 #include "fileutils.h"
 #include "lib7z_facade.h"
@@ -707,14 +706,9 @@ void ComponentIndex::writeComponentData(QIODevice *out, qint64 offset) const
         component.writeData(out, offset);
 }
 
-KD7zEngineHandler* ComponentIndex::zipHandler = 0;
 
 ComponentIndex::ComponentIndex()
 {
-    if (zipHandler == 0) {
-        // TODO: this one get leaked
-        zipHandler = new KD7zEngineHandler;
-    }
 }
 
 ComponentIndex ComponentIndex::read(QIODevice *dev, qint64 offset)
