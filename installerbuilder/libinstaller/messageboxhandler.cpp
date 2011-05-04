@@ -32,53 +32,86 @@
 **************************************************************************/
 #include "messageboxhandler.h"
 
-#include <QApplication>
-#include <QScriptValue>
-#include <QScriptEngine>
-#include <QDebug>
-#include <QPushButton>
-#include <QDialogButtonBox>
+#include <QtCore/QDebug>
 
-QScriptValue QInstaller::registerMessageBox( QScriptEngine* scriptEngine ) {
-    QScriptValue messageBox = scriptEngine->newQObject(MessageBoxHandler::instance());
+#include <QtGui/QApplication>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
+
+#include <QtScript/QScriptEngine>
+#include <QtScript/QScriptValue>
+
+QScriptValue QInstaller::registerMessageBox(QScriptEngine *scriptEngine)
+{
     // register QMessageBox::StandardButton enum in the script connection
-    messageBox.setProperty( QLatin1String( "Ok" ),              scriptEngine->newVariant( static_cast< int >( QMessageBox::Yes ) ) );
-    messageBox.setProperty( QLatin1String( "Open" ),            scriptEngine->newVariant( static_cast< int >( QMessageBox::Open ) ) );
-    messageBox.setProperty( QLatin1String( "Save" ),            scriptEngine->newVariant( static_cast< int >( QMessageBox::Save ) ) );
-    messageBox.setProperty( QLatin1String( "Cancel" ),          scriptEngine->newVariant( static_cast< int >( QMessageBox::Cancel ) ) );
-    messageBox.setProperty( QLatin1String( "Close" ),           scriptEngine->newVariant( static_cast< int >( QMessageBox::Close ) ) );
-    messageBox.setProperty( QLatin1String( "Discard" ),         scriptEngine->newVariant( static_cast< int >( QMessageBox::Discard ) ) );
-    messageBox.setProperty( QLatin1String( "Apply" ),           scriptEngine->newVariant( static_cast< int >( QMessageBox::Apply ) ) );
-    messageBox.setProperty( QLatin1String( "Reset" ),           scriptEngine->newVariant( static_cast< int >( QMessageBox::Reset ) ) );
-    messageBox.setProperty( QLatin1String( "RestoreDefaults" ), scriptEngine->newVariant( static_cast< int >( QMessageBox::RestoreDefaults ) ) );
-    messageBox.setProperty( QLatin1String( "Help" ),            scriptEngine->newVariant( static_cast< int >( QMessageBox::Help ) ) );
-    messageBox.setProperty( QLatin1String( "SaveAll" ),         scriptEngine->newVariant( static_cast< int >( QMessageBox::SaveAll ) ) );
-    messageBox.setProperty( QLatin1String( "Yes" ),             scriptEngine->newVariant( static_cast< int >( QMessageBox::Yes ) ) );
-    messageBox.setProperty( QLatin1String( "YesToAll" ),        scriptEngine->newVariant( static_cast< int >( QMessageBox::YesToAll ) ) );
-    messageBox.setProperty( QLatin1String( "No" ),              scriptEngine->newVariant( static_cast< int >( QMessageBox::No ) ) );
-    messageBox.setProperty( QLatin1String( "NoToAll" ),         scriptEngine->newVariant( static_cast< int >( QMessageBox::NoToAll ) ) );
-    messageBox.setProperty( QLatin1String( "Abort" ),           scriptEngine->newVariant( static_cast< int >( QMessageBox::Abort ) ) );
-    messageBox.setProperty( QLatin1String( "Retry" ),           scriptEngine->newVariant( static_cast< int >( QMessageBox::Retry ) ) );
-    messageBox.setProperty( QLatin1String( "Ignore" ),          scriptEngine->newVariant( static_cast< int >( QMessageBox::Ignore ) ) );
-    messageBox.setProperty( QLatin1String( "NoButton" ),        scriptEngine->newVariant( static_cast< int >( QMessageBox::NoButton ) ) );
-    scriptEngine->globalObject().setProperty( QLatin1String("QMessageBox"), messageBox );
+    QScriptValue messageBox = scriptEngine->newQObject(MessageBoxHandler::instance());
+    messageBox.setProperty(QLatin1String("Ok"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Yes)));
+    messageBox.setProperty(QLatin1String("Open"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Open)));
+    messageBox.setProperty(QLatin1String("Save"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Save)));
+    messageBox.setProperty(QLatin1String("Cancel"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Cancel)));
+    messageBox.setProperty(QLatin1String("Close"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Close)));
+    messageBox.setProperty(QLatin1String("Discard"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Discard)));
+    messageBox.setProperty(QLatin1String("Apply"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Apply)));
+    messageBox.setProperty(QLatin1String("Reset"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Reset)));
+    messageBox.setProperty(QLatin1String("RestoreDefaults"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::RestoreDefaults)));
+    messageBox.setProperty(QLatin1String("Help"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Help)));
+    messageBox.setProperty(QLatin1String("SaveAll"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::SaveAll)));
+    messageBox.setProperty(QLatin1String("Yes"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Yes)));
+    messageBox.setProperty(QLatin1String("YesToAll"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::YesToAll)));
+    messageBox.setProperty(QLatin1String("No"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::No)));
+    messageBox.setProperty(QLatin1String("NoToAll"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::NoToAll)));
+    messageBox.setProperty(QLatin1String("Abort"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Abort)));
+    messageBox.setProperty(QLatin1String("Retry"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Retry)));
+    messageBox.setProperty(QLatin1String("Ignore"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::Ignore)));
+    messageBox.setProperty(QLatin1String("NoButton"),
+        scriptEngine->newVariant(static_cast<int>(QMessageBox::NoButton)));
+    scriptEngine->globalObject().setProperty(QLatin1String("QMessageBox"), messageBox);
+
     return messageBox;
 }
 
 using namespace QInstaller;
 
-MessageBoxHandler *MessageBoxHandler::m_instance = 0;
-
-MessageBoxHandler::MessageBoxHandler(QObject *parent)
-    : QObject(parent), m_defaultAction( MessageBoxHandler::AskUser )
+template <typename T>
+static QList<T> reversed(const QList<T> &list)
 {
-
+    QList<T> res = list;
+    qCopyBackward(list.begin(), list.end(), res.end());
+    return res;
 }
 
 
+// -- MessageBoxHandler
+
+MessageBoxHandler *MessageBoxHandler::m_instance = 0;
+MessageBoxHandler::MessageBoxHandler(QObject *parent)
+    : QObject(parent)
+    , m_defaultAction(MessageBoxHandler::AskUser)
+{
+}
+
+// -- public
+
 MessageBoxHandler::~MessageBoxHandler()
 {
-
 }
 
 MessageBoxHandler* MessageBoxHandler::instance()
@@ -88,63 +121,119 @@ MessageBoxHandler* MessageBoxHandler::instance()
     return m_instance;
 }
 
-void MessageBoxHandler::setAutomaticAnswer(const QString& identifier, QMessageBox::StandardButton answer)
-{
-    m_automaticAnswers.insert( identifier, answer );
-}
-
-template <typename T>
-static QList<T> reversed( const QList<T>& list ) {
-    QList<T> res = list;
-    qCopyBackward( list.begin(), list.end(), res.end() );
-    return res;
-}
-
-void MessageBoxHandler::setDefaultAction(DefaultAction defaultAction)
-{
-    if ( m_defaultAction == defaultAction )
-        return;
-    m_defaultAction = defaultAction;
-    m_buttonOrder.clear();
-    if ( m_defaultAction != AskUser )
-        m_buttonOrder << QMessageBox::YesToAll << QMessageBox::Yes << QMessageBox::Ok << QMessageBox::Apply
-                      << QMessageBox::SaveAll << QMessageBox::Save <<QMessageBox::Retry << QMessageBox::Ignore
-                      << QMessageBox::Help << QMessageBox::RestoreDefaults << QMessageBox::Reset << QMessageBox::Open
-                      << QMessageBox::Cancel << QMessageBox::Close << QMessageBox::Abort << QMessageBox::Discard
-                      << QMessageBox::No << QMessageBox::NoToAll;
-        if ( m_defaultAction == Reject ) {
-            //if we want to reject everything, we need the lowest button
-            //for example if Cancel existing it could use Cancel, but if Close existing
-            //it will use Close
-            m_buttonOrder = reversed( m_buttonOrder );
-        }
-}
-
-QMessageBox::StandardButton MessageBoxHandler::autoReply( QMessageBox::StandardButtons buttons ) const {
-    if ( buttons == QMessageBox::NoButton )
-        return QMessageBox::NoButton;
-    foreach (const QMessageBox::StandardButton& currentButton, m_buttonOrder)
-            if ( (buttons & currentButton) != 0 )
-                return currentButton;
-    Q_ASSERT( !"the list must have all possible buttons" );
-    return QMessageBox::NoButton;
-}
-
 QWidget* MessageBoxHandler::currentBestSuitParent()
 {
     if (QApplication::type() == QApplication::Tty) {
         Q_ASSERT_X(false, Q_FUNC_INFO, "We can't find a parent widget if we are a console application.");
         return 0;
     }
+
     if (qApp->activeModalWidget())
         return qApp->activeModalWidget();
 
     return qApp->activeWindow();
 }
 
-// taken from Qt
+void MessageBoxHandler::setDefaultAction(DefaultAction defaultAction)
+{
+    if (m_defaultAction == defaultAction)
+        return;
+    m_defaultAction = defaultAction;
+
+    m_buttonOrder.clear();
+    if (m_defaultAction != AskUser) {
+        m_buttonOrder << QMessageBox::YesToAll << QMessageBox::Yes << QMessageBox::Ok << QMessageBox::Apply
+        << QMessageBox::SaveAll << QMessageBox::Save <<QMessageBox::Retry << QMessageBox::Ignore
+        << QMessageBox::Help << QMessageBox::RestoreDefaults << QMessageBox::Reset << QMessageBox::Open
+        << QMessageBox::Cancel << QMessageBox::Close << QMessageBox::Abort << QMessageBox::Discard
+        << QMessageBox::No << QMessageBox::NoToAll;
+    }
+
+    if (m_defaultAction == Reject) {
+        // If we want to reject everything, we need the lowest button. For example, if Cancel is existing it
+        // could use Cancel, but if Close is existing it will use Close.
+        m_buttonOrder = reversed(m_buttonOrder);
+    }
+}
+
+void MessageBoxHandler::setAutomaticAnswer(const QString &identifier, QMessageBox::StandardButton answer)
+{
+    m_automaticAnswers.insert(identifier, answer);
+}
+
+// -- static
+
+QMessageBox::StandardButton MessageBoxHandler::critical(QWidget* parent, const QString &identifier,
+    const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
+    QMessageBox::StandardButton button)
+{
+    return instance()->showMessageBox(criticalType, parent, identifier, title, text, buttons, button);
+}
+
+QMessageBox::StandardButton MessageBoxHandler::information(QWidget* parent, const QString &identifier,
+    const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
+    QMessageBox::StandardButton button)
+{
+    return instance()->showMessageBox(informationType, parent, identifier, title, text, buttons, button);
+}
+
+QMessageBox::StandardButton MessageBoxHandler::question(QWidget* parent, const QString &identifier,
+    const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
+    QMessageBox::StandardButton button)
+{
+    return instance()->showMessageBox(questionType, parent, identifier, title, text, buttons, button);
+}
+
+QMessageBox::StandardButton MessageBoxHandler::warning(QWidget* parent, const QString &identifier,
+    const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
+    QMessageBox::StandardButton button)
+{
+    return instance()->showMessageBox(warningType, parent, identifier, title, text, buttons, button);
+}
+
+// -- invokable
+
+int MessageBoxHandler::critical(const QString &identifier, const QString &title, const QString &text,
+    QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
+{
+    return showMessageBox(criticalType, currentBestSuitParent(), identifier, title, text, buttons, button);
+}
+
+int MessageBoxHandler::information(const QString &identifier, const QString &title, const QString &text,
+    QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
+{
+    return showMessageBox(informationType, currentBestSuitParent(), identifier, title, text, buttons, button);
+}
+
+int MessageBoxHandler::question(const QString &identifier, const QString &title, const QString &text,
+    QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
+{
+    return showMessageBox(questionType, currentBestSuitParent(), identifier, title, text, buttons, button);
+}
+
+int MessageBoxHandler::warning(const QString &identifier, const QString &title, const QString &text,
+    QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
+{
+    return showMessageBox(warningType, currentBestSuitParent(), identifier, title, text, buttons, button);
+}
+
+// -- private
+
+QMessageBox::StandardButton MessageBoxHandler::autoReply(QMessageBox::StandardButtons buttons) const
+{
+    if (buttons == QMessageBox::NoButton)
+        return QMessageBox::NoButton;
+
+    foreach (const QMessageBox::StandardButton &currentButton, m_buttonOrder) {
+        if ((buttons & currentButton) != 0)
+            return currentButton;
+    }
+    Q_ASSERT(!"the list must have all possible buttons");
+    return QMessageBox::NoButton;
+}
+
 static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBox::Icon icon,
-    const QString& title, const QString& text, QMessageBox::StandardButtons buttons,
+    const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
     QMessageBox msgBox(icon, title, text, QMessageBox::NoButton, parent);
@@ -175,77 +264,33 @@ static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBo
     return msgBox.standardButton(msgBox.clickedButton());
 }
 
-QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messageType, QWidget* parent, const QString& identifier, const QString& title, const QString& text,
-                                     QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
+QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messageType, QWidget *parent,
+    const QString &identifier, const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
+    QMessageBox::StandardButton button) const
 {
     if (QApplication::type() == QApplication::Tty)
         return button;
-    if ( m_automaticAnswers.contains( identifier ) )
-        return m_automaticAnswers.value( identifier );
-    if ( m_defaultAction == AskUser ) {
+
+    if (m_automaticAnswers.contains(identifier))
+        return m_automaticAnswers.value(identifier);
+
+    if (m_defaultAction == AskUser) {
         if (!identifier.isEmpty())
             qDebug() << QString(QLatin1String("create message box with identifier: '%1'")).arg(identifier);
-        switch( messageType ) {
-        case criticalType:
-            return showNewMessageBox( parent, QMessageBox::Critical, title, text, buttons, button );
-        case informationType:
-            return showNewMessageBox( parent, QMessageBox::Information, title, text, buttons, button );
-        case questionType:
-            return showNewMessageBox( parent, QMessageBox::Question, title, text, buttons, button );
-        case warningType:
-            return showNewMessageBox( parent, QMessageBox::Warning, title, text, buttons, button );
+        switch(messageType) {
+            case criticalType:
+                return showNewMessageBox(parent, QMessageBox::Critical, title, text, buttons, button);
+            case informationType:
+                return showNewMessageBox(parent, QMessageBox::Information, title, text, buttons, button);
+            case questionType:
+                return showNewMessageBox(parent, QMessageBox::Question, title, text, buttons, button);
+            case warningType:
+                return showNewMessageBox(parent, QMessageBox::Warning, title, text, buttons, button);
         }
+    } else {
+        return autoReply(buttons);
     }
-    else
-        return autoReply( buttons );
+
     Q_ASSERT_X(false, Q_FUNC_INFO, "Something went realy wrong.");
     return button;
-}
-
-QMessageBox::StandardButton MessageBoxHandler::critical(QWidget* parent, const QString& identifier, const QString& title, const QString& text,
-                                     QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button)
-{
-    return instance()->showMessageBox(criticalType, parent, identifier, title, text, buttons, button);
-}
-
-QMessageBox::StandardButton MessageBoxHandler::information(QWidget* parent, const QString& identifier, const QString& title, const QString& text,
-                                        QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button)
-{
-    return instance()->showMessageBox(informationType, parent, identifier, title, text, buttons, button);
-}
-
-QMessageBox::StandardButton MessageBoxHandler::question(QWidget* parent, const QString& identifier, const QString& title, const QString& text,
-                                     QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button)
-{
-    return instance()->showMessageBox(questionType, parent, identifier, title, text, buttons, button);
-}
-
-QMessageBox::StandardButton MessageBoxHandler::warning(QWidget* parent, const QString& identifier, const QString& title, const QString& text,
-                                    QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button)
-{
-    return instance()->showMessageBox(warningType, parent, identifier, title, text, buttons, button);
-}
-
-int MessageBoxHandler::critical(const QString& identifier, const QString& title, const QString& text,
-                                                 QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
-{
-    return showMessageBox(criticalType, currentBestSuitParent(), identifier, title, text, buttons, button);
-}
-
-int MessageBoxHandler::information(const QString& identifier, const QString& title, const QString& text,
-                                                    QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
-{
-    return showMessageBox(informationType, currentBestSuitParent(), identifier, title, text, buttons, button);
-}
-
-int MessageBoxHandler::question(const QString& identifier, const QString& title, const QString& text,
-                                                 QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
-{
-    return showMessageBox(questionType, currentBestSuitParent(), identifier, title, text, buttons, button);
-}
-
-int MessageBoxHandler::warning(const QString& identifier, const QString& title, const QString& text,
-                                                QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
-{
-    return showMessageBox(warningType, currentBestSuitParent(), identifier, title, text, buttons, button);
 }

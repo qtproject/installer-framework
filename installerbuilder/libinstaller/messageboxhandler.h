@@ -28,14 +28,16 @@
 
 #include <installer_global.h>
 
-#include <QObject>
-#include <QScriptable>
-#include <QMessageBox>
-#include <QHash>
+#include <QtCore/QHash>
+#include <QtCore/QObject>
+
+#include <QtGui/QMessageBox>
+
+#include <QtScript/QScriptable>
 
 namespace QInstaller {
 
-QScriptValue registerMessageBox( QScriptEngine* scriptEngine );
+QScriptValue registerMessageBox(QScriptEngine *scriptEngine);
 
 class INSTALLER_EXPORT MessageBoxHandler : public QObject, private QScriptable
 {
@@ -47,6 +49,7 @@ public:
         Accept,
         Reject
     };
+
     enum MessageType{
         criticalType,
         informationType,
@@ -58,49 +61,63 @@ public:
     static MessageBoxHandler* instance();
     static QWidget* currentBestSuitParent();
 
-    void setAutomaticAnswer(const QString& identifier, QMessageBox::StandardButton answer);
     void setDefaultAction(DefaultAction defaultAction);
+    void setAutomaticAnswer(const QString &identifier, QMessageBox::StandardButton answer);
 
-    static QMessageBox::StandardButton critical(QWidget* parent, const QString& identifier, const QString& title, const QString& text,
-                                         QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-                                         QMessageBox::StandardButton button = QMessageBox::NoButton );
-    static QMessageBox::StandardButton information(QWidget* parent, const QString& identifier, const QString& title, const QString& text,
-                                            QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-                                            QMessageBox::StandardButton button=QMessageBox::NoButton );
-    static QMessageBox::StandardButton question(QWidget* parent, const QString& identifier, const QString& title, const QString& text,
-                                         QMessageBox::StandardButtons buttons = QMessageBox::Yes|QMessageBox::No,
-                                         QMessageBox::StandardButton button = QMessageBox::NoButton );
-    static QMessageBox::StandardButton warning(QWidget* parent, const QString& identifier, const QString& title, const QString& text,
-                                        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-                                        QMessageBox::StandardButton button = QMessageBox::NoButton);
+    static QMessageBox::StandardButton critical(QWidget *parent, const QString &identifier,
+        const QString &title, const QString &text, QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton);
 
-    Q_INVOKABLE int critical(const QString& identifier, const QString& title, const QString& text,
-                                                     QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-                                                     QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-    Q_INVOKABLE int information(const QString& identifier, const QString& title, const QString& text,
-                                                        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-                                                        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-    Q_INVOKABLE int question(const QString& identifier, const QString& title, const QString& text,
-                                                     QMessageBox::StandardButtons buttons = QMessageBox::Yes|QMessageBox::No,
-                                                     QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-    Q_INVOKABLE int warning(const QString& identifier, const QString& title, const QString& text,
-                                                    QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-                                                    QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-//this removes the slot from the script area
+    static QMessageBox::StandardButton information(QWidget *parent, const QString &identifier,
+        const QString &title, const QString &text, QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button=QMessageBox::NoButton);
+
+    static QMessageBox::StandardButton question(QWidget *parent, const QString &identifier,
+        const QString &title, const QString &text,
+        QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No,
+        QMessageBox::StandardButton button = QMessageBox::NoButton);
+
+    static QMessageBox::StandardButton warning(QWidget *parent, const QString &identifier,
+        const QString &title, const QString &text, QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton);
+
+    Q_INVOKABLE int critical(const QString &identifier, const QString &title, const QString &text,
+        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+
+    Q_INVOKABLE int information(const QString &identifier, const QString &title, const QString &text,
+        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+
+    Q_INVOKABLE int question(const QString &identifier, const QString &title, const QString &text,
+        QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+
+    Q_INVOKABLE int warning(const QString &identifier, const QString &title, const QString &text,
+        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+
 private Q_SLOTS:
-    virtual void deleteLater()  {QObject::deleteLater();}
+    //this removes the slot from the script area
+    virtual void deleteLater() {
+        QObject::deleteLater();
+    }
 
 private:
-    MessageBoxHandler(QObject *parent);
-    QMessageBox::StandardButton showMessageBox(MessageType messageType, QWidget* parent, const QString& identifier, const QString& title, const QString& text,
-                                               QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-                                               QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-    QMessageBox::StandardButton autoReply( QMessageBox::StandardButtons buttons ) const;
+    explicit MessageBoxHandler(QObject *parent);
 
+    QMessageBox::StandardButton autoReply(QMessageBox::StandardButtons buttons) const;
+    QMessageBox::StandardButton showMessageBox(MessageType messageType, QWidget *parent,
+        const QString &identifier, const QString &title, const QString &text,
+        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
+        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+
+private:
     static MessageBoxHandler *m_instance;
-    QList<QMessageBox::Button> m_buttonOrder;
+
     DefaultAction m_defaultAction;
-    QHash<QString,QMessageBox::StandardButton> m_automaticAnswers;
+    QList<QMessageBox::Button> m_buttonOrder;
+    QHash<QString, QMessageBox::StandardButton> m_automaticAnswers;
 };
 
 }
