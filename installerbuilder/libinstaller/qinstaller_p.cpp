@@ -1425,7 +1425,7 @@ void InstallerPrivate::registerUninstaller()
     settings.setValue(QLatin1String("UninstallString"), uninstaller);
     settings.setValue(QLatin1String("ModifyPath"), uninstaller + QLatin1String(" --manage-packages"));
     settings.setValue(QLatin1String("EstimatedSize"), QFileInfo(installerBinaryPath()).size());
-    settings.setValue(QLatin1String("NoModify"), 1);    // TODO: set to 0 and support modify
+    settings.setValue(QLatin1String("NoModify"), 0);
     settings.setValue(QLatin1String("NoRepair"), 1);
 #endif
 }
