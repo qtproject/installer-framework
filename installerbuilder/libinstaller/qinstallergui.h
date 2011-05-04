@@ -433,7 +433,9 @@ class ClickForwarder : public QObject
 {
     Q_OBJECT
 public:
-    explicit ClickForwarder(QAbstractButton* button) : m_abstractButton(button) {}
+    explicit ClickForwarder(QAbstractButton* button)
+        : QObject(button)
+        , m_abstractButton(button) {}
 
 protected:
     bool eventFilter(QObject *object, QEvent *event)
