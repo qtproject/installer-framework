@@ -67,10 +67,10 @@ AdminAuthorization::~AdminAuthorization()
 
 bool AdminAuthorization::authorize()
 {
-    if(geteuid() == 0)
+    if (geteuid() == 0)
         setAuthorized();
 
-    if(isAuthorized())
+    if (isAuthorized())
         return true;
 
     AuthorizationItem item;
@@ -88,7 +88,7 @@ bool AdminAuthorization::authorize()
 
     const OSStatus result = AuthorizationCopyRights(d->auth, &rights, kAuthorizationEmptyEnvironment,
         flags, 0);
-    if(result != errAuthorizationSuccess)
+    if (result != errAuthorizationSuccess)
         return false;
 
     seteuid(0);
