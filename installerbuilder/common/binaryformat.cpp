@@ -639,11 +639,6 @@ bool Component::operator==(const Component& other) const
     return m_name == other.m_name && m_binarySegment == other.m_binarySegment;
 }
 
-Component ComponentIndex::componentByName(const QByteArray &id) const
-{
-    return m_components.value(id);
-}
-
 /*!
     Destroys this component.
  */
@@ -678,34 +673,8 @@ QSharedPointer<Archive> Component::archiveByName(const QByteArray &name) const
     return QSharedPointer<Archive>();
 }
 
-void ComponentIndex::insertComponent(const Component& c)
-{
-    m_components.insert(c.name(), c);
-}
 
-int ComponentIndex::componentCount() const
-{
-    return m_components.size();
-}
-
-void ComponentIndex::removeComponent(const QByteArray &name)
-{
-    m_components.remove(name);
-}
-
-QVector<Component> ComponentIndex::components() const
-{
-    return m_components.values().toVector();
-}
-
-void ComponentIndex::writeComponentData(QIODevice *out, qint64 offset) const
-{
-    appendInt64(out, componentCount());
-
-    foreach (const Component &component, m_components)
-        component.writeData(out, offset);
-}
-
+// -- ComponentIndex
 
 ComponentIndex::ComponentIndex()
 {
@@ -730,6 +699,40 @@ void ComponentIndex::writeIndex(QIODevice *out, qint64 offset) const
         i.writeIndexEntry(out, offset);
     appendInt64(out, componentCount());
 }
+
+void ComponentIndex::writeComponentData(QIODevice *out, qint64 offset) const
+{
+    appendInt64(out, componentCount());
+
+    foreach (const Component &component, m_components)
+        component.writeData(out, offset);
+}
+
+Component ComponentIndex::componentByName(const QByteArray &id) const
+{
+    return m_components.value(id);
+}
+
+void ComponentIndex::insertComponent(const Component& c)
+{
+    m_components.insert(c.name(), c);
+}
+
+void ComponentIndex::removeComponent(const QByteArray &name)
+{
+    m_components.remove(name);
+}
+
+QVector<Component> ComponentIndex::components() const
+{
+    return m_components.values().toVector();
+}
+
+int ComponentIndex::componentCount() const
+{
+    return m_components.size();
+}
+
 
 /*!
     \internal
