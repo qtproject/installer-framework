@@ -32,8 +32,8 @@
 **************************************************************************/
 #include "progresscoordinator.h"
 
-#include <QCoreApplication>
-#include <QDebug>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDebug>
 
 using namespace QInstaller;
 
@@ -44,8 +44,8 @@ uint qHash(QPointer<QObject> key)
 }
 QT_END_NAMESPACE
 
-ProgressCoordninator::ProgressCoordninator(QObject *parent) :
-    QObject(parent),
+ProgressCoordninator::ProgressCoordninator(QObject *parent)
+    : QObject(parent),
     m_currentCompletePercentage(0),
     m_currentBasePercentage(0),
     m_manualAddedPercentage(0),
@@ -53,8 +53,7 @@ ProgressCoordninator::ProgressCoordninator(QObject *parent) :
     m_undoMode(false),
     m_reachedPercentageBeforeUndo(0)
 {
-    //it have to be in the main thread
-    //to be able refresh the ui with processEvents
+    // it has to be in the main thread to be able refresh the ui with processEvents
     Q_ASSERT(thread() == qApp->thread());
 }
 
@@ -65,9 +64,8 @@ ProgressCoordninator::~ProgressCoordninator()
 ProgressCoordninator* ProgressCoordninator::instance()
 {
     static ProgressCoordninator* instance = 0;
-    if (instance == 0) {
+    if (instance == 0)
         instance = new ProgressCoordninator(qApp);
-    }
     return instance;
 }
 
@@ -101,12 +99,15 @@ void ProgressCoordninator::registerPartProgress(QObject *sender, const char *sig
 void ProgressCoordninator::partProgressChanged(double fraction)
 {
     if (fraction < 0 || fraction > 1) {
-        qWarning() << QString(QLatin1String("The fraction is outside from possible value ")) << QString::number(fraction);
+        qWarning() << QString(QLatin1String("The fraction is outside from possible value:"))
+            << QString::number(fraction);
         return;
     }
+
     double partProgressSize = m_senderPartProgressSizeHash.value(sender(), 0);
     if (partProgressSize == 0) {
-        qWarning() << QString(QLatin1String("it seems that this sender was not registered in the right way: ")) << sender();
+        qWarning() << QString(QLatin1String("It seems that this sender was not registered in the right way:"))
+            << sender();
         return;
     }
 
@@ -115,7 +116,9 @@ void ProgressCoordninator::partProgressChanged(double fraction)
         double maxSize = m_reachedPercentageBeforeUndo * partProgressSize;
         double pendingCalculatedPartPercentage = maxSize * fraction;
 
-        double newCurrentCompletePercentage = m_currentBasePercentage - pendingCalculatedPartPercentage + allPendingCalculatedPartPercentages(sender()); //allPendingCalculatedPartPercentages has negative values
+         // allPendingCalculatedPartPercentages has negative values
+        double newCurrentCompletePercentage = m_currentBasePercentage - pendingCalculatedPartPercentage
+            + allPendingCalculatedPartPercentages(sender());
 
         //we can't check this here, because some round issues can make it little bit under 0 or over 100
         //Q_ASSERT(newCurrentCompletePercentage >= 0);
@@ -128,6 +131,7 @@ void ProgressCoordninator::partProgressChanged(double fraction)
             qDebug() << newCurrentCompletePercentage << " is bigger then 100 - this should happen max once";
             newCurrentCompletePercentage = 100;
         }
+
         if (qRound(m_currentCompletePercentage) < qRound(newCurrentCompletePercentage)) {
             qFatal("This should not happen!");
         }
@@ -145,10 +149,8 @@ void ProgressCoordninator::partProgressChanged(double fraction)
         double pendingCalculatedPartPercentage = availablePercentagePoints * partProgressSize * fraction;
         //double checkValue = allPendingCalculatedPartPercentages(sender());
 
-        double newCurrentCompletePercentage = m_manualAddedPercentage +
-                                              m_currentBasePercentage +
-                                              pendingCalculatedPartPercentage +
-                                              allPendingCalculatedPartPercentages(sender());
+        double newCurrentCompletePercentage = m_manualAddedPercentage + m_currentBasePercentage
+            + pendingCalculatedPartPercentage + allPendingCalculatedPartPercentages(sender());
 
         //we can't check this here, because some round issues can make it little bit under 0 or over 100
         //Q_ASSERT(newCurrentCompletePercentage >= 0);
@@ -157,10 +159,12 @@ void ProgressCoordninator::partProgressChanged(double fraction)
             qDebug() << newCurrentCompletePercentage << " is smaller then 0 - this should happen max once";
             newCurrentCompletePercentage = 0;
         }
+
         if (newCurrentCompletePercentage > 100) {
             qDebug() << newCurrentCompletePercentage << " is bigger then 100 - this should happen max once";
             newCurrentCompletePercentage = 100;
         }
+
         if (qRound(m_currentCompletePercentage) > qRound(newCurrentCompletePercentage)) {
             qFatal("This should not happen!");
         }
@@ -177,8 +181,8 @@ void ProgressCoordninator::partProgressChanged(double fraction)
 
 
 /*!
- * Contains the installation progress percentage.
- */
+    Contains the installation progress percentage.
+*/
 int ProgressCoordninator::progressInPercentage() const
 {
     int currentValue = qRound(m_currentCompletePercentage);
@@ -189,7 +193,7 @@ int ProgressCoordninator::progressInPercentage() const
 
 void ProgressCoordninator::disconnectAllSenders()
 {
-    foreach(QPointer<QObject> sender, m_senderPartProgressSizeHash.keys()) {
+    foreach (QPointer<QObject> sender, m_senderPartProgressSizeHash.keys()) {
         if (!sender.isNull()) {
             bool isDisconnected = sender->disconnect(this);
             Q_UNUSED(isDisconnected);
@@ -238,8 +242,8 @@ void ProgressCoordninator::setLabelText(const QString &text)
 }
 
 /*!
- * Contains the installation progress label text.
- */
+    Contains the installation progress label text.
+*/
 QString ProgressCoordninator::labelText() const
 {
     return m_installationLabelText;
@@ -260,12 +264,10 @@ void ProgressCoordninator::emitLabelAndDetailTextChanged(const QString &text)
 double ProgressCoordninator::allPendingCalculatedPartPercentages(QObject *excludeKeyObject)
 {
     double result = 0;
-
     QHash<QPointer<QObject>, double>::iterator it = m_senderPendingCalculatedPercentageHash.begin();
-    while ( it != m_senderPendingCalculatedPercentageHash.end() ) {
-        if (it.key() != excludeKeyObject) {
-            result = result + it.value();
-        }
+    while (it != m_senderPendingCalculatedPercentageHash.end()) {
+        if (it.key() != excludeKeyObject)
+            result += it.value();
         it++;
     }
     return result;

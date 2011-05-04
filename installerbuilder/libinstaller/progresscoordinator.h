@@ -26,43 +26,50 @@
 #ifndef PROGRESSCOORDNINATOR_H
 #define PROGRESSCOORDNINATOR_H
 
-#include <QObject>
-#include <QHash>
-#include <QPointer>
+#include <QtCore/QHash>
+#include <QtCore/QObject>
+#include <QtCore/QPointer>
 
 namespace QInstaller {
 
 class ProgressCoordninator : public QObject
 {
     Q_OBJECT
+
 public:
     static ProgressCoordninator* instance();
     ~ProgressCoordninator();
 
     void registerPartProgress(QObject *sender, const char *signal, double partProgressSize);
 
+public slots:
+    void reset();
+    void setUndoMode();
+
+    QString labelText() const;
+    void setLabelText(const QString &text);
+
+    int progressInPercentage() const;
+    void partProgressChanged(double fraction);
+
+    void addManualPercentagePoints(int value);
+    void addReservePercentagePoints(int value);
+
+    void emitDetailTextChanged(const QString &text);
+    void emitLabelAndDetailTextChanged(const QString &text);
+
 signals:
     void detailTextChanged(const QString &text);
     void detailTextResetNeeded();
-public slots:
-    void reset();
-    int progressInPercentage() const;
-
-    void setUndoMode();
-    void addManualPercentagePoints(int value);
-    void addReservePercentagePoints(int value);
-    void setLabelText(const QString &text);
-    QString labelText() const;
-    void emitDetailTextChanged(const QString &text);
-    void emitLabelAndDetailTextChanged(const QString &text);
-    void partProgressChanged(double fraction);
 
 protected:
     explicit ProgressCoordninator(QObject *parent);
+
 private:
     double allPendingCalculatedPartPercentages(QObject *excludeKeyObject = 0);
     void disconnectAllSenders();
 
+private:
     QHash<QPointer<QObject>, double> m_senderPendingCalculatedPercentageHash;
     QHash<QPointer<QObject>, double> m_senderPartProgressSizeHash;
     QString m_installationLabelText;
