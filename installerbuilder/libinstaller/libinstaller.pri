@@ -43,6 +43,3 @@ static {
         exists($$OUT_PWD/../../lib/installer.lib):POST_TARGETDEPS += $$OUT_PWD/../../lib/installer.lib
     }
 }
-
-RESOURCES += content.qrc
-
