@@ -277,7 +277,7 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
     if (m_defaultAction == AskUser) {
         if (!identifier.isEmpty())
             qDebug() << QString(QLatin1String("create message box with identifier: '%1'")).arg(identifier);
-        switch(messageType) {
+        switch (messageType) {
             case criticalType:
                 return showNewMessageBox(parent, QMessageBox::Critical, title, text, buttons, button);
             case informationType:
