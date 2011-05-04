@@ -501,7 +501,7 @@ void Component::loadUserInterfaces(const QDir& directory, const QStringList& uis
         static QUiLoader loader;
         loader.setTranslationEnabled(true);
         loader.setLanguageChangeEnabled(true);
-        QWidget* const w = loader.load(&file);
+        QWidget* const w = loader.load(&file, MessageBoxHandler::currentBestSuitParent());
         d->m_userInterfaces.insert(w->objectName(), w);
     }
 }
