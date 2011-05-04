@@ -149,11 +149,10 @@ static QStringList findAllLibSsl()
 
 class KDLibraryLoader : public QObject
 {
-    static QMutex* mutex;
 public:
     KDLibraryLoader()
     {
-        const QMutexLocker ml( mutex );
+        const QMutexLocker ml( &mutex );
         if( tempDir.isEmpty() )
         {
             QTemporaryFile file( QDir::temp().absoluteFilePath( QString::fromLatin1( "templibsXXXXXX" ) ) );
@@ -167,7 +166,7 @@ public:
 
     ~KDLibraryLoader()
     {
-        const QMutexLocker ml( mutex );
+        const QMutexLocker ml( &mutex );
         for( QVector< QLibrary* >::const_iterator it = loadedLibraries.begin(); it != loadedLibraries.end(); ++it )
         {
             QLibrary* const lib = *it;
@@ -187,7 +186,7 @@ public:
 
     bool load( const QString& filename )
     {
-        const QMutexLocker ml( mutex );
+        const QMutexLocker ml( &mutex );
         // does it work out of the box? great!
         QLibrary* const lib = new QLibrary;
         loadedLibraries.push_back( lib );
@@ -251,7 +250,7 @@ public:
 
     void* resolve( const char* symbol )
     {
-        const QMutexLocker ml( mutex );
+        const QMutexLocker ml( &mutex );
         for( QVector< QLibrary* >::const_iterator it = loadedLibraries.begin(); it != loadedLibraries.end(); ++it )
         {
             QLibrary* const lib = *it;
@@ -265,13 +264,14 @@ public:
 private:
     QVector< QLibrary* > loadedLibraries;
     QStringList temporaryFiles;
+
+    static QMutex mutex;
     static QString tempDir;
 };
 
+QMutex KDLibraryLoader::mutex;
 QString KDLibraryLoader::tempDir;
 
-// TODO: this one get leaked
-QMutex* KDLibraryLoader::mutex = new QMutex;
 
 static KDLibraryLoader* loadOpenSsl()
 {
