@@ -1089,10 +1089,11 @@ void InstallerPrivate::runPackageUpdater()
         }
 
         double undoOperationProgressSize = 0;
+        const double downloadPartProgressSize = double(2) / double(5);
         double componentsInstallPartProgressSize = double(3) / double(5);
         if (undoOperations.count() > 0) {
             undoOperationProgressSize = double(1) / double(5);
-            componentsInstallPartProgressSize = double(2) / double(5);
+            componentsInstallPartProgressSize = downloadPartProgressSize;
             undoOperationProgressSize /= countProgressOperations(undoOperations);
         }
 
@@ -1103,8 +1104,8 @@ void InstallerPrivate::runPackageUpdater()
 
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
-        // following, we download the needed archives, 2/5 for componentsInstallPartProgressSize
-        q->downloadNeededArchives(AllMode, componentsInstallPartProgressSize);
+        // following, we download the needed archives
+        q->downloadNeededArchives(AllMode, downloadPartProgressSize);
 
         const QList<Component*> componentsToInstall = q->componentsToInstall(q->runMode());
         verbose() << "Install size: " << componentsToInstall.size() << " components " << std::endl;
