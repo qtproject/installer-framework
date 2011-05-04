@@ -39,8 +39,6 @@ HEADERS += $$PWD/qinstaller.h \
     ../common/binaryformatenginehandler.h \
     ../common/repository.h \
     ../common/zipjob.h \
-    ../common/kd7zengine.h \
-    ../common/kd7zenginehandler.h \
     ../common/utils.h \
     ../common/errors.h \
     kdmmappedfileiodevice.h \
@@ -101,8 +99,6 @@ SOURCES += $$PWD/qinstaller.cpp \
     ../common/binaryformatenginehandler.cpp \
     ../common/repository.cpp \
     ../common/zipjob.cpp \
-    ../common/kd7zengine.cpp \
-    ../common/kd7zenginehandler.cpp \
     ../common/installersettings.cpp \
     ../common/fileutils.cpp \
     ../common/utils.cpp \
