@@ -93,15 +93,13 @@ std::ostream& QInstaller::stdverbose()
 {
     static std::fstream null;
 #ifdef Q_WS_WIN
-    // TODO: this one get leaked
-    static debugstream& stream = *(new debugstream);
+    static debugstream stream;
 #else
     static std::ostream& stream = std::cout;
 #endif
-    if( verb )
+    if (verb)
         return stream;
-    else
-        return null;
+    return null;
 }
 
 std::ostream& QInstaller::operator<<( std::ostream& os, const QUrl& url )
