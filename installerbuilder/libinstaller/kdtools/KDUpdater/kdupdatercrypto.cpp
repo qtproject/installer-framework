@@ -218,7 +218,7 @@ public:
     template< typename VERSION >
     bool load( const QString& filename, VERSION version )
     {
-        const QMutexLocker ml( mutex );
+        const QMutexLocker ml( &mutex );
         // does it work out of the box? great!
         QLibrary* const lib = new QLibrary;
         loadedLibraries.push_back( lib );
