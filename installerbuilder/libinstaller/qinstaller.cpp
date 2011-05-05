@@ -99,7 +99,7 @@ static void appendComponentAndMissingDependencies(QList<Component*>& components,
 static bool componentMatches(const Component *component, const QString &name,
     const QString& version = QString())
 {
-    if (!name.isEmpty() && component->name() != name)
+    if (name.isEmpty() || component->name() != name)
         return false;
 
     if (version.isEmpty())
@@ -111,6 +111,9 @@ static bool componentMatches(const Component *component, const QString &name,
 static Component* subComponentByName(const Installer *installer, const QString &name,
     const QString &version = QString(), Component *check = 0)
 {
+    if (name.isEmpty())
+        return 0;
+
     if (check != 0 && componentMatches(check, name, version))
         return check;
 
@@ -1029,6 +1032,9 @@ void Installer::appendRootComponent(Component *component, RunMode runMode)
 */
 Component* Installer::componentByName(const QString &name) const
 {
+    if (name.isEmpty())
+        return 0;
+
     if (name.contains(QChar::fromLatin1('-'))) {
         // the last part is considered to be the version, then
         const QString version = name.section(QLatin1Char('-'), 1);
