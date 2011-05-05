@@ -72,8 +72,6 @@ ProgressCoordninator* ProgressCoordninator::instance()
 void ProgressCoordninator::reset()
 {
     disconnectAllSenders();
-    m_senderPendingCalculatedPercentageHash.clear();
-    m_senderPartProgressSizeHash.clear();
     m_installationLabelText.clear();
     m_currentCompletePercentage = 0;
     m_currentBasePercentage = 0;
@@ -200,6 +198,8 @@ void ProgressCoordninator::disconnectAllSenders()
             Q_ASSERT(isDisconnected);
         }
     }
+    m_senderPartProgressSizeHash.clear();
+    m_senderPendingCalculatedPercentageHash.clear();
 }
 
 void ProgressCoordninator::setUndoMode()
@@ -208,8 +208,6 @@ void ProgressCoordninator::setUndoMode()
     m_undoMode = true;
 
     disconnectAllSenders();
-    m_senderPendingCalculatedPercentageHash.clear();
-
     m_reachedPercentageBeforeUndo = progressInPercentage();
     m_currentBasePercentage = m_reachedPercentageBeforeUndo;
 }
