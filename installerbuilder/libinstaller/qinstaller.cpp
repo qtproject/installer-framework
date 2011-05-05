@@ -452,13 +452,15 @@ int Installer::downloadNeededArchives(RunMode runMode, double partProgressSize)
     // don't have it on the stack, since it keeps the temporary files
     DownloadArchivesJob* const archivesJob =
         new DownloadArchivesJob(d->m_installerSettings->publicKey(), this);
-    archivesJob->setArchivesToDownload(archivesToDownload);
     archivesJob->setAutoDelete(false);
+    archivesJob->setArchivesToDownload(archivesToDownload);
+    connect(this, SIGNAL(installationInterrupted()), archivesJob, SLOT(cancel()));
     connect(archivesJob, SIGNAL(outputTextChanged(QString)), ProgressCoordninator::instance(),
         SLOT(emitLabelAndDetailTextChanged(QString)));
-    ProgressCoordninator::instance()->registerPartProgress(archivesJob,
-        SIGNAL(progressChanged(double)), partProgressSize);
-    connect(this, SIGNAL(installationInterrupted()), archivesJob, SLOT(cancel()));
+
+    ProgressCoordninator::instance()->registerPartProgress(archivesJob, SIGNAL(progressChanged(double)),
+        partProgressSize);
+
     archivesJob->start();
     archivesJob->waitForFinished();
 
@@ -466,6 +468,7 @@ int Installer::downloadNeededArchives(RunMode runMode, double partProgressSize)
         interrupt();
     else if (archivesJob->error() != DownloadArchivesJob::NoError)
         throw Error(archivesJob->errorString());
+
     if (d->statusCanceledOrFailed())
         throw Error(tr("Installation canceled by user"));
 
