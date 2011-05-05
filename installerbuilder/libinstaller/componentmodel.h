@@ -86,7 +86,7 @@ private Q_SLOTS:
     void slotCheckStateChanged(const QModelIndex &index);
 
 private:
-    void select(Qt::CheckState state);
+    QSet<QString> select(Qt::CheckState state);
     void updateCache(const QModelIndex &parent) const;
     QModelIndexList collectComponents(const QModelIndex &parent) const;
 

@@ -229,19 +229,22 @@ Component* ComponentModel::componentFromIndex(const QModelIndex &index) const
 
 void ComponentModel::selectAll()
 {
-    select(Qt::Checked);
+    m_currentCheckedList = m_currentCheckedList.unite(select(Qt::Checked));
+    emit defaultCheckStateChanged(m_initialCheckedList != m_currentCheckedList);
 }
 
 void ComponentModel::deselectAll()
 {
-    select(Qt::Unchecked);
+    m_currentCheckedList = m_currentCheckedList.subtract(select(Qt::Unchecked));
+    emit defaultCheckStateChanged(m_initialCheckedList != m_currentCheckedList);
 }
 
 void ComponentModel::selectDefault()
 {
-    select(Qt::Unchecked);
+    m_currentCheckedList = m_currentCheckedList.subtract(select(Qt::Unchecked));
     foreach (const QString &name, m_initialCheckedList)
         setData(indexFromComponentName(name), Qt::Checked, Qt::CheckStateRole);
+    emit defaultCheckStateChanged(m_initialCheckedList != m_currentCheckedList);
 }
 
 // -- private slots
@@ -346,16 +349,20 @@ void ComponentModel::slotCheckStateChanged(const QModelIndex &index)
 
 // -- private
 
-void ComponentModel::select(Qt::CheckState state)
+QSet<QString> ComponentModel::select(Qt::CheckState state)
 {
+    QSet<QString> changed;
     for (int i = 0; i < m_rootComponentList.count(); ++i) {
         const QList<Component*> &children = m_rootComponentList.at(i)->childs();
         foreach (Component *child, children) {
-            if (child->isCheckable())
+            if (child->isCheckable()) {
                 child->setCheckState(state);
+                changed.insert(child->name());
+            }
         }
         setData(index(i, 0, QModelIndex()), state, Qt::CheckStateRole);
     }
+    return changed;
 }
 
 void ComponentModel::updateCache(const QModelIndex &parent) const
