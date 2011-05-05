@@ -936,6 +936,7 @@ void InstallerPrivate::runInstaller()
         if (!QDir(target).exists()) {
             QScopedPointer<KDUpdater::UpdateOperation> mkdirOp(createOwnedOperation(QLatin1String("Mkdir")));
             mkdirOp->setValue(QLatin1String("forceremoval"), true);
+            mkdirOp->setValue(QLatin1String("uninstall-only"), true);
             Q_ASSERT(mkdirOp.data());
             mkdirOp->setArguments(QStringList() << target);
             performOperationThreaded(mkdirOp.data(), Backup);
@@ -1068,16 +1069,28 @@ void InstallerPrivate::runPackageUpdater()
             }
         }
 
+        QHash<QString, Component*> componentsByName;
         QList<KDUpdater::UpdateOperation*> undoOperations;
         QVector<KDUpdater::UpdateOperation*> nonRevertedOperations;
         foreach (KDUpdater::UpdateOperation *op, m_performedOperationsOld) {
-            if (Component *comp = q->componentByName(op->value(QLatin1String("component")).toString())) {
-            // if we're _not_ removing everything an this component is still selected, -> next
+            const QString &name = op->value(QLatin1String("component")).toString();
+            Component *comp = componentsByName.value(name, 0);
+            if (!comp)
+                comp = q->componentByName(name);
+            if (comp) {
+                componentsByName.insert(name, comp);
+                // if we're _not_ removing everything and this component is still selected, -> next
                 if (comp->isSelected()) {
                     nonRevertedOperations.append(op);
                     continue;
                 }
             }
+            // Filter out the create target dir undo operation, it's only needed for full uninstall.
+            if (op->value(QLatin1String("uninstall-only")).toBool()) {
+                nonRevertedOperations.append(op);
+                continue;
+            }
+
             undoOperations.prepend(op);
             updateAdminRights |= op->value(QLatin1String("admin")).toBool();
         }
