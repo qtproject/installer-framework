@@ -75,7 +75,8 @@ bool ExtractArchiveOperation::performOperation()
     Receiver receiver;
     Callback callback;
     
-    connect( &callback, SIGNAL(progressChanged(QString)), this, SLOT(slotProgressChanged(QString)), Qt::QueuedConnection );
+    //usually we have to connect it as queued connection but then some blocking work is in the main thread
+    connect( &callback, SIGNAL(progressChanged(QString)), this, SLOT(slotProgressChanged(QString)), Qt::DirectConnection );
     connect( &callback, SIGNAL(progressChanged(int)), this, SIGNAL(progressChanged(int)), Qt::QueuedConnection );
 
     if(QInstaller::Installer *installer = this->value( QLatin1String( "installer" )).value<QInstaller::Installer*>()) {
@@ -189,6 +190,7 @@ ExtractArchiveOperation* ExtractArchiveOperation::clone() const
     return new ExtractArchiveOperation();
 }
 
+//this slot is direct connected to the caller so please don't call it from another thread in the same time
 void ExtractArchiveOperation::slotProgressChanged( const QString& filename )
 {
     QStringList m_files = value( QLatin1String( "files" ) ).toStringList();
