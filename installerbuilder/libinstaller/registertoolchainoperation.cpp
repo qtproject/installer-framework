@@ -78,7 +78,7 @@ bool RegisterToolChainOperation::performOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() < 4) {
+    if (args.count() < 4) {
         setError( InvalidArguments );
         setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
                         .arg(name()).arg( args.count() ) );
@@ -176,7 +176,7 @@ bool RegisterToolChainOperation::undoOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() < 4) {
+    if (args.count() < 4) {
         setError( InvalidArguments );
         setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
                         .arg(name()).arg( args.count() ) );
@@ -232,7 +232,7 @@ bool RegisterToolChainOperation::undoOperation()
             //gets the path variable, hope ".Path" will stay in QtCreator
             QStringList pathContainingKeyList =
                     QStringList(toolChainMap.keys()).filter(QLatin1String(".Path"));
-            foreach(const QString& pathKey, pathContainingKeyList) {
+            foreach (const QString& pathKey, pathContainingKeyList) {
                 QString path = toolChainMap.value(pathKey).toString();
                 QString currentUniqueToolChainKey = toolChainMap.value(QLatin1String(ID_KEY)).toString();
                 Q_ASSERT(!currentUniqueToolChainKey.isEmpty());
