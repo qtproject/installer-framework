@@ -28,41 +28,41 @@
 
 #include <KDToolsCore/KDJob>
 
-#include <QPair>
-#include <QStringList>
+#include <QtCore/QPair>
+#include <QtCore/QStringList>
 
-namespace KDUpdater 
-{
+QT_BEGIN_NAMESPACE
+class QTimerEvent;
+QT_END_NAMESPACE
+
+namespace KDUpdater {
     class FileDownloader;
 }
 
-class QTimer;
+namespace QInstaller {
 
-namespace QInstaller 
-{
-
-class MessageBoxHandler;
 class Installer;
+class MessageBoxHandler;
 
 class DownloadArchivesJob : public KDJob
 {
     Q_OBJECT
+
 public:
-    enum Error 
-    {
+    enum Error {
         InvalidUrl = KDJob::UserDefinedError,
         Timeout,
         DownloadError
     };
 
-    explicit DownloadArchivesJob(const QByteArray& publicKey, Installer* parent = 0 );
+    explicit DownloadArchivesJob(const QByteArray &publicKey, Installer *installer = 0);
     ~DownloadArchivesJob();
 
-    void setArchivesToDownload( const QList< QPair< QString, QString > >& archives );
+    void setArchivesToDownload(const QList<QPair<QString, QString> > &archives);
 
 Q_SIGNALS:
-    void progressChanged( double progress );
-    void outputTextChanged( const QString& progress );
+    void progressChanged(double progress);
+    void outputTextChanged(const QString &progress);
 
 protected:
     void doStart();
@@ -72,27 +72,29 @@ protected:
 protected Q_SLOTS:
     void registerFile();
     void downloadCanceled();
-    void downloadFailed( const QString& error );
-    void finishWithError( const QString& error );
+    void downloadFailed(const QString &error);
+    void finishWithError(const QString &error);
     void fetchNextArchive();
     void fetchNextArchiveHash();
     void finishedHashDownload();
-    void emitDownloadProgress( double progress );
+    void emitDownloadProgress(double progress);
 
 private:
-    bool cancelled;
-    QList< QPair< QString, QString > > archives;
-    const QByteArray publicKey;
-    KDUpdater::FileDownloader* downloader;
-    QStringList temporaryFiles;
-    int filesToDownload;
-    int filesDownloaded;
-    Installer* parent;
-    QByteArray currentHash;
-    double lastFileProgress;
-    int progressChangedTimerId;
+    Installer *m_installer;
+    KDUpdater::FileDownloader *m_downloader;
+
+    int m_archivesDownloaded;
+    int m_archivesToDownloadCount;
+    QList<QPair<QString, QString> > m_archivesToDownload;
+
+    bool m_canceled;
+    const QByteArray m_publicKey;
+    QStringList m_temporaryFiles;
+    QByteArray m_currentHash;
+    double m_lastFileProgress;
+    int m_progressChangedTimerId;
 };
 
-}
+}   // namespace QInstaller
 
-#endif
+#endif  // DOWNLOADARCHIVESJOB_H
