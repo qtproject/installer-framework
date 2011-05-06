@@ -303,7 +303,7 @@ void DownloadArchivesJob::registerFile()
 
 void DownloadArchivesJob::downloadCanceled()
 {
-    emitFinishedWithError(Canceled, m_downloader->errorString());
+    emitFinishedWithError(KDJob::Canceled, m_downloader->errorString());
 }
 
 void DownloadArchivesJob::downloadFailed(const QString &error)

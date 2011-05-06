@@ -466,7 +466,7 @@ int Installer::downloadNeededArchives(RunMode runMode, double partProgressSize)
 
     if (archivesJob->error() == KDJob::Canceled)
         interrupt();
-    else if (archivesJob->error() != DownloadArchivesJob::NoError)
+    else if (archivesJob->error() != KDJob::NoError)
         throw Error(archivesJob->errorString());
 
     if (d->statusCanceledOrFailed())
