@@ -60,13 +60,11 @@ using namespace QInstaller;
 
 // -- GetRepositoryMetaInfoJob
 
-GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(const QByteArray &publicKey,
-        bool packageManager, QObject *parent)
+GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(const QByteArray &publicKey, QObject *parent)
     : KDJob(parent),
     m_canceled(false),
     m_silentRetries(3),
     m_retriesLeft(m_silentRetries),
-    m_packageManager(packageManager),
     m_publicKey(publicKey),
     m_downloader()
 {
@@ -192,35 +190,26 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         return;
     }
 
-    QDomDocument doc;
     QString err;
-    int line = 0;
-    int col = 0;
-    if (!doc.setContent(&updatesFile, &err, &line, &col)) {
-        QMessageBox::StandardButtons buttons = QMessageBox::Cancel;
-        QString packageManagerMessage;
-        if (m_packageManager) {
-            buttons |= QMessageBox::Ok;
-            packageManagerMessage = tr("\nOnly uninstallation is possible.");
+    QDomDocument doc;
+    if (!doc.setContent(&updatesFile, &err)) {
+        const QString msg =  tr("Could not fetch a valid version of Updates.xml from repository %1, Error: %2")
+            .arg(m_repository.url().toString(), err);
+        verbose() << msg << std::endl;
+
+        if (!m_repository.required()) {
+            emitFinishedWithError(QInstaller::UserIgnoreError, msg);
+            return;
         }
+
         const QMessageBox::StandardButton b =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("updatesXmlDownloadError"), tr("Download Error"), tr("Could not fetch a "
-            "valid version of Updates.xml: %1%2").arg(err, packageManagerMessage), buttons);
+            QLatin1String("updatesXmlDownloadError"), tr("Download Error"), msg, QMessageBox::Cancel);
 
-        if (b == QMessageBox::Cancel) {
-            emitFinishedWithError(KDJob::Canceled, tr("Could not fetch Updates.xml: %1").arg(err));
+        if (b == QMessageBox::Cancel || b == QMessageBox::NoButton) {
+            emitFinishedWithError(KDJob::Canceled, msg);
             return;
         }
-
-        if (b == QMessageBox::Ok) {
-            emitFinishedWithError(QInstaller::UserIgnoreError, tr("Could not fetch "
-                "Updates.xml: %1").arg(err));
-            return;
-        }
-        // emitFinishedWithError(QInstaller::InvalidMetaInfo,
-        // tr("Could not parse component index: %1:%2: %3").arg(QString::number(line),
-        // QString::number(col), err));
     }
 
     emit infoMessage(this, tr("Parsing component meta information..."));
@@ -258,34 +247,22 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
 {
     if (m_retriesLeft <= 0) {
+        const QString msg = tr("Could not fetch Updates.xml from repository %1, Error: %2")
+            .arg(m_repository.url().toString(), err);
+        verbose() << msg << std::endl;
+
         if (!m_repository.required()) {
-            emit infoMessage(this, tr("Could not fetch Updates.xml from repository: %1")
-                .arg(m_repository.url().toString()));
-            emitFinishedWithError(QInstaller::UserIgnoreError, tr("Could not fetch "
-                "Updates.xml: %1").arg(err));
-            verbose() << "Could not fetch Updates.xml from: " << m_repository.url().toString() << std::endl;
+            emitFinishedWithError(QInstaller::UserIgnoreError, msg);
             return;
         }
 
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
-        QString packageManagerMessage;
-        if (m_packageManager) {
-            buttons |= QMessageBox::Ok;
-            packageManagerMessage = tr("\nOnly uninstallation is possible.");
-        }
         const QMessageBox::StandardButton b =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("updatesXmlDownloadError"), tr("Download Error"), tr("Could not fetch "
-            "Updates.xml: %1%2").arg(err, packageManagerMessage), buttons);
+            QLatin1String("updatesXmlDownloadError"), tr("Download Error"), msg, buttons);
 
         if (b == QMessageBox::Cancel || b == QMessageBox::NoButton) {
-            emitFinishedWithError(KDJob::Canceled, tr("Could not fetch Updates.xml: %1").arg(err));
-            return;
-        }
-
-        if (b == QMessageBox::Ok) {
-            emitFinishedWithError(QInstaller::UserIgnoreError, tr("Could not fetch "
-                "Updates.xml: %1").arg(err));
+            emitFinishedWithError(KDJob::Canceled, msg);
             return;
         }
     }
@@ -414,36 +391,22 @@ void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
         emit infoMessage(this, tr("The hash of one component does not match the expected one."));
 
     if (m_retriesLeft <= 0) {
+        const QString msg = tr("Could not download meta information for component %1, Error: %2")
+            .arg(m_currentPackageName, err);
+        verbose() << msg << std::endl;
+
         if (!m_repository.required()) {
-            emit infoMessage(this, tr("Could not download information for component %1: %2")
-                .arg(m_currentPackageName, err));
-            emitFinishedWithError(QInstaller::UserIgnoreError, tr("Could not download "
-                "information for component %1: %2").arg(m_currentPackageName, err));
-            verbose() << QString::fromLatin1("Could not download information for component %1: %2")
-                .arg(m_currentPackageName, err) << std::endl;
+            emitFinishedWithError(QInstaller::UserIgnoreError, msg);
             return;
         }
 
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
-        QString packageManagerMessage;
-        if (m_packageManager) {
-            buttons |= QMessageBox::Ok;
-            packageManagerMessage = tr("\nOnly uninstallation is possible.");
-        }
-
         const QMessageBox::StandardButton b =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("updatesXmlDownloadError"), tr("Download Error"), tr("Could not download "
-            "information for component %1: %2%3") .arg(m_currentPackageName, err,
-            packageManagerMessage), buttons);
+            QLatin1String("updatesXmlDownloadError"), tr("Download Error"), msg, buttons);
 
-        if (b == QMessageBox::Cancel) {
-            emitFinishedWithError(KDJob::Canceled, tr("Canceled"));
-            return;
-        }
-
-        if (b == QMessageBox::Ok) {
-            emitFinishedWithError(QInstaller::UserIgnoreError, tr("%1").arg(err));
+        if (b == QMessageBox::Cancel || b == QMessageBox::NoButton) {
+            emitFinishedWithError(KDJob::Canceled, msg);
             return;
         }
     }

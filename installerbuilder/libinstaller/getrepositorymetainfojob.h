@@ -51,8 +51,7 @@ class INSTALLER_EXPORT GetRepositoryMetaInfoJob : public KDJob
     friend class ::QInstaller::GetRepositoriesMetaInfoJob;
 
 public:
-    explicit GetRepositoryMetaInfoJob(const QByteArray &publicKey = QByteArray(),
-        bool packageManager = false, QObject *parent = 0);
+    explicit GetRepositoryMetaInfoJob(const QByteArray &publicKey = QByteArray(), QObject *parent = 0);
     ~GetRepositoryMetaInfoJob();
 
     Repository repository() const;
@@ -83,7 +82,6 @@ private:
     bool m_canceled;
     int m_silentRetries;
     int m_retriesLeft;
-    bool m_packageManager;
     const QByteArray m_publicKey;
     Repository m_repository;
     QStringList m_packageNames;

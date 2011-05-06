@@ -41,13 +41,11 @@ using namespace QInstaller;
 
 // -- GetRepositoriesMetaInfoJob
 
-GetRepositoriesMetaInfoJob::GetRepositoriesMetaInfoJob(const QByteArray &publicKey,
-        bool packageManager, QObject *parent)
+GetRepositoriesMetaInfoJob::GetRepositoriesMetaInfoJob(const QByteArray &publicKey, QObject *parent)
     : KDJob(parent),
       m_publicKey(publicKey),
       m_canceled(false),
       m_silentRetries(3),
-      m_packageManager(packageManager),
       m_haveIgnoredError(false)
 {
     setCapabilities(Cancelable);
@@ -132,7 +130,7 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
         return;
     }
 
-    m_job = new GetRepositoryMetaInfoJob(m_publicKey, m_packageManager, this);
+    m_job = new GetRepositoryMetaInfoJob(m_publicKey, this);
     m_job->setSilentRetries(silentRetries());
     m_job->setRepository(m_tmpRepositories.takeLast());
     connect(m_job, SIGNAL(finished(KDJob*)), this, SLOT(jobFinished(KDJob*)));

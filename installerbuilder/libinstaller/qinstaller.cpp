@@ -629,7 +629,7 @@ QHash<QString, KDUpdater::PackageInfo> Installer::localInstalledPackages()
 
 GetRepositoriesMetaInfoJob* Installer::fetchMetaInformation(const QInstaller::InstallerSettings &settings)
 {
-    GetRepositoriesMetaInfoJob *metaInfoJob = new GetRepositoriesMetaInfoJob(settings.publicKey(), false);
+    GetRepositoriesMetaInfoJob *metaInfoJob = new GetRepositoriesMetaInfoJob(settings.publicKey());
     if ((isInstaller() && !isOfflineOnly()) || (isUpdater() || isPackageManager()))
         metaInfoJob->setRepositories(settings.repositories());
 
