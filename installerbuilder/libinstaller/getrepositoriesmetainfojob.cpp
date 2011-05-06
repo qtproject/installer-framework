@@ -121,7 +121,7 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
 
     if (m_tmpRepositories.isEmpty()) {
         if (m_haveIgnoredError)
-            emitFinishedWithError(UserIgnoreError, m_errorString);
+            emitFinishedWithError(GetRepositoryMetaInfoJob::UserIgnoreError, m_errorString);
         else
             emitFinished();
         return;

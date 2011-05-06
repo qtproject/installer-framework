@@ -130,17 +130,17 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
 
     const QUrl url = m_repository.url();
     if (url.isEmpty()) {
-        emitFinishedWithError(InvalidUrl, tr("empty repository URL"));
+        emitFinishedWithError(GetRepositoryMetaInfoJob::InvalidUrl, tr("empty repository URL"));
         return;
     }
     if (!url.isValid()) {
-        emitFinishedWithError(InvalidUrl, tr("invalid repository URL"));
+        emitFinishedWithError(GetRepositoryMetaInfoJob::InvalidUrl, tr("invalid repository URL"));
         return;
     }
     m_downloader = FileDownloaderFactory::instance().create(url.scheme(), 0, QUrl(), this);
     if (!m_downloader) {
-        emitFinishedWithError(InvalidUrl, tr("URL scheme not supported: %1 (%2)").arg(url.scheme(),
-            url.toString()));
+        emitFinishedWithError(GetRepositoryMetaInfoJob::InvalidUrl, tr("URL scheme not supported: %1 (%2)")
+            .arg(url.scheme(), url.toString()));
         return;
     }
 
@@ -155,7 +155,7 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
 
 void GetRepositoryMetaInfoJob::updatesXmlDownloadCanceled()
 {
-    emitFinishedWithError(Canceled, m_downloader->errorString());
+    emitFinishedWithError(KDJob::Canceled, m_downloader->errorString());
 }
 
 void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
@@ -170,20 +170,20 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         m_temporaryDirectory = createTemporaryDirectory(QLatin1String("remoterepo"));
         m_tempDirDeleter.add(m_temporaryDirectory);
     } catch (const QInstaller::Error& e) {
-        emitFinishedWithError(ExtractionError, e.message());
+        emitFinishedWithError(GetRepositoryMetaInfoJob::ExtractionError, e.message());
         return;
     }
     QFile file(fn);
     const QString updatesXmlPath = m_temporaryDirectory + QLatin1String("/Updates.xml");
     if (!file.rename(updatesXmlPath)) {
-        emitFinishedWithError(DownloadError,
+        emitFinishedWithError(GetRepositoryMetaInfoJob::DownloadError,
             tr("Could not move Updates.xml to target location: %1").arg(file.errorString()));
         return;
     }
 
     QFile updatesFile(updatesXmlPath);
     if (!updatesFile.open(QIODevice::ReadOnly)) {
-        emitFinishedWithError(DownloadError,
+        emitFinishedWithError(GetRepositoryMetaInfoJob::DownloadError,
             tr("Could not open Updates.xml for reading: %1").arg(updatesFile.errorString()));
         return;
     }
@@ -214,8 +214,9 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                 "Updates.xml: %1").arg(err));
             return;
         }
-        //emitFinishedWithError(InvalidMetaInfo, tr("Could not parse component index: %1:%2: %3")
-        //    .arg(QString::number(line), QString::number(col), err));
+        // emitFinishedWithError(GetRepositoryMetaInfoJob::InvalidMetaInfo,
+        // tr("Could not parse component index: %1:%2: %3").arg(QString::number(line),
+        // QString::number(col), err));
     }
 
     emit infoMessage(this, tr("Parsing component meta information..."));
@@ -348,7 +349,7 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
 
 void GetRepositoryMetaInfoJob::metaDownloadCanceled()
 {
-    emitFinishedWithError(Canceled, m_downloader->errorString());
+    emitFinishedWithError(KDJob::Canceled, m_downloader->errorString());
 }
 
 void GetRepositoryMetaInfoJob::metaDownloadFinished()
@@ -358,8 +359,8 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
 
     QFile arch(fn);
     if (!arch.open(QIODevice::ReadOnly)) {
-        emitFinishedWithError(ExtractionError, tr("Could not open meta info archive %1: %2").arg(fn,
-            arch.errorString()));
+        emitFinishedWithError(GetRepositoryMetaInfoJob::ExtractionError,
+            tr("Could not open meta info archive %1: %2").arg(fn, arch.errorString()));
         return;
     }
 
@@ -383,8 +384,8 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
         if (!arch.remove())
             qWarning("Could not delete file %s: %s", qPrintable(fn), qPrintable(arch.errorString()));
     } catch (const Lib7z::SevenZipException& e) {
-        emitFinishedWithError(ExtractionError, tr("Could not open meta info archive %1: %2").arg(fn,
-            e.message()));
+        emitFinishedWithError(GetRepositoryMetaInfoJob::ExtractionError,
+            tr("Could not open meta info archive %1: %2").arg(fn, e.message()));
         return;
     }
 
@@ -414,7 +415,7 @@ void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
             packageManagerMessage), buttons);
 
         if (b == QMessageBox::Cancel) {
-            emitFinishedWithError(Canceled, tr("Canceled"));
+            emitFinishedWithError(KDJob::Canceled, tr("Canceled"));
             return;
         }
 
