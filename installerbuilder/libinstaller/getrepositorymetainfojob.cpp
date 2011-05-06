@@ -288,7 +288,7 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     emit infoMessage(this, tr("Retrieving component information from remote repository..."));
 
     if (m_canceled) {
-        emitFinished();
+        metaDownloadCanceled();
         return;
     }
 

@@ -115,7 +115,7 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
     }
 
     if (m_canceled) {
-        emitFinished();
+        emitFinishedWithError(KDJob::Canceled, m_errorString);
         return;
     }
 
