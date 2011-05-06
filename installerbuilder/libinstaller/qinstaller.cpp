@@ -699,8 +699,10 @@ bool Installer::fetchAllPackages()
 
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
-        verbose() << tr("Could not retrieve components: %1").arg(metaInfoJob->errorString()) << std::endl;
-        return false;
+        if (metaInfoJob->error() != GetRepositoriesMetaInfoJob::UserIgnoreError) {
+            verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
+            return false;
+        }
     }
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {
@@ -795,8 +797,10 @@ bool Installer::fetchUpdaterPackages()
 
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
-        verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
-        return false;
+        if (metaInfoJob->error() != GetRepositoriesMetaInfoJob::UserIgnoreError) {
+            verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
+            return false;
+        }
     }
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {

@@ -254,6 +254,15 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
 {
     if (m_retriesLeft <= 0) {
+        if (!m_repository.required()) {
+            emit infoMessage(this, tr("Could not fetch Updates.xml from repository: %1")
+                .arg(m_repository.url().toString()));
+            emitFinishedWithError(GetRepositoryMetaInfoJob::UserIgnoreError, tr("Could not fetch "
+                "Updates.xml: %1").arg(err));
+            verbose() << "Could not fetch Updates.xml from: " << m_repository.url().toString() << std::endl;
+            return;
+        }
+
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
         QString packageManagerMessage;
         if (m_packageManager) {
@@ -401,6 +410,16 @@ void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
         emit infoMessage(this, tr("The hash of one component does not match the expected one."));
 
     if (m_retriesLeft <= 0) {
+        if (!m_repository.required()) {
+            emit infoMessage(this, tr("Could not download information for component %1: %2")
+                .arg(m_currentPackageName, err));
+            emitFinishedWithError(GetRepositoryMetaInfoJob::UserIgnoreError, tr("Could not download "
+                "information for component %1: %2").arg(m_currentPackageName, err));
+            verbose() << QString::fromLatin1("Could not download information for component %1: %2")
+                .arg(m_currentPackageName, err) << std::endl;
+            return;
+        }
+
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
         QString packageManagerMessage;
         if (m_packageManager) {
