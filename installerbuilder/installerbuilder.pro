@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS += libinstaller installerbase binarycreator #repogen archivegen tests
+SUBDIRS += libinstaller installerbase binarycreator repogen archivegen tests
 
 #test.commands=(cd tests && $(MAKE) test)
 
