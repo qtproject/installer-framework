@@ -34,7 +34,7 @@
 
 #include <QScrollBar>
 
-#define TIMER_TIME 10
+#define TIMER_TIME 20
 
 LazyPlainTextEdit::LazyPlainTextEdit(QWidget *parent) :
     QPlainTextEdit(parent), m_timerId(0)
@@ -55,12 +55,12 @@ void LazyPlainTextEdit::timerEvent(QTimerEvent *event)
 
 void LazyPlainTextEdit::append(const QString &text)
 {
-    if (m_timerId) {
-        killTimer(m_timerId);
-        m_timerId = 0;
-    }
+    //if (m_timerId) {
+    //    killTimer(m_timerId);
+    //    m_timerId = 0;
+    //}
     m_chachedOutput.append(text + QLatin1String("\n"));
-    if (isVisible()) {
+    if (isVisible() && m_timerId == 0) {
         m_timerId = startTimer(TIMER_TIME);
     }
 }

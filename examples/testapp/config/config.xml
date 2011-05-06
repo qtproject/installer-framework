@@ -27,5 +27,5 @@
     </PublicKey>
 
     <!-- @homeDir@ and @rootDir@ are some of the supported vars -->
-    <TargetDir>@rootDir@/testinstall</TargetDir>
+    <TargetDir>f:/testinstall</TargetDir>
 </Installer>
