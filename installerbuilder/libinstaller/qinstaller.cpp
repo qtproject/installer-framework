@@ -699,7 +699,7 @@ bool Installer::fetchAllPackages()
 
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
-        if (metaInfoJob->error() != GetRepositoriesMetaInfoJob::UserIgnoreError) {
+        if (metaInfoJob->error() != QInstaller::UserIgnoreError) {
             verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
             return false;
         }
@@ -797,7 +797,7 @@ bool Installer::fetchUpdaterPackages()
 
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
-        if (metaInfoJob->error() != GetRepositoriesMetaInfoJob::UserIgnoreError) {
+        if (metaInfoJob->error() != QInstaller::UserIgnoreError) {
             verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
             return false;
         }

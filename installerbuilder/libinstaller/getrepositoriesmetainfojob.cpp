@@ -31,10 +31,15 @@
 **
 **************************************************************************/
 #include "getrepositoriesmetainfojob.h"
+
 #include "getrepositorymetainfojob.h"
+#include "qinstallerglobal.h"
 
 using namespace KDUpdater;
 using namespace QInstaller;
+
+
+// -- GetRepositoriesMetaInfoJob
 
 GetRepositoriesMetaInfoJob::GetRepositoriesMetaInfoJob(const QByteArray &publicKey,
         bool packageManager, QObject *parent)
@@ -121,7 +126,7 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
 
     if (m_tmpRepositories.isEmpty()) {
         if (m_haveIgnoredError)
-            emitFinishedWithError(GetRepositoriesMetaInfoJob::UserIgnoreError, m_errorString);
+            emitFinishedWithError(QInstaller::UserIgnoreError, m_errorString);
         else
             emitFinished();
         return;
@@ -152,14 +157,14 @@ void GetRepositoriesMetaInfoJob::jobFinished(KDJob* j)
         return;
     }
 
-    if (job->error() == GetRepositoryMetaInfoJob::UserIgnoreError) {
+    if (job->error() == QInstaller::UserIgnoreError) {
         m_haveIgnoredError = true;
         m_errorString = job->errorString();
         QMetaObject::invokeMethod(this, "fetchNextRepo", Qt::QueuedConnection);
         return;
     }
 
-    if (job->error() == GetRepositoryMetaInfoJob::InvalidMetaInfo) {
+    if (job->error() == QInstaller::InvalidMetaInfo) {
         emitFinishedWithError(KDJob::UserDefinedError, tr("Error while accessing online "
             "repository: %1. Please try again later").arg(job->errorString()));
         return;

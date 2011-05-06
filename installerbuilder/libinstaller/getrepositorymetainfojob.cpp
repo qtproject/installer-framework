@@ -37,6 +37,7 @@
 #include "cryptosignatureverifier.h"
 #include "lib7z_facade.h"
 #include "messageboxhandler.h"
+#include "qinstallerglobal.h"
 
 #include <KDUpdater/FileDownloader>
 #include <KDUpdater/FileDownloaderFactory>
@@ -55,6 +56,9 @@
 
 using namespace KDUpdater;
 using namespace QInstaller;
+
+
+// -- GetRepositoryMetaInfoJob
 
 GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(const QByteArray &publicKey,
         bool packageManager, QObject *parent)
@@ -130,16 +134,16 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
 
     const QUrl url = m_repository.url();
     if (url.isEmpty()) {
-        emitFinishedWithError(GetRepositoryMetaInfoJob::InvalidUrl, tr("empty repository URL"));
+        emitFinishedWithError(QInstaller::InvalidUrl, tr("empty repository URL"));
         return;
     }
     if (!url.isValid()) {
-        emitFinishedWithError(GetRepositoryMetaInfoJob::InvalidUrl, tr("invalid repository URL"));
+        emitFinishedWithError(QInstaller::InvalidUrl, tr("invalid repository URL"));
         return;
     }
     m_downloader = FileDownloaderFactory::instance().create(url.scheme(), 0, QUrl(), this);
     if (!m_downloader) {
-        emitFinishedWithError(GetRepositoryMetaInfoJob::InvalidUrl, tr("URL scheme not supported: %1 (%2)")
+        emitFinishedWithError(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2)")
             .arg(url.scheme(), url.toString()));
         return;
     }
@@ -170,20 +174,20 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         m_temporaryDirectory = createTemporaryDirectory(QLatin1String("remoterepo"));
         m_tempDirDeleter.add(m_temporaryDirectory);
     } catch (const QInstaller::Error& e) {
-        emitFinishedWithError(GetRepositoryMetaInfoJob::ExtractionError, e.message());
+        emitFinishedWithError(QInstaller::ExtractionError, e.message());
         return;
     }
     QFile file(fn);
     const QString updatesXmlPath = m_temporaryDirectory + QLatin1String("/Updates.xml");
     if (!file.rename(updatesXmlPath)) {
-        emitFinishedWithError(GetRepositoryMetaInfoJob::DownloadError,
+        emitFinishedWithError(QInstaller::DownloadError,
             tr("Could not move Updates.xml to target location: %1").arg(file.errorString()));
         return;
     }
 
     QFile updatesFile(updatesXmlPath);
     if (!updatesFile.open(QIODevice::ReadOnly)) {
-        emitFinishedWithError(GetRepositoryMetaInfoJob::DownloadError,
+        emitFinishedWithError(QInstaller::DownloadError,
             tr("Could not open Updates.xml for reading: %1").arg(updatesFile.errorString()));
         return;
     }
@@ -210,11 +214,11 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         }
 
         if (b == QMessageBox::Ok) {
-            emitFinishedWithError(GetRepositoryMetaInfoJob::UserIgnoreError, tr("Could not fetch "
+            emitFinishedWithError(QInstaller::UserIgnoreError, tr("Could not fetch "
                 "Updates.xml: %1").arg(err));
             return;
         }
-        // emitFinishedWithError(GetRepositoryMetaInfoJob::InvalidMetaInfo,
+        // emitFinishedWithError(QInstaller::InvalidMetaInfo,
         // tr("Could not parse component index: %1:%2: %3").arg(QString::number(line),
         // QString::number(col), err));
     }
@@ -257,7 +261,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
         if (!m_repository.required()) {
             emit infoMessage(this, tr("Could not fetch Updates.xml from repository: %1")
                 .arg(m_repository.url().toString()));
-            emitFinishedWithError(GetRepositoryMetaInfoJob::UserIgnoreError, tr("Could not fetch "
+            emitFinishedWithError(QInstaller::UserIgnoreError, tr("Could not fetch "
                 "Updates.xml: %1").arg(err));
             verbose() << "Could not fetch Updates.xml from: " << m_repository.url().toString() << std::endl;
             return;
@@ -280,7 +284,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
         }
 
         if (b == QMessageBox::Ok) {
-            emitFinishedWithError(GetRepositoryMetaInfoJob::UserIgnoreError, tr("Could not fetch "
+            emitFinishedWithError(QInstaller::UserIgnoreError, tr("Could not fetch "
                 "Updates.xml: %1").arg(err));
             return;
         }
@@ -368,7 +372,7 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
 
     QFile arch(fn);
     if (!arch.open(QIODevice::ReadOnly)) {
-        emitFinishedWithError(GetRepositoryMetaInfoJob::ExtractionError,
+        emitFinishedWithError(QInstaller::ExtractionError,
             tr("Could not open meta info archive %1: %2").arg(fn, arch.errorString()));
         return;
     }
@@ -393,7 +397,7 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
         if (!arch.remove())
             qWarning("Could not delete file %s: %s", qPrintable(fn), qPrintable(arch.errorString()));
     } catch (const Lib7z::SevenZipException& e) {
-        emitFinishedWithError(GetRepositoryMetaInfoJob::ExtractionError,
+        emitFinishedWithError(QInstaller::ExtractionError,
             tr("Could not open meta info archive %1: %2").arg(fn, e.message()));
         return;
     }
@@ -413,7 +417,7 @@ void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
         if (!m_repository.required()) {
             emit infoMessage(this, tr("Could not download information for component %1: %2")
                 .arg(m_currentPackageName, err));
-            emitFinishedWithError(GetRepositoryMetaInfoJob::UserIgnoreError, tr("Could not download "
+            emitFinishedWithError(QInstaller::UserIgnoreError, tr("Could not download "
                 "information for component %1: %2").arg(m_currentPackageName, err));
             verbose() << QString::fromLatin1("Could not download information for component %1: %2")
                 .arg(m_currentPackageName, err) << std::endl;
@@ -439,7 +443,7 @@ void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
         }
 
         if (b == QMessageBox::Ok) {
-            emitFinishedWithError(GetRepositoryMetaInfoJob::UserIgnoreError, tr("%1").arg(err));
+            emitFinishedWithError(QInstaller::UserIgnoreError, tr("%1").arg(err));
             return;
         }
     }

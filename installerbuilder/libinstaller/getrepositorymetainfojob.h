@@ -51,15 +51,6 @@ class INSTALLER_EXPORT GetRepositoryMetaInfoJob : public KDJob
     friend class ::QInstaller::GetRepositoriesMetaInfoJob;
 
 public:
-    enum Error {
-        InvalidUrl = KDJob::UserDefinedError,
-        DownloadError,
-        InvalidUpdatesXml,
-        InvalidMetaInfo,
-        ExtractionError,
-        UserIgnoreError
-    };
-
     explicit GetRepositoryMetaInfoJob(const QByteArray &publicKey = QByteArray(),
         bool packageManager = false, QObject *parent = 0);
     ~GetRepositoryMetaInfoJob();

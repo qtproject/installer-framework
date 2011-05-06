@@ -51,10 +51,6 @@ class INSTALLER_EXPORT GetRepositoriesMetaInfoJob : public KDJob
     Q_OBJECT
 
 public:
-    enum Error {
-        UserIgnoreError = KDJob::UserDefinedError + 1
-    };
-
     explicit GetRepositoriesMetaInfoJob(const QByteArray &publicKey, bool packageManager = false,
         QObject *parent = 0);
 

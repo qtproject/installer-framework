@@ -49,12 +49,6 @@ class DownloadArchivesJob : public KDJob
     Q_OBJECT
 
 public:
-    enum Error {
-        InvalidUrl = KDJob::UserDefinedError,
-        Timeout,
-        DownloadError
-    };
-
     explicit DownloadArchivesJob(const QByteArray &publicKey, Installer *installer = 0);
     ~DownloadArchivesJob();
 
