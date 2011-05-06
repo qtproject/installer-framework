@@ -44,6 +44,17 @@ enum INSTALLER_EXPORT RunMode
     UpdaterMode
 };
 
+enum INSTALLER_EXPORT JobError
+{
+    InvalidUrl = 0x24B04,
+    Timeout,
+    DownloadError,
+    InvalidUpdatesXml,
+    InvalidMetaInfo,
+    ExtractionError,
+    UserIgnoreError
+};
+
 QString uncaughtExceptionString(QScriptEngine *scriptEngine);
 QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine);
 
