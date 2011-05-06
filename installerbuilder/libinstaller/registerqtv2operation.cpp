@@ -131,28 +131,32 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() < 3) {
+    if( args.count() < 2) {
         setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 3 expected.")
+        setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 2 expected.")
                         .arg(name()).arg( args.count() ) );
         return false;
     }
 
-    const QString &rootInstallPath = args.value(0); //for example "C:\\QtSDK\\"
-    const QString &versionName = args.value(1);
-    const QString &path = args.value(2);
+    const Installer* const installer = qVariantValue< Installer* >( value( QLatin1String( "installer" ) ) );
+    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+
+    int argCounter = 0;
+    const QString &versionName = args.value(argCounter++);
+    const QString &path = args.value(argCounter++);
     QString qmakePath = QDir(path).absolutePath();
-    if (!qmakePath.endsWith(QLatin1String("qmake"))
-            || !qmakePath.endsWith(QLatin1String("qmake.exe"))) {
-        #if defined ( Q_OS_WIN )
-            qmakePath.append(QLatin1String("bin/qmake.exe"));
-        #elif defined( Q_OS_UNIX )
-            qmakePath.append(QLatin1String("bin/qmake"));
-        #endif
+    if ( !qmakePath.endsWith(QLatin1String("qmake"))
+         || !qmakePath.endsWith(QLatin1String("qmake.exe")))
+    {
+#if defined ( Q_OS_WIN )
+        qmakePath.append(QLatin1String("/bin/qmake.exe"));
+#elif defined( Q_OS_UNIX )
+        qmakePath.append(QLatin1String("/bin/qmake"));
+#endif
     }
 
-    QSettings settings( rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-        QSettings::IniFormat );
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
+                        QSettings::IniFormat);
 
     QString newVersions;
     QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")
