@@ -58,6 +58,7 @@ HEADERS += $$PWD/qinstaller.h \
     linereplaceoperation.h \
     registerdocumentationoperation.h \
     registerqtoperation.h  \
+    registerqtv2operation.h  \
     registertoolchainoperation.h  \
     setqtcreatorvalueoperation.h \
     copydirectoryoperation.h \
@@ -121,6 +122,7 @@ SOURCES += $$PWD/qinstaller.cpp \
     linereplaceoperation.cpp \
     registerdocumentationoperation.cpp \
     registerqtoperation.cpp \
+    registerqtv2operation.cpp \
     registertoolchainoperation.cpp  \
     setqtcreatorvalueoperation.cpp \
     copydirectoryoperation.cpp \
