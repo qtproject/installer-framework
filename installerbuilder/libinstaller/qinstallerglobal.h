@@ -28,13 +28,7 @@
 
 #include <installer_global.h>
 
-#include <QtGlobal>
-#include <qnamespace.h>
-
 QT_BEGIN_NAMESPACE
-class QIODevice;
-class QFile;
-template <typename T> class QList;
 class QScriptContext;
 class QScriptEngine;
 class QScriptValue;
@@ -42,41 +36,21 @@ QT_END_NAMESPACE
 
 namespace QInstaller {
 
+class Component;
+
 enum INSTALLER_EXPORT RunMode
 {
     AllMode,
     UpdaterMode
 };
 
-class Component;
+QString uncaughtExceptionString(QScriptEngine *scriptEngine);
+QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine);
 
-#if 0
-// Faster or not?
-static void appendFileData(QIODevice *out, const QString &fileName)
-{
-    QFile file(fileName);
-    openForRead(file);
-    qint64 size = file.size();
-    QInstaller::appendInt(out, size);
-    if (size == 0)
-        return;
-    uchar *data = file.map(0, size);
-    if (!data)
-        throw Error(QInstaller::tr("Cannot map file %1").arg(file.fileName()));
-    rawWrite(out, (const char *)data, size);
-    if (!file.unmap(data))
-        throw Error(QInstaller::tr("Cannot unmap file %1").arg(file.fileName()));
-}
-#endif
+QScriptValue qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *engine);
+QScriptValue qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine *engine);
+QScriptValue qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine);
 
-    QScriptValue qDesktopServicesOpenUrl( QScriptContext* context, QScriptEngine* engine );
-    QScriptValue qDesktopServicesDisplayName( QScriptContext* context, QScriptEngine* engine );
-    QScriptValue qDesktopServicesStorageLocation( QScriptContext* context, QScriptEngine* engine );
-    
-    QScriptValue qInstallerComponentByName( QScriptContext* context, QScriptEngine* engine );
-
-    Qt::CheckState componentCheckState( const Component* component, RunMode runMode = AllMode );
-    QString uncaughtExceptionString(QScriptEngine *scriptEngine/*, const QString &context*/);
 }
 
 #endif // QINSTALLER_GLOBAL_H
