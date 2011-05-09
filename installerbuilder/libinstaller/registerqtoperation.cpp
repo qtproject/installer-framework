@@ -40,6 +40,14 @@
 
 using namespace QInstaller;
 
+#if defined ( Q_OS_MAC )
+    static const char *QtCreatorSettingsSuffixPath =
+        "/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini";
+#else
+    static const char *QtCreatorSettingsSuffixPath =
+        "/QtCreator/share/qtcreator/Nokia/QtCreator.ini";
+#endif
+
 RegisterQtInCreatorOperation::RegisterQtInCreatorOperation()
 {
     setName(QLatin1String("RegisterQtInCreator"));
@@ -86,15 +94,8 @@ bool RegisterQtInCreatorOperation::performOperation()
     if (args.count() >= 9)
         sbsPath = args.at(8);
 
-#if defined ( Q_OS_MAC )
-    QSettings settings( QString( QLatin1String("%1/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini")
-                                 ).arg(rootInstallPath),
-                         QSettings::IniFormat );
-#else
-    QSettings settings( QString( QLatin1String("%1/QtCreator/share/qtcreator/Nokia/QtCreator.ini")
-                                ).arg(rootInstallPath),
-                        QSettings::IniFormat );
-#endif
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
+                        QSettings::IniFormat);
 
     QString newVersions;
     QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")

@@ -40,6 +40,14 @@
 
 using namespace QInstaller;
 
+#if defined ( Q_OS_MAC )
+    static const char *QtCreatorSettingsSuffixPath =
+        "/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini";
+#else
+    static const char *QtCreatorSettingsSuffixPath =
+        "/QtCreator/share/qtcreator/Nokia/QtCreator.ini";
+#endif
+
 SetQtCreatorValueOperation::SetQtCreatorValueOperation()
 {
     setName(QLatin1String("SetQtCreatorValue"));
@@ -81,14 +89,8 @@ bool SetQtCreatorValueOperation::performOperation()
     const QString &key = args.at(2);
     const QString &value = args.at(3);
 
-#if defined(Q_OS_MAC)
-    QString iniFileLocation = QLatin1String("%1/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini");
-#else
-    QString iniFileLocation = QLatin1String("%1/QtCreator/share/qtcreator/Nokia/QtCreator.ini");
-#endif
-
-    QSettings settings( iniFileLocation.arg(rootInstallPath),
-                        QSettings::IniFormat );
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
+                        QSettings::IniFormat);
 
     if(!group.isEmpty()) {
         settings.beginGroup(group);
