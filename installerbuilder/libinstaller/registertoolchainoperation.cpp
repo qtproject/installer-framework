@@ -188,8 +188,10 @@ bool RegisterToolChainOperation::undoOperation()
 
     int argCounter = 0;
     const QString &toolChainKey = args.at(argCounter++); //Qt SDK:gccPath
+    Q_UNUSED(toolChainKey)
     const QString &toolChainType = args.at(argCounter++); //where this toolchain is defined in QtCreator
     const QString &displayName = args.at(argCounter++); //nice special Toolchain (Qt SDK)
+    Q_UNUSED(displayName)
     const QString &abiString = args.at(argCounter++); //x86-windows-msys-pe-32bit
     const QString &compilerPath = args.at(argCounter++); //gccPath
     QString debuggerPath;
