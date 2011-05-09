@@ -43,12 +43,8 @@ public:
     QUrl url() const;
     void setUrl(const QUrl& url);
 
-    bool required() const;
-    void setRequired(bool required);
-
 private:
     QUrl m_url;
-    bool m_required;
 };
 
 }   // namespace QInstaller

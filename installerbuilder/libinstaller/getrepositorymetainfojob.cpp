@@ -197,11 +197,6 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
             .arg(m_repository.url().toString(), err);
         verbose() << msg << std::endl;
 
-        if (!m_repository.required()) {
-            emitFinishedWithError(QInstaller::UserIgnoreError, msg);
-            return;
-        }
-
         const QMessageBox::StandardButton b =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
             QLatin1String("updatesXmlDownloadError"), tr("Download Error"), msg, QMessageBox::Cancel);
@@ -250,11 +245,6 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
         const QString msg = tr("Could not fetch Updates.xml from repository %1, Error: %2")
             .arg(m_repository.url().toString(), err);
         verbose() << msg << std::endl;
-
-        if (!m_repository.required()) {
-            emitFinishedWithError(QInstaller::UserIgnoreError, msg);
-            return;
-        }
 
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
         const QMessageBox::StandardButton b =
@@ -394,11 +384,6 @@ void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
         const QString msg = tr("Could not download meta information for component %1, Error: %2")
             .arg(m_currentPackageName, err);
         verbose() << msg << std::endl;
-
-        if (!m_repository.required()) {
-            emitFinishedWithError(QInstaller::UserIgnoreError, msg);
-            return;
-        }
 
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
         const QMessageBox::StandardButton b =

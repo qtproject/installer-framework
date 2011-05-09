@@ -168,13 +168,7 @@ void GetRepositoriesMetaInfoJob::jobFinished(KDJob* j)
         return;
     }
 
-    if (job->error() != KDJob::NoError && job->repository().required()) {
-        emitFinishedWithError(KDJob::UserDefinedError, tr("Error while accessing online "
-            "repository: %1").arg(job->errorString()));
-        return;
-    }
-
-    const QString tmpdir = job->releaseTemporaryDirectory();
+    const QString &tmpdir = job->releaseTemporaryDirectory();
     job->m_tempDirDeleter.passAndRelease(m_tempDirDeleter, tmpdir);
     m_repositoryByTemporaryDirectory.insert(tmpdir, job->repository());
 

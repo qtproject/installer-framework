@@ -206,8 +206,6 @@ InstallerSettings InstallerSettings::fromFileAndPrefix(const QString &path, cons
             for (int j = 0; j < children.size(); ++j) {
                 if (children.at(j).toElement().tagName() == QLatin1String("Url"))
                     r.setUrl(children.at(j).toElement().text());
-                if (children.at(j).toElement().tagName() == QLatin1String("Required"))
-                    r.setRequired(children.at(j).toElement().text() == QLatin1String("true"));
             }
             s.d->repositories.append(r);
         }

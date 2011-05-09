@@ -137,7 +137,6 @@ QList< Repository > UpdateSettings::repositories() const
         Repository rep;
         settings.setArrayIndex( i );
         rep.setUrl( d->settings().value( QLatin1String( "url" ) ).toUrl() );
-        rep.setRequired( d->settings().value( QLatin1String( "required" ) ).toBool() );
         result.push_back( rep );
     }
     settings.endArray();
@@ -164,7 +163,6 @@ void UpdateSettings::setRepositories( const QList< Repository >& repositories )
         const Repository& rep = repositories[ i ];
         d->settings().setArrayIndex( i );
         d->settings().setValue( QLatin1String( "url" ), rep.url() );
-        d->settings().setValue( QLatin1String( "required" ), rep.required() );
     }
     d->settings().endArray();
 }

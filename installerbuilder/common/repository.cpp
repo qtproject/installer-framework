@@ -38,7 +38,6 @@ namespace QInstaller {
     Constructs an invalid Repository object.
 */
 Repository::Repository()
-    : m_required(false)
 {
 }
 
@@ -47,7 +46,6 @@ Repository::Repository()
 */
 Repository::Repository(const QUrl &url)
     : m_url(url)
-    , m_required(false)
 {
 }
 
@@ -76,24 +74,6 @@ QUrl Repository::url() const
 void Repository::setUrl(const QUrl& url)
 {
     m_url = url;
-}
-
-/*!
-    Returns whether the repository is required for installation. If a required repository cannot be
-    reached or an error occurrs accessing it, the installer will fail.
-*/
-bool Repository::required() const
-{
-    return m_required;
-}
-
-/*!
-    Sets whether the repository is required for installation. If a required repository cannot be
-    reached or an error occurrs accessing it, the installer will fail.
-*/
-void Repository::setRequired(bool required)
-{
-    m_required = required;
 }
 
 }

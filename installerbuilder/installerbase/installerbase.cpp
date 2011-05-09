@@ -258,9 +258,7 @@ int main(int argc, char *argv[])
                     QStringList items = args.at(i).split(QLatin1Char(','));
                     foreach(const QString &item, items) {
                         verbose() << "Adding custom repository:" << item << std::endl;
-                        Repository rep;
-                        rep.setUrl(item);
-                        rep.setRequired(true);
+                        Repository rep(item);
                         repoList.append(rep);
                     }
 
