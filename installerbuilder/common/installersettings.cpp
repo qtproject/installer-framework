@@ -196,10 +196,8 @@ InstallerSettings InstallerSettings::fromFileAndPrefix(const QString &path, cons
         QLatin1String("components.xml"));
 
     const QDomNodeList reposTags = root.elementsByTagName(QLatin1String("RemoteRepositories"));
-    if (reposTags.size() > 1)
-        throw Error(tr("Multiple RemoteRepositories elements found, but only one allowed."));
-    if (!reposTags.isEmpty()) {
-        const QDomNodeList repos = reposTags.at(0).toElement().elementsByTagName(QLatin1String("Repository"));
+    for (int a = 0; a < reposTags.count(); ++a) {
+        const QDomNodeList repos = reposTags.at(a).toElement().elementsByTagName(QLatin1String("Repository"));
         for (int i = 0; i < repos.size(); ++i) {
             Repository r;
             const QDomNodeList children = repos.at(i).childNodes();
