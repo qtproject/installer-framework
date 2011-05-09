@@ -348,6 +348,9 @@ void InstallerPrivate::initialize()
 #endif
     }
 
+    foreach (KDUpdater::UpdateOperation *currentOperation, m_performedOperationsOld)
+        currentOperation->setValue(QLatin1String("installer"), QVariant::fromValue(q));
+
     disconnect(this, SIGNAL(installationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
     connect(this, SIGNAL(installationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
     disconnect(this, SIGNAL(uninstallationStarted()), ProgressCoordninator::instance(), SLOT(reset()));

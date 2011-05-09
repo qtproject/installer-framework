@@ -202,6 +202,15 @@
   a \a description, a \a contentType and an \a icon. This is currently only supported on Windows.
 
 
+  \section2 RegisterQtInCreatorV2
+
+  \bold Syntax: "RegisterQtInCreatorV2", \a displayname, \a qt_or_qmake_path, [\a system_root, [\a sbs_path]].
+
+  Registers the Qt version \a displayname to Qt Creator with \a qt_or_qmake_path (if the path does not end with the qmake binary, it will add bin/qmake to the path automatically). Optionally, you can specify a\ system_root which. For Symbian SDKs the instance root will be where Qt Creator will find the Symbian SDK root (EPOCROOT).  For Symbian SDKs supporting sbs, you add the \a sbs_path .
+  
+  \note The minimum Qt Creator version it supports is 2.2
+
+
   \section1 Custom Operations
 
   It is possible to register custom installation operations in the Installer. This works by deriving KDUpdater::UpdateOperation.
