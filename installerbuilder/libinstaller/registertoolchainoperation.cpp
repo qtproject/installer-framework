@@ -85,7 +85,12 @@ bool RegisterToolChainOperation::performOperation()
         return false;
     }
 
-    const Installer* const installer = qVariantValue<Installer*>( value(QLatin1String("installer")));
+    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+    if (!installer) {
+        setError( UserDefinedError );
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
 
     int argCounter = 0;

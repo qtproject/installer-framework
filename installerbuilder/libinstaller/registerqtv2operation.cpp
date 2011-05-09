@@ -66,14 +66,19 @@ bool RegisterQtInCreatorV2Operation::performOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() < 2) {
+    if (args.count() < 2) {
         setError( InvalidArguments );
         setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 2 expected.")
                         .arg(name()).arg( args.count() ) );
         return false;
     }
 
-    const Installer* const installer = qVariantValue< Installer* >( value( QLatin1String( "installer" ) ) );
+    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+    if (!installer) {
+        setError( UserDefinedError );
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
 
     int argCounter = 0;
@@ -138,7 +143,12 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
         return false;
     }
 
-    const Installer* const installer = qVariantValue< Installer* >( value( QLatin1String( "installer" ) ) );
+    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+    if (!installer) {
+        setError( UserDefinedError );
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
 
     int argCounter = 0;
