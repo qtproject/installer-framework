@@ -100,10 +100,10 @@ bool SetImportsPathOnQtCoreOperation::performOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() != 2) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, exact 2 expected.")
-                        .arg(name()).arg( arguments().count() ) );
+    if (args.count() != 2) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 2 expected.")
+                        .arg(name()).arg( arguments().count()));
         return false;
     }
 
@@ -116,13 +116,13 @@ bool SetImportsPathOnQtCoreOperation::performOperation()
     }
     QStringList libraryFiles;
     #ifdef Q_OS_WIN
-        libraryFiles << QString( QLatin1String("%1/QtCore4.dll") ).arg(qtCoreLibraryDir);
-        libraryFiles << QString( QLatin1String("%1/QtCore4d.dll") ).arg(qtCoreLibraryDir);
+        libraryFiles << QString(QLatin1String("%1/QtCore4.dll")).arg(qtCoreLibraryDir);
+        libraryFiles << QString(QLatin1String("%1/QtCore4d.dll")).arg(qtCoreLibraryDir);
     #else
         libraryFiles << qtCoreLibraryDir + QLatin1String("/libQtCore.so");
     #endif
-    foreach(const QString coreLibrary, libraryFiles) {
-        if( QFile::exists(coreLibrary) ) {
+    foreach (const QString coreLibrary, libraryFiles) {
+        if (QFile::exists(coreLibrary)) {
             QByteArray oldValue(getOldValue(coreLibrary));
             Q_ASSERT(!oldValue.isEmpty());
             oldValue = QByteArray("qt_impspath=%1").replace("%1", oldValue);

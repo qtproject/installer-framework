@@ -64,7 +64,7 @@ void SetQtCreatorValueOperation::backup()
 namespace {
     QString groupName(const QString & groupName)
     {
-        if(groupName == QLatin1String("General")) {
+        if (groupName == QLatin1String("General")) {
             return QString();
         } else {
             return groupName;
@@ -76,10 +76,10 @@ bool SetQtCreatorValueOperation::performOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() != 4) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, exact 4 expected(rootInstallPath,group,key,value).")
-                        .arg(name()).arg( arguments().count() ) );
+    if (args.count() != 4) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 4 expected(rootInstallPath,group,key,value).")
+                        .arg(name()).arg( arguments().count()));
         return false;
     }
 
@@ -92,13 +92,13 @@ bool SetQtCreatorValueOperation::performOperation()
     QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
                         QSettings::IniFormat);
 
-    if(!group.isEmpty()) {
+    if (!group.isEmpty()) {
         settings.beginGroup(group);
     }
 
     settings.setValue(key, value);
 
-    if(!group.isEmpty()) {
+    if (!group.isEmpty()) {
         settings.endGroup();
     }
 

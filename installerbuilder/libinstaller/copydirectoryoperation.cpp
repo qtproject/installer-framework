@@ -49,7 +49,7 @@ TRANSLATOR QInstaller::CopyDirectoryOperation
 
 CopyDirectoryOperation::CopyDirectoryOperation()
 {
-    setName( QLatin1String( "CopyDirectory" ) );
+    setName(QLatin1String("CopyDirectory"));
 }
 
 CopyDirectoryOperation::~CopyDirectoryOperation()
@@ -75,8 +75,8 @@ QList< QPair<QString,QString> > CopyDirectoryOperation::fileList()
     Q_ASSERT(!arguments().at(0).isEmpty());
     Q_ASSERT(!arguments().at(1).isEmpty());
     if (m_fileList.isEmpty()) {
-        const QString sourcePath = arguments().at( 0 );
-        const QString targetPath = arguments().at( 1 );
+        const QString sourcePath = arguments().at(0);
+        const QString targetPath = arguments().at(1);
 
         m_fileList = generateFileList(sourcePath, targetPath);
     }
@@ -85,27 +85,23 @@ QList< QPair<QString,QString> > CopyDirectoryOperation::fileList()
 
 QList< QPair<QString,QString> > CopyDirectoryOperation::generateFileList(const QString &sourcePath, const QString &targetPath)
 {
-    Q_ASSERT( QFileInfo( sourcePath ).isDir() );
-    Q_ASSERT( !QFileInfo( targetPath ).exists() || QFileInfo( targetPath ).isDir() );
-    if ( !QDir().mkpath( targetPath ) ) {
-        qWarning() << QLatin1String("Could not create folder ") << targetPath;
+    Q_ASSERT(QFileInfo(sourcePath).isDir());
+    Q_ASSERT(!QFileInfo(targetPath).exists() || QFileInfo(targetPath).isDir());
+    if (!QDir().mkpath(targetPath)) {
+        qWarning() << QLatin1String("Could not create folder") << targetPath;
     } else {
         addDirectoryToDirectoryList(targetPath);
     }
 
 
-    QDirIterator it( sourcePath, QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden | QDir::System);
-    while( it.hasNext() )
-    {
-        const QFileInfo currentFileInfo( it.next() );
-        if( currentFileInfo.isDir() && !currentFileInfo.isSymLink() )
-        {
-            generateFileList( currentFileInfo.absoluteFilePath(), QDir( targetPath ).absoluteFilePath( currentFileInfo.fileName() ) );
-        }
-        else
-        {
+    QDirIterator it(sourcePath, QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden | QDir::System);
+    while (it.hasNext()) {
+        const QFileInfo currentFileInfo(it.next());
+        if (currentFileInfo.isDir() && !currentFileInfo.isSymLink()) {
+            generateFileList( currentFileInfo.absoluteFilePath(), QDir(targetPath).absoluteFilePath(currentFileInfo.fileName()));
+        } else {
             const QString source = currentFileInfo.absoluteFilePath();
-            const QString target = QDir( targetPath ).absoluteFilePath( currentFileInfo.fileName() );
+            const QString target = QDir(targetPath).absoluteFilePath(currentFileInfo.fileName());
             m_fileList.append(QPair<QString, QString>(source, target));
         }
     }
@@ -124,24 +120,23 @@ bool CopyDirectoryOperation::copyFilesFromInternalFileList()
         // If destination file exists, then we cannot use QFile::copy()
         // because it does not overwrite an existing file. So we remove
         // the destination file.
-        if( QFile::exists(dest) )
-        {
-            QFile file( dest );
-            if( !file.remove() ) {
-                setError( UserDefinedError );
-                setErrorString( tr("Could not remove destination file %1: %2.").arg( dest, file.errorString() ) );
+        if (QFile::exists(dest)) {
+            QFile file(dest);
+            if (!file.remove()) {
+                setError(UserDefinedError);
+                setErrorString(tr("Could not remove destination file %1: %2.").arg( dest, file.errorString()));
                 return false;
             }
         }
 
-        QFile file( source );
-        const bool copied = file.copy( dest );
-        if ( !copied ) {
-            setError( UserDefinedError );
-            setErrorString( tr("Could not copy %1 to %2: %3.").arg( source, dest, file.errorString() ) );
+        QFile file(source);
+        const bool copied = file.copy(dest);
+        if (!copied) {
+            setError(UserDefinedError);
+            setErrorString(tr("Could not copy %1 to %2: %3.").arg(source, dest, file.errorString()));
             return false;
         } else {
-            addFileToFileList( dest );
+            addFileToFileList(dest);
         }
     }
     return true;
@@ -149,14 +144,14 @@ bool CopyDirectoryOperation::copyFilesFromInternalFileList()
 
 bool CopyDirectoryOperation::removeFilesFromInternalFileList()
 {
-    const QStringList fileNameList = value( QLatin1String( "files" ) ).toStringList();
+    const QStringList fileNameList = value(QLatin1String("files")).toStringList();
 
     bool result = true;
     foreach(const QString fileName, fileNameList) {
-        result = result & deleteFileNowOrLater( fileName );
+        result = result & deleteFileNowOrLater(fileName);
     }
 
-    const QStringList directoryList = value( QLatin1String( "directories" ) ).toStringList();
+    const QStringList directoryList = value(QLatin1String("directories")).toStringList();
 
     foreach(const QString directory, directoryList) {
         QDir().rmdir(directory);
@@ -172,14 +167,14 @@ void CopyDirectoryOperation::backup()
 bool CopyDirectoryOperation::performOperation()
 {
     const QStringList args = arguments();
-    if( args.count() != 2 ) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, 2 expected.")
-                        .arg(name()).arg( args.count() ) );
+    if (args.count() != 2) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.")
+                        .arg(name()).arg( args.count()));
         return false;
     }
-    const QString sourcePath = args.at( 0 );
-    const QString targetPath = args.at( 1 );
+//    const QString sourcePath = args.at(0);
+//    const QString targetPath = args.at(1);
 
 
     typedef QList< QPair< QString, QString > > FileList;
@@ -194,28 +189,28 @@ bool CopyDirectoryOperation::performOperation()
 
 bool CopyDirectoryOperation::undoOperation()
 {
-    Q_ASSERT( arguments().count() == 2 );
+    Q_ASSERT(arguments().count() == 2);
 
-    QFuture< bool > allRemoved = QtConcurrent::run(this, &CopyDirectoryOperation::removeFilesFromInternalFileList);
+    QFuture<bool> allRemoved = QtConcurrent::run(this, &CopyDirectoryOperation::removeFilesFromInternalFileList);
     letTheUiRunTillFinished(allRemoved);
 
     return allRemoved.result();
 }
 
-void CopyDirectoryOperation::addFileToFileList( const QString& fileName )
+void CopyDirectoryOperation::addFileToFileList(const QString& fileName)
 {
-    QStringList files = value( QLatin1String( "files" ) ).toStringList();
-    files.push_front( fileName );
-    setValue( QLatin1String( "files" ), files );
-    emit outputTextChanged( fileName );
+    QStringList files = value(QLatin1String("files")).toStringList();
+    files.push_front(fileName);
+    setValue(QLatin1String("files"), files);
+    emit outputTextChanged(fileName);
 }
 
-void CopyDirectoryOperation::addDirectoryToDirectoryList( const QString& directory )
+void CopyDirectoryOperation::addDirectoryToDirectoryList(const QString& directory)
 {
-    QStringList directories = value( QLatin1String( "directories" ) ).toStringList();
-    directories.push_front( directory );
-    setValue( QLatin1String( "directories" ), directories );
-    emit outputTextChanged( directory );
+    QStringList directories = value(QLatin1String("directories")).toStringList();
+    directories.push_front(directory);
+    setValue( QLatin1String("directories"), directories);
+    emit outputTextChanged(directory);
 }
 
 bool CopyDirectoryOperation::testOperation()

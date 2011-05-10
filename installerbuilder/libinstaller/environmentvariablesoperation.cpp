@@ -137,9 +137,9 @@ UpdateOperation::Error undoSetting(const QString &regPath,
 bool EnvironmentVariableOperation::performOperation()
 {
     if (arguments().count() < 2 || arguments().count() > 4) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, 2-3 expected.")
-                        .arg(name()).arg( arguments().count() ) );
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2-3 expected.")
+                        .arg(name()).arg( arguments().count()));
         return false;
     }
 
@@ -151,8 +151,7 @@ bool EnvironmentVariableOperation::performOperation()
     isPersistent = arguments().count() >= 3 ? arguments().at(2) == QLatin1String("true") : true;
     const bool isSystemWide = arguments().count() >= 4 ? arguments().at(3) == QLatin1String("true") : false;
     QString oldvalue;
-    if (isPersistent)
-    {
+    if (isPersistent) {
         const QString regPath = isSystemWide ? QLatin1String( "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" )
                                              : QLatin1String( "HKEY_CURRENT_USER\\Environment" );
 

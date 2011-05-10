@@ -2,7 +2,7 @@
 **
 ** This file is part of Qt SDK**
 **
-** Copyright (c) 2011 Nokia Corporation and/or its subsidiary(-ies).*
+** Copyright(c) 2011 Nokia Corporation and/or its subsidiary(-ies).*
 **
 ** Contact:  Nokia Corporation qt-info@nokia.com**
 **
@@ -27,7 +27,7 @@
 ** 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** If you are unsure which license is appropriate for your use, please contact
-** (qt-info@nokia.com).
+**(qt-info@nokia.com).
 **
 **************************************************************************/
 #include "elevatedexecuteoperation.h"
@@ -45,8 +45,8 @@ using namespace QInstaller;
 class ElevatedExecuteOperation::Private
 {
 public:
-    explicit Private( ElevatedExecuteOperation* qq )
-        : q( qq ), process(0), showStandardError(false)
+    explicit Private(ElevatedExecuteOperation* qq)
+        : q(qq), process(0), showStandardError(false)
     {
     }
     ~Private()
@@ -65,10 +65,10 @@ public:
 };
 
 ElevatedExecuteOperation::ElevatedExecuteOperation()
-    : d( new Private( this ) )
+    : d(new Private(this))
 {
     // this operation has to "overwrite" the Execute operation from KDUpdater
-    setName( QLatin1String( "Execute" ) );
+    setName(QLatin1String("Execute"));
 }
 
 ElevatedExecuteOperation::~ElevatedExecuteOperation()
@@ -79,10 +79,10 @@ bool ElevatedExecuteOperation::performOperation()
 {
     // This operation receives only one argument. It is the complete
     // command line of the external program to execute.
-    if( arguments().isEmpty() )
+    if (arguments().isEmpty())
     {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %1: %2 arguments given, at least 1 expected.").arg( name(), QString::number( arguments().count() ) ) );
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %1: %2 arguments given, at least 1 expected.").arg(name(), QString::number(arguments().count())));
         return false;
     }
     QStringList args;
@@ -109,49 +109,49 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
     }
 
 
-    if ( args.last().endsWith( QLatin1String("showStandardError") ) ) {
+    if (args.last().endsWith(QLatin1String("showStandardError"))) {
         showStandardError = true;
         args.pop_back();
     }
 
     QList< int > allowedExitCodes;
     
-    QRegExp re( QLatin1String( "^\\{((-?\\d+,)*-?\\d+)\\}$" ) );
-    if( re.exactMatch( args.first() ) )
+    QRegExp re(QLatin1String("^\\{((-?\\d+,)*-?\\d+)\\}$"));
+    if (re.exactMatch(args.first()))
     {
-        const QStringList numbers = re.cap( 1 ).split( QLatin1Char( ',' ) );
-        for( QStringList::const_iterator it = numbers.constBegin(); it != numbers.constEnd(); ++it )
-            allowedExitCodes.push_back( it->toInt() );
+        const QStringList numbers = re.cap(1).split(QLatin1Char(','));
+        for(QStringList::const_iterator it = numbers.constBegin(); it != numbers.constEnd(); ++it)
+            allowedExitCodes.push_back(it->toInt());
         args.pop_front();
     }
     else
     {
-        allowedExitCodes.push_back( 0 );
+        allowedExitCodes.push_back(0);
     }
 
-    const QString callstr = args.join( QLatin1String( " " ) );
+    const QString callstr = args.join(QLatin1String(" "));
 
     // unix style: when there's an ampersand after the command, it's started detached
-    if( args.count() >= 2 && args.last() == QLatin1String( "&" ) )
+    if (args.count() >= 2 && args.last() == QLatin1String("&"))
     {
         args.pop_back();
-        const bool success = QProcess::startDetached( args.front(), args.mid( 1 ) );
-        if ( !success ) {
-            q->setError( UserDefinedError );
-            q->setErrorString( tr( "Execution failed: Could not start detached: \"%1\"" ).arg( callstr ) );
+        const bool success = QProcess::startDetached(args.front(), args.mid(1));
+        if (!success) {
+            q->setError(UserDefinedError);
+            q->setErrorString(tr("Execution failed: Could not start detached: \"%1\"").arg(callstr));
         }
         return success;
     }
 
     process = new QProcessWrapper();
     if (!workingDirectory.isEmpty()) {
-        process->setWorkingDirectory( workingDirectory );
+        process->setWorkingDirectory(workingDirectory);
         QInstaller::verbose() << " ElevatedExecuteOperation setWorkingDirectory: " << workingDirectory << std::endl;
     }
 
     QProcessEnvironment penv;
-    //there is no way to serialize a QProcessEnvironment properly other than per mangled QStringList :/ (i.e. no other way to list all keys)
-    process->setEnvironment( KDUpdater::Environment::instance()->applyTo( penv ).toStringList() );
+    //there is no way to serialize a QProcessEnvironment properly other than per mangled QStringList :/(i.e. no other way to list all keys)
+    process->setEnvironment(KDUpdater::Environment::instance()->applyTo(penv).toStringList());
     
     if (showStandardError)
         process->setProcessChannelMode(QProcess::MergedChannels);
@@ -161,19 +161,19 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
     //we still like the none blocking possibility to perform this operation without threads
     QEventLoop loop;
     if (QThread::currentThread() == qApp->thread()) {
-        QObject::connect( process, SIGNAL( finished( int, QProcess::ExitStatus ) ), &loop, SLOT( quit() ) );
+        QObject::connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
     }
     //readProcessOutput should only called from this current Thread -> Qt::DirectConnection
-    QObject::connect( process, SIGNAL( readyRead() ), q, SLOT( readProcessOutput() ), Qt::DirectConnection );
+    QObject::connect(process, SIGNAL(readyRead()), q, SLOT(readProcessOutput()), Qt::DirectConnection);
 #ifdef Q_OS_WIN
     if (args.count() == 1) {
-        process->setNativeArguments( args.front() );
+        process->setNativeArguments(args.front());
         QInstaller::verbose() << " ElevatedExecuteOperation setNativeArguments to start: " << args.front() << std::endl;
         process->start(QString(), QStringList());
     } else
 #endif
-    process->start( args.front(), args.mid( 1 ) );
-    QInstaller::verbose() << args.front() << " started, arguments: " << QStringList(args.mid( 1 )).join(QLatin1String(" ")) << std::endl;
+    process->start(args.front(), args.mid(1));
+    QInstaller::verbose() << args.front() << " started, arguments: " << QStringList(args.mid(1)).join(QLatin1String(" ")) << std::endl;
 
     bool success = false;
     //we still like the none blocking possibility to perform this operation without threads
@@ -184,11 +184,11 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
     }
 
     bool returnValue = true;
-    if ( !success )
+    if (!success)
     {
-        q->setError( UserDefinedError );
+        q->setError(UserDefinedError);
         //TODO: pass errorString() through the wrapper */
-        q->setErrorString( tr( "Execution failed: Could not start: \"%1\"" ).arg( callstr ) );
+        q->setErrorString(tr("Execution failed: Could not start: \"%1\"").arg(callstr));
         returnValue = false;
     }
 
@@ -199,19 +199,19 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
         readProcessOutput();
     }
 
-    q->setValue( QLatin1String( "ExitCode" ), process->exitCode() );
+    q->setValue(QLatin1String("ExitCode"), process->exitCode());
 
-    if ( process->exitStatus() == QProcess::CrashExit )
+    if (process->exitStatus() == QProcess::CrashExit)
     {
-        q->setError( UserDefinedError );
-        q->setErrorString( tr( "Execution failed (Crash): \"%1\"" ).arg( callstr ) );
+        q->setError(UserDefinedError);
+        q->setErrorString(tr("Execution failed(Crash): \"%1\"").arg(callstr));
         returnValue = false;
     }
 
-    if ( !allowedExitCodes.contains( process->exitCode() ) )
+    if (!allowedExitCodes.contains(process->exitCode()))
     {
-        q->setError( UserDefinedError );
-        q->setErrorString( tr( "Execution failed (Unexpected exit code: %1): \"%2\"" ).arg( QString::number( process->exitCode() ), callstr ) );
+        q->setError(UserDefinedError);
+        q->setErrorString(tr("Execution failed(Unexpected exit code: %1): \"%2\"").arg(QString::number(process->exitCode()), callstr));
         returnValue = false;
     }
 
@@ -239,9 +239,9 @@ void ElevatedExecuteOperation::Private::readProcessOutput()
         QInstaller::verbose() << Q_FUNC_INFO << QLatin1String(" can only be called from the same thread as the process is.") << std::endl;
     }
     const QByteArray output = process->readAll();
-    if( !output.isEmpty() ) {
-        QInstaller::verbose() << QString::fromLocal8Bit( output ) << std::endl;
-        emit q->outputTextChanged( QString::fromLocal8Bit( output ) );
+    if (!output.isEmpty()) {
+        QInstaller::verbose() << QString::fromLocal8Bit(output) << std::endl;
+        emit q->outputTextChanged(QString::fromLocal8Bit(output));
     }
 }
 

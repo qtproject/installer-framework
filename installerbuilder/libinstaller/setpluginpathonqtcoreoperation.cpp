@@ -46,7 +46,7 @@ QByteArray getOldValue(const QString & binaryPath)
 {
     QFileInfo fileInfo(binaryPath);
 
-    if ( !fileInfo.exists() ) {
+    if (!fileInfo.exists()) {
         verbose() << "qpatch: warning: file `" << qPrintable(binaryPath) << "' not found" << std::endl;
         return QByteArray();
     }
@@ -54,12 +54,12 @@ QByteArray getOldValue(const QString & binaryPath)
 
     QFile file(binaryPath);
     int readOpenCount = 0;
-    while (! file.open(QFile::ReadOnly) && readOpenCount < 20000) {
+    while (!file.open(QFile::ReadOnly) && readOpenCount < 20000) {
         ++readOpenCount;
         qApp->processEvents();
     }
     Q_ASSERT(file.isOpen());
-    if (! file.isOpen()) {
+    if (!file.isOpen()) {
         verbose() << "qpatch: warning: file `" << qPrintable(binaryPath) << "' can not open as ReadOnly." << std::endl;
         verbose() << file.errorString() << std::endl;
         return QByteArray();
@@ -100,10 +100,10 @@ bool SetPluginPathOnQtCoreOperation::performOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() != 2) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, exact 2 expected.")
-                        .arg(name()).arg( arguments().count() ) );
+    if (args.count() != 2) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 2 expected.")
+                        .arg(name()).arg( arguments().count()));
         return false;
     }
 
@@ -116,13 +116,13 @@ bool SetPluginPathOnQtCoreOperation::performOperation()
     }
     QStringList libraryFiles;
     #ifdef Q_OS_WIN
-        libraryFiles << QString( QLatin1String("%1/QtCore4.dll") ).arg(qtCoreLibraryDir);
-        libraryFiles << QString( QLatin1String("%1/QtCore4d.dll") ).arg(qtCoreLibraryDir);
+        libraryFiles << QString(QLatin1String("%1/QtCore4.dll")).arg(qtCoreLibraryDir);
+        libraryFiles << QString(QLatin1String("%1/QtCore4d.dll")).arg(qtCoreLibraryDir);
     #else
         libraryFiles << qtCoreLibraryDir + QLatin1String("/libQtCore.so");
     #endif
-    foreach(const QString coreLibrary, libraryFiles) {
-        if( QFile::exists(coreLibrary) ) {
+    foreach (const QString coreLibrary, libraryFiles) {
+        if (QFile::exists(coreLibrary) ) {
             QByteArray oldValue(getOldValue(coreLibrary));
             Q_ASSERT(!oldValue.isEmpty());
             oldValue = QByteArray("qt_plugpath=%1").replace("%1", oldValue);

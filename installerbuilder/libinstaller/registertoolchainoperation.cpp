@@ -79,15 +79,15 @@ bool RegisterToolChainOperation::performOperation()
     const QStringList args = arguments();
 
     if (args.count() < 4) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
-                        .arg(name()).arg( args.count() ) );
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
+            .arg(name()).arg(args.count()));
         return false;
     }
 
     const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
     if (!installer) {
-        setError( UserDefinedError );
+        setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
@@ -122,7 +122,7 @@ bool RegisterToolChainOperation::performOperation()
         // Check version:
         int version = data.value(QLatin1String(TOOLCHAIN_FILE_VERSION_KEY), 0).toInt();
         if (version < 1) {
-            setError( UserDefinedError );
+            setError(UserDefinedError);
             setErrorString(tr("Toolchain settings xml file %1 has not the right version.")
                 .arg(toolChainsXmlFilePath));
             return false;
@@ -182,9 +182,9 @@ bool RegisterToolChainOperation::undoOperation()
     const QStringList args = arguments();
 
     if (args.count() < 4) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
-                        .arg(name()).arg( args.count() ) );
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
+            .arg(name()).arg( args.count() ) );
         return false;
     }
 
@@ -192,9 +192,7 @@ bool RegisterToolChainOperation::undoOperation()
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
 
     int argCounter = 0;
-    const QString &toolChainKey = args.at(argCounter++); //Qt SDK:gccPath
     const QString &toolChainType = args.at(argCounter++); //where this toolchain is defined in QtCreator
-    const QString &displayName = args.at(argCounter++); //nice special Toolchain (Qt SDK)
     const QString &abiString = args.at(argCounter++); //x86-windows-msys-pe-32bit
     const QString &compilerPath = args.at(argCounter++); //gccPath
     QString debuggerPath;
@@ -222,7 +220,7 @@ bool RegisterToolChainOperation::undoOperation()
         // Check version:
         int version = data.value(QLatin1String(TOOLCHAIN_FILE_VERSION_KEY), 0).toInt();
         if (version < 1) {
-            setError( UserDefinedError );
+            setError(UserDefinedError);
             setErrorString(tr("Toolchain settings xml file %1 has not the right version.")
                 .arg(toolChainsXmlFilePath));
             return false;

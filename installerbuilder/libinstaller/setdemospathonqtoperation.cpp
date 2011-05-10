@@ -58,10 +58,10 @@ bool SetDemosPathOnQtOperation::performOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() != 2) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, exact 2 expected.")
-                        .arg(name()).arg( arguments().count() ) );
+    if (args.count() != 2) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 2 expected.")
+            .arg(name()).arg(arguments().count()));
         return false;
     }
 
@@ -78,30 +78,30 @@ bool SetDemosPathOnQtOperation::performOperation()
 
     if (qmakeValueHash.isEmpty())
     {
-        setError( UserDefinedError );
-        setErrorString( tr("The output of \n%1 -query\n"  \
-                           "is not parseable. Please make a bugreport with this dialog http://bugreports.qt.nokia.com.\n" \
-                           "output: \"%2\"").arg(QDir::toNativeSeparators(qmakePath), QString::fromUtf8(qmakeOutput)));
+        setError(UserDefinedError);
+        setErrorString(tr("The output of \n%1 -query\n"  \
+            "is not parseable. Please make a bugreport with this dialog http://bugreports.qt.nokia.com.\n" \
+            "output: \"%2\"").arg(QDir::toNativeSeparators(qmakePath), QString::fromUtf8(qmakeOutput)));
         return false;
     }
 
-    QByteArray oldValue = qmakeValueHash.value( QLatin1String("QT_INSTALL_DEMOS") );
+    QByteArray oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DEMOS"));
     bool oldQtPathFromQMakeIsEmpty = oldValue.isEmpty();
     if (oldQtPathFromQMakeIsEmpty) {
         verbose() << "qpatch: warning: It was not able to get the old values from " << qPrintable(qmakePath) << std::endl;
     }
 
     if (255 < newValue.size()) {
-        setError( UserDefinedError );
-        setErrorString( tr("Qt patch error: new Qt demo path(%1)\n" \
-                           "needs to be less than 255 characters.").arg(QString::fromLocal8Bit(newValue)) );
+        setError(UserDefinedError);
+        setErrorString(tr("Qt patch error: new Qt demo path(%1)\n" \
+            "needs to be less than 255 characters.").arg(QString::fromLocal8Bit(newValue)) );
         return false;
     }
 
     QString qtConfPath = qtDir + QLatin1String("/bin/qt.conf");
     if (QFile::exists(qtConfPath)) {
         QSettings settings(qtConfPath, QSettings::IniFormat);
-        settings.setValue( QLatin1String("Paths/Demos"), QString::fromUtf8(newValue));
+        settings.setValue(QLatin1String("Paths/Demos"), QString::fromUtf8(newValue));
     }
 
     oldValue = QByteArray("qt_demopath=%1").replace("%1", oldValue);
@@ -109,7 +109,8 @@ bool SetDemosPathOnQtOperation::performOperation()
 
     bool isPatched = QtPatch::patchBinaryFile(qmakePath, oldValue, newValue);
     if (!isPatched) {
-        QInstaller::verbose() << "qpatch: warning: could not patched the demo path in " << qPrintable(qmakePath) << std::endl;
+        QInstaller::verbose() << "qpatch: warning: could not patched the demo path in "
+            << qPrintable(qmakePath) << std::endl;
     }
 
     return true;

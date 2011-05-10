@@ -67,7 +67,7 @@ bool RegisterQtInCreatorV2Operation::performOperation()
     const QStringList args = arguments();
 
     if (args.count() < 2) {
-        setError( InvalidArguments );
+        setError(InvalidArguments);
         setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 2 expected.")
                         .arg(name()).arg( args.count() ) );
         return false;
@@ -75,7 +75,7 @@ bool RegisterQtInCreatorV2Operation::performOperation()
 
     const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
     if (!installer) {
-        setError( UserDefinedError );
+        setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
@@ -137,7 +137,7 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
     const QStringList args = arguments();
 
     if (args.count() < 2) {
-        setError( InvalidArguments );
+        setError(InvalidArguments);
         setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 2 expected.")
                         .arg(name()).arg( args.count() ) );
         return false;
@@ -145,7 +145,7 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
 
     const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
     if (!installer) {
-        setError( UserDefinedError );
+        setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
@@ -155,7 +155,7 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
     const QString &versionName = args.value(argCounter++);
     const QString &path = args.value(argCounter++);
     QString qmakePath = QDir(path).absolutePath();
-    if ( !qmakePath.endsWith(QLatin1String("qmake"))
+    if (!qmakePath.endsWith(QLatin1String("qmake"))
          || !qmakePath.endsWith(QLatin1String("qmake.exe")))
     {
 #if defined ( Q_OS_WIN )

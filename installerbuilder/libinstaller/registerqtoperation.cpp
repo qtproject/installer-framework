@@ -66,9 +66,9 @@ bool RegisterQtInCreatorOperation::performOperation()
     const QStringList args = arguments();
 
     if( args.count() < 3) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 3 expected.")
-                        .arg(name()).arg( args.count() ) );
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 3 expected.")
+                        .arg(name()).arg( args.count()));
         return false;
     }
 
