@@ -78,6 +78,7 @@ public:
     QString configurationFileName() const;
 
     QList<Repository> repositories() const;
+    void addRepositories(const QList<Repository> &repositories);
     void setTemporaryRepositories(const QList<Repository> &repos, bool replace);
 
     QStringList certificateFiles() const;

@@ -70,6 +70,7 @@ public:
     QString uninstallerIniFile;
     QString configurationFileName;
     QList<Repository> repositories;
+    QList<Repository> m_userRepositories;
     QStringList certificateFiles;
     QByteArray privateKey;
     QByteArray publicKey;
@@ -326,11 +327,6 @@ QString InstallerSettings::configurationFileName() const
     return d->configurationFileName;
 }
 
-QList<Repository> InstallerSettings::repositories() const
-{
-    return d->repositories;
-}
-
 QStringList InstallerSettings::certificateFiles() const
 {
     return d->certificateFiles;
@@ -344,6 +340,16 @@ QByteArray InstallerSettings::privateKey() const
 QByteArray InstallerSettings::publicKey() const
 {
     return d->publicKey;
+}
+
+QList<Repository> InstallerSettings::repositories() const
+{
+    return d->repositories + d->m_userRepositories;
+}
+
+void InstallerSettings::addRepositories(const QList<Repository> &repositories)
+{
+    d->m_userRepositories.append(repositories);
 }
 
 void InstallerSettings::setTemporaryRepositories(const QList<Repository> &repos, bool replace)

@@ -159,6 +159,7 @@ public:
     KDUpdater::Application &updaterApplication() const;
     void setUpdaterApplication(KDUpdater::Application *app);
 
+    void addRepositories(const QList<Repository> &repositories);
     void setTemporaryRepositories(const QList<Repository> &repositories, bool replace = false);
 
     Q_INVOKABLE void autoAcceptMessageBoxes();

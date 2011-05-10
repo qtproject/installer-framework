@@ -90,6 +90,22 @@ static void printUsage(bool isInstaller, const QString &productName,
     std::cerr << qPrintable(str) << std::endl;
 }
 
+static QList<Repository> repositories(const QStringList &arguments, const int index)
+{
+    QList<Repository> repoList;
+    if (index < arguments.size()) {
+        QStringList items = arguments.at(index).split(QLatin1Char(','));
+        foreach(const QString &item, items) {
+            verbose() << "Adding custom repository:" << item << std::endl;
+            Repository rep(item);
+            repoList.append(rep);
+        }
+    } else {
+        std::cerr << "No repository specified" << std::endl;
+    }
+    return repoList;
+}
+
 int main(int argc, char *argv[])
 {
     qsrand(QDateTime::currentDateTime().toTime_t());
@@ -249,23 +265,20 @@ int main(int argc, char *argv[])
             } else if (argument == QLatin1String("--addTempRepository")
                 || argument == QLatin1String("--setTempRepository")) {
                     ++i;
-                    if (i >= args.size()) {
-                        std::cerr << "No repository specified" << std::endl;
+                    QList<Repository> repoList = repositories(args, i);
+                    if (repoList.isEmpty())
                         return Installer::Failure;
-                    }
-
-                    QList<Repository> repoList;
-                    QStringList items = args.at(i).split(QLatin1Char(','));
-                    foreach(const QString &item, items) {
-                        verbose() << "Adding custom repository:" << item << std::endl;
-                        Repository rep(item);
-                        repoList.append(rep);
-                    }
 
                     // We cannot use setRemoteRepositories as that is a synchronous call which "
                     // tries to get the data from server and this isn't what we want at this point
                     const bool replace = (argument == QLatin1String("--setTempRepository"));
                     installer.setTemporaryRepositories(repoList, replace);
+            } else if (argument == QLatin1String("--addRepository")) {
+                ++i;
+                QList<Repository> repoList = repositories(args, i);
+                if (repoList.isEmpty())
+                    return Installer::Failure;
+                installer.addRepositories(repoList);
             } else if (argument == QLatin1String("--no-force-installations")) {
                 verbose() << "Use no-force-installations" << std::endl;
             } else {

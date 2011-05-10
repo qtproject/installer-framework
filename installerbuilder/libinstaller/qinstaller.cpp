@@ -972,6 +972,11 @@ bool Installer::removeWizardPageItem(Component *component, const QString &name)
     return false;
 }
 
+void Installer::addRepositories(const QList<Repository> &repositories)
+{
+    d->m_installerSettings->addRepositories(repositories);
+}
+
 /*!
     Sets additional repository for this instance of the installer or updater
     Will be removed after invoking it again
