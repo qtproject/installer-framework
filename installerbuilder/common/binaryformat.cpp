@@ -758,7 +758,7 @@ static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segm
 BinaryContent::BinaryContent(const QString &path)
     : file(new QFile(path)),
        handler(components),
-       magicmaker(0),
+       m_magicmaker(0),
        dataBlockStart(0)
 {
 }
@@ -770,26 +770,8 @@ BinaryContent::~BinaryContent()
 }
 
 /*!
-    \internal
-    Registers the Qt resources embedded in this binary.
- */
-int BinaryContent::registerEmbeddedQResources()
-{
-    if (!file->isOpen()) {
-        if (!file->open(QIODevice::ReadOnly))
-            throw Error(QObject::tr("Could not open binary %1: %2").arg(file->fileName(), file->errorString()));
-    }
-
-    foreach (const Range<qint64> &i, metadataResourceSegments)
-        mappings.push_back(addResourceFromBinary(file.data(), i));
-    return mappings.count();
-}
-
-/*!
-    \internal
-    \fn static BinaryContent BinaryContent::readFromApplicationFile()
     Reads BinaryContent stored in the current application binary.
- */
+*/
 BinaryContent BinaryContent::readFromApplicationFile()
 {
     return BinaryContent::readFromBinary(QCoreApplication::applicationFilePath());
@@ -817,14 +799,18 @@ BinaryContent BinaryContent::readFromApplicationFile()
  * quint64 offset of component index segment
  * quint64 length of component index segment
  * ------------------------------------------------------
- * quint64 offset of meta data segment 0
- * quint64 length of meta data segment 0
- * quint64 offset of meta data segment ..
- * quint64 length of meta data segment ..
- * quint64 offset of meta data segment n
- * quint64 length of meta data segment n
+ * qint64 offset of meta data segment 0
+ * qint64 length of meta data segment 0
+ * qint64 offset of meta data segment ..
+ * qint64 length of meta data segment ..
+ * qint64 offset of meta data segment n
+ * qint64 length of meta data segment n
  * ------------------------------------------------------
- * quint64 number of meta data segments
+ * operations start offest
+ * operations end
+ * quint64 embedded resource count
+ * quint64 data block size
+ * quint64 Magic marker
  * quint64 Magic cookie (0xc2 0x63 0x0a 0x1c 0x99 0xd6 0x68 0xf8)
  * <eof>
  *
@@ -887,7 +873,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
 
     operationsStart += dataBlockStart;
     //operationsEnd += dataBlockStart;
-    c.magicmaker = retrieveInt64(file);
+    c.m_magicmaker = retrieveInt64(file);
 
     const quint64 magicCookie = retrieveInt64(file);
     Q_UNUSED(magicCookie);
@@ -924,7 +910,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
             qWarning() << "Failed to load XML for operation=" << name;
         performedOperations.push(op);
     }
-    c.performedOperations = performedOperations;
+    c.m_performedOperations = performedOperations;
 
     // seek to the position of the component index
     if (!file->seek(endOfData - indexSize - resourceSectionSize - 2 * sizeof(qint64)))
@@ -947,4 +933,37 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
             verbose() << "    " << archive->name() << " (" << archive->size() << " bytes)" << std::endl;
     }
     return c;
+}
+
+
+/*!
+    Returns the magic marker found in the binary. Returns 0 if no marker has been found.
+*/
+qint64 BinaryContent::magicmaker() const
+{
+    return m_magicmaker;
+}
+
+/*!
+    Registers the Qt resources embedded in this binary.
+ */
+int BinaryContent::registerEmbeddedQResources()
+{
+    if (!file->isOpen()) {
+        if (!file->open(QIODevice::ReadOnly))
+            throw Error(QObject::tr("Could not open binary %1: %2").arg(file->fileName(), file->errorString()));
+    }
+
+    foreach (const Range<qint64> &i, metadataResourceSegments)
+        mappings.push_back(addResourceFromBinary(file.data(), i));
+    return mappings.count();
+}
+
+/*!
+    Returns the operations performed during installation. Returns an empty list if no operations are
+    performed or the binary is the installer application.
+*/
+QStack<KDUpdater::UpdateOperation*> BinaryContent::performedOperations() const
+{
+    return m_performedOperations;
 }

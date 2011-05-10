@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
         content.registerEmbeddedQResources();
 
         // instantiate the installer we are actually going to use
-        QInstaller::Installer installer(content.magicmaker, content.performedOperations);
+        QInstaller::Installer installer(content.magicmaker(), content.performedOperations());
 
         if (QInstaller::isVerbose()) {
             verbose() << "resource tree after loading the in-binary resource: " << std::endl;

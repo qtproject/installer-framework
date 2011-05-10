@@ -168,6 +168,7 @@ private:
 }
 
 namespace QInstaller {
+
 class INSTALLER_EXPORT BinaryContent
 {
     explicit BinaryContent(const QString &path);
@@ -178,17 +179,21 @@ public:
     static BinaryContent readFromApplicationFile();
     static BinaryContent readFromBinary(const QString &path);
 
+    qint64 magicmaker() const;
     int registerEmbeddedQResources();
+    QStack<KDUpdater::UpdateOperation*> performedOperations() const;
 
+private:
     QSharedPointer<QFile> file;
     QInstallerCreator::ComponentIndex components;
     QInstallerCreator::BinaryFormatEngineHandler handler;
     QVector<Range<qint64> > metadataResourceSegments;
     QVector<const uchar*> mappings;
-    qint64 magicmaker;
+    qint64 m_magicmaker;
     qint64 dataBlockStart;
-    QStack<KDUpdater::UpdateOperation*> performedOperations;
+    QStack<KDUpdater::UpdateOperation*> m_performedOperations;
 };
+
 }
 
 #endif // BINARYFORMAT_H

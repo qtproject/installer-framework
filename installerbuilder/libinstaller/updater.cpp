@@ -63,12 +63,12 @@ bool Updater::checkForUpdates()
     BinaryContent content = BinaryContent::readFromApplicationFile();
     content.registerEmbeddedQResources();
 
-    if (content.magicmaker == MagicInstallerMarker) {
+    if (content.magicmaker() == MagicInstallerMarker) {
         verbose() << tr("Impossible to use an installer to check for updates!") << std::endl;
         return false;
     }
 
-    Installer installer(content.magicmaker, content.performedOperations);
+    Installer installer(content.magicmaker(), content.performedOperations());
     installer.setUpdater();
     Installer::setVirtualComponentsVisible(true);
 
