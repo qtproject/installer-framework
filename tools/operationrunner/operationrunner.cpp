@@ -57,7 +57,9 @@ static void printUsage()
     std::cout << std::endl;
     std::cout << "operationrunner \"Execute\" \"{0,1}\" \"C:\\Windows\\System32\\cmd.exe\" \"/A\" \"/Q\" \"/C\" \"magicmaemoscript.bat\" \"showStandardError\"" << std::endl;
     std::cout << std::endl;
+    std::cout << std::endl;
     std::cout << "Note: there is an optional argument --sdktargetdir which is needed by some operations" << std::endl;
+    std::cout << std::endl;
     std::cout << "operationrunner --sdktargetdir c:\\QtSDK \"RegisterToolChain\" \"GccToolChain\" \"Qt4ProjectManager.ToolChain.GCCE\" \"GCCE 4 for Symbian targets\" \"arm-symbian-device-elf-32bit\" \"c:\\QtSDK\\Symbian\\tools\\gcce4\\bin\\arm-none-symbianelf-g++.exe\""<< std::endl;
 }
 
