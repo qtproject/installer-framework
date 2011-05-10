@@ -69,8 +69,8 @@ public:
     QString uninstallerName;
     QString uninstallerIniFile;
     QString configurationFileName;
-    QList<Repository> repositories;
-    QList<Repository> m_userRepositories;
+    QSet<Repository> m_repositories;
+    QSet<Repository> m_userRepositories;
     QStringList certificateFiles;
     QByteArray privateKey;
     QByteArray publicKey;
@@ -206,7 +206,7 @@ InstallerSettings InstallerSettings::fromFileAndPrefix(const QString &path, cons
                 if (children.at(j).toElement().tagName() == QLatin1String("Url"))
                     r.setUrl(children.at(j).toElement().text());
             }
-            s.d->repositories.append(r);
+            s.d->m_repositories.insert(r);
         }
     }
 
@@ -344,18 +344,23 @@ QByteArray InstallerSettings::publicKey() const
 
 QList<Repository> InstallerSettings::repositories() const
 {
-    return d->repositories + d->m_userRepositories;
-}
-
-void InstallerSettings::addRepositories(const QList<Repository> &repositories)
-{
-    d->m_userRepositories.append(repositories);
+    return (d->m_repositories + d->m_userRepositories).toList();
 }
 
 void InstallerSettings::setTemporaryRepositories(const QList<Repository> &repos, bool replace)
 {
     if (replace)
-        d->repositories = repos;
+        d->m_repositories = repos.toSet();
     else
-        d->repositories.append(repos);
+        d->m_repositories.unite(repos.toSet());
+}
+
+QList<Repository> InstallerSettings::userRepositories() const
+{
+    return d->m_userRepositories.toList();
+}
+
+void InstallerSettings::addUserRepositories(const QList<Repository> &repositories)
+{
+    d->m_userRepositories.unite(repositories.toSet());
 }

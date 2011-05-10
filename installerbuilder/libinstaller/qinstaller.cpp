@@ -974,7 +974,7 @@ bool Installer::removeWizardPageItem(Component *component, const QString &name)
 
 void Installer::addRepositories(const QList<Repository> &repositories)
 {
-    d->m_installerSettings->addRepositories(repositories);
+    d->m_installerSettings->addUserRepositories(repositories);
 }
 
 /*!

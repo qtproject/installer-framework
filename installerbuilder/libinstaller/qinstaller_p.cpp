@@ -470,6 +470,12 @@ void InstallerPrivate::readUninstallerIniFile(const QString &targetDir)
         m_vars.insert(it.key(), it.value().toString());
         ++it;
     }
+
+    QList<Repository> repositories;
+    const QStringList list = cfg.value(QLatin1String("Repositories")).toStringList();
+    foreach (const QString &url, list)
+        repositories.append(Repository(url));
+    m_installerSettings->addUserRepositories(repositories);
 }
 
 void InstallerPrivate::stopProcessesForUpdates(const QList<Component*> &components)
@@ -633,6 +639,12 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
             ++it;
         }
         cfg.setValue(QLatin1String("Variables"), vars);
+
+        QStringList list;
+        foreach (const Repository &repository, m_installerSettings->userRepositories())
+            list.append(repository.url().toString());
+        cfg.setValue(QLatin1String("Repositories"), list);
+
         cfg.sync();
         if (cfg.status() != QSettings::NoError) {
             const QString reason = cfg.status() == QSettings::AccessError ? tr("Access error")
