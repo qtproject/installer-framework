@@ -95,7 +95,7 @@ static QList<Repository> repositories(const QStringList &arguments, const int in
     QList<Repository> repoList;
     if (index < arguments.size()) {
         QStringList items = arguments.at(index).split(QLatin1Char(','));
-        foreach(const QString &item, items) {
+        foreach (const QString &item, items) {
             verbose() << "Adding custom repository:" << item << std::endl;
             Repository rep(item);
             repoList.append(rep);
