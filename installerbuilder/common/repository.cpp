@@ -76,4 +76,9 @@ void Repository::setUrl(const QUrl& url)
     m_url = url;
 }
 
+bool Repository::operator==(const Repository &repository) const
+{
+    return m_url == repository.m_url;
+}
+
 }

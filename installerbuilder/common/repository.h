@@ -43,9 +43,18 @@ public:
     QUrl url() const;
     void setUrl(const QUrl& url);
 
+    uint qHash(const Repository &repository);
+    bool operator==(const Repository &repository) const;
+
 private:
     QUrl m_url;
 };
+
+inline uint qHash(const Repository &repository)
+{
+    return qHash(repository.url().toString());
+}
+
 
 }   // namespace QInstaller
 
