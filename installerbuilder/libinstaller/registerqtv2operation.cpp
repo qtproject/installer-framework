@@ -80,6 +80,11 @@ bool RegisterQtInCreatorV2Operation::performOperation()
         return false;
     }
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    if (rootInstallPath.isEmpty() || !QDir(rootInstallPath).exists()) {
+        setError(UserDefinedError);
+        setErrorString(tr("The given TargetDir %1 is not a valid/existing dir.").arg(rootInstallPath));
+        return false;
+    }
 
     int argCounter = 0;
     const QString &versionName = args.value(argCounter++);

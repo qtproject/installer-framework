@@ -184,12 +184,17 @@ bool RegisterToolChainOperation::undoOperation()
     if (args.count() < 4) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
-            .arg(name()).arg( args.count() ) );
+            .arg(name()).arg(args.count()));
         return false;
     }
 
     const Installer* const installer = qVariantValue< Installer* >( value( QLatin1String( "installer" ) ) );
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    if (rootInstallPath.isEmpty() || !QDir(rootInstallPath).exists()) {
+        setError(UserDefinedError);
+        setErrorString(tr("The given TargetDir %1 is not a valid/existing dir.").arg(rootInstallPath));
+        return false;
+    }
 
     int argCounter = 0;
     const QString &toolChainType = args.at(argCounter++); //where this toolchain is defined in QtCreator
