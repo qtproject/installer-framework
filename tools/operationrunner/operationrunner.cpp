@@ -30,6 +30,10 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
+#include "fakeinstaller.h" //this should be the pseudo one next to this file
+
+#include <qinstaller.h>
+
 #include <common/errors.h>
 #include <common/utils.h>
 #include <common/repositorygen.h>
@@ -43,6 +47,7 @@
 #include <QFileInfo>
 #include <QString>
 #include <QStringList>
+#include <QDir>
 
 #include <iostream>
 
@@ -51,7 +56,23 @@ static void printUsage()
     std::cout << "Usage: " << std::endl;
     std::cout << std::endl;
     std::cout << "operationrunner \"Execute\" \"{0,1}\" \"C:\\Windows\\System32\\cmd.exe\" \"/A\" \"/Q\" \"/C\" \"magicmaemoscript.bat\" \"showStandardError\"" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Note: there is an optional argument --sdktargetdir which is needed by some operations" << std::endl;
+    std::cout << "operationrunner --sdktargetdir c:\\QtSDK \"RegisterToolChain\" \"GccToolChain\" \"Qt4ProjectManager.ToolChain.GCCE\" \"GCCE 4 for Symbian targets\" \"arm-symbian-device-elf-32bit\" \"c:\\QtSDK\\Symbian\\tools\\gcce4\\bin\\arm-none-symbianelf-g++.exe\""<< std::endl;
 }
+
+class OutputHandler : public QObject
+{
+    Q_OBJECT
+
+public slots:
+   void drawItToCommandLine(const QString &outPut)
+   {
+       std::cout << qPrintable(outPut) << std::endl;
+   }
+};
+
+
 
 int main(int argc, char **argv)
 {
@@ -67,22 +88,57 @@ int main(int argc, char **argv)
         }
         argumentList.removeFirst(); // we don't need the application name
 
+        QString sdkTargetDir;
+        int sdkTargetDirArgumentPosition = argumentList.indexOf(QRegExp("--sdktargetdir", Qt::CaseInsensitive));
+        //+1 means the needed following argument
+        if (sdkTargetDirArgumentPosition != -1 && argumentList.count() > sdkTargetDirArgumentPosition + 1) {
+            sdkTargetDir = argumentList.at(sdkTargetDirArgumentPosition + 1);
+            if (!QDir(sdkTargetDir).exists()) {
+                std::cerr << qPrintable(QString("The following argument of %1 is not an existing directory.").arg(
+                    argumentList.at(sdkTargetDirArgumentPosition))) << std::endl;
+                return 1;
+            }
+            argumentList.removeAt(sdkTargetDirArgumentPosition + 1);
+            argumentList.removeAt(sdkTargetDirArgumentPosition);
+        }
+
+
         QInstaller::init();
 
         QInstaller::setVerbose( true );
 
         QString operationName = argumentList.takeFirst();
-        KDUpdater::UpdateOperation* const operation = KDUpdater::UpdateOperationFactory::instance().create( operationName );
+        KDUpdater::UpdateOperation* const operation = KDUpdater::UpdateOperationFactory::instance().create(operationName);
         if (!operation) {
             std::cerr << "Can not find the operation: " << qPrintable(operationName) << std::endl;
             return 1;
         }
+
+        OutputHandler myOutPutHandler;
+        QObject* const operationObject = dynamic_cast<QObject*>(operation);
+        if (operationObject != 0) {
+            const QMetaObject* const mo = operationObject->metaObject();
+            if (mo->indexOfSignal(QMetaObject::normalizedSignature("outputTextChanged(QString)")) > -1) {
+                QObject::connect(operationObject, SIGNAL(outputTextChanged(QString)),
+                        &myOutPutHandler, SLOT(drawItToCommandLine(QString)));
+            }
+        }
+
+        FakeInstaller fakeInstaller;
+        fakeInstaller.setTargetDir(sdkTargetDir);
+
+        operation->setValue(QLatin1String("installer"),
+            QVariant::fromValue(static_cast<QInstaller::Installer*>(&fakeInstaller)));
+
         operation->setArguments(argumentList);
+
         bool readyPerformed = operation->performOperation();
+        std::cout << "========================================" << std::endl;
         if (readyPerformed) {
             std::cout << "Operation was succesfully performed." << std::endl;
         } else {
             std::cerr << "There was a problem while performing the operation: " << qPrintable(operation->errorString()) << std::endl;
+            std::cerr << "\tNote: if you see something like installer is null/empty then --sdktargetdir argument was missing." << std::endl;
         }
         return 0;
     } catch ( const QInstaller::Error& e ) {
@@ -90,3 +146,5 @@ int main(int argc, char **argv)
     }
     return 1;
 }
+
+#include "operationrunner.moc"

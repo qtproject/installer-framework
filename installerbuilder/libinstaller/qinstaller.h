@@ -74,7 +74,8 @@ class INSTALLER_EXPORT Installer : public QObject
     Q_ENUMS(Status WizardPage)
 
 public:
-    explicit Installer(qint64 magicmaker = 0,
+    Installer();
+    explicit Installer(qint64 magicmaker,
         const QVector<KDUpdater::UpdateOperation*> &performedOperations
             = QVector< KDUpdater::UpdateOperation*>());
     ~Installer();
@@ -99,7 +100,7 @@ public:
 
     // parameter handling
     Q_INVOKABLE void setValue(const QString &key, const QString &value);
-    Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString()) const;
+    virtual Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString()) const;
     Q_INVOKABLE bool containsValue(const QString &key) const;
 
     //a way to have global flags share able from a component script to another one

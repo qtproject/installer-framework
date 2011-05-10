@@ -369,12 +369,16 @@ static FSEngineClientHandler* createEngineClientHandler()
 
 class QInstaller::Installer::Private : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 private:
     Installer* const q;
 
 public:
+    //used by operation runner to get a fake installer,
+    //can be removed if installerbase can do what operation runner does
+    Private() : q(0), engineClientHandler(0) {}
+
     explicit Private(Installer *q, qint64 magicmaker,
         QVector<KDUpdater::UpdateOperation*> performedOperations);
     ~Private();
@@ -2210,6 +2214,12 @@ void Installer::Private::runUninstaller()
 
 // -- QInstaller
 
+//used by operation runner to get a fake installer,
+//can be removed if installerbase can do what operation runner does
+Installer::Installer()
+    : d(new Private())
+{
+}
 
 Installer::Installer(qint64 magicmaker,
         const QVector<KDUpdater::UpdateOperation*>& performedOperations)
@@ -2230,7 +2240,10 @@ Installer::~Installer()
         QInstaller::VerboseWriter::instance()->setOutputStream(logFileName);
     }
 
-    d->engineClientHandler->setActive(false);
+    //check for fake installer case
+    if (d->engineClientHandler) {
+        d->engineClientHandler->setActive(false);
+    }
     delete d;
 }
 
