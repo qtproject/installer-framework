@@ -107,6 +107,25 @@ bool SetQtCreatorValueOperation::performOperation()
 
 bool SetQtCreatorValueOperation::undoOperation()
 {
+    const QStringList args = arguments();
+
+    const QString &rootInstallPath = args.at(0); //for example "C:\\Nokia_SDK\\"
+
+    const QString &group = groupName(args.at(1));
+    const QString &key = args.at(2);
+
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
+                        QSettings::IniFormat);
+
+    if (!group.isEmpty()) {
+        settings.beginGroup(group);
+    }
+
+    settings.remove(key);
+
+    if (!group.isEmpty()) {
+        settings.endGroup();
+    }
     return true;
 }
 
