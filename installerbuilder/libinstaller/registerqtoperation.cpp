@@ -31,6 +31,7 @@
 **
 **************************************************************************/
 #include "registerqtoperation.h"
+#include "qtcreator_constants.h"
 
 #include <QString>
 #include <QFileInfo>
@@ -39,14 +40,6 @@
 #include <QDebug>
 
 using namespace QInstaller;
-
-#if defined ( Q_OS_MAC )
-    static const char *QtCreatorSettingsSuffixPath =
-        "/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini";
-#else
-    static const char *QtCreatorSettingsSuffixPath =
-        "/QtCreator/share/qtcreator/Nokia/QtCreator.ini";
-#endif
 
 RegisterQtInCreatorOperation::RegisterQtInCreatorOperation()
 {

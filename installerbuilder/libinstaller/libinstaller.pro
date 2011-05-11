@@ -94,7 +94,8 @@ HEADERS += $$PWD/qinstaller.h \
     performinstallationform.h \
     messageboxhandler.h \
     getrepositoriesmetainfojob.h \
-    licenseoperation.h
+    licenseoperation.h \
+    qtcreator_constants.h
 
 SOURCES += $$PWD/qinstaller.cpp \
     $$PWD/qinstallergui.cpp \

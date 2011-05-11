@@ -33,6 +33,7 @@
 #include "registertoolchainoperation.h"
 #include "persistentsettings.h"
 #include "qinstaller.h"
+#include "qtcreator_constants.h"
 
 #include <QString>
 #include <QFileInfo>
@@ -42,24 +43,7 @@
 
 using namespace QInstaller;
 
-//Begin - copied from Creator
 using namespace ProjectExplorer;
-
-static const char *const TOOLCHAIN_DATA_KEY = "ToolChain.";
-static const char *const TOOLCHAIN_COUNT_KEY = "ToolChain.Count";
-static const char *const TOOLCHAIN_FILE_VERSION_KEY = "Version";
-
-static const char *const ID_KEY = "ProjectExplorer.ToolChain.Id";
-static const char *const DISPLAY_NAME_KEY = "ProjectExplorer.ToolChain.DisplayName";
-//End - copied from Creator
-
-#if defined ( Q_OS_MAC )
-    static const char *ToolChainSettingsSuffixPath =
-        "/Qt Creator.app/Contents/Resources/Nokia/toolChains.xml";
-#else
-    static const char *ToolChainSettingsSuffixPath =
-        "/QtCreator/share/qtcreator/Nokia/toolChains.xml";
-#endif
 
 RegisterToolChainOperation::RegisterToolChainOperation()
 {
