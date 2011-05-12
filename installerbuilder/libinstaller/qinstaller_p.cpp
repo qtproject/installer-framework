@@ -834,27 +834,41 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         const qint64 uninstallerDataBlockStart = out.pos();
         appendData(&out, &in, resourceLength);
 
-        const qint64 opCount = 0;
         const qint64 operationsStart = out.pos();
+        const qint64 opCount = performedOperations.count();
         appendInt64(&out, opCount);
-        QFile tmp(targetDir() + QLatin1Char('/') + m_installerSettings->uninstallerName()
+
+        KDSaveFile *tmp = &out;
+        KDSaveFile operations(targetDir() + QLatin1Char('/') + m_installerSettings->uninstallerName()
             + QLatin1String(".dat"));
-        if (tmp.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            // compared to the installer we do not have component data but details about
-            // the performed operations during the installation to allow to undo them.;
-            appendInt64(&tmp, performedOperations.count());
-            foreach (KDUpdater::UpdateOperation *op, performedOperations) {
-                // the installer can't be put into XML, remove it first
-                op->clearValue(QLatin1String("installer"));
+        const bool datFileOpenend = operations.open(QIODevice::WriteOnly | QIODevice::Truncate);
+        if (datFileOpenend)
+            tmp = &operations;
 
-                appendString(&tmp, op->name());
-                appendString(&tmp, op->toXml().toString());
+        // compared to the installer we do not have component data but details about
+        // the performed operations during the installation to allow to undo them.;
+        appendInt64(tmp, performedOperations.count());
+        foreach (KDUpdater::UpdateOperation *op, performedOperations) {
+            // the installer can't be put into XML, remove it first
+            op->clearValue(QLatin1String("installer"));
 
-                // for the ui not to get blocked
-                qApp->processEvents();
-            }
-            appendInt64(&tmp, MagicCookie);
+            appendString(tmp, op->name());
+            appendString(tmp, op->toXml().toString());
+
+            // for the ui not to get blocked
+            qApp->processEvents();
         }
+
+        if (datFileOpenend) {
+            appendInt64(tmp, MagicCookie);
+            tmp->setPermissions(tmp->permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther);
+
+            if (!tmp->commit(KDSaveFile::OverwriteExistingFile)) {
+                throw Error(tr("Could not write uninstaller operations to %1: %2").arg(tmp->fileName(),
+                    tmp->errorString()));
+            }
+        }
+
         appendInt64(&out, opCount);
         const qint64 operationsEnd = out.pos();
 
