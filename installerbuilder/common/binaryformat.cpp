@@ -853,7 +853,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
 {
     BinaryContent c(path);
 
-    QFile* const file = c.file.data();
+    QFile *file = c.file.data();
 
     if (!file->open(QIODevice::ReadOnly))
         throw Error(QObject::tr("Could not open binary %1: %2").arg(path, file->errorString()));
@@ -890,27 +890,41 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
             metadataResourceLength));
     }
 
-    if (!file->seek(operationsStart))
-        throw Error(QObject::tr("Could not seek to operation list"));
+    if (c.m_magicmaker != MagicInstallerMarker) {
+        QString binaryPath = path;
+        QFileInfo fi(binaryPath + QLatin1String("/../../.."));
+        if (QFileInfo(fi.absoluteFilePath()).isBundle())
+            binaryPath = fi.absoluteFilePath();
+        fi.setFile(binaryPath);
 
-    QStack<KDUpdater::UpdateOperation*> performedOperations;
-    const qint64 operationsCount = retrieveInt64(file);
-    verbose() << "operationsCount=" << operationsCount << std::endl;
+        QFile *tmp = file;
+        QFile operations(fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat"));
+        if (operations.exists() && operations.open(QIODevice::ReadOnly)) {
+            if (findMagicCookie(&operations) >= 0) {
+                tmp = &operations;
+                operationsStart = 0;
+            }
+        }
 
-    for (int i = operationsCount; --i >= 0;) {
-        const QString name = retrieveString(file);
-        const QString xml = retrieveString(file);
-        KDUpdater::UpdateOperation* const op = KDUpdater::UpdateOperationFactory::instance().create(name);
-        QString debugXmlString(xml);
-        debugXmlString.truncate(1000);
-        verbose() << "Operation name=" << name << " xml=\n" << debugXmlString << std::endl;
-        Q_ASSERT_X(op, "BinaryContent::readFromBinary", QString::fromLatin1("Invalid operation name='%1'")
-            .arg(name).toLatin1());
-        if (! op->fromXml(xml))
-            qWarning() << "Failed to load XML for operation=" << name;
-        performedOperations.push(op);
+        if (!tmp->seek(operationsStart))
+            throw Error(QObject::tr("Could not seek to operation list"));
+
+        const qint64 operationsCount = retrieveInt64(tmp);
+        verbose() << "operationsCount=" << operationsCount << std::endl;
+
+        for (int i = 0; i < operationsCount; ++i) {
+            const QString name = retrieveString(tmp);
+            KDUpdater::UpdateOperation *op = KDUpdater::UpdateOperationFactory::instance().create(name);
+            Q_ASSERT_X(op, __FUNCTION__, QString::fromLatin1("Invalid operation name: %1").arg(name)
+                .toLatin1());
+
+            const QString xml = retrieveString(tmp);
+            if (!op->fromXml(xml))
+                qWarning() << "Failed to load XML for operation:" << name;
+            verbose() << "Operation name: " << name << "\nOperation xml:\n" << xml.leftRef(1000) << std::endl;
+            c.m_performedOperations.push(op);
+        }
     }
-    c.m_performedOperations = performedOperations;
 
     // seek to the position of the component index
     if (!file->seek(endOfData - indexSize - resourceSectionSize - 2 * sizeof(qint64)))

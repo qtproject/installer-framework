@@ -834,21 +834,28 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         const qint64 uninstallerDataBlockStart = out.pos();
         appendData(&out, &in, resourceLength);
 
-        // compared to the installer we do not have component data but details about
-        // the performed operations during the installation to allow to undo them.
+        const qint64 opCount = 0;
         const qint64 operationsStart = out.pos();
-        appendInt64(&out, performedOperations.count());
-        foreach (KDUpdater::UpdateOperation *op, performedOperations) {
-            // the installer can't be put into XML, remove it first
-            op->clearValue(QLatin1String("installer"));
+        appendInt64(&out, opCount);
+        QFile tmp(targetDir() + QLatin1Char('/') + m_installerSettings->uninstallerName()
+            + QLatin1String(".dat"));
+        if (tmp.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            // compared to the installer we do not have component data but details about
+            // the performed operations during the installation to allow to undo them.;
+            appendInt64(&tmp, performedOperations.count());
+            foreach (KDUpdater::UpdateOperation *op, performedOperations) {
+                // the installer can't be put into XML, remove it first
+                op->clearValue(QLatin1String("installer"));
 
-            appendString(&out, op->name());
-            appendString(&out, op->toXml().toString());
+                appendString(&tmp, op->name());
+                appendString(&tmp, op->toXml().toString());
 
-            // for the ui not to get blocked
-            qApp->processEvents();
+                // for the ui not to get blocked
+                qApp->processEvents();
+            }
+            appendInt64(&tmp, MagicCookie);
         }
-        appendInt64(&out, performedOperations.count());
+        appendInt64(&out, opCount);
         const qint64 operationsEnd = out.pos();
 
         // we don't save any component-indexes.
