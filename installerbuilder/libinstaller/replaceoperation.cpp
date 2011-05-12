@@ -61,9 +61,9 @@ bool ReplaceOperation::performOperation()
     // 1. filename
     // 2. Source-String
     // 3. Replace-String
-    if( args.count() != 3 ) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, 3 expected.")
+    if (args.count() != 3) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 3 expected.")
                         .arg(name()).arg( args.count() ) );
         return false;
     }
@@ -78,8 +78,8 @@ bool ReplaceOperation::performOperation()
 
     QFile file(currentFileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        setError( UserDefinedError );
-        setErrorString( QObject::tr( "Failed to open %1 for reading" ).arg( currentFileName ) );
+        setError(UserDefinedError);
+        setErrorString(QObject::tr("Failed to open %1 for reading").arg(currentFileName));
         return false;
     }
 
@@ -88,13 +88,13 @@ bool ReplaceOperation::performOperation()
     file.close();
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        setError( UserDefinedError );
-        setErrorString( QObject::tr( "Failed to open %1 for writing" ).arg( currentFileName ) );
+        setError(UserDefinedError);
+        setErrorString(QObject::tr("Failed to open %1 for writing").arg(currentFileName));
         return false;
     }
 
     //TODO: check that toAscii is right(?)
-    file.write( replacedFileContent.toLocal8Bit() );
+    file.write(replacedFileContent.toLocal8Bit());
     file.close();
 
     return true;

@@ -31,6 +31,7 @@
 **
 **************************************************************************/
 #include "registerqtoperation.h"
+#include "qtcreator_constants.h"
 
 #include <QString>
 #include <QFileInfo>
@@ -58,9 +59,9 @@ bool RegisterQtInCreatorOperation::performOperation()
     const QStringList args = arguments();
 
     if( args.count() < 3) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 3 expected.")
-                        .arg(name()).arg( args.count() ) );
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 3 expected.")
+                        .arg(name()).arg( args.count()));
         return false;
     }
 
@@ -86,15 +87,8 @@ bool RegisterQtInCreatorOperation::performOperation()
     if (args.count() >= 9)
         sbsPath = args.at(8);
 
-#if defined ( Q_OS_MAC )
-    QSettings settings( QString( QLatin1String("%1/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini")
-                                 ).arg(rootInstallPath),
-                         QSettings::IniFormat );
-#else
-    QSettings settings( QString( QLatin1String("%1/QtCreator/share/qtcreator/Nokia/QtCreator.ini")
-                                ).arg(rootInstallPath),
-                        QSettings::IniFormat );
-#endif
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
+                        QSettings::IniFormat);
 
     QString newVersions;
     QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")

@@ -31,6 +31,7 @@
 **
 **************************************************************************/
 #include "setqtcreatorvalueoperation.h"
+#include "qtcreator_constants.h"
 
 #include <QString>
 #include <QFileInfo>
@@ -56,7 +57,7 @@ void SetQtCreatorValueOperation::backup()
 namespace {
     QString groupName(const QString & groupName)
     {
-        if(groupName == QLatin1String("General")) {
+        if (groupName == QLatin1String("General")) {
             return QString();
         } else {
             return groupName;
@@ -68,10 +69,10 @@ bool SetQtCreatorValueOperation::performOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() != 4) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, exact 4 expected(rootInstallPath,group,key,value).")
-                        .arg(name()).arg( arguments().count() ) );
+    if (args.count() != 4) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 4 expected(rootInstallPath,group,key,value).")
+                        .arg(name()).arg( arguments().count()));
         return false;
     }
 
@@ -81,22 +82,16 @@ bool SetQtCreatorValueOperation::performOperation()
     const QString &key = args.at(2);
     const QString &value = args.at(3);
 
-#if defined(Q_OS_MAC)
-    QString iniFileLocation = QLatin1String("%1/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini");
-#else
-    QString iniFileLocation = QLatin1String("%1/QtCreator/share/qtcreator/Nokia/QtCreator.ini");
-#endif
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
+                        QSettings::IniFormat);
 
-    QSettings settings( iniFileLocation.arg(rootInstallPath),
-                        QSettings::IniFormat );
-
-    if(!group.isEmpty()) {
+    if (!group.isEmpty()) {
         settings.beginGroup(group);
     }
 
     settings.setValue(key, value);
 
-    if(!group.isEmpty()) {
+    if (!group.isEmpty()) {
         settings.endGroup();
     }
 
@@ -105,6 +100,25 @@ bool SetQtCreatorValueOperation::performOperation()
 
 bool SetQtCreatorValueOperation::undoOperation()
 {
+    const QStringList args = arguments();
+
+    const QString &rootInstallPath = args.at(0); //for example "C:\\Nokia_SDK\\"
+
+    const QString &group = groupName(args.at(1));
+    const QString &key = args.at(2);
+
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
+                        QSettings::IniFormat);
+
+    if (!group.isEmpty()) {
+        settings.beginGroup(group);
+    }
+
+    settings.remove(key);
+
+    if (!group.isEmpty()) {
+        settings.endGroup();
+    }
     return true;
 }
 

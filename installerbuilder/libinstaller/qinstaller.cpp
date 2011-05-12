@@ -252,7 +252,6 @@ QString QInstaller::uncaughtExceptionString(QScriptEngine *scriptEngine/*, const
   Non-existing page - this value has to be used if you want to insert a page after \a InstallationFinished
  */
 
-
 KDUpdater::Application& Installer::updaterApplication() const
 {
     return *d->m_app;
@@ -553,6 +552,15 @@ bool Installer::isFileExtensionRegistered(const QString& extension) const
 
 // -- QInstaller
 
+/*!
+    Used by operation runner to get a fake installer, can be removed if installerbase can do what operation
+    runner does.
+*/
+Installer::Installer()
+    : d(new InstallerPrivate())
+{
+}
+
 Installer::Installer(qint64 magicmaker,
         const QVector<KDUpdater::UpdateOperation*>& performedOperations)
     : d(new InstallerPrivate(this, magicmaker, performedOperations))
@@ -572,7 +580,10 @@ Installer::~Installer()
         QInstaller::VerboseWriter::instance()->setOutputStream(logFileName);
     }
 
-    d->m_FSEngineClientHandler->setActive(false);
+    // check for fake installer case
+    if (d->m_FSEngineClientHandler)
+        d->m_FSEngineClientHandler->setActive(false);
+
     delete d;
 }
 

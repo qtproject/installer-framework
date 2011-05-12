@@ -68,6 +68,7 @@ public:
         Undo
     };
 
+    InstallerPrivate();
     explicit InstallerPrivate(Installer *q, qint64 magicInstallerMaker,
         const QVector<KDUpdater::UpdateOperation*> &performedOperations);
     ~InstallerPrivate();

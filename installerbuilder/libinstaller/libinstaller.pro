@@ -90,7 +90,8 @@ HEADERS += $$PWD/qinstaller.h \
     messageboxhandler.h \
     getrepositoriesmetainfojob.h \
     licenseoperation.h \
-    qinstallercomponent_p.h
+    qinstallercomponent_p.h \
+    qtcreator_constants.h
 
 SOURCES += $$PWD/qinstaller.cpp \
     $$PWD/qinstaller_p.cpp \

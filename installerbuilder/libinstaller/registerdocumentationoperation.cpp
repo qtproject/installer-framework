@@ -89,10 +89,10 @@ bool RegisterDocumentationOperation::performOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() != 1 ) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, 1 expected.")
-                        .arg(name()).arg( args.count() ) );
+    if (args.count() != 1) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 1 expected.")
+                        .arg(name()).arg( args.count()));
         return false;
     }
     const QString helpFile = args.at(0);
@@ -106,8 +106,8 @@ bool RegisterDocumentationOperation::performOperation()
     const QString collectionFile = settingsDir.absolutePath() + QLatin1String("/helpcollection.qhc");
     qDebug() << "collectionFile: " << collectionFile;
 
-    if ( !QFileInfo( helpFile ).exists() ) {
-        setError ( UserDefinedError );
+    if (!QFileInfo( helpFile ).exists()) {
+        setError(UserDefinedError);
         setErrorString( tr("Could not register help file %1: File not found.").arg( helpFile ) );
         return false;
     }
@@ -131,7 +131,7 @@ bool RegisterDocumentationOperation::undoOperation()
         settingsDir.mkpath(settingsDir.absolutePath());
     const QString collectionFile = settingsDir.absolutePath() + QLatin1String("/helpcollection.qhc");
 
-    if ( !QFileInfo( helpFile ).exists() ) {
+    if (!QFileInfo( helpFile ).exists()) {
         setError ( UserDefinedError );
         setErrorString( tr("Could not unregister help file %1: File not found.").arg( helpFile ) );
         return false;

@@ -33,6 +33,7 @@
 #include "registertoolchainoperation.h"
 #include "persistentsettings.h"
 #include "qinstaller.h"
+#include "qtcreator_constants.h"
 
 #include <QString>
 #include <QFileInfo>
@@ -42,24 +43,7 @@
 
 using namespace QInstaller;
 
-//Begin - copied from Creator
 using namespace ProjectExplorer;
-
-static const char *const TOOLCHAIN_DATA_KEY = "ToolChain.";
-static const char *const TOOLCHAIN_COUNT_KEY = "ToolChain.Count";
-static const char *const TOOLCHAIN_FILE_VERSION_KEY = "Version";
-
-static const char *const ID_KEY = "ProjectExplorer.ToolChain.Id";
-static const char *const DISPLAY_NAME_KEY = "ProjectExplorer.ToolChain.DisplayName";
-//End - copied from Creator
-
-#if defined ( Q_OS_MAC )
-    static const char *ToolChainSettingsSuffixPath =
-        "/Qt Creator.app/Contents/Resources/Nokia/toolChains.xml";
-#else
-    static const char *ToolChainSettingsSuffixPath =
-        "/QtCreator/share/qtcreator/Nokia/toolChains.xml";
-#endif
 
 RegisterToolChainOperation::RegisterToolChainOperation()
 {
@@ -79,13 +63,18 @@ bool RegisterToolChainOperation::performOperation()
     const QStringList args = arguments();
 
     if (args.count() < 4) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
-                        .arg(name()).arg( args.count() ) );
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
+            .arg(name()).arg(args.count()));
         return false;
     }
 
-    const Installer* const installer = qVariantValue<Installer*>( value(QLatin1String("installer")));
+    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+    if (!installer) {
+        setError(UserDefinedError);
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
 
     int argCounter = 0;
@@ -117,7 +106,7 @@ bool RegisterToolChainOperation::performOperation()
         // Check version:
         int version = data.value(QLatin1String(TOOLCHAIN_FILE_VERSION_KEY), 0).toInt();
         if (version < 1) {
-            setError( UserDefinedError );
+            setError(UserDefinedError);
             setErrorString(tr("Toolchain settings xml file %1 has not the right version.")
                 .arg(toolChainsXmlFilePath));
             return false;
@@ -177,14 +166,19 @@ bool RegisterToolChainOperation::undoOperation()
     const QStringList args = arguments();
 
     if (args.count() < 4) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
-                        .arg(name()).arg( args.count() ) );
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
+            .arg(name()).arg(args.count()));
         return false;
     }
 
     const Installer* const installer = qVariantValue< Installer* >( value( QLatin1String( "installer" ) ) );
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    if (rootInstallPath.isEmpty() || !QDir(rootInstallPath).exists()) {
+        setError(UserDefinedError);
+        setErrorString(tr("The given TargetDir %1 is not a valid/existing dir.").arg(rootInstallPath));
+        return false;
+    }
 
     int argCounter = 0;
     const QString &toolChainKey = args.at(argCounter++); //Qt SDK:gccPath
@@ -219,7 +213,7 @@ bool RegisterToolChainOperation::undoOperation()
         // Check version:
         int version = data.value(QLatin1String(TOOLCHAIN_FILE_VERSION_KEY), 0).toInt();
         if (version < 1) {
-            setError( UserDefinedError );
+            setError(UserDefinedError);
             setErrorString(tr("Toolchain settings xml file %1 has not the right version.")
                 .arg(toolChainsXmlFilePath));
             return false;

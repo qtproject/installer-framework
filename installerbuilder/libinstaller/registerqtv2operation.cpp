@@ -32,6 +32,7 @@
 **************************************************************************/
 #include "registerqtv2operation.h"
 #include "qinstaller.h"
+#include "qtcreator_constants.h"
 
 #include <QString>
 #include <QFileInfo>
@@ -40,14 +41,6 @@
 #include <QDebug>
 
 using namespace QInstaller;
-
-#if defined ( Q_OS_MAC )
-    static const char *QtCreatorSettingsSuffixPath =
-        "/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini";
-#else
-    static const char *QtCreatorSettingsSuffixPath =
-        "/QtCreator/share/qtcreator/Nokia/QtCreator.ini";
-#endif
 
 RegisterQtInCreatorV2Operation::RegisterQtInCreatorV2Operation()
 {
@@ -66,15 +59,25 @@ bool RegisterQtInCreatorV2Operation::performOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() < 2) {
-        setError( InvalidArguments );
+    if (args.count() < 2) {
+        setError(InvalidArguments);
         setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 2 expected.")
                         .arg(name()).arg( args.count() ) );
         return false;
     }
 
-    const Installer* const installer = qVariantValue< Installer* >( value( QLatin1String( "installer" ) ) );
+    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+    if (!installer) {
+        setError(UserDefinedError);
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    if (rootInstallPath.isEmpty() || !QDir(rootInstallPath).exists()) {
+        setError(UserDefinedError);
+        setErrorString(tr("The given TargetDir %1 is not a valid/existing dir.").arg(rootInstallPath));
+        return false;
+    }
 
     int argCounter = 0;
     const QString &versionName = args.value(argCounter++);
@@ -132,20 +135,25 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
     const QStringList args = arguments();
 
     if (args.count() < 2) {
-        setError( InvalidArguments );
+        setError(InvalidArguments);
         setErrorString( tr("Invalid arguments in %0: %1 arguments given, minimum 2 expected.")
                         .arg(name()).arg( args.count() ) );
         return false;
     }
 
-    const Installer* const installer = qVariantValue< Installer* >( value( QLatin1String( "installer" ) ) );
+    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+    if (!installer) {
+        setError(UserDefinedError);
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
 
     int argCounter = 0;
     const QString &versionName = args.value(argCounter++);
     const QString &path = args.value(argCounter++);
     QString qmakePath = QDir(path).absolutePath();
-    if ( !qmakePath.endsWith(QLatin1String("qmake"))
+    if (!qmakePath.endsWith(QLatin1String("qmake"))
          || !qmakePath.endsWith(QLatin1String("qmake.exe")))
     {
 #if defined ( Q_OS_WIN )

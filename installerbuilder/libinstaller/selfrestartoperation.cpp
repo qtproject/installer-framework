@@ -39,7 +39,7 @@ using namespace QInstaller;
 
 SelfRestartOperation::SelfRestartOperation()
 {
-    setName( QLatin1String( "SelfRestart" ) );
+    setName(QLatin1String("SelfRestart"));
 }
 
 SelfRestartOperation::~SelfRestartOperation()
@@ -48,31 +48,36 @@ SelfRestartOperation::~SelfRestartOperation()
 
 void SelfRestartOperation::backup()
 {
-    setValue( QLatin1String( "PreviousSelfRestart" ), KDSelfRestarter::restartOnQuit() );
+    setValue(QLatin1String("PreviousSelfRestart"), KDSelfRestarter::restartOnQuit());
 }
 
 bool SelfRestartOperation::performOperation()
 {
-    const Installer* const installer = qVariantValue< Installer* >( value( QLatin1String( "installer" ) ) );
-    if(!installer->isUpdater() && !installer->isPackageManager()) {
+    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+    if (!installer) {
         setError(UserDefinedError);
-        setErrorString (tr("Self Restart: Only valid within updater or packagemanager mode."));
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
 
-    if( !arguments().isEmpty() )
-    {
-        setError( InvalidArguments );
-        setErrorString( tr("Self Restart: Invalid arguments") );
+    if(!installer->isUpdater() && !installer->isPackageManager()) {
+        setError(UserDefinedError);
+        setErrorString(tr("Self Restart: Only valid within updater or packagemanager mode."));
         return false;
     }
-    KDSelfRestarter::setRestartOnQuit( true );
+
+    if (!arguments().isEmpty()) {
+        setError(InvalidArguments);
+        setErrorString(tr("Self Restart: Invalid arguments"));
+        return false;
+    }
+    KDSelfRestarter::setRestartOnQuit(true);
     return KDSelfRestarter::restartOnQuit();
 }
 
 bool SelfRestartOperation::undoOperation()
 {
-    KDSelfRestarter::setRestartOnQuit( value( QLatin1String( "PreviousSelfRestart" ) ).toBool() );
+    KDSelfRestarter::setRestartOnQuit(value(QLatin1String("PreviousSelfRestart")).toBool());
     return true;
 }
 

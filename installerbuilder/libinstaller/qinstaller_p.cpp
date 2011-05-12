@@ -175,6 +175,14 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 // -- InstallerPrivate
 
+InstallerPrivate::InstallerPrivate()
+    : m_tempDirDeleter(0)
+    , m_installerSettings(0)
+    , m_FSEngineClientHandler(0)
+    , q(0)
+{
+}
+
 InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMaker,
         const QVector<KDUpdater::UpdateOperation*> &performedOperations)
     : m_app(0)

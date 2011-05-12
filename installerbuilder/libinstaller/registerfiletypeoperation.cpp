@@ -60,10 +60,9 @@ bool RegisterFileTypeOperation::performOperation()
     // (content type)
     // (icon)
 #ifdef Q_WS_WIN
-    if( arguments().count() < 2 || arguments().count() > 5 )
-    {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0").arg(name()) );
+    if (arguments().count() < 2 || arguments().count() > 5) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0").arg(name()));
         return false;
     }
     const QString extension = arguments()[ 0 ];
@@ -75,46 +74,44 @@ bool RegisterFileTypeOperation::performOperation()
     const QString settingsPrefix = QString::fromLatin1( "Software/Classes/" );
     
     //QSettings settings( QLatin1String( "HKEY_CLASSES_ROOT" ), QSettings::NativeFormat );
-    QSettings settings( QLatin1String( "HKEY_CURRENT_USER" ), QSettings::NativeFormat );
+    QSettings settings(QLatin1String("HKEY_CURRENT_USER"), QSettings::NativeFormat);
     // first backup the old values
-    setValue( QLatin1String( "oldClass" ), settings.value( QString::fromLatin1( "%1.%2/Default" ).arg( settingsPrefix, extension ) ) );
-    setValue( QLatin1String( "oldContentType" ), settings.value( QString::fromLatin1( "%1.%2/Content Type" ).arg( settingsPrefix, extension ) ) );
+    setValue(QLatin1String("oldClass"), settings.value(QString::fromLatin1("%1.%2/Default").arg(settingsPrefix, extension)));
+    setValue(QLatin1String("oldContentType"), settings.value(QString::fromLatin1("%1.%2/Content Type").arg(settingsPrefix, extension)));
 
     // the file extension was not yet registered. Let's do so now
-    settings.setValue( QString::fromLatin1( "%1.%2/Default" ).arg( settingsPrefix, extension ),
-                       className );
+    settings.setValue(QString::fromLatin1("%1.%2/Default").arg(settingsPrefix, extension), className);
 
     // register the content type, if given
-    if( !contentType.isEmpty() )
-        settings.setValue( QString::fromLatin1( "%1.%2/Content Type" ).arg( settingsPrefix, extension ),
-                           contentType );
+    if (!contentType.isEmpty())
+        settings.setValue(QString::fromLatin1("%1.%2/Content Type").arg(settingsPrefix, extension), contentType);
 
     //const QString className = settings.value( QString::fromLatin1( ".%1/Default" ).arg( extension ) ).toString();
     //const QString oldClassName = value( QString::fromLatin1( ".%1/Default" ).arg( extension ) ).toString();
-    setValue( QLatin1String( "className" ), className );
+    setValue(QLatin1String("className"), className);
 
 //    setValue( QLatin1String( "oldDescription" ), settings.value( QString::fromLatin1( "%1/Default" ).arg( oldClassName ) ) );
 //    setValue( QLatin1String( "oldIcon" ), settings.value( QString::fromLatin1( "%1/DefaultIcon/Default" ).arg( oldClassName ) ) );
 //    setValue( QLatin1String( "oldCommand" ), settings.value( QString::fromLatin1( "%1/shell/Open/Command/Default" ).arg( oldClassName ) ) );
 
     // register the description, if given
-    if( !description.isEmpty() )
-        settings.setValue( QString::fromLatin1( "%1%2/Default" ).arg( settingsPrefix, className ),
-                           description );
+    if (!description.isEmpty())
+        settings.setValue(QString::fromLatin1("%1%2/Default").arg(settingsPrefix, className), description);
 
     // register the icon, if given
-    if( !icon.isEmpty() )
-        settings.setValue( QString::fromLatin1( "%1%2/DefaultIcon/Default" ).arg( settingsPrefix, className ),
-                           icon );
+    if (!icon.isEmpty()) {
+        settings.setValue(QString::fromLatin1("%1%2/DefaultIcon/Default").arg(settingsPrefix,
+            className), icon);
+    }
 
     // register the command to open the file
-    settings.setValue( QString::fromLatin1( "%1%2/shell/Open/Command/Default" ).arg( settingsPrefix, className ),
-                       command );
+    settings.setValue(QString::fromLatin1("%1%2/shell/Open/Command/Default").arg(settingsPrefix,
+        className), command );
 
     return true;
 #else
-    setError( UserDefinedError );
-    setErrorString( QObject::tr( "Registering file types in only supported on Windows." ) );
+    setError(UserDefinedError);
+    setErrorString(QObject::tr("Registering file types in only supported on Windows."));
     return false;
 #endif
 }
@@ -127,61 +124,65 @@ bool RegisterFileTypeOperation::undoOperation()
     // (content type)
     // (icon)
 #ifdef Q_WS_WIN
-    if( arguments().count() < 2 || arguments().count() > 5 )
-    {
-        setErrorString( tr("Register File Type: Invalid arguments") );
+    if (arguments().count() < 2 || arguments().count() > 5) {
+        setErrorString(tr("Register File Type: Invalid arguments"));
         return false;
     }
-    const QString extension = arguments()[ 0 ];
-    const QString command = arguments()[ 1 ];
-    const QString description = arguments().count() > 2 ? arguments()[ 2 ] : QString(); // optional
-    const QString contentType = arguments().count() > 3 ? arguments()[ 3 ] : QString(); // optional
-    const QString icon = arguments().count() > 4 ? arguments()[ 4 ] : QString(); // optional
-    const QString className = QString::fromLatin1( "%1_auto_file" ).arg( extension );
-    const QString settingsPrefix = QString::fromLatin1( "Software/Classes/" );
+    const QString extension = arguments()[0];
+    const QString command = arguments()[1];
+    const QString description = arguments().count() > 2 ? arguments()[2] : QString(); // optional
+    const QString contentType = arguments().count() > 3 ? arguments()[3] : QString(); // optional
+    const QString icon = arguments().count() > 4 ? arguments()[4] : QString(); // optional
+    const QString className = QString::fromLatin1("%1_auto_file").arg(extension);
+    const QString settingsPrefix = QString::fromLatin1("Software/Classes/");
     
-    QSettings settings( QLatin1String( "HKEY_CURRENT_USER" ), QSettings::NativeFormat );
+    QSettings settings(QLatin1String("HKEY_CURRENT_USER"), QSettings::NativeFormat);
 
-    const QString restoredClassName = value( QLatin1String( "oldClassName" ) ).toString();
+    const QString restoredClassName = value(QLatin1String("oldClassName")).toString();
     // register the command to open the file
-    if( settings.value( QString::fromLatin1( "%1%2/shell/Open/Command/Default" ).arg( settingsPrefix, className ) ).toString() != command )
+    if (settings.value(QString::fromLatin1("%1%2/shell/Open/Command/Default").arg(settingsPrefix, className)).toString() != command)
         return false;
-    if( settings.value( QString::fromLatin1( "%1%2/DefaultIcon/Default" ).arg( settingsPrefix, className ) ).toString() != icon )
+    if (settings.value(QString::fromLatin1("%1%2/DefaultIcon/Default").arg(settingsPrefix, className)).toString() != icon)
         return false;
-    if( settings.value( QString::fromLatin1( "%1%2/Default" ).arg( settingsPrefix, className ) ).toString() != description )
+    if (settings.value(QString::fromLatin1("%1%2/Default").arg(settingsPrefix, className)).toString() != description)
         return false;
-    if( settings.value( QString::fromLatin1( "%1.%2/Content Type" ).arg( settingsPrefix, extension ) ).toString() != contentType )
+    if (settings.value(QString::fromLatin1("%1.%2/Content Type").arg(settingsPrefix, extension)).toString() != contentType)
         return false;
-    if( settings.value( QString::fromLatin1( "%1.%2/Default" ).arg( settingsPrefix, extension ) ).toString() !=  className )
+    if (settings.value(QString::fromLatin1("%1.%2/Default").arg(settingsPrefix, extension)).toString() !=  className)
         return false;
 
-    const QVariant oldCommand = value( QLatin1String( "oldCommand" ) );
-    if( !oldCommand.isNull() )
-        settings.setValue( QString::fromLatin1( "%1%2/shell/Open/Command/Default" ).arg( settingsPrefix, restoredClassName ),
-                           oldCommand );
-    else
-        settings.remove( QString::fromLatin1( "%1%2/shell/Open/Command/Default" ).arg( settingsPrefix, className ) );
+    const QVariant oldCommand = value(QLatin1String("oldCommand"));
+    if (!oldCommand.isNull()) {
+        settings.setValue(QString::fromLatin1("%1%2/shell/Open/Command/Default").arg(settingsPrefix,
+            restoredClassName ), oldCommand);
+    } else {
+        settings.remove(QString::fromLatin1("%1%2/shell/Open/Command/Default").arg(settingsPrefix,
+            className));
+    }
 
     // register the icon, if given
 
-    const QVariant oldIcon = value( QLatin1String( "oldIcon" ) );
-    if( !oldIcon.isNull() )
-        settings.setValue( QString::fromLatin1( "%1%2/DefaultIcon/Default" ).arg( settingsPrefix, restoredClassName ),
-                           oldIcon );
-    else
-        settings.remove( QString::fromLatin1( "%1%2/DefaultIcon/Default" ).arg( settingsPrefix, className ) );
+    const QVariant oldIcon = value(QLatin1String("oldIcon"));
+    if (!oldIcon.isNull()) {
+        settings.setValue(QString::fromLatin1("%1%2/DefaultIcon/Default").arg( settingsPrefix,
+            restoredClassName), oldIcon);
+    } else {
+        settings.remove(QString::fromLatin1("%1%2/DefaultIcon/Default").arg(settingsPrefix,
+            className));
+    }
 
     // register the description, if given
 
-    const QVariant oldDescription = value( QLatin1String( "oldDescription" ) );
-    if( !oldDescription.isNull() )
-        settings.setValue( QString::fromLatin1( "%1%2/Default" ).arg( settingsPrefix, restoredClassName ),
-                           oldDescription );
-    else
-        settings.remove( QString::fromLatin1( "%1%2/Default" ).arg( settingsPrefix, className ) );
+    const QVariant oldDescription = value(QLatin1String("oldDescription"));
+    if (!oldDescription.isNull()) {
+        settings.setValue(QString::fromLatin1("%1%2/Default").arg(settingsPrefix, restoredClassName),
+            oldDescription );
+    } else {
+        settings.remove(QString::fromLatin1("%1%2/Default").arg(settingsPrefix, className));
+    }
 
     // content type
-    settings.remove( QString::fromLatin1( "%1%2" ).arg( settingsPrefix, className ) );
+    settings.remove(QString::fromLatin1("%1%2").arg(settingsPrefix, className));
 
     const QVariant oldContentType = value( QLatin1String( "oldContentType" ) );
     if( !oldContentType.isNull() )
