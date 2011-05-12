@@ -854,7 +854,6 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
     BinaryContent c(path);
 
     QFile *file = c.file.data();
-
     if (!file->open(QIODevice::ReadOnly))
         throw Error(QObject::tr("Could not open binary %1: %2").arg(path, file->errorString()));
 
@@ -865,29 +864,28 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
     if (!file->seek(endOfData - indexSize))
         throw Error(QObject::tr("Could not seek to binary layout section"));
 
+    // fetch all file positions to read the data stored after the actual binary
     qint64 operationsStart = retrieveInt64(file);
-    /*qint64 operationsEnd = */ retrieveInt64(file); // don't care
-    const qint64 count = retrieveInt64(file);
+    const qint64 operationsEnd = retrieveInt64(file);
+    const qint64 resourceCount = retrieveInt64(file);
     const qint64 dataBlockSize = retrieveInt64(file);
-    const qint64 dataBlockStart = endOfData - dataBlockSize;
-
-    operationsStart += dataBlockStart;
-    //operationsEnd += dataBlockStart;
     c.m_magicmaker = retrieveInt64(file);
-
     const quint64 magicCookie = retrieveInt64(file);
-    Q_UNUSED(magicCookie);
+
+    Q_UNUSED(magicCookie)
+    Q_UNUSED(operationsEnd)
     Q_ASSERT(magicCookie == MagicCookie);
 
-    const qint64 resourceSectionSize = 2 * sizeof(qint64) * count;
-    for (int i = 0; i < count; ++i) {
+    const qint64 dataBlockStart = endOfData - dataBlockSize;
+    const qint64 resourceSectionSize = 2 * sizeof(qint64) * resourceCount;
+    for (int i = 0; i < resourceCount; ++i) {
         if (!file->seek(endOfData - indexSize - 2 * sizeof(qint64) * (i + 1)))
             throw Error(QObject::tr("Could not seek to metadata index"));
 
-        const qint64 metadataResourceOffset = retrieveInt64(file) + dataBlockStart;
+        const qint64 metadataResourceOffset = retrieveInt64(file);
         const qint64 metadataResourceLength = retrieveInt64(file);
-        c.metadataResourceSegments.push_back(Range<qint64>::fromStartAndLength(metadataResourceOffset,
-            metadataResourceLength));
+        c.metadataResourceSegments.push_back(Range<qint64>::fromStartAndLength(metadataResourceOffset
+             + dataBlockStart, metadataResourceLength));
     }
 
     if (c.m_magicmaker != MagicInstallerMarker) {
@@ -898,6 +896,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
         fi.setFile(binaryPath);
 
         QFile *tmp = file;
+        operationsStart += dataBlockStart;
         QFile operations(fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat"));
         if (operations.exists() && operations.open(QIODevice::ReadOnly)) {
             if (findMagicCookie(&operations) >= 0) {
@@ -937,14 +936,18 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
     c.components = QInstallerCreator::ComponentIndex::read(file, dataBlockStart);
     c.handler.setComponentIndex(c.components);
 
-    const QVector<QInstallerCreator::Component> components = c.components.components();
-    verbose() << "components loaded:" << components.count() << std::endl;
-    foreach (const QInstallerCreator::Component &component, components) {
-        verbose() << "loaded " << component.name();
-        const QVector<QSharedPointer<Archive> > archives = component.archives();
-        verbose() << "  having " << archives.count() << " archives:" << std::endl;
-        foreach (const QSharedPointer<Archive> &archive, archives)
-            verbose() << "    " << archive->name() << " (" << archive->size() << " bytes)" << std::endl;
+    if (isVerbose()) {
+        const QVector<QInstallerCreator::Component> components = c.components.components();
+        verbose() << "Number of components loaded: " << components.count() << std::endl;
+        foreach (const QInstallerCreator::Component &component, components) {
+            const QVector<QSharedPointer<Archive> > archives = component.archives();
+            verbose() << "Loaded component " << component.name() << " containing " << archives.count()
+                << " archives:" << std::endl;
+            foreach (const QSharedPointer<Archive> &archive, archives) {
+                verbose() << "    Archive name: " << archive->name() << ", Archive size: "
+                    << archive->size() << " bytes" << std::endl;
+            }
+        }
     }
     return c;
 }
