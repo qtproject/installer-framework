@@ -83,6 +83,7 @@ namespace QInstaller
         inline VerboseWriter &operator<<(std::string &t) { stdverbose() << t; stream << QString::fromStdString(t); return *this; }
         inline VerboseWriter &operator<<(const QByteArray &t) { stdverbose() << t; stream << t; return *this; }
         inline VerboseWriter &operator<<(const QString &t) { stdverbose() << t; stream << t; return *this; }
+        inline VerboseWriter &operator<<(const QStringRef &t) { return verbose() << t.toString(); }
         inline VerboseWriter &operator<<(const QLatin1String &t) { stdverbose() << t; stream << t; return *this; }
         inline VerboseWriter &operator<<(const char *t) { stdverbose() << t; stream << t; return *this; }
         inline VerboseWriter &operator<<(const QUrl &t) { return verbose() << t.toString(); }
