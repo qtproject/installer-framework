@@ -100,22 +100,46 @@ bool TargetDirectoryPageImpl::validatePage()
 {
     if ( !isVisible() )
         return true;
+    const QDir dir( targetDir() );
+
     if (targetDir().isEmpty()) {
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                                     QLatin1String("forbiddenTargetDirectory"), tr("Error"),
-                                    tr( "The install directory cannot be empty, please specify a valid folder"),
+                                    tr( "The install directory cannot be empty, please specify a valid folder."),
                                     QMessageBox::Ok);
         return false;
     }
+    if (dir.isRelative()) {
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+                                    QLatin1String("forbiddenTargetDirectory"), tr("Error"),
+                                    tr( "The install directory cannot be relative, please specify an absolute path."),
+                                    QMessageBox::Ok);
+        return false;
+    }
+
+    QString checkString;
+#ifdef Q_OS_WIN
+    checkString = targetDir().mid(2);
+#else
+    checkString = targetDir();
+#endif
+    if (checkString.contains(QRegExp(QLatin1String("[!@#$%^&*: ,;]")))) {
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+                                    QLatin1String("forbiddenTargetDirectory"), tr("Error"),
+                                    tr( "The install directory cannot contain !@#$%^&*:,; or spaces, please specify a valid folder."),
+                                    QMessageBox::Ok);
+        return false;
+    }
+
     QString remove = installer()->value(QLatin1String("RemoveTargetDir"));
     if (!QVariant(remove).toBool())
         return true;
 
     const QFileInfo targetDirInfo = QFileInfo(targetDir());
-    const QDir dir( targetDir() );
     if (targetDirInfo.isDir()) {
         QFileInfo fi2(targetDir() + QDir::separator() + installer()->uninstallerName());
-        if ( dir == QDir::root() )
+        // disallow root and home dirs if the target dir is set to be deleted on uninstall
+        if ( dir == QDir::root() || dir == QDir::home() )
         {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                                         QLatin1String("forbiddenTargetDirectory"),
