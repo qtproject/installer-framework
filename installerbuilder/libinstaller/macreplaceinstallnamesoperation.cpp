@@ -32,6 +32,7 @@
 **************************************************************************/
 #include "macreplaceinstallnamesoperation.h"
 #include "fsengineclient.h"
+#include "qprocesswrapper.h"
 
 #include <QtCore/QDirIterator>
 #include <QtCore/QDebug>

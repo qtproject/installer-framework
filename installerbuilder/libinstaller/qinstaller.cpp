@@ -45,6 +45,7 @@
 #include "qinstaller_p.h"
 #include "qinstallercomponent.h"
 #include "qinstallerglobal.h"
+#include "qprocesswrapper.h"
 
 #include <QtCore/QTemporaryFile>
 
@@ -1229,6 +1230,7 @@ bool Installer::isProcessRunning(const QString &name) const
             command as first item, the return code as second item.
     \note On Unix, the output is just the output to stdout, not to stderr.
 */
+
 QList<QVariant> Installer::execute(const QString &program, const QStringList &arguments,
     const QString &stdIn) const
 {

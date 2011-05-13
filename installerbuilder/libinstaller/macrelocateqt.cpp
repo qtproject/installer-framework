@@ -33,6 +33,7 @@
 #include "macrelocateqt.h"
 #include "common/utils.h"
 #include "fsengineclient.h"
+#include "qprocesswrapper.h"
 
 #include <QtCore/QDirIterator>
 #include <QtCore/QDebug>

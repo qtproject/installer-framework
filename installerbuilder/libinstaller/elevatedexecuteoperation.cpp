@@ -35,6 +35,7 @@
 #include "environment.h"
 #include "fsengineclient.h"
 #include "common/utils.h"
+#include "qprocesswrapper.h"
 
 #include <QThread>
 
