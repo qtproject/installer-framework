@@ -579,11 +579,6 @@ Installer::~Installer()
             QLatin1String("InstallationLog.txt")));
         QInstaller::VerboseWriter::instance()->setOutputStream(logFileName);
     }
-
-    // check for fake installer case
-    if (d->m_FSEngineClientHandler)
-        d->m_FSEngineClientHandler->setActive(false);
-
     delete d;
 }
 

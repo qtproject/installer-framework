@@ -215,6 +215,11 @@ InstallerPrivate::~InstallerPrivate()
     qDeleteAll(m_performedOperationsOld);
     qDeleteAll(m_performedOperationsCurrentSession);
 
+    // check for fake installer case
+    if (m_FSEngineClientHandler)
+        m_FSEngineClientHandler->setActive(false);
+
+
     delete m_tempDirDeleter;
     delete m_installerSettings;
     delete m_FSEngineClientHandler;
