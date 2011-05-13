@@ -198,8 +198,8 @@ QString QInstaller::uncaughtExceptionString(QScriptEngine *scriptEngine/*, const
 
     //usually the line number is in the backtrace
     errorString = errorString.arg(/*QString::number(scriptEngine->uncaughtExceptionLineNumber()),*/
-                    scriptEngine->uncaughtException().toString(),
-                    scriptEngine->uncaughtExceptionBacktrace().join(QLatin1String("\n")));
+        scriptEngine->uncaughtException().toString(), scriptEngine->uncaughtExceptionBacktrace()
+        .join(QLatin1String("\n")));
     return errorString;
 }
 
