@@ -31,15 +31,16 @@
 **
 **************************************************************************/
 #include "registertoolchainoperation.h"
+
 #include "persistentsettings.h"
 #include "qinstaller.h"
 #include "qtcreator_constants.h"
 
-#include <QString>
-#include <QFileInfo>
-#include <QDir>
-#include <QSettings>
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QSettings>
+#include <QtCore/QString>
 
 using namespace QInstaller;
 
@@ -93,13 +94,9 @@ bool RegisterToolChainOperation::performOperation()
     if (args.count() > argCounter)
         force32Bit = args.at(argCounter++);
 
-    QString toolChainsXmlFilePath;
-
-    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
-
-    QHash< QString, QVariantMap > toolChainHash;
-
     PersistentSettingsReader reader;
+    QHash<QString, QVariantMap> toolChainHash;
+    QString toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
     if (reader.load(toolChainsXmlFilePath)) {
         QVariantMap data = reader.restoreValues();
 
@@ -117,10 +114,9 @@ bool RegisterToolChainOperation::performOperation()
             const QString key = QLatin1String(TOOLCHAIN_DATA_KEY) + QString::number(i);
 
             const QVariantMap toolChainMap = data.value(key).toMap();
-
             //gets the path variable, hope ".Path" will stay in QtCreator
-            QStringList pathContainingKeyList =
-                    QStringList(toolChainMap.keys()).filter(QLatin1String(".Path"));
+            QStringList pathContainingKeyList = QStringList(toolChainMap.keys())
+                .filter(QLatin1String(".Path"));
             foreach(const QString& pathKey, pathContainingKeyList) {
                 QString path = toolChainMap.value(pathKey).toString();
                 if (!path.isEmpty() && QFile::exists(path)) {
@@ -152,8 +148,7 @@ bool RegisterToolChainOperation::performOperation()
     foreach (const QVariantMap &toolChainMap, toolChainHash.values()) {
         if (toolChainMap.isEmpty())
             continue;
-        writer.saveValue(QLatin1String(TOOLCHAIN_DATA_KEY) + QString::number(count++),
-                         toolChainMap);
+        writer.saveValue(QLatin1String(TOOLCHAIN_DATA_KEY) + QString::number(count++), toolChainMap);
     }
     writer.saveValue(QLatin1String(TOOLCHAIN_COUNT_KEY), count);
     writer.save(toolChainsXmlFilePath, QLatin1String("QtCreatorToolChains"));
@@ -172,7 +167,7 @@ bool RegisterToolChainOperation::undoOperation()
         return false;
     }
 
-    const Installer* const installer = qVariantValue< Installer* >( value( QLatin1String( "installer" ) ) );
+    const Installer *const installer = qVariantValue< Installer*> (value(QLatin1String("installer")));
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
     if (rootInstallPath.isEmpty() || !QDir(rootInstallPath).exists()) {
         setError(UserDefinedError);
@@ -198,15 +193,9 @@ bool RegisterToolChainOperation::undoOperation()
     if (args.count() > argCounter)
         force32Bit = args.at(argCounter++);
 
-    const QString uniqueToolChainKey =
-            QString(QLatin1String("%1:%2.%3")).arg(toolChainType, compilerPath, abiString);
-    QString toolChainsXmlFilePath;
-
-    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
-
-    QHash< QString, QVariantMap > toolChainHash;
-
     PersistentSettingsReader reader;
+    QHash<QString, QVariantMap> toolChainHash;
+    QString toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
     if (reader.load(toolChainsXmlFilePath)) {
         QVariantMap data = reader.restoreValues();
 
@@ -219,15 +208,16 @@ bool RegisterToolChainOperation::undoOperation()
             return false;
         }
 
-        int count = data.value(QLatin1String(TOOLCHAIN_COUNT_KEY), 0).toInt();
+        const int count = data.value(QLatin1String(TOOLCHAIN_COUNT_KEY), 0).toInt();
+        const QString uniqueToolChainKey = QString(QLatin1String("%1:%2.%3")).arg(toolChainType,
+            compilerPath, abiString);
         for (int i = 0; i < count; ++i) {
             const QString key = QLatin1String(TOOLCHAIN_DATA_KEY) + QString::number(i);
 
             const QVariantMap toolChainMap = data.value(key).toMap();
-
             //gets the path variable, hope ".Path" will stay in QtCreator
-            QStringList pathContainingKeyList =
-                    QStringList(toolChainMap.keys()).filter(QLatin1String(".Path"));
+            QStringList pathContainingKeyList = QStringList(toolChainMap.keys())
+                .filter(QLatin1String(".Path"));
             foreach (const QString& pathKey, pathContainingKeyList) {
                 QString path = toolChainMap.value(pathKey).toString();
                 QString currentUniqueToolChainKey = toolChainMap.value(QLatin1String(ID_KEY)).toString();
@@ -244,12 +234,11 @@ bool RegisterToolChainOperation::undoOperation()
     writer.saveValue(QLatin1String(TOOLCHAIN_FILE_VERSION_KEY), 1);
 
     int count = 0;
-
     foreach (const QVariantMap &toolChainMap, toolChainHash.values()) {
         if (toolChainMap.isEmpty())
             continue;
         writer.saveValue(QLatin1String(TOOLCHAIN_DATA_KEY) + QString::number(count++),
-                         toolChainMap);
+            toolChainMap);
     }
     writer.saveValue(QLatin1String(TOOLCHAIN_COUNT_KEY), count);
     writer.save(toolChainsXmlFilePath, QLatin1String("QtCreatorToolChains"));
