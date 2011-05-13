@@ -157,7 +157,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
     delete kdEnv;
 
     if (showStandardError)
-        process->setProcessChannelMode(QProcess::MergedChannels);
+        process->setProcessChannelMode(QProcessWrapper::MergedChannels);
 
     connect(q, SIGNAL(cancelProcess()), process, SLOT(cancel()));
 
@@ -196,7 +196,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
     }
 
     if (QThread::currentThread() == qApp->thread()) {
-        if (process->state() != QProcess::NotRunning) {
+        if (process->state() != QProcessWrapper::NotRunning) {
             loop.exec();
         }
         readProcessOutput();
@@ -204,7 +204,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
 
     q->setValue(QLatin1String("ExitCode"), process->exitCode());
 
-    if (process->exitStatus() == QProcess::CrashExit)
+    if (process->exitStatus() == QProcessWrapper::CrashExit)
     {
         q->setError(UserDefinedError);
         q->setErrorString(tr("Execution failed(Crash): \"%1\"").arg(callstr));
