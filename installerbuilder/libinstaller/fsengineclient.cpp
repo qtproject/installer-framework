@@ -33,7 +33,6 @@
 #include "fsengineclient.h"
 
 #undef QSettings
-#undef QProcess
 
 #include "adminauthorization.h"
 

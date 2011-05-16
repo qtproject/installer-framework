@@ -33,7 +33,6 @@
 #include "adminauthorization.h"
 
 #include <QtCore/QFile>
-#include <QtCore/QProcess>
 
 #include <QtGui/QApplication>
 #include <QtGui/QInputDialog>

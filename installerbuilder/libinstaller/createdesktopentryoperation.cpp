@@ -38,13 +38,10 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
+#include <QProcess>
 #if QT_VERSION >= 0x040600
 #include <QProcessEnvironment>
-#else
-#include <QProcess>
 #endif
-
-#include <QProcess>
 
 using namespace QInstaller;
 
