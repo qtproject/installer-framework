@@ -96,7 +96,8 @@ HEADERS += $$PWD/qinstaller.h \
     getrepositoriesmetainfojob.h \
     licenseoperation.h \
     qtcreator_constants.h \
-    qtcreatorpersistentsettings.h
+    qtcreatorpersistentsettings.h \
+    registerdefaultdebuggeroperation.h
 
 SOURCES += $$PWD/qinstaller.cpp \
     $$PWD/qinstallergui.cpp \
@@ -159,7 +160,8 @@ SOURCES += $$PWD/qinstaller.cpp \
     messageboxhandler.cpp \
     getrepositoriesmetainfojob.cpp \
     licenseoperation.cpp \
-    qtcreatorpersistentsettings.cpp
+    qtcreatorpersistentsettings.cpp \
+    registerdefaultdebuggeroperation.cpp
 
 
 macx {

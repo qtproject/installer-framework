@@ -1,0 +1,154 @@
+/**************************************************************************
+**
+** This file is part of Qt SDK**
+**
+** Copyright (c) 2011 Nokia Corporation and/or its subsidiary(-ies).*
+**
+** Contact:  Nokia Corporation qt-info@nokia.com**
+**
+** No Commercial Usage
+**
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the Technology Preview License Agreement accompanying
+** this package.
+**
+** GNU Lesser General Public License Usage
+**
+** This file may be used under the terms of the GNU Lesser General Public
+** License version 2.1 as published by the Free Software Foundation and
+** appearing in the file LICENSE.LGPL included in the packaging of this file.
+** Please review the following information to ensure the GNU Lesser General
+** Public License version 2.1 requirements will be met:
+** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain additional
+** rights. These rights are described in the Nokia Qt LGPL Exception version
+** 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+**
+** If you are unsure which license is appropriate for your use, please contact
+** (qt-info@nokia.com).
+**
+**************************************************************************/
+#include "registerdefaultdebuggeroperation.h"
+#include "persistentsettings.h"
+//#include "qinstaller.h"
+#include "qtcreator_constants.h"
+#include "qtcreatorpersistentsettings.h"
+
+#include <QString>
+#include <QFileInfo>
+#include <QDir>
+#include <QSettings>
+#include <QDebug>
+
+using namespace QInstaller;
+
+using namespace ProjectExplorer;
+
+RegisterDefaultDebuggerOperation::RegisterDefaultDebuggerOperation()
+{
+    setName(QLatin1String("RegisterToolChain"));
+}
+
+RegisterDefaultDebuggerOperation::~RegisterDefaultDebuggerOperation()
+{
+}
+
+void RegisterDefaultDebuggerOperation::backup()
+{
+}
+
+/** application binary interface - this is an internal creator typ as a String CPU-OS-OS_FLAVOR-BINARY_FORMAT-WORD_WIDTH
+  *     CPU: arm x86 mips ppc itanium
+  *     OS: linux macos symbian unix windows
+  *     OS_FLAVOR: generic maemo meego generic device emulator generic msvc2005 msvc2008 msvc2010 msys ce
+  *     BINARY_FORMAT: elf pe mach_o qml_rt
+  *     WORD_WIDTH: 8 16 32 64
+  */
+
+bool RegisterDefaultDebuggerOperation::performOperation()
+{
+    const QStringList args = arguments();
+
+    if (args.count() != 2) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.")
+            .arg(name()).arg(args.count()));
+        return false;
+    }
+
+    QString toolChainsXmlFilePath;
+
+//    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+//    if (!installer) {
+//        setError(UserDefinedError);
+//        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+//        return false;
+//    }
+//    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+//    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
+    toolChainsXmlFilePath = "d:\\toolchains.xml_debugger";
+
+    int argCounter = 0;
+    const QString &abiString = args.at(argCounter++); //for example x86-windows-msys-pe-32bit
+    const QString &debuggerPath = QDir::toNativeSeparators(args.at(argCounter++));
+
+    QtCreatorPersistentSettings creatorToolChainSettings;
+
+    if (!creatorToolChainSettings.init(toolChainsXmlFilePath)) {
+        setError(UserDefinedError);
+        setErrorString(tr("Can't read from tool chains xml file(%1) correctly.")
+            .arg(toolChainsXmlFilePath));
+        return false;
+    }
+
+
+    creatorToolChainSettings.addDefaultDebugger(abiString, debuggerPath);
+    return creatorToolChainSettings.save();
+}
+
+bool RegisterDefaultDebuggerOperation::undoOperation()
+{
+    const QStringList args = arguments();
+
+    if (args.count() == 2) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.")
+            .arg(name()).arg(args.count()));
+        return false;
+    }
+
+    QString toolChainsXmlFilePath;
+
+//    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+//    if (!installer) {
+//        setError(UserDefinedError);
+//        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+//        return false;
+//    }
+//    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+//    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
+    toolChainsXmlFilePath = "d:\\toolchains.xml_debugger";
+
+    int argCounter = 0;
+    const QString &abiString = args.at(argCounter++); //for example x86-windows-msys-pe-32bit
+    const QString &debuggerPath = QDir::toNativeSeparators(args.at(argCounter++));
+    Q_UNUSED(debuggerPath)
+
+    QtCreatorPersistentSettings creatorToolChainSettings;
+
+    creatorToolChainSettings.init(toolChainsXmlFilePath);
+    creatorToolChainSettings.removeDefaultDebugger(abiString);
+    return creatorToolChainSettings.save();
+}
+
+bool RegisterDefaultDebuggerOperation::testOperation()
+{
+    return true;
+}
+
+KDUpdaterUpdateOperation* RegisterDefaultDebuggerOperation::clone() const
+{
+    return new RegisterDefaultDebuggerOperation();
+}
