@@ -44,5 +44,3 @@ static {
     }
 }
 
-RESOURCES += content.qrc
-
