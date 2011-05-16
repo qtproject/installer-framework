@@ -32,6 +32,12 @@
 **************************************************************************/
 #include "registerqtoperation.h"
 #include "qtcreator_constants.h"
+#include "qinstaller.h"
+#include "registertoolchainoperation.h"
+#include "registerqtv2operation.h"
+#include "qtcreatorpersistentsettings.h"
+#include "qinstallercomponent.h"
+
 
 #include <QString>
 #include <QFileInfo>
@@ -87,6 +93,82 @@ bool RegisterQtInCreatorOperation::performOperation()
     if (args.count() >= 9)
         sbsPath = args.at(8);
 
+//this is for creator 2.2
+    QInstaller::Installer* const installer = qVariantValue<Installer*>(value(QLatin1String(
+        "installer")));
+    if (!installer) {
+        setError(UserDefinedError);
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
+    QString toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
+    bool isCreator22 = false;
+    //in case of the fake installer this component doesn't exist
+    Component* creatorComponent = installer->componentByName(
+        QLatin1String("com.nokia.ndk.tools.qtcreator.application"));
+    if (creatorComponent) {
+        QString creatorVersion = creatorComponent->value(QLatin1String("InstalledVersion"));
+        isCreator22 = Installer::versionMatches(creatorVersion, QLatin1String("2.2"));
+    }
+
+    if (QFileInfo(toolChainsXmlFilePath).exists() || isCreator22) {
+        QtCreatorPersistentSettings creatorToolChainSettings;
+
+        if (!creatorToolChainSettings.init(toolChainsXmlFilePath)) {
+            setError(UserDefinedError);
+            setErrorString(tr("Can't read from tool chains xml file(%1) correctly.")
+                .arg(toolChainsXmlFilePath));
+            return false;
+        }
+        if (!mingwPath.isEmpty()) {
+            RegisterToolChainOperation operation;
+            operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
+            operation.setArguments(QStringList()
+                                   << QLatin1String("GccToolChain")
+                                   << QLatin1String("ProjectExplorer.ToolChain.Mingw")
+                                   << QLatin1String("Mingw as a GCC for Windows targets")
+                                   << QLatin1String("x86-windows-msys-pe-32bit")
+                                   << mingwPath + QLatin1String("\\bin\\g++.exe")
+                                   << creatorToolChainSettings.abiToDebuggerHash().value(QLatin1String
+                                        ("x86-windows-msys-pe-32bit"))
+                                   );
+            if (!operation.performOperation()) {
+                setError(operation.error());
+                setErrorString(operation.errorString());
+                return false;
+            }
+        }
+        if (!gccePath.isEmpty()) {
+            RegisterToolChainOperation operation;
+            operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
+            operation.setArguments(QStringList()
+                                   << QLatin1String("GccToolChain")
+                                   << QLatin1String("Qt4ProjectManager.ToolChain.GCCE")
+                                   << QLatin1String("GCCE 4 for Symbian targets")
+                                   << QLatin1String("arm-symbian-device-elf-32bit")
+                                   << gccePath + QLatin1String("\\bin\\arm-none-symbianelf-g++.exe")
+                                   << creatorToolChainSettings.abiToDebuggerHash().value(QLatin1String(
+                                        "arm-symbian-device-elf-32bit"))
+                                   );
+            if (!operation.performOperation()) {
+                setError(operation.error());
+                setErrorString(operation.errorString());
+                return false;
+            }
+        }
+        RegisterQtInCreatorV2Operation registerQtInCreatorV2Operation;
+        registerQtInCreatorV2Operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
+        registerQtInCreatorV2Operation.setArguments(QStringList() << versionName << path
+            << s60SdkPath << sbsPath);
+        if (!registerQtInCreatorV2Operation.performOperation()) {
+            setError(registerQtInCreatorV2Operation.error());
+            setErrorString(registerQtInCreatorV2Operation.errorString());
+            return false;
+        }
+        return true;
+    }
+//END - this is for creator 2.2
+
     QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
                         QSettings::IniFormat);
 
@@ -125,6 +207,7 @@ bool RegisterQtInCreatorOperation::performOperation()
     return true;
 }
 
+//works with creator 2.1 and 2.2
 bool RegisterQtInCreatorOperation::undoOperation()
 {
     const QStringList args = arguments();
