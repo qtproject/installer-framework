@@ -43,5 +43,6 @@ public:
     KDUpdater::UpdateOperation* clone() const;
 };
 
-}; // namespace
+} // namespace
+
 #endif // LINEREPLACEOPERATION_H

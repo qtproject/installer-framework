@@ -44,6 +44,6 @@ public:
     KDUpdater::UpdateOperation* clone() const;
 };
 
-}; // namespace
+} // namespace
 
 #endif // SETIMPORTSPATHONQTCOREOPERATION_H
