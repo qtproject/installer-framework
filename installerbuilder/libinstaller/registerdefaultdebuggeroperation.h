@@ -23,18 +23,21 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#ifndef REPLACEOPERATION_H
-#define REPLACEOPERATION_H
+#ifndef REGISTERDEFAULTDEBUGGEROPERATION_H
+#define REGISTERDEFAULTDEBUGGEROPERATION_H
 
 #include <KDUpdater/UpdateOperation>
 
+#include <QObject>
+#include <QStringList>
+
 namespace QInstaller {
 
-class ReplaceOperation : public KDUpdater::UpdateOperation
+class RegisterDefaultDebuggerOperation : public KDUpdater::UpdateOperation
 {
 public:
-    ReplaceOperation();
-    ~ReplaceOperation();
+    RegisterDefaultDebuggerOperation();
+    ~RegisterDefaultDebuggerOperation();
 
     void backup();
     bool performOperation();
@@ -45,4 +48,4 @@ public:
 
 } // namespace
 
-#endif // REPLACEOPERATION_H
+#endif // REGISTERDEFAULTDEBUGGEROPERATION_H

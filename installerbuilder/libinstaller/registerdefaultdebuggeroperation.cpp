@@ -30,43 +30,50 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include "registertoolchainoperation.h"
-
+#include "registerdefaultdebuggeroperation.h"
 #include "persistentsettings.h"
 #include "qinstaller.h"
 #include "qtcreator_constants.h"
 #include "qtcreatorpersistentsettings.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <QtCore/QSettings>
-#include <QtCore/QString>
+#include <QString>
+#include <QFileInfo>
+#include <QDir>
+#include <QSettings>
+#include <QDebug>
 
 using namespace QInstaller;
 
 using namespace ProjectExplorer;
 
-RegisterToolChainOperation::RegisterToolChainOperation()
+RegisterDefaultDebuggerOperation::RegisterDefaultDebuggerOperation()
 {
     setName(QLatin1String("RegisterToolChain"));
 }
 
-RegisterToolChainOperation::~RegisterToolChainOperation()
+RegisterDefaultDebuggerOperation::~RegisterDefaultDebuggerOperation()
 {
 }
 
-void RegisterToolChainOperation::backup()
+void RegisterDefaultDebuggerOperation::backup()
 {
 }
 
-bool RegisterToolChainOperation::performOperation()
+/** application binary interface - this is an internal creator typ as a String CPU-OS-OS_FLAVOR-BINARY_FORMAT-WORD_WIDTH
+  *     CPU: arm x86 mips ppc itanium
+  *     OS: linux macos symbian unix windows
+  *     OS_FLAVOR: generic maemo meego generic device emulator generic msvc2005 msvc2008 msvc2010 msys ce
+  *     BINARY_FORMAT: elf pe mach_o qml_rt
+  *     WORD_WIDTH: 8 16 32 64
+  */
+
+bool RegisterDefaultDebuggerOperation::performOperation()
 {
     const QStringList args = arguments();
 
-    if (args.count() < 4) {
+    if (args.count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.")
             .arg(name()).arg(args.count()));
         return false;
     }
@@ -82,20 +89,9 @@ bool RegisterToolChainOperation::performOperation()
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
     toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
 
-    QtCreatorToolChain toolChain;
-
     int argCounter = 0;
-    toolChain.key = args.at(argCounter++); //Qt SDK:gccPath
-    toolChain.type = args.at(argCounter++); //where this toolchain is defined in QtCreator
-    toolChain.displayName = args.at(argCounter++); //nice special Toolchain (Qt SDK)
-    toolChain.abiString = args.at(argCounter++); //x86-windows-msys-pe-32bit
-    toolChain.compilerPath = QDir::toNativeSeparators(args.at(argCounter++)); //gccPath
-    if (args.count() > argCounter)
-        toolChain.debuggerPath = QDir::toNativeSeparators(args.at(argCounter++));
-    if (args.count() > argCounter)
-        toolChain.armVersion = args.at(argCounter++);
-    if (args.count() > argCounter)
-        toolChain.force32Bit = args.at(argCounter++);
+    const QString &abiString = args.at(argCounter++); //for example x86-windows-msys-pe-32bit
+    const QString &debuggerPath = QDir::toNativeSeparators(args.at(argCounter++));
 
     QtCreatorPersistentSettings creatorToolChainSettings;
 
@@ -106,22 +102,18 @@ bool RegisterToolChainOperation::performOperation()
         return false;
     }
 
-    if (!creatorToolChainSettings.addToolChain(toolChain)) {
-        setError(InvalidArguments);
-        setErrorString(tr("Some arguments are not right in %1 operation.")
-            .arg(name()).arg(args.count()));
-        return false;
-    }
+
+    creatorToolChainSettings.addDefaultDebugger(abiString, debuggerPath);
     return creatorToolChainSettings.save();
 }
 
-bool RegisterToolChainOperation::undoOperation()
+bool RegisterDefaultDebuggerOperation::undoOperation()
 {
     const QStringList args = arguments();
 
-    if (args.count() < 4) {
+    if (args.count() == 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.")
             .arg(name()).arg(args.count()));
         return false;
     }
@@ -137,45 +129,24 @@ bool RegisterToolChainOperation::undoOperation()
     const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
     toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
 
-    QtCreatorToolChain toolChain;
-
     int argCounter = 0;
-    toolChain.key = args.at(argCounter++); //Qt SDK:gccPath
-    toolChain.type = args.at(argCounter++); //where this toolchain is defined in QtCreator
-    toolChain.displayName = args.at(argCounter++); //nice special Toolchain (Qt SDK)
-    toolChain.abiString = args.at(argCounter++); //x86-windows-msys-pe-32bit
-    toolChain.compilerPath = QDir::toNativeSeparators(args.at(argCounter++)); //gccPath
-    if (args.count() > argCounter)
-        toolChain.debuggerPath = QDir::toNativeSeparators(args.at(argCounter++));
-    if (args.count() > argCounter)
-        toolChain.armVersion = args.at(argCounter++);
-    if (args.count() > argCounter)
-        toolChain.force32Bit = args.at(argCounter++);
+    const QString &abiString = args.at(argCounter++); //for example x86-windows-msys-pe-32bit
+    const QString &debuggerPath = QDir::toNativeSeparators(args.at(argCounter++));
+    Q_UNUSED(debuggerPath)
 
     QtCreatorPersistentSettings creatorToolChainSettings;
 
-    if (!creatorToolChainSettings.init(toolChainsXmlFilePath)) {
-        setError(UserDefinedError);
-        setErrorString(tr("Can't read from tool chains xml file(%1) correctly.")
-            .arg(toolChainsXmlFilePath));
-        return false;
-    }
-
-    if (!creatorToolChainSettings.removeToolChain(toolChain)) {
-        setError(InvalidArguments);
-        setErrorString(tr("Some arguments are not right in %1 operation.")
-            .arg(name()).arg(args.count()));
-        return false;
-    }
+    creatorToolChainSettings.init(toolChainsXmlFilePath);
+    creatorToolChainSettings.removeDefaultDebugger(abiString);
     return creatorToolChainSettings.save();
 }
 
-bool RegisterToolChainOperation::testOperation()
+bool RegisterDefaultDebuggerOperation::testOperation()
 {
     return true;
 }
 
-KDUpdater::UpdateOperation* RegisterToolChainOperation::clone() const
+KDUpdater::UpdateOperation* RegisterDefaultDebuggerOperation::clone() const
 {
-    return new RegisterToolChainOperation();
+    return new RegisterDefaultDebuggerOperation();
 }

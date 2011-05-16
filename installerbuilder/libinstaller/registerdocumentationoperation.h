@@ -43,6 +43,6 @@ public:
     KDUpdater::UpdateOperation* clone() const;
 };
 
-}; // namespace
+} // namespace
 
 #endif // REGISTERDOCUMENTATIONOPERATION_H

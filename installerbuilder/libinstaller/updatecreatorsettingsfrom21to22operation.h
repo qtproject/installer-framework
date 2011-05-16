@@ -23,18 +23,18 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#ifndef REPLACEOPERATION_H
-#define REPLACEOPERATION_H
+#ifndef UPDATECREATORSETTINGSFROM21TO22OPERATION_H
+#define UPDATECREATORSETTINGSFROM21TO22OPERATION_H
 
 #include <KDUpdater/UpdateOperation>
 
 namespace QInstaller {
 
-class ReplaceOperation : public KDUpdater::UpdateOperation
+class UpdateCreatorSettingsFrom21To22Operation : public KDUpdater::UpdateOperation
 {
 public:
-    ReplaceOperation();
-    ~ReplaceOperation();
+    UpdateCreatorSettingsFrom21To22Operation();
+    ~UpdateCreatorSettingsFrom21To22Operation();
 
     void backup();
     bool performOperation();
@@ -45,4 +45,4 @@ public:
 
 } // namespace
 
-#endif // REPLACEOPERATION_H
+#endif // UPDATECREATORSETTINGSFROM21TO22OPERATION_H

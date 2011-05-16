@@ -48,5 +48,6 @@ private:
     QSettingsWrapper* setup(QString *key, QString *value, const QStringList &args);
 };
 
-}; // namespace
+} // namespace
+
 #endif // GLOBALSETTINGSOPERATION_H

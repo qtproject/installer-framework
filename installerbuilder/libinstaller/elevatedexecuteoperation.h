@@ -60,6 +60,6 @@ private:
     kdtools::pimpl_ptr< Private > d;
 };
 
-}; // namespace
+} // namespace
 
 #endif

@@ -49,6 +49,6 @@ signals:
     void progressChanged( double progress );
 };
 
-}; // namespace
+} // namespace
 
 #endif // MINIMUMPROGRESSOPERATION_H
