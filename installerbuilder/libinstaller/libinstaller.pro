@@ -97,7 +97,8 @@ HEADERS += $$PWD/qinstaller.h \
     licenseoperation.h \
     qtcreator_constants.h \
     qtcreatorpersistentsettings.h \
-    registerdefaultdebuggeroperation.h
+    registerdefaultdebuggeroperation.h \
+    updatecreatorsettingsfrom21to22operation.h
 
 SOURCES += $$PWD/qinstaller.cpp \
     $$PWD/qinstallergui.cpp \
@@ -161,8 +162,8 @@ SOURCES += $$PWD/qinstaller.cpp \
     getrepositoriesmetainfojob.cpp \
     licenseoperation.cpp \
     qtcreatorpersistentsettings.cpp \
-    registerdefaultdebuggeroperation.cpp
-
+    registerdefaultdebuggeroperation.cpp \
+    updatecreatorsettingsfrom21to22operation.cpp
 
 macx {
     HEADERS +=  macrelocateqt.h \

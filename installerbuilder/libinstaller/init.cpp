@@ -60,6 +60,7 @@
 #include "simplemovefileoperation.h"
 #include "registertoolchainoperation.h"
 #include "registerdefaultdebuggeroperation.h"
+#include "updatecreatorsettingsfrom21to22operation.h"
 
 #include "minimumprogressoperation.h"
 
@@ -189,6 +190,7 @@ void QInstaller::init()
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::QtPatchOperation >( QLatin1String( "QtPatch" ) );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::ReplaceOperation >( QLatin1String( "Replace" ) );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::LineReplaceOperation >( QLatin1String( "LineReplace" ) );
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::UpdateCreatorSettingsFrom21To22Operation >( QLatin1String( "UpdateCreatorSettingsFrom21To22" ) );
 
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::MinimumProgressOperation>(QLatin1String("MinimumProgress"));
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::LicenseOperation>(QLatin1String("License"));
