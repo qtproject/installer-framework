@@ -54,7 +54,7 @@ QHash<QString, QVariantMap> QtCreatorPersistentSettings::readValidToolChains()
         //gets the path variable, hope ".Path" will stay in QtCreator
         QStringList pathContainingKeyList = QStringList(toolChainMap.keys()).filter(QLatin1String(
             ".Path"));
-        foreach(const QString& pathKey, pathContainingKeyList) {
+        foreach (const QString& pathKey, pathContainingKeyList) {
             QString path = toolChainMap.value(pathKey).toString();
             if (!path.isEmpty() && QFile::exists(path)) {
                 toolChainHash.insert(path, toolChainMap);
@@ -149,7 +149,7 @@ bool QtCreatorPersistentSettings::save()
 
     QHashIterator<QString, QString> it(m_abiToDebuggerHash);
     int debuggerCounter = 0;
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
         const QString abiKey = QString::fromLatin1(DEFAULT_DEBUGGER_ABI_KEY) + QString::number(
             debuggerCounter);

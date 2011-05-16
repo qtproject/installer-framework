@@ -75,10 +75,10 @@ void removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList 
     //get the installer added Qt Version settings ids
     QList<int> toRemoveIds;
     QHashIterator<QString, QVariant> it(oldSettingsAsHash);
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
-        if(it.key().endsWith(QLatin1String("QMakePath")) && !it.value().toString().isEmpty()) {
-            foreach(const QString &toRemoveQmakePath, qmakePathes) {
+        if (it.key().endsWith(QLatin1String("QMakePath")) && !it.value().toString().isEmpty()) {
+            foreach (const QString &toRemoveQmakePath, qmakePathes) {
                 if (QFileInfo(it.value().toString()) == QFileInfo(toRemoveQmakePath)) {
                     int firstNoDigitCharIndex = it.key().indexOf(QRegExp(QLatin1String("[^0-9]")));
                     QString numberAtTheBeginning = it.key().left(firstNoDigitCharIndex);
@@ -92,7 +92,7 @@ void removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList 
     it.toFront();
     QHash<int, int> qtVersionIdMapper; //old, new
     int newVersionId = 1;
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
         settings.remove(it.key());
         int firstNoDigitCharIndex = it.key().indexOf(QRegExp(QLatin1String("[^0-9]")));
@@ -209,7 +209,7 @@ void convertDefaultGDBInstallerSettings(QSettings &settings)
 
         QString gdbTypesAsCommaSeperatedString = oldValue.mid(oldValue.indexOf(QLatin1String(",")));
         QStringList gdbTypeList = gdbTypesAsCommaSeperatedString.split(QLatin1String(","));
-        foreach(const QString &gdbType, gdbTypeList) {
+        foreach (const QString &gdbType, gdbTypeList) {
             if (gdbType == QLatin1String("0")) {
                 abiToDefaultDebuggerHash.insert(QLatin1String("x86-linux-generic-elf-64bit"), gdbBinaryPath);
                 abiToDefaultDebuggerHash.insert(QLatin1String("x86-linux-generic-elf-32bit"), gdbBinaryPath);
@@ -230,7 +230,7 @@ void convertDefaultGDBInstallerSettings(QSettings &settings)
     QInstaller::RegisterDefaultDebuggerOperation operation;
 
     QHashIterator<QString, QString> it(abiToDefaultDebuggerHash);
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
         operation.setArguments(QStringList() << it.key() << it.value());
         bool result = operation.performOperation();
