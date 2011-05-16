@@ -1416,7 +1416,7 @@ void ReadyForInstallationPage::entering()
     const KDByteSize available = vol.availableSpace();
     const KDByteSize tempAvailable = tempVolume.availableSpace();
     const KDByteSize realRequiredTempSpace = KDByteSize( 0.1 * tempRequired + tempRequired );
-    const KDByteSize realRequiredSpace = KDByteSize( 0.5 * required + required );
+    const KDByteSize realRequiredSpace = KDByteSize( 2 * required );
 
     const bool tempInstFailure = tempOnSameVolume && available < realRequiredSpace + realRequiredTempSpace;
 
@@ -1449,13 +1449,13 @@ void ReadyForInstallationPage::entering()
     else if( available - required < 0.01 * vol.size() )
     {
         msgLabel->setText( tr( "The volume you selected for installation seems to have sufficient space for installation,\n"
-                               "but there will not more than 1% of the volume's space available afterwards.\n\n%1" ).arg( msgLabel->text() ) );
+                               "but there will be less than 1% of the volume's space available afterwards.\n\n%1" ).arg( msgLabel->text() ) );
     }
     // warn for less than 100MB being free
     else if( available - required < 100*1024*1024LL )
     {
         msgLabel->setText( tr( "The volume you selected for installation seems to have sufficient space for installation,\n"
-                               "but there will not more than 100 MB available afterwards.\n\n%1" ).arg( msgLabel->text() ) );
+                               "but there will be less than 100 MB available afterwards.\n\n%1" ).arg( msgLabel->text() ) );
     }
 }
 
