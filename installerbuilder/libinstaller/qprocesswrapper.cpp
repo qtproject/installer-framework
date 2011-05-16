@@ -33,130 +33,141 @@
 #include <QtNetwork/QLocalSocket>
 #include <QtNetwork/QTcpSocket>
 
-void callRemoteVoidMethod( QDataStream& stream, const QString& name, const QString &foo = QString() )
+template<typename T>
+QDataStream &operator>>(QDataStream &stream, T &state)
+{
+    int s;
+    stream >> s;
+    state = static_cast<T> (s);
+    return stream;
+}
+
+void callRemoteVoidMethod(QDataStream &stream, const QString &name, const QString &foo = QString())
 {
     Q_UNUSED(foo)
     stream.device()->readAll();
     stream << name;
-    stream.device()->waitForBytesWritten( -1 );
-    if( !stream.device()->bytesAvailable() )
-        stream.device()->waitForReadyRead( -1 );
+    stream.device()->waitForBytesWritten(-1);
+    if (!stream.device()->bytesAvailable())
+        stream.device()->waitForReadyRead(-1);
     quint32 test;
     stream >> test;
     stream.device()->readAll();
     return;
 }
 
-template< typename T >
-void callRemoteVoidMethod( QDataStream& stream, const QString& name, const T& param1 )
+template<typename T>
+void callRemoteVoidMethod(QDataStream & stream, const QString &name, const T &param1)
 {
     stream.device()->readAll();
     stream << name;
     stream << param1;
-    stream.device()->waitForBytesWritten( -1 );
-    if( !stream.device()->bytesAvailable() )
-        stream.device()->waitForReadyRead( -1 );
+    stream.device()->waitForBytesWritten(-1);
+    if (!stream.device()->bytesAvailable())
+        stream.device()->waitForReadyRead(-1);
     quint32 test;
     stream >> test;
     stream.device()->readAll();
     return;
 }
 
-template< typename T1, typename T2 >
-void callRemoteVoidMethod( QDataStream& stream, const QString& name, const T1& param1, const T2& param2 )
+template<typename T1, typename T2>
+void callRemoteVoidMethod(QDataStream &stream, const QString &name, const T1 &param1, const T2 &param2)
 {
     stream.device()->readAll();
     stream << name;
     stream << param1;
     stream << param2;
-    stream.device()->waitForBytesWritten( -1 );
-    if( !stream.device()->bytesAvailable() )
-        stream.device()->waitForReadyRead( -1 );
+    stream.device()->waitForBytesWritten(-1);
+    if (!stream.device()->bytesAvailable())
+        stream.device()->waitForReadyRead(-1);
     quint32 test;
     stream >> test;
     stream.device()->readAll();
     return;
 }
 
-template< typename T1, typename T2, typename T3 >
-void callRemoteVoidMethod( QDataStream& stream, const QString& name, const T1& param1, const T2& param2, const T3& param3 )
-{
-    stream.device()->readAll();
-    stream << name;
-    stream << param1;
-    stream << param2;
-    stream << param3;
-    stream.device()->waitForBytesWritten( -1 );
-    if( !stream.device()->bytesAvailable() )
-        stream.device()->waitForReadyRead( -1 );
-    quint32 test;
-    stream >> test;
-    stream.device()->readAll();
-    return;
-}
-
-template< typename RESULT >
-RESULT callRemoteMethod( QDataStream& stream, const QString& name )
-{
-    stream.device()->readAll();
-    stream << name;
-    stream.device()->waitForBytesWritten( -1 );
-    if( !stream.device()->bytesAvailable() )
-        stream.device()->waitForReadyRead( -1 );
-    quint32 test;
-    stream >> test;
-    RESULT result;
-    stream >> result;
-    stream.device()->readAll();
-    return result;
-}
-
-template< typename RESULT, typename T >
-RESULT callRemoteMethod( QDataStream& stream, const QString& name, const T& param1 )
-{
-    stream.device()->readAll();
-    stream << name;
-    stream << param1;
-    stream.device()->waitForBytesWritten( -1 );
-    if( !stream.device()->bytesAvailable() )
-        stream.device()->waitForReadyRead( -1 );
-    quint32 test;
-    stream >> test;
-    RESULT result;
-    stream >> result;
-    stream.device()->readAll();
-    return result;
-}
-
-template< typename RESULT, typename T1, typename T2 >
-RESULT callRemoteMethod( QDataStream& stream, const QString& name, const T1& param1, const T2& param2 )
-{
-    stream.device()->readAll();
-    stream << name;
-    stream << param1;
-    stream << param2;
-    stream.device()->waitForBytesWritten( -1 );
-    if( !stream.device()->bytesAvailable() )
-        stream.device()->waitForReadyRead( -1 );
-    quint32 test;
-    stream >> test;
-    RESULT result;
-    stream >> result;
-    stream.device()->readAll();
-    return result;
-}
-
-template< typename RESULT, typename T1, typename T2, typename T3 >
-RESULT callRemoteMethod( QDataStream& stream, const QString& name, const T1& param1, const T2& param2, const T3& param3 )
+template<typename T1, typename T2, typename T3>
+void callRemoteVoidMethod(QDataStream &stream, const QString &name, const T1 &param1, const T2 &param2,
+    const T3 & param3)
 {
     stream.device()->readAll();
     stream << name;
     stream << param1;
     stream << param2;
     stream << param3;
-    stream.device()->waitForBytesWritten( -1 );
-    if( !stream.device()->bytesAvailable() )
-        stream.device()->waitForReadyRead( -1 );
+    stream.device()->waitForBytesWritten(-1);
+    if (!stream.device()->bytesAvailable())
+        stream.device()->waitForReadyRead(-1);
+    quint32 test;
+    stream >> test;
+    stream.device()->readAll();
+    return;
+}
+
+template<typename RESULT>
+RESULT callRemoteMethod(QDataStream &stream, const QString &name)
+{
+    stream.device()->readAll();
+    stream << name;
+    stream.device()->waitForBytesWritten(-1);
+    if (!stream.device()->bytesAvailable())
+        stream.device()->waitForReadyRead(-1);
+    quint32 test;
+    stream >> test;
+    RESULT result;
+    stream >> result;
+    stream.device()->readAll();
+    return result;
+}
+
+template<typename RESULT, typename T>
+RESULT callRemoteMethod(QDataStream &stream, const QString &name, const T &param1)
+{
+    stream.device()->readAll();
+    stream << name;
+    stream << param1;
+    stream.device()->waitForBytesWritten(-1);
+    if (!stream.device()->bytesAvailable())
+        stream.device()->waitForReadyRead(-1);
+    quint32 test;
+    stream >> test;
+    RESULT result;
+    stream >> result;
+    stream.device()->readAll();
+    return result;
+}
+
+template<typename RESULT, typename T1, typename T2>
+RESULT callRemoteMethod(QDataStream &stream, const QString &name, const T1 & param1, const T2 &param2)
+{
+    stream.device()->readAll();
+    stream << name;
+    stream << param1;
+    stream << param2;
+    stream.device()->waitForBytesWritten(-1);
+    if (!stream.device()->bytesAvailable())
+        stream.device()->waitForReadyRead(-1);
+    quint32 test;
+    stream >> test;
+    RESULT result;
+    stream >> result;
+    stream.device()->readAll();
+    return result;
+}
+
+template<typename RESULT, typename T1, typename T2, typename T3>
+RESULT callRemoteMethod(QDataStream &stream, const QString &name, const T1 &param1, const T2 & param2,
+    const T3 &param3)
+{
+    stream.device()->readAll();
+    stream << name;
+    stream << param1;
+    stream << param2;
+    stream << param3;
+    stream.device()->waitForBytesWritten(-1);
+    if (!stream.device()->bytesAvailable())
+        stream.device()->waitForReadyRead(-1);
     quint32 test;
     stream >> test;
     RESULT result;
@@ -171,39 +182,37 @@ RESULT callRemoteMethod( QDataStream& stream, const QString& name, const T1& par
 class QProcessWrapper::Private
 {
 public:
-    Private( QProcessWrapper* qq )
-        : q( qq ),
-          ignoreTimer( false ),
-          socket( 0 )
-    {
-    }
+    Private(QProcessWrapper *qq)
+        : q(qq),
+          ignoreTimer(false),
+          socket(0) { }
 
     bool createSocket()
     {
-        if( !FSEngineClientHandler::instance()->isActive() )
+        if (!FSEngineClientHandler::instance()->isActive())
             return false;
-        if( socket != 0 && socket->state() == static_cast< int >( QLocalSocket::ConnectedState ) )
+        if (socket != 0 && socket->state() == static_cast< int >(QLocalSocket::ConnectedState))
             return true;
-        if( socket != 0 )
+        if (socket != 0)
             delete socket;
 #ifdef FSENGINE_TCP
         socket = new QTcpSocket;
 #else
         socket = new QLocalSocket;
 #endif
-        if( !FSEngineClientHandler::instance()->connect( socket ) )
+        if (!FSEngineClientHandler::instance()->connect(socket))
             return false;
-        stream.setDevice( socket );
-        stream.setVersion( QDataStream::Qt_4_2 );
+        stream.setDevice(socket);
+        stream.setVersion(QDataStream::Qt_4_2);
 
-        stream << QString::fromLatin1( "createQProcess" );
+        stream << QString::fromLatin1("createQProcess");
         socket->flush();
-        stream.device()->waitForReadyRead( -1 );
+        stream.device()->waitForReadyRead(-1);
         quint32 test;
         stream >> test;
         stream.device()->readAll();
 
-        q->startTimer( 250 );
+        q->startTimer(250);
 
         return true;
     }
@@ -211,31 +220,32 @@ public:
     class TimerBlocker
     {
     public:
-        explicit TimerBlocker( const QProcessWrapper* wrapper )
-            : w( const_cast< QProcessWrapper* >( wrapper ) )
+        explicit TimerBlocker(const QProcessWrapper *wrapper)
+            : w(const_cast< QProcessWrapper*> (wrapper))
         {
             w->d->ignoreTimer = true;
         }
+
         ~TimerBlocker()
         {
             w->d->ignoreTimer = false;
         }
 
     private:
-        QProcessWrapper* const w;
+        QProcessWrapper *const w;
     };
 
 private:
-    QProcessWrapper* const q;
+    QProcessWrapper *const q;
 
 public:
     bool ignoreTimer;
 
     QProcess process;
 #ifdef FSENGINE_TCP
-    mutable QTcpSocket* socket;
+    mutable QTcpSocket *socket;
 #else
-    mutable QLocalSocket* socket;
+    mutable QLocalSocket *socket;
 #endif
     mutable QDataStream stream;
 };
@@ -243,155 +253,112 @@ public:
 
 // -- QProcessWrapper
 
-QProcessWrapper::QProcessWrapper( QObject* parent )
-    : QObject( parent ),
-      d( new Private( this ) )
+QProcessWrapper::QProcessWrapper(QObject *parent)
+    : QObject(parent),
+      d(new Private(this))
 {
-    KDMetaMethodIterator it( QProcess::staticMetaObject, KDMetaMethodIterator::Signal, KDMetaMethodIterator::IgnoreQObjectMethods );
-    while( it.hasNext() )
-    {
+    KDMetaMethodIterator it(QProcess::staticMetaObject, KDMetaMethodIterator::Signal,
+        KDMetaMethodIterator::IgnoreQObjectMethods);
+    while (it.hasNext()) {
         it.next();
-        connect( &d->process, it.connectableSignature(), this, it.connectableSignature() );
+        connect(&d->process, it.connectableSignature(), this, it.connectableSignature());
     }
 }
 
 QProcessWrapper::~QProcessWrapper()
 {
-    if( d->socket != 0 )
-    {
-        d->stream << QString::fromLatin1( "destroyQProcess" );
+    if (d->socket != 0) {
+        d->stream << QString::fromLatin1("destroyQProcess");
         d->socket->flush();
         quint32 result;
         d->stream >> result;
 
-        if( QThread::currentThread() == d->socket->thread() )
-        {
+        if (QThread::currentThread() == d->socket->thread()) {
             d->socket->close();
             delete d->socket;
-        }
-        else
-        {
+        } else {
             d->socket->deleteLater();
         }
     }
     delete d;
 }
 
-void QProcessWrapper::timerEvent( QTimerEvent* event )
+void QProcessWrapper::timerEvent(QTimerEvent *event)
 {
-    Q_UNUSED( event )
+    Q_UNUSED(event)
 
-    if( d->ignoreTimer )
+    if (d->ignoreTimer)
         return;
 
-    QList< QVariant > receivedSignals;
-
+    QList<QVariant> receivedSignals;
     {
-        const Private::TimerBlocker blocker( this );
+        const Private::TimerBlocker blocker(this);
 
-        d->stream << QString::fromLatin1( "getQProcessSignals" );
+        d->stream << QString::fromLatin1("getQProcessSignals");
         d->socket->flush();
-        d->stream.device()->waitForReadyRead( -1 );
+        d->stream.device()->waitForReadyRead(-1);
         quint32 test;
         d->stream >> test;
         d->stream >> receivedSignals;
         d->stream.device()->readAll();
     }
 
-    while( !receivedSignals.isEmpty() )
-    {
+    while (!receivedSignals.isEmpty()) {
         const QString name = receivedSignals.takeFirst().toString();
-        if( name == QLatin1String( "started" ) )
-        {
+        if (name == QLatin1String("started")) {
             emit started();
-        }
-        else if( name == QLatin1String( "readyRead" ) )
-        {
+        } else if (name == QLatin1String("readyRead")) {
             emit readyRead();
-        }
-         else if( name == QLatin1String( "stateChanged" ) )
-        {
-            const QProcess::ProcessState newState = static_cast< QProcess::ProcessState >( receivedSignals.takeFirst().toInt() );
-            emit stateChanged( newState );
-        }
-        else if( name == QLatin1String( "finished" ) )
-        {
+        } else if (name == QLatin1String("stateChanged")) {
+            const QProcess::ProcessState newState =
+                static_cast<QProcess::ProcessState> (receivedSignals.takeFirst().toInt());
+            emit stateChanged(newState);
+        } else if (name == QLatin1String("finished")) {
             const int exitCode = receivedSignals.takeFirst().toInt();
-            const QProcess::ExitStatus exitStatus = static_cast< QProcess::ExitStatus >( receivedSignals.takeFirst().toInt() );
-            emit finished( exitCode );
-            emit finished( exitCode, exitStatus );
+            const QProcess::ExitStatus exitStatus =
+                static_cast<QProcess::ExitStatus> (receivedSignals.takeFirst().toInt());
+            emit finished(exitCode);
+            emit finished(exitCode, exitStatus);
         }
     }
 }
 
-static QDataStream& operator>>( QDataStream& stream, QProcessWrapper::ProcessState& state )
-{
-    int s;
-    stream >> s;
-    state = static_cast< QProcessWrapper::ProcessState >( s );
-    return stream;
-}
+bool startDetached(const QString &program, const QStringList &args, const QString &workingDirectory,
+    qint64 *pid);
 
-static QDataStream& operator>>( QDataStream& stream, QProcessWrapper::ExitStatus& status )
-{
-    int s;
-    stream >> s;
-    status = static_cast< QProcessWrapper::ExitStatus >( s );
-    return stream;
-}
-
-static QDataStream& operator>>( QDataStream& stream, QProcessWrapper::ProcessChannelMode& status )
-{
-    int s;
-    stream >> s;
-    status = static_cast< QProcessWrapper::ProcessChannelMode >( s );
-    return stream;
-}
-
-static QDataStream& operator>>( QDataStream& stream, QProcessWrapper::ProcessChannel& status )
-{
-    int s;
-    stream >> s;
-    status = static_cast< QProcessWrapper::ProcessChannel >( s );
-    return stream;
-}
-
-
-bool startDetached( const QString& program, const QStringList& args, const QString& workingDirectory, qint64* pid );
-
-bool QProcessWrapper::startDetached( const QString& program, const QStringList& arguments, const QString& workingDirectory, qint64* pid )
+bool QProcessWrapper::startDetached(const QString &program, const QStringList &arguments,
+    const QString &workingDirectory, qint64 *pid)
 {
     QProcessWrapper w;
-    if( w.d->createSocket() )
-    {
-        const QPair< bool, qint64 > result = callRemoteMethod< QPair< bool, qint64 > >( w.d->stream, QLatin1String( "QProcess::startDetached" ), program, arguments, workingDirectory );
-        if( pid != 0 )
+    if (w.d->createSocket()) {
+        const QPair<bool, qint64> result = callRemoteMethod<QPair<bool, qint64> >(w.d->stream,
+            QLatin1String("QProcess::startDetached"), program, arguments, workingDirectory);
+        if (pid != 0)
             *pid = result.second;
         return result.first;
     }
-    else
-    {
-        return ::startDetached( program, arguments, workingDirectory, pid );
+    return ::startDetached(program, arguments, workingDirectory, pid);
+}
+
+bool QProcessWrapper::startDetached(const QString &program, const QStringList &arguments)
+{
+    return startDetached(program, arguments, QDir::currentPath());
+}
+
+bool QProcessWrapper::startDetached(const QString &program)
+{
+    return startDetached(program, QStringList());
+}
+
+void QProcessWrapper::setProcessChannelMode(QProcessWrapper::ProcessChannelMode mode)
+{
+    const Private::TimerBlocker blocker(this);
+    if (d->createSocket()) {
+        callRemoteVoidMethod(d->stream, QLatin1String("QProcess::setProcessChannelMode"),
+            static_cast<QProcess::ProcessChannelMode>(mode));
+    } else {
+        d->process.setProcessChannelMode(static_cast<QProcess::ProcessChannelMode>(mode));
     }
-}
-
-bool QProcessWrapper::startDetached( const QString& program, const QStringList& arguments )
-{
-    return startDetached( program, arguments, QDir::currentPath() );
-}
-
-bool QProcessWrapper::startDetached( const QString& program )
-{
-    return startDetached( program, QStringList() );
-}
-
-void QProcessWrapper::setProcessChannelMode( QProcessWrapper::ProcessChannelMode mode )
-{ \
-    const Private::TimerBlocker blocker( this );\
-    if( d->createSocket() ) \
-        callRemoteVoidMethod( d->stream, QLatin1String( "QProcess::setProcessChannelMode" ), static_cast<QProcess::ProcessChannelMode>( mode ) ); \
-    else \
-        d->process.setProcessChannelMode( static_cast<QProcess::ProcessChannelMode>( mode ) ); \
 }
 
 /*!
@@ -400,167 +367,157 @@ void QProcessWrapper::setProcessChannelMode( QProcessWrapper::ProcessChannelMode
  */
 void QProcessWrapper::cancel()
 {
-    if( state() == QProcessWrapper::Running )
+    if (state() == QProcessWrapper::Running)
         terminate();
-    if( !waitForFinished( 10000 ) )
+
+    if (!waitForFinished(10000))
         kill();
 }
 
-void QProcessWrapper::setReadChannel( QProcessWrapper::ProcessChannel chan )
+void QProcessWrapper::setReadChannel(QProcessWrapper::ProcessChannel chan)
 {
-    const Private::TimerBlocker blocker( this );
-    if( d->createSocket() )
-        callRemoteVoidMethod( d->stream, QLatin1String( "QProcess::setReadChannel" ), static_cast<QProcess::ProcessChannel>( chan ) ); \
-    else
-        d->process.setReadChannel( static_cast<QProcess::ProcessChannel>( chan ) ); \
+    const Private::TimerBlocker blocker(this);
+    if (d->createSocket()) {
+        callRemoteVoidMethod(d->stream, QLatin1String("QProcess::setReadChannel"),
+            static_cast<QProcess::ProcessChannel>(chan));
+    } else {
+        d->process.setReadChannel(static_cast<QProcess::ProcessChannel>(chan));
+    }
 }
 
-bool QProcessWrapper::waitForFinished( int msecs )
+bool QProcessWrapper::waitForFinished(int msecs)
 {
-    const Private::TimerBlocker blocker( this );
-    if( d->createSocket() )
-        return callRemoteMethod< bool >( d->stream, QLatin1String( "QProcess::waitForFinished"), msecs );
+    const Private::TimerBlocker blocker(this);
+    if (d->createSocket())
+        return callRemoteMethod< bool >(d->stream, QLatin1String("QProcess::waitForFinished"), msecs);
     else
-        return d->process.waitForFinished( msecs );
+        return d->process.waitForFinished(msecs);
 }
 
-bool QProcessWrapper::waitForStarted( int msecs )
+bool QProcessWrapper::waitForStarted(int msecs)
 {
-    const Private::TimerBlocker blocker( this );
-    if( d->createSocket() )
-        return callRemoteMethod< bool >( d->stream, QLatin1String( "QProcess::waitForStarted"), msecs );
+    const Private::TimerBlocker blocker(this);
+    if (d->createSocket())
+        return callRemoteMethod< bool >(d->stream, QLatin1String("QProcess::waitForStarted"), msecs);
     else
-        return d->process.waitForStarted( msecs );
+        return d->process.waitForStarted(msecs);
 }
 
-qint64 QProcessWrapper::write( const QByteArray &data )
+qint64 QProcessWrapper::write(const QByteArray &data)
 {
-    const Private::TimerBlocker blocker( this );
-    if( d->createSocket() )
-        return callRemoteMethod< qint64 >( d->stream, QLatin1String( "QProcess::write"), data );
+    const Private::TimerBlocker blocker(this);
+    if (d->createSocket())
+        return callRemoteMethod< qint64 >(d->stream, QLatin1String("QProcess::write"), data);
     else
-        return d->process.write( data );
+        return d->process.write(data);
 }
 
 #undef RETURN_NO_ARGS_CONST
-#define RETURN_NO_ARGS_CONST( RESULT, NAME ) \
+#define RETURN_NO_ARGS_CONST(RESULT, NAME) \
 RESULT QProcessWrapper::NAME() const       \
 { \
-    const Private::TimerBlocker blocker( this );\
-    if( d->createSocket() ) \
-        return callRemoteMethod< RESULT >( d->stream, QLatin1String( "QProcess::"#NAME ) ); \
+    const Private::TimerBlocker blocker(this);\
+    if (d->createSocket()) \
+        return callRemoteMethod< RESULT >(d->stream, QLatin1String("QProcess::"#NAME)); \
     else \
-        return static_cast< RESULT >( d->process.NAME() ); \
+        return static_cast< RESULT >(d->process.NAME()); \
 }
 
-#define RETURN_NO_ARGS( RESULT, NAME ) \
+#define RETURN_NO_ARGS(RESULT, NAME) \
 RESULT QProcessWrapper::NAME()       \
 { \
-    const Private::TimerBlocker blocker( this );\
-    if( d->createSocket() ) \
-        return callRemoteMethod< RESULT >( d->stream, QLatin1String( "QProcess::"#NAME ) ); \
+    const Private::TimerBlocker blocker(this);\
+    if (d->createSocket()) \
+        return callRemoteMethod< RESULT >(d->stream, QLatin1String("QProcess::"#NAME)); \
     else \
         return d->process.NAME(); \
 }
 
-/*
-#undef RETURN_ONE_ARG
-#define RETURN_ONE_ARG( RESULT, NAME, TYPE1 ) \
-RESULT QProcessWrapper::NAME( TYPE1 param1 ) \
-{ \
-    const Private::TimerBlocker blocker( this );\
-    if( d->createSocket() ) \
-        return callRemoteMethod< RESULT >( d->stream, QLatin1String( "QProcess::"#NAME ), param1 ); \
-    else \
-        return d->process.NAME( param1 ); \
-}
-*/
-
 #undef RETURN_ONE_ARG_CONST
-#define RETURN_ONE_ARG_CONST( RESULT, NAME, TYPE1 ) \
-RESULT QProcessWrapper::NAME( TYPE1 param1 ) const \
+#define RETURN_ONE_ARG_CONST(RESULT, NAME, TYPE1) \
+RESULT QProcessWrapper::NAME(TYPE1 param1) const \
 { \
-    const Private::TimerBlocker blocker( this );\
-    if( d->createSocket() ) \
-        return callRemoteMethod< RESULT >( d->stream, QLatin1String( "QProcess::"#NAME ), param1 ); \
+    const Private::TimerBlocker blocker(this);\
+    if (d->createSocket()) \
+        return callRemoteMethod< RESULT >(d->stream, QLatin1String("QProcess::"#NAME), param1); \
     else \
-        return d->process.NAME( param1 ); \
+        return d->process.NAME(param1); \
 }
 
 #undef RETURN_TWO_ARGS_CONST
-#define RETURN_TWO_ARGS_CONST( RESULT, NAME, TYPE1, TYPE2 ) \
-RESULT QProcessWrapper::NAME( TYPE1 param1, TYPE2 param2 ) const \
+#define RETURN_TWO_ARGS_CONST(RESULT, NAME, TYPE1, TYPE2) \
+RESULT QProcessWrapper::NAME(TYPE1 param1, TYPE2 param2) const \
 { \
-    const Private::TimerBlocker blocker( this );\
-    if( d->createSocket() ) \
-        return callRemoteMethod< RESULT >( d->stream, QLatin1String( "QProcess::"#NAME ), param1, param2 ); \
+    const Private::TimerBlocker blocker(this);\
+    if (d->createSocket()) \
+        return callRemoteMethod< RESULT >(d->stream, QLatin1String("QProcess::"#NAME), param1, param2); \
     else \
-        return d->process.NAME( param1, param2 ); \
+        return d->process.NAME(param1, param2); \
 }
 
 #undef VOID_NO_ARGS
-#define VOID_NO_ARGS( NAME ) \
+#define VOID_NO_ARGS(NAME) \
 void QProcessWrapper::NAME() \
 { \
     qDebug() << Q_FUNC_INFO; \
-    const Private::TimerBlocker blocker( this );\
-    if( d->createSocket() ) \
-        callRemoteVoidMethod( d->stream, QLatin1String( "QProcess::"#NAME ) ); \
+    const Private::TimerBlocker blocker(this);\
+    if (d->createSocket()) \
+        callRemoteVoidMethod(d->stream, QLatin1String("QProcess::"#NAME)); \
     else \
         d->process.NAME(); \
 }
 
 #undef VOID_ONE_ARG
-#define VOID_ONE_ARG( NAME, TYPE1 ) \
-void QProcessWrapper::NAME( TYPE1 param1 ) \
+#define VOID_ONE_ARG(NAME, TYPE1) \
+void QProcessWrapper::NAME(TYPE1 param1) \
 { \
     qDebug() << Q_FUNC_INFO; \
-    const Private::TimerBlocker blocker( this );\
-    if( d->createSocket() ) \
-        callRemoteVoidMethod( d->stream, QLatin1String( "QProcess::"#NAME ), param1 ); \
+    const Private::TimerBlocker blocker(this);\
+    if (d->createSocket()) \
+        callRemoteVoidMethod(d->stream, QLatin1String("QProcess::"#NAME), param1); \
     else \
-        d->process.NAME( param1 ); \
+        d->process.NAME(param1); \
 }
 
 #undef VOID_TWO_ARGS
-#define VOID_TWO_ARGS( NAME, TYPE1, TYPE2 ) \
-void QProcessWrapper::NAME( TYPE1 param1, TYPE2 param2 ) \
+#define VOID_TWO_ARGS(NAME, TYPE1, TYPE2) \
+void QProcessWrapper::NAME(TYPE1 param1, TYPE2 param2) \
 { \
     qDebug() << Q_FUNC_INFO; \
-    const Private::TimerBlocker blocker( this );\
-    if( d->createSocket() ) \
-        callRemoteVoidMethod( d->stream, QLatin1String( "QProcess::"#NAME ), param1, param2 ); \
+    const Private::TimerBlocker blocker(this);\
+    if (d->createSocket()) \
+        callRemoteVoidMethod(d->stream, QLatin1String("QProcess::"#NAME), param1, param2); \
     else \
-        d->process.NAME( param1, param2 ); \
+        d->process.NAME(param1, param2); \
 }
 
-#define VOID_THREE_ARGS( NAME, TYPE1, TYPE2, TYPE3 ) \
-void QProcessWrapper::NAME( TYPE1 param1, TYPE2 param2, TYPE3 param3 ) \
+#define VOID_THREE_ARGS(NAME, TYPE1, TYPE2, TYPE3) \
+void QProcessWrapper::NAME(TYPE1 param1, TYPE2 param2, TYPE3 param3) \
 { \
     qDebug() << Q_FUNC_INFO; \
-    const Private::TimerBlocker blocker( this );\
-    if( d->createSocket() ) \
-        callRemoteVoidMethod( d->stream, QLatin1String( "QProcess::"#NAME ), param1, param2, param3 ); \
+    const Private::TimerBlocker blocker(this);\
+    if (d->createSocket()) \
+        callRemoteVoidMethod(d->stream, QLatin1String("QProcess::"#NAME), param1, param2, param3); \
     else \
-        d->process.NAME( param1, param2, param3 ); \
+        d->process.NAME(param1, param2, param3); \
 }
 
-VOID_NO_ARGS( closeWriteChannel );
-RETURN_NO_ARGS_CONST( int, exitCode );
-RETURN_NO_ARGS_CONST( QProcessWrapper::ExitStatus, exitStatus );
-VOID_NO_ARGS( kill )
-RETURN_NO_ARGS( QByteArray, readAll );
-RETURN_NO_ARGS( QByteArray, readAllStandardOutput );
-VOID_THREE_ARGS( start, const QString&, const QStringList&, QIODevice::OpenMode )
-VOID_ONE_ARG( start, const QString& )
+VOID_NO_ARGS(closeWriteChannel);
+RETURN_NO_ARGS_CONST(int, exitCode);
+RETURN_NO_ARGS_CONST(QProcessWrapper::ExitStatus, exitStatus);
+VOID_NO_ARGS(kill)
+RETURN_NO_ARGS(QByteArray, readAll);
+RETURN_NO_ARGS(QByteArray, readAllStandardOutput);
+VOID_THREE_ARGS(start, const QString&, const QStringList&, QIODevice::OpenMode)
+VOID_ONE_ARG(start, const QString&)
 
-RETURN_NO_ARGS_CONST( QProcessWrapper::ProcessState, state )
-VOID_NO_ARGS( terminate )
-RETURN_NO_ARGS_CONST( QProcessWrapper::ProcessChannel, readChannel )
-RETURN_NO_ARGS_CONST( QProcessWrapper::ProcessChannelMode, processChannelMode )
-RETURN_NO_ARGS_CONST( QString, workingDirectory )
-VOID_ONE_ARG( setEnvironment, const QStringList& )
+RETURN_NO_ARGS_CONST(QProcessWrapper::ProcessState, state)
+VOID_NO_ARGS(terminate)
+RETURN_NO_ARGS_CONST(QProcessWrapper::ProcessChannel, readChannel)
+RETURN_NO_ARGS_CONST(QProcessWrapper::ProcessChannelMode, processChannelMode)
+RETURN_NO_ARGS_CONST(QString, workingDirectory)
+VOID_ONE_ARG(setEnvironment, const QStringList&)
 #ifdef Q_OS_WIN
-VOID_ONE_ARG( setNativeArguments, const QString& )
+VOID_ONE_ARG(setNativeArguments, const QString&)
 #endif
-VOID_ONE_ARG( setWorkingDirectory, const QString& )
+VOID_ONE_ARG(setWorkingDirectory, const QString&)

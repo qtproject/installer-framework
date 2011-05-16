@@ -40,85 +40,85 @@ class INSTALLER_EXPORT QProcessWrapper : public QObject
 {
     Q_OBJECT
 public:
-    enum ProcessState
-    {
+    enum ProcessState {
         NotRunning,
         Starting,
         Running
     };
 
-    enum ExitStatus
-    {
+    enum ExitStatus {
         NormalExit,
         CrashExit
     };
 
-    enum ProcessChannel
-    {
+    enum ProcessChannel {
         StandardOutput = 0,
         StandardError = 1
     };
 
-    enum ProcessChannelMode
-    {
+    enum ProcessChannelMode {
         SeparateChannels = 0,
         MergedChannels = 1,
         ForwardedChannels = 2
     };
 
-    explicit QProcessWrapper( QObject* parent = 0 );
+    explicit QProcessWrapper(QObject *parent = 0);
     ~QProcessWrapper();
 
     void closeWriteChannel();
     int exitCode() const;
     ExitStatus exitStatus() const;
     void kill();
+    void terminate();
     QByteArray readAll();
     QByteArray readAllStandardOutput();
-    void setWorkingDirectory( const QString& dir );
-    void start( const QString& program, const QStringList& arguments, QIODevice::OpenMode mode = QIODevice::ReadWrite );
-    void start( const QString& program );
-    static bool startDetached( const QString& program, const QStringList& arguments, const QString& workingDirectory, qint64* pid = 0 );
-    static bool startDetached( const QString& program, const QStringList& arguments );
-    static bool startDetached( const QString& program );
+    void setWorkingDirectory(const QString &dir);
+
+    void start(const QString &program);
+    void start(const QString &program, const QStringList &arguments,
+        QIODevice::OpenMode mode = QIODevice::ReadWrite);
+
+    static bool startDetached(const QString &program);
+    static bool startDetached(const QString &program, const QStringList &arguments);
+    static bool startDetached(const QString &program, const QStringList &arguments,
+        const QString &workingDirectory, qint64 *pid = 0);
 
     ProcessState state() const;
-    void terminate();
-    bool waitForFinished( int msecs = 30000 );
-    bool waitForStarted( int msecs = 30000 );
-    void setEnvironment( const QStringList& environment );
+    bool waitForStarted(int msecs = 30000);
+    bool waitForFinished(int msecs = 30000);
+    void setEnvironment(const QStringList &environment);
     QString workingDirectory() const;
-    qint64 write( const QByteArray& byteArray );
+    qint64 write(const QByteArray &byteArray);
     QProcessWrapper::ProcessChannel readChannel() const;
-    void setReadChannel( QProcessWrapper::ProcessChannel channel );
+    void setReadChannel(QProcessWrapper::ProcessChannel channel);
     QProcessWrapper::ProcessChannelMode processChannelMode() const;
-    void setProcessChannelMode( QProcessWrapper::ProcessChannelMode channel );
+    void setProcessChannelMode(QProcessWrapper::ProcessChannelMode channel);
 #ifdef Q_OS_WIN
-    void setNativeArguments(const QString& arguments);
+    void setNativeArguments(const QString &arguments);
 #endif
 
 Q_SIGNALS:
-    void bytesWritten( qint64 );
+    void bytesWritten(qint64);
     void aboutToClose();
     void readChannelFinished();
-    void error( QProcess::ProcessError );
+    void error(QProcess::ProcessError);
     void readyReadStandardOutput();
     void readyReadStandardError();
-    void finished( int exitCode );
-    void finished( int exitCode, QProcess::ExitStatus exitStatus );
+    void finished(int exitCode);
+    void finished(int exitCode, QProcess::ExitStatus exitStatus);
     void readyRead();
     void started();
-    void stateChanged( QProcess::ProcessState newState );
+    void stateChanged(QProcess::ProcessState newState);
 
 public Q_SLOTS:
     void cancel();
 
 protected:
-    void timerEvent( QTimerEvent* event );
+    void timerEvent(QTimerEvent *event);
 
 private:
     class Private;
-    Private* d;
+    Private *d;
 };
 
 #endif  // QPROCESSWRAPPER_H
