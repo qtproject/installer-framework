@@ -28,8 +28,6 @@ SOURCES = installerbase.cpp \
           installerbasecommons.cpp \
           maintabwidget.cpp
 
-RESOURCES += installerbase.qrc
-
 win32-msvc2005 {
   CONFIG += embed_manifest_exe #msvc2008 is doing this automaticaly
 }
