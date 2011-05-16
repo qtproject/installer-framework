@@ -167,7 +167,7 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
         batch << "fso.DeleteFile(WScript.ScriptFullName)\n";
     }
 
-    QProcess::startDetached(QLatin1String("cscript"), QStringList() << QLatin1String("//Nologo")
+    QProcessWrapper::startDetached(QLatin1String("cscript"), QStringList() << QLatin1String("//Nologo")
         << QDir::toNativeSeparators(batchfile));
 }
 #endif // Q_WS_WIN
@@ -1449,7 +1449,7 @@ void InstallerPrivate::deleteUninstaller()
             arguments << QDir::toNativeSeparators(QFileInfo(op->arguments().first()).absoluteFilePath());
     }
 
-    if (!QProcess::startDetached(QLatin1String("cscript"), arguments, QDir::rootPath()))
+    if (!QProcessWrapper::startDetached(QLatin1String("cscript"), arguments, QDir::rootPath()))
         throw Error(tr("Cannot start uninstall"));
 #else
     // every other platform has no problem if we just delete ourself now

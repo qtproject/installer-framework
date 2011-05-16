@@ -38,7 +38,6 @@
 #include <QtCore/QDirIterator>
 #include <QtCore/QDebug>
 #include <QtCore/QBuffer>
-#include <QtCore/QProcess>
 
 using namespace QInstaller;
 
@@ -116,7 +115,7 @@ bool Relocator::containsOriginalBuildDir(const QString &dirName)
 void Relocator::extractExecutableInfo(const QString& fileName, QStringList& frameworks)
 {
     verbose() << "Relocator calling otool -l for " << fileName << std::endl;
-    QProcess otool;
+    QProcessWrapper otool;
     otool.start(QLatin1String("otool"), QStringList() << QLatin1String("-l") << fileName);
     if (!otool.waitForStarted()) {
         mErrorMessage = QLatin1String("Can't start otool. Is Xcode installed?");

@@ -136,7 +136,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
     if (args.count() >= 2 && args.last() == QLatin1String("&"))
     {
         args.pop_back();
-        const bool success = QProcess::startDetached(args.front(), args.mid(1));
+        const bool success = QProcessWrapper::startDetached(args.front(), args.mid(1));
         if (!success) {
             q->setError(UserDefinedError);
             q->setErrorString(tr("Execution failed: Could not start detached: \"%1\"").arg(callstr));
@@ -228,7 +228,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
 
 /*!
  Cancels the ElevatedExecuteOperation. This methods tries to terminate the process
- gracefully by calling QProcess::terminate. After 10 seconds, the process gets killed.
+ gracefully by calling QProcessWrapper::terminate. After 10 seconds, the process gets killed.
  */
 void ElevatedExecuteOperation::cancelOperation()
 {

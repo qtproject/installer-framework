@@ -37,7 +37,6 @@
 #include <QtCore/QDirIterator>
 #include <QtCore/QDebug>
 #include <QtCore/QBuffer>
-#include <QtCore/QProcess>
 
 using namespace QInstaller;
 
@@ -105,7 +104,7 @@ bool MacReplaceInstallNamesOperation::apply(const QString& indicator, const QStr
 
 void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString& fileName, QString& frameworkId, QStringList& frameworks)
 {
-    QProcess otool;
+    QProcessWrapper otool;
     otool.start(QLatin1String("otool"), QStringList() << QLatin1String("-l") << fileName);
     if (!otool.waitForStarted()) {
         setError(UserDefinedError, tr("Can't invoke otool."));
