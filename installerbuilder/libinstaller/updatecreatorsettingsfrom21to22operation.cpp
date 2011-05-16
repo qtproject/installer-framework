@@ -65,8 +65,9 @@ QStringList getQmakePathesOfAllInstallerRegisteredQtVersions(const QSettings &se
     return qmakePathes;
 }
 
-void removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList &qmakePathes)
+bool removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList &qmakePathes)
 {
+    return true;
     qDebug() << Q_FUNC_INFO << settings.fileName();
     settings.beginGroup(QLatin1String(QtVersionsSectionName));
     int qtVersionSizeValue = settings.value(QLatin1String("size")).toInt();
@@ -127,11 +128,15 @@ void removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList 
         }
     }
 
-    qDebug() << QLatin1String("qtVersionIdMapper.count(): ") << qtVersionIdMapper.count();
-    qDebug() << QLatin1String("qtVersionSizeValue - toRemoveIds.count(): ") << qtVersionSizeValue - toRemoveIds.count();
-    Q_ASSERT(qtVersionIdMapper.count() == qtVersionSizeValue - toRemoveIds.count());
     settings.setValue(QLatin1String("size"), qtVersionIdMapper.count());
     settings.endGroup(); //QtVersionsSectionName
+
+    qDebug() << QLatin1String("qtVersionIdMapper.count(): ") << qtVersionIdMapper.count();
+    qDebug() << QLatin1String("qtVersionSizeValue - toRemoveIds.count(): ") << qtVersionSizeValue - toRemoveIds.count();
+    if (qtVersionIdMapper.count() != qtVersionSizeValue - toRemoveIds.count()) {
+        return false;
+    }
+    return true;
 }
 
 bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXmlFilePath,
@@ -302,7 +307,11 @@ bool UpdateCreatorSettingsFrom21To22Operation::performOperation()
     if (QFile::exists(userSettingsFileName)) {
         QSettings userSettings(userSettingsFileName, QSettings::IniFormat);
         QStringList qmakePathes = getQmakePathesOfAllInstallerRegisteredQtVersions(sdkSettings);
-        removeInstallerRegisteredQtVersions(userSettings, qmakePathes);
+        if (removeInstallerRegisteredQtVersions(userSettings, qmakePathes)) {
+            setError(UserDefinedError);
+            setErrorString(tr("Can not remove previous registered Qt Versions in \"%1\" operation.").arg(name()));
+            return false;
+        }
     }
 
     return convertQtInstallerSettings(sdkSettings, toolChainsXmlFilePath, installer);
