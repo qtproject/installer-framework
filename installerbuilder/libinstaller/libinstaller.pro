@@ -190,4 +190,4 @@ TRANSLATIONS += translations/de_de.ts \
     translations/sv_se.ts
 
 RESOURCES += ../common/openssl.qrc \
-    patch_file_lists.qrc
+    resources/patch_file_lists.qrc
