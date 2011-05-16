@@ -3,11 +3,11 @@ TARGET = installer
 DEPENDPATH += . \
     .. \
     ../common \
-    kdtools/KDToolsCore \
-    kdtools/KDUpdater
+    3rdparty/kdtools/KDToolsCore \
+    3rdparty/kdtools/KDUpdater
 INCLUDEPATH += . \
     .. \
-    kdtools
+    3rdparty/kdtools
 
 DESTDIR = $$OUT_PWD/../lib
 DLLDESTDIR = $$OUT_PWD/../bin
@@ -28,8 +28,8 @@ CONFIG += help uitools
 QTPLUGIN += qsqlite
 
 include(3rdparty/p7zip_9.04/p7zip.pri)
-include(kdtools/KDToolsCore/KDToolsCore.pri)
-include(kdtools/KDUpdater/KDUpdater.pri)
+include(3rdparty/kdtools/KDUpdater/KDUpdater.pri)
+include(3rdparty/kdtools/KDToolsCore/KDToolsCore.pri)
 
 HEADERS += $$PWD/qinstaller.h \
     $$PWD/qinstaller_p.h \

@@ -4,19 +4,16 @@ DEFINES += FSENGINE_TCP
 
 INCLUDEPATH += $$PWD \
     $$PWD/.. \
-    $$PWD/kdtools
+    $$PWD/3rdparty/kdtools \
+    $$PWD/3rdparty/p7zip_9.04 \
+    $$PWD/3rdparty/p7zip_9.04/unix/CPP
 
 DEPENDPATH += $$PWD \
     $$PWD/.. \
-    $$PWD/kdtools/KDToolsCore \
-    $$PWD/kdtools/KDUpdater
-
-
-INCLUDEPATH += $$PWD/3rdparty/p7zip_9.04/unix/CPP \
-               $$PWD/3rdparty/p7zip_9.04
-
-DEPENDPATH += $$PWD/3rdparty/p7zip_9.04/unix/CPP \
-              $$PWD/3rdparty/p7zip_9.04
+    $$PWD/3rdparty/p7zip_9.04 \
+    $$PWD/3rdparty/p7zip_9.04/unix/CPP \
+    $$PWD/3rdparty/kdtools/KDUpdater \
+    $$PWD/3rdparty/kdtools/KDToolsCore \              
 
 CONFIG( shared, static|shared ):DEFINES += LIB_INSTALLER_SHARED
 CONFIG( shared, static|shared ):DEFINES += KDTOOLS_SHARED
