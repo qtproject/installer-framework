@@ -1232,8 +1232,12 @@ bool Installer::isProcessRunning(const QString &name) const
 QList<QVariant> Installer::execute(const QString &program, const QStringList &arguments,
     const QString &stdIn) const
 {
-    QProcess p;
+    QEventLoop loop;
+    QProcessWrapper p;
+
+    connect(&p, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
     p.start(program, arguments, stdIn.isNull() ? QIODevice::ReadOnly : QIODevice::ReadWrite);
+
     if (!p.waitForStarted())
         return QList< QVariant >();
 
@@ -1242,9 +1246,8 @@ QList<QVariant> Installer::execute(const QString &program, const QStringList &ar
         p.closeWriteChannel();
     }
 
-    QEventLoop loop;
-    connect(&p, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
-    loop.exec();
+    if (p.state() != QProcessWrapper::NotRunning)
+        loop.exec();
 
     return QList< QVariant >() << QString::fromLatin1(p.readAllStandardOutput()) << p.exitCode();
 }
