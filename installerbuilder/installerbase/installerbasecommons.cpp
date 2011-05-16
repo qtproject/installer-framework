@@ -235,17 +235,39 @@ bool TargetDirectoryPageImpl::validatePage()
         return false;
     }
 
-    QString remove = installer()->value(QLatin1String("RemoveTargetDir"));
+    const QDir dir(targetDir());
+    if (dir.isRelative()) {
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("forbiddenTargetDirectory"), tr("Error"),
+            tr("The install directory cannot be relative, please specify an absolute path."), QMessageBox::Ok);
+        return false;
+    }
+
+    QString checkString = targetDir();
+#ifdef Q_OS_WIN
+    // remove e.g. "c:"
+    checkString = checkString.mid(2);
+#endif
+    // check if there are not allowed characters in the target path
+    if (checkString.contains(QRegExp(QLatin1String("[!@#$%^&*: ,;]")))) {
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("forbiddenTargetDirectory"), tr("Error"),
+            tr("The install directory cannot contain !@#$%^&*:,; or spaces, please specify a valid folder."),
+            QMessageBox::Ok);
+        return false;
+    }
+
+    const QString remove = installer()->value(QLatin1String("RemoveTargetDir"));
     if (!QVariant(remove).toBool())
         return true;
 
-    const QDir dir(targetDir());
+    // the directory exists and is empty...
     if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
         return true;
 
     QFileInfo fi(targetDir());
     if (fi.isDir()) {
-        if (dir == QDir::root()) {
+        if (dir == QDir::root() || dir == QDir::home()) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("forbiddenTargetDirectory"), tr("Error"),
                 tr("As the install directory is completely deleted installing in %1 is forbidden")
@@ -264,15 +286,14 @@ bool TargetDirectoryPageImpl::validatePage()
         QFileInfo fi2(targetDir() + QDir::separator() + fileName);
         if (fi2.exists()) {
             return askQuestion(QLatin1String("overwriteTargetDirectory"),
-                TargetDirectoryPageImpl::tr("The folder you selected exists already and "
-                "contains an installation.\nDo you want to overwrite it?"));
+                TargetDirectoryPageImpl::tr("The folder you selected exists already and contains an "
+                "installation.\nDo you want to overwrite it?"));
         }
 
         return askQuestion(QLatin1String("overwriteTargetDirectory"),
-            tr("You have selected an existing, non-empty folder for installation.\n"
-            "Note that it will be completely wiped on uninstallation of this application.\n"
-            "It is not advisable to install into this folder as installation might fail.\n"
-            "Do you want to continue?"));
+            tr("You have selected an existing, non-empty folder for installation.\nNote that it will be "
+            "completely wiped on uninstallation of this application.\nIt is not advisable to install into "
+            "this folder as installation might fail.\nDo you want to continue?"));
     } else if (fi.isFile() || fi.isSymLink()) {
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
             QLatin1String("WrongTargetDirectory"), tr("Error"),
