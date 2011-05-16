@@ -13,7 +13,7 @@ class FakeInstaller : public QInstaller::Installer
 public:
     FakeInstaller() : QInstaller::Installer() {}
     void setTargetDir(const QString &targetDir);
-    virtual Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString()) const;
+    Q_INVOKABLE virtual QString value(const QString &key, const QString &defaultValue = QString()) const;
 
 private:
     QString m_targetDir;

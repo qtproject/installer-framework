@@ -100,7 +100,7 @@ public:
 
     // parameter handling
     Q_INVOKABLE void setValue(const QString &key, const QString &value);
-    virtual Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString()) const;
+    Q_INVOKABLE virtual QString value(const QString &key, const QString &defaultValue = QString()) const;
     Q_INVOKABLE bool containsValue(const QString &key) const;
 
     //a way to have global flags share able from a component script to another one
