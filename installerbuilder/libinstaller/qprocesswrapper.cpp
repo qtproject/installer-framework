@@ -24,7 +24,9 @@
 **
 **************************************************************************/
 #include "qprocesswrapper.h"
+
 #include "fsengineclient.h"
+#include "templates.cpp"
 
 #include <KDToolsCore/KDMetaMethodIterator>
 
@@ -32,150 +34,6 @@
 
 #include <QtNetwork/QLocalSocket>
 #include <QtNetwork/QTcpSocket>
-
-template<typename T>
-QDataStream &operator>>(QDataStream &stream, T &state)
-{
-    int s;
-    stream >> s;
-    state = static_cast<T> (s);
-    return stream;
-}
-
-void callRemoteVoidMethod(QDataStream &stream, const QString &name, const QString &foo = QString())
-{
-    Q_UNUSED(foo)
-    stream.device()->readAll();
-    stream << name;
-    stream.device()->waitForBytesWritten(-1);
-    if (!stream.device()->bytesAvailable())
-        stream.device()->waitForReadyRead(-1);
-    quint32 test;
-    stream >> test;
-    stream.device()->readAll();
-    return;
-}
-
-template<typename T>
-void callRemoteVoidMethod(QDataStream & stream, const QString &name, const T &param1)
-{
-    stream.device()->readAll();
-    stream << name;
-    stream << param1;
-    stream.device()->waitForBytesWritten(-1);
-    if (!stream.device()->bytesAvailable())
-        stream.device()->waitForReadyRead(-1);
-    quint32 test;
-    stream >> test;
-    stream.device()->readAll();
-    return;
-}
-
-template<typename T1, typename T2>
-void callRemoteVoidMethod(QDataStream &stream, const QString &name, const T1 &param1, const T2 &param2)
-{
-    stream.device()->readAll();
-    stream << name;
-    stream << param1;
-    stream << param2;
-    stream.device()->waitForBytesWritten(-1);
-    if (!stream.device()->bytesAvailable())
-        stream.device()->waitForReadyRead(-1);
-    quint32 test;
-    stream >> test;
-    stream.device()->readAll();
-    return;
-}
-
-template<typename T1, typename T2, typename T3>
-void callRemoteVoidMethod(QDataStream &stream, const QString &name, const T1 &param1, const T2 &param2,
-    const T3 & param3)
-{
-    stream.device()->readAll();
-    stream << name;
-    stream << param1;
-    stream << param2;
-    stream << param3;
-    stream.device()->waitForBytesWritten(-1);
-    if (!stream.device()->bytesAvailable())
-        stream.device()->waitForReadyRead(-1);
-    quint32 test;
-    stream >> test;
-    stream.device()->readAll();
-    return;
-}
-
-template<typename RESULT>
-RESULT callRemoteMethod(QDataStream &stream, const QString &name)
-{
-    stream.device()->readAll();
-    stream << name;
-    stream.device()->waitForBytesWritten(-1);
-    if (!stream.device()->bytesAvailable())
-        stream.device()->waitForReadyRead(-1);
-    quint32 test;
-    stream >> test;
-    RESULT result;
-    stream >> result;
-    stream.device()->readAll();
-    return result;
-}
-
-template<typename RESULT, typename T>
-RESULT callRemoteMethod(QDataStream &stream, const QString &name, const T &param1)
-{
-    stream.device()->readAll();
-    stream << name;
-    stream << param1;
-    stream.device()->waitForBytesWritten(-1);
-    if (!stream.device()->bytesAvailable())
-        stream.device()->waitForReadyRead(-1);
-    quint32 test;
-    stream >> test;
-    RESULT result;
-    stream >> result;
-    stream.device()->readAll();
-    return result;
-}
-
-template<typename RESULT, typename T1, typename T2>
-RESULT callRemoteMethod(QDataStream &stream, const QString &name, const T1 & param1, const T2 &param2)
-{
-    stream.device()->readAll();
-    stream << name;
-    stream << param1;
-    stream << param2;
-    stream.device()->waitForBytesWritten(-1);
-    if (!stream.device()->bytesAvailable())
-        stream.device()->waitForReadyRead(-1);
-    quint32 test;
-    stream >> test;
-    RESULT result;
-    stream >> result;
-    stream.device()->readAll();
-    return result;
-}
-
-template<typename RESULT, typename T1, typename T2, typename T3>
-RESULT callRemoteMethod(QDataStream &stream, const QString &name, const T1 &param1, const T2 & param2,
-    const T3 &param3)
-{
-    stream.device()->readAll();
-    stream << name;
-    stream << param1;
-    stream << param2;
-    stream << param3;
-    stream.device()->waitForBytesWritten(-1);
-    if (!stream.device()->bytesAvailable())
-        stream.device()->waitForReadyRead(-1);
-    quint32 test;
-    stream >> test;
-    RESULT result;
-    stream >> result;
-    stream.device()->readAll();
-    return result;
-}
-
 
 // -- QProcessWrapper::Private
 
@@ -462,7 +320,7 @@ void QProcessWrapper::NAME() \
     qDebug() << Q_FUNC_INFO; \
     const Private::TimerBlocker blocker(this);\
     if (d->createSocket()) \
-        callRemoteVoidMethod(d->stream, QLatin1String("QProcess::"#NAME)); \
+        callRemoteVoidMethod<void>(d->stream, QLatin1String("QProcess::"#NAME)); \
     else \
         d->process.NAME(); \
 }

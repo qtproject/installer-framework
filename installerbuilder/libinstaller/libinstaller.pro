@@ -157,7 +157,8 @@ SOURCES += $$PWD/qinstaller.cpp \
     qtcreatorpersistentsettings.cpp \
     registerdefaultdebuggeroperation.cpp \
     updatecreatorsettingsfrom21to22operation.cpp \
-    qprocesswrapper.cpp
+    qprocesswrapper.cpp \
+    templates.cpp
 
 macx {
     HEADERS +=  macrelocateqt.h \
