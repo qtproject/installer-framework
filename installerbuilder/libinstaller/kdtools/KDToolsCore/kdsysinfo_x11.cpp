@@ -128,7 +128,7 @@ QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
         if( statvfs( qPrintable( v.name() ), &data ) == 0 )
         {
             v.setSize( KDByteSize( static_cast< quint64 >( data.f_blocks ) * data.f_bsize ) );
-            v.setAvailableSpace( KDByteSize( static_cast< quint64> ( data.f_bfree ) * data.f_bsize ) );
+            v.setAvailableSpace( KDByteSize( static_cast< quint64> ( data.f_bavail ) * data.f_bsize ) );
         }
 
         result.push_back( v );
