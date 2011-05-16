@@ -51,6 +51,7 @@ struct KDUpdater::Task::TaskData
         paused = false;
         stopped = false;
         progressPc = 0;
+        autoDelete = true;
     }
 
     Task* q;
@@ -64,6 +65,7 @@ struct KDUpdater::Task::TaskData
     bool stopped;
     int progressPc;
     QString progressText;
+    bool autoDelete;
 };
 
 /*!
@@ -242,7 +244,8 @@ void KDUpdater::Task::stop()
     d->finished = false; // the task is not finished, but was canceled half-way through
 
     emit stopped();
-    deleteLater();
+    if (d->autoDelete)
+        deleteLater();
 }
 
 /*!
@@ -340,7 +343,8 @@ void KDUpdater::Task::reportError(int errorCode, const QString& errorText)
     d->errorText = errorText;
 
     emit error(d->errorCode, d->errorText);
-    deleteLater();
+    if (d->autoDelete)
+        deleteLater();
 }
 
 /*!
@@ -360,7 +364,18 @@ void KDUpdater::Task::reportDone()
     d->errorText.clear();
 
     emit finished();
-    deleteLater();
+    if (d->autoDelete)
+        deleteLater();
+}
+
+bool KDUpdater::Task::autoDelete() const
+{
+    return d->autoDelete;
+}
+
+void KDUpdater::Task::setAutoDelete(bool autoDelete)
+{
+    d->autoDelete = autoDelete;
 }
 
 /*!

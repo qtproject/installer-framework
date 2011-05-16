@@ -56,6 +56,9 @@ namespace KDUpdater
         int  progressPercent() const;
         QString progressText() const;
 
+        bool autoDelete() const;
+        void setAutoDelete(bool autoDelete);
+
     public Q_SLOTS:
         void run();
         void stop();

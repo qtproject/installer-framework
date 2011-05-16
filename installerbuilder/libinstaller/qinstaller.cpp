@@ -724,6 +724,7 @@ bool Installer::fetchAllPackages()
     }
 
     KDUpdater::UpdateFinder updateFinder(d->m_app);
+    updateFinder.setAutoDelete(false);
     updateFinder.setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
     updateFinder.run();
 
@@ -822,6 +823,7 @@ bool Installer::fetchUpdaterPackages()
     }
 
     KDUpdater::UpdateFinder updateFinder(d->m_app);
+    updateFinder.setAutoDelete(false);
     updateFinder.setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
     updateFinder.run();
 
