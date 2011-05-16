@@ -93,6 +93,7 @@ bool RegisterQtInCreatorV2Operation::performOperation()
         qmakePath.append(QLatin1String("/bin/qmake"));
 #endif
     }
+    qmakePath = QDir::toNativeSeparators(qmakePath);
 
     const QString &systemRoot = QDir::toNativeSeparators(args.value(argCounter++)); //Symbian SDK root for example
     const QString &sbsPath = QDir::toNativeSeparators(args.value(argCounter++));
@@ -163,6 +164,7 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
         qmakePath.append(QLatin1String("/bin/qmake"));
 #endif
     }
+    qmakePath = QDir::toNativeSeparators(qmakePath);
 
     QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
                         QSettings::IniFormat);
