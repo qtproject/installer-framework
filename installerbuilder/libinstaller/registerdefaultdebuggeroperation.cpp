@@ -32,7 +32,7 @@
 **************************************************************************/
 #include "registerdefaultdebuggeroperation.h"
 #include "persistentsettings.h"
-//#include "qinstaller.h"
+#include "qinstaller.h"
 #include "qtcreator_constants.h"
 #include "qtcreatorpersistentsettings.h"
 
@@ -80,15 +80,14 @@ bool RegisterDefaultDebuggerOperation::performOperation()
 
     QString toolChainsXmlFilePath;
 
-//    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
-//    if (!installer) {
-//        setError(UserDefinedError);
-//        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
-//        return false;
-//    }
-//    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
-//    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
-    toolChainsXmlFilePath = "d:\\toolchains.xml_debugger";
+    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+    if (!installer) {
+        setError(UserDefinedError);
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
+    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
 
     int argCounter = 0;
     const QString &abiString = args.at(argCounter++); //for example x86-windows-msys-pe-32bit
@@ -121,15 +120,14 @@ bool RegisterDefaultDebuggerOperation::undoOperation()
 
     QString toolChainsXmlFilePath;
 
-//    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
-//    if (!installer) {
-//        setError(UserDefinedError);
-//        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
-//        return false;
-//    }
-//    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
-//    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
-    toolChainsXmlFilePath = "d:\\toolchains.xml_debugger";
+    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+    if (!installer) {
+        setError(UserDefinedError);
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
+    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
 
     int argCounter = 0;
     const QString &abiString = args.at(argCounter++); //for example x86-windows-msys-pe-32bit
@@ -148,7 +146,7 @@ bool RegisterDefaultDebuggerOperation::testOperation()
     return true;
 }
 
-KDUpdaterUpdateOperation* RegisterDefaultDebuggerOperation::clone() const
+KDUpdater::UpdateOperation* RegisterDefaultDebuggerOperation::clone() const
 {
     return new RegisterDefaultDebuggerOperation();
 }

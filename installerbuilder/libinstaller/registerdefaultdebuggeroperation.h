@@ -26,38 +26,24 @@
 #ifndef REGISTERDEFAULTDEBUGGEROPERATION_H
 #define REGISTERDEFAULTDEBUGGEROPERATION_H
 
-//#include <KDUpdater/UpdateOperation>
+#include <KDUpdater/UpdateOperation>
 
 #include <QObject>
 #include <QStringList>
-typedef QObject KDUpdaterUpdateOperation;
 
 namespace QInstaller {
 
-class RegisterDefaultDebuggerOperation : public KDUpdaterUpdateOperation
+class RegisterDefaultDebuggerOperation : public KDUpdater::UpdateOperation
 {
 public:
     RegisterDefaultDebuggerOperation();
     ~RegisterDefaultDebuggerOperation();
-    enum error {
-        UserDefinedError,
-        InvalidArguments
-    };
-
-    void setName(const QString &) {}
-    QString name() {return "something";}
-    void setError(error) {}
-    void setErrorString(const QString &) {}
-
-    void setArguments(const QStringList &arguments) {m_arguments = arguments;}
-    QStringList arguments() {return m_arguments;}
-    QStringList m_arguments;
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdaterUpdateOperation* clone() const;
+    KDUpdater::UpdateOperation* clone() const;
 };
 
 } // namespace
