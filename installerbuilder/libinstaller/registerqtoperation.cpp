@@ -127,6 +127,51 @@ bool RegisterQtInCreatorOperation::performOperation()
 
 bool RegisterQtInCreatorOperation::undoOperation()
 {
+    const QStringList args = arguments();
+    const QString &rootInstallPath = args.at(0); //for example "C:\\Nokia_SDK\\"
+    const QString &versionName = args.at(1);
+    Q_UNUSED(versionName)
+    const QString &path = args.at(2);
+    Q_UNUSED(path)
+    QString mingwPath;
+    QString s60SdkPath;
+    QString gccePath;
+    QString carbidePath;
+    QString msvcPath;
+    QString sbsPath;
+    if (args.count() >= 4)
+        mingwPath = args.at(3);
+    if (args.count() >= 5)
+        s60SdkPath = args.at(4);
+    if (arguments().count() >= 6)
+        gccePath = args.at(5);
+    if (args.count() >= 7)
+        carbidePath = args.at(6);
+    if (args.count() >= 8)
+        msvcPath = args.at(7);
+    if (args.count() >= 9)
+        sbsPath = args.at(8);
+
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
+                        QSettings::IniFormat);
+
+    QString newVersions;
+    QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")
+                                                  ).toString().split(QLatin1String(";"));
+
+    //remove not existing Qt versions, the current to remove Qt version has an already removed qmake
+    if (!oldNewQtVersions.isEmpty()) {
+        foreach (const QString &qtVersion, oldNewQtVersions) {
+            QStringList splitedQtConfiguration = qtVersion.split(QLatin1String("="));
+            if (splitedQtConfiguration.count() > 1
+                && splitedQtConfiguration.at(1).contains(QLatin1String("qmake"), Qt::CaseInsensitive)) {
+                    QString qmakePath = splitedQtConfiguration.at(1);
+                    if (QFile::exists(qmakePath))
+                        newVersions.append(qtVersion + QLatin1String(";"));
+            }
+        }
+    }
+    settings.setValue(QLatin1String("NewQtVersions"), newVersions);
     return true;
 }
 
