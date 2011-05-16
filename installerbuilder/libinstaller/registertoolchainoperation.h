@@ -60,6 +60,6 @@ public:
     KDUpdater::UpdateOperation* clone() const;
 };
 
-}; // namespace
+} // namespace
 
 #endif // REGISTERTOOLCHAINOPERATION_H
