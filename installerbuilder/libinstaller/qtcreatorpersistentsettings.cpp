@@ -180,6 +180,7 @@ bool QtCreatorPersistentSettings::save()
             if (key.contains(QLatin1String(".Debugger"))
                     && toolChainMap.value(key).toString().isEmpty()) {
                 toolChainMap.insert(key, m_abiToDebuggerHash.value(abiString));
+                break;
             }
         }
 
