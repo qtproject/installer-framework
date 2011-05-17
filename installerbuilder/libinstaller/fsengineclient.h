@@ -26,59 +26,44 @@
 #ifndef FSENGINECLIENT_H
 #define FSENGINECLIENT_H
 
-#include <QtCore/QAbstractFileEngineHandler>
-#include <QtCore/QSettings>
+#include "installer_global.h"
 
-#ifdef FSENGINE_TCP
+#include <QtCore/QAbstractFileEngineHandler>
+
 #include <QtNetwork/QHostAddress>
+
 QT_BEGIN_NAMESPACE
 class QTcpSocket;
 QT_END_NAMESPACE
-#else
-QT_BEGIN_NAMESPACE
-class QLocalSocket;
-QT_END_NAMESPACE
-#endif
-
-#include "installer_global.h"
 
 class INSTALLER_EXPORT FSEngineClientHandler : public QAbstractFileEngineHandler
 {
 public:
     FSEngineClientHandler();
-#ifdef FSENGINE_TCP
-    FSEngineClientHandler( quint16 port, const QHostAddress& a = QHostAddress::LocalHost );
-    void init( quint16 port, const QHostAddress& a = QHostAddress::LocalHost );
-
-#else
-    FSEngineClientHandler( const QString& socket );
-    void init( const QString& socket );
-#endif
+    FSEngineClientHandler(quint16 port, const QHostAddress &a = QHostAddress::LocalHost);
     ~FSEngineClientHandler();
+
+    void init(quint16 port, const QHostAddress &a = QHostAddress::LocalHost);
 
     static FSEngineClientHandler* instance();
 
-    QAbstractFileEngine* create( const QString& fileName ) const;
+    QAbstractFileEngine* create(const QString &fileName) const;
 
     void enableTestMode();
-    void setActive( bool active );
+    void setActive(bool active);
     bool isActive() const;
     bool isServerRunning() const;
 
     QString authorizationKey() const;
 
-    void setStartServerCommand( const QString& command, bool startAsAdmin = false );
-    void setStartServerCommand( const QString& command, const QStringList& arguments, bool startAsAdmin = false );
+    void setStartServerCommand(const QString &command, bool startAsAdmin = false);
+    void setStartServerCommand(const QString &command, const QStringList &arguments, bool startAsAdmin = false);
 
-#ifdef FSENGINE_TCP
-    bool connect( QTcpSocket* socket );
-#else
-    bool connect( QLocalSocket* socket );
-#endif
+    bool connect(QTcpSocket *socket);
 
 private:
     class Private;
-    Private* d;
+    Private *d;
 };
 
 #endif
