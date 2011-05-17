@@ -307,7 +307,7 @@ bool UpdateCreatorSettingsFrom21To22Operation::performOperation()
     if (QFile::exists(userSettingsFileName)) {
         QSettings userSettings(userSettingsFileName, QSettings::IniFormat);
         QStringList qmakePathes = getQmakePathesOfAllInstallerRegisteredQtVersions(sdkSettings);
-        if (removeInstallerRegisteredQtVersions(userSettings, qmakePathes)) {
+        if (!removeInstallerRegisteredQtVersions(userSettings, qmakePathes)) {
             setError(UserDefinedError);
             setErrorString(tr("Can not remove previous registered Qt Versions in \"%1\" operation.").arg(name()));
             return false;
