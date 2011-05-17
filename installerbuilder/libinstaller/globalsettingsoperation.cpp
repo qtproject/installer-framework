@@ -31,7 +31,7 @@
 **
 **************************************************************************/
 #include "globalsettingsoperation.h"
-#include "fsengineclient.h"
+#include "qsettingswrapper.h"
 
 using namespace QInstaller;
 
@@ -65,7 +65,7 @@ bool GlobalSettingsOperation::performOperation()
     settings->setValue(key, value);
     settings->sync();
 
-    if (settings->status() != QSettings::NoError) {
+    if (settings->status() != QSettingsWrapper::NoError) {
         setError(UserDefinedError);
         setErrorString(tr("Failed to write settings"));
         return false;
@@ -118,7 +118,7 @@ QSettingsWrapper* GlobalSettingsOperation::setup(QString *key, QString *value,
         const QString &filename = arguments.at(0);
         *key = arguments.at(1);
         *value = arguments.at(2);
-        return new QSettingsWrapper(filename, QSettings::NativeFormat);
+        return new QSettingsWrapper(filename, QSettingsWrapper::NativeFormat);
     }
 
     setError(InvalidArguments);

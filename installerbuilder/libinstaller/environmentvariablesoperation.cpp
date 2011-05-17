@@ -31,15 +31,11 @@
 **
 **************************************************************************/
 #include "environmentvariablesoperation.h"
+#include "qsettingswrapper.h"
 
 #include <stdlib.h>
 
-#include <QtCore/QSettings>
-
 #include "KDUpdater/environment.h"
-
-// this makes us use QSettingsWrapper
-#include "fsengineclient.h"
 
 #ifdef Q_WS_WIN
 # include <windows.h>
@@ -92,7 +88,7 @@ UpdateOperation::Error writeSetting(const QString &regPath,
                                     QString *errorString,
                                     QString *oldValue) {
     oldValue->clear();
-    SettingsType registry(regPath, QSettings::NativeFormat);
+    SettingsType registry(regPath, QSettingsWrapper::NativeFormat);
     if (!registry.isWritable()) {
         *errorString = QObject::tr("Registry path %1 is not writable").arg(regPath);
         return UpdateOperation::UserDefinedError;
@@ -105,7 +101,7 @@ UpdateOperation::Error writeSetting(const QString &regPath,
     registry.setValue(name, value);
     registry.sync();
 
-    if(registry.status() != QSettings::NoError) {
+    if(registry.status() != QSettingsWrapper::NoError) {
         *errorString = QObject::tr("Could not write to registry path %1").arg(regPath);
         return UpdateOperation::UserDefinedError;
     }
@@ -121,7 +117,7 @@ UpdateOperation::Error undoSetting(const QString &regPath,
                                     QString *errorString) {
     QString actual;
     {
-        SettingsType registry(regPath, QSettings::NativeFormat);
+        SettingsType registry(regPath, QSettingsWrapper::NativeFormat);
         actual = registry.value(name).toString();
     }
     if (actual != value) //key changed, don't undo
@@ -162,7 +158,7 @@ bool EnvironmentVariableOperation::performOperation()
 
         err = isSystemWide
             ? writeSetting<QSettingsWrapper>(regPath, name, value, &errorString, &oldvalue)
-            : writeSetting<QSettings>(regPath, name, value, &errorString, &oldvalue);
+            : writeSetting<QSettingsWrapper>(regPath, name, value, &errorString, &oldvalue);
         if (err != NoError) {
             setError(err);
             setErrorString(errorString);
@@ -215,7 +211,7 @@ bool EnvironmentVariableOperation::undoOperation()
 
     const Error err = isSystemWide
         ? undoSetting<QSettingsWrapper>(regPath, name, value, oldvalue, &errorString)
-        : undoSetting<QSettings>(regPath, name, value, oldvalue, &errorString);
+        : undoSetting<QSettingsWrapper>(regPath, name, value, oldvalue, &errorString);
 
     if  (err != NoError) {
         setError(err);

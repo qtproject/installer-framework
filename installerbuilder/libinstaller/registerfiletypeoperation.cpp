@@ -32,10 +32,7 @@
 **************************************************************************/
 #include "registerfiletypeoperation.h"
 
-#include <QSettings>
-
-// this makes us use QSettingsWrapper
-#include "fsengineclient.h"
+#include "qsettingswrapper.h"
 
 using namespace QInstaller;
 
@@ -73,8 +70,8 @@ bool RegisterFileTypeOperation::performOperation()
     const QString className = QString::fromLatin1( "%1_auto_file" ).arg( extension );
     const QString settingsPrefix = QString::fromLatin1( "Software/Classes/" );
     
-    //QSettings settings( QLatin1String( "HKEY_CLASSES_ROOT" ), QSettings::NativeFormat );
-    QSettings settings(QLatin1String("HKEY_CURRENT_USER"), QSettings::NativeFormat);
+    //QSettingsWrapper settings( QLatin1String( "HKEY_CLASSES_ROOT" ), QSettingsWrapper::NativeFormat );
+    QSettingsWrapper settings(QLatin1String("HKEY_CURRENT_USER"), QSettingsWrapper::NativeFormat);
     // first backup the old values
     setValue(QLatin1String("oldClass"), settings.value(QString::fromLatin1("%1.%2/Default").arg(settingsPrefix, extension)));
     setValue(QLatin1String("oldContentType"), settings.value(QString::fromLatin1("%1.%2/Content Type").arg(settingsPrefix, extension)));
@@ -136,7 +133,7 @@ bool RegisterFileTypeOperation::undoOperation()
     const QString className = QString::fromLatin1("%1_auto_file").arg(extension);
     const QString settingsPrefix = QString::fromLatin1("Software/Classes/");
     
-    QSettings settings(QLatin1String("HKEY_CURRENT_USER"), QSettings::NativeFormat);
+    QSettingsWrapper settings(QLatin1String("HKEY_CURRENT_USER"), QSettingsWrapper::NativeFormat);
 
     const QString restoredClassName = value(QLatin1String("oldClassName")).toString();
     // register the command to open the file

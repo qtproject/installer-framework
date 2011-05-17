@@ -46,6 +46,7 @@
 #include "qinstallercomponent.h"
 #include "qinstallerglobal.h"
 #include "qprocesswrapper.h"
+#include "qsettingswrapper.h"
 
 #include <QtCore/QTemporaryFile>
 
@@ -546,7 +547,7 @@ void Installer::rollBackInstallation()
 
 bool Installer::isFileExtensionRegistered(const QString& extension) const
 {
-    QSettings settings(QLatin1String("HKEY_CLASSES_ROOT"), QSettings::NativeFormat);
+    QSettingsWrapper settings(QLatin1String("HKEY_CLASSES_ROOT"), QSettingsWrapper::NativeFormat);
     return settings.value(QString::fromLatin1(".%1/Default").arg(extension)).isValid();
 }
 

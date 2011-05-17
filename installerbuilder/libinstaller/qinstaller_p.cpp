@@ -44,6 +44,7 @@
 #include "qinstaller.h"
 #include "qinstallercomponent.h"
 #include "qprocesswrapper.h"
+#include "qsettingswrapper.h"
 
 #include <KDToolsCore/KDSaveFile>
 #include <KDToolsCore/KDSelfRestarter>
@@ -348,8 +349,8 @@ void InstallerPrivate::initialize()
         m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_installerSettings->targetDir()));
     m_vars.insert(QLatin1String("RemoveTargetDir"), replaceVariables(m_installerSettings->removeTargetDir()));
 
-    QSettings creatorSettings(QSettings::IniFormat, QSettings::UserScope, QLatin1String("Nokia"),
-        QLatin1String("QtCreator"));
+    QSettingsWrapper creatorSettings(QSettingsWrapper::IniFormat, QSettingsWrapper::UserScope,
+        QLatin1String("Nokia"), QLatin1String("QtCreator"));
     QFileInfo info(creatorSettings.fileName());
     if (info.exists())
         m_vars.insert(QLatin1String("QtCreatorSettingsFile"), info.absoluteFilePath());
@@ -477,7 +478,7 @@ QString InstallerPrivate::uninstallerName() const
 void InstallerPrivate::readUninstallerIniFile(const QString &targetDir)
 {
     const QString iniPath = targetDir + QLatin1Char('/') + m_installerSettings->uninstallerIniFile();
-    QSettings cfg(iniPath, QSettings::IniFormat);
+    QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
     const QVariantHash vars = cfg.value(QLatin1String("Variables")).toHash();
     QHash<QString, QVariant>::ConstIterator it = vars.constBegin();
     while (it != vars.constEnd()) {
@@ -643,7 +644,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
     {
         // write current state (variables) to the uninstaller ini file
         const QString iniPath = targetDir() + QLatin1Char('/') + m_installerSettings->uninstallerIniFile();
-        QSettings cfg(iniPath, QSettings::IniFormat);
+        QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
         QVariantHash vars;
         QHash<QString, QString>::ConstIterator it = m_vars.constBegin();
         while (it != m_vars.constEnd()) {
@@ -660,8 +661,8 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         cfg.setValue(QLatin1String("Repositories"), list);
 
         cfg.sync();
-        if (cfg.status() != QSettings::NoError) {
-            const QString reason = cfg.status() == QSettings::AccessError ? tr("Access error")
+        if (cfg.status() != QSettingsWrapper::NoError) {
+            const QString reason = cfg.status() == QSettingsWrapper::AccessError ? tr("Access error")
                 : tr("Format error");
             throw Error(tr("Could not write installer configuration to %1: %2").arg(iniPath, reason));
         }
@@ -1475,7 +1476,7 @@ void InstallerPrivate::deleteUninstaller()
 void InstallerPrivate::registerUninstaller()
 {
 #ifdef Q_OS_WIN
-    QSettings settings(registerPath(), QSettings::NativeFormat);
+    QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);
     settings.setValue(QLatin1String("DisplayName"), m_vars.value(QLatin1String("ProductName")));
     settings.setValue(QLatin1String("DisplayVersion"), m_vars.value(QLatin1String("ProductVersion")));
     const QString uninstaller = QDir::toNativeSeparators(uninstallerName());
@@ -1496,7 +1497,7 @@ void InstallerPrivate::registerUninstaller()
 void InstallerPrivate::unregisterUninstaller()
 {
 #ifdef Q_OS_WIN
-    QSettings settings(registerPath(), QSettings::NativeFormat);
+    QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);
     settings.remove(QString());
 #endif
 }
