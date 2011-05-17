@@ -42,11 +42,7 @@
 #include <QThread>
 #include <QVariant>
 
-#ifdef FSENGINE_TCP
 typedef int descriptor_t;
-#else
-typedef quintptr descriptor_t;
-#endif
 
 #ifdef Q_WS_WIN 
 #include <windows.h>
@@ -189,7 +185,6 @@ private:
     QProcessSignalReceiver* signalReceiver;
 };
 
-#ifdef FSENGINE_TCP
 FSEngineServer::FSEngineServer( quint16 port, QObject* parent )
     : QTcpServer( parent )
 {
@@ -206,22 +201,6 @@ FSEngineServer::FSEngineServer( const QHostAddress& address, quint16 port, QObje
     connect( &watchdog, SIGNAL( timeout() ), qApp, SLOT( quit() ) );
 }
 
-#else
-/*!
- Creates a new FSEngineServer with \a parent. The server will listen on \a socket.
- */
-FSEngineServer::FSEngineServer( const QString& socket, QObject* parent )
-    : QLocalServer( parent )
-{
-    removeServer( socket );
-    listen( socket );
-    QFile( socket ).setPermissions( static_cast< QFile::Permissions >( 0x6666 ) );
-    watchdog.setTimeoutInterval( 30000 );
-    connect( &watchdog, SIGNAL( timeout() ), qApp, SLOT( quit() ) );
-}
-
-#endif
-
 /*!
  Destroys the FSEngineServer.
  */
@@ -232,7 +211,6 @@ FSEngineServer::~FSEngineServer()
         (*it)->wait();
 }
 
-#ifdef FSENGINE_TCP
 /*!
  \reimp
  */
@@ -244,21 +222,6 @@ void FSEngineServer::incomingConnection( int socketDescriptor )
     thread->start();
     watchdog.resetTimeoutTimer();
 }
-
-#else
-
-/*!
- \reimp
- */
-void FSEngineServer::incomingConnection( quintptr socketDescriptor )
-{   
-    qApp->processEvents();
-    QThread* const thread = new FSEngineConnectionThread( socketDescriptor, this );
-    connect( thread, SIGNAL( finished() ), thread, SLOT( deleteLater() ) );
-    thread->start();
-    watchdog.resetTimeoutTimer();
-}
-#endif
 
 void FSEngineServer::enableTestMode()
 {
@@ -316,11 +279,7 @@ void QProcessSignalReceiver::processStateChanged( QProcess::ProcessState newStat
  */
 void FSEngineConnectionThread::run()
 {
-#ifdef FSENGINE_TCP
     QTcpSocket socket;
-#else
-    QLocalSocket socket;
-#endif
     socket.setSocketDescriptor( descriptor );
 
     receivedStream.setDevice( &socket );

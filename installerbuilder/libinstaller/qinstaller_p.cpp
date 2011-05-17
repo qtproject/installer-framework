@@ -98,18 +98,11 @@ void letTheUiRunTillFinished(const QFuture<T>& f)
 */
 static void initEngineHandler(/*QInstaller::*/FSEngineClientHandler *handler)
 {
-#ifdef FSENGINE_TCP
     const int port = 30000 + qrand() % 1000;
     handler->init(port);
     handler->setStartServerCommand(QCoreApplication::applicationFilePath(), QStringList()
         << QLatin1String("--startserver") << QString::number(port) << handler->authorizationKey(),
         true);
-#else
-    const QString name = QInstaller::generateTemporaryFileName();
-    handler->init(name);
-    handler->setStartServerCommand(qApp->applicationFilePath(), QStringList()
-        << QLatin1String("--startserver") << name << handler->authorizationKey(), true);
-#endif
 }
 
 /*!

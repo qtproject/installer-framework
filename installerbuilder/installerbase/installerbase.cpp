@@ -121,11 +121,7 @@ int main(int argc, char *argv[])
 
             // this isthe FSEngineServer as an admin rights process upon request:
             if (args.count() >= 3 && args[1] == QLatin1String("--startserver")) {
-#ifdef FSENGINE_TCP
                 FSEngineServer* const server = new FSEngineServer(args[2].toInt());
-#else
-                FSEngineServer* const server = new FSEngineServer(args[2]);
-#endif
                 if (args.count() >= 4)
                     server->setAuthorizationKey(args[3]);
                 QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));

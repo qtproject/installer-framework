@@ -32,7 +32,6 @@
 
 #include <QtCore/QThread>
 
-#include <QtNetwork/QLocalSocket>
 #include <QtNetwork/QTcpSocket>
 
 // -- QProcessWrapper::Private
@@ -49,15 +48,12 @@ public:
     {
         if (!FSEngineClientHandler::instance()->isActive())
             return false;
-        if (socket != 0 && socket->state() == static_cast< int >(QLocalSocket::ConnectedState))
+        if (socket != 0 && socket->state() == static_cast< int >(QAbstractSocket::ConnectedState))
             return true;
         if (socket != 0)
             delete socket;
-#ifdef FSENGINE_TCP
         socket = new QTcpSocket;
-#else
-        socket = new QLocalSocket;
-#endif
+
         if (!FSEngineClientHandler::instance()->connect(socket))
             return false;
         stream.setDevice(socket);
@@ -100,11 +96,7 @@ public:
     bool ignoreTimer;
 
     QProcess process;
-#ifdef FSENGINE_TCP
     mutable QTcpSocket *socket;
-#else
-    mutable QLocalSocket *socket;
-#endif
     mutable QDataStream stream;
 };
 

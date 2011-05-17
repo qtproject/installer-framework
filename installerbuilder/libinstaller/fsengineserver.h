@@ -30,8 +30,6 @@
 
 #include <KDToolsCore/KDWatchdog>
 
-#ifdef FSENGINE_TCP
-
 #include <QtNetwork/QTcpServer>
 
 class INSTALLER_EXPORT FSEngineServer : public QTcpServer
@@ -53,29 +51,5 @@ private:
     QString key;
     KDWatchdog watchdog;
 };
-
-#else
-
-
-#include <QtNetwork/QLocalServer>
-
-class INSTALLER_EXPORT FSEngineServer : public QLocalServer
-{
-    Q_OBJECT
-public:
-    explicit FSEngineServer( const QString& socket, QObject* parent = 0 );
-    ~FSEngineServer();
-
-    void setAuthorizationKey( const QString& key );
-    QString authorizationKey() const;
-
-protected:
-    void incomingConnection( quintptr socketDescriptor );
-
-private:
-    QString key;
-    KDWatchdog watchdog;
-};
-#endif
 
 #endif

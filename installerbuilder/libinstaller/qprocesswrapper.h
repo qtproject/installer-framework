@@ -32,10 +32,6 @@
 #include<QtCore/QObject>
 #include<QtCore/QProcess>
 
-#ifdef FSENGINE_TCP
-#include <QtNetwork/QHostAddress>
-#endif
-
 class INSTALLER_EXPORT QProcessWrapper : public QObject
 {
     Q_OBJECT
