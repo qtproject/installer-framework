@@ -318,7 +318,7 @@ void QProcessWrapper::kill()
 }
 
 QByteArray QProcessWrapper::readAll()
-{ 
+{
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())
         return callRemoteMethod<QByteArray>(d->stream, QLatin1String("QProcess::readAll"));
@@ -343,11 +343,11 @@ void QProcessWrapper::start(const QString& param1, const QStringList& param2, QI
         d->process.start(param1, param2, param3);
 }
 
-void QProcessWrapper::start(const QString& param1) 
+void QProcessWrapper::start(const QString& param1)
 {
-    qDebug() << Q_FUNC_INFO; 
+    qDebug() << Q_FUNC_INFO;
     const Private::TimerBlocker blocker(this);
-    if (d->createSocket()) 
+    if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QProcess::start"), param1);
     else
         d->process.start(param1);
@@ -372,7 +372,7 @@ void QProcessWrapper::terminate()
 }
 
 QProcessWrapper::ProcessChannel QProcessWrapper::readChannel() const
-{ 
+{
     const Private::TimerBlocker blocker(this);
     if (d->createSocket()) {
         return callRemoteMethod<QProcessWrapper::ProcessChannel>(d->stream,
@@ -392,7 +392,7 @@ QProcessWrapper::ProcessChannelMode QProcessWrapper::processChannelMode() const
 }
 
 QString QProcessWrapper::workingDirectory() const
-{ 
+{
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())
         return callRemoteMethod<QString>(d->stream, QLatin1String("QProcess::workingDirectory"));
@@ -422,7 +422,7 @@ void QProcessWrapper::setNativeArguments(const QString& param1)
 #endif
 
 void QProcessWrapper::setWorkingDirectory(const QString& param1)
-{ 
+{
     qDebug() << Q_FUNC_INFO;
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())
