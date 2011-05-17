@@ -43,6 +43,10 @@
 #include <QSettings>
 #include <QDebug>
 
+using namespace QInstaller;
+
+using namespace ProjectExplorer;
+
 QStringList getQmakePathesOfAllInstallerRegisteredQtVersions(const QSettings &settings)
 {
     QStringList qmakePathes;
@@ -61,24 +65,28 @@ QStringList getQmakePathesOfAllInstallerRegisteredQtVersions(const QSettings &se
     return qmakePathes;
 }
 
-void removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList &qmakePathes)
+bool removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList &qmakePathes)
 {
+    return true;
+    qDebug() << Q_FUNC_INFO << settings.fileName();
     settings.beginGroup(QLatin1String(QtVersionsSectionName));
-    int qtVersionSizeValue=settings.value(QLatin1String("size")).toInt();
+    int qtVersionSizeValue = settings.value(QLatin1String("size")).toInt();
+    qDebug() << QLatin1String("qtVersionSizeValue: ") << qtVersionSizeValue;
 
     //read all settings for Qt Versions
     QHash<QString, QVariant> oldSettingsAsHash;
     foreach (const QString &key, settings.allKeys()) {
         oldSettingsAsHash.insert(key, settings.value(key));
     }
+    qDebug() << QLatin1String("settings.allKeys(): ") << settings.allKeys();
 
     //get the installer added Qt Version settings ids
     QList<int> toRemoveIds;
     QHashIterator<QString, QVariant> it(oldSettingsAsHash);
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
-        if(it.key().endsWith(QLatin1String("QMakePath")) && !it.value().toString().isEmpty()) {
-            foreach(const QString &toRemoveQmakePath, qmakePathes) {
+        if (it.key().endsWith(QLatin1String("QMakePath")) && !it.value().toString().isEmpty()) {
+            foreach (const QString &toRemoveQmakePath, qmakePathes) {
                 if (QFileInfo(it.value().toString()) == QFileInfo(toRemoveQmakePath)) {
                     int firstNoDigitCharIndex = it.key().indexOf(QRegExp(QLatin1String("[^0-9]")));
                     QString numberAtTheBeginning = it.key().left(firstNoDigitCharIndex);
@@ -87,18 +95,19 @@ void removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList 
             }
         }
     }
+    qDebug() << QLatin1String("toRemoveIds: ") << toRemoveIds;
 
     //now write only the other Qt Versions to QtCreator settings
     it.toFront();
     QHash<int, int> qtVersionIdMapper; //old, new
     int newVersionId = 1;
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
         settings.remove(it.key());
         int firstNoDigitCharIndex = it.key().indexOf(QRegExp(QLatin1String("[^0-9]")));
         QString numberAtTheBeginningAsString = it.key().left(firstNoDigitCharIndex);
         QString restOfTheKey = it.key().mid(firstNoDigitCharIndex);
-        bool isNumber=false;
+        bool isNumber = false;
         //check that it is a nummer - for example "size" value of the settings array is not
         int numberAtTheBeginning = numberAtTheBeginningAsString.toInt(&isNumber);
         if (isNumber && !toRemoveIds.contains(numberAtTheBeginning)) {
@@ -107,19 +116,31 @@ void removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList 
                 newVersionId++;
             }
             QString newKey = QString::number(qtVersionIdMapper.value(numberAtTheBeginning)) + restOfTheKey;
-            if (newKey.endsWith(QLatin1String("Id")))
+            if (newKey.endsWith(QLatin1String("Id"))) {
+                qDebug() << QLatin1String("settings.setValue(newKey, qtVersionIdMapper.value(numberAtTheBeginning)): ")
+                         << newKey << QLatin1String("||") << qtVersionIdMapper.value(numberAtTheBeginning);
                 settings.setValue(newKey, qtVersionIdMapper.value(numberAtTheBeginning));
-            else
+            } else {
+                qDebug() << QLatin1String("settings.setValue(newKey, it.value()): ")
+                         << newKey << QLatin1String("||") << it.value();
                 settings.setValue(newKey, it.value());
+            }
         }
     }
 
-    Q_ASSERT(qtVersionIdMapper.count() == qtVersionSizeValue - toRemoveIds.count());
     settings.setValue(QLatin1String("size"), qtVersionIdMapper.count());
     settings.endGroup(); //QtVersionsSectionName
+
+    qDebug() << QLatin1String("qtVersionIdMapper.count(): ") << qtVersionIdMapper.count();
+    qDebug() << QLatin1String("qtVersionSizeValue - toRemoveIds.count(): ") << qtVersionSizeValue - toRemoveIds.count();
+    if (qtVersionIdMapper.count() != qtVersionSizeValue - toRemoveIds.count()) {
+        return false;
+    }
+    return true;
 }
 
-bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXmlFilePath)
+bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXmlFilePath,
+    QInstaller::Installer* const installer)
 {
     QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")).toString().split(
         QLatin1String(";"));
@@ -150,7 +171,6 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
             addedQtVersion += QLatin1Char('=') + sbsPath;
             newQtVersions.append(addedQtVersion + QLatin1Char(';'));
         } else {
-            //I am not sure that this can happen
             newQtVersions.append(qtVersion + QLatin1Char(';'));
         }
     }
@@ -166,6 +186,7 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
         if (mingwPath.isEmpty())
             continue;
         QInstaller::RegisterToolChainOperation operation;
+        operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
         operation.setArguments(QStringList()
                                << QLatin1String("GccToolChain")
                                << QLatin1String("ProjectExplorer.ToolChain.Mingw")
@@ -182,6 +203,7 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
         if (gccePath.isEmpty())
             continue;
         QInstaller::RegisterToolChainOperation operation;
+        operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
         operation.setArguments(QStringList()
                                << QLatin1String("GccToolChain")
                                << QLatin1String("Qt4ProjectManager.ToolChain.GCCE")
@@ -197,7 +219,8 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
     return true;
 }
 
-void convertDefaultGDBInstallerSettings(QSettings &settings)
+void convertDefaultGDBInstallerSettings(QSettings &settings,
+    QInstaller::Installer* const installer)
 {
     settings.beginGroup(QLatin1String("GdbBinaries21"));
 
@@ -209,7 +232,7 @@ void convertDefaultGDBInstallerSettings(QSettings &settings)
 
         QString gdbTypesAsCommaSeperatedString = oldValue.mid(oldValue.indexOf(QLatin1String(",")));
         QStringList gdbTypeList = gdbTypesAsCommaSeperatedString.split(QLatin1String(","));
-        foreach(const QString &gdbType, gdbTypeList) {
+        foreach (const QString &gdbType, gdbTypeList) {
             if (gdbType == QLatin1String("0")) {
                 abiToDefaultDebuggerHash.insert(QLatin1String("x86-linux-generic-elf-64bit"), gdbBinaryPath);
                 abiToDefaultDebuggerHash.insert(QLatin1String("x86-linux-generic-elf-32bit"), gdbBinaryPath);
@@ -228,9 +251,10 @@ void convertDefaultGDBInstallerSettings(QSettings &settings)
         }
     }
     QInstaller::RegisterDefaultDebuggerOperation operation;
+    operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
 
     QHashIterator<QString, QString> it(abiToDefaultDebuggerHash);
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
         operation.setArguments(QStringList() << it.key() << it.value());
         bool result = operation.performOperation();
@@ -239,10 +263,6 @@ void convertDefaultGDBInstallerSettings(QSettings &settings)
 
     settings.endGroup(); //"GdbBinaries21"
 }
-
-using namespace QInstaller;
-
-using namespace ProjectExplorer;
 
 UpdateCreatorSettingsFrom21To22Operation::UpdateCreatorSettingsFrom21To22Operation()
 {
@@ -268,7 +288,7 @@ bool UpdateCreatorSettingsFrom21To22Operation::performOperation()
         return false;
     }
 
-    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
+    Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
     if (!installer) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
@@ -281,16 +301,20 @@ bool UpdateCreatorSettingsFrom21To22Operation::performOperation()
     QSettings sdkSettings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
         QSettings::IniFormat);
 
-    convertDefaultGDBInstallerSettings(sdkSettings);
+    convertDefaultGDBInstallerSettings(sdkSettings, installer);
 
     QString userSettingsFileName = installer->value(QLatin1String("QtCreatorSettingsFile"));
     if (QFile::exists(userSettingsFileName)) {
         QSettings userSettings(userSettingsFileName, QSettings::IniFormat);
         QStringList qmakePathes = getQmakePathesOfAllInstallerRegisteredQtVersions(sdkSettings);
-        removeInstallerRegisteredQtVersions(userSettings, qmakePathes);
+        if (!removeInstallerRegisteredQtVersions(userSettings, qmakePathes)) {
+            setError(UserDefinedError);
+            setErrorString(tr("Can not remove previous registered Qt Versions in \"%1\" operation.").arg(name()));
+            return false;
+        }
     }
 
-    return convertQtInstallerSettings(sdkSettings, toolChainsXmlFilePath);
+    return convertQtInstallerSettings(sdkSettings, toolChainsXmlFilePath, installer);
 }
 
 bool UpdateCreatorSettingsFrom21To22Operation::undoOperation()

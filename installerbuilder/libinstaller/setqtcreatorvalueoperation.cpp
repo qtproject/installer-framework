@@ -32,6 +32,8 @@
 **************************************************************************/
 #include "setqtcreatorvalueoperation.h"
 #include "qtcreator_constants.h"
+#include "updatecreatorsettingsfrom21to22operation.h"
+#include "qinstaller.h"
 
 #include <QString>
 #include <QFileInfo>
@@ -80,8 +82,8 @@ bool SetQtCreatorValueOperation::performOperation()
 
     const QString &group = groupName(args.at(1));
     const QString &key = args.at(2);
-    const QString &value = args.at(3);
-
+    const QString &settingsValue = args.at(3);
+{
     QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
                         QSettings::IniFormat);
 
@@ -89,10 +91,29 @@ bool SetQtCreatorValueOperation::performOperation()
         settings.beginGroup(group);
     }
 
-    settings.setValue(key, value);
+    settings.setValue(key, settingsValue);
 
     if (!group.isEmpty()) {
         settings.endGroup();
+    }
+    settings.sync(); //be save ;)
+} //destruct QSettings
+
+    if (group == QLatin1String("GdbBinaries21")) {
+        QInstaller::Installer* const installer = qVariantValue<Installer*>(value(QLatin1String(
+            "installer")));
+        if (!installer) {
+            setError(UserDefinedError);
+            setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+            return false;
+        }
+        UpdateCreatorSettingsFrom21To22Operation updateCreatorSettingsOperation;
+        updateCreatorSettingsOperation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
+        if (!updateCreatorSettingsOperation.performOperation()) {
+            setError(updateCreatorSettingsOperation.error());
+            setErrorString(updateCreatorSettingsOperation.errorString());
+            return false;
+        }
     }
 
     return true;

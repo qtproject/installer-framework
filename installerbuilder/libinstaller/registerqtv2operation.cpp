@@ -55,6 +55,7 @@ void RegisterQtInCreatorV2Operation::backup()
 {
 }
 
+//version name; qmake path; system root path; sbs path
 bool RegisterQtInCreatorV2Operation::performOperation()
 {
     const QStringList args = arguments();
@@ -81,7 +82,7 @@ bool RegisterQtInCreatorV2Operation::performOperation()
 
     int argCounter = 0;
     const QString &versionName = args.value(argCounter++);
-    const QString &path = args.value(argCounter++);
+    const QString &path = QDir::toNativeSeparators(args.value(argCounter++));
     QString qmakePath = QDir(path).absolutePath();
     if ( !qmakePath.endsWith(QLatin1String("qmake"))
          || !qmakePath.endsWith(QLatin1String("qmake.exe")))
@@ -92,9 +93,10 @@ bool RegisterQtInCreatorV2Operation::performOperation()
         qmakePath.append(QLatin1String("/bin/qmake"));
 #endif
     }
+    qmakePath = QDir::toNativeSeparators(qmakePath);
 
-    const QString &systemRoot = args.value(argCounter++); //Symbian SDK root for example
-    const QString &sbsPath = args.value(argCounter++);
+    const QString &systemRoot = QDir::toNativeSeparators(args.value(argCounter++)); //Symbian SDK root for example
+    const QString &sbsPath = QDir::toNativeSeparators(args.value(argCounter++));
 
     QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
                         QSettings::IniFormat);
@@ -111,7 +113,7 @@ bool RegisterQtInCreatorV2Operation::performOperation()
                     Qt::CaseInsensitive)) {
                 QString foundVersionName = splitedQtConfiguration.at(0);
                 QString foundQmakePath = splitedQtConfiguration.at(1);
-                    if (qmakePath != foundQmakePath && versionName != foundVersionName
+                    if (QFileInfo(qmakePath) != QFileInfo(foundQmakePath) && versionName != foundVersionName
                             && QFile::exists(foundQmakePath)) {
                         newVersions.append(qtVersion + QLatin1String(";"));
                     }
@@ -151,7 +153,7 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
 
     int argCounter = 0;
     const QString &versionName = args.value(argCounter++);
-    const QString &path = args.value(argCounter++);
+    const QString &path = QDir::toNativeSeparators(args.value(argCounter++));
     QString qmakePath = QDir(path).absolutePath();
     if (!qmakePath.endsWith(QLatin1String("qmake"))
          || !qmakePath.endsWith(QLatin1String("qmake.exe")))
@@ -162,6 +164,7 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
         qmakePath.append(QLatin1String("/bin/qmake"));
 #endif
     }
+    qmakePath = QDir::toNativeSeparators(qmakePath);
 
     QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
                         QSettings::IniFormat);
@@ -178,7 +181,7 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
                     Qt::CaseInsensitive)) {
                 QString foundVersionName = splitedQtConfiguration.at(0);
                 QString foundQmakePath = splitedQtConfiguration.at(1);
-                    if (qmakePath != foundQmakePath &&versionName != foundVersionName
+                    if (QFileInfo(qmakePath) != QFileInfo(foundQmakePath) &&versionName != foundVersionName
                             && QFile::exists(foundQmakePath)) {
                         newVersions.append(qtVersion + QLatin1String(";"));
                     }

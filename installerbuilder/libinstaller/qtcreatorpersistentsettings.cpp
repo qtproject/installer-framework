@@ -54,7 +54,7 @@ QHash<QString, QVariantMap> QtCreatorPersistentSettings::readValidToolChains()
         //gets the path variable, hope ".Path" will stay in QtCreator
         QStringList pathContainingKeyList = QStringList(toolChainMap.keys()).filter(QLatin1String(
             ".Path"));
-        foreach(const QString& pathKey, pathContainingKeyList) {
+        foreach (const QString& pathKey, pathContainingKeyList) {
             QString path = toolChainMap.value(pathKey).toString();
             if (!path.isEmpty() && QFile::exists(path)) {
                 toolChainHash.insert(path, toolChainMap);
@@ -149,7 +149,7 @@ bool QtCreatorPersistentSettings::save()
 
     QHashIterator<QString, QString> it(m_abiToDebuggerHash);
     int debuggerCounter = 0;
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
         const QString abiKey = QString::fromLatin1(DEFAULT_DEBUGGER_ABI_KEY) + QString::number(
             debuggerCounter);
@@ -164,9 +164,25 @@ bool QtCreatorPersistentSettings::save()
 
     int toolChainCounter = 0;
 
-    foreach (const QVariantMap &toolChainMap, m_toolChains.values()) {
+    foreach (QVariantMap toolChainMap, m_toolChains.values()) {
         if (toolChainMap.isEmpty())
             continue;
+
+        //if we added a new debugger we need to adjust the tool chains
+        QString abiString;
+        foreach (const QString &key, toolChainMap.keys()) {
+            if (key.contains(QLatin1String(".TargetAbi"))) {
+                abiString = toolChainMap.value(key).toString();
+                break;
+            }
+        }
+        foreach (const QString &key, toolChainMap.keys()) {
+            if (key.contains(QLatin1String(".Debugger"))
+                    && toolChainMap.value(key).toString().isEmpty()) {
+                toolChainMap.insert(key, m_abiToDebuggerHash.value(abiString));
+            }
+        }
+
         m_writer.saveValue(QLatin1String(TOOLCHAIN_DATA_KEY) + QString::number(toolChainCounter++),
             toolChainMap);
     }
