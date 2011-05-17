@@ -41,9 +41,6 @@
 
 #include <KDUpdater/FileDownloader>
 #include <KDUpdater/FileDownloaderFactory>
-#include <KDUpdater/SignatureVerifier>
-#include <KDUpdater/SignatureVerificationResult>
-#include <KDUpdater/kdupdatercrypto.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QTimer>
