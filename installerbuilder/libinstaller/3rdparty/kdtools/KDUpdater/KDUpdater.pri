@@ -65,7 +65,7 @@ DEFINES += KDUPDATERGUITEXTBROWSER \
 QT += gui
 
 TRY_INCLUDEPATHS = /include /usr/include /usr/local/include $$QMAKE_INCDIR $$INCLUDEPATH
-win32:TRY_INCLUDEPATHS += $$PWD/../../3rdparty/openssl-0.9.8k/src/include
+win32:TRY_INCLUDEPATHS += $$PWD/../../openssl-0.9.8k/src/include
 linux-lsb-g++:TRY_INCLUDEPATHS = $$QMAKE_INCDIR $$INCLUDEPATH
 for(p, TRY_INCLUDEPATHS) {
     pp = $$join(p, "", "", "/openssl")

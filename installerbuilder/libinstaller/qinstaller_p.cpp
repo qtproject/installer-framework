@@ -43,6 +43,7 @@
 #include "progresscoordinator.h"
 #include "qinstaller.h"
 #include "qinstallercomponent.h"
+#include "qprocesswrapper.h"
 
 #include <KDToolsCore/KDSaveFile>
 #include <KDToolsCore/KDSelfRestarter>
