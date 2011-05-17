@@ -1390,7 +1390,7 @@ QString Installer::value(const QString &key, const QString &defaultValue) const
         static const QRegExp regex(QLatin1String("\\\\|/"));
         const QString filename = key.section(regex, 0, -2);
         const QString regKey = key.section(regex, -1);
-        const QSettings registry(filename, QSettings::NativeFormat);
+        const QSettingsWrapper registry(filename, QSettingsWrapper::NativeFormat);
         if (!filename.isEmpty() && !regKey.isEmpty() && registry.contains(regKey))
             return registry.value(regKey).toString();
     }
@@ -1521,7 +1521,7 @@ bool Installer::isInstaller() const
 */
 bool Installer::isOfflineOnly() const
 {
-    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
+    QSettingsWrapper confInternal(QLatin1String(":/config/config-internal.ini"), QSettingsWrapper::IniFormat);
     return confInternal.value(QLatin1String("offlineOnly")).toBool();
 }
 
