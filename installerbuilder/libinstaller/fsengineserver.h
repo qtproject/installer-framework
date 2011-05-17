@@ -35,17 +35,18 @@
 class INSTALLER_EXPORT FSEngineServer : public QTcpServer
 {
     Q_OBJECT
+
 public:
-    explicit FSEngineServer( quint16 port, QObject* parent = 0 );
-    FSEngineServer( const QHostAddress& address, quint16 port, QObject* parent = 0 );
+    explicit FSEngineServer(quint16 port, QObject *parent = 0);
+    FSEngineServer(const QHostAddress &address, quint16 port, QObject *parent = 0);
     ~FSEngineServer();
     
     void enableTestMode();
-    void setAuthorizationKey( const QString& key );
+    void setAuthorizationKey(const QString &key);
     QString authorizationKey() const;
 
 protected:
-    void incomingConnection( int socketDescriptor );
+    void incomingConnection(int socketDescriptor);
 
 private:
     QString key;
