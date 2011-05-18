@@ -176,6 +176,9 @@ int main(int argc, char *argv[])
             return u.checkForUpdates(true) ? 0 : 1;
         }
 
+        // from here, the "normal" installer binary is running
+        QApplication app(argc, argv);
+
         if (runCheck.isRunning(KDRunOnceChecker::ProcessList)) {
             if (runCheck.isRunning(KDRunOnceChecker::Lockfile))
                 return 0;
@@ -183,9 +186,6 @@ int main(int argc, char *argv[])
             while (runCheck.isRunning(KDRunOnceChecker::ProcessList))
                 Sleep::sleep(1);
         }
-
-        // from here, the "normal" installer binary is running
-        QApplication app(argc, argv);
 
         if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("Verbose")))
             QInstaller::setVerbose(true);
