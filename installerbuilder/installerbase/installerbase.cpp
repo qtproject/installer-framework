@@ -138,11 +138,11 @@ int main(int argc, char *argv[])
 #endif
 
         if (args.contains(QLatin1String("--checkupdates"))) {
+            QCoreApplication app(argc, argv);
             if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
                 return 0;
 
             Updater u;
-            QCoreApplication app(argc, argv);
             u.setVerbose(args.contains(QLatin1String("--verbose")));
             return u.checkForUpdates() ? 0 : 1;
         }
