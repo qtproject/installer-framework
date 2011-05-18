@@ -26,16 +26,19 @@
 #ifndef QINSTALLER_UTILS_H
 #define QINSTALLER_UTILS_H
 
-#include <QtCore/QCryptographicHash>
-#include <QtCore/QFile>
-#include <QtCore/QFile>
-#include <QtCore/QTextStream>
-#include <QtCore/QBuffer>
-#include <QtCore/QUrl>
-
 #include "installer_global.h"
 
+#include <QtCore/QBuffer>
+#include <QtCore/QCryptographicHash>
+#include <QtCore/QHash>
+#include <QtCore/QUrl>
+#include <QtCore/QTextStream>
+
 #include <ostream>
+
+QT_BEGIN_NAMESPACE
+class QIODevice;
+QT_END_NAMESPACE
 
 namespace QInstaller
 {
@@ -43,6 +46,7 @@ namespace QInstaller
 
     QString INSTALLER_EXPORT replaceVariables( const QHash<QString,QString>& vars, const QString &str );
     QString INSTALLER_EXPORT replaceWindowsEnvironmentVariables( const QString &str );
+    QStringList INSTALLER_EXPORT parseCommandLineArgs(int argc, char **argv);
 
     void INSTALLER_EXPORT setVerbose( bool v );
     bool INSTALLER_EXPORT isVerbose();
