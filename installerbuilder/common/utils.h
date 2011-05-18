@@ -52,6 +52,7 @@ namespace QInstaller
 
     QString INSTALLER_EXPORT replaceVariables( const QHash<QString,QString>& vars, const QString &str );
     QString INSTALLER_EXPORT replaceWindowsEnvironmentVariables( const QString &str );
+    QStringList INSTALLER_EXPORT parseCommandLineArgs(int argc, char **argv);
 
     void INSTALLER_EXPORT setVerbose( bool v );
     bool INSTALLER_EXPORT isVerbose();

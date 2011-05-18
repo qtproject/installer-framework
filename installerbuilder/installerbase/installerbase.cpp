@@ -133,51 +133,47 @@ int main(int argc, char *argv[])
     const KDSelfRestarter restarter(argc, argv);
     KDRunOnceChecker runCheck(QLatin1String("lockmyApp1234865.lock"));
 
-    QApplication app(argc, argv);
-
+    const QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
     try {
-
-        {
-            const QStringList args = app.arguments();
-
-            // this isthe FSEngineServer as an admin rights process upon request:
-            if (args.count() >= 3 && args[1] == QLatin1String("--startserver")) {
+        // this is the FSEngineServer as an admin rights process upon request:
+        if (args.count() >= 3 && args[1] == QLatin1String("--startserver")) {
+            QCoreApplication app(argc, argv);
 #ifdef FSENGINE_TCP
-                FSEngineServer* const server = new FSEngineServer(args[2].toInt());
+            FSEngineServer* const server = new FSEngineServer(args[2].toInt());
 #else
-                FSEngineServer* const server = new FSEngineServer(args[2]);
+            FSEngineServer* const server = new FSEngineServer(args[2]);
 #endif
-                if (args.count() >= 4)
-                    server->setAuthorizationKey(args[3]);
-                QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
-                return app.exec();
-            }
+            if (args.count() >= 4)
+                server->setAuthorizationKey(args[3]);
+            QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
+            return app.exec();
+        }
 
-            // Make sure we honor the system's proxy settings
-            #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
-                QUrl proxyUrl(QString::fromLatin1(qgetenv("http_proxy")));
-                if (proxyUrl.isValid()) {
-                    QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxyUrl.host(),
-                    proxyUrl.port(), proxyUrl.userName(), proxyUrl.password());
-                    QNetworkProxy::setApplicationProxy(proxy);
-                }
-            #else
-                if (args.contains(QLatin1String("--proxy")))
-                    QNetworkProxyFactory::setUseSystemConfiguration(true);
-            #endif
+        // Make sure we honor the system's proxy settings
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+        QUrl proxyUrl(QString::fromLatin1(qgetenv("http_proxy")));
+        if (proxyUrl.isValid()) {
+            QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxyUrl.host(),
+                proxyUrl.port(), proxyUrl.userName(), proxyUrl.password());
+            QNetworkProxy::setApplicationProxy(proxy);
+        }
+#else
+        if (args.contains(QLatin1String("--proxy")))
+            QNetworkProxyFactory::setUseSystemConfiguration(true);
+#endif
 
-            if (args.contains(QLatin1String("--checkupdates"))) {
-                if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
-                    return 0;
+        if (args.contains(QLatin1String("--checkupdates"))) {
+            QCoreApplication app(argc, argv);
+            if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
+                return 0;
 
-                QInstaller::setVerbose(args.contains(QLatin1String("--verbose")));
-                QInstaller::init();
-                // load the embedded binary resource
-                BinaryContent content = BinaryContent::readFromApplicationFile();
-                content.registerEmbeddedQResources();
-                Updater u;
-                return u.checkForUpdates(true) ? 0 : 1;
-            }
+            QInstaller::setVerbose(args.contains(QLatin1String("--verbose")));
+            QInstaller::init();
+            // load the embedded binary resource
+            BinaryContent content = BinaryContent::readFromApplicationFile();
+            content.registerEmbeddedQResources();
+            Updater u;
+            return u.checkForUpdates(true) ? 0 : 1;
         }
 
         if (runCheck.isRunning(KDRunOnceChecker::ProcessList)) {
@@ -188,9 +184,9 @@ int main(int argc, char *argv[])
                 Sleep::sleep(1);
         }
 
-        const QStringList args = app.arguments();
-
         // from here, the "normal" installer binary is running
+        QApplication app(argc, argv);
+
         if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("Verbose")))
             QInstaller::setVerbose(true);
 
@@ -273,7 +269,9 @@ int main(int argc, char *argv[])
              } else if (argument == QLatin1String("--verbose") || argument == QLatin1String("Verbose")) {
                 installer.setVerbose(true);
              } else if (argument == QLatin1String("--proxy")) {
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
                 QNetworkProxyFactory::setUseSystemConfiguration(true);
+#endif
              } else if (argument == QLatin1String("--show-virtual-components")
                  || argument == QLatin1String("ShowVirtualComponents")) {
                      QInstaller::ComponentModel::setVirtualComponentsVisible(true);
@@ -317,15 +315,6 @@ int main(int argc, char *argv[])
             }
         }
 
-        // Make sure we honor the system's proxy settings
-        #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
-            QUrl proxyUrl(QString::fromLatin1(qgetenv("http_proxy")));
-            if (proxyUrl.isValid()) {
-                QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxyUrl.host(),
-                proxyUrl.port(), proxyUrl.userName(), proxyUrl.password());
-                QNetworkProxy::setApplicationProxy(proxy);
-            }
-        #endif
 
         if (!installer.isInstaller())
             installer.setPackageManager();
