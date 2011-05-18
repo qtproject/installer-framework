@@ -26,39 +26,43 @@
 #ifndef CRYPTOSIGNATUREVERIFIER_H
 #define CRYPTOSIGNATUREVERIFIER_H
 
+#include "KDUpdater/kdupdatercrypto.h"
+
 #include <KDUpdater/SignatureVerifier>
 #include <KDUpdater/SignatureVerificationResult>
 
-#include "KDUpdater/kdupdatercrypto.h"
 
 class CryptoSignatureVerifier : public KDUpdater::SignatureVerifier
 {
 public:
-    explicit CryptoSignatureVerifier( const QByteArray& publicKey ) 
-        : m_publicKey( publicKey )
+    explicit CryptoSignatureVerifier(const QByteArray &publicKey)
+        : m_publicKey(publicKey)
     {
     }
+
     SignatureVerifier* clone() const
     {
-        return new CryptoSignatureVerifier( m_publicKey );
+        return new CryptoSignatureVerifier(m_publicKey);
     }
-    KDUpdater::SignatureVerificationResult verify( const QByteArray &data, const QByteArray& signature ) const
+
+    KDUpdater::SignatureVerificationResult verify(const QByteArray &data, const QByteArray &signature) const
     {
         KDUpdaterCrypto crypto;
-        crypto.setPublicKey( m_publicKey );
+        crypto.setPublicKey(m_publicKey);
         KDUpdater::SignatureVerificationResult r;
-        r.setValidity( crypto.verify( data, signature ) ? KDUpdater::SignatureVerificationResult::ValidSignature : KDUpdater::SignatureVerificationResult::BadSignature );
-        r.setErrorString( QObject::tr( "Bad signature" ) );
+        r.setValidity(crypto.verify(data, signature) ? KDUpdater::SignatureVerificationResult::ValidSignature
+            : KDUpdater::SignatureVerificationResult::BadSignature);
+        r.setErrorString( QObject::tr("Bad signature"));
         return r;
     }
+
     QString type() const
-    { 
-        return QLatin1String( "CryptoSignature" );
+    {
+        return QLatin1String("CryptoSignature");
     }
 
 private:
     const QByteArray m_publicKey;
-    KDUpdaterCrypto *m_crypto;
 };
 
 #endif
