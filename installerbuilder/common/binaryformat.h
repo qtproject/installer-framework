@@ -42,7 +42,17 @@ namespace KDUpdater {
 }
 
 namespace QInstaller {
-    qint64 INSTALLER_EXPORT findMagicCookie(QFile *file);
+    static const qint64 MagicInstallerMarker = 0x12023233UL;
+    static const qint64 MagicUninstallerMarker = 0x12023234UL;
+
+    static const qint64 MagicUpdaterMarker =  0x12023235UL;
+    static const qint64 MagicPackageManagerMarker = 0x12023236UL;
+
+    // this cookie is put at the end of the file to determine whether we have data
+    static const quint64 MagicCookie = 0xc2630a1c99d668f8LL;
+    static const quint64 MagicCookieDat = 0xc2630a1c99d668f9LL;
+
+    qint64 INSTALLER_EXPORT findMagicCookie(QFile *file, quint64 magicCookie = MagicCookie);
     void INSTALLER_EXPORT appendFileData(QIODevice *out, QIODevice *in);
     void INSTALLER_EXPORT appendInt64(QIODevice *out, qint64 n);
     void INSTALLER_EXPORT appendInt64Range(QIODevice *out, const Range<qint64> &r);
@@ -59,15 +69,6 @@ namespace QInstaller {
     QString INSTALLER_EXPORT retrieveString(QIODevice *in);
     QStringList INSTALLER_EXPORT retrieveStringList(QIODevice *in);
     QHash<QString,QString> INSTALLER_EXPORT retrieveDictionary(QIODevice *in);
-
-    static const qint64 MagicInstallerMarker = 0x12023233UL;
-    static const qint64 MagicUninstallerMarker = 0x12023234UL;
-
-    static const qint64 MagicUpdaterMarker =  0x12023235UL;
-    static const qint64 MagicPackageManagerMarker = 0x12023236UL;
-
-    // this cookie is put at the end of the file to determine whether we have data
-    static const quint64 MagicCookie = 0xc2630a1c99d668f8LL;
 }
 
 namespace QInstallerCreator {
@@ -169,6 +170,18 @@ private:
 
 namespace QInstaller {
 
+struct BinaryLayout {
+    QVector<Range<qint64> >metadataResourceSegments;
+    qint64 operationsStart;
+    qint64 operationsEnd;
+    qint64 resourceCount;
+    qint64 dataBlockSize;
+    qint64 magicMarker;
+    quint64 magicCookie;
+    qint64 indexSize;
+    qint64 endOfData;
+};
+
 class INSTALLER_EXPORT BinaryContent
 {
     explicit BinaryContent(const QString &path);
@@ -178,10 +191,14 @@ public:
 
     static BinaryContent readFromApplicationFile();
     static BinaryContent readFromBinary(const QString &path);
+    static BinaryLayout readBinaryLayout(QIODevice *file, qint64 cookiePos);
 
     qint64 magicmaker() const;
     int registerEmbeddedQResources();
     QStack<KDUpdater::UpdateOperation*> performedOperations() const;
+
+private:
+    static void readBinaryData(BinaryContent &c, QIODevice *const file, const BinaryLayout &layout);
 
 private:
     QSharedPointer<QFile> file;
@@ -189,7 +206,7 @@ private:
     QInstallerCreator::BinaryFormatEngineHandler handler;
     QVector<Range<qint64> > metadataResourceSegments;
     QVector<const uchar*> mappings;
-    qint64 m_magicmaker;
+    qint64 m_magicmarker;
     qint64 dataBlockStart;
     QStack<KDUpdater::UpdateOperation*> m_performedOperations;
 };

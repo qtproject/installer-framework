@@ -199,7 +199,7 @@ QHash<QString,QString> QInstaller::retrieveDictionary(QIODevice *in)
     return dict;
 }
 
-qint64 QInstaller::findMagicCookie(QFile *in)
+qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
 {
     Q_ASSERT(in);
     Q_ASSERT(in->isOpen());
@@ -217,7 +217,7 @@ qint64 QInstaller::findMagicCookie(QFile *in)
                     in->fileName(), in->errorString()));
             }
             const quint64 num = static_cast<quint64>(retrieveInt64(in));
-            if (num == MagicCookie) {
+            if (num == magicCookie) {
                 in->seek(oldPos);
                 return pos;
             }
@@ -756,10 +756,10 @@ static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segm
 }
 
 BinaryContent::BinaryContent(const QString &path)
-    : file(new QFile(path)),
-       handler(components),
-       m_magicmaker(0),
-       dataBlockStart(0)
+    : file(new QFile(path))
+    , handler(components)
+    , m_magicmarker(0)
+    , dataBlockStart(0)
 {
 }
 
@@ -857,76 +857,101 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
     if (!file->open(QIODevice::ReadOnly))
         throw Error(QObject::tr("Could not open binary %1: %2").arg(path, file->errorString()));
 
-    const qint64 cookiepos = findMagicCookie(file);
-    Q_ASSERT(cookiepos >= 0);
-    const qint64 endOfData = cookiepos + sizeof(qint64);
-    const qint64 indexSize = 6 * sizeof(qint64);
-    if (!file->seek(endOfData - indexSize))
-        throw Error(QObject::tr("Could not seek to binary layout section"));
+    // check for supported binary, will throw if we can't find a marker
+    const qint64 cookiePos = findMagicCookie(file, QInstaller::MagicCookie);
+    const BinaryLayout layout = readBinaryLayout(file, cookiePos);
+    if (layout.magicMarker != MagicInstallerMarker) {
+        QString binaryDataPath = path;
+        QFileInfo fi(path + QLatin1String("/../../.."));
+        if (QFileInfo(fi.absoluteFilePath()).isBundle())
+            binaryDataPath = fi.absoluteFilePath();
+        fi.setFile(binaryDataPath);
 
-    // fetch all file positions to read the data stored after the actual binary
-    qint64 operationsStart = retrieveInt64(file);
-    const qint64 operationsEnd = retrieveInt64(file);
-    const qint64 resourceCount = retrieveInt64(file);
-    const qint64 dataBlockSize = retrieveInt64(file);
-    c.m_magicmaker = retrieveInt64(file);
-    const quint64 magicCookie = retrieveInt64(file);
+        bool retry = true;
+        QFile binaryData(fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat"));
+        if (binaryData.exists() && binaryData.open(QIODevice::ReadOnly)) {
+            // check for supported binary data file, will throw if we can't find a marker
+            try {
+                const qint64 cookiePosData = findMagicCookie(&binaryData, QInstaller::MagicCookieDat);
+                readBinaryData(c, &binaryData, readBinaryLayout(&binaryData, cookiePosData));
+                retry = false;
+            } catch (const Error &error) {
+                // this seems to be an unsupported dat file, try to read from original binary
+                verbose() << error.message();
+            }
+        }
+        if (retry)
+            readBinaryData(c, file, layout);
+    } else {
+        readBinaryData(c, file, layout);
+    }
+    return c;
+}
 
-    Q_UNUSED(magicCookie)
-    Q_UNUSED(operationsEnd)
-    Q_ASSERT(magicCookie == MagicCookie);
+/* static */
+BinaryLayout BinaryContent::readBinaryLayout(QIODevice *file, qint64 cookiePos)
+{
+    const qint64 indexSize = 5 * sizeof(qint64);
+    if (!file->seek(cookiePos - indexSize))
+        throw Error(QObject::tr("Could not seek to binary layout section!"));
 
-    const qint64 dataBlockStart = endOfData - dataBlockSize;
-    const qint64 resourceSectionSize = 2 * sizeof(qint64) * resourceCount;
-    for (int i = 0; i < resourceCount; ++i) {
-        if (!file->seek(endOfData - indexSize - 2 * sizeof(qint64) * (i + 1)))
+    BinaryLayout layout;
+    layout.operationsStart = retrieveInt64(file);
+    layout.operationsEnd = retrieveInt64(file);
+    layout.resourceCount = retrieveInt64(file);
+    layout.dataBlockSize = retrieveInt64(file);
+    layout.magicMarker = retrieveInt64(file);
+    layout.magicCookie = retrieveInt64(file);
+    layout.indexSize = indexSize + sizeof(qint64);
+    layout.endOfData = file->pos();
+
+    const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
+    const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
+    for (int i = 0; i < layout.resourceCount; ++i) {
+        if (!file->seek(layout.endOfData - layout.indexSize - resourceOffsetAndLengtSize * (i + 1)))
             throw Error(QObject::tr("Could not seek to metadata index"));
 
         const qint64 metadataResourceOffset = retrieveInt64(file);
         const qint64 metadataResourceLength = retrieveInt64(file);
-        c.metadataResourceSegments.push_back(Range<qint64>::fromStartAndLength(metadataResourceOffset
+        layout.metadataResourceSegments.append(Range<qint64>::fromStartAndLength(metadataResourceOffset
              + dataBlockStart, metadataResourceLength));
     }
 
-    if (c.m_magicmaker != MagicInstallerMarker) {
-        QString binaryPath = path;
-        QFileInfo fi(binaryPath + QLatin1String("/../../.."));
-        if (QFileInfo(fi.absoluteFilePath()).isBundle())
-            binaryPath = fi.absoluteFilePath();
-        fi.setFile(binaryPath);
+    return layout;
+}
 
-        QFile *tmp = file;
-        operationsStart += dataBlockStart;
-        QFile operations(fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat"));
-        if (operations.exists() && operations.open(QIODevice::ReadOnly)) {
-            if (findMagicCookie(&operations) >= 0) {
-                tmp = &operations;
-                operationsStart = 0;
-            }
-        }
 
-        if (!tmp->seek(operationsStart))
-            throw Error(QObject::tr("Could not seek to operation list"));
+/* static */
+void BinaryContent::readBinaryData(BinaryContent &c, QIODevice *const file, const BinaryLayout &layout)
+{
+    c.m_magicmarker = layout.magicMarker;
+    c.metadataResourceSegments = layout.metadataResourceSegments;
 
-        const qint64 operationsCount = retrieveInt64(tmp);
-        verbose() << "operationsCount=" << operationsCount << std::endl;
+    const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
+    const qint64 operationsStart = layout.operationsStart + dataBlockStart;
+    if (!file->seek(operationsStart))
+        throw Error(QObject::tr("Could not seek to operation list"));
 
-        for (int i = 0; i < operationsCount; ++i) {
-            const QString name = retrieveString(tmp);
-            KDUpdater::UpdateOperation *op = KDUpdater::UpdateOperationFactory::instance().create(name);
-            Q_ASSERT_X(op, __FUNCTION__, QString::fromLatin1("Invalid operation name: %1").arg(name)
-                .toLatin1());
+    const qint64 operationsCount = retrieveInt64(file);
+    verbose() << "Number of operations: " << operationsCount << std::endl;
 
-            const QString xml = retrieveString(tmp);
-            if (!op->fromXml(xml))
-                qWarning() << "Failed to load XML for operation:" << name;
-            verbose() << "Operation name: " << name << "\nOperation xml:\n" << xml.leftRef(1000) << std::endl;
-            c.m_performedOperations.push(op);
-        }
+    for (int i = 0; i < operationsCount; ++i) {
+        const QString name = retrieveString(file);
+        KDUpdater::UpdateOperation *op = KDUpdater::UpdateOperationFactory::instance().create(name);
+        Q_ASSERT_X(op, __FUNCTION__, QString::fromLatin1("Invalid operation name: %1").arg(name)
+            .toLatin1());
+
+        const QString xml = retrieveString(file);
+        if (!op->fromXml(xml))
+            qWarning() << "Failed to load XML for operation:" << name;
+        verbose() << "Operation name: " << name << "\nOperation xml:\n" << xml.leftRef(1000) << std::endl;
+        c.m_performedOperations.push(op);
     }
 
     // seek to the position of the component index
-    if (!file->seek(endOfData - indexSize - resourceSectionSize - 2 * sizeof(qint64)))
+    const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
+    const qint64 resourceSectionSize = resourceOffsetAndLengtSize * layout.resourceCount;
+    if (!file->seek(layout.endOfData - layout.indexSize - resourceSectionSize - resourceOffsetAndLengtSize))
         throw Error(QObject::tr("Could not seek to component index information"));
 
     const qint64 compIndexStart = retrieveInt64(file) + dataBlockStart;
@@ -949,7 +974,6 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
             }
         }
     }
-    return c;
 }
 
 
@@ -958,7 +982,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
 */
 qint64 BinaryContent::magicmaker() const
 {
-    return m_magicmaker;
+    return m_magicmarker;
 }
 
 /*!
