@@ -33,6 +33,8 @@
 #ifndef QINSTALLER_P_H
 #define QINSTALLER_P_H
 
+#include "common/installersettings.h"
+
 #include <KDToolsCore/KDSysInfo>
 
 #include <QtCore/QHash>
@@ -53,7 +55,6 @@ namespace QInstaller {
 
 class Component;
 class Installer;
-class InstallerSettings;
 class TempDirDeleter;
 
 class InstallerPrivate : public QObject
@@ -145,7 +146,6 @@ signals:
 public:
     KDUpdater::Application *m_app;
     TempDirDeleter *m_tempDirDeleter;
-    InstallerSettings *m_installerSettings;
     FSEngineClientHandler *m_FSEngineClientHandler;
 
     int m_status;
@@ -157,6 +157,7 @@ public:
     bool m_needToWriteUninstaller;
     QHash<QString, QString> m_vars;
     QHash<QString, bool> m_sharedFlags;
+    InstallerSettings m_installerSettings;
     QString m_installerBaseBinaryUnreplaced;
 
     qint64 m_globalDictOffset;

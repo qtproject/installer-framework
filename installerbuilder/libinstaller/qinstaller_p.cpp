@@ -36,7 +36,6 @@
 #include "common/binaryformat.h"
 #include "common/errors.h"
 #include "common/fileutils.h"
-#include "common/installersettings.h"
 #include "common/utils.h"
 #include "fsengineclient.h"
 #include "messageboxhandler.h"
@@ -172,7 +171,6 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 InstallerPrivate::InstallerPrivate()
     : m_tempDirDeleter(0)
-    , m_installerSettings(0)
     , m_FSEngineClientHandler(0)
     , q(0)
 {
@@ -182,7 +180,6 @@ InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMa
         const QVector<KDUpdater::UpdateOperation*> &performedOperations)
     : m_app(0)
     , m_tempDirDeleter(new TempDirDeleter())
-    , m_installerSettings(0)
     , m_FSEngineClientHandler(createEngineClientHandler())
     , m_status(Installer::Unfinished)
     , m_forceRestart(false)
@@ -216,7 +213,6 @@ InstallerPrivate::~InstallerPrivate()
 
 
     delete m_tempDirDeleter;
-    delete m_installerSettings;
     delete m_FSEngineClientHandler;
 }
 
@@ -289,10 +285,8 @@ QString InstallerPrivate::localComponentsXmlPath() const
 void InstallerPrivate::initialize()
 {
     try {
-        delete m_installerSettings;
-        m_installerSettings = new InstallerSettings(InstallerSettings::fromFileAndPrefix(
-            QLatin1String(":/metadata/installer-config/config.xml"),
-            QLatin1String(":/metadata/installer-config/")));
+        m_installerSettings = InstallerSettings(InstallerSettings::fromFileAndPrefix(QLatin1String
+            (":/metadata/installer-config/config.xml"), QLatin1String(":/metadata/installer-config/")));
     } catch (const Error &e) {
         qCritical("Could not parse Config: %s", qPrintable(e.message()));
         // TODO: try better error handling
@@ -317,30 +311,30 @@ void InstallerPrivate::initialize()
 #endif
 
     // fill the variables defined in the settings
-    m_vars.insert(QLatin1String("ProductName"), m_installerSettings->applicationName());
-    m_vars.insert(QLatin1String("ProductVersion"), m_installerSettings->applicationVersion());
-    m_vars.insert(QLatin1String("Title"), m_installerSettings->title());
-    m_vars.insert(QLatin1String("MaintenanceTitle"), m_installerSettings->maintenanceTitle());
-    m_vars.insert(QLatin1String("Publisher"), m_installerSettings->publisher());
-    m_vars.insert(QLatin1String("Url"), m_installerSettings->url());
-    m_vars.insert(QLatin1String("StartMenuDir"), m_installerSettings->startMenuDir());
+    m_vars.insert(QLatin1String("ProductName"), m_installerSettings.applicationName());
+    m_vars.insert(QLatin1String("ProductVersion"), m_installerSettings.applicationVersion());
+    m_vars.insert(QLatin1String("Title"), m_installerSettings.title());
+    m_vars.insert(QLatin1String("MaintenanceTitle"), m_installerSettings.maintenanceTitle());
+    m_vars.insert(QLatin1String("Publisher"), m_installerSettings.publisher());
+    m_vars.insert(QLatin1String("Url"), m_installerSettings.url());
+    m_vars.insert(QLatin1String("StartMenuDir"), m_installerSettings.startMenuDir());
 
-    m_vars.insert(QLatin1String("TargetConfigurationFile"), m_installerSettings->configurationFileName());
-    m_vars.insert(QLatin1String("LogoPixmap"), m_installerSettings->logo());
-    m_vars.insert(QLatin1String("LogoSmallPixmap"), m_installerSettings->logoSmall());
-    m_vars.insert(QLatin1String("WatermarkPixmap"), m_installerSettings->watermark());
+    m_vars.insert(QLatin1String("TargetConfigurationFile"), m_installerSettings.configurationFileName());
+    m_vars.insert(QLatin1String("LogoPixmap"), m_installerSettings.logo());
+    m_vars.insert(QLatin1String("LogoSmallPixmap"), m_installerSettings.logoSmall());
+    m_vars.insert(QLatin1String("WatermarkPixmap"), m_installerSettings.watermark());
 
-    m_vars.insert(QLatin1String("RunProgram"), replaceVariables(m_installerSettings->runProgram()));
-    const QString desc = m_installerSettings->runProgramDescription();
+    m_vars.insert(QLatin1String("RunProgram"), replaceVariables(m_installerSettings.runProgram()));
+    const QString desc = m_installerSettings.runProgramDescription();
     if (!desc.isEmpty())
         m_vars.insert(QLatin1String("RunProgramDescription"), desc);
 #ifdef Q_WS_X11
     if (m_launchedAsRoot)
-        m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_installerSettings->adminTargetDir()));
+        m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_installerSettings.adminTargetDir()));
     else
 #endif
-        m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_installerSettings->targetDir()));
-    m_vars.insert(QLatin1String("RemoveTargetDir"), replaceVariables(m_installerSettings->removeTargetDir()));
+        m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_installerSettings.targetDir()));
+    m_vars.insert(QLatin1String("RemoveTargetDir"), replaceVariables(m_installerSettings.removeTargetDir()));
 
     QSettingsWrapper creatorSettings(QSettingsWrapper::IniFormat, QSettingsWrapper::UserScope,
         QLatin1String("Nokia"), QLatin1String("QtCreator"));
@@ -458,7 +452,7 @@ KDUpdater::UpdateOperation* InstallerPrivate::createOwnedOperation(const QString
 
 QString InstallerPrivate::uninstallerName() const
 {
-    QString filename = m_installerSettings->uninstallerName();
+    QString filename = m_installerSettings.uninstallerName();
 #if defined(Q_WS_MAC)
     if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
         filename += QLatin1String(".app/Contents/MacOS/") + filename;
@@ -470,7 +464,7 @@ QString InstallerPrivate::uninstallerName() const
 
 void InstallerPrivate::readUninstallerIniFile(const QString &targetDir)
 {
-    const QString iniPath = targetDir + QLatin1Char('/') + m_installerSettings->uninstallerIniFile();
+    const QString iniPath = targetDir + QLatin1Char('/') + m_installerSettings.uninstallerIniFile();
     QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
     const QVariantHash vars = cfg.value(QLatin1String("Variables")).toHash();
     QHash<QString, QVariant>::ConstIterator it = vars.constBegin();
@@ -483,7 +477,7 @@ void InstallerPrivate::readUninstallerIniFile(const QString &targetDir)
     const QStringList list = cfg.value(QLatin1String("Repositories")).toStringList();
     foreach (const QString &url, list)
         repositories.append(Repository(url));
-    m_installerSettings->addUserRepositories(repositories);
+    m_installerSettings.addUserRepositories(repositories);
 }
 
 void InstallerPrivate::stopProcessesForUpdates(const QList<Component*> &components)
@@ -636,7 +630,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
 
     {
         // write current state (variables) to the uninstaller ini file
-        const QString iniPath = targetDir() + QLatin1Char('/') + m_installerSettings->uninstallerIniFile();
+        const QString iniPath = targetDir() + QLatin1Char('/') + m_installerSettings.uninstallerIniFile();
         QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
         QVariantHash vars;
         QHash<QString, QString>::ConstIterator it = m_vars.constBegin();
@@ -649,7 +643,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         cfg.setValue(QLatin1String("Variables"), vars);
 
         QStringList list;
-        foreach (const Repository &repository, m_installerSettings->userRepositories())
+        foreach (const Repository &repository, m_installerSettings.userRepositories())
             list.append(repository.url().toString());
         cfg.setValue(QLatin1String("Repositories"), list);
 
@@ -847,7 +841,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         appendInt64(&out, opCount);
 
         KDSaveFile *tmp = &out;
-        KDSaveFile operations(targetDir() + QLatin1Char('/') + m_installerSettings->uninstallerName()
+        KDSaveFile operations(targetDir() + QLatin1Char('/') + m_installerSettings.uninstallerName()
             + QLatin1String(".dat"));
         const bool datFileOpenend = operations.open(QIODevice::WriteOnly | QIODevice::Truncate);
         if (datFileOpenend)
@@ -1032,8 +1026,8 @@ void InstallerPrivate::runInstaller()
         // put the installed packages info into the target dir
         KDUpdater::PackagesInfo* const packages = m_app->packagesInfo();
         packages->setFileName(componentsXmlPath());
-        packages->setApplicationName(m_installerSettings->applicationName());
-        packages->setApplicationVersion(m_installerSettings->applicationVersion());
+        packages->setApplicationName(m_installerSettings.applicationName());
+        packages->setApplicationVersion(m_installerSettings.applicationVersion());
 
         stopProcessesForUpdates(componentsToInstall);
 
@@ -1174,8 +1168,8 @@ void InstallerPrivate::runPackageUpdater()
 
         KDUpdater::PackagesInfo *packages = m_app->packagesInfo();
         packages->setFileName(packagesXml);
-        packages->setApplicationName(m_installerSettings->applicationName());
-        packages->setApplicationVersion(m_installerSettings->applicationVersion());
+        packages->setApplicationName(m_installerSettings.applicationName());
+        packages->setApplicationVersion(m_installerSettings.applicationVersion());
 
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
@@ -1500,8 +1494,8 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
 {
     KDUpdater::PackagesInfo *packages = m_app->packagesInfo();
     packages->setFileName(componentsXmlPath());
-    packages->setApplicationName(m_installerSettings->applicationName());
-    packages->setApplicationVersion(m_installerSettings->applicationVersion());
+    packages->setApplicationName(m_installerSettings.applicationName());
+    packages->setApplicationVersion(m_installerSettings.applicationVersion());
 
     try {
         foreach (KDUpdater::UpdateOperation *undoOperation, undoOperations) {

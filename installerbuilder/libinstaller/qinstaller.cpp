@@ -452,7 +452,7 @@ int Installer::downloadNeededArchives(RunMode runMode, double partProgressSize)
 
     // don't have it on the stack, since it keeps the temporary files
     DownloadArchivesJob* const archivesJob =
-        new DownloadArchivesJob(d->m_installerSettings->publicKey(), this);
+        new DownloadArchivesJob(d->m_installerSettings.publicKey(), this);
     archivesJob->setAutoDelete(false);
     archivesJob->setArchivesToDownload(archivesToDownload);
     connect(this, SIGNAL(installationInterrupted()), archivesJob, SLOT(cancel()));
@@ -625,8 +625,8 @@ QHash<QString, KDUpdater::PackageInfo> Installer::localInstalledPackages()
                 .arg(d->localComponentsXmlPath());
             return installedPackages;
         }
-        packagesInfo.setApplicationName(d->m_installerSettings->applicationName());
-        packagesInfo.setApplicationVersion(d->m_installerSettings->applicationVersion());
+        packagesInfo.setApplicationName(d->m_installerSettings.applicationName());
+        packagesInfo.setApplicationVersion(d->m_installerSettings.applicationVersion());
 
         foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
             installedPackages.insert(info.name, info);
@@ -705,7 +705,7 @@ bool Installer::fetchAllPackages()
 
     QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
 
-    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
+    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(d->m_installerSettings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
         if (metaInfoJob->error() != QInstaller::UserIgnoreError) {
             verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
@@ -714,7 +714,7 @@ bool Installer::fetchAllPackages()
     }
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {
-        if (!addUpdateResourcesFrom(metaInfoJob.data(), *d->m_installerSettings, true)) {
+        if (!addUpdateResourcesFrom(metaInfoJob.data(), d->m_installerSettings, true)) {
             verbose() << tr("Could not add temporary update source information.") << std::endl;
             return false;
         }
@@ -804,7 +804,7 @@ bool Installer::fetchUpdaterPackages()
 
     QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
 
-    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(*d->m_installerSettings));
+    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(d->m_installerSettings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
         if (metaInfoJob->error() != QInstaller::UserIgnoreError) {
             verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
@@ -813,7 +813,7 @@ bool Installer::fetchUpdaterPackages()
     }
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {
-        if (!addUpdateResourcesFrom(metaInfoJob.data(), *d->m_installerSettings, true)) {
+        if (!addUpdateResourcesFrom(metaInfoJob.data(), d->m_installerSettings, true)) {
             verbose() << tr("Could not add temporary update source information.") << std::endl;
             return false;
         }
@@ -984,7 +984,7 @@ bool Installer::removeWizardPageItem(Component *component, const QString &name)
 
 void Installer::addRepositories(const QList<Repository> &repositories)
 {
-    d->m_installerSettings->addUserRepositories(repositories);
+    d->m_installerSettings.addUserRepositories(repositories);
 }
 
 /*!
@@ -993,7 +993,7 @@ void Installer::addRepositories(const QList<Repository> &repositories)
 */
 void Installer::setTemporaryRepositories(const QList<Repository> &repositories, bool replace)
 {
-    d->m_installerSettings->setTemporaryRepositories(repositories, replace);
+    d->m_installerSettings.setTemporaryRepositories(repositories, replace);
 }
 
 /*!
@@ -1185,9 +1185,9 @@ QList<Component*> Installer::dependencies(const Component *component, QStringLis
     return result;
 }
 
-InstallerSettings Installer::settings() const
+const InstallerSettings &Installer::settings() const
 {
-    return *d->m_installerSettings;
+    return d->m_installerSettings;
 }
 
 /*!

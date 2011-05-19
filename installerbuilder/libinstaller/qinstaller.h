@@ -206,7 +206,7 @@ public:
 
     Q_INVOKABLE bool isProcessRunning(const QString &name) const;
 
-    InstallerSettings settings() const;
+    const InstallerSettings &settings() const;
 
     Q_INVOKABLE bool addWizardPage(QInstaller::Component *component, const QString &name, int page);
     Q_INVOKABLE bool removeWizardPage(QInstaller::Component *component, const QString &name);
