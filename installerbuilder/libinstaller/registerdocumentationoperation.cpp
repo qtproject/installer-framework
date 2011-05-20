@@ -119,7 +119,12 @@ bool RegisterDocumentationOperation::performOperation()
     if (!oldData.isEmpty())
         oldData.append(QLatin1String(";"));
     const QString newData = oldData + QFileInfo(helpFile).absoluteFilePath();
-    return help.setCustomValue(QLatin1String("AddedDocs"), newData);
+    if (!help.setCustomValue(QLatin1String("AddedDocs"), newData)) {
+        setError(UserDefinedError);
+        setErrorString(help.error());
+        return false;
+    }
+    return true;
 }
 
 bool RegisterDocumentationOperation::undoOperation()
