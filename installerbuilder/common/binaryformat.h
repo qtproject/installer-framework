@@ -202,6 +202,7 @@ private:
 
 private:
     QSharedPointer<QFile> file;
+    QSharedPointer<QFile> m_binaryFile;
     QInstallerCreator::ComponentIndex components;
     QInstallerCreator::BinaryFormatEngineHandler handler;
     QVector<Range<qint64> > metadataResourceSegments;

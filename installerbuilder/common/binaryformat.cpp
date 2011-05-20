@@ -757,6 +757,7 @@ static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segm
 
 BinaryContent::BinaryContent(const QString &path)
     : file(new QFile(path))
+    , m_binaryFile(0)
     , handler(components)
     , m_magicmarker(0)
     , dataBlockStart(0)
@@ -858,8 +859,9 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
         throw Error(QObject::tr("Could not open binary %1: %2").arg(path, file->errorString()));
 
     // check for supported binary, will throw if we can't find a marker
-    const qint64 cookiePos = findMagicCookie(file, QInstaller::MagicCookie);
-    const BinaryLayout layout = readBinaryLayout(file, cookiePos);
+    const BinaryLayout layout = readBinaryLayout(file, findMagicCookie(file, QInstaller::MagicCookie));
+
+    bool retry = true;
     if (layout.magicMarker != MagicInstallerMarker) {
         QString binaryDataPath = path;
         QFileInfo fi(path + QLatin1String("/../../.."));
@@ -867,24 +869,27 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
             binaryDataPath = fi.absoluteFilePath();
         fi.setFile(binaryDataPath);
 
-        bool retry = true;
-        QFile binaryData(fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat"));
-        if (binaryData.exists() && binaryData.open(QIODevice::ReadOnly)) {
+        c.m_binaryFile = QSharedPointer<QFile>(new QFile(fi.absolutePath() + QLatin1Char('/') + fi.baseName()
+            + QLatin1String(".dat")));
+        if (c.m_binaryFile->exists() && c.m_binaryFile->open(QIODevice::ReadOnly)) {
             // check for supported binary data file, will throw if we can't find a marker
             try {
-                const qint64 cookiePosData = findMagicCookie(&binaryData, QInstaller::MagicCookieDat);
-                readBinaryData(c, &binaryData, readBinaryLayout(&binaryData, cookiePosData));
+                const qint64 cookiePos = findMagicCookie(c.m_binaryFile.data(), QInstaller::MagicCookieDat);
+                readBinaryData(c, c.m_binaryFile.data(), readBinaryLayout(c.m_binaryFile.data(), cookiePos));
                 retry = false;
             } catch (const Error &error) {
                 // this seems to be an unsupported dat file, try to read from original binary
+                c.m_binaryFile.clear();
                 verbose() << error.message();
             }
+        } else {
+            c.m_binaryFile.clear();
         }
-        if (retry)
-            readBinaryData(c, file, layout);
-    } else {
-        readBinaryData(c, file, layout);
     }
+
+    if (retry)
+        readBinaryData(c, file, layout);
+
     return c;
 }
 
@@ -990,13 +995,14 @@ qint64 BinaryContent::magicmaker() const
  */
 int BinaryContent::registerEmbeddedQResources()
 {
-    if (!file->isOpen()) {
-        if (!file->open(QIODevice::ReadOnly))
-            throw Error(QObject::tr("Could not open binary %1: %2").arg(file->fileName(), file->errorString()));
+    QFile *data = m_binaryFile.isNull() ? file.data() : m_binaryFile.data();
+    if (!data->isOpen() && !data->open(QIODevice::ReadOnly)) {
+        throw Error(QObject::tr("Could not open binary %1: %2").arg(data->fileName(),
+            data->errorString()));
     }
 
     foreach (const Range<qint64> &i, metadataResourceSegments)
-        mappings.push_back(addResourceFromBinary(file.data(), i));
+        mappings.push_back(addResourceFromBinary(data, i));
     return mappings.count();
 }
 
