@@ -131,19 +131,16 @@ static QStringList checkRunningProcessesFromList(const QStringList &processList)
 
 static void deferredRename(const QString &oldName, const QString &newName, bool restart = false)
 {
-#ifdef Q_WS_WIN
-    QString batchfile;
-
+#ifdef Q_OS_WIN
     QStringList arguments;
-    arguments << QDir::toNativeSeparators(batchfile) << QDir::toNativeSeparators(oldName)
-        << QDir::toNativeSeparators(QFileInfo(oldName).dir().absoluteFilePath(newName));
-
     {
         QTemporaryFile f(QDir::temp().absoluteFilePath(QLatin1String("deferredrenameXXXXXX.vbs")));
         openForWrite(&f, f.fileName());
         f.setAutoRemove(false);
 
-        batchfile = f.fileName();
+        arguments << QDir::toNativeSeparators(f.fileName()) << QDir::toNativeSeparators(oldName)
+            << QDir::toNativeSeparators(QFileInfo(oldName).dir().absoluteFilePath(QFileInfo(newName)
+            .fileName()));
 
         QTextStream batch(&f);
         batch << "Set fso = WScript.CreateObject(\"Scripting.FileSystemObject\")\n";
@@ -162,7 +159,7 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
     }
 
     QProcessWrapper::startDetached(QLatin1String("cscript"), QStringList() << QLatin1String("//Nologo")
-        << QDir::toNativeSeparators(batchfile));
+        << arguments[0]);
 #else
         QFile::remove(newName);
         QFile::rename(oldName, newName);
@@ -919,7 +916,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
 
         if (newBinary) {
             verbose() << "Needs restart: " << (replacementExists && isUpdater()) << std::endl;
-            deferredRename(uninstallerName() + QLatin1String(".new"), QFileInfo(uninstallerName()).fileName(),
+            deferredRename(uninstallerName() + QLatin1String(".new"), uninstallerName(),
                 replacementExists && isUpdater());
         }
     } catch (const Error &err) {
