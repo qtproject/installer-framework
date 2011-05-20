@@ -1,8 +1,10 @@
 #include "fakeinstaller.h"
 
+#include <QFileInfo>
+
 void FakeInstaller::setTargetDir(const QString &targetDir)
 {
-    m_targetDir = targetDir;
+    m_targetDir = QFileInfo(targetDir).absoluteFilePath();
 }
 
 QString FakeInstaller::value(const QString &key, const QString &/*defaultValue*/) const
