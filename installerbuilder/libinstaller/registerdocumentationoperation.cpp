@@ -32,8 +32,7 @@
 **************************************************************************/
 #include "registerdocumentationoperation.h"
 
-#include "qsettingswrapper.h"
-
+#include <QSettings>
 #include <QHelpEngine>
 #include <QString>
 #include <QFileInfo>
@@ -63,25 +62,25 @@ namespace {
             // If the system settings are writable, don't touch the user settings.
             // The reason is that a doc registered while running with sudo could otherwise create
             // a root-owned configuration file a user directory.
-            QScopedPointer<QSettingsWrapper> settings(new QSettingsWrapper(QSettingsWrapper::IniFormat,
-                QSettingsWrapper::SystemScope, QLatin1String("Nokia"), QLatin1String("QtCreator")));
+            QScopedPointer<QSettings> settings(new QSettings(QSettings::IniFormat,
+                QSettings::SystemScope, QLatin1String("Nokia"), QLatin1String("QtCreator")));
 
-            // QSettingsWrapper::isWritable isn't reliable enough in 4.7, determine writability experimentally
+            // QSettings::isWritable isn't reliable enough in 4.7, determine writability experimentally
             settings->setValue(QLatin1String("iswritable"), QLatin1String("accomplished"));
             settings->sync();
-            if (settings->status() == QSettingsWrapper::NoError) {
+            if (settings->status() == QSettings::NoError) {
                 // we can use the system settings
                 if (settings->contains(QLatin1String("iswritable")))
                     settings->remove(QLatin1String("iswritable"));
             } else {
                 // we have to use user settings
-                settings.reset(new QSettingsWrapper(QSettingsWrapper::IniFormat, QSettingsWrapper::UserScope,
+                settings.reset(new QSettings(QSettings::IniFormat, QSettings::UserScope,
                     QLatin1String("Nokia"), QLatin1String("QtCreator")));
             }
 
         #else
-            QScopedPointer<QSettingsWrapper> settings(new QSettingsWrapper(QSettingsWrapper::IniFormat,
-                QSettingsWrapper::UserScope, QLatin1String("Nokia"), QLatin1String("QtCreator")));
+            QScopedPointer<QSettings> settings(new QSettings(QSettings::IniFormat,
+                QSettings::UserScope, QLatin1String("Nokia"), QLatin1String("QtCreator")));
         #endif
             return settings->fileName();
     }
