@@ -620,6 +620,8 @@ void InstallerPrivate::writeUninstallerBinary(QFile *const input, qint64 size)
     }
 
     appendData(&out, input, size);
+    appendInt64(&out, 0);   // resource count
+    appendInt64(&out, 0);   // data block size
     appendInt64(&out, QInstaller::MagicUninstallerMarker);
     appendInt64(&out, QInstaller::MagicCookie);
 
