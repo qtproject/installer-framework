@@ -129,9 +129,9 @@ static QStringList checkRunningProcessesFromList(const QStringList &processList)
     return stillRunningProcesses;
 }
 
-#ifdef Q_WS_WIN
 static void deferredRename(const QString &oldName, const QString &newName, bool restart = false)
 {
+#ifdef Q_WS_WIN
     QString batchfile;
 
     QStringList arguments;
@@ -163,8 +163,12 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
     QProcessWrapper::startDetached(QLatin1String("cscript"), QStringList() << QLatin1String("//Nologo")
         << QDir::toNativeSeparators(batchfile));
+#else
+        QFile::remove(newName);
+        QFile::rename(oldName, newName);
+        KDSelfRestarter::setRestartOnQuit(restart);
+#endif
 }
-#endif // Q_WS_WIN
 
 
 // -- InstallerPrivate
@@ -606,6 +610,79 @@ void InstallerPrivate::registerPathesForUninstallation(
     }
 }
 
+void InstallerPrivate::writeUninstallerBinary(QFile *const input, qint64 size)
+{
+    verbose() << "Writing uninstaller: " << (uninstallerName()  + QLatin1String(".new")) << std::endl;
+
+    KDSaveFile out(uninstallerName() + QLatin1String(".new"));
+    openForWrite(&out, out.fileName()); // throws an exception in case of error
+
+    if (!input->seek(0)) {
+        throw Error(QObject::tr("Failed to seek in file %1: %2").arg(input->fileName(),
+            input->errorString()));
+    }
+
+    appendData(&out, input, size);
+    appendInt64(&out, QInstaller::MagicUninstallerMarker);
+    appendInt64(&out, QInstaller::MagicCookie);
+
+    out.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
+        | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser);
+
+    if (!out.commit(KDSaveFile::OverwriteExistingFile)) {
+        verbose() << "Could not write uninstaller: " << out.fileName() << std::endl;
+        throw Error(tr("Could not write uninstaller to %1: %2").arg(out.fileName(), out.errorString()));
+    }
+}
+
+void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *const input,
+    const QVector<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout)
+{
+    const qint64 dataBlockStart = output->pos();
+
+    QVector<Range<qint64> >resourceSegments;
+    foreach (const Range<qint64> segment, layout.metadataResourceSegments) {
+        input->seek(segment.start());
+        resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos(), segment.length()));
+        appendData(output, input, segment.length());
+    }
+
+    const qint64 operationsStart = output->pos();
+    appendInt64(output, performedOperations.count());
+    foreach (KDUpdater::UpdateOperation *op, performedOperations) {
+        // the installer can't be put into XML, remove it first
+        op->clearValue(QLatin1String("installer"));
+
+        appendString(output, op->name());
+        appendString(output, op->toXml().toString());
+
+        // for the ui not to get blocked
+        qApp->processEvents();
+    }
+    appendInt64(output, performedOperations.count());
+    const qint64 operationsEnd = output->pos();
+
+    // we don't save any component-indexes.
+    const qint64 numComponents = 0;
+    appendInt64(output, numComponents); // for the indexes
+    // we don't save any components.
+    const qint64 compIndexStart = output->pos();
+    appendInt64(output, numComponents); // and 2 times number of components,
+    appendInt64(output, numComponents); // one before and one after the components
+    const qint64 compIndexEnd = output->pos();
+
+    appendInt64Range(output, Range<qint64>::fromStartAndEnd(compIndexStart, compIndexEnd)
+        .moved(-dataBlockStart));
+    foreach (const Range<qint64> segment, resourceSegments)
+        appendInt64Range(output, segment.moved(-dataBlockStart));
+    appendInt64Range(output, Range<qint64>::fromStartAndEnd(operationsStart, operationsEnd)
+        .moved(-dataBlockStart));
+    appendInt64(output, layout.resourceCount);
+    //data block size, from end of .exe to end of file
+    appendInt64(output, output->pos() + 3 * sizeof(qint64) - dataBlockStart);
+    appendInt64(output, MagicUninstallerMarker);
+}
+
 void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> performedOperations)
 {
     bool gainedAdminRights = false;
@@ -615,9 +692,6 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         q->gainAdminRights();
         gainedAdminRights = true;
     }
-
-    verbose() << "QInstaller::InstallerPrivate::writeUninstaller uninstaller=" << uninstallerName()
-        << std::endl;
 
     if (!QDir().exists(QFileInfo(uninstallerName()).path())) {
         // create the directory containing the uninstaller (like a bundle structor, on Mac...)
@@ -710,8 +784,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         QTextStream in(&sourcePlist);
         QTextStream out(&targetPlist);
 
-        while (!in.atEnd())
-        {
+        while (!in.atEnd()) {
             QString line = in.readLine();
             line = line.replace(QLatin1String("<string>")
                 + QFileInfo(QCoreApplication::applicationFilePath()).baseName()
@@ -750,179 +823,105 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
     }
 #endif
 
-    QFile in;
-    if (isInstaller() || isUninstaller() || isPackageManager())
-        in.setFileName(installerBinaryPath());
-    else
-        in.setFileName(uninstallerName());  // we're the updater
-
-    const QString installerBaseBinary = q->replaceVariables(m_installerBaseBinaryUnreplaced);
-    if (!installerBaseBinary.isEmpty())
-        verbose() << "Got a replacement installer base binary: " << installerBaseBinary << std::endl;
-
-    const bool haveSeparateExec = QFile::exists(installerBaseBinary) && !installerBaseBinary.isEmpty();
-    verbose() << "Need to restart after exit: " << haveSeparateExec << " "
-        << qPrintable(installerBaseBinary) << std::endl;
-
-#ifdef Q_WS_WIN
-    KDSaveFile out(uninstallerName() + QLatin1String(".org"));
-#else
-    KDSaveFile out(uninstallerName());
-#endif
-
     try {
-        verbose() << "CREATING UNINSTALLER " << performedOperations.size() << std::endl;
+        // 1 - check if we have a installer base replacement
+        //   |--- if so, write out the new tool and remove the replacement
+        //   |--- remember to restart and that we need to replace the original binary
+        //
+        // 2 - if we do not have a replacement, try to open the binary data file as input
+        //   |--- try to read the binary layout
+        //      |--- on error (see 2.1)
+        //          |--- set the installer or maintenance binary to take over binary data
+        //          |--- in case we did not have a replacement, write out an new maintenance tool binary
+        //              |--- remember that we need to replace the original binary
+        //
+        // 3 - open a new binary data file
+        //   |--- try to write out the binary data based on the loaded input file (see 2)
+        //      |--- on error (see 3.1)
+        //          |--- if we wrote a new maintenance tool, take this as output - if not, write out a new
+        //                  one and set it as output file, remember we did this
+        //          |--- append the binary data based on the loaded input file (see 2)
+        //
+        // 4 - force a deferred rename on the .dat file (see 4.1)
+        // 5 - force a deferred rename on the maintenance file (see 5.1)
 
-        QFile* execIn = &in;
-        qint64 execSize = 0;
-        QFile ibbIn;
-        if (haveSeparateExec) {
-            ibbIn.setFileName(installerBaseBinary);
-            openForRead(&ibbIn, ibbIn.fileName());
-            execIn = &ibbIn;
-            execSize = ibbIn.size();
-        }
+        // 2.1 - Error cases are: no data file (in fact we are the installer or an old installation),
+        //          could not find the data file magic cookie (unknown .dat file), failed to read binary
+        //          layout (mostly likely the resource section or we couldn't seek inside the file)
+        //
+        // 3.1 - most likely the commit operation will fail
+        // 4.1 - if 3 failed, this makes sure the .dat file will get removed and on the next run all
+        //          binary data is read from the maintenance tool, otherwise it get replaced be the new one
+        // 5.1 - this will only happen -if- we wrote out a new binary
 
-        openForRead(&in, in.fileName());
-        openForWrite(&out, out.fileName());
+        bool newBinary = false;
+        bool replacementExists = false;
+        const QString installerBaseBinary = q->replaceVariables(m_installerBaseBinaryUnreplaced);
+        if (!installerBaseBinary.isEmpty() && QFileInfo(installerBaseBinary).exists()) {
+            verbose() << "Got a replacement installer base binary: " << installerBaseBinary << std::endl;
 
-        const qint64 magicCookiePos = findMagicCookie(&in);
-        if (magicCookiePos < 0) {
-            throw Error(QObject::tr("Can not find the magic cookie in file %1. Are you sure this "
-                "is a valid installer?").arg(installerBinaryPath()));
-        }
+            newBinary = true;
+            replacementExists = true;
+            QFile replacementBinary(installerBaseBinary);
+            openForRead(&replacementBinary, replacementBinary.fileName());
+            writeUninstallerBinary(&replacementBinary, replacementBinary.size());
 
-        if (!in.seek(magicCookiePos - 7 * sizeof(qint64))) {
-            throw Error(QObject::tr("Failed to seek in file %1: %2").arg(installerBinaryPath(),
-                in.errorString()));
-        }
-
-        qint64 resourceStart = retrieveInt64(&in);
-        const qint64 resourceLength = retrieveInt64(&in);
-        Q_ASSERT(resourceLength >= 0);
-        const qint64 _operationsStart = retrieveInt64(&in);
-        Q_UNUSED(_operationsStart);
-        Q_ASSERT(_operationsStart >= 0);
-        const qint64 _operationsLength = retrieveInt64(&in);
-        Q_UNUSED(_operationsLength);
-        Q_ASSERT(_operationsLength >= 0);
-        const qint64 resourceCount = retrieveInt64(&in); // atm always "1"
-        Q_ASSERT(resourceCount == 1); // we have just 1 resource atm
-        const qint64 dataBlockSize = retrieveInt64(&in);
-        const qint64 dataBlockStart = magicCookiePos + sizeof(qint64) - dataBlockSize;
-        resourceStart += dataBlockStart;
-        if (!haveSeparateExec)
-            execSize = dataBlockStart;
-
-        // consider size difference between old and new installer base executable (if updated)
-        const qint64 newResourceStart = execSize;
-        const qint64 magicmarker = retrieveInt64(&in);
-        Q_UNUSED(magicmarker);
-        Q_ASSERT(magicmarker == MagicInstallerMarker || magicmarker == MagicUninstallerMarker);
-
-        if (!execIn->seek(0)) {
-            throw Error(QObject::tr("Failed to seek in file %1: %2").arg(execIn->fileName(),
-                execIn->errorString()));
-        }
-        appendData(&out, execIn, execSize);
-
-        // copy the first few bytes to take the executable + resources over to the uninstaller.
-        if (!in.seek(resourceStart)) {
-            throw Error(QObject::tr("Failed to seek in file %1: %2").arg(in.fileName(),
-                in.errorString()));
-        }
-        Q_ASSERT(in.pos() == resourceStart && out.pos() == execSize);
-
-        const qint64 uninstallerDataBlockStart = out.pos();
-        appendData(&out, &in, resourceLength);
-
-        const qint64 operationsStart = out.pos();
-        const qint64 opCount = performedOperations.count();
-        appendInt64(&out, opCount);
-
-        KDSaveFile *tmp = &out;
-        KDSaveFile operations(targetDir() + QLatin1Char('/') + m_installerSettings.uninstallerName()
-            + QLatin1String(".dat"));
-        const bool datFileOpenend = operations.open(QIODevice::WriteOnly | QIODevice::Truncate);
-        if (datFileOpenend)
-            tmp = &operations;
-
-        // compared to the installer we do not have component data but details about
-        // the performed operations during the installation to allow to undo them.;
-        appendInt64(tmp, performedOperations.count());
-        foreach (KDUpdater::UpdateOperation *op, performedOperations) {
-            // the installer can't be put into XML, remove it first
-            op->clearValue(QLatin1String("installer"));
-
-            appendString(tmp, op->name());
-            appendString(tmp, op->toXml().toString());
-
-            // for the ui not to get blocked
-            qApp->processEvents();
-        }
-
-        if (datFileOpenend) {
-            appendInt64(tmp, MagicCookie);
-            tmp->setPermissions(tmp->permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther);
-
-            if (!tmp->commit(KDSaveFile::OverwriteExistingFile)) {
-                throw Error(tr("Could not write uninstaller operations to %1: %2").arg(tmp->fileName(),
-                    tmp->errorString()));
-            }
-        }
-
-        appendInt64(&out, opCount);
-        const qint64 operationsEnd = out.pos();
-
-        // we don't save any component-indexes.
-        const qint64 numComponents = 0;
-        appendInt64(&out, numComponents); // for the indexes
-        // we don't save any components.
-        const qint64 compIndexStart = out.pos();
-        appendInt64(&out, numComponents); // and 2 times number of components,
-        appendInt64(&out, numComponents); // one before and one after the components
-        const qint64 compIndexEnd = out.pos();
-
-        appendInt64Range(&out, Range<qint64>::fromStartAndEnd(compIndexStart, compIndexEnd)
-            .moved(-uninstallerDataBlockStart));
-        appendInt64Range(&out, Range<qint64>::fromStartAndLength(newResourceStart, resourceLength)
-            .moved(-uninstallerDataBlockStart));
-        appendInt64Range(&out, Range<qint64>::fromStartAndEnd(operationsStart, operationsEnd)
-            .moved(-uninstallerDataBlockStart));
-        appendInt64(&out, resourceCount);
-        //data block size, from end of .exe to end of file
-        appendInt64(&out, out.pos() + 3 * sizeof(qint64) - uninstallerDataBlockStart);
-        appendInt64(&out, MagicUninstallerMarker);
-        appendInt64(&out, MagicCookie);
-
-        out.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
-            | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser);
-
-        if (!out.commit(KDSaveFile::OverwriteExistingFile)) {
-            throw Error(tr("Could not write uninstaller to %1: %2").arg(uninstallerName(),
-                out.errorString()));
-        }
-
-        //delete the installer base binary temporarily installed for the uninstaller update
-        if (haveSeparateExec) {
-            QFile tmp(installerBaseBinary);
-            // Is there anything more sensible we can do with this error? I think not.
-            // It's not serious enough for throwing/aborting.
-            if (!tmp.remove()) {
+            if (!replacementBinary.remove()) {
+                // Is there anything more sensible we can do with this error? I think not. It's not serious
+                // enough for throwing/ aborting the process.
                 verbose() << "Could not remove installer base binary (" << installerBaseBinary
-                    << ") after updating the uninstaller: " << tmp.errorString() << std::endl;
+                    << ") after updating the uninstaller: " << replacementBinary.errorString() << std::endl;
             }
             m_installerBaseBinaryUnreplaced.clear();
         }
 
-#ifdef Q_WS_WIN
-        deferredRename(out.fileName(), QFileInfo(uninstallerName()).fileName(),
-            haveSeparateExec && !isInstaller());
-#else
-        verbose() << " preparing restart " << std::endl;
-        if (haveSeparateExec && !isInstaller())
-            KDSelfRestarter::setRestartOnQuit(true);
-#endif
+        QFile input;
+        BinaryLayout layout;
+        const QString dataFile = targetDir() + QLatin1Char('/') + m_installerSettings.uninstallerName()
+            + QLatin1String(".dat");
+        try {
+            input.setFileName(dataFile);
+            openForRead(&input, input.fileName());
+            layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookieDat));
+        } catch (...) {
+            input.setFileName(isInstaller() ? installerBinaryPath() : uninstallerName());
+            openForRead(&input, input.fileName());
+            layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
+            if (!replacementExists) {
+                newBinary = true;
+                writeUninstallerBinary(&input, layout.endOfData - layout.dataBlockSize);
+            }
+        }
+
+        try {
+            KDSaveFile file(dataFile + QLatin1String(".new"));
+            openForWrite(&file, file.fileName());
+            writeUninstallerBinaryData(&file, &input, performedOperations, layout);
+            appendInt64(&file, MagicCookieDat);
+            file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
+                | QFile::ReadOther);
+            if (!file.commit(KDSaveFile::OverwriteExistingFile)) {
+                throw Error(tr("Could not write uninstaller binary data to %1: %2").arg(file.fileName(),
+                    file.errorString()));
+            }
+        } catch (...) {
+            if (!newBinary) {
+                newBinary = true;
+                writeUninstallerBinary(&input, layout.endOfData - layout.dataBlockSize);
+            }
+            QFile file(uninstallerName() + QLatin1String(".new"));
+            openForWrite(&file, file.fileName());
+            file.seek(file.size());
+            writeUninstallerBinaryData(&file, &input, performedOperations, layout);
+            appendInt64(&file, MagicCookie);
+        }
+        deferredRename(dataFile + QLatin1String(".new"), dataFile, false);
+
+        if (newBinary) {
+            verbose() << "Needs restart: " << (replacementExists && isUpdater()) << std::endl;
+            deferredRename(uninstallerName() + QLatin1String(".new"), QFileInfo(uninstallerName()).fileName(),
+                replacementExists && isUpdater());
+        }
     } catch (const Error &err) {
         setStatus(Installer::Failure);
         if (gainedAdminRights)

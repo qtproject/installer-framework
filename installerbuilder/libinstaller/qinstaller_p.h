@@ -44,6 +44,7 @@
 #include <QtCore/QVector>
 
 class FSEngineClientHandler;
+QT_FORWARD_DECLARE_CLASS(QFile)
 QT_FORWARD_DECLARE_CLASS(QFileInfo)
 
 namespace KDUpdater {
@@ -52,6 +53,8 @@ namespace KDUpdater {
 }
 
 namespace QInstaller {
+
+struct BinaryLayout;
 
 class Component;
 class Installer;
@@ -182,6 +185,10 @@ private:
     void deleteUninstaller();
     void registerUninstaller();
     void unregisterUninstaller();
+
+    void writeUninstallerBinary(QFile *const input, qint64 size);
+    void writeUninstallerBinaryData(QIODevice *output, QFile *const input,
+        const QVector<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout);
 
     void runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
         double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation);
