@@ -910,6 +910,12 @@ BinaryLayout BinaryContent::readBinaryLayout(QIODevice *file, qint64 cookiePos)
     layout.indexSize = indexSize + sizeof(qint64);
     layout.endOfData = file->pos();
 
+    verbose() << "Operations start: "<< layout.operationsStart << "; " << "Operations end: "
+        << layout.operationsEnd << "; " << "Resource count: " << layout.resourceCount << "; "
+        << "Data block size: " << layout.dataBlockSize << "; " << "Magic marker: "
+        << layout.magicMarker << "; " << "Magic cookie: " << layout.magicCookie << "; "
+        << "Index size: " << layout.indexSize << "; " << "End of data: " << layout.endOfData << std::endl;
+
     const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
     const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
     for (int i = 0; i < layout.resourceCount; ++i) {
