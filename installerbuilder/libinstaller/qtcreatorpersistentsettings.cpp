@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QStringList>
 #include <QFile>
+#include <QDir>
 
 QtCreatorPersistentSettings::QtCreatorPersistentSettings()
 {
@@ -111,28 +112,29 @@ bool QtCreatorPersistentSettings::addToolChain(const QtCreatorToolChain &toolCha
     QVariantMap newToolChainVariantMap;
 
     newToolChainVariantMap.insert(QLatin1String(ID_KEY),
-        QString(QLatin1String("%1:%2.%3")).arg(toolChain.type, toolChain.compilerPath, toolChain.abiString));
+        QString(QLatin1String("%1:%2.%3")).arg(toolChain.type, QFileInfo(toolChain.compilerPath
+            ).absoluteFilePath(), toolChain.abiString));
     newToolChainVariantMap.insert(QLatin1String(DISPLAY_NAME_KEY), toolChain.displayName);
     newToolChainVariantMap.insert(QString(QLatin1String("ProjectExplorer.%1.Path")).arg(toolChain.key),
-        toolChain.compilerPath);
+        QFileInfo(toolChain.compilerPath).absoluteFilePath());
     newToolChainVariantMap.insert(QString(QLatin1String("ProjectExplorer.%1.TargetAbi")).arg(toolChain.key),
         toolChain.abiString);
     newToolChainVariantMap.insert(QString(QLatin1String("ProjectExplorer.%1.Debugger")).arg(toolChain.key),
-        toolChain.debuggerPath);
+        QFileInfo(toolChain.debuggerPath).absoluteFilePath());
 
-    m_toolChains.insert(toolChain.compilerPath, newToolChainVariantMap);
+    m_toolChains.insert(QFileInfo(toolChain.compilerPath).absoluteFilePath(), newToolChainVariantMap);
     return true;
 }
 
 bool QtCreatorPersistentSettings::removeToolChain(const QtCreatorToolChain &toolChain)
 {
-    m_toolChains.remove(toolChain.compilerPath);
+    m_toolChains.remove(QFileInfo(toolChain.compilerPath).absoluteFilePath());
     return true;
 }
 
 void QtCreatorPersistentSettings::addDefaultDebugger(const QString &abiString, const QString &debuggerPath)
 {
-    m_abiToDebuggerHash.insert(abiString, debuggerPath);
+    m_abiToDebuggerHash.insert(abiString, QFileInfo(debuggerPath).absoluteFilePath());
 }
 
 void QtCreatorPersistentSettings::removeDefaultDebugger(const QString &abiString)
