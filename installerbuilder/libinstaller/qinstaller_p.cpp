@@ -692,10 +692,11 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         gainedAdminRights = true;
     }
 
-    if (!QDir().exists(QFileInfo(uninstallerName()).path())) {
+    const QString filePath = QFileInfo(uninstallerName()).path();
+    if (!QDir().exists(filePath)) {
         // create the directory containing the uninstaller (like a bundle structor, on Mac...)
         KDUpdater::UpdateOperation* op = createOwnedOperation(QLatin1String("Mkdir"));
-        op->setArguments(QStringList() << QFileInfo(uninstallerName()).path());
+        op->setArguments(QStringList() << filePath);
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
         performedOperations.push_back(op);
@@ -730,42 +731,38 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
 
 #ifdef Q_WS_MAC
     // if it is a bundle, we need some stuff in it...
-    if (isInstaller()
-        && QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle()) {
+    const QString appDirPath = QCoreApplication::applicationDirPath();
+    if (isInstaller() && QFileInfo(appDirPath + QLatin1String("/../..")).isBundle()) {
         KDUpdater::UpdateOperation* op = createOwnedOperation(QLatin1String("Copy"));
-        op->setArguments(QStringList() << (QCoreApplication::applicationDirPath()
-            + QLatin1String("/../PkgInfo")) << (QFileInfo(uninstallerName()).path()
-            + QLatin1String("/../PkgInfo")));
+        op->setArguments(QStringList() << (appDirPath + QLatin1String("/../PkgInfo"))
+            << (filePath + QLatin1String("/../PkgInfo")));
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
 
         op = createOwnedOperation(QLatin1String("Copy"));
-        op->setArguments(QStringList() << (QCoreApplication::applicationDirPath()
-            + QLatin1String("/../Info.plist")) << (QFileInfo(uninstallerName()).path()
+        op->setArguments(QStringList() << (appDirPath + QLatin1String("/../Info.plist")) << (filePath
             + QLatin1String("/../Info.plist")));
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
 
         verbose() << "Checking for qt_menu.nib" << std::endl;
-        QString sourceDirName = QCoreApplication::applicationDirPath()
-            + QLatin1String("/../Resources/qt_menu.nib");
+        QString sourceDirName = appDirPath + QLatin1String("/../Resources/qt_menu.nib");
         if (QFileInfo(sourceDirName).exists()) {
             verbose() << "qt_menu.nib has been found. Isn't it great?" << std::endl;
-            QString targetDirName = QFileInfo(QFileInfo(uninstallerName()).path()
-                + QLatin1String("/../Resources/qt_menu.nib")).absoluteFilePath();
+            const QString targetDirName = QFileInfo(filePath + QLatin1String("/../Resources/qt_menu.nib"))
+                .absoluteFilePath();
 
             // IFW has been built with a static Cocoa Qt. The app bundle must contain the qt_menu.nib.
             // ### use the CopyDirectory operation in 1.1
             op = createOwnedOperation(QLatin1String("Mkdir"));
             op->setArguments(QStringList() << targetDirName);
-            if (!op->performOperation()) {
+            if (!op->performOperation())
                 verbose() << "ERROR in Mkdir operation: " << op->errorString() << std::endl;
-            }
 
             QDir sourceDir(sourceDirName);
             foreach (const QString &filename, sourceDir.entryList(QDir::Files)) {
-                QString src = sourceDirName + QLatin1String("/") + filename;
-                QString dst = targetDirName + QLatin1String("/") + filename;
+                const QString src = sourceDirName + QLatin1String("/") + filename;
+                const QString dst = targetDirName + QLatin1String("/") + filename;
                 op = createOwnedOperation(QLatin1String("Copy"));
                 op->setArguments(QStringList() << src << dst);
                 if (!op->performOperation())
@@ -775,9 +772,9 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         }
 
         // patch the Info.plist while copying it
-        QFile sourcePlist(QCoreApplication::applicationDirPath() + QLatin1String("/../Info.plist"));
+        QFile sourcePlist(appDirPath + QLatin1String("/../Info.plist"));
         openForRead(&sourcePlist, sourcePlist.fileName());
-        QFile targetPlist(QFileInfo(uninstallerName()).path() + QLatin1String("/../Info.plist"));
+        QFile targetPlist(filePath + QLatin1String("/../Info.plist"));
         openForWrite(&targetPlist, targetPlist.fileName());
 
         QTextStream in(&sourcePlist);
@@ -793,30 +790,26 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         }
 
         op = createOwnedOperation(QLatin1String("Mkdir"));
-        op->setArguments(QStringList() << (QFileInfo(QFileInfo(uninstallerName()).path()).path()
-            + QLatin1String("/Resources")));
+        op->setArguments(QStringList() << (QFileInfo(filePath).path() + QLatin1String("/Resources")));
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
 
         const QString icon = QFileInfo(QCoreApplication::applicationFilePath()).baseName()
             + QLatin1String(".icns");
         op = createOwnedOperation(QLatin1String("Copy"));
-        op->setArguments(QStringList() << (QCoreApplication::applicationDirPath()
-            + QLatin1String("/../Resources/") + icon) << (QFileInfo(uninstallerName()).path()
-            + QLatin1String("/../Resources/") + icon));
+        op->setArguments(QStringList() << (appDirPath + QLatin1String("/../Resources/") + icon)
+            << (filePath + QLatin1String("/../Resources/") + icon));
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
 
         // finally, copy everything within Frameworks and plugins
-        if (QDir(QCoreApplication::applicationDirPath() + QLatin1String("/../Frameworks")).exists()) {
-            copyDirectoryContents(QCoreApplication::applicationDirPath()
-                + QLatin1String("/../Frameworks"), QFileInfo(uninstallerName()).path()
+        if (QDir(appDirPath + QLatin1String("/../Frameworks")).exists()) {
+            copyDirectoryContents(appDirPath + QLatin1String("/../Frameworks"), filePath
                 + QLatin1String("/../Frameworks"));
         }
 
-        if (QDir(QCoreApplication::applicationDirPath() + QLatin1String("/../plugins")).exists()) {
-            copyDirectoryContents(QCoreApplication::applicationDirPath()
-                + QLatin1String("/../plugins"), QFileInfo(uninstallerName()).path()
+        if (QDir(appDirPath + QLatin1String("/../plugins")).exists()) {
+            copyDirectoryContents(appDirPath + QLatin1String("/../plugins"), filePath
                 + QLatin1String("/../plugins"));
         }
     }
