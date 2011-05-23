@@ -205,6 +205,7 @@ InstallerPrivate::~InstallerPrivate()
     qDeleteAll(m_updaterComponents);
     qDeleteAll(m_updaterComponentsDeps);
 
+    qDeleteAll(m_ownedOperations);
     qDeleteAll(m_performedOperationsOld);
     qDeleteAll(m_performedOperationsCurrentSession);
 
@@ -446,9 +447,22 @@ QByteArray InstallerPrivate::replaceVariables(const QByteArray &ba) const
  */
 KDUpdater::UpdateOperation* InstallerPrivate::createOwnedOperation(const QString &type)
 {
-    KDUpdater::UpdateOperation* const op = KDUpdater::UpdateOperationFactory::instance().create(type);
-    ownedOperations.push_back(op);
-    return op;
+    m_ownedOperations.append(KDUpdater::UpdateOperationFactory::instance().create(type));
+    return m_ownedOperations.last();
+}
+
+/*!
+    \internal
+    Removes \a opertion from the operations owned by the installer, returns the very same operation if the
+    operation was found, otherwise 0.
+ */
+KDUpdater::UpdateOperation* InstallerPrivate::takeOwnedOperation(KDUpdater::UpdateOperation *operation)
+{
+    if (!m_ownedOperations.contains(operation))
+        return 0;
+
+    m_ownedOperations.removeAll(operation);
+    return operation;
 }
 
 QString InstallerPrivate::uninstallerName() const
@@ -562,8 +576,7 @@ KDUpdater::UpdateOperation* InstallerPrivate::createPathOperation(const QFileInf
 {
     const bool isDir = fileInfo.isDir();
     // create an operation with the dir/ file as target, it will get deleted on undo
-    KDUpdater::UpdateOperation *op = createOwnedOperation(QLatin1String(isDir
-        ? "Mkdir" : "Copy"));
+    KDUpdater::UpdateOperation *op = createOwnedOperation(QLatin1String(isDir ? "Mkdir" : "Copy"));
     if (isDir)
         op->setValue(QLatin1String("createddir"), fileInfo.absoluteFilePath());
     op->setValue(QLatin1String("component"), componentName);
@@ -593,7 +606,7 @@ void InstallerPrivate::registerPathesForUninstallation(
             op->setValue(QLatin1String("forceremoval"), wipe ? QLatin1String("true")
                 : QLatin1String("false"));
         }
-        addPerformed(op);
+        addPerformed(takeOwnedOperation(op));
 
         // get recursive afterwards
         if (fi.isDir() && !wipe) {
@@ -601,7 +614,8 @@ void InstallerPrivate::registerPathesForUninstallation(
                 | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
             while (dirIt.hasNext()) {
                 dirIt.next();
-                addPerformed(createPathOperation(dirIt.fileInfo(), componentName));
+                KDUpdater::UpdateOperation *op = createPathOperation(dirIt.fileInfo(), componentName);
+                addPerformed(takeOwnedOperation(op));
             }
         }
     }
@@ -699,7 +713,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         op->setArguments(QStringList() << filePath);
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
-        performedOperations.push_back(op);
+        performedOperations.append(takeOwnedOperation(op));
     }
 
     {
@@ -963,21 +977,21 @@ void InstallerPrivate::runInstaller()
 
         // add the operation to create the target directory
         if (!QDir(target).exists()) {
-            QScopedPointer<KDUpdater::UpdateOperation> mkdirOp(createOwnedOperation(QLatin1String("Mkdir")));
+            KDUpdater::UpdateOperation *mkdirOp = createOwnedOperation(QLatin1String("Mkdir"));
+            mkdirOp->setArguments(QStringList() << target);
             mkdirOp->setValue(QLatin1String("forceremoval"), true);
             mkdirOp->setValue(QLatin1String("uninstall-only"), true);
-            Q_ASSERT(mkdirOp.data());
-            mkdirOp->setArguments(QStringList() << target);
-            performOperationThreaded(mkdirOp.data(), Backup);
-            if (!performOperationThreaded(mkdirOp.data())) {
+
+            performOperationThreaded(mkdirOp, Backup);
+            if (!performOperationThreaded(mkdirOp)) {
                 // if we cannot create the target dir, we try to activate the admin rights
                 adminRightsGained = q->gainAdminRights();
-                if (!performOperationThreaded(mkdirOp.data()))
+                if (!performOperationThreaded(mkdirOp))
                     throw Error(mkdirOp->errorString());
             }
-            QString remove = q->value(QLatin1String("RemoveTargetDir"));
+            const QString remove = q->value(QLatin1String("RemoveTargetDir"));
             if (QVariant(remove).toBool())
-                addPerformed(mkdirOp.take());
+                addPerformed(takeOwnedOperation(mkdirOp));
         } else {
             QTemporaryFile tempAdminFile(target + QLatin1String("/adminrights"));
             if (!tempAdminFile.open() || !tempAdminFile.isWritable())

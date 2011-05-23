@@ -117,12 +117,14 @@ public:
     QString replaceVariables(const QString &str) const;
     QByteArray replaceVariables(const QByteArray &str) const;
 
-    KDUpdater::UpdateOperation* createOwnedOperation(const QString &type);
     void stopProcessesForUpdates(const QList<Component*> &components);
     int countProgressOperations(const QList<Component*> &components);
     int countProgressOperations(const QList<KDUpdater::UpdateOperation*> &operations);
     void connectOperationToInstaller(KDUpdater::UpdateOperation* const operation,
         double progressOperationPartSize);
+
+    KDUpdater::UpdateOperation* createOwnedOperation(const QString &type);
+    KDUpdater::UpdateOperation* takeOwnedOperation(KDUpdater::UpdateOperation *operation);
 
     KDUpdater::UpdateOperation* createPathOperation(const QFileInfo &fileInfo,
         const QString &componentName);
@@ -177,7 +179,7 @@ public:
     QList<Component*> m_updaterComponents;
     QList<Component*> m_updaterComponentsDeps;
 
-    QList<KDUpdater::UpdateOperation*> ownedOperations;
+    QList<KDUpdater::UpdateOperation*> m_ownedOperations;
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsOld;
     QVector<KDUpdater::UpdateOperation*> m_performedOperationsCurrentSession;
 
