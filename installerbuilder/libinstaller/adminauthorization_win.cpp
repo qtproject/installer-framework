@@ -32,51 +32,14 @@
 **************************************************************************/
 #include "adminauthorization.h"
 
-#include "windows.h"
+#include <common/utils.h>
 
-#include <QDir>
-#include <QStringList>
-#include <QVector>
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtCore/QDir>
+#include <QtCore/QStringList>
+#include <QtCore/QVector>
 
-// from qprocess_win.cpp
-static QString qt_create_commandline(const QString &program, const QStringList &arguments)
-{
-    QString args;
-    if (!program.isEmpty()) {
-        QString programName = program;
-        if (!programName.startsWith(QLatin1Char('\"')) && !programName.endsWith(QLatin1Char('\"')) && programName.contains(QLatin1Char(' ')))
-            programName = QLatin1Char('\"') + programName + QLatin1Char('\"');
-        programName.replace(QLatin1Char('/'), QLatin1Char('\\'));
-
-        // add the prgram as the first arg ... it works better
-        args = programName + QLatin1Char(' ');
-    }
-
-    for (int i=0; i<arguments.size(); ++i) {
-        QString tmp = arguments.at(i);
-        // in the case of \" already being in the string the \ must also be escaped
-        tmp.replace( QLatin1String("\\\""), QLatin1String("\\\\\"") );
-        // escape a single " because the arguments will be parsed
-        tmp.replace( QLatin1Char('\"'), QLatin1String("\\\"") );
-        if (tmp.isEmpty() || tmp.contains(QLatin1Char(' ')) || tmp.contains(QLatin1Char('\t'))) {
-            // The argument must not end with a \ since this would be interpreted
-            // as escaping the quote -- rather put the \ behind the quote: e.g.
-            // rather use "foo"\ than "foo\"
-            QString endQuote(QLatin1Char('\"'));
-            int i = tmp.length();
-            while (i>0 && tmp.at(i-1) == QLatin1Char('\\')) {
-                --i;
-                endQuote += QLatin1Char('\\');
-            }
-            args += QLatin1String(" \"") + tmp.left(i) + endQuote;
-        } else {
-            args += QLatin1Char(' ') + tmp;
-        }
-    }
-    return args;
-}
-
+#include <windows.h>
 
 class AdminAuthorization::Private
 {
@@ -125,9 +88,8 @@ bool AdminAuthorization::hasAdminRights()
 bool AdminAuthorization::execute( QWidget*, const QString& program, const QStringList& arguments )
 {
     qDebug() << Q_FUNC_INFO;
-    //const QString file = qt_create_commandline( program, QStringList() );
-    const QString args = qt_create_commandline( QString(), arguments );
     const QString file = QDir::toNativeSeparators( program );
+    const QString args = QInstaller::createCommandline( QString(), arguments );
 
     const int len = GetShortPathNameW( (wchar_t*)file.utf16(), 0, 0 );
     if( len == 0 )

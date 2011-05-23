@@ -47,13 +47,14 @@ namespace QInstaller
     QString INSTALLER_EXPORT replaceVariables( const QHash<QString,QString>& vars, const QString &str );
     QString INSTALLER_EXPORT replaceWindowsEnvironmentVariables( const QString &str );
     QStringList INSTALLER_EXPORT parseCommandLineArgs(int argc, char **argv);
+#ifdef Q_OS_WIN
+    QString createCommandline(const QString &program, const QStringList &arguments);
+#endif
 
     void INSTALLER_EXPORT setVerbose( bool v );
     bool INSTALLER_EXPORT isVerbose();
 
     INSTALLER_EXPORT std::ostream& stdverbose();
-
-
     INSTALLER_EXPORT std::ostream& operator<<( std::ostream& os, const QUrl& url );
     INSTALLER_EXPORT std::ostream& operator<<( std::ostream& os, const QString& string );
     INSTALLER_EXPORT std::ostream& operator<<( std::ostream& os, const QByteArray& array );
