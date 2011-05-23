@@ -8,11 +8,11 @@ using namespace KDUpdater;
 
 class Environment::Private {
 public:
-    static Environment* s_instance;
+    static Environment s_instance;
     QHash<QString, QString> tempValues;
 };
 
-Environment* Environment::Private::s_instance = 0;
+Environment Environment::Private::s_instance;
 
 Environment::Environment()
     : d( new Private )
@@ -23,9 +23,7 @@ Environment::~Environment() {
     delete d;
 }
 
-Environment* Environment::instance() {
-    if ( !Private::s_instance )
-        Private::s_instance = new Environment;
+Environment& Environment::instance() {
     return Private::s_instance;
 }
 

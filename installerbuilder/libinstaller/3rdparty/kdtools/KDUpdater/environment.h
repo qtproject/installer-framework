@@ -14,7 +14,7 @@ namespace KDUpdater {
 
 class KDTOOLS_UPDATER_EXPORT Environment {
     public:
-        static Environment* instance();
+        static Environment& instance();
 
         ~Environment();
 

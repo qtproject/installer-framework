@@ -150,11 +150,9 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
     }
 
     QProcessEnvironment penv;
-    KDUpdater::Environment *kdEnv = KDUpdater::Environment::instance();
     // there is no way to serialize a QProcessEnvironment properly other than per mangled QStringList:
     // (i.e. no other way to list all keys)
-    process->setEnvironment(kdEnv->applyTo(penv).toStringList());
-    delete kdEnv;
+    process->setEnvironment(KDUpdater::Environment::instance().applyTo(penv).toStringList());
 
     if (showStandardError)
         process->setProcessChannelMode(QProcessWrapper::MergedChannels);

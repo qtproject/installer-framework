@@ -172,8 +172,8 @@ bool EnvironmentVariableOperation::performOperation()
 #endif
     Q_ASSERT( !isPersistent );
 
-    setValue( QLatin1String( "oldvalue" ), Environment::instance()->value( name ) );
-    Environment::instance()->setTemporaryValue( name, value );
+    setValue( QLatin1String( "oldvalue" ), Environment::instance().value( name ) );
+    Environment::instance().setTemporaryValue( name, value );
 
     return true;
 }
@@ -194,10 +194,10 @@ bool EnvironmentVariableOperation::undoOperation()
 #endif
 
     if ( !isPersistent ) {
-        const QString actual = Environment::instance()->value( name );
+        const QString actual = Environment::instance().value( name );
         const bool doUndo = actual == value;
         if ( doUndo )
-            Environment::instance()->setTemporaryValue( name, oldvalue );
+            Environment::instance().setTemporaryValue( name, oldvalue );
         return doUndo;
     }
 

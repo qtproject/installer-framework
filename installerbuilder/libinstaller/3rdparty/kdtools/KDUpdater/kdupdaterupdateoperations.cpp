@@ -935,7 +935,7 @@ bool ExecuteOperation::performOperation()
     else
 #endif
     {
-        Environment::instance()->applyTo( &process ); //apply non-persistent variables
+        Environment::instance().applyTo( &process ); //apply non-persistent variables
     	process.start( args.front(), args.mid( 1 ) );
         
         QEventLoop loop;
