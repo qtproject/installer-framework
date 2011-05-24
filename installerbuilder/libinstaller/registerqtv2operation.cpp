@@ -85,7 +85,7 @@ bool RegisterQtInCreatorV2Operation::performOperation()
     const QString &path = QDir::toNativeSeparators(args.value(argCounter++));
     QString qmakePath = QDir(path).absolutePath();
     if ( !qmakePath.endsWith(QLatin1String("qmake"))
-         || !qmakePath.endsWith(QLatin1String("qmake.exe")))
+         && !qmakePath.endsWith(QLatin1String("qmake.exe")))
     {
 #if defined ( Q_OS_WIN )
         qmakePath.append(QLatin1String("/bin/qmake.exe"));
