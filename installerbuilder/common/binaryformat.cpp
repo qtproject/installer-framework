@@ -815,7 +815,7 @@ BinaryContent BinaryContent::readFromApplicationFile()
  * BinaryContent handles binary information embedded into executables.
  * Qt resources as well as component information can be stored.
  *
- * Explanation of the binary blob at the end of the file:
+ * Explanation of the binary blob at the end of the installer or separate data file:
  *
  * \verbatim
  * Meta data segment 0
