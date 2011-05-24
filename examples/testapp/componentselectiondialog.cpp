@@ -36,9 +36,9 @@
 #include <QPushButton>
 #include <QHeaderView>
 
-#include "qinstaller.h"
-#include "qinstallercomponent.h"
-#include "qinstallercomponentmodel.h"
+#include <componentmodel.h>
+#include <qinstaller.h>
+#include <qinstallercomponent.h>
 
 using namespace QInstaller;
 
@@ -59,7 +59,7 @@ public:
         int selectionCount = 0;
         for( QList< Component* >::const_iterator it = components.begin(); it != components.end(); ++it )
         {
-            if( (*it)->isSelected( UpdaterMode ) )
+            if( (*it)->isSelected() )
                 ++selectionCount;
         }
 
@@ -118,7 +118,7 @@ void ComponentSelectionDialog::Private::selectAll()
     QList< Component* > updaterComponents = installer->components( false, UpdaterMode );
     Q_FOREACH( Component* comp, updaterComponents )
     {
-        comp->setSelected( true, UpdaterMode );
+        comp->setSelected( true );
     }
 }
 
@@ -127,21 +127,17 @@ void ComponentSelectionDialog::Private::deselectAll()
     QList< Component* > updaterComponents = installer->components( false, UpdaterMode );
     Q_FOREACH( Component* comp, updaterComponents )
     {
-        comp->setSelected( false, UpdaterMode );
+        comp->setSelected( false );
     }
 }
 
-void ComponentSelectionDialog::refreshDialog()
-{
-    d->selectionChanged();
-}
 
 ComponentSelectionDialog::ComponentSelectionDialog( Installer* installer, QWidget* parent )
     : QDialog( parent ),
       d( new Private( this, installer ) )
 {
     d->ui.setupUi( this );
-    d->componentModel = new ComponentModel( installer, UpdaterMode );
+    d->componentModel = new ComponentModel( 5, installer );
     d->ui.treeView->setModel( d->componentModel );
     
     d->ui.labelLicenseBlurb->setAttribute( Qt::WA_MacSmallSize );
@@ -162,8 +158,8 @@ ComponentSelectionDialog::ComponentSelectionDialog( Installer* installer, QWidge
     connect( d->ui.treeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ),
              this,                             SLOT( selectionChanged() ) );
     connect( d->installBtn, SIGNAL( clicked() ), this, SIGNAL( requestUpdate() ) );
-    connect( d->ui.selectAll, SIGNAL( clicked() ), d.get(), SLOT( selectAll() ), Qt::QueuedConnection );
-    connect( d->ui.deselectAll, SIGNAL( clicked() ), d.get(), SLOT( deselectAll() ), Qt::QueuedConnection );
+    connect( d->ui.selectAll, SIGNAL( clicked() ), d, SLOT( selectAll() ), Qt::QueuedConnection );
+    connect( d->ui.deselectAll, SIGNAL( clicked() ), d, SLOT( deselectAll() ), Qt::QueuedConnection );
 
 
     d->ui.treeView->setCurrentIndex( d->ui.treeView->model()->index( 0, 0 ) );
@@ -178,6 +174,7 @@ ComponentSelectionDialog::ComponentSelectionDialog( Installer* installer, QWidge
 
 ComponentSelectionDialog::~ComponentSelectionDialog()
 {
+    delete d;
 }
 
 void ComponentSelectionDialog::selectAll() {
@@ -193,17 +190,22 @@ void ComponentSelectionDialog::install() {
 }
 
 void ComponentSelectionDialog::selectComponent( const QString& id ) {
-    const QModelIndex idx = d->componentModel->findComponent( id );
+    const QModelIndex idx = d->componentModel->indexFromComponentName( id );
     if ( !idx.isValid() )
         return;
     d->componentModel->setData( idx, Qt::Checked );
 }
 
 void ComponentSelectionDialog::deselectComponent( const QString& id ) {
-    const QModelIndex idx = d->componentModel->findComponent( id );
+    const QModelIndex idx = d->componentModel->indexFromComponentName( id );
     if ( !idx.isValid() )
         return;
     d->componentModel->setData( idx, Qt::Unchecked );
+}
+
+void ComponentSelectionDialog::refreshDialog()
+{
+    d->selectionChanged();
 }
 
 #include "moc_componentselectiondialog.cpp"

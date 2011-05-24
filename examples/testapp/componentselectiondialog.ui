@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>656</width>
-    <height>406</height>
+    <height>408</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
         </sizepolicy>
        </property>
        <property name="pixmap">
-        <pixmap>:/logo.png</pixmap>
+        <pixmap resource="testapp.qrc">:/logo.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>false</bool>
@@ -160,7 +160,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="testapp.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

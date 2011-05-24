@@ -1,6 +1,6 @@
 TEMPLATE=subdirs
 CONFIG += ordered
-SUBDIRS += installerbuilder
+SUBDIRS += installerbuilder examples
 
 
 test.target=test

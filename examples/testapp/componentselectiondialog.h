@@ -28,20 +28,17 @@
 
 #include <QtGui/QDialog>
 
-#include <KDToolsCore/pimpl_ptr>
+namespace QInstaller {
+    class Installer;
+}
 
-#include "installer_global.h"
-
-namespace QInstaller
-{
-class Installer;
-
-class INSTALLER_EXPORT ComponentSelectionDialog : public QDialog
+class ComponentSelectionDialog : public QDialog
 {
     Q_OBJECT
+
 public:
     explicit ComponentSelectionDialog( QInstaller::Installer* installer, QWidget* parent = 0 );
-    ~ComponentSelectionDialog();
+    virtual ~ComponentSelectionDialog();
     Q_INVOKABLE void selectComponent( const QString& compoenent );
     Q_INVOKABLE void deselectComponent( const QString& component );
     Q_INVOKABLE void selectAll();
@@ -55,13 +52,11 @@ Q_SIGNALS:
     void requestUpdate();
 
 private:
-    Q_PRIVATE_SLOT( d, void selectionChanged() );
-    Q_PRIVATE_SLOT( d, void modelReset() );
-
     class Private;
-    kdtools::pimpl_ptr< Private > d;
-};
+    Private *d;
 
-}
+    Q_PRIVATE_SLOT( d, void selectionChanged() )
+    Q_PRIVATE_SLOT( d, void modelReset() )
+};
 
 #endif
