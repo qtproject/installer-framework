@@ -61,6 +61,7 @@ namespace QInstaller {
     void INSTALLER_EXPORT appendString(QIODevice *out, const QString &str);
     void INSTALLER_EXPORT appendStringList(QIODevice *out, const QStringList &list);
     void INSTALLER_EXPORT appendDictionary(QIODevice *out, const QHash<QString,QString> &dict);
+    qint64 INSTALLER_EXPORT appendCompressedData(QIODevice *out, QIODevice *in, qint64 size);
 
     void INSTALLER_EXPORT retrieveFileData(QIODevice *out, QIODevice *in);
     qint64 INSTALLER_EXPORT retrieveInt64(QIODevice *in);
@@ -69,6 +70,7 @@ namespace QInstaller {
     QString INSTALLER_EXPORT retrieveString(QIODevice *in);
     QStringList INSTALLER_EXPORT retrieveStringList(QIODevice *in);
     QHash<QString,QString> INSTALLER_EXPORT retrieveDictionary(QIODevice *in);
+    QByteArray INSTALLER_EXPORT retrieveCompressedData(QIODevice *in, qint64 size);
 }
 
 namespace QInstallerCreator {

@@ -130,7 +130,7 @@ static void appendFileData(QIODevice *out, const QString &fileName)
 
 void QInstaller::appendData(QIODevice *out, QIODevice *in, qint64 size)
 {
-    while(size > 0) {
+    while (size > 0) {
         const qint64 nextSize = qMin(size, 16384LL);
         QByteArray &b = theBuffer(nextSize);
         blockingRead(in, b.data(), nextSize);
@@ -166,6 +166,17 @@ void QInstaller::appendDictionary(QIODevice *out, const QHash<QString,QString> &
     }
 }
 
+qint64 QInstaller::appendCompressedData(QIODevice *out, QIODevice *in, qint64 size)
+{
+    QByteArray ba;
+    ba.resize(size);
+    blockingRead(in, ba.data(), size);
+
+    QByteArray cba = qCompress(ba);
+    blockingWrite(out, cba, cba.size());
+    return cba.size();
+}
+
 QString QInstaller::retrieveString(QIODevice *in)
 {
     const QByteArray b = retrieveByteArray(in);
@@ -197,6 +208,14 @@ QHash<QString,QString> QInstaller::retrieveDictionary(QIODevice *in)
         dict.insert(key, retrieveString(in));
     }
     return dict;
+}
+
+QByteArray QInstaller::retrieveCompressedData(QIODevice *in, qint64 size)
+{
+    QByteArray ba;
+    ba.resize(size);
+    blockingRead(in, ba.data(), size);
+    return qUncompress(ba);
 }
 
 qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
@@ -734,14 +753,26 @@ int ComponentIndex::componentCount() const
 }
 
 
+static QVector<QByteArray> sResourceVec;
 /*!
     \internal
     Registers the resource found at \a segment within \a file into the Qt resource system.
  */
-static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segment)
+static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segment, bool compressed)
 {
     if (segment.length() <= 0)
         return 0;
+
+    if (compressed) {
+        file->seek(segment.start());
+        sResourceVec.append(retrieveCompressedData(file, segment.length()));
+
+        if (!QResource::registerResource((const uchar*)(sResourceVec.last().constData()),
+            QLatin1String(":/metadata"))) {
+                throw Error(QObject::tr("Could not register in-binary resource."));
+        }
+        return (const uchar*)(sResourceVec.last().constData());
+    }
 
     const uchar* const mapped = file->map(segment.start(), segment.length());
     if (!mapped) {
@@ -1011,7 +1042,7 @@ int BinaryContent::registerEmbeddedQResources()
     }
 
     foreach (const Range<qint64> &i, metadataResourceSegments)
-        mappings.push_back(addResourceFromBinary(data, i));
+        mappings.push_back(addResourceFromBinary(data, i, !m_binaryFile.isNull()));
     return mappings.count();
 }
 
