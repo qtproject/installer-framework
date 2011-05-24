@@ -601,7 +601,7 @@ void InstallerPrivate::registerPathesForUninstallation(
 
         const QFileInfo fi(path);
         // create a copy operation with the file as target -> it will get deleted on undo
-        KDUpdater::UpdateOperation* const op = createPathOperation(fi, componentName);
+        KDUpdater::UpdateOperation *op = createPathOperation(fi, componentName);
         if (fi.isDir()) {
             op->setValue(QLatin1String("forceremoval"), wipe ? QLatin1String("true")
                 : QLatin1String("false"));
@@ -614,7 +614,7 @@ void InstallerPrivate::registerPathesForUninstallation(
                 | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
             while (dirIt.hasNext()) {
                 dirIt.next();
-                KDUpdater::UpdateOperation *op = createPathOperation(dirIt.fileInfo(), componentName);
+                op = createPathOperation(dirIt.fileInfo(), componentName);
                 addPerformed(takeOwnedOperation(op));
             }
         }
