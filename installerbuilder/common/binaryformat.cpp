@@ -306,44 +306,40 @@ Archive::~Archive()
  */
 bool Archive::copy(const QString &name)
 {
+    const QFileInfo fileInfo(name);
     if (isZippedDirectory()) {
-        const QFileInfo fi(name);
-        if (fi.exists() && !fi.isDir())
+        if (fileInfo.exists() && !fileInfo.isDir())
             return false;
+
         errno = 0;
-        if (!fi.exists() && !QDir().mkpath(fi.absoluteFilePath())) {
+        const QString absoluteFilePath = fileInfo.absoluteFilePath();
+        if (!fileInfo.exists() && !QDir().mkpath(absoluteFilePath)) {
             setErrorString(tr("Could not create %1: %2").arg(name, QString::fromLocal8Bit(strerror(errno))));
             return false;
         }
 
-        UnzipJob job;
         if (isOpen())
             close();
         open(QIODevice::ReadOnly);
+
+        UnzipJob job;
         job.setInputDevice(this);
-        job.setOutputPath(fi.absoluteFilePath());
-
+        job.setOutputPath(absoluteFilePath);
         job.run();
-
-        close();
-
-        return true;
     } else {
         if (isOpen())
             close();
-
         open(QIODevice::ReadOnly);
 
-        QFile target(QFileInfo(name).isDir() ? QString::fromLatin1("%1/%2").arg(name)
+        QFile target(fileInfo.isDir() ? QString::fromLatin1("%1/%2").arg(name)
             .arg(QString::fromUtf8(m_name.data(), m_name.count())) : name);
         if (target.exists())
             return false;
         target.open(QIODevice::WriteOnly);
         blockingCopy(this, &target, size());
-
-        close();
-        return true;
     }
+    close();
+    return true;
 }
 
 /*!
@@ -364,24 +360,24 @@ bool Archive::isZippedDirectory() const
     if (m_device == 0) {
         // easy, just check whether it's a dir
         return QFileInfo(m_path).isDir();
-    } else {
-        // more complex, check the zip header magic
-        Archive* const arch = const_cast< Archive* >(this);
-
-        const bool opened = !isOpen();
-        if (opened)
-            arch->open(QIODevice::ReadOnly);
-        const qint64 p = pos();
-        arch->seek(0);
-
-        const QByteArray ba = arch->read(4);
-        const bool result = ba == QByteArray("\x50\x4b\x03\04");
-
-        arch->seek(p);
-        if (opened)
-            arch->close();
-        return result;
     }
+
+    // more complex, check the zip header magic
+    Archive* const arch = const_cast<Archive*> (this);
+
+    const bool notOpened = !isOpen();
+    if (notOpened)
+        arch->open(QIODevice::ReadOnly);
+    const qint64 p = pos();
+    arch->seek(0);
+
+    const QByteArray ba = arch->read(4);
+    const bool result = ba == QByteArray("\x50\x4b\x03\04");
+
+    arch->seek(p);
+    if (notOpened)
+        arch->close();
+    return result;
 }
 
 QByteArray Archive::name() const
@@ -423,8 +419,6 @@ bool Archive::open(OpenMode mode)
     if (m_device != 0)
         return QIODevice::open(mode);
 
-    // we
-
     const QFileInfo fi(m_path);
     if (fi.isFile()) {
         m_inputFile.setFileName(m_path);
@@ -432,13 +426,6 @@ bool Archive::open(OpenMode mode)
             setErrorString(tr("Could not open archive file %1 for reading.").arg(m_path));
             return false;
         }
-
-/*        if (!Lib7z::isSupportedArchive(&m_inputFile)) {
-            setErrorString(tr("Not in a supported archive format: %1").arg(m_path));
-            m_inputFile.close();
-            return false;
-        }*/
-
         setOpenMode(mode);
         return true;
     }
@@ -465,6 +452,7 @@ bool Archive::createZippedFile()
     file.setAutoRemove(false);
     if (!file.open())
         return false;
+
     m_inputFile.setFileName(file.fileName());
     file.close();
     m_inputFile.open(QIODevice::ReadWrite);
