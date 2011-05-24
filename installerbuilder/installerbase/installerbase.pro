@@ -20,13 +20,11 @@ include(../libinstaller/libinstaller.pri)
 QT += network
 
 HEADERS += tabcontroller.h \
-           installerbasecommons.h \
-           maintabwidget.h
+           installerbasecommons.h
 
 SOURCES = installerbase.cpp \
           tabcontroller.cpp \
-          installerbasecommons.cpp \
-          maintabwidget.cpp
+          installerbasecommons.cpp
 
 win32-msvc2005 {
   CONFIG += embed_manifest_exe #msvc2008 is doing this automaticaly
