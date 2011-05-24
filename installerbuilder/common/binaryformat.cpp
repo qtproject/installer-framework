@@ -875,7 +875,8 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
             // check for supported binary data file, will throw if we can't find a marker
             try {
                 const qint64 cookiePos = findMagicCookie(c.m_binaryFile.data(), QInstaller::MagicCookieDat);
-                readBinaryData(c, c.m_binaryFile.data(), readBinaryLayout(c.m_binaryFile.data(), cookiePos));
+                readBinaryData(c, c.m_binaryFile.data(), readBinaryLayout(c.m_binaryFile.data(), cookiePos),
+                    true);
                 retry = false;
             } catch (const Error &error) {
                 // this seems to be an unsupported dat file, try to read from original binary
@@ -888,7 +889,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
     }
 
     if (retry)
-        readBinaryData(c, file, layout);
+        readBinaryData(c, file, layout, false);
 
     return c;
 }
@@ -933,7 +934,8 @@ BinaryLayout BinaryContent::readBinaryLayout(QIODevice *file, qint64 cookiePos)
 
 
 /* static */
-void BinaryContent::readBinaryData(BinaryContent &c, QIODevice *const file, const BinaryLayout &layout)
+void BinaryContent::readBinaryData(BinaryContent &c, QIODevice *const file, const BinaryLayout &layout,
+    bool compressed)
 {
     c.m_magicmarker = layout.magicMarker;
     c.metadataResourceSegments = layout.metadataResourceSegments;
@@ -952,7 +954,8 @@ void BinaryContent::readBinaryData(BinaryContent &c, QIODevice *const file, cons
         Q_ASSERT_X(op, __FUNCTION__, QString::fromLatin1("Invalid operation name: %1").arg(name)
             .toLatin1());
 
-        const QString xml = retrieveString(file);
+        const QString xml = (compressed ? QString::fromUtf8(qUncompress(retrieveByteArray(file)))
+            : retrieveString(file));
         if (!op->fromXml(xml))
             qWarning() << "Failed to load XML for operation:" << name;
         verbose() << "Operation name: " << name << "\nOperation xml:\n" << xml.leftRef(1000) << std::endl;

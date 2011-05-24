@@ -198,7 +198,8 @@ public:
     QStack<KDUpdater::UpdateOperation*> performedOperations() const;
 
 private:
-    static void readBinaryData(BinaryContent &c, QIODevice *const file, const BinaryLayout &layout);
+    static void readBinaryData(BinaryContent &c, QIODevice *const file, const BinaryLayout &layout,
+        bool compressed);
 
 private:
     QSharedPointer<QFile> file;

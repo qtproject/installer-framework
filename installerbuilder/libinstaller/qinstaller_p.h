@@ -190,7 +190,8 @@ private:
 
     void writeUninstallerBinary(QFile *const input, qint64 size);
     void writeUninstallerBinaryData(QIODevice *output, QFile *const input,
-        const QVector<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout);
+        const QVector<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout,
+        bool compress);
 
     void runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
         double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation);

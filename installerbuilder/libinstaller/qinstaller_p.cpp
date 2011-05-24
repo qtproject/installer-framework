@@ -649,7 +649,7 @@ void InstallerPrivate::writeUninstallerBinary(QFile *const input, qint64 size)
 }
 
 void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *const input,
-    const QVector<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout)
+    const QVector<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout, bool compress)
 {
     const qint64 dataBlockStart = output->pos();
 
@@ -667,7 +667,8 @@ void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *cons
         op->clearValue(QLatin1String("installer"));
 
         appendString(output, op->name());
-        appendString(output, op->toXml().toString());
+        compress ? appendByteArray(output, qCompress(op->toXml().toByteArray()))
+            : appendString(output, op->toXml().toString());
 
         // for the ui not to get blocked
         qApp->processEvents();
@@ -902,7 +903,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         try {
             KDSaveFile file(dataFile + QLatin1String(".new"));
             openForWrite(&file, file.fileName());
-            writeUninstallerBinaryData(&file, &input, performedOperations, layout);
+            writeUninstallerBinaryData(&file, &input, performedOperations, layout, true);
             appendInt64(&file, MagicCookieDat);
             file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
                 | QFile::ReadOther);
@@ -918,7 +919,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
             QFile file(uninstallerName() + QLatin1String(".new"));
             openForWrite(&file, file.fileName());
             file.seek(file.size());
-            writeUninstallerBinaryData(&file, &input, performedOperations, layout);
+            writeUninstallerBinaryData(&file, &input, performedOperations, layout, false);
             appendInt64(&file, MagicCookie);
         }
         deferredRename(dataFile + QLatin1String(".new"), dataFile, false);
