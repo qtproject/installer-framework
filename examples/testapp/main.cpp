@@ -30,17 +30,20 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include <QApplication>
 #include "mainwindow.h"
+
 #include <KDToolsCore/KDSelfRestarter>
 
-int main( int argc, char** argv ) {
-    const KDSelfRestarter restarter( argc, argv );
-    QStringList args;
-    for ( int i = 0; i < argc; ++i )
-        args << QString::fromLocal8Bit( argv[i] );
-    QApplication app( argc, argv );
-    MainWindow mw( args );
+#include <QtGui/QApplication>
+
+
+int main(int argc, char** argv)
+{
+    const KDSelfRestarter restarter(argc, argv);
+
+    QApplication app(argc, argv);
+    MainWindow mw(app.arguments());
     mw.show();
+
     return app.exec();
 }
