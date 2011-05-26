@@ -526,6 +526,9 @@ int main(int argc, char **argv)
 #else
     QString templateBinary = QString::fromLatin1("installerbase");
 #endif
+    if (!QFileInfo(templateBinary).exists()) {
+        templateBinary = QString(QLatin1String("%1/%2")).arg(qApp->applicationDirPath(), templateBinary);
+    }
     QString target;
     QString configDir;
     QString packagesDirectory = QDir::currentPath();
