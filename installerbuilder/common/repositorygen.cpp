@@ -67,6 +67,13 @@ static QVector<PackageInfo> collectAvailablePackages(const QString& packagesDire
         .entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
         verbose() << "  found subdirectory \"" << it->fileName() << "\"";
+        //because the filter is QDir::Dirs - filename means the name of the subdirectory
+        if (it->fileName().contains(QLatin1Char('-'))) {
+            verbose() << ", but it contains \"-\" which is not allowed, because it is used as the seperator between the component name and the version number internally."
+                << std::endl;
+            throw QInstaller::Error(QObject::tr("Component %1 can't contain \"-\"").arg(it->fileName()));
+        }
+
         QFile file(QString::fromLatin1("%1/meta/package.xml").arg(it->filePath()));
         if (!file.exists()) {
             verbose() << ", but it contains no package information (meta/package.xml missing)"
