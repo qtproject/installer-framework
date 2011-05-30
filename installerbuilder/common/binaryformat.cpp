@@ -210,6 +210,14 @@ QHash<QString,QString> QInstaller::retrieveDictionary(QIODevice *in)
     return dict;
 }
 
+QByteArray QInstaller::retrieveData(QIODevice *in, qint64 size)
+{
+    QByteArray ba;
+    ba.resize(size);
+    blockingRead(in, ba.data(), size);
+    return ba;
+}
+
 QByteArray QInstaller::retrieveCompressedData(QIODevice *in, qint64 size)
 {
     QByteArray ba;

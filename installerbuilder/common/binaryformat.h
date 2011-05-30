@@ -70,6 +70,7 @@ namespace QInstaller {
     QString INSTALLER_EXPORT retrieveString(QIODevice *in);
     QStringList INSTALLER_EXPORT retrieveStringList(QIODevice *in);
     QHash<QString,QString> INSTALLER_EXPORT retrieveDictionary(QIODevice *in);
+    QByteArray INSTALLER_EXPORT retrieveData(QIODevice *in, qint64 size);
     QByteArray INSTALLER_EXPORT retrieveCompressedData(QIODevice *in, qint64 size);
 }
 
