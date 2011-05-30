@@ -759,27 +759,18 @@ static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segm
     if (segment.length() <= 0)
         return 0;
 
-    if (compressed) {
-        file->seek(segment.start());
-        sResourceVec.append(retrieveCompressedData(file, segment.length()));
-
-        if (!QResource::registerResource((const uchar*)(sResourceVec.last().constData()),
-            QLatin1String(":/metadata"))) {
-                throw Error(QObject::tr("Could not register in-binary resource."));
-        }
-        return (const uchar*)(sResourceVec.last().constData());
-    }
-
-    const uchar* const mapped = file->map(segment.start(), segment.length());
-    if (!mapped) {
-        throw Error(QObject::tr("Could not mmap in-binary resource. (offset=%1, length=%2")
+    if (!file->seek(segment.start())) {
+        throw Error(QObject::tr("Could not seek to in-binary resource. (offset: %1, length: %2")
             .arg(QString::number(segment.start()), QString::number(segment.length())));
     }
+    sResourceVec.append(compressed ? retrieveCompressedData(file, segment.length()) : retrieveData(file,
+        segment.length()));
 
-    if (!QResource::registerResource(mapped, QLatin1String(":/metadata")))
-        throw Error(QObject::tr("Could not register in-binary resource."));
-
-    return mapped;
+    if (!QResource::registerResource((const uchar*)(sResourceVec.last().constData()),
+        QLatin1String(":/metadata"))) {
+            throw Error(QObject::tr("Could not register in-binary resource."));
+    }
+    return (const uchar*)(sResourceVec.last().constData());
 }
 
 BinaryContent::BinaryContent(const QString &path)
@@ -959,7 +950,6 @@ BinaryLayout BinaryContent::readBinaryLayout(QIODevice *file, qint64 cookiePos)
     return layout;
 }
 
-
 /* static */
 void BinaryContent::readBinaryData(BinaryContent &c, QIODevice *const file, const BinaryLayout &layout,
     bool compressed)
@@ -1031,14 +1021,20 @@ qint64 BinaryContent::magicmaker() const
  */
 int BinaryContent::registerEmbeddedQResources()
 {
-    QFile *data = m_binaryFile.isNull() ? file.data() : m_binaryFile.data();
+    const bool hasBinaryDataFile = !m_binaryFile.isNull();
+    QFile *const data = hasBinaryDataFile ? m_binaryFile.data() : file.data();
     if (!data->isOpen() && !data->open(QIODevice::ReadOnly)) {
         throw Error(QObject::tr("Could not open binary %1: %2").arg(data->fileName(),
             data->errorString()));
     }
 
     foreach (const Range<qint64> &i, metadataResourceSegments)
-        mappings.push_back(addResourceFromBinary(data, i, !m_binaryFile.isNull()));
+        mappings.append(addResourceFromBinary(data, i, hasBinaryDataFile));
+
+    file.clear();
+    if (hasBinaryDataFile)
+        m_binaryFile.clear();
+
     return mappings.count();
 }
 
