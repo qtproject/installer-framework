@@ -656,7 +656,7 @@ void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *cons
     QVector<Range<qint64> >resourceSegments;
     foreach (const Range<qint64> segment, layout.metadataResourceSegments) {
         input->seek(segment.start());
-        if (compress) {
+        if (isInstaller()) {
             const qint64 compressedSize = appendCompressedData(output, input, segment.length());
             resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos() - compressedSize,
                 compressedSize));
