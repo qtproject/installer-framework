@@ -71,7 +71,6 @@ static const QLatin1String skReplaces("Replaces");
 static const QLatin1String skVirtual("Virtual");
 static const QLatin1String skSortingPriority("SortingPriority");
 static const QLatin1String skInstallPriority("InstallPriority");
-static const QLatin1String skAutoSelectOn("AutoSelectOn");
 static const QLatin1String skImportant("Important");
 static const QLatin1String skForcedInstallation("ForcedInstallation");
 static const QLatin1String skUpdateText("UpdateText");
@@ -177,7 +176,6 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
     setValue(skVirtual, update->data(skVirtual).toString());
     setValue(skSortingPriority, update->data(skSortingPriority).toString());
     setValue(skInstallPriority, update->data(skInstallPriority).toString());
-    setValue(skAutoSelectOn, update->data(skAutoSelectOn).toString());
 
     setValue(skImportant, update->data(skImportant).toString());
     setValue(skUpdateText, update->data(skUpdateText).toString());
