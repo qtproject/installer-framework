@@ -11,9 +11,19 @@ CONFIG += uitools help
 QTPLUGIN += qsqlite
 
 # Input
-FORMS += componentselectiondialog.ui
-HEADERS += mainwindow.h componentselectiondialog.h
-SOURCES += main.cpp mainwindow.cpp componentselectiondialog.cpp
+FORMS += componentselectiondialog.ui updatesettingsdialog.ui updatesettingswidget.ui
+HEADERS += mainwindow.h \
+    componentselectiondialog.h \
+    updatesettingsdialog.h \
+    updateagent.h \
+    updatesettingswidget.h
+
+SOURCES += main.cpp mainwindow.cpp \
+    componentselectiondialog.cpp \
+    updatesettingsdialog.cpp \
+    updateagent.cpp \
+    updatesettingswidget.cpp
+
 RESOURCES += testapp.qrc
 
 macx:QMAKE_POST_LINK = ($$OUT_PWD/../../installerbuilder/bin/binarycreator -p packages -c config -t ../../installerbuilder/bin/installerbase TestAppInstaller.app com.nokia.testapp)

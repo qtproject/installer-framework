@@ -58,131 +58,132 @@
 #include <common/errors.h>
 #include <common/fileutils.h>
 #include <init.h>
-//#include "updateagent.h"
+#include "updateagent.h"
 
 #include <updatesettings.h>
-//#include "updatesettingsdialog.h"
+#include "updatesettingsdialog.h"
 
 using namespace QInstaller;
+using namespace QInstallerCreator;
 
-MainWindow::MainWindow( const QStringList& args, QWidget* parent )
-    : QMainWindow( parent )
+MainWindow::MainWindow(const QStringList &args, QWidget *parent)
+    : QMainWindow(parent)
     , m_installer(new Installer(QInstaller::MagicUpdaterMarker))
 {
-
     QInstaller::init();
     m_installer->setUpdaterApplication(&updaterapp);
 
-    QMenuBar* mbar = menuBar();
-    QMenu* fm = mbar->addMenu( QObject::tr("File") );
-    fm->addAction( QObject::tr("Check for Updates"), this, SLOT(checkForUpdates()), QKeySequence( QLatin1String("Ctrl+U") ) );
-    fm->addAction( QObject::tr("Update Settings"), this, SLOT(editUpdateSettings()) );
-    fm->addAction( QObject::tr("Quit"), QApplication::instance(), SLOT(quit()), QKeySequence( QLatin1String("Ctrl+Q") ) );
-    QLabel* label = new QLabel( this );
-    label->setAlignment( Qt::AlignCenter );
-    setCentralWidget( label );    
-    label->setText( QString::fromLatin1("Version: %1\n").arg( m_installer->settings().applicationVersion() ) + args.join( QLatin1String(" ") ) );
-    updaterapp.packagesInfo()->setApplicationName( m_settings.applicationName() );
-    updaterapp.packagesInfo()->setApplicationVersion( m_settings.applicationVersion() );
+    QMenu *fm = menuBar()->addMenu(QObject::tr("File"));
+    fm->addAction(QObject::tr("Check for Updates"), this, SLOT(checkForUpdates()),
+        QKeySequence(QLatin1String("Ctrl+U")));
+    fm->addAction(QObject::tr("Update Settings"), this, SLOT(editUpdateSettings()));
+    fm->addAction(QObject::tr("Quit"), QApplication::instance(), SLOT(quit()),
+        QKeySequence(QLatin1String("Ctrl+Q")));
 
-//    UpdateAgent* const agent = new UpdateAgent( this );
-//    connect( agent, SIGNAL( updatesAvailable() ), this, SLOT( updatesAvailable() ) );
+    QLabel* label = new QLabel(this);
+    label->setWordWrap(true);
+    label->setAlignment(Qt::AlignCenter);
+    setCentralWidget(label);
+    label->setText(QString::fromLatin1("Version: %1\n").arg(m_installer->settings().applicationVersion())
+        + args.join(QLatin1String(" ")));
+
+    updaterapp.packagesInfo()->setApplicationName(m_settings.applicationName());
+    updaterapp.packagesInfo()->setApplicationVersion(m_settings.applicationVersion());
+
+    UpdateAgent* const agent = new UpdateAgent(this);
+    connect(agent, SIGNAL(updatesAvailable()), this, SLOT(updatesAvailable()));
 }
 
 void MainWindow::editUpdateSettings()
 {
-//    UpdateSettingsDialog dialog( this );
-//    connect( &dialog, SIGNAL( checkForUpdates() ), this, SLOT( checkForUpdates() ) );
-//    dialog.exec();
+    UpdateSettingsDialog dialog(this);
+    connect(&dialog, SIGNAL(checkForUpdates()), this, SLOT(checkForUpdates()));
+    dialog.exec();
 }
 
-void MainWindow::checkForUpdates() {
-    std::auto_ptr< QInstallerCreator::BinaryFormatEngineHandler > handler( new QInstallerCreator::BinaryFormatEngineHandler( QInstallerCreator::ComponentIndex() ) );
-    handler->setComponentIndex( QInstallerCreator::ComponentIndex() );
-        
+void MainWindow::checkForUpdates()
+{
+    QScopedPointer<BinaryFormatEngineHandler> handler(new BinaryFormatEngineHandler(ComponentIndex()));
+    handler->setComponentIndex(QInstallerCreator::ComponentIndex());
+
     UpdateSettings settings;
-        
     try
     {
-        m_installer->setTemporaryRepositories( settings.repositories() );
-        settings.setLastCheck( QDateTime::currentDateTime() );
+        m_installer->setTemporaryRepositories(settings.repositories());
+        settings.setLastCheck(QDateTime::currentDateTime());
 
         m_installer->fetchUpdaterPackages();
 
         // no updates for us
-        if( m_installer->components(false, UpdaterMode).isEmpty() )
-        {
-            QMessageBox::information( this, tr( "Check for Updates" ), tr( "There are currently no updates available for you." ) );
+        if(m_installer->components(false, UpdaterMode).isEmpty()) {
+            QMessageBox::information(this, tr("Check for Updates"), tr("There are currently no updates "
+                "available for you."));
             return;
         }
 
         // set the target directory to the actual one
-        m_installer->setValue( QLatin1String( "TargetDir" ), QFileInfo( updaterapp.packagesInfo()->fileName() ).absolutePath() );
+        m_installer->setValue(QLatin1String("TargetDir"), QFileInfo(updaterapp.packagesInfo()->fileName())
+            .absolutePath());
 
-        // this will automatically mork components as to get installed
-        ComponentSelectionDialog componentSelection( m_installer, this );
-        if( componentSelection.exec() == QDialog::Rejected )
+        // this will automatically mark components as to get installed
+        ComponentSelectionDialog componentSelection(m_installer, this);
+        if(componentSelection.exec() == QDialog::Rejected)
             return;
 
-        QProgressDialog dialog( this );
-        dialog.setRange( 0, 100 );
+        QProgressDialog dialog(this);
+        dialog.setRange(0, 100);
         dialog.show();
-        connect( &dialog, SIGNAL( canceled() ), m_installer, SLOT( interrupt() ) );
-        connect( m_installer, SIGNAL( installationProgressTextChanged( QString ) ), &dialog, SLOT( setLabelText( QString ) ) );
-        connect( m_installer, SIGNAL( installationProgressChanged( int ) ), &dialog, SLOT( setValue( int ) ) );
+        connect(&dialog, SIGNAL(canceled()), m_installer, SLOT(interrupt()));
+        connect(m_installer, SIGNAL(installationProgressTextChanged(QString)), &dialog, SLOT(setLabelText(QString)));
+        connect(m_installer, SIGNAL(installationProgressChanged(int)), &dialog, SLOT(setValue(int)));
         m_installer->installSelectedComponents();
         updatesInstalled();
-    }
-    catch( const QInstaller::Error& error )
-    {
-        QMessageBox::critical( this, tr( "Check for Updates" ), tr( "Error while installing updates:\n%1" ).arg( error.what() ) );
+    } catch (const QInstaller::Error &error) {
+        QMessageBox::critical(this, tr("Check for Updates"), tr("Error while installing updates:\n%1")
+            .arg(error.what()));
         m_installer->rollBackInstallation();
-        settings.setLastResult( tr( "Software Update failed." ) );
-    }
-    catch( ... )
-    {
-        QMessageBox::critical( this, tr( "Check for Updates" ), tr( "Unknown error while installing updates." ) );
+        settings.setLastResult(tr("Software Update failed."));
+    } catch (...) {
+        QMessageBox::critical(this, tr("Check for Updates"), tr("Unknown error while installing updates."));
         m_installer->rollBackInstallation();
-        settings.setLastResult( tr( "Software Update failed." ) );
+        settings.setLastResult(tr("Software Update failed."));
     }
 }
 
 void MainWindow::updatesAvailable()
 {
-    KDAutoPointer<QMessageBox> box( new QMessageBox( this ) );
-    box->setWindowTitle( tr("Updates Available") );
-    box->setText( tr("Software updates are available for your computer. Do you want to install them?") );
-    box->setStandardButtons( QMessageBox::Yes|QMessageBox::No );
-    box->button( QMessageBox::Yes )->setText( tr( "Continue" ) );
-    box->button( QMessageBox::No )->setText( tr( "Not Now" ) );
+    QScopedPointer<QMessageBox> box(new QMessageBox(this));
+    box->setWindowTitle(tr("Updates Available"));
+    box->setText(tr("Software updates are available for your computer. Do you want to install them?"));
+    box->setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+    box->button(QMessageBox::Yes)->setText(tr("Continue"));
+    box->button(QMessageBox::No)->setText(tr("Not Now"));
     box->exec();
-    if ( !box )
-        return;
-    if ( box->clickedButton() == box->button( QMessageBox::Yes ) )
+
+    if (box && box->clickedButton() == box->button(QMessageBox::Yes))
         checkForUpdates();
 }
 
 void MainWindow::updatesInstalled()
 {
     // only ask that dumb question if a SelfUpdateOperation was executed
-    if( !KDSelfRestarter::restartOnQuit() )
-    {
-        QMessageBox::information( this, tr( "Updates Installed" ), tr( "Installation complete." ) );
+    if(!KDSelfRestarter::restartOnQuit()) {
+        QMessageBox::information(this, tr("Updates Installed"), tr("Installation complete."));
         return;
     }
 
-    KDAutoPointer<QMessageBox> box( new QMessageBox( this ) );
-    box->setWindowTitle( tr("Updates Installed" ) );
-    box->setText( tr("Installation complete, you need to restart the application for the changes to take effect.") );
-    box->setStandardButtons( QMessageBox::Yes|QMessageBox::No );
-    box->button( QMessageBox::Yes )->setText( tr("Restart Now") );
-    box->button( QMessageBox::No )->setText( tr("Restart Later") );
+    QScopedPointer<QMessageBox> box(new QMessageBox(this));
+    box->setWindowTitle(tr("Updates Installed"));
+    box->setText(tr("Installation complete, you need to restart the application for the changes to take effect."));
+    box->setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+    box->button(QMessageBox::Yes)->setText(tr("Restart Now"));
+    box->button(QMessageBox::No)->setText(tr("Restart Later"));
     box->exec();
-    if ( !box )
+    if (!box)
         return;
-    if ( box->clickedButton() == box->button( QMessageBox::Yes ) )
+    if (box->clickedButton() == box->button(QMessageBox::Yes))
         QCoreApplication::quit();
     else
-        KDSelfRestarter::setRestartOnQuit( false );
+        KDSelfRestarter::setRestartOnQuit(false);
 }
 
