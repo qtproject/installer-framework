@@ -61,8 +61,9 @@ private:
     QSet<QString> m_paths;
 };
 
-    void INSTALLER_EXPORT openForWrite(QIODevice *dev, const QString &name);
     void INSTALLER_EXPORT openForRead(QIODevice *dev, const QString &name);
+    void INSTALLER_EXPORT openForWrite(QIODevice *dev, const QString &name);
+    void INSTALLER_EXPORT openForAppend(QIODevice *dev, const QString &name);
 
     qint64 INSTALLER_EXPORT blockingRead(QIODevice *in, char *buffer, qint64 size);
     void INSTALLER_EXPORT blockingCopy(QIODevice *in, QIODevice *out, qint64 size);

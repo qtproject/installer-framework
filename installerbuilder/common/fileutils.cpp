@@ -129,6 +129,12 @@ QString QInstaller::pathFromUrl(const QUrl &url)
     return str;
 }
 
+void QInstaller::openForRead(QIODevice *dev, const QString &name)
+{
+    Q_ASSERT(dev);
+    if (!dev->open(QIODevice::ReadOnly))
+        throw Error(QObject::tr("Cannot open file %1 for reading: %2").arg(name, dev->errorString()));
+}
 
 void QInstaller::openForWrite(QIODevice *dev, const QString &name)
 {
@@ -137,11 +143,11 @@ void QInstaller::openForWrite(QIODevice *dev, const QString &name)
         throw Error(QObject::tr("Cannot open file %1 for writing: %2").arg(name, dev->errorString()));
 }
 
-void QInstaller::openForRead(QIODevice *dev, const QString &name)
+void QInstaller::openForAppend(QIODevice *dev, const QString &name)
 {
     Q_ASSERT(dev);
-    if (!dev->open(QIODevice::ReadOnly))
-        throw Error(QObject::tr("Cannot open file %1 for reading: %2").arg(name, dev->errorString()));
+    if (!dev->open(QIODevice::ReadWrite | QIODevice::Append))
+        throw Error(QObject::tr("Cannot open file %1 for writing: %2").arg(name, dev->errorString()));
 }
 
 qint64 QInstaller::blockingWrite(QIODevice *out, const char *buffer, qint64 size)
