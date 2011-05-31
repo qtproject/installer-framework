@@ -628,28 +628,25 @@ void InstallerPrivate::writeUninstallerBinary(QFile *const input, qint64 size)
     KDSaveFile out(uninstallerName() + QLatin1String(".new"));
     openForWrite(&out, out.fileName()); // throws an exception in case of error
 
-    if (!input->seek(0)) {
-        throw Error(QObject::tr("Failed to seek in file %1: %2").arg(input->fileName(),
-            input->errorString()));
-    }
+    if (!input->seek(0))
+        throw Error(QObject::tr("Failed to seek in file %1: %2").arg(input->fileName(), input->errorString()));
 
     appendData(&out, input, size);
     appendInt64(&out, 0);   // resource count
-    appendInt64(&out, 0);   // data block size
+    appendInt64(&out, 4 * sizeof(qint64));   // data block size
     appendInt64(&out, QInstaller::MagicUninstallerMarker);
     appendInt64(&out, QInstaller::MagicCookie);
 
     out.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
         | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser);
 
-    if (!out.commit(KDSaveFile::OverwriteExistingFile)) {
-        verbose() << "Could not write uninstaller: " << out.fileName() << std::endl;
+    if (!out.commit(KDSaveFile::OverwriteExistingFile))
         throw Error(tr("Could not write uninstaller to %1: %2").arg(out.fileName(), out.errorString()));
-    }
 }
 
 void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *const input,
-    const QVector<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout, bool compress)
+    const QVector<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout,
+    bool compressOperations, bool forceUncompressedResources)
 {
     const qint64 dataBlockStart = output->pos();
 
@@ -660,6 +657,12 @@ void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *cons
             const qint64 compressedSize = appendCompressedData(output, input, segment.length());
             resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos() - compressedSize,
                 compressedSize));
+        } else if (forceUncompressedResources) {
+            QBuffer resource;
+            resource.setData(retrieveCompressedData(input, segment.length()));
+            resource.open(QIODevice::ReadOnly);
+            resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos(), resource.size()));
+            appendData(output, &resource, resource.size());
         } else {
             resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos(), segment.length()));
             appendData(output, input, segment.length());
@@ -673,7 +676,7 @@ void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *cons
         op->clearValue(QLatin1String("installer"));
 
         appendString(output, op->name());
-        compress ? appendByteArray(output, qCompress(op->toXml().toByteArray()))
+        compressOperations ? appendByteArray(output, qCompress(op->toXml().toByteArray()))
             : appendString(output, op->toXml().toString());
 
         // for the ui not to get blocked
@@ -844,7 +847,8 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         // 2 - if we do not have a replacement, try to open the binary data file as input
         //   |--- try to read the binary layout
         //      |--- on error (see 2.1)
-        //          |--- set the installer or maintenance binary to take over binary data
+        //          |--- remember we might to append uncompressed resource data (see 3)
+        //          |--- set the installer or maintenance binary as input to take over binary data
         //          |--- in case we did not have a replacement, write out an new maintenance tool binary
         //              |--- remember that we need to replace the original binary
         //
@@ -853,7 +857,8 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         //      |--- on error (see 3.1)
         //          |--- if we wrote a new maintenance tool, take this as output - if not, write out a new
         //                  one and set it as output file, remember we did this
-        //          |--- append the binary data based on the loaded input file (see 2)
+        //          |--- append the binary data based on the loaded input file (see 2), make sure we force
+        //                 uncompression of the resource section if we read from a binary data file (see 4.1).
         //
         // 4 - force a deferred rename on the .dat file (see 4.1)
         // 5 - force a deferred rename on the maintenance file (see 5.1)
@@ -867,17 +872,22 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         //          binary data is read from the maintenance tool, otherwise it get replaced be the new one
         // 5.1 - this will only happen -if- we wrote out a new binary
 
-        bool newBinary = false;
+        bool newBinaryWritten = false;
         bool replacementExists = false;
         const QString installerBaseBinary = q->replaceVariables(m_installerBaseBinaryUnreplaced);
         if (!installerBaseBinary.isEmpty() && QFileInfo(installerBaseBinary).exists()) {
             verbose() << "Got a replacement installer base binary: " << installerBaseBinary << std::endl;
 
-            newBinary = true;
-            replacementExists = true;
             QFile replacementBinary(installerBaseBinary);
-            openForRead(&replacementBinary, replacementBinary.fileName());
-            writeUninstallerBinary(&replacementBinary, replacementBinary.size());
+            try {
+                openForRead(&replacementBinary, replacementBinary.fileName());
+                writeUninstallerBinary(&replacementBinary, replacementBinary.size());
+
+                newBinaryWritten = true;
+                replacementExists = true;
+            } catch (const Error &error) {
+                verbose() << error.message() << std::endl;
+            }
 
             if (!replacementBinary.remove()) {
                 // Is there anything more sensible we can do with this error? I think not. It's not serious
@@ -890,18 +900,22 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
 
         QFile input;
         BinaryLayout layout;
+        bool forceUncompressedResourcesOnError = false;
         const QString dataFile = targetDir() + QLatin1Char('/') + m_installerSettings.uninstallerName()
             + QLatin1String(".dat");
         try {
             input.setFileName(dataFile);
             openForRead(&input, input.fileName());
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookieDat));
-        } catch (...) {
+            forceUncompressedResourcesOnError = true;
+        } catch (const Error &error) {
+            verbose() << error.message() << std::endl;
+
             input.setFileName(isInstaller() ? installerBinaryPath() : uninstallerName());
             openForRead(&input, input.fileName());
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
-            if (!replacementExists) {
-                newBinary = true;
+            if (!newBinaryWritten) {
+                newBinaryWritten = true;
                 writeUninstallerBinary(&input, layout.endOfData - layout.dataBlockSize);
             }
         }
@@ -909,7 +923,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         try {
             KDSaveFile file(dataFile + QLatin1String(".new"));
             openForWrite(&file, file.fileName());
-            writeUninstallerBinaryData(&file, &input, performedOperations, layout, true);
+            writeUninstallerBinaryData(&file, &input, performedOperations, layout, true, false);
             appendInt64(&file, MagicCookieDat);
             file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
                 | QFile::ReadOther);
@@ -918,19 +932,28 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
                     file.errorString()));
             }
         } catch (...) {
-            if (!newBinary) {
-                newBinary = true;
-                writeUninstallerBinary(&input, layout.endOfData - layout.dataBlockSize);
+            if (!newBinaryWritten) {
+                newBinaryWritten = true;
+                QFile tmp(isInstaller() ? installerBinaryPath() : uninstallerName());
+                openForRead(&tmp, tmp.fileName());
+                BinaryLayout tmpLayout = BinaryContent::readBinaryLayout(&tmp, findMagicCookie(&tmp, MagicCookie));
+                writeUninstallerBinary(&tmp, tmpLayout.endOfData - tmpLayout.dataBlockSize);
             }
+
             QFile file(uninstallerName() + QLatin1String(".new"));
-            openForWrite(&file, file.fileName());
-            file.seek(file.size());
-            writeUninstallerBinaryData(&file, &input, performedOperations, layout, false);
-            appendInt64(&file, MagicCookie);
+            if (file.resize(file.size() - 4 * sizeof(qint64))) {
+                openForAppend(&file, file.fileName());
+                file.seek(file.size());
+                writeUninstallerBinaryData(&file, &input, performedOperations, layout, false,
+                    forceUncompressedResourcesOnError);
+                appendInt64(&file, MagicCookie);
+            }
+            file.close();
         }
+        input.close();
         deferredRename(dataFile + QLatin1String(".new"), dataFile, false);
 
-        if (newBinary) {
+        if (newBinaryWritten) {
             verbose() << "Needs restart: " << (replacementExists && isUpdater()) << std::endl;
             deferredRename(uninstallerName() + QLatin1String(".new"), uninstallerName(),
                 replacementExists && isUpdater());
