@@ -32,25 +32,26 @@
 **************************************************************************/
 #include "updatesettings.h"
 
-#include <QDateTime>
-#include <QSettings>
-
 #include "common/errors.h"
 #include "common/installersettings.h"
 #include "common/repository.h"
+
+#include <QtCore/QDateTime>
+#include <QtCore/QSettings>
+#include <QtCore/QstringList>
 
 using namespace QInstaller;
 
 class UpdateSettings::Private
 {
 public:
-    Private( UpdateSettings* qq )
-        : q( qq )
+    Private(UpdateSettings* qq)
+        : q(qq)
     {
     }
 
 private:
-    UpdateSettings* const q;
+    UpdateSettings *const q;
 
 public:
     QSettings& settings()
@@ -66,16 +67,14 @@ public:
     QSettings internalSettings;
     static QSettings* externalSettings;
 };
-   
+
 QSettings* UpdateSettings::Private::externalSettings = 0;
 
-void UpdateSettings::setSettingsSource( QSettings* settings )
-{
-    Private::externalSettings = settings;
-}
+
+// -- UpdateSettings
 
 UpdateSettings::UpdateSettings()
-    : d( new Private( this ) )
+    : d(new Private(this))
 {
     d->settings().sync();
 }
@@ -85,84 +84,84 @@ UpdateSettings::~UpdateSettings()
     d->settings().sync();
 }
 
-int UpdateSettings::updateInterval() const
+/* static */
+void UpdateSettings::setSettingsSource(QSettings *settings)
 {
-    return d->settings().value( QLatin1String( "updatesettings/interval" ), static_cast< int >( Weekly ) ).toInt();
+    Private::externalSettings = settings;
 }
 
-void UpdateSettings::setUpdateInterval( int seconds )
+int UpdateSettings::updateInterval() const
 {
-    d->settings().setValue( QLatin1String( "updatesettings/interval" ), seconds );
+    return d->settings().value(QLatin1String("updatesettings/interval"), static_cast<int> (Weekly)).toInt();
+}
+
+void UpdateSettings::setUpdateInterval(int seconds)
+{
+    d->settings().setValue(QLatin1String("updatesettings/interval"), seconds);
 }
 
 QString UpdateSettings::lastResult() const
 {
-    return d->settings().value( QLatin1String( "updatesettings/lastresult" ) ).toString();
+    return d->settings().value(QLatin1String("updatesettings/lastresult")).toString();
 }
 
-void UpdateSettings::setLastResult( const QString& lastResult )
+void UpdateSettings::setLastResult(const QString &lastResult)
 {
-    d->settings().setValue( QLatin1String( "updatesettings/lastresult" ), lastResult );
+    d->settings().setValue(QLatin1String("updatesettings/lastresult"), lastResult);
 }
 
 QDateTime UpdateSettings::lastCheck() const
 {
-    return d->settings().value( QLatin1String( "updatesettings/lastcheck" ) ).toDateTime();
+    return d->settings().value(QLatin1String("updatesettings/lastcheck")).toDateTime();
 }
 
-void UpdateSettings::setLastCheck( const QDateTime& lastCheck )
+void UpdateSettings::setLastCheck(const QDateTime &lastCheck)
 {
-    d->settings().setValue( QLatin1String( "updatesettings/lastcheck" ), lastCheck );
+    d->settings().setValue(QLatin1String("updatesettings/lastcheck"), lastCheck);
 }
 
 bool UpdateSettings::checkOnlyImportantUpdates() const
 {
-    return d->settings().value( QLatin1String( "updatesettings/onlyimportant" ), false ).toBool();
+    return d->settings().value(QLatin1String("updatesettings/onlyimportant"), false).toBool();
 }
 
-void UpdateSettings::setCheckOnlyImportantUpdates( bool checkOnlyImportantUpdates )
+void UpdateSettings::setCheckOnlyImportantUpdates(bool checkOnlyImportantUpdates)
 {
-    d->settings().setValue( QLatin1String( "updatesettings/onlyimportant" ), checkOnlyImportantUpdates );
+    d->settings().setValue(QLatin1String("updatesettings/onlyimportant"), checkOnlyImportantUpdates);
 }
 
-QList< Repository > UpdateSettings::repositories() const
+QList<Repository> UpdateSettings::repositories() const
 {
-    QList< Repository > result;
+    QSettings &settings = *(const_cast<QSettings*> (&d->settings()));
+    const int count = settings.beginReadArray(QLatin1String("updatesettings/repositories"));
 
-    QSettings& settings = *(const_cast< QSettings* >( &d->settings() ) );
-
-    const int count = settings.beginReadArray( QLatin1String( "updatesettings/repositories" ) );
-    for( int i = 0; i < count; ++i )
-    {
+    QList<Repository> result;
+    for (int i = 0; i < count; ++i) {
         Repository rep;
-        settings.setArrayIndex( i );
-        rep.setUrl( d->settings().value( QLatin1String( "url" ) ).toUrl() );
-        result.push_back( rep );
+        settings.setArrayIndex(i);
+        rep.setUrl(d->settings().value(QLatin1String("url")).toUrl());
+        result.append(rep);
     }
     settings.endArray();
 
-    if( !result.isEmpty() )
-        return result;
-       
-    try
-    {
-        return InstallerSettings::fromFileAndPrefix( QLatin1String( ":/metadata/installer-config/config.xml" ), QLatin1String( ":/metadata/installer-config/" ) ).repositories();
-    }
-    catch( const Error& e )
-    {
-        qDebug( "Could not parse config: %s", qPrintable( e.message() ) );
+    try {
+        if(result.isEmpty()) {
+            result = InstallerSettings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
+                QLatin1String(":/metadata/installer-config/")).repositories();
+        }
+    } catch (const Error &e) {
+        qDebug("Could not parse config: %s", qPrintable(e.message()));
     }
     return result;
 }
 
-void UpdateSettings::setRepositories( const QList< Repository >& repositories )
+void UpdateSettings::setRepositories(const QList<Repository> &repositories)
 {
-    d->settings().beginWriteArray( QLatin1String( "updatesettings/repositories" ) );
-    for( int i = 0; i < repositories.count(); ++i )
-    {
-        const Repository& rep = repositories[ i ];
-        d->settings().setArrayIndex( i );
-        d->settings().setValue( QLatin1String( "url" ), rep.url() );
+    d->settings().beginWriteArray(QLatin1String("updatesettings/repositories"));
+    for (int i = 0; i < repositories.count(); ++i) {
+        const Repository &rep = repositories.at(i);
+        d->settings().setArrayIndex(i);
+        d->settings().setValue(QLatin1String("url"), rep.url());
     }
     d->settings().endArray();
 }
