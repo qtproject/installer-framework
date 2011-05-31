@@ -238,6 +238,7 @@ Gui::Gui(Installer *installer, QWidget *parent)
 
     // make sure the QUiLoader's retranslateUi is executed first, then the script
     connect(this, SIGNAL(languageChanged()), installer, SLOT(languageChanged()), Qt::QueuedConnection);
+    connect(this, SIGNAL(languageChanged()), this, SLOT(onLanguageChanged()), Qt::QueuedConnection);
 
     connect(installer, SIGNAL(wizardPageInsertionRequested(QWidget*, Installer::WizardPage)), this,
         SLOT(wizardPageInsertionRequested(QWidget*, Installer::WizardPage)));
@@ -379,6 +380,13 @@ void Gui::delayedControlScriptExecution(int id)
 {
     if (Page* const p = qobject_cast<Page*>(page(id)))
         callControlScriptMethod(p->objectName() + QLatin1String("Callback"));
+}
+
+void Gui::onLanguageChanged()
+{
+    d->m_defaultButtonText.clear();
+    for (int i = QWizard::BackButton; i < QWizard::CustomButton1; ++i)
+        d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
 }
 
 bool Gui::event(QEvent* event)

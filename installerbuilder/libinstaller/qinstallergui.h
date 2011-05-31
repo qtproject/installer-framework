@@ -135,7 +135,7 @@ Q_SIGNALS:
     void finishButtonClicked();
     void gotRestarted();
 
-public slots:
+public Q_SLOTS:
     void cancelButtonClicked();
     void reject();
     void rejectWithoutPrompt();
@@ -152,6 +152,9 @@ protected Q_SLOTS:
     void delayedControlScriptExecution(int id);
 
     void setAutomatedPageSwitchEnabled(bool request);
+
+private Q_SLOTS:
+    void onLanguageChanged();
 
 protected:
     bool event(QEvent* event);
