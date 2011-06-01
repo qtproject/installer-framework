@@ -39,7 +39,6 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(const QStringList &args, QWidget *parent = 0);
-    ~MainWindow() { delete m_installer; }
 
 private Q_SLOTS:
     void editUpdateSettings();
@@ -49,8 +48,8 @@ private Q_SLOTS:
 
 private:
     UpdateSettingsDialog *m_dialog;
-    QInstaller::Installer *m_installer;
 
+    QInstaller::Installer m_installer;
     KDUpdater::Application updaterapp;
     QInstaller::InstallerSettings m_settings;
 };
