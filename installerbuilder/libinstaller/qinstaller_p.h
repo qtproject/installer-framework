@@ -188,7 +188,7 @@ private:
     void registerUninstaller();
     void unregisterUninstaller();
 
-    void writeUninstallerBinary(QFile *const input, qint64 size);
+    void writeUninstallerBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
     void writeUninstallerBinaryData(QIODevice *output, QFile *const input,
         const QVector<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout,
         bool compressOperations, bool forceUncompressedResources);

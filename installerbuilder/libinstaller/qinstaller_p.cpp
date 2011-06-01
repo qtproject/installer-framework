@@ -621,7 +621,7 @@ void InstallerPrivate::registerPathesForUninstallation(
     }
 }
 
-void InstallerPrivate::writeUninstallerBinary(QFile *const input, qint64 size)
+void InstallerPrivate::writeUninstallerBinary(QFile *const input, qint64 size, bool writeBinaryLayout)
 {
     verbose() << "Writing uninstaller: " << (uninstallerName()  + QLatin1String(".new")) << std::endl;
 
@@ -632,11 +632,12 @@ void InstallerPrivate::writeUninstallerBinary(QFile *const input, qint64 size)
         throw Error(QObject::tr("Failed to seek in file %1: %2").arg(input->fileName(), input->errorString()));
 
     appendData(&out, input, size);
-    appendInt64(&out, 0);   // resource count
-    appendInt64(&out, 4 * sizeof(qint64));   // data block size
-    appendInt64(&out, QInstaller::MagicUninstallerMarker);
-    appendInt64(&out, QInstaller::MagicCookie);
-
+    if (writeBinaryLayout) {
+        appendInt64(&out, 0);   // resource count
+        appendInt64(&out, 4 * sizeof(qint64));   // data block size
+        appendInt64(&out, QInstaller::MagicUninstallerMarker);
+        appendInt64(&out, QInstaller::MagicCookie);
+    }
     out.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
         | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser);
 
@@ -881,7 +882,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
             QFile replacementBinary(installerBaseBinary);
             try {
                 openForRead(&replacementBinary, replacementBinary.fileName());
-                writeUninstallerBinary(&replacementBinary, replacementBinary.size());
+                writeUninstallerBinary(&replacementBinary, replacementBinary.size(), true);
 
                 newBinaryWritten = true;
                 replacementExists = true;
@@ -915,7 +916,7 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
-                writeUninstallerBinary(&input, layout.endOfData - layout.dataBlockSize);
+                writeUninstallerBinary(&input, layout.endOfData - layout.dataBlockSize, true);
             }
         }
 
@@ -937,18 +938,15 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
                 QFile tmp(isInstaller() ? installerBinaryPath() : uninstallerName());
                 openForRead(&tmp, tmp.fileName());
                 BinaryLayout tmpLayout = BinaryContent::readBinaryLayout(&tmp, findMagicCookie(&tmp, MagicCookie));
-                writeUninstallerBinary(&tmp, tmpLayout.endOfData - tmpLayout.dataBlockSize);
+                writeUninstallerBinary(&tmp, tmpLayout.endOfData - tmpLayout.dataBlockSize, false);
             }
 
             QFile file(uninstallerName() + QLatin1String(".new"));
-            if (file.resize(file.size() - 4 * sizeof(qint64))) {
-                openForAppend(&file, file.fileName());
-                file.seek(file.size());
-                writeUninstallerBinaryData(&file, &input, performedOperations, layout, false,
-                    forceUncompressedResourcesOnError);
-                appendInt64(&file, MagicCookie);
-            }
-            file.close();
+            openForAppend(&file, file.fileName());
+            file.seek(file.size());
+            writeUninstallerBinaryData(&file, &input, performedOperations, layout, false,
+                forceUncompressedResourcesOnError);
+            appendInt64(&file, MagicCookie);
         }
         input.close();
         deferredRename(dataFile + QLatin1String(".new"), dataFile, false);
