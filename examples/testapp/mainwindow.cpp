@@ -32,36 +32,22 @@
 **************************************************************************/
 #include "mainwindow.h"
 
-#include <memory>
+#include "componentselectiondialog.h"
+#include "updateagent.h"
+#include "updatesettingsdialog.h"
 
-#include <QAbstractButton>
-#include <QApplication>
-#include <QLabel>
-#include <QMenu>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QProgressDialog>
-#include <QStringList>
+#include <common/binaryformat.h>
+#include <common/errors.h>
+#include <init.h>
+#include <updatesettings.h>
 
-#include <KDToolsCore/KDAutoPointer>
 #include <KDToolsCore/KDSelfRestarter>
 
-#include <KDUpdater/Application>
-#include <KDUpdater/PackagesInfo>
-#include <KDUpdater/UpdateFinder>
-#include <KDUpdater/UpdateSourcesInfo>
-
-#include <common/binaryformatenginehandler.h>
-#include <common/binaryformat.h>
-#include "componentselectiondialog.h"
-#include <getrepositorymetainfojob.h>
-#include <common/errors.h>
-#include <common/fileutils.h>
-#include <init.h>
-#include "updateagent.h"
-
-#include <updatesettings.h>
-#include "updatesettingsdialog.h"
+#include <QtGui/QAbstractButton>
+#include <QtGui/QApplication>
+#include <QtGui/QLabel>
+#include <QtGui/QMenuBar>
+#include <QtGui/QProgressDialog>
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -80,7 +66,7 @@ MainWindow::MainWindow(const QStringList &args, QWidget *parent)
     fm->addAction(QObject::tr("Quit"), QApplication::instance(), SLOT(quit()),
         QKeySequence(QLatin1String("Ctrl+Q")));
 
-    QLabel* label = new QLabel(this);
+    QLabel *label = new QLabel(this);
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignCenter);
     setCentralWidget(label);
@@ -90,7 +76,7 @@ MainWindow::MainWindow(const QStringList &args, QWidget *parent)
     updaterapp.packagesInfo()->setApplicationName(m_settings.applicationName());
     updaterapp.packagesInfo()->setApplicationVersion(m_settings.applicationVersion());
 
-    UpdateAgent* const agent = new UpdateAgent(this);
+    UpdateAgent *const agent = new UpdateAgent(this);
     connect(agent, SIGNAL(updatesAvailable()), this, SLOT(updatesAvailable()));
 }
 
@@ -107,8 +93,7 @@ void MainWindow::checkForUpdates()
     handler->setComponentIndex(QInstallerCreator::ComponentIndex());
 
     UpdateSettings settings;
-    try
-    {
+    try {
         m_installer->setTemporaryRepositories(settings.repositories());
         settings.setLastCheck(QDateTime::currentDateTime());
 
@@ -134,7 +119,8 @@ void MainWindow::checkForUpdates()
         dialog.setRange(0, 100);
         dialog.show();
         connect(&dialog, SIGNAL(canceled()), m_installer, SLOT(interrupt()));
-        connect(m_installer, SIGNAL(installationProgressTextChanged(QString)), &dialog, SLOT(setLabelText(QString)));
+        connect(m_installer, SIGNAL(installationProgressTextChanged(QString)), &dialog,
+            SLOT(setLabelText(QString)));
         connect(m_installer, SIGNAL(installationProgressChanged(int)), &dialog, SLOT(setValue(int)));
         m_installer->installSelectedComponents();
         updatesInstalled();

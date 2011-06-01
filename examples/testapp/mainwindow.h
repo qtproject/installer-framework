@@ -23,17 +23,21 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include <QMainWindow>
+
+#include <qinstaller.h>
+#include <common/installersettings.h>
 
 #include <KDUpdater/Application>
 
-#include "qinstaller.h"
-#include "common/installersettings.h"
+#include <QtGui/QMainWindow>
 
-class MainWindow : public QMainWindow {
+
+class MainWindow : public QMainWindow
+{
     Q_OBJECT
+
 public:
-    explicit MainWindow( const QStringList& args, QWidget* parent=0 );
+    explicit MainWindow(const QStringList &args, QWidget *parent = 0);
     ~MainWindow() { delete m_installer; }
 
 private Q_SLOTS:
