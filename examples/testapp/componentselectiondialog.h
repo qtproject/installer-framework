@@ -37,26 +37,25 @@ class ComponentSelectionDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ComponentSelectionDialog( QInstaller::Installer* installer, QWidget* parent = 0 );
+    explicit ComponentSelectionDialog(QInstaller::Installer *installer, QWidget *parent = 0);
     virtual ~ComponentSelectionDialog();
-    Q_INVOKABLE void selectComponent( const QString& compoenent );
-    Q_INVOKABLE void deselectComponent( const QString& component );
+
+    Q_INVOKABLE void selectComponent(const QString &compoenent);
+    Q_INVOKABLE void deselectComponent(const QString &component);
     Q_INVOKABLE void selectAll();
     Q_INVOKABLE void deselectAll();
     Q_INVOKABLE void install();
-
-public Q_SLOTS:
-    void refreshDialog();
 
 Q_SIGNALS:
     void requestUpdate();
 
 private:
+    Q_PRIVATE_SLOT(d, void modelReset())
+    Q_PRIVATE_SLOT(d, void currentChanged(const QModelIndex &index))
+
+private:
     class Private;
     Private *d;
-
-    Q_PRIVATE_SLOT( d, void selectionChanged() )
-    Q_PRIVATE_SLOT( d, void modelReset() )
 };
 
 #endif

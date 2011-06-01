@@ -33,18 +33,19 @@
 #include "componentselectiondialog.h"
 #include "ui_componentselectiondialog.h"
 
-#include <QPushButton>
-#include <QHeaderView>
-
 #include <componentmodel.h>
 #include <qinstaller.h>
 #include <qinstallercomponent.h>
+
+#include <QtGui/QHeaderView>
+#include <QtGui/QPushButton>
 
 using namespace QInstaller;
 
 class ComponentSelectionDialog::Private : public QObject
 {
     Q_OBJECT
+
 public:    
     Private(ComponentSelectionDialog *qq, Installer *inst)
         : q(qq),
@@ -52,32 +53,21 @@ public:
     {
     }
 
-    void selectionChanged()
+    void currentChanged(const QModelIndex &index)
     {
-        int selectionCount = 0;
-        // no component selected disables the ok button
-        foreach (Component *component, installer->components(true, UpdaterMode)) {
-            if (component->isSelected())
-                ++selectionCount;
-        }
-
-        installBtn->setEnabled(selectionCount > 0);
+        installBtn->setEnabled(componentModel->hasCheckedComponents());
+        const int selectionCount = componentModel->checkedComponents().count();
         installBtn->setText(selectionCount > 1 ? tr("Install %1 Items").arg(selectionCount) :
             selectionCount == 1 ? tr("Install 1 Item") : tr("Install"));
+        ui.buttonBox->button(QDialogButtonBox::Cancel)->setText(selectionCount > 0 ? tr("Cancel")
+            : tr("Close"));
 
-        if (selectionCount > 0) {
-            ui.buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+        if (index.isValid()) {
+            ui.textBrowser->setHtml(componentModel->data(componentModel->index(index.row(), 0,
+                index.parent()), Qt::ToolTipRole).toString());
         } else {
-            ui.buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Close"));
-        }
-
-        const QModelIndex index = ui.treeView->currentIndex();
-        if (!index.isValid()) {
             ui.textBrowser->clear();
-            return;
         }
-
-        ui.textBrowser->setHtml(index.sibling(index.row(), 0).data(Qt::ToolTipRole).toString());
     }
 
     void modelReset()
@@ -93,7 +83,6 @@ public:
             hasChildren = ui.treeView->model()->hasChildren(ui.treeView->model()->index(row, 0));
         ui.treeView->setRootIsDecorated(hasChildren);
         ui.treeView->expandToDepth(0);
-        selectionChanged();
     }
 
 private:
@@ -112,14 +101,12 @@ public Q_SLOTS:
 
 void ComponentSelectionDialog::Private::selectAll()
 {
-    foreach (Component *component, installer->components(false, UpdaterMode))
-        component->setSelected(true);
+    componentModel->selectAll();
 }
 
 void ComponentSelectionDialog::Private::deselectAll()
 {
-    foreach (Component *component, installer->components(false, UpdaterMode))
-        component->setSelected(false);
+    componentModel->deselectAll();
 }
 
 
@@ -130,38 +117,40 @@ ComponentSelectionDialog::ComponentSelectionDialog(Installer *installer, QWidget
       d(new Private(this, installer))
 {
     d->ui.setupUi(this);
-    d->componentModel = new ComponentModel(5, installer);
-    d->ui.treeView->setModel(d->componentModel);
-    
-    d->ui.labelLicenseBlurb->setAttribute(Qt::WA_MacSmallSize);
-    d->ui.labelSubTitle->setAttribute(Qt::WA_MacSmallSize);
-    d->ui.treeView->setAttribute(Qt::WA_MacShowFocusRect, false);
-    d->ui.textBrowser->setAttribute(Qt::WA_MacShowFocusRect, false);
+    d->ui.icon->setPixmap(windowIcon().pixmap(48, 48));
+
+    d->ui.splitter->setStretchFactor(0, 2);
+    d->ui.splitter->setStretchFactor(1, 1);
     d->ui.splitter->setCollapsible(0, false);
+
+    d->componentModel = new ComponentModel(5, installer);
+    d->componentModel->setHeaderData(0, Qt::Horizontal, tr("Name"));
+    d->componentModel->setHeaderData(1, Qt::Horizontal, tr("Installed Version"));
+    d->componentModel->setHeaderData(2, Qt::Horizontal, tr("New Version"));
+    d->componentModel->setHeaderData(3, Qt::Horizontal, tr("Size"));
+
+    d->ui.treeView->setModel(d->componentModel);
+    d->ui.treeView->setAttribute(Qt::WA_MacShowFocusRect, false);
+    connect(d->ui.treeView->model(), SIGNAL(modelReset()), this, SLOT(modelReset()));
+    connect(d->ui.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+        this, SLOT(currentChanged(QModelIndex)));
+
+    d->ui.labelSubTitle->setAttribute(Qt::WA_MacSmallSize);
+    d->ui.labelLicenseBlurb->setAttribute(Qt::WA_MacSmallSize);
+    d->ui.textBrowser->setAttribute(Qt::WA_MacShowFocusRect, false);
+
     d->installBtn = d->ui.buttonBox->addButton(tr("Install"), QDialogButtonBox::AcceptRole) ;
     if (!d->ui.buttonBox->button(QDialogButtonBox::Cancel)->icon().isNull())
         d->installBtn->setIcon(style()->standardIcon(QStyle::SP_DialogOkButton));
 
-    d->ui.icon->setPixmap(windowIcon().pixmap(48, 48));
-
-    connect(d->ui.treeView->model(), SIGNAL(dataChanged(QModelIndex, QModelIndex)),
-        this, SLOT(selectionChanged()));
-    connect(d->ui.treeView->model(), SIGNAL(modelReset()),
-        this, SLOT(modelReset()));
-    connect(d->ui.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-        this, SLOT(selectionChanged()));
     connect(d->installBtn, SIGNAL(clicked()), this, SIGNAL(requestUpdate()));
     connect(d->ui.selectAll, SIGNAL(clicked()), d, SLOT(selectAll()), Qt::QueuedConnection);
     connect(d->ui.deselectAll, SIGNAL(clicked()), d, SLOT(deselectAll()), Qt::QueuedConnection);
 
-
-    d->ui.treeView->setCurrentIndex(d->ui.treeView->model()->index(0, 0));
-    d->ui.splitter->setStretchFactor(0, 2);
-    d->ui.splitter->setStretchFactor(1, 1);
     d->ui.treeView->header()->setStretchLastSection(true);
+    d->ui.treeView->setCurrentIndex(d->ui.treeView->model()->index(0, 0));
     for (int i = 0; i < d->ui.treeView->model()->columnCount(); ++i)
         d->ui.treeView->resizeColumnToContents(i);
-    d->selectionChanged();
     d->modelReset();
 }
 
@@ -185,25 +174,20 @@ void ComponentSelectionDialog::install()
     emit requestUpdate();
 }
 
-void ComponentSelectionDialog::selectComponent(const QString& id)
+void ComponentSelectionDialog::selectComponent(const QString &id)
 {
     const QModelIndex &idx = d->componentModel->indexFromComponentName(id);
     if (!idx.isValid())
         return;
-    d->componentModel->setData(idx, Qt::Checked);
+    d->componentModel->setData(idx, Qt::Checked, Qt::CheckStateRole);
 }
 
-void ComponentSelectionDialog::deselectComponent(const QString& id)
+void ComponentSelectionDialog::deselectComponent(const QString &id)
 {
     const QModelIndex &idx = d->componentModel->indexFromComponentName(id);
     if (!idx.isValid())
         return;
-    d->componentModel->setData(idx, Qt::Unchecked);
-}
-
-void ComponentSelectionDialog::refreshDialog()
-{
-    d->selectionChanged();
+    d->componentModel->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
 }
 
 #include "moc_componentselectiondialog.cpp"
