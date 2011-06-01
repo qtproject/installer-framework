@@ -5,4 +5,6 @@
     <ReleaseDate>2009-12-03</ReleaseDate>
     <Name>com.nokia.testapp.subcomponent.virtual</Name>
     <Virtual>true</Virtual>
+    <Script>installscript.qs</Script>
+    <Default>script</Default>
 </Package>

@@ -777,20 +777,20 @@ bool Installer::fetchAllPackages()
             appendRootComponent(component, AllMode);
     }
 
+    // after everything is set up, load the scripts
+    foreach (QInstaller::Component *component, components)
+        component->loadComponentScript();
+
     // now set the checked state for all components without child
     for (int i = 0; i < rootComponentCount(AllMode); ++i) {
         QList<Component*> children = rootComponent(i, AllMode)->childs();
         foreach (Component *child, children) {
             if (child->isCheckable() && !child->isTristate()) {
-                if (child->isInstalled())
+                if (child->isInstalled() || child->isDefault())
                     child->setCheckState(Qt::Checked);
             }
         }
     }
-
-    // after everything is set up, load the scripts
-    foreach (QInstaller::Component *component, components)
-        component->loadComponentScript();
 
     emit finishAllComponentsReset();
 

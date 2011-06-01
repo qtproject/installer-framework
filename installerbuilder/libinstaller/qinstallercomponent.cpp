@@ -62,6 +62,7 @@ using namespace QInstaller;
 static const QLatin1String skName("Name");
 static const QLatin1String skDisplayName("DisplayName");
 static const QLatin1String skDescription("Description");
+static const QLatin1String skDefault("Default");
 static const QLatin1String skCompressedSize("CompressedSize");
 static const QLatin1String skUncompressedSize("UncompressedSize");
 static const QLatin1String skVersion("Version");
@@ -169,6 +170,7 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
     setValue(skName, update->data(skName).toString());
     setValue(skDisplayName, update->data(skDisplayName).toString());
     setValue(skDescription, update->data(skDescription).toString());
+    setValue(skDefault, update->data(skDefault).toString());
     setValue(skCompressedSize, QString::number(update->compressedSize()));
     setValue(skUncompressedSize, QString::number(update->uncompressedSize()));
     setValue(skVersion, update->data(skVersion).toString());
@@ -277,6 +279,9 @@ void Component::setValue(const QString &key, const QString &value)
 {
     if (d->m_vars.value(key) == value)
         return;
+
+    if (key == QLatin1String("Name"))
+        m_name = value;
 
     d->m_vars[key] = value;
     emit valueChanged(key, value);
@@ -433,7 +438,7 @@ void Component::languageChanged()
     \note The method is not called, if the current script context is the same method, to avoid
     infinite recursion.
 */
-QScriptValue Component::callScriptMethod(const QString &methodName, const QScriptValueList& arguments)
+QScriptValue Component::callScriptMethod(const QString &methodName, const QScriptValueList& arguments) const
 {
     if (!d->m_unexistingScriptMethods.value(methodName, true))
         return QScriptValue();
@@ -918,14 +923,7 @@ bool Component::isSelected() const
 */
 void Component::setSelected(bool selected)
 {
-    const Qt::CheckState previousState = checkState();
-    const Qt::CheckState newState = selected ? Qt::Checked : Qt::Unchecked;
-
-    if (newState != previousState && !isTristate()) {
-        setCheckState(newState);
-        QMetaObject::invokeMethod(this, "selectedChanged", Qt::QueuedConnection,
-        Q_ARG(bool, newState == Qt::Checked));
-    }
+    verbose() << Q_FUNC_INFO << " is deprecated!!!" << std::endl;
 }
 
 /*!
@@ -943,6 +941,24 @@ QStringList Component::dependencies() const
 void Component::setInstalled()
 {
     setValue(skCurrentState, skInstalled);
+}
+
+/*!
+    Determines if the component is a default one.
+*/
+bool Component::isDefault() const
+{
+    // the script can override this method
+    if (value(skDefault).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
+        const QScriptValue valueFromScript = callScriptMethod(QLatin1String("isDefault"));
+        if (valueFromScript.isValid()) {
+            return valueFromScript.toBool();
+        }
+        verbose() << "value from script is not valid " << std::endl;
+        return false;
+    }
+
+    return value(skDefault).compare(QLatin1String("true"), Qt::CaseInsensitive) == 0;
 }
 
 /*!

@@ -61,6 +61,7 @@ class INSTALLER_EXPORT Component : public QObject, public QScriptable, public Co
     Q_PROPERTY(bool fromOnlineRepository READ isFromOnlineRepository)
     Q_PROPERTY(QUrl repositoryUrl READ repositoryUrl)
     Q_PROPERTY(bool removeBeforeUpdate READ removeBeforeUpdate WRITE setRemoveBeforeUpdate)
+    Q_PROPERTY(bool default READ isDefault)
     Q_PROPERTY(bool installed READ isInstalled)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
 
@@ -177,6 +178,7 @@ public:
     bool operationsCreatedSuccessfully() const;
 
     Q_INVOKABLE void setInstalled();
+    Q_INVOKABLE bool isDefault() const;
     Q_INVOKABLE bool isInstalled() const;
     Q_INVOKABLE bool installationRequested() const;
 
@@ -199,7 +201,7 @@ Q_SIGNALS:
 
 protected:
     QScriptValue callScriptMethod(const QString &name,
-        const QScriptValueList &parameters = QScriptValueList());
+        const QScriptValueList &parameters = QScriptValueList()) const;
 
 private Q_SLOTS:
     void updateModelData(const QString &key, const QString &value);
@@ -216,6 +218,7 @@ private:
 
 private:
     ComponentPrivate *d;
+    QString m_name;
 };
 
 }   // namespace QInstaller
