@@ -54,6 +54,7 @@ using namespace QInstallerCreator;
 
 MainWindow::MainWindow(const QStringList &args, QWidget *parent)
     : QMainWindow(parent)
+    , m_dialog(new UpdateSettingsDialog(this))
     , m_installer(new Installer(QInstaller::MagicUpdaterMarker))
 {
     QInstaller::init();
@@ -82,9 +83,8 @@ MainWindow::MainWindow(const QStringList &args, QWidget *parent)
 
 void MainWindow::editUpdateSettings()
 {
-    UpdateSettingsDialog dialog(this);
-    connect(&dialog, SIGNAL(checkForUpdates()), this, SLOT(checkForUpdates()));
-    dialog.exec();
+    connect(m_dialog, SIGNAL(checkForUpdates()), this, SLOT(checkForUpdates()));
+    m_dialog->show();
 }
 
 void MainWindow::checkForUpdates()

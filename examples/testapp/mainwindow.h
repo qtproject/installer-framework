@@ -31,6 +31,7 @@
 
 #include <QtGui/QMainWindow>
 
+class UpdateSettingsDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -47,7 +48,9 @@ private Q_SLOTS:
     void updatesAvailable();
 
 private:
-    KDUpdater::Application updaterapp;
+    UpdateSettingsDialog *m_dialog;
     QInstaller::Installer *m_installer;
+
+    KDUpdater::Application updaterapp;
     QInstaller::InstallerSettings m_settings;
 };
