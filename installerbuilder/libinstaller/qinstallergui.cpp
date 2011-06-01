@@ -1045,7 +1045,7 @@ void ComponentSelectionPage::selectComponent(const QString& id)
 {
     const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
     if (idx.isValid())
-        d->m_allModel->setData(idx, Qt::Checked, Qt::CheckStateRole);
+        d->m_currentModel->setData(idx, Qt::Checked, Qt::CheckStateRole);
 }
 
 /*!
@@ -1055,7 +1055,7 @@ void ComponentSelectionPage::deselectComponent(const QString& id)
 {
     const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
     if (idx.isValid())
-        d->m_allModel->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
+        d->m_currentModel->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
 }
 
 void ComponentSelectionPage::setModified(bool modified)
