@@ -88,7 +88,7 @@ public:
 
                     QList<Component*> components = installer.components(false, UpdaterMode);
                     // no updates available
-                    if(components.isEmpty())
+                    if (components.isEmpty())
                         return;
                     emit q->updatesAvailable();
             }

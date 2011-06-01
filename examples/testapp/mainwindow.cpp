@@ -102,7 +102,7 @@ void MainWindow::checkForUpdates()
         }
 
         // no updates for us
-        if(m_installer.components(false, UpdaterMode).isEmpty()) {
+        if (m_installer.components(false, UpdaterMode).isEmpty()) {
             QMessageBox::information(this, tr("Check for Updates"), tr("There are currently no updates "
                 "available for you."));
             return;
@@ -114,7 +114,7 @@ void MainWindow::checkForUpdates()
 
         // this will automatically mark components as to get installed
         ComponentSelectionDialog componentSelection(&m_installer, this);
-        if(componentSelection.exec() == QDialog::Rejected)
+        if (componentSelection.exec() == QDialog::Rejected)
             return;
 
         QProgressDialog dialog(this);
@@ -155,7 +155,7 @@ void MainWindow::updatesAvailable()
 void MainWindow::updatesInstalled()
 {
     // only ask that dumb question if a SelfUpdateOperation was executed
-    if(!KDSelfRestarter::restartOnQuit()) {
+    if (!KDSelfRestarter::restartOnQuit()) {
         QMessageBox::information(this, tr("Updates Installed"), tr("Installation complete."));
         return;
     }

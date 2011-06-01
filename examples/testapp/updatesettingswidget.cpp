@@ -55,7 +55,7 @@ public:
     void addUpdateSource()
     {
         const int newRow = model.rowCount();
-        if(model.insertRow(newRow))
+        if (model.insertRow(newRow))
             ui.treeViewUpdateSources->edit(model.index(newRow, 0));
     }
     
@@ -92,12 +92,12 @@ UpdateSettingsWidget::~UpdateSettingsWidget()
 void UpdateSettingsWidget::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event)
-    if(d->initialized)
+    if (d->initialized)
         return;
 
     d->ui.checkBoxCheckForUpdates->setChecked(d->settings.updateInterval() > 0);
     d->ui.checkBoxCheckOnlyImportant->setChecked(d->settings.checkOnlyImportantUpdates());
-    switch(qAbs(d->settings.updateInterval())) {
+    switch (qAbs(d->settings.updateInterval())) {
     case UpdateSettings::Daily:
         d->ui.comboBoxFrequency->setCurrentIndex(0);
         break;
@@ -121,7 +121,7 @@ void UpdateSettingsWidget::showEvent(QShowEvent *event)
     d->ui.treeViewUpdateSources->setModel(&d->model);
 
     d->ui.labelLastUpdateResult->clear();
-    if(!d->settings.lastResult().isEmpty()) {
+    if (!d->settings.lastResult().isEmpty()) {
         d->ui.labelLastUpdateResult->setText(d->settings.lastResult() + QLatin1Char('\n')
             + d->settings.lastCheck().toString());
     }
@@ -142,7 +142,7 @@ void UpdateSettingsWidget::accept()
         break;
     }
 
-    if(!d->ui.checkBoxCheckForUpdates->isChecked())
+    if (!d->ui.checkBoxCheckForUpdates->isChecked())
         d->settings.setUpdateInterval(-d->settings.updateInterval());
     d->settings.setCheckOnlyImportantUpdates(d->ui.checkBoxCheckOnlyImportant->isChecked());
 
