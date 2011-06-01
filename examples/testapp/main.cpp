@@ -32,6 +32,8 @@
 **************************************************************************/
 #include "mainwindow.h"
 
+#include <init.h>
+
 #include <KDToolsCore/KDSelfRestarter>
 
 #include <QtGui/QApplication>
@@ -39,6 +41,7 @@
 
 int main(int argc, char *argv[])
 {
+    QInstaller::init();
     const KDSelfRestarter restarter(argc, argv);
 
     QApplication app(argc, argv);

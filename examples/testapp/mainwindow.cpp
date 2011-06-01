@@ -38,7 +38,6 @@
 
 #include <common/binaryformat.h>
 #include <common/errors.h>
-#include <init.h>
 #include <updatesettings.h>
 
 #include <KDToolsCore/KDSelfRestarter>
@@ -57,7 +56,6 @@ MainWindow::MainWindow(const QStringList &args, QWidget *parent)
     , m_dialog(new UpdateSettingsDialog(this))
     , m_installer(new Installer(QInstaller::MagicUpdaterMarker))
 {
-    QInstaller::init();
     m_installer->setUpdaterApplication(&updaterapp);
 
     QMenu *fm = menuBar()->addMenu(QObject::tr("File"));
