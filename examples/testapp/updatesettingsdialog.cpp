@@ -33,45 +33,46 @@
 #include "updatesettingsdialog.h"
 #include "ui_updatesettingsdialog.h"
 
-#include "common/repository.h"
+#include <common/repository.h>
+#include <updatesettings.h>
 
-#include "updatesettings.h"
+#include <QtCore/QDateTime>
 
-#include <QDateTime>
-#include <QStringListModel>
+#include <QtGui/QStringListModel>
 
 using namespace QInstaller;
 
 class UpdateSettingsDialog::Private
 {
 public:
-    Private( UpdateSettingsDialog* qq )
-        : q( qq )
+    Private(UpdateSettingsDialog *qq)
+        : q(qq)
     {
-        ui.setupUi( q );
+        ui.setupUi(q);
     }
 
 private:
-    UpdateSettingsDialog* const q;
+    UpdateSettingsDialog *const q;
 
 public:
     Ui::UpdateSettingsDialog ui;
 };
 
-UpdateSettingsDialog::UpdateSettingsDialog( QWidget* parent )
-    : QDialog( parent ),
-      d( new Private( this ) )
+UpdateSettingsDialog::UpdateSettingsDialog(QWidget *parent)
+    : QDialog(parent),
+      d(new Private(this))
 {
-    connect( d->ui.buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-    connect( d->ui.buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-    
-    connect( d->ui.widget, SIGNAL( checkForUpdates() ), this, SLOT( accept() ) );
-    connect( d->ui.widget, SIGNAL( checkForUpdates() ), this, SIGNAL( checkForUpdates() ) );
-    setFixedSize( size() );
+    connect(d->ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(d->ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    connect(d->ui.widget, SIGNAL(checkForUpdates()), this, SLOT(accept()));
+    connect(d->ui.widget, SIGNAL(checkForUpdates()), this, SIGNAL(checkForUpdates()));
+    setFixedSize(size());
 }
 
 UpdateSettingsDialog::~UpdateSettingsDialog()
 {
+    delete d;
 }
 
 void UpdateSettingsDialog::accept()

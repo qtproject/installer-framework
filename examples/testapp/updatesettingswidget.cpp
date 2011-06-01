@@ -33,129 +33,123 @@
 #include "updatesettingswidget.h"
 #include "ui_updatesettingswidget.h"
 
-#include "common/repository.h"
-
+#include <common/repository.h>
 #include "updatesettings.h"
 
-#include <QDateTime>
-#include <QStringListModel>
+#include <QtCore/QDateTime>
+
+#include <QtGui/QStringListModel>
 
 using namespace QInstaller;
 
 class UpdateSettingsWidget::Private
 {
 public:
-    Private( UpdateSettingsWidget* qq )
-        : q( qq ),
-          initialized( false )
+    Private(UpdateSettingsWidget *qq)
+        : q(qq),
+          initialized(false)
     {
-        ui.setupUi( q );
+        ui.setupUi(q);
     }
 
     void addUpdateSource()
     {
         const int newRow = model.rowCount();
-        if( model.insertRow( newRow ) )
-            ui.treeViewUpdateSources->edit( model.index( newRow, 0 ) );
+        if(model.insertRow(newRow))
+            ui.treeViewUpdateSources->edit(model.index(newRow, 0));
     }
     
     void removeUpdateSource()
     {
-        model.removeRow( ui.treeViewUpdateSources->currentIndex().row() );
+        model.removeRow(ui.treeViewUpdateSources->currentIndex().row());
     }
 
 private:
-    UpdateSettingsWidget* const q;
+    UpdateSettingsWidget *const q;
 
 public:
     bool initialized;
-    Ui::UpdateSettingsWidget ui;
-    UpdateSettings settings;
     QStringListModel model;
+    UpdateSettings settings;
+
+    Ui::UpdateSettingsWidget ui;
 };
 
-UpdateSettingsWidget::UpdateSettingsWidget( QWidget* parent )
-    : QWidget( parent ),
-      d( new Private( this ) )
+
+// -- UpdateSettingsWidget
+
+UpdateSettingsWidget::UpdateSettingsWidget(QWidget *parent)
+    : QWidget(parent),
+      d(new Private(this))
 {
 }
 
 UpdateSettingsWidget::~UpdateSettingsWidget()
 {
+    delete d;
 }
 
-/*!
- \reimpl
-*/
-void UpdateSettingsWidget::showEvent( QShowEvent* event )
+void UpdateSettingsWidget::showEvent(QShowEvent *event)
 {
-    Q_UNUSED( event )
-    if( d->initialized )
+    Q_UNUSED(event)
+    if(d->initialized)
         return;
 
-    d->ui.checkBoxCheckForUpdates->setChecked( d->settings.updateInterval() > 0 );
-    d->ui.checkBoxCheckOnlyImportant->setChecked( d->settings.checkOnlyImportantUpdates() );
-    switch( qAbs( d->settings.updateInterval() ) )
-    {
+    d->ui.checkBoxCheckForUpdates->setChecked(d->settings.updateInterval() > 0);
+    d->ui.checkBoxCheckOnlyImportant->setChecked(d->settings.checkOnlyImportantUpdates());
+    switch(qAbs(d->settings.updateInterval())) {
     case UpdateSettings::Daily:
-        d->ui.comboBoxFrequency->setCurrentIndex( 0 );
+        d->ui.comboBoxFrequency->setCurrentIndex(0);
         break;
     case UpdateSettings::Weekly:
-        d->ui.comboBoxFrequency->setCurrentIndex( 1 );
+        d->ui.comboBoxFrequency->setCurrentIndex(1);
         break;
     case UpdateSettings::Monthly:
-        d->ui.comboBoxFrequency->setCurrentIndex( 2 );
+        d->ui.comboBoxFrequency->setCurrentIndex(2);
         break;
     }
 
-    connect( d->ui.buttonAddUpdateSource, SIGNAL( clicked() ), this, SLOT( addUpdateSource() ) );
-    connect( d->ui.buttonRemoveUpdateSource, SIGNAL( clicked() ), this, SLOT( removeUpdateSource() ) );
-
-    connect( d->ui.buttonCheckNow, SIGNAL( clicked() ), this, SIGNAL( checkForUpdates() ) );
+    connect(d->ui.buttonCheckNow, SIGNAL(clicked()), this, SIGNAL(checkForUpdates()));
+    connect(d->ui.buttonAddUpdateSource, SIGNAL(clicked()), this, SLOT(addUpdateSource()));
+    connect(d->ui.buttonRemoveUpdateSource, SIGNAL(clicked()), this, SLOT(removeUpdateSource()));
 
     QStringList reps;
-    const QList< Repository > repositories = d->settings.repositories();
-    for( QList< Repository >::const_iterator it = repositories.begin(); it != repositories.end(); ++it )
-        reps.push_back( it->url().toString() );
-    d->model.setStringList( reps );
-    d->ui.treeViewUpdateSources->setModel( &d->model );
+    foreach (const Repository &repository, d->settings.repositories())
+        reps.append(repository.url().toString());
+
+    d->model.setStringList(reps);
+    d->ui.treeViewUpdateSources->setModel(&d->model);
 
     d->ui.labelLastUpdateResult->clear();
-    if( d->settings.lastResult().isEmpty() )
-        d->ui.labelLastCheck->clear();
-    else
-        d->ui.labelLastUpdateResult->setText( d->settings.lastResult() + QLatin1Char( '\n' ) + d->settings.lastCheck().toString() );
-
+    if(!d->settings.lastResult().isEmpty()) {
+        d->ui.labelLastUpdateResult->setText(d->settings.lastResult() + QLatin1Char('\n')
+            + d->settings.lastCheck().toString());
+    }
     d->initialized = true;
 }
 
 void UpdateSettingsWidget::accept()
 {
-    switch( d->ui.comboBoxFrequency->currentIndex() )
-    {
+    switch(d->ui.comboBoxFrequency->currentIndex()) {
     case 0:
-        d->settings.setUpdateInterval( UpdateSettings::Daily );
+        d->settings.setUpdateInterval(UpdateSettings::Daily);
         break;
     case 1:
-        d->settings.setUpdateInterval( UpdateSettings::Weekly );
+        d->settings.setUpdateInterval(UpdateSettings::Weekly);
         break;
     case 2:
-        d->settings.setUpdateInterval( UpdateSettings::Monthly );
+        d->settings.setUpdateInterval(UpdateSettings::Monthly);
         break;
     }
-    if( !d->ui.checkBoxCheckForUpdates->isChecked() )
-        d->settings.setUpdateInterval( -d->settings.updateInterval() );
-    d->settings.setCheckOnlyImportantUpdates( d->ui.checkBoxCheckOnlyImportant->isChecked() );
 
-    const QStringList reps = d->model.stringList();
-    QList< Repository > repositories;
-    Repository rep;
-    for( QStringList::const_iterator it = reps.begin(); it != reps.end(); ++it )
-    {
-        rep.setUrl( QUrl( *it ) );
-        repositories.push_back( rep );
-    }
-    d->settings.setRepositories( repositories );
+    if(!d->ui.checkBoxCheckForUpdates->isChecked())
+        d->settings.setUpdateInterval(-d->settings.updateInterval());
+    d->settings.setCheckOnlyImportantUpdates(d->ui.checkBoxCheckOnlyImportant->isChecked());
+
+    QList<Repository> repositories;
+    foreach (const QString &url, d->model.stringList())
+        repositories.append(Repository(QUrl(url)));
+    d->settings.setRepositories(repositories);
 }
 
 #include "moc_updatesettingswidget.cpp"

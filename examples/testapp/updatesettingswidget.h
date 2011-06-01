@@ -28,30 +28,30 @@
 
 #include <QtGui/QWidget>
 
-#include <KDToolsCore/pimpl_ptr.h>
-
 class UpdateSettingsWidget : public QWidget
 {
     Q_OBJECT
-public:
-    explicit UpdateSettingsWidget( QWidget* parent = 0 );
-    ~UpdateSettingsWidget();
 
-Q_SIGNALS:
-    void checkForUpdates();
+public:
+    explicit UpdateSettingsWidget(QWidget *parent = 0);
+    ~UpdateSettingsWidget();
 
 public Q_SLOTS:
     void accept();
 
+Q_SIGNALS:
+    void checkForUpdates();
+
 protected:
-    void showEvent( QShowEvent* event );
+    void showEvent(QShowEvent *event);
 
 private:
-    Q_PRIVATE_SLOT( d, void addUpdateSource() );
-    Q_PRIVATE_SLOT( d, void removeUpdateSource() );
+    Q_PRIVATE_SLOT(d, void addUpdateSource());
+    Q_PRIVATE_SLOT(d, void removeUpdateSource());
 
+private:
     class Private;
-    kdtools::pimpl_ptr< Private > d;
+    Private *const d;
 };
 
 #endif

@@ -28,24 +28,23 @@
 
 #include <QtGui/QDialog>
 
-#include <KDToolsCore/pimpl_ptr.h>
-
 class UpdateSettingsDialog : public QDialog
 {
     Q_OBJECT
-public:
-    explicit UpdateSettingsDialog( QWidget* parent = 0 );
-    ~UpdateSettingsDialog();
 
-Q_SIGNALS:
-    void checkForUpdates();
+public:
+    explicit UpdateSettingsDialog(QWidget *parent = 0);
+    ~UpdateSettingsDialog();
 
 public Q_SLOTS:
     void accept();
 
+Q_SIGNALS:
+    void checkForUpdates();
+
 private:
     class Private;
-    kdtools::pimpl_ptr< Private > d;
+    Private *const d;
 };
 
 #endif
