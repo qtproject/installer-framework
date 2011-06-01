@@ -910,7 +910,6 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
             forceUncompressedResourcesOnError = true;
         } catch (const Error &error) {
             verbose() << error.message() << std::endl;
-
             input.setFileName(isInstaller() ? installerBinaryPath() : uninstallerName());
             openForRead(&input, input.fileName());
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
@@ -931,7 +930,8 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
                 throw Error(tr("Could not write uninstaller binary data to %1: %2").arg(file.fileName(),
                     file.errorString()));
             }
-        } catch (...) {
+        } catch (const Error &error) {
+            verbose() << error.message() << std::endl;
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
                 QFile tmp(isInstaller() ? installerBinaryPath() : uninstallerName());
