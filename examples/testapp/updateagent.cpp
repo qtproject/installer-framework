@@ -32,18 +32,17 @@
 **************************************************************************/
 #include "updateagent.h"
 
-#include "updatesettings.h"
+#include <common/binaryformatenginehandler.h>
+#include <common/binaryformat.h>
+#include <common/errors.h>
+#include <qinstaller.h>
+#include <qinstallercomponent.h>
+#include <updatesettings.h>
 
-#include <QDateTime>
-#include <QTimer>
+#include <QtCore/QDateTime>
+#include <QtCore/QTimer>
 
 #include <KDUpdater/Application>
-
-#include "qinstaller.h"
-#include "qinstallercomponent.h"
-
-#include "common/binaryformatenginehandler.h"
-#include "common/binaryformat.h"
 
 using namespace QInstaller;
 using QInstallerCreator::ComponentIndex;
@@ -52,78 +51,64 @@ using QInstallerCreator::BinaryFormatEngineHandler;
 class UpdateAgent::Private
 {
 public:
-    Private( UpdateAgent* qq )
-        : q( qq )
+    Private(UpdateAgent *qq)
+        : q(qq)
     {
-        connect( &checkTimer, SIGNAL( timeout() ), q, SLOT( maybeCheck() ) );
-        checkTimer.start( 1000 );
+        connect(&checkTimer, SIGNAL(timeout()), q, SLOT(maybeCheck()));
+        checkTimer.start(1000);
     }
 
 private:
-    UpdateAgent* const q;
+    QTimer checkTimer;
+    UpdateAgent *const q;
 
 public:
     void maybeCheck()
     {
         checkTimer.stop();
-            
+
         UpdateSettings settings;
-        
-        try
-        {
-            if( settings.updateInterval() > 0 && settings.lastCheck().secsTo( QDateTime::currentDateTime() ) >= settings.updateInterval() )
-            {
-                QScopedPointer<BinaryFormatEngineHandler> handler( new BinaryFormatEngineHandler( ComponentIndex() ) );
-                handler->setComponentIndex( QInstallerCreator::ComponentIndex() );
+        try {
+            if (settings.updateInterval() > 0
+                && settings.lastCheck().secsTo(QDateTime::currentDateTime()) >= settings.updateInterval()) {
+                    // update the time we last checked for updates
+                    settings.setLastCheck(QDateTime::currentDateTime());
 
-                settings.setLastCheck( QDateTime::currentDateTime() );
-                
-                KDUpdater::Application app;
-                Installer installer(QInstaller::MagicUpdaterMarker);
-                installer.setUpdaterApplication(&app);
-                installer.setTemporaryRepositories( settings.repositories() );
-                installer.fetchUpdaterPackages();
-                QList<Component* > components = installer.components(false, UpdaterMode);
-            
-                // remove all unimportant updates
-                if( settings.checkOnlyImportantUpdates() )
-                {
-                    for( int i = components.count() - 1; i >= 0; --i )
-                    {
-                        const Component* const comp = components[ i ];
-                        if( comp->value( QLatin1String( "Important" ) ).toLower() != QLatin1String( "true" ) )
-                            components.removeAt( i );
-                    }
-                }
-            
-                settings.setLastResult( tr( "Software Update run successfully." ) );
+                    QScopedPointer<BinaryFormatEngineHandler> handler;
+                    handler.reset(new BinaryFormatEngineHandler(ComponentIndex()));
+                    handler->setComponentIndex(QInstallerCreator::ComponentIndex());
 
-                // no updates available
-                if( components.isEmpty() )
-                    return;
+                    KDUpdater::Application app;
+                    Installer installer(QInstaller::MagicUpdaterMarker);
+                    installer.setUpdaterApplication(&app);
+                    installer.setTemporaryRepositories(settings.repositories());
+                    if (!installer.fetchUpdaterPackages())
+                        throw Error(tr("Software Update failed."));
+                    settings.setLastResult(tr("Software Update run successfully."));
 
-                emit q->updatesAvailable();
+                    QList<Component*> components = installer.components(false, UpdaterMode);
+                    // no updates available
+                    if(components.isEmpty())
+                        return;
+                    emit q->updatesAvailable();
             }
+        } catch (...) {
+            settings.setLastResult(tr("Software Update failed."));
+            return;
         }
-        catch( ... )
-        {
-            settings.setLastResult( tr( "Software Update failed." ) );
-        }
-
         checkTimer.start();
     }
-
-    QTimer checkTimer;
 };
 
-UpdateAgent::UpdateAgent( QObject* parent )
-    : QObject( parent ),
-      d( new Private( this ) )
+UpdateAgent::UpdateAgent(QObject *parent)
+    : QObject(parent),
+      d(new Private(this))
 {
 }
 
 UpdateAgent::~UpdateAgent()
 {
+    delete d;
 }
 
 #include "moc_updateagent.cpp"

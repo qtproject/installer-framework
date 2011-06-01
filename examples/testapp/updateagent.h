@@ -27,23 +27,23 @@
 #define UPDATEAGENT_H
 
 #include <QtCore/QObject>
-#include <KDToolsCore/pimpl_ptr.h>
 
 class UpdateAgent : public QObject
 {
     Q_OBJECT
 public:
-    explicit UpdateAgent( QObject* parent = 0 );
+    explicit UpdateAgent(QObject *parent = 0);
     ~UpdateAgent();
 
 Q_SIGNALS:
     void updatesAvailable();
 
 private:
-    Q_PRIVATE_SLOT( d, void maybeCheck() );
+    Q_PRIVATE_SLOT(d, void maybeCheck());
 
+private:
     class Private;
-    kdtools::pimpl_ptr< Private > d;
+    Private *const d;
 };
 
 #endif
