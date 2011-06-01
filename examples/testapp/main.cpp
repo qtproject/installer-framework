@@ -37,7 +37,7 @@
 #include <QtGui/QApplication>
 
 
-int main(int argc, char** argv)
+int main(int argc, char *argv[])
 {
     const KDSelfRestarter restarter(argc, argv);
 
