@@ -73,23 +73,6 @@ public:
     }
 };
 
-static void printUsage(bool isInstaller, const QString &productName,
-    const QString &installerBinaryPath)
-{
-    QString str;
-    if (isInstaller) {
-        str = QString::fromLatin1("  [--script <scriptfile>] [<name>=<value>...]\n"
-            "\n      Runs the %1 installer\n"
-            "\n      --script runs the the installer non-interactively, without UI, using the "
-            "script <scriptfile> to perform the installation.\n").arg(productName);
-    } else {
-        str = QString::fromLatin1("  [<name>=<value>...]\n\n      Runs the %1 uninstaller.\n")
-            .arg(productName);
-    }
-    str = QLatin1String("\nUsage: ") + installerBinaryPath + str;
-    std::cerr << qPrintable(str) << std::endl;
-}
-
 static QList<Repository> repositories(const QStringList &arguments, const int index)
 {
     QList<Repository> repoList;
