@@ -34,6 +34,8 @@ namespace QInstaller {
     class Installer;
 }
 
+class IntroductionPageImpl;
+
 class TabController : public QObject
 {
     Q_OBJECT
@@ -56,6 +58,9 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void restartWizard();
+
+private:
+    IntroductionPageImpl *introductionPage() const;
 
 private:
     class Private;

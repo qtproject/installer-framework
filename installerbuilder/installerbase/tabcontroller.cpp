@@ -256,3 +256,10 @@ void TabController::restartWizard()
     // restart and switch back to intro page
     QTimer::singleShot(0, this, SLOT(init()));
 }
+
+// -- private
+
+IntroductionPageImpl *TabController::introductionPage() const
+{
+    return qobject_cast<IntroductionPageImpl*> (d->m_gui->page(Installer::Introduction));
+}
