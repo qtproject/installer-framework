@@ -907,6 +907,10 @@ void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> per
         try {
             input.setFileName(dataFile);
             openForRead(&input, input.fileName());
+            if (isInstaller()) {
+                throw Error(tr("Found a binary data file, but we are the installer and we should read the "
+                    "binary resource from our very own binary!"));
+            }
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookieDat));
             forceUncompressedResourcesOnError = true;
         } catch (const Error &error) {
