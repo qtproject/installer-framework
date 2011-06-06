@@ -1007,28 +1007,28 @@ void InstallerPrivate::runInstaller()
         if (target.isEmpty())
             throw Error(tr("Variable 'TargetDir' not set."));
 
-        // add the operation to create the target directory
         if (!QDir(target).exists()) {
-            KDUpdater::UpdateOperation *mkdirOp = createOwnedOperation(QLatin1String("Mkdir"));
-            mkdirOp->setArguments(QStringList() << target);
-            mkdirOp->setValue(QLatin1String("forceremoval"), true);
-            mkdirOp->setValue(QLatin1String("uninstall-only"), true);
-
-            performOperationThreaded(mkdirOp, Backup);
-            if (!performOperationThreaded(mkdirOp)) {
-                // if we cannot create the target dir, we try to activate the admin rights
-                adminRightsGained = q->gainAdminRights();
-                if (!performOperationThreaded(mkdirOp))
-                    throw Error(mkdirOp->errorString());
-            }
-            const QString remove = q->value(QLatin1String("RemoveTargetDir"));
-            if (QVariant(remove).toBool())
-                addPerformed(takeOwnedOperation(mkdirOp));
-        } else {
             QTemporaryFile tempAdminFile(target + QLatin1String("/adminrights"));
             if (!tempAdminFile.open() || !tempAdminFile.isWritable())
                 adminRightsGained = q->gainAdminRights();
         }
+
+        // add the operation to create the target directory
+        KDUpdater::UpdateOperation *mkdirOp = createOwnedOperation(QLatin1String("Mkdir"));
+        mkdirOp->setArguments(QStringList() << target);
+        mkdirOp->setValue(QLatin1String("forceremoval"), true);
+        mkdirOp->setValue(QLatin1String("uninstall-only"), true);
+
+        performOperationThreaded(mkdirOp, Backup);
+        if (!performOperationThreaded(mkdirOp)) {
+            // if we cannot create the target dir, we try to activate the admin rights
+            adminRightsGained = q->gainAdminRights();
+            if (!performOperationThreaded(mkdirOp))
+                throw Error(mkdirOp->errorString());
+        }
+        const QString remove = q->value(QLatin1String("RemoveTargetDir"));
+        if (QVariant(remove).toBool())
+            addPerformed(takeOwnedOperation(mkdirOp));
 
         // to show that there was some work
         ProgressCoordninator::instance()->addManualPercentagePoints(1);
