@@ -321,7 +321,7 @@ void Component::appendComponent(Component* component)
     if (Component *parent = component->parentComponent())
         parent->removeComponent(component);
     component->d->m_parentComponent = this;
-    setTristate(childCount() > 0);
+    setTristate(d->m_components.count() > 0);
 }
 
 /*!

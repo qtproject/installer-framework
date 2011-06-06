@@ -268,26 +268,31 @@ static Qt::CheckState verifyPartiallyChecked(Component *component)
 {
     int checked = 0;
     int unchecked = 0;
+    int virtualChilds = 0;
+
     const int count = component->childCount();
     for (int i = 0; i < count; ++i) {
-        switch (component->childAt(i)->checkState()) {
-            case Qt::Checked: {
-                ++checked;
-            }    break;
-
-            case Qt::Unchecked: {
-                ++unchecked;
-            }    break;
-
-            default:
-                break;
+        Component *const child = component->childAt(i);
+        if (!child->isVirtual()) {
+            switch (component->childAt(i)->checkState()) {
+                case Qt::Checked: {
+                    ++checked;
+                }    break;
+                case Qt::Unchecked: {
+                    ++unchecked;
+                }    break;
+                default:
+                    break;
+            }
+        } else {
+            ++virtualChilds;
         }
     }
 
-    if (checked == count)
+    if ((checked + virtualChilds) == count)
         return Qt::Checked;
 
-    if (unchecked == count)
+    if ((unchecked + virtualChilds) == count)
         return Qt::Unchecked;
 
     return Qt::PartiallyChecked;
@@ -305,6 +310,9 @@ void ComponentModel::slotCheckStateChanged(const QModelIndex &index)
         m_currentCheckedList.remove(component->name());
     emit defaultCheckStateChanged(m_initialCheckedList != m_currentCheckedList);
 
+    if (component->isVirtual())
+        return;
+
     const Qt::CheckState state = component->checkState();
     if (component->isTristate()) {
         if (state == Qt::PartiallyChecked) {
@@ -316,7 +324,7 @@ void ComponentModel::slotCheckStateChanged(const QModelIndex &index)
         foreach (Component *child, component->childs()) {
             const QModelIndex &idx = indexFromComponentName(child->name());
             if (child->isCheckable()) {
-                if (child->checkState() != state)
+                if (child->checkState() != state && !child->isVirtual())
                     setData(idx, state, Qt::CheckStateRole);
             } else {
                 notCheckable.append(idx);
