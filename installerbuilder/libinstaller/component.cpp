@@ -56,35 +56,9 @@
 
 #include <algorithm>
 
+#include "qinstallercomponent_constants.h"
+
 using namespace QInstaller;
-
-static const QLatin1String skName("Name");
-static const QLatin1String skDisplayName("DisplayName");
-static const QLatin1String skDescription("Description");
-static const QLatin1String skDefault("Default");
-static const QLatin1String skCompressedSize("CompressedSize");
-static const QLatin1String skUncompressedSize("UncompressedSize");
-static const QLatin1String skVersion("Version");
-static const QLatin1String skDependencies("Dependencies");
-static const QLatin1String skReleaseDate("ReleaseDate");
-static const QLatin1String skReplaces("Replaces");
-static const QLatin1String skVirtual("Virtual");
-static const QLatin1String skSortingPriority("SortingPriority");
-static const QLatin1String skInstallPriority("InstallPriority");
-static const QLatin1String skImportant("Important");
-static const QLatin1String skForcedInstallation("ForcedInstallation");
-static const QLatin1String skUpdateText("UpdateText");
-static const QLatin1String skRequiresAdminRights("RequiresAdminRights");
-static const QLatin1String skNewComponent("NewComponent");
-static const QLatin1String skScript("Script");
-static const QLatin1String skInstalledVersion("InstalledVersion");
-
-static const QLatin1String skTrue("true");
-static const QLatin1String skFalse("false");
-
-static const QLatin1String skInstalled("Installed");
-static const QLatin1String skUninstalled("Uninstalled");
-static const QLatin1String skCurrentState("CurrentState");
 
 /*
     TRANSLATOR QInstaller::Component
@@ -137,12 +111,12 @@ Component::~Component()
 // package info is that what is saved inside the package manager on hard disk
 void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo)
 {
-    setValue(skName, packageInfo.name);
-    setValue(skDisplayName, packageInfo.title);
-    setValue(skDescription, packageInfo.description);
-    setValue(skUncompressedSize, QString::number(packageInfo.uncompressedSize));
-    setValue(skVersion, packageInfo.version);
-    setValue(skVirtual, packageInfo.virtualComp ? skTrue : skFalse);
+    setValue(scName, packageInfo.name);
+    setValue(scDisplayName, packageInfo.title);
+    setValue(scDescription, packageInfo.description);
+    setValue(scUncompressedSize, QString::number(packageInfo.uncompressedSize));
+    setValue(scVersion, packageInfo.version);
+    setValue(scVirtual, packageInfo.virtualComp ? scTrue : scFalse);
 
     QString dependstr = QLatin1String("");
     foreach (const QString& val, packageInfo.dependencies)
@@ -150,9 +124,9 @@ void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInf
 
     if (packageInfo.dependencies.count() > 0)
         dependstr.chop(1);
-    setValue(skDependencies, dependstr);
+    setValue(scDependencies, dependstr);
 
-    setValue(skForcedInstallation, packageInfo.forcedInstallation ? skTrue : skFalse);
+    setValue(scForcedInstallation, packageInfo.forcedInstallation ? scTrue : scFalse);
     if (packageInfo.forcedInstallation) {
         setEnabled(false);
         setCheckable(false);
@@ -166,32 +140,32 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
     Q_ASSERT(update);
     Q_ASSERT(!update->name().isEmpty());
 
-    setValue(skName, update->data(skName).toString());
-    setValue(skDisplayName, update->data(skDisplayName).toString());
-    setValue(skDescription, update->data(skDescription).toString());
-    setValue(skDefault, update->data(skDefault).toString());
-    setValue(skCompressedSize, QString::number(update->compressedSize()));
-    setValue(skUncompressedSize, QString::number(update->uncompressedSize()));
-    setValue(skVersion, update->data(skVersion).toString());
-    setValue(skDependencies, update->data(skDependencies).toString());
-    setValue(skVirtual, update->data(skVirtual).toString());
-    setValue(skSortingPriority, update->data(skSortingPriority).toString());
-    setValue(skInstallPriority, update->data(skInstallPriority).toString());
+    setValue(scName, update->data(scName).toString());
+    setValue(scDisplayName, update->data(scDisplayName).toString());
+    setValue(scDescription, update->data(scDescription).toString());
+    setValue(scDefault, update->data(scDefault).toString());
+    setValue(scCompressedSize, QString::number(update->compressedSize()));
+    setValue(scUncompressedSize, QString::number(update->uncompressedSize()));
+    setValue(scVersion, update->data(scVersion).toString());
+    setValue(scDependencies, update->data(scDependencies).toString());
+    setValue(scVirtual, update->data(scVirtual).toString());
+    setValue(scSortingPriority, update->data(scSortingPriority).toString());
+    setValue(scInstallPriority, update->data(scInstallPriority).toString());
 
-    setValue(skImportant, update->data(skImportant).toString());
-    setValue(skUpdateText, update->data(skUpdateText).toString());
-    setValue(skNewComponent, update->data(skNewComponent).toString());
-    setValue(skRequiresAdminRights, update->data(skRequiresAdminRights).toString());
+    setValue(scImportant, update->data(scImportant).toString());
+    setValue(scUpdateText, update->data(scUpdateText).toString());
+    setValue(scNewComponent, update->data(scNewComponent).toString());
+    setValue(scRequiresAdminRights, update->data(scRequiresAdminRights).toString());
 
-    setValue(skScript, update->data(skScript).toString());
-    setValue(skReplaces, update->data(skReplaces).toString());
-    setValue(skReleaseDate, update->data(skReleaseDate).toString());
+    setValue(scScript, update->data(scScript).toString());
+    setValue(scReplaces, update->data(scReplaces).toString());
+    setValue(scReleaseDate, update->data(scReleaseDate).toString());
 
-    QString forced = update->data(skForcedInstallation, skFalse).toString().toLower();
+    QString forced = update->data(scForcedInstallation, scFalse).toString().toLower();
     if (qApp->arguments().contains(QLatin1String("--no-force-installations")))
-        forced = skFalse;
-    setValue(skForcedInstallation, forced);
-    if (forced == skTrue) {
+        forced = scFalse;
+    setValue(scForcedInstallation, forced);
+    if (forced == scTrue) {
         setEnabled(false);
         setCheckable(false);
         setCheckState(Qt::Checked);
@@ -215,7 +189,7 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
 
 QString Component::uncompressedSize() const
 {
-    double size = value(skUncompressedSize).toDouble();
+    double size = value(scUncompressedSize).toDouble();
     if (size < 10000.0)
         return tr("%L1 Bytes").arg(size);
     size /= 1024.0;
@@ -370,12 +344,12 @@ QString Component::name() const
 */
 QString Component::displayName() const
 {
-    return value(skDisplayName);
+    return value(scDisplayName);
 }
 
 void Component::loadComponentScript()
 {
-    const QString script = value(skScript);
+    const QString script = value(scScript);
     if (!localTempPath().isEmpty() && !script.isEmpty())
         loadComponentScript(QString::fromLatin1("%1/%2/%3").arg(localTempPath(), name(), script));
 }
@@ -687,7 +661,7 @@ void Component::addDownloadableArchive(const QString &path)
 {
     Q_ASSERT(isFromOnlineRepository());
 
-    const QString versionPrefix = value(skVersion);
+    const QString versionPrefix = value(scVersion);
     verbose() << "addDownloadable " << path << std::endl;
     d->m_downloadableArchives.append(versionPrefix + path);
 }
@@ -943,7 +917,7 @@ void Component::setSelected(bool selected)
 */
 QStringList Component::dependencies() const
 {
-    return value(skDependencies).split(QLatin1Char(','));
+    return value(scDependencies).split(QLatin1Char(','));
 }
 
 /*!
@@ -951,7 +925,7 @@ QStringList Component::dependencies() const
 */
 void Component::setInstalled()
 {
-    setValue(skCurrentState, skInstalled);
+    setValue(scCurrentState, scInstalled);
 }
 
 /*!
@@ -960,7 +934,7 @@ void Component::setInstalled()
 bool Component::isDefault() const
 {
     // the script can override this method
-    if (value(skDefault).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
+    if (value(scDefault).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
         const QScriptValue valueFromScript = callScriptMethod(QLatin1String("isDefault"));
         if (valueFromScript.isValid()) {
             return valueFromScript.toBool();
@@ -969,7 +943,7 @@ bool Component::isDefault() const
         return false;
     }
 
-    return value(skDefault).compare(QLatin1String("true"), Qt::CaseInsensitive) == 0;
+    return value(scDefault).compare(QLatin1String("true"), Qt::CaseInsensitive) == 0;
 }
 
 /*!
@@ -977,7 +951,7 @@ bool Component::isDefault() const
 */
 bool Component::isInstalled() const
 {
-    return skInstalled == value(skCurrentState);
+    return scInstalled == value(scCurrentState);
 }
 
 /*!
@@ -993,7 +967,7 @@ bool Component::installationRequested() const
 */
 void Component::setUninstalled()
 {
-    setValue(skCurrentState, skUninstalled);
+    setValue(scCurrentState, scUninstalled);
 }
 
 /*!
@@ -1001,7 +975,7 @@ void Component::setUninstalled()
 */
 bool Component::isUninstalled() const
 {
-    return skUninstalled == value(skCurrentState);
+    return scUninstalled == value(scCurrentState);
 }
 
 /*!
@@ -1053,23 +1027,23 @@ void Component::setLocalTempPath(const QString &tempLocalPath)
 
 void Component::updateModelData(const QString &key, const QString &data)
 {
-    if (key == skVirtual) {
-        if (data.toLower() == skTrue)
+    if (key == scVirtual) {
+        if (data.toLower() == scTrue)
             setData(installer()->virtualComponentsFont(), Qt::FontRole);
     }
 
-    if (key == skVersion)
+    if (key == scVersion)
         setData(data, NewVersion);
 
-    if (key == skDisplayName)
+    if (key == scDisplayName)
         setData(data, Qt::DisplayRole);
 
-    if (key == skInstalledVersion)
+    if (key == scInstalledVersion)
         setData(data, InstalledVersion);
 
-    if (key == skUncompressedSize)
+    if (key == scUncompressedSize)
         setData(uncompressedSize(), UncompressedSize);
 
-    setData(value(skDescription) + QLatin1String("<br><br>Update Info: ") + value(skUpdateText),
+    setData(value(scDescription) + QLatin1String("<br><br>Update Info: ") + value(scUpdateText),
         Qt::ToolTipRole);
 }
