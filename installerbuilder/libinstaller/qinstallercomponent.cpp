@@ -363,7 +363,7 @@ QList<Component*> Component::childComponents(bool recursive, RunMode runMode) co
 */
 QString Component::name() const
 {
-    return value(skName);
+    return d->m_componentName;
 }
 
 /*!
