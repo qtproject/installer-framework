@@ -72,7 +72,8 @@ namespace KDUpdater
         bool isValid() const;
         QString errorString() const;
         Error error() const;
-        
+        void clearPackageInfoList();
+
         void setFileName(const QString& fileName);
         QString fileName() const;
 

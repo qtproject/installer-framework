@@ -521,6 +521,16 @@ void PackagesInfo::PackagesInfoData::addPackageFrom(const QDomElement& packageE)
 }
 
 /*!
+    Clears the installed package list.
+*/
+void PackagesInfo::clearPackageInfoList()
+{
+    d->packageInfoList.clear();
+    d->modified = true;
+    emit reset();
+}
+
+/*!
    \fn void KDUpdater::PackagesInfo::reset()
 
    This signal is emitted whenever the contents of this class is refreshed, usually from within
