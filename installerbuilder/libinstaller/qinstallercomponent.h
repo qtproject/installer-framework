@@ -188,6 +188,7 @@ public:
 
     Q_INVOKABLE bool isFromOnlineRepository() const;
 
+    bool isVirtual() const;
     bool isSelected() const;
 
 public Q_SLOTS:

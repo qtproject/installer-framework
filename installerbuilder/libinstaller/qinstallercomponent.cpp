@@ -310,7 +310,7 @@ Component* Component::parentComponent() const
 */
 void Component::appendComponent(Component* component)
 {
-    if (component->value(skVirtual).toLower() != skTrue) {
+    if (!component->isVirtual()) {
         d->m_components.append(component);
         std::sort(d->m_components.begin(), d->m_components.end(), Component::SortingPriorityLessThan());
     } else {
@@ -906,6 +906,11 @@ bool Component::autoCreateOperations() const
 void Component::setAutoCreateOperations(bool autoCreateOperations)
 {
     d->m_autoCreateOperations = autoCreateOperations;
+}
+
+bool Component::isVirtual() const
+{
+    return value(skVirtual, skFalse).toLower() == skTrue;
 }
 
 /*!
