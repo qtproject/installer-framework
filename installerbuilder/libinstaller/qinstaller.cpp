@@ -904,8 +904,10 @@ bool Installer::fetchUpdaterPackages()
             appendRootComponent(component, UpdaterMode);
 
         // after everything is set up, load the scripts
-        foreach (QInstaller::Component *component, updaterComponents)
+        foreach (QInstaller::Component *component, updaterComponents) {
             component->loadComponentScript();
+            component->setCheckState(Qt::Checked);
+        }
     } else {
         // we have no updates, no need to store possible dependencies
         qDeleteAll(d->m_updaterComponentsDeps);
