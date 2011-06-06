@@ -69,6 +69,7 @@ public:
     bool m_autoCreateOperations;
     bool m_operationsCreatedSuccessfully;
 
+    QString m_componentName;
     QUrl m_repositoryUrl;
     QString m_localTempPath;
     QScriptEngine m_scriptEngine;

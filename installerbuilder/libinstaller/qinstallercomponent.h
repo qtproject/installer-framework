@@ -218,7 +218,6 @@ private:
 
 private:
     ComponentPrivate *d;
-    QString m_name;
 };
 
 }   // namespace QInstaller

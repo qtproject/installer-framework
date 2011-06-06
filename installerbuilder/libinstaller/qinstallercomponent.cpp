@@ -281,7 +281,7 @@ void Component::setValue(const QString &key, const QString &value)
         return;
 
     if (key == QLatin1String("Name"))
-        m_name = value;
+        d->m_componentName = value;
 
     d->m_vars[key] = value;
     emit valueChanged(key, value);
@@ -923,7 +923,9 @@ bool Component::isSelected() const
 */
 void Component::setSelected(bool selected)
 {
-    verbose() << Q_FUNC_INFO << " is deprecated!!!" << std::endl;
+    Q_UNUSED(selected)
+    verbose() << Q_FUNC_INFO << qPrintable(QString(QLatin1String("on \"%1\" is deprecated!!!")).arg(
+        d->m_componentName)) << std::endl;
 }
 
 /*!
