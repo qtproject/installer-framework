@@ -1602,6 +1602,10 @@ void FinishedPage::entering()
 
 void FinishedPage::leaving()
 {
+#ifdef Q_WS_MAC
+    wizard()->setOption(QWizard::NoCancelButton, true);
+#endif
+
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
 
