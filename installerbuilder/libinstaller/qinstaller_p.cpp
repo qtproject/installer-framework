@@ -1062,7 +1062,9 @@ void InstallerPrivate::runInstaller()
 
         // put the installed packages info into the target dir
         KDUpdater::PackagesInfo* const packages = m_app->packagesInfo();
-        packages->setFileName(componentsXmlPath());
+        packages->setFileName(componentsXmlPath()); // forces a refresh of installed packages
+        // Clear these packages as we might install into an already existing installation folder.
+        packages->clearPackageInfoList();
         packages->setApplicationName(m_installerSettings.applicationName());
         packages->setApplicationVersion(m_installerSettings.applicationVersion());
 
@@ -1080,7 +1082,7 @@ void InstallerPrivate::runInstaller()
         writeUninstaller(m_performedOperationsOld + m_performedOperationsCurrentSession);
         registerUninstaller();
 
-        //this is the reserved one from the beginning
+        // this is the reserved one from the beginning
         ProgressCoordninator::instance()->addManualPercentagePoints(1);
 
         setStatus(Installer::Success);
