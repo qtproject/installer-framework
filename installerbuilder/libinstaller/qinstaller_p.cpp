@@ -1061,7 +1061,7 @@ void InstallerPrivate::runInstaller()
             componentsInstallPartProgressSize = double(1);
 
         // put the installed packages info into the target dir
-        KDUpdater::PackagesInfo* const packages = m_app->packagesInfo();
+        KDUpdater::PackagesInfo *const packages = m_app->packagesInfo();
         packages->setFileName(componentsXmlPath()); // forces a refresh of installed packages
         // Clear these packages as we might install into an already existing installation folder.
         packages->clearPackageInfoList();
@@ -1075,7 +1075,6 @@ void InstallerPrivate::runInstaller()
 
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
-        m_app->packagesInfo()->writeToDisk();
 
         emit q->titleMessageChanged(tr("Creating Uninstaller"));
 
@@ -1212,8 +1211,6 @@ void InstallerPrivate::runPackageUpdater()
 
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
-
-        packages->writeToDisk();
 
         emit q->titleMessageChanged(tr("Creating Uninstaller"));
 
@@ -1423,6 +1420,7 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
         component->value(QLatin1String("DisplayName")), component->value(QLatin1String("Description")),
         component->dependencies(), component->forcedInstallation(), component->isVirtual(),
         component->value(QLatin1String("UncompressedSize")).toULongLong());
+    packages->writeToDisk();
 
     component->setInstalled();
     component->markAsPerformedInstallation();
@@ -1526,7 +1524,7 @@ void InstallerPrivate::unregisterUninstaller()
 void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
     double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation)
 {
-    KDUpdater::PackagesInfo *packages = m_app->packagesInfo();
+    KDUpdater::PackagesInfo *const packages = m_app->packagesInfo();
     packages->setFileName(componentsXmlPath());
     packages->setApplicationName(m_installerSettings.applicationName());
     packages->setApplicationVersion(m_installerSettings.applicationVersion());
@@ -1570,6 +1568,7 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
                 if (Component *component = q->componentByName(componentName)) {
                     component->setUninstalled();
                     packages->removePackage(component->name());
+                    packages->writeToDisk();
                 }
             }
 
@@ -1586,8 +1585,6 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
         packages->writeToDisk();
         throw Error(tr("Unknown error"));
     }
-
-    packages->writeToDisk();
 }
 
 }   // QInstaller
