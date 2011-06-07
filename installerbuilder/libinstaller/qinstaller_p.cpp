@@ -1148,6 +1148,8 @@ void InstallerPrivate::runPackageUpdater()
         QHash<QString, Component*> componentsByName;
         QList<KDUpdater::UpdateOperation*> undoOperations;
         QVector<KDUpdater::UpdateOperation*> nonRevertedOperations;
+
+        // build a list of undo operations based on the checked state of the component
         foreach (KDUpdater::UpdateOperation *op, m_performedOperationsOld) {
             const QString &name = op->value(QLatin1String("component")).toString();
             Component *comp = componentsByName.value(name, 0);
