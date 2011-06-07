@@ -549,7 +549,7 @@ int InstallerPrivate::countProgressOperations(const QList<Component*> &component
     return operationCount;
 }
 
-void InstallerPrivate::connectOperationToInstaller(KDUpdater::UpdateOperation* const operation,
+void InstallerPrivate::connectOperationToInstaller(KDUpdater::UpdateOperation *const operation,
     double progressOperationPartSize)
 {
     Q_ASSERT(progressOperationPartSize);
@@ -557,8 +557,8 @@ void InstallerPrivate::connectOperationToInstaller(KDUpdater::UpdateOperation* c
     if (operationObject != 0) {
         const QMetaObject* const mo = operationObject->metaObject();
         if (mo->indexOfSignal(QMetaObject::normalizedSignature("outputTextChanged(QString)")) > -1) {
-            connect(operationObject, SIGNAL(outputTextChanged(QString)),
-                    ProgressCoordninator::instance(), SLOT(emitDetailTextChanged(QString)));
+            connect(operationObject, SIGNAL(outputTextChanged(QString)), ProgressCoordninator::instance(),
+                SLOT(emitDetailTextChanged(QString)));
         }
 
         if (mo->indexOfSlot(QMetaObject::normalizedSignature("cancelOperation()")) > -1)
