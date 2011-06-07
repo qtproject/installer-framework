@@ -362,8 +362,7 @@ void Installer::installSelectedComponents()
             "version of: %1").arg(currentComponent->name()));
         if ((isUpdater() || isPackageManager()) && currentComponent->removeBeforeUpdate()) {
             QString replacesAsString = currentComponent->value(QLatin1String("Replaces"));
-            QStringList possibleNames(replacesAsString.split(QLatin1String(","),
-                QString::SkipEmptyParts));
+            QStringList possibleNames(replacesAsString.split(QLatin1String(","), QString::SkipEmptyParts));
             possibleNames.append(currentComponent->name());
 
             // undo all operations done by this component upon installation
