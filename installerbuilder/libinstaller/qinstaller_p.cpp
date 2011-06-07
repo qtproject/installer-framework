@@ -1337,17 +1337,15 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
     bool adminRightsGained)
 {
     const QList<KDUpdater::UpdateOperation*> operations = component->operations();
+    if (!component->operationsCreatedSuccessfully())
+        q->setCanceled();
 
-    // show only component which are doing something, MinimumProgress is only for progress
-    // calculation safeness
-    if (operations.count() > 1
-        || (operations.count() == 1 && operations.at(0)->name() != QLatin1String("MinimumProgress"))) {
+    const int opCount = operations.count();
+    // show only components which do something, MinimumProgress is only for progress calculation safeness
+    if (opCount > 1 || (opCount == 1 && operations.at(0)->name() != QLatin1String("MinimumProgress"))) {
             ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1")
                 .arg(component->displayName()));
     }
-
-    if (!component->operationsCreatedSuccessfully())
-        q->setCanceled();
 
     foreach (KDUpdater::UpdateOperation *operation, operations) {
         if (statusCanceledOrFailed())
