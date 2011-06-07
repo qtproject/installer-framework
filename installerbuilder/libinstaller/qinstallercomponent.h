@@ -190,6 +190,7 @@ public:
 
     bool isVirtual() const;
     bool isSelected() const;
+    bool forcedInstallation() const;
 
 public Q_SLOTS:
     void setSelected(bool selected);

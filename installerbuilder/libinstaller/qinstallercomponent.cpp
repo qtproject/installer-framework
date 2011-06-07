@@ -923,6 +923,11 @@ bool Component::isSelected() const
     return checkState() != Qt::Unchecked;
 }
 
+bool Component::forcedInstallation() const
+{
+    return value(skForcedInstallation, skFalse).toLower() == skTrue;
+}
+
 /*!
     Marks the component for installation. Emits the selectedChanged() signal if the check state changes.
 */
