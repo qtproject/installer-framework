@@ -1418,16 +1418,11 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
     }
 
     // now mark the component as installed
-    KDUpdater::PackagesInfo* const packages = m_app->packagesInfo();
-    const bool forcedInstall =
-        component->value(QLatin1String("ForcedInstallation")).toLower() == QLatin1String("true")
-        ? true : false;
-    const bool virtualComponent =
-        component->value(QLatin1String("Virtual")).toLower() == QLatin1String("true") ? true : false;
-    packages->installPackage(component->value(QLatin1String("Name")),
-        component->value(QLatin1String("Version")), component->value(QLatin1String("DisplayName")),
-        component->value(QLatin1String("Description")), component->dependencies(), forcedInstall,
-        virtualComponent, component->value(QLatin1String("UncompressedSize")).toULongLong());
+    KDUpdater::PackagesInfo *const packages = m_app->packagesInfo();
+    packages->installPackage(component->name(), component->value(QLatin1String("Version")),
+        component->value(QLatin1String("DisplayName")), component->value(QLatin1String("Description")),
+        component->dependencies(), component->forcedInstallation(), component->isVirtual(),
+        component->value(QLatin1String("UncompressedSize")).toULongLong());
 
     component->setInstalled();
     component->markAsPerformedInstallation();
