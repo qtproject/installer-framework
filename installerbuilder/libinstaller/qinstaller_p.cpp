@@ -1131,9 +1131,11 @@ void InstallerPrivate::runPackageUpdater()
         if (!QFileInfo(installerBinaryPath()).isWritable() || !QFileInfo(packagesXml).isWritable())
             adminRightsGained = q->gainAdminRights();
 
+        const QList<Component*> componentsToInstall = q->componentsToInstall(q->runMode());
+        verbose() << "Install size: " << componentsToInstall.size() << " components " << std::endl;
+
         bool updateAdminRights = false;
         if (!adminRightsGained) {
-            QList<Component*> componentsToInstall = q->componentsToInstall(q->runMode());
             foreach (Component *component, componentsToInstall) {
                 if (component->value(QLatin1String("RequiresAdminRights"),
                     QLatin1String("false")) == QLatin1String("false")) {
@@ -1197,9 +1199,6 @@ void InstallerPrivate::runPackageUpdater()
 
         // following, we download the needed archives
         q->downloadNeededArchives(AllMode, downloadPartProgressSize);
-
-        const QList<Component*> componentsToInstall = q->componentsToInstall(q->runMode());
-        verbose() << "Install size: " << componentsToInstall.size() << " components " << std::endl;
 
         stopProcessesForUpdates(componentsToInstall);
 
