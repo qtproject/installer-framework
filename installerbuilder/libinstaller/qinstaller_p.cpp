@@ -78,19 +78,6 @@ static bool runOperation(KDUpdater::UpdateOperation *op, InstallerPrivate::Opera
     return false;
 }
 
-template <typename T>
-void letTheUiRunTillFinished(const QFuture<T>& f)
-{
-    QFutureWatcher<T> futureWatcher;
-
-    QEventLoop loop;
-    loop.connect(&futureWatcher, SIGNAL(finished()), SLOT(quit()), Qt::QueuedConnection);
-    futureWatcher.setFuture(f);
-
-    if (!f.isFinished())
-        loop.exec();
-}
-
 /*!
     \internal
     Initializes the created FSEngineClientHandler instance \a handler.
@@ -250,11 +237,18 @@ bool InstallerPrivate::isProcessRunning(const QString &name,
 }
 
 /* static */
-bool InstallerPrivate::performOperationThreaded(KDUpdater::UpdateOperation *op,
-    InstallerPrivate::OperationType type)
+bool InstallerPrivate::performOperationThreaded(KDUpdater::UpdateOperation *op, OperationType type)
 {
-    QFuture<bool> future = QtConcurrent::run(runOperation, op, type);
-    letTheUiRunTillFinished(future);
+    QFutureWatcher<bool> futureWatcher;
+    const QFuture<bool> future = QtConcurrent::run(runOperation, op, type);
+
+    QEventLoop loop;
+    loop.connect(&futureWatcher, SIGNAL(finished()), SLOT(quit()), Qt::QueuedConnection);
+    futureWatcher.setFuture(future);
+
+    if (!future.isFinished())
+        loop.exec();
+
     return future.result();
 }
 
