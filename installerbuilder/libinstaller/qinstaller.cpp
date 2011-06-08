@@ -758,6 +758,10 @@ bool Installer::fetchAllPackages()
         }
     }
 
+    // remove all components that got a replacement
+    foreach (const QString &component, data.componentsToReplace)
+        delete components.take(component);
+
     // now append all components to their respective parents
     QMap<QString, QInstaller::Component*>::const_iterator it;
     for (it = components.begin(); it != components.end(); ++it) {
@@ -864,9 +868,17 @@ bool Installer::fetchUpdaterPackages()
                 continue;
 
             const QString &name = d->m_updaterComponentsDeps.last()->name();
-            // Update for not installed package found, skip it.
-            if (!installedPackages.contains(name))
-                continue;
+            const QString replaces = data.package->data(QLatin1String("Replaces")).toString();
+            bool isValidUpdate = installedPackages.contains(name);
+            if (!isValidUpdate && !replaces.isEmpty()) {
+                const QStringList possibleNames = replaces.split(QLatin1String(","), QString::SkipEmptyParts);
+                foreach (const QString &possibleName, possibleNames)
+                    isValidUpdate |= installedPackages.contains(possibleName);
+            }
+
+            if (!isValidUpdate)
+                continue;   // Update for not installed package found, skip it.
+
 
             const KDUpdater::PackageInfo &info = installedPackages.value(name);
             const QString updateVersion = update->data(QLatin1String("Version")).toString();
@@ -885,27 +897,35 @@ bool Installer::fetchUpdaterPackages()
         }
     }
 
+    // remove all components that got a replacement
+    foreach (const QString &component, data.componentsToReplace)
+        delete components.take(component);
+
     // remove all unimportant components
     QList<QInstaller::Component*> updaterComponents = components.values();
     if (importantUpdates) {
         for (int i = updaterComponents.count() - 1; i >= 0; --i) {
             const QString important = updaterComponents.at(i)->value(QLatin1String("Important"));
-            if (important.toLower() == QLatin1String("false") || important.isEmpty()) {
-                delete updaterComponents[i];
-                updaterComponents.removeAt(i);
-            }
+            if (important.toLower() == QLatin1String("false") || important.isEmpty())
+                delete updaterComponents.takeAt(i);
         }
     }
 
     if (!updaterComponents.isEmpty()) {
-        // append all components w/o parent to the direct list
-        foreach (QInstaller::Component *component, updaterComponents)
-            appendRootComponent(component, UpdaterMode);
-
-        // after everything is set up, load the scripts
+        // load the scripts and append all components w/o parent to the direct list
         foreach (QInstaller::Component *component, updaterComponents) {
             component->loadComponentScript();
             component->setCheckState(Qt::Checked);
+            appendRootComponent(component, UpdaterMode);
+        }
+
+        // after everything is set up, check installed components
+        foreach (QInstaller::Component *component, d->m_updaterComponentsDeps) {
+            if (component->isInstalled()) {
+                // since we do not put them into the model, which would force a update of e.g. tri state
+                // components, we have to check all installed components ourself
+                component->setCheckState(Qt::Checked);
+            }
         }
     } else {
         // we have no updates, no need to store possible dependencies
@@ -1715,7 +1735,7 @@ Installer::Status Installer::handleComponentsFileSetOrParseError(const QString &
     return Installer::Unfinished;
 }
 
-bool Installer::updateComponentData(const struct Data &data, Component *component)
+bool Installer::updateComponentData(struct Data &data, Component *component)
 {
     try {
         const QString name = data.package->data(QLatin1String("Name")).toString();
@@ -1725,11 +1745,27 @@ bool Installer::updateComponentData(const struct Data &data, Component *componen
             return false;
         }
 
-        if (data.installedPackages->contains(name)) {
+        if (!data.installedPackages->contains(name)) {
+            const QString replaces = data.package->data(QLatin1String("Replaces")).toString();
+            if (!replaces.isEmpty() && runMode() == AllMode) {
+                const QStringList components = replaces.split(QLatin1String(","), QString::SkipEmptyParts);
+                foreach (const QString &componentName, components) {
+                    if (data.installedPackages->contains(componentName)) {
+                        component->setInstalled();
+                        component->setValue(QLatin1String("InstalledVersion"),
+                            data.package->data(QLatin1String("Version")).toString());
+                        data.componentsToReplace.append(components);
+                        break;  // break as soon as we know we replace at least one other component
+                    } else {
+                        component->setUninstalled();
+                    }
+                }
+            } else {
+                component->setUninstalled();
+            }
+        } else {
             component->setInstalled();
             component->setValue(QLatin1String("InstalledVersion"), data.installedPackages->value(name).version);
-        } else {
-            component->setUninstalled();
         }
 
         const QString &localPath = component->localTempPath();

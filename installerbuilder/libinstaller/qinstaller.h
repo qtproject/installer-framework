@@ -274,11 +274,12 @@ private:
 
     struct Data {
         KDUpdater::Update *package;
+        QStringList componentsToReplace;
         QMap<QString, Component*> *components;
         GetRepositoriesMetaInfoJob *metaInfoJob;
         QHash<QString, KDUpdater::PackageInfo> *installedPackages;
     };
-    bool updateComponentData(const struct Data &data, QInstaller::Component *component);
+    bool updateComponentData(struct Data &data, QInstaller::Component *component);
     static Component *subComponentByName(const QInstaller::Installer *installer, const QString &name,
         const QString &version = QString(), Component *check = 0);
 
