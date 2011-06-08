@@ -367,7 +367,7 @@ void Installer::installSelectedComponents()
 
             // undo all operations done by this component upon installation
             for (int i = d->m_performedOperationsOld.count() - 1; i >= 0; --i) {
-                KDUpdater::UpdateOperation* const op = d->m_performedOperationsOld[i];
+                KDUpdater::UpdateOperation* const op = d->m_performedOperationsOld.at(i);
                 if (!possibleNames.contains(op->value(QLatin1String("component")).toString()))
                     continue;
                 const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
@@ -375,8 +375,7 @@ void Installer::installSelectedComponents()
                 InstallerPrivate::performOperationThreaded(op, InstallerPrivate::Undo);
                 if (becameAdmin)
                     dropAdminRights();
-                d->m_performedOperationsOld.remove(i);
-                delete op;
+                delete d->m_performedOperationsOld.takeAt(i);
             }
             foreach(const QString possilbeName, possibleNames)
                 d->m_app->packagesInfo()->removePackage(possilbeName);
@@ -509,9 +508,8 @@ void Installer::rollBackInstallation()
 
     //this unregisters all operation progressChanged connects
     ProgressCoordninator::instance()->setUndoMode();
-    int progressOperationCount =
-        d->countProgressOperations(d->m_performedOperationsCurrentSession.toList());
-    double progressOperationSize = double(1) / progressOperationCount;
+    const int progressOperationCount = d->countProgressOperations(d->m_performedOperationsCurrentSession);
+    const double progressOperationSize = double(1) / progressOperationCount;
 
     //re register all the undo operations with the new size to the ProgressCoordninator
     foreach (KDUpdater::UpdateOperation* const operation, d->m_performedOperationsCurrentSession) {
@@ -527,9 +525,7 @@ void Installer::rollBackInstallation()
 
     while (!d->m_performedOperationsCurrentSession.isEmpty()) {
         try {
-            KDUpdater::UpdateOperation* const operation = d->m_performedOperationsCurrentSession.last();
-            d->m_performedOperationsCurrentSession.pop_back();
-
+            KDUpdater::UpdateOperation* const operation = d->m_performedOperationsCurrentSession.takeLast();
             const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
                 && operation->value(QLatin1String("admin")).toBool() && gainAdminRights();
             InstallerPrivate::performOperationThreaded(operation, InstallerPrivate::Undo);
@@ -564,7 +560,7 @@ Installer::Installer()
 
 Installer::Installer(qint64 magicmaker,
         const QVector<KDUpdater::UpdateOperation*>& performedOperations)
-    : d(new InstallerPrivate(this, magicmaker, performedOperations))
+    : d(new InstallerPrivate(this, magicmaker, performedOperations.toList()))
 {
     qRegisterMetaType< QInstaller::Installer::Status >("QInstaller::Installer::Status");
     qRegisterMetaType< QInstaller::Installer::WizardPage >("QInstaller::Installer::WizardPage");

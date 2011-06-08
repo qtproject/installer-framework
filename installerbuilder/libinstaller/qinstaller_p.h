@@ -41,7 +41,6 @@
 #include <QtCore/QObject>
 #include <QtCore/QPair>
 #include <QtCore/QPointer>
-#include <QtCore/QVector>
 
 class FSEngineClientHandler;
 QT_FORWARD_DECLARE_CLASS(QFile)
@@ -74,7 +73,7 @@ public:
 
     InstallerPrivate();
     explicit InstallerPrivate(Installer *q, qint64 magicInstallerMaker,
-        const QVector<KDUpdater::UpdateOperation*> &performedOperations);
+        const QList<KDUpdater::UpdateOperation*> &performedOperations);
     ~InstallerPrivate();
 
     static bool isProcessRunning(const QString &name,
@@ -94,7 +93,7 @@ public:
     QString uninstallerName() const;
     QString installerBinaryPath() const;
     void readUninstallerIniFile(const QString &targetDir);
-    void writeUninstaller(QVector<KDUpdater::UpdateOperation*> performedOperations);
+    void writeUninstaller(QList<KDUpdater::UpdateOperation*> performedOperations);
 
     QString configurationFileName() const;
     QString componentsXmlPath() const;
@@ -132,7 +131,7 @@ public:
         const QString &componentName);
 
     void addPerformed(KDUpdater::UpdateOperation* op) {
-        m_performedOperationsCurrentSession.push_back(op);
+        m_performedOperationsCurrentSession.append(op);
     }
 
     void commitSessionOperations() {
@@ -180,8 +179,8 @@ public:
     QList<Component*> m_updaterComponentsDeps;
 
     QList<KDUpdater::UpdateOperation*> m_ownedOperations;
-    QVector<KDUpdater::UpdateOperation*> m_performedOperationsOld;
-    QVector<KDUpdater::UpdateOperation*> m_performedOperationsCurrentSession;
+    QList<KDUpdater::UpdateOperation*> m_performedOperationsOld;
+    QList<KDUpdater::UpdateOperation*> m_performedOperationsCurrentSession;
 
 private:
     void deleteUninstaller();
@@ -190,7 +189,7 @@ private:
 
     void writeUninstallerBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
     void writeUninstallerBinaryData(QIODevice *output, QFile *const input,
-        const QVector<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout,
+        const QList<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout,
         bool compressOperations, bool forceUncompressedResources);
 
     void runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,

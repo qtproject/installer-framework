@@ -178,7 +178,7 @@ InstallerPrivate::InstallerPrivate()
 }
 
 InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMaker,
-        const QVector<KDUpdater::UpdateOperation*> &performedOperations)
+        const QList<KDUpdater::UpdateOperation*> &performedOperations)
     : m_app(0)
     , m_tempDirDeleter(new TempDirDeleter())
     , m_FSEngineClientHandler(createEngineClientHandler())
@@ -646,7 +646,7 @@ void InstallerPrivate::writeUninstallerBinary(QFile *const input, qint64 size, b
 }
 
 void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *const input,
-    const QVector<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout,
+    const QList<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout,
     bool compressOperations, bool forceUncompressedResources)
 {
     const qint64 dataBlockStart = output->pos();
@@ -707,7 +707,7 @@ void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *cons
     appendInt64(output, MagicUninstallerMarker);
 }
 
-void InstallerPrivate::writeUninstaller(QVector<KDUpdater::UpdateOperation*> performedOperations)
+void InstallerPrivate::writeUninstaller(QList<KDUpdater::UpdateOperation*> performedOperations)
 {
     bool gainedAdminRights = false;
     QTemporaryFile tempAdminFile(targetDir() + QString::fromLatin1("/testjsfdjlkdsjflkdsjfldsjlfds")
@@ -1149,7 +1149,7 @@ void InstallerPrivate::runPackageUpdater()
 
         QHash<QString, Component*> componentsByName;
         QList<KDUpdater::UpdateOperation*> undoOperations;
-        QVector<KDUpdater::UpdateOperation*> nonRevertedOperations;
+        QList<KDUpdater::UpdateOperation*> nonRevertedOperations;
 
         // build a list of undo operations based on the checked state of the component
         foreach (KDUpdater::UpdateOperation *op, m_performedOperationsOld) {
