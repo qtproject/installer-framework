@@ -504,7 +504,11 @@ bool Installer::needsRestart() const
 void Installer::rollBackInstallation()
 {
     emit titleMessageChanged(tr("Cancelling the Installer"));
-    // rolling back
+
+    KDUpdater::PackagesInfo *const packages = d->m_app->packagesInfo();
+    packages->setFileName(d->componentsXmlPath()); // forces a refresh of installed packages
+    packages->setApplicationName(d->m_installerSettings.applicationName());
+    packages->setApplicationVersion(d->m_installerSettings.applicationVersion());
 
     //this unregisters all operation progressChanged connects
     ProgressCoordninator::instance()->setUndoMode();
@@ -525,19 +529,37 @@ void Installer::rollBackInstallation()
 
     while (!d->m_performedOperationsCurrentSession.isEmpty()) {
         try {
-            KDUpdater::UpdateOperation* const operation = d->m_performedOperationsCurrentSession.takeLast();
+            KDUpdater::UpdateOperation *const operation = d->m_performedOperationsCurrentSession.takeLast();
             const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
                 && operation->value(QLatin1String("admin")).toBool() && gainAdminRights();
+
             InstallerPrivate::performOperationThreaded(operation, InstallerPrivate::Undo);
+
+            const QString componentName = operation->value(QLatin1String("component")).toString();
+            if (!componentName.isEmpty()) {
+                Component *component = componentByName(componentName);
+                if (!component)
+                    component = d->m_componentsToReplace.value(componentName, 0);
+                if (component) {
+                    component->setUninstalled();
+                    packages->removePackage(component->name());
+                }
+            }
+
             if (becameAdmin)
                 dropAdminRights();
-        } catch(const Error &e) {
+        } catch (const Error &e) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("ElevationError"), tr("Authentication Error"), tr("Some components "
                 "could not be removed completely because admin rights could not be acquired: %1.")
                 .arg(e.message()));
+        } catch (...) {
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("unknown"),
+                tr("Unknown error."), tr("Some components could not be removed completely because an unknown "
+                "error happend."));
         }
     }
+    packages->writeToDisk();
 }
 
 bool Installer::isFileExtensionRegistered(const QString& extension) const
