@@ -271,8 +271,10 @@ int main(int argc, char *argv[])
         updaterapp.packagesInfo()->setApplicationName(productName);
         updaterapp.packagesInfo()->setApplicationVersion(installer
             .value(QLatin1String("ProductVersion")));
-        updaterapp.addUpdateSource(productName, productName, QString(),
-            QUrl(QLatin1String("resource://metadata/")), 0);
+        if (content.magicmaker() == MagicInstallerMarker) {
+            updaterapp.addUpdateSource(productName, productName, QString(),
+                QUrl(QLatin1String("resource://metadata/")), 0);
+        }
         installer.setUpdaterApplication(&updaterapp);
 
         // Create the wizard gui
