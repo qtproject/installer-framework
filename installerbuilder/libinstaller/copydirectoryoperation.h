@@ -26,11 +26,11 @@
 #ifndef COPYDIRECTORYOPERATION_H
 #define COPYDIRECTORYOPERATION_H
 
+#include "installer_global.h"
+
 #include <KDUpdater/UpdateOperation>
 
-#include "installer_global.h"
 #include <QtCore/QObject>
-#include <QFuture>
 
 
 namespace QInstaller {
@@ -39,7 +39,6 @@ class INSTALLER_EXPORT CopyDirectoryOperation : public QObject, public KDUpdater
 {
     Q_OBJECT
 
-    friend class WorkerThread;
 public:
     CopyDirectoryOperation();
     ~CopyDirectoryOperation();
@@ -48,23 +47,11 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    CopyDirectoryOperation* clone() const;
+    CopyDirectoryOperation *clone() const;
 
 Q_SIGNALS:
-    void outputTextChanged( const QString& progress );
     //TODO: needs progress signal
-
-private Q_SLOTS:
-    
-private:
-    void addFileToFileList( const QString& fileName );
-    void addDirectoryToDirectoryList( const QString& directory );
-    void letTheUiRunTillFinished(const QFuture<void> &_future);
-    bool copyFilesFromInternalFileList();
-    bool removeFilesFromInternalFileList();
-    QList< QPair<QString,QString> > fileList();
-    QList< QPair<QString,QString> > generateFileList(const QString &sourcePath, const QString &targetPath);
-    QList< QPair<QString,QString> > m_fileList;
+    void outputTextChanged(const QString &progress);
 };
 
 }
