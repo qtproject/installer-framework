@@ -30,7 +30,6 @@
 
 #include "installer_global.h"
 #include <QtCore/QObject>
-#include <QFuture>
 
 
 namespace QInstaller {
@@ -39,7 +38,6 @@ class INSTALLER_EXPORT CopyDirectoryOperation : public QObject, public KDUpdater
 {
     Q_OBJECT
 
-    friend class WorkerThread;
 public:
     CopyDirectoryOperation();
     ~CopyDirectoryOperation();
@@ -57,14 +55,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     
 private:
-    void addFileToFileList( const QString& fileName );
-    void addDirectoryToDirectoryList( const QString& directory );
-    void letTheUiRunTillFinished(const QFuture<void> &_future);
-    bool copyFilesFromInternalFileList();
-    bool removeFilesFromInternalFileList();
-    QList< QPair<QString,QString> > fileList();
-    QList< QPair<QString,QString> > generateFileList(const QString &sourcePath, const QString &targetPath);
-    QList< QPair<QString,QString> > m_fileList;
+    void addFileToFileList(const QString& fileName);
 };
 
 }
