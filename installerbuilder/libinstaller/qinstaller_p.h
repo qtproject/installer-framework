@@ -177,6 +177,7 @@ public:
     QList<Component*> m_rootComponents;
     QList<Component*> m_updaterComponents;
     QList<Component*> m_updaterComponentsDeps;
+    QHash<QString, Component*> m_componentsToReplace;
 
     QList<KDUpdater::UpdateOperation*> m_ownedOperations;
     QList<KDUpdater::UpdateOperation*> m_performedOperationsOld;

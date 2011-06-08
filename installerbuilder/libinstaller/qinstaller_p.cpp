@@ -191,6 +191,7 @@ InstallerPrivate::~InstallerPrivate()
     qDeleteAll(m_rootComponents);
     qDeleteAll(m_updaterComponents);
     qDeleteAll(m_updaterComponentsDeps);
+    qDeleteAll(m_componentsToReplace.values());
 
     qDeleteAll(m_ownedOperations);
     qDeleteAll(m_performedOperationsOld);
@@ -1558,7 +1559,10 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
             }
 
             if (!componentName.isEmpty()) {
-                if (Component *component = q->componentByName(componentName)) {
+                Component *component = q->componentByName(componentName);
+                if (!component)
+                    component = m_componentsToReplace.value(componentName, 0);
+                if (component) {
                     component->setUninstalled();
                     packages->removePackage(component->name());
                     packages->writeToDisk();

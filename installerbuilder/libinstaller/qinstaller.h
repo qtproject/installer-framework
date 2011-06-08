@@ -282,6 +282,7 @@ private:
     bool updateComponentData(struct Data &data, QInstaller::Component *component);
     static Component *subComponentByName(const QInstaller::Installer *installer, const QString &name,
         const QString &version = QString(), Component *check = 0);
+    void storeReplacedComponents(QMap<QString, Component*> &components, const QStringList &replaceables);
 
 private:
     InstallerPrivate* const d;

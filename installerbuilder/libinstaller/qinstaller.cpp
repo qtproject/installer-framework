@@ -754,9 +754,8 @@ bool Installer::fetchAllPackages()
         }
     }
 
-    // remove all components that got a replacement
-    foreach (const QString &component, data.componentsToReplace)
-        delete components.take(component);
+    // store all components that got a replacement
+    storeReplacedComponents(components, data.componentsToReplace);
 
     // now append all components to their respective parents
     QMap<QString, QInstaller::Component*>::const_iterator it;
@@ -893,9 +892,8 @@ bool Installer::fetchUpdaterPackages()
         }
     }
 
-    // remove all components that got a replacement
-    foreach (const QString &component, data.componentsToReplace)
-        delete components.take(component);
+    // store all components that got a replacement
+    storeReplacedComponents(components, data.componentsToReplace);
 
     // remove all unimportant components
     QList<QInstaller::Component*> updaterComponents = components.values();
@@ -1777,4 +1775,18 @@ bool Installer::updateComponentData(struct Data &data, Component *component)
     }
 
     return true;
+}
+
+void Installer::storeReplacedComponents(QMap<QString, Component*> &components, const QStringList &replaceables)
+{
+    // remeber all components that got a replacement, requierd for uninstall
+    foreach (const QString &componentName, replaceables) {
+        Component *component = components.take(componentName);
+        if (!component && !d->m_componentsToReplace.contains(componentName)) {
+            component = new Component(this);
+            component->setValue(QLatin1String("Name"), componentName);
+        }
+        if (component)
+            d->m_componentsToReplace.insert(componentName, component);
+    }
 }
