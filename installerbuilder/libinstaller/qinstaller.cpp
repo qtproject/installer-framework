@@ -110,8 +110,8 @@ static bool componentMatches(const Component *component, const QString &name,
     return Installer::versionMatches(component->value(QLatin1String("Version")), version);
 }
 
-static Component* subComponentByName(const Installer *installer, const QString &name,
-    const QString &version = QString(), Component *check = 0)
+Component* Installer::subComponentByName(const QInstaller::Installer *installer, const QString &name,
+    const QString &version, Component *check)
 {
     if (name.isEmpty())
         return 0;
@@ -119,22 +119,22 @@ static Component* subComponentByName(const Installer *installer, const QString &
     if (check != 0 && componentMatches(check, name, version))
         return check;
 
-    const QList<Component*> rootComponents = check == 0 ? installer->components(false, AllMode)
-        : check->childComponents(false, AllMode);
-    foreach (QInstaller::Component* component, rootComponents) {
-        Component* const result = subComponentByName(installer, name, version, component);
-        if (result != 0)
-            return result;
+    if (installer->runMode() == AllMode) {
+        const QList<Component*> rootComponents = check == 0 ? installer->components(false, AllMode)
+            : check->childComponents(false, AllMode);
+        foreach (QInstaller::Component* component, rootComponents) {
+            Component* const result = subComponentByName(installer, name, version, component);
+            if (result != 0)
+                return result;
+        }
+    } else {
+        const QList<Component*> updaterComponents = installer->components(false, UpdaterMode)
+            + installer->d->m_updaterComponentsDeps;
+        foreach (QInstaller::Component *component, updaterComponents) {
+            if (componentMatches(component, name, version))
+                return component;
+        }
     }
-
-    const QList<Component*> updaterComponents = check == 0
-        ? installer->components(false, UpdaterMode) : check->childComponents(false, UpdaterMode);
-    foreach (QInstaller::Component* component, updaterComponents) {
-        Component* const result = subComponentByName(installer, name, version, component);
-        if (result != 0)
-            return result;
-    }
-
     return 0;
 }
 
