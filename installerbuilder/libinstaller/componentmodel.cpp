@@ -251,15 +251,23 @@ void ComponentModel::selectDefault()
 
 void ComponentModel::slotModelReset()
 {
-    for (int i = m_rootIndex; i < m_rootComponentList.count(); ++i) {
-        foreach (Component *child, m_rootComponentList.at(i)->childs()) {
+    if (installer()->runMode() == QInstaller::AllMode) {
+        for (int i = m_rootIndex; i < m_rootComponentList.count(); ++i) {
+            foreach (Component *child, m_rootComponentList.at(i)->childs()) {
+                if (child->checkState() == Qt::Checked && !child->isTristate())
+                    m_initialCheckedList.insert(child->name());
+            }
+        }
+        m_currentCheckedList += m_initialCheckedList;
+        select(Qt::Unchecked);
+    } else {
+        foreach (Component *child, m_rootComponentList) {
             if (child->checkState() == Qt::Checked && !child->isTristate())
                 m_initialCheckedList.insert(child->name());
         }
+        m_currentCheckedList += m_initialCheckedList;
     }
-    m_currentCheckedList += m_initialCheckedList;
 
-    select(Qt::Unchecked);
     foreach (const QString &name, m_currentCheckedList)
         setData(indexFromComponentName(name), Qt::Checked, Qt::CheckStateRole);
 }
