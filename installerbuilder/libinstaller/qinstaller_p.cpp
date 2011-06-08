@@ -1565,7 +1565,6 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
                 if (component) {
                     component->setUninstalled();
                     packages->removePackage(component->name());
-                    packages->writeToDisk();
                 }
             }
 
@@ -1582,6 +1581,7 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
         packages->writeToDisk();
         throw Error(tr("Unknown error"));
     }
+    packages->writeToDisk();
 }
 
 }   // QInstaller
