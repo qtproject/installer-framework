@@ -32,17 +32,10 @@
 **************************************************************************/
 #include "simplemovefileoperation.h"
 
-#include <QFileInfo>
-#include <QDir>
-#include <QDirIterator>
+#include <QtCore/QFileInfo>
 
-#include <QDebug>
 
-using namespace QInstaller;
-
-/*
-TRANSLATOR QInstaller::SimpleMoveFileOperation
-*/
+namespace QInstaller {
 
 SimpleMoveFileOperation::SimpleMoveFileOperation()
 {
@@ -62,44 +55,41 @@ bool SimpleMoveFileOperation::performOperation()
     const QStringList args = arguments();
     if (args.count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.")
-                        .arg(name()).arg(args.count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.").arg(name())
+            .arg(args.count()));
         return false;
     }
+
     const QString source = args.at(0);
     const QString target = args.at(1);
 
-
-
     if (source.isEmpty() || target.isEmpty()) {
         setError(UserDefinedError);
-        setErrorString(tr("None of the arguments can be empty: source(\"%1\"), target(\"%2\")")
-                        .arg(source, target));
+        setErrorString(tr("None of the arguments can be empty: source(\"%1\"), target(\"%2\").")
+            .arg(source, target));
         return false;
     }
 
-    // If destination file exists, then we cannot use QFile::copy()
-    // because it does not overwrite an existing file. So we remove
-    // the destination file.
-    if (QFile::exists(target))
-    {
-        QFile file(target);
+    // If destination file exists, then we cannot use QFile::copy() because it does not overwrite an existing
+    // file. So we remove the destination file.
+    QFile file(target);
+    if (file.exists()) {
         if (!file.remove()) {
             setError(UserDefinedError);
-            setErrorString(tr("can not copy source(\"%1\") to target(\"%2\"), because target is existing and not removable.")
-                            .arg(source, target));
+            setErrorString(tr("Can not copy source(\"%1\") to target(\"%2\"), because target is existing and "
+                "not removable.").arg(source, target));
             return false;
         }
     }
 
-    QFile file(source);
-    const bool moved = file.rename(target);
-    if (!moved) {
+    file.setFileName(source);
+    if (!file.rename(target)) {
         setError(UserDefinedError);
-        setErrorString(tr("can not move source(\"%1\") to target(\"%2\"), %3")
-                        .arg(source, target, file.errorString()));
+        setErrorString(tr("Can not move source(\"%1\") to target(\"%2\"), %3.").arg(source, target,
+            file.errorString()));
         return false;
     }
+
     return true;
 }
 
@@ -122,3 +112,5 @@ SimpleMoveFileOperation* SimpleMoveFileOperation::clone() const
 {
     return new SimpleMoveFileOperation();
 }
+
+}   // namespace QInstaller
