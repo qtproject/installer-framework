@@ -48,7 +48,7 @@ using namespace ProjectExplorer;
 
 RegisterDefaultDebuggerOperation::RegisterDefaultDebuggerOperation()
 {
-    setName(QLatin1String("RegisterToolChain"));
+    setName(QLatin1String("RegisterDefaultDebugger"));
 }
 
 RegisterDefaultDebuggerOperation::~RegisterDefaultDebuggerOperation()

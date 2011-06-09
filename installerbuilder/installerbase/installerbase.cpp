@@ -261,7 +261,6 @@ int main(int argc, char *argv[])
                 verbose() << "Use no-force-installations" << std::endl;
             } else {
                 std::cerr << "Unknown option: " << argument << std::endl;
-                return Installer::Failure;
             }
         }
 
