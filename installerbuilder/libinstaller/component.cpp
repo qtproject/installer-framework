@@ -162,7 +162,7 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
     setValue(scReleaseDate, update->data(scReleaseDate).toString());
 
     QString forced = update->data(scForcedInstallation, scFalse).toString().toLower();
-    if (qApp->arguments().contains(QLatin1String("--no-force-installations")))
+    if (Installer::noForceInstallation())
         forced = scFalse;
     setValue(scForcedInstallation, forced);
     if (forced == scTrue) {

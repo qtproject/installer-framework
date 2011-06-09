@@ -63,8 +63,10 @@
 
 using namespace QInstaller;
 
-static QFont s_virtualComponentsFont;
-static bool s_virtualComponentsVisible = false;
+static QFont sVirtualComponentsFont;
+
+static bool sNoForceInstallation = false;
+static bool sVirtualComponentsVisible = false;
 
 static QScriptValue checkArguments(QScriptContext* context, int amin, int amax)
 {
@@ -601,24 +603,40 @@ Installer::~Installer()
     delete d;
 }
 
+/* static */
 QFont Installer::virtualComponentsFont()
 {
-    return s_virtualComponentsFont;
+    return sVirtualComponentsFont;
 }
 
+/* static */
 void Installer::setVirtualComponentsFont(const QFont &font)
 {
-    s_virtualComponentsFont = font;
+    sVirtualComponentsFont = font;
 }
 
+/* static */
 bool Installer::virtualComponentsVisible()
 {
-    return s_virtualComponentsVisible;
+    return sVirtualComponentsVisible;
 }
 
+/* static */
 void Installer::setVirtualComponentsVisible(bool visible)
 {
-    s_virtualComponentsVisible = visible;
+    sVirtualComponentsVisible = visible;
+}
+
+/* static */
+bool Installer::noForceInstallation()
+{
+    return sNoForceInstallation;
+}
+
+/* static */
+void Installer::setNoForceInstallation(bool value)
+{
+    sNoForceInstallation = value;
 }
 
 RunMode Installer::runMode() const

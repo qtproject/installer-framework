@@ -258,9 +258,9 @@ int main(int argc, char *argv[])
                     return Installer::Failure;
                 installer.addRepositories(repoList);
             } else if (argument == QLatin1String("--no-force-installations")) {
-                verbose() << "Use no-force-installations" << std::endl;
+                Installer::setNoForceInstallation(true);
             } else {
-                std::cerr << "Unknown option: " << argument << std::endl;
+                verbose() << "Unknown option: " << argument << std::endl;
             }
         }
 

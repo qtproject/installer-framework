@@ -111,6 +111,9 @@ public:
     static bool virtualComponentsVisible();
     static void setVirtualComponentsVisible(bool visible);
 
+    static bool noForceInstallation();
+    static void setNoForceInstallation(bool value);
+
     QHash<QString, KDUpdater::PackageInfo> localInstalledPackages();
     GetRepositoriesMetaInfoJob* fetchMetaInformation(const InstallerSettings &settings);
     bool addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *metaInfoJob, const InstallerSettings &settings,
