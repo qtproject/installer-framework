@@ -56,8 +56,6 @@
 
 #include <algorithm>
 
-#include "qinstallercomponent_constants.h"
-
 using namespace QInstaller;
 
 /*
@@ -253,7 +251,7 @@ void Component::setValue(const QString &key, const QString &value)
     if (d->m_vars.value(key) == value)
         return;
 
-    if (key == QLatin1String("Name"))
+    if (key == scName)
         d->m_componentName = value;
 
     d->m_vars[key] = value;
@@ -943,7 +941,7 @@ bool Component::isDefault() const
         return false;
     }
 
-    return value(scDefault).compare(QLatin1String("true"), Qt::CaseInsensitive) == 0;
+    return value(scDefault).compare(scTrue, Qt::CaseInsensitive) == 0;
 }
 
 /*!

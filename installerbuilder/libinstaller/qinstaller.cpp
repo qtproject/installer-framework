@@ -109,7 +109,7 @@ static bool componentMatches(const Component *component, const QString &name,
     if (version.isEmpty())
         return true;
 
-    return Installer::versionMatches(component->value(QLatin1String("Version")), version);
+    return Installer::versionMatches(component->value(scVersion), version);
 }
 
 Component* Installer::subComponentByName(const QInstaller::Installer *installer, const QString &name,
@@ -363,8 +363,8 @@ void Installer::installSelectedComponents()
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nRemoving the old "
             "version of: %1").arg(currentComponent->name()));
         if ((isUpdater() || isPackageManager()) && currentComponent->removeBeforeUpdate()) {
-            QString replacesAsString = currentComponent->value(QLatin1String("Replaces"));
-            QStringList possibleNames(replacesAsString.split(QLatin1String(","), QString::SkipEmptyParts));
+            QString replacesAsString = currentComponent->value(scReplaces);
+            QStringList possibleNames(replacesAsString.split(QLatin1Char(','), QString::SkipEmptyParts));
             possibleNames.append(currentComponent->name());
 
             // undo all operations done by this component upon installation
@@ -410,7 +410,7 @@ quint64 Installer::requiredDiskSpace() const
 
     const QList<Component*> availableComponents = components(true, runMode());
     foreach (QInstaller::Component *component, availableComponents)
-        result += size(component, QLatin1String("UncompressedSize"));
+        result += size(component, scUncompressedSize);
 
     return result;
 }
@@ -421,7 +421,7 @@ quint64 Installer::requiredTemporaryDiskSpace() const
 
     const QList<Component*> availableComponents = components(true, runMode());
     foreach (QInstaller::Component *component, availableComponents)
-        result += size(component, QLatin1String("CompressedSize"));
+        result += size(component, scCompressedSize);
 
     return result;
 }
@@ -721,10 +721,8 @@ bool Installer::addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *metaInfoJob, 
             }
 
             const QDomNode checksum = doc.documentElement().firstChildElement(QLatin1String("Checksum"));
-            if (!checksum.isNull()) {
-                const QDomElement checksumElem = checksum.toElement();
-                setTestChecksum(checksumElem.text().toLower() == QLatin1String("true"));
-            }
+            if (!checksum.isNull())
+                setTestChecksum(checksum.toElement().text().toLower() == scTrue);
         }
         d->m_app->addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
     }
@@ -891,12 +889,12 @@ bool Installer::fetchUpdaterPackages()
             // Keep a reference so we can resolve dependencies during update.
             d->m_updaterComponentsDeps.append(component.take());
 
-            const QString isNew = update->data(QLatin1String("NewComponent")).toString();
-            if (isNew.toLower() != QLatin1String("true"))
+            const QString isNew = update->data(scNewComponent).toString();
+            if (isNew.toLower() != scTrue)
                 continue;
 
             const QString &name = d->m_updaterComponentsDeps.last()->name();
-            const QString replaces = data.package->data(QLatin1String("Replaces")).toString();
+            const QString replaces = data.package->data(scReplaces).toString();
             bool isValidUpdate = installedPackages.contains(name);
             if (!isValidUpdate && !replaces.isEmpty()) {
                 const QStringList possibleNames = replaces.split(QLatin1String(","), QString::SkipEmptyParts);
@@ -909,14 +907,14 @@ bool Installer::fetchUpdaterPackages()
 
 
             const KDUpdater::PackageInfo &info = installedPackages.value(name);
-            const QString updateVersion = update->data(QLatin1String("Version")).toString();
+            const QString updateVersion = update->data(scVersion).toString();
             if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)
                 continue;
 
             // It is quite possible that we may have already installed the update. Lets check the last
             // update date of the package and the release date of the update. This way we can compare and
             // figure out if the update has been installed or not.
-            const QDate updateDate = update->data(QLatin1String("ReleaseDate")).toDate();
+            const QDate updateDate = update->data(scReleaseDate).toDate();
             if (info.lastUpdateDate > updateDate)
                 continue;
 
@@ -932,8 +930,7 @@ bool Installer::fetchUpdaterPackages()
     QList<QInstaller::Component*> updaterComponents = components.values();
     if (importantUpdates) {
         for (int i = updaterComponents.count() - 1; i >= 0; --i) {
-            const QString important = updaterComponents.at(i)->value(QLatin1String("Important"));
-            if (important.toLower() == QLatin1String("false") || important.isEmpty())
+            if (updaterComponents.at(i)->value(scImportant, scFalse).toLower() == scFalse)
                 delete updaterComponents.takeAt(i);
         }
     }
@@ -1158,8 +1155,8 @@ QList<Component*> Installer::dependees(const Component *component) const
 
     QList<Component*> result;
     foreach (Component *comp, allComponents) {
-        const QStringList dependencies = comp->value(QString::fromLatin1("Dependencies"))
-            .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
+        const QStringList dependencies = comp->value(scDependencies).split(QChar::fromLatin1(','),
+            QString::SkipEmptyParts);
 
         const QLatin1Char dash('-');
         foreach (const QString &dependency, dependencies) {
@@ -1183,8 +1180,8 @@ QList<Component*> Installer::missingDependencies(const Component *component) con
     if (runMode() == UpdaterMode)
         allComponents += d->m_updaterComponentsDeps;
 
-    const QStringList dependencies = component->value(QString::fromLatin1("Dependencies"))
-        .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
+    const QStringList dependencies = component->value(scDependencies).split(QChar::fromLatin1(','),
+        QString::SkipEmptyParts);
 
     QList<Component*> result;
     const QLatin1Char dash('-');
@@ -1197,7 +1194,7 @@ QList<Component*> Installer::missingDependencies(const Component *component) con
             if (comp->name() == name) {
                 if (hasVersionString) {
                     const QString version = dependency.section(dash, 1);
-                    if (Installer::versionMatches(comp->value(QLatin1String("InstalledVersion")), version))
+                    if (Installer::versionMatches(comp->value(scInstalledVersion), version))
                         installed = true;
                 } else if (comp->isInstalled()) {
                     installed = true;
@@ -1220,8 +1217,8 @@ QList<Component*> Installer::missingDependencies(const Component *component) con
 QList<Component*> Installer::dependencies(const Component *component, QStringList &missingComponents) const
 {
     QList<Component*> result;
-    const QStringList dependencies = component->value(QString::fromLatin1("Dependencies"))
-        .split(QChar::fromLatin1(','), QString::SkipEmptyParts);
+    const QStringList dependencies = component->value(scDependencies).split(QChar::fromLatin1(','),
+        QString::SkipEmptyParts);
 
     foreach (const QString &dependency, dependencies) {
         Component *component = componentByName(dependency);
@@ -1765,7 +1762,7 @@ Installer::Status Installer::handleComponentsFileSetOrParseError(const QString &
 bool Installer::updateComponentData(struct Data &data, Component *component)
 {
     try {
-        const QString name = data.package->data(QLatin1String("Name")).toString();
+        const QString name = data.package->data(scName).toString();
         if (data.components->contains(name)) {
             qCritical("Could not register component! Component with identifier %s already registered.",
                 qPrintable(name));
@@ -1773,15 +1770,14 @@ bool Installer::updateComponentData(struct Data &data, Component *component)
         }
 
         if (!data.installedPackages->contains(name)) {
-            const QString replaces = data.package->data(QLatin1String("Replaces")).toString();
+            const QString replaces = data.package->data(scReplaces).toString();
             if (!replaces.isEmpty()) {
-                const QStringList components = replaces.split(QLatin1String(","), QString::SkipEmptyParts);
+                const QStringList components = replaces.split(QLatin1Char(','), QString::SkipEmptyParts);
                 foreach (const QString &componentName, components) {
                     if (data.installedPackages->contains(componentName)) {
                         if (runMode() == AllMode) {
                             component->setInstalled();
-                            component->setValue(QLatin1String("InstalledVersion"),
-                                data.package->data(QLatin1String("Version")).toString());
+                            component->setValue(scInstalledVersion, data.package->data(scVersion).toString());
                         }
                         data.replacementToExchangeables.insert(component, components);
                         break;  // break as soon as we know we replace at least one other component
@@ -1794,7 +1790,7 @@ bool Installer::updateComponentData(struct Data &data, Component *component)
             }
         } else {
             component->setInstalled();
-            component->setValue(QLatin1String("InstalledVersion"), data.installedPackages->value(name).version);
+            component->setValue(scInstalledVersion, data.installedPackages->value(name).version);
         }
 
         const QString &localPath = component->localTempPath();
@@ -1822,7 +1818,7 @@ void Installer::storeReplacedComponents(QMap<QString, Component*> &components,
             Component *component = components.take(componentName);
             if (!component && !d->componentsToReplace().contains(componentName)) {
                 component = new Component(this);
-                component->setValue(QLatin1String("Name"), componentName);
+                component->setValue(scName, componentName);
             }
             if (component)
                 d->componentsToReplace().insert(componentName, qMakePair(it.key(), component));

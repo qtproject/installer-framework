@@ -28,6 +28,8 @@
 
 #include <installer_global.h>
 
+#include <QtCore/QString>
+
 QT_BEGIN_NAMESPACE
 class QScriptContext;
 class QScriptEngine;
@@ -61,6 +63,34 @@ QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *e
 QScriptValue qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *engine);
 QScriptValue qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine *engine);
 QScriptValue qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine);
+
+static const QLatin1String scName("Name");
+static const QLatin1String scDisplayName("DisplayName");
+static const QLatin1String scDescription("Description");
+static const QLatin1String scDefault("Default");
+static const QLatin1String scCompressedSize("CompressedSize");
+static const QLatin1String scUncompressedSize("UncompressedSize");
+static const QLatin1String scVersion("Version");
+static const QLatin1String scDependencies("Dependencies");
+static const QLatin1String scReleaseDate("ReleaseDate");
+static const QLatin1String scReplaces("Replaces");
+static const QLatin1String scVirtual("Virtual");
+static const QLatin1String scSortingPriority("SortingPriority");
+static const QLatin1String scInstallPriority("InstallPriority");
+static const QLatin1String scImportant("Important");
+static const QLatin1String scForcedInstallation("ForcedInstallation");
+static const QLatin1String scUpdateText("UpdateText");
+static const QLatin1String scRequiresAdminRights("RequiresAdminRights");
+static const QLatin1String scNewComponent("NewComponent");
+static const QLatin1String scScript("Script");
+static const QLatin1String scInstalledVersion("InstalledVersion");
+
+static const QLatin1String scTrue("true");
+static const QLatin1String scFalse("false");
+
+static const QLatin1String scInstalled("Installed");
+static const QLatin1String scUninstalled("Uninstalled");
+static const QLatin1String scCurrentState("CurrentState");
 
 }
 

@@ -108,7 +108,7 @@ bool RegisterQtInCreatorOperation::performOperation()
     Component* creatorComponent = installer->componentByName(
         QLatin1String("com.nokia.ndk.tools.qtcreator.application"));
     if (creatorComponent) {
-        QString creatorVersion = creatorComponent->value(QLatin1String("InstalledVersion"));
+        QString creatorVersion = creatorComponent->value(scInstalledVersion);
         isCreator22 = Installer::versionMatches(creatorVersion, QLatin1String("2.2"));
     }
 

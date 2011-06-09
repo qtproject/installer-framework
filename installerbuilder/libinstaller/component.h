@@ -74,8 +74,7 @@ public:
     {
         bool operator() (const Component *comp) const
         {
-            return comp->value(QLatin1String("Virtual"), QLatin1String("false"))
-                .toLower() == QLatin1String("true");
+            return comp->value(scVirtual, scFalse).toLower() == scTrue;
         }
     };
 
@@ -83,8 +82,7 @@ public:
     {
         bool operator() (const Component *lhs, const Component *rhs)
         {
-            const QLatin1String priority("InstallPriority");
-            return lhs->value(priority).toInt() < rhs->value(priority).toInt();
+            return lhs->value(scInstallPriority).toInt() < rhs->value(scInstallPriority).toInt();
         }
     };
 
@@ -92,8 +90,7 @@ public:
     {
         bool operator() (const Component *lhs, const Component *rhs) const
         {
-            const QLatin1String priority("SortingPriority");
-            return lhs->value(priority).toInt() < rhs->value(priority).toInt();
+            return lhs->value(scSortingPriority).toInt() < rhs->value(scSortingPriority).toInt();
         }
     };
 

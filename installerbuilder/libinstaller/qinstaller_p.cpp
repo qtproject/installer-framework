@@ -625,10 +625,8 @@ void InstallerPrivate::registerPathesForUninstallation(
         const QFileInfo fi(path);
         // create a copy operation with the file as target -> it will get deleted on undo
         KDUpdater::UpdateOperation *op = createPathOperation(fi, componentName);
-        if (fi.isDir()) {
-            op->setValue(QLatin1String("forceremoval"), wipe ? QLatin1String("true")
-                : QLatin1String("false"));
-        }
+        if (fi.isDir())
+            op->setValue(QLatin1String("forceremoval"), wipe ? scTrue : scFalse);
         addPerformed(takeOwnedOperation(op));
 
         // get recursive afterwards
@@ -1007,7 +1005,7 @@ QString InstallerPrivate::registerPath() const
         throw Error(tr("ProductName should be set"));
 
     QString path = QLatin1String("HKEY_CURRENT_USER");
-    if (m_vars.value(QLatin1String("AllUsers")) == QLatin1String("true"))
+    if (m_vars.value(QLatin1String("AllUsers")) == scTrue)
         path = QLatin1String("HKEY_LOCAL_MACHINE");
 
     return path + QLatin1String("\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\")
@@ -1063,10 +1061,8 @@ void InstallerPrivate::runInstaller()
         if (!adminRightsGained) {
             QList<Component*> componentsToInstall = q->componentsToInstall(q->runMode());
             foreach (Component *component, componentsToInstall) {
-                if (component->value(QLatin1String("RequiresAdminRights"),
-                    QLatin1String("false")) == QLatin1String("false")) {
-                        continue;
-                }
+                if (component->value(scRequiresAdminRights, scFalse) == scFalse)
+                    continue;
 
                 q->gainAdminRights();
                 q->dropAdminRights();
@@ -1160,10 +1156,8 @@ void InstallerPrivate::runPackageUpdater()
         bool updateAdminRights = false;
         if (!adminRightsGained) {
             foreach (Component *component, componentsToInstall) {
-                if (component->value(QLatin1String("RequiresAdminRights"),
-                    QLatin1String("false")) == QLatin1String("false")) {
-                        continue;
-                }
+                if (component->value(scRequiresAdminRights, scFalse) == scFalse)
+                    continue;
 
                 updateAdminRights = true;
                 break;
@@ -1432,7 +1426,7 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
         if (!ok && !ignoreError)
             throw Error(operation->errorString());
 
-        if (component->value(QLatin1String("Important"), QLatin1String("false")) == QLatin1String("true"))
+        if (component->value(scImportant, scFalse) == scTrue)
             m_forceRestart = true;
     }
 
@@ -1449,10 +1443,9 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
 
     // now mark the component as installed
     KDUpdater::PackagesInfo *const packages = m_app->packagesInfo();
-    packages->installPackage(component->name(), component->value(QLatin1String("Version")),
-        component->value(QLatin1String("DisplayName")), component->value(QLatin1String("Description")),
-        component->dependencies(), component->forcedInstallation(), component->isVirtual(),
-        component->value(QLatin1String("UncompressedSize")).toULongLong());
+    packages->installPackage(component->name(), component->value(scVersion), component->value(scDisplayName),
+        component->value(scDescription), component->dependencies(), component->forcedInstallation(),
+        component->isVirtual(), component->value(scUncompressedSize).toULongLong());
     packages->writeToDisk();
 
     component->setInstalled();
@@ -1529,7 +1522,7 @@ void InstallerPrivate::registerUninstaller()
 {
 #ifdef Q_OS_WIN
     QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);
-    settings.setValue(QLatin1String("DisplayName"), m_vars.value(QLatin1String("ProductName")));
+    settings.setValue(scDisplayName, m_vars.value(QLatin1String("ProductName")));
     settings.setValue(QLatin1String("DisplayVersion"), m_vars.value(QLatin1String("ProductVersion")));
     const QString uninstaller = QDir::toNativeSeparators(uninstallerName());
     settings.setValue(QLatin1String("DisplayIcon"), uninstaller);

@@ -34,6 +34,7 @@
 
 #include "common/errors.h"
 #include "common/repository.h"
+#include "qinstallerglobal.h"
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QStringList>
@@ -175,8 +176,8 @@ InstallerSettings InstallerSettings::fromFileAndPrefix(const QString &path, cons
     s.d->logoSmall = readChild(root, QLatin1String("LogoSmall"));
     s.d->title = readChild(root, QLatin1String("Title"));
     s.d->maintenanceTitle = readChild(root, QLatin1String("MaintenanceTitle"));
-    s.d->name = readChild(root, QLatin1String("Name"));
-    s.d->version = readChild(root, QLatin1String("Version"));
+    s.d->name = readChild(root, scName);
+    s.d->version = readChild(root, scVersion);
     s.d->publisher = readChild(root, QLatin1String("Publisher"));
     s.d->url = readChild(root, QLatin1String("ProductUrl"));
     s.d->watermark = readChild(root, QLatin1String("Watermark"));
@@ -187,7 +188,7 @@ InstallerSettings InstallerSettings::fromFileAndPrefix(const QString &path, cons
     s.d->targetDir = readChild(root, QLatin1String("TargetDir"));
     s.d->adminTargetDir = readChild(root, QLatin1String("AdminTargetDir"));
     s.d->icon = readChild(root, QLatin1String("Icon"));
-    s.d->removeTargetDir = readChild(root, QLatin1String("RemoveTargetDir"), QLatin1String("true"));
+    s.d->removeTargetDir = readChild(root, QLatin1String("RemoveTargetDir"), scTrue);
     s.d->uninstallerName = readChild(root, QLatin1String("UninstallerName"), QLatin1String("uninstall"));
     s.d->uninstallerIniFile = readChild(root, QLatin1String("UninstallerIniFile"), s.d->uninstallerName
         + QLatin1String(".ini"));

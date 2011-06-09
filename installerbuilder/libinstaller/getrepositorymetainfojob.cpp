@@ -215,9 +215,9 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         if (el.tagName() == QLatin1String("PackageUpdate")) {
             const QDomNodeList c2 = el.childNodes();
             for (int j = 0; j < c2.count(); ++j)
-                if (c2.at(j).toElement().tagName() == QLatin1String("Name"))
+                if (c2.at(j).toElement().tagName() == scName)
                     m_packageNames << c2.at(j).toElement().text();
-                else if (c2.at(j).toElement().tagName() == QLatin1String("Version"))
+                else if (c2.at(j).toElement().tagName() == scVersion)
                     m_packageVersions << c2.at(j).toElement().text();
                 else if (c2.at(j).toElement().tagName() == QLatin1String("SHA1"))
                     m_packageHash << c2.at(j).toElement().text();
