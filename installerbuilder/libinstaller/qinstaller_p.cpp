@@ -188,10 +188,8 @@ InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMa
 
 InstallerPrivate::~InstallerPrivate()
 {
-    qDeleteAll(m_rootComponents);
-    qDeleteAll(m_updaterComponents);
-    qDeleteAll(m_updaterComponentsDeps);
-    qDeleteAll(m_componentsToReplace.values());
+    clearAllComponentLists();
+    clearUpdaterComponentLists();
 
     qDeleteAll(m_ownedOperations);
     qDeleteAll(m_performedOperationsOld);
@@ -277,6 +275,36 @@ QString InstallerPrivate::localComponentsXmlPath() const
             + QLatin1String("/../../../") + configurationFileName())).absoluteFilePath());
     }
     return componentsXmlPath();
+}
+
+void InstallerPrivate::clearAllComponentLists()
+{
+    qDeleteAll(m_rootComponents);
+    m_rootComponents.clear();
+
+    const QList<QPair<Component*, Component*> > list = m_componentsToReplaceAllMode.values();
+    for (int i = 0; i < list.count(); ++i)
+        delete list.at(i).second;
+    m_componentsToReplaceAllMode.clear();
+}
+
+void InstallerPrivate::clearUpdaterComponentLists()
+{
+    qDeleteAll(m_updaterComponents);
+    m_updaterComponents.clear();
+
+    qDeleteAll(m_updaterComponentsDeps);
+    m_updaterComponentsDeps.clear();
+
+    const QList<QPair<Component*, Component*> > list = m_componentsToReplaceUpdaterMode.values();
+    for (int i = 0; i < list.count(); ++i)
+        delete list.at(i).second;
+    m_componentsToReplaceUpdaterMode.clear();
+}
+
+QHash<QString, QPair<Component*, Component*> > &InstallerPrivate::componentsToReplace()
+{
+    return q->runMode() == AllMode ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
 }
 
 void InstallerPrivate::initialize()
@@ -1160,7 +1188,18 @@ void InstallerPrivate::runPackageUpdater()
                     continue;
                 }
             }
+
+            // In package manager mode a component (one to replace) might be scheduled for uninstall, but we
+            // don't know if it should be uninstalled. To figure this out we need to check the actual
+            // replacement if it is still checked. If so, skip the undo operation. This avoids an update if we
+            // actually do a completely different component install/ uninstall.
+            if (isPackageManager() && m_componentsToReplaceAllMode.contains(name)) {
+                if (m_componentsToReplaceAllMode.value(name).first->isSelected())
+                    continue;
+            }
+
             // Filter out the create target dir undo operation, it's only needed for full uninstall.
+            // TODO: Figure out a compat way for old create target dir undo operation (missing name and tag).
             if (operation->value(QLatin1String("uninstall-only")).toBool()) {
                 nonRevertedOperations.append(operation);
                 continue;
@@ -1561,7 +1600,7 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
             if (!componentName.isEmpty()) {
                 Component *component = q->componentByName(componentName);
                 if (!component)
-                    component = m_componentsToReplace.value(componentName, 0);
+                    component = componentsToReplace().value(componentName).second;
                 if (component) {
                     component->setUninstalled();
                     packages->removePackage(component->name());

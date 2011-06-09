@@ -274,15 +274,16 @@ private:
 
     struct Data {
         KDUpdater::Update *package;
-        QStringList componentsToReplace;
         QMap<QString, Component*> *components;
         GetRepositoriesMetaInfoJob *metaInfoJob;
+        QHash<Component*, QStringList> replacementToExchangeables;
         QHash<QString, KDUpdater::PackageInfo> *installedPackages;
     };
     bool updateComponentData(struct Data &data, QInstaller::Component *component);
     static Component *subComponentByName(const QInstaller::Installer *installer, const QString &name,
         const QString &version = QString(), Component *check = 0);
-    void storeReplacedComponents(QMap<QString, Component*> &components, const QStringList &replaceables);
+    void storeReplacedComponents(QMap<QString, Component*> &components,
+        const QHash<Component*, QStringList> &replacementToExchangeables);
 
 private:
     InstallerPrivate* const d;

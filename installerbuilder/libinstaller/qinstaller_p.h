@@ -101,6 +101,10 @@ public:
 
     Installer *installer() const { return q; }
 
+    void clearAllComponentLists();
+    void clearUpdaterComponentLists();
+    QHash<QString, QPair<Component*, Component*> > &componentsToReplace();
+
     void runInstaller();
     bool isInstaller() const;
 
@@ -177,7 +181,6 @@ public:
     QList<Component*> m_rootComponents;
     QList<Component*> m_updaterComponents;
     QList<Component*> m_updaterComponentsDeps;
-    QHash<QString, Component*> m_componentsToReplace;
 
     QList<KDUpdater::UpdateOperation*> m_ownedOperations;
     QList<KDUpdater::UpdateOperation*> m_performedOperationsOld;
@@ -199,6 +202,10 @@ private:
 private:
     Installer *q;
     qint64 m_magicBinaryMarker;
+
+    // < name (component to replace), < replacement component, component to replace > >
+    QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceAllMode;
+    QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceUpdaterMode;
 };
 
 }   // QInstaller

@@ -539,7 +539,7 @@ void Installer::rollBackInstallation()
             if (!componentName.isEmpty()) {
                 Component *component = componentByName(componentName);
                 if (!component)
-                    component = d->m_componentsToReplace.value(componentName, 0);
+                    component = d->componentsToReplace().value(componentName).second;
                 if (component) {
                     component->setUninstalled();
                     packages->removePackage(component->name());
@@ -755,9 +755,7 @@ bool Installer::fetchAllPackages()
 
     emit startAllComponentsReset();
 
-    qDeleteAll(d->m_rootComponents);
-    d->m_rootComponents.clear();
-
+    d->clearAllComponentLists();
     QMap<QString, QInstaller::Component*> components;
 
     Data data;
@@ -777,7 +775,7 @@ bool Installer::fetchAllPackages()
     }
 
     // store all components that got a replacement
-    storeReplacedComponents(components, data.componentsToReplace);
+    storeReplacedComponents(components, data.replacementToExchangeables);
 
     // now append all components to their respective parents
     QMap<QString, QInstaller::Component*>::const_iterator it;
@@ -857,12 +855,7 @@ bool Installer::fetchUpdaterPackages()
 
     emit startUpdaterComponentsReset();
 
-    qDeleteAll(d->m_updaterComponents);
-    d->m_updaterComponents.clear();
-
-    qDeleteAll(d->m_updaterComponentsDeps);
-    d->m_updaterComponentsDeps.clear();
-
+    d->clearUpdaterComponentLists();
     QMap<QString, QInstaller::Component*> components;
 
     Data data;
@@ -915,7 +908,7 @@ bool Installer::fetchUpdaterPackages()
     }
 
     // store all components that got a replacement
-    storeReplacedComponents(components, data.componentsToReplace);
+    storeReplacedComponents(components, data.replacementToExchangeables);
 
     // remove all unimportant components
     QList<QInstaller::Component*> updaterComponents = components.values();
@@ -1763,14 +1756,16 @@ bool Installer::updateComponentData(struct Data &data, Component *component)
 
         if (!data.installedPackages->contains(name)) {
             const QString replaces = data.package->data(QLatin1String("Replaces")).toString();
-            if (!replaces.isEmpty() && runMode() == AllMode) {
+            if (!replaces.isEmpty()) {
                 const QStringList components = replaces.split(QLatin1String(","), QString::SkipEmptyParts);
                 foreach (const QString &componentName, components) {
                     if (data.installedPackages->contains(componentName)) {
-                        component->setInstalled();
-                        component->setValue(QLatin1String("InstalledVersion"),
-                            data.package->data(QLatin1String("Version")).toString());
-                        data.componentsToReplace.append(components);
+                        if (runMode() == AllMode) {
+                            component->setInstalled();
+                            component->setValue(QLatin1String("InstalledVersion"),
+                                data.package->data(QLatin1String("Version")).toString());
+                        }
+                        data.replacementToExchangeables.insert(component, components);
                         break;  // break as soon as we know we replace at least one other component
                     } else {
                         component->setUninstalled();
@@ -1799,16 +1794,20 @@ bool Installer::updateComponentData(struct Data &data, Component *component)
     return true;
 }
 
-void Installer::storeReplacedComponents(QMap<QString, Component*> &components, const QStringList &replaceables)
+void Installer::storeReplacedComponents(QMap<QString, Component*> &components,
+    const QHash<Component*, QStringList> &replacementToExchangeables)
 {
+    QHash<Component*, QStringList>::const_iterator it;
     // remeber all components that got a replacement, requierd for uninstall
-    foreach (const QString &componentName, replaceables) {
-        Component *component = components.take(componentName);
-        if (!component && !d->m_componentsToReplace.contains(componentName)) {
-            component = new Component(this);
-            component->setValue(QLatin1String("Name"), componentName);
+    for (it = replacementToExchangeables.constBegin(); it != replacementToExchangeables.constEnd(); ++it) {
+        foreach (const QString &componentName, it.value()) {
+            Component *component = components.take(componentName);
+            if (!component && !d->componentsToReplace().contains(componentName)) {
+                component = new Component(this);
+                component->setValue(QLatin1String("Name"), componentName);
+            }
+            if (component)
+                d->componentsToReplace().insert(componentName, qMakePair(it.key(), component));
         }
-        if (component)
-            d->m_componentsToReplace.insert(componentName, component);
     }
 }
