@@ -41,7 +41,7 @@ HEADERS += $$PWD/qinstaller.h \
     ../common/utils.h \
     ../common/errors.h \
     kdmmappedfileiodevice.h \
-    qinstallercomponent.h \
+    component.h \
     componentmodel.h \
     qinstallerglobal.h \
     qtpatch.h \
@@ -89,7 +89,7 @@ HEADERS += $$PWD/qinstaller.h \
     messageboxhandler.h \
     getrepositoriesmetainfojob.h \
     licenseoperation.h \
-    qinstallercomponent_p.h \
+    component_p.h \
     qtcreator_constants.h \
     qtcreatorpersistentsettings.h \
     registerdefaultdebuggeroperation.h \
@@ -109,7 +109,7 @@ SOURCES += $$PWD/qinstaller.cpp \
     ../common/fileutils.cpp \
     ../common/utils.cpp \
     kdmmappedfileiodevice.cpp \
-    qinstallercomponent.cpp \
+    component.cpp \
     componentmodel.cpp \
     qtpatch.cpp \
     persistentsettings.cpp \
@@ -153,7 +153,7 @@ SOURCES += $$PWD/qinstaller.cpp \
     messageboxhandler.cpp \
     getrepositoriesmetainfojob.cpp \
     licenseoperation.cpp \
-    qinstallercomponent_p.cpp \
+    component_p.cpp \
     qtcreatorpersistentsettings.cpp \
     registerdefaultdebuggeroperation.cpp \
     updatecreatorsettingsfrom21to22operation.cpp \

@@ -26,8 +26,8 @@
 #ifndef QINSTALLER_COMPONENT_H
 #define QINSTALLER_COMPONENT_H
 
+#include "component_p.h"
 #include "qinstallerglobal.h"
-#include "qinstallercomponent_p.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QMetaType>

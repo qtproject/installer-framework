@@ -32,8 +32,8 @@
 **************************************************************************/
 #include "componentmodel.h"
 
+#include "component.h"
 #include "qinstaller.h"
-#include "qinstallercomponent.h"
 
 
 namespace QInstaller {

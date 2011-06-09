@@ -34,9 +34,9 @@
 
 #include "common/binaryformat.h"
 #include "common/utils.h"
+#include "component.h"
 #include "init.h"
 #include "qinstaller.h"
-#include "qinstallercomponent.h"
 
 #include <QtXml/QDomDocument>
 

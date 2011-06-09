@@ -31,13 +31,13 @@
 **
 **************************************************************************/
 #include "registerqtoperation.h"
+
+#include "component.h"
 #include "qtcreator_constants.h"
 #include "qinstaller.h"
 #include "registertoolchainoperation.h"
 #include "registerqtv2operation.h"
 #include "qtcreatorpersistentsettings.h"
-#include "qinstallercomponent.h"
-
 
 #include <QString>
 #include <QFileInfo>
@@ -46,6 +46,7 @@
 #include <QDebug>
 
 using namespace QInstaller;
+
 
 RegisterQtInCreatorOperation::RegisterQtInCreatorOperation()
 {

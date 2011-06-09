@@ -34,10 +34,10 @@
 
 #include "common/binaryformatenginehandler.h"
 #include "common/utils.h"
+#include "component.h"
 #include "cryptosignatureverifier.h"
 #include "messageboxhandler.h"
 #include "qinstaller.h"
-#include "qinstallercomponent.h"
 
 #include <QtCore/QFile>
 

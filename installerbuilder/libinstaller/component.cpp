@@ -30,7 +30,7 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include "qinstallercomponent.h"
+#include "component.h"
 
 #include "common/errors.h"
 #include "common/fileutils.h"
@@ -38,7 +38,6 @@
 #include "fsengineclient.h"
 #include "lib7z_facade.h"
 #include "qinstaller.h"
-#include "qinstallercomponent_p.h"
 #include "qinstallerglobal.h"
 #include "messageboxhandler.h"
 

@@ -32,10 +32,10 @@
 **************************************************************************/
 #include "qinstallergui.h"
 
+#include "component.h"
 #include "componentmodel.h"
 #include "qinstaller.h"
 #include "qinstallerglobal.h"
-#include "qinstallercomponent.h"
 #include "progresscoordinator.h"
 #include "performinstallationform.h"
 

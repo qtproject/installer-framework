@@ -37,11 +37,11 @@
 #include "common/errors.h"
 #include "common/fileutils.h"
 #include "common/utils.h"
+#include "component.h"
 #include "fsengineclient.h"
 #include "messageboxhandler.h"
 #include "progresscoordinator.h"
 #include "qinstaller.h"
-#include "qinstallercomponent.h"
 #include "qprocesswrapper.h"
 #include "qsettingswrapper.h"
 

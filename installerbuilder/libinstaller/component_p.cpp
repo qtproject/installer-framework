@@ -30,14 +30,15 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include "qinstallercomponent_p.h"
+#include "component_p.h"
 
+#include "component.h"
 #include "messageboxhandler.h"
 #include "qinstaller.h"
-#include "qinstallercomponent.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopServices>
+
 
 namespace QInstaller {
 
