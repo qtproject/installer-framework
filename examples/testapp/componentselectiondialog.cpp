@@ -33,9 +33,9 @@
 #include "componentselectiondialog.h"
 #include "ui_componentselectiondialog.h"
 
+#include <component.h>
 #include <componentmodel.h>
 #include <qinstaller.h>
-#include <qinstallercomponent.h>
 
 #include <QtGui/QHeaderView>
 #include <QtGui/QPushButton>

@@ -34,8 +34,8 @@
 #include "installerbasecommons.h"
 
 #include <common/utils.h>
+#include <component.h>
 #include <qinstaller.h>
-#include <qinstallercomponent.h>
 
 #include <QtCore/QPointer>
 #include <QtCore/QTimer>

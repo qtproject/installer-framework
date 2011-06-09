@@ -35,8 +35,8 @@
 #include <common/binaryformatenginehandler.h>
 #include <common/binaryformat.h>
 #include <common/errors.h>
+#include <component.h>
 #include <qinstaller.h>
-#include <qinstallercomponent.h>
 #include <updatesettings.h>
 
 #include <QtCore/QDateTime>

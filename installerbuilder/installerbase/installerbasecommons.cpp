@@ -33,9 +33,9 @@
 #include "installerbasecommons.h"
 
 #include <common/installersettings.h>
+#include <component.h>
 #include <messageboxhandler.h>
 #include <qinstaller.h>
-#include <qinstallercomponent.h>
 
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
