@@ -1147,27 +1147,27 @@ void InstallerPrivate::runPackageUpdater()
         QList<KDUpdater::UpdateOperation*> nonRevertedOperations;
 
         // build a list of undo operations based on the checked state of the component
-        foreach (KDUpdater::UpdateOperation *op, m_performedOperationsOld) {
-            const QString &name = op->value(QLatin1String("component")).toString();
-            Component *comp = componentsByName.value(name, 0);
-            if (!comp)
-                comp = q->componentByName(name);
-            if (comp) {
-                componentsByName.insert(name, comp);
+        foreach (KDUpdater::UpdateOperation *operation, m_performedOperationsOld) {
+            const QString &name = operation->value(QLatin1String("component")).toString();
+            Component *component = componentsByName.value(name, 0);
+            if (!component)
+                component = q->componentByName(name);
+            if (component) {
+                componentsByName.insert(name, component);
                 // if we're _not_ removing everything and this component is still selected, -> next
-                if (comp->isSelected()) {
-                    nonRevertedOperations.append(op);
+                if (component->isSelected()) {
+                    nonRevertedOperations.append(operation);
                     continue;
                 }
             }
             // Filter out the create target dir undo operation, it's only needed for full uninstall.
-            if (op->value(QLatin1String("uninstall-only")).toBool()) {
-                nonRevertedOperations.append(op);
+            if (operation->value(QLatin1String("uninstall-only")).toBool()) {
+                nonRevertedOperations.append(operation);
                 continue;
             }
 
-            undoOperations.prepend(op);
-            updateAdminRights |= op->value(QLatin1String("admin")).toBool();
+            undoOperations.prepend(operation);
+            updateAdminRights |= operation->value(QLatin1String("admin")).toBool();
         }
 
         // we did not request admin rights till we found out that a component/ undo needs admin rights
