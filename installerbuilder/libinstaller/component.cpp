@@ -883,7 +883,7 @@ void Component::setAutoCreateOperations(bool autoCreateOperations)
 
 bool Component::isVirtual() const
 {
-    return value(skVirtual, skFalse).toLower() == skTrue;
+    return value(scVirtual, scFalse).toLower() == scTrue;
 }
 
 /*!
@@ -898,7 +898,7 @@ bool Component::isSelected() const
 
 bool Component::forcedInstallation() const
 {
-    return value(skForcedInstallation, skFalse).toLower() == skTrue;
+    return value(scForcedInstallation, scFalse).toLower() == scTrue;
 }
 
 /*!
