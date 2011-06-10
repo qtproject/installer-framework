@@ -109,8 +109,7 @@ void MainWindow::checkForUpdates()
         }
 
         // set the target directory to the actual one
-        m_installer.setValue(QLatin1String("TargetDir"), QFileInfo(updaterapp.packagesInfo()->fileName())
-            .absolutePath());
+        m_installer.setValue(scTargetDir, QFileInfo(updaterapp.packagesInfo()->fileName()).absolutePath());
 
         // this will automatically mark components as to get installed
         ComponentSelectionDialog componentSelection(&m_installer, this);

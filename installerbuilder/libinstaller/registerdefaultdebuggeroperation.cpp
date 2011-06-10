@@ -86,7 +86,7 @@ bool RegisterDefaultDebuggerOperation::performOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    const QString &rootInstallPath = installer->value(scTargetDir);
     toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
 
     int argCounter = 0;
@@ -126,7 +126,7 @@ bool RegisterDefaultDebuggerOperation::undoOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    const QString &rootInstallPath = installer->value(scTargetDir);
     toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
 
     int argCounter = 0;

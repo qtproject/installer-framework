@@ -315,7 +315,7 @@ bool QtPatchOperation::performOperation()
         return false;
     }
     Q_CHECK_PTR(installer);
-    successMacRelocating = relocator.apply(newQtPathStr, installer->value(QLatin1String("TargetDir")));
+    successMacRelocating = relocator.apply(newQtPathStr, installer->value(scTargetDir));
     if (!successMacRelocating)
     {
         setError(UserDefinedError);

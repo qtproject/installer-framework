@@ -185,7 +185,7 @@ InstallerSettings InstallerSettings::fromFileAndPrefix(const QString &path, cons
     s.d->runProgram = readChild(root, QLatin1String("RunProgram"));
     s.d->runProgramDescription = readChild(root, QLatin1String("RunProgramDescription"));
     s.d->startMenuDir = readChild(root, QLatin1String("StartMenuDir"));
-    s.d->targetDir = readChild(root, QLatin1String("TargetDir"));
+    s.d->targetDir = readChild(root, scTargetDir);
     s.d->adminTargetDir = readChild(root, QLatin1String("AdminTargetDir"));
     s.d->icon = readChild(root, QLatin1String("Icon"));
     s.d->removeTargetDir = readChild(root, QLatin1String("RemoveTargetDir"), scTrue);

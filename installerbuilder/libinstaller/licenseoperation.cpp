@@ -70,7 +70,7 @@ bool LicenseOperation::performOperation()
         return false;
     }
 
-    QString targetDir = QString::fromLatin1("%1/%2").arg(installer->value(QLatin1String("TargetDir")),
+    QString targetDir = QString::fromLatin1("%1/%2").arg(installer->value(scTargetDir),
         QLatin1String("Licenses"));
 
     QDir dir;

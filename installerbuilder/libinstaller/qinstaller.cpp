@@ -595,7 +595,7 @@ Installer::Installer(qint64 magicmaker,
 Installer::~Installer()
 {
     if (!isUninstaller() && !(isInstaller() && status() == Installer::Canceled)) {
-        QDir targetDir(value(QLatin1String("TargetDir")));
+        QDir targetDir(value(scTargetDir));
         QString logFileName = targetDir.absoluteFilePath(value(QLatin1String("LogFileName"),
             QLatin1String("InstallationLog.txt")));
         QInstaller::VerboseWriter::instance()->setOutputStream(logFileName);
@@ -1440,7 +1440,7 @@ QString Installer::value(const QString &key, const QString &defaultValue) const
             return registry.value(regKey).toString();
     }
 #else
-    if (key == QLatin1String("TargetDir")) {
+    if (key == scTargetDir) {
         const QString dir = d->m_vars.value(key, defaultValue);
         if (dir.startsWith(QLatin1String("~/")))
             return QDir::home().absoluteFilePath(dir.mid(2));

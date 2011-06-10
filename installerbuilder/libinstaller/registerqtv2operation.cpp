@@ -73,7 +73,7 @@ bool RegisterQtInCreatorV2Operation::performOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    const QString &rootInstallPath = installer->value(scTargetDir);
     if (rootInstallPath.isEmpty() || !QDir(rootInstallPath).exists()) {
         setError(UserDefinedError);
         setErrorString(tr("The given TargetDir %1 is not a valid/existing dir.").arg(rootInstallPath));
@@ -149,7 +149,7 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    const QString &rootInstallPath = installer->value(scTargetDir);
 
     int argCounter = 0;
     const QString &versionName = args.value(argCounter++);

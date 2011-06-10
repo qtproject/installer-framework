@@ -1118,7 +1118,7 @@ void TargetDirectoryPage::setTargetDir(const QString &dirName)
 
 void TargetDirectoryPage::initializePage()
 {
-    QString targetDir = installer()->value(QLatin1String("TargetDir"));
+    QString targetDir = installer()->value(scTargetDir);
     if (targetDir.isEmpty()) {
         targetDir = QDir::homePath() + QDir::separator();
         // prevent spaces in the default target directory
@@ -1174,7 +1174,7 @@ void TargetDirectoryPage::entering()
 
 void TargetDirectoryPage::leaving()
 {
-    installer()->setValue(QLatin1String("TargetDir"), targetDir());
+    installer()->setValue(scTargetDir, targetDir());
 }
 
 void TargetDirectoryPage::targetDirSelected()
@@ -1318,7 +1318,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(Installer* installer)
 void ReadyForInstallationPage::entering()
 {
     setCommitPage(true);
-    const QString target = installer()->value(QLatin1String("TargetDir"));
+    const QString target = installer()->value(scTargetDir);
 
     if (installer()->isUninstaller()) {
         setTitle(tr("Ready to Uninstall"));

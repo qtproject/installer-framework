@@ -79,7 +79,7 @@ bool RegisterToolChainOperation::performOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    const QString &rootInstallPath = installer->value(scTargetDir);
     toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
 
     QtCreatorToolChain toolChain;
@@ -134,7 +134,7 @@ bool RegisterToolChainOperation::undoOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = installer->value(QLatin1String("TargetDir"));
+    const QString &rootInstallPath = installer->value(scTargetDir);
     toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
 
     QtCreatorToolChain toolChain;

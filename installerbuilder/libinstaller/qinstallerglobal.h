@@ -92,6 +92,8 @@ static const QLatin1String scInstalled("Installed");
 static const QLatin1String scUninstalled("Uninstalled");
 static const QLatin1String scCurrentState("CurrentState");
 
+static const QLatin1String scTargetDir("TargetDir");
+
 }
 
 #endif // QINSTALLER_GLOBAL_H

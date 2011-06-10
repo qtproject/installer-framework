@@ -253,7 +253,7 @@ bool InstallerPrivate::performOperationThreaded(KDUpdater::UpdateOperation *op, 
 
 QString InstallerPrivate::targetDir() const
 {
-    return q->value(QLatin1String("TargetDir"));
+    return q->value(scTargetDir);
 }
 
 QString InstallerPrivate::configurationFileName() const
@@ -355,10 +355,10 @@ void InstallerPrivate::initialize()
         m_vars.insert(QLatin1String("RunProgramDescription"), desc);
 #ifdef Q_WS_X11
     if (m_launchedAsRoot)
-        m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_installerSettings.adminTargetDir()));
+        m_vars.insert(scTargetDir, replaceVariables(m_installerSettings.adminTargetDir()));
     else
 #endif
-        m_vars.insert(QLatin1String("TargetDir"), replaceVariables(m_installerSettings.targetDir()));
+        m_vars.insert(scTargetDir, replaceVariables(m_installerSettings.targetDir()));
     m_vars.insert(QLatin1String("RemoveTargetDir"), replaceVariables(m_installerSettings.removeTargetDir()));
 
     QSettingsWrapper creatorSettings(QSettingsWrapper::IniFormat, QSettingsWrapper::UserScope,
