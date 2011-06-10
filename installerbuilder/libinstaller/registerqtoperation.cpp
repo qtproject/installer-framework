@@ -33,17 +33,16 @@
 #include "registerqtoperation.h"
 
 #include "component.h"
-#include "qtcreator_constants.h"
 #include "qinstaller.h"
+#include "qtcreator_constants.h"
+#include "qtcreatorpersistentsettings.h"
 #include "registertoolchainoperation.h"
 #include "registerqtv2operation.h"
-#include "qtcreatorpersistentsettings.h"
 
-#include <QString>
-#include <QFileInfo>
-#include <QDir>
-#include <QSettings>
-#include <QDebug>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QSettings>
+#include <QtCore/QString>
 
 using namespace QInstaller;
 
@@ -65,34 +64,22 @@ bool RegisterQtInCreatorOperation::performOperation()
 {
     const QStringList args = arguments();
 
-    if( args.count() < 3) {
+    if (args.count() < 3) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 3 expected.")
-                        .arg(name()).arg( args.count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 3 expected.").arg(name())
+            .arg(args.count()));
         return false;
     }
 
-    const QString &rootInstallPath = args.at(0); //for example "C:\\Nokia_SDK\\"
-    const QString &versionName = args.at(1);
-    const QString &path = args.at(2);
-    QString mingwPath;
-    QString s60SdkPath;
-    QString gccePath;
-    QString carbidePath;
-    QString msvcPath;
-    QString sbsPath;
-    if (args.count() >= 4)
-        mingwPath = args.at(3);
-    if (args.count() >= 5)
-        s60SdkPath = args.at(4);
-    if (arguments().count() >= 6)
-        gccePath = args.at(5);
-    if (args.count() >= 7)
-        carbidePath = args.at(6);
-    if (args.count() >= 8)
-        msvcPath = args.at(7);
-    if (args.count() >= 9)
-        sbsPath = args.at(8);
+    const QString &rootInstallPath = args.value(0); //for example "C:\\Nokia_SDK\\"
+    const QString &versionName = args.value(1);
+    const QString &path = args.value(2);
+    QString mingwPath = args.value(3);
+    QString s60SdkPath = args.value(4);
+    QString gccePath = args.value(5);
+    QString carbidePath = args.value(6);
+    QString msvcPath = args.value(7);
+    QString sbsPath = args.value(8);
 
 //this is for creator 2.2
     QInstaller::Installer* const installer = qVariantValue<Installer*>(value(QLatin1String(
@@ -108,7 +95,7 @@ bool RegisterQtInCreatorOperation::performOperation()
     Component* creatorComponent = installer->componentByName(
         QLatin1String("com.nokia.ndk.tools.qtcreator.application"));
     if (creatorComponent) {
-        QString creatorVersion = creatorComponent->value(scInstalledVersion);
+        const QString creatorVersion = creatorComponent->value(scInstalledVersion);
         isCreator22 = Installer::versionMatches(creatorVersion, QLatin1String("2.2"));
     }
 
@@ -159,8 +146,8 @@ bool RegisterQtInCreatorOperation::performOperation()
         }
         RegisterQtInCreatorV2Operation registerQtInCreatorV2Operation;
         registerQtInCreatorV2Operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
-        registerQtInCreatorV2Operation.setArguments(QStringList() << versionName << path
-            << s60SdkPath << sbsPath);
+        registerQtInCreatorV2Operation.setArguments(QStringList() << versionName << path << s60SdkPath
+            << sbsPath);
         if (!registerQtInCreatorV2Operation.performOperation()) {
             setError(registerQtInCreatorV2Operation.error());
             setErrorString(registerQtInCreatorV2Operation.errorString());
@@ -170,13 +157,11 @@ bool RegisterQtInCreatorOperation::performOperation()
     }
 //END - this is for creator 2.2
 
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-                        QSettings::IniFormat);
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath), QSettings::IniFormat);
+    const QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")).toString()
+        .split(QLatin1String(";"));
 
     QString newVersions;
-    QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")
-                                                  ).toString().split(QLatin1String(";"));
-
     //remove not existing Qt versions
     if (!oldNewQtVersions.isEmpty()) {
         foreach (const QString &qtVersion, oldNewQtVersions) {
@@ -189,12 +174,12 @@ bool RegisterQtInCreatorOperation::performOperation()
             }
         }
     }
-#if defined ( Q_OS_WIN )
-    QString addedVersion = versionName + QLatin1Char('=') +
-                           QDir(path).absoluteFilePath(QLatin1String("bin/qmake.exe")).replace(QLatin1String("/"), QLatin1String("\\"));
-#elif defined( Q_OS_UNIX )
-    QString addedVersion = versionName + QLatin1Char('=') +
-                           QDir(path).absoluteFilePath(QLatin1String("bin/qmake"));
+#if defined (Q_OS_WIN )
+    QString addedVersion = versionName + QLatin1Char('=') + QDir(path)
+        .absoluteFilePath(QLatin1String("bin/qmake.exe")).replace(QLatin1String("/"), QLatin1String("\\"));
+#elif defined(Q_OS_UNIX )
+    QString addedVersion = versionName + QLatin1Char('=') + QDir(path)
+        .absoluteFilePath(QLatin1String("bin/qmake"));
 #endif
     addedVersion += QLatin1Char('=') + mingwPath.replace(QLatin1String("/"), QLatin1String("\\"));
     addedVersion += QLatin1Char('=') + s60SdkPath.replace(QLatin1String("/"), QLatin1String("\\"));
@@ -211,38 +196,12 @@ bool RegisterQtInCreatorOperation::performOperation()
 //works with creator 2.1 and 2.2
 bool RegisterQtInCreatorOperation::undoOperation()
 {
-    const QStringList args = arguments();
-    const QString &rootInstallPath = args.at(0); //for example "C:\\Nokia_SDK\\"
-    const QString &versionName = args.at(1);
-    Q_UNUSED(versionName)
-    const QString &path = args.at(2);
-    Q_UNUSED(path)
-    QString mingwPath;
-    QString s60SdkPath;
-    QString gccePath;
-    QString carbidePath;
-    QString msvcPath;
-    QString sbsPath;
-    if (args.count() >= 4)
-        mingwPath = args.at(3);
-    if (args.count() >= 5)
-        s60SdkPath = args.at(4);
-    if (arguments().count() >= 6)
-        gccePath = args.at(5);
-    if (args.count() >= 7)
-        carbidePath = args.at(6);
-    if (args.count() >= 8)
-        msvcPath = args.at(7);
-    if (args.count() >= 9)
-        sbsPath = args.at(8);
-
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-                        QSettings::IniFormat);
+    const QString &rootInstallPath = arguments().value(0); //for example "C:\\Nokia_SDK\\"
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath), QSettings::IniFormat);
+    const QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")).toString()
+        .split(QLatin1String(";"));
 
     QString newVersions;
-    QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")
-                                                  ).toString().split(QLatin1String(";"));
-
     //remove not existing Qt versions, the current to remove Qt version has an already removed qmake
     if (!oldNewQtVersions.isEmpty()) {
         foreach (const QString &qtVersion, oldNewQtVersions) {
