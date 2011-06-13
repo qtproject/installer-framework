@@ -673,7 +673,7 @@ void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *cons
     const qint64 dataBlockStart = output->pos();
 
     QVector<Range<qint64> >resourceSegments;
-    foreach (const Range<qint64> segment, layout.metadataResourceSegments) {
+    foreach (const Range<qint64> &segment, layout.metadataResourceSegments) {
         input->seek(segment.start());
         if (isInstaller()) {
             const qint64 compressedSize = appendCompressedData(output, input, segment.length());
@@ -738,11 +738,11 @@ void InstallerPrivate::writeUninstaller(QList<KDUpdater::UpdateOperation*> perfo
         gainedAdminRights = true;
     }
 
-    const QString filePath = QFileInfo(uninstallerName()).path();
-    if (!QDir().exists(filePath)) {
+    const QString targetAppDirPath = QFileInfo(uninstallerName()).path();
+    if (!QDir().exists(targetAppDirPath)) {
         // create the directory containing the uninstaller (like a bundle structor, on Mac...)
         KDUpdater::UpdateOperation* op = createOwnedOperation(QLatin1String("Mkdir"));
-        op->setArguments(QStringList() << filePath);
+        op->setArguments(QStringList() << targetAppDirPath);
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
         performedOperations.append(takeOwnedOperation(op));
@@ -777,87 +777,66 @@ void InstallerPrivate::writeUninstaller(QList<KDUpdater::UpdateOperation*> perfo
 
 #ifdef Q_WS_MAC
     // if it is a bundle, we need some stuff in it...
-    const QString appDirPath = QCoreApplication::applicationDirPath();
-    if (isInstaller() && QFileInfo(appDirPath + QLatin1String("/../..")).isBundle()) {
+    const QString sourceAppDirPath = QCoreApplication::applicationDirPath();
+    if (isInstaller() && QFileInfo(sourceAppDirPath + QLatin1String("/../..")).isBundle()) {
         KDUpdater::UpdateOperation* op = createOwnedOperation(QLatin1String("Copy"));
-        op->setArguments(QStringList() << (appDirPath + QLatin1String("/../PkgInfo"))
-            << (filePath + QLatin1String("/../PkgInfo")));
+        op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../PkgInfo"))
+            << (targetAppDirPath + QLatin1String("/../PkgInfo")));
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
 
+        // copy Info.plist to target directory
         op = createOwnedOperation(QLatin1String("Copy"));
-        op->setArguments(QStringList() << (appDirPath + QLatin1String("/../Info.plist")) << (filePath
-            + QLatin1String("/../Info.plist")));
+        op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../Info.plist"))
+            << (targetAppDirPath + QLatin1String("/../Info.plist")));
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
 
-        verbose() << "Checking for qt_menu.nib" << std::endl;
-        QString sourceDirName = appDirPath + QLatin1String("/../Resources/qt_menu.nib");
-        if (QFileInfo(sourceDirName).exists()) {
-            verbose() << "qt_menu.nib has been found. Isn't it great?" << std::endl;
-            const QString targetDirName = QFileInfo(filePath + QLatin1String("/../Resources/qt_menu.nib"))
-                .absoluteFilePath();
-
-            // IFW has been built with a static Cocoa Qt. The app bundle must contain the qt_menu.nib.
-            // ### use the CopyDirectory operation in 1.1
-            op = createOwnedOperation(QLatin1String("Mkdir"));
-            op->setArguments(QStringList() << targetDirName);
-            if (!op->performOperation())
-                verbose() << "ERROR in Mkdir operation: " << op->errorString() << std::endl;
-
-            QDir sourceDir(sourceDirName);
-            foreach (const QString &filename, sourceDir.entryList(QDir::Files)) {
-                const QString src = sourceDirName + QLatin1String("/") + filename;
-                const QString dst = targetDirName + QLatin1String("/") + filename;
-                op = createOwnedOperation(QLatin1String("Copy"));
-                op->setArguments(QStringList() << src << dst);
-                if (!op->performOperation())
-                    verbose() << "ERROR in Copy operation: copy " << src << " to " << dst << std::endl
-                              << "error message: " << op->errorString() << std::endl;
-            }
-        }
-
-        // patch the Info.plist while copying it
-        QFile sourcePlist(appDirPath + QLatin1String("/../Info.plist"));
+        // patch the Info.plist after copying it
+        QFile sourcePlist(sourceAppDirPath + QLatin1String("/../Info.plist"));
         openForRead(&sourcePlist, sourcePlist.fileName());
-        QFile targetPlist(filePath + QLatin1String("/../Info.plist"));
+        QFile targetPlist(targetAppDirPath + QLatin1String("/../Info.plist"));
         openForWrite(&targetPlist, targetPlist.fileName());
 
         QTextStream in(&sourcePlist);
         QTextStream out(&targetPlist);
+        const QString before = QLatin1String("<string>") + QFileInfo(QCoreApplication::applicationFilePath())
+            .baseName() + QLatin1String("</string>");
+        const QString after = QLatin1String("<string>") + QFileInfo(uninstallerName()).baseName()
+            + QLatin1String("</string>");
+        while (!in.atEnd())
+            out << in.readLine().replace(before, after) << endl;
 
-        while (!in.atEnd()) {
-            QString line = in.readLine();
-            line = line.replace(QLatin1String("<string>")
-                + QFileInfo(QCoreApplication::applicationFilePath()).baseName()
-                + QLatin1String("</string>"), QLatin1String("<string>")
-                + QFileInfo(uninstallerName()).baseName() + QLatin1String("</string>"));
-            out << line << endl;
-        }
+        // copy qt_menu.nib if it exists
+        op = createOwnedOperation(QLatin1String("CopyDirectory"));
+        op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../Resources/qt_menu.nib"))
+            << (targetAppDirPath + QLatin1String("/../Resources/qt_menu.nib")));
+        performOperationThreaded(op);
 
         op = createOwnedOperation(QLatin1String("Mkdir"));
-        op->setArguments(QStringList() << (QFileInfo(filePath).path() + QLatin1String("/Resources")));
+        op->setArguments(QStringList() << (QFileInfo(targetAppDirPath).path() + QLatin1String("/Resources")));
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
 
+        // copy application icons if it exists
         const QString icon = QFileInfo(QCoreApplication::applicationFilePath()).baseName()
             + QLatin1String(".icns");
         op = createOwnedOperation(QLatin1String("Copy"));
-        op->setArguments(QStringList() << (appDirPath + QLatin1String("/../Resources/") + icon)
-            << (filePath + QLatin1String("/../Resources/") + icon));
+        op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../Resources/") + icon)
+            << (targetAppDirPath + QLatin1String("/../Resources/") + icon));
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
 
         // finally, copy everything within Frameworks and plugins
-        if (QDir(appDirPath + QLatin1String("/../Frameworks")).exists()) {
-            copyDirectoryContents(appDirPath + QLatin1String("/../Frameworks"), filePath
-                + QLatin1String("/../Frameworks"));
-        }
+        op = createOwnedOperation(QLatin1String("CopyDirectory"));
+        op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../Frameworks"))
+            << (targetAppDirPath + QLatin1String("/../Frameworks")));
+        performOperationThreaded(op);
 
-        if (QDir(appDirPath + QLatin1String("/../plugins")).exists()) {
-            copyDirectoryContents(appDirPath + QLatin1String("/../plugins"), filePath
-                + QLatin1String("/../plugins"));
-        }
+        op = createOwnedOperation(QLatin1String("CopyDirectory"));
+        op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../plugins"))
+            << (targetAppDirPath + QLatin1String("/../plugins")));
+        performOperationThreaded(op);
     }
 #endif
 
