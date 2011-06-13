@@ -40,7 +40,6 @@ HEADERS += $$PWD/qinstaller.h \
     ../common/zipjob.h \
     ../common/utils.h \
     ../common/errors.h \
-    kdmmappedfileiodevice.h \
     component.h \
     componentmodel.h \
     qinstallerglobal.h \
@@ -80,7 +79,6 @@ HEADERS += $$PWD/qinstaller.h \
     fsengineclient.h \
     fsengineserver.h \
     elevatedexecuteoperation.h \
-    installationprogressdialog.h \
     fakestopprocessforupdateoperation.h \
     lazyplaintextedit.h \
     progresscoordinator.h \
@@ -108,7 +106,6 @@ SOURCES += $$PWD/qinstaller.cpp \
     ../common/installersettings.cpp \
     ../common/fileutils.cpp \
     ../common/utils.cpp \
-    kdmmappedfileiodevice.cpp \
     component.cpp \
     componentmodel.cpp \
     qtpatch.cpp \
@@ -144,7 +141,6 @@ SOURCES += $$PWD/qinstaller.cpp \
     fsengineclient.cpp \
     fsengineserver.cpp \
     elevatedexecuteoperation.cpp \
-    installationprogressdialog.cpp \
     fakestopprocessforupdateoperation.cpp \
     lazyplaintextedit.cpp \
     progresscoordinator.cpp \
