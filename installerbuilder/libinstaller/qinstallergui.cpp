@@ -34,6 +34,7 @@
 
 #include "component.h"
 #include "componentmodel.h"
+#include "messageboxhandler.h"
 #include "qinstaller.h"
 #include "qinstallerglobal.h"
 #include "progresscoordinator.h"

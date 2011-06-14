@@ -93,9 +93,19 @@ using namespace QInstaller;
 template <typename T>
 static QList<T> reversed(const QList<T> &list)
 {
+    qFatal("This seems to be broken, check this!!!!");
+    // TODO: Figure out what should happen here. See setDefaultAction(...).
+#if 1
+    // Note: This does not what the function name implies???
     QList<T> res = list;
     qCopyBackward(list.begin(), list.end(), res.end());
     return res;
+#else
+    // Note: This does what the function name implies, but we need to check if this is what we want.
+    QList<T> res = list;
+    std::reverse(res.begin(), res.end());
+    return res;
+#endif
 }
 
 

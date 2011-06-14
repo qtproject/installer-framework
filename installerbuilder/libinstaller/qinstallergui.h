@@ -27,7 +27,6 @@
 #define QINSTALLER_GUI_H
 
 #include "qinstaller.h"
-#include "messageboxhandler.h"
 
 #include <QtCore/QEvent>
 #include <QtCore/QMetaType>
@@ -55,55 +54,6 @@ class Installer;
 class IntroductionPage;
 class Page;
 class PerformInstallationForm;
-
-
-// -- MessageBoxHandlerImpl
-
-class INSTALLER_EXPORT MessageBoxHandlerImpl : public MessageBoxHandler
-{
-public:
-    explicit MessageBoxHandlerImpl(QWidget* parentWidget);
-    void setAutomaticAnswer(const QString& identifier, QMessageBox::StandardButton answer);
-    void setDefaultAction(DefaultAction da);
-
-    QMessageBox::StandardButton critical(const QString& identifier, const QString& title,
-        const QString& text, QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-    QMessageBox::StandardButton information(const QString& identifier, const QString& title,
-        const QString& text, QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-    QMessageBox::StandardButton question(const QString& identifier, const QString& title,
-        const QString& text, QMessageBox::StandardButtons buttons = QMessageBox::Yes|QMessageBox::No,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-    QMessageBox::StandardButton warning(const QString& identifier, const QString& title,
-        const QString& text, QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-    QMessageBox::StandardButton critical(QWidget* parent, const QString& identifier,
-        const QString& title, const QString& text,
-        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-    QMessageBox::StandardButton information(QWidget* parent, const QString& identifier,
-        const QString& title, const QString& text,
-        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-    QMessageBox::StandardButton question(QWidget* parent, const QString& identifier,
-        const QString& title, const QString& text,
-        QMessageBox::StandardButtons buttons = QMessageBox::Yes|QMessageBox::No,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-    QMessageBox::StandardButton warning(QWidget* parent, const QString& identifier,
-        const QString& title, const QString& text,
-        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
-
-private:
-    QMessageBox::StandardButton autoReply(QMessageBox::StandardButtons buttons) const;
-
-private:
-    QList<QMessageBox::Button> m_buttonOrder;
-    QWidget* m_parentWidget;
-    DefaultAction m_defaultAction;
-    QHash<QString,QMessageBox::StandardButton> m_automaticAnswers;
-};
 
 
 // -- Gui
