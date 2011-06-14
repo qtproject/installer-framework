@@ -134,7 +134,7 @@ bool QtCreatorPersistentSettings::removeToolChain(const QtCreatorToolChain &tool
 
 void QtCreatorPersistentSettings::addDefaultDebugger(const QString &abiString, const QString &debuggerPath)
 {
-    m_abiToDebuggerHash.insert(abiString, QFileInfo(debuggerPath).absoluteFilePath());
+    m_abiToDebuggerHash.insert(abiString, debuggerPath);
 }
 
 void QtCreatorPersistentSettings::removeDefaultDebugger(const QString &abiString)
