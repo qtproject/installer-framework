@@ -56,15 +56,15 @@ class Page;
 class PerformInstallationForm;
 
 
-// -- Gui
+// -- PackageManagerGui
 
-class INSTALLER_EXPORT Gui : public QWizard
+class INSTALLER_EXPORT PackageManagerGui : public QWizard
 {
     Q_OBJECT
 
 public:
-    explicit Gui(Installer *installer, QWidget *parent = 0);
-    ~Gui();
+    explicit PackageManagerGui(Installer *installer, QWidget *parent = 0);
+    virtual ~PackageManagerGui();
     virtual void init() = 0;
 
     void loadControlScript(const QString& scriptPath);
@@ -133,7 +133,7 @@ public:
     virtual bool isComplete() const;
     void setComplete(bool complete);
 
-    Gui* gui() const { return qobject_cast<Gui*>(wizard()); }
+    PackageManagerGui* gui() const { return qobject_cast<PackageManagerGui*>(wizard()); }
 
 protected:
     Installer *installer() const;

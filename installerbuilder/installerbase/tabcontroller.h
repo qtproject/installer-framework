@@ -30,7 +30,7 @@
 #include <QtCore/QObject>
 
 namespace QInstaller {
-    class Gui;
+    class PackageManagerGui;
     class Installer;
 }
 
@@ -45,7 +45,7 @@ public:
     explicit TabController(QObject *parent = 0);
     ~TabController();
 
-    void setInstallerGui(QInstaller::Gui *gui);
+    void setGui(QInstaller::PackageManagerGui *gui);
     void setControlScript(const QString &script);
     void setInstaller(QInstaller::Installer *installer);
     void setInstallerParams(const QHash<QString, QString> &params);

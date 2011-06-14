@@ -58,7 +58,7 @@ public:
     bool m_allPackagesFetched;
     bool m_introPageConnected;
 
-    QPointer<QInstaller::Gui> m_gui;
+    QPointer<QInstaller::PackageManagerGui> m_gui;
     QInstaller::Installer *m_installer;
 
     QString m_controlScript;
@@ -95,7 +95,7 @@ TabController::~TabController()
     delete d;
 }
 
-void TabController::setInstallerGui(QInstaller::Gui *gui)
+void TabController::setGui(QInstaller::PackageManagerGui *gui)
 {
     d->m_gui = gui;
     connect(d->m_gui, SIGNAL(gotRestarted()), this, SLOT(restartWizard()));

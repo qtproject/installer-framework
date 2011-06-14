@@ -305,10 +305,10 @@ bool TargetDirectoryPageImpl::validatePage()
 }
 
 
-// -- QtInstallerGui
+// -- InstallerGui
 
-QtInstallerGui::QtInstallerGui(Installer *installer)
-    : Gui(installer, 0)
+InstallerGui::InstallerGui(Installer *installer)
+    : PackageManagerGui(installer, 0)
 {
     setPage(Installer::Introduction, new IntroductionPageImpl(installer));
     setPage(Installer::TargetDirectory, new TargetDirectoryPageImpl(installer));
@@ -327,17 +327,17 @@ QtInstallerGui::QtInstallerGui(Installer *installer)
         setStartId(startPage);
 }
 
-void QtInstallerGui::init()
+void InstallerGui::init()
 {
     if (m_installer->components(true, m_installer->runMode()).count() == 1)
         wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
 }
 
 
-// -- QtUninstallerGui
+// -- Maintenance
 
-QtUninstallerGui::QtUninstallerGui(Installer *installer)
-    : Gui(installer, 0)
+MaintenanceGui::MaintenanceGui(Installer *installer)
+    : PackageManagerGui(installer, 0)
 {
     IntroductionPageImpl *intro = new IntroductionPageImpl(installer);
     connect(intro, SIGNAL(initUpdater()), this, SLOT(updateRestartPage()));
@@ -359,7 +359,7 @@ QtUninstallerGui::QtUninstallerGui(Installer *installer)
         wizardPageVisibilityChangeRequested(false, Installer::InstallationFinished + 1);
 }
 
-void QtUninstallerGui::init()
+void MaintenanceGui::init()
 {
     const bool visible = !m_installer->components(false, m_installer->runMode()).isEmpty();
 
@@ -367,7 +367,7 @@ void QtUninstallerGui::init()
     wizardPageVisibilityChangeRequested(visible, Installer::LicenseCheck);
 }
 
-int QtUninstallerGui::nextId() const
+int MaintenanceGui::nextId() const
 {
     const int next = QWizard::nextId();
     if (next == Installer::LicenseCheck) {
@@ -390,7 +390,7 @@ int QtUninstallerGui::nextId() const
     return next;
 }
 
-void QtUninstallerGui::updateRestartPage()
+void MaintenanceGui::updateRestartPage()
 {
     wizardPageVisibilityChangeRequested((m_installer->isUninstaller() ? false : true),
         Installer::InstallationFinished + 1);

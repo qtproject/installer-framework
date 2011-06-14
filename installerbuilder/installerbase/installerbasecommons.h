@@ -97,27 +97,27 @@ private:
 };
 
 
-// -- QtInstallerGui
+// -- InstallerGui
 
-class QtInstallerGui : public QInstaller::Gui
+class InstallerGui : public QInstaller::PackageManagerGui
 {
     Q_OBJECT
 
 public:
-    explicit QtInstallerGui(QInstaller::Installer *installer);
+    explicit InstallerGui(QInstaller::Installer *installer);
 
     virtual void init();
 };
 
 
-// -- QtUninstallerGui
+// -- MaintenanceGui
 
-class QtUninstallerGui : public QInstaller::Gui
+class MaintenanceGui : public QInstaller::PackageManagerGui
 {
     Q_OBJECT
 
 public:
-    explicit QtUninstallerGui(QInstaller::Installer *installer);
+    explicit MaintenanceGui(QInstaller::Installer *installer);
 
     virtual void init();
     virtual int nextId() const;

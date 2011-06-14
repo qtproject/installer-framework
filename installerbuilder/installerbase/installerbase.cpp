@@ -283,9 +283,9 @@ int main(int argc, char *argv[])
         controller.setControlScript(controlScript);
 
         if (installer.isInstaller()) {
-            controller.setInstallerGui(new QtInstallerGui(&installer));
+            controller.setGui(new InstallerGui(&installer));
         } else {
-            controller.setInstallerGui(new QtUninstallerGui(&installer));
+            controller.setGui(new MaintenanceGui(&installer));
         }
 
         Installer::Status status = Installer::Status(controller.init());

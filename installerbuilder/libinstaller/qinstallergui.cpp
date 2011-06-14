@@ -174,9 +174,9 @@ private:
 };
 
 
-// -- Gui::Private
+// -- PackageManagerGui::Private
 
-class Gui::Private
+class PackageManagerGui::Private
 {
 public:
     Private()
@@ -194,18 +194,18 @@ public:
 };
 
 
-// -- Gui
+// -- PackageManagerGui
 
-QScriptEngine* Gui::controlScriptEngine() const
+QScriptEngine* PackageManagerGui::controlScriptEngine() const
 {
     return &d->m_controlScriptEngine;
 }
 
 /*!
-    \class QInstaller::Gui
+    \class QInstaller::PackageManagerGui
     Is the "gui" object in a none interactive installation
 */
-Gui::Gui(Installer *installer, QWidget *parent)
+PackageManagerGui::PackageManagerGui(Installer *installer, QWidget *parent)
     : QWizard(parent)
     , m_installer(installer)
     , d(new Private)
@@ -265,22 +265,22 @@ Gui::Gui(Installer *installer, QWidget *parent)
 #endif
 }
 
-Gui::~Gui()
+PackageManagerGui::~PackageManagerGui()
 {
     delete d;
 }
 
-void Gui::setAutomatedPageSwitchEnabled(bool request)
+void PackageManagerGui::setAutomatedPageSwitchEnabled(bool request)
 {
     d->m_autoSwitchPage = request;
 }
 
-QString Gui::defaultButtonText(int wizardButton) const
+QString PackageManagerGui::defaultButtonText(int wizardButton) const
 {
     return d->m_defaultButtonText.value(wizardButton);
 }
 
-void Gui::clickButton(int wb, int delay)
+void PackageManagerGui::clickButton(int wb, int delay)
 {
     if (QAbstractButton* b = button(static_cast<QWizard::WizardButton>(wb) )) {
         QTimer::singleShot(delay, b, SLOT(click()));
@@ -294,7 +294,7 @@ void Gui::clickButton(int wb, int delay)
     Loads a script to perform the installation non-interactively.
     @throws QInstaller::Error if the script is not readable/cannot be parsed
 */
-void Gui::loadControlScript(const QString& scriptPath)
+void PackageManagerGui::loadControlScript(const QString& scriptPath)
 {
     QFile file(scriptPath);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -305,6 +305,8 @@ void Gui::loadControlScript(const QString& scriptPath)
     d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("installer"),
         d->m_controlScriptEngine.newQObject(m_installer));
     d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("gui"),
+        d->m_controlScriptEngine.newQObject(this));
+    d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("packagemanagergui"),
         d->m_controlScriptEngine.newQObject(this));
     registerMessageBox(&d->m_controlScriptEngine);
 
@@ -345,18 +347,18 @@ void Gui::loadControlScript(const QString& scriptPath)
     verbose() << "Loaded control script " << qPrintable(scriptPath) << std::endl;
 }
 
-void Gui::triggerControlScriptForCurrentPage()
+void PackageManagerGui::triggerControlScriptForCurrentPage()
 {
     slotCurrentPageChanged(currentId());
 }
 
-void Gui::slotCurrentPageChanged(int id)
+void PackageManagerGui::slotCurrentPageChanged(int id)
 {
     QMetaObject::invokeMethod(this, "delayedControlScriptExecution", Qt::QueuedConnection,
         Q_ARG(int, id));
 }
 
-void Gui::callControlScriptMethod(const QString& methodName)
+void PackageManagerGui::callControlScriptMethod(const QString& methodName)
 {
     QScriptValue method = d->m_controlScript.property(QLatin1String("prototype")).property(methodName);
 
@@ -377,20 +379,20 @@ void Gui::callControlScriptMethod(const QString& methodName)
     }
 }
 
-void Gui::delayedControlScriptExecution(int id)
+void PackageManagerGui::delayedControlScriptExecution(int id)
 {
     if (Page* const p = qobject_cast<Page*>(page(id)))
         callControlScriptMethod(p->objectName() + QLatin1String("Callback"));
 }
 
-void Gui::onLanguageChanged()
+void PackageManagerGui::onLanguageChanged()
 {
     d->m_defaultButtonText.clear();
     for (int i = QWizard::BackButton; i < QWizard::CustomButton1; ++i)
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
 }
 
-bool Gui::event(QEvent* event)
+bool PackageManagerGui::event(QEvent* event)
 {
     switch(event->type()) {
     case QEvent::LanguageChange:
@@ -402,7 +404,7 @@ bool Gui::event(QEvent* event)
     return QWizard::event(event);
 }
 
-void Gui::wizardPageInsertionRequested(QWidget* widget, Installer::WizardPage page)
+void PackageManagerGui::wizardPageInsertionRequested(QWidget* widget, Installer::WizardPage page)
 {
     // just in case it was already in there...
     wizardPageRemovalRequested(widget);
@@ -415,7 +417,7 @@ void Gui::wizardPageInsertionRequested(QWidget* widget, Installer::WizardPage pa
     setPage(p, new DynamicInstallerPage(widget, m_installer));
 }
 
-void Gui::wizardPageRemovalRequested(QWidget* widget)
+void PackageManagerGui::wizardPageRemovalRequested(QWidget* widget)
 {
     const QList<int> pages = pageIds();
     for (QList<int>::const_iterator it = pages.begin(); it != pages.end(); ++it) {
@@ -429,20 +431,20 @@ void Gui::wizardPageRemovalRequested(QWidget* widget)
     }
 }
 
-void Gui::wizardWidgetInsertionRequested(QWidget* widget, Installer::WizardPage page)
+void PackageManagerGui::wizardWidgetInsertionRequested(QWidget* widget, Installer::WizardPage page)
 {
     Q_ASSERT(widget);
     if (QWizardPage* const p = QWizard::page(page))
         p->layout()->addWidget(widget);
 }
 
-void Gui::wizardWidgetRemovalRequested(QWidget* widget)
+void PackageManagerGui::wizardWidgetRemovalRequested(QWidget* widget)
 {
     Q_ASSERT(widget);
     widget->setParent(0);
 }
 
-void Gui::wizardPageVisibilityChangeRequested(bool visible, int p)
+void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
 {
     if (visible && page(p) == 0) {
         setPage(p, d->m_defaultPages[p]);
@@ -452,12 +454,12 @@ void Gui::wizardPageVisibilityChangeRequested(bool visible, int p)
     }
 }
 
-Page* Gui::page(int pageId) const
+Page* PackageManagerGui::page(int pageId) const
 {
     return qobject_cast<Page*>(QWizard::page(pageId));
 }
 
-QWidget* Gui::pageWidgetByObjectName(const QString& name) const
+QWidget* PackageManagerGui::pageWidgetByObjectName(const QString& name) const
 {
     const QList<int> ids = pageIds();
     foreach (const int i, ids) {
@@ -474,12 +476,12 @@ QWidget* Gui::pageWidgetByObjectName(const QString& name) const
     return 0;
 }
 
-QWidget* Gui::currentPageWidget() const
+QWidget* PackageManagerGui::currentPageWidget() const
 {
     return currentPage();
 }
 
-void Gui::cancelButtonClicked()
+void PackageManagerGui::cancelButtonClicked()
 {
     if (currentId() != Installer::InstallationFinished) {
         Page* const page = qobject_cast<Page*>(currentPage());
@@ -510,23 +512,23 @@ void Gui::cancelButtonClicked()
     }
 }
 
-void Gui::rejectWithoutPrompt()
+void PackageManagerGui::rejectWithoutPrompt()
 {
     m_installer->setCanceled();
     QDialog::reject();
 }
 
-void Gui::reject()
+void PackageManagerGui::reject()
 {
     cancelButtonClicked();
 }
 
-void Gui::setModified(bool value)
+void PackageManagerGui::setModified(bool value)
 {
     d->m_modified = value;
 }
 
-void Gui::showFinishedPage()
+void PackageManagerGui::showFinishedPage()
 {
     verbose() << "SHOW FINISHED PAGE" << std::endl;
     if (d->m_autoSwitchPage)
