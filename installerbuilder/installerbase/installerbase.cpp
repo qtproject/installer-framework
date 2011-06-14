@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
         content.registerEmbeddedQResources();
 
         // instantiate the installer we are actually going to use
-        QInstaller::Installer installer(content.magicmaker(), content.performedOperations());
+        QInstaller::PackageManagerCore core(content.magicmaker(), content.performedOperations());
 
         if (QInstaller::isVerbose()) {
             verbose() << "resource tree after loading the in-binary resource: " << std::endl;
@@ -210,18 +210,18 @@ int main(int argc, char *argv[])
                 const QString name = argument.section(QLatin1Char('='), 0, 0);
                 const QString value = argument.section(QLatin1Char('='), 1, 1);
                 params.insert(name, value);
-                installer.setValue(name, value);
+                core.setValue(name, value);
             } else if (argument == QLatin1String("--script") || argument == QLatin1String("Script")) {
                 ++i;
                 if (i < args.size()) {
                     controlScript = args.at(i);
                     if (!QFileInfo(controlScript).exists())
-                        return Installer::Failure;
+                        return PackageManagerCore::Failure;
                 } else {
-                    return Installer::Failure;
+                    return PackageManagerCore::Failure;
                 }
              } else if (argument == QLatin1String("--verbose") || argument == QLatin1String("Verbose")) {
-                installer.setVerbose(true);
+                core.setVerbose(true);
              } else if (argument == QLatin1String("--proxy")) {
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC)
                 QNetworkProxyFactory::setUseSystemConfiguration(true);
@@ -230,35 +230,35 @@ int main(int argc, char *argv[])
                  || argument == QLatin1String("ShowVirtualComponents")) {
                      QFont f;
                      f.setItalic(true);
-                     Installer::setVirtualComponentsFont(f);
-                     Installer::setVirtualComponentsVisible(true);
+                     PackageManagerCore::setVirtualComponentsFont(f);
+                     PackageManagerCore::setVirtualComponentsVisible(true);
             } else if ((argument == QLatin1String("--updater")
-                || argument == QLatin1String("Updater")) && installer.isUninstaller()) {
-                    installer.setUpdater();
+                || argument == QLatin1String("Updater")) && core.isUninstaller()) {
+                    core.setUpdater();
             } else if ((argument == QLatin1String("--manage-packages")
-                || argument == QLatin1String("ManagePackages")) && installer.isUninstaller()) {
-                    installer.setPackageManager();
+                || argument == QLatin1String("ManagePackages")) && core.isUninstaller()) {
+                    core.setPackageManager();
             } else if (argument == QLatin1String("--help") || argument == QLatin1String("-h")) {
-                return Installer::Success;
+                return PackageManagerCore::Success;
             } else if (argument == QLatin1String("--addTempRepository")
                 || argument == QLatin1String("--setTempRepository")) {
                     ++i;
                     QList<Repository> repoList = repositories(args, i);
                     if (repoList.isEmpty())
-                        return Installer::Failure;
+                        return PackageManagerCore::Failure;
 
                     // We cannot use setRemoteRepositories as that is a synchronous call which "
                     // tries to get the data from server and this isn't what we want at this point
                     const bool replace = (argument == QLatin1String("--setTempRepository"));
-                    installer.setTemporaryRepositories(repoList, replace);
+                    core.setTemporaryRepositories(repoList, replace);
             } else if (argument == QLatin1String("--addRepository")) {
                 ++i;
                 QList<Repository> repoList = repositories(args, i);
                 if (repoList.isEmpty())
-                    return Installer::Failure;
-                installer.addRepositories(repoList);
+                    return PackageManagerCore::Failure;
+                core.addRepositories(repoList);
             } else if (argument == QLatin1String("--no-force-installations")) {
-                Installer::setNoForceInstallation(true);
+                PackageManagerCore::setNoForceInstallation(true);
             } else {
                 verbose() << "Unknown option: " << argument << std::endl;
             }
@@ -266,51 +266,50 @@ int main(int argc, char *argv[])
 
 
         KDUpdater::Application updaterapp;
-        const QString &productName = installer.value(QLatin1String("ProductName"));
+        const QString &productName = core.value(QLatin1String("ProductName"));
         updaterapp.packagesInfo()->setApplicationName(productName);
-        updaterapp.packagesInfo()->setApplicationVersion(installer
-            .value(QLatin1String("ProductVersion")));
+        updaterapp.packagesInfo()->setApplicationVersion(core.value(QLatin1String("ProductVersion")));
         if (content.magicmaker() == MagicInstallerMarker) {
             updaterapp.addUpdateSource(productName, productName, QString(),
                 QUrl(QLatin1String("resource://metadata/")), 0);
         }
-        installer.setUpdaterApplication(&updaterapp);
+        core.setUpdaterApplication(&updaterapp);
 
         // Create the wizard gui
         TabController controller(0);
-        controller.setInstaller(&installer);
-        controller.setInstallerParams(params);
+        controller.setManager(&core);
+        controller.setManagerParams(params);
         controller.setControlScript(controlScript);
 
-        if (installer.isInstaller()) {
-            controller.setGui(new InstallerGui(&installer));
+        if (core.isInstaller()) {
+            controller.setGui(new InstallerGui(&core));
         } else {
-            controller.setGui(new MaintenanceGui(&installer));
+            controller.setGui(new MaintenanceGui(&core));
         }
 
-        Installer::Status status = Installer::Status(controller.init());
-        if (status != Installer::Success)
+        PackageManagerCore::Status status = PackageManagerCore::Status(controller.init());
+        if (status != PackageManagerCore::Success)
             return status;
 
         const int result = app.exec();
         if (result != 0)
             return result;
 
-        if (installer.finishedWithSuccess())
-            return Installer::Success;
+        if (core.finishedWithSuccess())
+            return PackageManagerCore::Success;
 
-        status = installer.status();
+        status = core.status();
         switch (status) {
-            case Installer::Success:
+            case PackageManagerCore::Success:
                 return status;
 
-            case Installer::Canceled:
+            case PackageManagerCore::Canceled:
                 return status;
 
             default:
                 break;
         }
-        return Installer::Failure;
+        return PackageManagerCore::Failure;
     } catch(const Error &e) {
         std::cerr << qPrintable(e.message()) << std::endl;
     } catch (const std::exception &e) {
@@ -319,5 +318,5 @@ int main(int argc, char *argv[])
          std::cerr << "Unknown error, aborting." << std::endl;
     }
 
-    return Installer::Failure;
+    return PackageManagerCore::Failure;
 }

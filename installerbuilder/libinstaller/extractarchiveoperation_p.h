@@ -80,18 +80,18 @@ Q_SIGNALS:
     void progressChanged( int );
 
 public Q_SLOTS:
-    void statusChanged( QInstaller::Installer::Status status )
+    void statusChanged( QInstaller::PackageManagerCore::Status status )
     {
         switch( status ) {
-            case Installer::Canceled:
+            case PackageManagerCore::Canceled:
                 state = E_ABORT;
                 break;
-            case Installer::Failure:
+            case PackageManagerCore::Failure:
                 state = E_FAIL;
                 break;
-            case Installer::Unfinished: // fall through
-            case Installer::Success:
-            case Installer::Running:
+            case PackageManagerCore::Unfinished: // fall through
+            case PackageManagerCore::Success:
+            case PackageManagerCore::Running:
                 //state = S_OK;
                 break;
         }

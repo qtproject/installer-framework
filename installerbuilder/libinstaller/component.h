@@ -44,7 +44,8 @@ namespace KDUpdater {
 }
 
 namespace QInstaller {
-class Installer;
+
+class PackageManagerCore;
 
 class INSTALLER_EXPORT Component : public QObject, public QScriptable, public ComponentModelHelper
 {
@@ -66,8 +67,8 @@ class INSTALLER_EXPORT Component : public QObject, public QScriptable, public Co
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
 
 public:
-    explicit Component(Installer *installer);
-    explicit Component(KDUpdater::Update *update, Installer *installer);
+    explicit Component(PackageManagerCore *core);
+    explicit Component(KDUpdater::Update *update, PackageManagerCore *core);
     ~Component();
 
     struct IsVirtual
@@ -102,7 +103,7 @@ public:
     Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString()) const;
 
     QStringList archives() const;
-    Installer *installer() const;
+    PackageManagerCore *packageManagerCore() const;
 
     Component *parentComponent() const;
     void appendComponent(Component *component);

@@ -308,14 +308,14 @@ bool QtPatchOperation::performOperation()
 #ifdef Q_OS_MAC
     Relocator relocator;
     bool successMacRelocating = false;
-    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
-    if (!installer) {
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    Q_CHECK_PTR(installer);
-    successMacRelocating = relocator.apply(newQtPathStr, installer->value(scTargetDir));
+    Q_CHECK_PTR(core);
+    successMacRelocating = relocator.apply(newQtPathStr, core->value(scTargetDir));
     if (!successMacRelocating)
     {
         setError(UserDefinedError);

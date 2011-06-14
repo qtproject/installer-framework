@@ -79,14 +79,14 @@ public:
                     handler->setComponentIndex(QInstallerCreator::ComponentIndex());
 
                     KDUpdater::Application app;
-                    Installer installer(QInstaller::MagicUpdaterMarker);
-                    installer.setUpdaterApplication(&app);
-                    installer.setTemporaryRepositories(settings.repositories());
-                    if (!installer.fetchUpdaterPackages())
+                    PackageManagerCore core(QInstaller::MagicUpdaterMarker);
+                    core.setUpdaterApplication(&app);
+                    core.setTemporaryRepositories(settings.repositories());
+                    if (!core.fetchUpdaterPackages())
                         throw Error(tr("Software Update failed."));
                     settings.setLastResult(tr("Software Update run successfully."));
 
-                    QList<Component*> components = installer.components(false, UpdaterMode);
+                    QList<Component*> components = core.components(false, UpdaterMode);
                     // no updates available
                     if (components.isEmpty())
                         return;

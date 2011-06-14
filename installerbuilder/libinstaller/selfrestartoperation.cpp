@@ -53,14 +53,14 @@ void SelfRestartOperation::backup()
 
 bool SelfRestartOperation::performOperation()
 {
-    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
-    if (!installer) {
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
 
-    if(!installer->isUpdater() && !installer->isPackageManager()) {
+    if(!core->isUpdater() && !core->isPackageManager()) {
         setError(UserDefinedError);
         setErrorString(tr("Self Restart: Only valid within updater or packagemanager mode."));
         return false;

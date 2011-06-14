@@ -55,8 +55,8 @@ MainWindow::MainWindow(const QStringList &args, QWidget *parent)
     : QMainWindow(parent)
     , m_dialog(new UpdateSettingsDialog(this))
 {
-    m_installer.setUpdater();
-    m_installer.setUpdaterApplication(&updaterapp);
+    m_core.setUpdater();
+    m_core.setUpdaterApplication(&updaterapp);
 
     QMenu *fm = menuBar()->addMenu(QObject::tr("File"));
     fm->addAction(QObject::tr("Check for Updates"), this, SLOT(checkForUpdates()),
@@ -69,7 +69,7 @@ MainWindow::MainWindow(const QStringList &args, QWidget *parent)
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignCenter);
     setCentralWidget(label);
-    label->setText(QString::fromLatin1("Version: %1\n").arg(m_installer.settings().applicationVersion())
+    label->setText(QString::fromLatin1("Version: %1\n").arg(m_core.settings().applicationVersion())
         + args.join(QLatin1String(" ")));
 
     updaterapp.packagesInfo()->setApplicationName(m_settings.applicationName());
@@ -92,47 +92,47 @@ void MainWindow::checkForUpdates()
 
     UpdateSettings settings;
     try {
-        m_installer.setTemporaryRepositories(settings.repositories());
+        m_core.setTemporaryRepositories(settings.repositories());
         settings.setLastCheck(QDateTime::currentDateTime());
 
-        if (!m_installer.fetchUpdaterPackages()) {
+        if (!m_core.fetchUpdaterPackages()) {
             settings.setLastResult(tr("Software Update failed."));
             QMessageBox::information(this, tr("Check for Updates"), tr("Failed to retrieve updates!"));
             return;
         }
 
         // no updates for us
-        if (m_installer.components(false, UpdaterMode).isEmpty()) {
+        if (m_core.components(false, UpdaterMode).isEmpty()) {
             QMessageBox::information(this, tr("Check for Updates"), tr("There are currently no updates "
                 "available for you."));
             return;
         }
 
         // set the target directory to the actual one
-        m_installer.setValue(scTargetDir, QFileInfo(updaterapp.packagesInfo()->fileName()).absolutePath());
+        m_core.setValue(scTargetDir, QFileInfo(updaterapp.packagesInfo()->fileName()).absolutePath());
 
         // this will automatically mark components as to get installed
-        ComponentSelectionDialog componentSelection(&m_installer, this);
+        ComponentSelectionDialog componentSelection(&m_core, this);
         if (componentSelection.exec() == QDialog::Rejected)
             return;
 
         QProgressDialog dialog(this);
         dialog.setRange(0, 100);
         dialog.show();
-        connect(&dialog, SIGNAL(canceled()), &m_installer, SLOT(interrupt()));
-        connect(&m_installer, SIGNAL(installationProgressTextChanged(QString)), &dialog,
+        connect(&dialog, SIGNAL(canceled()), &m_core, SLOT(interrupt()));
+        connect(&m_core, SIGNAL(installationProgressTextChanged(QString)), &dialog,
             SLOT(setLabelText(QString)));
-        connect(&m_installer, SIGNAL(installationProgressChanged(int)), &dialog, SLOT(setValue(int)));
-        m_installer.installSelectedComponents();
+        connect(&m_core, SIGNAL(installationProgressChanged(int)), &dialog, SLOT(setValue(int)));
+        m_core.installSelectedComponents();
         updatesInstalled();
     } catch (const QInstaller::Error &error) {
         QMessageBox::critical(this, tr("Check for Updates"), tr("Error while installing updates:\n%1")
             .arg(error.what()));
-        m_installer.rollBackInstallation();
+        m_core.rollBackInstallation();
         settings.setLastResult(tr("Software Update failed."));
     } catch (...) {
         QMessageBox::critical(this, tr("Check for Updates"), tr("Unknown error while installing updates."));
-        m_installer.rollBackInstallation();
+        m_core.rollBackInstallation();
         settings.setLastResult(tr("Software Update failed."));
     }
 }

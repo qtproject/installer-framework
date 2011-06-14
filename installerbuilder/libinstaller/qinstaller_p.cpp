@@ -160,16 +160,16 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 InstallerPrivate::InstallerPrivate()
     : m_tempDirDeleter(0)
     , m_FSEngineClientHandler(0)
-    , q(0)
+    , m_core(0)
 {
 }
 
-InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMaker,
+InstallerPrivate::InstallerPrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<KDUpdater::UpdateOperation*> &performedOperations)
     : m_app(0)
     , m_tempDirDeleter(new TempDirDeleter())
     , m_FSEngineClientHandler(createEngineClientHandler())
-    , m_status(Installer::Unfinished)
+    , m_status(PackageManagerCore::Unfinished)
     , m_forceRestart(false)
     , m_silentRetries(3)
     , m_testChecksum(false)
@@ -177,13 +177,13 @@ InstallerPrivate::InstallerPrivate(Installer *installer, qint64 magicInstallerMa
     , m_completeUninstall(false)
     , m_needToWriteUninstaller(false)
     , m_performedOperationsOld(performedOperations)
-    , q(installer)
+    , m_core(core)
     , m_magicBinaryMarker(magicInstallerMaker)
 {
-    connect(this, SIGNAL(installationStarted()), q, SIGNAL(installationStarted()));
-    connect(this, SIGNAL(installationFinished()), q, SIGNAL(installationFinished()));
-    connect(this, SIGNAL(uninstallationStarted()), q, SIGNAL(uninstallationStarted()));
-    connect(this, SIGNAL(uninstallationFinished()), q, SIGNAL(uninstallationFinished()));
+    connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
+    connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
+    connect(this, SIGNAL(uninstallationStarted()), m_core, SIGNAL(uninstallationStarted()));
+    connect(this, SIGNAL(uninstallationFinished()), m_core, SIGNAL(uninstallationFinished()));
 }
 
 InstallerPrivate::~InstallerPrivate()
@@ -253,12 +253,12 @@ bool InstallerPrivate::performOperationThreaded(KDUpdater::UpdateOperation *op, 
 
 QString InstallerPrivate::targetDir() const
 {
-    return q->value(scTargetDir);
+    return m_core->value(scTargetDir);
 }
 
 QString InstallerPrivate::configurationFileName() const
 {
-    return q->value(QLatin1String("TargetConfigurationFile"), QString::fromLatin1("components.xml"));
+    return m_core->value(QLatin1String("TargetConfigurationFile"), QString::fromLatin1("components.xml"));
 }
 
 QString InstallerPrivate::componentsXmlPath() const
@@ -304,7 +304,7 @@ void InstallerPrivate::clearUpdaterComponentLists()
 
 QHash<QString, QPair<Component*, Component*> > &InstallerPrivate::componentsToReplace()
 {
-    return q->runMode() == AllMode ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
+    return m_core->runMode() == AllMode ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
 }
 
 void InstallerPrivate::initialize()
@@ -367,7 +367,7 @@ void InstallerPrivate::initialize()
     if (info.exists())
         m_vars.insert(QLatin1String("QtCreatorSettingsFile"), info.absoluteFilePath());
 
-    if (!q->isInstaller()) {
+    if (!m_core->isInstaller()) {
 #ifdef Q_WS_MAC
         readUninstallerIniFile(QCoreApplication::applicationDirPath() + QLatin1String("/../../.."));
 #else
@@ -376,7 +376,7 @@ void InstallerPrivate::initialize()
     }
 
     foreach (KDUpdater::UpdateOperation *currentOperation, m_performedOperationsOld)
-        currentOperation->setValue(QLatin1String("installer"), QVariant::fromValue(q));
+        currentOperation->setValue(QLatin1String("installer"), QVariant::fromValue(m_core));
 
     disconnect(this, SIGNAL(installationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
     connect(this, SIGNAL(installationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
@@ -411,14 +411,14 @@ bool InstallerPrivate::isPackageManager() const
 
 bool InstallerPrivate::statusCanceledOrFailed() const
 {
-    return m_status == Installer::Canceled || m_status == Installer::Failure;
+    return m_status == PackageManagerCore::Canceled || m_status == PackageManagerCore::Failure;
 }
 
 void InstallerPrivate::setStatus(int status)
 {
     if (m_status != status) {
         m_status = status;
-        emit q->statusChanged(Installer::Status(m_status));
+        emit m_core->statusChanged(PackageManagerCore::Status(m_status));
     }
 }
 
@@ -436,7 +436,7 @@ QString InstallerPrivate::replaceVariables(const QString &str) const
             break;
         res += str.mid(pos, pos1 - pos);
         const QString name = str.mid(pos1 + 1, pos2 - pos1 - 1);
-        res += q->value(name);
+        res += m_core->value(name);
         pos = pos2 + 1;
     }
     res += str.mid(pos);
@@ -457,7 +457,7 @@ QByteArray InstallerPrivate::replaceVariables(const QByteArray &ba) const
             break;
         res += ba.mid(pos, pos1 - pos);
         const QString name = QString::fromLocal8Bit(ba.mid(pos1 + 1, pos2 - pos1 - 1));
-        res += q->value(name).toLocal8Bit();
+        res += m_core->value(name).toLocal8Bit();
         pos = pos2 + 1;
     }
     res += ba.mid(pos);
@@ -522,7 +522,7 @@ void InstallerPrivate::stopProcessesForUpdates(const QList<Component*> &componen
 {
     QStringList processList;
     foreach (const Component* const i, components)
-        processList << q->replaceVariables(i->stopProcessForUpdateRequests());
+        processList << m_core->replaceVariables(i->stopProcessForUpdateRequests());
 
     qSort(processList);
     processList.erase(std::unique(processList.begin(), processList.end()), processList.end());
@@ -544,7 +544,7 @@ void InstallerPrivate::stopProcessesForUpdates(const QList<Component*> &componen
         if (button == QMessageBox::Ignore)
             return;
         if (button == QMessageBox::Cancel) {
-            q->setCanceled();
+            m_core->setCanceled();
             throw Error(tr("Installation canceled by user"));
         }
     }
@@ -585,7 +585,7 @@ void InstallerPrivate::connectOperationToInstaller(KDUpdater::UpdateOperation *c
         }
 
         if (mo->indexOfSlot(QMetaObject::normalizedSignature("cancelOperation()")) > -1)
-            connect(q, SIGNAL(installationInterrupted()), operationObject, SLOT(cancelOperation()));
+            connect(m_core, SIGNAL(installationInterrupted()), operationObject, SLOT(cancelOperation()));
 
         if (mo->indexOfSignal(QMetaObject::normalizedSignature("progressChanged(double)")) > -1) {
             ProgressCoordninator::instance()->registerPartProgress(operationObject,
@@ -734,7 +734,7 @@ void InstallerPrivate::writeUninstaller(QList<KDUpdater::UpdateOperation*> perfo
     QTemporaryFile tempAdminFile(targetDir() + QString::fromLatin1("/testjsfdjlkdsjflkdsjfldsjlfds")
         + QString::number(qrand() % 1000));
     if (!tempAdminFile.open() || !tempAdminFile.isWritable()) {
-        q->gainAdminRights();
+        m_core->gainAdminRights();
         gainedAdminRights = true;
     }
 
@@ -875,7 +875,7 @@ void InstallerPrivate::writeUninstaller(QList<KDUpdater::UpdateOperation*> perfo
 
         bool newBinaryWritten = false;
         bool replacementExists = false;
-        const QString installerBaseBinary = q->replaceVariables(m_installerBaseBinaryUnreplaced);
+        const QString installerBaseBinary = m_core->replaceVariables(m_installerBaseBinaryUnreplaced);
         if (!installerBaseBinary.isEmpty() && QFileInfo(installerBaseBinary).exists()) {
             verbose() << "Got a replacement installer base binary: " << installerBaseBinary << std::endl;
 
@@ -961,15 +961,15 @@ void InstallerPrivate::writeUninstaller(QList<KDUpdater::UpdateOperation*> perfo
                 replacementExists && isUpdater());
         }
     } catch (const Error &err) {
-        setStatus(Installer::Failure);
+        setStatus(PackageManagerCore::Failure);
         if (gainedAdminRights)
-            q->dropAdminRights();
+            m_core->dropAdminRights();
         m_needToWriteUninstaller = false;
         throw err;
     }
 
     if (gainedAdminRights)
-        q->dropAdminRights();
+        m_core->dropAdminRights();
 
     commitSessionOperations();
 
@@ -997,7 +997,7 @@ void InstallerPrivate::runInstaller()
 {
     bool adminRightsGained = false;
     try {
-        setStatus(Installer::Running);
+        setStatus(PackageManagerCore::Running);
         emit installationStarted(); //resets also the ProgressCoordninator
 
         //to have some progress for writeUninstaller
@@ -1010,7 +1010,7 @@ void InstallerPrivate::runInstaller()
         if (!QDir(target).exists()) {
             QTemporaryFile tempAdminFile(target + QLatin1String("/adminrights"));
             if (!tempAdminFile.open() || !tempAdminFile.isWritable())
-                adminRightsGained = q->gainAdminRights();
+                adminRightsGained = m_core->gainAdminRights();
         }
 
         // add the operation to create the target directory
@@ -1022,11 +1022,11 @@ void InstallerPrivate::runInstaller()
         performOperationThreaded(mkdirOp, Backup);
         if (!performOperationThreaded(mkdirOp)) {
             // if we cannot create the target dir, we try to activate the admin rights
-            adminRightsGained = q->gainAdminRights();
+            adminRightsGained = m_core->gainAdminRights();
             if (!performOperationThreaded(mkdirOp))
                 throw Error(mkdirOp->errorString());
         }
-        const QString remove = q->value(QLatin1String("RemoveTargetDir"));
+        const QString remove = m_core->value(QLatin1String("RemoveTargetDir"));
         if (QVariant(remove).toBool())
             addPerformed(takeOwnedOperation(mkdirOp));
 
@@ -1034,24 +1034,24 @@ void InstallerPrivate::runInstaller()
         ProgressCoordninator::instance()->addManualPercentagePoints(1);
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
-        const QList<Component*> componentsToInstall = q->componentsToInstall(AllMode);
+        const QList<Component*> componentsToInstall = m_core->componentsToInstall(AllMode);
         verbose() << "Install size: " << componentsToInstall.size() << " components" << std::endl;
 
         if (!adminRightsGained) {
-            QList<Component*> componentsToInstall = q->componentsToInstall(q->runMode());
+            QList<Component*> componentsToInstall = m_core->componentsToInstall(m_core->runMode());
             foreach (Component *component, componentsToInstall) {
                 if (component->value(scRequiresAdminRights, scFalse) == scFalse)
                     continue;
 
-                q->gainAdminRights();
-                q->dropAdminRights();
+                m_core->gainAdminRights();
+                m_core->dropAdminRights();
                 break;
             }
         }
 
         const double downloadPartProgressSize = double(1) / double(3);
         double componentsInstallPartProgressSize = double(2) / double(3);
-        const int downloadedArchivesCount = q->downloadNeededArchives(AllMode,
+        const int downloadedArchivesCount = m_core->downloadNeededArchives(AllMode,
             downloadPartProgressSize);
 
         // if there was no download we have the whole progress for installing components
@@ -1074,7 +1074,7 @@ void InstallerPrivate::runInstaller()
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
 
-        emit q->titleMessageChanged(tr("Creating Uninstaller"));
+        emit m_core->titleMessageChanged(tr("Creating Uninstaller"));
 
         writeUninstaller(m_performedOperationsOld + m_performedOperationsCurrentSession);
         registerUninstaller();
@@ -1082,15 +1082,15 @@ void InstallerPrivate::runInstaller()
         // this is the reserved one from the beginning
         ProgressCoordninator::instance()->addManualPercentagePoints(1);
 
-        setStatus(Installer::Success);
+        setStatus(PackageManagerCore::Success);
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
         if (adminRightsGained)
-            q->dropAdminRights();
+            m_core->dropAdminRights();
 
         emit installationFinished();
     } catch (const Error &err) {
-        if (q->status() != Installer::Canceled) {
-            setStatus(Installer::Failure);
+        if (m_core->status() != PackageManagerCore::Canceled) {
+            setStatus(PackageManagerCore::Failure);
             verbose() << "INSTALLER FAILED: " << err.message() << std::endl;
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
@@ -1098,11 +1098,11 @@ void InstallerPrivate::runInstaller()
                 << std::endl;
         }
 
-        q->rollBackInstallation();
+        m_core->rollBackInstallation();
 
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Installation aborted"));
         if (adminRightsGained)
-            q->dropAdminRights();
+            m_core->dropAdminRights();
         emit installationFinished();
 
         throw;
@@ -1118,7 +1118,7 @@ void InstallerPrivate::runPackageUpdater()
             return;
         }
 
-        setStatus(Installer::Running);
+        setStatus(PackageManagerCore::Running);
         emit installationStarted(); //resets also the ProgressCoordninator
 
         //to have some progress for the cleanup/write component.xml step
@@ -1127,9 +1127,9 @@ void InstallerPrivate::runPackageUpdater()
         const QString packagesXml = componentsXmlPath();
         // check if we need admin rights and ask before the action happens
         if (!QFileInfo(installerBinaryPath()).isWritable() || !QFileInfo(packagesXml).isWritable())
-            adminRightsGained = q->gainAdminRights();
+            adminRightsGained = m_core->gainAdminRights();
 
-        const QList<Component*> componentsToInstall = q->componentsToInstall(q->runMode());
+        const QList<Component*> componentsToInstall = m_core->componentsToInstall(m_core->runMode());
         verbose() << "Install size: " << componentsToInstall.size() << " components " << std::endl;
 
         bool updateAdminRights = false;
@@ -1152,7 +1152,7 @@ void InstallerPrivate::runPackageUpdater()
             const QString &name = operation->value(QLatin1String("component")).toString();
             Component *component = componentsByName.value(name, 0);
             if (!component)
-                component = q->componentByName(name);
+                component = m_core->componentByName(name);
             if (component) {
                 componentsByName.insert(name, component);
                 // if we're _not_ removing everything and this component is still selected, -> next
@@ -1184,8 +1184,8 @@ void InstallerPrivate::runPackageUpdater()
 
         // we did not request admin rights till we found out that a component/ undo needs admin rights
         if (updateAdminRights && !adminRightsGained) {
-            q->gainAdminRights();
-            q->dropAdminRights();
+            m_core->gainAdminRights();
+            m_core->dropAdminRights();
         }
 
         double undoOperationProgressSize = 0;
@@ -1205,7 +1205,7 @@ void InstallerPrivate::runPackageUpdater()
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
         // following, we download the needed archives
-        q->downloadNeededArchives(AllMode, downloadPartProgressSize);
+        m_core->downloadNeededArchives(AllMode, downloadPartProgressSize);
 
         stopProcessesForUpdates(componentsToInstall);
 
@@ -1220,7 +1220,7 @@ void InstallerPrivate::runPackageUpdater()
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
 
-        emit q->titleMessageChanged(tr("Creating Uninstaller"));
+        emit m_core->titleMessageChanged(tr("Creating Uninstaller"));
 
         commitSessionOperations(); //end session, move ops to "old"
         m_needToWriteUninstaller = true;
@@ -1228,15 +1228,15 @@ void InstallerPrivate::runPackageUpdater()
         //this is the reserved one from the beginning
         ProgressCoordninator::instance()->addManualPercentagePoints(1);
 
-        setStatus(Installer::Success);
+        setStatus(PackageManagerCore::Success);
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
         if (adminRightsGained)
-            q->dropAdminRights();
+            m_core->dropAdminRights();
 
         emit installationFinished();
     } catch (const Error &err) {
-        if (q->status() != Installer::Canceled) {
-            setStatus(Installer::Failure);
+        if (m_core->status() != PackageManagerCore::Canceled) {
+            setStatus(PackageManagerCore::Failure);
             verbose() << "INSTALLER FAILED: " << err.message() << std::endl;
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
@@ -1244,11 +1244,11 @@ void InstallerPrivate::runPackageUpdater()
                 << std::endl;
         }
 
-        q->rollBackInstallation();
+        m_core->rollBackInstallation();
 
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Installation aborted"));
         if (adminRightsGained)
-            q->dropAdminRights();
+            m_core->dropAdminRights();
         emit installationFinished();
 
         throw;
@@ -1259,12 +1259,12 @@ void InstallerPrivate::runUninstaller()
 {
     bool adminRightsGained = false;
     try {
-        setStatus(Installer::Running);
+        setStatus(PackageManagerCore::Running);
         emit uninstallationStarted();
 
         // check if we need administration rights and ask before the action happens
         if (!QFileInfo(installerBinaryPath()).isWritable() || !QFileInfo(componentsXmlPath()).isWritable())
-            adminRightsGained = q->gainAdminRights();
+            adminRightsGained = m_core->gainAdminRights();
 
         bool updateAdminRights = false;
         QList<KDUpdater::UpdateOperation*> undoOperations;
@@ -1275,8 +1275,8 @@ void InstallerPrivate::runUninstaller()
 
         // we did not request administration rights till we found out that a undo needs administration rights
         if (updateAdminRights && !adminRightsGained) {
-            q->gainAdminRights();
-            q->dropAdminRights();
+            m_core->gainAdminRights();
+            m_core->dropAdminRights();
         }
 
         const int uninstallOperationCount = countProgressOperations(undoOperations);
@@ -1299,7 +1299,7 @@ void InstallerPrivate::runUninstaller()
         // this will also delete the TargetDir on Windows
         deleteUninstaller();
 
-        QString remove = q->value(QLatin1String("RemoveTargetDir"));
+        QString remove = m_core->value(QLatin1String("RemoveTargetDir"));
         if (QVariant(remove).toBool()) {
             // on !Windows, we need to remove TargetDir manually
             verbose() << "Complete uninstallation is chosen" << std::endl;
@@ -1307,9 +1307,9 @@ void InstallerPrivate::runUninstaller()
             if (!target.isEmpty()) {
                 if (updateAdminRights && !adminRightsGained) {
                     // we were root at least once, so we remove the target dir as root
-                    q->gainAdminRights();
+                    m_core->gainAdminRights();
                     removeDirectoryThreaded(target, true);
-                    q->dropAdminRights();
+                    m_core->dropAdminRights();
                 } else {
                     removeDirectoryThreaded(target, true);
                 }
@@ -1319,14 +1319,14 @@ void InstallerPrivate::runUninstaller()
         unregisterUninstaller();
         m_needToWriteUninstaller = false;
 
-        setStatus(Installer::Success);
+        setStatus(PackageManagerCore::Success);
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation finished"));
         if (adminRightsGained)
-            q->dropAdminRights();
+            m_core->dropAdminRights();
         emit uninstallationFinished();
     } catch (const Error &err) {
-        if (q->status() != Installer::Canceled) {
-            setStatus(Installer::Failure);
+        if (m_core->status() != PackageManagerCore::Canceled) {
+            setStatus(PackageManagerCore::Failure);
             verbose() << "INSTALLER FAILED: " << err.message() << std::endl;
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
@@ -1334,7 +1334,7 @@ void InstallerPrivate::runUninstaller()
 
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Installation aborted"));
         if (adminRightsGained)
-            q->dropAdminRights();
+            m_core->dropAdminRights();
         emit installationFinished();
 
         throw;
@@ -1346,7 +1346,7 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
 {
     const QList<KDUpdater::UpdateOperation*> operations = component->operations();
     if (!component->operationsCreatedSuccessfully())
-        q->setCanceled();
+        m_core->setCanceled();
 
     const int opCount = operations.count();
     // show only components which do something, MinimumProgress is only for progress calculation safeness
@@ -1362,7 +1362,7 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
         // maybe this operations wants us to be admin...
         bool becameAdmin = false;
         if (!adminRightsGained && operation->value(QLatin1String("admin")).toBool()) {
-            becameAdmin = q->gainAdminRights();
+            becameAdmin = m_core->gainAdminRights();
             verbose() << operation->name() << " as admin: " << becameAdmin << std::endl;
         }
 
@@ -1372,7 +1372,7 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
 
         bool ignoreError = false;
         bool ok = InstallerPrivate::performOperationThreaded(operation);
-        while (!ok && !ignoreError && q->status() != Installer::Canceled) {
+        while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
             verbose() << QString(QLatin1String("operation '%1' with arguments: '%2' failed: %3"))
                 .arg(operation->name(), operation->arguments().join(QLatin1String("; ")),
                 operation->errorString()) << std::endl;;
@@ -1388,7 +1388,7 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
             else if (button == QMessageBox::Ignore)
                 ignoreError = true;
             else if (button == QMessageBox::Cancel)
-                q->interrupt();
+                m_core->interrupt();
         }
 
         if (ok || operation->error() > KDUpdater::UpdateOperation::InvalidArguments) {
@@ -1400,7 +1400,7 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
         }
 
         if (becameAdmin)
-            q->dropAdminRights();
+            m_core->dropAdminRights();
 
         if (!ok && !ignoreError)
             throw Error(operation->errorString());
@@ -1541,7 +1541,7 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
 
             bool becameAdmin = false;
             if (!adminRightsGained && undoOperation->value(QLatin1String("admin")).toBool())
-                becameAdmin = q->gainAdminRights();
+                becameAdmin = m_core->gainAdminRights();
 
             connectOperationToInstaller(undoOperation, undoOperationProgressSize);
             verbose() << "undo operation=" << undoOperation->name() << std::endl;
@@ -1551,7 +1551,7 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
             if (undoOperation->error() != KDUpdater::UpdateOperation::NoError) {
                 if (!componentName.isEmpty()) {
                     bool run = true;
-                    while (run && q->status() != Installer::Canceled) {
+                    while (run && m_core->status() != PackageManagerCore::Canceled) {
                         const QMessageBox::StandardButton button =
                             MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
                             QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
@@ -1570,7 +1570,7 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
             }
 
             if (!componentName.isEmpty()) {
-                Component *component = q->componentByName(componentName);
+                Component *component = m_core->componentByName(componentName);
                 if (!component)
                     component = componentsToReplace().value(componentName).second;
                 if (component) {
@@ -1580,7 +1580,7 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
             }
 
             if (becameAdmin)
-                q->dropAdminRights();
+                m_core->dropAdminRights();
 
             if (deleteOperation)
                 delete undoOperation;

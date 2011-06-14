@@ -29,7 +29,7 @@
 #include <QtGui/QDialog>
 
 namespace QInstaller {
-    class Installer;
+    class PackageManagerCore;
 }
 
 class ComponentSelectionDialog : public QDialog
@@ -37,7 +37,7 @@ class ComponentSelectionDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ComponentSelectionDialog(QInstaller::Installer *installer, QWidget *parent = 0);
+    explicit ComponentSelectionDialog(QInstaller::PackageManagerCore *core, QWidget *parent = 0);
     virtual ~ComponentSelectionDialog();
 
     Q_INVOKABLE void selectComponent(const QString &compoenent);

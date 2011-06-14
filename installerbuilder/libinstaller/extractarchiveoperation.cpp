@@ -79,9 +79,9 @@ bool ExtractArchiveOperation::performOperation()
     connect(&callback, SIGNAL(progressChanged(QString)), this, SLOT(slotProgressChanged(QString)), Qt::DirectConnection);
     connect(&callback, SIGNAL(progressChanged(int)), this, SIGNAL(progressChanged(int)), Qt::QueuedConnection);
 
-    if (QInstaller::Installer *installer = this->value(QLatin1String("installer")).value<QInstaller::Installer*>()) {
-        connect(installer, SIGNAL(statusChanged(QInstaller::Installer::Status)), &callback,
-                            SLOT(statusChanged(QInstaller::Installer::Status)), Qt::QueuedConnection);
+    if (PackageManagerCore *core = this->value(QLatin1String("installer")).value<PackageManagerCore*>()) {
+        connect(core, SIGNAL(statusChanged(QInstaller::PackageManagerCore::Status)), &callback,
+            SLOT(statusChanged(QInstaller::PackageManagerCore::Status)), Qt::QueuedConnection);
     }
     
     //Runnable is derived from QRunable which will be deleted by the ThreadPool -> no parent is needed

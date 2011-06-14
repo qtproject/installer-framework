@@ -67,13 +67,13 @@ bool RegisterQtInCreatorV2Operation::performOperation()
         return false;
     }
 
-    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
-    if (!installer) {
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = installer->value(scTargetDir);
+    const QString &rootInstallPath = core->value(scTargetDir);
     if (rootInstallPath.isEmpty() || !QDir(rootInstallPath).exists()) {
         setError(UserDefinedError);
         setErrorString(tr("The given TargetDir %1 is not a valid/existing dir.").arg(rootInstallPath));
@@ -143,13 +143,13 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
         return false;
     }
 
-    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
-    if (!installer) {
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = installer->value(scTargetDir);
+    const QString &rootInstallPath = core->value(scTargetDir);
 
     int argCounter = 0;
     const QString &versionName = args.value(argCounter++);

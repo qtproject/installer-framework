@@ -68,15 +68,15 @@ bool Updater::checkForUpdates()
         return false;
     }
 
-    Installer installer(content.magicmaker(), content.performedOperations());
-    installer.setUpdater();
-    Installer::setVirtualComponentsVisible(true);
+    PackageManagerCore core(content.magicmaker(), content.performedOperations());
+    core.setUpdater();
+    PackageManagerCore::setVirtualComponentsVisible(true);
 
     KDUpdater::Application updaterapp;
-    installer.setUpdaterApplication(&updaterapp);
+    core.setUpdaterApplication(&updaterapp);
 
-    if (installer.fetchUpdaterPackages()) {
-        const QList<QInstaller::Component*> components = installer.components(true, UpdaterMode);
+    if (core.fetchUpdaterPackages()) {
+        const QList<QInstaller::Component*> components = core.components(true, UpdaterMode);
 
         if (components.isEmpty()) {
             verbose() << tr("There are currently no updates available.") << std::endl;

@@ -45,20 +45,21 @@ namespace KDUpdater {
 }
 
 namespace QInstaller {
+
 class Component;
-class Installer;
+class PackageManagerCore;
 
 class ComponentPrivate
 {
     QInstaller::Component* const q;
 
 public:
-    explicit ComponentPrivate(Installer* installer, Component* qq);
+    explicit ComponentPrivate(PackageManagerCore *core, Component *qq);
 
     void init();
     void setProperty(QScriptValue &scriptValue, const QString &propertyName, int value);
 
-    Installer *m_installer;
+    PackageManagerCore *m_core;
     Component *m_parentComponent;
     KDUpdater::UpdateOperation *m_licenseOperation;
     KDUpdater::UpdateOperation *m_minimumProgressOperation;

@@ -41,15 +41,15 @@ namespace KDUpdater {
 
 namespace QInstaller {
 
-class Installer;
 class MessageBoxHandler;
+class PackageManagerCore;
 
 class DownloadArchivesJob : public KDJob
 {
     Q_OBJECT
 
 public:
-    explicit DownloadArchivesJob(const QByteArray &publicKey, Installer *installer = 0);
+    explicit DownloadArchivesJob(const QByteArray &publicKey, PackageManagerCore *core = 0);
     ~DownloadArchivesJob();
 
     void setArchivesToDownload(const QList<QPair<QString, QString> > &archives);
@@ -74,7 +74,7 @@ protected Q_SLOTS:
     void emitDownloadProgress(double progress);
 
 private:
-    Installer *m_installer;
+    PackageManagerCore *m_core;
     KDUpdater::FileDownloader *m_downloader;
 
     int m_archivesDownloaded;

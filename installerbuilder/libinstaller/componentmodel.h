@@ -34,15 +34,16 @@
 #include <QtCore/QVector>
 
 namespace QInstaller {
+
 class Component;
-class Installer;
+class PackageManagerCore;
 
 class INSTALLER_EXPORT ComponentModel : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
-    explicit ComponentModel(int columns, Installer *parent = 0);
+    explicit ComponentModel(int columns, PackageManagerCore *core = 0);
     ~ComponentModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -63,7 +64,7 @@ public:
     void setRootComponents(QList<Component*> rootComponents);
     void appendRootComponents(QList<Component*> rootComponents);
 
-    Installer* installer() const;
+    PackageManagerCore *packageManagerCore() const;
 
     bool defaultCheckState() const;
     bool hasCheckedComponents() const;
@@ -91,7 +92,7 @@ private:
     QModelIndexList collectComponents(const QModelIndex &parent) const;
 
 private:
-    Installer *m_installer;
+    PackageManagerCore *m_core;
 
     int m_rootIndex;
     QVector<QVariant> m_headerData;

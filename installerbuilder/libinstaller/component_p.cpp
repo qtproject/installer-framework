@@ -44,9 +44,9 @@ namespace QInstaller {
 
 // -- ComponentPrivate
 
-ComponentPrivate::ComponentPrivate(Installer* installer, Component* qq)
+ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
     : q(qq),
-    m_installer(installer),
+    m_core(core),
     m_parentComponent(0),
     m_licenseOperation(0),
     m_minimumProgressOperation(0),
@@ -88,29 +88,29 @@ void ComponentPrivate::init()
 
     // register ::WizardPage enum in the script connection
     QScriptValue qinstaller = m_scriptEngine.newArray();
-    setProperty(qinstaller, QLatin1String("Introduction"), Installer::Introduction);
-    setProperty(qinstaller, QLatin1String("LicenseCheck"), Installer::LicenseCheck);
-    setProperty(qinstaller, QLatin1String("TargetDirectory"), Installer::TargetDirectory);
-    setProperty(qinstaller, QLatin1String("ComponentSelection"), Installer::ComponentSelection);
-    setProperty(qinstaller, QLatin1String("StartMenuSelection"), Installer::StartMenuSelection);
-    setProperty(qinstaller, QLatin1String("ReadyForInstallation"), Installer::ReadyForInstallation);
-    setProperty(qinstaller, QLatin1String("PerformInstallation"), Installer::PerformInstallation);
-    setProperty(qinstaller, QLatin1String("InstallationFinished"), Installer::InstallationFinished);
-    setProperty(qinstaller, QLatin1String("End"), Installer::End);
+    setProperty(qinstaller, QLatin1String("Introduction"), PackageManagerCore::Introduction);
+    setProperty(qinstaller, QLatin1String("LicenseCheck"), PackageManagerCore::LicenseCheck);
+    setProperty(qinstaller, QLatin1String("TargetDirectory"), PackageManagerCore::TargetDirectory);
+    setProperty(qinstaller, QLatin1String("ComponentSelection"), PackageManagerCore::ComponentSelection);
+    setProperty(qinstaller, QLatin1String("StartMenuSelection"), PackageManagerCore::StartMenuSelection);
+    setProperty(qinstaller, QLatin1String("ReadyForInstallation"), PackageManagerCore::ReadyForInstallation);
+    setProperty(qinstaller, QLatin1String("PerformInstallation"), PackageManagerCore::PerformInstallation);
+    setProperty(qinstaller, QLatin1String("InstallationFinished"), PackageManagerCore::InstallationFinished);
+    setProperty(qinstaller, QLatin1String("End"), PackageManagerCore::End);
 
     // register ::Status enum in the script connection
-    setProperty(qinstaller, QLatin1String("InstallerSuccess"), Installer::Success);
-    setProperty(qinstaller, QLatin1String("InstallerSucceeded"), Installer::Success);
-    setProperty(qinstaller, QLatin1String("InstallerFailed"), Installer::Failure);
-    setProperty(qinstaller, QLatin1String("InstallerFailure"), Installer::Failure);
-    setProperty(qinstaller, QLatin1String("InstallerRunning"), Installer::Running);
-    setProperty(qinstaller, QLatin1String("InstallerCanceled"), Installer::Canceled);
-    setProperty(qinstaller, QLatin1String("InstallerCanceledByUser"), Installer::Canceled);
-    setProperty(qinstaller, QLatin1String("InstallerUnfinished"), Installer::Unfinished);
+    setProperty(qinstaller, QLatin1String("InstallerSuccess"), PackageManagerCore::Success);
+    setProperty(qinstaller, QLatin1String("InstallerSucceeded"), PackageManagerCore::Success);
+    setProperty(qinstaller, QLatin1String("InstallerFailed"), PackageManagerCore::Failure);
+    setProperty(qinstaller, QLatin1String("InstallerFailure"), PackageManagerCore::Failure);
+    setProperty(qinstaller, QLatin1String("InstallerRunning"), PackageManagerCore::Running);
+    setProperty(qinstaller, QLatin1String("InstallerCanceled"), PackageManagerCore::Canceled);
+    setProperty(qinstaller, QLatin1String("InstallerCanceledByUser"), PackageManagerCore::Canceled);
+    setProperty(qinstaller, QLatin1String("InstallerUnfinished"), PackageManagerCore::Unfinished);
 
-    QScriptValue installerObject = m_scriptEngine.newQObject(m_installer);
-    installerObject.setProperty(QLatin1String("componentByName"),
-        m_scriptEngine.newFunction(qInstallerComponentByName, 1));
+    QScriptValue installerObject = m_scriptEngine.newQObject(m_core);
+    installerObject.setProperty(QLatin1String("componentByName"), m_scriptEngine
+        .newFunction(qInstallerComponentByName, 1));
 
     m_scriptEngine.globalObject().setProperty(QLatin1String("QInstaller"), qinstaller);
     m_scriptEngine.globalObject().setProperty(QLatin1String("installer"), installerObject);
@@ -141,7 +141,7 @@ ComponentModelHelper::~ComponentModelHelper()
 */
 int ComponentModelHelper::childCount() const
 {
-    if (m_componentPrivate->m_installer->virtualComponentsVisible())
+    if (m_componentPrivate->m_core->virtualComponentsVisible())
         return m_componentPrivate->m_allComponents.count();
     return m_componentPrivate->m_components.count();
 }
@@ -163,7 +163,7 @@ int ComponentModelHelper::indexInParent() const
 QList<Component*> ComponentModelHelper::childs() const
 {
     QList<Component*> *components = &m_componentPrivate->m_components;
-    if (m_componentPrivate->m_installer->virtualComponentsVisible())
+    if (m_componentPrivate->m_core->virtualComponentsVisible())
         components = &m_componentPrivate->m_allComponents;
 
     QList<Component*> result;
@@ -181,7 +181,7 @@ QList<Component*> ComponentModelHelper::childs() const
 Component* ComponentModelHelper::childAt(int index) const
 {
     if (index >= 0 && index < childCount()) {
-        if (m_componentPrivate->m_installer->virtualComponentsVisible())
+        if (m_componentPrivate->m_core->virtualComponentsVisible())
             return m_componentPrivate->m_allComponents.value(index, 0);
         return m_componentPrivate->m_components.value(index, 0);
     }

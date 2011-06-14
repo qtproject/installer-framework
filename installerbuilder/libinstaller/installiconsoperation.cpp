@@ -167,15 +167,15 @@ bool InstallIconsOperation::performOperation()
         ++numItems;
     }
 
-    Installer* const installer = qVariantValue< Installer* >(value(QLatin1String("installer")));
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
 
     // iterate a second time to get the actual work done
     QDirIterator it(sourceDir.path(), QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
     while (it.hasNext())  {
         qApp->processEvents();
 
-        const int status = installer->status();
-        if(status == Installer::Canceled || status == Installer::Failure)
+        const int status = core->status();
+        if(status == PackageManagerCore::Canceled || status == PackageManagerCore::Failure)
             return true;
  
         const QString source = it.next();

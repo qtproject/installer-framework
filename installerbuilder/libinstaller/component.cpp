@@ -70,8 +70,8 @@ using namespace QInstaller;
 /*!
     Constructor. Creates a new Component inside of \a installer.
 */
-Component::Component(Installer *installer)
-    : d(new ComponentPrivate(installer, this))
+Component::Component(PackageManagerCore *core)
+    : d(new ComponentPrivate(core, this))
 {
     d->init();
     setPrivate(d);
@@ -79,8 +79,8 @@ Component::Component(Installer *installer)
     connect(this, SIGNAL(valueChanged(QString, QString)), this, SLOT(updateModelData(QString, QString)));
 }
 
-Component::Component(KDUpdater::Update* update, Installer* installer)
-    : d(new ComponentPrivate(installer, this))
+Component::Component(KDUpdater::Update* update, PackageManagerCore *core)
+    : d(new ComponentPrivate(core, this))
 {
     Q_ASSERT(update);
 
@@ -160,7 +160,7 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
     setValue(scReleaseDate, update->data(scReleaseDate).toString());
 
     QString forced = update->data(scForcedInstallation, scFalse).toString().toLower();
-    if (Installer::noForceInstallation())
+    if (PackageManagerCore::noForceInstallation())
         forced = scFalse;
     setValue(scForcedInstallation, forced);
     if (forced == scTrue) {
@@ -223,7 +223,7 @@ void Component::setRemoveBeforeUpdate(bool removeBeforeUpdate)
 
 QList<Component*> Component::dependees() const
 {
-    return d->m_installer->dependees(this);
+    return d->m_core->dependees(this);
 }
 
 /*
@@ -261,9 +261,9 @@ void Component::setValue(const QString &key, const QString &value)
 /*!
     Returns the installer this component belongs to.
 */
-Installer* Component::installer() const
+PackageManagerCore *Component::packageManagerCore() const
 {
-    return d->m_installer;
+    return d->m_core;
 }
 
 /*!
@@ -373,7 +373,7 @@ void Component::loadComponentScript(const QString &fileName)
             .arg(uncaughtExceptionString(&(d->m_scriptEngine)/*, QFileInfo(file).absoluteFilePath()*/)));
     }
 
-    const QList<Component*> components = d->m_installer->components(true, d->m_installer->runMode());
+    const QList<Component*> components = d->m_core->components(true, d->m_core->runMode());
     QScriptValue comps = d->m_scriptEngine.newArray(components.count());
     for (int i = 0; i < components.count(); ++i)
         comps.setProperty(i, d->m_scriptEngine.newQObject(components[i]));
@@ -738,8 +738,7 @@ QList<KDUpdater::UpdateOperation*> Component::operations() const
         if (!d->m_licenses.isEmpty()) {
             d->m_licenseOperation = KDUpdater::UpdateOperationFactory::instance()
                 .create(QLatin1String("License"));
-            d->m_licenseOperation->setValue(QLatin1String("installer"),
-                QVariant::fromValue(d->m_installer));
+            d->m_licenseOperation->setValue(QLatin1String("installer"), QVariant::fromValue(d->m_core));
 
             QVariantMap licenses;
             const QList<QPair<QString, QString> > values = d->m_licenses.values();
@@ -797,7 +796,7 @@ KDUpdater::UpdateOperation* Component::createOperation(const QString &operation,
 
     if (op->name() == QLatin1String("Delete"))
         op->setValue(QLatin1String("performUndo"), false);
-    op->setValue(QLatin1String("installer"), qVariantFromValue(d->m_installer));
+    op->setValue(QLatin1String("installer"), qVariantFromValue(d->m_core));
 
     QStringList arguments;
     if (!parameter1.isNull())
@@ -820,7 +819,7 @@ KDUpdater::UpdateOperation* Component::createOperation(const QString &operation,
         arguments.append(parameter9);
     if (!parameter10.isNull())
         arguments.append(parameter10);
-    op->setArguments(d->m_installer->replaceVariables(arguments));
+    op->setArguments(d->m_core->replaceVariables(arguments));
 
     return op;
 }
@@ -852,7 +851,10 @@ bool Component::addOperation(const QString &operation, const QString &parameter1
     \a operation is executed with elevated rights.
     \sa installeroperations
 */
-bool Component::addElevatedOperation(const QString &operation, const QString &parameter1, const QString &parameter2, const QString &parameter3, const QString &parameter4, const QString &parameter5, const QString &parameter6, const QString &parameter7, const QString &parameter8, const QString &parameter9, const QString &parameter10)
+bool Component::addElevatedOperation(const QString &operation, const QString &parameter1,
+    const QString &parameter2, const QString &parameter3, const QString &parameter4, const QString &parameter5,
+    const QString &parameter6, const QString &parameter7, const QString &parameter8, const QString &parameter9,
+    const QString &parameter10)
 {
     if (KDUpdater::UpdateOperation *op = createOperation(operation, parameter1, parameter2,
         parameter3, parameter4, parameter5, parameter6, parameter7, parameter8, parameter9,
@@ -1027,7 +1029,7 @@ void Component::updateModelData(const QString &key, const QString &data)
 {
     if (key == scVirtual) {
         if (data.toLower() == scTrue)
-            setData(installer()->virtualComponentsFont(), Qt::FontRole);
+            setData(d->m_core->virtualComponentsFont(), Qt::FontRole);
     }
 
     if (key == scVersion)

@@ -31,7 +31,7 @@
 
 namespace QInstaller {
     class PackageManagerGui;
-    class Installer;
+    class PackageManagerCore;
 }
 
 class IntroductionPageImpl;
@@ -46,9 +46,10 @@ public:
     ~TabController();
 
     void setGui(QInstaller::PackageManagerGui *gui);
+    void setManager(QInstaller::PackageManagerCore *core);
+    void setManagerParams(const QHash<QString, QString> &params);
+
     void setControlScript(const QString &script);
-    void setInstaller(QInstaller::Installer *installer);
-    void setInstallerParams(const QHash<QString, QString> &params);
 
 public Q_SLOTS:
     int init();

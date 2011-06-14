@@ -56,13 +56,12 @@ namespace QInstaller {
 struct BinaryLayout;
 
 class Component;
-class Installer;
 class TempDirDeleter;
 
 class InstallerPrivate : public QObject
 {
     Q_OBJECT;
-    friend class Installer;
+    friend class PackageManagerCore;
 
 public:
     enum OperationType {
@@ -72,7 +71,7 @@ public:
     };
 
     InstallerPrivate();
-    explicit InstallerPrivate(Installer *q, qint64 magicInstallerMaker,
+    explicit InstallerPrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<KDUpdater::UpdateOperation*> &performedOperations);
     ~InstallerPrivate();
 
@@ -98,8 +97,6 @@ public:
     QString configurationFileName() const;
     QString componentsXmlPath() const;
     QString localComponentsXmlPath() const;
-
-    Installer *installer() const { return q; }
 
     void clearAllComponentLists();
     void clearUpdaterComponentLists();
@@ -200,7 +197,7 @@ private:
         double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation);
 
 private:
-    Installer *q;
+    PackageManagerCore *m_core;
     qint64 m_magicBinaryMarker;
 
     // < name (component to replace), < replacement component, component to replace > >

@@ -37,7 +37,6 @@
 #include <component.h>
 #include <qinstaller.h>
 
-#include <QtCore/QPointer>
 #include <QtCore/QTimer>
 
 #include <QtScript/QScriptEngine>
@@ -58,8 +57,8 @@ public:
     bool m_allPackagesFetched;
     bool m_introPageConnected;
 
-    QPointer<QInstaller::PackageManagerGui> m_gui;
-    QInstaller::Installer *m_installer;
+    QInstaller::PackageManagerGui *m_gui;
+    QInstaller::PackageManagerCore *m_core;
 
     QString m_controlScript;
     QHash<QString, QString> m_params;
@@ -71,7 +70,7 @@ TabController::Private::Private()
     , m_allPackagesFetched(false)
     , m_introPageConnected(false)
     , m_gui(0)
-    , m_installer(0)
+    , m_core(0)
 {
 }
 
@@ -91,7 +90,7 @@ TabController::TabController(QObject *parent)
 
 TabController::~TabController()
 {
-    d->m_installer->writeUninstaller();
+    d->m_core->writeUninstaller();
     delete d;
 }
 
@@ -106,12 +105,12 @@ void TabController::setControlScript (const QString &script)
     d->m_controlScript = script;
 }
 
-void TabController::setInstaller(QInstaller::Installer *installer)
+void TabController::setManager(QInstaller::PackageManagerCore *core)
 {
-    d->m_installer = installer;
+    d->m_core = core;
 }
 
-void TabController::setInstallerParams(const QHash<QString, QString> &params)
+void TabController::setManagerParams(const QHash<QString, QString> &params)
 {
     d->m_params = params;
 }
@@ -133,11 +132,11 @@ int TabController::init()
                 engine->newQObject(this));
         }
 
-        if (!d->m_installer->isInstaller())
-            d->m_gui->setWindowTitle(d->m_installer->value(QLatin1String("MaintenanceTitle")));
+        if (!d->m_core->isInstaller())
+            d->m_gui->setWindowTitle(d->m_core->value(QLatin1String("MaintenanceTitle")));
 
         IntroductionPageImpl *introPage =
-            qobject_cast<IntroductionPageImpl*>(d->m_gui->page(Installer::Introduction));
+            qobject_cast<IntroductionPageImpl*>(d->m_gui->page(PackageManagerCore::Introduction));
         connect(introPage, SIGNAL(initUpdater()), this, SLOT(initUpdater()));
         connect(introPage, SIGNAL(initPackageManager()), this, SLOT(initPackageManager()));
     }
@@ -145,10 +144,10 @@ int TabController::init()
     d->m_updatesFetched = false;
     d->m_allPackagesFetched = false;
 
-    if (d->m_installer->isUpdater())
+    if (d->m_core->isUpdater())
         return initUpdater();
 
-    if (d->m_installer->isUninstaller())
+    if (d->m_core->isUninstaller())
         return initUninstaller();
 
     return initPackageManager();
@@ -164,7 +163,7 @@ int TabController::initUpdater()
 
     if (!d->m_introPageConnected) {
         d->m_introPageConnected = true;
-        connect(d->m_installer, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
+        connect(d->m_core, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
             SLOT(message(KDJob*, QString)));
     }
 
@@ -172,7 +171,7 @@ int TabController::initUpdater()
     d->m_gui->show();
 
     if (!d->m_updatesFetched)
-        d->m_updatesFetched = d->m_installer->fetchUpdaterPackages();
+        d->m_updatesFetched = d->m_core->fetchUpdaterPackages();
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
     // hide of pages depenging on the components.
@@ -184,9 +183,9 @@ int TabController::initUpdater()
     introPage->setMaintenanceToolsEnabled(true);
     introPage->setComplete(true);
 
-    if (d->m_installer->status() == Installer::Canceled)
-        return Installer::Canceled;
-    return Installer::Success;
+    if (d->m_core->status() == PackageManagerCore::Canceled)
+        return PackageManagerCore::Canceled;
+    return PackageManagerCore::Success;
 }
 
 int TabController::initUninstaller()
@@ -199,7 +198,7 @@ int TabController::initUninstaller()
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 
-    return Installer::Success;
+    return PackageManagerCore::Success;
 }
 
 int TabController::initPackageManager()
@@ -208,14 +207,14 @@ int TabController::initPackageManager()
 
     introPage->setComplete(false);
     introPage->showMetaInfoUdate();
-    if (d->m_installer->isPackageManager()) {
+    if (d->m_core->isPackageManager()) {
         introPage->showAll();
         introPage->setMaintenanceToolsEnabled(false);
     }
 
     if (!d->m_introPageConnected) {
         d->m_introPageConnected = true;
-        connect(d->m_installer, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
+        connect(d->m_core, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
             SLOT(message(KDJob*, QString)));
     }
 
@@ -223,7 +222,7 @@ int TabController::initPackageManager()
     d->m_gui->show();
 
     if (!d->m_allPackagesFetched)
-        d->m_allPackagesFetched = d->m_installer->fetchAllPackages();
+        d->m_allPackagesFetched = d->m_core->fetchAllPackages();
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
     // hide of pages depenging on the components.
@@ -231,7 +230,7 @@ int TabController::initPackageManager()
     d->m_gui->callControlScriptMethod(QLatin1String("PackageManagerSelectedCallback"));
     d->m_gui->triggerControlScriptForCurrentPage();
 
-    if (d->m_installer->isPackageManager()) {
+    if (d->m_core->isPackageManager()) {
         introPage->showMaintenanceTools();
         introPage->setMaintenanceToolsEnabled(true);
     } else {
@@ -239,16 +238,16 @@ int TabController::initPackageManager()
     }
     introPage->setComplete(true);
 
-    if (d->m_installer->status() == Installer::Canceled)
-        return Installer::Canceled;
-    return Installer::Success;
+    if (d->m_core->status() == PackageManagerCore::Canceled)
+        return PackageManagerCore::Canceled;
+    return PackageManagerCore::Success;
 }
 
 // -- private slots
 
 void TabController::restartWizard()
 {
-    d->m_installer->reset(d->m_params);
+    d->m_core->reset(d->m_params);
 
     // restart and switch back to intro page
     QTimer::singleShot(0, this, SLOT(init()));
@@ -258,5 +257,5 @@ void TabController::restartWizard()
 
 IntroductionPageImpl *TabController::introductionPage() const
 {
-    return qobject_cast<IntroductionPageImpl*> (d->m_gui->page(Installer::Introduction));
+    return qobject_cast<IntroductionPageImpl*> (d->m_gui->page(PackageManagerCore::Introduction));
 }

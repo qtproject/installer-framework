@@ -52,27 +52,27 @@ using namespace QInstaller;
 
 // -- IntroductionPageImpl
 
-IntroductionPageImpl::IntroductionPageImpl(QInstaller::Installer *installer)
-    : QInstaller::IntroductionPage(installer)
+IntroductionPageImpl::IntroductionPageImpl(QInstaller::PackageManagerCore *core)
+    : QInstaller::IntroductionPage(core)
 {
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
 
     m_packageManager = new QRadioButton(tr("Package manager"), this);
     layout->addWidget(m_packageManager);
-    m_packageManager->setChecked(installer->isPackageManager());
+    m_packageManager->setChecked(core->isPackageManager());
     connect(m_packageManager, SIGNAL(toggled(bool)), this, SLOT(setPackageManager(bool)));
 
     m_updateComponents = new QRadioButton(tr("Update components"), this);
     layout->addWidget(m_updateComponents);
-    m_updateComponents->setChecked(installer->isUpdater());
+    m_updateComponents->setChecked(core->isUpdater());
     connect(m_updateComponents, SIGNAL(toggled(bool)), this, SLOT(setUpdater(bool)));
 
     m_removeAllComponents = new QRadioButton(tr("Remove all components"), this);
     layout->addWidget(m_removeAllComponents);
-    m_removeAllComponents->setChecked(installer->isUninstaller());
+    m_removeAllComponents->setChecked(core->isUninstaller());
     connect(m_removeAllComponents, SIGNAL(toggled(bool)), this, SLOT(setUninstaller(bool)));
-    connect(m_removeAllComponents, SIGNAL(toggled(bool)), installer, SLOT(setCompleteUninstallation(bool)));
+    connect(m_removeAllComponents, SIGNAL(toggled(bool)), core, SLOT(setCompleteUninstallation(bool)));
 
     layout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
@@ -89,16 +89,16 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::Installer *installer)
     widget->setLayout(layout);
     setWidget(widget);
 
-    installer->setCompleteUninstallation(installer->isUninstaller());
+    core->setCompleteUninstallation(core->isUninstaller());
 }
 
 int IntroductionPageImpl::nextId() const
 {
-    if (installer()->isUninstaller())
-        return Installer::ReadyForInstallation;
+    if (packageManagerCore()->isUninstaller())
+        return PackageManagerCore::ReadyForInstallation;
 
-    if (installer()->isUpdater() || installer()->isPackageManager())
-        return Installer::ComponentSelection;
+    if (packageManagerCore()->isUpdater() || packageManagerCore()->isPackageManager())
+        return PackageManagerCore::ComponentSelection;
 
     return QInstaller::IntroductionPage::nextId();
 }
@@ -143,7 +143,7 @@ void IntroductionPageImpl::message(KDJob *job, const QString &msg)
 void IntroductionPageImpl::setUpdater(bool value)
 {
     if (value) {
-        installer()->setUpdater();
+        packageManagerCore()->setUpdater();
         emit initUpdater();
     }
 }
@@ -151,7 +151,7 @@ void IntroductionPageImpl::setUpdater(bool value)
 void IntroductionPageImpl::setUninstaller(bool value)
 {
     if (value) {
-        installer()->setUninstaller();
+        packageManagerCore()->setUninstaller();
         emit initUninstaller();
     }
 }
@@ -159,7 +159,7 @@ void IntroductionPageImpl::setUninstaller(bool value)
 void IntroductionPageImpl::setPackageManager(bool value)
 {
     if (value) {
-        installer()->setPackageManager();
+        packageManagerCore()->setPackageManager();
         emit initPackageManager();
     }
 }
@@ -179,8 +179,8 @@ void IntroductionPageImpl::showWidgets(bool show)
 /*!
     A custom target directory selection based due to the no-space restriction...
 */
-TargetDirectoryPageImpl::TargetDirectoryPageImpl(Installer *installer)
-  : TargetDirectoryPage(installer)
+TargetDirectoryPageImpl::TargetDirectoryPageImpl(PackageManagerCore *core)
+  : TargetDirectoryPage(core)
 {
     QPalette palette;
     palette.setColor(QPalette::WindowText, Qt::red);
@@ -257,7 +257,7 @@ bool TargetDirectoryPageImpl::validatePage()
         return false;
     }
 
-    const QString remove = installer()->value(QLatin1String("RemoveTargetDir"));
+    const QString remove = packageManagerCore()->value(QLatin1String("RemoveTargetDir"));
     if (!QVariant(remove).toBool())
         return true;
 
@@ -275,7 +275,7 @@ bool TargetDirectoryPageImpl::validatePage()
             return false;
         }
 
-        QString fileName = installer()->settings().uninstallerName();
+        QString fileName = packageManagerCore()->settings().uninstallerName();
 #if defined(Q_WS_MAC)
         if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
             fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
@@ -307,75 +307,76 @@ bool TargetDirectoryPageImpl::validatePage()
 
 // -- InstallerGui
 
-InstallerGui::InstallerGui(Installer *installer)
-    : PackageManagerGui(installer, 0)
+InstallerGui::InstallerGui(PackageManagerCore *core)
+    : PackageManagerGui(core, 0)
 {
-    setPage(Installer::Introduction, new IntroductionPageImpl(installer));
-    setPage(Installer::TargetDirectory, new TargetDirectoryPageImpl(installer));
-    setPage(Installer::ComponentSelection, new ComponentSelectionPage(m_installer));
-    setPage(Installer::LicenseCheck, new LicenseAgreementPage(installer));
+    setPage(PackageManagerCore::Introduction, new IntroductionPageImpl(core));
+    setPage(PackageManagerCore::TargetDirectory, new TargetDirectoryPageImpl(core));
+    setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
+    setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
 #ifdef Q_OS_WIN
-    setPage(Installer::StartMenuSelection, new StartMenuDirectoryPage(installer));
+    setPage(PackageManagerCore::StartMenuSelection, new StartMenuDirectoryPage(core));
 #endif
-    setPage(Installer::ReadyForInstallation, new ReadyForInstallationPage(installer));
-    setPage(Installer::PerformInstallation, new PerformInstallationPage(installer));
-    setPage(Installer::InstallationFinished, new FinishedPage(installer));
+    setPage(PackageManagerCore::ReadyForInstallation, new ReadyForInstallationPage(core));
+    setPage(PackageManagerCore::PerformInstallation, new PerformInstallationPage(core));
+    setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
 
     bool ok = false;
-    const int startPage = installer->value(QLatin1String("GuiStartPage")).toInt(&ok);
+    const int startPage = core->value(QLatin1String("GuiStartPage")).toInt(&ok);
     if(ok)
         setStartId(startPage);
 }
 
 void InstallerGui::init()
 {
-    if (m_installer->components(true, m_installer->runMode()).count() == 1)
-        wizardPageVisibilityChangeRequested(false, Installer::ComponentSelection);
+    if (packageManagerCore()->components(true, packageManagerCore()->runMode()).count() == 1)
+        wizardPageVisibilityChangeRequested(false, PackageManagerCore::ComponentSelection);
 }
 
 
-// -- Maintenance
+// -- MaintenanceGui
 
-MaintenanceGui::MaintenanceGui(Installer *installer)
-    : PackageManagerGui(installer, 0)
+MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
+    : PackageManagerGui(core, 0)
 {
-    IntroductionPageImpl *intro = new IntroductionPageImpl(installer);
+    IntroductionPageImpl *intro = new IntroductionPageImpl(core);
     connect(intro, SIGNAL(initUpdater()), this, SLOT(updateRestartPage()));
     connect(intro, SIGNAL(initUninstaller()), this, SLOT(updateRestartPage()));
     connect(intro, SIGNAL(initPackageManager()), this, SLOT(updateRestartPage()));
 
-    setPage(Installer::Introduction, intro);
-    setPage(Installer::ComponentSelection, new ComponentSelectionPage(m_installer));
-    setPage(Installer::LicenseCheck, new LicenseAgreementPage(installer));
-    setPage(Installer::ReadyForInstallation, new ReadyForInstallationPage(installer));
-    setPage(Installer::PerformInstallation, new PerformInstallationPage(installer));
-    setPage(Installer::InstallationFinished, new FinishedPage(installer));
+    setPage(PackageManagerCore::Introduction, intro);
+    setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
+    setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
+    setPage(PackageManagerCore::ReadyForInstallation, new ReadyForInstallationPage(core));
+    setPage(PackageManagerCore::PerformInstallation, new PerformInstallationPage(core));
+    setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
 
-    RestartPage *p = new RestartPage(installer);
+    RestartPage *p = new RestartPage(core);
     connect(p, SIGNAL(restart()), this, SIGNAL(gotRestarted()));
-    setPage(Installer::InstallationFinished + 1, p);
+    setPage(PackageManagerCore::InstallationFinished + 1, p);
 
-    if (installer->isUninstaller())
-        wizardPageVisibilityChangeRequested(false, Installer::InstallationFinished + 1);
+    if (core->isUninstaller())
+        wizardPageVisibilityChangeRequested(false, PackageManagerCore::InstallationFinished + 1);
 }
 
 void MaintenanceGui::init()
 {
-    const bool visible = !m_installer->components(false, m_installer->runMode()).isEmpty();
+    const bool visible = !packageManagerCore()->components(false, packageManagerCore()->runMode()).isEmpty();
 
-    wizardPageVisibilityChangeRequested(visible, Installer::ComponentSelection);
-    wizardPageVisibilityChangeRequested(visible, Installer::LicenseCheck);
+    wizardPageVisibilityChangeRequested(visible, PackageManagerCore::ComponentSelection);
+    wizardPageVisibilityChangeRequested(visible, PackageManagerCore::LicenseCheck);
 }
 
 int MaintenanceGui::nextId() const
 {
     const int next = QWizard::nextId();
-    if (next == Installer::LicenseCheck) {
+    if (next == PackageManagerCore::LicenseCheck) {
+        PackageManagerCore *const core = packageManagerCore();
         const int nextNextId = pageIds().value(pageIds().indexOf(next)+ 1, -1);
-        if (!m_installer->isPackageManager() && !m_installer->isUpdater())
+        if (!core->isPackageManager() && !core->isUpdater())
             return nextNextId;
 
-        QList<Component*> components = m_installer->componentsToInstall(m_installer->runMode());
+        QList<Component*> components = core->componentsToInstall(core->runMode());
         if (components.isEmpty())
             return nextNextId;
 
@@ -392,6 +393,6 @@ int MaintenanceGui::nextId() const
 
 void MaintenanceGui::updateRestartPage()
 {
-    wizardPageVisibilityChangeRequested((m_installer->isUninstaller() ? false : true),
-        Installer::InstallationFinished + 1);
+    wizardPageVisibilityChangeRequested((packageManagerCore()->isUninstaller() ? false : true),
+        PackageManagerCore::InstallationFinished + 1);
 }

@@ -63,14 +63,14 @@ bool LicenseOperation::performOperation()
         return false;
     }
 
-    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
-    if (!installer) {
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    if (!core) {
         setError( UserDefinedError );
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
 
-    QString targetDir = QString::fromLatin1("%1/%2").arg(installer->value(scTargetDir),
+    QString targetDir = QString::fromLatin1("%1/%2").arg(core->value(scTargetDir),
         QLatin1String("Licenses"));
 
     QDir dir;

@@ -80,13 +80,13 @@ bool RegisterDefaultDebuggerOperation::performOperation()
 
     QString toolChainsXmlFilePath;
 
-    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
-    if (!installer) {
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = installer->value(scTargetDir);
+    const QString &rootInstallPath = core->value(scTargetDir);
     toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
 
     int argCounter = 0;
@@ -120,13 +120,13 @@ bool RegisterDefaultDebuggerOperation::undoOperation()
 
     QString toolChainsXmlFilePath;
 
-    const Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
-    if (!installer) {
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = installer->value(scTargetDir);
+    const QString &rootInstallPath = core->value(scTargetDir);
     toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
 
     int argCounter = 0;

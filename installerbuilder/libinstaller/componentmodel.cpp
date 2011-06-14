@@ -38,9 +38,9 @@
 
 namespace QInstaller {
 
-ComponentModel::ComponentModel(int columns, Installer *parent)
-    : QAbstractItemModel(parent)
-    , m_installer(parent)
+ComponentModel::ComponentModel(int columns, PackageManagerCore *core)
+    : QAbstractItemModel(core)
+    , m_core(core)
     , m_rootIndex(0)
 {
     m_headerData.insert(0, columns, QVariant());
@@ -186,9 +186,9 @@ void ComponentModel::appendRootComponents(QList<Component*> rootComponents)
     endResetModel();
 }
 
-Installer* ComponentModel::installer() const
+PackageManagerCore *ComponentModel::packageManagerCore() const
 {
-    return m_installer;
+    return m_core;
 }
 
 bool ComponentModel::defaultCheckState() const
@@ -251,7 +251,7 @@ void ComponentModel::selectDefault()
 
 void ComponentModel::slotModelReset()
 {
-    if (installer()->runMode() == QInstaller::AllMode) {
+    if (m_core->runMode() == QInstaller::AllMode) {
         for (int i = m_rootIndex; i < m_rootComponentList.count(); ++i) {
             foreach (Component *child, m_rootComponentList.at(i)->childs()) {
                 if (child->checkState() == Qt::Checked && !child->isTristate())

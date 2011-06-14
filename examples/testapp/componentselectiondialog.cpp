@@ -47,9 +47,9 @@ class ComponentSelectionDialog::Private : public QObject
     Q_OBJECT
 
 public:    
-    Private(ComponentSelectionDialog *qq, Installer *inst)
+    Private(ComponentSelectionDialog *qq, PackageManagerCore *core)
         : q(qq),
-          installer(inst)
+          m_core(core)
     {
     }
 
@@ -90,7 +90,7 @@ private:
 
 public:
     Ui::ComponentSelectionDialog ui;
-    Installer *const installer;
+    PackageManagerCore *const m_core;
     ComponentModel *componentModel;
     QPushButton *installBtn;
 
@@ -112,9 +112,9 @@ void ComponentSelectionDialog::Private::deselectAll()
 
 // -- ComponentSelectionDialog
 
-ComponentSelectionDialog::ComponentSelectionDialog(Installer *installer, QWidget *parent)
+ComponentSelectionDialog::ComponentSelectionDialog(PackageManagerCore *core, QWidget *parent)
     : QDialog(parent),
-      d(new Private(this, installer))
+      d(new Private(this, core))
 {
     d->ui.setupUi(this);
     d->ui.icon->setPixmap(windowIcon().pixmap(48, 48));
@@ -123,7 +123,7 @@ ComponentSelectionDialog::ComponentSelectionDialog(Installer *installer, QWidget
     d->ui.splitter->setStretchFactor(1, 1);
     d->ui.splitter->setCollapsible(0, false);
 
-    d->componentModel = new ComponentModel(5, installer);
+    d->componentModel = new ComponentModel(5, core);
     d->componentModel->setHeaderData(0, Qt::Horizontal, tr("Name"));
     d->componentModel->setHeaderData(1, Qt::Horizontal, tr("Installed Version"));
     d->componentModel->setHeaderData(2, Qt::Horizontal, tr("New Version"));

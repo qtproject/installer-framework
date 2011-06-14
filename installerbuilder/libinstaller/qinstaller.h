@@ -60,7 +60,7 @@ class KDJob;
 #define INSTALLERBASE_VERSION "2"
 
 /*
- * TRANSLATOR QInstaller::Installer
+ * TRANSLATOR QInstaller::PackageManagerCore
  */
 namespace QInstaller {
 
@@ -70,7 +70,7 @@ class InstallerPrivate;
 class InstallerSettings;
 class MessageBoxHandler;
 
-class INSTALLER_EXPORT Installer : public QObject
+class INSTALLER_EXPORT PackageManagerCore : public QObject
 {
     Q_OBJECT
 
@@ -78,10 +78,10 @@ class INSTALLER_EXPORT Installer : public QObject
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
 public:
-    Installer();
-    explicit Installer(qint64 magicmaker, const QVector<KDUpdater::UpdateOperation*> &performedOperations
+    PackageManagerCore();
+    explicit PackageManagerCore(qint64 magicmaker, const QVector<KDUpdater::UpdateOperation*> &oldOperations
             = QVector< KDUpdater::UpdateOperation*>());
-    ~Installer();
+    ~PackageManagerCore();
 
     // status
     enum Status {
@@ -241,7 +241,7 @@ Q_SIGNALS:
     void updaterComponentsAdded(QList<QInstaller::Component*> components);
     void componentsAboutToBeCleared();
     void valueChanged(const QString &key, const QString &value);
-    void statusChanged(QInstaller::Installer::Status);
+    void statusChanged(QInstaller::PackageManagerCore::Status);
     void currentPageChanged(int page);
     void finishButtonClicked();
 
@@ -262,9 +262,9 @@ Q_SIGNALS:
     void uninstallationFinished();
     void titleMessageChanged(const QString &title);
 
-    void wizardPageInsertionRequested(QWidget *widget, Installer::WizardPage page);
+    void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardPageRemovalRequested(QWidget *widget);
-    void wizardWidgetInsertionRequested(QWidget *widget, Installer::WizardPage page);
+    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardWidgetRemovalRequested(QWidget *widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
 
@@ -272,7 +272,7 @@ Q_SIGNALS:
 
 private:
     bool setAndParseLocalComponentsFile(KDUpdater::PackagesInfo &packagesInfo);
-    Installer::Status handleComponentsFileSetOrParseError(const QString &arg1,
+    PackageManagerCore::Status handleComponentsFileSetOrParseError(const QString &arg1,
         const QString &arg2 = QString(), bool withRetry = true);
 
     struct Data {
@@ -283,7 +283,7 @@ private:
         QHash<QString, KDUpdater::PackageInfo> *installedPackages;
     };
     bool updateComponentData(struct Data &data, QInstaller::Component *component);
-    static Component *subComponentByName(const QInstaller::Installer *installer, const QString &name,
+    static Component *subComponentByName(const QInstaller::PackageManagerCore *installer, const QString &name,
         const QString &version = QString(), Component *check = 0);
     void storeReplacedComponents(QMap<QString, Component*> &components,
         const QHash<Component*, QStringList> &replacementToExchangeables);
@@ -295,6 +295,6 @@ private:
 
 }
 
-Q_DECLARE_METATYPE(QInstaller::Installer*)
+Q_DECLARE_METATYPE(QInstaller::PackageManagerCore*)
 
 #endif // QINSTALLER_H

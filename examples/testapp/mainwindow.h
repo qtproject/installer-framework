@@ -49,7 +49,7 @@ private Q_SLOTS:
 private:
     UpdateSettingsDialog *m_dialog;
 
-    QInstaller::Installer m_installer;
     KDUpdater::Application updaterapp;
+    QInstaller::PackageManagerCore m_core;
     QInstaller::InstallerSettings m_settings;
 };

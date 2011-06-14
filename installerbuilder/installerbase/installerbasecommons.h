@@ -42,7 +42,7 @@ class IntroductionPageImpl : public QInstaller::IntroductionPage
     Q_OBJECT
 
 public:
-    explicit IntroductionPageImpl(QInstaller::Installer *installer);
+    explicit IntroductionPageImpl(QInstaller::PackageManagerCore *core);
 
     int nextId() const;
 
@@ -84,7 +84,7 @@ class TargetDirectoryPageImpl : public QInstaller::TargetDirectoryPage
     Q_OBJECT
 
 public:
-    explicit TargetDirectoryPageImpl(QInstaller::Installer *installer);
+    explicit TargetDirectoryPageImpl(QInstaller::PackageManagerCore *core);
 
     QString targetDirWarning() const;
     bool isComplete() const;
@@ -104,7 +104,7 @@ class InstallerGui : public QInstaller::PackageManagerGui
     Q_OBJECT
 
 public:
-    explicit InstallerGui(QInstaller::Installer *installer);
+    explicit InstallerGui(QInstaller::PackageManagerCore *core);
 
     virtual void init();
 };
@@ -117,7 +117,7 @@ class MaintenanceGui : public QInstaller::PackageManagerGui
     Q_OBJECT
 
 public:
-    explicit MaintenanceGui(QInstaller::Installer *installer);
+    explicit MaintenanceGui(QInstaller::PackageManagerCore *core);
 
     virtual void init();
     virtual int nextId() const;

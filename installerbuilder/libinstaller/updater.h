@@ -31,7 +31,6 @@
 #include <QtCore/QObject>
 
 namespace QInstaller {
-class Installer;
 
 class INSTALLER_EXPORT Updater : public QObject
 {

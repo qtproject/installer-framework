@@ -82,9 +82,8 @@ bool RegisterQtInCreatorOperation::performOperation()
     QString sbsPath = args.value(8);
 
 //this is for creator 2.2
-    QInstaller::Installer* const installer = qVariantValue<Installer*>(value(QLatin1String(
-        "installer")));
-    if (!installer) {
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
@@ -92,11 +91,11 @@ bool RegisterQtInCreatorOperation::performOperation()
     QString toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
     bool isCreator22 = false;
     //in case of the fake installer this component doesn't exist
-    Component* creatorComponent = installer->componentByName(
-        QLatin1String("com.nokia.ndk.tools.qtcreator.application"));
+    Component* creatorComponent =
+        core->componentByName(QLatin1String("com.nokia.ndk.tools.qtcreator.application"));
     if (creatorComponent) {
         const QString creatorVersion = creatorComponent->value(scInstalledVersion);
-        isCreator22 = Installer::versionMatches(creatorVersion, QLatin1String("2.2"));
+        isCreator22 = PackageManagerCore::versionMatches(creatorVersion, QLatin1String("2.2"));
     }
 
     if (QFileInfo(toolChainsXmlFilePath).exists() || isCreator22) {
@@ -110,7 +109,7 @@ bool RegisterQtInCreatorOperation::performOperation()
         }
         if (!mingwPath.isEmpty()) {
             RegisterToolChainOperation operation;
-            operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
+            operation.setValue(QLatin1String("installer"), QVariant::fromValue(core));
             operation.setArguments(QStringList()
                                    << QLatin1String("GccToolChain")
                                    << QLatin1String("ProjectExplorer.ToolChain.Mingw")
@@ -128,7 +127,7 @@ bool RegisterQtInCreatorOperation::performOperation()
         }
         if (!gccePath.isEmpty()) {
             RegisterToolChainOperation operation;
-            operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
+            operation.setValue(QLatin1String("installer"), QVariant::fromValue(core));
             operation.setArguments(QStringList()
                                    << QLatin1String("GccToolChain")
                                    << QLatin1String("Qt4ProjectManager.ToolChain.GCCE")
@@ -145,7 +144,7 @@ bool RegisterQtInCreatorOperation::performOperation()
             }
         }
         RegisterQtInCreatorV2Operation registerQtInCreatorV2Operation;
-        registerQtInCreatorV2Operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
+        registerQtInCreatorV2Operation.setValue(QLatin1String("installer"), QVariant::fromValue(core));
         registerQtInCreatorV2Operation.setArguments(QStringList() << versionName << path << s60SdkPath
             << sbsPath);
         if (!registerQtInCreatorV2Operation.performOperation()) {

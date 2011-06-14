@@ -140,7 +140,7 @@ bool removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList 
 }
 
 bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXmlFilePath,
-    QInstaller::Installer* const installer)
+    QInstaller::PackageManagerCore *const core)
 {
     QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")).toString().split(
         QLatin1String(";"));
@@ -186,7 +186,7 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
         if (mingwPath.isEmpty())
             continue;
         QInstaller::RegisterToolChainOperation operation;
-        operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
+        operation.setValue(QLatin1String("installer"), QVariant::fromValue(core));
         operation.setArguments(QStringList()
                                << QLatin1String("GccToolChain")
                                << QLatin1String("ProjectExplorer.ToolChain.Mingw")
@@ -203,7 +203,7 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
         if (gccePath.isEmpty())
             continue;
         QInstaller::RegisterToolChainOperation operation;
-        operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
+        operation.setValue(QLatin1String("installer"), QVariant::fromValue(core));
         operation.setArguments(QStringList()
                                << QLatin1String("GccToolChain")
                                << QLatin1String("Qt4ProjectManager.ToolChain.GCCE")
@@ -219,8 +219,7 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
     return true;
 }
 
-void convertDefaultGDBInstallerSettings(QSettings &settings,
-    QInstaller::Installer* const installer)
+void convertDefaultGDBInstallerSettings(QSettings &settings, QInstaller::PackageManagerCore* const core)
 {
     settings.beginGroup(QLatin1String("GdbBinaries21"));
 
@@ -251,7 +250,7 @@ void convertDefaultGDBInstallerSettings(QSettings &settings,
         }
     }
     QInstaller::RegisterDefaultDebuggerOperation operation;
-    operation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
+    operation.setValue(QLatin1String("installer"), QVariant::fromValue(core));
 
     QHashIterator<QString, QString> it(abiToDefaultDebuggerHash);
     while (it.hasNext()) {
@@ -288,22 +287,22 @@ bool UpdateCreatorSettingsFrom21To22Operation::performOperation()
         return false;
     }
 
-    Installer* const installer = qVariantValue<Installer*>(value(QLatin1String("installer")));
-    if (!installer) {
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = installer->value(scTargetDir);
+    const QString &rootInstallPath = core->value(scTargetDir);
 
     QString toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
 
     QSettings sdkSettings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
         QSettings::IniFormat);
 
-    convertDefaultGDBInstallerSettings(sdkSettings, installer);
+    convertDefaultGDBInstallerSettings(sdkSettings, core);
 
-    QString userSettingsFileName = installer->value(QLatin1String("QtCreatorSettingsFile"));
+    QString userSettingsFileName = core->value(QLatin1String("QtCreatorSettingsFile"));
     if (QFile::exists(userSettingsFileName)) {
         QSettings userSettings(userSettingsFileName, QSettings::IniFormat);
         QStringList qmakePathes = getQmakePathesOfAllInstallerRegisteredQtVersions(sdkSettings);
@@ -314,7 +313,7 @@ bool UpdateCreatorSettingsFrom21To22Operation::performOperation()
         }
     }
 
-    return convertQtInstallerSettings(sdkSettings, toolChainsXmlFilePath, installer);
+    return convertQtInstallerSettings(sdkSettings, toolChainsXmlFilePath, core);
 }
 
 bool UpdateCreatorSettingsFrom21To22Operation::undoOperation()

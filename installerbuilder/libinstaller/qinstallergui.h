@@ -50,8 +50,8 @@ QT_END_NAMESPACE
 
 namespace QInstaller {
 
-class Installer;
 class IntroductionPage;
+class PackageManagerCore;
 class Page;
 class PerformInstallationForm;
 
@@ -63,7 +63,7 @@ class INSTALLER_EXPORT PackageManagerGui : public QWizard
     Q_OBJECT
 
 public:
-    explicit PackageManagerGui(Installer *installer, QWidget *parent = 0);
+    explicit PackageManagerGui(PackageManagerCore *core, QWidget *parent = 0);
     virtual ~PackageManagerGui();
     virtual void init() = 0;
 
@@ -93,9 +93,9 @@ public Q_SLOTS:
     void setModified(bool value);
 
 protected Q_SLOTS:
-    void wizardPageInsertionRequested(QWidget* widget, Installer::WizardPage page);
+    void wizardPageInsertionRequested(QWidget* widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardPageRemovalRequested(QWidget* widget);
-    void wizardWidgetInsertionRequested(QWidget* widget, Installer::WizardPage page);
+    void wizardWidgetInsertionRequested(QWidget* widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardWidgetRemovalRequested(QWidget* widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
     void slotCurrentPageChanged(int id);
@@ -108,11 +108,12 @@ private Q_SLOTS:
 
 protected:
     bool event(QEvent* event);
-    Installer *m_installer;
+    PackageManagerCore *packageManagerCore() const { return m_core; }
 
 private:
     class Private;
     Private* const d;
+    PackageManagerCore *m_core;
 };
 
 
@@ -123,7 +124,7 @@ class INSTALLER_EXPORT Page : public QWizardPage
     Q_OBJECT
 
 public:
-    explicit Page(Installer *installer);
+    explicit Page(PackageManagerCore *core);
 
     virtual bool isInterruptible() const { return false; }
     virtual QPixmap watermarkPixmap() const;
@@ -136,7 +137,7 @@ public:
     PackageManagerGui* gui() const { return qobject_cast<PackageManagerGui*>(wizard()); }
 
 protected:
-    Installer *installer() const;
+    PackageManagerCore *packageManagerCore() const;
 
     // Inserts widget into the same layout like a sibling identified
     // by its name. Default position is just behind the sibling.
@@ -152,9 +153,10 @@ protected:
     bool isConstructing() const { return m_fresh; }
 
 private:
-    Installer *m_installer;
     bool m_fresh;
     bool m_complete;
+
+    PackageManagerCore *m_core;
 };
 
 
@@ -165,7 +167,7 @@ class INSTALLER_EXPORT IntroductionPage : public Page
     Q_OBJECT
 
 public:
-    explicit IntroductionPage(Installer *installer);
+    explicit IntroductionPage(PackageManagerCore *core);
     void setText(const QString &text);
     void setWidget(QWidget *w);
 
@@ -182,7 +184,7 @@ class INSTALLER_EXPORT LicenseAgreementPage : public Page
     Q_OBJECT
 
 public:
-    explicit LicenseAgreementPage(Installer *installer);
+    explicit LicenseAgreementPage(PackageManagerCore *core);
 
     void entering();
     bool isComplete() const;
@@ -210,7 +212,7 @@ class INSTALLER_EXPORT ComponentSelectionPage : public Page
     Q_OBJECT
 
 public:
-    explicit ComponentSelectionPage(Installer *installer);
+    explicit ComponentSelectionPage(PackageManagerCore *core);
     ~ComponentSelectionPage();
 
     bool isComplete() const;
@@ -240,7 +242,7 @@ class INSTALLER_EXPORT TargetDirectoryPage : public Page
     Q_OBJECT
 
 public:
-    explicit TargetDirectoryPage(Installer *installer);
+    explicit TargetDirectoryPage(PackageManagerCore *core);
     QString targetDir() const;
     void setTargetDir(const QString &dirName);
 
@@ -267,7 +269,7 @@ class INSTALLER_EXPORT StartMenuDirectoryPage : public Page
     Q_OBJECT
 
 public:
-    explicit StartMenuDirectoryPage(Installer *installer);
+    explicit StartMenuDirectoryPage(PackageManagerCore *core);
 
     QString startMenuDir() const;
     void setStartMenuDir(const QString &startMenuDir);
@@ -292,7 +294,7 @@ class INSTALLER_EXPORT ReadyForInstallationPage : public Page
     Q_OBJECT
 
 public:
-    explicit ReadyForInstallationPage(Installer *installer);
+    explicit ReadyForInstallationPage(PackageManagerCore *core);
 
     bool isComplete() const;
 
@@ -312,7 +314,7 @@ class INSTALLER_EXPORT PerformInstallationPage : public Page
     Q_OBJECT
 
 public:
-    explicit PerformInstallationPage(Installer *installer);
+    explicit PerformInstallationPage(PackageManagerCore *core);
     ~PerformInstallationPage();
     bool isAutoSwitching() const;
 
@@ -346,7 +348,7 @@ class INSTALLER_EXPORT FinishedPage : public Page
     Q_OBJECT
 
 public:
-    explicit FinishedPage(Installer *installer);
+    explicit FinishedPage(PackageManagerCore *core);
 
 public Q_SLOTS:
     void handleFinishClicked();
@@ -368,7 +370,7 @@ class INSTALLER_EXPORT RestartPage : public Page
     Q_OBJECT
 
 public:
-    explicit RestartPage(Installer *installer);
+    explicit RestartPage(PackageManagerCore *core);
 
     virtual int nextId() const;
 

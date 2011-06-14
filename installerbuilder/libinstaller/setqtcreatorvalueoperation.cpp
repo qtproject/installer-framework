@@ -100,15 +100,14 @@ bool SetQtCreatorValueOperation::performOperation()
 } //destruct QSettings
 
     if (group == QLatin1String("GdbBinaries21")) {
-        QInstaller::Installer* const installer = qVariantValue<Installer*>(value(QLatin1String(
-            "installer")));
-        if (!installer) {
+        PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+        if (!core) {
             setError(UserDefinedError);
             setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
             return false;
         }
         UpdateCreatorSettingsFrom21To22Operation updateCreatorSettingsOperation;
-        updateCreatorSettingsOperation.setValue(QLatin1String("installer"), QVariant::fromValue(installer));
+        updateCreatorSettingsOperation.setValue(QLatin1String("installer"), QVariant::fromValue(core));
         if (!updateCreatorSettingsOperation.performOperation()) {
             setError(updateCreatorSettingsOperation.error());
             setErrorString(updateCreatorSettingsOperation.errorString());

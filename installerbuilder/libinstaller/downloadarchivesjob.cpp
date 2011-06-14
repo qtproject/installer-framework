@@ -48,9 +48,9 @@ using namespace KDUpdater;
 /*!
     Creates a new DownloadArchivesJob with \a parent.
 */
-DownloadArchivesJob::DownloadArchivesJob(const QByteArray &publicKey, Installer *installer)
-    : KDJob(installer),
-      m_installer(installer),
+DownloadArchivesJob::DownloadArchivesJob(const QByteArray &publicKey, PackageManagerCore *core)
+    : KDJob(core),
+      m_core(core),
       m_downloader(0),
       m_archivesDownloaded(0),
       m_archivesToDownloadCount(0),
@@ -109,7 +109,7 @@ void DownloadArchivesJob::doCancel()
 
 void DownloadArchivesJob::fetchNextArchiveHash()
 {
-    if (m_installer->testChecksum()) {
+    if (m_core->testChecksum()) {
         if (m_canceled) {
             finishWithError(tr("Canceled"));
             return;
@@ -151,7 +151,7 @@ void DownloadArchivesJob::fetchNextArchiveHash()
         m_downloader->setAutoRemoveDownloadedFile(false);
 
         const QString comp = QFileInfo(QFileInfo(m_archivesToDownload.first().first).path()).fileName();
-        const Component *const component = m_installer->componentByName(comp);
+        const Component *const component = m_core->componentByName(comp);
 
         emit outputTextChanged(tr("Downloading archive hash for component: %1").arg(component->displayName()));
         m_downloader->download();
@@ -219,7 +219,7 @@ void DownloadArchivesJob::fetchNextArchive()
     m_downloader->setAutoRemoveDownloadedFile(false);
 
     const QString comp = QFileInfo(QFileInfo(m_archivesToDownload.first().first).path()).fileName();
-    const Component* const component = m_installer->componentByName(comp);
+    const Component* const component = m_core->componentByName(comp);
 
     emit outputTextChanged(tr("Downloading archive for component %1").arg(component->displayName()));
     emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
@@ -268,7 +268,7 @@ void DownloadArchivesJob::registerFile()
     const QString tempFile = m_downloader->downloadedFileName();
     QFile archiveFile(tempFile);
     if (archiveFile.open(QFile::ReadOnly)) {
-        if (m_installer->testChecksum()) {
+        if (m_core->testChecksum()) {
             const QByteArray archiveHash = QCryptographicHash::hash(archiveFile.readAll(),
                 QCryptographicHash::Sha1).toHex();
             if (archiveHash != m_currentHash) {
