@@ -213,7 +213,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     if (m_core->isInstaller())
         setWindowTitle(tr("%1 Setup").arg(m_core->value(QLatin1String("Title"))));
     else
-        setWindowTitle(tr("%1").arg(m_core->value(QLatin1String("maintenanceTitle"))));
+        setWindowTitle(tr("%1").arg(m_core->value(QLatin1String("MaintenanceTitle"))));
 
 #ifndef Q_WS_MAC
     setWindowIcon(QIcon(m_core->settings().icon()));
@@ -404,7 +404,8 @@ bool PackageManagerGui::event(QEvent* event)
     return QWizard::event(event);
 }
 
-void PackageManagerGui::wizardPageInsertionRequested(QWidget* widget, QInstaller::PackageManagerCore::WizardPage page)
+void PackageManagerGui::wizardPageInsertionRequested(QWidget* widget,
+    QInstaller::PackageManagerCore::WizardPage page)
 {
     // just in case it was already in there...
     wizardPageRemovalRequested(widget);
@@ -431,7 +432,8 @@ void PackageManagerGui::wizardPageRemovalRequested(QWidget* widget)
     }
 }
 
-void PackageManagerGui::wizardWidgetInsertionRequested(QWidget* widget, QInstaller::PackageManagerCore::WizardPage page)
+void PackageManagerGui::wizardWidgetInsertionRequested(QWidget* widget,
+    QInstaller::PackageManagerCore::WizardPage page)
 {
     Q_ASSERT(widget);
     if (QWizardPage* const p = QWizard::page(page))
@@ -484,7 +486,7 @@ QWidget* PackageManagerGui::currentPageWidget() const
 void PackageManagerGui::cancelButtonClicked()
 {
     if (currentId() != PackageManagerCore::InstallationFinished) {
-        Page* const page = qobject_cast<Page*>(currentPage());
+        Page *const page = qobject_cast<Page*>(currentPage());
         if (page && page->isInterruptible()) {
             const QMessageBox::StandardButton bt =
                 MessageBoxHandler::question(MessageBoxHandler::currentBestSuitParent(),
@@ -635,7 +637,7 @@ int Page::nextId() const
 }
 
 
-// -- QInstallerIntroductionPage
+// -- IntroductionPage
 
 IntroductionPage::IntroductionPage(PackageManagerCore *core)
     : Page(core)
