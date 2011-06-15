@@ -31,7 +31,7 @@
 **
 **************************************************************************/
 #include "replaceoperation.h"
-#include <qinstaller.h>
+#include <packagemanagercore.h>
 #include "common/utils.h"
 
 #include <QFile>

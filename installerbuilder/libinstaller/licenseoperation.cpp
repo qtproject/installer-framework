@@ -32,7 +32,7 @@
 **************************************************************************/
 #include "licenseoperation.h"
 
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 #include "common/installersettings.h"
 
 #include <QtCore/QDir>

@@ -32,7 +32,7 @@
 **************************************************************************/
 #include "registerdefaultdebuggeroperation.h"
 #include "persistentsettings.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 #include "qtcreator_constants.h"
 #include "qtcreatorpersistentsettings.h"
 

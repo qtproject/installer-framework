@@ -33,7 +33,7 @@
 #include "registerqtoperation.h"
 
 #include "component.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 #include "qtcreator_constants.h"
 #include "qtcreatorpersistentsettings.h"
 #include "registertoolchainoperation.h"

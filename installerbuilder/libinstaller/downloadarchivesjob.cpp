@@ -37,7 +37,7 @@
 #include "component.h"
 #include "cryptosignatureverifier.h"
 #include "messageboxhandler.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 
 #include <QtCore/QFile>
 

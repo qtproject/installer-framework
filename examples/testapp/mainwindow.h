@@ -24,7 +24,7 @@
 **
 **************************************************************************/
 
-#include <qinstaller.h>
+#include <packagemanagercore.h>
 #include <common/installersettings.h>
 
 #include <KDUpdater/Application>

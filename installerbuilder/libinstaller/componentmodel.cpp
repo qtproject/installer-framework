@@ -33,7 +33,7 @@
 #include "componentmodel.h"
 
 #include "component.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 
 
 namespace QInstaller {

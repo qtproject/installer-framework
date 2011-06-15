@@ -33,7 +33,7 @@
 #include "setqtcreatorvalueoperation.h"
 #include "qtcreator_constants.h"
 #include "updatecreatorsettingsfrom21to22operation.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 
 #include <QString>
 #include <QFileInfo>

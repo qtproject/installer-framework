@@ -37,7 +37,7 @@
 #include "common/utils.h"
 #include "fsengineclient.h"
 #include "lib7z_facade.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 #include "qinstallerglobal.h"
 #include "messageboxhandler.h"
 

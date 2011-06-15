@@ -26,7 +26,7 @@
 #ifndef INSTALLERBASECOMMONS_H
 #define INSTALLERBASECOMMONS_H
 
-#include <qinstallergui.h>
+#include <packagemanagergui.h>
 
 QT_BEGIN_NAMESPACE
 class QLabel;

@@ -34,7 +34,7 @@
 #include "registerdefaultdebuggeroperation.h"
 #include "registertoolchainoperation.h"
 #include "qtcreatorpersistentsettings.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 #include "qtcreator_constants.h"
 
 #include <QString>

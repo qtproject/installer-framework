@@ -32,7 +32,7 @@
 **************************************************************************/
 #include "installiconsoperation.h"
 
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 
 #include "common/errors.h"
 #include "common/fileutils.h"

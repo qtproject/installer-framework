@@ -26,7 +26,7 @@
 #ifndef QINSTALLER_GUI_H
 #define QINSTALLER_GUI_H
 
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 
 #include <QtCore/QEvent>
 #include <QtCore/QMetaType>

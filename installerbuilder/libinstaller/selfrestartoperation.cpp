@@ -31,7 +31,7 @@
 **
 **************************************************************************/
 #include "selfrestartoperation.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 
 #include <KDToolsCore/KDSelfRestarter>
 

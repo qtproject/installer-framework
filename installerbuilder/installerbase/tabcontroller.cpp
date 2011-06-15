@@ -35,7 +35,7 @@
 
 #include <common/utils.h>
 #include <component.h>
-#include <qinstaller.h>
+#include <packagemanagercore.h>
 
 #include <QtCore/QTimer>
 

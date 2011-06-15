@@ -31,7 +31,7 @@
 **
 **************************************************************************/
 #include "registerqtv2operation.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 #include "qtcreator_constants.h"
 
 #include <QString>

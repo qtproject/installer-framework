@@ -40,11 +40,11 @@
 #include "installerbasecommons.h"
 #include "lib7z_facade.h"
 #include "qinstallerglobal.h"
-#include "qinstallergui.h"
+#include "packagemanagergui.h"
 #include "tabcontroller.h"
 #include "updater.h"
 
-#include <qinstaller.h>
+#include <packagemanagercore.h>
 
 #include <QtCore/QTranslator>
 #include <QtCore/QThread>

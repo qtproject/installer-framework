@@ -30,7 +30,7 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 
 #include "adminauthorization.h"
 #include "common/binaryformat.h"
@@ -42,8 +42,8 @@
 #include "fsengineclient.h"
 #include "getrepositoriesmetainfojob.h"
 #include "messageboxhandler.h"
+#include "packagemanagercore_p.h"
 #include "progresscoordinator.h"
-#include "qinstaller_p.h"
 #include "qinstallerglobal.h"
 #include "qprocesswrapper.h"
 #include "qsettingswrapper.h"

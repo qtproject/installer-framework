@@ -28,7 +28,7 @@
 
 #include "extractarchiveoperation.h"
 #include "lib7z_facade.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 
 #include <QDir>
 #include <QFile>

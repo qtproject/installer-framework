@@ -34,7 +34,7 @@
 
 #include "component.h"
 #include "messageboxhandler.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopServices>

@@ -37,7 +37,7 @@
 #endif
 
 #include "common/utils.h"
-#include <qinstaller.h>
+#include <packagemanagercore.h>
 
 #include <QMap>
 #include <QSet>

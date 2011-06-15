@@ -36,7 +36,7 @@
 #include "common/utils.h"
 #include "component.h"
 #include "init.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 
 #include <QtXml/QDomDocument>
 

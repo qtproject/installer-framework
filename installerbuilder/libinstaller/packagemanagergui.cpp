@@ -30,12 +30,12 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include "qinstallergui.h"
+#include "packagemanagergui.h"
 
 #include "component.h"
 #include "componentmodel.h"
 #include "messageboxhandler.h"
-#include "qinstaller.h"
+#include "packagemanagercore.h"
 #include "qinstallerglobal.h"
 #include "progresscoordinator.h"
 #include "performinstallationform.h"

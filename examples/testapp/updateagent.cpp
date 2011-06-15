@@ -36,7 +36,7 @@
 #include <common/binaryformat.h>
 #include <common/errors.h>
 #include <component.h>
-#include <qinstaller.h>
+#include <packagemanagercore.h>
 #include <updatesettings.h>
 
 #include <QtCore/QDateTime>

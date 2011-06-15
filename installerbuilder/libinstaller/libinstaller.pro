@@ -30,9 +30,9 @@ include(3rdparty/p7zip_9.04/p7zip.pri)
 include(3rdparty/kdtools/KDUpdater/KDUpdater.pri)
 include(3rdparty/kdtools/KDToolsCore/KDToolsCore.pri)
 
-HEADERS += $$PWD/qinstaller.h \
-    $$PWD/qinstaller_p.h \
-    $$PWD/qinstallergui.h \
+HEADERS += $$PWD/packagemanagercore.h \
+    $$PWD/packagemanagercore_p.h \
+    $$PWD/packagemanagergui.h \
     ../common/binaryformat.h \
     ../common/binaryformatengine.h \
     ../common/binaryformatenginehandler.h \
@@ -95,9 +95,9 @@ HEADERS += $$PWD/qinstaller.h \
     qprocesswrapper.h \
     qsettingswrapper.h
 
-SOURCES += $$PWD/qinstaller.cpp \
-    $$PWD/qinstaller_p.cpp \
-    $$PWD/qinstallergui.cpp \
+SOURCES += $$PWD/packagemanagercore.cpp \
+    $$PWD/packagemanagercore_p.cpp \
+    $$PWD/packagemanagergui.cpp \
     ../common/binaryformat.cpp \
     ../common/binaryformatengine.cpp \
     ../common/binaryformatenginehandler.cpp \

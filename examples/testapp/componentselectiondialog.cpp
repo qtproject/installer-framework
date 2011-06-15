@@ -35,7 +35,7 @@
 
 #include <component.h>
 #include <componentmodel.h>
-#include <qinstaller.h>
+#include <packagemanagercore.h>
 
 #include <QtGui/QHeaderView>
 #include <QtGui/QPushButton>
