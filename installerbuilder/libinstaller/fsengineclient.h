@@ -39,27 +39,26 @@ QT_END_NAMESPACE
 class INSTALLER_EXPORT FSEngineClientHandler : public QAbstractFileEngineHandler
 {
 public:
-    FSEngineClientHandler();
-    FSEngineClientHandler(quint16 port, const QHostAddress &a = QHostAddress::LocalHost);
-    ~FSEngineClientHandler();
-
-    void init(quint16 port, const QHostAddress &a = QHostAddress::LocalHost);
-
-    static FSEngineClientHandler* instance();
+    static FSEngineClientHandler& instance();
 
     QAbstractFileEngine* create(const QString &fileName) const;
+    void init(quint16 port, const QHostAddress &a = QHostAddress::LocalHost);
+
+    bool connect(QTcpSocket *socket);
+
+    bool isActive() const;
+    void setActive(bool active);
 
     void enableTestMode();
-    void setActive(bool active);
-    bool isActive() const;
     bool isServerRunning() const;
-
     QString authorizationKey() const;
 
     void setStartServerCommand(const QString &command, bool startAsAdmin = false);
     void setStartServerCommand(const QString &command, const QStringList &arguments, bool startAsAdmin = false);
 
-    bool connect(QTcpSocket *socket);
+protected:
+    FSEngineClientHandler();
+    ~FSEngineClientHandler();
 
 private:
     class Private;

@@ -46,7 +46,7 @@ public:
 
     bool createSocket()
     {
-        if (!FSEngineClientHandler::instance()->isActive())
+        if (!FSEngineClientHandler::instance().isActive())
             return false;
         if (socket != 0 && socket->state() == static_cast< int >(QAbstractSocket::ConnectedState))
             return true;
@@ -54,7 +54,7 @@ public:
             delete socket;
         socket = new QTcpSocket;
 
-        if (!FSEngineClientHandler::instance()->connect(socket))
+        if (!FSEngineClientHandler::instance().connect(socket))
             return false;
         stream.setDevice(socket);
         stream.setVersion(QDataStream::Qt_4_2);

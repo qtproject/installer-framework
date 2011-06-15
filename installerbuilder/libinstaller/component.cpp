@@ -757,7 +757,7 @@ QList<KDUpdater::UpdateOperation*> Component::operations() const
 void Component::addOperation(KDUpdater::UpdateOperation* operation)
 {
     d->m_operations.append(operation);
-    if (FSEngineClientHandler::instance()->isActive())
+    if (FSEngineClientHandler::instance().isActive())
         operation->setValue(QLatin1String("admin"), true);
 }
 

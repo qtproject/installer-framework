@@ -70,7 +70,7 @@ public:
         Undo
     };
 
-    PackageManagerCorePrivate();
+    PackageManagerCorePrivate(PackageManagerCore *core);
     explicit PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<KDUpdater::UpdateOperation*> &performedOperations);
     ~PackageManagerCorePrivate();

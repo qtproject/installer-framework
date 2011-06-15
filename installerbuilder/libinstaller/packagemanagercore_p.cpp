@@ -80,29 +80,22 @@ static bool runOperation(KDUpdater::UpdateOperation *op, PackageManagerCorePriva
 
 /*!
     \internal
-    Initializes the created FSEngineClientHandler instance \a handler.
-*/
-static void initEngineHandler(/*QInstaller::*/FSEngineClientHandler *handler)
-{
-    const int port = 30000 + qrand() % 1000;
-    handler->init(port);
-    handler->setStartServerCommand(QCoreApplication::applicationFilePath(), QStringList()
-        << QLatin1String("--startserver") << QString::number(port) << handler->authorizationKey(),
-        true);
-}
-
-/*!
-    \internal
     Creates and initializes a FSEngineClientHandler -> makes us get admin rights for QFile operations
 */
-static /*QInstaller::*/FSEngineClientHandler* createEngineClientHandler()
+static FSEngineClientHandler *sClientHandlerInstance = 0;
+static FSEngineClientHandler *initFSEngineClientHandler()
 {
-    static FSEngineClientHandler* clientHandlerInstance = 0;
-    if (clientHandlerInstance == 0) {
-        clientHandlerInstance = new FSEngineClientHandler;
-        initEngineHandler(clientHandlerInstance);
+    if (sClientHandlerInstance == 0) {
+        sClientHandlerInstance = &FSEngineClientHandler::instance();
+
+        // Initialize the created FSEngineClientHandler instance.
+        const int port = 30000 + qrand() % 1000;
+        sClientHandlerInstance->init(port);
+        sClientHandlerInstance->setStartServerCommand(QCoreApplication::applicationFilePath(),
+            QStringList() << QLatin1String("--startserver") << QString::number(port)
+            << sClientHandlerInstance->authorizationKey(), true);
     }
-    return clientHandlerInstance;
+    return sClientHandlerInstance;
 }
 
 static QStringList checkRunningProcessesFromList(const QStringList &processList)
@@ -157,10 +150,11 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 // -- PackageManagerCorePrivate
 
-PackageManagerCorePrivate::PackageManagerCorePrivate()
-    : m_tempDirDeleter(0)
+PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
+    : m_app(0)
+    , m_tempDirDeleter(0)
     , m_FSEngineClientHandler(0)
-    , m_core(0)
+    , m_core(core)
 {
 }
 
@@ -168,7 +162,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
         const QList<KDUpdater::UpdateOperation*> &performedOperations)
     : m_app(0)
     , m_tempDirDeleter(new TempDirDeleter())
-    , m_FSEngineClientHandler(createEngineClientHandler())
+    , m_FSEngineClientHandler(initFSEngineClientHandler())
     , m_status(PackageManagerCore::Unfinished)
     , m_forceRestart(false)
     , m_silentRetries(3)
@@ -191,6 +185,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     clearAllComponentLists();
     clearUpdaterComponentLists();
 
+    delete m_tempDirDeleter;
     qDeleteAll(m_ownedOperations);
     qDeleteAll(m_performedOperationsOld);
     qDeleteAll(m_performedOperationsCurrentSession);
@@ -198,10 +193,6 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     // check for fake installer case
     if (m_FSEngineClientHandler)
         m_FSEngineClientHandler->setActive(false);
-
-
-    delete m_tempDirDeleter;
-    delete m_FSEngineClientHandler;
 }
 
 /*!

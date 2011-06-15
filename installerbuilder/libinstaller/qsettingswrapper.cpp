@@ -84,7 +84,7 @@ public:
 
     bool createSocket()
     {
-        if (!native || !FSEngineClientHandler::instance()->isActive())
+        if (!native || !FSEngineClientHandler::instance().isActive())
             return false;
 
         if (socket != 0 && socket->state() == static_cast<int>(QAbstractSocket::ConnectedState))
@@ -94,7 +94,7 @@ public:
             delete socket;
 
         socket = new QTcpSocket;
-        if (!FSEngineClientHandler::instance()->connect(socket))
+        if (!FSEngineClientHandler::instance().connect(socket))
             return false;
 
         stream.setDevice(socket);

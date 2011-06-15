@@ -577,7 +577,7 @@ bool PackageManagerCore::isFileExtensionRegistered(const QString& extension) con
     runner does.
 */
 PackageManagerCore::PackageManagerCore()
-    : d(new PackageManagerCorePrivate())
+    : d(new PackageManagerCorePrivate(this))
 {
 }
 

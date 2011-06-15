@@ -65,12 +65,12 @@ public:
 public Q_SLOTS:
     void stillAlive()
     {
-        if (!FSEngineClientHandler::instance()->isServerRunning())
+        if (!FSEngineClientHandler::instance().isServerRunning())
             return;
 
         // in case of the server not running, this will simply fail
         QTcpSocket socket;
-        FSEngineClientHandler::instance()->connect(&socket);
+        FSEngineClientHandler::instance().connect(&socket);
     }
 };
 
@@ -202,7 +202,7 @@ private:
 FSEngineClient::FSEngineClient()
     : socket(new QTcpSocket)
 {
-    FSEngineClientHandler::instance()->connect(socket);
+    FSEngineClientHandler::instance().connect(socket);
     stream.setDevice(socket);
     stream.setVersion(QDataStream::Qt_4_2);
 }
@@ -594,8 +594,6 @@ public:
     void maybeStartServer();
     void maybeStopServer();
 
-    static FSEngineClientHandler* instance;
-
     QMutex mutex;
     QHostAddress address;
     quint16 port;
@@ -611,8 +609,6 @@ public:
     StillAliveThread* const thread;
 };
 
-FSEngineClientHandler* FSEngineClientHandler::Private::instance = 0;
-
 /*!
     Creates a new FSEngineClientHandler with no connection.
 */
@@ -622,19 +618,6 @@ FSEngineClientHandler::FSEngineClientHandler()
     //don't do this in the Private ctor as createUuid() accesses QFileEngine, which accesses this
     // half-constructed handler -> Crash (KDNDK-248)
     d->key = QUuid::createUuid().toString();
-    Private::instance = this;
-}
-
-/*!
-    Creates a new FSEngineClientHandler connection to \a port on address \a.
-*/
-FSEngineClientHandler::FSEngineClientHandler(quint16 port, const QHostAddress& a)
-    : d(new Private)
-{
-    d->address = a;
-    d->port = port;
-    d->key = QUuid::createUuid().toString(); //moved from Private() ctor, see above
-    Private::instance = this;
 }
 
 void FSEngineClientHandler::enableTestMode()
@@ -679,17 +662,15 @@ FSEngineClientHandler::~FSEngineClientHandler()
     QMetaObject::invokeMethod(d->thread, "quit");
     //d->maybeStopServer();
     delete d;
-    Private::instance = 0;
 }
 
 /*!
     Returns a previously created FSEngineClientHandler instance.
 */
-FSEngineClientHandler* FSEngineClientHandler::instance()
+FSEngineClientHandler& FSEngineClientHandler::instance()
 {
-    if (!Private::instance)
-        Private::instance = new FSEngineClientHandler();
-    return Private::instance;
+    static FSEngineClientHandler instance;
+    return instance;
 }
 
 /*!
@@ -804,7 +785,7 @@ void FSEngineClientHandler::Private::maybeStartServer()
     // now wait for the socket to arrive
     QTcpSocket s;
     while (serverStarting && serverStarted) {
-        if (instance->connect(&s))
+        if (FSEngineClientHandler::instance().connect(&s))
             serverStarting = false;
     }
     serverStarting = false;
@@ -823,7 +804,7 @@ void FSEngineClientHandler::Private::maybeStopServer()
         return;
 
     QTcpSocket s;
-    if (instance->connect(&s)) {
+    if (FSEngineClientHandler::instance().connect(&s)) {
         QDataStream stream(&s);
         stream.setVersion(QDataStream::Qt_4_2);
         stream << QString::fromLatin1("authorize");
