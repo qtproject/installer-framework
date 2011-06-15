@@ -58,7 +58,7 @@ struct BinaryLayout;
 class Component;
 class TempDirDeleter;
 
-class InstallerPrivate : public QObject
+class PackageManagerCorePrivate : public QObject
 {
     Q_OBJECT;
     friend class PackageManagerCore;
@@ -70,16 +70,16 @@ public:
         Undo
     };
 
-    InstallerPrivate();
-    explicit InstallerPrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
+    PackageManagerCorePrivate();
+    explicit PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<KDUpdater::UpdateOperation*> &performedOperations);
-    ~InstallerPrivate();
+    ~PackageManagerCorePrivate();
 
     static bool isProcessRunning(const QString &name,
         const QList<KDSysInfo::ProcessInfo> &processes);
 
     static bool performOperationThreaded(KDUpdater::UpdateOperation *op,
-        InstallerPrivate::OperationType type = InstallerPrivate::Perform);
+        PackageManagerCorePrivate::OperationType type = PackageManagerCorePrivate::Perform);
 
     void initialize();
 

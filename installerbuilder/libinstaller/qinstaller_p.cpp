@@ -62,15 +62,15 @@
 
 namespace QInstaller {
 
-static bool runOperation(KDUpdater::UpdateOperation *op, InstallerPrivate::OperationType type)
+static bool runOperation(KDUpdater::UpdateOperation *op, PackageManagerCorePrivate::OperationType type)
 {
     switch (type) {
-        case InstallerPrivate::Backup:
+        case PackageManagerCorePrivate::Backup:
             op->backup();
             return true;
-        case InstallerPrivate::Perform:
+        case PackageManagerCorePrivate::Perform:
             return op->performOperation();
-        case InstallerPrivate::Undo:
+        case PackageManagerCorePrivate::Undo:
             return op->undoOperation();
         default:
             Q_ASSERT(!"unexpected operation type");
@@ -110,7 +110,7 @@ static QStringList checkRunningProcessesFromList(const QStringList &processList)
     const QList<KDSysInfo::ProcessInfo> allProcesses = KDSysInfo::runningProcesses();
     QStringList stillRunningProcesses;
     foreach (const QString &process, processList) {
-        if (!process.isEmpty() && InstallerPrivate::isProcessRunning(process, allProcesses))
+        if (!process.isEmpty() && PackageManagerCorePrivate::isProcessRunning(process, allProcesses))
             stillRunningProcesses.append(process);
     }
     return stillRunningProcesses;
@@ -155,16 +155,16 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 }
 
 
-// -- InstallerPrivate
+// -- PackageManagerCorePrivate
 
-InstallerPrivate::InstallerPrivate()
+PackageManagerCorePrivate::PackageManagerCorePrivate()
     : m_tempDirDeleter(0)
     , m_FSEngineClientHandler(0)
     , m_core(0)
 {
 }
 
-InstallerPrivate::InstallerPrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
+PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<KDUpdater::UpdateOperation*> &performedOperations)
     : m_app(0)
     , m_tempDirDeleter(new TempDirDeleter())
@@ -186,7 +186,7 @@ InstallerPrivate::InstallerPrivate(PackageManagerCore *core, qint64 magicInstall
     connect(this, SIGNAL(uninstallationFinished()), m_core, SIGNAL(uninstallationFinished()));
 }
 
-InstallerPrivate::~InstallerPrivate()
+PackageManagerCorePrivate::~PackageManagerCorePrivate()
 {
     clearAllComponentLists();
     clearUpdaterComponentLists();
@@ -208,7 +208,7 @@ InstallerPrivate::~InstallerPrivate()
     Return true, if a process with \a name is running. On Windows, comparison is case-insensitive.
 */
 /* static */
-bool InstallerPrivate::isProcessRunning(const QString &name,
+bool PackageManagerCorePrivate::isProcessRunning(const QString &name,
     const QList<KDSysInfo::ProcessInfo> &processes)
 {
     QList<KDSysInfo::ProcessInfo>::const_iterator it;
@@ -236,7 +236,7 @@ bool InstallerPrivate::isProcessRunning(const QString &name,
 }
 
 /* static */
-bool InstallerPrivate::performOperationThreaded(KDUpdater::UpdateOperation *op, OperationType type)
+bool PackageManagerCorePrivate::performOperationThreaded(KDUpdater::UpdateOperation *op, OperationType type)
 {
     QFutureWatcher<bool> futureWatcher;
     const QFuture<bool> future = QtConcurrent::run(runOperation, op, type);
@@ -251,23 +251,23 @@ bool InstallerPrivate::performOperationThreaded(KDUpdater::UpdateOperation *op, 
     return future.result();
 }
 
-QString InstallerPrivate::targetDir() const
+QString PackageManagerCorePrivate::targetDir() const
 {
     return m_core->value(scTargetDir);
 }
 
-QString InstallerPrivate::configurationFileName() const
+QString PackageManagerCorePrivate::configurationFileName() const
 {
     return m_core->value(QLatin1String("TargetConfigurationFile"), QString::fromLatin1("components.xml"));
 }
 
-QString InstallerPrivate::componentsXmlPath() const
+QString PackageManagerCorePrivate::componentsXmlPath() const
 {
     return QDir::toNativeSeparators(QDir(QDir::cleanPath(targetDir()))
         .absoluteFilePath(configurationFileName()));
 }
 
-QString InstallerPrivate::localComponentsXmlPath() const
+QString PackageManagerCorePrivate::localComponentsXmlPath() const
 {
     const QString &appDirPath = QCoreApplication::applicationDirPath();
     if (QFileInfo(appDirPath + QLatin1String("/../..")).isBundle()) {
@@ -277,7 +277,7 @@ QString InstallerPrivate::localComponentsXmlPath() const
     return componentsXmlPath();
 }
 
-void InstallerPrivate::clearAllComponentLists()
+void PackageManagerCorePrivate::clearAllComponentLists()
 {
     qDeleteAll(m_rootComponents);
     m_rootComponents.clear();
@@ -288,7 +288,7 @@ void InstallerPrivate::clearAllComponentLists()
     m_componentsToReplaceAllMode.clear();
 }
 
-void InstallerPrivate::clearUpdaterComponentLists()
+void PackageManagerCorePrivate::clearUpdaterComponentLists()
 {
     qDeleteAll(m_updaterComponents);
     m_updaterComponents.clear();
@@ -302,12 +302,12 @@ void InstallerPrivate::clearUpdaterComponentLists()
     m_componentsToReplaceUpdaterMode.clear();
 }
 
-QHash<QString, QPair<Component*, Component*> > &InstallerPrivate::componentsToReplace()
+QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::componentsToReplace()
 {
     return m_core->runMode() == AllMode ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
 }
 
-void InstallerPrivate::initialize()
+void PackageManagerCorePrivate::initialize()
 {
     try {
         m_installerSettings = InstallerSettings(InstallerSettings::fromFileAndPrefix(QLatin1String
@@ -384,37 +384,37 @@ void InstallerPrivate::initialize()
     connect(this, SIGNAL(uninstallationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
 }
 
-QString InstallerPrivate::installerBinaryPath() const
+QString PackageManagerCorePrivate::installerBinaryPath() const
 {
     return qApp->applicationFilePath();
 }
 
-bool InstallerPrivate::isInstaller() const
+bool PackageManagerCorePrivate::isInstaller() const
 {
     return m_magicBinaryMarker == MagicInstallerMarker;
 }
 
-bool InstallerPrivate::isUninstaller() const
+bool PackageManagerCorePrivate::isUninstaller() const
 {
     return m_magicBinaryMarker == MagicUninstallerMarker;
 }
 
-bool InstallerPrivate::isUpdater() const
+bool PackageManagerCorePrivate::isUpdater() const
 {
     return m_magicBinaryMarker == MagicUpdaterMarker;
 }
 
-bool InstallerPrivate::isPackageManager() const
+bool PackageManagerCorePrivate::isPackageManager() const
 {
     return m_magicBinaryMarker == MagicPackageManagerMarker;
 }
 
-bool InstallerPrivate::statusCanceledOrFailed() const
+bool PackageManagerCorePrivate::statusCanceledOrFailed() const
 {
     return m_status == PackageManagerCore::Canceled || m_status == PackageManagerCore::Failure;
 }
 
-void InstallerPrivate::setStatus(int status)
+void PackageManagerCorePrivate::setStatus(int status)
 {
     if (m_status != status) {
         m_status = status;
@@ -422,7 +422,7 @@ void InstallerPrivate::setStatus(int status)
     }
 }
 
-QString InstallerPrivate::replaceVariables(const QString &str) const
+QString PackageManagerCorePrivate::replaceVariables(const QString &str) const
 {
     static const QChar at = QLatin1Char('@');
     QString res;
@@ -443,7 +443,7 @@ QString InstallerPrivate::replaceVariables(const QString &str) const
     return res;
 }
 
-QByteArray InstallerPrivate::replaceVariables(const QByteArray &ba) const
+QByteArray PackageManagerCorePrivate::replaceVariables(const QByteArray &ba) const
 {
     static const QChar at = QLatin1Char('@');
     QByteArray res;
@@ -468,7 +468,7 @@ QByteArray InstallerPrivate::replaceVariables(const QByteArray &ba) const
     \internal
     Creates an update operation owned by the installer, not by any component.
  */
-KDUpdater::UpdateOperation* InstallerPrivate::createOwnedOperation(const QString &type)
+KDUpdater::UpdateOperation* PackageManagerCorePrivate::createOwnedOperation(const QString &type)
 {
     m_ownedOperations.append(KDUpdater::UpdateOperationFactory::instance().create(type));
     return m_ownedOperations.last();
@@ -479,7 +479,7 @@ KDUpdater::UpdateOperation* InstallerPrivate::createOwnedOperation(const QString
     Removes \a opertion from the operations owned by the installer, returns the very same operation if the
     operation was found, otherwise 0.
  */
-KDUpdater::UpdateOperation* InstallerPrivate::takeOwnedOperation(KDUpdater::UpdateOperation *operation)
+KDUpdater::UpdateOperation* PackageManagerCorePrivate::takeOwnedOperation(KDUpdater::UpdateOperation *operation)
 {
     if (!m_ownedOperations.contains(operation))
         return 0;
@@ -488,7 +488,7 @@ KDUpdater::UpdateOperation* InstallerPrivate::takeOwnedOperation(KDUpdater::Upda
     return operation;
 }
 
-QString InstallerPrivate::uninstallerName() const
+QString PackageManagerCorePrivate::uninstallerName() const
 {
     QString filename = m_installerSettings.uninstallerName();
 #if defined(Q_WS_MAC)
@@ -500,7 +500,7 @@ QString InstallerPrivate::uninstallerName() const
     return QString::fromLatin1("%1/%2").arg(targetDir()).arg(filename);
 }
 
-void InstallerPrivate::readUninstallerIniFile(const QString &targetDir)
+void PackageManagerCorePrivate::readUninstallerIniFile(const QString &targetDir)
 {
     const QString iniPath = targetDir + QLatin1Char('/') + m_installerSettings.uninstallerIniFile();
     QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
@@ -518,7 +518,7 @@ void InstallerPrivate::readUninstallerIniFile(const QString &targetDir)
     m_installerSettings.addUserRepositories(repositories);
 }
 
-void InstallerPrivate::stopProcessesForUpdates(const QList<Component*> &components)
+void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> &components)
 {
     QStringList processList;
     foreach (const Component* const i, components)
@@ -550,7 +550,7 @@ void InstallerPrivate::stopProcessesForUpdates(const QList<Component*> &componen
     }
 }
 
-int InstallerPrivate::countProgressOperations(const QList<KDUpdater::UpdateOperation*> &operations)
+int PackageManagerCorePrivate::countProgressOperations(const QList<KDUpdater::UpdateOperation*> &operations)
 {
     int operationCount = 0;
     foreach (KDUpdater::UpdateOperation *operation, operations) {
@@ -563,7 +563,7 @@ int InstallerPrivate::countProgressOperations(const QList<KDUpdater::UpdateOpera
     return operationCount;
 }
 
-int InstallerPrivate::countProgressOperations(const QList<Component*> &components)
+int PackageManagerCorePrivate::countProgressOperations(const QList<Component*> &components)
 {
     int operationCount = 0;
     foreach (Component* component, components)
@@ -572,7 +572,7 @@ int InstallerPrivate::countProgressOperations(const QList<Component*> &component
     return operationCount;
 }
 
-void InstallerPrivate::connectOperationToInstaller(KDUpdater::UpdateOperation *const operation,
+void PackageManagerCorePrivate::connectOperationToInstaller(KDUpdater::UpdateOperation *const operation,
     double progressOperationPartSize)
 {
     Q_ASSERT(progressOperationPartSize);
@@ -594,7 +594,7 @@ void InstallerPrivate::connectOperationToInstaller(KDUpdater::UpdateOperation *c
     }
 }
 
-KDUpdater::UpdateOperation* InstallerPrivate::createPathOperation(const QFileInfo &fileInfo,
+KDUpdater::UpdateOperation* PackageManagerCorePrivate::createPathOperation(const QFileInfo &fileInfo,
     const QString &componentName)
 {
     const bool isDir = fileInfo.isDir();
@@ -611,7 +611,7 @@ KDUpdater::UpdateOperation* InstallerPrivate::createPathOperation(const QFileInf
 /*!
     This creates fake operations which remove stuff which was registered for uninstallation afterwards
 */
-void InstallerPrivate::registerPathesForUninstallation(
+void PackageManagerCorePrivate::registerPathesForUninstallation(
     const QList<QPair<QString, bool> > &pathesForUninstallation, const QString &componentName)
 {
     if (pathesForUninstallation.isEmpty())
@@ -642,7 +642,7 @@ void InstallerPrivate::registerPathesForUninstallation(
     }
 }
 
-void InstallerPrivate::writeUninstallerBinary(QFile *const input, qint64 size, bool writeBinaryLayout)
+void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint64 size, bool writeBinaryLayout)
 {
     verbose() << "Writing uninstaller: " << (uninstallerName()  + QLatin1String(".new")) << std::endl;
 
@@ -666,7 +666,7 @@ void InstallerPrivate::writeUninstallerBinary(QFile *const input, qint64 size, b
         throw Error(tr("Could not write uninstaller to %1: %2").arg(out.fileName(), out.errorString()));
 }
 
-void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *const input,
+void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QFile *const input,
     const QList<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout,
     bool compressOperations, bool forceUncompressedResources)
 {
@@ -728,7 +728,7 @@ void InstallerPrivate::writeUninstallerBinaryData(QIODevice *output, QFile *cons
     appendInt64(output, MagicUninstallerMarker);
 }
 
-void InstallerPrivate::writeUninstaller(QList<KDUpdater::UpdateOperation*> performedOperations)
+void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperation*> performedOperations)
 {
     bool gainedAdminRights = false;
     QTemporaryFile tempAdminFile(targetDir() + QString::fromLatin1("/testjsfdjlkdsjflkdsjfldsjlfds")
@@ -976,7 +976,7 @@ void InstallerPrivate::writeUninstaller(QList<KDUpdater::UpdateOperation*> perfo
     m_needToWriteUninstaller = false;
 }
 
-QString InstallerPrivate::registerPath() const
+QString PackageManagerCorePrivate::registerPath() const
 {
 #ifdef Q_OS_WIN
     QString productName = m_vars.value(QLatin1String("ProductName"));
@@ -993,7 +993,7 @@ QString InstallerPrivate::registerPath() const
     return QString();
 }
 
-void InstallerPrivate::runInstaller()
+void PackageManagerCorePrivate::runInstaller()
 {
     bool adminRightsGained = false;
     try {
@@ -1109,7 +1109,7 @@ void InstallerPrivate::runInstaller()
     }
 }
 
-void InstallerPrivate::runPackageUpdater()
+void PackageManagerCorePrivate::runPackageUpdater()
 {
     bool adminRightsGained = false;
     try {
@@ -1255,7 +1255,7 @@ void InstallerPrivate::runPackageUpdater()
     }
 }
 
-void InstallerPrivate::runUninstaller()
+void PackageManagerCorePrivate::runUninstaller()
 {
     bool adminRightsGained = false;
     try {
@@ -1341,7 +1341,7 @@ void InstallerPrivate::runUninstaller()
     }
 }
 
-void InstallerPrivate::installComponent(Component *component, double progressOperationSize,
+void PackageManagerCorePrivate::installComponent(Component *component, double progressOperationSize,
     bool adminRightsGained)
 {
     const QList<KDUpdater::UpdateOperation*> operations = component->operations();
@@ -1368,10 +1368,10 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
 
         connectOperationToInstaller(operation, progressOperationSize);
         // allow the operation to backup stuff before performing the operation
-        InstallerPrivate::performOperationThreaded(operation, InstallerPrivate::Backup);
+        PackageManagerCorePrivate::performOperationThreaded(operation, PackageManagerCorePrivate::Backup);
 
         bool ignoreError = false;
-        bool ok = InstallerPrivate::performOperationThreaded(operation);
+        bool ok = PackageManagerCorePrivate::performOperationThreaded(operation);
         while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
             verbose() << QString(QLatin1String("operation '%1' with arguments: '%2' failed: %3"))
                 .arg(operation->name(), operation->arguments().join(QLatin1String("; ")),
@@ -1384,7 +1384,7 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
                 QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel, QMessageBox::Retry);
 
             if (button == QMessageBox::Retry)
-                ok = InstallerPrivate::performOperationThreaded(operation);
+                ok = PackageManagerCorePrivate::performOperationThreaded(operation);
             else if (button == QMessageBox::Ignore)
                 ignoreError = true;
             else if (button == QMessageBox::Cancel)
@@ -1433,7 +1433,7 @@ void InstallerPrivate::installComponent(Component *component, double progressOpe
 
 // -- private
 
-void InstallerPrivate::deleteUninstaller()
+void PackageManagerCorePrivate::deleteUninstaller()
 {
 #ifdef Q_OS_WIN
     // Since Windows does not support that the uninstaller deletes itself we  have to go with a rather dirty
@@ -1497,7 +1497,7 @@ void InstallerPrivate::deleteUninstaller()
     }
 }
 
-void InstallerPrivate::registerUninstaller()
+void PackageManagerCorePrivate::registerUninstaller()
 {
 #ifdef Q_OS_WIN
     QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);
@@ -1518,7 +1518,7 @@ void InstallerPrivate::registerUninstaller()
 #endif
 }
 
-void InstallerPrivate::unregisterUninstaller()
+void PackageManagerCorePrivate::unregisterUninstaller()
 {
 #ifdef Q_OS_WIN
     QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);
@@ -1526,7 +1526,7 @@ void InstallerPrivate::unregisterUninstaller()
 #endif
 }
 
-void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
+void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
     double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation)
 {
     KDUpdater::PackagesInfo *const packages = m_app->packagesInfo();
@@ -1545,7 +1545,7 @@ void InstallerPrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*
 
             connectOperationToInstaller(undoOperation, undoOperationProgressSize);
             verbose() << "undo operation=" << undoOperation->name() << std::endl;
-            performOperationThreaded(undoOperation, InstallerPrivate::Undo);
+            performOperationThreaded(undoOperation, PackageManagerCorePrivate::Undo);
 
             const QString componentName = undoOperation->value(QLatin1String("component")).toString();
             if (undoOperation->error() != KDUpdater::UpdateOperation::NoError) {

@@ -373,7 +373,7 @@ void PackageManagerCore::installSelectedComponents()
                     continue;
                 const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
                     && op->value(QLatin1String("admin")).toBool() && gainAdminRights();
-                InstallerPrivate::performOperationThreaded(op, InstallerPrivate::Undo);
+                PackageManagerCorePrivate::performOperationThreaded(op, PackageManagerCorePrivate::Undo);
                 if (becameAdmin)
                     dropAdminRights();
                 delete d->m_performedOperationsOld.takeAt(i);
@@ -534,7 +534,7 @@ void PackageManagerCore::rollBackInstallation()
             const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
                 && operation->value(QLatin1String("admin")).toBool() && gainAdminRights();
 
-            InstallerPrivate::performOperationThreaded(operation, InstallerPrivate::Undo);
+            PackageManagerCorePrivate::performOperationThreaded(operation, PackageManagerCorePrivate::Undo);
 
             const QString componentName = operation->value(QLatin1String("component")).toString();
             if (!componentName.isEmpty()) {
@@ -577,13 +577,13 @@ bool PackageManagerCore::isFileExtensionRegistered(const QString& extension) con
     runner does.
 */
 PackageManagerCore::PackageManagerCore()
-    : d(new InstallerPrivate())
+    : d(new PackageManagerCorePrivate())
 {
 }
 
 PackageManagerCore::PackageManagerCore(qint64 magicmaker,
         const QVector<KDUpdater::UpdateOperation*>& performedOperations)
-    : d(new InstallerPrivate(this, magicmaker, performedOperations.toList()))
+    : d(new PackageManagerCorePrivate(this, magicmaker, performedOperations.toList()))
 {
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
@@ -1262,7 +1262,7 @@ void PackageManagerCore::dropAdminRights()
 */
 bool PackageManagerCore::isProcessRunning(const QString &name) const
 {
-    return InstallerPrivate::isProcessRunning(name, KDSysInfo::runningProcesses());
+    return PackageManagerCorePrivate::isProcessRunning(name, KDSysInfo::runningProcesses());
 }
 
 /*!
@@ -1331,8 +1331,8 @@ bool PackageManagerCore::performOperation(const QString &name, const QStringList
 
     op->setArguments(arguments);
     op->backup();
-    if (!InstallerPrivate::performOperationThreaded(op.data())) {
-        InstallerPrivate::performOperationThreaded(op.data(), InstallerPrivate::Undo);
+    if (!PackageManagerCorePrivate::performOperationThreaded(op.data())) {
+        PackageManagerCorePrivate::performOperationThreaded(op.data(), PackageManagerCorePrivate::Undo);
         return false;
     }
     return true;

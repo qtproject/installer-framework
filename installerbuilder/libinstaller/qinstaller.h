@@ -66,9 +66,9 @@ namespace QInstaller {
 
 class Component;
 class GetRepositoriesMetaInfoJob;
-class InstallerPrivate;
 class InstallerSettings;
 class MessageBoxHandler;
+class PackageManagerCorePrivate;
 
 class INSTALLER_EXPORT PackageManagerCore : public QObject
 {
@@ -289,8 +289,8 @@ private:
         const QHash<Component*, QStringList> &replacementToExchangeables);
 
 private:
-    InstallerPrivate* const d;
-    friend class InstallerPrivate;
+    PackageManagerCorePrivate *const d;
+    friend class PackageManagerCorePrivate;
 };
 
 }
