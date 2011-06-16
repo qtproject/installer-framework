@@ -23,8 +23,8 @@
 * *(qt-info@nokia.com).
 **
 **************************************************************************/
-#ifndef QINSTALLER_COMPONENT_H
-#define QINSTALLER_COMPONENT_H
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include "component_p.h"
 #include "qinstallerglobal.h"
@@ -224,4 +224,4 @@ private:
 
 Q_DECLARE_METATYPE(QInstaller::Component*);
 
-#endif // QINSTALLER_COMPONENT_H
+#endif // COMPONENT_H

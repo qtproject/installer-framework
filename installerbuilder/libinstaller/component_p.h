@@ -30,8 +30,8 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#ifndef QINSTALLER_COMPONENT_P_H
-#define QINSTALLER_COMPONENT_P_H
+#ifndef COMPONENT_P_H
+#define COMPONENT_P_H
 
 #include "qinstallerglobal.h"
 
@@ -153,4 +153,4 @@ private:
 
 }   // namespace QInstaller
 
-#endif  // QINSTALLER_COMPONENT_P_H
+#endif  // COMPONENT_P_H

@@ -23,8 +23,8 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#ifndef QINSTALLER_H
-#define QINSTALLER_H
+#ifndef PACKAGEMANAGERCORE_H
+#define PACKAGEMANAGERCORE_H
 
 #include "common/repository.h"
 #include "qinstallerglobal.h"
@@ -297,4 +297,4 @@ private:
 
 Q_DECLARE_METATYPE(QInstaller::PackageManagerCore*)
 
-#endif // QINSTALLER_H
+#endif  // PACKAGEMANAGERCORE_H

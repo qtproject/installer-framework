@@ -23,8 +23,8 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#ifndef QINSTALLER_GUI_H
-#define QINSTALLER_GUI_H
+#ifndef PACKAGEMANAGERGUI_H
+#define PACKAGEMANAGERGUI_H
 
 #include "packagemanagercore.h"
 
@@ -406,4 +406,4 @@ private:
     QAbstractButton* m_abstractButton;
 };
 
-#endif // QINSTALLER_GUI_H
+#endif  // PACKAGEMANAGERGUI_H

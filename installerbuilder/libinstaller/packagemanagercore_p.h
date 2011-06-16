@@ -30,8 +30,8 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#ifndef QINSTALLER_P_H
-#define QINSTALLER_P_H
+#ifndef PACKAGEMANAGERCORE_P_H
+#define PACKAGEMANAGERCORE_P_H
 
 #include "common/installersettings.h"
 
@@ -207,4 +207,4 @@ private:
 
 }   // QInstaller
 
-#endif  // QINSTALLER_P_H
+#endif  // PACKAGEMANAGERCORE_P_H
