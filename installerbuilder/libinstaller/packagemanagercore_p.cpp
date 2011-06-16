@@ -1091,7 +1091,7 @@ void PackageManagerCorePrivate::runInstaller()
 
         m_core->rollBackInstallation();
 
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Installation aborted"));
+        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation aborted!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
@@ -1220,7 +1220,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
         ProgressCoordninator::instance()->addManualPercentagePoints(1);
 
         setStatus(PackageManagerCore::Success);
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
+        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate finished!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
 
@@ -1237,7 +1237,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
 
         m_core->rollBackInstallation();
 
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Installation aborted"));
+        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate aborted!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
@@ -1311,7 +1311,7 @@ void PackageManagerCorePrivate::runUninstaller()
         m_needToWriteUninstaller = false;
 
         setStatus(PackageManagerCore::Success);
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation finished"));
+        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation finished!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit uninstallationFinished();
@@ -1323,7 +1323,7 @@ void PackageManagerCorePrivate::runUninstaller()
                 QLatin1String("installationError"), tr("Error"), err.message());
         }
 
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Installation aborted"));
+        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation aborted!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
