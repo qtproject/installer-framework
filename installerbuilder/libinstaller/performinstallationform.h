@@ -28,8 +28,6 @@
 
 #include <QObject>
 
-class LazyPlainTextEdit;
-
 QT_BEGIN_NAMESPACE
 class QWidget;
 class QPushButton;
@@ -37,6 +35,9 @@ class QProgressBar;
 class QLabel;
 class QTimer;
 QT_END_NAMESPACE
+
+class LazyPlainTextEdit;
+
 
 namespace QInstaller {
 
@@ -46,6 +47,7 @@ class PerformInstallationForm : public QObject
 public:
     PerformInstallationForm(QObject *parent);
     ~PerformInstallationForm();
+
     void setupUi(QWidget *widget);
     void setDetailsWidgetVisible(bool visible);
     void enableDetails();
@@ -63,6 +65,7 @@ public slots:
     void updateProgress();
     void toggleDetails();
     void clearDetailsBrowser();
+
 private:
     QWidget* m_detailsWidget;
     QPushButton *m_detailsButton;

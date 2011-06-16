@@ -30,18 +30,20 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-
 #include "performinstallationform.h"
+
 #include "lazyplaintextedit.h"
 #include "progresscoordinator.h"
+
 #include <common/utils.h>
 
-#include <QProgressBar>
-#include <QPushButton>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QTimer>
-#include <QScrollBar>
+#include <QtGui/QLabel>
+#include <QtGui/QProgressBar>
+#include <QtGui/QPushButton>
+#include <QtGui/QScrollBar>
+#include <QtGui/QVBoxLayout>
+
+#include <QtCore/QTimer>
 
 using namespace QInstaller;
 
@@ -63,16 +65,16 @@ PerformInstallationForm::~PerformInstallationForm()
 void PerformInstallationForm::setupUi(QWidget *widget)
 {
     m_progressBar = new QProgressBar(widget);
-    m_progressBar->setObjectName( QLatin1String( "ProgressBar" ) );
+    m_progressBar->setObjectName(QLatin1String("ProgressBar"));
     m_progressBar->setRange(1, 100);
 
     m_progressLabel = new QLabel(widget);
-    m_progressLabel->setObjectName( QLatin1String( "ProgressLabel" ) );
+    m_progressLabel->setObjectName(QLatin1String("ProgressLabel"));
 
     m_detailsButton = new QPushButton(widget);
     connect(m_detailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
-    m_detailsButton->setText( tr("Show Details") );
-    m_detailsButton->setObjectName( QLatin1String("button") );
+    m_detailsButton->setText(tr("Show Details"));
+    m_detailsButton->setObjectName(QLatin1String("button"));
     m_detailsBrowser = new LazyPlainTextEdit(widget);
     m_detailsBrowser->setWordWrapMode(QTextOption::NoWrap);
     m_detailsBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -82,8 +84,8 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     layout->addWidget(m_progressLabel);
 
     m_detailsWidget = new QWidget(widget);
-    m_detailsWidget->setObjectName( QLatin1String("details") );
-    QHBoxLayout* detailsLayout = new QHBoxLayout( m_detailsWidget );
+    m_detailsWidget->setObjectName(QLatin1String("details"));
+    QHBoxLayout* detailsLayout = new QHBoxLayout(m_detailsWidget);
     detailsLayout->addWidget(m_detailsButton);
     detailsLayout->addStretch();
     layout->addWidget(m_detailsWidget);
@@ -94,8 +96,7 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     widget->setLayout(layout);
 
     m_updateTimer = new QTimer(widget);
-    connect(m_updateTimer, SIGNAL(timeout()),
-            this, SLOT(updateProgress())); //updateProgress includes the label
+    connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(updateProgress())); //updateProgress includes label
     m_updateTimer->setInterval(30);
 }
 
@@ -104,21 +105,20 @@ void PerformInstallationForm::setDetailsWidgetVisible(bool visible)
     m_detailsWidget->setVisible(visible);
 }
 
-void PerformInstallationForm::appendProgressDetails( const QString &details)
+void PerformInstallationForm::appendProgressDetails(const QString &details)
 {
-    m_detailsBrowser->append( details );
+    m_detailsBrowser->append(details);
 }
 
 void PerformInstallationForm::updateProgress()
 {
     QInstaller::ProgressCoordninator *progressCoordninator = QInstaller::ProgressCoordninator::instance();
     const int progressPercentage = progressCoordninator->progressInPercentage();
-    if( progressPercentage == 0 )
-        m_progressBar->setRange( 0, 0 );
-    else
-        m_progressBar->setRange( 0, 100 );
-    if ( progressPercentage != m_progressBar->value() )
-        m_progressBar->setValue( progressPercentage );
+
+    m_progressBar->setRange(0, (progressPercentage == 0) ? 0 : 100);
+
+    if (progressPercentage != m_progressBar->value())
+        m_progressBar->setValue(progressPercentage);
     if (m_progressLabel->text() != progressCoordninator->labelText())
         m_progressLabel->setText(progressCoordninator->labelText());
 }
@@ -126,13 +126,12 @@ void PerformInstallationForm::updateProgress()
 void PerformInstallationForm::toggleDetails()
 {
     const bool willShow = !isShowingDetails();
-    m_detailsButton->setText( willShow ? tr( "Hide Details" ) : tr( "Show Details" ) );
+    m_detailsButton->setText(willShow ? tr("Hide Details") : tr("Show Details"));
 
-    if (willShow) {
+    if (willShow)
         scrollDetailsToTheEnd();
-    }
 
-    m_detailsBrowser->setVisible( willShow );
+    m_detailsBrowser->setVisible(willShow);
     emit showDetailsChanged();
 }
 
@@ -143,9 +142,9 @@ void PerformInstallationForm::clearDetailsBrowser()
 
 void PerformInstallationForm::enableDetails()
 {
-    m_detailsButton->setEnabled( true );
-    m_detailsButton->setText( QObject::tr( "Show Details" ) );
-    m_detailsBrowser->setVisible( false );
+    m_detailsButton->setEnabled(true);
+    m_detailsButton->setText(QObject::tr("Show Details"));
+    m_detailsBrowser->setVisible(false);
 }
 
 void PerformInstallationForm::startUpdateProgress()
@@ -168,7 +167,7 @@ void PerformInstallationForm::setDetailsButtonEnabled(bool enable)
 void PerformInstallationForm::scrollDetailsToTheEnd()
 {
     m_detailsBrowser->horizontalScrollBar()->setValue(0);
-    m_detailsBrowser->verticalScrollBar()->setValue( m_detailsBrowser->verticalScrollBar()->maximum() );
+    m_detailsBrowser->verticalScrollBar()->setValue(m_detailsBrowser->verticalScrollBar()->maximum());
 }
 
 bool PerformInstallationForm::isShowingDetails() const
