@@ -676,6 +676,32 @@ void IntroductionPage::setWidget(QWidget *w)
 }
 
 
+// -- LicenseAgreementPage::ClickForwarder
+
+class LicenseAgreementPage::ClickForwarder : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit ClickForwarder(QAbstractButton* button)
+        : QObject(button)
+        , m_abstractButton(button) {}
+
+protected:
+    bool eventFilter(QObject *object, QEvent *event)
+    {
+        if (event->type() == QEvent::MouseButtonRelease) {
+            m_abstractButton->click();
+            return true;
+        }
+        // standard event processing
+        return QObject::eventFilter(object, event);
+    }
+private:
+    QAbstractButton* m_abstractButton;
+};
+
+
 // -- LicenseAgreementPage
 
 LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
@@ -1659,4 +1685,5 @@ void RestartPage::leaving()
 {
 }
 
-#include "qinstallergui.moc"
+#include "packagemanagergui.moc"
+#include "moc_packagemanagergui.cpp"

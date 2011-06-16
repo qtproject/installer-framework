@@ -41,16 +41,13 @@ class QLabel;
 class QLineEdit;
 class QListWidget;
 class QListWidgetItem;
-class QProgressBar;
 class QRadioButton;
 class QTextBrowser;
-class QTreeView;
 class QScriptEngine;
 QT_END_NAMESPACE
 
 namespace QInstaller {
 
-class IntroductionPage;
 class PackageManagerCore;
 class Page;
 class PerformInstallationForm;
@@ -182,6 +179,7 @@ private:
 class INSTALLER_EXPORT LicenseAgreementPage : public Page
 {
     Q_OBJECT
+    class ClickForwarder;
 
 public:
     explicit LicenseAgreementPage(PackageManagerCore *core);
@@ -383,27 +381,5 @@ Q_SIGNALS:
 };
 
 } //namespace QInstaller
-
-class ClickForwarder : public QObject
-{
-    Q_OBJECT
-public:
-    explicit ClickForwarder(QAbstractButton* button)
-        : QObject(button)
-        , m_abstractButton(button) {}
-
-protected:
-    bool eventFilter(QObject *object, QEvent *event)
-    {
-        if (event->type() == QEvent::MouseButtonRelease) {
-            m_abstractButton->click();
-            return true;
-        }
-        // standard event processing
-        return QObject::eventFilter(object, event);
-    }
-private:
-    QAbstractButton* m_abstractButton;
-};
 
 #endif  // PACKAGEMANAGERGUI_H
