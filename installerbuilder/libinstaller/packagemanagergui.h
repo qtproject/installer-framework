@@ -31,8 +31,8 @@
 #include <QtCore/QEvent>
 #include <QtCore/QMetaType>
 
-#include <QtGui/QAbstractButton>
 #include <QtGui/QWizard>
+#include <QtGui/QWizardPage>
 
 // FIXME: move to private classes
 QT_BEGIN_NAMESPACE
@@ -49,7 +49,7 @@ QT_END_NAMESPACE
 namespace QInstaller {
 
 class PackageManagerCore;
-class Page;
+class PackageManagerPage;
 class PerformInstallationForm;
 
 
@@ -70,7 +70,7 @@ public:
 
     QScriptEngine* controlScriptEngine() const;
 
-    Q_INVOKABLE Page* page(int pageId) const;
+    Q_INVOKABLE PackageManagerPage* page(int pageId) const;
     Q_INVOKABLE QWidget* pageWidgetByObjectName(const QString& name) const;
     Q_INVOKABLE QWidget* currentPageWidget() const;
     Q_INVOKABLE QString defaultButtonText(int wizardButton) const;
@@ -114,14 +114,15 @@ private:
 };
 
 
-// -- Page
+// -- PackageManagerPage
 
-class INSTALLER_EXPORT Page : public QWizardPage
+class INSTALLER_EXPORT PackageManagerPage : public QWizardPage
 {
     Q_OBJECT
 
 public:
-    explicit Page(PackageManagerCore *core);
+    explicit PackageManagerPage(PackageManagerCore *core);
+    virtual ~PackageManagerPage() {}
 
     virtual bool isInterruptible() const { return false; }
     virtual QPixmap watermarkPixmap() const;
@@ -159,7 +160,7 @@ private:
 
 // -- IntroductionPage
 
-class INSTALLER_EXPORT IntroductionPage : public Page
+class INSTALLER_EXPORT IntroductionPage : public PackageManagerPage
 {
     Q_OBJECT
 
@@ -176,7 +177,7 @@ private:
 
 // -- LicenseAgreementPage
 
-class INSTALLER_EXPORT LicenseAgreementPage : public Page
+class INSTALLER_EXPORT LicenseAgreementPage : public PackageManagerPage
 {
     Q_OBJECT
     class ClickForwarder;
@@ -205,7 +206,7 @@ private:
 
 // -- ComponentSelectionPage
 
-class INSTALLER_EXPORT ComponentSelectionPage : public Page
+class INSTALLER_EXPORT ComponentSelectionPage : public PackageManagerPage
 {
     Q_OBJECT
 
@@ -235,7 +236,7 @@ private:
 
 // -- TargetDirectoryPage
 
-class INSTALLER_EXPORT TargetDirectoryPage : public Page
+class INSTALLER_EXPORT TargetDirectoryPage : public PackageManagerPage
 {
     Q_OBJECT
 
@@ -262,7 +263,7 @@ private:
 
 // -- StartMenuDirectoryPage
 
-class INSTALLER_EXPORT StartMenuDirectoryPage : public Page
+class INSTALLER_EXPORT StartMenuDirectoryPage : public PackageManagerPage
 {
     Q_OBJECT
 
@@ -287,7 +288,7 @@ private:
 
 // -- ReadyForInstallationPage
 
-class INSTALLER_EXPORT ReadyForInstallationPage : public Page
+class INSTALLER_EXPORT ReadyForInstallationPage : public PackageManagerPage
 {
     Q_OBJECT
 
@@ -307,7 +308,7 @@ private:
 
 // -- PerformInstallationPage
 
-class INSTALLER_EXPORT PerformInstallationPage : public Page
+class INSTALLER_EXPORT PerformInstallationPage : public PackageManagerPage
 {
     Q_OBJECT
 
@@ -341,7 +342,7 @@ private:
 
 // -- FinishedPage
 
-class INSTALLER_EXPORT FinishedPage : public Page
+class INSTALLER_EXPORT FinishedPage : public PackageManagerPage
 {
     Q_OBJECT
 
@@ -363,7 +364,7 @@ private:
 
 // -- RestartPage
 
-class INSTALLER_EXPORT RestartPage : public Page
+class INSTALLER_EXPORT RestartPage : public PackageManagerPage
 {
     Q_OBJECT
 

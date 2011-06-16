@@ -84,13 +84,13 @@
 using namespace QInstaller;
 
 /*
-TRANSLATOR QInstaller::Installer;
+TRANSLATOR QInstaller::PackageManagerCore;
 */
 /*
-TRANSLATOR QInstaller::Gui
+TRANSLATOR QInstaller::PackageManagerGui
 */
 /*
-TRANSLATOR QInstaller::Page
+TRANSLATOR QInstaller::PackageManagerPage
 */
 /*
 TRANSLATOR QInstaller::IntroductionPage
@@ -118,11 +118,11 @@ TRANSLATOR QInstaller::FinishedPage
 */
 
 
-class DynamicInstallerPage : public Page
+class DynamicInstallerPage : public PackageManagerPage
 {
 public:
     explicit DynamicInstallerPage(QWidget* widget, PackageManagerCore *core = 0)
-        : Page(core)
+        : PackageManagerPage(core)
         , m_widget(widget)
     {
         setObjectName(QLatin1String("Dynamic") + widget->objectName());
@@ -166,11 +166,11 @@ protected:
                 break;
             }
         }
-        return Page::eventFilter(obj, event);
+        return PackageManagerPage::eventFilter(obj, event);
     }
 
 private:
-    QWidget* const m_widget;
+    QWidget *const m_widget;
 };
 
 
@@ -381,7 +381,7 @@ void PackageManagerGui::callControlScriptMethod(const QString& methodName)
 
 void PackageManagerGui::delayedControlScriptExecution(int id)
 {
-    if (Page* const p = qobject_cast<Page*>(page(id)))
+    if (PackageManagerPage *const p = qobject_cast<PackageManagerPage*> (page(id)))
         callControlScriptMethod(p->objectName() + QLatin1String("Callback"));
 }
 
@@ -456,16 +456,16 @@ void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
     }
 }
 
-Page* PackageManagerGui::page(int pageId) const
+PackageManagerPage *PackageManagerGui::page(int pageId) const
 {
-    return qobject_cast<Page*>(QWizard::page(pageId));
+    return qobject_cast<PackageManagerPage*> (QWizard::page(pageId));
 }
 
 QWidget* PackageManagerGui::pageWidgetByObjectName(const QString& name) const
 {
     const QList<int> ids = pageIds();
     foreach (const int i, ids) {
-        Page* const p = qobject_cast<Page*>(page(i));
+        PackageManagerPage *const p = qobject_cast<PackageManagerPage*> (page(i));
         if (p && p->objectName() == name) {
             // For dynamic pages, return the contained widget (as read from the UI file), not the
             // wrapper page
@@ -486,7 +486,7 @@ QWidget* PackageManagerGui::currentPageWidget() const
 void PackageManagerGui::cancelButtonClicked()
 {
     if (currentId() != PackageManagerCore::InstallationFinished) {
-        Page *const page = qobject_cast<Page*>(currentPage());
+        PackageManagerPage *const page = qobject_cast<PackageManagerPage*> (currentPage());
         if (page && page->isInterruptible()) {
             const QMessageBox::StandardButton bt =
                 MessageBoxHandler::question(MessageBoxHandler::currentBestSuitParent(),
@@ -540,9 +540,9 @@ void PackageManagerGui::showFinishedPage()
 }
 
 
-// -- Page
+// -- PackageManagerPage
 
-Page::Page(PackageManagerCore *core)
+PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     : m_fresh(true)
     , m_complete(true)
     , m_core(core)
@@ -551,32 +551,32 @@ Page::Page(PackageManagerCore *core)
     setSubTitle(QLatin1String(" "));
 }
 
-PackageManagerCore *Page::packageManagerCore() const
+PackageManagerCore *PackageManagerPage::packageManagerCore() const
 {
     return m_core;
 }
 
-QPixmap Page::watermarkPixmap() const
+QPixmap PackageManagerPage::watermarkPixmap() const
 {
     return QPixmap(m_core->value(QLatin1String("WatermarkPixmap")));
 }
 
-QPixmap Page::logoPixmap() const
+QPixmap PackageManagerPage::logoPixmap() const
 {
     return QPixmap(m_core->value(QLatin1String("LogoPixmap")));
 }
 
-QString Page::productName() const
+QString PackageManagerPage::productName() const
 {
     return m_core->value(QLatin1String("ProductName"));
 }
 
-bool Page::isComplete() const
+bool PackageManagerPage::isComplete() const
 {
     return m_complete;
 }
 
-void Page::setComplete(bool complete)
+void PackageManagerPage::setComplete(bool complete)
 {
     m_complete = complete;
     if (QWizard *w = wizard()) {
@@ -590,7 +590,7 @@ void Page::setComplete(bool complete)
     emit completeChanged();
 }
 
-void Page::insertWidget(QWidget *widget, const QString &siblingName, int offset)
+void PackageManagerPage::insertWidget(QWidget *widget, const QString &siblingName, int offset)
 {
     QWidget *sibling = findChild<QWidget *>(siblingName);
     QWidget *parent = sibling ? sibling->parentWidget() : 0;
@@ -603,9 +603,9 @@ void Page::insertWidget(QWidget *widget, const QString &siblingName, int offset)
     }
 }
 
-QWidget *Page::findWidget(const QString &objectName) const
+QWidget *PackageManagerPage::findWidget(const QString &objectName) const
 {
-    return findChild<QWidget *>(objectName);
+    return findChild<QWidget*> (objectName);
 }
 
 /*!
@@ -614,7 +614,7 @@ QWidget *Page::findWidget(const QString &objectName) const
     to QWizard::IndependentPages. If that option has been set, initializePage() would be only called
     once. So we provide entering() and leaving() based on this overwritten function.
 */
-void Page::setVisible(bool visible)
+void PackageManagerPage::setVisible(bool visible)
 {
     QWizardPage::setVisible(visible);
     qApp->processEvents();
@@ -631,7 +631,7 @@ void Page::setVisible(bool visible)
         leaving();
 }
 
-int Page::nextId() const
+int PackageManagerPage::nextId() const
 {
     return QWizardPage::nextId();
 }
@@ -640,7 +640,7 @@ int Page::nextId() const
 // -- IntroductionPage
 
 IntroductionPage::IntroductionPage(PackageManagerCore *core)
-    : Page(core)
+    : PackageManagerPage(core)
     , m_widget(0)
 {
     setObjectName(QLatin1String("IntroductionPage"));
@@ -705,7 +705,7 @@ private:
 // -- LicenseAgreementPage
 
 LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
-    : Page(core)
+    : PackageManagerPage(core)
 {
     setTitle(tr("License Agreement"));
     setSubTitle(tr("Please read the following license agreement(s). You must accept the terms contained "
@@ -1022,7 +1022,7 @@ public:
     On this page the user can select and deselect what he wants to be installed.
 */
 ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
-    : Page(core)
+    : PackageManagerPage(core)
     , d(new Private(this, core))
 {
     setTitle(tr("Select Components"));
@@ -1104,7 +1104,7 @@ bool ComponentSelectionPage::isComplete() const
 // -- TargetDirectoryPage
 
 TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
-    : Page(core)
+    : PackageManagerPage(core)
 {
     setObjectName(QLatin1String("TargetDirectoryPage"));
     setTitle(tr("Installation Folder"));
@@ -1157,7 +1157,7 @@ void TargetDirectoryPage::initializePage()
     }
     m_lineEdit->setText(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));
 
-    Page::initializePage();
+    PackageManagerPage::initializePage();
 }
 
 bool TargetDirectoryPage::validatePage()
@@ -1223,7 +1223,7 @@ void TargetDirectoryPage::dirRequested()
 // -- StartMenuDirectoryPage
 
 StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
-    : Page(core)
+    : PackageManagerPage(core)
 {
     setTitle(tr("Start Menu shortcuts"));
     setPixmap(QWizard::LogoPixmap, logoPixmap());
@@ -1324,7 +1324,7 @@ inline QString unitSizeText(const qint64 size)
 }
 
 ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
-    : Page(core)
+    : PackageManagerPage(core)
     , msgLabel(new QLabel)
 {
     setPixmap(QWizard::LogoPixmap, logoPixmap());
@@ -1448,7 +1448,7 @@ bool ReadyForInstallationPage::isComplete() const
     On this page the user can see on a progress bar how far the current installation is.
 */
 PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
-    : Page(core)
+    : PackageManagerPage(core)
     , m_performInstallationForm(new PerformInstallationForm(this))
 {
     setPixmap(QWizard::LogoPixmap, logoPixmap());
@@ -1561,7 +1561,7 @@ void PerformInstallationPage::toggleDetailsWereChanged()
 // -- FinishedPage
 
 FinishedPage::FinishedPage(PackageManagerCore *core)
-    : Page(core)
+    : PackageManagerPage(core)
 {
     setObjectName(QLatin1String("FinishedPage"));
     setTitle(tr("Completing the %1 Wizard").arg(productName()));
@@ -1656,7 +1656,7 @@ void FinishedPage::handleFinishClicked()
 // -- RestartPage
 
 RestartPage::RestartPage(PackageManagerCore *core)
-    : Page(core)
+    : PackageManagerPage(core)
 {
     setObjectName(QLatin1String("RestartPage"));
     setTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
