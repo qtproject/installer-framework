@@ -806,6 +806,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
 void LicenseAgreementPage::entering()
 {
     m_licenseListWidget->clear();
+    m_licenseListWidget->setVisible(false);
     m_textBrowser->setText(QLatin1String(""));
 
     RunMode runMode = packageManagerCore()->runMode();
@@ -830,8 +831,11 @@ void LicenseAgreementPage::entering()
             addLicenseItem(component->licenses());
     }
 
-    if (m_licenseListWidget->count() > 0)
+    const int licenseCount = m_licenseListWidget->count();
+    if (licenseCount > 0) {
+        m_licenseListWidget->setVisible(licenseCount > 1);
         m_licenseListWidget->setCurrentItem(m_licenseListWidget->item(0));
+    }
 }
 
 bool LicenseAgreementPage::isComplete() const
