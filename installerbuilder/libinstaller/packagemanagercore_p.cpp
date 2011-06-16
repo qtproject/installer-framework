@@ -998,7 +998,7 @@ void PackageManagerCorePrivate::runInstaller()
         if (target.isEmpty())
             throw Error(tr("Variable 'TargetDir' not set."));
 
-        if (!QDir(target).exists()) {
+        if (QDir(target).exists()) {
             QTemporaryFile tempAdminFile(target + QLatin1String("/adminrights"));
             if (!tempAdminFile.open() || !tempAdminFile.isWritable())
                 adminRightsGained = m_core->gainAdminRights();
