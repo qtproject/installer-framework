@@ -73,6 +73,7 @@ public:
         QString name() const;
         QString path() const;
         KDByteSize size() const;
+        QString fileSystemType() const;
         KDByteSize availableSpace() const;
 
         void swap( Volume& other );
@@ -83,6 +84,7 @@ public:
         void setPath( const QString& path );
         void setName( const QString& name );
         void setSize( const KDByteSize& size );
+        void setFileSystemType(const QString &type);
         void setAvailableSpace( const KDByteSize& available );
 
     private:

@@ -153,6 +153,18 @@ QString volumeName( const QString& volume )
     return QString::fromLatin1( "%2 (%1)" ).arg( volume.left( 2 ), vName );
 }
 
+QString fileSystemType(const QString &path)
+{
+    char name[MAX_PATH + 1] = "";
+    DWORD dummy;
+    char fileSystem[MAX_PATH + 1] = "";
+    BOOL result = GetVolumeInformationA(qPrintable(path), name, MAX_PATH + 1, &dummy, &dummy, &dummy,
+        fileSystem, MAX_PATH + 1);
+    if (result)
+        return QLatin1String(fileSystem);
+    return QLatin1String("unknown");
+}
+
 QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
 {
     QList< Volume > result;
@@ -163,6 +175,7 @@ QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
         const QString path = QDir::toNativeSeparators( it->path() );
         volume.setPath( path );
         volume.setName( volumeName( path ) );
+        volume.setFileSystemType(fileSystemType(path));
         const QPair< KDByteSize, KDByteSize > sizes = volumeSpace( path );
         volume.setSize( sizes.first );
         volume.setAvailableSpace( sizes.second );

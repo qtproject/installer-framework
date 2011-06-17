@@ -85,6 +85,7 @@ public:
     QString p;
     QString name;
     KDByteSize size;
+    QString fileSystemType;
     KDByteSize availableSpace;
 };
 
@@ -148,6 +149,16 @@ KDByteSize KDSysInfo::Volume::size() const
 void KDSysInfo::Volume::setSize( const KDByteSize& size )
 {
     d->size = size;
+}
+
+QString KDSysInfo::Volume::fileSystemType() const
+{
+    return d->fileSystemType;
+}
+
+void KDSysInfo::Volume::setFileSystemType(const QString &type)
+{
+    d->fileSystemType = type;
 }
 
 KDByteSize KDSysInfo::Volume::availableSpace() const
