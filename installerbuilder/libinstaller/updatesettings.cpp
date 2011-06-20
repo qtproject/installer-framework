@@ -46,9 +46,7 @@ class UpdateSettings::Private
 {
 public:
     Private(UpdateSettings* qq)
-        : q(qq)
-    {
-    }
+        : q(qq) { }
 
 private:
     UpdateSettings *const q;
@@ -64,6 +62,12 @@ public:
         return externalSettings ? *externalSettings : internalSettings;
     }
 
+    static void setExternalSettings(QSettings *settings)
+    {
+        externalSettings = settings;
+    }
+
+private:
     QSettings internalSettings;
     static QSettings* externalSettings;
 };
@@ -82,12 +86,13 @@ UpdateSettings::UpdateSettings()
 UpdateSettings::~UpdateSettings()
 {
     d->settings().sync();
+    delete d;
 }
 
 /* static */
 void UpdateSettings::setSettingsSource(QSettings *settings)
 {
-    Private::externalSettings = settings;
+    Private::setExternalSettings(settings);
 }
 
 int UpdateSettings::updateInterval() const
@@ -137,10 +142,8 @@ QList<Repository> UpdateSettings::repositories() const
 
     QList<Repository> result;
     for (int i = 0; i < count; ++i) {
-        Repository rep;
         settings.setArrayIndex(i);
-        rep.setUrl(d->settings().value(QLatin1String("url")).toUrl());
-        result.append(rep);
+        result.append(Repository(d->settings().value(QLatin1String("url")).toUrl()));
     }
     settings.endArray();
 
@@ -149,8 +152,8 @@ QList<Repository> UpdateSettings::repositories() const
             result = Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
                 QLatin1String(":/metadata/installer-config/")).repositories();
         }
-    } catch (const Error &e) {
-        qDebug("Could not parse config: %s", qPrintable(e.message()));
+    } catch (const Error &error) {
+        qDebug("Could not parse config: %s", qPrintable(error.message()));
     }
     return result;
 }
@@ -159,9 +162,8 @@ void UpdateSettings::setRepositories(const QList<Repository> &repositories)
 {
     d->settings().beginWriteArray(QLatin1String("updatesettings/repositories"));
     for (int i = 0; i < repositories.count(); ++i) {
-        const Repository &rep = repositories.at(i);
         d->settings().setArrayIndex(i);
-        d->settings().setValue(QLatin1String("url"), rep.url());
+        d->settings().setValue(QLatin1String("url"), repositories.at(i).url());
     }
     d->settings().endArray();
 }

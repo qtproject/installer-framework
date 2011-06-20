@@ -37,8 +37,8 @@ class QList;
 class QSettings;
 QT_END_NAMESPACE
 
-namespace QInstaller
-{
+namespace QInstaller {
+
 class Repository;
 
 class INSTALLER_EXPORT UpdateSettings
@@ -47,33 +47,32 @@ public:
     UpdateSettings();
     ~UpdateSettings();
 
-    enum Interval
-    {
+    enum Interval {
         Daily = 86400,
         Weekly = Daily * 7,
         Monthly = Daily * 30
     };
 
-    static void setSettingsSource( QSettings* settings );
+    static void setSettingsSource(QSettings* settings);
 
     int updateInterval() const;
-    void setUpdateInterval( int seconds );
+    void setUpdateInterval(int seconds);
 
     QString lastResult() const;
-    void setLastResult( const QString& lastResult );
+    void setLastResult(const QString &lastResult);
 
     QDateTime lastCheck() const;
-    void setLastCheck( const QDateTime& lastCheck );
+    void setLastCheck(const QDateTime &lastCheck);
 
     bool checkOnlyImportantUpdates() const;
-    void setCheckOnlyImportantUpdates( bool checkOnlyImportantUpdates );
+    void setCheckOnlyImportantUpdates(bool checkOnlyImportantUpdates);
 
-    QList< Repository > repositories() const;
-    void setRepositories( const QList< Repository >& repositories );
+    QList<Repository> repositories() const;
+    void setRepositories(const QList<Repository>& repositories);
 
 private:
     class Private;
-    kdtools::pimpl_ptr< Private > d;
+    Private *const d;
 };
 
 }
