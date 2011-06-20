@@ -33,50 +33,42 @@
 #include <common/errors.h>
 #include <common/utils.h>
 #include <common/repositorygen.h>
-#include <settings.h>
+#include <init.h>
+#include <lib7z_facade.h>
 
-#include "lib7z_facade.h"
-#include "init.h"
-
-#include <QCoreApplication>
-#include <QFileInfo>
-#include <QString>
-#include <QStringList>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QFileInfo>
 
 #include <iostream>
 
-using namespace QInstaller;
 using namespace Lib7z;
+using namespace QInstaller;
 
 static void printUsage()
 {
-    const QString appName = QFileInfo( QCoreApplication::applicationFilePath() ).fileName();
-    std::cout << "Usage: " << appName << " directory archive.7z" << std::endl;
-    std::cout << std::endl;
-    std::cout << "Example:" << std::endl;
-    std::cout << "  " << appName << " someDirectory foobar.7z" << std::endl;
+    std::cout << "Usage: " << QFileInfo(QCoreApplication::applicationFilePath()).fileName()
+        << " directory directory.7z" << std::endl;
 }
 
 int main(int argc, char **argv)
 {
     try {
         QCoreApplication app(argc, argv);
-        init();
 
-        setVerbose( true );
-
-        if( app.arguments().count() < 3 )
-        {
+        if (app.arguments().count() < 3) {
             printUsage();
-            return 1;
+            return EXIT_FAILURE;
         }
 
+        QInstaller::init();
+        QInstaller::setVerbose(true);
+
         QInstaller::compressDirectory(app.arguments().at(1), app.arguments().at(2));
-        return 0;
-    } catch ( const Lib7z::SevenZipException& e ) {
+        return EXIT_SUCCESS;
+    } catch (const Lib7z::SevenZipException &e) {
         std::cerr << e.message() << std::endl;
-    } catch ( const QInstaller::Error& e ) {
+    } catch (const QInstaller::Error &e) {
         std::cerr << e.message() << std::endl;
     }
-    return 1;
+    return EXIT_FAILURE;
 }
