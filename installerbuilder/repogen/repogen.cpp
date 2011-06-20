@@ -198,10 +198,11 @@ int main( int argc, char** argv ) {
         }
 
         copyComponentData(packagesDir, configDir, repositoryDir, packages);
+
+        TempDirDeleter tmpDeleter;
         const QString metaTmp = createTemporaryDirectory();
-        const TempDirDeleter tmpDeleter( metaTmp );
-        Q_UNUSED(tmpDeleter);
-        generateMetaDataDirectory(metaTmp, repositoryDir, packages, appName, appVersion);
+        tmpDeleter.add(metaTmp);
+
         const Settings &settings = Settings::fromFileAndPrefix(configDir + QLatin1String("/config.xml"), configDir);
         generateMetaDataDirectory(metaTmp, repositoryDir, packages, settings.applicationName(),
             settings.applicationVersion());
