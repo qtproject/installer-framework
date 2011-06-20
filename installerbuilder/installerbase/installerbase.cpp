@@ -33,7 +33,6 @@
 #include "common/binaryformat.h"
 #include "common/errors.h"
 #include "common/fileutils.h"
-#include "common/installersettings.h"
 #include "common/utils.h"
 #include "fsengineserver.h"
 #include "init.h"
@@ -45,6 +44,7 @@
 #include "updater.h"
 
 #include <packagemanagercore.h>
+#include <settings.h>
 
 #include <QtCore/QTranslator>
 #include <QtCore/QThread>

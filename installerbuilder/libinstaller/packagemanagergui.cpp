@@ -39,10 +39,10 @@
 #include "qinstallerglobal.h"
 #include "progresscoordinator.h"
 #include "performinstallationform.h"
+#include "settings.h"
 
 #include "common/errors.h"
 #include "common/utils.h"
-#include "common/installersettings.h"
 #include "common/fileutils.h"
 
 #include <KDToolsCore/KDByteSize>

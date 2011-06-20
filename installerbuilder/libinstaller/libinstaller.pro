@@ -69,7 +69,7 @@ HEADERS += $$PWD/packagemanagercore.h \
     environmentvariablesoperation.h \
     installiconsoperation.h \
     selfrestartoperation.h \
-    installersettings.h \
+    settings.h \
     getrepositorymetainfojob.h \
     downloadarchivesjob.h \
     init.h \
@@ -103,7 +103,6 @@ SOURCES += $$PWD/packagemanagercore.cpp \
     ../common/binaryformatenginehandler.cpp \
     ../common/repository.cpp \
     ../common/zipjob.cpp \
-    ../common/installersettings.cpp \
     ../common/fileutils.cpp \
     ../common/utils.cpp \
     component.cpp \
@@ -155,7 +154,8 @@ SOURCES += $$PWD/packagemanagercore.cpp \
     updatecreatorsettingsfrom21to22operation.cpp \
     qprocesswrapper.cpp \
     templates.cpp \
-    qsettingswrapper.cpp
+    qsettingswrapper.cpp \
+    settings.cpp
 
 macx {
     HEADERS +=  macrelocateqt.h \

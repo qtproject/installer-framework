@@ -33,8 +33,8 @@
 #include "updatesettings.h"
 
 #include "common/errors.h"
-#include "common/installersettings.h"
 #include "common/repository.h"
+#include "settings.h"
 
 #include <QtCore/QDateTime>
 #include <QtCore/QSettings>

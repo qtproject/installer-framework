@@ -25,7 +25,7 @@
 **************************************************************************/
 
 #include <packagemanagercore.h>
-#include <common/installersettings.h>
+#include <settings.h>
 
 #include <KDUpdater/Application>
 

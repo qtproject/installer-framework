@@ -33,7 +33,7 @@
 #ifndef PACKAGEMANAGERCORE_P_H
 #define PACKAGEMANAGERCORE_P_H
 
-#include "common/installersettings.h"
+#include "settings.h"
 
 #include <KDToolsCore/KDSysInfo>
 

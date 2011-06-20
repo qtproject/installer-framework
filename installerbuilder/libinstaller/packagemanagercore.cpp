@@ -35,7 +35,6 @@
 #include "adminauthorization.h"
 #include "common/binaryformat.h"
 #include "common/errors.h"
-#include "common/installersettings.h"
 #include "common/utils.h"
 #include "component.h"
 #include "downloadarchivesjob.h"
@@ -47,6 +46,7 @@
 #include "qinstallerglobal.h"
 #include "qprocesswrapper.h"
 #include "qsettingswrapper.h"
+#include "settings.h"
 
 #include <QtCore/QTemporaryFile>
 

@@ -30,7 +30,7 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include "installersettings.h"
+#include "settings.h"
 
 #include "common/errors.h"
 #include "common/repository.h"

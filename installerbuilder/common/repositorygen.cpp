@@ -36,7 +36,7 @@
 #include <common/errors.h>
 #include <common/utils.h>
 #include <common/consolepasswordprovider.h>
-#include <common/installersettings.h>
+#include <settings.h>
 
 #include <KDUpdater/KDUpdater>
 
