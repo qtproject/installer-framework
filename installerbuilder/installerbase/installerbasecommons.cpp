@@ -193,17 +193,34 @@ TargetDirectoryPageImpl::TargetDirectoryPageImpl(PackageManagerCore *core)
 
 QString TargetDirectoryPageImpl::targetDirWarning() const
 {
-    if (targetDir().contains(QLatin1Char(' ')))
-        return TargetDirectoryPageImpl::tr("The installation path must not contain any space.");
+    if (targetDir().isEmpty()) {
+        return TargetDirectoryPageImpl::tr("The installation path cannot be empty, please specify a valid "
+            "folder.");
+    }
+
+    if (QDir(targetDir()).isRelative()) {
+        return TargetDirectoryPageImpl::tr("The installation path cannot be relative, please specify an "
+            "absolute path.");
+    }
+
+    QString dir = targetDir();
+#ifdef Q_OS_WIN
+    // remove e.g. "c:"
+    dir = dir.mid(2);
+#endif
+    // check if there are not allowed characters in the target path
+    if (dir.contains(QRegExp(QLatin1String("[!@#$%^&*: ,;]")))) {
+        return TargetDirectoryPageImpl::tr("The installation path must not contain !@#$%^&*:,; or spaces, "
+            "please specify a valid folder.");
+    }
+
     return QString();
 }
 
 bool TargetDirectoryPageImpl::isComplete() const
 {
-    const QString warning = targetDirWarning();
-    m_warningLabel->setText(warning);
-
-    return warning.isEmpty();
+    m_warningLabel->setText(targetDirWarning());
+    return m_warningLabel->text().isEmpty();
 }
 
 bool TargetDirectoryPageImpl::askQuestion(const QString &identifier, const QString &message)
@@ -228,39 +245,11 @@ bool TargetDirectoryPageImpl::validatePage()
     if (!isVisible())
         return true;
 
-    if (targetDir().isEmpty()) {
-        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("forbiddenTargetDirectory"), tr("Error"),
-            tr( "The install directory cannot be empty, please specify a valid folder"), QMessageBox::Ok);
-        return false;
-    }
-
-    const QDir dir(targetDir());
-    if (dir.isRelative()) {
-        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("forbiddenTargetDirectory"), tr("Error"),
-            tr("The install directory cannot be relative, please specify an absolute path."), QMessageBox::Ok);
-        return false;
-    }
-
-    QString checkString = targetDir();
-#ifdef Q_OS_WIN
-    // remove e.g. "c:"
-    checkString = checkString.mid(2);
-#endif
-    // check if there are not allowed characters in the target path
-    if (checkString.contains(QRegExp(QLatin1String("[!@#$%^&*: ,;]")))) {
-        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("forbiddenTargetDirectory"), tr("Error"),
-            tr("The install directory cannot contain !@#$%^&*:,; or spaces, please specify a valid folder."),
-            QMessageBox::Ok);
-        return false;
-    }
-
     const QString remove = packageManagerCore()->value(QLatin1String("RemoveTargetDir"));
     if (!QVariant(remove).toBool())
         return true;
 
+    QDir dir(targetDir());
     // the directory exists and is empty...
     if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
         return true;
@@ -270,7 +259,7 @@ bool TargetDirectoryPageImpl::validatePage()
         if (dir == QDir::root() || dir == QDir::home()) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("forbiddenTargetDirectory"), tr("Error"),
-                tr("As the install directory is completely deleted installing in %1 is forbidden")
+                tr("As the install directory is completely deleted installing in %1 is forbidden.")
                 .arg(QDir::rootPath()), QMessageBox::Ok);
             return false;
         }
