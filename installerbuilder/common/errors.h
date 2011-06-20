@@ -26,23 +26,27 @@
 #ifndef ERRORS_H
 #define ERRORS_H
 
-#include <QString>
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtCore/QString>
 
 #include <stdexcept>
 
 namespace QInstaller {
-    class Error : public std::runtime_error
-    {
-    public:
-        explicit Error(const QString &m) : std::runtime_error( m.toStdString() ), m_message ( m ) {
-            qWarning()<<"Error-Exception:"<<m;
-        }
-        virtual ~Error() throw() {}
-        QString message() const { return m_message; }
-    private:
-        QString m_message;
-    };
+
+class Error : public std::runtime_error
+{
+public:
+    explicit Error(const QString &message)
+        : std::runtime_error(message.toStdString())
+        , m_message (message) { qWarning() << "Error-Exception:" << message; }
+    virtual ~Error() throw() {}
+
+    QString message() const { return m_message; }
+
+private:
+    QString m_message;
+};
+
 }
 
 #endif // ERRORS_H
