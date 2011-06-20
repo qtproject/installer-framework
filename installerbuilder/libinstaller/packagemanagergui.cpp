@@ -207,8 +207,8 @@ QScriptEngine* PackageManagerGui::controlScriptEngine() const
 */
 PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     : QWizard(parent)
-    , m_core(core)
     , d(new Private)
+    , m_core(core)
 {
     if (m_core->isInstaller())
         setWindowTitle(tr("%1 Setup").arg(m_core->value(QLatin1String("Title"))));
