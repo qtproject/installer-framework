@@ -123,7 +123,7 @@ ComponentSelectionDialog::ComponentSelectionDialog(PackageManagerCore *core, QWi
     d->ui.splitter->setStretchFactor(1, 1);
     d->ui.splitter->setCollapsible(0, false);
 
-    d->componentModel = new ComponentModel(5, core);
+    d->componentModel = new ComponentModel(4, core);
     d->componentModel->setHeaderData(0, Qt::Horizontal, tr("Name"));
     d->componentModel->setHeaderData(1, Qt::Horizontal, tr("Installed Version"));
     d->componentModel->setHeaderData(2, Qt::Horizontal, tr("New Version"));

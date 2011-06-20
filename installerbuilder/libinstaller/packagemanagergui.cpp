@@ -875,8 +875,8 @@ public:
         : q(qq)
         , m_core(core)
         , m_treeView(new QTreeView(q))
-        , m_allModel(new ComponentModel(5, m_core))
-        , m_updaterModel(new ComponentModel(5, m_core))
+        , m_allModel(new ComponentModel(4, m_core))
+        , m_updaterModel(new ComponentModel(4, m_core))
     {
         m_treeView->setObjectName(QLatin1String("ComponentTreeView"));
 

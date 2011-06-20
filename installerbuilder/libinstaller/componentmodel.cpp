@@ -131,21 +131,19 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, in
 
 QVariant ComponentModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation == Qt::Vertical || section < 0 || section >= columnCount())
-        return QAbstractItemModel::headerData(section, orientation, role);
-    return m_headerData.at(section);
+    if (section >= 0 && section < columnCount() && orientation == Qt::Horizontal && role == Qt::DisplayRole)
+        return m_headerData.at(section);
+    return QAbstractItemModel::headerData(section, orientation, role);
 }
 
-bool ComponentModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
-    int role)
+bool ComponentModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
 {
-    if (orientation == Qt::Vertical || section < 0 || section >= columnCount())
-        return QAbstractItemModel::setHeaderData(section, orientation, value, role);
-
-    m_headerData.replace(section, value);
-    emit headerDataChanged(orientation, section, section);
-
-    return true;
+    if (section >= 0 && section < columnCount() && orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+        m_headerData.replace(section, value);
+        emit headerDataChanged(orientation, section, section);
+        return true;
+    }
+    return QAbstractItemModel::setHeaderData(section, orientation, value, role);
 }
 
 Qt::ItemFlags ComponentModel::flags(const QModelIndex &index) const
