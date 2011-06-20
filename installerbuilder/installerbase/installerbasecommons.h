@@ -89,7 +89,7 @@ public:
     QString targetDirWarning() const;
     bool isComplete() const;
     bool askQuestion(const QString &identifier, const QString &message);
-    bool failWithWarning(const QString &identifier, const QString &message);
+    bool failWithError(const QString &identifier, const QString &message);
     bool validatePage();
 
 private:

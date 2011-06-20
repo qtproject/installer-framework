@@ -39,7 +39,6 @@
 
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
-#include <QtCore/QTimer>
 
 #include <QtGui/QLabel>
 #include <QtGui/QProgressBar>
@@ -228,15 +227,15 @@ bool TargetDirectoryPageImpl::askQuestion(const QString &identifier, const QStri
     QMessageBox::StandardButton bt =
         MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(), identifier,
         TargetDirectoryPageImpl::tr("Warning"), message, QMessageBox::Yes | QMessageBox::No);
-    QTimer::singleShot(100, wizard()->page(nextId()), SLOT(repaint()));
+
     return bt == QMessageBox::Yes;
 }
 
-bool TargetDirectoryPageImpl::failWithWarning(const QString &identifier, const QString &message)
+bool TargetDirectoryPageImpl::failWithError(const QString &identifier, const QString &message)
 {
     MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), identifier,
-        TargetDirectoryPageImpl::tr("Warning"), message);
-    QTimer::singleShot(100, wizard()->page(nextId()), SLOT(repaint()));
+        TargetDirectoryPageImpl::tr("Error"), message);
+
     return false;
 }
 
@@ -249,19 +248,16 @@ bool TargetDirectoryPageImpl::validatePage()
     if (!QVariant(remove).toBool())
         return true;
 
-    QDir dir(targetDir());
+    const QDir dir(targetDir());
     // the directory exists and is empty...
     if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
         return true;
 
-    QFileInfo fi(targetDir());
+    const QFileInfo fi(targetDir());
     if (fi.isDir()) {
         if (dir == QDir::root() || dir == QDir::home()) {
-            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("forbiddenTargetDirectory"), tr("Error"),
-                tr("As the install directory is completely deleted installing in %1 is forbidden.")
-                .arg(QDir::rootPath()), QMessageBox::Ok);
-            return false;
+            return failWithError(QLatin1String("ForbiddenTargetDirectory"), tr("As the install directory "
+                "is completely deleted installing in %1 is forbidden.").arg(QDir::rootPath()));
         }
 
         QString fileName = packageManagerCore()->settings().uninstallerName();
@@ -274,21 +270,18 @@ bool TargetDirectoryPageImpl::validatePage()
 
         QFileInfo fi2(targetDir() + QDir::separator() + fileName);
         if (fi2.exists()) {
-            return askQuestion(QLatin1String("overwriteTargetDirectory"),
+            return askQuestion(QLatin1String("OverwriteTargetDirectory"),
                 TargetDirectoryPageImpl::tr("The folder you selected exists already and contains an "
                 "installation.\nDo you want to overwrite it?"));
         }
 
-        return askQuestion(QLatin1String("overwriteTargetDirectory"),
+        return askQuestion(QLatin1String("OverwriteTargetDirectory"),
             tr("You have selected an existing, non-empty folder for installation.\nNote that it will be "
             "completely wiped on uninstallation of this application.\nIt is not advisable to install into "
             "this folder as installation might fail.\nDo you want to continue?"));
     } else if (fi.isFile() || fi.isSymLink()) {
-        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("WrongTargetDirectory"), tr("Error"),
-            tr("You have selected an existing file or symlink, please choose a different target for "
-            "installation."), QMessageBox::Ok);
-        return false;
+        return failWithError(QLatin1String("WrongTargetDirectory"), tr("You have selected an existing file "
+            "or symlink, please choose a different target for installation."));
     }
     return true;
 }
