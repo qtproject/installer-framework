@@ -896,16 +896,15 @@ void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperatio
         const QString dataFile = targetDir() + QLatin1Char('/') + m_installerSettings.uninstallerName()
             + QLatin1String(".dat");
         try {
-            input.setFileName(dataFile);
-            openForRead(&input, input.fileName());
             if (isInstaller()) {
                 throw Error(tr("Found a binary data file, but we are the installer and we should read the "
                     "binary resource from our very own binary!"));
             }
+            input.setFileName(dataFile);
+            openForRead(&input, input.fileName());
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookieDat));
             forceUncompressedResourcesOnError = true;
         } catch (const Error &error) {
-            verbose() << error.message() << std::endl;
             input.setFileName(isInstaller() ? installerBinaryPath() : uninstallerName());
             openForRead(&input, input.fileName());
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
@@ -927,7 +926,6 @@ void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperatio
                     file.errorString()));
             }
         } catch (const Error &error) {
-            verbose() << error.message() << std::endl;
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
                 QFile tmp(isInstaller() ? installerBinaryPath() : uninstallerName());
