@@ -146,7 +146,7 @@ QList<Repository> UpdateSettings::repositories() const
 
     try {
         if(result.isEmpty()) {
-            result = InstallerSettings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
+            result = Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
                 QLatin1String(":/metadata/installer-config/")).repositories();
         }
     } catch (const Error &e) {

@@ -111,8 +111,7 @@ private:
 static int assemble(Input input, const QString &configdir)
 {
     const QString configfile = QFileInfo(configdir, QLatin1String("config.xml")).absoluteFilePath();
-    const QInstaller::InstallerSettings settings =
-        QInstaller::InstallerSettings::fromFileAndPrefix(configfile, configdir);
+    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configdir);
 
 #ifdef Q_WS_MAC
     if (QFileInfo(input.installerExePath).isBundle()) {
@@ -404,8 +403,7 @@ static QString createMetaDataDirectory(const PackageInfoVector &packages,
     const QString &packagesDir, const QString &configdir)
 {
     const QString configfile = QFileInfo(configdir, "config.xml").absoluteFilePath();
-    const QInstaller::InstallerSettings settings =
-        QInstaller::InstallerSettings::fromFileAndPrefix(configfile, QString());
+    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, QString());
 
     const QString metapath = createTemporaryDirectory();
     generateMetaDataDirectory(metapath, packagesDir, packages, settings.applicationName(),
@@ -624,8 +622,7 @@ int main(int argc, char **argv)
         const QString resourceFile = createBinaryResourceFile(metaDir);
 
         const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
-        const QInstaller::InstallerSettings settings =
-            QInstaller::InstallerSettings::fromFileAndPrefix(configfile, configDir);
+        const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
         const QByteArray privateKey = settings.privateKey();
 
         Input input;

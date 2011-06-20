@@ -451,7 +451,7 @@ int PackageManagerCore::downloadNeededArchives(RunMode runMode, double partProgr
 
     // don't have it on the stack, since it keeps the temporary files
     DownloadArchivesJob* const archivesJob =
-        new DownloadArchivesJob(d->m_installerSettings.publicKey(), this);
+        new DownloadArchivesJob(d->m_Settings.publicKey(), this);
     archivesJob->setAutoDelete(false);
     archivesJob->setArchivesToDownload(archivesToDownload);
     connect(this, SIGNAL(installationInterrupted()), archivesJob, SLOT(cancel()));
@@ -508,8 +508,8 @@ void PackageManagerCore::rollBackInstallation()
 
     KDUpdater::PackagesInfo *const packages = d->m_app->packagesInfo();
     packages->setFileName(d->componentsXmlPath()); // forces a refresh of installed packages
-    packages->setApplicationName(d->m_installerSettings.applicationName());
-    packages->setApplicationVersion(d->m_installerSettings.applicationVersion());
+    packages->setApplicationName(d->m_Settings.applicationName());
+    packages->setApplicationVersion(d->m_Settings.applicationVersion());
 
     //this unregisters all operation progressChanged connects
     ProgressCoordninator::instance()->setUndoMode();
@@ -659,8 +659,8 @@ QHash<QString, KDUpdater::PackageInfo> PackageManagerCore::localInstalledPackage
                 .arg(d->localComponentsXmlPath());
             return installedPackages;
         }
-        packagesInfo.setApplicationName(d->m_installerSettings.applicationName());
-        packagesInfo.setApplicationVersion(d->m_installerSettings.applicationVersion());
+        packagesInfo.setApplicationName(d->m_Settings.applicationName());
+        packagesInfo.setApplicationVersion(d->m_Settings.applicationVersion());
 
         foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
             installedPackages.insert(info.name, info);
@@ -669,7 +669,7 @@ QHash<QString, KDUpdater::PackageInfo> PackageManagerCore::localInstalledPackage
     return installedPackages;
 }
 
-GetRepositoriesMetaInfoJob* PackageManagerCore::fetchMetaInformation(const QInstaller::InstallerSettings &settings)
+GetRepositoriesMetaInfoJob* PackageManagerCore::fetchMetaInformation(const QInstaller::Settings &settings)
 {
     GetRepositoriesMetaInfoJob *metaInfoJob = new GetRepositoriesMetaInfoJob(settings.publicKey());
     if ((isInstaller() && !isOfflineOnly()) || (isUpdater() || isPackageManager()))
@@ -690,7 +690,7 @@ GetRepositoriesMetaInfoJob* PackageManagerCore::fetchMetaInformation(const QInst
     return metaInfoJob;
 }
 
-bool PackageManagerCore::addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *metaInfoJob, const InstallerSettings &settings,
+bool PackageManagerCore::addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *metaInfoJob, const Settings &settings,
     bool parseChecksum)
 {
     const QString &appName = settings.applicationName();
@@ -737,7 +737,7 @@ bool PackageManagerCore::fetchAllPackages()
 
     QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
 
-    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(d->m_installerSettings));
+    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(d->m_Settings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
         if (metaInfoJob->error() != QInstaller::UserIgnoreError) {
             verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
@@ -746,7 +746,7 @@ bool PackageManagerCore::fetchAllPackages()
     }
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {
-        if (!addUpdateResourcesFrom(metaInfoJob.data(), d->m_installerSettings, true)) {
+        if (!addUpdateResourcesFrom(metaInfoJob.data(), d->m_Settings, true)) {
             verbose() << tr("Could not add temporary update source information.") << std::endl;
             return false;
         }
@@ -837,7 +837,7 @@ bool PackageManagerCore::fetchUpdaterPackages()
 
     QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
 
-    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(d->m_installerSettings));
+    QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(d->m_Settings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
         if (metaInfoJob->error() != QInstaller::UserIgnoreError) {
             verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
@@ -846,7 +846,7 @@ bool PackageManagerCore::fetchUpdaterPackages()
     }
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {
-        if (!addUpdateResourcesFrom(metaInfoJob.data(), d->m_installerSettings, true)) {
+        if (!addUpdateResourcesFrom(metaInfoJob.data(), d->m_Settings, true)) {
             verbose() << tr("Could not add temporary update source information.") << std::endl;
             return false;
         }
@@ -1028,7 +1028,7 @@ bool PackageManagerCore::removeWizardPageItem(Component *component, const QStrin
 
 void PackageManagerCore::addRepositories(const QList<Repository> &repositories)
 {
-    d->m_installerSettings.addUserRepositories(repositories);
+    d->m_Settings.addUserRepositories(repositories);
 }
 
 /*!
@@ -1037,7 +1037,7 @@ void PackageManagerCore::addRepositories(const QList<Repository> &repositories)
 */
 void PackageManagerCore::setTemporaryRepositories(const QList<Repository> &repositories, bool replace)
 {
-    d->m_installerSettings.setTemporaryRepositories(repositories, replace);
+    d->m_Settings.setTemporaryRepositories(repositories, replace);
 }
 
 /*!
@@ -1229,9 +1229,9 @@ QList<Component*> PackageManagerCore::dependencies(const Component *component, Q
     return result;
 }
 
-const InstallerSettings &PackageManagerCore::settings() const
+const Settings &PackageManagerCore::settings() const
 {
-    return d->m_installerSettings;
+    return d->m_Settings;
 }
 
 /*!

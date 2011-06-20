@@ -154,6 +154,7 @@ public:
     FSEngineClientHandler *m_FSEngineClientHandler;
 
     int m_status;
+    Settings m_Settings;
     bool m_forceRestart;
     int m_silentRetries;
     bool m_testChecksum;
@@ -162,7 +163,6 @@ public:
     bool m_needToWriteUninstaller;
     QHash<QString, QString> m_vars;
     QHash<QString, bool> m_sharedFlags;
-    InstallerSettings m_installerSettings;
     QString m_installerBaseBinaryUnreplaced;
 
     qint64 m_globalDictOffset;

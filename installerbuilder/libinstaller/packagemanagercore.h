@@ -66,9 +66,9 @@ namespace QInstaller {
 
 class Component;
 class GetRepositoriesMetaInfoJob;
-class InstallerSettings;
 class MessageBoxHandler;
 class PackageManagerCorePrivate;
+class Settings;
 
 class INSTALLER_EXPORT PackageManagerCore : public QObject
 {
@@ -115,8 +115,8 @@ public:
     static void setNoForceInstallation(bool value);
 
     QHash<QString, KDUpdater::PackageInfo> localInstalledPackages();
-    GetRepositoriesMetaInfoJob* fetchMetaInformation(const InstallerSettings &settings);
-    bool addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *metaInfoJob, const InstallerSettings &settings,
+    GetRepositoriesMetaInfoJob* fetchMetaInformation(const Settings &settings);
+    bool addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *metaInfoJob, const Settings &settings,
         bool parseChecksum);
 
     bool fetchAllPackages();
@@ -209,7 +209,7 @@ public:
 
     Q_INVOKABLE bool isProcessRunning(const QString &name) const;
 
-    const InstallerSettings &settings() const;
+    const Settings &settings() const;
 
     Q_INVOKABLE bool addWizardPage(QInstaller::Component *component, const QString &name, int page);
     Q_INVOKABLE bool removeWizardPage(QInstaller::Component *component, const QString &name);

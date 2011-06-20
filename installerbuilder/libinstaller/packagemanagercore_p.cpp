@@ -301,8 +301,8 @@ QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::compo
 void PackageManagerCorePrivate::initialize()
 {
     try {
-        m_installerSettings = InstallerSettings(InstallerSettings::fromFileAndPrefix(QLatin1String
-            (":/metadata/installer-config/config.xml"), QLatin1String(":/metadata/installer-config/")));
+        m_Settings = Settings(Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
+            QLatin1String(":/metadata/installer-config/")));
     } catch (const Error &e) {
         qCritical("Could not parse Config: %s", qPrintable(e.message()));
         // TODO: try better error handling
@@ -327,21 +327,21 @@ void PackageManagerCorePrivate::initialize()
 #endif
 
     // fill the variables defined in the settings
-    m_vars.insert(QLatin1String("ProductName"), m_installerSettings.applicationName());
-    m_vars.insert(QLatin1String("ProductVersion"), m_installerSettings.applicationVersion());
-    m_vars.insert(QLatin1String("Title"), m_installerSettings.title());
-    m_vars.insert(QLatin1String("MaintenanceTitle"), m_installerSettings.maintenanceTitle());
-    m_vars.insert(QLatin1String("Publisher"), m_installerSettings.publisher());
-    m_vars.insert(QLatin1String("Url"), m_installerSettings.url());
-    m_vars.insert(QLatin1String("StartMenuDir"), m_installerSettings.startMenuDir());
+    m_vars.insert(QLatin1String("ProductName"), m_Settings.applicationName());
+    m_vars.insert(QLatin1String("ProductVersion"), m_Settings.applicationVersion());
+    m_vars.insert(QLatin1String("Title"), m_Settings.title());
+    m_vars.insert(QLatin1String("MaintenanceTitle"), m_Settings.maintenanceTitle());
+    m_vars.insert(QLatin1String("Publisher"), m_Settings.publisher());
+    m_vars.insert(QLatin1String("Url"), m_Settings.url());
+    m_vars.insert(QLatin1String("StartMenuDir"), m_Settings.startMenuDir());
 
-    m_vars.insert(QLatin1String("TargetConfigurationFile"), m_installerSettings.configurationFileName());
-    m_vars.insert(QLatin1String("LogoPixmap"), m_installerSettings.logo());
-    m_vars.insert(QLatin1String("LogoSmallPixmap"), m_installerSettings.logoSmall());
-    m_vars.insert(QLatin1String("WatermarkPixmap"), m_installerSettings.watermark());
+    m_vars.insert(QLatin1String("TargetConfigurationFile"), m_Settings.configurationFileName());
+    m_vars.insert(QLatin1String("LogoPixmap"), m_Settings.logo());
+    m_vars.insert(QLatin1String("LogoSmallPixmap"), m_Settings.logoSmall());
+    m_vars.insert(QLatin1String("WatermarkPixmap"), m_Settings.watermark());
 
-    m_vars.insert(QLatin1String("RunProgram"), replaceVariables(m_installerSettings.runProgram()));
-    const QString desc = m_installerSettings.runProgramDescription();
+    m_vars.insert(QLatin1String("RunProgram"), replaceVariables(m_Settings.runProgram()));
+    const QString desc = m_Settings.runProgramDescription();
     if (!desc.isEmpty())
         m_vars.insert(QLatin1String("RunProgramDescription"), desc);
 #ifdef Q_WS_X11
@@ -349,8 +349,8 @@ void PackageManagerCorePrivate::initialize()
         m_vars.insert(scTargetDir, replaceVariables(m_installerSettings.adminTargetDir()));
     else
 #endif
-        m_vars.insert(scTargetDir, replaceVariables(m_installerSettings.targetDir()));
-    m_vars.insert(QLatin1String("RemoveTargetDir"), replaceVariables(m_installerSettings.removeTargetDir()));
+        m_vars.insert(scTargetDir, replaceVariables(m_Settings.targetDir()));
+    m_vars.insert(QLatin1String("RemoveTargetDir"), replaceVariables(m_Settings.removeTargetDir()));
 
     QSettingsWrapper creatorSettings(QSettingsWrapper::IniFormat, QSettingsWrapper::UserScope,
         QLatin1String("Nokia"), QLatin1String("QtCreator"));
@@ -481,7 +481,7 @@ KDUpdater::UpdateOperation* PackageManagerCorePrivate::takeOwnedOperation(KDUpda
 
 QString PackageManagerCorePrivate::uninstallerName() const
 {
-    QString filename = m_installerSettings.uninstallerName();
+    QString filename = m_Settings.uninstallerName();
 #if defined(Q_WS_MAC)
     if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
         filename += QLatin1String(".app/Contents/MacOS/") + filename;
@@ -493,7 +493,7 @@ QString PackageManagerCorePrivate::uninstallerName() const
 
 void PackageManagerCorePrivate::readUninstallerIniFile(const QString &targetDir)
 {
-    const QString iniPath = targetDir + QLatin1Char('/') + m_installerSettings.uninstallerIniFile();
+    const QString iniPath = targetDir + QLatin1Char('/') + m_Settings.uninstallerIniFile();
     QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
     const QVariantHash vars = cfg.value(QLatin1String("Variables")).toHash();
     QHash<QString, QVariant>::ConstIterator it = vars.constBegin();
@@ -506,7 +506,7 @@ void PackageManagerCorePrivate::readUninstallerIniFile(const QString &targetDir)
     const QStringList list = cfg.value(QLatin1String("Repositories")).toStringList();
     foreach (const QString &url, list)
         repositories.append(Repository(url));
-    m_installerSettings.addUserRepositories(repositories);
+    m_Settings.addUserRepositories(repositories);
 }
 
 void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> &components)
@@ -741,7 +741,7 @@ void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperatio
 
     {
         // write current state (variables) to the uninstaller ini file
-        const QString iniPath = targetDir() + QLatin1Char('/') + m_installerSettings.uninstallerIniFile();
+        const QString iniPath = targetDir() + QLatin1Char('/') + m_Settings.uninstallerIniFile();
         QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
         QVariantHash vars;
         QHash<QString, QString>::ConstIterator it = m_vars.constBegin();
@@ -754,7 +754,7 @@ void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperatio
         cfg.setValue(QLatin1String("Variables"), vars);
 
         QStringList list;
-        foreach (const Repository &repository, m_installerSettings.userRepositories())
+        foreach (const Repository &repository, m_Settings.userRepositories())
             list.append(repository.url().toString());
         cfg.setValue(QLatin1String("Repositories"), list);
 
@@ -893,7 +893,7 @@ void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperatio
         QFile input;
         BinaryLayout layout;
         bool forceUncompressedResourcesOnError = false;
-        const QString dataFile = targetDir() + QLatin1Char('/') + m_installerSettings.uninstallerName()
+        const QString dataFile = targetDir() + QLatin1Char('/') + m_Settings.uninstallerName()
             + QLatin1String(".dat");
         try {
             if (isInstaller()) {
@@ -1052,8 +1052,8 @@ void PackageManagerCorePrivate::runInstaller()
         packages->setFileName(componentsXmlPath()); // forces a refresh of installed packages
         // Clear these packages as we might install into an already existing installation folder.
         packages->clearPackageInfoList();
-        packages->setApplicationName(m_installerSettings.applicationName());
-        packages->setApplicationVersion(m_installerSettings.applicationVersion());
+        packages->setApplicationName(m_Settings.applicationName());
+        packages->setApplicationVersion(m_Settings.applicationVersion());
 
         stopProcessesForUpdates(componentsToInstall);
 
@@ -1203,8 +1203,8 @@ void PackageManagerCorePrivate::runPackageUpdater()
 
         KDUpdater::PackagesInfo *packages = m_app->packagesInfo();
         packages->setFileName(packagesXml);
-        packages->setApplicationName(m_installerSettings.applicationName());
-        packages->setApplicationVersion(m_installerSettings.applicationVersion());
+        packages->setApplicationName(m_Settings.applicationName());
+        packages->setApplicationVersion(m_Settings.applicationVersion());
 
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
@@ -1520,8 +1520,8 @@ void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateO
 {
     KDUpdater::PackagesInfo *const packages = m_app->packagesInfo();
     packages->setFileName(componentsXmlPath());
-    packages->setApplicationName(m_installerSettings.applicationName());
-    packages->setApplicationVersion(m_installerSettings.applicationVersion());
+    packages->setApplicationName(m_Settings.applicationName());
+    packages->setApplicationVersion(m_Settings.applicationVersion());
 
     try {
         foreach (KDUpdater::UpdateOperation *undoOperation, undoOperations) {

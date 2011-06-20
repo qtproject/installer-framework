@@ -44,9 +44,9 @@
 using namespace QInstaller;
 
 
-// -- InstallerSettings::Private
+// -- Settings::Private
 
-class InstallerSettings::Private : public QSharedData
+class Settings::Private : public QSharedData
 {
 public:
     QString prefix;
@@ -122,23 +122,23 @@ static QString splitTrimmed(const QString &string)
 
 // -- InstallerSettings
 
-InstallerSettings::InstallerSettings()
+Settings::Settings()
     : d(new Private)
 {
 }
 
-InstallerSettings::~InstallerSettings()
+Settings::~Settings()
 {
 }
 
-InstallerSettings::InstallerSettings(const InstallerSettings &other)
+Settings::Settings(const Settings &other)
     : d(other.d)
 {
 }
 
-InstallerSettings& InstallerSettings::operator=(const InstallerSettings &other)
+Settings& Settings::operator=(const Settings &other)
 {
-    InstallerSettings copy(other);
+    Settings copy(other);
     std::swap(d, copy.d);
     return *this;
 }
@@ -146,7 +146,7 @@ InstallerSettings& InstallerSettings::operator=(const InstallerSettings &other)
 /*!
     @throws QInstallerError
 */
-InstallerSettings InstallerSettings::fromFileAndPrefix(const QString &path, const QString &prefix)
+Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
 {
     QDomDocument doc;
     QFile file(path);
@@ -170,7 +170,7 @@ InstallerSettings InstallerSettings::fromFileAndPrefix(const QString &path, cons
     if (root.tagName() != QLatin1String("Installer"))
         throw Error(tr("%1 is not valid: Installer root node expected"));
 
-    InstallerSettings s;
+    Settings s;
     s.d->prefix = prefix;
     s.d->logo = readChild(root, QLatin1String("Logo"));
     s.d->logoSmall = readChild(root, QLatin1String("LogoSmall"));
@@ -221,57 +221,57 @@ InstallerSettings InstallerSettings::fromFileAndPrefix(const QString &path, cons
     return s;
 }
 
-QString InstallerSettings::maintenanceTitle() const
+QString Settings::maintenanceTitle() const
 {
     return d->maintenanceTitle;
 }
 
-QString InstallerSettings::logo() const
+QString Settings::logo() const
 {
     return d->makeAbsolutePath(d->logo);
 }
 
-QString InstallerSettings::logoSmall() const
+QString Settings::logoSmall() const
 {
     return d->makeAbsolutePath(d->logoSmall);
 }
 
-QString InstallerSettings::title() const
+QString Settings::title() const
 {
     return d->title;
 }
 
-QString InstallerSettings::applicationName() const
+QString Settings::applicationName() const
 {
     return d->name;
 }
 
-QString InstallerSettings::applicationVersion() const
+QString Settings::applicationVersion() const
 {
     return d->version;
 }
 
-QString InstallerSettings::publisher() const
+QString Settings::publisher() const
 {
     return d->publisher;
 }
 
-QString InstallerSettings::url() const
+QString Settings::url() const
 {
     return d->url;
 }
 
-QString InstallerSettings::watermark() const
+QString Settings::watermark() const
 {
     return d->makeAbsolutePath(d->watermark);
 }
 
-QString InstallerSettings::background() const
+QString Settings::background() const
 {
     return d->makeAbsolutePath(d->background);
 }
 
-QString InstallerSettings::icon() const
+QString Settings::icon() const
 {
 #if defined(Q_WS_MAC)
     return d->makeAbsolutePath(d->icon) + QLatin1String(".icns");
@@ -281,74 +281,74 @@ QString InstallerSettings::icon() const
     return d->makeAbsolutePath(d->icon) + QLatin1String(".png");
 }
 
-QString InstallerSettings::removeTargetDir() const
+QString Settings::removeTargetDir() const
 {
     return d->removeTargetDir;
 }
 
-QString InstallerSettings::uninstallerName() const
+QString Settings::uninstallerName() const
 {
     if (d->uninstallerName.isEmpty())
         return QLatin1String("uninstall");
     return d->uninstallerName;
 }
 
-QString InstallerSettings::uninstallerIniFile() const
+QString Settings::uninstallerIniFile() const
 {
     return d->uninstallerIniFile;
 }
 
-QString InstallerSettings::runProgram() const
+QString Settings::runProgram() const
 {
     return d->runProgram;
 }
 
-QString InstallerSettings::runProgramDescription() const
+QString Settings::runProgramDescription() const
 {
     return d->runProgramDescription;
 }
 
-QString InstallerSettings::startMenuDir() const
+QString Settings::startMenuDir() const
 {
     return d->startMenuDir;
 }
 
-QString InstallerSettings::targetDir() const
+QString Settings::targetDir() const
 {
     return d->targetDir;
 }
 
-QString InstallerSettings::adminTargetDir() const
+QString Settings::adminTargetDir() const
 {
     return d->adminTargetDir;
 }
 
-QString InstallerSettings::configurationFileName() const
+QString Settings::configurationFileName() const
 {
     return d->configurationFileName;
 }
 
-QStringList InstallerSettings::certificateFiles() const
+QStringList Settings::certificateFiles() const
 {
     return d->certificateFiles;
 }
 
-QByteArray InstallerSettings::privateKey() const
+QByteArray Settings::privateKey() const
 {
     return d->privateKey;
 }
 
-QByteArray InstallerSettings::publicKey() const
+QByteArray Settings::publicKey() const
 {
     return d->publicKey;
 }
 
-QList<Repository> InstallerSettings::repositories() const
+QList<Repository> Settings::repositories() const
 {
     return (d->m_repositories + d->m_userRepositories).toList();
 }
 
-void InstallerSettings::setTemporaryRepositories(const QList<Repository> &repos, bool replace)
+void Settings::setTemporaryRepositories(const QList<Repository> &repos, bool replace)
 {
     if (replace)
         d->m_repositories = repos.toSet();
@@ -356,12 +356,12 @@ void InstallerSettings::setTemporaryRepositories(const QList<Repository> &repos,
         d->m_repositories.unite(repos.toSet());
 }
 
-QList<Repository> InstallerSettings::userRepositories() const
+QList<Repository> Settings::userRepositories() const
 {
     return d->m_userRepositories.toList();
 }
 
-void InstallerSettings::addUserRepositories(const QList<Repository> &repositories)
+void Settings::addUserRepositories(const QList<Repository> &repositories)
 {
     d->m_userRepositories.unite(repositories.toSet());
 }

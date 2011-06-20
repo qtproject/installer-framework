@@ -23,8 +23,8 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#ifndef INSTALLERSETTINGS_H
-#define INSTALLERSETTINGS_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
 #include "installer_global.h"
 
@@ -34,18 +34,18 @@
 namespace QInstaller {
 class Repository;
 
-class INSTALLER_EXPORT InstallerSettings
+class INSTALLER_EXPORT Settings
 {
-    Q_DECLARE_TR_FUNCTIONS(InstallerSettings)
+    Q_DECLARE_TR_FUNCTIONS(Settings)
 
 public:
-    explicit InstallerSettings();
-    ~InstallerSettings();
+    explicit Settings();
+    ~Settings();
 
-    InstallerSettings(const InstallerSettings &other);
-    InstallerSettings &operator=(const InstallerSettings &other);
+    Settings(const Settings &other);
+    Settings &operator=(const Settings &other);
 
-    static InstallerSettings fromFileAndPrefix(const QString &path, const QString &prefix);
+    static Settings fromFileAndPrefix(const QString &path, const QString &prefix);
 
     bool isValid() const;
 
@@ -92,4 +92,4 @@ private:
 
 }
 
-#endif // INSTALLERSETTINGS_H
+#endif  // SETTINGS_H

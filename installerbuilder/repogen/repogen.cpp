@@ -183,9 +183,6 @@ int main( int argc, char** argv ) {
 
         const QString repositoryDir = makeAbsolute( args[argsPosition++] );
         const QStringList components = args.mid( argsPosition );
-        const InstallerSettings installerSettings = InstallerSettings::fromFileAndPrefix( configDir + QLatin1String("/config.xml"), configDir );
-        const QString appName = installerSettings.applicationName();
-        const QString appVersion = installerSettings.applicationVersion();
 
         if (!replaceSingleComponent && QFile::exists(repositoryDir))
             throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!").arg(repositoryDir));
@@ -205,8 +202,11 @@ int main( int argc, char** argv ) {
         const TempDirDeleter tmpDeleter( metaTmp );
         Q_UNUSED(tmpDeleter);
         generateMetaDataDirectory(metaTmp, repositoryDir, packages, appName, appVersion);
+        const Settings &settings = Settings::fromFileAndPrefix(configDir + QLatin1String("/config.xml"), configDir);
+        generateMetaDataDirectory(metaTmp, repositoryDir, packages, settings.applicationName(),
+            settings.applicationVersion());
         compressMetaDirectories(configDir, metaTmp, metaTmp, pathToVersionMapping);
-        
+
         QFile::remove(QFileInfo(repositoryDir, QLatin1String("Updates.xml")).absoluteFilePath());
         moveDirectoryContents(metaTmp,repositoryDir);
         return 0;

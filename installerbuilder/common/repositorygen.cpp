@@ -284,8 +284,7 @@ void QInstaller::compressDirectory(const QString& path, const QString& archivePa
 void QInstaller::compressMetaDirectories(const QString& configDir, const QString& repoDir)
 {
     const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
-    const QInstaller::InstallerSettings settings =
-        QInstaller::InstallerSettings::fromFileAndPrefix(configfile, configDir);
+    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
 
     KDUpdaterCrypto crypto;
     crypto.setPrivateKey(settings.privateKey());
@@ -649,8 +648,7 @@ void QInstaller::compressMetaDirectories(const QString& configDir, const QString
     const QString& baseDir, const QMap<QString, QString>& versionMapping)
 {
     const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
-    const QInstaller::InstallerSettings settings =
-        QInstaller::InstallerSettings::fromFileAndPrefix(configfile, configDir);
+    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
 
     KDUpdaterCrypto crypto;
     crypto.setPrivateKey(settings.privateKey());
@@ -710,8 +708,7 @@ void QInstaller::copyComponentData(const QString& packageDir, const QString& con
     const QString& repoDir, const QVector<PackageInfo>& infos)
 {
     const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
-    const QInstaller::InstallerSettings settings =
-        QInstaller::InstallerSettings::fromFileAndPrefix(configfile, configDir);
+    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
 
     KDUpdaterCrypto crypto;
     crypto.setPrivateKey(settings.privateKey());
