@@ -199,10 +199,11 @@ QVariant ComponentModel::headerData(int section, Qt::Orientation orientation, in
 */
 bool ComponentModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
 {
-    if (section >= 0 && section < columnCount() && orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        m_headerData.replace(section, value);
-        emit headerDataChanged(orientation, section, section);
-        return true;
+    if (section >= 0 && section < columnCount() && orientation == Qt::Horizontal
+        && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+            m_headerData.replace(section, value);
+            emit headerDataChanged(orientation, section, section);
+            return true;
     }
     return false;
 }
