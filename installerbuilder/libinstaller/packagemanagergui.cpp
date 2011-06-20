@@ -1462,8 +1462,6 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
 
     m_performInstallationForm->setupUi(this);
 
-    m_performInstallationForm->setDetailsWidgetVisible(core->isInstaller() || core->isPackageManager()
-        || core->isUpdater());
     connect(ProgressCoordninator::instance(), SIGNAL(detailTextChanged(QString)),
         m_performInstallationForm, SLOT(appendProgressDetails(QString)));
     connect(ProgressCoordninator::instance(), SIGNAL(detailTextResetNeeded()),
@@ -1498,23 +1496,21 @@ void PerformInstallationPage::entering()
     setComplete(false);
     setCommitPage(true);
 
+    const QString productName = packageManagerCore()->value(QLatin1String("ProductName"));
     if (packageManagerCore()->isUninstaller()) {
-        m_commitBtnText = tr("&Uninstall");
-        setButtonText(QWizard::CommitButton, m_commitBtnText);
-        setTitle(tr("Uninstalling %1").arg(packageManagerCore()->value(QLatin1String("ProductName"))));
-
+        setTitle(tr("Uninstalling %1").arg(productName));
+        setButtonText(QWizard::CommitButton, tr("&Uninstall"));
+        m_performInstallationForm->setDetailsWidgetVisible(false);
         QTimer::singleShot(30, packageManagerCore(), SLOT(runUninstaller()));
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
-        m_commitBtnText = tr ("&Update");
-        setButtonText(QWizard::CommitButton, m_commitBtnText);
-        setTitle(tr("Updating components of %1").arg(packageManagerCore()->value(QLatin1String("ProductName"))));
-
+        setButtonText(QWizard::CommitButton, tr("&Update"));
+        m_performInstallationForm->setDetailsWidgetVisible(true);
+        setTitle(tr("Updating components of %1").arg(productName));
         QTimer::singleShot(30, packageManagerCore(), SLOT(runPackageUpdater()));
     } else {
-        m_commitBtnText = tr("&Install");
-        setButtonText(QWizard::CommitButton, m_commitBtnText);
-        setTitle(tr("Installing %1").arg(packageManagerCore()->value(QLatin1String("ProductName"))));
-
+        setTitle(tr("Installing %1").arg(productName));
+        setButtonText(QWizard::CommitButton, tr("&Install"));
+        m_performInstallationForm->setDetailsWidgetVisible(true);
         QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
     }
 
@@ -1555,10 +1551,7 @@ void PerformInstallationPage::installationFinished()
 
 void PerformInstallationPage::toggleDetailsWereChanged()
 {
-    const bool needAutoSwitching = isAutoSwitching();
-    setButtonText(QWizard::CommitButton, needAutoSwitching ? m_commitBtnText
-        : gui()->defaultButtonText(QWizard::NextButton));
-    emit setAutomatedPageSwitchEnabled(needAutoSwitching);
+    emit setAutomatedPageSwitchEnabled(isAutoSwitching());
 }
 
 

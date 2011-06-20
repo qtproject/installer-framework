@@ -335,7 +335,6 @@ private Q_SLOTS:
     void toggleDetailsWereChanged();
 
 private:
-    QString m_commitBtnText;
     PerformInstallationForm *m_performInstallationForm;
 };
 
