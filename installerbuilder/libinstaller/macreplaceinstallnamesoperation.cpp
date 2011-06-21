@@ -61,7 +61,7 @@ bool MacReplaceInstallNamesOperation::performOperation()
     // 5. other directory containing frameworks
     // 6. ...
 
-    verbose() << arguments().join(QLatin1Char('; ')) << std::endl;
+    verbose() << arguments().join(QLatin1String(";" )) << std::endl;
     if( arguments().count() < 3 ) {
         setError( InvalidArguments );
         setErrorString( tr("Invalid arguments in %0: %1 arguments given, 3 expected.")
@@ -183,7 +183,7 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString& fileName)
     QString originalBuildDir;
     extractExecutableInfo(fileName, frameworkId, frameworks, originalBuildDir);
     verbose() << "got following informations(fileName, frameworkId, frameworks, orginalBuildDir): " << std::endl;
-    verbose() << fileName << ", " << frameworkId << ", " << frameworks.join(QLatin1Char('|')) << ", " << originalBuildDir << std::endl;
+    verbose() << fileName << ", " << frameworkId << ", " << frameworks.join(QLatin1String("|")) << ", " << originalBuildDir << std::endl;
 
     QStringList args;
     if (frameworkId.contains(mIndicator)) {
