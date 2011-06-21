@@ -69,7 +69,8 @@ bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
         return false;
     }
 
-    QString indicator = QString(mInstallDir).chop(1);
+    QString indicator(mInstallDir);
+    indicator.chop(1);
     indicator = indicator.mid(indicator.lastIndexOf('/'));
     verbose() << "Relocator uses indicator: " << indicator;
     QString replacement = targetDir;
