@@ -45,7 +45,7 @@ public:
     bool apply(const QString& oldString, const QString& newString, const QString& frameworkDir);
 
 private:
-    void extractExecutableInfo(const QString& fileName, QString& frameworkId, QStringList& frameworks);
+    void extractExecutableInfo(const QString& fileName, QString& frameworkId, QStringList& frameworks, QString& originalBuildDir);
     void relocateFramework(const QString& directoryName);
     void relocateBinary(const QString& fileName);
     bool execCommand(const QString& cmd, const QStringList& args);
