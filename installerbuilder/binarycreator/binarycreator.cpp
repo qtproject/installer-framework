@@ -68,13 +68,15 @@ using namespace QInstallerCreator;
 typedef QVector<PackageInfo> PackageInfoVector;
 
 struct Input {
-    QString installerExePath;
     QString outputPath;
-    QString binaryResourcePath;
+    QString installerExePath;
     ComponentIndex components;
-    Range<qint64> componentIndexSegment;
-    Range<qint64> resourcePos;
+    QString binaryResourcePath;
+    QStringList binaryResources;
+
     Range<qint64> operationsPos;
+    QVector<Range<qint64> > resourcePos;
+    Range<qint64> componentIndexSegment;
 };
 
 class BundleBackup
@@ -230,11 +232,22 @@ static int assemble(Input input, const QString &configdir)
 
         const qint64 dataBlockStart = out.pos();
         verbose() << "Data block starts at " << dataBlockStart << std::endl;
+
+        // append our self created resource file
         QFile res(input.binaryResourcePath);
         openForRead(&res, res.fileName());
         appendFileData(&out, &res);
-        input.resourcePos = Range<qint64>::fromStartAndEnd(out.pos() - res.size(), out.pos())
-            .moved(-dataBlockStart);
+        input.resourcePos.append(Range<qint64>::fromStartAndEnd(out.pos() - res.size(), out.pos())
+            .moved(-dataBlockStart));
+
+        // append given resource files
+        foreach (const QString &resource, input.binaryResources) {
+            QFile res(resource);
+            openForRead(&res, res.fileName());
+            appendFileData(&out, &res);
+            input.resourcePos.append(Range<qint64>::fromStartAndEnd(out.pos() - res.size(), out.pos())
+                .moved(-dataBlockStart));
+        }
 
         // zero operations cause we are not the uninstaller
         const qint64 operationsStart = out.pos();
@@ -253,9 +266,10 @@ static int assemble(Input input, const QString &configdir)
         verbose() << "Component index: [" << input.componentIndexSegment.start() << ":"
             << input.componentIndexSegment.end() << "]" << std::endl;
         appendInt64Range(&out, input.componentIndexSegment);
-        appendInt64Range(&out, input.resourcePos);
+        foreach (const Range<qint64> &range, input.resourcePos)
+            appendInt64Range(&out, range);
         appendInt64Range(&out, input.operationsPos);
-        appendInt64(&out, 1); // we have just 1 resource atm
+        appendInt64(&out, input.resourcePos.count());
 
         //data block size, from end of .exe to end of file
         appendInt64(&out, out.pos() + 3 * sizeof(qint64) - dataBlockStart);
@@ -358,6 +372,23 @@ static QString createBinaryResourceFile(const QString &directory)
     return binaryName;
 }
 
+static QStringList createBinaryResourceFiles(const QStringList &resources)
+{
+    QStringList result;
+    foreach (const QString &resource, resources) {
+        QFile file(resource);
+        if (file.exists()) {
+            const QString binaryName = generateTemporaryFileName();
+            const QString fileName = QFileInfo(file.fileName()).absoluteFilePath();
+            const int status = runRcc(QStringList() << QString::fromLatin1("rcc")
+                << QString::fromLatin1("-binary") << QString::fromLatin1("-o") << binaryName << fileName);
+            if (status == EXIT_SUCCESS)
+                result.append(binaryName);
+        }
+    }
+    return result;
+}
+
 static void printUsage()
 {
     const QString appName = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
@@ -381,6 +412,7 @@ static void printUsage()
     std::cout << "  --offline-only         Forces the installer to act as an offline installer, "
         "i.e. never access online repositories" << std::endl;
     std::cout << "  -v|--verbose           Verbose output" << std::endl;
+    std::cout << "  -r|--resources r1,.,rn include the given resource files into the binary" << std::endl;
     std::cout << std::endl;
     std::cout << "Packages are to be found in the current working directory and get listed as "
         "their names" << std::endl << std::endl;
@@ -528,11 +560,12 @@ int main(int argc, char **argv)
     QString target;
     QString configDir;
     QString packagesDirectory = QDir::currentPath();
-    QStringList excludedPackages;
     bool nodeps = false;
     bool offlineOnly = false;
-
+    QStringList resources;
     QStringList components;
+    QStringList excludedPackages;
+
     const QStringList args = app.arguments().mid(1);
     for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
         if (*it == QString::fromLatin1("-h") || *it == QString::fromLatin1("--help")) {
@@ -587,6 +620,11 @@ int main(int argc, char **argv)
                     .arg(*it));
             }
             configDir = *it;
+        } else if (*it == QLatin1String("-r") || *it == QLatin1String("--resources")) {
+            ++it;
+            if (it == args.end() || it->startsWith(QLatin1String("-")))
+                return printErrorAndUsageAndExit(QObject::tr("Error: Resource files to include missing."));
+            resources = it->split(QLatin1Char(','));
         } else {
             if (target.isEmpty())
                 target = *it;
@@ -630,6 +668,7 @@ int main(int argc, char **argv)
         input.outputPath = target;
         input.installerExePath = templateBinary;
         input.binaryResourcePath = createBinaryResourceFile(metaDir);
+        input.binaryResources = createBinaryResourceFiles(resources);
 
         const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
         const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
@@ -680,6 +719,8 @@ int main(int argc, char **argv)
         // cleanup
         verbose() << "Cleaning up..." << std::endl;
         QFile::remove(input.binaryResourcePath);
+        foreach (const QString &resource, input.binaryResources)
+            QFile::remove(resource);
         removeDirectory(metaDir);
 
         return result;
