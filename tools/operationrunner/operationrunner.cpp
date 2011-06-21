@@ -107,7 +107,7 @@ int main(int argc, char **argv)
 
         QInstaller::init();
 
-        QInstaller::VerboseWriter::instance()->setOutputStream(app.arguments().at(0) + QLatin1String(".txt"));
+        QInstaller::VerboseWriter::instance();
 
         QInstaller::setVerbose( true );
 
