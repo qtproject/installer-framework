@@ -172,8 +172,10 @@ void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString& fileN
             }
             if (originalBuildDir.endsWith(QLatin1Char('/')))
                 originalBuildDir.chop(1);
+            verbose() << "originalBuildDir is: " << originalBuildDir << std::endl;
         }
     }
+    verbose() << "END - Relocator calling otool -l for " << fileName << std::endl;
 }
 
 void MacReplaceInstallNamesOperation::relocateBinary(const QString& fileName)
