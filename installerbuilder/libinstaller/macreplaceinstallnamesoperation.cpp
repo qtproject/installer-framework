@@ -61,7 +61,8 @@ bool MacReplaceInstallNamesOperation::performOperation()
     // 5. other directory containing frameworks
     // 6. ...
 
-    if( arguments().count() != 3 ) {
+    verbose() << arguments().join(QLatin1Char('; ')) << std::endl;
+    if( arguments().count() < 3 ) {
         setError( InvalidArguments );
         setErrorString( tr("Invalid arguments in %0: %1 arguments given, 3 expected.")
                         .arg(name()).arg( arguments().count() ) );
@@ -96,7 +97,6 @@ KDUpdater::UpdateOperation* MacReplaceInstallNamesOperation::clone() const
 
 bool MacReplaceInstallNamesOperation::apply(const QString& indicator, const QString& installationDir, const QString& searchDir)
 {
-    mOriginalBuildDir.clear();
     mIndicator = indicator;
     mInstallationDir = installationDir;
 
@@ -117,7 +117,7 @@ bool MacReplaceInstallNamesOperation::apply(const QString& indicator, const QStr
     return error() == NoError;
 }
 
-void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString& fileName, QString& frameworkId, QStringList& frameworks)
+void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString& fileName, QString& frameworkId, QStringList& frameworks, QString& originalBuildDir)
 {
     verbose() << "Relocator calling otool -l for " << fileName << std::endl;
     QProcess otool;
@@ -163,15 +163,15 @@ void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString& fileN
             line = line.trimmed();
             frameworkId = line;
 
-            mOriginalBuildDir = frameworkId;
-            idx = mOriginalBuildDir.indexOf(mIndicator);
+            originalBuildDir = frameworkId;
+            idx = originalBuildDir.indexOf(mIndicator);
             if (idx < 0) {
-                mOriginalBuildDir.clear();
+                originalBuildDir.clear();
             } else {
-                mOriginalBuildDir.truncate(idx);
+                originalBuildDir.truncate(idx);
             }
-            if (mOriginalBuildDir.endsWith(QLatin1Char('/')))
-                mOriginalBuildDir.chop(1);
+            if (originalBuildDir.endsWith(QLatin1Char('/')))
+                originalBuildDir.chop(1);
         }
     }
 }
@@ -180,7 +180,10 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString& fileName)
 {
     QString frameworkId;
     QStringList frameworks;
-    extractExecutableInfo(fileName, frameworkId, frameworks);
+    QString originalBuildDir;
+    extractExecutableInfo(fileName, frameworkId, frameworks, originalBuildDir);
+    verbose() << "got following informations(fileName, frameworkId, frameworks, orginalBuildDir): " << std::endl;
+    verbose() << fileName << ", " << frameworkId << ", " << frameworks.join(QLatin1Char('|')) << ", " << originalBuildDir << std::endl;
 
     QStringList args;
     if (frameworkId.contains(mIndicator)) {
@@ -190,11 +193,11 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString& fileName)
     }
 
     foreach (const QString& fw, frameworks) {
-        if (!fw.contains(mOriginalBuildDir))
+        if (!fw.contains(originalBuildDir))
             continue;
 
         QString newPath = fw;
-        newPath.replace(mOriginalBuildDir, mInstallationDir);
+        newPath.replace(originalBuildDir, mInstallationDir);
 
         args.clear();
         args << QLatin1String("-change") << fw << newPath << fileName;

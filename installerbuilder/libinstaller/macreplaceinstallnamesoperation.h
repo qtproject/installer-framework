@@ -53,7 +53,6 @@ private:
 private:
     QString mIndicator;
     QString mInstallationDir;
-    QString mOriginalBuildDir;
 };
 
 } // namespace QInstaller
