@@ -39,13 +39,6 @@ public:
     QString errorMessage() const { return mErrorMessage; }
 
 private:
-    bool containsOriginalBuildDir(const QString &dirName);
-    void extractExecutableInfo(const QString& fileName, QStringList& frameworks);
-    void relocateFramework(const QString& directoryName);
-    void relocateBinary(const QString& fileName);
-    bool execCommand(const QString& cmd, const QStringList& args);
-
-private:
     QString mErrorMessage;
     QString mOriginalInstallDir;
     QString mInstallDir;

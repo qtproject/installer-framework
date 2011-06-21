@@ -32,6 +32,7 @@
 **************************************************************************/
 #include "macreplaceinstallnamesoperation.h"
 #include "fsengineclient.h"
+#include "common/utils.h"
 
 #include <QtCore/QDirIterator>
 #include <QtCore/QDebug>
@@ -52,9 +53,13 @@ void MacReplaceInstallNamesOperation::backup()
 bool MacReplaceInstallNamesOperation::performOperation()
 {
     // Arguments:
-    // 1. indicator to find the original build directory
-    // 2. new build directory
+    // 1. indicator to find the original build directory,
+    //    means the path till this will be used to replace it with 2.
+    // 2. new/current target install directory(the replacement)
     // 3. directory containing frameworks
+    // 4. other directory containing frameworks
+    // 5. other directory containing frameworks
+    // 6. ...
 
     if( arguments().count() != 3 ) {
         setError( InvalidArguments );
@@ -65,8 +70,13 @@ bool MacReplaceInstallNamesOperation::performOperation()
 
     QString indicator = arguments().at(0);
     QString installationDir = arguments().at(1);
-    QString searchDir = arguments().at(2);
-    return apply(indicator, installationDir, searchDir);
+    QStringList searchDirList = arguments().mid(2);
+    foreach (const QString &searchDir, searchDirList) {
+        if (!apply(indicator, installationDir, searchDir))
+            return false;
+    }
+
+    return true;
 }
 
 bool MacReplaceInstallNamesOperation::undoOperation()
@@ -90,13 +100,18 @@ bool MacReplaceInstallNamesOperation::apply(const QString& indicator, const QStr
     mIndicator = indicator;
     mInstallationDir = installationDir;
 
-    {
-        QDirIterator dirIterator(searchDir, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
-        while (dirIterator.hasNext()) {
-            QString dirName = dirIterator.next();
-            if (dirName.endsWith(QLatin1String(".framework")))
-                relocateFramework(dirName);
-        }
+    QDirIterator dirIterator(searchDir, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
+    while (dirIterator.hasNext()) {
+        QString fileName = dirIterator.next();
+        if (dirIterator.fileInfo().isDir())
+            continue;
+
+        if (fileName.endsWith(QLatin1String(".dylib")))
+            relocateBinary(fileName);
+        else if (fileName.endsWith(QLatin1String(".framework")))
+            relocateFramework(fileName);
+        else if (dirIterator.fileInfo().isExecutable())
+            relocateBinary(fileName);
     }
 
     return error() == NoError;
@@ -104,10 +119,11 @@ bool MacReplaceInstallNamesOperation::apply(const QString& indicator, const QStr
 
 void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString& fileName, QString& frameworkId, QStringList& frameworks)
 {
+    verbose() << "Relocator calling otool -l for " << fileName << std::endl;
     QProcess otool;
     otool.start(QLatin1String("otool"), QStringList() << QLatin1String("-l") << fileName);
     if (!otool.waitForStarted()) {
-        setError(UserDefinedError, tr("Can't invoke otool."));
+        setError(UserDefinedError, tr("Can't invoke otool. Is Xcode installed?"));
         return;
     }
     otool.waitForFinished();
@@ -169,7 +185,8 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString& fileName)
     QStringList args;
     if (frameworkId.contains(mIndicator)) {
         args << QLatin1String("-id") << fileName << fileName;
-        execCommand(QLatin1String("install_name_tool"), args);
+        if (!execCommand(QLatin1String("install_name_tool"), args))
+            return;
     }
 
     foreach (const QString& fw, frameworks) {
@@ -181,7 +198,8 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString& fileName)
 
         args.clear();
         args << QLatin1String("-change") << fw << newPath << fileName;
-        execCommand(QLatin1String("install_name_tool"), args);
+        if (!execCommand(QLatin1String("install_name_tool"), args))
+            return;
     }
 }
 
@@ -204,7 +222,7 @@ void MacReplaceInstallNamesOperation::relocateFramework(const QString& directory
 
 bool MacReplaceInstallNamesOperation::execCommand(const QString& cmd, const QStringList& args)
 {
-    //qDebug() << cmd << args;
+    verbose() << "Relocator::execCommand " << cmd << " " << args << std::endl;
 
     QProcessWrapper process;
     process.start(cmd, args);
@@ -213,5 +231,11 @@ bool MacReplaceInstallNamesOperation::execCommand(const QString& cmd, const QStr
         return false;
     }
     process.waitForFinished();
+    if (process.exitCode() != 0) {
+        QString errorMessage = QLatin1String("Command %1 failed.\nArguments: %2\nOutput: %3\n");
+        setError(UserDefinedError, errorMessage.arg(cmd, args.join(QLatin1String(" ")),
+            QString::fromLocal8Bit(process.readAll())));
+        return false;
+    }
     return true;
 }
