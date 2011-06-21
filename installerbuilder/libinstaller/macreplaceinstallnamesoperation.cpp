@@ -182,6 +182,12 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString& fileName)
     QStringList frameworks;
     QString originalBuildDir;
     extractExecutableInfo(fileName, frameworkId, frameworks, originalBuildDir);
+
+    if (originalBuildDir.isEmpty()) {
+        verbose() << "can't find the originalBuildDir in the file: " << fileName << std::endl;
+        return;
+    }
+
     verbose() << "got following informations(fileName, frameworkId, frameworks, orginalBuildDir): " << std::endl;
     verbose() << fileName << ", " << frameworkId << ", " << frameworks.join(QLatin1String("|")) << ", " << originalBuildDir << std::endl;
 
