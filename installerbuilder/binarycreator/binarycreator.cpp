@@ -36,6 +36,7 @@
 #include <common/fileutils.h>
 #include <common/utils.h>
 #include <common/consolepasswordprovider.h>
+#include <init.h>
 #include <settings.h>
 
 #include <KDToolsCore/KDSaveFile>
@@ -60,8 +61,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #endif
-
-#include "init.h"
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -313,8 +312,8 @@ static int runRcc(const QStringList &args)
 
     const int result = runRcc(argc, argv.data());
 
-    for (int i = 0; i < argc; ++i)
-        delete [] argv[i];
+    foreach (char *arg, argv)
+        delete [] arg;
 
     return result;
 }
@@ -342,12 +341,11 @@ static QString createBinaryResourceFile(const QString &directory)
     QTemporaryFile projectFile(directory + QString::fromLatin1("/rccprojectXXXXXX.qrc"));
     if (!projectFile.open())
         throw Error(QObject::tr("Could not create temporary file for generated rcc project file"));
-    const QString projectFileName = QFileInfo(projectFile.fileName()).absoluteFilePath();
     projectFile.close();
 
-    const QString binaryName = generateTemporaryFileName();
-
     const WorkingDirectoryChange wd(directory);
+    const QString binaryName = generateTemporaryFileName();
+    const QString projectFileName = QFileInfo(projectFile.fileName()).absoluteFilePath();
 
     // 1. create the .qrc file
     runRcc(QStringList() << QString::fromLatin1("rcc") << QString::fromLatin1("-project")
@@ -399,8 +397,8 @@ static void printUsage()
     std::cout << std::endl;
 }
 
-static QString createMetaDataDirectory(const PackageInfoVector &packages,
-    const QString &packagesDir, const QString &configdir)
+static QString createMetaDataDirectory(const PackageInfoVector &packages, const QString &packagesDir,
+    const QString &configdir)
 {
     const QString configfile = QFileInfo(configdir, "config.xml").absoluteFilePath();
     const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, QString());
@@ -413,8 +411,7 @@ static QString createMetaDataDirectory(const PackageInfoVector &packages,
     QInstaller::mkdir(configCopy);
     QString absoluteConfigPath = QFileInfo(configdir).absoluteFilePath();
 
-    QDirIterator it(absoluteConfigPath, QDir::Files | QDir::NoDotAndDotDot,
-        QDirIterator::Subdirectories);
+    QDirIterator it(absoluteConfigPath, QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
     while (it.hasNext()) {
         const QString next = it.next();
         if (next.contains("/.")) // skip files that are in directories starting with a point
@@ -447,7 +444,7 @@ static QString createMetaDataDirectory(const PackageInfoVector &packages,
                     throw Error(QObject::tr("Could not remove the private key from config.xml"));
             }
 
-            // afterward, iterater over all child elements, searching for relative file names
+            // afterward, iterate over all child elements, searching for relative file names
             const QDomNodeList children = doc.childNodes();
             for (int i = 0; i < children.count(); ++i) {
                 QDomElement el = children.at(i).toElement();
@@ -495,15 +492,17 @@ static int printErrorAndUsageAndExit(const QString &err)
 {
     std::cerr << qPrintable(err) << std::endl << std::endl;
     printUsage();
-    return 1;
+    return EXIT_FAILURE;
 }
 
-static PackageInfoVector filterBlacklisted(PackageInfoVector packages, const QStringList &blacklist)
+static PackageInfoVector filterBlacklisted(const PackageInfoVector &packages, const QStringList &blacklist)
 {
-    for (int i = packages.size() - 1; i >= 0; --i)
-        if (blacklist.contains(packages[i].name))
-            packages.remove(i);
-    return packages;
+    PackageInfoVector result;
+    foreach (const PackageInfo &info, packages) {
+        if (!blacklist.contains(info.name))
+            result.append(info);
+    }
+    return result;
 }
 
 /**
@@ -517,18 +516,15 @@ int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
 
-    init();
+    QInstaller::init();
 
-    const QStringList args = app.arguments().mid(1);
-    QStringList components;
+    QString templateBinary = QLatin1String("installerbase");
 #ifdef Q_WS_WIN
-    QString templateBinary = QString::fromLatin1("installerbase.exe");
-#else
-    QString templateBinary = QString::fromLatin1("installerbase");
+    templateBinary += QLatin1String(".exe");
 #endif
-    if (!QFileInfo(templateBinary).exists()) {
+    if (!QFileInfo(templateBinary).exists())
         templateBinary = QString(QLatin1String("%1/%2")).arg(qApp->applicationDirPath(), templateBinary);
-    }
+
     QString target;
     QString configDir;
     QString packagesDirectory = QDir::currentPath();
@@ -536,6 +532,8 @@ int main(int argc, char **argv)
     bool nodeps = false;
     bool offlineOnly = false;
 
+    QStringList components;
+    const QStringList args = app.arguments().mid(1);
     for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
         if (*it == QString::fromLatin1("-h") || *it == QString::fromLatin1("--help")) {
             printUsage();
@@ -543,21 +541,20 @@ int main(int argc, char **argv)
         } else if (*it == QString::fromLatin1("-p") || *it == QString::fromLatin1("--packages")) {
             ++it;
             if (it == args.end()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Packages parameter missing "
-                    "argument"));
+                return printErrorAndUsageAndExit(QObject::tr("Error: Packages parameter missing argument."));
             }
             if (!QFileInfo(*it).exists()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Package directory not found "
-                    "at the specified location"));
+                return printErrorAndUsageAndExit(QObject::tr("Error: Package directory not found at the "
+                    "specified location."));
             }
             packagesDirectory = *it;
         } else if (*it == QLatin1String("-e") || *it == QLatin1String("--exclude")) {
             ++it;
             if (it == args.end() || it->startsWith(QLatin1String("-")))
-                return printErrorAndUsageAndExit(QObject::tr("Error: Package to exclude missing"));
+                return printErrorAndUsageAndExit(QObject::tr("Error: Package to exclude missing."));
             excludedPackages = it->split(QLatin1Char(','));
         } else if (*it == QString::fromLatin1("-v") || *it == QString::fromLatin1("--verbose")) {
-            setVerbose(true);
+            QInstaller::setVerbose(true);
         } else if (*it == QString::fromLatin1("-n") || *it == QString::fromLatin1("--nodeps")) {
             nodeps = true;
         } else if (*it == QString::fromLatin1("--offline-only")) {
@@ -565,81 +562,78 @@ int main(int argc, char **argv)
         } else if (*it == QString::fromLatin1("-t") || *it == QString::fromLatin1("--template")) {
             ++it;
             if (it == args.end()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Template parameter missing "
-                    "argument"));
+                return printErrorAndUsageAndExit(QObject::tr("Error: Template parameter missing argument."));
             }
             if (!QFileInfo(*it).exists()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Template not found at the "
-                    "specified location"));
+                return printErrorAndUsageAndExit(QObject::tr("Error: Template not found at the specified "
+                    "location."));
             }
             templateBinary = *it;
         } else if (*it == QLatin1String("-c") || *it == QLatin1String("--config")) {
             ++it;
             if (it == args.end())
-                return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument"));
+                return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument."));
             const QFileInfo fi(*it);
             if (!fi.exists()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Config directory %1 not found "
-                    "at the specified location").arg(*it));
+                return printErrorAndUsageAndExit(QObject::tr("Error: Config directory %1 not found at the "
+                    "specified location.").arg(*it));
             }
             if (!fi.isDir()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Configuration %1 is not a "
-                    "directory").arg(*it));
+                return printErrorAndUsageAndExit(QObject::tr("Error: Configuration %1 is not a directory.")
+                    .arg(*it));
             }
             if (!fi.isReadable()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Config directory %1 is not "
-                    "readable").arg(*it));
+                return printErrorAndUsageAndExit(QObject::tr("Error: Config directory %1 is not readable.")
+                    .arg(*it));
             }
             configDir = *it;
         } else {
             if (target.isEmpty())
                 target = *it;
             else
-                components.push_back(*it);
+                components.append(*it);
         }
     }
 
     if (target.isEmpty())
-        return printErrorAndUsageAndExit(QObject::tr("Error: Target parameter missing"));
+        return printErrorAndUsageAndExit(QObject::tr("Error: Target parameter missing."));
 
     if (components.isEmpty())
-        return printErrorAndUsageAndExit(QObject::tr("Error: No components selected"));
+        return printErrorAndUsageAndExit(QObject::tr("Error: No components selected."));
 
     if (configDir.isEmpty())
-        return printErrorAndUsageAndExit(QObject::tr("Error: No configuration directory selected"));
+        return printErrorAndUsageAndExit(QObject::tr("Error: No configuration directory selected."));
 
     verbose() << "Parsed arguments, ok." << std::endl;
 
     try {
-        const PackageInfoVector packageList = createListOfPackages(components, packagesDirectory,
-            !nodeps);
+        const PackageInfoVector packageList = createListOfPackages(components, packagesDirectory, !nodeps);
         const PackageInfoVector packages = filterBlacklisted(packageList, excludedPackages);
         const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configDir);
         {
             QSettings confInternal(metaDir + "/config/config-internal.ini", QSettings::IniFormat);
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
         }
-        const QString resourceFile = createBinaryResourceFile(metaDir);
+
+#if defined(Q_WS_MAC)
+        // on mac, we enforce building a bundle
+        if (!target.endsWith(QLatin1String(".app")) && !target.endsWith(QLatin1String(".dmg"))) {
+            target += QLatin1String(".app");
+        }
+#elif defined(Q_WS_WIN)
+        // on windows, we add .exe
+        if (!target.endsWith(QLatin1String(".exe")))
+            target += QLatin1String(".exe");
+#endif
+
+        Input input;
+        input.outputPath = target;
+        input.installerExePath = templateBinary;
+        input.binaryResourcePath = createBinaryResourceFile(metaDir);
 
         const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
         const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
         const QByteArray privateKey = settings.privateKey();
-
-        Input input;
-        input.installerExePath = templateBinary;
-        input.binaryResourcePath = resourceFile;
-        input.outputPath = target;
-#if defined(Q_WS_MAC)
-        // on mac, we enforce building a bundle
-        if (!input.outputPath.endsWith(QLatin1String(".app"))
-            && !input.outputPath.endsWith(QLatin1String(".dmg"))) {
-            input.outputPath += QLatin1String(".app");
-        }
-#elif defined(Q_WS_WIN)
-        // on windows, we add .exe
-        if (!input.outputPath.endsWith(QLatin1String(".exe")))
-            input.outputPath += QLatin1String(".exe");
-#endif
 
         KDUpdaterCrypto crypto;
         crypto.setPrivateKey(privateKey);
@@ -656,7 +650,7 @@ int main(int argc, char **argv)
             // append everything within the data directory
             const QFileInfoList archives = QDir(QString::fromLatin1("%1/data").arg(it->directory))
                 .entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-            Q_FOREACH(const QFileInfo &archive, archives) {
+            foreach (const QFileInfo &archive, archives) {
                 const QSharedPointer<Archive> arch(new Archive(archive.absoluteFilePath()));
                 verbose() << "  Appending " << archive.filePath() << " (" << arch->size() << " bytes)"
                     << std::endl;
@@ -673,8 +667,7 @@ int main(int argc, char **argv)
                     }
                     verbose() << "    Appending " << archive.fileName() << ".sig  ("
                         << signature.size() << " bytes)" << std::endl;
-                    const QSharedPointer< Archive > sigArch(new Archive(arch->name() + ".sig",
-                        signature));
+                    const QSharedPointer< Archive > sigArch(new Archive(arch->name() + ".sig", signature));
                     comp.appendArchive(sigArch);
                 }
             }
@@ -686,15 +679,16 @@ int main(int argc, char **argv)
 
         // cleanup
         verbose() << "Cleaning up..." << std::endl;
-        QFile::remove(resourceFile);
+        QFile::remove(input.binaryResourcePath);
         removeDirectory(metaDir);
 
         return result;
-    } catch(const Error &e) {
+    } catch (const Error &e) {
         std::cerr << e.message() << std::endl;
-        return 1;
-    } catch(...) {
+        return EXIT_FAILURE;
+    } catch (...) {
         std::cerr << "Unknown exception caught" << std::endl;
-        return 1;
+        return EXIT_FAILURE;
     }
+    return EXIT_FAILURE;
 }
