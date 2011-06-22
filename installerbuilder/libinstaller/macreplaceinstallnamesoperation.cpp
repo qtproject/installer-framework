@@ -62,6 +62,12 @@ bool MacReplaceInstallNamesOperation::performOperation()
     // 4. other directory containing frameworks
     // 5. other directory containing frameworks
     // 6. ...
+        setErrorString( QString(QLatin1String("\""))
+                                 + name() + QString(QLatin1String("\"")) + QString(QLatin1String("\""))
+                                 + arguments().join(QLatin1String("\" \"")) + QString(QLatin1String("\"")));
+        setError(UserDefinedError);
+        return false;
+
 
     verbose() << arguments().join(QLatin1String(";" )) << std::endl;
     if( arguments().count() < 3 ) {
