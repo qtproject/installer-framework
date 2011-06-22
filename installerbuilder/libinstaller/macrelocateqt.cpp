@@ -78,7 +78,7 @@ bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
     //then indicator should be "Simulator/Qt/gcc"
     for(int i = 0; i < mInstallDir.count(); ++i) {
         QString endWithString = mInstallDir.right(i);
-        if (mOrginalInstallDir.endsWith(endWithString)) {
+        if (mOriginalInstallDir.endsWith(endWithString)) {
             indicator = endWithString;
         } else {
             break;
