@@ -113,7 +113,8 @@ bool MacReplaceInstallNamesOperation::apply(const QString& indicator, const QStr
         else if (fileName.endsWith(QLatin1String(".framework")))
             relocateFramework(fileName);
         else if (dirIterator.fileInfo().isExecutable() && !fileName.endsWith(QLatin1String(".h"))
-                 && !fileName.endsWith(".cpp") && !fileName.endsWith(".pro") && !fileName.endsWith(".pri")) {
+                 && !fileName.endsWith(QLatin1String(".cpp")) && !fileName.endsWith(QLatin1String(".pro"))
+                 && !fileName.endsWith(QLatin1String(".pri"))) {
             //the endsWith check are here because there were wrongly commited files in the repositories
             relocateBinary(fileName);
         }
