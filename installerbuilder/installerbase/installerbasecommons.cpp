@@ -39,6 +39,7 @@
 
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
+#include <QtCore/QTimer>
 
 #include <QtGui/QLabel>
 #include <QtGui/QProgressBar>
@@ -227,6 +228,7 @@ bool TargetDirectoryPageImpl::askQuestion(const QString &identifier, const QStri
     QMessageBox::StandardButton bt =
         MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(), identifier,
         TargetDirectoryPageImpl::tr("Warning"), message, QMessageBox::Yes | QMessageBox::No);
+    QTimer::singleShot(100, wizard()->page(nextId()), SLOT(repaint()));
 
     return bt == QMessageBox::Yes;
 }
@@ -235,6 +237,7 @@ bool TargetDirectoryPageImpl::failWithError(const QString &identifier, const QSt
 {
     MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), identifier,
         TargetDirectoryPageImpl::tr("Error"), message);
+    QTimer::singleShot(100, wizard()->page(nextId()), SLOT(repaint()));
 
     return false;
 }
