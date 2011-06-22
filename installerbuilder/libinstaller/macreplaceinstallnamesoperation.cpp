@@ -39,6 +39,8 @@
 #include <QtCore/QBuffer>
 #include <QtCore/QProcess>
 
+#include <QMessageBox>
+
 using namespace QInstaller;
 
 MacReplaceInstallNamesOperation::MacReplaceInstallNamesOperation()
@@ -60,6 +62,10 @@ bool MacReplaceInstallNamesOperation::performOperation()
     // 4. other directory containing frameworks
     // 5. other directory containing frameworks
     // 6. ...
+
+    QMessageBox::information(0, name(), QString(QLatin1String("\""))
+                             + name() + QString(QLatin1String("\"")) + QString(QLatin1String("\""))
+                             + arguments().join(QLatin1String("\" \"")) + QString(QLatin1String("\"")));
 
     verbose() << arguments().join(QLatin1String(";" )) << std::endl;
     if( arguments().count() < 3 ) {
