@@ -197,6 +197,7 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
                                     ("x86-windows-msys-pe-32bit"))
                                );
         bool result = operation.performOperation();
+        Q_UNUSED(result);
         Q_ASSERT(result);
     }
     foreach (const QString gccePath, gcceToolChains) {
@@ -214,6 +215,7 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
                                     "arm-symbian-device-elf-32bit"))
                                );
         bool result = operation.performOperation();
+        Q_UNUSED(result);
         Q_ASSERT(result);
     }
     return true;
@@ -257,6 +259,7 @@ void convertDefaultGDBInstallerSettings(QSettings &settings, QInstaller::Package
         it.next();
         operation.setArguments(QStringList() << it.key() << it.value());
         bool result = operation.performOperation();
+        Q_UNUSED(result);
         Q_ASSERT(result);
     }
 

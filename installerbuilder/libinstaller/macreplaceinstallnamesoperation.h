@@ -27,7 +27,7 @@
 #define MACREPLACEINSTALLNAMEOPERATION_H
 
 #include <KDUpdater/UpdateOperation>
-#include <QStringList>
+
 
 namespace QInstaller {
 
@@ -40,20 +40,20 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    KDUpdater::UpdateOperation *clone() const;
 
-    bool apply(const QString& oldString, const QString& newString, const QString& frameworkDir);
+    bool apply(const QString &oldString, const QString &newString, const QString &frameworkDir);
 
 private:
-    void extractExecutableInfo(const QString& fileName, QString& frameworkId, QStringList& frameworks);
-    void relocateFramework(const QString& directoryName);
-    void relocateBinary(const QString& fileName);
-    bool execCommand(const QString& cmd, const QStringList& args);
+    void extractExecutableInfo(const QString &fileName, QString &frameworkId, QStringList &frameworks,
+        QString &originalBuildDir);
+    void relocateFramework(const QString &directoryName);
+    void relocateBinary(const QString &fileName);
+    bool execCommand(const QString &cmd, const QStringList &args);
 
 private:
     QString mIndicator;
     QString mInstallationDir;
-    QString mOriginalBuildDir;
 };
 
 } // namespace QInstaller

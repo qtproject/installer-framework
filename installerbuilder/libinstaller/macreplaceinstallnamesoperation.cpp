@@ -31,12 +31,13 @@
 **
 **************************************************************************/
 #include "macreplaceinstallnamesoperation.h"
-#include "fsengineclient.h"
+
+#include "common/utils.h"
 #include "qprocesswrapper.h"
 
-#include <QtCore/QDirIterator>
-#include <QtCore/QDebug>
 #include <QtCore/QBuffer>
+#include <QtCore/QDirIterator>
+
 
 using namespace QInstaller;
 
@@ -52,21 +53,31 @@ void MacReplaceInstallNamesOperation::backup()
 bool MacReplaceInstallNamesOperation::performOperation()
 {
     // Arguments:
-    // 1. indicator to find the original build directory
-    // 2. new build directory
+    // 1. indicator to find the original build directory,
+    //    means the path till this will be used to replace it with 2.
+    // 2. new/current target install directory(the replacement)
     // 3. directory containing frameworks
+    // 4. other directory containing frameworks
+    // 5. other directory containing frameworks
+    // 6. ...
 
-    if( arguments().count() != 3 ) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, 3 expected.")
-                        .arg(name()).arg( arguments().count() ) );
+    verbose() << arguments().join(QLatin1String(";")) << std::endl;
+    if (arguments().count() < 3) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 3 expected.").arg(name())
+            .arg(arguments().count()));
         return false;
     }
 
     QString indicator = arguments().at(0);
     QString installationDir = arguments().at(1);
-    QString searchDir = arguments().at(2);
-    return apply(indicator, installationDir, searchDir);
+    QStringList searchDirList = arguments().mid(2);
+    foreach (const QString &searchDir, searchDirList) {
+        if (!apply(indicator, installationDir, searchDir))
+            return false;
+    }
+
+    return true;
 }
 
 bool MacReplaceInstallNamesOperation::undoOperation()
@@ -84,30 +95,41 @@ KDUpdater::UpdateOperation* MacReplaceInstallNamesOperation::clone() const
     return new MacReplaceInstallNamesOperation;
 }
 
-bool MacReplaceInstallNamesOperation::apply(const QString& indicator, const QString& installationDir, const QString& searchDir)
+bool MacReplaceInstallNamesOperation::apply(const QString &indicator, const QString &installationDir,
+    const QString &searchDir)
 {
-    mOriginalBuildDir.clear();
     mIndicator = indicator;
     mInstallationDir = installationDir;
 
-    {
-        QDirIterator dirIterator(searchDir, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
-        while (dirIterator.hasNext()) {
-            QString dirName = dirIterator.next();
-            if (dirName.endsWith(QLatin1String(".framework")))
-                relocateFramework(dirName);
+    QDirIterator dirIterator(searchDir, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
+    while (dirIterator.hasNext()) {
+        QString fileName = dirIterator.next();
+        if (dirIterator.fileInfo().isDir())
+            continue;
+
+        if (fileName.endsWith(QLatin1String(".dylib")))
+            relocateBinary(fileName);
+        else if (fileName.endsWith(QLatin1String(".framework")))
+            relocateFramework(fileName);
+        else if (dirIterator.fileInfo().isExecutable() && !fileName.endsWith(QLatin1String(".h"))
+            && !fileName.endsWith(QLatin1String(".cpp")) && !fileName.endsWith(QLatin1String(".pro"))
+            && !fileName.endsWith(QLatin1String(".pri"))) {
+                //the endsWith check are here because there were wrongly commited files in the repositories
+                relocateBinary(fileName);
         }
     }
 
     return error() == NoError;
 }
 
-void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString& fileName, QString& frameworkId, QStringList& frameworks)
+void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString &fileName, QString& frameworkId,
+    QStringList &frameworks, QString &originalBuildDir)
 {
+    verbose() << "Relocator calling otool -l for " << fileName << std::endl;
     QProcessWrapper otool;
     otool.start(QLatin1String("otool"), QStringList() << QLatin1String("-l") << fileName);
     if (!otool.waitForStarted()) {
-        setError(UserDefinedError, tr("Can't invoke otool."));
+        setError(UserDefinedError, tr("Can't invoke otool. Is Xcode installed?"));
         return;
     }
     otool.waitForFinished();
@@ -123,7 +145,6 @@ void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString& fileN
     while (!output.atEnd()) {
         QString line = QString::fromLocal8Bit(output.readLine());
         line = line.trimmed();
-//        qDebug() << line;
         if (line.startsWith(QLatin1String("cmd "))) {
             line.remove(0, 4);
             if (line == QLatin1String("LC_LOAD_DYLIB"))
@@ -147,47 +168,58 @@ void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString& fileN
             line = line.trimmed();
             frameworkId = line;
 
-            mOriginalBuildDir = frameworkId;
-            idx = mOriginalBuildDir.indexOf(mIndicator);
+            originalBuildDir = frameworkId;
+            idx = originalBuildDir.indexOf(mIndicator);
             if (idx < 0) {
-                mOriginalBuildDir.clear();
+                originalBuildDir.clear();
             } else {
-                mOriginalBuildDir.truncate(idx);
+                originalBuildDir.truncate(idx);
             }
-            if (mOriginalBuildDir.endsWith(QLatin1Char('/')))
-                mOriginalBuildDir.chop(1);
+            if (originalBuildDir.endsWith(QLatin1Char('/')))
+                originalBuildDir.chop(1);
+            verbose() << "originalBuildDir is: " << originalBuildDir << std::endl;
         }
     }
+    verbose() << "END - Relocator calling otool -l for " << fileName << std::endl;
 }
 
-void MacReplaceInstallNamesOperation::relocateBinary(const QString& fileName)
+void MacReplaceInstallNamesOperation::relocateBinary(const QString &fileName)
 {
     QString frameworkId;
     QStringList frameworks;
-    extractExecutableInfo(fileName, frameworkId, frameworks);
+    QString originalBuildDir;
+    extractExecutableInfo(fileName, frameworkId, frameworks, originalBuildDir);
+
+    verbose() << "got following informations(fileName, frameworkId, frameworks, orginalBuildDir): " << std::endl;
+    verbose() << fileName << ", " << frameworkId << ", " << frameworks.join(QLatin1String("|")) << ", "
+        << originalBuildDir << std::endl;
 
     QStringList args;
-    if (frameworkId.contains(mIndicator)) {
+    if (frameworkId.contains(mIndicator) || QFileInfo(frameworkId).fileName() == frameworkId) {
         args << QLatin1String("-id") << fileName << fileName;
-        execCommand(QLatin1String("install_name_tool"), args);
+        if (!execCommand(QLatin1String("install_name_tool"), args))
+            return;
     }
 
-    foreach (const QString& fw, frameworks) {
-        if (!fw.contains(mOriginalBuildDir))
-            continue;
 
+    foreach (const QString &fw, frameworks) {
+        if (originalBuildDir.isEmpty() && fw.contains(mIndicator)) {
+            originalBuildDir = fw.left(fw.indexOf(mIndicator));
+        }
+        if (originalBuildDir.isEmpty() || !fw.contains(originalBuildDir))
+            continue;
         QString newPath = fw;
-        newPath.replace(mOriginalBuildDir, mInstallationDir);
+        newPath.replace(originalBuildDir, mInstallationDir);
 
         args.clear();
         args << QLatin1String("-change") << fw << newPath << fileName;
-        execCommand(QLatin1String("install_name_tool"), args);
+        if (!execCommand(QLatin1String("install_name_tool"), args))
+            return;
     }
 }
 
-void MacReplaceInstallNamesOperation::relocateFramework(const QString& directoryName)
+void MacReplaceInstallNamesOperation::relocateFramework(const QString &directoryName)
 {
-    //qDebug() << "relocateFramework" << directoryName;
     QFileInfo fi(directoryName);
     QString frameworkName = fi.baseName();
     fi.setFile(directoryName + QLatin1String("/Versions/Current/") + frameworkName);
@@ -202,9 +234,9 @@ void MacReplaceInstallNamesOperation::relocateFramework(const QString& directory
     }
 }
 
-bool MacReplaceInstallNamesOperation::execCommand(const QString& cmd, const QStringList& args)
+bool MacReplaceInstallNamesOperation::execCommand(const QString &cmd, const QStringList &args)
 {
-    //qDebug() << cmd << args;
+    verbose() << "Relocator::execCommand " << cmd << " " << args << std::endl;
 
     QProcessWrapper process;
     process.start(cmd, args);
@@ -213,5 +245,11 @@ bool MacReplaceInstallNamesOperation::execCommand(const QString& cmd, const QStr
         return false;
     }
     process.waitForFinished();
+    if (process.exitCode() != 0) {
+        QString errorMessage = QLatin1String("Command %1 failed.\nArguments: %2\nOutput: %3\n");
+        setError(UserDefinedError, errorMessage.arg(cmd, args.join(QLatin1String(" ")),
+            QString::fromLocal8Bit(process.readAll())));
+        return false;
+    }
     return true;
 }

@@ -36,19 +36,11 @@ public:
     Relocator();
 
     bool apply(const QString &qtInstallDir, const QString &targetDir);
-    QString errorMessage() const { return mErrorMessage; }
+    QString errorMessage() const { return m_errorMessage; }
 
 private:
-    bool containsOriginalBuildDir(const QString &dirName);
-    void extractExecutableInfo(const QString& fileName, QStringList& frameworks);
-    void relocateFramework(const QString& directoryName);
-    void relocateBinary(const QString& fileName);
-    bool execCommand(const QString& cmd, const QStringList& args);
-
-private:
-    QString mErrorMessage;
-    QString mOriginalInstallDir;
-    QString mInstallDir;
+    QString m_errorMessage;
+    QString m_installDir;
 };
 
 } // namespace QInstaller

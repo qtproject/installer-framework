@@ -171,6 +171,7 @@ bool EnvironmentVariableOperation::performOperation()
     }
 #endif
     Q_ASSERT( !isPersistent );
+    Q_UNUSED(isPersistent)
 
     setValue( QLatin1String( "oldvalue" ), Environment::instance().value( name ) );
     Environment::instance().setTemporaryValue( name, value );

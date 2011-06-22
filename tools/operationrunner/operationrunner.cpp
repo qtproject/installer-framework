@@ -107,7 +107,10 @@ int main(int argc, char **argv)
 
         QInstaller::init();
 
+        QInstaller::VerboseWriter::instance();
+
         QInstaller::setVerbose( true );
+
 
         QString operationName = argumentList.takeFirst();
         KDUpdater::UpdateOperation* const operation = KDUpdater::UpdateOperationFactory::instance().create(operationName);
@@ -127,10 +130,12 @@ int main(int argc, char **argv)
         }
 
         FakeInstaller fakeInstaller;
-        fakeInstaller.setTargetDir(sdkTargetDir);
+        if (!sdkTargetDir.isEmpty()) {
+            fakeInstaller.setTargetDir(sdkTargetDir);
 
-        operation->setValue(QLatin1String("installer"),
-            QVariant::fromValue(static_cast<QInstaller::Installer*>(&fakeInstaller)));
+            operation->setValue(QLatin1String("installer"),
+                QVariant::fromValue(static_cast<QInstaller::Installer*>(&fakeInstaller)));
+        }
 
         operation->setArguments(argumentList);
 
