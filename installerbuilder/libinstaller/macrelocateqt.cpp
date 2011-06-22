@@ -48,7 +48,10 @@ Relocator::Relocator()
 
 bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
 {
-    verbose() << "Relocator::apply(" << qtInstallDir << ')' << std::endl;
+//    Relocator::apply(/Users/rakeller/QtSDKtest2/Simulator/Qt/gcc)
+//    Relocator uses indicator: /QtSDKtest2operation 'QtPatch' with arguments: 'mac; /Users/rakeller/QtSDKtest2/Simulator/Qt/gcc' failed: Error while relocating Qt: "ReplaceInsta
+
+    verbose() << "Relocator::apply(" << qtInstallDir << ")" << std::endl;
 
     mErrorMessage.clear();
     mOriginalInstallDir.clear();
@@ -69,10 +72,21 @@ bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
         return false;
     }
 
-    QString indicator(mInstallDir);
-    indicator.chop(1);
-    indicator = indicator.mid(indicator.lastIndexOf(QLatin1Char('/')));
-    verbose() << "Relocator uses indicator: " << indicator;
+    QString indicator;
+    //if mInstallDir = /Users/rakeller/QtSDKtest2/Simulator/Qt/gcc/
+    //and if mOriginalInstallDir = /Users/berlin/Installer/______BUILD______PADDED______/ndk/Simulator/Qt/gcc/
+    //then indicator should be "Simulator/Qt/gcc"
+    for(int i = 0; i < mInstallDir.count(); ++i) {
+        QString endWithString = mInstallDir.right(i);
+        if (mOrginalInstallDir.endsWith(endWithString)) {
+            indicator = endWithString;
+        } else {
+            break;
+        }
+    }
+    indicator.chop(1); //removes the last "/"
+
+    verbose() << "Relocator uses indicator: " << indicator << std::endl;
     QString replacement = targetDir;
 
 
