@@ -1044,6 +1044,12 @@ void Component::updateModelData(const QString &key, const QString &data)
     if (key == scUncompressedSize)
         setData(uncompressedSize(), UncompressedSize);
 
-    setData(value(scDescription) + QLatin1String("<br><br>Update Info: ") + value(scUpdateText),
-        Qt::ToolTipRole);
+    const QString &updateInfo = value(scUpdateText);
+    if (updateInfo.isEmpty()) {
+        setData(QLatin1String("<html><body>") + value(scDescription) + QLatin1String("</body></html>"),
+            Qt::ToolTipRole);
+    } else {
+        setData(value(scDescription) + QLatin1String("<br><br>Update Info: ") + value(scUpdateText),
+            Qt::ToolTipRole);
+    }
 }
