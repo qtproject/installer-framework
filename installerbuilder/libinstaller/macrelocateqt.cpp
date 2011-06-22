@@ -51,18 +51,18 @@ bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
 //    Relocator::apply(/Users/rakeller/QtSDKtest2/Simulator/Qt/gcc)
 //    Relocator uses indicator: /QtSDKtest2operation 'QtPatch' with arguments: 'mac; /Users/rakeller/QtSDKtest2/Simulator/Qt/gcc' failed: Error while relocating Qt: "ReplaceInsta
 
+    if (qtInstallDir.isEmpty()) {
+        mErrorMessage = QLatin1String("qtInstallDir can't be empty");
+        return false;
+    }
+    if (targetDir.isEmpty()) {
+        mErrorMessage = QLatin1String("targetDir can't be empty");
+        return false;
+    }
     verbose() << "Relocator::apply(" << qtInstallDir << ")" << std::endl;
 
     mErrorMessage.clear();
-    mOriginalInstallDir.clear();
     mInstallDir.clear();
-
-    QFile buildRootFile(qtInstallDir + QLatin1String("/.orig_build_root"));
-    if (buildRootFile.exists() && buildRootFile.open(QFile::ReadOnly)) {
-        mOriginalInstallDir = QString::fromLocal8Bit(buildRootFile.readAll()).trimmed();
-        if (!mOriginalInstallDir.endsWith(QLatin1Char('/')))
-            mOriginalInstallDir += QLatin1Char('/');
-    }
 
     mInstallDir = targetDir;
     if (!mInstallDir.endsWith(QLatin1Char('/')))
@@ -72,19 +72,8 @@ bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
         return false;
     }
 
-    QString indicator;
-    //if mInstallDir = /Users/rakeller/QtSDKtest2/Simulator/Qt/gcc/
-    //and if mOriginalInstallDir = /Users/berlin/Installer/______BUILD______PADDED______/ndk/Simulator/Qt/gcc/
-    //then indicator should be "Simulator/Qt/gcc"
-    for(int i = 0; i < mInstallDir.count(); ++i) {
-        QString endWithString = mInstallDir.right(i);
-        if (mOriginalInstallDir.endsWith(endWithString)) {
-            indicator = endWithString;
-        } else {
-            break;
-        }
-    }
-    indicator.chop(1); //removes the last "/"
+    QString indicator = qtInstallDir;
+    indicator = indicator.replace(targetDir, QString());
 
     verbose() << "Relocator uses indicator: " << indicator << std::endl;
     QString replacement = targetDir;

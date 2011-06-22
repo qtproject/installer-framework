@@ -201,16 +201,19 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString& fileName)
     verbose() << fileName << ", " << frameworkId << ", " << frameworks.join(QLatin1String("|")) << ", " << originalBuildDir << std::endl;
 
     QStringList args;
-    if (frameworkId.contains(mIndicator)) {
+    if (frameworkId.contains(mIndicator) || QFileInfo(frameworkId).fileName() == frameworkId) {
         args << QLatin1String("-id") << fileName << fileName;
         if (!execCommand(QLatin1String("install_name_tool"), args))
             return;
     }
 
+
     foreach (const QString& fw, frameworks) {
+        if (originalBuildDir.isEmpty() && fw.contains(mIndicator)) {
+            originalBuildDir = fw.left(fw.indexOf(mIndicator));
+        }
         if (originalBuildDir.isEmpty() || !fw.contains(originalBuildDir))
             continue;
-
         QString newPath = fw;
         newPath.replace(originalBuildDir, mInstallationDir);
 

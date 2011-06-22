@@ -40,7 +40,6 @@ public:
 
 private:
     QString mErrorMessage;
-    QString mOriginalInstallDir;
     QString mInstallDir;
 };
 
