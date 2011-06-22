@@ -27,6 +27,8 @@
 
 #include <Carbon/Carbon.h>
 
+#include <sys/mount.h>
+
 static QString qt_mac_hfsunistr_to_qstring( const HFSUniStr255* hfs )
 {
     const QChar* const charPointer = reinterpret_cast< const QChar* >( hfs->unicode );
@@ -93,23 +95,24 @@ QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
     FSRef ref;
     int i = 0;
 
-    while( FSGetVolumeInfo( kFSInvalidVolumeRefNum, ++i, &volume, kFSVolInfoFSInfo, &info, &volName, &ref ) == 0 )
-    {
-        UInt8 path[ PATH_MAX + 1 ];
-        if( FSRefMakePath( &ref, path, PATH_MAX ) == 0 )
-        {
-            const QString name = qt_mac_hfsunistr_to_qstring( &volName );
-            const QString mount = QString::fromLocal8Bit( reinterpret_cast< char* >( path ) );
-            FSGetVolumeInfo( volume, 0, 0, kFSVolInfoSizes, &info, 0, 0 );
+    while (FSGetVolumeInfo(kFSInvalidVolumeRefNum, ++i, &volume, kFSVolInfoFSInfo, &info, &volName, &ref) == 0) {
+        UInt8 path[PATH_MAX + 1];
+        if (FSRefMakePath(&ref, path, PATH_MAX) == 0) {
             Volume v;
-            v.setName( name );
-            v.setPath( mount );
-            v.setSize( KDByteSize( info.totalBytes ) );
-            v.setAvailableSpace( KDByteSize( info.freeBytes ) );
-            result.push_back( v );
+            v.setName(qt_mac_hfsunistr_to_qstring(&volName));
+            v.setPath(QString::fromLocal8Bit(reinterpret_cast< char* >(path)));
+
+            FSGetVolumeInfo(volume, 0, 0, kFSVolInfoSizes, &info, 0, 0);
+            v.setSize(KDByteSize(info.totalBytes));
+            v.setAvailableSpace(KDByteSize(info.freeBytes));
+
+            struct statfs data;
+            if (statfs(qPrintable(v.path()), &data) == 0)
+                v.setFileSystemType(QLatin1String(data.f_fstypename));
+
+            result.append(v);
         }
     }
-    
     return result;
 }
 
