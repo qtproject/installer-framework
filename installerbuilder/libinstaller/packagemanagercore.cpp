@@ -904,7 +904,6 @@ bool PackageManagerCore::fetchUpdaterPackages()
             if (!isValidUpdate)
                 continue;   // Update for not installed package found, skip it.
 
-
             const KDUpdater::PackageInfo &info = installedPackages.value(name);
             const QString updateVersion = update->data(scVersion).toString();
             if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)

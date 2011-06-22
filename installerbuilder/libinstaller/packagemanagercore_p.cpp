@@ -904,7 +904,7 @@ void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperatio
             openForRead(&input, input.fileName());
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookieDat));
             forceUncompressedResourcesOnError = true;
-        } catch (const Error &error) {
+        } catch (const Error &/*error*/) {
             input.setFileName(isInstaller() ? installerBinaryPath() : uninstallerName());
             openForRead(&input, input.fileName());
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
@@ -925,7 +925,7 @@ void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperatio
                 throw Error(tr("Could not write uninstaller binary data to %1: %2").arg(file.fileName(),
                     file.errorString()));
             }
-        } catch (const Error &error) {
+        } catch (const Error &/*error*/) {
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
                 QFile tmp(isInstaller() ? installerBinaryPath() : uninstallerName());
