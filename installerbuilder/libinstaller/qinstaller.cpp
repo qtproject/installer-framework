@@ -135,6 +135,7 @@ namespace {
 
 static bool performOperationThreaded(KDUpdater::UpdateOperation *op, OperationType type=Perform)
 {
+    return runOperation(op, type);
     QFuture<bool> future = QtConcurrent::run(runOperation, op, type);
     letTheUiRunTillFinished(future);
     return future.result();
