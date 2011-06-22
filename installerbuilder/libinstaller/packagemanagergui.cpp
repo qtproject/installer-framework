@@ -64,7 +64,6 @@
 #include <QtGui/QFormLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
-#include <QtGui/QGroupBox>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QListWidget>
@@ -715,11 +714,6 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("LicenseAgreementPage"));
 
-#if !defined(Q_WS_MAC)
-    QGroupBox *licenseBox = new QGroupBox(this);
-    licenseBox->setObjectName(QString::fromUtf8("licenseBox"));
-#endif
-
     m_licenseListWidget = new QListWidget(this);
     connect(m_licenseListWidget, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
         this, SLOT(currentItemChanged(QListWidgetItem *)));
@@ -743,12 +737,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     licenseBoxLayout->addWidget(m_textBrowser);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-#if !defined(Q_WS_MAC)
-    layout->addWidget(licenseBox);
-    licenseBox->setLayout(licenseBoxLayout);
-#else
     layout->addLayout(licenseBoxLayout);
-#endif
 
     m_acceptRadioButton = new QRadioButton(this);
     m_acceptRadioButton->setObjectName(QString::fromUtf8("acceptLicenseRB"));
