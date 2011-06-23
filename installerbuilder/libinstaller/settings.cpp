@@ -191,7 +191,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
             }
         } else {
             if (s.d->m_data.contains(name))
-                throw Error(QObject::tr("Multiple %1 elements found, but only one allowed.").arg(name));
+                throw Error(tr("Multiple %1 elements found, but only one allowed.").arg(name));
             s.d->m_data.insert(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
         }
     }
