@@ -28,6 +28,7 @@
 
 #include "installer_global.h"
 
+#include <QtCore/QMetaType>
 #include <QtCore/QUrl>
 
 namespace QInstaller {
@@ -55,7 +56,8 @@ inline uint qHash(const Repository &repository)
     return qHash(repository.url().toString());
 }
 
-
 }   // namespace QInstaller
+
+Q_DECLARE_METATYPE(QInstaller::Repository)
 
 #endif // REPOSITORY_H
