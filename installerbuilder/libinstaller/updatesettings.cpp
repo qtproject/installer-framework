@@ -38,7 +38,7 @@
 
 #include <QtCore/QDateTime>
 #include <QtCore/QSettings>
-#include <QtCore/QstringList>
+#include <QtCore/QStringList>
 
 using namespace QInstaller;
 

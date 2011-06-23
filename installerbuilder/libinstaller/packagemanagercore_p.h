@@ -34,6 +34,7 @@
 #define PACKAGEMANAGERCORE_P_H
 
 #include "settings.h"
+#include "packagemanagercore.h"
 
 #include <KDToolsCore/KDSysInfo>
 

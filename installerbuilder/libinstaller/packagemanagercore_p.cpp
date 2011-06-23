@@ -346,7 +346,7 @@ void PackageManagerCorePrivate::initialize()
         m_vars.insert(QLatin1String("RunProgramDescription"), desc);
 #ifdef Q_WS_X11
     if (m_launchedAsRoot)
-        m_vars.insert(scTargetDir, replaceVariables(m_installerSettings.adminTargetDir()));
+        m_vars.insert(scTargetDir, replaceVariables(m_Settings.adminTargetDir()));
     else
 #endif
         m_vars.insert(scTargetDir, replaceVariables(m_Settings.targetDir()));
