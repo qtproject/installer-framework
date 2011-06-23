@@ -337,12 +337,12 @@ void Settings::addUserRepositories(const QList<Repository> &repositories)
         d->m_data.insertMulti(scUserRepositories, QVariant().fromValue(repository));
 }
 
-QVariant Settings::value(const QString &key, const QVariant &defaultValue)
+QVariant Settings::value(const QString &key, const QVariant &defaultValue) const
 {
     return d->m_data.value(key, defaultValue);
 }
 
-QVariantList Settings::values(const QString &key, const QVariantList &defaultValue)
+QVariantList Settings::values(const QString &key, const QVariantList &defaultValue) const
 {
     QVariantList list = d->m_data.values(key);
     return list.isEmpty() ? defaultValue : list;

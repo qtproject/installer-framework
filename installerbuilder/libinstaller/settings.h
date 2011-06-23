@@ -83,8 +83,8 @@ public:
     void addUserRepositories(const QList<Repository> &repositories);
 
     QStringList certificateFiles() const;
-    QVariant value(const QString &key, const QVariant &defaultValue = QVariant());
-    QVariantList values(const QString &key, const QVariantList &defaultValue = QVariantList());
+    QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
+    QVariantList values(const QString &key, const QVariantList &defaultValue = QVariantList()) const;
 
 private:
     class Private;
