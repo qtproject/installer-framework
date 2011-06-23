@@ -210,9 +210,9 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     , m_core(core)
 {
     if (m_core->isInstaller())
-        setWindowTitle(tr("%1 Setup").arg(m_core->value(QLatin1String("Title"))));
+        setWindowTitle(tr("%1 Setup").arg(m_core->value(scTitle)));
     else
-        setWindowTitle(tr("%1").arg(m_core->value(QLatin1String("MaintenanceTitle"))));
+        setWindowTitle(tr("%1").arg(m_core->value(scMaintenanceTitle)));
 
 #ifndef Q_WS_MAC
     setWindowIcon(QIcon(m_core->settings().icon()));
@@ -1176,8 +1176,7 @@ bool TargetDirectoryPage::validatePage()
             return false;
         }
 
-        QString remove = packageManagerCore()->value(QLatin1String("RemoveTargetDir"));
-        if (!QVariant(remove).toBool())
+        if (!QVariant(packageManagerCore()->value(scRemoveTargetDir)).toBool())
             return true;
 
         return MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -1228,7 +1227,7 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setObjectName(QLatin1String("LineEdit"));
 
-    QString startMenuDir = core->value(QLatin1String("StartMenuDir"));
+    QString startMenuDir = core->value(scStartMenuDir);
     if (startMenuDir.isEmpty())
         startMenuDir = productName();
     m_lineEdit->setText(startMenuDir);
@@ -1288,8 +1287,7 @@ void StartMenuDirectoryPage::setStartMenuDir(const QString &startMenuDir)
 
 void StartMenuDirectoryPage::leaving()
 {
-    packageManagerCore()->setValue(QLatin1String("StartMenuDir"), startMenuPath + QDir::separator()
-        + startMenuDir());
+    packageManagerCore()->setValue(scStartMenuDir, startMenuPath + QDir::separator() + startMenuDir());
 }
 
 void StartMenuDirectoryPage::currentItemChanged(QListWidgetItem* current)
@@ -1298,7 +1296,7 @@ void StartMenuDirectoryPage::currentItemChanged(QListWidgetItem* current)
         QString dir = current->data(Qt::DisplayRole).toString();
         if (!dir.isEmpty())
             dir += QDir::separator();
-        setStartMenuDir(dir + packageManagerCore()->value(QLatin1String("StartMenuDir")));
+        setStartMenuDir(dir + packageManagerCore()->value(scStartMenuDir));
     }
 }
 
@@ -1600,10 +1598,10 @@ void FinishedPage::entering()
         if (!finishedtext.isEmpty())
             m_msgLabel->setText(finishedtext);
 
-        if (!packageManagerCore()->value(QLatin1String("RunProgram")).isEmpty()) {
+        if (!packageManagerCore()->value(scRunProgram).isEmpty()) {
             m_runItCheckBox->show();
-            m_runItCheckBox->setText(packageManagerCore()->value(QLatin1String("RunProgramDescription"),
-                tr("Run %1 now.").arg(productName())));
+            m_runItCheckBox->setText(packageManagerCore()->value(scRunProgramDescription, tr("Run %1 now.")
+                .arg(productName())));
             return; // job done
         }
     } else {
@@ -1630,7 +1628,7 @@ void FinishedPage::leaving()
 
 void FinishedPage::handleFinishClicked()
 {
-    QString program = packageManagerCore()->value(QLatin1String("RunProgram"));
+    QString program = packageManagerCore()->value(scRunProgram);
     if (!m_runItCheckBox->isChecked() || program.isEmpty())
         return;
     program = packageManagerCore()->replaceVariables(program);

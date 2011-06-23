@@ -249,7 +249,7 @@ QString PackageManagerCorePrivate::targetDir() const
 
 QString PackageManagerCorePrivate::configurationFileName() const
 {
-    return m_core->value(QLatin1String("TargetConfigurationFile"), QString::fromLatin1("components.xml"));
+    return m_core->value(scTargetConfigurationFile, QString::fromLatin1("components.xml"));
 }
 
 QString PackageManagerCorePrivate::componentsXmlPath() const
@@ -329,28 +329,27 @@ void PackageManagerCorePrivate::initialize()
     // fill the variables defined in the settings
     m_vars.insert(QLatin1String("ProductName"), m_Settings.applicationName());
     m_vars.insert(QLatin1String("ProductVersion"), m_Settings.applicationVersion());
-    m_vars.insert(QLatin1String("Title"), m_Settings.title());
-    m_vars.insert(QLatin1String("MaintenanceTitle"), m_Settings.maintenanceTitle());
-    m_vars.insert(QLatin1String("Publisher"), m_Settings.publisher());
+    m_vars.insert(scTitle, m_Settings.title());
+    m_vars.insert(scMaintenanceTitle, m_Settings.maintenanceTitle());
+    m_vars.insert(scPublisher, m_Settings.publisher());
     m_vars.insert(QLatin1String("Url"), m_Settings.url());
-    m_vars.insert(QLatin1String("StartMenuDir"), m_Settings.startMenuDir());
-
-    m_vars.insert(QLatin1String("TargetConfigurationFile"), m_Settings.configurationFileName());
+    m_vars.insert(scStartMenuDir, m_Settings.startMenuDir());
+    m_vars.insert(scTargetConfigurationFile, m_Settings.configurationFileName());
     m_vars.insert(QLatin1String("LogoPixmap"), m_Settings.logo());
     m_vars.insert(QLatin1String("LogoSmallPixmap"), m_Settings.logoSmall());
     m_vars.insert(QLatin1String("WatermarkPixmap"), m_Settings.watermark());
 
-    m_vars.insert(QLatin1String("RunProgram"), replaceVariables(m_Settings.runProgram()));
+    m_vars.insert(scRunProgram, replaceVariables(m_Settings.runProgram()));
     const QString desc = m_Settings.runProgramDescription();
     if (!desc.isEmpty())
-        m_vars.insert(QLatin1String("RunProgramDescription"), desc);
+        m_vars.insert(scRunProgramDescription, desc);
 #ifdef Q_WS_X11
     if (m_launchedAsRoot)
         m_vars.insert(scTargetDir, replaceVariables(m_Settings.adminTargetDir()));
     else
 #endif
         m_vars.insert(scTargetDir, replaceVariables(m_Settings.targetDir()));
-    m_vars.insert(QLatin1String("RemoveTargetDir"), replaceVariables(m_Settings.removeTargetDir()));
+    m_vars.insert(scRemoveTargetDir, replaceVariables(m_Settings.removeTargetDir()));
 
     QSettingsWrapper creatorSettings(QSettingsWrapper::IniFormat, QSettingsWrapper::UserScope,
         QLatin1String("Nokia"), QLatin1String("QtCreator"));
@@ -503,7 +502,7 @@ void PackageManagerCorePrivate::readUninstallerIniFile(const QString &targetDir)
     }
 
     QList<Repository> repositories;
-    const QStringList list = cfg.value(QLatin1String("Repositories")).toStringList();
+    const QStringList list = cfg.value(scRepositories).toStringList();
     foreach (const QString &url, list)
         repositories.append(Repository(url));
     m_Settings.addUserRepositories(repositories);
@@ -747,7 +746,7 @@ void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperatio
         QHash<QString, QString>::ConstIterator it = m_vars.constBegin();
         while (it != m_vars.constEnd()) {
             const QString &key = it.key();
-            if (key != QLatin1String("RunProgramDescription") && key != QLatin1String("RunProgram"))
+            if (key != scRunProgramDescription && key != scRunProgram)
                 vars.insert(key, it.value());
             ++it;
         }
@@ -756,7 +755,7 @@ void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperatio
         QStringList list;
         foreach (const Repository &repository, m_Settings.userRepositories())
             list.append(repository.url().toString());
-        cfg.setValue(QLatin1String("Repositories"), list);
+        cfg.setValue(scRepositories, list);
 
         cfg.sync();
         if (cfg.status() != QSettingsWrapper::NoError) {
@@ -1015,7 +1014,7 @@ void PackageManagerCorePrivate::runInstaller()
             if (!performOperationThreaded(mkdirOp))
                 throw Error(mkdirOp->errorString());
         }
-        const QString remove = m_core->value(QLatin1String("RemoveTargetDir"));
+        const QString remove = m_core->value(scRemoveTargetDir);
         if (QVariant(remove).toBool())
             addPerformed(takeOwnedOperation(mkdirOp));
 
@@ -1274,7 +1273,7 @@ void PackageManagerCorePrivate::runUninstaller()
         runUndoOperations(undoOperations, undoOperationProgressSize, adminRightsGained, false);
         // No operation delete here, as all old undo operations are deleted in the destructor.
 
-        const QString startMenuDir = m_vars.value(QLatin1String("StartMenuDir"));
+        const QString startMenuDir = m_vars.value(scStartMenuDir);
         if (!startMenuDir.isEmpty()) {
             try {
                 QInstaller::removeDirectory(startMenuDir);
@@ -1288,8 +1287,7 @@ void PackageManagerCorePrivate::runUninstaller()
         // this will also delete the TargetDir on Windows
         deleteUninstaller();
 
-        QString remove = m_core->value(QLatin1String("RemoveTargetDir"));
-        if (QVariant(remove).toBool()) {
+        if (QVariant(m_core->value(scRemoveTargetDir)).toBool()) {
             // on !Windows, we need to remove TargetDir manually
             verbose() << "Complete uninstallation is chosen" << std::endl;
             const QString target = targetDir();
@@ -1494,9 +1492,9 @@ void PackageManagerCorePrivate::registerUninstaller()
     settings.setValue(QLatin1String("DisplayVersion"), m_vars.value(QLatin1String("ProductVersion")));
     const QString uninstaller = QDir::toNativeSeparators(uninstallerName());
     settings.setValue(QLatin1String("DisplayIcon"), uninstaller);
-    settings.setValue(QLatin1String("Publisher"), m_vars.value(QLatin1String("Publisher")));
+    settings.setValue(scPublisher, m_vars.value(scPublisher));
     settings.setValue(QLatin1String("UrlInfoAbout"), m_vars.value(QLatin1String("Url")));
-    settings.setValue(QLatin1String("Comments"), m_vars.value(QLatin1String("Title")));
+    settings.setValue(QLatin1String("Comments"), m_vars.value(scTitle));
     settings.setValue(QLatin1String("InstallDate"), QDateTime::currentDateTime().toString());
     settings.setValue(QLatin1String("InstallLocation"), QDir::toNativeSeparators(targetDir()));
     settings.setValue(QLatin1String("UninstallString"), uninstaller);
