@@ -86,6 +86,23 @@ static QList<Repository> readRemoteRepositories(QXmlStreamReader &reader)
     return set.toList();
 }
 
+static QHash<QString, QVariantHash> readPages(QXmlStreamReader &reader)
+{
+    QHash<QString, QVariantHash> hash;
+    while (reader.readNextStartElement()) {
+        if (reader.name() == QLatin1String("Page")) {
+            QVariantHash pageElements;
+            QString pageName = reader.attributes().value(QLatin1String("name")).toString();
+            while (reader.readNextStartElement()) {
+                pageElements.insert(reader.name().toString(), reader
+                    .readElementText(QXmlStreamReader::SkipChildElements));
+            }
+            hash.insert(pageName, pageElements);
+        }
+    }
+    return hash;
+}
+
 
 // -- Settings::Private
 
@@ -147,7 +164,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
     }
 
     QStringList blackList;
-    blackList << scPrivateKey << scPublicKey << scRemoteRepositories << scSigningCertificate;
+    blackList << scPrivateKey << scPublicKey << scRemoteRepositories << scSigningCertificate << scPages;
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
@@ -164,6 +181,13 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
                 QList<Repository> repositories = readRemoteRepositories(reader);
                 foreach (const Repository &repository, repositories)
                     s.d->m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
+            }
+
+            if (name == scPages) {
+                QHash<QString, QVariantHash> pages = readPages(reader);
+                const QStringList &keys = pages.keys();
+                foreach (const QString &key, keys)
+                    s.d->m_data.insert(key, pages.value(key));
             }
         } else {
             if (s.d->m_data.contains(name))

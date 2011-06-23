@@ -98,6 +98,7 @@ static const QLatin1String scSortingPriority("SortingPriority");
 static const QLatin1String scIcon("Icon");
 static const QLatin1String scLogo("Logo");
 static const QLatin1String scTitle("Title");
+static const QLatin1String scPages("Pages");
 static const QLatin1String scPrefix("Prefix");
 static const QLatin1String scLogoSmall("LogoSmall");
 static const QLatin1String scPublisher("Publisher");
