@@ -653,14 +653,17 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     , m_widget(0)
 {
     setObjectName(QLatin1String("IntroductionPage"));
-    setTitle(tr("Setup - %1").arg(productName()));
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
-    setSubTitle(QString());
+
+    const QVariantHash hash = elementsForPage(QLatin1String("IntroductionPage"));
+    setSubTitle(hash.value(QLatin1String("SubTitle"), QString()).toString());
+    setTitle(hash.value(QLatin1String("Title"), tr("Setup - %1")).toString().arg(productName()));
 
     m_msgLabel = new QLabel(this);
-    m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
     m_msgLabel->setWordWrap(true);
-    m_msgLabel->setText(tr("Welcome to the %1 Setup Wizard.").arg(productName()));
+    m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
+    m_msgLabel->setText(hash.value(QLatin1String("MessageLabel"), tr("Welcome to the %1 Setup Wizard."))
+        .toString().arg(productName()));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);
@@ -716,15 +719,18 @@ private:
 LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
-    setTitle(tr("License Agreement"));
-    setSubTitle(tr("Please read the following license agreement(s). You must accept the terms contained "
-        "in these agreement(s) before continuing with the installation."));
-
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("LicenseAgreementPage"));
 
+    const QVariantHash hash = elementsForPage(QLatin1String("LicenseAgreementPage"));
+    setTitle(hash.value(QLatin1String("Title"), tr("License Agreement")).toString());
+    setSubTitle(hash.value(QLatin1String("SubTitle"), tr("Please read the following license agreement(s). "
+        "You must accept the terms contained in these agreement(s) before continuing with the installation."))
+        .toString());
+
     m_licenseListWidget = new QListWidget(this);
+    m_licenseListWidget->setObjectName(QLatin1String("LicenseListWidget"));
     connect(m_licenseListWidget, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
         this, SLOT(currentItemChanged(QListWidgetItem *)));
 
@@ -736,6 +742,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_textBrowser->setReadOnly(true);
     m_textBrowser->setOpenLinks(false);
     m_textBrowser->setOpenExternalLinks(true);
+    m_textBrowser->setObjectName(QLatin1String("LicenseTextBrowser"));
     connect(m_textBrowser, SIGNAL(anchorClicked(QUrl)), this, SLOT(openLicenseUrl(QUrl)));
 
     QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -750,27 +757,32 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     layout->addLayout(licenseBoxLayout);
 
     m_acceptRadioButton = new QRadioButton(this);
-    m_acceptRadioButton->setObjectName(QString::fromUtf8("acceptLicenseRB"));
-
     m_acceptRadioButton->setShortcut(QKeySequence(tr("Alt+A", "agree license")));
-    QLabel *acceptLabel = new QLabel(tr("I h<u>a</u>ve read and agree to the following terms contained in "
-        "the license agreements accompanying the Qt SDK and additional items. I agree that my use of "
-        "the Qt SDK is governed by the terms and conditions contained in these license agreements."));
-    acceptLabel->setWordWrap(true);
+    m_acceptRadioButton->setObjectName(QLatin1String("AcceptLicenseRadioButton"));
     ClickForwarder* acceptClickForwarder = new ClickForwarder(m_acceptRadioButton);
+
+    QLabel *acceptLabel = new QLabel;
+    acceptLabel->setWordWrap(true);
     acceptLabel->installEventFilter(acceptClickForwarder);
+    acceptLabel->setObjectName(QLatin1String("AcceptLicenseLabel"));
+    acceptLabel->setText(hash.value(QLatin1String("AcceptLicenseLabel"), tr("I h<u>a</u>ve read and agree to "
+        "the following terms contained in the license agreements accompanying the Qt SDK and additional items"
+        ". I agree that my use of the Qt SDK is governed by the terms and conditions contained in these "
+        "license agreements.")).toString());
 
     m_rejectRadioButton = new QRadioButton(this);
-    m_rejectRadioButton->setObjectName(QString::fromUtf8("rejectLicenseRB"));
-
-    m_rejectRadioButton->setShortcut(QKeySequence(tr("Alt+D", "do not agree license")));
-    QLabel *rejectLabel = new QLabel(tr("I <u>d</u>o not accept the terms and conditions of the above "
-        "listed license agreements. Please note by checking the box, you must cancel the "
-        "installation or downloading the Qt SDK and must destroy all copies, or portions thereof, "
-        "of the Qt SDK in your possessions."));
-    rejectLabel->setWordWrap(true);
     ClickForwarder* rejectClickForwarder = new ClickForwarder(m_rejectRadioButton);
+    m_rejectRadioButton->setObjectName(QString::fromUtf8("RejectLicenseRadioButton"));
+    m_rejectRadioButton->setShortcut(QKeySequence(tr("Alt+D", "do not agree license")));
+
+    QLabel *rejectLabel = new QLabel;
+    rejectLabel->setWordWrap(true);
     rejectLabel->installEventFilter(rejectClickForwarder);
+    rejectLabel->setObjectName(QLatin1String("RejectLicenseLabel"));
+    rejectLabel->setText(hash.value(QLatin1String("RejectLicenseLabel"), tr("I <u>d</u>o not accept the "
+        "terms and conditions of the above listed license agreements. Please note by checking the box, you "
+        "must cancel the installation or downloading the Qt SDK and must destroy all copies, or portions "
+        "thereof, of the Qt SDK in your possessions.")).toString());
 
     QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Minimum);
     sizePolicy3.setHeightForWidth(rejectLabel->sizePolicy().hasHeightForWidth());
@@ -974,7 +986,7 @@ public slots:
                 ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString());
             if (!m_core->isUninstaller()) {
                 m_sizeLabel->setText(tr("This component will occupy approximately %1 on your "
-                    "hard disk.").arg(m_currentModel->data(m_currentModel->index(current.row(),
+                    "hard disk drive.").arg(m_currentModel->data(m_currentModel->index(current.row(),
                     ComponentModelHelper::UncompressedSizeColumn, current.parent())).toString()));
             }
         }
@@ -1028,20 +1040,32 @@ ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , d(new Private(this, core))
 {
-    setTitle(tr("Select Components"));
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ComponentSelectionPage"));
 
-    if (core->isInstaller())
-        setSubTitle(tr("Please select the components you want to install."));
-    if (core->isUninstaller())
-        setSubTitle(tr("Please select the components you want to uninstall."));
+    const QVariantHash hash = elementsForPage(QLatin1String("ComponentSelectionPage"));
+    setTitle(hash.value(QLatin1String("Title"), tr("Select Components")).toString());
 
-    if (core->isUpdater())
-        setSubTitle(tr("Please select the components you want to update."));
-    if (core->isPackageManager())
-        setSubTitle(tr("Please (de)select the components you want to (un)install."));
+    if (core->isInstaller()) {
+        setSubTitle(hash.value(QLatin1String("SubTitleInstaller"), tr("Please select the components you want "
+            "to install.")).toString());
+    }
+
+    if (core->isUninstaller()) {
+        setSubTitle(hash.value(QLatin1String("SubTitleUnInstaller"), tr("Please select the components you "
+            "want to uninstall.")).toString());
+    }
+
+    if (core->isUpdater()) {
+        setSubTitle(hash.value(QLatin1String("SubTitleUpdater"), tr("Please select the components you want "
+            "to update.")).toString());
+    }
+
+    if (core->isPackageManager()) {
+        setSubTitle(hash.value(QLatin1String("SubTitlePackageManager"), tr("Please (de)select the components "
+            "you want to (un)install.")).toString());
+    }
 }
 
 ComponentSelectionPage::~ComponentSelectionPage()
