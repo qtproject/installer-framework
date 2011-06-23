@@ -136,6 +136,7 @@ public:
 
 protected:
     PackageManagerCore *packageManagerCore() const;
+    QVariantHash elementsForPage(const QString &pageName) const;
 
     // Inserts widget into the same layout like a sibling identified
     // by its name. Default position is just behind the sibling.

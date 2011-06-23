@@ -555,6 +555,16 @@ PackageManagerCore *PackageManagerPage::packageManagerCore() const
     return m_core;
 }
 
+QVariantHash PackageManagerPage::elementsForPage(const QString &pageName) const
+{
+    const QVariant variant = m_core->settings().value(pageName);
+
+    QVariantHash hash;
+    if (variant.canConvert<QVariantHash>())
+        hash = variant.value<QVariantHash>();
+    return hash;
+}
+
 QPixmap PackageManagerPage::watermarkPixmap() const
 {
     return QPixmap(m_core->value(QLatin1String("WatermarkPixmap")));
