@@ -62,36 +62,62 @@ QScriptValue qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *eng
 QScriptValue qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine *engine);
 QScriptValue qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine);
 
-static const QLatin1String scName("Name");
-static const QLatin1String scDisplayName("DisplayName");
-static const QLatin1String scDescription("Description");
-static const QLatin1String scDefault("Default");
-static const QLatin1String scCompressedSize("CompressedSize");
-static const QLatin1String scUncompressedSize("UncompressedSize");
-static const QLatin1String scVersion("Version");
-static const QLatin1String scDependencies("Dependencies");
-static const QLatin1String scReleaseDate("ReleaseDate");
-static const QLatin1String scReplaces("Replaces");
-static const QLatin1String scVirtual("Virtual");
-static const QLatin1String scSortingPriority("SortingPriority");
-static const QLatin1String scInstallPriority("InstallPriority");
-static const QLatin1String scImportant("Important");
-static const QLatin1String scForcedInstallation("ForcedInstallation");
-static const QLatin1String scUpdateText("UpdateText");
-static const QLatin1String scRequiresAdminRights("RequiresAdminRights");
-static const QLatin1String scNewComponent("NewComponent");
-static const QLatin1String scScript("Script");
-static const QLatin1String scInstalledVersion("InstalledVersion");
-
+// constants used throughout several classes
 static const QLatin1String scTrue("true");
 static const QLatin1String scFalse("false");
 
+static const QLatin1String scName("Name");
+static const QLatin1String scVersion("Version");
+static const QLatin1String scReplaces("Replaces");
+static const QLatin1String scImportant("Important");
+static const QLatin1String scTargetDir("TargetDir");
+static const QLatin1String scReleaseDate("ReleaseDate");
+static const QLatin1String scDescription("Description");
+static const QLatin1String scDisplayName("DisplayName");
+static const QLatin1String scDependencies("Dependencies");
+static const QLatin1String scNewComponent("NewComponent");
+static const QLatin1String scRepositories("Repositories");
+static const QLatin1String scCompressedSize("CompressedSize");
+static const QLatin1String scInstalledVersion("InstalledVersion");
+static const QLatin1String scUncompressedSize("UncompressedSize");
+static const QLatin1String scForcedInstallation("ForcedInstallation");
+static const QLatin1String scRequiresAdminRights("RequiresAdminRights");
+
+// constants used throughout the components class
+static const QLatin1String scScript("Script");
+static const QLatin1String scVirtual("Virtual");
+static const QLatin1String scDefault("Default");
 static const QLatin1String scInstalled("Installed");
+static const QLatin1String scUpdateText("UpdateText");
 static const QLatin1String scUninstalled("Uninstalled");
 static const QLatin1String scCurrentState("CurrentState");
+static const QLatin1String scInstallPriority("InstallPriority");
+static const QLatin1String scSortingPriority("SortingPriority");
 
-static const QLatin1String scTargetDir("TargetDir");
-
+// constants used throughout the settings class
+static const QLatin1String scIcon("Icon");
+static const QLatin1String scLogo("Logo");
+static const QLatin1String scTitle("Title");
+static const QLatin1String scPrefix("Prefix");
+static const QLatin1String scLogoSmall("LogoSmall");
+static const QLatin1String scPublisher("Publisher");
+static const QLatin1String scWatermark("Watermark");
+static const QLatin1String scPublicKey("PublicKey");
+static const QLatin1String scPrivateKey("PrivateKey");
+static const QLatin1String scProductUrl("ProductUrl");
+static const QLatin1String scBackground("Background");
+static const QLatin1String scRunProgram("RunProgram");
+static const QLatin1String scStartMenuDir("StartMenuDir");
+static const QLatin1String scAdminTargetDir("AdminTargetDir");
+static const QLatin1String scRemoveTargetDir("RemoveTargetDir");
+static const QLatin1String scUninstallerName("UninstallerName");
+static const QLatin1String scMaintenanceTitle("MaintenanceTitle");
+static const QLatin1String scUserRepositories("UserRepositories");
+static const QLatin1String scUninstallerIniFile("UninstallerIniFile");
+static const QLatin1String scRemoteRepositories("RemoteRepositories");
+static const QLatin1String scSigningCertificate("SigningCertificate");
+static const QLatin1String scRunProgramDescription("RunProgramDescription");
+static const QLatin1String scTargetConfigurationFile("TargetConfigurationFile");
 }
 
 #endif // QINSTALLER_GLOBAL_H
