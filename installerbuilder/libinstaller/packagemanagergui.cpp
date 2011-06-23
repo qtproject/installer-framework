@@ -889,8 +889,11 @@ public:
         , m_allModel(new ComponentModel(4, m_core))
         , m_updaterModel(new ComponentModel(4, m_core))
     {
-        m_treeView->setObjectName(QLatin1String("ComponentTreeView"));
+        m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
+        m_allModel->setObjectName(QLatin1String("AllComponentsModel"));
+        m_updaterModel->setObjectName(QLatin1String("UpdaterComponentsModel"));
 
+        const QVariantHash hash = q->elementsForPage(QLatin1String("ComponentSelectionPage"));
         int i = 0;
         m_currentModel = m_allModel;
         ComponentModel *list[] = { m_allModel, m_updaterModel, 0 };
@@ -928,13 +931,25 @@ public:
         QPushButton *button;
         hlayout = new QHBoxLayout;
         if (m_core->isInstaller()) {
-            hlayout->addWidget(button = new QPushButton(tr("Default")));
+            button = new QPushButton;
+            hlayout->addWidget(button);
+            button->setObjectName(QLatin1String("SelectDefaultComponents"));
             connect(button, SIGNAL(clicked()), this, SLOT(selectDefault()));
+            button->setText(hash.value(QLatin1String("SelectDefaultComponents"), tr("Default")).toString());
         }
-        hlayout->addWidget(button = new QPushButton(tr("Select All")));
+
+        button = new QPushButton;
+        hlayout->addWidget(button);
+        button->setObjectName(QLatin1String("SelectAllComponents"));
         connect(button, SIGNAL(clicked()), this, SLOT(selectAll()));
-        hlayout->addWidget(button = new QPushButton(tr("Deselect All")));
+        button->setText(hash.value(QLatin1String("SelectAllComponents"), tr("Select All")).toString());
+
+        button = new QPushButton;
+        hlayout->addWidget(button);
+        button->setObjectName(QLatin1String("DeselectAllComponents"));
         connect(button, SIGNAL(clicked()), this, SLOT(deselectAll()));
+        button->setText(hash.value(QLatin1String("DeselectAllComponents"), tr("Deselect All")).toString());
+
         hlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
             QSizePolicy::MinimumExpanding));
         layout->addLayout(hlayout);
