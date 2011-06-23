@@ -192,8 +192,6 @@ bool QtCreatorPersistentSettings::save()
 
     m_writer.saveValue(QLatin1String(TOOLCHAIN_FILE_VERSION_KEY), 1);
 
-    QDir pathToFile(m_fileName);
-    pathToFile.cdUp();
-    QDir().mkpath(pathToFile.absolutePath());
+    QDir().mkpath(QFileInfo(m_fileName).absolutePath());
     return m_writer.save(m_fileName, QLatin1String("QtCreatorToolChains"));
 }
