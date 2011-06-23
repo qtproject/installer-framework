@@ -30,6 +30,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSharedDataPointer>
+#include <QtCore/QVariant>
 
 namespace QInstaller {
 class Repository;
@@ -46,8 +47,6 @@ public:
     Settings &operator=(const Settings &other);
 
     static Settings fromFileAndPrefix(const QString &path, const QString &prefix);
-
-    bool isValid() const;
 
     QString logo() const;
     QString logoSmall() const;
@@ -78,12 +77,14 @@ public:
     QString configurationFileName() const;
 
     QList<Repository> repositories() const;
-    void setTemporaryRepositories(const QList<Repository> &repos, bool replace);
+    void setTemporaryRepositories(const QList<Repository> &repositories, bool replace);
 
     QList<Repository> userRepositories() const;
     void addUserRepositories(const QList<Repository> &repositories);
 
     QStringList certificateFiles() const;
+    QVariant value(const QString &key, const QVariant &defaultValue = QVariant());
+    QVariantList values(const QString &key, const QVariantList &defaultValue = QVariantList());
 
 private:
     class Private;
