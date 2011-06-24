@@ -288,7 +288,7 @@ Archive::Archive(const QByteArray &identifier, const QByteArray &data)
 /*!
     Creates an archive identified by \a identifier providing a data \a segment within a \a device.
  */
-Archive::Archive(const QByteArray &identifier, QIODevice *device, const Range<qint64> &segment)
+Archive::Archive(const QByteArray &identifier, const QSharedPointer<QFile> &device, const Range<qint64> &segment)
     : m_device(device),
       m_segment(segment),
       m_isTempFile(false),
@@ -554,11 +554,11 @@ void Component::setBinarySegment(const Range<qint64> &r)
     m_binarySegment = r;
 }
 
-Component Component::readFromIndexEntry(QIODevice *in, qint64 offset)
+Component Component::readFromIndexEntry(const QSharedPointer<QFile> &in, qint64 offset)
 {
     Component c;
-    c.m_name = retrieveByteArray(in);
-    c.m_binarySegment = retrieveInt64Range(in).moved(offset);
+    c.m_name = retrieveByteArray(in.data());
+    c.m_binarySegment = retrieveInt64Range(in.data()).moved(offset);
 
     c.readData(in, offset);
 
@@ -612,22 +612,22 @@ void Component::writeData(QIODevice *out, qint64 offset) const
     m_binarySegment = Range<qint64>::fromStartAndEnd(dataBegin, out->pos() + offset);
 }
 
-void Component::readData(QIODevice *in, qint64 offset)
+void Component::readData(const QSharedPointer<QFile> &in, qint64 offset)
 {
     const qint64 pos = in->pos();
 
     in->seek(m_binarySegment.start());
-    const qint64 count = retrieveInt64(in);
+    const qint64 count = retrieveInt64(in.data());
 
     QVector<QByteArray> names;
     QVector<Range<qint64> > ranges;
     for (int i = 0; i < count; ++i) {
-        names.push_back(retrieveByteArray(in));
-        ranges.push_back(retrieveInt64Range(in).moved(offset));
+        names.push_back(retrieveByteArray(in.data()));
+        ranges.push_back(retrieveInt64Range(in.data()).moved(offset));
     }
 
     for (int i = 0; i < ranges.count(); ++i)
-        m_archives.push_back(QSharedPointer<Archive>(new Archive(names.at(i), in, ranges.at(i))));
+        m_archives.append(QSharedPointer<Archive>(new Archive(names.at(i), in, ranges.at(i))));
 
     in->seek(pos);
 }
@@ -695,13 +695,13 @@ ComponentIndex::ComponentIndex()
 {
 }
 
-ComponentIndex ComponentIndex::read(QIODevice *dev, qint64 offset)
+ComponentIndex ComponentIndex::read(const QSharedPointer<QFile> &dev, qint64 offset)
 {
     ComponentIndex result;
-    const qint64 size = retrieveInt64(dev);
+    const qint64 size = retrieveInt64(dev.data());
     for (int i = 0; i < size; ++i)
         result.insertComponent(Component::readFromIndexEntry(dev, offset));
-    retrieveInt64(dev);
+    retrieveInt64(dev.data());
     return result;
 }
 
@@ -871,13 +871,12 @@ BinaryContent BinaryContent::readFromApplicationFile()
 BinaryContent BinaryContent::readFromBinary(const QString &path)
 {
     BinaryContent c(path);
-
-    QFile *file = c.m_binary.data();
-    if (!file->open(QIODevice::ReadOnly))
-        throw Error(QObject::tr("Could not open binary %1: %2").arg(path, file->errorString()));
+    if (!c.m_binary->open(QIODevice::ReadOnly))
+        throw Error(QObject::tr("Could not open binary %1: %2").arg(path, c.m_binary->errorString()));
 
     // check for supported binary, will throw if we can't find a marker
-    const BinaryLayout layout = readBinaryLayout(file, findMagicCookie(file, QInstaller::MagicCookie));
+    const BinaryLayout layout = readBinaryLayout(c.m_binary.data(), findMagicCookie(c.m_binary.data(),
+        QInstaller::MagicCookie));
 
     bool retry = true;
     if (layout.magicMarker != MagicInstallerMarker) {
@@ -893,7 +892,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
             // check for supported binary data file, will throw if we can't find a marker
             try {
                 const qint64 cookiePos = findMagicCookie(c.m_binaryFile.data(), QInstaller::MagicCookieDat);
-                readBinaryData(c, c.m_binaryFile.data(), readBinaryLayout(c.m_binaryFile.data(), cookiePos),
+                readBinaryData(c, c.m_binaryFile, readBinaryLayout(c.m_binaryFile.data(), cookiePos),
                     true);
                 retry = false;
             } catch (const Error &error) {
@@ -907,13 +906,13 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
     }
 
     if (retry)
-        readBinaryData(c, file, layout, false);
+        readBinaryData(c, c.m_binary, layout, false);
 
     return c;
 }
 
 /* static */
-BinaryLayout BinaryContent::readBinaryLayout(QIODevice *file, qint64 cookiePos)
+BinaryLayout BinaryContent::readBinaryLayout(QIODevice *const file, qint64 cookiePos)
 {
     const qint64 indexSize = 5 * sizeof(qint64);
     if (!file->seek(cookiePos - indexSize))
@@ -951,32 +950,32 @@ BinaryLayout BinaryContent::readBinaryLayout(QIODevice *file, qint64 cookiePos)
 }
 
 /* static */
-void BinaryContent::readBinaryData(BinaryContent &c, QIODevice *const file, const BinaryLayout &layout,
-    bool compressed)
+void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
+    const BinaryLayout &layout, bool compressed)
 {
-    c.m_magicmarker = layout.magicMarker;
-    c.m_metadataResourceSegments = layout.metadataResourceSegments;
+    content.m_magicmarker = layout.magicMarker;
+    content.m_metadataResourceSegments = layout.metadataResourceSegments;
 
     const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
     const qint64 operationsStart = layout.operationsStart + dataBlockStart;
     if (!file->seek(operationsStart))
         throw Error(QObject::tr("Could not seek to operation list"));
 
-    const qint64 operationsCount = retrieveInt64(file);
+    const qint64 operationsCount = retrieveInt64(file.data());
     verbose() << "Number of operations: " << operationsCount << std::endl;
 
     for (int i = 0; i < operationsCount; ++i) {
-        const QString name = retrieveString(file);
+        const QString name = retrieveString(file.data());
         KDUpdater::UpdateOperation *op = KDUpdater::UpdateOperationFactory::instance().create(name);
         Q_ASSERT_X(op, __FUNCTION__, QString::fromLatin1("Invalid operation name: %1").arg(name)
             .toLatin1());
 
-        const QString xml = (compressed ? QString::fromUtf8(qUncompress(retrieveByteArray(file)))
-            : retrieveString(file));
+        const QString xml = (compressed ? QString::fromUtf8(qUncompress(retrieveByteArray(file.data())))
+            : retrieveString(file.data()));
         if (!op->fromXml(xml))
             qWarning() << "Failed to load XML for operation:" << name;
         verbose() << "Operation name: " << name << "\nOperation xml:\n" << xml.leftRef(1000) << std::endl;
-        c.m_performedOperations.push(op);
+        content.m_performedOperations.push(op);
     }
 
     // seek to the position of the component index
@@ -985,15 +984,15 @@ void BinaryContent::readBinaryData(BinaryContent &c, QIODevice *const file, cons
     if (!file->seek(layout.endOfData - layout.indexSize - resourceSectionSize - resourceOffsetAndLengtSize))
         throw Error(QObject::tr("Could not seek to component index information"));
 
-    const qint64 compIndexStart = retrieveInt64(file) + dataBlockStart;
+    const qint64 compIndexStart = retrieveInt64(file.data()) + dataBlockStart;
     if (!file->seek(compIndexStart))
         throw Error(QObject::tr("Could not seek to component index"));
 
-    c.m_components = QInstallerCreator::ComponentIndex::read(file, dataBlockStart);
-    c.handler.setComponentIndex(c.m_components);
+    content.m_components = QInstallerCreator::ComponentIndex::read(file, dataBlockStart);
+    content.handler.setComponentIndex(content.m_components);
 
     if (isVerbose()) {
-        const QVector<QInstallerCreator::Component> components = c.m_components.components();
+        const QVector<QInstallerCreator::Component> components = content.m_components.components();
         verbose() << "Number of components loaded: " << components.count() << std::endl;
         foreach (const QInstallerCreator::Component &component, components) {
             const QVector<QSharedPointer<Archive> > archives = component.archives();
@@ -1031,6 +1030,7 @@ int BinaryContent::registerEmbeddedQResources()
     foreach (const Range<qint64> &i, m_metadataResourceSegments)
         m_resourceMappings.append(addResourceFromBinary(data, i, hasBinaryDataFile));
 
+    m_binary.clear();
     if (hasBinaryDataFile)
         m_binaryFile.clear();
 

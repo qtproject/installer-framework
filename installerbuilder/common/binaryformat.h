@@ -83,7 +83,7 @@ class INSTALLER_EXPORT Archive : public QIODevice
 public:
     explicit Archive(const QString &path);
     Archive(const QByteArray &name, const QByteArray &data);
-    Archive(const QByteArray &name, QIODevice *device, const Range<qint64> &segment);
+    Archive(const QByteArray &name, const QSharedPointer<QFile> &device, const Range<qint64> &segment);
     ~Archive();
 
     bool open(OpenMode mode);
@@ -107,7 +107,7 @@ protected:
 
 private:
     //used when when reading from the installer
-    QIODevice *const m_device;
+    QSharedPointer<QFile> m_device;
     const Range<qint64> m_segment;
 
     //used when creating the installer, archive input file
@@ -119,15 +119,16 @@ private:
 
 class INSTALLER_EXPORT Component
 {
-    Q_DECLARE_TR_FUNCTIONS(Component);
+    Q_DECLARE_TR_FUNCTIONS(Component)
+
 public:
     virtual ~Component();
 
-    static Component readFromIndexEntry(QIODevice *dev, qint64 offset);
+    static Component readFromIndexEntry(const QSharedPointer<QFile> &dev, qint64 offset);
     void writeIndexEntry(QIODevice *dev, qint64 offset) const;
 
     void writeData(QIODevice *dev, qint64 positionOffset) const;
-    void readData(QIODevice *dev, qint64 offset);
+    void readData(const QSharedPointer<QFile> &dev, qint64 offset);
 
     QByteArray name() const;
     void setName(const QByteArray &ba);
@@ -157,7 +158,7 @@ class INSTALLER_EXPORT ComponentIndex
 {
 public:
     ComponentIndex();
-    static ComponentIndex read(QIODevice *dev, qint64 offset);
+    static ComponentIndex read(const QSharedPointer<QFile> &dev, qint64 offset);
     void writeIndex(QIODevice *dev, qint64 offset) const;
     void writeComponentData(QIODevice *dev, qint64 offset) const;
     Component componentByName(const QByteArray &name) const;
@@ -194,15 +195,15 @@ public:
 
     static BinaryContent readFromApplicationFile();
     static BinaryContent readFromBinary(const QString &path);
-    static BinaryLayout readBinaryLayout(QIODevice *file, qint64 cookiePos);
+    static BinaryLayout readBinaryLayout(QIODevice *const file, qint64 cookiePos);
 
     qint64 magicmaker() const;
     int registerEmbeddedQResources();
     QStack<KDUpdater::UpdateOperation*> performedOperations() const;
 
 private:
-    static void readBinaryData(BinaryContent &c, QIODevice *const file, const BinaryLayout &layout,
-        bool compressed);
+    static void readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
+        const BinaryLayout &layout, bool compressed);
 
 private:
     QSharedPointer<QFile> m_binary;
