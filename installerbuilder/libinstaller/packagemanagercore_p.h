@@ -155,7 +155,7 @@ public:
     FSEngineClientHandler *m_FSEngineClientHandler;
 
     int m_status;
-    Settings m_Settings;
+    Settings m_settings;
     bool m_forceRestart;
     int m_silentRetries;
     bool m_testChecksum;
