@@ -40,6 +40,7 @@ HEADERS += $$PWD/packagemanagercore.h \
     ../common/zipjob.h \
     ../common/utils.h \
     ../common/errors.h \
+    kdmmappedfileiodevice.h \
     component.h \
     componentmodel.h \
     qinstallerglobal.h \
@@ -105,6 +106,7 @@ SOURCES += $$PWD/packagemanagercore.cpp \
     ../common/zipjob.cpp \
     ../common/fileutils.cpp \
     ../common/utils.cpp \
+    kdmmappedfileiodevice.cpp \
     component.cpp \
     componentmodel.cpp \
     qtpatch.cpp \
