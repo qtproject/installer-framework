@@ -38,6 +38,8 @@ HEADERS += $$PWD/packagemanagercore.h \
     ../common/binaryformatenginehandler.h \
     ../common/repository.h \
     ../common/zipjob.h \
+    ../common/kd7zengine.h \
+    ../common/kd7zenginehandler.h \
     ../common/utils.h \
     ../common/errors.h \
     kdmmappedfileiodevice.h \
@@ -104,6 +106,8 @@ SOURCES += $$PWD/packagemanagercore.cpp \
     ../common/binaryformatenginehandler.cpp \
     ../common/repository.cpp \
     ../common/zipjob.cpp \
+    ../common/kd7zengine.cpp \
+    ../common/kd7zenginehandler.cpp \
     ../common/fileutils.cpp \
     ../common/utils.cpp \
     kdmmappedfileiodevice.cpp \
