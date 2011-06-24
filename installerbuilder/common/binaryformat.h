@@ -205,14 +205,14 @@ private:
         bool compressed);
 
 private:
-    QSharedPointer<QFile> file;
+    QSharedPointer<QFile> m_binary;
     QSharedPointer<QFile> m_binaryFile;
-    QInstallerCreator::ComponentIndex components;
+    QInstallerCreator::ComponentIndex m_components;
     QInstallerCreator::BinaryFormatEngineHandler handler;
-    QVector<Range<qint64> > metadataResourceSegments;
-    QVector<const uchar*> mappings;
+    QVector<Range<qint64> > m_metadataResourceSegments;
+    QVector<const uchar*> m_resourceMappings;
     qint64 m_magicmarker;
-    qint64 dataBlockStart;
+    qint64 m_dataBlockStart;
     QStack<KDUpdater::UpdateOperation*> m_performedOperations;
 };
 

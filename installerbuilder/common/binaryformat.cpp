@@ -774,17 +774,17 @@ static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segm
 }
 
 BinaryContent::BinaryContent(const QString &path)
-    : file(new QFile(path))
+    : m_binary(new QFile(path))
     , m_binaryFile(0)
-    , handler(components)
+    , handler(m_components)
     , m_magicmarker(0)
-    , dataBlockStart(0)
+    , m_dataBlockStart(0)
 {
 }
 
 BinaryContent::~BinaryContent()
 {
-    foreach (const uchar *rccData, mappings)
+    foreach (const uchar *rccData, m_resourceMappings)
         QResource::unregisterResource(rccData);
 }
 
@@ -872,7 +872,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
 {
     BinaryContent c(path);
 
-    QFile *file = c.file.data();
+    QFile *file = c.m_binary.data();
     if (!file->open(QIODevice::ReadOnly))
         throw Error(QObject::tr("Could not open binary %1: %2").arg(path, file->errorString()));
 
@@ -955,7 +955,7 @@ void BinaryContent::readBinaryData(BinaryContent &c, QIODevice *const file, cons
     bool compressed)
 {
     c.m_magicmarker = layout.magicMarker;
-    c.metadataResourceSegments = layout.metadataResourceSegments;
+    c.m_metadataResourceSegments = layout.metadataResourceSegments;
 
     const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
     const qint64 operationsStart = layout.operationsStart + dataBlockStart;
@@ -989,11 +989,11 @@ void BinaryContent::readBinaryData(BinaryContent &c, QIODevice *const file, cons
     if (!file->seek(compIndexStart))
         throw Error(QObject::tr("Could not seek to component index"));
 
-    c.components = QInstallerCreator::ComponentIndex::read(file, dataBlockStart);
-    c.handler.setComponentIndex(c.components);
+    c.m_components = QInstallerCreator::ComponentIndex::read(file, dataBlockStart);
+    c.handler.setComponentIndex(c.m_components);
 
     if (isVerbose()) {
-        const QVector<QInstallerCreator::Component> components = c.components.components();
+        const QVector<QInstallerCreator::Component> components = c.m_components.components();
         verbose() << "Number of components loaded: " << components.count() << std::endl;
         foreach (const QInstallerCreator::Component &component, components) {
             const QVector<QSharedPointer<Archive> > archives = component.archives();
@@ -1022,19 +1022,19 @@ qint64 BinaryContent::magicmaker() const
 int BinaryContent::registerEmbeddedQResources()
 {
     const bool hasBinaryDataFile = !m_binaryFile.isNull();
-    QFile *const data = hasBinaryDataFile ? m_binaryFile.data() : file.data();
+    QFile *const data = hasBinaryDataFile ? m_binaryFile.data() : m_binary.data();
     if (!data->isOpen() && !data->open(QIODevice::ReadOnly)) {
         throw Error(QObject::tr("Could not open binary %1: %2").arg(data->fileName(),
             data->errorString()));
     }
 
-    foreach (const Range<qint64> &i, metadataResourceSegments)
-        mappings.append(addResourceFromBinary(data, i, hasBinaryDataFile));
+    foreach (const Range<qint64> &i, m_metadataResourceSegments)
+        m_resourceMappings.append(addResourceFromBinary(data, i, hasBinaryDataFile));
 
     if (hasBinaryDataFile)
         m_binaryFile.clear();
 
-    return mappings.count();
+    return m_resourceMappings.count();
 }
 
 /*!
