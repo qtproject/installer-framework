@@ -34,6 +34,7 @@
 
 #include "errors.h"
 #include "fileutils.h"
+#include "kd7zenginehandler.h"
 #include "lib7z_facade.h"
 #include "utils.h"
 #include "zipjob.h"
@@ -691,8 +692,13 @@ QSharedPointer<Archive> Component::archiveByName(const QByteArray &name) const
 
 // -- ComponentIndex
 
+KD7zEngineHandler* ComponentIndex::zipHandler = 0;
 ComponentIndex::ComponentIndex()
 {
+    if (zipHandler == 0) {
+        // TODO: this one get leaked
+        zipHandler = new KD7zEngineHandler;
+    }
 }
 
 ComponentIndex ComponentIndex::read(QIODevice *dev, qint64 offset)
