@@ -99,14 +99,16 @@ void ComponentPrivate::init()
     setProperty(qinstaller, QLatin1String("End"), PackageManagerCore::End);
 
     // register ::Status enum in the script connection
-    setProperty(qinstaller, QLatin1String("InstallerSuccess"), PackageManagerCore::Success);
-    setProperty(qinstaller, QLatin1String("InstallerSucceeded"), PackageManagerCore::Success);
+    setProperty(qinstaller, QLatin1String("Success"), PackageManagerCore::Success);
+    setProperty(qinstaller, QLatin1String("Failure"), PackageManagerCore::Failure);
+    setProperty(qinstaller, QLatin1String("Running"), PackageManagerCore::Running);
+    setProperty(qinstaller, QLatin1String("Canceled"), PackageManagerCore::Canceled);
+
+    // maybe used by old scripts
     setProperty(qinstaller, QLatin1String("InstallerFailed"), PackageManagerCore::Failure);
-    setProperty(qinstaller, QLatin1String("InstallerFailure"), PackageManagerCore::Failure);
-    setProperty(qinstaller, QLatin1String("InstallerRunning"), PackageManagerCore::Running);
-    setProperty(qinstaller, QLatin1String("InstallerCanceled"), PackageManagerCore::Canceled);
-    setProperty(qinstaller, QLatin1String("InstallerCanceledByUser"), PackageManagerCore::Canceled);
+    setProperty(qinstaller, QLatin1String("InstallerSucceeded"), PackageManagerCore::Success);
     setProperty(qinstaller, QLatin1String("InstallerUnfinished"), PackageManagerCore::Unfinished);
+    setProperty(qinstaller, QLatin1String("InstallerCanceledByUser"), PackageManagerCore::Canceled);
 
     QScriptValue installerObject = m_scriptEngine.newQObject(m_core);
     installerObject.setProperty(QLatin1String("componentByName"), m_scriptEngine

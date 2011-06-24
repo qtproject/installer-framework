@@ -75,7 +75,7 @@ class INSTALLER_EXPORT PackageManagerCore : public QObject
     Q_OBJECT
 
     Q_ENUMS(Status WizardPage)
-    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
+    Q_PROPERTY(int status READ status NOTIFY statusChanged)
 
 public:
     PackageManagerCore();
