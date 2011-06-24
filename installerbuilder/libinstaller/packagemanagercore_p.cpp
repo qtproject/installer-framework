@@ -345,7 +345,7 @@ void PackageManagerCorePrivate::initialize()
         m_vars.insert(scRunProgramDescription, desc);
 #ifdef Q_WS_X11
     if (m_launchedAsRoot)
-        m_vars.insert(scTargetDir, replaceVariables(m_Settings.adminTargetDir()));
+        m_vars.insert(scTargetDir, replaceVariables(m_settings.adminTargetDir()));
     else
 #endif
         m_vars.insert(scTargetDir, replaceVariables(m_settings.targetDir()));
