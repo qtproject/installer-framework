@@ -1031,7 +1031,6 @@ int BinaryContent::registerEmbeddedQResources()
     foreach (const Range<qint64> &i, metadataResourceSegments)
         mappings.append(addResourceFromBinary(data, i, hasBinaryDataFile));
 
-    file.clear();
     if (hasBinaryDataFile)
         m_binaryFile.clear();
 
