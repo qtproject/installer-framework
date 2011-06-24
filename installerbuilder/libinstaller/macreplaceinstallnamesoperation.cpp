@@ -195,12 +195,17 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString& fileName)
     verbose() << fileName << ", " << frameworkId << ", " << frameworks.join(QLatin1String("|")) << ", " << originalBuildDir << std::endl;
 
     QStringList args;
-    if (frameworkId.contains(mIndicator) || QFileInfo(frameworkId).fileName() == frameworkId) {
+    if ((frameworkId.contains(mIndicator) && frameworkId.contains(QLatin1String("/")))
+            || (QFileInfo(frameworkId).fileName() == frameworkId && !frameworkId.contains(QLatin1String("/")))) {
         args << QLatin1String("-id") << fileName << fileName;
         if (!execCommand(QLatin1String("install_name_tool"), args))
             return;
     }
 
+    //this can happen if we used the more then ones patching step from script side and this is needed
+    //if the indicator is to often in the original path, hopefully we find a better solution in the future
+    if (!originalBuildDir.isEmpty() && frameworkId.contains(originalBuildDir))
+        originalBuildDir.clear();
 
     foreach (const QString& fw, frameworks) {
         if (originalBuildDir.isEmpty() && fw.contains(mIndicator)) {
