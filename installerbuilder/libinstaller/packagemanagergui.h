@@ -36,6 +36,7 @@
 
 // FIXME: move to private classes
 QT_BEGIN_NAMESPACE
+class QAbstractButton;
 class QCheckBox;
 class QLabel;
 class QLineEdit;
@@ -359,6 +360,7 @@ protected:
 private:
     QLabel *m_msgLabel;
     QCheckBox *m_runItCheckBox;
+    QAbstractButton *m_commitButton;
 };
 
 

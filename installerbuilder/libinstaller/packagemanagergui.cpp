@@ -1595,6 +1595,7 @@ void PerformInstallationPage::toggleDetailsWereChanged()
 
 FinishedPage::FinishedPage(PackageManagerCore *core)
     : PackageManagerPage(core)
+    , m_commitButton(0)
 {
     setObjectName(QLatin1String("FinishedPage"));
     setTitle(tr("Completing the %1 Wizard").arg(productName()));
@@ -1625,27 +1626,35 @@ void FinishedPage::entering()
 {
     verbose() << "FINISHED ENTERING: " << std::endl;
 
+    if (m_commitButton) {
+        disconnect(m_commitButton, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
+        m_commitButton = 0;
+    }
+
     setCommitPage(true);
     if (packageManagerCore()->isUpdater() || packageManagerCore()->isPackageManager()) {
 #ifdef Q_WS_MAC
         wizard()->setOption(QWizard::NoCancelButton, false);
 #endif
         gui()->button(QWizard::CancelButton)->setEnabled(true);
+        m_commitButton = wizard()->button(QWizard::CancelButton);
         setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::NextButton));
         setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::FinishButton));
     } else {
+        if (packageManagerCore()->isInstaller())
+            m_commitButton = wizard()->button(QWizard::FinishButton);
         wizard()->setOption(QWizard::NoCancelButton, true);
     }
 
-    if (QAbstractButton *commit = wizard()->button(QWizard::CommitButton)) {
-        disconnect(commit, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
-        connect(commit, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
+    if (m_commitButton) {
+        disconnect(m_commitButton, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
+        connect(m_commitButton, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
     }
 
     if (packageManagerCore()->status() == PackageManagerCore::Success) {
-        const QString finishedtext = packageManagerCore()->value(QLatin1String("FinishedText"));
-        if (!finishedtext.isEmpty())
-            m_msgLabel->setText(finishedtext);
+        const QString finishedText = packageManagerCore()->value(QLatin1String("FinishedText"));
+        if (!finishedText.isEmpty())
+            m_msgLabel->setText(finishedText);
 
         if (!packageManagerCore()->value(scRunProgram).isEmpty()) {
             m_runItCheckBox->show();
@@ -1669,18 +1678,14 @@ void FinishedPage::leaving()
 
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
-
-    if (QAbstractButton *commit = wizard()->button(QWizard::CommitButton))
-        disconnect(commit, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
-    disconnect(wizard(), SIGNAL(customButtonClicked(int)), this, SLOT(handleFinishClicked()));
 }
 
 void FinishedPage::handleFinishClicked()
 {
-    QString program = packageManagerCore()->value(scRunProgram);
+    const QString program = packageManagerCore()->replaceVariables(packageManagerCore()->value(scRunProgram));
     if (!m_runItCheckBox->isChecked() || program.isEmpty())
         return;
-    program = packageManagerCore()->replaceVariables(program);
+
     verbose() << "STARTING " << program << std::endl;
     QProcess::startDetached(program);
 }
