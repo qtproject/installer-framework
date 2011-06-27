@@ -86,6 +86,14 @@ static QList<Repository> readRemoteRepositories(QXmlStreamReader &reader)
     return set.toList();
 }
 
+static QVariantHash readTitles(QXmlStreamReader &reader)
+{
+    QVariantHash hash;
+    while (reader.readNextStartElement())
+        hash.insert(reader.name().toString(), reader.readElementText(QXmlStreamReader::SkipChildElements));
+    return hash;
+}
+
 static QHash<QString, QVariantHash> readPages(QXmlStreamReader &reader)
 {
     QHash<QString, QVariantHash> hash;
@@ -94,8 +102,12 @@ static QHash<QString, QVariantHash> readPages(QXmlStreamReader &reader)
             QVariantHash pageElements;
             QString pageName = reader.attributes().value(QLatin1String("name")).toString();
             while (reader.readNextStartElement()) {
-                pageElements.insert(reader.name().toString(), reader
-                    .readElementText(QXmlStreamReader::SkipChildElements));
+                const QString name = reader.name().toString();
+                if (name == QLatin1String("Title") || name == QLatin1String("SubTitle")) {
+                    pageElements.insert(name, readTitles(reader));
+                } else {
+                    pageElements.insert(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
+                }
             }
             hash.insert(pageName, pageElements);
         }
@@ -370,4 +382,22 @@ QVariantList Settings::values(const QString &key, const QVariantList &defaultVal
 {
     QVariantList list = d->m_data.values(key);
     return list.isEmpty() ? defaultValue : list;
+}
+
+QVariantHash Settings::titlesForPage(const QString &pageName) const
+{
+    const QVariantHash hash = d->m_data.value(pageName).toHash();
+    const QVariant variant = hash.value(QLatin1String("Title"), QVariant());
+    if (!variant.canConvert<QVariantHash>())
+        return QVariantHash();
+    return variant.value<QVariantHash>();
+}
+
+QVariantHash Settings::subTitlesForPage(const QString &pageName) const
+{
+    const QVariantHash hash = d->m_data.value(pageName).toHash();
+    const QVariant variant = hash.value(QLatin1String("SubTitle"), QVariant());
+    if (!variant.canConvert<QVariantHash>())
+        return QVariantHash();
+    return variant.value<QVariantHash>();
 }
