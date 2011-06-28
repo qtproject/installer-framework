@@ -970,22 +970,25 @@ public:
         if (m_core->isInstaller()) {
             button = new QPushButton;
             hlayout->addWidget(button);
-            button->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
             connect(button, SIGNAL(clicked()), this, SLOT(selectDefault()));
-            button->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), tr("Default")).toString());
+            button->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
+            button->setShortcut(QKeySequence(tr("Alt+A", "select default components")));
+            button->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), tr("Def&ault")).toString());
         }
 
         button = new QPushButton;
         hlayout->addWidget(button);
-        button->setObjectName(QLatin1String("SelectAllComponentsButton"));
         connect(button, SIGNAL(clicked()), this, SLOT(selectAll()));
-        button->setText(hash.value(QLatin1String("SelectAllComponentsButton"), tr("Select All")).toString());
+        button->setObjectName(QLatin1String("SelectAllComponentsButton"));
+        button->setShortcut(QKeySequence(tr("Alt+S", "select all components")));
+        button->setText(hash.value(QLatin1String("SelectAllComponentsButton"), tr("&Select All")).toString());
 
         button = new QPushButton;
         hlayout->addWidget(button);
-        button->setObjectName(QLatin1String("DeselectAllComponentsButton"));
         connect(button, SIGNAL(clicked()), this, SLOT(deselectAll()));
-        button->setText(hash.value(QLatin1String("DeselectAllComponentsButton"), tr("Deselect All")).toString());
+        button->setObjectName(QLatin1String("DeselectAllComponentsButton"));
+        button->setShortcut(QKeySequence(tr("Alt+D", "deselect all components")));
+        button->setText(hash.value(QLatin1String("DeselectAllComponentsButton"), tr("&Deselect All")).toString());
 
         hlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
             QSizePolicy::MinimumExpanding));
@@ -1184,31 +1187,33 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     setSubTitle(subTitleForPage(QLatin1String("TargetDirectoryPage")));
     setTitle(titleForPage(QLatin1String("TargetDirectoryPage"), tr("Installation Folder")));
 
+    QVBoxLayout *layout = new QVBoxLayout(this);
+
     QLabel *msgLabel = new QLabel(this);
     msgLabel->setWordWrap(true);
     msgLabel->setObjectName(QLatin1String("MessageLabel"));
     const QVariantHash hash = elementsForPage(QLatin1String("TargetDirectoryPage"));
     msgLabel->setText(tr("%1").arg(hash.value(QLatin1String("MessageLabel"), tr("Please specify the folder "
         "where %1 will be installed.")).toString().arg(productName())));
+    layout->addWidget(msgLabel);
+
+    QHBoxLayout *hlayout = new QHBoxLayout;
 
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setObjectName(QLatin1String("TargetDirectoryLineEdit"));
+    connect(m_lineEdit, SIGNAL(textChanged(QString)), this, SIGNAL(completeChanged()));
+    hlayout->addWidget(m_lineEdit);
 
     QPushButton *browseButton = new QPushButton(this);
     browseButton->setObjectName(QLatin1String("BrowseDirectoryButton"));
-    browseButton->setText(tr("%1").arg(hash.value(QLatin1String("BrowseDirectoryButton"), tr("Browse..."))
+    connect(browseButton, SIGNAL(clicked()), this, SLOT(dirRequested()));
+    browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
+    browseButton->setText(tr("%1").arg(hash.value(QLatin1String("BrowseDirectoryButton"), tr("B&rowse..."))
         .toString()));
-
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(msgLabel);
-    QHBoxLayout *hlayout = new QHBoxLayout;
-    hlayout->addWidget(m_lineEdit);
     hlayout->addWidget(browseButton);
+
     layout->addLayout(hlayout);
     setLayout(layout);
-
-    connect(browseButton, SIGNAL(clicked()), this, SLOT(dirRequested()));
-    connect(m_lineEdit, SIGNAL(textChanged(QString)), this, SIGNAL(completeChanged()));
 }
 
 QString TargetDirectoryPage::targetDir() const
@@ -1405,17 +1410,18 @@ inline QString unitSizeText(const qint64 size)
 
 ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     : PackageManagerPage(core)
-    , msgLabel(new QLabel)
+    , m_msgLabel(new QLabel)
 {
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ReadyForInstallationPage"));
 
-    msgLabel->setWordWrap(true);
-    msgLabel->setObjectName(QLatin1String("MessageLabel"));
-
     QLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(msgLabel);
+
+    m_msgLabel->setWordWrap(true);
+    m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
+    layout->addWidget(m_msgLabel);
+
     setLayout(layout);
 }
 
@@ -1430,19 +1436,19 @@ void ReadyForInstallationPage::entering()
     if (packageManagerCore()->isUninstaller()) {
         setTitle(tr("Ready to Uninstall"));
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
-        msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.\nThe "
+        m_msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer. The "
             "program dir %2 will be deleted completely, including all content in that directory!")
             .arg(productName(), QDir::toNativeSeparators(QDir(target).absolutePath())));
         return;
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
         setTitle(tr("Ready to Update Packages"));
         setButtonText(QWizard::CommitButton, tr("U&pdate"));
-        msgLabel->setText(tr("Setup is now ready to begin updating your installation."));
+        m_msgLabel->setText(tr("Setup is now ready to begin updating your installation."));
     } else {
         Q_ASSERT(packageManagerCore()->isInstaller());
         setTitle(tr("Ready to Install"));
         setButtonText(QWizard::CommitButton, tr("&Install"));
-        msgLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
+        m_msgLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
             .arg(productName()));
     }
 
@@ -1453,8 +1459,8 @@ void ReadyForInstallationPage::entering()
 
     // there is no better way atm to check this
     if (vol.size().size() == 0 && vol.availableSpace().size() == 0) {
-        verbose() << "Could not determine available space on device " << target
-            << ". Continue silently." << std::endl;
+        verbose() << "Could not determine available space on device " << target << ". Continue silently."
+            << std::endl;
         return;
     }
 
@@ -1469,11 +1475,11 @@ void ReadyForInstallationPage::entering()
     const bool tempInstFailure = tempOnSameVolume && available < realRequiredSpace
         + realRequiredTempSpace;
 
-    verbose() << "Disk space check on " << target << ": required=" << required.size()
-        << " available=" << available.size() << " size=" << vol.size().size() << std::endl;
+    verbose() << "Disk space check on " << target << ": required: " << required.size()
+        << ", available: " << available.size() << ", size: " << vol.size().size() << std::endl;
 
     QString tempString;
-    if (tempAvailable <  realRequiredTempSpace || tempInstFailure) {
+    if (tempAvailable < realRequiredTempSpace || tempInstFailure) {
         if (tempOnSameVolume) {
             tempString = tr("Not enough disk space to store temporary files and the installation, "
                 "at least %1 are required").arg(unitSizeText(realRequiredTempSpace + realRequiredSpace));
@@ -1486,23 +1492,23 @@ void ReadyForInstallationPage::entering()
     // error on not enough space
     if (available < required || tempInstFailure) {
         if (tempOnSameVolume) {
-            msgLabel->setText(tempString);
+            m_msgLabel->setText(tempString);
         } else {
-            msgLabel->setText(tr("The volume you selected for installation has insufficient space "
-                "for the selected components.\n\nThe installation requires approximately %1.")
+            m_msgLabel->setText(tr("The volume you selected for installation has insufficient space "
+                "for the selected components. The installation requires approximately %1.")
                 .arg(required.toString()) + tempString);
         }
         setCommitPage(false);
     } else if (available - required < 0.01 * vol.size()) {
         // warn for less than 1% of the volume's space being free
-        msgLabel->setText(tr("The volume you selected for installation seems to have sufficient space for "
-            "installation,\nbut there will be less than 1% of the volume's space available afterwards.\n\n%1")
-            .arg(msgLabel->text()));
+        m_msgLabel->setText(tr("The volume you selected for installation seems to have sufficient space for "
+            "installation, but there will be less than 1% of the volume's space available afterwards. %1")
+            .arg(m_msgLabel->text()));
     } else if (available - required < 100*1024*1024LL) {
         // warn for less than 100MB being free
-        msgLabel->setText(tr("The volume you selected for installation seems to have sufficient space for "
-            "installation,\nbut there will be less than 100 MB available afterwards.\n\n%1")
-            .arg(msgLabel->text()));
+        m_msgLabel->setText(tr("The volume you selected for installation seems to have sufficient space for "
+            "installation, but there will be less than 100 MB available afterwards. %1")
+            .arg(m_msgLabel->text()));
     }
 }
 

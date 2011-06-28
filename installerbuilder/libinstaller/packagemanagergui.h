@@ -312,7 +312,7 @@ protected:
     void leaving();
 
 private:
-    QLabel* const msgLabel;
+    QLabel *m_msgLabel;
 };
 
 
