@@ -767,23 +767,17 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
 
     m_licenseListWidget = new QListWidget(this);
     m_licenseListWidget->setObjectName(QLatin1String("LicenseListWidget"));
+    m_licenseListWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
     connect(m_licenseListWidget, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
         this, SLOT(currentItemChanged(QListWidgetItem *)));
-
-    QSizePolicy sizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
-    sizePolicy.setHeightForWidth(m_licenseListWidget->sizePolicy().hasHeightForWidth());
-    m_licenseListWidget->setSizePolicy(sizePolicy);
 
     m_textBrowser = new QTextBrowser(this);
     m_textBrowser->setReadOnly(true);
     m_textBrowser->setOpenLinks(false);
     m_textBrowser->setOpenExternalLinks(true);
     m_textBrowser->setObjectName(QLatin1String("LicenseTextBrowser"));
+    m_textBrowser->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     connect(m_textBrowser, SIGNAL(anchorClicked(QUrl)), this, SLOT(openLicenseUrl(QUrl)));
-
-    QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Expanding);
-    sizePolicy2.setHeightForWidth(m_textBrowser->sizePolicy().hasHeightForWidth());
-    m_textBrowser->setSizePolicy(sizePolicy2);
 
     QHBoxLayout *licenseBoxLayout = new QHBoxLayout();
     licenseBoxLayout->addWidget(m_licenseListWidget);
@@ -801,6 +795,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     acceptLabel->setWordWrap(true);
     acceptLabel->installEventFilter(acceptClickForwarder);
     acceptLabel->setObjectName(QLatin1String("AcceptLicenseLabel"));
+    acceptLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     const QVariantHash hash = elementsForPage(QLatin1String("LicenseAgreementPage"));
     acceptLabel->setText(tr("%1").arg(hash.value(QLatin1String("AcceptLicenseLabel"), tr("I h<u>a</u>ve read "
         "and agree to the following terms contained in the license agreements accompanying the Qt SDK and "
@@ -816,23 +811,15 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     rejectLabel->setWordWrap(true);
     rejectLabel->installEventFilter(rejectClickForwarder);
     rejectLabel->setObjectName(QLatin1String("RejectLicenseLabel"));
+    rejectLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     rejectLabel->setText(tr("%1").arg(hash.value(QLatin1String("RejectLicenseLabel"), tr("I <u>d</u>o not "
         "accept the terms and conditions of the above listed license agreements. Please note by checking the "
         "box, you must cancel the installation or downloading the Qt SDK and must destroy all copies, or "
         "portions thereof, of the Qt SDK in your possessions.")).toString()));
 
-    QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Minimum);
-    sizePolicy3.setHeightForWidth(rejectLabel->sizePolicy().hasHeightForWidth());
-    sizePolicy3.setVerticalStretch(0);
-    sizePolicy3.setHorizontalStretch(0);
-
-    acceptLabel->setSizePolicy(sizePolicy3);
-    rejectLabel->setSizePolicy(sizePolicy3);
-
 #if defined(Q_WS_X11) || defined(Q_WS_MAC)
     QFont labelFont(font());
     labelFont.setPixelSize(9);
-
     acceptLabel->setFont(labelFont);
     rejectLabel->setFont(labelFont);
 #endif
