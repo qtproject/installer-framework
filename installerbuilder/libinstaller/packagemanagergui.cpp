@@ -77,6 +77,7 @@
 #include <QtGui/QTreeView>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QScrollBar>
+#include <QtGui/QShowEvent>
 
 #include <QtScript/QScriptEngine>
 
@@ -129,6 +130,7 @@ public:
         setPixmap(QWizard::WatermarkPixmap, QPixmap());
 
         setLayout(new QVBoxLayout);
+        setSubTitle(QLatin1String(""));
         setTitle(widget->windowTitle());
         m_widget->setProperty("complete", true);
         m_widget->setProperty("final", false);
@@ -216,7 +218,6 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
 #ifndef Q_WS_MAC
     setWindowIcon(QIcon(m_core->settings().icon()));
-    setWizardStyle(QWizard::ModernStyle);
 #else
     setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
 #endif
@@ -403,6 +404,21 @@ bool PackageManagerGui::event(QEvent* event)
     return QWizard::event(event);
 }
 
+void PackageManagerGui::showEvent(QShowEvent *event)
+{
+    if (!event->spontaneous()) {
+        foreach (int id, pageIds()) {
+            const QString subTitle = page(id)->subTitle();
+            if (subTitle.isEmpty()) {
+                const QWizard::WizardStyle style = wizardStyle();
+                if ((style == QWizard::ClassicStyle || style == QWizard::ModernStyle))
+                    page(id)->setSubTitle(QLatin1String(" "));    // otherwise the colors might screw up
+            }
+        }
+    }
+    QWizard::showEvent(event);
+}
+
 void PackageManagerGui::wizardPageInsertionRequested(QWidget* widget,
     QInstaller::PackageManagerCore::WizardPage page)
 {
@@ -546,8 +562,6 @@ PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     , m_complete(true)
     , m_core(core)
 {
-    // otherwise the colors will screw up
-    setSubTitle(QLatin1String(" "));
 }
 
 PackageManagerCore *PackageManagerPage::packageManagerCore() const

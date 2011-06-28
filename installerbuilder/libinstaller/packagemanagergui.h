@@ -106,6 +106,7 @@ private Q_SLOTS:
 
 protected:
     bool event(QEvent* event);
+    void showEvent(QShowEvent *event);
     PackageManagerCore *packageManagerCore() const { return m_core; }
 
 private:
