@@ -29,11 +29,11 @@
 #include <QObject>
 
 QT_BEGIN_NAMESPACE
-class QWidget;
-class QPushButton;
-class QProgressBar;
 class QLabel;
+class QProgressBar;
+class QPushButton;
 class QTimer;
+class QWidget;
 QT_END_NAMESPACE
 
 class LazyPlainTextEdit;
@@ -67,10 +67,9 @@ public slots:
     void clearDetailsBrowser();
 
 private:
-    QWidget* m_detailsWidget;
-    QPushButton *m_detailsButton;
     QProgressBar *m_progressBar;
     QLabel *m_progressLabel;
+    QPushButton *m_detailsButton;
     LazyPlainTextEdit *m_detailsBrowser;
     QTimer *m_updateTimer;
 };

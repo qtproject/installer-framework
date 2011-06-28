@@ -47,12 +47,14 @@
 
 using namespace QInstaller;
 
+
+// -- PerformInstallationForm
+
 PerformInstallationForm::PerformInstallationForm(QObject *parent)
     : QObject(parent),
-      m_detailsWidget(0),
-      m_detailsButton(0),
       m_progressBar(0),
       m_progressLabel(0),
+      m_detailsButton(0),
       m_detailsBrowser(0),
       m_updateTimer(0)
 {
@@ -64,36 +66,40 @@ PerformInstallationForm::~PerformInstallationForm()
 
 void PerformInstallationForm::setupUi(QWidget *widget)
 {
+    QVBoxLayout *baseLayout = new QVBoxLayout(widget);
+    baseLayout->setObjectName(QLatin1String("BaseLayout"));
+
+    QVBoxLayout *topLayout = new QVBoxLayout();
+    topLayout->setObjectName(QLatin1String("TopLayout"));
+
     m_progressBar = new QProgressBar(widget);
-    m_progressBar->setObjectName(QLatin1String("ProgressBar"));
     m_progressBar->setRange(1, 100);
+    m_progressBar->setObjectName(QLatin1String("ProgressBar"));
+    topLayout->addWidget(m_progressBar);
 
     m_progressLabel = new QLabel(widget);
     m_progressLabel->setObjectName(QLatin1String("ProgressLabel"));
+    topLayout->addWidget(m_progressLabel);
 
-    m_detailsButton = new QPushButton(widget);
+    m_detailsButton = new QPushButton(tr("&Show Details"), widget);
+    m_detailsButton->setObjectName(QLatin1String("DetailsButton"));
+    m_detailsButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
     connect(m_detailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
-    m_detailsButton->setText(tr("Show Details"));
-    m_detailsButton->setObjectName(QLatin1String("button"));
+    topLayout->addWidget(m_detailsButton);
+
+    QVBoxLayout *bottomLayout = new QVBoxLayout();
+    bottomLayout->setObjectName(QLatin1String("BottomLayout"));
+    bottomLayout->addStretch();
+
     m_detailsBrowser = new LazyPlainTextEdit(widget);
     m_detailsBrowser->setWordWrapMode(QTextOption::NoWrap);
+    m_detailsBrowser->setObjectName(QLatin1String("DetailsBrowser"));
     m_detailsBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    bottomLayout->addWidget(m_detailsBrowser);
 
-    QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->addWidget(m_progressBar);
-    layout->addWidget(m_progressLabel);
-
-    m_detailsWidget = new QWidget(widget);
-    m_detailsWidget->setObjectName(QLatin1String("details"));
-    QHBoxLayout* detailsLayout = new QHBoxLayout(m_detailsWidget);
-    detailsLayout->addWidget(m_detailsButton);
-    detailsLayout->addStretch();
-    layout->addWidget(m_detailsWidget);
-    layout->addWidget(m_detailsBrowser);
-
-    m_detailsBrowser->setVisible(false);
-    layout->addStretch();
-    widget->setLayout(layout);
+    bottomLayout->setStretch(1, 10);
+    baseLayout->addLayout(topLayout);
+    baseLayout->addLayout(bottomLayout);
 
     m_updateTimer = new QTimer(widget);
     connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(updateProgress())); //updateProgress includes label
@@ -102,7 +108,7 @@ void PerformInstallationForm::setupUi(QWidget *widget)
 
 void PerformInstallationForm::setDetailsWidgetVisible(bool visible)
 {
-    m_detailsWidget->setVisible(visible);
+    m_detailsButton->setVisible(visible);
 }
 
 void PerformInstallationForm::appendProgressDetails(const QString &details)
@@ -116,17 +122,14 @@ void PerformInstallationForm::updateProgress()
     const int progressPercentage = progressCoordninator->progressInPercentage();
 
     m_progressBar->setRange(0, (progressPercentage == 0) ? 0 : 100);
-
-    if (progressPercentage != m_progressBar->value())
-        m_progressBar->setValue(progressPercentage);
-    if (m_progressLabel->text() != progressCoordninator->labelText())
-        m_progressLabel->setText(progressCoordninator->labelText());
+    m_progressBar->setValue(progressPercentage);
+    m_progressLabel->setText(progressCoordninator->labelText());
 }
 
 void PerformInstallationForm::toggleDetails()
 {
     const bool willShow = !isShowingDetails();
-    m_detailsButton->setText(willShow ? tr("Hide Details") : tr("Show Details"));
+    m_detailsButton->setText(willShow ? tr("&Hide Details") : tr("&Show Details"));
 
     if (willShow)
         scrollDetailsToTheEnd();
@@ -143,7 +146,7 @@ void PerformInstallationForm::clearDetailsBrowser()
 void PerformInstallationForm::enableDetails()
 {
     m_detailsButton->setEnabled(true);
-    m_detailsButton->setText(QObject::tr("Show Details"));
+    m_detailsButton->setText(tr("&Show Details"));
     m_detailsBrowser->setVisible(false);
 }
 
