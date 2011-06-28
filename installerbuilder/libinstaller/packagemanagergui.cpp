@@ -709,20 +709,20 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 }
 
-void IntroductionPage::setText(const QString &text)
-{
-    m_msgLabel->setText(text);
-}
-
-void IntroductionPage::setWidget(QWidget *w)
+void IntroductionPage::setWidget(QWidget *widget)
 {
     if (m_widget) {
         layout()->removeWidget(m_widget);
         delete m_widget;
     }
-    m_widget = w;
+    m_widget = widget;
     if (m_widget)
         static_cast<QVBoxLayout*>(layout())->addWidget(m_widget, 1);
+}
+
+void IntroductionPage::setText(const QString &text)
+{
+    m_msgLabel->setText(text);
 }
 
 

@@ -126,14 +126,14 @@ public:
     explicit PackageManagerPage(PackageManagerCore *core);
     virtual ~PackageManagerPage() {}
 
-    virtual bool isInterruptible() const { return false; }
-    virtual QPixmap watermarkPixmap() const;
     virtual QPixmap logoPixmap() const;
     virtual QString productName() const;
+    virtual QPixmap watermarkPixmap() const;
 
     virtual bool isComplete() const;
     void setComplete(bool complete);
 
+    virtual bool isInterruptible() const { return false; }
     PackageManagerGui* gui() const { return qobject_cast<PackageManagerGui*>(wizard()); }
 
 protected:
@@ -175,8 +175,9 @@ class INSTALLER_EXPORT IntroductionPage : public PackageManagerPage
 
 public:
     explicit IntroductionPage(PackageManagerCore *core);
+
+    void setWidget(QWidget *widget);
     void setText(const QString &text);
-    void setWidget(QWidget *w);
 
 private:
     QLabel *m_msgLabel;
