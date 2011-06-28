@@ -1279,7 +1279,7 @@ void TargetDirectoryPage::dirRequested()
 {
     const QVariantHash hash = elementsForPage(QLatin1String("TargetDirectoryPage"));
     const QString newDirName = QFileDialog::getExistingDirectory(this, tr("%1").arg(hash
-        .value(QLatin1String("SelectInstallationFolderMessage"), tr("Select Installation Folder")).toString()),
+        .value(QLatin1String("SelectInstallationFolderCaption"), tr("Select Installation Folder")).toString()),
         targetDir());
     if (newDirName.isEmpty() || newDirName == targetDir())
         return;
@@ -1292,12 +1292,12 @@ void TargetDirectoryPage::dirRequested()
 StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
-    setTitle(tr("Start Menu shortcuts"));
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("StartMenuDirectoryPage"));
-    setSubTitle(tr("Select the Start Menu in which you would like to create the program's shortcuts. You can "
-        "also enter a name to create a new folder."));
+    setTitle(titleForPage(QLatin1String("StartMenuDirectoryPage"), tr("Start Menu shortcuts")));
+    setSubTitle(subTitleForPage(QLatin1String("StartMenuDirectoryPage"), tr("Select the Start Menu in which "
+        "you would like to create the program's shortcuts. You can also enter a name to create a new folder.")));
 
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setObjectName(QLatin1String("LineEdit"));
@@ -1311,8 +1311,8 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     QSettings user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\"
         "Explorer\\User Shell Folders"), QSettings::NativeFormat);
     // User Shell Folders uses %USERPROFILE%
-    startMenuPath = replaceWindowsEnvironmentVariables(user.value(QLatin1String("Programs"),
-        QString()).toString());
+    startMenuPath = replaceWindowsEnvironmentVariables(user.value(QLatin1String("Programs"), QString())
+        .toString());
     core->setValue(QLatin1String("DesktopDir"), replaceWindowsEnvironmentVariables(user
         .value(QLatin1String("Desktop")).toString()));
 
@@ -1321,8 +1321,8 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
 
     if (core->value(QLatin1String("AllUsers")) == QLatin1String("true")) {
         verbose() << "AllUsers set. Using HKEY_LOCAL_MACHINE" << std::endl;
-        QSettings system(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\"
-            "CurrentVersion\\Explorer\\Shell Folders"), QSettings::NativeFormat);
+        QSettings system(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\"
+            "Explorer\\Shell Folders"), QSettings::NativeFormat);
         startMenuPath = system.value(QLatin1String("Common Programs"), QString()).toString();
         core->setValue(QLatin1String("DesktopDir"),system.value(QLatin1String("Desktop")).toString());
 
@@ -1395,7 +1395,6 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
-
     setObjectName(QLatin1String("ReadyForInstallationPage"));
 
     msgLabel->setWordWrap(true);
