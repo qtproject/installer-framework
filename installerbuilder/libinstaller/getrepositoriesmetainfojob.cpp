@@ -146,7 +146,7 @@ void GetRepositoriesMetaInfoJob::jobFinished(KDJob* j)
     if(job->error() != KDJob::NoError && !job->temporaryDirectory().isEmpty()) {
         try {
             removeDirectory(job->temporaryDirectory());
-        } catch(...) {
+        } catch (...) {
         }
     }
 
