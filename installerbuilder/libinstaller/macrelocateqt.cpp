@@ -71,6 +71,8 @@ bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
 
     QString indicator = qtInstallDir;
     indicator = indicator.replace(targetDir, QString());
+    //to get realy only the first subdirectory as an indicator like the old behaviour was till Mobility don't use this qt patch hack
+    indicator = indicator.left(indicator.indexOf(QLatin1String("/"), 1));
 
     verbose() << "Relocator uses indicator: " << indicator << std::endl;
     QString replacement = targetDir;
