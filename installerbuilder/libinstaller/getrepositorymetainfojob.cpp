@@ -129,16 +129,18 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
 
     const QUrl url = m_repository.url();
     if (url.isEmpty()) {
-        emitFinishedWithError(QInstaller::InvalidUrl, tr("empty repository URL"));
+        emitFinishedWithError(QInstaller::InvalidUrl, tr("Empty repository URL."));
         return;
     }
+
     if (!url.isValid()) {
-        emitFinishedWithError(QInstaller::InvalidUrl, tr("invalid repository URL"));
+        emitFinishedWithError(QInstaller::InvalidUrl, tr("Invalid repository URL: %1.").arg(url.toString()));
         return;
     }
+
     m_downloader = FileDownloaderFactory::instance().create(url.scheme(), 0, QUrl(), this);
     if (!m_downloader) {
-        emitFinishedWithError(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2)")
+        emitFinishedWithError(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2).")
             .arg(url.scheme(), url.toString()));
         return;
     }
@@ -176,22 +178,22 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
     const QString updatesXmlPath = m_temporaryDirectory + QLatin1String("/Updates.xml");
     if (!file.rename(updatesXmlPath)) {
         emitFinishedWithError(QInstaller::DownloadError,
-            tr("Could not move Updates.xml to target location: %1").arg(file.errorString()));
+            tr("Could not move Updates.xml to target location: %1.").arg(file.errorString()));
         return;
     }
 
     QFile updatesFile(updatesXmlPath);
     if (!updatesFile.open(QIODevice::ReadOnly)) {
-        emitFinishedWithError(QInstaller::DownloadError,
-            tr("Could not open Updates.xml for reading: %1").arg(updatesFile.errorString()));
+        emitFinishedWithError(QInstaller::DownloadError, tr("Could not open Updates.xml for reading: %1.")
+            .arg(updatesFile.errorString()));
         return;
     }
 
     QString err;
     QDomDocument doc;
     if (!doc.setContent(&updatesFile, &err)) {
-        const QString msg =  tr("Could not fetch a valid version of Updates.xml from repository %1, Error: %2")
-            .arg(m_repository.url().toString(), err);
+        const QString msg =  tr("Could not fetch a valid version of Updates.xml from repository: %1. "
+            "Error: %2.").arg(m_repository.url().toString(), err);
         verbose() << msg << std::endl;
 
         const QMessageBox::StandardButton b =
@@ -239,7 +241,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
 {
     if (m_retriesLeft <= 0) {
-        const QString msg = tr("Could not fetch Updates.xml from repository %1, Error: %2")
+        const QString msg = tr("Could not fetch Updates.xml from repository: %1. Error: %2.")
             .arg(m_repository.url().toString(), err);
         verbose() << msg << std::endl;
 
@@ -336,8 +338,8 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
 
     QFile arch(fn);
     if (!arch.open(QIODevice::ReadOnly)) {
-        emitFinishedWithError(QInstaller::ExtractionError,
-            tr("Could not open meta info archive %1: %2").arg(fn, arch.errorString()));
+        emitFinishedWithError(QInstaller::ExtractionError, tr("Could not open meta info archive: %1. "
+            "Error: %2.").arg(fn, arch.errorString()));
         return;
     }
 
@@ -348,7 +350,7 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
         QByteArray realFileHash = QString::fromLatin1(QCryptographicHash::hash(archContent,
             QCryptographicHash::Sha1).toHex()).toLatin1();
         if (expectedFileHash != realFileHash) {
-            metaDownloadError(tr("Bad hash"));
+            metaDownloadError(tr("Bad hash."));
             return;
         }
         m_currentPackageName.clear();
@@ -362,7 +364,7 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
             qWarning("Could not delete file %s: %s", qPrintable(fn), qPrintable(arch.errorString()));
     } catch (const Lib7z::SevenZipException& e) {
         emitFinishedWithError(QInstaller::ExtractionError,
-            tr("Could not open meta info archive %1: %2").arg(fn, e.message()));
+            tr("Could not open meta info archive: %1. Error: %2.").arg(fn, e.message()));
         return;
     }
 
@@ -378,7 +380,7 @@ void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
         emit infoMessage(this, tr("The hash of one component does not match the expected one."));
 
     if (m_retriesLeft <= 0) {
-        const QString msg = tr("Could not download meta information for component %1, Error: %2")
+        const QString msg = tr("Could not download meta information for component: %1. Error: %2.")
             .arg(m_currentPackageName, err);
         verbose() << msg << std::endl;
 
