@@ -161,6 +161,7 @@ int TabController::initUpdater()
     introPage->showAll();
     introPage->setComplete(false);
     introPage->setMaintenanceToolsEnabled(false);
+    introPage->setErrorMessage(QLatin1String(""));
 
     if (!d->m_introPageConnected) {
         d->m_introPageConnected = true;
@@ -172,7 +173,6 @@ int TabController::initUpdater()
     d->m_gui->show();
 
     if (!d->m_updatesFetched) {
-        introPage->setErrorMessage(QLatin1String(""));
         d->m_updatesFetched = d->m_core->fetchUpdaterPackages();
         if (!d->m_updatesFetched)
             introPage->setErrorMessage(d->m_core->error());
@@ -186,8 +186,13 @@ int TabController::initUpdater()
 
     introPage->showMaintenanceTools();
     introPage->setMaintenanceToolsEnabled(true);
-    if (d->m_updatesFetched)
-        introPage->setComplete(true);
+
+    if (d->m_updatesFetched) {
+        if (d->m_core->components(true, QInstaller::UpdaterMode).count() <= 0)
+            introPage->setErrorMessage(tr("<b>No updates available.</b>"));
+        else
+            introPage->setComplete(true);
+    }
 
     if (d->m_core->status() == PackageManagerCore::Canceled)
         return PackageManagerCore::Canceled;
@@ -214,6 +219,8 @@ int TabController::initPackageManager()
 
     introPage->setComplete(false);
     introPage->showMetaInfoUdate();
+    introPage->setErrorMessage(QLatin1String(""));
+
     if (d->m_core->isPackageManager()) {
         introPage->showAll();
         introPage->setMaintenanceToolsEnabled(false);
@@ -229,7 +236,6 @@ int TabController::initPackageManager()
     d->m_gui->show();
 
     if (!d->m_allPackagesFetched) {
-        introPage->setErrorMessage(QLatin1String(""));
         d->m_allPackagesFetched = d->m_core->fetchAllPackages();
         if (!d->m_allPackagesFetched)
             introPage->setErrorMessage(d->m_core->error());
