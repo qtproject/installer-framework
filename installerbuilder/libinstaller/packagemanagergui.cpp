@@ -1402,6 +1402,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ReadyForInstallationPage"));
+    setSubTitle(subTitleForPage(QLatin1String("ReadyForInstallationPage")));
 
     QLayout *layout = new QVBoxLayout(this);
 
@@ -1421,20 +1422,20 @@ void ReadyForInstallationPage::entering()
     const QString target = packageManagerCore()->value(scTargetDir);
 
     if (packageManagerCore()->isUninstaller()) {
-        setTitle(tr("Ready to Uninstall"));
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
+        setTitle(titleForPage(objectName(), tr("Ready to Uninstall")));
         m_msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer. The "
             "program dir %2 will be deleted completely, including all content in that directory!")
             .arg(productName(), QDir::toNativeSeparators(QDir(target).absolutePath())));
         return;
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
-        setTitle(tr("Ready to Update Packages"));
         setButtonText(QWizard::CommitButton, tr("U&pdate"));
+        setTitle(titleForPage(objectName(), tr("Ready to Update Packages")));
         m_msgLabel->setText(tr("Setup is now ready to begin updating your installation."));
     } else {
         Q_ASSERT(packageManagerCore()->isInstaller());
-        setTitle(tr("Ready to Install"));
         setButtonText(QWizard::CommitButton, tr("&Install"));
+        setTitle(titleForPage(objectName(), tr("Ready to Install")));
         m_msgLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
             .arg(productName()));
     }
@@ -1525,8 +1526,8 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
-
     setObjectName(QLatin1String("PerformInstallationPage"));
+    setSubTitle(subTitleForPage(QLatin1String("PerformInstallationPage")));
 
     m_performInstallationForm->setupUi(this);
 
@@ -1566,19 +1567,22 @@ void PerformInstallationPage::entering()
 
     const QString productName = packageManagerCore()->value(QLatin1String("ProductName"));
     if (packageManagerCore()->isUninstaller()) {
-        setTitle(tr("Uninstalling %1").arg(productName));
         setButtonText(QWizard::CommitButton, tr("&Uninstall"));
         m_performInstallationForm->setDetailsWidgetVisible(false);
+        setTitle(titleForPage(objectName(), tr("Uninstalling %1")).arg(productName));
+
         QTimer::singleShot(30, packageManagerCore(), SLOT(runUninstaller()));
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
         setButtonText(QWizard::CommitButton, tr("&Update"));
         m_performInstallationForm->setDetailsWidgetVisible(true);
-        setTitle(tr("Updating components of %1").arg(productName));
+        setTitle(titleForPage(objectName(), tr("Updating components of %1")).arg(productName));
+
         QTimer::singleShot(30, packageManagerCore(), SLOT(runPackageUpdater()));
     } else {
-        setTitle(tr("Installing %1").arg(productName));
         setButtonText(QWizard::CommitButton, tr("&Install"));
         m_performInstallationForm->setDetailsWidgetVisible(true);
+        setTitle(titleForPage(objectName(), tr("Installing %1")).arg(productName));
+
         QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
     }
 
@@ -1729,9 +1733,10 @@ RestartPage::RestartPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
     setObjectName(QLatin1String("RestartPage"));
-    setTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
-    setSubTitle(QString());
+    setSubTitle(subTitleForPage(QLatin1String("RestartPage")));
+    setTitle(titleForPage(QLatin1String("RestartPage"), tr("Completing the %1 Setup Wizard"))
+        .arg(productName()));
 
     setFinalPage(false);
     setCommitPage(false);
