@@ -132,9 +132,6 @@ int TabController::init()
                 engine->newQObject(this));
         }
 
-        if (!d->m_core->isInstaller())
-            d->m_gui->setWindowTitle(d->m_core->value(QLatin1String("MaintenanceTitle")));
-
         IntroductionPageImpl *introPage =
             qobject_cast<IntroductionPageImpl*>(d->m_gui->page(PackageManagerCore::Introduction));
         connect(introPage, SIGNAL(initUpdater()), this, SLOT(initUpdater()));
