@@ -732,14 +732,19 @@ bool PackageManagerCore::addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *meta
 
 bool PackageManagerCore::fetchAllPackages()
 {
-    if (isUninstaller() || isUpdater())
+    d->setStatus(Running);
+
+    if (isUninstaller() || isUpdater()) {
+        d->setStatus(Failure, tr("Application not running in Installer or Package Manager mode!"));
         return false;
+    }
 
     QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
 
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(d->m_settings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
         if (metaInfoJob->error() != QInstaller::UserIgnoreError) {
+            d->setStatus(Failure, tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()));
             verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
             return false;
         }
@@ -747,12 +752,14 @@ bool PackageManagerCore::fetchAllPackages()
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {
         if (!addUpdateResourcesFrom(metaInfoJob.data(), d->m_settings, true)) {
+            d->setStatus(Failure, tr("Could not add temporary update source information."));
             verbose() << tr("Could not add temporary update source information.") << std::endl;
             return false;
         }
     }
 
     if (d->m_app->updateSourcesInfo()->updateSourceInfoCount() == 0) {
+        d->setStatus(Failure, tr("Could not find any update source information."));
         verbose() << tr("Could not find any update source information.") << std::endl;
         return false;
     }
@@ -765,6 +772,7 @@ bool PackageManagerCore::fetchAllPackages()
     const QList<KDUpdater::Update*> &packages = updateFinder.updates();
     if (packages.isEmpty()) {
         verbose() << tr("Could not retrieve components: %1").arg(updateFinder.errorString());
+        d->setStatus(Failure, tr("Could not retrieve components: %1").arg(updateFinder.errorString()));
         return false;
     }
 
@@ -810,10 +818,16 @@ bool PackageManagerCore::fetchAllPackages()
             appendRootComponent(component, AllMode);
     }
 
-    // after everything is set up, load the scripts
-    foreach (QInstaller::Component *component, components)
-        component->loadComponentScript();
-
+    try {
+        // after everything is set up, load the scripts
+        foreach (QInstaller::Component *component, components)
+            component->loadComponentScript();
+    } catch (const Error &error) {
+        d->clearAllComponentLists();
+        emit finishAllComponentsReset();
+        d->setStatus(Failure, error.message());
+        return false;
+    }
     // now set the checked state for all components without child
     for (int i = 0; i < rootComponentCount(AllMode); ++i) {
         QList<Component*> children = rootComponent(i, AllMode)->childs();
@@ -825,6 +839,7 @@ bool PackageManagerCore::fetchAllPackages()
         }
     }
 
+    d->setStatus(Success);
     emit finishAllComponentsReset();
 
     return true;
@@ -832,14 +847,19 @@ bool PackageManagerCore::fetchAllPackages()
 
 bool PackageManagerCore::fetchUpdaterPackages()
 {
-    if (!isUpdater())
+    d->setStatus(Running);
+
+    if (!isUpdater()) {
+        d->setStatus(Failure, tr("Application not running in Updater mode!"));
         return false;
+    }
 
     QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
 
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(d->m_settings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
         if (metaInfoJob->error() != QInstaller::UserIgnoreError) {
+            d->setStatus(Failure, tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()));
             verbose() << tr("Could not retrieve updates: %1").arg(metaInfoJob->errorString()) << std::endl;
             return false;
         }
@@ -847,12 +867,14 @@ bool PackageManagerCore::fetchUpdaterPackages()
 
     if (!metaInfoJob->temporaryDirectories().isEmpty()) {
         if (!addUpdateResourcesFrom(metaInfoJob.data(), d->m_settings, true)) {
+            d->setStatus(Failure, tr("Could not add temporary update source information."));
             verbose() << tr("Could not add temporary update source information.") << std::endl;
             return false;
         }
     }
 
     if (d->m_app->updateSourcesInfo()->updateSourceInfoCount() == 0) {
+        d->setStatus(Failure, tr("Could not find any update source information."));
         verbose() << tr("Could not find any update source information.") << std::endl;
         return false;
     }
@@ -865,6 +887,7 @@ bool PackageManagerCore::fetchUpdaterPackages()
     const QList<KDUpdater::Update*> &updates = updateFinder.updates();
     if (updates.isEmpty()) {
         verbose() << tr("Could not retrieve updates: %1").arg(updateFinder.errorString());
+        d->setStatus(Failure, tr("Could not retrieve updates: %1").arg(updateFinder.errorString()));
         return false;
     }
 
@@ -933,29 +956,37 @@ bool PackageManagerCore::fetchUpdaterPackages()
         }
     }
 
-    if (!updaterComponents.isEmpty()) {
-        // load the scripts and append all components w/o parent to the direct list
-        foreach (QInstaller::Component *component, updaterComponents) {
-            component->loadComponentScript();
-            component->setCheckState(Qt::Checked);
-            appendRootComponent(component, UpdaterMode);
-        }
-
-        // after everything is set up, check installed components
-        foreach (QInstaller::Component *component, d->m_updaterComponentsDeps) {
-            if (component->isInstalled()) {
-                // since we do not put them into the model, which would force a update of e.g. tri state
-                // components, we have to check all installed components ourself
+    try {
+        if (!updaterComponents.isEmpty()) {
+            // load the scripts and append all components w/o parent to the direct list
+            foreach (QInstaller::Component *component, updaterComponents) {
+                component->loadComponentScript();
                 component->setCheckState(Qt::Checked);
+                appendRootComponent(component, UpdaterMode);
             }
+
+            // after everything is set up, check installed components
+            foreach (QInstaller::Component *component, d->m_updaterComponentsDeps) {
+                if (component->isInstalled()) {
+                    // since we do not put them into the model, which would force a update of e.g. tri state
+                    // components, we have to check all installed components ourself
+                    component->setCheckState(Qt::Checked);
+                }
+            }
+        } else {
+            // we have no updates, no need to store possible dependencies
+            qDeleteAll(d->m_updaterComponentsDeps);
+            d->m_updaterComponentsDeps.clear();
         }
-    } else {
-        // we have no updates, no need to store possible dependencies
-        qDeleteAll(d->m_updaterComponentsDeps);
-        d->m_updaterComponentsDeps.clear();
+    } catch (const Error &error) {
+        d->clearUpdaterComponentLists();
+        emit finishUpdaterComponentsReset();
+        d->setStatus(Failure, error.message());
+        return false;
     }
 
     emit finishUpdaterComponentsReset();
+    d->setStatus(Success);
 
     return true;
 }
@@ -1492,6 +1523,12 @@ PackageManagerCore::Status PackageManagerCore::status() const
 {
     return PackageManagerCore::Status(d->m_status);
 }
+
+QString PackageManagerCore::error() const
+{
+    return d->m_error;
+}
+
 /*!
     Returns true if at least one complete installation/update was successful, even if the user cancelled the
     newest installation process.

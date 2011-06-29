@@ -53,6 +53,7 @@ public:
     void setMaintenanceToolsEnabled(bool enable);
 
 public Q_SLOTS:
+    void setErrorMessage(const QString &error);
     void message(KDJob *job, const QString &msg);
 
 Q_SIGNALS:
@@ -70,6 +71,7 @@ private:
 
 private:
     QLabel *m_label;
+    QLabel *m_errorLabel;
     QProgressBar *m_progressBar;
     QRadioButton *m_packageManager;
     QRadioButton *m_updateComponents;

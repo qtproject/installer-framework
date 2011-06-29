@@ -84,8 +84,8 @@ public:
 
     void initialize();
 
-    void setStatus(int status);
     bool statusCanceledOrFailed() const;
+    void setStatus(int status, const QString &error = QString());
 
     QString targetDir() const;
     QString registerPath() const;
@@ -155,6 +155,8 @@ public:
     FSEngineClientHandler *m_FSEngineClientHandler;
 
     int m_status;
+    QString m_error;
+
     Settings m_settings;
     bool m_forceRestart;
     int m_silentRetries;

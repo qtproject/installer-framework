@@ -138,6 +138,7 @@ int TabController::init()
         IntroductionPageImpl *introPage =
             qobject_cast<IntroductionPageImpl*>(d->m_gui->page(PackageManagerCore::Introduction));
         connect(introPage, SIGNAL(initUpdater()), this, SLOT(initUpdater()));
+        connect(introPage, SIGNAL(initUninstaller()), this, SLOT(initUninstaller()));
         connect(introPage, SIGNAL(initPackageManager()), this, SLOT(initPackageManager()));
     }
 
@@ -170,8 +171,12 @@ int TabController::initUpdater()
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 
-    if (!d->m_updatesFetched)
+    if (!d->m_updatesFetched) {
+        introPage->setErrorMessage(QLatin1String(""));
         d->m_updatesFetched = d->m_core->fetchUpdaterPackages();
+        if (!d->m_updatesFetched)
+            introPage->setErrorMessage(d->m_core->error());
+    }
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
     // hide of pages depenging on the components.
@@ -181,7 +186,8 @@ int TabController::initUpdater()
 
     introPage->showMaintenanceTools();
     introPage->setMaintenanceToolsEnabled(true);
-    introPage->setComplete(true);
+    if (d->m_updatesFetched)
+        introPage->setComplete(true);
 
     if (d->m_core->status() == PackageManagerCore::Canceled)
         return PackageManagerCore::Canceled;
@@ -194,6 +200,7 @@ int TabController::initUninstaller()
 
     introPage->setComplete(true);
     introPage->showMaintenanceTools();
+    introPage->setErrorMessage(QLatin1String(""));
 
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
@@ -221,8 +228,12 @@ int TabController::initPackageManager()
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 
-    if (!d->m_allPackagesFetched)
+    if (!d->m_allPackagesFetched) {
+        introPage->setErrorMessage(QLatin1String(""));
         d->m_allPackagesFetched = d->m_core->fetchAllPackages();
+        if (!d->m_allPackagesFetched)
+            introPage->setErrorMessage(d->m_core->error());
+    }
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
     // hide of pages depenging on the components.
@@ -236,7 +247,8 @@ int TabController::initPackageManager()
     } else {
         introPage->hideAll();
     }
-    introPage->setComplete(true);
+    if (d->m_allPackagesFetched)
+        introPage->setComplete(true);
 
     if (d->m_core->status() == PackageManagerCore::Canceled)
         return PackageManagerCore::Canceled;

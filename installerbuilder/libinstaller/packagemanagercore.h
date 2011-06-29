@@ -92,6 +92,7 @@ public:
         Unfinished
     };
     Status status() const;
+    QString error() const;
 
     enum WizardPage {
         Introduction = 0x1000,

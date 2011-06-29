@@ -404,8 +404,9 @@ bool PackageManagerCorePrivate::statusCanceledOrFailed() const
     return m_status == PackageManagerCore::Canceled || m_status == PackageManagerCore::Failure;
 }
 
-void PackageManagerCorePrivate::setStatus(int status)
+void PackageManagerCorePrivate::setStatus(int status, const QString &error)
 {
+    m_error = error;
     if (m_status != status) {
         m_status = status;
         emit m_core->statusChanged(PackageManagerCore::Status(m_status));

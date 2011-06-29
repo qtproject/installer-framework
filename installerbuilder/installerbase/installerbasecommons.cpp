@@ -86,6 +86,11 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::PackageManagerCore *core)
     layout->addWidget(m_progressBar);
 
     layout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    m_errorLabel = new QLabel(this);
+    m_errorLabel->setWordWrap(true);
+    layout->addWidget(m_errorLabel);
+
     widget->setLayout(layout);
     setWidget(widget);
 
@@ -132,6 +137,19 @@ void IntroductionPageImpl::setMaintenanceToolsEnabled(bool enable)
     m_packageManager->setEnabled(enable);
     m_updateComponents->setEnabled(enable);
     m_removeAllComponents->setEnabled(enable);
+}
+
+void IntroductionPageImpl::setErrorMessage(const QString &error)
+{
+    QPalette palette;
+    if (packageManagerCore()->status() != PackageManagerCore::Failure) {
+        palette.setColor(QPalette::WindowText, palette.color(QPalette::WindowText));
+    } else {
+        palette.setColor(QPalette::WindowText, Qt::red);
+    }
+
+    m_errorLabel->setText(error);
+    m_errorLabel->setPalette(palette);
 }
 
 void IntroductionPageImpl::message(KDJob *job, const QString &msg)
