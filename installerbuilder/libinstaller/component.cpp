@@ -188,16 +188,16 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
 QString Component::uncompressedSize() const
 {
     double size = value(scUncompressedSize).toDouble();
-    if (size < 10000.0)
+    if (size < 1000.0)
         return tr("%L1 Bytes").arg(size);
     size /= 1024.0;
-    if (size < 10000.0)
-        return tr("%L1 kBytes").arg(size, 0, 'f', 1);
+    if (size < 1000.0)
+        return tr("%L1 kBytes").arg(size, 0, 'f', 2);
     size /= 1024.0;
-    if (size < 10000.0)
-        return tr("%L1 MBytes").arg(size, 0, 'f', 1);
+    if (size < 1000.0)
+        return tr("%L1 MBytes").arg(size, 0, 'f', 2);
     size /= 1024.0;
-    return tr("%L1 GBytes").arg(size, 0, 'f', 1);
+    return tr("%L1 GBytes").arg(size, 0, 'f', 2);
 }
 
 void Component::markAsPerformedInstallation()
