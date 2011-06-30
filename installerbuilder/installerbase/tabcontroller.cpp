@@ -232,10 +232,19 @@ int TabController::initPackageManager()
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 
+    bool localPackagesTreeFetched = false;
     if (!d->m_allPackagesFetched) {
+        // first try to fetch the server side packages tree
         d->m_allPackagesFetched = d->m_core->fetchAllPackages();
-        if (!d->m_allPackagesFetched)
-            introPage->setErrorMessage(d->m_core->error());
+        if (!d->m_allPackagesFetched) {
+            const QString error = d->m_core->error();
+            // if that fails, try to fetch local installed tree
+            localPackagesTreeFetched = d->m_core->fetchLocalPackagesTree();
+            if (!localPackagesTreeFetched) {
+                // if that still failed, show error message
+                introPage->setErrorMessage(error);
+            }
+        }
     }
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
@@ -250,7 +259,8 @@ int TabController::initPackageManager()
     } else {
         introPage->hideAll();
     }
-    if (d->m_allPackagesFetched)
+
+    if (d->m_allPackagesFetched | localPackagesTreeFetched)
         introPage->setComplete(true);
 
     if (d->m_core->status() == PackageManagerCore::Canceled)

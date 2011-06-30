@@ -110,11 +110,14 @@ Component::~Component()
 void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo)
 {
     setValue(scName, packageInfo.name);
+    // pixmap ???
     setValue(scDisplayName, packageInfo.title);
     setValue(scDescription, packageInfo.description);
-    setValue(scUncompressedSize, QString::number(packageInfo.uncompressedSize));
     setValue(scVersion, packageInfo.version);
-    setValue(scVirtual, packageInfo.virtualComp ? scTrue : scFalse);
+    setValue(scInstalledVersion, packageInfo.version);
+    setValue(QLatin1String("LastUpdateDate"), packageInfo.lastUpdateDate.toString());
+    setValue(QLatin1String("InstallDate"), packageInfo.installDate.toString());
+    setValue(scUncompressedSize, QString::number(packageInfo.uncompressedSize));
 
     QString dependstr = QLatin1String("");
     foreach (const QString& val, packageInfo.dependencies)
@@ -125,11 +128,13 @@ void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInf
     setValue(scDependencies, dependstr);
 
     setValue(scForcedInstallation, packageInfo.forcedInstallation ? scTrue : scFalse);
-    if (packageInfo.forcedInstallation) {
+    if (!PackageManagerCore::noForceInstallation()) {
         setEnabled(false);
         setCheckable(false);
         setCheckState(Qt::Checked);
     }
+    setValue(scVirtual, packageInfo.virtualComp ? scTrue : scFalse);
+    setValue(scCurrentState, scInstalled);
 }
 
 // update means it is the package info from server

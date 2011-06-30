@@ -122,6 +122,7 @@ public:
 
     bool fetchAllPackages();
     bool fetchUpdaterPackages();
+    bool fetchLocalPackagesTree();
 
     bool run();
     RunMode runMode() const;

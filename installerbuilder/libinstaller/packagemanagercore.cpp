@@ -991,6 +991,74 @@ bool PackageManagerCore::fetchUpdaterPackages()
     return true;
 }
 
+bool PackageManagerCore::fetchLocalPackagesTree()
+{
+    d->setStatus(Running);
+
+    if (!isPackageManager()) {
+        d->setStatus(Failure, tr("Application not running in Package Manager mode!"));
+        return false;
+    }
+
+    QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
+    if (installedPackages.isEmpty()) {
+        d->setStatus(Failure, tr("No installed packages found!"));
+        return false;
+    }
+
+    emit startAllComponentsReset();
+
+    d->clearAllComponentLists();
+    QMap<QString, QInstaller::Component*> components;
+
+    const QStringList &keys = installedPackages.keys();
+    foreach (const QString &key, keys) {
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+        component->loadDataFromPackageInfo(installedPackages.value(key));
+        const QString &name = component->name();
+        if (components.contains(name)) {
+            qCritical("Could not register component! Component with identifier %s already registered.",
+                qPrintable(name));
+            continue;
+        }
+        components.insert(name, component.take());
+    }
+
+    // now append all components to their respective parents
+    QMap<QString, QInstaller::Component*>::const_iterator it;
+    for (it = components.begin(); it != components.end(); ++it) {
+        QString id = it.key();
+        QInstaller::Component *component = it.value();
+        while (!id.isEmpty() && component->parentComponent() == 0) {
+            id = id.section(QLatin1Char('.'), 0, -2);
+            if (components.contains(id))
+                components[id]->appendComponent(component);
+        }
+    }
+
+    // append all components w/o parent to the direct list
+    foreach (QInstaller::Component *component, components) {
+        if (component->parentComponent() == 0)
+            appendRootComponent(component, AllMode);
+    }
+
+    // now set the checked state for all components without child
+    for (int i = 0; i < rootComponentCount(AllMode); ++i) {
+        QList<Component*> children = rootComponent(i, AllMode)->childs();
+        foreach (Component *child, children) {
+            if (child->isCheckable() && !child->isTristate()) {
+                if (child->isInstalled() || child->isDefault())
+                    child->setCheckState(Qt::Checked);
+            }
+        }
+    }
+
+    emit finishAllComponentsReset();
+    d->setStatus(Success);
+
+    return true;
+}
+
 /*!
     Adds the widget with objectName() \a name registered by \a component as a new page
     into the installer's GUI wizard. The widget is added before \a page.
