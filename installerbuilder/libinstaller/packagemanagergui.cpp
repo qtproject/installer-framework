@@ -1088,19 +1088,6 @@ ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ComponentSelectionPage"));
     setTitle(titleForPage(QLatin1String("ComponentSelectionPage"), tr("Select Components")));
-
-    static const char *strings[] = {
-        QT_TR_NOOP("Please select the components you want to update."),
-        QT_TR_NOOP("Please select the components you want to install."),
-        QT_TR_NOOP("Please select the components you want to uninstall."),
-        QT_TR_NOOP("Please (de)select the components you want to (un)install.")
-     };
-
-    int index = 0;
-    if (core->isInstaller()) index = 1;
-    if (core->isUninstaller()) index = 2;
-    if (core->isPackageManager()) index = 3;
-    setSubTitle(subTitleForPage(QLatin1String("ComponentSelectionPage"), tr(strings[index])));
 }
 
 ComponentSelectionPage::~ComponentSelectionPage()
@@ -1110,6 +1097,20 @@ ComponentSelectionPage::~ComponentSelectionPage()
 
 void ComponentSelectionPage::entering()
 {
+    static const char *strings[] = {
+        QT_TR_NOOP("Please select the components you want to update."),
+        QT_TR_NOOP("Please select the components you want to install."),
+        QT_TR_NOOP("Please select the components you want to uninstall."),
+        QT_TR_NOOP("Please (de)select the components you want to (un)install.")
+     };
+
+    int index = 0;
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isInstaller()) index = 1;
+    if (core->isUninstaller()) index = 2;
+    if (core->isPackageManager()) index = 3;
+    setSubTitle(subTitleForPage(QLatin1String("ComponentSelectionPage"), tr(strings[index])));
+
     d->updateTreeView();
     setModified(isComplete());
 }
