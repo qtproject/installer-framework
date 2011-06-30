@@ -152,7 +152,6 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     : m_app(0)
-    , m_tempDirDeleter(0)
     , m_FSEngineClientHandler(0)
     , m_core(core)
 {
@@ -161,7 +160,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<KDUpdater::UpdateOperation*> &performedOperations)
     : m_app(0)
-    , m_tempDirDeleter(new TempDirDeleter())
     , m_FSEngineClientHandler(initFSEngineClientHandler())
     , m_status(PackageManagerCore::Unfinished)
     , m_forceRestart(false)
@@ -185,7 +183,6 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     clearAllComponentLists();
     clearUpdaterComponentLists();
 
-    delete m_tempDirDeleter;
     qDeleteAll(m_ownedOperations);
     qDeleteAll(m_performedOperationsOld);
     qDeleteAll(m_performedOperationsCurrentSession);

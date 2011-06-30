@@ -151,7 +151,6 @@ signals:
 
 public:
     KDUpdater::Application *m_app;
-    TempDirDeleter *m_tempDirDeleter;
     FSEngineClientHandler *m_FSEngineClientHandler;
 
     int m_status;
