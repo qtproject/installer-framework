@@ -1599,7 +1599,7 @@ void PerformInstallationPage::leaving()
 
 void PerformInstallationPage::setTitleMessage(const QString& title)
 {
-    setTitle(title);
+    setTitle(tr("%1").arg(title));
 }
 
 // -- private slots
@@ -1634,18 +1634,21 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     , m_commitButton(0)
 {
     setObjectName(QLatin1String("FinishedPage"));
-    setTitle(tr("Completing the %1 Wizard").arg(productName()));
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
-    setSubTitle(QString());
+    setSubTitle(subTitleForPage(QLatin1String("FinishedPage")));
+    setTitle(titleForPage(QLatin1String("FinishedPage"), tr("Completing the %1 Wizard")).arg(productName()));
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
 
+    const QVariantHash hash = elementsForPage(QLatin1String("FinishedPage"));
 #ifdef Q_WS_MAC
-    m_msgLabel->setText(tr("Click Done to exit the %1 Wizard.").arg(productName()));
+    m_msgLabel->setText(tr("%1").arg(hash.value(QLatin1String("MessageLabel"), tr("Click Done to exit the %1 "
+        "Wizard.")).toString().arg(productName())));
 #else
-    m_msgLabel->setText(tr("Click Finish to exit the %1 Wizard.").arg(productName()));
+    m_msgLabel->setText(tr("%1").arg(hash.value(QLatin1String("MessageLabel"), tr("Click Finish to exit the "
+        "%1 Wizard.")).toString().arg(productName())));
 #endif
 
     m_runItCheckBox = new QCheckBox(this);
@@ -1690,15 +1693,16 @@ void FinishedPage::entering()
     if (packageManagerCore()->status() == PackageManagerCore::Success) {
         const QString finishedText = packageManagerCore()->value(QLatin1String("FinishedText"));
         if (!finishedText.isEmpty())
-            m_msgLabel->setText(finishedText);
+            m_msgLabel->setText(tr("%1").arg(finishedText));
 
         if (!packageManagerCore()->value(scRunProgram).isEmpty()) {
             m_runItCheckBox->show();
-            m_runItCheckBox->setText(packageManagerCore()->value(scRunProgramDescription, tr("Run %1 now.")
-                .arg(productName())));
+            m_runItCheckBox->setText(packageManagerCore()->value(scRunProgramDescription, tr("Run %1 now."))
+                .arg(productName()));
             return; // job done
         }
     } else {
+        // TODO: how to handle this using the config.xml
         setTitle(tr("The %1 Wizard failed.").arg(productName()));
     }
 
