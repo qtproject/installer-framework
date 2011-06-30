@@ -128,7 +128,7 @@ void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInf
     setValue(scDependencies, dependstr);
 
     setValue(scForcedInstallation, packageInfo.forcedInstallation ? scTrue : scFalse);
-    if (!PackageManagerCore::noForceInstallation()) {
+    if (packageInfo.forcedInstallation & !PackageManagerCore::noForceInstallation()) {
         setEnabled(false);
         setCheckable(false);
         setCheckState(Qt::Checked);
