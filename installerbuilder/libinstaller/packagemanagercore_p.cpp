@@ -1040,13 +1040,8 @@ void PackageManagerCorePrivate::runInstaller()
         if (!downloadedArchivesCount)
             componentsInstallPartProgressSize = double(1);
 
-        // put the installed packages info into the target dir
-        KDUpdater::PackagesInfo *const packages = m_updaterApplication.packagesInfo();
-        packages->setFileName(componentsXmlPath()); // forces a refresh of installed packages
-        // Clear these packages as we might install into an already existing installation folder.
-        packages->clearPackageInfoList();
-        packages->setApplicationName(m_settings.applicationName());
-        packages->setApplicationVersion(m_settings.applicationVersion());
+        // Clear the packages as we might install into an already existing installation folder.
+        m_updaterApplication.packagesInfo()->clearPackageInfoList();
 
         stopProcessesForUpdates(componentsToInstall);
 
