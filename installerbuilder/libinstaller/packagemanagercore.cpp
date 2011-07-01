@@ -642,17 +642,20 @@ QHash<QString, KDUpdater::PackageInfo> PackageManagerCore::localInstalledPackage
 {
     QHash<QString, KDUpdater::PackageInfo> installedPackages;
 
-    if (!isInstaller()) {
-        KDUpdater::PackagesInfo &packagesInfo = *d->m_updaterApplication.packagesInfo();
-        if (!setAndParseLocalComponentsFile(packagesInfo)) {
-            verbose() << tr("Could not parse local components xml file: %1").arg(d->componentsXmlPath());
-            return installedPackages;
-        }
-        foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
-            installedPackages.insert(info.name, info);
+    KDUpdater::PackagesInfo &packagesInfo = *d->m_updaterApplication.packagesInfo();
+    if (!isInstaller() && packagesInfo.error() != KDUpdater::PackagesInfo::NoError) {
+        packagesInfo.setFileName(d->componentsXmlPath());
         packagesInfo.setApplicationName(d->m_settings.applicationName());
         packagesInfo.setApplicationVersion(d->m_settings.applicationVersion());
 
+        if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError) {
+            d->setStatus(PackageManagerCore::Failure, packagesInfo.errorString());
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("Error loading component.xml"), tr("Error."), tr("Could not load: %1. Error: %2.")
+            .arg(d->componentsXmlPath(), packagesInfo.errorString()), QMessageBox::Ok);
+        }
+        foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
+            installedPackages.insert(info.name, info);
      }
 
     return installedPackages;
@@ -991,7 +994,8 @@ bool PackageManagerCore::fetchLocalPackagesTree()
 
     QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
     if (installedPackages.isEmpty()) {
-        d->setStatus(Failure, tr("No installed packages found!"));
+        if (status() != Failure)
+            d->setStatus(Failure, tr("No installed packages found!"));
         return false;
     }
 
@@ -1777,78 +1781,6 @@ bool PackageManagerCore::run()
 QString PackageManagerCore::uninstallerName() const
 {
     return d->uninstallerName();
-}
-
-bool PackageManagerCore::setAndParseLocalComponentsFile(KDUpdater::PackagesInfo &packagesInfo)
-{
-    packagesInfo.setFileName(d->componentsXmlPath());
-    const QString localComponentsXml = d->componentsXmlPath();
-
-    // handle errors occurred by loading components.xml
-    QFileInfo componentFileInfo(localComponentsXml);
-    int silentRetries = d->m_silentRetries;
-    while (!componentFileInfo.exists()) {
-        if (silentRetries > 0) {
-            --silentRetries;
-        } else {
-            Status status = handleComponentsFileSetOrParseError(localComponentsXml);
-            if (status == PackageManagerCore::Canceled)
-                return false;
-        }
-        packagesInfo.setFileName(localComponentsXml);
-    }
-
-    silentRetries = d->m_silentRetries;
-    while (packagesInfo.error() != KDUpdater::PackagesInfo::NoError) {
-        if (silentRetries > 0) {
-            --silentRetries;
-        } else {
-            Status status = handleComponentsFileSetOrParseError(localComponentsXml);
-            if (status == PackageManagerCore::Canceled)
-                return false;
-        }
-        packagesInfo.setFileName(localComponentsXml);
-    }
-
-    silentRetries = d->m_silentRetries;
-    while (packagesInfo.error() != KDUpdater::PackagesInfo::NoError) {
-        if (silentRetries > 0) {
-            --silentRetries;
-        } else {
-            bool retry = false;
-            if (packagesInfo.error() != KDUpdater::PackagesInfo::InvalidContentError
-                && packagesInfo.error() != KDUpdater::PackagesInfo::InvalidXmlError) {
-                    retry = true;
-            }
-            Status status = handleComponentsFileSetOrParseError(componentFileInfo.fileName(),
-                packagesInfo.errorString(), retry);
-            if (status == PackageManagerCore::Canceled)
-                return false;
-        }
-        packagesInfo.setFileName(localComponentsXml);
-    }
-
-    return true;
-}
-
-PackageManagerCore::Status PackageManagerCore::handleComponentsFileSetOrParseError(const QString &arg1,
-    const QString &arg2, bool withRetry)
-{
-    QMessageBox::StandardButtons buttons = QMessageBox::Cancel;
-    if (withRetry)
-        buttons |= QMessageBox::Retry;
-
-    const QMessageBox::StandardButton button =
-        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-        QLatin1String("Error loading component.xml"), tr("Loading error"),
-        tr(arg2.isEmpty() ? "Could not load %1" : "Could not load %1 : %2").arg(arg1, arg2),
-        buttons);
-
-    if (button == QMessageBox::Cancel) {
-        d->m_status = PackageManagerCore::Failure;
-        return PackageManagerCore::Canceled;
-    }
-    return PackageManagerCore::Unfinished;
 }
 
 bool PackageManagerCore::updateComponentData(struct Data &data, Component *component)

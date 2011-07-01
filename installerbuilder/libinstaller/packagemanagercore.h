@@ -269,10 +269,6 @@ Q_SIGNALS:
     void setAutomatedPageSwitchEnabled(bool request);
 
 private:
-    bool setAndParseLocalComponentsFile(KDUpdater::PackagesInfo &packagesInfo);
-    PackageManagerCore::Status handleComponentsFileSetOrParseError(const QString &arg1,
-        const QString &arg2 = QString(), bool withRetry = true);
-
     struct Data {
         KDUpdater::Update *package;
         QMap<QString, Component*> *components;

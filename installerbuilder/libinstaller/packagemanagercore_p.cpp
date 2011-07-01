@@ -161,7 +161,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     : m_FSEngineClientHandler(initFSEngineClientHandler())
     , m_status(PackageManagerCore::Unfinished)
     , m_forceRestart(false)
-    , m_silentRetries(3)
     , m_testChecksum(false)
     , m_launchedAsRoot(AdminAuthorization::hasAdminRights())
     , m_completeUninstall(false)

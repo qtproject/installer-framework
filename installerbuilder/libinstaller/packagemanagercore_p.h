@@ -157,7 +157,6 @@ public:
 
     Settings m_settings;
     bool m_forceRestart;
-    int m_silentRetries;
     bool m_testChecksum;
     bool m_launchedAsRoot;
     bool m_completeUninstall;
