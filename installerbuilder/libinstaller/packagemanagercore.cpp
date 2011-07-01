@@ -645,8 +645,7 @@ QHash<QString, KDUpdater::PackageInfo> PackageManagerCore::localInstalledPackage
     if (!isInstaller()) {
         KDUpdater::PackagesInfo &packagesInfo = *d->m_updaterApplication.packagesInfo();
         if (!setAndParseLocalComponentsFile(packagesInfo)) {
-            verbose() << tr("Could not parse local components xml file: %1")
-                .arg(d->localComponentsXmlPath());
+            verbose() << tr("Could not parse local components xml file: %1").arg(d->componentsXmlPath());
             return installedPackages;
         }
         foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
@@ -1782,8 +1781,8 @@ QString PackageManagerCore::uninstallerName() const
 
 bool PackageManagerCore::setAndParseLocalComponentsFile(KDUpdater::PackagesInfo &packagesInfo)
 {
-    packagesInfo.setFileName(d->localComponentsXmlPath());
-    const QString localComponentsXml = d->localComponentsXmlPath();
+    packagesInfo.setFileName(d->componentsXmlPath());
+    const QString localComponentsXml = d->componentsXmlPath();
 
     // handle errors occurred by loading components.xml
     QFileInfo componentFileInfo(localComponentsXml);

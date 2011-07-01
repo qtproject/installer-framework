@@ -253,16 +253,6 @@ QString PackageManagerCorePrivate::componentsXmlPath() const
         .absoluteFilePath(configurationFileName()));
 }
 
-QString PackageManagerCorePrivate::localComponentsXmlPath() const
-{
-    const QString &appDirPath = QCoreApplication::applicationDirPath();
-    if (QFileInfo(appDirPath + QLatin1String("/../..")).isBundle()) {
-        return QDir::toNativeSeparators(QFileInfo(QDir::cleanPath(appDirPath
-            + QLatin1String("/../../../") + configurationFileName())).absoluteFilePath());
-    }
-    return componentsXmlPath();
-}
-
 void PackageManagerCorePrivate::clearAllComponentLists()
 {
     qDeleteAll(m_rootComponents);
