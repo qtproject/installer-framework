@@ -546,6 +546,10 @@ void PackageManagerCore::rollBackInstallation()
                 "error happend."));
         }
     }
+
+    if (ProgressCoordninator::instance()->progressInPercentage() > 0)
+        ProgressCoordninator::instance()->partProgressChanged(-0.99);
+    packages.writeToDisk();
 }
 
 bool PackageManagerCore::isFileExtensionRegistered(const QString& extension) const

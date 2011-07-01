@@ -1057,13 +1057,14 @@ void PackageManagerCorePrivate::runInstaller()
 
         // this is the reserved one from the beginning
         ProgressCoordninator::instance()->addManualPercentagePoints(1);
-
-        setStatus(PackageManagerCore::Success);
+        if (ProgressCoordninator::instance()->progressInPercentage() < 100)
+            ProgressCoordninator::instance()->partProgressChanged(0.99);
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
+
         if (adminRightsGained)
             m_core->dropAdminRights();
-
         emit installationFinished();
+        setStatus(PackageManagerCore::Success);
     } catch (const Error &err) {
         if (m_core->status() != PackageManagerCore::Canceled) {
             setStatus(PackageManagerCore::Failure);
@@ -1198,13 +1199,14 @@ void PackageManagerCorePrivate::runPackageUpdater()
 
         //this is the reserved one from the beginning
         ProgressCoordninator::instance()->addManualPercentagePoints(1);
-
-        setStatus(PackageManagerCore::Success);
+        if (ProgressCoordninator::instance()->progressInPercentage() < 100)
+            ProgressCoordninator::instance()->partProgressChanged(0.99);
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate finished!"));
+
         if (adminRightsGained)
             m_core->dropAdminRights();
-
         emit installationFinished();
+        setStatus(PackageManagerCore::Success);
     } catch (const Error &err) {
         if (m_core->status() != PackageManagerCore::Canceled) {
             setStatus(PackageManagerCore::Failure);
