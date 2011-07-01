@@ -1383,11 +1383,14 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         }
 
         if (ok || operation->error() > KDUpdater::UpdateOperation::InvalidArguments) {
-            // remember that the operation was performed what allows us to undo it if a
-            // following operation fails or if this operation failed but still needs
-            // an undo call to cleanup.
+            // Remember that the operation was performed, what allows us to undo it if a following operation
+            // fails or if this operation failed but still needs an undo call to cleanup.
             addPerformed(operation);
             operation->setValue(QLatin1String("component"), component->name());
+            // Add the progress operation size to the progress coordinator, so we will show the right
+            // progress at the end of the install/ update after we had an ignore error.
+            if (ignoreError)
+                ProgressCoordninator::instance()->partProgressChanged(progressOperationSize);
         }
 
         if (becameAdmin)
