@@ -496,11 +496,6 @@ void PackageManagerCore::rollBackInstallation()
 {
     emit titleMessageChanged(tr("Cancelling the Installer"));
 
-    KDUpdater::PackagesInfo *const packages = d->m_updaterApplication.packagesInfo();
-    packages->setFileName(d->componentsXmlPath()); // forces a refresh of installed packages
-    packages->setApplicationName(d->m_settings.applicationName());
-    packages->setApplicationVersion(d->m_settings.applicationVersion());
-
     //this unregisters all operation progressChanged connects
     ProgressCoordninator::instance()->setUndoMode();
     const int progressOperationCount = d->countProgressOperations(d->m_performedOperationsCurrentSession);
@@ -518,6 +513,7 @@ void PackageManagerCore::rollBackInstallation()
         }
     }
 
+    KDUpdater::PackagesInfo &packages = *d->m_updaterApplication.packagesInfo();
     while (!d->m_performedOperationsCurrentSession.isEmpty()) {
         try {
             KDUpdater::UpdateOperation *const operation = d->m_performedOperationsCurrentSession.takeLast();
@@ -533,7 +529,7 @@ void PackageManagerCore::rollBackInstallation()
                     component = d->componentsToReplace().value(componentName).second;
                 if (component) {
                     component->setUninstalled();
-                    packages->removePackage(component->name());
+                    packages.removePackage(component->name());
                 }
             }
 
@@ -550,7 +546,6 @@ void PackageManagerCore::rollBackInstallation()
                 "error happend."));
         }
     }
-    packages->writeToDisk();
 }
 
 bool PackageManagerCore::isFileExtensionRegistered(const QString& extension) const
@@ -643,15 +638,16 @@ QHash<QString, KDUpdater::PackageInfo> PackageManagerCore::localInstalledPackage
     QHash<QString, KDUpdater::PackageInfo> installedPackages;
 
     KDUpdater::PackagesInfo &packagesInfo = *d->m_updaterApplication.packagesInfo();
-    if (!isInstaller() && packagesInfo.error() != KDUpdater::PackagesInfo::NoError) {
-        packagesInfo.setFileName(d->componentsXmlPath());
-        packagesInfo.setApplicationName(d->m_settings.applicationName());
-        packagesInfo.setApplicationVersion(d->m_settings.applicationVersion());
-
-        if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError) {
-            d->setStatus(PackageManagerCore::Failure, tr("The file %1 does not exist, could not read "
-                "installed packages.").arg(d->componentsXmlPath()));
+    if (!isInstaller()) {
+        if (!packagesInfo.isValid()) {
+            packagesInfo.setFileName(d->componentsXmlPath());
+            packagesInfo.setApplicationName(d->m_settings.applicationName());
+            packagesInfo.setApplicationVersion(d->m_settings.applicationVersion());
         }
+
+        if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError)
+            d->setStatus(Failure, tr("Failure to read packages from: %1.").arg(d->componentsXmlPath()));
+
         foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
             installedPackages.insert(info.name, info);
      }

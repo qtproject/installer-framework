@@ -1188,11 +1188,6 @@ void PackageManagerCorePrivate::runPackageUpdater()
         const double progressOperationCount = countProgressOperations(componentsToInstall);
         const double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
-        KDUpdater::PackagesInfo *packages = m_updaterApplication.packagesInfo();
-        packages->setFileName(packagesXml);
-        packages->setApplicationName(m_settings.applicationName());
-        packages->setApplicationVersion(m_settings.applicationVersion());
-
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
 
@@ -1399,11 +1394,11 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     }
 
     // now mark the component as installed
-    KDUpdater::PackagesInfo *const packages = m_updaterApplication.packagesInfo();
-    packages->installPackage(component->name(), component->value(scVersion), component->value(scDisplayName),
+    KDUpdater::PackagesInfo &packages = *m_updaterApplication.packagesInfo();
+    packages.installPackage(component->name(), component->value(scVersion), component->value(scDisplayName),
         component->value(scDescription), component->dependencies(), component->forcedInstallation(),
         component->isVirtual(), component->value(scUncompressedSize).toULongLong());
-    packages->writeToDisk();
+    packages.writeToDisk();
 
     component->setInstalled();
     component->markAsPerformedInstallation();
@@ -1507,11 +1502,7 @@ void PackageManagerCorePrivate::unregisterUninstaller()
 void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
     double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation)
 {
-    KDUpdater::PackagesInfo *const packages = m_updaterApplication.packagesInfo();
-    packages->setFileName(componentsXmlPath());
-    packages->setApplicationName(m_settings.applicationName());
-    packages->setApplicationVersion(m_settings.applicationVersion());
-
+    KDUpdater::PackagesInfo &packages = *m_updaterApplication.packagesInfo();
     try {
         foreach (KDUpdater::UpdateOperation *undoOperation, undoOperations) {
             if (statusCanceledOrFailed())
@@ -1553,7 +1544,7 @@ void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateO
                     component = componentsToReplace().value(componentName).second;
                 if (component) {
                     component->setUninstalled();
-                    packages->removePackage(component->name());
+                    packages.removePackage(component->name());
                 }
             }
 
@@ -1564,13 +1555,13 @@ void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateO
                 delete undoOperation;
         }
     } catch (const Error &error) {
-        packages->writeToDisk();
+        packages.writeToDisk();
         throw Error(error.message());
     } catch (...) {
-        packages->writeToDisk();
+        packages.writeToDisk();
         throw Error(tr("Unknown error"));
     }
-    packages->writeToDisk();
+    packages.writeToDisk();
 }
 
 }   // QInstaller
