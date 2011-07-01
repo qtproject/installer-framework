@@ -649,10 +649,8 @@ QHash<QString, KDUpdater::PackageInfo> PackageManagerCore::localInstalledPackage
         packagesInfo.setApplicationVersion(d->m_settings.applicationVersion());
 
         if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError) {
-            d->setStatus(PackageManagerCore::Failure, packagesInfo.errorString());
-            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("Error loading component.xml"), tr("Error."), tr("Could not load: %1. Error: %2.")
-            .arg(d->componentsXmlPath(), packagesInfo.errorString()), QMessageBox::Ok);
+            d->setStatus(PackageManagerCore::Failure, tr("The file %1 does not exist, could not read "
+                "installed packages.").arg(d->componentsXmlPath()));
         }
         foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
             installedPackages.insert(info.name, info);
@@ -732,6 +730,8 @@ bool PackageManagerCore::fetchAllPackages()
     }
 
     QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
+    if (isPackageManager() && status() == Failure)
+        return false;
 
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(d->m_settings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
@@ -763,8 +763,8 @@ bool PackageManagerCore::fetchAllPackages()
 
     const QList<KDUpdater::Update*> &packages = updateFinder.updates();
     if (packages.isEmpty()) {
-        verbose() << tr("Could not retrieve components: %1").arg(updateFinder.errorString());
-        d->setStatus(Failure, tr("Could not retrieve components: %1").arg(updateFinder.errorString()));
+        verbose() << tr("Could not retrieve components: %1.").arg(updateFinder.errorString());
+        d->setStatus(Failure, tr("Could not retrieve components: %1.").arg(updateFinder.errorString()));
         return false;
     }
 
@@ -847,6 +847,8 @@ bool PackageManagerCore::fetchUpdaterPackages()
     }
 
     QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
+    if (status() == Failure)
+        return false;
 
     QScopedPointer <GetRepositoriesMetaInfoJob> metaInfoJob(fetchMetaInformation(d->m_settings));
     if (metaInfoJob->isCanceled() || metaInfoJob->error() != KDJob::NoError) {
@@ -878,8 +880,8 @@ bool PackageManagerCore::fetchUpdaterPackages()
 
     const QList<KDUpdater::Update*> &updates = updateFinder.updates();
     if (updates.isEmpty()) {
-        verbose() << tr("Could not retrieve updates: %1").arg(updateFinder.errorString());
-        d->setStatus(Failure, tr("Could not retrieve updates: %1").arg(updateFinder.errorString()));
+        verbose() << tr("Could not retrieve updates: %1.").arg(updateFinder.errorString());
+        d->setStatus(Failure, tr("Could not retrieve updates: %1.").arg(updateFinder.errorString()));
         return false;
     }
 
@@ -995,7 +997,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
     QHash<QString, KDUpdater::PackageInfo> installedPackages = localInstalledPackages();
     if (installedPackages.isEmpty()) {
         if (status() != Failure)
-            d->setStatus(Failure, tr("No installed packages found!"));
+            d->setStatus(Failure, tr("No installed packages found."));
         return false;
     }
 

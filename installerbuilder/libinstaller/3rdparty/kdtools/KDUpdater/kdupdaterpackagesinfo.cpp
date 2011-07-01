@@ -282,8 +282,8 @@ void PackagesInfo::refresh()
     // if the file does not exist then we just skip the reading
     if( !file.exists() )
     {
-        d->error = NoError;
-        d->errorMessage.clear();
+        d->error = NotYetReadError;
+        d->errorMessage = tr("The file \"%1\" does not exist").arg(d->fileName);
         emit reset();
         return;
     }
@@ -292,7 +292,7 @@ void PackagesInfo::refresh()
     if( !file.open(QFile::ReadOnly) )
     {
         d->error = CouldNotReadPackageFileError;
-        d->errorMessage = tr("Could not read \"%1\"").arg(d->fileName);
+        d->errorMessage = tr("Could not open \"%1\"").arg(d->fileName);
         emit reset();
         return;
     }
