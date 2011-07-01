@@ -138,6 +138,8 @@ Application* PackagesInfo::application() const
 */
 bool PackagesInfo::isValid() const
 {
+    if (!d->fileName.isEmpty())
+        return d->error <= NotYetReadError;
     return d->error == NoError;
 }
 
