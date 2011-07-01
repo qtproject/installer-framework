@@ -42,8 +42,6 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QTimer>
 
-#include <KDUpdater/Application>
-
 using namespace QInstaller;
 using QInstallerCreator::ComponentIndex;
 using QInstallerCreator::BinaryFormatEngineHandler;
@@ -78,9 +76,7 @@ public:
                     handler.reset(new BinaryFormatEngineHandler(ComponentIndex()));
                     handler->setComponentIndex(QInstallerCreator::ComponentIndex());
 
-                    KDUpdater::Application app;
                     PackageManagerCore core(QInstaller::MagicUpdaterMarker);
-                    core.setUpdaterApplication(&app);
                     core.setTemporaryRepositories(settings.repositories());
                     if (!core.fetchUpdaterPackages())
                         throw Error(tr("Software Update failed."));

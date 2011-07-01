@@ -27,8 +27,6 @@
 #include <packagemanagercore.h>
 #include <settings.h>
 
-#include <KDUpdater/Application>
-
 #include <QtGui/QMainWindow>
 
 class UpdateSettingsDialog;
@@ -50,6 +48,5 @@ private:
     UpdateSettingsDialog *m_dialog;
 
     QInstaller::Settings m_settings;
-    KDUpdater::Application updaterapp;
     QInstaller::PackageManagerCore m_core;
 };

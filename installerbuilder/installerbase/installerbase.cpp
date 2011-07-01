@@ -53,9 +53,6 @@
 
 #include <QtNetwork/QNetworkProxyFactory>
 
-#include <KDUpdater/Application>
-#include <KDUpdater/PackagesInfo>
-
 #include <KDToolsCore/KDSelfRestarter>
 #include <KDToolsCore/KDRunOnceChecker>
 
@@ -263,17 +260,6 @@ int main(int argc, char *argv[])
                 verbose() << "Unknown option: " << argument << std::endl;
             }
         }
-
-
-        KDUpdater::Application updaterapp;
-        const QString &productName = core.value(QLatin1String("ProductName"));
-        updaterapp.packagesInfo()->setApplicationName(productName);
-        updaterapp.packagesInfo()->setApplicationVersion(core.value(QLatin1String("ProductVersion")));
-        if (content.magicmaker() == MagicInstallerMarker) {
-            updaterapp.addUpdateSource(productName, productName, QString(),
-                QUrl(QLatin1String("resource://metadata/")), 0);
-        }
-        core.setUpdaterApplication(&updaterapp);
 
         // Create the wizard gui
         TabController controller(0);

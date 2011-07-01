@@ -72,9 +72,6 @@ bool Updater::checkForUpdates()
     core.setUpdater();
     PackageManagerCore::setVirtualComponentsVisible(true);
 
-    KDUpdater::Application updaterapp;
-    core.setUpdaterApplication(&updaterapp);
-
     if (core.fetchUpdaterPackages()) {
         const QList<QInstaller::Component*> components = core.components(true, UpdaterMode);
 

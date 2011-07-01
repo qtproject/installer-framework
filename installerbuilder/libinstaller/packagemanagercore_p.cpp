@@ -151,16 +151,14 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 // -- PackageManagerCorePrivate
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
-    : m_app(0)
-    , m_FSEngineClientHandler(0)
+    : m_FSEngineClientHandler(0)
     , m_core(core)
 {
 }
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<KDUpdater::UpdateOperation*> &performedOperations)
-    : m_app(0)
-    , m_FSEngineClientHandler(initFSEngineClientHandler())
+    : m_FSEngineClientHandler(initFSEngineClientHandler())
     , m_status(PackageManagerCore::Unfinished)
     , m_forceRestart(false)
     , m_silentRetries(3)
@@ -369,6 +367,14 @@ void PackageManagerCorePrivate::initialize()
     connect(this, SIGNAL(installationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
     disconnect(this, SIGNAL(uninstallationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
     connect(this, SIGNAL(uninstallationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
+
+    m_updaterApplication.packagesInfo()->setFileName(componentsXmlPath());
+    m_updaterApplication.packagesInfo()->setApplicationName(m_settings.applicationName());
+    m_updaterApplication.packagesInfo()->setApplicationVersion(m_settings.applicationVersion());
+    if (isInstaller()) {
+        m_updaterApplication.addUpdateSource(m_settings.applicationName(), m_settings.applicationName(),
+            QString(), QUrl(QLatin1String("resource://metadata/")), 0);
+        }
 }
 
 QString PackageManagerCorePrivate::installerBinaryPath() const
@@ -1045,7 +1051,7 @@ void PackageManagerCorePrivate::runInstaller()
             componentsInstallPartProgressSize = double(1);
 
         // put the installed packages info into the target dir
-        KDUpdater::PackagesInfo *const packages = m_app->packagesInfo();
+        KDUpdater::PackagesInfo *const packages = m_updaterApplication.packagesInfo();
         packages->setFileName(componentsXmlPath()); // forces a refresh of installed packages
         // Clear these packages as we might install into an already existing installation folder.
         packages->clearPackageInfoList();
@@ -1198,7 +1204,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
         const double progressOperationCount = countProgressOperations(componentsToInstall);
         const double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
-        KDUpdater::PackagesInfo *packages = m_app->packagesInfo();
+        KDUpdater::PackagesInfo *packages = m_updaterApplication.packagesInfo();
         packages->setFileName(packagesXml);
         packages->setApplicationName(m_settings.applicationName());
         packages->setApplicationVersion(m_settings.applicationVersion());
@@ -1406,7 +1412,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     }
 
     // now mark the component as installed
-    KDUpdater::PackagesInfo *const packages = m_app->packagesInfo();
+    KDUpdater::PackagesInfo *const packages = m_updaterApplication.packagesInfo();
     packages->installPackage(component->name(), component->value(scVersion), component->value(scDisplayName),
         component->value(scDescription), component->dependencies(), component->forcedInstallation(),
         component->isVirtual(), component->value(scUncompressedSize).toULongLong());
@@ -1514,7 +1520,7 @@ void PackageManagerCorePrivate::unregisterUninstaller()
 void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
     double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation)
 {
-    KDUpdater::PackagesInfo *const packages = m_app->packagesInfo();
+    KDUpdater::PackagesInfo *const packages = m_updaterApplication.packagesInfo();
     packages->setFileName(componentsXmlPath());
     packages->setApplicationName(m_settings.applicationName());
     packages->setApplicationVersion(m_settings.applicationVersion());

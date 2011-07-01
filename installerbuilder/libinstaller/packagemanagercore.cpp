@@ -255,16 +255,6 @@ QString QInstaller::uncaughtExceptionString(QScriptEngine *scriptEngine/*, const
     Non-existing page - this value has to be used if you want to insert a page after \a InstallationFinished
  */
 
-KDUpdater::Application& PackageManagerCore::updaterApplication() const
-{
-    return *d->m_app;
-}
-
-void PackageManagerCore::setUpdaterApplication(KDUpdater::Application *app)
-{
-    d->m_app = app;
-}
-
 void PackageManagerCore::writeUninstaller()
 {
     if (d->m_needToWriteUninstaller) {
@@ -278,7 +268,7 @@ void PackageManagerCore::writeUninstaller()
                 gainAdminRights();
                 gainedAdminRights = true;
             }
-            d->m_app->packagesInfo()->writeToDisk();
+            d->m_updaterApplication.packagesInfo()->writeToDisk();
             if (gainedAdminRights)
                 dropAdminRights();
             d->m_needToWriteUninstaller = false;
@@ -379,8 +369,8 @@ void PackageManagerCore::installSelectedComponents()
                 delete d->m_performedOperationsOld.takeAt(i);
             }
             foreach(const QString possilbeName, possibleNames)
-                d->m_app->packagesInfo()->removePackage(possilbeName);
-            d->m_app->packagesInfo()->writeToDisk();
+                d->m_updaterApplication.packagesInfo()->removePackage(possilbeName);
+            d->m_updaterApplication.packagesInfo()->writeToDisk();
         }
         ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(
             tr("\nInstalling the new version of: %1").arg(currentComponent->name()));
@@ -506,7 +496,7 @@ void PackageManagerCore::rollBackInstallation()
 {
     emit titleMessageChanged(tr("Cancelling the Installer"));
 
-    KDUpdater::PackagesInfo *const packages = d->m_app->packagesInfo();
+    KDUpdater::PackagesInfo *const packages = d->m_updaterApplication.packagesInfo();
     packages->setFileName(d->componentsXmlPath()); // forces a refresh of installed packages
     packages->setApplicationName(d->m_settings.applicationName());
     packages->setApplicationVersion(d->m_settings.applicationVersion());
@@ -653,17 +643,17 @@ QHash<QString, KDUpdater::PackageInfo> PackageManagerCore::localInstalledPackage
     QHash<QString, KDUpdater::PackageInfo> installedPackages;
 
     if (!isInstaller()) {
-        KDUpdater::PackagesInfo &packagesInfo = *d->m_app->packagesInfo();
+        KDUpdater::PackagesInfo &packagesInfo = *d->m_updaterApplication.packagesInfo();
         if (!setAndParseLocalComponentsFile(packagesInfo)) {
             verbose() << tr("Could not parse local components xml file: %1")
                 .arg(d->localComponentsXmlPath());
             return installedPackages;
         }
+        foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
+            installedPackages.insert(info.name, info);
         packagesInfo.setApplicationName(d->m_settings.applicationName());
         packagesInfo.setApplicationVersion(d->m_settings.applicationVersion());
 
-        foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
-            installedPackages.insert(info.name, info);
      }
 
     return installedPackages;
@@ -723,9 +713,9 @@ bool PackageManagerCore::addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *meta
             if (!checksum.isNull())
                 setTestChecksum(checksum.toElement().text().toLower() == scTrue);
         }
-        d->m_app->addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
+        d->m_updaterApplication.addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
     }
-    d->m_app->updateSourcesInfo()->setModified(false);
+    d->m_updaterApplication.updateSourcesInfo()->setModified(false);
 
     return true;
 }
@@ -758,13 +748,13 @@ bool PackageManagerCore::fetchAllPackages()
         }
     }
 
-    if (d->m_app->updateSourcesInfo()->updateSourceInfoCount() == 0) {
+    if (d->m_updaterApplication.updateSourcesInfo()->updateSourceInfoCount() == 0) {
         d->setStatus(Failure, tr("Could not find any update source information."));
         verbose() << tr("Could not find any update source information.") << std::endl;
         return false;
     }
 
-    KDUpdater::UpdateFinder updateFinder(d->m_app);
+    KDUpdater::UpdateFinder updateFinder(&d->m_updaterApplication);
     updateFinder.setAutoDelete(false);
     updateFinder.setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
     updateFinder.run();
@@ -873,13 +863,13 @@ bool PackageManagerCore::fetchUpdaterPackages()
         }
     }
 
-    if (d->m_app->updateSourcesInfo()->updateSourceInfoCount() == 0) {
+    if (d->m_updaterApplication.updateSourcesInfo()->updateSourceInfoCount() == 0) {
         d->setStatus(Failure, tr("Could not find any update source information."));
         verbose() << tr("Could not find any update source information.") << std::endl;
         return false;
     }
 
-    KDUpdater::UpdateFinder updateFinder(d->m_app);
+    KDUpdater::UpdateFinder updateFinder(&d->m_updaterApplication);
     updateFinder.setAutoDelete(false);
     updateFinder.setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
     updateFinder.run();

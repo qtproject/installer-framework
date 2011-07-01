@@ -150,7 +150,7 @@ signals:
     void uninstallationFinished();
 
 public:
-    KDUpdater::Application *m_app;
+    KDUpdater::Application m_updaterApplication;
     FSEngineClientHandler *m_FSEngineClientHandler;
 
     int m_status;

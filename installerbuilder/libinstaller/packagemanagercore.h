@@ -43,7 +43,6 @@
 #include <QtScript/QScriptValue>
 
 namespace KDUpdater {
-    class Application;
     class PackagesInfo;
     class Update;
     class UpdateOperation;
@@ -160,9 +159,6 @@ public:
 
     bool testChecksum() const;
     void setTestChecksum(bool test);
-
-    KDUpdater::Application &updaterApplication() const;
-    void setUpdaterApplication(KDUpdater::Application *app);
 
     void addRepositories(const QList<Repository> &repositories);
     void setTemporaryRepositories(const QList<Repository> &repositories, bool replace = false);

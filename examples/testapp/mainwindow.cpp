@@ -56,7 +56,6 @@ MainWindow::MainWindow(const QStringList &args, QWidget *parent)
     , m_dialog(new UpdateSettingsDialog(this))
 {
     m_core.setUpdater();
-    m_core.setUpdaterApplication(&updaterapp);
 
     QMenu *fm = menuBar()->addMenu(QObject::tr("File"));
     fm->addAction(QObject::tr("Check for Updates"), this, SLOT(checkForUpdates()),
@@ -71,9 +70,6 @@ MainWindow::MainWindow(const QStringList &args, QWidget *parent)
     setCentralWidget(label);
     label->setText(QString::fromLatin1("Version: %1\n").arg(m_core.settings().applicationVersion())
         + args.join(QLatin1String(" ")));
-
-    updaterapp.packagesInfo()->setApplicationName(m_settings.applicationName());
-    updaterapp.packagesInfo()->setApplicationVersion(m_settings.applicationVersion());
 
     UpdateAgent *const agent = new UpdateAgent(this);
     connect(agent, SIGNAL(updatesAvailable()), this, SLOT(updatesAvailable()));
@@ -108,8 +104,8 @@ void MainWindow::checkForUpdates()
             return;
         }
 
-        // set the target directory to the actual one
-        m_core.setValue(scTargetDir, QFileInfo(updaterapp.packagesInfo()->fileName()).absolutePath());
+        // TODO: fix this, set the target directory to the actual one
+        // m_core.setValue(scTargetDir, QFileInfo(updaterapp.packagesInfo()->fileName()).absolutePath());
 
         // this will automatically mark components as to get installed
         ComponentSelectionDialog componentSelection(&m_core, this);
