@@ -221,7 +221,7 @@ void DownloadArchivesJob::fetchNextArchive()
     const QString comp = QFileInfo(QFileInfo(m_archivesToDownload.first().first).path()).fileName();
     const Component* const component = m_core->componentByName(comp);
 
-    emit outputTextChanged(tr("Downloading archive for component %1").arg(component->displayName()));
+    emit outputTextChanged(tr("Downloading archive for component: %1").arg(component->displayName()));
     emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
     m_downloader->download();
 }
