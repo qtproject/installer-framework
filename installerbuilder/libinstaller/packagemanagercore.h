@@ -55,8 +55,6 @@ QT_END_NAMESPACE
 
 class KDJob;
 
-#define INSTALLERBASE_VERSION "2"
-
 /*
  * TRANSLATOR QInstaller::PackageManagerCore
  */

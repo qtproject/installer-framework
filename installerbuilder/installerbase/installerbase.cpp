@@ -58,6 +58,8 @@
 
 #include <iostream>
 
+#define INSTALLERBASE_VERSION "2"
+
 using namespace QInstaller;
 using namespace QInstallerCreator;
 
