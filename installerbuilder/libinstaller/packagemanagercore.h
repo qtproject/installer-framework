@@ -68,6 +68,7 @@ class Settings;
 class INSTALLER_EXPORT PackageManagerCore : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(PackageManagerCore)
 
     Q_ENUMS(Status WizardPage)
     Q_PROPERTY(int status READ status NOTIFY statusChanged)
