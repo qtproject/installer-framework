@@ -29,7 +29,7 @@
 #include "common/repository.h"
 #include "qinstallerglobal.h"
 
-#include <KDUpdater/KDUpdater>
+#include <KDUpdater/PackagesInfo>
 
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QObject>
@@ -43,7 +43,6 @@
 #include <QtScript/QScriptValue>
 
 namespace KDUpdater {
-    class PackagesInfo;
     class Update;
     class UpdateOperation;
 }
@@ -64,7 +63,6 @@ class KDJob;
 namespace QInstaller {
 
 class Component;
-class GetRepositoriesMetaInfoJob;
 class MessageBoxHandler;
 class PackageManagerCorePrivate;
 class Settings;
@@ -113,11 +111,6 @@ public:
 
     static bool noForceInstallation();
     static void setNoForceInstallation(bool value);
-
-    QHash<QString, KDUpdater::PackageInfo> localInstalledPackages();
-    GetRepositoriesMetaInfoJob* fetchMetaInformation(const Settings &settings);
-    bool addUpdateResourcesFrom(GetRepositoriesMetaInfoJob *metaInfoJob, const Settings &settings,
-        bool parseChecksum);
 
     bool fetchAllPackages();
     bool fetchUpdaterPackages();
@@ -232,6 +225,7 @@ public Q_SLOTS:
     void setCanceled();
     void languageChanged();
     void setCompleteUninstallation(bool complete);
+    void cancelMetaInfoJob();
 
 Q_SIGNALS:
     void componentAdded(QInstaller::Component *comp);
@@ -243,7 +237,6 @@ Q_SIGNALS:
     void currentPageChanged(int page);
     void finishButtonClicked();
 
-    void cancelMetaInfoJob();
     void metaJobInfoMessage(KDJob* job, const QString &message);
 
     void startAllComponentsReset();
@@ -272,7 +265,6 @@ private:
     struct Data {
         KDUpdater::Update *package;
         QMap<QString, Component*> *components;
-        GetRepositoriesMetaInfoJob *metaInfoJob;
         QHash<Component*, QStringList> replacementToExchangeables;
         QHash<QString, KDUpdater::PackageInfo> *installedPackages;
     };

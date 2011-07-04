@@ -153,6 +153,8 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     : m_FSEngineClientHandler(0)
     , m_core(core)
+    , m_repoFetched(false)
+    , m_updateSourcesAdded(false)
 {
 }
 
@@ -168,6 +170,8 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_performedOperationsOld(performedOperations)
     , m_core(core)
     , m_magicBinaryMarker(magicInstallerMaker)
+    , m_repoFetched(false)
+    , m_updateSourcesAdded(false)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
@@ -366,6 +370,14 @@ void PackageManagerCorePrivate::initialize()
         m_updaterApplication.addUpdateSource(m_settings.applicationName(), m_settings.applicationName(),
             QString(), QUrl(QLatin1String("resource://metadata/")), 0);
         m_updaterApplication.updateSourcesInfo()->setModified(false);
+    }
+
+    if (!m_repoFetched) {
+        m_repoMetaInfoJob.clear();
+        m_repoMetaInfoJob =
+            QSharedPointer<GetRepositoriesMetaInfoJob>(new GetRepositoriesMetaInfoJob(m_settings.publicKey()));
+        connect(m_repoMetaInfoJob.data(), SIGNAL(infoMessage(KDJob*, QString)), m_core,
+            SIGNAL(metaJobInfoMessage(KDJob*, QString)));
     }
 }
 
@@ -1567,6 +1579,119 @@ void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateO
         throw Error(tr("Unknown error"));
     }
     packages.writeToDisk();
+}
+
+bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
+{
+    if (m_repoFetched)
+        return m_repoFetched;
+
+    m_repoFetched = false;
+    if ((isInstaller() && !m_core->isOfflineOnly()) || (isUpdater() || isPackageManager()))
+        m_repoMetaInfoJob->setRepositories(m_settings.repositories());
+
+    try {
+        m_repoMetaInfoJob->setAutoDelete(false);
+        m_repoMetaInfoJob->start();
+        m_repoMetaInfoJob->waitForFinished();
+    } catch (Error &error) {
+        verbose() << tr("Could not retrieve meta information: %1").arg(error.message()) << std::endl;
+        return m_repoFetched;
+    }
+
+    if (m_repoMetaInfoJob->isCanceled() || m_repoMetaInfoJob->error() != KDJob::NoError) {
+        if (m_repoMetaInfoJob->error() != QInstaller::UserIgnoreError) {
+            verbose() << m_repoMetaInfoJob->errorString() << std::endl;
+            setStatus(PackageManagerCore::Failure, m_repoMetaInfoJob->errorString());
+            return m_repoFetched;
+        }
+    }
+
+    m_repoFetched = true;
+    return m_repoFetched;
+}
+
+bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChecksum)
+{
+    if (m_updateSourcesAdded)
+        return m_updateSourcesAdded;
+
+    if (m_repoMetaInfoJob->temporaryDirectories().isEmpty()) {
+        m_updateSourcesAdded = true;
+        return m_updateSourcesAdded;
+    }
+
+    m_updateSourcesAdded = false;
+    const QString &appName = m_settings.applicationName();
+    const QStringList tempDirs = m_repoMetaInfoJob->temporaryDirectories();
+    foreach (const QString &tmpDir, tempDirs) {
+        if (tmpDir.isEmpty())
+            continue;
+
+        if (parseChecksum) {
+            const QString updatesXmlPath = tmpDir + QLatin1String("/Updates.xml");
+            QFile updatesFile(updatesXmlPath);
+            try {
+                openForRead(&updatesFile, updatesFile.fileName());
+            } catch(const Error &e) {
+                verbose() << tr("Error opening Updates.xml: ") << e.message() << std::endl;
+                setStatus(PackageManagerCore::Failure, tr("Could not add temporary update source information."));
+                return false;
+            }
+
+            int line = 0;
+            int column = 0;
+            QString error;
+            QDomDocument doc;
+            if (!doc.setContent(&updatesFile, &error, &line, &column)) {
+                verbose() << tr("Parse error in File %4 : %1 at line %2 col %3").arg(error,
+                    QString::number(line), QString::number(column), updatesFile.fileName()) << std::endl;
+                setStatus(PackageManagerCore::Failure, tr("Could not add temporary update source information."));
+                return false;
+            }
+
+            const QDomNode checksum = doc.documentElement().firstChildElement(QLatin1String("Checksum"));
+            if (!checksum.isNull())
+                m_core->setTestChecksum(checksum.toElement().text().toLower() == scTrue);
+        }
+        m_updaterApplication.addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
+    }
+    m_updaterApplication.updateSourcesInfo()->setModified(false);
+
+    if (m_updaterApplication.updateSourcesInfo()->updateSourceInfoCount() == 0) {
+        setStatus(PackageManagerCore::Failure, tr("Could not find any update source information."));
+        return false;
+    }
+
+    m_updateSourcesAdded = true;
+    return m_updateSourcesAdded;
+}
+
+/*!
+    Returns a hash containing the installed package name and it's associated package information. If
+    the application is running in installer mode or the local components file could not be parsed, the
+    hash is empty.
+*/
+QHash<QString, KDUpdater::PackageInfo> PackageManagerCorePrivate::localInstalledPackages()
+{
+    QHash<QString, KDUpdater::PackageInfo> installedPackages;
+
+    KDUpdater::PackagesInfo &packagesInfo = *m_updaterApplication.packagesInfo();
+    if (!isInstaller()) {
+        if (!packagesInfo.isValid()) {
+            packagesInfo.setFileName(componentsXmlPath());
+            packagesInfo.setApplicationName(m_settings.applicationName());
+            packagesInfo.setApplicationVersion(m_settings.applicationVersion());
+        }
+
+        if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError)
+            setStatus(PackageManagerCore::Failure, tr("Failure to read packages from: %1.").arg(componentsXmlPath()));
+
+        foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
+            installedPackages.insert(info.name, info);
+     }
+
+    return installedPackages;
 }
 
 }   // QInstaller

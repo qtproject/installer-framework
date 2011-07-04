@@ -33,10 +33,12 @@
 #ifndef PACKAGEMANAGERCORE_P_H
 #define PACKAGEMANAGERCORE_P_H
 
+#include "getrepositoriesmetainfojob.h"
 #include "settings.h"
 #include "packagemanagercore.h"
 
 #include <KDToolsCore/KDSysInfo>
+#include <KDUpdater/Application>
 
 #include <QtCore/QHash>
 #include <QtCore/QObject>
@@ -186,9 +188,17 @@ private:
     void runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
         double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation);
 
+    bool fetchMetaInformationFromRepositories();
+    bool addUpdateResourcesFromRepositories(bool parseChecksum);
+    QHash<QString, KDUpdater::PackageInfo> localInstalledPackages();
+
 private:
     PackageManagerCore *m_core;
     qint64 m_magicBinaryMarker;
+
+    bool m_repoFetched;
+    bool m_updateSourcesAdded;
+    QSharedPointer<GetRepositoriesMetaInfoJob> m_repoMetaInfoJob;
 
     // < name (component to replace), < replacement component, component to replace > >
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceAllMode;
