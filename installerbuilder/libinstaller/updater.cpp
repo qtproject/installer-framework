@@ -72,7 +72,7 @@ bool Updater::checkForUpdates()
     core.setUpdater();
     PackageManagerCore::setVirtualComponentsVisible(true);
 
-    if (core.fetchUpdaterPackages()) {
+    if (core.fetchRemotePackagesTree()) {
         const QList<QInstaller::Component*> components = core.components(true, UpdaterMode);
 
         if (components.isEmpty()) {

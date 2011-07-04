@@ -56,7 +56,10 @@ class INSTALLER_EXPORT PackageManagerCore : public QObject
     Q_ENUMS(Status WizardPage)
     Q_PROPERTY(int status READ status NOTIFY statusChanged)
 
+    typedef QList<KDUpdater::Update*> RemotePackages;
     typedef QList<KDUpdater::UpdateOperation*> Operations;
+    typedef QHash<QString, KDUpdater::PackageInfo> LocalPackages;
+
 public:
     explicit PackageManagerCore();
     explicit PackageManagerCore(qint64 magicmaker, const Operations &oldOperations = Operations());
@@ -94,9 +97,8 @@ public:
     static bool noForceInstallation();
     static void setNoForceInstallation(bool value);
 
-    bool fetchAllPackages();
-    bool fetchUpdaterPackages();
     bool fetchLocalPackagesTree();
+    bool fetchRemotePackagesTree();
 
     bool run();
     RunMode runMode() const;
@@ -245,16 +247,20 @@ Q_SIGNALS:
 
 private:
     struct Data {
+        RunMode runMode;
         KDUpdater::Update *package;
         QMap<QString, Component*> *components;
+        const LocalPackages *installedPackages;
         QHash<Component*, QStringList> replacementToExchangeables;
-        QHash<QString, KDUpdater::PackageInfo> *installedPackages;
     };
+
     bool updateComponentData(struct Data &data, QInstaller::Component *component);
+    void storeReplacedComponents(QMap<QString, Component*> &components, const struct Data &data);
+    bool fetchAllPackages(const RemotePackages &remotePackages, const LocalPackages &localPackages);
+    bool fetchUpdaterPackages(const RemotePackages &remotePackages, const LocalPackages &localPackages);
+
     static Component *subComponentByName(const QInstaller::PackageManagerCore *installer, const QString &name,
         const QString &version = QString(), Component *check = 0);
-    void storeReplacedComponents(QMap<QString, Component*> &components,
-        const QHash<Component*, QStringList> &replacementToExchangeables);
 
 private:
     PackageManagerCorePrivate *const d;

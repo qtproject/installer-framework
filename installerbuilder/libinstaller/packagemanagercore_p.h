@@ -50,7 +50,7 @@ QT_FORWARD_DECLARE_CLASS(QFile)
 QT_FORWARD_DECLARE_CLASS(QFileInfo)
 
 namespace KDUpdater {
-    class Application;
+    class UpdateFinder;
     class UpdateOperation;
 }
 
@@ -102,7 +102,7 @@ public:
 
     void clearAllComponentLists();
     void clearUpdaterComponentLists();
-    QHash<QString, QPair<Component*, Component*> > &componentsToReplace();
+    QHash<QString, QPair<Component*, Component*> > &componentsToReplace(RunMode mode);
 
     void runInstaller();
     bool isInstaller() const;
@@ -151,6 +151,7 @@ signals:
     void uninstallationFinished();
 
 public:
+    KDUpdater::UpdateFinder *m_updateFinder;
     KDUpdater::Application m_updaterApplication;
     FSEngineClientHandler *m_FSEngineClientHandler;
 
@@ -188,17 +189,20 @@ private:
     void runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
         double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation);
 
+    PackageManagerCore::RemotePackages remotePackages();
+    PackageManagerCore::LocalPackages localInstalledPackages();
+
     bool fetchMetaInformationFromRepositories();
     bool addUpdateResourcesFromRepositories(bool parseChecksum);
-    QHash<QString, KDUpdater::PackageInfo> localInstalledPackages();
 
 private:
     PackageManagerCore *m_core;
-    qint64 m_magicBinaryMarker;
+    GetRepositoriesMetaInfoJob *m_repoMetaInfoJob;
 
+    bool m_updates;
     bool m_repoFetched;
     bool m_updateSourcesAdded;
-    QSharedPointer<GetRepositoriesMetaInfoJob> m_repoMetaInfoJob;
+    qint64 m_magicBinaryMarker;
 
     // < name (component to replace), < replacement component, component to replace > >
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceAllMode;

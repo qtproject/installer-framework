@@ -170,7 +170,7 @@ int TabController::initUpdater()
     d->m_gui->show();
 
     if (!d->m_updatesFetched) {
-        d->m_updatesFetched = d->m_core->fetchUpdaterPackages();
+        d->m_updatesFetched = d->m_core->fetchRemotePackagesTree();
         if (!d->m_updatesFetched)
             introPage->setErrorMessage(d->m_core->error());
     }
@@ -235,7 +235,7 @@ int TabController::initPackageManager()
     bool localPackagesTreeFetched = false;
     if (!d->m_allPackagesFetched) {
         // first try to fetch the server side packages tree
-        d->m_allPackagesFetched = d->m_core->fetchAllPackages();
+        d->m_allPackagesFetched = d->m_core->fetchRemotePackagesTree();
         if (!d->m_allPackagesFetched) {
             const QString error = d->m_core->error();
             // if that fails, try to fetch local installed tree

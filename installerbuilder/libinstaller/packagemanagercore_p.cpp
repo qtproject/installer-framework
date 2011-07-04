@@ -47,8 +47,8 @@
 
 #include <KDToolsCore/KDSaveFile>
 #include <KDToolsCore/KDSelfRestarter>
-
 #include <KDUpdater/KDUpdater>
+#include <KDUpdater/UpdateOperation>
 
 #include <QtCore/QtConcurrentRun>
 #include <QtCore/QCoreApplication>
@@ -151,8 +151,11 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 // -- PackageManagerCorePrivate
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
-    : m_FSEngineClientHandler(0)
+    : m_updateFinder(0)
+    , m_FSEngineClientHandler(0)
     , m_core(core)
+    , m_repoMetaInfoJob(0)
+    , m_updates(false)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
 {
@@ -160,7 +163,8 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<KDUpdater::UpdateOperation*> &performedOperations)
-    : m_FSEngineClientHandler(initFSEngineClientHandler())
+    : m_updateFinder(0)
+    , m_FSEngineClientHandler(initFSEngineClientHandler())
     , m_status(PackageManagerCore::Unfinished)
     , m_forceRestart(false)
     , m_testChecksum(false)
@@ -169,9 +173,11 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_needToWriteUninstaller(false)
     , m_performedOperationsOld(performedOperations)
     , m_core(core)
-    , m_magicBinaryMarker(magicInstallerMaker)
+    , m_repoMetaInfoJob(0)
+    , m_updates(false)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
+    , m_magicBinaryMarker(magicInstallerMaker)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
@@ -191,6 +197,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     // check for fake installer case
     if (m_FSEngineClientHandler)
         m_FSEngineClientHandler->setActive(false);
+    delete m_updateFinder;
 }
 
 /*!
@@ -281,9 +288,9 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
     m_componentsToReplaceUpdaterMode.clear();
 }
 
-QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::componentsToReplace()
+QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::componentsToReplace(RunMode mode)
 {
-    return m_core->runMode() == AllMode ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
+    return mode == AllMode ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
 }
 
 void PackageManagerCorePrivate::initialize()
@@ -372,12 +379,15 @@ void PackageManagerCorePrivate::initialize()
         m_updaterApplication.updateSourcesInfo()->setModified(false);
     }
 
-    if (!m_repoFetched) {
-        m_repoMetaInfoJob.clear();
-        m_repoMetaInfoJob =
-            QSharedPointer<GetRepositoriesMetaInfoJob>(new GetRepositoriesMetaInfoJob(m_settings.publicKey()));
-        connect(m_repoMetaInfoJob.data(), SIGNAL(infoMessage(KDJob*, QString)), m_core,
+    if (!m_repoMetaInfoJob) {
+        m_repoMetaInfoJob = new GetRepositoriesMetaInfoJob(m_settings.publicKey());
+        connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), m_core,
             SIGNAL(metaJobInfoMessage(KDJob*, QString)));
+    }
+    if (!m_updateFinder) {
+        m_updateFinder = new KDUpdater::UpdateFinder(&m_updaterApplication);
+        m_updateFinder->setAutoDelete(false);
+        m_updateFinder->setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
     }
 }
 
@@ -1558,7 +1568,7 @@ void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateO
             if (!componentName.isEmpty()) {
                 Component *component = m_core->componentByName(componentName);
                 if (!component)
-                    component = componentsToReplace().value(componentName).second;
+                    component = componentsToReplace(m_core->runMode()).value(componentName).second;
                 if (component) {
                     component->setUninstalled();
                     packages.removePackage(component->name());
@@ -1581,6 +1591,53 @@ void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateO
     packages.writeToDisk();
 }
 
+PackageManagerCore::RemotePackages PackageManagerCorePrivate::remotePackages()
+{
+    if (m_updates)
+        return m_updateFinder->updates();
+
+    m_updates = false;
+
+    m_updateFinder->run();
+
+    if (m_updateFinder->updates().isEmpty()) {
+        verbose() << tr("Could not retrieve remote tree: %1.").arg(m_updateFinder->errorString());
+        setStatus(PackageManagerCore::Failure, tr("Could not retrieve remote tree: %1.")
+            .arg(m_updateFinder->errorString()));
+        return PackageManagerCore::RemotePackages();
+    }
+
+    m_updates = true;
+    return m_updateFinder->updates();
+}
+
+/*!
+    Returns a hash containing the installed package name and it's associated package information. If
+    the application is running in installer mode or the local components file could not be parsed, the
+    hash is empty.
+*/
+PackageManagerCore::LocalPackages PackageManagerCorePrivate::localInstalledPackages()
+{
+    PackageManagerCore::LocalPackages installedPackages;
+
+    KDUpdater::PackagesInfo &packagesInfo = *m_updaterApplication.packagesInfo();
+    if (!isInstaller()) {
+        if (!packagesInfo.isValid()) {
+            packagesInfo.setFileName(componentsXmlPath());
+            packagesInfo.setApplicationName(m_settings.applicationName());
+            packagesInfo.setApplicationVersion(m_settings.applicationVersion());
+        }
+
+        if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError)
+            setStatus(PackageManagerCore::Failure, tr("Failure to read packages from: %1.").arg(componentsXmlPath()));
+
+        foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
+            installedPackages.insert(info.name, info);
+     }
+
+    return installedPackages;
+}
+
 bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
 {
     if (m_repoFetched)
@@ -1596,6 +1653,7 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
         m_repoMetaInfoJob->waitForFinished();
     } catch (Error &error) {
         verbose() << tr("Could not retrieve meta information: %1").arg(error.message()) << std::endl;
+        setStatus(PackageManagerCore::Failure, tr("Could not retrieve meta information: %1").arg(error.message()));
         return m_repoFetched;
     }
 
@@ -1665,33 +1723,6 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
 
     m_updateSourcesAdded = true;
     return m_updateSourcesAdded;
-}
-
-/*!
-    Returns a hash containing the installed package name and it's associated package information. If
-    the application is running in installer mode or the local components file could not be parsed, the
-    hash is empty.
-*/
-QHash<QString, KDUpdater::PackageInfo> PackageManagerCorePrivate::localInstalledPackages()
-{
-    QHash<QString, KDUpdater::PackageInfo> installedPackages;
-
-    KDUpdater::PackagesInfo &packagesInfo = *m_updaterApplication.packagesInfo();
-    if (!isInstaller()) {
-        if (!packagesInfo.isValid()) {
-            packagesInfo.setFileName(componentsXmlPath());
-            packagesInfo.setApplicationName(m_settings.applicationName());
-            packagesInfo.setApplicationVersion(m_settings.applicationVersion());
-        }
-
-        if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError)
-            setStatus(PackageManagerCore::Failure, tr("Failure to read packages from: %1.").arg(componentsXmlPath()));
-
-        foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
-            installedPackages.insert(info.name, info);
-     }
-
-    return installedPackages;
 }
 
 }   // QInstaller

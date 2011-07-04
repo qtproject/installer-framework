@@ -78,7 +78,7 @@ public:
 
                     PackageManagerCore core(QInstaller::MagicUpdaterMarker);
                     core.setTemporaryRepositories(settings.repositories());
-                    if (!core.fetchUpdaterPackages())
+                    if (!core.fetchRemotePackagesTree())
                         throw Error(tr("Software Update failed."));
                     settings.setLastResult(tr("Software Update run successfully."));
 

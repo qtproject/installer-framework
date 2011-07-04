@@ -92,7 +92,7 @@ void MainWindow::checkForUpdates()
         m_core.setTemporaryRepositories(settings.repositories());
         settings.setLastCheck(QDateTime::currentDateTime());
 
-        if (!m_core.fetchUpdaterPackages()) {
+        if (!m_core.fetchRemotePackagesTree()) {
             settings.setLastResult(tr("Software Update failed."));
             QMessageBox::information(this, tr("Check for Updates"), tr("Failed to retrieve updates!"));
             return;

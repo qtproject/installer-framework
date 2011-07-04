@@ -57,7 +57,6 @@
 
 #include <KDToolsCore/KDSysInfo>
 #include <KDUpdater/Update>
-#include <KDUpdater/UpdateFinder>
 #include <KDUpdater/UpdateOperation>
 #include <KDUpdater/UpdateOperationFactory>
 
@@ -535,7 +534,7 @@ void PackageManagerCore::rollBackInstallation()
             if (!componentName.isEmpty()) {
                 Component *component = componentByName(componentName);
                 if (!component)
-                    component = d->componentsToReplace().value(componentName).second;
+                    component = d->componentsToReplace(runMode()).value(componentName).second;
                 if (component) {
                     component->setUninstalled();
                     packages.removePackage(component->name());
@@ -640,235 +639,6 @@ RunMode PackageManagerCore::runMode() const
     return isUpdater() ? UpdaterMode : AllMode;
 }
 
-bool PackageManagerCore::fetchAllPackages()
-{
-    d->setStatus(Running);
-
-    if (isUninstaller() || isUpdater()) {
-        d->setStatus(Failure, tr("Application not running in Installer or Package Manager mode!"));
-        return false;
-    }
-
-    QHash<QString, KDUpdater::PackageInfo> installedPackages = d->localInstalledPackages();
-    if (isPackageManager() && status() == Failure)
-        return false;
-
-    if (!d->fetchMetaInformationFromRepositories())
-        return false;
-
-    if (!d->addUpdateResourcesFromRepositories(true))
-            return false;
-
-    KDUpdater::UpdateFinder updateFinder(&d->m_updaterApplication);
-    updateFinder.setAutoDelete(false);
-    updateFinder.setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
-    updateFinder.run();
-
-    const QList<KDUpdater::Update*> &packages = updateFinder.updates();
-    if (packages.isEmpty()) {
-        verbose() << tr("Could not retrieve components: %1.").arg(updateFinder.errorString());
-        d->setStatus(Failure, tr("Could not retrieve components: %1.").arg(updateFinder.errorString()));
-        return false;
-    }
-
-    emit startAllComponentsReset();
-
-    d->clearAllComponentLists();
-    QMap<QString, QInstaller::Component*> components;
-
-    Data data;
-    data.components = &components;
-    data.installedPackages = &installedPackages;
-
-    foreach (KDUpdater::Update *package, packages) {
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
-
-        data.package = package;
-        component->loadDataFromUpdate(package);
-        if (updateComponentData(data, component.data())) {
-            const QString name = component->name();
-            components.insert(name, component.take());
-        }
-    }
-
-    // store all components that got a replacement
-    storeReplacedComponents(components, data.replacementToExchangeables);
-
-    // now append all components to their respective parents
-    QMap<QString, QInstaller::Component*>::const_iterator it;
-    for (it = components.begin(); it != components.end(); ++it) {
-        QString id = it.key();
-        QInstaller::Component *component = it.value();
-        while (!id.isEmpty() && component->parentComponent() == 0) {
-            id = id.section(QLatin1Char('.'), 0, -2);
-            if (components.contains(id))
-                components[id]->appendComponent(component);
-        }
-    }
-
-    // append all components w/o parent to the direct list
-    foreach (QInstaller::Component *component, components) {
-        if (component->parentComponent() == 0)
-            appendRootComponent(component, AllMode);
-    }
-
-    try {
-        // after everything is set up, load the scripts
-        foreach (QInstaller::Component *component, components)
-            component->loadComponentScript();
-    } catch (const Error &error) {
-        d->clearAllComponentLists();
-        emit finishAllComponentsReset();
-        d->setStatus(Failure, error.message());
-        return false;
-    }
-    // now set the checked state for all components without child
-    for (int i = 0; i < rootComponentCount(AllMode); ++i) {
-        QList<Component*> children = rootComponent(i, AllMode)->childs();
-        foreach (Component *child, children) {
-            if (child->isCheckable() && !child->isTristate()) {
-                if (child->isInstalled() || child->isDefault())
-                    child->setCheckState(Qt::Checked);
-            }
-        }
-    }
-
-    d->setStatus(Success);
-    emit finishAllComponentsReset();
-
-    return true;
-}
-
-bool PackageManagerCore::fetchUpdaterPackages()
-{
-    d->setStatus(Running);
-
-    if (!isUpdater()) {
-        d->setStatus(Failure, tr("Application not running in Updater mode!"));
-        return false;
-    }
-
-    QHash<QString, KDUpdater::PackageInfo> installedPackages = d->localInstalledPackages();
-    if (status() == Failure)
-        return false;
-
-    if (!d->fetchMetaInformationFromRepositories())
-        return false;
-
-    if (!d->addUpdateResourcesFromRepositories(true))
-        return false;
-
-    KDUpdater::UpdateFinder updateFinder(&d->m_updaterApplication);
-    updateFinder.setAutoDelete(false);
-    updateFinder.setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
-    updateFinder.run();
-
-    const QList<KDUpdater::Update*> &updates = updateFinder.updates();
-    if (updates.isEmpty()) {
-        verbose() << tr("Could not retrieve updates: %1.").arg(updateFinder.errorString());
-        d->setStatus(Failure, tr("Could not retrieve updates: %1.").arg(updateFinder.errorString()));
-        return false;
-    }
-
-    emit startUpdaterComponentsReset();
-
-    d->clearUpdaterComponentLists();
-    QMap<QString, QInstaller::Component*> components;
-
-    Data data;
-    data.components = &components;
-    data.installedPackages = &installedPackages;
-
-    bool importantUpdates = false;
-    foreach (KDUpdater::Update *update, updates) {
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
-
-        data.package = update;
-        component->loadDataFromUpdate(update);
-        if (updateComponentData(data, component.data())) {
-            // Keep a reference so we can resolve dependencies during update.
-            d->m_updaterComponentsDeps.append(component.take());
-
-            const QString isNew = update->data(scNewComponent).toString();
-            if (isNew.toLower() != scTrue)
-                continue;
-
-            const QString &name = d->m_updaterComponentsDeps.last()->name();
-            const QString replaces = data.package->data(scReplaces).toString();
-            bool isValidUpdate = installedPackages.contains(name);
-            if (!isValidUpdate && !replaces.isEmpty()) {
-                const QStringList possibleNames = replaces.split(QLatin1String(","), QString::SkipEmptyParts);
-                foreach (const QString &possibleName, possibleNames)
-                    isValidUpdate |= installedPackages.contains(possibleName);
-            }
-
-            if (!isValidUpdate)
-                continue;   // Update for not installed package found, skip it.
-
-            const KDUpdater::PackageInfo &info = installedPackages.value(name);
-            const QString updateVersion = update->data(scVersion).toString();
-            if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)
-                continue;
-
-            // It is quite possible that we may have already installed the update. Lets check the last
-            // update date of the package and the release date of the update. This way we can compare and
-            // figure out if the update has been installed or not.
-            const QDate updateDate = update->data(scReleaseDate).toDate();
-            if (info.lastUpdateDate > updateDate)
-                continue;
-
-            // this is not a dependency, it is a real update
-            components.insert(name, d->m_updaterComponentsDeps.takeLast());
-        }
-    }
-
-    // store all components that got a replacement
-    storeReplacedComponents(components, data.replacementToExchangeables);
-
-    // remove all unimportant components
-    QList<QInstaller::Component*> updaterComponents = components.values();
-    if (importantUpdates) {
-        for (int i = updaterComponents.count() - 1; i >= 0; --i) {
-            if (updaterComponents.at(i)->value(scImportant, scFalse).toLower() == scFalse)
-                delete updaterComponents.takeAt(i);
-        }
-    }
-
-    try {
-        if (!updaterComponents.isEmpty()) {
-            // load the scripts and append all components w/o parent to the direct list
-            foreach (QInstaller::Component *component, updaterComponents) {
-                component->loadComponentScript();
-                component->setCheckState(Qt::Checked);
-                appendRootComponent(component, UpdaterMode);
-            }
-
-            // after everything is set up, check installed components
-            foreach (QInstaller::Component *component, d->m_updaterComponentsDeps) {
-                if (component->isInstalled()) {
-                    // since we do not put them into the model, which would force a update of e.g. tri state
-                    // components, we have to check all installed components ourself
-                    component->setCheckState(Qt::Checked);
-                }
-            }
-        } else {
-            // we have no updates, no need to store possible dependencies
-            qDeleteAll(d->m_updaterComponentsDeps);
-            d->m_updaterComponentsDeps.clear();
-        }
-    } catch (const Error &error) {
-        d->clearUpdaterComponentLists();
-        emit finishUpdaterComponentsReset();
-        d->setStatus(Failure, error.message());
-        return false;
-    }
-
-    emit finishUpdaterComponentsReset();
-    d->setStatus(Success);
-
-    return true;
-}
-
 bool PackageManagerCore::fetchLocalPackagesTree()
 {
     d->setStatus(Running);
@@ -878,7 +648,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
         return false;
     }
 
-    QHash<QString, KDUpdater::PackageInfo> installedPackages = d->localInstalledPackages();
+    LocalPackages installedPackages = d->localInstalledPackages();
     if (installedPackages.isEmpty()) {
         if (status() != Failure)
             d->setStatus(Failure, tr("No installed packages found."));
@@ -936,6 +706,40 @@ bool PackageManagerCore::fetchLocalPackagesTree()
     d->setStatus(Success);
 
     return true;
+}
+
+bool PackageManagerCore::fetchRemotePackagesTree()
+{
+    d->setStatus(Running);
+
+    if (isUninstaller()) {
+        d->setStatus(Failure, tr("Application running in Uninstaller mode!"));
+        return false;
+    }
+
+    const LocalPackages installedPackages = d->localInstalledPackages();
+    if (!isInstaller() && status() == Failure)
+        return false;
+
+    if (!d->fetchMetaInformationFromRepositories())
+        return false;
+
+    if (!d->addUpdateResourcesFromRepositories(true))
+        return false;
+
+    const RemotePackages &packages = d->remotePackages();
+    if (packages.isEmpty())
+        return false;
+
+    bool success = false;
+    if (runMode() == AllMode)
+        success = fetchAllPackages(packages, installedPackages);
+    else
+        success = fetchUpdaterPackages(packages, installedPackages);
+
+    if (success)
+        d->setStatus(Success);
+    return success;
 }
 
 /*!
@@ -1685,7 +1489,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
                 const QStringList components = replaces.split(QLatin1Char(','), QString::SkipEmptyParts);
                 foreach (const QString &componentName, components) {
                     if (data.installedPackages->contains(componentName)) {
-                        if (runMode() == AllMode) {
+                        if (data.runMode == AllMode) {
                             component->setInstalled();
                             component->setValue(scInstalledVersion, data.package->data(scVersion).toString());
                         }
@@ -1718,20 +1522,185 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
     return true;
 }
 
-void PackageManagerCore::storeReplacedComponents(QMap<QString, Component*> &components,
-    const QHash<Component*, QStringList> &replacementToExchangeables)
+void PackageManagerCore::storeReplacedComponents(QMap<QString, Component*> &components, const struct Data &data)
 {
     QHash<Component*, QStringList>::const_iterator it;
     // remeber all components that got a replacement, requierd for uninstall
-    for (it = replacementToExchangeables.constBegin(); it != replacementToExchangeables.constEnd(); ++it) {
+    for (it = data.replacementToExchangeables.constBegin(); it != data.replacementToExchangeables.constEnd(); ++it) {
         foreach (const QString &componentName, it.value()) {
             Component *component = components.take(componentName);
-            if (!component && !d->componentsToReplace().contains(componentName)) {
+            if (!component && !d->componentsToReplace(data.runMode).contains(componentName)) {
                 component = new Component(this);
                 component->setValue(scName, componentName);
             }
             if (component)
-                d->componentsToReplace().insert(componentName, qMakePair(it.key(), component));
+                d->componentsToReplace(data.runMode).insert(componentName, qMakePair(it.key(), component));
         }
     }
+}
+
+bool PackageManagerCore::fetchAllPackages(const RemotePackages &remotes, const LocalPackages &locals)
+{
+    emit startAllComponentsReset();
+
+    d->clearAllComponentLists();
+    QMap<QString, QInstaller::Component*> components;
+
+    Data data;
+    data.runMode = AllMode;
+    data.components = &components;
+    data.installedPackages = &locals;
+
+    foreach (KDUpdater::Update *package, remotes) {
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+
+        data.package = package;
+        component->loadDataFromUpdate(package);
+        if (updateComponentData(data, component.data())) {
+            const QString name = component->name();
+            components.insert(name, component.take());
+        }
+    }
+
+    // store all components that got a replacement
+    storeReplacedComponents(components, data);
+
+    try {
+        // append all components to their respective parents
+        for (QMap<QString, Component*>::const_iterator it = components.begin(); it != components.end(); ++it) {
+            QString id = it.key();
+            QInstaller::Component *component = it.value();
+            while (!id.isEmpty() && component->parentComponent() == 0) {
+                id = id.section(QLatin1Char('.'), 0, -2);
+                if (components.contains(id))
+                    components[id]->appendComponent(component);
+            }
+        }
+
+        // append all components w/o parent to the direct list
+        foreach (QInstaller::Component *component, components) {
+            if (component->parentComponent() == 0)
+                appendRootComponent(component, AllMode);
+        }
+
+        // after everything is set up, load the scripts
+        foreach (QInstaller::Component *component, components)
+            component->loadComponentScript();
+
+        // set the checked state for all components without child
+        for (int i = 0; i < rootComponentCount(AllMode); ++i) {
+            QList<Component*> children = rootComponent(i, AllMode)->childs();
+            foreach (Component *child, children) {
+                if (child->isCheckable() && !child->isTristate()) {
+                    if (child->isInstalled() || child->isDefault())
+                        child->setCheckState(Qt::Checked);
+                }
+            }
+        }
+    } catch (const Error &error) {
+        d->clearAllComponentLists();
+        emit finishAllComponentsReset();
+        d->setStatus(Failure, error.message());
+        return false;
+    }
+
+    emit finishAllComponentsReset();
+    return true;
+}
+
+bool PackageManagerCore::fetchUpdaterPackages(const RemotePackages &remotes, const LocalPackages &locals)
+{
+    emit startUpdaterComponentsReset();
+
+    d->clearUpdaterComponentLists();
+    QMap<QString, QInstaller::Component*> components;
+
+    Data data;
+    data.runMode = UpdaterMode;
+    data.components = &components;
+    data.installedPackages = &locals;
+
+    foreach (KDUpdater::Update *update, remotes) {
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+
+        data.package = update;
+        component->loadDataFromUpdate(update);
+        if (updateComponentData(data, component.data())) {
+            // Keep a reference so we can resolve dependencies during update.
+            d->m_updaterComponentsDeps.append(component.take());
+
+            const QString isNew = update->data(scNewComponent).toString();
+            if (isNew.toLower() != scTrue)
+                continue;
+
+            const QString &name = d->m_updaterComponentsDeps.last()->name();
+            const QString replaces = data.package->data(scReplaces).toString();
+
+            bool isValidUpdate = locals.contains(name);
+            if (!isValidUpdate && !replaces.isEmpty()) {
+                const QStringList possibleNames = replaces.split(QLatin1String(","), QString::SkipEmptyParts);
+                foreach (const QString &possibleName, possibleNames)
+                    isValidUpdate |= locals.contains(possibleName);
+            }
+
+            if (!isValidUpdate)
+                continue;   // Update for not installed package found, skip it.
+
+            const KDUpdater::PackageInfo &info = locals.value(name);
+            const QString updateVersion = update->data(scVersion).toString();
+            if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)
+                continue;
+
+            // It is quite possible that we may have already installed the update. Lets check the last
+            // update date of the package and the release date of the update. This way we can compare and
+            // figure out if the update has been installed or not.
+            const QDate updateDate = update->data(scReleaseDate).toDate();
+            if (info.lastUpdateDate > updateDate)
+                continue;
+
+            // this is not a dependency, it is a real update
+            components.insert(name, d->m_updaterComponentsDeps.takeLast());
+        }
+    }
+
+    // store all components that got a replacement
+    storeReplacedComponents(components, data);
+
+    try {
+        // remove all unimportant updates
+        const QStringList &keys = components.keys();
+        foreach (const QString &key, keys) {
+            if (components.value(key)->value(scImportant, scFalse).toLower() == scFalse)
+                delete components.take(key);
+        }
+
+        if (!components.isEmpty()) {
+            // load the scripts and append all components w/o parent to the direct list
+            foreach (QInstaller::Component *component, components) {
+                component->loadComponentScript();
+                component->setCheckState(Qt::Checked);
+                appendRootComponent(component, UpdaterMode);
+            }
+
+            // after everything is set up, check installed components
+            foreach (QInstaller::Component *component, d->m_updaterComponentsDeps) {
+                if (component->isInstalled()) {
+                    // since we do not put them into the model, which would force a update of e.g. tri state
+                    // components, we have to check all installed components ourself
+                    component->setCheckState(Qt::Checked);
+                }
+            }
+        } else {
+            // we have no updates, no need to store possible dependencies
+            d->clearUpdaterComponentLists();
+        }
+    } catch (const Error &error) {
+        d->clearUpdaterComponentLists();
+        emit finishUpdaterComponentsReset();
+        d->setStatus(Failure, error.message());
+        return false;
+    }
+
+    emit finishUpdaterComponentsReset();
+    return true;
 }
