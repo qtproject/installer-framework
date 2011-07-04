@@ -92,6 +92,7 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     bottomLayout->addStretch();
 
     m_detailsBrowser = new LazyPlainTextEdit(widget);
+    m_detailsBrowser->setReadOnly(true);
     m_detailsBrowser->setWordWrapMode(QTextOption::NoWrap);
     m_detailsBrowser->setObjectName(QLatin1String("DetailsBrowser"));
     m_detailsBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
