@@ -50,7 +50,7 @@ class PackageManagerCore;
 class INSTALLER_EXPORT Component : public QObject, public QScriptable, public ComponentModelHelper
 {
     Q_OBJECT
-    Q_DISABLE_COPY(Component);
+    Q_DISABLE_COPY(Component)
 
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QString displayName READ displayName)

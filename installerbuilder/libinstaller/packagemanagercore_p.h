@@ -63,7 +63,7 @@ class TempDirDeleter;
 
 class PackageManagerCorePrivate : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
     friend class PackageManagerCore;
 
 public:
