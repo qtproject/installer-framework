@@ -46,6 +46,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QLabel>
 #include <QtGui/QMenuBar>
+#include <QtGui/QMessageBox>
 #include <QtGui/QProgressDialog>
 
 using namespace QInstaller;

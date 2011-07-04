@@ -31,37 +31,20 @@
 
 #include <KDUpdater/PackagesInfo>
 
-#include <QtCore/QAbstractItemModel>
+#include <QtCore/QHash>
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
 #include <QtCore/QVector>
-#include <QtCore/QHash>
 
-#include <QtGui/QMessageBox>
-
-#include <QtScript/QScriptable>
-#include <QtScript/QScriptValue>
-
+class KDJob;
 namespace KDUpdater {
     class Update;
     class UpdateOperation;
 }
 
-QT_BEGIN_NAMESPACE
-class QDir;
-class QFile;
-class QIODevice;
-QT_END_NAMESPACE
-
-class KDJob;
-
-/*
- * TRANSLATOR QInstaller::PackageManagerCore
- */
 namespace QInstaller {
 
 class Component;
-class MessageBoxHandler;
 class PackageManagerCorePrivate;
 class Settings;
 
