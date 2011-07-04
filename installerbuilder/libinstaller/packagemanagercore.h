@@ -72,10 +72,10 @@ class INSTALLER_EXPORT PackageManagerCore : public QObject
     Q_ENUMS(Status WizardPage)
     Q_PROPERTY(int status READ status NOTIFY statusChanged)
 
+    typedef QList<KDUpdater::UpdateOperation*> Operations;
 public:
-    PackageManagerCore();
-    explicit PackageManagerCore(qint64 magicmaker, const QVector<KDUpdater::UpdateOperation*> &oldOperations
-            = QVector< KDUpdater::UpdateOperation*>());
+    explicit PackageManagerCore();
+    explicit PackageManagerCore(qint64 magicmaker, const Operations &oldOperations = Operations());
     ~PackageManagerCore();
 
     // status

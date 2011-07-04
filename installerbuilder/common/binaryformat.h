@@ -199,7 +199,7 @@ public:
 
     qint64 magicmaker() const;
     int registerEmbeddedQResources();
-    QStack<KDUpdater::UpdateOperation*> performedOperations() const;
+    QList<KDUpdater::UpdateOperation*> performedOperations() const;
 
 private:
     static void readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,

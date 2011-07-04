@@ -579,9 +579,8 @@ PackageManagerCore::PackageManagerCore()
 {
 }
 
-PackageManagerCore::PackageManagerCore(qint64 magicmaker,
-        const QVector<KDUpdater::UpdateOperation*>& performedOperations)
-    : d(new PackageManagerCorePrivate(this, magicmaker, performedOperations.toList()))
+PackageManagerCore::PackageManagerCore(qint64 magicmaker, const Operations &performedOperations)
+    : d(new PackageManagerCorePrivate(this, magicmaker, performedOperations))
 {
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");

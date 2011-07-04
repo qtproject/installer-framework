@@ -1041,7 +1041,7 @@ int BinaryContent::registerEmbeddedQResources()
     Returns the operations performed during installation. Returns an empty list if no operations are
     performed or the binary is the installer application.
 */
-QStack<KDUpdater::UpdateOperation*> BinaryContent::performedOperations() const
+QList<KDUpdater::UpdateOperation*> BinaryContent::performedOperations() const
 {
-    return m_performedOperations;
+    return m_performedOperations.toList();
 }
