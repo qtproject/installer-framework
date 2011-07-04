@@ -27,8 +27,8 @@
 #define BINARYFORMAT_H
 
 #include "binaryformatenginehandler.h"
-#include "installer_global.h"
 #include "range.h"
+#include "qinstallerglobal.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QFile>
@@ -36,10 +36,6 @@
 #include <QtCore/QStack>
 #include <QtCore/QVector>
 #include <QtCore/QSharedPointer>
-
-namespace KDUpdater {
-    class UpdateOperation;
-}
 
 namespace QInstaller {
     static const qint64 MagicInstallerMarker = 0x12023233UL;
@@ -199,7 +195,7 @@ public:
 
     qint64 magicmaker() const;
     int registerEmbeddedQResources();
-    QList<KDUpdater::UpdateOperation*> performedOperations() const;
+    Operations performedOperations() const;
 
 private:
     static void readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
@@ -214,7 +210,7 @@ private:
     QVector<const uchar*> m_resourceMappings;
     qint64 m_magicmarker;
     qint64 m_dataBlockStart;
-    QStack<KDUpdater::UpdateOperation*> m_performedOperations;
+    QStack<Operation*> m_performedOperations;
 };
 
 }

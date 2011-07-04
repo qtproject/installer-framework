@@ -48,7 +48,6 @@
 #include <KDToolsCore/KDSaveFile>
 #include <KDToolsCore/KDSelfRestarter>
 #include <KDUpdater/KDUpdater>
-#include <KDUpdater/UpdateOperation>
 
 #include <QtCore/QtConcurrentRun>
 #include <QtCore/QCoreApplication>
@@ -62,7 +61,7 @@
 
 namespace QInstaller {
 
-static bool runOperation(KDUpdater::UpdateOperation *op, PackageManagerCorePrivate::OperationType type)
+static bool runOperation(Operation *op, PackageManagerCorePrivate::OperationType type)
 {
     switch (type) {
         case PackageManagerCorePrivate::Backup:
@@ -162,7 +161,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 }
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
-        const QList<KDUpdater::UpdateOperation*> &performedOperations)
+        const Operations &performedOperations)
     : m_updateFinder(0)
     , m_FSEngineClientHandler(initFSEngineClientHandler())
     , m_status(PackageManagerCore::Unfinished)
@@ -232,10 +231,10 @@ bool PackageManagerCorePrivate::isProcessRunning(const QString &name,
 }
 
 /* static */
-bool PackageManagerCorePrivate::performOperationThreaded(KDUpdater::UpdateOperation *op, OperationType type)
+bool PackageManagerCorePrivate::performOperationThreaded(Operation *operation, OperationType type)
 {
     QFutureWatcher<bool> futureWatcher;
-    const QFuture<bool> future = QtConcurrent::run(runOperation, op, type);
+    const QFuture<bool> future = QtConcurrent::run(runOperation, operation, type);
 
     QEventLoop loop;
     loop.connect(&futureWatcher, SIGNAL(finished()), SLOT(quit()), Qt::QueuedConnection);
@@ -360,7 +359,7 @@ void PackageManagerCorePrivate::initialize()
 #endif
     }
 
-    foreach (KDUpdater::UpdateOperation *currentOperation, m_performedOperationsOld)
+    foreach (Operation *currentOperation, m_performedOperationsOld)
         currentOperation->setValue(QLatin1String("installer"), QVariant::fromValue(m_core));
 
     disconnect(this, SIGNAL(installationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
@@ -476,7 +475,7 @@ QByteArray PackageManagerCorePrivate::replaceVariables(const QByteArray &ba) con
     \internal
     Creates an update operation owned by the installer, not by any component.
  */
-KDUpdater::UpdateOperation* PackageManagerCorePrivate::createOwnedOperation(const QString &type)
+Operation* PackageManagerCorePrivate::createOwnedOperation(const QString &type)
 {
     m_ownedOperations.append(KDUpdater::UpdateOperationFactory::instance().create(type));
     return m_ownedOperations.last();
@@ -487,7 +486,7 @@ KDUpdater::UpdateOperation* PackageManagerCorePrivate::createOwnedOperation(cons
     Removes \a opertion from the operations owned by the installer, returns the very same operation if the
     operation was found, otherwise 0.
  */
-KDUpdater::UpdateOperation* PackageManagerCorePrivate::takeOwnedOperation(KDUpdater::UpdateOperation *operation)
+Operation* PackageManagerCorePrivate::takeOwnedOperation(Operation *operation)
 {
     if (!m_ownedOperations.contains(operation))
         return 0;
@@ -558,10 +557,10 @@ void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> 
     }
 }
 
-int PackageManagerCorePrivate::countProgressOperations(const QList<KDUpdater::UpdateOperation*> &operations)
+int PackageManagerCorePrivate::countProgressOperations(const Operations &operations)
 {
     int operationCount = 0;
-    foreach (KDUpdater::UpdateOperation *operation, operations) {
+    foreach (Operation *operation, operations) {
         if (QObject *operationObject = dynamic_cast<QObject*> (operation)) {
             const QMetaObject *const mo = operationObject->metaObject();
             if (mo->indexOfSignal(QMetaObject::normalizedSignature("progressChanged(double)")) > -1)
@@ -580,10 +579,9 @@ int PackageManagerCorePrivate::countProgressOperations(const QList<Component*> &
     return operationCount;
 }
 
-void PackageManagerCorePrivate::connectOperationToInstaller(KDUpdater::UpdateOperation *const operation,
-    double progressOperationPartSize)
+void PackageManagerCorePrivate::connectOperationToInstaller(Operation *const operation, double operationPartSize)
 {
-    Q_ASSERT(progressOperationPartSize);
+    Q_ASSERT(operationPartSize);
     QObject* const operationObject = dynamic_cast< QObject* >(operation);
     if (operationObject != 0) {
         const QMetaObject* const mo = operationObject->metaObject();
@@ -597,23 +595,23 @@ void PackageManagerCorePrivate::connectOperationToInstaller(KDUpdater::UpdateOpe
 
         if (mo->indexOfSignal(QMetaObject::normalizedSignature("progressChanged(double)")) > -1) {
             ProgressCoordninator::instance()->registerPartProgress(operationObject,
-                SIGNAL(progressChanged(double)), progressOperationPartSize);
+                SIGNAL(progressChanged(double)), operationPartSize);
         }
     }
 }
 
-KDUpdater::UpdateOperation* PackageManagerCorePrivate::createPathOperation(const QFileInfo &fileInfo,
+Operation* PackageManagerCorePrivate::createPathOperation(const QFileInfo &fileInfo,
     const QString &componentName)
 {
     const bool isDir = fileInfo.isDir();
     // create an operation with the dir/ file as target, it will get deleted on undo
-    KDUpdater::UpdateOperation *op = createOwnedOperation(QLatin1String(isDir ? "Mkdir" : "Copy"));
+    Operation *operation = createOwnedOperation(QLatin1String(isDir ? "Mkdir" : "Copy"));
     if (isDir)
-        op->setValue(QLatin1String("createddir"), fileInfo.absoluteFilePath());
-    op->setValue(QLatin1String("component"), componentName);
-    op->setArguments(isDir ? QStringList() << fileInfo.absoluteFilePath()
+        operation->setValue(QLatin1String("createddir"), fileInfo.absoluteFilePath());
+    operation->setValue(QLatin1String("component"), componentName);
+    operation->setArguments(isDir ? QStringList() << fileInfo.absoluteFilePath()
         : QStringList() << QString() << fileInfo.absoluteFilePath());
-    return op;
+    return operation;
 }
 
 /*!
@@ -632,7 +630,7 @@ void PackageManagerCorePrivate::registerPathesForUninstallation(
 
         const QFileInfo fi(path);
         // create a copy operation with the file as target -> it will get deleted on undo
-        KDUpdater::UpdateOperation *op = createPathOperation(fi, componentName);
+        Operation *op = createPathOperation(fi, componentName);
         if (fi.isDir())
             op->setValue(QLatin1String("forceremoval"), wipe ? scTrue : scFalse);
         addPerformed(takeOwnedOperation(op));
@@ -675,8 +673,8 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
 }
 
 void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QFile *const input,
-    const QList<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout,
-    bool compressOperations, bool forceUncompressedResources)
+    const Operations &performedOperations, const BinaryLayout &layout, bool compressOperations,
+    bool forceUncompressedResources)
 {
     const qint64 dataBlockStart = output->pos();
 
@@ -701,13 +699,13 @@ void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QF
 
     const qint64 operationsStart = output->pos();
     appendInt64(output, performedOperations.count());
-    foreach (KDUpdater::UpdateOperation *op, performedOperations) {
+    foreach (Operation *operation, performedOperations) {
         // the installer can't be put into XML, remove it first
-        op->clearValue(QLatin1String("installer"));
+        operation->clearValue(QLatin1String("installer"));
 
-        appendString(output, op->name());
-        compressOperations ? appendByteArray(output, qCompress(op->toXml().toByteArray()))
-            : appendString(output, op->toXml().toString());
+        appendString(output, operation->name());
+        compressOperations ? appendByteArray(output, qCompress(operation->toXml().toByteArray()))
+            : appendString(output, operation->toXml().toString());
 
         // for the ui not to get blocked
         qApp->processEvents();
@@ -736,7 +734,7 @@ void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QF
     appendInt64(output, MagicUninstallerMarker);
 }
 
-void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperation*> performedOperations)
+void PackageManagerCorePrivate::writeUninstaller(Operations performedOperations)
 {
     bool gainedAdminRights = false;
     QTemporaryFile tempAdminFile(targetDir() + QString::fromLatin1("/testjsfdjlkdsjflkdsjfldsjlfds")
@@ -749,7 +747,7 @@ void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperatio
     const QString targetAppDirPath = QFileInfo(uninstallerName()).path();
     if (!QDir().exists(targetAppDirPath)) {
         // create the directory containing the uninstaller (like a bundle structor, on Mac...)
-        KDUpdater::UpdateOperation* op = createOwnedOperation(QLatin1String("Mkdir"));
+        Operation* op = createOwnedOperation(QLatin1String("Mkdir"));
         op->setArguments(QStringList() << targetAppDirPath);
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
@@ -787,7 +785,7 @@ void PackageManagerCorePrivate::writeUninstaller(QList<KDUpdater::UpdateOperatio
     // if it is a bundle, we need some stuff in it...
     const QString sourceAppDirPath = QCoreApplication::applicationDirPath();
     if (isInstaller() && QFileInfo(sourceAppDirPath + QLatin1String("/../..")).isBundle()) {
-        KDUpdater::UpdateOperation* op = createOwnedOperation(QLatin1String("Copy"));
+        Operation *op = createOwnedOperation(QLatin1String("Copy"));
         op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../PkgInfo"))
             << (targetAppDirPath + QLatin1String("/../PkgInfo")));
         performOperationThreaded(op, Backup);
@@ -1020,7 +1018,7 @@ void PackageManagerCorePrivate::runInstaller()
         }
 
         // add the operation to create the target directory
-        KDUpdater::UpdateOperation *mkdirOp = createOwnedOperation(QLatin1String("Mkdir"));
+        Operation *mkdirOp = createOwnedOperation(QLatin1String("Mkdir"));
         mkdirOp->setArguments(QStringList() << target);
         mkdirOp->setValue(QLatin1String("forceremoval"), true);
         mkdirOp->setValue(QLatin1String("uninstall-only"), true);
@@ -1145,12 +1143,12 @@ void PackageManagerCorePrivate::runPackageUpdater()
             }
         }
 
+        Operations undoOperations;
+        Operations nonRevertedOperations;
         QHash<QString, Component*> componentsByName;
-        QList<KDUpdater::UpdateOperation*> undoOperations;
-        QList<KDUpdater::UpdateOperation*> nonRevertedOperations;
 
         // build a list of undo operations based on the checked state of the component
-        foreach (KDUpdater::UpdateOperation *operation, m_performedOperationsOld) {
+        foreach (Operation *operation, m_performedOperationsOld) {
             const QString &name = operation->value(QLatin1String("component")).toString();
             Component *component = componentsByName.value(name, 0);
             if (!component)
@@ -1264,9 +1262,9 @@ void PackageManagerCorePrivate::runUninstaller()
         if (!QFileInfo(installerBinaryPath()).isWritable() || !QFileInfo(componentsXmlPath()).isWritable())
             adminRightsGained = m_core->gainAdminRights();
 
+        Operations undoOperations;
         bool updateAdminRights = false;
-        QList<KDUpdater::UpdateOperation*> undoOperations;
-        foreach (KDUpdater::UpdateOperation *op, m_performedOperationsOld) {
+        foreach (Operation *op, m_performedOperationsOld) {
             undoOperations.prepend(op);
             updateAdminRights |= op->value(QLatin1String("admin")).toBool();
         }
@@ -1341,7 +1339,7 @@ void PackageManagerCorePrivate::runUninstaller()
 void PackageManagerCorePrivate::installComponent(Component *component, double progressOperationSize,
     bool adminRightsGained)
 {
-    const QList<KDUpdater::UpdateOperation*> operations = component->operations();
+    const Operations operations = component->operations();
     if (!component->operationsCreatedSuccessfully())
         m_core->setCanceled();
 
@@ -1352,7 +1350,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
                 .arg(component->displayName()));
     }
 
-    foreach (KDUpdater::UpdateOperation *operation, operations) {
+    foreach (Operation *operation, operations) {
         if (statusCanceledOrFailed())
             throw Error(tr("Installation canceled by user"));
 
@@ -1388,7 +1386,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
                 m_core->interrupt();
         }
 
-        if (ok || operation->error() > KDUpdater::UpdateOperation::InvalidArguments) {
+        if (ok || operation->error() > Operation::InvalidArguments) {
             // Remember that the operation was performed, what allows us to undo it if a following operation
             // fails or if this operation failed but still needs an undo call to cleanup.
             addPerformed(operation);
@@ -1412,8 +1410,8 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     registerPathesForUninstallation(component->pathesForUninstallation(), component->name());
 
     if (!component->stopProcessForUpdateRequests().isEmpty()) {
-        KDUpdater::UpdateOperation *stopProcessForUpdatesOp =
-            KDUpdater::UpdateOperationFactory::instance().create(QLatin1String("FakeStopProcessForUpdate"));
+        Operation *stopProcessForUpdatesOp = KDUpdater::UpdateOperationFactory::instance()
+            .create(QLatin1String("FakeStopProcessForUpdate"));
         const QStringList arguments(component->stopProcessForUpdateRequests().join(QLatin1String(",")));
         stopProcessForUpdatesOp->setArguments(arguments);
         addPerformed(stopProcessForUpdatesOp);
@@ -1470,7 +1468,7 @@ void PackageManagerCorePrivate::deleteUninstaller()
     arguments << QLatin1String("//Nologo") << batchfile; // execute the batchfile
     arguments << QDir::toNativeSeparators(QFileInfo(installerBinaryPath()).absoluteFilePath());
     if (!m_performedOperationsOld.isEmpty()) {
-        const KDUpdater::UpdateOperation* const op = m_performedOperationsOld.first();
+        const Operation* const op = m_performedOperationsOld.first();
         if (op->name() == QLatin1String("Mkdir")) // the target directory name
             arguments << QDir::toNativeSeparators(QFileInfo(op->arguments().first()).absoluteFilePath());
     }
@@ -1526,12 +1524,12 @@ void PackageManagerCorePrivate::unregisterUninstaller()
 #endif
 }
 
-void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
-    double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation)
+void PackageManagerCorePrivate::runUndoOperations(const Operations &undoOperations, double progressSize,
+    bool adminRightsGained, bool deleteOperation)
 {
     KDUpdater::PackagesInfo &packages = *m_updaterApplication.packagesInfo();
     try {
-        foreach (KDUpdater::UpdateOperation *undoOperation, undoOperations) {
+        foreach (Operation *undoOperation, undoOperations) {
             if (statusCanceledOrFailed())
                 throw Error(tr("Installation canceled by user"));
 
@@ -1539,12 +1537,12 @@ void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateO
             if (!adminRightsGained && undoOperation->value(QLatin1String("admin")).toBool())
                 becameAdmin = m_core->gainAdminRights();
 
-            connectOperationToInstaller(undoOperation, undoOperationProgressSize);
+            connectOperationToInstaller(undoOperation, progressSize);
             verbose() << "undo operation=" << undoOperation->name() << std::endl;
             performOperationThreaded(undoOperation, PackageManagerCorePrivate::Undo);
 
             const QString componentName = undoOperation->value(QLatin1String("component")).toString();
-            if (undoOperation->error() != KDUpdater::UpdateOperation::NoError) {
+            if (undoOperation->error() != Operation::NoError) {
                 if (!componentName.isEmpty()) {
                     bool run = true;
                     while (run && m_core->status() != PackageManagerCore::Canceled) {
@@ -1556,7 +1554,7 @@ void PackageManagerCorePrivate::runUndoOperations(const QList<KDUpdater::UpdateO
 
                         if (button == QMessageBox::Retry) {
                             performOperationThreaded(undoOperation, Undo);
-                            if (undoOperation->error() == KDUpdater::UpdateOperation::NoError)
+                            if (undoOperation->error() == Operation::NoError)
                                 run = false;
                         } else if (button == QMessageBox::Ignore) {
                             run = false;

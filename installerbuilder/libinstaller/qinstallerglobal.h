@@ -28,6 +28,8 @@
 
 #include <installer_global.h>
 
+#include <KDUpdater/UpdateOperation>
+
 #include <QtCore/QString>
 
 QT_BEGIN_NAMESPACE
@@ -54,6 +56,9 @@ enum INSTALLER_EXPORT JobError
     ExtractionError,
     UserIgnoreError
 };
+
+typedef KDUpdater::UpdateOperation Operation;
+typedef QList<QInstaller::Operation*> Operations;
 
 QString uncaughtExceptionString(QScriptEngine *scriptEngine);
 QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine);

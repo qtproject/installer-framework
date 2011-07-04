@@ -39,7 +39,6 @@
 
 namespace KDUpdater {
     class Update;
-    class UpdateOperation;
     struct PackageInfo;
 }
 
@@ -129,9 +128,9 @@ public:
     Q_INVOKABLE QList<QPair<QString, bool> > pathesForUninstallation() const;
     Q_INVOKABLE void registerPathForUninstallation(const QString &path, bool wipe = false);
 
-    QList<KDUpdater::UpdateOperation*> operations() const;
+    Operations operations() const;
 
-    void addOperation(KDUpdater::UpdateOperation *operation);
+    void addOperation(Operation *operation);
     Q_INVOKABLE bool addOperation(const QString &operation, const QString &parameter1 = QString(),
         const QString &parameter2 = QString(), const QString &parameter3 = QString(),
         const QString &parameter4 = QString(), const QString &parameter5 = QString(),
@@ -139,7 +138,7 @@ public:
         const QString &parameter8 = QString(), const QString &parameter9 = QString(),
         const QString &parameter10 = QString());
 
-    void addElevatedOperation(KDUpdater::UpdateOperation *operation);
+    void addElevatedOperation(Operation *operation);
     Q_INVOKABLE bool addElevatedOperation(const QString &operation,
         const QString &parameter1 = QString(), const QString &parameter2 = QString(),
         const QString &parameter3 = QString(), const QString &parameter4 = QString(),
@@ -209,12 +208,12 @@ private Q_SLOTS:
 private:
     void setLocalTempPath(const QString &tempPath);
 
-    KDUpdater::UpdateOperation *createOperation(const QString &operation,
-        const QString &parameter1 = QString(), const QString &parameter2 = QString(),
-        const QString &parameter3 = QString(), const QString &parameter4 = QString(),
-        const QString &parameter5 = QString(), const QString &parameter6 = QString(),
-        const QString &parameter7 = QString(), const QString &parameter8 = QString(),
-        const QString &parameter9 = QString(), const QString &parameter10 = QString());
+    Operation *createOperation(const QString &operation, const QString &parameter1 = QString(),
+        const QString &parameter2 = QString(), const QString &parameter3 = QString(),
+        const QString &parameter4 = QString(), const QString &parameter5 = QString(),
+        const QString &parameter6 = QString(), const QString &parameter7 = QString(),
+        const QString &parameter8 = QString(), const QString &parameter9 = QString(),
+        const QString &parameter10 = QString());
 
 private:
     ComponentPrivate *d;
@@ -222,6 +221,6 @@ private:
 
 }   // namespace QInstaller
 
-Q_DECLARE_METATYPE(QInstaller::Component*);
+Q_DECLARE_METATYPE(QInstaller::Component*)
 
 #endif // COMPONENT_H

@@ -57,7 +57,6 @@
 
 #include <KDToolsCore/KDSysInfo>
 #include <KDUpdater/Update>
-#include <KDUpdater/UpdateOperation>
 #include <KDUpdater/UpdateOperationFactory>
 
 #ifdef Q_OS_WIN
@@ -366,7 +365,7 @@ void PackageManagerCore::installSelectedComponents()
 
             // undo all operations done by this component upon installation
             for (int i = d->m_performedOperationsOld.count() - 1; i >= 0; --i) {
-                KDUpdater::UpdateOperation* const op = d->m_performedOperationsOld.at(i);
+                Operation* const op = d->m_performedOperationsOld.at(i);
                 if (!possibleNames.contains(op->value(QLatin1String("component")).toString()))
                     continue;
                 const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
@@ -510,8 +509,8 @@ void PackageManagerCore::rollBackInstallation()
     const double progressOperationSize = double(1) / progressOperationCount;
 
     //re register all the undo operations with the new size to the ProgressCoordninator
-    foreach (KDUpdater::UpdateOperation* const operation, d->m_performedOperationsCurrentSession) {
-        QObject* const operationObject = dynamic_cast<QObject*>(operation);
+    foreach (Operation *const operation, d->m_performedOperationsCurrentSession) {
+        QObject *const operationObject = dynamic_cast<QObject*> (operation);
         if (operationObject != 0) {
             const QMetaObject* const mo = operationObject->metaObject();
             if (mo->indexOfSignal(QMetaObject::normalizedSignature("progressChanged(double)")) > -1) {
@@ -524,7 +523,7 @@ void PackageManagerCore::rollBackInstallation()
     KDUpdater::PackagesInfo &packages = *d->m_updaterApplication.packagesInfo();
     while (!d->m_performedOperationsCurrentSession.isEmpty()) {
         try {
-            KDUpdater::UpdateOperation *const operation = d->m_performedOperationsCurrentSession.takeLast();
+            Operation *const operation = d->m_performedOperationsCurrentSession.takeLast();
             const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
                 && operation->value(QLatin1String("admin")).toBool() && gainAdminRights();
 
@@ -1105,8 +1104,7 @@ QString PackageManagerCore::environmentVariable(const QString &name) const
 */
 bool PackageManagerCore::performOperation(const QString &name, const QStringList &arguments)
 {
-    QScopedPointer<KDUpdater::UpdateOperation> op(KDUpdater::UpdateOperationFactory::instance()
-        .create(name));
+    QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(name));
     if (!op.data())
         return false;
 

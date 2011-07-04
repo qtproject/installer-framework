@@ -38,7 +38,6 @@
 #include "utils.h"
 #include "zipjob.h"
 
-#include <KDUpdater/UpdateOperation>
 #include <KDUpdater/UpdateOperationFactory>
 
 #include <QtCore/QResource>
@@ -966,7 +965,7 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
 
     for (int i = 0; i < operationsCount; ++i) {
         const QString name = retrieveString(file.data());
-        KDUpdater::UpdateOperation *op = KDUpdater::UpdateOperationFactory::instance().create(name);
+        Operation *op = KDUpdater::UpdateOperationFactory::instance().create(name);
         Q_ASSERT_X(op, __FUNCTION__, QString::fromLatin1("Invalid operation name: %1").arg(name)
             .toLatin1());
 
@@ -1041,7 +1040,7 @@ int BinaryContent::registerEmbeddedQResources()
     Returns the operations performed during installation. Returns an empty list if no operations are
     performed or the binary is the installer application.
 */
-QList<KDUpdater::UpdateOperation*> BinaryContent::performedOperations() const
+Operations BinaryContent::performedOperations() const
 {
     return m_performedOperations.toList();
 }

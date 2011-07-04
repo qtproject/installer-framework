@@ -61,8 +61,9 @@ public:
 
     PackageManagerCore *m_core;
     Component *m_parentComponent;
-    KDUpdater::UpdateOperation *m_licenseOperation;
-    KDUpdater::UpdateOperation *m_minimumProgressOperation;
+    Operations m_operations;
+    Operation *m_licenseOperation;
+    Operation *m_minimumProgressOperation;
 
     bool m_newlyInstalled;
     bool m_operationsCreated;
@@ -83,7 +84,7 @@ public:
     QMap<QString, QWidget*> m_userInterfaces;
     QStringList m_stopProcessForUpdateRequests;
     QHash<QString, bool> m_unexistingScriptMethods;
-    QList<KDUpdater::UpdateOperation*> m_operations;
+
     // < display name, < file name, file content > >
     QHash<QString, QPair<QString, QString> > m_licenses;
     QList<QPair<QString, bool> > m_pathesForUninstallation;

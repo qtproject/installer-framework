@@ -39,7 +39,6 @@
 class KDJob;
 namespace KDUpdater {
     class Update;
-    class UpdateOperation;
 }
 
 namespace QInstaller {
@@ -57,7 +56,6 @@ class INSTALLER_EXPORT PackageManagerCore : public QObject
     Q_PROPERTY(int status READ status NOTIFY statusChanged)
 
     typedef QList<KDUpdater::Update*> RemotePackages;
-    typedef QList<KDUpdater::UpdateOperation*> Operations;
     typedef QHash<QString, KDUpdater::PackageInfo> LocalPackages;
 
 public:

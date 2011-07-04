@@ -51,7 +51,6 @@ QT_FORWARD_DECLARE_CLASS(QFileInfo)
 
 namespace KDUpdater {
     class UpdateFinder;
-    class UpdateOperation;
 }
 
 namespace QInstaller {
@@ -73,16 +72,15 @@ public:
         Undo
     };
 
-    PackageManagerCorePrivate(PackageManagerCore *core);
+    explicit PackageManagerCorePrivate(PackageManagerCore *core);
     explicit PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
-        const QList<KDUpdater::UpdateOperation*> &performedOperations);
+        const Operations &performedOperations);
     ~PackageManagerCorePrivate();
 
-    static bool isProcessRunning(const QString &name,
-        const QList<KDSysInfo::ProcessInfo> &processes);
+    static bool isProcessRunning(const QString &name, const QList<KDSysInfo::ProcessInfo> &processes);
 
-    static bool performOperationThreaded(KDUpdater::UpdateOperation *op,
-        PackageManagerCorePrivate::OperationType type = PackageManagerCorePrivate::Perform);
+    static bool performOperationThreaded(Operation *op, PackageManagerCorePrivate::OperationType type
+        = PackageManagerCorePrivate::Perform);
 
     void initialize();
 
@@ -95,7 +93,7 @@ public:
     QString uninstallerName() const;
     QString installerBinaryPath() const;
     void readUninstallerIniFile(const QString &targetDir);
-    void writeUninstaller(QList<KDUpdater::UpdateOperation*> performedOperations);
+    void writeUninstaller(Operations performedOperations);
 
     QString componentsXmlPath() const;
     QString configurationFileName() const;
@@ -121,19 +119,18 @@ public:
 
     void stopProcessesForUpdates(const QList<Component*> &components);
     int countProgressOperations(const QList<Component*> &components);
-    int countProgressOperations(const QList<KDUpdater::UpdateOperation*> &operations);
-    void connectOperationToInstaller(KDUpdater::UpdateOperation* const operation,
-        double progressOperationPartSize);
+    int countProgressOperations(const Operations &operations);
+    void connectOperationToInstaller(Operation* const operation, double progressOperationPartSize);
 
-    KDUpdater::UpdateOperation* createOwnedOperation(const QString &type);
-    KDUpdater::UpdateOperation* takeOwnedOperation(KDUpdater::UpdateOperation *operation);
+    Operation* createOwnedOperation(const QString &type);
+    Operation* takeOwnedOperation(Operation *operation);
 
-    KDUpdater::UpdateOperation* createPathOperation(const QFileInfo &fileInfo,
+    Operation* createPathOperation(const QFileInfo &fileInfo,
         const QString &componentName);
     void registerPathesForUninstallation(const QList<QPair<QString, bool> > &pathesForUninstallation,
         const QString &componentName);
 
-    void addPerformed(KDUpdater::UpdateOperation* op) {
+    void addPerformed(Operation* op) {
         m_performedOperationsCurrentSession.append(op);
     }
 
@@ -172,9 +169,9 @@ public:
     QList<Component*> m_updaterComponents;
     QList<Component*> m_updaterComponentsDeps;
 
-    QList<KDUpdater::UpdateOperation*> m_ownedOperations;
-    QList<KDUpdater::UpdateOperation*> m_performedOperationsOld;
-    QList<KDUpdater::UpdateOperation*> m_performedOperationsCurrentSession;
+    Operations m_ownedOperations;
+    Operations m_performedOperationsOld;
+    Operations m_performedOperationsCurrentSession;
 
 private:
     void deleteUninstaller();
@@ -182,12 +179,11 @@ private:
     void unregisterUninstaller();
 
     void writeUninstallerBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
-    void writeUninstallerBinaryData(QIODevice *output, QFile *const input,
-        const QList<KDUpdater::UpdateOperation*> &performedOperations, const BinaryLayout &layout,
-        bool compressOperations, bool forceUncompressedResources);
+    void writeUninstallerBinaryData(QIODevice *output, QFile *const input, const Operations &performed,
+        const BinaryLayout &layout, bool compressOperations, bool forceUncompressedResources);
 
-    void runUndoOperations(const QList<KDUpdater::UpdateOperation*> &undoOperations,
-        double undoOperationProgressSize, bool adminRightsGained, bool deleteOperation);
+    void runUndoOperations(const Operations &undoOperations, double undoOperationProgressSize,
+        bool adminRightsGained, bool deleteOperation);
 
     PackageManagerCore::RemotePackages remotePackages();
     PackageManagerCore::LocalPackages localInstalledPackages();

@@ -43,7 +43,6 @@
 
 #include <KDUpdater/Update>
 #include <KDUpdater/UpdateSourcesInfo>
-#include <KDUpdater/UpdateOperation>
 #include <KDUpdater/UpdateOperationFactory>
 #include <KDUpdater/PackagesInfo>
 
@@ -728,7 +727,7 @@ QStringList Component::stopProcessForUpdateRequests() const
     Returns the operations needed to install this component. If autoCreateOperations is true,
     createOperations is called, if no operations have been auto-created yet.
 */
-QList<KDUpdater::UpdateOperation*> Component::operations() const
+Operations Component::operations() const
 {
     if (d->m_autoCreateOperations && !d->m_operationsCreated) {
         const_cast<Component*>(this)->createOperations();
@@ -758,7 +757,7 @@ QList<KDUpdater::UpdateOperation*> Component::operations() const
 /*!
     Adds \a operation to the list of operations needed to install this component.
 */
-void Component::addOperation(KDUpdater::UpdateOperation* operation)
+void Component::addOperation(Operation *operation)
 {
     d->m_operations.append(operation);
     if (FSEngineClientHandler::instance().isActive())
@@ -769,7 +768,7 @@ void Component::addOperation(KDUpdater::UpdateOperation* operation)
     Adds \a operation to the list of operations needed to install this component. \a operation
     is executed with elevated rights.
 */
-void Component::addElevatedOperation(KDUpdater::UpdateOperation* operation)
+void Component::addElevatedOperation(Operation *operation)
 {
     addOperation(operation);
     operation->setValue(QLatin1String("admin"), true);
@@ -780,19 +779,17 @@ bool Component::operationsCreatedSuccessfully() const
     return d->m_operationsCreatedSuccessfully;
 }
 
-KDUpdater::UpdateOperation* Component::createOperation(const QString &operation,
-    const QString &parameter1, const QString &parameter2, const QString &parameter3,
-    const QString &parameter4, const QString &parameter5, const QString &parameter6,
-    const QString &parameter7, const QString &parameter8, const QString &parameter9,
+Operation* Component::createOperation(const QString &operation, const QString &parameter1,
+    const QString &parameter2, const QString &parameter3, const QString &parameter4, const QString &parameter5,
+    const QString &parameter6, const QString &parameter7, const QString &parameter8, const QString &parameter9,
     const QString &parameter10)
 {
-    KDUpdater::UpdateOperation* op = KDUpdater::UpdateOperationFactory::instance().create(operation);
+    Operation* op = KDUpdater::UpdateOperationFactory::instance().create(operation);
     if (op == 0) {
         const QMessageBox::StandardButton button =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("OperationDoesNotExistError"), tr("Error"),
-            tr("Error: Operation %1 does not exist").arg(operation),
-            QMessageBox::Abort | QMessageBox::Ignore);
+            QLatin1String("OperationDoesNotExistError"), tr("Error"), tr("Error: Operation %1 does not exist")
+                .arg(operation), QMessageBox::Abort | QMessageBox::Ignore);
         if (button == QMessageBox::Abort)
             d->m_operationsCreatedSuccessfully = false;
         return op;
@@ -833,14 +830,12 @@ KDUpdater::UpdateOperation* Component::createOperation(const QString &operation,
     the parameters get variables like "@TargetDir@" replaced with their values, if contained.
     \sa installeroperations
 */
-bool Component::addOperation(const QString &operation, const QString &parameter1,
-    const QString &parameter2, const QString &parameter3, const QString &parameter4,
-    const QString &parameter5, const QString &parameter6, const QString &parameter7,
-    const QString &parameter8, const QString &parameter9, const QString &parameter10)
+bool Component::addOperation(const QString &operation, const QString &parameter1, const QString &parameter2,
+    const QString &parameter3, const QString &parameter4, const QString &parameter5, const QString &parameter6,
+    const QString &parameter7, const QString &parameter8, const QString &parameter9, const QString &parameter10)
 {
-    if (KDUpdater::UpdateOperation *op = createOperation(operation, parameter1, parameter2,
-        parameter3, parameter4, parameter5, parameter6, parameter7, parameter8, parameter9,
-        parameter10)) {
+    if (Operation *op = createOperation(operation, parameter1, parameter2, parameter3, parameter4, parameter5,
+        parameter6, parameter7, parameter8, parameter9, parameter10)) {
             addOperation(op);
             return true;
     }
@@ -860,9 +855,8 @@ bool Component::addElevatedOperation(const QString &operation, const QString &pa
     const QString &parameter6, const QString &parameter7, const QString &parameter8, const QString &parameter9,
     const QString &parameter10)
 {
-    if (KDUpdater::UpdateOperation *op = createOperation(operation, parameter1, parameter2,
-        parameter3, parameter4, parameter5, parameter6, parameter7, parameter8, parameter9,
-        parameter10)) {
+    if (Operation *op = createOperation(operation, parameter1, parameter2, parameter3, parameter4, parameter5,
+        parameter6, parameter7, parameter8, parameter9, parameter10)) {
             addElevatedOperation(op);
             return true;
     }
