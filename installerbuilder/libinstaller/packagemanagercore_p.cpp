@@ -358,12 +358,15 @@ void PackageManagerCorePrivate::initialize()
     connect(this, SIGNAL(uninstallationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
 
     m_updaterApplication.packagesInfo()->setFileName(componentsXmlPath());
+    m_updaterApplication.updateSourcesInfo()->setFileName(QLatin1String(""));
+
     m_updaterApplication.packagesInfo()->setApplicationName(m_settings.applicationName());
     m_updaterApplication.packagesInfo()->setApplicationVersion(m_settings.applicationVersion());
     if (isInstaller()) {
         m_updaterApplication.addUpdateSource(m_settings.applicationName(), m_settings.applicationName(),
             QString(), QUrl(QLatin1String("resource://metadata/")), 0);
-        }
+        m_updaterApplication.updateSourcesInfo()->setModified(false);
+    }
 }
 
 QString PackageManagerCorePrivate::installerBinaryPath() const
