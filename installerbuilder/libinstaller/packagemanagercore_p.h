@@ -165,16 +165,6 @@ public:
     QHash<QString, bool> m_sharedFlags;
     QString m_installerBaseBinaryUnreplaced;
 
-    qint64 m_globalDictOffset;
-
-    qint64 m_componentsCount;
-    qint64 m_firstComponentStart;
-    qint64 m_componentOffsetTableStart;
-
-    qint64 m_componentsDictCount;
-    qint64 m_firstComponentDictStart;
-    qint64 m_componentDictOffsetTableStart;
-
     QList<Component*> m_rootComponents;
     QList<Component*> m_updaterComponents;
     QList<Component*> m_updaterComponentsDeps;
