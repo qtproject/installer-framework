@@ -31,12 +31,10 @@
 **
 **************************************************************************/
 #include "replaceoperation.h"
-#include <packagemanagercore.h>
-#include "common/utils.h"
 
-#include <QFile>
-#include <QDir>
-#include <QDebug>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
 
 using namespace QInstaller;
 
@@ -63,38 +61,33 @@ bool ReplaceOperation::performOperation()
     // 3. Replace-String
     if (args.count() != 3) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 3 expected.")
-                        .arg(name()).arg( args.count() ) );
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 3 expected.").arg(name()).arg(args
+            .count()));
         return false;
     }
-    const QString currentFileName = args.at(0);
-    const QString beforeString = args.at(1);
-    const QString afterString = args.at(2);
-//    QString debugString( QLatin1String("Replacing %1 to %2 in %3") );
-//    debugString = debugString.arg(beforeString);
-//    debugString = debugString.arg(afterString);
-//    debugString = debugString.arg(currentFileName);
-//    verbose() << debugString;
+    const QString fileName = args.at(0);
+    const QString before = args.at(1);
+    const QString after = args.at(2);
 
-    QFile file(currentFileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
         setError(UserDefinedError);
-        setErrorString(QObject::tr("Failed to open %1 for reading").arg(currentFileName));
+        setErrorString(QObject::tr("Failed to open %1 for reading").arg(fileName));
         return false;
     }
 
-    QString replacedFileContent = QString::fromLocal8Bit(file.readAll());
-    replacedFileContent.replace(beforeString, afterString);
+    QTextStream stream(&file);
+    QString replacedFileContent = stream.readAll();
     file.close();
 
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::WriteOnly)) {
         setError(UserDefinedError);
-        setErrorString(QObject::tr("Failed to open %1 for writing").arg(currentFileName));
+        setErrorString(QObject::tr("Failed to open %1 for writing").arg(fileName));
         return false;
     }
 
-    //TODO: check that toAscii is right(?)
-    file.write(replacedFileContent.toLocal8Bit());
+    stream.setDevice(&file);
+    stream << replacedFileContent.replace(before, after);
     file.close();
 
     return true;
@@ -111,7 +104,7 @@ bool ReplaceOperation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* ReplaceOperation::clone() const
+Operation *ReplaceOperation::clone() const
 {
     return new ReplaceOperation();
 }

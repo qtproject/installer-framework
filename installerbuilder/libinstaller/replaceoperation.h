@@ -26,11 +26,11 @@
 #ifndef REPLACEOPERATION_H
 #define REPLACEOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class ReplaceOperation : public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT ReplaceOperation : public Operation
 {
 public:
     ReplaceOperation();
@@ -40,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation *clone() const;
 };
 
 } // namespace
