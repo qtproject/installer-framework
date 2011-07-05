@@ -36,7 +36,6 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVector>
 
-class KDJob;
 namespace KDUpdater {
     class Update;
 }
@@ -219,7 +218,7 @@ Q_SIGNALS:
     void currentPageChanged(int page);
     void finishButtonClicked();
 
-    void metaJobInfoMessage(KDJob* job, const QString &message);
+    void metaJobInfoMessage(const QString &message);
 
     void startAllComponentsReset();
     void finishAllComponentsReset();

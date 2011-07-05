@@ -380,8 +380,8 @@ void PackageManagerCorePrivate::initialize()
 
     if (!m_repoMetaInfoJob) {
         m_repoMetaInfoJob = new GetRepositoriesMetaInfoJob(m_settings.publicKey());
-        connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), m_core,
-            SIGNAL(metaJobInfoMessage(KDJob*, QString)));
+        connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this, SLOT(infoMessage(KDJob*,
+            QString)));
     }
     if (!m_updateFinder) {
         m_updateFinder = new KDUpdater::UpdateFinder(&m_updaterApplication);

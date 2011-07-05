@@ -49,6 +49,7 @@ class FSEngineClientHandler;
 QT_FORWARD_DECLARE_CLASS(QFile)
 QT_FORWARD_DECLARE_CLASS(QFileInfo)
 
+class KDJob;
 namespace KDUpdater {
     class UpdateFinder;
 }
@@ -172,6 +173,11 @@ public:
     OperationList m_ownedOperations;
     OperationList m_performedOperationsOld;
     OperationList m_performedOperationsCurrentSession;
+
+private slots:
+    void infoMessage(KDJob *, const QString &message) {
+        emit m_core->metaJobInfoMessage(message);
+    }
 
 private:
     void deleteUninstaller();

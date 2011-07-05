@@ -152,9 +152,8 @@ void IntroductionPageImpl::setErrorMessage(const QString &error)
     m_errorLabel->setPalette(palette);
 }
 
-void IntroductionPageImpl::message(KDJob *job, const QString &msg)
+void IntroductionPageImpl::message(const QString &msg)
 {
-    Q_UNUSED(job)
     m_label->setText(msg);
 }
 

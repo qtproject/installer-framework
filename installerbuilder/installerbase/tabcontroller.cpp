@@ -162,8 +162,7 @@ int TabController::initUpdater()
 
     if (!d->m_introPageConnected) {
         d->m_introPageConnected = true;
-        connect(d->m_core, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
-            SLOT(message(KDJob*, QString)));
+        connect(d->m_core, SIGNAL(metaJobInfoMessage(QString)), introPage, SLOT(message(QString)));
     }
 
     d->m_gui->setWindowModality(Qt::WindowModal);
@@ -225,8 +224,7 @@ int TabController::initPackageManager()
 
     if (!d->m_introPageConnected) {
         d->m_introPageConnected = true;
-        connect(d->m_core, SIGNAL(metaJobInfoMessage(KDJob*,QString)), introPage,
-            SLOT(message(KDJob*, QString)));
+        connect(d->m_core, SIGNAL(metaJobInfoMessage(QString)), introPage, SLOT(message(QString)));
     }
 
     d->m_gui->setWindowModality(Qt::WindowModal);
