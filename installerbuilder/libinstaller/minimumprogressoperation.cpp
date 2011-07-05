@@ -65,7 +65,7 @@ bool MinimumProgressOperation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* MinimumProgressOperation::clone() const
+Operation *MinimumProgressOperation::clone() const
 {
     return new MinimumProgressOperation();
 }

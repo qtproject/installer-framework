@@ -26,15 +26,16 @@
 #ifndef MINIMUMPROGRESSOPERATION_H
 #define MINIMUMPROGRESSOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
+
 #include <QtCore/QObject>
 
 namespace QInstaller {
 
-//Is only for progress calculation safeness and not for external use.
-class MinimumProgressOperation : public QObject, public KDUpdater::UpdateOperation
+class MinimumProgressOperation : public QObject, public Operation
 {
     Q_OBJECT
+
 public:
     MinimumProgressOperation();
     ~MinimumProgressOperation();
@@ -43,10 +44,10 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation* clone() const;
 
 signals:
-    void progressChanged( double progress );
+    void progressChanged(double progress);
 };
 
 } // namespace
