@@ -1589,7 +1589,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
     packages.writeToDisk();
 }
 
-PackageManagerCore::RemotePackages PackageManagerCorePrivate::remotePackages()
+PackagesList PackageManagerCorePrivate::remotePackages()
 {
     if (m_updates)
         return m_updateFinder->updates();
@@ -1602,7 +1602,7 @@ PackageManagerCore::RemotePackages PackageManagerCorePrivate::remotePackages()
         verbose() << tr("Could not retrieve remote tree: %1.").arg(m_updateFinder->errorString());
         setStatus(PackageManagerCore::Failure, tr("Could not retrieve remote tree: %1.")
             .arg(m_updateFinder->errorString()));
-        return PackageManagerCore::RemotePackages();
+        return PackagesList();
     }
 
     m_updates = true;
@@ -1614,9 +1614,9 @@ PackageManagerCore::RemotePackages PackageManagerCorePrivate::remotePackages()
     the application is running in installer mode or the local components file could not be parsed, the
     hash is empty.
 */
-PackageManagerCore::LocalPackages PackageManagerCorePrivate::localInstalledPackages()
+LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
 {
-    PackageManagerCore::LocalPackages installedPackages;
+    LocalPackagesHash installedPackages;
 
     KDUpdater::PackagesInfo &packagesInfo = *m_updaterApplication.packagesInfo();
     if (!isInstaller()) {
@@ -1629,8 +1629,8 @@ PackageManagerCore::LocalPackages PackageManagerCorePrivate::localInstalledPacka
         if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError)
             setStatus(PackageManagerCore::Failure, tr("Failure to read packages from: %1.").arg(componentsXmlPath()));
 
-        foreach (const KDUpdater::PackageInfo &info, packagesInfo.packageInfos())
-            installedPackages.insert(info.name, info);
+        foreach (const LocalPackage &package, packagesInfo.packageInfos())
+            installedPackages.insert(package.name, package);
      }
 
     return installedPackages;

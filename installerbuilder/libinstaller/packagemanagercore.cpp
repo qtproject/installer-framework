@@ -56,7 +56,6 @@
 #include <QtScript/QScriptContext>
 
 #include <KDToolsCore/KDSysInfo>
-#include <KDUpdater/Update>
 #include <KDUpdater/UpdateOperationFactory>
 
 #ifdef Q_OS_WIN
@@ -647,7 +646,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
         return false;
     }
 
-    LocalPackages installedPackages = d->localInstalledPackages();
+    LocalPackagesHash installedPackages = d->localInstalledPackages();
     if (installedPackages.isEmpty()) {
         if (status() != Failure)
             d->setStatus(Failure, tr("No installed packages found."));
@@ -662,7 +661,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
     const QStringList &keys = installedPackages.keys();
     foreach (const QString &key, keys) {
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
-        component->loadDataFromPackageInfo(installedPackages.value(key));
+        component->loadDataFromPackage(installedPackages.value(key));
         const QString &name = component->name();
         if (components.contains(name)) {
             qCritical("Could not register component! Component with identifier %s already registered.",
@@ -716,7 +715,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
         return false;
     }
 
-    const LocalPackages installedPackages = d->localInstalledPackages();
+    const LocalPackagesHash installedPackages = d->localInstalledPackages();
     if (!isInstaller() && status() == Failure)
         return false;
 
@@ -726,7 +725,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
     if (!d->addUpdateResourcesFromRepositories(true))
         return false;
 
-    const RemotePackages &packages = d->remotePackages();
+    const PackagesList &packages = d->remotePackages();
     if (packages.isEmpty())
         return false;
 
@@ -1537,7 +1536,7 @@ void PackageManagerCore::storeReplacedComponents(QMap<QString, Component*> &comp
     }
 }
 
-bool PackageManagerCore::fetchAllPackages(const RemotePackages &remotes, const LocalPackages &locals)
+bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const LocalPackagesHash &locals)
 {
     emit startAllComponentsReset();
 
@@ -1549,11 +1548,11 @@ bool PackageManagerCore::fetchAllPackages(const RemotePackages &remotes, const L
     data.components = &components;
     data.installedPackages = &locals;
 
-    foreach (KDUpdater::Update *package, remotes) {
+    foreach (Package *const package, remotes) {
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
 
         data.package = package;
-        component->loadDataFromUpdate(package);
+        component->loadDataFromPackage(*package);
         if (updateComponentData(data, component.data())) {
             const QString name = component->name();
             components.insert(name, component.take());
@@ -1606,7 +1605,7 @@ bool PackageManagerCore::fetchAllPackages(const RemotePackages &remotes, const L
     return true;
 }
 
-bool PackageManagerCore::fetchUpdaterPackages(const RemotePackages &remotes, const LocalPackages &locals)
+bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const LocalPackagesHash &locals)
 {
     emit startUpdaterComponentsReset();
 
@@ -1618,11 +1617,11 @@ bool PackageManagerCore::fetchUpdaterPackages(const RemotePackages &remotes, con
     data.components = &components;
     data.installedPackages = &locals;
 
-    foreach (KDUpdater::Update *update, remotes) {
+    foreach (Package *const update, remotes) {
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
 
         data.package = update;
-        component->loadDataFromUpdate(update);
+        component->loadDataFromPackage(*update);
         if (updateComponentData(data, component.data())) {
             // Keep a reference so we can resolve dependencies during update.
             d->m_updaterComponentsDeps.append(component.take());
@@ -1644,16 +1643,16 @@ bool PackageManagerCore::fetchUpdaterPackages(const RemotePackages &remotes, con
             if (!isValidUpdate)
                 continue;   // Update for not installed package found, skip it.
 
-            const KDUpdater::PackageInfo &info = locals.value(name);
+            const LocalPackage &localPackage = locals.value(name);
             const QString updateVersion = update->data(scVersion).toString();
-            if (KDUpdater::compareVersion(updateVersion, info.version) <= 0)
+            if (KDUpdater::compareVersion(updateVersion, localPackage.version) <= 0)
                 continue;
 
             // It is quite possible that we may have already installed the update. Lets check the last
             // update date of the package and the release date of the update. This way we can compare and
             // figure out if the update has been installed or not.
             const QDate updateDate = update->data(scReleaseDate).toDate();
-            if (info.lastUpdateDate > updateDate)
+            if (localPackage.lastUpdateDate > updateDate)
                 continue;
 
             // this is not a dependency, it is a real update

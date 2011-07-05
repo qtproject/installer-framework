@@ -29,16 +29,10 @@
 #include "common/repository.h"
 #include "qinstallerglobal.h"
 
-#include <KDUpdater/PackagesInfo>
-
 #include <QtCore/QHash>
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
 #include <QtCore/QVector>
-
-namespace KDUpdater {
-    class Update;
-}
 
 namespace QInstaller {
 
@@ -53,9 +47,6 @@ class INSTALLER_EXPORT PackageManagerCore : public QObject
 
     Q_ENUMS(Status WizardPage)
     Q_PROPERTY(int status READ status NOTIFY statusChanged)
-
-    typedef QList<KDUpdater::Update*> RemotePackages;
-    typedef QHash<QString, KDUpdater::PackageInfo> LocalPackages;
 
 public:
     explicit PackageManagerCore();
@@ -245,16 +236,16 @@ Q_SIGNALS:
 private:
     struct Data {
         RunMode runMode;
-        KDUpdater::Update *package;
+        Package *package;
         QMap<QString, Component*> *components;
-        const LocalPackages *installedPackages;
+        const LocalPackagesHash *installedPackages;
         QHash<Component*, QStringList> replacementToExchangeables;
     };
 
     bool updateComponentData(struct Data &data, QInstaller::Component *component);
     void storeReplacedComponents(QMap<QString, Component*> &components, const struct Data &data);
-    bool fetchAllPackages(const RemotePackages &remotePackages, const LocalPackages &localPackages);
-    bool fetchUpdaterPackages(const RemotePackages &remotePackages, const LocalPackages &localPackages);
+    bool fetchAllPackages(const PackagesList &remotePackages, const LocalPackagesHash &localPackages);
+    bool fetchUpdaterPackages(const PackagesList &remotePackages, const LocalPackagesHash &localPackages);
 
     static Component *subComponentByName(const QInstaller::PackageManagerCore *installer, const QString &name,
         const QString &version = QString(), Component *check = 0);

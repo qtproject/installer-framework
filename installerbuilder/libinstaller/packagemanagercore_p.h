@@ -191,9 +191,8 @@ private:
     void runUndoOperations(const OperationList &undoOperations, double undoOperationProgressSize,
         bool adminRightsGained, bool deleteOperation);
 
-    PackageManagerCore::RemotePackages remotePackages();
-    PackageManagerCore::LocalPackages localInstalledPackages();
-
+    PackagesList remotePackages();
+    LocalPackagesHash localInstalledPackages();
     bool fetchMetaInformationFromRepositories();
     bool addUpdateResourcesFromRepositories(bool parseChecksum);
 

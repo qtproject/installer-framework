@@ -28,7 +28,9 @@
 
 #include <installer_global.h>
 
+#include <KDUpdater/Update>
 #include <KDUpdater/UpdateOperation>
+#include <KDUpdater/PackagesInfo>
 
 #include <QtCore/QString>
 
@@ -37,6 +39,7 @@ class QScriptContext;
 class QScriptEngine;
 class QScriptValue;
 QT_END_NAMESPACE
+
 
 namespace QInstaller {
 
@@ -59,6 +62,12 @@ enum INSTALLER_EXPORT JobError
 
 typedef KDUpdater::UpdateOperation Operation;
 typedef QList<QInstaller::Operation*> OperationList;
+
+typedef KDUpdater::Update Package;
+typedef QList<QInstaller::Package*> PackagesList;
+
+typedef KDUpdater::PackageInfo LocalPackage;
+typedef QHash<QString, LocalPackage> LocalPackagesHash;
 
 QString uncaughtExceptionString(QScriptEngine *scriptEngine);
 QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine);

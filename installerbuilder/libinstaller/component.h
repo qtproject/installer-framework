@@ -67,7 +67,6 @@ class INSTALLER_EXPORT Component : public QObject, public QScriptable, public Co
 
 public:
     explicit Component(PackageManagerCore *core);
-    explicit Component(KDUpdater::Update *update, PackageManagerCore *core);
     ~Component();
 
     struct IsVirtual
@@ -94,8 +93,8 @@ public:
         }
     };
 
-    void loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo);
-    void loadDataFromUpdate(KDUpdater::Update* update);
+    void loadDataFromPackage(const Package &package);
+    void loadDataFromPackage(const LocalPackage &package);
 
     QHash<QString, QString> variables() const;
     Q_INVOKABLE void setValue(const QString &key, const QString &value);

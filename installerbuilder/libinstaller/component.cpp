@@ -41,10 +41,8 @@
 #include "qinstallerglobal.h"
 #include "messageboxhandler.h"
 
-#include <KDUpdater/Update>
 #include <KDUpdater/UpdateSourcesInfo>
 #include <KDUpdater/UpdateOperationFactory>
-#include <KDUpdater/PackagesInfo>
 
 #include <QtCore/QDirIterator>
 #include <QtCore/QTranslator>
@@ -78,18 +76,6 @@ Component::Component(PackageManagerCore *core)
     connect(this, SIGNAL(valueChanged(QString, QString)), this, SLOT(updateModelData(QString, QString)));
 }
 
-Component::Component(KDUpdater::Update* update, PackageManagerCore *core)
-    : d(new ComponentPrivate(core, this))
-{
-    Q_ASSERT(update);
-
-    d->init();
-    setPrivate(d);
-    connect(this, SIGNAL(valueChanged(QString, QString)), this, SLOT(updateModelData(QString, QString)));
-
-    loadDataFromUpdate(update);
-}
-
 /*!
     Destroys the Component.
 */
@@ -105,65 +91,63 @@ Component::~Component()
     delete d;
 }
 
-// package info is that what is saved inside the package manager on hard disk
-void Component::loadDataFromPackageInfo(const KDUpdater::PackageInfo &packageInfo)
+void Component::loadDataFromPackage(const LocalPackage &package)
 {
-    setValue(scName, packageInfo.name);
+    setValue(scName, package.name);
     // pixmap ???
-    setValue(scDisplayName, packageInfo.title);
-    setValue(scDescription, packageInfo.description);
-    setValue(scVersion, packageInfo.version);
-    setValue(scInstalledVersion, packageInfo.version);
-    setValue(QLatin1String("LastUpdateDate"), packageInfo.lastUpdateDate.toString());
-    setValue(QLatin1String("InstallDate"), packageInfo.installDate.toString());
-    setValue(scUncompressedSize, QString::number(packageInfo.uncompressedSize));
+    setValue(scDisplayName, package.title);
+    setValue(scDescription, package.description);
+    setValue(scVersion, package.version);
+    setValue(scInstalledVersion, package.version);
+    setValue(QLatin1String("LastUpdateDate"), package.lastUpdateDate.toString());
+    setValue(QLatin1String("InstallDate"), package.installDate.toString());
+    setValue(scUncompressedSize, QString::number(package.uncompressedSize));
 
     QString dependstr = QLatin1String("");
-    foreach (const QString& val, packageInfo.dependencies)
+    foreach (const QString& val, package.dependencies)
         dependstr += val + QLatin1String(",");
 
-    if (packageInfo.dependencies.count() > 0)
+    if (package.dependencies.count() > 0)
         dependstr.chop(1);
     setValue(scDependencies, dependstr);
 
-    setValue(scForcedInstallation, packageInfo.forcedInstallation ? scTrue : scFalse);
-    if (packageInfo.forcedInstallation & !PackageManagerCore::noForceInstallation()) {
+    setValue(scForcedInstallation, package.forcedInstallation ? scTrue : scFalse);
+    if (package.forcedInstallation & !PackageManagerCore::noForceInstallation()) {
         setEnabled(false);
         setCheckable(false);
         setCheckState(Qt::Checked);
     }
-    setValue(scVirtual, packageInfo.virtualComp ? scTrue : scFalse);
+    setValue(scVirtual, package.virtualComp ? scTrue : scFalse);
     setValue(scCurrentState, scInstalled);
 }
 
-// update means it is the package info from server
-void Component::loadDataFromUpdate(KDUpdater::Update* update)
+void Component::loadDataFromPackage(const Package &package)
 {
-    Q_ASSERT(update);
-    Q_ASSERT(!update->name().isEmpty());
+    Q_ASSERT(&package);
+    Q_ASSERT(!package.name().isEmpty());
 
-    setValue(scName, update->data(scName).toString());
-    setValue(scDisplayName, update->data(scDisplayName).toString());
-    setValue(scDescription, update->data(scDescription).toString());
-    setValue(scDefault, update->data(scDefault).toString());
-    setValue(scCompressedSize, QString::number(update->compressedSize()));
-    setValue(scUncompressedSize, QString::number(update->uncompressedSize()));
-    setValue(scVersion, update->data(scVersion).toString());
-    setValue(scDependencies, update->data(scDependencies).toString());
-    setValue(scVirtual, update->data(scVirtual).toString());
-    setValue(scSortingPriority, update->data(scSortingPriority).toString());
-    setValue(scInstallPriority, update->data(scInstallPriority).toString());
+    setValue(scName, package.data(scName).toString());
+    setValue(scDisplayName, package.data(scDisplayName).toString());
+    setValue(scDescription, package.data(scDescription).toString());
+    setValue(scDefault, package.data(scDefault).toString());
+    setValue(scCompressedSize, QString::number(package.compressedSize()));
+    setValue(scUncompressedSize, QString::number(package.uncompressedSize()));
+    setValue(scVersion, package.data(scVersion).toString());
+    setValue(scDependencies, package.data(scDependencies).toString());
+    setValue(scVirtual, package.data(scVirtual).toString());
+    setValue(scSortingPriority, package.data(scSortingPriority).toString());
+    setValue(scInstallPriority, package.data(scInstallPriority).toString());
 
-    setValue(scImportant, update->data(scImportant).toString());
-    setValue(scUpdateText, update->data(scUpdateText).toString());
-    setValue(scNewComponent, update->data(scNewComponent).toString());
-    setValue(scRequiresAdminRights, update->data(scRequiresAdminRights).toString());
+    setValue(scImportant, package.data(scImportant).toString());
+    setValue(scUpdateText, package.data(scUpdateText).toString());
+    setValue(scNewComponent, package.data(scNewComponent).toString());
+    setValue(scRequiresAdminRights, package.data(scRequiresAdminRights).toString());
 
-    setValue(scScript, update->data(scScript).toString());
-    setValue(scReplaces, update->data(scReplaces).toString());
-    setValue(scReleaseDate, update->data(scReleaseDate).toString());
+    setValue(scScript, package.data(scScript).toString());
+    setValue(scReplaces, package.data(scReplaces).toString());
+    setValue(scReleaseDate, package.data(scReleaseDate).toString());
 
-    QString forced = update->data(scForcedInstallation, scFalse).toString().toLower();
+    QString forced = package.data(scForcedInstallation, scFalse).toString().toLower();
     if (PackageManagerCore::noForceInstallation())
         forced = scFalse;
     setValue(scForcedInstallation, forced);
@@ -173,18 +157,18 @@ void Component::loadDataFromUpdate(KDUpdater::Update* update)
         setCheckState(Qt::Checked);
     }
 
-    setLocalTempPath(QInstaller::pathFromUrl(update->sourceInfo().url));
-    const QStringList uis = update->data(QLatin1String("UserInterfaces")).toString()
+    setLocalTempPath(QInstaller::pathFromUrl(package.sourceInfo().url));
+    const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()
         .split(QString::fromLatin1(","), QString::SkipEmptyParts);
     if (!uis.isEmpty())
         loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), uis);
 
-    const QStringList qms = update->data(QLatin1String("Translations")).toString()
+    const QStringList qms = package.data(QLatin1String("Translations")).toString()
         .split(QString::fromLatin1(","), QString::SkipEmptyParts);
     if (!qms.isEmpty())
         loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), qms);
 
-    QHash<QString, QVariant> licenseHash = update->data(QLatin1String("Licenses")).toHash();
+    QHash<QString, QVariant> licenseHash = package.data(QLatin1String("Licenses")).toHash();
     if (!licenseHash.isEmpty())
         loadLicenses(QString::fromLatin1("%1/%2/").arg(localTempPath(), name()), licenseHash);
 }
