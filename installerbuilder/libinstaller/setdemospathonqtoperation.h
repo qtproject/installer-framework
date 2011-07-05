@@ -26,12 +26,11 @@
 #ifndef SETDEMOSPATHONQTOPERATION_H
 #define SETDEMOSPATHONQTOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
-#include <QtCore/QObject>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class SetDemosPathOnQtOperation : public KDUpdater::UpdateOperation
+class SetDemosPathOnQtOperation : public Operation
 {
 public:
     SetDemosPathOnQtOperation();
@@ -41,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation *clone() const;
 };
 
 } // namespace

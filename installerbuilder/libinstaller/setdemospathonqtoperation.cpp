@@ -33,11 +33,10 @@
 #include "setdemospathonqtoperation.h"
 
 #include "qtpatch.h"
-#include "qinstallerglobal.h"
 #include "common/utils.h"
 
-#include <QDir>
-#include <QSettings>
+#include <QtCore/QDir>
+#include <QtCore/QSettings>
 
 using namespace QInstaller;
 
@@ -60,8 +59,8 @@ bool SetDemosPathOnQtOperation::performOperation()
 
     if (args.count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 2 expected.")
-            .arg(name()).arg(arguments().count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 2 expected.").arg(name())
+            .arg(arguments().count()));
         return false;
     }
 
@@ -76,25 +75,25 @@ bool SetDemosPathOnQtOperation::performOperation()
     QByteArray qmakeOutput;
     QHash<QString, QByteArray> qmakeValueHash = QtPatch::qmakeValues(qmakePath, &qmakeOutput);
 
-    if (qmakeValueHash.isEmpty())
-    {
+    if (qmakeValueHash.isEmpty()) {
         setError(UserDefinedError);
-        setErrorString(tr("The output of \n%1 -query\n"  \
-            "is not parseable. Please make a bugreport with this dialog http://bugreports.qt.nokia.com.\n" \
-            "output: \"%2\"").arg(QDir::toNativeSeparators(qmakePath), QString::fromUtf8(qmakeOutput)));
+        setErrorString(tr("The output of \n%1 -query\nis not parseable. Please file a bugreport with this "
+            "dialog http://bugreports.qt.nokia.com.\noutput: \"%2\"").arg(QDir::toNativeSeparators(qmakePath),
+            QString::fromUtf8(qmakeOutput)));
         return false;
     }
 
     QByteArray oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DEMOS"));
     bool oldQtPathFromQMakeIsEmpty = oldValue.isEmpty();
     if (oldQtPathFromQMakeIsEmpty) {
-        verbose() << "qpatch: warning: It was not able to get the old values from " << qPrintable(qmakePath) << std::endl;
+        verbose() << "qpatch: warning: It was not able to get the old values from " << qPrintable(qmakePath)
+            << std::endl;
     }
 
     if (255 < newValue.size()) {
         setError(UserDefinedError);
-        setErrorString(tr("Qt patch error: new Qt demo path(%1)\n" \
-            "needs to be less than 255 characters.").arg(QString::fromLocal8Bit(newValue)) );
+        setErrorString(tr("Qt patch error: new Qt demo path(%1)\nneeds to be less than 255 characters.")
+            .arg(QString::fromLocal8Bit(newValue)) );
         return false;
     }
 
@@ -126,7 +125,7 @@ bool SetDemosPathOnQtOperation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* SetDemosPathOnQtOperation::clone() const
+Operation *SetDemosPathOnQtOperation::clone() const
 {
     return new SetDemosPathOnQtOperation();
 }
