@@ -26,11 +26,11 @@
 #ifndef LINEREPLACEOPERATION_H
 #define LINEREPLACEOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class LineReplaceOperation : public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT LineReplaceOperation : public Operation
 {
 public:
     LineReplaceOperation();
@@ -40,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation *clone() const;
 };
 
 } // namespace

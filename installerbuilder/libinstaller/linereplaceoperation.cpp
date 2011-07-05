@@ -31,13 +31,10 @@
 **
 **************************************************************************/
 #include "linereplaceoperation.h"
-#include <packagemanagercore.h>
-#include "common/utils.h"
 
-#include <QFile>
-#include <QDir>
-#include <QDebug>
-#include <QBuffer>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
 
 using namespace QInstaller;
 
@@ -62,47 +59,42 @@ bool LineReplaceOperation::performOperation()
     // 1. filename
     // 2. startsWith Search-String
     // 3. Replace-Line-String
-    if ( args.count() != 3 ) {
-        setError( InvalidArguments );
-        setErrorString( tr("Invalid arguments in %0: %1 arguments given, 3 expected.")
-                        .arg(name()).arg( args.count() ) );
+    if (args.count() != 3) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 3 expected.").arg(name()).arg(args
+            .count()));
         return false;
     }
-    const QString currentFileName = args.at(0);
+    const QString fileName = args.at(0);
     const QString searchString = args.at(1);
     const QString replaceString = args.at(2);
-    QString debugString( QLatin1String("Replacing lines with %1 to %2 in %3") );
-    debugString = debugString.arg(searchString);
-    debugString = debugString.arg(replaceString);
-    debugString = debugString.arg(currentFileName);
-    verbose() << debugString;
 
-    QFile file(currentFileName);
+    QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        setError( UserDefinedError );
-        setErrorString( QObject::tr( "Failed to open %1 for reading" ).arg( currentFileName ) );
+        setError(UserDefinedError);
+        setErrorString(QObject::tr("Failed to open %1 for reading").arg(fileName));
         return false;
     }
 
-    QByteArray memorybyteArray;
-
-    while (!file.atEnd()) {
-        QByteArray line = file.readLine();
-        if (QString::fromLatin1(line).trimmed().startsWith(searchString)) {
-            memorybyteArray.append(replaceString.toLatin1()).append("\n");
-        } else {
-            memorybyteArray.append(line);
-        }
+    QString replacement;
+    QTextStream stream(&file);
+    while (!stream.atEnd()) {
+        const QString line = stream.readLine();
+        if (line.trimmed().startsWith(searchString))
+            replacement.append(replaceString + QLatin1String("\n"));
+        else
+            replacement.append(line);
     }
     file.close();
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        setError( UserDefinedError );
-        setErrorString( QObject::tr( "Failed to open %1 for writing" ).arg( currentFileName ) );
+        setError(UserDefinedError);
+        setErrorString(QObject::tr("Failed to open %1 for writing").arg(fileName));
         return false;
     }
 
-    file.write( memorybyteArray );
+    stream.setDevice(&file);
+    stream << replacement;
     file.close();
 
     return true;
@@ -119,7 +111,7 @@ bool LineReplaceOperation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* LineReplaceOperation::clone() const
+Operation *LineReplaceOperation::clone() const
 {
     return new LineReplaceOperation();
 }
