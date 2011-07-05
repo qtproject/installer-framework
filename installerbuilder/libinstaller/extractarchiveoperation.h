@@ -26,18 +26,17 @@
 #ifndef EXTRACTARCHIVEOPERATION_H
 #define EXTRACTARCHIVEOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
-#include <QtCore/QObject>
+#include "qinstallerglobal.h"
 
-#include "installer_global.h"
+#include <QtCore/QObject>
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT ExtractArchiveOperation : public QObject, public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT ExtractArchiveOperation : public QObject, public Operation
 {
     Q_OBJECT
-
     friend class WorkerThread;
+
 public:
     ExtractArchiveOperation();
     ~ExtractArchiveOperation();
@@ -46,15 +45,15 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    ExtractArchiveOperation* clone() const;
+    Operation* clone() const;
 
 Q_SIGNALS:
-    void progressChanged( int progress );
-    void outputTextChanged( const QString& progress );
+    void progressChanged(int progress);
+    void outputTextChanged(const QString &progress);
 
 private Q_SLOTS:
-    void slotProgressChanged( const QString& progress );
-    
+    void slotProgressChanged(const QString &progress);
+
 private:
     class Callback;
     class Runnable;
