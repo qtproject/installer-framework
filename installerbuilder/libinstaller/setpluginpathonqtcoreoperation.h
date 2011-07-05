@@ -26,12 +26,11 @@
 #ifndef SETPLUGINPATHONQTCOREOPERATION_H
 #define SETPLUGINPATHONQTCOREOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
-#include <QtCore/QObject>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class SetPluginPathOnQtCoreOperation : public KDUpdater::UpdateOperation
+class SetPluginPathOnQtCoreOperation : public Operation
 {
 public:
     SetPluginPathOnQtCoreOperation();
@@ -41,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation *clone() const;
 };
 
 } // namespace
