@@ -71,6 +71,7 @@ BinaryFormatEngineHandler::~BinaryFormatEngineHandler()
 {
     if( s_instance == this )
         s_instance = 0;
+    delete d;
 }
 
 void BinaryFormatEngineHandler::setComponentIndex( const ComponentIndex& index )

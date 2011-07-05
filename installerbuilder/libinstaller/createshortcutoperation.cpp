@@ -30,9 +30,9 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-//#include "kdupdaterupdateoperations.h"
-#include <KDUpdater/kdupdaterapplication.h>
-#include <KDUpdater/kdupdaterpackagesinfo.h>
+
+#include <KDUpdater/Application>
+#include <KDUpdater/PackagesInfo>
 
 #include "createshortcutoperation.h"
 #include "common/errors.h"

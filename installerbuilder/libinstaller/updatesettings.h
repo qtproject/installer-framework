@@ -26,13 +26,11 @@
 #ifndef UPDATESETTINGS_H
 #define UPDATESETTINGS_H
 
-#include <KDToolsCore/pimpl_ptr.h>
-
 #include "installer_global.h"
 
 QT_BEGIN_NAMESPACE
 class QDateTime;
-template< typename T >
+template<typename T>
 class QList;
 class QSettings;
 QT_END_NAMESPACE
@@ -68,7 +66,7 @@ public:
     void setCheckOnlyImportantUpdates(bool checkOnlyImportantUpdates);
 
     QList<Repository> repositories() const;
-    void setRepositories(const QList<Repository>& repositories);
+    void setRepositories(const QList<Repository> &repositories);
 
 private:
     class Private;

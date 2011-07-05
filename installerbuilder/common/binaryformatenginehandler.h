@@ -26,11 +26,10 @@
 #ifndef BINARYFORMATENGINEHANDLER_H
 #define BINARYFORMATENGINEHANDLER_H
 
+#include "installer_global.h"
+
 #include <QtCore/QAbstractFileEngineHandler>
 
-#include <KDToolsCore/pimpl_ptr.h>
-
-#include "installer_global.h"
 
 namespace QInstallerCreator
 {
@@ -53,7 +52,7 @@ public:
 
 private:
     class Private;
-    kdtools::pimpl_ptr< Private > d;
+    Private *const d;
 };
 
 }
