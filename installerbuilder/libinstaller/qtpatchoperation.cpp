@@ -36,6 +36,7 @@
 #include "macrelocateqt.h"
 #endif
 
+#include "constants.h"
 #include "common/utils.h"
 #include <packagemanagercore.h>
 
