@@ -26,11 +26,11 @@
 #ifndef REGISTERFILETYPEOPERATION_H
 #define REGISTERFILETYPEOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class RegisterFileTypeOperation : public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT RegisterFileTypeOperation : public Operation
 {
 public:
     RegisterFileTypeOperation();
@@ -40,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    RegisterFileTypeOperation* clone() const;
+    Operation *clone() const;
 };
 
 }
