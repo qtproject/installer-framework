@@ -39,11 +39,11 @@
 #include "packagemanagercore.h"
 #include "qtcreator_constants.h"
 
-#include <QString>
-#include <QFileInfo>
-#include <QDir>
-#include <QSettings>
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QSettings>
+#include <QtCore/QString>
 
 using namespace QInstaller;
 
@@ -331,7 +331,7 @@ bool UpdateCreatorSettingsFrom21To22Operation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* UpdateCreatorSettingsFrom21To22Operation::clone() const
+Operation *UpdateCreatorSettingsFrom21To22Operation::clone() const
 {
     return new UpdateCreatorSettingsFrom21To22Operation();
 }

@@ -26,11 +26,11 @@
 #ifndef UPDATECREATORSETTINGSFROM21TO22OPERATION_H
 #define UPDATECREATORSETTINGSFROM21TO22OPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class UpdateCreatorSettingsFrom21To22Operation : public KDUpdater::UpdateOperation
+class UpdateCreatorSettingsFrom21To22Operation : public Operation
 {
 public:
     UpdateCreatorSettingsFrom21To22Operation();
@@ -40,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation* clone() const;
 };
 
 } // namespace
