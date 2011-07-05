@@ -119,7 +119,7 @@ void PerformInstallationForm::appendProgressDetails(const QString &details)
 
 void PerformInstallationForm::updateProgress()
 {
-    QInstaller::ProgressCoordninator *progressCoordninator = QInstaller::ProgressCoordninator::instance();
+    QInstaller::ProgressCoordinator *progressCoordninator = QInstaller::ProgressCoordinator::instance();
     const int progressPercentage = progressCoordninator->progressInPercentage();
 
     m_progressBar->setRange(0, (progressPercentage == 0) ? 0 : 100);

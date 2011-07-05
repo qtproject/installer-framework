@@ -356,7 +356,7 @@ void PackageManagerCore::installSelectedComponents()
     foreach (Component* const currentComponent, components) {
         if (d->statusCanceledOrFailed())
             throw Error(tr("Installation canceled by user"));
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nRemoving the old "
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nRemoving the old "
             "version of: %1").arg(currentComponent->name()));
         if ((isUpdater() || isPackageManager()) && currentComponent->removeBeforeUpdate()) {
             QString replacesAsString = currentComponent->value(scReplaces);
@@ -379,7 +379,7 @@ void PackageManagerCore::installSelectedComponents()
                 d->m_updaterApplication.packagesInfo()->removePackage(possilbeName);
             d->m_updaterApplication.packagesInfo()->writeToDisk();
         }
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(
             tr("\nInstalling the new version of: %1").arg(currentComponent->name()));
         installComponent(currentComponent, progressOperationSize);
         //commit all operations for this already updated/installed component
@@ -389,7 +389,7 @@ void PackageManagerCore::installSelectedComponents()
     }
 
     d->setStatus(PackageManagerCore::Success);
-    ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate finished!"));
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate finished!"));
     emit updateFinished();
 }
 
@@ -444,7 +444,7 @@ int PackageManagerCore::downloadNeededArchives(RunMode runMode, double partProgr
     if (archivesToDownload.isEmpty())
         return 0;
 
-    ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nDownloading packages..."));
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nDownloading packages..."));
 
     // don't have it on the stack, since it keeps the temporary files
     DownloadArchivesJob* const archivesJob =
@@ -452,10 +452,10 @@ int PackageManagerCore::downloadNeededArchives(RunMode runMode, double partProgr
     archivesJob->setAutoDelete(false);
     archivesJob->setArchivesToDownload(archivesToDownload);
     connect(this, SIGNAL(installationInterrupted()), archivesJob, SLOT(cancel()));
-    connect(archivesJob, SIGNAL(outputTextChanged(QString)), ProgressCoordninator::instance(),
+    connect(archivesJob, SIGNAL(outputTextChanged(QString)), ProgressCoordinator::instance(),
         SLOT(emitLabelAndDetailTextChanged(QString)));
 
-    ProgressCoordninator::instance()->registerPartProgress(archivesJob, SIGNAL(progressChanged(double)),
+    ProgressCoordinator::instance()->registerPartProgress(archivesJob, SIGNAL(progressChanged(double)),
         partProgressSize);
 
     archivesJob->start();
@@ -504,7 +504,7 @@ void PackageManagerCore::rollBackInstallation()
     emit titleMessageChanged(tr("Cancelling the Installer"));
 
     //this unregisters all operation progressChanged connects
-    ProgressCoordninator::instance()->setUndoMode();
+    ProgressCoordinator::instance()->setUndoMode();
     const int progressOperationCount = d->countProgressOperations(d->m_performedOperationsCurrentSession);
     const double progressOperationSize = double(1) / progressOperationCount;
 
@@ -514,7 +514,7 @@ void PackageManagerCore::rollBackInstallation()
         if (operationObject != 0) {
             const QMetaObject* const mo = operationObject->metaObject();
             if (mo->indexOfSignal(QMetaObject::normalizedSignature("progressChanged(double)")) > -1) {
-                ProgressCoordninator::instance()->registerPartProgress(operationObject,
+                ProgressCoordinator::instance()->registerPartProgress(operationObject,
                     SIGNAL(progressChanged(double)), progressOperationSize);
             }
         }
@@ -554,8 +554,8 @@ void PackageManagerCore::rollBackInstallation()
         }
     }
 
-    if (ProgressCoordninator::instance()->progressInPercentage() > 0)
-        ProgressCoordninator::instance()->partProgressChanged(-0.99);
+    if (ProgressCoordinator::instance()->progressInPercentage() < 100)
+        ProgressCoordinator::instance()->partProgressChanged(0.99);
     packages.writeToDisk();
 }
 

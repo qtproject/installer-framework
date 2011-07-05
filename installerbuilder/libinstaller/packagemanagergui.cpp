@@ -1532,9 +1532,9 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
 
     m_performInstallationForm->setupUi(this);
 
-    connect(ProgressCoordninator::instance(), SIGNAL(detailTextChanged(QString)),
+    connect(ProgressCoordinator::instance(), SIGNAL(detailTextChanged(QString)),
         m_performInstallationForm, SLOT(appendProgressDetails(QString)));
-    connect(ProgressCoordninator::instance(), SIGNAL(detailTextResetNeeded()),
+    connect(ProgressCoordinator::instance(), SIGNAL(detailTextResetNeeded()),
         m_performInstallationForm, SLOT(clearDetailsBrowser()));
 
     connect(m_performInstallationForm, SIGNAL(showDetailsChanged()), this,

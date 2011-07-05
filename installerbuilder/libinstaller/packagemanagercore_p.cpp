@@ -362,10 +362,10 @@ void PackageManagerCorePrivate::initialize()
     foreach (Operation *currentOperation, m_performedOperationsOld)
         currentOperation->setValue(QLatin1String("installer"), QVariant::fromValue(m_core));
 
-    disconnect(this, SIGNAL(installationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
-    connect(this, SIGNAL(installationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
-    disconnect(this, SIGNAL(uninstallationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
-    connect(this, SIGNAL(uninstallationStarted()), ProgressCoordninator::instance(), SLOT(reset()));
+    disconnect(this, SIGNAL(installationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
+    connect(this, SIGNAL(installationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
+    disconnect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
+    connect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
 
     m_updaterApplication.packagesInfo()->setFileName(componentsXmlPath());
     m_updaterApplication.updateSourcesInfo()->setFileName(QLatin1String(""));
@@ -586,7 +586,7 @@ void PackageManagerCorePrivate::connectOperationToInstaller(Operation *const ope
     if (operationObject != 0) {
         const QMetaObject* const mo = operationObject->metaObject();
         if (mo->indexOfSignal(QMetaObject::normalizedSignature("outputTextChanged(QString)")) > -1) {
-            connect(operationObject, SIGNAL(outputTextChanged(QString)), ProgressCoordninator::instance(),
+            connect(operationObject, SIGNAL(outputTextChanged(QString)), ProgressCoordinator::instance(),
                 SLOT(emitDetailTextChanged(QString)));
         }
 
@@ -594,7 +594,7 @@ void PackageManagerCorePrivate::connectOperationToInstaller(Operation *const ope
             connect(m_core, SIGNAL(installationInterrupted()), operationObject, SLOT(cancelOperation()));
 
         if (mo->indexOfSignal(QMetaObject::normalizedSignature("progressChanged(double)")) > -1) {
-            ProgressCoordninator::instance()->registerPartProgress(operationObject,
+            ProgressCoordinator::instance()->registerPartProgress(operationObject,
                 SIGNAL(progressChanged(double)), operationPartSize);
         }
     }
@@ -1005,7 +1005,7 @@ void PackageManagerCorePrivate::runInstaller()
         emit installationStarted(); //resets also the ProgressCoordninator
 
         //to have some progress for writeUninstaller
-        ProgressCoordninator::instance()->addReservePercentagePoints(1);
+        ProgressCoordinator::instance()->addReservePercentagePoints(1);
 
         const QString target = targetDir();
         if (target.isEmpty())
@@ -1035,8 +1035,8 @@ void PackageManagerCorePrivate::runInstaller()
             addPerformed(takeOwnedOperation(mkdirOp));
 
         // to show that there was some work
-        ProgressCoordninator::instance()->addManualPercentagePoints(1);
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
+        ProgressCoordinator::instance()->addManualPercentagePoints(1);
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
         const QList<Component*> componentsToInstall = m_core->componentsToInstall(AllMode);
         verbose() << "Install size: " << componentsToInstall.size() << " components" << std::endl;
@@ -1079,10 +1079,10 @@ void PackageManagerCorePrivate::runInstaller()
         registerUninstaller();
 
         // this is the reserved one from the beginning
-        ProgressCoordninator::instance()->addManualPercentagePoints(1);
-        if (ProgressCoordninator::instance()->progressInPercentage() < 100)
-            ProgressCoordninator::instance()->partProgressChanged(0.99);
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
+        ProgressCoordinator::instance()->addManualPercentagePoints(1);
+        if (ProgressCoordinator::instance()->progressInPercentage() < 100)
+            ProgressCoordinator::instance()->partProgressChanged(0.99);
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
 
         if (adminRightsGained)
             m_core->dropAdminRights();
@@ -1100,7 +1100,7 @@ void PackageManagerCorePrivate::runInstaller()
 
         m_core->rollBackInstallation();
 
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation aborted!"));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation aborted!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
@@ -1122,7 +1122,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
         emit installationStarted(); //resets also the ProgressCoordninator
 
         //to have some progress for the cleanup/write component.xml step
-        ProgressCoordninator::instance()->addReservePercentagePoints(1);
+        ProgressCoordinator::instance()->addReservePercentagePoints(1);
 
         const QString packagesXml = componentsXmlPath();
         // check if we need admin rights and ask before the action happens
@@ -1197,12 +1197,12 @@ void PackageManagerCorePrivate::runPackageUpdater()
             undoOperationProgressSize /= countProgressOperations(undoOperations);
         }
 
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Removing deselected components..."));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Removing deselected components..."));
 
         runUndoOperations(undoOperations, undoOperationProgressSize, adminRightsGained, true);
         m_performedOperationsOld = nonRevertedOperations; // these are all operations left: those not reverted
 
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
         // following, we download the needed archives
         m_core->downloadNeededArchives(AllMode, downloadPartProgressSize);
@@ -1221,10 +1221,10 @@ void PackageManagerCorePrivate::runPackageUpdater()
         m_needToWriteUninstaller = true;
 
         //this is the reserved one from the beginning
-        ProgressCoordninator::instance()->addManualPercentagePoints(1);
-        if (ProgressCoordninator::instance()->progressInPercentage() < 100)
-            ProgressCoordninator::instance()->partProgressChanged(0.99);
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate finished!"));
+        ProgressCoordinator::instance()->addManualPercentagePoints(1);
+        if (ProgressCoordinator::instance()->progressInPercentage() < 100)
+            ProgressCoordinator::instance()->partProgressChanged(0.99);
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate finished!"));
 
         if (adminRightsGained)
             m_core->dropAdminRights();
@@ -1242,7 +1242,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
 
         m_core->rollBackInstallation();
 
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate aborted!"));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate aborted!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
@@ -1315,7 +1315,7 @@ void PackageManagerCorePrivate::runUninstaller()
         m_needToWriteUninstaller = false;
 
         setStatus(PackageManagerCore::Success);
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation finished!"));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation finished!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit uninstallationFinished();
@@ -1327,7 +1327,7 @@ void PackageManagerCorePrivate::runUninstaller()
                 QLatin1String("installationError"), tr("Error"), err.message());
         }
 
-        ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation aborted!"));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation aborted!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
@@ -1346,7 +1346,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     const int opCount = operations.count();
     // show only components which do something, MinimumProgress is only for progress calculation safeness
     if (opCount > 1 || (opCount == 1 && operations.at(0)->name() != QLatin1String("MinimumProgress"))) {
-            ProgressCoordninator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1")
+            ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1")
                 .arg(component->displayName()));
     }
 
@@ -1394,7 +1394,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
             // Add the progress operation size to the progress coordinator, so we will show the right
             // progress at the end of the install/ update after we had an ignore error.
             if (ignoreError)
-                ProgressCoordninator::instance()->partProgressChanged(progressOperationSize);
+                ProgressCoordinator::instance()->partProgressChanged(progressOperationSize);
         }
 
         if (becameAdmin)

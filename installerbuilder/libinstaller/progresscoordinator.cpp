@@ -44,7 +44,7 @@ uint qHash(QPointer<QObject> key)
 }
 QT_END_NAMESPACE
 
-ProgressCoordninator::ProgressCoordninator(QObject *parent)
+ProgressCoordinator::ProgressCoordinator(QObject *parent)
     : QObject(parent),
     m_currentCompletePercentage(0),
     m_currentBasePercentage(0),
@@ -57,19 +57,19 @@ ProgressCoordninator::ProgressCoordninator(QObject *parent)
     Q_ASSERT(thread() == qApp->thread());
 }
 
-ProgressCoordninator::~ProgressCoordninator()
+ProgressCoordinator::~ProgressCoordinator()
 {
 }
 
-ProgressCoordninator* ProgressCoordninator::instance()
+ProgressCoordinator* ProgressCoordinator::instance()
 {
-    static ProgressCoordninator* instance = 0;
+    static ProgressCoordinator* instance = 0;
     if (instance == 0)
-        instance = new ProgressCoordninator(qApp);
+        instance = new ProgressCoordinator(qApp);
     return instance;
 }
 
-void ProgressCoordninator::reset()
+void ProgressCoordinator::reset()
 {
     disconnectAllSenders();
     m_installationLabelText.clear();
@@ -82,7 +82,7 @@ void ProgressCoordninator::reset()
     emit detailTextResetNeeded();
 }
 
-void ProgressCoordninator::registerPartProgress(QObject *sender, const char *signal, double partProgressSize)
+void ProgressCoordinator::registerPartProgress(QObject *sender, const char *signal, double partProgressSize)
 {
     Q_ASSERT(sender);
     Q_ASSERT(QString::fromLatin1(signal).contains(QLatin1String("(double)")));
@@ -94,7 +94,7 @@ void ProgressCoordninator::registerPartProgress(QObject *sender, const char *sig
     Q_ASSERT(isConnected);
 }
 
-void ProgressCoordninator::partProgressChanged(double fraction)
+void ProgressCoordinator::partProgressChanged(double fraction)
 {
     if (fraction < 0 || fraction > 1) {
         qWarning() << QString(QLatin1String("The fraction is outside from possible value:"))
@@ -181,7 +181,7 @@ void ProgressCoordninator::partProgressChanged(double fraction)
 /*!
     Contains the installation progress percentage.
 */
-int ProgressCoordninator::progressInPercentage() const
+int ProgressCoordinator::progressInPercentage() const
 {
     int currentValue = qRound(m_currentCompletePercentage);
     Q_ASSERT( currentValue <= 100);
@@ -189,7 +189,7 @@ int ProgressCoordninator::progressInPercentage() const
     return currentValue;
 }
 
-void ProgressCoordninator::disconnectAllSenders()
+void ProgressCoordinator::disconnectAllSenders()
 {
     foreach (QPointer<QObject> sender, m_senderPartProgressSizeHash.keys()) {
         if (!sender.isNull()) {
@@ -202,7 +202,7 @@ void ProgressCoordninator::disconnectAllSenders()
     m_senderPendingCalculatedPercentageHash.clear();
 }
 
-void ProgressCoordninator::setUndoMode()
+void ProgressCoordinator::setUndoMode()
 {
     Q_ASSERT(!m_undoMode);
     m_undoMode = true;
@@ -212,7 +212,7 @@ void ProgressCoordninator::setUndoMode()
     m_currentBasePercentage = m_reachedPercentageBeforeUndo;
 }
 
-void ProgressCoordninator::addManualPercentagePoints(int value)
+void ProgressCoordinator::addManualPercentagePoints(int value)
 {
     m_manualAddedPercentage = m_manualAddedPercentage + value;
     if (m_undoMode) {
@@ -227,12 +227,12 @@ void ProgressCoordninator::addManualPercentagePoints(int value)
     qApp->processEvents(); //makes the result available in the ui
 }
 
-void ProgressCoordninator::addReservePercentagePoints(int value)
+void ProgressCoordinator::addReservePercentagePoints(int value)
 {
     m_reservedPercentage = m_reservedPercentage + value;
 }
 
-void ProgressCoordninator::setLabelText(const QString &text)
+void ProgressCoordinator::setLabelText(const QString &text)
 {
     if (m_installationLabelText == text)
         return;
@@ -242,24 +242,24 @@ void ProgressCoordninator::setLabelText(const QString &text)
 /*!
     Contains the installation progress label text.
 */
-QString ProgressCoordninator::labelText() const
+QString ProgressCoordinator::labelText() const
 {
     return m_installationLabelText;
 }
 
-void ProgressCoordninator::emitDetailTextChanged(const QString &text)
+void ProgressCoordinator::emitDetailTextChanged(const QString &text)
 {
     emit detailTextChanged(text);
 }
 
-void ProgressCoordninator::emitLabelAndDetailTextChanged(const QString &text)
+void ProgressCoordinator::emitLabelAndDetailTextChanged(const QString &text)
 {
     emit detailTextChanged(text);
     m_installationLabelText = QString(text).remove(QLatin1String("\n"));
     qApp->processEvents(); //makes the result available in the ui
 }
 
-double ProgressCoordninator::allPendingCalculatedPartPercentages(QObject *excludeKeyObject)
+double ProgressCoordinator::allPendingCalculatedPartPercentages(QObject *excludeKeyObject)
 {
     double result = 0;
     QHash<QPointer<QObject>, double>::iterator it = m_senderPendingCalculatedPercentageHash.begin();

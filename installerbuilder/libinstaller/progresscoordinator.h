@@ -32,13 +32,13 @@
 
 namespace QInstaller {
 
-class ProgressCoordninator : public QObject
+class ProgressCoordinator : public QObject
 {
     Q_OBJECT
 
 public:
-    static ProgressCoordninator* instance();
-    ~ProgressCoordninator();
+    static ProgressCoordinator* instance();
+    ~ProgressCoordinator();
 
     void registerPartProgress(QObject *sender, const char *signal, double partProgressSize);
 
@@ -63,7 +63,7 @@ signals:
     void detailTextResetNeeded();
 
 protected:
-    explicit ProgressCoordninator(QObject *parent);
+    explicit ProgressCoordinator(QObject *parent);
 
 private:
     double allPendingCalculatedPartPercentages(QObject *excludeKeyObject = 0);
