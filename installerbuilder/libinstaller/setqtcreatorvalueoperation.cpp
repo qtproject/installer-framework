@@ -31,17 +31,23 @@
 **
 **************************************************************************/
 #include "setqtcreatorvalueoperation.h"
+
 #include "qtcreator_constants.h"
 #include "updatecreatorsettingsfrom21to22operation.h"
 #include "packagemanagercore.h"
 
-#include <QString>
-#include <QFileInfo>
-#include <QDir>
-#include <QSettings>
-#include <QDebug>
+#include <QtCore/QSettings>
 
 using namespace QInstaller;
+
+namespace {
+    QString groupName(const QString &groupName)
+    {
+        if (groupName == QLatin1String("General"))
+            return QString();
+        return groupName;
+    }
+}
 
 SetQtCreatorValueOperation::SetQtCreatorValueOperation()
 {
@@ -56,25 +62,14 @@ void SetQtCreatorValueOperation::backup()
 {
 }
 
-namespace {
-    QString groupName(const QString & groupName)
-    {
-        if (groupName == QLatin1String("General")) {
-            return QString();
-        } else {
-            return groupName;
-        }
-    }
-}
-
 bool SetQtCreatorValueOperation::performOperation()
 {
     const QStringList args = arguments();
 
     if (args.count() != 4) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 4 expected(rootInstallPath,group,key,value).")
-                        .arg(name()).arg( arguments().count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 4 expected(rootInstallPath, "
+            "group, key, value).").arg(name()).arg( arguments().count()));
         return false;
     }
 
@@ -84,18 +79,15 @@ bool SetQtCreatorValueOperation::performOperation()
     const QString &key = args.at(2);
     const QString &settingsValue = args.at(3);
 {
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-                        QSettings::IniFormat);
-
-    if (!group.isEmpty()) {
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath), QSettings::IniFormat);
+    if (!group.isEmpty())
         settings.beginGroup(group);
-    }
 
     settings.setValue(key, settingsValue);
 
-    if (!group.isEmpty()) {
+    if (!group.isEmpty())
         settings.endGroup();
-    }
+
     settings.sync(); //be save ;)
 } //destruct QSettings
 
@@ -127,18 +119,15 @@ bool SetQtCreatorValueOperation::undoOperation()
     const QString &group = groupName(args.at(1));
     const QString &key = args.at(2);
 
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-                        QSettings::IniFormat);
-
-    if (!group.isEmpty()) {
+    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath), QSettings::IniFormat);
+    if (!group.isEmpty())
         settings.beginGroup(group);
-    }
 
     settings.remove(key);
 
-    if (!group.isEmpty()) {
+    if (!group.isEmpty())
         settings.endGroup();
-    }
+
     return true;
 }
 
@@ -147,8 +136,7 @@ bool SetQtCreatorValueOperation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* SetQtCreatorValueOperation::clone() const
+Operation *SetQtCreatorValueOperation::clone() const
 {
     return new SetQtCreatorValueOperation();
 }
-

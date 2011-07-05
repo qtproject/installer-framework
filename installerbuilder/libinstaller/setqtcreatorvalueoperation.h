@@ -26,12 +26,11 @@
 #ifndef SETQTCREATORVALUEOPERATION_H
 #define SETQTCREATORVALUEOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
-#include <QtCore/QObject>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class SetQtCreatorValueOperation : public KDUpdater::UpdateOperation
+class SetQtCreatorValueOperation : public Operation
 {
 public:
     SetQtCreatorValueOperation();
@@ -41,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation *clone() const;
 };
 
 } // namespace
