@@ -26,12 +26,11 @@
 #ifndef SETEXAMPLESPATHONQTOPERATION_H
 #define SETEXAMPLESPATHONQTOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
-#include <QtCore/QObject>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class SetExamplesPathOnQtOperation : public KDUpdater::UpdateOperation
+class SetExamplesPathOnQtOperation : public Operation
 {
 public:
     SetExamplesPathOnQtOperation();
@@ -41,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation *clone() const;
 };
 
 } // namespace
