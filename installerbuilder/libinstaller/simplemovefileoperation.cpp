@@ -34,7 +34,6 @@
 
 #include <QtCore/QFileInfo>
 
-
 namespace QInstaller {
 
 SimpleMoveFileOperation::SimpleMoveFileOperation()
@@ -90,6 +89,7 @@ bool SimpleMoveFileOperation::performOperation()
         return false;
     }
 
+    emit outputTextChanged(tr("Move %1 to %2.").arg(source, target));
     return true;
 }
 
@@ -97,8 +97,9 @@ bool SimpleMoveFileOperation::undoOperation()
 {
     const QString source = arguments().at(0);
     const QString target = arguments().at(1);
-    QFile file(target);
-    file.rename(source);
+
+    QFile(target).rename(source);
+    emit outputTextChanged(tr("Move %1 to %2.").arg(target, source));
 
     return true;
 }
@@ -108,7 +109,7 @@ bool SimpleMoveFileOperation::testOperation()
     return true;
 }
 
-SimpleMoveFileOperation* SimpleMoveFileOperation::clone() const
+Operation* SimpleMoveFileOperation::clone() const
 {
     return new SimpleMoveFileOperation();
 }

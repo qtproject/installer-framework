@@ -26,16 +26,13 @@
 #ifndef SIMPLEMOVEFILEOPERATION_H
 #define SIMPLEMOVEFILEOPERATION_H
 
-#include "installer_global.h"
-
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 #include <QtCore/QObject>
 
-
 namespace QInstaller {
 
-class INSTALLER_EXPORT SimpleMoveFileOperation : public QObject, public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT SimpleMoveFileOperation : public QObject, public Operation
 {
     Q_OBJECT
 
@@ -47,7 +44,10 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    SimpleMoveFileOperation *clone() const;
+    Operation *clone() const;
+
+Q_SIGNALS:
+    void outputTextChanged(const QString &progress);
 };
 
 }
