@@ -40,10 +40,6 @@
 
 #include <QtScript/QScriptEngine>
 
-namespace KDUpdater {
-    class UpdateOperation;
-}
-
 namespace QInstaller {
 
 class Component;
