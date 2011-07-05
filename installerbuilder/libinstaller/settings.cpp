@@ -43,6 +43,22 @@
 
 using namespace QInstaller;
 
+static const QLatin1String scIcon("Icon");
+static const QLatin1String scLogo("Logo");
+static const QLatin1String scPages("Pages");
+static const QLatin1String scPrefix("Prefix");
+static const QLatin1String scLogoSmall("LogoSmall");
+static const QLatin1String scWatermark("Watermark");
+static const QLatin1String scPublicKey("PublicKey");
+static const QLatin1String scPrivateKey("PrivateKey");
+static const QLatin1String scProductUrl("ProductUrl");
+static const QLatin1String scBackground("Background");
+static const QLatin1String scAdminTargetDir("AdminTargetDir");
+static const QLatin1String scUninstallerName("UninstallerName");
+static const QLatin1String scUserRepositories("UserRepositories");
+static const QLatin1String scUninstallerIniFile("UninstallerIniFile");
+static const QLatin1String scRemoteRepositories("RemoteRepositories");
+static const QLatin1String scSigningCertificate("SigningCertificate");
 
 template <typename T>
 static QSet<T> variantListToSet(const QVariantList &list)

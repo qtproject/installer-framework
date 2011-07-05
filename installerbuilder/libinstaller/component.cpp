@@ -55,9 +55,14 @@
 
 using namespace QInstaller;
 
-/*
-    TRANSLATOR QInstaller::Component
-*/
+static const QLatin1String scScript("Script");
+static const QLatin1String scDefault("Default");
+static const QLatin1String scVirtual("Virtual");
+static const QLatin1String scInstalled("Installed");
+static const QLatin1String scUpdateText("UpdateText");
+static const QLatin1String scUninstalled("Uninstalled");
+static const QLatin1String scCurrentState("CurrentState");
+static const QLatin1String scForcedInstallation("ForcedInstallation");
 
 /*!
     \class QInstaller::Component
