@@ -176,7 +176,7 @@ bool RegisterToolChainOperation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* RegisterToolChainOperation::clone() const
+Operation *RegisterToolChainOperation::clone() const
 {
     return new RegisterToolChainOperation();
 }

@@ -26,28 +26,29 @@
 #ifndef REGISTERTOOLCHAINOPERATION_H
 #define REGISTERTOOLCHAINOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-/** Arguments:
-  * SDK Path - to find the QtCreator installation
-  * ToolChainKey - is the internal QtCreator settings key usually: GccToolChain
-  * toolchain type - where this toolchain is defined in QtCreator
-  *     ProjectExplorer.ToolChain.Gcc ProjectExplorer.ToolChain.Mingw
-  *     ProjectExplorer.ToolChain.LinuxIcc ProjectExplorer.ToolChain.Msvc
-  *     Qt4ProjectManager.ToolChain.GCCE Qt4ProjectManager.ToolChain.Maemo
-  * display name - the name how it will be displayed in QtCreator
-  * application binary interface - this is an internal creator typ as a String CPU-OS-OS_FLAVOR-BINARY_FORMAT-WORD_WIDTH
-  *     CPU: arm x86 mips ppc itanium
-  *     OS: linux macos symbian unix windows
-  *     OS_FLAVOR: generic maemo meego generic device emulator generic msvc2005 msvc2008 msvc2010 msys ce
-  *     BINARY_FORMAT: elf pe mach_o qml_rt
-  *     WORD_WIDTH: 8 16 32 64
-  * compiler path - the binary which is used as the compiler
-  * debugger path - the binary which is used as the debugger
-  */
-class RegisterToolChainOperation : public KDUpdater::UpdateOperation
+/*!
+    Arguments:
+    * SDK Path - to find the QtCreator installation
+    * ToolChainKey - is the internal QtCreator settings key usually: GccToolChain
+    * toolchain type - where this toolchain is defined in QtCreator
+    *     ProjectExplorer.ToolChain.Gcc ProjectExplorer.ToolChain.Mingw
+    *     ProjectExplorer.ToolChain.LinuxIcc ProjectExplorer.ToolChain.Msvc
+    *     Qt4ProjectManager.ToolChain.GCCE Qt4ProjectManager.ToolChain.Maemo
+    * display name - the name how it will be displayed in QtCreator
+    * application binary interface - this is an internal creator typ as a String CPU-OS-OS_FLAVOR-BINARY_FORMAT-WORD_WIDTH
+    *     CPU: arm x86 mips ppc itanium
+    *     OS: linux macos symbian unix windows
+    *     OS_FLAVOR: generic maemo meego generic device emulator generic msvc2005 msvc2008 msvc2010 msys ce
+    *     BINARY_FORMAT: elf pe mach_o qml_rt
+    *     WORD_WIDTH: 8 16 32 64
+    * compiler path - the binary which is used as the compiler
+    * debugger path - the binary which is used as the debugger
+*/
+class RegisterToolChainOperation : public Operation
 {
 public:
     RegisterToolChainOperation();
@@ -57,7 +58,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation *clone() const;
 };
 
 } // namespace
