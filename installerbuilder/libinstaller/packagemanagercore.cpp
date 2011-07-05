@@ -577,7 +577,7 @@ PackageManagerCore::PackageManagerCore()
 {
 }
 
-PackageManagerCore::PackageManagerCore(qint64 magicmaker, const Operations &performedOperations)
+PackageManagerCore::PackageManagerCore(qint64 magicmaker, const OperationList &performedOperations)
     : d(new PackageManagerCorePrivate(this, magicmaker, performedOperations))
 {
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");

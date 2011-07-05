@@ -74,7 +74,7 @@ public:
 
     explicit PackageManagerCorePrivate(PackageManagerCore *core);
     explicit PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
-        const Operations &performedOperations);
+        const OperationList &performedOperations);
     ~PackageManagerCorePrivate();
 
     static bool isProcessRunning(const QString &name, const QList<KDSysInfo::ProcessInfo> &processes);
@@ -93,7 +93,7 @@ public:
     QString uninstallerName() const;
     QString installerBinaryPath() const;
     void readUninstallerIniFile(const QString &targetDir);
-    void writeUninstaller(Operations performedOperations);
+    void writeUninstaller(OperationList performedOperations);
 
     QString componentsXmlPath() const;
     QString configurationFileName() const;
@@ -119,7 +119,7 @@ public:
 
     void stopProcessesForUpdates(const QList<Component*> &components);
     int countProgressOperations(const QList<Component*> &components);
-    int countProgressOperations(const Operations &operations);
+    int countProgressOperations(const OperationList &operations);
     void connectOperationToInstaller(Operation* const operation, double progressOperationPartSize);
 
     Operation* createOwnedOperation(const QString &type);
@@ -169,9 +169,9 @@ public:
     QList<Component*> m_updaterComponents;
     QList<Component*> m_updaterComponentsDeps;
 
-    Operations m_ownedOperations;
-    Operations m_performedOperationsOld;
-    Operations m_performedOperationsCurrentSession;
+    OperationList m_ownedOperations;
+    OperationList m_performedOperationsOld;
+    OperationList m_performedOperationsCurrentSession;
 
 private:
     void deleteUninstaller();
@@ -179,10 +179,10 @@ private:
     void unregisterUninstaller();
 
     void writeUninstallerBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
-    void writeUninstallerBinaryData(QIODevice *output, QFile *const input, const Operations &performed,
+    void writeUninstallerBinaryData(QIODevice *output, QFile *const input, const OperationList &performed,
         const BinaryLayout &layout, bool compressOperations, bool forceUncompressedResources);
 
-    void runUndoOperations(const Operations &undoOperations, double undoOperationProgressSize,
+    void runUndoOperations(const OperationList &undoOperations, double undoOperationProgressSize,
         bool adminRightsGained, bool deleteOperation);
 
     PackageManagerCore::RemotePackages remotePackages();

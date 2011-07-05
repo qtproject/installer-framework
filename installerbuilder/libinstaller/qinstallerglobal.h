@@ -58,7 +58,7 @@ enum INSTALLER_EXPORT JobError
 };
 
 typedef KDUpdater::UpdateOperation Operation;
-typedef QList<QInstaller::Operation*> Operations;
+typedef QList<QInstaller::Operation*> OperationList;
 
 QString uncaughtExceptionString(QScriptEngine *scriptEngine);
 QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine);

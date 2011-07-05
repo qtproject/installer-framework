@@ -61,7 +61,7 @@ public:
 
     PackageManagerCore *m_core;
     Component *m_parentComponent;
-    Operations m_operations;
+    OperationList m_operations;
     Operation *m_licenseOperation;
     Operation *m_minimumProgressOperation;
 

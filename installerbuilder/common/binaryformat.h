@@ -195,7 +195,7 @@ public:
 
     qint64 magicmaker() const;
     int registerEmbeddedQResources();
-    Operations performedOperations() const;
+    OperationList performedOperations() const;
 
 private:
     static void readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,

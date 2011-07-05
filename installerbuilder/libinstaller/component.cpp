@@ -727,7 +727,7 @@ QStringList Component::stopProcessForUpdateRequests() const
     Returns the operations needed to install this component. If autoCreateOperations is true,
     createOperations is called, if no operations have been auto-created yet.
 */
-Operations Component::operations() const
+OperationList Component::operations() const
 {
     if (d->m_autoCreateOperations && !d->m_operationsCreated) {
         const_cast<Component*>(this)->createOperations();

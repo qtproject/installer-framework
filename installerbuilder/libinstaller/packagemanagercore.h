@@ -60,7 +60,7 @@ class INSTALLER_EXPORT PackageManagerCore : public QObject
 
 public:
     explicit PackageManagerCore();
-    explicit PackageManagerCore(qint64 magicmaker, const Operations &oldOperations = Operations());
+    explicit PackageManagerCore(qint64 magicmaker, const OperationList &oldOperations = OperationList());
     ~PackageManagerCore();
 
     // status

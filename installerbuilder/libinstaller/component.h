@@ -128,7 +128,7 @@ public:
     Q_INVOKABLE QList<QPair<QString, bool> > pathesForUninstallation() const;
     Q_INVOKABLE void registerPathForUninstallation(const QString &path, bool wipe = false);
 
-    Operations operations() const;
+    OperationList operations() const;
 
     void addOperation(Operation *operation);
     Q_INVOKABLE bool addOperation(const QString &operation, const QString &parameter1 = QString(),

@@ -1040,7 +1040,7 @@ int BinaryContent::registerEmbeddedQResources()
     Returns the operations performed during installation. Returns an empty list if no operations are
     performed or the binary is the installer application.
 */
-Operations BinaryContent::performedOperations() const
+OperationList BinaryContent::performedOperations() const
 {
     return m_performedOperations.toList();
 }

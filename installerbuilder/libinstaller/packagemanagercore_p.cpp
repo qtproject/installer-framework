@@ -161,7 +161,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 }
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
-        const Operations &performedOperations)
+        const OperationList &performedOperations)
     : m_updateFinder(0)
     , m_FSEngineClientHandler(initFSEngineClientHandler())
     , m_status(PackageManagerCore::Unfinished)
@@ -557,7 +557,7 @@ void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> 
     }
 }
 
-int PackageManagerCorePrivate::countProgressOperations(const Operations &operations)
+int PackageManagerCorePrivate::countProgressOperations(const OperationList &operations)
 {
     int operationCount = 0;
     foreach (Operation *operation, operations) {
@@ -673,7 +673,7 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
 }
 
 void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QFile *const input,
-    const Operations &performedOperations, const BinaryLayout &layout, bool compressOperations,
+    const OperationList &performedOperations, const BinaryLayout &layout, bool compressOperations,
     bool forceUncompressedResources)
 {
     const qint64 dataBlockStart = output->pos();
@@ -734,7 +734,7 @@ void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QF
     appendInt64(output, MagicUninstallerMarker);
 }
 
-void PackageManagerCorePrivate::writeUninstaller(Operations performedOperations)
+void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperations)
 {
     bool gainedAdminRights = false;
     QTemporaryFile tempAdminFile(targetDir() + QString::fromLatin1("/testjsfdjlkdsjflkdsjfldsjlfds")
@@ -1143,8 +1143,8 @@ void PackageManagerCorePrivate::runPackageUpdater()
             }
         }
 
-        Operations undoOperations;
-        Operations nonRevertedOperations;
+        OperationList undoOperations;
+        OperationList nonRevertedOperations;
         QHash<QString, Component*> componentsByName;
 
         // build a list of undo operations based on the checked state of the component
@@ -1262,7 +1262,7 @@ void PackageManagerCorePrivate::runUninstaller()
         if (!QFileInfo(installerBinaryPath()).isWritable() || !QFileInfo(componentsXmlPath()).isWritable())
             adminRightsGained = m_core->gainAdminRights();
 
-        Operations undoOperations;
+        OperationList undoOperations;
         bool updateAdminRights = false;
         foreach (Operation *op, m_performedOperationsOld) {
             undoOperations.prepend(op);
@@ -1339,7 +1339,7 @@ void PackageManagerCorePrivate::runUninstaller()
 void PackageManagerCorePrivate::installComponent(Component *component, double progressOperationSize,
     bool adminRightsGained)
 {
-    const Operations operations = component->operations();
+    const OperationList operations = component->operations();
     if (!component->operationsCreatedSuccessfully())
         m_core->setCanceled();
 
@@ -1524,7 +1524,7 @@ void PackageManagerCorePrivate::unregisterUninstaller()
 #endif
 }
 
-void PackageManagerCorePrivate::runUndoOperations(const Operations &undoOperations, double progressSize,
+void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOperations, double progressSize,
     bool adminRightsGained, bool deleteOperation)
 {
     KDUpdater::PackagesInfo &packages = *m_updaterApplication.packagesInfo();
