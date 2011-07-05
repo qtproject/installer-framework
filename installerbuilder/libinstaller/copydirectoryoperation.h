@@ -26,16 +26,13 @@
 #ifndef COPYDIRECTORYOPERATION_H
 #define COPYDIRECTORYOPERATION_H
 
-#include "installer_global.h"
-
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 #include <QtCore/QObject>
 
-
 namespace QInstaller {
 
-class INSTALLER_EXPORT CopyDirectoryOperation : public QObject, public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT CopyDirectoryOperation : public QObject, public Operation
 {
     Q_OBJECT
 
@@ -47,10 +44,9 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    CopyDirectoryOperation *clone() const;
+    Operation *clone() const;
 
 Q_SIGNALS:
-    //TODO: needs progress signal
     void outputTextChanged(const QString &progress);
 };
 

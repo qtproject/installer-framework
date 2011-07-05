@@ -136,6 +136,7 @@ bool CopyDirectoryOperation::undoOperation()
 {
     Q_ASSERT(arguments().count() == 2);
 
+    QDir dir;
     const QStringList files = value(QLatin1String("files")).toStringList();
     foreach (const QString &file, files) {
         if (!QFile::remove(file)) {
@@ -143,12 +144,11 @@ bool CopyDirectoryOperation::undoOperation()
             setErrorString(tr("Could not remove %0").arg(file));
             return false;
         }
-        QDir().rmpath(QFileInfo(file).absolutePath());
+        dir.rmpath(QFileInfo(file).absolutePath());
         emit outputTextChanged(file);
     }
 
     setValue(QLatin1String("files"), QStringList());
-
     return true;
 }
 
@@ -157,7 +157,7 @@ bool CopyDirectoryOperation::testOperation()
     return true;
 }
 
-CopyDirectoryOperation* CopyDirectoryOperation::clone() const
+Operation *CopyDirectoryOperation::clone() const
 {
     return new CopyDirectoryOperation();
 }
