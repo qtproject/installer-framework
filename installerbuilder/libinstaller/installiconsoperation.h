@@ -26,12 +26,13 @@
 #ifndef INSTALLICONSOPERATION_H
 #define INSTALLICONSOPERATION_H
 
+#include "qinstallerglobal.h"
+
 #include <QtCore/QObject>
-#include <KDUpdater/UpdateOperation>
 
 namespace QInstaller {
 
-class InstallIconsOperation : public QObject, public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT InstallIconsOperation : public QObject, public Operation
 {
     Q_OBJECT
 public:
@@ -42,11 +43,11 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    InstallIconsOperation* clone() const;
+    Operation *clone() const;
 
 Q_SIGNALS:
-    void progressChanged( int progress );
-    void outputTextChanged( const QString& progress );
+    void progressChanged(int progress);
+    void outputTextChanged(const QString &progress);
 
 private:
     QString targetDirectory();

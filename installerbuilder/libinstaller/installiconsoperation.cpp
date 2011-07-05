@@ -32,15 +32,11 @@
 **************************************************************************/
 #include "installiconsoperation.h"
 
+#include "common/fileutils.h"
 #include "packagemanagercore.h"
 
-#include "common/errors.h"
-#include "common/fileutils.h"
-
-#include <QDir>
-#include <QDirIterator>
-#include <QFileInfo>
-#include <QTemporaryFile>
+#include <QtCore/QDir>
+#include <QtCore/QDirIterator>
 
 #if QT_VERSION >= 0x040600
 #include <QProcessEnvironment>
@@ -50,10 +46,6 @@
 
 using namespace QInstaller;
 
-/*
-TRANSLATOR QInstaller::InstallIconsOperation
-*/
-
 QString InstallIconsOperation::targetDirectory()
 {
     // we're not searching for the first time, let's re-use the old value
@@ -62,12 +54,12 @@ QString InstallIconsOperation::targetDirectory()
 
 #if QT_VERSION >= 0x040600
     const QProcessEnvironment env;
-    QStringList XDG_DATA_DIRS = env.value(QLatin1String("XDG_DATA_DIRS")).split(QLatin1Char(':'), QString::SkipEmptyParts);
+    QStringList XDG_DATA_DIRS = env.value(QLatin1String("XDG_DATA_DIRS")).split(QLatin1Char(':'),
+        QString::SkipEmptyParts);
 #else
-    const QStringList env = QProcess::systemEnvironment();
     QStringList XDG_DATA_DIRS;
-    for(QStringList::const_iterator it = env.begin(); it != env.end(); ++it)
-    {
+    const QStringList env = QProcess::systemEnvironment();
+    for (QStringList::const_iterator it = env.begin(); it != env.end(); ++it) {
         if (it->startsWith(QLatin1String("XDG_DATA_DIRS=")))
             XDG_DATA_DIRS = it->mid(it->indexOf(QLatin1Char('=')) + 1).split(QLatin1Char(':'));
      }
@@ -76,10 +68,9 @@ QString InstallIconsOperation::targetDirectory()
     XDG_DATA_DIRS.push_back(QLatin1String("/usr/share")); // default path
     XDG_DATA_DIRS.push_back(QDir::home().absoluteFilePath(QLatin1String(".icons"))); // default path
 
-    const QStringList& directories = XDG_DATA_DIRS;
     QString directory;
-    for(QStringList::const_iterator it = directories.begin(); it != directories.end(); ++it)
-    {
+    const QStringList& directories = XDG_DATA_DIRS;
+    for (QStringList::const_iterator it = directories.begin(); it != directories.end(); ++it) {
         if (it->isEmpty())
             continue;
 
@@ -87,8 +78,8 @@ QString InstallIconsOperation::targetDirectory()
             directory = QDir(*it).absolutePath();
         else
             directory = QDir(*it).absoluteFilePath(QLatin1String("icons"));
-        QDir dir(directory);
 
+        QDir dir(directory);
         // let's see wheter this dir exists or we're able to create it
         if (!dir.exists() && !QDir().mkpath(directory))
             continue;
@@ -98,6 +89,7 @@ QString InstallIconsOperation::targetDirectory()
         const bool existed = file.exists();
         if (!file.open(QIODevice::ReadWrite))
             continue;
+
         file.close();
         if (!existed)
             file.remove();
@@ -106,10 +98,8 @@ QString InstallIconsOperation::targetDirectory()
 
     if (!QDir(directory).exists())
         QDir().mkpath(directory);
-    
+
     setValue(QLatin1String("directory"), directory);
-
-
     return directory;
 }
 
@@ -121,8 +111,7 @@ InstallIconsOperation::InstallIconsOperation()
 InstallIconsOperation::~InstallIconsOperation()
 {
     const QStringList backupFiles = value(QLatin1String("backupfiles")).toStringList();
-    for(QStringList::const_iterator it = backupFiles.begin(); it != backupFiles.end(); it += 2)
-    {
+    for (QStringList::const_iterator it = backupFiles.begin(); it != backupFiles.end(); it += 2) {
         const QString& backup = *(it + 1);
         deleteFileNowOrLater(backup);
     }
@@ -138,8 +127,8 @@ bool InstallIconsOperation::performOperation()
     const QStringList args = arguments();
     if (args.count() != 1) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 1 expected.")
-                        .arg(name()).arg(args.count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 1 expected.").arg(name()).arg(args
+            .count()));
         return false;
     }
 
@@ -156,12 +145,13 @@ bool InstallIconsOperation::performOperation()
     QStringList files;
     QStringList backupFiles;
     QStringList createdDirectories;
-    
+
     int numItems = 0;
     int currentItem = 0;
 
     // iterate a first time to count the items (for proper progress)
-    QDirIterator itCount(sourceDir.path(), QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+    QDirIterator itCount(sourceDir.path(), QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot,
+        QDirIterator::Subdirectories);
     while (itCount.hasNext()) {
         itCount.next();
         ++numItems;
@@ -170,14 +160,15 @@ bool InstallIconsOperation::performOperation()
     PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
 
     // iterate a second time to get the actual work done
-    QDirIterator it(sourceDir.path(), QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+    QDirIterator it(sourceDir.path(), QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot,
+        QDirIterator::Subdirectories);
     while (it.hasNext())  {
         qApp->processEvents();
 
         const int status = core->status();
-        if(status == PackageManagerCore::Canceled || status == PackageManagerCore::Failure)
+        if (status == PackageManagerCore::Canceled || status == PackageManagerCore::Failure)
             return true;
- 
+
         const QString source = it.next();
         const QString target = targetDir.absoluteFilePath(sourceDir.relativeFilePath(source));
 
@@ -185,7 +176,6 @@ bool InstallIconsOperation::performOperation()
         emit progressChanged(++currentItem * 100 / numItems);
 
         const QFileInfo fi = it.fileInfo();
-
         if (!fi.isDir()) {
             if (QFile(target).exists()) {
                 // first backup...
@@ -201,7 +191,7 @@ bool InstallIconsOperation::performOperation()
                 backupFiles.push_back(target);
                 backupFiles.push_back(backup);
                 setValue(QLatin1String("backupfiles"), backupFiles);
-               
+
                 // then delete it
                 QString errStr;
                 if (!deleteFileNowOrLater(target, &errStr)) {
@@ -210,7 +200,7 @@ bool InstallIconsOperation::performOperation()
                     undoOperation();
                     return false;
                 }
-                
+
             }
 
             // copy the file to its new location
@@ -239,11 +229,8 @@ bool InstallIconsOperation::performOperation()
     // this should work now if not, it's not _that_ problematic...
     try {
         removeDirectory(source);
+    } catch(...) {
     }
-    catch(...) {
-    }
-
-    // reached this? cool :-)
     return true;
 }
 
@@ -255,7 +242,7 @@ bool InstallIconsOperation::undoOperation()
     const QStringList files = value(QLatin1String("files")).toStringList();
     for (QStringList::const_iterator it = files.begin(); it != files.end(); it += 2) {
         qApp->processEvents();
-        
+
         const QString& source = *it;
         const QString& target = *(it + 1);
 
@@ -285,7 +272,7 @@ bool InstallIconsOperation::undoOperation()
 
     // then remove all directories created by us
     const QStringList createdDirectories = value(QLatin1String("createddirectories")).toStringList();
-    for(QStringList::const_iterator it = createdDirectories.begin(); it != createdDirectories.end(); ++it) {
+    for (QStringList::const_iterator it = createdDirectories.begin(); it != createdDirectories.end(); ++it) {
         const QDir dir(*it);
         // even remove some hidden, OS-created files in there
 #if defined Q_WS_MAC
@@ -304,7 +291,7 @@ bool InstallIconsOperation::testOperation()
     return true;
 }
 
-InstallIconsOperation* InstallIconsOperation::clone() const
+Operation *InstallIconsOperation::clone() const
 {
     return new InstallIconsOperation();
 }
