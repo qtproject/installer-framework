@@ -31,6 +31,8 @@
 **
 **************************************************************************/
 #include "updatecreatorsettingsfrom21to22operation.h"
+
+#include "constants.h"
 #include "registerdefaultdebuggeroperation.h"
 #include "registertoolchainoperation.h"
 #include "qtcreatorpersistentsettings.h"

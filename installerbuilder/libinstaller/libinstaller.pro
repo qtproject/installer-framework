@@ -93,7 +93,8 @@ HEADERS += $$PWD/packagemanagercore.h \
     registerdefaultdebuggeroperation.h \
     updatecreatorsettingsfrom21to22operation.h \
     qprocesswrapper.h \
-    qsettingswrapper.h
+    qsettingswrapper.h \
+    constants.h
 
 SOURCES += $$PWD/packagemanagercore.cpp \
     $$PWD/packagemanagercore_p.cpp \

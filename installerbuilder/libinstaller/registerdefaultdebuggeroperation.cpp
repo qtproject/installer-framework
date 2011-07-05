@@ -31,6 +31,8 @@
 **
 **************************************************************************/
 #include "registerdefaultdebuggeroperation.h"
+
+#include "constants.h"
 #include "persistentsettings.h"
 #include "packagemanagercore.h"
 #include "qtcreator_constants.h"

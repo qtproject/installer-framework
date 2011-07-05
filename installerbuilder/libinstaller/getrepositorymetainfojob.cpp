@@ -32,6 +32,7 @@
 **************************************************************************/
 #include "getrepositorymetainfojob.h"
 
+#include "constants.h"
 #include "common/errors.h"
 #include "common/utils.h"
 #include "cryptosignatureverifier.h"

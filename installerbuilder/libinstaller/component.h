@@ -26,6 +26,7 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+#include "constants.h"
 #include "component_p.h"
 #include "qinstallerglobal.h"
 

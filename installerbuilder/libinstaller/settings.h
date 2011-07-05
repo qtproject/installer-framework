@@ -26,6 +26,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include "constants.h"
 #include "installer_global.h"
 
 #include <QtCore/QCoreApplication>
