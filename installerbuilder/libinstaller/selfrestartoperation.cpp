@@ -86,7 +86,7 @@ bool SelfRestartOperation::testOperation()
     return true;
 }
 
-SelfRestartOperation* SelfRestartOperation::clone() const
+Operation *SelfRestartOperation::clone() const
 {
     return new SelfRestartOperation();
 }

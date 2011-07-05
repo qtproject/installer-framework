@@ -26,11 +26,11 @@
 #ifndef SELFRESTARTOPERATION_H
 #define SELFRESTARTOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class SelfRestartOperation : public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT SelfRestartOperation : public Operation
 {
 public:
     SelfRestartOperation();
@@ -40,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    SelfRestartOperation* clone() const;
+    Operation *clone() const;
 };
 
 }
