@@ -1078,10 +1078,10 @@ void PackageManagerCorePrivate::runInstaller()
         writeUninstaller(m_performedOperationsOld + m_performedOperationsCurrentSession);
         registerUninstaller();
 
-        // this is the reserved one from the beginning
-        ProgressCoordinator::instance()->addManualPercentagePoints(1);
-        if (ProgressCoordinator::instance()->progressInPercentage() < 100)
-            ProgressCoordinator::instance()->partProgressChanged(0.99);
+        // fake a possible wrong value to show a full progress bar
+        const int progress = ProgressCoordinator::instance()->progressInPercentage();
+        if (progress < 100)
+            ProgressCoordinator::instance()->addManualPercentagePoints(100 - progress);
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
 
         if (adminRightsGained)
@@ -1220,10 +1220,10 @@ void PackageManagerCorePrivate::runPackageUpdater()
         commitSessionOperations(); //end session, move ops to "old"
         m_needToWriteUninstaller = true;
 
-        //this is the reserved one from the beginning
-        ProgressCoordinator::instance()->addManualPercentagePoints(1);
-        if (ProgressCoordinator::instance()->progressInPercentage() < 100)
-            ProgressCoordinator::instance()->partProgressChanged(0.99);
+        // fake a possible wrong value to show a full progress bar
+        const int progress = ProgressCoordinator::instance()->progressInPercentage();
+        if (progress < 100)
+            ProgressCoordinator::instance()->addManualPercentagePoints(100 - progress);
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate finished!"));
 
         if (adminRightsGained)
@@ -1330,7 +1330,7 @@ void PackageManagerCorePrivate::runUninstaller()
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation aborted!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
-        emit installationFinished();
+        emit uninstallationFinished();
 
         throw;
     }
@@ -1391,10 +1391,6 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
             // fails or if this operation failed but still needs an undo call to cleanup.
             addPerformed(operation);
             operation->setValue(QLatin1String("component"), component->name());
-            // Add the progress operation size to the progress coordinator, so we will show the right
-            // progress at the end of the install/ update after we had an ignore error.
-            if (ignoreError)
-                ProgressCoordinator::instance()->partProgressChanged(progressOperationSize);
         }
 
         if (becameAdmin)

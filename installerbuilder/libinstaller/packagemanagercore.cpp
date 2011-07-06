@@ -552,9 +552,6 @@ void PackageManagerCore::rollBackInstallation()
                 "error happend."));
         }
     }
-
-    if (ProgressCoordinator::instance()->progressInPercentage() < 100)
-        ProgressCoordinator::instance()->partProgressChanged(0.99);
     packages.writeToDisk();
 }
 
