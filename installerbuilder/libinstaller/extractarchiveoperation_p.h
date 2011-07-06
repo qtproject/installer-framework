@@ -43,7 +43,7 @@ class WorkerThread : public QThread
 {
     Q_OBJECT
 public:
-    WorkerThread::WorkerThread(ExtractArchiveOperation *op, const QStringList &files, QObject *parent = 0)
+    WorkerThread(ExtractArchiveOperation *op, const QStringList &files, QObject *parent = 0)
         : QThread(parent)
         , m_files(files)
         , m_op(op)
