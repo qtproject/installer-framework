@@ -1062,6 +1062,8 @@ void PackageManagerCorePrivate::runInstaller()
         if (!downloadedArchivesCount)
             componentsInstallPartProgressSize = double(1);
 
+        // Force an update on the components xml as the install dir might have changed.
+        m_updaterApplication.packagesInfo()->setFileName(componentsXmlPath());
         // Clear the packages as we might install into an already existing installation folder.
         m_updaterApplication.packagesInfo()->clearPackageInfoList();
 
