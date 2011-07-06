@@ -78,7 +78,7 @@ static bool createLink(QString fileName, QString linkName, QString workingDir, Q
 
     if (SUCCEEDED(hres)) {
         hres = psl->SetPath((wchar_t *)fileName.utf16());
-        if(SUCCEEDED(hres) && !arguments.isNull())
+        if (SUCCEEDED(hres) && !arguments.isNull())
             hres = psl->SetArguments((wchar_t*)arguments.utf16());
         if (SUCCEEDED(hres)) {
             hres = psl->SetWorkingDirectory((wchar_t *)workingDir.utf16());
@@ -121,14 +121,16 @@ CreateShortcutOperation::~CreateShortcutOperation()
     deleteFileNowOrLater(value(QLatin1String("backupOfExistingShortcut")).toString());
 }
 
-static bool isWorkingDirOption(const QString& s) {
+static bool isWorkingDirOption(const QString& s)
+{
     return s.startsWith(QLatin1String("workingDirectory="));
 }
 
-static QString getWorkingDir(QStringList& args) {
+static QString getWorkingDir(QStringList& args)
+{
     QString workingDir;
     // if the args contain an option in the form "workingDirectory=...", find it and consume it
-    QStringList::iterator wdiropt = std::find_if(args.begin(), args.end(), isWorkingDirOption);
+    QStringList::iterator wdiropt = std::find_if (args.begin(), args.end(), isWorkingDirOption);
     if (wdiropt != args.end()) {
         workingDir = wdiropt->mid(QString::fromLatin1("workingDirectory=").size());
         args.erase(wdiropt);
@@ -155,11 +157,12 @@ void CreateShortcutOperation::backup()
         createdDir = QDir(p);
         if (!createdDir.exists()) {
             directoriesToCreate.push_back(QDir::toNativeSeparators(createdDir.absolutePath()));
-            verbose() << " backup created dir_pre " << QDir::toNativeSeparators(createdDir.absolutePath()) << std::endl;
+            verbose() << " backup created dir_pre " << QDir::toNativeSeparators(createdDir.absolutePath())
+                << std::endl;
             if (p == path)
                 break;
 
-        } else if(p == path) {
+        } else if (p == path) {
             // everything did already exist -> nothing to do for us (nothing to revert then, either)
             createdDir = QDir::root();
             break;
@@ -193,7 +196,8 @@ bool CreateShortcutOperation::performOperation()
 
     if (args.count() != 2 && args.count() != 3) {
         setError(InvalidArguments);
-        setErrorString(QObject::tr("Invalid arguments: %1 arguments given, 2 or 3 expected (optional: \"workingDirectory=...\").").arg(args.count()));
+        setErrorString(QObject::tr("Invalid arguments: %1 arguments given, 2 or 3 expected (optional: "
+            "\"workingDirectory=...\").").arg(args.count()));
         return false;
     }
 
@@ -212,7 +216,8 @@ bool CreateShortcutOperation::performOperation()
 
     if (!created) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not create folder %1: %2.").arg(QDir::toNativeSeparators(dirName), QLatin1String(strerror(errno))));
+        setErrorString(tr("Could not create folder %1: %2.").arg(QDir::toNativeSeparators(dirName),
+            QLatin1String(strerror(errno))));
         return false;
     }
 
@@ -221,30 +226,34 @@ bool CreateShortcutOperation::performOperation()
     if (dirAlreadyExists)
         deleter.releaseAll();
 
-#if 0 // disabled for now, isDir() also returns true if the link exists and points to a folder, then removing it fails
+    // disabled for now, isDir() also returns true if the link exists and points to a folder, then removing it
+    // fails
+#if 0
     // link creation
     if (QFileInfo(linkLocation).isDir()) {
         errno = 0;
         if (!QDir().rmdir(linkLocation)) {
             setError(UserDefinedError);
-            setErrorString(QObject::tr("Could not create link: failed to remove folder %1: %2").arg(QDir::toNativeSeparators(linkLocation), QLatin1String(strerror(errno))));
+            setErrorString(QObject::tr("Could not create link: failed to remove folder %1: %2")
+                .arg(QDir::toNativeSeparators(linkLocation), QLatin1String(strerror(errno))));
             return false;
         }
     }
 #endif
 
     QString errorString;
-
     if (QFile::exists(linkLocation) && !deleteFileNowOrLater(linkLocation, &errorString)) {
         setError(UserDefinedError);
-        setErrorString(QObject::tr("Failed to overwrite %1: %2").arg(QDir::toNativeSeparators(linkLocation),errorString));
+        setErrorString(QObject::tr("Failed to overwrite %1: %2").arg(QDir::toNativeSeparators(linkLocation),
+            errorString));
         return false;
     }
 
     const bool linked = createLink(linkTarget, linkLocation, workingDir, targetArguments);
     if (!linked) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not create link %1: %2").arg(QDir::toNativeSeparators(linkLocation), qt_error_string()));
+        setErrorString(tr("Could not create link %1: %2").arg(QDir::toNativeSeparators(linkLocation),
+            qt_error_string()));
         return false;
     }
     deleter.releaseAll();
@@ -252,7 +261,7 @@ bool CreateShortcutOperation::performOperation()
 }
 
 bool CreateShortcutOperation::undoOperation()
-{       
+{
     const QString linkLocation = arguments()[ 1 ];
     const QStringList args = this->arguments();
     verbose() << " undo Shortcutoperation with arguments ";
@@ -269,7 +278,8 @@ bool CreateShortcutOperation::undoOperation()
 
     if (hasValue(QLatin1String("backupOfExistingShortcut"))) {
         const QString backupOfExistingShortcut = value(QLatin1String("backupOfExistingShortcut")).toString();
-        const bool success = QFile::copy(backupOfExistingShortcut, linkLocation) && deleteFileNowOrLater(backupOfExistingShortcut);
+        const bool success = QFile::copy(backupOfExistingShortcut, linkLocation)
+            && deleteFileNowOrLater(backupOfExistingShortcut);
         if (!success) {
             setErrorString(QObject::tr("Could not restore backup file into %1").arg(linkLocation));
             return success;
@@ -277,8 +287,9 @@ bool CreateShortcutOperation::undoOperation()
     }
     verbose() << " got behin backup " << std::endl;
 
+    // no dir to delete (QDir(createdDirPath) would return the current working directory -> never do that
     const QStringList createdDirsPaths = value(QLatin1String("createddirs")).toStringList();
-    if (createdDirsPaths.isEmpty()) //no dir to delete (QDir(createdDirPath) would return the current working directory -> never do that
+    if (createdDirsPaths.isEmpty())
         return true;
 
     const bool forceremoval = QVariant(value(QLatin1String("forceremoval"))).toBool();
@@ -310,10 +321,13 @@ bool CreateShortcutOperation::undoOperation()
             verbose() << " removal of path " << createdDir.path() << std::endl;
             const bool result = QDir::root().rmdir(createdDir.path());
             if (!result) {
-                if (errorString.isEmpty())
-                    setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errorString));
-                else
-                    setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), QLatin1String(strerror(errno))));
+                if (errorString.isEmpty()) {
+                    setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(),
+                        errorString));
+                } else {
+                    setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(),
+                        QLatin1String(strerror(errno))));
+                }
                 return result;
             }
         }
@@ -326,7 +340,7 @@ bool CreateShortcutOperation::testOperation()
     return true;
 }
 
-CreateShortcutOperation* CreateShortcutOperation::clone() const
+Operation *CreateShortcutOperation::clone() const
 {
     return new CreateShortcutOperation();
 }

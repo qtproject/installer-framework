@@ -90,7 +90,7 @@ bool MacReplaceInstallNamesOperation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* MacReplaceInstallNamesOperation::clone() const
+Operation* MacReplaceInstallNamesOperation::clone() const
 {
     return new MacReplaceInstallNamesOperation;
 }

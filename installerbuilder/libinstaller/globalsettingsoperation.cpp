@@ -100,13 +100,12 @@ bool GlobalSettingsOperation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* GlobalSettingsOperation::clone() const
+Operation* GlobalSettingsOperation::clone() const
 {
     return new GlobalSettingsOperation();
 }
 
-QSettingsWrapper* GlobalSettingsOperation::setup(QString *key, QString *value,
-    const QStringList &arguments)
+QSettingsWrapper* GlobalSettingsOperation::setup(QString *key, QString *value, const QStringList &arguments)
 {
     if (arguments.count() == 4) {
         const QString &company = arguments.at(0);

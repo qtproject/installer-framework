@@ -26,11 +26,11 @@
 #ifndef CREATEDESKTOPENTRYOPERATION_H
 #define CREATEDESKTOPENTRYOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class CreateDesktopEntryOperation : public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT CreateDesktopEntryOperation : public Operation
 {
 public:
     CreateDesktopEntryOperation();
@@ -40,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    CreateDesktopEntryOperation* clone() const;
+    Operation* clone() const;
 
     QString absoluteFileName();
 };

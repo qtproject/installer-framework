@@ -117,7 +117,7 @@ bool LicenseOperation::testOperation()
     return true;
 }
 
-LicenseOperation* LicenseOperation::clone() const
+Operation* LicenseOperation::clone() const
 {
     return new LicenseOperation();
 }

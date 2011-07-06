@@ -54,7 +54,7 @@ using namespace QInstaller;
 //"anonymous" namespace to make clear that this is only for inside use
 namespace {
     QMap<QByteArray, QByteArray> generatePatchValueMap(const QByteArray & newQtPath,
-                                                        const QHash<QString, QByteArray> & qmakeValueHash)
+        const QHash<QString, QByteArray> & qmakeValueHash)
     {
         QMap<QByteArray, QByteArray> replaceMap; //first == searchstring: second == replace string
         char nativeSeperator = QDir::separator().toAscii();
@@ -62,54 +62,54 @@ namespace {
 
         oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_PREFIX"));
         replaceMap.insert(QByteArray("qt_prfxpath=%1").replace("%1", oldValue),
-                           QByteArray("qt_prfxpath=%1/").replace("%1/", newQtPath));
+            QByteArray("qt_prfxpath=%1/").replace("%1/", newQtPath));
 
         oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DOCS"));
         replaceMap.insert(QByteArray("qt_docspath=%1").replace("%1", oldValue),
-                           QByteArray("qt_docspath=%1/doc").replace("%1/", newQtPath + nativeSeperator));
+            QByteArray("qt_docspath=%1/doc").replace("%1/", newQtPath + nativeSeperator));
 
         oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_HEADERS"));
         replaceMap.insert(QByteArray("qt_hdrspath=%1").replace("%1", oldValue),
-                           QByteArray("qt_hdrspath=%1/include").replace("%1/", newQtPath + nativeSeperator));
+            QByteArray("qt_hdrspath=%1/include").replace("%1/", newQtPath + nativeSeperator));
 
         oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_LIBS"));
         replaceMap.insert(QByteArray("qt_libspath=%1").replace("%1", oldValue),
-                           QByteArray("qt_libspath=%1/lib").replace("%1/", newQtPath + nativeSeperator));
+            QByteArray("qt_libspath=%1/lib").replace("%1/", newQtPath + nativeSeperator));
 
         oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_BINS"));
         replaceMap.insert(QByteArray("qt_binspath=%1").replace("%1", oldValue),
-                           QByteArray("qt_binspath=%1/bin").replace("%1/", newQtPath + nativeSeperator));
+            QByteArray("qt_binspath=%1/bin").replace("%1/", newQtPath + nativeSeperator));
 
         oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_PLUGINS"));
         replaceMap.insert(QByteArray("qt_plugpath=%1").replace("%1", oldValue),
-                           QByteArray("qt_plugpath=%1/plugins").replace("%1/", newQtPath + nativeSeperator));
+            QByteArray("qt_plugpath=%1/plugins").replace("%1/", newQtPath + nativeSeperator));
 
         oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_IMPORTS"));
         replaceMap.insert(QByteArray("qt_impspath=%1").replace("%1", oldValue),
-                           QByteArray("qt_impspath=%1/imports").replace("%1/", newQtPath + nativeSeperator));
+            QByteArray("qt_impspath=%1/imports").replace("%1/", newQtPath + nativeSeperator));
 
         oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DATA"));
         replaceMap.insert( QByteArray("qt_datapath=%1").replace("%1", oldValue),
-                            QByteArray("qt_datapath=%1/").replace("%1/", newQtPath + nativeSeperator));
+            QByteArray("qt_datapath=%1/").replace("%1/", newQtPath + nativeSeperator));
 
         oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_TRANSLATIONS"));
         replaceMap.insert( QByteArray("qt_trnspath=%1").replace("%1", oldValue),
-                            QByteArray("qt_trnspath=%1/translations").replace("%1/", newQtPath + nativeSeperator));
+            QByteArray("qt_trnspath=%1/translations").replace("%1/", newQtPath + nativeSeperator));
 
-// This must not be patched. Commenting out to fix QTSDK-429
-//        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_CONFIGURATION"));
-//        replaceMap.insert( QByteArray("qt_stngpath=%1").replace("%1", oldValue),
-//                            QByteArray("qt_stngpath=%1").replace("%1", newQtPath));
+        // This must not be patched. Commenting out to fix QTSDK-429
+        //        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_CONFIGURATION"));
+        //        replaceMap.insert( QByteArray("qt_stngpath=%1").replace("%1", oldValue),
+        //                            QByteArray("qt_stngpath=%1").replace("%1", newQtPath));
 
         //examples and demoes can patched outside separately,
         //but for cosmetic reasons - if the qt version gets no examples later.
         oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_EXAMPLES"));
         replaceMap.insert( QByteArray("qt_xmplpath=%1").replace("%1", oldValue),
-                            QByteArray("qt_xmplpath=%1/examples").replace("%1/", newQtPath + nativeSeperator));
+            QByteArray("qt_xmplpath=%1/examples").replace("%1/", newQtPath + nativeSeperator));
 
         oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DEMOS"));
         replaceMap.insert( QByteArray("qt_demopath=%1").replace("%1", oldValue),
-                            QByteArray("qt_demopath=%1/demos").replace("%1/", newQtPath + nativeSeperator));
+            QByteArray("qt_demopath=%1/demos").replace("%1/", newQtPath + nativeSeperator));
 
         return replaceMap;
     }
@@ -135,24 +135,24 @@ bool QtPatchOperation::performOperation()
     // 1. type
     // 2. new/target qtpath
 
-    if(arguments().count() != 2) {
+    if (arguments().count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.")
-                        .arg(name()).arg(arguments().count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.").arg(name())
+            .arg(arguments().count()));
         return false;
     }
 
     QString type = arguments().at(0);
-
-    bool isPlatformSupported = type.contains(QLatin1String("linux"), Qt::CaseInsensitive) ||
-                               type.contains(QLatin1String("windows"), Qt::CaseInsensitive) ||
-                               type.contains(QLatin1String("mac"), Qt::CaseInsensitive);
-    if (!isPlatformSupported)
-    {
+    bool isPlatformSupported = type.contains(QLatin1String("linux"), Qt::CaseInsensitive)
+        || type.contains(QLatin1String("windows"), Qt::CaseInsensitive)
+        || type.contains(QLatin1String("mac"), Qt::CaseInsensitive);
+    if (!isPlatformSupported) {
         setError(InvalidArguments);
-        setErrorString(tr("First argument should be 'linux', 'mac' or 'windows'. No other type is supported at this time."));
+        setErrorString(tr("First argument should be 'linux', 'mac' or 'windows'. No other type is supported "
+            "at this time."));
         return false;
     }
+    
     const QString newQtPathStr = QDir::toNativeSeparators(arguments().at(1));
     const QByteArray newQtPath = newQtPathStr.toUtf8();
 
@@ -161,24 +161,21 @@ bool QtPatchOperation::performOperation()
     qmakePath = qmakePath + QLatin1String(".exe");
 #endif
 
-    if (!QFile::exists(qmakePath))
-    {
+    if (!QFile::exists(qmakePath)) {
         setError(UserDefinedError);
-        setErrorString(tr("QMake from the current Qt version \n(%1)"  \
-                           "is not existing. Please make a bugreport with this dialog at http://bugreports.qt.nokia.com.\n" \
-                          ).arg(QDir::toNativeSeparators(qmakePath)));
+        setErrorString(tr("QMake from the current Qt version \n(%1)is not existing. Please file a bugreport "
+            "with this dialog at http://bugreports.qt.nokia.com.").arg(QDir::toNativeSeparators(qmakePath)));
         return false;
     }
 
     QByteArray qmakeOutput;
     QHash<QString, QByteArray> qmakeValueHash = QtPatch::qmakeValues(qmakePath, &qmakeOutput);
 
-    if (qmakeValueHash.isEmpty())
-    {
+    if (qmakeValueHash.isEmpty()) {
         setError(UserDefinedError);
-        setErrorString(tr("The output of \n%1 -query\n"  \
-                           "is not parseable. Please make a bugreport with this dialog http://bugreports.qt.nokia.com.\n" \
-                           "output: \"%2\"").arg(QDir::toNativeSeparators(qmakePath), QString::fromUtf8(qmakeOutput)));
+        setErrorString(tr("The output of \n%1 -query\nis not parseable. Please file a bugreport with this "
+            "dialog http://bugreports.qt.nokia.com.\noutput: \"%2\"").arg(QDir::toNativeSeparators(qmakePath),
+            QString::fromUtf8(qmakeOutput)));
         return false;
     }
 
@@ -188,15 +185,15 @@ bool QtPatchOperation::performOperation()
     //maybe we don't need this, but I 255 should be a rational limit
     if (255 < newQtPath.size()) {
         setError(UserDefinedError);
-        setErrorString(tr("Qt patch error: new Qt dir(%1)\n" \
-                           "needs to be less than 255 characters.").arg(newQtPathStr));
+        setErrorString(tr("Qt patch error: new Qt dir(%1)\nneeds to be less than 255 characters.")
+            .arg(newQtPathStr));
         return false;
     }
 
     QFile patchFileListFile;
-    if(type == QLatin1String("windows"))
+    if (type == QLatin1String("windows"))
         patchFileListFile.setFileName(QLatin1String(":/files-to-patch-windows"));
-    else if(type == QLatin1String("linux"))
+    else if (type == QLatin1String("linux"))
         patchFileListFile.setFileName(QLatin1String(":/files-to-patch-linux"));
     else if (type == QLatin1String("mac"))
         patchFileListFile.setFileName(QLatin1String(":/files-to-patch-macx"));
@@ -252,16 +249,18 @@ bool QtPatchOperation::performOperation()
 
         if (!QtPatch::openFileForPatching(&file)) {
             setError(UserDefinedError);
-            setErrorString(tr("Qt patch error: Can not open %1(%2).").arg(file.fileName()).arg(file.errorString()));
+            setErrorString(tr("Qt patch error: Can not open %1(%2).").arg(file.fileName())
+                .arg(file.errorString()));
             return false;
         }
 
         QMapIterator<QByteArray, QByteArray> it(patchValueMap);
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             it.next();
             bool isPatched = QtPatch::patchBinaryFile(&file, it.key(), it.value());
             if (!isPatched) {
-                QInstaller::verbose() << "qpatch: warning: file '" << qPrintable(fileName) << "' could not patched" << std::endl;
+                QInstaller::verbose() << "qpatch: warning: file '" << qPrintable(fileName)
+                    << "' could not patched" << std::endl;
             }
         }
     } //foreach (QString fileName, filesToPatch)
@@ -281,16 +280,17 @@ bool QtPatchOperation::performOperation()
     searchReplacePairs.insert(QByteArray(oldQtPath).replace("\\", "\\\\"), newQtPathWithDoubleBackSlashes);
 
     //this is checking for a possible drive letter, which could be upper or lower
-    if (oldQtPath.mid(1,1) == ":")
-    {
+    if (oldQtPath.mid(1,1) == ":") {
         QHash<QByteArray, QByteArray> tempSearchReplacePairs;
         QHashIterator<QByteArray, QByteArray> it(searchReplacePairs);
         QByteArray driveLetter = oldQtPath.left(1);
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             it.next();
             QByteArray currentPossibleSearchByteArrayWithoutDriveLetter = QByteArray(it.key()).remove(0, 1);
-            tempSearchReplacePairs.insert(driveLetter.toLower() + currentPossibleSearchByteArrayWithoutDriveLetter, it.value());
-            tempSearchReplacePairs.insert(driveLetter.toUpper() + currentPossibleSearchByteArrayWithoutDriveLetter, it.value());
+            tempSearchReplacePairs.insert(driveLetter.toLower()
+                + currentPossibleSearchByteArrayWithoutDriveLetter, it.value());
+            tempSearchReplacePairs.insert(driveLetter.toUpper()
+                + currentPossibleSearchByteArrayWithoutDriveLetter, it.value());
         }
         searchReplacePairs = tempSearchReplacePairs;
     }
@@ -317,8 +317,7 @@ bool QtPatchOperation::performOperation()
     }
     Q_CHECK_PTR(core);
     successMacRelocating = relocator.apply(newQtPathStr, core->value(scTargetDir));
-    if (!successMacRelocating)
-    {
+    if (!successMacRelocating) {
         setError(UserDefinedError);
         setErrorString(tr("Error while relocating Qt: %1").arg(relocator.errorMessage()));
         return false;
@@ -326,11 +325,10 @@ bool QtPatchOperation::performOperation()
 #endif
     if (oldQtPathFromQMakeIsEmpty) {
         setError(UserDefinedError);
-        setErrorString(tr("The installer was not able to get the unpatched path from \n%1.(maybe it is broken or removed)\n"  \
-                           "It tried to patch the Qt binaries, but all other files in Qt are unpatched.\n" \
-                           "This could result in a broken Qt version.\n" \
-                           "Sometimes it helps to restart the installer with a switched off antivirus software."
-                          ).arg(QDir::toNativeSeparators(qmakePath)));
+        setErrorString(tr("The installer was not able to get the unpatched path from \n%1.(maybe it is "
+            "broken or removed)\nIt tried to patch the Qt binaries, but all other files in Qt are unpatched."
+            "\nThis could result in a broken Qt version.\nSometimes it helps to restart the installer with a "
+            "switched off antivirus software.").arg(QDir::toNativeSeparators(qmakePath)));
         return false;
     }
 
@@ -347,7 +345,7 @@ bool QtPatchOperation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* QtPatchOperation::clone() const
+Operation* QtPatchOperation::clone() const
 {
     return new QtPatchOperation();
 }

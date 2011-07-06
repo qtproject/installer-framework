@@ -58,8 +58,10 @@ QString CreateDesktopEntryOperation::absoluteFileName()
         return QDir(value(QLatin1String("directory")).toString()).absoluteFilePath(filename);
 
     const QProcessEnvironment env;
-    QStringList XDG_DATA_DIRS = env.value(QLatin1String("XDG_DATA_DIRS")).split(QLatin1Char(':'), QString::SkipEmptyParts);
-    QStringList XDG_DATA_HOME = env.value(QLatin1String("XDG_DATA_HOME")).split(QLatin1Char(':'), QString::SkipEmptyParts);
+    QStringList XDG_DATA_DIRS = env.value(QLatin1String("XDG_DATA_DIRS")).split(QLatin1Char(':'),
+        QString::SkipEmptyParts);
+    QStringList XDG_DATA_HOME = env.value(QLatin1String("XDG_DATA_HOME")).split(QLatin1Char(':'),
+        QString::SkipEmptyParts);
 
     XDG_DATA_DIRS.push_back(QLatin1String("/usr/share")); // default path
     XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default path
@@ -132,14 +134,14 @@ bool CreateDesktopEntryOperation::performOperation()
     const QStringList args = arguments();
     if(args.count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.")
-                        .arg(name()).arg(args.count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.").arg(name()).arg(args
+            .count()));
         return false;
     }
 
     const QString filename = absoluteFileName();
     const QString& values = args[1];
-    
+
     if (QFile::exists(filename) && !deleteFileNowOrLater(filename)) {
         setError(UserDefinedError);
         setErrorString(tr("Failed to overwrite %1").arg(filename));
@@ -153,7 +155,8 @@ bool CreateDesktopEntryOperation::performOperation()
         return false;
     }
 
-    QFile::setPermissions(filename, QFile::ReadOwner | QFile::WriteOwner | QFile::ReadUser | QFile::ReadGroup | QFile::ReadOther);
+    QFile::setPermissions(filename, QFile::ReadOwner | QFile::WriteOwner | QFile::ReadUser | QFile::ReadGroup
+        | QFile::ReadOther);
 
     QTextStream stream(&file);
     stream.setCodec("UTF-8");
@@ -162,9 +165,8 @@ bool CreateDesktopEntryOperation::performOperation()
 
     // Type=Application\nExec=qtcreator\nPath=...
     const QStringList pairs = values.split(QLatin1Char('\n'));
-    for (QStringList::const_iterator it = pairs.begin(); it != pairs.end(); ++it) {
+    for (QStringList::const_iterator it = pairs.begin(); it != pairs.end(); ++it)
         stream << *it << endl;
-    }
 
     return true;
 }
@@ -183,7 +185,8 @@ bool CreateDesktopEntryOperation::undoOperation()
         return true;
 
     const QString backupOfExistingDesktopEntry = value(QLatin1String("backupOfExistingDesktopEntry")).toString();
-    const bool success = QFile::copy(backupOfExistingDesktopEntry, filename) && deleteFileNowOrLater(backupOfExistingDesktopEntry);
+    const bool success = QFile::copy(backupOfExistingDesktopEntry, filename)
+        && deleteFileNowOrLater(backupOfExistingDesktopEntry);
     if (!success)
         setErrorString(QObject::tr("Could not restore backup file into %1").arg(filename));
 
@@ -195,7 +198,7 @@ bool CreateDesktopEntryOperation::testOperation()
     return true;
 }
 
-CreateDesktopEntryOperation* CreateDesktopEntryOperation::clone() const
+Operation* CreateDesktopEntryOperation::clone() const
 {
     return new CreateDesktopEntryOperation();
 }

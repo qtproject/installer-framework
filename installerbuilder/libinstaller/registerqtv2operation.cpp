@@ -199,7 +199,7 @@ bool RegisterQtInCreatorV2Operation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* RegisterQtInCreatorV2Operation::clone() const
+Operation* RegisterQtInCreatorV2Operation::clone() const
 {
     return new RegisterQtInCreatorV2Operation();
 }

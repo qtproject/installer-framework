@@ -26,11 +26,11 @@
 #ifndef REGISTERQTINCREATORV2OPERATION_H
 #define REGISTERQTINCREATORV2OPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class RegisterQtInCreatorV2Operation : public KDUpdater::UpdateOperation
+class RegisterQtInCreatorV2Operation : public Operation
 {
 public:
     RegisterQtInCreatorV2Operation();
@@ -40,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation* clone() const;
 };
 
 } // namespace

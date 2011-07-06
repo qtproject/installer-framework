@@ -26,11 +26,11 @@
 #ifndef REGISTERDOCUMENTATIONOPERATION_H
 #define REGISTERDOCUMENTATIONOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class RegisterDocumentationOperation : public KDUpdater::UpdateOperation
+class RegisterDocumentationOperation : public Operation
 {
 public:
     RegisterDocumentationOperation();
@@ -40,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation* clone() const;
 };
 
 } // namespace

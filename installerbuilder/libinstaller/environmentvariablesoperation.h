@@ -26,17 +26,12 @@
 #ifndef ENVIRONMENTVARIABLESOPERATION_H
 #define ENVIRONMENTVARIABLESOPERATION_H
 
-#include "installer_global.h"
-
-#include <KDUpdater/UpdateOperation>
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT EnvironmentVariableOperation : public QObject, public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT EnvironmentVariableOperation : public Operation
 {
-    Q_OBJECT
 public:
     EnvironmentVariableOperation();
     ~EnvironmentVariableOperation();
@@ -45,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    EnvironmentVariableOperation* clone() const;
+    Operation* clone() const;
 };
 
 }

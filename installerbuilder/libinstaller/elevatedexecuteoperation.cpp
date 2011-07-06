@@ -79,10 +79,10 @@ bool ElevatedExecuteOperation::performOperation()
 {
     // This operation receives only one argument. It is the complete
     // command line of the external program to execute.
-    if (arguments().isEmpty())
-    {
+    if (arguments().isEmpty()) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %1: %2 arguments given, at least 1 expected.").arg(name(), QString::number(arguments().count())));
+        setErrorString(tr("Invalid arguments in %1: %2 arguments given, at least 1 expected.").arg(name(),
+            QString::number(arguments().count())));
         return false;
     }
     QStringList args;
@@ -100,7 +100,8 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
 {
     QStringList args = arguments;
     QString workingDirectory;
-    QStringList filteredWorkingDirectoryArgs = args.filter(QLatin1String("workingdirectory="), Qt::CaseInsensitive);
+    QStringList filteredWorkingDirectoryArgs = args.filter(QLatin1String("workingdirectory="),
+        Qt::CaseInsensitive);
     if (!filteredWorkingDirectoryArgs.isEmpty()) {
         QString workingDirectoryArgument = filteredWorkingDirectoryArgs.at(0);
         workingDirectory = workingDirectoryArgument;
@@ -115,25 +116,21 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
     }
 
     QList< int > allowedExitCodes;
-    
+
     QRegExp re(QLatin1String("^\\{((-?\\d+,)*-?\\d+)\\}$"));
-    if (re.exactMatch(args.first()))
-    {
+    if (re.exactMatch(args.first())) {
         const QStringList numbers = re.cap(1).split(QLatin1Char(','));
         for(QStringList::const_iterator it = numbers.constBegin(); it != numbers.constEnd(); ++it)
             allowedExitCodes.push_back(it->toInt());
         args.pop_front();
-    }
-    else
-    {
+    } else {
         allowedExitCodes.push_back(0);
     }
 
     const QString callstr = args.join(QLatin1String(" "));
 
     // unix style: when there's an ampersand after the command, it's started detached
-    if (args.count() >= 2 && args.last() == QLatin1String("&"))
-    {
+    if (args.count() >= 2 && args.last() == QLatin1String("&")) {
         args.pop_back();
         const bool success = QProcessWrapper::startDetached(args.front(), args.mid(1));
         if (!success) {
@@ -146,7 +143,8 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
     process = new QProcessWrapper();
     if (!workingDirectory.isEmpty()) {
         process->setWorkingDirectory(workingDirectory);
-        QInstaller::verbose() << " ElevatedExecuteOperation setWorkingDirectory: " << workingDirectory << std::endl;
+        QInstaller::verbose() << " ElevatedExecuteOperation setWorkingDirectory: " << workingDirectory
+            << std::endl;
     }
 
     QProcessEnvironment penv;
@@ -169,12 +167,14 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
 #ifdef Q_OS_WIN
     if (args.count() == 1) {
         process->setNativeArguments(args.front());
-        QInstaller::verbose() << " ElevatedExecuteOperation setNativeArguments to start: " << args.front() << std::endl;
+        QInstaller::verbose() << " ElevatedExecuteOperation setNativeArguments to start: " << args.front()
+            << std::endl;
         process->start(QString(), QStringList());
     } else
 #endif
     process->start(args.front(), args.mid(1));
-    QInstaller::verbose() << args.front() << " started, arguments: " << QStringList(args.mid(1)).join(QLatin1String(" ")) << std::endl;
+    QInstaller::verbose() << args.front() << " started, arguments: " << QStringList(args.mid(1))
+        .join(QLatin1String(" ")) << std::endl;
 
     bool success = false;
     //we still like the none blocking possibility to perform this operation without threads
@@ -185,8 +185,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
     }
 
     bool returnValue = true;
-    if (!success)
-    {
+    if (!success) {
         q->setError(UserDefinedError);
         //TODO: pass errorString() through the wrapper */
         q->setErrorString(tr("Execution failed: Could not start: \"%1\"").arg(callstr));
@@ -202,17 +201,16 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
 
     q->setValue(QLatin1String("ExitCode"), process->exitCode());
 
-    if (process->exitStatus() == QProcessWrapper::CrashExit)
-    {
+    if (process->exitStatus() == QProcessWrapper::CrashExit) {
         q->setError(UserDefinedError);
         q->setErrorString(tr("Execution failed(Crash): \"%1\"").arg(callstr));
         returnValue = false;
     }
 
-    if (!allowedExitCodes.contains(process->exitCode()))
-    {
+    if (!allowedExitCodes.contains(process->exitCode())) {
         q->setError(UserDefinedError);
-        q->setErrorString(tr("Execution failed(Unexpected exit code: %1): \"%2\"").arg(QString::number(process->exitCode()), callstr));
+        q->setErrorString(tr("Execution failed(Unexpected exit code: %1): \"%2\"")
+            .arg(QString::number(process->exitCode()), callstr));
         returnValue = false;
     }
 
@@ -237,7 +235,8 @@ void ElevatedExecuteOperation::Private::readProcessOutput()
     Q_ASSERT(process);
     Q_ASSERT(QThread::currentThread() == process->thread());
     if (QThread::currentThread() != process->thread()) {
-        QInstaller::verbose() << Q_FUNC_INFO << QLatin1String(" can only be called from the same thread as the process is.") << std::endl;
+        QInstaller::verbose() << Q_FUNC_INFO << QLatin1String(" can only be called from the same thread as "
+            "the process is.") << std::endl;
     }
     const QByteArray output = process->readAll();
     if (!output.isEmpty()) {
@@ -251,7 +250,7 @@ bool ElevatedExecuteOperation::undoOperation()
 {
     QStringList args;
     bool found = false;
-    foreach(const QString &argument, arguments()) {
+    foreach (const QString &argument, arguments()) {
         if (found)
             args.append(argument);
         else
@@ -269,7 +268,7 @@ bool ElevatedExecuteOperation::testOperation()
     return true;
 }
 
-ElevatedExecuteOperation* ElevatedExecuteOperation::clone() const
+Operation* ElevatedExecuteOperation::clone() const
 {
     return new ElevatedExecuteOperation;
 }

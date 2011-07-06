@@ -26,16 +26,16 @@
 #ifndef ELEVATEDEXECUTEOPERATION_H
 #define ELEVATEDEXECUTEOPERATION_H
 
-#include <KDUpdater/kdupdaterupdateoperations.h>
-#include <KDToolsCore/pimpl_ptr.h>
+#include "qinstallerglobal.h"
 
-#include "installer_global.h"
+#include <KDToolsCore/pimpl_ptr.h>
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT ElevatedExecuteOperation : public QObject, public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT ElevatedExecuteOperation : public QObject, public Operation
 {
     Q_OBJECT
+
 public:
     ElevatedExecuteOperation();
     ~ElevatedExecuteOperation();
@@ -44,7 +44,7 @@ public:
     virtual bool performOperation();
     virtual bool undoOperation();
     virtual bool testOperation();
-    virtual ElevatedExecuteOperation* clone() const;
+    virtual Operation* clone() const;
 
 Q_SIGNALS:
     void cancelProcess();

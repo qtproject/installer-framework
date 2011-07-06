@@ -26,11 +26,11 @@
 #ifndef CREATESHORTCUTOPERATION_H
 #define CREATESHORTCUTOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class CreateShortcutOperation : public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT CreateShortcutOperation : public Operation
 {
 public:
     CreateShortcutOperation();
@@ -40,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    CreateShortcutOperation* clone() const;
+    Operation* clone() const;
 };
 
 }

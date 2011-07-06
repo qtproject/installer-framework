@@ -148,7 +148,7 @@ bool RegisterDefaultDebuggerOperation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* RegisterDefaultDebuggerOperation::clone() const
+Operation* RegisterDefaultDebuggerOperation::clone() const
 {
     return new RegisterDefaultDebuggerOperation();
 }

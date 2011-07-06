@@ -26,17 +26,12 @@
 #ifndef LICENSEOPERATION_H
 #define LICENSEOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
-
-#include "installer_global.h"
-#include <QtCore/QObject>
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT LicenseOperation : public QObject, public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT LicenseOperation : public Operation
 {
-    Q_OBJECT
-
 public:
     LicenseOperation();
     ~LicenseOperation();
@@ -45,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    LicenseOperation* clone() const;
+    Operation* clone() const;
 
 };
 

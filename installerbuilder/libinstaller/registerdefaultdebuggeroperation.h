@@ -26,14 +26,12 @@
 #ifndef REGISTERDEFAULTDEBUGGEROPERATION_H
 #define REGISTERDEFAULTDEBUGGEROPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
-#include <QObject>
-#include <QStringList>
 
 namespace QInstaller {
 
-class RegisterDefaultDebuggerOperation : public KDUpdater::UpdateOperation
+class RegisterDefaultDebuggerOperation : public Operation
 {
 public:
     RegisterDefaultDebuggerOperation();
@@ -43,7 +41,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation* clone() const;
 };
 
 } // namespace

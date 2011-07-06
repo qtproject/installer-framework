@@ -25,11 +25,12 @@
 **************************************************************************/
 #ifndef FAKESTOPPROCESSFORUPDATEOPERATION_H
 #define FAKESTOPPROCESSFORUPDATEOPERATION_H
-#include <KDUpdater/UpdateOperation>
+
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class FakeStopProcessForUpdateOperation : public KDUpdater::UpdateOperation
+class FakeStopProcessForUpdateOperation : public Operation
 {
 
 public:
@@ -40,7 +41,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    FakeStopProcessForUpdateOperation* clone() const;
+    Operation* clone() const;
 
 };
 

@@ -25,14 +25,13 @@
 **************************************************************************/
 #ifndef QTPATCHOPERATION_H
 #define QTPATCHOPERATION_H
-#include <KDUpdater/UpdateOperation>
-#include <QtCore/QObject>
+
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class QtPatchOperation : public QObject, public KDUpdater::UpdateOperation
+class QtPatchOperation : public Operation
 {
-    Q_OBJECT
 public:
     QtPatchOperation();
     ~QtPatchOperation();
@@ -41,7 +40,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation* clone() const;
 };
 
 } // namespace

@@ -153,7 +153,7 @@ bool RegisterDocumentationOperation::testOperation()
     return true;
 }
 
-KDUpdater::UpdateOperation* RegisterDocumentationOperation::clone() const
+Operation* RegisterDocumentationOperation::clone() const
 {
     return new RegisterDocumentationOperation();
 }

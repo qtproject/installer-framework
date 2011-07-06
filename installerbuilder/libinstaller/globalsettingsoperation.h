@@ -26,13 +26,13 @@
 #ifndef GLOBALSETTINGSOPERATION_H
 #define GLOBALSETTINGSOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
+#include "qinstallerglobal.h"
 
 class QSettingsWrapper;
 
 namespace QInstaller {
 
-class GlobalSettingsOperation : public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT GlobalSettingsOperation : public Operation
 {
 public:
     GlobalSettingsOperation();
@@ -42,7 +42,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation* clone() const;
+    Operation* clone() const;
 
 private:
     QSettingsWrapper* setup(QString *key, QString *value, const QStringList &args);

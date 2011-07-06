@@ -26,12 +26,11 @@
 #ifndef MACREPLACEINSTALLNAMEOPERATION_H
 #define MACREPLACEINSTALLNAMEOPERATION_H
 
-#include <KDUpdater/UpdateOperation>
-
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
-class MacReplaceInstallNamesOperation : public KDUpdater::UpdateOperation
+class INSTALLER_EXPORT MacReplaceInstallNamesOperation : public Operation
 {
 public:
     MacReplaceInstallNamesOperation();
@@ -40,7 +39,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    KDUpdater::UpdateOperation *clone() const;
+    Operation *clone() const;
 
     bool apply(const QString &oldString, const QString &newString, const QString &frameworkDir);
 

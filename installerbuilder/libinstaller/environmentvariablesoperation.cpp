@@ -68,10 +68,10 @@ static bool broadcastChange() {
     // running applications. This is needed to activate the changes done above without logout+login.
     // Note that cmd.exe does not respond to any WM_SETTINGCHANGE messages...
     DWORD aResult = 0;
-    LRESULT sendresult = SendMessageTimeout( HWND_BROADCAST, WM_SETTINGCHANGE,
-        0, (LPARAM) "Environment", SMTO_BLOCK | SMTO_ABORTIFHUNG, 5000, &aResult );
-    if( sendresult == 0 || aResult != 0 ) {
-        qWarning( "Failed to broadcast a WM_SETTINGCHANGE message\n" );
+    LRESULT sendresult = SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE,
+        0, (LPARAM) "Environment", SMTO_BLOCK | SMTO_ABORTIFHUNG, 5000, &aResult);
+    if (sendresult == 0 || aResult != 0) {
+        qWarning("Failed to broadcast a WM_SETTINGCHANGE message\n");
         return false;
     }
 
@@ -86,7 +86,8 @@ UpdateOperation::Error writeSetting(const QString &regPath,
                                     const QString &name,
                                     const QString &value,
                                     QString *errorString,
-                                    QString *oldValue) {
+                                    QString *oldValue)
+{
     oldValue->clear();
     SettingsType registry(regPath, QSettingsWrapper::NativeFormat);
     if (!registry.isWritable()) {
@@ -101,7 +102,7 @@ UpdateOperation::Error writeSetting(const QString &regPath,
     registry.setValue(name, value);
     registry.sync();
 
-    if(registry.status() != QSettingsWrapper::NoError) {
+    if (registry.status() != QSettingsWrapper::NoError) {
         *errorString = QObject::tr("Could not write to registry path %1").arg(regPath);
         return UpdateOperation::UserDefinedError;
     }
@@ -114,7 +115,8 @@ UpdateOperation::Error undoSetting(const QString &regPath,
                                     const QString &name,
                                     const QString &value,
                                     const QString &oldValue,
-                                    QString *errorString) {
+                                    QString *errorString)
+{
     QString actual;
     {
         SettingsType registry(regPath, QSettingsWrapper::NativeFormat);
@@ -135,7 +137,7 @@ bool EnvironmentVariableOperation::performOperation()
     if (arguments().count() < 2 || arguments().count() > 4) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2-3 expected.")
-                        .arg(name()).arg( arguments().count()));
+                        .arg(name()).arg(arguments().count()));
         return false;
     }
 
@@ -148,8 +150,8 @@ bool EnvironmentVariableOperation::performOperation()
     const bool isSystemWide = arguments().count() >= 4 ? arguments().at(3) == QLatin1String("true") : false;
     QString oldvalue;
     if (isPersistent) {
-        const QString regPath = isSystemWide ? QLatin1String( "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" )
-                                             : QLatin1String( "HKEY_CURRENT_USER\\Environment" );
+        const QString regPath = isSystemWide ? QLatin1String("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet"
+            "\\Control\\Session Manager\\Environment") : QLatin1String("HKEY_CURRENT_USER\\Environment");
 
         // write the name=value pair to the global environment
         QString errorString;
@@ -166,15 +168,15 @@ bool EnvironmentVariableOperation::performOperation()
         }
         const bool bret = broadcastChange();
         Q_UNUSED(bret); // this is not critical, so fall-through
-        setValue( QLatin1String( "oldvalue" ), oldvalue );
+        setValue(QLatin1String("oldvalue"), oldvalue);
         return true;
     }
 #endif
-    Q_ASSERT( !isPersistent );
+    Q_ASSERT(!isPersistent);
     Q_UNUSED(isPersistent)
 
-    setValue( QLatin1String( "oldvalue" ), Environment::instance().value( name ) );
-    Environment::instance().setTemporaryValue( name, value );
+    setValue(QLatin1String("oldvalue"), Environment::instance().value(name));
+    Environment::instance().setTemporaryValue(name, value);
 
     return true;
 }
@@ -186,7 +188,7 @@ bool EnvironmentVariableOperation::undoOperation()
 
     const QString name = arguments().at(0);
     const QString value = arguments().at(1);
-    const QString oldvalue = this->value( QLatin1String("oldvalue") ).toString();
+    const QString oldvalue = this->value(QLatin1String("oldvalue")).toString();
 
 #ifdef Q_WS_WIN
     const bool isPersistent = arguments().count() >= 3 ? arguments().at(2) == QLatin1String("true") : true;
@@ -194,19 +196,19 @@ bool EnvironmentVariableOperation::undoOperation()
    const bool isPersistent = false;
 #endif
 
-    if ( !isPersistent ) {
-        const QString actual = Environment::instance().value( name );
+    if (!isPersistent) {
+        const QString actual = Environment::instance().value(name);
         const bool doUndo = actual == value;
-        if ( doUndo )
-            Environment::instance().setTemporaryValue( name, oldvalue );
+        if (doUndo)
+            Environment::instance().setTemporaryValue(name, oldvalue);
         return doUndo;
     }
 
 #ifdef Q_WS_WIN
     const bool isSystemWide = arguments().count() >= 4 ? arguments().at(3) == QLatin1String("true") : false;
 
-    const QString regPath = isSystemWide ? QLatin1String( "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" )
-                                         : QLatin1String( "HKEY_CURRENT_USER\\Environment" );
+    const QString regPath = isSystemWide ? QLatin1String("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\"
+        "Control\\Session Manager\\Environment") : QLatin1String("HKEY_CURRENT_USER\\Environment");
 
     QString errorString;
 
@@ -214,7 +216,7 @@ bool EnvironmentVariableOperation::undoOperation()
         ? undoSetting<QSettingsWrapper>(regPath, name, value, oldvalue, &errorString)
         : undoSetting<QSettingsWrapper>(regPath, name, value, oldvalue, &errorString);
 
-    if  (err != NoError) {
+    if (err != NoError) {
         setError(err);
         setErrorString(errorString);
         return false;
@@ -229,7 +231,7 @@ bool EnvironmentVariableOperation::testOperation()
     return true;
 }
 
-EnvironmentVariableOperation* EnvironmentVariableOperation::clone() const
+Operation* EnvironmentVariableOperation::clone() const
 {
     return new EnvironmentVariableOperation();
 }
