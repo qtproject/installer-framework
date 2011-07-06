@@ -1259,7 +1259,7 @@ void PackageManagerCorePrivate::runUninstaller()
         emit uninstallationStarted();
 
         // check if we need administration rights and ask before the action happens
-        if (!QFileInfo(installerBinaryPath()).isWritable() || !QFileInfo(componentsXmlPath()).isWritable())
+        if (!QFileInfo(installerBinaryPath()).isWritable())
             adminRightsGained = m_core->gainAdminRights();
 
         OperationList undoOperations;
