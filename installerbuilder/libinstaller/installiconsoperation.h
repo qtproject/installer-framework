@@ -46,7 +46,6 @@ public:
     Operation *clone() const;
 
 Q_SIGNALS:
-    void progressChanged(int progress);
     void outputTextChanged(const QString &progress);
 
 private:

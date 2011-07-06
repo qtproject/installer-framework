@@ -73,7 +73,6 @@ bool ExtractArchiveOperation::performOperation()
     // usually we have to connect it as queued connection but then some blocking work is in the main thread
     connect(&callback, SIGNAL(progressChanged(QString)), this, SLOT(slotProgressChanged(QString)),
         Qt::DirectConnection);
-    connect(&callback, SIGNAL(progressChanged(int)), this, SIGNAL(progressChanged(int)), Qt::QueuedConnection);
 
     if (PackageManagerCore *core = this->value(QLatin1String("installer")).value<PackageManagerCore*>()) {
         connect(core, SIGNAL(statusChanged(QInstaller::PackageManagerCore::Status)), &callback,
@@ -123,7 +122,6 @@ bool ExtractArchiveOperation::undoOperation()
     WorkerThread *const thread = new WorkerThread(this, files);
     connect(thread, SIGNAL(outputTextChanged(QString)), this, SIGNAL(outputTextChanged(QString)),
         Qt::QueuedConnection);
-    connect(thread, SIGNAL(progressChanged(int)), this, SIGNAL(progressChanged(int)), Qt::QueuedConnection);
 
     QEventLoop loop;
     connect(thread, SIGNAL(finished()), &loop, SLOT(quit()), Qt::QueuedConnection);

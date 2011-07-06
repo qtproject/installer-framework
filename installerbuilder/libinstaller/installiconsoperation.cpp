@@ -146,23 +146,12 @@ bool InstallIconsOperation::performOperation()
     QStringList backupFiles;
     QStringList createdDirectories;
 
-    int numItems = 0;
-    int currentItem = 0;
-
-    // iterate a first time to count the items (for proper progress)
-    QDirIterator itCount(sourceDir.path(), QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot,
-        QDirIterator::Subdirectories);
-    while (itCount.hasNext()) {
-        itCount.next();
-        ++numItems;
-    }
-
     PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
 
     // iterate a second time to get the actual work done
     QDirIterator it(sourceDir.path(), QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot,
         QDirIterator::Subdirectories);
-    while (it.hasNext())  {
+    while (it.hasNext()) {
         qApp->processEvents();
 
         const int status = core->status();
@@ -173,7 +162,6 @@ bool InstallIconsOperation::performOperation()
         const QString target = targetDir.absoluteFilePath(sourceDir.relativeFilePath(source));
 
         emit outputTextChanged(target);
-        emit progressChanged(++currentItem * 100 / numItems);
 
         const QFileInfo fi = it.fileInfo();
         if (!fi.isDir()) {

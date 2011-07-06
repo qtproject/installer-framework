@@ -55,9 +55,6 @@ public:
         ExtractArchiveOperation *const op = m_op;//dynamic_cast< ExtractArchiveOperation* >(parent());
         Q_ASSERT(op != 0);
 
-        int progress = -1;
-        int index = 0;
-        const int count = m_files.count();
         foreach (const QString &file, m_files) {
             const QFileInfo fi(file);
             emit outputTextChanged(file);
@@ -73,17 +70,11 @@ public:
 #endif
                 d.rmdir(file); // directory may not exist
             }
-            const int newProgress = (index++) * 100 / count;
-            if (progress != newProgress)
-                emit progressChanged(newProgress);
-            progress = newProgress;
         }
     }
 
 Q_SIGNALS:
     void outputTextChanged(const QString &filename);
-    void progressChanged(int progress);
-
 
 private:
     QStringList m_files;
@@ -96,18 +87,15 @@ class ExtractArchiveOperation::Callback : public QObject, public Lib7z::ExtractC
     Q_OBJECT
 
 public:
-    int lastProgress;
     HRESULT state;
     bool createBackups;
     QVector<QPair<QString, QString> > backupFiles;
 
     explicit Callback()
-        : lastProgress(-1),
-        state(S_OK),
+        : state(S_OK),
         createBackups(true) {}
 
 Q_SIGNALS:
-    void progressChanged(int);
     void progressChanged(const QString &filename);
 
 public Q_SLOTS:
@@ -162,13 +150,8 @@ protected:
         return true;
     }
 
-    HRESULT setCompleted(quint64 completed, quint64 total)
+    HRESULT setCompleted(quint64 /*completed*/, quint64 /*total*/)
     {
-        Q_ASSERT(total != 0);
-        const int progress = (100 * completed) / total;
-        if (progress != lastProgress)
-            emit progressChanged(progress);
-        lastProgress = progress;
         return state;
     }
 };
