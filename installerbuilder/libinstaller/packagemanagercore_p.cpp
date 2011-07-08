@@ -380,6 +380,7 @@ void PackageManagerCorePrivate::initialize()
 
     if (!m_repoMetaInfoJob) {
         m_repoMetaInfoJob = new GetRepositoriesMetaInfoJob(m_settings.publicKey());
+        m_repoMetaInfoJob->setAutoDelete(false);
         connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this, SLOT(infoMessage(KDJob*,
             QString)));
     }
@@ -1640,11 +1641,11 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
         return m_repoFetched;
 
     m_repoFetched = false;
+    m_repoMetaInfoJob->resetState();
     if ((isInstaller() && !m_core->isOfflineOnly()) || (isUpdater() || isPackageManager()))
         m_repoMetaInfoJob->setRepositories(m_settings.repositories());
 
     try {
-        m_repoMetaInfoJob->setAutoDelete(false);
         m_repoMetaInfoJob->start();
         m_repoMetaInfoJob->waitForFinished();
     } catch (Error &error) {

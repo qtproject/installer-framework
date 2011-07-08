@@ -93,6 +93,16 @@ void GetRepositoriesMetaInfoJob::setSilentRetries(int retries)
     m_silentRetries = retries;
 }
 
+void GetRepositoriesMetaInfoJob::resetState()
+{
+    m_canceled = false;
+    m_errorString.clear();
+    m_haveIgnoredError = false;
+
+    setError(KDJob::NoError);
+    setErrorString(QLatin1String(""));
+}
+
 bool GetRepositoriesMetaInfoJob::isCanceled() const
 {
     return m_canceled;
