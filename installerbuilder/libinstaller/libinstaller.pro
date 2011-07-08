@@ -55,8 +55,9 @@ HEADERS += $$PWD/packagemanagercore.h \
     linereplaceoperation.h \
     registerdocumentationoperation.h \
     registerqtoperation.h  \
-    registerqtv2operation.h  \
     registertoolchainoperation.h  \
+    registerqtv2operation.h  \
+    registerqtv23operation.h  \
     setqtcreatorvalueoperation.h \
     copydirectoryoperation.h \
     simplemovefileoperation.h \
@@ -119,8 +120,9 @@ SOURCES += $$PWD/packagemanagercore.cpp \
     linereplaceoperation.cpp \
     registerdocumentationoperation.cpp \
     registerqtoperation.cpp \
-    registerqtv2operation.cpp \
     registertoolchainoperation.cpp  \
+    registerqtv2operation.cpp \
+    registerqtv23operation.cpp \
     setqtcreatorvalueoperation.cpp \
     copydirectoryoperation.cpp \
     simplemovefileoperation.cpp \
