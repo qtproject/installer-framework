@@ -13,7 +13,7 @@ DESTDIR = $$OUT_PWD/../lib
 DLLDESTDIR = $$OUT_PWD/../bin
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
-    BUILD_LIB_INSTALLER 
+    BUILD_LIB_INSTALLER
 
 CONFIG( shared, static|shared ){
     DEFINES += KDTOOLS_SHARED
@@ -24,7 +24,13 @@ QT += script \
     sql
 CONFIG += help uitools
 
-QTPLUGIN += qsqlite
+contains(CONFIG, static): {
+    SQLPLUGINS = $$unique(sql-plugins)
+    contains(SQLPLUGINS, sqlite): {
+        QTPLUGIN += qsqlite
+        DEFINES += USE_STATIC_SQLITE_PLUGIN
+    }
+}
 
 include(3rdparty/p7zip_9.04/p7zip.pri)
 include(3rdparty/kdtools/KDUpdater/KDUpdater.pri)

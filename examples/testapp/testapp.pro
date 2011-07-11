@@ -8,7 +8,13 @@ DESTDIR = packages/com.nokia.testapp/data
 
 QT += script network xml sql
 CONFIG += uitools help
-QTPLUGIN += qsqlite
+contains(CONFIG, static): {
+    SQLPLUGINS = $$unique(sql-plugins)
+    contains(SQLPLUGINS, sqlite): {
+        QTPLUGIN += qsqlite
+        DEFINES += USE_STATIC_SQLITE_PLUGIN
+    }
+}
 
 # Input
 FORMS += componentselectiondialog.ui updatesettingsdialog.ui updatesettingswidget.ui

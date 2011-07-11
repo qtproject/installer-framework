@@ -13,13 +13,20 @@ DEPENDPATH += $$PWD \
     $$PWD/3rdparty/p7zip_9.04 \
     $$PWD/3rdparty/p7zip_9.04/unix/CPP \
     $$PWD/3rdparty/kdtools/KDUpdater \
-    $$PWD/3rdparty/kdtools/KDToolsCore \              
+    $$PWD/3rdparty/kdtools/KDToolsCore \
 
 CONFIG( shared, static|shared ):DEFINES += LIB_INSTALLER_SHARED
 CONFIG( shared, static|shared ):DEFINES += KDTOOLS_SHARED
 
 CONFIG += uitools help
-QTPLUGIN += qsqlite
+
+contains(CONFIG, static): {
+    SQLPLUGINS = $$unique(sql-plugins)
+    contains(SQLPLUGINS, sqlite): {
+        QTPLUGIN += qsqlite
+        DEFINES += USE_STATIC_SQLITE_PLUGIN
+    }
+}
 
 QT += script
 QT += gui # gui needed for KDUpdater include (compareVersion), which indirectly include QTreeWidget
