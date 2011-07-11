@@ -99,7 +99,7 @@ bool RegisterQtInCreatorV23Operation::performOperation()
          && !versionQmakePath.endsWith(QLatin1String("qmake.exe")))
     {
 #if defined ( Q_OS_WIN )
-        qmakePath.append(QLatin1String("/bin/qmake.exe"));
+        versionQmakePath.append(QLatin1String("/bin/qmake.exe"));
 #elif defined( Q_OS_UNIX )
         versionQmakePath.append(QLatin1String("/bin/qmake"));
 #endif
