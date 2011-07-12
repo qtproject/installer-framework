@@ -1758,7 +1758,7 @@ void RestartPage::entering()
         finish->setVisible(false);
 
     wizard()->restart();
-    emit restart();
+    QMetaObject::invokeMethod(this, "restart", Qt::QueuedConnection);
 }
 
 void RestartPage::leaving()

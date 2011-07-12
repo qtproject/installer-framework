@@ -381,6 +381,7 @@ void Component::loadComponentScript(const QString &fileName)
 
     emit loaded();
     languageChanged();
+    QCoreApplication::processEvents();
 }
 
 /*!
