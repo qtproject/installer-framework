@@ -175,15 +175,14 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         emitFinishedWithError(QInstaller::ExtractionError, e.message());
         return;
     }
-    QFile file(fn);
-    const QString updatesXmlPath = m_temporaryDirectory + QLatin1String("/Updates.xml");
-    if (!file.rename(updatesXmlPath)) {
+
+    QFile updatesFile(fn);
+    if (!updatesFile.rename(m_temporaryDirectory + QLatin1String("/Updates.xml"))) {
         emitFinishedWithError(QInstaller::DownloadError,
-            tr("Could not move Updates.xml to target location: %1.").arg(file.errorString()));
+            tr("Could not move Updates.xml to target location: %1.").arg(updatesFile.errorString()));
         return;
     }
 
-    QFile updatesFile(updatesXmlPath);
     if (!updatesFile.open(QIODevice::ReadOnly)) {
         emitFinishedWithError(QInstaller::DownloadError, tr("Could not open Updates.xml for reading: %1.")
             .arg(updatesFile.errorString()));
@@ -354,8 +353,8 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
             metaDownloadError(tr("Bad hash."));
             return;
         }
+        m_packageHash.removeLast();
         m_currentPackageName.clear();
-        m_packageHash.pop_back();
     }
 
     try {
