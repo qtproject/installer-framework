@@ -170,8 +170,9 @@ bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
         QInstaller::verbose() << " ElevatedExecuteOperation setNativeArguments to start: " << args.front()
             << std::endl;
         process->start(QString(), QStringList());
-    } else {
+    } else
 #endif
+    {
         process->start(args.front(), args.mid(1));
     }
     QInstaller::verbose() << args.front() << " started, arguments: " << QStringList(args.mid(1))
