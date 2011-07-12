@@ -379,7 +379,7 @@ void PackageManagerCorePrivate::initialize()
     }
 
     if (!m_repoMetaInfoJob) {
-        m_repoMetaInfoJob = new GetRepositoriesMetaInfoJob(m_settings.publicKey());
+        m_repoMetaInfoJob = new GetRepositoriesMetaInfoJob(m_settings.publicKey(), this);
         m_repoMetaInfoJob->setAutoDelete(false);
         connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this, SLOT(infoMessage(KDJob*,
             QString)));
