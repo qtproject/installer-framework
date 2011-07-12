@@ -325,7 +325,7 @@ struct KDUpdater::LocalFileDownloader::LocalFileDownloaderData
                                 downloaded(false), timerId(-1) { }
 
     QFile* source;
-    QTemporaryFile* destination;
+    QFile* destination;
     QString destFileName;
     bool downloaded;
     int timerId;
@@ -370,8 +370,6 @@ void KDUpdater::LocalFileDownloader::doDownload()
     // Open source and destination files
     QString localFile = this->url().toLocalFile();
     d->source = new QFile(localFile, this);
-    d->destination = new QTemporaryFile(this);
-
     if( !d->source->open(QFile::ReadOnly) )
     {
         onError();
@@ -379,7 +377,15 @@ void KDUpdater::LocalFileDownloader::doDownload()
         return;
     }
 
-    if( !d->destination->open() )
+    if (d->destFileName.isEmpty()) {
+        QTemporaryFile *file = new QTemporaryFile(this);
+        file->open();
+        d->destination = file;
+    } else {
+        d->destination = new QFile(d->destFileName, this);
+        d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
+    }
+    if( !d->destination->isOpen() )
     {
         onError();
         setDownloadAborted(tr("Cannot open destination file for writing."));
@@ -395,6 +401,11 @@ void KDUpdater::LocalFileDownloader::doDownload()
 QString KDUpdater::LocalFileDownloader::downloadedFileName() const
 {
     return d->destFileName;
+}
+
+void KDUpdater::LocalFileDownloader::setDownloadedFileName(const QString &name)
+{
+    d->destFileName = name;
 }
 
 KDUpdater::LocalFileDownloader* KDUpdater::LocalFileDownloader::clone( QObject* parent ) const
@@ -453,7 +464,8 @@ void LocalFileDownloader::onSuccess()
 {
     d->downloaded = true;
     d->destFileName = d->destination->fileName();
-    d->destination->setAutoRemove( false );
+    if (QTemporaryFile *file = dynamic_cast<QTemporaryFile*> (d->destination))
+        file->setAutoRemove( false );
     d->destination->close();
     delete d->destination;
     d->destination = 0;
@@ -535,6 +547,11 @@ QString KDUpdater::ResourceFileDownloader::downloadedFileName() const
     return d->destFileName;
 }
 
+void KDUpdater::ResourceFileDownloader::setDownloadedFileName(const QString &/*name*/)
+{
+    Q_ASSERT_X(false, "KDUpdater::ResourceFileDownloader::setDownloadedFileName", "Not supported!");
+}
+
 KDUpdater::ResourceFileDownloader* KDUpdater::ResourceFileDownloader::clone( QObject* parent ) const
 {
     return new ResourceFileDownloader( parent );
@@ -578,7 +595,7 @@ struct KDUpdater::FtpDownloader::FtpDownloaderData
                           downloaded(false), ftpCmdId(-1), aborted(false) { }
 
     QFtp* ftp;
-    QTemporaryFile* destination;
+    QFile* destination;
     QString destFileName;
     bool downloaded;
     int ftpCmdId;
@@ -632,6 +649,11 @@ void KDUpdater::FtpDownloader::doDownload()
 QString KDUpdater::FtpDownloader::downloadedFileName() const
 {
     return d->destFileName;
+}
+
+void KDUpdater::FtpDownloader::setDownloadedFileName(const QString &name)
+{
+    d->destFileName = name;
 }
 
 KDUpdater::FtpDownloader* KDUpdater::FtpDownloader::clone( QObject* parent ) const
@@ -697,7 +719,8 @@ void FtpDownloader::onSuccess()
 {
     d->downloaded = true;
     d->destFileName = d->destination->fileName();
-    d->destination->setAutoRemove( false );
+    if (QTemporaryFile *file = dynamic_cast<QTemporaryFile*> (d->destination))
+        file->setAutoRemove( false );
     delete d->destination;
     d->destination = 0;
 
@@ -718,8 +741,14 @@ void KDUpdater::FtpDownloader::ftpStateChanged(int state)
     {
     case QFtp::Connected:
         // begin the download
-        d->destination = new QTemporaryFile(this);
-        d->destination->open(); //PENDING handle error
+        if (d->destFileName.isEmpty()) {
+            QTemporaryFile *file = new QTemporaryFile(this);
+            file->open(); //PENDING handle error
+            d->destination = file;
+        } else {
+            d->destination = new QFile(d->destFileName, this);
+            d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
+        }
         d->ftpCmdId = d->ftp->get( url().path(), d->destination );
         break;
     case QFtp::Unconnected:
@@ -751,7 +780,7 @@ struct KDUpdater::HttpDownloader::HttpDownloaderData
     HttpDownloader* const q;
     QNetworkAccessManager manager;
     QNetworkReply* http;
-    QTemporaryFile* destination;
+    QFile* destination;
     QString destFileName;
     bool downloaded;
     bool aborted;
@@ -817,8 +846,15 @@ void KDUpdater::HttpDownloader::doDownload()
     */
 
     // Begin the download
-    d->destination = new QTemporaryFile(this);
-    if ( !d->destination->open() ) {
+    if (d->destFileName.isEmpty()) {
+        QTemporaryFile *file = new QTemporaryFile(this);
+        file->open();
+        d->destination = file;
+    } else {
+        d->destination = new QFile(d->destFileName, this);
+        d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
+    }
+    if ( !d->destination->isOpen() ) {
         const QString err = d->destination->errorString();
         d->shutDown();
         setDownloadAborted( tr("Cannot download %1: Could not create temporary file: %2").arg( url().toString(), err ) );
@@ -829,6 +865,11 @@ void KDUpdater::HttpDownloader::doDownload()
 QString KDUpdater::HttpDownloader::downloadedFileName() const
 {
     return d->destFileName;
+}
+
+void KDUpdater::HttpDownloader::setDownloadedFileName(const QString &name)
+{
+    d->destFileName = name;
 }
 
 KDUpdater::HttpDownloader* KDUpdater::HttpDownloader::clone( QObject* parent ) const
@@ -920,7 +961,8 @@ void KDUpdater::HttpDownloader::onSuccess()
 {
     d->downloaded = true;
     d->destFileName = d->destination->fileName();
-    d->destination->setAutoRemove( false );
+    if (QTemporaryFile *file = dynamic_cast<QTemporaryFile*> (d->destination))
+        file->setAutoRemove( false );
     delete d->destination;
     d->destination = 0;
 }
@@ -948,8 +990,14 @@ void KDUpdater::HttpDownloader::httpReqFinished()
         connect( d->http, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( httpError( QNetworkReply::NetworkError ) ) );
 
         // Begin the download
-        d->destination = new QTemporaryFile(this);
-        d->destination->open(); //PENDING handle error
+        if (d->destFileName.isEmpty()) {
+            QTemporaryFile *file = new QTemporaryFile(this);
+            file->open(); //PENDING handle error
+            d->destination = file;
+        } else {
+            d->destination = new QFile(d->destFileName, this);
+            d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
+        }
     }
     else
     {
@@ -1041,6 +1089,11 @@ bool SignatureVerificationDownloader::isDownloaded() const
 QString SignatureVerificationDownloader::downloadedFileName() const
 {
     return d->downloadedFileName;
+}
+
+void SignatureVerificationDownloader::setDownloadedFileName(const QString &/*name*/)
+{
+    Q_ASSERT_X(false, "SignatureVerificationDownloader::setDownloadedFileName", "Not supported!");
 }
 
 FileDownloader* SignatureVerificationDownloader::clone( QObject* parent ) const

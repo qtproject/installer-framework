@@ -60,6 +60,7 @@ namespace KDUpdater
         virtual bool canDownload() const = 0;
         virtual bool isDownloaded() const = 0;
         virtual QString downloadedFileName() const = 0;
+        virtual void setDownloadedFileName(const QString &name) = 0;
         virtual FileDownloader* clone( QObject* parent=0 ) const = 0;
 
         void download();

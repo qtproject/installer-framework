@@ -127,19 +127,15 @@ void DownloadArchivesJob::fetchNextArchiveHash()
         if (m_downloader)
             m_downloader->deleteLater();
 
-        QString hashUrl = m_archivesToDownload.first().second;
-        const QUrl url(hashUrl + QLatin1String(".sha1"));
-        const QUrl sigUrl = m_publicKey.isEmpty() ? QUrl() : QUrl(m_archivesToDownload.first().second
-            + QLatin1String(".sig"));
         const CryptoSignatureVerifier verifier(m_publicKey);
+        const QUrl url(m_archivesToDownload.first().second + QLatin1String(".sha1"));
         m_downloader = FileDownloaderFactory::instance().create(url.scheme(), m_publicKey.isEmpty() ? 0
-            : &verifier, sigUrl, this);
+            : &verifier, QUrl(m_archivesToDownload.first().second + QLatin1String(".sig")), this);
 
+        const QString &scheme = url.scheme();
         if (!m_downloader) {
-            m_archivesToDownload.pop_front();
-            const QString errMsg = tr("Scheme not supported: %1 (%2)").arg(url.scheme(), url.toString());
-            verbose() << errMsg << std::endl;
-            emit outputTextChanged(errMsg);
+            m_archivesToDownload.removeFirst();
+            emit outputTextChanged(tr("Scheme not supported: %1 (%2)").arg(scheme, url.toString()));
             QMetaObject::invokeMethod(this, "fetchNextArchiveHash", Qt::QueuedConnection);
             return;
         }
@@ -154,8 +150,13 @@ void DownloadArchivesJob::fetchNextArchiveHash()
         m_downloader->setUrl(url);
         m_downloader->setAutoRemoveDownloadedFile(false);
 
-        const QString comp = QFileInfo(QFileInfo(m_archivesToDownload.first().first).path()).fileName();
-        const Component *const component = m_core->componentByName(comp);
+        const QFileInfo fi = QFileInfo(m_archivesToDownload.first().first);
+        const Component *const component = m_core->componentByName(QFileInfo(fi.path()).fileName());
+        if (scheme == QLatin1String("http") || scheme == QLatin1String("ftp")
+            || scheme == QLatin1String("file")) {
+                m_downloader->setDownloadedFileName(component->localTempPath() + QLatin1String("/")
+                    + component->name() + QLatin1String("/") + fi.fileName() + QLatin1String(".sha1"));
+        }
 
         emit outputTextChanged(tr("Downloading archive hash for component: %1").arg(component->displayName()));
         m_downloader->download();
@@ -175,7 +176,7 @@ void DownloadArchivesJob::finishedHashDownload()
     else
         finishWithError(tr("Downloading hash signature failed."));
 
-    m_temporaryFiles.push_back(tempFile);
+    m_temporaryFiles.insert(tempFile);
 
     fetchNextArchive();
 }
@@ -198,18 +199,15 @@ void DownloadArchivesJob::fetchNextArchive()
     if (m_downloader != 0)
         m_downloader->deleteLater();
 
-    const QUrl url(m_archivesToDownload.first().second);
-    const QUrl sigUrl = m_publicKey.isEmpty() ? QUrl() : QUrl(m_archivesToDownload.first().second
-        + QLatin1String(".sig"));
     const CryptoSignatureVerifier verifier(m_publicKey);
+    const QUrl url(m_archivesToDownload.first().second);
     m_downloader = FileDownloaderFactory::instance().create(url.scheme(), m_publicKey.isEmpty() ? 0
-        : &verifier, sigUrl, this);
+        : &verifier, m_archivesToDownload.first().second + QLatin1String(".sig"), this);
 
+    const QString &scheme = url.scheme();
     if (!m_downloader) {
-        m_archivesToDownload.pop_front();
-        const QString errMsg = tr("Scheme not supported: %1 (%2)").arg(url.scheme(), url.toString());
-        verbose() << errMsg;
-        emit outputTextChanged(errMsg);
+        m_archivesToDownload.removeFirst();
+        emit outputTextChanged(tr("Scheme not supported: %1 (%2)").arg(scheme, url.toString()));
         QMetaObject::invokeMethod(this, "fetchNextArchive", Qt::QueuedConnection);
         return;
     }
@@ -222,8 +220,13 @@ void DownloadArchivesJob::fetchNextArchive()
     m_downloader->setUrl(url);
     m_downloader->setAutoRemoveDownloadedFile(false);
 
-    const QString comp = QFileInfo(QFileInfo(m_archivesToDownload.first().first).path()).fileName();
-    const Component* const component = m_core->componentByName(comp);
+    const QFileInfo fi = QFileInfo(m_archivesToDownload.first().first);
+    const Component *const component = m_core->componentByName(QFileInfo(fi.path()).fileName());
+    if (scheme == QLatin1String("http") || scheme == QLatin1String("ftp")
+        || scheme == QLatin1String("file")) {
+            m_downloader->setDownloadedFileName(component->localTempPath() + QLatin1String("/")
+                + component->name() + QLatin1String("/") + fi.fileName());
+    }
 
     emit outputTextChanged(tr("Downloading archive for component: %1").arg(component->displayName()));
     emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
@@ -296,11 +299,10 @@ void DownloadArchivesJob::registerFile()
         finishWithError(tr("Could not open %1").arg(tempFile));
     }
 
-    const QString path = m_archivesToDownload.first().first;
-    m_archivesToDownload.pop_front();
-    m_temporaryFiles.push_back(tempFile);
-
-    QInstallerCreator::BinaryFormatEngineHandler::instance()->registerArchive(path, tempFile);
+    m_temporaryFiles.insert(tempFile);
+    m_archivesToDownload.removeFirst();
+    QInstallerCreator::BinaryFormatEngineHandler::instance()->registerArchive(m_archivesToDownload.first()
+        .first, tempFile);
 
     fetchNextArchiveHash();
 }

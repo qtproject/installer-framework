@@ -83,6 +83,7 @@ namespace KDUpdater
         bool canDownload() const;
         bool isDownloaded() const;
         QString downloadedFileName() const;
+        /* reimp */ void setDownloadedFileName(const QString &name);
         /* reimp */ LocalFileDownloader* clone( QObject* parent=0 ) const;
 
     public Q_SLOTS:
@@ -112,6 +113,7 @@ namespace KDUpdater
         bool canDownload() const;
         bool isDownloaded() const;
         QString downloadedFileName() const;
+        /* reimp */ void setDownloadedFileName(const QString &name);
         /* reimp */ ResourceFileDownloader* clone( QObject* parent=0 ) const;
 
     public Q_SLOTS:
@@ -141,6 +143,7 @@ namespace KDUpdater
         bool canDownload() const;
         bool isDownloaded() const;
         QString downloadedFileName() const;
+        /* reimp */ void setDownloadedFileName(const QString &name);
         /* reimp */ FtpDownloader* clone( QObject* parent=0 ) const;
 
     public Q_SLOTS:
@@ -174,6 +177,7 @@ namespace KDUpdater
         bool canDownload() const;
         bool isDownloaded() const;
         QString downloadedFileName() const;
+        /* reimp */ void setDownloadedFileName(const QString &name);
         /* reimp */ HttpDownloader* clone( QObject* parent=0 ) const;
 
     public Q_SLOTS:
@@ -217,6 +221,7 @@ namespace KDUpdater
         /* reimp */ bool canDownload() const;
         /* reimp */ bool isDownloaded() const;
         /* reimp */ QString downloadedFileName() const;
+        /* reimp */ void setDownloadedFileName(const QString &name);
         /* reimp */ FileDownloader* clone( QObject* parent=0 ) const;
 
     public Q_SLOTS:

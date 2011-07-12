@@ -29,7 +29,7 @@
 #include <KDToolsCore/KDJob>
 
 #include <QtCore/QPair>
-#include <QtCore/QStringList>
+#include <QtCore/QSet>
 
 QT_BEGIN_NAMESPACE
 class QTimerEvent;
@@ -83,7 +83,7 @@ private:
 
     bool m_canceled;
     const QByteArray m_publicKey;
-    QStringList m_temporaryFiles;
+    QSet<QString> m_temporaryFiles;
     QByteArray m_currentHash;
     double m_lastFileProgress;
     int m_progressChangedTimerId;
