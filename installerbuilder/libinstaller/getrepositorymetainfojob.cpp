@@ -56,6 +56,58 @@ using namespace KDUpdater;
 using namespace QInstaller;
 
 
+// -- GetRepositoryMetaInfoJob::ZipRunnable
+
+class GetRepositoryMetaInfoJob::ZipRunnable : public QObject, public QRunnable
+{
+    Q_OBJECT
+
+public:
+    ZipRunnable(const QString &archive, const QString &targetDir, QPointer<FileDownloader> downloader)
+        : QObject()
+        , QRunnable()
+        , m_archive(archive)
+        , m_targetDir(targetDir)
+        , m_downloader(downloader)
+    {}
+
+    ~ZipRunnable()
+    {
+        m_downloader->deleteLater();
+    }
+
+    void run()
+    {
+        QFile archive(m_archive);
+        if (archive.open(QIODevice::ReadOnly)) {
+            try {
+                Lib7z::extractArchive(&archive, m_targetDir);
+                if (!archive.remove()) {
+                    qWarning("Could not delete file %s: %s", qPrintable(m_archive),
+                        qPrintable(archive.errorString()));
+                }
+                emit finished(true, QString());
+            } catch (const Lib7z::SevenZipException& e) {
+                emit finished(false, tr("Error while extracting %1: %2.").arg(m_archive, e.message()));
+            } catch (...) {
+                emit finished(false, tr("Unknown exception caught while extracting %1.").arg(m_archive));
+            }
+        } else {
+            emit finished(false, tr("Could not open %1 for reading: %2.").arg(m_archive,
+                archive.errorString()));
+        }
+    }
+
+Q_SIGNALS:
+    void finished(bool success, const QString &errorString);
+
+private:
+    const QString m_archive;
+    const QString m_targetDir;
+    QPointer<KDUpdater::FileDownloader> m_downloader;
+};
+
+
 // -- GetRepositoryMetaInfoJob
 
 GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(const QByteArray &publicKey, QObject *parent)
@@ -64,14 +116,15 @@ GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(const QByteArray &publicKey, 
     m_silentRetries(3),
     m_retriesLeft(m_silentRetries),
     m_publicKey(publicKey),
-    m_downloader()
+    m_downloader(0),
+    m_waitForDone(false)
 {
     setCapabilities(Cancelable);
 }
 
 GetRepositoryMetaInfoJob::~GetRepositoryMetaInfoJob()
 {
-    delete m_downloader;
+    m_downloader->deleteLater();
 }
 
 Repository GetRepositoryMetaInfoJob::repository() const
@@ -108,6 +161,13 @@ void GetRepositoryMetaInfoJob::doCancel()
         m_downloader->cancelDownload();
 }
 
+void GetRepositoryMetaInfoJob::finished(int error, const QString &errorString)
+{
+    m_waitForDone = true;
+    m_threadPool.waitForDone();
+    (error > KDJob::NoError) ? emitFinishedWithError(error, errorString) : emitFinished();
+}
+
 QString GetRepositoryMetaInfoJob::temporaryDirectory() const
 {
     return m_temporaryDirectory;
@@ -130,19 +190,19 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
 
     const QUrl url = m_repository.url();
     if (url.isEmpty()) {
-        emitFinishedWithError(QInstaller::InvalidUrl, tr("Empty repository URL."));
+        finished(QInstaller::InvalidUrl, tr("Empty repository URL."));
         return;
     }
 
     if (!url.isValid()) {
-        emitFinishedWithError(QInstaller::InvalidUrl, tr("Invalid repository URL: %1.").arg(url.toString()));
+        finished(QInstaller::InvalidUrl, tr("Invalid repository URL: %1.").arg(url.toString()));
         return;
     }
 
     m_downloader = FileDownloaderFactory::instance().create(url.scheme(), 0, QUrl(), this);
     if (!m_downloader) {
-        emitFinishedWithError(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2).")
-            .arg(url.scheme(), url.toString()));
+        finished(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2).").arg(url.scheme(),
+            url.toString()));
         return;
     }
 
@@ -157,7 +217,7 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
 
 void GetRepositoryMetaInfoJob::updatesXmlDownloadCanceled()
 {
-    emitFinishedWithError(KDJob::Canceled, m_downloader->errorString());
+    finished(KDJob::Canceled, m_downloader->errorString());
 }
 
 void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
@@ -172,19 +232,19 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         m_temporaryDirectory = createTemporaryDirectory(QLatin1String("remoterepo"));
         m_tempDirDeleter.add(m_temporaryDirectory);
     } catch (const QInstaller::Error& e) {
-        emitFinishedWithError(QInstaller::ExtractionError, e.message());
+        finished(QInstaller::ExtractionError, e.message());
         return;
     }
 
     QFile updatesFile(fn);
     if (!updatesFile.rename(m_temporaryDirectory + QLatin1String("/Updates.xml"))) {
-        emitFinishedWithError(QInstaller::DownloadError,
-            tr("Could not move Updates.xml to target location: %1.").arg(updatesFile.errorString()));
+        finished(QInstaller::DownloadError, tr("Could not move Updates.xml to target location: %1.")
+            .arg(updatesFile.errorString()));
         return;
     }
 
     if (!updatesFile.open(QIODevice::ReadOnly)) {
-        emitFinishedWithError(QInstaller::DownloadError, tr("Could not open Updates.xml for reading: %1.")
+        finished(QInstaller::DownloadError, tr("Could not open Updates.xml for reading: %1.")
             .arg(updatesFile.errorString()));
         return;
     }
@@ -201,7 +261,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
             QLatin1String("updatesXmlDownloadError"), tr("Download Error"), msg, QMessageBox::Cancel);
 
         if (b == QMessageBox::Cancel || b == QMessageBox::NoButton) {
-            emitFinishedWithError(KDJob::Canceled, msg);
+            finished(KDJob::Canceled, msg);
             return;
         }
     }
@@ -228,14 +288,12 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 
     setTotalAmount(m_packageNames.count() + 1);
     setProcessedAmount(1);
-    if (m_packageNames.isEmpty()) {
-        emitFinished();
-        return;
-    }
-
     emit infoMessage(this, tr("Finished updating component meta information..."));
 
-    fetchNextMetaInfo();
+    if (m_packageNames.isEmpty())
+        finished(KDJob::NoError);
+    else
+        fetchNextMetaInfo();
 }
 
 void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
@@ -251,7 +309,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
             QLatin1String("updatesXmlDownloadError"), tr("Download Error"), msg, buttons);
 
         if (b == QMessageBox::Cancel || b == QMessageBox::NoButton) {
-            emitFinishedWithError(KDJob::Canceled, msg);
+            finished(KDJob::Canceled, msg);
             return;
         }
     }
@@ -267,12 +325,12 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     emit infoMessage(this, tr("Retrieving component information from remote repository..."));
 
     if (m_canceled) {
-        metaDownloadCanceled();
+        finished(KDJob::Canceled, m_downloader->errorString());
         return;
     }
 
     if (m_packageNames.isEmpty() && m_currentPackageName.isEmpty()) {
-        emitFinished();
+        finished(KDJob::NoError);
         return;
     }
 
@@ -294,9 +352,6 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     const QUrl url = QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, next,
         online ? nextVersion : QLatin1String(""));
 
-    // must be deleteLater: this code is executed from slots listening to m_downloader, avoid
-    // reentrancy issues
-    m_downloader->deleteLater();
     if (!m_publicKey.isEmpty()) {
         const CryptoSignatureVerifier verifier(m_publicKey);
         const QUrl sigUrl = QString::fromLatin1("%1/%2/meta.7z.sig").arg(repoUrl, next);
@@ -328,7 +383,7 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
 
 void GetRepositoryMetaInfoJob::metaDownloadCanceled()
 {
-    emitFinishedWithError(KDJob::Canceled, m_downloader->errorString());
+    finished(KDJob::Canceled, m_downloader->errorString());
 }
 
 void GetRepositoryMetaInfoJob::metaDownloadFinished()
@@ -338,8 +393,8 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
 
     QFile arch(fn);
     if (!arch.open(QIODevice::ReadOnly)) {
-        emitFinishedWithError(QInstaller::ExtractionError, tr("Could not open meta info archive: %1. "
-            "Error: %2.").arg(fn, arch.errorString()));
+        finished(QInstaller::ExtractionError, tr("Could not open meta info archive: %1. Error: %2.").arg(fn,
+            arch.errorString()));
         return;
     }
 
@@ -356,19 +411,14 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
         m_packageHash.removeLast();
         m_currentPackageName.clear();
     }
+    arch.close();
 
-    try {
-        // TODO: make this threaded
-        Lib7z::extractArchive(&arch, m_temporaryDirectory);
-        if (!arch.remove())
-            qWarning("Could not delete file %s: %s", qPrintable(fn), qPrintable(arch.errorString()));
-    } catch (const Lib7z::SevenZipException& e) {
-        emitFinishedWithError(QInstaller::ExtractionError,
-            tr("Could not open meta info archive: %1. Error: %2.").arg(fn, e.message()));
-        return;
-    }
+    ZipRunnable *runnable = new ZipRunnable(fn, m_temporaryDirectory, m_downloader);
+    connect(runnable, SIGNAL(finished(bool,QString)), this, SLOT(unzipFinished(bool,QString)));
+    m_threadPool.start(runnable);
 
-    fetchNextMetaInfo();
+    if (!m_waitForDone)
+        fetchNextMetaInfo();
 }
 
 void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
@@ -390,7 +440,7 @@ void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
             QLatin1String("updatesXmlDownloadError"), tr("Download Error"), msg, buttons);
 
         if (b == QMessageBox::Cancel || b == QMessageBox::NoButton) {
-            emitFinishedWithError(KDJob::Canceled, msg);
+            finished(KDJob::Canceled, msg);
             return;
         }
     }
@@ -398,3 +448,12 @@ void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
     m_retriesLeft--;
     QTimer::singleShot(1500, this, SLOT(fetchNextMetaInfo()));
 }
+
+void GetRepositoryMetaInfoJob::unzipFinished(bool ok, const QString &error)
+{
+    if (!ok)
+        finished(QInstaller::ExtractionError, error);
+}
+
+#include "getrepositorymetainfojob.moc"
+#include "moc_getrepositorymetainfojob.cpp"

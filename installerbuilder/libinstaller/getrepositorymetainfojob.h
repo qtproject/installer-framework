@@ -31,6 +31,7 @@
 #include <QtCore/QPointer>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
+#include <QtCore/QThreadPool>
 
 #include <common/fileutils.h>
 #include <common/repository.h>
@@ -48,7 +49,8 @@ class GetRepositoriesMetaInfoJob;
 class INSTALLER_EXPORT GetRepositoryMetaInfoJob : public KDJob
 {
     Q_OBJECT
-    friend class ::QInstaller::GetRepositoriesMetaInfoJob;
+    class ZipRunnable;
+    friend class QInstaller::GetRepositoriesMetaInfoJob;
 
 public:
     explicit GetRepositoryMetaInfoJob(const QByteArray &publicKey = QByteArray(), QObject *parent = 0);
@@ -66,6 +68,7 @@ public:
 private:
     /* reimp */ void doStart();
     /* reimp */ void doCancel();
+    void finished(int error, const QString &errorString = QString());
 
 private Q_SLOTS:
     void startUpdatesXmlDownload();
@@ -77,6 +80,8 @@ private Q_SLOTS:
     void metaDownloadCanceled();
     void metaDownloadFinished();
     void metaDownloadError(const QString &error);
+
+    void unzipFinished(bool status, const QString &error);
 
 private:
     bool m_canceled;
@@ -92,6 +97,9 @@ private:
     QString m_currentPackageVersion;
     QString m_temporaryDirectory;
     mutable TempDirDeleter m_tempDirDeleter;
+
+    bool m_waitForDone;
+    QThreadPool m_threadPool;
 };
 
 }   // namespace QInstaller
