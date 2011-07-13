@@ -1,3 +1,3 @@
 TEMPLATE=subdirs
 CONFIG += ordered
-SUBDIRS += operationrunner
+SUBDIRS += operationrunner fileengineclient fileengineserver
