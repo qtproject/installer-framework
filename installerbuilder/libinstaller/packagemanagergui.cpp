@@ -221,6 +221,9 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 #else
     setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
 #endif
+#ifdef Q_OS_LINUX
+    setWizardStyle(QWizard::ModernStyle);
+#endif
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
     setLayout(new QVBoxLayout(this));
@@ -406,6 +409,7 @@ bool PackageManagerGui::event(QEvent* event)
 
 void PackageManagerGui::showEvent(QShowEvent *event)
 {
+#ifndef Q_OS_LINUX
     if (!event->spontaneous()) {
         foreach (int id, pageIds()) {
             const QString subTitle = page(id)->subTitle();
@@ -416,6 +420,7 @@ void PackageManagerGui::showEvent(QShowEvent *event)
             }
         }
     }
+#endif
     QWizard::showEvent(event);
 }
 
