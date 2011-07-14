@@ -366,128 +366,128 @@ bool KDMetaMethodIterator::Priv::filterMatches( const QMetaMethod& method, int i
     return ( ( 1 << method.methodType() ) & m ) != 0;
 }
 
-#ifdef KDTOOLSCORE_UNITTESTS
+//#ifdef KDTOOLSCORE_UNITTESTS
 
-#include <KDUnitTest/Test>
+//#include <KDUnitTest/Test>
 
-class TestClass : public QObject
-{
-    Q_OBJECT
-public:
-    TestClass(){}
+//class TestClass : public QObject
+//{
+//    Q_OBJECT
+//public:
+//    TestClass(){}
 
-public Q_SLOTS:
-    void publicSlot( int ) {}
+//public Q_SLOTS:
+//    void publicSlot( int ) {}
 
-protected Q_SLOTS:
-    void protectedSlot( int ) {}
+//protected Q_SLOTS:
+//    void protectedSlot( int ) {}
 
-private Q_SLOTS:
-    void privateSlot( int ) {}
+//private Q_SLOTS:
+//    void privateSlot( int ) {}
 
-private:
-    Q_PRIVATE_SLOT( d, void veryPrivateSlot() )
+//private:
+//    Q_PRIVATE_SLOT( d, void veryPrivateSlot() )
     
-    class Private;
-    kdtools::pimpl_ptr< Private > d;
-};
+//    class Private;
+//    kdtools::pimpl_ptr< Private > d;
+//};
 
-class TestClassDerived : public TestClass
-{
-    Q_OBJECT
-public:
-    TestClassDerived(){}
-};
+//class TestClassDerived : public TestClass
+//{
+//    Q_OBJECT
+//public:
+//    TestClassDerived(){}
+//};
 
-class TestClass::Private
-{
-public:
-    void veryPrivateSlot() {}
-};
+//class TestClass::Private
+//{
+//public:
+//    void veryPrivateSlot() {}
+//};
 
-KDAB_UNITTEST_SIMPLE( KDMetaMethodIterator, "kdcoretools" ) {
+//KDAB_UNITTEST_SIMPLE( KDMetaMethodIterator, "kdcoretools" ) {
 
-    QObject o;
-    {
-        KDMetaMethodIterator it( &o, KDMetaMethodIterator::Signal );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "destroyed(QObject*)" );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "destroyed()" );
-        assertFalse( it.hasNext() );
-    }
-    {
-        KDMetaMethodIterator it( QObject::staticMetaObject, KDMetaMethodIterator::Signal );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "destroyed(QObject*)" );
-    }
-    {
-        KDMetaMethodIterator it( o.metaObject(), KDMetaMethodIterator::Signal );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "destroyed(QObject*)" );
-    }
+//    QObject o;
+//    {
+//        KDMetaMethodIterator it( &o, KDMetaMethodIterator::Signal );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "destroyed(QObject*)" );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "destroyed()" );
+//        assertFalse( it.hasNext() );
+//    }
+//    {
+//        KDMetaMethodIterator it( QObject::staticMetaObject, KDMetaMethodIterator::Signal );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "destroyed(QObject*)" );
+//    }
+//    {
+//        KDMetaMethodIterator it( o.metaObject(), KDMetaMethodIterator::Signal );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "destroyed(QObject*)" );
+//    }
 
-    {
-        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Signal );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "destroyed(QObject*)" );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "destroyed()" );
-        assertEqual( std::string( it.connectableSignature() ), "2destroyed()" );
-        assertFalse( it.hasNext() );
-    }
+//    {
+//        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Signal );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "destroyed(QObject*)" );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "destroyed()" );
+//        assertEqual( std::string( it.connectableSignature() ), "2destroyed()" );
+//        assertFalse( it.hasNext() );
+//    }
 
-    {
-        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Signal, KDMetaMethodIterator::IgnoreQObjectMethods );
-        assertFalse( it.hasNext() );
-    }
-    {
-        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Signal, KDMetaMethodIterator::IgnoreSuperClassMethods );
-        assertFalse( it.hasNext() );
-    }
-    {
-        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Slot );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "deleteLater()" );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "publicSlot(int)" );
-        assertEqual( std::string( it.connectableSignature() ), "1publicSlot(int)" );
-        assertFalse( it.hasNext() );
-    }
-    {
-        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Slot, KDMetaMethodIterator::IgnoreQObjectMethods );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "publicSlot(int)" );
-        assertFalse( it.hasNext() );
-    }
-    {
-        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Slot, KDMetaMethodIterator::Protected, KDMetaMethodIterator::IgnoreQObjectMethods );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "protectedSlot(int)" );
-        assertFalse( it.hasNext() );
-    }
-    {
-        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Slot, KDMetaMethodIterator::Private, KDMetaMethodIterator::IgnoreQObjectMethods );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "privateSlot(int)" );
-        assertEqual( std::string( it.next().signature() ), "veryPrivateSlot()" );
-        assertFalse( it.hasNext() );
-    }
+//    {
+//        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Signal, KDMetaMethodIterator::IgnoreQObjectMethods );
+//        assertFalse( it.hasNext() );
+//    }
+//    {
+//        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Signal, KDMetaMethodIterator::IgnoreSuperClassMethods );
+//        assertFalse( it.hasNext() );
+//    }
+//    {
+//        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Slot );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "deleteLater()" );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "publicSlot(int)" );
+//        assertEqual( std::string( it.connectableSignature() ), "1publicSlot(int)" );
+//        assertFalse( it.hasNext() );
+//    }
+//    {
+//        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Slot, KDMetaMethodIterator::IgnoreQObjectMethods );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "publicSlot(int)" );
+//        assertFalse( it.hasNext() );
+//    }
+//    {
+//        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Slot, KDMetaMethodIterator::Protected, KDMetaMethodIterator::IgnoreQObjectMethods );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "protectedSlot(int)" );
+//        assertFalse( it.hasNext() );
+//    }
+//    {
+//        KDMetaMethodIterator it( TestClass::staticMetaObject, KDMetaMethodIterator::Slot, KDMetaMethodIterator::Private, KDMetaMethodIterator::IgnoreQObjectMethods );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "privateSlot(int)" );
+//        assertEqual( std::string( it.next().signature() ), "veryPrivateSlot()" );
+//        assertFalse( it.hasNext() );
+//    }
 
-    {
-        KDMetaMethodIterator it( TestClassDerived::staticMetaObject, KDMetaMethodIterator::Slot, KDMetaMethodIterator::Private, KDMetaMethodIterator::IgnoreQObjectMethods );
-        assertTrue( it.hasNext() );
-        assertEqual( std::string( it.next().signature() ), "privateSlot(int)" );
-        assertEqual( std::string( it.next().signature() ), "veryPrivateSlot()" );
-        assertFalse( it.hasNext() );
-    }
-    {
-        KDMetaMethodIterator it( TestClassDerived::staticMetaObject, KDMetaMethodIterator::Slot, KDMetaMethodIterator::Private, KDMetaMethodIterator::IgnoreSuperClassMethods );
-        assertFalse( it.hasNext() );
-    }
+//    {
+//        KDMetaMethodIterator it( TestClassDerived::staticMetaObject, KDMetaMethodIterator::Slot, KDMetaMethodIterator::Private, KDMetaMethodIterator::IgnoreQObjectMethods );
+//        assertTrue( it.hasNext() );
+//        assertEqual( std::string( it.next().signature() ), "privateSlot(int)" );
+//        assertEqual( std::string( it.next().signature() ), "veryPrivateSlot()" );
+//        assertFalse( it.hasNext() );
+//    }
+//    {
+//        KDMetaMethodIterator it( TestClassDerived::staticMetaObject, KDMetaMethodIterator::Slot, KDMetaMethodIterator::Private, KDMetaMethodIterator::IgnoreSuperClassMethods );
+//        assertFalse( it.hasNext() );
+//    }
 
-}
+//}
 
-#include "kdmetamethoditerator.moc"
+//#include "kdmetamethoditerator.moc"
 
-#endif // KDTOOLSCORE_UNITTESTS
+//#endif // KDTOOLSCORE_UNITTESTS
