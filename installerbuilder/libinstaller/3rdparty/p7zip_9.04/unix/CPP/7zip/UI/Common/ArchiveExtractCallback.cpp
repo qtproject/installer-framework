@@ -16,6 +16,10 @@
 
 #include "ArchiveExtractCallback.h"
 
+#ifdef _MSC_VER
+#pragma warning(disable:4297)
+#endif
+
 using namespace NWindows;
 
 static const wchar_t *kCantAutoRename = L"ERROR: Can not create file with auto name";

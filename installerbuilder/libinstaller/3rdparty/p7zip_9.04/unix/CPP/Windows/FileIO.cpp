@@ -42,7 +42,7 @@ CFileBase::~CFileBase()
 }
 
 bool CFileBase::Create(LPCSTR filename, DWORD dwDesiredAccess,
-    DWORD dwShareMode, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes,bool ignoreSymbolicLink)
+    DWORD dwShareMode, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, bool /*ignoreSymbolicLink*/)
 {
 #ifdef ENV_UNIX
   (void)dwShareMode;
@@ -398,7 +398,7 @@ bool CInFile::Read(void *buffer, UINT32 bytesToRead, UINT32 &bytesRead)
   do
   {
     DWORD processedLoc = 0;
-    bool res = ::ReadFile( _handle, buffer, bytesToRead, &processedLoc, 0 );
+    BOOL res = ::ReadFile( _handle, buffer, bytesToRead, &processedLoc, 0 );
     bytesRead += processedLoc;
     if (!res)
       return false;

@@ -14,6 +14,11 @@
 
 #include "Common/DummyOutStream.h"
 
+#ifdef _MSC_VER
+#pragma warning(disable:4297)
+#endif
+
+
 namespace NArchive {
 namespace NZ {
 

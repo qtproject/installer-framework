@@ -47,7 +47,12 @@
 #include <QStringList>
 #include <QTemporaryFile>
 
+#ifdef _MSC_VER
+#pragma warning(disable:4297)
+#endif
+
 #ifdef Q_OS_WIN
+
 #include <time.h>
 #define FILE_ATTRIBUTE_UNIX_EXTENSION   0x8000   /* trick for Unix */
 #define S_IFMT  00170000

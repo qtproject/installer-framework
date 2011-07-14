@@ -22,6 +22,10 @@
 #endif
 #endif
 
+#ifdef _MSC_VER
+#pragma warning(disable:4297)
+#endif
+
 using namespace NWindows;
 
 extern UString ConvertMethodIdToString(UInt64 id);

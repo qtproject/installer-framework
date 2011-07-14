@@ -16,6 +16,10 @@
 #include "7zOut.h"
 #include "7zUpdate.h"
 
+#ifdef _MSC_VER
+#pragma warning(disable:4297)
+#endif
+
 using namespace NWindows;
 
 namespace NArchive {

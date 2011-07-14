@@ -11,6 +11,10 @@
 
 #include "ArchiveOpenCallback.h"
 
+#ifdef _MSC_VER
+#pragma warning(disable:4297)
+#endif
+
 using namespace NWindows;
 
 STDMETHODIMP COpenCallbackImp::SetTotal(const UInt64 *files, const UInt64 *bytes)

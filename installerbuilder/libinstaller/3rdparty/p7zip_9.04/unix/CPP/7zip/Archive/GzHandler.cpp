@@ -22,6 +22,10 @@
 #include "Common/OutStreamWithCRC.h"
 #include "Common/ParseProperties.h"
 
+#ifdef _MSC_VER
+#pragma warning(disable:4297)
+#endif
+
 #define Get32(p) GetUi32(p)
 
 using namespace NWindows;

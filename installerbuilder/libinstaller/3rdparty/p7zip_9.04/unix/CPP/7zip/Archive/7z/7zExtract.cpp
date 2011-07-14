@@ -12,6 +12,11 @@
 #include "../../Common/ProgressUtils.h"
 #include "../../Common/LimitedStreams.h"
 
+#ifdef _MSC_VER
+#pragma warning(disable:4297)
+#endif
+
+
 namespace NArchive {
 namespace N7z {
 
