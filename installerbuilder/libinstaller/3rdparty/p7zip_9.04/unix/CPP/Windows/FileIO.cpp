@@ -42,7 +42,7 @@ CFileBase::~CFileBase()
 }
 
 bool CFileBase::Create(LPCSTR filename, DWORD dwDesiredAccess,
-    DWORD dwShareMode, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, bool /*ignoreSymbolicLink*/)
+    DWORD dwShareMode, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, bool ignoreSymbolicLink)
 {
 #ifdef ENV_UNIX
   (void)dwShareMode;
@@ -97,6 +97,8 @@ bool CFileBase::Create(LPCSTR filename, DWORD dwDesiredAccess,
        }
      }
   }
+#else
+  (void)ignoreSymbolicLink;
 #endif
 
   if (_fd == -1) {
@@ -131,6 +133,7 @@ bool CFileBase::Create(LPCSTR filename, DWORD dwDesiredAccess,
 
   return true;
 #else
+  (void)ignoreSymbolicLink;
   if (!Close())
     return false;
   _handle = ::CreateFileA(filename, dwDesiredAccess, dwShareMode,

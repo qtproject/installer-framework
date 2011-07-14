@@ -62,9 +62,10 @@ NUserAnswerMode::EEnum ScanUserYesNoAllQuit(CStdOutStream *outStream)
   }
 }
 
-UString GetPassword(CStdOutStream *outStream, bool /*verify*/)
+UString GetPassword(CStdOutStream *outStream, bool verify)
 {
 #ifdef USE_FLTK 
+  (void)verify;
   const char *r = fl_password("Enter password", 0);
   AString oemPassword = "";
   if (r) oemPassword = r;
@@ -81,6 +82,7 @@ UString GetPassword(CStdOutStream *outStream, bool /*verify*/)
     if (oemPassword != oemPassword2) throw "password verification failed";
   }
 #else
+  (void)verify;
   (*outStream) << "\nEnter password:";
   outStream->Flush();
   AString oemPassword = g_StdIn.ScanStringUntilNewLine();
