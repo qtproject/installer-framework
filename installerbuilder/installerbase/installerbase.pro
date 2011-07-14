@@ -11,14 +11,11 @@ win32:RC_FILE = installerbase.rc
 DESTDIR = ../bin
 
 CONFIG += help
-contains(CONFIG, static): {
-    SQLPLUGINS = $$unique(sql-plugins)
-    contains(SQLPLUGINS, sqlite): {
-        QTPLUGIN += qsqlite
-        DEFINES += USE_STATIC_SQLITE_PLUGIN
-    }
-}
 
+contains(CONFIG, static): {
+    QTPLUGIN += qsqlite
+    DEFINES += USE_STATIC_SQLITE_PLUGIN
+}
 
 CONFIG -= app_bundle
 

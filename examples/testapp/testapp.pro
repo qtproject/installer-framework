@@ -9,11 +9,8 @@ DESTDIR = packages/com.nokia.testapp/data
 QT += script network xml sql
 CONFIG += uitools help
 contains(CONFIG, static): {
-    SQLPLUGINS = $$unique(sql-plugins)
-    contains(SQLPLUGINS, sqlite): {
-        QTPLUGIN += qsqlite
-        DEFINES += USE_STATIC_SQLITE_PLUGIN
-    }
+    QTPLUGIN += qsqlite
+    DEFINES += USE_STATIC_SQLITE_PLUGIN
 }
 
 # Input

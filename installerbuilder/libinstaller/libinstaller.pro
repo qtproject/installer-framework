@@ -25,11 +25,8 @@ QT += script \
 CONFIG += help uitools
 
 contains(CONFIG, static): {
-    SQLPLUGINS = $$unique(sql-plugins)
-    contains(SQLPLUGINS, sqlite): {
-        QTPLUGIN += qsqlite
-        DEFINES += USE_STATIC_SQLITE_PLUGIN
-    }
+    QTPLUGIN += qsqlite
+    DEFINES += USE_STATIC_SQLITE_PLUGIN
 }
 
 include(3rdparty/p7zip_9.04/p7zip.pri)

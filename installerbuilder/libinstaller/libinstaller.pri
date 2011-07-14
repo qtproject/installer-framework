@@ -21,11 +21,8 @@ CONFIG( shared, static|shared ):DEFINES += KDTOOLS_SHARED
 CONFIG += uitools help
 
 contains(CONFIG, static): {
-    SQLPLUGINS = $$unique(sql-plugins)
-    contains(SQLPLUGINS, sqlite): {
-        QTPLUGIN += qsqlite
-        DEFINES += USE_STATIC_SQLITE_PLUGIN
-    }
+    QTPLUGIN += qsqlite
+    DEFINES += USE_STATIC_SQLITE_PLUGIN
 }
 
 QT += script
