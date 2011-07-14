@@ -10,10 +10,8 @@ CONFIG -= app_bundle
 include(../../installerbuilder/libinstaller/libinstaller.pri)
 
 # Input
-SOURCES += operationrunner.cpp \
-    fakeinstaller.cpp
+SOURCES += operationrunner.cpp
 
-HEADERS += \
-    fakeinstaller.h
+HEADERS +=
 
 LIBS = -L../../installerbuilder/lib -linstaller $$LIBS

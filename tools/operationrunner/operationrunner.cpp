@@ -30,14 +30,11 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include "fakeinstaller.h" //this should be the pseudo one next to this file
-
-#include <qinstaller.h>
+#include <packagemanagercore.h>
 
 #include <common/errors.h>
 #include <common/utils.h>
 #include <common/repositorygen.h>
-#include <common/installersettings.h>
 
 #include <init.h>
 #include <KDUpdater/UpdateOperation>
@@ -129,12 +126,12 @@ int main(int argc, char **argv)
             }
         }
 
-        FakeInstaller fakeInstaller;
+        QInstaller::PackageManagerCore packageManagerCore;
         if (!sdkTargetDir.isEmpty()) {
-            fakeInstaller.setTargetDir(sdkTargetDir);
+            packageManagerCore.setValue(QLatin1String("TargetDir"), QFileInfo(sdkTargetDir).absoluteFilePath());
 
             operation->setValue(QLatin1String("installer"),
-                QVariant::fromValue(static_cast<QInstaller::Installer*>(&fakeInstaller)));
+                QVariant::fromValue(&packageManagerCore));
         }
 
         operation->setArguments(argumentList);

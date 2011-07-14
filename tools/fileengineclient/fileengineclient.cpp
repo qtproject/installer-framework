@@ -135,10 +135,9 @@ int main(int argc, char **argv)
 //first run as a normal QProcess
     QByteArray secondOutPut;
     {
-        FSEngineClientHandler* engineClientHandler = new FSEngineClientHandler();
-        engineClientHandler->enableTestMode();
-        engineClientHandler->init(39999);
-        engineClientHandler->setActive(true);
+        FSEngineClientHandler::instance().enableTestMode();
+        FSEngineClientHandler::instance().init(39999);
+        FSEngineClientHandler::instance().setActive(true);
 
         QProcess process;
         OutputHandler outputer(&process);
