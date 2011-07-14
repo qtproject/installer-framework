@@ -80,11 +80,19 @@ int main(int argc, char **argv)
 
         QStringList argumentList = app.arguments();
 
-        if( argumentList.count() < 2 || argumentList.contains("--help") )
-        {
+        QInstaller::init();
+        QInstaller::VerboseWriter::instance();
+
+        if (argumentList.contains("--showAvailableOperations")) {
+            std::cout << "AvailableOperations: " << std::endl;
+            std::cout << "\t" << qPrintable(KDUpdater::UpdateOperationFactory::instance().availableUpdateOperations().join("\n\t")) << std::endl;
+        }
+
+        if (argumentList.count() < 2 || argumentList.contains("--help")) {
             printUsage();
             return 1;
         }
+
         argumentList.removeFirst(); // we don't need the application name
 
         QString sdkTargetDir;
@@ -101,13 +109,8 @@ int main(int argc, char **argv)
             argumentList.removeAt(sdkTargetDirArgumentPosition);
         }
 
-
-        QInstaller::init();
-
-        QInstaller::VerboseWriter::instance();
-
+        //now all output goes into the log file next to the application
         QInstaller::setVerbose( true );
-
 
         QString operationName = argumentList.takeFirst();
         KDUpdater::UpdateOperation* const operation = KDUpdater::UpdateOperationFactory::instance().create(operationName);
@@ -145,7 +148,7 @@ int main(int argc, char **argv)
             std::cerr << "\tNote: if you see something like installer is null/empty then --sdktargetdir argument was missing." << std::endl;
         }
         return 0;
-    } catch ( const QInstaller::Error& e ) {
+    } catch (const QInstaller::Error& e) {
         std::cerr << qPrintable(e.message()) << std::endl;
     }
     return 1;
