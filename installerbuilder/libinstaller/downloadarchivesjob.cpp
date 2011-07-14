@@ -300,9 +300,8 @@ void DownloadArchivesJob::registerFile()
     }
 
     m_temporaryFiles.insert(tempFile);
-    m_archivesToDownload.removeFirst();
-    QInstallerCreator::BinaryFormatEngineHandler::instance()->registerArchive(m_archivesToDownload.first()
-        .first, tempFile);
+    const QPair<QString, QString> pair = m_archivesToDownload.takeFirst();
+    QInstallerCreator::BinaryFormatEngineHandler::instance()->registerArchive(pair.first, tempFile);
 
     fetchNextArchiveHash();
 }
