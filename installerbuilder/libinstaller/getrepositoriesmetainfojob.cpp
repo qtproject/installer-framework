@@ -32,6 +32,7 @@
 **************************************************************************/
 #include "getrepositoriesmetainfojob.h"
 
+#include "common/utils.h"
 #include "getrepositorymetainfojob.h"
 #include "qinstallerglobal.h"
 
@@ -150,7 +151,7 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
 
 void GetRepositoriesMetaInfoJob::jobFinished(KDJob* j)
 {
-    const GetRepositoryMetaInfoJob* const job = qobject_cast<const GetRepositoryMetaInfoJob*>(j);
+    const GetRepositoryMetaInfoJob *const job = qobject_cast<const GetRepositoryMetaInfoJob*>(j);
     Q_ASSERT(job);
 
     if(job->error() != KDJob::NoError && !job->temporaryDirectory().isEmpty()) {
@@ -160,27 +161,21 @@ void GetRepositoriesMetaInfoJob::jobFinished(KDJob* j)
         }
     }
 
-    if (job->error() == KDJob::Canceled) {
-        emitFinishedWithError(job->error(), job->errorString());
-        return;
+    if (job->error() == KDJob::Canceled
+        || job->error() >= KDJob::UserDefinedError && job->error() < QInstaller::UserIgnoreError) {
+            emit infoMessage(j, job->errorString());
+            verbose() << job->errorString() << std::endl;
+            emitFinishedWithError(job->error(), job->errorString());
+            return;
     }
 
     if (job->error() == QInstaller::UserIgnoreError) {
         m_haveIgnoredError = true;
         m_errorString = job->errorString();
-        QMetaObject::invokeMethod(this, "fetchNextRepo", Qt::QueuedConnection);
-        return;
+    } else {
+        const QString &tmpdir = job->releaseTemporaryDirectory();
+        job->m_tempDirDeleter.passAndRelease(m_tempDirDeleter, tmpdir);
+        m_repositoryByTemporaryDirectory.insert(tmpdir, job->repository());
     }
-
-    if (job->error() == QInstaller::InvalidMetaInfo) {
-        emitFinishedWithError(KDJob::UserDefinedError, tr("Error while accessing online "
-            "repository: %1. Please try again later").arg(job->errorString()));
-        return;
-    }
-
-    const QString &tmpdir = job->releaseTemporaryDirectory();
-    job->m_tempDirDeleter.passAndRelease(m_tempDirDeleter, tmpdir);
-    m_repositoryByTemporaryDirectory.insert(tmpdir, job->repository());
-
     QMetaObject::invokeMethod(this, "fetchNextRepo", Qt::QueuedConnection);
 }

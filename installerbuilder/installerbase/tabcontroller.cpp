@@ -157,6 +157,7 @@ int TabController::initUpdater()
 
     introPage->showAll();
     introPage->setComplete(false);
+    introPage->message(QLatin1String(""));
     introPage->setMaintenanceToolsEnabled(false);
     introPage->setErrorMessage(QLatin1String(""));
 
@@ -219,6 +220,7 @@ int TabController::initPackageManager()
 
     if (d->m_core->isPackageManager()) {
         introPage->showAll();
+        introPage->message(QLatin1String(""));
         introPage->setMaintenanceToolsEnabled(false);
     }
 
@@ -235,13 +237,15 @@ int TabController::initPackageManager()
         // first try to fetch the server side packages tree
         d->m_allPackagesFetched = d->m_core->fetchRemotePackagesTree();
         if (!d->m_allPackagesFetched) {
-            const QString error = d->m_core->error();
+            QString error = d->m_core->error();
             // if that fails, try to fetch local installed tree
             localPackagesTreeFetched = d->m_core->fetchLocalPackagesTree();
-            if (!localPackagesTreeFetched) {
-                // if that still failed, show error message
-                introPage->setErrorMessage(error);
+            if (localPackagesTreeFetched) {
+                // if that succeeded, adjust error message
+                error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package management "
+                    "available.") + QLatin1String("</font>");
             }
+            introPage->setErrorMessage(error);
         }
     }
 

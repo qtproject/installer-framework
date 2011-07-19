@@ -73,7 +73,8 @@ public:
 
     ~ZipRunnable()
     {
-        m_downloader->deleteLater();
+        if (m_downloader)
+            m_downloader->deleteLater();
     }
 
     void run()
@@ -124,7 +125,8 @@ GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(const QByteArray &publicKey, 
 
 GetRepositoryMetaInfoJob::~GetRepositoryMetaInfoJob()
 {
-    m_downloader->deleteLater();
+    if (m_downloader)
+        m_downloader->deleteLater();
 }
 
 Repository GetRepositoryMetaInfoJob::repository() const
@@ -254,7 +256,6 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
     if (!doc.setContent(&updatesFile, &err)) {
         const QString msg =  tr("Could not fetch a valid version of Updates.xml from repository: %1. "
             "Error: %2.").arg(m_repository.url().toString(), err);
-        verbose() << msg << std::endl;
 
         const QMessageBox::StandardButton b =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -301,7 +302,6 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
     if (m_retriesLeft <= 0) {
         const QString msg = tr("Could not fetch Updates.xml from repository: %1. Error: %2.")
             .arg(m_repository.url().toString(), err);
-        verbose() << msg << std::endl;
 
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
         const QMessageBox::StandardButton b =
@@ -361,9 +361,9 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     }
 
     if (!m_downloader) {
-        qWarning() << "Scheme not supported:" << next;
         m_currentPackageName.clear();
         m_currentPackageVersion.clear();
+        qWarning() << "Scheme not supported: " << url.toString();
         QMetaObject::invokeMethod(this, "fetchNextMetaInfo", Qt::QueuedConnection);
         return;
     }
@@ -432,7 +432,6 @@ void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
     if (m_retriesLeft <= 0) {
         const QString msg = tr("Could not download meta information for component: %1. Error: %2.")
             .arg(m_currentPackageName, err);
-        verbose() << msg << std::endl;
 
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
         const QMessageBox::StandardButton b =
