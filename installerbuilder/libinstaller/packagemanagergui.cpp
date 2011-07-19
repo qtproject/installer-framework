@@ -1342,8 +1342,8 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
         dirs += dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
     }
 
-    verbose() << "StartMenuPath: " << startMenuPath;
-    verbose() << "DesktopDir:" << core->value(QLatin1String("DesktopDir")) << std::endl;
+    verbose() << "StartMenuPath: \t" << startMenuPath << std::endl;
+    verbose() << "DesktopDir: \t" << core->value(QLatin1String("DesktopDir")) << std::endl;
 
     m_listWidget = new QListWidget(this);
     if (!dirs.isEmpty()) {

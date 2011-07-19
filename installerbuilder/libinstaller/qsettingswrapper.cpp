@@ -124,7 +124,6 @@ QSettingsWrapper::QSettingsWrapper(const QString &organization, const QString &a
     : QObject(parent)
     , d(new Private(organization, application))
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
 QSettingsWrapper::QSettingsWrapper(QSettingsWrapper::Scope scope, const QString &organization,
@@ -132,7 +131,6 @@ QSettingsWrapper::QSettingsWrapper(QSettingsWrapper::Scope scope, const QString 
     : QObject(parent)
     , d(new Private(static_cast<QSettings::Scope> (scope), organization, application))
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
 QSettingsWrapper::QSettingsWrapper(QSettingsWrapper::Format format, QSettingsWrapper::Scope scope,
@@ -141,26 +139,22 @@ QSettingsWrapper::QSettingsWrapper(QSettingsWrapper::Format format, QSettingsWra
     , d(new Private(static_cast<QSettings::Format> (format), static_cast<QSettings::Scope> (scope),
         organization, application))
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
 QSettingsWrapper::QSettingsWrapper(const QString &fileName, QSettingsWrapper::Format format, QObject *parent)
     : QObject(parent)
     , d(new Private(fileName, static_cast<QSettings::Format> (format)))
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
 QSettingsWrapper::QSettingsWrapper(QObject *parent)
     : QObject(parent)
     , d(new Private)
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
 QSettingsWrapper::~QSettingsWrapper()
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->socket != 0) {
         d->stream << QString::fromLatin1("destroyQSettings");
         d->socket->flush();
@@ -179,7 +173,6 @@ QSettingsWrapper::~QSettingsWrapper()
 
 QStringList QSettingsWrapper::allKeys() const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<QStringList>(d->stream, QLatin1String("QSettings::allKeys"));
     return static_cast<QStringList>(d->settings.allKeys());
@@ -187,7 +180,6 @@ QStringList QSettingsWrapper::allKeys() const
 
 QString QSettingsWrapper::applicationName() const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<QString>(d->stream, QLatin1String("QSettings::applicationName"));
     return static_cast<QString>(d->settings.applicationName());
@@ -195,7 +187,6 @@ QString QSettingsWrapper::applicationName() const
 
 void QSettingsWrapper::beginGroup(const QString& param1)
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::beginGroup"), param1);
     else
@@ -204,7 +195,6 @@ void QSettingsWrapper::beginGroup(const QString& param1)
 
 int QSettingsWrapper::beginReadArray(const QString& param1)
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<int>(d->stream, QLatin1String("QSettings::beginReadArray"), param1);
     return d->settings.beginReadArray(param1);
@@ -212,7 +202,6 @@ int QSettingsWrapper::beginReadArray(const QString& param1)
 
 void QSettingsWrapper::beginWriteArray(const QString& param1, int param2)
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::beginWriteArray"), param1, param2);
     else
@@ -221,7 +210,6 @@ void QSettingsWrapper::beginWriteArray(const QString& param1, int param2)
 
 QStringList QSettingsWrapper::childGroups() const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<QStringList>(d->stream, QLatin1String("QSettings::childGroups"));
     return static_cast<QStringList>(d->settings.childGroups());
@@ -229,7 +217,6 @@ QStringList QSettingsWrapper::childGroups() const
 
 QStringList QSettingsWrapper::childKeys() const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<QStringList>(d->stream, QLatin1String("QSettings::childKeys"));
     return static_cast<QStringList>(d->settings.childKeys());
@@ -237,7 +224,6 @@ QStringList QSettingsWrapper::childKeys() const
 
 void QSettingsWrapper::clear()
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         callRemoteVoidMethod<void>(d->stream, QLatin1String("QSettings::clear"));
     else d->settings.clear();
@@ -245,7 +231,6 @@ void QSettingsWrapper::clear()
 
 bool QSettingsWrapper::contains(const QString& param1) const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<bool>(d->stream, QLatin1String("QSettings::contains"), param1);
     return d->settings.contains(param1);
@@ -253,7 +238,6 @@ bool QSettingsWrapper::contains(const QString& param1) const
 
 void QSettingsWrapper::endArray()
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         callRemoteVoidMethod<void>(d->stream, QLatin1String("QSettings::endArray"));
     else
@@ -262,7 +246,6 @@ void QSettingsWrapper::endArray()
 
 void QSettingsWrapper::endGroup()
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         callRemoteVoidMethod<void>(d->stream, QLatin1String("QSettings::endGroup"));
     else
@@ -271,7 +254,6 @@ void QSettingsWrapper::endGroup()
 
 bool QSettingsWrapper::fallbacksEnabled() const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<bool>(d->stream, QLatin1String("QSettings::fallbacksEnabled"));
     return static_cast<bool>(d->settings.fallbacksEnabled());
@@ -279,7 +261,6 @@ bool QSettingsWrapper::fallbacksEnabled() const
 
 QString QSettingsWrapper::fileName() const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<QString>(d->stream, QLatin1String("QSettings::fileName"));
     return static_cast<QString>(d->settings.fileName());
@@ -287,13 +268,11 @@ QString QSettingsWrapper::fileName() const
 
 QSettingsWrapper::Format QSettingsWrapper::format() const
 {
-    qDebug() << Q_FUNC_INFO;
     return static_cast<QSettingsWrapper::Format>(d->settings.format());
 }
 
 QString QSettingsWrapper::group() const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<QString>(d->stream, QLatin1String("QSettings::group"));
     return static_cast<QString>(d->settings.group());
@@ -301,13 +280,11 @@ QString QSettingsWrapper::group() const
 
 QTextCodec* QSettingsWrapper::iniCodec() const
 {
-    qDebug() << Q_FUNC_INFO;
     return d->settings.iniCodec();
 }
 
 bool QSettingsWrapper::isWritable() const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<bool>(d->stream, QLatin1String("QSettings::isWritable"));
     return static_cast<bool>(d->settings.isWritable());
@@ -315,7 +292,6 @@ bool QSettingsWrapper::isWritable() const
 
 QString QSettingsWrapper::organizationName() const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<QString>(d->stream, QLatin1String("QSettings::organizationName"));
     return static_cast<QString>(d->settings.organizationName());
@@ -323,7 +299,6 @@ QString QSettingsWrapper::organizationName() const
 
 void QSettingsWrapper::remove(const QString& param1)
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::remove"), param1);
     else d->settings.remove(param1);
@@ -331,13 +306,11 @@ void QSettingsWrapper::remove(const QString& param1)
 
 QSettingsWrapper::Scope QSettingsWrapper::scope() const
 {
-    qDebug() << Q_FUNC_INFO;
     return static_cast<QSettingsWrapper::Scope>(d->settings.scope());
 }
 
 void QSettingsWrapper::setArrayIndex(int param1)
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::setArrayIndex"), param1);
     else d->settings.setArrayIndex(param1);
@@ -345,7 +318,6 @@ void QSettingsWrapper::setArrayIndex(int param1)
 
 void QSettingsWrapper::setFallbacksEnabled(bool param1)
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::setFallbacksEnabled"), param1);
     else d->settings.setFallbacksEnabled(param1);
@@ -353,19 +325,16 @@ void QSettingsWrapper::setFallbacksEnabled(bool param1)
 
 void QSettingsWrapper::setIniCodec(QTextCodec* codec)
 {
-    qDebug() << Q_FUNC_INFO;
     d->settings.setIniCodec(codec);
 }
 
 void QSettingsWrapper::setIniCodec(const char* codecName)
 {
-    qDebug() << Q_FUNC_INFO;
     d->settings.setIniCodec(codecName);
 }
 
 void QSettingsWrapper::setValue(const QString& param1, const QVariant& param2)
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::setValue"), param1, param2);
     else
@@ -374,15 +343,13 @@ void QSettingsWrapper::setValue(const QString& param1, const QVariant& param2)
 
 QSettingsWrapper::Status QSettingsWrapper::status() const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<QSettingsWrapper::Status>(d->stream, QLatin1String("QSettings::status"));
     return static_cast<QSettingsWrapper::Status>(d->settings.status());
-};
+}
 
 void QSettingsWrapper::sync()
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         callRemoteVoidMethod<void>(d->stream, QLatin1String("QSettings::sync"));
     else
@@ -391,7 +358,6 @@ void QSettingsWrapper::sync()
 
 QVariant QSettingsWrapper::value(const QString& param1, const QVariant& param2) const
 {
-    qDebug() << Q_FUNC_INFO;
     if (d->createSocket())
         return callRemoteMethod<QVariant>(d->stream, QLatin1String("QSettings::value"), param1, param2);
     return d->settings.value(param1, param2);
