@@ -482,14 +482,18 @@ QSet<QString> ComponentModel::select(Qt::CheckState state)
 {
     QSet<QString> changed;
     for (int i = 0; i < m_rootComponentList.count(); ++i) {
+        QSet<QString> tmp;
         const QList<Component*> &children = m_rootComponentList.at(i)->childs();
         foreach (Component *child, children) {
-            if (child->isCheckable()) {
+            if (child->isCheckable() && !child->isTristate() && child->checkState() != state) {
+                tmp.insert(child->name());
                 child->setCheckState(state);
-                changed.insert(child->name());
             }
         }
-        setData(index(i, 0, QModelIndex()), state, Qt::CheckStateRole);
+        if (!tmp.isEmpty()) {
+            changed += tmp;
+            setData(index(i, 0, QModelIndex()), state, Qt::CheckStateRole);
+        }
     }
     return changed;
 }
