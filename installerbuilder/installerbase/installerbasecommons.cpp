@@ -410,7 +410,10 @@ int MaintenanceGui::nextId() const
         foreach (Component* component, components) {
             if (component->isInstalled())
                 continue;
-            foundLicense |= !component->licenses().isEmpty();
+            if (!component->licenses().isEmpty()) {
+                foundLicense = true;
+                break;
+            }
         }
         return foundLicense ? next : nextNextId;
     }
