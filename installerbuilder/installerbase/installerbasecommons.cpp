@@ -336,6 +336,29 @@ void InstallerGui::init()
         wizardPageVisibilityChangeRequested(false, PackageManagerCore::ComponentSelection);
 }
 
+int InstallerGui::nextId() const
+{
+    const int next = QWizard::nextId();
+    if (next == PackageManagerCore::LicenseCheck) {
+        PackageManagerCore *const core = packageManagerCore();
+        const int nextNextId = pageIds().value(pageIds().indexOf(next)+ 1, -1);
+        if (!core->isInstaller())
+            return nextNextId;
+
+        QList<Component*> components = core->componentsToInstall(core->runMode());
+        bool foundLicense = false;
+
+        foreach (Component* component, components) {
+            if (!component->licenses().isEmpty()) {
+                foundLicense = true;
+                break;
+            }
+        }
+        return foundLicense ? next : nextNextId;
+    }
+    return next;
+}
+
 
 // -- MaintenanceGui
 

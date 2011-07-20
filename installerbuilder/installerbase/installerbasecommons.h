@@ -109,6 +109,7 @@ public:
     explicit InstallerGui(QInstaller::PackageManagerCore *core);
 
     virtual void init();
+    virtual int nextId() const;
 };
 
 
