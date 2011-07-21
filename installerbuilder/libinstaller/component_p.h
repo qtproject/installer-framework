@@ -73,10 +73,10 @@ public:
     QScriptEngine m_scriptEngine;
     QScriptValue m_scriptComponent;
     QHash<QString, QString> m_vars;
-    QList<Component*> m_components;
-    QList<Component*> m_allComponents;
+    QList<Component*> m_childComponents;
+    QList<Component*> m_allChildComponents;
+    QList<Component*> m_virtualChildComponents;
     QStringList m_downloadableArchives;
-    QList<Component*> m_virtualComponents;
     QMap<QString, QWidget*> m_userInterfaces;
     QStringList m_stopProcessForUpdateRequests;
     QHash<QString, bool> m_unexistingScriptMethods;

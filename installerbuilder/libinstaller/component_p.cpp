@@ -144,8 +144,8 @@ ComponentModelHelper::~ComponentModelHelper()
 int ComponentModelHelper::childCount() const
 {
     if (m_componentPrivate->m_core->virtualComponentsVisible())
-        return m_componentPrivate->m_allComponents.count();
-    return m_componentPrivate->m_components.count();
+        return m_componentPrivate->m_allChildComponents.count();
+    return m_componentPrivate->m_childComponents.count();
 }
 
 /*!
@@ -164,9 +164,9 @@ int ComponentModelHelper::indexInParent() const
 */
 QList<Component*> ComponentModelHelper::childs() const
 {
-    QList<Component*> *components = &m_componentPrivate->m_components;
+    QList<Component*> *components = &m_componentPrivate->m_childComponents;
     if (m_componentPrivate->m_core->virtualComponentsVisible())
-        components = &m_componentPrivate->m_allComponents;
+        components = &m_componentPrivate->m_allChildComponents;
 
     QList<Component*> result;
     foreach (Component *component, *components) {
@@ -184,8 +184,8 @@ Component* ComponentModelHelper::childAt(int index) const
 {
     if (index >= 0 && index < childCount()) {
         if (m_componentPrivate->m_core->virtualComponentsVisible())
-            return m_componentPrivate->m_allComponents.value(index, 0);
-        return m_componentPrivate->m_components.value(index, 0);
+            return m_componentPrivate->m_allChildComponents.value(index, 0);
+        return m_componentPrivate->m_childComponents.value(index, 0);
     }
     return 0;
 }

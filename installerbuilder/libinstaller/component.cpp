@@ -87,12 +87,12 @@ Component::Component(PackageManagerCore *core)
 Component::~Component()
 {
     if (parentComponent() != 0)
-        d->m_parentComponent->d->m_allComponents.removeAll(this);
+        d->m_parentComponent->d->m_allChildComponents.removeAll(this);
 
     if (!d->m_newlyInstalled)
         qDeleteAll(d->m_operations);
 
-    qDeleteAll(d->m_allComponents);
+    qDeleteAll(d->m_allChildComponents);
     delete d;
 }
 
@@ -275,17 +275,17 @@ Component* Component::parentComponent() const
 void Component::appendComponent(Component* component)
 {
     if (!component->isVirtual()) {
-        d->m_components.append(component);
-        std::sort(d->m_components.begin(), d->m_components.end(), Component::SortingPriorityLessThan());
+        d->m_childComponents.append(component);
+        std::sort(d->m_childComponents.begin(), d->m_childComponents.end(), Component::SortingPriorityLessThan());
     } else {
-        d->m_virtualComponents.append(component);
+        d->m_virtualChildComponents.append(component);
     }
 
-    d->m_allComponents = d->m_components + d->m_virtualComponents;
+    d->m_allChildComponents = d->m_childComponents + d->m_virtualChildComponents;
     if (Component *parent = component->parentComponent())
         parent->removeComponent(component);
     component->d->m_parentComponent = this;
-    setTristate(d->m_components.count() > 0);
+    setTristate(d->m_childComponents.count() > 0);
 }
 
 /*!
@@ -296,9 +296,9 @@ void Component::removeComponent(Component *component)
 {
     if (component->parentComponent() == this) {
         component->d->m_parentComponent = 0;
-        d->m_components.removeAll(component);
-        d->m_virtualComponents.removeAll(component);
-        d->m_allComponents = d->m_components + d->m_virtualComponents;
+        d->m_childComponents.removeAll(component);
+        d->m_virtualChildComponents.removeAll(component);
+        d->m_allChildComponents = d->m_childComponents + d->m_virtualChildComponents;
     }
 }
 
@@ -313,9 +313,9 @@ QList<Component*> Component::childComponents(bool recursive, RunMode runMode) co
         return result;
 
     if (!recursive)
-        return d->m_allComponents;
+        return d->m_allChildComponents;
 
-    foreach (Component *component, d->m_allComponents) {
+    foreach (Component *component, d->m_allChildComponents) {
         result.append(component);
         result += component->childComponents(true, runMode);
     }
