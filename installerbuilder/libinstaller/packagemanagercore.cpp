@@ -683,7 +683,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
     // append all components w/o parent to the direct list
     foreach (QInstaller::Component *component, components) {
         if (component->parentComponent() == 0)
-            appendRootComponent(component, AllMode);
+            appendRootComponent(component);
     }
 
     // now set the checked state for all components without child
@@ -849,16 +849,15 @@ Component *PackageManagerCore::rootComponent(int i) const
     return d->m_rootComponents.value(i, 0);
 }
 
-/*!
-    Appends a new root components \a component based on the current run mode \a runMode to the
-    installers internal lists of components.
-*/
-void PackageManagerCore::appendRootComponent(Component *component, RunMode runMode)
+void PackageManagerCore::appendRootComponent(Component *component)
 {
-    if (runMode == AllMode)
-        d->m_rootComponents.append(component);
-    else
-        d->m_updaterComponents.append(component);
+    d->m_rootComponents.append(component);
+    emit componentAdded(component);
+}
+
+void PackageManagerCore::appendUpdaterComponent(Component *component)
+{
+    d->m_updaterComponents.append(component);
     emit componentAdded(component);
 }
 
@@ -1570,7 +1569,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
         // append all components w/o parent to the direct list
         foreach (QInstaller::Component *component, components) {
             if (component->parentComponent() == 0)
-                appendRootComponent(component, AllMode);
+                appendRootComponent(component);
         }
 
         // after everything is set up, load the scripts
@@ -1665,7 +1664,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             foreach (QInstaller::Component *component, components) {
                 component->loadComponentScript();
                 component->setCheckState(Qt::Checked);
-                appendRootComponent(component, UpdaterMode);
+                appendUpdaterComponent(component);
             }
 
             // after everything is set up, check installed components

@@ -138,7 +138,8 @@ public:
     // component handling
     int rootComponentCount() const;
     Component *rootComponent(int i) const;
-    void appendRootComponent(Component *components, RunMode runMode);
+    void appendRootComponent(Component *components);
+    void appendUpdaterComponent(Component *components);
 
     Component *componentByName(const QString &identifier) const;
     QList<Component*> components(bool recursive, RunMode runMode) const;
