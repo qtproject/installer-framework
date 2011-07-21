@@ -484,6 +484,9 @@ bool MkdirOperation::undoOperation()
     if( createdDir == QDir::root() )
         return true;
 
+    if( !createdDir.exists())
+        return true;
+
     QString errorString;
     if( forceremoval )
     {
