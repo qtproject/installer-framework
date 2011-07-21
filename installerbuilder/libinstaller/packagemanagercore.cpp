@@ -687,7 +687,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
     }
 
     // now set the checked state for all components without child
-    for (int i = 0; i < rootComponentCount(AllMode); ++i) {
+    for (int i = 0; i < rootComponentCount(); ++i) {
         QList<Component*> children = rootComponent(i, AllMode)->childs();
         foreach (Component *child, children) {
             if (child->isCheckable() && !child->isTristate()) {
@@ -835,10 +835,8 @@ void PackageManagerCore::setTestChecksum(bool test)
 /*!
     Returns the number of components in the list depending on the run mode \a runMode.
 */
-int PackageManagerCore::rootComponentCount(RunMode runMode) const
+int PackageManagerCore::rootComponentCount() const
 {
-    if (runMode == UpdaterMode)
-        return d->m_updaterComponents.size();
     return d->m_rootComponents.size();
 }
 
@@ -1582,7 +1580,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
             component->loadComponentScript();
 
         // set the checked state for all components without child
-        for (int i = 0; i < rootComponentCount(AllMode); ++i) {
+        for (int i = 0; i < rootComponentCount(); ++i) {
             QList<Component*> children = rootComponent(i, AllMode)->childs();
             foreach (Component *child, children) {
                 if (child->isCheckable() && !child->isTristate()) {

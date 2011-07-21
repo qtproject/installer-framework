@@ -136,7 +136,7 @@ public:
 
 public:
     // component handling
-    int rootComponentCount(RunMode runMode) const;
+    int rootComponentCount() const;
     Component *rootComponent(int i, RunMode runMode) const;
     void appendRootComponent(Component *components, RunMode runMode);
 
