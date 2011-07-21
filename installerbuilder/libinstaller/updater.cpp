@@ -73,7 +73,7 @@ bool Updater::checkForUpdates()
     PackageManagerCore::setVirtualComponentsVisible(true);
 
     if (core.fetchRemotePackagesTree()) {
-        const QList<QInstaller::Component*> components = core.components(true, UpdaterMode);
+        const QList<QInstaller::Component*> components = core.updaterComponents();
 
         if (components.isEmpty()) {
             verbose() << tr("There are currently no updates available.") << std::endl;

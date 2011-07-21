@@ -332,8 +332,6 @@ InstallerGui::InstallerGui(PackageManagerCore *core)
 
 void InstallerGui::init()
 {
-    if (packageManagerCore()->components(true, packageManagerCore()->runMode()).count() == 1)
-        wizardPageVisibilityChangeRequested(false, PackageManagerCore::ComponentSelection);
 }
 
 int InstallerGui::nextId() const
@@ -387,10 +385,6 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
 
 void MaintenanceGui::init()
 {
-    const bool visible = !packageManagerCore()->components(false, packageManagerCore()->runMode()).isEmpty();
-
-    wizardPageVisibilityChangeRequested(visible, PackageManagerCore::ComponentSelection);
-    wizardPageVisibilityChangeRequested(visible, PackageManagerCore::LicenseCheck);
 }
 
 int MaintenanceGui::nextId() const

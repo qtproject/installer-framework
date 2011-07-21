@@ -185,7 +185,7 @@ int TabController::initUpdater()
     introPage->setMaintenanceToolsEnabled(true);
 
     if (d->m_updatesFetched) {
-        if (d->m_core->components(true, QInstaller::UpdaterMode).count() <= 0)
+        if (d->m_core->updaterComponents().count() <= 0)
             introPage->setErrorMessage(tr("<b>No updates available.</b>"));
         else
             introPage->setComplete(true);

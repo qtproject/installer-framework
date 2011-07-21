@@ -123,15 +123,19 @@ Component* PackageManagerCore::subComponentByName(const QInstaller::PackageManag
         return check;
 
     if (installer->runMode() == AllMode) {
-        const QList<Component*> rootComponents = check == 0 ? installer->components(false, AllMode)
-            : check->childComponents(false, AllMode);
+        QList<Component*> rootComponents;
+        if (check == 0)
+            rootComponents = installer->rootComponents();
+        else
+            rootComponents = check->childComponents(false, AllMode);
+
         foreach (QInstaller::Component* component, rootComponents) {
             Component* const result = subComponentByName(installer, name, version, component);
             if (result != 0)
                 return result;
         }
     } else {
-        const QList<Component*> updaterComponents = installer->components(false, UpdaterMode)
+        const QList<Component*> updaterComponents = installer->updaterComponents()
             + installer->d->m_updaterComponentsDeps;
         foreach (QInstaller::Component *component, updaterComponents) {
             if (componentMatches(component, name, version))
@@ -403,8 +407,7 @@ quint64 PackageManagerCore::requiredDiskSpace() const
 {
     quint64 result = 0;
 
-    const QList<Component*> availableComponents = components(true, runMode());
-    foreach (QInstaller::Component *component, availableComponents)
+    foreach (QInstaller::Component *component, availableComponents())
         result += size(component, scUncompressedSize);
 
     return result;
@@ -414,8 +417,7 @@ quint64 PackageManagerCore::requiredTemporaryDiskSpace() const
 {
     quint64 result = 0;
 
-    const QList<Component*> availableComponents = components(true, runMode());
-    foreach (QInstaller::Component *component, availableComponents)
+    foreach (QInstaller::Component *component, availableComponents())
         result += size(component, scCompressedSize);
 
     return result;
@@ -881,37 +883,30 @@ Component* PackageManagerCore::componentByName(const QString &name) const
     return subComponentByName(this, name);
 }
 
-QList<Component*> PackageManagerCore::components(bool recursive, RunMode runMode) const
+QList<Component*> PackageManagerCore::updaterComponents() const
 {
-    if (runMode == UpdaterMode)
-        return d->m_updaterComponents;
+    return d->m_updaterComponents;
+}
 
-    if (!recursive)
-        return d->m_rootComponents;
-
+QList<Component*> PackageManagerCore::availableComponents() const
+{
     QList<Component*> result;
     foreach (QInstaller::Component *component, d->m_rootComponents) {
         result.push_back(component);
-        result += component->childComponents(true, runMode);
+        result += component->childComponents(true, AllMode);
     }
 
     return result;
 }
 
+QList<Component*> PackageManagerCore::rootComponents() const
+{
+    return d->m_rootComponents;
+}
+
 QList<Component*> PackageManagerCore::componentsToInstall(RunMode runMode) const
 {
-    QList<Component*> availableComponents = components(true, runMode);
-    std::sort(availableComponents.begin(), availableComponents.end(),
-        Component::InstallPriorityLessThan());
-
-    QList<Component*> componentsToInstall;
-    foreach (QInstaller::Component *component, availableComponents) {
-        if (!component->installationRequested())
-            continue;
-        appendComponentAndMissingDependencies(componentsToInstall, component);
-    }
-
-    return componentsToInstall;
+    return QList<Component*>();
 }
 
 /*!
@@ -919,26 +914,7 @@ QList<Component*> PackageManagerCore::componentsToInstall(RunMode runMode) const
 */
 QList<Component*> PackageManagerCore::dependees(const Component *component) const
 {
-    QList<Component*> allComponents = components(true, runMode());
-    if (runMode() == UpdaterMode)
-        allComponents += d->m_updaterComponentsDeps;
-
-    QList<Component*> result;
-    foreach (Component *comp, allComponents) {
-        const QStringList dependencies = comp->value(scDependencies).split(QChar::fromLatin1(','),
-            QString::SkipEmptyParts);
-
-        const QLatin1Char dash('-');
-        foreach (const QString &dependency, dependencies) {
-            // the last part is considered to be the version, then
-            const QString name = dependency.contains(dash) ? dependency.section(dash, 0, 0) : dependency;
-            const QString version = dependency.contains(dash) ? dependency.section(dash, 1) : QString();
-            if (componentMatches(component, name, version))
-                result.append(comp);
-        }
-    }
-
-    return result;
+    return QList<Component*>();
 }
 
 /*!
@@ -946,38 +922,38 @@ QList<Component*> PackageManagerCore::dependees(const Component *component) cons
 */
 QList<Component*> PackageManagerCore::missingDependencies(const Component *component) const
 {
-    QList<Component*> allComponents = components(true, runMode());
-    if (runMode() == UpdaterMode)
-        allComponents += d->m_updaterComponentsDeps;
+//    QList<Component*> allComponents = components(true, runMode());
+//    if (runMode() == UpdaterMode)
+//        allComponents += d->m_updaterComponentsDeps;
 
-    const QStringList dependencies = component->value(scDependencies).split(QChar::fromLatin1(','),
-        QString::SkipEmptyParts);
+//    const QStringList dependencies = component->value(scDependencies).split(QChar::fromLatin1(','),
+//        QString::SkipEmptyParts);
 
-    QList<Component*> result;
-    const QLatin1Char dash('-');
-    foreach (const QString &dependency, dependencies) {
-        const bool hasVersionString = dependency.contains(dash);
-        const QString name = hasVersionString ? dependency.section(dash, 0, 0) : dependency;
+//    QList<Component*> result;
+//    const QLatin1Char dash('-');
+//    foreach (const QString &dependency, dependencies) {
+//        const bool hasVersionString = dependency.contains(dash);
+//        const QString name = hasVersionString ? dependency.section(dash, 0, 0) : dependency;
 
-        bool installed = false;
-        foreach (Component *comp, allComponents) {
-            if (comp->name() == name) {
-                if (hasVersionString) {
-                    const QString version = dependency.section(dash, 1);
-                    if (PackageManagerCore::versionMatches(comp->value(scInstalledVersion), version))
-                        installed = true;
-                } else if (comp->isInstalled()) {
-                    installed = true;
-                }
-            }
-        }
+//        bool installed = false;
+//        foreach (Component *comp, allComponents) {
+//            if (comp->name() == name) {
+//                if (hasVersionString) {
+//                    const QString version = dependency.section(dash, 1);
+//                    if (PackageManagerCore::versionMatches(comp->value(scInstalledVersion), version))
+//                        installed = true;
+//                } else if (comp->isInstalled()) {
+//                    installed = true;
+//                }
+//            }
+//        }
 
-        if (!installed) {
-            if (Component *comp = componentByName(dependency))
-                result.append(comp);
-        }
-    }
-    return result;
+//        if (!installed) {
+//            if (Component *comp = componentByName(dependency))
+//                result.append(comp);
+//        }
+//    }
+    return QList<Component*>();
 }
 
 /*!
@@ -1430,8 +1406,7 @@ bool PackageManagerCore::runPackageUpdater()
 */
 void PackageManagerCore::languageChanged()
 {
-    const QList<Component*> comps = components(true, runMode());
-    foreach (Component* component, comps)
+    foreach (Component* component, availableComponents())
         component->languageChanged();
 }
 

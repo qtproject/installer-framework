@@ -365,7 +365,7 @@ void Component::loadComponentScript(const QString &fileName)
             .arg(uncaughtExceptionString(&(d->m_scriptEngine)/*, QFileInfo(file).absoluteFilePath()*/)));
     }
 
-    const QList<Component*> components = d->m_core->components(true, d->m_core->runMode());
+    const QList<Component*> components = d->m_core->availableComponents();
     QScriptValue comps = d->m_scriptEngine.newArray(components.count());
     for (int i = 0; i < components.count(); ++i)
         comps.setProperty(i, d->m_scriptEngine.newQObject(components[i]));

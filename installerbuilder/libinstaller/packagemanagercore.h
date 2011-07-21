@@ -142,7 +142,9 @@ public:
     void appendUpdaterComponent(Component *components);
 
     Component *componentByName(const QString &identifier) const;
-    QList<Component*> components(bool recursive, RunMode runMode) const;
+    QList<Component*> availableComponents() const;
+    QList<Component*> updaterComponents() const;
+    QList<Component*> rootComponents() const;
     QList<Component*> componentsToInstall(RunMode runMode) const;
 
     QList<Component*> dependees(const Component *component) const;
