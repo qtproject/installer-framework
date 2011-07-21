@@ -381,6 +381,8 @@ void Component::loadComponentScript(const QString &fileName)
 
     emit loaded();
     languageChanged();
+
+    //Solves a freeze seen on updater/ package manger restart.
     QCoreApplication::processEvents();
 }
 
