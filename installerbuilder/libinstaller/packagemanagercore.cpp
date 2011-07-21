@@ -688,7 +688,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
 
     // now set the checked state for all components without child
     for (int i = 0; i < rootComponentCount(); ++i) {
-        QList<Component*> children = rootComponent(i, AllMode)->childs();
+        QList<Component*> children = rootComponent(i)->childs();
         foreach (Component *child, children) {
             if (child->isCheckable() && !child->isTristate()) {
                 if (child->isInstalled() || child->isDefault())
@@ -844,10 +844,8 @@ int PackageManagerCore::rootComponentCount() const
     Returns the component at index position i in the components list. i must be a valid index
     position in the list (i.e., 0 <= i < rootComponentCount(...)).
 */
-Component *PackageManagerCore::rootComponent(int i, RunMode runMode) const
+Component *PackageManagerCore::rootComponent(int i) const
 {
-    if (runMode == UpdaterMode)
-        return d->m_updaterComponents.value(i, 0);
     return d->m_rootComponents.value(i, 0);
 }
 
@@ -1581,7 +1579,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
 
         // set the checked state for all components without child
         for (int i = 0; i < rootComponentCount(); ++i) {
-            QList<Component*> children = rootComponent(i, AllMode)->childs();
+            QList<Component*> children = rootComponent(i)->childs();
             foreach (Component *child, children) {
                 if (child->isCheckable() && !child->isTristate()) {
                     if (child->isInstalled() || child->isDefault())

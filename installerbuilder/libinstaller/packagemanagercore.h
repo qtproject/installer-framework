@@ -137,7 +137,7 @@ public:
 public:
     // component handling
     int rootComponentCount() const;
-    Component *rootComponent(int i, RunMode runMode) const;
+    Component *rootComponent(int i) const;
     void appendRootComponent(Component *components, RunMode runMode);
 
     Component *componentByName(const QString &identifier) const;
