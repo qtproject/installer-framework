@@ -1512,7 +1512,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
     return true;
 }
 
-void PackageManagerCore::storeReplacedComponents(QMap<QString, Component*> &components, const struct Data &data)
+void PackageManagerCore::storeReplacedComponents(QHash<QString, Component*> &components, const struct Data &data)
 {
     QHash<Component*, QStringList>::const_iterator it;
     // remeber all components that got a replacement, requierd for uninstall
@@ -1534,7 +1534,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     emit startAllComponentsReset();
 
     d->clearAllComponentLists();
-    QMap<QString, QInstaller::Component*> components;
+    QHash<QString, QInstaller::Component*> components;
 
     Data data;
     data.runMode = AllMode;
@@ -1557,7 +1557,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
 
     try {
         // append all components to their respective parents
-        for (QMap<QString, Component*>::const_iterator it = components.begin(); it != components.end(); ++it) {
+        for (QHash<QString, Component*>::const_iterator it = components.begin(); it != components.end(); ++it) {
             QString id = it.key();
             QInstaller::Component *component = it.value();
             while (!id.isEmpty() && component->parentComponent() == 0) {
@@ -1574,17 +1574,13 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
         }
 
         // after everything is set up, load the scripts
-        foreach (QInstaller::Component *component, components)
+        foreach (QInstaller::Component *component, components) {
             component->loadComponentScript();
 
-        // set the checked state for all components without child
-        for (int i = 0; i < rootComponentCount(); ++i) {
-            QList<Component*> children = rootComponent(i)->childs();
-            foreach (Component *child, children) {
-                if (child->isCheckable() && !child->isTristate()) {
-                    if (child->isInstalled() || child->isDefault())
-                        child->setCheckState(Qt::Checked);
-                }
+            // set the checked state for all components without child(means without tristate)
+            if (component->isCheckable() && !component->isTristate()) {
+                if (component->isInstalled() || component->isDefault())
+                    component->setCheckState(Qt::Checked);
             }
         }
     } catch (const Error &error) {
@@ -1603,7 +1599,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     emit startUpdaterComponentsReset();
 
     d->clearUpdaterComponentLists();
-    QMap<QString, QInstaller::Component*> components;
+    QHash<QString, QInstaller::Component*> components;
 
     Data data;
     data.runMode = UpdaterMode;

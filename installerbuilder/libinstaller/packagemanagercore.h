@@ -237,13 +237,13 @@ private:
     struct Data {
         RunMode runMode;
         Package *package;
-        QMap<QString, Component*> *components;
+        QHash<QString, Component*> *components;
         const LocalPackagesHash *installedPackages;
         QHash<Component*, QStringList> replacementToExchangeables;
     };
 
     bool updateComponentData(struct Data &data, QInstaller::Component *component);
-    void storeReplacedComponents(QMap<QString, Component*> &components, const struct Data &data);
+    void storeReplacedComponents(QHash<QString, Component*> &components, const struct Data &data);
     bool fetchAllPackages(const PackagesList &remotePackages, const LocalPackagesHash &localPackages);
     bool fetchUpdaterPackages(const PackagesList &remotePackages, const LocalPackagesHash &localPackages);
 
