@@ -79,7 +79,6 @@ public:
 
     };
 
-    explicit PackageManagerCorePrivate(PackageManagerCore *core);
     explicit PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const OperationList &performedOperations);
     ~PackageManagerCorePrivate();

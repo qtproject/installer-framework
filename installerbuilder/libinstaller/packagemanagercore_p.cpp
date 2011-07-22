@@ -149,17 +149,6 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 // -- PackageManagerCorePrivate
 
-PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
-    : m_updateFinder(0)
-    , m_FSEngineClientHandler(0)
-    , m_core(core)
-    , m_repoMetaInfoJob(0)
-    , m_updates(false)
-    , m_repoFetched(false)
-    , m_updateSourcesAdded(false)
-{
-}
-
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const OperationList &performedOperations)
     : m_updateFinder(0)
