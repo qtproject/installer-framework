@@ -343,10 +343,7 @@ int InstallerGui::nextId() const
         if (!core->isInstaller())
             return nextNextId;
 
-        core->calculateToInstallComponents();
-
-        QList<Component*> components = core->componentsToInstall(core->runMode());
-        return next; //till componentsToInstall is broken
+        QList<Component*> components = core->orderedComponentsToInstall();
         bool foundLicense = false;
 
         foreach (Component* component, components) {
@@ -399,7 +396,7 @@ int MaintenanceGui::nextId() const
         if (!core->isPackageManager() && !core->isUpdater())
             return nextNextId;
 
-        QList<Component*> components = core->componentsToInstall(core->runMode());
+        QList<Component*> components = core->orderedComponentsToInstall();
         if (components.isEmpty())
             return nextNextId;
 

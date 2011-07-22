@@ -1176,12 +1176,11 @@ void PackageManagerCorePrivate::runInstaller()
         ProgressCoordinator::instance()->addManualPercentagePoints(1);
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
-        const QList<Component*> componentsToInstall = m_core->componentsToInstall(AllMode);
-        verbose() << "Install size: " << componentsToInstall.size() << " components" << std::endl;
+        const QList<Component*> componentsToInstall = m_core->orderedComponentsToInstall();
+        verbose() << "Install size: " << m_core->orderedComponentsToInstall().size() << " components" << std::endl;
 
         if (!adminRightsGained) {
-            QList<Component*> componentsToInstall = m_core->componentsToInstall(m_core->runMode());
-            foreach (Component *component, componentsToInstall) {
+            foreach (Component *component, m_core->orderedComponentsToInstall()) {
                 if (component->value(scRequiresAdminRights, scFalse) == scFalse)
                     continue;
 
