@@ -307,12 +307,18 @@ public:
 
     bool isComplete() const;
 
+private slots:
+    void toggleDetails();
+
 protected:
     void entering();
     void leaving();
 
 private:
+    void refreshTaskDetailsBrowser();
     QLabel *m_msgLabel;
+    QPushButton *m_taskDetailsButton;
+    QTextBrowser* m_taskDetailsBrowser;
 };
 
 

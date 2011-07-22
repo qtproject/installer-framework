@@ -1411,14 +1411,39 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     setObjectName(QLatin1String("ReadyForInstallationPage"));
     setSubTitle(subTitleForPage(QLatin1String("ReadyForInstallationPage")));
 
-    QLayout *layout = new QVBoxLayout(this);
+    QVBoxLayout *baseLayout = new QVBoxLayout();
+    baseLayout->setObjectName(QLatin1String("BaseLayout"));
+
+    QVBoxLayout *topLayout = new QVBoxLayout();
+    topLayout->setObjectName(QLatin1String("TopLayout"));
 
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
-    layout->addWidget(m_msgLabel);
+    topLayout->addWidget(m_msgLabel);
 
-    setLayout(layout);
+    m_taskDetailsButton = new QPushButton(tr("&Show Task Details"), this);
+    m_taskDetailsButton->setObjectName(QLatin1String("TaskDetailsButton"));
+    m_taskDetailsButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+    connect(m_taskDetailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
+    topLayout->addWidget(m_taskDetailsButton);
+
+    QVBoxLayout *bottomLayout = new QVBoxLayout();
+    bottomLayout->setObjectName(QLatin1String("BottomLayout"));
+    bottomLayout->addStretch();
+
+    m_taskDetailsBrowser = new QTextBrowser(this);
+    m_taskDetailsBrowser->setReadOnly(true);
+    m_taskDetailsBrowser->setObjectName(QLatin1String("TaskDetailsBrowser"));
+    m_taskDetailsBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    bottomLayout->addWidget(m_taskDetailsBrowser);
+
+    bottomLayout->setStretch(1, 10);
+    baseLayout->addLayout(topLayout);
+    baseLayout->addLayout(bottomLayout);
+
+    setLayout(baseLayout);
 }
+
 
 /*!
     \reimp
@@ -1505,7 +1530,33 @@ void ReadyForInstallationPage::entering()
             "installation, but there will be less than 100 MB available afterwards. %1")
             .arg(m_msgLabel->text()));
     }
+    refreshTaskDetailsBrowser();
 }
+void ReadyForInstallationPage::refreshTaskDetailsBrowser()
+{
+    QString htmlOutput;
+    QString lastInstallReason;
+
+    QListIterator<Component*> it(packageManagerCore()->orderedComponentsToInstall());
+    while(it.hasNext()) {
+        Component* currentComponent = it.next();
+        QString currentInstallReason = packageManagerCore()->installReason(currentComponent);
+        if (lastInstallReason != currentInstallReason) {
+            htmlOutput.append(QString(QLatin1String("</ul><h3>%1</h3><ul>")).arg(currentInstallReason));
+            lastInstallReason = currentInstallReason;
+        }
+        htmlOutput.append(QString(QLatin1String("<li> %1 </li>")).arg(currentComponent->name()));
+    }
+    m_taskDetailsBrowser->setHtml(htmlOutput);
+}
+
+void ReadyForInstallationPage::toggleDetails()
+{
+    const bool willShow = !m_taskDetailsBrowser->isVisible();
+    m_taskDetailsBrowser->setVisible(willShow);
+    m_taskDetailsButton->setText(willShow ? tr("&Hide Details") : tr("&Show Details"));
+}
+
 
 void ReadyForInstallationPage::leaving()
 {
@@ -1519,7 +1570,6 @@ bool ReadyForInstallationPage::isComplete() const
 {
     return isCommitPage();
 }
-
 
 // -- PerformInstallationPage
 
