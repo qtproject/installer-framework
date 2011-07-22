@@ -343,7 +343,9 @@ int InstallerGui::nextId() const
         if (!core->isInstaller())
             return nextNextId;
 
+
         QList<Component*> components = core->componentsToInstall(core->runMode());
+        return next; //till componentsToInstall is broken
         bool foundLicense = false;
 
         foreach (Component* component, components) {
