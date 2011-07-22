@@ -72,6 +72,12 @@ public:
         Perform,
         Undo
     };
+    enum AppendToInstallState {
+        StartAppendToInstallState,
+        WithoutDependenciesAppendToInstallState,
+        WithResolvedDependenciesAppendToInstallState
+
+    };
 
     explicit PackageManagerCorePrivate(PackageManagerCore *core);
     explicit PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
