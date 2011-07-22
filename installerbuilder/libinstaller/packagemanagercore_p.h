@@ -146,7 +146,8 @@ public:
         m_performedOperationsCurrentSession.clear();
     }
 
-    void installComponent(Component *component, double progressOperationSize, bool adminRightsGained = false);
+    void installComponent(Component *component, double progressOperationSize,
+        bool adminRightsGained = false);
 
 signals:
     void installationStarted();
