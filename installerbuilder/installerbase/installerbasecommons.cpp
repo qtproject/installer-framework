@@ -343,6 +343,7 @@ int InstallerGui::nextId() const
         if (!core->isInstaller())
             return nextNextId;
 
+        core->calculateToInstallComponents();
 
         QList<Component*> components = core->componentsToInstall(core->runMode());
         return next; //till componentsToInstall is broken

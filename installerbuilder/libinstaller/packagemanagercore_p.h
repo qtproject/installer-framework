@@ -109,6 +109,11 @@ public:
     void clearUpdaterComponentLists();
     QHash<QString, QPair<Component*, Component*> > &componentsToReplace(RunMode mode);
 
+    void clearOrderedToInstallComponents();
+    void appendToInstallComponents(const QList<Component*> &components,
+        const AppendToInstallState state = StartAppendToInstallState);
+    QString installReason(Component* component);
+
     void runInstaller();
     bool isInstaller() const;
 
@@ -202,6 +207,8 @@ private:
     LocalPackagesHash localInstalledPackages();
     bool fetchMetaInformationFromRepositories();
     bool addUpdateResourcesFromRepositories(bool parseChecksum);
+    void realAppendToInstallComponents(Component *component);
+    void insertInstallReason(Component *component, const QString &reason);
 
 private:
     PackageManagerCore *m_core;
@@ -215,6 +222,17 @@ private:
     // < name (component to replace), < replacement component, component to replace > >
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceAllMode;
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceUpdaterMode;
+
+    //calculate installation order variables
+    QList<Component*> m_orderedToInstallComponents;
+    QHash<QString, QString> m_toInstallComponentIdReasonHash;
+
+    //in some cases we have the reason a while before we can it really,
+    //so we can't use ReasonHash as a quick is allready added check
+    QSet<QString> m_toInstallComponentIds;
+
+    QString debugComponent;
+
 };
 
 }   // QInstaller

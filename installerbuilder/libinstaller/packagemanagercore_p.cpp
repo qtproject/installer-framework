@@ -188,6 +188,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
 {
     clearAllComponentLists();
     clearUpdaterComponentLists();
+    clearOrderedToInstallComponents();
 
     qDeleteAll(m_ownedOperations);
     qDeleteAll(m_performedOperationsOld);
@@ -264,6 +265,7 @@ QString PackageManagerCorePrivate::componentsXmlPath() const
 
 void PackageManagerCorePrivate::clearAllComponentLists()
 {
+    clearOrderedToInstallComponents();
     qDeleteAll(m_rootComponents);
     m_rootComponents.clear();
 
@@ -275,6 +277,7 @@ void PackageManagerCorePrivate::clearAllComponentLists()
 
 void PackageManagerCorePrivate::clearUpdaterComponentLists()
 {
+    clearOrderedToInstallComponents();
     qDeleteAll(m_updaterComponents);
     m_updaterComponents.clear();
 
@@ -291,6 +294,150 @@ QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::compo
 {
     return mode == AllMode ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
 }
+
+void PackageManagerCorePrivate::clearOrderedToInstallComponents() {
+    m_orderedToInstallComponents.clear();
+    m_toInstallComponentIds.clear();
+    m_toInstallComponentIdReasonHash.clear();
+}
+
+void PackageManagerCorePrivate::appendToInstallComponents(const QList<Component*> &components,
+    const AppendToInstallState state)
+{
+    verbose() << Q_FUNC_INFO << std::endl;
+    if (components.isEmpty()) {
+        return;
+    }
+
+    QList<Component*> toAppendComponents;
+    QList<Component*> notAppendedComponents; //for example components with unresolved dependencies
+    foreach (Component *currentComponent, components){
+        if (currentComponent->name() == debugComponent)
+            verbose() << "now we are woring with:" << currentComponent->name() << std::endl;
+        if (m_toInstallComponentIds.contains(currentComponent->name())) {
+            QString errorMessage = QString(QLatin1String(
+                "Recursion detected component(%1) already added with reason: %2.")).arg(
+                    currentComponent->name(), installReason(currentComponent));
+            verbose() << qPrintable(errorMessage) << std::endl;
+            Q_ASSERT_X(!m_toInstallComponentIds.contains(currentComponent->name()),
+                       Q_FUNC_INFO,
+                       qPrintable(errorMessage));
+            return;
+        }
+
+        switch(state) {
+        case StartAppendToInstallState: {
+            if (currentComponent->installationRequested()) {
+                toAppendComponents.append(currentComponent);
+            }
+            break;
+        } case WithoutDependenciesAppendToInstallState: {
+            if (currentComponent->dependencies().isEmpty()) {
+                realAppendToInstallComponents(currentComponent);
+            } else {
+                if (currentComponent->name() == debugComponent)
+                    verbose() << "now we are woring with:" << currentComponent->name() << std::endl;
+                notAppendedComponents.append(currentComponent);
+            }
+            break;
+        } case WithResolvedDependenciesAppendToInstallState: {
+            bool allDependenciesAreThere = true;
+            foreach (const QString &dependencyComponentName, currentComponent->dependencies()) {
+                //ignore version numbers to check that we have it already in the to install list
+                QString name = dependencyComponentName.section(QLatin1Char('-'), 0, 0);
+                if (!m_toInstallComponentIds.contains(name)) {
+                    Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
+                    //add needed dependency components to the next run
+                    if (dependencyComponent) {
+                        insertInstallReason(dependencyComponent, QString(QLatin1String(
+                            "added as dependency for %1")).arg(currentComponent->name()));
+                        if (currentComponent->name() == debugComponent)
+                            verbose() << "now we are woring with:" << currentComponent->name() << std::endl;
+
+                        //make sure that we don't add it more then ones
+                        notAppendedComponents.removeAll(dependencyComponent);
+
+                        notAppendedComponents.append(dependencyComponent);
+                    } else {
+                        QString errorMessage = QString(QLatin1String(
+                            "Can't find missing dependency(%1) for %2.")).arg(dependencyComponentName, currentComponent->name());
+                        verbose() << qPrintable(errorMessage) << std::endl;
+
+                        Q_ASSERT_X(false, Q_FUNC_INFO, qPrintable(errorMessage));
+                        return;
+                    }
+                }
+                allDependenciesAreThere &= m_toInstallComponentIds.contains(name);
+            }
+            //remove this component from the next run, because we can add it now,
+            //if we can't add it - it will added again in the else case
+            notAppendedComponents.removeAll(currentComponent);
+            if (allDependenciesAreThere) {
+                //adding it to the real install list
+                realAppendToInstallComponents(currentComponent);
+                insertInstallReason(currentComponent, QString(QLatin1String(
+                    "component with resolved dependencies"))/*.arg(
+                        currentComponent->dependencies().join(QLatin1String(", ")))*/);
+            } else {
+                //add the component again(after dependencies were added)
+                if (currentComponent->name() == debugComponent)
+                    verbose() << "now we are woring with:" << currentComponent->name() << std::endl;
+                notAppendedComponents.append(currentComponent);
+            }
+            break;
+        } default:
+            Q_ASSERT_X(false, Q_FUNC_INFO, "Something went realy wrong!");
+            break;
+        }
+    }
+
+    if (notAppendedComponents.count() == components.count()) {
+        QString errorMessage = QString(QLatin1String(
+            "Can't install any more component, because no one has no or resolved dependencies."));
+        verbose() << qPrintable(errorMessage) << std::endl;
+        foreach (Component *currentComponent, notAppendedComponents){
+            verbose() << "\t" << currentComponent->name();
+            if (!currentComponent->dependencies().isEmpty())
+                verbose() << " with dependencies: " << currentComponent->dependencies().join(QLatin1String(", "));
+            verbose() << std::endl;
+        }
+
+        Q_ASSERT_X(!(notAppendedComponents.count() == components.count()),
+                   Q_FUNC_INFO,
+                   qPrintable(errorMessage));
+        return;
+    } else if (state == StartAppendToInstallState) {
+        appendToInstallComponents(toAppendComponents, WithoutDependenciesAppendToInstallState);
+    } else if (state == WithoutDependenciesAppendToInstallState) {
+        appendToInstallComponents(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
+    } else if (state == WithResolvedDependenciesAppendToInstallState && !notAppendedComponents.isEmpty()) {
+        //try again to append the not appended component because the last appended ones could
+        //are the missing dependencies, cancel case of this loop is the the first if check:
+        //when notAppendedComponents.count is the same as components.count
+        appendToInstallComponents(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
+    } else {
+        //this means notAppendedComponents are empty, so all regular dependencies are resolved
+        //now we are looking for auto depend on components
+        foreach (Component* currentComponent, m_core->availableComponents()) {
+            if (!m_toInstallComponentIds.contains(currentComponent->name())
+                    && currentComponent->isAutoDependOn()) {
+                notAppendedComponents.append(currentComponent);
+            }
+        }
+        if (!notAppendedComponents.isEmpty())
+            appendToInstallComponents(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
+        //else
+            //nothing we are ready
+    }
+}
+
+QString PackageManagerCorePrivate::installReason(Component* component) {
+    QString reason = m_toInstallComponentIdReasonHash.value(component->name());
+    if (reason.isEmpty())
+        return QLatin1String("simple component without dependencies");
+    return m_toInstallComponentIdReasonHash.value(component->name());
+}
+
 
 void PackageManagerCorePrivate::initialize()
 {
@@ -1721,5 +1868,20 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
     m_updateSourcesAdded = true;
     return m_updateSourcesAdded;
 }
+
+void PackageManagerCorePrivate::realAppendToInstallComponents(Component *component)
+{
+    if (component->name() == debugComponent)
+        verbose() << "now we are woring with:" << component->name() << std::endl;
+    m_orderedToInstallComponents.append(component);
+    m_toInstallComponentIds.insert(component->name());
+}
+void PackageManagerCorePrivate::insertInstallReason(Component *component, const QString &reason) {
+    //keep the first reason
+    if (m_toInstallComponentIdReasonHash.value(component->name()).isEmpty()) {
+        m_toInstallComponentIdReasonHash.insert(component->name(), reason);
+    }
+}
+
 
 }   // QInstaller

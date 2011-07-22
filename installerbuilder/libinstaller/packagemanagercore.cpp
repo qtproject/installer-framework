@@ -904,6 +904,12 @@ QList<Component*> PackageManagerCore::rootComponents() const
     return d->m_rootComponents;
 }
 
+void PackageManagerCore::calculateToInstallComponents()
+{
+    d->clearOrderedToInstallComponents();
+    d->appendToInstallComponents(availableComponents());
+}
+
 QList<Component*> PackageManagerCore::componentsToInstall(RunMode runMode) const
 {
     return QList<Component*>();

@@ -145,6 +145,9 @@ public:
     QList<Component*> availableComponents() const;
     QList<Component*> updaterComponents() const;
     QList<Component*> rootComponents() const;
+
+    void calculateToInstallComponents();
+
     QList<Component*> componentsToInstall(RunMode runMode) const;
 
     QList<Component*> dependees(const Component *component) const;
