@@ -431,7 +431,7 @@ int PackageManagerCore::downloadNeededArchives(RunMode runMode, double partProgr
     Q_ASSERT(partProgressSize >= 0 && partProgressSize <= 1);
 
     QList<QPair<QString, QString> > archivesToDownload;
-    QList<Component*> neededComponents = componentsToInstall(runMode);
+    QList<Component*> neededComponents = orderedComponentsToInstall();
     foreach (Component *component, neededComponents) {
         // collect all archives to be downloaded
         const QStringList toDownload = component->downloadableArchives();
@@ -895,14 +895,27 @@ QList<Component*> PackageManagerCore::rootComponents() const
     return d->m_rootComponents;
 }
 
+QList<Component*> PackageManagerCore::orderedComponentsToInstall()
+{
+    if (!d->isInstallComponentsOrderCalculated)
+        calculateToInstallComponents();
+    return d->m_orderedToInstallComponents;
+}
+
+QString PackageManagerCore::installReason(Component* component)
+{
+    return d->installReason(component);
+}
+
 void PackageManagerCore::calculateToInstallComponents()
 {
-    d->clearOrderedToInstallComponents();
-    d->appendToInstallComponents(availableComponents());
+    d->clearComponentsToInstall();
+    d->appendComponentsToInstall(availableComponents());
 }
 
 QList<Component*> PackageManagerCore::componentsToInstall(RunMode runMode) const
 {
+    Q_ASSERT(false);
     return QList<Component*>();
 }
 
@@ -911,6 +924,7 @@ QList<Component*> PackageManagerCore::componentsToInstall(RunMode runMode) const
 */
 QList<Component*> PackageManagerCore::dependees(const Component *component) const
 {
+    Q_ASSERT(false);
     return QList<Component*>();
 }
 
@@ -919,6 +933,7 @@ QList<Component*> PackageManagerCore::dependees(const Component *component) cons
 */
 QList<Component*> PackageManagerCore::missingDependencies(const Component *component) const
 {
+    Q_ASSERT(false);
 //    QList<Component*> allComponents = components(true, runMode());
 //    if (runMode() == UpdaterMode)
 //        allComponents += d->m_updaterComponentsDeps;

@@ -146,6 +146,8 @@ public:
     QList<Component*> rootComponents() const;
 
     void calculateToInstallComponents();
+    QList<Component*> orderedComponentsToInstall();
+    QString installReason(Component* component);
 
     QList<Component*> componentsToInstall(RunMode runMode) const;
 

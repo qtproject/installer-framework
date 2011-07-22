@@ -166,6 +166,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(magicInstallerMaker)
+    , isInstallComponentsOrderCalculated(false)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
@@ -177,7 +178,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
 {
     clearAllComponentLists();
     clearUpdaterComponentLists();
-    clearOrderedToInstallComponents();
+    clearComponentsToInstall();
 
     qDeleteAll(m_ownedOperations);
     qDeleteAll(m_performedOperationsOld);
@@ -254,7 +255,7 @@ QString PackageManagerCorePrivate::componentsXmlPath() const
 
 void PackageManagerCorePrivate::clearAllComponentLists()
 {
-    clearOrderedToInstallComponents();
+    clearComponentsToInstall();
     qDeleteAll(m_rootComponents);
     m_rootComponents.clear();
 
@@ -266,7 +267,7 @@ void PackageManagerCorePrivate::clearAllComponentLists()
 
 void PackageManagerCorePrivate::clearUpdaterComponentLists()
 {
-    clearOrderedToInstallComponents();
+    clearComponentsToInstall();
     qDeleteAll(m_updaterComponents);
     m_updaterComponents.clear();
 
@@ -284,13 +285,13 @@ QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::compo
     return mode == AllMode ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
 }
 
-void PackageManagerCorePrivate::clearOrderedToInstallComponents() {
+void PackageManagerCorePrivate::clearComponentsToInstall() {
     m_orderedToInstallComponents.clear();
     m_toInstallComponentIds.clear();
     m_toInstallComponentIdReasonHash.clear();
 }
 
-void PackageManagerCorePrivate::appendToInstallComponents(const QList<Component*> &components,
+void PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*> &components,
     const AppendToInstallState state)
 {
     verbose() << Q_FUNC_INFO << std::endl;
@@ -396,14 +397,14 @@ void PackageManagerCorePrivate::appendToInstallComponents(const QList<Component*
                    qPrintable(errorMessage));
         return;
     } else if (state == StartAppendToInstallState) {
-        appendToInstallComponents(toAppendComponents, WithoutDependenciesAppendToInstallState);
+        appendComponentsToInstall(toAppendComponents, WithoutDependenciesAppendToInstallState);
     } else if (state == WithoutDependenciesAppendToInstallState) {
-        appendToInstallComponents(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
+        appendComponentsToInstall(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
     } else if (state == WithResolvedDependenciesAppendToInstallState && !notAppendedComponents.isEmpty()) {
         //try again to append the not appended component because the last appended ones could
         //are the missing dependencies, cancel case of this loop is the the first if check:
         //when notAppendedComponents.count is the same as components.count
-        appendToInstallComponents(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
+        appendComponentsToInstall(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
     } else {
         //this means notAppendedComponents are empty, so all regular dependencies are resolved
         //now we are looking for auto depend on components
@@ -414,7 +415,7 @@ void PackageManagerCorePrivate::appendToInstallComponents(const QList<Component*
             }
         }
         if (!notAppendedComponents.isEmpty())
-            appendToInstallComponents(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
+            appendComponentsToInstall(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
         //else
             //nothing we are ready
     }

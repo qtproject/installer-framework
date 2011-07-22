@@ -108,8 +108,8 @@ public:
     void clearUpdaterComponentLists();
     QHash<QString, QPair<Component*, Component*> > &componentsToReplace(RunMode mode);
 
-    void clearOrderedToInstallComponents();
-    void appendToInstallComponents(const QList<Component*> &components,
+    void clearComponentsToInstall();
+    void appendComponentsToInstall(const QList<Component*> &components,
         const AppendToInstallState state = StartAppendToInstallState);
     QString installReason(Component* component);
 
@@ -184,6 +184,8 @@ public:
     OperationList m_ownedOperations;
     OperationList m_performedOperationsOld;
     OperationList m_performedOperationsCurrentSession;
+
+    bool isInstallComponentsOrderCalculated;
 
 private slots:
     void infoMessage(KDJob *, const QString &message) {
