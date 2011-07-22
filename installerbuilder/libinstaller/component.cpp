@@ -57,6 +57,7 @@ using namespace QInstaller;
 
 static const QLatin1String scScript("Script");
 static const QLatin1String scDefault("Default");
+static const QLatin1String scAutoDependOn("AutoDependOn");
 static const QLatin1String scVirtual("Virtual");
 static const QLatin1String scInstalled("Installed");
 static const QLatin1String scUpdateText("UpdateText");
@@ -907,7 +908,7 @@ void Component::setSelected(bool selected)
 */
 QStringList Component::dependencies() const
 {
-    return value(scDependencies).split(QLatin1Char(','));
+    return value(scDependencies).split(QLatin1Char(','), QString::SkipEmptyParts);
 }
 
 /*!
@@ -916,6 +917,38 @@ QStringList Component::dependencies() const
 void Component::setInstalled()
 {
     setValue(scCurrentState, scInstalled);
+}
+
+/*!
+    Determines if the component comes as an auto dependency.
+*/
+bool Component::isAutoDependOn() const
+{
+    // the script can override this method
+    if (value(scAutoDependOn).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
+        const QScriptValue valueFromScript = callScriptMethod(QLatin1String("isAutoDependOn"));
+        if (valueFromScript.isValid()) {
+            return valueFromScript.toBool();
+        }
+        verbose() << "value from script is not valid " << std::endl;
+        return false;
+    }
+    QStringList autoDependOnDependencyList =  value(scAutoDependOn).split(QLatin1Char(','),
+        QString::SkipEmptyParts);
+    if (autoDependOnDependencyList.isEmpty())
+        return false;
+
+    QList<Component*> components = d->m_core->componentsToInstall(AllMode);
+    foreach (Component *component, components) {
+        if (autoDependOnDependencyList.contains(component->name())) {
+            autoDependOnDependencyList.removeAll(component->name());
+            //found all "when" components
+            if (autoDependOnDependencyList.isEmpty())
+                return true;
+        }
+    }
+
+    return false;
 }
 
 /*!
