@@ -1404,7 +1404,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
     topLayout->addWidget(m_msgLabel);
 
-    m_taskDetailsButton = new QPushButton(tr("&Show Task Details"), this);
+    m_taskDetailsButton = new QPushButton(tr("&Show Details"), this);
     m_taskDetailsButton->setObjectName(QLatin1String("TaskDetailsButton"));
     m_taskDetailsButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
     connect(m_taskDetailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
@@ -1425,6 +1425,8 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     baseLayout->addLayout(bottomLayout);
 
     setLayout(baseLayout);
+
+    m_taskDetailsBrowser->setVisible(false);
 }
 
 
