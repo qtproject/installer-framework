@@ -1236,8 +1236,8 @@ void PackageManagerCorePrivate::runInstaller()
 
         if (adminRightsGained)
             m_core->dropAdminRights();
-        emit installationFinished();
         setStatus(PackageManagerCore::Success);
+        emit installationFinished();
     } catch (const Error &err) {
         if (m_core->status() != PackageManagerCore::Canceled) {
             setStatus(PackageManagerCore::Failure);
