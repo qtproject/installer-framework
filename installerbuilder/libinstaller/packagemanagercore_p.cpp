@@ -1279,7 +1279,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
         if (!QFileInfo(installerBinaryPath()).isWritable() || !QFileInfo(packagesXml).isWritable())
             adminRightsGained = m_core->gainAdminRights();
 
-        const QList<Component*> componentsToInstall = m_core->componentsToInstall(m_core->runMode());
+        const QList<Component*> componentsToInstall = m_core->orderedComponentsToInstall();
         verbose() << "Install size: " << componentsToInstall.size() << " components " << std::endl;
 
         bool updateAdminRights = false;

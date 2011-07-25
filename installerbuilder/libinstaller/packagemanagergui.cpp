@@ -849,28 +849,11 @@ void LicenseAgreementPage::entering()
     m_licenseListWidget->setVisible(false);
     m_textBrowser->setText(QLatin1String(""));
 
-    QString notSureWhichComponentListIsNeeded;
-//    RunMode runMode = packageManagerCore()->runMode();
-//    QList<QInstaller::Component*> components = packageManagerCore()->components(false, runMode);
+    QList<QInstaller::Component*> components = packageManagerCore()->orderedComponentsToInstall();
 
-//    QInstaller::Component *rootComponent = 0;
-//    // TODO: this needs to be fixed once we support several root components
-//    foreach (QInstaller::Component* root, components) {
-//        if (root->isInstalled())
-//            continue;
-
-//        const QHash<QString, QPair<QString, QString> > &hash = root->licenses();
-//        if (!hash.isEmpty()) {
-//            addLicenseItem(hash);
-//            rootComponent = root;
-//        }
-//    }
-
-//    components = packageManagerCore()->componentsToInstall(runMode);
-//    foreach (QInstaller::Component* component, components) {
-//        if (rootComponent != component && !component->isInstalled())
-//            addLicenseItem(component->licenses());
-//    }
+    foreach (QInstaller::Component* component, components) {
+        addLicenseItem(component->licenses());
+    }
 
     const int licenseCount = m_licenseListWidget->count();
     if (licenseCount > 0) {
