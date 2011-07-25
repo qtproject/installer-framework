@@ -49,6 +49,7 @@ class INSTALLER_EXPORT PackageManagerCore : public QObject
     Q_PROPERTY(int status READ status NOTIFY statusChanged)
 
 public:
+    explicit PackageManagerCore();
     explicit PackageManagerCore(qint64 magicmaker, const OperationList &oldOperations = OperationList());
     ~PackageManagerCore();
 

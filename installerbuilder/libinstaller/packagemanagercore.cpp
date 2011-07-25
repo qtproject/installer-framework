@@ -566,6 +566,15 @@ bool PackageManagerCore::isFileExtensionRegistered(const QString& extension) con
 
 // -- QInstaller
 
+/*!
+    Used by operation runner to get a fake installer, can be removed if installerbase can do what operation
+    runner does.
+*/
+PackageManagerCore::PackageManagerCore()
+    : d(new PackageManagerCorePrivate(this))
+{
+}
+
 PackageManagerCore::PackageManagerCore(qint64 magicmaker, const OperationList &performedOperations)
     : d(new PackageManagerCorePrivate(this, magicmaker, performedOperations))
 {
