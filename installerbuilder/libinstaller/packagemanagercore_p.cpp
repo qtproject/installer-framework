@@ -344,31 +344,29 @@ void PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         } case WithResolvedDependenciesAppendToInstallState: {
             bool allDependenciesAreThere = true;
             foreach (const QString &dependencyComponentName, currentComponent->dependencies()) {
-                //ignore version numbers to check that we have it already in the to install list
-                QString name = dependencyComponentName.section(QLatin1Char('-'), 0, 0);
-                if (!m_toInstallComponentIds.contains(name)) {
-                    Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
-                    //add needed dependency components to the next run
-                    if (dependencyComponent) {
-                        insertInstallReason(dependencyComponent, QString(QLatin1String(
-                            "added as dependency for %1")).arg(currentComponent->name()));
-                        if (currentComponent->name() == debugComponent)
-                            verbose() << "now we are woring with:" << currentComponent->name() << std::endl;
+                Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
+                if (dependencyComponent == 0) {
+                    QString errorMessage = QString(QLatin1String(
+                        "Can't find missing dependency(%1) for %2.")).arg(dependencyComponentName, currentComponent->name());
+                    verbose() << qPrintable(errorMessage) << std::endl;
 
-                        //make sure that we don't add it more then ones
-                        notAppendedComponents.removeAll(dependencyComponent);
-
-                        notAppendedComponents.append(dependencyComponent);
-                    } else {
-                        QString errorMessage = QString(QLatin1String(
-                            "Can't find missing dependency(%1) for %2.")).arg(dependencyComponentName, currentComponent->name());
-                        verbose() << qPrintable(errorMessage) << std::endl;
-
-                        Q_ASSERT_X(false, Q_FUNC_INFO, qPrintable(errorMessage));
-                        return;
-                    }
+                    Q_ASSERT_X(false, Q_FUNC_INFO, qPrintable(errorMessage));
+                    return;
                 }
-                allDependenciesAreThere &= m_toInstallComponentIds.contains(name);
+                if (!dependencyComponent->isInstalled()
+                    && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
+                    //add needed dependency components to the next run
+                    insertInstallReason(dependencyComponent, QString(QLatin1String(
+                        "added as dependency for %1")).arg(currentComponent->name()));
+                    if (currentComponent->name() == debugComponent)
+                        verbose() << "now we are woring with:" << currentComponent->name() << std::endl;
+
+                    //make sure that we don't add it more then ones
+                    notAppendedComponents.removeAll(dependencyComponent);
+
+                    notAppendedComponents.append(dependencyComponent);
+                }
+                allDependenciesAreThere &= dependencyComponent->isInstalled() || m_toInstallComponentIds.contains(dependencyComponent->name());
             }
             //remove this component from the next run, because we can add it now,
             //if we can't add it - it will added again in the else case
