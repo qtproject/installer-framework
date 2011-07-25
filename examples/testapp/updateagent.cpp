@@ -82,7 +82,7 @@ public:
                         throw Error(tr("Software Update failed."));
                     settings.setLastResult(tr("Software Update run successfully."));
 
-                    QList<Component*> components = core.components(false, UpdaterMode);
+                    QList<Component*> components = core.updaterComponents();
                     // no updates available
                     if (components.isEmpty())
                         return;

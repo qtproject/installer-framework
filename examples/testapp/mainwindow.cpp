@@ -99,7 +99,7 @@ void MainWindow::checkForUpdates()
         }
 
         // no updates for us
-        if (m_core.components(false, UpdaterMode).isEmpty()) {
+        if (m_core.updaterComponents().isEmpty()) {
             QMessageBox::information(this, tr("Check for Updates"), tr("There are currently no updates "
                 "available for you."));
             return;
