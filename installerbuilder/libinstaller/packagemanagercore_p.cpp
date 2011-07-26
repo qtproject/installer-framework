@@ -390,26 +390,28 @@ void PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         }
     }
 
-    if (notAppendedComponents.count() == components.count()) {
-        QString errorMessage = QString(QLatin1String(
-            "Can't install any more component, because no one has no or resolved dependencies."));
-        verbose() << qPrintable(errorMessage) << std::endl;
-        foreach (Component *currentComponent, notAppendedComponents){
-            verbose() << "\t" << currentComponent->name();
-            if (!currentComponent->dependencies().isEmpty())
-                verbose() << " with dependencies: " << currentComponent->dependencies().join(QLatin1String(", "));
-            verbose() << std::endl;
-        }
-
-        Q_ASSERT_X(!(notAppendedComponents.count() == components.count()),
-                   Q_FUNC_INFO,
-                   qPrintable(errorMessage));
-        return;
-    } else if (state == StartAppendToInstallState) {
+    if (state == StartAppendToInstallState) {
         appendComponentsToInstall(toAppendComponents, WithoutDependenciesAppendToInstallState);
     } else if (state == WithoutDependenciesAppendToInstallState) {
         appendComponentsToInstall(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
     } else if (state == WithResolvedDependenciesAppendToInstallState && !notAppendedComponents.isEmpty()) {
+        //check there changed something in this current run, if not we can cancel this
+        if (notAppendedComponents.count() == components.count()) {
+            QString errorMessage = QString(QLatin1String(
+                "Can't install any more component, because no one has no or resolved dependencies."));
+            verbose() << qPrintable(errorMessage) << std::endl;
+            foreach (Component *currentComponent, notAppendedComponents){
+                verbose() << "\t" << currentComponent->name();
+                if (!currentComponent->dependencies().isEmpty())
+                    verbose() << " with dependencies: " << currentComponent->dependencies().join(QLatin1String(", "));
+                verbose() << std::endl;
+            }
+
+            Q_ASSERT_X(!(notAppendedComponents.count() == components.count()),
+                       Q_FUNC_INFO,
+                       qPrintable(errorMessage));
+            return;
+        }
         //try again to append the not appended component because the last appended ones could
         //are the missing dependencies, cancel case of this loop is the the first if check:
         //when notAppendedComponents.count is the same as components.count
