@@ -987,7 +987,23 @@ bool Component::installationRequested() const
 }
 
 /*!
-    Set's the components state to uninstalled.
+    Sets a flag that the core found an update
+*/
+void Component::setUpdateAvailable(bool isUpdateAvailable)
+{
+    d->m_updateIsAvailable = isUpdateAvailable;
+}
+
+/*!
+    Determines if the user wants to install the update for this component
+*/
+bool Component::updateRequested()
+{
+    return d->m_updateIsAvailable && isSelected();
+}
+
+/*!
+    Sets the component state to uninstalled.
 */
 void Component::setUninstalled()
 {

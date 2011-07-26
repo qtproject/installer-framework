@@ -54,7 +54,8 @@ ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
     m_operationsCreated(false),
     m_removeBeforeUpdate(true),
     m_autoCreateOperations(true),
-    m_operationsCreatedSuccessfully(true)
+    m_operationsCreatedSuccessfully(true),
+    m_updateIsAvailable(false)
 {
 }
 

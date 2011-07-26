@@ -186,6 +186,10 @@ public:
 
     Q_INVOKABLE bool isFromOnlineRepository() const;
 
+    void setUpdateAvailable(bool isUpdateAvailable);
+    bool updateRequested();
+
+
     bool isVirtual() const;
     bool isSelected() const;
     bool forcedInstallation() const;

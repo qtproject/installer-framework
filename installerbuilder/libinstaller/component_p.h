@@ -66,6 +66,7 @@ public:
     bool m_removeBeforeUpdate;
     bool m_autoCreateOperations;
     bool m_operationsCreatedSuccessfully;
+    bool m_updateIsAvailable;
 
     QString m_componentName;
     QUrl m_repositoryUrl;
