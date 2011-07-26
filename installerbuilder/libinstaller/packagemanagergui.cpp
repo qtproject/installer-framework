@@ -1441,8 +1441,9 @@ void ReadyForInstallationPage::entering()
     if (packageManagerCore()->isUninstaller()) {
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setTitle(titleForPage(objectName(), tr("Ready to Uninstall")));
-        m_msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer. The "
-            "program dir %2 will be deleted completely, including all content in that directory!")
+        m_msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
+            "<font color=\"red\">The program dir %2 will be deleted completely</font>, "
+            "including all content in that directory!")
             .arg(productName(), QDir::toNativeSeparators(QDir(target).absolutePath())));
         return;
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
