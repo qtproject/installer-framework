@@ -166,12 +166,12 @@ void Component::loadDataFromPackage(const Package &package)
 
     setLocalTempPath(QInstaller::pathFromUrl(package.sourceInfo().url));
     const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()
-        .split(QString::fromLatin1(","), QString::SkipEmptyParts);
+        .split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
     if (!uis.isEmpty())
         loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), uis);
 
     const QStringList qms = package.data(QLatin1String("Translations")).toString()
-        .split(QString::fromLatin1(","), QString::SkipEmptyParts);
+        .split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
     if (!qms.isEmpty())
         loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), qms);
 
@@ -909,7 +909,7 @@ void Component::setSelected(bool selected)
 */
 QStringList Component::dependencies() const
 {
-    return value(scDependencies).split(QLatin1Char(','), QString::SkipEmptyParts);
+    return value(scDependencies).split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
 }
 
 /*!
@@ -934,7 +934,7 @@ bool Component::isAutoDependOn() const
         verbose() << "value from script is not valid " << std::endl;
         return false;
     }
-    QStringList autoDependOnDependencyList =  value(scAutoDependOn).split(QLatin1Char(','),
+    QStringList autoDependOnDependencyList =  value(scAutoDependOn).split(QRegExp(QLatin1String("\\b(,|, )\\b")),
         QString::SkipEmptyParts);
     if (autoDependOnDependencyList.isEmpty())
         return false;

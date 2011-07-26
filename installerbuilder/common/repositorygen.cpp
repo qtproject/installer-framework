@@ -111,7 +111,7 @@ static QVector<PackageInfo> collectAvailablePackages(const QString& packagesDire
         info.version = doc.firstChildElement(QString::fromLatin1("Package")).
             firstChildElement(QString::fromLatin1("Version")).text();
         info.dependencies = doc.firstChildElement(QString::fromLatin1("Package")).
-            firstChildElement(QString::fromLatin1("Dependencies")).text().split(QLatin1String(","),
+            firstChildElement(QString::fromLatin1("Dependencies")).text().split(QRegExp(QLatin1String("\\b(,|, )\\b")),
             QString::SkipEmptyParts);
         info.directory = it->filePath();
         dict.push_back(info);

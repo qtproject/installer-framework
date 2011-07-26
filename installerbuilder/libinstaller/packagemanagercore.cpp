@@ -363,7 +363,7 @@ void PackageManagerCore::installSelectedComponents()
             "version of: %1").arg(currentComponent->name()));
         if ((isUpdater() || isPackageManager()) && currentComponent->removeBeforeUpdate()) {
             QString replacesAsString = currentComponent->value(scReplaces);
-            QStringList possibleNames(replacesAsString.split(QLatin1Char(','), QString::SkipEmptyParts));
+            QStringList possibleNames(replacesAsString.split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts));
             possibleNames.append(currentComponent->name());
 
             // undo all operations done by this component upon installation
@@ -963,7 +963,7 @@ QList<Component*> PackageManagerCore::missingDependencies(const Component *compo
 //    if (runMode() == UpdaterMode)
 //        allComponents += d->m_updaterComponentsDeps;
 
-//    const QStringList dependencies = component->value(scDependencies).split(QChar::fromLatin1(','),
+//    const QStringList dependencies = component->value(scDependencies).split(QRegExp(QLatin1String("\\b(,|, )\\b")),
 //        QString::SkipEmptyParts);
 
 //    QList<Component*> result;
@@ -1000,7 +1000,7 @@ QList<Component*> PackageManagerCore::missingDependencies(const Component *compo
 QList<Component*> PackageManagerCore::dependencies(const Component *component, QStringList &missingComponents) const
 {
     QList<Component*> result;
-    const QStringList dependencies = component->value(scDependencies).split(QChar::fromLatin1(','),
+    const QStringList dependencies = component->value(scDependencies).split(QRegExp(QLatin1String("\\b(,|, )\\b")),
         QString::SkipEmptyParts);
 
     foreach (const QString &dependency, dependencies) {
@@ -1487,7 +1487,8 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         if (!data.installedPackages->contains(name)) {
             const QString replaces = data.package->data(scReplaces).toString();
             if (!replaces.isEmpty()) {
-                const QStringList components = replaces.split(QLatin1Char(','), QString::SkipEmptyParts);
+                const QStringList components = replaces.split(QRegExp(QLatin1String("\\b(,|, )\\b")),
+                    QString::SkipEmptyParts);
                 foreach (const QString &componentName, components) {
                     if (data.installedPackages->contains(componentName)) {
                         if (data.runMode == AllMode) {
@@ -1637,7 +1638,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
 
             bool isValidUpdate = locals.contains(name);
             if (!isValidUpdate && !replaces.isEmpty()) {
-                const QStringList possibleNames = replaces.split(QLatin1String(","), QString::SkipEmptyParts);
+                const QStringList possibleNames = replaces.split(QRegExp(QLatin1String("\\b(,|, )\\b")),
+                    QString::SkipEmptyParts);
                 foreach (const QString &possibleName, possibleNames)
                     isValidUpdate |= locals.contains(possibleName);
             }

@@ -499,7 +499,7 @@ QList<KDUpdater::UpdateInfo> KDUpdater::UpdateFinder::Private::applicableUpdates
                                   QLatin1String( "," ));
 
         // Catch hold of app names contained updatesInfo->applicationName()
-        QStringList apps = appName.split(QLatin1String( "," ), QString::SkipEmptyParts);
+        QStringList apps = appName.split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
         appNameIndex = apps.indexOf(this->application->applicationName());
 
         // If the application appName isnt one of the app names, then

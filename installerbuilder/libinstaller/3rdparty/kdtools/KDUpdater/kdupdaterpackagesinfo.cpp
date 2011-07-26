@@ -510,7 +510,7 @@ void PackagesInfo::PackagesInfoData::addPackageFrom(const QDomElement& packageE)
         else if( childNodeE.tagName() == QLatin1String( "Size" ) )
             info.uncompressedSize = childNodeE.text().toULongLong();
         else if( childNodeE.tagName() == QLatin1String( "Dependencies" ) )
-            info.dependencies = childNodeE.text().split( QLatin1String( "," ) );
+            info.dependencies = childNodeE.text().split( QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts );
         else if( childNodeE.tagName() == QLatin1String( "ForcedInstallation" ) )
             info.forcedInstallation = childNodeE.text().toLower() == QLatin1String( "true" ) ? true : false;
         else if( childNodeE.tagName() == QLatin1String( "LastUpdateDate" ) )
