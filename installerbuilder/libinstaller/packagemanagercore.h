@@ -146,7 +146,7 @@ public:
     QList<Component*> updaterComponents() const;
     QList<Component*> rootComponents() const;
 
-    bool calculateToInstallComponents();
+    bool calculateToInstallComponents(RunMode runMode);
     QList<Component*> orderedComponentsToInstall();
     QString installReason(Component* component);
 

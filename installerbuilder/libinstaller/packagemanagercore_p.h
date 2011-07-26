@@ -73,7 +73,6 @@ public:
         Undo
     };
     enum AppendToInstallState {
-        StartAppendToInstallState,
         WithoutDependenciesAppendToInstallState,
         WithResolvedDependenciesAppendToInstallState
 
@@ -111,7 +110,7 @@ public:
 
     void clearComponentsToInstall();
     bool appendComponentsToInstall(const QList<Component*> &components,
-        const AppendToInstallState state = StartAppendToInstallState);
+        const AppendToInstallState state = WithoutDependenciesAppendToInstallState);
     QString installReason(Component* component);
 
     void runInstaller();

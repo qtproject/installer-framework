@@ -859,6 +859,7 @@ void PackageManagerCore::appendRootComponent(Component *component)
 
 void PackageManagerCore::appendUpdaterComponent(Component *component)
 {
+    component->setUpdateAvailable(true);
     d->m_updaterComponents.append(component);
     emit componentAdded(component);
 }
@@ -907,7 +908,7 @@ QList<Component*> PackageManagerCore::rootComponents() const
 QList<Component*> PackageManagerCore::orderedComponentsToInstall()
 {
     if (!d->isInstallComponentsOrderCalculated)
-        calculateToInstallComponents();
+        calculateToInstallComponents(runMode());
     return d->m_orderedToInstallComponents;
 }
 
@@ -916,10 +917,22 @@ QString PackageManagerCore::installReason(Component* component)
     return d->installReason(component);
 }
 
-bool PackageManagerCore::calculateToInstallComponents()
+bool PackageManagerCore::calculateToInstallComponents(RunMode runMode)
 {
     d->clearComponentsToInstall();
-    return d->appendComponentsToInstall(availableComponents());
+    QList<Component*> components;
+    if (runMode == UpdaterMode) {
+        foreach(Component* component, updaterComponents()) {
+            if (component->updateRequested())
+                components.append(component);
+        }
+    } else if (runMode == AllMode) {
+        foreach(Component* component, availableComponents()) {
+            if (component->installationRequested())
+                components.append(component);
+        }
+    }
+    return d->appendComponentsToInstall(components);
 }
 
 QList<Component*> PackageManagerCore::componentsToInstall(RunMode runMode) const

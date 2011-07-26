@@ -327,12 +327,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         }
 
         switch(state) {
-        case StartAppendToInstallState: {
-            if (currentComponent->installationRequested()) {
-                toAppendComponents.append(currentComponent);
-            }
-            break;
-        } case WithoutDependenciesAppendToInstallState: {
+        case WithoutDependenciesAppendToInstallState: {
             if (currentComponent->dependencies().isEmpty()) {
                 realAppendToInstallComponents(currentComponent);
             } else {
@@ -390,9 +385,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         }
     }
 
-    if (state == StartAppendToInstallState) {
-        appendComponentsToInstall(toAppendComponents, WithoutDependenciesAppendToInstallState);
-    } else if (state == WithoutDependenciesAppendToInstallState) {
+    if (state == WithoutDependenciesAppendToInstallState) {
         appendComponentsToInstall(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
     } else if (state == WithResolvedDependenciesAppendToInstallState && !notAppendedComponents.isEmpty()) {
         //check there changed something in this current run, if not we can cancel this
