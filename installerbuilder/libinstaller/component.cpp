@@ -90,6 +90,7 @@ Component::~Component()
     if (parentComponent() != 0)
         d->m_parentComponent->d->m_allChildComponents.removeAll(this);
 
+    //why can we delete all create operations if the component gets destroyed
     if (!d->m_newlyInstalled)
         qDeleteAll(d->m_operations);
 
