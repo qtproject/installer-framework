@@ -45,6 +45,23 @@
 
 using namespace QInstaller;
 
+namespace {
+inline QString absoluteQmakePath(const QString &path)
+{
+    QString versionQmakePath = QDir(path).absolutePath();
+    if ( !versionQmakePath.endsWith(QLatin1String("qmake"))
+         && !versionQmakePath.endsWith(QLatin1String("qmake.exe")))
+    {
+#if defined ( Q_OS_WIN )
+        versionQmakePath.append(QLatin1String("/bin/qmake.exe"));
+#elif defined( Q_OS_UNIX )
+        versionQmakePath.append(QLatin1String("/bin/qmake"));
+#endif
+    }
+    return QDir::toNativeSeparators(versionQmakePath);
+}
+}
+
 RegisterQtInCreatorV23Operation::RegisterQtInCreatorV23Operation()
 {
     setName(QLatin1String("RegisterQtInCreatorV23"));
@@ -94,17 +111,7 @@ bool RegisterQtInCreatorV23Operation::performOperation()
     int argCounter = 0;
     const QString &versionName = args.at(argCounter++);
     const QString &path = QDir::toNativeSeparators(args.value(argCounter++));
-    QString versionQmakePath = QDir(path).absolutePath();
-    if ( !versionQmakePath.endsWith(QLatin1String("qmake"))
-         && !versionQmakePath.endsWith(QLatin1String("qmake.exe")))
-    {
-#if defined ( Q_OS_WIN )
-        versionQmakePath.append(QLatin1String("/bin/qmake.exe"));
-#elif defined( Q_OS_UNIX )
-        versionQmakePath.append(QLatin1String("/bin/qmake"));
-#endif
-    }
-    versionQmakePath = QDir::toNativeSeparators(versionQmakePath);
+    const QString versionQmakePath = absoluteQmakePath(path);
 
     const QString &versionTypeIdentifier = args.at(argCounter++);
     const QString &versionSDKIdentifier = args.at(argCounter++);
@@ -189,7 +196,11 @@ bool RegisterQtInCreatorV23Operation::undoOperation()
     int currentVersionIndex = 0;
     for (int i = 0; i < qtVersionCount; ++i) {
         QVariantMap versionMap = map[QString::fromLatin1("QtVersion.") + QString::number(i)].toMap();
-        if (versionMap[QString::fromLatin1("QMakePath")] == args.at(1))
+
+        const QString path = QDir::toNativeSeparators(args.value(1));
+        const QString versionQmakePath = absoluteQmakePath(path);
+
+        if (versionMap[QString::fromLatin1("QMakePath")] == versionQmakePath)
             continue;
         writer.saveValue(QString::fromLatin1("QtVersion.%1").arg(currentVersionIndex++), versionMap);
     }
