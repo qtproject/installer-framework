@@ -1523,12 +1523,37 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
     QString htmlOutput;
     QString lastInstallReason;
 
-    QListIterator<Component*> it(packageManagerCore()->orderedComponentsToInstall());
-    while(it.hasNext()) {
-        Component* currentComponent = it.next();
+    //in updater case we don't uninstall components(yes I know update = uninstall + install,
+    //but a complete uninstall is meant)
+    if (!packageManagerCore()->isUpdater()) {
+        QList<Component*> toRemoveComponentList;
+        QListIterator<Component*> allIt(packageManagerCore()->availableComponents());
+        while(allIt.hasNext()) {
+            Component* currentComponent = allIt.next();
+            if (currentComponent->isInstalled()
+                && !currentComponent->isSelected())
+                toRemoveComponentList.append(currentComponent);
+        }
+
+        if (!toRemoveComponentList.isEmpty()) {
+            htmlOutput.append(QString(QLatin1String("<h3>%1</h3><ul>")).arg(tr("Components about to be removed.")));
+            QListIterator<Component*> toRemoveIt(toRemoveComponentList);
+            while(toRemoveIt.hasNext()) {
+                Component* currentComponent = toRemoveIt.next();
+                htmlOutput.append(QString(QLatin1String("<li> %1 </li>")).arg(currentComponent->name()));
+            }
+            htmlOutput.append(QString(QLatin1String("</ul>")));
+        }
+    }
+
+    QListIterator<Component*> toInstallIt(packageManagerCore()->orderedComponentsToInstall());
+    while(toInstallIt.hasNext()) {
+        Component* currentComponent = toInstallIt.next();
         QString currentInstallReason = packageManagerCore()->installReason(currentComponent);
         if (lastInstallReason != currentInstallReason) {
-            htmlOutput.append(QString(QLatin1String("</ul><h3>%1</h3><ul>")).arg(currentInstallReason));
+            if (!lastInstallReason.isEmpty()) //means we had to close the previous list
+                htmlOutput.append(QString(QLatin1String("</ul>")));
+            htmlOutput.append(QString(QLatin1String("<h3>%1</h3><ul>")).arg(currentInstallReason));
             lastInstallReason = currentInstallReason;
         }
         htmlOutput.append(QString(QLatin1String("<li> %1 </li>")).arg(currentComponent->name()));
