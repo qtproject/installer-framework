@@ -693,7 +693,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
         QList<Component*> children = rootComponent(i)->childs();
         foreach (Component *child, children) {
             if (child->isCheckable() && !child->isTristate()) {
-                if (child->isInstalled() || child->isDefault())
+                if (child->isInstalled())
                     child->setCheckState(Qt::Checked);
             }
         }
@@ -1590,7 +1590,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
 
             // set the checked state for all components without child(means without tristate)
             if (component->isCheckable() && !component->isTristate()) {
-                if (component->isInstalled() || component->isDefault())
+                if (component->isInstalled())
                     component->setCheckState(Qt::Checked);
             }
         }
