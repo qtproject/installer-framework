@@ -1601,6 +1601,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     data.components = &components;
     data.installedPackages = &locals;
 
+    bool foundImportantUpdate = false;
+
     foreach (Package *const update, remotes) {
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
 
@@ -1639,6 +1641,10 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             if (localPackage.lastUpdateDate > updateDate)
                 continue;
 
+            if (update->data(scImportant, scFalse).toString().toLower() == scTrue) {
+                foundImportantUpdate = true;
+            }
+
             // this is not a dependency, it is a real update
             components.insert(name, d->m_updaterComponentsDeps.takeLast());
         }
@@ -1648,11 +1654,13 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     storeReplacedComponents(components, data);
 
     try {
-        // remove all unimportant updates
-        const QStringList &keys = components.keys();
-        foreach (const QString &key, keys) {
-            if (components.value(key)->value(scImportant, scFalse).toLower() == scFalse)
-                delete components.take(key);
+        if (foundImportantUpdate) {
+            // remove all unimportant updates
+            const QStringList &keys = components.keys();
+            foreach (const QString &key, keys) {
+                if (components.value(key)->value(scImportant, scFalse).toLower() == scFalse)
+                    delete components.take(key);
+            }
         }
 
         if (!components.isEmpty()) {
