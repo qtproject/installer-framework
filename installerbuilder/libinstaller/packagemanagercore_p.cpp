@@ -351,7 +351,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
                 if (!dependencyComponent->isInstalled()
                     && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
                     //add needed dependency components to the next run
-                    insertInstallReason(dependencyComponent, QString(QLatin1String(
+                    insertInstallReason(dependencyComponent, QString(tr(
                         "added as dependency for %1")).arg(currentComponent->name()));
                     if (currentComponent->name() == debugComponent)
                         verbose() << "now we are woring with:" << currentComponent->name() << std::endl;
@@ -369,8 +369,8 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             if (allDependenciesAreThere) {
                 //adding it to the real install list
                 realAppendToInstallComponents(currentComponent);
-                insertInstallReason(currentComponent, QString(QLatin1String(
-                    "component with resolved dependencies"))/*.arg(
+                insertInstallReason(currentComponent, QString(
+                    tr("component(s) with resolved dependencies"))/*.arg(
                         currentComponent->dependencies().join(QLatin1String(", ")))*/);
             } else {
                 //add the component again(after dependencies were added)
