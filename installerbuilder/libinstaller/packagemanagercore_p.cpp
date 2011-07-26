@@ -436,7 +436,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
 QString PackageManagerCorePrivate::installReason(Component* component) {
     QString reason = m_toInstallComponentIdReasonHash.value(component->name());
     if (reason.isEmpty())
-        return QLatin1String("simple component without dependencies");
+        return tr("simple component(s) without dependencies");
     return m_toInstallComponentIdReasonHash.value(component->name());
 }
 
