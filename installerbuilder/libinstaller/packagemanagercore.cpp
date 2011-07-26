@@ -1610,9 +1610,9 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             // Keep a reference so we can resolve dependencies during update.
             d->m_updaterComponentsDeps.append(component.take());
 
-            const QString isNew = update->data(scNewComponent).toString();
-            if (isNew.toLower() != scTrue)
-                continue;
+//            const QString isNew = update->data(scNewComponent).toString();
+//            if (isNew.toLower() != scTrue)
+//                continue;
 
             const QString &name = d->m_updaterComponentsDeps.last()->name();
             const QString replaces = data.package->data(scReplaces).toString();
