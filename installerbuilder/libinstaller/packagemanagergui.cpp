@@ -1403,30 +1403,30 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
     topLayout->addWidget(m_msgLabel);
-
-    m_taskDetailsButton = new QPushButton(tr("&Show Details"), this);
-    m_taskDetailsButton->setObjectName(QLatin1String("TaskDetailsButton"));
-    m_taskDetailsButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
-    connect(m_taskDetailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
-    topLayout->addWidget(m_taskDetailsButton);
-
-    QVBoxLayout *bottomLayout = new QVBoxLayout();
-    bottomLayout->setObjectName(QLatin1String("BottomLayout"));
-    bottomLayout->addStretch();
-
-    m_taskDetailsBrowser = new QTextBrowser(this);
-    m_taskDetailsBrowser->setReadOnly(true);
-    m_taskDetailsBrowser->setObjectName(QLatin1String("TaskDetailsBrowser"));
-    m_taskDetailsBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    bottomLayout->addWidget(m_taskDetailsBrowser);
-
-    bottomLayout->setStretch(1, 10);
     baseLayout->addLayout(topLayout);
-    baseLayout->addLayout(bottomLayout);
+
+    if (!packageManagerCore()->isUninstaller()) {
+        m_taskDetailsButton = new QPushButton(tr("&Show Details"), this);
+        m_taskDetailsButton->setObjectName(QLatin1String("TaskDetailsButton"));
+        m_taskDetailsButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+        connect(m_taskDetailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
+        topLayout->addWidget(m_taskDetailsButton);
+
+        QVBoxLayout *bottomLayout = new QVBoxLayout();
+        bottomLayout->setObjectName(QLatin1String("BottomLayout"));
+        bottomLayout->addStretch();
+
+        m_taskDetailsBrowser = new QTextBrowser(this);
+        m_taskDetailsBrowser->setReadOnly(true);
+        m_taskDetailsBrowser->setObjectName(QLatin1String("TaskDetailsBrowser"));
+        m_taskDetailsBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        m_taskDetailsBrowser->setVisible(false);
+        bottomLayout->addWidget(m_taskDetailsBrowser);
+        bottomLayout->setStretch(1, 10);
+        baseLayout->addLayout(bottomLayout);
+    }
 
     setLayout(baseLayout);
-
-    m_taskDetailsBrowser->setVisible(false);
 }
 
 
