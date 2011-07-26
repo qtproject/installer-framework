@@ -298,6 +298,7 @@ QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::compo
 
 void PackageManagerCorePrivate::clearComponentsToInstall() {
     m_orderedToInstallComponents.clear();
+    m_visitedDependencies.clear();
     m_toInstallComponentIds.clear();
     m_toInstallComponentIdReasonHash.clear();
 }
@@ -310,7 +311,6 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         return false;
     }
 
-    QList<Component*> toAppendComponents;
     QList<Component*> notAppendedComponents; //for example components with unresolved dependencies
     foreach (Component *currentComponent, components){
         if (currentComponent->name() == debugComponent)
@@ -339,6 +339,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         } case WithResolvedDependenciesAppendToInstallState: {
             bool allDependenciesAreThere = true;
             foreach (const QString &dependencyComponentName, currentComponent->dependencies()) {
+                //componentByName return 0 if dependencyComponentName contains a version which is not available
                 Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
                 if (dependencyComponent == 0) {
                     QString errorMessage = QString(QLatin1String(
@@ -350,6 +351,27 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
                 }
                 if (!dependencyComponent->isInstalled()
                     && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
+
+                    QString dependencyWay = currentComponent->name() + QLatin1String("->") + dependencyComponentName;
+                    if (m_visitedDependencies.contains(dependencyWay)) {
+                        QString errorMessage = QString(QLatin1String(
+                            "Can't install any more component, because no one has no or resolved dependencies."));
+                        verbose() << qPrintable(errorMessage) << std::endl;
+                        foreach (Component *currentComponent, components){
+                            verbose() << "\t" << currentComponent->name();
+                            if (!currentComponent->dependencies().isEmpty())
+                                verbose() << " with dependencies: " << currentComponent->dependencies().join(QLatin1String(", "));
+                            verbose() << std::endl;
+                        }
+
+                        Q_ASSERT_X(!m_visitedDependencies.contains(dependencyWay),
+                                   Q_FUNC_INFO,
+                                   qPrintable(errorMessage));
+                        return false;
+                    } else {
+                        m_visitedDependencies.insert(dependencyWay);
+                    }
+
                     //add needed dependency components to the next run
                     insertInstallReason(dependencyComponent, QString(tr(
                         "added as dependency for %1")).arg(currentComponent->name()));
@@ -359,7 +381,8 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
                     //make sure that we don't add it more then ones
                     notAppendedComponents.removeAll(dependencyComponent);
 
-                    notAppendedComponents.append(dependencyComponent);
+                    //then prepend it to make sure that the next try tries the dependency first
+                    notAppendedComponents.prepend(dependencyComponent);
                 }
                 allDependenciesAreThere &= dependencyComponent->isInstalled() || m_toInstallComponentIds.contains(dependencyComponent->name());
             }
@@ -388,26 +411,8 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
     if (state == WithoutDependenciesAppendToInstallState) {
         appendComponentsToInstall(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
     } else if (state == WithResolvedDependenciesAppendToInstallState && !notAppendedComponents.isEmpty()) {
-        //check there changed something in this current run, if not we can cancel this
-        if (notAppendedComponents.count() == components.count()) {
-            QString errorMessage = QString(QLatin1String(
-                "Can't install any more component, because no one has no or resolved dependencies."));
-            verbose() << qPrintable(errorMessage) << std::endl;
-            foreach (Component *currentComponent, notAppendedComponents){
-                verbose() << "\t" << currentComponent->name();
-                if (!currentComponent->dependencies().isEmpty())
-                    verbose() << " with dependencies: " << currentComponent->dependencies().join(QLatin1String(", "));
-                verbose() << std::endl;
-            }
-
-            Q_ASSERT_X(!(notAppendedComponents.count() == components.count()),
-                       Q_FUNC_INFO,
-                       qPrintable(errorMessage));
-            return false;
-        }
         //try again to append the not appended component because the last appended ones could
-        //are the missing dependencies, cancel case of this loop is the the first if check:
-        //when notAppendedComponents.count is the same as components.count
+        //are the missing dependencies
         appendComponentsToInstall(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
     } else {
         //this means notAppendedComponents are empty, so all regular dependencies are resolved
