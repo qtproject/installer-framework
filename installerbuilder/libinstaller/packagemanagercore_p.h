@@ -110,7 +110,7 @@ public:
     QHash<QString, QPair<Component*, Component*> > &componentsToReplace(RunMode mode);
 
     void clearComponentsToInstall();
-    void appendComponentsToInstall(const QList<Component*> &components,
+    bool appendComponentsToInstall(const QList<Component*> &components,
         const AppendToInstallState state = StartAppendToInstallState);
     QString installReason(Component* component);
 

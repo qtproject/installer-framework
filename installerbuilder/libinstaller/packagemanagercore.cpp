@@ -916,10 +916,10 @@ QString PackageManagerCore::installReason(Component* component)
     return d->installReason(component);
 }
 
-void PackageManagerCore::calculateToInstallComponents()
+bool PackageManagerCore::calculateToInstallComponents()
 {
     d->clearComponentsToInstall();
-    d->appendComponentsToInstall(availableComponents());
+    return d->appendComponentsToInstall(availableComponents());
 }
 
 QList<Component*> PackageManagerCore::componentsToInstall(RunMode runMode) const

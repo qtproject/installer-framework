@@ -302,12 +302,12 @@ void PackageManagerCorePrivate::clearComponentsToInstall() {
     m_toInstallComponentIdReasonHash.clear();
 }
 
-void PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*> &components,
+bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*> &components,
     const AppendToInstallState state)
 {
-    verbose() << Q_FUNC_INFO << std::endl;
     if (components.isEmpty()) {
-        return;
+        verbose() << "components list is empty in " << Q_FUNC_INFO << std::endl;
+        return false;
     }
 
     QList<Component*> toAppendComponents;
@@ -323,7 +323,7 @@ void PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             Q_ASSERT_X(!m_toInstallComponentIds.contains(currentComponent->name()),
                        Q_FUNC_INFO,
                        qPrintable(errorMessage));
-            return;
+            return false;
         }
 
         switch(state) {
@@ -351,7 +351,7 @@ void PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
                     verbose() << qPrintable(errorMessage) << std::endl;
 
                     Q_ASSERT_X(false, Q_FUNC_INFO, qPrintable(errorMessage));
-                    return;
+                    return false;
                 }
                 if (!dependencyComponent->isInstalled()
                     && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
@@ -386,7 +386,7 @@ void PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             break;
         } default:
             Q_ASSERT_X(false, Q_FUNC_INFO, "Something went realy wrong!");
-            break;
+            return false;
         }
     }
 
@@ -410,7 +410,7 @@ void PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             Q_ASSERT_X(!(notAppendedComponents.count() == components.count()),
                        Q_FUNC_INFO,
                        qPrintable(errorMessage));
-            return;
+            return false;
         }
         //try again to append the not appended component because the last appended ones could
         //are the missing dependencies, cancel case of this loop is the the first if check:
@@ -430,6 +430,7 @@ void PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         //else
             //nothing we are ready
     }
+    return true;
 }
 
 QString PackageManagerCorePrivate::installReason(Component* component) {
