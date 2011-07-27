@@ -1523,6 +1523,12 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
     QString htmlOutput;
     QString lastInstallReason;
 
+    if (!packageManagerCore()->calculateToInstallComponents(packageManagerCore()->runMode())) {
+        htmlOutput.append(QString(QLatin1String("<font color=\"red\">%1</font>")).arg(
+            tr("Can't resolve all dependencies.<br>")));
+    }
+
+
     //in updater case we don't uninstall components(yes I know update = uninstall + install,
     //but a complete uninstall is meant)
     if (!packageManagerCore()->isUpdater()) {
