@@ -378,7 +378,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
                     //then prepend it to make sure that the next try tries the dependency first
                     notAppendedComponents.prepend(dependencyComponent);
                 }
-                allDependenciesAreThere &= dependencyComponent->isInstalled() || m_toInstallComponentIds.contains(dependencyComponent->name());
+                allDependenciesAreThere &= (dependencyComponent->isInstalled() || m_toInstallComponentIds.contains(dependencyComponent->name()));
             }
             //remove this component from the next run, because we can add it now,
             //if we can't add it - it will added again in the else case
