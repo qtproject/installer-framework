@@ -325,14 +325,14 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         }
 
         switch(state) {
-        case WithoutDependenciesAppendToInstallState: {
+        case WithoutDependenciesAppendState: {
             if (currentComponent->dependencies().isEmpty()) {
                 realAppendToInstallComponents(currentComponent);
             } else {
                 notAppendedComponents.append(currentComponent);
             }
             break;
-        } case WithResolvedDependenciesAppendToInstallState: {
+        } case WithDependenciesAppendState: {
             bool allDependenciesAreThere = true;
             foreach (const QString &dependencyComponentName, currentComponent->dependencies()) {
                 //componentByName return 0 if dependencyComponentName contains a version which is not available
@@ -403,7 +403,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
     if (notAppendedComponents.count() > 0) {
         //try again to append the not appended component because the last appended ones could
         //are the missing dependencies
-        appendComponentsToInstall(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
+        appendComponentsToInstall(notAppendedComponents, WithDependenciesAppendState);
     } else {
         //this means notAppendedComponents are empty, so all regular dependencies are resolved
         //now we are looking for auto depend on components
@@ -414,7 +414,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             }
         }
         if (notAppendedComponents.count() > 0)
-            appendComponentsToInstall(notAppendedComponents, WithoutDependenciesAppendToInstallState);
+            appendComponentsToInstall(notAppendedComponents, WithoutDependenciesAppendState);
         //else
             //nothing we are ready
     }
