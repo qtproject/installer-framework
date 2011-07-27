@@ -120,7 +120,7 @@ void MainWindow::checkForUpdates()
         connect(&m_core, SIGNAL(installationProgressTextChanged(QString)), &dialog,
             SLOT(setLabelText(QString)));
         connect(&m_core, SIGNAL(installationProgressChanged(int)), &dialog, SLOT(setValue(int)));
-        m_core.installSelectedComponents();
+        //m_core.installSelectedComponents(); //method doesn't exist anymore
         updatesInstalled();
     } catch (const QInstaller::Error &error) {
         QMessageBox::critical(this, tr("Check for Updates"), tr("Error while installing updates:\n%1")

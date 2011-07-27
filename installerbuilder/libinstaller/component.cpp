@@ -216,11 +216,6 @@ void Component::setRemoveBeforeUpdate(bool removeBeforeUpdate)
     d->m_removeBeforeUpdate = removeBeforeUpdate;
 }
 
-QList<Component*> Component::dependees() const
-{
-    return d->m_core->dependees(this);
-}
-
 /*
     Returns a key/value based hash of all variables set for this component.
 */
@@ -934,16 +929,16 @@ bool Component::isAutoDependOn() const
         verbose() << "value from script is not valid " << std::endl;
         return false;
     }
-    QStringList autoDependOnDependencyList =  value(scAutoDependOn).split(QRegExp(QLatin1String("\\b(,|, )\\b")),
-        QString::SkipEmptyParts);
+    QStringList autoDependOnDependencyList =  value(scAutoDependOn).split(QRegExp(
+        QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
     if (autoDependOnDependencyList.isEmpty())
         return false;
 
-    QList<Component*> components = d->m_core->componentsToInstall(AllMode);
+    QList<Component*> components = d->m_core->availableComponents();
     foreach (Component *component, components) {
         if (autoDependOnDependencyList.contains(component->name())) {
             autoDependOnDependencyList.removeAll(component->name());
-            //found all "when" components
+            //found all "when"-components
             if (autoDependOnDependencyList.isEmpty())
                 return true;
         }

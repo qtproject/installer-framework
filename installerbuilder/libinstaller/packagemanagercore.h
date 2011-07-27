@@ -146,14 +146,10 @@ public:
     QList<Component*> updaterComponents() const;
     QList<Component*> rootComponents() const;
 
-    bool calculateToInstallComponents(RunMode runMode);
-    QList<Component*> orderedComponentsToInstall();
-    QString installReason(Component* component);
+    bool calculateToInstallComponents(RunMode runMode) const;
+    QList<Component*> orderedComponentsToInstall() const;
+    QString installReason(Component* component) const;
 
-    QList<Component*> componentsToInstall(RunMode runMode) const;
-
-    QList<Component*> dependees(const Component *component) const;
-    QList<Component*> missingDependencies(const Component *component) const;
     QList<Component*> dependencies(const Component *component, QStringList &missingComponents) const;
 
     // convenience
@@ -188,10 +184,9 @@ public:
     Q_INVOKABLE bool removeWizardPageItem(QInstaller::Component *component, const QString &name);
     Q_INVOKABLE bool setDefaultPageVisible(int page, bool visible);
 
-    void installSelectedComponents();
     void rollBackInstallation();
 
-    int downloadNeededArchives(RunMode runMode, double partProgressSize);
+    int downloadNeededArchives(double partProgressSize);
     void installComponent(Component *component, double progressOperationSize);
 
     bool needsRestart() const;

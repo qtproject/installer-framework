@@ -166,7 +166,6 @@ public:
     void setRemoveBeforeUpdate(bool removeBeforeUpdate);
 
     QStringList dependencies() const;
-    QList<Component*> dependees() const;
 
     void languageChanged();
     QString localTempPath() const;

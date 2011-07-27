@@ -83,24 +83,6 @@ static QScriptValue checkArguments(QScriptContext* context, int amin, int amax)
     return QScriptValue();
 }
 
-/*!
-    Appends \a comp preceded by its dependencies to \a components. Makes sure components contains
-    every component only once.
-    \internal
-*/
-static void appendComponentAndMissingDependencies(QList<Component*>& components, Component* comp)
-{
-    if (comp == 0)
-        return;
-
-    const QList<Component*> deps = comp->packageManagerCore()->missingDependencies(comp);
-    foreach (Component *component, deps)
-        appendComponentAndMissingDependencies(components, component);
-
-    if (!components.contains(comp))
-        components.push_back(comp);
-}
-
 static bool componentMatches(const Component *component, const QString &name,
     const QString& version = QString())
 {
@@ -326,76 +308,6 @@ void PackageManagerCore::setMessageBoxAutomaticAnswer(const QString &identifier,
         static_cast<QMessageBox::Button>(button));
 }
 
-// TODO: figure out why we have this function at all
-void PackageManagerCore::installSelectedComponents()
-{
-    d->setStatus(PackageManagerCore::Running);
-    // download
-
-    double downloadPartProgressSize = double(1)/3;
-    double componentsInstallPartProgressSize = double(2)/3;
-    // get the list of packages we need to install in proper order and do it for the updater
-
-    // TODO: why only updater mode???
-    const int downloadedArchivesCount = downloadNeededArchives(UpdaterMode, downloadPartProgressSize);
-
-    //if there was no download we have the whole progress for installing components
-    if (!downloadedArchivesCount) {
-         //componentsInstallPartProgressSize + downloadPartProgressSize;
-        componentsInstallPartProgressSize = double(1);
-    }
-
-    // get the list of packages we need to install in proper order
-    const QList<Component*> components = componentsToInstall(runMode());
-
-    if (!isInstaller() && !QFileInfo(installerBinaryPath()).isWritable())
-        gainAdminRights();
-
-    d->stopProcessesForUpdates(components);
-    int progressOperationCount = d->countProgressOperations(components);
-    double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
-
-    // TODO: divide this in undo steps and install steps (2 "for" loops) for better progress calculation
-    foreach (Component* const currentComponent, components) {
-        if (d->statusCanceledOrFailed())
-            throw Error(tr("Installation canceled by user"));
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nRemoving the old "
-            "version of: %1").arg(currentComponent->name()));
-        if ((isUpdater() || isPackageManager()) && currentComponent->removeBeforeUpdate()) {
-            QString replacesAsString = currentComponent->value(scReplaces);
-            QStringList possibleNames(replacesAsString.split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts));
-            possibleNames.append(currentComponent->name());
-
-            // undo all operations done by this component upon installation
-            for (int i = d->m_performedOperationsOld.count() - 1; i >= 0; --i) {
-                Operation* const op = d->m_performedOperationsOld.at(i);
-                if (!possibleNames.contains(op->value(QLatin1String("component")).toString()))
-                    continue;
-                const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
-                    && op->value(QLatin1String("admin")).toBool() && gainAdminRights();
-                PackageManagerCorePrivate::performOperationThreaded(op, PackageManagerCorePrivate::Undo);
-                if (becameAdmin)
-                    dropAdminRights();
-                delete d->m_performedOperationsOld.takeAt(i);
-            }
-            foreach(const QString possilbeName, possibleNames)
-                d->m_updaterApplication.packagesInfo()->removePackage(possilbeName);
-            d->m_updaterApplication.packagesInfo()->writeToDisk();
-        }
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(
-            tr("\nInstalling the new version of: %1").arg(currentComponent->name()));
-        installComponent(currentComponent, progressOperationSize);
-        //commit all operations for this already updated/installed component
-        //so an undo during the installComponent function only undoes the uncompleted installed one
-        d->commitSessionOperations();
-        d->m_needToWriteUninstaller = true;
-    }
-
-    d->setStatus(PackageManagerCore::Success);
-    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate finished!"));
-    emit updateFinished();
-}
-
 quint64 size(QInstaller::Component *component, const QString &value)
 {
     if (!component->isSelected() || component->isInstalled())
@@ -407,7 +319,7 @@ quint64 PackageManagerCore::requiredDiskSpace() const
 {
     quint64 result = 0;
 
-    foreach (QInstaller::Component *component, availableComponents())
+    foreach (QInstaller::Component *component, orderedComponentsToInstall())
         result += size(component, scUncompressedSize);
 
     return result;
@@ -417,7 +329,7 @@ quint64 PackageManagerCore::requiredTemporaryDiskSpace() const
 {
     quint64 result = 0;
 
-    foreach (QInstaller::Component *component, availableComponents())
+    foreach (QInstaller::Component *component, orderedComponentsToInstall())
         result += size(component, scCompressedSize);
 
     return result;
@@ -426,7 +338,7 @@ quint64 PackageManagerCore::requiredTemporaryDiskSpace() const
 /*!
     Returns the will be downloaded archives count
 */
-int PackageManagerCore::downloadNeededArchives(RunMode runMode, double partProgressSize)
+int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 {
     Q_ASSERT(partProgressSize >= 0 && partProgressSize <= 1);
 
@@ -908,19 +820,19 @@ QList<Component*> PackageManagerCore::rootComponents() const
     return d->m_rootComponents;
 }
 
-QList<Component*> PackageManagerCore::orderedComponentsToInstall()
+QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 {
     if (!d->isInstallComponentsOrderCalculated)
         calculateToInstallComponents(runMode());
     return d->m_orderedToInstallComponents;
 }
 
-QString PackageManagerCore::installReason(Component* component)
+QString PackageManagerCore::installReason(Component* component) const
 {
     return d->installReason(component);
 }
 
-bool PackageManagerCore::calculateToInstallComponents(RunMode runMode)
+bool PackageManagerCore::calculateToInstallComponents(RunMode runMode) const
 {
     d->clearComponentsToInstall();
     QList<Component*> components;
@@ -936,61 +848,6 @@ bool PackageManagerCore::calculateToInstallComponents(RunMode runMode)
         }
     }
     return d->appendComponentsToInstall(components);
-}
-
-QList<Component*> PackageManagerCore::componentsToInstall(RunMode runMode) const
-{
-    Q_ASSERT(false);
-    return QList<Component*>();
-}
-
-/*!
-    Returns a list of packages depending on \a component.
-*/
-QList<Component*> PackageManagerCore::dependees(const Component *component) const
-{
-    Q_ASSERT(false);
-    return QList<Component*>();
-}
-
-/*!
-    Returns the list of all missing (not installed) dependencies for \a component.
-*/
-QList<Component*> PackageManagerCore::missingDependencies(const Component *component) const
-{
-    Q_ASSERT(false);
-//    QList<Component*> allComponents = components(true, runMode());
-//    if (runMode() == UpdaterMode)
-//        allComponents += d->m_updaterComponentsDeps;
-
-//    const QStringList dependencies = component->value(scDependencies).split(QRegExp(QLatin1String("\\b(,|, )\\b")),
-//        QString::SkipEmptyParts);
-
-//    QList<Component*> result;
-//    const QLatin1Char dash('-');
-//    foreach (const QString &dependency, dependencies) {
-//        const bool hasVersionString = dependency.contains(dash);
-//        const QString name = hasVersionString ? dependency.section(dash, 0, 0) : dependency;
-
-//        bool installed = false;
-//        foreach (Component *comp, allComponents) {
-//            if (comp->name() == name) {
-//                if (hasVersionString) {
-//                    const QString version = dependency.section(dash, 1);
-//                    if (PackageManagerCore::versionMatches(comp->value(scInstalledVersion), version))
-//                        installed = true;
-//                } else if (comp->isInstalled()) {
-//                    installed = true;
-//                }
-//            }
-//        }
-
-//        if (!installed) {
-//            if (Component *comp = componentByName(dependency))
-//                result.append(comp);
-//        }
-//    }
-    return QList<Component*>();
 }
 
 /*!

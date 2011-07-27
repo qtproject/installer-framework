@@ -1202,8 +1202,7 @@ void PackageManagerCorePrivate::runInstaller()
 
         const double downloadPartProgressSize = double(1) / double(3);
         double componentsInstallPartProgressSize = double(2) / double(3);
-        const int downloadedArchivesCount = m_core->downloadNeededArchives(AllMode,
-            downloadPartProgressSize);
+        const int downloadedArchivesCount = m_core->downloadNeededArchives(downloadPartProgressSize);
 
         // if there was no download we have the whole progress for installing components
         if (!downloadedArchivesCount)
@@ -1354,7 +1353,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
         // following, we download the needed archives
-        m_core->downloadNeededArchives(AllMode, downloadPartProgressSize);
+        m_core->downloadNeededArchives(downloadPartProgressSize);
 
         stopProcessesForUpdates(componentsToInstall);
 
