@@ -416,7 +416,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             }
         }
         if (!notAppendedComponents.isEmpty())
-            appendComponentsToInstall(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
+            appendComponentsToInstall(notAppendedComponents, WithoutDependenciesAppendToInstallState);
         //else
             //nothing we are ready
     }
