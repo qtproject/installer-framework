@@ -400,7 +400,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         }
     }
 
-    if (!notAppendedComponents.isEmpty()) {
+    if (notAppendedComponents.count() > 0) {
         //try again to append the not appended component because the last appended ones could
         //are the missing dependencies
         appendComponentsToInstall(notAppendedComponents, WithResolvedDependenciesAppendToInstallState);
@@ -413,7 +413,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
                 notAppendedComponents.append(currentComponent);
             }
         }
-        if (!notAppendedComponents.isEmpty())
+        if (notAppendedComponents.count() > 0)
             appendComponentsToInstall(notAppendedComponents, WithoutDependenciesAppendToInstallState);
         //else
             //nothing we are ready
