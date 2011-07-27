@@ -96,8 +96,8 @@ private:
 
     int m_rootIndex;
     QVector<QVariant> m_headerData;
-    QSet<QString> m_initialCheckedList;
-    QSet<QString> m_currentCheckedList;
+    QSet<QString> m_initialCheckedSet;
+    QSet<QString> m_currentCheckedSet;
     QList<Component*> m_rootComponentList;
 
     mutable QMap<QString, QPersistentModelIndex> m_indexByNameCache;

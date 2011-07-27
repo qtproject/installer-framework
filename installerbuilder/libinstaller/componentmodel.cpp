@@ -235,8 +235,8 @@ void ComponentModel::setRootComponents(QList<Component*> rootComponents)
 
     m_indexByNameCache.clear();
     m_rootComponentList.clear();
-    m_initialCheckedList.clear();
-    m_currentCheckedList.clear();
+    m_initialCheckedSet.clear();
+    m_currentCheckedSet.clear();
 
     m_rootIndex = 0;
     m_rootComponentList = rootComponents;
@@ -275,7 +275,7 @@ PackageManagerCore *ComponentModel::packageManagerCore() const
 */
 bool ComponentModel::isChanged() const
 {
-    return m_initialCheckedList == m_currentCheckedList;
+    return m_initialCheckedSet == m_currentCheckedSet;
 }
 
 /*!
@@ -283,7 +283,7 @@ bool ComponentModel::isChanged() const
 */
 bool ComponentModel::hasCheckedComponents() const
 {
-    return !m_currentCheckedList.isEmpty();
+    return !m_currentCheckedSet.isEmpty();
 }
 
 /*!
@@ -292,7 +292,7 @@ bool ComponentModel::hasCheckedComponents() const
 QList<Component*> ComponentModel::checkedComponents() const
 {
     QList<Component*> list;
-    foreach (const QString &name, m_currentCheckedList)
+    foreach (const QString &name, m_currentCheckedSet)
         list.append(componentFromIndex(indexFromComponentName(name)));
     return list;
 }
@@ -330,8 +330,8 @@ Component* ComponentModel::componentFromIndex(const QModelIndex &index) const
 */
 void ComponentModel::selectAll()
 {
-    m_currentCheckedList = m_currentCheckedList.unite(select(Qt::Checked));
-    emit defaultCheckStateChanged(m_initialCheckedList != m_currentCheckedList);
+    m_currentCheckedSet = m_currentCheckedSet.unite(select(Qt::Checked));
+    emit defaultCheckStateChanged(m_initialCheckedSet != m_currentCheckedSet);
 }
 
 /*!
@@ -341,8 +341,8 @@ void ComponentModel::selectAll()
 */
 void ComponentModel::deselectAll()
 {
-    m_currentCheckedList = m_currentCheckedList.subtract(select(Qt::Unchecked));
-    emit defaultCheckStateChanged(m_initialCheckedList != m_currentCheckedList);
+    m_currentCheckedSet = m_currentCheckedSet.subtract(select(Qt::Unchecked));
+    emit defaultCheckStateChanged(m_initialCheckedSet != m_currentCheckedSet);
 }
 
 /*!
@@ -360,7 +360,7 @@ void ComponentModel::selectDefault()
         for (int i = 0; i < m_rootComponentList.count(); ++i) {
             foreach (Component *child, m_rootComponentList.at(i)->childs()) {
                 if (child->isCheckable() && !child->isTristate() && child->isDefault()) {
-                    m_initialCheckedList.insert(child->name());
+                    m_initialCheckedSet.insert(child->name());
                 }
             }
         }
@@ -368,14 +368,14 @@ void ComponentModel::selectDefault()
         for (int i = 0; i < m_rootComponentList.count(); ++i) {
             foreach (Component *child, m_rootComponentList.at(i)->childs()) {
                 if (child->isCheckable() && !child->isTristate() && child->isInstalled())
-                    m_initialCheckedList.insert(child->name());
+                    m_initialCheckedSet.insert(child->name());
             }
         }
     }
-    m_currentCheckedList += m_initialCheckedList;
-    foreach (const QString &name, m_currentCheckedList)
+    m_currentCheckedSet += m_initialCheckedSet;
+    foreach (const QString &name, m_currentCheckedSet)
         setData(indexFromComponentName(name), Qt::Checked, Qt::CheckStateRole);
-    emit defaultCheckStateChanged(m_initialCheckedList != m_currentCheckedList);
+    emit defaultCheckStateChanged(m_initialCheckedSet != m_currentCheckedSet);
 }
 
 // -- private slots
@@ -429,10 +429,10 @@ void ComponentModel::slotCheckStateChanged(const QModelIndex &index)
         return;
 
     if (component->checkState() == Qt::Checked && !component->isTristate())
-        m_currentCheckedList.insert(component->name());
+        m_currentCheckedSet.insert(component->name());
     else if (component->checkState() == Qt::Unchecked && !component->isTristate())
-        m_currentCheckedList.remove(component->name());
-    emit defaultCheckStateChanged(m_initialCheckedList != m_currentCheckedList);
+        m_currentCheckedSet.remove(component->name());
+    emit defaultCheckStateChanged(m_initialCheckedSet != m_currentCheckedSet);
 
     if (component->isVirtual())
         return;
