@@ -313,8 +313,6 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
 
     QList<Component*> notAppendedComponents; //for example components with unresolved dependencies
     foreach (Component *currentComponent, components){
-        if (currentComponent->name() == debugComponent)
-            verbose() << "now we are woring with:" << currentComponent->name() << std::endl;
         if (m_toInstallComponentIds.contains(currentComponent->name())) {
             QString errorMessage = QString(QLatin1String(
                 "Recursion detected component(%1) already added with reason: %2.")).arg(
@@ -331,8 +329,6 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             if (currentComponent->dependencies().isEmpty()) {
                 realAppendToInstallComponents(currentComponent);
             } else {
-                if (currentComponent->name() == debugComponent)
-                    verbose() << "now we are woring with:" << currentComponent->name() << std::endl;
                 notAppendedComponents.append(currentComponent);
             }
             break;
@@ -375,8 +371,6 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
                     //add needed dependency components to the next run
                     insertInstallReason(dependencyComponent, QString(tr(
                         "added as dependency for %1")).arg(currentComponent->name()));
-                    if (currentComponent->name() == debugComponent)
-                        verbose() << "now we are woring with:" << currentComponent->name() << std::endl;
 
                     //make sure that we don't add it more then ones
                     notAppendedComponents.removeAll(dependencyComponent);
@@ -397,8 +391,6 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
                         currentComponent->dependencies().join(QLatin1String(", ")))*/);
             } else {
                 //add the component again(after dependencies were added)
-                if (currentComponent->name() == debugComponent)
-                    verbose() << "now we are woring with:" << currentComponent->name() << std::endl;
                 notAppendedComponents.append(currentComponent);
             }
             break;
@@ -1869,8 +1861,6 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
 
 void PackageManagerCorePrivate::realAppendToInstallComponents(Component *component)
 {
-    if (component->name() == debugComponent)
-        verbose() << "now we are woring with:" << component->name() << std::endl;
     m_orderedToInstallComponents.append(component);
     m_toInstallComponentIds.insert(component->name());
 }

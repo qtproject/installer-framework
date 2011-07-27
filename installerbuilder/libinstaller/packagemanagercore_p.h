@@ -232,9 +232,6 @@ private:
     //in some cases we have the reason a while before we can it really,
     //so we can't use ReasonHash as a quick is allready added check
     QSet<QString> m_toInstallComponentIds;
-
-    QString debugComponent;
-
 };
 
 }   // QInstaller
