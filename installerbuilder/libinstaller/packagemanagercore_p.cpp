@@ -350,8 +350,8 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
 
                     QString dependencyWay = currentComponent->name() + QLatin1String("->") + dependencyComponentName;
                     if (m_visitedDependencies.contains(dependencyWay)) {
-                        QString errorMessage = QString(QLatin1String(
-                            "Can't install any more component, because no one has no or resolved dependencies."));
+                        QString errorMessage = QString(QLatin1String("Unable to install any further"
+                            "components because there are none available that have no or only fulfilled dependencies."));
                         verbose() << qPrintable(errorMessage) << std::endl;
                         foreach (Component *currentComponent, components){
                             verbose() << "\t" << currentComponent->name();
@@ -395,7 +395,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             }
             break;
         } default:
-            Q_ASSERT_X(false, Q_FUNC_INFO, "Something went realy wrong!");
+            Q_ASSERT_X(false, Q_FUNC_INFO, "Something went really wrong!");
             return false;
         }
     }

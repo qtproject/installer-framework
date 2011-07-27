@@ -301,6 +301,6 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
         return autoReply(buttons);
     }
 
-    Q_ASSERT_X(false, Q_FUNC_INFO, "Something went realy wrong.");
+    Q_ASSERT_X(false, Q_FUNC_INFO, "Something went really wrong.");
     return button;
 }
