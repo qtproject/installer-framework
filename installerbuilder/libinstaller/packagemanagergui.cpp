@@ -943,13 +943,19 @@ public:
         QPushButton *button;
         hlayout = new QHBoxLayout;
         const QVariantHash hash = q->elementsForPage(QLatin1String("ComponentSelectionPage"));
-        if (m_core->isInstaller()) {
+        if (!m_core->isUpdater()) {
             button = new QPushButton;
             hlayout->addWidget(button);
             connect(button, SIGNAL(clicked()), this, SLOT(selectDefault()));
-            button->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
-            button->setShortcut(QKeySequence(tr("Alt+A", "select default components")));
-            button->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), tr("Def&ault")).toString());
+            if (m_core->isInstaller()) {
+                button->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
+                button->setShortcut(QKeySequence(tr("Alt+A", "select default components")));
+                button->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), tr("Def&ault")).toString());
+            } else {
+                button->setObjectName(QLatin1String("ResetComponentsButton"));
+                button->setShortcut(QKeySequence(tr("Alt+R", "reset to already installed components")));
+                button->setText(hash.value(QLatin1String("ResetComponentsButton"), tr("&Reset")).toString());
+            }
         }
 
         button = new QPushButton;
@@ -1149,7 +1155,7 @@ bool ComponentSelectionPage::isComplete() const
 {
     if (packageManagerCore()->isInstaller() || packageManagerCore()->isUpdater())
         return d->m_currentModel->hasCheckedComponents();
-    return !d->m_currentModel->defaultCheckState();
+    return !d->m_currentModel->isChanged();
 }
 
 
