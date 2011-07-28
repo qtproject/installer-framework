@@ -185,8 +185,6 @@ public:
     OperationList m_performedOperationsOld;
     OperationList m_performedOperationsCurrentSession;
 
-    bool isInstallComponentsOrderCalculated;
-
 private slots:
     void infoMessage(KDJob *, const QString &message) {
         emit m_core->metaJobInfoMessage(message);

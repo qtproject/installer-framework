@@ -177,7 +177,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(magicInstallerMaker)
-    , isInstallComponentsOrderCalculated(false)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
