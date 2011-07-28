@@ -952,6 +952,12 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             out << in.readLine().replace(before, after) << endl;
 
         // copy qt_menu.nib if it exists
+        op = createOwnedOperation(QLatin1String("Mkdir"));
+        op->setArguments(QStringList() << (targetAppDirPath + QLatin1String("/../Resources/qt_menu.nib")));
+        if (!op->performOperation()) {
+            verbose() << "ERROR in Mkdir operation: " << op->errorString() << std::endl;
+        }
+
         op = createOwnedOperation(QLatin1String("CopyDirectory"));
         op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../Resources/qt_menu.nib"))
             << (targetAppDirPath + QLatin1String("/../Resources/qt_menu.nib")));
