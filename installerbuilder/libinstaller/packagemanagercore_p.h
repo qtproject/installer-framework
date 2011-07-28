@@ -72,11 +72,6 @@ public:
         Perform,
         Undo
     };
-    enum AppendToInstallState {
-        WithoutDependenciesAppendState,
-        WithDependenciesAppendState
-
-    };
 
     explicit PackageManagerCorePrivate(PackageManagerCore *core);
     explicit PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
@@ -109,8 +104,8 @@ public:
     QHash<QString, QPair<Component*, Component*> > &componentsToReplace(RunMode mode);
 
     void clearComponentsToInstall();
-    bool appendComponentsToInstall(const QList<Component*> &components,
-        const AppendToInstallState state = WithoutDependenciesAppendState);
+    bool appendComponentsToInstall(const QList<Component*> &components);
+    bool appendComponentToInstall(Component* components);
     QString installReason(Component* component);
 
     void runInstaller();

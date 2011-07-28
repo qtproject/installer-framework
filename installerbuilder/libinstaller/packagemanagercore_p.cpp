@@ -302,8 +302,7 @@ void PackageManagerCorePrivate::clearComponentsToInstall() {
     m_toInstallComponentIdReasonHash.clear();
 }
 
-bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*> &components,
-    const AppendToInstallState state)
+bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*> &components)
 {
     if (components.isEmpty()) {
         verbose() << "components list is empty in " << Q_FUNC_INFO << std::endl;
@@ -323,99 +322,47 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             return false;
         }
 
-        switch(state) {
-        case WithoutDependenciesAppendState: {
-            if (currentComponent->dependencies().isEmpty()) {
-                realAppendToInstallComponents(currentComponent);
-            } else {
-                notAppendedComponents.append(currentComponent);
-            }
-            break;
-        } case WithDependenciesAppendState: {
-            bool allDependenciesAreThere = true;
-            foreach (const QString &dependencyComponentName, currentComponent->dependencies()) {
-                //componentByName return 0 if dependencyComponentName contains a version which is not available
-                Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
-                if (dependencyComponent == 0) {
-                    QString errorMessage = QString(QLatin1String(
-                        "Can't find missing dependency(%1) for %2.")).arg(dependencyComponentName, currentComponent->name());
-                    verbose() << qPrintable(errorMessage) << std::endl;
-
-                    Q_ASSERT_X(false, Q_FUNC_INFO, qPrintable(errorMessage));
-                    return false;
-                }
-                if (!dependencyComponent->isInstalled()
-                    && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
-
-                    QString dependencyWay = currentComponent->name() + QLatin1String("->") + dependencyComponentName;
-                    if (m_visitedDependencies.contains(dependencyWay)) {
-                        QString errorMessage = QString(QLatin1String("Unable to install any further"
-                            "components because there are none available that have no or only fulfilled dependencies."));
-                        verbose() << qPrintable(errorMessage) << std::endl;
-                        foreach (Component *currentComponent, components){
-                            verbose() << "\t" << currentComponent->name();
-                            if (!currentComponent->dependencies().isEmpty())
-                                verbose() << " with dependencies: " << currentComponent->dependencies().join(QLatin1String(", "));
-                            verbose() << std::endl;
-                        }
-
-                        Q_ASSERT_X(!m_visitedDependencies.contains(dependencyWay),
-                                   Q_FUNC_INFO,
-                                   qPrintable(errorMessage));
-                        return false;
-                    } else {
-                        m_visitedDependencies.insert(dependencyWay);
-                    }
-
-                    //add needed dependency components to the next run
-                    insertInstallReason(dependencyComponent, QString(tr(
-                        "added as dependency for %1")).arg(currentComponent->name()));
-
-                    //make sure that we don't add it more then ones
-                    notAppendedComponents.removeAll(dependencyComponent);
-
-                    //then prepend it to make sure that the next try tries the dependency first
-                    notAppendedComponents.prepend(dependencyComponent);
-                }
-                allDependenciesAreThere &= (dependencyComponent->isInstalled() || m_toInstallComponentIds.contains(dependencyComponent->name()));
-            }
-            //remove this component from the next run, because we can add it now,
-            //if we can't add it - it will added again in the else case
-            notAppendedComponents.removeAll(currentComponent);
-            if (allDependenciesAreThere) {
-                //adding it to the real install list
-                realAppendToInstallComponents(currentComponent);
-                insertInstallReason(currentComponent, QString(
-                    tr("component(s) with resolved dependencies"))/*.arg(
-                        currentComponent->dependencies().join(QLatin1String(", ")))*/);
-            } else {
-                //add the component again(after dependencies were added)
-                notAppendedComponents.append(currentComponent);
-            }
-            break;
-        } default:
-            Q_ASSERT_X(false, Q_FUNC_INFO, "Something went really wrong!");
-            return false;
+        if (currentComponent->dependencies().isEmpty()) {
+            realAppendToInstallComponents(currentComponent);
+        } else {
+            notAppendedComponents.append(currentComponent);
         }
     }
+    bool allComponentsAdded = true;
+    foreach (Component* currentComponent, notAppendedComponents) {
+        allComponentsAdded &= appendComponentToInstall(currentComponent);
+    }
+    return allComponentsAdded;
+}
 
-    if (notAppendedComponents.count() > 0) {
-        //try again to append the not appended component because the last appended ones could
-        //are the missing dependencies
-        appendComponentsToInstall(notAppendedComponents, WithDependenciesAppendState);
-    } else {
-        //this means notAppendedComponents are empty, so all regular dependencies are resolved
-        //now we are looking for auto depend on components
-        foreach (Component* currentComponent, m_core->availableComponents()) {
-            if (!m_toInstallComponentIds.contains(currentComponent->name())
-                    && currentComponent->isAutoDependOn()) {
-                notAppendedComponents.append(currentComponent);
-            }
+bool PackageManagerCorePrivate::appendComponentToInstall(Component* component)
+{
+    foreach (const QString &dependencyComponentName, component->dependencies()) {
+        //componentByName return 0 if dependencyComponentName contains a version which is not available
+        Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
+        if (dependencyComponent == 0) {
+            QString errorMessage = QString(QLatin1String(
+                "Can't find missing dependency(%1) for %2.")).arg(dependencyComponentName, component->name());
+            verbose() << qPrintable(errorMessage) << std::endl;
+
+            Q_ASSERT_X(false, Q_FUNC_INFO, qPrintable(errorMessage));
+            return false;
         }
-        if (notAppendedComponents.count() > 0)
-            appendComponentsToInstall(notAppendedComponents, WithoutDependenciesAppendState);
-        //else
-            //nothing we are ready
+        if (!dependencyComponent->isInstalled()
+            && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
+
+            //add needed dependency components to the next run
+            insertInstallReason(dependencyComponent, QString(tr(
+                "added as dependency for %1")).arg(component->name()));
+
+            appendComponentToInstall(dependencyComponent);
+        }
+    }
+    if (!m_toInstallComponentIds.contains(component->name())) {
+        insertInstallReason(component, QString(
+            tr("component(s) with resolved dependencies"))/*.arg(
+                currentComponent->dependencies().join(QLatin1String(", ")))*/);
+        realAppendToInstallComponents(component);
     }
     return true;
 }
@@ -1866,6 +1813,7 @@ void PackageManagerCorePrivate::realAppendToInstallComponents(Component *compone
 {
     m_orderedToInstallComponents.append(component);
     m_toInstallComponentIds.insert(component->name());
+    verbose() << "ADDED: " << component->name() <<" DEPENDENCIES: " << component->dependencies() << std::endl;
 }
 void PackageManagerCorePrivate::insertInstallReason(Component *component, const QString &reason) {
     //keep the first reason
