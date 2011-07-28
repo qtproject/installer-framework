@@ -104,13 +104,12 @@ bool MacReplaceInstallNamesOperation::apply(const QString &indicator, const QStr
     QDirIterator dirIterator(searchDir, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
     while (dirIterator.hasNext()) {
         QString fileName = dirIterator.next();
-        if (dirIterator.fileInfo().isDir())
-            continue;
-
-        if (fileName.endsWith(QLatin1String(".dylib")))
-            relocateBinary(fileName);
-        else if (fileName.endsWith(QLatin1String(".framework")))
+        if (dirIterator.fileInfo().isDir() && fileName.endsWith(QLatin1String(".framework")))
             relocateFramework(fileName);
+        else if (dirIterator.fileInfo().isDir())
+            continue;
+        else if (fileName.endsWith(QLatin1String(".dylib")))
+            relocateBinary(fileName);
         else if (dirIterator.fileInfo().isExecutable() && !fileName.endsWith(QLatin1String(".h"))
             && !fileName.endsWith(QLatin1String(".cpp")) && !fileName.endsWith(QLatin1String(".pro"))
             && !fileName.endsWith(QLatin1String(".pri"))) {
@@ -222,16 +221,19 @@ void MacReplaceInstallNamesOperation::relocateFramework(const QString &directory
 {
     QFileInfo fi(directoryName);
     QString frameworkName = fi.baseName();
-    fi.setFile(directoryName + QLatin1String("/Versions/Current/") + frameworkName);
-    if (fi.exists()) {
-        QString fileName = fi.isSymLink() ? fi.symLinkTarget() : fi.absoluteFilePath();
-        relocateBinary(fileName);
+
+    QString absoluteVersionDirectory = directoryName + QLatin1String("/Versions/Current");
+    if (QFileInfo(absoluteVersionDirectory).isSymLink()) {
+        absoluteVersionDirectory = QFileInfo(absoluteVersionDirectory).symLinkTarget();
     }
-    fi.setFile(directoryName + QLatin1String("/Versions/Current/") + frameworkName + QLatin1String("_debug"));
-    if (fi.exists()) {
-        QString fileName = fi.isSymLink() ? fi.symLinkTarget() : fi.absoluteFilePath();
+
+    fi.setFile(absoluteVersionDirectory + QDir::separator() + frameworkName);
+    if (fi.exists())
         relocateBinary(fileName);
-    }
+
+    fi.setFile(absoluteVersionDirectory + QDir::separator() + frameworkName + QLatin1String("_debug"));
+    if (fi.exists())
+        relocateBinary(fileName);
 }
 
 bool MacReplaceInstallNamesOperation::execCommand(const QString &cmd, const QStringList &args)
