@@ -220,7 +220,7 @@ private:
     //calculate installation order variables
     QList<Component*> m_orderedToInstallComponents;
     QHash<QString, QString> m_toInstallComponentIdReasonHash; //for faster lookups
-    QSet<QString> m_visitedDependencies;
+    QHash<Component*, QSet<Component*> > m_visitedComponents;
 
     //in some cases we have the reason a while before we can it really,
     //so we can't use ReasonHash as a quick is allready added check

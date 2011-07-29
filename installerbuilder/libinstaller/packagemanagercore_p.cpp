@@ -297,7 +297,7 @@ QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::compo
 
 void PackageManagerCorePrivate::clearComponentsToInstall() {
     m_orderedToInstallComponents.clear();
-    m_visitedDependencies.clear();
+    m_visitedComponents.clear();
     m_toInstallComponentIds.clear();
     m_toInstallComponentIdReasonHash.clear();
 }
@@ -351,11 +351,16 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component* component)
         if (!dependencyComponent->isInstalled()
             && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
 
+            if (m_visitedComponents.value(component).contains(dependencyComponent))
+                return false;
+            m_visitedComponents[component].insert(dependencyComponent);
+
             //add needed dependency components to the next run
             insertInstallReason(dependencyComponent, QString(tr(
                 "added as dependency for %1")).arg(component->name()));
 
-            appendComponentToInstall(dependencyComponent);
+            if (!appendComponentToInstall(dependencyComponent))
+                return false;
         }
     }
     if (!m_toInstallComponentIds.contains(component->name())) {
