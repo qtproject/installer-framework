@@ -1420,25 +1420,28 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     topLayout->addWidget(m_msgLabel);
     baseLayout->addLayout(topLayout);
 
-    if (!packageManagerCore()->isUninstaller()) {
-        m_taskDetailsButton = new QPushButton(tr("&Show Details"), this);
-        m_taskDetailsButton->setObjectName(QLatin1String("TaskDetailsButton"));
-        m_taskDetailsButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
-        connect(m_taskDetailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
-        topLayout->addWidget(m_taskDetailsButton);
+    m_taskDetailsButton = new QPushButton(tr("&Show Details"), this);
+    m_taskDetailsButton->setObjectName(QLatin1String("TaskDetailsButton"));
+    m_taskDetailsButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+    connect(m_taskDetailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
+    topLayout->addWidget(m_taskDetailsButton);
 
-        QVBoxLayout *bottomLayout = new QVBoxLayout();
-        bottomLayout->setObjectName(QLatin1String("BottomLayout"));
-        bottomLayout->addStretch();
+    QVBoxLayout *bottomLayout = new QVBoxLayout();
+    bottomLayout->setObjectName(QLatin1String("BottomLayout"));
+    bottomLayout->addStretch();
 
-        m_taskDetailsBrowser = new QTextBrowser(this);
-        m_taskDetailsBrowser->setReadOnly(true);
-        m_taskDetailsBrowser->setObjectName(QLatin1String("TaskDetailsBrowser"));
-        m_taskDetailsBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_taskDetailsBrowser = new QTextBrowser(this);
+    m_taskDetailsBrowser->setReadOnly(true);
+    m_taskDetailsBrowser->setObjectName(QLatin1String("TaskDetailsBrowser"));
+    m_taskDetailsBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_taskDetailsBrowser->setVisible(false);
+    bottomLayout->addWidget(m_taskDetailsBrowser);
+    bottomLayout->setStretch(1, 10);
+    baseLayout->addLayout(bottomLayout);
+
+    if (packageManagerCore()->isUninstaller()) {
+        m_taskDetailsButton->setVisible(false);
         m_taskDetailsBrowser->setVisible(false);
-        bottomLayout->addWidget(m_taskDetailsBrowser);
-        bottomLayout->setStretch(1, 10);
-        baseLayout->addLayout(bottomLayout);
     }
 
     setLayout(baseLayout);
@@ -1535,6 +1538,8 @@ void ReadyForInstallationPage::entering()
 }
 void ReadyForInstallationPage::refreshTaskDetailsBrowser()
 {
+    if (packageManagerCore()->isUninstaller())
+        return;
     QString htmlOutput;
     QString lastInstallReason;
 
