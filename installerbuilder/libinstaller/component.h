@@ -175,7 +175,7 @@ public:
 
     Q_INVOKABLE void setInstalled();
     Q_INVOKABLE bool isDefault() const;
-    Q_INVOKABLE bool isAutoDependOn() const;
+    Q_INVOKABLE bool isAutoDependOn(const QSet<QString> &toInstallComponentIds) const;
     Q_INVOKABLE bool isInstalled() const;
     Q_INVOKABLE bool installationRequested() const;
 

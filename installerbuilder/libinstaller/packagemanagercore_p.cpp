@@ -332,19 +332,22 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
     foreach (Component* currentComponent, notAppendedComponents) {
         allComponentsAdded &= appendComponentToInstall(currentComponent);
     }
+    QList<Component*> foundAutoDependOnList;
     if (allComponentsAdded) {
         //this means notAppendedComponents are empty, so all regular dependencies are resolved
         //now we are looking for auto depend on components
         foreach (Component* currentComponent, m_core->availableComponents()) {
             if (!currentComponent->isInstalled()
                     && !m_toInstallComponentIds.contains(currentComponent->name())
-                    && currentComponent->isAutoDependOn()) {
+                    && currentComponent->isAutoDependOn(m_toInstallComponentIds)) {
                 insertInstallReason(currentComponent, QString(
                     tr("component(s) with activated auto depend on ")));
-                appendComponentToInstall(currentComponent);
+                foundAutoDependOnList.append(currentComponent);
             }
         }
     }
+    if (!foundAutoDependOnList.isEmpty())
+        return appendComponentsToInstall(foundAutoDependOnList);
     return allComponentsAdded;
 }
 
@@ -1831,7 +1834,6 @@ void PackageManagerCorePrivate::realAppendToInstallComponents(Component *compone
 {
     m_orderedToInstallComponents.append(component);
     m_toInstallComponentIds.insert(component->name());
-    verbose() << "ADDED: " << component->name() <<" DEPENDENCIES: " << component->dependencies() << std::endl;
 }
 void PackageManagerCorePrivate::insertInstallReason(Component *component, const QString &reason) {
     //keep the first reason

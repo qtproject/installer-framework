@@ -919,7 +919,7 @@ void Component::setInstalled()
 /*!
     Determines if the component comes as an auto dependency.
 */
-bool Component::isAutoDependOn() const
+bool Component::isAutoDependOn(const QSet<QString> &toInstallComponentIds) const
 {
     // the script can override this method
     if (value(scAutoDependOn).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
@@ -935,10 +935,17 @@ bool Component::isAutoDependOn() const
     if (autoDependOnDependencyList.isEmpty())
         return false;
 
-    QList<Component*> components = d->m_core->availableComponents();
-    foreach (Component *component, components) {
-        if (autoDependOnDependencyList.contains(component->name())) {
-            autoDependOnDependencyList.removeAll(component->name());
+    QSet<QString> installedComponentIds;
+    foreach (const Component *component, d->m_core->availableComponents()) {
+        if (component->isInstalled()) {
+            installedComponentIds.insert(component->name());
+        }
+    }
+    installedComponentIds.unite(toInstallComponentIds);
+    //if we found all autodependons we know that this one wants to be installed
+    foreach (QString componentName, installedComponentIds) {
+        if (autoDependOnDependencyList.contains(componentName)) {
+            autoDependOnDependencyList.removeAll(componentName);
             //found all "when"-components
             if (autoDependOnDependencyList.isEmpty())
                 return true;
