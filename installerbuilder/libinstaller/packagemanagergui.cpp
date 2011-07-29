@@ -1546,6 +1546,8 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
     if (!packageManagerCore()->calculateToInstallComponents()) {
         htmlOutput.append(QString(QLatin1String("<h2><font color=\"red\">%1</font></h2>")).arg(
             tr("Can't resolve all dependencies.<br>")));
+        if (!m_taskDetailsBrowser->isVisible())
+            toggleDetails();
     }
 
 
