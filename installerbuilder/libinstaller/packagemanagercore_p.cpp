@@ -306,7 +306,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
 {
     if (components.isEmpty()) {
         verbose() << "components list is empty in " << Q_FUNC_INFO << std::endl;
-        return false;
+        return true;
     }
 
     QList<Component*> notAppendedComponents; //for example components with unresolved dependencies
