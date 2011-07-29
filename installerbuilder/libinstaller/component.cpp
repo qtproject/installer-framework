@@ -137,6 +137,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scDisplayName, package.data(scDisplayName).toString());
     setValue(scDescription, package.data(scDescription).toString());
     setValue(scDefault, package.data(scDefault).toString());
+    setValue(scAutoDependOn, package.data(scAutoDependOn).toString());
     setValue(scCompressedSize, QString::number(package.compressedSize()));
     setValue(scUncompressedSize, QString::number(package.uncompressedSize()));
     setValue(scVersion, package.data(scVersion).toString());

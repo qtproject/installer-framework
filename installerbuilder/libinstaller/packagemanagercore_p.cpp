@@ -332,6 +332,19 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
     foreach (Component* currentComponent, notAppendedComponents) {
         allComponentsAdded &= appendComponentToInstall(currentComponent);
     }
+    if (allComponentsAdded) {
+        //this means notAppendedComponents are empty, so all regular dependencies are resolved
+        //now we are looking for auto depend on components
+        foreach (Component* currentComponent, m_core->availableComponents()) {
+            if (!currentComponent->isInstalled()
+                    && !m_toInstallComponentIds.contains(currentComponent->name())
+                    && currentComponent->isAutoDependOn()) {
+                insertInstallReason(currentComponent, QString(
+                    tr("component(s) with activated auto depend on ")));
+                appendComponentToInstall(currentComponent);
+            }
+        }
+    }
     return allComponentsAdded;
 }
 
