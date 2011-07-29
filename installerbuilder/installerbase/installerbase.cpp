@@ -72,6 +72,40 @@ public:
     }
 };
 
+class MyApplication : public QApplication {
+public:
+    MyApplication(int& argc, char ** argv) :
+    QApplication(argc, argv) { }
+    virtual ~MyApplication() { }
+
+    // reimplemented from QApplication so we can throw exceptions in scripts and slots
+    virtual bool notify(QObject * receiver, QEvent * event) {
+        try {
+            return QApplication::notify(receiver, event);
+        } catch(std::exception& e) {
+            qCritical() << "Exception thrown:" << e.what();
+        }
+        return false;
+    }
+};
+
+class MyCoreApplication : public QCoreApplication {
+public:
+    MyCoreApplication(int& argc, char ** argv) :
+    QCoreApplication(argc, argv) { }
+    virtual ~MyCoreApplication() { }
+
+    // reimplemented from QCoreApplication so we can throw exceptions in scripts and slots
+    virtual bool notify(QObject * receiver, QEvent * event) {
+    try {
+        return QCoreApplication::notify(receiver, event);
+    } catch(std::exception& e) {
+        qCritical() << "Exception thrown:" << e.what();
+    }
+        return false;
+    }
+};
+
 static QList<Repository> repositories(const QStringList &arguments, const int index)
 {
     QList<Repository> repoList;
@@ -98,7 +132,7 @@ int main(int argc, char *argv[])
     try {
         // this is the FSEngineServer as an admin rights process upon request:
         if (args.count() >= 3 && args[1] == QLatin1String("--startserver")) {
-            QCoreApplication app(argc, argv);
+            MyCoreApplication app(argc, argv);
             FSEngineServer* const server = new FSEngineServer(args[2].toInt());
             if (args.count() >= 4)
                 server->setAuthorizationKey(args[3]);
@@ -120,7 +154,7 @@ int main(int argc, char *argv[])
 #endif
 
         if (args.contains(QLatin1String("--checkupdates"))) {
-            QCoreApplication app(argc, argv);
+            MyCoreApplication app(argc, argv);
             if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
                 return 0;
 
@@ -130,7 +164,7 @@ int main(int argc, char *argv[])
         }
 
         // from here, the "normal" installer binary is running
-        QApplication app(argc, argv);
+        MyApplication app(argc, argv);
 
         if (runCheck.isRunning(KDRunOnceChecker::ProcessList)) {
             if (runCheck.isRunning(KDRunOnceChecker::Lockfile))
