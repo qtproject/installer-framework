@@ -228,12 +228,16 @@ void MacReplaceInstallNamesOperation::relocateFramework(const QString &directory
     }
 
     fi.setFile(absoluteVersionDirectory + QDir::separator() + frameworkName);
-    if (fi.exists())
+    if (fi.exists()) {
+        QString fileName = fi.isSymLink() ? fi.symLinkTarget() : fi.absoluteFilePath();
         relocateBinary(fileName);
+    }
 
     fi.setFile(absoluteVersionDirectory + QDir::separator() + frameworkName + QLatin1String("_debug"));
-    if (fi.exists())
+    if (fi.exists()) {
+        QString fileName = fi.isSymLink() ? fi.symLinkTarget() : fi.absoluteFilePath();
         relocateBinary(fileName);
+    }
 }
 
 bool MacReplaceInstallNamesOperation::execCommand(const QString &cmd, const QStringList &args)
