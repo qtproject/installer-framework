@@ -381,7 +381,7 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component* component)
     }
     if (!m_toInstallComponentIds.contains(component->name())) {
         insertInstallReason(component, QString(
-            tr("component(s) with resolved dependencies"))/*.arg(
+            tr("Component(s) that have resolved Dependencies"))/*.arg(
                 currentComponent->dependencies().join(QLatin1String(", ")))*/);
         realAppendToInstallComponents(component);
     }
@@ -391,7 +391,7 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component* component)
 QString PackageManagerCorePrivate::installReason(Component* component) {
     QString reason = m_toInstallComponentIdReasonHash.value(component->name());
     if (reason.isEmpty())
-        return tr("simple component(s) without dependencies");
+        return tr("Selected Component(s) without Dependencies");
     return m_toInstallComponentIdReasonHash.value(component->name());
 }
 
