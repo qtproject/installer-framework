@@ -65,7 +65,8 @@ QString InstallIconsOperation::targetDirectory()
      }
 #endif
 
-    XDG_DATA_DIRS.push_back(QLatin1String("/usr/share")); // default path
+    XDG_DATA_DIRS.push_back(QLatin1String("/usr/share/pixmaps")); // default path
+    XDG_DATA_DIRS.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share/icons"))); // default path
     XDG_DATA_DIRS.push_back(QDir::home().absoluteFilePath(QLatin1String(".icons"))); // default path
 
     QString directory;
@@ -74,17 +75,18 @@ QString InstallIconsOperation::targetDirectory()
         if (it->isEmpty())
             continue;
 
-        if (it + 1 == directories.end())
+        // our default dirs are correct, XDG_DATA_DIRS set via env need "icon" at the end
+        if ((it + 1 == directories.end()) || (it + 2 == directories.end()) || (it + 3 == directories.end()))
             directory = QDir(*it).absolutePath();
         else
             directory = QDir(*it).absoluteFilePath(QLatin1String("icons"));
 
         QDir dir(directory);
-        // let's see wheter this dir exists or we're able to create it
+        // let's see if this dir exists or we're able to create it
         if (!dir.exists() && !QDir().mkpath(directory))
             continue;
 
-        // we just try wheter we're able to open the file in ReadWrite
+        // we just try if we're able to open the file in ReadWrite
         QFile file(QDir(directory).absoluteFilePath(QLatin1String("tmpfile")));
         const bool existed = file.exists();
         if (!file.open(QIODevice::ReadWrite))
