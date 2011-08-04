@@ -1164,7 +1164,7 @@ bool ComponentSelectionPage::isComplete() const
 {
     if (packageManagerCore()->isInstaller() || packageManagerCore()->isUpdater())
         return d->m_currentModel->hasCheckedComponents();
-    return !d->m_currentModel->isChanged();
+    return !d->m_currentModel->isUnChanged();
 }
 
 

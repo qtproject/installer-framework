@@ -273,7 +273,7 @@ PackageManagerCore *ComponentModel::packageManagerCore() const
 /*!
     Returns true if no changes to the components checked state have been done, otherwise returns false.
 */
-bool ComponentModel::isChanged() const
+bool ComponentModel::isUnChanged() const
 {
     return m_initialCheckedSet == m_currentCheckedSet;
 }
