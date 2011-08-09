@@ -1835,11 +1835,12 @@ void PackageManagerCorePrivate::realAppendToInstallComponents(Component *compone
     m_orderedToInstallComponents.append(component);
     m_toInstallComponentIds.insert(component->name());
 }
-void PackageManagerCorePrivate::insertInstallReason(Component *component, const QString &reason) {
+
+void PackageManagerCorePrivate::insertInstallReason(Component *component, const QString &reason)
+{
     //keep the first reason
-    if (m_toInstallComponentIdReasonHash.value(component->name()).isEmpty()) {
+    if (m_toInstallComponentIdReasonHash.value(component->name()).isEmpty())
         m_toInstallComponentIdReasonHash.insert(component->name(), reason);
-    }
 }
 
 
