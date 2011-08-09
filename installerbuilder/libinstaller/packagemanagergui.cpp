@@ -1439,11 +1439,6 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     bottomLayout->setStretch(1, 10);
     baseLayout->addLayout(bottomLayout);
 
-    if (packageManagerCore()->isUninstaller()) {
-        m_taskDetailsButton->setVisible(false);
-        m_taskDetailsBrowser->setVisible(false);
-    }
-
     setLayout(baseLayout);
 }
 
@@ -1457,6 +1452,8 @@ void ReadyForInstallationPage::entering()
     const QString target = packageManagerCore()->value(scTargetDir);
 
     if (packageManagerCore()->isUninstaller()) {
+        m_taskDetailsButton->setVisible(false);
+        m_taskDetailsBrowser->setVisible(false);
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setTitle(titleForPage(objectName(), tr("Ready to Uninstall")));
         m_msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
