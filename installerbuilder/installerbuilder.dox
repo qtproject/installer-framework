@@ -41,11 +41,11 @@
   \verbatim
   <?xml version="1.0"?>
   <Package>
-      <Name>QtGui</Name>
+      <DisplayName>QtGui</DisplayName>
       <Description>Qt gui libraries</Description>
       <Version>4.5.1</Version>
       <ReleaseDate>2009-04-23</ReleaseDate>
-      <Identifier>com.nokia.sdk.qt.gui</Identifier>
+      <Name>com.nokia.sdk.qt.gui</Name>
       <Dependencies>com.nokia.sdk.qt.core-4.5.1</Dependencies>
       <Virtual>false</Virtual>
       <Script>installscript.qs</Script>
@@ -62,7 +62,7 @@
 
   In the example above, you see several XML tags which are filled with values. The following tag names - values - are allowed:
 
-  \li \b VisibleName The human readable name of the component - \a required.
+  \li \b DisplayName The human readable name of the component - \a required.
   \li \b Description The human readable description of the component - \a required.
   \li \b Version The version number of the component - \a required.
   \li \b ReleaseDate The day this component version was released - \a optional.
