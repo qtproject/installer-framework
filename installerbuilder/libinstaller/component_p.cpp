@@ -140,7 +140,8 @@ ComponentModelHelper::~ComponentModelHelper()
 }
 
 /*!
-    Returns the number of child components.
+    Returns the number of child components. Depending if virtual components are visible or not the count might
+    differ from what one will get if calling Component::childComponents(...).count().
 */
 int ComponentModelHelper::childCount() const
 {
@@ -172,7 +173,7 @@ QList<Component*> ComponentModelHelper::childs() const
     QList<Component*> result;
     foreach (Component *component, *components) {
         result.append(component);
-        result += component->childComponents(true, AllMode);
+        result += component->childs();
     }
     return result;
 }

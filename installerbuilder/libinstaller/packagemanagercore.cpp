@@ -1444,9 +1444,11 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
         foreach (QInstaller::Component *component, components) {
             component->loadComponentScript();
 
-            // set the checked state for all components without child(means without tristate)
+            // set the checked state for all components without child (means without tristate)
             if (component->isCheckable() && !component->isTristate()) {
-                if (component->isInstalled())
+                if (component->isDefault() && isInstaller())
+                    component->setCheckState(Qt::Checked);
+                else if (component->isInstalled())
                     component->setCheckState(Qt::Checked);
             }
         }

@@ -302,7 +302,8 @@ void Component::removeComponent(Component *component)
 
 /*!
     Returns a list of child components. If \a recursive is set to true, the returned list
-    contains not only the direct children, but all ancestors.
+    contains not only the direct children, but all ancestors. Note: The returned list does include ALL
+    children, non virtual components as well as virtual components.
 */
 QList<Component*> Component::childComponents(bool recursive, RunMode runMode) const
 {

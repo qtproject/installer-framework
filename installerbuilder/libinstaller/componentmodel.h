@@ -66,7 +66,7 @@ public:
 
     PackageManagerCore *packageManagerCore() const;
 
-    bool isUnChanged() const;
+    bool defaultCheckState() const;
     bool hasCheckedComponents() const;
     QList<Component*> checkedComponents() const;
 

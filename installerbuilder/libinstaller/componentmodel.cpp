@@ -273,7 +273,7 @@ PackageManagerCore *ComponentModel::packageManagerCore() const
 /*!
     Returns true if no changes to the components checked state have been done, otherwise returns false.
 */
-bool ComponentModel::isUnChanged() const
+bool ComponentModel::defaultCheckState() const
 {
     return m_initialCheckedSet == m_currentCheckedSet;
 }
@@ -353,27 +353,8 @@ void ComponentModel::deselectAll()
 */
 void ComponentModel::selectDefault()
 {
-    if (m_core->isUpdater())
-        return;
-    deselectAll();
-    if (m_core->isInstaller()) {
-        for (int i = 0; i < m_rootComponentList.count(); ++i) {
-            foreach (Component *child, m_rootComponentList.at(i)->childs()) {
-                if (child->isCheckable() && !child->isTristate() && child->isDefault()) {
-                    m_initialCheckedSet.insert(child->name());
-                }
-            }
-        }
-    } else {
-        for (int i = 0; i < m_rootComponentList.count(); ++i) {
-            foreach (Component *child, m_rootComponentList.at(i)->childs()) {
-                if (child->isCheckable() && !child->isTristate() && child->isInstalled())
-                    m_initialCheckedSet.insert(child->name());
-            }
-        }
-    }
-    m_currentCheckedSet += m_initialCheckedSet;
-    foreach (const QString &name, m_currentCheckedSet)
+    m_currentCheckedSet = m_currentCheckedSet.subtract(select(Qt::Unchecked));
+    foreach (const QString &name, m_initialCheckedSet)
         setData(indexFromComponentName(name), Qt::Checked, Qt::CheckStateRole);
     emit defaultCheckStateChanged(m_initialCheckedSet != m_currentCheckedSet);
 }
@@ -382,10 +363,23 @@ void ComponentModel::selectDefault()
 
 void ComponentModel::slotModelReset()
 {
-    if (m_core->isUpdater())
-        selectAll();
-    else
-        selectDefault();
+    QList<QInstaller::Component*> components = m_rootComponentList;
+    if (m_core->runMode() == QInstaller::AllMode) {
+        for (int i = m_rootIndex; i < m_rootComponentList.count(); ++i)
+            components.append(m_rootComponentList.at(i)->childs());
+    }
+
+    foreach (Component *child, components) {
+        if (child->checkState() == Qt::Checked && !child->isTristate())
+            m_initialCheckedSet.insert(child->name());
+    }
+    m_currentCheckedSet += m_initialCheckedSet;
+
+    if (m_core->runMode() == QInstaller::AllMode)
+        select(Qt::Unchecked);
+
+    foreach (const QString &name, m_currentCheckedSet)
+        setData(indexFromComponentName(name), Qt::Checked, Qt::CheckStateRole);
 }
 
 static Qt::CheckState verifyPartiallyChecked(Component *component)
@@ -486,7 +480,8 @@ QSet<QString> ComponentModel::select(Qt::CheckState state)
     QSet<QString> changed;
     for (int i = 0; i < m_rootComponentList.count(); ++i) {
         QSet<QString> tmp;
-        const QList<Component*> &children = m_rootComponentList.at(i)->childs();
+        QList<Component*> children = m_rootComponentList.at(i)->childs();
+        children.prepend(m_rootComponentList.at(i));    // we need to take the root item into account as well
         foreach (Component *child, children) {
             if (child->isCheckable() && !child->isTristate() && child->checkState() != state) {
                 tmp.insert(child->name());
