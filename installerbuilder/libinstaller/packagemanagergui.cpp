@@ -943,25 +943,25 @@ public:
         QVBoxLayout *layout = new QVBoxLayout(q);
         layout->addLayout(hlayout, 1);
 
-        QPushButton *button;
-        hlayout = new QHBoxLayout;
+        m_button = new QPushButton;
+        connect(m_button, SIGNAL(clicked()), this, SLOT(selectDefault()));
+        connect(m_allModel, SIGNAL(defaultCheckStateChanged(bool)), m_button, SLOT(setEnabled(bool)));
         const QVariantHash hash = q->elementsForPage(QLatin1String("ComponentSelectionPage"));
-        if (!m_core->isUpdater()) {
-            button = new QPushButton;
-            hlayout->addWidget(button);
-            connect(button, SIGNAL(clicked()), this, SLOT(selectDefault()));
-            if (m_core->isInstaller()) {
-                button->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
-                button->setShortcut(QKeySequence(tr("Alt+A", "select default components")));
-                button->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), tr("Def&ault")).toString());
-            } else {
-                button->setObjectName(QLatin1String("ResetComponentsButton"));
-                button->setShortcut(QKeySequence(tr("Alt+R", "reset to already installed components")));
-                button->setText(hash.value(QLatin1String("ResetComponentsButton"), tr("&Reset")).toString());
-            }
+        if (m_core->isInstaller()) {
+            m_button->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
+            m_button->setShortcut(QKeySequence(tr("Alt+A", "select default components")));
+            m_button->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), tr("Def&ault"))
+                .toString());
+        } else {
+            m_button->setEnabled(false);
+            m_button->setObjectName(QLatin1String("ResetComponentsButton"));
+            m_button->setShortcut(QKeySequence(tr("Alt+R", "reset to already installed components")));
+            m_button->setText(hash.value(QLatin1String("ResetComponentsButton"), tr("&Reset")).toString());
         }
+        hlayout = new QHBoxLayout;
+        hlayout->addWidget(m_button);
 
-        button = new QPushButton;
+        QPushButton *button = new QPushButton;
         hlayout->addWidget(button);
         connect(button, SIGNAL(clicked()), this, SLOT(selectAll()));
         button->setObjectName(QLatin1String("SelectAllComponentsButton"));
@@ -987,6 +987,10 @@ public:
 
     void updateTreeView()
     {
+        m_button->setVisible(m_core->isInstaller() || m_core->isPackageManager());
+        disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(currentChanged(QModelIndex)));
+
         m_currentModel = m_core->isUpdater() ? m_updaterModel : m_allModel;
         m_treeView->setModel(m_currentModel);
 
@@ -1006,8 +1010,6 @@ public:
             hasChildren = m_currentModel->hasChildren(m_currentModel->index(row, 0));
         m_treeView->setRootIsDecorated(hasChildren);
 
-        disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(currentChanged(QModelIndex)));
         connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(currentChanged(QModelIndex)));
 
@@ -1069,6 +1071,7 @@ public:
     ComponentModel *m_currentModel;
     QLabel *m_sizeLabel;
     QLabel *m_descriptionLabel;
+    QPushButton *m_button;
 };
 
 
