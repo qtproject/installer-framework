@@ -823,7 +823,7 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
     return d->m_orderedComponentsToInstall;
 }
 
-QString PackageManagerCore::installReason(Component* component) const
+QString PackageManagerCore::installReason(Component *component) const
 {
     return d->installReason(component);
 }

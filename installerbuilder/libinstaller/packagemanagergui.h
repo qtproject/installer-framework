@@ -317,6 +317,8 @@ protected:
 
 private:
     void refreshTaskDetailsBrowser();
+
+private:
     QLabel *m_msgLabel;
     QPushButton *m_taskDetailsButton;
     QTextBrowser* m_taskDetailsBrowser;

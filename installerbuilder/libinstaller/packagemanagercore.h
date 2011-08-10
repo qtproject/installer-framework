@@ -148,7 +148,7 @@ public:
 
     bool calculateComponentsToInstall() const;
     QList<Component*> orderedComponentsToInstall() const;
-    QString installReason(Component* component) const;
+    QString installReason(Component *component) const;
 
     QList<Component*> dependencies(const Component *component, QStringList &missingComponents) const;
 

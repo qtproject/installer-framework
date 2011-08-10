@@ -1528,7 +1528,7 @@ void ReadyForInstallationPage::entering()
         m_msgLabel->setText(tr("The volume you selected for installation seems to have sufficient space for "
             "installation, but there will be less than 1% of the volume's space available afterwards. %1")
             .arg(m_msgLabel->text()));
-    } else if (available - required < 100*1024*1024LL) {
+    } else if (available - required < 100 * 1024 * 1024LL) {
         // warn for less than 100MB being free
         m_msgLabel->setText(tr("The volume you selected for installation seems to have sufficient space for "
             "installation, but there will be less than 100 MB available afterwards. %1")
@@ -1536,6 +1536,7 @@ void ReadyForInstallationPage::entering()
     }
     refreshTaskDetailsBrowser();
 }
+
 void ReadyForInstallationPage::refreshTaskDetailsBrowser()
 {
     if (packageManagerCore()->isUninstaller())
@@ -1544,58 +1545,47 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
     QString htmlOutput;
     QString lastInstallReason;
     if (!packageManagerCore()->calculateComponentsToInstall()) {    // TODO: why again?
-        htmlOutput.append(QString(QLatin1String("<h2><font color=\"red\">%1</font></h2>")).arg(
-            tr("Can't resolve all dependencies.<br>")));
+        htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font><br></h2>").arg(tr("Can't "
+            "resolve all dependencies.")));
         if (!m_taskDetailsBrowser->isVisible())
             toggleDetails();
     }
 
-
-    //in updater case we don't uninstall components(yes I know update = uninstall + install,
-    //but a complete uninstall is meant)
+    // In case of updater mode we don't uninstall components.
     if (!packageManagerCore()->isUpdater()) {
-        QList<Component*> toRemoveComponentList;
-        QListIterator<Component*> allIt(packageManagerCore()->availableComponents());
-        while(allIt.hasNext()) {
-            Component* currentComponent = allIt.next();
-            if (currentComponent->isInstalled()
-                && !currentComponent->isSelected())
-                toRemoveComponentList.append(currentComponent);
+        QList<Component*> componentsToRemove;
+        foreach (Component *component, packageManagerCore()->availableComponents()) {
+            if (component->isInstalled() && !component->isSelected())
+                componentsToRemove.append(component);
         }
 
-        if (!toRemoveComponentList.isEmpty()) {
-            htmlOutput.append(QString(QLatin1String("<h3>%1</h3><ul>")).arg(tr("Components about to be removed.")));
-            QListIterator<Component*> toRemoveIt(toRemoveComponentList);
-            while(toRemoveIt.hasNext()) {
-                Component* currentComponent = toRemoveIt.next();
-                htmlOutput.append(QString(QLatin1String("<li> %1 </li>")).arg(currentComponent->name()));
-            }
-            htmlOutput.append(QString(QLatin1String("</ul>")));
+        if (!componentsToRemove.isEmpty()) {
+            htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(tr("Components about to be removed.")));
+            foreach (Component *component, componentsToRemove)
+                htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
+            htmlOutput.append(QLatin1String("</ul>"));
         }
     }
 
-    QListIterator<Component*> toInstallIt(packageManagerCore()->orderedComponentsToInstall());
-    while(toInstallIt.hasNext()) {
-        Component* currentComponent = toInstallIt.next();
-        QString currentInstallReason = packageManagerCore()->installReason(currentComponent);
-        if (lastInstallReason != currentInstallReason) {
-            if (!lastInstallReason.isEmpty()) //means we had to close the previous list
-                htmlOutput.append(QString(QLatin1String("</ul>")));
-            htmlOutput.append(QString(QLatin1String("<h3>%1</h3><ul>")).arg(currentInstallReason));
-            lastInstallReason = currentInstallReason;
+    foreach (Component *component, packageManagerCore()->orderedComponentsToInstall()) {
+        const QString installReason = packageManagerCore()->installReason(component);
+        if (lastInstallReason != installReason) {
+            if (!lastInstallReason.isEmpty()) // means we had to close the previous list
+                htmlOutput.append(QLatin1String("</ul>"));
+            htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(installReason));
+            lastInstallReason = installReason;
         }
-        htmlOutput.append(QString(QLatin1String("<li> %1 </li>")).arg(currentComponent->name()));
+        htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
     }
     m_taskDetailsBrowser->setHtml(htmlOutput);
 }
 
 void ReadyForInstallationPage::toggleDetails()
 {
-    const bool willShow = !m_taskDetailsBrowser->isVisible();
-    m_taskDetailsBrowser->setVisible(willShow);
-    m_taskDetailsButton->setText(willShow ? tr("&Hide Details") : tr("&Show Details"));
+    const bool visible = !m_taskDetailsBrowser->isVisible();
+    m_taskDetailsBrowser->setVisible(visible);
+    m_taskDetailsButton->setText(visible ? tr("&Hide Details") : tr("&Show Details"));
 }
-
 
 void ReadyForInstallationPage::leaving()
 {
@@ -1609,6 +1599,7 @@ bool ReadyForInstallationPage::isComplete() const
 {
     return isCommitPage();
 }
+
 
 // -- PerformInstallationPage
 
@@ -1627,13 +1618,11 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
 
     m_performInstallationForm->setupUi(this);
 
-    connect(ProgressCoordinator::instance(), SIGNAL(detailTextChanged(QString)),
-        m_performInstallationForm, SLOT(appendProgressDetails(QString)));
-    connect(ProgressCoordinator::instance(), SIGNAL(detailTextResetNeeded()),
-        m_performInstallationForm, SLOT(clearDetailsBrowser()));
-
-    connect(m_performInstallationForm, SIGNAL(showDetailsChanged()), this,
-        SLOT(toggleDetailsWereChanged()));
+    connect(ProgressCoordinator::instance(), SIGNAL(detailTextChanged(QString)), m_performInstallationForm,
+        SLOT(appendProgressDetails(QString)));
+    connect(ProgressCoordinator::instance(), SIGNAL(detailTextResetNeeded()), m_performInstallationForm,
+        SLOT(clearDetailsBrowser()));
+    connect(m_performInstallationForm, SIGNAL(showDetailsChanged()), this, SLOT(toggleDetailsWereChanged()));
 
     connect(core, SIGNAL(installationStarted()), this, SLOT(installationStarted()));
     connect(core, SIGNAL(uninstallationStarted()), this, SLOT(installationStarted()));

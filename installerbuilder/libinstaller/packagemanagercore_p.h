@@ -105,8 +105,8 @@ public:
 
     void clearComponentsToInstall();
     bool appendComponentsToInstall(const QList<Component*> &components);
-    bool appendComponentToInstall(Component* components);
-    QString installReason(Component* component);
+    bool appendComponentToInstall(Component *components);
+    QString installReason(Component *component);
 
     void runInstaller();
     bool isInstaller() const;
