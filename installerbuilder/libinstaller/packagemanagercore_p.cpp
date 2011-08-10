@@ -338,11 +338,10 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         //now we are looking for auto depend on components
         foreach (Component* currentComponent, m_core->availableComponents()) {
             if (!currentComponent->isInstalled()
-                    && !m_toInstallComponentIds.contains(currentComponent->name())
-                    && currentComponent->isAutoDependOn(m_toInstallComponentIds)) {
-                insertInstallReason(currentComponent, QString(
-                    tr("component(s) with activated auto depend on ")));
-                foundAutoDependOnList.append(currentComponent);
+                && !m_toInstallComponentIds.contains(currentComponent->name())
+                && currentComponent->isAutoDependOn(m_toInstallComponentIds)) {
+                    insertInstallReason(currentComponent, tr("Component(s) with activated auto depend on "));
+                    foundAutoDependOnList.append(currentComponent);
             }
         }
     }
