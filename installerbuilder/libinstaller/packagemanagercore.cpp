@@ -644,9 +644,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
     if (runMode() == AllMode)
         success = fetchAllPackages(packages, installedPackages);
     else {
-        success = fetchAllPackages(packages, installedPackages); //we need this to install dependencies
-        if (success)
-            success = fetchUpdaterPackages(packages, installedPackages);
+        success = fetchUpdaterPackages(packages, installedPackages);
     }
 
     if (success)
