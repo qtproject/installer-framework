@@ -828,7 +828,7 @@ QString PackageManagerCore::installReason(Component* component) const
     return d->installReason(component);
 }
 
-bool PackageManagerCore::calculateToInstallComponents() const
+bool PackageManagerCore::calculateComponentsToInstall() const
 {
     d->clearComponentsToInstall();
     QList<Component*> components;

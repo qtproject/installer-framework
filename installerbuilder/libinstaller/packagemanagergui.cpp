@@ -473,7 +473,7 @@ void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
     } else if (!visible && page(p) != 0) {
         //no component selection page means we can calculate it now
         if (p == PackageManagerCore::ComponentSelection)
-            m_core->calculateToInstallComponents();
+            m_core->calculateComponentsToInstall(); // TODO: why?
         d->m_defaultPages[p] = page(p);
         removePage(p);
     }
@@ -1119,7 +1119,7 @@ void ComponentSelectionPage::entering()
 void ComponentSelectionPage::leaving()
 {
     //now we can calculate the install order
-    packageManagerCore()->calculateToInstallComponents();
+    packageManagerCore()->calculateComponentsToInstall();   // TODO: why here?
 }
 
 void ComponentSelectionPage::selectAll()
@@ -1540,10 +1540,10 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
 {
     if (packageManagerCore()->isUninstaller())
         return;
+
     QString htmlOutput;
     QString lastInstallReason;
-
-    if (!packageManagerCore()->calculateToInstallComponents()) {
+    if (!packageManagerCore()->calculateComponentsToInstall()) {    // TODO: why again?
         htmlOutput.append(QString(QLatin1String("<h2><font color=\"red\">%1</font></h2>")).arg(
             tr("Can't resolve all dependencies.<br>")));
         if (!m_taskDetailsBrowser->isVisible())
