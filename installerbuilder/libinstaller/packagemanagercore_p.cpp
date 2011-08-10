@@ -312,30 +312,28 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
     QList<Component*> notAppendedComponents; //for example components with unresolved dependencies
     foreach (Component *currentComponent, components){
         if (m_toInstallComponentIds.contains(currentComponent->name())) {
-            QString errorMessage = QString(QLatin1String(
-                "Recursion detected component(%1) already added with reason: %2.")).arg(
-                    currentComponent->name(), installReason(currentComponent));
+            const QString errorMessage = QString::fromLatin1("Recursion detected component(%1) already added "
+                "with reason: %2.").arg(currentComponent->name(), installReason(currentComponent));
             verbose() << qPrintable(errorMessage) << std::endl;
-            Q_ASSERT_X(!m_toInstallComponentIds.contains(currentComponent->name()),
-                       Q_FUNC_INFO,
-                       qPrintable(errorMessage));
+            Q_ASSERT_X(!m_toInstallComponentIds.contains(currentComponent->name()), Q_FUNC_INFO,
+                qPrintable(errorMessage));
             return false;
         }
 
-        if (currentComponent->dependencies().isEmpty()) {
+        if (currentComponent->dependencies().isEmpty())
             realAppendToInstallComponents(currentComponent);
-        } else {
+        else
             notAppendedComponents.append(currentComponent);
-        }
     }
+
     bool allComponentsAdded = true;
-    foreach (Component* currentComponent, notAppendedComponents) {
+    foreach (Component *currentComponent, notAppendedComponents)
         allComponentsAdded &= appendComponentToInstall(currentComponent);
-    }
+
     QList<Component*> foundAutoDependOnList;
     if (allComponentsAdded) {
-        //this means notAppendedComponents are empty, so all regular dependencies are resolved
-        //now we are looking for auto depend on components
+        // This means notAppendedComponents is empty, so all regular dependencies are resolved. Now we are
+        // looking for auto depend on components.
         foreach (Component* currentComponent, m_core->availableComponents()) {
             if (!currentComponent->isInstalled()
                 && !m_toInstallComponentIds.contains(currentComponent->name())
@@ -345,6 +343,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             }
         }
     }
+
     if (!foundAutoDependOnList.isEmpty())
         return appendComponentsToInstall(foundAutoDependOnList);
     return allComponentsAdded;
