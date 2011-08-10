@@ -820,7 +820,7 @@ QList<Component*> PackageManagerCore::rootComponents() const
 
 QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 {
-    return d->m_orderedToInstallComponents;
+    return d->m_orderedComponentsToInstall;
 }
 
 QString PackageManagerCore::installReason(Component* component) const

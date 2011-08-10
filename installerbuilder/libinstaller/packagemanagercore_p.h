@@ -218,7 +218,7 @@ private:
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceUpdaterMode;
 
     //calculate installation order variables
-    QList<Component*> m_orderedToInstallComponents;
+    QList<Component*> m_orderedComponentsToInstall;
     QHash<QString, QString> m_toInstallComponentIdReasonHash; //for faster lookups
     QHash<Component*, QSet<Component*> > m_visitedComponents;
 

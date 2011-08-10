@@ -296,10 +296,11 @@ QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::compo
     return mode == AllMode ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
 }
 
-void PackageManagerCorePrivate::clearComponentsToInstall() {
-    m_orderedToInstallComponents.clear();
+void PackageManagerCorePrivate::clearComponentsToInstall()
+{
     m_visitedComponents.clear();
     m_toInstallComponentIds.clear();
+    m_orderedComponentsToInstall.clear();
     m_toInstallComponentIdReasonHash.clear();
 }
 
@@ -1831,9 +1832,9 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
 
 void PackageManagerCorePrivate::realAppendToInstallComponents(Component *component)
 {
-    m_orderedToInstallComponents.append(component);
+    m_orderedComponentsToInstall.append(component);
     m_toInstallComponentIds.insert(component->name());
-    std::sort(m_orderedToInstallComponents.begin(), m_orderedToInstallComponents.end(), Component::InstallPriorityLessThan());
+    std::sort(m_orderedComponentsToInstall.begin(), m_orderedComponentsToInstall.end(), Component::InstallPriorityLessThan());
 }
 
 void PackageManagerCorePrivate::insertInstallReason(Component *component, const QString &reason)
