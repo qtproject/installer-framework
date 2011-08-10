@@ -748,7 +748,8 @@ void PackageManagerCore::setTestChecksum(bool test)
 }
 
 /*!
-    Returns the number of components in the list depending on the run mode \a runMode.
+    Returns the number of components in the list for installer and package manager mode. Might return 0 in
+    case the engine has only been run in updater mode or no components have been fetched.
 */
 int PackageManagerCore::rootComponentCount() const
 {
@@ -756,20 +757,64 @@ int PackageManagerCore::rootComponentCount() const
 }
 
 /*!
-    Returns the component at index position i in the components list. i must be a valid index
-    position in the list (i.e., 0 <= i < rootComponentCount(...)).
+    Returns the component at index position \a i in the components list. \a i must be a valid index
+    position in the list (i.e., 0 <= i < rootComponentCount()).
 */
 Component *PackageManagerCore::rootComponent(int i) const
 {
     return d->m_rootComponents.value(i, 0);
 }
 
+/*!
+    Returns a list of root components if run in installer or package manager mode. Might return an empty list
+    in case the engine has only been run in updater mode or no components have been fetched.
+*/
+QList<Component*> PackageManagerCore::rootComponents() const
+{
+    return d->m_rootComponents;
+}
+
+/*
+    Appends a component as root component to the internal storage for installer or package manager components.
+    To append a component as a child to an already existing component, use Component::appendComponent(). Emits
+    the componentAdded() signal.
+*/
 void PackageManagerCore::appendRootComponent(Component *component)
 {
     d->m_rootComponents.append(component);
     emit componentAdded(component);
 }
 
+/*!
+    Returns the number of components in the list for updater mode. Might return 0 in case the engine has only
+    been run in installer or package manager mode or no components have been fetched.
+*/
+int PackageManagerCore::updaterComponentCount() const
+{
+    return d->m_updaterComponents.size();
+}
+
+/*!
+    Returns the component at index position \a i in the updates component list. \a i must be a valid index
+    position in the list (i.e., 0 <= i < updaterComponentCount()).
+*/
+Component *PackageManagerCore::updaterComponent(int i) const
+{
+    return d->m_updaterComponents.value(i, 0);
+}
+
+/*!
+    Returns a list of components if run in updater mode. Might return an empty list case the engine has only
+    been run in installer or package manager mode or no components have been fetched.
+*/
+QList<Component*> PackageManagerCore::updaterComponents() const
+{
+    return d->m_updaterComponents;
+}
+
+/*
+    Appends a component to the internal storage for updater components. Emits the componentAdded() signal.
+*/
 void PackageManagerCore::appendUpdaterComponent(Component *component)
 {
     component->setUpdateAvailable(true);
@@ -797,11 +842,6 @@ Component* PackageManagerCore::componentByName(const QString &name) const
     return subComponentByName(this, name);
 }
 
-QList<Component*> PackageManagerCore::updaterComponents() const
-{
-    return d->m_updaterComponents;
-}
-
 QList<Component*> PackageManagerCore::availableComponents() const
 {
     QList<Component*> result;
@@ -811,11 +851,6 @@ QList<Component*> PackageManagerCore::availableComponents() const
     }
 
     return result;
-}
-
-QList<Component*> PackageManagerCore::rootComponents() const
-{
-    return d->m_rootComponents;
 }
 
 QList<Component*> PackageManagerCore::orderedComponentsToInstall() const

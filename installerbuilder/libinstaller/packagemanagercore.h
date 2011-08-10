@@ -138,17 +138,20 @@ public:
     // component handling
     int rootComponentCount() const;
     Component *rootComponent(int i) const;
+    QList<Component*> rootComponents() const;
     void appendRootComponent(Component *components);
+
+    int updaterComponentCount() const;
+    Component *updaterComponent(int i) const;
+    QList<Component*> updaterComponents() const;
     void appendUpdaterComponent(Component *components);
 
-    Component *componentByName(const QString &identifier) const;
     QList<Component*> availableComponents() const;
-    QList<Component*> updaterComponents() const;
-    QList<Component*> rootComponents() const;
+    Component *componentByName(const QString &identifier) const;
 
     bool calculateComponentsToInstall() const;
-    QList<Component*> orderedComponentsToInstall() const;
     QString installReason(Component *component) const;
+    QList<Component*> orderedComponentsToInstall() const;
 
     QList<Component*> dependencies(const Component *component, QStringList &missingComponents) const;
 
