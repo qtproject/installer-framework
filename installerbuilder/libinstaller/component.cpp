@@ -65,6 +65,8 @@ static const QLatin1String scUninstalled("Uninstalled");
 static const QLatin1String scCurrentState("CurrentState");
 static const QLatin1String scForcedInstallation("ForcedInstallation");
 
+static QRegExp scCommaRegExp(QLatin1String("\\b(,|, )\\b"));
+
 /*!
     \class QInstaller::Component
     Component describes a component within the installer.
@@ -166,13 +168,13 @@ void Component::loadDataFromPackage(const Package &package)
     }
 
     setLocalTempPath(QInstaller::pathFromUrl(package.sourceInfo().url));
-    const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()
-        .split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
+    const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString().split(scCommaRegExp,
+        QString::SkipEmptyParts);
     if (!uis.isEmpty())
         loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), uis);
 
-    const QStringList qms = package.data(QLatin1String("Translations")).toString()
-        .split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
+    const QStringList qms = package.data(QLatin1String("Translations")).toString().split(scCommaRegExp,
+        QString::SkipEmptyParts);
     if (!qms.isEmpty())
         loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), qms);
 
@@ -906,7 +908,7 @@ void Component::setSelected(bool selected)
 */
 QStringList Component::dependencies() const
 {
-    return value(scDependencies).split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
+    return value(scDependencies).split(scCommaRegExp, QString::SkipEmptyParts);
 }
 
 /*!
@@ -934,8 +936,7 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
 
     // If there is no auto depend on value or the value is empty, we have nothing todo. The component does
     // not need to be installed as an auto dependency.
-    QStringList autoDependOnList = value(scAutoDependOn).split(QRegExp(QLatin1String("\\b(,|, )\\b")),
-        QString::SkipEmptyParts);
+    QStringList autoDependOnList = value(scAutoDependOn).split(scCommaRegExp, QString::SkipEmptyParts);
     if (autoDependOnList.isEmpty())
         return false;
 
@@ -946,13 +947,11 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
     }
 
     foreach (const QString &component, components) {
-        if (autoDependOnList.contains(component)) {
-            autoDependOnList.removeAll(component);
-            if (autoDependOnList.isEmpty()) {
-                // If all components in the isAutoDependOn field are already installed or selected for
-                // installation, this component needs to be installed as well.
-                return true;
-            }
+        autoDependOnList.removeAll(component);
+        if (autoDependOnList.isEmpty()) {
+            // If all components in the isAutoDependOn field are already installed or selected for
+            // installation, this component needs to be installed as well.
+            return true;
         }
     }
 
@@ -967,9 +966,8 @@ bool Component::isDefault() const
     // the script can override this method
     if (value(scDefault).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
         const QScriptValue valueFromScript = callScriptMethod(QLatin1String("isDefault"));
-        if (valueFromScript.isValid()) {
+        if (valueFromScript.isValid())
             return valueFromScript.toBool();
-        }
         verbose() << "value from script is not valid " << std::endl;
         return false;
     }
