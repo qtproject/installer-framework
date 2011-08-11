@@ -842,14 +842,19 @@ Component* PackageManagerCore::componentByName(const QString &name) const
     return subComponentByName(this, name);
 }
 
+/*!
+    Returns a list of all available components found during a fetch. Note that depending on the run mode the
+    returned list might have different values. In case of updater mode, components scheduled for an
+    update as well as all possible dependencies are returned.
+*/
 QList<Component*> PackageManagerCore::availableComponents() const
 {
-    QList<Component*> result;
-    foreach (QInstaller::Component *component, d->m_rootComponents) {
-        result.push_back(component);
-        result += component->childComponents(true, AllMode);
-    }
+    if (isUpdater())
+        return d->m_updaterComponents + d->m_updaterComponentsDeps;
 
+    QList<Component*> result = d->m_rootComponents;
+    foreach (QInstaller::Component *component, d->m_rootComponents)
+        result += component->childComponents(true, AllMode);
     return result;
 }
 
