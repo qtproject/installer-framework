@@ -888,10 +888,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
 QList<Component*> PackageManagerCore::dependencies(const Component *component, QStringList &missingComponents) const
 {
     QList<Component*> result;
-    const QStringList dependencies = component->value(scDependencies).split(QRegExp(QLatin1String("\\b(,|, )\\b")),
-        QString::SkipEmptyParts);
-
-    foreach (const QString &dependency, dependencies) {
+    foreach (const QString &dependency, component->dependencies()) {
         Component *component = componentByName(dependency);
         if (component)
             result.append(component);

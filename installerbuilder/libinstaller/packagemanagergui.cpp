@@ -1555,7 +1555,7 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
     if (!packageManagerCore()->isUpdater()) {
         QList<Component*> componentsToRemove;
         foreach (Component *component, packageManagerCore()->availableComponents()) {
-            if (component->isInstalled() && !component->isSelected())
+            if (component->uninstallationRequested())
                 componentsToRemove.append(component);
         }
 
