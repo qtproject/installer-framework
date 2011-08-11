@@ -918,38 +918,41 @@ void Component::setInstalled()
 }
 
 /*!
-    Determines if the component comes as an auto dependency.
+    Determines if the component comes as an auto dependency. Returns true if the component needs to be
+    installed.
 */
-bool Component::isAutoDependOn(const QSet<QString> &toInstallComponentIds) const
+bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
 {
-    // the script can override this method
+    // The script can override this method and determines if the component needs to be installed.
     if (value(scAutoDependOn).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
         const QScriptValue valueFromScript = callScriptMethod(QLatin1String("isAutoDependOn"));
-        if (valueFromScript.isValid()) {
+        if (valueFromScript.isValid())
             return valueFromScript.toBool();
-        }
         verbose() << "value from script is not valid " << std::endl;
         return false;
     }
-    QStringList autoDependOnDependencyList =  value(scAutoDependOn).split(QRegExp(
-        QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
-    if (autoDependOnDependencyList.isEmpty())
+
+    // If there is no auto depend on value or the value is empty, we have nothing todo. The component does
+    // not need to be installed as an auto dependency.
+    QStringList autoDependOnList = value(scAutoDependOn).split(QRegExp(QLatin1String("\\b(,|, )\\b")),
+        QString::SkipEmptyParts);
+    if (autoDependOnList.isEmpty())
         return false;
 
-    QSet<QString> installedComponentIds;
+    QSet<QString> components = componentsToInstall;
     foreach (const Component *component, d->m_core->availableComponents()) {
-        if (component->isInstalled()) {
-            installedComponentIds.insert(component->name());
-        }
+        if (component->isInstalled())
+            components.insert(component->name());
     }
-    installedComponentIds.unite(toInstallComponentIds);
-    //if we found all autodependons we know that this one wants to be installed
-    foreach (QString componentName, installedComponentIds) {
-        if (autoDependOnDependencyList.contains(componentName)) {
-            autoDependOnDependencyList.removeAll(componentName);
-            //found all "when"-components
-            if (autoDependOnDependencyList.isEmpty())
+
+    foreach (const QString &component, components) {
+        if (autoDependOnList.contains(component)) {
+            autoDependOnList.removeAll(component);
+            if (autoDependOnList.isEmpty()) {
+                // If all components in the isAutoDependOn field are already installed or selected for
+                // installation, this component needs to be installed as well.
                 return true;
+            }
         }
     }
 
