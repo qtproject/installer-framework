@@ -126,17 +126,16 @@ public:
     void stopProcessesForUpdates(const QList<Component*> &components);
     int countProgressOperations(const QList<Component*> &components);
     int countProgressOperations(const OperationList &operations);
-    void connectOperationToInstaller(Operation* const operation, double progressOperationPartSize);
+    void connectOperationToInstaller(Operation *const operation, double progressOperationPartSize);
 
-    Operation* createOwnedOperation(const QString &type);
-    Operation* takeOwnedOperation(Operation *operation);
+    Operation *createOwnedOperation(const QString &type);
+    Operation *takeOwnedOperation(Operation *operation);
 
-    Operation* createPathOperation(const QFileInfo &fileInfo,
-        const QString &componentName);
+    Operation *createPathOperation(const QFileInfo &fileInfo, const QString &componentName);
     void registerPathesForUninstallation(const QList<QPair<QString, bool> > &pathesForUninstallation,
         const QString &componentName);
 
-    void addPerformed(Operation* op) {
+    void addPerformed(Operation *op) {
         m_performedOperationsCurrentSession.append(op);
     }
 

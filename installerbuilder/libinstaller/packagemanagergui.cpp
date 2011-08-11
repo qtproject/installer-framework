@@ -121,7 +121,7 @@ TRANSLATOR QInstaller::FinishedPage
 class DynamicInstallerPage : public PackageManagerPage
 {
 public:
-    explicit DynamicInstallerPage(QWidget* widget, PackageManagerCore *core = 0)
+    explicit DynamicInstallerPage(QWidget *widget, PackageManagerCore *core = 0)
         : PackageManagerPage(core)
         , m_widget(widget)
     {
@@ -138,7 +138,7 @@ public:
         layout()->addWidget(widget);
     }
 
-    QWidget* widget() const
+    QWidget *widget() const
     {
         return m_widget;
     }
@@ -149,7 +149,7 @@ public:
     }
 
 protected:
-    bool eventFilter(QObject* obj, QEvent* event)
+    bool eventFilter(QObject *obj, QEvent *event)
     {
         if (obj == m_widget) {
             switch(event->type()) {
@@ -197,7 +197,7 @@ public:
 
 // -- PackageManagerGui
 
-QScriptEngine* PackageManagerGui::controlScriptEngine() const
+QScriptEngine *PackageManagerGui::controlScriptEngine() const
 {
     return &d->m_controlScriptEngine;
 }
@@ -285,7 +285,7 @@ QString PackageManagerGui::defaultButtonText(int wizardButton) const
 
 void PackageManagerGui::clickButton(int wb, int delay)
 {
-    if (QAbstractButton* b = button(static_cast<QWizard::WizardButton>(wb) )) {
+    if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) )) {
         QTimer::singleShot(delay, b, SLOT(click()));
     } else {
         // TODO: we should probably abort immediately here (faulty test script)
@@ -297,7 +297,7 @@ void PackageManagerGui::clickButton(int wb, int delay)
     Loads a script to perform the installation non-interactively.
     @throws QInstaller::Error if the script is not readable/cannot be parsed
 */
-void PackageManagerGui::loadControlScript(const QString& scriptPath)
+void PackageManagerGui::loadControlScript(const QString &scriptPath)
 {
     QFile file(scriptPath);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -361,7 +361,7 @@ void PackageManagerGui::slotCurrentPageChanged(int id)
         Q_ARG(int, id));
 }
 
-void PackageManagerGui::callControlScriptMethod(const QString& methodName)
+void PackageManagerGui::callControlScriptMethod(const QString &methodName)
 {
     QScriptValue method = d->m_controlScript.property(QLatin1String("prototype")).property(methodName);
 
@@ -395,7 +395,7 @@ void PackageManagerGui::onLanguageChanged()
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
 }
 
-bool PackageManagerGui::event(QEvent* event)
+bool PackageManagerGui::event(QEvent *event)
 {
     switch(event->type()) {
     case QEvent::LanguageChange:
@@ -424,7 +424,7 @@ void PackageManagerGui::showEvent(QShowEvent *event)
     QWizard::showEvent(event);
 }
 
-void PackageManagerGui::wizardPageInsertionRequested(QWidget* widget,
+void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
     QInstaller::PackageManagerCore::WizardPage page)
 {
     // just in case it was already in there...
@@ -438,12 +438,12 @@ void PackageManagerGui::wizardPageInsertionRequested(QWidget* widget,
     setPage(p, new DynamicInstallerPage(widget, m_core));
 }
 
-void PackageManagerGui::wizardPageRemovalRequested(QWidget* widget)
+void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
 {
     const QList<int> pages = pageIds();
     for (QList<int>::const_iterator it = pages.begin(); it != pages.end(); ++it) {
-        QWizardPage* const p = page(*it);
-        DynamicInstallerPage* const dynamicPage = dynamic_cast<DynamicInstallerPage*>(p);
+        QWizardPage *const p = page(*it);
+        DynamicInstallerPage *const dynamicPage = dynamic_cast<DynamicInstallerPage*>(p);
         if (dynamicPage == 0)
             continue;
         if (dynamicPage->widget() != widget)
@@ -452,15 +452,15 @@ void PackageManagerGui::wizardPageRemovalRequested(QWidget* widget)
     }
 }
 
-void PackageManagerGui::wizardWidgetInsertionRequested(QWidget* widget,
+void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
     QInstaller::PackageManagerCore::WizardPage page)
 {
     Q_ASSERT(widget);
-    if (QWizardPage* const p = QWizard::page(page))
+    if (QWizardPage *const p = QWizard::page(page))
         p->layout()->addWidget(widget);
 }
 
-void PackageManagerGui::wizardWidgetRemovalRequested(QWidget* widget)
+void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
 {
     Q_ASSERT(widget);
     widget->setParent(0);
@@ -484,7 +484,7 @@ PackageManagerPage *PackageManagerGui::page(int pageId) const
     return qobject_cast<PackageManagerPage*> (QWizard::page(pageId));
 }
 
-QWidget* PackageManagerGui::pageWidgetByObjectName(const QString& name) const
+QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
 {
     const QList<int> ids = pageIds();
     foreach (const int i, ids) {
@@ -492,7 +492,7 @@ QWidget* PackageManagerGui::pageWidgetByObjectName(const QString& name) const
         if (p && p->objectName() == name) {
             // For dynamic pages, return the contained widget (as read from the UI file), not the
             // wrapper page
-            if (DynamicInstallerPage* dp = dynamic_cast<DynamicInstallerPage*>(p))
+            if (DynamicInstallerPage *dp = dynamic_cast<DynamicInstallerPage*>(p))
                 return dp->widget();
             return p;
         }
@@ -501,7 +501,7 @@ QWidget* PackageManagerGui::pageWidgetByObjectName(const QString& name) const
     return 0;
 }
 
-QWidget* PackageManagerGui::currentPageWidget() const
+QWidget *PackageManagerGui::currentPageWidget() const
 {
     return currentPage();
 }
@@ -741,7 +741,7 @@ class LicenseAgreementPage::ClickForwarder : public QObject
     Q_OBJECT
 
 public:
-    explicit ClickForwarder(QAbstractButton* button)
+    explicit ClickForwarder(QAbstractButton *button)
         : QObject(button)
         , m_abstractButton(button) {}
 
@@ -756,7 +756,7 @@ protected:
         return QObject::eventFilter(object, event);
     }
 private:
-    QAbstractButton* m_abstractButton;
+    QAbstractButton *m_abstractButton;
 };
 
 
@@ -797,7 +797,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_acceptRadioButton = new QRadioButton(this);
     m_acceptRadioButton->setShortcut(QKeySequence(tr("Alt+A", "agree license")));
     m_acceptRadioButton->setObjectName(QLatin1String("AcceptLicenseRadioButton"));
-    ClickForwarder* acceptClickForwarder = new ClickForwarder(m_acceptRadioButton);
+    ClickForwarder *acceptClickForwarder = new ClickForwarder(m_acceptRadioButton);
 
     QLabel *acceptLabel = new QLabel;
     acceptLabel->setWordWrap(true);
@@ -811,7 +811,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
         "contained in these license agreements.")).toString()));
 
     m_rejectRadioButton = new QRadioButton(this);
-    ClickForwarder* rejectClickForwarder = new ClickForwarder(m_rejectRadioButton);
+    ClickForwarder *rejectClickForwarder = new ClickForwarder(m_rejectRadioButton);
     m_rejectRadioButton->setObjectName(QString::fromUtf8("RejectLicenseRadioButton"));
     m_rejectRadioButton->setShortcut(QKeySequence(tr("Alt+D", "do not agree license")));
 
@@ -854,7 +854,7 @@ void LicenseAgreementPage::entering()
 
     QList<QInstaller::Component*> components = packageManagerCore()->orderedComponentsToInstall();
 
-    foreach (QInstaller::Component* component, components) {
+    foreach (QInstaller::Component *component, components) {
         addLicenseItem(component->licenses());
     }
 
@@ -1141,7 +1141,7 @@ void ComponentSelectionPage::selectDefault()
 /*!
     Selects the component with /a id in the component tree.
 */
-void ComponentSelectionPage::selectComponent(const QString& id)
+void ComponentSelectionPage::selectComponent(const QString &id)
 {
     const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
     if (idx.isValid())
@@ -1151,7 +1151,7 @@ void ComponentSelectionPage::selectComponent(const QString& id)
 /*!
     Deselects the component with /a id in the component tree.
 */
-void ComponentSelectionPage::deselectComponent(const QString& id)
+void ComponentSelectionPage::deselectComponent(const QString &id)
 {
     const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
     if (idx.isValid())
@@ -1379,7 +1379,7 @@ void StartMenuDirectoryPage::leaving()
     packageManagerCore()->setValue(scStartMenuDir, startMenuPath + QDir::separator() + startMenuDir());
 }
 
-void StartMenuDirectoryPage::currentItemChanged(QListWidgetItem* current)
+void StartMenuDirectoryPage::currentItemChanged(QListWidgetItem *current)
 {
     if (current) {
         QString dir = current->data(Qt::DisplayRole).toString();
@@ -1682,7 +1682,7 @@ void PerformInstallationPage::leaving()
 
 // -- public slots
 
-void PerformInstallationPage::setTitleMessage(const QString& title)
+void PerformInstallationPage::setTitleMessage(const QString &title)
 {
     setTitle(tr("%1").arg(title));
 }

@@ -84,7 +84,7 @@ static QScriptValue checkArguments(QScriptContext* context, int amin, int amax)
 }
 
 static bool componentMatches(const Component *component, const QString &name,
-    const QString& version = QString())
+    const QString &version = QString())
 {
     if (name.isEmpty() || component->name() != name)
         return false;
@@ -469,7 +469,7 @@ void PackageManagerCore::rollBackInstallation()
     packages.writeToDisk();
 }
 
-bool PackageManagerCore::isFileExtensionRegistered(const QString& extension) const
+bool PackageManagerCore::isFileExtensionRegistered(const QString &extension) const
 {
     QSettingsWrapper settings(QLatin1String("HKEY_CLASSES_ROOT"), QSettingsWrapper::NativeFormat);
     return settings.value(QString::fromLatin1(".%1/Default").arg(extension)).isValid();
@@ -873,12 +873,12 @@ bool PackageManagerCore::calculateComponentsToInstall() const
     d->clearComponentsToInstall();
     QList<Component*> components;
     if (runMode() == UpdaterMode) {
-        foreach(Component* component, updaterComponents()) {
+        foreach(Component *component, updaterComponents()) {
             if (component->updateRequested())
                 components.append(component);
         }
     } else if (runMode() == AllMode) {
-        foreach(Component* component, availableComponents()) {
+        foreach(Component *component, availableComponents()) {
             if (component->installationRequested())
                 components.append(component);
         }
@@ -1333,7 +1333,7 @@ bool PackageManagerCore::runPackageUpdater()
 */
 void PackageManagerCore::languageChanged()
 {
-    foreach (Component* component, availableComponents())
+    foreach (Component *component, availableComponents())
         component->languageChanged();
 }
 

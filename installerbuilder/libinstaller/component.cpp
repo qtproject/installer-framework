@@ -113,7 +113,7 @@ void Component::loadDataFromPackage(const LocalPackage &package)
     setValue(scUncompressedSize, QString::number(package.uncompressedSize));
 
     QString dependstr = QLatin1String("");
-    foreach (const QString& val, package.dependencies)
+    foreach (const QString &val, package.dependencies)
         dependstr += val + QLatin1String(",");
 
     if (package.dependencies.count() > 0)
@@ -263,7 +263,7 @@ PackageManagerCore *Component::packageManagerCore() const
     Returns the parent of this component. If this component is com.nokia.sdk.qt, its
     parent is com.nokia.sdk, as far as this exists.
 */
-Component* Component::parentComponent() const
+Component *Component::parentComponent() const
 {
     return d->m_parentComponent;
 }
@@ -272,7 +272,7 @@ Component* Component::parentComponent() const
     Appends \a component as a child of this component. If \a component already has a parent,
     it is removed from the previous parent.
 */
-void Component::appendComponent(Component* component)
+void Component::appendComponent(Component *component)
 {
     if (!component->isVirtual()) {
         d->m_childComponents.append(component);
@@ -290,7 +290,7 @@ void Component::appendComponent(Component* component)
 
 /*!
     Removes \a component if it is a child of this component. The component object still exists after the
-    function returns. It's up to the caller to delete the passed component.
+    function returns. It's up to the caller to delete the passed \a component.
 */
 void Component::removeComponent(Component *component)
 {
@@ -405,7 +405,7 @@ void Component::languageChanged()
     \note The method is not called, if the current script context is the same method, to avoid
     infinite recursion.
 */
-QScriptValue Component::callScriptMethod(const QString &methodName, const QScriptValueList& arguments) const
+QScriptValue Component::callScriptMethod(const QString &methodName, const QScriptValueList &arguments) const
 {
     if (!d->m_unexistingScriptMethods.value(methodName, true))
         return QScriptValue();
@@ -435,7 +435,7 @@ QScriptValue Component::callScriptMethod(const QString &methodName, const QScrip
     QLocale::name() name \endlink are loaded.
     Read \ref componenttranslation for details.
 */
-void Component::loadTranslations(const QDir& directory, const QStringList& qms)
+void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 {
     QDirIterator it(directory.path(), qms, QDir::Files);
     while (it.hasNext()) {
@@ -455,7 +455,7 @@ void Component::loadTranslations(const QDir& directory, const QStringList& qms)
     interface can be accessed via userInterfaces by using the class name set in the ui file.
     Read \ref componentuserinterfaces for details.
 */
-void Component::loadUserInterfaces(const QDir& directory, const QStringList& uis)
+void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis)
 {
     if (QApplication::type() == QApplication::Tty)
         return;
@@ -471,7 +471,7 @@ void Component::loadUserInterfaces(const QDir& directory, const QStringList& uis
         static QUiLoader loader;
         loader.setTranslationEnabled(true);
         loader.setLanguageChangeEnabled(true);
-        QWidget* const w = loader.load(&file, MessageBoxHandler::currentBestSuitParent());
+        QWidget *const w = loader.load(&file, MessageBoxHandler::currentBestSuitParent());
         d->m_userInterfaces.insert(w->objectName(), w);
     }
 }
@@ -507,7 +507,7 @@ QHash<QString, QPair<QString, QString> > Component::licenses() const
 /*!
     Returns the QWidget created for class \a name.
 */
-QWidget* Component::userInterface(const QString &name) const
+QWidget *Component::userInterface(const QString &name) const
 {
     return d->m_userInterfaces.value(name);
 }
@@ -772,12 +772,12 @@ bool Component::operationsCreatedSuccessfully() const
     return d->m_operationsCreatedSuccessfully;
 }
 
-Operation* Component::createOperation(const QString &operation, const QString &parameter1,
+Operation *Component::createOperation(const QString &operation, const QString &parameter1,
     const QString &parameter2, const QString &parameter3, const QString &parameter4, const QString &parameter5,
     const QString &parameter6, const QString &parameter7, const QString &parameter8, const QString &parameter9,
     const QString &parameter10)
 {
-    Operation* op = KDUpdater::UpdateOperationFactory::instance().create(operation);
+    Operation *op = KDUpdater::UpdateOperationFactory::instance().create(operation);
     if (op == 0) {
         const QMessageBox::StandardButton button =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -1054,7 +1054,7 @@ QUrl Component::repositoryUrl() const
 /*!
     Sets this components #repositoryUrl.
 */
-void Component::setRepositoryUrl(const QUrl& url)
+void Component::setRepositoryUrl(const QUrl &url)
 {
     d->m_repositoryUrl = url;
 }

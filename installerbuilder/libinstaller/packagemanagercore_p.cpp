@@ -336,7 +336,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
     if (allComponentsAdded) {
         // This means notAppendedComponents is empty, so all regular dependencies are resolved. Now we are
         // looking for auto depend on components.
-        foreach (Component* component, m_core->availableComponents()) {
+        foreach (Component *component, m_core->availableComponents()) {
             if (!component->isInstalled() && !m_toInstallComponentIds.contains(component->name())
                 && component->isAutoDependOn(m_toInstallComponentIds)) {
                     foundAutoDependOnList.append(component);
@@ -350,7 +350,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
     return allComponentsAdded;
 }
 
-bool PackageManagerCorePrivate::appendComponentToInstall(Component* component)
+bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
 {
     foreach (const QString &dependencyComponentName, component->dependencies()) {
         //componentByName return 0 if dependencyComponentName contains a version which is not available
@@ -578,7 +578,7 @@ QByteArray PackageManagerCorePrivate::replaceVariables(const QByteArray &ba) con
     \internal
     Creates an update operation owned by the installer, not by any component.
  */
-Operation* PackageManagerCorePrivate::createOwnedOperation(const QString &type)
+Operation *PackageManagerCorePrivate::createOwnedOperation(const QString &type)
 {
     m_ownedOperations.append(KDUpdater::UpdateOperationFactory::instance().create(type));
     return m_ownedOperations.last();
@@ -589,7 +589,7 @@ Operation* PackageManagerCorePrivate::createOwnedOperation(const QString &type)
     Removes \a opertion from the operations owned by the installer, returns the very same operation if the
     operation was found, otherwise 0.
  */
-Operation* PackageManagerCorePrivate::takeOwnedOperation(Operation *operation)
+Operation *PackageManagerCorePrivate::takeOwnedOperation(Operation *operation)
 {
     if (!m_ownedOperations.contains(operation))
         return 0;
@@ -631,7 +631,7 @@ void PackageManagerCorePrivate::readUninstallerIniFile(const QString &targetDir)
 void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> &components)
 {
     QStringList processList;
-    foreach (const Component* const i, components)
+    foreach (const Component *const i, components)
         processList << m_core->replaceVariables(i->stopProcessForUpdateRequests());
 
     qSort(processList);
@@ -676,7 +676,7 @@ int PackageManagerCorePrivate::countProgressOperations(const OperationList &oper
 int PackageManagerCorePrivate::countProgressOperations(const QList<Component*> &components)
 {
     int operationCount = 0;
-    foreach (Component* component, components)
+    foreach (Component *component, components)
         operationCount += countProgressOperations(component->operations());
 
     return operationCount;
@@ -685,9 +685,9 @@ int PackageManagerCorePrivate::countProgressOperations(const QList<Component*> &
 void PackageManagerCorePrivate::connectOperationToInstaller(Operation *const operation, double operationPartSize)
 {
     Q_ASSERT(operationPartSize);
-    QObject* const operationObject = dynamic_cast< QObject* >(operation);
+    QObject *const operationObject = dynamic_cast< QObject*> (operation);
     if (operationObject != 0) {
-        const QMetaObject* const mo = operationObject->metaObject();
+        const QMetaObject *const mo = operationObject->metaObject();
         if (mo->indexOfSignal(QMetaObject::normalizedSignature("outputTextChanged(QString)")) > -1) {
             connect(operationObject, SIGNAL(outputTextChanged(QString)), ProgressCoordinator::instance(),
                 SLOT(emitDetailTextChanged(QString)));
@@ -703,7 +703,7 @@ void PackageManagerCorePrivate::connectOperationToInstaller(Operation *const ope
     }
 }
 
-Operation* PackageManagerCorePrivate::createPathOperation(const QFileInfo &fileInfo,
+Operation *PackageManagerCorePrivate::createPathOperation(const QFileInfo &fileInfo,
     const QString &componentName)
 {
     const bool isDir = fileInfo.isDir();
@@ -850,7 +850,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
     const QString targetAppDirPath = QFileInfo(uninstallerName()).path();
     if (!QDir().exists(targetAppDirPath)) {
         // create the directory containing the uninstaller (like a bundle structor, on Mac...)
-        Operation* op = createOwnedOperation(QLatin1String("Mkdir"));
+        Operation *op = createOwnedOperation(QLatin1String("Mkdir"));
         op->setArguments(QStringList() << targetAppDirPath);
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
@@ -1573,7 +1573,7 @@ void PackageManagerCorePrivate::deleteUninstaller()
     arguments << QLatin1String("//Nologo") << batchfile; // execute the batchfile
     arguments << QDir::toNativeSeparators(QFileInfo(installerBinaryPath()).absoluteFilePath());
     if (!m_performedOperationsOld.isEmpty()) {
-        const Operation* const op = m_performedOperationsOld.first();
+        const Operation *const op = m_performedOperationsOld.first();
         if (op->name() == QLatin1String("Mkdir")) // the target directory name
             arguments << QDir::toNativeSeparators(QFileInfo(op->arguments().first()).absoluteFilePath());
     }
