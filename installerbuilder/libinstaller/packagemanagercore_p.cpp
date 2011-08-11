@@ -340,7 +340,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             if (!component->isInstalled() && !m_toInstallComponentIds.contains(component->name())
                 && component->isAutoDependOn(m_toInstallComponentIds)) {
                     foundAutoDependOnList.append(component);
-                    insertInstallReason(component, tr("Component(s) with activated auto depend on"));
+                    insertInstallReason(component, tr("Component(s) added as automatic dependencies"));
             }
         }
     }
