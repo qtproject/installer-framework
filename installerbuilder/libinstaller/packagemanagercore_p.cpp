@@ -57,7 +57,6 @@
 #include <QtCore/QFutureWatcher>
 #include <QtCore/QTemporaryFile>
 
-#include <algorithm>
 #include <errno.h>
 
 namespace QInstaller {
@@ -1832,7 +1831,6 @@ void PackageManagerCorePrivate::realAppendToInstallComponents(Component *compone
 {
     m_orderedComponentsToInstall.append(component);
     m_toInstallComponentIds.insert(component->name());
-    std::sort(m_orderedComponentsToInstall.begin(), m_orderedComponentsToInstall.end(), Component::InstallPriorityLessThan());
 }
 
 void PackageManagerCorePrivate::insertInstallReason(Component *component, const QString &reason)
