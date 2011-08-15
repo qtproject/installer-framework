@@ -52,7 +52,6 @@ static const QLatin1String scRequiresAdminRights("RequiresAdminRights");
 
 // constants used throughout the components class
 static const QLatin1String scVirtual("Virtual");
-static const QLatin1String scInstallPriority("InstallPriority");
 static const QLatin1String scSortingPriority("SortingPriority");
 
 // constants used throughout the settings and package manager core class

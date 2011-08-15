@@ -70,22 +70,6 @@ public:
     explicit Component(PackageManagerCore *core);
     ~Component();
 
-    struct IsVirtual
-    {
-        bool operator() (const Component *comp) const
-        {
-            return comp->value(scVirtual, scFalse).toLower() == scTrue;
-        }
-    };
-
-    struct InstallPriorityLessThan
-    {
-        bool operator() (const Component *lhs, const Component *rhs)
-        {
-            return lhs->value(scInstallPriority).toInt() < rhs->value(scInstallPriority).toInt();
-        }
-    };
-
     struct SortingPriorityLessThan
     {
         bool operator() (const Component *lhs, const Component *rhs) const
