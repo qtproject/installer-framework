@@ -1263,10 +1263,13 @@ void PackageManagerCorePrivate::runPackageUpdater()
             }
 
             // Filter out the create target dir undo operation, it's only needed for full uninstall.
-            // TODO: Figure out a compat way for old create target dir undo operation (missing name and tag).
-            if (operation->value(QLatin1String("uninstall-only")).toBool()) {
-                nonRevertedOperations.append(operation);
-                continue;
+            // Note: We filter for unnamed operations as well, since old installations had the remove target
+            //  dir operation without the "uninstall-only", which will result in an complete uninstallation
+            //  during an update for the maintenance tool.
+            if (operation->value(QLatin1String("uninstall-only")).toBool()
+                || operation->value(QLatin1String("component")).toString().isEmpty()) {
+                    nonRevertedOperations.append(operation);
+                    continue;
             }
 
             undoOperations.prepend(operation);
