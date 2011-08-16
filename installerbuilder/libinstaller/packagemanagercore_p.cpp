@@ -775,28 +775,15 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
 }
 
 void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QFile *const input,
-    const OperationList &performedOperations, const BinaryLayout &layout, bool compressOperations,
-    bool forceUncompressedResources)
+    const OperationList &performedOperations, const BinaryLayout &layout)
 {
     const qint64 dataBlockStart = output->pos();
 
     QVector<Range<qint64> >resourceSegments;
     foreach (const Range<qint64> &segment, layout.metadataResourceSegments) {
         input->seek(segment.start());
-        if (isInstaller()) {
-            const qint64 compressedSize = appendCompressedData(output, input, segment.length());
-            resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos() - compressedSize,
-                compressedSize));
-        } else if (forceUncompressedResources) {
-            QBuffer resource;
-            resource.setData(retrieveCompressedData(input, segment.length()));
-            resource.open(QIODevice::ReadOnly);
-            resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos(), resource.size()));
-            appendData(output, &resource, resource.size());
-        } else {
-            resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos(), segment.length()));
-            appendData(output, input, segment.length());
-        }
+        resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos(), segment.length()));
+        appendData(output, input, segment.length());
     }
 
     const qint64 operationsStart = output->pos();
@@ -806,8 +793,7 @@ void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QF
         operation->clearValue(QLatin1String("installer"));
 
         appendString(output, operation->name());
-        compressOperations ? appendByteArray(output, qCompress(operation->toXml().toByteArray()))
-            : appendString(output, operation->toXml().toString());
+        appendString(output, operation->toXml().toString());
 
         // for the ui not to get blocked
         qApp->processEvents();
@@ -1015,7 +1001,6 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 
         QFile input;
         BinaryLayout layout;
-        bool forceUncompressedResourcesOnError = false;
         const QString dataFile = targetDir() + QLatin1Char('/') + m_settings.uninstallerName()
             + QLatin1String(".dat");
         try {
@@ -1026,7 +1011,6 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             input.setFileName(dataFile);
             openForRead(&input, input.fileName());
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookieDat));
-            forceUncompressedResourcesOnError = true;
         } catch (const Error &/*error*/) {
             input.setFileName(isInstaller() ? installerBinaryPath() : uninstallerName());
             openForRead(&input, input.fileName());
@@ -1040,7 +1024,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         try {
             KDSaveFile file(dataFile + QLatin1String(".new"));
             openForWrite(&file, file.fileName());
-            writeUninstallerBinaryData(&file, &input, performedOperations, layout, true, false);
+            writeUninstallerBinaryData(&file, &input, performedOperations, layout);
             appendInt64(&file, MagicCookieDat);
             file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
                 | QFile::ReadOther);
@@ -1060,8 +1044,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             QFile file(uninstallerName() + QLatin1String(".new"));
             openForAppend(&file, file.fileName());
             file.seek(file.size());
-            writeUninstallerBinaryData(&file, &input, performedOperations, layout, false,
-                forceUncompressedResourcesOnError);
+            writeUninstallerBinaryData(&file, &input, performedOperations, layout);
             appendInt64(&file, MagicCookie);
         }
         input.close();

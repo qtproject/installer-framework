@@ -199,7 +199,7 @@ public:
 
 private:
     static void readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
-        const BinaryLayout &layout, bool compressed);
+        const BinaryLayout &layout);
 
 private:
     QSharedPointer<QFile> m_binary;

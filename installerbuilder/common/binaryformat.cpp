@@ -753,7 +753,7 @@ static QVector<QByteArray> sResourceVec;
     \internal
     Registers the resource found at \a segment within \a file into the Qt resource system.
  */
-static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segment, bool compressed)
+static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segment)
 {
     if (segment.length() <= 0)
         return 0;
@@ -762,8 +762,7 @@ static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segm
         throw Error(QObject::tr("Could not seek to in-binary resource. (offset: %1, length: %2")
             .arg(QString::number(segment.start()), QString::number(segment.length())));
     }
-    sResourceVec.append(compressed ? retrieveCompressedData(file, segment.length()) : retrieveData(file,
-        segment.length()));
+    sResourceVec.append(retrieveData(file, segment.length()));
 
     if (!QResource::registerResource((const uchar*)(sResourceVec.last().constData()),
         QLatin1String(":/metadata"))) {
@@ -891,8 +890,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
             // check for supported binary data file, will throw if we can't find a marker
             try {
                 const qint64 cookiePos = findMagicCookie(c.m_binaryFile.data(), QInstaller::MagicCookieDat);
-                readBinaryData(c, c.m_binaryFile, readBinaryLayout(c.m_binaryFile.data(), cookiePos),
-                    true);
+                readBinaryData(c, c.m_binaryFile, readBinaryLayout(c.m_binaryFile.data(), cookiePos));
                 retry = false;
             } catch (const Error &error) {
                 // this seems to be an unsupported dat file, try to read from original binary
@@ -905,7 +903,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
     }
 
     if (retry)
-        readBinaryData(c, c.m_binary, layout, false);
+        readBinaryData(c, c.m_binary, layout);
 
     return c;
 }
@@ -950,7 +948,7 @@ BinaryLayout BinaryContent::readBinaryLayout(QIODevice *const file, qint64 cooki
 
 /* static */
 void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
-    const BinaryLayout &layout, bool compressed)
+    const BinaryLayout &layout)
 {
     content.m_magicmarker = layout.magicMarker;
     content.m_metadataResourceSegments = layout.metadataResourceSegments;
@@ -969,8 +967,7 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
         Q_ASSERT_X(op, __FUNCTION__, QString::fromLatin1("Invalid operation name: %1").arg(name)
             .toLatin1());
 
-        const QString xml = (compressed ? QString::fromUtf8(qUncompress(retrieveByteArray(file.data())))
-            : retrieveString(file.data()));
+        const QString xml = retrieveString(file.data());
         if (!op->fromXml(xml))
             qWarning() << "Failed to load XML for operation:" << name;
         verbose() << "Operation name: " << name << "\nOperation xml:\n" << xml.leftRef(1000) << std::endl;
@@ -1027,7 +1024,7 @@ int BinaryContent::registerEmbeddedQResources()
     }
 
     foreach (const Range<qint64> &i, m_metadataResourceSegments)
-        m_resourceMappings.append(addResourceFromBinary(data, i, hasBinaryDataFile));
+        m_resourceMappings.append(addResourceFromBinary(data, i));
 
     m_binary.clear();
     if (hasBinaryDataFile)
