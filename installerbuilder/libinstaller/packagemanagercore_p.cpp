@@ -1289,11 +1289,10 @@ void PackageManagerCorePrivate::runPackageUpdater()
             undoOperationProgressSize = double(1) / double(5);
             componentsInstallPartProgressSize = downloadPartProgressSize;
             undoOperationProgressSize /= countProgressOperations(undoOperations);
+
+            ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Removing deselected components..."));
+            runUndoOperations(undoOperations, undoOperationProgressSize, adminRightsGained, true);
         }
-
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Removing deselected components..."));
-
-        runUndoOperations(undoOperations, undoOperationProgressSize, adminRightsGained, true);
         m_performedOperationsOld = nonRevertedOperations; // these are all operations left: those not reverted
 
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));

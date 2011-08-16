@@ -988,8 +988,10 @@ public:
     void updateTreeView()
     {
         m_button->setVisible(m_core->isInstaller() || m_core->isPackageManager());
-        disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(currentChanged(QModelIndex)));
+        if (m_treeView->selectionModel()) {
+            disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+                this, SLOT(currentChanged(QModelIndex)));
+        }
 
         m_currentModel = m_core->isUpdater() ? m_updaterModel : m_allModel;
         m_treeView->setModel(m_currentModel);
