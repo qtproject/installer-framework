@@ -70,7 +70,6 @@
   \li \b Dependencies Comma-separated list of \ref componentdependencies "dependencies" - \a optional.
   \li \b Virtual Set to true if this is a virtual component not showing up in the installer.
   \li \b SortingPriority Priority of this component when visible in the tree. Lowest priority number is on top.
-  \li \b InstallPriority Priority of this component when getting installed. Lowest priority number is first.
   \li \b Script File name of a \ref componentscripting "script" being loaded - \a optional.
   \li \b UserInterfaces One ore more file names of \ref componentuserinterfaces "user interfaces" being loaded - \a optional.
   \li \b Translations One ore more file names of \ref componenttranslation "translations" being loaded - \a optional.

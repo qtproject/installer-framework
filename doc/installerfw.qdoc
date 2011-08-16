@@ -240,7 +240,6 @@
     \o \bold{Dependencies} Comma-separated list of dependencies - optional.
     \o \bold{Virtual} Set to true if this is a virtual component not showing up in the installer.
     \o \bold{SortingPriority} Priority of this component when visible in the tree. Lowest priority number is on top.
-    \o \bold{InstallPriority} Priority of this component when getting installed. Lowest priority number is first.
     \o \bold{Script} File name of a script being loaded - optional.
     \o \bold{UserInterfaces} One ore more file names of user interfaces being loaded - optional.
     \o \bold{Translations} One ore more file names of translations being loaded - optional.
