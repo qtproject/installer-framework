@@ -1246,10 +1246,22 @@ void PackageManagerCorePrivate::runPackageUpdater()
                 component = m_core->componentByName(name);
             if (component) {
                 componentsByName.insert(name, component);
-                // if we're _not_ removing everything and this component is still selected, -> next
-                if (component->isSelected()) {
-                    nonRevertedOperations.append(operation);
-                    continue;
+
+                if (isUpdater()) {
+                    // If we have a component scheduled for update, do not break as we need whose operations in
+                    // the undo list to be able to properly update (uninstall -> install). In case we had more
+                    // then one update, others might have been deselected - so we need to keep them to avoid
+                    // uninstalling the component the update was possible for.
+                    if (!component->updateRequested() && !componentsToInstall.contains(component)) {
+                        nonRevertedOperations.append(operation);
+                        continue;
+                    }
+                } else {
+                    // If we're _not_ removing everything and this component is still selected, -> next.
+                    if (component->isSelected()) {
+                        nonRevertedOperations.append(operation);
+                        continue;
+                    }
                 }
             }
 
