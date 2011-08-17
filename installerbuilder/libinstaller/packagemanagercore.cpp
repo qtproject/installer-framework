@@ -823,6 +823,22 @@ void PackageManagerCore::appendUpdaterComponent(Component *component)
 }
 
 /*!
+    Returns a list of all available components found during a fetch. Note that depending on the run mode the
+    returned list might have different values. In case of updater mode, components scheduled for an
+    update as well as all possible dependencies are returned.
+*/
+QList<Component*> PackageManagerCore::availableComponents() const
+{
+    if (isUpdater())
+        return d->m_updaterComponents + d->m_updaterComponentsDeps;
+
+    QList<Component*> result = d->m_rootComponents;
+    foreach (QInstaller::Component *component, d->m_rootComponents)
+        result += component->childComponents(true, AllMode);
+    return result;
+}
+
+/*!
     Returns a component matching \a name. \a name can also contains a version requirement.
     E.g. "com.nokia.sdk.qt" returns any component with that name, "com.nokia.sdk.qt->=4.5" requires
     the returned component to have at least version 4.5.
@@ -843,31 +859,9 @@ Component* PackageManagerCore::componentByName(const QString &name) const
 }
 
 /*!
-    Returns a list of all available components found during a fetch. Note that depending on the run mode the
-    returned list might have different values. In case of updater mode, components scheduled for an
-    update as well as all possible dependencies are returned.
+    Calculates a order list of components to install based on the current run mode. Also auto installed
+    depenedencies are resolved.
 */
-QList<Component*> PackageManagerCore::availableComponents() const
-{
-    if (isUpdater())
-        return d->m_updaterComponents + d->m_updaterComponentsDeps;
-
-    QList<Component*> result = d->m_rootComponents;
-    foreach (QInstaller::Component *component, d->m_rootComponents)
-        result += component->childComponents(true, AllMode);
-    return result;
-}
-
-QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
-{
-    return d->m_orderedComponentsToInstall;
-}
-
-QString PackageManagerCore::installReason(Component *component) const
-{
-    return d->installReason(component);
-}
-
 bool PackageManagerCore::calculateComponentsToInstall() const
 {
     d->clearComponentsToInstall();
@@ -884,6 +878,24 @@ bool PackageManagerCore::calculateComponentsToInstall() const
         }
     }
     return d->appendComponentsToInstall(components);
+}
+
+/*!
+    Returns a list of ordered components to install. The list can be empty.
+*/
+QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
+{
+    return d->m_orderedComponentsToInstall;
+}
+
+/*!
+    Returns the reason why the component needs to be installed. Reasons can be: The component was scheduled
+    for installation, the component was added as a dependency for an other component or added as an automatic
+    dependency.
+*/
+QString PackageManagerCore::installReason(Component *component) const
+{
+    return d->installReason(component);
 }
 
 /*!
