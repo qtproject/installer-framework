@@ -887,8 +887,34 @@ bool PackageManagerCore::calculateComponentsToInstall() const
 }
 
 /*!
+    Returns a list of components that dependend on \a component. The list can be empty. Note: Auto
+    installed dependencies are not resolved.
+*/
+QList<Component*> PackageManagerCore::dependees(const Component *_component) const
+{
+    QList<Component*> dependees;
+    const QList<Component*> components = availableComponents();
+    if (!_component || components.isEmpty())
+        return dependees;
+
+    const QLatin1Char dash('-');
+    foreach (Component *component, components) {
+        const QStringList &dependencies = component->dependencies();
+        foreach (const QString &dependency, dependencies) {
+            // the last part is considered to be the version then
+            const QString name = dependency.contains(dash) ? dependency.section(dash, 0, 0) : dependency;
+            const QString version = dependency.contains(dash) ? dependency.section(dash, 1) : QString();
+            if (componentMatches(_component, name, version))
+                dependees.append(component);
+        }
+    }
+    return dependees;
+}
+
+/*!
     Returns a list of dependencies for \a component. If there's a dependency which cannot be fulfilled,
-    \a missingComponents will contain the missing components.
+    \a missingComponents will contain the missing components. Note: Auto installed dependencies are not
+    resolved.
 */
 QList<Component*> PackageManagerCore::dependencies(const Component *component, QStringList &missingComponents) const
 {

@@ -153,6 +153,7 @@ public:
     QString installReason(Component *component) const;
     QList<Component*> orderedComponentsToInstall() const;
 
+    QList<Component*> dependees(const Component *component) const;
     QList<Component*> dependencies(const Component *component, QStringList &missingComponents) const;
 
     // convenience
