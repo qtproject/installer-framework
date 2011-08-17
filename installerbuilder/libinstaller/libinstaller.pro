@@ -62,6 +62,7 @@ HEADERS += $$PWD/packagemanagercore.h \
     registerqtv2operation.h  \
     registerqtv23operation.h  \
     setqtcreatorvalueoperation.h \
+    addqtcreatorarrayvalueoperation.h \
     copydirectoryoperation.h \
     simplemovefileoperation.h \
     extractarchiveoperation.h \
@@ -127,6 +128,7 @@ SOURCES += $$PWD/packagemanagercore.cpp \
     registerqtv2operation.cpp \
     registerqtv23operation.cpp \
     setqtcreatorvalueoperation.cpp \
+    addqtcreatorarrayvalueoperation.cpp \
     copydirectoryoperation.cpp \
     simplemovefileoperation.cpp \
     extractarchiveoperation.cpp \

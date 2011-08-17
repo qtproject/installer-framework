@@ -58,6 +58,7 @@
 #include "registerqtv2operation.h"
 #include "registerqtv23operation.h"
 #include "setqtcreatorvalueoperation.h"
+#include "addqtcreatorarrayvalueoperation.h"
 #include "simplemovefileoperation.h"
 #include "registertoolchainoperation.h"
 #include "registerdefaultdebuggeroperation.h"
@@ -189,6 +190,7 @@ void QInstaller::init()
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetPluginPathOnQtCoreOperation>( QLatin1String( "SetPluginPathOnQtCore") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetImportsPathOnQtCoreOperation>( QLatin1String( "SetImportsPathOnQtCore") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetQtCreatorValueOperation>( QLatin1String( "SetQtCreatorValue") );
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::AddQtCreatorArrayValueOperation>( QLatin1String( "AddQtCreatorArrayValue") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::QtPatchOperation >( QLatin1String( "QtPatch" ) );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::ReplaceOperation >( QLatin1String( "Replace" ) );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::LineReplaceOperation >( QLatin1String( "LineReplace" ) );
