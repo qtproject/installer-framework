@@ -13,7 +13,6 @@
 <!--    <RemoteRepositories>
         <Repository>
             <Url>http://www.xxxx.com/repository</Url>
-            <Required>false</Required>
         </Repository>
     </RemoteRepositories>
 -->

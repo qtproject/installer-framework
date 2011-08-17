@@ -602,7 +602,6 @@
     <RemoteRepositories>
         <Repository>
             <Url>http://qt.nokia.com/packages/</Url>
-            <Required>false</Required>
         </Repository>      
     </RemoteRepositories>
 </Installer>  \endverbatim
