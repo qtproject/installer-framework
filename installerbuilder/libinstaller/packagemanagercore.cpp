@@ -869,7 +869,7 @@ Component* PackageManagerCore::componentByName(const QString &name) const
 }
 
 /*!
-    Calculates a order list of components to install based on the current run mode. Also auto installed
+    Calculates a ordered list of components to install based on the current run mode. Also auto installed
     depenedencies are resolved.
 */
 bool PackageManagerCore::calculateComponentsToInstall() const
