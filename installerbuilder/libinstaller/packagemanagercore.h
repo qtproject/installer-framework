@@ -153,8 +153,12 @@ public:
     Component *componentByName(const QString &identifier) const;
 
     bool calculateComponentsToInstall() const;
-    QString installReason(Component *component) const;
     QList<Component*> orderedComponentsToInstall() const;
+
+    bool calculateComponentsToUninstall() const;
+    QList<Component*> componentsToUninstall() const;
+
+    QString installReason(Component *component) const;
 
     QList<Component*> dependees(const Component *component) const;
     QList<Component*> dependencies(const Component *component, QStringList &missingComponents) const;

@@ -1841,5 +1841,67 @@ void PackageManagerCorePrivate::insertInstallReason(Component *component, const 
         m_toInstallComponentIdReasonHash.insert(component->name(), reason);
 }
 
+bool PackageManagerCorePrivate::appendComponentToUninstall(Component *component)
+{
+    // remove all already resolved dependees
+    QSet<Component*> dependees = m_core->dependees(component).toSet().subtract(m_componentsToUninstall);
+    if (dependees.isEmpty()) {
+        m_componentsToUninstall.insert(component);
+        m_componentsToUninstallIds.insert(component->name());
+        return true;
+    }
+
+    QSet<Component*> dependeesToResolve;
+    foreach (Component *dependee, dependees) {
+        if (dependee->isInstalled()) {
+            // keep them as already resolved
+            m_componentsToUninstall.insert(dependee);
+            m_componentsToUninstallIds.insert(dependee->name());
+            // gather possible dependees, keep them to resolve it later
+            dependeesToResolve.unite(m_core->dependees(dependee).toSet());
+        }
+    }
+
+    bool allResolved = true;
+    foreach (Component *dependee, dependeesToResolve)
+        allResolved &= appendComponentToUninstall(dependee);
+
+    return allResolved;
+}
+
+bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Component*> &components)
+{
+    if (components.isEmpty()) {
+        verbose() << "components list is empty in " << Q_FUNC_INFO << std::endl;
+        return true;
+    }
+
+    bool allResolved = true;
+    foreach (Component *component, components) {
+        if (component->isInstalled()) {
+            m_componentsToUninstall.insert(component);
+            m_componentsToUninstallIds.insert(component->name());
+            allResolved &= appendComponentToUninstall(component);
+        }
+    }
+
+    QList<Component*> autoDependOnList;
+    if (allResolved) {
+        // All regular dependees are resolved. Now we are looking for auto depend on components.
+        foreach (Component *component, m_core->availableComponents()) {
+            // If a components is installed and not yet scheduled for un-installation, check for auto depend.
+            if (component->isInstalled() && !m_componentsToUninstall.contains(component)) {
+                // If we figure out a component requested auto installation, keep it to resolve their deps as
+                // well.
+                if (component->isAutoDependOn(m_componentsToUninstallIds))
+                    autoDependOnList.append(component);
+            }
+        }
+    }
+
+    if (!autoDependOnList.isEmpty())
+        return appendComponentsToUninstall(autoDependOnList);
+    return allResolved;
+}
 
 }   // QInstaller

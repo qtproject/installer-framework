@@ -899,6 +899,33 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 }
 
 /*!
+    Calculates a list of components to uninstall based on the current run mode. Auto installed dependencies
+    are resolved as well.
+*/
+bool PackageManagerCore::calculateComponentsToUninstall() const
+{
+    if (runMode() == UpdaterMode)
+        return false;
+
+    QList<Component*> components;
+    foreach (Component *component, availableComponents()) {
+        if (component->uninstallationRequested())
+            components.append(component);
+    }
+    d->m_componentsToUninstall.clear();
+    d->m_componentsToUninstallIds.clear();
+    return d->appendComponentsToUninstall(components);
+}
+
+/*!
+    Returns a list of components to uninstall. The list can be empty.
+*/
+QList<Component*> PackageManagerCore::componentsToUninstall() const
+{
+    return d->m_componentsToUninstall.toList();
+}
+
+/*!
     Returns the reason why the component needs to be installed. Reasons can be: The component was scheduled
     for installation, the component was added as a dependency for an other component or added as an automatic
     dependency.
