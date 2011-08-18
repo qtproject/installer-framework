@@ -940,10 +940,9 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
         return false;
 
     QSet<QString> components = componentsToInstall;
-    foreach (const Component *component, d->m_core->availableComponents()) {
-        if (component->isInstalled())
-            components.insert(component->name());
-    }
+    const QStringList installedPackages = d->m_core->localInstalledPackages().keys();
+    foreach (const QString &name, installedPackages)
+        components.insert(name);
 
     foreach (const QString &component, components) {
         autoDependOnList.removeAll(component);

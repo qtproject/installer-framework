@@ -617,6 +617,16 @@ bool PackageManagerCore::fetchLocalPackagesTree()
     return true;
 }
 
+LocalPackagesHash PackageManagerCore::localInstalledPackages()
+{
+    return d->localInstalledPackages();
+}
+
+PackagesList PackageManagerCore::remotePackages()
+{
+    return d->remotePackages();
+}
+
 bool PackageManagerCore::fetchRemotePackagesTree()
 {
     d->setStatus(Running);

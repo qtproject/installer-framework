@@ -86,6 +86,9 @@ public:
     static void setNoForceInstallation(bool value);
 
     bool fetchLocalPackagesTree();
+    LocalPackagesHash localInstalledPackages();
+
+    PackagesList remotePackages();
     bool fetchRemotePackagesTree();
 
     bool run();
