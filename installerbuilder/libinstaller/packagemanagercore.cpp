@@ -336,7 +336,7 @@ quint64 PackageManagerCore::requiredTemporaryDiskSpace() const
 }
 
 /*!
-    Returns the will be downloaded archives count
+    Returns the count of archives that will be downloaded
 */
 int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 {
@@ -784,7 +784,7 @@ QList<Component*> PackageManagerCore::rootComponents() const
     return d->m_rootComponents;
 }
 
-/*
+/*!
     Appends a component as root component to the internal storage for installer or package manager components.
     To append a component as a child to an already existing component, use Component::appendComponent(). Emits
     the componentAdded() signal.
@@ -814,7 +814,7 @@ Component *PackageManagerCore::updaterComponent(int i) const
 }
 
 /*!
-    Returns a list of components if run in updater mode. Might return an empty list case the engine has only
+    Returns a list of components if run in updater mode. Might return an empty list in case the engine has only
     been run in installer or package manager mode or no components have been fetched.
 */
 QList<Component*> PackageManagerCore::updaterComponents() const
@@ -822,7 +822,7 @@ QList<Component*> PackageManagerCore::updaterComponents() const
     return d->m_updaterComponents;
 }
 
-/*
+/*!
     Appends a component to the internal storage for updater components. Emits the componentAdded() signal.
 */
 void PackageManagerCore::appendUpdaterComponent(Component *component)
