@@ -475,9 +475,6 @@ void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
     if (visible && page(p) == 0) {
         setPage(p, d->m_defaultPages[p]);
     } else if (!visible && page(p) != 0) {
-        //no component selection page means we can calculate it now
-        if (p == PackageManagerCore::ComponentSelection)
-            m_core->calculateComponentsToInstall(); // TODO: why?
         d->m_defaultPages[p] = page(p);
         removePage(p);
     }
@@ -856,11 +853,9 @@ void LicenseAgreementPage::entering()
     m_licenseListWidget->setVisible(false);
     m_textBrowser->setText(QLatin1String(""));
 
-    QList<QInstaller::Component*> components = packageManagerCore()->orderedComponentsToInstall();
-
-    foreach (QInstaller::Component *component, components) {
+    packageManagerCore()->calculateComponentsToInstall();
+    foreach (QInstaller::Component *component, packageManagerCore()->orderedComponentsToInstall())
         addLicenseItem(component->licenses());
-    }
 
     const int licenseCount = m_licenseListWidget->count();
     if (licenseCount > 0) {
@@ -918,6 +913,9 @@ public:
         ComponentModel *list[] = { m_allModel, m_updaterModel, 0 };
         while (ComponentModel *model = list[i++]) {
             connect(model, SIGNAL(defaultCheckStateChanged(bool)), q, SLOT(setModified(bool)));
+            connect(model, SIGNAL(defaultCheckStateChanged(bool)), m_core,
+                SLOT(componentsToInstallNeedsRecalculation()));
+
             model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal, tr("Name"));
             model->setHeaderData(ComponentModelHelper::InstalledVersionColumn, Qt::Horizontal,
                 tr("Installed Version"));
@@ -1120,12 +1118,6 @@ void ComponentSelectionPage::entering()
 
     d->updateTreeView();
     setModified(isComplete());
-}
-
-void ComponentSelectionPage::leaving()
-{
-    //now we can calculate the install order
-    packageManagerCore()->calculateComponentsToInstall();   // TODO: why here?
 }
 
 void ComponentSelectionPage::selectAll()
@@ -1426,6 +1418,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
 
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
+    m_msgLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     topLayout->addWidget(m_msgLabel);
     baseLayout->addLayout(topLayout);
 
@@ -1481,6 +1474,8 @@ void ReadyForInstallationPage::entering()
         m_msgLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
             .arg(productName()));
     }
+
+    refreshTaskDetailsBrowser();
 
     const KDSysInfo::Volume vol = KDSysInfo::Volume::fromPath(target);
     const KDSysInfo::Volume tempVolume =
@@ -1540,21 +1535,18 @@ void ReadyForInstallationPage::entering()
             "installation, but there will be less than 100 MB available afterwards. %1")
             .arg(m_msgLabel->text()));
     }
-    refreshTaskDetailsBrowser();
 }
 
 void ReadyForInstallationPage::refreshTaskDetailsBrowser()
 {
-    if (packageManagerCore()->isUninstaller())
-        return;
-
     QString htmlOutput;
     QString lastInstallReason;
-    if (!packageManagerCore()->calculateComponentsToInstall()) {    // TODO: why again?
+    if (!packageManagerCore()->calculateComponentsToInstall()) {
         htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font><br></h2>").arg(tr("Can't "
             "resolve all dependencies.")));
         if (!m_taskDetailsBrowser->isVisible())
             toggleDetails();
+        setCommitPage(false);
     }
 
     // In case of updater mode we don't uninstall components.

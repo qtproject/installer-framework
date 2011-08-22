@@ -234,7 +234,6 @@ public:
 
 protected:
     void entering();
-    void leaving();
 
 private Q_SLOTS:
     void setModified(bool modified);

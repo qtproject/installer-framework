@@ -293,6 +293,11 @@ void PackageManagerCore::cancelMetaInfoJob()
         d->m_repoMetaInfoJob->cancel();
 }
 
+void PackageManagerCore::componentsToInstallNeedsRecalculation()
+{
+    d->m_componentsToInstallCalculated = false;
+}
+
 void PackageManagerCore::autoAcceptMessageBoxes()
 {
     MessageBoxHandler::instance()->setDefaultAction(MessageBoxHandler::Accept);
@@ -875,20 +880,23 @@ Component* PackageManagerCore::componentByName(const QString &name) const
 */
 bool PackageManagerCore::calculateComponentsToInstall() const
 {
-    d->clearComponentsToInstall();
-    QList<Component*> components;
-    if (runMode() == UpdaterMode) {
-        foreach(Component *component, updaterComponents()) {
-            if (component->updateRequested())
-                components.append(component);
+    if (!d->m_componentsToInstallCalculated) {
+        d->clearComponentsToInstall();
+        QList<Component*> components;
+        if (runMode() == UpdaterMode) {
+            foreach (Component *component, updaterComponents()) {
+                if (component->updateRequested())
+                    components.append(component);
+            }
+        } else if (runMode() == AllMode) {
+            foreach (Component *component, availableComponents()) {
+                if (component->installationRequested())
+                    components.append(component);
+            }
         }
-    } else if (runMode() == AllMode) {
-        foreach(Component *component, availableComponents()) {
-            if (component->installationRequested())
-                components.append(component);
-        }
+        d->m_componentsToInstallCalculated = d->appendComponentsToInstall(components);
     }
-    return d->appendComponentsToInstall(components);
+    return d->m_componentsToInstallCalculated;
 }
 
 /*!

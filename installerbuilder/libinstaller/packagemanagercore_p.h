@@ -216,6 +216,7 @@ private:
     bool m_repoFetched;
     bool m_updateSourcesAdded;
     qint64 m_magicBinaryMarker;
+    bool m_componentsToInstallCalculated;
 
     // < name (component to replace), < replacement component, component to replace > >
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceAllMode;

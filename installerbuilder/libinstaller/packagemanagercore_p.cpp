@@ -157,6 +157,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_updates(false)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
+    , m_componentsToInstallCalculated(false)
 {
 }
 
@@ -177,6 +178,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(magicInstallerMaker)
+    , m_componentsToInstallCalculated(false)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));

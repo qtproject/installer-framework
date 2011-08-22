@@ -212,6 +212,8 @@ public Q_SLOTS:
     void languageChanged();
     void setCompleteUninstallation(bool complete);
     void cancelMetaInfoJob();
+    void componentsToInstallNeedsRecalculation();
+
 
 Q_SIGNALS:
     void componentAdded(QInstaller::Component *comp);

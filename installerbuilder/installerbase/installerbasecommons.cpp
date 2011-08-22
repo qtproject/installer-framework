@@ -343,16 +343,12 @@ int InstallerGui::nextId() const
         if (!core->isInstaller())
             return nextNextId;
 
-        QList<Component*> components = core->orderedComponentsToInstall();
-        bool foundLicense = false;
-
-        foreach (Component* component, components) {
-            if (!component->licenses().isEmpty()) {
-                foundLicense = true;
-                break;
-            }
+        core->calculateComponentsToInstall();
+        foreach (Component* component, core->orderedComponentsToInstall()) {
+            if (!component->licenses().isEmpty())
+                return next;
         }
-        return foundLicense ? next : nextNextId;
+        return nextNextId;
     }
     return next;
 }
@@ -396,20 +392,14 @@ int MaintenanceGui::nextId() const
         if (!core->isPackageManager() && !core->isUpdater())
             return nextNextId;
 
-        QList<Component*> components = core->orderedComponentsToInstall();
-        if (components.isEmpty())
-            return nextNextId;
-
-        bool foundLicense = false;
-        foreach (Component* component, components) {
+        core->calculateComponentsToInstall();
+        foreach (Component* component, core->orderedComponentsToInstall()) {
             if (component->isInstalled())
                 continue;
-            if (!component->licenses().isEmpty()) {
-                foundLicense = true;
-                break;
-            }
+            if (!component->licenses().isEmpty())
+                return next;
         }
-        return foundLicense ? next : nextNextId;
+        return nextNextId;
     }
     return next;
 }
