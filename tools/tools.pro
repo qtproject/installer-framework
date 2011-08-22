@@ -1,3 +1,3 @@
 TEMPLATE=subdirs
 CONFIG += ordered
-SUBDIRS += operationrunner fileengineclient fileengineserver
+SUBDIRS += operationrunner fileengineclient fileengineserver extractbinarydata
