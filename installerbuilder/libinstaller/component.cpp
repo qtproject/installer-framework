@@ -926,7 +926,16 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
 {
     // The script can override this method and determines if the component needs to be installed.
     if (value(scAutoDependOn).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
-        const QScriptValue valueFromScript = callScriptMethod(QLatin1String("isAutoDependOn"));
+        QScriptValue valueFromScript;
+        try {
+            valueFromScript = callScriptMethod(QLatin1String("isAutoDependOn"));
+        } catch (const Error &error) {
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+                QLatin1String("isAutoDependOnError"), tr("Can't resolve isAutoDependOn in %1"
+                    ).arg(name()), error.message());
+            return false;
+        }
+
         if (valueFromScript.isValid())
             return valueFromScript.toBool();
         verbose() << "value from script is not valid " << std::endl;
@@ -963,7 +972,15 @@ bool Component::isDefault() const
 {
     // the script can override this method
     if (value(scDefault).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
-        const QScriptValue valueFromScript = callScriptMethod(QLatin1String("isDefault"));
+        QScriptValue valueFromScript;
+        try {
+            valueFromScript = callScriptMethod(QLatin1String("isDefault"));
+        } catch (const Error &error) {
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+                QLatin1String("isDefaultError"), tr("Can't resolve isDefault in %1").arg(name()),
+                    error.message());
+            return false;
+        }
         if (valueFromScript.isValid())
             return valueFromScript.toBool();
         verbose() << "value from script is not valid " << std::endl;
