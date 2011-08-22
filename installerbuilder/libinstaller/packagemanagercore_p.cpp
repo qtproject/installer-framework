@@ -399,19 +399,11 @@ QString PackageManagerCorePrivate::installReason(Component *component)
 
 void PackageManagerCorePrivate::initialize()
 {
-    try {
-        m_settings = Settings(Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
-            QLatin1String(":/metadata/installer-config/")));
-    } catch (const Error &e) {
-        qCritical("Could not parse Config: %s", qPrintable(e.message()));
-        // TODO: try better error handling
-        return;
-    }
-
     // first set some common variables that may used e.g. as placeholder
     // in some of the settings variables or in a script or...
     m_vars.insert(QLatin1String("rootDir"), QDir::rootPath());
     m_vars.insert(QLatin1String("homeDir"), QDir::homePath());
+    m_vars.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
 
 #ifdef Q_WS_WIN
     m_vars.insert(QLatin1String("os"), QLatin1String("win"));
@@ -424,6 +416,15 @@ void PackageManagerCorePrivate::initialize()
 #else
     // TODO: add more platforms as needed...
 #endif
+
+    try {
+        m_settings = Settings(Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
+            QLatin1String(":/metadata/installer-config/")));
+    } catch (const Error &e) {
+        qCritical("Could not parse Config: %s", qPrintable(e.message()));
+        // TODO: try better error handling
+        return;
+    }
 
     // fill the variables defined in the settings
     m_vars.insert(QLatin1String("ProductName"), m_settings.applicationName());
