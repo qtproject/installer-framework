@@ -289,7 +289,8 @@ void PackageManagerCore::setCompleteUninstallation(bool complete)
 
 void PackageManagerCore::cancelMetaInfoJob()
 {
-    d->m_repoMetaInfoJob->cancel();
+    if (d->m_repoMetaInfoJob)
+        d->m_repoMetaInfoJob->cancel();
 }
 
 void PackageManagerCore::autoAcceptMessageBoxes()
@@ -1264,8 +1265,8 @@ void PackageManagerCore::interrupt()
 
 void PackageManagerCore::setCanceled()
 {
+    cancelMetaInfoJob();
     d->setStatus(PackageManagerCore::Canceled);
-    d->m_repoMetaInfoJob->cancel();
 }
 
 /*!
@@ -1481,7 +1482,8 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
                 verbose() << "Url is : " << localPath << std::endl;
             lastLocalPath = localPath;
         }
-        component->setRepositoryUrl(d->m_repoMetaInfoJob->repositoryForTemporaryDirectory(localPath).url());
+        if (d->m_repoMetaInfoJob)
+            component->setRepositoryUrl(d->m_repoMetaInfoJob->repositoryForTemporaryDirectory(localPath).url());
     } catch (...) {
         return false;
     }
