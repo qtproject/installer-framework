@@ -1269,13 +1269,16 @@ void PackageManagerCorePrivate::runPackageUpdater()
                 }
             }
 
-            // In package manager mode a component (one to replace) might be scheduled for uninstall, but we
-            // don't know if it should be uninstalled. To figure this out we need to check the actual
-            // replacement if it is still checked. If so, skip the undo operation. This avoids an update if we
-            // actually do a completely different component install/ uninstall.
-            if (isPackageManager() && m_componentsToReplaceAllMode.contains(name)) {
-                if (m_componentsToReplaceAllMode.value(name).first->isSelected())
+            // A component (one to replace) might be scheduled for uninstall, but we really don't know if it
+            // should be uninstalled. To figure this out we need to check the actual replacement if it is
+            // checked. If so, skip the undo operation. This avoids an update if we actually do a completely
+            // different component install/ uninstall.
+            if (componentsToReplace(m_core->runMode()).contains(name)) {
+                if ((isUpdater() && !m_componentsToReplaceUpdaterMode.value(name).first->updateRequested())
+                    || isPackageManager() && m_componentsToReplaceAllMode.value(name).first->isSelected()) {
+                    nonRevertedOperations.append(operation);
                     continue;
+                }
             }
 
             // Filter out the create target dir undo operation, it's only needed for full uninstall.
