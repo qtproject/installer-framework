@@ -336,7 +336,7 @@ quint64 PackageManagerCore::requiredTemporaryDiskSpace() const
 }
 
 /*!
-    Returns the count of archives that will be downloaded
+    Returns the count of archives that will be downloaded.
 */
 int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 {
@@ -733,8 +733,8 @@ void PackageManagerCore::addRepositories(const QList<Repository> &repositories)
 }
 
 /*!
-    Sets additional repository for this instance of the installer or updater
-    Will be removed after invoking it again
+    Sets additional repository for this instance of the installer or updater.
+    Will be removed after invoking it again.
 */
 void PackageManagerCore::setTemporaryRepositories(const QList<Repository> &repositories, bool replace)
 {
@@ -742,7 +742,7 @@ void PackageManagerCore::setTemporaryRepositories(const QList<Repository> &repos
 }
 
 /*!
-    checks if the downloader should try to download sha1 checksums for archives
+    Checks if the downloader should try to download sha1 checksums for archives.
 */
 bool PackageManagerCore::testChecksum() const
 {
@@ -750,7 +750,7 @@ bool PackageManagerCore::testChecksum() const
 }
 
 /*!
-    Defines if the downloader should try to download sha1 checksums for archives
+    Defines if the downloader should try to download sha1 checksums for archives.
 */
 void PackageManagerCore::setTestChecksum(bool test)
 {
@@ -869,8 +869,8 @@ Component* PackageManagerCore::componentByName(const QString &name) const
 }
 
 /*!
-    Calculates a ordered list of components to install based on the current run mode. Also auto installed
-    depenedencies are resolved.
+    Calculates an ordered list of components to install based on the current run mode. Also auto installed
+    dependencies are resolved.
 */
 bool PackageManagerCore::calculateComponentsToInstall() const
 {
@@ -1161,7 +1161,7 @@ QString PackageManagerCore::findPath(const QString &name, const QStringList &pat
 }
 
 /*!
-    sets the "installerbase" binary to use when writing the package manager/uninstaller.
+    Sets the "installerbase" binary to use when writing the package manager/uninstaller.
     Set this if an update to installerbase is available.
     If not set, the executable segment of the running un/installer will be used.
 */
@@ -1492,7 +1492,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
 void PackageManagerCore::storeReplacedComponents(QHash<QString, Component*> &components, const struct Data &data)
 {
     QHash<Component*, QStringList>::const_iterator it;
-    // remeber all components that got a replacement, requierd for uninstall
+    // remember all components that got a replacement, required for uninstall
     for (it = data.replacementToExchangeables.constBegin(); it != data.replacementToExchangeables.constEnd(); ++it) {
         foreach (const QString &componentName, it.value()) {
             Component *component = components.take(componentName);
