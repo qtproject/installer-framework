@@ -305,8 +305,12 @@ void PackageManagerGui::loadControlScript(const QString &scriptPath)
             .arg(scriptPath, file.errorString()));
     }
 
+    QScriptValue installerObject = d->m_controlScriptEngine.newQObject(m_core);
+    installerObject.setProperty(QLatin1String("componentByName"), d->m_controlScriptEngine
+        .newFunction(qInstallerComponentByName, 1));
+
     d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("installer"),
-        d->m_controlScriptEngine.newQObject(m_core));
+        installerObject);
     d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("gui"),
         d->m_controlScriptEngine.newQObject(this));
     d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("packagemanagergui"),
