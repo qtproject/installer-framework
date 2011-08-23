@@ -341,7 +341,8 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         foreach (Component *component, m_core->availableComponents()) {
             // If a components is already installed or is scheduled for installation, no need to check for
             // auto depend installation.
-            if (!component->isInstalled() && !m_toInstallComponentIds.contains(component->name())) {
+            if ((!component->isInstalled() || component->updateRequested())
+                && !m_toInstallComponentIds.contains(component->name())) {
                 // If we figure out a component requests auto installation, keep it to resolve their deps as
                 // well.
                 if (component->isAutoDependOn(m_toInstallComponentIds)) {
@@ -376,7 +377,7 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
             return false;
         }
 
-        if (!dependencyComponent->isInstalled()
+        if ((!dependencyComponent->isInstalled() || dependencyComponent->updateRequested())
             && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
                 if (m_visitedComponents.value(component).contains(dependencyComponent))
                     return false;
