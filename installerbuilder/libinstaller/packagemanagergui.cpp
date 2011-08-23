@@ -1551,9 +1551,11 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
     QString lastInstallReason;
     if (!packageManagerCore()->calculateComponentsToUninstall() ||
         !packageManagerCore()->calculateComponentsToInstall()) {
-            htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font><br></h2>")
-                .arg(tr("Can not resolve all dependencies. Some components might be scheduled for uninstall "
-                "while others require them for installation!")));
+            htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font></h2><ul>")
+                .arg(tr("Can not resolve all dependencies!")));
+            foreach (const QString &reason, packageManagerCore()->missingDependenciesReasons())
+                htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(reason));
+            htmlOutput.append(QLatin1String("</ul>"));
             m_taskDetailsBrowser->setHtml(htmlOutput);
             if (!m_taskDetailsBrowser->isVisible())
                 toggleDetails();

@@ -933,6 +933,11 @@ QList<Component*> PackageManagerCore::componentsToUninstall() const
     return d->m_componentsToUninstall.toList();
 }
 
+QStringList PackageManagerCore::missingDependenciesReasons() const
+{
+    return d->m_missingDependenciesReasons;
+}
+
 /*!
     Returns the reason why the component needs to be installed. Reasons can be: The component was scheduled
     for installation, the component was added as a dependency for an other component or added as an automatic

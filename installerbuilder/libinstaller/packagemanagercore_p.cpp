@@ -301,6 +301,7 @@ void PackageManagerCorePrivate::clearComponentsToInstall()
 {
     m_visitedComponents.clear();
     m_toInstallComponentIds.clear();
+    m_missingDependenciesReasons.clear();
     m_orderedComponentsToInstall.clear();
     m_toInstallComponentIdReasonHash.clear();
 }
@@ -361,10 +362,15 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
         //componentByName return 0 if dependencyComponentName contains a version which is not available
         Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
         if (dependencyComponent == 0 || dependencyComponent->uninstallationRequested()) {
-            const QString errorMessage = QString::fromLatin1("Can't find missing dependency(%1) for %2.")
-                .arg(dependencyComponentName, component->name());
+            QString errorMessage;
+            if (!dependencyComponent)
+                errorMessage = QString::fromLatin1("Can't find missing dependency (%1) for %2.");
+            else if (dependencyComponent->uninstallationRequested())
+                errorMessage = QString::fromLatin1("Dependency (%1) scheduled for uninstall, but required for"
+                " %2.");
+            errorMessage = errorMessage.arg(dependencyComponentName, component->name());
             verbose() << qPrintable(errorMessage) << std::endl;
-
+            m_missingDependenciesReasons.append(errorMessage);
             Q_ASSERT_X(false, Q_FUNC_INFO, qPrintable(errorMessage));
             return false;
         }

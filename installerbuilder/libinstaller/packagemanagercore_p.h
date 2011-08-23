@@ -147,7 +147,6 @@ public:
     void installComponent(Component *component, double progressOperationSize,
         bool adminRightsGained = false);
 
-    QSet<Component*> m_componentsToUninstall;
     bool appendComponentToUninstall(Component *component);
     bool appendComponentsToUninstall(const QList<Component*> &components);
 
@@ -230,6 +229,9 @@ private:
     //we can't use this reason hash as component id hash, because some reasons are ready before
     //the component is added
     QHash<QString, QString> m_toInstallComponentIdReasonHash;
+
+    QSet<Component*> m_componentsToUninstall;
+    QStringList m_missingDependenciesReasons;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...
