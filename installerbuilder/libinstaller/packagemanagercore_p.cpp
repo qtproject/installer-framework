@@ -299,6 +299,7 @@ QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::compo
 
 void PackageManagerCorePrivate::clearComponentsToInstall()
 {
+    m_componentsToInstallCalculated = false;
     m_visitedComponents.clear();
     m_toInstallComponentIds.clear();
     m_missingDependenciesReasons.clear();
