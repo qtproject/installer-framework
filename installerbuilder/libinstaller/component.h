@@ -59,6 +59,7 @@ class INSTALLER_EXPORT Component : public QObject, public QScriptable, public Co
     Q_PROPERTY(QStringList archives READ archives)
     Q_PROPERTY(QStringList userInterfaces READ userInterfaces)
     Q_PROPERTY(QStringList dependencies READ dependencies)
+    Q_PROPERTY(QStringList autoDependencies READ autoDependencies)
     Q_PROPERTY(bool fromOnlineRepository READ isFromOnlineRepository)
     Q_PROPERTY(QUrl repositoryUrl READ repositoryUrl)
     Q_PROPERTY(bool removeBeforeUpdate READ removeBeforeUpdate WRITE setRemoveBeforeUpdate)
@@ -150,6 +151,7 @@ public:
     void setRemoveBeforeUpdate(bool removeBeforeUpdate);
 
     QStringList dependencies() const;
+    QStringList autoDependencies() const;
 
     void languageChanged();
     QString localTempPath() const;

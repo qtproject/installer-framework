@@ -910,6 +910,11 @@ QStringList Component::dependencies() const
     return value(scDependencies).split(scCommaRegExp, QString::SkipEmptyParts);
 }
 
+QStringList Component::autoDependencies() const
+{
+    return value(scAutoDependOn).split(scCommaRegExp, QString::SkipEmptyParts);
+}
+
 /*!
     Set's the components state to installed.
 */
@@ -924,8 +929,14 @@ void Component::setInstalled()
 */
 bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
 {
+    // If there is no auto depend on value or the value is empty, we have nothing todo. The component does
+    // not need to be installed as an auto dependency.
+    QStringList autoDependOnList = autoDependencies();
+    if (autoDependOnList.isEmpty())
+        return false;
+
     // The script can override this method and determines if the component needs to be installed.
-    if (value(scAutoDependOn).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
+    if (autoDependOnList.first().compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
         QScriptValue valueFromScript;
         try {
             valueFromScript = callScriptMethod(QLatin1String("isAutoDependOn"));
@@ -941,12 +952,6 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
         verbose() << "value from script is not valid " << std::endl;
         return false;
     }
-
-    // If there is no auto depend on value or the value is empty, we have nothing todo. The component does
-    // not need to be installed as an auto dependency.
-    QStringList autoDependOnList = value(scAutoDependOn).split(scCommaRegExp, QString::SkipEmptyParts);
-    if (autoDependOnList.isEmpty())
-        return false;
 
     QSet<QString> components = componentsToInstall;
     const QStringList installedPackages = d->m_core->localInstalledPackages().keys();
