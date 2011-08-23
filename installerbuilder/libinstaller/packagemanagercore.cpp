@@ -1688,3 +1688,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     emit finishUpdaterComponentsReset();
     return true;
 }
+
+void PackageManagerCore::resetComponentsToUserCheckedState()
+{
+    d->resetComponentsToUserCheckedState();
+}

@@ -234,6 +234,7 @@ public:
 
 protected:
     void entering();
+    int nextId() const;
 
 private Q_SLOTS:
     void setModified(bool modified);

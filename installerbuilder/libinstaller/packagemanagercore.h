@@ -269,6 +269,11 @@ private:
 private:
     PackageManagerCorePrivate *const d;
     friend class PackageManagerCorePrivate;
+
+private:
+    // remove once we deprecate isSelected, setSelected etc...
+    friend class ComponentSelectionPage;
+    void resetComponentsToUserCheckedState();
 };
 
 }

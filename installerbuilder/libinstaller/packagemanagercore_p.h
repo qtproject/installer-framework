@@ -231,6 +231,12 @@ private:
     //we can't use this reason hash as component id hash, because some reasons are ready before
     //the component is added
     QHash<QString, QString> m_toInstallComponentIdReasonHash;
+
+private:
+    // remove once we deprecate isSelected, setSelected etc...
+    void resetComponentsToUserCheckedState();
+    QHash<Component*, Qt::CheckState> m_coreCheckedHash;
+    void setCheckedState(Component *component, Qt::CheckState state);
 };
 
 }   // QInstaller

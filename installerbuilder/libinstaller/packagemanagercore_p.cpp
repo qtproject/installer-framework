@@ -401,6 +401,9 @@ QString PackageManagerCorePrivate::installReason(Component *component)
 
 void PackageManagerCorePrivate::initialize()
 {
+    m_coreCheckedHash.clear();
+    m_componentsToInstallCalculated = false;
+
     // first set some common variables that may used e.g. as placeholder
     // in some of the settings variables or in a script or...
     m_vars.insert(QLatin1String("rootDir"), QDir::rootPath());
@@ -1839,6 +1842,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
 
 void PackageManagerCorePrivate::realAppendToInstallComponents(Component *component)
 {
+    setCheckedState(component, Qt::Checked);
     m_orderedComponentsToInstall.append(component);
     m_toInstallComponentIds.insert(component->name());
 }
@@ -1855,6 +1859,7 @@ bool PackageManagerCorePrivate::appendComponentToUninstall(Component *component)
     // remove all already resolved dependees
     QSet<Component*> dependees = m_core->dependees(component).toSet().subtract(m_componentsToUninstall);
     if (dependees.isEmpty()) {
+        setCheckedState(component, Qt::Unchecked);
         m_componentsToUninstall.insert(component);
         m_componentsToUninstallIds.insert(component->name());
         return true;
@@ -1864,6 +1869,7 @@ bool PackageManagerCorePrivate::appendComponentToUninstall(Component *component)
     foreach (Component *dependee, dependees) {
         if (dependee->isInstalled()) {
             // keep them as already resolved
+            setCheckedState(dependee, Qt::Unchecked);
             m_componentsToUninstall.insert(dependee);
             m_componentsToUninstallIds.insert(dependee->name());
             // gather possible dependees, keep them to resolve it later
@@ -1888,6 +1894,7 @@ bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Componen
     bool allResolved = true;
     foreach (Component *component, components) {
         if (component->isInstalled()) {
+            setCheckedState(component, Qt::Unchecked);
             m_componentsToUninstall.insert(component);
             m_componentsToUninstallIds.insert(component->name());
             allResolved &= appendComponentToUninstall(component);
@@ -1911,6 +1918,24 @@ bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Componen
     if (!autoDependOnList.isEmpty())
         return appendComponentsToUninstall(autoDependOnList);
     return allResolved;
+}
+
+void PackageManagerCorePrivate::resetComponentsToUserCheckedState()
+{
+    if (m_coreCheckedHash.isEmpty())
+        return;
+
+    foreach (Component *component, m_coreCheckedHash.keys())
+    component->setCheckState(m_coreCheckedHash.value(component));
+
+    m_coreCheckedHash.clear();
+    m_componentsToInstallCalculated = false;
+}
+
+void PackageManagerCorePrivate::setCheckedState(Component *component, Qt::CheckState state)
+{
+    m_coreCheckedHash.insert(component, component->checkState());
+    component->setCheckState(state);
 }
 
 }   // QInstaller

@@ -1120,6 +1120,14 @@ void ComponentSelectionPage::entering()
     setModified(isComplete());
 }
 
+int ComponentSelectionPage::nextId() const
+{
+    // remove once we deprecate isSelected, setSelected etc...
+    const int next = PackageManagerPage::nextId();
+    packageManagerCore()->resetComponentsToUserCheckedState();
+    return next;
+}
+
 void ComponentSelectionPage::selectAll()
 {
     d->selectAll();
