@@ -1549,22 +1549,21 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
 {
     QString htmlOutput;
     QString lastInstallReason;
-    if (!packageManagerCore()->calculateComponentsToInstall()) {
-        htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font><br></h2>").arg(tr("Can't "
-            "resolve all dependencies.")));
-        if (!m_taskDetailsBrowser->isVisible())
-            toggleDetails();
-        setCommitPage(false);
+    if (!packageManagerCore()->calculateComponentsToUninstall() ||
+        !packageManagerCore()->calculateComponentsToInstall()) {
+            htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font><br></h2>")
+                .arg(tr("Can not resolve all dependencies. Some components might be scheduled for uninstall "
+                "while others require them for installation!")));
+            m_taskDetailsBrowser->setHtml(htmlOutput);
+            if (!m_taskDetailsBrowser->isVisible())
+                toggleDetails();
+            setCommitPage(false);
+            return;
     }
 
     // In case of updater mode we don't uninstall components.
     if (!packageManagerCore()->isUpdater()) {
-        QList<Component*> componentsToRemove;
-        foreach (Component *component, packageManagerCore()->availableComponents()) {
-            if (component->uninstallationRequested())
-                componentsToRemove.append(component);
-        }
-
+        QList<Component*> componentsToRemove = packageManagerCore()->componentsToUninstall();
         if (!componentsToRemove.isEmpty()) {
             htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(tr("Components about to be removed.")));
             foreach (Component *component, componentsToRemove)

@@ -360,7 +360,7 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
     foreach (const QString &dependencyComponentName, component->dependencies()) {
         //componentByName return 0 if dependencyComponentName contains a version which is not available
         Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
-        if (dependencyComponent == 0) {
+        if (dependencyComponent == 0 || dependencyComponent->uninstallationRequested()) {
             const QString errorMessage = QString::fromLatin1("Can't find missing dependency(%1) for %2.")
                 .arg(dependencyComponentName, component->name());
             verbose() << qPrintable(errorMessage) << std::endl;
@@ -1140,7 +1140,7 @@ void PackageManagerCorePrivate::runInstaller()
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
         const QList<Component*> componentsToInstall = m_core->orderedComponentsToInstall();
-        verbose() << "Install size: " << m_core->orderedComponentsToInstall().size() << " components" << std::endl;
+        verbose() << "Install size: " << componentsToInstall.size() << " components" << std::endl;
 
         if (!adminRightsGained) {
             foreach (Component *component, m_core->orderedComponentsToInstall()) {
