@@ -1861,7 +1861,6 @@ bool PackageManagerCorePrivate::appendComponentToUninstall(Component *component)
     if (dependees.isEmpty()) {
         setCheckedState(component, Qt::Unchecked);
         m_componentsToUninstall.insert(component);
-        m_componentsToUninstallIds.insert(component->name());
         return true;
     }
 
@@ -1871,7 +1870,6 @@ bool PackageManagerCorePrivate::appendComponentToUninstall(Component *component)
             // keep them as already resolved
             setCheckedState(dependee, Qt::Unchecked);
             m_componentsToUninstall.insert(dependee);
-            m_componentsToUninstallIds.insert(dependee->name());
             // gather possible dependees, keep them to resolve it later
             dependeesToResolve.unite(m_core->dependees(dependee).toSet());
         }
@@ -1896,8 +1894,15 @@ bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Componen
         if (component->isInstalled()) {
             setCheckedState(component, Qt::Unchecked);
             m_componentsToUninstall.insert(component);
-            m_componentsToUninstallIds.insert(component->name());
             allResolved &= appendComponentToUninstall(component);
+        }
+    }
+
+    QSet<Component*> installedComponents;
+    foreach (const QString &name, localInstalledPackages().keys()) {
+        if (Component *component = m_core->componentByName(name)) {
+            if (!component->uninstallationRequested())
+                installedComponents.insert(component);
         }
     }
 
@@ -1907,9 +1912,31 @@ bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Componen
         foreach (Component *component, m_core->availableComponents()) {
             // If a components is installed and not yet scheduled for un-installation, check for auto depend.
             if (component->isInstalled() && !m_componentsToUninstall.contains(component)) {
-                // If we figure out a component requested auto installation, keep it to resolve their deps as
-                // well.
-                if (component->isAutoDependOn(m_componentsToUninstallIds))
+                QStringList autoDependencies = component->autoDependencies();
+                if (autoDependencies.isEmpty())
+                    continue;
+
+                // This code needs to be enabled once the scripts use isInstalled, installationRequested and
+                // uninstallationRequested...
+                if (autoDependencies.first().compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
+                    //QScriptValue valueFromScript;
+                    //try {
+                    //    valueFromScript = callScriptMethod(QLatin1String("isAutoDependOn"));
+                    //} catch (const Error &error) {
+                    //    // keep the component, should do no harm
+                    //    continue;
+                    //}
+
+                    //if (valueFromScript.isValid() && !valueFromScript.toBool())
+                    //    autoDependOnList.append(component);
+                    continue;
+                }
+
+                foreach (Component *c, installedComponents)
+                    autoDependencies.removeAll(c->name());
+
+                // A component requested auto installation, keep it to resolve their dependencies as well.
+                if (!autoDependencies.isEmpty())
                     autoDependOnList.append(component);
             }
         }

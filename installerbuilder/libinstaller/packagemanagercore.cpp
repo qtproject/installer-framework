@@ -922,7 +922,6 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
             components.append(component);
     }
     d->m_componentsToUninstall.clear();
-    d->m_componentsToUninstallIds.clear();
     return d->appendComponentsToUninstall(components);
 }
 

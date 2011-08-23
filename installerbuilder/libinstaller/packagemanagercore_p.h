@@ -148,7 +148,6 @@ public:
         bool adminRightsGained = false);
 
     QSet<Component*> m_componentsToUninstall;
-    QSet<QString> m_componentsToUninstallIds;
     bool appendComponentToUninstall(Component *component);
     bool appendComponentsToUninstall(const QList<Component*> &components);
 
