@@ -58,7 +58,7 @@ inline QString absoluteQmakePath(const QString &path)
         versionQmakePath.append(QLatin1String("/bin/qmake"));
 #endif
     }
-    return QDir::toNativeSeparators(versionQmakePath);
+    return QDir::fromNativeSeparators(versionQmakePath);
 }
 }
 
@@ -115,8 +115,8 @@ bool RegisterQtInCreatorV23Operation::performOperation()
 
     const QString &versionTypeIdentifier = args.at(argCounter++);
     const QString &versionSDKIdentifier = args.at(argCounter++);
-    const QString &versionSystemRoot = QDir::toNativeSeparators(args.value(argCounter++));
-    const QString &versionSbsPath = QDir::toNativeSeparators(args.value(argCounter++));
+    const QString &versionSystemRoot = QDir::fromNativeSeparators(args.value(argCounter++));
+    const QString &versionSbsPath = QDir::fromNativeSeparators(args.value(argCounter++));
 
     ProjectExplorer::PersistentSettingsReader reader;
     int qtVersionCount = 0;
