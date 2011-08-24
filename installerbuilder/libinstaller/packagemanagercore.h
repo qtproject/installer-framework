@@ -215,7 +215,6 @@ public Q_SLOTS:
     void cancelMetaInfoJob();
     void componentsToInstallNeedsRecalculation();
 
-
 Q_SIGNALS:
     void componentAdded(QInstaller::Component *comp);
     void rootComponentsAdded(QList<QInstaller::Component*> components);

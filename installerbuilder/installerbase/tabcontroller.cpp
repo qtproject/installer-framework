@@ -190,10 +190,7 @@ int TabController::initUpdater()
         else
             introPage->setComplete(true);
     }
-
-    if (d->m_core->status() == PackageManagerCore::Canceled)
-        return PackageManagerCore::Canceled;
-    return PackageManagerCore::Success;
+    return d->m_core->status();
 }
 
 int TabController::initUninstaller()
@@ -264,10 +261,7 @@ int TabController::initPackageManager()
 
     if (d->m_allPackagesFetched | localPackagesTreeFetched)
         introPage->setComplete(true);
-
-    if (d->m_core->status() == PackageManagerCore::Canceled)
-        return PackageManagerCore::Canceled;
-    return PackageManagerCore::Success;
+    return d->m_core->status();
 }
 
 // -- private slots

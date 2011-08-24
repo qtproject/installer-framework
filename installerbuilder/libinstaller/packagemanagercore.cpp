@@ -663,7 +663,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
         success = fetchUpdaterPackages(packages, installedPackages);
     }
 
-    if (success)
+    if (success && !d->statusCanceledOrFailed())
         d->setStatus(Success);
     return success;
 }
@@ -1533,8 +1533,10 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     data.installedPackages = &locals;
 
     foreach (Package *const package, remotes) {
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+        if (d->statusCanceledOrFailed())
+            return false;
 
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
         data.package = package;
         component->loadDataFromPackage(*package);
         if (updateComponentData(data, component.data())) {
@@ -1549,6 +1551,9 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     try {
         // append all components to their respective parents
         for (QHash<QString, Component*>::const_iterator it = components.begin(); it != components.end(); ++it) {
+            if (d->statusCanceledOrFailed())
+                return false;
+
             QString id = it.key();
             QInstaller::Component *component = it.value();
             while (!id.isEmpty() && component->parentComponent() == 0) {
@@ -1560,12 +1565,18 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
 
         // append all components w/o parent to the direct list
         foreach (QInstaller::Component *component, components) {
+            if (d->statusCanceledOrFailed())
+                return false;
+
             if (component->parentComponent() == 0)
                 appendRootComponent(component);
         }
 
         // after everything is set up, load the scripts
         foreach (QInstaller::Component *component, components) {
+            if (d->statusCanceledOrFailed())
+                return false;
+
             component->loadComponentScript();
 
             // set the checked state for all components without child (means without tristate)
@@ -1602,8 +1613,10 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     bool foundImportantUpdate = false;
 
     foreach (Package *const update, remotes) {
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+        if (d->statusCanceledOrFailed())
+            return false;
 
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
         data.package = update;
         component->loadDataFromPackage(*update);
         if (updateComponentData(data, component.data())) {
@@ -1657,6 +1670,9 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             // remove all unimportant updates
             const QStringList &keys = components.keys();
             foreach (const QString &key, keys) {
+                if (d->statusCanceledOrFailed())
+                    return false;
+
                 if (components.value(key)->value(scImportant, scFalse).toLower() == scFalse)
                     delete components.take(key);
             }
@@ -1665,6 +1681,9 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
         if (!components.isEmpty()) {
             // load the scripts and append all components w/o parent to the direct list
             foreach (QInstaller::Component *component, components) {
+                if (d->statusCanceledOrFailed())
+                    return false;
+
                 component->loadComponentScript();
                 component->setCheckState(Qt::Checked);
                 appendUpdaterComponent(component);
@@ -1672,6 +1691,9 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
 
             // after everything is set up, check installed components
             foreach (QInstaller::Component *component, d->m_updaterComponentsDeps) {
+                if (d->statusCanceledOrFailed())
+                    return false;
+
                 if (component->isInstalled()) {
                     // since we do not put them into the model, which would force a update of e.g. tri state
                     // components, we have to check all installed components ourself

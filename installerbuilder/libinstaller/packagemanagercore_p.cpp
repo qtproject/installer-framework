@@ -1754,8 +1754,11 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
         if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError)
             setStatus(PackageManagerCore::Failure, tr("Failure to read packages from: %1.").arg(componentsXmlPath()));
 
-        foreach (const LocalPackage &package, packagesInfo.packageInfos())
+        foreach (const LocalPackage &package, packagesInfo.packageInfos()) {
+            if (statusCanceledOrFailed())
+                break;
             installedPackages.insert(package.name, package);
+        }
      }
 
     return installedPackages;
@@ -1806,6 +1809,9 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
     const QString &appName = m_settings.applicationName();
     const QStringList tempDirs = m_repoMetaInfoJob->temporaryDirectories();
     foreach (const QString &tmpDir, tempDirs) {
+        if (statusCanceledOrFailed())
+            return false;
+
         if (tmpDir.isEmpty())
             continue;
 
