@@ -267,7 +267,6 @@ QString PackageManagerCorePrivate::componentsXmlPath() const
 
 void PackageManagerCorePrivate::clearAllComponentLists()
 {
-    clearComponentsToInstall();
     qDeleteAll(m_rootComponents);
     m_rootComponents.clear();
 
@@ -275,11 +274,11 @@ void PackageManagerCorePrivate::clearAllComponentLists()
     for (int i = 0; i < list.count(); ++i)
         delete list.at(i).second;
     m_componentsToReplaceAllMode.clear();
+    m_componentsToInstallCalculated = false;
 }
 
 void PackageManagerCorePrivate::clearUpdaterComponentLists()
 {
-    clearComponentsToInstall();
     qDeleteAll(m_updaterComponents);
     m_updaterComponents.clear();
 
@@ -290,6 +289,7 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
     for (int i = 0; i < list.count(); ++i)
         delete list.at(i).second;
     m_componentsToReplaceUpdaterMode.clear();
+    m_componentsToInstallCalculated = false;
 }
 
 QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::componentsToReplace(RunMode mode)
@@ -299,7 +299,6 @@ QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::compo
 
 void PackageManagerCorePrivate::clearComponentsToInstall()
 {
-    m_componentsToInstallCalculated = false;
     m_visitedComponents.clear();
     m_toInstallComponentIds.clear();
     m_missingDependenciesReasons.clear();
@@ -1967,7 +1966,7 @@ void PackageManagerCorePrivate::resetComponentsToUserCheckedState()
         return;
 
     foreach (Component *component, m_coreCheckedHash.keys())
-    component->setCheckState(m_coreCheckedHash.value(component));
+        component->setCheckState(m_coreCheckedHash.value(component));
 
     m_coreCheckedHash.clear();
     m_componentsToInstallCalculated = false;

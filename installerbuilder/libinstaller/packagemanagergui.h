@@ -234,7 +234,7 @@ public:
 
 protected:
     void entering();
-    int nextId() const;
+    void showEvent(QShowEvent *event);
 
 private Q_SLOTS:
     void setModified(bool modified);

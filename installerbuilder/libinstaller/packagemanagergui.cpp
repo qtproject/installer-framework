@@ -1120,12 +1120,12 @@ void ComponentSelectionPage::entering()
     setModified(isComplete());
 }
 
-int ComponentSelectionPage::nextId() const
+void ComponentSelectionPage::showEvent(QShowEvent *event)
 {
     // remove once we deprecate isSelected, setSelected etc...
-    const int next = PackageManagerPage::nextId();
-    packageManagerCore()->resetComponentsToUserCheckedState();
-    return next;
+    if (!event->spontaneous())
+        packageManagerCore()->resetComponentsToUserCheckedState();
+    QWizardPage::showEvent(event);
 }
 
 void ComponentSelectionPage::selectAll()

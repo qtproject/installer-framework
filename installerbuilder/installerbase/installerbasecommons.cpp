@@ -346,11 +346,11 @@ int InstallerGui::nextId() const
         core->calculateComponentsToInstall();
         foreach (Component* component, core->orderedComponentsToInstall()) {
             if (!component->licenses().isEmpty())
-                return QWizard::nextId();
+                return next;
         }
         return nextNextId;
     }
-    return QWizard::nextId();
+    return next;
 }
 
 
@@ -397,11 +397,11 @@ int MaintenanceGui::nextId() const
             if (component->isInstalled())
                 continue;
             if (!component->licenses().isEmpty())
-                return QWizard::nextId();
+                return next;
         }
         return nextNextId;
     }
-    return QWizard::nextId();
+    return next;
 }
 
 void MaintenanceGui::updateRestartPage()
