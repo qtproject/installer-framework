@@ -379,6 +379,12 @@ void Component::loadComponentScript(const QString &fileName)
         d->m_scriptComponent.construct();
     }
 
+    //evaluate("Component") and construct can have an exception
+    if (d->m_scriptEngine.hasUncaughtException()) {
+        throw Error(tr("Exception while loading the component script %1")
+            .arg(uncaughtExceptionString(&(d->m_scriptEngine)/*, QFileInfo(file).absoluteFilePath()*/)));
+    }
+
     emit loaded();
     languageChanged();
 
