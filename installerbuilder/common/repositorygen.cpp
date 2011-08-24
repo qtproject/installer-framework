@@ -458,11 +458,12 @@ void QInstaller::generateMetaDataDirectory(const QString& metapath_, const QStri
         const QString script = package.firstChildElement("Script").text();
         if (!script.isEmpty()) {
             verbose() << "    Copying associated script " << script << " into the meta package...";
-            if (!QFile::copy(QString::fromLatin1("%1/meta/%2").arg(it->directory, script),
-                QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, script))) {
+            QString fromLocation(QString::fromLatin1("%1/meta/%2").arg(it->directory, script));
+            QString toLocation(QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, script));
+            if (!QFile::copy(fromLocation, toLocation)) {
                 verbose() << "failed!" << std::endl;
-                throw Error(QObject::tr("Could not copy the scriot %1 to its target location (%2)")
-                    .arg(script, it->name));
+                throw Error(QObject::tr("Could not copy the script (%1) to its target location (%2)")
+                    .arg(fromLocation, toLocation));
             } else {
                 verbose() << std::endl;
             }
