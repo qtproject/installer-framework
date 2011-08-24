@@ -43,6 +43,7 @@
 #include <QSettings>
 #include <QDebug>
 
+
 using namespace QInstaller;
 
 namespace {
@@ -58,8 +59,19 @@ inline QString absoluteQmakePath(const QString &path)
         versionQmakePath.append(QLatin1String("/bin/qmake"));
 #endif
     }
-    return QDir::fromNativeSeparators(versionQmakePath);
+    return fromNativeSeparatorsAllOS(versionQmakePath);
 }
+
+QString fromNativeSeparatorsAllOS(const QString &pathName)
+{
+    QString n(pathName);
+    for (int i = 0; i < (int)n.length(); ++i) {
+        if (n[i] == QLatin1Char('\\'))
+            n[i] = QLatin1Char('/');
+    }
+    return n;
+}
+
 }
 
 RegisterQtInCreatorV23Operation::RegisterQtInCreatorV23Operation()
@@ -115,8 +127,8 @@ bool RegisterQtInCreatorV23Operation::performOperation()
 
     const QString &versionTypeIdentifier = args.at(argCounter++);
     const QString &versionSDKIdentifier = args.at(argCounter++);
-    const QString &versionSystemRoot = QDir::fromNativeSeparators(args.value(argCounter++));
-    const QString &versionSbsPath = QDir::fromNativeSeparators(args.value(argCounter++));
+    const QString &versionSystemRoot = fromNativeSeparatorsAllOS(args.value(argCounter++));
+    const QString &versionSbsPath = fromNativeSeparatorsAllOS(args.value(argCounter++));
 
     ProjectExplorer::PersistentSettingsReader reader;
     int qtVersionCount = 0;
