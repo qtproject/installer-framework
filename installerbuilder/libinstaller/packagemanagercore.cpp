@@ -914,7 +914,7 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 bool PackageManagerCore::calculateComponentsToUninstall() const
 {
     if (runMode() == UpdaterMode)
-        return false;
+        return true;
 
     QList<Component*> components;
     foreach (Component *component, availableComponents()) {
