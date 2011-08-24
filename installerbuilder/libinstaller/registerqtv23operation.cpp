@@ -47,6 +47,16 @@
 using namespace QInstaller;
 
 namespace {
+QString fromNativeSeparatorsAllOS(const QString &pathName)
+{
+    QString n(pathName);
+    for (int i = 0; i < (int)n.length(); ++i) {
+        if (n[i] == QLatin1Char('\\'))
+            n[i] = QLatin1Char('/');
+    }
+    return n;
+}
+
 inline QString absoluteQmakePath(const QString &path)
 {
     QString versionQmakePath = QDir(path).absolutePath();
@@ -61,17 +71,6 @@ inline QString absoluteQmakePath(const QString &path)
     }
     return fromNativeSeparatorsAllOS(versionQmakePath);
 }
-
-QString fromNativeSeparatorsAllOS(const QString &pathName)
-{
-    QString n(pathName);
-    for (int i = 0; i < (int)n.length(); ++i) {
-        if (n[i] == QLatin1Char('\\'))
-            n[i] = QLatin1Char('/');
-    }
-    return n;
-}
-
 }
 
 RegisterQtInCreatorV23Operation::RegisterQtInCreatorV23Operation()
