@@ -1638,6 +1638,8 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     connect(core, SIGNAL(titleMessageChanged(QString)), this, SLOT(setTitleMessage(QString)));
     connect(this, SIGNAL(setAutomatedPageSwitchEnabled(bool)), core,
         SIGNAL(setAutomatedPageSwitchEnabled(bool)));
+
+    m_performInstallationForm->setDetailsWidgetVisible(true);
 }
 
 PerformInstallationPage::~PerformInstallationPage()
@@ -1660,19 +1662,16 @@ void PerformInstallationPage::entering()
     const QString productName = packageManagerCore()->value(QLatin1String("ProductName"));
     if (packageManagerCore()->isUninstaller()) {
         setButtonText(QWizard::CommitButton, tr("&Uninstall"));
-        m_performInstallationForm->setDetailsWidgetVisible(false);
         setTitle(titleForPage(objectName(), tr("Uninstalling %1")).arg(productName));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runUninstaller()));
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
         setButtonText(QWizard::CommitButton, tr("&Update"));
-        m_performInstallationForm->setDetailsWidgetVisible(true);
         setTitle(titleForPage(objectName(), tr("Updating components of %1")).arg(productName));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runPackageUpdater()));
     } else {
         setButtonText(QWizard::CommitButton, tr("&Install"));
-        m_performInstallationForm->setDetailsWidgetVisible(true);
         setTitle(titleForPage(objectName(), tr("Installing %1")).arg(productName));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
