@@ -1587,6 +1587,10 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
         d->clearAllComponentLists();
         emit finishAllComponentsReset();
         d->setStatus(Failure, error.message());
+
+        // TODO: make sure we remove all message boxes inside the library at some point.
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
+            tr("Error"), error.message());
         return false;
     }
 
@@ -1704,6 +1708,10 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
         d->clearUpdaterComponentLists();
         emit finishUpdaterComponentsReset();
         d->setStatus(Failure, error.message());
+
+        // TODO: make sure we remove all message boxes inside the library at some point.
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
+            tr("Error"), error.message());
         return false;
     }
 
