@@ -34,7 +34,7 @@
 
 #include <QScrollBar>
 
-#define TIMER_TIME 20
+#define INTERVAL 20
 
 LazyPlainTextEdit::LazyPlainTextEdit(QWidget *parent) :
     QPlainTextEdit(parent), m_timerId(0)
@@ -47,7 +47,8 @@ void LazyPlainTextEdit::timerEvent(QTimerEvent *event)
         killTimer(m_timerId);
         m_timerId = 0;
         m_chachedOutput.chop(1); //removes the last \n
-        appendPlainText(m_chachedOutput);
+        if (!m_chachedOutput.isEmpty())
+            appendPlainText(m_chachedOutput);
         horizontalScrollBar()->setValue( 0 );
         m_chachedOutput.clear();
     }
@@ -61,7 +62,7 @@ void LazyPlainTextEdit::append(const QString &text)
     //}
     m_chachedOutput.append(text + QLatin1String("\n"));
     if (isVisible() && m_timerId == 0) {
-        m_timerId = startTimer(TIMER_TIME);
+        m_timerId = startTimer(INTERVAL);
     }
 }
 
@@ -83,7 +84,7 @@ void LazyPlainTextEdit::setVisible ( bool visible )
         m_timerId = 0;
     }
     if (visible) {
-        m_timerId = startTimer(TIMER_TIME);
+        m_timerId = startTimer(INTERVAL);
     }
     QPlainTextEdit::setVisible(visible);
 }
