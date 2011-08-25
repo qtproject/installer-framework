@@ -67,7 +67,7 @@ typedef QList<QInstaller::Package*> PackagesList;
 typedef KDUpdater::PackageInfo LocalPackage;
 typedef QHash<QString, LocalPackage> LocalPackagesHash;
 
-QString uncaughtExceptionString(QScriptEngine *scriptEngine);
+QString uncaughtExceptionString(QScriptEngine *scriptEngine, const QString &context = QString());
 QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine);
 
 QScriptValue qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *engine);

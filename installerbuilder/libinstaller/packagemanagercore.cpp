@@ -179,18 +179,14 @@ QScriptValue QInstaller::qDesktopServicesStorageLocation(QScriptContext* context
     return QDesktopServices::storageLocation(location);
 }
 
-QString QInstaller::uncaughtExceptionString(QScriptEngine *scriptEngine/*, const QString &context*/)
+QString QInstaller::uncaughtExceptionString(QScriptEngine *scriptEngine, const QString &context)
 {
-    //QString errorString(QLatin1String("%1 %2\n%3"));
-    QString errorString(QLatin1String("\t\t%1\n%2"));
-    //if (!context.isEmpty())
-    //    errorString.prepend(context + QLatin1String(": "));
+    QString error(QLatin1String("\n\n%1\n\nBacktrace:\n\t%2"));
+    if (!context.isEmpty())
+        error.prepend(context);
 
-    //usually the line number is in the backtrace
-    errorString = errorString.arg(/*QString::number(scriptEngine->uncaughtExceptionLineNumber()),*/
-        scriptEngine->uncaughtException().toString(), scriptEngine->uncaughtExceptionBacktrace()
-        .join(QLatin1String("\n")));
-    return errorString;
+    return error.arg(scriptEngine->uncaughtException().toString(), scriptEngine->uncaughtExceptionBacktrace()
+        .join(QLatin1String("\n\t")));
 }
 
 

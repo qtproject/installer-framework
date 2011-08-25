@@ -356,12 +356,12 @@ void Component::loadComponentScript(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        throw Error(tr("Could not open the requested script file at %1: %2").arg(fileName, file.errorString()));
+        throw Error(tr("Could not open the requested script file at %1: %2.").arg(fileName, file.errorString()));
     }
 
     d->m_scriptEngine.evaluate(QLatin1String(file.readAll()), fileName);
     if (d->m_scriptEngine.hasUncaughtException()) {
-        throw Error(tr("Exception while loading the component script %1")
+        throw Error(tr("Exception while loading the component script: %1")
             .arg(uncaughtExceptionString(&(d->m_scriptEngine)/*, QFileInfo(file).absoluteFilePath()*/)));
     }
 
@@ -381,8 +381,8 @@ void Component::loadComponentScript(const QString &fileName)
 
     //evaluate("Component") and construct can have an exception
     if (d->m_scriptEngine.hasUncaughtException()) {
-        throw Error(tr("Exception while loading the component script %1")
-            .arg(uncaughtExceptionString(&(d->m_scriptEngine)/*, QFileInfo(file).absoluteFilePath()*/)));
+        throw Error(tr("Exception while loading the component script: %1")
+            .arg(uncaughtExceptionString(&(d->m_scriptEngine), QFileInfo(file).absoluteFilePath())));
     }
 
     emit loaded();
