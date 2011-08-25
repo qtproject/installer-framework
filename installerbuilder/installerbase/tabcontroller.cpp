@@ -233,7 +233,7 @@ int TabController::initPackageManager()
     if (!d->m_allPackagesFetched) {
         // first try to fetch the server side packages tree
         d->m_allPackagesFetched = d->m_core->fetchRemotePackagesTree();
-        if (!d->m_allPackagesFetched) {
+        if (!d->m_core->isInstaller() && !d->m_allPackagesFetched) {
             QString error = d->m_core->error();
             // if that fails, try to fetch local installed tree
             localPackagesTreeFetched = d->m_core->fetchLocalPackagesTree();
