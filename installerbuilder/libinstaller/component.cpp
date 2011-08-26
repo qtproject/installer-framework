@@ -1054,6 +1054,8 @@ bool Component::isUninstalled() const
 */
 bool Component::uninstallationRequested() const
 {
+    if (packageManagerCore()->isUpdater())
+        return false;
     return isInstalled() && !isSelected();
 }
 
