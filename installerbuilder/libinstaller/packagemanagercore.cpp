@@ -1509,6 +1509,9 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component*> &com
             if (!component && !d->componentsToReplace(data.runMode).contains(componentName)) {
                 component = new Component(this);
                 component->setValue(scName, componentName);
+            } else {
+                // TODO: at the moment updates could not resolve replaced dependency, maybe we need this in the future
+                //component->loadComponentScript();
             }
             if (component)
                 d->componentsToReplace(data.runMode).insert(componentName, qMakePair(it.key(), component));
