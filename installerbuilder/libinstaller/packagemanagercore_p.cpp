@@ -270,6 +270,8 @@ void PackageManagerCorePrivate::clearAllComponentLists()
     qDeleteAll(m_rootComponents);
     m_rootComponents.clear();
 
+    m_rootDependencyReplacements.clear();
+
     const QList<QPair<Component*, Component*> > list = m_componentsToReplaceAllMode.values();
     for (int i = 0; i < list.count(); ++i)
         delete list.at(i).second;
@@ -285,11 +287,18 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
     qDeleteAll(m_updaterComponentsDeps);
     m_updaterComponentsDeps.clear();
 
+    m_updaterDependencyReplacements.clear();
+
     const QList<QPair<Component*, Component*> > list = m_componentsToReplaceUpdaterMode.values();
     for (int i = 0; i < list.count(); ++i)
         delete list.at(i).second;
     m_componentsToReplaceUpdaterMode.clear();
     m_componentsToInstallCalculated = false;
+}
+
+QList<Component*> &PackageManagerCorePrivate::replacementDependencyComponents(RunMode mode)
+{
+    return mode == AllMode ? m_rootDependencyReplacements : m_updaterDependencyReplacements;
 }
 
 QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::componentsToReplace(RunMode mode)

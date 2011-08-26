@@ -842,12 +842,12 @@ void PackageManagerCore::appendUpdaterComponent(Component *component)
 QList<Component*> PackageManagerCore::availableComponents() const
 {
     if (isUpdater())
-        return d->m_updaterComponents + d->m_updaterComponentsDeps;
+        return d->m_updaterComponents + d->m_updaterComponentsDeps + d->m_updaterDependencyReplacements;
 
     QList<Component*> result = d->m_rootComponents;
     foreach (QInstaller::Component *component, d->m_rootComponents)
         result += component->childComponents(true, AllMode);
-    return result;
+    return result + d->m_rootDependencyReplacements;
 }
 
 /*!
@@ -1510,8 +1510,8 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component*> &com
                 component = new Component(this);
                 component->setValue(scName, componentName);
             } else {
-                // TODO: at the moment updates could not resolve replaced dependency, maybe we need this in the future
-                //component->loadComponentScript();
+                component->loadComponentScript();
+                d->replacementDependencyComponents(data.runMode).append(component);
             }
             if (component)
                 d->componentsToReplace(data.runMode).insert(componentName, qMakePair(it.key(), component));

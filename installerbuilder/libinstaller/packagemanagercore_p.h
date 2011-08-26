@@ -101,6 +101,7 @@ public:
 
     void clearAllComponentLists();
     void clearUpdaterComponentLists();
+    QList<Component*> &replacementDependencyComponents(RunMode mode);
     QHash<QString, QPair<Component*, Component*> > &componentsToReplace(RunMode mode);
 
     void clearComponentsToInstall();
@@ -175,8 +176,11 @@ public:
     QString m_installerBaseBinaryUnreplaced;
 
     QList<Component*> m_rootComponents;
+    QList<Component*> m_rootDependencyReplacements;
+
     QList<Component*> m_updaterComponents;
     QList<Component*> m_updaterComponentsDeps;
+    QList<Component*> m_updaterDependencyReplacements;
 
     OperationList m_ownedOperations;
     OperationList m_performedOperationsOld;
