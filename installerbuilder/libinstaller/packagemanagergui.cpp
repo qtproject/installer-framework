@@ -223,6 +223,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 #endif
 #ifdef Q_OS_LINUX
     setWizardStyle(QWizard::ModernStyle);
+    setSizeGripEnabled(true);
 #endif
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
