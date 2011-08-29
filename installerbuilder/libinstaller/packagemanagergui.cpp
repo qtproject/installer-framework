@@ -916,7 +916,7 @@ public:
             connect(model, SIGNAL(defaultCheckStateChanged(bool)), m_core,
                 SLOT(componentsToInstallNeedsRecalculation()));
 
-            model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal, tr("Name"));
+            model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal, tr("Component Name"));
             model->setHeaderData(ComponentModelHelper::InstalledVersionColumn, Qt::Horizontal,
                 tr("Installed Version"));
             model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal, tr("New Version"));
