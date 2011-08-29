@@ -172,15 +172,16 @@ bool QtCreatorPersistentSettings::save()
 
         //if we added a new debugger we need to adjust the tool chains
         QString abiString;
+        //find the abiString
         foreach (const QString &key, toolChainMap.keys()) {
             if (key.contains(QLatin1String(".TargetAbi"))) {
                 abiString = toolChainMap.value(key).toString();
                 break;
             }
         }
+        //adjust debugger path
         foreach (const QString &key, toolChainMap.keys()) {
-            if (key.contains(QLatin1String(".Debugger"))
-                    && toolChainMap.value(key).toString().isEmpty()) {
+            if (key.contains(QLatin1String(".Debugger"))) {
                 toolChainMap.insert(key, m_abiToDebuggerHash.value(abiString));
                 break;
             }

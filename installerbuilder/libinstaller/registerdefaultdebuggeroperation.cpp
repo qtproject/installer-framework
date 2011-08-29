@@ -48,6 +48,19 @@ using namespace QInstaller;
 
 using namespace ProjectExplorer;
 
+namespace {
+//TODO move this to a general location it is used on some classes
+QString fromNativeSeparatorsAllOS(const QString &pathName)
+{
+    QString n(pathName);
+    for (int i = 0; i < (int)n.length(); ++i) {
+        if (n[i] == QLatin1Char('\\'))
+            n[i] = QLatin1Char('/');
+    }
+    return n;
+}
+}
+
 RegisterDefaultDebuggerOperation::RegisterDefaultDebuggerOperation()
 {
     setName(QLatin1String("RegisterDefaultDebugger"));
@@ -93,7 +106,7 @@ bool RegisterDefaultDebuggerOperation::performOperation()
 
     int argCounter = 0;
     const QString &abiString = args.at(argCounter++); //for example x86-windows-msys-pe-32bit
-    const QString &debuggerPath = QDir::toNativeSeparators(args.at(argCounter++));
+    const QString &debuggerPath = fromNativeSeparatorsAllOS(args.at(argCounter++));
 
     QtCreatorPersistentSettings creatorToolChainSettings;
 
@@ -133,7 +146,7 @@ bool RegisterDefaultDebuggerOperation::undoOperation()
 
     int argCounter = 0;
     const QString &abiString = args.at(argCounter++); //for example x86-windows-msys-pe-32bit
-    const QString &debuggerPath = QDir::toNativeSeparators(args.at(argCounter++));
+    const QString &debuggerPath = fromNativeSeparatorsAllOS(args.at(argCounter++));
     Q_UNUSED(debuggerPath)
 
     QtCreatorPersistentSettings creatorToolChainSettings;

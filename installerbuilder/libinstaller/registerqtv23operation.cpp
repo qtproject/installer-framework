@@ -47,6 +47,7 @@
 using namespace QInstaller;
 
 namespace {
+//TODO move this to a general location it is used on some classes
 QString fromNativeSeparatorsAllOS(const QString &pathName)
 {
     QString n(pathName);
