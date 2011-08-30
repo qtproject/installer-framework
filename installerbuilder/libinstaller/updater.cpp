@@ -94,7 +94,7 @@ bool Updater::checkForUpdates()
         }
 
         verbose() << doc.toString(4) << std::endl;
+        return true;
     }
-
-    return true;
+    return false;
 }
