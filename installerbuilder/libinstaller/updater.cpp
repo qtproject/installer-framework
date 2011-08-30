@@ -96,6 +96,7 @@ bool Updater::checkForUpdates()
         }
 
         std::cout << doc.toString(4) << std::endl;
+        return true;
     }
     return false;
 }
