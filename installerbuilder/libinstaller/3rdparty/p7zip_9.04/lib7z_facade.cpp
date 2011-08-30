@@ -922,7 +922,7 @@ public:
         // TODO!
         return S_OK;
     }
-    void setSource( const QString& dir )
+    void setSource( const QStringList& dir )
     {
         sourceDir = dir;
     }
@@ -935,7 +935,7 @@ private:
     UpdateCallback* const q;
 
     QIODevice* target;
-    QString sourceDir;
+    QStringList sourceDir;
 };
 
 class Lib7z::UpdateCallbackPrivate
@@ -971,7 +971,7 @@ UpdateCallbackImpl* UpdateCallback::impl()
 }
 
 
-void UpdateCallback::setSource( const QString& dir )
+void UpdateCallback::setSource( const QStringList& dir )
 {
     d->impl()->setSource( dir );
 }
@@ -1038,7 +1038,7 @@ void ExtractItemJob::setTarget( QIODevice* dev )
     d->target = dev;
 }
     
-void Lib7z::createArchive( QIODevice* archive, const QString& sourceDirectory, UpdateCallback* callback )
+void Lib7z::createArchive( QIODevice* archive, const QStringList& sourceDirectories, UpdateCallback* callback )
 {
     assert( archive );
 
@@ -1061,11 +1061,13 @@ void Lib7z::createArchive( QIODevice* archive, const QString& sourceDirectory, U
         const QString tempFile = generateTempFileName();
 
         NWildcard::CCensor censor;
-        const UString sourceDirectoryPath = QString2UString( QDir::toNativeSeparators( sourceDirectory ) );
-        if( UString2QString( sourceDirectoryPath ) != QDir::toNativeSeparators( sourceDirectory ) )
-            throw UString2QString( sourceDirectoryPath ).toLatin1().data();
-        censor.AddItem( true, sourceDirectoryPath, true );
-        
+        foreach( QString dir, sourceDirectories) {
+            const UString sourceDirectoryPath = QString2UString( QDir::toNativeSeparators( dir));
+            if( UString2QString( sourceDirectoryPath) != QDir::toNativeSeparators( dir))
+                throw UString2QString( sourceDirectoryPath ).toLatin1().data();
+            censor.AddItem( true, sourceDirectoryPath, true );
+        }
+
         CUpdateOptions options;
         CArchivePath archivePath;
         archivePath.ParseFromPath( QString2UString( tempFile ) );
@@ -1079,7 +1081,7 @@ void Lib7z::createArchive( QIODevice* archive, const QString& sourceDirectory, U
         CUpdateErrorInfo errorInfo;
        
         callback->setTarget( archive );
-        callback->setSource( sourceDirectory );
+        callback->setSource( sourceDirectories );
         const HRESULT res = UpdateArchive( codecs.get(), censor, options, errorInfo, 0, callback->impl() );
         if( res != S_OK || !QFile::exists( tempFile ) )
             throw SevenZipException( QObject::tr( "Could not create archive %1" ).arg( tempFile ) );

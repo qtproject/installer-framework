@@ -268,17 +268,19 @@ namespace {
     };
 }
 
-void QInstaller::compressDirectory(const QString& path, const QString& archivePath)
+void QInstaller::compressDirectory(const QStringList& paths, const QString& archivePath)
 {
-    if (!QFileInfo(path).exists())
-        throw QInstaller::Error(QObject::tr("Folder %1 does not exist").arg(path));
+    foreach (QString path, paths) {
+        if (!QFileInfo(path).exists())
+            throw QInstaller::Error(QObject::tr("Folder %1 does not exist").arg(path));
 
-    if (!QFileInfo(path).isDir())
-        throw QInstaller::Error(QObject::tr("%1 is not a folder").arg(path));
+        if (!QFileInfo(path).isDir())
+            throw QInstaller::Error(QObject::tr("%1 is not a folder").arg(path));
+    }
 
     QFile archive(archivePath);
     openForWrite(&archive, archivePath);
-    Lib7z::createArchive(&archive, path);
+    Lib7z::createArchive(&archive, paths);
 }
 
 void QInstaller::compressMetaDirectories(const QString& configDir, const QString& repoDir)
@@ -299,7 +301,7 @@ void QInstaller::compressMetaDirectories(const QString& configDir, const QString
         const QString absPath = sd.absolutePath();
         const QString fn = QLatin1String("meta.7z");
         const QString tmpTarget = repoDir + QLatin1String("/") +fn;
-        compressDirectory(absPath, tmpTarget);
+        compressDirectory(QStringList() << absPath, tmpTarget);
         QFile tmp(tmpTarget);
         const QString finalTarget = absPath + QLatin1String("/") + fn;
         if (!tmp.rename(finalTarget)) {
@@ -679,7 +681,7 @@ void QInstaller::compressMetaDirectories(const QString& configDir, const QString
         const QString absPath = sd.absolutePath();
         const QString fn = QLatin1String(versionPrefix.toLatin1() + "meta.7z");
         const QString tmpTarget = repoDir + QLatin1String("/") +fn;
-        compressDirectory(absPath, tmpTarget);
+        compressDirectory(QStringList() << absPath, tmpTarget);
         QFile tmp(tmpTarget);
         tmp.open(QFile::ReadOnly);
         QByteArray fileToCheck = tmp.readAll();
@@ -767,7 +769,7 @@ void QInstaller::copyComponentData(const QString& packageDir, const QString& con
             verbose() << "Compressing data directory " << dir << std::endl;
             const QString archiveName = QString::fromLatin1("%1/%2/%4%3.7z").arg(repoDir, i, dir,
                 info.version);
-            compressDirectory(dataDir.absoluteFilePath(dir), archiveName);
+            compressDirectory(QStringList() << dataDir.absoluteFilePath(dir), archiveName);
             verbose() << "Creating hash of archive "<< archiveName << std::endl;
             QFile archiveFile(archiveName);
             QString archiveHashFileName = archiveFile.fileName();

@@ -464,7 +464,7 @@ bool Archive::createZippedFile()
     file.close();
     m_inputFile.open(QIODevice::ReadWrite);
     try {
-        Lib7z::createArchive(&m_inputFile, m_path);
+        Lib7z::createArchive(&m_inputFile, QStringList() << m_path);
     } catch(Lib7z::SevenZipException &e) {
         m_inputFile.close();
         setErrorString(e.message());

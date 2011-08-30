@@ -38,6 +38,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QFileInfo>
+#include <QtCore/QStringList>
 
 #include <iostream>
 
@@ -47,7 +48,7 @@ using namespace QInstaller;
 static void printUsage()
 {
     std::cout << "Usage: " << QFileInfo(QCoreApplication::applicationFilePath()).fileName()
-        << " directory directory.7z" << std::endl;
+        << " directory.7z directories" << std::endl;
 }
 
 int main(int argc, char **argv)
@@ -62,8 +63,8 @@ int main(int argc, char **argv)
 
         QInstaller::init();
         QInstaller::setVerbose(true);
-
-        QInstaller::compressDirectory(app.arguments().at(1), app.arguments().at(2));
+        const QStringList sourceDirectories = app.arguments().mid(2);
+        QInstaller::compressDirectory(sourceDirectories, app.arguments().at(1));
         return EXIT_SUCCESS;
     } catch (const Lib7z::SevenZipException &e) {
         std::cerr << e.message() << std::endl;

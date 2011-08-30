@@ -96,7 +96,7 @@ namespace Lib7z {
         virtual ~UpdateCallback();
 
         void setTarget( QIODevice* archive );
-        void setSource( const QString& dir );
+        void setSource( const QStringList& dir );
 
         virtual UpdateCallbackImpl* impl();
 
@@ -130,7 +130,7 @@ namespace Lib7z {
     /*
      * @thows Lib7z::SevenZipException
      */
-    void INSTALLER_EXPORT createArchive( QIODevice* archive, const QString& sourceDirectory, UpdateCallback* callback = 0 );
+    void INSTALLER_EXPORT createArchive( QIODevice* archive, const QStringList& sourceDirectory, UpdateCallback* callback = 0 );
 
     /*
      * @throws Lib7z::SevenZipException
