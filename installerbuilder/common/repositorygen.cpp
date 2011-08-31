@@ -273,9 +273,6 @@ void QInstaller::compressDirectory(const QStringList& paths, const QString& arch
     foreach (QString path, paths) {
         if (!QFileInfo(path).exists())
             throw QInstaller::Error(QObject::tr("Folder %1 does not exist").arg(path));
-
-        if (!QFileInfo(path).isDir())
-            throw QInstaller::Error(QObject::tr("%1 is not a folder").arg(path));
     }
 
     QFile archive(archivePath);
