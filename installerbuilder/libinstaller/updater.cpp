@@ -40,6 +40,8 @@
 
 #include <QtXml/QDomDocument>
 
+#include <iostream>
+
 using namespace QInstaller;
 using namespace QInstallerCreator;
 
@@ -93,8 +95,7 @@ bool Updater::checkForUpdates()
             root.appendChild(update);
         }
 
-        verbose() << doc.toString(4) << std::endl;
-        return true;
+        std::cout << doc.toString(4) << std::endl;
     }
     return false;
 }
