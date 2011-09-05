@@ -126,7 +126,7 @@ bool RegisterDefaultDebuggerOperation::undoOperation()
 {
     const QStringList args = arguments();
 
-    if (args.count() == 2) {
+    if (args.count() != 2) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.")
             .arg(name()).arg(args.count()));
