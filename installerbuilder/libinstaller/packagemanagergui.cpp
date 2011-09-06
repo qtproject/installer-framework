@@ -998,6 +998,7 @@ public:
 
         m_currentModel = m_core->isUpdater() ? m_updaterModel : m_allModel;
         m_treeView->setModel(m_currentModel);
+        m_treeView->setExpanded(m_currentModel->index(0, 0), true);
 
         if (m_core->isInstaller()) {
             m_treeView->setHeaderHidden(true);
@@ -1019,7 +1020,6 @@ public:
             this, SLOT(currentChanged(QModelIndex)));
 
         m_treeView->setCurrentIndex(m_currentModel->index(0, 0));
-        m_treeView->setExpanded(m_currentModel->index(0, 0), true);
     }
 
 public slots:
