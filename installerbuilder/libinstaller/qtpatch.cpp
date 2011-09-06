@@ -86,7 +86,6 @@ namespace {
 
 QHash<QString, QByteArray> QtPatch::qmakeValues(const QString & qmakePath, QByteArray * qmakeOutput)
 {
-
     QHash<QString, QByteArray> qmakeValueHash;
 
     // in some cases qmake is not runable, because another process is blocking it(filewatcher ...)
@@ -94,8 +93,12 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString & qmakePath, QByte
     while (qmakeValueHash.isEmpty() && waitCount < 60) {
         QFileInfo qmake(qmakePath);
 
-        if (!qmake.exists() || !qmake.isExecutable()) {
-            QInstaller::verbose() << qPrintable( QString(QLatin1String("%1 is not existing or not executable")).arg(qmakePath) ) << std::endl;
+        if (!qmake.exists()) {
+            qmakeOutput->append(QString(QLatin1String("%1 is not existing")).arg(qmakePath));
+            return qmakeValueHash;
+        }
+        if (!qmake.isExecutable()) {
+            qmakeOutput->append(QString(QLatin1String("%1 is not executable")).arg(qmakePath));
             return qmakeValueHash;
         }
 
@@ -127,7 +130,14 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString & qmakePath, QByte
             static const int waitTimeInMilliSeconds = 500;
             uiDetachedWait(waitTimeInMilliSeconds);
         }
-    } //while (qmakeValueHash.isEmpty() && waitCount < 60)
+        if (process.state() > QProcess::NotRunning ) {
+            QInstaller::verbose() << "qmake process is still running, need to kill it." << std::endl;
+            process.kill();
+        }
+
+    }
+    if (qmakeValueHash.isEmpty())
+        QInstaller::verbose() << "Can't get any query output from qmake." << std::endl;
     return qmakeValueHash;
 }
 

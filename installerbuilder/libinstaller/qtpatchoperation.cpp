@@ -200,7 +200,8 @@ bool QtPatchOperation::performOperation()
 
     if (! patchFileListFile.open(QFile::ReadOnly)) {
         setError(UserDefinedError);
-        setErrorString(tr("Qt patch error: Can not open %1.").arg(patchFileListFile.fileName()));
+        setErrorString(tr("Qt patch error: Can not open %1.(%2)").arg(patchFileListFile.fileName(),
+            patchFileListFile.errorString()));
         return false;
     }
 
@@ -249,7 +250,7 @@ bool QtPatchOperation::performOperation()
 
         if (!QtPatch::openFileForPatching(&file)) {
             setError(UserDefinedError);
-            setErrorString(tr("Qt patch error: Can not open %1(%2).").arg(file.fileName())
+            setErrorString(tr("Qt patch error: Can not open %1.(%2)").arg(file.fileName())
                 .arg(file.errorString()));
             return false;
         }
