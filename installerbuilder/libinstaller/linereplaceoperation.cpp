@@ -83,7 +83,7 @@ bool LineReplaceOperation::performOperation()
         if (line.trimmed().startsWith(searchString))
             replacement.append(replaceString + QLatin1String("\n"));
         else
-            replacement.append(line);
+            replacement.append(line + QLatin1String("\n"));
     }
     file.close();
 
@@ -102,7 +102,6 @@ bool LineReplaceOperation::performOperation()
 
 bool LineReplaceOperation::undoOperation()
 {
-    // Need to remove settings again
     return true;
 }
 
