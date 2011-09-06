@@ -102,6 +102,7 @@ static QVector<PackageInfo> collectAvailablePackages(const QString& packagesDire
         const QString name = doc.firstChildElement(QString::fromLatin1("Package"))
             .firstChildElement(QLatin1String("Name")).text();
         if (name != it->fileName()) {
+            verbose() << std::endl;
             throw QInstaller::Error(QObject::tr("Component folder name must match component name: "
                 "\"%1\" in %2/").arg(name, it->fileName()));
         }
@@ -110,6 +111,11 @@ static QVector<PackageInfo> collectAvailablePackages(const QString& packagesDire
         info.name = name;
         info.version = doc.firstChildElement(QString::fromLatin1("Package")).
             firstChildElement(QString::fromLatin1("Version")).text();
+        if (!QRegExp(QLatin1String("[0-9]+((\\.|-)[0-9]+)*")).exactMatch(info.version)) {
+            verbose() << std::endl;
+            throw QInstaller::Error(QObject::tr("Component version for %1 is invalid! <Version>%2</version>")
+                .arg(it->fileName(), info.version));
+        }
         info.dependencies = doc.firstChildElement(QString::fromLatin1("Package")).
             firstChildElement(QString::fromLatin1("Dependencies")).text().split(QRegExp(QLatin1String("\\b(,|, )\\b")),
             QString::SkipEmptyParts);
