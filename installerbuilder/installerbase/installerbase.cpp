@@ -42,6 +42,7 @@
 #include "packagemanagergui.h"
 #include "tabcontroller.h"
 #include "updater.h"
+#include "operationrunner.h"
 
 #include <packagemanagercore.h>
 #include <settings.h>
@@ -161,6 +162,13 @@ int main(int argc, char *argv[])
             Updater u;
             u.setVerbose(args.contains(QLatin1String("--verbose")));
             return u.checkForUpdates() ? 0 : 1;
+        }
+
+        if (args.contains(QLatin1String("--operation"))
+            || args.contains(QLatin1String("--undooperation"))) {
+            OperationRunner o;
+            o.setVerbose(args.contains(QLatin1String("--verbose")));
+            return o.runOperation(args);
         }
 
         // from here, the "normal" installer binary is running

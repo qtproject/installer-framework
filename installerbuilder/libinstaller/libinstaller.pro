@@ -79,6 +79,7 @@ HEADERS += $$PWD/packagemanagercore.h \
     downloadarchivesjob.h \
     init.h \
     updater.h \
+    operationrunner.h \
     updatesettings.h \
     adminauthorization.h \
     fsengineclient.h \
@@ -143,6 +144,7 @@ SOURCES += $$PWD/packagemanagercore.cpp \
     downloadarchivesjob.cpp \
     init.cpp \
     updater.cpp \
+    operationrunner.cpp \
     updatesettings.cpp \
     adminauthorization.cpp \
     fsengineclient.cpp \
