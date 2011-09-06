@@ -101,11 +101,25 @@ bool MacReplaceInstallNamesOperation::apply(const QString &indicator, const QStr
     mIndicator = indicator;
     mInstallationDir = installationDir;
 
+    QStringList alreadyPatchedFrameworks;
+    QLatin1String frameworkSuffix(".framework");
+
     QDirIterator dirIterator(searchDir, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
     while (dirIterator.hasNext()) {
         QString fileName = dirIterator.next();
-        if (dirIterator.fileInfo().isDir() && fileName.endsWith(QLatin1String(".framework")))
+
+        //check that we don't do anything for already patched framework pathes
+        if (fileName.contains(frameworkSuffix)) {
+            QString alreadyPatchedSearchString = fileName.left(fileName.lastIndexOf(frameworkSuffix))
+                + frameworkSuffix;
+            if (alreadyPatchedFrameworks.contains(alreadyPatchedSearchString)) {
+                continue;
+            }
+        }
+        if (dirIterator.fileInfo().isDir() && fileName.endsWith(frameworkSuffix)) {
             relocateFramework(fileName);
+            alreadyPatchedFrameworks.append(fileName);
+        }
         else if (dirIterator.fileInfo().isDir())
             continue;
         else if (fileName.endsWith(QLatin1String(".dylib")))
