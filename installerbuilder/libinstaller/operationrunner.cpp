@@ -43,6 +43,7 @@
 
 #include <QtXml/QDomDocument>
 
+namespace {
 class OutputHandler : public QObject
 {
     Q_OBJECT
@@ -53,6 +54,7 @@ public slots:
        std::cout << qPrintable(outPut) << std::endl;
    }
 };
+}
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -157,5 +159,4 @@ int OperationRunner::runOperation(const QStringList &arguments)
     return 0;
 }
 
-#include "moc_operationrunner.cpp"
 #include "operationrunner.moc"
