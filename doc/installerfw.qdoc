@@ -41,6 +41,10 @@
                 \o \l{Included Tools}
             \endlist
         \o \l{Tutorial}
+        \o \l{Component Scripting}
+           \list
+                \o \l{Operations}
+           \endlist
         \o Enhanced instructions
            \list
                 \o \l{Creating online installers}

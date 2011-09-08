@@ -18,7 +18,7 @@ indexes                 = qt.index
 
 include(qt-defines.qdocconf)
 
-sources.fileextensions  = "installerfw.qdoc scripting.qdoc tutorial.qdoc noninteractive.qdoc"
+sources.fileextensions  = "installerfw.qdoc scripting.qdoc tutorial.qdoc noninteractive.qdoc operations.qdoc"
 
 
 qhp.projects            = InstallerFramework
