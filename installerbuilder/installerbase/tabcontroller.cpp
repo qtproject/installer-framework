@@ -121,7 +121,7 @@ int TabController::init()
 {
     if (!d->m_init) {
         d->m_init = true;
-        // this should called as early as possible, to handle error messageboxes for example
+        // this should called as early as possible, to handle error message boxes for example
         if (!d->m_controlScript.isEmpty()) {
             QInstaller::verbose() << "Non-interactive installation using script: "
                 << qPrintable(d->m_controlScript) << std::endl;
@@ -176,7 +176,7 @@ int TabController::initUpdater()
     }
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
-    // hide of pages depenging on the components.
+    // hide of pages depending on the components.
     d->m_gui->init();
     d->m_gui->callControlScriptMethod(QLatin1String("UpdaterSelectedCallback"));
     d->m_gui->triggerControlScriptForCurrentPage();
@@ -247,7 +247,7 @@ int TabController::initPackageManager()
     }
 
     // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
-    // hide of pages depenging on the components.
+    // hide of pages depending on the components.
     d->m_gui->init();
     d->m_gui->callControlScriptMethod(QLatin1String("PackageManagerSelectedCallback"));
     d->m_gui->triggerControlScriptForCurrentPage();
