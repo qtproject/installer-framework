@@ -28,9 +28,7 @@
 
 #include "installer_global.h"
 
-#include <QtCore/QObject>
-
-#include <iostream>
+QT_FORWARD_DECLARE_CLASS(QStringList)
 
 namespace QInstaller {
 
@@ -43,8 +41,9 @@ public:
     ~OperationRunner();
 
     bool init();
-    int runOperation(const QStringList &arguments);
     void setVerbose(bool verbose);
+    int runOperation(const QStringList &arguments);
+
 private:
     PackageManagerCore *m_core;
 };

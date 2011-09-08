@@ -38,10 +38,13 @@
 #include "component.h"
 #include "init.h"
 #include "packagemanagercore.h"
+
 #include <KDUpdater/UpdateOperation>
 #include <KDUpdater/UpdateOperationFactory>
 
-#include <QtXml/QDomDocument>
+#include <QtCore/QObject>
+
+#include <iostream>
 
 namespace {
 class OutputHandler : public QObject
@@ -68,12 +71,6 @@ OperationRunner::OperationRunner()
 OperationRunner::~OperationRunner()
 {
     delete m_core;
-    m_core = 0;
-}
-
-void OperationRunner::setVerbose(bool verbose)
-{
-    QInstaller::setVerbose(verbose);
 }
 
 bool OperationRunner::init()
@@ -92,11 +89,18 @@ bool OperationRunner::init()
     return true;
 }
 
+void OperationRunner::setVerbose(bool verbose)
+{
+    QInstaller::setVerbose(verbose);
+}
+
 int OperationRunner::runOperation(const QStringList &arguments)
 {
-    if (!init())
-        verbose() << "Could not init the packagemanager core - without this not all operations " <<
-                     "are working as expected." << std::endl;
+    if (!init()) {
+        verbose() << "Could not init the package manager core - without this not all operations "
+            << "are working as expected." << std::endl;
+    }
+
     QStringList argumentList = arguments;
     bool isPerformType = argumentList.contains(QLatin1String("--runoperation"));
     bool isUndoType = argumentList.contains(QLatin1String("--undooperation"));
@@ -111,9 +115,9 @@ int OperationRunner::runOperation(const QStringList &arguments)
     }
 
     try {
-        QString operationName = argumentList.takeFirst();
-        KDUpdater::UpdateOperation* const operation =
-            KDUpdater::UpdateOperationFactory::instance().create(operationName);
+        const QString operationName = argumentList.takeFirst();
+        KDUpdater::UpdateOperation* const operation = KDUpdater::UpdateOperationFactory::instance()
+            .create(operationName);
         if (!operation) {
             std::cerr << "Can not find the operation: " << qPrintable(operationName) << std::endl;
             return EXIT_FAILURE;
@@ -142,13 +146,13 @@ int OperationRunner::runOperation(const QStringList &arguments)
 
         std::cout << "========================================" << std::endl;
         if (readyPerformed) {
-            std::cout << "Operation was succesfully performed." << std::endl;
+            std::cout << "Operation was successfully performed." << std::endl;
         } else {
-            std::cerr << "There was a problem while performing the operation: " <<
-                qPrintable(operation->errorString()) << std::endl;
+            std::cerr << "There was a problem while performing the operation: "
+                << qPrintable(operation->errorString()) << std::endl;
             return EXIT_FAILURE;
         }
-    } catch (const QInstaller::Error& e) {
+    } catch (const QInstaller::Error &e) {
         std::cerr << qPrintable(e.message()) << std::endl;
         return EXIT_FAILURE;
     } catch (...) {
@@ -156,7 +160,7 @@ int OperationRunner::runOperation(const QStringList &arguments)
         return EXIT_FAILURE;
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 #include "operationrunner.moc"
