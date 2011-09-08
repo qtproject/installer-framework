@@ -1451,6 +1451,7 @@ QString PackageManagerCore::uninstallerName() const
 bool PackageManagerCore::updateComponentData(struct Data &data, Component *component)
 {
     try {
+        // check if we already added the component to the available components list
         const QString name = data.package->data(scName).toString();
         if (data.components->contains(name)) {
             qCritical("Could not register component! Component with identifier %s already registered.",
@@ -1458,31 +1459,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
             return false;
         }
 
-        if (!data.installedPackages->contains(name)) {
-            const QString replaces = data.package->data(scReplaces).toString();
-            if (!replaces.isEmpty()) {
-                const QStringList components = replaces.split(QRegExp(QLatin1String("\\b(,|, )\\b")),
-                    QString::SkipEmptyParts);
-                foreach (const QString &componentName, components) {
-                    if (data.installedPackages->contains(componentName)) {
-                        if (data.runMode == AllMode) {
-                            component->setInstalled();
-                            component->setValue(scInstalledVersion, data.package->data(scVersion).toString());
-                        }
-                        data.replacementToExchangeables.insert(component, components);
-                        break;  // break as soon as we know we replace at least one other component
-                    } else {
-                        component->setUninstalled();
-                    }
-                }
-            } else {
-                component->setUninstalled();
-            }
-        } else {
-            component->setInstalled();
-            component->setValue(scInstalledVersion, data.installedPackages->value(name).version);
-        }
-
+        component->setUninstalled();
         const QString &localPath = component->localTempPath();
         if (isVerbose()) {
             static QString lastLocalPath;
@@ -1490,8 +1467,41 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
                 verbose() << "Url is : " << localPath << std::endl;
             lastLocalPath = localPath;
         }
+
         if (d->m_repoMetaInfoJob)
             component->setRepositoryUrl(d->m_repoMetaInfoJob->repositoryForTemporaryDirectory(localPath).url());
+
+        const QStringList componentsToReplace = data.package->data(scReplaces).toString()
+            .split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
+
+        // running as installer means no component is installed, still we might have replacements
+        if (isInstaller()) {
+            if (!componentsToReplace.isEmpty())
+                data.replacementToExchangeables.insert(component, componentsToReplace);
+            return true;
+        }
+
+        // the replacement is already installed, no need to search for the components to replace
+        if (data.installedPackages->contains(name)) {
+            component->setInstalled();
+            component->setValue(scInstalledVersion, data.installedPackages->value(name).version);
+            return true;
+        }
+
+        // the replacement is not yet installed
+        foreach (const QString &componentName, componentsToReplace) {
+            // check if a component to replace is already installed
+            if (data.installedPackages->contains(componentName)) {
+                if (isPackageManager()) {
+                    // mark the replacement as installed only in package manager mode, otherwise
+                    // it would not show up in the updaters component list
+                    component->setInstalled();
+                    component->setValue(scInstalledVersion, data.package->data(scVersion).toString());
+                }
+                data.replacementToExchangeables.insert(component, componentsToReplace);
+                break;  // break as soon as we know we replace at least one other component
+            }
+        }
     } catch (...) {
         return false;
     }
