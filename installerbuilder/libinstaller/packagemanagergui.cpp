@@ -512,7 +512,8 @@ void PackageManagerGui::cancelButtonClicked()
 {
     if (currentId() != PackageManagerCore::InstallationFinished) {
         PackageManagerPage *const page = qobject_cast<PackageManagerPage*> (currentPage());
-        if (page && page->isInterruptible()) {
+        if (page && page->isInterruptible() && m_core->status() != PackageManagerCore::Canceled
+            && m_core->status() != PackageManagerCore::Failure) {
             const QMessageBox::StandardButton bt =
                 MessageBoxHandler::question(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("cancelInstallation"), tr("Question"),
