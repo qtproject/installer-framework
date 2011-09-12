@@ -947,37 +947,38 @@ public:
         QVBoxLayout *layout = new QVBoxLayout(q);
         layout->addLayout(hlayout, 1);
 
-        m_button = new QPushButton;
-        connect(m_button, SIGNAL(clicked()), this, SLOT(selectDefault()));
-        connect(m_allModel, SIGNAL(defaultCheckStateChanged(bool)), m_button, SLOT(setEnabled(bool)));
+        m_checkDefault = new QPushButton;
+        connect(m_checkDefault, SIGNAL(clicked()), this, SLOT(selectDefault()));
+        connect(m_allModel, SIGNAL(defaultCheckStateChanged(bool)), m_checkDefault, SLOT(setEnabled(bool)));
         const QVariantHash hash = q->elementsForPage(QLatin1String("ComponentSelectionPage"));
         if (m_core->isInstaller()) {
-            m_button->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
-            m_button->setShortcut(QKeySequence(tr("Alt+A", "select default components")));
-            m_button->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), tr("Def&ault"))
+            m_checkDefault->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
+            m_checkDefault->setShortcut(QKeySequence(tr("Alt+A", "select default components")));
+            m_checkDefault->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), tr("Def&ault"))
                 .toString());
         } else {
-            m_button->setEnabled(false);
-            m_button->setObjectName(QLatin1String("ResetComponentsButton"));
-            m_button->setShortcut(QKeySequence(tr("Alt+R", "reset to already installed components")));
-            m_button->setText(hash.value(QLatin1String("ResetComponentsButton"), tr("&Reset")).toString());
+            m_checkDefault->setEnabled(false);
+            m_checkDefault->setObjectName(QLatin1String("ResetComponentsButton"));
+            m_checkDefault->setShortcut(QKeySequence(tr("Alt+R", "reset to already installed components")));
+            m_checkDefault->setText(hash.value(QLatin1String("ResetComponentsButton"), tr("&Reset")).toString());
         }
         hlayout = new QHBoxLayout;
-        hlayout->addWidget(m_button);
+        hlayout->addWidget(m_checkDefault);
 
-        QPushButton *button = new QPushButton;
-        hlayout->addWidget(button);
-        connect(button, SIGNAL(clicked()), this, SLOT(selectAll()));
-        button->setObjectName(QLatin1String("SelectAllComponentsButton"));
-        button->setShortcut(QKeySequence(tr("Alt+S", "select all components")));
-        button->setText(hash.value(QLatin1String("SelectAllComponentsButton"), tr("&Select All")).toString());
+        m_checkAll = new QPushButton;
+        hlayout->addWidget(m_checkAll);
+        connect(m_checkAll, SIGNAL(clicked()), this, SLOT(selectAll()));
+        m_checkAll->setObjectName(QLatin1String("SelectAllComponentsButton"));
+        m_checkAll->setShortcut(QKeySequence(tr("Alt+S", "select all components")));
+        m_checkAll->setText(hash.value(QLatin1String("SelectAllComponentsButton"), tr("&Select All")).toString());
 
-        button = new QPushButton;
-        hlayout->addWidget(button);
-        connect(button, SIGNAL(clicked()), this, SLOT(deselectAll()));
-        button->setObjectName(QLatin1String("DeselectAllComponentsButton"));
-        button->setShortcut(QKeySequence(tr("Alt+D", "deselect all components")));
-        button->setText(hash.value(QLatin1String("DeselectAllComponentsButton"), tr("&Deselect All")).toString());
+        m_uncheckAll = new QPushButton;
+        hlayout->addWidget(m_uncheckAll);
+        connect(m_uncheckAll, SIGNAL(clicked()), this, SLOT(deselectAll()));
+        m_uncheckAll->setObjectName(QLatin1String("DeselectAllComponentsButton"));
+        m_uncheckAll->setShortcut(QKeySequence(tr("Alt+D", "deselect all components")));
+        m_uncheckAll->setText(hash.value(QLatin1String("DeselectAllComponentsButton"), tr("&Deselect All"))
+            .toString());
 
         hlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
             QSizePolicy::MinimumExpanding));
@@ -991,7 +992,7 @@ public:
 
     void updateTreeView()
     {
-        m_button->setVisible(m_core->isInstaller() || m_core->isPackageManager());
+        m_checkDefault->setVisible(m_core->isInstaller() || m_core->isPackageManager());
         if (m_treeView->selectionModel()) {
             disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
                 this, SLOT(currentChanged(QModelIndex)));
@@ -1045,16 +1046,28 @@ public slots:
     void selectAll()
     {
         m_currentModel->selectAll();
+
+        m_checkAll->setEnabled(!m_currentModel->hasCheckedComponents());
+        m_uncheckAll->setEnabled(m_currentModel->hasCheckedComponents());
     }
 
     void deselectAll()
     {
         m_currentModel->deselectAll();
+
+        m_checkAll->setEnabled(m_currentModel->hasCheckedComponents());
+        m_uncheckAll->setEnabled(!m_currentModel->hasCheckedComponents());
     }
 
     void selectDefault()
     {
         m_currentModel->selectDefault();
+
+        // Do not apply special magic here to keep the enabled/ disabled state in sync with the checked
+        // components. We would need to implement the counter in the model, which has an unnecessary impact
+        // on the complexity and amount of code compared to what we gain in functionality.
+        m_checkAll->setEnabled(true);
+        m_uncheckAll->setEnabled(true);
     }
 
 private slots:
@@ -1077,7 +1090,9 @@ public:
     ComponentModel *m_currentModel;
     QLabel *m_sizeLabel;
     QLabel *m_descriptionLabel;
-    QPushButton *m_button;
+    QPushButton *m_checkAll;
+    QPushButton *m_uncheckAll;
+    QPushButton *m_checkDefault;
 };
 
 
