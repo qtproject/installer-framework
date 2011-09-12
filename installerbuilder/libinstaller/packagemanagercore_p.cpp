@@ -369,8 +369,11 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
 bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
 {
     //autodependon is a kind of real dependency and we need to add it to get the right install order
-    const QSet<QString> allDependencies = component->dependencies().toSet()
+    QSet<QString> allDependencies = component->dependencies().toSet()
         + component->autoDependencies().toSet();
+    //ignore "script" value
+    allDependencies.remove(QLatin1String("script"));
+
     foreach (const QString &dependencyComponentName, allDependencies) {
         //componentByName return 0 if dependencyComponentName contains a version which is not available
         Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
