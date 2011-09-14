@@ -166,6 +166,7 @@ int main(int argc, char *argv[])
 
         if (args.contains(QLatin1String("--operation"))
             || args.contains(QLatin1String("--undooperation"))) {
+            MyCoreApplication app(argc, argv);
             OperationRunner o;
             o.setVerbose(args.contains(QLatin1String("--verbose")));
             return o.runOperation(args);
