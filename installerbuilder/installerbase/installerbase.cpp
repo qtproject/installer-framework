@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
             return u.checkForUpdates() ? 0 : 1;
         }
 
-        if (args.contains(QLatin1String("--operation"))
+        if (args.contains(QLatin1String("--runoperation"))
             || args.contains(QLatin1String("--undooperation"))) {
             MyCoreApplication app(argc, argv);
             OperationRunner o;
