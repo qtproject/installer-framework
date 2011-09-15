@@ -1123,7 +1123,7 @@ void ComponentSelectionPage::entering()
         QT_TR_NOOP("Please select the components you want to update."),
         QT_TR_NOOP("Please select the components you want to install."),
         QT_TR_NOOP("Please select the components you want to uninstall."),
-        QT_TR_NOOP("Please (de)select the components you want to (un)install.")
+        QT_TR_NOOP("Select the components to install. Deselect installed components to unistall them.")
      };
 
     int index = 0;
