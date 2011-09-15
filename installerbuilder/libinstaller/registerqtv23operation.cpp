@@ -212,7 +212,10 @@ bool RegisterQtInCreatorV23Operation::undoOperation()
         const QString path = QDir::toNativeSeparators(args.value(1));
         const QString versionQmakePath = absoluteQmakePath(path);
 
-        if (versionMap[QString::fromLatin1("QMakePath")] == versionQmakePath)
+        //use absoluteQmakePath function to normalize the path string, for example //
+        const QString existingQtQMakePath = absoluteQmakePath(
+            versionMap[QString::fromLatin1("QMakePath")].toString());
+        if (existingQtQMakePath == versionQmakePath)
             continue;
         writer.saveValue(QString::fromLatin1("QtVersion.%1").arg(currentVersionIndex++), versionMap);
     }
