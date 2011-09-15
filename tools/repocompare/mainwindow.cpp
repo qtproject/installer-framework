@@ -38,16 +38,44 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QUrl>
 #include <QtCore/QXmlStreamReader>
+#include <QtCore/QSettings>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
+
+namespace {
+const QLatin1String productionIdentifier = QLatin1String("ProductionRepositories");
+const QLatin1String updateIdentifier = QLatin1String("UpdateRepositories");
+
+void uniqueAppend(QComboBox* box, const QString &url) {
+    const int itemCount = box->count();
+    for (int i = 0; i < itemCount; ++i) {
+        if (box->itemText(i) == url)
+            return;
+    }
+    box->insertItem(0, url);
+}
+
+QStringList itemsToList(QComboBox* box) {
+    QStringList result;
+    const int itemCount = box->count();
+    for (int i = 0; i < itemCount; ++i) {
+        result.append(box->itemText(i));
+    }
+    return result;
+}
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QSettings settings;
+    ui->productionRepo->insertItems(0, settings.value(productionIdentifier).toStringList());
+    ui->updateRepo->insertItems(0, settings.value(updateIdentifier).toStringList());
 
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->productionButton, SIGNAL(clicked()), this, SLOT(getProductionRepository()));
@@ -59,6 +87,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    QSettings settings;
+    settings.setValue(productionIdentifier, itemsToList(ui->productionRepo));
+    settings.setValue(updateIdentifier, itemsToList(ui->updateRepo));
     delete ui;
 }
 
@@ -104,10 +135,13 @@ void MainWindow::receiveRepository(QNetworkReply *reply)
 {
     QByteArray data = reply->readAll();
     reply->deleteLater();
-    if (reply == productionReply)
+    if (reply == productionReply) {
         createRepositoryMap(data, productionMap);
-    else if (reply == updateReply)
+        uniqueAppend(ui->productionRepo, reply->url().toString());
+    } else if (reply == updateReply) {
         createRepositoryMap(data, updateMap);
+        uniqueAppend(ui->updateRepo, reply->url().toString());
+    }
 
     if (productionMap.size() && updateMap.size())
         compareRepositories();

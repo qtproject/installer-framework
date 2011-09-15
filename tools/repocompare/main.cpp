@@ -36,6 +36,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    QCoreApplication::setApplicationName(QLatin1String("IFW_repocompare"));
     MainWindow w;
     w.show();
 
