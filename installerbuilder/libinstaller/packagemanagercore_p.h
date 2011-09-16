@@ -236,6 +236,7 @@ private:
 
     QSet<Component*> m_componentsToUninstall;
     QStringList m_missingDependenciesReasons;
+    QHash<Component*, QSet<QString> > m_autoDependOnDependencies;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

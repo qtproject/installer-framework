@@ -322,6 +322,21 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         return true;
     }
 
+    //build a data structure to be able to use autodependency as normal dependency
+    m_autoDependOnDependencies.clear();
+    foreach (Component *component, m_core->availableComponents()) {
+        foreach (const QString componentName, component->autoDependencies()) {
+            Component *componentWithAutoDependOnInspector = m_core->componentByName(componentName);
+            if (componentWithAutoDependOnInspector != 0) {
+                QSet<QString> dependencyStringSet = m_autoDependOnDependencies.value(
+                    componentWithAutoDependOnInspector);
+                dependencyStringSet.insert(component->name());
+                m_autoDependOnDependencies.insert(componentWithAutoDependOnInspector, dependencyStringSet);
+            }
+
+        }
+    }
+
     QList<Component*> notAppendedComponents; // for example components with unresolved dependencies
     foreach (Component *component, components){
         if (m_toInstallComponentIds.contains(component->name())) {
@@ -333,7 +348,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             return false;
         }
 
-        if (component->dependencies().isEmpty())
+        if (component->dependencies().isEmpty() && m_autoDependOnDependencies.value(component).isEmpty())
             realAppendToInstallComponents(component);
         else
             notAppendedComponents.append(component);
@@ -368,11 +383,8 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
 
 bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
 {
-    //autodependon is a kind of real dependency and we need to add it to get the right install order
     QSet<QString> allDependencies = component->dependencies().toSet()
-        + component->autoDependencies().toSet();
-    //ignore "script" value
-    allDependencies.remove(QLatin1String("script"));
+        +  m_autoDependOnDependencies.value(component);
 
     foreach (const QString &dependencyComponentName, allDependencies) {
         //componentByName return 0 if dependencyComponentName contains a version which is not available

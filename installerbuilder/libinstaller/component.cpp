@@ -918,7 +918,10 @@ QStringList Component::dependencies() const
 
 QStringList Component::autoDependencies() const
 {
-    return value(scAutoDependOn).split(scCommaRegExp, QString::SkipEmptyParts);
+    QStringList autoDependencyStringList =
+        value(scAutoDependOn).split(scCommaRegExp, QString::SkipEmptyParts);
+    autoDependencyStringList.removeAll(QLatin1String("script"));
+    return autoDependencyStringList;
 }
 
 /*!
