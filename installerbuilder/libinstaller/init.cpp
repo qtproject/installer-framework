@@ -50,6 +50,7 @@
 #include "setexamplespathonqtoperation.h"
 #include "setpluginpathonqtcoreoperation.h"
 #include "setimportspathonqtcoreoperation.h"
+#include "setpathonqtcoreoperation.h"
 #include "replaceoperation.h"
 #include "licenseoperation.h"
 #include "linereplaceoperation.h"
@@ -189,6 +190,7 @@ void QInstaller::init()
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetExamplesPathOnQtOperation>( QLatin1String( "SetExamplesPathOnQt") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetPluginPathOnQtCoreOperation>( QLatin1String( "SetPluginPathOnQtCore") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetImportsPathOnQtCoreOperation>( QLatin1String( "SetImportsPathOnQtCore") );
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetPathOnQtCoreOperation>( QLatin1String( "SetPathOnQtCore") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetQtCreatorValueOperation>( QLatin1String( "SetQtCreatorValue") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::AddQtCreatorArrayValueOperation>( QLatin1String( "AddQtCreatorArrayValue") );
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::QtPatchOperation >( QLatin1String( "QtPatch" ) );

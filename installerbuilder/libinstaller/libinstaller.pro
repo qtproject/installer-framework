@@ -50,6 +50,7 @@ HEADERS += $$PWD/packagemanagercore.h \
     persistentsettings.h \
     projectexplorer_export.h \
     qtpatchoperation.h \
+    setpathonqtcoreoperation.h \
     setdemospathonqtoperation.h \
     setexamplespathonqtoperation.h \
     setpluginpathonqtcoreoperation.h \
@@ -117,6 +118,7 @@ SOURCES += $$PWD/packagemanagercore.cpp \
     qtpatch.cpp \
     persistentsettings.cpp \
     qtpatchoperation.cpp  \
+    setpathonqtcoreoperation.cpp \
     setdemospathonqtoperation.cpp \
     setexamplespathonqtoperation.cpp \
     setpluginpathonqtcoreoperation.cpp \
