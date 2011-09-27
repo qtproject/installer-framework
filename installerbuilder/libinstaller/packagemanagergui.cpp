@@ -1861,11 +1861,15 @@ int RestartPage::nextId() const
 
 void RestartPage::entering()
 {
-    if (QAbstractButton *finish = wizard()->button(QWizard::FinishButton))
-        finish->setVisible(false);
+    if (!packageManagerCore()->needsRestart()) {
+        if (QAbstractButton *finish = wizard()->button(QWizard::FinishButton))
+            finish->setVisible(false);
 
-    wizard()->restart();
-    QMetaObject::invokeMethod(this, "restart", Qt::QueuedConnection);
+        wizard()->restart();
+        QMetaObject::invokeMethod(this, "restart", Qt::QueuedConnection);
+    } else {
+        gui()->accept();
+    }
 }
 
 void RestartPage::leaving()

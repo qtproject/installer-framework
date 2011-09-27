@@ -1095,9 +1095,9 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         deferredRename(dataFile + QLatin1String(".new"), dataFile, false);
 
         if (newBinaryWritten) {
-            verbose() << "Needs restart: " << (replacementExists && isUpdater()) << std::endl;
-            deferredRename(uninstallerName() + QLatin1String(".new"), uninstallerName(),
-                replacementExists && isUpdater());
+            const bool restart = replacementExists && isUpdater() && (!statusCanceledOrFailed());
+            deferredRename(uninstallerName() + QLatin1String(".new"), uninstallerName(), restart);
+            verbose() << "Maintenance tool restart: " << (restart ? "true." : "false.") << std::endl;
         }
     } catch (const Error &err) {
         setStatus(PackageManagerCore::Failure);
