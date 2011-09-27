@@ -328,10 +328,9 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
         foreach (const QString componentName, component->autoDependencies()) {
             Component *componentWithAutoDependOnInspector = m_core->componentByName(componentName);
             if (componentWithAutoDependOnInspector != 0) {
-                QSet<QString> dependencyStringSet = m_autoDependOnDependencies.value(
-                    componentWithAutoDependOnInspector);
-                dependencyStringSet.insert(component->name());
-                m_autoDependOnDependencies.insert(componentWithAutoDependOnInspector, dependencyStringSet);
+                QSet<QString> dependencyStringSet = m_autoDependOnDependencies.value(component);
+                dependencyStringSet.insert(componentWithAutoDependOnInspector->name());
+                m_autoDependOnDependencies.insert(component, dependencyStringSet);
             }
 
         }
