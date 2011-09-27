@@ -1554,7 +1554,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         if (!ok && !ignoreError)
             throw Error(operation->errorString());
 
-        if (component->value(scImportant, scFalse) == scTrue)
+        if (component->value(scEssential, scFalse) == scTrue)
             m_forceRestart = true;
     }
 

@@ -37,7 +37,7 @@ static const QLatin1String scFalse("false");
 static const QLatin1String scName("Name");
 static const QLatin1String scVersion("Version");
 static const QLatin1String scReplaces("Replaces");
-static const QLatin1String scImportant("Important");
+static const QLatin1String scEssential("Essential");
 static const QLatin1String scTargetDir("TargetDir");
 static const QLatin1String scReleaseDate("ReleaseDate");
 static const QLatin1String scDescription("Description");

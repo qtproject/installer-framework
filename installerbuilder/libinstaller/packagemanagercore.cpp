@@ -1623,7 +1623,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     data.components = &components;
     data.installedPackages = &locals;
 
-    bool foundImportantUpdate = false;
+    bool foundEssentialUpdate = false;
 
     foreach (Package *const update, remotes) {
         if (d->statusCanceledOrFailed())
@@ -1666,8 +1666,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             if (localPackage.lastUpdateDate > updateDate)
                 continue;
 
-            if (update->data(scImportant, scFalse).toString().toLower() == scTrue) {
-                foundImportantUpdate = true;
+            if (update->data(scEssential, scFalse).toString().toLower() == scTrue) {
+                foundEssentialUpdate = true;
             }
 
             // this is not a dependency, it is a real update
@@ -1679,18 +1679,6 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     storeReplacedComponents(components, data);
 
     try {
-        if (foundImportantUpdate) {
-            // remove all unimportant updates
-            const QStringList &keys = components.keys();
-            foreach (const QString &key, keys) {
-                if (d->statusCanceledOrFailed())
-                    return false;
-
-                if (components.value(key)->value(scImportant, scFalse).toLower() == scFalse)
-                    delete components.take(key);
-            }
-        }
-
         if (!components.isEmpty()) {
             // load the scripts and append all components w/o parent to the direct list
             foreach (QInstaller::Component *component, components) {
@@ -1712,6 +1700,18 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                     // since we do not put them into the model, which would force a update of e.g. tri state
                     // components, we have to check all installed components ourself
                     component->setCheckState(Qt::Checked);
+                }
+            }
+            if (foundEssentialUpdate) {
+                // remove all unimportant updates
+                foreach (QInstaller::Component *component, components) {
+                    if (d->statusCanceledOrFailed())
+                        return false;
+                    if (component->value(scEssential, scFalse).toLower() == scFalse) {
+                        component->setEnabled(false);
+                        component->setSelectable(false);
+                        component->setCheckState(Qt::Unchecked);
+                    }
                 }
             }
         } else {

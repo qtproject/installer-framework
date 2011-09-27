@@ -147,7 +147,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scVirtual, package.data(scVirtual).toString());
     setValue(scSortingPriority, package.data(scSortingPriority).toString());
 
-    setValue(scImportant, package.data(scImportant).toString());
+    setValue(scEssential, package.data(scEssential).toString());
     setValue(scUpdateText, package.data(scUpdateText).toString());
     setValue(scNewComponent, package.data(scNewComponent).toString());
     setValue(scRequiresAdminRights, package.data(scRequiresAdminRights).toString());
