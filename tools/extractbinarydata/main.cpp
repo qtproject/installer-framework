@@ -127,7 +127,8 @@ int main(int argc, char **argv)
 
     QStringList arguments = app.arguments();
     if (arguments.count() < 3) {
-        std::cout << "Usage: extractbinarydata [--verbose] maintenance-tool installer-base" << std::endl;
+        std::cout << "Usage: extractbinarydata [--verbose --extract-binarydata] maintenance-tool "
+            "installer-base" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -146,39 +147,41 @@ int main(int argc, char **argv)
             return EXIT_FAILURE;
         }
 
-        BinaryLayout layout;
-        QFile input(arguments.at(1));
-        try {
-            openForRead(&input, input.fileName());
-            layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
-        } catch (const Error &error) {
-            verbose() << error.message() << std::endl;
-            return EXIT_FAILURE;
-        }
-
-        if (layout.magicMarker != MagicUninstallerMarker) {
-            std::cout << "Extracting binary data only supported for maintenance tools." << std::endl;
-            return EXIT_FAILURE;
-        }
-
-        try {
-            KDSaveFile file(QFileInfo(arguments.at(1)).absolutePath() + QDir::separator()
-                + QFileInfo(arguments.at(1)).baseName() + QLatin1String(".dat"));
-            openForWrite(&file, file.fileName());
-            BinaryContent content = BinaryContent::readFromBinary(arguments.at(1));
-            writeBinaryDataFile(&file, &input, content.performedOperations(), layout);
-            appendInt64(&file, MagicCookieDat);
-            file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
-                | QFile::ReadOther);
-            if (!file.commit(KDSaveFile::OverwriteExistingFile)) {
-                throw Error(QString::fromLatin1("Couldn't write binary data to %1. Reason: %2").arg(file
-                    .fileName(), file.errorString()));
+        if (arguments.contains(QLatin1String("--extract-binarydata"))) {
+            BinaryLayout layout;
+            QFile input(arguments.at(1));
+            try {
+                openForRead(&input, input.fileName());
+                layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
+            } catch (const Error &error) {
+                verbose() << error.message() << std::endl;
+                return EXIT_FAILURE;
             }
-            file.close();
-            input.close();
-        } catch (const Error &error) {
-            verbose() << error.message() << std::endl;
-            return EXIT_FAILURE;
+
+            if (layout.magicMarker != MagicUninstallerMarker) {
+                std::cout << "Extracting binary data only supported for maintenance tools." << std::endl;
+                return EXIT_FAILURE;
+            }
+
+            try {
+                KDSaveFile file(QFileInfo(arguments.at(1)).absolutePath() + QDir::separator()
+                    + QFileInfo(arguments.at(1)).baseName() + QLatin1String(".dat"));
+                openForWrite(&file, file.fileName());
+                BinaryContent content = BinaryContent::readFromBinary(arguments.at(1));
+                writeBinaryDataFile(&file, &input, content.performedOperations(), layout);
+                appendInt64(&file, MagicCookieDat);
+                file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
+                    | QFile::ReadOther);
+                if (!file.commit(KDSaveFile::OverwriteExistingFile)) {
+                    throw Error(QString::fromLatin1("Couldn't write binary data to %1. Reason: %2").arg(file
+                        .fileName(), file.errorString()));
+                }
+                file.close();
+                input.close();
+            } catch (const Error &error) {
+                verbose() << error.message() << std::endl;
+                return EXIT_FAILURE;
+            }
         }
     }
 
