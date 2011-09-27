@@ -1702,15 +1702,21 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                     component->setCheckState(Qt::Checked);
                 }
             }
+
             if (foundEssentialUpdate) {
-                // remove all unimportant updates
                 foreach (QInstaller::Component *component, components) {
                     if (d->statusCanceledOrFailed())
                         return false;
+
+                    component->setCheckable(false);
+                    component->setSelectable(false);
                     if (component->value(scEssential, scFalse).toLower() == scFalse) {
+                        // non essential updates are disabled, not checkable and unchecked
                         component->setEnabled(false);
-                        component->setSelectable(false);
                         component->setCheckState(Qt::Unchecked);
+                    } else {
+                        // essential updates are enabled, still not checkable but checked
+                        component->setEnabled(true);
                     }
                 }
             }
