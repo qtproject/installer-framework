@@ -192,7 +192,7 @@ private slots:
         emit m_core->metaJobInfoMessage(message);
     }
 
-    void handleMethodInvocationRequest(const QString& slot);
+    void handleMethodInvocationRequest(const QString &invokableMethodName);
 
 
 private:

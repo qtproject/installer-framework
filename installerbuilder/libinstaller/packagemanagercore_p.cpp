@@ -2018,11 +2018,11 @@ void PackageManagerCorePrivate::connectOperationCallMethodRequest(Operation *con
     }
 }
 
-void PackageManagerCorePrivate::handleMethodInvocationRequest(const QString &slot)
+void PackageManagerCorePrivate::handleMethodInvocationRequest(const QString &invokableMethodName)
 {
     QObject *obj = QObject::sender();
     if (obj != 0)
-        QMetaObject::invokeMethod(obj, qPrintable(slot));
+        QMetaObject::invokeMethod(obj, qPrintable(invokableMethodName));
 }
 
 }   // QInstaller
