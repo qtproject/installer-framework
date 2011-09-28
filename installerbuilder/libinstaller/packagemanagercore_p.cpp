@@ -1516,6 +1516,8 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         }
 
         connectOperationToInstaller(operation, progressOperationSize);
+        connectOperationCallMethodRequest(operation);
+
         // allow the operation to backup stuff before performing the operation
         PackageManagerCorePrivate::performOperationThreaded(operation, PackageManagerCorePrivate::Backup);
 
@@ -2002,6 +2004,25 @@ void PackageManagerCorePrivate::setCheckedState(Component *component, Qt::CheckS
 {
     m_coreCheckedHash.insert(component, component->checkState());
     component->setCheckState(state);
+}
+
+void PackageManagerCorePrivate::connectOperationCallMethodRequest(Operation *const operation)
+{
+    QObject *const operationObject = dynamic_cast<QObject *> (operation);
+    if (operationObject != 0) {
+        const QMetaObject *const mo = operationObject->metaObject();
+        if (mo->indexOfSignal(QMetaObject::normalizedSignature("requestBlockingExecution(QString)")) > -1) {
+            connect(operationObject, SIGNAL(requestBlockingExecution(QString)),
+                    this, SLOT(handleMethodInvocationRequest(QString)), Qt::BlockingQueuedConnection);
+        }
+    }
+}
+
+void PackageManagerCorePrivate::handleMethodInvocationRequest(const QString &slot)
+{
+    QObject *obj = QObject::sender();
+    if (obj != 0)
+        QMetaObject::invokeMethod(obj, qPrintable(slot));
 }
 
 }   // QInstaller

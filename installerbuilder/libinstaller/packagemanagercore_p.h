@@ -128,6 +128,7 @@ public:
     int countProgressOperations(const QList<Component*> &components);
     int countProgressOperations(const OperationList &operations);
     void connectOperationToInstaller(Operation *const operation, double progressOperationPartSize);
+    void connectOperationCallMethodRequest(Operation *const operation);
 
     Operation *createOwnedOperation(const QString &type);
     Operation *takeOwnedOperation(Operation *operation);
@@ -190,6 +191,9 @@ private slots:
     void infoMessage(KDJob *, const QString &message) {
         emit m_core->metaJobInfoMessage(message);
     }
+
+    void handleMethodInvocationRequest(const QString& slot);
+
 
 private:
     void deleteUninstaller();
