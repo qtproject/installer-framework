@@ -1141,11 +1141,23 @@ void PackageManagerCorePrivate::runInstaller()
         //to have some progress for writeUninstaller
         ProgressCoordinator::instance()->addReservePercentagePoints(1);
 
-        const QString target = targetDir();
+        static const QLatin1String sep("/");
+        const QString target = QDir::cleanPath(targetDir().replace(QRegExp(QLatin1String("\\\\|/")), sep));
         if (target.isEmpty())
             throw Error(tr("Variable 'TargetDir' not set."));
 
-        if (QDir(target).exists()) {
+        if (!QDir(target).exists()) {
+            const QString &pathToTarget = target.mid(0, target.lastIndexOf(sep));
+            if (!QDir(pathToTarget).exists()) {
+                Operation *pathToTargetOp = createOwnedOperation(QLatin1String("Mkdir"));
+                pathToTargetOp->setArguments(QStringList() << pathToTarget);
+                if (!performOperationThreaded(pathToTargetOp)) {
+                    adminRightsGained = m_core->gainAdminRights();
+                    if (!performOperationThreaded(pathToTargetOp))
+                        throw Error(pathToTargetOp->errorString());
+                }
+            }
+        } else if (QDir(target).exists()) {
             QTemporaryFile tempAdminFile(target + QLatin1String("/adminrights"));
             if (!tempAdminFile.open() || !tempAdminFile.isWritable())
                 adminRightsGained = m_core->gainAdminRights();

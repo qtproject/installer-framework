@@ -476,10 +476,14 @@ bool MkdirOperation::performOperation()
 bool MkdirOperation::undoOperation()
 {
     Q_ASSERT( arguments().count() == 1 );
-    QString dirName = arguments().first();
 
-    const QDir createdDir = QDir( value( QLatin1String( "createddir" ) ).toString() );
+    QDir createdDir = QDir( value( QLatin1String( "createddir" ) ).toString() );
     const bool forceremoval = QVariant( value( QLatin1String( "forceremoval" ) ) ).toBool();
+
+    // Since refactoring we know the mkdir operation which is creating the target path. If we do a full
+    // uninstall prevent removing the full path including target, instead remove the target only. (QTIFW-46)
+    if (hasValue(QLatin1String("uninstall-only")) && value(QLatin1String("uninstall-only")).toBool())
+        createdDir = QDir(arguments().first());
 
     if( createdDir == QDir::root() )
         return true;
@@ -489,9 +493,7 @@ bool MkdirOperation::undoOperation()
 
     QString errorString;
     if( forceremoval )
-    {
         return removeDirectory( createdDir.path(), &errorString );
-    }
 
     // even remove some hidden, OS-created files in there
 #if defined Q_WS_MAC
