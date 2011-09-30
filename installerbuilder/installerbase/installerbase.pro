@@ -4,7 +4,9 @@ TARGET = installerbase
 DEPENDPATH += . ..
 INCLUDEPATH += . .. 
 
-DEFINES += QT_NO_CAST_FROM_ASCII
+GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
+
+DEFINES += QT_NO_CAST_FROM_ASCII "_GIT_SHA1_=$$GIT_SHA1"
 
 win32:RC_FILE = installerbase.rc
 

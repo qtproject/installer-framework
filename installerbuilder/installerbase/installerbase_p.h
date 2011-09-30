@@ -42,6 +42,14 @@ public:
     }
 };
 
+class InstallerBase : public QObject
+{
+    Q_OBJECT;
+
+public:
+    static void showVersion(int &argc, char **argv, const QString &version);
+};
+
 class MyCoreApplication : public QCoreApplication
 {
 public:

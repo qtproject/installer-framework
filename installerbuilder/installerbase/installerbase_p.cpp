@@ -72,3 +72,17 @@ bool MyApplication::notify(QObject *receiver, QEvent *event)
     }
     return false;
 }
+
+
+// -- InstallerBase
+
+void InstallerBase::showVersion(int &argc, char **argv, const QString &version)
+{
+#ifdef Q_OS_WIN
+    MyApplication app(argc, argv);
+    QMessageBox::information(0, tr("Version"), version);
+#else
+    Q_UNUSED(argc) Q_UNUSED(argv)
+    fprintf(stdout, "%s\n", qPrintable(version));
+#endif
+}

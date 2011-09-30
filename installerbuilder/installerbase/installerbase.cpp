@@ -58,7 +58,9 @@
 
 #include <iostream>
 
-#define INSTALLERBASE_VERSION "2"
+#define QUOTE_(x) #x
+#define QUOTE(x) QUOTE_(x)
+#define VERSION "Installerbase SHA1: \"" QUOTE(_GIT_SHA1_) "\" , Build date: " QUOTE(__DATE__) "."
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -87,6 +89,11 @@ int main(int argc, char *argv[])
 
     const QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
     try {
+        if (args.contains(QLatin1String("--version"))) {
+            InstallerBase::showVersion(argc, argv, QString::fromLatin1(VERSION));
+            return 0;
+        }
+
         // this is the FSEngineServer as an admin rights process upon request:
         if (args.count() >= 3 && args[1] == QLatin1String("--startserver")) {
             MyCoreApplication app(argc, argv);
@@ -162,15 +169,14 @@ int main(int argc, char *argv[])
         }
 
         if (QInstaller::isVerbose()) {
-            verbose() << "This is installerbase version " << INSTALLERBASE_VERSION << std::endl;
-            verbose() << "ARGS: " << args << std::endl;
-
-            verbose() << "resource tree before loading the in-binary resource: " << std::endl;
+            verbose() << VERSION << std::endl;
+            verbose() << "Arguments: " << args << std::endl;
+            verbose() << "Resource tree before loading the in-binary resource: " << std::endl;
 
             QDir dir(QLatin1String(":/"));
             foreach (const QString &i, dir.entryList()) {
                 const QByteArray ba = i.toUtf8();
-                verbose() << "\t :/" << ba.constData() << std::endl;
+                verbose() << "    :/" << ba.constData() << std::endl;
             }
         }
 
@@ -186,15 +192,15 @@ int main(int argc, char *argv[])
         QInstaller::PackageManagerCore core(content.magicmaker(), content.performedOperations());
 
         if (QInstaller::isVerbose()) {
-            verbose() << "resource tree after loading the in-binary resource: " << std::endl;
+            verbose() << "Resource tree after loading the in-binary resource: " << std::endl;
 
             QDir dir = QDir(QLatin1String(":/"));
             foreach (const QString &i, dir.entryList())
-                verbose() << QString::fromLatin1("\t :/%1").arg(i) << std::endl;
+                verbose() << QString::fromLatin1("    :/%1").arg(i) << std::endl;
 
             dir = QDir(QLatin1String(":/metadata/"));
             foreach (const QString &i, dir.entryList())
-                verbose() << QString::fromLatin1("\t :/metadata/%1").arg(i) << std::endl;
+                verbose() << QString::fromLatin1("    :/metadata/%1").arg(i) << std::endl;
         }
 
         QString controlScript;
