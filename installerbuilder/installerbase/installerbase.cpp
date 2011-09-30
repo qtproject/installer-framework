@@ -30,32 +30,31 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include "common/binaryformat.h"
-#include "common/errors.h"
-#include "common/fileutils.h"
-#include "common/utils.h"
-#include "fsengineserver.h"
-#include "init.h"
+#include "installerbase_p.h"
+
 #include "installerbasecommons.h"
-#include "lib7z_facade.h"
-#include "qinstallerglobal.h"
-#include "packagemanagergui.h"
 #include "tabcontroller.h"
-#include "updater.h"
-#include "operationrunner.h"
 
+#include <common/binaryformat.h>
+#include <common/errors.h>
+#include <common/fileutils.h>
+#include <common/utils.h>
+#include <fsengineserver.h>
+#include <init.h>
+#include <lib7z_facade.h>
+#include <operationrunner.h>
 #include <packagemanagercore.h>
+#include <packagemanagergui.h>
+#include <qinstallerglobal.h>
 #include <settings.h>
-
-#include <QtCore/QTranslator>
-#include <QtCore/QThread>
-
-#include <QtGui/QApplication>
-
-#include <QtNetwork/QNetworkProxyFactory>
+#include <updater.h>
 
 #include <KDToolsCore/KDSelfRestarter>
 #include <KDToolsCore/KDRunOnceChecker>
+
+#include <QtCore/QTranslator>
+
+#include <QtNetwork/QNetworkProxyFactory>
 
 #include <iostream>
 
@@ -63,49 +62,6 @@
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
-
-class Sleep : public QThread
-{
-public:
-    static void sleep(unsigned long ms)
-    {
-        QThread::usleep(ms);
-    }
-};
-
-class MyApplication : public QApplication {
-public:
-    MyApplication(int& argc, char ** argv) :
-    QApplication(argc, argv) { }
-    virtual ~MyApplication() { }
-
-    // reimplemented from QApplication so we can throw exceptions in scripts and slots
-    virtual bool notify(QObject * receiver, QEvent * event) {
-        try {
-            return QApplication::notify(receiver, event);
-        } catch(std::exception& e) {
-            qCritical() << "Exception thrown:" << e.what();
-        }
-        return false;
-    }
-};
-
-class MyCoreApplication : public QCoreApplication {
-public:
-    MyCoreApplication(int& argc, char ** argv) :
-    QCoreApplication(argc, argv) { }
-    virtual ~MyCoreApplication() { }
-
-    // reimplemented from QCoreApplication so we can throw exceptions in scripts and slots
-    virtual bool notify(QObject * receiver, QEvent * event) {
-    try {
-        return QCoreApplication::notify(receiver, event);
-    } catch(std::exception& e) {
-        qCritical() << "Exception thrown:" << e.what();
-    }
-        return false;
-    }
-};
 
 static QList<Repository> repositories(const QStringList &arguments, const int index)
 {

@@ -23,10 +23,12 @@ include(../libinstaller/libinstaller.pri)
 
 QT += network
 
-HEADERS += tabcontroller.h \
+HEADERS += installerbase_p.h \
+           tabcontroller.h \
            installerbasecommons.h
 
 SOURCES = installerbase.cpp \
+          installerbase_p.cpp \
           tabcontroller.cpp \
           installerbasecommons.cpp
 
