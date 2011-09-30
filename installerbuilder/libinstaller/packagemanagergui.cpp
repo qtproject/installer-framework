@@ -1783,9 +1783,9 @@ void FinishedPage::entering()
 #ifdef Q_WS_MAC
         wizard()->setOption(QWizard::NoCancelButton, false);
 #endif
+        setButtonText(QWizard::CommitButton, tr("Restart"));
+        m_commitButton = gui()->button(QWizard::CancelButton);
         gui()->button(QWizard::CancelButton)->setEnabled(true);
-        m_commitButton = wizard()->button(QWizard::CancelButton);
-        setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::NextButton));
         setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::FinishButton));
     } else {
         if (packageManagerCore()->isInstaller())
