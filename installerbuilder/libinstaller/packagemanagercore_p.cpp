@@ -1027,6 +1027,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
                 openForRead(&replacementBinary, replacementBinary.fileName());
                 writeUninstallerBinary(&replacementBinary, replacementBinary.size(), true);
 
+                m_forceRestart = true;
                 newBinaryWritten = true;
                 replacementExists = true;
             } catch (const Error &error) {
@@ -1566,9 +1567,6 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
 
         if (!ok && !ignoreError)
             throw Error(operation->errorString());
-
-        if (component->value(scEssential, scFalse) == scTrue)
-            m_forceRestart = true;
     }
 
     registerPathesForUninstallation(component->pathesForUninstallation(), component->name());

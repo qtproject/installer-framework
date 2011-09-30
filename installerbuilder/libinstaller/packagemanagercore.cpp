@@ -1176,7 +1176,6 @@ QString PackageManagerCore::findPath(const QString &name, const QStringList &pat
 */
 void PackageManagerCore::setInstallerBaseBinary(const QString &path)
 {
-    d->m_forceRestart = true;
     d->m_installerBaseBinaryUnreplaced = path;
 }
 
