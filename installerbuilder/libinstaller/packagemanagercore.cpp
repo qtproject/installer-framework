@@ -1086,7 +1086,7 @@ bool PackageManagerCore::performOperation(const QString &name, const QStringList
     if (!op.data())
         return false;
 
-    op->setArguments(arguments);
+    op->setArguments(replaceVariables(arguments));
     op->backup();
     if (!PackageManagerCorePrivate::performOperationThreaded(op.data())) {
         PackageManagerCorePrivate::performOperationThreaded(op.data(), PackageManagerCorePrivate::Undo);
