@@ -208,7 +208,10 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
         return;
     }
 
-    m_downloader->setUrl(QUrl(url.toString() + QLatin1String("/Updates.xml")));
+    //append a random string to avoid proxy caches
+    m_downloader->setUrl(QUrl(url.toString() + QString(QLatin1String("/Updates.xml?")).append(
+        QString::number(qrand() * qrand()))));
+
     m_downloader->setAutoRemoveDownloadedFile(false);
     connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(updatesXmlDownloadFinished()));
     connect(m_downloader, SIGNAL(downloadCanceled()), this, SLOT(updatesXmlDownloadCanceled()));
