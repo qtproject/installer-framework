@@ -30,43 +30,49 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef REPOSITORYMANAGER_H
+#define REPOSITORYMANAGER_H
 
-#include "repositorymanager.h"
-#include <QtCore/QTemporaryFile>
-#include <QtCore/QUrl>
-#include <QtCore/QDate>
-#include <QtCore/QString>
+#include <QtCore/QObject>
 #include <QtCore/QMap>
-#include <QtGui/QMainWindow>
+#include <QtCore/QDate>
 #include <QtNetwork/QNetworkAccessManager>
 
-namespace Ui {
-    class MainWindow;
-}
-
-
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
-
-public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-
-
-public slots:
-    void displayRepositories();
-    void getProductionRepository();
-    void getUpdateRepository();
-    void createExportFile();
-
-private:
-    void createRepositoryMap(const QByteArray &data, QMap<QString, ComponentDescription> &map);
-
-    Ui::MainWindow *ui;
-    RepositoryManager manager;
+struct ComponentDescription {
+    QString version;
+    QDate releaseDate;
+    QString checksum;
+    QString updateText;
+    bool update;
 };
 
-#endif // MAINWINDOW_H
+class RepositoryManager : public QObject
+{
+    Q_OBJECT
+public:
+    explicit RepositoryManager(QObject *parent = 0);
+
+    bool updateRequired(const QString &componentName, QString *message = 0);
+    QMap<QString, ComponentDescription>* productionComponents() { return &productionMap; }
+    QMap<QString, ComponentDescription>* updateComponents() { return &updateMap; }
+signals:
+    void repositoriesCompared();
+
+public slots:
+    void setProductionRepository(const QString &repo);
+    void setUpdateRepository(const QString &repo);
+    void writeUpdateFile(const QString &fileName);
+
+    void receiveRepository(QNetworkReply *reply);
+
+    void compareRepositories();
+private:
+    void createRepositoryMap(const QByteArray &data, QMap<QString, ComponentDescription> &map);
+    QNetworkReply *productionReply;
+    QNetworkReply *updateReply;
+    QNetworkAccessManager *manager;
+    QMap<QString, ComponentDescription> productionMap;
+    QMap<QString, ComponentDescription> updateMap;
+};
+
+#endif // REPOSITORYMANAGER_H

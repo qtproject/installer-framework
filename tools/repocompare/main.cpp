@@ -31,14 +31,36 @@
 **
 **************************************************************************/
 #include <QtGui/QApplication>
+#include <QTimer>
+#include <QtCore>
 #include "mainwindow.h"
+#include "repositorymanager.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     QCoreApplication::setApplicationName(QLatin1String("IFW_repocompare"));
-    MainWindow w;
-    w.show();
+    if (a.arguments().contains("-i")) {
+        if (a.arguments().count() != 5) {
+            qWarning() << "Usage: " << a.arguments().at(0) << " -i <production Repo> <update Repo> <outputFile>";
+            return -1;
+        }
+        const QString productionRepo = a.arguments().at(2);
+        const QString updateRepo = a.arguments().at(3);
+        const QString outputFile = a.arguments().at(4);
+        RepositoryManager manager;
+        manager.setProductionRepository(productionRepo);
+        manager.setUpdateRepository(updateRepo);
+        a.connect(&manager, SIGNAL(repositoriesCompared()), &a, SLOT(quit()));
+        qDebug() << "Waiting for server reply...";
+        a.exec();
+        qDebug() << "Writing into " << outputFile;
+        manager.writeUpdateFile(outputFile);
+        return 0;
+    } else {
+        MainWindow w;
+        w.show();
 
-    return a.exec();
+        return a.exec();
+    }
 }

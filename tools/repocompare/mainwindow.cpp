@@ -80,9 +80,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->productionButton, SIGNAL(clicked()), this, SLOT(getProductionRepository()));
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(getUpdateRepository()));
-    manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(receiveRepository(QNetworkReply*)));
     connect(ui->exportButton, SIGNAL(clicked()), this, SLOT(createExportFile()));
+    connect(&manager, SIGNAL(repositoriesCompared()), this, SLOT(displayRepositories()));
 }
 
 MainWindow::~MainWindow()
@@ -95,121 +94,29 @@ MainWindow::~MainWindow()
 
 void MainWindow::getProductionRepository()
 {
-    QUrl url = this->ui->productionRepo->currentText();
-    if (!url.isValid()) {
-        QMessageBox::critical(this, "Error", "Specified URL is not valid");
-        return;
-    }
-
-    if (productionFile.isOpen())
-        productionFile.close();
-    if (!productionFile.open()) {
-        QMessageBox::critical(this, "Error", "Could not open File");
-        return;
-    }
-
-    QNetworkRequest request(url);
-    productionReply = manager->get(request);
+    manager.setProductionRepository(ui->productionRepo->currentText());
 }
 
 void MainWindow::getUpdateRepository()
 {
-    QUrl url = this->ui->updateRepo->currentText();
-    if (!url.isValid()) {
-        QMessageBox::critical(this, "Error", "Specified URL is not valid");
-        return;
-    }
-
-    if (updateFile.isOpen())
-        updateFile.close();
-    if (!updateFile.open()) {
-        QMessageBox::critical(this, "Error", "Could not open File");
-        return;
-    }
-
-    QNetworkRequest request(url);
-    updateReply = manager->get(request);
+    manager.setUpdateRepository(ui->updateRepo->currentText());
 }
 
-void MainWindow::receiveRepository(QNetworkReply *reply)
+void MainWindow::displayRepositories()
 {
-    QByteArray data = reply->readAll();
-    reply->deleteLater();
-    if (reply == productionReply) {
-        createRepositoryMap(data, productionMap);
-        uniqueAppend(ui->productionRepo, reply->url().toString());
-    } else if (reply == updateReply) {
-        createRepositoryMap(data, updateMap);
-        uniqueAppend(ui->updateRepo, reply->url().toString());
-    }
 
-    if (productionMap.size() && updateMap.size())
-        compareRepositories();
-}
+    uniqueAppend(ui->productionRepo, ui->productionRepo->currentText());
+    uniqueAppend(ui->updateRepo, ui->updateRepo->currentText());
 
-void MainWindow::createRepositoryMap(const QByteArray &data, QMap<QString, RepositoryDescription> &map)
-{
-    QXmlStreamReader reader(data);
-    QString currentItem;
-    RepositoryDescription currentDescription;
-    while (!reader.atEnd()) {
-        QXmlStreamReader::TokenType type = reader.readNext();
-        if (type == QXmlStreamReader::StartElement) {
-            if (reader.name() == "PackageUpdate") {
-                // new package
-                if (!currentItem.isEmpty())
-                    map.insert(currentItem, currentDescription);
-                currentDescription.updateText.clear();
-                currentDescription.version.clear();
-                currentDescription.checksum.clear();
-            }
-            if (reader.name() == "SHA1")
-                currentDescription.checksum = reader.readElementText();
-            else if (reader.name() == "Version")
-                currentDescription.version = reader.readElementText();
-            else if (reader.name() == "ReleaseDate")
-                currentDescription.releaseDate = QDate::fromString(reader.readElementText(), "yyyy-MM-dd");
-            else if (reader.name() == "UpdateText")
-                currentDescription.updateText = reader.readElementText();
-            else if (reader.name() == "Name")
-                currentItem = reader.readElementText();
-        }
-    }
-    // Insert the last item
-    if (!currentItem.isEmpty())
-        map.insert(currentItem, currentDescription);
-}
-
-static qreal createVersionNumber(const QString &text)
-{
-    QStringList items = text.split(QLatin1Char('.'));
-    QString last = items.takeLast();
-    items.append(last.split(QLatin1Char('-')));
-
-    qreal value = 0;
-    if (items.count() == 4)
-        value += qreal(0.01) * items.takeLast().toInt();
-
-    int multiplier = 10000;
-    do {
-        value += multiplier * items.takeFirst().toInt();
-        multiplier /= 100;
-    } while (items.count());
-
-    return value;
-}
-
-void MainWindow::compareRepositories()
-{
     // First we put everything into the treeview
     for (int i = 0; i < 2; ++i) {
-        QMap<QString, RepositoryDescription>* map;
+        QMap<QString, ComponentDescription>* map;
         if (i == 0)
-            map = &productionMap;
+            map = manager.productionComponents();
         else
-            map = &updateMap;
+            map = manager.updateComponents();
         int indexIncrement = 4*i;
-        for (QMap<QString, RepositoryDescription>::iterator it = map->begin(); it != map->end(); ++it) {
+        for (QMap<QString, ComponentDescription>::iterator it = map->begin(); it != map->end(); ++it) {
             QList<QTreeWidgetItem*> list = ui->treeWidget->findItems(it.key(), Qt::MatchExactly);
             QTreeWidgetItem* item;
             if (list.size())
@@ -222,29 +129,14 @@ void MainWindow::compareRepositories()
             item->setText(indexIncrement + 4, it.value().releaseDate.toString("yyyy-MM-dd"));
             item->setText(indexIncrement + 5, it.value().checksum);
             item->setText(indexIncrement + 6, it.value().updateText);
-        }
-    }
-
-    // Now iterate over the items and check where an update is needed
-    for (int i = 0; i < ui->treeWidget->topLevelItemCount(); ++i) {
-        QTreeWidgetItem* item = ui->treeWidget->topLevelItem(i);
-        if (item->text(3).isEmpty() && !item->text(7).isEmpty()) {
-            item->setText(1, "Yes");
-            item->setText(2, "New Component");
-        } else if (item->text(7).isEmpty()) {
-            item->setText(2, "Caution: component removed");
-        } else if (createVersionNumber(item->text(3)) < createVersionNumber(item->text(7))) {
-            // New Version
-            item->setText(1, "Yes");
-            // Check update date
-            QDate productionDate = QDate::fromString(item->text(4), "yyyy-MM-dd");
-            QDate updateDate = QDate::fromString(item->text(8), "yyyy-MM-dd");
-            if (updateDate <= productionDate)
-                item->setText(2, "Error: Date not correct");
-            else if (item->text(6) == item->text(10) || item->text(10).isEmpty())
-                item->setText(2, "Error: Update text wrong");
-            else
-                item->setText(2, "Ok");
+            if (i != 0) {
+                QString errorText;
+                if (manager.updateRequired(it.key(), &errorText))
+                    item->setText(1, "Yes");
+                else
+                    item->setText(1, "No");
+                item->setText(2, errorText);
+            }
         }
     }
 }
@@ -252,18 +144,7 @@ void MainWindow::compareRepositories()
 void MainWindow::createExportFile()
 {
     QString fileName = QFileDialog::getSaveFileName(this, "Export File");
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadWrite)) {
-        QMessageBox::critical(this, "Error", "Could not open File for saving");
+    if (fileName.isEmpty())
         return;
-    }
-
-    QTextStream s(&file);
-    for (int i = 0; i < ui->treeWidget->topLevelItemCount(); ++i) {
-        QTreeWidgetItem* item = ui->treeWidget->topLevelItem(i);
-        if (item->text(1) == "Yes" && item->text(2) == "Ok")
-            s << item->text(0) << "\n";
-    }
-    s.flush();
-    file.close();
+    manager.writeUpdateFile(fileName);
 }

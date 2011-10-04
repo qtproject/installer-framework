@@ -11,8 +11,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+        repositorymanager.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+        repositorymanager.h
 
 FORMS    += mainwindow.ui
