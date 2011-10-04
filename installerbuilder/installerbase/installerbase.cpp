@@ -135,6 +135,14 @@ int main(int argc, char *argv[])
             return o.runOperation(args);
         }
 
+        if (args.contains(QLatin1String("--update-installerbase"))) {
+            MyCoreApplication app(argc, argv);
+            if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
+                return 0;
+
+            return InstallerBase().replaceMaintenanceToolBinary(args);
+        }
+
         // from here, the "normal" installer binary is running
         MyApplication app(argc, argv);
 

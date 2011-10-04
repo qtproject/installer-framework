@@ -33,6 +33,12 @@
 #include <QtCore/QThread>
 #include <QtGui/QApplication>
 
+namespace KDUpdater {
+    class FileDownloader;
+}
+class QFile;
+
+
 class Sleep : public QThread
 {
 public:
@@ -47,7 +53,25 @@ class InstallerBase : public QObject
     Q_OBJECT;
 
 public:
+    InstallerBase(QObject *parent = 0);
+    ~InstallerBase();
+
+    int replaceMaintenanceToolBinary(QStringList arguments);
     static void showVersion(int &argc, char **argv, const QString &version);
+
+private slots:
+    void downloadStarted();
+    void downloadFinished();
+    void downloadProgress(double progress);
+    void downloadAborted(const QString& error);
+
+private:
+    void deferredRename(const QString &source, const QString &target);
+    void writeMaintenanceBinary(const QString &target, QFile *const source, qint64 size);
+
+private:
+    volatile bool m_downloadFinished;
+    QScopedPointer<KDUpdater::FileDownloader> m_downloader;
 };
 
 class MyCoreApplication : public QCoreApplication
