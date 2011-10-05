@@ -95,7 +95,7 @@ static QVector<PackageInfo> collectAvailablePackages(const QString& packagesDire
             verbose() << ", but it's package description is invalid. Error at " << errorLine
                 << ", " << errorColumn << ": " << errorMessage << std::endl;
             throw QInstaller::Error(QObject::tr("Component package description for %1 is invalid. "
-                "Error at %2, %3 : %4").arg(it->fileName(), QString::number(errorLine),
+                "Error at line: %2, column: %3 -> %4").arg(it->fileName(), QString::number(errorLine),
                 QString::number(errorColumn), errorMessage));
         }
 
