@@ -1570,8 +1570,11 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
         !packageManagerCore()->calculateComponentsToInstall()) {
             htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font></h2><ul>")
                 .arg(tr("Can not resolve all dependencies!")));
-            foreach (const QString &reason, packageManagerCore()->missingDependenciesReasons())
-                htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(reason));
+            //if we have a missing dependency or a recursion we can display it
+            if (!packageManagerCore()->componentsToInstallError().isEmpty()) {
+                htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(
+                    packageManagerCore()->componentsToInstallError()));
+            }
             htmlOutput.append(QLatin1String("</ul>"));
             m_taskDetailsBrowser->setHtml(htmlOutput);
             if (!m_taskDetailsBrowser->isVisible())

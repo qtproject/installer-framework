@@ -158,7 +158,7 @@ public:
     bool calculateComponentsToUninstall() const;
     QList<Component*> componentsToUninstall() const;
 
-    QStringList missingDependenciesReasons() const;
+    QString componentsToInstallError() const;
     QString installReason(Component *component) const;
 
     QList<Component*> dependees(const Component *component) const;

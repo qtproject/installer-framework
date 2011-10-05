@@ -310,7 +310,7 @@ void PackageManagerCorePrivate::clearComponentsToInstall()
 {
     m_visitedComponents.clear();
     m_toInstallComponentIds.clear();
-    m_missingDependenciesReasons.clear();
+    m_componentsToInstallError.clear();
     m_orderedComponentsToInstall.clear();
     m_toInstallComponentIdReasonHash.clear();
 }
@@ -339,9 +339,10 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
     QList<Component*> notAppendedComponents; // for example components with unresolved dependencies
     foreach (Component *component, components){
         if (m_toInstallComponentIds.contains(component->name())) {
-            const QString errorMessage = QString::fromLatin1("Recursion detected component(%1) already added "
-                "with reason: %2.").arg(component->name(), installReason(component));
+            QString errorMessage = QString::fromLatin1("Recursion detected component(%1) already added with "
+                "reason: \"%2\"").arg(component->name(), installReason(component));
             verbose() << qPrintable(errorMessage) << std::endl;
+            m_componentsToInstallError.append(errorMessage);
             Q_ASSERT_X(!m_toInstallComponentIds.contains(component->name()), Q_FUNC_INFO,
                 qPrintable(errorMessage));
             return false;
@@ -353,31 +354,30 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             notAppendedComponents.append(component);
     }
 
-    bool allComponentsAdded = true;
-    foreach (Component *component, notAppendedComponents)
-        allComponentsAdded &= appendComponentToInstall(component);
+    foreach (Component *component, notAppendedComponents) {
+        if (!appendComponentToInstall(component))
+            return false;
+    }
 
     QList<Component*> foundAutoDependOnList;
-    if (allComponentsAdded) {
-        // All regular dependencies are resolved. Now we are looking for auto depend on components.
-        foreach (Component *component, m_core->availableComponents()) {
-            // If a components is already installed or is scheduled for installation, no need to check for
-            // auto depend installation.
-            if ((!component->isInstalled() || component->updateRequested())
-                && !m_toInstallComponentIds.contains(component->name())) {
-                // If we figure out a component requests auto installation, keep it to resolve their deps as
-                // well.
-                if (component->isAutoDependOn(m_toInstallComponentIds)) {
-                    foundAutoDependOnList.append(component);
-                    insertInstallReason(component, tr("Component(s) added as automatic dependencies"));
-                }
+    // All regular dependencies are resolved. Now we are looking for auto depend on components.
+    foreach (Component *component, m_core->availableComponents()) {
+        // If a components is already installed or is scheduled for installation, no need to check for
+        // auto depend installation.
+        if ((!component->isInstalled() || component->updateRequested())
+            && !m_toInstallComponentIds.contains(component->name())) {
+            // If we figure out a component requests auto installation, keep it to resolve their deps as
+            // well.
+            if (component->isAutoDependOn(m_toInstallComponentIds)) {
+                foundAutoDependOnList.append(component);
+                insertInstallReason(component, tr("Component(s) added as automatic dependencies"));
             }
         }
     }
 
     if (!foundAutoDependOnList.isEmpty())
         return appendComponentsToInstall(foundAutoDependOnList);
-    return allComponentsAdded;
+    return true;
 }
 
 bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
@@ -397,15 +397,22 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
                 " %2.");
             errorMessage = errorMessage.arg(dependencyComponentName, component->name());
             verbose() << qPrintable(errorMessage) << std::endl;
-            m_missingDependenciesReasons.append(errorMessage);
+            m_componentsToInstallError.append(errorMessage);
             Q_ASSERT_X(false, Q_FUNC_INFO, qPrintable(errorMessage));
             return false;
         }
 
         if ((!dependencyComponent->isInstalled() || dependencyComponent->updateRequested())
             && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
-                if (m_visitedComponents.value(component).contains(dependencyComponent))
+                if (m_visitedComponents.value(component).contains(dependencyComponent)) {
+                    QString errorMessage = QString::fromLatin1("Recursion detected component(%1) already "
+                        "added with reason: \"%2\"").arg(component->name(), installReason(component));
+                    verbose() << qPrintable(errorMessage) << std::endl;
+                    m_componentsToInstallError = errorMessage;
+                    Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent), Q_FUNC_INFO,
+                        qPrintable(errorMessage));
                     return false;
+                }
                 m_visitedComponents[component].insert(dependencyComponent);
 
                 // add needed dependency components to the next run

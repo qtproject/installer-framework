@@ -929,9 +929,9 @@ QList<Component*> PackageManagerCore::componentsToUninstall() const
     return d->m_componentsToUninstall.toList();
 }
 
-QStringList PackageManagerCore::missingDependenciesReasons() const
+QString PackageManagerCore::componentsToInstallError() const
 {
-    return d->m_missingDependenciesReasons;
+    return d->m_componentsToInstallError;
 }
 
 /*!

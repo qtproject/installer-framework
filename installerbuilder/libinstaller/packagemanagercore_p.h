@@ -239,7 +239,7 @@ private:
     QHash<QString, QString> m_toInstallComponentIdReasonHash;
 
     QSet<Component*> m_componentsToUninstall;
-    QStringList m_missingDependenciesReasons;
+    QString m_componentsToInstallError;
     QHash<Component*, QSet<QString> > m_autoDependOnDependencies;
 
 private:
