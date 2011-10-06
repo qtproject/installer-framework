@@ -148,6 +148,12 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
             break;
     }
 
+    if (!m_downloader->isDownloaded()) {
+        verbose() << tr("Could not download file %s: . Error: %s.").arg(m_downloader->url().toString(),
+            m_downloader->errorString()) << std::endl;
+        return EXIT_FAILURE;
+    }
+
     if (Lib7z::isSupportedArchive(target)) {
         QFile archive(target);
         if (archive.open(QIODevice::ReadOnly)) {
@@ -222,6 +228,7 @@ void InstallerBase::downloadProgress(double progress)
 
 void InstallerBase::downloadAborted(const QString &error)
 {
+    m_downloadFinished = true;
     verbose() << tr("Download aborted! Source: ") << m_downloader->url().toString() << tr(", Target: ")
         << m_downloader->downloadedFileName() << tr(", Error: ") << error << std::endl;
 }
