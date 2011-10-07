@@ -12,7 +12,6 @@ HEADERS += $$PWD/kdupdater.h \
     $$PWD/kdupdaterfiledownloader_p.h \
     $$PWD/kdupdaterfiledownloaderfactory.h \
     $$PWD/kdupdaterpackagesinfo.h \
-    $$PWD/kdupdaterpackagesview.h \
     $$PWD/kdupdatersignatureverificationresult.h \
     $$PWD/kdupdatersignatureverifier.h \
     $$PWD/kdupdaterupdate.h \
@@ -26,8 +25,6 @@ HEADERS += $$PWD/kdupdater.h \
     $$PWD/kdupdaterupdatesinfo_p.h \
     $$PWD/kdupdaterupdateinstaller.h \
     $$PWD/kdupdaterufuncompressor_p.h \
-    $$PWD/kdupdaterupdatesdialog.h \
-    $$PWD/kdupdaterupdatesourcesview.h \
     $$PWD/kdupdaterufcompresscommon_p.h \
     $$PWD/environment.h
 
@@ -36,7 +33,6 @@ SOURCES += $$PWD/kdupdaterapplication.cpp \
     $$PWD/kdupdaterfiledownloader.cpp \
     $$PWD/kdupdaterfiledownloaderfactory.cpp \
     $$PWD/kdupdaterpackagesinfo.cpp \
-    $$PWD/kdupdaterpackagesview.cpp \
     $$PWD/kdupdatersignatureverificationresult.cpp \
     $$PWD/kdupdatersignatureverifier.cpp \
     $$PWD/kdupdaterupdate.cpp \
@@ -50,18 +46,9 @@ SOURCES += $$PWD/kdupdaterapplication.cpp \
     $$PWD/kdupdaterupdatesinfo.cpp \
     $$PWD/kdupdaterupdateinstaller.cpp \
     $$PWD/kdupdaterufuncompressor.cpp \
-    $$PWD/kdupdaterupdatesdialog.cpp \
-    $$PWD/kdupdaterupdatesourcesview.cpp \
     $$PWD/kdupdaterufcompresscommon.cpp \
     $$PWD/environment.cpp
 
-
-
-FORMS += $$PWD/updatesdialog.ui \
-    $$PWD/addupdatesourcedialog.ui
-
-DEFINES += KDUPDATERGUITEXTBROWSER \
-    KDUPDATERVIEW=QTextBrowser
 QT += gui
 
 TRY_INCLUDEPATHS = /include /usr/include /usr/local/include $$QMAKE_INCDIR $$INCLUDEPATH
