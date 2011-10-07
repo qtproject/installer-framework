@@ -264,12 +264,7 @@ bool InstallIconsOperation::undoOperation()
     const QStringList createdDirectories = value(QLatin1String("createddirectories")).toStringList();
     for (QStringList::const_iterator it = createdDirectories.begin(); it != createdDirectories.end(); ++it) {
         const QDir dir(*it);
-        // even remove some hidden, OS-created files in there
-#if defined Q_WS_MAC
-        QFile::remove(dir.absoluteFilePath(QLatin1String(".DS_Store")));
-#elif defined Q_WS_WIN
-        QFile::remove(dir.absoluteFilePath(QLatin1String("/Thumbs.db")));
-#endif
+        cleanFromOSCreatedFiles(dir.absolutePath());
         success = QDir::root().rmdir(dir.path());
     }
 

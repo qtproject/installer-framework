@@ -81,6 +81,7 @@ private:
     void INSTALLER_EXPORT removeFiles(const QString &path, bool ignoreErrors = false);
     void INSTALLER_EXPORT removeDirectory(const QString &path, bool ignoreErrors = false);
     void INSTALLER_EXPORT removeDirectoryThreaded(const QString &path, bool ignoreErrors = false);
+    void INSTALLER_EXPORT cleanFromOSCreatedFiles(const QString &path);
 
     /*!
         Creates a temporary directory

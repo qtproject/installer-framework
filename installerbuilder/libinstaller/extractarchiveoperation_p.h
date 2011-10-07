@@ -30,6 +30,7 @@
 
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
+#include "common/fileutils.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QFile>
@@ -62,12 +63,7 @@ public:
                 op->deleteFileNowOrLater(fi.absoluteFilePath());
             } else if (fi.isDir()) {
                 const QDir d = fi.dir();
-                // even remove some hidden, OS-created files in there
-#if defined Q_WS_MAC
-                op->deleteFileNowOrLater(file + QLatin1String("/.DS_Store"));
-#elif defined Q_WS_WIN
-                op->deleteFileNowOrLater(file + QLatin1String("/Thumbs.db"));
-#endif
+                cleanFromOSCreatedFiles(file);
                 d.rmdir(file); // directory may not exist
             }
         }

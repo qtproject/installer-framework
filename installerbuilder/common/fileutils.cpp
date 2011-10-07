@@ -283,6 +283,17 @@ void QInstaller::removeDirectoryThreaded(const QString &path, bool ignoreErrors)
         throw Error(thread.error());
 }
 
+void QInstaller::cleanFromOSCreatedFiles(const QString &path)
+{
+    if (path.isEmpty())
+        return;
+#if defined Q_WS_MAC
+    QFile::remove(path + QLatin1String("/.DS_Store"));
+#elif defined Q_WS_WIN
+    QFile::remove(path + QLatin1String("/Thumbs.db"));
+#endif
+}
+
 void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
     verbose() << "Copying " << sourceDir << " to " << targetDir << std::endl;
