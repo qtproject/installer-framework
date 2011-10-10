@@ -80,9 +80,14 @@ namespace KDUpdater
         virtual void onSuccess() = 0;
 
     Q_SIGNALS:
-        void downloadProgress(double);
         void downloadStarted();
         void downloadCanceled();
+
+        void downloadProgress(double progress);
+        void estimatedDownloadTime(int seconds);
+        void downloadSpeed(qint64 bytesPerSecond);
+        void downloadStatus(const QString &status);
+        void downloadProgress(qint64 bytesReceived, qint64 bytesToReceive);
 
 #ifndef Q_MOC_RUN
     private:
@@ -93,6 +98,18 @@ namespace KDUpdater
     protected:
         void setDownloadCompleted( const QString& filepath );
         void setDownloadAborted( const QString& error );
+
+        void runDownloadSpeedTimer();
+        void stopDownloadSpeedTimer();
+
+        void addSample(qint64 sample);
+        int downloadSpeedTimerId() const;
+        void setProgress(qint64 bytesReceived, qint64 bytesToReceive);
+
+        void emitDownloadSpeed();
+        void emitDownloadStatus();
+        void emitDownloadProgress();
+        void emitEstimatedDownloadTime();
 
     private Q_SLOTS:
         virtual void doDownload() = 0;

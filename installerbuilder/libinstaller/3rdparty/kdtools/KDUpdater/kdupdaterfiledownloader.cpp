@@ -39,11 +39,28 @@
 #include <QThreadPool>
 #include <QDebug>
 
+#include <QBasicTimer>
+#include <QTimerEvent>
+
 using namespace KDUpdater;
 
 static double calcProgress(qint32 done, qint32 total)
 {
     return total ? (double(done) / double(total)) : 0 ;
+}
+
+static QString format(double data)
+{
+    if (data < 1024.0)
+        return KDUpdater::FileDownloader::tr("%L1 B").arg(data);
+    data /= 1024.0;
+    if (data < 1024.0)
+        return KDUpdater::FileDownloader::tr("%L1 KB").arg(data, 0, 'f', 2);
+    data /= 1024.0;
+    if (data < 1024.0)
+        return KDUpdater::FileDownloader::tr("%L1 MB").arg(data, 0, 'f', 2);
+    data /= 1024.0;
+    return KDUpdater::FileDownloader::tr("%L1 GB").arg(data, 0, 'f', 2);
 }
 
 QByteArray KDUpdater::calculateHash( QIODevice* device, QCryptographicHash::Algorithm algo ) {
@@ -180,7 +197,13 @@ QString downloadedFile = downloader->downloadedFileName();
 
 struct KDUpdater::FileDownloader::FileDownloaderData
 {
-    FileDownloaderData() : autoRemove( true ) {
+    FileDownloaderData()
+        : autoRemove( true )
+        , m_bytesReceived(0)
+        , m_bytesToReceive(0)
+        , m_downloadSpeed(0)
+    {
+        memset(m_samples, 0, sizeof(m_samples));
     }
     
     QUrl url;
@@ -189,6 +212,15 @@ struct KDUpdater::FileDownloader::FileDownloaderData
     QString errorString;
     bool autoRemove;
     bool followRedirect;
+
+    QTime m_time;
+    QBasicTimer m_timer;
+
+    qint64 m_bytesReceived;
+    qint64 m_bytesToReceive;
+
+    mutable qint64 m_samples[10];
+    mutable qint64 m_downloadSpeed;
 };
 
 KDUpdater::FileDownloader::FileDownloader(const QString& scheme, QObject* parent)
@@ -297,6 +329,113 @@ void KDUpdater::FileDownloader::cancelDownload()
     // Do nothing
 }
 
+void KDUpdater::FileDownloader::runDownloadSpeedTimer()
+{
+    if (!d->m_timer.isActive()) {
+        d->m_time.start();
+        d->m_timer.start(500, this);
+    }
+}
+
+void KDUpdater::FileDownloader::stopDownloadSpeedTimer()
+{
+    d->m_timer.stop();
+}
+
+void KDUpdater::FileDownloader::addSample(qint64 sample)
+{
+    d->m_samples[0] += sample;
+}
+
+int KDUpdater::FileDownloader::downloadSpeedTimerId() const
+{
+    return d->m_timer.timerId();
+}
+
+void KDUpdater::FileDownloader::setProgress(qint64 bytesReceived, qint64 bytesToReceive)
+{
+    d->m_bytesReceived = bytesReceived;
+    d->m_bytesToReceive = bytesToReceive;
+}
+
+void KDUpdater::FileDownloader::emitDownloadSpeed()
+{
+    for (int i = 8; i >= 0; --i)
+        d->m_samples[i + 1] = d->m_samples[i];
+    d->m_samples[0] = 0;
+
+    d->m_downloadSpeed = 0;
+    for (unsigned int i = 0; i < sizeof(d->m_samples) / sizeof(qint64); ++i)
+        d->m_downloadSpeed += d->m_samples[i];
+    d->m_downloadSpeed /= (sizeof(d->m_samples) / sizeof(qint64) - 1) * 0.5;
+
+    emit downloadSpeed(d->m_downloadSpeed);
+}
+
+void KDUpdater::FileDownloader::emitDownloadStatus()
+{
+    QString status;
+    if (d->m_bytesToReceive > 0) {
+        QString bytesReceived = format(d->m_bytesReceived);
+        const QString bytesToReceive = format(d->m_bytesToReceive);
+
+        const QString tmp = bytesToReceive.mid(bytesToReceive.indexOf(QLatin1Char(' ')));
+        if (bytesReceived.endsWith(tmp))
+            bytesReceived.chop(tmp.length());
+
+        status = bytesReceived + tr(" of ") + bytesToReceive;
+    } else {
+        if (d->m_bytesReceived > 0)
+            status = format(d->m_bytesReceived) + tr(" downloaded.");
+    }
+
+    status += QLatin1String(" (") + format(d->m_downloadSpeed) + tr("/sec") + QLatin1Char(')');
+    if (d->m_bytesToReceive > 0 && d->m_downloadSpeed > 0) {
+        const qint64 time = (d->m_bytesToReceive - d->m_bytesReceived) / d->m_downloadSpeed;
+
+        int s = time % 60;
+        const int d = time / 86400;
+        const int h = (time / 3600) - (d * 24);
+        const int m = (time / 60) - (d * 1440) - (h * 60);
+
+        QString days;
+        if (d > 0)
+            days = QString::number(d) + (d < 2 ? tr(" day") : tr(" days")) + QLatin1String(", ");
+
+        QString hours;
+        if (h > 0)
+            hours = QString::number(h) + (h < 2 ? tr(" hour") : tr(" hours")) + QLatin1String(", ");
+
+        QString minutes;
+        if (m > 0)
+            minutes = QString::number(m) + (m < 2 ? tr(" minute") : tr(" minutes"));
+
+        QString seconds;
+        if (s >= 0 && minutes.isEmpty()) {
+            s = (s <= 0 ? 1 : s);
+            seconds = QString::number(s) + (s < 2 ? tr(" second") : tr(" seconds"));
+        }
+        status += tr(" - ") + days + hours + minutes + seconds + tr(" remaining.");
+    } else {
+        status += tr(" - unknown time remaining.");
+    }
+
+    emit downloadStatus(status);
+}
+
+void KDUpdater::FileDownloader::emitDownloadProgress()
+{
+    emit downloadProgress(d->m_bytesReceived, d->m_bytesToReceive);
+}
+
+void KDUpdater::FileDownloader::emitEstimatedDownloadTime()
+{
+    if (d->m_bytesToReceive <= 0 || d->m_downloadSpeed <= 0) {
+        emit estimatedDownloadTime(-1);
+        return;
+    }
+    emit estimatedDownloadTime((d->m_bytesToReceive - d->m_bytesReceived) / d->m_downloadSpeed);
+}
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -392,8 +531,10 @@ void KDUpdater::LocalFileDownloader::doDownload()
         return;
     }
 
+    runDownloadSpeedTimer();
     // Start a timer and kickoff the copy process
     d->timerId = startTimer(0); // as fast as possible
+
     emit downloadStarted();
     emit downloadProgress(0);
 }
@@ -425,39 +566,48 @@ void KDUpdater::LocalFileDownloader::cancelDownload()
     emit downloadCanceled();
 }
 
-void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent*)
+void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent *event)
 {
-    if( !d->source || !d->destination )
-        return;
+    if (event->timerId() == d->timerId) {
+        if( !d->source || !d->destination )
+            return;
 
-    const qint64 blockSize = 32768;
-    QByteArray buffer;
-    buffer.resize( blockSize );
-    const qint64 numRead = d->source->read( buffer.data(), buffer.size() );
-    qint64 toWrite = numRead;
-    while ( toWrite > 0 ) {
-        const qint64 numWritten = d->destination->write( buffer.constData() + numRead - toWrite, toWrite );
-        if ( numWritten < 0 ) {
-            killTimer( d->timerId );
-            d->timerId = -1;
-            onError();
-            setDownloadAborted( tr("Writing to %1 failed: %2").arg( d->destination->fileName(), d->destination->errorString() ) );
+        const qint64 blockSize = 32768;
+        QByteArray buffer;
+        buffer.resize( blockSize );
+        const qint64 numRead = d->source->read( buffer.data(), buffer.size() );
+        qint64 toWrite = numRead;
+        while ( toWrite > 0 ) {
+            const qint64 numWritten = d->destination->write( buffer.constData() + numRead - toWrite, toWrite );
+            if ( numWritten < 0 ) {
+                killTimer( d->timerId );
+                d->timerId = -1;
+                onError();
+                setDownloadAborted( tr("Writing to %1 failed: %2").arg( d->destination->fileName(), d->destination->errorString() ) );
+                return;
+            }
+            toWrite -= numWritten;
+        }
+        addSample(numRead);
+
+        if( numRead > 0 ) {
+            setProgress(d->source->pos(), d->source->size());
+            emit downloadProgress( calcProgress(d->source->pos(), d->source->size()) );
             return;
         }
-        toWrite -= numWritten;
+
+        d->destination->flush();
+
+        killTimer( d->timerId );
+        d->timerId = -1;
+
+        setDownloadCompleted( d->destination->fileName() );
+    } else if (event->timerId() == downloadSpeedTimerId()) {
+        emitDownloadSpeed();
+        emitDownloadStatus();
+        emitDownloadProgress();
+        emitEstimatedDownloadTime();
     }
-
-    if( numRead > 0 ) {
-        emit downloadProgress( calcProgress(d->source->pos(), d->source->size()) );
-        return;
-    }
-    
-    d->destination->flush();
-
-    killTimer( d->timerId );
-    d->timerId = -1;
-
-    setDownloadCompleted( d->destination->fileName() );
 }
 
 void LocalFileDownloader::onSuccess()
@@ -471,6 +621,7 @@ void LocalFileDownloader::onSuccess()
     d->destination = 0;
     delete d->source;
     d->source = 0;
+    stopDownloadSpeedTimer();
 }
 
 void LocalFileDownloader::onError()
@@ -481,6 +632,7 @@ void LocalFileDownloader::onError()
     d->destination = 0;
     delete d->source;
     d->source = 0;
+    stopDownloadSpeedTimer();
 }
 
 struct KDUpdater::ResourceFileDownloader::ResourceFileDownloaderData
@@ -641,6 +793,7 @@ void KDUpdater::FtpDownloader::doDownload()
     connect(d->ftp, SIGNAL(commandFinished(int,bool)), this, SLOT(ftpCmdFinished(int,bool)));
     connect(d->ftp, SIGNAL(stateChanged(int)), this, SLOT(ftpStateChanged(int)));
     connect(d->ftp, SIGNAL(dataTransferProgress(qint64,qint64)), this, SLOT(ftpDataTransferProgress(qint64,qint64)));
+    connect(d->ftp, SIGNAL(readyRead()), this, SLOT(ftpReadyRead()));
 
     d->ftp->connectToHost( url().host(), url().port(21) );
     d->ftp->login();
@@ -723,6 +876,7 @@ void FtpDownloader::onSuccess()
         file->setAutoRemove( false );
     delete d->destination;
     d->destination = 0;
+    stopDownloadSpeedTimer();
 
 }
 
@@ -732,7 +886,7 @@ void FtpDownloader::onError()
     d->destFileName.clear();
     delete d->destination;
     d->destination = 0;
-
+    stopDownloadSpeedTimer();
 }
 
 void KDUpdater::FtpDownloader::ftpStateChanged(int state)
@@ -749,8 +903,10 @@ void KDUpdater::FtpDownloader::ftpStateChanged(int state)
             d->destination = new QFile(d->destFileName, this);
             d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
         }
-        d->ftpCmdId = d->ftp->get( url().path(), d->destination );
+        runDownloadSpeedTimer();
+        d->ftpCmdId = d->ftp->get(url().path());
         break;
+
     case QFtp::Unconnected:
         // download was unconditionally aborted
         disconnect(d->ftp, 0, this, 0);
@@ -765,7 +921,38 @@ void KDUpdater::FtpDownloader::ftpStateChanged(int state)
 
 void KDUpdater::FtpDownloader::ftpDataTransferProgress(qint64 done, qint64 total)
 {
+    setProgress(done, total);
     emit downloadProgress( calcProgress(done, total) );
+}
+
+void KDUpdater::FtpDownloader::ftpReadyRead()
+{
+    static QByteArray buffer(16384, '\0');
+    while (d->ftp->bytesAvailable()) {
+        const qint64 read = d->ftp->read(buffer.data(), buffer.size());
+        qint64 written = 0;
+        while (written < read) {
+            const qint64 numWritten = d->destination->write(buffer.data() + written, read - written);
+            if (numWritten < 0) {
+                onError();
+                setDownloadAborted(tr("Cannot download %1: Writing to temporary file failed: %2")
+                    .arg(url().toString(), d->destination->errorString()));
+                return;
+            }
+            written += numWritten;
+        }
+        addSample(written);
+    }
+}
+
+void KDUpdater::FtpDownloader::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId() == downloadSpeedTimerId()) {
+        emitDownloadSpeed();
+        emitDownloadStatus();
+        emitDownloadProgress();
+        emitEstimatedDownloadTime();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -828,6 +1015,8 @@ void KDUpdater::HttpDownloader::doDownload()
 
     if( d->http )
         return;
+
+    runDownloadSpeedTimer();
 
     d->http = d->manager.get( QNetworkRequest( url() ) );   
 
@@ -894,6 +1083,7 @@ void KDUpdater::HttpDownloader::httpReadyRead()
             }
             written += numWritten;
         }
+        addSample(written);
     }
 }
 
@@ -955,6 +1145,7 @@ void KDUpdater::HttpDownloader::onError()
     d->destFileName.clear();
     delete d->destination;
     d->destination = 0;
+    stopDownloadSpeedTimer();
 }
 
 void KDUpdater::HttpDownloader::onSuccess()
@@ -965,6 +1156,7 @@ void KDUpdater::HttpDownloader::onSuccess()
         file->setAutoRemove( false );
     delete d->destination;
     d->destination = 0;
+    stopDownloadSpeedTimer();
 }
 
 void KDUpdater::HttpDownloader::httpReqFinished()
@@ -1013,8 +1205,20 @@ void KDUpdater::HttpDownloader::httpReqFinished()
 
 void KDUpdater::HttpDownloader::httpReadProgress( qint64 done, qint64 total)
 {
+    setProgress(done, total);
     emit downloadProgress( calcProgress( done, total ) );
 }
+
+void KDUpdater::HttpDownloader::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId() == downloadSpeedTimerId()) {
+        emitDownloadSpeed();
+        emitDownloadStatus();
+        emitDownloadProgress();
+        emitEstimatedDownloadTime();
+    }
+}
+
 
 class SignatureVerificationDownloader::Private
 {

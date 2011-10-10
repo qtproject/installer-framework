@@ -152,6 +152,7 @@ namespace KDUpdater
     protected:
         /* reimp */ void onError();
         /* reimp */ void onSuccess();
+        void timerEvent(QTimerEvent *event);
 
     private Q_SLOTS:
         /* reimp */ void doDownload();
@@ -160,6 +161,7 @@ namespace KDUpdater
         void ftpCmdFinished(int id, bool error);
         void ftpStateChanged(int state);
         void ftpDataTransferProgress(qint64 done, qint64 total);
+        void ftpReadyRead();
 
     private:
         struct FtpDownloaderData;
@@ -186,6 +188,7 @@ namespace KDUpdater
     protected:
         /* reimp */ void onError();
         /* reimp */ void onSuccess();
+        void timerEvent(QTimerEvent *event);
 
     private Q_SLOTS:
         /* reimp */ void doDownload();
