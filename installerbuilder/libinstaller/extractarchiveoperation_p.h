@@ -63,7 +63,7 @@ public:
                 op->deleteFileNowOrLater(fi.absoluteFilePath());
             } else if (fi.isDir()) {
                 const QDir d = fi.dir();
-                cleanFromOSCreatedFiles(file);
+                removeSystemGeneratedFiles(file);
                 d.rmdir(file); // directory may not exist
             }
         }

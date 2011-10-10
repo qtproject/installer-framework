@@ -283,7 +283,7 @@ void QInstaller::removeDirectoryThreaded(const QString &path, bool ignoreErrors)
         throw Error(thread.error());
 }
 
-void QInstaller::cleanFromOSCreatedFiles(const QString &path)
+void QInstaller::removeSystemGeneratedFiles(const QString &path)
 {
     if (path.isEmpty())
         return;

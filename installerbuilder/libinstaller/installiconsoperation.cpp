@@ -264,7 +264,7 @@ bool InstallIconsOperation::undoOperation()
     const QStringList createdDirectories = value(QLatin1String("createddirectories")).toStringList();
     for (QStringList::const_iterator it = createdDirectories.begin(); it != createdDirectories.end(); ++it) {
         const QDir dir(*it);
-        cleanFromOSCreatedFiles(dir.absolutePath());
+        removeSystemGeneratedFiles(dir.absolutePath());
         success = QDir::root().rmdir(dir.path());
     }
 
