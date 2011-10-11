@@ -213,7 +213,6 @@ struct KDUpdater::FileDownloader::FileDownloaderData
     bool autoRemove;
     bool followRedirect;
 
-    QTime m_time;
     QBasicTimer m_timer;
 
     qint64 m_bytesReceived;
@@ -331,10 +330,8 @@ void KDUpdater::FileDownloader::cancelDownload()
 
 void KDUpdater::FileDownloader::runDownloadSpeedTimer()
 {
-    if (!d->m_timer.isActive()) {
-        d->m_time.start();
+    if (!d->m_timer.isActive())
         d->m_timer.start(500, this);
-    }
 }
 
 void KDUpdater::FileDownloader::stopDownloadSpeedTimer()
