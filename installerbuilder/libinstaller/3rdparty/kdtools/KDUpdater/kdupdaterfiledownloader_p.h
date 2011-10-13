@@ -199,6 +199,9 @@ namespace KDUpdater
         void httpReqFinished();
 
     private:
+        void startDownload(const QUrl &url);
+
+    private:
         struct HttpDownloaderData;
         HttpDownloaderData* d;
     };

@@ -996,7 +996,7 @@ KDUpdater::HttpDownloader::~HttpDownloader()
 
 bool KDUpdater::HttpDownloader::canDownload() const
 {
-    // TODO: Check whether the ftp file actually exists or not.
+    // TODO: Check whether the http file actually exists or not.
     return true;
 }
 
@@ -1007,45 +1007,20 @@ bool KDUpdater::HttpDownloader::isDownloaded() const
 
 void KDUpdater::HttpDownloader::doDownload()
 {
-    if( d->downloaded )
+    if(d->downloaded)
         return;
 
-    if( d->http )
+    if(d->http)
         return;
 
+    //// In a future update, authentication should also be supported.
+    //connect(&d->manager, SIGNAL(authenticationRequired(QString, QAuthenticator*)), this,
+    //    SLOT(httpAuth(QString,QAuthenticator*)));
+    //connect(&d->manager, SIGNAL(proxyAuthenticationRequired(QNetworkProxy, QAuthenticator*)), this,
+    //    SLOT(httpProxyAuth(QNetworkProxy, QAuthenticator*)));
+
+    startDownload(url());
     runDownloadSpeedTimer();
-
-    d->http = d->manager.get( QNetworkRequest( url() ) );   
-
-    connect( d->http, SIGNAL( readyRead() ), this, SLOT( httpReadyRead() ) );
-    connect( d->http, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( httpReadProgress( qint64, qint64) ) );
-    connect( d->http, SIGNAL( finished() ), this, SLOT( httpReqFinished() ) );
-    connect( d->http, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( httpError( QNetworkReply::NetworkError ) ) );
-
-    /*
-    // In a future update, authentication should also be supported.
-
-    connect(d->http, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
-    this, SLOT(httpProxyAuth(QNetworkProxy,QAuthenticator*)));
-    connect(d->http, SIGNAL(authenticationRequired(QString,QAuthenticator*)),
-    this, SLOT(httpAuth(QString,QAuthenticator*)));
-    */
-
-    // Begin the download
-    if (d->destFileName.isEmpty()) {
-        QTemporaryFile *file = new QTemporaryFile(this);
-        file->open();
-        d->destination = file;
-    } else {
-        d->destination = new QFile(d->destFileName, this);
-        d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
-    }
-    if ( !d->destination->isOpen() ) {
-        const QString err = d->destination->errorString();
-        d->shutDown();
-        setDownloadAborted( tr("Cannot download %1: Could not create temporary file: %2").arg( url().toString(), err ) );
-        return;
-    }
 }
 
 QString KDUpdater::HttpDownloader::downloadedFileName() const
@@ -1158,43 +1133,20 @@ void KDUpdater::HttpDownloader::onSuccess()
 
 void KDUpdater::HttpDownloader::httpReqFinished()
 {
-    const QVariant redirect = d->http == 0 ? QVariant() : d->http->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    const QVariant redirect = d->http == 0 ? QVariant()
+        : d->http->attribute(QNetworkRequest::RedirectionTargetAttribute);
+
     const QUrl redirectUrl = redirect.toUrl();
-    //if ( redirect.isValid() )
-    //    redirectUrl = redirect.toUrl();
-    if ( followRedirects() && redirectUrl.isValid() )
-    {
-        // clean the previous download
-        d->http->deleteLater();
-        d->http = 0;
-        d->destination->close();
-        d->destination->deleteLater();
-        d->destination = 0;
-
-        d->http = d->manager.get( QNetworkRequest( redirectUrl ) );
-
-        connect( d->http, SIGNAL( readyRead() ), this, SLOT( httpReadyRead() ) );
-        connect( d->http, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( httpReadProgress( qint64, qint64) ) );
-        connect( d->http, SIGNAL( finished() ), this, SLOT( httpReqFinished() ) );
-        connect( d->http, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( httpError( QNetworkReply::NetworkError ) ) );
-
-        // Begin the download
-        if (d->destFileName.isEmpty()) {
-            QTemporaryFile *file = new QTemporaryFile(this);
-            file->open(); //PENDING handle error
-            d->destination = file;
-        } else {
-            d->destination = new QFile(d->destFileName, this);
-            d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
-        }
-    }
-    else
-    {
-        if( d->http == 0 )
+    if (followRedirects() && redirectUrl.isValid()) {
+        d->shutDown();  // clean the previous download
+        startDownload(redirectUrl);
+    } else {
+        if(d->http == 0)
             return;
+
         httpReadyRead();
         d->destination->flush();
-        setDownloadCompleted( d->destination->fileName() );
+        setDownloadCompleted(d->destination->fileName());
         d->http->deleteLater();
         d->http = 0;
     }
@@ -1216,6 +1168,32 @@ void KDUpdater::HttpDownloader::timerEvent(QTimerEvent *event)
     }
 }
 
+void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
+{
+    d->http = d->manager.get(QNetworkRequest(url));
+
+    connect(d->http, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
+    connect(d->http, SIGNAL(downloadProgress(qint64, qint64)), this,
+        SLOT(httpReadProgress(qint64, qint64)));
+    connect(d->http, SIGNAL(finished()), this, SLOT(httpReqFinished()));
+    connect(d->http, SIGNAL(error(QNetworkReply::NetworkError)), this,
+        SLOT(httpError(QNetworkReply::NetworkError)));
+
+    if (d->destFileName.isEmpty()) {
+        QTemporaryFile *file = new QTemporaryFile(this);
+        file->open();
+        d->destination = file;
+    } else {
+        d->destination = new QFile(d->destFileName, this);
+        d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
+    }
+
+    if (!d->destination->isOpen()) {
+        d->shutDown();
+        setDownloadAborted(tr("Cannot download %1: Could not create temporary file: %2").arg(url.toString(),
+            d->destination->errorString()));
+    }
+}
 
 class SignatureVerificationDownloader::Private
 {
