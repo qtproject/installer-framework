@@ -266,6 +266,9 @@ private:
     static Component *subComponentByName(const QInstaller::PackageManagerCore *installer, const QString &name,
         const QString &version = QString(), Component *check = 0);
 
+    void updateDisplayVersions();
+    QString findDisplayVersion(const QString &componentName, const QHash<QString, QInstaller::Component*> &components,
+                               QHash<QString, bool> &visited);
 private:
     PackageManagerCorePrivate *const d;
     friend class PackageManagerCorePrivate;

@@ -42,6 +42,7 @@ namespace KDUpdater
         QString title;
         QString description;
         QString version;
+        QString inheritVersionFrom;
         QStringList dependencies;
         QStringList translations;
         QDate lastUpdateDate;
@@ -92,8 +93,9 @@ namespace KDUpdater
         int compatLevel() const;
         void setCompatLevel(int level);
 
-        bool installPackage( const QString& pkgName, const QString& version, const QString& title = QString(), const QString& description = QString()
-                           , const QStringList& dependencies = QStringList(), bool forcedInstallation = false, bool virtualComp = false, quint64 uncompressedSize = 0 );
+        bool installPackage( const QString& pkgName, const QString& version, const QString& title = QString(), const QString& description = QString(),
+                             const QStringList& dependencies = QStringList(), bool forcedInstallation = false, bool virtualComp = false, quint64 uncompressedSize = 0,
+                             const QString &inheritVersionFrom=QString());
         bool updatePackage(const QString &pkgName, const QString &version, const QDate &date );
         bool removePackage( const QString& pkgName );
 

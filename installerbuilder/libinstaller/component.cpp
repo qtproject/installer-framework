@@ -107,6 +107,7 @@ void Component::loadDataFromPackage(const LocalPackage &package)
     setValue(scDisplayName, package.title);
     setValue(scDescription, package.description);
     setValue(scVersion, package.version);
+    setValue(scInheritVersion, package.inheritVersionFrom);
     setValue(scInstalledVersion, package.version);
     setValue(QLatin1String("LastUpdateDate"), package.lastUpdateDate.toString());
     setValue(QLatin1String("InstallDate"), package.installDate.toString());
@@ -143,6 +144,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scCompressedSize, QString::number(package.compressedSize()));
     setValue(scUncompressedSize, QString::number(package.uncompressedSize()));
     setValue(scVersion, package.data(scVersion).toString());
+    setValue(scInheritVersion, package.data(scInheritVersion).toString());
     setValue(scDependencies, package.data(scDependencies).toString());
     setValue(scVirtual, package.data(scVirtual).toString());
     setValue(scSortingPriority, package.data(scSortingPriority).toString());
@@ -1108,14 +1110,14 @@ void Component::updateModelData(const QString &key, const QString &data)
             setData(d->m_core->virtualComponentsFont(), Qt::FontRole);
     }
 
-    if (key == scVersion)
-        setData(data, NewVersion);
+    if (key == scRemoteDisplayVersion)
+        setData(data, RemoteDisplayVersion);
 
     if (key == scDisplayName)
         setData(data, Qt::DisplayRole);
 
-    if (key == scInstalledVersion)
-        setData(data, InstalledVersion);
+    if (key == scDisplayVersion)
+        setData(data, LocalDisplayVersion);
 
     if (key == scUncompressedSize)
         setData(uncompressedSize(), UncompressedSize);

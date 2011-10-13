@@ -40,13 +40,20 @@ namespace QInstaller {
 
 
     QMap<QString, QString> buildPathToVersionMap( const QVector<PackageInfo>& info );
-    void compressMetaDirectories( const QString& configDir, const QString& repoDir, const QString& baseDir, const QMap<QString, QString>& versionMapping );
+    void compressMetaDirectories( const QString &configDir, const QString &repoDir, const QString &baseDir,
+                                  const QMap<QString, QString> &versionMapping );
     void compressMetaDirectories( const QString& configDir, const QString& repoDir );
-    void compressDirectory( const QStringList& paths, const QString& archivePath );
-    void copyComponentData( const QString& packageDir, const QString& configDir, const QString& repoDir, const QVector<PackageInfo>& infos );
-    void generateMetaDataDirectory( const QString& outDir, const QString& dataDir, const QVector<PackageInfo>& packages, const QString& appName, const QString& appVersion );
-    QVector<PackageInfo> createListOfPackages( const QStringList& components, const QString& packagesDirectory, bool addDependencies = true );
-    void generateMetaDataDirectory( const QString& outDir, const QString& dataDir, const QVector<PackageInfo>& packages, const QString& appName, const QString& appVersion );
+    void compressDirectory( const QStringList &paths, const QString &archivePath );
+    void copyComponentData( const QString &packageDir, const QString &configDir, const QString &repoDir,
+                            const QVector<PackageInfo> &infos );
+    void generateMetaDataDirectory( const QString &outDir, const QString &dataDir,
+                                    const QVector<PackageInfo> &packages, const QString &appName,
+                                    const QString& appVersion );
+    QVector<PackageInfo> createListOfPackages( const QStringList &components, const QString &packagesDirectory,
+                                               bool addDependencies = true );
+    void generateMetaDataDirectory( const QString &outDir, const QString &dataDir,
+                                    const QVector<PackageInfo> &packages, const QString &appName,
+                                    const QString &appVersion );
 }
 
 #endif // QINSTALLER_REPOSITORYGEN_H

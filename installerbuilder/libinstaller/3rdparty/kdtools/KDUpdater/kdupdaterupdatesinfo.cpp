@@ -152,11 +152,10 @@ bool KDUpdater::UpdatesInfo::UpdatesInfoData::parsePackageUpdateElement(const QD
         if( childE.isNull() )
             continue;
 
-        if( childE.tagName() == QLatin1String( "ReleaseNotes" ) ) {
+        if (childE.tagName() == QLatin1String( "ReleaseNotes" )) {
             info.data[childE.tagName()] = QUrl(childE.text());
         }
-        else if( childE.tagName() == QLatin1String( "UpdateFile" ) )
-        {
+        else if (childE.tagName() == QLatin1String( "UpdateFile" )) {
             KDUpdater::UpdateFileInfo ufInfo;
             ufInfo.arch = childE.attribute(QLatin1String( "Arch" ), QLatin1String( "i386" ));
             ufInfo.os = childE.attribute(QLatin1String( "OS" ));
@@ -179,6 +178,10 @@ bool KDUpdater::UpdatesInfo::UpdatesInfoData::parsePackageUpdateElement(const QD
             }
             if (!licenseHash.isEmpty())
                 info.data.insert(QLatin1String("Licenses"), licenseHash);
+        }
+        else if (childE.tagName() == QLatin1String( "Version" )) {
+            info.data.insert(QLatin1String("inheritVersionFrom"), childE.attribute(QLatin1String("inheritVersionFrom")));
+            info.data[childE.tagName()] = childE.text();
         }
         else {
             info.data[childE.tagName()] = childE.text();

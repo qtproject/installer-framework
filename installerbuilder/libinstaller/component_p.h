@@ -94,9 +94,9 @@ class ComponentModelHelper
 {
 public:
     enum Roles {
-        InstalledVersion = Qt::UserRole + 1,
-        NewVersion = InstalledVersion + 1,
-        UncompressedSize = NewVersion + 1
+        LocalDisplayVersion = Qt::UserRole + 1,
+        RemoteDisplayVersion = LocalDisplayVersion + 1,
+        UncompressedSize = RemoteDisplayVersion + 1
     };
 
     enum Column {

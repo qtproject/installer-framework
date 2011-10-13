@@ -1601,7 +1601,8 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     KDUpdater::PackagesInfo &packages = *m_updaterApplication.packagesInfo();
     packages.installPackage(component->name(), component->value(scVersion), component->value(scDisplayName),
         component->value(scDescription), component->dependencies(), component->forcedInstallation(),
-        component->isVirtual(), component->value(scUncompressedSize).toULongLong());
+        component->isVirtual(), component->value(scUncompressedSize).toULongLong(),
+        component->value(scInheritVersion));
     packages.writeToDisk();
 
     component->setInstalled();

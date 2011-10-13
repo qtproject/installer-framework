@@ -398,7 +398,12 @@ void QInstaller::generateMetaDataDirectory(const QString& metapath_, const QStri
             if (key == QString::fromLatin1("Licenses"))
                 continue;
             const QString value = node.toElement().text();
-            update.appendChild(doc.createElement(key)).appendChild(doc.createTextNode(value));
+            QDomElement element = doc.createElement(key);
+            for (int  i = 0; i < node.attributes().size(); i++) {
+                element.setAttribute(node.attributes().item(i).toAttr().name(),
+                                     node.attributes().item(i).toAttr().value());
+            }
+            update.appendChild(element).appendChild(doc.createTextNode(value));
         }
 
         // get the size of the data

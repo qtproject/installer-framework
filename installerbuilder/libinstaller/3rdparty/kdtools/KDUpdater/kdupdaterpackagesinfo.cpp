@@ -361,8 +361,9 @@ void PackagesInfo::setCompatLevel(int level)
 /*!
  Marks the package with \a name as installed in \a version.
  */
-bool PackagesInfo::installPackage( const QString& name, const QString& version, const QString& title, const QString& description
-                                 , const QStringList& dependencies, bool forcedInstallation, bool virtualComp, quint64 uncompressedSize )
+bool PackagesInfo::installPackage( const QString& name, const QString& version, const QString& title, const QString& description,
+                                   const QStringList& dependencies, bool forcedInstallation, bool virtualComp, quint64 uncompressedSize,
+                                   const QString &inheritVersionFrom)
 {
     if( findPackageInfo( name ) != -1 )
         return updatePackage( name, version, QDate::currentDate() );
@@ -370,6 +371,7 @@ bool PackagesInfo::installPackage( const QString& name, const QString& version, 
     PackageInfo info;
     info.name = name;
     info.version = version;
+    info.inheritVersionFrom = inheritVersionFrom;
     info.installDate = QDate::currentDate();
     info.title = title;
     info.description = description;
@@ -415,12 +417,16 @@ bool PackagesInfo::removePackage( const QString& name )
 
 static void addTextChildHelper(QDomNode *node,
                                const QString &tag,
-                               const QString &text)
+                               const QString &text,
+                               const QString &attributeName=QString(),
+                               const QString &attributeValue=QString())
 {
     QDomElement domElement = node->ownerDocument().createElement(tag);
     QDomText domText = node->ownerDocument().createTextNode(text);
 
     domElement.appendChild(domText);
+    if(!attributeName.isEmpty())
+        domElement.setAttribute(attributeName, attributeValue);
     node->appendChild(domElement);
 }
 
@@ -445,7 +451,11 @@ void PackagesInfo::writeToDisk()
             addTextChildHelper( &package, QLatin1String( "Pixmap" ), info.pixmap );
             addTextChildHelper( &package, QLatin1String( "Title" ), info.title );
             addTextChildHelper( &package, QLatin1String( "Description" ), info.description );
-            addTextChildHelper( &package, QLatin1String( "Version" ), info.version );
+            if (info.inheritVersionFrom.isEmpty())
+                addTextChildHelper( &package, QLatin1String( "Version" ), info.version );
+            else
+                addTextChildHelper( &package, QLatin1String( "Version" ), info.version,
+                                   QLatin1String("inheritVersionFrom"), info.inheritVersionFrom);
             addTextChildHelper( &package, QLatin1String( "LastUpdateDate" ), info.lastUpdateDate.toString( Qt::ISODate ) );
             addTextChildHelper( &package, QLatin1String( "InstallDate" ), info.installDate.toString( Qt::ISODate) );
             addTextChildHelper( &package, QLatin1String( "Size" ), QString::number( info.uncompressedSize ) );
@@ -503,8 +513,10 @@ void PackagesInfo::PackagesInfoData::addPackageFrom(const QDomElement& packageE)
             info.title = childNodeE.text();
         else if( childNodeE.tagName() == QLatin1String( "Description" ) )
             info.description = childNodeE.text();
-        else if( childNodeE.tagName() == QLatin1String( "Version" ) )
+        else if( childNodeE.tagName() == QLatin1String( "Version" ) ) {
             info.version = childNodeE.text();
+            info.inheritVersionFrom = childNodeE.attribute(QLatin1String("inheritVersionFrom"));
+        }
         else if( childNodeE.tagName() == QLatin1String( "Virtual" ) )
             info.virtualComp = childNodeE.text().toLower() == QLatin1String( "true" ) ? true : false;
         else if( childNodeE.tagName() == QLatin1String( "Size" ) )
