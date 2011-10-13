@@ -55,9 +55,21 @@ public:
     inline bool downloaded() { return m_downloadFinished; }
 
 public slots:
-    void downloadStarted() { m_downloadFinished = false; }
-    void downloadFinished() { m_downloadFinished = true; }
-    void downloadAborted(const QString &error) { m_downloadFinished = true; qDebug() << "Error:" << error; }
+    void downloadStarted()
+    {
+        m_downloadFinished = false;
+    }
+
+    void downloadFinished()
+    {
+        m_downloadFinished = true;
+    }
+
+    void downloadAborted(const QString &error)
+    {
+        m_downloadFinished = true;
+        qDebug() << "Error:" << error;
+    }
 
     void downloadSpeed(qint64 speed)
     {
@@ -140,7 +152,7 @@ int main(int argc, char *argv[])
         r.connect(loader, SIGNAL(downloadSpeed(qint64)), &r, SLOT(downloadSpeed(qint64)));
         r.connect(loader, SIGNAL(downloadStatus(QString)), &r, SLOT(downloadStatus(QString)));
         r.connect(loader, SIGNAL(downloadProgress(double)), &r, SLOT(downloadProgress(double)));
-        r.connect(loader, SIGNAL(estimatedDownloadTime(int)), &r, SLOT(destimatedDownloadTime(int)));
+        r.connect(loader, SIGNAL(estimatedDownloadTime(int)), &r, SLOT(estimatedDownloadTime(int)));
         r.connect(loader, SIGNAL(downloadProgress(qint64, qint64)), &r, SLOT(downloadProgress(qint64, qint64)));
 
         loader->download();
