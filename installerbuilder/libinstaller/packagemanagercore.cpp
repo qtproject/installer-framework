@@ -92,6 +92,7 @@ static bool componentMatches(const Component *component, const QString &name,
     if (version.isEmpty())
         return true;
 
+    // can be remote or local version
     return PackageManagerCore::versionMatches(component->value(scVersion), version);
 }
 
@@ -1499,7 +1500,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
                     // mark the replacement as installed only in package manager mode, otherwise
                     // it would not show up in the updaters component list
                     component->setInstalled();
-                    component->setValue(scInstalledVersion, data.package->data(scVersion).toString());
+                    component->setValue(scInstalledVersion, data.package->data(scRemoteVersion).toString());
                 }
                 data.replacementToExchangeables.insert(component, componentsToReplace);
                 break;  // break as soon as we know we replace at least one other component
@@ -1658,7 +1659,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                 continue;   // Update for not installed package found, skip it.
 
             const LocalPackage &localPackage = locals.value(name);
-            const QString updateVersion = update->data(scVersion).toString();
+            const QString updateVersion = update->data(scRemoteVersion).toString();
             if (KDUpdater::compareVersion(updateVersion, localPackage.version) <= 0)
                 continue;
 
@@ -1779,7 +1780,7 @@ QString PackageManagerCore::findDisplayVersion(const QString &componentName,
     if (replaceWith.isEmpty()) {
         if (components.value(componentName)->isInstalled())
             return components.value(componentName)->value(scInstalledVersion);
-        return components.value(componentName)->value(scVersion);
+        return components.value(componentName)->value(scVersion);   // can be remote or local version
     }
     if (visited.contains(replaceWith))  // cycle
         return QString();

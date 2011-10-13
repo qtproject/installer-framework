@@ -283,7 +283,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
             for (int j = 0; j < c2.count(); ++j)
                 if (c2.at(j).toElement().tagName() == scName)
                     m_packageNames << c2.at(j).toElement().text();
-                else if (c2.at(j).toElement().tagName() == scVersion)
+                else if (c2.at(j).toElement().tagName() == scRemoteVersion)
                     m_packageVersions << c2.at(j).toElement().text();
                 else if (c2.at(j).toElement().tagName() == QLatin1String("SHA1"))
                     m_packageHash << c2.at(j).toElement().text();

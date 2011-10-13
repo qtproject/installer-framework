@@ -36,6 +36,7 @@ static const QLatin1String scFalse("false");
 
 static const QLatin1String scName("Name");
 static const QLatin1String scVersion("Version");
+static const QLatin1String scRemoteVersion("Version");
 static const QLatin1String scDisplayVersion("DisplayVersion");
 static const QLatin1String scRemoteDisplayVersion("RemoteDisplayVersion");
 static const QLatin1String scInheritVersion("inheritVersionFrom");

@@ -143,7 +143,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scAutoDependOn, package.data(scAutoDependOn).toString());
     setValue(scCompressedSize, QString::number(package.compressedSize()));
     setValue(scUncompressedSize, QString::number(package.uncompressedSize()));
-    setValue(scVersion, package.data(scVersion).toString());
+    setValue(scRemoteVersion, package.data(scRemoteVersion).toString());
     setValue(scInheritVersion, package.data(scInheritVersion).toString());
     setValue(scDependencies, package.data(scDependencies).toString());
     setValue(scVirtual, package.data(scVirtual).toString());
@@ -662,7 +662,7 @@ void Component::addDownloadableArchive(const QString &path)
 {
     Q_ASSERT(isFromOnlineRepository());
 
-    const QString versionPrefix = value(scVersion);
+    const QString versionPrefix = value(scRemoteVersion);
     verbose() << "addDownloadable " << path << std::endl;
     d->m_downloadableArchives.append(versionPrefix + path);
 }

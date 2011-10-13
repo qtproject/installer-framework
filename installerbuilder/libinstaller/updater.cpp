@@ -90,7 +90,7 @@ bool Updater::checkForUpdates()
         for (it = components.begin(); it != components.end(); ++it) {
             QDomElement update = doc.createElement(QLatin1String("update"));
             update.setAttribute(QLatin1String("name"), (*it)->value(scDisplayName));
-            update.setAttribute(QLatin1String("version"), (*it)->value(scVersion));
+            update.setAttribute(QLatin1String("version"), (*it)->value(scRemoteVersion));
             update.setAttribute(QLatin1String("size"), (*it)->value(scUncompressedSize));
             root.appendChild(update);
         }
