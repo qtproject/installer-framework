@@ -189,7 +189,7 @@ KDSysInfo::Volume KDSysInfo::Volume::fromPath( const QString& path )
 #ifdef Q_WS_WIN
         if( QDir::toNativeSeparators( path ).toLower().startsWith( it->path().toLower() ) )
 #else
-        if( path.startsWith( it->path() ) )
+        if( QDir(path).canonicalPath().startsWith( it->path() ) )
 #endif
             return *it;
     }
