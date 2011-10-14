@@ -199,8 +199,11 @@ struct KDUpdater::FileDownloader::FileDownloaderData
 {
     FileDownloaderData()
         : autoRemove( true )
+        , m_speedTimerInterval(100)
         , m_bytesReceived(0)
         , m_bytesToReceive(0)
+        , m_currentSpeedBin(0)
+        , m_sampleIndex(0)
         , m_downloadSpeed(0)
     {
         memset(m_samples, 0, sizeof(m_samples));
@@ -214,11 +217,14 @@ struct KDUpdater::FileDownloader::FileDownloaderData
     bool followRedirect;
 
     QBasicTimer m_timer;
+    int m_speedTimerInterval;
 
     qint64 m_bytesReceived;
     qint64 m_bytesToReceive;
 
-    mutable qint64 m_samples[10];
+    mutable qint64 m_samples[50];
+    mutable qint64 m_currentSpeedBin;
+    mutable quint32 m_sampleIndex;
     mutable qint64 m_downloadSpeed;
 };
 
@@ -331,7 +337,7 @@ void KDUpdater::FileDownloader::cancelDownload()
 void KDUpdater::FileDownloader::runDownloadSpeedTimer()
 {
     if (!d->m_timer.isActive())
-        d->m_timer.start(500, this);
+        d->m_timer.start(d->m_speedTimerInterval, this);
 }
 
 void KDUpdater::FileDownloader::stopDownloadSpeedTimer()
@@ -341,7 +347,7 @@ void KDUpdater::FileDownloader::stopDownloadSpeedTimer()
 
 void KDUpdater::FileDownloader::addSample(qint64 sample)
 {
-    d->m_samples[0] += sample;
+    d->m_currentSpeedBin += sample;
 }
 
 int KDUpdater::FileDownloader::downloadSpeedTimerId() const
@@ -357,14 +363,25 @@ void KDUpdater::FileDownloader::setProgress(qint64 bytesReceived, qint64 bytesTo
 
 void KDUpdater::FileDownloader::emitDownloadSpeed()
 {
-    for (int i = 8; i >= 0; --i)
-        d->m_samples[i + 1] = d->m_samples[i];
-    d->m_samples[0] = 0;
+    unsigned int windowSize = sizeof(d->m_samples) / sizeof(qint64);
 
+    // add speed of last time bin to the window
+    d->m_samples[d->m_sampleIndex % windowSize] = d->m_currentSpeedBin;
+    d->m_currentSpeedBin = 0;   // reset bin for next time interval
+
+    // advance the sample index
+    d->m_sampleIndex++;
     d->m_downloadSpeed = 0;
-    for (unsigned int i = 0; i < sizeof(d->m_samples) / sizeof(qint64); ++i)
+
+    // dynamic window size until the window is completely filled
+    if (d->m_sampleIndex < windowSize)
+        windowSize = d->m_sampleIndex;
+
+    for (unsigned int i = 0; i < windowSize; ++i)
         d->m_downloadSpeed += d->m_samples[i];
-    d->m_downloadSpeed /= (sizeof(d->m_samples) / sizeof(qint64) - 1) * 0.5;
+
+    d->m_downloadSpeed /= windowSize; // computer average
+    d->m_downloadSpeed *= 1000.0 / d->m_speedTimerInterval; // rescale to bytes/second
 
     emit downloadSpeed(d->m_downloadSpeed);
 }
