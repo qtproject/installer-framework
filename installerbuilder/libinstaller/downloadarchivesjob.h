@@ -57,6 +57,7 @@ public:
 Q_SIGNALS:
     void progressChanged(double progress);
     void outputTextChanged(const QString &progress);
+    void downloadStatusChanged(const QString &status);
 
 protected:
     void doStart();

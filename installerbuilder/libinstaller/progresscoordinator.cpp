@@ -270,3 +270,8 @@ double ProgressCoordinator::allPendingCalculatedPartPercentages(QObject *exclude
     }
     return result;
 }
+
+void ProgressCoordinator::emitDownloadStatus(const QString &status)
+{
+    emit downloadStatusChanged(status);
+}

@@ -81,6 +81,13 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     m_progressLabel->setObjectName(QLatin1String("ProgressLabel"));
     topLayout->addWidget(m_progressLabel);
 
+    m_downloadStatus = new QLabel(widget);
+    m_downloadStatus->setObjectName(QLatin1String("DownloadStatus"));
+    m_downloadStatus->setWordWrap(true);
+    topLayout->addWidget(m_downloadStatus);
+    connect(ProgressCoordinator::instance(), SIGNAL(downloadStatusChanged(QString)), m_downloadStatus,
+        SLOT(setText(QString)));
+
     m_detailsButton = new QPushButton(tr("&Show Details"), widget);
     m_detailsButton->setObjectName(QLatin1String("DetailsButton"));
     m_detailsButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);

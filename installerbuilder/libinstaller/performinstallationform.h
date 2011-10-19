@@ -69,6 +69,7 @@ public slots:
 private:
     QProgressBar *m_progressBar;
     QLabel *m_progressLabel;
+    QLabel *m_downloadStatus;
     QPushButton *m_detailsButton;
     LazyPlainTextEdit *m_detailsBrowser;
     QTimer *m_updateTimer;

@@ -146,7 +146,8 @@ void DownloadArchivesJob::fetchNextArchiveHash()
         connect(m_downloader, SIGNAL(downloadAborted(QString)), this, SLOT(downloadFailed(QString)),
             Qt::QueuedConnection);
         //hashes are not registered as files - so we can't handle this as a normal progress
-        //connect(downloader, SIGNAL(downloadProgress(double)), this, SLOT(emitDownloadProgress(double)));
+        connect(m_downloader, SIGNAL(downloadStatus(QString)), this, SIGNAL(downloadStatusChanged(QString)));
+
         m_downloader->setUrl(url);
         m_downloader->setAutoRemoveDownloadedFile(false);
 
@@ -217,6 +218,8 @@ void DownloadArchivesJob::fetchNextArchive()
     connect(m_downloader, SIGNAL(downloadAborted(QString)), this, SLOT(downloadFailed(QString)),
         Qt::QueuedConnection);
     connect(m_downloader, SIGNAL(downloadProgress(double)), this, SLOT(emitDownloadProgress(double)));
+    connect(m_downloader, SIGNAL(downloadStatus(QString)), this, SIGNAL(downloadStatusChanged(QString)));
+
     m_downloader->setUrl(url);
     m_downloader->setAutoRemoveDownloadedFile(false);
 

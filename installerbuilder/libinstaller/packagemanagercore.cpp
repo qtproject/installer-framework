@@ -370,6 +370,8 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     connect(this, SIGNAL(installationInterrupted()), archivesJob, SLOT(cancel()));
     connect(archivesJob, SIGNAL(outputTextChanged(QString)), ProgressCoordinator::instance(),
         SLOT(emitLabelAndDetailTextChanged(QString)));
+    connect(archivesJob, SIGNAL(downloadStatusChanged(QString)), ProgressCoordinator::instance(),
+        SIGNAL(downloadStatusChanged(QString)));
 
     ProgressCoordinator::instance()->registerPartProgress(archivesJob, SIGNAL(progressChanged(double)),
         partProgressSize);
@@ -384,6 +386,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 
     if (d->statusCanceledOrFailed())
         throw Error(tr("Installation canceled by user"));
+    ProgressCoordinator::instance()->emitDownloadStatus(tr("All downloads finished."));
 
     return archivesToDownload.count();
 }
