@@ -574,7 +574,7 @@ void Component::createOperationsForPath(const QString &path)
 }
 
 /*!
-    Creates all operations needed to install this component's \a archive. This metods gets called
+    Creates all operations needed to install this component's \a archive. This method gets called
     from Component::createOperations. You can override this method by providing a method with the
     same name in the component script.
 
@@ -669,7 +669,7 @@ void Component::addDownloadableArchive(const QString &path)
 
 /*!
     Removes the archive \a path previously added via addDownloadableArchive from this component.
-    This can oly be called when this component was downloaded from an online repository.
+    This can only be called when this component was downloaded from an online repository.
 
     Read \ref sec_repogen for details.
 */
