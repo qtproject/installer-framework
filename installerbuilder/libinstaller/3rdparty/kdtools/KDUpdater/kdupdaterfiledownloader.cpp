@@ -268,6 +268,7 @@ QString FileDownloader::errorString() const
 void FileDownloader::setDownloadAborted( const QString& error )
 {
     d->errorString = error;
+    emit downloadStatus(error);
     emit downloadAborted( error );
 }
 
@@ -288,6 +289,12 @@ void KDUpdater::FileDownloader::setDownloadCompleted( const QString& path )
     job.release()->start();
 }
 
+void KDUpdater::FileDownloader::setDownloadCanceled()
+{
+    emit downloadCanceled();
+    emit downloadStatus(tr("Download canceled."));
+}
+
 void KDUpdater::FileDownloader::sha1SumVerified( KDUpdater::HashVerificationJob* job )
 {
     if ( job->hasError() ) {
@@ -297,6 +304,7 @@ void KDUpdater::FileDownloader::sha1SumVerified( KDUpdater::HashVerificationJob*
     else {
         onSuccess();
         emit downloadCompleted();
+        emit downloadStatus(tr("Download finished."));
     }
 }
 
@@ -577,7 +585,7 @@ void KDUpdater::LocalFileDownloader::cancelDownload()
     d->timerId = -1;
 
     onError();
-    emit downloadCanceled();
+    setDownloadCanceled();
 }
 
 void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent *event)
@@ -731,7 +739,7 @@ void KDUpdater::ResourceFileDownloader::cancelDownload()
     killTimer( d->timerId );
     d->timerId = -1;
 
-    emit downloadCanceled();
+    setDownloadCanceled();
 }
 
 void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent*)
@@ -851,7 +859,7 @@ void KDUpdater::FtpDownloader::ftpDone(bool error)
         if( d->aborted )
         {
             d->aborted = false;
-            emit downloadCanceled();
+            setDownloadCanceled();
         }
         else
             setDownloadAborted( d->ftp->errorString() );
@@ -1120,7 +1128,7 @@ void KDUpdater::HttpDownloader::httpDone( bool error )
         if( d->aborted )
         {
             d->aborted = false;
-            emit downloadCanceled();
+            setDownloadCanceled();
         }
         else
             setDownloadAborted( err );
@@ -1341,7 +1349,7 @@ void SignatureVerificationDownloader::dataDownloadAborted( const QString& err )
 
 void SignatureVerificationDownloader::dataDownloadCanceled()
 {
-    emit downloadCanceled();
+    setDownloadCanceled();
 }
 
 static QUrl suggestSignatureUrl( const QUrl& url ) {
@@ -1375,7 +1383,7 @@ void SignatureVerificationDownloader::signatureDownloadAborted( const QString& e
 
 void SignatureVerificationDownloader::signatureDownloadCanceled()
 {
-    emit downloadCanceled();
+    setDownloadCanceled();
 }
 
 void SignatureVerificationDownloader::signatureDownloadCompleted()

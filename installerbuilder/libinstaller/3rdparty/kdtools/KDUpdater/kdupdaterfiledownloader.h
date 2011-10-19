@@ -96,6 +96,7 @@ namespace KDUpdater
         void downloadAborted(const QString& errorMessage);
 
     protected:
+        void setDownloadCanceled();
         void setDownloadCompleted( const QString& filepath );
         void setDownloadAborted( const QString& error );
 
