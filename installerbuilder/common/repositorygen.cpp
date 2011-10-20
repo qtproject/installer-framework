@@ -593,6 +593,11 @@ QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList& compone
     const QString& packagesDirectory, bool addDependencies)
 {
     const QVector< PackageInfo > available = collectAvailablePackages(packagesDirectory);
+    return available;
+
+    //we don't want to have two different dependency checking codes (installer itself and repgen here)
+    //so because they have two different behaviours we deactivate it here for now
+
     verbose() << "Calculating dependencies for selected packages..." << std::endl;
     QVector<PackageInfo> needed = calculateNeededPackages(components, available, addDependencies);
 
