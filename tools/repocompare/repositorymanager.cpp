@@ -162,7 +162,7 @@ bool RepositoryManager::updateRequired(const QString &componentName, QString *me
     const ComponentDescription &productionDescription = productionMap.value(componentName);
     const ComponentDescription &updateDescription = updateMap.value(componentName);
     if (createVersionNumber(productionDescription.version) < createVersionNumber(updateDescription.version)) {
-        if (productionDescription.releaseDate >= updateDescription.releaseDate) {
+        if (productionDescription.releaseDate > updateDescription.releaseDate) {
             if (message)
                 *message = QString::fromLatin1("Error: Component %1 has wrong release date %2").arg(componentName).arg(updateDescription.releaseDate.toString());
             return false;
