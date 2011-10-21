@@ -593,6 +593,14 @@ QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList& compone
     const QString& packagesDirectory, bool addDependencies)
 {
     const QVector< PackageInfo > availablePackageInfos = collectAvailablePackages(packagesDirectory);
+    if (!addDependencies) {
+        QVector<PackageInfo> packageInfos;
+        foreach (const PackageInfo info, availablePackageInfos) {
+            if (components.contains(info.name))
+                packageInfos.append(info);
+        }
+        return packageInfos;
+    }
     return availablePackageInfos;
 
     //we don't want to have two different dependency checking codes (installer itself and repgen here)
