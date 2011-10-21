@@ -592,14 +592,14 @@ void QInstaller::generateMetaDataDirectory(const QString& metapath_, const QStri
 QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList& components,
     const QString& packagesDirectory, bool addDependencies)
 {
-    const QVector< PackageInfo > available = collectAvailablePackages(packagesDirectory);
-    return available;
+    const QVector< PackageInfo > availablePackageInfos = collectAvailablePackages(packagesDirectory);
+    return availablePackageInfos;
 
     //we don't want to have two different dependency checking codes (installer itself and repgen here)
     //so because they have two different behaviours we deactivate it here for now
 
     verbose() << "Calculating dependencies for selected packages..." << std::endl;
-    QVector<PackageInfo> needed = calculateNeededPackages(components, available, addDependencies);
+    QVector<PackageInfo> needed = calculateNeededPackages(components, availablePackageInfos, addDependencies);
 
     verbose() << "The following packages will be placed in the installer:" << std::endl;
     Q_FOREACH (const PackageInfo& i, needed) {
@@ -620,9 +620,9 @@ QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList& compone
             while (!id.isEmpty()) {
                 PackageInfo info;
                 if (!version.isEmpty())
-                    info = findMatchingPackage(QString::fromLatin1("%1-%2").arg(id, version), available);
+                    info = findMatchingPackage(QString::fromLatin1("%1-%2").arg(id, version), availablePackageInfos);
                 if (info.name.isEmpty())
-                    info = findMatchingPackage(id, available);
+                    info = findMatchingPackage(id, availablePackageInfos);
                 if (!info.name.isEmpty() && !allPackagesHavePrefix(needed, id) && !needed.contains(info)) {
                     verbose() << "Adding " << info.name << " as it is the virtual parent item of "
                         << name << std::endl;
