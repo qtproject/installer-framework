@@ -1039,6 +1039,15 @@ bool Component::updateRequested()
 }
 
 /*!
+    Returns true if that component will be changed (update/installation/uninstallation)
+*/
+bool Component::componentChangeRequested()
+{
+    return updateRequested() || installationRequested() || uninstallationRequested();
+}
+
+
+/*!
     Sets the component state to uninstalled.
 */
 void Component::setUninstalled()
