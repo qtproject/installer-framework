@@ -1,10 +1,11 @@
 /**************************************************************************
 **
-** This file is part of Qt SDK**
+** This file is part of Installer Framework
 **
-** Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).*
+** Copyright (c) 2011 Nokia Corporation and/or its subsidiary(-ies).
 **
-** Contact:  Nokia Corporation qt-info@nokia.com**
+** Contact: Nokia Corporation (info@qt.nokia.com)
+**
 **
 ** GNU Lesser General Public License Usage
 **
@@ -16,11 +17,16 @@
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
 ** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception version
-** 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** rights. These rights are described in the Nokia Qt LGPL Exception
+** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
-** If you are unsure which license is appropriate for your use, please contact
-** (qt-info@nokia.com).
+** Other Usage
+**
+** Alternatively, this file may be used in accordance with the terms and
+** conditions contained in a signed written agreement between you and Nokia.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at info@qt.nokia.com.
 **
 **************************************************************************/
 #ifndef REPOSITORY_H
@@ -36,19 +42,35 @@ namespace QInstaller {
 class INSTALLER_EXPORT Repository
 {
 public:
-    Repository();
-    explicit Repository(const QUrl &url);
+    explicit Repository();
+    Repository(const Repository &other);
+    explicit Repository(const QUrl &url, bool isDefault = true);
 
     bool isValid() const;
+    bool isDefault() const;
 
     QUrl url() const;
     void setUrl(const QUrl& url);
 
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
+
+    QString username() const;
+    void setUsername(const QString &username);
+
+    QString password() const;
+    void setPassword(const QString &password);
+
     uint qHash(const Repository &repository);
-    bool operator==(const Repository &repository) const;
+    bool operator==(const Repository &other) const;
+    const Repository &operator=(const Repository &other);
 
 private:
     QUrl m_url;
+    bool m_default;
+    bool m_enabled;
+    QString m_username;
+    QString m_password;
 };
 
 inline uint qHash(const Repository &repository)

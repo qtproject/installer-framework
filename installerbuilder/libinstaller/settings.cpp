@@ -84,17 +84,25 @@ static QString splitTrimmed(const QString &string)
     return result.join(QLatin1String("\n"));
 }
 
-static QList<Repository> readRemoteRepositories(QXmlStreamReader &reader)
+static QList<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault)
 {
     QSet<Repository> set;
     while (reader.readNextStartElement()) {
         if (reader.name() == QLatin1String("Repository")) {
+            Repository repo(QString(), isDefault);
             while (reader.readNextStartElement()) {
                 if (reader.name() == QLatin1String("Url"))
-                    set.insert(Repository(reader.readElementText()));
+                    repo.setUrl(reader.readElementText());
+                else if (reader.name() == QLatin1String("Username"))
+                    repo.setUsername(reader.readElementText());
+                else if (reader.name() == QLatin1String("Password"))
+                    repo.setPassword(reader.readElementText());
+                else if (reader.name() == QLatin1String("Enabled"))
+                    repo.setEnabled(bool(reader.readElementText().toInt()));
                 else
                     reader.skipCurrentElement();
             }
+            set.insert(repo);
         } else {
             reader.skipCurrentElement();
         }
@@ -171,9 +179,7 @@ Settings& Settings::operator=(const Settings &other)
     return *this;
 }
 
-/*!
-    @throws Error
-*/
+/* static */
 Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
 {
     QFile file(path);
@@ -206,7 +212,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
                 s.d->m_data.insertMulti(name, s.d->makeAbsolutePath(reader.readElementText()));
 
             if (name == scRemoteRepositories) {
-                QList<Repository> repositories = readRemoteRepositories(reader);
+                QList<Repository> repositories = readRepositories(reader, true);
                 foreach (const Repository &repository, repositories)
                     s.d->m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
             }
