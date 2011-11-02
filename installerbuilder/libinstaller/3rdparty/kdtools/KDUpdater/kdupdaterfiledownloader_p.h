@@ -48,24 +48,24 @@ namespace KDUpdater
             ReadError=128,
             SumsDifferError
         };
-        
-        explicit HashVerificationJob( QObject* parent=0 );
+
+        explicit HashVerificationJob(QObject* parent=0);
         ~HashVerificationJob();
-        
-        void setDevice( QIODevice* dev );
-        void setSha1Sum( const QByteArray& data );
- 
+
+        void setDevice(QIODevice* dev);
+        void setSha1Sum(const QByteArray &data);
+
         bool hasError() const;
         int error() const;
-        
+
         void start();
- 
+
     Q_SIGNALS:
-        void finished( KDUpdater::HashVerificationJob* );
- 
+        void finished(KDUpdater::HashVerificationJob*);
+
     private:
         void emitFinished();
-        /* reimp */ void timerEvent( QTimerEvent* te );
+        /* reimp */ void timerEvent(QTimerEvent* te);
 
     private:
         class Private;
@@ -84,7 +84,7 @@ namespace KDUpdater
         bool isDownloaded() const;
         QString downloadedFileName() const;
         /* reimp */ void setDownloadedFileName(const QString &name);
-        /* reimp */ LocalFileDownloader* clone( QObject* parent=0 ) const;
+        /* reimp */ LocalFileDownloader* clone(QObject* parent=0) const;
 
     public Q_SLOTS:
         void cancelDownload();
@@ -114,7 +114,7 @@ namespace KDUpdater
         bool isDownloaded() const;
         QString downloadedFileName() const;
         /* reimp */ void setDownloadedFileName(const QString &name);
-        /* reimp */ ResourceFileDownloader* clone( QObject* parent=0 ) const;
+        /* reimp */ ResourceFileDownloader* clone(QObject* parent=0) const;
 
     public Q_SLOTS:
         void cancelDownload();
@@ -144,7 +144,7 @@ namespace KDUpdater
         bool isDownloaded() const;
         QString downloadedFileName() const;
         /* reimp */ void setDownloadedFileName(const QString &name);
-        /* reimp */ FtpDownloader* clone( QObject* parent=0 ) const;
+        /* reimp */ FtpDownloader* clone(QObject* parent=0) const;
 
     public Q_SLOTS:
         void cancelDownload();
@@ -180,7 +180,7 @@ namespace KDUpdater
         bool isDownloaded() const;
         QString downloadedFileName() const;
         /* reimp */ void setDownloadedFileName(const QString &name);
-        /* reimp */ HttpDownloader* clone( QObject* parent=0 ) const;
+        /* reimp */ HttpDownloader* clone(QObject* parent=0) const;
 
     public Q_SLOTS:
         void cancelDownload();
@@ -193,9 +193,9 @@ namespace KDUpdater
     private Q_SLOTS:
         /* reimp */ void doDownload();
         void httpReadyRead();
-        void httpReadProgress( qint64 done, qint64 total );
-        void httpError( QNetworkReply::NetworkError );
-        void httpDone( bool error );
+        void httpReadProgress(qint64 done, qint64 total);
+        void httpError(QNetworkReply::NetworkError);
+        void httpDone(bool error);
         void httpReqFinished();
 
     private:
@@ -213,14 +213,14 @@ namespace KDUpdater
     {
         Q_OBJECT
     public:
-        explicit SignatureVerificationDownloader( FileDownloader* downloader, QObject* parent=0 );
+        explicit SignatureVerificationDownloader(FileDownloader* downloader, QObject* parent=0);
         ~SignatureVerificationDownloader();
 
         QUrl signatureUrl() const;
-        void setSignatureUrl( const QUrl& url );
+        void setSignatureUrl(const QUrl &url);
 
         const SignatureVerifier* signatureVerifier() const;
-        void setSignatureVerifier( const SignatureVerifier* verifier );
+        void setSignatureVerifier(const SignatureVerifier* verifier);
 
         SignatureVerificationResult result() const;
 
@@ -228,7 +228,7 @@ namespace KDUpdater
         /* reimp */ bool isDownloaded() const;
         /* reimp */ QString downloadedFileName() const;
         /* reimp */ void setDownloadedFileName(const QString &name);
-        /* reimp */ FileDownloader* clone( QObject* parent=0 ) const;
+        /* reimp */ FileDownloader* clone(QObject* parent=0) const;
 
     public Q_SLOTS:
         /* reimp */ void cancelDownload();
@@ -242,10 +242,10 @@ namespace KDUpdater
         void dataDownloadStarted();
         void dataDownloadCanceled();
         void dataDownloadCompleted();
-        void dataDownloadAborted(const QString& errorMessage);
+        void dataDownloadAborted(const QString &errorMessage);
         void signatureDownloadCanceled();
         void signatureDownloadCompleted();
-        void signatureDownloadAborted(const QString& errorMessage);
+        void signatureDownloadAborted(const QString &errorMessage);
 
     private:
         class Private;

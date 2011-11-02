@@ -46,7 +46,7 @@ using namespace KDUpdater;
 
 static double calcProgress(qint32 done, qint32 total)
 {
-    return total ? (double(done) / double(total)) : 0 ;
+    return total ? (double(done) / double(total)) : 0;
 }
 
 static QString format(double data)
@@ -63,32 +63,37 @@ static QString format(double data)
     return KDUpdater::FileDownloader::tr("%L1 GB").arg(data, 0, 'f', 2);
 }
 
-QByteArray KDUpdater::calculateHash( QIODevice* device, QCryptographicHash::Algorithm algo ) {
-    Q_ASSERT( device );
-    QCryptographicHash hash( algo );
+QByteArray KDUpdater::calculateHash(QIODevice* device, QCryptographicHash::Algorithm algo)
+{
+    Q_ASSERT(device);
+    QCryptographicHash hash(algo);
     QByteArray buffer;
-    buffer.resize( 512 * 1024 );
-    while ( true ) {
-        const qint64 numRead = device->read( buffer.data(), buffer.size() );
-        if ( numRead <= 0 )
+    buffer.resize(512 * 1024);
+    while (true) {
+        const qint64 numRead = device->read(buffer.data(), buffer.size());
+        if (numRead <= 0)
             return hash.result();
-        hash.addData( buffer.constData(), numRead );
+        hash.addData(buffer.constData(), numRead);
     }
     return QByteArray(); // never reached
 }
 
-QByteArray KDUpdater::calculateHash( const QString& path, QCryptographicHash::Algorithm algo ) {
-    QFile file( path );
-    if ( !file.open( QIODevice::ReadOnly ) )
+QByteArray KDUpdater::calculateHash(const QString &path, QCryptographicHash::Algorithm algo)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly))
         return QByteArray();
-    return calculateHash( &file, algo );
+    return calculateHash(&file, algo);
 }
 
-class HashVerificationJob::Private {
+class HashVerificationJob::Private
+{
 public:
-    Private() : hash( QCryptographicHash::Sha1 ), error( HashVerificationJob::ReadError ), timerId( -1 ) {
-    }
-    
+    Private()
+        : hash(QCryptographicHash::Sha1)
+        , error(HashVerificationJob::ReadError)
+        , timerId(-1) { }
+
     QPointer<QIODevice> device;
     QByteArray sha1Sum;
     QCryptographicHash hash;
@@ -96,7 +101,9 @@ public:
     int timerId;
 };
 
-HashVerificationJob::HashVerificationJob( QObject* parent ) : QObject( parent ), d( new Private )
+HashVerificationJob::HashVerificationJob(QObject* parent)
+    : QObject(parent)
+    , d(new Private)
 {
 }
 
@@ -104,12 +111,12 @@ HashVerificationJob::~HashVerificationJob()
 {
 }
 
-void HashVerificationJob::setDevice( QIODevice* dev )
+void HashVerificationJob::setDevice(QIODevice* dev)
 {
     d->device = dev;
 }
 
-void HashVerificationJob::setSha1Sum( const QByteArray& sum )
+void HashVerificationJob::setSha1Sum(const QByteArray &sum)
 {
     d->sha1Sum = sum;
 }
@@ -126,21 +133,21 @@ bool HashVerificationJob::hasError() const
 
 void HashVerificationJob::start()
 {
-    Q_ASSERT( d->device );
-    d->timerId = startTimer( 0 );
+    Q_ASSERT(d->device);
+    d->timerId = startTimer(0);
 }
 
 void HashVerificationJob::emitFinished()
 {
-    emit finished( this );
+    emit finished(this);
     deleteLater();
 }
 
-void HashVerificationJob::timerEvent( QTimerEvent* )
+void HashVerificationJob::timerEvent(QTimerEvent*)
 {
-    Q_ASSERT( d->timerId >= 0 );
-    if ( d->sha1Sum.isEmpty() ) {
-        killTimer( d->timerId );
+    Q_ASSERT(d->timerId >= 0);
+    if (d->sha1Sum.isEmpty()) {
+        killTimer(d->timerId);
         d->timerId = -1;
         d->error = NoError;
         d->device->close();
@@ -149,15 +156,15 @@ void HashVerificationJob::timerEvent( QTimerEvent* )
     }
 
     QByteArray buf;
-    buf.resize( 128 * 1024 );
-    const qint64 read = d->device->read( buf.data(), buf.size() );
-    if ( read > 0 ) {
-        d->hash.addData( buf.constData(), read );
+    buf.resize(128 * 1024);
+    const qint64 read = d->device->read(buf.data(), buf.size());
+    if (read > 0) {
+        d->hash.addData(buf.constData(), read);
         return;
     }
 
     d->error = d->hash.result() == d->sha1Sum ? NoError : SumsDifferError;
-    killTimer( d->timerId );
+    killTimer(d->timerId);
     d->timerId = -1;
     emitFinished();
 }
@@ -173,7 +180,7 @@ void HashVerificationJob::timerEvent( QTimerEvent* )
 
    Base class for file downloaders used in KDUpdater. File downloaders are used by
    the KDUpdater::Update class to download update files. Each subclass of FileDownloader
-   can download file from a specific category of sources (eg. local, ftp, http etc).
+   can download file from a specific category of sources (e.g. local, ftp, http etc).
 
    This is an internal class, not a part of the public API. Currently we have three
    subclasses of FileDownloader
@@ -186,7 +193,7 @@ void HashVerificationJob::timerEvent( QTimerEvent* )
    \code
    KDUpdater::FileDownloader* downloader = new KDUpdater::(some subclass name)
 
-   downloader->setUrl( url );
+   downloader->setUrl(url);
    downloader->download();
 
 // wait for downloadCompleted() signal
@@ -198,7 +205,7 @@ QString downloadedFile = downloader->downloadedFileName();
 struct KDUpdater::FileDownloader::FileDownloaderData
 {
     FileDownloaderData()
-        : autoRemove( true )
+        : autoRemove(true)
         , m_speedTimerInterval(100)
         , m_bytesReceived(0)
         , m_bytesToReceive(0)
@@ -208,7 +215,7 @@ struct KDUpdater::FileDownloader::FileDownloaderData
     {
         memset(m_samples, 0, sizeof(m_samples));
     }
-    
+
     QUrl url;
     QString scheme;
     QByteArray sha1Sum;
@@ -228,9 +235,9 @@ struct KDUpdater::FileDownloader::FileDownloaderData
     mutable qint64 m_downloadSpeed;
 };
 
-KDUpdater::FileDownloader::FileDownloader(const QString& scheme, QObject* parent)
-    : QObject(parent),
-      d( new FileDownloaderData )
+KDUpdater::FileDownloader::FileDownloader(const QString &scheme, QObject* parent)
+    : QObject(parent)
+    , d(new FileDownloaderData)
 {
     d->scheme = scheme;
     d->followRedirect = false;
@@ -240,7 +247,7 @@ KDUpdater::FileDownloader::~FileDownloader()
 {
 }
 
-void KDUpdater::FileDownloader::setUrl(const QUrl& url)
+void KDUpdater::FileDownloader::setUrl(const QUrl &url)
 {
     d->url = url;
 }
@@ -250,7 +257,7 @@ QUrl KDUpdater::FileDownloader::url() const
     return d->url;
 }
 
-void KDUpdater::FileDownloader::setSha1Sum( const QByteArray& sum )
+void KDUpdater::FileDownloader::setSha1Sum(const QByteArray &sum)
 {
     d->sha1Sum = sum;
 }
@@ -265,27 +272,29 @@ QString FileDownloader::errorString() const
     return d->errorString;
 }
 
-void FileDownloader::setDownloadAborted( const QString& error )
+void FileDownloader::setDownloadAborted(const QString &error)
 {
     d->errorString = error;
     emit downloadStatus(error);
-    emit downloadAborted( error );
+    emit downloadAborted(error);
 }
 
-void KDUpdater::FileDownloader::setDownloadCompleted( const QString& path )
+void KDUpdater::FileDownloader::setDownloadCompleted(const QString &path)
 {
-    KDAutoPointer<HashVerificationJob> job( new HashVerificationJob );
-    QFile* file = new QFile( path, job.get() );
-    if ( !file->open( QIODevice::ReadOnly ) ) {
-        emit downloadProgress( 1 );
+    KDAutoPointer<HashVerificationJob> job(new HashVerificationJob);
+    QFile* file = new QFile(path, job.get());
+    if (!file->open(QIODevice::ReadOnly)) {
+        emit downloadProgress(1);
         onError();
-        setDownloadAborted( tr("Could not reopen downloaded file %1 for reading: %2").arg( path, file->errorString() ) );
+        setDownloadAborted(tr("Could not reopen downloaded file %1 for reading: %2").arg(path,
+            file->errorString()));
         return;
     }
 
-    job->setDevice( file );
-    job->setSha1Sum( d->sha1Sum );
-    connect( job.get(), SIGNAL(finished(KDUpdater::HashVerificationJob*)), this, SLOT(sha1SumVerified(KDUpdater::HashVerificationJob*)) );
+    job->setDevice(file);
+    job->setSha1Sum(d->sha1Sum);
+    connect(job.get(), SIGNAL(finished(KDUpdater::HashVerificationJob*)), this,
+        SLOT(sha1SumVerified(KDUpdater::HashVerificationJob*)));
     job.release()->start();
 }
 
@@ -295,13 +304,12 @@ void KDUpdater::FileDownloader::setDownloadCanceled()
     emit downloadStatus(tr("Download canceled."));
 }
 
-void KDUpdater::FileDownloader::sha1SumVerified( KDUpdater::HashVerificationJob* job )
+void KDUpdater::FileDownloader::sha1SumVerified(KDUpdater::HashVerificationJob* job)
 {
-    if ( job->hasError() ) {
+    if (job->hasError()) {
         onError();
-        setDownloadAborted( tr("Cryptographic hashes do not match.") );
-    }
-    else {
+        setDownloadAborted(tr("Cryptographic hashes do not match."));
+    } else {
         onSuccess();
         emit downloadCompleted();
         emit downloadStatus(tr("Download finished."));
@@ -318,7 +326,7 @@ void KDUpdater::FileDownloader::setAutoRemoveDownloadedFile(bool val)
     d->autoRemove = val;
 }
 
-void KDUpdater::FileDownloader::setFollowRedirects( bool val )
+void KDUpdater::FileDownloader::setFollowRedirects(bool val)
 {
     d->followRedirect = val;
 }
@@ -333,8 +341,9 @@ bool KDUpdater::FileDownloader::isAutoRemoveDownloadedFile() const
     return d->autoRemove;
 }
 
-void KDUpdater::FileDownloader::download() {
-    QMetaObject::invokeMethod( this, "doDownload", Qt::QueuedConnection );
+void KDUpdater::FileDownloader::download()
+{
+    QMetaObject::invokeMethod(this, "doDownload", Qt::QueuedConnection);
 }
 
 void KDUpdater::FileDownloader::cancelDownload()
@@ -473,7 +482,7 @@ void KDUpdater::FileDownloader::emitEstimatedDownloadTime()
   If the local file that is being downloaded takes a long time; then that will
   hang the other downloads.
 
-  On the otherhand, local downloads need not actually download the file. It can
+  On the other hand, local downloads need not actually download the file. It can
   simply pass on the source file as destination file. At this moment however,
   I think the user of LocalFileDownloader will assume that the downloaded file
   can be fiddled around with without worrying about whether it would mess up
@@ -482,8 +491,11 @@ void KDUpdater::FileDownloader::emitEstimatedDownloadTime()
 
 struct KDUpdater::LocalFileDownloader::LocalFileDownloaderData
 {
-    LocalFileDownloaderData() : source(0), destination(0),
-                                downloaded(false), timerId(-1) { }
+    LocalFileDownloaderData()
+        : source(0)
+        , destination(0)
+        , downloaded(false)
+        , timerId(-1) { }
 
     QFile* source;
     QFile* destination;
@@ -493,14 +505,14 @@ struct KDUpdater::LocalFileDownloader::LocalFileDownloaderData
 };
 
 KDUpdater::LocalFileDownloader::LocalFileDownloader(QObject* parent)
-    :KDUpdater::FileDownloader(QLatin1String( "file" ), parent),
-     d ( new LocalFileDownloaderData )
+    : KDUpdater::FileDownloader(QLatin1String("file"), parent)
+    , d (new LocalFileDownloaderData)
 {
 }
 
 KDUpdater::LocalFileDownloader::~LocalFileDownloader()
 {
-    if( this->isAutoRemoveDownloadedFile() && !d->destFileName.isEmpty() )
+    if (this->isAutoRemoveDownloadedFile() && !d->destFileName.isEmpty())
         QFile::remove(d->destFileName);
 
     delete d;
@@ -508,8 +520,7 @@ KDUpdater::LocalFileDownloader::~LocalFileDownloader()
 
 bool KDUpdater::LocalFileDownloader::canDownload() const
 {
-    const QString localFile = url().toLocalFile();
-    QFileInfo fi( localFile );
+    QFileInfo fi(url().toLocalFile());
     return fi.exists() && fi.isReadable();
 }
 
@@ -521,18 +532,17 @@ bool KDUpdater::LocalFileDownloader::isDownloaded() const
 void KDUpdater::LocalFileDownloader::doDownload()
 {
     // Already downloaded
-    if( d->downloaded )
+    if (d->downloaded)
         return;
 
     // Already started downloading
-    if( d->timerId >= 0 )
+    if (d->timerId >= 0)
         return;
 
     // Open source and destination files
     QString localFile = this->url().toLocalFile();
     d->source = new QFile(localFile, this);
-    if( !d->source->open(QFile::ReadOnly) )
-    {
+    if (!d->source->open(QFile::ReadOnly)) {
         onError();
         setDownloadAborted(tr("Cannot open source file for reading."));
         return;
@@ -546,8 +556,8 @@ void KDUpdater::LocalFileDownloader::doDownload()
         d->destination = new QFile(d->destFileName, this);
         d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
     }
-    if( !d->destination->isOpen() )
-    {
+
+    if (!d->destination->isOpen()) {
         onError();
         setDownloadAborted(tr("Cannot open destination file for writing."));
         return;
@@ -571,17 +581,17 @@ void KDUpdater::LocalFileDownloader::setDownloadedFileName(const QString &name)
     d->destFileName = name;
 }
 
-KDUpdater::LocalFileDownloader* KDUpdater::LocalFileDownloader::clone( QObject* parent ) const
+KDUpdater::LocalFileDownloader* KDUpdater::LocalFileDownloader::clone(QObject* parent) const
 {
-    return new LocalFileDownloader( parent );
+    return new LocalFileDownloader(parent);
 }
 
 void KDUpdater::LocalFileDownloader::cancelDownload()
 {
-    if( d->timerId < 0 )
+    if (d->timerId < 0)
         return;
 
-    killTimer( d->timerId );
+    killTimer(d->timerId);
     d->timerId = -1;
 
     onError();
@@ -591,39 +601,40 @@ void KDUpdater::LocalFileDownloader::cancelDownload()
 void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == d->timerId) {
-        if( !d->source || !d->destination )
+        if (!d->source || !d->destination)
             return;
 
         const qint64 blockSize = 32768;
         QByteArray buffer;
-        buffer.resize( blockSize );
-        const qint64 numRead = d->source->read( buffer.data(), buffer.size() );
+        buffer.resize(blockSize);
+        const qint64 numRead = d->source->read(buffer.data(), buffer.size());
         qint64 toWrite = numRead;
-        while ( toWrite > 0 ) {
-            const qint64 numWritten = d->destination->write( buffer.constData() + numRead - toWrite, toWrite );
-            if ( numWritten < 0 ) {
-                killTimer( d->timerId );
+        while (toWrite > 0) {
+            const qint64 numWritten = d->destination->write(buffer.constData() + numRead - toWrite, toWrite);
+            if (numWritten < 0) {
+                killTimer(d->timerId);
                 d->timerId = -1;
                 onError();
-                setDownloadAborted( tr("Writing to %1 failed: %2").arg( d->destination->fileName(), d->destination->errorString() ) );
+                setDownloadAborted(tr("Writing to %1 failed: %2").arg(d->destination->fileName(),
+                    d->destination->errorString()));
                 return;
             }
             toWrite -= numWritten;
         }
         addSample(numRead);
 
-        if( numRead > 0 ) {
+        if (numRead > 0) {
             setProgress(d->source->pos(), d->source->size());
-            emit downloadProgress( calcProgress(d->source->pos(), d->source->size()) );
+            emit downloadProgress(calcProgress(d->source->pos(), d->source->size()));
             return;
         }
 
         d->destination->flush();
 
-        killTimer( d->timerId );
+        killTimer(d->timerId);
         d->timerId = -1;
 
-        setDownloadCompleted( d->destination->fileName() );
+        setDownloadCompleted(d->destination->fileName());
     } else if (event->timerId() == downloadSpeedTimerId()) {
         emitDownloadSpeed();
         emitDownloadStatus();
@@ -637,7 +648,7 @@ void LocalFileDownloader::onSuccess()
     d->downloaded = true;
     d->destFileName = d->destination->fileName();
     if (QTemporaryFile *file = dynamic_cast<QTemporaryFile*> (d->destination))
-        file->setAutoRemove( false );
+        file->setAutoRemove(false);
     d->destination->close();
     delete d->destination;
     d->destination = 0;
@@ -660,10 +671,8 @@ void LocalFileDownloader::onError()
 struct KDUpdater::ResourceFileDownloader::ResourceFileDownloaderData
 {
     ResourceFileDownloaderData()
-        : downloaded( false ), 
-          timerId( -1 )
-    { 
-    }
+        : downloaded(false),
+          timerId(-1) { }
 
     QString destFileName;
     bool downloaded;
@@ -671,8 +680,8 @@ struct KDUpdater::ResourceFileDownloader::ResourceFileDownloaderData
 };
 
 KDUpdater::ResourceFileDownloader::ResourceFileDownloader(QObject* parent)
-    :KDUpdater::FileDownloader(QLatin1String( "resource" ), parent),
-     d ( new ResourceFileDownloaderData )
+    : KDUpdater::FileDownloader(QLatin1String("resource"), parent)
+    , d (new ResourceFileDownloaderData)
 {
 }
 
@@ -684,8 +693,8 @@ KDUpdater::ResourceFileDownloader::~ResourceFileDownloader()
 bool KDUpdater::ResourceFileDownloader::canDownload() const
 {
     QUrl url = this->url();
-    url.setScheme( QString::fromLatin1( "file" ) );
-    QString localFile = QString::fromLatin1( ":%1" ).arg( url.toLocalFile() );
+    url.setScheme(QString::fromLatin1("file"));
+    QString localFile = QString::fromLatin1(":%1").arg(url.toLocalFile());
     QFileInfo fi(localFile);
     return fi.exists() && fi.isReadable();
 }
@@ -698,18 +707,18 @@ bool KDUpdater::ResourceFileDownloader::isDownloaded() const
 void KDUpdater::ResourceFileDownloader::doDownload()
 {
     // Already downloaded
-    if( d->downloaded )
+    if (d->downloaded)
         return;
 
     // Already started downloading
-    if( d->timerId >= 0 )
+    if (d->timerId >= 0)
         return;
 
     // Open source and destination files
     QUrl url = this->url();
-    url.setScheme( QString::fromLatin1( "file" ) );
-    d->destFileName = QString::fromLatin1( ":%1" ).arg( url.toLocalFile() );
-    
+    url.setScheme(QString::fromLatin1("file"));
+    d->destFileName = QString::fromLatin1(":%1").arg(url.toLocalFile());
+
     // Start a timer and kickoff the copy process
     d->timerId = startTimer(0); // as fast as possible
     emit downloadStarted();
@@ -726,17 +735,17 @@ void KDUpdater::ResourceFileDownloader::setDownloadedFileName(const QString &/*n
     Q_ASSERT_X(false, "KDUpdater::ResourceFileDownloader::setDownloadedFileName", "Not supported!");
 }
 
-KDUpdater::ResourceFileDownloader* KDUpdater::ResourceFileDownloader::clone( QObject* parent ) const
+KDUpdater::ResourceFileDownloader* KDUpdater::ResourceFileDownloader::clone(QObject* parent) const
 {
-    return new ResourceFileDownloader( parent );
+    return new ResourceFileDownloader(parent);
 }
 
 void KDUpdater::ResourceFileDownloader::cancelDownload()
 {
-    if( d->timerId < 0 )
+    if (d->timerId < 0)
         return;
 
-    killTimer( d->timerId );
+    killTimer(d->timerId);
     d->timerId = -1;
 
     setDownloadCanceled();
@@ -744,9 +753,9 @@ void KDUpdater::ResourceFileDownloader::cancelDownload()
 
 void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent*)
 {
-    killTimer( d->timerId );
+    killTimer(d->timerId);
     d->timerId = -1;
-    setDownloadCompleted( d->destFileName );
+    setDownloadCompleted(d->destFileName);
 }
 
 void KDUpdater::ResourceFileDownloader::onSuccess()
@@ -765,8 +774,12 @@ void KDUpdater::ResourceFileDownloader::onError()
 
 struct KDUpdater::FtpDownloader::FtpDownloaderData
 {
-    FtpDownloaderData() : ftp(0), destination(0),
-                          downloaded(false), ftpCmdId(-1), aborted(false) { }
+    FtpDownloaderData()
+        : ftp(0)
+        , destination(0)
+        , downloaded(false)
+        , ftpCmdId(-1)
+        , aborted(false) { }
 
     QFtp* ftp;
     QFile* destination;
@@ -777,14 +790,14 @@ struct KDUpdater::FtpDownloader::FtpDownloaderData
 };
 
 KDUpdater::FtpDownloader::FtpDownloader(QObject* parent)
-    : KDUpdater::FileDownloader(QLatin1String( "ftp" ), parent),
-      d ( new FtpDownloaderData )
+    : KDUpdater::FileDownloader(QLatin1String("ftp"), parent)
+    , d (new FtpDownloaderData)
 {
 }
 
 KDUpdater::FtpDownloader::~FtpDownloader()
 {
-    if( this->isAutoRemoveDownloadedFile() && !d->destFileName.isEmpty() )
+    if (this->isAutoRemoveDownloadedFile() && !d->destFileName.isEmpty())
         QFile::remove(d->destFileName);
 
     delete d;
@@ -803,21 +816,22 @@ bool KDUpdater::FtpDownloader::isDownloaded() const
 
 void KDUpdater::FtpDownloader::doDownload()
 {
-    if( d->downloaded )
+    if (d->downloaded)
         return;
 
-    if( d->ftp )
+    if (d->ftp)
         return;
 
     d->ftp = new QFtp(this);
     connect(d->ftp, SIGNAL(done(bool)), this, SLOT(ftpDone(bool)));
     connect(d->ftp, SIGNAL(commandStarted(int)), this, SLOT(ftpCmdStarted(int)));
-    connect(d->ftp, SIGNAL(commandFinished(int,bool)), this, SLOT(ftpCmdFinished(int,bool)));
+    connect(d->ftp, SIGNAL(commandFinished(int, bool)), this, SLOT(ftpCmdFinished(int, bool)));
     connect(d->ftp, SIGNAL(stateChanged(int)), this, SLOT(ftpStateChanged(int)));
-    connect(d->ftp, SIGNAL(dataTransferProgress(qint64,qint64)), this, SLOT(ftpDataTransferProgress(qint64,qint64)));
+    connect(d->ftp, SIGNAL(dataTransferProgress(qint64, qint64)), this, SLOT(ftpDataTransferProgress(qint64,
+        qint64)));
     connect(d->ftp, SIGNAL(readyRead()), this, SLOT(ftpReadyRead()));
 
-    d->ftp->connectToHost( url().host(), url().port(21) );
+    d->ftp->connectToHost(url().host(), url().port(21));
     d->ftp->login();
 }
 
@@ -831,16 +845,14 @@ void KDUpdater::FtpDownloader::setDownloadedFileName(const QString &name)
     d->destFileName = name;
 }
 
-KDUpdater::FtpDownloader* KDUpdater::FtpDownloader::clone( QObject* parent ) const
+KDUpdater::FtpDownloader* KDUpdater::FtpDownloader::clone(QObject* parent) const
 {
-    return new FtpDownloader( parent );
+    return new FtpDownloader(parent);
 }
-
 
 void KDUpdater::FtpDownloader::cancelDownload()
 {
-    if( d->ftp )
-    {
+    if (d->ftp) {
         d->aborted = true;
         d->ftp->abort();
     }
@@ -848,28 +860,26 @@ void KDUpdater::FtpDownloader::cancelDownload()
 
 void KDUpdater::FtpDownloader::ftpDone(bool error)
 {
-    if( error )
-    {
+    if (error) {
         d->ftp->deleteLater();
         d->ftp = 0;
         d->ftpCmdId = -1;
 
         onError();
-        
-        if( d->aborted )
-        {
+
+        if (d->aborted) {
             d->aborted = false;
             setDownloadCanceled();
+        } else {
+            setDownloadAborted(d->ftp->errorString());
         }
-        else
-            setDownloadAborted( d->ftp->errorString() );
     }
     //PENDING what about the non-error case??
 }
 
 void KDUpdater::FtpDownloader::ftpCmdStarted(int id)
 {
-    if( id != d->ftpCmdId )
+    if (id != d->ftpCmdId)
         return;
 
     emit downloadStarted();
@@ -878,7 +888,7 @@ void KDUpdater::FtpDownloader::ftpCmdStarted(int id)
 
 void KDUpdater::FtpDownloader::ftpCmdFinished(int id, bool error)
 {
-    if( id != d->ftpCmdId || error ) // PENDING why error -> return??
+    if (id != d->ftpCmdId || error) // PENDING why error -> return??
         return;
 
     disconnect(d->ftp, 0, this, 0);
@@ -887,7 +897,7 @@ void KDUpdater::FtpDownloader::ftpCmdFinished(int id, bool error)
     d->ftpCmdId = -1;
     d->destination->flush();
 
-    setDownloadCompleted( d->destination->fileName() );
+    setDownloadCompleted(d->destination->fileName());
 }
 
 void FtpDownloader::onSuccess()
@@ -895,7 +905,7 @@ void FtpDownloader::onSuccess()
     d->downloaded = true;
     d->destFileName = d->destination->fileName();
     if (QTemporaryFile *file = dynamic_cast<QTemporaryFile*> (d->destination))
-        file->setAutoRemove( false );
+        file->setAutoRemove(false);
     delete d->destination;
     d->destination = 0;
     stopDownloadSpeedTimer();
@@ -913,38 +923,37 @@ void FtpDownloader::onError()
 
 void KDUpdater::FtpDownloader::ftpStateChanged(int state)
 {
-    switch(state)
-    {
-    case QFtp::Connected:
-        // begin the download
-        if (d->destFileName.isEmpty()) {
-            QTemporaryFile *file = new QTemporaryFile(this);
-            file->open(); //PENDING handle error
-            d->destination = file;
-        } else {
-            d->destination = new QFile(d->destFileName, this);
-            d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
-        }
-        runDownloadSpeedTimer();
-        d->ftpCmdId = d->ftp->get(url().path());
-        break;
+    switch(state) {
+        case QFtp::Connected: {
+            // begin the download
+            if (d->destFileName.isEmpty()) {
+                QTemporaryFile *file = new QTemporaryFile(this);
+                file->open(); //PENDING handle error
+                d->destination = file;
+            } else {
+                d->destination = new QFile(d->destFileName, this);
+                d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
+            }
+            runDownloadSpeedTimer();
+            d->ftpCmdId = d->ftp->get(url().path());
+        }   break;
 
-    case QFtp::Unconnected:
-        // download was unconditionally aborted
-        disconnect(d->ftp, 0, this, 0);
-        d->ftp->deleteLater();
-        d->ftp = 0;
-        d->ftpCmdId = -1;
-        onError();
-        setDownloadAborted(tr("Download was aborted due to network errors."));
-        break;
+        case QFtp::Unconnected: {
+            // download was unconditionally aborted
+            disconnect(d->ftp, 0, this, 0);
+            d->ftp->deleteLater();
+            d->ftp = 0;
+            d->ftpCmdId = -1;
+            onError();
+            setDownloadAborted(tr("Download was aborted due to network errors."));
+        }   break;
     }
 }
 
 void KDUpdater::FtpDownloader::ftpDataTransferProgress(qint64 done, qint64 total)
 {
     setProgress(done, total);
-    emit downloadProgress( calcProgress(done, total) );
+    emit downloadProgress(calcProgress(done, total));
 }
 
 void KDUpdater::FtpDownloader::ftpReadyRead()
@@ -983,8 +992,13 @@ void KDUpdater::FtpDownloader::timerEvent(QTimerEvent *event)
 
 struct KDUpdater::HttpDownloader::HttpDownloaderData
 {
-    explicit HttpDownloaderData( HttpDownloader* qq ) : q( qq ), http(0), destination(0), downloaded(false),
-                           aborted(false), retrying(false) { }
+    explicit HttpDownloaderData(HttpDownloader* qq)
+        : q(qq)
+        , http(0)
+        , destination(0)
+        , downloaded(false)
+        , aborted(false)
+        , retrying(false) { }
 
     HttpDownloader* const q;
     QNetworkAccessManager manager;
@@ -995,8 +1009,9 @@ struct KDUpdater::HttpDownloader::HttpDownloaderData
     bool aborted;
     bool retrying;
 
-    void shutDown() {
-        disconnect( http, SIGNAL( finished() ), q, SLOT( httpReqFinished() ) );
+    void shutDown()
+    {
+        disconnect(http, SIGNAL(finished()), q, SLOT(httpReqFinished()));
         http->deleteLater();
         http = 0;
         destination->close();
@@ -1007,14 +1022,14 @@ struct KDUpdater::HttpDownloader::HttpDownloaderData
 };
 
 KDUpdater::HttpDownloader::HttpDownloader(QObject* parent)
-    : KDUpdater::FileDownloader(QLatin1String( "http" ), parent),
-      d ( new HttpDownloaderData( this ) )
+    : KDUpdater::FileDownloader(QLatin1String("http"), parent)
+    , d (new HttpDownloaderData(this))
 {
 }
 
 KDUpdater::HttpDownloader::~HttpDownloader()
 {
-    if( this->isAutoRemoveDownloadedFile() && !d->destFileName.isEmpty() )
+    if (this->isAutoRemoveDownloadedFile() && !d->destFileName.isEmpty())
         QFile::remove(d->destFileName);
     delete d;
 }
@@ -1032,10 +1047,10 @@ bool KDUpdater::HttpDownloader::isDownloaded() const
 
 void KDUpdater::HttpDownloader::doDownload()
 {
-    if(d->downloaded)
+    if (d->downloaded)
         return;
 
-    if(d->http)
+    if (d->http)
         return;
 
     //// In a future update, authentication should also be supported.
@@ -1058,24 +1073,24 @@ void KDUpdater::HttpDownloader::setDownloadedFileName(const QString &name)
     d->destFileName = name;
 }
 
-KDUpdater::HttpDownloader* KDUpdater::HttpDownloader::clone( QObject* parent ) const
+KDUpdater::HttpDownloader* KDUpdater::HttpDownloader::clone(QObject* parent) const
 {
-    return new HttpDownloader( parent );
+    return new HttpDownloader(parent);
 }
 
 void KDUpdater::HttpDownloader::httpReadyRead()
 {
-    static QByteArray buffer( 16384, '\0' );
-    while( d->http->bytesAvailable() )
-    {
-        const qint64 read = d->http->read( buffer.data(), buffer.size() );
+    static QByteArray buffer(16384, '\0');
+    while (d->http->bytesAvailable()) {
+        const qint64 read = d->http->read(buffer.data(), buffer.size());
         qint64 written = 0;
-        while( written < read ) {
-            const qint64 numWritten = d->destination->write( buffer.data() + written, read - written );
-            if ( numWritten < 0 ) {
+        while (written < read) {
+            const qint64 numWritten = d->destination->write(buffer.data() + written, read - written);
+            if (numWritten < 0) {
                 const QString err = d->destination->errorString();
                 d->shutDown();
-                setDownloadAborted( tr("Cannot download %1: Writing to temporary file failed: %2").arg( url().toString(), err ) );
+                setDownloadAborted(tr("Cannot download %1: Writing to temporary file failed: %2")
+                    .arg(url().toString(), err));
                 return;
             }
             written += numWritten;
@@ -1084,54 +1099,49 @@ void KDUpdater::HttpDownloader::httpReadyRead()
     }
 }
 
-void KDUpdater::HttpDownloader::httpError( QNetworkReply::NetworkError )
+void KDUpdater::HttpDownloader::httpError(QNetworkReply::NetworkError)
 {
     static bool setProxySettings = false;
-    if( !d->retrying && !setProxySettings )
-    {
+    if (!d->retrying && !setProxySettings) {
         d->shutDown();
         d->retrying = true;
         setProxySettings = true;
 
         // silently force retry with global proxy settings
-        QNetworkProxyFactory::setUseSystemConfiguration( true );
-        
+        QNetworkProxyFactory::setUseSystemConfiguration(true);
+
         doDownload();
         return;
     }
-    httpDone( true );
+    httpDone(true);
 }
 
 void KDUpdater::HttpDownloader::cancelDownload()
 {
     d->aborted = true;
-    if( d->http )
-    {
+    if (d->http) {
         d->http->abort();
-        httpDone( true );
+        httpDone(true);
     }
 }
 
-void KDUpdater::HttpDownloader::httpDone( bool error )
+void KDUpdater::HttpDownloader::httpDone(bool error)
 {
-    if( error )
-    {
+    if (error) {
         QString err;
-        if( d->http )
-        {
+        if (d->http) {
             err = d->http->errorString();
             d->http->deleteLater();
             d->http = 0;
             onError();
         }
 
-        if( d->aborted )
-        {
+        if (d->aborted) {
             d->aborted = false;
             setDownloadCanceled();
+        } else {
+            setDownloadAborted(err);
         }
-        else
-            setDownloadAborted( err );
     }
     //PENDING: what about the non-error case??
 }
@@ -1150,7 +1160,7 @@ void KDUpdater::HttpDownloader::onSuccess()
     d->downloaded = true;
     d->destFileName = d->destination->fileName();
     if (QTemporaryFile *file = dynamic_cast<QTemporaryFile*> (d->destination))
-        file->setAutoRemove( false );
+        file->setAutoRemove(false);
     delete d->destination;
     d->destination = 0;
     stopDownloadSpeedTimer();
@@ -1166,7 +1176,7 @@ void KDUpdater::HttpDownloader::httpReqFinished()
         d->shutDown();  // clean the previous download
         startDownload(redirectUrl);
     } else {
-        if(d->http == 0)
+        if (d->http == 0)
             return;
 
         httpReadyRead();
@@ -1177,10 +1187,10 @@ void KDUpdater::HttpDownloader::httpReqFinished()
     }
 }
 
-void KDUpdater::HttpDownloader::httpReadProgress( qint64 done, qint64 total)
+void KDUpdater::HttpDownloader::httpReadProgress(qint64 done, qint64 total)
 {
     setProgress(done, total);
-    emit downloadProgress( calcProgress( done, total ) );
+    emit downloadProgress(calcProgress(done, total));
 }
 
 void KDUpdater::HttpDownloader::timerEvent(QTimerEvent *event)
@@ -1224,14 +1234,19 @@ class SignatureVerificationDownloader::Private
 {
     SignatureVerificationDownloader* const q;
 public:
-    explicit Private( FileDownloader* dl, SignatureVerificationDownloader* qq ) : q( qq ), verifier( 0 ), downloader( dl ), sigDownloader( 0 ), actualDownloadDone( false )
+    explicit Private(FileDownloader* dl, SignatureVerificationDownloader* qq)
+        : q(qq)
+        , verifier(0)
+        , downloader(dl)
+        , sigDownloader(0)
+        , actualDownloadDone(false)
     {
-        Q_ASSERT( downloader );
-        q->connect( downloader.get(), SIGNAL( downloadProgress( double ) ), q, SIGNAL( downloadProgress( double ) ) );
-        q->connect( downloader.get(), SIGNAL(downloadStarted()), q, SLOT(dataDownloadStarted()) );
-        q->connect( downloader.get(), SIGNAL(downloadCompleted()), q, SLOT(dataDownloadCompleted()) );
-        q->connect( downloader.get(), SIGNAL(downloadCanceled()), q, SLOT(dataDownloadCanceled()) );
-        q->connect( downloader.get(), SIGNAL(downloadAborted(QString)), q, SLOT(dataDownloadAborted(QString)) );
+        Q_ASSERT(downloader);
+        q->connect(downloader.get(), SIGNAL(downloadProgress(double)), q, SIGNAL(downloadProgress(double)));
+        q->connect(downloader.get(), SIGNAL(downloadStarted()), q, SLOT(dataDownloadStarted()));
+        q->connect(downloader.get(), SIGNAL(downloadCompleted()), q, SLOT(dataDownloadCompleted()));
+        q->connect(downloader.get(), SIGNAL(downloadCanceled()), q, SLOT(dataDownloadCanceled()));
+        q->connect(downloader.get(), SIGNAL(downloadAborted(QString)), q, SLOT(dataDownloadAborted(QString)));
     }
 
     ~Private()
@@ -1248,7 +1263,9 @@ public:
     bool actualDownloadDone : 1;
 };
 
-SignatureVerificationDownloader::SignatureVerificationDownloader( FileDownloader* downloader, QObject* parent ) : FileDownloader( downloader->scheme(), parent ), d( new Private( downloader, this ) )
+SignatureVerificationDownloader::SignatureVerificationDownloader(FileDownloader* downloader, QObject* parent)
+    : FileDownloader(downloader->scheme(), parent)
+    , d(new Private(downloader, this))
 {
 }
 
@@ -1261,16 +1278,18 @@ QUrl SignatureVerificationDownloader::signatureUrl() const
     return d->signatureUrl;
 }
 
-void SignatureVerificationDownloader::setSignatureUrl( const QUrl& url )
+void SignatureVerificationDownloader::setSignatureUrl(const QUrl &url)
 {
     d->signatureUrl = url;
 }
 
-const SignatureVerifier* SignatureVerificationDownloader::signatureVerifier() const {
+const SignatureVerifier* SignatureVerificationDownloader::signatureVerifier() const
+{
     return d->verifier;
 }
 
-void SignatureVerificationDownloader::setSignatureVerifier( const SignatureVerifier* verifier ) {
+void SignatureVerificationDownloader::setSignatureVerifier(const SignatureVerifier* verifier)
+{
     delete d->verifier;
     d->verifier = verifier ? verifier->clone() : 0;
 }
@@ -1300,16 +1319,16 @@ void SignatureVerificationDownloader::setDownloadedFileName(const QString &/*nam
     Q_ASSERT_X(false, "SignatureVerificationDownloader::setDownloadedFileName", "Not supported!");
 }
 
-FileDownloader* SignatureVerificationDownloader::clone( QObject* parent ) const
+FileDownloader* SignatureVerificationDownloader::clone(QObject* parent) const
 {
-    return new SignatureVerificationDownloader( d->downloader->clone(), parent );
+    return new SignatureVerificationDownloader(d->downloader->clone(), parent);
 }
 
 void SignatureVerificationDownloader::onError()
 {
     d->sigDownloader.reset();
-    if ( QFile::exists( d->downloadedFileName ) )
-        QFile::remove( d->downloadedFileName );
+    if (QFile::exists(d->downloadedFileName))
+        QFile::remove(d->downloadedFileName);
 }
 
 void SignatureVerificationDownloader::onSuccess()
@@ -1319,21 +1338,21 @@ void SignatureVerificationDownloader::onSuccess()
 
 void SignatureVerificationDownloader::cancelDownload()
 {
-    if ( !d->actualDownloadDone ) {
+    if (!d->actualDownloadDone) {
         d->downloader->cancelDownload();
         return;
     }
-    if ( d->sigDownloader ) {
+
+    if (d->sigDownloader)
         d->sigDownloader->cancelDownload();
-    }
 }
 
 void SignatureVerificationDownloader::doDownload()
 {
-    Q_ASSERT( d->verifier );
-    Q_ASSERT( d->downloader );
-    d->downloader->setUrl( url() );
-    d->downloader->setSha1Sum( sha1Sum() );
+    Q_ASSERT(d->verifier);
+    Q_ASSERT(d->downloader);
+    d->downloader->setUrl(url());
+    d->downloader->setSha1Sum(sha1Sum());
     d->downloader->download();
 }
 
@@ -1342,9 +1361,9 @@ void SignatureVerificationDownloader::dataDownloadStarted()
     emit downloadStarted();
 }
 
-void SignatureVerificationDownloader::dataDownloadAborted( const QString& err )
+void SignatureVerificationDownloader::dataDownloadAborted(const QString &err)
 {
-    setDownloadAborted( err );
+    setDownloadAborted(err);
 }
 
 void SignatureVerificationDownloader::dataDownloadCanceled()
@@ -1352,7 +1371,8 @@ void SignatureVerificationDownloader::dataDownloadCanceled()
     setDownloadCanceled();
 }
 
-static QUrl suggestSignatureUrl( const QUrl& url ) {
+static QUrl suggestSignatureUrl(const QUrl &url)
+{
     return url.toString() + QLatin1String(".sig");
 }
 
@@ -1362,23 +1382,24 @@ void SignatureVerificationDownloader::dataDownloadCompleted()
     d->actualDownloadDone = true;
 
     QUrl url = d->signatureUrl;
-    if ( url.isEmpty() )
-        url = suggestSignatureUrl( d->downloader->url() );
-    d->sigDownloader.reset( FileDownloaderFactory::instance().create( url.scheme(), this ) );
-    if ( !d->sigDownloader ) {
-        setDownloadAborted( tr("Could not download signature: scheme %1 not supported").arg( url.scheme() ) );
+    if (url.isEmpty())
+        url = suggestSignatureUrl(d->downloader->url());
+    d->sigDownloader.reset(FileDownloaderFactory::instance().create(url.scheme(), this));
+    if (!d->sigDownloader) {
+        setDownloadAborted(tr("Could not download signature: scheme %1 not supported").arg(url.scheme()));
         return;
     }
-    d->sigDownloader->setUrl( url );
-    connect( d->sigDownloader.get(), SIGNAL(downloadCompleted()), this, SLOT(signatureDownloadCompleted()) );
-    connect( d->sigDownloader.get(), SIGNAL(downloadCanceled()), this, SLOT(signatureDownloadCanceled()) );
-    connect( d->sigDownloader.get(), SIGNAL(downloadAborted(QString)), this, SLOT(signatureDownloadAborted(QString)) );
+    d->sigDownloader->setUrl(url);
+    connect(d->sigDownloader.get(), SIGNAL(downloadCompleted()), this, SLOT(signatureDownloadCompleted()));
+    connect(d->sigDownloader.get(), SIGNAL(downloadCanceled()), this, SLOT(signatureDownloadCanceled()));
+    connect(d->sigDownloader.get(), SIGNAL(downloadAborted(QString)), this,
+        SLOT(signatureDownloadAborted(QString)));
     d->sigDownloader->download();
 }
 
-void SignatureVerificationDownloader::signatureDownloadAborted( const QString& err )
+void SignatureVerificationDownloader::signatureDownloadAborted(const QString &err)
 {
-    setDownloadAborted( tr("Downloading signature: %1").arg( err ) );
+    setDownloadAborted(tr("Downloading signature: %1").arg(err));
 }
 
 void SignatureVerificationDownloader::signatureDownloadCanceled()
@@ -1388,35 +1409,33 @@ void SignatureVerificationDownloader::signatureDownloadCanceled()
 
 void SignatureVerificationDownloader::signatureDownloadCompleted()
 {
-    QFile sigFile( d->sigDownloader->downloadedFileName() );
-    if ( !sigFile.open( QIODevice::ReadOnly ) ) {
-        setDownloadAborted( tr("Could not open signature file: %1").arg( sigFile.errorString() ) );
+    QFile sigFile(d->sigDownloader->downloadedFileName());
+    if (!sigFile.open(QIODevice::ReadOnly)) {
+        setDownloadAborted(tr("Could not open signature file: %1").arg(sigFile.errorString()));
+        return;
+    }
+
+    QFile dataFile(d->downloadedFileName);
+    if (!dataFile.open(QIODevice::ReadOnly)) {
+        setDownloadAborted(tr("Could not open file for verification: %1").arg(dataFile.errorString()));
         return;
     }
 
     const QByteArray signature = sigFile.readAll();
-
-    QFile dataFile( d->downloadedFileName );
-    if ( !dataFile.open( QIODevice::ReadOnly ) ) {
-        setDownloadAborted( tr("Could not open file for verification: %1").arg( dataFile.errorString() ) );
-        return;
-    }
     const QByteArray dataHash = calculateHash(&dataFile, QCryptographicHash::Sha1);
-
-    //const QString sigPath = d->sigDownloader->downloadedFileName();
-    d->result = d->verifier->verify( dataHash, signature );
-    if( ! d->result.isValid() ) {
-        setDownloadAborted( d->result.errorString() );
+    d->result = d->verifier->verify(dataHash, signature);
+    if (! d->result.isValid()) {
+        setDownloadAborted(d->result.errorString());
         return;
     }
-    setDownloadCompleted( d->downloadedFileName );
+    setDownloadCompleted(d->downloadedFileName);
 
 #if 0
     SignatureVerificationRunnable* runnable = new SignatureVerificationRunnable;
-    runnable->setSignature( signature );
-    runnable->setData( dataFile.release() );
-    runnable->setVerifier( d->verifier );
-    runnable->addResultListener( this, "verificationResult" );
-    QThreadPool::globalInstance()->start( runnable );
+    runnable->setSignature(signature);
+    runnable->setData(dataFile.release());
+    runnable->setVerifier(d->verifier);
+    runnable->addResultListener(this, "verificationResult");
+    QThreadPool::globalInstance()->start(runnable);
 #endif
 }

@@ -32,26 +32,26 @@
 
 namespace KDUpdater
 {
-    KDTOOLS_UPDATER_EXPORT QByteArray calculateHash( QIODevice* device, QCryptographicHash::Algorithm algo );
-    KDTOOLS_UPDATER_EXPORT QByteArray calculateHash( const QString& path, QCryptographicHash::Algorithm algo );
-    
+    KDTOOLS_UPDATER_EXPORT QByteArray calculateHash(QIODevice* device, QCryptographicHash::Algorithm algo);
+    KDTOOLS_UPDATER_EXPORT QByteArray calculateHash(const QString &path, QCryptographicHash::Algorithm algo);
+
     class HashVerificationJob;
 
     class KDTOOLS_UPDATER_EXPORT FileDownloader : public QObject
     {
         Q_OBJECT
-        Q_PROPERTY( bool autoRemoveDownloadedFile READ isAutoRemoveDownloadedFile WRITE setAutoRemoveDownloadedFile )
-        Q_PROPERTY( QUrl url READ url WRITE setUrl )
-        Q_PROPERTY( QString scheme READ scheme )
+        Q_PROPERTY(bool autoRemoveDownloadedFile READ isAutoRemoveDownloadedFile WRITE setAutoRemoveDownloadedFile)
+        Q_PROPERTY(QUrl url READ url WRITE setUrl)
+        Q_PROPERTY(QString scheme READ scheme)
 
     public:
-        explicit FileDownloader(const QString& scheme, QObject* parent=0);
+        explicit FileDownloader(const QString &scheme, QObject* parent=0);
         ~FileDownloader();
 
-        void setUrl(const QUrl& url);
+        void setUrl(const QUrl &url);
         QUrl url() const;
 
-        void setSha1Sum( const QByteArray& sha1 );
+        void setSha1Sum(const QByteArray &sha1);
         QByteArray sha1Sum() const;
 
         QString errorString() const;
@@ -61,19 +61,19 @@ namespace KDUpdater
         virtual bool isDownloaded() const = 0;
         virtual QString downloadedFileName() const = 0;
         virtual void setDownloadedFileName(const QString &name) = 0;
-        virtual FileDownloader* clone( QObject* parent=0 ) const = 0;
+        virtual FileDownloader* clone(QObject* parent=0) const = 0;
 
         void download();
 
         void setAutoRemoveDownloadedFile(bool val);
         bool isAutoRemoveDownloadedFile() const;
 
-        void setFollowRedirects( bool val );
+        void setFollowRedirects(bool val);
         bool followRedirects() const;
 
     public Q_SLOTS:
         virtual void cancelDownload();
-        void sha1SumVerified( KDUpdater::HashVerificationJob* job );
+        void sha1SumVerified(KDUpdater::HashVerificationJob* job);
 
     protected:
         virtual void onError() = 0;
@@ -93,12 +93,12 @@ namespace KDUpdater
     private:
 #endif
         void downloadCompleted();
-        void downloadAborted(const QString& errorMessage);
+        void downloadAborted(const QString &errorMessage);
 
     protected:
         void setDownloadCanceled();
-        void setDownloadCompleted( const QString& filepath );
-        void setDownloadAborted( const QString& error );
+        void setDownloadCompleted(const QString &filepath);
+        void setDownloadAborted(const QString &error);
 
         void runDownloadSpeedTimer();
         void stopDownloadSpeedTimer();
