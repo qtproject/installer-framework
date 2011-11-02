@@ -861,9 +861,13 @@ void KDUpdater::FtpDownloader::cancelDownload()
 void KDUpdater::FtpDownloader::ftpDone(bool error)
 {
     if (error) {
-        d->ftp->deleteLater();
-        d->ftp = 0;
-        d->ftpCmdId = -1;
+        QString errorString;
+        if (d->ftp) {
+            errorString = d->ftp->errorString();
+            d->ftp->deleteLater();
+            d->ftp = 0;
+            d->ftpCmdId = -1;
+        }
 
         onError();
 
@@ -871,7 +875,7 @@ void KDUpdater::FtpDownloader::ftpDone(bool error)
             d->aborted = false;
             setDownloadCanceled();
         } else {
-            setDownloadAborted(d->ftp->errorString());
+            setDownloadAborted(errorString);
         }
     }
     //PENDING what about the non-error case??
