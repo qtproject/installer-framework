@@ -197,6 +197,7 @@ namespace KDUpdater
         void httpError(QNetworkReply::NetworkError);
         void httpDone(bool error);
         void httpReqFinished();
+        void onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 
     private:
         void startDownload(const QUrl &url);

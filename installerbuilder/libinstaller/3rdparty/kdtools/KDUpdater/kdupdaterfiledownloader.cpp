@@ -214,8 +214,14 @@ struct KDUpdater::FileDownloader::FileDownloaderData
         , m_currentSpeedBin(0)
         , m_sampleIndex(0)
         , m_downloadSpeed(0)
+        , m_factory(0)
     {
         memset(m_samples, 0, sizeof(m_samples));
+    }
+
+    ~FileDownloaderData()
+    {
+        delete m_factory;
     }
 
     QUrl url;
@@ -235,6 +241,9 @@ struct KDUpdater::FileDownloader::FileDownloaderData
     mutable qint64 m_currentSpeedBin;
     mutable quint32 m_sampleIndex;
     mutable qint64 m_downloadSpeed;
+
+    QAuthenticator m_authenticator;
+    FileDownloaderProxyFactory *m_factory;
 };
 
 KDUpdater::FileDownloader::FileDownloader(const QString &scheme, QObject* parent)
@@ -470,7 +479,45 @@ void KDUpdater::FileDownloader::emitEstimatedDownloadTime()
     emit estimatedDownloadTime((d->m_bytesToReceive - d->m_bytesReceived) / d->m_downloadSpeed);
 }
 
+/*!
+    Returns a copy of the proxy factory that this FileDownloader object is using to determine the proxies to
+    be used for requests.
+*/
+FileDownloaderProxyFactory *KDUpdater::FileDownloader::proxyFactory() const
+{
+    if (d->m_factory)
+        return d->m_factory->clone();
+    return 0;
+}
 
+/*!
+    Sets the proxy factory for this class to be \a factory. A proxy factory is used to determine a more
+    specific list of proxies to be used for a given request, instead of trying to use the same proxy value
+    for all requests. This might only be of use for http or ftp requests.
+*/
+void KDUpdater::FileDownloader::setProxyFactory(FileDownloaderProxyFactory *factory)
+{
+    delete d->m_factory;
+    d->m_factory = factory;
+}
+
+/*!
+    Returns a copy of the authenticator that this FileDownloader object is using to set the username and
+    password for download request.
+*/
+QAuthenticator KDUpdater::FileDownloader::authenticator() const
+{
+    return d->m_authenticator;
+}
+
+/*!
+    Sets the authenticator object for this class to be \a authenticator. A authenticator is used to
+    pass on the required authentication information. This might only be of use for http or ftp requests.
+*/
+void KDUpdater::FileDownloader::setAuthenticator(const QAuthenticator &authenticator)
+{
+    d->m_authenticator = authenticator;
+}
 
 // -- KDUpdater::LocalFileDownloader
 
@@ -834,8 +881,15 @@ void KDUpdater::FtpDownloader::doDownload()
         qint64)));
     connect(d->ftp, SIGNAL(readyRead()), this, SLOT(ftpReadyRead()));
 
+    if (FileDownloaderProxyFactory *factory = proxyFactory()) {
+        const QList<QNetworkProxy> proxies = factory->queryProxy(QNetworkProxyQuery(url()));
+        if (!proxies.isEmpty())
+            d->ftp->setProxy(proxies.at(0).hostName(), proxies.at(0).port());
+        delete factory;
+    }
+
     d->ftp->connectToHost(url().host(), url().port(21));
-    d->ftp->login();
+    d->ftp->login(authenticator().user(), authenticator().password());
 }
 
 QString KDUpdater::FtpDownloader::downloadedFileName() const
@@ -1004,7 +1058,8 @@ struct KDUpdater::HttpDownloader::HttpDownloaderData
         , destination(0)
         , downloaded(false)
         , aborted(false)
-        , retrying(false) { }
+        , retrying(false)
+        , m_authenticationDone(false) { }
 
     HttpDownloader* const q;
     QNetworkAccessManager manager;
@@ -1014,6 +1069,7 @@ struct KDUpdater::HttpDownloader::HttpDownloaderData
     bool downloaded;
     bool aborted;
     bool retrying;
+    bool m_authenticationDone;
 
     void shutDown()
     {
@@ -1031,6 +1087,8 @@ KDUpdater::HttpDownloader::HttpDownloader(QObject* parent)
     : KDUpdater::FileDownloader(QLatin1String("http"), parent)
     , d (new HttpDownloaderData(this))
 {
+    connect(&d->manager, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)), this,
+        SLOT(onAuthenticationRequired(QNetworkReply*, QAuthenticator*)));
 }
 
 KDUpdater::HttpDownloader::~HttpDownloader()
@@ -1058,12 +1116,6 @@ void KDUpdater::HttpDownloader::doDownload()
 
     if (d->http)
         return;
-
-    //// In a future update, authentication should also be supported.
-    //connect(&d->manager, SIGNAL(authenticationRequired(QString, QAuthenticator*)), this,
-    //    SLOT(httpAuth(QString,QAuthenticator*)));
-    //connect(&d->manager, SIGNAL(proxyAuthenticationRequired(QNetworkProxy, QAuthenticator*)), this,
-    //    SLOT(httpProxyAuth(QNetworkProxy, QAuthenticator*)));
 
     startDownload(url());
     runDownloadSpeedTimer();
@@ -1211,6 +1263,8 @@ void KDUpdater::HttpDownloader::timerEvent(QTimerEvent *event)
 
 void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
 {
+    d->m_authenticationDone = false;
+    d->manager.setProxyFactory(proxyFactory());
     d->http = d->manager.get(QNetworkRequest(url));
 
     connect(d->http, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
@@ -1233,6 +1287,16 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
         d->shutDown();
         setDownloadAborted(tr("Cannot download %1: Could not create temporary file: %2").arg(url.toString(),
             d->destination->errorString()));
+    }
+}
+
+void KDUpdater::HttpDownloader::onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
+{
+    qDebug() << reply->readAll();
+    if (!d->m_authenticationDone) {
+        d->m_authenticationDone = true;
+        authenticator->setUser(this->authenticator().user());
+        authenticator->setPassword(this->authenticator().password());
     }
 }
 

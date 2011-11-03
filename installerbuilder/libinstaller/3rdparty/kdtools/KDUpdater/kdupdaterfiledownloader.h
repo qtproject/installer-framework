@@ -30,12 +30,21 @@
 #include <QtCore/QUrl>
 #include <QtCore/QCryptographicHash>
 
+#include <QtNetwork/QAuthenticator>
+#include <QtNetwork/QNetworkProxyFactory>
+
 namespace KDUpdater
 {
     KDTOOLS_UPDATER_EXPORT QByteArray calculateHash(QIODevice* device, QCryptographicHash::Algorithm algo);
     KDTOOLS_UPDATER_EXPORT QByteArray calculateHash(const QString &path, QCryptographicHash::Algorithm algo);
 
     class HashVerificationJob;
+
+    class KDTOOLS_UPDATER_EXPORT FileDownloaderProxyFactory : public QNetworkProxyFactory
+    {
+        public:
+            virtual FileDownloaderProxyFactory *clone() = 0;
+    };
 
     class KDTOOLS_UPDATER_EXPORT FileDownloader : public QObject
     {
@@ -70,6 +79,12 @@ namespace KDUpdater
 
         void setFollowRedirects(bool val);
         bool followRedirects() const;
+
+        FileDownloaderProxyFactory *proxyFactory() const;
+        void setProxyFactory(FileDownloaderProxyFactory *factory);
+
+        QAuthenticator authenticator() const;
+        void setAuthenticator(const QAuthenticator &authenticator);
 
     public Q_SLOTS:
         virtual void cancelDownload();
