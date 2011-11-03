@@ -86,6 +86,9 @@ QByteArray KDUpdater::calculateHash(const QString &path, QCryptographicHash::Alg
     return calculateHash(&file, algo);
 }
 
+
+// -- HashVerificationJob
+
 class HashVerificationJob::Private
 {
 public:
@@ -169,37 +172,36 @@ void HashVerificationJob::timerEvent(QTimerEvent*)
     emitFinished();
 }
 
-////////////////////////////////////////////////////////////////////////////
-// KDUpdater::FileDownloader
-////////////////////////////////////////////////////////////////////////////
+
+// -- KDUpdater::FileDownloader
 
 /*!
-   \internal
-   \ingroup kdupdater
-   \class KDUpdater::FileDownloader kdupdaterfiledownloader.h
+    \internal
+    \ingroup kdupdater
+    \class KDUpdater::FileDownloader kdupdaterfiledownloader.h
 
-   Base class for file downloaders used in KDUpdater. File downloaders are used by
-   the KDUpdater::Update class to download update files. Each subclass of FileDownloader
-   can download file from a specific category of sources (e.g. local, ftp, http etc).
+    Base class for file downloaders used in KDUpdater. File downloaders are used by
+    the KDUpdater::Update class to download update files. Each subclass of FileDownloader
+    can download file from a specific category of sources (e.g. local, ftp, http etc).
 
-   This is an internal class, not a part of the public API. Currently we have three
-   subclasses of FileDownloader
-   \li LocalFileDownloader - downloads from the local file system
-   \li FtpDownloader - downloads from a FTP site
-   \li HttpDownloader - downloads from a HTTP site
+    This is an internal class, not a part of the public API. Currently we have three
+    subclasses of FileDownloader
+    \li LocalFileDownloader - downloads from the local file system
+    \li FtpDownloader - downloads from a FTP site
+    \li HttpDownloader - downloads from a HTTP site
 
-   Usage
+    Usage
 
-   \code
-   KDUpdater::FileDownloader* downloader = new KDUpdater::(some subclass name)
+    \code
+    KDUpdater::FileDownloader* downloader = new KDUpdater::(some subclass name)
 
-   downloader->setUrl(url);
-   downloader->download();
+    downloader->setUrl(url);
+    downloader->download();
 
-// wait for downloadCompleted() signal
+    // wait for downloadCompleted() signal
 
-QString downloadedFile = downloader->downloadedFileName();
-\endcode
+    QString downloadedFile = downloader->downloadedFileName();
+    \endcode
 */
 
 struct KDUpdater::FileDownloader::FileDownloaderData
@@ -469,24 +471,23 @@ void KDUpdater::FileDownloader::emitEstimatedDownloadTime()
 }
 
 
-////////////////////////////////////////////////////////////////////////////
-// KDUpdater::FileDownloader
-////////////////////////////////////////////////////////////////////////////
+
+// -- KDUpdater::LocalFileDownloader
 
 /*
-  Even though QFile::copy() does the task of copying local files from one place
-  to another, I prefer to use the timer and copy one block of data per unit time.
+      Even though QFile::copy() does the task of copying local files from one place
+      to another, I prefer to use the timer and copy one block of data per unit time.
 
-  This is because, it is possible that the user of KDUpdater is simultaneously
-  downloading several files. Sometimes in tandem with other file downloaders.
-  If the local file that is being downloaded takes a long time; then that will
-  hang the other downloads.
+      This is because, it is possible that the user of KDUpdater is simultaneously
+      downloading several files. Sometimes in tandem with other file downloaders.
+      If the local file that is being downloaded takes a long time; then that will
+      hang the other downloads.
 
-  On the other hand, local downloads need not actually download the file. It can
-  simply pass on the source file as destination file. At this moment however,
-  I think the user of LocalFileDownloader will assume that the downloaded file
-  can be fiddled around with without worrying about whether it would mess up
-  the original source or not.
+      On the other hand, local downloads need not actually download the file. It can
+      simply pass on the source file as destination file. At this moment however,
+      I think the user of LocalFileDownloader will assume that the downloaded file
+      can be fiddled around with without worrying about whether it would mess up
+      the original source or not.
 */
 
 struct KDUpdater::LocalFileDownloader::LocalFileDownloaderData
@@ -668,6 +669,9 @@ void LocalFileDownloader::onError()
     stopDownloadSpeedTimer();
 }
 
+
+// -- ResourceFileDownloader
+
 struct KDUpdater::ResourceFileDownloader::ResourceFileDownloaderData
 {
     ResourceFileDownloaderData()
@@ -768,9 +772,8 @@ void KDUpdater::ResourceFileDownloader::onError()
     d->downloaded = false;
 }
 
-////////////////////////////////////////////////////////////////////////////
-// KDUpdater::FileDownloader
-////////////////////////////////////////////////////////////////////////////
+
+// -- KDUpdater::FtpFileDownloader
 
 struct KDUpdater::FtpDownloader::FtpDownloaderData
 {
@@ -990,9 +993,8 @@ void KDUpdater::FtpDownloader::timerEvent(QTimerEvent *event)
     }
 }
 
-////////////////////////////////////////////////////////////////////////////
-// KDUpdater::FileDownloader
-////////////////////////////////////////////////////////////////////////////
+
+// -- KDUpdater::HttpDownloader
 
 struct KDUpdater::HttpDownloader::HttpDownloaderData
 {
@@ -1233,6 +1235,9 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
             d->destination->errorString()));
     }
 }
+
+
+// -- SignatureVerificationDownloader
 
 class SignatureVerificationDownloader::Private
 {
