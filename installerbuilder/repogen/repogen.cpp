@@ -62,11 +62,12 @@ static void printUsage()
     std::cout << "  -c|--config dir        The directory containing the installer configuration "
         "files to use." << std::endl;
     std::cout << "  -e|--exclude p1,...,pn exclude the given packages and their dependencies from the repository" << std::endl;
+    std::cout << "  -u|--updateurl url instructs clients to receive updates from a different location" << std::endl;
     std::cout << "  -v|--verbose           Verbose output" << std::endl;
     std::cout << "     --single            Put only the given components (not their dependencies) into the (already existing) repository" << std::endl;
     std::cout << std::endl;
     std::cout << "Example:" << std::endl;
-    std::cout << "  " << appName << " -p ../examples/packages -c ../examples/config repository/ com.nokia.sdk" << std::endl;
+    std::cout << "  " << appName << " -p ../examples/packages -c ../examples/config -u http://www.some-server.com:8080 repository/ com.nokia.sdk" << std::endl;
 }
 
 static int printErrorAndUsageAndExit( const QString& err ) 
@@ -103,6 +104,7 @@ int main( int argc, char** argv ) {
         bool replaceSingleComponent = false;
         QString packagesDir;
         QString configDir;
+        QString redirectUpdateUrl;
 
         //TODO: use a for loop without removing values from args like it is in binarycreator.cpp
         //for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -150,7 +152,14 @@ int main( int argc, char** argv ) {
                 }
                 configDir = args.first();
                 args.removeFirst();
-            } else {
+            } else if (args.first() == QLatin1String("-u") || args.first() == QLatin1String("--updateurl")) {
+                args.removeFirst();
+                if (args.isEmpty())
+                    return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument"));
+                redirectUpdateUrl = args.first();
+                args.removeFirst();
+            }
+            else {
                 printUsage();
                 return 1;
             }
@@ -205,7 +214,7 @@ int main( int argc, char** argv ) {
 
         const Settings &settings = Settings::fromFileAndPrefix(configDir + QLatin1String("/config.xml"), configDir);
         generateMetaDataDirectory(metaTmp, repositoryDir, packages, settings.applicationName(),
-            settings.applicationVersion());
+            settings.applicationVersion(), redirectUpdateUrl);
         compressMetaDirectories(configDir, metaTmp, metaTmp, pathToVersionMapping);
 
         QFile::remove(QFileInfo(repositoryDir, QLatin1String("Updates.xml")).absoluteFilePath());

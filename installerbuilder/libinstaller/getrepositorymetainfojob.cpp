@@ -287,6 +287,10 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     m_packageVersions << c2.at(j).toElement().text();
                 else if (c2.at(j).toElement().tagName() == QLatin1String("SHA1"))
                     m_packageHash << c2.at(j).toElement().text();
+        } else if (el.tagName() == QLatin1String("RedirectUpdateUrl")) { // received a new URL for package download
+            m_repository.setUrl(QUrl(el.text()));   // update the internal repo container
+            startUpdatesXmlDownload();  // ... and start over
+            return;
         }
     }
 

@@ -48,12 +48,9 @@ namespace QInstaller {
                             const QVector<PackageInfo> &infos );
     void generateMetaDataDirectory( const QString &outDir, const QString &dataDir,
                                     const QVector<PackageInfo> &packages, const QString &appName,
-                                    const QString& appVersion );
+                                    const QString& appVersion, const QString &redirectUpdateUrl = QString() );
     QVector<PackageInfo> createListOfPackages( const QStringList &components, const QString &packagesDirectory,
                                                bool addDependencies = true );
-    void generateMetaDataDirectory( const QString &outDir, const QString &dataDir,
-                                    const QVector<PackageInfo> &packages, const QString &appName,
-                                    const QString &appVersion );
 }
 
 #endif // QINSTALLER_REPOSITORYGEN_H

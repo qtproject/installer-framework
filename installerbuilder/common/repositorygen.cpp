@@ -326,10 +326,11 @@ void QInstaller::compressMetaDirectories(const QString& configDir, const QString
     }
 }
 
-void QInstaller::generateMetaDataDirectory(const QString& metapath_, const QString& dataDir,
-    const QVector< PackageInfo >& packages, const QString& appName, const QString& appVersion)
+void QInstaller::generateMetaDataDirectory(const QString& outDir, const QString& dataDir,
+    const QVector< PackageInfo >& packages, const QString& appName, const QString& appVersion,
+    const QString &redirectUpdateUrl)
 {
-    QString metapath = metapath_;
+    QString metapath = outDir;
     if (QFileInfo(metapath).isRelative())
         metapath = QDir::cleanPath(QDir::current().absoluteFilePath(metapath));
     verbose() << "Generating meta data..." << std::endl;
@@ -349,6 +350,10 @@ void QInstaller::generateMetaDataDirectory(const QString& metapath_, const QStri
             doc.createTextNode(appVersion));
         root.appendChild(doc.createElement("Checksum")).appendChild(
             doc.createTextNode(QLatin1String("true")));
+        if (!redirectUpdateUrl.isEmpty()) {
+            root.appendChild(doc.createElement("RedirectUpdateUrl")).appendChild(
+                doc.createTextNode(redirectUpdateUrl));
+        }
     } else {
         root = doc.documentElement();
     }
