@@ -267,8 +267,8 @@ private:
         const QString &version = QString(), Component *check = 0);
 
     void updateDisplayVersions();
-    QString findDisplayVersion(const QString &componentName, const QHash<QString, QInstaller::Component*> &components,
-                               QHash<QString, bool> &visited);
+    QString findDisplayVersion(const QString &componentName,
+        const QHash<QString, QInstaller::Component*> &components, QHash<QString, bool> &visited);
 private:
     PackageManagerCorePrivate *const d;
     friend class PackageManagerCorePrivate;

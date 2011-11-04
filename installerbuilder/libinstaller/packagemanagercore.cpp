@@ -96,8 +96,8 @@ static bool componentMatches(const Component *component, const QString &name,
     return PackageManagerCore::versionMatches(component->value(scVersion), version);
 }
 
-Component* PackageManagerCore::subComponentByName(const QInstaller::PackageManagerCore *installer, const QString &name,
-    const QString &version, Component *check)
+Component* PackageManagerCore::subComponentByName(const QInstaller::PackageManagerCore *installer,
+    const QString &name, const QString &version, Component *check)
 {
     if (name.isEmpty())
         return 0;
@@ -1518,9 +1518,9 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
 
 void PackageManagerCore::storeReplacedComponents(QHash<QString, Component*> &components, const struct Data &data)
 {
-    QHash<Component*, QStringList>::const_iterator it;
+    QHash<Component*, QStringList>::const_iterator it = data.replacementToExchangeables.constBegin();
     // remember all components that got a replacement, required for uninstall
-    for (it = data.replacementToExchangeables.constBegin(); it != data.replacementToExchangeables.constEnd(); ++it) {
+    for (; it != data.replacementToExchangeables.constEnd(); ++it) {
         foreach (const QString &componentName, it.value()) {
             Component *component = components.take(componentName);
             if (!component && !d->componentsToReplace(data.runMode).contains(componentName)) {
@@ -1775,8 +1775,7 @@ void PackageManagerCore::updateDisplayVersions()
 }
 
 QString PackageManagerCore::findDisplayVersion(const QString &componentName,
-                                               const QHash<QString, QInstaller::Component*> &components,
-                                               QHash<QString, bool> &visited)
+    const QHash<QString, QInstaller::Component*> &components, QHash<QString, bool> &visited)
 {
     const QString replaceWith = components.value(componentName)->value(scInheritVersion);
     visited[componentName] = true;
