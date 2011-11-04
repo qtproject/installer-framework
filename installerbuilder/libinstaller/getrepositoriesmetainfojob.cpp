@@ -60,7 +60,10 @@ QList< Repository > GetRepositoriesMetaInfoJob::repositories() const
 void GetRepositoriesMetaInfoJob::setRepositories(const QList<Repository>& repos)
 {
     m_repositories = repos;
-    m_tmpRepositories = repos;
+    foreach (const Repository &repo, repos) {
+        if (repo.isEnabled())
+            m_tmpRepositories += repo;
+    }
 }
 
 QStringList GetRepositoriesMetaInfoJob::temporaryDirectories() const
