@@ -57,7 +57,7 @@ QList< Repository > GetRepositoriesMetaInfoJob::repositories() const
     return m_repositories;
 }
 
-void GetRepositoriesMetaInfoJob::setRepositories(const QList<Repository>& repos)
+void GetRepositoriesMetaInfoJob::setRepositories(const QList<Repository> &repos)
 {
     m_repositories = repos;
     foreach (const Repository &repo, repos) {
@@ -157,7 +157,7 @@ void GetRepositoriesMetaInfoJob::jobFinished(KDJob* j)
     const GetRepositoryMetaInfoJob *const job = qobject_cast<const GetRepositoryMetaInfoJob*>(j);
     Q_ASSERT(job);
 
-    if(job->error() != KDJob::NoError && !job->temporaryDirectory().isEmpty()) {
+    if (job->error() != KDJob::NoError && !job->temporaryDirectory().isEmpty()) {
         try {
             removeDirectory(job->temporaryDirectory());
         } catch (...) {
