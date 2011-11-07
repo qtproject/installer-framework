@@ -156,7 +156,6 @@ bool Repository::operator==(const Repository &other) const
 {
     return m_url == other.m_url && m_default == other.m_default && m_enabled == other.m_enabled
         && m_username == other.m_username && m_password == other.m_password;
-;
 }
 
 /*!
