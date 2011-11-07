@@ -56,6 +56,9 @@ public:
     void passAndReleaseAll(TempDirDeleter &tdd);
     void passAndRelease(TempDirDeleter &tdd, const QString &path);
 
+    void releaseAndDeleteAll();
+    void releaseAndDelete(const QString &path);
+
 private:
     Q_DISABLE_COPY(TempDirDeleter)
     QSet<QString> m_paths;

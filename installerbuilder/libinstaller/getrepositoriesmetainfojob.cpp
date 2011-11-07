@@ -97,13 +97,20 @@ void GetRepositoriesMetaInfoJob::setSilentRetries(int retries)
     m_silentRetries = retries;
 }
 
-void GetRepositoriesMetaInfoJob::resetState()
+void GetRepositoriesMetaInfoJob::reset()
 {
     m_canceled = false;
+    m_silentRetries = 3;
     m_errorString.clear();
     m_haveIgnoredError = false;
 
+    m_repositories.clear();
+    m_tmpRepositories.clear();
+    m_tempDirDeleter.releaseAndDeleteAll();
+    m_repositoryByTemporaryDirectory.clear();
+
     setError(KDJob::NoError);
+    setCapabilities(Cancelable);
     setErrorString(QLatin1String(""));
 }
 

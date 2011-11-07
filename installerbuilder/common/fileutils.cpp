@@ -61,17 +61,7 @@ TempDirDeleter::TempDirDeleter(const QStringList &paths)
 
 TempDirDeleter::~TempDirDeleter()
 {
-    foreach (const QString &path, m_paths) {
-        if (!path.isEmpty()) {
-            try {
-                removeDirectory(path);
-            } catch (const Error &e) {
-                qCritical() << Q_FUNC_INFO << "Exception caught:" << e.message();
-            } catch (...) {
-                qCritical() << Q_FUNC_INFO << "Unknown exception caught.";
-            }
-        }
-    }
+    releaseAndDeleteAll();
 }
 
 QStringList TempDirDeleter::paths() const
@@ -109,6 +99,26 @@ void TempDirDeleter::passAndRelease(TempDirDeleter &tdd, const QString &path)
 {
     tdd.add(path);
     release(path);
+}
+
+void TempDirDeleter::releaseAndDeleteAll()
+{
+    foreach (const QString &path, m_paths)
+        releaseAndDelete(path);
+}
+
+void TempDirDeleter::releaseAndDelete(const QString &path)
+{
+    if (m_paths.contains(path)) {
+        try {
+            m_paths.remove(path);
+            removeDirectory(path);
+        } catch (const Error &e) {
+            qCritical() << Q_FUNC_INFO << "Exception caught:" << e.message();
+        } catch (...) {
+            qCritical() << Q_FUNC_INFO << "Unknown exception caught.";
+        }
+    }
 }
 
 

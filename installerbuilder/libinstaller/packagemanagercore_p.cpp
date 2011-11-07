@@ -545,11 +545,6 @@ void PackageManagerCorePrivate::initialize()
         connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this, SLOT(infoMessage(KDJob*,
             QString)));
     }
-    if (!m_updateFinder) {
-        m_updateFinder = new KDUpdater::UpdateFinder(&m_updaterApplication);
-        m_updateFinder->setAutoDelete(false);
-        m_updateFinder->setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
-    }
 }
 
 QString PackageManagerCorePrivate::installerBinaryPath() const
@@ -1773,11 +1768,15 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
 
 PackagesList PackageManagerCorePrivate::remotePackages()
 {
-    if (m_updates)
+    if (m_updates && m_updateFinder)
         return m_updateFinder->updates();
 
     m_updates = false;
+    delete m_updateFinder;
 
+    m_updateFinder = new KDUpdater::UpdateFinder(&m_updaterApplication);
+    m_updateFinder->setAutoDelete(false);
+    m_updateFinder->setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
     m_updateFinder->run();
 
     if (m_updateFinder->updates().isEmpty()) {
@@ -1826,8 +1825,11 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
     if (m_repoFetched)
         return m_repoFetched;
 
+    m_updates = false;
     m_repoFetched = false;
-    m_repoMetaInfoJob->resetState();
+    m_updateSourcesAdded = false;
+
+    m_repoMetaInfoJob->reset();
     if ((isInstaller() && !m_core->isOfflineOnly()) || (isUpdater() || isPackageManager()))
         m_repoMetaInfoJob->setRepositories(m_settings.repositories());
 
@@ -1862,7 +1864,17 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
         return m_updateSourcesAdded;
     }
 
+    // forces an refresh/ clear on all update sources
+    m_updaterApplication.updateSourcesInfo()->refresh();
+    if (isInstaller()) {
+        m_updaterApplication.addUpdateSource(m_settings.applicationName(), m_settings.applicationName(),
+            QString(), QUrl(QLatin1String("resource://metadata/")), 0);
+        m_updaterApplication.updateSourcesInfo()->setModified(false);
+    }
+
+    m_updates = false;
     m_updateSourcesAdded = false;
+
     const QString &appName = m_settings.applicationName();
     const QStringList tempDirs = m_repoMetaInfoJob->temporaryDirectories();
     foreach (const QString &tmpDir, tempDirs) {

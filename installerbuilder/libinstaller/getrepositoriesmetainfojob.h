@@ -65,7 +65,7 @@ public:
     int silentRetries() const;
     void setSilentRetries(int retries);
 
-    void resetState();
+    void reset();
     bool isCanceled() const;
 
 private Q_SLOTS:
