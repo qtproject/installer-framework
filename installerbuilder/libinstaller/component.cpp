@@ -770,6 +770,10 @@ void Component::addOperation(Operation *operation)
 */
 void Component::addElevatedOperation(Operation *operation)
 {
+    if (value(scRequiresAdminRights, scFalse) != scTrue) {
+        qWarning() << QString::fromLatin1("component %1 uses addElevatedOperation in the script, but it doesn't"
+            "have the needed RequiresAdminRights tag").arg(name());
+    }
     addOperation(operation);
     operation->setValue(QLatin1String("admin"), true);
 }

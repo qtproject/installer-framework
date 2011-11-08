@@ -472,6 +472,20 @@ void QInstaller::generateMetaDataDirectory(const QString& outDir, const QString&
         // copy scripts
         const QString script = package.firstChildElement("Script").text();
         if (!script.isEmpty()) {
+
+            QFile scriptFile(script);
+            QString scriptContent;
+            if (scriptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                QTextStream in(&scriptFile);
+                scriptContent = in.readAll();
+            }
+
+            //added the xml tag RequiresAdminRights to the xml if somewhere addElevatedOperation is used
+            if (scriptContent.contains("addElevatedOperation")) {
+                QDomElement requiresAdminRightsElement = doc.createElement("RequiresAdminRights");
+                requiresAdminRightsElement.appendChild(doc.createTextNode("true"));
+            }
+
             verbose() << "    Copying associated script " << script << " into the meta package...";
             QString fromLocation(QString::fromLatin1("%1/meta/%2").arg(it->directory, script));
             QString toLocation(QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, script));
