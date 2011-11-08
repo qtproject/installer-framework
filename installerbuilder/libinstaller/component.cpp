@@ -512,11 +512,11 @@ QHash<QString, QPair<QString, QString> > Component::licenses() const
 }
 
 /*!
-    Returns the QWidget created for class \a name.
+    Returns the QWidget created for \a name or 0 if the widget already has been deleted or cannot be found.
 */
 QWidget *Component::userInterface(const QString &name) const
 {
-    return d->m_userInterfaces.value(name);
+    return d->m_userInterfaces.value(name).data();
 }
 
 /*!

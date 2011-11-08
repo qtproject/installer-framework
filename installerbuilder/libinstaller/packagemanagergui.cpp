@@ -435,25 +435,24 @@ void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
     // just in case it was already in there...
     wizardPageRemovalRequested(widget);
 
-    // now find a suitable ID lower than page
-    int p = static_cast<int>(page) - 1;
-    while (QWizard::page(p) != 0)
-        --p;
+    int pageId = static_cast<int>(page) - 1;
+    while (QWizard::page(pageId) != 0)
+        --pageId;
+
     // add it
-    setPage(p, new DynamicInstallerPage(widget, m_core));
+    setPage(pageId, new DynamicInstallerPage(widget, m_core));
 }
 
 void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
 {
-    const QList<int> pages = pageIds();
-    for (QList<int>::const_iterator it = pages.begin(); it != pages.end(); ++it) {
-        QWizardPage *const p = page(*it);
-        DynamicInstallerPage *const dynamicPage = dynamic_cast<DynamicInstallerPage*>(p);
+    foreach (int pageId, pageIds()) {
+        DynamicInstallerPage *const dynamicPage = dynamic_cast<DynamicInstallerPage*>(page(pageId));
         if (dynamicPage == 0)
             continue;
         if (dynamicPage->widget() != widget)
             continue;
-        removePage(*it);
+        removePage(pageId);
+        d->m_defaultPages.remove(pageId);
     }
 }
 

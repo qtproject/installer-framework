@@ -59,6 +59,22 @@ ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
 {
 }
 
+ComponentPrivate::~ComponentPrivate()
+{
+    // Before we can delete the added widgets, they need to be removed from the wizard first.
+    QMap<QString, QPointer<QWidget> >::const_iterator it;
+    foreach (const QString &widgetName, m_userInterfaces.keys()) {
+        m_core->removeWizardPage(q, widgetName);
+        m_core->removeWizardPageItem(q, widgetName);
+    }
+
+    // Use QPointer here instead of raw pointers. This is a requirement that needs to be met cause possible
+    // Ui elements get added during component script run and might be destroyed by the package manager gui
+    // before the actual component gets destroyed. Avoids a possible delete call on a dangling pointer.
+    foreach (const QPointer<QWidget> widget, m_userInterfaces)
+        delete widget.data();
+}
+
 void ComponentPrivate::init()
 {
     // register translation stuff

@@ -35,6 +35,7 @@
 
 #include "qinstallerglobal.h"
 
+#include <QtCore/QPointer>
 #include <QtCore/QStringList>
 #include <QtCore/QUrl>
 
@@ -51,6 +52,7 @@ class ComponentPrivate
 
 public:
     explicit ComponentPrivate(PackageManagerCore *core, Component *qq);
+    ~ComponentPrivate();
 
     void init();
     void setProperty(QScriptValue &scriptValue, const QString &propertyName, int value);
@@ -78,9 +80,9 @@ public:
     QList<Component*> m_allChildComponents;
     QList<Component*> m_virtualChildComponents;
     QStringList m_downloadableArchives;
-    QMap<QString, QWidget*> m_userInterfaces;
     QStringList m_stopProcessForUpdateRequests;
     QHash<QString, bool> m_unexistingScriptMethods;
+    QMap<QString, QPointer<QWidget> > m_userInterfaces;
 
     // < display name, < file name, file content > >
     QHash<QString, QPair<QString, QString> > m_licenses;
