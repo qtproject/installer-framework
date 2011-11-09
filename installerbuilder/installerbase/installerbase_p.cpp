@@ -63,13 +63,13 @@ MyCoreApplication::MyCoreApplication(int &argc, char **argv)
 {
 }
 
-// reimplemented from QCoreApplication so we can throw exceptions in scripts and slots
+// re-implemented from QCoreApplication so we can throw exceptions in scripts and slots
 bool MyCoreApplication::notify(QObject *receiver, QEvent *event)
 {
     try {
         return QCoreApplication::notify(receiver, event);
     } catch(std::exception &e) {
-        qCritical() << "Exception thrown:" << e.what();
+        qFatal("Exception thrown: %s", e.what());
     }
     return false;
 }
@@ -82,13 +82,13 @@ MyApplication::MyApplication(int &argc, char **argv)
 {
 }
 
-// reimplemented from QApplication so we can throw exceptions in scripts and slots
+// re-implemented from QApplication so we can throw exceptions in scripts and slots
 bool MyApplication::notify(QObject *receiver, QEvent *event)
 {
     try {
         return QApplication::notify(receiver, event);
     } catch(std::exception &e) {
-        qCritical() << "Exception thrown:" << e.what();
+        qFatal("Exception thrown: %s", e.what());
     }
     return false;
 }

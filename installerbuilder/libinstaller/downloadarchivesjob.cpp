@@ -276,11 +276,19 @@ void DownloadArchivesJob::registerFile()
     }
 
     const QString tempFile = m_downloader->downloadedFileName();
-    QFile archiveFile(tempFile);
-    if (archiveFile.open(QFile::ReadOnly)) {
-        if (m_core->testChecksum()) {
-            const QByteArray archiveHash = QCryptographicHash::hash(archiveFile.readAll(),
-                QCryptographicHash::Sha1).toHex();
+    if (m_core->testChecksum()) {
+        QFile archiveFile(tempFile);
+        if (archiveFile.open(QFile::ReadOnly)) {
+            static QByteArray buffer(1024 * 1024, '\0');
+            QCryptographicHash hash(QCryptographicHash::Sha1);
+            while (true) {
+                const qint64 numRead = archiveFile.read(buffer.data(), buffer.size());
+                if (numRead <= 0)
+                    break;
+                hash.addData(buffer.constData(), numRead);
+            }
+
+            const QByteArray archiveHash = hash.result().toHex();
             if (archiveHash != m_currentHash) {
                 //TODO: Maybe we should try to download the file again automatically
                 const QMessageBox::Button res =
@@ -297,9 +305,9 @@ void DownloadArchivesJob::registerFile()
                 fetchNextArchiveHash();
                 return;
             }
+        } else {
+            finishWithError(tr("Could not open %1").arg(tempFile));
         }
-    } else {
-        finishWithError(tr("Could not open %1").arg(tempFile));
     }
 
     m_temporaryFiles.insert(tempFile);
