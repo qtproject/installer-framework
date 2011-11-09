@@ -127,39 +127,15 @@ void DownloadArchivesJob::fetchNextArchiveHash()
         if (m_downloader)
             m_downloader->deleteLater();
 
-        const CryptoSignatureVerifier verifier(m_publicKey);
-        const QUrl url(m_archivesToDownload.first().second + QLatin1String(".sha1"));
-        m_downloader = FileDownloaderFactory::instance().create(url.scheme(), m_publicKey.isEmpty() ? 0
-            : &verifier, QUrl(m_archivesToDownload.first().second + QLatin1String(".sig")), this);
-
-        const QString &scheme = url.scheme();
+        m_downloader = setupDownloader(QLatin1String(".sha1"));
         if (!m_downloader) {
             m_archivesToDownload.removeFirst();
-            emit outputTextChanged(tr("Scheme not supported: %1 (%2)").arg(scheme, url.toString()));
             QMetaObject::invokeMethod(this, "fetchNextArchiveHash", Qt::QueuedConnection);
             return;
         }
 
         connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(finishedHashDownload()),
             Qt::QueuedConnection);
-        connect(m_downloader, SIGNAL(downloadCanceled()), this, SLOT(downloadCanceled()));
-        connect(m_downloader, SIGNAL(downloadAborted(QString)), this, SLOT(downloadFailed(QString)),
-            Qt::QueuedConnection);
-        //hashes are not registered as files - so we can't handle this as a normal progress
-        connect(m_downloader, SIGNAL(downloadStatus(QString)), this, SIGNAL(downloadStatusChanged(QString)));
-
-        m_downloader->setUrl(url);
-        m_downloader->setAutoRemoveDownloadedFile(false);
-
-        const QFileInfo fi = QFileInfo(m_archivesToDownload.first().first);
-        const Component *const component = m_core->componentByName(QFileInfo(fi.path()).fileName());
-        if (scheme == QLatin1String("http") || scheme == QLatin1String("ftp")
-            || scheme == QLatin1String("file")) {
-                m_downloader->setDownloadedFileName(component->localTempPath() + QLatin1String("/")
-                    + component->name() + QLatin1String("/") + fi.fileName() + QLatin1String(".sha1"));
-        }
-
-        emit outputTextChanged(tr("Downloading archive hash for component: %1").arg(component->displayName()));
         m_downloader->download();
     } else {
         QMetaObject::invokeMethod(this, "fetchNextArchive", Qt::QueuedConnection);
@@ -191,7 +167,7 @@ void DownloadArchivesJob::fetchNextArchive()
         finishWithError(tr("Canceled"));
         return;
     }
-    
+
     if (m_archivesToDownload.isEmpty()) {
         emitFinished();
         return;
@@ -200,42 +176,19 @@ void DownloadArchivesJob::fetchNextArchive()
     if (m_downloader != 0)
         m_downloader->deleteLater();
 
-    const CryptoSignatureVerifier verifier(m_publicKey);
-    const QUrl url(m_archivesToDownload.first().second);
-    m_downloader = FileDownloaderFactory::instance().create(url.scheme(), m_publicKey.isEmpty() ? 0
-        : &verifier, m_archivesToDownload.first().second + QLatin1String(".sig"), this);
-
-    const QString &scheme = url.scheme();
+    m_downloader = setupDownloader();
     if (!m_downloader) {
         m_archivesToDownload.removeFirst();
-        emit outputTextChanged(tr("Scheme not supported: %1 (%2)").arg(scheme, url.toString()));
         QMetaObject::invokeMethod(this, "fetchNextArchive", Qt::QueuedConnection);
         return;
     }
 
-    connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(registerFile()), Qt::QueuedConnection);
-    connect(m_downloader, SIGNAL(downloadCanceled()), this, SLOT(downloadCanceled()));
-    connect(m_downloader, SIGNAL(downloadAborted(QString)), this, SLOT(downloadFailed(QString)),
-        Qt::QueuedConnection);
-    connect(m_downloader, SIGNAL(downloadProgress(double)), this, SLOT(emitDownloadProgress(double)));
-    connect(m_downloader, SIGNAL(downloadStatus(QString)), this, SIGNAL(downloadStatusChanged(QString)));
-
-    m_downloader->setUrl(url);
-    m_downloader->setAutoRemoveDownloadedFile(false);
-
-    const QFileInfo fi = QFileInfo(m_archivesToDownload.first().first);
-    const Component *const component = m_core->componentByName(QFileInfo(fi.path()).fileName());
-    if (scheme == QLatin1String("http") || scheme == QLatin1String("ftp")
-        || scheme == QLatin1String("file")) {
-            m_downloader->setDownloadedFileName(component->localTempPath() + QLatin1String("/")
-                + component->name() + QLatin1String("/") + fi.fileName());
-    }
-
-    emit outputTextChanged(tr("Downloading archive for component: %1").arg(component->displayName()));
     emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
+    connect(m_downloader, SIGNAL(downloadProgress(double)), this, SLOT(emitDownloadProgress(double)));
+    connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(registerFile()), Qt::QueuedConnection);
+
     m_downloader->download();
 }
-
 
 /*!
     Emits the global download progress during a single download in a lazy way (uses a timer to reduce to
@@ -259,7 +212,6 @@ void DownloadArchivesJob::timerEvent(QTimerEvent *event)
         emit progressChanged((double(m_archivesDownloaded) + m_lastFileProgress) / m_archivesToDownloadCount);
     }
 }
-
 
 /*!
     Registers the just downloaded file in the intaller's file system.
@@ -330,7 +282,7 @@ void DownloadArchivesJob::downloadFailed(const QString &error)
         .arg(m_archivesToDownload.first().second, error), QMessageBox::Retry | QMessageBox::Cancel);
 
     if (b == QMessageBox::Retry)
-        QMetaObject::invokeMethod(this, "fetchNextArchive", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "fetchNextArchiveHash", Qt::QueuedConnection);
     else
         downloadCanceled();
 }
@@ -343,4 +295,47 @@ void DownloadArchivesJob::finishWithError(const QString &error)
         emitFinishedWithError(QInstaller::DownloadError, msg.arg(error, dl->url().toString()));
     else
         emitFinishedWithError(QInstaller::DownloadError, msg.arg(error, m_downloader->url().toString()));
+}
+
+KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &prefix)
+{
+    KDUpdater::FileDownloader *downloader = 0;
+    const QString targetUrl = m_archivesToDownload.first().second;
+    const QString registerPath = m_archivesToDownload.first().first;
+
+    const QFileInfo fi = QFileInfo(registerPath);
+    const Component *const component = m_core->componentByName(QFileInfo(fi.path()).fileName());
+    if (component) {
+        const QUrl url(targetUrl + prefix);
+        const QString &scheme = url.scheme();
+        const CryptoSignatureVerifier verifier(m_publicKey);
+        downloader = FileDownloaderFactory::instance().create(scheme, m_publicKey.isEmpty() ? 0 : &verifier,
+            QUrl(targetUrl + QLatin1String(".sig")), this);
+
+        if (downloader) {
+            downloader->setUrl(url);
+            downloader->setAutoRemoveDownloadedFile(false);
+
+            connect(downloader, SIGNAL(downloadCanceled()), this, SLOT(downloadCanceled()));
+            connect(downloader, SIGNAL(downloadAborted(QString)), this, SLOT(downloadFailed(QString)),
+                Qt::QueuedConnection);
+            connect(downloader, SIGNAL(downloadStatus(QString)), this, SIGNAL(downloadStatusChanged(QString)));
+
+            if (scheme == QLatin1String("http") || scheme == QLatin1String("ftp") ||
+                scheme == QLatin1String("file")) {
+                    downloader->setDownloadedFileName(component->localTempPath() + QLatin1String("/")
+                        + component->name() + QLatin1String("/") + fi.fileName() + prefix);
+            }
+
+            QString message = tr("Downloading archive hash for component: %1");
+            if (prefix.isEmpty())
+                message = tr("Downloading archive for component: %1");
+            emit outputTextChanged(message.arg(component->displayName()));
+        } else {
+            emit outputTextChanged(tr("Scheme not supported: %1 (%2)").arg(scheme, url.toString()));
+        }
+    } else {
+        emit outputTextChanged(tr("Could not find component for: %1.").arg(QFileInfo(fi.path()).fileName()));
+    }
+    return downloader;
 }
