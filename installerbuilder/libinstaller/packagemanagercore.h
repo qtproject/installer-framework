@@ -103,8 +103,8 @@ public:
 
     Q_INVOKABLE static bool versionMatches(const QString &version, const QString &requirement);
 
-    Q_INVOKABLE static QString findLibrary(const QString &name, const QStringList &pathes = QStringList());
-    Q_INVOKABLE static QString findPath(const QString &name, const QStringList &pathes = QStringList());
+    Q_INVOKABLE static QString findLibrary(const QString &name, const QStringList &paths = QStringList());
+    Q_INVOKABLE static QString findPath(const QString &name, const QStringList &paths = QStringList());
 
     Q_INVOKABLE void setInstallerBaseBinary(const QString &path);
 

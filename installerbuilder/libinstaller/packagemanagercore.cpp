@@ -193,7 +193,7 @@ QString QInstaller::uncaughtExceptionString(QScriptEngine *scriptEngine, const Q
 
 /*!
     \class QInstaller::PackageManagerCore
-    PackageManagerCore forms the core of the installation and uninstallation system.
+    PackageManagerCore forms the core of the installation, update, maintenance and un-installation system.
  */
 
 /*!
@@ -469,7 +469,7 @@ void PackageManagerCore::rollBackInstallation()
         } catch (...) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("unknown"),
                 tr("Unknown error."), tr("Some components could not be removed completely because an unknown "
-                "error happend."));
+                "error happened."));
         }
     }
     packages.writeToDisk();
@@ -1131,42 +1131,42 @@ bool PackageManagerCore::versionMatches(const QString &version, const QString &r
 }
 
 /*!
-    Finds a library named \a name in \a pathes.
-    If \a pathes is empty, it gets filled with platform dependent default pathes.
+    Finds a library named \a name in \a paths.
+    If \a paths is empty, it gets filled with platform dependent default paths.
     The resulting path is stored in \a library.
     This method can be used by scripts to check external dependencies.
 */
-QString PackageManagerCore::findLibrary(const QString &name, const QStringList &pathes)
+QString PackageManagerCore::findLibrary(const QString &name, const QStringList &paths)
 {
-    QStringList findPathes = pathes;
+    QStringList findPaths = paths;
 #if defined(Q_WS_WIN)
-    return findPath(QString::fromLatin1("%1.lib").arg(name), findPathes);
+    return findPath(QString::fromLatin1("%1.lib").arg(name), findPaths);
 #else
-    if (findPathes.isEmpty()) {
-        findPathes.push_back(QLatin1String("/lib"));
-        findPathes.push_back(QLatin1String("/usr/lib"));
-        findPathes.push_back(QLatin1String("/usr/local/lib"));
-        findPathes.push_back(QLatin1String("/opt/local/lib"));
+    if (findPaths.isEmpty()) {
+        findPaths.push_back(QLatin1String("/lib"));
+        findPaths.push_back(QLatin1String("/usr/lib"));
+        findPaths.push_back(QLatin1String("/usr/local/lib"));
+        findPaths.push_back(QLatin1String("/opt/local/lib"));
     }
 #if defined(Q_WS_MAC)
-    const QString dynamic = findPath(QString::fromLatin1("lib%1.dylib").arg(name), findPathes);
+    const QString dynamic = findPath(QString::fromLatin1("lib%1.dylib").arg(name), findPaths);
 #else
-    const QString dynamic = findPath(QString::fromLatin1("lib%1.so*").arg(name), findPathes);
+    const QString dynamic = findPath(QString::fromLatin1("lib%1.so*").arg(name), findPaths);
 #endif
     if (!dynamic.isEmpty())
         return dynamic;
-    return findPath(QString::fromLatin1("lib%1.a").arg(name), findPathes);
+    return findPath(QString::fromLatin1("lib%1.a").arg(name), findPaths);
 #endif
 }
 
 /*!
-    Tries to find a file name \a name in one of \a pathes.
+    Tries to find a file name \a name in one of \a paths.
     The resulting path is stored in \a path.
     This method can be used by scripts to check external dependencies.
 */
-QString PackageManagerCore::findPath(const QString &name, const QStringList &pathes)
+QString PackageManagerCore::findPath(const QString &name, const QStringList &paths)
 {
-    foreach (const QString &path, pathes) {
+    foreach (const QString &path, paths) {
         const QDir dir(path);
         const QStringList entries = dir.entryList(QStringList() << name, QDir::Files | QDir::Hidden);
         if (entries.isEmpty())
@@ -1705,7 +1705,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                 component->loadComponentScript();
                 if (component->isInstalled()) {
                     // since we do not put them into the model, which would force a update of e.g. tri state
-                    // components, we have to check all installed components ourself
+                    // components, we have to check all installed components ourselves
                     component->setCheckState(Qt::Checked);
                 }
             }
