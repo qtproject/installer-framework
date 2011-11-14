@@ -383,13 +383,10 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
     foreach (const QString &dependencyComponentName, allDependencies) {
         //componentByName return 0 if dependencyComponentName contains a version which is not available
         Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
-        if (dependencyComponent == 0 || dependencyComponent->uninstallationRequested()) {
+        if (dependencyComponent == 0) {
             QString errorMessage;
             if (!dependencyComponent)
                 errorMessage = QString::fromLatin1("Can't find missing dependency (%1) for %2.");
-            else if (dependencyComponent->uninstallationRequested())
-                errorMessage = QString::fromLatin1("Dependency (%1) scheduled for uninstall, but required for"
-                " %2.");
             errorMessage = errorMessage.arg(dependencyComponentName, component->name());
             verbose() << qPrintable(errorMessage) << std::endl;
             m_componentsToInstallError.append(errorMessage);

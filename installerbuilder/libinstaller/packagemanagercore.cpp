@@ -927,11 +927,16 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
     if (runMode() == UpdaterMode)
         return true;
 
+    // hack to avoid removeing needed dependencies
+    QSet<Component*>  componentsToInstall = d->m_orderedComponentsToInstall.toSet();
+
     QList<Component*> components;
     foreach (Component *component, availableComponents()) {
-        if (component->uninstallationRequested())
+        if (component->uninstallationRequested() && !componentsToInstall.contains(component))
             components.append(component);
     }
+
+
     d->m_componentsToUninstall.clear();
     return d->appendComponentsToUninstall(components);
 }
