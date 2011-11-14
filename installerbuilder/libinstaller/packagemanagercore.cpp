@@ -617,7 +617,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
         }
     }
 
-    updateDisplayVersions();
+    updateDisplayVersions(scDisplayVersion);
 
     emit finishAllComponentsReset();
     d->setStatus(Success);
@@ -665,7 +665,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
         success = fetchUpdaterPackages(packages, installedPackages);
     }
 
-    updateDisplayVersions();
+    updateDisplayVersions(scRemoteDisplayVersion);
 
     if (success && !d->statusCanceledOrFailed())
         d->setStatus(Success);
@@ -1503,7 +1503,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
                     // mark the replacement as installed only in package manager mode, otherwise
                     // it would not show up in the updaters component list
                     component->setInstalled();
-                    component->setValue(scInstalledVersion, data.package->data(scRemoteVersion).toString());
+                    component->setValue(scInstalledVersion, data.installedPackages->value(componentName).version);
                 }
                 data.replacementToExchangeables.insert(component, componentsToReplace);
                 break;  // break as soon as we know we replace at least one other component
@@ -1751,40 +1751,43 @@ void PackageManagerCore::resetComponentsToUserCheckedState()
     d->resetComponentsToUserCheckedState();
 }
 
-void PackageManagerCore::updateDisplayVersions()
+void PackageManagerCore::updateDisplayVersions(const QString &displayKey)
 {
     QHash<QString, QInstaller::Component*> components;
     const QList<QInstaller::Component*> componentList = availableComponents();
-    foreach (QInstaller::Component* component, componentList) {
+    foreach (QInstaller::Component* component, componentList)
         components[component->name()] = component;
-        qDebug() << component->value(scInheritVersion);
-    }
 
     // set display version for all components in list
     const QStringList &keys = components.keys();
     foreach (const QString &key, keys) {
         QHash<QString, bool> visited;
-        const QString displayVersion = findDisplayVersion(key, components, visited);
-        if (displayVersion.isEmpty())
-            components.value(key)->setValue(scDisplayVersion, tr("invalid"));
-        else if (components.value(key)->isInstalled())
-            components.value(key)->setValue(scDisplayVersion, displayVersion);
-        components.value(key)->setValue(scRemoteDisplayVersion, displayVersion);
+        if (components.value(key)->isInstalled()) {
+            components.value(key)->setValue(scDisplayVersion,
+                findDisplayVersion(key, components, scInstalledVersion, visited));
+        }
+        visited.clear();
+        const QString displayVersionRemote = findDisplayVersion(key, components, scRemoteVersion, visited);
+        if (displayVersionRemote.isEmpty())
+            components.value(key)->setValue(displayKey, tr("invalid"));
+        else
+            components.value(key)->setValue(displayKey, displayVersionRemote);
     }
 
 }
 
 QString PackageManagerCore::findDisplayVersion(const QString &componentName,
-    const QHash<QString, QInstaller::Component*> &components, QHash<QString, bool> &visited)
+                                               const QHash<QString, QInstaller::Component*> &components,
+                                               const QString &versionKey, QHash<QString, bool> &visited)
 {
     const QString replaceWith = components.value(componentName)->value(scInheritVersion);
     visited[componentName] = true;
-    if (replaceWith.isEmpty()) {
-        if (components.value(componentName)->isInstalled())
-            return components.value(componentName)->value(scInstalledVersion);
-        return components.value(componentName)->value(scVersion);   // can be remote or local version
-    }
+
+    if (replaceWith.isEmpty())
+        return components.value(componentName)->value(versionKey);
+
     if (visited.contains(replaceWith))  // cycle
         return QString();
-    return findDisplayVersion(replaceWith, components, visited);
+
+    return findDisplayVersion(replaceWith, components, versionKey, visited);
 }
