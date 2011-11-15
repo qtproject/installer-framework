@@ -588,6 +588,8 @@ bool PackageManagerCorePrivate::statusCanceledOrFailed() const
 void PackageManagerCorePrivate::setStatus(int status, const QString &error)
 {
     m_error = error;
+    if (!error.isEmpty())
+        qDebug() << m_error;
     if (m_status != status) {
         m_status = status;
         emit m_core->statusChanged(PackageManagerCore::Status(m_status));
@@ -1794,7 +1796,6 @@ PackagesList PackageManagerCorePrivate::remotePackages()
     m_updateFinder->run();
 
     if (m_updateFinder->updates().isEmpty()) {
-        verbose() << tr("Could not retrieve remote tree: %1.").arg(m_updateFinder->errorString());
         setStatus(PackageManagerCore::Failure, tr("Could not retrieve remote tree: %1.")
             .arg(m_updateFinder->errorString()));
         return PackagesList();
@@ -1851,14 +1852,12 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
         m_repoMetaInfoJob->start();
         m_repoMetaInfoJob->waitForFinished();
     } catch (Error &error) {
-        verbose() << tr("Could not retrieve meta information: %1").arg(error.message()) << std::endl;
         setStatus(PackageManagerCore::Failure, tr("Could not retrieve meta information: %1").arg(error.message()));
         return m_repoFetched;
     }
 
     if (m_repoMetaInfoJob->isCanceled() || m_repoMetaInfoJob->error() != KDJob::NoError) {
         if (m_repoMetaInfoJob->error() != QInstaller::UserIgnoreError) {
-            verbose() << m_repoMetaInfoJob->errorString() << std::endl;
             setStatus(PackageManagerCore::Failure, m_repoMetaInfoJob->errorString());
             return m_repoFetched;
         }
