@@ -893,11 +893,18 @@ bool PackageManagerCore::calculateComponentsToInstall() const
                     components.append(component);
             }
         } else if (runMode() == AllMode) {
-            foreach (Component *component, availableComponents()) {
-                if (component->installationRequested())
+            // relevant means all components which are not replaced
+            QList<Component*> relevantComponents;
+            foreach (QInstaller::Component *component, rootComponents())
+                relevantComponents += component->childComponents(true, AllMode);
+            foreach (Component *component, relevantComponents) {
+                // ask for all components which will be installed to get all dependencies
+                // even dependencies wich are changed without an increased version
+                if (component->installationRequested() || (component->isInstalled() && !component->uninstallationRequested()))
                     components.append(component);
             }
         }
+
         d->m_componentsToInstallCalculated = d->appendComponentsToInstall(components);
     }
     return d->m_componentsToInstallCalculated;

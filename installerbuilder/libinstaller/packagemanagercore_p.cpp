@@ -1932,9 +1932,13 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
 
 void PackageManagerCorePrivate::realAppendToInstallComponents(Component *component)
 {
-    setCheckedState(component, Qt::Checked);
-    m_orderedComponentsToInstall.append(component);
-    m_toInstallComponentIds.insert(component->name());
+    if (!component->isInstalled() || component->updateRequested()) {
+        //remove the checkState method if we don't use selected in scripts
+        setCheckedState(component, Qt::Checked);
+
+        m_orderedComponentsToInstall.append(component);
+        m_toInstallComponentIds.insert(component->name());
+    }
 }
 
 void PackageManagerCorePrivate::insertInstallReason(Component *component, const QString &reason)
