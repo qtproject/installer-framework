@@ -53,8 +53,8 @@ class INSTALLER_EXPORT GetRepositoriesMetaInfoJob : public KDJob
 public:
     explicit GetRepositoriesMetaInfoJob(const QByteArray &publicKey, QObject *parent = 0);
 
-    QList<Repository> repositories() const;
-    void setRepositories(const QList<Repository> &repositories);
+    QSet<Repository> repositories() const;
+    void setRepositories(const QSet<Repository> &repositories);
 
     QStringList temporaryDirectories() const;
     QStringList releaseTemporaryDirectories() const;
@@ -80,7 +80,7 @@ private:
     const QByteArray m_publicKey;
     bool m_canceled;
     int m_silentRetries;
-    QList<Repository> m_repositories;
+    QSet<Repository> m_repositories;
     QList<Repository> m_tmpRepositories;
     QHash<QString, Repository> m_repositoryByTemporaryDirectory;
     bool m_haveIgnoredError;

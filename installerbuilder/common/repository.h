@@ -44,7 +44,7 @@ class INSTALLER_EXPORT Repository
 public:
     explicit Repository();
     Repository(const Repository &other);
-    explicit Repository(const QUrl &url, bool isDefault = true);
+    explicit Repository(const QUrl &url, bool isDefault);
 
     bool isValid() const;
     bool isDefault() const;

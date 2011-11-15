@@ -31,7 +31,7 @@
 QT_BEGIN_NAMESPACE
 class QDateTime;
 template<typename T>
-class QList;
+class QSet;
 class QSettings;
 QT_END_NAMESPACE
 
@@ -65,8 +65,8 @@ public:
     bool checkOnlyImportantUpdates() const;
     void setCheckOnlyImportantUpdates(bool checkOnlyImportantUpdates);
 
-    QList<Repository> repositories() const;
-    void setRepositories(const QList<Repository> &repositories);
+    QSet<Repository> repositories() const;
+    void setRepositories(const QSet<Repository> &repositories);
 
 private:
     class Private;

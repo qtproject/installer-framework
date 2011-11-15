@@ -52,12 +52,12 @@ GetRepositoriesMetaInfoJob::GetRepositoriesMetaInfoJob(const QByteArray &publicK
     setCapabilities(Cancelable);
 }
 
-QList< Repository > GetRepositoriesMetaInfoJob::repositories() const
+QSet<Repository> GetRepositoriesMetaInfoJob::repositories() const
 {
     return m_repositories;
 }
 
-void GetRepositoriesMetaInfoJob::setRepositories(const QList<Repository> &repos)
+void GetRepositoriesMetaInfoJob::setRepositories(const QSet<Repository> &repos)
 {
     m_repositories = repos;
     foreach (const Repository &repo, repos) {

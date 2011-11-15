@@ -146,9 +146,9 @@ void UpdateSettingsWidget::accept()
         d->settings.setUpdateInterval(-d->settings.updateInterval());
     d->settings.setCheckOnlyImportantUpdates(d->ui.checkBoxCheckOnlyImportant->isChecked());
 
-    QList<Repository> repositories;
+    QSet<Repository> repositories;
     foreach (const QString &url, d->model.stringList())
-        repositories.append(Repository(QUrl(url)));
+        repositories.insert(Repository(QUrl(url), false));
     d->settings.setRepositories(repositories);
 }
 

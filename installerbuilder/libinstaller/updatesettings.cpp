@@ -135,22 +135,22 @@ void UpdateSettings::setCheckOnlyImportantUpdates(bool checkOnlyImportantUpdates
     d->settings().setValue(QLatin1String("updatesettings/onlyimportant"), checkOnlyImportantUpdates);
 }
 
-QList<Repository> UpdateSettings::repositories() const
+QSet<Repository> UpdateSettings::repositories() const
 {
     QSettings &settings = *(const_cast<QSettings*> (&d->settings()));
     const int count = settings.beginReadArray(QLatin1String("updatesettings/repositories"));
 
-    QList<Repository> result;
+    QSet<Repository> result;
     for (int i = 0; i < count; ++i) {
         settings.setArrayIndex(i);
-        result.append(Repository(d->settings().value(QLatin1String("url")).toUrl()));
+        result.insert(Repository(d->settings().value(QLatin1String("url")).toUrl(), false));
     }
     settings.endArray();
 
     try {
         if(result.isEmpty()) {
             result = Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
-                QLatin1String(":/metadata/installer-config/")).repositories();
+                QLatin1String(":/metadata/installer-config/")).userRepositories();
         }
     } catch (const Error &error) {
         qDebug("Could not parse config: %s", qPrintable(error.message()));
@@ -158,12 +158,13 @@ QList<Repository> UpdateSettings::repositories() const
     return result;
 }
 
-void UpdateSettings::setRepositories(const QList<Repository> &repositories)
+void UpdateSettings::setRepositories(const QSet<Repository> &repositories)
 {
+    QSet<Repository>::ConstIterator it = repositories.constBegin();
     d->settings().beginWriteArray(QLatin1String("updatesettings/repositories"));
-    for (int i = 0; i < repositories.count(); ++i) {
+    for (int i = 0; i < repositories.count(); ++i, ++it) {
         d->settings().setArrayIndex(i);
-        d->settings().setValue(QLatin1String("url"), repositories.at(i).url());
+        d->settings().setValue(QLatin1String("url"), (*it).url());
     }
     d->settings().endArray();
 }

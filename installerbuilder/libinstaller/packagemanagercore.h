@@ -128,8 +128,8 @@ public:
     bool testChecksum() const;
     void setTestChecksum(bool test);
 
-    void addRepositories(const QList<Repository> &repositories);
-    void setTemporaryRepositories(const QList<Repository> &repositories, bool replace = false);
+    void addUserRepositories(const QSet<Repository> &repositories);
+    void setTemporaryRepositories(const QSet<Repository> &repositories, bool replace = false);
 
     Q_INVOKABLE void autoAcceptMessageBoxes();
     Q_INVOKABLE void autoRejectMessageBoxes();

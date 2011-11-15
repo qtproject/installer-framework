@@ -737,7 +737,7 @@ bool PackageManagerCore::removeWizardPageItem(Component *component, const QStrin
     return false;
 }
 
-void PackageManagerCore::addRepositories(const QList<Repository> &repositories)
+void PackageManagerCore::addUserRepositories(const QSet<Repository> &repositories)
 {
     d->m_settings.addUserRepositories(repositories);
 }
@@ -746,7 +746,7 @@ void PackageManagerCore::addRepositories(const QList<Repository> &repositories)
     Sets additional repository for this instance of the installer or updater.
     Will be removed after invoking it again.
 */
-void PackageManagerCore::setTemporaryRepositories(const QList<Repository> &repositories, bool replace)
+void PackageManagerCore::setTemporaryRepositories(const QSet<Repository> &repositories, bool replace)
 {
     d->m_settings.setTemporaryRepositories(repositories, replace);
 }

@@ -65,20 +65,19 @@
 using namespace QInstaller;
 using namespace QInstallerCreator;
 
-static QList<Repository> repositories(const QStringList &arguments, const int index)
+static QSet<Repository> repositories(const QStringList &arguments, const int index)
 {
-    QList<Repository> repoList;
+    QSet<Repository> set;
     if (index < arguments.size()) {
         QStringList items = arguments.at(index).split(QLatin1Char(','));
         foreach (const QString &item, items) {
+            set.insert(Repository(item, false));
             verbose() << "Adding custom repository:" << item << std::endl;
-            Repository rep(item);
-            repoList.append(rep);
         }
     } else {
         std::cerr << "No repository specified" << std::endl;
     }
-    return repoList;
+    return set;
 }
 
 int main(int argc, char *argv[])
@@ -255,7 +254,7 @@ int main(int argc, char *argv[])
             } else if (argument == QLatin1String("--addTempRepository")
                 || argument == QLatin1String("--setTempRepository")) {
                     ++i;
-                    QList<Repository> repoList = repositories(args, i);
+                    QSet<Repository> repoList = repositories(args, i);
                     if (repoList.isEmpty())
                         return PackageManagerCore::Failure;
 
@@ -265,10 +264,10 @@ int main(int argc, char *argv[])
                     core.setTemporaryRepositories(repoList, replace);
             } else if (argument == QLatin1String("--addRepository")) {
                 ++i;
-                QList<Repository> repoList = repositories(args, i);
+                QSet<Repository> repoList = repositories(args, i);
                 if (repoList.isEmpty())
                     return PackageManagerCore::Failure;
-                core.addRepositories(repoList);
+                core.addUserRepositories(repoList);
             } else if (argument == QLatin1String("--no-force-installations")) {
                 PackageManagerCore::setNoForceInstallation(true);
             } else {

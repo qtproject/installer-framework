@@ -77,11 +77,17 @@ public:
 
     QString configurationFileName() const;
 
-    QList<Repository> repositories() const;
-    void setTemporaryRepositories(const QList<Repository> &repositories, bool replace);
+    bool hasReplacementRepos() const;
+    QSet<Repository> repositories() const;
 
-    QList<Repository> userRepositories() const;
-    void addUserRepositories(const QList<Repository> &repositories);
+    QSet<Repository> defaultRepositories() const;
+    void addDefaultRepositories(const QSet<Repository> &repositories);
+
+    QSet<Repository> temporaryRepositories() const;
+    void setTemporaryRepositories(const QSet<Repository> &repositories, bool replace);
+
+    QSet<Repository> userRepositories() const;
+    void addUserRepositories(const QSet<Repository> &repositories);
 
     QStringList certificateFiles() const;
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;

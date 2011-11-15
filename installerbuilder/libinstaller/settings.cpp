@@ -56,6 +56,7 @@ static const QLatin1String scBackground("Background");
 static const QLatin1String scAdminTargetDir("AdminTargetDir");
 static const QLatin1String scUninstallerName("UninstallerName");
 static const QLatin1String scUserRepositories("UserRepositories");
+static const QLatin1String scTmpRepositories("TemporaryRepositories");
 static const QLatin1String scUninstallerIniFile("UninstallerIniFile");
 static const QLatin1String scRemoteRepositories("RemoteRepositories");
 static const QLatin1String scSigningCertificate("SigningCertificate");
@@ -84,7 +85,7 @@ static QString splitTrimmed(const QString &string)
     return result.join(QLatin1String("\n"));
 }
 
-static QList<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault)
+static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault)
 {
     QSet<Repository> set;
     while (reader.readNextStartElement()) {
@@ -107,7 +108,7 @@ static QList<Repository> readRepositories(QXmlStreamReader &reader, bool isDefau
             reader.skipCurrentElement();
         }
     }
-    return set.toList();
+    return set;
 }
 
 static QVariantHash readTitles(QXmlStreamReader &reader)
@@ -145,7 +146,12 @@ static QHash<QString, QVariantHash> readPages(QXmlStreamReader &reader)
 class Settings::Private : public QSharedData
 {
 public:
+    Private()
+        : m_replacementRepos(false)
+    {}
+
     QVariantHash m_data;
+    bool m_replacementRepos;
 
     QString makeAbsolutePath(const QString &path) const
     {
@@ -211,11 +217,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
             if (name == scSigningCertificate)
                 s.d->m_data.insertMulti(name, s.d->makeAbsolutePath(reader.readElementText()));
 
-            if (name == scRemoteRepositories) {
-                QList<Repository> repositories = readRepositories(reader, true);
-                foreach (const Repository &repository, repositories)
-                    s.d->m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
-            }
+            if (name == scRemoteRepositories)
+                s.addDefaultRepositories(readRepositories(reader, true));
 
             if (name == scPages) {
                 QHash<QString, QVariantHash> pages = readPages(reader);
@@ -369,29 +372,51 @@ QByteArray Settings::publicKey() const
     return d->m_data.value(scPublicKey).toByteArray();
 }
 
-QList<Repository> Settings::repositories() const
+bool Settings::hasReplacementRepos() const
 {
-    return variantListToSet<Repository>(d->m_data.values(scRepositories)
-        + d->m_data.values(scUserRepositories)).toList();
+    return d->m_replacementRepos;
 }
 
-void Settings::setTemporaryRepositories(const QList<Repository> &repositories, bool replace)
+QSet<Repository> Settings::repositories() const
 {
-    if (replace)
-        d->m_data.remove(scRepositories);
+    if (d->m_replacementRepos)
+        return variantListToSet<Repository>(d->m_data.values(scTmpRepositories));
 
-    foreach (const Repository &repository, repositories.toSet())
+    return variantListToSet<Repository>(d->m_data.values(scRepositories)
+        + d->m_data.values(scUserRepositories) + d->m_data.values(scTmpRepositories));
+}
+
+QSet<Repository> Settings::defaultRepositories() const
+{
+    return variantListToSet<Repository>(d->m_data.values(scRepositories));
+}
+
+void Settings::addDefaultRepositories(const QSet<Repository> &repositories)
+{
+    foreach (const Repository &repository, repositories)
         d->m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
 }
 
-QList<Repository> Settings::userRepositories() const
+QSet<Repository> Settings::temporaryRepositories() const
 {
-    return variantListToSet<Repository>(d->m_data.values(scUserRepositories)).toList();
+    return variantListToSet<Repository>(d->m_data.values(scTmpRepositories));
 }
 
-void Settings::addUserRepositories(const QList<Repository> &repositories)
+void Settings::setTemporaryRepositories(const QSet<Repository> &repositories, bool replace)
 {
-    foreach (const Repository &repository, repositories.toSet())
+    d->m_replacementRepos = replace;
+    foreach (const Repository &repository, repositories)
+        d->m_data.insertMulti(scTmpRepositories, QVariant().fromValue(repository));
+}
+
+QSet<Repository> Settings::userRepositories() const
+{
+    return variantListToSet<Repository>(d->m_data.values(scUserRepositories));
+}
+
+void Settings::addUserRepositories(const QSet<Repository> &repositories)
+{
+    foreach (const Repository &repository, repositories)
         d->m_data.insertMulti(scUserRepositories, QVariant().fromValue(repository));
 }
 
