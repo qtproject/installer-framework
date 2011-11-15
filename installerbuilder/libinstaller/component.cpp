@@ -145,6 +145,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scRemoteVersion, package.data(scRemoteVersion).toString());
     setValue(scInheritVersion, package.data(scInheritVersion).toString());
     setValue(scDependencies, package.data(scDependencies).toString());
+    setValue(scDownloadableArchives, package.data(scDownloadableArchives).toString());
     setValue(scVirtual, package.data(scVirtual).toString());
     setValue(scSortingPriority, package.data(scSortingPriority).toString());
 
