@@ -47,9 +47,9 @@
     In this easy scenario the installer handles only one component, which is
     named \a{com.vendor.product}. The installer needs to know a couple of
     information about this component, which is stored in a file called
-    \a{packages.xml} inside the meta directory. It has the following shape:
+    \a{package.xml} inside the meta directory. It has the following shape:
 
-    \quotefile ../examples/tutorial/packages/com.vendor.product/meta/packages.xml
+    \quotefile ../examples/tutorial/packages/com.vendor.product/meta/package.xml
 
     \section1 Installer content
 
