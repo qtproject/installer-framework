@@ -241,16 +241,16 @@
     \o \bold{ReleaseDate} The day this component version was released - optional.
     \o \bold{Name} domain-like identification for this component - required.
     \o \bold{Dependencies} Comma-separated list of dependencies - optional.
+    \o \bold{AutoDependOn} Is the opposite of dependencies: "If foo is being loaded, load me also."
     \o \bold{Virtual} Set to true if this is a virtual component not showing up in the installer.
     \o \bold{SortingPriority} Priority of this component when visible in the tree. Lowest priority number is on top.
     \o \bold{Script} File name of a script being loaded - optional.
     \o \bold{UserInterfaces} One ore more file names of user interfaces being loaded - optional.
     \o \bold{Translations} One ore more file names of translations being loaded - optional.
     \o \bold{UpdateText} A description added to the component description if the component is an update - optional.
-    \o \bold{NewComponent} If this flag is set the component appears as an update if its not installed - optional.
-    \o \bold{Important} The package is marked as important. This is relevant for updates found with UpdateAgent.
+    \o \bold{Default} If that value is set to true the component will be preselected in the installer mode
+    \o \bold{Essential} The package is marked as essential. This is relevant for updates found with UpdateAgent and it will force a restart of the UpdateAgent/MaintenanceTool.
     \o \bold{ForcedInstallation} This packages must always be installed and can't get unchecked by the user.
-    \o \bold{AutoSelectOn} Define boolean expressions with other components names to define when this components gets autoselected.
     \o \bold{Replaces} Comma-separated list of components to replace - optional.
     \endlist
 
