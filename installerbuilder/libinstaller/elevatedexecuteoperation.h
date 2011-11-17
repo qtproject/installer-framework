@@ -28,8 +28,6 @@
 
 #include "qinstallerglobal.h"
 
-#include <KDToolsCore/pimpl_ptr.h>
-
 namespace QInstaller {
 
 class INSTALLER_EXPORT ElevatedExecuteOperation : public QObject, public Operation
@@ -44,7 +42,7 @@ public:
     virtual bool performOperation();
     virtual bool undoOperation();
     virtual bool testOperation();
-    virtual Operation* clone() const;
+    virtual Operation *clone() const;
 
 Q_SIGNALS:
     void cancelProcess();
@@ -54,10 +52,10 @@ public Q_SLOTS:
     void cancelOperation();
 
 private:
-    Q_PRIVATE_SLOT( d, void readProcessOutput() );
+    Q_PRIVATE_SLOT(d, void readProcessOutput())
 
     class Private;
-    kdtools::pimpl_ptr< Private > d;
+    Private *d;
 };
 
 } // namespace

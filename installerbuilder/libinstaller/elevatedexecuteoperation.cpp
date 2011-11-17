@@ -45,7 +45,7 @@ using namespace QInstaller;
 class ElevatedExecuteOperation::Private
 {
 public:
-    explicit Private(ElevatedExecuteOperation* qq)
+    explicit Private(ElevatedExecuteOperation *qq)
         : q(qq), process(0), showStandardError(false)
     {
     }
@@ -54,13 +54,13 @@ public:
     }
 
 private:
-    ElevatedExecuteOperation* const q;
+    ElevatedExecuteOperation *const q;
 
 public:
     void readProcessOutput();
-    bool run(const QStringList& arguments);
+    bool run(const QStringList &arguments);
 
-    QProcessWrapper* process;
+    QProcessWrapper *process;
     bool showStandardError;
 };
 
@@ -73,6 +73,7 @@ ElevatedExecuteOperation::ElevatedExecuteOperation()
 
 ElevatedExecuteOperation::~ElevatedExecuteOperation()
 {
+    delete d;
 }
 
 bool ElevatedExecuteOperation::performOperation()
@@ -96,7 +97,7 @@ bool ElevatedExecuteOperation::performOperation()
     return d->run(args);
 }
 
-bool ElevatedExecuteOperation::Private::run(const QStringList& arguments)
+bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
 {
     QStringList args = arguments;
     QString workingDirectory;
@@ -270,7 +271,7 @@ bool ElevatedExecuteOperation::testOperation()
     return true;
 }
 
-Operation* ElevatedExecuteOperation::clone() const
+Operation *ElevatedExecuteOperation::clone() const
 {
     return new ElevatedExecuteOperation;
 }
