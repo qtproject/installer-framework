@@ -78,7 +78,6 @@ static QRegExp scCommaRegExp(QLatin1String("\\b(,|, )\\b"));
 Component::Component(PackageManagerCore *core)
     : d(new ComponentPrivate(core, this))
 {
-    d->init();
     setPrivate(d);
 
     connect(this, SIGNAL(valueChanged(QString, QString)), this, SLOT(updateModelData(QString, QString)));
@@ -361,30 +360,30 @@ void Component::loadComponentScript(const QString &fileName)
         throw Error(tr("Could not open the requested script file at %1: %2.").arg(fileName, file.errorString()));
     }
 
-    d->m_scriptEngine.evaluate(QLatin1String(file.readAll()), fileName);
-    if (d->m_scriptEngine.hasUncaughtException()) {
+    d->scriptEngine()->evaluate(QLatin1String(file.readAll()), fileName);
+    if (d->scriptEngine()->hasUncaughtException()) {
         throw Error(tr("Exception while loading the component script: %1")
-            .arg(uncaughtExceptionString(&(d->m_scriptEngine)/*, QFileInfo(file).absoluteFilePath()*/)));
+            .arg(uncaughtExceptionString(d->scriptEngine()/*, QFileInfo(file).absoluteFilePath()*/)));
     }
 
     const QList<Component*> components = d->m_core->availableComponents();
-    QScriptValue comps = d->m_scriptEngine.newArray(components.count());
+    QScriptValue comps = d->scriptEngine()->newArray(components.count());
     for (int i = 0; i < components.count(); ++i)
-        comps.setProperty(i, d->m_scriptEngine.newQObject(components[i]));
+        comps.setProperty(i, d->scriptEngine()->newQObject(components[i]));
 
-    d->m_scriptEngine.globalObject().property(QLatin1String("installer"))
+    d->scriptEngine()->globalObject().property(QLatin1String("installer"))
         .setProperty(QLatin1String("components"), comps);
 
-    QScriptValue comp = d->m_scriptEngine.evaluate(QLatin1String("Component"));
-    if (!d->m_scriptEngine.hasUncaughtException()) {
+    QScriptValue comp = d->scriptEngine()->evaluate(QLatin1String("Component"), fileName);
+    if (!d->scriptEngine()->hasUncaughtException()) {
         d->m_scriptComponent = comp;
         d->m_scriptComponent.construct();
     }
 
     //evaluate("Component") and construct can have an exception
-    if (d->m_scriptEngine.hasUncaughtException()) {
+    if (d->scriptEngine()->hasUncaughtException()) {
         throw Error(tr("Exception while loading the component script: %1")
-            .arg(uncaughtExceptionString(&(d->m_scriptEngine), QFileInfo(file).absoluteFilePath())));
+            .arg(uncaughtExceptionString(d->scriptEngine(), QFileInfo(file).absoluteFilePath())));
     }
 
     emit loaded();
@@ -418,7 +417,7 @@ QScriptValue Component::callScriptMethod(const QString &methodName, const QScrip
         return QScriptValue();
 
     // don't allow such a recursion
-    if (d->m_scriptEngine.currentContext()->backtrace().first().startsWith(methodName))
+    if (d->scriptEngine()->currentContext()->backtrace().first().startsWith(methodName))
         return QScriptValue();
 
     QScriptValue method = d->m_scriptComponent.property(QString::fromLatin1("prototype"))
@@ -430,8 +429,8 @@ QScriptValue Component::callScriptMethod(const QString &methodName, const QScrip
     if (!result.isValid())
         return result;
 
-    if (d->m_scriptEngine.hasUncaughtException())
-        throw Error(uncaughtExceptionString(&(d->m_scriptEngine)/*, name()*/));
+    if (d->scriptEngine()->hasUncaughtException())
+        throw Error(uncaughtExceptionString(d->scriptEngine()/*, name()*/));
 
     return result;
 }

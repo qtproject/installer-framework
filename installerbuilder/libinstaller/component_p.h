@@ -54,7 +54,8 @@ public:
     explicit ComponentPrivate(PackageManagerCore *core, Component *qq);
     ~ComponentPrivate();
 
-    void init();
+    QScriptEngine *scriptEngine();
+
     void setProperty(QScriptValue &scriptValue, const QString &propertyName, int value);
 
     PackageManagerCore *m_core;
@@ -73,7 +74,6 @@ public:
     QString m_componentName;
     QUrl m_repositoryUrl;
     QString m_localTempPath;
-    QScriptEngine m_scriptEngine;
     QScriptValue m_scriptComponent;
     QHash<QString, QString> m_vars;
     QList<Component*> m_childComponents;
@@ -87,6 +87,9 @@ public:
     // < display name, < file name, file content > >
     QHash<QString, QPair<QString, QString> > m_licenses;
     QList<QPair<QString, bool> > m_pathesForUninstallation;
+
+private:
+    QScriptEngine* m_scriptEngine;
 };
 
 

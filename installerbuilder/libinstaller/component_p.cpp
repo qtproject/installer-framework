@@ -55,7 +55,8 @@ ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
     m_removeBeforeUpdate(true),
     m_autoCreateOperations(true),
     m_operationsCreatedSuccessfully(true),
-    m_updateIsAvailable(false)
+    m_updateIsAvailable(false),
+    m_scriptEngine(0)
 {
 }
 
@@ -75,16 +76,22 @@ ComponentPrivate::~ComponentPrivate()
         delete widget.data();
 }
 
-void ComponentPrivate::init()
+QScriptEngine *ComponentPrivate::scriptEngine()
 {
+    if (m_scriptEngine != 0)
+        return m_scriptEngine;
+
+
+    m_scriptEngine = new QScriptEngine(q);
+
     // register translation stuff
-    m_scriptEngine.installTranslatorFunctions();
+    m_scriptEngine->installTranslatorFunctions();
 
     // register QMessageBox::StandardButton enum in the script connection
-    registerMessageBox(&m_scriptEngine);
+    registerMessageBox(m_scriptEngine);
 
     // register QDesktopServices in the script connection
-    QScriptValue desktopServices = m_scriptEngine.newArray();
+    QScriptValue desktopServices = m_scriptEngine->newArray();
     setProperty(desktopServices, QLatin1String("DesktopLocation"), QDesktopServices::DesktopLocation);
     setProperty(desktopServices, QLatin1String("DocumentsLocation"), QDesktopServices::DocumentsLocation);
     setProperty(desktopServices, QLatin1String("FontsLocation"), QDesktopServices::FontsLocation);
@@ -97,14 +104,14 @@ void ComponentPrivate::init()
     setProperty(desktopServices, QLatin1String("DataLocation"), QDesktopServices::DataLocation);
     setProperty(desktopServices, QLatin1String("CacheLocation"), QDesktopServices::CacheLocation);
 
-    desktopServices.setProperty(QLatin1String("openUrl"), m_scriptEngine.newFunction(qDesktopServicesOpenUrl));
+    desktopServices.setProperty(QLatin1String("openUrl"), m_scriptEngine->newFunction(qDesktopServicesOpenUrl));
     desktopServices.setProperty(QLatin1String("displayName"),
-        m_scriptEngine.newFunction(qDesktopServicesDisplayName));
+        m_scriptEngine->newFunction(qDesktopServicesDisplayName));
     desktopServices.setProperty(QLatin1String("storageLocation"),
-        m_scriptEngine.newFunction(qDesktopServicesStorageLocation));
+        m_scriptEngine->newFunction(qDesktopServicesStorageLocation));
 
     // register ::WizardPage enum in the script connection
-    QScriptValue qinstaller = m_scriptEngine.newArray();
+    QScriptValue qinstaller = m_scriptEngine->newArray();
     setProperty(qinstaller, QLatin1String("Introduction"), PackageManagerCore::Introduction);
     setProperty(qinstaller, QLatin1String("LicenseCheck"), PackageManagerCore::LicenseCheck);
     setProperty(qinstaller, QLatin1String("TargetDirectory"), PackageManagerCore::TargetDirectory);
@@ -127,19 +134,21 @@ void ComponentPrivate::init()
     setProperty(qinstaller, QLatin1String("InstallerUnfinished"), PackageManagerCore::Unfinished);
     setProperty(qinstaller, QLatin1String("InstallerCanceledByUser"), PackageManagerCore::Canceled);
 
-    QScriptValue installerObject = m_scriptEngine.newQObject(m_core);
+    QScriptValue installerObject = m_scriptEngine->newQObject(m_core);
     installerObject.setProperty(QLatin1String("componentByName"), m_scriptEngine
-        .newFunction(qInstallerComponentByName, 1));
+        ->newFunction(qInstallerComponentByName, 1));
 
-    m_scriptEngine.globalObject().setProperty(QLatin1String("QInstaller"), qinstaller);
-    m_scriptEngine.globalObject().setProperty(QLatin1String("installer"), installerObject);
-    m_scriptEngine.globalObject().setProperty(QLatin1String("QDesktopServices"), desktopServices);
-    m_scriptEngine.globalObject().setProperty(QLatin1String("component"), m_scriptEngine.newQObject(q));
+    m_scriptEngine->globalObject().setProperty(QLatin1String("QInstaller"), qinstaller);
+    m_scriptEngine->globalObject().setProperty(QLatin1String("installer"), installerObject);
+    m_scriptEngine->globalObject().setProperty(QLatin1String("QDesktopServices"), desktopServices);
+    m_scriptEngine->globalObject().setProperty(QLatin1String("component"), m_scriptEngine->newQObject(q));
+
+    return m_scriptEngine;
 }
 
 void ComponentPrivate::setProperty(QScriptValue &scriptValue, const QString &propertyName, int value)
 {
-    scriptValue.setProperty(propertyName, m_scriptEngine.newVariant(value));
+    scriptValue.setProperty(propertyName, m_scriptEngine->newVariant(value));
 }
 
 
