@@ -330,20 +330,6 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             relevantComponentForAutoDependOn += component->childComponents(true, AllMode);
     }
 
-    //build a data structure to be able to use autodependency as normal dependency
-    m_autoDependOnDependencies.clear();
-    foreach (Component *component, relevantComponentForAutoDependOn) {
-        foreach (const QString componentName, component->autoDependencies()) {
-            Component *componentWithAutoDependOnInspector = m_core->componentByName(componentName);
-            if (componentWithAutoDependOnInspector != 0) {
-                QSet<QString> dependencyStringSet = m_autoDependOnDependencies.value(component);
-                dependencyStringSet.insert(componentWithAutoDependOnInspector->name());
-                m_autoDependOnDependencies.insert(component, dependencyStringSet);
-            }
-
-        }
-    }
-
     QList<Component*> notAppendedComponents; // for example components with unresolved dependencies
     foreach (Component *component, components){
         if (m_toInstallComponentIds.contains(component->name())) {
@@ -356,7 +342,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             return false;
         }
 
-        if (component->dependencies().isEmpty() && m_autoDependOnDependencies.value(component).isEmpty())
+        if (component->dependencies().isEmpty())
             realAppendToInstallComponents(component);
         else
             notAppendedComponents.append(component);
@@ -390,8 +376,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
 
 bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
 {
-    QSet<QString> allDependencies = component->dependencies().toSet()
-        +  m_autoDependOnDependencies.value(component);
+    QSet<QString> allDependencies = component->dependencies().toSet();
 
     foreach (const QString &dependencyComponentName, allDependencies) {
         //componentByName return 0 if dependencyComponentName contains a version which is not available

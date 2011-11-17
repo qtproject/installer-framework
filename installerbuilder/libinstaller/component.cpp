@@ -923,6 +923,16 @@ void Component::setSelected(bool selected)
         d->m_componentName)) << std::endl;
 }
 
+void Component::addDependency(const QString &newDependency)
+{
+    QString oldDependencies = value(scDependencies);
+    if (oldDependencies.isEmpty())
+        setValue(scDependencies, newDependency);
+    else
+        setValue(scDependencies, oldDependencies + QLatin1String(", ") + newDependency);
+}
+
+
 /*!
     Contains this component dependencies.
     Read \ref componentdependencies for details.

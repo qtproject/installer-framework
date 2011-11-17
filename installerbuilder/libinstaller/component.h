@@ -153,6 +153,7 @@ public:
     bool removeBeforeUpdate() const;
     void setRemoveBeforeUpdate(bool removeBeforeUpdate);
 
+    Q_INVOKABLE void addDependency(const QString &newDependency);
     QStringList dependencies() const;
     QStringList autoDependencies() const;
 
