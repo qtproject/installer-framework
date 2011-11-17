@@ -23,7 +23,6 @@
 #include "kdsysinfo.h"
 
 #include "kdbytesize.h"
-#include "kdversion.h"
 
 #include <windows.h>
 #include <Tlhelp32.h>
@@ -36,80 +35,12 @@
 
 #define KDSYSINFO_PROCESS_QUERY_LIMITED_INFORMATION  (0x1000)
 
-KDSysInfo::OperatingSystemType KDSysInfo::osType()
-{
-    return Windows;
-}
-
-KDVersion KDSysInfo::osVersion()
-{
-    OSVERSIONINFO info;
-    memset( &info, 0, sizeof( info ) );
-    info.dwOSVersionInfoSize = sizeof( info );
-    GetVersionEx( &info );
-    return KDVersion::fromString( QString::fromLatin1( "%1.%2" ).arg( info.dwMajorVersion ).arg( info.dwMinorVersion ) );
-}
-
-QString KDSysInfo::osDescription()
-{
-    switch( QSysInfo::windowsVersion() )
-    {
-    case QSysInfo::WV_32s:
-        return QObject::tr( "Windows 3.1" );
-    case QSysInfo::WV_95:
-        return QObject::tr( "Windows 95" );
-    case QSysInfo::WV_98:
-        return QObject::tr( "Windows 98" );
-    case QSysInfo::WV_Me:
-        return QObject::tr( "Windows ME" );
-    case QSysInfo::WV_NT:
-        return QObject::tr( "Windows NT" );
-    case QSysInfo::WV_2000:
-        return QObject::tr( "Windows 2000" );
-    case QSysInfo::WV_XP:
-        return QObject::tr( "Windows XP" );
-    case QSysInfo::WV_2003:
-        return QObject::tr( "Windows 2003" );
-    case QSysInfo::WV_VISTA:
-        return QObject::tr( "Windows Vista" );
-    case QSysInfo::WV_WINDOWS7:
-        return QObject::tr( "Windows 7" );
-    case QSysInfo::WV_CE:
-        return QObject::tr( "Windows CE" );
-    case QSysInfo::WV_CENET:
-        return QObject::tr( "Windows CE .NET" );
-    case QSysInfo::WV_CE_5:
-        return QObject::tr( "Windows CE 5" );
-    case QSysInfo::WV_CE_6:
-        return QObject::tr( "Windows CE 6" );
-    default:
-        return QObject::tr( "Windows" );
-    }
-}
-
 KDByteSize KDSysInfo::installedMemory()
 {
     MEMORYSTATUSEX status;
     status.dwLength = sizeof( status );
     GlobalMemoryStatusEx( &status );
     return KDByteSize( status.ullTotalPhys );
-}
-
-KDSysInfo::ArchitectureType KDSysInfo::architecture()
-{
-#if defined( _M_X64 )
-    return AMD64;
-#elif defined( _M_IX86 )
-    return Intel;
-#elif defined( _M_IA64 )
-    return IA64;
-#elif defined( _M_PPC )
-    return PowerPC;
-#elif defined( _M_ARM )
-    return ARM;
-#else
-    return UnknownArchitecture;
-#endif
 }
 
 QPair< KDByteSize, KDByteSize > volumeSpace( const QString& volume )

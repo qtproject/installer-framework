@@ -17,8 +17,7 @@ HEADERS += $$PWD/pimpl_ptr.h \
     $$PWD/kdmetamethoditerator.h \
     $$PWD/kdrunoncechecker.h \
     $$PWD/kdlockfile.h \
-    $$PWD/kdsysinfo.h \
-    $$PWD/kdversion.h
+    $$PWD/kdsysinfo.h
 
 SOURCES += $$PWD/pimpl_ptr.cpp \
     $$PWD/kdtoolsglobal.cpp \
@@ -32,8 +31,7 @@ SOURCES += $$PWD/pimpl_ptr.cpp \
     $$PWD/kdmetamethoditerator.cpp \
     $$PWD/kdrunoncechecker.cpp \
     $$PWD/kdlockfile.cpp \
-    $$PWD/kdsysinfo.cpp \
-    $$PWD/kdversion.cpp
+    $$PWD/kdsysinfo.cpp
 
 unix:SOURCES += $$PWD/kdlockfile_unix.cpp
 win32:SOURCES += $$PWD/kdlockfile_win.cpp

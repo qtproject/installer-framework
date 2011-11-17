@@ -31,8 +31,6 @@
 
 #include "kdbytesize.h"
 
-class KDVersion;
-
 class KDTOOLSCORE_EXPORT KDSysInfo : public QSysInfo
 {
 private:
@@ -40,14 +38,6 @@ private:
 
 public:
     ~KDSysInfo();
-
-    enum OperatingSystemType
-    {
-        UnknownOperatingSystem = -1,
-        Linux,
-        MacOSX,
-        Windows
-    };
 
     enum ArchitectureType
     {
@@ -98,9 +88,6 @@ public:
         QString name;
     };
 
-    static OperatingSystemType osType();
-    static KDVersion osVersion();
-    static QString osDescription();
     static ArchitectureType architecture();
     
     static KDByteSize installedMemory();
@@ -112,7 +99,6 @@ QT_BEGIN_NAMESPACE
 class QDebug;
 QT_END_NAMESPACE
 
-QDebug operator<<( QDebug dbg, KDSysInfo::OperatingSystemType type );
 QDebug operator<<( QDebug dbg, KDSysInfo::ArchitectureType type );
 QDebug operator<<( QDebug dbg, KDSysInfo::Volume volume );
 QDebug operator<<( QDebug dbg, KDSysInfo::ProcessInfo process );

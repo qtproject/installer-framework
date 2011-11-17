@@ -23,7 +23,6 @@
 #include "kdsysinfo.h"
 
 #include "kdbytesize.h"
-#include "kdversion.h"
 
 #include <sys/utsname.h>
 #include <sys/statvfs.h>
@@ -32,39 +31,6 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
-
-KDSysInfo::OperatingSystemType KDSysInfo::osType()
-{
-#if defined( Q_OS_LINUX )
-    return Linux;
-#else
-    UnknownOperatingSystem;
-#endif
-}
-
-KDVersion KDSysInfo::osVersion()
-{
-#if defined( Q_OS_LINUX )
-    struct utsname info;
-    uname( &info );
-    QString v = QString::fromLatin1( info.release );
-    if( v.contains( QString::fromLatin1( "-" ) ) )
-        v = v.mid( 0, v.indexOf( QString::fromLatin1( "-" ) ) );
-
-    return KDVersion::fromString( v );
-#else
-    return KDVersion();
-#endif
-}
-
-QString KDSysInfo::osDescription()
-{
-#if defined( Q_OS_LINUX )
-    return QObject::tr( "Linux %1" ).arg( osVersion().toString() );
-#else
-    return QString();
-#endif
-}
 
 KDByteSize KDSysInfo::installedMemory()
 {
@@ -93,11 +59,6 @@ KDByteSize KDSysInfo::installedMemory()
     return KDByteSize();
 }
 
-KDSysInfo::ArchitectureType KDSysInfo::architecture()
-{
-    return UnknownArchitecture;
-}
-    
 QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
 {
     QList< Volume > result;

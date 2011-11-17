@@ -35,21 +35,6 @@ KDSysInfo::~KDSysInfo()
 #include <QDir>
 #include <QDebug>
 
-QDebug operator<<( QDebug dbg, KDSysInfo::OperatingSystemType type )
-{
-    switch( type )
-    {
-    case KDSysInfo::Linux:
-        return dbg << "Linux";
-    case KDSysInfo::MacOSX:
-        return dbg << "Mac OS X";
-    case KDSysInfo::Windows:
-        return dbg << "Windows";
-    default:
-        return dbg << "<unknown>";
-    }
-}
-
 QDebug operator<<( QDebug dbg, KDSysInfo::ArchitectureType type )
 {
     switch( type )

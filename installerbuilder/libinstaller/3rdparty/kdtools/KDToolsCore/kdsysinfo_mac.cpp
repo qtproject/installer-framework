@@ -23,7 +23,6 @@
 #include "kdsysinfo.h"
 
 #include "kdbytesize.h"
-#include "kdversion.h"
 
 #include <Carbon/Carbon.h>
 
@@ -35,33 +34,6 @@ static QString qt_mac_hfsunistr_to_qstring( const HFSUniStr255* hfs )
     return QString( charPointer, hfs->length );
 }
 
-KDSysInfo::OperatingSystemType KDSysInfo::osType()
-{
-    return MacOSX;
-}
-
-KDVersion KDSysInfo::osVersion()
-{
-    SInt32 major = 0;
-    SInt32 minor = 0;
-    SInt32 bugfix = 0;
-    Gestalt( gestaltSystemVersionMajor, &major );
-    Gestalt( gestaltSystemVersionMinor, &minor );
-    Gestalt( gestaltSystemVersionBugFix, &bugfix );
-    
-    QStringList result;
-    result << QString::number( major );
-    result << QString::number( minor );
-    result << QString::number( bugfix );
-
-    return KDVersion::fromString( result.join( QChar::fromLatin1( '.' ) ) );
-}
-
-QString KDSysInfo::osDescription()
-{
-    return QObject::tr( "Mac OS X Version %1" ).arg( osVersion().toString() );
-}
-
 KDByteSize KDSysInfo::installedMemory()
 {
     SInt32 mb = 0;
@@ -69,23 +41,6 @@ KDByteSize KDSysInfo::installedMemory()
     return KDByteSize( static_cast< quint64 >( mb ) * 1024LL * 1024LL );
 }
 
-KDSysInfo::ArchitectureType KDSysInfo::architecture()
-{
-    SInt32 arch = 0;
-    Gestalt( gestaltSysArchitecture, &arch );
-    switch( arch )
-    {
-    case gestalt68k:
-        return Motorola68k;
-    case gestaltPowerPC:
-        return PowerPC;
-    case gestaltIntel:
-        return Intel;
-    default:
-        return UnknownArchitecture;
-    }
-}
-    
 QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
 {
     QList< KDSysInfo::Volume > result;
