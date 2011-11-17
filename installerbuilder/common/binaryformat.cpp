@@ -963,15 +963,15 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
 
     for (int i = 0; i < operationsCount; ++i) {
         const QString name = retrieveString(file.data());
-        Operation *op = KDUpdater::UpdateOperationFactory::instance().create(name);
-        Q_ASSERT_X(op, __FUNCTION__, QString::fromLatin1("Invalid operation name: %1").arg(name)
+        QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(name));
+        Q_ASSERT_X(!op.isNull(), __FUNCTION__, QString::fromLatin1("Invalid operation name: %1").arg(name)
             .toLatin1());
 
-        const QString xml = retrieveString(file.data());
-        if (!op->fromXml(xml))
+        if (!op->fromXml(retrieveString(file.data()))) {
             qWarning() << "Failed to load XML for operation:" << name;
-        verbose() << "Operation name: " << name << "\nOperation xml:\n" << xml.leftRef(1000) << std::endl;
-        content.m_performedOperations.push(op);
+            continue;
+        }
+        content.m_performedOperations.push(op.take());
     }
 
     // seek to the position of the component index
