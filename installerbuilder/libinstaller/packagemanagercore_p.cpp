@@ -683,10 +683,10 @@ void PackageManagerCorePrivate::readUninstallerIniFile(const QString &targetDir)
         ++it;
     }
 
-    QList<Repository> repositories;
+    QSet<Repository> repositories;
     const QStringList list = cfg.value(scRepositories).toStringList();
     foreach (const QString &url, list)
-        repositories.append(Repository(url));
+        repositories.insert(Repository(url, false));
     m_settings.addUserRepositories(repositories);
 }
 
