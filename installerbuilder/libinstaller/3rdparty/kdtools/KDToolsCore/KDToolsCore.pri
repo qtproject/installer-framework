@@ -13,7 +13,6 @@ HEADERS += $$PWD/pimpl_ptr.h \
     $$PWD/kdautopointer.h \
     $$PWD/kdselfrestarter.h \
     $$PWD/kdsavefile.h \
-    $$PWD/kdmetamethoditerator.h \
     $$PWD/kdrunoncechecker.h \
     $$PWD/kdlockfile.h \
     $$PWD/kdsysinfo.h
@@ -26,7 +25,6 @@ SOURCES += $$PWD/pimpl_ptr.cpp \
     $$PWD/kdautopointer.cpp \
     $$PWD/kdselfrestarter.cpp \
     $$PWD/kdsavefile.cpp \
-    $$PWD/kdmetamethoditerator.cpp \
     $$PWD/kdrunoncechecker.cpp \
     $$PWD/kdlockfile.cpp \
     $$PWD/kdsysinfo.cpp

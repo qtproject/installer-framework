@@ -28,8 +28,6 @@
 #include "fsengineclient.h"
 #include "templates.cpp"
 
-#include <KDToolsCore/KDMetaMethodIterator>
-
 #include <QtCore/QThread>
 
 #include <QtNetwork/QTcpSocket>
@@ -42,7 +40,8 @@ public:
     Private(QProcessWrapper *qq)
         : q(qq),
           ignoreTimer(false),
-          socket(0) { }
+          socket(0)
+    {}
 
     bool createSocket()
     {
@@ -107,12 +106,17 @@ QProcessWrapper::QProcessWrapper(QObject *parent)
     : QObject(parent),
       d(new Private(this))
 {
-    KDMetaMethodIterator it(QProcess::staticMetaObject, KDMetaMethodIterator::Signal,
-        KDMetaMethodIterator::IgnoreQObjectMethods);
-    while (it.hasNext()) {
-        it.next();
-        connect(&d->process, it.connectableSignature(), this, it.connectableSignature());
-    }
+    connect(&d->process, SIGNAL(bytesWritten(qint64)), SIGNAL(bytesWritten(qint64)));
+    connect(&d->process, SIGNAL(aboutToClose()), SIGNAL(aboutToClose()));
+    connect(&d->process, SIGNAL(readChannelFinished()), SIGNAL(readChannelFinished()));
+    connect(&d->process, SIGNAL(error(QProcess::ProcessError)), SIGNAL(error(QProcess::ProcessError)));
+    connect(&d->process, SIGNAL(readyReadStandardOutput()), SIGNAL(readyReadStandardOutput()));
+    connect(&d->process, SIGNAL(readyReadStandardError()), SIGNAL(readyReadStandardError()));
+    connect(&d->process, SIGNAL(finished(int)), SIGNAL(finished(int)));
+    connect(&d->process, SIGNAL(finished(int,QProcess::ExitStatus)), SIGNAL(finished(int,QProcess::ExitStatus)));
+    connect(&d->process, SIGNAL(readyRead()), SIGNAL(readyRead()));
+    connect(&d->process, SIGNAL(started()), SIGNAL(started()));
+    connect(&d->process, SIGNAL(stateChanged(QProcess::ProcessState)), SIGNAL(stateChanged(QProcess::ProcessState)));
 }
 
 QProcessWrapper::~QProcessWrapper()
