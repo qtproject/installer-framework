@@ -28,8 +28,7 @@
 
 #include "installer_global.h"
 
-#include <KDToolsCore/KDWatchdog>
-
+#include <QtCore/QTimer>
 #include <QtNetwork/QTcpServer>
 
 class INSTALLER_EXPORT FSEngineServer : public QTcpServer
@@ -50,7 +49,7 @@ protected:
 
 private:
     QString key;
-    KDWatchdog watchdog;
+    QTimer watchdog;
 };
 
 #endif

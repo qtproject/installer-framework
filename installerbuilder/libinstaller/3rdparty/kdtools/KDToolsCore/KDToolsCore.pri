@@ -9,7 +9,6 @@ HEADERS += $$PWD/pimpl_ptr.h \
     $$PWD/kdtoolsglobal.h \
     $$PWD/kdbytesize.h \
     $$PWD/kdjob.h \
-    $$PWD/kdwatchdog.h \
     $$PWD/kdgenericfactory.h \
     $$PWD/kdautopointer.h \
     $$PWD/kdselfrestarter.h \
@@ -23,7 +22,6 @@ SOURCES += $$PWD/pimpl_ptr.cpp \
     $$PWD/kdtoolsglobal.cpp \
     $$PWD/kdbytesize.cpp \
     $$PWD/kdjob.cpp \
-    $$PWD/kdwatchdog.cpp \
     $$PWD/kdgenericfactory.cpp \
     $$PWD/kdautopointer.cpp \
     $$PWD/kdselfrestarter.cpp \

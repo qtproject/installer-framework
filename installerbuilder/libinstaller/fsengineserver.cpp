@@ -79,6 +79,7 @@ bool startDetached(const QString &program, const QStringList &args, const QStrin
 #endif
 }
 
+
 class QProcessSignalReceiver : public QObject
 {
     Q_OBJECT
@@ -151,16 +152,20 @@ FSEngineServer::FSEngineServer(quint16 port, QObject *parent)
     : QTcpServer(parent)
 {
     listen(QHostAddress::LocalHost, port);
-    watchdog.setTimeoutInterval(30000);
     connect(&watchdog, SIGNAL(timeout()), qApp, SLOT(quit()));
+    watchdog.setSingleShot(true);
+    watchdog.setInterval(30000);
+    watchdog.start();
 }
 
 FSEngineServer::FSEngineServer(const QHostAddress &address, quint16 port, QObject *parent)
     : QTcpServer(parent)
 {
     listen(address, port);
-    watchdog.setTimeoutInterval(30000);
     connect(&watchdog, SIGNAL(timeout()), qApp, SLOT(quit()));
+    watchdog.setSingleShot(true);
+    watchdog.setInterval(30000);
+    watchdog.start();
 }
 
 /*!
@@ -182,7 +187,7 @@ void FSEngineServer::incomingConnection(int socketDescriptor)
     QThread *const thread = new FSEngineConnectionThread(socketDescriptor, this);
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     thread->start();
-    watchdog.resetTimeoutTimer();
+    watchdog.start();
 }
 
 void FSEngineServer::enableTestMode()
