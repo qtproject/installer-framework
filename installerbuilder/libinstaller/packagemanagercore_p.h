@@ -124,6 +124,7 @@ public:
     QString replaceVariables(const QString &str) const;
     QByteArray replaceVariables(const QByteArray &str) const;
 
+    void callBeginInstallation(const QList<Component*> &componentList);
     void stopProcessesForUpdates(const QList<Component*> &components);
     int countProgressOperations(const QList<Component*> &components);
     int countProgressOperations(const OperationList &operations);

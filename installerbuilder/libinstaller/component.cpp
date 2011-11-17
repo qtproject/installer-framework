@@ -601,6 +601,16 @@ void Component::createOperationsForArchive(const QString &archive)
     }
 }
 
+void Component::beginInstallation()
+{
+    // the script can override this method
+    if (callScriptMethod(QLatin1String("beginInstallation")).isValid()) {
+        d->m_operationsCreated = true;
+        return;
+    }
+}
+
+
 /*!
     Creates all operations needed to install this component.
     You can override this method by providing a method with the same name in the component script.

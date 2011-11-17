@@ -108,6 +108,7 @@ public:
     QStringList userInterfaces() const;
     QHash<QString, QPair<QString, QString> > licenses() const;
     Q_INVOKABLE QWidget *userInterface(const QString &name) const;
+    Q_INVOKABLE virtual void beginInstallation();
     Q_INVOKABLE virtual void createOperations();
     Q_INVOKABLE virtual void createOperationsForArchive(const QString &archive);
     Q_INVOKABLE virtual void createOperationsForPath(const QString &path);

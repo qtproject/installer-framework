@@ -692,6 +692,12 @@ void PackageManagerCorePrivate::readUninstallerIniFile(const QString &targetDir)
     m_settings.addUserRepositories(repositories);
 }
 
+void PackageManagerCorePrivate::callBeginInstallation(const QList<Component*> &componentList)
+{
+    foreach (Component *component, componentList)
+        component->beginInstallation();
+}
+
 void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> &components)
 {
     QStringList processList;
@@ -1234,6 +1240,7 @@ void PackageManagerCorePrivate::runInstaller()
         // Clear the packages as we might install into an already existing installation folder.
         m_updaterApplication.packagesInfo()->clearPackageInfoList();
 
+        callBeginInstallation(componentsToInstall);
         stopProcessesForUpdates(componentsToInstall);
 
         const int progressOperationCount = countProgressOperations(componentsToInstall);
@@ -1398,6 +1405,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
         }
         m_performedOperationsOld = nonRevertedOperations; // these are all operations left: those not reverted
 
+        callBeginInstallation(componentsToInstall);
         stopProcessesForUpdates(componentsToInstall);
 
         const double progressOperationCount = countProgressOperations(componentsToInstall);
@@ -1470,6 +1478,7 @@ void PackageManagerCorePrivate::runUninstaller()
         const double undoOperationProgressSize = double(1) / double(uninstallOperationCount);
 
         //yes uninstallation is like an update on the component so please inform the user to stop processes
+        callBeginInstallation(m_core->availableComponents());
         stopProcessesForUpdates(m_core->availableComponents());
 
         runUndoOperations(undoOperations, undoOperationProgressSize, adminRightsGained, false);
