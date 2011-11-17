@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
             } else if (argument == QLatin1String("--no-force-installations")) {
                 PackageManagerCore::setNoForceInstallation(true);
             } else {
-                verbose() << "Unknown option: " << argument << std::endl;
+                std::cerr << "Unknown option: " << argument << std::endl;
             }
         }
 
