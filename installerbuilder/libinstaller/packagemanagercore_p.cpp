@@ -1320,37 +1320,40 @@ void PackageManagerCorePrivate::runPackageUpdater()
             Component *component = componentsByName.value(name, 0);
             if (!component)
                 component = m_core->componentByName(name);
-            if (component) {
+            if (component)
                 componentsByName.insert(name, component);
 
-                if (isUpdater()) {
-                    // If we have a component scheduled for update, do not break as we need whose operations in
-                    // the undo list to be able to properly update (uninstall -> install). In case we had more
-                    // then one update, others might have been deselected - so we need to keep them to avoid
-                    // uninstalling the component the update was possible for.
-                    if (!component->updateRequested() && !componentsToInstall.contains(component)) {
+            if (isUpdater()) {
+                // We found the component, the component is not scheduled for update, the dependency solver
+                // did not add the component as install dependency and there is no replacement, keep it.
+                if ((component && !component->updateRequested() && !componentsToInstall.contains(component)
+                    && !m_componentsToReplaceUpdaterMode.contains(name))) {
                         nonRevertedOperations.append(operation);
                         continue;
-                    }
-                } else {
-                    // If we're _not_ removing everything and this component is still selected, -> next.
-                    if (component->isSelected()) {
-                        nonRevertedOperations.append(operation);
-                        continue;
-                    }
                 }
-            }
 
-            // A component (one to replace) might be scheduled for uninstall, but we really don't know if it
-            // should be uninstalled. To figure this out we need to check the actual replacement if it is
-            // checked. If so, skip the undo operation. This avoids an update if we actually do a completely
-            // different component install/ uninstall.
-            if (componentsToReplace(m_core->runMode()).contains(name)) {
-                if ((isUpdater() && !m_componentsToReplaceUpdaterMode.value(name).first->updateRequested())
-                    || isPackageManager() && m_componentsToReplaceAllMode.value(name).first->isSelected()) {
+                // There is a replacement, but the replacement is not scheduled for update, keep it as well.
+                if (m_componentsToReplaceUpdaterMode.contains(name)
+                    && !m_componentsToReplaceUpdaterMode.value(name).first->updateRequested()) {
+                        nonRevertedOperations.append(operation);
+                        continue;
+                }
+            } else if (isPackageManager()) {
+                // We found the component, the component is still checked and the dependency solver did not
+                // add the component as install dependency, keep it.
+                if (component && component->isSelected() && !componentsToInstall.contains(component)) {
                     nonRevertedOperations.append(operation);
                     continue;
                 }
+
+                // There is a replacement, but the replacement is not scheduled for update, keep it as well.
+                if (m_componentsToReplaceAllMode.contains(name)
+                    && !m_componentsToReplaceAllMode.value(name).first->installationRequested()) {
+                        nonRevertedOperations.append(operation);
+                        continue;
+                }
+            } else {
+                Q_ASSERT_X(false, Q_FUNC_INFO, "Invalid package manager mode!");
             }
 
             // Filter out the create target dir undo operation, it's only needed for full uninstall.
