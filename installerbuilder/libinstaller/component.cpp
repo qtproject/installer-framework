@@ -1143,3 +1143,16 @@ void Component::updateModelData(const QString &key, const QString &data)
         setData(value(scDescription) + QLatin1String("<br><br>Update Info: ") + updateInfo, Qt::ToolTipRole);
     }
 }
+
+
+QDebug QInstaller::operator<<(QDebug dbg, Component *component)
+{
+    dbg << "component: " << component->name() << "\n";
+    dbg << "\tisSelected: \t" << component->isSelected() << "\n";
+    dbg << "\tisInstalled: \t" << component->isInstalled() << "\n";
+    dbg << "\tisUninstalled: \t" << component->isUninstalled() << "\n";
+    dbg << "\tupdateRequested: \t" << component->updateRequested() << "\n";
+    dbg << "\tinstallationRequested: \t" << component->installationRequested() << "\n";
+    dbg << "\tuninstallationRequested: \t" << component->uninstallationRequested() << "\n";
+    return dbg;
+}

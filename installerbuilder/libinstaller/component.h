@@ -38,6 +38,8 @@
 #include <QtScript/QScriptable>
 #include <QtScript/QScriptValueList>
 
+QT_FORWARD_DECLARE_CLASS(QDebug)
+
 namespace KDUpdater {
     class Update;
     struct PackageInfo;
@@ -211,6 +213,8 @@ private:
 private:
     ComponentPrivate *d;
 };
+
+QDebug operator<<(QDebug dbg, Component *component);
 
 }   // namespace QInstaller
 
