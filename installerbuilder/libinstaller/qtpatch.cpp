@@ -59,9 +59,8 @@
 namespace {
     void sleepCopiedFromQTest(int ms)
     {
-        if (ms < 0) {
+        if (ms < 0)
             return;
-        }
     #ifdef Q_OS_WIN
         Sleep(uint(ms));
     #else
@@ -84,7 +83,7 @@ namespace {
 }//"anonymous" namespace
 
 
-QHash<QString, QByteArray> QtPatch::qmakeValues(const QString & qmakePath, QByteArray * qmakeOutput)
+QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteArray *qmakeOutput)
 {
     QHash<QString, QByteArray> qmakeValueHash;
 
@@ -109,7 +108,7 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString & qmakePath, QByte
         process.start(qmake.absoluteFilePath(), args, QIODevice::ReadOnly);
         if (process.waitForFinished(2000)) {
             if (process.exitStatus() == QProcess::CrashExit) {
-                QInstaller::verbose() << qPrintable( QString(QLatin1String("%1 was crashed")).arg(qmakePath) ) << std::endl;
+                QInstaller::verbose() << qPrintable(QString(QLatin1String("%1 was crashed")).arg(qmakePath) ) << std::endl;
                 return qmakeValueHash;
             }
             QByteArray output = process.readAllStandardOutput();
@@ -141,18 +140,18 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString & qmakePath, QByte
     return qmakeValueHash;
 }
 
-bool QtPatch::patchBinaryFile( const QString & fileName,
-                               const QByteArray & oldQtPath,
-                               const QByteArray & newQtPath )
+bool QtPatch::patchBinaryFile(const QString &fileName,
+                              const QByteArray &oldQtPath,
+                              const QByteArray &newQtPath)
 {
     QFile file(fileName);
-    if ( !file.exists() ) {
+    if (!file.exists()) {
         QInstaller::verbose() << "qpatch: warning: file `" << qPrintable(fileName) << "' not found" << std::endl;
         return false;
     }
 
     openFileForPatching(&file);
-    if (! file.isOpen()) {
+    if (!file.isOpen()) {
         QInstaller::verbose() << "qpatch: warning: file `" << qPrintable(fileName) << "' can not open." << std::endl;
         QInstaller::verbose() << qPrintable(file.errorString()) << std::endl;
         return false;
@@ -165,9 +164,9 @@ bool QtPatch::patchBinaryFile( const QString & fileName,
 }
 
 // device must be open
-bool QtPatch::patchBinaryFile( QIODevice* device,
-                               const QByteArray & oldQtPath,
-                               const QByteArray & newQtPath )
+bool QtPatch::patchBinaryFile(QIODevice *device,
+                              const QByteArray &oldQtPath,
+                              const QByteArray &newQtPath)
 {
     if (!(device->openMode() == QIODevice::ReadWrite)) {
         QInstaller::verbose() << "qpatch: warning: This function needs an open device for writing." << std::endl;
@@ -178,7 +177,7 @@ bool QtPatch::patchBinaryFile( QIODevice* device,
 
     int offset = 0;
     QByteArray overwritePath(newQtPath);
-    if(overwritePath.size() < oldQtPath.size()) {
+    if (overwritePath.size() < oldQtPath.size()) {
         QByteArray fillByteArray(oldQtPath.size() - overwritePath.size(), '\0');
         overwritePath.append(fillByteArray);
     }
@@ -186,7 +185,7 @@ bool QtPatch::patchBinaryFile( QIODevice* device,
     QByteArrayMatcher byteArrayMatcher(oldQtPath);
     forever {
         offset = byteArrayMatcher.indexIn(source, offset);
-        if(offset == -1)
+        if (offset == -1)
             break;
         device->seek(offset);
         device->write(overwritePath);
@@ -196,12 +195,12 @@ bool QtPatch::patchBinaryFile( QIODevice* device,
     return true;
 }
 
-bool QtPatch::patchTextFile( const QString & fileName,
-                             const QHash<QByteArray, QByteArray> &searchReplacePairs)
+bool QtPatch::patchTextFile(const QString &fileName,
+                            const QHash<QByteArray, QByteArray> &searchReplacePairs)
 {
     QFile file(fileName);
 
-    if (! file.open(QFile::ReadOnly)) {
+    if (!file.open(QFile::ReadOnly)) {
         QInstaller::verbose() << "qpatch: warning: Open the file '"
                               << qPrintable(fileName) << "' stopped: "
                               << qPrintable(file.errorString()) << std::endl;
@@ -212,12 +211,12 @@ bool QtPatch::patchTextFile( const QString & fileName,
     file.close();
 
     QHashIterator<QByteArray, QByteArray> it(searchReplacePairs);
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
         source.replace(it.key(), it.value());
     }
 
-    if (! file.open(QFile::WriteOnly | QFile::Truncate)) {
+    if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
         QInstaller::verbose() << "qpatch: error: file `" << qPrintable(fileName) << "' not writable" << std::endl;
         return false;
     }
@@ -227,12 +226,12 @@ bool QtPatch::patchTextFile( const QString & fileName,
 }
 
 
-bool QtPatch::openFileForPatching(QFile* file)
+bool QtPatch::openFileForPatching(QFile *file)
 {
     if (file->openMode() == QIODevice::NotOpen) {
         // in some cases the file can not open, because another process is blocking it(filewatcher ...)
         int waitCount = 0;
-        while (! file->open(QFile::ReadWrite) && waitCount < 60) {
+        while (!file->open(QFile::ReadWrite) && waitCount < 60) {
             ++waitCount;
             static const int waitTimeInMilliSeconds = 500;
             uiDetachedWait(waitTimeInMilliSeconds);

@@ -43,6 +43,6 @@ public:
     Operation *clone() const;
 };
 
-} // namespace
+} // namespace QInstaller
 
 #endif // REPLACEOPERATION_H

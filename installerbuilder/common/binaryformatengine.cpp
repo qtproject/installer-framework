@@ -34,15 +34,15 @@
 
 using namespace QInstallerCreator;
 
-namespace
-{
+namespace {
+
 class StringListIterator : public QAbstractFileEngineIterator
 {
 public:
-    StringListIterator( const QStringList& list, QDir::Filters filters, const QStringList& nameFilters )
-        : QAbstractFileEngineIterator( filters, nameFilters ),
-          list( list ),
-          index( -1 )
+    StringListIterator( const QStringList &list, QDir::Filters filters, const QStringList &nameFilters)
+        : QAbstractFileEngineIterator(filters, nameFilters),
+          list(list),
+          index(-1)
     {
     }
 
@@ -53,7 +53,7 @@ public:
 
     QString next()
     {
-        if( !hasNext() )
+        if(!hasNext())
             return QString();
         ++index;
         return currentFilePath();
@@ -61,58 +61,59 @@ public:
 
     QString currentFileName() const
     {
-        return index < 0 ? QString() : list[ index ];
+        return index < 0 ? QString() : list[index];
     }
 
 private:
     const QStringList list;
     int index;
 };
-}
 
-BinaryFormatEngine::BinaryFormatEngine( const ComponentIndex& index, const QString& fileName )
-    : m_index( index )
-    , m_hasComponent( false )
-    , m_hasArchive( false )
-    , m_archive( 0 )
+} // anon namespace
+
+BinaryFormatEngine::BinaryFormatEngine(const ComponentIndex &index, const QString &fileName)
+    : m_index(index)
+    , m_hasComponent(false)
+    , m_hasArchive(false)
+    , m_archive(0)
 {
-    setArchive( fileName );
+    setArchive(fileName);
 }
 
 BinaryFormatEngine::~BinaryFormatEngine()
 {
 }
 
-void BinaryFormatEngine::setArchive( const QString& file )
+void BinaryFormatEngine::setArchive(const QString &file)
 {
     m_fileNamePath = file;
 
-    static const QChar sep = QChar::fromLatin1( '/' );
-    static const QString prefix = QString::fromLatin1( "installer://" );
-    Q_ASSERT( file.toLower().startsWith( prefix ) );
+    static const QChar sep = QChar::fromLatin1('/');
+    static const QString prefix = QString::fromLatin1("installer://");
+    Q_ASSERT(file.toLower().startsWith(prefix));
 
     // cut the prefix
-    QString path = file.mid( prefix.length() );
-    while( path.endsWith( sep ) )
-        path.chop( 1 );
+    QString path = file.mid(prefix.length());
+    while (path.endsWith(sep))
+        path.chop(1);
 
     QString arch;
-    const QString comp = path.section( sep, 0, 0 );
+    const QString comp = path.section(sep, 0, 0);
     m_hasComponent = !comp.isEmpty();
-    m_hasArchive = path.contains( sep );
-    if( m_hasArchive )
-        arch = path.section( sep, 1, 1 );
+    m_hasArchive = path.contains(sep);
+    if (m_hasArchive)
+        arch = path.section(sep, 1, 1);
 
-    m_component = m_index.componentByName( comp.toUtf8() );
-    m_archive = m_component.archiveByName( arch.toUtf8() );
+    m_component = m_index.componentByName(comp.toUtf8());
+    m_archive = m_component.archiveByName(arch.toUtf8());
 }
 
 /**
  * \reimp
  */
-void BinaryFormatEngine::setFileName( const QString& file )
+void BinaryFormatEngine::setFileName(const QString &file)
 {
-    setArchive( file );
+    setArchive(file);
 }
 
 /**
@@ -120,7 +121,7 @@ void BinaryFormatEngine::setFileName( const QString& file )
  */
 bool BinaryFormatEngine::close()
 {
-    if( m_archive == 0 )
+    if (m_archive == 0)
         return false;
 
     const bool result = m_archive->isOpen();
@@ -131,9 +132,9 @@ bool BinaryFormatEngine::close()
 /**
  * \reimp
  */
-bool BinaryFormatEngine::open( QIODevice::OpenMode mode )
+bool BinaryFormatEngine::open(QIODevice::OpenMode mode)
 {
-    return m_archive == 0 ? false : m_archive->open( mode );
+    return m_archive == 0 ? false : m_archive->open(mode);
 }
 
 /**
@@ -147,32 +148,31 @@ qint64 BinaryFormatEngine::pos() const
 /**
  * \reimp
  */
-qint64 BinaryFormatEngine::read( char* data, qint64 maxlen )
+qint64 BinaryFormatEngine::read(char *data, qint64 maxlen)
 {
-    return m_archive == 0 ? -1 : m_archive->read( data, maxlen );
+    return m_archive == 0 ? -1 : m_archive->read(data, maxlen);
 }
 
 /**
  * \reimp
  */
-bool BinaryFormatEngine::seek( qint64 offset )
+bool BinaryFormatEngine::seek(qint64 offset)
 {
-    return m_archive == 0 ? false : m_archive->seek( offset );
+    return m_archive == 0 ? false : m_archive->seek(offset);
 }
 
 /**
  * \reimp
  */
-QString BinaryFormatEngine::fileName( FileName file ) const
+QString BinaryFormatEngine::fileName(FileName file) const
 {
-    switch( file )
-    {
+    switch(file) {
     case BaseName:
-        return m_fileNamePath.section( QChar::fromLatin1( '/' ), -1, -1, QString::SectionSkipEmpty );
+        return m_fileNamePath.section(QChar::fromLatin1('/'), -1, -1, QString::SectionSkipEmpty);
     case PathName:
     case AbsolutePathName:
     case CanonicalPathName:
-        return m_fileNamePath.section( QChar::fromLatin1( '/' ), 0, -2, QString::SectionSkipEmpty );
+        return m_fileNamePath.section(QChar::fromLatin1('/'), 0, -2, QString::SectionSkipEmpty);
     case DefaultName:
     case AbsoluteName:
     case CanonicalName:
@@ -185,32 +185,29 @@ QString BinaryFormatEngine::fileName( FileName file ) const
 /**
  * \reimp
  */
-bool BinaryFormatEngine::copy( const QString& newName )
+bool BinaryFormatEngine::copy(const QString &newName)
 {
-    if( QFile::exists( newName ) )
+    if (QFile::exists(newName))
         return false;
 
-    QFile target( newName );
-    if( !target.open( QIODevice::WriteOnly ) )
+    QFile target(newName);
+    if (!target.open(QIODevice::WriteOnly))
         return false;
 
     qint64 bytesLeft = size();
-    if( !open( QIODevice::ReadOnly ) )
+    if (!open(QIODevice::ReadOnly))
         return false;
 
-    char data[ 4096 ];
-    while( bytesLeft > 0 )
-    {
-        const qint64 len = qMin< qint64 >( bytesLeft, 4096 );
-        const qint64 bytesRead = read( data, len );
-        if( bytesRead != len )
-        {
+    char data[4096];
+    while(bytesLeft > 0) {
+        const qint64 len = qMin<qint64>(bytesLeft, 4096);
+        const qint64 bytesRead = read(data, len);
+        if (bytesRead != len) {
             close();
             return false;
         }
-        const qint64 bytesWritten = target.write( data, len );
-        if( bytesWritten != len )
-        {
+        const qint64 bytesWritten = target.write(data, len);
+        if (bytesWritten != len) {
             close();
             return false;
         }
@@ -224,16 +221,16 @@ bool BinaryFormatEngine::copy( const QString& newName )
 /**
  * \reimp
  */
-QAbstractFileEngine::FileFlags BinaryFormatEngine::fileFlags( FileFlags type ) const
+QAbstractFileEngine::FileFlags BinaryFormatEngine::fileFlags(FileFlags type) const
 {
     FileFlags result;
-    if( ( type & FileType ) && m_archive != 0 )
+    if ((type & FileType) && m_archive != 0)
         result |= FileType;
-    if( ( type & DirectoryType ) && !m_hasArchive )
+    if ((type & DirectoryType) && !m_hasArchive)
         result |= DirectoryType;
-    if( ( type & ExistsFlag ) && m_hasArchive && m_archive != 0 )
+    if ((type & ExistsFlag) && m_hasArchive && m_archive != 0)
         result |= ExistsFlag;
-    if( ( type & ExistsFlag ) && !m_hasArchive && !m_component.name().isEmpty() )
+    if ((type & ExistsFlag) && !m_hasArchive && !m_component.name().isEmpty())
         result |= ExistsFlag;
 
     return result;
@@ -242,54 +239,50 @@ QAbstractFileEngine::FileFlags BinaryFormatEngine::fileFlags( FileFlags type ) c
 /**
  * \reimp
  */
-QAbstractFileEngineIterator* BinaryFormatEngine::beginEntryList( QDir::Filters filters, const QStringList& filterNames )
+QAbstractFileEngineIterator *BinaryFormatEngine::beginEntryList(QDir::Filters filters, const QStringList &filterNames)
 {
-    const QStringList entries = entryList( filters, filterNames );
-    return new StringListIterator( entries, filters, filterNames );
+    const QStringList entries = entryList(filters, filterNames);
+    return new StringListIterator(entries, filters, filterNames);
 }
 
 /**
  * \reimp
  */
-QStringList BinaryFormatEngine::entryList( QDir::Filters filters, const QStringList& filterNames ) const
+QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringList &filterNames) const
 {
-    if( m_hasArchive )
+    if (m_hasArchive)
         return QStringList();
     
     QStringList result;
 
-    if( m_hasComponent && ( filters & QDir::Files ) )
-    {
+    if (m_hasComponent && (filters & QDir::Files)) {
         const QVector< QSharedPointer<Archive> > archives = m_component.archives();
-        Q_FOREACH( const QSharedPointer<Archive>& i, archives )
-            result.push_back( QString::fromUtf8( i->name() ) );
+        foreach (const QSharedPointer<Archive> &i, archives)
+            result.push_back(QString::fromUtf8(i->name()));
     }
-    else if( !m_hasComponent && ( filters & QDir::Dirs ) )
-    {
-        const QVector< Component > components = m_index.components();
-        Q_FOREACH( const Component& i, components )
-            result.push_back( QString::fromUtf8( i.name() ) );
+    else if (!m_hasComponent && (filters & QDir::Dirs)) {
+        const QVector<Component> components = m_index.components();
+        foreach (const Component &i, components)
+            result.push_back(QString::fromUtf8(i.name()));
     }
 
-    if( filterNames.isEmpty() )
+    if (filterNames.isEmpty())
         return result;
 
-    QList< QRegExp > regexps;
-    Q_FOREACH( const QString& i, filterNames )
-        regexps.push_back( QRegExp( i, Qt::CaseInsensitive, QRegExp::Wildcard ) );
+    QList<QRegExp> regexps;
+    foreach (const QString &i, filterNames)
+        regexps.push_back(QRegExp(i, Qt::CaseInsensitive, QRegExp::Wildcard));
 
     QStringList entries;
-    Q_FOREACH( const QString& i, result )
-    {
+    foreach (const QString &i, result) {
         bool matched = false;
-        Q_FOREACH( const QRegExp& reg, regexps )
-        {
-            matched = reg.exactMatch( i );
-            if( matched )
+        foreach (const QRegExp &reg, regexps) {
+            matched = reg.exactMatch(i);
+            if (matched)
                 break;
         }
-        if( matched )
-            entries.push_back( i );
+        if (matched)
+            entries.push_back(i);
     }
 
     return entries;

@@ -31,24 +31,23 @@
 #include <QtCore/QAbstractFileEngineHandler>
 
 
-namespace QInstallerCreator
-{
+namespace QInstallerCreator {
 
 class ComponentIndex;
 
 class INSTALLER_EXPORT BinaryFormatEngineHandler : public QAbstractFileEngineHandler
 {
 public:
-    explicit BinaryFormatEngineHandler( const ComponentIndex& index );
-    BinaryFormatEngineHandler( const BinaryFormatEngineHandler& other );
+    explicit BinaryFormatEngineHandler(const ComponentIndex &index);
+    BinaryFormatEngineHandler(const BinaryFormatEngineHandler &other);
     ~BinaryFormatEngineHandler();
-    QAbstractFileEngine* create( const QString& fileName ) const;
+    QAbstractFileEngine *create(const QString &fileName) const;
 
-    void setComponentIndex( const ComponentIndex& index );
+    void setComponentIndex(const ComponentIndex &index);
 
-    static BinaryFormatEngineHandler* instance();
+    static BinaryFormatEngineHandler *instance();
 
-    void registerArchive( const QString& fileName, const QString& path );
+    void registerArchive(const QString &fileName, const QString &path);
 
 private:
     class Private;

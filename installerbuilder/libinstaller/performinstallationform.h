@@ -61,7 +61,7 @@ signals:
     void showDetailsChanged();
 
 public slots:
-    void appendProgressDetails( const QString &details);
+    void appendProgressDetails(const QString &details);
     void updateProgress();
     void toggleDetails();
     void clearDetailsBrowser();

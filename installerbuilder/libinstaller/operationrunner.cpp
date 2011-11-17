@@ -124,9 +124,9 @@ int OperationRunner::runOperation(const QStringList &arguments)
         }
 
         OutputHandler myOutPutHandler;
-        QObject* const operationObject = dynamic_cast<QObject*>(operation);
+        QObject *const operationObject = dynamic_cast<QObject *>(operation);
         if (operationObject != 0) {
-            const QMetaObject* const mo = operationObject->metaObject();
+            const QMetaObject *const mo = operationObject->metaObject();
             if (mo->indexOfSignal(QMetaObject::normalizedSignature("outputTextChanged(QString)")) > -1) {
                 QObject::connect(operationObject, SIGNAL(outputTextChanged(QString)),
                         &myOutPutHandler, SLOT(drawItToCommandLine(QString)));

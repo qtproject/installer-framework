@@ -232,7 +232,7 @@ bool RegisterQtInCreatorV23Operation::testOperation()
     return true;
 }
 
-Operation* RegisterQtInCreatorV23Operation::clone() const
+Operation *RegisterQtInCreatorV23Operation::clone() const
 {
     return new RegisterQtInCreatorV23Operation();
 }

@@ -159,9 +159,9 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
     m_job->start();
 }
 
-void GetRepositoriesMetaInfoJob::jobFinished(KDJob* j)
+void GetRepositoriesMetaInfoJob::jobFinished(KDJob *j)
 {
-    const GetRepositoryMetaInfoJob *const job = qobject_cast<const GetRepositoryMetaInfoJob*>(j);
+    const GetRepositoryMetaInfoJob *const job = qobject_cast<const GetRepositoryMetaInfoJob *>(j);
     Q_ASSERT(job);
 
     if (job->error() != KDJob::NoError && !job->temporaryDirectory().isEmpty()) {
@@ -172,7 +172,7 @@ void GetRepositoriesMetaInfoJob::jobFinished(KDJob* j)
     }
 
     if (job->error() == KDJob::Canceled
-        || job->error() >= KDJob::UserDefinedError && job->error() < QInstaller::UserIgnoreError) {
+        || (job->error() >= KDJob::UserDefinedError && job->error() < QInstaller::UserIgnoreError)) {
             emit infoMessage(j, job->errorString());
             verbose() << job->errorString() << std::endl;
             emitFinishedWithError(job->error(), job->errorString());

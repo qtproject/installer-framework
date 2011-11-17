@@ -7,7 +7,8 @@
 #include <QString>
 #include <QVariantMap>
 
-struct QtCreatorToolChain {
+struct QtCreatorToolChain
+{
     QString key;
     QString type;
     QString displayName;

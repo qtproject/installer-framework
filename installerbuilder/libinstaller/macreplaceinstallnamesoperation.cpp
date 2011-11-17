@@ -90,7 +90,7 @@ bool MacReplaceInstallNamesOperation::testOperation()
     return true;
 }
 
-Operation* MacReplaceInstallNamesOperation::clone() const
+Operation *MacReplaceInstallNamesOperation::clone() const
 {
     return new MacReplaceInstallNamesOperation;
 }
@@ -98,8 +98,8 @@ Operation* MacReplaceInstallNamesOperation::clone() const
 bool MacReplaceInstallNamesOperation::apply(const QString &indicator, const QString &installationDir,
     const QString &searchDir)
 {
-    mIndicator = indicator;
-    mInstallationDir = installationDir;
+    m_indicator = indicator;
+    m_installationDir = installationDir;
 
     QStringList alreadyPatchedFrameworks;
     QLatin1String frameworkSuffix(".framework");
@@ -135,7 +135,7 @@ bool MacReplaceInstallNamesOperation::apply(const QString &indicator, const QStr
     return error() == NoError;
 }
 
-void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString &fileName, QString& frameworkId,
+void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString &fileName, QString &frameworkId,
     QStringList &frameworks, QString &originalBuildDir)
 {
     verbose() << "Relocator calling otool -l for " << fileName << std::endl;
@@ -182,7 +182,7 @@ void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString &fileN
             frameworkId = line;
 
             originalBuildDir = frameworkId;
-            idx = originalBuildDir.indexOf(mIndicator);
+            idx = originalBuildDir.indexOf(m_indicator);
             if (idx < 0) {
                 originalBuildDir.clear();
             } else {
@@ -208,7 +208,7 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString &fileName)
         << originalBuildDir << std::endl;
 
     QStringList args;
-    if (frameworkId.contains(mIndicator) || QFileInfo(frameworkId).fileName() == frameworkId) {
+    if (frameworkId.contains(m_indicator) || QFileInfo(frameworkId).fileName() == frameworkId) {
         args << QLatin1String("-id") << fileName << fileName;
         if (!execCommand(QLatin1String("install_name_tool"), args))
             return;
@@ -216,13 +216,13 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString &fileName)
 
 
     foreach (const QString &fw, frameworks) {
-        if (originalBuildDir.isEmpty() && fw.contains(mIndicator)) {
-            originalBuildDir = fw.left(fw.indexOf(mIndicator));
+        if (originalBuildDir.isEmpty() && fw.contains(m_indicator)) {
+            originalBuildDir = fw.left(fw.indexOf(m_indicator));
         }
         if (originalBuildDir.isEmpty() || !fw.contains(originalBuildDir))
             continue;
         QString newPath = fw;
-        newPath.replace(originalBuildDir, mInstallationDir);
+        newPath.replace(originalBuildDir, m_installationDir);
 
         args.clear();
         args << QLatin1String("-change") << fw << newPath << fileName;

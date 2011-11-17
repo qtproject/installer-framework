@@ -53,8 +53,8 @@ using namespace QInstaller;
 
 //"anonymous" namespace to make clear that this is only for inside use
 namespace {
-    QMap<QByteArray, QByteArray> generatePatchValueMap(const QByteArray & newQtPath,
-        const QHash<QString, QByteArray> & qmakeValueHash)
+    QMap<QByteArray, QByteArray> generatePatchValueMap(const QByteArray &newQtPath,
+        const QHash<QString, QByteArray> &qmakeValueHash)
     {
         QMap<QByteArray, QByteArray> replaceMap; //first == searchstring: second == replace string
         char nativeSeperator = QDir::separator().toAscii();
@@ -114,7 +114,7 @@ namespace {
         return replaceMap;
     }
 
-}//"anonymous" namespace
+} // anonymous namespace
 
 QtPatchOperation::QtPatchOperation()
 {
@@ -346,7 +346,7 @@ bool QtPatchOperation::testOperation()
     return true;
 }
 
-Operation* QtPatchOperation::clone() const
+Operation *QtPatchOperation::clone() const
 {
     return new QtPatchOperation();
 }

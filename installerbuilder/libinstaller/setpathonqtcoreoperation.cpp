@@ -40,7 +40,7 @@
 using namespace QInstaller;
 
 namespace {
-    QByteArray getOldValue(const QString & binaryPath, const QByteArray &typeValue)
+    QByteArray getOldValue(const QString &binaryPath, const QByteArray &typeValue)
     {
         QFileInfo fileInfo(binaryPath);
 

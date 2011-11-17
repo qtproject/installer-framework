@@ -69,7 +69,7 @@ public:
     void callControlScriptMethod(const QString& methodName);
     void triggerControlScriptForCurrentPage();
 
-    QScriptEngine* controlScriptEngine() const;
+    QScriptEngine *controlScriptEngine() const;
 
     Q_INVOKABLE PackageManagerPage* page(int pageId) const;
     Q_INVOKABLE QWidget* pageWidgetByObjectName(const QString& name) const;
@@ -91,10 +91,10 @@ public Q_SLOTS:
     void setModified(bool value);
 
 protected Q_SLOTS:
-    void wizardPageInsertionRequested(QWidget* widget, QInstaller::PackageManagerCore::WizardPage page);
-    void wizardPageRemovalRequested(QWidget* widget);
-    void wizardWidgetInsertionRequested(QWidget* widget, QInstaller::PackageManagerCore::WizardPage page);
-    void wizardWidgetRemovalRequested(QWidget* widget);
+    void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
+    void wizardPageRemovalRequested(QWidget *widget);
+    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
+    void wizardWidgetRemovalRequested(QWidget *widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
     void slotCurrentPageChanged(int id);
     void delayedControlScriptExecution(int id);
@@ -105,13 +105,13 @@ private Q_SLOTS:
     void onLanguageChanged();
 
 protected:
-    bool event(QEvent* event);
+    bool event(QEvent *event);
     void showEvent(QShowEvent *event);
     PackageManagerCore *packageManagerCore() const { return m_core; }
 
 private:
     class Private;
-    Private* const d;
+    Private *const d;
     PackageManagerCore *m_core;
 };
 
@@ -229,8 +229,8 @@ public:
     Q_INVOKABLE void selectAll();
     Q_INVOKABLE void deselectAll();
     Q_INVOKABLE void selectDefault();
-    Q_INVOKABLE void selectComponent(const QString& id);
-    Q_INVOKABLE void deselectComponent(const QString& id);
+    Q_INVOKABLE void selectComponent(const QString &id);
+    Q_INVOKABLE void deselectComponent(const QString &id);
 
 protected:
     void entering();

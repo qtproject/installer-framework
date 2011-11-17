@@ -61,6 +61,6 @@ public:
     Operation *clone() const;
 };
 
-} // namespace
+} // namespace QInstaller
 
 #endif // REGISTERTOOLCHAINOPERATION_H

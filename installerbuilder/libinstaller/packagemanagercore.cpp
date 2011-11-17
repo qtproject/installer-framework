@@ -69,7 +69,7 @@ static QFont sVirtualComponentsFont;
 static bool sNoForceInstallation = false;
 static bool sVirtualComponentsVisible = false;
 
-static QScriptValue checkArguments(QScriptContext* context, int amin, int amax)
+static QScriptValue checkArguments(QScriptContext *context, int amin, int amax)
 {
     if (context->argumentCount() < amin || context->argumentCount() > amax) {
         if (amin != amax) {
@@ -96,7 +96,7 @@ static bool componentMatches(const Component *component, const QString &name,
     return PackageManagerCore::versionMatches(component->value(scVersion), version);
 }
 
-Component* PackageManagerCore::subComponentByName(const QInstaller::PackageManagerCore *installer,
+Component *PackageManagerCore::subComponentByName(const QInstaller::PackageManagerCore *installer,
     const QString &name, const QString &version, Component *check)
 {
     if (name.isEmpty())
@@ -112,8 +112,8 @@ Component* PackageManagerCore::subComponentByName(const QInstaller::PackageManag
         else
             rootComponents = check->childComponents(false, AllMode);
 
-        foreach (QInstaller::Component* component, rootComponents) {
-            Component* const result = subComponentByName(installer, name, version, component);
+        foreach (QInstaller::Component *component, rootComponents) {
+            Component *const result = subComponentByName(installer, name, version, component);
             if (result != 0)
                 return result;
         }
@@ -132,7 +132,7 @@ Component* PackageManagerCore::subComponentByName(const QInstaller::PackageManag
     Scriptable version of PackageManagerCore::componentByName(QString).
     \sa PackageManagerCore::componentByName
  */
-QScriptValue QInstaller::qInstallerComponentByName(QScriptContext* context, QScriptEngine* engine)
+QScriptValue QInstaller::qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine)
 {
     const QScriptValue check = checkArguments(context, 1, 1);
     if (check.isError())
@@ -146,7 +146,7 @@ QScriptValue QInstaller::qInstallerComponentByName(QScriptContext* context, QScr
     return engine->newQObject(core->componentByName(name));
 }
 
-QScriptValue QInstaller::qDesktopServicesOpenUrl(QScriptContext* context, QScriptEngine* engine)
+QScriptValue QInstaller::qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *engine)
 {
     Q_UNUSED(engine);
     const QScriptValue check = checkArguments(context, 1, 1);
@@ -158,7 +158,7 @@ QScriptValue QInstaller::qDesktopServicesOpenUrl(QScriptContext* context, QScrip
     return QDesktopServices::openUrl(QUrl::fromUserInput(url));
 }
 
-QScriptValue QInstaller::qDesktopServicesDisplayName(QScriptContext* context, QScriptEngine* engine)
+QScriptValue QInstaller::qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine *engine)
 {
     Q_UNUSED(engine);
     const QScriptValue check = checkArguments(context, 1, 1);
@@ -169,7 +169,7 @@ QScriptValue QInstaller::qDesktopServicesDisplayName(QScriptContext* context, QS
     return QDesktopServices::displayName(location);
 }
 
-QScriptValue QInstaller::qDesktopServicesStorageLocation(QScriptContext* context, QScriptEngine* engine)
+QScriptValue QInstaller::qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine)
 {
     Q_UNUSED(engine);
     const QScriptValue check = checkArguments(context, 1, 1);
@@ -363,7 +363,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nDownloading packages..."));
 
     // don't have it on the stack, since it keeps the temporary files
-    DownloadArchivesJob* const archivesJob =
+    DownloadArchivesJob *const archivesJob =
         new DownloadArchivesJob(d->m_settings.publicKey(), this);
     archivesJob->setAutoDelete(false);
     archivesJob->setArchivesToDownload(archivesToDownload);
@@ -677,7 +677,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
     into the installer's GUI wizard. The widget is added before \a page.
     \a page has to be a value of \ref QInstaller::PackageManagerCore::WizardPage "WizardPage".
 */
-bool PackageManagerCore::addWizardPage(Component* component, const QString &name, int page)
+bool PackageManagerCore::addWizardPage(Component *component, const QString &name, int page)
 {
     if (QWidget* const widget = component->userInterface(name)) {
         emit wizardPageInsertionRequested(widget, static_cast<WizardPage>(page));
@@ -864,7 +864,7 @@ QList<Component*> PackageManagerCore::availableComponents() const
     the returned component to have at least version 4.5.
     If no component matches the requirement, 0 is returned.
 */
-Component* PackageManagerCore::componentByName(const QString &name) const
+Component *PackageManagerCore::componentByName(const QString &name) const
 {
     if (name.isEmpty())
         return 0;
@@ -1269,7 +1269,7 @@ QString PackageManagerCore::error() const
 */
 bool PackageManagerCore::finishedWithSuccess() const
 {
-    return (d->m_status == PackageManagerCore::Success) || d->m_needToWriteUninstaller;
+    return d->m_status == PackageManagerCore::Success || d->m_needToWriteUninstaller;
 }
 
 void PackageManagerCore::interrupt()

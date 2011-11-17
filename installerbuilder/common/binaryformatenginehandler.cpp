@@ -40,77 +40,77 @@
 
 using namespace QInstallerCreator;
 
-static BinaryFormatEngineHandler* s_instance = 0;
+static BinaryFormatEngineHandler *s_instance = 0;
 
     
 class BinaryFormatEngineHandler::Private
 {
 public:
-    Private( const ComponentIndex& i )
-        : index( i )
+    Private(const ComponentIndex &i)
+        : index(i)
     {
     }
 
     ComponentIndex index;
 };
 
-BinaryFormatEngineHandler::BinaryFormatEngineHandler( const ComponentIndex& index )
-    : d( new Private( index ) )
+BinaryFormatEngineHandler::BinaryFormatEngineHandler(const ComponentIndex &index)
+    : d(new Private(index))
 {
     s_instance = this;
 }
 
-BinaryFormatEngineHandler::BinaryFormatEngineHandler( const BinaryFormatEngineHandler& other )
+BinaryFormatEngineHandler::BinaryFormatEngineHandler(const BinaryFormatEngineHandler &other)
     : QAbstractFileEngineHandler(),
-      d( new Private( other.d->index ) )
+      d(new Private(other.d->index))
 {
     s_instance = this;
 }
 
 BinaryFormatEngineHandler::~BinaryFormatEngineHandler()
 {
-    if( s_instance == this )
+    if (s_instance == this)
         s_instance = 0;
     delete d;
 }
 
-void BinaryFormatEngineHandler::setComponentIndex( const ComponentIndex& index )
+void BinaryFormatEngineHandler::setComponentIndex(const ComponentIndex &index)
 {
     d->index = index;
 }
 
-QAbstractFileEngine* BinaryFormatEngineHandler::create( const QString& fileName ) const
+QAbstractFileEngine *BinaryFormatEngineHandler::create(const QString &fileName) const
 {
-    return fileName.startsWith( QLatin1String( "installer://" ), Qt::CaseInsensitive ) ? new BinaryFormatEngine( d->index, fileName ) : 0;
+    return fileName.startsWith(QLatin1String("installer://"), Qt::CaseInsensitive ) ? new BinaryFormatEngine(d->index, fileName) : 0;
 }
     
-BinaryFormatEngineHandler* BinaryFormatEngineHandler::instance()
+BinaryFormatEngineHandler *BinaryFormatEngineHandler::instance()
 {
     return s_instance;
 }
    
-void BinaryFormatEngineHandler::registerArchive( const QString& pathName, const QString& archive )
+void BinaryFormatEngineHandler::registerArchive(const QString &pathName, const QString &archive)
 {
-    static const QChar sep = QChar::fromLatin1( '/' );
-    static const QString prefix = QString::fromLatin1( "installer://" );
-    Q_ASSERT( pathName.toLower().startsWith( prefix ) );
+    static const QChar sep = QChar::fromLatin1('/');
+    static const QString prefix = QString::fromLatin1("installer://");
+    Q_ASSERT(pathName.toLower().startsWith(prefix));
 
     // cut the prefix
-    QString path = pathName.mid( prefix.length() );
-    while( path.endsWith( sep ) )
-        path.chop( 1 );
+    QString path = pathName.mid(prefix.length());
+    while (path.endsWith(sep))
+        path.chop(1);
 
-    const QString comp = path.section( sep, 0, 0 );
-    const QString archiveName = path.section( sep, 1, 1 );
+    const QString comp = path.section(sep, 0, 0);
+    const QString archiveName = path.section(sep, 1, 1);
     
-    Component c = d->index.componentByName( comp.toUtf8() );
-    if( c.name().isEmpty() )
-        c.setName( comp.toUtf8() );
+    Component c = d->index.componentByName(comp.toUtf8());
+    if (c.name().isEmpty())
+        c.setName(comp.toUtf8());
 
-    QList< QSharedPointer< Archive > > registered;
-    QSharedPointer< Archive > newArchive( new Archive( archive ) );
-    newArchive->setName( archiveName.toUtf8() );
-    registered.push_back( newArchive );
-    c.appendArchive( newArchive );
-    d->index.insertComponent( c );
+    QList< QSharedPointer<Archive> > registered;
+    QSharedPointer<Archive> newArchive(new Archive(archive));
+    newArchive->setName(archiveName.toUtf8());
+    registered.push_back(newArchive);
+    c.appendArchive(newArchive);
+    d->index.insertComponent(c);
 }

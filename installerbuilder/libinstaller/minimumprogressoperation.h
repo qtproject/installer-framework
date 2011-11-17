@@ -44,12 +44,12 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation* clone() const;
+    Operation *clone() const;
 
 signals:
     void progressChanged(double progress);
 };
 
-} // namespace
+} // namespace QInstaller
 
 #endif // MINIMUMPROGRESSOPERATION_H

@@ -44,6 +44,6 @@ public:
     void setVerbose(bool verbose);
 };
 
-}   // namespace QInstaller
+} // namespace QInstaller
 
 #endif

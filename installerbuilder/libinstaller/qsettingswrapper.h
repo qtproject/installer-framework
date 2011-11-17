@@ -28,8 +28,8 @@
 
 #include <installer_global.h>
 
-#include<QtCore/QObject>
-#include<QtCore/QVariant>
+#include <QtCore/QObject>
+#include <QtCore/QVariant>
 
 class INSTALLER_EXPORT QSettingsWrapper : public QObject
 {

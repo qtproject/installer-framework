@@ -77,7 +77,7 @@ void LazyPlainTextEdit::clear()
 }
 
 
-void LazyPlainTextEdit::setVisible ( bool visible )
+void LazyPlainTextEdit::setVisible(bool visible)
 {
     if (m_timerId) {
         killTimer(m_timerId);

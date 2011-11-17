@@ -49,7 +49,7 @@ class PROJECTEXPLORER_EXPORT PersistentSettingsReader
 {
 public:
     PersistentSettingsReader();
-    QVariant restoreValue(const QString & variable) const;
+    QVariant restoreValue(const QString &variable) const;
     QVariantMap restoreValues() const;
     bool load(const QString & fileName);
 
@@ -63,8 +63,8 @@ class PROJECTEXPLORER_EXPORT PersistentSettingsWriter
 {
 public:
     PersistentSettingsWriter();
-    void saveValue(const QString & variable, const QVariant &value);
-    bool save(const QString & fileName, const QString & docType);
+    void saveValue(const QString &variable, const QVariant &value);
+    bool save(const QString &fileName, const QString &docType);
 
 private:
     void writeValue(QDomElement &ps, const QVariant &value);

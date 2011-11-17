@@ -73,6 +73,7 @@ QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *e
 QScriptValue qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *engine);
 QScriptValue qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine *engine);
 QScriptValue qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine);
-}
+
+} // namespace QInstaller
 
 #endif // QINSTALLER_GLOBAL_H

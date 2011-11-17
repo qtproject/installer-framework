@@ -124,14 +124,14 @@ MessageBoxHandler::~MessageBoxHandler()
 {
 }
 
-MessageBoxHandler* MessageBoxHandler::instance()
+MessageBoxHandler *MessageBoxHandler::instance()
 {
     if (m_instance == 0)
         m_instance = new MessageBoxHandler(qApp);
     return m_instance;
 }
 
-QWidget* MessageBoxHandler::currentBestSuitParent()
+QWidget *MessageBoxHandler::currentBestSuitParent()
 {
     if (QApplication::type() == QApplication::Tty) {
         Q_ASSERT_X(false, Q_FUNC_INFO, "We can't find a parent widget if we are a console application.");
@@ -173,28 +173,28 @@ void MessageBoxHandler::setAutomaticAnswer(const QString &identifier, QMessageBo
 
 // -- static
 
-QMessageBox::StandardButton MessageBoxHandler::critical(QWidget* parent, const QString &identifier,
+QMessageBox::StandardButton MessageBoxHandler::critical(QWidget *parent, const QString &identifier,
     const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton button)
 {
     return instance()->showMessageBox(criticalType, parent, identifier, title, text, buttons, button);
 }
 
-QMessageBox::StandardButton MessageBoxHandler::information(QWidget* parent, const QString &identifier,
+QMessageBox::StandardButton MessageBoxHandler::information(QWidget *parent, const QString &identifier,
     const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton button)
 {
     return instance()->showMessageBox(informationType, parent, identifier, title, text, buttons, button);
 }
 
-QMessageBox::StandardButton MessageBoxHandler::question(QWidget* parent, const QString &identifier,
+QMessageBox::StandardButton MessageBoxHandler::question(QWidget *parent, const QString &identifier,
     const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton button)
 {
     return instance()->showMessageBox(questionType, parent, identifier, title, text, buttons, button);
 }
 
-QMessageBox::StandardButton MessageBoxHandler::warning(QWidget* parent, const QString &identifier,
+QMessageBox::StandardButton MessageBoxHandler::warning(QWidget *parent, const QString &identifier,
     const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton button)
 {
@@ -247,7 +247,7 @@ static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBo
     QMessageBox::StandardButton defaultButton)
 {
     QMessageBox msgBox(icon, title, text, QMessageBox::NoButton, parent);
-    QDialogButtonBox *buttonBox = msgBox.findChild<QDialogButtonBox*>();
+    QDialogButtonBox *buttonBox = msgBox.findChild<QDialogButtonBox *>();
     Q_ASSERT(buttonBox != 0);
 
     uint mask = QMessageBox::FirstButton;

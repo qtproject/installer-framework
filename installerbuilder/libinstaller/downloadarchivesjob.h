@@ -93,6 +93,6 @@ private:
     int m_progressChangedTimerId;
 };
 
-}   // namespace QInstaller
+} // namespace QInstaller
 
 #endif  // DOWNLOADARCHIVESJOB_H

@@ -46,8 +46,7 @@
 class AdminAuthorization::Private
 {
 public:
-    Private()
-        : auth(0) { }
+    Private() : auth(0) { }
 
     AuthorizationRef auth;
 };
@@ -99,9 +98,9 @@ bool AdminAuthorization::authorize()
     return true;
 }
 
-bool AdminAuthorization::execute(QWidget*, const QString& program, const QStringList& arguments)
+bool AdminAuthorization::execute(QWidget *, const QString &program, const QStringList &arguments)
 {
-    QVector<char* > args;
+    QVector<char *> args;
     QVector<QByteArray> utf8Args;
     foreach (const QString &argument, arguments) {
         utf8Args.push_back(argument.toUtf8());

@@ -112,10 +112,10 @@ UpdateOperation::Error writeSetting(const QString &regPath,
 
 template <typename SettingsType>
 UpdateOperation::Error undoSetting(const QString &regPath,
-                                    const QString &name,
-                                    const QString &value,
-                                    const QString &oldValue,
-                                    QString *errorString)
+                                   const QString &name,
+                                   const QString &value,
+                                   const QString &oldValue,
+                                   QString *errorString)
 {
     QString actual;
     {
@@ -124,13 +124,11 @@ UpdateOperation::Error undoSetting(const QString &regPath,
     }
     if (actual != value) //key changed, don't undo
         return UpdateOperation::UserDefinedError;
-    else {
-        QString dontcare;
-        return writeSetting<SettingsType>(regPath, name, oldValue, errorString, &dontcare);
-    }
+    QString dontcare;
+    return writeSetting<SettingsType>(regPath, name, oldValue, errorString, &dontcare);
 }
 
-}
+} // namespace
 
 bool EnvironmentVariableOperation::performOperation()
 {
@@ -231,7 +229,7 @@ bool EnvironmentVariableOperation::testOperation()
     return true;
 }
 
-Operation* EnvironmentVariableOperation::clone() const
+Operation *EnvironmentVariableOperation::clone() const
 {
     return new EnvironmentVariableOperation();
 }

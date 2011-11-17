@@ -30,34 +30,32 @@
 
 #include "binaryformat.h"
 
-namespace QInstallerCreator
-{
+namespace QInstallerCreator {
 
 class BinaryFormatEngine : public QAbstractFileEngine
 {
 public:
-    BinaryFormatEngine( const ComponentIndex& index, const QString& fileName );
+    BinaryFormatEngine(const ComponentIndex &index, const QString &fileName);
     ~BinaryFormatEngine();
 
-    void setFileName( const QString& file );
+    void setFileName(const QString &file);
 
-    Iterator* beginEntryList( QDir::Filters filters, const QStringList& filterNames );
+    Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames);
 
-    bool copy( const QString& newName );
-
+    bool copy(const QString &newName);
     bool close();
-    bool open( QIODevice::OpenMode mode );
+    bool open(QIODevice::OpenMode mode);
     qint64 pos() const;
-    qint64 read( char* data, qint64 maxlen );
-    bool seek( qint64 offset );
+    qint64 read(char *data, qint64 maxlen);
+    bool seek(qint64 offset);
     qint64 size() const;
 
-    QString fileName( FileName file = DefaultName ) const;
-    FileFlags fileFlags( FileFlags type = FileInfoAll ) const;
-    QStringList entryList( QDir::Filters filters, const QStringList& filterNames ) const;
+    QString fileName(FileName file = DefaultName) const;
+    FileFlags fileFlags(FileFlags type = FileInfoAll) const;
+    QStringList entryList(QDir::Filters filters, const QStringList &filterNames) const;
 
 protected:
-    void setArchive( const QString& file );
+    void setArchive(const QString &file);
 
 private:
     const ComponentIndex m_index;
@@ -68,6 +66,6 @@ private:
     QString m_fileNamePath;
 };
 
-}
+} // namespace QInstallerCreator
 
 #endif

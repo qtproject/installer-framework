@@ -87,7 +87,7 @@ bool ElevatedExecuteOperation::performOperation()
         return false;
     }
     QStringList args;
-    foreach(const QString &argument, arguments()) {
+    foreach (const QString &argument, arguments()) {
         if (argument!=QLatin1String("UNDOEXECUTE"))
             args.append(argument);
         else

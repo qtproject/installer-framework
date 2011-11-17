@@ -51,8 +51,8 @@ private:
     bool execCommand(const QString &cmd, const QStringList &args);
 
 private:
-    QString mIndicator;
-    QString mInstallationDir;
+    QString m_indicator;
+    QString m_installationDir;
 };
 
 } // namespace QInstaller

@@ -249,6 +249,6 @@ private:
     void setCheckedState(Component *component, Qt::CheckState state);
 };
 
-}   // QInstaller
+} // namespace QInstaller
 
 #endif  // PACKAGEMANAGERCORE_P_H

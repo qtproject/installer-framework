@@ -42,7 +42,7 @@ QHash<QString, QVariantMap> QtCreatorPersistentSettings::readValidToolChains()
     if (m_fileName.isEmpty())
         return QHash<QString, QVariantMap>();
 
-    QHash< QString, QVariantMap > toolChainHash;
+    QHash<QString, QVariantMap> toolChainHash;
 
     QVariantMap data = m_reader.restoreValues();
 

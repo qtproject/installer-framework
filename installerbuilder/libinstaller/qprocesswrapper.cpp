@@ -75,7 +75,7 @@ public:
     {
     public:
         explicit TimerBlocker(const QProcessWrapper *wrapper)
-            : w(const_cast< QProcessWrapper*> (wrapper))
+            : w(const_cast<QProcessWrapper *>(wrapper))
         {
             w->d->ignoreTimer = true;
         }
@@ -267,7 +267,7 @@ void QProcessWrapper::closeWriteChannel()
         callRemoteVoidMethod<void>(d->stream, QLatin1String("QProcess::closeWriteChannel"));
     else
         d->process.closeWriteChannel();
-};
+}
 
 int QProcessWrapper::exitCode() const
 {
@@ -275,7 +275,7 @@ int QProcessWrapper::exitCode() const
     if (d->createSocket())
         return callRemoteMethod<int>(d->stream, QLatin1String("QProcess::exitCode"));
     return static_cast< int>(d->process.exitCode());
-};
+}
 
 QProcessWrapper::ExitStatus QProcessWrapper::exitStatus() const
 {
@@ -283,7 +283,7 @@ QProcessWrapper::ExitStatus QProcessWrapper::exitStatus() const
     if (d->createSocket())
         return callRemoteMethod<QProcessWrapper::ExitStatus>(d->stream, QLatin1String("QProcess::exitStatus"));
     return static_cast< QProcessWrapper::ExitStatus>(d->process.exitStatus());
-};
+}
 
 void QProcessWrapper::kill()
 {
@@ -300,7 +300,7 @@ QByteArray QProcessWrapper::readAll()
     if (d->createSocket())
         return callRemoteMethod<QByteArray>(d->stream, QLatin1String("QProcess::readAll"));
     return d->process.readAll();
-};
+}
 
 QByteArray QProcessWrapper::readAllStandardOutput()
 {
@@ -308,9 +308,9 @@ QByteArray QProcessWrapper::readAllStandardOutput()
     if (d->createSocket())
         return callRemoteMethod<QByteArray>(d->stream, QLatin1String("QProcess::readAllStandardOutput"));
     return d->process.readAllStandardOutput();
-};
+}
 
-void QProcessWrapper::start(const QString& param1, const QStringList& param2, QIODevice::OpenMode param3)
+void QProcessWrapper::start(const QString &param1, const QStringList &param2, QIODevice::OpenMode param3)
 {
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())
@@ -319,7 +319,7 @@ void QProcessWrapper::start(const QString& param1, const QStringList& param2, QI
         d->process.start(param1, param2, param3);
 }
 
-void QProcessWrapper::start(const QString& param1)
+void QProcessWrapper::start(const QString &param1)
 {
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())
@@ -373,7 +373,7 @@ QString QProcessWrapper::workingDirectory() const
     return static_cast< QString>(d->process.workingDirectory());
 }
 
-void QProcessWrapper::setEnvironment(const QStringList& param1)
+void QProcessWrapper::setEnvironment(const QStringList &param1)
 {
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())
@@ -383,7 +383,7 @@ void QProcessWrapper::setEnvironment(const QStringList& param1)
 }
 
 #ifdef Q_OS_WIN
-void QProcessWrapper::setNativeArguments(const QString& param1)
+void QProcessWrapper::setNativeArguments(const QString &param1)
 {
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())
@@ -393,7 +393,7 @@ void QProcessWrapper::setNativeArguments(const QString& param1)
 }
 #endif
 
-void QProcessWrapper::setWorkingDirectory(const QString& param1)
+void QProcessWrapper::setWorkingDirectory(const QString &param1)
 {
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())

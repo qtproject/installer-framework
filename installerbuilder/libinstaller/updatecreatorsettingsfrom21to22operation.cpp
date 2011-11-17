@@ -184,7 +184,7 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
         return false;
     }
 
-    foreach (const QString mingwPath, mingwToolChains) {
+    foreach (const QString &mingwPath, mingwToolChains) {
         if (mingwPath.isEmpty())
             continue;
         QInstaller::RegisterToolChainOperation operation;
@@ -223,7 +223,7 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
     return true;
 }
 
-void convertDefaultGDBInstallerSettings(QSettings &settings, QInstaller::PackageManagerCore* const core)
+void convertDefaultGDBInstallerSettings(QSettings &settings, QInstaller::PackageManagerCore *const core)
 {
     settings.beginGroup(QLatin1String("GdbBinaries21"));
 

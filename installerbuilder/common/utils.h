@@ -40,45 +40,45 @@ QT_BEGIN_NAMESPACE
 class QIODevice;
 QT_END_NAMESPACE
 
-namespace QInstaller
-{
-    QByteArray INSTALLER_EXPORT calculateHash( QIODevice* device, QCryptographicHash::Algorithm algo );
+namespace QInstaller {
 
-    QString INSTALLER_EXPORT replaceVariables( const QHash<QString,QString>& vars, const QString &str );
-    QString INSTALLER_EXPORT replaceWindowsEnvironmentVariables( const QString &str );
+    QByteArray INSTALLER_EXPORT calculateHash(QIODevice *device, QCryptographicHash::Algorithm algo);
+
+    QString INSTALLER_EXPORT replaceVariables(const QHash<QString,QString> &vars, const QString &str);
+    QString INSTALLER_EXPORT replaceWindowsEnvironmentVariables(const QString &str);
     QStringList INSTALLER_EXPORT parseCommandLineArgs(int argc, char **argv);
 #ifdef Q_OS_WIN
     QString createCommandline(const QString &program, const QStringList &arguments);
 #endif
 
-    void INSTALLER_EXPORT setVerbose( bool v );
+    void INSTALLER_EXPORT setVerbose(bool v);
     bool INSTALLER_EXPORT isVerbose();
 
     INSTALLER_EXPORT std::ostream& stdverbose();
-    INSTALLER_EXPORT std::ostream& operator<<( std::ostream& os, const QUrl& url );
-    INSTALLER_EXPORT std::ostream& operator<<( std::ostream& os, const QString& string );
-    INSTALLER_EXPORT std::ostream& operator<<( std::ostream& os, const QByteArray& array );
-    template< typename T >
-    std::ostream& operator<<( std::ostream& os, const QList< T >& list )
+    INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QUrl &url);
+    INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
+    INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QByteArray &array);
+    template <typename T>
+    std::ostream& operator<<(std::ostream &os, const QList<T> &list)
     {
         os << "(";
-        for( typename QList< T >::const_iterator it = list.begin(); it != list.end(); ++it )
+        for (typename QList<T>::const_iterator it = list.begin(); it != list.end(); ++it)
             os << *it;
         os << ");";
         return os;
     }
 
     class VerboseWriter;
-    INSTALLER_EXPORT VerboseWriter& verbose();
+    INSTALLER_EXPORT VerboseWriter &verbose();
 
     class INSTALLER_EXPORT VerboseWriter : public QObject
     {
         Q_OBJECT
     public:
-        VerboseWriter(QObject* parent = 0);
+        VerboseWriter(QObject *parent = 0);
         ~VerboseWriter();
 
-        static VerboseWriter* instance();
+        static VerboseWriter *instance();
 
         inline VerboseWriter &operator<<(bool t) { stdverbose() << t; stream << (t ? "true" : "false"); return *this; }
         inline VerboseWriter &operator<<(int t) { stdverbose() << t; stream << t; return *this; }
@@ -92,11 +92,11 @@ namespace QInstaller
         inline VerboseWriter &operator<<(const QLatin1String &t) { stdverbose() << t; stream << t; return *this; }
         inline VerboseWriter &operator<<(const char *t) { stdverbose() << t; stream << t; return *this; }
         inline VerboseWriter &operator<<(const QUrl &t) { return verbose() << t.toString(); }
-        template< typename T >
-        VerboseWriter& operator<<(const QList< T >& list )
+        template <typename T>
+        VerboseWriter &operator<<(const QList<T> &list)
         {
             verbose() << "List ( ";
-            for( typename QList< T >::const_iterator it = list.begin(); it != list.end(); ++it )
+            for (typename QList< T >::const_iterator it = list.begin(); it != list.end(); ++it)
                 verbose() << *it <<"; ";
             return verbose() << ");";
         }

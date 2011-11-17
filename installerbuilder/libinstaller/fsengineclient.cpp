@@ -84,7 +84,7 @@ public:
     ~FSEngineClient();
 
     bool atEnd() const;
-    Iterator* beginEntryList(QDir::Filters filters, const QStringList &filterNames);
+    Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames);
     bool caseSensitive() const;
     bool close();
     bool copy(const QString &newName);
@@ -124,7 +124,7 @@ private:
 private:
     friend class FSEngineClientHandler;
 
-    mutable QTcpSocket* socket;
+    mutable QTcpSocket *socket;
     mutable QDataStream stream;
 };
 
@@ -297,7 +297,7 @@ QString FSEngineClient::errorString() const
 /*!
     \reimp
 */
-bool FSEngineClient::extension(Extension extension, const ExtensionOption* option, ExtensionReturn* output)
+bool FSEngineClient::extension(Extension extension, const ExtensionOption *option, ExtensionReturn *output)
 {
     Q_UNUSED(extension)
     Q_UNUSED(option)
@@ -424,7 +424,7 @@ qint64 FSEngineClient::pos() const
 /*!
     \reimp
 */
-qint64 FSEngineClient::read(char* data, qint64 maxlen)
+qint64 FSEngineClient::read(char *data, qint64 maxlen)
 {
     stream << QString::fromLatin1("QFSFileEngine::read");
     stream << maxlen;
@@ -447,7 +447,7 @@ qint64 FSEngineClient::read(char* data, qint64 maxlen)
 /*!
     \reimp
 */
-qint64 FSEngineClient::readLine(char* data, qint64 maxlen)
+qint64 FSEngineClient::readLine(char *data, qint64 maxlen)
 {
     stream << QString::fromLatin1("QFSFileEngine::readLine");
     stream << maxlen;
@@ -564,7 +564,7 @@ bool FSEngineClient::supportsExtension(Extension extension) const
 /*!
     \reimp
 */
-qint64 FSEngineClient::write(const char* data, qint64 len)
+qint64 FSEngineClient::write(const char *data, qint64 len)
 {
     stream << QString::fromLatin1("QFSFileEngine::write");
     stream << len;
@@ -606,7 +606,7 @@ public:
     QStringList serverArguments;
     QString key;
 
-    StillAliveThread* const thread;
+    StillAliveThread *const thread;
 };
 
 /*!
@@ -626,7 +626,7 @@ void FSEngineClientHandler::enableTestMode()
     d->serverStarted = true;
 }
 
-void FSEngineClientHandler::init(quint16 port, const QHostAddress& a)
+void FSEngineClientHandler::init(quint16 port, const QHostAddress &a)
 {
     d->address = a;
     d->port = port;
@@ -667,7 +667,7 @@ FSEngineClientHandler::~FSEngineClientHandler()
 /*!
     Returns a previously created FSEngineClientHandler instance.
 */
-FSEngineClientHandler& FSEngineClientHandler::instance()
+FSEngineClientHandler &FSEngineClientHandler::instance()
 {
     static FSEngineClientHandler instance;
     return instance;
@@ -722,7 +722,7 @@ QAbstractFileEngine* FSEngineClientHandler::create(const QString &fileName) cons
     if (fileName.isEmpty() || fileName.startsWith(QLatin1String(":")))
         return 0; // empty filename or Qt resource
 
-    FSEngineClient* const client = new FSEngineClient;
+    FSEngineClient *const client = new FSEngineClient;
     // authorize
     client->stream << QString::fromLatin1("authorize");
     client->stream << d->key;

@@ -47,7 +47,8 @@
 
 static bool verb = false;
 
-void QInstaller::setVerbose( bool v ) {
+void QInstaller::setVerbose(bool v)
+{
     verb = v;
 }
 
@@ -57,7 +58,7 @@ bool QInstaller::isVerbose()
 }
 
 #ifdef Q_WS_WIN
-void qWinMsgHandler(QtMsgType t, const char* str);
+void qWinMsgHandler(QtMsgType t, const char *str);
 
 class debugstream : public std::ostream
 {
@@ -88,7 +89,7 @@ private:
 };
 #endif
 
-std::ostream& QInstaller::stdverbose()
+std::ostream &QInstaller::stdverbose()
 {
     static std::fstream null;
 #ifdef Q_WS_WIN
@@ -101,46 +102,47 @@ std::ostream& QInstaller::stdverbose()
     return null;
 }
 
-std::ostream& QInstaller::operator<<( std::ostream& os, const QUrl& url )
+std::ostream &QInstaller::operator<<(std::ostream &os, const QUrl &url)
 {
     return os << "QUrl( " << url.toString() << ")";
 }
 
-std::ostream& QInstaller::operator<<( std::ostream& os, const QString& string )
+std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
 {
     return os << qPrintable(string);
 }
 
-std::ostream& QInstaller::operator<<( std::ostream& os, const QByteArray& array )
+std::ostream &QInstaller::operator<<(std::ostream &os, const QByteArray &array)
 {
     return os << '"' << QString::fromAscii( array ) << '"';
 }
 
 //TODO from kdupdaterfiledownloader.cpp, use that one once merged
-QByteArray QInstaller::calculateHash( QIODevice* device, QCryptographicHash::Algorithm algo ) {
-    Q_ASSERT( device );
-    QCryptographicHash hash( algo );
+QByteArray QInstaller::calculateHash(QIODevice *device, QCryptographicHash::Algorithm algo)
+{
+    Q_ASSERT(device);
+    QCryptographicHash hash(algo);
     QByteArray buffer;
-    buffer.resize( 512 * 1024 );
-    while ( true ) {
-        const qint64 numRead = device->read( buffer.data(), buffer.size() );
-        if ( numRead <= 0 )
+    buffer.resize(512 * 1024);
+    while (true) {
+        const qint64 numRead = device->read(buffer.data(), buffer.size());
+        if (numRead <= 0)
             return hash.result();
-        hash.addData( buffer.constData(), numRead );
+        hash.addData(buffer.constData(), numRead);
     }
     return QByteArray(); // never reached
 }
 
 
-QString QInstaller::replaceVariables(const QHash<QString,QString>& vars, const QString &str)
+QString QInstaller::replaceVariables(const QHash<QString, QString> &vars, const QString &str)
 {
     QString res;
     int pos = 0;
     while (true) {
-        int pos1 = str.indexOf( QLatin1Char( '@' ), pos);
+        int pos1 = str.indexOf(QLatin1Char('@'), pos);
         if (pos1 == -1)
             break;
-        int pos2 = str.indexOf( QLatin1Char( '@' ), pos1 + 1);
+        int pos2 = str.indexOf(QLatin1Char('@'), pos1 + 1);
         if (pos2 == -1)
             break;
         res += str.mid(pos, pos1 - pos);
@@ -158,10 +160,10 @@ QString QInstaller::replaceWindowsEnvironmentVariables(const QString &str)
     QString res;
     int pos = 0;
     while (true) {
-        int pos1 = str.indexOf( QLatin1Char( '%' ), pos);
+        int pos1 = str.indexOf(QLatin1Char( '%'), pos);
         if (pos1 == -1)
             break;
-        int pos2 = str.indexOf( QLatin1Char( '%' ), pos1 + 1);
+        int pos2 = str.indexOf(QLatin1Char( '%'), pos1 + 1);
         if (pos2 == -1)
             break;
         res += str.mid(pos, pos1 - pos);
@@ -185,9 +187,9 @@ QInstaller::VerboseWriter::~VerboseWriter()
     if (logFileName.isEmpty()) // binarycreator
         return;
     //if the installer installed nothing - there is no target directory - where the logfile can be saved
-    if (!QFileInfo(logFileName).absoluteDir().exists()) {
+    if (!QFileInfo(logFileName).absoluteDir().exists())
         return;
-    }
+
     QFile output(logFileName);
     if (output.open(QIODevice::ReadWrite | QIODevice::Append)) {
         QString logInfo;
@@ -206,14 +208,14 @@ void QInstaller::VerboseWriter::setOutputStream(const QString &fileName)
 }
 
 
-Q_GLOBAL_STATIC(QInstaller::VerboseWriter, verboseWriter);
+Q_GLOBAL_STATIC(QInstaller::VerboseWriter, verboseWriter)
 
-QInstaller::VerboseWriter* QInstaller::VerboseWriter::instance()
+QInstaller::VerboseWriter *QInstaller::VerboseWriter::instance()
 {
     return verboseWriter();
 }
 
-QInstaller::VerboseWriter& QInstaller::verbose()
+QInstaller::VerboseWriter &QInstaller::verbose()
 {
     return *verboseWriter();
 }

@@ -50,7 +50,7 @@ public:
     bool isDefault() const;
 
     QUrl url() const;
-    void setUrl(const QUrl& url);
+    void setUrl(const QUrl &url);
 
     bool isEnabled() const;
     void setEnabled(bool enabled);
@@ -78,7 +78,7 @@ inline uint qHash(const Repository &repository)
     return qHash(repository.url().toString());
 }
 
-}   // namespace QInstaller
+} // namespace QInstaller
 
 Q_DECLARE_METATYPE(QInstaller::Repository)
 

@@ -41,9 +41,9 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation* clone() const;
+    Operation *clone() const;
 };
 
-} // namespace
+} // namespace QInstaller
 
 #endif // REGISTERDEFAULTDEBUGGEROPERATION_H

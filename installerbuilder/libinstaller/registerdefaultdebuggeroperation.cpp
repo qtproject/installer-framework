@@ -161,7 +161,7 @@ bool RegisterDefaultDebuggerOperation::testOperation()
     return true;
 }
 
-Operation* RegisterDefaultDebuggerOperation::clone() const
+Operation *RegisterDefaultDebuggerOperation::clone() const
 {
     return new RegisterDefaultDebuggerOperation();
 }

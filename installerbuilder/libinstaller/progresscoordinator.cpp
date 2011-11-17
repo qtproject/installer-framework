@@ -61,9 +61,9 @@ ProgressCoordinator::~ProgressCoordinator()
 {
 }
 
-ProgressCoordinator* ProgressCoordinator::instance()
+ProgressCoordinator *ProgressCoordinator::instance()
 {
-    static ProgressCoordinator* instance = 0;
+    static ProgressCoordinator *instance = 0;
     if (instance == 0)
         instance = new ProgressCoordinator(qApp);
     return instance;

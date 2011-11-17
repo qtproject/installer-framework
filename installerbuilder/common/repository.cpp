@@ -95,7 +95,7 @@ QUrl Repository::url() const
 /*!
     Sets the repository URL to the one specified at \a url.
 */
-void Repository::setUrl(const QUrl& url)
+void Repository::setUrl(const QUrl &url)
 {
     m_url = url;
 }

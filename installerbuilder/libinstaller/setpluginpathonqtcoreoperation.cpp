@@ -41,7 +41,7 @@
 using namespace QInstaller;
 
 namespace {
-    QByteArray getOldValue(const QString & binaryPath)
+    QByteArray getOldValue(const QString &binaryPath)
     {
         QFileInfo fileInfo(binaryPath);
 
@@ -73,7 +73,7 @@ namespace {
         QByteArrayMatcher byteArrayMatcher(searchValue);
         offset = byteArrayMatcher.indexIn(source, offset);
         Q_ASSERT(offset > 0);
-        if(offset == -1)
+        if (offset == -1)
             return QByteArray();
 
         int stringEndPosition = offset;

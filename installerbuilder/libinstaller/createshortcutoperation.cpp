@@ -120,16 +120,16 @@ CreateShortcutOperation::~CreateShortcutOperation()
 {
 }
 
-static bool isWorkingDirOption(const QString& s)
+static bool isWorkingDirOption(const QString &s)
 {
     return s.startsWith(QLatin1String("workingDirectory="));
 }
 
-static QString takeWorkingDirArgument(QStringList& args)
+static QString takeWorkingDirArgument(QStringList &args)
 {
     QString workingDir;
     // if the args contain an option in the form "workingDirectory=...", find it and consume it
-    QStringList::iterator wdiropt = std::find_if (args.begin(), args.end(), isWorkingDirOption);
+    QStringList::iterator wdiropt = std::find_if(args.begin(), args.end(), isWorkingDirOption);
     if (wdiropt != args.end()) {
         workingDir = wdiropt->mid(QString::fromLatin1("workingDirectory=").size());
         args.erase(wdiropt);

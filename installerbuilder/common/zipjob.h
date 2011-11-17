@@ -43,49 +43,51 @@ public:
     ZipJob();
     ~ZipJob();
 
-    void setOutputDevice( QIODevice* device );
-    void setWorkingDirectory( const QDir& dir );
-    void setFilesToArchive( const QStringList& files );
+    void setOutputDevice(QIODevice *device);
+    void setWorkingDirectory(const QDir &dir);
+    void setFilesToArchive(const QStringList &files);
 
-    /* reimp */ void run();
+    void run();
 
 Q_SIGNALS:
     void finished();
     void error();
 
 private Q_SLOTS:
-    void processError( QProcess::ProcessError );
-    void processFinished( int, QProcess::ExitStatus );
+    void processError(QProcess::ProcessError);
+    void processFinished(int, QProcess::ExitStatus);
     void processReadyReadStandardOutput();
 
 private:
     class Private;
-    Private* const d;
+    Private *const d;
 };
 
-class UnzipJob : public QObject, public QRunnable {
+class UnzipJob : public QObject, public QRunnable
+{
     Q_OBJECT
+
 public:
     UnzipJob();
     ~UnzipJob();
 
-    void setInputDevice( QIODevice* device );
-    void setOutputPath( const QString& path );
-    void setFilesToExtract( const QStringList& files );
+    void setInputDevice(QIODevice *device);
+    void setOutputPath(const QString &path);
+    void setFilesToExtract(const QStringList &files);
 
-    /* reimp */ void run();
+    void run();
 
 Q_SIGNALS:
     void finished();
     void error();
 
 private Q_SLOTS:
-    void processError( QProcess::ProcessError );
-    void processFinished( int, QProcess::ExitStatus );
+    void processError(QProcess::ProcessError);
+    void processFinished(int, QProcess::ExitStatus);
 
 private:
     class Private;
-    Private* const d;
+    Private *const d;
 };
 
 #endif // ZIPJOB_H

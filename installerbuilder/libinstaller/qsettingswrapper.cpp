@@ -229,7 +229,7 @@ void QSettingsWrapper::clear()
     else d->settings.clear();
 }
 
-bool QSettingsWrapper::contains(const QString& param1) const
+bool QSettingsWrapper::contains(const QString &param1) const
 {
     if (d->createSocket())
         return callRemoteMethod<bool>(d->stream, QLatin1String("QSettings::contains"), param1);
@@ -297,7 +297,7 @@ QString QSettingsWrapper::organizationName() const
     return static_cast<QString>(d->settings.organizationName());
 }
 
-void QSettingsWrapper::remove(const QString& param1)
+void QSettingsWrapper::remove(const QString &param1)
 {
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::remove"), param1);
@@ -323,17 +323,17 @@ void QSettingsWrapper::setFallbacksEnabled(bool param1)
     else d->settings.setFallbacksEnabled(param1);
 }
 
-void QSettingsWrapper::setIniCodec(QTextCodec* codec)
+void QSettingsWrapper::setIniCodec(QTextCodec *codec)
 {
     d->settings.setIniCodec(codec);
 }
 
-void QSettingsWrapper::setIniCodec(const char* codecName)
+void QSettingsWrapper::setIniCodec(const char *codecName)
 {
     d->settings.setIniCodec(codecName);
 }
 
-void QSettingsWrapper::setValue(const QString& param1, const QVariant& param2)
+void QSettingsWrapper::setValue(const QString &param1, const QVariant &param2)
 {
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::setValue"), param1, param2);
@@ -356,7 +356,7 @@ void QSettingsWrapper::sync()
         d->settings.sync();
 }
 
-QVariant QSettingsWrapper::value(const QString& param1, const QVariant& param2) const
+QVariant QSettingsWrapper::value(const QString &param1, const QVariant &param2) const
 {
     if (d->createSocket())
         return callRemoteMethod<QVariant>(d->stream, QLatin1String("QSettings::value"), param1, param2);

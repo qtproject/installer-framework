@@ -41,25 +41,25 @@
     Copied from QInstaller with some adjustments
     Return true, if a process with \a name is running. On Windows, the comparision is case-insensitive.
 */
-static bool isProcessRunning(const QString& name, const QList< KDSysInfo::ProcessInfo > &processes)
+static bool isProcessRunning(const QString &name, const QList<KDSysInfo::ProcessInfo> &processes)
 {
-    for(QList< KDSysInfo::ProcessInfo >::const_iterator it = processes.constBegin(); it != processes.constEnd(); ++it) {
+    for (QList<KDSysInfo::ProcessInfo>::const_iterator it = processes.constBegin(); it != processes.constEnd(); ++it) {
         if (it->name.isEmpty())
             continue;
 
 #ifndef Q_WS_WIN
-        if(it->name == name)
+        if (it->name == name)
             return true;
         const QFileInfo fi(it->name);
-        if(fi.fileName() == name || fi.baseName() == name)
+        if (fi.fileName() == name || fi.baseName() == name)
             return true;
 #else
-        if(it->name.toLower() == name.toLower())
+        if (it->name.toLower() == name.toLower())
             return true;
-        if(it->name.toLower() == QDir::toNativeSeparators(name.toLower()))
+        if (it->name.toLower() == QDir::toNativeSeparators(name.toLower()))
             return true;
         const QFileInfo fi(it->name);
-        if(fi.fileName().toLower() == name.toLower() || fi.baseName().toLower() == name.toLower())
+        if (fi.fileName().toLower() == name.toLower() || fi.baseName().toLower() == name.toLower())
             return true;
 #endif
     }
@@ -68,9 +68,9 @@ static bool isProcessRunning(const QString& name, const QList< KDSysInfo::Proces
 
 static QStringList checkRunningProcessesFromList(const QStringList &processList)
 {
-    const QList< KDSysInfo::ProcessInfo > allProcesses = KDSysInfo::runningProcesses();
+    const QList<KDSysInfo::ProcessInfo> allProcesses = KDSysInfo::runningProcesses();
     QStringList stillRunningProcesses;
-    foreach (const QString process, processList) {
+    foreach (const QString &process, processList) {
         if (!process.isEmpty() && isProcessRunning(process, allProcesses))
             stillRunningProcesses.append(process);
     }
@@ -86,12 +86,10 @@ FakeStopProcessForUpdateOperation::FakeStopProcessForUpdateOperation()
 
 FakeStopProcessForUpdateOperation::~FakeStopProcessForUpdateOperation()
 {
-
 }
 
 void FakeStopProcessForUpdateOperation::backup()
 {
-
 }
 
 bool FakeStopProcessForUpdateOperation::performOperation()
@@ -127,7 +125,7 @@ bool FakeStopProcessForUpdateOperation::testOperation()
     return true;
 }
 
-Operation* FakeStopProcessForUpdateOperation::clone() const
+Operation *FakeStopProcessForUpdateOperation::clone() const
 {
     return new FakeStopProcessForUpdateOperation();
 }

@@ -84,16 +84,16 @@
 
 #include <unix/C/7zCrc.h>
 
-namespace NArchive
-{
-namespace NBz2{void registerArcBZip2();}
-namespace NGz{void registerArcGZip();}
-namespace NLzma{ namespace NLzmaAr { void registerArcLzma();}}
-namespace NLzma{ namespace NLzma86Ar { void registerArcLzma86();}}
-namespace NSplit{void registerArcSplit();}
-namespace NXz{void registerArcxz();}
-namespace NZ{void registerArcZ();}
+namespace NArchive {
+namespace NBz2 { void registerArcBZip2(); }
+namespace NGz { void registerArcGZip(); }
+namespace NLzma { namespace NLzmaAr { void registerArcLzma(); } }
+namespace NLzma { namespace NLzma86Ar { void registerArcLzma86(); } }
+namespace NSplit { void registerArcSplit(); }
+namespace NXz { void registerArcxz(); }
+namespace NZ {void registerArcZ(); }
 }
+
 void registerArc7z();
 void registerArcCab();
 void registerArcTar();
@@ -148,14 +148,14 @@ static void initArchives()
 
 static void initResources()
 {
-    Q_INIT_RESOURCE( openssl );
-    Q_INIT_RESOURCE( patch_file_lists );
+    Q_INIT_RESOURCE(openssl);
+    Q_INIT_RESOURCE(patch_file_lists);
 #if defined(USE_STATIC_SQLITE_PLUGIN)
-    Q_IMPORT_PLUGIN( qsqlite ); //RegisterDocumentationOperation needs this
+    Q_IMPORT_PLUGIN(qsqlite); // RegisterDocumentationOperation needs this
 #endif
 }
 
-static void messageHandler( QtMsgType type, const char* msg )
+static void messageHandler(QtMsgType type, const char *msg)
 {
     QInstaller::verbose() << msg << std::endl;
     if (type != QtFatalMsg && QString::fromLatin1(msg).contains(QLatin1String("Object::connect: "))) {
@@ -166,45 +166,45 @@ static void messageHandler( QtMsgType type, const char* msg )
 void QInstaller::init()
 {
     ::initResources();
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::CreateShortcutOperation >( QLatin1String( "CreateShortcut" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::CreateDesktopEntryOperation >( QLatin1String( "CreateDesktopEntry" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::ExtractArchiveOperation >( QLatin1String( "Extract" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::GlobalSettingsOperation >( QLatin1String( "GlobalConfig" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::EnvironmentVariableOperation >( QLatin1String( "EnvironmentVariable" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::RegisterFileTypeOperation >( QLatin1String( "RegisterFileType" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SelfRestartOperation >( QLatin1String( "SelfRestart" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::InstallIconsOperation >( QLatin1String( "InstallIcons" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::ElevatedExecuteOperation >( QLatin1String( "Execute" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::FakeStopProcessForUpdateOperation >( QLatin1String( "FakeStopProcessForUpdate" ) );
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::CreateShortcutOperation>(QLatin1String("CreateShortcut"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::CreateDesktopEntryOperation>(QLatin1String("CreateDesktopEntry"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::ExtractArchiveOperation>(QLatin1String("Extract"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::GlobalSettingsOperation>(QLatin1String("GlobalConfig"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::EnvironmentVariableOperation>(QLatin1String( "EnvironmentVariable"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::RegisterFileTypeOperation>(QLatin1String("RegisterFileType"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::SelfRestartOperation>(QLatin1String("SelfRestart"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::InstallIconsOperation>(QLatin1String("InstallIcons"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::ElevatedExecuteOperation>(QLatin1String("Execute"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::FakeStopProcessForUpdateOperation>(QLatin1String("FakeStopProcessForUpdate"));
 
-    //added for NDK
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SimpleMoveFileOperation >( QLatin1String( "SimpleMoveFile") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::CopyDirectoryOperation >( QLatin1String( "CopyDirectory") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::RegisterDocumentationOperation >( QLatin1String( "RegisterDocumentation") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::RegisterQtInCreatorOperation>( QLatin1String( "RegisterQtInCreator") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::RegisterQtInCreatorV2Operation>( QLatin1String( "RegisterQtInCreatorV2") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::RegisterQtInCreatorV23Operation>( QLatin1String( "RegisterQtInCreatorV23") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::RegisterToolChainOperation>( QLatin1String( "RegisterToolChain") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::RegisterDefaultDebuggerOperation>( QLatin1String( "RegisterDefaultDebugger") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetDemosPathOnQtOperation>( QLatin1String( "SetDemosPathOnQt") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetExamplesPathOnQtOperation>( QLatin1String( "SetExamplesPathOnQt") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetPluginPathOnQtCoreOperation>( QLatin1String( "SetPluginPathOnQtCore") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetImportsPathOnQtCoreOperation>( QLatin1String( "SetImportsPathOnQtCore") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetPathOnQtCoreOperation>( QLatin1String( "SetPathOnQtCore") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::SetQtCreatorValueOperation>( QLatin1String( "SetQtCreatorValue") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::AddQtCreatorArrayValueOperation>( QLatin1String( "AddQtCreatorArrayValue") );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::QtPatchOperation >( QLatin1String( "QtPatch" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::ReplaceOperation >( QLatin1String( "Replace" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::LineReplaceOperation >( QLatin1String( "LineReplace" ) );
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::UpdateCreatorSettingsFrom21To22Operation >( QLatin1String( "UpdateCreatorSettingsFrom21To22" ) );
+    // added for NDK
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::SimpleMoveFileOperation>(QLatin1String("SimpleMoveFile"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::CopyDirectoryOperation>(QLatin1String("CopyDirectory"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::RegisterDocumentationOperation>(QLatin1String("RegisterDocumentation"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::RegisterQtInCreatorOperation>(QLatin1String("RegisterQtInCreator"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::RegisterQtInCreatorV2Operation>(QLatin1String("RegisterQtInCreatorV2"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::RegisterQtInCreatorV23Operation>(QLatin1String("RegisterQtInCreatorV23"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::RegisterToolChainOperation>(QLatin1String("RegisterToolChain") );
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::RegisterDefaultDebuggerOperation>(QLatin1String( "RegisterDefaultDebugger"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::SetDemosPathOnQtOperation>(QLatin1String("SetDemosPathOnQt"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::SetExamplesPathOnQtOperation>(QLatin1String("SetExamplesPathOnQt"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::SetPluginPathOnQtCoreOperation>(QLatin1String("SetPluginPathOnQtCore"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::SetImportsPathOnQtCoreOperation>(QLatin1String("SetImportsPathOnQtCore"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::SetPathOnQtCoreOperation>(QLatin1String("SetPathOnQtCore"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::SetQtCreatorValueOperation>(QLatin1String("SetQtCreatorValue"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::AddQtCreatorArrayValueOperation>(QLatin1String("AddQtCreatorArrayValue"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::QtPatchOperation>(QLatin1String("QtPatch"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::ReplaceOperation>(QLatin1String("Replace"));
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::LineReplaceOperation>(QLatin1String( "LineReplace" ) );
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::UpdateCreatorSettingsFrom21To22Operation>(QLatin1String("UpdateCreatorSettingsFrom21To22"));
 
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::MinimumProgressOperation>(QLatin1String("MinimumProgress"));
     KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation<QInstaller::LicenseOperation>(QLatin1String("License"));
 
-    KDUpdater::FileDownloaderFactory::setFollowRedirects( true );
+    KDUpdater::FileDownloaderFactory::setFollowRedirects(true);
 
 #ifdef Q_OS_MAC
-    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::MacReplaceInstallNamesOperation >( QLatin1String( "ReplaceInstallNames" ) );
+    KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< QInstaller::MacReplaceInstallNamesOperation>(QLatin1String("ReplaceInstallNames"));
 #endif // Q_OS_MAC
 
     // load 7z stuff, if we're a static lib
@@ -214,5 +214,5 @@ void QInstaller::init()
    //QNetworkProxyFactory::setUseSystemConfiguration( true );
 
    // qDebug -> verbose()
-   qInstallMsgHandler( messageHandler );
+   qInstallMsgHandler(messageHandler);
 }

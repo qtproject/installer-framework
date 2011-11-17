@@ -37,7 +37,7 @@ class ProgressCoordinator : public QObject
     Q_OBJECT
 
 public:
-    static ProgressCoordinator* instance();
+    static ProgressCoordinator *instance();
     ~ProgressCoordinator();
 
     void registerPartProgress(QObject *sender, const char *signal, double partProgressSize);

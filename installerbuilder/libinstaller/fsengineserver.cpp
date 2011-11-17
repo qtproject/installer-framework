@@ -49,19 +49,19 @@ typedef int descriptor_t;
 #   include <windows.h>
 #endif
 
-bool startDetached(const QString &program, const QStringList& args, const QString &workingDirectory,
-    qint64* pid)
+bool startDetached(const QString &program, const QStringList &args, const QString &workingDirectory,
+    qint64 *pid)
 {
 #ifdef Q_WS_WIN
     PROCESS_INFORMATION pinfo;
     STARTUPINFOW startupInfo = { sizeof(STARTUPINFO), 0, 0, 0,
-        static_cast<ulong> (CW_USEDEFAULT), static_cast<ulong> (CW_USEDEFAULT),
-        static_cast<ulong> (CW_USEDEFAULT), static_cast<ulong> (CW_USEDEFAULT),
+        static_cast<ulong>(CW_USEDEFAULT), static_cast<ulong>(CW_USEDEFAULT),
+        static_cast<ulong>(CW_USEDEFAULT), static_cast<ulong>(CW_USEDEFAULT),
         0, 0, 0, STARTF_USESHOWWINDOW, SW_HIDE, 0, 0, 0, 0, 0
     };
 
     const QString arguments = QInstaller::createCommandline(program, args);
-    const bool success = CreateProcess(0, const_cast<wchar_t*> (static_cast<const wchar_t*>(arguments.utf16())),
+    const bool success = CreateProcess(0, const_cast<wchar_t *>(static_cast<const wchar_t *>(arguments.utf16())),
         0, 0, FALSE, CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_CONSOLE,
         0, (wchar_t*)workingDirectory.utf16(),
         &startupInfo, &pinfo);
@@ -83,7 +83,7 @@ class QProcessSignalReceiver : public QObject
 {
     Q_OBJECT
 public:
-    QProcessSignalReceiver(QObject* parent = 0)
+    QProcessSignalReceiver(QObject *parent = 0)
         : QObject(parent)
     {
         connect(parent, SIGNAL(finished(int, QProcess::ExitStatus)), this,
@@ -140,7 +140,7 @@ private:
     QFSFileEngine engine;
     const descriptor_t descriptor;
     QDataStream receivedStream;
-    QSettings* settings;
+    QSettings *settings;
 
     QProcess *process;
     QProcessSignalReceiver *signalReceiver;
@@ -168,7 +168,7 @@ FSEngineServer::FSEngineServer(const QHostAddress &address, quint16 port, QObjec
 */
 FSEngineServer::~FSEngineServer()
 {
-    const QList<QThread*> threads = findChildren<QThread*>();
+    const QList<QThread *> threads = findChildren<QThread *>();
     foreach (QThread *thread, threads)
         thread->wait();
 }
@@ -179,7 +179,7 @@ FSEngineServer::~FSEngineServer()
 void FSEngineServer::incomingConnection(int socketDescriptor)
 {
     qApp->processEvents();
-    QThread* const thread = new FSEngineConnectionThread(socketDescriptor, this);
+    QThread *const thread = new FSEngineConnectionThread(socketDescriptor, this);
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     thread->start();
     watchdog.resetTimeoutTimer();
@@ -233,7 +233,7 @@ void QProcessSignalReceiver::processReadyRead()
 void QProcessSignalReceiver::processStateChanged(QProcess::ProcessState newState)
 {
     receivedSignals.push_back(QLatin1String("stateChanged"));
-    receivedSignals.push_back(static_cast<int> (newState));
+    receivedSignals.push_back(static_cast<int>(newState));
 }
 
 /*!
@@ -285,9 +285,9 @@ void FSEngineConnectionThread::run()
     }
 }
 
-static QDataStream& operator<<(QDataStream& stream, const QSettings::Status& status)
+static QDataStream &operator<<(QDataStream &stream, const QSettings::Status &status)
 {
-    return stream << static_cast<int> (status);
+    return stream << static_cast<int>(status);
 }
 
 /*!

@@ -48,6 +48,6 @@ private:
     PackageManagerCore *m_core;
 };
 
-}   // namespace QInstaller
+} // namespace QInstaller
 
 #endif

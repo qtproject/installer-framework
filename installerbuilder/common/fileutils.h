@@ -70,7 +70,7 @@ private:
 
     qint64 INSTALLER_EXPORT blockingRead(QIODevice *in, char *buffer, qint64 size);
     void INSTALLER_EXPORT blockingCopy(QIODevice *in, QIODevice *out, qint64 size);
-    qint64 INSTALLER_EXPORT blockingWrite(QIODevice *out, const char* buffer, qint64 size);
+    qint64 INSTALLER_EXPORT blockingWrite(QIODevice *out, const char *buffer, qint64 size);
     qint64 INSTALLER_EXPORT blockingWrite(QIODevice *out, const QByteArray& ba);
 
     /*!

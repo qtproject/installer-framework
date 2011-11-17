@@ -53,12 +53,12 @@ namespace {
 
         QFile file(binaryPath);
         int readOpenCount = 0;
-        while (! file.open(QFile::ReadOnly) && readOpenCount < 20000) {
+        while (!file.open(QFile::ReadOnly) && readOpenCount < 20000) {
             ++readOpenCount;
             qApp->processEvents();
         }
         Q_ASSERT(file.isOpen());
-        if (! file.isOpen()) {
+        if (!file.isOpen()) {
             verbose() << "qpatch: warning: file `" << qPrintable(binaryPath) << "' can not open as ReadOnly."
                 << std::endl;
             verbose() << file.errorString() << std::endl;
@@ -73,7 +73,7 @@ namespace {
         QByteArrayMatcher byteArrayMatcher(searchValue);
         offset = byteArrayMatcher.indexIn(source, offset);
         Q_ASSERT(offset > 0);
-        if(offset == -1)
+        if (offset == -1)
             return QByteArray();
 
         int stringEndPosition = offset;

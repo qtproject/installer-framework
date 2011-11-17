@@ -120,7 +120,7 @@ void CreateDesktopEntryOperation::backup()
 
     try {
         setValue(QLatin1String("backupOfExistingDesktopEntry"), generateTemporaryFileName(filename));
-    } catch (const QInstaller::Error& e) {
+    } catch (const QInstaller::Error &e) {
         setErrorString(e.message());
         return;
     }
@@ -132,7 +132,7 @@ void CreateDesktopEntryOperation::backup()
 bool CreateDesktopEntryOperation::performOperation()
 {
     const QStringList args = arguments();
-    if(args.count() != 2) {
+    if (args.count() != 2) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.").arg(name()).arg(args
             .count()));
@@ -140,7 +140,7 @@ bool CreateDesktopEntryOperation::performOperation()
     }
 
     const QString filename = absoluteFileName();
-    const QString& values = args[1];
+    const QString &values = args[1];
 
     if (QFile::exists(filename) && !deleteFileNowOrLater(filename)) {
         setError(UserDefinedError);
@@ -198,7 +198,7 @@ bool CreateDesktopEntryOperation::testOperation()
     return true;
 }
 
-Operation* CreateDesktopEntryOperation::clone() const
+Operation *CreateDesktopEntryOperation::clone() const
 {
     return new CreateDesktopEntryOperation();
 }

@@ -48,7 +48,7 @@ PersistentSettingsReader::PersistentSettingsReader()
 
 }
 
-QVariant PersistentSettingsReader::restoreValue(const QString & variable) const
+QVariant PersistentSettingsReader::restoreValue(const QString &variable) const
 {
     if (m_valueMap.contains(variable))
         return m_valueMap.value(variable);
@@ -60,7 +60,7 @@ QVariantMap PersistentSettingsReader::restoreValues() const
     return m_valueMap;
 }
 
-bool PersistentSettingsReader::load(const QString & fileName)
+bool PersistentSettingsReader::load(const QString &fileName)
 {
     m_valueMap.clear();
 
@@ -143,7 +143,6 @@ void PersistentSettingsReader::readValues(const QDomElement &data)
 
 PersistentSettingsWriter::PersistentSettingsWriter()
 {
-
 }
 
 void PersistentSettingsWriter::writeValue(QDomElement &ps, const QVariant &variant)
@@ -180,12 +179,12 @@ void PersistentSettingsWriter::writeValue(QDomElement &ps, const QVariant &varia
     }
 }
 
-void PersistentSettingsWriter::saveValue(const QString & variable, const QVariant &value)
+void PersistentSettingsWriter::saveValue(const QString &variable, const QVariant &value)
 {
     m_valueMap[variable] = value;
 }
 
-bool PersistentSettingsWriter::save(const QString & fileName, const QString & docType)
+bool PersistentSettingsWriter::save(const QString &fileName, const QString &docType)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly))

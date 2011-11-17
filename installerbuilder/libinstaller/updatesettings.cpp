@@ -52,12 +52,12 @@ private:
     UpdateSettings *const q;
 
 public:
-    QSettings& settings()
+    QSettings &settings()
     {
         return externalSettings ? *externalSettings : internalSettings;
     }
 
-    const QSettings& settings() const
+    const QSettings &settings() const
     {
         return externalSettings ? *externalSettings : internalSettings;
     }
@@ -69,10 +69,10 @@ public:
 
 private:
     QSettings internalSettings;
-    static QSettings* externalSettings;
+    static QSettings *externalSettings;
 };
 
-QSettings* UpdateSettings::Private::externalSettings = 0;
+QSettings *UpdateSettings::Private::externalSettings = 0;
 
 
 // -- UpdateSettings

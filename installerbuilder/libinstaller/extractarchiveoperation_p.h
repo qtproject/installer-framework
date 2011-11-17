@@ -87,9 +87,7 @@ public:
     bool createBackups;
     QVector<QPair<QString, QString> > backupFiles;
 
-    explicit Callback()
-        : state(S_OK),
-        createBackups(true) {}
+    Callback() : state(S_OK), createBackups(true) {}
 
 Q_SIGNALS:
     void progressChanged(const QString &filename);

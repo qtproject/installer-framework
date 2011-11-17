@@ -109,7 +109,7 @@ bool SimpleMoveFileOperation::testOperation()
     return true;
 }
 
-Operation* SimpleMoveFileOperation::clone() const
+Operation *SimpleMoveFileOperation::clone() const
 {
     return new SimpleMoveFileOperation();
 }

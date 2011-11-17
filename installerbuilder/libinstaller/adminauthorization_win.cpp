@@ -41,14 +41,6 @@
 
 #include <windows.h>
 
-class AdminAuthorization::Private
-{
-public:
-    Private()
-    {
-    }
-};
-
 AdminAuthorization::AdminAuthorization()
 {
 }
@@ -69,33 +61,33 @@ bool AdminAuthorization::hasAdminRights()
     SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
     PSID adminGroup;
     // Initialize SID.
-    if( !AllocateAndInitializeSid( &authority,
-                                   2,
-                                   SECURITY_BUILTIN_DOMAIN_RID,
-                                   DOMAIN_ALIAS_RID_ADMINS,
-                                   0, 0, 0, 0, 0, 0,
-                                   &adminGroup))
+    if (!AllocateAndInitializeSid(&authority,
+                                  2,
+                                  SECURITY_BUILTIN_DOMAIN_RID,
+                                  DOMAIN_ALIAS_RID_ADMINS,
+                                  0, 0, 0, 0, 0, 0,
+                                  &adminGroup))
         return false;
 
     BOOL isInAdminGroup = FALSE;
-    if( !CheckTokenMembership( 0, adminGroup, &isInAdminGroup ))
+    if (!CheckTokenMembership(0, adminGroup, &isInAdminGroup))
         isInAdminGroup = FALSE;
 
-    FreeSid( adminGroup );
+    FreeSid(adminGroup);
     return isInAdminGroup;
 }
 
-bool AdminAuthorization::execute( QWidget*, const QString& program, const QStringList& arguments )
+bool AdminAuthorization::execute(QWidget *, const QString &program, const QStringList &arguments)
 {
     qDebug() << Q_FUNC_INFO;
-    const QString file = QDir::toNativeSeparators( program );
-    const QString args = QInstaller::createCommandline( QString(), arguments );
+    const QString file = QDir::toNativeSeparators(program);
+    const QString args = QInstaller::createCommandline(QString(), arguments);
 
-    const int len = GetShortPathNameW( (wchar_t*)file.utf16(), 0, 0 );
-    if( len == 0 )
+    const int len = GetShortPathNameW((wchar_t *)file.utf16(), 0, 0);
+    if (len == 0)
         return false;
-    wchar_t* const buffer = new wchar_t[ len ];
-    GetShortPathName( (wchar_t*)file.utf16(), buffer, len );
+    wchar_t *const buffer = new wchar_t[len];
+    GetShortPathName((wchar_t *)file.utf16(), buffer, len);
 
     SHELLEXECUTEINFOW TempInfo = { 0 };
     TempInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
@@ -103,13 +95,13 @@ bool AdminAuthorization::execute( QWidget*, const QString& program, const QStrin
     TempInfo.hwnd = 0;
     TempInfo.lpVerb = L"runas";
     TempInfo.lpFile = buffer;
-    TempInfo.lpParameters = (wchar_t*)args.utf16();
+    TempInfo.lpParameters = (wchar_t *)args.utf16();
     TempInfo.lpDirectory = 0;
     TempInfo.nShow = SW_NORMAL;
 
     
     qDebug() << QLatin1String("\t starting elevated process with ::ShellExecuteExW( &TempInfo );");
-    const bool result = ::ShellExecuteExW( &TempInfo );
+    const bool result = ::ShellExecuteExW(&TempInfo);
     qDebug() << QLatin1String("\t after starting elevated process");
     delete[] buffer;
     return result;
