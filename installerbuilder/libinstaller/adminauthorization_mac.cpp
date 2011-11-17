@@ -56,6 +56,7 @@ public:
 // -- AdminAuthorization
 
 AdminAuthorization::AdminAuthorization()
+    : d(new Private)
 {
     AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &d->auth);
 }
@@ -63,6 +64,7 @@ AdminAuthorization::AdminAuthorization()
 AdminAuthorization::~AdminAuthorization()
 {
     AuthorizationFree(d->auth, kAuthorizationFlagDestroyRights);
+    delete d;
 }
 
 bool AdminAuthorization::authorize()

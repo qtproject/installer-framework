@@ -32,31 +32,17 @@
 **************************************************************************/
 #include "adminauthorization.h"
 
-class AdminAuthorizationBase::Private
-{
-public:
-    Private()
-        : authorized( false )
-    {
-    }
-
-    bool authorized;
-};
-
 AdminAuthorizationBase::AdminAuthorizationBase()
-{
-}
-
-AdminAuthorizationBase::~AdminAuthorizationBase()
+    : m_authorized(false)
 {
 }
 
 bool AdminAuthorizationBase::isAuthorized() const
 {
-    return d->authorized;
+    return m_authorized;
 }
 
 void AdminAuthorizationBase::setAuthorized()
 {
-    d->authorized = true;
+    m_authorized = true;
 }

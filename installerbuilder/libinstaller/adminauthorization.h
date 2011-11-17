@@ -28,15 +28,13 @@
 
 #include <QtCore/QObject>
 
-#include <KDToolsCore/pimpl_ptr>
-
 class AdminAuthorizationBase
 {
 protected:
     AdminAuthorizationBase();
 
 public:
-    virtual ~AdminAuthorizationBase();
+    virtual ~AdminAuthorizationBase() {}
 
     virtual bool authorize() = 0;
     bool isAuthorized() const;
@@ -45,19 +43,18 @@ protected:
     void setAuthorized();
 
 private:
-    class Private;
-    kdtools::pimpl_ptr< Private > d;
+    bool m_authorized;
 };
 
 class AdminAuthorization : public QObject, public AdminAuthorizationBase
 {
     Q_OBJECT
-    Q_PROPERTY( bool authorized READ isAuthorized )
+    Q_PROPERTY(bool authorized READ isAuthorized)
 public:
     AdminAuthorization();
     ~AdminAuthorization();
 
-    bool execute( QWidget* dialogParent, const QString& programs, const QStringList& arguments );
+    bool execute(QWidget *dialogParent, const QString &programs, const QStringList &arguments);
 
     static bool hasAdminRights();
 
@@ -69,7 +66,7 @@ Q_SIGNALS:
 
 private:
     class Private;
-    kdtools::pimpl_ptr< Private > d;
+    Private *d;
 };
 
 #endif
