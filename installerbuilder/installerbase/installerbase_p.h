@@ -50,7 +50,7 @@ public:
 
 class InstallerBase : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     InstallerBase(QObject *parent = 0);
@@ -63,11 +63,11 @@ private slots:
     void downloadStarted();
     void downloadFinished();
     void downloadProgress(double progress);
-    void downloadAborted(const QString& error);
+    void downloadAborted(const QString &error);
 
 private:
     void deferredRename(const QString &source, const QString &target);
-    void writeMaintenanceBinary(const QString &target, QFile *const source, qint64 size);
+    void writeMaintenanceBinary(const QString &target, QFile *source, qint64 size);
 
 private:
     volatile bool m_downloadFinished;

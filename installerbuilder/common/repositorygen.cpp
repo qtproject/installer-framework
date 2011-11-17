@@ -55,13 +55,13 @@
 using namespace QInstaller;
 
 QT_BEGIN_NAMESPACE
-static bool operator==(const PackageInfo& lhs, const PackageInfo& rhs)
+static bool operator==(const PackageInfo &lhs, const PackageInfo &rhs)
 {
     return lhs.name == rhs.name && lhs.version == rhs.version;
 }
 QT_END_NAMESPACE
 
-static QVector<PackageInfo> collectAvailablePackages(const QString& packagesDirectory)
+static QVector<PackageInfo> collectAvailablePackages(const QString &packagesDirectory)
 {
     verbose() << "Collecting information about available packages..." << std::endl;
 
@@ -134,7 +134,7 @@ static QVector<PackageInfo> collectAvailablePackages(const QString& packagesDire
     return dict;
 }
 
-static PackageInfo findMatchingPackage(const QString& name, const QVector< PackageInfo >& available)
+static PackageInfo findMatchingPackage(const QString &name, const QVector<PackageInfo> &available)
 {
     const QString id = name.contains(QChar::fromLatin1('-'))
         ? name.section(QChar::fromLatin1('-'), 0, 0) : name;
@@ -150,15 +150,14 @@ static PackageInfo findMatchingPackage(const QString& name, const QVector< Packa
     const bool allowLess = comparator.contains(QLatin1Char('<'));
     const bool allowMore = comparator.contains(QLatin1Char('>'));
 
-    for (QVector< PackageInfo >::const_iterator it = available.begin(); it != available.end(); ++it) {
+    for (QVector<PackageInfo>::const_iterator it = available.begin(); it != available.end(); ++it) {
         if (it->name != id)
             continue;
-
         if (allowEqual && (version.isEmpty() || it->version == version))
             return *it;
-        else if (allowLess && KDUpdater::compareVersion(version, it->version) > 0)
+        if (allowLess && KDUpdater::compareVersion(version, it->version) > 0)
             return *it;
-        else if (allowMore && KDUpdater::compareVersion(version, it->version) < 0)
+        if (allowMore && KDUpdater::compareVersion(version, it->version) < 0)
             return *it;
     }
 
@@ -168,16 +167,16 @@ static PackageInfo findMatchingPackage(const QString& name, const QVector< Packa
 /**
  * Returns true, when the \a package's identifier starts with, but not equals \a prefix.
  */
-static bool packageHasPrefix(const PackageInfo& package, const QString& prefix)
+static bool packageHasPrefix(const PackageInfo &package, const QString &prefix)
 {
-    return package.name.startsWith(prefix) && package.name.mid(prefix.length(), 1)
-        == QString::fromLatin1(".");
+    return package.name.startsWith(prefix)
+        && package.name.mid(prefix.length(), 1) == QString::fromLatin1(".");
 }
 
 /**
  * Returns true, whel all \a packages start with \a prefix
  */
-static bool allPackagesHavePrefix(const QVector< PackageInfo >& packages, const QString& prefix)
+static bool allPackagesHavePrefix(const QVector<PackageInfo> &packages, const QString &prefix)
 {
     for (QVector< PackageInfo >::const_iterator it = packages.begin(); it != packages.end(); ++it) {
         if (!packageHasPrefix(*it, prefix))
@@ -189,21 +188,21 @@ static bool allPackagesHavePrefix(const QVector< PackageInfo >& packages, const 
 /**
  * Returns all packages out of \a all starting with \a prefix.
  */
-static QVector< PackageInfo > packagesWithPrefix(const QVector< PackageInfo >& all,
-    const QString& prefix)
+static QVector<PackageInfo> packagesWithPrefix(const QVector<PackageInfo> &all,
+    const QString &prefix)
 {
-    QVector< PackageInfo > result;
-    for (QVector< PackageInfo >::const_iterator it = all.begin(); it != all.end(); ++it) {
+    QVector<PackageInfo> result;
+    for (QVector<PackageInfo>::const_iterator it = all.begin(); it != all.end(); ++it) {
         if (packageHasPrefix(*it, prefix))
             result.push_back(*it);
     }
     return result;
 }
 
-static QVector< PackageInfo > calculateNeededPackages(const QStringList& components,
-    const QVector< PackageInfo >& available, bool addDependencies = true)
+static QVector<PackageInfo> calculateNeededPackages(const QStringList &components,
+    const QVector<PackageInfo> &available, bool addDependencies = true)
 {
-    QVector< PackageInfo > result;
+    QVector<PackageInfo> result;
 
     for (QStringList::const_iterator it = components.begin(); it != components.end(); ++it) {
         static bool recursion = false;
@@ -231,7 +230,7 @@ static QVector< PackageInfo > calculateNeededPackages(const QStringList& compone
             result.push_back(info);
 
             if (addDependencies) {
-                QVector< PackageInfo > dependencies;
+                QVector<PackageInfo> dependencies;
 
                 if (!info.dependencies.isEmpty()) {
                     verbose() << "  It depends on:" << std::endl;
@@ -243,15 +242,15 @@ static QVector< PackageInfo > calculateNeededPackages(const QStringList& compone
                 // append all child items, as this package was requested explicitely
                 dependencies += packagesWithPrefix(available, info.name);
 
-                for (QVector< PackageInfo >::const_iterator dep = dependencies.begin();
+                for (QVector<PackageInfo>::const_iterator dep = dependencies.begin();
                     dep != dependencies.end(); ++dep) {
                     if (result.contains(*dep))
                         continue;
 
                     result += *dep;
-                    const QVector< PackageInfo > depdeps = calculateNeededPackages(QStringList()
+                    const QVector<PackageInfo> depdeps = calculateNeededPackages(QStringList()
                         << dep->name, available);
-                    for (QVector< PackageInfo >::const_iterator dep2 = depdeps.begin();
+                    for (QVector<PackageInfo>::const_iterator dep2 = depdeps.begin();
                         dep2 != depdeps.end(); ++dep2)
                         if (!result.contains(*dep2))
                             result += *dep2;
@@ -274,9 +273,9 @@ namespace {
     };
 }
 
-void QInstaller::compressDirectory(const QStringList& paths, const QString& archivePath)
+void QInstaller::compressDirectory(const QStringList &paths, const QString &archivePath)
 {
-    foreach (QString path, paths) {
+    foreach (const QString &path, paths) {
         if (!QFileInfo(path).exists())
             throw QInstaller::Error(QObject::tr("Folder %1 does not exist").arg(path));
     }
@@ -286,7 +285,7 @@ void QInstaller::compressDirectory(const QStringList& paths, const QString& arch
     Lib7z::createArchive(&archive, paths);
 }
 
-void QInstaller::compressMetaDirectories(const QString& configDir, const QString& repoDir)
+void QInstaller::compressMetaDirectories(const QString &configDir, const QString &repoDir)
 {
     const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
     const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
@@ -298,7 +297,7 @@ void QInstaller::compressMetaDirectories(const QString& configDir, const QString
 
     QDir dir(repoDir);
     const QStringList sub = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-    Q_FOREACH (const QString& i, sub) {
+    foreach (const QString &i, sub) {
         QDir sd(dir);
         sd.cd(i);
         const QString absPath = sd.absolutePath();
@@ -326,8 +325,8 @@ void QInstaller::compressMetaDirectories(const QString& configDir, const QString
     }
 }
 
-void QInstaller::generateMetaDataDirectory(const QString& outDir, const QString& dataDir,
-    const QVector< PackageInfo >& packages, const QString& appName, const QString& appVersion,
+void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
+    const QVector<PackageInfo> &packages, const QString &appName, const QString &appVersion,
     const QString &redirectUpdateUrl)
 {
     QString metapath = outDir;
@@ -358,7 +357,7 @@ void QInstaller::generateMetaDataDirectory(const QString& outDir, const QString&
         root = doc.documentElement();
     }
 
-    for (QVector< PackageInfo >::const_iterator it = packages.begin(); it != packages.end(); ++it) {
+    for (QVector<PackageInfo>::const_iterator it = packages.begin(); it != packages.end(); ++it) {
         const QString packageXmlPath = QString::fromLatin1("%1/meta/package.xml").arg(it->directory);
         verbose() << "  Generating meta data for package " << it->name << " using "
             << packageXmlPath << std::endl;;
@@ -420,9 +419,8 @@ void QInstaller::generateMetaDataDirectory(const QString& outDir, const QString&
             ? QDir(cmpDataDir).entryInfoList(QDir::Files | QDir::NoDotAndDotDot)
             : QDir(cmpDataDir + QLatin1String("/data")).entryInfoList(QDir::Files
                 | QDir::Dirs | QDir::NoDotAndDotDot);
-        QVector<ArchiveFile> archiveFiles;
 
-        Q_FOREACH (const QFileInfo& fi, entries) {
+        foreach (const QFileInfo &fi, entries) {
             if (fi.isHidden())
                 continue;
 
@@ -455,7 +453,7 @@ void QInstaller::generateMetaDataDirectory(const QString& outDir, const QString&
 
         // add fake update files
         const QStringList platforms = QStringList() << "Windows" << "MacOSX" << "Linux";
-        Q_FOREACH (const QString& platform, platforms) {
+        foreach (const QString &platform, platforms) {
             QDomElement file = doc.createElement("UpdateFile");
             file.setAttribute("OS", platform);
             file.setAttribute("UncompressedSize", componentSize);
@@ -480,7 +478,7 @@ void QInstaller::generateMetaDataDirectory(const QString& outDir, const QString&
                 scriptContent = in.readAll();
             }
 
-            //added the xml tag RequiresAdminRights to the xml if somewhere addElevatedOperation is used
+            // added the xml tag RequiresAdminRights to the xml if somewhere addElevatedOperation is used
             if (scriptContent.contains("addElevatedOperation")) {
                 QDomElement requiresAdminRightsElement = doc.createElement("RequiresAdminRights");
                 requiresAdminRightsElement.appendChild(doc.createTextNode("true"));
@@ -608,13 +606,13 @@ void QInstaller::generateMetaDataDirectory(const QString& outDir, const QString&
     blockingWrite(&updatesXml, doc.toByteArray());
 }
 
-QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList& components,
-    const QString& packagesDirectory, bool addDependencies)
+QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList &components,
+    const QString &packagesDirectory, bool addDependencies)
 {
-    const QVector< PackageInfo > availablePackageInfos = collectAvailablePackages(packagesDirectory);
+    const QVector<PackageInfo> availablePackageInfos = collectAvailablePackages(packagesDirectory);
     if (!addDependencies) {
         QVector<PackageInfo> packageInfos;
-        foreach (const PackageInfo info, availablePackageInfos) {
+        foreach (const PackageInfo &info, availablePackageInfos) {
             if (components.contains(info.name))
                 packageInfos.append(info);
         }
@@ -629,7 +627,7 @@ QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList& compone
     QVector<PackageInfo> needed = calculateNeededPackages(components, availablePackageInfos, addDependencies);
 
     verbose() << "The following packages will be placed in the installer:" << std::endl;
-    Q_FOREACH (const PackageInfo& i, needed) {
+    foreach (const PackageInfo &i, needed) {
         verbose() << "  " << i.name;
         if (!i.version.isEmpty())
             verbose() << "-" << i.version;
@@ -640,7 +638,7 @@ QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList& compone
     // like... if com.nokia.sdk.qt.qtcore was passed, even com.nokia.sdk.qt will show up in the tree
     if (addDependencies) {
         for (int i = 0; i < needed.count(); ++i) {
-            const PackageInfo& package = needed[ i ];
+            const PackageInfo& package = needed.at(i);
             const QString name = package.name;
             const QString version = package.version;
             QString id = name.section(QChar::fromLatin1('.'), 0, -2);
@@ -663,17 +661,16 @@ QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList& compone
     return needed;
 }
 
-QMap<QString, QString> QInstaller::buildPathToVersionMap(const QVector<PackageInfo>& info)
+QMap<QString, QString> QInstaller::buildPathToVersionMap(const QVector<PackageInfo> &info)
 {
     QMap<QString, QString> map;
-    Q_FOREACH (PackageInfo inf, info) {
+    foreach (const PackageInfo &inf, info)
         map[inf.name] = inf.version;
-    }
     return map;
 }
 
-static void writeSHA1ToNodeWithName(QDomDocument& doc, QDomNodeList& list, const QByteArray& sha1sum,
-    const QString& nodename)
+static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const QByteArray &sha1sum,
+    const QString &nodename)
 {
     verbose() << "searching sha1sum node for " << nodename << std::endl;
     for (int i = 0; i < list.size(); ++i) {
@@ -687,8 +684,8 @@ static void writeSHA1ToNodeWithName(QDomDocument& doc, QDomNodeList& list, const
     }
 }
 
-void QInstaller::compressMetaDirectories(const QString& configDir, const QString& repoDir,
-    const QString& baseDir, const QMap<QString, QString>& versionMapping)
+void QInstaller::compressMetaDirectories(const QString &configDir, const QString &repoDir,
+    const QString &baseDir, const QMap<QString, QString> &versionMapping)
 {
     const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
     const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
@@ -711,7 +708,7 @@ void QInstaller::compressMetaDirectories(const QString& configDir, const QString
     QDir dir(repoDir);
     const QStringList sub = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
     QDomNodeList elements =  doc.elementsByTagName(QLatin1String("PackageUpdate"));
-    Q_FOREACH (const QString& i, sub) {
+    foreach (const QString &i, sub) {
         QDir sd(dir);
         sd.cd(i);
         const QString path = QString(i).remove(baseDir);
@@ -747,8 +744,8 @@ void QInstaller::compressMetaDirectories(const QString& configDir, const QString
     existingUpdatesXml.close();
 }
 
-void QInstaller::copyComponentData(const QString& packageDir, const QString& configDir,
-    const QString& repoDir, const QVector<PackageInfo>& infos)
+void QInstaller::copyComponentData(const QString &packageDir, const QString &configDir,
+    const QString &repoDir, const QVector<PackageInfo> &infos)
 {
     const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
     const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
@@ -758,7 +755,7 @@ void QInstaller::copyComponentData(const QString& packageDir, const QString& con
     ConsolePasswordProvider passwordProvider;
     crypto.setPrivatePasswordProvider(&passwordProvider);
 
-    Q_FOREACH (const PackageInfo& info, infos) {
+    foreach (const PackageInfo &info, infos) {
         const QString i = info.name;
         verbose() << "Copying component data for " << i << std::endl;
         const QString dataDirPath = QString::fromLatin1("%1/%2/data").arg(packageDir, i);
@@ -769,7 +766,7 @@ void QInstaller::copyComponentData(const QString& packageDir, const QString& con
         }
 
         const QStringList files = dataDir.entryList(QDir::Files);
-        Q_FOREACH (const QString& file, files) {
+        foreach (const QString& file, files) {
             QFile tmp(dataDir.absoluteFilePath(file));
             openForRead(&tmp, tmp.fileName());
 
@@ -796,7 +793,7 @@ void QInstaller::copyComponentData(const QString& packageDir, const QString& con
                 archiveHashFile.write(hashOfArchiveData);
                 archiveHashFile.close();
 
-            } catch(const Error& /*e*/) {
+            } catch (const Error &/*e*/) {
                 //verbose() << e.message() << std::endl;
                 archiveHashFile.close();
                 archiveFile.close();
@@ -805,7 +802,7 @@ void QInstaller::copyComponentData(const QString& packageDir, const QString& con
         }
 
         const QStringList dirs = dataDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-        Q_FOREACH (const QString& dir, dirs) {
+        foreach (const QString &dir, dirs) {
             verbose() << "Compressing data directory " << dir << std::endl;
             const QString archiveName = QString::fromLatin1("%1/%2/%4%3.7z").arg(repoDir, i, dir,
                 info.version);
@@ -825,7 +822,7 @@ void QInstaller::copyComponentData(const QString& packageDir, const QString& con
                     QCryptographicHash::Sha1).toHex();
                 archiveHashFile.write(hashOfArchiveData);
                 archiveHashFile.close();
-            } catch(const Error& /*e*/) {
+            } catch(const Error &/*e*/) {
                 //std::cerr << e.message() << std::endl;
                 archiveHashFile.close();
                 archiveFile.close();

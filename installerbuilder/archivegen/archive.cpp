@@ -51,7 +51,7 @@ static void printUsage()
         << " directory.7z directories" << std::endl;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     try {
         QCoreApplication app(argc, argv);
