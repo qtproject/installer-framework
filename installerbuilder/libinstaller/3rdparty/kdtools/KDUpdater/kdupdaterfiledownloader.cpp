@@ -25,8 +25,6 @@
 #include "kdupdatersignatureverifier.h"
 #include "kdupdatersignatureverificationresult.h"
 
-#include <KDToolsCore/KDAutoPointer>
-
 #include <QFile>
 #include <QFtp>
 #include <QNetworkAccessManager>
@@ -292,21 +290,22 @@ void FileDownloader::setDownloadAborted(const QString &error)
 
 void KDUpdater::FileDownloader::setDownloadCompleted(const QString &path)
 {
-    KDAutoPointer<HashVerificationJob> job(new HashVerificationJob);
-    QFile* file = new QFile(path, job.get());
+    HashVerificationJob *job = new HashVerificationJob;
+    QFile* file = new QFile(path, job);
     if (!file->open(QIODevice::ReadOnly)) {
         emit downloadProgress(1);
         onError();
         setDownloadAborted(tr("Could not reopen downloaded file %1 for reading: %2").arg(path,
             file->errorString()));
+        delete job;
         return;
     }
 
     job->setDevice(file);
     job->setSha1Sum(d->sha1Sum);
-    connect(job.get(), SIGNAL(finished(KDUpdater::HashVerificationJob*)), this,
+    connect(job, SIGNAL(finished(KDUpdater::HashVerificationJob*)), this,
         SLOT(sha1SumVerified(KDUpdater::HashVerificationJob*)));
-    job.release()->start();
+    job->start();
 }
 
 void KDUpdater::FileDownloader::setDownloadCanceled()
@@ -1315,21 +1314,23 @@ public:
         , actualDownloadDone(false)
     {
         Q_ASSERT(downloader);
-        q->connect(downloader.get(), SIGNAL(downloadProgress(double)), q, SIGNAL(downloadProgress(double)));
-        q->connect(downloader.get(), SIGNAL(downloadStarted()), q, SLOT(dataDownloadStarted()));
-        q->connect(downloader.get(), SIGNAL(downloadCompleted()), q, SLOT(dataDownloadCompleted()));
-        q->connect(downloader.get(), SIGNAL(downloadCanceled()), q, SLOT(dataDownloadCanceled()));
-        q->connect(downloader.get(), SIGNAL(downloadAborted(QString)), q, SLOT(dataDownloadAborted(QString)));
+        q->connect(downloader, SIGNAL(downloadProgress(double)), q, SIGNAL(downloadProgress(double)));
+        q->connect(downloader, SIGNAL(downloadStarted()), q, SLOT(dataDownloadStarted()));
+        q->connect(downloader, SIGNAL(downloadCompleted()), q, SLOT(dataDownloadCompleted()));
+        q->connect(downloader, SIGNAL(downloadCanceled()), q, SLOT(dataDownloadCanceled()));
+        q->connect(downloader, SIGNAL(downloadAborted(QString)), q, SLOT(dataDownloadAborted(QString)));
     }
 
     ~Private()
     {
         delete verifier;
+        delete downloader;
+        delete sigDownloader;
     }
 
     const SignatureVerifier* verifier;
-    KDAutoPointer< FileDownloader > downloader;
-    KDAutoPointer< FileDownloader > sigDownloader;
+    FileDownloader *downloader;
+    FileDownloader *sigDownloader;
     QUrl signatureUrl;
     SignatureVerificationResult result;
     QString downloadedFileName;
@@ -1399,14 +1400,16 @@ FileDownloader* SignatureVerificationDownloader::clone(QObject* parent) const
 
 void SignatureVerificationDownloader::onError()
 {
-    d->sigDownloader.reset();
+    delete d->sigDownloader;
+    d->sigDownloader = 0;
     if (QFile::exists(d->downloadedFileName))
         QFile::remove(d->downloadedFileName);
 }
 
 void SignatureVerificationDownloader::onSuccess()
 {
-    d->sigDownloader.reset();
+    delete d->sigDownloader;
+    d->sigDownloader = 0;
 }
 
 void SignatureVerificationDownloader::cancelDownload()
@@ -1457,15 +1460,16 @@ void SignatureVerificationDownloader::dataDownloadCompleted()
     QUrl url = d->signatureUrl;
     if (url.isEmpty())
         url = suggestSignatureUrl(d->downloader->url());
-    d->sigDownloader.reset(FileDownloaderFactory::instance().create(url.scheme(), this));
+    delete d->sigDownloader;
+    d->sigDownloader = FileDownloaderFactory::instance().create(url.scheme(), this);
     if (!d->sigDownloader) {
         setDownloadAborted(tr("Could not download signature: scheme %1 not supported").arg(url.scheme()));
         return;
     }
     d->sigDownloader->setUrl(url);
-    connect(d->sigDownloader.get(), SIGNAL(downloadCompleted()), this, SLOT(signatureDownloadCompleted()));
-    connect(d->sigDownloader.get(), SIGNAL(downloadCanceled()), this, SLOT(signatureDownloadCanceled()));
-    connect(d->sigDownloader.get(), SIGNAL(downloadAborted(QString)), this,
+    connect(d->sigDownloader, SIGNAL(downloadCompleted()), this, SLOT(signatureDownloadCompleted()));
+    connect(d->sigDownloader, SIGNAL(downloadCanceled()), this, SLOT(signatureDownloadCanceled()));
+    connect(d->sigDownloader, SIGNAL(downloadAborted(QString)), this,
         SLOT(signatureDownloadAborted(QString)));
     d->sigDownloader->download();
 }

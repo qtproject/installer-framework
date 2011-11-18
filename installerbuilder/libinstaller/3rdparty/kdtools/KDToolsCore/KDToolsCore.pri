@@ -10,7 +10,6 @@ HEADERS += $$PWD/pimpl_ptr.h \
     $$PWD/kdbytesize.h \
     $$PWD/kdjob.h \
     $$PWD/kdgenericfactory.h \
-    $$PWD/kdautopointer.h \
     $$PWD/kdselfrestarter.h \
     $$PWD/kdsavefile.h \
     $$PWD/kdrunoncechecker.h \
@@ -22,7 +21,6 @@ SOURCES += $$PWD/pimpl_ptr.cpp \
     $$PWD/kdbytesize.cpp \
     $$PWD/kdjob.cpp \
     $$PWD/kdgenericfactory.cpp \
-    $$PWD/kdautopointer.cpp \
     $$PWD/kdselfrestarter.cpp \
     $$PWD/kdsavefile.cpp \
     $$PWD/kdrunoncechecker.cpp \
