@@ -35,27 +35,6 @@ KDSysInfo::~KDSysInfo()
 #include <QDir>
 #include <QDebug>
 
-QDebug operator<<( QDebug dbg, KDSysInfo::ArchitectureType type )
-{
-    switch( type )
-    {
-    case KDSysInfo::ARM:
-        return dbg << "ARM";
-    case KDSysInfo::Intel:
-        return dbg << "Intel";
-    case KDSysInfo::AMD64:
-        return dbg << "AMD64";
-    case KDSysInfo::IA64:
-        return dbg << "IA64";
-    case KDSysInfo::PowerPC:
-        return dbg << "Power PC";
-    case KDSysInfo::Motorola68k:
-        return dbg << "Motorola 68k";
-    default:
-        return dbg << "<unknown>";
-    }
-}
-
 QDebug operator<<( QDebug dbg, KDSysInfo::Volume volume )
 {
     return dbg << "KDSysInfo::Volume(" << volume.path() << ")";

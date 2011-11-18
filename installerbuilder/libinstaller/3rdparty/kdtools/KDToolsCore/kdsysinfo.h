@@ -39,17 +39,6 @@ private:
 public:
     ~KDSysInfo();
 
-    enum ArchitectureType
-    {
-        UnknownArchitecture = -1,
-        ARM,
-        Intel,
-        AMD64,
-        IA64,
-        PowerPC,
-        Motorola68k
-    };
-
     class KDTOOLSCORE_EXPORT Volume
     {
         friend class ::KDSysInfo;
@@ -88,8 +77,6 @@ public:
         QString name;
     };
 
-    static ArchitectureType architecture();
-    
     static KDByteSize installedMemory();
     static QList< Volume > mountedVolumes();
     static QList< ProcessInfo > runningProcesses();
@@ -99,7 +86,6 @@ QT_BEGIN_NAMESPACE
 class QDebug;
 QT_END_NAMESPACE
 
-QDebug operator<<( QDebug dbg, KDSysInfo::ArchitectureType type );
 QDebug operator<<( QDebug dbg, KDSysInfo::Volume volume );
 QDebug operator<<( QDebug dbg, KDSysInfo::ProcessInfo process );
 
