@@ -17,7 +17,6 @@ HEADERS += $$PWD/pimpl_ptr.h \
     $$PWD/kdsysinfo.h
 
 SOURCES += $$PWD/pimpl_ptr.cpp \
-    $$PWD/kdtoolsglobal.cpp \
     $$PWD/kdbytesize.cpp \
     $$PWD/kdjob.cpp \
     $$PWD/kdgenericfactory.cpp \

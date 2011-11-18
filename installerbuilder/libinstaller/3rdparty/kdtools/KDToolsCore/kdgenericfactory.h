@@ -28,7 +28,7 @@
 #include <QtCore/QHash>
 
 template< typename T_Product, typename T_Identifier = QString, template< typename U, typename V > class T_Map = QHash >
-class MAKEINCLUDES_EXPORT KDGenericFactory
+class KDGenericFactory
 {
 public:
     virtual ~KDGenericFactory()

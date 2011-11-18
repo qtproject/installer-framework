@@ -30,8 +30,7 @@ namespace kdtools {
 #endif
 
     template <typename T>
-    class MAKEINCLUDES_EXPORT pimpl_ptr {
-        KDAB_DISABLE_COPY( pimpl_ptr );
+    class pimpl_ptr {
         T * d;
     public:
         pimpl_ptr() : d( new T ) {}
@@ -47,7 +46,9 @@ namespace kdtools {
         T & operator*() { return *get(); }
         const T & operator*() const { return *get(); }
 
-        KDAB_IMPLEMENT_SAFE_BOOL_OPERATOR( get() )
+    private:
+        pimpl_ptr( const pimpl_ptr & );
+        void operator=( const pimpl_ptr & );
     };
 
     // these are not implemented, so's we can catch their use at
