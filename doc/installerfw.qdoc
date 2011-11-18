@@ -11,7 +11,7 @@
 
     \title Qt Installer Framework Manual
 
-    \section1 Version 1.2.0
+    \section1 Version 1.2.1
 
     The Qt Installer Framework provides a set of tools and utilities to
     create installers for all supported desktop Qt platforms.
@@ -30,7 +30,7 @@
     published on the server.
 
 
-    \note Please report bugs in the Nokia Qt SDK bugtracking system
+    \note Please report bugs in the Qt SDK bugtracking system
     \l{http://bugreports.qt.nokia.com/browse/QTSDK}{here}.
 
     \list
