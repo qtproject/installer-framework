@@ -6,8 +6,7 @@ CONFIG(shared, static|shared) {
     DEFINES += BUILD_SHARED_KDUPDATER
 }
 
-HEADERS += $$PWD/pimpl_ptr.h \
-    $$PWD/kdtoolsglobal.h \
+HEADERS += $$PWD/kdtoolsglobal.h \
     $$PWD/kdjob.h \
     $$PWD/kdgenericfactory.h \
     $$PWD/kdselfrestarter.h \
@@ -16,8 +15,7 @@ HEADERS += $$PWD/pimpl_ptr.h \
     $$PWD/kdlockfile.h \
     $$PWD/kdsysinfo.h
 
-SOURCES += $$PWD/pimpl_ptr.cpp \
-    $$PWD/kdjob.cpp \
+SOURCES += $$PWD/kdjob.cpp \
     $$PWD/kdgenericfactory.cpp \
     $$PWD/kdselfrestarter.cpp \
     $$PWD/kdsavefile.cpp \

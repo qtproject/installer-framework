@@ -23,7 +23,7 @@
 #ifndef __KDTOOLS_RUNONCECHECKER_H__
 #define __KDTOOLS_RUNONCECHECKER_H__
 
-#include <pimpl_ptr.h>
+#include <kdtoolsglobal.h>
 
 #include <QtCore/QString>
 
@@ -39,8 +39,7 @@ public:
 private:
     Q_DISABLE_COPY(KDRunOnceChecker)
     class Private;
-    kdtools::pimpl_ptr< Private > d;
-
+    Private *d;
 };
 
 #endif

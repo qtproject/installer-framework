@@ -24,8 +24,7 @@
 #define __KDTOOLS_KDUPDATERCRYPTO_H__
 
 #include "kdupdater.h"
-
-#include <pimpl_ptr.h>
+#include "kdtoolsglobal.h"
 
 QT_BEGIN_NAMESPACE
 class QByteArray;
@@ -95,7 +94,7 @@ class KDTOOLS_UPDATER_EXPORT KDUpdaterCrypto {
 
     private:
         class Private;
-        kdtools::pimpl_ptr< Private > d;
+        Private *d;
 };
 
 #endif

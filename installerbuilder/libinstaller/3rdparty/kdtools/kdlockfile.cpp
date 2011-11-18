@@ -38,6 +38,7 @@ KDLockFile::KDLockFile( const QString& name )
 
 KDLockFile::~KDLockFile()
 {
+    delete d;
 }
 
 bool KDLockFile::lock()

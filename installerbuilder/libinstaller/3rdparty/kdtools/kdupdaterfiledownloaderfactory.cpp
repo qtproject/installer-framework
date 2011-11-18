@@ -77,6 +77,7 @@ bool FileDownloaderFactory::followRedirects()
 
 FileDownloaderFactory::~FileDownloaderFactory()
 {
+    delete d;
 }
 
 /*!

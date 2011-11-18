@@ -60,7 +60,7 @@ KDRunOnceChecker::KDRunOnceChecker( const QString& filename )
 
 KDRunOnceChecker::~KDRunOnceChecker()
 {
-
+    delete d;
 }
 
 class ProcessnameEquals

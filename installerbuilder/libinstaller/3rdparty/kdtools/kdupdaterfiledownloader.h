@@ -24,7 +24,7 @@
 #define KD_UPDATER_FILE_DOWNLOADER_H
 
 #include "kdupdater.h"
-#include <pimpl_ptr.h>
+#include "kdtoolsglobal.h"
 
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
@@ -132,7 +132,7 @@ namespace KDUpdater
 
     private:
         struct FileDownloaderData;
-        kdtools::pimpl_ptr<FileDownloaderData> d;
+        FileDownloaderData *d;
     };
 }
 

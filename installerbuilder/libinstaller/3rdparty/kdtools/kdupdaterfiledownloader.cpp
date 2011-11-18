@@ -110,6 +110,7 @@ HashVerificationJob::HashVerificationJob(QObject* parent)
 
 HashVerificationJob::~HashVerificationJob()
 {
+    delete d;
 }
 
 void HashVerificationJob::setDevice(QIODevice* dev)
@@ -254,6 +255,7 @@ KDUpdater::FileDownloader::FileDownloader(const QString &scheme, QObject* parent
 
 KDUpdater::FileDownloader::~FileDownloader()
 {
+    delete d;
 }
 
 void KDUpdater::FileDownloader::setUrl(const QUrl &url)
@@ -1345,6 +1347,7 @@ SignatureVerificationDownloader::SignatureVerificationDownloader(FileDownloader*
 
 SignatureVerificationDownloader::~SignatureVerificationDownloader()
 {
+    delete d;
 }
 
 QUrl SignatureVerificationDownloader::signatureUrl() const

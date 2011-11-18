@@ -23,7 +23,7 @@
 #ifndef __KDTOOLSCORE_KDSELFRESTARTER_H__
 #define __KDTOOLSCORE_KDSELFRESTARTER_H__
 
-#include <pimpl_ptr.h>
+#include "kdtoolsglobal.h"
 
 class KDTOOLSCORE_EXPORT KDSelfRestarter {
 public:
@@ -36,7 +36,7 @@ public:
 private:
     Q_DISABLE_COPY(KDSelfRestarter);
     class Private;
-    kdtools::pimpl_ptr<Private> d;
+    Private *d;
 };
 
 #endif

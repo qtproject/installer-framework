@@ -26,7 +26,6 @@
 #include <kdgenericfactory.h>
 
 #include "kdupdater.h"
-#include <pimpl_ptr.h>
 
 namespace KDUpdater
 {
@@ -58,7 +57,7 @@ namespace KDUpdater
 
     private:
         struct UpdateOperationFactoryData;
-        kdtools::pimpl_ptr<UpdateOperationFactoryData> d;
+        UpdateOperationFactoryData *d;
     };
 }
 

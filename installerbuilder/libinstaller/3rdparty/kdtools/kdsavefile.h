@@ -24,7 +24,6 @@
 #define __KDTOOLSCORE_KDSAVEFILE_H__
 
 #include <kdtoolsglobal.h>
-#include <pimpl_ptr.h>
 
 #include <QtCore/QIODevice>
 #include <QtCore/QFile>
@@ -77,7 +76,7 @@ private:
 
 private:
     class Private;
-    kdtools::pimpl_ptr<Private> d;
+    Private *d;
 };
 
 #endif // __KDTOOLSCORE_KDSAVEFILE_H__

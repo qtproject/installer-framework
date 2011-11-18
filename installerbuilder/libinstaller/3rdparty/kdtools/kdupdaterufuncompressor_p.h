@@ -23,7 +23,7 @@
 #ifndef __KDTOOLS_KDUPDATERUFUNCOMPRESSOR_P_H__
 #define __KDTOOLS_KDUPDATERUFUNCOMPRESSOR_P_H__
 
-#include <pimpl_ptr.h>
+#include <kdtoolsglobal.h>
 
 #include <QtCore/QCoreApplication>
 
@@ -53,7 +53,7 @@ namespace KDUpdater
 
     private:
         class Private;
-        kdtools::pimpl_ptr< Private > d;
+        Private *d;
     };
 }
 

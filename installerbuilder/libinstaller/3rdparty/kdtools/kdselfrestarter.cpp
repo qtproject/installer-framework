@@ -64,6 +64,7 @@ KDSelfRestarter::KDSelfRestarter( int argc, char** argv ) : d( new Private( argc
 KDSelfRestarter::~KDSelfRestarter()
 {
     Q_ASSERT_X( Private::instance == this, Q_FUNC_INFO, "Cannot create more than one KDSelfRestarter instance" );
+    delete d;
     Private::instance = 0;
 }
 

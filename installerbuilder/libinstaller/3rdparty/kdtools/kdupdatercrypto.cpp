@@ -581,6 +581,7 @@ KDUpdaterCrypto::KDUpdaterCrypto()
 
 KDUpdaterCrypto::~KDUpdaterCrypto()
 {
+    delete d;
 }
 
 QByteArray KDUpdaterCrypto::privateKey() const

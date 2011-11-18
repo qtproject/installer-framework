@@ -217,6 +217,7 @@ KDSaveFile::KDSaveFile( const QString& filename, QObject* parent ) : QIODevice( 
 }
 
 KDSaveFile::~KDSaveFile() {
+    delete d;
 }
 
 void KDSaveFile::close() {

@@ -48,11 +48,13 @@ void UFUncompressor::Private::setError(const QString& msg)
 }
 
 UFUncompressor::UFUncompressor()
+    : d(new Private)
 {
 }
 
 UFUncompressor::~UFUncompressor()
 {
+    delete d;
 }
 
 QString UFUncompressor::errorString() const

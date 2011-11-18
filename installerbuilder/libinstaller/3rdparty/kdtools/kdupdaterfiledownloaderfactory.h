@@ -24,7 +24,6 @@
 #define KD_UPDATER_FILE_DOWNLOADER_FACTORY_H
 
 #include "kdupdater.h"
-#include <pimpl_ptr.h>
 #include <kdgenericfactory.h>
 
 #include <QtCore/QStringList>
@@ -64,7 +63,7 @@ namespace KDUpdater
 
     private:
         struct FileDownloaderFactoryData;
-        kdtools::pimpl_ptr<FileDownloaderFactoryData> d;
+        FileDownloaderFactoryData *d;
     };
 }
 

@@ -23,7 +23,8 @@
 #ifndef KDUPDATERSIGNATUREVERIFICATIONJOB_H
 #define KDUPDATERSIGNATUREVERIFICATIONJOB_H
 
-#include <pimpl_ptr.h>
+#include <kdtoolsglobal.h>
+
 #include <QtCore/QGenericArgument>
 #include <QtCore/QRunnable>
 
@@ -59,7 +60,7 @@ namespace KDUpdater {
 
     private:
         class Private;
-        kdtools::pimpl_ptr<Private> d;
+        Private *d;
     };
 
     class SignatureVerificationRunnable : public Runnable {
@@ -80,7 +81,7 @@ namespace KDUpdater {
 
     private:
         class Private;
-        kdtools::pimpl_ptr<Private> d;
+        Private *d;
     };
 }
 

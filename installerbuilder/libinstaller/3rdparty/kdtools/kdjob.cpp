@@ -52,7 +52,7 @@ KDJob::KDJob( QObject* parent ) : QObject( parent ), d( new Private( this ) ) {
 }
 
 KDJob::~KDJob() {
-    //delete d;
+    delete d;
 }
 
 bool KDJob::autoDelete() const {

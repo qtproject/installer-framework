@@ -80,6 +80,7 @@ UpdateOperationFactory::UpdateOperationFactory()
 
 UpdateOperationFactory::~UpdateOperationFactory()
 {
+    delete d;
 }
 
 /*!

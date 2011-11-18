@@ -24,7 +24,6 @@
 #define KD_UPDATER_FILE_DOWNLOADER_P_H
 
 #include "kdupdaterfiledownloader.h"
-#include <pimpl_ptr.h>
 
 #include <QtCore/QCryptographicHash>
 #include <QtNetwork/QNetworkReply>
@@ -69,7 +68,7 @@ namespace KDUpdater
 
     private:
         class Private;
-        kdtools::pimpl_ptr<Private> d;
+        Private *d;
     };
 
     class LocalFileDownloader : public FileDownloader
@@ -250,7 +249,7 @@ namespace KDUpdater
 
     private:
         class Private;
-        kdtools::pimpl_ptr<Private> d;
+        Private *d;
     };
 }
 

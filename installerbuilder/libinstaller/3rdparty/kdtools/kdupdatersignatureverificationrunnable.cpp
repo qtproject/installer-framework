@@ -47,6 +47,7 @@ Runnable::Runnable() : QRunnable(), d( new Private ) {
 }
 
 Runnable::~Runnable() {
+    delete d;
 }
 
 
@@ -95,6 +96,7 @@ SignatureVerificationRunnable::SignatureVerificationRunnable() : Runnable(), d( 
 }
 
 SignatureVerificationRunnable::~SignatureVerificationRunnable() {
+    delete d;
 }
 
 const SignatureVerifier* SignatureVerificationRunnable::verifier() const {

@@ -23,7 +23,7 @@
 #ifndef __KDTOOLSCORE_KDLOCKFILE_H__
 #define __KDTOOLSCORE_KDLOCKFILE_H__
 
-#include <pimpl_ptr.h>
+#include <kdtoolsglobal.h>
 
 QT_BEGIN_NAMESPACE
 class QString;
@@ -43,7 +43,7 @@ public:
 private:
     Q_DISABLE_COPY(KDLockFile)
     class Private;
-    kdtools::pimpl_ptr< Private > d;
+    Private *d;
 };
 
 #endif // __KDTOOLSCORE_KDLOCKFILE_H__

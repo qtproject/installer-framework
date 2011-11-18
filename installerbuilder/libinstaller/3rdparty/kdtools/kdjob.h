@@ -23,9 +23,9 @@
 #ifndef __KDTOOLS_CORE_KDJOB_H__
 #define __KDTOOLS_CORE_KDJOB_H__
 
-#include <QObject>
+#include "kdtoolsglobal.h"
 
-#include <pimpl_ptr.h>
+#include <QObject>
 
 class KDTOOLSCORE_EXPORT KDJob : public QObject {
     Q_OBJECT
@@ -95,7 +95,7 @@ protected:
 private:
     class Private;
     friend class ::KDJob::Private;
-    kdtools::pimpl_ptr<Private> d;
+    Private *d;
     Q_PRIVATE_SLOT( d, void delayedStart() )
 };
 
