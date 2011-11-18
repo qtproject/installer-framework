@@ -23,12 +23,12 @@ sources.fileextensions  = "installerfw.qdoc scripting.qdoc tutorial.qdoc noninte
 
 qhp.projects            = InstallerFramework
 qhp.InstallerFramework.file             = installerfw.qhp
-qhp.InstallerFramework.namespace        = com.nokia.qt.installerfw.120
+qhp.InstallerFramework.namespace        = com.nokia.qt.installerfw.121
 qhp.InstallerFramework.virtualFolder    = doc
 qhp.InstallerFramework.indexTitle       = Qt Installer Framework Manual
 qhp.InstallerFramework.indexRoot        =
 qhp.InstallerFramework.filterAttributes = installerfw
-qhp.InstallerFramework.customFilters.InstallerFramework.name = Qt Installer Framework 1.2.0
+qhp.InstallerFramework.customFilters.InstallerFramework.name = Qt Installer Framework 1.2.1
 qhp.InstallerFramework.customFilters.InstallerFramework.filterAttributes = installerfw
 
 qhp.InstallerFramework.subprojects         = scripting manual
