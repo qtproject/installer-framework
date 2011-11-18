@@ -49,8 +49,8 @@
 #include <settings.h>
 #include <updater.h>
 
-#include <KDToolsCore/kdselfrestarter.h>
-#include <KDToolsCore/kdrunoncechecker.h>
+#include <kdselfrestarter.h>
+#include <kdrunoncechecker.h>
 
 #include <QtCore/QTranslator>
 

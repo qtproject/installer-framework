@@ -27,10 +27,9 @@
 #ifndef CRYPTOSIGNATUREVERIFIER_H
 #define CRYPTOSIGNATUREVERIFIER_H
 
-#include "KDUpdater/kdupdatercrypto.h"
-
-#include <KDUpdater/kdupdatersignatureverifier.h>
-#include <KDUpdater/kdupdatersignatureverificationresult.h>
+#include <kdupdatercrypto.h>
+#include <kdupdatersignatureverifier.h>
+#include <kdupdatersignatureverificationresult.h>
 
 
 class CryptoSignatureVerifier : public KDUpdater::SignatureVerifier

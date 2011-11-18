@@ -38,7 +38,7 @@
 #include "utils.h"
 #include "zipjob.h"
 
-#include <KDUpdater/kdupdaterupdateoperationfactory.h>
+#include <kdupdaterupdateoperationfactory.h>
 
 #include <QtCore/QResource>
 #include <QtCore/QTemporaryFile>

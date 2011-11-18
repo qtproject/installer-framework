@@ -3,8 +3,8 @@ TARGET = installer
 DEPENDPATH += . \
     .. \
     ../common \
-    3rdparty/kdtools/KDToolsCore \
-    3rdparty/kdtools/KDUpdater
+    3rdparty/kdtools 
+
 INCLUDEPATH += . \
     .. \
     3rdparty/kdtools
@@ -30,8 +30,7 @@ contains(CONFIG, static): {
 }
 
 include(3rdparty/p7zip_9.04/p7zip.pri)
-include(3rdparty/kdtools/KDUpdater/KDUpdater.pri)
-include(3rdparty/kdtools/KDToolsCore/KDToolsCore.pri)
+include(3rdparty/kdtools/kdtools.pri)
 
 HEADERS += $$PWD/packagemanagercore.h \
     $$PWD/packagemanagercore_p.h \
@@ -185,7 +184,7 @@ win32:LIBS += ole32.lib \
     oleaut32.lib \
     user32.lib
 
-# Needed by KDToolsCore (in kdlog_win.cpp):
+# Needed by kdtools (in kdlog_win.cpp):
 win32:LIBS += advapi32.lib psapi.lib
 macx:LIBS += -framework Carbon
 

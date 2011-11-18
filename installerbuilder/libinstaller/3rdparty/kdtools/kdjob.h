@@ -25,7 +25,7 @@
 
 #include <QObject>
 
-#include <KDToolsCore/pimpl_ptr.h>
+#include <pimpl_ptr.h>
 
 class KDTOOLSCORE_EXPORT KDJob : public QObject {
     Q_OBJECT

@@ -41,8 +41,8 @@
 #include "qinstallerglobal.h"
 #include "messageboxhandler.h"
 
-#include <KDUpdater/kdupdaterupdatesourcesinfo.h>
-#include <KDUpdater/kdupdaterupdateoperationfactory.h>
+#include <kdupdaterupdatesourcesinfo.h>
+#include <kdupdaterupdateoperationfactory.h>
 
 #include <QtCore/QDirIterator>
 #include <QtCore/QTranslator>

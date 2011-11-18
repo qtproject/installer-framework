@@ -23,7 +23,7 @@
 #ifndef KDSYSINFO_H
 #define KDSYSINFO_H
 
-#include <KDToolsCore/kdtoolsglobal.h>
+#include <kdtoolsglobal.h>
 
 #include <QtCore/QString>
 #include <QtCore/QSysInfo>

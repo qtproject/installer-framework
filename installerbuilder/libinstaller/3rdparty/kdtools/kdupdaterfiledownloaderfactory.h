@@ -24,8 +24,8 @@
 #define KD_UPDATER_FILE_DOWNLOADER_FACTORY_H
 
 #include "kdupdater.h"
-#include <KDToolsCore/pimpl_ptr.h>
-#include <KDToolsCore/kdgenericfactory.h>
+#include <pimpl_ptr.h>
+#include <kdgenericfactory.h>
 
 #include <QtCore/QStringList>
 #include <QtCore/QUrl>

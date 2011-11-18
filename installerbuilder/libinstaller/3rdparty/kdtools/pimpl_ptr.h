@@ -23,7 +23,7 @@
 #ifndef __KDTOOLSCORE__PIMPL_PTR_H__
 #define __KDTOOLSCORE__PIMPL_PTR_H__
 
-#include <KDToolsCore/kdtoolsglobal.h>
+#include <kdtoolsglobal.h>
 
 #ifndef DOXYGEN_RUN
 namespace kdtools {

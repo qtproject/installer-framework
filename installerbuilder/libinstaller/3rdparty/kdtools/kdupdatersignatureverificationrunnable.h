@@ -23,7 +23,7 @@
 #ifndef KDUPDATERSIGNATUREVERIFICATIONJOB_H
 #define KDUPDATERSIGNATUREVERIFICATIONJOB_H
 
-#include <KDToolsCore/pimpl_ptr.h>
+#include <pimpl_ptr.h>
 #include <QtCore/QGenericArgument>
 #include <QtCore/QRunnable>
 

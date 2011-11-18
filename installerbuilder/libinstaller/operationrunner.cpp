@@ -39,8 +39,8 @@
 #include "init.h"
 #include "packagemanagercore.h"
 
-#include <KDUpdater/kdupdaterupdateoperation.h>
-#include <KDUpdater/kdupdaterupdateoperationfactory.h>
+#include <kdupdaterupdateoperation.h>
+#include <kdupdaterupdateoperationfactory.h>
 
 #include <iostream>
 

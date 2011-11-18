@@ -34,7 +34,7 @@
 
 #include <init.h>
 
-#include <KDToolsCore/kdselfrestarter.h>
+#include <kdselfrestarter.h>
 
 #include <QtGui/QApplication>
 

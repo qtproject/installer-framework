@@ -20,8 +20,8 @@
 **
 **********************************************************************/
 
-#include <KDUpdater/kdupdaterfiledownloader.h>
-#include <KDUpdater/kdupdaterfiledownloaderfactory.h>
+#include <kdupdaterfiledownloader.h>
+#include <kdupdaterfiledownloaderfactory.h>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>

@@ -23,8 +23,8 @@
 #ifndef __KDTOOLSCORE_KDSAVEFILE_H__
 #define __KDTOOLSCORE_KDSAVEFILE_H__
 
-#include <KDToolsCore/kdtoolsglobal.h>
-#include <KDToolsCore/pimpl_ptr.h>
+#include <kdtoolsglobal.h>
+#include <pimpl_ptr.h>
 
 #include <QtCore/QIODevice>
 #include <QtCore/QFile>

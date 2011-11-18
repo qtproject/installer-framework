@@ -55,8 +55,8 @@
 #include <QtScript/QScriptEngine>
 #include <QtScript/QScriptContext>
 
-#include <KDToolsCore/kdsysinfo.h>
-#include <KDUpdater/kdupdaterupdateoperationfactory.h>
+#include <kdsysinfo.h>
+#include <kdupdaterupdateoperationfactory.h>
 
 #ifdef Q_OS_WIN
 #include "qt_windows.h"

@@ -39,7 +39,7 @@
 #include <init.h>
 #include <settings.h>
 
-#include <KDToolsCore/kdsavefile.h>
+#include <kdsavefile.h>
 
 #include <QCoreApplication>
 #include <QDebug>

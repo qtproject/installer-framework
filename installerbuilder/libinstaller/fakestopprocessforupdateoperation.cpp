@@ -33,7 +33,7 @@
 
 #include "fakestopprocessforupdateoperation.h"
 
-#include <KDToolsCore/kdsysinfo.h>
+#include <kdsysinfo.h>
 #include <QtCore/QDir>
 
 #include <algorithm>

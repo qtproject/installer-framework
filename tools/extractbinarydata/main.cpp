@@ -37,7 +37,7 @@
 
 #include <init.h>
 
-#include <KDToolsCore/kdsavefile.h>
+#include <kdsavefile.h>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>

@@ -31,8 +31,8 @@
 **
 **************************************************************************/
 
-#include <KDUpdater/kdupdaterapplication.h>
-#include <KDUpdater/kdupdaterpackagesinfo.h>
+#include <kdupdaterapplication.h>
+#include <kdupdaterpackagesinfo.h>
 
 #include "createshortcutoperation.h"
 #include "common/errors.h"

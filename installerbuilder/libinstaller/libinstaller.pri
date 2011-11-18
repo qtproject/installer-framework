@@ -12,8 +12,7 @@ DEPENDPATH += $$PWD \
     $$PWD/.. \
     $$PWD/3rdparty/p7zip_9.04 \
     $$PWD/3rdparty/p7zip_9.04/unix/CPP \
-    $$PWD/3rdparty/kdtools/KDUpdater \
-    $$PWD/3rdparty/kdtools/KDToolsCore \
+    $$PWD/3rdparty/kdtools 
 
 CONFIG( shared, static|shared ):DEFINES += LIB_INSTALLER_SHARED
 CONFIG( shared, static|shared ):DEFINES += KDTOOLS_SHARED

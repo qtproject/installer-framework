@@ -39,10 +39,10 @@
 #include <lib7z_facade.h>
 #include <qprocesswrapper.h>
 
-#include <KDUpdater/kdupdaterfiledownloader.h>
-#include <KDUpdater/kdupdaterfiledownloaderfactory.h>
+#include <kdupdaterfiledownloader.h>
+#include <kdupdaterfiledownloaderfactory.h>
 
-#include <KDToolsCore/kdsavefile.h>
+#include <kdsavefile.h>
 
 #include <QtCore/QDir>
 #include <QtCore/QDebug>

@@ -25,7 +25,7 @@
 
 #define KD_UPDATER_UF_HEADER_MAGIC "KDVCLZ"
 
-#include <KDToolsCore/kdtoolsglobal.h>
+#include <kdtoolsglobal.h>
 
 #include <QtCore/QStringList>
 #include <QtCore/QByteArray>

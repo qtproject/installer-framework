@@ -23,7 +23,7 @@
 #ifndef __KDTOOLS_RUNONCECHECKER_H__
 #define __KDTOOLS_RUNONCECHECKER_H__
 
-#include <KDToolsCore/pimpl_ptr>
+#include <pimpl_ptr.h>
 
 #include <QtCore/QString>
 

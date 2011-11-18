@@ -26,7 +26,7 @@
 #ifndef DOWNLOADARCHIVESJOB_H
 #define DOWNLOADARCHIVESJOB_H
 
-#include <KDToolsCore/kdjob.h>
+#include <kdjob.h>
 
 #include <QtCore/QPair>
 #include <QtCore/QSet>

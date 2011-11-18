@@ -24,7 +24,7 @@
 #define KD_UPDATER_FILE_DOWNLOADER_P_H
 
 #include "kdupdaterfiledownloader.h"
-#include <KDToolsCore/pimpl_ptr.h>
+#include <pimpl_ptr.h>
 
 #include <QtCore/QCryptographicHash>
 #include <QtNetwork/QNetworkReply>

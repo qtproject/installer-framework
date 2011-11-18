@@ -23,7 +23,7 @@
 #ifndef __KDTOOLSCORE_KDSELFRESTARTER_H__
 #define __KDTOOLSCORE_KDSELFRESTARTER_H__
 
-#include <KDToolsCore/pimpl_ptr.h>
+#include <pimpl_ptr.h>
 
 class KDTOOLSCORE_EXPORT KDSelfRestarter {
 public:

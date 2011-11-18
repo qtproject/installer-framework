@@ -24,7 +24,7 @@
 #define KD_UPDATER_FILE_DOWNLOADER_H
 
 #include "kdupdater.h"
-#include <KDToolsCore/pimpl_ptr.h>
+#include <pimpl_ptr.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QUrl>

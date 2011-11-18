@@ -23,7 +23,7 @@
 #ifndef __KDTOOLS_KDUPDATERUFUNCOMPRESSOR_P_H__
 #define __KDTOOLS_KDUPDATERUFUNCOMPRESSOR_P_H__
 
-#include <KDToolsCore/pimpl_ptr.h>
+#include <pimpl_ptr.h>
 
 #include <QtCore/QCoreApplication>
 

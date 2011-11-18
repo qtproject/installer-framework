@@ -28,9 +28,9 @@
 
 #include <installer_global.h>
 
-#include <KDUpdater/kdupdaterupdate.h>
-#include <KDUpdater/kdupdaterupdateoperation.h>
-#include <KDUpdater/kdupdaterpackagesinfo.h>
+#include <kdupdaterupdate.h>
+#include <kdupdaterupdateoperation.h>
+#include <kdupdaterpackagesinfo.h>
 
 QT_BEGIN_NAMESPACE
 class QScriptContext;

@@ -25,7 +25,7 @@
 
 #include "kdupdater.h"
 
-#include <KDToolsCore/pimpl_ptr.h>
+#include <pimpl_ptr.h>
 
 QT_BEGIN_NAMESPACE
 class QByteArray;

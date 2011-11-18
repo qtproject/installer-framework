@@ -23,10 +23,11 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
+
 #ifndef CONSOLEPASSWORDPROVIDER_H
 #define CONSOLEPASSWORDPROVIDER_H
 
-#include <KDUpdater/kdupdatercrypto.h>
+#include <kdupdatercrypto.h>
 
 #include <iostream>
 #include <string>

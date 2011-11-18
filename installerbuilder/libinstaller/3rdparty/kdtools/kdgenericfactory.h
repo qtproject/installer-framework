@@ -23,7 +23,7 @@
 #ifndef __KDTOOLSCORE__KDGENERICFACTORY_H__
 #define __KDTOOLSCORE__KDGENERICFACTORY_H__
 
-#include <KDToolsCore/kdtoolsglobal.h>
+#include <kdtoolsglobal.h>
 
 #include <QtCore/QHash>
 

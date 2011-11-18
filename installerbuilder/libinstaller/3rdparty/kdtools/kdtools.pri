@@ -1,9 +1,30 @@
 DEPENDPATH += $$PWD
 INCLUDEPATH += $$PWD
 
-CONFIG( shared, static|shared) {
+CONFIG(shared, static|shared) {
+    DEFINES += BUILD_SHARED_KDTOOLSCORE
     DEFINES += BUILD_SHARED_KDUPDATER
 }
+
+HEADERS += $$PWD/pimpl_ptr.h \
+    $$PWD/kdtoolsglobal.h \
+    $$PWD/kdjob.h \
+    $$PWD/kdgenericfactory.h \
+    $$PWD/kdselfrestarter.h \
+    $$PWD/kdsavefile.h \
+    $$PWD/kdrunoncechecker.h \
+    $$PWD/kdlockfile.h \
+    $$PWD/kdsysinfo.h
+
+SOURCES += $$PWD/pimpl_ptr.cpp \
+    $$PWD/kdjob.cpp \
+    $$PWD/kdgenericfactory.cpp \
+    $$PWD/kdselfrestarter.cpp \
+    $$PWD/kdsavefile.cpp \
+    $$PWD/kdrunoncechecker.cpp \
+    $$PWD/kdlockfile.cpp \
+    $$PWD/kdsysinfo.cpp
+
 
 HEADERS += $$PWD/kdupdater.h \
     $$PWD/kdupdaterapplication.h \
@@ -51,8 +72,15 @@ SOURCES += $$PWD/kdupdaterapplication.cpp \
 
 QT += gui
 
+unix:SOURCES += $$PWD/kdlockfile_unix.cpp
+win32:SOURCES += $$PWD/kdlockfile_win.cpp
+win32:SOURCES += $$PWD/kdsysinfo_win.cpp
+macx:SOURCES += $$PWD/kdsysinfo_mac.cpp
+unix:!macx:SOURCES += $$PWD/kdsysinfo_x11.cpp
+
+
 TRY_INCLUDEPATHS = /include /usr/include /usr/local/include $$QMAKE_INCDIR $$INCLUDEPATH
-win32:TRY_INCLUDEPATHS += $$PWD/../../openssl-0.9.8k/src/include
+win32:TRY_INCLUDEPATHS += $$PWD/../openssl-0.9.8k/src/include
 linux-lsb-g++:TRY_INCLUDEPATHS = $$QMAKE_INCDIR $$INCLUDEPATH
 for(p, TRY_INCLUDEPATHS) {
     pp = $$join(p, "", "", "/openssl")

@@ -35,7 +35,7 @@
 
 #include "init.h"
 
-#include <KDUpdater/kdupdaterapplication.h>
+#include <kdupdaterapplication.h>
 
 #include <QDir>
 #include <QDirIterator>

@@ -35,7 +35,7 @@
 
 #include <stdlib.h>
 
-#include "KDUpdater/environment.h"
+#include "environment.h"
 
 #ifdef Q_WS_WIN
 # include <windows.h>

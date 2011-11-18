@@ -23,10 +23,10 @@
 #ifndef KD_UPDATER_UPDATE_OPERATION_FACTORY_H
 #define KD_UPDATER_UPDATE_OPERATION_FACTORY_H
 
-#include <KDToolsCore/kdgenericfactory.h>
+#include <kdgenericfactory.h>
 
 #include "kdupdater.h"
-#include <KDToolsCore/pimpl_ptr.h>
+#include <pimpl_ptr.h>
 
 namespace KDUpdater
 {
