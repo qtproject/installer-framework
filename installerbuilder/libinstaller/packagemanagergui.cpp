@@ -118,6 +118,27 @@ TRANSLATOR QInstaller::FinishedPage
 */
 
 
+static QString humanReadableSize(quint64 intSize)
+{
+    QString unit;
+    double size;
+
+    if (intSize < 1024 * 1024) {
+        size = 1. + intSize / 1024.;
+        unit = QObject::tr("kB");
+    } else if (intSize < 1024 * 1024 * 1024) {
+        size = 1. + intSize / 1024. / 1024.;
+        unit = QObject::tr("MB");
+    } else {
+        size = 1. + intSize / 1024. / 1024. / 1024.;
+        unit = QObject::tr("GB");
+    }
+
+    size = qRound(size * 10) / 10.0;
+    return QString::fromLatin1("%L1 %2").arg(size, 0, 'g', 4).arg(unit);
+}
+
+
 class DynamicInstallerPage : public PackageManagerPage
 {
 public:
@@ -1545,7 +1566,7 @@ void ReadyForInstallationPage::entering()
         } else {
             m_msgLabel->setText(tr("The volume you selected for installation has insufficient space "
                 "for the selected components. The installation requires approximately %1.")
-                .arg(required.toString()) + tempString);
+                .arg(humanReadableSize(required)) + tempString);
         }
         setCommitPage(false);
     } else if (available - required < 0.01 * vol.size()) {
