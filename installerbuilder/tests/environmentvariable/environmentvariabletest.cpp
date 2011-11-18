@@ -77,7 +77,8 @@ void EnvironmentVariableTest::testPersistentNonSystem()
     settings.remove(key);
 }
 
-void EnvironmentVariableTest::testNonPersistentNonSystem() {
+void EnvironmentVariableTest::testNonPersistentNonSystem()
+{
 #ifndef Q_OS_WIN
     QSKIP("This operation only works on Windows",SkipSingle);
 #endif

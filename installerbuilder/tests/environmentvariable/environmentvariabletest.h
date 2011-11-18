@@ -30,14 +30,16 @@
 
 #include <QtTest/QtTest>
 
-class EnvironmentVariableTest : public QObject {
+class EnvironmentVariableTest : public QObject
+{
     Q_OBJECT
+
 public:
     EnvironmentVariableTest();
+
 private Q_SLOTS:
     void testPersistentNonSystem();
     void testNonPersistentNonSystem();
-private:
 };
 
 #endif // EXTRACTARCHIVEOPERATIONTEST_H

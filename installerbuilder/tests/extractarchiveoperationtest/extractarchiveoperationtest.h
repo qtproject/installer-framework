@@ -30,17 +30,21 @@
 
 #include <QtTest/QtTest>
 
-class ExtractArchiveOperationTest : public QObject {
+class ExtractArchiveOperationTest : public QObject
+{
     Q_OBJECT
+
 public:
     ExtractArchiveOperationTest();
+
 private Q_SLOTS:
     void testExtraction();
     void testInvalidArchive();
     void testExtractionErrors();
+
 private:
-    void init( const QString& );
-    void cleanup( const QString& );
+    void init(const QString &);
+    void cleanup(const QString &);
 };
 
 #endif // EXTRACTARCHIVEOPERATIONTEST_H
