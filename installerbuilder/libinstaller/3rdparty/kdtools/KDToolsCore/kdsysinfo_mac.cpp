@@ -22,8 +22,6 @@
 
 #include "kdsysinfo.h"
 
-#include "kdbytesize.h"
-
 #include <Carbon/Carbon.h>
 
 #include <sys/mount.h>
@@ -34,11 +32,11 @@ static QString qt_mac_hfsunistr_to_qstring( const HFSUniStr255* hfs )
     return QString( charPointer, hfs->length );
 }
 
-KDByteSize KDSysInfo::installedMemory()
+quint64 KDSysInfo::installedMemory()
 {
     SInt32 mb = 0;
     Gestalt( gestaltPhysicalRAMSizeInMegabytes, &mb );
-    return KDByteSize( static_cast< quint64 >( mb ) * 1024LL * 1024LL );
+    return quint64( static_cast< quint64 >( mb ) * 1024LL * 1024LL );
 }
 
 QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
@@ -58,8 +56,8 @@ QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
             v.setPath(QString::fromLocal8Bit(reinterpret_cast< char* >(path)));
 
             FSGetVolumeInfo(volume, 0, 0, kFSVolInfoSizes, &info, 0, 0);
-            v.setSize(KDByteSize(info.totalBytes));
-            v.setAvailableSpace(KDByteSize(info.freeBytes));
+            v.setSize(quint64(info.totalBytes));
+            v.setAvailableSpace(quint64(info.freeBytes));
 
             struct statfs data;
             if (statfs(qPrintable(v.path()), &data) == 0)

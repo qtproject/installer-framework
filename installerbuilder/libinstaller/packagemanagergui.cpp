@@ -30,6 +30,7 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
+
 #include "packagemanagergui.h"
 
 #include "component.h"
@@ -45,7 +46,6 @@
 #include "common/utils.h"
 #include "common/fileutils.h"
 
-#include <KDToolsCore/KDByteSize>
 #include <KDToolsCore/KDSysInfo>
 
 #include <QtCore/QDir>
@@ -1528,25 +1528,25 @@ void ReadyForInstallationPage::entering()
     const bool tempOnSameVolume = vol == tempVolume;
 
     // there is no better way atm to check this
-    if (vol.size().size() == 0 && vol.availableSpace().size() == 0) {
+    if (vol.size() == 0 && vol.availableSpace() == 0) {
         verbose() << "Could not determine available space on device " << target << ". Continue silently."
             << std::endl;
         return;
     }
 
-    const KDByteSize required(packageManagerCore()->requiredDiskSpace());
-    const KDByteSize tempRequired(packageManagerCore()->requiredTemporaryDiskSpace());
+    const quint64 required(packageManagerCore()->requiredDiskSpace());
+    const quint64 tempRequired(packageManagerCore()->requiredTemporaryDiskSpace());
 
-    const KDByteSize available = vol.availableSpace();
-    const KDByteSize tempAvailable = tempVolume.availableSpace();
-    const KDByteSize realRequiredTempSpace = KDByteSize(0.1 * tempRequired + tempRequired);
-    const KDByteSize realRequiredSpace = KDByteSize(2 * required);
+    const quint64 available = vol.availableSpace();
+    const quint64 tempAvailable = tempVolume.availableSpace();
+    const quint64 realRequiredTempSpace = quint64(0.1 * tempRequired + tempRequired);
+    const quint64 realRequiredSpace = quint64(2 * required);
 
     const bool tempInstFailure = tempOnSameVolume && available < realRequiredSpace
         + realRequiredTempSpace;
 
-    verbose() << "Disk space check on " << target << ": required: " << required.size()
-        << ", available: " << available.size() << ", size: " << vol.size().size() << std::endl;
+    verbose() << "Disk space check on " << target << ": required: " << required
+        << ", available: " << available << ", size: " << vol.size() << std::endl;
 
     QString tempString;
     if (tempAvailable < realRequiredTempSpace || tempInstFailure) {
@@ -1555,7 +1555,7 @@ void ReadyForInstallationPage::entering()
                 "at least %1 are required").arg(unitSizeText(realRequiredTempSpace + realRequiredSpace));
         } else {
             tempString = tr("Not enough disk space to store temporary files, at least %1 are required")
-                .arg(unitSizeText(realRequiredTempSpace.size()));
+                .arg(unitSizeText(realRequiredTempSpace));
         }
     }
 

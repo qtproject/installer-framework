@@ -7,7 +7,6 @@ CONFIG( shared, static|shared) {
 
 HEADERS += $$PWD/pimpl_ptr.h \
     $$PWD/kdtoolsglobal.h \
-    $$PWD/kdbytesize.h \
     $$PWD/kdjob.h \
     $$PWD/kdgenericfactory.h \
     $$PWD/kdselfrestarter.h \
@@ -17,7 +16,6 @@ HEADERS += $$PWD/pimpl_ptr.h \
     $$PWD/kdsysinfo.h
 
 SOURCES += $$PWD/pimpl_ptr.cpp \
-    $$PWD/kdbytesize.cpp \
     $$PWD/kdjob.cpp \
     $$PWD/kdgenericfactory.cpp \
     $$PWD/kdselfrestarter.cpp \

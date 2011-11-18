@@ -29,8 +29,6 @@
 #include <QtCore/QSysInfo>
 #include <QtCore/QSharedDataPointer>
 
-#include "kdbytesize.h"
-
 class KDTOOLSCORE_EXPORT KDSysInfo : public QSysInfo
 {
 private:
@@ -51,9 +49,9 @@ public:
 
         QString name() const;
         QString path() const;
-        KDByteSize size() const;
+        quint64 size() const;
         QString fileSystemType() const;
-        KDByteSize availableSpace() const;
+        quint64 availableSpace() const;
 
         void swap( Volume& other );
         Volume& operator=( const Volume& other );
@@ -62,9 +60,9 @@ public:
     private:
         void setPath( const QString& path );
         void setName( const QString& name );
-        void setSize( const KDByteSize& size );
+        void setSize( const quint64& size );
         void setFileSystemType(const QString &type);
-        void setAvailableSpace( const KDByteSize& available );
+        void setAvailableSpace( const quint64& available );
 
     private:
         class Private;
@@ -77,7 +75,7 @@ public:
         QString name;
     };
 
-    static KDByteSize installedMemory();
+    static quint64 installedMemory();
     static QList< Volume > mountedVolumes();
     static QList< ProcessInfo > runningProcesses();
 };

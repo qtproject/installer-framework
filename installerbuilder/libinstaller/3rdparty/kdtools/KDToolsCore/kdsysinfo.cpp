@@ -40,7 +40,7 @@ QDebug operator<<( QDebug dbg, KDSysInfo::Volume volume )
     return dbg << "KDSysInfo::Volume(" << volume.path() << ")";
 }
 
-QPair< KDByteSize, KDByteSize > volumeSpace( const QString& volume );
+QPair< quint64, quint64 > volumeSpace( const QString& volume );
 QString volumeName( const QString& volume );
 
 class KDSysInfo::Volume::Private : public QSharedData
@@ -48,9 +48,9 @@ class KDSysInfo::Volume::Private : public QSharedData
 public:
     QString p;
     QString name;
-    KDByteSize size;
+    quint64 size;
     QString fileSystemType;
-    KDByteSize availableSpace;
+    quint64 availableSpace;
 };
 
 
@@ -105,12 +105,12 @@ QString KDSysInfo::Volume::path() const
     return d->p;
 }
 
-KDByteSize KDSysInfo::Volume::size() const
+quint64 KDSysInfo::Volume::size() const
 {
     return d->size;
 }
 
-void KDSysInfo::Volume::setSize( const KDByteSize& size )
+void KDSysInfo::Volume::setSize( const quint64& size )
 {
     d->size = size;
 }
@@ -125,12 +125,12 @@ void KDSysInfo::Volume::setFileSystemType(const QString &type)
     d->fileSystemType = type;
 }
 
-KDByteSize KDSysInfo::Volume::availableSpace() const
+quint64 KDSysInfo::Volume::availableSpace() const
 {
     return d->availableSpace;
 }
 
-void KDSysInfo::Volume::setAvailableSpace( const KDByteSize& available )
+void KDSysInfo::Volume::setAvailableSpace( const quint64& available )
 {
     d->availableSpace = available;
 }

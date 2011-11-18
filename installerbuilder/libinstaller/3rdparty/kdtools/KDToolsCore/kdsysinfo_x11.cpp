@@ -22,8 +22,6 @@
 
 #include "kdsysinfo.h"
 
-#include "kdbytesize.h"
-
 #include <sys/utsname.h>
 #include <sys/statvfs.h>
 
@@ -32,7 +30,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 
-KDByteSize KDSysInfo::installedMemory()
+quint64 KDSysInfo::installedMemory()
 {
 #ifdef Q_OS_LINUX
     QFile f( QLatin1String( "/proc/meminfo" ) );
@@ -44,19 +42,19 @@ KDByteSize KDSysInfo::installedMemory()
         if( !s.startsWith( QLatin1String( "MemTotal:" ) ) )
             continue;
         else if( s.isEmpty() )
-            return KDByteSize();
+            return quint64();
 
         const QStringList parts = s.split( QLatin1Char( ' ' ), QString::SkipEmptyParts );
-        return KDByteSize( parts.at(1).toInt() * 1024LL );
+        return quint64( parts.at(1).toInt() * 1024LL );
     }
 #else
     quint64 physmem;
     size_t len = sizeof physmem;
     static int mib[2] = { CTL_HW, HW_MEMSIZE };
     sysctl( mib, 2, &physmem, &len, 0, 0 );
-    return KDByteSize( physmem );
+    return quint64( physmem );
 #endif
-    return KDByteSize();
+    return 0;
 }
 
 QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
@@ -88,8 +86,8 @@ QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
         struct statvfs data;
         if( statvfs( qPrintable( v.name() ), &data ) == 0 )
         {
-            v.setSize( KDByteSize( static_cast< quint64 >( data.f_blocks ) * data.f_bsize ) );
-            v.setAvailableSpace( KDByteSize( static_cast< quint64> ( data.f_bavail ) * data.f_bsize ) );
+            v.setSize( quint64( static_cast< quint64 >( data.f_blocks ) * data.f_bsize ) );
+            v.setAvailableSpace( quint64( static_cast< quint64> ( data.f_bavail ) * data.f_bsize ) );
         }
 
         result.push_back( v );

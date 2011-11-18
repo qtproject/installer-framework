@@ -22,8 +22,6 @@
 
 #include "kdsysinfo.h"
 
-#include "kdbytesize.h"
-
 #include <windows.h>
 #include <Tlhelp32.h>
 #include <Psapi.h>
@@ -35,23 +33,23 @@
 
 #define KDSYSINFO_PROCESS_QUERY_LIMITED_INFORMATION  (0x1000)
 
-KDByteSize KDSysInfo::installedMemory()
+quint64 KDSysInfo::installedMemory()
 {
     MEMORYSTATUSEX status;
     status.dwLength = sizeof( status );
     GlobalMemoryStatusEx( &status );
-    return KDByteSize( status.ullTotalPhys );
+    return quint64( status.ullTotalPhys );
 }
 
-QPair< KDByteSize, KDByteSize > volumeSpace( const QString& volume )
+QPair< quint64, quint64 > volumeSpace( const QString& volume )
 {
-    QPair< KDByteSize, KDByteSize > result;
+    QPair< quint64, quint64 > result;
     ULARGE_INTEGER bytes;
     ULARGE_INTEGER freebytes;
     if( GetDiskFreeSpaceExA( qPrintable( volume ), 0, &bytes, &freebytes ) != 0 )
     {
-        result.first = KDByteSize( bytes.QuadPart );
-        result.second = KDByteSize( freebytes.QuadPart );
+        result.first = quint64( bytes.QuadPart );
+        result.second = quint64( freebytes.QuadPart );
     }
     return result;
 }
@@ -107,7 +105,7 @@ QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
         volume.setPath( path );
         volume.setName( volumeName( path ) );
         volume.setFileSystemType(fileSystemType(path));
-        const QPair< KDByteSize, KDByteSize > sizes = volumeSpace( path );
+        const QPair< quint64, quint64 > sizes = volumeSpace( path );
         volume.setSize( sizes.first );
         volume.setAvailableSpace( sizes.second );
         result.push_back( volume );
