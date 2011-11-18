@@ -39,10 +39,8 @@
 #include "init.h"
 #include "packagemanagercore.h"
 
-#include <KDUpdater/UpdateOperation>
-#include <KDUpdater/UpdateOperationFactory>
-
-#include <QtCore/QObject>
+#include <KDUpdater/kdupdaterupdateoperation.h>
+#include <KDUpdater/kdupdaterupdateoperationfactory.h>
 
 #include <iostream>
 

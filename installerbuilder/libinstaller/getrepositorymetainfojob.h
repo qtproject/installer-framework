@@ -26,7 +26,7 @@
 #ifndef GETREPOSITORYMETAINFOJOB_H
 #define GETREPOSITORYMETAINFOJOB_H
 
-#include <KDToolsCore/KDJob>
+#include <KDToolsCore/kdjob.h>
 
 #include <QtCore/QPointer>
 #include <QtCore/QString>

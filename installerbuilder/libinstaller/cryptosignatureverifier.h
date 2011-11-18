@@ -23,13 +23,14 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
+
 #ifndef CRYPTOSIGNATUREVERIFIER_H
 #define CRYPTOSIGNATUREVERIFIER_H
 
 #include "KDUpdater/kdupdatercrypto.h"
 
-#include <KDUpdater/SignatureVerifier>
-#include <KDUpdater/SignatureVerificationResult>
+#include <KDUpdater/kdupdatersignatureverifier.h>
+#include <KDUpdater/kdupdatersignatureverificationresult.h>
 
 
 class CryptoSignatureVerifier : public KDUpdater::SignatureVerifier

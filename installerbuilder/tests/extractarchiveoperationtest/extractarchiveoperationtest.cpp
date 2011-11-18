@@ -33,14 +33,14 @@
 #include "extractarchiveoperationtest.h"
 #include "extractarchiveoperation.h"
 
+#include "init.h"
+
+#include <KDUpdater/kdupdaterapplication.h>
+
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QStack>
-
-#include <KDUpdater/Application>
-
-#include "init.h"
 
 ExtractArchiveOperationTest::ExtractArchiveOperationTest()
 {

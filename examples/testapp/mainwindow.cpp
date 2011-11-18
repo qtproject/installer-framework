@@ -40,7 +40,7 @@
 #include <common/errors.h>
 #include <updatesettings.h>
 
-#include <KDToolsCore/KDSelfRestarter>
+#include <KDToolsCore/kdselfrestarter.h>
 
 #include <QtGui/QAbstractButton>
 #include <QtGui/QApplication>

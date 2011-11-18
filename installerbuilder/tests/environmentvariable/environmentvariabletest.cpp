@@ -33,22 +33,23 @@
 #include "environmentvariabletest.h"
 #include "environmentvariablesoperation.h"
 
+#include "init.h"
+
+#include <KDUpdater/kdupdaterapplication.h>
+
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QStack>
 #include <QSettings>
 
-#include <KDUpdater/Application>
-
-#include "init.h"
-
 EnvironmentVariableTest::EnvironmentVariableTest()
 {
     QInstaller::init();
 }
 
-void EnvironmentVariableTest::testPersistentNonSystem() {
+void EnvironmentVariableTest::testPersistentNonSystem()
+{
 #ifndef Q_OS_WIN
     QSKIP("This operation only works on Windows",SkipSingle);
 #endif

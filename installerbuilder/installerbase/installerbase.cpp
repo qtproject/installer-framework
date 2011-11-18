@@ -49,8 +49,8 @@
 #include <settings.h>
 #include <updater.h>
 
-#include <KDToolsCore/KDSelfRestarter>
-#include <KDToolsCore/KDRunOnceChecker>
+#include <KDToolsCore/kdselfrestarter.h>
+#include <KDToolsCore/kdrunoncechecker.h>
 
 #include <QtCore/QTranslator>
 

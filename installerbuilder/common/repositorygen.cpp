@@ -38,8 +38,6 @@
 #include <common/consolepasswordprovider.h>
 #include <settings.h>
 
-#include <KDUpdater/KDUpdater>
-
 #include <QCryptographicHash>
 #include <QDir>
 #include <QDirIterator>

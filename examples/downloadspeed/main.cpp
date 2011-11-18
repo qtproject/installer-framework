@@ -19,8 +19,9 @@
 ** clear to you.
 **
 **********************************************************************/
-#include <KDUpdater/FileDownloader>
-#include <KDUpdater/FileDownloaderFactory>
+
+#include <KDUpdater/kdupdaterfiledownloader.h>
+#include <KDUpdater/kdupdaterfiledownloaderfactory.h>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>

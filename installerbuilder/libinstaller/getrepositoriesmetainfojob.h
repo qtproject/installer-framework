@@ -26,7 +26,7 @@
 #ifndef GETREPOSITORIESMETAINFOJOB_H
 #define GETREPOSITORIESMETAINFOJOB_H
 
-#include <KDToolsCore/KDJob>
+#include <KDToolsCore/kdjob.h>
 
 #include <QtCore/QList>
 #include <QtCore/QPointer>

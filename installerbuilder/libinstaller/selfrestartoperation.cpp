@@ -33,7 +33,7 @@
 #include "selfrestartoperation.h"
 #include "packagemanagercore.h"
 
-#include <KDToolsCore/KDSelfRestarter>
+#include <KDToolsCore/kdselfrestarter.h>
 
 using namespace QInstaller;
 

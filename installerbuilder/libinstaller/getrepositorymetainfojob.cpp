@@ -40,8 +40,8 @@
 #include "messageboxhandler.h"
 #include "qinstallerglobal.h"
 
-#include <KDUpdater/FileDownloader>
-#include <KDUpdater/FileDownloaderFactory>
+#include <KDUpdater/kdupdaterfiledownloader.h>
+#include <KDUpdater/kdupdaterfiledownloaderfactory.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QTimer>

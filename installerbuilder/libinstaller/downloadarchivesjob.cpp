@@ -39,8 +39,8 @@
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
 
-#include <KDUpdater/FileDownloader>
-#include <KDUpdater/FileDownloaderFactory>
+#include <KDUpdater/kdupdaterfiledownloader.h>
+#include <KDUpdater/kdupdaterfiledownloaderfactory.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QTimerEvent>

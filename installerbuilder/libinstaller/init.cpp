@@ -76,9 +76,10 @@
 
 #include <QtPlugin>
 
-#include <KDUpdater/UpdateOperation>
-#include <KDUpdater/UpdateOperationFactory>
-#include <KDUpdater/FileDownloaderFactory>
+#include <KDUpdater/kdupdaterupdateoperation.h>
+#include <KDUpdater/kdupdaterupdateoperationfactory.h>
+#include <KDUpdater/kdupdaterfiledownloader.h>
+#include <KDUpdater/kdupdaterfiledownloaderfactory.h>
 
 #include <QNetworkProxyFactory>
 

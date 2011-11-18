@@ -30,10 +30,11 @@
 ** (qt-info@nokia.com).
 **
 **************************************************************************/
-#include "fakestopprocessforupdateoperation.h"
-#include <QtCore/QDir>
 
-#include <KDToolsCore/KDSysInfo>
+#include "fakestopprocessforupdateoperation.h"
+
+#include <KDToolsCore/kdsysinfo.h>
+#include <QtCore/QDir>
 
 #include <algorithm>
 

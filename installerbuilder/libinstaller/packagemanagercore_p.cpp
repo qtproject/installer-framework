@@ -45,9 +45,11 @@
 #include "qprocesswrapper.h"
 #include "qsettingswrapper.h"
 
-#include <KDToolsCore/KDSaveFile>
-#include <KDToolsCore/KDSelfRestarter>
-#include <KDUpdater/KDUpdater>
+#include <KDToolsCore/kdsavefile.h>
+#include <KDToolsCore/kdselfrestarter.h>
+#include <KDUpdater/kdupdaterupdatesourcesinfo.h>
+#include <KDUpdater/kdupdaterupdateoperationfactory.h>
+#include <KDUpdater/kdupdaterupdatefinder.h>
 
 #include <QtCore/QtConcurrentRun>
 #include <QtCore/QCoreApplication>

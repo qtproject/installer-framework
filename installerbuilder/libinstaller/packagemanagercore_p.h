@@ -37,8 +37,8 @@
 #include "settings.h"
 #include "packagemanagercore.h"
 
-#include <KDToolsCore/KDSysInfo>
-#include <KDUpdater/Application>
+#include <KDToolsCore/kdsysinfo.h>
+#include <KDUpdater/kdupdaterapplication.h>
 
 #include <QtCore/QHash>
 #include <QtCore/QObject>

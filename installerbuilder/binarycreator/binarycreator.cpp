@@ -39,8 +39,7 @@
 #include <init.h>
 #include <settings.h>
 
-#include <KDToolsCore/KDSaveFile>
-#include <KDUpdater/KDUpdater>
+#include <KDToolsCore/kdsavefile.h>
 
 #include <QCoreApplication>
 #include <QDebug>

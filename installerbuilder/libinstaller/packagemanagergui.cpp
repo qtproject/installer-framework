@@ -46,7 +46,7 @@
 #include "common/utils.h"
 #include "common/fileutils.h"
 
-#include <KDToolsCore/KDSysInfo>
+#include <KDToolsCore/kdsysinfo.h>
 
 #include <QtCore/QDir>
 #include <QtCore/QDynamicPropertyChangeEvent>
