@@ -1069,7 +1069,7 @@ QList<QVariant> PackageManagerCore::execute(const QString &program, const QStrin
     if (p.state() != QProcessWrapper::NotRunning)
         loop.exec();
 
-    return QList< QVariant >() << QString::fromLatin1(p.readAllStandardOutput()) << p.exitCode();
+    return QList<QVariant>() << QString::fromLatin1(p.readAllStandardOutput()) << p.exitCode();
 }
 
 /*!
@@ -1118,7 +1118,7 @@ bool PackageManagerCore::performOperation(const QString &name, const QStringList
 bool PackageManagerCore::versionMatches(const QString &version, const QString &requirement)
 {
     QRegExp compEx(QLatin1String("([<=>]+)(.*)"));
-    const QString comparator = compEx.exactMatch(requirement) ? compEx.cap(1) : QString::fromLatin1("=");
+    const QString comparator = compEx.exactMatch(requirement) ? compEx.cap(1) : QLatin1String("=");
     const QString ver = compEx.exactMatch(requirement) ? compEx.cap(2) : requirement;
 
     const bool allowEqual = comparator.contains(QLatin1Char('='));

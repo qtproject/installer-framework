@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     const QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
     try {
         if (args.contains(QLatin1String("--version"))) {
-            InstallerBase::showVersion(argc, argv, QString::fromLatin1(VERSION));
+            InstallerBase::showVersion(argc, argv, QLatin1String(VERSION));
             return 0;
         }
 

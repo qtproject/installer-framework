@@ -351,7 +351,7 @@ private:
 
 static QString createBinaryResourceFile(const QString &directory)
 {
-    QTemporaryFile projectFile(directory + QString::fromLatin1("/rccprojectXXXXXX.qrc"));
+    QTemporaryFile projectFile(directory + QLatin1String("/rccprojectXXXXXX.qrc"));
     if (!projectFile.open())
         throw Error(QObject::tr("Could not create temporary file for generated rcc project file"));
     projectFile.close();
@@ -361,12 +361,12 @@ static QString createBinaryResourceFile(const QString &directory)
     const QString projectFileName = QFileInfo(projectFile.fileName()).absoluteFilePath();
 
     // 1. create the .qrc file
-    runRcc(QStringList() << QString::fromLatin1("rcc") << QString::fromLatin1("-project")
-        << QString::fromLatin1("-o") << projectFileName);
+    runRcc(QStringList() << QLatin1String("rcc") << QLatin1String("-project")
+        << QLatin1String("-o") << projectFileName);
 
     // 2. create the binary resource file from the .qrc file
-    runRcc(QStringList() << QString::fromLatin1("rcc") << QString::fromLatin1("-binary")
-        << QString::fromLatin1("-o") << binaryName << projectFileName);
+    runRcc(QStringList() << QLatin1String("rcc") << QLatin1String("-binary")
+        << QLatin1String("-o") << binaryName << projectFileName);
 
     return binaryName;
 }
@@ -379,8 +379,8 @@ static QStringList createBinaryResourceFiles(const QStringList &resources)
         if (file.exists()) {
             const QString binaryName = generateTemporaryFileName();
             const QString fileName = QFileInfo(file.fileName()).absoluteFilePath();
-            const int status = runRcc(QStringList() << QString::fromLatin1("rcc")
-                << QString::fromLatin1("-binary") << QString::fromLatin1("-o") << binaryName << fileName);
+            const int status = runRcc(QStringList() << QLatin1String("rcc")
+                << QLatin1String("-binary") << QLatin1String("-o") << binaryName << fileName);
             if (status == EXIT_SUCCESS)
                 result.append(binaryName);
         }
@@ -567,10 +567,10 @@ int main(int argc, char **argv)
 
     const QStringList args = app.arguments().mid(1);
     for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
-        if (*it == QString::fromLatin1("-h") || *it == QString::fromLatin1("--help")) {
+        if (*it == QLatin1String("-h") || *it == QLatin1String("--help")) {
             printUsage();
             return 0;
-        } else if (*it == QString::fromLatin1("-p") || *it == QString::fromLatin1("--packages")) {
+        } else if (*it == QLatin1String("-p") || *it == QLatin1String("--packages")) {
             ++it;
             if (it == args.end()) {
                 return printErrorAndUsageAndExit(QObject::tr("Error: Packages parameter missing argument."));
@@ -585,13 +585,13 @@ int main(int argc, char **argv)
             if (it == args.end() || it->startsWith(QLatin1String("-")))
                 return printErrorAndUsageAndExit(QObject::tr("Error: Package to exclude missing."));
             excludedPackages = it->split(QLatin1Char(','));
-        } else if (*it == QString::fromLatin1("-v") || *it == QString::fromLatin1("--verbose")) {
+        } else if (*it == QLatin1String("-v") || *it == QLatin1String("--verbose")) {
             QInstaller::setVerbose(true);
-        } else if (*it == QString::fromLatin1("-n") || *it == QString::fromLatin1("--nodeps")) {
+        } else if (*it == QLatin1String("-n") || *it == QLatin1String("--nodeps")) {
             nodeps = true;
-        } else if (*it == QString::fromLatin1("--offline-only")) {
+        } else if (*it == QLatin1String("--offline-only")) {
             offlineOnly = true;
-        } else if (*it == QString::fromLatin1("-t") || *it == QString::fromLatin1("--template")) {
+        } else if (*it == QLatin1String("-t") || *it == QLatin1String("--template")) {
             ++it;
             if (it == args.end()) {
                 return printErrorAndUsageAndExit(QObject::tr("Error: Template parameter missing argument."));

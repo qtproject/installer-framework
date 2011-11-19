@@ -258,7 +258,7 @@ QString PackageManagerCorePrivate::targetDir() const
 
 QString PackageManagerCorePrivate::configurationFileName() const
 {
-    return m_core->value(scTargetConfigurationFile, QString::fromLatin1("components.xml"));
+    return m_core->value(scTargetConfigurationFile, QLatin1String("components.xml"));
 }
 
 QString PackageManagerCorePrivate::componentsXmlPath() const
@@ -883,7 +883,7 @@ void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QF
 void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperations)
 {
     bool gainedAdminRights = false;
-    QTemporaryFile tempAdminFile(targetDir() + QString::fromLatin1("/testjsfdjlkdsjflkdsjfldsjlfds")
+    QTemporaryFile tempAdminFile(targetDir() + QLatin1String("/testjsfdjlkdsjflkdsjfldsjlfds")
         + QString::number(qrand() % 1000));
     if (!tempAdminFile.open() || !tempAdminFile.isWritable()) {
         m_core->gainAdminRights();

@@ -119,7 +119,7 @@ bool RegisterQtInCreatorV23Operation::performOperation()
     }
 
     const QString qtVersionsFileName = rootInstallPath
-                                     + QString::fromLatin1(QtVersionSettingsSuffixPath);
+                                     + QLatin1String(QtVersionSettingsSuffixPath);
     int argCounter = 0;
     const QString &versionName = args.at(argCounter++);
     const QString &path = QDir::toNativeSeparators(args.value(argCounter++));
@@ -135,9 +135,9 @@ bool RegisterQtInCreatorV23Operation::performOperation()
     QVariantMap map;
     if (reader.load(qtVersionsFileName)) {
         map = reader.restoreValues();
-        qtVersionCount = map.value(QString::fromLatin1("QtVersion.Count")).toInt();
-        map.remove(QString::fromLatin1("QtVersion.Count"));
-        map.remove(QString::fromLatin1("Version"));
+        qtVersionCount = map.value(QLatin1String("QtVersion.Count")).toInt();
+        map.remove(QLatin1String("QtVersion.Count"));
+        map.remove(QLatin1String("Version"));
     }
 
     ProjectExplorer::PersistentSettingsWriter writer;
@@ -145,30 +145,30 @@ bool RegisterQtInCreatorV23Operation::performOperation()
     if (!map.isEmpty()) {
         for (int i = 0; i < qtVersionCount; ++i) {
             writer.saveValue(QString::fromLatin1("QtVersion.%1").arg(i)
-                             , map[QString::fromLatin1("QtVersion.") + QString::number(i)].toMap());
+                             , map[QLatin1String("QtVersion.") + QString::number(i)].toMap());
         }
         map.clear();
     }
     // Enter new version
-    map.insert(QString::fromLatin1("Id"), -1);
-    map.insert(QString::fromLatin1("Name"), versionName);
-    map.insert(QString::fromLatin1("QMakePath"), versionQmakePath);
-    map.insert(QString::fromLatin1("QtVersion.Type"),
-               QString::fromLatin1("Qt4ProjectManager.QtVersion.") + versionTypeIdentifier);
-    map.insert(QString::fromLatin1("isAutodetected"), true);
-    map.insert(QString::fromLatin1("autodetectionSource"),
-               QString::fromLatin1("SDK.") + versionSDKIdentifier);
+    map.insert(QLatin1String("Id"), -1);
+    map.insert(QLatin1String("Name"), versionName);
+    map.insert(QLatin1String("QMakePath"), versionQmakePath);
+    map.insert(QLatin1String("QtVersion.Type"),
+               QLatin1String("Qt4ProjectManager.QtVersion.") + versionTypeIdentifier);
+    map.insert(QLatin1String("isAutodetected"), true);
+    map.insert(QLatin1String("autodetectionSource"),
+               QLatin1String("SDK.") + versionSDKIdentifier);
     if (!versionSystemRoot.isEmpty())
-        map.insert(QString::fromLatin1("SystemRoot"), versionSystemRoot);
+        map.insert(QLatin1String("SystemRoot"), versionSystemRoot);
     if (!versionSbsPath.isEmpty())
-        map.insert(QString::fromLatin1("SBSv2Directory"), versionSbsPath);
+        map.insert(QLatin1String("SBSv2Directory"), versionSbsPath);
 
-    writer.saveValue(QString::fromLatin1("QtVersion.") + QString::number(qtVersionCount), map);
+    writer.saveValue(QLatin1String("QtVersion.") + QString::number(qtVersionCount), map);
 
     writer.saveValue(QLatin1String("Version"), 1);
-    writer.saveValue(QString::fromLatin1("QtVersion.Count"), qtVersionCount + 1);
+    writer.saveValue(QLatin1String("QtVersion.Count"), qtVersionCount + 1);
     QDir().mkpath(QFileInfo(qtVersionsFileName).absolutePath());
-    writer.save(qtVersionsFileName, QString::fromLatin1("QtCreatorQtVersions"));
+    writer.save(qtVersionsFileName, QLatin1String("QtCreatorQtVersions"));
 
     return true;
 }
@@ -193,7 +193,7 @@ bool RegisterQtInCreatorV23Operation::undoOperation()
     const QString &rootInstallPath = core->value(scTargetDir);
 
     const QString qtVersionsFileName = rootInstallPath
-                                     + QString::fromLatin1(QtVersionSettingsSuffixPath);
+                                     + QLatin1String(QtVersionSettingsSuffixPath);
 
     ProjectExplorer::PersistentSettingsReader reader;
     // If no file, then it has been removed already
@@ -203,27 +203,27 @@ bool RegisterQtInCreatorV23Operation::undoOperation()
     const QVariantMap map = reader.restoreValues();
 
     ProjectExplorer::PersistentSettingsWriter writer;
-    const int qtVersionCount = map.value(QString::fromLatin1("QtVersion.Count")).toInt();
+    const int qtVersionCount = map.value(QLatin1String("QtVersion.Count")).toInt();
 
     int currentVersionIndex = 0;
     for (int i = 0; i < qtVersionCount; ++i) {
-        QVariantMap versionMap = map[QString::fromLatin1("QtVersion.") + QString::number(i)].toMap();
+        QVariantMap versionMap = map[QLatin1String("QtVersion.") + QString::number(i)].toMap();
 
         const QString path = QDir::toNativeSeparators(args.value(1));
         const QString versionQmakePath = absoluteQmakePath(path);
 
         //use absoluteQmakePath function to normalize the path string, for example //
         const QString existingQtQMakePath = absoluteQmakePath(
-            versionMap[QString::fromLatin1("QMakePath")].toString());
+            versionMap[QLatin1String("QMakePath")].toString());
         if (existingQtQMakePath == versionQmakePath)
             continue;
         writer.saveValue(QString::fromLatin1("QtVersion.%1").arg(currentVersionIndex++), versionMap);
     }
 
-    writer.saveValue(QString::fromLatin1("QtVersion.Count"), currentVersionIndex);
-    writer.saveValue(QString::fromLatin1("Version"), map[QString::fromLatin1("Version")].toInt());
+    writer.saveValue(QLatin1String("QtVersion.Count"), currentVersionIndex);
+    writer.saveValue(QLatin1String("Version"), map[QLatin1String("Version")].toInt());
 
-    writer.save(qtVersionsFileName, QString::fromLatin1("QtCreatorQtVersions"));
+    writer.save(qtVersionsFileName, QLatin1String("QtCreatorQtVersions"));
     return true;
 }
 

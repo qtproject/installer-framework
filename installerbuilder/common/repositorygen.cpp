@@ -97,7 +97,7 @@ static QVector<PackageInfo> collectAvailablePackages(const QString &packagesDire
                 QString::number(errorColumn), errorMessage));
         }
 
-        const QString name = doc.firstChildElement(QString::fromLatin1("Package"))
+        const QString name = doc.firstChildElement(QLatin1String("Package"))
             .firstChildElement(QLatin1String("Name")).text();
         if (name != it->fileName()) {
             verbose() << std::endl;
@@ -107,15 +107,15 @@ static QVector<PackageInfo> collectAvailablePackages(const QString &packagesDire
 
         PackageInfo info;
         info.name = name;
-        info.version = doc.firstChildElement(QString::fromLatin1("Package")).
-            firstChildElement(QString::fromLatin1("Version")).text();
+        info.version = doc.firstChildElement(QLatin1String("Package")).
+            firstChildElement(QLatin1String("Version")).text();
         if (!QRegExp(QLatin1String("[0-9]+((\\.|-)[0-9]+)*")).exactMatch(info.version)) {
             verbose() << std::endl;
             throw QInstaller::Error(QObject::tr("Component version for %1 is invalid! <Version>%2</version>")
                 .arg(it->fileName(), info.version));
         }
-        info.dependencies = doc.firstChildElement(QString::fromLatin1("Package")).
-            firstChildElement(QString::fromLatin1("Dependencies")).text().split(QRegExp(QLatin1String("\\b(,|, )\\b")),
+        info.dependencies = doc.firstChildElement(QLatin1String("Package")).
+            firstChildElement(QLatin1String("Dependencies")).text().split(QRegExp(QLatin1String("\\b(,|, )\\b")),
             QString::SkipEmptyParts);
         info.directory = it->filePath();
         dict.push_back(info);
@@ -141,7 +141,7 @@ static PackageInfo findMatchingPackage(const QString &name, const QVector<Packag
 
     QRegExp compEx(QLatin1String("([<=>]+)(.*)"));
     const QString comparator = compEx.exactMatch(version)
-        ? compEx.cap(1) : QString::fromLatin1("=");
+        ? compEx.cap(1) : QLatin1String("=");
     version = compEx.exactMatch(version) ? compEx.cap(2) : version;
 
     const bool allowEqual = comparator.contains(QLatin1Char('='));
@@ -168,7 +168,7 @@ static PackageInfo findMatchingPackage(const QString &name, const QVector<Packag
 static bool packageHasPrefix(const PackageInfo &package, const QString &prefix)
 {
     return package.name.startsWith(prefix)
-        && package.name.mid(prefix.length(), 1) == QString::fromLatin1(".");
+        && package.name.mid(prefix.length(), 1) == QLatin1String(".");
 }
 
 /**
@@ -393,11 +393,11 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
             if (node.isComment())
                 continue;
             const QString key = node.nodeName();
-            if (key == QString::fromLatin1("UserInterfaces"))
+            if (key == QLatin1String("UserInterfaces"))
                 continue;
-            if (key == QString::fromLatin1("Translations"))
+            if (key == QLatin1String("Translations"))
                 continue;
-            if (key == QString::fromLatin1("Licenses"))
+            if (key == QLatin1String("Licenses"))
                 continue;
             const QString value = node.toElement().text();
             QDomElement element = doc.createElement(key);
@@ -499,7 +499,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
         QStringList userinterfaces;
         for (int i = 0; i < uiNodes.count(); ++i) {
             const QDomNode node = uiNodes.at(i);
-            if (node.nodeName() != QString::fromLatin1("UserInterface"))
+            if (node.nodeName() != QLatin1String("UserInterface"))
                 continue;
 
             const QDir dir(QString::fromLatin1("%1/meta").arg(it->directory));
@@ -525,7 +525,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
         }
 
         if (!userinterfaces.isEmpty()) {
-            update.appendChild(doc.createElement(QString::fromLatin1("UserInterfaces")))
+            update.appendChild(doc.createElement(QLatin1String("UserInterfaces")))
                 .appendChild(doc.createTextNode(userinterfaces.join(QChar::fromLatin1(','))));
         }
 
@@ -534,7 +534,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
         QStringList translations;
         for (int i = 0; i < qmNodes.count(); ++i) {
             const QDomNode node = qmNodes.at(i);
-            if (node.nodeName() != QString::fromLatin1("Translation"))
+            if (node.nodeName() != QLatin1String("Translation"))
                 continue;
 
             const QDir dir(QString::fromLatin1("%1/meta").arg(it->directory));
@@ -560,7 +560,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
         }
 
         if (!translations.isEmpty()) {
-            update.appendChild(doc.createElement(QString::fromLatin1("Translations")))
+            update.appendChild(doc.createElement(QLatin1String("Translations")))
                 .appendChild(doc.createTextNode(translations.join(QChar::fromLatin1(','))));
         }
 

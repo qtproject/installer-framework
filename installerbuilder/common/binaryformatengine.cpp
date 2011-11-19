@@ -88,8 +88,8 @@ void BinaryFormatEngine::setArchive(const QString &file)
 {
     m_fileNamePath = file;
 
-    static const QChar sep = QChar::fromLatin1('/');
-    static const QString prefix = QString::fromLatin1("installer://");
+    static const QChar sep = QLatin1Char('/');
+    static const QString prefix = QLatin1String("installer://");
     Q_ASSERT(file.toLower().startsWith(prefix));
 
     // cut the prefix

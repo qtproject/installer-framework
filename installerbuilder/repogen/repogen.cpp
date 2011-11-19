@@ -121,7 +121,7 @@ int main( int argc, char** argv ) {
             } else if (args.first() == QLatin1String("--single")) {
                 args.removeFirst();
                 replaceSingleComponent = true;
-            } else if (args.first() == QString::fromLatin1("-p") || args.first() == QString::fromLatin1("--packages")) {
+            } else if (args.first() == QLatin1String("-p") || args.first() == QLatin1String("--packages")) {
                 args.removeFirst();
                 if (args.isEmpty()) {
                     return printErrorAndUsageAndExit(QObject::tr("Error: Packages parameter missing "
