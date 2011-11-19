@@ -72,36 +72,3 @@ UpdateOperationFactory::UpdateOperationFactory()
     registerUpdateOperation<UpdatePackageOperation>(QLatin1String("UpdatePackage"));
     registerUpdateOperation<UpdateCompatOperation>(QLatin1String("UpdateCompat"));
 }
-
-/*!
-   Returns the number of update operations in the factory.
-*/
-int UpdateOperationFactory::updateOperationCount() const
-{
-    return productCount();
-}
-
-/*!
-   Returns a list containing the names of all available UpdateOperations.
-*/
-QStringList UpdateOperationFactory::availableUpdateOperations() const
-{
-    return availableProducts();
-}
-
-/*
-  Unregisters the update operation previously registered with \a name.
-*/
-void UpdateOperationFactory::unregisterUpdateOperation(const QString &name)
-{
-    unregisterProduct(name);
-}
-
-/*!
-   Registers \a create to be a factory function to create an UpdateOperation with \a name.
-   \sa registerUpdateOperation
-*/
-void UpdateOperationFactory::registerUpdateOperationFactory(const QString &name, UpdateOperationFactoryFunction create)
-{
-    registerProductionFunction(name, create);
-}

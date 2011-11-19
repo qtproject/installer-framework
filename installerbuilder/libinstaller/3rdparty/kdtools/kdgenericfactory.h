@@ -27,7 +27,7 @@
 
 #include <QtCore/QHash>
 
-template <typename T_Product, typename T_Identifier = QString, template<typename U, typename V> class T_Map = QHash>
+template <typename T_Product, typename T_Identifier = QString>
 class KDGenericFactory
 {
 public:
@@ -39,36 +39,15 @@ public:
     void registerProduct(const T_Identifier &name)
     {
         FactoryFunction function = &KDGenericFactory::create<T>;
-        registerProductionFunction(name, function);
-    }
-
-    void unregisterProduct(const T_Identifier &name)
-    {
-        map.remove(name);
-    }
-
-    unsigned int productCount() const
-    {
-        return map.size();
-    }
-
-    QList<T_Identifier> availableProducts() const
-    {
-        return map.keys();
+        map.insert(name, function);
     }
 
     T_Product *create(const T_Identifier &name) const
     {
-        const typename T_Map<T_Identifier, FactoryFunction>::const_iterator it = map.find(name);
+        const typename QHash<T_Identifier, FactoryFunction>::const_iterator it = map.find(name);
         if (it == map.end())
             return 0;
         return (*it)();
-    }
-
-protected:
-    void registerProductionFunction(const T_Identifier &name, FactoryFunction create)
-    {
-        map.insert(name, create);
     }
 
 private:
@@ -78,7 +57,7 @@ private:
         return new T;
     }
 
-    T_Map<T_Identifier, FactoryFunction> map;
+    QHash<T_Identifier, FactoryFunction> map;
 };
 
 #endif

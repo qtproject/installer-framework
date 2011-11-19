@@ -51,9 +51,6 @@ public:
     {
         registerProduct<T>(scheme);
     }
-    QStringList supportedSchemes() const;
-
-    int fileDownloaderCount() const;
     FileDownloader *create(const QString &scheme, QObject *parent) const;
     FileDownloader *create(const QString &scheme, const SignatureVerifier *verifier = 0,
                            const QUrl &signatureUrl = QUrl(), QObject *parent = 0) const;

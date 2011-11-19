@@ -45,12 +45,6 @@ public:
     {
         registerProduct<T>(name);
     }
-    void registerUpdateOperationFactory(const QString &name, UpdateOperationFactoryFunction create);
-
-    void unregisterUpdateOperation(const QString &name);
-
-    int updateOperationCount() const;
-    QStringList availableUpdateOperations() const;
 
 protected:
     UpdateOperationFactory();

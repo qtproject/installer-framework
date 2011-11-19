@@ -112,20 +112,3 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, const Signa
    Registers a new file downloader with the factory. If there is already a downloader with the same scheme,
    the downloader is replaced. The ownership of the downloader is transfered to the factory.
 */
-
-/*!
-   Returns the number of file downloaders in the factory.
-*/
-int FileDownloaderFactory::fileDownloaderCount() const
-{
-    return productCount();
-}
-
-/*!
-   Returns a list of schemes supported by this factory, i.e. for which a 
-   FileDownloader was registered.
-*/
-QStringList FileDownloaderFactory::supportedSchemes() const
-{
-    return availableProducts();
-}
