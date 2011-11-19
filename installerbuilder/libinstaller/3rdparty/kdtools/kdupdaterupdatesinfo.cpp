@@ -28,10 +28,12 @@
 #include <QFile>
 #include <QSharedData>
 
+using namespace KDUpdater;
+
 //
-// KDUpdater::UpdatesInfo::UpdatesInfoData
+// UpdatesInfo::UpdatesInfoData
 //
-struct KDUpdater::UpdatesInfo::UpdatesInfoData : public QSharedData
+struct UpdatesInfo::UpdatesInfoData : public QSharedData
 {
     Q_DECLARE_TR_FUNCTIONS(KDUpdater::UpdatesInfoData)
 
@@ -44,26 +46,25 @@ public:
     QString applicationName;
     QString applicationVersion;
     int compatLevel;
-    QList<KDUpdater::UpdateInfo> updateInfoList;
+    QList<UpdateInfo> updateInfoList;
 
-    void parseFile(const QString& updateXmlFile);
-    bool parsePackageUpdateElement(const QDomElement & updateE);
-    bool parseCompatUpdateElement(const QDomElement & updateE);
+    void parseFile(const QString &updateXmlFile);
+    bool parsePackageUpdateElement(const QDomElement &updateE);
+    bool parseCompatUpdateElement(const QDomElement &updateE);
 
-    void setInvalidContentError( const QString& detail );
+    void setInvalidContentError(const QString &detail);
 };
 
-void KDUpdater::UpdatesInfo::UpdatesInfoData::setInvalidContentError(const QString& detail)
+void UpdatesInfo::UpdatesInfoData::setInvalidContentError(const QString &detail)
 {
     error = UpdatesInfo::InvalidContentError;
     errorMessage = tr("Updates.Xml contains invalid content: %1").arg(detail);
 }
 
-void KDUpdater::UpdatesInfo::UpdatesInfoData::parseFile(const QString& updateXmlFile)
+void UpdatesInfo::UpdatesInfoData::parseFile(const QString &updateXmlFile)
 {
-    QFile file( updateXmlFile );
-    if( !file.open(QFile::ReadOnly) )
-    {
+    QFile file(updateXmlFile);
+    if (!file.open(QFile::ReadOnly)) {
         error = UpdatesInfo::CouldNotReadUpdateInfoFileError;
         errorMessage = tr("Could not read \"%1\"").arg(updateXmlFile);
         return;
@@ -73,46 +74,43 @@ void KDUpdater::UpdatesInfo::UpdatesInfoData::parseFile(const QString& updateXml
     QString parseErrorMessage;
     int parseErrorLine;
     int parseErrorColumn;
-    if( !doc.setContent( &file, &parseErrorMessage, &parseErrorLine, &parseErrorColumn ) )
-    {
+    if (!doc.setContent(&file, &parseErrorMessage, &parseErrorLine, &parseErrorColumn)) {
         error = UpdatesInfo::InvalidXmlError;
         errorMessage = tr("Parse error in %1 at %2, %3: %4")
-                      .arg( updateXmlFile, 
-                            QString::number( parseErrorLine ),
-                            QString::number( parseErrorColumn ),
-                            parseErrorMessage );
+                      .arg(updateXmlFile,
+                           QString::number(parseErrorLine),
+                           QString::number(parseErrorColumn),
+                           parseErrorMessage);
         return;
     }
 
     QDomElement rootE = doc.documentElement();
-    if( rootE.tagName() != QLatin1String( "Updates" ) )
-    {
+    if (rootE.tagName() != QLatin1String("Updates")) {
         setInvalidContentError(tr("root element %1 unexpected, should be \"Updates\"").arg(rootE.tagName()));
         return;
     }
 
     QDomNodeList childNodes = rootE.childNodes();
-    for(int i=0; i<childNodes.count(); i++)
-    {
+    for(int i = 0; i < childNodes.count(); i++) {
         QDomNode childNode = childNodes.at(i);
         QDomElement childE = childNode.toElement();
-        if( childE.isNull() )
+        if (childE.isNull())
             continue;
 
-        if( childE.tagName() == QLatin1String( "ApplicationName" ) )
+        if (childE.tagName() == QLatin1String("ApplicationName"))
             applicationName = childE.text();
-        else if( childE.tagName() == QLatin1String( "ApplicationVersion" ) )
+        else if (childE.tagName() == QLatin1String("ApplicationVersion"))
             applicationVersion = childE.text();
-        else if( childE.tagName() == QLatin1String( "RequiredCompatLevel" ) )
+        else if (childE.tagName() == QLatin1String("RequiredCompatLevel"))
             compatLevel = childE.text().toInt();
-        else if( childE.tagName() == QLatin1String( "PackageUpdate" ) ) {
-            const bool res = parsePackageUpdateElement( childE );
+        else if (childE.tagName() == QLatin1String("PackageUpdate")) {
+            const bool res = parsePackageUpdateElement(childE);
             if (!res) {
                 //error handled in subroutine
                 return;
             }
-        } else if( childE.tagName() == QLatin1String( "CompatUpdate" ) ) {
-            const bool res = parseCompatUpdateElement( childE );
+        } else if (childE.tagName() == QLatin1String("CompatUpdate")) {
+            const bool res = parseCompatUpdateElement(childE);
             if (!res) {
                 //error handled in subroutine
                 return;
@@ -120,14 +118,12 @@ void KDUpdater::UpdatesInfo::UpdatesInfoData::parseFile(const QString& updateXml
         }
     }
 
-    if (applicationName.isEmpty())
-    {
+    if (applicationName.isEmpty()) {
         setInvalidContentError(tr("ApplicationName element is missing"));
         return;
     }
     
-    if (applicationVersion.isEmpty())
-    {
+    if (applicationVersion.isEmpty()) {
         setInvalidContentError(tr("ApplicationVersion element is missing"));
         return;
     }
@@ -136,36 +132,33 @@ void KDUpdater::UpdatesInfo::UpdatesInfoData::parseFile(const QString& updateXml
     errorMessage.clear();
 }
 
-bool KDUpdater::UpdatesInfo::UpdatesInfoData::parsePackageUpdateElement(const QDomElement & updateE)
+bool UpdatesInfo::UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
 {
-    if( updateE.isNull() )
+    if (updateE.isNull())
         return false;
 
-    KDUpdater::UpdateInfo info;
-    info.type = KDUpdater::PackageUpdate;
+    UpdateInfo info;
+    info.type = PackageUpdate;
 
     QDomNodeList childNodes = updateE.childNodes();
-    for(int i=0; i<childNodes.count(); i++)
-    {
+    for (int i = 0; i < childNodes.count(); i++) {
         QDomNode childNode = childNodes.at(i);
         QDomElement childE = childNode.toElement();
-        if( childE.isNull() )
+        if (childE.isNull())
             continue;
 
-        if (childE.tagName() == QLatin1String( "ReleaseNotes" )) {
+        if (childE.tagName() == QLatin1String("ReleaseNotes")) {
             info.data[childE.tagName()] = QUrl(childE.text());
-        }
-        else if (childE.tagName() == QLatin1String( "UpdateFile" )) {
-            KDUpdater::UpdateFileInfo ufInfo;
-            ufInfo.arch = childE.attribute(QLatin1String( "Arch" ), QLatin1String( "i386" ));
-            ufInfo.os = childE.attribute(QLatin1String( "OS" ));
-            ufInfo.compressedSize = childE.attribute( QLatin1String( "CompressedSize" ) ).toLongLong();
-            ufInfo.uncompressedSize = childE.attribute( QLatin1String( "UncompressedSize" ) ).toLongLong();
-            ufInfo.sha1sum = QByteArray::fromHex( childE.attribute( QLatin1String( "sha1sum" ) ).toAscii() );
+        } else if (childE.tagName() == QLatin1String("UpdateFile")) {
+            UpdateFileInfo ufInfo;
+            ufInfo.arch = childE.attribute(QLatin1String("Arch"), QLatin1String("i386"));
+            ufInfo.os = childE.attribute(QLatin1String("OS"));
+            ufInfo.compressedSize = childE.attribute(QLatin1String("CompressedSize")).toLongLong();
+            ufInfo.uncompressedSize = childE.attribute(QLatin1String("UncompressedSize")).toLongLong();
+            ufInfo.sha1sum = QByteArray::fromHex(childE.attribute(QLatin1String("sha1sum")).toAscii());
             ufInfo.fileName = childE.text();
             info.updateFiles.append(ufInfo);
-        }
-        else if (childE.tagName() == QLatin1String("Licenses")) {
+        } else if (childE.tagName() == QLatin1String("Licenses")) {
             QHash<QString, QVariant> licenseHash;
             const QDomNodeList licenseNodes = childE.childNodes();
             for (int i = 0; i < licenseNodes.count(); ++i) {
@@ -178,33 +171,27 @@ bool KDUpdater::UpdatesInfo::UpdatesInfoData::parsePackageUpdateElement(const QD
             }
             if (!licenseHash.isEmpty())
                 info.data.insert(QLatin1String("Licenses"), licenseHash);
-        }
-        else if (childE.tagName() == QLatin1String( "Version" )) {
+        } else if (childE.tagName() == QLatin1String("Version")) {
             info.data.insert(QLatin1String("inheritVersionFrom"), childE.attribute(QLatin1String("inheritVersionFrom")));
             info.data[childE.tagName()] = childE.text();
-        }
-        else {
+        } else {
             info.data[childE.tagName()] = childE.text();
         }
     }
 
-    if (!info.data.contains( QLatin1String( "Name" ) ))
-    {
+    if (!info.data.contains(QLatin1String("Name"))) {
         setInvalidContentError(tr("PackageUpdate element without Name"));
         return false;
     }
-    else if (!info.data.contains( QLatin1String( "Version" ) ))
-    {
+    if (!info.data.contains(QLatin1String("Version"))) {
         setInvalidContentError(tr("PackageUpdate element without Version"));
         return false;
     }
-    else if (!info.data.contains( QLatin1String( "ReleaseDate" ) ))
-    {
+    if (!info.data.contains(QLatin1String("ReleaseDate"))) {
         setInvalidContentError(tr("PackageUpdate element without ReleaseDate"));
         return false;
     }
-    else if (info.updateFiles.isEmpty())
-    {
+    if (info.updateFiles.isEmpty()) {
         setInvalidContentError(tr("PackageUpdate element without UpdateFile"));
         return false;
     }
@@ -213,52 +200,45 @@ bool KDUpdater::UpdatesInfo::UpdatesInfoData::parsePackageUpdateElement(const QD
     return true;
 }
 
-bool KDUpdater::UpdatesInfo::UpdatesInfoData::parseCompatUpdateElement(const QDomElement & updateE)
+bool UpdatesInfo::UpdatesInfoData::parseCompatUpdateElement(const QDomElement &updateE)
 {
-    if( updateE.isNull() )
+    if (updateE.isNull())
         return false;
 
-    KDUpdater::UpdateInfo info;
-    info.type = KDUpdater::CompatUpdate;
+    UpdateInfo info;
+    info.type = CompatUpdate;
 
     QDomNodeList childNodes = updateE.childNodes();
-    for(int i=0; i<childNodes.count(); i++)
-    {
+    for (int i = 0; i < childNodes.count(); i++) {
         QDomNode childNode = childNodes.at(i);
         QDomElement childE = childNode.toElement();
-        if( childE.isNull() )
+        if (childE.isNull())
             continue;
 
-        if( childE.tagName() == QLatin1String( "ReleaseNotes" ) ) {
+        if (childE.tagName() == QLatin1String("ReleaseNotes")) {
             info.data[childE.tagName()] = QUrl(childE.text());
-        }
-        else if( childE.tagName() == QLatin1String( "UpdateFile" ) )
-        {
-            KDUpdater::UpdateFileInfo ufInfo;
-            ufInfo.arch = childE.attribute(QLatin1String( "Arch" ), QLatin1String( "i386" ));
-            ufInfo.os = childE.attribute(QLatin1String( "OS" ));
+        } else if (childE.tagName() == QLatin1String("UpdateFile")) {
+            UpdateFileInfo ufInfo;
+            ufInfo.arch = childE.attribute(QLatin1String("Arch"), QLatin1String("i386"));
+            ufInfo.os = childE.attribute(QLatin1String("OS"));
             ufInfo.fileName = childE.text();
             info.updateFiles.append(ufInfo);
-        }
-        else {
+        } else {
             info.data[childE.tagName()] = childE.text();
         }
     }
 
-    if (!info.data.contains( QLatin1String( "CompatLevel" ) ))
-    {
+    if (!info.data.contains(QLatin1String("CompatLevel"))) {
         setInvalidContentError(tr("CompatUpdate element without CompatLevel"));
         return false;
     }
     
-    if (!info.data.contains( QLatin1String( "ReleaseDate" ) ))
-    {
+    if (!info.data.contains(QLatin1String("ReleaseDate"))) {
         setInvalidContentError(tr("CompatUpdate element without ReleaseDate"));
         return false;
     }
     
-    if (info.updateFiles.isEmpty())
-    {
+    if (info.updateFiles.isEmpty()) {
         setInvalidContentError(tr("CompatUpdate element without UpdateFile"));
         return false;
     }
@@ -269,30 +249,30 @@ bool KDUpdater::UpdatesInfo::UpdatesInfoData::parseCompatUpdateElement(const QDo
 
 
 //
-// KDUpdater::UpdatesInfo
+// UpdatesInfo
 //
-KDUpdater::UpdatesInfo::UpdatesInfo()
-    : d(new KDUpdater::UpdatesInfo::UpdatesInfoData)
+UpdatesInfo::UpdatesInfo()
+    : d(new UpdatesInfo::UpdatesInfoData)
 {
 }
 
-KDUpdater::UpdatesInfo::~UpdatesInfo()
+UpdatesInfo::~UpdatesInfo()
 {
 }
 
-bool KDUpdater::UpdatesInfo::isValid() const
+bool UpdatesInfo::isValid() const
 {
     return d->error == NoError;
 }
 
-QString KDUpdater::UpdatesInfo::errorString() const
+QString UpdatesInfo::errorString() const
 {
     return d->errorMessage;
 }
 
-void KDUpdater::UpdatesInfo::setFileName(const QString& updateXmlFile)
+void UpdatesInfo::setFileName(const QString &updateXmlFile)
 {
-    if( d->updateXmlFile == updateXmlFile )
+    if (d->updateXmlFile == updateXmlFile)
         return;
 
     d->applicationName.clear();
@@ -300,73 +280,70 @@ void KDUpdater::UpdatesInfo::setFileName(const QString& updateXmlFile)
     d->updateInfoList.clear();
 
     d->updateXmlFile = updateXmlFile;
-    d->parseFile( d->updateXmlFile );
+    d->parseFile(d->updateXmlFile);
 }
 
-QString KDUpdater::UpdatesInfo::fileName() const
+QString UpdatesInfo::fileName() const
 {
     return d->updateXmlFile;
 }
 
-QString KDUpdater::UpdatesInfo::applicationName() const
+QString UpdatesInfo::applicationName() const
 {
     return d->applicationName;
 }
 
-QString KDUpdater::UpdatesInfo::applicationVersion() const
+QString UpdatesInfo::applicationVersion() const
 {
     return d->applicationVersion;
 }
 
-int KDUpdater::UpdatesInfo::compatLevel() const
+int UpdatesInfo::compatLevel() const
 {
     return d->compatLevel;
 }
 
-int KDUpdater::UpdatesInfo::updateInfoCount( int type) const
+int UpdatesInfo::updateInfoCount(int type) const
 {
-    if ( type == KDUpdater::AllUpdate ) {
+    if (type == AllUpdate)
         return d->updateInfoList.count();
-    }
+
     int count = 0;
-    for ( int i=0; i<d->updateInfoList.count(); ++i ) {
-        if ( d->updateInfoList.at( i ).type == type )
+    for (int i = 0; i < d->updateInfoList.count(); ++i) {
+        if (d->updateInfoList.at(i).type == type)
             ++count;
     }
     return count;
 }
 
-KDUpdater::UpdateInfo KDUpdater::UpdatesInfo::updateInfo(int index) const
+UpdateInfo UpdatesInfo::updateInfo(int index) const
 {
-    if(index < 0 || index >= d->updateInfoList.count())
-        return KDUpdater::UpdateInfo();
+    if (index < 0 || index >= d->updateInfoList.count())
+        return UpdateInfo();
 
-    return d->updateInfoList.at( index );
+    return d->updateInfoList.at(index);
 }
 
-QList<KDUpdater::UpdateInfo> KDUpdater::UpdatesInfo::updatesInfo( int type,  int compatLevel ) const
+QList<UpdateInfo> UpdatesInfo::updatesInfo(int type, int compatLevel) const
 {
-    QList<KDUpdater::UpdateInfo> list;
-    if ( compatLevel == -1 ) {
-        if ( type == KDUpdater::AllUpdate ) {
+    QList<UpdateInfo> list;
+    if (compatLevel == -1) {
+        if (type == AllUpdate)
             return d->updateInfoList;
+        for (int i = 0; i < d->updateInfoList.count(); ++i) {
+            if (d->updateInfoList.at(i).type == type)
+                list.append(d->updateInfoList.at(i));
         }
-        for ( int i=0; i<d->updateInfoList.count(); ++i ) {
-            if ( d->updateInfoList.at( i ).type == type )
-                list.append( d->updateInfoList.at( i ) );
-        }
-    }
-    else {
-        for ( int i=0; i<d->updateInfoList.count(); ++i ) {
-            UpdateInfo updateInfo = d->updateInfoList.at( i );
-            if ( updateInfo.type == type ) {
-                if ( updateInfo.type == CompatUpdate ) {
-                    if ( updateInfo.data.value( QLatin1String( "CompatLevel" ) ) == compatLevel )
-                        list.append( updateInfo );
-                }
-                else {
-                    if ( updateInfo.data.value( QLatin1String( "RequiredCompatLevel" ) ) == compatLevel )
-                        list.append( updateInfo );
+    } else {
+        for (int i = 0; i < d->updateInfoList.count(); ++i) {
+            UpdateInfo updateInfo = d->updateInfoList.at(i);
+            if (updateInfo.type == type) {
+                if (updateInfo.type == CompatUpdate) {
+                    if (updateInfo.data.value(QLatin1String("CompatLevel")) == compatLevel)
+                        list.append(updateInfo);
+                } else {
+                    if (updateInfo.data.value(QLatin1String("RequiredCompatLevel")) == compatLevel)
+                        list.append(updateInfo);
                 }
             }
         }

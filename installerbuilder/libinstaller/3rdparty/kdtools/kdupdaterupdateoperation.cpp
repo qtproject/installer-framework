@@ -46,10 +46,10 @@
  * \internal
  * Returns a filename for a temporary file based on \a templateName
  */
-static QString backupFileName( const QString& templateName = QString() )
+static QString backupFileName(const QString &templateName)
 {
-    const QFileInfo templ( templateName );
-    QTemporaryFile file( QDir::temp().absoluteFilePath( templ.fileName() ) );
+    const QFileInfo templ(templateName);
+    QTemporaryFile file( QDir::temp().absoluteFilePath(templ.fileName()));
     file.open();
     const QString name = file.fileName();
     file.close();
@@ -61,18 +61,18 @@ using namespace KDUpdater;
 
 struct UpdateOperation::UpdateOperationData
 {
-    UpdateOperationData( UpdateOperation* qq ) :
-        q( qq ),
-        error( 0 ),
+    UpdateOperationData(UpdateOperation *qq) :
+        q(qq),
+        error(0),
         application(0)
     {}
 
-    UpdateOperation* q;
+    UpdateOperation *q;
     QString name;
     QStringList args;
     QString errorString;
     int error;
-    Application* application;
+    Application *application;
     QVariantMap values;
     QStringList delayedDeletionFiles;
 };
@@ -82,18 +82,17 @@ struct UpdateOperation::UpdateOperationData
    Constructor
 */
 UpdateOperation::UpdateOperation()
-    : d ( new UpdateOperationData( this ) )
-{
-}
+    : d(new UpdateOperationData(this))
+{}
 
 /*!
    Destructor
 */
 UpdateOperation::~UpdateOperation()
 {
-    Application* const app = Application::instance();
-    if( app )
-        app->addFilesForDelayedDeletion( filesForDelayedDeletion() );
+    Application *const app = Application::instance();
+    if (app)
+        app->addFilesForDelayedDeletion(filesForDelayedDeletion());
     delete d;
 }
 
@@ -122,42 +121,42 @@ QString UpdateOperation::operationCommand() const
 /*!
  Returns true if there exists a setting called \a name. Otherwise returns false.
 */
-bool UpdateOperation::hasValue( const QString& name ) const
+bool UpdateOperation::hasValue(const QString &name) const
 {
-    return d->values.contains( name );
+    return d->values.contains(name);
 }
 
 /*!
  Clears the value of setting \a name and removes it.
  \post hasValue( \a name ) returns false.
 */
-void UpdateOperation::clearValue( const QString& name )
+void UpdateOperation::clearValue(const QString &name)
 {
-    d->values.remove( name );
+    d->values.remove(name);
 }
 
 /*!
  Returns the value of setting \a name. If the setting does not exists,
  this returns an empty QVariant.
 */
-QVariant UpdateOperation::value( const QString& name ) const
+QVariant UpdateOperation::value(const QString &name) const
 {
-    return hasValue( name ) ? d->values[ name ] : QVariant();
+    return hasValue(name) ? d->values[name] : QVariant();
 }
 
 /*!
   Sets the value of setting \a name to \a value.
 */
-void UpdateOperation::setValue( const QString& name, const QVariant& value )
+void UpdateOperation::setValue(const QString &name, const QVariant &value)
 {
-    d->values[ name ] = value;
+    d->values[name] = value;
 }
 
 /*!
    Sets a update operation name. Subclasses will have to provide a unique
    name to describe this operation.
 */
-void UpdateOperation::setName(const QString& name)
+void UpdateOperation::setName(const QString &name)
 {
     d->name = name;
 }
@@ -166,7 +165,7 @@ void UpdateOperation::setName(const QString& name)
    Through this function, arguments to the update operation can be specified
    to the update operation.
 */
-void UpdateOperation::setArguments(const QStringList& args)
+void UpdateOperation::setArguments(const QStringList &args)
 {
     d->args = args;
 }
@@ -175,7 +174,7 @@ void UpdateOperation::setArguments(const QStringList& args)
    Sets the Application for this operation.
    This may be used by some operations
 */
-void UpdateOperation::setApplication( Application* application )
+void UpdateOperation::setApplication(Application *application)
 {
     d->application = application;
 }
@@ -208,7 +207,7 @@ int UpdateOperation::error() const
 /*!
  * Used by subclasses to set the error string.
  */
-void UpdateOperation::setErrorString( const QString& str )
+void UpdateOperation::setErrorString(const QString &str)
 {
     d->errorString = str;
 }
@@ -216,10 +215,10 @@ void UpdateOperation::setErrorString( const QString& str )
 /*!
  * Used by subclasses to set the error code.
  */
-void UpdateOperation::setError( int error, const QString& errorString )
+void UpdateOperation::setError(int error, const QString &errorString)
 {
     d->error = error;
-    if( !errorString.isNull() )
+    if (!errorString.isNull())
         d->errorString = errorString;
 }
 
@@ -242,7 +241,7 @@ QStringList UpdateOperation::filesForDelayedDeletion() const
    (and the file isn't used anymore for sure).
    @param files the files to be registered
 */
-void UpdateOperation::registerForDelayedDeletion( const QStringList& files )
+void UpdateOperation::registerForDelayedDeletion(const QStringList &files)
 {
     d->delayedDeletionFiles << files;
 }
@@ -250,30 +249,29 @@ void UpdateOperation::registerForDelayedDeletion( const QStringList& files )
 /*!
  Tries to delete \a file. If \a file can't be deleted, it gets registered for delayed deletion.
 */
-bool UpdateOperation::deleteFileNowOrLater( const QString& file, QString* errorString )
+bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorString)
 {
-    if( file.isEmpty() || QFile::remove( file ) )
+    if (file.isEmpty() || QFile::remove(file))
         return true;
 
-    if( !QFile::exists( file ) )
+    if (!QFile::exists(file))
         return true;
     
-    const QString backup = backupFileName( file ); 
-    QFile f( file );
-    if( !f.rename( backup ) )
-    {
-        if ( errorString )
+    const QString backup = backupFileName(file);
+    QFile f(file);
+    if (!f.rename(backup)) {
+        if (errorString)
             *errorString = f.errorString();
         return false;
     }
-    registerForDelayedDeletion( QStringList( backup ) );
+    registerForDelayedDeletion(QStringList(backup));
     return true;
 }
 
 /*!
    Returns a pointer to the current Application
 */
-Application* UpdateOperation::application() const
+Application *UpdateOperation::application() const
 {
     return d->application;
 }
@@ -315,43 +313,39 @@ Application* UpdateOperation::application() const
 QDomDocument UpdateOperation::toXml() const
 {
     QDomDocument doc;
-    QDomElement root = doc.createElement( QLatin1String("operation") );
-    doc.appendChild( root );
-    QDomElement args = doc.createElement( QLatin1String("arguments") );
-    Q_FOREACH( const QString &s, arguments() ) {
-        QDomElement arg = doc.createElement( QLatin1String("argument") );
-        arg.appendChild( doc.createTextNode(s) );
-        args.appendChild( arg );
+    QDomElement root = doc.createElement(QLatin1String("operation"));
+    doc.appendChild(root);
+    QDomElement args = doc.createElement(QLatin1String("arguments"));
+    Q_FOREACH (const QString &s, arguments()) {
+        QDomElement arg = doc.createElement(QLatin1String("argument"));
+        arg.appendChild(doc.createTextNode(s));
+        args.appendChild(arg);
     }
-    root.appendChild( args );
-    if( d->values.isEmpty() )
+    root.appendChild(args);
+    if (d->values.isEmpty())
         return doc;
 
     // append all values set with setValue
-    QDomElement values = doc.createElement( QLatin1String( "values" ) );
-    for( QVariantMap::const_iterator it = d->values.begin(); it != d->values.end(); ++it )
-    {
-        QDomElement value = doc.createElement( QLatin1String( "value" ) );
+    QDomElement values = doc.createElement(QLatin1String("values"));
+    for (QVariantMap::const_iterator it = d->values.begin(); it != d->values.end(); ++it) {
+        QDomElement value = doc.createElement(QLatin1String("value"));
         const QVariant& variant = it.value();
-        value.setAttribute( QLatin1String( "name" ), it.key() );
-        value.setAttribute( QLatin1String( "type" ), QLatin1String( QVariant::typeToName( variant.type() ) ) );
+        value.setAttribute(QLatin1String("name"), it.key());
+        value.setAttribute(QLatin1String("type"), QLatin1String( QVariant::typeToName( variant.type())));
 
-        if( variant.type() != QVariant::List && variant.type() != QVariant::StringList && qVariantCanConvert< QString >( variant ) )
-        {
+        if (variant.type() != QVariant::List && variant.type() != QVariant::StringList && qVariantCanConvert<QString>(variant)) {
             // it can convert to string? great!
-            value.appendChild( doc.createTextNode( variant.toString() ) );
-        }
-        else
-        {
+            value.appendChild( doc.createTextNode(variant.toString()));
+        } else {
             // no? then we have to go the hard way...
             QByteArray data;
-            QDataStream stream( &data, QIODevice::WriteOnly );
+            QDataStream stream(&data, QIODevice::WriteOnly);
             stream << variant;
-            value.appendChild( doc.createTextNode( QLatin1String( data.toBase64().data() ) ) );
+            value.appendChild(doc.createTextNode(QLatin1String( data.toBase64().data())));
         }
-        values.appendChild( value );
+        values.appendChild(value);
     }
-    root.appendChild( values );
+    root.appendChild(values);
     return doc;
 }
 
@@ -359,40 +353,38 @@ QDomDocument UpdateOperation::toXml() const
   Restores UpdateOperation's arguments and values from the XML document \a doc.
   Returns true on success, otherwise false.
 */
-bool UpdateOperation::fromXml( const QDomDocument &doc )
+bool UpdateOperation::fromXml(const QDomDocument &doc)
 {
     QStringList args;
     const QDomElement root = doc.documentElement();
-    const QDomElement argsElem = root.firstChildElement( QLatin1String("arguments") );
-    Q_ASSERT( ! argsElem.isNull() );
-    for( QDomNode n = argsElem.firstChild(); ! n.isNull(); n = n.nextSibling() ) {
+    const QDomElement argsElem = root.firstChildElement(QLatin1String("arguments"));
+    Q_ASSERT(! argsElem.isNull());
+    for (QDomNode n = argsElem.firstChild(); ! n.isNull(); n = n.nextSibling()) {
         const QDomElement e = n.toElement();
-        if( !e.isNull() && e.tagName() == QLatin1String("argument") )
+        if (!e.isNull() && e.tagName() == QLatin1String("argument"))
             args << e.text();
     }
     setArguments(args);
 
     d->values.clear();
-    const QDomElement values = root.firstChildElement( QLatin1String( "values" ) );
-    for( QDomNode n = values.firstChild(); !n.isNull(); n = n.nextSibling() )
-    {
+    const QDomElement values = root.firstChildElement(QLatin1String("values"));
+    for (QDomNode n = values.firstChild(); !n.isNull(); n = n.nextSibling()) {
         const QDomElement v = n.toElement();
-        if( v.isNull() || v.tagName() != QLatin1String( "value" ) )
+        if (v.isNull() || v.tagName() != QLatin1String("value"))
             continue;
 
-        const QString name = v.attribute( QLatin1String( "name" ) );
-        const QString type = v.attribute( QLatin1String( "type" ) );
+        const QString name = v.attribute(QLatin1String("name"));
+        const QString type = v.attribute(QLatin1String("type"));
         const QString value = v.text();
 
-        const QVariant::Type t = QVariant::nameToType( type.toLatin1().data() );
-        QVariant var = qVariantFromValue( value );
-        if( t == QVariant::List || t == QVariant::StringList || !var.convert( t ) )
-        {
-            QDataStream stream( QByteArray::fromBase64( value.toLatin1() ) );
+        const QVariant::Type t = QVariant::nameToType(type.toLatin1().data());
+        QVariant var = qVariantFromValue(value);
+        if (t == QVariant::List || t == QVariant::StringList || !var.convert(t)) {
+            QDataStream stream(QByteArray::fromBase64( value.toLatin1()));
             stream >> var;
         }
 
-        d->values[ name ] = var;
+        d->values[name] = var;
     }
 
     return true;
@@ -403,13 +395,13 @@ bool UpdateOperation::fromXml( const QDomDocument &doc )
   Returns true on success, otherwise false.
   \overload
 */
-bool UpdateOperation::fromXml( const QString &xml )
+bool UpdateOperation::fromXml(const QString &xml)
 {
     QDomDocument doc;
     QString errorMsg;
     int errorLine;
     int errorColumn;
-    if ( ! doc.setContent( xml, &errorMsg, &errorLine, &errorColumn ) ) {
+    if (!doc.setContent( xml, &errorMsg, &errorLine, &errorColumn)) {
         qWarning() << "Error parsing xml error=" << errorMsg << "line=" << errorLine << "column=" << errorColumn;
         return false;
     }

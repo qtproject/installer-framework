@@ -24,19 +24,25 @@
 
 #include <QEventLoop>
 
-class KDJob::Private {
-    KDJob* const q;
+class KDJob::Private
+{
+    KDJob *const q;
 public:
-    explicit Private( KDJob* qq ) : q( qq ), error( KDJob::NoError ), errorString(), caps( KDJob::NoCapabilities ), autoDelete( true ), totalAmount( 100 ), processedAmount( 0 ) {}
+    explicit Private(KDJob *qq)
+        : q(qq), error(KDJob::NoError), caps(KDJob::NoCapabilities), autoDelete(true),
+          totalAmount(100), processedAmount(0)
+    {}
 
-    void delayedStart() {
+    void delayedStart()
+    {
         q->doStart();
-        emit q->started( q );
+        emit q->started(q);
     }
 
-    void waitForSignal( const char* sig ) {
+    void waitForSignal(const char *sig)
+    {
         QEventLoop loop;
-        q->connect( q, sig, &loop, SLOT(quit()) );
+        q->connect(q, sig, &loop, SLOT(quit()));
         loop.exec();
     }
 
@@ -48,82 +54,102 @@ public:
     quint64 processedAmount;
 };
 
-KDJob::KDJob( QObject* parent ) : QObject( parent ), d( new Private( this ) ) {
-}
+KDJob::KDJob(QObject *parent)
+    : QObject(parent),
+      d(new Private(this))
+{}
 
-KDJob::~KDJob() {
+KDJob::~KDJob()
+{
     delete d;
 }
 
-bool KDJob::autoDelete() const {
+bool KDJob::autoDelete() const
+{
     return d->autoDelete;
 }
 
-void KDJob::setAutoDelete( bool autoDelete ) {
+void KDJob::setAutoDelete(bool autoDelete)
+{
     d->autoDelete = autoDelete;
 }
 
-int KDJob::error() const {
+int KDJob::error() const
+{
     return d->error;
 }
 
-QString KDJob::errorString() const {
+QString KDJob::errorString() const
+{
     return d->errorString;
 }
 
-void KDJob::emitFinished() {
-    emit finished( this );
-    if ( d->autoDelete )
+void KDJob::emitFinished()
+{
+    emit finished(this);
+    if (d->autoDelete)
         deleteLater();
 }
 
-void KDJob::emitFinishedWithError( int error, const QString& errorString ) {
+void KDJob::emitFinishedWithError(int error, const QString &errorString)
+{
     d->error = error;
     d->errorString = errorString;
     emitFinished();
 }
 
-void KDJob::setError( int error ) {
+void KDJob::setError(int error)
+{
     d->error = error;
 }
 
-void KDJob::setErrorString( const QString& errorString ) {
+void KDJob::setErrorString(const QString &errorString)
+{
     d->errorString = errorString;
 }
 
-void KDJob::waitForStarted() {
-    d->waitForSignal( SIGNAL(started(KDJob*)) );
+void KDJob::waitForStarted()
+{
+    d->waitForSignal(SIGNAL(started(KDJob*)));
 }
 
-void KDJob::waitForFinished() {
-    d->waitForSignal( SIGNAL(finished(KDJob*)) );
+void KDJob::waitForFinished()
+{
+    d->waitForSignal(SIGNAL(finished(KDJob*)));
 }
 
-KDJob::Capabilities KDJob::capabilities() const {
+KDJob::Capabilities KDJob::capabilities() const
+{
     return d->caps;
 }
 
-bool KDJob::hasCapability( Capability c ) const {
-    return d->caps.testFlag( c );
+bool KDJob::hasCapability(Capability c) const
+{
+    return d->caps.testFlag(c);
 }
 
-void KDJob::setCapabilities( Capabilities c ) {
+void KDJob::setCapabilities(Capabilities c)
+{
     d->caps = c;
 }
 
-void KDJob::start() {
-    QMetaObject::invokeMethod( this, "delayedStart", Qt::QueuedConnection );
+void KDJob::start()
+{
+    QMetaObject::invokeMethod(this, "delayedStart", Qt::QueuedConnection);
 }
 
-void KDJob::doCancel() {
+void KDJob::doCancel()
+{
 }
 
-void KDJob::cancel() {
+void KDJob::cancel()
+{
     doCancel();
-    setError( Canceled );
+    setError(Canceled);
 }
 
-quint64 KDJob::totalAmount() const {
+quint64 KDJob::totalAmount() const
+{
     return d->totalAmount;
 }
 
@@ -131,18 +157,20 @@ quint64 KDJob::processedAmount() const {
     return d->processedAmount;
 }
 
-void KDJob::setTotalAmount( quint64 amount ) {
-    if ( d->totalAmount == amount )
+void KDJob::setTotalAmount(quint64 amount)
+{
+    if (d->totalAmount == amount)
         return;
     d->totalAmount = amount;
-    emit progress( this, d->processedAmount, d->totalAmount );
+    emit progress(this, d->processedAmount, d->totalAmount);
 }
 
-void KDJob::setProcessedAmount( quint64 amount ) {
-    if ( d->processedAmount == amount )
+void KDJob::setProcessedAmount(quint64 amount)
+{
+    if (d->processedAmount == amount)
         return;
     d->processedAmount = amount;
-    emit progress( this, d->processedAmount, d->totalAmount );
+    emit progress(this, d->processedAmount, d->totalAmount);
 }
 
 #include "moc_kdjob.cpp"

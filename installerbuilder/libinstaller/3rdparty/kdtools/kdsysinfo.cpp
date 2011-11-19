@@ -22,6 +22,9 @@
 
 #include "kdsysinfo.h"
 
+#include <QDir>
+#include <QDebug>
+
 #include <algorithm>
 
 KDSysInfo::KDSysInfo()
@@ -32,16 +35,13 @@ KDSysInfo::~KDSysInfo()
 {
 }
 
-#include <QDir>
-#include <QDebug>
-
-QDebug operator<<( QDebug dbg, KDSysInfo::Volume volume )
+QDebug operator<<(QDebug dbg, KDSysInfo::Volume volume)
 {
     return dbg << "KDSysInfo::Volume(" << volume.path() << ")";
 }
 
-QPair< quint64, quint64 > volumeSpace( const QString& volume );
-QString volumeName( const QString& volume );
+QPair<quint64, quint64> volumeSpace(const QString &volume);
+QString volumeName(const QString &volume);
 
 class KDSysInfo::Volume::Private : public QSharedData
 {
@@ -55,12 +55,12 @@ public:
 
 
 KDSysInfo::Volume::Volume() 
-    : d( new Private )
+    : d(new Private)
 {
 }
 
-KDSysInfo::Volume::Volume( const Volume& other ) 
-    : d( other.d )
+KDSysInfo::Volume::Volume(const Volume &other)
+    : d(other.d)
 {
 }
 
@@ -68,29 +68,29 @@ KDSysInfo::Volume::~Volume()
 {
 }
 
-void KDSysInfo::Volume::swap( KDSysInfo::Volume& other )
+void KDSysInfo::Volume::swap(KDSysInfo::Volume& other)
 {
-    std::swap( d, other.d );
+    std::swap(d, other.d);
 }
 
-KDSysInfo::Volume& KDSysInfo::Volume::operator=( const KDSysInfo::Volume& other )
+KDSysInfo::Volume& KDSysInfo::Volume::operator=(const KDSysInfo::Volume &other)
 {
-    KDSysInfo::Volume tmp( other );
-    swap( tmp );
+    KDSysInfo::Volume tmp(other);
+    swap(tmp);
     return *this;
 }
 
-void KDSysInfo::Volume::setPath( const QString& path )
+void KDSysInfo::Volume::setPath(const QString &path)
 {
     d->p = path;
 }
 
-bool KDSysInfo::Volume::operator == ( const Volume& other ) const
+bool KDSysInfo::Volume::operator==(const Volume &other) const
 {
     return d->name == other.d->name && d->p == other.d->p;
 }
 
-void KDSysInfo::Volume::setName( const QString& name )
+void KDSysInfo::Volume::setName(const QString &name)
 {
     d->name = name;
 }
@@ -110,7 +110,7 @@ quint64 KDSysInfo::Volume::size() const
     return d->size;
 }
 
-void KDSysInfo::Volume::setSize( const quint64& size )
+void KDSysInfo::Volume::setSize(const quint64 &size)
 {
     d->size = size;
 }
@@ -130,37 +130,36 @@ quint64 KDSysInfo::Volume::availableSpace() const
     return d->availableSpace;
 }
 
-void KDSysInfo::Volume::setAvailableSpace( const quint64& available )
+void KDSysInfo::Volume::setAvailableSpace(const quint64 &available)
 {
     d->availableSpace = available;
 }
 
 struct PathLongerThan
 {
-    bool operator()( const KDSysInfo::Volume& lhs, const KDSysInfo::Volume& rhs ) const
+    bool operator()(const KDSysInfo::Volume &lhs, const KDSysInfo::Volume &rhs) const
     {
         return lhs.path().length() > rhs.path().length();
     }
 };
 
-KDSysInfo::Volume KDSysInfo::Volume::fromPath( const QString& path )
+KDSysInfo::Volume KDSysInfo::Volume::fromPath(const QString &path)
 {
-    QList< KDSysInfo::Volume > volumes = mountedVolumes();
+    QList<KDSysInfo::Volume> volumes = mountedVolumes();
     // sort by length to get the longest mount point (not just "/") first
-    std::sort( volumes.begin(), volumes.end(), PathLongerThan() );
-    for( QList< KDSysInfo::Volume >::const_iterator it = volumes.constBegin(); it != volumes.constEnd(); ++it )
-    {
+    std::sort(volumes.begin(), volumes.end(), PathLongerThan());
+    for (QList< KDSysInfo::Volume >::const_iterator it = volumes.constBegin(); it != volumes.constEnd(); ++it) {
 #ifdef Q_WS_WIN
-        if( QDir::toNativeSeparators( path ).toLower().startsWith( it->path().toLower() ) )
+        if (QDir::toNativeSeparators(path).toLower().startsWith(it->path().toLower()))
 #else
-        if( QDir(path).canonicalPath().startsWith( it->path() ) )
+        if (QDir(path).canonicalPath().startsWith(it->path()))
 #endif
             return *it;
     }
     return KDSysInfo::Volume();
 }
 
-QDebug operator<<( QDebug dbg, KDSysInfo::ProcessInfo process )
+QDebug operator<<(QDebug dbg, KDSysInfo::ProcessInfo process)
 {
     return dbg << "KDSysInfo::ProcessInfo(" << process.id << ", " << process.name << ")";
 }

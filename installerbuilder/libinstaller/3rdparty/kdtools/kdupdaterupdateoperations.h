@@ -78,7 +78,6 @@ class KDTOOLS_EXPORT MkdirOperation : public UpdateOperation
 {
 public:
     MkdirOperation();
-    ~MkdirOperation();
 
     void backup();
     bool performOperation();
@@ -91,7 +90,6 @@ class KDTOOLS_EXPORT RmdirOperation : public UpdateOperation
 {
 public:
     RmdirOperation();
-    ~RmdirOperation();
 
     void backup();
     bool performOperation();
@@ -104,7 +102,6 @@ class KDTOOLS_EXPORT AppendFileOperation : public UpdateOperation
 {
 public:
     AppendFileOperation();
-    ~AppendFileOperation();
 
     void backup();
     bool performOperation();
@@ -117,7 +114,6 @@ class KDTOOLS_EXPORT PrependFileOperation : public UpdateOperation
 {
 public:
     PrependFileOperation();
-    ~PrependFileOperation();
 
     void backup();
     bool performOperation();
@@ -132,7 +128,6 @@ class KDTOOLS_EXPORT ExecuteOperation : public QObject, public UpdateOperation
 
 public:
     ExecuteOperation();
-    ~ExecuteOperation();
 
     void backup();
     bool performOperation();
@@ -157,7 +152,6 @@ class KDTOOLS_EXPORT UpdatePackageOperation : public UpdateOperation
 {
 public:
     UpdatePackageOperation();
-    ~UpdatePackageOperation();
 
     void backup();
     bool performOperation();
@@ -170,7 +164,6 @@ class KDTOOLS_EXPORT UpdateCompatOperation : public UpdateOperation
 {
 public:
     UpdateCompatOperation();
-    ~UpdateCompatOperation();
 
     void backup();
     bool performOperation();

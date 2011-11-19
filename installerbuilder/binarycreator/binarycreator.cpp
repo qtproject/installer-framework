@@ -705,7 +705,7 @@ int main(int argc, char **argv)
                     }
                     verbose() << "    Appending " << archive.fileName() << ".sig  ("
                         << signature.size() << " bytes)" << std::endl;
-                    const QSharedPointer< Archive > sigArch(new Archive(arch->name() + ".sig", signature));
+                    const QSharedPointer<Archive> sigArch(new Archive(arch->name() + ".sig", signature));
                     comp.appendArchive(sigArch);
                 }
             }

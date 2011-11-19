@@ -29,42 +29,40 @@ using namespace KDUpdater;
 
 bool UFHeader::isValid() const
 {
-    return magic == QLatin1String( KD_UPDATER_UF_HEADER_MAGIC ) &&
-           fileList.count() == permList.count() &&
-           fileList.count() == isDirList.count();
+    return magic == QLatin1String(KD_UPDATER_UF_HEADER_MAGIC)
+            && fileList.count() == permList.count()
+            && fileList.count() == isDirList.count();
 }
 
-void UFHeader::addToHash(QCryptographicHash& hash) const 
+void UFHeader::addToHash(QCryptographicHash &hash) const
 {
     QByteArray data;
-    QDataStream stream( &data, QIODevice::WriteOnly );
+    QDataStream stream(&data, QIODevice::WriteOnly);
     stream << *this;
     hash.addData(data);
 }
 
 UFEntry::UFEntry() 
-    : permissions( 0 )
-{
-}
+    : permissions(0)
+{}
 
 bool UFEntry::isValid() const
 {
     return !fileName.isEmpty();
 }
 
-void UFEntry::addToHash(QCryptographicHash& hash) const 
+void UFEntry::addToHash(QCryptographicHash &hash) const
 {
     QByteArray data;
-    QDataStream stream( &data, QIODevice::WriteOnly );
-    stream.setVersion( QDataStream::Qt_4_2 );
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_4_2);
     stream << *this;
     hash.addData(data);
 }
 
-namespace KDUpdater
-{
+namespace KDUpdater {
 
-QDataStream& operator<<( QDataStream& stream, const UFHeader& hdr )
+QDataStream &operator<<(QDataStream &stream, const UFHeader &hdr)
 {
     stream << hdr.magic;
     stream << hdr.fileList;
@@ -73,35 +71,36 @@ QDataStream& operator<<( QDataStream& stream, const UFHeader& hdr )
     return stream;
 }
 
-QDataStream& operator>>( QDataStream& stream, UFHeader& hdr )
+QDataStream &operator>>(QDataStream &stream, UFHeader &hdr)
 {
     const QDataStream::Status oldStatus = stream.status();
     stream >> hdr.magic;
-    if( stream.status() == QDataStream::Ok && hdr.magic != QLatin1String( KD_UPDATER_UF_HEADER_MAGIC ) )
-        stream.setStatus( QDataStream::ReadCorruptData );
+    if (stream.status() == QDataStream::Ok && hdr.magic != QLatin1String(KD_UPDATER_UF_HEADER_MAGIC))
+        stream.setStatus(QDataStream::ReadCorruptData);
     
-    if( stream.status() == QDataStream::Ok )
+    if (stream.status() == QDataStream::Ok)
         stream >> hdr.fileList;
 
-    if( stream.status() == QDataStream::Ok )
+    if (stream.status() == QDataStream::Ok)
         stream >> hdr.permList;
     
-    if( stream.status() == QDataStream::Ok )
+    if (stream.status() == QDataStream::Ok)
         stream >> hdr.isDirList;
     
-    if( stream.status() == QDataStream::Ok && ( hdr.fileList.count() != hdr.permList.count() || hdr.permList.count() != hdr.isDirList.count() ) )
-        stream.setStatus( QDataStream::ReadCorruptData );
+    if (stream.status() == QDataStream::Ok
+            && (hdr.fileList.count() != hdr.permList.count() || hdr.permList.count() != hdr.isDirList.count()))
+        stream.setStatus(QDataStream::ReadCorruptData);
    
-    if( stream.status() != QDataStream::Ok )
+    if( stream.status() != QDataStream::Ok)
         hdr = UFHeader();
 
-    if( oldStatus != QDataStream::Ok )
-        stream.setStatus( oldStatus );
+    if (oldStatus != QDataStream::Ok)
+        stream.setStatus(oldStatus);
 
     return stream;
 }
 
-QDataStream& operator<<( QDataStream& stream, const UFEntry& entry ) 
+QDataStream &operator<<( QDataStream &stream, const UFEntry &entry)
 {
     stream << entry.fileName;
     stream << entry.permissions;
@@ -109,23 +108,23 @@ QDataStream& operator<<( QDataStream& stream, const UFEntry& entry )
     return stream;
 }
 
-QDataStream& operator>>( QDataStream& stream, UFEntry& entry ) 
+QDataStream &operator>>( QDataStream &stream, UFEntry &entry)
 {
     const QDataStream::Status oldStatus = stream.status();
-    if( stream.status() == QDataStream::Ok )
+    if (stream.status() == QDataStream::Ok)
         stream >> entry.fileName;
-    if( stream.status() == QDataStream::Ok )
+    if (stream.status() == QDataStream::Ok)
         stream >> entry.permissions;
-    if( stream.status() == QDataStream::Ok )
+    if (stream.status() == QDataStream::Ok)
         stream >> entry.fileData;
 
-    if( stream.status() != QDataStream::Ok )
+    if (stream.status() != QDataStream::Ok)
         entry = UFEntry();
 
-    if( oldStatus != QDataStream::Ok )
-        stream.setStatus( oldStatus );
+    if (oldStatus != QDataStream::Ok)
+        stream.setStatus(oldStatus);
 
     return stream;
 }
 
-}
+} // namespace KDUpdater

@@ -34,29 +34,20 @@
 class KDRunOnceChecker::Private
 {
 public:
-    Private( const QString& filename );
-    ~Private();
+    Private(const QString &filename);
+
     KDLockFile m_lockfile;
     bool m_hasLock;
 };
 
-KDRunOnceChecker::Private::Private( const QString& filename )
-    : m_lockfile( filename )
-    , m_hasLock( false )
-{
+KDRunOnceChecker::Private::Private(const QString &filename)
+    : m_lockfile(filename)
+    , m_hasLock(false)
+{}
 
-}
-
-KDRunOnceChecker::Private::~Private()
-{
-
-}
-
-KDRunOnceChecker::KDRunOnceChecker( const QString& filename )
-    :d( new Private( filename ) )
-{
-
-}
+KDRunOnceChecker::KDRunOnceChecker(const QString &filename)
+    :d(new Private(filename))
+{}
 
 KDRunOnceChecker::~KDRunOnceChecker()
 {
@@ -66,23 +57,24 @@ KDRunOnceChecker::~KDRunOnceChecker()
 class ProcessnameEquals
 {
 public:
-    ProcessnameEquals( const QString& name ): m_name( name ){}
-    bool operator()( const KDSysInfo::ProcessInfo& info )
+    ProcessnameEquals(const QString &name): m_name(name) {}
+
+    bool operator()(const KDSysInfo::ProcessInfo &info)
     {
 #ifndef Q_WS_WIN
-        if( info.name == m_name )
+        if (info.name == m_name)
             return true;
-        const QFileInfo fi( info.name );
-        if( fi.fileName() == m_name || fi.baseName() == m_name )
+        const QFileInfo fi(info.name);
+        if (fi.fileName() == m_name || fi.baseName() == m_name)
             return true;
         return false;
 #else
-        if( info.name.toLower() == m_name.toLower() )
+        if (info.name.toLower() == m_name.toLower())
             return true;
-        if( info.name.toLower() == QDir::toNativeSeparators(m_name.toLower()) )
+        if (info.name.toLower() == QDir::toNativeSeparators(m_name.toLower()))
             return true;
-        const QFileInfo fi( info.name );
-        if( fi.fileName().toLower() == m_name.toLower() || fi.baseName().toLower() == m_name.toLower() )
+        const QFileInfo fi(info.name);
+        if (fi.fileName().toLower() == m_name.toLower() || fi.baseName().toLower() == m_name.toLower())
             return true;
         return info.name == m_name;
 #endif
@@ -92,39 +84,34 @@ private:
     QString m_name;
 };
 
-bool KDRunOnceChecker::isRunning( Dependencies depends )
+bool KDRunOnceChecker::isRunning(Dependencies depends)
 {
     bool running = false;
-    switch ( depends )
-    {
-    case( Lockfile ):
-        {
+    switch (depends) {
+        case Lockfile: {
             const bool locked = d->m_hasLock || d->m_lockfile.lock();
-            if ( locked )
+            if (locked)
                 d->m_hasLock = true;
             running = running || ! locked;
         }
         break;
-    case( ProcessList ):
-        {
-            const QList< KDSysInfo::ProcessInfo > allProcesses = KDSysInfo::runningProcesses();
+        case ProcessList: {
+            const QList<KDSysInfo::ProcessInfo> allProcesses = KDSysInfo::runningProcesses();
             const QString appName = qApp->applicationFilePath();
-            //QList< KDSysInfo::ProcessInfo >::const_iterator it = std::find_if( allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals( appName ) );
-            const int count = std::count_if( allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals( appName ) );
+            //QList< KDSysInfo::ProcessInfo >::const_iterator it = std::find_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
+            const int count = std::count_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
             running = running || /*it != allProcesses.constEnd()*/count > 1;
         }
         break;
-    case( Both ):
-        {
-            const QList< KDSysInfo::ProcessInfo > allProcesses = KDSysInfo::runningProcesses();
+        case Both: {
+            const QList<KDSysInfo::ProcessInfo> allProcesses = KDSysInfo::runningProcesses();
             const QString appName = qApp->applicationFilePath();
-            //QList< KDSysInfo::ProcessInfo >::const_iterator it = std::find_if( allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals( appName ) );
-            const int count = std::count_if( allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals( appName ) );
+            //QList< KDSysInfo::ProcessInfo >::const_iterator it = std::find_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
+            const int count = std::count_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
             const bool locked = d->m_hasLock || d->m_lockfile.lock();
-            if ( locked )
+            if (locked)
                 d->m_hasLock = true;
-            running = running || ( /*it != allProcesses.constEnd()*/count > 1 && !locked );
-
+            running = running || ( /*it != allProcesses.constEnd()*/count > 1 && !locked);
         }
         break;
     }

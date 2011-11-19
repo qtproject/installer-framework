@@ -42,10 +42,10 @@ namespace KDUpdater {
 struct UpdateFileInfo
 {
     UpdateFileInfo()
-        : compressedSize( 0 ),
-          uncompressedSize( 0 )
-    {
-    }
+        : compressedSize(0),
+          uncompressedSize(0)
+    {}
+
     QString arch;
     QString os;
     QString fileName;

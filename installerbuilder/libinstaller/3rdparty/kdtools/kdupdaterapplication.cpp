@@ -61,23 +61,25 @@ ConfigurationInterface::~ConfigurationInterface()
 }
 
 namespace {
+
     class DefaultConfigImpl : public ConfigurationInterface
     {
     public:
-        QVariant value( const QString& key ) const
+        QVariant value(const QString &key) const
         {
             QSettings settings;
-            settings.beginGroup( QLatin1String("KDUpdater") );
-            return settings.value( key );
+            settings.beginGroup(QLatin1String("KDUpdater"));
+            return settings.value(key);
         }
         
-        void setValue( const QString& key, const QVariant& value )
+        void setValue(const QString &key, const QVariant &value)
         {
             QSettings settings;
-            settings.beginGroup( QLatin1String("KDUpdater") );
-            settings.setValue( key, value );
+            settings.beginGroup(QLatin1String("KDUpdater"));
+            settings.setValue(key, value);
         }
     };
+
 }
 
 /*!
@@ -99,41 +101,41 @@ namespace {
 
 struct Application::ApplicationData
 {
-    explicit ApplicationData( ConfigurationInterface* config ) :
+    explicit ApplicationData(ConfigurationInterface *config) :
         packagesInfo(0),
         updateSourcesInfo(0),
-        configurationInterface( config ? config : new DefaultConfigImpl )
+        configurationInterface(config ? config : new DefaultConfigImpl)
     {
-        const QStringList oldFiles = configurationInterface->value( QLatin1String("FilesForDelayedDeletion") ).toStringList();
-        Q_FOREACH( const QString& i, oldFiles ) { //TODO this should happen asnyc and report errors, I guess
-            QFile f( i );
-            if ( f.exists() && !f.remove() ) {
-                qWarning( "Could not delete file %s: %s", qPrintable(i), qPrintable(f.errorString()) );
+        const QStringList oldFiles = configurationInterface->value(QLatin1String("FilesForDelayedDeletion")).toStringList();
+        Q_FOREACH(const QString &i, oldFiles) { //TODO this should happen asnyc and report errors, I guess
+            QFile f(i);
+            if (f.exists() && !f.remove()) {
+                qWarning("Could not delete file %s: %s", qPrintable(i), qPrintable(f.errorString()));
                 filesForDelayedDeletion << i; // try again next time
             }
         }
-        configurationInterface->setValue( QLatin1String("FilesForDelayedDeletion"), filesForDelayedDeletion );    
+        configurationInterface->setValue(QLatin1String("FilesForDelayedDeletion"), filesForDelayedDeletion);
     }
 
     ~ApplicationData()
     {
         delete packagesInfo;
         delete updateSourcesInfo;
-        qDeleteAll( verifiers );
+        qDeleteAll(verifiers);
         delete configurationInterface;
     }
    
-    static Application* instance;
+    static Application *instance;
 
     QString applicationDirectory;
-    PackagesInfo* packagesInfo;
-    UpdateSourcesInfo* updateSourcesInfo;
-    QMap<Application::SignatureTarget, const SignatureVerifier*> verifiers;
+    PackagesInfo *packagesInfo;
+    UpdateSourcesInfo *updateSourcesInfo;
+    QMap<Application::SignatureTarget, const SignatureVerifier *> verifiers;
     QStringList filesForDelayedDeletion;
-    ConfigurationInterface* configurationInterface;
+    ConfigurationInterface *configurationInterface;
 };
 
-Application* Application::ApplicationData::instance = 0;
+Application *Application::ApplicationData::instance = 0;
 
 /*!
    Constructor of the Application class. The class will be constructed and configured to
@@ -156,7 +158,7 @@ Application::Application(ConfigurationInterface* config, QObject* p) : QObject(p
 */
 Application::~Application()
 {
-    if( this == ApplicationData::instance )
+    if (this == ApplicationData::instance)
         ApplicationData::instance = 0;
     delete d;
 }
@@ -164,7 +166,7 @@ Application::~Application()
 /*!
  Returns a previousle created Application instance.
  */
-Application* Application::instance()
+Application *Application::instance()
 {
     return ApplicationData::instance;
 }
@@ -173,17 +175,17 @@ Application* Application::instance()
    Changes the applicationDirPath directory to \c dir. Packages.xml and UpdateSources.xml found in the new
    application directory will be used.
 */
-void Application::setApplicationDirectory(const QString& dir)
+void Application::setApplicationDirectory(const QString &dir)
 {
-    if( d->applicationDirectory == dir )
+    if (d->applicationDirectory == dir)
         return;
 
     QDir dirObj(dir);
 
     // FIXME: Perhaps we should check whether dir exists on the local file system or not
     d->applicationDirectory = dirObj.absolutePath();
-    setPackagesXMLFileName( QString::fromLatin1( "%1/Packages.xml" ).arg(dir) );
-    setUpdateSourcesXMLFileName( QString::fromLatin1( "%1/UpdateSources.xml" ).arg(dir) );
+    setPackagesXMLFileName(QString::fromLatin1("%1/Packages.xml").arg(dir));
+    setUpdateSourcesXMLFileName(QString::fromLatin1("%1/UpdateSources.xml").arg(dir));
 }
 
 /*!
@@ -199,7 +201,7 @@ QString Application::applicationDirectory() const
 */
 QString Application::applicationName() const
 {
-    if( d->packagesInfo->isValid() )
+    if (d->packagesInfo->isValid())
         return d->packagesInfo->applicationName();
 
     return QCoreApplication::applicationName();
@@ -210,23 +212,23 @@ QString Application::applicationName() const
 */
 QString Application::applicationVersion() const
 {
-    if( d->packagesInfo->isValid() )
+    if (d->packagesInfo->isValid())
         return d->packagesInfo->applicationVersion();
 
     return QString();
 }
 
-const SignatureVerifier* Application::signatureVerifier( SignatureTarget target ) const
+const SignatureVerifier *Application::signatureVerifier(SignatureTarget target) const
 {
-    return d->verifiers.value( target );
+    return d->verifiers.value(target);
 }
 
-void Application::setSignatureVerifier( SignatureTarget target, const SignatureVerifier* v )
+void Application::setSignatureVerifier(SignatureTarget target, const SignatureVerifier *v)
 {
-    delete d->verifiers.value( target );
-    d->verifiers.remove( target );
-    if ( v )
-        d->verifiers.insert( target, v->clone() );
+    delete d->verifiers.value(target);
+    d->verifiers.remove(target);
+    if (v)
+        d->verifiers.insert(target, v->clone());
 }
 
 /*!
@@ -234,14 +236,14 @@ void Application::setSignatureVerifier( SignatureTarget target, const SignatureV
 */
 int Application::compatLevel() const
 {
-    if(d->packagesInfo->isValid())
+    if (d->packagesInfo->isValid())
         return d->packagesInfo->compatLevel();
 
     return -1;
 }
 
-void Application::addUpdateSource( const QString& name, const QString& title, 
-                                              const QString& description, const QUrl& url, int priority )
+void Application::addUpdateSource(const QString &name, const QString &title,
+                                  const QString &description, const QUrl &url, int priority)
 {
     UpdateSourceInfo info;
     info.name = name;
@@ -249,7 +251,7 @@ void Application::addUpdateSource( const QString& name, const QString& title,
     info.description = description;
     info.url = url;
     info.priority = priority;
-    d->updateSourcesInfo->addUpdateSourceInfo( info );
+    d->updateSourcesInfo->addUpdateSourceInfo(info);
 }
 
 
@@ -259,9 +261,9 @@ void Application::addUpdateSource( const QString& name, const QString& title,
 
    \sa KDUpdater::PackagesInfo::setFileName()
 */
-void Application::setPackagesXMLFileName(const QString& fileName)
+void Application::setPackagesXMLFileName(const QString &fileName)
 {
-    d->packagesInfo->setFileName( fileName );
+    d->packagesInfo->setFileName(fileName);
 }
 
 /*!
@@ -286,9 +288,9 @@ PackagesInfo* Application::packagesInfo() const
 
    \sa KDUpdater::UpdateSourcesInfo::setFileName()
 */
-void Application::setUpdateSourcesXMLFileName(const QString& fileName)
+void Application::setUpdateSourcesXMLFileName(const QString &fileName)
 {
-    d->updateSourcesInfo->setFileName( fileName );
+    d->updateSourcesInfo->setFileName(fileName);
 }
 
 /*!
@@ -307,7 +309,7 @@ UpdateSourcesInfo* Application::updateSourcesInfo() const
     return d->updateSourcesInfo;
 }
     
-void Application::printError( int errorCode, const QString& error )
+void Application::printError(int errorCode, const QString &error)
 {
     qDebug() << errorCode << error;
 }
@@ -317,8 +319,8 @@ QStringList Application::filesForDelayedDeletion() const
     return d->filesForDelayedDeletion;
 }
 
-void Application::addFilesForDelayedDeletion( const QStringList& files )
+void Application::addFilesForDelayedDeletion(const QStringList &files)
 {
     d->filesForDelayedDeletion << files;
-    d->configurationInterface->setValue( QLatin1String("FilesForDelayedDeletion"), d->filesForDelayedDeletion );
+    d->configurationInterface->setValue(QLatin1String("FilesForDelayedDeletion"), d->filesForDelayedDeletion);
 }

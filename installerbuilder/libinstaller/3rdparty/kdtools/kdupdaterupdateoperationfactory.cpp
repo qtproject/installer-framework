@@ -53,7 +53,7 @@ struct UpdateOperationFactory::UpdateOperationFactoryData
 /*!
    Returns the UpdateOperationFactory instance. The instance is created if needed.
 */
-UpdateOperationFactory& UpdateOperationFactory::instance()
+UpdateOperationFactory &UpdateOperationFactory::instance()
 {
     static UpdateOperationFactory theFactory;
     return theFactory;
@@ -63,19 +63,19 @@ UpdateOperationFactory& UpdateOperationFactory::instance()
    Constructor
 */
 UpdateOperationFactory::UpdateOperationFactory()
-    : d ( new UpdateOperationFactoryData )
+    : d(new UpdateOperationFactoryData)
 {
     // Register the default update operation set
-    registerUpdateOperation< CopyOperation >( QLatin1String( "Copy" ) );
-    registerUpdateOperation< MoveOperation >( QLatin1String( "Move" ) );
-    registerUpdateOperation< DeleteOperation >( QLatin1String( "Delete" ) );
-    registerUpdateOperation< MkdirOperation >( QLatin1String( "Mkdir" ) );
-    registerUpdateOperation< RmdirOperation >( QLatin1String( "Rmdir" ) );
-    registerUpdateOperation< AppendFileOperation >( QLatin1String( "AppendFile" ) );
-    registerUpdateOperation< PrependFileOperation >( QLatin1String( "PrependFile" ) );
-    registerUpdateOperation< ExecuteOperation >( QLatin1String( "Execute" ) );
-    registerUpdateOperation< UpdatePackageOperation >( QLatin1String( "UpdatePackage" ) );
-    registerUpdateOperation< UpdateCompatOperation >( QLatin1String( "UpdateCompat" ) );
+    registerUpdateOperation<CopyOperation>(QLatin1String("Copy"));
+    registerUpdateOperation<MoveOperation>(QLatin1String("Move"));
+    registerUpdateOperation<DeleteOperation>(QLatin1String("Delete"));
+    registerUpdateOperation<MkdirOperation>(QLatin1String("Mkdir"));
+    registerUpdateOperation<RmdirOperation>(QLatin1String("Rmdir"));
+    registerUpdateOperation<AppendFileOperation>(QLatin1String("AppendFile"));
+    registerUpdateOperation<PrependFileOperation>(QLatin1String("PrependFile"));
+    registerUpdateOperation<ExecuteOperation>(QLatin1String("Execute"));
+    registerUpdateOperation<UpdatePackageOperation>(QLatin1String("UpdatePackage"));
+    registerUpdateOperation<UpdateCompatOperation>(QLatin1String("UpdateCompat"));
 }
 
 UpdateOperationFactory::~UpdateOperationFactory()
@@ -102,16 +102,16 @@ QStringList UpdateOperationFactory::availableUpdateOperations() const
 /*
   Unregisters the update operation previously registered with \a name.
 */
-void UpdateOperationFactory::unregisterUpdateOperation( const QString& name )
+void UpdateOperationFactory::unregisterUpdateOperation(const QString &name)
 {
-    unregisterProduct( name );
+    unregisterProduct(name);
 }
 
 /*!
    Registers \a create to be a factory function to create an UpdateOperation with \a name.
    \sa registerUpdateOperation
 */
-void UpdateOperationFactory::registerUpdateOperationFactory( const QString& name, UpdateOperationFactoryFunction create )
+void UpdateOperationFactory::registerUpdateOperationFactory(const QString &name, UpdateOperationFactoryFunction create)
 {
-    registerProductionFunction( name, create );
+    registerProductionFunction(name, create);
 }

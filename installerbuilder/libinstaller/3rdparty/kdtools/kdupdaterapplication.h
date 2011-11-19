@@ -91,6 +91,6 @@ private:
     ApplicationData *d;
 };
 
-}
+} // namespace KDUpdater
 
 #endif // KD_UPDATER_APPLICATION_H

@@ -31,16 +31,16 @@ SignatureVerifier::~SignatureVerifier()
 {
 }
 
-SignatureVerificationResult SignatureVerifier::verify( const QString& dataFile, const QString& signatureFile ) const
+SignatureVerificationResult SignatureVerifier::verify(const QString &dataFile, const QString &signatureFile ) const
 {
-    QFile dFile( dataFile );
-    QFile sFile( signatureFile );
+    QFile dFile(dataFile);
+    QFile sFile(signatureFile);
 
-    if( !dFile.open( QIODevice::ReadOnly ) )
+    if (!dFile.open(QIODevice::ReadOnly))
         return SignatureVerificationResult();
 
-    if( !sFile.open( QIODevice::ReadOnly ) )
-        return SignatureVerificationResult( SignatureVerificationResult::BadSignature );
+    if (!sFile.open(QIODevice::ReadOnly))
+        return SignatureVerificationResult(SignatureVerificationResult::BadSignature);
 
-    return verify( dFile.readAll(), sFile.readAll() );
+    return verify(dFile.readAll(), sFile.readAll());
 }

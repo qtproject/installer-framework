@@ -29,9 +29,11 @@
 
 using namespace KDUpdater;
 
-class SignatureVerificationResult::Private : public QSharedData {
+class SignatureVerificationResult::Private : public QSharedData
+{
 public:
-    Private() : QSharedData(), validity( SignatureVerificationResult::UnknownValidity ) {
+    Private() : QSharedData(), validity( SignatureVerificationResult::UnknownValidity )
+    {
     }
     Private( const Private& other ) : QSharedData( other ), validity( other.validity ), errorString( other.errorString )  {
     }

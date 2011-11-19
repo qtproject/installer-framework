@@ -33,23 +33,23 @@ KDLockFile::Private::~Private()
 
 bool KDLockFile::Private::lock()
 {
-    const QFileInfo fi( filename );
-    handle = CreateFile( filename.toStdWString().data(),
-                         GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
-                         NULL, fi.exists() ? OPEN_EXISTING : CREATE_NEW,
-                         FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL );
+    const QFileInfo fi(filename);
+    handle = CreateFile(filename.toStdWString().data(),
+                        GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
+                        NULL, fi.exists() ? OPEN_EXISTING : CREATE_NEW,
+                        FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL);
 
-    if ( !handle )
+    if (!handle)
         return false;
-    QString pid = QString::number( qApp->applicationPid() );
+    QString pid = QString::number(qApp->applicationPid());
     QByteArray data = pid.toLatin1();
-    DWORD  bytesWritten;
-    const bool wrotePid  = WriteFile( handle, data.data(), data.size(), &bytesWritten, NULL );
-    if ( !wrotePid )
+    DWORD bytesWritten;
+    const bool wrotePid = WriteFile(handle, data.data(), data.size(), &bytesWritten, NULL);
+    if (!wrotePid)
         return false;
-    FlushFileBuffers( handle );
+    FlushFileBuffers(handle);
 
-    const bool locked = LockFile( handle, 0, 0, fi.size(), 0 );
+    const bool locked = LockFile(handle, 0, 0, fi.size(), 0);
 
     this->locked = locked;
     return locked;
@@ -57,12 +57,11 @@ bool KDLockFile::Private::lock()
 
 bool KDLockFile::Private::unlock()
 {
-    const QFileInfo fi( filename );
-    if ( locked )
-    {
-        const bool success = UnlockFile( handle, 0, 0, 0, fi.size() );
+    const QFileInfo fi(filename);
+    if (locked) {
+        const bool success = UnlockFile(handle, 0, 0, 0, fi.size());
         this->locked = !success;
-        CloseHandle( handle );
+        CloseHandle(handle);
         return success;
     }
     return true;

@@ -245,7 +245,7 @@ struct KDUpdater::FileDownloader::Private
     FileDownloaderProxyFactory *m_factory;
 };
 
-KDUpdater::FileDownloader::FileDownloader(const QString &scheme, QObject* parent)
+KDUpdater::FileDownloader::FileDownloader(const QString &scheme, QObject *parent)
     : QObject(parent)
     , d(new Private)
 {
@@ -293,7 +293,7 @@ void FileDownloader::setDownloadAborted(const QString &error)
 void KDUpdater::FileDownloader::setDownloadCompleted(const QString &path)
 {
     HashVerificationJob *job = new HashVerificationJob;
-    QFile* file = new QFile(path, job);
+    QFile *file = new QFile(path, job);
     if (!file->open(QIODevice::ReadOnly)) {
         emit downloadProgress(1);
         onError();
@@ -316,7 +316,7 @@ void KDUpdater::FileDownloader::setDownloadCanceled()
     emit downloadStatus(tr("Download canceled."));
 }
 
-void KDUpdater::FileDownloader::sha1SumVerified(KDUpdater::HashVerificationJob* job)
+void KDUpdater::FileDownloader::sha1SumVerified(KDUpdater::HashVerificationJob *job)
 {
     if (job->hasError()) {
         onError();
@@ -544,16 +544,17 @@ struct KDUpdater::LocalFileDownloader::Private
         : source(0)
         , destination(0)
         , downloaded(false)
-        , timerId(-1) { }
+        , timerId(-1)
+    {}
 
-    QFile* source;
-    QFile* destination;
+    QFile *source;
+    QFile *destination;
     QString destFileName;
     bool downloaded;
     int timerId;
 };
 
-KDUpdater::LocalFileDownloader::LocalFileDownloader(QObject* parent)
+KDUpdater::LocalFileDownloader::LocalFileDownloader(QObject *parent)
     : KDUpdater::FileDownloader(QLatin1String("file"), parent)
     , d (new Private)
 {
@@ -630,7 +631,7 @@ void KDUpdater::LocalFileDownloader::setDownloadedFileName(const QString &name)
     d->destFileName = name;
 }
 
-KDUpdater::LocalFileDownloader* KDUpdater::LocalFileDownloader::clone(QObject* parent) const
+KDUpdater::LocalFileDownloader *KDUpdater::LocalFileDownloader::clone(QObject *parent) const
 {
     return new LocalFileDownloader(parent);
 }
@@ -696,7 +697,7 @@ void LocalFileDownloader::onSuccess()
 {
     d->downloaded = true;
     d->destFileName = d->destination->fileName();
-    if (QTemporaryFile *file = dynamic_cast<QTemporaryFile*> (d->destination))
+    if (QTemporaryFile *file = dynamic_cast<QTemporaryFile *>(d->destination))
         file->setAutoRemove(false);
     d->destination->close();
     delete d->destination;
@@ -724,16 +725,17 @@ struct KDUpdater::ResourceFileDownloader::Private
 {
     Private()
         : downloaded(false),
-          timerId(-1) { }
+          timerId(-1)
+    {}
 
     QString destFileName;
     bool downloaded;
     int timerId;
 };
 
-KDUpdater::ResourceFileDownloader::ResourceFileDownloader(QObject* parent)
+KDUpdater::ResourceFileDownloader::ResourceFileDownloader(QObject *parent)
     : KDUpdater::FileDownloader(QLatin1String("resource"), parent)
-    , d (new Private)
+    , d(new Private)
 {
 }
 
@@ -787,7 +789,7 @@ void KDUpdater::ResourceFileDownloader::setDownloadedFileName(const QString &/*n
     Q_ASSERT_X(false, "KDUpdater::ResourceFileDownloader::setDownloadedFileName", "Not supported!");
 }
 
-KDUpdater::ResourceFileDownloader* KDUpdater::ResourceFileDownloader::clone(QObject* parent) const
+KDUpdater::ResourceFileDownloader *KDUpdater::ResourceFileDownloader::clone(QObject *parent) const
 {
     return new ResourceFileDownloader(parent);
 }
@@ -803,7 +805,7 @@ void KDUpdater::ResourceFileDownloader::cancelDownload()
     setDownloadCanceled();
 }
 
-void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent*)
+void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent *)
 {
     killTimer(d->timerId);
     d->timerId = -1;
@@ -830,19 +832,20 @@ struct KDUpdater::FtpDownloader::Private
         , destination(0)
         , downloaded(false)
         , ftpCmdId(-1)
-        , aborted(false) { }
+        , aborted(false)
+    {}
 
-    QFtp* ftp;
-    QFile* destination;
+    QFtp *ftp;
+    QFile *destination;
     QString destFileName;
     bool downloaded;
     int ftpCmdId;
     bool aborted;
 };
 
-KDUpdater::FtpDownloader::FtpDownloader(QObject* parent)
+KDUpdater::FtpDownloader::FtpDownloader(QObject *parent)
     : KDUpdater::FileDownloader(QLatin1String("ftp"), parent)
-    , d (new Private)
+    , d(new Private)
 {
 }
 
@@ -878,8 +881,8 @@ void KDUpdater::FtpDownloader::doDownload()
     connect(d->ftp, SIGNAL(commandStarted(int)), this, SLOT(ftpCmdStarted(int)));
     connect(d->ftp, SIGNAL(commandFinished(int, bool)), this, SLOT(ftpCmdFinished(int, bool)));
     connect(d->ftp, SIGNAL(stateChanged(int)), this, SLOT(ftpStateChanged(int)));
-    connect(d->ftp, SIGNAL(dataTransferProgress(qint64, qint64)), this, SLOT(ftpDataTransferProgress(qint64,
-        qint64)));
+    connect(d->ftp, SIGNAL(dataTransferProgress(qint64, qint64)), this,
+            SLOT(ftpDataTransferProgress(qint64, qint64)));
     connect(d->ftp, SIGNAL(readyRead()), this, SLOT(ftpReadyRead()));
 
     if (FileDownloaderProxyFactory *factory = proxyFactory()) {
@@ -903,7 +906,7 @@ void KDUpdater::FtpDownloader::setDownloadedFileName(const QString &name)
     d->destFileName = name;
 }
 
-KDUpdater::FtpDownloader* KDUpdater::FtpDownloader::clone(QObject* parent) const
+KDUpdater::FtpDownloader *KDUpdater::FtpDownloader::clone(QObject *parent) const
 {
     return new FtpDownloader(parent);
 }
@@ -966,7 +969,7 @@ void FtpDownloader::onSuccess()
 {
     d->downloaded = true;
     d->destFileName = d->destination->fileName();
-    if (QTemporaryFile *file = dynamic_cast<QTemporaryFile*> (d->destination))
+    if (QTemporaryFile *file = dynamic_cast<QTemporaryFile *>(d->destination))
         file->setAutoRemove(false);
     delete d->destination;
     d->destination = 0;
@@ -1053,19 +1056,20 @@ void KDUpdater::FtpDownloader::timerEvent(QTimerEvent *event)
 
 struct KDUpdater::HttpDownloader::Private
 {
-    explicit Private(HttpDownloader* qq)
+    explicit Private(HttpDownloader *qq)
         : q(qq)
         , http(0)
         , destination(0)
         , downloaded(false)
         , aborted(false)
         , retrying(false)
-        , m_authenticationDone(false) { }
+        , m_authenticationDone(false)
+    {}
 
-    HttpDownloader* const q;
+    HttpDownloader *const q;
     QNetworkAccessManager manager;
-    QNetworkReply* http;
-    QFile* destination;
+    QNetworkReply *http;
+    QFile *destination;
     QString destFileName;
     bool downloaded;
     bool aborted;
@@ -1080,13 +1084,12 @@ struct KDUpdater::HttpDownloader::Private
         destination->close();
         destination->deleteLater();
         destination = 0;
-
     }
 };
 
-KDUpdater::HttpDownloader::HttpDownloader(QObject* parent)
+KDUpdater::HttpDownloader::HttpDownloader(QObject *parent)
     : KDUpdater::FileDownloader(QLatin1String("http"), parent)
-    , d (new Private(this))
+    , d(new Private(this))
 {
     connect(&d->manager, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)), this,
         SLOT(onAuthenticationRequired(QNetworkReply*, QAuthenticator*)));
@@ -1132,7 +1135,7 @@ void KDUpdater::HttpDownloader::setDownloadedFileName(const QString &name)
     d->destFileName = name;
 }
 
-KDUpdater::HttpDownloader* KDUpdater::HttpDownloader::clone(QObject* parent) const
+KDUpdater::HttpDownloader *KDUpdater::HttpDownloader::clone(QObject *parent) const
 {
     return new HttpDownloader(parent);
 }
@@ -1218,7 +1221,7 @@ void KDUpdater::HttpDownloader::onSuccess()
 {
     d->downloaded = true;
     d->destFileName = d->destination->fileName();
-    if (QTemporaryFile *file = dynamic_cast<QTemporaryFile*> (d->destination))
+    if (QTemporaryFile *file = dynamic_cast<QTemporaryFile *>(d->destination))
         file->setAutoRemove(false);
     delete d->destination;
     d->destination = 0;
@@ -1306,9 +1309,9 @@ void KDUpdater::HttpDownloader::onAuthenticationRequired(QNetworkReply *reply, Q
 
 class SignatureVerificationDownloader::Private
 {
-    SignatureVerificationDownloader* const q;
+    SignatureVerificationDownloader *const q;
 public:
-    explicit Private(FileDownloader* dl, SignatureVerificationDownloader* qq)
+    explicit Private(FileDownloader *dl, SignatureVerificationDownloader *qq)
         : q(qq)
         , verifier(0)
         , downloader(dl)
@@ -1330,7 +1333,7 @@ public:
         delete sigDownloader;
     }
 
-    const SignatureVerifier* verifier;
+    const SignatureVerifier *verifier;
     FileDownloader *downloader;
     FileDownloader *sigDownloader;
     QUrl signatureUrl;
@@ -1339,7 +1342,7 @@ public:
     bool actualDownloadDone : 1;
 };
 
-SignatureVerificationDownloader::SignatureVerificationDownloader(FileDownloader* downloader, QObject* parent)
+SignatureVerificationDownloader::SignatureVerificationDownloader(FileDownloader *downloader, QObject *parent)
     : FileDownloader(downloader->scheme(), parent)
     , d(new Private(downloader, this))
 {
@@ -1365,7 +1368,7 @@ const SignatureVerifier* SignatureVerificationDownloader::signatureVerifier() co
     return d->verifier;
 }
 
-void SignatureVerificationDownloader::setSignatureVerifier(const SignatureVerifier* verifier)
+void SignatureVerificationDownloader::setSignatureVerifier(const SignatureVerifier *verifier)
 {
     delete d->verifier;
     d->verifier = verifier ? verifier->clone() : 0;
@@ -1396,7 +1399,7 @@ void SignatureVerificationDownloader::setDownloadedFileName(const QString &/*nam
     Q_ASSERT_X(false, "SignatureVerificationDownloader::setDownloadedFileName", "Not supported!");
 }
 
-FileDownloader* SignatureVerificationDownloader::clone(QObject* parent) const
+FileDownloader *SignatureVerificationDownloader::clone(QObject *parent) const
 {
     return new SignatureVerificationDownloader(d->downloader->clone(), parent);
 }
@@ -1511,7 +1514,7 @@ void SignatureVerificationDownloader::signatureDownloadCompleted()
     setDownloadCompleted(d->downloadedFileName);
 
 #if 0
-    SignatureVerificationRunnable* runnable = new SignatureVerificationRunnable;
+    SignatureVerificationRunnable *runnable = new SignatureVerificationRunnable;
     runnable->setSignature(signature);
     runnable->setData(dataFile.release());
     runnable->setVerifier(d->verifier);

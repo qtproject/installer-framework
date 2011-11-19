@@ -41,8 +41,8 @@
 
 struct KDUpdater::Task::TaskData
 {
-    TaskData( Task* qq) :
-        q( qq )
+    TaskData(Task *qq) :
+        q(qq)
     {
         caps = KDUpdater::Task::NoCapability;
         errorCode = 0;
@@ -54,7 +54,7 @@ struct KDUpdater::Task::TaskData
         autoDelete = true;
     }
 
-    Task* q;
+    Task *q;
     int caps;
     QString name;
     int errorCode;
@@ -71,13 +71,13 @@ struct KDUpdater::Task::TaskData
 /*!
    \internal
 */
-KDUpdater::Task::Task(const QString& name, int caps, QObject* parent)
+KDUpdater::Task::Task(const QString &name, int caps, QObject *parent)
     : QObject(parent),
-      d( new TaskData( this ) )
+      d(new TaskData(this))
 {
     d->caps = caps;
     d->name = name;
-};
+}
 
 /*!
    \internal
@@ -185,14 +185,12 @@ QString KDUpdater::Task::progressText() const
 */
 void KDUpdater::Task::run()
 {
-    if(d->started)
-    {
+    if (d->started) {
         qDebug("Trying to start an already started task");
         return;
     }
 
-    if(d->finished || d->stopped)
-    {
+    if (d->finished || d->stopped) {
         qDebug("Trying to start a finished or canceled task");
         return;
     }
@@ -213,15 +211,13 @@ void KDUpdater::Task::run()
 */
 void KDUpdater::Task::stop()
 {
-    if( !(d->caps & Stoppable) )
-    {
+    if (!(d->caps & Stoppable)) {
         const QString errorMsg = tr("'%1' cannot be stopped").arg(d->name);
         reportError(KDUpdater::ECannotStopTask, errorMsg);
         return;
     }
 
-    if(!d->started)
-    {
+    if (!d->started) {
         qDebug("Trying to stop an unstarted task");
         return;
     }
@@ -233,8 +229,7 @@ void KDUpdater::Task::stop()
     }
 
     d->stopped = doStop();
-    if(!d->stopped)
-    {
+    if (!d->stopped) {
         const QString errorMsg = tr("Cannot stop task '%1'").arg(d->name);
         reportError(KDUpdater::ECannotStopTask, errorMsg);
         return;
@@ -253,28 +248,25 @@ void KDUpdater::Task::stop()
 */
 void KDUpdater::Task::pause()
 {
-    if( !(d->caps & Pausable) )
-    {
+    if (!(d->caps & Pausable)) {
         const QString errorMsg = tr("'%1' cannot be paused").arg(d->name);
         reportError(KDUpdater::ECannotPauseTask, errorMsg);
         return;
     }
 
-    if(!d->started)
-    {
+    if (!d->started) {
         qDebug("Trying to pause an unstarted task");
         return;
     }
 
-    if(d->finished || d->stopped)
-    {
+    if (d->finished || d->stopped) {
         qDebug("Trying to pause a finished or canceled task");
         return;
     }
 
     d->paused = doPause();
-    if(!d->paused)
-    {
+
+    if (!d->paused) {
         const QString errorMsg = tr("Cannot pause task '%1'").arg(d->name);
         reportError(KDUpdater::ECannotPauseTask, errorMsg);
         return;
@@ -295,15 +287,14 @@ void KDUpdater::Task::pause()
 */
 void KDUpdater::Task::resume()
 {
-    if(!d->paused)
-    {
+    if (!d->paused) {
         qDebug("Trying to resume an unpaused task");
         return;
     }
 
     const bool val = doResume();
-    if(!val)
-    {
+
+    if (!val) {
         const QString errorMsg = tr("Cannot resume task '%1'").arg(d->name);
         reportError(KDUpdater::ECannotResumeTask, errorMsg);
         return;
@@ -323,21 +314,21 @@ void KDUpdater::Task::resume()
 /*!
    \internal
 */
-void KDUpdater::Task::reportProgress(int percent, const QString& text)
+void KDUpdater::Task::reportProgress(int percent, const QString &text)
 {
-    if(d->progressPc == percent)
+    if (d->progressPc == percent)
         return;
 
     d->progressPc = percent;
     d->progressText = text;
-    emit progressValue( d->progressPc );
-    emit progressText( d->progressText );
+    emit progressValue(d->progressPc);
+    emit progressText(d->progressText);
 }
 
 /*!
    \internal
 */
-void KDUpdater::Task::reportError(int errorCode, const QString& errorText)
+void KDUpdater::Task::reportError(int errorCode, const QString &errorText)
 {
     d->errorCode = errorCode;
     d->errorText = errorText;

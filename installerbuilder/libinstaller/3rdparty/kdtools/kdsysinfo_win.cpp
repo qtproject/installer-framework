@@ -36,33 +36,31 @@
 quint64 KDSysInfo::installedMemory()
 {
     MEMORYSTATUSEX status;
-    status.dwLength = sizeof( status );
-    GlobalMemoryStatusEx( &status );
-    return quint64( status.ullTotalPhys );
+    status.dwLength = sizeof(status);
+    GlobalMemoryStatusEx(&status);
+    return quint64(status.ullTotalPhys);
 }
 
-QPair< quint64, quint64 > volumeSpace( const QString& volume )
+QPair<quint64, quint64> volumeSpace(const QString &volume)
 {
-    QPair< quint64, quint64 > result;
+    QPair<quint64, quint64> result;
     ULARGE_INTEGER bytes;
     ULARGE_INTEGER freebytes;
-    if( GetDiskFreeSpaceExA( qPrintable( volume ), 0, &bytes, &freebytes ) != 0 )
-    {
-        result.first = quint64( bytes.QuadPart );
-        result.second = quint64( freebytes.QuadPart );
+    if (GetDiskFreeSpaceExA(qPrintable(volume), 0, &bytes, &freebytes) != 0) {
+        result.first = quint64(bytes.QuadPart);
+        result.second = quint64(freebytes.QuadPart);
     }
     return result;
 }
 
-QString volumeName( const QString& volume )
+QString volumeName(const QString &volume)
 {
-    char name[ MAX_PATH + 1 ] = "";
+    char name[MAX_PATH + 1] = "";
     DWORD dummy;
-    char dummy2[ MAX_PATH + 1 ] = "";
-    GetVolumeInformationA( qPrintable( volume ), name, MAX_PATH + 1, &dummy, &dummy, &dummy, dummy2, MAX_PATH + 1 );
-    QString vName = QString::fromLatin1( name );
-    if( vName.isEmpty() )
-    {
+    char dummy2[MAX_PATH + 1] = "";
+    GetVolumeInformationA(qPrintable(volume), name, MAX_PATH + 1, &dummy, &dummy, &dummy, dummy2, MAX_PATH + 1);
+    QString vName = QString::fromLatin1(name);
+    if(vName.isEmpty()) {
         const uint driveType = GetDriveTypeA( qPrintable( volume ) );
         switch( driveType )
         {
@@ -94,12 +92,11 @@ QString fileSystemType(const QString &path)
     return QLatin1String("unknown");
 }
 
-QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
+QList<KDSysInfo::Volume> KDSysInfo::mountedVolumes()
 {
     QList< Volume > result;
     const QFileInfoList drives = QDir::drives();
-    for( QFileInfoList::const_iterator it = drives.constBegin(); it != drives.constEnd(); ++it )
-    {
+    for (QFileInfoList::const_iterator it = drives.constBegin(); it != drives.constEnd(); ++it) {
         Volume volume;
         const QString path = QDir::toNativeSeparators( it->path() );
         volume.setPath( path );
@@ -115,8 +112,8 @@ QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
 
 struct EnumWindowsProcParam
 {
-    QList< KDSysInfo::ProcessInfo > processes;
-    QList< quint32 > seenIDs;
+    QList<KDSysInfo::ProcessInfo> processes;
+    QList<quint32> seenIDs;
 };
 
 //BOOL CALLBACK EnumWindowsProc( HWND hWnd, LPARAM lParam )
@@ -226,8 +223,8 @@ QList< KDSysInfo::ProcessInfo > KDSysInfo::runningProcesses()
         QString whichFailed;
         QString executablePath;
         KDSysInfo::ProcessInfo info;
-        if ( QSysInfo::windowsVersion() > QSysInfo::WV_5_2 )
-        {
+
+        if (QSysInfo::windowsVersion() > QSysInfo::WV_5_2) {
             succ = callPtr( procHandle, 0, buffer, &bufferSize );
             executablePath = QString::fromLatin1( buffer );
         }
@@ -236,29 +233,26 @@ QList< KDSysInfo::ProcessInfo > KDSysInfo::runningProcesses()
         if (pGetProcessImageFileNamePtr) {
             succ = callPtrXp( procHandle, buffer, bufferSize );
             executablePath = QString::fromLatin1( buffer );
-            for ( int i = 0; i < deviceList.count(); ++i )
-            {
+            for (int i = 0; i < deviceList.count(); ++i)
                 executablePath.replace( QString::fromLatin1( "\\Device\\HarddiskVolume%1\\" ).arg( i + 1 ), deviceList.at( i ) );
-            }
         }
 
         }
-        if ( succ )
-        {
+        if (succ) {
             const quint32 pid = processStruct.th32ProcessID;
-            param.seenIDs.append( pid );
+            param.seenIDs.append(pid);
 
             info.id = pid;
             info.name = executablePath;
-            param.processes.append( info );
+            param.processes.append(info);
         }
 
-        CloseHandle( procHandle );
-        foundProcess =  Process32Next( snapshot, &processStruct );
+        CloseHandle(procHandle);
+        foundProcess =  Process32Next(snapshot, &processStruct);
 
     }
-    if ( snapshot )
-        CloseHandle( snapshot );
+    if (snapshot)
+        CloseHandle(snapshot);
 
     kernel32.unload();
     return param.processes;

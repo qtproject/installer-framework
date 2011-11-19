@@ -33,90 +33,83 @@
 quint64 KDSysInfo::installedMemory()
 {
 #ifdef Q_OS_LINUX
-    QFile f( QLatin1String( "/proc/meminfo" ) );
-    f.open( QIODevice::ReadOnly );
-    QTextStream stream( &f );
-    while( true )
-    {
+    QFile f(QLatin1String("/proc/meminfo"));
+    f.open(QIODevice::ReadOnly);
+    QTextStream stream(&f);
+    while (true) {
         const QString s = stream.readLine();
-        if( !s.startsWith( QLatin1String( "MemTotal:" ) ) )
+        if( !s.startsWith(QLatin1String("MemTotal:" )))
             continue;
-        else if( s.isEmpty() )
+        else if (s.isEmpty())
             return quint64();
 
-        const QStringList parts = s.split( QLatin1Char( ' ' ), QString::SkipEmptyParts );
-        return quint64( parts.at(1).toInt() * 1024LL );
+        const QStringList parts = s.split(QLatin1Char(' '), QString::SkipEmptyParts);
+        return quint64(parts.at(1).toInt() * 1024LL);
     }
 #else
     quint64 physmem;
     size_t len = sizeof physmem;
     static int mib[2] = { CTL_HW, HW_MEMSIZE };
-    sysctl( mib, 2, &physmem, &len, 0, 0 );
-    return quint64( physmem );
+    sysctl(mib, 2, &physmem, &len, 0, 0);
+    return quint64(physmem);
 #endif
     return 0;
 }
 
-QList< KDSysInfo::Volume > KDSysInfo::mountedVolumes()
+QList<KDSysInfo::Volume> KDSysInfo::mountedVolumes()
 {
-    QList< Volume > result;
+    QList<Volume> result;
 
-    QFile f( QLatin1String( "/etc/mtab" ) );
-    if ( !f.open( QIODevice::ReadOnly ) ) {
-        qCritical( "%s: Could not open %s: %s", Q_FUNC_INFO, qPrintable(f.fileName()), qPrintable(f.errorString()) );
+    QFile f(QLatin1String("/etc/mtab"));
+    if (!f.open(QIODevice::ReadOnly)) {
+        qCritical("%s: Could not open %s: %s", Q_FUNC_INFO, qPrintable(f.fileName()), qPrintable(f.errorString()));
         return QList<KDSysInfo::Volume>(); //better error-handling?
     }
     
-    QTextStream stream( &f );
-    while( true )
-    {
+    QTextStream stream(&f);
+    while (true) {
         const QString s = stream.readLine();
-        if ( s.isNull() )
+        if (s.isNull())
             return result;
         
-        if( !s.startsWith( QLatin1Char( '/' ) ) )
+        if (!s.startsWith(QLatin1Char('/')))
             continue;
 
-        const QStringList parts = s.split( QLatin1Char( ' ' ), QString::SkipEmptyParts );
+        const QStringList parts = s.split( QLatin1Char(' '), QString::SkipEmptyParts);
 
         Volume v;
-        v.setName( parts.at( 1 ) );
-        v.setPath( parts.at( 1 ) );
+        v.setName(parts.at(1));
+        v.setPath(parts.at(1));
 
         struct statvfs data;
-        if( statvfs( qPrintable( v.name() ), &data ) == 0 )
-        {
-            v.setSize( quint64( static_cast< quint64 >( data.f_blocks ) * data.f_bsize ) );
-            v.setAvailableSpace( quint64( static_cast< quint64> ( data.f_bavail ) * data.f_bsize ) );
+        if (statvfs(qPrintable(v.name()), &data) == 0) {
+            v.setSize(quint64(static_cast<quint64>(data.f_blocks) * data.f_bsize));
+            v.setAvailableSpace(quint64(static_cast<quint64>(data.f_bavail) * data.f_bsize));
         }
 
-        result.push_back( v );
+        result.push_back(v);
     }
 
     return result;
 }
 
-QList< KDSysInfo::ProcessInfo > KDSysInfo::runningProcesses()
+QList<KDSysInfo::ProcessInfo> KDSysInfo::runningProcesses()
 {
-    QList< KDSysInfo::ProcessInfo > processes;
-    QDir procDir( QLatin1String( "/proc" ) );
-    const QFileInfoList procCont = procDir.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable );
-    QRegExp validator( QLatin1String( "[0-9]+" ) );
-    Q_FOREACH( const QFileInfo& info, procCont )
-    {
-        if ( validator.exactMatch( info.fileName() ) )
-        {
-            const QString linkPath = QDir( info.absoluteFilePath() ).absoluteFilePath( QLatin1String( "exe" ) );
-            const QFileInfo linkInfo( linkPath );
-            if ( linkInfo.exists() )
-            {
+    QList<KDSysInfo::ProcessInfo> processes;
+    QDir procDir(QLatin1String("/proc"));
+    const QFileInfoList procCont = procDir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable);
+    QRegExp validator(QLatin1String("[0-9]+"));
+    Q_FOREACH (const QFileInfo &info, procCont) {
+        if (validator.exactMatch(info.fileName())) {
+            const QString linkPath = QDir(info.absoluteFilePath()).absoluteFilePath(QLatin1String("exe"));
+            const QFileInfo linkInfo(linkPath);
+            if (linkInfo.exists()) {
                 KDSysInfo::ProcessInfo processInfo;
                 processInfo.name = linkInfo.symLinkTarget();
                 processInfo.id = info.fileName().toInt();
-                processes.append( processInfo );
+                processes.append(processInfo);
             }
         }
     }
     return processes;
 }
-

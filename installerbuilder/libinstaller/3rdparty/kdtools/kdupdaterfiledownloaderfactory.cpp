@@ -55,17 +55,17 @@ FileDownloaderFactory& FileDownloaderFactory::instance()
    Constructor
 */
 FileDownloaderFactory::FileDownloaderFactory()
-    : d ( new FileDownloaderFactoryData )
+    : d (new FileDownloaderFactoryData)
 {
     // Register the default file downloader set
-    registerFileDownloader< LocalFileDownloader >( QLatin1String( "file" ) );
-    registerFileDownloader< FtpDownloader >( QLatin1String( "ftp" ) );
-    registerFileDownloader< HttpDownloader >( QLatin1String( "http" ) );
-    registerFileDownloader< ResourceFileDownloader >( QLatin1String( "resource" ) );
+    registerFileDownloader<LocalFileDownloader>( QLatin1String("file"));
+    registerFileDownloader<FtpDownloader>(QLatin1String("ftp"));
+    registerFileDownloader<HttpDownloader>(QLatin1String("http"));
+    registerFileDownloader<ResourceFileDownloader >(QLatin1String("resource"));
     d->m_followRedirects = false;
 }
 
-void FileDownloaderFactory::setFollowRedirects( bool val )
+void FileDownloaderFactory::setFollowRedirects(bool val)
 {
     FileDownloaderFactory::instance().d->m_followRedirects = val;
 }
@@ -85,24 +85,25 @@ FileDownloaderFactory::~FileDownloaderFactory()
    passed as parameter to this function.
    \note Ownership of this object remains to the programmer.
 */
-FileDownloader* FileDownloaderFactory::create( const QString& scheme, QObject* parent ) const
+FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *parent) const
 {
-    return create( scheme, 0, QUrl(), parent );
+    return create(scheme, 0, QUrl(), parent);
 }
 
-FileDownloader* FileDownloaderFactory::create( const QString& scheme, const SignatureVerifier* verifier, const QUrl& signatureUrl, QObject* parent ) const
+FileDownloader *FileDownloaderFactory::create(const QString &scheme, const SignatureVerifier *verifier,
+                                              const QUrl &signatureUrl, QObject *parent) const
 {
-    FileDownloader* const downloader = KDGenericFactory< FileDownloader >::create( scheme );
-    if( downloader != 0 ) {
-        downloader->setFollowRedirects( d->m_followRedirects );
-        downloader->setParent( parent );
+    FileDownloader *downloader = KDGenericFactory<FileDownloader>::create(scheme);
+    if (downloader != 0) {
+        downloader->setFollowRedirects(d->m_followRedirects);
+        downloader->setParent(parent);
     }
-    if( !verifier )
+    if (!verifier)
         return downloader;
 
-    SignatureVerificationDownloader* const svdl = new SignatureVerificationDownloader( downloader, parent );
-    svdl->setSignatureVerifier( verifier );
-    svdl->setSignatureUrl( signatureUrl );
+    SignatureVerificationDownloader *svdl = new SignatureVerificationDownloader(downloader, parent);
+    svdl->setSignatureVerifier(verifier);
+    svdl->setSignatureUrl(signatureUrl);
     return svdl;
 }
 

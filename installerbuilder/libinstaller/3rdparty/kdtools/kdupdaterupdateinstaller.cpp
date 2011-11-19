@@ -35,6 +35,8 @@
 #include <QDomElement>
 #include <QDate>
 
+using namespace KDUpdater;
+
 /*!
    \ingroup kdupdater
    \class KDUpdater::UpdateInstaller kdupdaterupdateinstaller.h KDUpdaterUpdateInstaller
@@ -52,16 +54,16 @@
    \note All temporary files created during the installation of the update will be destroyed
    immediately after the installation is complete.
 */
-class KDUpdater::UpdateInstaller::Private
+class UpdateInstaller::Private
 {
   public:
-    Private( UpdateInstaller* qq ) :
-        q( qq )
+    Private(UpdateInstaller *qq) :
+        q(qq)
     {}
 
-    UpdateInstaller* q;
+    UpdateInstaller *q;
 
-    KDUpdater::Application* application;
+    Application *application;
     int updateDownloadDoneCount;
     int updateDownloadProgress;
     int totalUpdates;
@@ -69,11 +71,11 @@ class KDUpdater::UpdateInstaller::Private
 
     int totalProgressPc;
     int currentProgressPc;
-    QList<KDUpdater::Update*> updates;
+    QList<Update *> updates;
 
-    void resolveArguments(QStringList& args);
+    void resolveArguments(QStringList &args);
 
-    void removeDirectory(const QDir & dir);
+    void removeDirectory(const QDir &dir);
     void slotUpdateDownloadProgress(int percent);
     void slotUpdateDownloadDone();
 };
@@ -94,9 +96,9 @@ static int computePercent(int done, int total)
    Constructs an instance of this class for the \ref KDUpdater::Application passed as
    parameter. Only updates meant for the specified application will be installed by this class.
 */
-KDUpdater::UpdateInstaller::UpdateInstaller(KDUpdater::Application* application)
-    : KDUpdater::Task(QLatin1String( "UpdateInstaller" ), NoCapability, application),
-      d( new Private( this ) )
+UpdateInstaller::UpdateInstaller(Application *application)
+    : Task(QLatin1String("UpdateInstaller"), NoCapability, application),
+      d(new Private(this))
 {
     d->application = application;
 }
@@ -104,7 +106,7 @@ KDUpdater::UpdateInstaller::UpdateInstaller(KDUpdater::Application* application)
 /*!
    Destructor
 */
-KDUpdater::UpdateInstaller::~UpdateInstaller()
+UpdateInstaller::~UpdateInstaller()
 {
     delete d;
 }
@@ -112,7 +114,7 @@ KDUpdater::UpdateInstaller::~UpdateInstaller()
 /*!
    Returns the update application for which the update is being installed
 */
-KDUpdater::Application* KDUpdater::UpdateInstaller::application() const
+Application *UpdateInstaller::application() const
 {
     return d->application;
 }
@@ -121,7 +123,7 @@ KDUpdater::Application* KDUpdater::UpdateInstaller::application() const
    Use this function to let the installer know what updates are to be installed. The
    updates are actually installed when the \ref start() method is called on this class.
 */
-void KDUpdater::UpdateInstaller::setUpdatesToInstall(const QList<KDUpdater::Update*>& updates)
+void UpdateInstaller::setUpdatesToInstall(const QList<Update *> &updates)
 {
     d->updates = updates;
 }
@@ -129,7 +131,7 @@ void KDUpdater::UpdateInstaller::setUpdatesToInstall(const QList<KDUpdater::Upda
 /*!
    Returns the updates that would be installed when the next time \ref the start) method is called.
 */
-QList<KDUpdater::Update*> KDUpdater::UpdateInstaller::updatesToInstall() const
+QList<Update *> UpdateInstaller::updatesToInstall() const
 {
     return d->updates;
 }
@@ -137,18 +139,17 @@ QList<KDUpdater::Update*> KDUpdater::UpdateInstaller::updatesToInstall() const
 /*!
    \internal
 */
-void KDUpdater::UpdateInstaller::doRun()
+void UpdateInstaller::doRun()
 {
-    QList<KDUpdater::Update*>& updates = d->updates;
+    QList<Update *> &updates = d->updates;
 
     // First download all the updates
     d->updateDownloadDoneCount = 0;
     d->totalUpdates = updates.count();
 
-    for(int i=0; i<updates.count(); i++)
-    {
-        KDUpdater::Update* update = updates[i];
-        if( update->application() != d->application )
+    for (int i = 0; i < updates.count(); i++) {
+        Update *update = updates[i];
+        if (update->application() != d->application)
             continue;
 
         update->setProperty("_ProgressPc_", 0);
@@ -162,8 +163,7 @@ void KDUpdater::UpdateInstaller::doRun()
     d->currentProgressPc = 0;
 
     // Wait until all updates have been downloaded
-    while(d->updateDownloadDoneCount != updates.count())
-    {
+    while (d->updateDownloadDoneCount != updates.count()) {
         QCoreApplication::processEvents();
 
         // Normalized progress
@@ -186,9 +186,8 @@ void KDUpdater::UpdateInstaller::doRun()
     pcDiff = computeProgressPercentage(50, 95, pcDiff) - 50;
 
     // Now install one update after another.
-    for(int i=0; i<updates.count(); i++)
-    {
-        KDUpdater::Update* update = updates[i];
+    for (int i = 0; i < updates.count(); i++) {
+        Update *update = updates[i];
 
         // Global progress
         QString msg = tr("Installing %1..").arg(update->name());
@@ -196,7 +195,7 @@ void KDUpdater::UpdateInstaller::doRun()
         int maxPc = minPc + pcDiff;
         reportProgress(minPc, msg);
 
-        if( update->application() != d->application )
+        if (update->application() != d->application)
             continue;
 
         QDir::setCurrent(oldCWD.absolutePath());
@@ -215,14 +214,13 @@ void KDUpdater::UpdateInstaller::doRun()
     QDir::setCurrent(oldCWD.absolutePath());
 
     // Remove all the toRemoveDirs
-    for(int i=0; i<d->toRemoveDirs.count(); i++)
-    {
-        QDir dir( d->toRemoveDirs[i] );
-        d->removeDirectory( dir );
+    for (int i = 0; i < d->toRemoveDirs.count(); i++) {
+        QDir dir(d->toRemoveDirs[i]);
+        d->removeDirectory(dir);
 
         QString dirName = dir.dirName();
         dir.cdUp();
-        dir.rmdir( dirName );
+        dir.rmdir(dirName);
     }
     d->toRemoveDirs.clear();
 
@@ -234,7 +232,7 @@ void KDUpdater::UpdateInstaller::doRun()
 /*!
    \internal
 */
-bool KDUpdater::UpdateInstaller::doStop()
+bool UpdateInstaller::doStop()
 {
     return false;
 }
@@ -242,7 +240,7 @@ bool KDUpdater::UpdateInstaller::doStop()
 /*!
    \internal
 */
-bool KDUpdater::UpdateInstaller::doPause()
+bool UpdateInstaller::doPause()
 {
     return false;
 }
@@ -250,18 +248,17 @@ bool KDUpdater::UpdateInstaller::doPause()
 /*!
    \internal
 */
-bool KDUpdater::UpdateInstaller::doResume()
+bool UpdateInstaller::doResume()
 {
     return false;
 }
 
-bool KDUpdater::UpdateInstaller::installUpdate(KDUpdater::Update* update, int minPc, int maxPc)
+bool UpdateInstaller::installUpdate(Update *update, int minPc, int maxPc)
 {
-    QString updateName( update->name() );
+    QString updateName = update->name();
 
     // Sanity checks
-    if( !update->isDownloaded() )
-    {
+    if (!update->isDownloaded()) {
         QString msg = tr("Could not download update '%1'").arg(update->name());
         reportError(msg);
         return false;
@@ -275,15 +272,15 @@ bool KDUpdater::UpdateInstaller::installUpdate(KDUpdater::Update* update, int mi
     QString dirName = QString::fromLatin1("%1_Update%2").arg(d->application->applicationName(), QString::number(count++));
     QString updateFile = update->downloadedFileName();
     QFileInfo fi(updateFile);
-    QDir dir( fi.absolutePath() );
-    dir.mkdir( dirName );
-    dir.cd( dirName );
+    QDir dir(fi.absolutePath());
+    dir.mkdir(dirName);
+    dir.cd(dirName);
     d->toRemoveDirs << dir.absolutePath();
 
     // Step 2: Unpack the update file into the update directory
-    KDUpdater::UFUncompressor uncompressor;
-    uncompressor.setFileName( updateFile );
-    uncompressor.setDestination( dir.absolutePath() );
+    UFUncompressor uncompressor;
+    uncompressor.setFileName(updateFile);
+    uncompressor.setDestination(dir.absolutePath());
 
     if (!uncompressor.uncompress()) {
         reportError(tr("Couldn't uncompress update: %1")
@@ -293,17 +290,14 @@ bool KDUpdater::UpdateInstaller::installUpdate(KDUpdater::Update* update, int mi
 
     // Step 3: Find out the directory in which UpdateInstructions.xml can be found
     QDir updateDir = dir;
-    while( !updateDir.exists(QLatin1String( "UpdateInstructions.xml" )) )
-    {
+    while (!updateDir.exists(QLatin1String("UpdateInstructions.xml"))) {
         QString path = updateDir.absolutePath();
         QFileInfoList fiList = updateDir.entryInfoList(QDir::Dirs|QDir::NoDotAndDotDot);
-        if( !fiList.count() ) // || fiList.count() >= 2 )
-        {
+        if (!fiList.count()) { // || fiList.count() >= 2 )
             QString msg = tr("Could not find UpdateInstructions.xml for %1").arg(update->name());
             reportError(msg);
             return false;
         }
-
         updateDir.cd(fiList.first().fileName());
     }
 
@@ -313,14 +307,12 @@ bool KDUpdater::UpdateInstaller::installUpdate(KDUpdater::Update* update, int mi
     // Step 4: Now load the UpdateInstructions.xml file
     QDomDocument doc;
     QFile file(updateDir.absoluteFilePath(QLatin1String( "UpdateInstructions.xml" )));
-    if( !file.open(QFile::ReadOnly) )
-    {
+    if (!file.open(QFile::ReadOnly)) {
         QString msg = tr("Could not read UpdateInstructions.xml of %1").arg(update->name());
         reportError(msg);
         return false;
     }
-    if( !doc.setContent(&file) )
-    {
+    if (!doc.setContent(&file)) {
         QString msg = tr("Could not read UpdateInstructions.xml of %1").arg(update->name());
         reportError(msg);
         return false;
@@ -330,45 +322,41 @@ bool KDUpdater::UpdateInstaller::installUpdate(KDUpdater::Update* update, int mi
     QDomNodeList operEList = doc.elementsByTagName(QLatin1String( "UpdateOperation" ));
     QString msg = tr("Installing %1").arg(updateName);
 
-    for(int i=0; i<operEList.count(); i++)
-    {
+    for (int i = 0; i < operEList.count(); i++) {
         int pc = computePercent(i+1, operEList.count());
         pc = computeProgressPercentage(minPc, maxPc, pc);
         reportProgress(pc, msg);
 
         // Fetch the important XML elements in UpdateOperation
         QDomElement operE = operEList.at(i).toElement();
-        QDomElement nameE = operE.firstChildElement(QLatin1String( "Name" ));
-        QDomElement errorE = operE.firstChildElement(QLatin1String( "OnError" ));
-        QDomElement argE = operE.firstChildElement(QLatin1String( "Arg" ));
+        QDomElement nameE = operE.firstChildElement(QLatin1String("Name"));
+        QDomElement errorE = operE.firstChildElement(QLatin1String("OnError"));
+        QDomElement argE = operE.firstChildElement(QLatin1String("Arg"));
 
         // Figure out information about the update operation to perform
         QString operName = nameE.text();
-        QString onError = errorE.attribute(QLatin1String( "Action" ), QLatin1String( "Abort" ) );
+        QString onError = errorE.attribute(QLatin1String("Action"), QLatin1String("Abort"));
         QStringList args;
-        while( !argE.isNull() )
-        {
+        while(!argE.isNull()) {
             args << argE.text();
-            argE = argE.nextSiblingElement(QLatin1String( "Arg" ));
+            argE = argE.nextSiblingElement(QLatin1String("Arg"));
         }
 
         //QString operSignature = QString::fromLatin1("%1(%2)").arg(operName, args.join( QLatin1String( ", ") ) );
 
         // Fetch update operation
-        KDUpdater::UpdateOperation* const updateOperation = KDUpdater::UpdateOperationFactory::instance().create(operName);
-        if( !updateOperation )
-        {
+        UpdateOperation *const updateOperation = UpdateOperationFactory::instance().create(operName);
+        if (!updateOperation) {
             QString errMsg = tr("Update operation %1 not supported").arg(operName);
             reportError(errMsg);
 
-            if( onError == QLatin1String( "Continue" ) )
+            if (onError == QLatin1String("Continue"))
                 continue;
 
-            if( onError == QLatin1String( "Abort" ) )
+            if (onError == QLatin1String("Abort"))
                 return false;
 
-            if( onError == QLatin1String( "AskUser" ) )
-            {
+            if (onError == QLatin1String("AskUser")) {
                 // TODO:
                 continue;
             }
@@ -379,24 +367,22 @@ bool KDUpdater::UpdateInstaller::installUpdate(KDUpdater::Update* update, int mi
 
         // Now set the arguments to the update operation and execute the update operation
         updateOperation->setArguments(args);
-        updateOperation->setApplication( d->application );
+        updateOperation->setApplication(d->application);
         const bool success = updateOperation->performOperation();
         
         updateOperation->clear();
 
-        if( !success )
-        {
+        if (!success) {
             QString errMsg = tr("Cannot execute '%1'").arg(updateOperation->operationCommand());
             reportError(errMsg);
 
-            if( onError == QLatin1String( "Continue" ) )
+            if (onError == QLatin1String("Continue"))
                 continue;
 
-            if( onError == QLatin1String( "Abort" ) )
+            if (onError == QLatin1String("Abort"))
                 return false;
 
-            if( onError == QLatin1String( "AskUser" ) )
-            {
+            if (onError == QLatin1String("AskUser")) {
                 // TODO:
                 continue;
             }
@@ -404,9 +390,8 @@ bool KDUpdater::UpdateInstaller::installUpdate(KDUpdater::Update* update, int mi
         delete updateOperation;
     }
 
-    Q_FOREACH( UpdateOperation* updateOperation, update->operations() ) {
+    Q_FOREACH (UpdateOperation *updateOperation, update->operations())
         updateOperation->performOperation();
-    }
 
     msg = tr("Finished installing update %1").arg(update->name());
     reportProgress(maxPc, msg);
@@ -416,16 +401,16 @@ bool KDUpdater::UpdateInstaller::installUpdate(KDUpdater::Update* update, int mi
 /*!
    \internal
 */
-void KDUpdater::UpdateInstaller::Private::slotUpdateDownloadProgress(int percent)
+void UpdateInstaller::Private::slotUpdateDownloadProgress(int percent)
 {
     // 0-49 percent progress is dedicated for the download of updates
-    KDUpdater::Update* update = qobject_cast<KDUpdater::Update*>(q->sender());
-    if( !update )
+    Update *update = qobject_cast<Update *>(q->sender());
+    if (!update)
         return;
 
     int oldPc = update->property("_ProgressPc_").toInt();
     int diffPc = percent-oldPc;
-    if(diffPc <= 0)
+    if (diffPc <= 0)
         return;
 
     currentProgressPc += diffPc;
@@ -435,46 +420,43 @@ void KDUpdater::UpdateInstaller::Private::slotUpdateDownloadProgress(int percent
 /*!
    \internal
 */
-void KDUpdater::UpdateInstaller::Private::slotUpdateDownloadDone()
+void UpdateInstaller::Private::slotUpdateDownloadDone()
 {
     ++updateDownloadDoneCount;
 }
 
-void KDUpdater::UpdateInstaller::Private::resolveArguments(QStringList& args)
+void UpdateInstaller::Private::resolveArguments(QStringList& args)
 {
-    for(int i=0; i<args.count(); i++)
-    {
+    for (int i = 0; i < args.count(); i++) {
         QString arg = args[i];
 
-        arg = arg.replace(QLatin1String( "{APPDIR}" ), application->applicationDirectory());
-        arg = arg.replace(QLatin1String( "{HOME}" ), QDir::homePath());
-        arg = arg.replace(QLatin1String( "{APPNAME}" ), application->applicationName());
-        arg = arg.replace(QLatin1String( "{APPVERSION}" ), application->applicationVersion());
-        arg = arg.replace(QLatin1String( "{CURPATH}" ), QDir::currentPath());
-        arg = arg.replace(QLatin1String( "{ROOT}" ), QDir::rootPath());
-        arg = arg.replace(QLatin1String( "{TEMP}" ), QDir::tempPath());
+        arg = arg.replace(QLatin1String("{APPDIR}"), application->applicationDirectory());
+        arg = arg.replace(QLatin1String("{HOME}"), QDir::homePath());
+        arg = arg.replace(QLatin1String("{APPNAME}"), application->applicationName());
+        arg = arg.replace(QLatin1String("{APPVERSION}"), application->applicationVersion());
+        arg = arg.replace(QLatin1String("{CURPATH}"), QDir::currentPath());
+        arg = arg.replace(QLatin1String("{ROOT}"), QDir::rootPath());
+        arg = arg.replace(QLatin1String("{TEMP}"), QDir::tempPath());
 
         args[i] = arg;
     }
 }
 
-void KDUpdater::UpdateInstaller::Private::removeDirectory(const QDir & dir)
+void UpdateInstaller::Private::removeDirectory(const QDir &dir)
 {
     QFileInfoList fiList = dir.entryInfoList(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot);
-    if( !fiList.count() )
+    if (!fiList.count())
         return;
 
-    for(int i=0; i<fiList.count(); i++)
-    {
+    for (int i = 0; i < fiList.count(); i++) {
         QFileInfo fi = fiList[i];
-        if( fi.isDir() )
-        {
+        if (fi.isDir()) {
             QDir childDir = fi.absoluteFilePath();
-            removeDirectory( childDir );
-            dir.rmdir( childDir.dirName() );
+            removeDirectory(childDir);
+            dir.rmdir(childDir.dirName());
+        } else if(fi.isFile()) {
+            QFile::remove(fi.absoluteFilePath());
         }
-        else if( fi.isFile() )
-            QFile::remove( fi.absoluteFilePath() );
     }
 }
 

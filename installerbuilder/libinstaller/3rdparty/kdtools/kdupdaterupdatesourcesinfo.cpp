@@ -84,49 +84,49 @@
  * Changes made to the object could be saved back to the source file
  */
 
-namespace KDUpdater
-{
+using namespace KDUpdater;
+
 struct UpdateSourceInfoPriorityHigherThan
 {
-    bool operator()( const UpdateSourceInfo& lhs, const UpdateSourceInfo& rhs ) const
+    bool operator()(const UpdateSourceInfo &lhs, const UpdateSourceInfo &rhs) const
     {
         return lhs.priority > rhs.priority;
     }
 };
-}
 
-struct KDUpdater::UpdateSourcesInfo::UpdateSourcesInfoData
+
+struct UpdateSourcesInfo::UpdateSourcesInfoData
 {
-    UpdateSourcesInfoData( UpdateSourcesInfo* qq ) :
-        q( qq ),
+    UpdateSourcesInfoData(UpdateSourcesInfo *qq) :
+        q(qq),
         error(UpdateSourcesInfo::NotYetReadError),
         application(0),
         modified(false)
     {}
 
-    UpdateSourcesInfo* q;
+    UpdateSourcesInfo *q;
 
     QString errorMessage;
     UpdateSourcesInfo::Error error;
-    KDUpdater::Application* application;
+    Application *application;
     bool modified;
     QString fileName;
-    QList<KDUpdater::UpdateSourceInfo> updateSourceInfoList;
+    QList<UpdateSourceInfo> updateSourceInfoList;
 
-    void addUpdateSourceFrom( const QDomElement & element );
-    void addChildElement( QDomDocument & doc, QDomElement & parentE, const QString & tagName, const QString & text, bool htmlText=false );
-    void setInvalidContentError( const QString& detail );
+    void addUpdateSourceFrom(const QDomElement &element);
+    void addChildElement(QDomDocument &doc, QDomElement &parentE, const QString &tagName, const QString &text, bool htmlText = false);
+    void setInvalidContentError(const QString &detail);
     void clearError();
     void saveChanges();
 };
 
-void KDUpdater::UpdateSourcesInfo::UpdateSourcesInfoData::setInvalidContentError(const QString& detail)
+void UpdateSourcesInfo::UpdateSourcesInfoData::setInvalidContentError(const QString &detail)
 {
     error = UpdateSourcesInfo::InvalidContentError;
     errorMessage = tr("%1 contains invalid content: %2").arg(fileName, detail);
 }
 
-void KDUpdater::UpdateSourcesInfo::UpdateSourcesInfoData::clearError()
+void UpdateSourcesInfo::UpdateSourcesInfoData::clearError()
 {
     error = UpdateSourcesInfo::NoError;
     errorMessage.clear();
@@ -135,9 +135,9 @@ void KDUpdater::UpdateSourcesInfo::UpdateSourcesInfoData::clearError()
 /*!
    \internal
 */
-KDUpdater::UpdateSourcesInfo::UpdateSourcesInfo(Application* application)
+UpdateSourcesInfo::UpdateSourcesInfo(Application *application)
     : QObject(application),
-      d( new KDUpdater::UpdateSourcesInfo::UpdateSourcesInfoData( this ) )
+      d(new UpdateSourcesInfo::UpdateSourcesInfoData(this))
 {
     d->application = application;
 }
@@ -145,7 +145,7 @@ KDUpdater::UpdateSourcesInfo::UpdateSourcesInfo(Application* application)
 /*!
    \internal
 */
-KDUpdater::UpdateSourcesInfo::~UpdateSourcesInfo()
+UpdateSourcesInfo::~UpdateSourcesInfo()
 {
     d->saveChanges();
     delete d;
@@ -154,7 +154,7 @@ KDUpdater::UpdateSourcesInfo::~UpdateSourcesInfo()
 /*!
    Returns a pointer to the update application for which this class manages update sources.
 */
-KDUpdater::Application* KDUpdater::UpdateSourcesInfo::application() const
+Application *UpdateSourcesInfo::application() const
 {
     return d->application;
 }
@@ -162,7 +162,7 @@ KDUpdater::Application* KDUpdater::UpdateSourcesInfo::application() const
 /*!
    \internal
 */
-bool KDUpdater::UpdateSourcesInfo::isValid() const
+bool UpdateSourcesInfo::isValid() const
 {
     return d->error == NoError;
 }
@@ -170,7 +170,7 @@ bool KDUpdater::UpdateSourcesInfo::isValid() const
 /*!
    returns a human-readable description of the error
  */
-QString KDUpdater::UpdateSourcesInfo::errorString() const
+QString UpdateSourcesInfo::errorString() const
 {
     return d->errorMessage;
 }
@@ -178,17 +178,17 @@ QString KDUpdater::UpdateSourcesInfo::errorString() const
 /*!
    returns the last error
  */
-KDUpdater::UpdateSourcesInfo::Error KDUpdater::UpdateSourcesInfo::error() const
+UpdateSourcesInfo::Error UpdateSourcesInfo::error() const
 {
     return d->error;
 }
 
-bool KDUpdater::UpdateSourcesInfo::isModified() const
+bool UpdateSourcesInfo::isModified() const
 {
     return d->modified;
 }
 
-void KDUpdater::UpdateSourcesInfo::setModified(bool modified)
+void UpdateSourcesInfo::setModified(bool modified)
 {
     d->modified = modified;
 }
@@ -199,9 +199,9 @@ void KDUpdater::UpdateSourcesInfo::setModified(bool modified)
 
    \sa KDUpdater::Application::setUpdateSourcesXMLFileName()
 */
-void KDUpdater::UpdateSourcesInfo::setFileName(const QString& fileName)
+void UpdateSourcesInfo::setFileName(const QString &fileName)
 {
-    if( d->fileName == fileName )
+    if (d->fileName == fileName)
         return;
 
     d->fileName = fileName;
@@ -211,7 +211,7 @@ void KDUpdater::UpdateSourcesInfo::setFileName(const QString& fileName)
 /*!
    Returns the name of the UpdateSources.xml file that this class referred to.
 */
-QString KDUpdater::UpdateSourcesInfo::fileName() const
+QString UpdateSourcesInfo::fileName() const
 {
     return d->fileName;
 }
@@ -219,7 +219,7 @@ QString KDUpdater::UpdateSourcesInfo::fileName() const
 /*!
    Returns the number of update source info structures contained in this class.
 */
-int KDUpdater::UpdateSourcesInfo::updateSourceInfoCount() const
+int UpdateSourcesInfo::updateSourceInfoCount() const
 {
     return d->updateSourceInfoList.count();
 }
@@ -228,10 +228,10 @@ int KDUpdater::UpdateSourcesInfo::updateSourceInfoCount() const
    Returns the update source info structure at \c index. If an invalid index is passed
    the function returns a dummy constructor.
 */
-KDUpdater::UpdateSourceInfo KDUpdater::UpdateSourcesInfo::updateSourceInfo(int index) const
+UpdateSourceInfo UpdateSourcesInfo::updateSourceInfo(int index) const
 {
-    if( index < 0 || index >= d->updateSourceInfoList.count() )
-        return KDUpdater::UpdateSourceInfo();
+    if (index < 0 || index >= d->updateSourceInfoList.count())
+        return UpdateSourceInfo();
 
     return d->updateSourceInfoList[index];
 }
@@ -240,12 +240,12 @@ KDUpdater::UpdateSourceInfo KDUpdater::UpdateSourcesInfo::updateSourceInfo(int i
    Adds an update source info to this class. Upon successful addition, the class emits a
    \ref updateSourceInfoAdded() signal.
 */
-void KDUpdater::UpdateSourcesInfo::addUpdateSourceInfo(const KDUpdater::UpdateSourceInfo& info)
+void UpdateSourcesInfo::addUpdateSourceInfo(const UpdateSourceInfo &info)
 {
-    if( d->updateSourceInfoList.contains( info ) )
+    if (d->updateSourceInfoList.contains(info))
         return;
-    d->updateSourceInfoList.push_back( info );
-    qSort( d->updateSourceInfoList.begin(), d->updateSourceInfoList.end(), KDUpdater::UpdateSourceInfoPriorityHigherThan() );
+    d->updateSourceInfoList.push_back(info);
+    qSort(d->updateSourceInfoList.begin(), d->updateSourceInfoList.end(), UpdateSourceInfoPriorityHigherThan());
     emit updateSourceInfoAdded(info);
     d->modified = true;
 }
@@ -254,9 +254,9 @@ void KDUpdater::UpdateSourcesInfo::addUpdateSourceInfo(const KDUpdater::UpdateSo
    Removes an update source info from this class. Upon successful removal, the class emits a
    \ref updateSourceInfoRemoved() signal.
 */
-void KDUpdater::UpdateSourcesInfo::removeUpdateSourceInfo(const KDUpdater::UpdateSourceInfo& info)
+void UpdateSourcesInfo::removeUpdateSourceInfo(const UpdateSourceInfo &info)
 {
-    if( !d->updateSourceInfoList.contains(info) )
+    if (!d->updateSourceInfoList.contains(info))
         return;
     d->updateSourceInfoList.removeAll(info);
     emit updateSourceInfoRemoved(info);
@@ -267,11 +267,11 @@ void KDUpdater::UpdateSourcesInfo::removeUpdateSourceInfo(const KDUpdater::Updat
    Removes an update source info at \index in this class. Upon successful removal, the class emits a
    \ref updateSourceInfoRemoved() signal.
 */
-void KDUpdater::UpdateSourcesInfo::removeUpdateSourceInfoAt(int index)
+void UpdateSourcesInfo::removeUpdateSourceInfoAt(int index)
 {
-    if( index < 0 || index >= d->updateSourceInfoList.count() )
+    if (index < 0 || index >= d->updateSourceInfoList.count())
         return;
-    KDUpdater::UpdateSourceInfo info = d->updateSourceInfoList[index];
+    UpdateSourceInfo info = d->updateSourceInfoList[index];
     d->updateSourceInfoList.removeAt(index);
     emit updateSourceInfoRemoved(info);
     d->modified = true;
@@ -285,20 +285,17 @@ void KDUpdater::UpdateSourcesInfo::removeUpdateSourceInfoAt(int index)
    Depending on what the function does \ref updateSourceInfoAdded() or \ref updateSourceInfoChanged()
    signal is emitted.
 */
-void KDUpdater::UpdateSourcesInfo::setUpdateSourceInfoAt(int index, const KDUpdater::UpdateSourceInfo& info)
+void UpdateSourcesInfo::setUpdateSourceInfoAt(int index, const UpdateSourceInfo &info)
 {
-    if( index < 0 || index > d->updateSourceInfoList.count() )
+    if (index < 0 || index > d->updateSourceInfoList.count())
         return;
 
-    if( index == d->updateSourceInfoList.count() )
-    {
+    if (index == d->updateSourceInfoList.count()) {
         d->updateSourceInfoList.append(info);
         emit updateSourceInfoAdded(info);
-    }
-    else
-    {
-        KDUpdater::UpdateSourceInfo oldInfo = d->updateSourceInfoList[index];
-        if( info == oldInfo )
+    } else {
+        UpdateSourceInfo oldInfo = d->updateSourceInfoList[index];
+        if (info == oldInfo)
             return;
 
         d->updateSourceInfoList[index] = info;
@@ -310,24 +307,22 @@ void KDUpdater::UpdateSourcesInfo::setUpdateSourceInfoAt(int index, const KDUpda
 /*!
    This slot reloads the update source information from UpdateSources.xml.
 */
-void KDUpdater::UpdateSourcesInfo::refresh()
+void UpdateSourcesInfo::refresh()
 {
     d->saveChanges(); // save changes done in the previous file
     d->updateSourceInfoList.clear();
 
-    QFile file( d->fileName );
+    QFile file(d->fileName);
     
     // if the file does not exist then we just skip the reading
-    if( !file.exists() )
-    {
+    if (!file.exists()) {
         d->clearError();
         emit reset();
         return;
     }
     
     // Open the XML file
-    if( !file.open(QFile::ReadOnly) )
-    {
+    if (!file.open(QFile::ReadOnly)) {
         d->errorMessage = tr("Could not read \"%1\"").arg(d->fileName);
         d->error = CouldNotReadSourceFileError;
         emit reset();
@@ -338,36 +333,33 @@ void KDUpdater::UpdateSourcesInfo::refresh()
     QString parseErrorMessage;
     int parseErrorLine;
     int parseErrorColumn;
-    if( !doc.setContent( &file, &parseErrorMessage, &parseErrorLine, &parseErrorColumn ) )
-    {
+    if (!doc.setContent(&file, &parseErrorMessage, &parseErrorLine, &parseErrorColumn)) {
         d->error = InvalidXmlError;
         d->errorMessage = tr("XML Parse error in %1 at %2, %3: %4")
-                          .arg( d->fileName,
-                                QString::number( parseErrorLine ),
-                                QString::number( parseErrorColumn ),
-                                parseErrorMessage );
+                          .arg(d->fileName,
+                                QString::number(parseErrorLine),
+                                QString::number(parseErrorColumn),
+                                parseErrorMessage);
         emit reset();
         return;
     }
 
     // Now parse the XML file.
     QDomElement rootE = doc.documentElement();
-    if( rootE.tagName() != QLatin1String( "UpdateSources" ) )
-    {
+    if (rootE.tagName() != QLatin1String("UpdateSources")) {
         d->setInvalidContentError(tr("Root element %1 unexpected, should be \"UpdateSources\"").arg(rootE.tagName()));
         emit reset();
         return;
     }
 
     QDomNodeList childNodes = rootE.childNodes();
-    for(int i=0; i<childNodes.count(); i++)
-    {
+    for (int i = 0; i < childNodes.count(); i++) {
         QDomNode childNode = childNodes.item(i);
         QDomElement childNodeE = childNode.toElement();
-        if( childNodeE.isNull() )
+        if (childNodeE.isNull())
             continue;
 
-        if( childNodeE.tagName() == QLatin1String( "UpdateSource" ) )
+        if (childNodeE.tagName() == QLatin1String("UpdateSource"))
             d->addUpdateSourceFrom(childNodeE);
     }
 
@@ -375,101 +367,94 @@ void KDUpdater::UpdateSourcesInfo::refresh()
     emit reset();
 }
 
-void KDUpdater::UpdateSourcesInfo::UpdateSourcesInfoData::saveChanges()
+void UpdateSourcesInfo::UpdateSourcesInfoData::saveChanges()
 {
-    if( !modified || fileName.isEmpty() )
+    if (!modified || fileName.isEmpty())
         return;
 
     const bool hadSaveError = error == UpdateSourcesInfo::CouldNotSaveChangesError; 
         
     QDomDocument doc;
 
-    QDomElement rootE = doc.createElement( QLatin1String( "UpdateSources") );
+    QDomElement rootE = doc.createElement(QLatin1String("UpdateSources"));
     doc.appendChild(rootE);
 
-    for(int i=0; i<updateSourceInfoList.count(); i++)
-    {
-        KDUpdater::UpdateSourceInfo info = updateSourceInfoList[i];
+    for (int i = 0; i < updateSourceInfoList.count(); i++) {
+        UpdateSourceInfo info = updateSourceInfoList.at(i);
 
-        QDomElement infoE = doc.createElement( QLatin1String( "UpdateSource" ) );
+        QDomElement infoE = doc.createElement(QLatin1String("UpdateSource"));
         rootE.appendChild(infoE);
-        addChildElement(doc, infoE, QLatin1String( "Name" ), info.name);
-        addChildElement(doc, infoE, QLatin1String( "Title" ), info.title);
-        addChildElement(doc, infoE, QLatin1String( "Description" ),  info.description,
-                           (info.description.length() && info.description[0] == QLatin1Char( '<' ) ) );
-        addChildElement(doc, infoE, QLatin1String( "Url" ),  info.url.toString());
+        addChildElement(doc, infoE, QLatin1String("Name"), info.name);
+        addChildElement(doc, infoE, QLatin1String("Title"), info.title);
+        addChildElement(doc, infoE, QLatin1String("Description"),  info.description,
+                           (info.description.length() && info.description.at(0) == QLatin1Char('<')));
+        addChildElement(doc, infoE, QLatin1String("Url"),  info.url.toString());
     }
 
-    QFile file( fileName );
-    if ( !file.open( QFile::WriteOnly ) )
-    {
+    QFile file(fileName);
+    if (!file.open(QFile::WriteOnly)) {
         error = UpdateSourcesInfo::CouldNotSaveChangesError;
         errorMessage = tr("Could not save changes to \"%1\": %2").arg(fileName, file.errorString());
         return;
     }
     
-    QTextStream stream( &file );
-    doc.save( stream, 2 );
+    QTextStream stream(&file);
+    doc.save(stream, 2);
     stream.flush();
     file.close();
 
-    if ( file.error() != QFile::NoError )
-    {
+    if (file.error() != QFile::NoError) {
         error = UpdateSourcesInfo::CouldNotSaveChangesError;
         errorMessage = tr("Could not save changes to \"%1\": %2").arg(fileName, file.errorString());
         return;
     }
     
     //if there was a write error before, clear the error, as the write was successful now
-    if ( hadSaveError )
+    if (hadSaveError)
         clearError();
     
     modified = false;
 }
 
-void KDUpdater::UpdateSourcesInfo::UpdateSourcesInfoData::addUpdateSourceFrom( const QDomElement & element )
+void UpdateSourcesInfo::UpdateSourcesInfoData::addUpdateSourceFrom(const QDomElement &element)
 {
-    if( element.tagName() != QLatin1String( "UpdateSource" ) )
+    if (element.tagName() != QLatin1String("UpdateSource"))
         return;
 
     QDomNodeList childNodes = element.childNodes();
-    if(!childNodes.count())
+    if (!childNodes.count())
         return;
 
-    KDUpdater::UpdateSourceInfo info;
+    UpdateSourceInfo info;
 
-    for(int i=0; i<childNodes.count(); i++)
-    {
+    for (int i = 0; i<childNodes.count(); i++) {
         QDomNode childNode = childNodes.item(i);
         QDomElement childNodeE = childNode.toElement();
-        if( childNodeE.isNull() )
+        if (childNodeE.isNull())
             continue;
 
-        if( childNodeE.tagName() == QLatin1String( "Name" ) )
+        if (childNodeE.tagName() == QLatin1String("Name"))
             info.name = childNodeE.text();
-        else if( childNodeE.tagName() == QLatin1String( "Title" ) )
+        else if (childNodeE.tagName() == QLatin1String("Title"))
             info.title = childNodeE.text();
-        else if( childNodeE.tagName() == QLatin1String( "Description" ) )
+        else if (childNodeE.tagName() == QLatin1String("Description"))
             info.description = childNodeE.text();
-        else if( childNodeE.tagName() == QLatin1String( "Url" ) )
+        else if (childNodeE.tagName() == QLatin1String("Url"))
             info.url = childNodeE.text();
     }
 
     this->updateSourceInfoList.append(info);
 }
 
-void KDUpdater::UpdateSourcesInfo::UpdateSourcesInfoData::addChildElement( QDomDocument & doc, QDomElement & parentE, const QString & tagName, const QString & text, bool htmlText )
+void UpdateSourcesInfo::UpdateSourcesInfoData::addChildElement(QDomDocument &doc, QDomElement &parentE, const QString &tagName, const QString &text, bool htmlText)
 {
     QDomElement childE = doc.createElement(tagName);
     parentE.appendChild(childE);
 
-    if( htmlText )
-    {
+    if (htmlText) {
         QDomCDATASection textE = doc.createCDATASection(text);
         childE.appendChild(textE);
-    }
-    else
-    {
+    } else {
         QDomText textE = doc.createTextNode(text);
         childE.appendChild(textE);
     }
@@ -504,8 +489,12 @@ void KDUpdater::UpdateSourcesInfo::UpdateSourcesInfoData::addChildElement( QDomD
    \var QUrl KDUpdater::UpdateSourceInfo::priority
 */
 
-bool KDUpdater::operator==( const UpdateSourceInfo & lhs, const UpdateSourceInfo & rhs )
+namespace KDUpdater {
+
+bool operator==(const UpdateSourceInfo &lhs, const UpdateSourceInfo &rhs)
 {
-    return (lhs.name == rhs.name) && (lhs.title == rhs.title) &&
-        (lhs.description == rhs.description) && (lhs.url == rhs.url);
+    return lhs.name == rhs.name && lhs.title == rhs.title
+        && lhs.description == rhs.description && lhs.url == rhs.url;
 }
+
+} // namespace KDUpdater

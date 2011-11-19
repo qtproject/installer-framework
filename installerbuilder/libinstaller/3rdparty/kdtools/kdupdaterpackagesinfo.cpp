@@ -75,15 +75,15 @@ using namespace KDUpdater;
 
 struct PackagesInfo::PackagesInfoData
 {
-    PackagesInfoData( PackagesInfo* qq ) :
-        q( qq ),
+    PackagesInfoData(PackagesInfo *qq) :
+        q(qq),
         application(0),
         error(PackagesInfo::NotYetReadError),
         compatLevel(-1),
-        modified( false )
+        modified(false)
     {}
-    PackagesInfo* q;
-    Application* application;
+    PackagesInfo *q;
+    Application *application;
     QString errorMessage;
     PackagesInfo::Error error;
     QString fileName;
@@ -94,11 +94,11 @@ struct PackagesInfo::PackagesInfoData
 
     QVector<PackageInfo> packageInfoList;
 
-    void addPackageFrom(const QDomElement& packageE);
-    void setInvalidContentError( const QString& detail );
+    void addPackageFrom(const QDomElement &packageE);
+    void setInvalidContentError(const QString &detail);
 };
 
-void PackagesInfo::PackagesInfoData::setInvalidContentError(const QString& detail)
+void PackagesInfo::PackagesInfoData::setInvalidContentError(const QString &detail)
 {
     error = PackagesInfo::InvalidContentError;
     errorMessage = tr("%1 contains invalid content: %2").arg(fileName, detail);
@@ -107,9 +107,9 @@ void PackagesInfo::PackagesInfoData::setInvalidContentError(const QString& detai
 /*!
    \internal
 */
-PackagesInfo::PackagesInfo(Application* application)
+PackagesInfo::PackagesInfo(Application *application)
     : QObject(application),
-      d( new PackagesInfoData( this ) )
+      d(new PackagesInfoData(this))
 {
     d->application = application;
 }
@@ -183,7 +183,7 @@ QString PackagesInfo::fileName() const
    Sets the application name. By default this is the name specified in
    the ApplicationName XML element of the Packages.xml file.
 */
-void PackagesInfo::setApplicationName(const QString& name)
+void PackagesInfo::setApplicationName(const QString &name)
 {
     d->applicationName = name;
     d->modified = true;
@@ -229,7 +229,7 @@ int PackagesInfo::packageInfoCount() const
 */
 PackageInfo PackagesInfo::packageInfo(int index) const
 {
-    if( index < 0 || index >= d->packageInfoList.count() )
+    if (index < 0 || index >= d->packageInfoList.count())
         return PackageInfo();
 
     return d->packageInfoList[index];
@@ -249,9 +249,8 @@ int PackagesInfo::compatLevel() const
 */
 int PackagesInfo::findPackageInfo(const QString& pkgName) const
 {
-    for(int i=0; i<d->packageInfoList.count(); i++)
-    {
-        if( d->packageInfoList[i].name == pkgName )
+    for (int i = 0; i < d->packageInfoList.count(); i++) {
+        if (d->packageInfoList[i].name == pkgName)
             return i;
     }
 
@@ -279,11 +278,10 @@ void PackagesInfo::refresh()
     d->packageInfoList.clear();
     d->modified = false;
 
-    QFile file( d->fileName );
+    QFile file(d->fileName);
     
     // if the file does not exist then we just skip the reading
-    if( !file.exists() )
-    {
+    if (!file.exists()) {
         d->error = NotYetReadError;
         d->errorMessage = tr("The file \"%1\" does not exist").arg(d->fileName);
         emit reset();
@@ -291,8 +289,7 @@ void PackagesInfo::refresh()
     }
 
     // Open Packages.xml
-    if( !file.open(QFile::ReadOnly) )
-    {
+    if (!file.open(QFile::ReadOnly)) {
         d->error = CouldNotReadPackageFileError;
         d->errorMessage = tr("Could not open \"%1\"").arg(d->fileName);
         emit reset();
@@ -304,8 +301,7 @@ void PackagesInfo::refresh()
     QString parseErrorMessage;
     int parseErrorLine;
     int parseErrorColumn;
-    if( !doc.setContent( &file, &parseErrorMessage, &parseErrorLine, &parseErrorColumn ) )
-    {
+    if (!doc.setContent(&file, &parseErrorMessage, &parseErrorLine, &parseErrorColumn)) {
         d->error = InvalidXmlError;
         d->errorMessage = tr("Parse error in %1 at %2, %3: %4")
                           .arg(d->fileName,
@@ -319,28 +315,26 @@ void PackagesInfo::refresh()
 
     // Now populate information from the XML file.
     QDomElement rootE = doc.documentElement();
-    if( rootE.tagName() != QLatin1String( "Packages" ) )
-    {
+    if (rootE.tagName() != QLatin1String("Packages")) {
         d->setInvalidContentError(tr("root element %1 unexpected, should be \"Packages\"").arg(rootE.tagName()));
         emit reset();
         return;
     }
 
     QDomNodeList childNodes = rootE.childNodes();
-    for(int i=0; i<childNodes.count(); i++)
-    {
+    for (int i = 0; i < childNodes.count(); i++) {
         QDomNode childNode = childNodes.item(i);
         QDomElement childNodeE = childNode.toElement();
-        if( childNodeE.isNull() )
+        if (childNodeE.isNull())
             continue;
 
-        if( childNodeE.tagName() == QLatin1String( "ApplicationName" ) )
+        if (childNodeE.tagName() == QLatin1String("ApplicationName"))
             d->applicationName = childNodeE.text();
-        else if( childNodeE.tagName() == QLatin1String( "ApplicationVersion" ) )
+        else if (childNodeE.tagName() == QLatin1String("ApplicationVersion"))
             d->applicationVersion = childNodeE.text();
-        else if( childNodeE.tagName() == QLatin1String( "Package" ) )
-            d->addPackageFrom( childNodeE );
-        else if( childNodeE.tagName() == QLatin1String( "CompatLevel" ) )
+        else if (childNodeE.tagName() == QLatin1String("Package"))
+            d->addPackageFrom(childNodeE);
+        else if (childNodeE.tagName() == QLatin1String("CompatLevel"))
             d->compatLevel = childNodeE.text().toInt();
     }
 
@@ -361,12 +355,14 @@ void PackagesInfo::setCompatLevel(int level)
 /*!
  Marks the package with \a name as installed in \a version.
  */
-bool PackagesInfo::installPackage( const QString& name, const QString& version, const QString& title, const QString& description,
-                                   const QStringList& dependencies, bool forcedInstallation, bool virtualComp, quint64 uncompressedSize,
-                                   const QString &inheritVersionFrom)
+bool PackagesInfo::installPackage(const QString &name, const QString &version,
+                                  const QString &title, const QString &description,
+                                  const QStringList &dependencies, bool forcedInstallation,
+                                  bool virtualComp, quint64 uncompressedSize,
+                                  const QString &inheritVersionFrom)
 {
-    if( findPackageInfo( name ) != -1 )
-        return updatePackage( name, version, QDate::currentDate() );
+    if (findPackageInfo(name) != -1)
+        return updatePackage(name, version, QDate::currentDate());
 
     PackageInfo info;
     info.name = name;
@@ -379,7 +375,7 @@ bool PackagesInfo::installPackage( const QString& name, const QString& version, 
     info.forcedInstallation = forcedInstallation;
     info.virtualComp = virtualComp;
     info.uncompressedSize = uncompressedSize;
-    d->packageInfoList.push_back( info );
+    d->packageInfoList.push_back(info);
     d->modified = true;
     return true;
 }
@@ -388,12 +384,13 @@ bool PackagesInfo::installPackage( const QString& name, const QString& version, 
    Update the package.
 */
 bool PackagesInfo::updatePackage(const QString &name,
-                                            const QString &version,
-                                            const QDate &date)
+                                 const QString &version,
+                                 const QDate &date)
 {
     int index = findPackageInfo(name);
 
-    if (index==-1) return false;
+    if (index == -1)
+        return false;
 
     d->packageInfoList[index].version = version;
     d->packageInfoList[index].lastUpdateDate = date;
@@ -404,13 +401,13 @@ bool PackagesInfo::updatePackage(const QString &name,
 /*!
  Remove the package with \a name.
  */
-bool PackagesInfo::removePackage( const QString& name )
+bool PackagesInfo::removePackage(const QString &name)
 {
-    const int index = findPackageInfo( name );
-    if( index == -1 )
+    const int index = findPackageInfo(name);
+    if (index == -1)
         return false;
 
-    d->packageInfoList.remove( index );
+    d->packageInfoList.remove(index);
     d->modified = true;
     return true;
 }
@@ -418,67 +415,64 @@ bool PackagesInfo::removePackage( const QString& name )
 static void addTextChildHelper(QDomNode *node,
                                const QString &tag,
                                const QString &text,
-                               const QString &attributeName=QString(),
-                               const QString &attributeValue=QString())
+                               const QString &attributeName = QString(),
+                               const QString &attributeValue = QString())
 {
     QDomElement domElement = node->ownerDocument().createElement(tag);
     QDomText domText = node->ownerDocument().createTextNode(text);
 
     domElement.appendChild(domText);
-    if(!attributeName.isEmpty())
+    if (!attributeName.isEmpty())
         domElement.setAttribute(attributeName, attributeValue);
     node->appendChild(domElement);
 }
 
 void PackagesInfo::writeToDisk()
 {
-    if( d->modified && ( !d->packageInfoList.isEmpty() || QFile::exists( d->fileName ) ) )
-    {
+    if (d->modified && (!d->packageInfoList.isEmpty() || QFile::exists(d->fileName))) {
         QDomDocument doc;
-        QDomElement root = doc.createElement(QLatin1String( "Packages") ) ;
+        QDomElement root = doc.createElement(QLatin1String("Packages")) ;
         doc.appendChild(root);
 
-        addTextChildHelper(&root, QLatin1String( "ApplicationName" ), d->applicationName);
-        addTextChildHelper(&root, QLatin1String( "ApplicationVersion" ), d->applicationVersion);
-        if (d->compatLevel!=-1) {
+        addTextChildHelper(&root, QLatin1String("ApplicationName"), d->applicationName);
+        addTextChildHelper(&root, QLatin1String("ApplicationVersion"), d->applicationVersion);
+        if (d->compatLevel != -1)
             addTextChildHelper(&root, QLatin1String( "CompatLevel" ), QString::number(d->compatLevel));
-        }
 
         Q_FOREACH (const PackageInfo &info, d->packageInfoList) {
-            QDomElement package = doc.createElement( QLatin1String( "Package" ) );
+            QDomElement package = doc.createElement(QLatin1String("Package"));
 
-            addTextChildHelper( &package, QLatin1String( "Name" ), info.name );
-            addTextChildHelper( &package, QLatin1String( "Pixmap" ), info.pixmap );
-            addTextChildHelper( &package, QLatin1String( "Title" ), info.title );
-            addTextChildHelper( &package, QLatin1String( "Description" ), info.description );
+            addTextChildHelper(&package, QLatin1String("Name"), info.name);
+            addTextChildHelper(&package, QLatin1String("Pixmap"), info.pixmap);
+            addTextChildHelper(&package, QLatin1String("Title"), info.title);
+            addTextChildHelper(&package, QLatin1String("Description"), info.description);
             if (info.inheritVersionFrom.isEmpty())
-                addTextChildHelper( &package, QLatin1String( "Version" ), info.version );
+                addTextChildHelper(&package, QLatin1String("Version"), info.version);
             else
-                addTextChildHelper( &package, QLatin1String( "Version" ), info.version,
+                addTextChildHelper(&package, QLatin1String("Version"), info.version,
                                    QLatin1String("inheritVersionFrom"), info.inheritVersionFrom);
-            addTextChildHelper( &package, QLatin1String( "LastUpdateDate" ), info.lastUpdateDate.toString( Qt::ISODate ) );
-            addTextChildHelper( &package, QLatin1String( "InstallDate" ), info.installDate.toString( Qt::ISODate) );
-            addTextChildHelper( &package, QLatin1String( "Size" ), QString::number( info.uncompressedSize ) );
-            QString assembledDependencies = QLatin1String( "" );
-            Q_FOREACH( const QString & val, info.dependencies ){
-                assembledDependencies += val + QLatin1String( "," );
+            addTextChildHelper(&package, QLatin1String("LastUpdateDate"), info.lastUpdateDate.toString(Qt::ISODate));
+            addTextChildHelper(&package, QLatin1String("InstallDate"), info.installDate.toString(Qt::ISODate));
+            addTextChildHelper(&package, QLatin1String("Size"), QString::number(info.uncompressedSize));
+            QString assembledDependencies = QLatin1String("");
+            Q_FOREACH (const QString & val, info.dependencies) {
+                assembledDependencies += val + QLatin1String(",");
             }
-            if ( info.dependencies.count() > 0 )
-                assembledDependencies.chop( 1 );
-            addTextChildHelper( &package, QLatin1String( "Dependencies" ), assembledDependencies );
-            if ( info.forcedInstallation )
-                addTextChildHelper( &package, QLatin1String( "ForcedInstallation" ), QLatin1String( "true" ) );
-            if ( info.virtualComp )
-                addTextChildHelper( &package, QLatin1String( "Virtual" ), QLatin1String( "true" ) );
+            if (info.dependencies.count() > 0)
+                assembledDependencies.chop(1);
+            addTextChildHelper(&package, QLatin1String("Dependencies"), assembledDependencies);
+            if (info.forcedInstallation)
+                addTextChildHelper(&package, QLatin1String("ForcedInstallation"), QLatin1String("true"));
+            if (info.virtualComp)
+                addTextChildHelper(&package, QLatin1String("Virtual"), QLatin1String("true"));
 
             root.appendChild(package);
         }
 
         // Open Packages.xml
-        QFile file( d->fileName );
-        if( !file.open(QFile::WriteOnly) ) {
+        QFile file(d->fileName);
+        if (!file.open(QFile::WriteOnly))
             return;
-        }
 
         file.write(doc.toByteArray(4));
         file.close();
@@ -486,52 +480,51 @@ void PackagesInfo::writeToDisk()
     }
 }
 
-void PackagesInfo::PackagesInfoData::addPackageFrom(const QDomElement& packageE)
+void PackagesInfo::PackagesInfoData::addPackageFrom(const QDomElement &packageE)
 {
-    if( packageE.isNull() )
+    if (packageE.isNull())
         return;
 
     QDomNodeList childNodes = packageE.childNodes();
-    if(childNodes.count() == 0)
+    if (childNodes.count() == 0)
         return;
 
     PackageInfo info;
     info.forcedInstallation = false;
     info.virtualComp = false;
-    for(int i=0; i<childNodes.count(); i++)
-    {
+    for (int i = 0; i < childNodes.count(); i++) {
         QDomNode childNode = childNodes.item(i);
         QDomElement childNodeE = childNode.toElement();
-        if( childNodeE.isNull() )
+        if (childNodeE.isNull())
             continue;
 
-        if( childNodeE.tagName() == QLatin1String( "Name" ) )
+        if (childNodeE.tagName() == QLatin1String("Name"))
             info.name = childNodeE.text();
-        else if( childNodeE.tagName() == QLatin1String( "Pixmap" ) )
+        else if (childNodeE.tagName() == QLatin1String("Pixmap"))
             info.pixmap = childNodeE.text();
-        else if( childNodeE.tagName() == QLatin1String( "Title" ) )
+        else if (childNodeE.tagName() == QLatin1String("Title"))
             info.title = childNodeE.text();
-        else if( childNodeE.tagName() == QLatin1String( "Description" ) )
+        else if (childNodeE.tagName() == QLatin1String("Description"))
             info.description = childNodeE.text();
-        else if( childNodeE.tagName() == QLatin1String( "Version" ) ) {
+        else if (childNodeE.tagName() == QLatin1String("Version")) {
             info.version = childNodeE.text();
             info.inheritVersionFrom = childNodeE.attribute(QLatin1String("inheritVersionFrom"));
         }
-        else if( childNodeE.tagName() == QLatin1String( "Virtual" ) )
-            info.virtualComp = childNodeE.text().toLower() == QLatin1String( "true" ) ? true : false;
-        else if( childNodeE.tagName() == QLatin1String( "Size" ) )
+        else if (childNodeE.tagName() == QLatin1String("Virtual"))
+            info.virtualComp = childNodeE.text().toLower() == QLatin1String("true") ? true : false;
+        else if (childNodeE.tagName() == QLatin1String("Size"))
             info.uncompressedSize = childNodeE.text().toULongLong();
-        else if( childNodeE.tagName() == QLatin1String( "Dependencies" ) )
-            info.dependencies = childNodeE.text().split( QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts );
-        else if( childNodeE.tagName() == QLatin1String( "ForcedInstallation" ) )
+        else if (childNodeE.tagName() == QLatin1String("Dependencies"))
+            info.dependencies = childNodeE.text().split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
+        else if (childNodeE.tagName() == QLatin1String("ForcedInstallation"))
             info.forcedInstallation = childNodeE.text().toLower() == QLatin1String( "true" ) ? true : false;
-        else if( childNodeE.tagName() == QLatin1String( "LastUpdateDate" ) )
+        else if (childNodeE.tagName() == QLatin1String("LastUpdateDate"))
             info.lastUpdateDate = QDate::fromString(childNodeE.text(), Qt::ISODate);
-        else if( childNodeE.tagName() == QLatin1String( "InstallDate" ) )
+        else if (childNodeE.tagName() == QLatin1String("InstallDate"))
             info.installDate = QDate::fromString(childNodeE.text(), Qt::ISODate);
     }
 
-    this->packageInfoList.append( info );
+    this->packageInfoList.append(info);
 }
 
 /*!
