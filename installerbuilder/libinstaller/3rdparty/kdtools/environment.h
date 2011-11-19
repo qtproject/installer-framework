@@ -1,9 +1,10 @@
 #ifndef LIBINSTALLER_ENVIRONMENT_H
 #define LIBINSTALLER_ENVIRONMENT_H
 
-#include "kdupdaterupdateoperation.h"
+#include "kdtoolsglobal.h"
 
 #include <QString>
+#include <QHash>
 
 QT_BEGIN_NAMESPACE
 class QProcess;
@@ -17,7 +18,7 @@ class KDTOOLS_EXPORT Environment
 public:
     static Environment &instance();
 
-    ~Environment();
+    ~Environment() {}
 
     QString value(const QString &key, const QString &defaultValue = QString()) const;
     void setTemporaryValue(const QString &key, const QString &value);
@@ -26,12 +27,11 @@ public:
     void applyTo(QProcess *process);
 
 private:
-    Environment();
+    Environment() {}
 
 private:
     Q_DISABLE_COPY(Environment)
-    class Private;
-    Private *const d;
+    QHash<QString, QString> m_tempValues;
 };
 
 } // namespace KDUpdater
