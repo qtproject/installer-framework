@@ -44,7 +44,7 @@ namespace KDUpdater
         virtual void setValue( const QString& key, const QVariant& value ) = 0;
     };
 
-    class KDTOOLS_UPDATER_EXPORT Application : public QObject
+    class KDTOOLS_EXPORT Application : public QObject
     {
         Q_OBJECT
 

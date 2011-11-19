@@ -35,7 +35,7 @@ namespace KDUpdater {
 
     class SignatureVerificationResult;
 
-    class KDTOOLS_UPDATER_EXPORT SignatureVerifier {
+    class KDTOOLS_EXPORT SignatureVerifier {
     public:
         virtual ~SignatureVerifier();
         virtual SignatureVerifier* clone() const = 0;

@@ -29,7 +29,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QString>
 
-class KDTOOLSCORE_EXPORT KDSaveFile : public QIODevice {
+class KDTOOLS_EXPORT KDSaveFile : public QIODevice {
     Q_OBJECT
 public:
     explicit KDSaveFile( const QString& filename=QString(), QObject* parent=0 );

@@ -35,7 +35,7 @@ QT_END_NAMESPACE
  * Class that provides cryptographic functionality like signing and verifying
  * or encrypting and decrypting content.
  */
-class KDTOOLS_UPDATER_EXPORT KDUpdaterCrypto {
+class KDTOOLS_EXPORT KDUpdaterCrypto {
     public:
         class PasswordProvider
         {

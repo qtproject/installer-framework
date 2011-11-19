@@ -23,17 +23,7 @@
 #ifndef KD_UPDATER_H
 #define KD_UPDATER_H
 
-#include <QtGlobal>
-
-#ifdef KDTOOLS_SHARED
-    #if defined(BUILD_SHARED_KDUPDATER)
-        #define KDTOOLS_UPDATER_EXPORT    Q_DECL_EXPORT
-    #else
-        #define KDTOOLS_UPDATER_EXPORT    Q_DECL_IMPORT
-    #endif
-#else
-    #define KDTOOLS_UPDATER_EXPORT
-#endif
+#include <kdtoolsglobal.h>
 
 namespace KDUpdater
 {
@@ -56,7 +46,7 @@ namespace KDUpdater
     Q_DECLARE_FLAGS( UpdateTypes, UpdateType )
     Q_DECLARE_OPERATORS_FOR_FLAGS( UpdateTypes )
 
-    KDTOOLS_UPDATER_EXPORT int compareVersion(const QString& v1, const QString& v2);
+    KDTOOLS_EXPORT int compareVersion(const QString& v1, const QString& v2);
 }
 
 #endif

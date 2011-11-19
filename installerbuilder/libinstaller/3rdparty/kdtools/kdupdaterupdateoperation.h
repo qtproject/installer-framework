@@ -34,7 +34,7 @@ namespace KDUpdater
 {
     class Application;
 
-    class KDTOOLS_UPDATER_EXPORT UpdateOperation
+    class KDTOOLS_EXPORT UpdateOperation
     {
         Q_DECLARE_TR_FUNCTIONS(UpdateOperation)
 

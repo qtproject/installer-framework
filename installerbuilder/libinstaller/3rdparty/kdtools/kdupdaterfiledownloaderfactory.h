@@ -38,7 +38,7 @@ namespace KDUpdater
     class FileDownloader;
     class SignatureVerifier;
 
-    class KDTOOLS_UPDATER_EXPORT FileDownloaderFactory : public KDGenericFactory< FileDownloader >
+    class KDTOOLS_EXPORT FileDownloaderFactory : public KDGenericFactory< FileDownloader >
     {
         Q_DISABLE_COPY( FileDownloaderFactory )
     public:

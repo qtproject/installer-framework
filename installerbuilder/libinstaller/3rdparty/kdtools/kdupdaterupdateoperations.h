@@ -32,7 +32,7 @@
 namespace KDUpdater
 {
 
-    class KDTOOLS_UPDATER_EXPORT CopyOperation : public UpdateOperation
+    class KDTOOLS_EXPORT CopyOperation : public UpdateOperation
     {
     public:
         CopyOperation();
@@ -47,7 +47,7 @@ namespace KDUpdater
         QDomDocument toXml() const;
     };
 
-    class KDTOOLS_UPDATER_EXPORT MoveOperation : public UpdateOperation
+    class KDTOOLS_EXPORT MoveOperation : public UpdateOperation
     {
     public:
         MoveOperation();
@@ -60,7 +60,7 @@ namespace KDUpdater
         MoveOperation* clone() const;
     };
 
-    class KDTOOLS_UPDATER_EXPORT DeleteOperation : public UpdateOperation
+    class KDTOOLS_EXPORT DeleteOperation : public UpdateOperation
     {
     public:
         DeleteOperation();
@@ -75,7 +75,7 @@ namespace KDUpdater
         QDomDocument toXml() const;
     };
 
-    class KDTOOLS_UPDATER_EXPORT MkdirOperation : public UpdateOperation
+    class KDTOOLS_EXPORT MkdirOperation : public UpdateOperation
     {
     public:
         MkdirOperation();
@@ -88,7 +88,7 @@ namespace KDUpdater
         MkdirOperation* clone() const;
     };
 
-    class KDTOOLS_UPDATER_EXPORT RmdirOperation : public UpdateOperation
+    class KDTOOLS_EXPORT RmdirOperation : public UpdateOperation
     {
     public:
         RmdirOperation();
@@ -101,7 +101,7 @@ namespace KDUpdater
         RmdirOperation* clone() const;
     };
 
-    class KDTOOLS_UPDATER_EXPORT AppendFileOperation : public UpdateOperation
+    class KDTOOLS_EXPORT AppendFileOperation : public UpdateOperation
     {
     public:
         AppendFileOperation();
@@ -114,7 +114,7 @@ namespace KDUpdater
         AppendFileOperation* clone() const;
     };
 
-    class KDTOOLS_UPDATER_EXPORT PrependFileOperation : public UpdateOperation
+    class KDTOOLS_EXPORT PrependFileOperation : public UpdateOperation
     {
     public:
         PrependFileOperation();
@@ -127,7 +127,7 @@ namespace KDUpdater
         PrependFileOperation* clone() const;
     };
 
-    class KDTOOLS_UPDATER_EXPORT ExecuteOperation : public QObject, public UpdateOperation
+    class KDTOOLS_EXPORT ExecuteOperation : public QObject, public UpdateOperation
     {
         Q_OBJECT
     public:
@@ -153,7 +153,7 @@ namespace KDUpdater
         QProcess process;
     };
 
-    class KDTOOLS_UPDATER_EXPORT UpdatePackageOperation : public UpdateOperation
+    class KDTOOLS_EXPORT UpdatePackageOperation : public UpdateOperation
     {
     public:
         UpdatePackageOperation();
@@ -166,7 +166,7 @@ namespace KDUpdater
         UpdatePackageOperation* clone() const;
     };
 
-    class KDTOOLS_UPDATER_EXPORT UpdateCompatOperation : public UpdateOperation
+    class KDTOOLS_EXPORT UpdateCompatOperation : public UpdateOperation
     {
     public:
         UpdateCompatOperation();

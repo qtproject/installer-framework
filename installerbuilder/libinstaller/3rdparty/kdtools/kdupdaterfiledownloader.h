@@ -35,18 +35,18 @@
 
 namespace KDUpdater
 {
-    KDTOOLS_UPDATER_EXPORT QByteArray calculateHash(QIODevice* device, QCryptographicHash::Algorithm algo);
-    KDTOOLS_UPDATER_EXPORT QByteArray calculateHash(const QString &path, QCryptographicHash::Algorithm algo);
+    KDTOOLS_EXPORT QByteArray calculateHash(QIODevice* device, QCryptographicHash::Algorithm algo);
+    KDTOOLS_EXPORT QByteArray calculateHash(const QString &path, QCryptographicHash::Algorithm algo);
 
     class HashVerificationJob;
 
-    class KDTOOLS_UPDATER_EXPORT FileDownloaderProxyFactory : public QNetworkProxyFactory
+    class KDTOOLS_EXPORT FileDownloaderProxyFactory : public QNetworkProxyFactory
     {
         public:
             virtual FileDownloaderProxyFactory *clone() = 0;
     };
 
-    class KDTOOLS_UPDATER_EXPORT FileDownloader : public QObject
+    class KDTOOLS_EXPORT FileDownloader : public QObject
     {
         Q_OBJECT
         Q_PROPERTY(bool autoRemoveDownloadedFile READ isAutoRemoveDownloadedFile WRITE setAutoRemoveDownloadedFile)

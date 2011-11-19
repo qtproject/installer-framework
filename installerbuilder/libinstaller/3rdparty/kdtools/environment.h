@@ -12,7 +12,7 @@ QT_END_NAMESPACE
 
 namespace KDUpdater {
 
-class KDTOOLS_UPDATER_EXPORT Environment {
+class KDTOOLS_EXPORT Environment {
     public:
         static Environment& instance();
 

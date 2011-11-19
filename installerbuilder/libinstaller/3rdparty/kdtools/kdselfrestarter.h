@@ -25,7 +25,7 @@
 
 #include "kdtoolsglobal.h"
 
-class KDTOOLSCORE_EXPORT KDSelfRestarter {
+class KDTOOLS_EXPORT KDSelfRestarter {
 public:
     KDSelfRestarter( int argc, char** argv );
     ~KDSelfRestarter();

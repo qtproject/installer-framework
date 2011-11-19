@@ -33,7 +33,7 @@ class QString;
 QT_END_NAMESPACE
 
 namespace KDUpdater {
-    class KDTOOLS_UPDATER_EXPORT SignatureVerificationResult {
+    class KDTOOLS_EXPORT SignatureVerificationResult {
     public:
         enum Validity {
             ValidSignature=0,

@@ -35,7 +35,7 @@ namespace KDUpdater
     class Application;
     class UpdateInstaller;
 
-    struct KDTOOLS_UPDATER_EXPORT PackageInfo
+    struct KDTOOLS_EXPORT PackageInfo
     {
         QString name;
         QString pixmap;
@@ -52,7 +52,7 @@ namespace KDUpdater
         quint64 uncompressedSize;
     };
 
-    class KDTOOLS_UPDATER_EXPORT PackagesInfo : public QObject
+    class KDTOOLS_EXPORT PackagesInfo : public QObject
     {
         Q_OBJECT
 

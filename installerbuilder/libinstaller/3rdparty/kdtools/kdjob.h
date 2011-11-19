@@ -27,7 +27,7 @@
 
 #include <QObject>
 
-class KDTOOLSCORE_EXPORT KDJob : public QObject {
+class KDTOOLS_EXPORT KDJob : public QObject {
     Q_OBJECT
     Q_PROPERTY( bool autoDelete READ autoDelete WRITE setAutoDelete )
 

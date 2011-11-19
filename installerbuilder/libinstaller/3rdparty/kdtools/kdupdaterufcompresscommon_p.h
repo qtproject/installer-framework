@@ -38,7 +38,7 @@ QT_END_NAMESPACE
 
 namespace KDUpdater
 {
-    struct KDTOOLS_UPDATER_EXPORT UFHeader
+    struct KDTOOLS_EXPORT UFHeader
     {
         QString magic;
         QStringList fileList;
@@ -50,7 +50,7 @@ namespace KDUpdater
         void addToHash( QCryptographicHash& hash ) const;
     };
 
-    struct KDTOOLS_UPDATER_EXPORT UFEntry
+    struct KDTOOLS_EXPORT UFEntry
     {
         QString fileName;
         quint64 permissions;
@@ -63,11 +63,11 @@ namespace KDUpdater
         void addToHash(QCryptographicHash& hash) const;
     };
 
-    KDTOOLS_UPDATER_EXPORT QDataStream& operator<<( QDataStream& stream, const UFHeader& hdr );
-    KDTOOLS_UPDATER_EXPORT QDataStream& operator>>( QDataStream& stream, UFHeader& hdr );
+    KDTOOLS_EXPORT QDataStream& operator<<( QDataStream& stream, const UFHeader& hdr );
+    KDTOOLS_EXPORT QDataStream& operator>>( QDataStream& stream, UFHeader& hdr );
 
-    KDTOOLS_UPDATER_EXPORT QDataStream& operator<<( QDataStream& stream, const UFEntry& entry );
-    KDTOOLS_UPDATER_EXPORT QDataStream& operator>>( QDataStream& stream, UFEntry& entry );
+    KDTOOLS_EXPORT QDataStream& operator<<( QDataStream& stream, const UFEntry& entry );
+    KDTOOLS_EXPORT QDataStream& operator>>( QDataStream& stream, UFEntry& entry );
 }
 
 #endif

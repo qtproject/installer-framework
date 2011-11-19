@@ -33,7 +33,7 @@ namespace KDUpdater
 {
     class Application;
 
-    struct KDTOOLS_UPDATER_EXPORT UpdateSourceInfo
+    struct KDTOOLS_EXPORT UpdateSourceInfo
     {
         UpdateSourceInfo() : priority(-1) { }
 
@@ -45,12 +45,12 @@ namespace KDUpdater
 
     };
 
-    KDTOOLS_UPDATER_EXPORT bool operator==( const UpdateSourceInfo & lhs, const UpdateSourceInfo & rhs );
+    KDTOOLS_EXPORT bool operator==( const UpdateSourceInfo & lhs, const UpdateSourceInfo & rhs );
     inline bool operator!= ( const UpdateSourceInfo & lhs, const UpdateSourceInfo & rhs ) {
         return !operator==( lhs, rhs );
     }
 
-    class KDTOOLS_UPDATER_EXPORT UpdateSourcesInfo : public QObject
+    class KDTOOLS_EXPORT UpdateSourcesInfo : public QObject
     {
         Q_OBJECT
 

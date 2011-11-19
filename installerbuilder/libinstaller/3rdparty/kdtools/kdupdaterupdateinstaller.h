@@ -32,7 +32,7 @@ namespace KDUpdater
     class Application;
     class Update;
 
-    class KDTOOLS_UPDATER_EXPORT UpdateInstaller : public Task
+    class KDTOOLS_EXPORT UpdateInstaller : public Task
     {
         Q_OBJECT
 

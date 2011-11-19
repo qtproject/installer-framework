@@ -29,7 +29,7 @@ QT_BEGIN_NAMESPACE
 class QString;
 QT_END_NAMESPACE
 
-class KDTOOLSCORE_EXPORT KDLockFile
+class KDTOOLS_EXPORT KDLockFile
 {
 public:
     explicit KDLockFile( const QString & name );

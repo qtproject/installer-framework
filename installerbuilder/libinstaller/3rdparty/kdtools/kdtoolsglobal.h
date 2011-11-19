@@ -20,54 +20,20 @@
 **
 **********************************************************************/
 
-#ifndef __KDTOOLS_KDTOOLSGLOBAL_H__
-#define __KDTOOLS_KDTOOLSGLOBAL_H__
+#ifndef KDTOOLS_KDTOOLSGLOBAL_H
+#define KDTOOLS_KDTOOLSGLOBAL_H
 
 #include <QtCore/QtGlobal>
 
 #ifdef KDTOOLS_SHARED
-#  ifdef BUILD_SHARED_KDTOOLSCORE
-#    define KDTOOLSCORE_EXPORT Q_DECL_EXPORT
+#  ifdef BUILD_SHARED_KDTOOLS
+#    define KDTOOLS_EXPORT Q_DECL_EXPORT
 #  else
-#    define KDTOOLSCORE_EXPORT Q_DECL_IMPORT
-#  endif
-#  ifdef BUILD_SHARED_KDTOOLSGUI
-#    define KDTOOLSGUI_EXPORT Q_DECL_EXPORT
-#  else
-#    define KDTOOLSGUI_EXPORT Q_DECL_IMPORT
-#  endif
-#  ifdef BUILD_SHARED_KDTOOLSXML
-#    define KDTOOLSXML_EXPORT Q_DECL_EXPORT
-#  else
-#    define KDTOOLSXML_EXPORT Q_DECL_IMPORT
-#  endif
-#  ifdef BUILD_SHARED_KDUPDATER
-#    define KDTOOLS_UPDATER_EXPORT    Q_DECL_EXPORT
-#  else
-#    define KDTOOLS_UPDATER_EXPORT    Q_DECL_IMPORT
+#    define KDTOOLS_EXPORT Q_DECL_IMPORT
 #  endif
 #else // KDTOOLS_SHARED
-#  define KDTOOLSCORE_EXPORT
-#  define KDTOOLSGUI_EXPORT
-#  define KDTOOLSXML_EXPORT
-#  define KDTOOLS_UPDATER_EXPORT
+#  define KDTOOLS_EXPORT
 #endif // KDTOOLS_SHARED
 
-#define KDTOOLS_MAKE_RELATION_OPERATORS( Class, linkage )             \
-    linkage bool operator>( const Class & lhs, const Class & rhs ) {  \
-        return operator<( rhs, lhs );                                 \
-    }                                                                 \
-    linkage bool operator!=( const Class & lhs, const Class & rhs ) { \
-        return !operator==( lhs, rhs );                               \
-    }                                                                 \
-    linkage bool operator<=( const Class & lhs, const Class & rhs ) { \
-        return !operator>( lhs, rhs );                                \
-    }                                                                 \
-    linkage bool operator>=( const Class & lhs, const Class & rhs ) { \
-        return !operator<( lhs, rhs );                                \
-    }
-
-
-
-#endif /* __KDTOOLS_KDTOOLSGLOBAL_H__ */
+#endif // KDTOOLS_KDTOOLSGLOBAL_H
 

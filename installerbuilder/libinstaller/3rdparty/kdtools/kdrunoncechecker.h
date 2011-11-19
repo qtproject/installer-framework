@@ -27,7 +27,7 @@
 
 #include <QtCore/QString>
 
-class KDTOOLSCORE_EXPORT KDRunOnceChecker
+class KDTOOLS_EXPORT KDRunOnceChecker
 {
 
 public:

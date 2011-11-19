@@ -33,7 +33,7 @@ QT_END_NAMESPACE
 
 namespace KDUpdater
 {
-    class KDTOOLS_UPDATER_EXPORT UFUncompressor
+    class KDTOOLS_EXPORT UFUncompressor
     {
         Q_DECLARE_TR_FUNCTIONS(KDUpdater::UFUncompressor)
 

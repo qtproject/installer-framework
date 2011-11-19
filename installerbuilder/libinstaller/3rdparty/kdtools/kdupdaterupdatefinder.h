@@ -38,7 +38,7 @@ namespace KDUpdater
     class Update;
     struct UpdateSourceInfo;
 
-    class KDTOOLS_UPDATER_EXPORT UpdateFinder : public Task
+    class KDTOOLS_EXPORT UpdateFinder : public Task
     {
         Q_OBJECT
 

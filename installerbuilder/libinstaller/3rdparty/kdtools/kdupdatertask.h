@@ -28,7 +28,7 @@
 
 namespace KDUpdater
 {
-    class KDTOOLS_UPDATER_EXPORT Task : public QObject
+    class KDTOOLS_EXPORT Task : public QObject
     {
         Q_OBJECT
 

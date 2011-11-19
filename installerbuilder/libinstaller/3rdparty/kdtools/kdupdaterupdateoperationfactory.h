@@ -33,7 +33,7 @@ namespace KDUpdater
     
     typedef KDGenericFactory< UpdateOperation >::FactoryFunction UpdateOperationFactoryFunction;
 
-    class KDTOOLS_UPDATER_EXPORT UpdateOperationFactory : public KDGenericFactory< UpdateOperation >
+    class KDTOOLS_EXPORT UpdateOperationFactory : public KDGenericFactory< UpdateOperation >
     {
         Q_DISABLE_COPY( UpdateOperationFactory )
     public:

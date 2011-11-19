@@ -29,7 +29,7 @@
 #include <QtCore/QSysInfo>
 #include <QtCore/QSharedDataPointer>
 
-class KDTOOLSCORE_EXPORT KDSysInfo : public QSysInfo
+class KDTOOLS_EXPORT KDSysInfo : public QSysInfo
 {
 private:
     KDSysInfo();
@@ -37,7 +37,7 @@ private:
 public:
     ~KDSysInfo();
 
-    class KDTOOLSCORE_EXPORT Volume
+    class KDTOOLS_EXPORT Volume
     {
         friend class ::KDSysInfo;
     public:

@@ -38,7 +38,7 @@ namespace KDUpdater
     class UpdateFinder;
     class UpdateOperation;
 
-    class KDTOOLS_UPDATER_EXPORT Update : public Task
+    class KDTOOLS_EXPORT Update : public Task
     {
         Q_OBJECT
 
