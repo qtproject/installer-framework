@@ -46,10 +46,6 @@
 
 using namespace KDUpdater;
 
-struct UpdateOperationFactory::UpdateOperationFactoryData
-{
-};
-
 /*!
    Returns the UpdateOperationFactory instance. The instance is created if needed.
 */
@@ -63,7 +59,6 @@ UpdateOperationFactory &UpdateOperationFactory::instance()
    Constructor
 */
 UpdateOperationFactory::UpdateOperationFactory()
-    : d(new UpdateOperationFactoryData)
 {
     // Register the default update operation set
     registerUpdateOperation<CopyOperation>(QLatin1String("Copy"));
@@ -76,11 +71,6 @@ UpdateOperationFactory::UpdateOperationFactory()
     registerUpdateOperation<ExecuteOperation>(QLatin1String("Execute"));
     registerUpdateOperation<UpdatePackageOperation>(QLatin1String("UpdatePackage"));
     registerUpdateOperation<UpdateCompatOperation>(QLatin1String("UpdateCompat"));
-}
-
-UpdateOperationFactory::~UpdateOperationFactory()
-{
-    delete d;
 }
 
 /*!

@@ -39,7 +39,6 @@ class KDTOOLS_EXPORT UpdateOperationFactory : public KDGenericFactory<UpdateOper
 
 public:
     static UpdateOperationFactory &instance();
-    ~UpdateOperationFactory();
 
     template <class T>
     void registerUpdateOperation(const QString &name)
@@ -55,10 +54,6 @@ public:
 
 protected:
     UpdateOperationFactory();
-
-private:
-    struct UpdateOperationFactoryData;
-    UpdateOperationFactoryData *d;
 };
 
 } // namespace KDUpdater
