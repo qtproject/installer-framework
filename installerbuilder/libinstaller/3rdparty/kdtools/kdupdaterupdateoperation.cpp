@@ -59,30 +59,11 @@ static QString backupFileName(const QString &templateName)
 
 using namespace KDUpdater;
 
-struct UpdateOperation::UpdateOperationData
-{
-    UpdateOperationData(UpdateOperation *qq) :
-        q(qq),
-        error(0),
-        application(0)
-    {}
-
-    UpdateOperation *q;
-    QString name;
-    QStringList args;
-    QString errorString;
-    int error;
-    Application *application;
-    QVariantMap values;
-    QStringList delayedDeletionFiles;
-};
-
-
 /*!
    Constructor
 */
 UpdateOperation::UpdateOperation()
-    : d(new UpdateOperationData(this))
+    : m_error(0), m_application(0)
 {}
 
 /*!
@@ -90,10 +71,8 @@ UpdateOperation::UpdateOperation()
 */
 UpdateOperation::~UpdateOperation()
 {
-    Application *const app = Application::instance();
-    if (app)
+    if (Application *app = Application::instance())
         app->addFilesForDelayedDeletion(filesForDelayedDeletion());
-    delete d;
 }
 
 /*!
@@ -103,7 +82,7 @@ UpdateOperation::~UpdateOperation()
 */
 QString UpdateOperation::name() const
 {
-    return d->name;
+    return m_name;
 }
 
 /*!
@@ -114,8 +93,8 @@ QString UpdateOperation::name() const
 */
 QString UpdateOperation::operationCommand() const
 {
-    QString argsStr = d->args.join(QLatin1String( " " ));
-    return QString::fromLatin1( "%1 %2" ).arg(d->name, argsStr);
+    QString argsStr = m_args.join(QLatin1String( " " ));
+    return QString::fromLatin1( "%1 %2" ).arg(m_name, argsStr);
 }
 
 /*!
@@ -123,7 +102,7 @@ QString UpdateOperation::operationCommand() const
 */
 bool UpdateOperation::hasValue(const QString &name) const
 {
-    return d->values.contains(name);
+    return m_values.contains(name);
 }
 
 /*!
@@ -132,7 +111,7 @@ bool UpdateOperation::hasValue(const QString &name) const
 */
 void UpdateOperation::clearValue(const QString &name)
 {
-    d->values.remove(name);
+    m_values.remove(name);
 }
 
 /*!
@@ -141,7 +120,7 @@ void UpdateOperation::clearValue(const QString &name)
 */
 QVariant UpdateOperation::value(const QString &name) const
 {
-    return hasValue(name) ? d->values[name] : QVariant();
+    return hasValue(name) ? m_values[name] : QVariant();
 }
 
 /*!
@@ -149,7 +128,7 @@ QVariant UpdateOperation::value(const QString &name) const
 */
 void UpdateOperation::setValue(const QString &name, const QVariant &value)
 {
-    d->values[name] = value;
+    m_values[name] = value;
 }
 
 /*!
@@ -158,7 +137,7 @@ void UpdateOperation::setValue(const QString &name, const QVariant &value)
 */
 void UpdateOperation::setName(const QString &name)
 {
-    d->name = name;
+    m_name = name;
 }
 
 /*!
@@ -167,7 +146,7 @@ void UpdateOperation::setName(const QString &name)
 */
 void UpdateOperation::setArguments(const QStringList &args)
 {
-    d->args = args;
+    m_args = args;
 }
 
 /*!
@@ -176,7 +155,7 @@ void UpdateOperation::setArguments(const QStringList &args)
 */
 void UpdateOperation::setApplication(Application *application)
 {
-    d->application = application;
+    m_application = application;
 }
 
 /*!
@@ -184,7 +163,7 @@ void UpdateOperation::setApplication(Application *application)
 */
 QStringList UpdateOperation::arguments() const
 {
-    return d->args;
+    return m_args;
 }
 
 /*!
@@ -192,7 +171,7 @@ QStringList UpdateOperation::arguments() const
 */
 QString UpdateOperation::errorString() const
 {
-    return d->errorString;
+    return m_errorString;
 }
 
 /*!
@@ -201,7 +180,7 @@ QString UpdateOperation::errorString() const
  */
 int UpdateOperation::error() const
 {
-    return d->error;
+    return m_error;
 }
 
 /*!
@@ -209,7 +188,7 @@ int UpdateOperation::error() const
  */
 void UpdateOperation::setErrorString(const QString &str)
 {
-    d->errorString = str;
+    m_errorString = str;
 }
 
 /*!
@@ -217,9 +196,9 @@ void UpdateOperation::setErrorString(const QString &str)
  */
 void UpdateOperation::setError(int error, const QString &errorString)
 {
-    d->error = error;
+    m_error = error;
     if (!errorString.isNull())
-        d->errorString = errorString;
+        m_errorString = errorString;
 }
 
 /*!
@@ -227,13 +206,13 @@ void UpdateOperation::setError(int error, const QString &errorString)
 */
 void UpdateOperation::clear()
 {
-    d->args.clear();
-    d->application = 0;
+    m_args.clear();
+    m_application = 0;
 }
 
 QStringList UpdateOperation::filesForDelayedDeletion() const
 {
-    return d->delayedDeletionFiles;
+    return m_delayedDeletionFiles;
 }
 
 /*!
@@ -243,7 +222,7 @@ QStringList UpdateOperation::filesForDelayedDeletion() const
 */
 void UpdateOperation::registerForDelayedDeletion(const QStringList &files)
 {
-    d->delayedDeletionFiles << files;
+    m_delayedDeletionFiles << files;
 }
  
 /*!
@@ -273,7 +252,7 @@ bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorSt
 */
 Application *UpdateOperation::application() const
 {
-    return d->application;
+    return m_application;
 }
 
 /*!
@@ -322,12 +301,12 @@ QDomDocument UpdateOperation::toXml() const
         args.appendChild(arg);
     }
     root.appendChild(args);
-    if (d->values.isEmpty())
+    if (m_values.isEmpty())
         return doc;
 
     // append all values set with setValue
     QDomElement values = doc.createElement(QLatin1String("values"));
-    for (QVariantMap::const_iterator it = d->values.begin(); it != d->values.end(); ++it) {
+    for (QVariantMap::const_iterator it = m_values.begin(); it != m_values.end(); ++it) {
         QDomElement value = doc.createElement(QLatin1String("value"));
         const QVariant& variant = it.value();
         value.setAttribute(QLatin1String("name"), it.key());
@@ -366,7 +345,7 @@ bool UpdateOperation::fromXml(const QDomDocument &doc)
     }
     setArguments(args);
 
-    d->values.clear();
+    m_values.clear();
     const QDomElement values = root.firstChildElement(QLatin1String("values"));
     for (QDomNode n = values.firstChild(); !n.isNull(); n = n.nextSibling()) {
         const QDomElement v = n.toElement();
@@ -384,7 +363,7 @@ bool UpdateOperation::fromXml(const QDomDocument &doc)
             stream >> var;
         }
 
-        d->values[name] = var;
+        m_values[name] = var;
     }
 
     return true;

@@ -83,8 +83,13 @@ protected:
     bool deleteFileNowOrLater(const QString &file, QString *errorString = 0);
 
 private:
-    struct UpdateOperationData;
-    UpdateOperationData *d;
+    QString m_name;
+    QStringList m_arguments;
+    QString m_errorString;
+    int m_error;
+    Application *m_application;
+    QVariantMap m_values;
+    QStringList m_delayedDeletionFiles;
 };
 
 } // namespace KDUpdater
