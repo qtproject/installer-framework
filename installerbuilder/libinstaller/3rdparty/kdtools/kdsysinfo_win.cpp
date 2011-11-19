@@ -31,7 +31,7 @@
 
 #include <QtCore/QLibrary>
 
-#define KDSYSINFO_PROCESS_QUERY_LIMITED_INFORMATION  (0x1000)
+const int KDSYSINFO_PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
 
 namespace KDUpdater {
 
@@ -62,24 +62,23 @@ QString volumeName(const QString &volume)
     char dummy2[MAX_PATH + 1] = "";
     GetVolumeInformationA(qPrintable(volume), name, MAX_PATH + 1, &dummy, &dummy, &dummy, dummy2, MAX_PATH + 1);
     QString vName = QString::fromLatin1(name);
-    if(vName.isEmpty()) {
-        const uint driveType = GetDriveTypeA( qPrintable( volume ) );
-        switch( driveType )
-        {
+    if (vName.isEmpty()) {
+        const uint driveType = GetDriveTypeA(qPrintable(volume));
+        switch (driveType) {
         case DRIVE_REMOVABLE:
-            vName = QObject::tr( "Removable Disk" );
+            vName = QObject::tr("Removable Disk");
             break;
         case DRIVE_CDROM:
-            vName = QObject::tr( "CD Drive" );
+            vName = QObject::tr("CD Drive");
             break;
         case DRIVE_FIXED:
-            vName = QObject::tr( "Local Disk" );
+            vName = QObject::tr("Local Disk");
             break;
         default:
-            return volume.left( 2 );
+            return volume.left(2);
         }
     }
-    return QString::fromLatin1( "%2 (%1)" ).arg( volume.left( 2 ), vName );
+    return QString::fromLatin1("%2 (%1)").arg(volume.left(2), vName);
 }
 
 QString fileSystemType(const QString &path)
@@ -96,18 +95,18 @@ QString fileSystemType(const QString &path)
 
 QList<VolumeInfo> mountedVolumes()
 {
-    QList< VolumeInfo > result;
+    QList<VolumeInfo> result;
     const QFileInfoList drives = QDir::drives();
     for (QFileInfoList::const_iterator it = drives.constBegin(); it != drives.constEnd(); ++it) {
         VolumeInfo volume;
-        const QString path = QDir::toNativeSeparators( it->path() );
-        volume.setPath( path );
-        volume.setName( volumeName( path ) );
+        const QString path = QDir::toNativeSeparators(it->path());
+        volume.setPath(path);
+        volume.setName(volumeName(path));
         volume.setFileSystemType(fileSystemType(path));
-        const QPair< quint64, quint64 > sizes = volumeSpace( path );
-        volume.setSize( sizes.first );
-        volume.setAvailableSpace( sizes.second );
-        result.push_back( volume );
+        const QPair<quint64, quint64> sizes = volumeSpace(path);
+        volume.setSize(sizes.first);
+        volume.setAvailableSpace(sizes.second);
+        result.push_back(volume);
     }
     return result;
 }
@@ -118,10 +117,9 @@ struct EnumWindowsProcParam
     QList<quint32> seenIDs;
 };
 
-//BOOL CALLBACK EnumWindowsProc( HWND hWnd, LPARAM lParam )
+//BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam)
 //{
 //    EnumWindowsProcParam* const list = reinterpret_cast< EnumWindowsProcParam* >( lParam );
-
 //    ProcessInfo info;
 
 //    // process id
@@ -146,25 +144,23 @@ struct EnumWindowsProcParam
 //    return TRUE;
 //}
 
-//QList< ProcessInfo > runningProcesses()
+//QList<ProcessInfo> runningProcesses()
 //{
 //    EnumWindowsProcParam param;
-//    HANDLE snapshot = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
-//    if ( !snapshot )
+//    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+//    if (!snapshot)
 //        return param.processes;
 //    PROCESSENTRY32 processStruct;
-//    processStruct.dwSize = sizeof( PROCESSENTRY32 );
-//    bool foundProcess =  Process32First( snapshot, &processStruct );
-//    while ( foundProcess )
-//    {
+//    processStruct.dwSize = sizeof(PROCESSENTRY32);
+//    bool foundProcess = Process32First(snapshot, &processStruct);
+//    while (foundProcess) {
 //        //const QString executableName = QString::fromWCharArray( processStruct.szExeFile );
 //        ProcessInfo info;
 //        HANDLE procHandle = OpenProcess( PROCESS_QUERY_LIMITED_INFORMATION, false, processStruct.th32ProcessID );
 //        char buffer[ 1024 ];
 //        DWORD bufferSize = 1024;
 //        const bool succ = QueryFullProcessImageNameA( procHandle, 0, buffer, &bufferSize );
-//        if ( succ )
-//        {
+//        if (succ) {
 //            const QString executablepath = QString::fromLatin1( buffer );
 //            const quint32 pid = processStruct.th32ProcessID;
 //            param.seenIDs.append( pid );
@@ -177,79 +173,74 @@ struct EnumWindowsProcParam
 
 //        foundProcess =  Process32Next( snapshot, &processStruct );
 //    }
-//    if ( snapshot )
+//    if (snapshot)
 //        CloseHandle( snapshot );
 ////    EnumDesktopWindows( 0, &EnumWindowsProc, reinterpret_cast< LPARAM >( &param ) );
 //    return param.processes;
 //}
+
 typedef BOOL (WINAPI *QueryFullProcessImageNamePtr)(HANDLE, DWORD, char *, PDWORD);
-typedef DWORD (WINAPI *GetProcessImageFileNamePtr)(HANDLE, char *,  DWORD);
+typedef DWORD (WINAPI *GetProcessImageFileNamePtr)(HANDLE, char *, DWORD);
+
 QList<ProcessInfo> runningProcesses()
 {
     EnumWindowsProcParam param;
-    HANDLE snapshot = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
-    if ( !snapshot )
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (!snapshot)
         return param.processes;
     PROCESSENTRY32 processStruct;
-    processStruct.dwSize = sizeof( PROCESSENTRY32 );
-    bool foundProcess =  Process32First( snapshot, &processStruct );
+    processStruct.dwSize = sizeof(PROCESSENTRY32);
+    bool foundProcess = Process32First(snapshot, &processStruct);
     const DWORD bufferSize = 1024;
-    char driveBuffer[ bufferSize ];
+    char driveBuffer[bufferSize];
     QStringList deviceList;
-    if ( QSysInfo::windowsVersion() <= QSysInfo::WV_5_2 )
-    {
-        DWORD size = GetLogicalDriveStringsA( bufferSize, driveBuffer );
-        deviceList = QString::fromLatin1( driveBuffer, size ).split( QLatin1Char( (char)0 ), QString::SkipEmptyParts );
+    if (QSysInfo::windowsVersion() <= QSysInfo::WV_5_2) {
+        DWORD size = GetLogicalDriveStringsA(bufferSize, driveBuffer);
+        deviceList = QString::fromLatin1(driveBuffer, size).split(QLatin1Char(char(0)), QString::SkipEmptyParts);
     }
 
-    QLibrary kernel32( QLatin1String( "Kernel32.dll" ) );
+    QLibrary kernel32(QLatin1String("Kernel32.dll"));
     kernel32.load();
-    void* pQueryFullProcessImageNameA = kernel32.resolve( "QueryFullProcessImageNameA" );
+    void *pQueryFullProcessImageNameA = kernel32.resolve("QueryFullProcessImageNameA");
 
-    QLibrary psapi( QLatin1String ( "Psapi.dll" ) );
+    QLibrary psapi(QLatin1String("Psapi.dll"));
     psapi.load();
-    void* pGetProcessImageFileNamePtr = psapi.resolve( "GetProcessImageFileNameA" );
-    QueryFullProcessImageNamePtr callPtr = ( QueryFullProcessImageNamePtr ) pQueryFullProcessImageNameA;
-    GetProcessImageFileNamePtr callPtrXp = ( GetProcessImageFileNamePtr ) pGetProcessImageFileNamePtr;
-    while ( foundProcess )
-    {
-        HANDLE procHandle = OpenProcess( QSysInfo::windowsVersion() > QSysInfo::WV_5_2 ?
-                                         KDSYSINFO_PROCESS_QUERY_LIMITED_INFORMATION :
-                                         PROCESS_QUERY_INFORMATION
-                                         , false,
-                                         processStruct.th32ProcessID );
+    void *pGetProcessImageFileNamePtr = psapi.resolve("GetProcessImageFileNameA");
+    QueryFullProcessImageNamePtr callPtr = (QueryFullProcessImageNamePtr) pQueryFullProcessImageNameA;
+    GetProcessImageFileNamePtr callPtrXp = (GetProcessImageFileNamePtr) pGetProcessImageFileNamePtr;
 
-        char buffer[ 1024 ];
+    while (foundProcess) {
+        HANDLE procHandle = OpenProcess(QSysInfo::windowsVersion() > QSysInfo::WV_5_2
+                                            ? KDSYSINFO_PROCESS_QUERY_LIMITED_INFORMATION
+                                            : PROCESS_QUERY_INFORMATION,
+                                         false,
+                                         processStruct.th32ProcessID);
+        char buffer[1024];
         DWORD bufferSize = 1024;
         bool succ = false;
         QString executablePath;
         ProcessInfo info;
 
         if (QSysInfo::windowsVersion() > QSysInfo::WV_5_2) {
-            succ = callPtr( procHandle, 0, buffer, &bufferSize );
-            executablePath = QString::fromLatin1( buffer );
-        }
-        else
-        {
-        if (pGetProcessImageFileNamePtr) {
-            succ = callPtrXp( procHandle, buffer, bufferSize );
-            executablePath = QString::fromLatin1( buffer );
+            succ = callPtr(procHandle, 0, buffer, &bufferSize);
+            executablePath = QString::fromLatin1(buffer);
+        } else if (pGetProcessImageFileNamePtr) {
+            succ = callPtrXp(procHandle, buffer, bufferSize);
+            executablePath = QString::fromLatin1(buffer);
             for (int i = 0; i < deviceList.count(); ++i)
-                executablePath.replace( QString::fromLatin1( "\\Device\\HarddiskVolume%1\\" ).arg( i + 1 ), deviceList.at( i ) );
+                executablePath.replace(QString::fromLatin1( "\\Device\\HarddiskVolume%1\\" ).arg(i + 1), deviceList.at(i));
         }
 
-        }
         if (succ) {
             const quint32 pid = processStruct.th32ProcessID;
             param.seenIDs.append(pid);
-
             info.id = pid;
             info.name = executablePath;
             param.processes.append(info);
         }
 
         CloseHandle(procHandle);
-        foundProcess =  Process32Next(snapshot, &processStruct);
+        foundProcess = Process32Next(snapshot, &processStruct);
 
     }
     if (snapshot)
