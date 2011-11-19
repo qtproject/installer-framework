@@ -93,7 +93,7 @@ QString UpdateOperation::name() const
 */
 QString UpdateOperation::operationCommand() const
 {
-    QString argsStr = m_args.join(QLatin1String( " " ));
+    QString argsStr = m_arguments.join(QLatin1String( " " ));
     return QString::fromLatin1( "%1 %2" ).arg(m_name, argsStr);
 }
 
@@ -146,7 +146,7 @@ void UpdateOperation::setName(const QString &name)
 */
 void UpdateOperation::setArguments(const QStringList &args)
 {
-    m_args = args;
+    m_arguments = args;
 }
 
 /*!
@@ -163,7 +163,7 @@ void UpdateOperation::setApplication(Application *application)
 */
 QStringList UpdateOperation::arguments() const
 {
-    return m_args;
+    return m_arguments;
 }
 
 /*!
@@ -206,7 +206,7 @@ void UpdateOperation::setError(int error, const QString &errorString)
 */
 void UpdateOperation::clear()
 {
-    m_args.clear();
+    m_arguments.clear();
     m_application = 0;
 }
 

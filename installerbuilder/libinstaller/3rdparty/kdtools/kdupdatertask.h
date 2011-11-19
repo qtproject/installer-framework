@@ -80,14 +80,9 @@ protected:
     explicit Task(const QString &name, int caps = NoCapability, QObject *parent = 0);
     void reportProgress(int percent, const QString &progressText);
     void reportError(int errorCode, const QString &errorText);
+    void reportError(const QString &errorText);
     void reportDone();
 
-    void reportError(const QString &errorText)
-    {
-        reportError(EUnknown, errorText);
-    }
-
-protected:
     // Task interface
     virtual void doRun() = 0;
     virtual bool doStop() = 0;
@@ -95,8 +90,17 @@ protected:
     virtual bool doResume() = 0;
 
 private:
-    struct TaskData;
-    TaskData *d;
+    int m_caps;
+    QString m_name;
+    int m_errorCode;
+    QString m_errorText;
+    bool m_started;
+    bool m_finished;
+    bool m_paused;
+    bool m_stopped;
+    int m_progressPc;
+    QString m_progressText;
+    bool m_autoDelete;
 };
 
 } // namespace KDUpdater

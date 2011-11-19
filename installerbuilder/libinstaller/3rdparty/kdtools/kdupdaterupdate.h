@@ -51,7 +51,7 @@ public:
     UpdateType type() const;
     QUrl updateUrl() const;
     QDate releaseDate() const;
-    QVariant data(const QString &name, const QVariant &defaultValue = QVariant()) const;
+    QVariant data(const QString &m_name, const QVariant &defaultValue = QVariant()) const;
     UpdateSourceInfo sourceInfo() const;
 
     bool canDownload() const;

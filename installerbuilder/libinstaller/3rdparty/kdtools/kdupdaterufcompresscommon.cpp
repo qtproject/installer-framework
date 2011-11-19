@@ -100,7 +100,7 @@ QDataStream &operator>>(QDataStream &stream, UFHeader &hdr)
     return stream;
 }
 
-QDataStream &operator<<( QDataStream &stream, const UFEntry &entry)
+QDataStream &operator<<(QDataStream &stream, const UFEntry &entry)
 {
     stream << entry.fileName;
     stream << entry.permissions;
@@ -108,7 +108,7 @@ QDataStream &operator<<( QDataStream &stream, const UFEntry &entry)
     return stream;
 }
 
-QDataStream &operator>>( QDataStream &stream, UFEntry &entry)
+QDataStream &operator>>(QDataStream &stream, UFEntry &entry)
 {
     const QDataStream::Status oldStatus = stream.status();
     if (stream.status() == QDataStream::Ok)

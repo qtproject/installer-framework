@@ -22,6 +22,8 @@
 
 #include "kdupdatertask.h"
 
+using namespace KDUpdater;
+
 /*!
    \ingroup kdupdater
    \class KDUpdater::Task kdupdatertask.h KDUpdaterTask
@@ -39,67 +41,35 @@
    \li Task classes can be started only once.
 */
 
-struct KDUpdater::Task::TaskData
-{
-    TaskData(Task *qq) :
-        q(qq)
-    {
-        caps = KDUpdater::Task::NoCapability;
-        errorCode = 0;
-        started = false;
-        finished = false;
-        paused = false;
-        stopped = false;
-        progressPc = 0;
-        autoDelete = true;
-    }
-
-    Task *q;
-    int caps;
-    QString name;
-    int errorCode;
-    QString errorText;
-    bool started;
-    bool finished;
-    bool paused;
-    bool stopped;
-    int progressPc;
-    QString progressText;
-    bool autoDelete;
-};
-
 /*!
    \internal
 */
 KDUpdater::Task::Task(const QString &name, int caps, QObject *parent)
-    : QObject(parent),
-      d(new TaskData(this))
+    : QObject(parent)
 {
-    d->caps = caps;
-    d->name = name;
+    m_caps = caps;
+    m_name = name;
 }
 
 /*!
    \internal
 */
-KDUpdater::Task::~Task()
-{
-    delete d;
-}
+Task::~Task()
+{}
 
 /*!
    Returns the name of the task.
 */
-QString KDUpdater::Task::name() const
+QString Task::name() const
 {
-    return d->name;
+    return m_name;
 }
 
 /*!
    Returns the capabilities of the task. It is a combination of one or more
    Capability flags. Defined as follows
    \code
-   enum KDUpdater::Task::Capability
+   enum Task::Capability
    {
        NoCapability	= 0,
        Pausable     = 1,
@@ -107,33 +77,33 @@ QString KDUpdater::Task::name() const
    };
    \endcode
 */
-int KDUpdater::Task::capabilities() const
+int Task::capabilities() const
 {
-    return d->caps;
+    return m_caps;
 }
 
 /*!
    Returns the last reported error code.
 */
-int KDUpdater::Task::error() const
+int Task::error() const
 {
-    return d->errorCode;
+    return m_errorCode;
 }
 
 /*!
    Returns the last reported error message text.
 */
-QString KDUpdater::Task::errorString() const
+QString Task::errorString() const
 {
-    return d->errorText;
+    return m_errorText;
 }
 
 /*!
    Returns whether the task has started and is running or not.
 */
-bool KDUpdater::Task::isRunning() const
+bool Task::isRunning() const
 {
-    return d->started;
+    return m_started;
 }
 
 /*!
@@ -141,17 +111,17 @@ bool KDUpdater::Task::isRunning() const
 
    \note Stopped (or canceled) tasks are not finished tasks.
 */
-bool KDUpdater::Task::isFinished() const
+bool Task::isFinished() const
 {
-    return d->finished;
+    return m_finished;
 }
 
 /*!
    Returns whether the task is paused or not.
 */
-bool KDUpdater::Task::isPaused() const
+bool Task::isPaused() const
 {
-    return d->paused;
+    return m_paused;
 }
 
 /*!
@@ -159,47 +129,47 @@ bool KDUpdater::Task::isPaused() const
 
    \note Finished tasks are not stopped classes.
 */
-bool KDUpdater::Task::isStopped() const
+bool Task::isStopped() const
 {
-    return d->stopped;
+    return m_stopped;
 }
 
 /*!
    Returns the progress in percentage made by this task.
 */
-int  KDUpdater::Task::progressPercent() const
+int  Task::progressPercent() const
 {
-    return d->progressPc;
+    return m_progressPc;
 }
 
 /*!
    Returns a string that describes the progress made by this task as a string.
 */
-QString KDUpdater::Task::progressText() const
+QString Task::progressText() const
 {
-    return d->progressText;
+    return m_progressText;
 }
 
 /*!
    Starts the task.
 */
-void KDUpdater::Task::run()
+void Task::run()
 {
-    if (d->started) {
+    if (m_started) {
         qDebug("Trying to start an already started task");
         return;
     }
 
-    if (d->finished || d->stopped) {
+    if (m_finished || m_stopped) {
         qDebug("Trying to start a finished or canceled task");
         return;
     }
 
-    d->stopped = false;
-    d->finished = false; // for the sake of completeness
-    d->started = true;
+    m_stopped = false;
+    m_finished = false; // for the sake of completeness
+    m_started = true;
     emit started();
-    reportProgress(0, tr("%1 started").arg(d->name));
+    reportProgress(0, tr("%1 started").arg(m_name));
 
     doRun();
 }
@@ -209,75 +179,75 @@ void KDUpdater::Task::run()
 
    \note Once the task is stopped, it cannot be restarted.
 */
-void KDUpdater::Task::stop()
+void Task::stop()
 {
-    if (!(d->caps & Stoppable)) {
-        const QString errorMsg = tr("'%1' cannot be stopped").arg(d->name);
-        reportError(KDUpdater::ECannotStopTask, errorMsg);
+    if (!(m_caps & Stoppable)) {
+        const QString errorMsg = tr("'%1' cannot be stopped").arg(m_name);
+        reportError(ECannotStopTask, errorMsg);
         return;
     }
 
-    if (!d->started) {
+    if (!m_started) {
         qDebug("Trying to stop an unstarted task");
         return;
     }
 
-    if(d->finished || d->stopped)
+    if(m_finished || m_stopped)
     {
         qDebug("Trying to stop a finished or canceled task");
         return;
     }
 
-    d->stopped = doStop();
-    if (!d->stopped) {
-        const QString errorMsg = tr("Cannot stop task '%1'").arg(d->name);
-        reportError(KDUpdater::ECannotStopTask, errorMsg);
+    m_stopped = doStop();
+    if (!m_stopped) {
+        const QString errorMsg = tr("Cannot stop task '%1'").arg(m_name);
+        reportError(ECannotStopTask, errorMsg);
         return;
     }
 
-    d->started = false; // the task is not running
-    d->finished = false; // the task is not finished, but was canceled half-way through
+    m_started = false; // the task is not running
+    m_finished = false; // the task is not finished, but was canceled half-way through
 
     emit stopped();
-    if (d->autoDelete)
+    if (m_autoDelete)
         deleteLater();
 }
 
 /*!
    Paused the task, provided the task has \ref Pausable capability.
 */
-void KDUpdater::Task::pause()
+void Task::pause()
 {
-    if (!(d->caps & Pausable)) {
-        const QString errorMsg = tr("'%1' cannot be paused").arg(d->name);
-        reportError(KDUpdater::ECannotPauseTask, errorMsg);
+    if (!(m_caps & Pausable)) {
+        const QString errorMsg = tr("'%1' cannot be paused").arg(m_name);
+        reportError(ECannotPauseTask, errorMsg);
         return;
     }
 
-    if (!d->started) {
+    if (!m_started) {
         qDebug("Trying to pause an unstarted task");
         return;
     }
 
-    if (d->finished || d->stopped) {
+    if (m_finished || m_stopped) {
         qDebug("Trying to pause a finished or canceled task");
         return;
     }
 
-    d->paused = doPause();
+    m_paused = doPause();
 
-    if (!d->paused) {
-        const QString errorMsg = tr("Cannot pause task '%1'").arg(d->name);
-        reportError(KDUpdater::ECannotPauseTask, errorMsg);
+    if (!m_paused) {
+        const QString errorMsg = tr("Cannot pause task '%1'").arg(m_name);
+        reportError(ECannotPauseTask, errorMsg);
         return;
     }
 
     // The task state has to be started, paused but not finished or stopped.
     // We need not set the flags below, but just in case.
     // Perhaps we should do Q_ASSERT() ???
-    d->started = true;
-    d->finished = false;
-    d->stopped = false;
+    m_started = true;
+    m_finished = false;
+    m_stopped = false;
 
     emit paused();
 }
@@ -285,9 +255,9 @@ void KDUpdater::Task::pause()
 /*!
    Resumes the task if it was paused.
 */
-void KDUpdater::Task::resume()
+void Task::resume()
 {
-    if (!d->paused) {
+    if (!m_paused) {
         qDebug("Trying to resume an unpaused task");
         return;
     }
@@ -295,18 +265,18 @@ void KDUpdater::Task::resume()
     const bool val = doResume();
 
     if (!val) {
-        const QString errorMsg = tr("Cannot resume task '%1'").arg(d->name);
-        reportError(KDUpdater::ECannotResumeTask, errorMsg);
+        const QString errorMsg = tr("Cannot resume task '%1'").arg(m_name);
+        reportError(ECannotResumeTask, errorMsg);
         return;
     }
 
     // The task state should be started, but not paused, finished or stopped.
     // We need not set the flags below, but just in case.
     // Perhaps we should do Q_ASSERT() ???
-    d->started = true;
-    d->paused = false;
-    d->finished = false;
-    d->stopped = false;
+    m_started = true;
+    m_paused = false;
+    m_finished = false;
+    m_stopped = false;
 
     emit resumed();
 }
@@ -314,59 +284,67 @@ void KDUpdater::Task::resume()
 /*!
    \internal
 */
-void KDUpdater::Task::reportProgress(int percent, const QString &text)
+void Task::reportProgress(int percent, const QString &text)
 {
-    if (d->progressPc == percent)
+    if (m_progressPc == percent)
         return;
 
-    d->progressPc = percent;
-    d->progressText = text;
-    emit progressValue(d->progressPc);
-    emit progressText(d->progressText);
+    m_progressPc = percent;
+    m_progressText = text;
+    emit progressValue(m_progressPc);
+    emit progressText(m_progressText);
 }
 
 /*!
    \internal
 */
-void KDUpdater::Task::reportError(int errorCode, const QString &errorText)
+void Task::reportError(int errorCode, const QString &errorText)
 {
-    d->errorCode = errorCode;
-    d->errorText = errorText;
+    m_errorCode = errorCode;
+    m_errorText = errorText;
 
-    emit error(d->errorCode, d->errorText);
-    if (d->autoDelete)
+    emit error(m_errorCode, m_errorText);
+    if (m_autoDelete)
         deleteLater();
 }
 
 /*!
    \internal
 */
-void KDUpdater::Task::reportDone()
+void Task::reportError(const QString &errorText)
+{
+    reportError(EUnknown, errorText);
+}
+
+/*!
+   \internal
+*/
+void Task::reportDone()
 {
     QString msg = tr("%1 done");
     reportProgress(100, msg);
 
     // State should be finished, but not started, paused or stopped.
-    d->finished = true;
-    d->started = false;
-    d->paused = false;
-    d->stopped = false;
-    d->errorCode = 0;
-    d->errorText.clear();
+    m_finished = true;
+    m_started = false;
+    m_paused = false;
+    m_stopped = false;
+    m_errorCode = 0;
+    m_errorText.clear();
 
     emit finished();
-    if (d->autoDelete)
+    if (m_autoDelete)
         deleteLater();
 }
 
-bool KDUpdater::Task::autoDelete() const
+bool Task::autoDelete() const
 {
-    return d->autoDelete;
+    return m_autoDelete;
 }
 
-void KDUpdater::Task::setAutoDelete(bool autoDelete)
+void Task::setAutoDelete(bool autoDelete)
 {
-    d->autoDelete = autoDelete;
+    m_autoDelete = autoDelete;
 }
 
 /*!
