@@ -40,7 +40,6 @@ class SetPathOnQtCoreOperation : public Operation
 {
 public:
     SetPathOnQtCoreOperation();
-    ~SetPathOnQtCoreOperation();
 
     void backup();
     bool performOperation();

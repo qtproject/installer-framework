@@ -50,7 +50,6 @@ namespace {
             return QByteArray();
         }
 
-
         QFile file(binaryPath);
         int readOpenCount = 0;
         while (!file.open(QFile::ReadOnly) && readOpenCount < 20000) {
@@ -88,10 +87,6 @@ SetPluginPathOnQtCoreOperation::SetPluginPathOnQtCoreOperation()
     setName(QLatin1String("SetPluginPathOnQtCore"));
 }
 
-SetPluginPathOnQtCoreOperation::~SetPluginPathOnQtCoreOperation()
-{
-}
-
 void SetPluginPathOnQtCoreOperation::backup()
 {
 }
@@ -121,7 +116,7 @@ bool SetPluginPathOnQtCoreOperation::performOperation()
 #else
     libraryFiles << qtCoreLibraryDir + QLatin1String("/libQtCore.so");
 #endif
-    foreach (const QString coreLibrary, libraryFiles) {
+    foreach (const QString &coreLibrary, libraryFiles) {
         if (QFile::exists(coreLibrary)) {
             QByteArray oldValue(getOldValue(coreLibrary));
             Q_ASSERT(!oldValue.isEmpty());

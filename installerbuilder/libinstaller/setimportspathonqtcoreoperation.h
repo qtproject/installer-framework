@@ -34,7 +34,6 @@ class SetImportsPathOnQtCoreOperation : public Operation
 {
 public:
     SetImportsPathOnQtCoreOperation();
-    ~SetImportsPathOnQtCoreOperation();
 
     void backup();
     bool performOperation();

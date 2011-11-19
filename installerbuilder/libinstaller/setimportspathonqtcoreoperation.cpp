@@ -88,10 +88,6 @@ SetImportsPathOnQtCoreOperation::SetImportsPathOnQtCoreOperation()
     setName(QLatin1String("SetImportsPathOnQtCore"));
 }
 
-SetImportsPathOnQtCoreOperation::~SetImportsPathOnQtCoreOperation()
-{
-}
-
 void SetImportsPathOnQtCoreOperation::backup()
 {
 }

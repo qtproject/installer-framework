@@ -34,7 +34,6 @@ class INSTALLER_EXPORT CreateShortcutOperation : public Operation
 {
 public:
     CreateShortcutOperation();
-    ~CreateShortcutOperation();
 
     void backup();
     bool performOperation();

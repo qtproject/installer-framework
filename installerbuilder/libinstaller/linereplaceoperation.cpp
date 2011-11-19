@@ -43,10 +43,6 @@ LineReplaceOperation::LineReplaceOperation()
     setName(QLatin1String("LineReplace"));
 }
 
-LineReplaceOperation::~LineReplaceOperation()
-{
-}
-
 void LineReplaceOperation::backup()
 {
 }

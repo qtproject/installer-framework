@@ -34,7 +34,6 @@ class INSTALLER_EXPORT LineReplaceOperation : public Operation
 {
 public:
     LineReplaceOperation();
-    ~LineReplaceOperation();
 
     void backup();
     bool performOperation();

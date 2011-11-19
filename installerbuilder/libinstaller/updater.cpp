@@ -86,7 +86,7 @@ bool Updater::checkForUpdates()
         QDomElement root = doc.createElement(QLatin1String("updates"));
         doc.appendChild(root);
 
-        QList< QInstaller::Component* >::const_iterator it;
+        QList<QInstaller::Component *>::const_iterator it;
         for (it = components.begin(); it != components.end(); ++it) {
             QDomElement update = doc.createElement(QLatin1String("update"));
             update.setAttribute(QLatin1String("name"), (*it)->value(scDisplayName));

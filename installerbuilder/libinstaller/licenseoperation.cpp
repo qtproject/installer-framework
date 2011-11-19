@@ -46,10 +46,6 @@ LicenseOperation::LicenseOperation()
     setName(QLatin1String("License"));
 }
 
-LicenseOperation::~LicenseOperation()
-{
-}
-
 void LicenseOperation::backup()
 {
 }

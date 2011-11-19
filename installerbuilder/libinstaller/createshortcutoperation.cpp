@@ -116,10 +116,6 @@ CreateShortcutOperation::CreateShortcutOperation()
     setName(QLatin1String("CreateShortcut"));
 }
 
-CreateShortcutOperation::~CreateShortcutOperation()
-{
-}
-
 static bool isWorkingDirOption(const QString &s)
 {
     return s.startsWith(QLatin1String("workingDirectory="));

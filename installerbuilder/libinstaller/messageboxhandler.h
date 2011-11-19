@@ -57,9 +57,8 @@ public:
         warningType
     };
 
-    ~MessageBoxHandler();
-    static MessageBoxHandler* instance();
-    static QWidget* currentBestSuitParent();
+    static MessageBoxHandler *instance();
+    static QWidget *currentBestSuitParent();
 
     void setDefaultAction(DefaultAction defaultAction);
     void setAutomaticAnswer(const QString &identifier, QMessageBox::StandardButton answer);

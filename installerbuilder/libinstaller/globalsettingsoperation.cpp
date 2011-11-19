@@ -40,10 +40,6 @@ GlobalSettingsOperation::GlobalSettingsOperation()
     setName(QLatin1String("GlobalConfig"));
 }
 
-GlobalSettingsOperation::~GlobalSettingsOperation()
-{
-}
-
 void GlobalSettingsOperation::backup()
 {
 }

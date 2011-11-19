@@ -52,10 +52,6 @@ RegisterQtInCreatorOperation::RegisterQtInCreatorOperation()
     setName(QLatin1String("RegisterQtInCreator"));
 }
 
-RegisterQtInCreatorOperation::~RegisterQtInCreatorOperation()
-{
-}
-
 void RegisterQtInCreatorOperation::backup()
 {
 }
@@ -82,7 +78,7 @@ bool RegisterQtInCreatorOperation::performOperation()
     QString sbsPath = args.value(8);
 
 //this is for creator 2.2
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
@@ -91,7 +87,7 @@ bool RegisterQtInCreatorOperation::performOperation()
     QString toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
     bool isCreator22 = false;
     //in case of the fake installer this component doesn't exist
-    Component* creatorComponent =
+    Component *creatorComponent =
         core->componentByName(QLatin1String("com.nokia.ndk.tools.qtcreator.application"));
     if (creatorComponent) {
         const QString creatorVersion = creatorComponent->value(scInstalledVersion);
@@ -222,7 +218,7 @@ bool RegisterQtInCreatorOperation::testOperation()
     return true;
 }
 
-Operation* RegisterQtInCreatorOperation::clone() const
+Operation *RegisterQtInCreatorOperation::clone() const
 {
     return new RegisterQtInCreatorOperation();
 }

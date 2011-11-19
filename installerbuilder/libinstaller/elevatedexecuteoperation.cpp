@@ -37,7 +37,6 @@
 #include "qprocesswrapper.h"
 
 #include <QThread>
-
 #include <QProcessEnvironment>
 
 using namespace QInstaller;
@@ -47,9 +46,6 @@ class ElevatedExecuteOperation::Private
 public:
     explicit Private(ElevatedExecuteOperation *qq)
         : q(qq), process(0), showStandardError(false)
-    {
-    }
-    ~Private()
     {
     }
 
@@ -257,7 +253,7 @@ bool ElevatedExecuteOperation::undoOperation()
         if (found)
             args.append(argument);
         else
-             found = argument==QLatin1String("UNDOEXECUTE");
+            found = argument == QLatin1String("UNDOEXECUTE");
     }
     if (args.isEmpty())
         return true;

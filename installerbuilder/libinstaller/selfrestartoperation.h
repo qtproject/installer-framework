@@ -34,7 +34,6 @@ class INSTALLER_EXPORT SelfRestartOperation : public Operation
 {
 public:
     SelfRestartOperation();
-    ~SelfRestartOperation();
 
     void backup();
     bool performOperation();

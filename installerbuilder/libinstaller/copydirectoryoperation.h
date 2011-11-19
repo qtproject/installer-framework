@@ -38,7 +38,6 @@ class INSTALLER_EXPORT CopyDirectoryOperation : public QObject, public Operation
 
 public:
     CopyDirectoryOperation();
-    ~CopyDirectoryOperation();
 
     void backup();
     bool performOperation();

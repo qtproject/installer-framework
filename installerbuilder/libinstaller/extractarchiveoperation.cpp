@@ -45,10 +45,6 @@ ExtractArchiveOperation::ExtractArchiveOperation()
     setName(QLatin1String("Extract"));
 }
 
-ExtractArchiveOperation::~ExtractArchiveOperation()
-{
-}
-
 void ExtractArchiveOperation::backup()
 {
     // we need to backup on the fly...

@@ -85,10 +85,6 @@ FakeStopProcessForUpdateOperation::FakeStopProcessForUpdateOperation()
     setName(QLatin1String("FakeStopProcessForUpdate"));
 }
 
-FakeStopProcessForUpdateOperation::~FakeStopProcessForUpdateOperation()
-{
-}
-
 void FakeStopProcessForUpdateOperation::backup()
 {
 }

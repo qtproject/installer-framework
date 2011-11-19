@@ -46,44 +46,38 @@ RegisterDocumentationOperation::RegisterDocumentationOperation()
     setName(QLatin1String("RegisterDocumentation"));
 }
 
-RegisterDocumentationOperation::~RegisterDocumentationOperation()
-{
-}
-
 void RegisterDocumentationOperation::backup()
 {
 }
 
-namespace {
-    // get the right filename of the qsettingsfile (root/user)
-    QString settingsFileName()
-    {
-        #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
-            // If the system settings are writable, don't touch the user settings.
-            // The reason is that a doc registered while running with sudo could otherwise create
-            // a root-owned configuration file a user directory.
-            QScopedPointer<QSettings> settings(new QSettings(QSettings::IniFormat,
-                QSettings::SystemScope, QLatin1String("Nokia"), QLatin1String("QtCreator")));
+// get the right filename of the qsettingsfile (root/user)
+static QString settingsFileName()
+{
+    #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+        // If the system settings are writable, don't touch the user settings.
+        // The reason is that a doc registered while running with sudo could otherwise create
+        // a root-owned configuration file a user directory.
+        QScopedPointer<QSettings> settings(new QSettings(QSettings::IniFormat,
+            QSettings::SystemScope, QLatin1String("Nokia"), QLatin1String("QtCreator")));
 
-            // QSettings::isWritable isn't reliable enough in 4.7, determine writability experimentally
-            settings->setValue(QLatin1String("iswritable"), QLatin1String("accomplished"));
-            settings->sync();
-            if (settings->status() == QSettings::NoError) {
-                // we can use the system settings
-                if (settings->contains(QLatin1String("iswritable")))
-                    settings->remove(QLatin1String("iswritable"));
-            } else {
-                // we have to use user settings
-                settings.reset(new QSettings(QSettings::IniFormat, QSettings::UserScope,
-                    QLatin1String("Nokia"), QLatin1String("QtCreator")));
-            }
+        // QSettings::isWritable isn't reliable enough in 4.7, determine writability experimentally
+        settings->setValue(QLatin1String("iswritable"), QLatin1String("accomplished"));
+        settings->sync();
+        if (settings->status() == QSettings::NoError) {
+            // we can use the system settings
+            if (settings->contains(QLatin1String("iswritable")))
+                settings->remove(QLatin1String("iswritable"));
+        } else {
+            // we have to use user settings
+            settings.reset(new QSettings(QSettings::IniFormat, QSettings::UserScope,
+                QLatin1String("Nokia"), QLatin1String("QtCreator")));
+        }
 
-        #else
-            QScopedPointer<QSettings> settings(new QSettings(QSettings::IniFormat,
-                QSettings::UserScope, QLatin1String("Nokia"), QLatin1String("QtCreator")));
-        #endif
-            return settings->fileName();
-    }
+    #else
+        QScopedPointer<QSettings> settings(new QSettings(QSettings::IniFormat,
+            QSettings::UserScope, QLatin1String("Nokia"), QLatin1String("QtCreator")));
+    #endif
+        return settings->fileName();
 }
 
 bool RegisterDocumentationOperation::performOperation()
@@ -93,11 +87,10 @@ bool RegisterDocumentationOperation::performOperation()
     if (args.count() != 1) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments in %0: %1 arguments given, 1 expected.")
-                        .arg(name()).arg( args.count()));
+                        .arg(name()).arg(args.count()));
         return false;
     }
     const QString helpFile = args.at(0);
-
 
     QFileInfo fileInfo(settingsFileName());
     QDir settingsDir(fileInfo.absolutePath() + QLatin1String("/qtcreator"));
@@ -107,16 +100,16 @@ bool RegisterDocumentationOperation::performOperation()
     const QString collectionFile = settingsDir.absolutePath() + QLatin1String("/helpcollection.qhc");
     qDebug() << "collectionFile: " << collectionFile;
 
-    if (!QFileInfo( helpFile ).exists()) {
+    if (!QFileInfo(helpFile).exists()) {
         setError(UserDefinedError);
-        setErrorString( tr("Could not register help file %1: File not found.").arg( helpFile ) );
+        setErrorString(tr("Could not register help file %1: File not found.").arg(helpFile));
         return false;
     }
 
     QHelpEngineCore help(collectionFile);
     QString oldData = help.customValue(QLatin1String("AddedDocs")).toString();
     if (!oldData.isEmpty())
-        oldData.append(QLatin1String(";"));
+        oldData.append(QLatin1Char(';'));
     const QString newData = oldData + QFileInfo(helpFile).absoluteFilePath();
     if (!help.setCustomValue(QLatin1String("AddedDocs"), newData)) {
         setError(UserDefinedError);

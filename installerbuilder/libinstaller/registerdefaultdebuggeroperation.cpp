@@ -48,26 +48,20 @@ using namespace QInstaller;
 
 using namespace ProjectExplorer;
 
-namespace {
 //TODO move this to a general location it is used on some classes
-QString fromNativeSeparatorsAllOS(const QString &pathName)
+static QString fromNativeSeparatorsAllOS(const QString &pathName)
 {
-    QString n(pathName);
-    for (int i = 0; i < (int)n.length(); ++i) {
-        if (n[i] == QLatin1Char('\\'))
+    QString n = pathName;
+    for (int i = 0; i < n.size(); ++i) {
+        if (n.at(i) == QLatin1Char('\\'))
             n[i] = QLatin1Char('/');
     }
     return n;
-}
 }
 
 RegisterDefaultDebuggerOperation::RegisterDefaultDebuggerOperation()
 {
     setName(QLatin1String("RegisterDefaultDebugger"));
-}
-
-RegisterDefaultDebuggerOperation::~RegisterDefaultDebuggerOperation()
-{
 }
 
 void RegisterDefaultDebuggerOperation::backup()
@@ -95,7 +89,7 @@ bool RegisterDefaultDebuggerOperation::performOperation()
 
     QString toolChainsXmlFilePath;
 
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
@@ -117,7 +111,6 @@ bool RegisterDefaultDebuggerOperation::performOperation()
         return false;
     }
 
-
     creatorToolChainSettings.addDefaultDebugger(abiString, debuggerPath);
     return creatorToolChainSettings.save();
 }
@@ -135,7 +128,7 @@ bool RegisterDefaultDebuggerOperation::undoOperation()
 
     QString toolChainsXmlFilePath;
 
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));

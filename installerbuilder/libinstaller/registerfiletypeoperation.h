@@ -34,7 +34,6 @@ class INSTALLER_EXPORT RegisterFileTypeOperation : public Operation
 {
 public:
     RegisterFileTypeOperation();
-    ~RegisterFileTypeOperation();
 
     void backup();
     bool performOperation();

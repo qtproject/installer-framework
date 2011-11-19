@@ -105,7 +105,7 @@ Q_SIGNALS:
 private:
     const QString m_archive;
     const QString m_targetDir;
-    QPointer<KDUpdater::FileDownloader> m_downloader;
+    QPointer<FileDownloader> m_downloader;
 };
 
 

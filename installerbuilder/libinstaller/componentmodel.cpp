@@ -314,7 +314,7 @@ QModelIndex ComponentModel::indexFromComponentName(const QString &name) const
     Translates between a given QModelIndex \a index and it's associated Component. Returns the Component if
     the index is valid or 0 if an invalid QModelIndex is given.
 */
-Component* ComponentModel::componentFromIndex(const QModelIndex &index) const
+Component *ComponentModel::componentFromIndex(const QModelIndex &index) const
 {
     if (index.isValid())
         return static_cast<Component*>(index.internalPointer());
@@ -520,4 +520,4 @@ QModelIndexList ComponentModel::collectComponents(const QModelIndex &parent) con
     return list;
 }
 
-}   // namespace QInstaller
+} // namespace QInstaller

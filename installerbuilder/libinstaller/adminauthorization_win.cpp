@@ -45,10 +45,6 @@ AdminAuthorization::AdminAuthorization()
 {
 }
 
-AdminAuthorization::~AdminAuthorization()
-{
-}
-
 bool AdminAuthorization::authorize()
 {
     setAuthorized();

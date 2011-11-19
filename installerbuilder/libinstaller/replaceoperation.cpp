@@ -43,10 +43,6 @@ ReplaceOperation::ReplaceOperation()
     setName(QLatin1String("Replace"));
 }
 
-ReplaceOperation::~ReplaceOperation()
-{
-}
-
 void ReplaceOperation::backup()
 {
 }

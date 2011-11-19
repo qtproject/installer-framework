@@ -83,6 +83,7 @@ bool startDetached(const QString &program, const QStringList &args, const QStrin
 class QProcessSignalReceiver : public QObject
 {
     Q_OBJECT
+
 public:
     QProcessSignalReceiver(QObject *parent = 0)
         : QObject(parent)
@@ -95,10 +96,6 @@ public:
         connect(parent, SIGNAL(started()), this, SLOT(processStarted()));
         connect(parent, SIGNAL(stateChanged(QProcess::ProcessState)), this,
             SLOT(processStateChanged(QProcess::ProcessState)));
-     }
-
-    ~QProcessSignalReceiver()
-    {
     }
 
     QList<QVariant> receivedSignals;
@@ -109,7 +106,6 @@ private Q_SLOTS:
     void processReadyRead();
     void processStarted();
     void processStateChanged(QProcess::ProcessState newState);
-
 };
 
 /*!
@@ -125,12 +121,7 @@ public:
           settings(0),
           process(0),
           signalReceiver(0)
-    {
-    }
-
-    ~FSEngineConnectionThread()
-    {
-    }
+    {}
 
 protected:
     void run();

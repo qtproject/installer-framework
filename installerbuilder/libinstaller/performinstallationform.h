@@ -38,15 +38,14 @@ QT_END_NAMESPACE
 
 class LazyPlainTextEdit;
 
-
 namespace QInstaller {
 
 class PerformInstallationForm : public QObject
 {
     Q_OBJECT
+
 public:
     PerformInstallationForm(QObject *parent);
-    ~PerformInstallationForm();
 
     void setupUi(QWidget *widget);
     void setDetailsWidgetVisible(bool visible);
@@ -75,6 +74,6 @@ private:
     QTimer *m_updateTimer;
 };
 
-} //namespace QInstaller
+} // namespace QInstaller
 
 #endif // PERFORMINSTALLATIONFORM_H

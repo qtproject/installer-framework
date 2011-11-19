@@ -113,7 +113,7 @@ public:
     const bool native;
     const QString fileName;
     QSettings settings;
-    mutable QTcpSocket* socket;
+    mutable QTcpSocket *socket;
     mutable QDataStream stream;
 };
 
@@ -129,21 +129,21 @@ QSettingsWrapper::QSettingsWrapper(const QString &organization, const QString &a
 QSettingsWrapper::QSettingsWrapper(QSettingsWrapper::Scope scope, const QString &organization,
         const QString &application, QObject *parent)
     : QObject(parent)
-    , d(new Private(static_cast<QSettings::Scope> (scope), organization, application))
+    , d(new Private(static_cast<QSettings::Scope>(scope), organization, application))
 {
 }
 
 QSettingsWrapper::QSettingsWrapper(QSettingsWrapper::Format format, QSettingsWrapper::Scope scope,
         const QString &organization, const QString &application, QObject *parent)
     : QObject(parent)
-    , d(new Private(static_cast<QSettings::Format> (format), static_cast<QSettings::Scope> (scope),
+    , d(new Private(static_cast<QSettings::Format>(format), static_cast<QSettings::Scope> (scope),
         organization, application))
 {
 }
 
 QSettingsWrapper::QSettingsWrapper(const QString &fileName, QSettingsWrapper::Format format, QObject *parent)
     : QObject(parent)
-    , d(new Private(fileName, static_cast<QSettings::Format> (format)))
+    , d(new Private(fileName, static_cast<QSettings::Format>(format)))
 {
 }
 
@@ -185,7 +185,7 @@ QString QSettingsWrapper::applicationName() const
     return static_cast<QString>(d->settings.applicationName());
 }
 
-void QSettingsWrapper::beginGroup(const QString& param1)
+void QSettingsWrapper::beginGroup(const QString &param1)
 {
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::beginGroup"), param1);
@@ -193,14 +193,14 @@ void QSettingsWrapper::beginGroup(const QString& param1)
         d->settings.beginGroup(param1);
 }
 
-int QSettingsWrapper::beginReadArray(const QString& param1)
+int QSettingsWrapper::beginReadArray(const QString &param1)
 {
     if (d->createSocket())
         return callRemoteMethod<int>(d->stream, QLatin1String("QSettings::beginReadArray"), param1);
     return d->settings.beginReadArray(param1);
 }
 
-void QSettingsWrapper::beginWriteArray(const QString& param1, int param2)
+void QSettingsWrapper::beginWriteArray(const QString &param1, int param2)
 {
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::beginWriteArray"), param1, param2);
@@ -313,14 +313,16 @@ void QSettingsWrapper::setArrayIndex(int param1)
 {
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::setArrayIndex"), param1);
-    else d->settings.setArrayIndex(param1);
+    else
+        d->settings.setArrayIndex(param1);
 }
 
 void QSettingsWrapper::setFallbacksEnabled(bool param1)
 {
     if (d->createSocket())
         callRemoteVoidMethod(d->stream, QLatin1String("QSettings::setFallbacksEnabled"), param1);
-    else d->settings.setFallbacksEnabled(param1);
+    else
+        d->settings.setFallbacksEnabled(param1);
 }
 
 void QSettingsWrapper::setIniCodec(QTextCodec *codec)

@@ -49,10 +49,6 @@ RegisterQtInCreatorV2Operation::RegisterQtInCreatorV2Operation()
     setName(QLatin1String("RegisterQtInCreatorV2"));
 }
 
-RegisterQtInCreatorV2Operation::~RegisterQtInCreatorV2Operation()
-{
-}
-
 void RegisterQtInCreatorV2Operation::backup()
 {
 }

@@ -34,7 +34,6 @@ class SetQtCreatorValueOperation : public Operation
 {
 public:
     SetQtCreatorValueOperation();
-    ~SetQtCreatorValueOperation();
 
     void backup();
     bool performOperation();

@@ -42,10 +42,6 @@ SelfRestartOperation::SelfRestartOperation()
     setName(QLatin1String("SelfRestart"));
 }
 
-SelfRestartOperation::~SelfRestartOperation()
-{
-}
-
 void SelfRestartOperation::backup()
 {
     setValue(QLatin1String("PreviousSelfRestart"), KDSelfRestarter::restartOnQuit());
@@ -53,14 +49,14 @@ void SelfRestartOperation::backup()
 
 bool SelfRestartOperation::performOperation()
 {
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
 
-    if(!core->isUpdater() && !core->isPackageManager()) {
+    if (!core->isUpdater() && !core->isPackageManager()) {
         setError(UserDefinedError);
         setErrorString(tr("Self Restart: Only valid within updater or packagemanager mode."));
         return false;

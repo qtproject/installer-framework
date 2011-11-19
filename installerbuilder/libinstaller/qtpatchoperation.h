@@ -34,7 +34,6 @@ class QtPatchOperation : public Operation
 {
 public:
     QtPatchOperation();
-    ~QtPatchOperation();
 
     void backup();
     bool performOperation();

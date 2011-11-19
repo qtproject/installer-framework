@@ -34,15 +34,14 @@ class UpdateCreatorSettingsFrom21To22Operation : public Operation
 {
 public:
     UpdateCreatorSettingsFrom21To22Operation();
-    ~UpdateCreatorSettingsFrom21To22Operation();
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation* clone() const;
+    Operation *clone() const;
 };
 
-} // namespace
+} // namespace QInstaller
 
 #endif // UPDATECREATORSETTINGSFROM21TO22OPERATION_H

@@ -34,14 +34,12 @@ class INSTALLER_EXPORT LicenseOperation : public Operation
 {
 public:
     LicenseOperation();
-    ~LicenseOperation();
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
     Operation* clone() const;
-
 };
 
 }   // namespace QInstaller

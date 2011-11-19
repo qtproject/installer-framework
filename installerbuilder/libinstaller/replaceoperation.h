@@ -34,7 +34,6 @@ class INSTALLER_EXPORT ReplaceOperation : public Operation
 {
 public:
     ReplaceOperation();
-    ~ReplaceOperation();
 
     void backup();
     bool performOperation();

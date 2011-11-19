@@ -65,25 +65,21 @@ class debugstream : public std::ostream
     class buf : public std::stringbuf
     {
     public:
-        buf()
-        {
-        }
+        buf() {}
+
         int sync()
         {
             std::string s = str();
-            if( s[ s.length() - 1 ] == '\n' )
-                s[ s.length() - 1 ] = '\0'; // remove \n
-            qWinMsgHandler( QtDebugMsg, s.c_str() );
+            if (s[s.length() - 1] == '\n' )
+                s[s.length() - 1] = '\0'; // remove \n
+            qWinMsgHandler(QtDebugMsg, s.c_str());
             std::cout << s << std::endl;
-            str( std::string() );
+            str(std::string());
             return 0;
         }
     };
 public:
-    debugstream()
-        : std::ostream( &b )
-    {
-    }
+    debugstream() : std::ostream(&b) {}
 private:
     buf b;
 };

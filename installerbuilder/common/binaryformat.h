@@ -170,8 +170,9 @@ private:
 
 namespace QInstaller {
 
-struct BinaryLayout {
-    QVector<Range<qint64> >metadataResourceSegments;
+struct BinaryLayout
+{
+    QVector<Range<qint64> > metadataResourceSegments;
     qint64 operationsStart;
     qint64 operationsEnd;
     qint64 resourceCount;
@@ -207,10 +208,10 @@ private:
     QInstallerCreator::ComponentIndex m_components;
     QInstallerCreator::BinaryFormatEngineHandler handler;
     QVector<Range<qint64> > m_metadataResourceSegments;
-    QVector<const uchar*> m_resourceMappings;
+    QVector<const uchar *> m_resourceMappings;
     qint64 m_magicmarker;
     qint64 m_dataBlockStart;
-    QStack<Operation*> m_performedOperations;
+    QStack<Operation *> m_performedOperations;
 };
 
 }

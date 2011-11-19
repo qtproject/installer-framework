@@ -45,7 +45,6 @@ using namespace ProjectExplorer;
 
 PersistentSettingsReader::PersistentSettingsReader()
 {
-
 }
 
 QVariant PersistentSettingsReader::restoreValue(const QString &variable) const
@@ -127,11 +126,10 @@ void PersistentSettingsReader::readValues(const QDomElement &data)
 
     QDomElement child = data.firstChildElement();
     for (; !child.isNull(); child = child.nextSiblingElement()) {
-        if (child.nodeName() == QLatin1String("variable")) {
+        if (child.nodeName() == QLatin1String("variable"))
             variable = child.text();
-        } else {
+        else
             v = readValue(child);
-        }
     }
 
     m_valueMap.insert(variable, v);

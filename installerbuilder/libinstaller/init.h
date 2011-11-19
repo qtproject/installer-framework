@@ -29,7 +29,9 @@
 #include "installer_global.h"
 
 namespace QInstaller {
-    void INSTALLER_EXPORT init();
+
+void INSTALLER_EXPORT init();
+
 }
 
 #endif // QINSTALLER_INIT_H

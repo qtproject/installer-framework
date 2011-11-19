@@ -298,7 +298,7 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
     m_componentsToInstallCalculated = false;
 }
 
-QList<Component*> &PackageManagerCorePrivate::replacementDependencyComponents(RunMode mode)
+QList<Component *> &PackageManagerCorePrivate::replacementDependencyComponents(RunMode mode)
 {
     return mode == AllMode ? m_rootDependencyReplacements : m_updaterDependencyReplacements;
 }
@@ -317,7 +317,7 @@ void PackageManagerCorePrivate::clearComponentsToInstall()
     m_toInstallComponentIdReasonHash.clear();
 }
 
-bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*> &components)
+bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component *> &components)
 {
     if (components.isEmpty()) {
         verbose() << "components list is empty in " << Q_FUNC_INFO << std::endl;
@@ -355,7 +355,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component*
             return false;
     }
 
-    QList<Component*> foundAutoDependOnList;
+    QList<Component *> foundAutoDependOnList;
     // All regular dependencies are resolved. Now we are looking for auto depend on components.
     foreach (Component *component, relevantComponentForAutoDependOn) {
         // If a components is already installed or is scheduled for installation, no need to check for
@@ -688,8 +688,8 @@ void PackageManagerCorePrivate::callBeginInstallation(const QList<Component*> &c
 void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> &components)
 {
     QStringList processList;
-    foreach (const Component *const i, components)
-        processList << m_core->replaceVariables(i->stopProcessForUpdateRequests());
+    foreach (const Component *component, components)
+        processList << m_core->replaceVariables(component->stopProcessForUpdateRequests());
 
     qSort(processList);
     processList.erase(std::unique(processList.begin(), processList.end()), processList.end());
@@ -697,7 +697,7 @@ void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> 
         return;
 
     while (true) {
-        const QList<KDSysInfo::ProcessInfo> allProcesses = KDSysInfo::runningProcesses();
+        const QList<KDSysInfo::ProcessInfo> allProcesses = KDSysInfo::runningProcesses();  // FIXME: Unused?
         const QStringList processes = checkRunningProcessesFromList(processList);
         if (processes.isEmpty())
             return;
@@ -1292,7 +1292,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
         if (!QFileInfo(installerBinaryPath()).isWritable() || !QFileInfo(packagesXml).isWritable())
             adminRightsGained = m_core->gainAdminRights();
 
-        const QList<Component*> componentsToInstall = m_core->orderedComponentsToInstall();
+        const QList<Component *> componentsToInstall = m_core->orderedComponentsToInstall();
         verbose() << "Install size: " << componentsToInstall.size() << " components " << std::endl;
 
         bool updateAdminRights = false;
@@ -1308,7 +1308,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
 
         OperationList undoOperations;
         OperationList nonRevertedOperations;
-        QHash<QString, Component*> componentsByName;
+        QHash<QString, Component *> componentsByName;
 
         // build a list of undo operations based on the checked state of the component
         foreach (Operation *operation, m_performedOperationsOld) {
@@ -1953,14 +1953,14 @@ void PackageManagerCorePrivate::insertInstallReason(Component *component, const 
 bool PackageManagerCorePrivate::appendComponentToUninstall(Component *component)
 {
     // remove all already resolved dependees
-    QSet<Component*> dependees = m_core->dependees(component).toSet().subtract(m_componentsToUninstall);
+    QSet<Component *> dependees = m_core->dependees(component).toSet().subtract(m_componentsToUninstall);
     if (dependees.isEmpty()) {
         setCheckedState(component, Qt::Unchecked);
         m_componentsToUninstall.insert(component);
         return true;
     }
 
-    QSet<Component*> dependeesToResolve;
+    QSet<Component *> dependeesToResolve;
     foreach (Component *dependee, dependees) {
         if (dependee->isInstalled()) {
             // keep them as already resolved
@@ -2080,4 +2080,4 @@ void PackageManagerCorePrivate::handleMethodInvocationRequest(const QString &inv
         QMetaObject::invokeMethod(obj, qPrintable(invokableMethodName));
 }
 
-}   // QInstaller
+} // namespace QInstaller

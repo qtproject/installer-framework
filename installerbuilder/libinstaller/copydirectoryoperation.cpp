@@ -58,10 +58,6 @@ CopyDirectoryOperation::CopyDirectoryOperation()
     setName(QLatin1String("CopyDirectory"));
 }
 
-CopyDirectoryOperation::~CopyDirectoryOperation()
-{
-}
-
 void CopyDirectoryOperation::backup()
 {
 }

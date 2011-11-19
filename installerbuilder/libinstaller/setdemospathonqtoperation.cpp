@@ -45,10 +45,6 @@ SetDemosPathOnQtOperation::SetDemosPathOnQtOperation()
     setName(QLatin1String("SetDemosPathOnQt"));
 }
 
-SetDemosPathOnQtOperation::~SetDemosPathOnQtOperation()
-{
-}
-
 void SetDemosPathOnQtOperation::backup()
 {
 }

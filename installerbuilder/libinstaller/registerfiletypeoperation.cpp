@@ -41,10 +41,6 @@ RegisterFileTypeOperation::RegisterFileTypeOperation()
     setName(QLatin1String("RegisterFileType"));
 }
 
-RegisterFileTypeOperation::~RegisterFileTypeOperation()
-{
-}
-
 void RegisterFileTypeOperation::backup()
 {
 }

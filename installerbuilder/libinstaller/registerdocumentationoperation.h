@@ -34,7 +34,6 @@ class RegisterDocumentationOperation : public Operation
 {
 public:
     RegisterDocumentationOperation();
-    ~RegisterDocumentationOperation();
 
     void backup();
     bool performOperation();

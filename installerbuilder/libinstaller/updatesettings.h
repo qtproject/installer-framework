@@ -51,7 +51,7 @@ public:
         Monthly = Daily * 30
     };
 
-    static void setSettingsSource(QSettings* settings);
+    static void setSettingsSource(QSettings *settings);
 
     int updateInterval() const;
     void setUpdateInterval(int seconds);

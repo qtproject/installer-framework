@@ -149,7 +149,7 @@ RESULT callRemoteMethod(QDataStream &stream, const QString &name, const T1 & par
 }
 
 template<typename RESULT, typename T1, typename T2, typename T3>
-RESULT callRemoteMethod(QDataStream &stream, const QString &name, const T1 &param1, const T2 & param2,
+RESULT callRemoteMethod(QDataStream &stream, const QString &name, const T1 &param1, const T2 &param2,
     const T3 &param3)
 {
     stream.device()->readAll();

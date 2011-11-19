@@ -45,7 +45,6 @@
 #include <QCoreApplication>
 #include <QByteArrayMatcher>
 
-
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
 #endif
@@ -55,33 +54,27 @@
 #include <time.h>
 #endif
 
-//"anonymous" namespace to make clear that this is only for inside use
-namespace {
-    void sleepCopiedFromQTest(int ms)
-    {
-        if (ms < 0)
-            return;
-    #ifdef Q_OS_WIN
-        Sleep(uint(ms));
-    #else
-        struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
-        nanosleep(&ts, NULL);
-    #endif
-    }
+static void sleepCopiedFromQTest(int ms)
+{
+    if (ms < 0)
+        return;
+#ifdef Q_OS_WIN
+    Sleep(uint(ms));
+#else
+    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
+    nanosleep(&ts, NULL);
+#endif
+}
 
-    void uiDetachedWait(int ms)
-    {
-        QTime timer;
-        timer.start();
-        do {
-            QCoreApplication::processEvents(QEventLoop::AllEvents, ms);
-            sleepCopiedFromQTest(10);
-        } while (timer.elapsed() < ms);
-    }
-
-
-}//"anonymous" namespace
-
+static void uiDetachedWait(int ms)
+{
+    QTime timer;
+    timer.start();
+    do {
+        QCoreApplication::processEvents(QEventLoop::AllEvents, ms);
+        sleepCopiedFromQTest(10);
+    } while (timer.elapsed() < ms);
+}
 
 QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteArray *qmakeOutput)
 {
@@ -224,7 +217,6 @@ bool QtPatch::patchTextFile(const QString &fileName,
     file.write(source);
     return true;
 }
-
 
 bool QtPatch::openFileForPatching(QFile *file)
 {

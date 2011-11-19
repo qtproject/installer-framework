@@ -112,7 +112,6 @@ public:
     };
 
     explicit ComponentModelHelper();
-    ~ComponentModelHelper();
 
     int childCount() const;
     int indexInParent() const;
@@ -153,7 +152,6 @@ private:
     ComponentPrivate *m_componentPrivate;
 };
 
-
-}   // namespace QInstaller
+} // namespace QInstaller
 
 #endif  // COMPONENT_P_H

@@ -62,10 +62,6 @@ AdminAuthorization::AdminAuthorization()
 {
 }
 
-AdminAuthorization::~AdminAuthorization()
-{
-}
-
 bool AdminAuthorization::authorize()
 {
     return true;

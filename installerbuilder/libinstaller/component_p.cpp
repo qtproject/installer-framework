@@ -160,10 +160,6 @@ ComponentModelHelper::ComponentModelHelper()
     setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
 }
 
-ComponentModelHelper::~ComponentModelHelper()
-{
-}
-
 /*!
     Returns the number of child components. Depending if virtual components are visible or not the count might
     differ from what one will get if calling Component::childComponents(...).count().
@@ -207,7 +203,7 @@ QList<Component*> ComponentModelHelper::childs() const
     Returns the component at index position in the list. Index must be a valid position in
     the list (i.e., index >= 0 && index < childCount()). Otherwise it returns 0.
 */
-Component* ComponentModelHelper::childAt(int index) const
+Component *ComponentModelHelper::childAt(int index) const
 {
     if (index >= 0 && index < childCount()) {
         if (m_componentPrivate->m_core->virtualComponentsVisible())

@@ -36,7 +36,6 @@ class INSTALLER_EXPORT GlobalSettingsOperation : public Operation
 {
 public:
     GlobalSettingsOperation();
-    ~GlobalSettingsOperation();
 
     void backup();
     bool performOperation();

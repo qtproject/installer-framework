@@ -70,7 +70,6 @@ QHash<QString, QString> QtCreatorPersistentSettings::abiToDebuggerHash()
     return m_abiToDebuggerHash;
 }
 
-
 QHash<QString, QString> QtCreatorPersistentSettings::readAbiToDebuggerHash()
 {
     if (m_fileName.isEmpty())
@@ -93,8 +92,6 @@ QHash<QString, QString> QtCreatorPersistentSettings::readAbiToDebuggerHash()
     }
     return abiToDebuggerHash;
 }
-
-
 
 bool QtCreatorPersistentSettings::addToolChain(const QtCreatorToolChain &toolChain)
 {

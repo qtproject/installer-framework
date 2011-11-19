@@ -40,8 +40,9 @@
 #include <cassert>
 #include <climits>
 
-class ZipJob::Private {
-    ZipJob* const q;
+class ZipJob::Private
+{
+    ZipJob *const q;
 public:
     explicit Private(ZipJob *qq) :
         q(qq),

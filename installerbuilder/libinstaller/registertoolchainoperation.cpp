@@ -53,10 +53,6 @@ RegisterToolChainOperation::RegisterToolChainOperation()
     setName(QLatin1String("RegisterToolChain"));
 }
 
-RegisterToolChainOperation::~RegisterToolChainOperation()
-{
-}
-
 void RegisterToolChainOperation::backup()
 {
 }

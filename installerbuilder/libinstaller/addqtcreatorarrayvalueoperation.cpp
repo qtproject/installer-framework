@@ -41,22 +41,14 @@
 
 using namespace QInstaller;
 
-namespace {
-    QString groupName(const QString &groupName)
-    {
-        if (groupName == QLatin1String("General"))
-            return QString();
-        return groupName;
-    }
+static QString groupName(const QString &groupName)
+{
+    return groupName == QLatin1String("General") ? QString() : groupName;
 }
 
 AddQtCreatorArrayValueOperation::AddQtCreatorArrayValueOperation()
 {
     setName(QLatin1String("AddQtCreatorArrayValue"));
-}
-
-AddQtCreatorArrayValueOperation::~AddQtCreatorArrayValueOperation()
-{
 }
 
 void AddQtCreatorArrayValueOperation::backup()

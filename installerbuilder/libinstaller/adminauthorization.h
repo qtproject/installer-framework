@@ -50,12 +50,11 @@ class AdminAuthorization : public QObject, public AdminAuthorizationBase
 {
     Q_OBJECT
     Q_PROPERTY(bool authorized READ isAuthorized)
+
 public:
     AdminAuthorization();
-    ~AdminAuthorization();
 
     bool execute(QWidget *dialogParent, const QString &programs, const QStringList &arguments);
-
     static bool hasAdminRights();
 
 public Q_SLOTS:
@@ -63,10 +62,6 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void authorized();
-
-private:
-    class Private;
-    Private *d;
 };
 
-#endif
+#endif // ADMINAUTHORIZATION_H

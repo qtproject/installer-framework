@@ -42,6 +42,7 @@
 #endif
 
 using namespace QInstaller;
+using namespace KDUpdater;
 
 /*
 TRANSLATOR QInstaller::EnvironmentVariablesOperation
@@ -52,15 +53,9 @@ EnvironmentVariableOperation::EnvironmentVariableOperation()
     setName(QLatin1String("EnvironmentVariable"));
 }
 
-EnvironmentVariableOperation::~EnvironmentVariableOperation()
-{
-}
-
 void EnvironmentVariableOperation::backup()
 {
 }
-
-using namespace KDUpdater;
 
 #ifdef Q_WS_WIN
 static bool broadcastChange() {

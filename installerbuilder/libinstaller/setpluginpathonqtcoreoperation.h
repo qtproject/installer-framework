@@ -34,7 +34,6 @@ class SetPluginPathOnQtCoreOperation : public Operation
 {
 public:
     SetPluginPathOnQtCoreOperation();
-    ~SetPluginPathOnQtCoreOperation();
 
     void backup();
     bool performOperation();

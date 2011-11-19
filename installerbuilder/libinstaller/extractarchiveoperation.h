@@ -39,13 +39,12 @@ class INSTALLER_EXPORT ExtractArchiveOperation : public QObject, public Operatio
 
 public:
     ExtractArchiveOperation();
-    ~ExtractArchiveOperation();
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation* clone() const;
+    Operation *clone() const;
 
 Q_SIGNALS:
     void outputTextChanged(const QString &progress);

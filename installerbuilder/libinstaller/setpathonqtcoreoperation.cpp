@@ -91,10 +91,6 @@ SetPathOnQtCoreOperation::SetPathOnQtCoreOperation()
     setName(QLatin1String("SetPathOnQtCore"));
 }
 
-SetPathOnQtCoreOperation::~SetPathOnQtCoreOperation()
-{
-}
-
 void SetPathOnQtCoreOperation::backup()
 {
 }

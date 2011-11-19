@@ -57,11 +57,6 @@ public:
         return externalSettings ? *externalSettings : internalSettings;
     }
 
-    const QSettings &settings() const
-    {
-        return externalSettings ? *externalSettings : internalSettings;
-    }
-
     static void setExternalSettings(QSettings *settings)
     {
         externalSettings = settings;
@@ -97,7 +92,7 @@ void UpdateSettings::setSettingsSource(QSettings *settings)
 
 int UpdateSettings::updateInterval() const
 {
-    return d->settings().value(QLatin1String("updatesettings/interval"), static_cast<int> (Weekly)).toInt();
+    return d->settings().value(QLatin1String("updatesettings/interval"), static_cast<int>(Weekly)).toInt();
 }
 
 void UpdateSettings::setUpdateInterval(int seconds)
@@ -137,7 +132,7 @@ void UpdateSettings::setCheckOnlyImportantUpdates(bool checkOnlyImportantUpdates
 
 QSet<Repository> UpdateSettings::repositories() const
 {
-    QSettings &settings = *(const_cast<QSettings*> (&d->settings()));
+    QSettings &settings = d->settings();
     const int count = settings.beginReadArray(QLatin1String("updatesettings/repositories"));
 
     QSet<Repository> result;

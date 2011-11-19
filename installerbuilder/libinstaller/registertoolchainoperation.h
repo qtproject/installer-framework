@@ -52,7 +52,6 @@ class RegisterToolChainOperation : public Operation
 {
 public:
     RegisterToolChainOperation();
-    ~RegisterToolChainOperation();
 
     void backup();
     bool performOperation();

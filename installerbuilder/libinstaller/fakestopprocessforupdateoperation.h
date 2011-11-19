@@ -32,17 +32,14 @@ namespace QInstaller {
 
 class FakeStopProcessForUpdateOperation : public Operation
 {
-
 public:
     FakeStopProcessForUpdateOperation();
-    ~FakeStopProcessForUpdateOperation();
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation* clone() const;
-
+    Operation *clone() const;
 };
 
 }

@@ -47,7 +47,6 @@
 
 using namespace QInstaller;
 
-
 // -- PerformInstallationForm
 
 PerformInstallationForm::PerformInstallationForm(QObject *parent)
@@ -57,10 +56,6 @@ PerformInstallationForm::PerformInstallationForm(QObject *parent)
       m_detailsButton(0),
       m_detailsBrowser(0),
       m_updateTimer(0)
-{
-}
-
-PerformInstallationForm::~PerformInstallationForm()
 {
 }
 

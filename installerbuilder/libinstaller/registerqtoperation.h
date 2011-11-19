@@ -34,7 +34,6 @@ class RegisterQtInCreatorOperation : public Operation
 {
 public:
     RegisterQtInCreatorOperation();
-    ~RegisterQtInCreatorOperation();
 
     void backup();
     bool performOperation();

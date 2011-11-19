@@ -34,7 +34,6 @@ class AddQtCreatorArrayValueOperation : public Operation
 {
 public:
     AddQtCreatorArrayValueOperation();
-    ~AddQtCreatorArrayValueOperation();
 
     void backup();
     bool performOperation();
@@ -43,6 +42,6 @@ public:
     Operation *clone() const;
 };
 
-} // namespace
+} // namespace QInstaller
 
 #endif // ADDQTCREATORVALUEOPERATION_H

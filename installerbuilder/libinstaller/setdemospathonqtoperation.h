@@ -34,7 +34,6 @@ class SetDemosPathOnQtOperation : public Operation
 {
 public:
     SetDemosPathOnQtOperation();
-    ~SetDemosPathOnQtOperation();
 
     void backup();
     bool performOperation();

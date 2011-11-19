@@ -77,9 +77,8 @@ bool removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList 
 
     //read all settings for Qt Versions
     QHash<QString, QVariant> oldSettingsAsHash;
-    foreach (const QString &key, settings.allKeys()) {
+    foreach (const QString &key, settings.allKeys())
         oldSettingsAsHash.insert(key, settings.value(key));
-    }
     qDebug() << QLatin1String("settings.allKeys(): ") << settings.allKeys();
 
     //get the installer added Qt Version settings ids
@@ -180,9 +179,8 @@ bool convertQtInstallerSettings(QSettings &settings, const QString &toolChainsXm
 
     QtCreatorPersistentSettings creatorToolChainSettings;
 
-    if (!creatorToolChainSettings.init(toolChainsXmlFilePath)) {
+    if (!creatorToolChainSettings.init(toolChainsXmlFilePath))
         return false;
-    }
 
     foreach (const QString &mingwPath, mingwToolChains) {
         if (mingwPath.isEmpty())
@@ -271,10 +269,6 @@ void convertDefaultGDBInstallerSettings(QSettings &settings, QInstaller::Package
 UpdateCreatorSettingsFrom21To22Operation::UpdateCreatorSettingsFrom21To22Operation()
 {
     setName(QLatin1String("UpdateCreatorSettingsFrom21To22"));
-}
-
-UpdateCreatorSettingsFrom21To22Operation::~UpdateCreatorSettingsFrom21To22Operation()
-{
 }
 
 void UpdateCreatorSettingsFrom21To22Operation::backup()

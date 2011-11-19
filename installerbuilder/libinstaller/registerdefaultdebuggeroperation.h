@@ -28,14 +28,12 @@
 
 #include "qinstallerglobal.h"
 
-
 namespace QInstaller {
 
 class RegisterDefaultDebuggerOperation : public Operation
 {
 public:
     RegisterDefaultDebuggerOperation();
-    ~RegisterDefaultDebuggerOperation();
 
     void backup();
     bool performOperation();

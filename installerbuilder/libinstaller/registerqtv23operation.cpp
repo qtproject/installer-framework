@@ -35,8 +35,8 @@
 #include "constants.h"
 #include "packagemanagercore.h"
 #include "qtcreator_constants.h"
-
 #include "persistentsettings.h"
+
 #include <QString>
 #include <QFileInfo>
 #include <QDir>
@@ -46,41 +46,34 @@
 
 using namespace QInstaller;
 
-namespace {
-//TODO move this to a general location it is used on some classes
-QString fromNativeSeparatorsAllOS(const QString &pathName)
+// TODO: move this to a general location it is used on some classes
+static QString fromNativeSeparatorsAllOS(const QString &pathName)
 {
-    QString n(pathName);
-    for (int i = 0; i < (int)n.length(); ++i) {
-        if (n[i] == QLatin1Char('\\'))
+    QString n = pathName;
+    for (int i = 0; i < n.size(); ++i) {
+        if (n.at(i) == QLatin1Char('\\'))
             n[i] = QLatin1Char('/');
     }
     return n;
 }
 
-inline QString absoluteQmakePath(const QString &path)
+static QString absoluteQmakePath(const QString &path)
 {
     QString versionQmakePath = QDir(path).absolutePath();
-    if ( !versionQmakePath.endsWith(QLatin1String("qmake"))
-         && !versionQmakePath.endsWith(QLatin1String("qmake.exe")))
-    {
-#if defined ( Q_OS_WIN )
+    if (!versionQmakePath.endsWith(QLatin1String("qmake"))
+         && !versionQmakePath.endsWith(QLatin1String("qmake.exe"))) {
+#if defined (Q_OS_WIN)
         versionQmakePath.append(QLatin1String("/bin/qmake.exe"));
-#elif defined( Q_OS_UNIX )
+#elif defined(Q_OS_UNIX)
         versionQmakePath.append(QLatin1String("/bin/qmake"));
 #endif
     }
     return fromNativeSeparatorsAllOS(versionQmakePath);
 }
-}
 
 RegisterQtInCreatorV23Operation::RegisterQtInCreatorV23Operation()
 {
     setName(QLatin1String("RegisterQtInCreatorV23"));
-}
-
-RegisterQtInCreatorV23Operation::~RegisterQtInCreatorV23Operation()
-{
 }
 
 void RegisterQtInCreatorV23Operation::backup()

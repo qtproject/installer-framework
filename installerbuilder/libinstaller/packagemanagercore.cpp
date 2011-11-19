@@ -939,7 +939,7 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
 /*!
     Returns a list of components to uninstall. The list can be empty.
 */
-QList<Component*> PackageManagerCore::componentsToUninstall() const
+QList<Component *> PackageManagerCore::componentsToUninstall() const
 {
     return d->m_componentsToUninstall.toList();
 }
@@ -1474,7 +1474,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         }
 
         component->setUninstalled();
-        const QString &localPath = component->localTempPath();
+        const QString localPath = component->localTempPath();
         if (isVerbose()) {
             static QString lastLocalPath;
             if (lastLocalPath != localPath)
@@ -1530,7 +1530,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
     return true;
 }
 
-void PackageManagerCore::storeReplacedComponents(QHash<QString, Component*> &components, const struct Data &data)
+void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &components, const struct Data &data)
 {
     QHash<Component*, QStringList>::const_iterator it = data.replacementToExchangeables.constBegin();
     // remember all components that got a replacement, required for uninstall
@@ -1637,7 +1637,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     emit startUpdaterComponentsReset();
 
     d->clearUpdaterComponentLists();
-    QHash<QString, QInstaller::Component*> components;
+    QHash<QString, QInstaller::Component *> components;
 
     Data data;
     data.runMode = UpdaterMode;
@@ -1767,9 +1767,9 @@ void PackageManagerCore::resetComponentsToUserCheckedState()
 
 void PackageManagerCore::updateDisplayVersions(const QString &displayKey)
 {
-    QHash<QString, QInstaller::Component*> components;
-    const QList<QInstaller::Component*> componentList = availableComponents();
-    foreach (QInstaller::Component* component, componentList)
+    QHash<QString, QInstaller::Component *> components;
+    const QList<QInstaller::Component *> componentList = availableComponents();
+    foreach (QInstaller::Component *component, componentList)
         components[component->name()] = component;
 
     // set display version for all components in list
@@ -1791,7 +1791,7 @@ void PackageManagerCore::updateDisplayVersions(const QString &displayKey)
 }
 
 QString PackageManagerCore::findDisplayVersion(const QString &componentName,
-                                               const QHash<QString, QInstaller::Component*> &components,
+                                               const QHash<QString, QInstaller::Component *> &components,
                                                const QString &versionKey, QHash<QString, bool> &visited)
 {
     const QString replaceWith = components.value(componentName)->value(scInheritVersion);

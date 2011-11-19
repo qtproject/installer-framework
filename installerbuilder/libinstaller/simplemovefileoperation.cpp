@@ -41,10 +41,6 @@ SimpleMoveFileOperation::SimpleMoveFileOperation()
     setName(QLatin1String("SimpleMoveFile"));
 }
 
-SimpleMoveFileOperation::~SimpleMoveFileOperation()
-{
-}
-
 void SimpleMoveFileOperation::backup()
 {
 }

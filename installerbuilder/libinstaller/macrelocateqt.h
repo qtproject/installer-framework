@@ -26,7 +26,7 @@
 #ifndef RELOCATOR_H
 #define RELOCATOR_H
 
-#include <QStringList>
+#include <QString>
 
 namespace QInstaller {
 

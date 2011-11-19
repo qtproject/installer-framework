@@ -112,15 +112,10 @@ static QList<T> reversed(const QList<T> &list)
 // -- MessageBoxHandler
 
 MessageBoxHandler *MessageBoxHandler::m_instance = 0;
+
 MessageBoxHandler::MessageBoxHandler(QObject *parent)
     : QObject(parent)
     , m_defaultAction(MessageBoxHandler::AskUser)
-{
-}
-
-// -- public
-
-MessageBoxHandler::~MessageBoxHandler()
 {
 }
 

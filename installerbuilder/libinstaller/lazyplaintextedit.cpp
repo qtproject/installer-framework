@@ -34,7 +34,7 @@
 
 #include <QScrollBar>
 
-#define INTERVAL 20
+const int INTERVAL = 20;
 
 LazyPlainTextEdit::LazyPlainTextEdit(QWidget *parent) :
     QPlainTextEdit(parent), m_timerId(0)
@@ -61,9 +61,8 @@ void LazyPlainTextEdit::append(const QString &text)
     //    m_timerId = 0;
     //}
     m_chachedOutput.append(text + QLatin1String("\n"));
-    if (isVisible() && m_timerId == 0) {
+    if (isVisible() && m_timerId == 0)
         m_timerId = startTimer(INTERVAL);
-    }
 }
 
 void LazyPlainTextEdit::clear()

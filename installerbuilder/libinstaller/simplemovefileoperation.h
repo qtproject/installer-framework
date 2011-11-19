@@ -38,7 +38,6 @@ class INSTALLER_EXPORT SimpleMoveFileOperation : public QObject, public Operatio
 
 public:
     SimpleMoveFileOperation();
-    ~SimpleMoveFileOperation();
 
     void backup();
     bool performOperation();

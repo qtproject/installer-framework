@@ -40,10 +40,6 @@ MinimumProgressOperation::MinimumProgressOperation()
     setName(QLatin1String("MinimumProgress"));
 }
 
-MinimumProgressOperation::~MinimumProgressOperation()
-{
-}
-
 void MinimumProgressOperation::backup()
 {
 }

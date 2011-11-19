@@ -34,13 +34,12 @@ class INSTALLER_EXPORT EnvironmentVariableOperation : public Operation
 {
 public:
     EnvironmentVariableOperation();
-    ~EnvironmentVariableOperation();
 
     void backup();
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation* clone() const;
+    Operation *clone() const;
 };
 
 }

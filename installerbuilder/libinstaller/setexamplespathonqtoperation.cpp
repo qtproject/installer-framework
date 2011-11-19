@@ -45,10 +45,6 @@ SetExamplesPathOnQtOperation::SetExamplesPathOnQtOperation()
     setName(QLatin1String("SetExamplesPathOnQt"));
 }
 
-SetExamplesPathOnQtOperation::~SetExamplesPathOnQtOperation()
-{
-}
-
 void SetExamplesPathOnQtOperation::backup()
 {
 }

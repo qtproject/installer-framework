@@ -38,7 +38,7 @@
 
 #include "constants.h"
 #include "common/utils.h"
-#include <packagemanagercore.h>
+#include "packagemanagercore.h"
 
 #include <QMap>
 #include <QSet>
@@ -47,82 +47,72 @@
 #include <QDir>
 #include <QDebug>
 
-
-
 using namespace QInstaller;
 
-//"anonymous" namespace to make clear that this is only for inside use
-namespace {
-    QMap<QByteArray, QByteArray> generatePatchValueMap(const QByteArray &newQtPath,
+static QMap<QByteArray, QByteArray> generatePatchValueMap(const QByteArray &newQtPath,
         const QHash<QString, QByteArray> &qmakeValueHash)
-    {
-        QMap<QByteArray, QByteArray> replaceMap; //first == searchstring: second == replace string
-        char nativeSeperator = QDir::separator().toAscii();
-        QByteArray oldValue;
+{
+    QMap<QByteArray, QByteArray> replaceMap; //first == searchstring: second == replace string
+    char nativeSeperator = QDir::separator().toAscii();
+    QByteArray oldValue;
 
-        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_PREFIX"));
-        replaceMap.insert(QByteArray("qt_prfxpath=%1").replace("%1", oldValue),
-            QByteArray("qt_prfxpath=%1/").replace("%1/", newQtPath));
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_PREFIX"));
+    replaceMap.insert(QByteArray("qt_prfxpath=%1").replace("%1", oldValue),
+        QByteArray("qt_prfxpath=%1/").replace("%1/", newQtPath));
 
-        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DOCS"));
-        replaceMap.insert(QByteArray("qt_docspath=%1").replace("%1", oldValue),
-            QByteArray("qt_docspath=%1/doc").replace("%1/", newQtPath + nativeSeperator));
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DOCS"));
+    replaceMap.insert(QByteArray("qt_docspath=%1").replace("%1", oldValue),
+        QByteArray("qt_docspath=%1/doc").replace("%1/", newQtPath + nativeSeperator));
 
-        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_HEADERS"));
-        replaceMap.insert(QByteArray("qt_hdrspath=%1").replace("%1", oldValue),
-            QByteArray("qt_hdrspath=%1/include").replace("%1/", newQtPath + nativeSeperator));
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_HEADERS"));
+    replaceMap.insert(QByteArray("qt_hdrspath=%1").replace("%1", oldValue),
+        QByteArray("qt_hdrspath=%1/include").replace("%1/", newQtPath + nativeSeperator));
 
-        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_LIBS"));
-        replaceMap.insert(QByteArray("qt_libspath=%1").replace("%1", oldValue),
-            QByteArray("qt_libspath=%1/lib").replace("%1/", newQtPath + nativeSeperator));
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_LIBS"));
+    replaceMap.insert(QByteArray("qt_libspath=%1").replace("%1", oldValue),
+        QByteArray("qt_libspath=%1/lib").replace("%1/", newQtPath + nativeSeperator));
 
-        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_BINS"));
-        replaceMap.insert(QByteArray("qt_binspath=%1").replace("%1", oldValue),
-            QByteArray("qt_binspath=%1/bin").replace("%1/", newQtPath + nativeSeperator));
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_BINS"));
+    replaceMap.insert(QByteArray("qt_binspath=%1").replace("%1", oldValue),
+        QByteArray("qt_binspath=%1/bin").replace("%1/", newQtPath + nativeSeperator));
 
-        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_PLUGINS"));
-        replaceMap.insert(QByteArray("qt_plugpath=%1").replace("%1", oldValue),
-            QByteArray("qt_plugpath=%1/plugins").replace("%1/", newQtPath + nativeSeperator));
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_PLUGINS"));
+    replaceMap.insert(QByteArray("qt_plugpath=%1").replace("%1", oldValue),
+        QByteArray("qt_plugpath=%1/plugins").replace("%1/", newQtPath + nativeSeperator));
 
-        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_IMPORTS"));
-        replaceMap.insert(QByteArray("qt_impspath=%1").replace("%1", oldValue),
-            QByteArray("qt_impspath=%1/imports").replace("%1/", newQtPath + nativeSeperator));
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_IMPORTS"));
+    replaceMap.insert(QByteArray("qt_impspath=%1").replace("%1", oldValue),
+        QByteArray("qt_impspath=%1/imports").replace("%1/", newQtPath + nativeSeperator));
 
-        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DATA"));
-        replaceMap.insert( QByteArray("qt_datapath=%1").replace("%1", oldValue),
-            QByteArray("qt_datapath=%1/").replace("%1/", newQtPath + nativeSeperator));
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DATA"));
+    replaceMap.insert( QByteArray("qt_datapath=%1").replace("%1", oldValue),
+        QByteArray("qt_datapath=%1/").replace("%1/", newQtPath + nativeSeperator));
 
-        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_TRANSLATIONS"));
-        replaceMap.insert( QByteArray("qt_trnspath=%1").replace("%1", oldValue),
-            QByteArray("qt_trnspath=%1/translations").replace("%1/", newQtPath + nativeSeperator));
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_TRANSLATIONS"));
+    replaceMap.insert( QByteArray("qt_trnspath=%1").replace("%1", oldValue),
+        QByteArray("qt_trnspath=%1/translations").replace("%1/", newQtPath + nativeSeperator));
 
-        // This must not be patched. Commenting out to fix QTSDK-429
-        //        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_CONFIGURATION"));
-        //        replaceMap.insert( QByteArray("qt_stngpath=%1").replace("%1", oldValue),
-        //                            QByteArray("qt_stngpath=%1").replace("%1", newQtPath));
+    // This must not be patched. Commenting out to fix QTSDK-429
+    //        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_CONFIGURATION"));
+    //        replaceMap.insert( QByteArray("qt_stngpath=%1").replace("%1", oldValue),
+    //                            QByteArray("qt_stngpath=%1").replace("%1", newQtPath));
 
-        //examples and demoes can patched outside separately,
-        //but for cosmetic reasons - if the qt version gets no examples later.
-        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_EXAMPLES"));
-        replaceMap.insert( QByteArray("qt_xmplpath=%1").replace("%1", oldValue),
-            QByteArray("qt_xmplpath=%1/examples").replace("%1/", newQtPath + nativeSeperator));
+    //examples and demoes can patched outside separately,
+    //but for cosmetic reasons - if the qt version gets no examples later.
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_EXAMPLES"));
+    replaceMap.insert( QByteArray("qt_xmplpath=%1").replace("%1", oldValue),
+        QByteArray("qt_xmplpath=%1/examples").replace("%1/", newQtPath + nativeSeperator));
 
-        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DEMOS"));
-        replaceMap.insert( QByteArray("qt_demopath=%1").replace("%1", oldValue),
-            QByteArray("qt_demopath=%1/demos").replace("%1/", newQtPath + nativeSeperator));
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DEMOS"));
+    replaceMap.insert( QByteArray("qt_demopath=%1").replace("%1", oldValue),
+        QByteArray("qt_demopath=%1/demos").replace("%1/", newQtPath + nativeSeperator));
 
-        return replaceMap;
-    }
-
-} // anonymous namespace
+    return replaceMap;
+}
 
 QtPatchOperation::QtPatchOperation()
 {
     setName(QLatin1String("QtPatch"));
-}
-
-QtPatchOperation::~QtPatchOperation()
-{
 }
 
 void QtPatchOperation::backup()
@@ -198,7 +188,7 @@ bool QtPatchOperation::performOperation()
     else if (type == QLatin1String("mac"))
         patchFileListFile.setFileName(QLatin1String(":/files-to-patch-macx"));
 
-    if (! patchFileListFile.open(QFile::ReadOnly)) {
+    if (!patchFileListFile.open(QFile::ReadOnly)) {
         setError(UserDefinedError);
         setErrorString(tr("Qt patch error: Can not open %1.(%2)").arg(patchFileListFile.fileName(),
             patchFileListFile.errorString()));
