@@ -38,7 +38,6 @@ class INSTALLER_EXPORT Updater : public QObject
 
 public:
     explicit Updater();
-    ~Updater();
 
     bool checkForUpdates();
     void setVerbose(bool verbose);

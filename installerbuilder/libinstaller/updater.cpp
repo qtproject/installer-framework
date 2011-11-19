@@ -51,10 +51,6 @@ Updater::Updater()
     QInstaller::init();
 }
 
-Updater::~Updater()
-{
-}
-
 void Updater::setVerbose(bool verbose)
 {
     QInstaller::setVerbose(verbose);
@@ -74,29 +70,29 @@ bool Updater::checkForUpdates()
     core.setUpdater();
     PackageManagerCore::setVirtualComponentsVisible(true);
 
-    if (core.fetchRemotePackagesTree()) {
-        const QList<QInstaller::Component*> components = core.updaterComponents();
+    if (!core.fetchRemotePackagesTree())
+        return false;
 
-        if (components.isEmpty()) {
-            verbose() << tr("There are currently no updates available.") << std::endl;
-            return false;
-        }
+    const QList<QInstaller::Component *> components = core.updaterComponents();
 
-        QDomDocument doc;
-        QDomElement root = doc.createElement(QLatin1String("updates"));
-        doc.appendChild(root);
-
-        QList<QInstaller::Component *>::const_iterator it;
-        for (it = components.begin(); it != components.end(); ++it) {
-            QDomElement update = doc.createElement(QLatin1String("update"));
-            update.setAttribute(QLatin1String("name"), (*it)->value(scDisplayName));
-            update.setAttribute(QLatin1String("version"), (*it)->value(scRemoteVersion));
-            update.setAttribute(QLatin1String("size"), (*it)->value(scUncompressedSize));
-            root.appendChild(update);
-        }
-
-        std::cout << doc.toString(4) << std::endl;
-        return true;
+    if (components.isEmpty()) {
+        verbose() << tr("There are currently no updates available.") << std::endl;
+        return false;
     }
-    return false;
+
+    QDomDocument doc;
+    QDomElement root = doc.createElement(QLatin1String("updates"));
+    doc.appendChild(root);
+
+    QList<QInstaller::Component *>::const_iterator it;
+    for (it = components.begin(); it != components.end(); ++it) {
+        QDomElement update = doc.createElement(QLatin1String("update"));
+        update.setAttribute(QLatin1String("name"), (*it)->value(scDisplayName));
+        update.setAttribute(QLatin1String("version"), (*it)->value(scRemoteVersion));
+        update.setAttribute(QLatin1String("size"), (*it)->value(scUncompressedSize));
+        root.appendChild(update);
+    }
+
+    std::cout << doc.toString(4) << std::endl;
+    return true;
 }
