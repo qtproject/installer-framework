@@ -29,156 +29,156 @@
 #include <QObject>
 #include <QProcess>
 
-namespace KDUpdater
+namespace KDUpdater {
+
+class KDTOOLS_EXPORT CopyOperation : public UpdateOperation
 {
+public:
+    CopyOperation();
+    ~CopyOperation();
 
-    class KDTOOLS_EXPORT CopyOperation : public UpdateOperation
-    {
-    public:
-        CopyOperation();
-        ~CopyOperation();
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    CopyOperation *clone() const;
 
-        void backup();
-        bool performOperation();
-        bool undoOperation();
-        bool testOperation();
-        CopyOperation* clone() const;
-        
-        QDomDocument toXml() const;
-    };
-
-    class KDTOOLS_EXPORT MoveOperation : public UpdateOperation
-    {
-    public:
-        MoveOperation();
-        ~MoveOperation();
-
-        void backup();
-        bool performOperation();
-        bool undoOperation();
-        bool testOperation();
-        MoveOperation* clone() const;
-    };
-
-    class KDTOOLS_EXPORT DeleteOperation : public UpdateOperation
-    {
-    public:
-        DeleteOperation();
-        ~DeleteOperation();
-
-        void backup();
-        bool performOperation();
-        bool undoOperation();
-        bool testOperation();
-        DeleteOperation* clone() const;
-        
-        QDomDocument toXml() const;
-    };
-
-    class KDTOOLS_EXPORT MkdirOperation : public UpdateOperation
-    {
-    public:
-        MkdirOperation();
-        ~MkdirOperation();
-
-        void backup();
-        bool performOperation();
-        bool undoOperation();
-        bool testOperation();
-        MkdirOperation* clone() const;
-    };
-
-    class KDTOOLS_EXPORT RmdirOperation : public UpdateOperation
-    {
-    public:
-        RmdirOperation();
-        ~RmdirOperation();
-
-        void backup();
-        bool performOperation();
-        bool undoOperation();
-        bool testOperation();
-        RmdirOperation* clone() const;
-    };
-
-    class KDTOOLS_EXPORT AppendFileOperation : public UpdateOperation
-    {
-    public:
-        AppendFileOperation();
-        ~AppendFileOperation();
-
-        void backup();
-        bool performOperation();
-        bool undoOperation();
-        bool testOperation();
-        AppendFileOperation* clone() const;
-    };
-
-    class KDTOOLS_EXPORT PrependFileOperation : public UpdateOperation
-    {
-    public:
-        PrependFileOperation();
-        ~PrependFileOperation();
-
-        void backup();
-        bool performOperation();
-        bool undoOperation();
-        bool testOperation();
-        PrependFileOperation* clone() const;
-    };
-
-    class KDTOOLS_EXPORT ExecuteOperation : public QObject, public UpdateOperation
-    {
-        Q_OBJECT
-    public:
-        ExecuteOperation();
-        ~ExecuteOperation();
-
-        void backup();
-        bool performOperation();
-        bool undoOperation();
-        bool testOperation();
-        ExecuteOperation* clone() const;
-
-    public Q_SLOTS:
-        void cancelOperation();
-
-    private Q_SLOTS:
-        void readProcessOutput();
-
-    Q_SIGNALS:
-        void outputTextChanged(const QString &text);
-
-    private:
-        QProcess process;
-    };
-
-    class KDTOOLS_EXPORT UpdatePackageOperation : public UpdateOperation
-    {
-    public:
-        UpdatePackageOperation();
-        ~UpdatePackageOperation();
-
-        void backup();
-        bool performOperation();
-        bool undoOperation();
-        bool testOperation();
-        UpdatePackageOperation* clone() const;
-    };
-
-    class KDTOOLS_EXPORT UpdateCompatOperation : public UpdateOperation
-    {
-    public:
-        UpdateCompatOperation();
-        ~UpdateCompatOperation();
-
-        void backup();
-        bool performOperation();
-        bool undoOperation();
-        bool testOperation();
-        UpdateCompatOperation* clone() const;
-    };
-
+    QDomDocument toXml() const;
 };
 
-#endif
+class KDTOOLS_EXPORT MoveOperation : public UpdateOperation
+{
+public:
+    MoveOperation();
+    ~MoveOperation();
+
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    MoveOperation *clone() const;
+};
+
+class KDTOOLS_EXPORT DeleteOperation : public UpdateOperation
+{
+public:
+    DeleteOperation();
+    ~DeleteOperation();
+
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    DeleteOperation *clone() const;
+
+    QDomDocument toXml() const;
+};
+
+class KDTOOLS_EXPORT MkdirOperation : public UpdateOperation
+{
+public:
+    MkdirOperation();
+    ~MkdirOperation();
+
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    MkdirOperation *clone() const;
+};
+
+class KDTOOLS_EXPORT RmdirOperation : public UpdateOperation
+{
+public:
+    RmdirOperation();
+    ~RmdirOperation();
+
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    RmdirOperation *clone() const;
+};
+
+class KDTOOLS_EXPORT AppendFileOperation : public UpdateOperation
+{
+public:
+    AppendFileOperation();
+    ~AppendFileOperation();
+
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    AppendFileOperation *clone() const;
+};
+
+class KDTOOLS_EXPORT PrependFileOperation : public UpdateOperation
+{
+public:
+    PrependFileOperation();
+    ~PrependFileOperation();
+
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    PrependFileOperation *clone() const;
+};
+
+class KDTOOLS_EXPORT ExecuteOperation : public QObject, public UpdateOperation
+{
+    Q_OBJECT
+
+public:
+    ExecuteOperation();
+    ~ExecuteOperation();
+
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    ExecuteOperation *clone() const;
+
+public Q_SLOTS:
+    void cancelOperation();
+
+private Q_SLOTS:
+    void readProcessOutput();
+
+Q_SIGNALS:
+    void outputTextChanged(const QString &text);
+
+private:
+    QProcess process;
+};
+
+class KDTOOLS_EXPORT UpdatePackageOperation : public UpdateOperation
+{
+public:
+    UpdatePackageOperation();
+    ~UpdatePackageOperation();
+
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    UpdatePackageOperation *clone() const;
+};
+
+class KDTOOLS_EXPORT UpdateCompatOperation : public UpdateOperation
+{
+public:
+    UpdateCompatOperation();
+    ~UpdateCompatOperation();
+
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    UpdateCompatOperation *clone() const;
+};
+
+} // namespace KDUpdater
+
+#endif // KD_UPDATER_UPDATE_OPERATIONS_H

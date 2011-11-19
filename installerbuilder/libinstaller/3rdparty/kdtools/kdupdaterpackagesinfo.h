@@ -24,97 +24,100 @@
 #define KD_UPDATER_PACKAGES_INFO_H
 
 #include "kdupdater.h"
+
 #include <QObject>
 #include <QDate>
 #include <QString>
 #include <QStringList>
 #include <QVariant>
 
-namespace KDUpdater
+namespace KDUpdater {
+
+class Application;
+class UpdateInstaller;
+
+struct KDTOOLS_EXPORT PackageInfo
 {
-    class Application;
-    class UpdateInstaller;
+    QString name;
+    QString pixmap;
+    QString title;
+    QString description;
+    QString version;
+    QString inheritVersionFrom;
+    QStringList dependencies;
+    QStringList translations;
+    QDate lastUpdateDate;
+    QDate installDate;
+    bool forcedInstallation;
+    bool virtualComp;
+    quint64 uncompressedSize;
+};
 
-    struct KDTOOLS_EXPORT PackageInfo
+class KDTOOLS_EXPORT PackagesInfo : public QObject
+{
+    Q_OBJECT
+
+public:
+    ~PackagesInfo();
+
+    enum Error
     {
-        QString name;
-        QString pixmap;
-        QString title;
-        QString description;
-        QString version;
-        QString inheritVersionFrom;
-        QStringList dependencies;
-        QStringList translations;
-        QDate lastUpdateDate;
-        QDate installDate;
-        bool forcedInstallation;
-        bool virtualComp;
-        quint64 uncompressedSize;
+        NoError = 0,
+        NotYetReadError,
+        CouldNotReadPackageFileError,
+        InvalidXmlError,
+        InvalidContentError
     };
 
-    class KDTOOLS_EXPORT PackagesInfo : public QObject
-    {
-        Q_OBJECT
+    Application *application() const;
 
-    public:
-        ~PackagesInfo();
-        
-        enum Error
-        {
-            NoError=0,
-            NotYetReadError,
-            CouldNotReadPackageFileError,
-            InvalidXmlError,
-            InvalidContentError
-        };
+    bool isValid() const;
+    QString errorString() const;
+    Error error() const;
+    void clearPackageInfoList();
 
-        Application* application() const;
+    void setFileName(const QString &fileName);
+    QString fileName() const;
 
-        bool isValid() const;
-        QString errorString() const;
-        Error error() const;
-        void clearPackageInfoList();
+    void setApplicationName(const QString &name);
+    QString applicationName() const;
 
-        void setFileName(const QString& fileName);
-        QString fileName() const;
+    void setApplicationVersion(const QString &version);
+    QString applicationVersion() const;
 
-        void setApplicationName(const QString& name);
-        QString applicationName() const;
+    int packageInfoCount() const;
+    PackageInfo packageInfo(int index) const;
+    int findPackageInfo(const QString &pkgName) const;
+    QVector<KDUpdater::PackageInfo> packageInfos() const;
+    void writeToDisk();
 
-        void setApplicationVersion(const QString& version);
-        QString applicationVersion() const;
+    int compatLevel() const;
+    void setCompatLevel(int level);
 
-        int packageInfoCount() const;
-        PackageInfo packageInfo(int index) const;
-        int findPackageInfo(const QString& pkgName) const;
-        QVector<KDUpdater::PackageInfo> packageInfos() const;
-        void writeToDisk();
+    bool installPackage(const QString &pkgName, const QString &version, const QString &title = QString(),
+                        const QString &description = QString(), const QStringList &dependencies = QStringList(),
+                        bool forcedInstallation = false, bool virtualComp = false, quint64 uncompressedSize = 0,
+                        const QString &inheritVersionFrom = QString());
 
-        int compatLevel() const;
-        void setCompatLevel(int level);
+    bool updatePackage(const QString &pkgName, const QString &version, const QDate &date);
+    bool removePackage(const QString &pkgName);
 
-        bool installPackage( const QString& pkgName, const QString& version, const QString& title = QString(), const QString& description = QString(),
-                             const QStringList& dependencies = QStringList(), bool forcedInstallation = false, bool virtualComp = false, quint64 uncompressedSize = 0,
-                             const QString &inheritVersionFrom=QString());
-        bool updatePackage(const QString &pkgName, const QString &version, const QDate &date );
-        bool removePackage( const QString& pkgName );
+public Q_SLOTS:
+    void refresh();
 
-    public Q_SLOTS:
-        void refresh();
+Q_SIGNALS:
+    void reset();
 
-    Q_SIGNALS:
-        void reset();
+protected:
+    explicit PackagesInfo(Application *application = 0);
 
-    protected:
-        explicit PackagesInfo( Application * application=0 );        
+private:
+    friend class Application;
+    friend class UpdateInstaller;
+    struct PackagesInfoData;
+    PackagesInfoData *d;
+};
 
-    private:
-        friend class Application;
-        friend class UpdateInstaller;
-        struct PackagesInfoData;
-        PackagesInfoData* d;
-    };
+} // KDUpdater
 
-}
-
-#endif
+#endif // KD_UPDATER_PACKAGES_INFO_H

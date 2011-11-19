@@ -20,21 +20,21 @@
 **
 **********************************************************************/
 
-#ifndef __KDTOOLS_RUNONCECHECKER_H__
-#define __KDTOOLS_RUNONCECHECKER_H__
+#ifndef KDTOOLS_RUNONCECHECKER_H
+#define KDTOOLS_RUNONCECHECKER_H
 
 #include <kdtoolsglobal.h>
 
-#include <QtCore/QString>
+#include <QString>
 
 class KDTOOLS_EXPORT KDRunOnceChecker
 {
-
 public:
-    enum Dependencies{ ProcessList, Lockfile, BOTH };
-    explicit KDRunOnceChecker( const QString& filename = QString() );
+    enum Dependencies { ProcessList, Lockfile, Both };
+
+    explicit KDRunOnceChecker(const QString &filename = QString());
     ~KDRunOnceChecker();
-    bool isRunning( Dependencies depends );
+    bool isRunning(Dependencies depends);
 
 private:
     Q_DISABLE_COPY(KDRunOnceChecker)
@@ -42,4 +42,4 @@ private:
     Private *d;
 };
 
-#endif
+#endif // KDTOOLS_RUNONCECHECKER_H

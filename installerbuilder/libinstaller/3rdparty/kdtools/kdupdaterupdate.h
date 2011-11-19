@@ -25,62 +25,65 @@
 
 #include "kdupdater.h"
 #include "kdupdatertask.h"
+
 #include <QUrl>
 #include <QDate>
 #include <QMap>
 #include <QVariant>
 #include <QList>
 
-namespace KDUpdater
+namespace KDUpdater {
+
+class Application;
+struct UpdateSourceInfo;
+class UpdateFinder;
+class UpdateOperation;
+
+class KDTOOLS_EXPORT Update : public Task
 {
-    class Application;
-    struct UpdateSourceInfo;
-    class UpdateFinder;
-    class UpdateOperation;
+    Q_OBJECT
 
-    class KDTOOLS_EXPORT Update : public Task
-    {
-        Q_OBJECT
+public:
+    ~Update();
 
-    public:
-        ~Update();
+    Application *application() const;
 
-        Application* application() const;
+    UpdateType type() const;
+    QUrl updateUrl() const;
+    QDate releaseDate() const;
+    QVariant data(const QString &name, const QVariant &defaultValue = QVariant()) const;
+    UpdateSourceInfo sourceInfo() const;
 
-        UpdateType type() const;
-        QUrl updateUrl() const;
-        QDate releaseDate() const;
-        QVariant data( const QString& name, const QVariant &defaultValue = QVariant() ) const;
-        UpdateSourceInfo sourceInfo() const;
+    bool canDownload() const;
+    bool isDownloaded() const;
+    void download() { run(); }
+    QString downloadedFileName() const;
 
-        bool canDownload() const;
-        bool isDownloaded() const;
-        void download() { run(); }
-        QString downloadedFileName() const;
+    QList<UpdateOperation *> operations() const;
 
-        QList<UpdateOperation*> operations() const;
+    quint64 compressedSize() const;
+    quint64 uncompressedSize() const;
 
-        quint64 compressedSize() const;
-        quint64 uncompressedSize() const;
+private Q_SLOTS:
+    void downloadProgress(double);
+    void downloadAborted(const QString &msg);
+    void downloadCompleted();
 
-    private Q_SLOTS:
-        void downloadProgress(double);
-        void downloadAborted(const QString& msg);
-        void downloadCompleted();
+private:
+    friend class UpdateFinder;
+    struct UpdateData;
+    UpdateData *d;
 
-    private:
-        friend class UpdateFinder;
-        struct UpdateData;
-        UpdateData* d;
+    void doRun();
+    bool doStop();
+    bool doPause();
+    bool doResume();
 
-        void doRun();
-        bool doStop();
-        bool doPause();
-        bool doResume();
+    Update(Application *application, const UpdateSourceInfo &sourceInfo,
+           UpdateType type, const QUrl &updateUrl, const QMap<QString, QVariant> &data,
+           quint64 compressedSize, quint64 uncompressedSize, const QByteArray &sha1sum);
+};
 
-        Update(Application* application, const UpdateSourceInfo& sourceInfo,
-               UpdateType type, const QUrl& updateUrl, const QMap<QString, QVariant>& data, quint64 compressedSize, quint64 uncompressedSize, const QByteArray& sha1sum );
-    };
-}
+} // namespace KDUpdater
 
-#endif
+#endif // KD_UPDATER_UPDATE_H

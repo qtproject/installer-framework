@@ -20,23 +20,24 @@
 **
 **********************************************************************/
 
-#ifndef __KDTOOLSCORE_KDSELFRESTARTER_H__
-#define __KDTOOLSCORE_KDSELFRESTARTER_H__
+#ifndef KDTOOLS_KDSELFRESTARTER_H
+#define KDTOOLS_KDSELFRESTARTER_H
 
 #include "kdtoolsglobal.h"
 
-class KDTOOLS_EXPORT KDSelfRestarter {
+class KDTOOLS_EXPORT KDSelfRestarter
+{
 public:
-    KDSelfRestarter( int argc, char** argv );
+    KDSelfRestarter(int argc, char *argv[]);
     ~KDSelfRestarter();
 
     static bool restartOnQuit();
-    static void setRestartOnQuit( bool restart );
+    static void setRestartOnQuit(bool restart);
     
 private:
-    Q_DISABLE_COPY(KDSelfRestarter);
+    Q_DISABLE_COPY(KDSelfRestarter)
     class Private;
     Private *d;
 };
 
-#endif
+#endif // KDTOOLS_KDSELFRESTARTER_H

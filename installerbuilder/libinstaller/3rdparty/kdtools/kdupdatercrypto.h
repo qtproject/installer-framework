@@ -20,11 +20,10 @@
 **
 **********************************************************************/
 
-#ifndef __KDTOOLS_KDUPDATERCRYPTO_H__
-#define __KDTOOLS_KDUPDATERCRYPTO_H__
+#ifndef KDTOOLS_KDUPDATERCRYPTO_H
+#define KDTOOLS_KDUPDATERCRYPTO_H
 
 #include "kdupdater.h"
-#include "kdtoolsglobal.h"
 
 QT_BEGIN_NAMESPACE
 class QByteArray;
@@ -35,66 +34,67 @@ QT_END_NAMESPACE
  * Class that provides cryptographic functionality like signing and verifying
  * or encrypting and decrypting content.
  */
-class KDTOOLS_EXPORT KDUpdaterCrypto {
+class KDTOOLS_EXPORT KDUpdaterCrypto
+{
+public:
+    class PasswordProvider
+    {
     public:
-        class PasswordProvider
-        {
-        public:
-            virtual ~PasswordProvider() {}
-            virtual QByteArray password() const = 0;
-        };
-        
-        KDUpdaterCrypto();
-        virtual ~KDUpdaterCrypto();
+        virtual ~PasswordProvider() {}
+        virtual QByteArray password() const = 0;
+    };
 
-        /**
-         * The private key.
-         */
-        QByteArray privateKey() const;
-        void setPrivateKey(const QByteArray &key);
-        
-        /**
-         * The password for the private key.
-         */
-        QByteArray privatePassword() const;
-        void setPrivatePassword(const QByteArray &passwd);
+    KDUpdaterCrypto();
+    virtual ~KDUpdaterCrypto();
 
-        void setPrivatePasswordProvider( const PasswordProvider* provider );
+    /**
+     * The private key.
+     */
+    QByteArray privateKey() const;
+    void setPrivateKey(const QByteArray &key);
 
-        /**
-         * The public key.
-         */
-        QByteArray publicKey() const;
-        void setPublicKey(const QByteArray &key);
+    /**
+     * The password for the private key.
+     */
+    QByteArray privatePassword() const;
+    void setPrivatePassword(const QByteArray &passwd);
 
-        /**
-         * Encrypt content using the public key.
-         */
-        QByteArray encrypt(const QByteArray &plaintext);
+    void setPrivatePasswordProvider(const PasswordProvider *provider);
 
-        /**
-         * Decript encrypted content using the private key.
-         */
-        QByteArray decrypt(const QByteArray &encryptedtext);
-        
-        /**
-         * Sign content with the private key.
-         */
-        QByteArray sign(const QByteArray &data);
-        QByteArray sign( const QString& path );
-        QByteArray sign( QIODevice* dev );
+    /**
+     * The public key.
+     */
+    QByteArray publicKey() const;
+    void setPublicKey(const QByteArray &key);
 
-        /**
-         * Verify signed content with the public key.
-         */
-        bool verify(const QByteArray &data, const QByteArray &signature);
-        bool verify( const QString& dataPath, const QString& signaturePath );
-        bool verify( const QString& dataPath, const QByteArray& signature );
-        bool verify( QIODevice* dev, const QByteArray& signature );
+    /**
+     * Encrypt content using the public key.
+     */
+    QByteArray encrypt(const QByteArray &plaintext);
 
-    private:
-        class Private;
-        Private *d;
+    /**
+     * Decript encrypted content using the private key.
+     */
+    QByteArray decrypt(const QByteArray &encryptedtext);
+
+    /**
+     * Sign content with the private key.
+     */
+    QByteArray sign(const QByteArray &data);
+    QByteArray sign(const QString &path);
+    QByteArray sign(QIODevice *dev);
+
+    /**
+     * Verify signed content with the public key.
+     */
+    bool verify(const QByteArray &data, const QByteArray &signature);
+    bool verify(const QString &dataPath, const QString &signaturePath);
+    bool verify(const QString &dataPath, const QByteArray &signature);
+    bool verify(QIODevice *dev, const QByteArray &signature);
+
+private:
+    class Private;
+    Private *d;
 };
 
-#endif
+#endif // KDTOOLS_KDUPDATERCRYPTO_H

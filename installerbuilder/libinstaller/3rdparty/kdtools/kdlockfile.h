@@ -20,19 +20,15 @@
 **
 **********************************************************************/
 
-#ifndef __KDTOOLSCORE_KDLOCKFILE_H__
-#define __KDTOOLSCORE_KDLOCKFILE_H__
+#ifndef KDTOOLS_KDLOCKFILE_H
+#define KDTOOLS_KDLOCKFILE_H
 
 #include <kdtoolsglobal.h>
-
-QT_BEGIN_NAMESPACE
-class QString;
-QT_END_NAMESPACE
 
 class KDTOOLS_EXPORT KDLockFile
 {
 public:
-    explicit KDLockFile( const QString & name );
+    explicit KDLockFile(const QString &name);
     ~KDLockFile();
 
     QString errorString() const;
@@ -46,4 +42,4 @@ private:
     Private *d;
 };
 
-#endif // __KDTOOLSCORE_KDLOCKFILE_H__
+#endif // KDTOOLS_KDLOCKFILE_H

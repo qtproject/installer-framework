@@ -33,107 +33,108 @@
 #include <QtNetwork/QAuthenticator>
 #include <QtNetwork/QNetworkProxyFactory>
 
-namespace KDUpdater
+namespace KDUpdater {
+
+KDTOOLS_EXPORT QByteArray calculateHash(QIODevice *device, QCryptographicHash::Algorithm algo);
+KDTOOLS_EXPORT QByteArray calculateHash(const QString &path, QCryptographicHash::Algorithm algo);
+
+class HashVerificationJob;
+
+class KDTOOLS_EXPORT FileDownloaderProxyFactory : public QNetworkProxyFactory
 {
-    KDTOOLS_EXPORT QByteArray calculateHash(QIODevice* device, QCryptographicHash::Algorithm algo);
-    KDTOOLS_EXPORT QByteArray calculateHash(const QString &path, QCryptographicHash::Algorithm algo);
-
-    class HashVerificationJob;
-
-    class KDTOOLS_EXPORT FileDownloaderProxyFactory : public QNetworkProxyFactory
-    {
-        public:
-            virtual FileDownloaderProxyFactory *clone() = 0;
-    };
-
-    class KDTOOLS_EXPORT FileDownloader : public QObject
-    {
-        Q_OBJECT
-        Q_PROPERTY(bool autoRemoveDownloadedFile READ isAutoRemoveDownloadedFile WRITE setAutoRemoveDownloadedFile)
-        Q_PROPERTY(QUrl url READ url WRITE setUrl)
-        Q_PROPERTY(QString scheme READ scheme)
-
     public:
-        explicit FileDownloader(const QString &scheme, QObject* parent=0);
-        ~FileDownloader();
+        virtual FileDownloaderProxyFactory *clone() = 0;
+};
 
-        void setUrl(const QUrl &url);
-        QUrl url() const;
+class KDTOOLS_EXPORT FileDownloader : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(bool autoRemoveDownloadedFile READ isAutoRemoveDownloadedFile WRITE setAutoRemoveDownloadedFile)
+    Q_PROPERTY(QUrl url READ url WRITE setUrl)
+    Q_PROPERTY(QString scheme READ scheme)
 
-        void setSha1Sum(const QByteArray &sha1);
-        QByteArray sha1Sum() const;
+public:
+    explicit FileDownloader(const QString &scheme, QObject *parent = 0);
+    ~FileDownloader();
 
-        QString errorString() const;
-        QString scheme() const;
+    void setUrl(const QUrl &url);
+    QUrl url() const;
 
-        virtual bool canDownload() const = 0;
-        virtual bool isDownloaded() const = 0;
-        virtual QString downloadedFileName() const = 0;
-        virtual void setDownloadedFileName(const QString &name) = 0;
-        virtual FileDownloader* clone(QObject* parent=0) const = 0;
+    void setSha1Sum(const QByteArray &sha1);
+    QByteArray sha1Sum() const;
 
-        void download();
+    QString errorString() const;
+    QString scheme() const;
 
-        void setAutoRemoveDownloadedFile(bool val);
-        bool isAutoRemoveDownloadedFile() const;
+    virtual bool canDownload() const = 0;
+    virtual bool isDownloaded() const = 0;
+    virtual QString downloadedFileName() const = 0;
+    virtual void setDownloadedFileName(const QString &name) = 0;
+    virtual FileDownloader *clone(QObject *parent=0) const = 0;
 
-        void setFollowRedirects(bool val);
-        bool followRedirects() const;
+    void download();
 
-        FileDownloaderProxyFactory *proxyFactory() const;
-        void setProxyFactory(FileDownloaderProxyFactory *factory);
+    void setAutoRemoveDownloadedFile(bool val);
+    bool isAutoRemoveDownloadedFile() const;
 
-        QAuthenticator authenticator() const;
-        void setAuthenticator(const QAuthenticator &authenticator);
+    void setFollowRedirects(bool val);
+    bool followRedirects() const;
 
-    public Q_SLOTS:
-        virtual void cancelDownload();
-        void sha1SumVerified(KDUpdater::HashVerificationJob* job);
+    FileDownloaderProxyFactory *proxyFactory() const;
+    void setProxyFactory(FileDownloaderProxyFactory *factory);
 
-    protected:
-        virtual void onError() = 0;
-        virtual void onSuccess() = 0;
+    QAuthenticator authenticator() const;
+    void setAuthenticator(const QAuthenticator &authenticator);
 
-    Q_SIGNALS:
-        void downloadStarted();
-        void downloadCanceled();
+public Q_SLOTS:
+    virtual void cancelDownload();
+    void sha1SumVerified(KDUpdater::HashVerificationJob *job);
 
-        void downloadProgress(double progress);
-        void estimatedDownloadTime(int seconds);
-        void downloadSpeed(qint64 bytesPerSecond);
-        void downloadStatus(const QString &status);
-        void downloadProgress(qint64 bytesReceived, qint64 bytesToReceive);
+protected:
+    virtual void onError() = 0;
+    virtual void onSuccess() = 0;
+
+Q_SIGNALS:
+    void downloadStarted();
+    void downloadCanceled();
+
+    void downloadProgress(double progress);
+    void estimatedDownloadTime(int seconds);
+    void downloadSpeed(qint64 bytesPerSecond);
+    void downloadStatus(const QString &status);
+    void downloadProgress(qint64 bytesReceived, qint64 bytesToReceive);
 
 #ifndef Q_MOC_RUN
-    private:
+private:
 #endif
-        void downloadCompleted();
-        void downloadAborted(const QString &errorMessage);
+    void downloadCompleted();
+    void downloadAborted(const QString &errorMessage);
 
-    protected:
-        void setDownloadCanceled();
-        void setDownloadCompleted(const QString &filepath);
-        void setDownloadAborted(const QString &error);
+protected:
+    void setDownloadCanceled();
+    void setDownloadCompleted(const QString &filepath);
+    void setDownloadAborted(const QString &error);
 
-        void runDownloadSpeedTimer();
-        void stopDownloadSpeedTimer();
+    void runDownloadSpeedTimer();
+    void stopDownloadSpeedTimer();
 
-        void addSample(qint64 sample);
-        int downloadSpeedTimerId() const;
-        void setProgress(qint64 bytesReceived, qint64 bytesToReceive);
+    void addSample(qint64 sample);
+    int downloadSpeedTimerId() const;
+    void setProgress(qint64 bytesReceived, qint64 bytesToReceive);
 
-        void emitDownloadSpeed();
-        void emitDownloadStatus();
-        void emitDownloadProgress();
-        void emitEstimatedDownloadTime();
+    void emitDownloadSpeed();
+    void emitDownloadStatus();
+    void emitDownloadProgress();
+    void emitEstimatedDownloadTime();
 
-    private Q_SLOTS:
-        virtual void doDownload() = 0;
+private Q_SLOTS:
+    virtual void doDownload() = 0;
 
-    private:
-        struct FileDownloaderData;
-        FileDownloaderData *d;
-    };
-}
+private:
+    struct Private;
+    Private *d;
+};
 
-#endif
+} // namespace KDUpdater
+
+#endif // KD_UPDATER_FILE_DOWNLOADER_H

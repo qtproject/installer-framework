@@ -28,229 +28,230 @@
 #include <QtCore/QCryptographicHash>
 #include <QtNetwork/QNetworkReply>
 
-QT_BEGIN_NAMESPACE
-class QIODevice;
-QT_END_NAMESPACE
-
 // these classes are not a part of the public API
 
-namespace KDUpdater
+namespace KDUpdater {
+
+//TODO make it a KDJob once merged
+class HashVerificationJob : public QObject
 {
+    Q_OBJECT
 
-    //TODO make it a KDJob once merged
-    class HashVerificationJob : public QObject
-    {
-        Q_OBJECT
-    public:
-        enum Error {
-            NoError=0,
-            ReadError=128,
-            SumsDifferError
-        };
-
-        explicit HashVerificationJob(QObject* parent=0);
-        ~HashVerificationJob();
-
-        void setDevice(QIODevice* dev);
-        void setSha1Sum(const QByteArray &data);
-
-        bool hasError() const;
-        int error() const;
-
-        void start();
-
-    Q_SIGNALS:
-        void finished(KDUpdater::HashVerificationJob*);
-
-    private:
-        void emitFinished();
-        /* reimp */ void timerEvent(QTimerEvent* te);
-
-    private:
-        class Private;
-        Private *d;
+public:
+    enum Error {
+        NoError = 0,
+        ReadError = 128,
+        SumsDifferError
     };
 
-    class LocalFileDownloader : public FileDownloader
-    {
-        Q_OBJECT
+    explicit HashVerificationJob(QObject *parent = 0);
+    ~HashVerificationJob();
 
-    public:
-        explicit LocalFileDownloader(QObject* parent=0);
-        ~LocalFileDownloader();
+    void setDevice(QIODevice *dev);
+    void setSha1Sum(const QByteArray &data);
 
-        bool canDownload() const;
-        bool isDownloaded() const;
-        QString downloadedFileName() const;
-        /* reimp */ void setDownloadedFileName(const QString &name);
-        /* reimp */ LocalFileDownloader* clone(QObject* parent=0) const;
+    bool hasError() const;
+    int error() const;
 
-    public Q_SLOTS:
-        void cancelDownload();
+    void start();
 
-    protected:
-        void timerEvent(QTimerEvent* te);
-        /* reimp */ void onError();
-        /* reimp */ void onSuccess();
+Q_SIGNALS:
+    void finished(KDUpdater::HashVerificationJob *);
 
-    private Q_SLOTS:
-        /* reimp */ void doDownload();
+private:
+    void emitFinished();
+    void timerEvent(QTimerEvent *te);
 
-    private:
-        struct LocalFileDownloaderData;
-        LocalFileDownloaderData* d;
-    };
+private:
+    class Private;
+    Private *d;
+};
 
-    class ResourceFileDownloader : public FileDownloader
-    {
-        Q_OBJECT
+class LocalFileDownloader : public FileDownloader
+{
+    Q_OBJECT
 
-    public:
-        explicit ResourceFileDownloader(QObject* parent=0);
-        ~ResourceFileDownloader();
+public:
+    explicit LocalFileDownloader(QObject *parent = 0);
+    ~LocalFileDownloader();
 
-        bool canDownload() const;
-        bool isDownloaded() const;
-        QString downloadedFileName() const;
-        /* reimp */ void setDownloadedFileName(const QString &name);
-        /* reimp */ ResourceFileDownloader* clone(QObject* parent=0) const;
+    bool canDownload() const;
+    bool isDownloaded() const;
+    QString downloadedFileName() const;
+    void setDownloadedFileName(const QString &name);
+    LocalFileDownloader *clone(QObject *parent = 0) const;
 
-    public Q_SLOTS:
-        void cancelDownload();
+public Q_SLOTS:
+    void cancelDownload();
 
-    protected:
-        void timerEvent(QTimerEvent* te);
-        /* reimp */ void onError();
-        /* reimp */ void onSuccess();
+protected:
+    void timerEvent(QTimerEvent *te);
+    void onError();
+    void onSuccess();
 
-    private Q_SLOTS:
-        /* reimp */ void doDownload();
+private Q_SLOTS:
+    void doDownload();
 
-    private:
-        struct ResourceFileDownloaderData;
-        ResourceFileDownloaderData* d;
-    };
+private:
+    struct Private;
+    Private *d;
+};
 
-    class FtpDownloader : public FileDownloader
-    {
-        Q_OBJECT
+class ResourceFileDownloader : public FileDownloader
+{
+    Q_OBJECT
 
-    public:
-        explicit FtpDownloader(QObject* parent=0);
-        ~FtpDownloader();
+public:
+    explicit ResourceFileDownloader(QObject *parent = 0);
+    ~ResourceFileDownloader();
 
-        bool canDownload() const;
-        bool isDownloaded() const;
-        QString downloadedFileName() const;
-        /* reimp */ void setDownloadedFileName(const QString &name);
-        /* reimp */ FtpDownloader* clone(QObject* parent=0) const;
+    bool canDownload() const;
+    bool isDownloaded() const;
+    QString downloadedFileName() const;
+    void setDownloadedFileName(const QString &name);
+    ResourceFileDownloader *clone(QObject *parent = 0) const;
 
-    public Q_SLOTS:
-        void cancelDownload();
+public Q_SLOTS:
+    void cancelDownload();
 
-    protected:
-        /* reimp */ void onError();
-        /* reimp */ void onSuccess();
-        void timerEvent(QTimerEvent *event);
+protected:
+    void timerEvent(QTimerEvent *te);
+    void onError();
+    void onSuccess();
 
-    private Q_SLOTS:
-        /* reimp */ void doDownload();
-        void ftpDone(bool error);
-        void ftpCmdStarted(int id);
-        void ftpCmdFinished(int id, bool error);
-        void ftpStateChanged(int state);
-        void ftpDataTransferProgress(qint64 done, qint64 total);
-        void ftpReadyRead();
+private Q_SLOTS:
+    void doDownload();
 
-    private:
-        struct FtpDownloaderData;
-        FtpDownloaderData* d;
-    };
+private:
+    struct Private;
+    Private *d;
+};
 
-    class HttpDownloader : public FileDownloader
-    {
-        Q_OBJECT
+class FtpDownloader : public FileDownloader
+{
+    Q_OBJECT
 
-    public:
-        explicit HttpDownloader(QObject* parent=0);
-        ~HttpDownloader();
+public:
+    explicit FtpDownloader(QObject *parent = 0);
+    ~FtpDownloader();
 
-        bool canDownload() const;
-        bool isDownloaded() const;
-        QString downloadedFileName() const;
-        /* reimp */ void setDownloadedFileName(const QString &name);
-        /* reimp */ HttpDownloader* clone(QObject* parent=0) const;
+    bool canDownload() const;
+    bool isDownloaded() const;
+    QString downloadedFileName() const;
+    void setDownloadedFileName(const QString &name);
+    FtpDownloader *clone(QObject *parent = 0) const;
 
-    public Q_SLOTS:
-        void cancelDownload();
+public Q_SLOTS:
+    void cancelDownload();
 
-    protected:
-        /* reimp */ void onError();
-        /* reimp */ void onSuccess();
-        void timerEvent(QTimerEvent *event);
+protected:
+    void onError();
+    void onSuccess();
+    void timerEvent(QTimerEvent *event);
 
-    private Q_SLOTS:
-        /* reimp */ void doDownload();
-        void httpReadyRead();
-        void httpReadProgress(qint64 done, qint64 total);
-        void httpError(QNetworkReply::NetworkError);
-        void httpDone(bool error);
-        void httpReqFinished();
-        void onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
+private Q_SLOTS:
+    void doDownload();
 
-    private:
-        void startDownload(const QUrl &url);
+    void ftpDone(bool error);
+    void ftpCmdStarted(int id);
+    void ftpCmdFinished(int id, bool error);
+    void ftpStateChanged(int state);
+    void ftpDataTransferProgress(qint64 done, qint64 total);
+    void ftpReadyRead();
 
-    private:
-        struct HttpDownloaderData;
-        HttpDownloaderData* d;
-    };
+private:
+    struct Private;
+    Private *d;
+};
 
-    class SignatureVerificationResult;
-    class SignatureVerifier;
+class HttpDownloader : public FileDownloader
+{
+    Q_OBJECT
 
-    class SignatureVerificationDownloader : public FileDownloader
-    {
-        Q_OBJECT
-    public:
-        explicit SignatureVerificationDownloader(FileDownloader* downloader, QObject* parent=0);
-        ~SignatureVerificationDownloader();
+public:
+    explicit HttpDownloader(QObject *parent = 0);
+    ~HttpDownloader();
 
-        QUrl signatureUrl() const;
-        void setSignatureUrl(const QUrl &url);
+    bool canDownload() const;
+    bool isDownloaded() const;
+    QString downloadedFileName() const;
+    void setDownloadedFileName(const QString &name);
+    HttpDownloader *clone(QObject *parent = 0) const;
 
-        const SignatureVerifier* signatureVerifier() const;
-        void setSignatureVerifier(const SignatureVerifier* verifier);
+public Q_SLOTS:
+    void cancelDownload();
 
-        SignatureVerificationResult result() const;
+protected:
+    void onError();
+    void onSuccess();
+    void timerEvent(QTimerEvent *event);
 
-        /* reimp */ bool canDownload() const;
-        /* reimp */ bool isDownloaded() const;
-        /* reimp */ QString downloadedFileName() const;
-        /* reimp */ void setDownloadedFileName(const QString &name);
-        /* reimp */ FileDownloader* clone(QObject* parent=0) const;
+private Q_SLOTS:
+    void doDownload();
 
-    public Q_SLOTS:
-        /* reimp */ void cancelDownload();
+    void httpReadyRead();
+    void httpReadProgress(qint64 done, qint64 total);
+    void httpError(QNetworkReply::NetworkError);
+    void httpDone(bool error);
+    void httpReqFinished();
+    void onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 
-    protected:
-        /* reimp */ void onError();
-        /* reimp */ void onSuccess();
+private:
+    void startDownload(const QUrl &url);
 
-    private Q_SLOTS:
-        /* reimp */ void doDownload();
-        void dataDownloadStarted();
-        void dataDownloadCanceled();
-        void dataDownloadCompleted();
-        void dataDownloadAborted(const QString &errorMessage);
-        void signatureDownloadCanceled();
-        void signatureDownloadCompleted();
-        void signatureDownloadAborted(const QString &errorMessage);
+private:
+    struct Private;
+    Private *d;
+};
 
-    private:
-        class Private;
-        Private *d;
-    };
-}
+class SignatureVerificationResult;
+class SignatureVerifier;
 
-#endif
+class SignatureVerificationDownloader : public FileDownloader
+{
+    Q_OBJECT
+
+public:
+    explicit SignatureVerificationDownloader(FileDownloader *downloader, QObject *parent = 0);
+    ~SignatureVerificationDownloader();
+
+    QUrl signatureUrl() const;
+    void setSignatureUrl(const QUrl &url);
+
+    const SignatureVerifier *signatureVerifier() const;
+    void setSignatureVerifier(const SignatureVerifier *verifier);
+
+    SignatureVerificationResult result() const;
+
+    bool canDownload() const;
+    bool isDownloaded() const;
+    QString downloadedFileName() const;
+    void setDownloadedFileName(const QString &name);
+    FileDownloader *clone(QObject *parent = 0) const;
+
+public Q_SLOTS:
+    void cancelDownload();
+
+protected:
+    void onError();
+    void onSuccess();
+
+private Q_SLOTS:
+    void doDownload();
+
+    void dataDownloadStarted();
+    void dataDownloadCanceled();
+    void dataDownloadCompleted();
+    void dataDownloadAborted(const QString &errorMessage);
+    void signatureDownloadCanceled();
+    void signatureDownloadCompleted();
+    void signatureDownloadAborted(const QString &errorMessage);
+
+private:
+    class Private;
+    Private *d;
+};
+
+} // namespace KDUpdater
+
+#endif // KD_UPDATER_FILE_DOWNLOADER_P_H

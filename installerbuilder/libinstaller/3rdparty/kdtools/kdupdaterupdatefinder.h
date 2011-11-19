@@ -25,6 +25,7 @@
 
 #include "kdupdater.h"
 #include "kdupdatertask.h"
+
 #include <QList>
 #include <QMap>
 
@@ -32,41 +33,42 @@ QT_BEGIN_NAMESPACE
 class QUrl;
 QT_END_NAMESPACE
 
-namespace KDUpdater
+namespace KDUpdater {
+
+class Application;
+class Update;
+struct UpdateSourceInfo;
+
+class KDTOOLS_EXPORT UpdateFinder : public Task
 {
-    class Application;
-    class Update;
-    struct UpdateSourceInfo;
+    Q_OBJECT
 
-    class KDTOOLS_EXPORT UpdateFinder : public Task
-    {
-        Q_OBJECT
+public:
+    explicit UpdateFinder(Application *application);
+    ~UpdateFinder();
 
-    public:
-        explicit UpdateFinder(Application* application);
-        ~UpdateFinder();
+    Application *application() const;
+    QList<Update *> updates() const;
 
-        Application* application() const;
-        QList<Update*> updates() const;
+    void setUpdateType(UpdateTypes type);
+    UpdateTypes updateType() const;
 
-        void setUpdateType( UpdateTypes type );
-        UpdateTypes updateType() const;
+private:
+    void doRun();
+    bool doStop();
+    bool doPause();
+    bool doResume();
 
-    private:
-        void doRun();
-        bool doStop();
-        bool doPause();
-        bool doResume();
+    Update *constructUpdate(Application *application, const UpdateSourceInfo &sourceInfo,
+                            UpdateType type, const QUrl &updateUrl, const QMap<QString, QVariant> &data,
+                            quint64 compressedSize, quint64 uncompressedSize, const QByteArray &sha1sum);
 
-        Update* constructUpdate( Application* application, const UpdateSourceInfo& sourceInfo,
-                                 UpdateType type, const QUrl& updateUrl, const QMap< QString, QVariant >& data, quint64 compressedSize, quint64 uncompressedSize, const QByteArray& sha1sum );
-
-
-    private:
-        class Private;
-        Private* const d;
-        Q_PRIVATE_SLOT( d, void slotDownloadDone() )
-    };
+private:
+    class Private;
+    Private *d;
+    Q_PRIVATE_SLOT(d, void slotDownloadDone())
 };
 
-#endif
+} // namespace KDUpdater
+
+#endif // KD_UPDATER_UPDATE_FINDER_H

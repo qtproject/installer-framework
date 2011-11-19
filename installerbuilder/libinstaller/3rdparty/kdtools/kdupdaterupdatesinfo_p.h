@@ -20,10 +20,11 @@
 **
 **********************************************************************/
 
-#ifndef KD_UPDATER_UPDATE_PACKAGES_INFO_H
-#define KD_UPDATER_UPDATE_PACKAGES_INFO_H
+#ifndef KD_UPDATER_UPDATE_INFO_H
+#define KD_UPDATER_UPDATE_INFO_H
 
 #include "kdupdater.h"
+
 #include <QSharedDataPointer>
 #include <QString>
 #include <QDate>
@@ -36,64 +37,65 @@
 // Classes and structures in this header file are for internal use only.
 // They are not a part of the public API
 
-namespace KDUpdater
+namespace KDUpdater {
+
+struct UpdateFileInfo
 {
-    struct UpdateFileInfo
+    UpdateFileInfo()
+        : compressedSize( 0 ),
+          uncompressedSize( 0 )
     {
-        UpdateFileInfo()
-            : compressedSize( 0 ),
-              uncompressedSize( 0 )
-        {
-        }
-        QString arch;
-        QString os;
-        QString fileName;
-        QByteArray sha1sum;
-        quint64 compressedSize;
-        quint64 uncompressedSize;
-    };
-
-    struct UpdateInfo
-    {
-        int type;
-        QMap<QString, QVariant> data;
-        QList<UpdateFileInfo> updateFiles;
-    };
-
-    class UpdatesInfo
-    {
-    public:
-        enum Error
-        {
-            NoError=0,
-            NotYetReadError,
-            CouldNotReadUpdateInfoFileError,
-            InvalidXmlError,
-            InvalidContentError
-        };
-
-        UpdatesInfo();
-        ~UpdatesInfo();
-
-        bool isValid() const;
-        QString errorString() const;
-        Error error() const;
-
-        void setFileName(const QString& updateXmlFile);
-        QString fileName() const;
-
-        QString applicationName() const;
-        QString applicationVersion() const;
-        int compatLevel() const;
-
-        int updateInfoCount( int type=AllUpdate ) const;
-        UpdateInfo updateInfo(int index) const;
-        QList<UpdateInfo> updatesInfo( int type=AllUpdate, int compatLevel=-1 ) const;
-
-    private:
-        struct UpdatesInfoData;
-        QSharedDataPointer<UpdatesInfoData> d;
-    };
+    }
+    QString arch;
+    QString os;
+    QString fileName;
+    QByteArray sha1sum;
+    quint64 compressedSize;
+    quint64 uncompressedSize;
 };
 
-#endif
+struct UpdateInfo
+{
+    int type;
+    QMap<QString, QVariant> data;
+    QList<UpdateFileInfo> updateFiles;
+};
+
+class UpdatesInfo
+{
+public:
+    enum Error
+    {
+        NoError = 0,
+        NotYetReadError,
+        CouldNotReadUpdateInfoFileError,
+        InvalidXmlError,
+        InvalidContentError
+    };
+
+    UpdatesInfo();
+    ~UpdatesInfo();
+
+    bool isValid() const;
+    QString errorString() const;
+    Error error() const;
+
+    void setFileName(const QString &updateXmlFile);
+    QString fileName() const;
+
+    QString applicationName() const;
+    QString applicationVersion() const;
+    int compatLevel() const;
+
+    int updateInfoCount(int type = AllUpdate) const;
+    UpdateInfo updateInfo(int index) const;
+    QList<UpdateInfo> updatesInfo(int type = AllUpdate, int compatLevel = -1) const;
+
+private:
+    struct UpdatesInfoData;
+    QSharedDataPointer<UpdatesInfoData> d;
+};
+
+} // namespace KDUpdater
+
+#endif // KD_UPDATER_UPDATE_INFO_H

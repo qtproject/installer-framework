@@ -30,67 +30,67 @@ QT_BEGIN_NAMESPACE
 class QUrl;
 QT_END_NAMESPACE
 
-namespace KDUpdater
+namespace KDUpdater {
+
+class PackagesInfo;
+class SignatureVerifier;
+class UpdateSourcesInfo;
+
+class ConfigurationInterface
 {
-    class PackagesInfo;
-    class SignatureVerifier;
-    class UpdateSourcesInfo;
+public:
+    virtual ~ConfigurationInterface();
+    virtual QVariant value(const QString &key ) const = 0;
+    virtual void setValue(const QString &key, const QVariant &value) = 0;
+};
 
-    class ConfigurationInterface
-    {
-    public:
-        virtual ~ConfigurationInterface();
-        virtual QVariant value( const QString& key ) const = 0;
-        virtual void setValue( const QString& key, const QVariant& value ) = 0;
+class KDTOOLS_EXPORT Application : public QObject
+{
+    Q_OBJECT
+
+public:
+    enum SignatureTarget {
+        Metadata,
+        Packages
     };
 
-    class KDTOOLS_EXPORT Application : public QObject
-    {
-        Q_OBJECT
+    explicit Application(ConfigurationInterface *config = 0, QObject *parent = 0);
+    ~Application();
 
-    public:
-        enum SignatureTarget {
-            Metadata,
-            Packages
-        };
+    static Application *instance();
 
-        explicit Application( ConfigurationInterface* config=0, QObject* parent=0);
-        ~Application();
+    void setApplicationDirectory(const QString &dir);
+    QString applicationDirectory() const;
 
-        static Application* instance();
+    QString applicationName() const;
+    QString applicationVersion() const;
+    int compatLevel() const;
 
-        void setApplicationDirectory(const QString& dir);
-        QString applicationDirectory() const;
+    const SignatureVerifier *signatureVerifier(SignatureTarget target) const;
+    void setSignatureVerifier(SignatureTarget target, const SignatureVerifier *verifier);
 
-        QString applicationName() const;
-        QString applicationVersion() const;
-        int compatLevel() const;
+    void setPackagesXMLFileName(const QString &fileName);
+    QString packagesXMLFileName() const;
+    PackagesInfo *packagesInfo() const;
 
-        const SignatureVerifier* signatureVerifier( SignatureTarget target ) const;
-        void setSignatureVerifier( SignatureTarget target, const SignatureVerifier* verifier );
+    void addUpdateSource(const QString &name, const QString &title,
+                         const QString &description, const QUrl &url, int priority = -1);
 
-        void setPackagesXMLFileName(const QString& fileName);
-        QString packagesXMLFileName() const;
-        PackagesInfo* packagesInfo() const;
+    void setUpdateSourcesXMLFileName(const QString &fileName);
+    QString updateSourcesXMLFileName() const;
+    UpdateSourcesInfo *updateSourcesInfo() const;
 
-        void addUpdateSource( const QString& name, const QString& title, 
-                              const QString& description, const QUrl& url, int priority = -1 );
+    QStringList filesForDelayedDeletion() const;
+    void addFilesForDelayedDeletion(const QStringList &files);
 
-        void setUpdateSourcesXMLFileName(const QString& fileName);
-        QString updateSourcesXMLFileName() const;
-        UpdateSourcesInfo* updateSourcesInfo() const;
+public Q_SLOTS:
+    void printError(int errorCode, const QString &error);
 
-        QStringList filesForDelayedDeletion() const;
-        void addFilesForDelayedDeletion( const QStringList& files );
-        
-    public Q_SLOTS:
-        void printError( int errorCode, const QString& error );
-
-    private:
-        struct ApplicationData;
-        ApplicationData* d;
-    };
+private:
+    struct ApplicationData;
+    ApplicationData *d;
+};
 
 }
 
-#endif
+#endif // KD_UPDATER_APPLICATION_H

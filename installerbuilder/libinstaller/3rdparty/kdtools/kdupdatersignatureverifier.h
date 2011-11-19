@@ -33,16 +33,18 @@ QT_END_NAMESPACE
 
 namespace KDUpdater {
 
-    class SignatureVerificationResult;
+class SignatureVerificationResult;
 
-    class KDTOOLS_EXPORT SignatureVerifier {
-    public:
-        virtual ~SignatureVerifier();
-        virtual SignatureVerifier* clone() const = 0;
-        virtual SignatureVerificationResult verify( const QByteArray &data, const QByteArray& signature ) const = 0;
-        virtual SignatureVerificationResult verify( const QString& dataFile, const QString& signatureFile ) const;
-        virtual QString type() const = 0;
-    };
-}
+class KDTOOLS_EXPORT SignatureVerifier
+{
+public:
+    virtual ~SignatureVerifier();
+    virtual SignatureVerifier *clone() const = 0;
+    virtual SignatureVerificationResult verify(const QByteArray &data, const QByteArray &signature) const = 0;
+    virtual SignatureVerificationResult verify(const QString &dataFile, const QString &signatureFile) const;
+    virtual QString type() const = 0;
+};
+
+} // namespace KDUpdater
 
 #endif // KD_UPDATER_SIGNATUREVERIFIER_H

@@ -20,37 +20,31 @@
 **
 **********************************************************************/
 
-#ifndef __KDTOOLSCORE__KDGENERICFACTORY_H__
-#define __KDTOOLSCORE__KDGENERICFACTORY_H__
+#ifndef KDTOOLS__KDGENERICFACTORY_H
+#define KDTOOLS__KDGENERICFACTORY_H
 
 #include <kdtoolsglobal.h>
 
 #include <QtCore/QHash>
 
-template< typename T_Product, typename T_Identifier = QString, template< typename U, typename V > class T_Map = QHash >
+template <typename T_Product, typename T_Identifier = QString, template<typename U, typename V> class T_Map = QHash>
 class KDGenericFactory
 {
 public:
-    virtual ~KDGenericFactory()
-    {
-    }
+    virtual ~KDGenericFactory() {}
 
-    typedef T_Product* (*FactoryFunction)();
+    typedef T_Product *(*FactoryFunction)();
 
-    template< typename T >
-    void registerProduct( const T_Identifier& name )
+    template <typename T>
+    void registerProduct(const T_Identifier &name)
     {
-#ifdef Q_CC_MSVC
         FactoryFunction function = &KDGenericFactory::create<T>;
-        registerProductionFunction( name, function );
-#else
-        registerProductionFunction( name, &create<T> );
-#endif
+        registerProductionFunction(name, function);
     }
 
-    void unregisterProduct( const T_Identifier& name )
+    void unregisterProduct(const T_Identifier &name)
     {
-        map.remove( name );
+        map.remove(name);
     }
 
     unsigned int productCount() const
@@ -58,33 +52,33 @@ public:
         return map.size();
     }
 
-    QList< T_Identifier > availableProducts() const
+    QList<T_Identifier> availableProducts() const
     {
         return map.keys();
     }
 
-    T_Product* create( const T_Identifier& name ) const
+    T_Product *create(const T_Identifier &name) const
     {
-        const typename T_Map< T_Identifier, FactoryFunction >::const_iterator it = map.find( name );
-        if( it == map.end() )
+        const typename T_Map<T_Identifier, FactoryFunction>::const_iterator it = map.find(name);
+        if (it == map.end())
             return 0;
         return (*it)();
     }
 
 protected:
-    void registerProductionFunction( const T_Identifier& name, FactoryFunction create )
+    void registerProductionFunction(const T_Identifier &name, FactoryFunction create)
     {
-        map.insert( name, create );
+        map.insert(name, create);
     }
 
 private:
-    template< typename T >
-    static T_Product* create()
+    template <typename T>
+    static T_Product *create()
     {
         return new T;
     }
 
-    T_Map< T_Identifier, FactoryFunction > map;
+    T_Map<T_Identifier, FactoryFunction> map;
 };
 
 #endif

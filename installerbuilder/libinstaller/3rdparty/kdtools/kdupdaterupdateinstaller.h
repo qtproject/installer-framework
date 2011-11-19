@@ -25,40 +25,42 @@
 
 #include "kdupdater.h"
 #include "kdupdatertask.h"
+
 #include <QList>
 
-namespace KDUpdater
+namespace KDUpdater {
+
+class Application;
+class Update;
+
+class KDTOOLS_EXPORT UpdateInstaller : public Task
 {
-    class Application;
-    class Update;
+    Q_OBJECT
 
-    class KDTOOLS_EXPORT UpdateInstaller : public Task
-    {
-        Q_OBJECT
+public:
+    explicit UpdateInstaller(Application *application);
+    ~UpdateInstaller();
 
-    public:
-        explicit UpdateInstaller(Application* application);
-        ~UpdateInstaller();
+    Application *application() const;
 
-        Application* application() const;
+    void setUpdatesToInstall(const QList<Update *> &updates);
+    QList<Update *> updatesToInstall() const;
 
-        void setUpdatesToInstall(const QList<Update*>& updates);
-        QList<Update*> updatesToInstall() const;
+private:
+    void doRun();
+    bool doStop();
+    bool doPause();
+    bool doResume();
 
-    private:
-        void doRun();
-        bool doStop();
-        bool doPause();
-        bool doResume();
+    bool installUpdate(Update *update, int minPc, int maxPc);
 
-        bool installUpdate(Update* update, int minPc, int maxPc);
+    class Private;
+    Private *d;
 
-        class Private;
-        Private * const d;
-
-        Q_PRIVATE_SLOT( d, void slotUpdateDownloadProgress(int) )
-        Q_PRIVATE_SLOT( d, void slotUpdateDownloadDone() )
-    };
+    Q_PRIVATE_SLOT(d, void slotUpdateDownloadProgress(int))
+    Q_PRIVATE_SLOT(d, void slotUpdateDownloadDone())
 };
 
-#endif
+} // namespace KDUpdater
+
+#endif // KD_UPDATER_UPDATE_INSTALLER_H

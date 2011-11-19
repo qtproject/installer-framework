@@ -33,40 +33,41 @@ QT_BEGIN_NAMESPACE
 class QObject;
 QT_END_NAMESPACE
 
-namespace KDUpdater
+namespace KDUpdater {
+
+class FileDownloader;
+class SignatureVerifier;
+
+class KDTOOLS_EXPORT FileDownloaderFactory : public KDGenericFactory<FileDownloader>
 {
-    class FileDownloader;
-    class SignatureVerifier;
+    Q_DISABLE_COPY(FileDownloaderFactory)
 
-    class KDTOOLS_EXPORT FileDownloaderFactory : public KDGenericFactory< FileDownloader >
+public:
+    static FileDownloaderFactory &instance();
+    ~FileDownloaderFactory();
+
+    template<typename T>
+    void registerFileDownloader(const QString &scheme)
     {
-        Q_DISABLE_COPY( FileDownloaderFactory )
-    public:
-        static FileDownloaderFactory& instance();
-		~FileDownloaderFactory();
+        registerProduct<T>(scheme);
+    }
+    QStringList supportedSchemes() const;
 
-        template< typename T >
-        void registerFileDownloader( const QString& scheme )
-        {
-            registerProduct< T >( scheme );
-        }
-        QStringList supportedSchemes() const;
+    int fileDownloaderCount() const;
+    FileDownloader *create(const QString &scheme, QObject *parent) const;
+    FileDownloader *create(const QString &scheme, const SignatureVerifier *verifier = 0,
+                           const QUrl &signatureUrl = QUrl(), QObject *parent = 0) const;
+    static void setFollowRedirects(bool val);
+    static bool followRedirects();
 
-        int fileDownloaderCount() const;
-        FileDownloader* create( const QString& scheme, QObject* parent ) const;
-        FileDownloader* create( const QString& scheme, const SignatureVerifier* verifier = 0, const QUrl& signatureUrl = QUrl(), QObject* parent = 0 ) const;
-        static void setFollowRedirects( bool val );
-        static bool followRedirects();
+private:
+    FileDownloaderFactory();
 
-    private:
-        FileDownloaderFactory();
+private:
+    struct FileDownloaderFactoryData;
+    FileDownloaderFactoryData *d;
+};
 
-    private:
-        struct FileDownloaderFactoryData;
-        FileDownloaderFactoryData *d;
-    };
-}
+} // namespace KDUpdater
 
-
-#endif
-
+#endif // KD_UPDATER_FILE_DOWNLOADER_FACTORY_H

@@ -41,10 +41,10 @@ public:
     {
         friend class ::KDSysInfo;
     public:
-        static Volume fromPath( const QString& path );
+        static Volume fromPath(const QString &path);
 
         Volume();
-        Volume( const Volume& other );
+        Volume(const Volume &other);
         ~Volume();
 
         QString name() const;
@@ -53,16 +53,16 @@ public:
         QString fileSystemType() const;
         quint64 availableSpace() const;
 
-        void swap( Volume& other );
-        Volume& operator=( const Volume& other );
-        bool operator == ( const Volume& other ) const;
+        void swap(Volume &other);
+        Volume &operator=(const Volume &other);
+        bool operator==(const Volume &other) const;
 
     private:
-        void setPath( const QString& path );
-        void setName( const QString& name );
-        void setSize( const quint64& size );
+        void setPath(const QString &path);
+        void setName(const QString &name);
+        void setSize(const quint64 &size);
         void setFileSystemType(const QString &type);
-        void setAvailableSpace( const quint64& available );
+        void setAvailableSpace(const quint64 &available);
 
     private:
         class Private;
@@ -76,15 +76,15 @@ public:
     };
 
     static quint64 installedMemory();
-    static QList< Volume > mountedVolumes();
-    static QList< ProcessInfo > runningProcesses();
+    static QList<Volume> mountedVolumes();
+    static QList<ProcessInfo> runningProcesses();
 };
 
 QT_BEGIN_NAMESPACE
 class QDebug;
 QT_END_NAMESPACE
 
-QDebug operator<<( QDebug dbg, KDSysInfo::Volume volume );
-QDebug operator<<( QDebug dbg, KDSysInfo::ProcessInfo process );
+QDebug operator<<(QDebug dbg, KDSysInfo::Volume volume);
+QDebug operator<<(QDebug dbg, KDSysInfo::ProcessInfo process);
 
-#endif
+#endif // KDSYSINFO_H

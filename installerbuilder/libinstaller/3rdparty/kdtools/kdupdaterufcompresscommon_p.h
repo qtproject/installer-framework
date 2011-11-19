@@ -20,8 +20,8 @@
 **
 **********************************************************************/
 
-#ifndef __KDTOOLS_KDUPDATE_UFCOMPRESSCOMMON_P_H__
-#define __KDTOOLS_KDUPDATE_UFCOMPRESSCOMMON_P_H__
+#ifndef KDTOOLS_KDUPDATE_UFCOMPRESSCOMMON_P_H
+#define KDTOOLS_KDUPDATE_UFCOMPRESSCOMMON_P_H
 
 #define KD_UPDATER_UF_HEADER_MAGIC "KDVCLZ"
 
@@ -36,38 +36,39 @@ class QCryptographicHash;
 class QDataStream;
 QT_END_NAMESPACE
 
-namespace KDUpdater
+namespace KDUpdater {
+
+struct KDTOOLS_EXPORT UFHeader
 {
-    struct KDTOOLS_EXPORT UFHeader
-    {
-        QString magic;
-        QStringList fileList;
-        QVector<quint64> permList;
-        QList<bool> isDirList;
+    QString magic;
+    QStringList fileList;
+    QVector<quint64> permList;
+    QList<bool> isDirList;
 
-        bool isValid() const;
+    bool isValid() const;
 
-        void addToHash( QCryptographicHash& hash ) const;
-    };
+    void addToHash(QCryptographicHash &hash) const;
+};
 
-    struct KDTOOLS_EXPORT UFEntry
-    {
-        QString fileName;
-        quint64 permissions;
-        QByteArray fileData;
+struct KDTOOLS_EXPORT UFEntry
+{
+    QString fileName;
+    quint64 permissions;
+    QByteArray fileData;
 
-        UFEntry();
+    UFEntry();
 
-        bool isValid() const;
-        
-        void addToHash(QCryptographicHash& hash) const;
-    };
+    bool isValid() const;
 
-    KDTOOLS_EXPORT QDataStream& operator<<( QDataStream& stream, const UFHeader& hdr );
-    KDTOOLS_EXPORT QDataStream& operator>>( QDataStream& stream, UFHeader& hdr );
+    void addToHash(QCryptographicHash& hash) const;
+};
 
-    KDTOOLS_EXPORT QDataStream& operator<<( QDataStream& stream, const UFEntry& entry );
-    KDTOOLS_EXPORT QDataStream& operator>>( QDataStream& stream, UFEntry& entry );
-}
+KDTOOLS_EXPORT QDataStream &operator<<(QDataStream &stream, const UFHeader &hdr);
+KDTOOLS_EXPORT QDataStream &operator>>(QDataStream &stream, UFHeader &hdr);
 
-#endif
+KDTOOLS_EXPORT QDataStream &operator<<(QDataStream &stream, const UFEntry &entry);
+KDTOOLS_EXPORT QDataStream &operator>>(QDataStream &stream, UFEntry &entry);
+
+} // namespace KDUpdater
+
+#endif // KDTOOLS_KDUPDATE_UFCOMPRESSCOMMON_P_H

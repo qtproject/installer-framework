@@ -114,7 +114,7 @@ bool KDRunOnceChecker::isRunning( Dependencies depends )
             running = running || /*it != allProcesses.constEnd()*/count > 1;
         }
         break;
-    case( BOTH ):
+    case( Both ):
         {
             const QList< KDSysInfo::ProcessInfo > allProcesses = KDSysInfo::runningProcesses();
             const QString appName = qApp->applicationFilePath();

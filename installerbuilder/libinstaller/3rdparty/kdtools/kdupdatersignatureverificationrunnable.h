@@ -36,53 +36,57 @@ template <typename T> class QVector;
 QT_END_NAMESPACE
 
 namespace KDUpdater {
-    class SignatureVerifier;
-    class SignatureVerificationResult;
 
-    class Runnable : public QRunnable {
-    public:
-        Runnable();
-        ~Runnable();
+class SignatureVerifier;
+class SignatureVerificationResult;
 
-        void addResultListener( QObject* receiver, const char* method );
+class Runnable : public QRunnable
+{
+public:
+    Runnable();
+    ~Runnable();
 
-    protected:
-        void emitResult( const QGenericArgument& arg0=QGenericArgument( 0 ),
-                         const QGenericArgument& arg1=QGenericArgument(),
-                         const QGenericArgument& arg2=QGenericArgument(),
-                         const QGenericArgument& arg3=QGenericArgument(),
-                         const QGenericArgument& arg4=QGenericArgument(),
-                         const QGenericArgument& arg5=QGenericArgument(),
-                         const QGenericArgument& arg6=QGenericArgument(),
-                         const QGenericArgument& arg7=QGenericArgument(),
-                         const QGenericArgument& arg8=QGenericArgument(),
-                         const QGenericArgument& arg9=QGenericArgument() );
+    void addResultListener(QObject *receiver, const char *method);
 
-    private:
-        class Private;
-        Private *d;
-    };
+protected:
+    void emitResult(const QGenericArgument &arg0 = QGenericArgument(0),
+                    const QGenericArgument &arg1 = QGenericArgument(),
+                    const QGenericArgument &arg2 = QGenericArgument(),
+                    const QGenericArgument &arg3 = QGenericArgument(),
+                    const QGenericArgument &arg4 = QGenericArgument(),
+                    const QGenericArgument &arg5 = QGenericArgument(),
+                    const QGenericArgument &arg6 = QGenericArgument(),
+                    const QGenericArgument &arg7 = QGenericArgument(),
+                    const QGenericArgument &arg8 = QGenericArgument(),
+                    const QGenericArgument &arg9 = QGenericArgument());
 
-    class SignatureVerificationRunnable : public Runnable {
-    public:
-        explicit SignatureVerificationRunnable();
-        ~SignatureVerificationRunnable();
+private:
+    class Private;
+    Private *d;
+};
 
-        const SignatureVerifier* verifier() const;
-        void setVerifier( const SignatureVerifier* verifier );
+class SignatureVerificationRunnable : public Runnable
+{
+public:
+    explicit SignatureVerificationRunnable();
+    ~SignatureVerificationRunnable();
 
-        QByteArray signature() const;
-        void setSignature( const QByteArray& sig );
+    const SignatureVerifier *verifier() const;
+    void setVerifier(const SignatureVerifier *verifier);
 
-        QIODevice* data() const;
-        void setData( QIODevice* device );
+    QByteArray signature() const;
+    void setSignature(const QByteArray &sig);
 
-        /* reimp */ void run();
+    QIODevice *data() const;
+    void setData(QIODevice *device);
 
-    private:
-        class Private;
-        Private *d;
-    };
-}
+    void run();
+
+private:
+    class Private;
+    Private *d;
+};
+
+} // namespace KDUpdater
 
 #endif // KDUPDATERSIGNATUREVERIFICATIONJOB_H

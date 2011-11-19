@@ -20,19 +20,20 @@
 **
 **********************************************************************/
 
-#ifndef __KDTOOLS_CORE_KDJOB_H__
-#define __KDTOOLS_CORE_KDJOB_H__
+#ifndef KDTOOLS_KDJOB_H
+#define KDTOOLS_KDJOB_H
 
 #include "kdtoolsglobal.h"
 
 #include <QObject>
 
-class KDTOOLS_EXPORT KDJob : public QObject {
+class KDTOOLS_EXPORT KDJob : public QObject
+{
     Q_OBJECT
-    Q_PROPERTY( bool autoDelete READ autoDelete WRITE setAutoDelete )
+    Q_PROPERTY(bool autoDelete READ autoDelete WRITE setAutoDelete)
 
 public:
-    explicit KDJob( QObject* parent=0 );
+    explicit KDJob(QObject *parent = 0);
     ~KDJob();
 
     enum Error {
@@ -52,10 +53,10 @@ public:
     QString errorString() const;
 
     bool autoDelete() const;
-    void setAutoDelete( bool autoDelete );
+    void setAutoDelete(bool autoDelete);
 
     Capabilities capabilities() const;
-    bool hasCapability( Capability c ) const;
+    bool hasCapability(Capability c) const;
 
     void waitForStarted();
     void waitForFinished();
@@ -68,37 +69,34 @@ public Q_SLOTS:
     void cancel();
 
 Q_SIGNALS:
-    void infoMessage( KDJob*, const QString& );
+    void infoMessage(KDJob *, const QString &);
 
 Q_SIGNALS:
-#ifndef Q_MOC_RUN
-private: // make signals private unless moc runs
-#endif
-    void started( KDJob* );
-    void finished( KDJob* );
-    void progress( KDJob* job, quint64 processed, quint64 total );
+    void started(KDJob *);
+    void finished(KDJob *);
+    void progress(KDJob *job, quint64 processed, quint64 total);
 
 protected:
     virtual void doStart() = 0;
     virtual void doCancel();
 
-    void setCapabilities( Capabilities c );
-    void setTotalAmount( quint64 amount );
-    void setProcessedAmount( quint64 amount );
+    void setCapabilities(Capabilities c);
+    void setTotalAmount(quint64 amount);
+    void setProcessedAmount(quint64 amount);
 
-    void setError( int error );
-    void setErrorString( const QString& errorString );
+    void setError(int error);
+    void setErrorString(const QString &errorString);
 
     void emitFinished();
-    void emitFinishedWithError( int error, const QString& errorString );
+    void emitFinishedWithError(int error, const QString &errorString);
 
 private:
     class Private;
     friend class ::KDJob::Private;
     Private *d;
-    Q_PRIVATE_SLOT( d, void delayedStart() )
+    Q_PRIVATE_SLOT(d, void delayedStart())
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(KDJob::Capabilities)
 
-#endif // __KDTOOLS_CORE_KDJOB_H__
+#endif // KDTOOLS_KDJOB_H

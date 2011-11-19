@@ -20,41 +20,38 @@
 **
 **********************************************************************/
 
-#ifndef __KDTOOLS_KDUPDATERUFUNCOMPRESSOR_P_H__
-#define __KDTOOLS_KDUPDATERUFUNCOMPRESSOR_P_H__
+#ifndef KDTOOLS_KDUPDATERUFUNCOMPRESSOR_P_H
+#define KDTOOLS_KDUPDATERUFUNCOMPRESSOR_P_H
 
 #include <kdtoolsglobal.h>
 
 #include <QtCore/QCoreApplication>
 
-QT_BEGIN_NAMESPACE
-class QString;
-QT_END_NAMESPACE
+namespace KDUpdater {
 
-namespace KDUpdater
+class KDTOOLS_EXPORT UFUncompressor
 {
-    class KDTOOLS_EXPORT UFUncompressor
-    {
-        Q_DECLARE_TR_FUNCTIONS(KDUpdater::UFUncompressor)
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::UFUncompressor)
 
-    public:
-        UFUncompressor();
-        ~UFUncompressor();
+public:
+    UFUncompressor();
+    ~UFUncompressor();
 
-        QString errorString() const;
+    QString errorString() const;
 
-        void setFileName(const QString& fileName);
-        QString fileName() const;
+    void setFileName(const QString &fileName);
+    QString fileName() const;
 
-        void setDestination(const QString& dest);
-        QString destination() const;
+    void setDestination(const QString &dest);
+    QString destination() const;
 
-        bool uncompress();
+    bool uncompress();
 
-    private:
-        class Private;
-        Private *d;
-    };
-}
+private:
+    class Private;
+    Private *d;
+};
 
-#endif
+} // namespace KDUpdater
+
+#endif // KDTOOLS_KDUPDATERUFUNCOMPRESSOR_P_H

@@ -28,40 +28,39 @@
 #include <QtCore/QMetaType>
 #include <QtCore/QSharedDataPointer>
 
-QT_BEGIN_NAMESPACE
-class QString;
-QT_END_NAMESPACE
-
 namespace KDUpdater {
-    class KDTOOLS_EXPORT SignatureVerificationResult {
-    public:
-        enum Validity {
-            ValidSignature=0,
-            UnknownValidity,
-            InvalidSignature,
-            BadSignature
-        };
 
-        explicit SignatureVerificationResult( Validity validity = UnknownValidity );
-        SignatureVerificationResult( const SignatureVerificationResult& other );
-        ~SignatureVerificationResult();
-
-        SignatureVerificationResult& operator=( const SignatureVerificationResult& other );
-        bool operator==( const SignatureVerificationResult& other ) const;
-
-        bool isValid() const;
-        Validity validity() const;
-        void setValidity( Validity validity );
-
-        QString errorString() const;
-        void setErrorString( const QString& errorString );
-
-    private:
-        class Private;
-        QSharedDataPointer<Private> d;
+class KDTOOLS_EXPORT SignatureVerificationResult
+{
+public:
+    enum Validity {
+        ValidSignature = 0,
+        UnknownValidity,
+        InvalidSignature,
+        BadSignature
     };
-}
 
-Q_DECLARE_METATYPE( KDUpdater::SignatureVerificationResult )
+    explicit SignatureVerificationResult(Validity validity = UnknownValidity);
+    SignatureVerificationResult(const SignatureVerificationResult &other);
+    ~SignatureVerificationResult();
+
+    SignatureVerificationResult &operator=( const SignatureVerificationResult &other);
+    bool operator==(const SignatureVerificationResult &other) const;
+
+    bool isValid() const;
+    Validity validity() const;
+    void setValidity(Validity validity);
+
+    QString errorString() const;
+    void setErrorString(const QString& errorString);
+
+private:
+    class Private;
+    QSharedDataPointer<Private> d;
+};
+
+} // KDUpdater
+
+Q_DECLARE_METATYPE(KDUpdater::SignatureVerificationResult)
 
 #endif // KD_UPDATER_SIGNATUREVERIFICATIONRESULT_H

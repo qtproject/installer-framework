@@ -30,62 +30,63 @@
 #include <QVariant>
 #include <QDomDocument>
 
-namespace KDUpdater
+namespace KDUpdater {
+
+class Application;
+
+class KDTOOLS_EXPORT UpdateOperation
 {
-    class Application;
+    Q_DECLARE_TR_FUNCTIONS(UpdateOperation)
 
-    class KDTOOLS_EXPORT UpdateOperation
-    {
-        Q_DECLARE_TR_FUNCTIONS(UpdateOperation)
-
-    public:
-        enum Error {
-            NoError=0,
-            InvalidArguments=1,
-            UserDefinedError=128
-        };
-
-        UpdateOperation();
-        virtual ~UpdateOperation();
-
-        QString name() const;
-        QString operationCommand() const;
-
-        bool hasValue( const QString& name ) const;
-        void clearValue( const QString& name );
-        QVariant value( const QString& name ) const;
-        void setValue( const QString& name, const QVariant &value );
-        
-        void setArguments(const QStringList& args);
-        void setApplication( Application* application );
-        QStringList arguments() const;
-        void clear();
-        QString errorString() const;
-        int error() const;
-        QStringList filesForDelayedDeletion() const;
-
-        virtual void backup() = 0;
-        virtual bool performOperation() = 0;
-        virtual bool undoOperation() = 0;
-        virtual bool testOperation() = 0;
-        virtual UpdateOperation* clone() const = 0;
-
-        virtual QDomDocument toXml() const;
-        virtual bool fromXml( const QString &xml );
-        virtual bool fromXml( const QDomDocument &doc );
-
-    protected:
-        void setName(const QString& name);
-        Application* application() const;
-        void setErrorString( const QString& errorString );
-        void setError( int error, const QString& errorString = QString() );
-        void registerForDelayedDeletion( const QStringList& files );
-        bool deleteFileNowOrLater( const QString& file, QString* errorString=0 );
-
-    private:
-        struct UpdateOperationData;
-        UpdateOperationData* d;
+public:
+    enum Error {
+        NoError = 0,
+        InvalidArguments = 1,
+        UserDefinedError = 128
     };
+
+    UpdateOperation();
+    virtual ~UpdateOperation();
+
+    QString name() const;
+    QString operationCommand() const;
+
+    bool hasValue(const QString &name) const;
+    void clearValue(const QString &name);
+    QVariant value(const QString &name) const;
+    void setValue(const QString &name, const QVariant &value);
+
+    void setArguments(const QStringList &args);
+    void setApplication(Application *application);
+    QStringList arguments() const;
+    void clear();
+    QString errorString() const;
+    int error() const;
+    QStringList filesForDelayedDeletion() const;
+
+    virtual void backup() = 0;
+    virtual bool performOperation() = 0;
+    virtual bool undoOperation() = 0;
+    virtual bool testOperation() = 0;
+    virtual UpdateOperation *clone() const = 0;
+
+    virtual QDomDocument toXml() const;
+    virtual bool fromXml(const QString &xml);
+    virtual bool fromXml(const QDomDocument &doc);
+
+protected:
+    void setName(const QString &name);
+    Application *application() const;
+    void setErrorString(const QString &errorString);
+    void setError(int error, const QString &errorString = QString());
+    void registerForDelayedDeletion(const QStringList &files);
+    bool deleteFileNowOrLater(const QString &file, QString *errorString = 0);
+
+private:
+    struct UpdateOperationData;
+    UpdateOperationData *d;
 };
 
-#endif
+} // namespace KDUpdater
+
+#endif // KD_UPDATER_UPDATE_OPERATION_H

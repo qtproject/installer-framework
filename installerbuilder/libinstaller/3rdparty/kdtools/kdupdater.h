@@ -46,7 +46,7 @@ namespace KDUpdater
     Q_DECLARE_FLAGS( UpdateTypes, UpdateType )
     Q_DECLARE_OPERATORS_FOR_FLAGS( UpdateTypes )
 
-    KDTOOLS_EXPORT int compareVersion(const QString& v1, const QString& v2);
+    KDTOOLS_EXPORT int compareVersion(const QString &v1, const QString &v2);
 }
 
 #endif

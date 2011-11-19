@@ -20,8 +20,8 @@
 **
 **********************************************************************/
 
-#ifndef __KDTOOLSCORE_KDSAVEFILE_H__
-#define __KDTOOLSCORE_KDSAVEFILE_H__
+#ifndef KDTOOLS_KDSAVEFILE_H
+#define KDTOOLS_KDSAVEFILE_H
 
 #include <kdtoolsglobal.h>
 
@@ -29,54 +29,56 @@
 #include <QtCore/QFile>
 #include <QtCore/QString>
 
-class KDTOOLS_EXPORT KDSaveFile : public QIODevice {
+class KDTOOLS_EXPORT KDSaveFile : public QIODevice
+{
     Q_OBJECT
+
 public:
-    explicit KDSaveFile( const QString& filename=QString(), QObject* parent=0 );
+    explicit KDSaveFile(const QString &filename = QString(), QObject *parent = 0);
     ~KDSaveFile();
 
     enum CommitMode {
-        BackupExistingFile=0x1,
-        OverwriteExistingFile=0x2
+        BackupExistingFile = 1,
+        OverwriteExistingFile = 2
     };
 
-    bool commit( CommitMode=BackupExistingFile );
+    bool commit(CommitMode = BackupExistingFile);
 
     QString fileName() const;
-    void setFileName( const QString& filename );
+    void setFileName(const QString &filename);
 
     QFile::Permissions permissions() const;
-    bool setPermissions( QFile::Permissions );
+    bool setPermissions(QFile::Permissions);
 
     QString backupExtension() const;
-    void setBackupExtension( const QString& extension );
+    void setBackupExtension(const QString &extension);
 
     bool flush();
-    bool resize( qint64 sz );
+    bool resize(qint64 size);
     int handle() const;
 
-    /* reimp */ bool atEnd();
-    /* reimp */ qint64 bytesAvailable() const;
-    /* reimp */ qint64 bytesToWrite() const;
-    /* reimp */ bool canReadLine() const;
-    /* reimp */ void close();
-    /* reimp */ bool isSequential() const;
-    /* reimp */ bool open( OpenMode mode=QIODevice::ReadWrite ); //only valid: WriteOnly, ReadWrite
-    /* reimp */ qint64 pos() const;
-    /* reimp */ bool reset();
-    /* reimp */ bool seek( qint64 pos );
-    /* reimp */ qint64 size() const;
-    /* reimp */ bool waitForBytesWritten( int msecs );
-    /* reimp */ bool waitForReadyRead( int msecs );
+    bool atEnd();
+    qint64 bytesAvailable() const;
+    qint64 bytesToWrite() const;
+    bool canReadLine() const;
+    void close();
+    bool isSequential() const;
+    bool open(OpenMode mode = QIODevice::ReadWrite); //only valid: WriteOnly, ReadWrite
+    qint64 pos() const;
+    bool reset();
+    bool seek(qint64 pos);
+    qint64 size() const;
+    bool waitForBytesWritten(int msecs);
+    bool waitForReadyRead(int msecs);
 
 private:
-    /* reimp */ qint64 readData( char* data, qint64 maxSize );
-    /* reimp */ qint64 readLineData( char* data, qint64 maxSize );
-    /* reimp */ qint64 writeData( const char* data, qint64 maxSize );
+    qint64 readData(char *data, qint64 maxSize);
+    qint64 readLineData(char *data, qint64 maxSize);
+    qint64 writeData(const char *data, qint64 maxSize);
 
 private:
     class Private;
     Private *d;
 };
 
-#endif // __KDTOOLSCORE_KDSAVEFILE_H__
+#endif // KDTOOLS_KDSAVEFILE_H

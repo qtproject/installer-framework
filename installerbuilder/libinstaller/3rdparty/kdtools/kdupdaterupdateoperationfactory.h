@@ -27,38 +27,40 @@
 
 #include "kdupdater.h"
 
-namespace KDUpdater
+namespace KDUpdater {
+
+class UpdateOperation;
+
+typedef KDGenericFactory<UpdateOperation>::FactoryFunction UpdateOperationFactoryFunction;
+
+class KDTOOLS_EXPORT UpdateOperationFactory : public KDGenericFactory<UpdateOperation>
 {
-    class UpdateOperation;
-    
-    typedef KDGenericFactory< UpdateOperation >::FactoryFunction UpdateOperationFactoryFunction;
+    Q_DISABLE_COPY(UpdateOperationFactory)
 
-    class KDTOOLS_EXPORT UpdateOperationFactory : public KDGenericFactory< UpdateOperation >
+public:
+    static UpdateOperationFactory &instance();
+    ~UpdateOperationFactory();
+
+    template <class T>
+    void registerUpdateOperation(const QString &name)
     {
-        Q_DISABLE_COPY( UpdateOperationFactory )
-    public:
-        static UpdateOperationFactory& instance();
-		~UpdateOperationFactory();
+        registerProduct<T>(name);
+    }
+    void registerUpdateOperationFactory(const QString &name, UpdateOperationFactoryFunction create);
 
-        template< class T >
-        void registerUpdateOperation( const QString& name )
-        {
-            registerProduct< T >( name );
-        }
-        void registerUpdateOperationFactory( const QString& name, UpdateOperationFactoryFunction create  );
-        
-        void unregisterUpdateOperation( const QString& name );
+    void unregisterUpdateOperation(const QString &name);
 
-        int updateOperationCount() const;
-        QStringList availableUpdateOperations() const;
+    int updateOperationCount() const;
+    QStringList availableUpdateOperations() const;
 
-    protected:
-        UpdateOperationFactory();
+protected:
+    UpdateOperationFactory();
 
-    private:
-        struct UpdateOperationFactoryData;
-        UpdateOperationFactoryData *d;
-    };
-}
+private:
+    struct UpdateOperationFactoryData;
+    UpdateOperationFactoryData *d;
+};
 
-#endif
+} // namespace KDUpdater
+
+#endif // KD_UPDATER_UPDATE_OPERATION_FACTORY_H

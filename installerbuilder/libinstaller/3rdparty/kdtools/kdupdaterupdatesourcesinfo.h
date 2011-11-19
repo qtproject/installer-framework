@@ -29,84 +29,86 @@
 #include <QVariant>
 #include <QUrl>
 
-namespace KDUpdater
+namespace KDUpdater {
+
+class Application;
+
+struct KDTOOLS_EXPORT UpdateSourceInfo
 {
-    class Application;
+    UpdateSourceInfo() : priority(-1) { }
 
-    struct KDTOOLS_EXPORT UpdateSourceInfo
-    {
-        UpdateSourceInfo() : priority(-1) { }
+    QString name;
+    QString title;
+    QString description;
+    QUrl url;
+    int priority;
+};
 
-        QString name;
-        QString title;
-        QString description;
-        QUrl url;
-        int priority;
+KDTOOLS_EXPORT bool operator==(const UpdateSourceInfo &lhs, const UpdateSourceInfo &rhs);
 
-    };
-
-    KDTOOLS_EXPORT bool operator==( const UpdateSourceInfo & lhs, const UpdateSourceInfo & rhs );
-    inline bool operator!= ( const UpdateSourceInfo & lhs, const UpdateSourceInfo & rhs ) {
-        return !operator==( lhs, rhs );
-    }
-
-    class KDTOOLS_EXPORT UpdateSourcesInfo : public QObject
-    {
-        Q_OBJECT
-
-    public:
-        ~UpdateSourcesInfo();
-        
-        enum Error
-        {
-            NoError=0,
-            NotYetReadError,
-            CouldNotReadSourceFileError,
-            InvalidXmlError,
-            InvalidContentError,
-            CouldNotSaveChangesError
-        };
-        
-        Application* application() const;
-
-        bool isValid() const;
-        QString errorString() const;
-        Error error() const;
-
-        bool isModified() const;
-        void setModified(bool modified);
-        
-        void setFileName(const QString& fileName);
-        QString fileName() const;
-
-        int updateSourceInfoCount() const;
-        UpdateSourceInfo updateSourceInfo(int index) const;
-
-        void addUpdateSourceInfo(const UpdateSourceInfo& info);
-        void removeUpdateSourceInfo(const UpdateSourceInfo& info);
-        void removeUpdateSourceInfoAt(int index);
-        void setUpdateSourceInfoAt(int index, const UpdateSourceInfo& info);
-
-    protected:
-        explicit UpdateSourcesInfo(Application* application);
-
-    public Q_SLOTS:
-        void refresh();
-
-    Q_SIGNALS:
-        void reset();
-        void updateSourceInfoAdded(const UpdateSourceInfo& info);
-        void updateSourceInfoRemoved(const UpdateSourceInfo& info);
-        void updateSourceInfoChanged(const UpdateSourceInfo& newInfo,
-                                     const UpdateSourceInfo& oldInfo);
-
-    private:
-        friend class Application;
-        struct UpdateSourcesInfoData;
-        UpdateSourcesInfoData* d;
-    };
+inline bool operator!=(const UpdateSourceInfo &lhs, const UpdateSourceInfo &rhs)
+{
+    return !operator==(lhs, rhs);
 }
+
+class KDTOOLS_EXPORT UpdateSourcesInfo : public QObject
+{
+    Q_OBJECT
+
+public:
+    ~UpdateSourcesInfo();
+
+    enum Error
+    {
+        NoError = 0,
+        NotYetReadError,
+        CouldNotReadSourceFileError,
+        InvalidXmlError,
+        InvalidContentError,
+        CouldNotSaveChangesError
+    };
+
+    Application *application() const;
+
+    bool isValid() const;
+    QString errorString() const;
+    Error error() const;
+
+    bool isModified() const;
+    void setModified(bool modified);
+
+    void setFileName(const QString &fileName);
+    QString fileName() const;
+
+    int updateSourceInfoCount() const;
+    UpdateSourceInfo updateSourceInfo(int index) const;
+
+    void addUpdateSourceInfo(const UpdateSourceInfo &info);
+    void removeUpdateSourceInfo(const UpdateSourceInfo &info);
+    void removeUpdateSourceInfoAt(int index);
+    void setUpdateSourceInfoAt(int index, const UpdateSourceInfo &info);
+
+protected:
+    explicit UpdateSourcesInfo(Application *application);
+
+public Q_SLOTS:
+    void refresh();
+
+Q_SIGNALS:
+    void reset();
+    void updateSourceInfoAdded(const UpdateSourceInfo &info);
+    void updateSourceInfoRemoved(const UpdateSourceInfo &info);
+    void updateSourceInfoChanged(const UpdateSourceInfo &newInfo,
+                                 const UpdateSourceInfo &oldInfo);
+
+private:
+    friend class Application;
+    struct UpdateSourcesInfoData;
+    UpdateSourcesInfoData *d;
+};
+
+} // namespace KDUpdater
 
 Q_DECLARE_METATYPE(KDUpdater::UpdateSourceInfo)
 
-#endif
+#endif // KD_UPDATER_UPDATE_SOURCES_INFO_H

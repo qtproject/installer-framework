@@ -203,9 +203,9 @@ void HashVerificationJob::timerEvent(QTimerEvent*)
     \endcode
 */
 
-struct KDUpdater::FileDownloader::FileDownloaderData
+struct KDUpdater::FileDownloader::Private
 {
-    FileDownloaderData()
+    Private()
         : autoRemove(true)
         , m_speedTimerInterval(100)
         , m_bytesReceived(0)
@@ -218,7 +218,7 @@ struct KDUpdater::FileDownloader::FileDownloaderData
         memset(m_samples, 0, sizeof(m_samples));
     }
 
-    ~FileDownloaderData()
+    ~Private()
     {
         delete m_factory;
     }
@@ -247,7 +247,7 @@ struct KDUpdater::FileDownloader::FileDownloaderData
 
 KDUpdater::FileDownloader::FileDownloader(const QString &scheme, QObject* parent)
     : QObject(parent)
-    , d(new FileDownloaderData)
+    , d(new Private)
 {
     d->scheme = scheme;
     d->followRedirect = false;
@@ -538,9 +538,9 @@ void KDUpdater::FileDownloader::setAuthenticator(const QAuthenticator &authentic
       the original source or not.
 */
 
-struct KDUpdater::LocalFileDownloader::LocalFileDownloaderData
+struct KDUpdater::LocalFileDownloader::Private
 {
-    LocalFileDownloaderData()
+    Private()
         : source(0)
         , destination(0)
         , downloaded(false)
@@ -555,7 +555,7 @@ struct KDUpdater::LocalFileDownloader::LocalFileDownloaderData
 
 KDUpdater::LocalFileDownloader::LocalFileDownloader(QObject* parent)
     : KDUpdater::FileDownloader(QLatin1String("file"), parent)
-    , d (new LocalFileDownloaderData)
+    , d (new Private)
 {
 }
 
@@ -720,9 +720,9 @@ void LocalFileDownloader::onError()
 
 // -- ResourceFileDownloader
 
-struct KDUpdater::ResourceFileDownloader::ResourceFileDownloaderData
+struct KDUpdater::ResourceFileDownloader::Private
 {
-    ResourceFileDownloaderData()
+    Private()
         : downloaded(false),
           timerId(-1) { }
 
@@ -733,7 +733,7 @@ struct KDUpdater::ResourceFileDownloader::ResourceFileDownloaderData
 
 KDUpdater::ResourceFileDownloader::ResourceFileDownloader(QObject* parent)
     : KDUpdater::FileDownloader(QLatin1String("resource"), parent)
-    , d (new ResourceFileDownloaderData)
+    , d (new Private)
 {
 }
 
@@ -823,9 +823,9 @@ void KDUpdater::ResourceFileDownloader::onError()
 
 // -- KDUpdater::FtpFileDownloader
 
-struct KDUpdater::FtpDownloader::FtpDownloaderData
+struct KDUpdater::FtpDownloader::Private
 {
-    FtpDownloaderData()
+    Private()
         : ftp(0)
         , destination(0)
         , downloaded(false)
@@ -842,7 +842,7 @@ struct KDUpdater::FtpDownloader::FtpDownloaderData
 
 KDUpdater::FtpDownloader::FtpDownloader(QObject* parent)
     : KDUpdater::FileDownloader(QLatin1String("ftp"), parent)
-    , d (new FtpDownloaderData)
+    , d (new Private)
 {
 }
 
@@ -1051,9 +1051,9 @@ void KDUpdater::FtpDownloader::timerEvent(QTimerEvent *event)
 
 // -- KDUpdater::HttpDownloader
 
-struct KDUpdater::HttpDownloader::HttpDownloaderData
+struct KDUpdater::HttpDownloader::Private
 {
-    explicit HttpDownloaderData(HttpDownloader* qq)
+    explicit Private(HttpDownloader* qq)
         : q(qq)
         , http(0)
         , destination(0)
@@ -1086,7 +1086,7 @@ struct KDUpdater::HttpDownloader::HttpDownloaderData
 
 KDUpdater::HttpDownloader::HttpDownloader(QObject* parent)
     : KDUpdater::FileDownloader(QLatin1String("http"), parent)
-    , d (new HttpDownloaderData(this))
+    , d (new Private(this))
 {
     connect(&d->manager, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)), this,
         SLOT(onAuthenticationRequired(QNetworkReply*, QAuthenticator*)));
