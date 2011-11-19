@@ -26,22 +26,24 @@
 
 #include <sys/mount.h>
 
+namespace KDUpdater {
+
 static QString qt_mac_hfsunistr_to_qstring(const HFSUniStr255 *hfs)
 {
     const QChar *charPointer = reinterpret_cast<const QChar *>(hfs->unicode);
     return QString(charPointer, hfs->length);
 }
 
-quint64 KDSysInfo::installedMemory()
+quint64 installedMemory()
 {
     SInt32 mb = 0;
     Gestalt(gestaltPhysicalRAMSizeInMegabytes, &mb);
     return quint64(static_cast<quint64>(mb) * 1024LL * 1024LL);
 }
 
-QList<KDSysInfo::Volume> KDSysInfo::mountedVolumes()
+QList<VolumeInfo> mountedVolumes()
 {
-    QList<KDSysInfo::Volume> result;
+    QList<VolumeInfo> result;
     FSVolumeRefNum volume;
     FSVolumeInfo info;
     HFSUniStr255 volName;
@@ -51,7 +53,7 @@ QList<KDSysInfo::Volume> KDSysInfo::mountedVolumes()
     while (FSGetVolumeInfo(kFSInvalidVolumeRefNum, ++i, &volume, kFSVolInfoFSInfo, &info, &volName, &ref) == 0) {
         UInt8 path[PATH_MAX + 1];
         if (FSRefMakePath(&ref, path, PATH_MAX) == 0) {
-            Volume v;
+            VolumeInfo v;
             v.setName(qt_mac_hfsunistr_to_qstring(&volName));
             v.setPath(QString::fromLocal8Bit(reinterpret_cast< char* >(path)));
 
@@ -69,7 +71,9 @@ QList<KDSysInfo::Volume> KDSysInfo::mountedVolumes()
     return result;
 }
 
-QList<KDSysInfo::ProcessInfo> KDSysInfo::runningProcesses()
+QList<ProcessInfo> runningProcesses()
 {
-    return QList<KDSysInfo::ProcessInfo>();
+    return QList<ProcessInfo>();
 }
+
+} // namespace KDUpdater

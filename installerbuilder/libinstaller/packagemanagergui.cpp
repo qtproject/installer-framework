@@ -81,6 +81,7 @@
 
 #include <QtScript/QScriptEngine>
 
+using namespace KDUpdater;
 using namespace QInstaller;
 
 /*
@@ -1522,9 +1523,8 @@ void ReadyForInstallationPage::entering()
 
     refreshTaskDetailsBrowser();
 
-    const KDSysInfo::Volume vol = KDSysInfo::Volume::fromPath(target);
-    const KDSysInfo::Volume tempVolume =
-        KDSysInfo::Volume::fromPath(QInstaller::generateTemporaryFileName());
+    const VolumeInfo vol = VolumeInfo::fromPath(target);
+    const VolumeInfo tempVolume = VolumeInfo::fromPath(QInstaller::generateTemporaryFileName());
     const bool tempOnSameVolume = vol == tempVolume;
 
     // there is no better way atm to check this

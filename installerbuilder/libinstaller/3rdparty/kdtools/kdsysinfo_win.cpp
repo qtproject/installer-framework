@@ -33,7 +33,9 @@
 
 #define KDSYSINFO_PROCESS_QUERY_LIMITED_INFORMATION  (0x1000)
 
-quint64 KDSysInfo::installedMemory()
+namespace KDUpdater {
+
+quint64 installedMemory()
 {
     MEMORYSTATUSEX status;
     status.dwLength = sizeof(status);
@@ -92,12 +94,12 @@ QString fileSystemType(const QString &path)
     return QLatin1String("unknown");
 }
 
-QList<KDSysInfo::Volume> KDSysInfo::mountedVolumes()
+QList<VolumeInfo> mountedVolumes()
 {
-    QList< Volume > result;
+    QList< VolumeInfo > result;
     const QFileInfoList drives = QDir::drives();
     for (QFileInfoList::const_iterator it = drives.constBegin(); it != drives.constEnd(); ++it) {
-        Volume volume;
+        VolumeInfo volume;
         const QString path = QDir::toNativeSeparators( it->path() );
         volume.setPath( path );
         volume.setName( volumeName( path ) );
@@ -112,7 +114,7 @@ QList<KDSysInfo::Volume> KDSysInfo::mountedVolumes()
 
 struct EnumWindowsProcParam
 {
-    QList<KDSysInfo::ProcessInfo> processes;
+    QList<ProcessInfo> processes;
     QList<quint32> seenIDs;
 };
 
@@ -120,7 +122,7 @@ struct EnumWindowsProcParam
 //{
 //    EnumWindowsProcParam* const list = reinterpret_cast< EnumWindowsProcParam* >( lParam );
 
-//    KDSysInfo::ProcessInfo info;
+//    ProcessInfo info;
 
 //    // process id
 //    DWORD procID = 0;
@@ -144,7 +146,7 @@ struct EnumWindowsProcParam
 //    return TRUE;
 //}
 
-//QList< KDSysInfo::ProcessInfo > KDSysInfo::runningProcesses()
+//QList< ProcessInfo > runningProcesses()
 //{
 //    EnumWindowsProcParam param;
 //    HANDLE snapshot = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
@@ -156,7 +158,7 @@ struct EnumWindowsProcParam
 //    while ( foundProcess )
 //    {
 //        //const QString executableName = QString::fromWCharArray( processStruct.szExeFile );
-//        KDSysInfo::ProcessInfo info;
+//        ProcessInfo info;
 //        HANDLE procHandle = OpenProcess( PROCESS_QUERY_LIMITED_INFORMATION, false, processStruct.th32ProcessID );
 //        char buffer[ 1024 ];
 //        DWORD bufferSize = 1024;
@@ -180,9 +182,9 @@ struct EnumWindowsProcParam
 ////    EnumDesktopWindows( 0, &EnumWindowsProc, reinterpret_cast< LPARAM >( &param ) );
 //    return param.processes;
 //}
-typedef BOOL ( WINAPI *QueryFullProcessImageNamePtr )( HANDLE, DWORD, char*, PDWORD );
-typedef DWORD ( WINAPI *GetProcessImageFileNamePtr )( HANDLE, char*,  DWORD );
-QList< KDSysInfo::ProcessInfo > KDSysInfo::runningProcesses()
+typedef BOOL (WINAPI *QueryFullProcessImageNamePtr)(HANDLE, DWORD, char *, PDWORD);
+typedef DWORD (WINAPI *GetProcessImageFileNamePtr)(HANDLE, char *,  DWORD);
+QList<ProcessInfo> runningProcesses()
 {
     EnumWindowsProcParam param;
     HANDLE snapshot = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
@@ -220,9 +222,8 @@ QList< KDSysInfo::ProcessInfo > KDSysInfo::runningProcesses()
         char buffer[ 1024 ];
         DWORD bufferSize = 1024;
         bool succ = false;
-        QString whichFailed;
         QString executablePath;
-        KDSysInfo::ProcessInfo info;
+        ProcessInfo info;
 
         if (QSysInfo::windowsVersion() > QSysInfo::WV_5_2) {
             succ = callPtr( procHandle, 0, buffer, &bufferSize );
@@ -257,3 +258,5 @@ QList< KDSysInfo::ProcessInfo > KDSysInfo::runningProcesses()
     kernel32.unload();
     return param.processes;
 }
+
+} // namespace KDUpdater

@@ -31,6 +31,8 @@
 
 #include <algorithm>
 
+using namespace KDUpdater;
+
 class KDRunOnceChecker::Private
 {
 public:
@@ -59,7 +61,7 @@ class ProcessnameEquals
 public:
     ProcessnameEquals(const QString &name): m_name(name) {}
 
-    bool operator()(const KDSysInfo::ProcessInfo &info)
+    bool operator()(const ProcessInfo &info)
     {
 #ifndef Q_WS_WIN
         if (info.name == m_name)
@@ -96,17 +98,17 @@ bool KDRunOnceChecker::isRunning(Dependencies depends)
         }
         break;
         case ProcessList: {
-            const QList<KDSysInfo::ProcessInfo> allProcesses = KDSysInfo::runningProcesses();
+            const QList<ProcessInfo> allProcesses = runningProcesses();
             const QString appName = qApp->applicationFilePath();
-            //QList< KDSysInfo::ProcessInfo >::const_iterator it = std::find_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
+            //QList< ProcessInfo >::const_iterator it = std::find_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
             const int count = std::count_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
             running = running || /*it != allProcesses.constEnd()*/count > 1;
         }
         break;
         case Both: {
-            const QList<KDSysInfo::ProcessInfo> allProcesses = KDSysInfo::runningProcesses();
+            const QList<ProcessInfo> allProcesses = runningProcesses();
             const QString appName = qApp->applicationFilePath();
-            //QList< KDSysInfo::ProcessInfo >::const_iterator it = std::find_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
+            //QList<ProcessInfo>::const_iterator it = std::find_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
             const int count = std::count_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
             const bool locked = d->m_hasLock || d->m_lockfile.lock();
             if (locked)

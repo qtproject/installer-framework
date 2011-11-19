@@ -39,6 +39,7 @@
 
 #include <kdsysinfo.h>
 #include <kdupdaterapplication.h>
+#include <kdupdaterupdatefinder.h>
 
 #include <QtCore/QHash>
 #include <QtCore/QObject>
@@ -46,18 +47,16 @@
 #include <QtCore/QPointer>
 
 class FSEngineClientHandler;
+class KDJob;
+
 QT_FORWARD_DECLARE_CLASS(QFile)
 QT_FORWARD_DECLARE_CLASS(QFileInfo)
 
-class KDJob;
-namespace KDUpdater {
-    class UpdateFinder;
-}
+using namespace KDUpdater;
 
 namespace QInstaller {
 
 struct BinaryLayout;
-
 class Component;
 class TempDirDeleter;
 
@@ -78,7 +77,7 @@ public:
         const OperationList &performedOperations);
     ~PackageManagerCorePrivate();
 
-    static bool isProcessRunning(const QString &name, const QList<KDSysInfo::ProcessInfo> &processes);
+    static bool isProcessRunning(const QString &name, const QList<ProcessInfo> &processes);
 
     static bool performOperationThreaded(Operation *op, PackageManagerCorePrivate::OperationType type
         = PackageManagerCorePrivate::Perform);
@@ -160,8 +159,8 @@ signals:
     void uninstallationFinished();
 
 public:
-    KDUpdater::UpdateFinder *m_updateFinder;
-    KDUpdater::Application m_updaterApplication;
+    UpdateFinder *m_updateFinder;
+    Application m_updaterApplication;
     FSEngineClientHandler *m_FSEngineClientHandler;
 
     int m_status;

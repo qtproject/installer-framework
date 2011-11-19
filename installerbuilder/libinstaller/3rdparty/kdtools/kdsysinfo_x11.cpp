@@ -30,7 +30,9 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 
-quint64 KDSysInfo::installedMemory()
+namespace KDUpdater {
+
+quint64 installedMemory()
 {
 #ifdef Q_OS_LINUX
     QFile f(QLatin1String("/proc/meminfo"));
@@ -56,14 +58,14 @@ quint64 KDSysInfo::installedMemory()
     return 0;
 }
 
-QList<KDSysInfo::Volume> KDSysInfo::mountedVolumes()
+QList<VolumeInfo> mountedVolumes()
 {
-    QList<Volume> result;
+    QList<VolumeInfo> result;
 
     QFile f(QLatin1String("/etc/mtab"));
     if (!f.open(QIODevice::ReadOnly)) {
         qCritical("%s: Could not open %s: %s", Q_FUNC_INFO, qPrintable(f.fileName()), qPrintable(f.errorString()));
-        return QList<KDSysInfo::Volume>(); //better error-handling?
+        return QList<VolumeInfo>(); //better error-handling?
     }
     
     QTextStream stream(&f);
@@ -77,7 +79,7 @@ QList<KDSysInfo::Volume> KDSysInfo::mountedVolumes()
 
         const QStringList parts = s.split( QLatin1Char(' '), QString::SkipEmptyParts);
 
-        Volume v;
+        VolumeInfo v;
         v.setName(parts.at(1));
         v.setPath(parts.at(1));
 
@@ -93,9 +95,9 @@ QList<KDSysInfo::Volume> KDSysInfo::mountedVolumes()
     return result;
 }
 
-QList<KDSysInfo::ProcessInfo> KDSysInfo::runningProcesses()
+QList<ProcessInfo> runningProcesses()
 {
-    QList<KDSysInfo::ProcessInfo> processes;
+    QList<ProcessInfo> processes;
     QDir procDir(QLatin1String("/proc"));
     const QFileInfoList procCont = procDir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable);
     QRegExp validator(QLatin1String("[0-9]+"));
@@ -104,7 +106,7 @@ QList<KDSysInfo::ProcessInfo> KDSysInfo::runningProcesses()
             const QString linkPath = QDir(info.absoluteFilePath()).absoluteFilePath(QLatin1String("exe"));
             const QFileInfo linkInfo(linkPath);
             if (linkInfo.exists()) {
-                KDSysInfo::ProcessInfo processInfo;
+                ProcessInfo processInfo;
                 processInfo.name = linkInfo.symLinkTarget();
                 processInfo.id = info.fileName().toInt();
                 processes.append(processInfo);
@@ -113,3 +115,5 @@ QList<KDSysInfo::ProcessInfo> KDSysInfo::runningProcesses()
     }
     return processes;
 }
+
+} // namespace KDUpdater

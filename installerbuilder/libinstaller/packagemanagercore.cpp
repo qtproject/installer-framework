@@ -1035,7 +1035,7 @@ void PackageManagerCore::dropAdminRights()
 */
 bool PackageManagerCore::isProcessRunning(const QString &name) const
 {
-    return PackageManagerCorePrivate::isProcessRunning(name, KDSysInfo::runningProcesses());
+    return PackageManagerCorePrivate::isProcessRunning(name, runningProcesses());
 }
 
 /*!

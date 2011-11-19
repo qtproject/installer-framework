@@ -101,7 +101,7 @@ static FSEngineClientHandler *initFSEngineClientHandler()
 
 static QStringList checkRunningProcessesFromList(const QStringList &processList)
 {
-    const QList<KDSysInfo::ProcessInfo> allProcesses = KDSysInfo::runningProcesses();
+    const QList<ProcessInfo> allProcesses = runningProcesses();
     QStringList stillRunningProcesses;
     foreach (const QString &process, processList) {
         if (!process.isEmpty() && PackageManagerCorePrivate::isProcessRunning(process, allProcesses))
@@ -209,9 +209,9 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
 */
 /* static */
 bool PackageManagerCorePrivate::isProcessRunning(const QString &name,
-    const QList<KDSysInfo::ProcessInfo> &processes)
+    const QList<ProcessInfo> &processes)
 {
-    QList<KDSysInfo::ProcessInfo>::const_iterator it;
+    QList<ProcessInfo>::const_iterator it;
     for (it = processes.constBegin(); it != processes.constEnd(); ++it) {
         if (it->name.isEmpty())
             continue;
@@ -697,7 +697,7 @@ void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> 
         return;
 
     while (true) {
-        const QList<KDSysInfo::ProcessInfo> allProcesses = KDSysInfo::runningProcesses();  // FIXME: Unused?
+        const QList<ProcessInfo> allProcesses = runningProcesses();  // FIXME: Unused?
         const QStringList processes = checkRunningProcessesFromList(processList);
         if (processes.isEmpty())
             return;

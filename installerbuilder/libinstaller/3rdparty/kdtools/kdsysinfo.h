@@ -26,63 +26,54 @@
 #include <kdtoolsglobal.h>
 
 #include <QtCore/QString>
-#include <QtCore/QSysInfo>
-#include <QtCore/QSharedDataPointer>
 
-class KDTOOLS_EXPORT KDSysInfo : public QSysInfo
+namespace KDUpdater {
+
+class KDTOOLS_EXPORT VolumeInfo
 {
-private:
-    KDSysInfo() {}
-
 public:
-    ~KDSysInfo() {}
+    VolumeInfo();
+    static VolumeInfo fromPath(const QString &path);
 
-    class KDTOOLS_EXPORT Volume
-    {
-        friend class ::KDSysInfo;
-    public:
-        Volume();
-        static Volume fromPath(const QString &path);
+    QString name() const;
+    QString path() const;
+    quint64 size() const;
+    QString fileSystemType() const;
+    quint64 availableSpace() const;
 
-        QString name() const;
-        QString path() const;
-        quint64 size() const;
-        QString fileSystemType() const;
-        quint64 availableSpace() const;
+    bool operator==(const VolumeInfo &other) const;
 
-        bool operator==(const Volume &other) const;
+    void setPath(const QString &path);
+    void setName(const QString &name);
+    void setSize(const quint64 &size);
+    void setFileSystemType(const QString &type);
+    void setAvailableSpace(const quint64 &available);
 
-    private:
-        void setPath(const QString &path);
-        void setName(const QString &name);
-        void setSize(const quint64 &size);
-        void setFileSystemType(const QString &type);
-        void setAvailableSpace(const quint64 &available);
-
-    private:
-        QString m_path;
-        QString m_name;
-        QString m_fileSystemType;
-        quint64 m_size;
-        quint64 m_availableSpace;
-    };
-
-    struct ProcessInfo
-    {
-        quint32 id;
-        QString name;
-    };
-
-    static quint64 installedMemory();
-    static QList<Volume> mountedVolumes();
-    static QList<ProcessInfo> runningProcesses();
+private:
+    QString m_path;
+    QString m_name;
+    QString m_fileSystemType;
+    quint64 m_size;
+    quint64 m_availableSpace;
 };
+
+struct ProcessInfo
+{
+    quint32 id;
+    QString name;
+};
+
+quint64 installedMemory();
+QList<VolumeInfo> mountedVolumes();
+QList<ProcessInfo> runningProcesses();
+
+} // namespace KDUpdater
 
 QT_BEGIN_NAMESPACE
 class QDebug;
 QT_END_NAMESPACE
 
-QDebug operator<<(QDebug dbg, KDSysInfo::Volume volume);
-QDebug operator<<(QDebug dbg, KDSysInfo::ProcessInfo process);
+QDebug operator<<(QDebug dbg, KDUpdater::VolumeInfo volume);
+QDebug operator<<(QDebug dbg, KDUpdater::ProcessInfo process);
 
 #endif // KDSYSINFO_H

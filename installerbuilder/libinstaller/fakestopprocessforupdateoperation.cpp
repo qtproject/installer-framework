@@ -38,13 +38,15 @@
 
 #include <algorithm>
 
+using namespace KDUpdater;
+
 /*!
     Copied from QInstaller with some adjustments
     Return true, if a process with \a name is running. On Windows, the comparision is case-insensitive.
 */
-static bool isProcessRunning(const QString &name, const QList<KDSysInfo::ProcessInfo> &processes)
+static bool isProcessRunning(const QString &name, const QList<ProcessInfo> &processes)
 {
-    for (QList<KDSysInfo::ProcessInfo>::const_iterator it = processes.constBegin(); it != processes.constEnd(); ++it) {
+    for (QList<ProcessInfo>::const_iterator it = processes.constBegin(); it != processes.constEnd(); ++it) {
         if (it->name.isEmpty())
             continue;
 
@@ -69,7 +71,7 @@ static bool isProcessRunning(const QString &name, const QList<KDSysInfo::Process
 
 static QStringList checkRunningProcessesFromList(const QStringList &processList)
 {
-    const QList<KDSysInfo::ProcessInfo> allProcesses = KDSysInfo::runningProcesses();
+    const QList<ProcessInfo> allProcesses = runningProcesses();
     QStringList stillRunningProcesses;
     foreach (const QString &process, processList) {
         if (!process.isEmpty() && isProcessRunning(process, allProcesses))
