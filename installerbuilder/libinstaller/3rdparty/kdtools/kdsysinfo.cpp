@@ -27,14 +27,6 @@
 
 #include <algorithm>
 
-KDSysInfo::KDSysInfo()
-{
-}
-
-KDSysInfo::~KDSysInfo()
-{
-}
-
 QDebug operator<<(QDebug dbg, KDSysInfo::Volume volume)
 {
     return dbg << "KDSysInfo::Volume(" << volume.path() << ")";
@@ -43,96 +35,65 @@ QDebug operator<<(QDebug dbg, KDSysInfo::Volume volume)
 QPair<quint64, quint64> volumeSpace(const QString &volume);
 QString volumeName(const QString &volume);
 
-class KDSysInfo::Volume::Private : public QSharedData
-{
-public:
-    QString p;
-    QString name;
-    quint64 size;
-    QString fileSystemType;
-    quint64 availableSpace;
-};
-
-
 KDSysInfo::Volume::Volume() 
-    : d(new Private)
 {
-}
-
-KDSysInfo::Volume::Volume(const Volume &other)
-    : d(other.d)
-{
-}
-
-KDSysInfo::Volume::~Volume()
-{
-}
-
-void KDSysInfo::Volume::swap(KDSysInfo::Volume& other)
-{
-    std::swap(d, other.d);
-}
-
-KDSysInfo::Volume& KDSysInfo::Volume::operator=(const KDSysInfo::Volume &other)
-{
-    KDSysInfo::Volume tmp(other);
-    swap(tmp);
-    return *this;
+    m_size = 0;
+    m_availableSpace = 0;
 }
 
 void KDSysInfo::Volume::setPath(const QString &path)
 {
-    d->p = path;
+    m_path = path;
 }
 
 bool KDSysInfo::Volume::operator==(const Volume &other) const
 {
-    return d->name == other.d->name && d->p == other.d->p;
+    return m_name == other.m_name && m_path == other.m_path;
 }
 
 void KDSysInfo::Volume::setName(const QString &name)
 {
-    d->name = name;
+    m_name = name;
 }
 
 QString KDSysInfo::Volume::name() const
 {
-    return d->name;
+    return m_name;
 }
 
 QString KDSysInfo::Volume::path() const
 {
-    return d->p;
+    return m_path;
 }
 
 quint64 KDSysInfo::Volume::size() const
 {
-    return d->size;
+    return m_size;
 }
 
 void KDSysInfo::Volume::setSize(const quint64 &size)
 {
-    d->size = size;
+    m_size = size;
 }
 
 QString KDSysInfo::Volume::fileSystemType() const
 {
-    return d->fileSystemType;
+    return m_fileSystemType;
 }
 
 void KDSysInfo::Volume::setFileSystemType(const QString &type)
 {
-    d->fileSystemType = type;
+    m_fileSystemType = type;
 }
 
 quint64 KDSysInfo::Volume::availableSpace() const
 {
-    return d->availableSpace;
+    return m_availableSpace;
 }
 
 void KDSysInfo::Volume::setAvailableSpace(const quint64 &available)
 {
-    d->availableSpace = available;
+    m_availableSpace = available;
 }
 
 struct PathLongerThan

@@ -32,20 +32,17 @@
 class KDTOOLS_EXPORT KDSysInfo : public QSysInfo
 {
 private:
-    KDSysInfo();
+    KDSysInfo() {}
 
 public:
-    ~KDSysInfo();
+    ~KDSysInfo() {}
 
     class KDTOOLS_EXPORT Volume
     {
         friend class ::KDSysInfo;
     public:
-        static Volume fromPath(const QString &path);
-
         Volume();
-        Volume(const Volume &other);
-        ~Volume();
+        static Volume fromPath(const QString &path);
 
         QString name() const;
         QString path() const;
@@ -53,8 +50,6 @@ public:
         QString fileSystemType() const;
         quint64 availableSpace() const;
 
-        void swap(Volume &other);
-        Volume &operator=(const Volume &other);
         bool operator==(const Volume &other) const;
 
     private:
@@ -65,8 +60,11 @@ public:
         void setAvailableSpace(const quint64 &available);
 
     private:
-        class Private;
-        QSharedDataPointer<Private> d;
+        QString m_path;
+        QString m_name;
+        QString m_fileSystemType;
+        quint64 m_size;
+        quint64 m_availableSpace;
     };
 
     struct ProcessInfo
