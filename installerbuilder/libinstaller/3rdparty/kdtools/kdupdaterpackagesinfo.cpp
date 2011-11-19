@@ -75,14 +75,12 @@ using namespace KDUpdater;
 
 struct PackagesInfo::PackagesInfoData
 {
-    PackagesInfoData(PackagesInfo *qq) :
-        q(qq),
+    PackagesInfoData() :
         application(0),
         error(PackagesInfo::NotYetReadError),
         compatLevel(-1),
         modified(false)
     {}
-    PackagesInfo *q;
     Application *application;
     QString errorMessage;
     PackagesInfo::Error error;
@@ -109,7 +107,7 @@ void PackagesInfo::PackagesInfoData::setInvalidContentError(const QString &detai
 */
 PackagesInfo::PackagesInfo(Application *application)
     : QObject(application),
-      d(new PackagesInfoData(this))
+      d(new PackagesInfoData())
 {
     d->application = application;
 }
@@ -127,7 +125,7 @@ PackagesInfo::~PackagesInfo()
    Returns a pointer to the application, whose package information this class provides
    access to.
 */
-Application* PackagesInfo::application() const
+Application *PackagesInfo::application() const
 {
     return d->application;
 }
@@ -162,9 +160,9 @@ PackagesInfo::Error PackagesInfo::error() const
 
    \sa KDUpdater::Application::setPackagesXMLFileName()
 */
-void PackagesInfo::setFileName(const QString& fileName)
+void PackagesInfo::setFileName(const QString &fileName)
 {
-    if( d->fileName == fileName )
+    if (d->fileName == fileName)
         return;
 
     d->fileName = fileName;
@@ -201,7 +199,7 @@ QString PackagesInfo::applicationName() const
    Sets the application version. By default this is the version specified
    in the ApplicationVersion XML element of Packages.xml.
 */
-void PackagesInfo::setApplicationVersion(const QString& version)
+void PackagesInfo::setApplicationVersion(const QString &version)
 {
     d->applicationVersion = version;
     d->modified = true;
@@ -232,7 +230,7 @@ PackageInfo PackagesInfo::packageInfo(int index) const
     if (index < 0 || index >= d->packageInfoList.count())
         return PackageInfo();
 
-    return d->packageInfoList[index];
+    return d->packageInfoList.at(index);
 }
 
 /*!
@@ -247,7 +245,7 @@ int PackagesInfo::compatLevel() const
    This function returns the index of the package whose name is \c pkgName. If no such
    package was found, this function returns -1.
 */
-int PackagesInfo::findPackageInfo(const QString& pkgName) const
+int PackagesInfo::findPackageInfo(const QString &pkgName) const
 {
     for (int i = 0; i < d->packageInfoList.count(); i++) {
         if (d->packageInfoList[i].name == pkgName)

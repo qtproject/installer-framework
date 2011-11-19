@@ -62,25 +62,25 @@ ConfigurationInterface::~ConfigurationInterface()
 
 namespace {
 
-    class DefaultConfigImpl : public ConfigurationInterface
+class DefaultConfigImpl : public ConfigurationInterface
+{
+public:
+    QVariant value(const QString &key) const
     {
-    public:
-        QVariant value(const QString &key) const
-        {
-            QSettings settings;
-            settings.beginGroup(QLatin1String("KDUpdater"));
-            return settings.value(key);
-        }
-        
-        void setValue(const QString &key, const QVariant &value)
-        {
-            QSettings settings;
-            settings.beginGroup(QLatin1String("KDUpdater"));
-            settings.setValue(key, value);
-        }
-    };
+        QSettings settings;
+        settings.beginGroup(QLatin1String("KDUpdater"));
+        return settings.value(key);
+    }
 
-}
+    void setValue(const QString &key, const QVariant &value)
+    {
+        QSettings settings;
+        settings.beginGroup(QLatin1String("KDUpdater"));
+        settings.setValue(key, value);
+    }
+};
+
+} // namespace anon
 
 /*!
    \class KDUpdater::Application kdupdaterapplication.h KDUpdaterApplication

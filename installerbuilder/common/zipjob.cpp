@@ -42,14 +42,8 @@
 
 class ZipJob::Private
 {
-    ZipJob *const q;
 public:
-    explicit Private(ZipJob *qq) :
-        q(qq),
-        outputDevice(0),
-        process(0)
-    {
-    }
+    Private() : outputDevice(0), process(0) {}
 
     QIODevice *outputDevice;
     QDir workingDir;
@@ -60,7 +54,7 @@ public:
 Q_DECLARE_METATYPE(QProcess::ExitStatus)
 
 ZipJob::ZipJob() 
-    : d(new Private(this))
+    : d(new Private())
 {
     qRegisterMetaType<QProcess::ExitStatus>();
 }
@@ -137,24 +131,16 @@ void ZipJob::setFilesToArchive(const QStringList &files)
 
 class UnzipJob::Private
 {
-    UnzipJob *const q;
 public:
-    explicit Private(UnzipJob *qq)
-        : q(qq),
-          inputDevice(0)
-    {
-    }
+    Private() : inputDevice(0) {}
 
-public:
     QIODevice *inputDevice;
     QString outputPath;
     QStringList filesToExtract;
 };
 
 UnzipJob::UnzipJob() 
-    : QObject(),
-      QRunnable(), 
-      d(new Private(this))
+    : d(new Private())
 {
     qRegisterMetaType<QProcess::ExitStatus>();
 }
