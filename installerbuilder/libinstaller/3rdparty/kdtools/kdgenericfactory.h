@@ -38,7 +38,11 @@ public:
     template <typename T>
     void registerProduct(const T_Identifier &name)
     {
+#ifdef Q_CC_MSVC
         FactoryFunction function = &KDGenericFactory::create<T>;
+#else // compile fix for old gcc
+        FactoryFunction function = &create<T>;
+#endif
         map.insert(name, function);
     }
 
