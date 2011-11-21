@@ -36,7 +36,10 @@
 namespace KDUpdater {
     class FileDownloader;
 }
+
+QT_BEGIN_NAMESPACE
 class QFile;
+QT_END_NAMESPACE
 
 
 class Sleep : public QThread
