@@ -88,6 +88,8 @@ void usage()
     std::cout << std::setw(55) << std::setiosflags(std::ios::left)
     << "  --help" << std::setw(40) << "Show commandline usage" << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left)
+    << "  --version" << std::setw(40) << "Show current version" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
     << "  --checkupdates" << std::setw(40) << "Check for updates and return an XML file of the available updates"
     << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left)
