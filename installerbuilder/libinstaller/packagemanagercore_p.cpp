@@ -2002,7 +2002,7 @@ bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Componen
     QList<Component*> autoDependOnList;
     if (allResolved) {
         // All regular dependees are resolved. Now we are looking for auto depend on components.
-        foreach (Component *component, m_core->availableComponents()) {
+        foreach (Component *component, installedComponents) {
             // If a components is installed and not yet scheduled for un-installation, check for auto depend.
             if (component->isInstalled() && !m_componentsToUninstall.contains(component)) {
                 QStringList autoDependencies = component->autoDependencies();
@@ -2025,8 +2025,14 @@ bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Componen
                     continue;
                 }
 
-                foreach (Component *c, installedComponents)
-                    autoDependencies.removeAll(c->name());
+                foreach (Component *c, installedComponents) {
+                    const QString replaces = c->value(scReplaces);
+                    QStringList possibleNames = replaces.split(QRegExp(QLatin1String("\\b(,|, )\\b")),
+                        QString::SkipEmptyParts);
+                    possibleNames.append(c->name());
+                    foreach (const QString &possibleName, possibleNames)
+                        autoDependencies.removeAll(possibleName);
+                }
 
                 // A component requested auto installation, keep it to resolve their dependencies as well.
                 if (!autoDependencies.isEmpty())
