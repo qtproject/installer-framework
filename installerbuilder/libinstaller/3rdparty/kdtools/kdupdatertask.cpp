@@ -46,9 +46,16 @@ using namespace KDUpdater;
 */
 KDUpdater::Task::Task(const QString &name, int caps, QObject *parent)
     : QObject(parent)
+    , m_caps(caps)
+    , m_name(name)
+    , m_errorCode(0)
+    , m_started(false)
+    , m_finished(false)
+    , m_paused(false)
+    , m_stopped(false)
+    , m_progressPc(0)
+    , m_autoDelete(true)
 {
-    m_caps = caps;
-    m_name = name;
 }
 
 /*!
