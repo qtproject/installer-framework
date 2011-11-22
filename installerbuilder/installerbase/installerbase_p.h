@@ -33,6 +33,9 @@
 #include <QtCore/QThread>
 #include <QtGui/QApplication>
 
+#include <fstream>
+#include <iostream>
+
 namespace KDUpdater {
     class FileDownloader;
 }
@@ -41,6 +44,7 @@ QT_BEGIN_NAMESPACE
 class QFile;
 QT_END_NAMESPACE
 
+class MyApplicationConsole;
 
 class Sleep : public QThread
 {
@@ -60,7 +64,9 @@ public:
     ~InstallerBase();
 
     int replaceMaintenanceToolBinary(QStringList arguments);
-    static void showVersion(int &argc, char **argv, const QString &version);
+
+    static void showUsage();
+    static void showVersion(const QString &version);
 
 private slots:
     void downloadStarted();
@@ -88,5 +94,11 @@ class MyApplication : public QApplication
 {
 public:
     MyApplication(int &argc, char **argv);
+    ~MyApplication();
+
+    void setVerbose();
     virtual bool notify(QObject *receiver, QEvent *event);
+
+private:
+    MyApplicationConsole *m_console;
 };

@@ -51,6 +51,8 @@
 
 #include <QtGui/QMessageBox>
 
+#include <iomanip>
+
 using namespace KDUpdater;
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -75,11 +77,79 @@ bool MyCoreApplication::notify(QObject *receiver, QEvent *event)
 }
 
 
+// -- MyApplicationConsole
+
+class MyApplicationConsole
+{
+public:
+    MyApplicationConsole()
+    {
+#ifdef Q_OS_WIN
+        AllocConsole();
+
+        HANDLE stdOutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+        if (stdOutHandle != INVALID_HANDLE_VALUE) {
+            COORD largestConsoleWindowSize = GetLargestConsoleWindowSize(stdOutHandle);
+            largestConsoleWindowSize.X -= 1;
+            largestConsoleWindowSize.Y -= 1;
+            SetConsoleScreenBufferSize(stdOutHandle, largestConsoleWindowSize);
+            SetConsoleMode(stdOutHandle, ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS);
+        }
+
+        m_oldCin = std::cin.rdbuf();
+        m_newCin.open("CONIN$");
+        std::cin.rdbuf(m_newCin.rdbuf());
+
+        m_oldCout = std::cout.rdbuf();
+        m_newCout.open("CONOUT$");
+        std::cout.rdbuf(m_newCout.rdbuf());
+
+        m_oldCerr = std::cerr.rdbuf();
+        m_newCerr.open("CONOUT$");
+        std::cerr.rdbuf(m_newCerr.rdbuf());
+#endif
+    }
+    ~MyApplicationConsole()
+    {
+#ifdef Q_OS_WIN
+        system("PAUSE");
+
+        std::cin.rdbuf(m_oldCin);
+        std::cerr.rdbuf(m_oldCerr);
+        std::cout.rdbuf(m_oldCout);
+
+        FreeConsole();
+#endif
+    }
+
+private:
+    std::ifstream m_newCin;
+    std::ofstream m_newCout;
+    std::ofstream m_newCerr;
+
+    std::streambuf* m_oldCin;
+    std::streambuf* m_oldCout;
+    std::streambuf* m_oldCerr;
+};
+
+
 // -- MyApplication
 
 MyApplication::MyApplication(int &argc, char **argv)
     : QApplication(argc, argv)
+    , m_console(0)
 {
+}
+
+MyApplication::~MyApplication()
+{
+    delete m_console;
+}
+
+void MyApplication::setVerbose()
+{
+    if (!m_console)
+        m_console = new MyApplicationConsole;
 }
 
 // re-implemented from QApplication so we can throw exceptions in scripts and slots
@@ -193,15 +263,51 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
 }
 
 /* static*/
-void InstallerBase::showVersion(int &argc, char **argv, const QString &version)
+void InstallerBase::showUsage()
 {
-#ifdef Q_OS_WIN
-    MyApplication app(argc, argv);
-    QMessageBox::information(0, tr("Version"), version);
-#else
-    Q_UNUSED(argc) Q_UNUSED(argv)
-    fprintf(stdout, "%s\n", qPrintable(version));
-#endif
+    MyApplicationConsole c;
+    std::cout << "Usage: SDKMaintenanceTool [OPTIONS]" << std::endl << std::endl;
+
+    std::cout << "User:"<<std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --help" << std::setw(40)
+        << "Show commandline usage" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --version" << std::setw(40)
+        << "Show current version" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --checkupdates" << std::setw(40)
+        << "Check for updates and return an XML file of the available updates" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --proxy" << std::setw(40)
+        << "Set system proxy on Win and Mac. This option has no effect on Linux." << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --verbose" << std::setw(40)
+        << "Show debug output on the console" << std::endl;
+
+    std::cout << "Developer:"<< std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
+        << "  --runoperation [operationName] [arguments...]" << std::setw(40)
+        << "Perform an operation with a list of arguments" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
+        << "  --undooperation [operationName] [arguments...]" << std::setw(40)
+        << "Undo an operation with a list of arguments" <<std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
+        << "  --script [scriptName]" << std::setw(40) << "Execute a script" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --no-force-installations"
+        << std::setw(40) << "Enable deselection of forced components" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --addTempRepository [URI]"
+        << std::setw(40) << "Add a local or remote repo to the list of available repos." << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --setTempRepository [URI]"
+        << std::setw(40) << "Set the update URL to an arbitrary local or remote URI. URI must be prefixed "
+        "with the protocol, i.e. file:/// or http://" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --show-virtual-components"
+        << std::setw(40) << "Show virtual components in package manager and updater" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
+        << "  --update-installerbase [path/to/new/installerbase]" << std::setw(40)
+        << "Patch a full installer with a new installer base" << std::endl;
+}
+
+/* static*/
+void InstallerBase::showVersion(const QString &version)
+{
+    MyApplicationConsole c;
+    std::cout << qPrintable(version) << std::endl;
 }
 
 

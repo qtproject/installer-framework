@@ -56,9 +56,6 @@
 
 #include <QtNetwork/QNetworkProxyFactory>
 
-#include <iostream>
-#include <iomanip>
-
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
 #define VERSION "Installerbase SHA1: \"" QUOTE(_GIT_SHA1_) "\" , Build date: " QUOTE(__DATE__) "."
@@ -81,43 +78,8 @@ static QSet<Repository> repositories(const QStringList &arguments, const int ind
     return set;
 }
 
-void usage()
-{
-    std::cout << "Usage: SDKMaintenanceTool [OPTIONS]" << std::endl << std::endl;
-    std::cout << "User:"<<std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-    << "  --help" << std::setw(40) << "Show commandline usage" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-    << "  --version" << std::setw(40) << "Show current version" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-    << "  --checkupdates" << std::setw(40) << "Check for updates and return an XML file of the available updates"
-    << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-    << "  --proxy" << std::setw(40) << "Set system proxy on Win and Mac. This option has no effect on Linux" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --verbose" << std::setw(40)
-    << "Show debug output on the console" << std::endl;
 
-    std::cout << "Developer:"<< std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-    << "  --runoperation [operationName] [arguments...]" << std::setw(40)
-    << "Perform an operation with a list of arguments" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-    << "  --undooperation [operationName] [arguments...]" << std::setw(40)
-    << "Undo an operation with a list of arguments" <<std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-    << "  --script [scriptName]" << std::setw(40) << "Execute a script" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --no-force-installations"
-    << std::setw(40) << "Enable deselection of forced components" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --addTempRepository [URI]"
-    << std::setw(40) << "Add a local or remote repo to the list of available repos." << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --setTempRepository [URI]"
-    << std::setw(40) << "Set the update URL to an arbitrary local or remote URI. URI must be prefixed with the protocol, i.e. file:// or http://" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --show-virtual-components"
-    << std::setw(40) << "Show virtual components in package manager and updater" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-    << "  --update-installerbase [path/to/new/installerbase]" << std::setw(40)
-    << "Patch a full installer with a new installer base" << std::endl;
-}
+// -- main
 
 int main(int argc, char *argv[])
 {
@@ -128,7 +90,7 @@ int main(int argc, char *argv[])
     const QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
     try {
         if (args.contains(QLatin1String("--version"))) {
-            InstallerBase::showVersion(argc, argv, QLatin1String(VERSION));
+            InstallerBase::showVersion(QLatin1String(VERSION));
             return 0;
         }
 
@@ -192,8 +154,10 @@ int main(int argc, char *argv[])
                 Sleep::sleep(1);
         }
 
-        if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("Verbose")))
+        if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("Verbose"))) {
+            app.setVerbose();
             QInstaller::setVerbose(true);
+        }
 
         // install the default translator
         const QString localeFile =
@@ -289,7 +253,7 @@ int main(int argc, char *argv[])
                 || argument == QLatin1String("ManagePackages")) && core.isUninstaller()) {
                     core.setPackageManager();
             } else if (argument == QLatin1String("--help") || argument == QLatin1String("-h")) {
-                usage();
+                InstallerBase::showUsage();
                 return PackageManagerCore::Success;
             } else if (argument == QLatin1String("--addTempRepository")
                 || argument == QLatin1String("--setTempRepository")) {
@@ -312,7 +276,7 @@ int main(int argc, char *argv[])
                 PackageManagerCore::setNoForceInstallation(true);
             } else {
                 std::cerr << "Unknown option: " << argument << std::endl;
-                usage();
+                InstallerBase::showUsage();
                 return PackageManagerCore::Failure;
             }
         }
