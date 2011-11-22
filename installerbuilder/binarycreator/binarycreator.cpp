@@ -52,6 +52,9 @@
 #include <QSettings>
 #include <QTemporaryFile>
 #include <QVector>
+#ifdef Q_OS_MAC
+#include <QProcess>
+#endif
 
 #include <fstream>
 #include <iostream>

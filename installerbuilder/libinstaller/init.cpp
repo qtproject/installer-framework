@@ -207,7 +207,7 @@ void QInstaller::init()
     FileDownloaderFactory::setFollowRedirects(true);
 
 #ifdef Q_OS_MAC
-    factoryregisterUpdateOperation<MacReplaceInstallNamesOperation>(QLatin1String("ReplaceInstallNames"));
+    factory.registerUpdateOperation<MacReplaceInstallNamesOperation>(QLatin1String("ReplaceInstallNames"));
 #endif // Q_OS_MAC
 
     // load 7z stuff, if we're a static lib

@@ -26,6 +26,8 @@
 
 #include <sys/mount.h>
 
+#include <QtCore/QList>
+
 namespace KDUpdater {
 
 static QString qt_mac_hfsunistr_to_qstring(const HFSUniStr255 *hfs)

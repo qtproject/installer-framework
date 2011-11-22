@@ -53,6 +53,9 @@ class AdminAuthorization : public QObject, public AdminAuthorizationBase
 
 public:
     AdminAuthorization();
+#ifdef Q_OS_MAC
+    ~AdminAuthorization();
+#endif
 
     bool execute(QWidget *dialogParent, const QString &programs, const QStringList &arguments);
     static bool hasAdminRights();
@@ -62,6 +65,12 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void authorized();
+
+#ifdef Q_OS_MAC
+private:
+    class Private;
+    Private *d;
+#endif
 };
 
 #endif // ADMINAUTHORIZATION_H
