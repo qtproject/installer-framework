@@ -588,38 +588,49 @@ public:
         m_cleaner->deleteLater();
     }
 
-    static QMap< QIODevice*, OpenArchiveInfo* > instances;
-
-    static OpenArchiveInfo* instance(QIODevice* device)
+    static OpenArchiveInfo* value(QIODevice* device)
     {
-        if (instances[device] == 0)
-            instances[device] = new OpenArchiveInfo(device);
-        return instances[device];
+        QMutexLocker _(&m_mutex);
+        if (!instances.contains(device))
+            instances.insert(device, new OpenArchiveInfo(device));
+        return instances.value(device);
     }
 
-    std::auto_ptr< CCodecs > codecs;
-    CIntVector formatIndices;
+    static OpenArchiveInfo* take(QIODevice *device)
+    {
+        QMutexLocker _(&m_mutex);
+        if (instances.contains(device))
+            return instances.take(device);
+        return 0;
+    }
+
     CArchiveLink archiveLink;
-    CMyComPtr< IInStream > stream;
+
 private:
+    CIntVector formatIndices;
+    CMyComPtr< IInStream > stream;
+    std::auto_ptr< CCodecs > codecs;
     OpenArchiveInfoCleaner *m_cleaner;
+
+    static QMutex m_mutex;
+    static QMap< QIODevice*, OpenArchiveInfo* > instances;
 };
 
+QMutex OpenArchiveInfo::m_mutex;
 QMap< QIODevice*, OpenArchiveInfo* > OpenArchiveInfo::instances;
 
 void OpenArchiveInfoCleaner::deviceDestroyed(QObject* dev)
 {
     QIODevice* device = static_cast<QIODevice*>(dev);
     Q_ASSERT(device);
-    Q_ASSERT(OpenArchiveInfo::instances.contains(device));
-    delete OpenArchiveInfo::instances.take(device);
+    delete OpenArchiveInfo::take(device);
 }
 
 QVector<File> Lib7z::listArchive(QIODevice* archive)
 {
     assert(archive);
     try {
-        const OpenArchiveInfo* const openArchive = OpenArchiveInfo::instance(archive);
+        const OpenArchiveInfo* const openArchive = OpenArchiveInfo::value(archive);
 
         QVector<File> flat;
 
@@ -1202,7 +1213,7 @@ void Lib7z::extractArchive(QIODevice* archive, const File& item, QIODevice* targ
         callback = dummyCallback.get();
 
     try {
-        const OpenArchiveInfo* const openArchive = OpenArchiveInfo::instance(archive);
+        const OpenArchiveInfo* const openArchive = OpenArchiveInfo::value(archive);
 
         const int arcIdx = item.archiveIndex.x();
         if (arcIdx < 0 || arcIdx >= openArchive->archiveLink.Arcs.Size()) {
@@ -1276,7 +1287,7 @@ void Lib7z::extractArchive(QIODevice* archive, const QString &targetDirectory, E
     DirectoryGuard outDir(fi.absolutePath());
     outDir.tryCreate();
 
-    const OpenArchiveInfo* const openArchive = OpenArchiveInfo::instance(archive);
+    const OpenArchiveInfo* const openArchive = OpenArchiveInfo::value(archive);
 
     for (int a = 0; a < openArchive->archiveLink.Arcs.Size(); ++a)
     {
