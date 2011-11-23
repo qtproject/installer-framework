@@ -56,6 +56,8 @@
 
 #include <QtNetwork/QNetworkProxyFactory>
 
+#include <iostream>
+
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
 #define VERSION "Installerbase SHA1: \"" QUOTE(_GIT_SHA1_) "\" , Build date: " QUOTE(__DATE__) "."

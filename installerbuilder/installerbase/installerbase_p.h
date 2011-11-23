@@ -33,9 +33,6 @@
 #include <QtCore/QThread>
 #include <QtGui/QApplication>
 
-#include <fstream>
-#include <iostream>
-
 namespace KDUpdater {
     class FileDownloader;
 }

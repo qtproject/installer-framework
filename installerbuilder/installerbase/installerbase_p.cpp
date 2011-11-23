@@ -51,7 +51,25 @@
 
 #include <QtGui/QMessageBox>
 
+#include <fstream>
 #include <iomanip>
+#include <iostream>
+
+#ifdef Q_OS_WIN
+#include <wincon.h>
+
+#ifndef ENABLE_INSERT_MODE
+#   define ENABLE_INSERT_MODE 0x0020
+#endif
+
+#ifndef ENABLE_QUICK_EDIT_MODE
+#   define ENABLE_QUICK_EDIT_MODE 0x0040
+#endif
+
+#ifndef ENABLE_EXTENDED_FLAGS
+#   define ENABLE_EXTENDED_FLAGS 0x0080
+#endif
+#endif
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -87,14 +105,17 @@ public:
 #ifdef Q_OS_WIN
         AllocConsole();
 
-        HANDLE stdOutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-        if (stdOutHandle != INVALID_HANDLE_VALUE) {
-            COORD largestConsoleWindowSize = GetLargestConsoleWindowSize(stdOutHandle);
-            largestConsoleWindowSize.X -= 1;
-            largestConsoleWindowSize.Y -= 1;
-            SetConsoleScreenBufferSize(stdOutHandle, largestConsoleWindowSize);
-            SetConsoleMode(stdOutHandle, ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS);
+        HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+        if (handle != INVALID_HANDLE_VALUE) {
+            COORD largestConsoleWindowSize = GetLargestConsoleWindowSize(handle);
+            largestConsoleWindowSize.X -= 3;
+            largestConsoleWindowSize.Y = 5000;
+            SetConsoleScreenBufferSize(handle, largestConsoleWindowSize);
         }
+
+        handle = GetStdHandle(STD_INPUT_HANDLE);
+        if (handle != INVALID_HANDLE_VALUE)
+            SetConsoleMode(handle, ENABLE_INSERT_MODE | ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS);
 
         m_oldCin = std::cin.rdbuf();
         m_newCin.open("CONIN$");
