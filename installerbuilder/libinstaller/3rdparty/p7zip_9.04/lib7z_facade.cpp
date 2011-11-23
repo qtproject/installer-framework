@@ -564,15 +564,15 @@ class OpenArchiveInfo
 {
 private:
     OpenArchiveInfo(QIODevice* device)
-        : codecs(new CCodecs),
-        stream(new QIODeviceInStream(device))
+        : codecs(new CCodecs)
     {
         throwIfNotOK(codecs->Load(), QObject::tr("Could not load codecs"));
 
         if (!codecs->FindFormatForArchiveType(L"", formatIndices))
             throw SevenZipException(QObject::tr("Could not retrieve default format"));
 
-        throwIfNotOK(archiveLink.Open2(codecs.get(), formatIndices, false, stream, UString(), 0),
+        stream = new QIODeviceInStream(device);
+        throwIfNotOK(archiveLink.Open2(codecs.data(), formatIndices, false, stream, UString(), 0),
             QObject::tr("Could not open archive"));
         if (archiveLink.Arcs.Size() == 0)
             throw SevenZipException(QObject::tr("No CArc found"));
@@ -608,8 +608,8 @@ public:
 
 private:
     CIntVector formatIndices;
-    CMyComPtr< IInStream > stream;
-    std::auto_ptr< CCodecs > codecs;
+    CMyComPtr<IInStream> stream;
+    QScopedPointer<CCodecs> codecs;
     OpenArchiveInfoCleaner *m_cleaner;
 
     static QMutex m_mutex;
