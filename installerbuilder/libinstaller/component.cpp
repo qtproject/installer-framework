@@ -605,7 +605,6 @@ void Component::beginInstallation()
 {
     // the script can override this method
     if (callScriptMethod(QLatin1String("beginInstallation")).isValid()) {
-        d->m_operationsCreated = true;
         return;
     }
 }
