@@ -1493,39 +1493,43 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         // add downloadable archive from xml
         const QStringList downloadableArchives = data.package->data(scDownloadableArchives).toString()
             .split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
-        foreach (const QString downloadableArchive, downloadableArchives) {
+        foreach (const QString downloadableArchive, downloadableArchives)
             component->addDownloadableArchive(downloadableArchive);
-        }
 
         const QStringList componentsToReplace = data.package->data(scReplaces).toString()
             .split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
 
-        // running as installer means no component is installed, still we might have replacements
+        if (!componentsToReplace.isEmpty()) {
+            // Store the component (this is a component that replaces others) and all components that
+            // this one will replace.
+            data.replacementToExchangeables.insert(component, componentsToReplace);
+        }
+
         if (isInstaller()) {
-            if (!componentsToReplace.isEmpty())
-                data.replacementToExchangeables.insert(component, componentsToReplace);
+            // Running as installer means no component is installed, we do not need to check if the
+            // replacement needs to be marked as installed, just return.
             return true;
         }
 
-        // the replacement is already installed, no need to search for the components to replace
         if (data.installedPackages->contains(name)) {
+            // The replacement is already installed, we can mark it as installed and skip the search for
+            // a possible component to replace that might be installed (to mark the replacement as installed).
             component->setInstalled();
             component->setValue(scInstalledVersion, data.installedPackages->value(name).version);
             return true;
         }
 
-        // the replacement is not yet installed
+        // The replacement is not yet installed, check all components to replace for there install state.
         foreach (const QString &componentName, componentsToReplace) {
-            // check if a component to replace is already installed
             if (data.installedPackages->contains(componentName)) {
+                // We found a replacement that is installed.
                 if (isPackageManager()) {
-                    // mark the replacement as installed only in package manager mode, otherwise
-                    // it would not show up in the updaters component list
+                    // Mark the replacement component as installed as well. Only do this in package manager
+                    // mode, otherwise it would not show up in the updaters component list.
                     component->setInstalled();
                     component->setValue(scInstalledVersion, data.installedPackages->value(componentName).version);
+                    break;  // Break as soon as we know we found an installed component this one replaces.
                 }
-                data.replacementToExchangeables.insert(component, componentsToReplace);
-                break;  // break as soon as we know we replace at least one other component
             }
         }
     } catch (...) {
