@@ -77,11 +77,17 @@ public:
     Q_INVOKABLE QString defaultButtonText(int wizardButton) const;
     Q_INVOKABLE void clickButton(int wizardButton, int delayInMs = 0);
 
+    Q_INVOKABLE void showSettingsButton(bool show);
+    Q_INVOKABLE void setSettingsButtonEnabled(bool enable);
+
+    void updateButtonLayout();
+
 Q_SIGNALS:
     void interrupted();
     void languageChanged();
     void finishButtonClicked();
     void gotRestarted();
+    void settingsButtonClicked();
 
 public Q_SLOTS:
     void cancelButtonClicked();
@@ -103,6 +109,7 @@ protected Q_SLOTS:
 
 private Q_SLOTS:
     void onLanguageChanged();
+    void customButtonClicked(int which);
 
 protected:
     bool event(QEvent *event);

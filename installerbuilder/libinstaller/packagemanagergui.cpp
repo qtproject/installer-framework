@@ -205,10 +205,12 @@ public:
     Private()
         : m_modified(false)
         , m_autoSwitchPage(true)
+        , m_showSettingsButton(false)
     { }
 
     bool m_modified;
     bool m_autoSwitchPage;
+    bool m_showSettingsButton;
     QMap<int, QWizardPage*> m_defaultPages;
     QMap<int, QString> m_defaultButtonText;
 
@@ -280,6 +282,8 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
     connect(m_core, SIGNAL(setAutomatedPageSwitchEnabled(bool)), this,
         SLOT(setAutomatedPageSwitchEnabled(bool)));
+
+    connect(this, SIGNAL(customButtonClicked(int)), this, SLOT(customButtonClicked(int)));
 
     for (int i = QWizard::BackButton; i < QWizard::CustomButton1; ++i)
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
@@ -584,6 +588,65 @@ void PackageManagerGui::showFinishedPage()
         next();
     else
         qobject_cast<QPushButton*>(button(QWizard::CancelButton))->setEnabled(false);
+}
+
+void PackageManagerGui::showSettingsButton(bool show)
+{
+    if (d->m_showSettingsButton == show)
+        return;
+
+    d->m_showSettingsButton = show;
+    setOption(QWizard::HaveCustomButton1, show);
+    setButtonText(QWizard::CustomButton1, tr("Settings"));
+
+    updateButtonLayout();
+}
+
+/*!
+    Force an update of our own button layout, needs to be called whenever a button option has been set.
+*/
+void PackageManagerGui::updateButtonLayout()
+{
+    QVector<QWizard::WizardButton> buttons(12, QWizard::NoButton);
+    if (options() & QWizard::HaveHelpButton)
+        buttons[(options() & QWizard::HelpButtonOnRight) ? 11 : 0] = QWizard::HelpButton;
+
+    buttons[1] = QWizard::Stretch;
+    if (options() & QWizard::HaveCustomButton1) {
+        buttons[1] = QWizard::CustomButton1;
+        buttons[2] = QWizard::Stretch;
+    }
+
+    if (options() & QWizard::HaveCustomButton2)
+        buttons[3] = QWizard::CustomButton2;
+
+    if (options() & QWizard::HaveCustomButton3)
+        buttons[4] = QWizard::CustomButton3;
+
+    if (!(options() & QWizard::NoCancelButton))
+        buttons[(options() & QWizard::CancelButtonOnLeft) ? 5 : 10] = QWizard::CancelButton;
+
+    buttons[6] = QWizard::BackButton;
+    buttons[7] = QWizard::NextButton;
+    buttons[8] = QWizard::CommitButton;
+    buttons[9] = QWizard::FinishButton;
+
+    setOption(QWizard::NoBackButtonOnLastPage, true);
+    setOption(QWizard::NoBackButtonOnStartPage, true);
+
+    setButtonLayout(buttons.toList());
+}
+
+void PackageManagerGui::setSettingsButtonEnabled(bool enabled)
+{
+    if (QAbstractButton *btn = button(QWizard::CustomButton1))
+        btn->setEnabled(enabled);
+}
+
+void PackageManagerGui::customButtonClicked(int which)
+{
+    if (QWizard::WizardButton(which) == QWizard::CustomButton1 && d->m_showSettingsButton)
+        emit settingsButtonClicked();
 }
 
 
@@ -1804,17 +1867,25 @@ void FinishedPage::entering()
     setCommitPage(true);
     if (packageManagerCore()->isUpdater() || packageManagerCore()->isPackageManager()) {
 #ifdef Q_WS_MAC
-        wizard()->setOption(QWizard::NoCancelButton, false);
+        gui()->setOption(QWizard::NoCancelButton, false);
 #endif
+        if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton)) {
+            m_commitButton = cancel;
+            cancel->setEnabled(true);
+            cancel->setVisible(true);
+        }
         setButtonText(QWizard::CommitButton, tr("Restart"));
-        m_commitButton = gui()->button(QWizard::CancelButton);
-        gui()->button(QWizard::CancelButton)->setEnabled(true);
         setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::FinishButton));
     } else {
         if (packageManagerCore()->isInstaller())
             m_commitButton = wizard()->button(QWizard::FinishButton);
-        wizard()->setOption(QWizard::NoCancelButton, true);
+
+        gui()->setOption(QWizard::NoCancelButton, true);
+        if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton))
+            cancel->setVisible(false);
     }
+
+    gui()->updateButtonLayout();
 
     if (m_commitButton) {
         disconnect(m_commitButton, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
@@ -1844,8 +1915,12 @@ void FinishedPage::entering()
 void FinishedPage::leaving()
 {
 #ifdef Q_WS_MAC
-    wizard()->setOption(QWizard::NoCancelButton, true);
+    gui()->setOption(QWizard::NoCancelButton, true);
+    if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton))
+        cancel->setVisible(false);
 #endif
+
+    gui()->updateButtonLayout();
 
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
