@@ -1558,6 +1558,14 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
         }
     }
 
+    foreach (const QString &key, locals.keys()) {
+        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+        component->loadDataFromPackage(locals.value(key));
+        const QString &name = component->name();
+        if (!components.contains(name))
+            components.insert(name, component.take());
+    }
+
     // store all components that got a replacement
     storeReplacedComponents(components, data);
 
@@ -1581,6 +1589,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     data.installedPackages = &locals;
 
     bool foundEssentialUpdate = false;
+    LocalPackagesHash installedPackages = locals;
 
     foreach (Package *const update, remotes) {
         if (d->statusCanceledOrFailed())
@@ -1599,6 +1608,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
 
             const QString &name = d->m_updaterComponentsDeps.last()->name();
             const QString replaces = data.package->data(scReplaces).toString();
+            installedPackages.take(name);   // remove from local installed packages
 
             bool isValidUpdate = locals.contains(name);
             if (!isValidUpdate && !replaces.isEmpty()) {
@@ -1629,6 +1639,12 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             // this is not a dependency, it is a real update
             components.insert(name, d->m_updaterComponentsDeps.takeLast());
         }
+    }
+
+    foreach (const QString &key, installedPackages.keys()) {
+        QInstaller::Component *component = new QInstaller::Component(this);
+        component->loadDataFromPackage(installedPackages.value(key));
+        d->m_updaterComponentsDeps.append(component);
     }
 
     // store all components that got a replacement
