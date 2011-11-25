@@ -316,6 +316,11 @@ KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &p
             downloader->setUrl(url);
             downloader->setAutoRemoveDownloadedFile(false);
 
+            QAuthenticator auth;
+            auth.setUser(component->value(QLatin1String("username")));
+            auth.setPassword(component->value(QLatin1String("password")));
+            downloader->setAuthenticator(auth);
+
             connect(downloader, SIGNAL(downloadCanceled()), this, SLOT(downloadCanceled()));
             connect(downloader, SIGNAL(downloadAborted(QString)), this, SLOT(downloadFailed(QString)),
                 Qt::QueuedConnection);

@@ -49,6 +49,8 @@
 
 #include <QtGui/QMessageBox>
 
+#include <QtNetwork/QAuthenticator>
+
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 
@@ -211,6 +213,11 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
     //append a random string to avoid proxy caches
     m_downloader->setUrl(QUrl(url.toString() + QString(QLatin1String("/Updates.xml?")).append(
         QString::number(qrand() * qrand()))));
+
+    QAuthenticator auth;
+    auth.setUser(m_repository.username());
+    auth.setPassword(m_repository.password());
+    m_downloader->setAuthenticator(auth);
 
     m_downloader->setAutoRemoveDownloadedFile(false);
     connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(updatesXmlDownloadFinished()));
@@ -379,6 +386,11 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     m_currentPackageVersion = nextVersion;
     m_downloader->setUrl(url);
     m_downloader->setAutoRemoveDownloadedFile(true);
+
+    QAuthenticator auth;
+    auth.setUser(m_repository.username());
+    auth.setPassword(m_repository.password());
+    m_downloader->setAuthenticator(auth);
 
     connect(m_downloader, SIGNAL(downloadCanceled()), this, SLOT(metaDownloadCanceled()));
     connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(metaDownloadFinished()));

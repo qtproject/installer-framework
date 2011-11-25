@@ -1464,8 +1464,12 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
             lastLocalPath = localPath;
         }
 
-        if (d->m_repoMetaInfoJob)
-            component->setRepositoryUrl(d->m_repoMetaInfoJob->repositoryForTemporaryDirectory(localPath).url());
+        if (d->m_repoMetaInfoJob) {
+            const Repository &repo = d->m_repoMetaInfoJob->repositoryForTemporaryDirectory(localPath);
+            component->setRepositoryUrl(repo.url());
+            component->setValue(QLatin1String("username"), repo.username());
+            component->setValue(QLatin1String("password"), repo.password());
+        }
 
         // add downloadable archive from xml
         const QStringList downloadableArchives = data.package->data(scDownloadableArchives).toString()
