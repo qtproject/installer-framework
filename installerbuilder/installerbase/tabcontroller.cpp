@@ -155,15 +155,15 @@ int TabController::initUpdater()
 {
     IntroductionPageImpl *introPage = introductionPage();
 
+    introPage->setMessage(QString());
+    introPage->setErrorMessage(QString());
     introPage->showAll();
     introPage->setComplete(false);
-    introPage->message(QLatin1String(""));
     introPage->setMaintenanceToolsEnabled(false);
-    introPage->setErrorMessage(QLatin1String(""));
 
     if (!d->m_introPageConnected) {
         d->m_introPageConnected = true;
-        connect(d->m_core, SIGNAL(metaJobInfoMessage(QString)), introPage, SLOT(message(QString)));
+        connect(d->m_core, SIGNAL(metaJobInfoMessage(QString)), introPage, SLOT(setMessage(QString)));
     }
 
     d->m_gui->setWindowModality(Qt::WindowModal);
@@ -197,9 +197,10 @@ int TabController::initUninstaller()
 {
     IntroductionPageImpl *introPage = introductionPage();
 
+    introPage->setMessage(QString());
+    introPage->setErrorMessage(QString());
     introPage->setComplete(true);
     introPage->showMaintenanceTools();
-    introPage->setErrorMessage(QLatin1String(""));
 
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
@@ -211,19 +212,19 @@ int TabController::initPackageManager()
 {
     IntroductionPageImpl *introPage = introductionPage();
 
+    introPage->setMessage(QString());
+    introPage->setErrorMessage(QString());
     introPage->setComplete(false);
     introPage->showMetaInfoUdate();
-    introPage->setErrorMessage(QLatin1String(""));
 
     if (d->m_core->isPackageManager()) {
         introPage->showAll();
-        introPage->message(QLatin1String(""));
         introPage->setMaintenanceToolsEnabled(false);
     }
 
     if (!d->m_introPageConnected) {
         d->m_introPageConnected = true;
-        connect(d->m_core, SIGNAL(metaJobInfoMessage(QString)), introPage, SLOT(message(QString)));
+        connect(d->m_core, SIGNAL(metaJobInfoMessage(QString)), introPage, SLOT(setMessage(QString)));
     }
 
     d->m_gui->setWindowModality(Qt::WindowModal);

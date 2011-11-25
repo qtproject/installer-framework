@@ -53,7 +53,7 @@ public:
     void setMaintenanceToolsEnabled(bool enable);
 
 public Q_SLOTS:
-    void message(const QString &msg);
+    void setMessage(const QString &msg);
     void setErrorMessage(const QString &error);
 
 Q_SIGNALS:

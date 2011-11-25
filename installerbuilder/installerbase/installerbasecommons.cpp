@@ -139,6 +139,11 @@ void IntroductionPageImpl::setMaintenanceToolsEnabled(bool enable)
     m_removeAllComponents->setEnabled(enable);
 }
 
+void IntroductionPageImpl::setMessage(const QString &msg)
+{
+    m_label->setText(msg);
+}
+
 void IntroductionPageImpl::setErrorMessage(const QString &error)
 {
     QPalette palette;
@@ -151,11 +156,6 @@ void IntroductionPageImpl::setErrorMessage(const QString &error)
 
     m_errorLabel->setText(error);
     m_errorLabel->setPalette(palette);
-}
-
-void IntroductionPageImpl::message(const QString &msg)
-{
-    m_label->setText(msg);
 }
 
 void IntroductionPageImpl::setUpdater(bool value)
