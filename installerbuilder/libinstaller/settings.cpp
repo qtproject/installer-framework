@@ -61,6 +61,10 @@ static const QLatin1String scUninstallerIniFile("UninstallerIniFile");
 static const QLatin1String scRemoteRepositories("RemoteRepositories");
 static const QLatin1String scSigningCertificate("SigningCertificate");
 
+static const QLatin1String scFtpProxy("FtpProxy");
+static const QLatin1String scHttpProxy("HttpProxy");
+static const QLatin1String scProxyType("ProxyType");
+
 template <typename T>
 static QSet<T> variantListToSet(const QVariantList &list)
 {
@@ -465,4 +469,40 @@ QVariantHash Settings::subTitlesForPage(const QString &pageName) const
     if (!variant.canConvert<QVariantHash>())
         return QVariantHash();
     return variant.value<QVariantHash>();
+}
+
+Settings::ProxyType Settings::proxyType() const
+{
+    return Settings::ProxyType(d->m_data.value(scProxyType, Settings::NoProxy).toInt());
+}
+
+void Settings::setProxyType(Settings::ProxyType type)
+{
+    d->m_data.insert(scProxyType, type);
+}
+
+QNetworkProxy Settings::ftpProxy() const
+{
+    const QVariant variant = d->m_data.value(scFtpProxy);
+    if (variant.canConvert<QNetworkProxy>())
+        return variant.value<QNetworkProxy>();
+    return QNetworkProxy();
+}
+
+void Settings::setFtpProxy(const QNetworkProxy &proxy)
+{
+    d->m_data.insert(scFtpProxy, QVariant::fromValue(proxy));
+}
+
+QNetworkProxy Settings::httpProxy() const
+{
+    const QVariant variant = d->m_data.value(scHttpProxy);
+    if (variant.canConvert<QNetworkProxy>())
+        return variant.value<QNetworkProxy>();
+    return QNetworkProxy();
+}
+
+void Settings::setHttpProxy(const QNetworkProxy &proxy)
+{
+    d->m_data.insert(scHttpProxy, QVariant::fromValue(proxy));
 }

@@ -33,6 +33,10 @@
 #include <QtCore/QSharedDataPointer>
 #include <QtCore/QVariant>
 
+#include <QtNetwork/QNetworkProxy>
+
+Q_DECLARE_METATYPE(QNetworkProxy)
+
 namespace QInstaller {
 class Repository;
 
@@ -41,6 +45,12 @@ class INSTALLER_EXPORT Settings
     Q_DECLARE_TR_FUNCTIONS(Settings)
 
 public:
+    enum ProxyType {
+        NoProxy,
+        SystemProxy,
+        UserDefinedProxy
+    };
+
     explicit Settings();
     ~Settings();
 
@@ -99,11 +109,22 @@ public:
     QVariantHash titlesForPage(const QString &pageName) const;
     QVariantHash subTitlesForPage(const QString &pageName) const;
 
+    Settings::ProxyType proxyType() const;
+    void setProxyType(Settings::ProxyType type);
+
+    QNetworkProxy ftpProxy() const;
+    void setFtpProxy(const QNetworkProxy &proxy);
+
+    QNetworkProxy httpProxy() const;
+    void setHttpProxy(const QNetworkProxy &proxy);
+
 private:
     class Private;
     QSharedDataPointer<Private> d;
 };
 
 }
+
+Q_DECLARE_METATYPE(QInstaller::Settings)
 
 #endif  // SETTINGS_H
