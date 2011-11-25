@@ -47,6 +47,7 @@
 
 #include <kdsavefile.h>
 #include <kdselfrestarter.h>
+#include "kdupdaterfiledownloaderfactory.h"
 #include <kdupdaterupdatesourcesinfo.h>
 #include <kdupdaterupdateoperationfactory.h>
 #include <kdupdaterupdatefinder.h>
@@ -160,6 +161,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_componentsToInstallCalculated(false)
+    , m_proxyFactory(0)
 {
 }
 
@@ -181,6 +183,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(magicInstallerMaker)
     , m_componentsToInstallCalculated(false)
+    , m_proxyFactory(0)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
@@ -201,7 +204,9 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     // check for fake installer case
     if (m_FSEngineClientHandler)
         m_FSEngineClientHandler->setActive(false);
+
     delete m_updateFinder;
+    delete m_proxyFactory;
 }
 
 /*!
@@ -594,6 +599,7 @@ void PackageManagerCorePrivate::initialize()
         connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this, SLOT(infoMessage(KDJob*,
             QString)));
     }
+    KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 }
 
 QString PackageManagerCorePrivate::installerBinaryPath() const

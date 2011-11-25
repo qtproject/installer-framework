@@ -34,11 +34,17 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVector>
 
+namespace KDUpdater {
+    class FileDownloaderProxyFactory;
+}
+
 namespace QInstaller {
 
 class Component;
 class PackageManagerCorePrivate;
 class Settings;
+
+// -- PackageManagerCore
 
 class INSTALLER_EXPORT PackageManagerCore : public QObject
 {
@@ -87,6 +93,9 @@ public:
 
     bool fetchLocalPackagesTree();
     LocalPackagesHash localInstalledPackages();
+
+    KDUpdater::FileDownloaderProxyFactory *proxyFactory() const;
+    void setProxyFactory(KDUpdater::FileDownloaderProxyFactory *factory);
 
     PackagesList remotePackages();
     bool fetchRemotePackagesTree();

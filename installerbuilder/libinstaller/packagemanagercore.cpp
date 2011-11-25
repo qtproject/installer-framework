@@ -42,6 +42,7 @@
 #include "getrepositoriesmetainfojob.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore_p.h"
+#include "packagemanagerproxyfactory.h"
 #include "progresscoordinator.h"
 #include "qinstallerglobal.h"
 #include "qprocesswrapper.h"
@@ -602,6 +603,20 @@ bool PackageManagerCore::fetchLocalPackagesTree()
 LocalPackagesHash PackageManagerCore::localInstalledPackages()
 {
     return d->localInstalledPackages();
+}
+
+KDUpdater::FileDownloaderProxyFactory *PackageManagerCore::proxyFactory() const
+{
+    if (d->m_proxyFactory)
+        return d->m_proxyFactory->clone();
+    return new PackageManagerProxyFactory(this);
+}
+
+void PackageManagerCore::setProxyFactory(KDUpdater::FileDownloaderProxyFactory *factory)
+{
+    delete d->m_proxyFactory;
+    d->m_proxyFactory = factory;
+    KDUpdater::FileDownloaderFactory::instance().setProxyFactory(proxyFactory());
 }
 
 PackagesList PackageManagerCore::remotePackages()

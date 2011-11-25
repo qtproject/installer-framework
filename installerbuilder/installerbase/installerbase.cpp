@@ -51,6 +51,7 @@
 
 #include <kdselfrestarter.h>
 #include <kdrunoncechecker.h>
+#include "kdupdaterfiledownloaderfactory.h"
 
 #include <QtCore/QTranslator>
 
@@ -239,9 +240,8 @@ int main(int argc, char *argv[])
              } else if (argument == QLatin1String("--verbose") || argument == QLatin1String("Verbose")) {
                 core.setVerbose(true);
              } else if (argument == QLatin1String("--proxy")) {
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
-                QNetworkProxyFactory::setUseSystemConfiguration(true);
-#endif
+                    core.settings().setProxyType(QInstaller::Settings::SystemProxy);
+                    KDUpdater::FileDownloaderFactory::instance().setProxyFactory(core.proxyFactory());
              } else if (argument == QLatin1String("--show-virtual-components")
                  || argument == QLatin1String("ShowVirtualComponents")) {
                      QFont f;
