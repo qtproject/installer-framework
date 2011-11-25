@@ -42,7 +42,11 @@ using namespace KDUpdater;
 
 struct FileDownloaderFactory::FileDownloaderFactoryData
 {
+    FileDownloaderFactoryData() : m_factory(0) {}
+    ~FileDownloaderFactoryData() { delete m_factory; }
+
     bool m_followRedirects;
+    FileDownloaderProxyFactory *m_factory;
 };
 
 FileDownloaderFactory& FileDownloaderFactory::instance()
@@ -65,14 +69,20 @@ FileDownloaderFactory::FileDownloaderFactory()
     d->m_followRedirects = false;
 }
 
+bool FileDownloaderFactory::followRedirects()
+{
+    return FileDownloaderFactory::instance().d->m_followRedirects;
+}
+
 void FileDownloaderFactory::setFollowRedirects(bool val)
 {
     FileDownloaderFactory::instance().d->m_followRedirects = val;
 }
 
-bool FileDownloaderFactory::followRedirects()
+void FileDownloaderFactory::setProxyFactory(FileDownloaderProxyFactory *factory)
 {
-    return FileDownloaderFactory::instance().d->m_followRedirects;
+    delete FileDownloaderFactory::instance().d->m_factory;
+    FileDownloaderFactory::instance().d->m_factory = factory;
 }
 
 FileDownloaderFactory::~FileDownloaderFactory()
@@ -95,8 +105,10 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, const Signa
 {
     FileDownloader *downloader = KDGenericFactory<FileDownloader>::create(scheme);
     if (downloader != 0) {
-        downloader->setFollowRedirects(d->m_followRedirects);
         downloader->setParent(parent);
+        downloader->setFollowRedirects(d->m_followRedirects);
+        if (d->m_factory)
+            downloader->setProxyFactory(d->m_factory->clone());
     }
     if (!verifier)
         return downloader;

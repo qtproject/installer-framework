@@ -1163,18 +1163,6 @@ void KDUpdater::HttpDownloader::httpReadyRead()
 
 void KDUpdater::HttpDownloader::httpError(QNetworkReply::NetworkError)
 {
-    static bool setProxySettings = false;
-    if (!d->retrying && !setProxySettings) {
-        d->shutDown();
-        d->retrying = true;
-        setProxySettings = true;
-
-        // silently force retry with global proxy settings
-        QNetworkProxyFactory::setUseSystemConfiguration(true);
-
-        doDownload();
-        return;
-    }
     httpDone(true);
 }
 

@@ -31,7 +31,6 @@
 #include <QtCore/QCryptographicHash>
 
 #include <QtNetwork/QAuthenticator>
-#include <QtNetwork/QNetworkProxyFactory>
 
 namespace KDUpdater {
 
@@ -39,12 +38,7 @@ KDTOOLS_EXPORT QByteArray calculateHash(QIODevice *device, QCryptographicHash::A
 KDTOOLS_EXPORT QByteArray calculateHash(const QString &path, QCryptographicHash::Algorithm algo);
 
 class HashVerificationJob;
-
-class KDTOOLS_EXPORT FileDownloaderProxyFactory : public QNetworkProxyFactory
-{
-    public:
-        virtual FileDownloaderProxyFactory *clone() = 0;
-};
+class FileDownloaderProxyFactory;
 
 class KDTOOLS_EXPORT FileDownloader : public QObject
 {
