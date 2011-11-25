@@ -357,7 +357,7 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
 
     const QString repoUrl = m_repository.url().toString();
     const QUrl url = QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, next,
-        online ? nextVersion : QLatin1String(""));
+        online ? nextVersion : QString());
 
     if (!m_publicKey.isEmpty()) {
         const CryptoSignatureVerifier verifier(m_publicKey);

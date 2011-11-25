@@ -213,9 +213,6 @@ void QInstaller::init()
     // load 7z stuff, if we're a static lib
     ::initArchives();
 
-   // proxy settings
-   //QNetworkProxyFactory::setUseSystemConfiguration( true );
-
    // qDebug -> verbose()
    qInstallMsgHandler(messageHandler);
 }

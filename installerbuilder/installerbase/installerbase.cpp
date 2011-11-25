@@ -174,8 +174,7 @@ int main(int argc, char *argv[])
         // install "our" default translator
         const QString ourLocaleFile =
             QString::fromLatin1(":/translations/%1.qm").arg(QLocale().name().toLower());
-        if (QFile::exists(ourLocaleFile))
-        {
+        if (QFile::exists(ourLocaleFile)) {
             QTranslator* const translator = new QTranslator(&app);
             translator->load(ourLocaleFile);
             app.installTranslator(translator);

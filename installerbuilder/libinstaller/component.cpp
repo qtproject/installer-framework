@@ -112,7 +112,7 @@ void Component::loadDataFromPackage(const LocalPackage &package)
     setValue(QLatin1String("InstallDate"), package.installDate.toString());
     setValue(scUncompressedSize, QString::number(package.uncompressedSize));
 
-    QString dependstr = QLatin1String("");
+    QString dependstr;
     foreach (const QString &val, package.dependencies)
         dependstr += val + QLatin1String(",");
 

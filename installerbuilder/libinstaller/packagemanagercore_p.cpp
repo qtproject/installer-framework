@@ -576,11 +576,12 @@ void PackageManagerCorePrivate::initialize()
     disconnect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
     connect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
 
+    m_updaterApplication.updateSourcesInfo()->setFileName(QString());
     m_updaterApplication.packagesInfo()->setFileName(componentsXmlPath());
-    m_updaterApplication.updateSourcesInfo()->setFileName(QLatin1String(""));
 
     m_updaterApplication.packagesInfo()->setApplicationName(m_settings.applicationName());
     m_updaterApplication.packagesInfo()->setApplicationVersion(m_settings.applicationVersion());
+
     if (isInstaller()) {
         m_updaterApplication.addUpdateSource(m_settings.applicationName(), m_settings.applicationName(),
             QString(), QUrl(QLatin1String("resource://metadata/")), 0);

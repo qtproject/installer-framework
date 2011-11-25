@@ -152,7 +152,7 @@ public:
         setPixmap(QWizard::WatermarkPixmap, QPixmap());
 
         setLayout(new QVBoxLayout);
-        setSubTitle(QLatin1String(""));
+        setSubTitle(QString());
         setTitle(widget->windowTitle());
         m_widget->setProperty("complete", true);
         m_widget->setProperty("final", false);
@@ -873,8 +873,8 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
 void LicenseAgreementPage::entering()
 {
     m_licenseListWidget->clear();
+    m_textBrowser->setText(QString());
     m_licenseListWidget->setVisible(false);
-    m_textBrowser->setText(QLatin1String(""));
 
     packageManagerCore()->calculateComponentsToInstall();
     foreach (QInstaller::Component *component, packageManagerCore()->orderedComponentsToInstall())

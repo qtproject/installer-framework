@@ -110,8 +110,8 @@ void GetRepositoriesMetaInfoJob::reset()
     m_repositoryByTemporaryDirectory.clear();
 
     setError(KDJob::NoError);
+    setErrorString(QString());
     setCapabilities(Cancelable);
-    setErrorString(QLatin1String(""));
 }
 
 bool GetRepositoriesMetaInfoJob::isCanceled() const
