@@ -40,6 +40,7 @@ Repository::Repository()
     : m_default(false)
     , m_enabled(false)
 {
+    registerMetaType();
 }
 
 /*!
@@ -52,6 +53,7 @@ Repository::Repository(const Repository &other)
     , m_username(other.m_username)
     , m_password(other.m_password)
 {
+    registerMetaType();
 }
 
 /*!
@@ -62,6 +64,7 @@ Repository::Repository(const QUrl &url, bool isDefault)
     , m_default(isDefault)
     , m_enabled(true)
 {
+    registerMetaType();
 }
 
 /*!
@@ -173,6 +176,28 @@ const Repository &Repository::operator=(const Repository &other)
     m_password = other.m_password;
 
     return *this;
+}
+
+void Repository::registerMetaType()
+{
+    qRegisterMetaType<Repository>("Repository");
+    qRegisterMetaTypeStreamOperators<Repository>("Repository");
+}
+
+QDataStream &operator>>(QDataStream &istream, Repository &repository)
+{
+    QByteArray url, username, password;
+    istream >> url >> repository.m_default >> repository.m_enabled >> username >> password;
+    repository.setUrl(QUrl::fromEncoded(QByteArray::fromBase64(url)));
+    repository.setUsername(QString::fromUtf8(QByteArray::fromBase64(username)));
+    repository.setPassword(QString::fromUtf8(QByteArray::fromBase64(password)));
+    return istream;
+}
+
+QDataStream &operator<<(QDataStream &ostream, const Repository &repository)
+{
+    return ostream << repository.m_url.toEncoded().toBase64() << repository.m_default << repository.m_enabled
+        << repository.m_username.toUtf8().toBase64() << repository.m_password.toUtf8().toBase64();
 }
 
 }

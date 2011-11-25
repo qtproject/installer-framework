@@ -65,6 +65,12 @@ public:
     bool operator==(const Repository &other) const;
     const Repository &operator=(const Repository &other);
 
+    friend QDataStream &operator>>(QDataStream &istream, Repository &repository);
+    friend QDataStream &operator<<(QDataStream &ostream, const Repository &repository);
+
+private:
+    void registerMetaType();
+
 private:
     QUrl m_url;
     bool m_default;
@@ -77,6 +83,9 @@ inline uint qHash(const Repository &repository)
 {
     return qHash(repository.url().toString());
 }
+
+QDataStream &operator>>(QDataStream &istream, Repository &repository);
+QDataStream &operator<<(QDataStream &ostream, const Repository &repository);
 
 } // namespace QInstaller
 
