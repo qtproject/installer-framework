@@ -267,6 +267,62 @@ QString PackageManagerCorePrivate::componentsXmlPath() const
         .absoluteFilePath(configurationFileName()));
 }
 
+bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &components, bool loadScript)
+{
+    try {
+        // append all components to their respective parents
+        QHash<QString, Component*>::const_iterator it;
+        for (it = components.begin(); it != components.end(); ++it) {
+            if (statusCanceledOrFailed())
+                return false;
+
+            QString id = it.key();
+            QInstaller::Component *component = it.value();
+            while (!id.isEmpty() && component->parentComponent() == 0) {
+                id = id.section(QLatin1Char('.'), 0, -2);
+                if (components.contains(id))
+                    components[id]->appendComponent(component);
+            }
+        }
+
+        // append all components w/o parent to the direct list
+        foreach (QInstaller::Component *component, components) {
+            if (statusCanceledOrFailed())
+                return false;
+
+            if (component->parentComponent() == 0)
+                m_core->appendRootComponent(component);
+        }
+
+        // after everything is set up, load the scripts
+        foreach (QInstaller::Component *component, components) {
+            if (statusCanceledOrFailed())
+                return false;
+
+            if (loadScript)
+                component->loadComponentScript();
+
+            // set the checked state for all components without child (means without tristate)
+            if (component->isCheckable() && !component->isTristate()) {
+                if (component->isDefault() && isInstaller())
+                    component->setCheckState(Qt::Checked);
+                else if (component->isInstalled())
+                    component->setCheckState(Qt::Checked);
+            }
+        }
+    } catch (const Error &error) {
+        clearAllComponentLists();
+        emit m_core->finishAllComponentsReset();
+        setStatus(PackageManagerCore::Failure, error.message());
+
+        // TODO: make sure we remove all message boxes inside the library at some point.
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
+            tr("Error"), error.message());
+        return false;
+    }
+    return true;
+}
+
 void PackageManagerCorePrivate::clearAllComponentLists()
 {
     qDeleteAll(m_rootComponents);

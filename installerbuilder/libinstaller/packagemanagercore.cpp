@@ -573,7 +573,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
     emit startAllComponentsReset();
 
     d->clearAllComponentLists();
-    QMap<QString, QInstaller::Component*> components;
+    QHash<QString, QInstaller::Component*> components;
 
     const QStringList &keys = installedPackages.keys();
     foreach (const QString &key, keys) {
@@ -588,34 +588,8 @@ bool PackageManagerCore::fetchLocalPackagesTree()
         components.insert(name, component.take());
     }
 
-    // now append all components to their respective parents
-    QMap<QString, QInstaller::Component*>::const_iterator it;
-    for (it = components.begin(); it != components.end(); ++it) {
-        QString id = it.key();
-        QInstaller::Component *component = it.value();
-        while (!id.isEmpty() && component->parentComponent() == 0) {
-            id = id.section(QLatin1Char('.'), 0, -2);
-            if (components.contains(id))
-                components[id]->appendComponent(component);
-        }
-    }
-
-    // append all components w/o parent to the direct list
-    foreach (QInstaller::Component *component, components) {
-        if (component->parentComponent() == 0)
-            appendRootComponent(component);
-    }
-
-    // now set the checked state for all components without child
-    for (int i = 0; i < rootComponentCount(); ++i) {
-        QList<Component*> children = rootComponent(i)->childs();
-        foreach (Component *child, children) {
-            if (child->isCheckable() && !child->isTristate()) {
-                if (child->isInstalled())
-                    child->setCheckState(Qt::Checked);
-            }
-        }
-    }
+    if (!d->buildComponentTree(components, false))
+        return false;
 
     updateDisplayVersions(scDisplayVersion);
 
@@ -1587,55 +1561,8 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     // store all components that got a replacement
     storeReplacedComponents(components, data);
 
-    try {
-        // append all components to their respective parents
-        for (QHash<QString, Component*>::const_iterator it = components.begin(); it != components.end(); ++it) {
-            if (d->statusCanceledOrFailed())
-                return false;
-
-            QString id = it.key();
-            QInstaller::Component *component = it.value();
-            while (!id.isEmpty() && component->parentComponent() == 0) {
-                id = id.section(QLatin1Char('.'), 0, -2);
-                if (components.contains(id))
-                    components[id]->appendComponent(component);
-            }
-        }
-
-        // append all components w/o parent to the direct list
-        foreach (QInstaller::Component *component, components) {
-            if (d->statusCanceledOrFailed())
-                return false;
-
-            if (component->parentComponent() == 0)
-                appendRootComponent(component);
-        }
-
-        // after everything is set up, load the scripts
-        foreach (QInstaller::Component *component, components) {
-            if (d->statusCanceledOrFailed())
-                return false;
-
-            component->loadComponentScript();
-
-            // set the checked state for all components without child (means without tristate)
-            if (component->isCheckable() && !component->isTristate()) {
-                if (component->isDefault() && isInstaller())
-                    component->setCheckState(Qt::Checked);
-                else if (component->isInstalled())
-                    component->setCheckState(Qt::Checked);
-            }
-        }
-    } catch (const Error &error) {
-        d->clearAllComponentLists();
-        emit finishAllComponentsReset();
-        d->setStatus(Failure, error.message());
-
-        // TODO: make sure we remove all message boxes inside the library at some point.
-        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
-            tr("Error"), error.message());
+    if (!d->buildComponentTree(components, true))
         return false;
-    }
 
     emit finishAllComponentsReset();
     return true;
@@ -1696,9 +1623,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             if (localPackage.lastUpdateDate > updateDate)
                 continue;
 
-            if (update->data(scEssential, scFalse).toString().toLower() == scTrue) {
+            if (update->data(scEssential, scFalse).toString().toLower() == scTrue)
                 foundEssentialUpdate = true;
-            }
 
             // this is not a dependency, it is a real update
             components.insert(name, d->m_updaterComponentsDeps.takeLast());
@@ -1800,8 +1726,7 @@ void PackageManagerCore::updateDisplayVersions(const QString &displayKey)
 }
 
 QString PackageManagerCore::findDisplayVersion(const QString &componentName,
-                                               const QHash<QString, QInstaller::Component *> &components,
-                                               const QString &versionKey, QHash<QString, bool> &visited)
+    const QHash<QString, Component *> &components, const QString &versionKey, QHash<QString, bool> &visited)
 {
     const QString replaceWith = components.value(componentName)->value(scInheritVersion);
     visited[componentName] = true;

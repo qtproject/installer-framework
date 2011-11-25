@@ -98,6 +98,8 @@ public:
     QString componentsXmlPath() const;
     QString configurationFileName() const;
 
+    bool buildComponentTree(QHash<QString, Component*> &components, bool loadScript);
+
     void clearAllComponentLists();
     void clearUpdaterComponentLists();
     QList<Component*> &replacementDependencyComponents(RunMode mode);
@@ -193,7 +195,6 @@ private slots:
     }
 
     void handleMethodInvocationRequest(const QString &invokableMethodName);
-
 
 private:
     void deleteUninstaller();
