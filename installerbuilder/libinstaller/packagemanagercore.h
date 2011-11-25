@@ -94,6 +94,7 @@ public:
     bool fetchLocalPackagesTree();
     LocalPackagesHash localInstalledPackages();
 
+    void networkSettingsChanged();
     KDUpdater::FileDownloaderProxyFactory *proxyFactory() const;
     void setProxyFactory(KDUpdater::FileDownloaderProxyFactory *factory);
 
@@ -197,7 +198,7 @@ public:
 
     Q_INVOKABLE bool isProcessRunning(const QString &name) const;
 
-    const Settings &settings() const;
+    Settings &settings() const;
 
     Q_INVOKABLE bool addWizardPage(QInstaller::Component *component, const QString &name, int page);
     Q_INVOKABLE bool removeWizardPage(QInstaller::Component *component, const QString &name);

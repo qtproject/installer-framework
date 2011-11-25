@@ -92,7 +92,10 @@ public:
 
     QString uninstallerName() const;
     QString installerBinaryPath() const;
-    void readUninstallerIniFile(const QString &targetDir);
+
+    void writeMaintenanceConfigFiles();
+    void readMaintenanceConfigFiles(const QString &targetDir);
+
     void writeUninstaller(OperationList performedOperations);
 
     QString componentsXmlPath() const;

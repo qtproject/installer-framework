@@ -60,6 +60,9 @@
 #include <QtCore/QFutureWatcher>
 #include <QtCore/QTemporaryFile>
 
+#include <QtXml/QXmlStreamReader>
+#include <QtXml/QXmlStreamWriter>
+
 #include <errno.h>
 
 namespace QInstaller {
@@ -567,9 +570,9 @@ void PackageManagerCorePrivate::initialize()
 
     if (!m_core->isInstaller()) {
 #ifdef Q_WS_MAC
-        readUninstallerIniFile(QCoreApplication::applicationDirPath() + QLatin1String("/../../.."));
+        readMaintenanceConfigFiles(QCoreApplication::applicationDirPath() + QLatin1String("/../../.."));
 #else
-        readUninstallerIniFile(QCoreApplication::applicationDirPath());
+        readMaintenanceConfigFiles(QCoreApplication::applicationDirPath());
 #endif
     }
 
@@ -721,22 +724,162 @@ QString PackageManagerCorePrivate::uninstallerName() const
     return QString::fromLatin1("%1/%2").arg(targetDir()).arg(filename);
 }
 
-void PackageManagerCorePrivate::readUninstallerIniFile(const QString &targetDir)
+static QNetworkProxy readProxy(QXmlStreamReader &reader)
 {
-    const QString iniPath = targetDir + QLatin1Char('/') + m_settings.uninstallerIniFile();
+    QNetworkProxy proxy(QNetworkProxy::HttpProxy);
+    while (reader.readNextStartElement()) {
+        if (reader.name() == QLatin1String("Host"))
+            proxy.setHostName(reader.readElementText());
+        else if (reader.name() == QLatin1String("Port"))
+            proxy.setPort(reader.readElementText().toInt());
+        else if (reader.name() == QLatin1String("Username"))
+            proxy.setUser(reader.readElementText());
+        else if (reader.name() == QLatin1String("Password"))
+            proxy.setPassword(reader.readElementText());
+        else
+            reader.skipCurrentElement();
+    }
+    return proxy;
+}
+
+static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault)
+{
+    QSet<Repository> set;
+    while (reader.readNextStartElement()) {
+        if (reader.name() == QLatin1String("Repository")) {
+            Repository repo(QString(), isDefault);
+            while (reader.readNextStartElement()) {
+                if (reader.name() == QLatin1String("Host"))
+                    repo.setUrl(reader.readElementText());
+                else if (reader.name() == QLatin1String("Username"))
+                    repo.setUsername(reader.readElementText());
+                else if (reader.name() == QLatin1String("Password"))
+                    repo.setPassword(reader.readElementText());
+                else if (reader.name() == QLatin1String("Enabled"))
+                    repo.setEnabled(bool(reader.readElementText().toInt()));
+                else
+                    reader.skipCurrentElement();
+            }
+            set.insert(repo);
+        } else {
+            reader.skipCurrentElement();
+        }
+    }
+    return set;
+}
+
+void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
+{
+    // write current state (variables) to the uninstaller ini file
+    const QString iniPath = targetDir() + QLatin1Char('/') + m_settings.uninstallerIniFile();
+
+    QVariantHash vars;
     QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
-    const QVariantHash vars = cfg.value(QLatin1String("Variables")).toHash();
-    QHash<QString, QVariant>::ConstIterator it = vars.constBegin();
-    while (it != vars.constEnd()) {
-        m_vars.insert(it.key(), it.value().toString());
-        ++it;
+    foreach (const QString &key, m_vars.keys()) {
+        if (key != scRunProgramDescription && key != scRunProgram)
+            vars.insert(key, m_vars.value(key));
+    }
+    cfg.setValue(QLatin1String("Variables"), vars);
+
+    QVariantList repos;
+    foreach (const Repository &repo, m_settings.defaultRepositories())
+        repos.append(QVariant().fromValue(repo));
+    cfg.setValue(QLatin1String("DefaultRepositories"), repos);
+
+    cfg.sync();
+    if (cfg.status() != QSettingsWrapper::NoError) {
+        const QString reason = cfg.status() == QSettingsWrapper::AccessError ? tr("Access error")
+            : tr("Format error");
+        throw Error(tr("Could not write installer configuration to %1: %2").arg(iniPath, reason));
     }
 
-    QSet<Repository> repositories;
-    const QStringList list = cfg.value(scRepositories).toStringList();
-    foreach (const QString &url, list)
-        repositories.insert(Repository(url, false));
-    m_settings.addUserRepositories(repositories);
+    QFile file(targetDir() + QLatin1Char('/') + QLatin1String("network.xml"));
+    if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        QXmlStreamWriter writer(&file);
+        writer.setCodec("UTF-8");
+        writer.setAutoFormatting(true);
+        writer.writeStartDocument();
+
+        writer.writeStartElement(QLatin1String("Network"));
+            writer.writeTextElement(QLatin1String("ProxyType"), QString::number(m_settings.proxyType()));
+            writer.writeStartElement(QLatin1String("Ftp"));
+                const QNetworkProxy &ftpProxy = m_settings.ftpProxy();
+                writer.writeTextElement(QLatin1String("Host"), ftpProxy.hostName());
+                writer.writeTextElement(QLatin1String("Port"), QString::number(ftpProxy.port()));
+                writer.writeTextElement(QLatin1String("Username"), ftpProxy.user());
+                writer.writeTextElement(QLatin1String("Password"), ftpProxy.password());
+            writer.writeEndElement();
+            writer.writeStartElement(QLatin1String("Http"));
+                const QNetworkProxy &httpProxy = m_settings.httpProxy();
+                writer.writeTextElement(QLatin1String("Host"), httpProxy.hostName());
+                writer.writeTextElement(QLatin1String("Port"), QString::number(httpProxy.port()));
+                writer.writeTextElement(QLatin1String("Username"), httpProxy.user());
+                writer.writeTextElement(QLatin1String("Password"), httpProxy.password());
+            writer.writeEndElement();
+
+            writer.writeStartElement(QLatin1String("Repositories"));
+            foreach (const Repository &repo, m_settings.userRepositories()) {
+                writer.writeStartElement(QLatin1String("Repository"));
+                    writer.writeTextElement(QLatin1String("Host"), repo.url().toString());
+                    writer.writeTextElement(QLatin1String("Username"), repo.username());
+                    writer.writeTextElement(QLatin1String("Password"), repo.password());
+                    writer.writeTextElement(QLatin1String("Enabled"), QString::number(repo.isEnabled()));
+                writer.writeEndElement();
+            }
+            writer.writeEndElement();
+        writer.writeEndElement();
+    }
+}
+
+void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &targetDir)
+{
+    QSettingsWrapper cfg(targetDir + QLatin1Char('/') + m_settings.uninstallerIniFile(),
+        QSettingsWrapper::IniFormat);
+    const QVariantHash vars = cfg.value(QLatin1String("Variables")).toHash();
+    for (QHash<QString, QVariant>::ConstIterator it = vars.constBegin(); it != vars.constEnd(); ++it)
+        m_vars.insert(it.key(), it.value().toString());
+
+    QSet<Repository> repos;
+    const QVariantList variants = cfg.value(QLatin1String("DefaultRepositories")).toList();
+    foreach (const QVariant &variant, variants)
+        repos.insert(variant.value<Repository>());
+    if (!repos.isEmpty())
+        m_settings.setDefaultRepositories(repos);
+
+    QFile file(targetDir + QLatin1String("/network.xml"));
+    if (!file.open(QIODevice::ReadOnly))
+        return;
+
+    QXmlStreamReader reader(&file);
+    while (!reader.atEnd()) {
+        switch (reader.readNext()) {
+            case QXmlStreamReader::StartElement: {
+                if (reader.name() == QLatin1String("Network")) {
+                    while (reader.readNextStartElement()) {
+                        const QStringRef name = reader.name();
+                        if (name == QLatin1String("Ftp")) {
+                            m_settings.setFtpProxy(readProxy(reader));
+                        } else if (name == QLatin1String("Http")) {
+                            m_settings.setHttpProxy(readProxy(reader));
+                        } else if (reader.name() == QLatin1String("Repositories")) {
+                            m_settings.addUserRepositories(readRepositories(reader, false));
+                        } else if (name == QLatin1String("ProxyType")) {
+                            m_settings.setProxyType(Settings::ProxyType(reader.readElementText().toInt()));
+                        } else {
+                            reader.skipCurrentElement();
+                        }
+                    }
+                }
+            }   break;
+
+            case QXmlStreamReader::Invalid: {
+                qDebug() << reader.errorString();
+            }   break;
+
+            default:
+                break;
+        }
+    }
 }
 
 void PackageManagerCorePrivate::callBeginInstallation(const QList<Component*> &componentList)
@@ -960,32 +1103,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         performedOperations.append(takeOwnedOperation(op));
     }
 
-    {
-        // write current state (variables) to the uninstaller ini file
-        const QString iniPath = targetDir() + QLatin1Char('/') + m_settings.uninstallerIniFile();
-        QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
-        QVariantHash vars;
-        QHash<QString, QString>::ConstIterator it = m_vars.constBegin();
-        while (it != m_vars.constEnd()) {
-            const QString &key = it.key();
-            if (key != scRunProgramDescription && key != scRunProgram)
-                vars.insert(key, it.value());
-            ++it;
-        }
-        cfg.setValue(QLatin1String("Variables"), vars);
-
-        QStringList list;
-        foreach (const Repository &repository, m_settings.userRepositories())
-            list.append(repository.url().toString());
-        cfg.setValue(scRepositories, list);
-
-        cfg.sync();
-        if (cfg.status() != QSettingsWrapper::NoError) {
-            const QString reason = cfg.status() == QSettingsWrapper::AccessError ? tr("Access error")
-                : tr("Format error");
-            throw Error(tr("Could not write installer configuration to %1: %2").arg(iniPath, reason));
-        }
-    }
+    writeMaintenanceConfigFiles();
 
 #ifdef Q_WS_MAC
     // if it is a bundle, we need some stuff in it...

@@ -605,6 +605,19 @@ LocalPackagesHash PackageManagerCore::localInstalledPackages()
     return d->localInstalledPackages();
 }
 
+void PackageManagerCore::networkSettingsChanged()
+{
+    cancelMetaInfoJob();
+
+    d->m_updates = false;
+    d->m_repoFetched = false;
+    d->m_updateSourcesAdded = false;
+
+    if (d->isUpdater() || d->isPackageManager())
+        d->writeMaintenanceConfigFiles();
+    KDUpdater::FileDownloaderFactory::instance().setProxyFactory(proxyFactory());
+}
+
 KDUpdater::FileDownloaderProxyFactory *PackageManagerCore::proxyFactory() const
 {
     if (d->m_proxyFactory)
@@ -996,7 +1009,7 @@ QList<Component*> PackageManagerCore::dependencies(const Component *component, Q
     return result;
 }
 
-const Settings &PackageManagerCore::settings() const
+Settings &PackageManagerCore::settings() const
 {
     return d->m_settings;
 }

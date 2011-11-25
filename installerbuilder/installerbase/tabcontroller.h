@@ -32,6 +32,7 @@
 namespace QInstaller {
     class PackageManagerGui;
     class PackageManagerCore;
+    class Settings;
 }
 
 class IntroductionPageImpl;
@@ -59,6 +60,9 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void restartWizard();
+    void onSettingsButtonClicked();
+    void onCurrentIdChanged(int newId);
+    void onNetworkSettingsChanged(const QInstaller::Settings &settings);
 
 private:
     IntroductionPageImpl *introductionPage() const;

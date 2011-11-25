@@ -31,7 +31,9 @@
 **
 **************************************************************************/
 #include "tabcontroller.h"
+
 #include "installerbasecommons.h"
+#include "settingsdialog.h"
 
 #include <common/utils.h>
 #include <component.h>
@@ -62,6 +64,9 @@ public:
 
     QString m_controlScript;
     QHash<QString, QString> m_params;
+
+    Settings m_settings;
+    bool m_networkSettingsChanged;
 };
 
 TabController::Private::Private()
@@ -71,6 +76,7 @@ TabController::Private::Private()
     , m_introPageConnected(false)
     , m_gui(0)
     , m_core(0)
+    , m_networkSettingsChanged(false)
 {
 }
 
@@ -137,6 +143,9 @@ int TabController::init()
         connect(introPage, SIGNAL(initUpdater()), this, SLOT(initUpdater()));
         connect(introPage, SIGNAL(initUninstaller()), this, SLOT(initUninstaller()));
         connect(introPage, SIGNAL(initPackageManager()), this, SLOT(initPackageManager()));
+
+        connect(d->m_gui, SIGNAL(currentIdChanged(int)), this, SLOT(onCurrentIdChanged(int)));
+        connect(d->m_gui, SIGNAL(settingsButtonClicked()), this, SLOT(onSettingsButtonClicked()));
     }
 
     d->m_updatesFetched = false;
@@ -153,6 +162,7 @@ int TabController::init()
 
 int TabController::initUpdater()
 {
+    onCurrentIdChanged(d->m_gui->currentId());
     IntroductionPageImpl *introPage = introductionPage();
 
     introPage->setMessage(QString());
@@ -167,7 +177,9 @@ int TabController::initUpdater()
     }
 
     d->m_gui->setWindowModality(Qt::WindowModal);
+    d->m_gui->init();   // Initialize/ reset the ui.
     d->m_gui->show();
+    d->m_gui->setSettingsButtonEnabled(false);
 
     if (!d->m_updatesFetched) {
         d->m_updatesFetched = d->m_core->fetchRemotePackagesTree();
@@ -175,9 +187,8 @@ int TabController::initUpdater()
             introPage->setErrorMessage(d->m_core->error());
     }
 
-    // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
-    // hide of pages depending on the components.
-    d->m_gui->init();
+    // Needs to be done after check repositories as only then the ui can handle hide of pages depending on
+    // the components.
     d->m_gui->callControlScriptMethod(QLatin1String("UpdaterSelectedCallback"));
     d->m_gui->triggerControlScriptForCurrentPage();
 
@@ -190,11 +201,14 @@ int TabController::initUpdater()
         else
             introPage->setComplete(true);
     }
+    d->m_gui->setSettingsButtonEnabled(true);
+
     return d->m_core->status();
 }
 
 int TabController::initUninstaller()
 {
+    onCurrentIdChanged(d->m_gui->currentId());
     IntroductionPageImpl *introPage = introductionPage();
 
     introPage->setMessage(QString());
@@ -210,6 +224,7 @@ int TabController::initUninstaller()
 
 int TabController::initPackageManager()
 {
+    onCurrentIdChanged(d->m_gui->currentId());
     IntroductionPageImpl *introPage = introductionPage();
 
     introPage->setMessage(QString());
@@ -228,28 +243,31 @@ int TabController::initPackageManager()
     }
 
     d->m_gui->setWindowModality(Qt::WindowModal);
+    d->m_gui->init();   // Initialize/ reset the ui.
     d->m_gui->show();
+    d->m_gui->setSettingsButtonEnabled(false);
 
     bool localPackagesTreeFetched = false;
     if (!d->m_allPackagesFetched) {
         // first try to fetch the server side packages tree
         d->m_allPackagesFetched = d->m_core->fetchRemotePackagesTree();
-        if (!d->m_core->isInstaller() && !d->m_allPackagesFetched) {
+        if (!d->m_allPackagesFetched) {
             QString error = d->m_core->error();
-            // if that fails, try to fetch local installed tree
-            localPackagesTreeFetched = d->m_core->fetchLocalPackagesTree();
-            if (localPackagesTreeFetched) {
-                // if that succeeded, adjust error message
-                error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package management "
-                    "available.") + QLatin1String("</font>");
+            if (d->m_core->isPackageManager()) {
+                // if that fails and we're in maintenance mode, try to fetch local installed tree
+                localPackagesTreeFetched = d->m_core->fetchLocalPackagesTree();
+                if (localPackagesTreeFetched) {
+                    // if that succeeded, adjust error message
+                    error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
+                        "management available.") + QLatin1String("</font>");
+                }
             }
             introPage->setErrorMessage(error);
         }
     }
 
-    // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
-    // hide of pages depending on the components.
-    d->m_gui->init();
+    // Needs to be done after check repositories as only then the ui can handle hide of pages depending on
+    // the components.
     d->m_gui->callControlScriptMethod(QLatin1String("PackageManagerSelectedCallback"));
     d->m_gui->triggerControlScriptForCurrentPage();
 
@@ -262,6 +280,8 @@ int TabController::initPackageManager()
 
     if (d->m_allPackagesFetched | localPackagesTreeFetched)
         introPage->setComplete(true);
+    d->m_gui->setSettingsButtonEnabled(true);
+
     return d->m_core->status();
 }
 
@@ -270,9 +290,50 @@ int TabController::initPackageManager()
 void TabController::restartWizard()
 {
     d->m_core->reset(d->m_params);
+    if (d->m_networkSettingsChanged) {
+        d->m_networkSettingsChanged = false;
+
+        d->m_core->settings().setFtpProxy(d->m_settings.ftpProxy());
+        d->m_core->settings().setHttpProxy(d->m_settings.httpProxy());
+        d->m_core->settings().setProxyType(d->m_settings.proxyType());
+
+        d->m_core->settings().setUserRepositories(d->m_settings.userRepositories());
+        d->m_core->settings().setDefaultRepositories(d->m_settings.defaultRepositories());
+        d->m_core->settings().setTemporaryRepositories(d->m_settings.temporaryRepositories(),
+            d->m_settings.hasReplacementRepos());
+        d->m_core->networkSettingsChanged();
+    }
 
     // restart and switch back to intro page
     QTimer::singleShot(0, this, SLOT(init()));
+}
+
+void TabController::onSettingsButtonClicked()
+{
+    SettingsDialog dialog(d->m_core);
+    connect (&dialog, SIGNAL(networkSettingsChanged(QInstaller::Settings)), this,
+        SLOT(onNetworkSettingsChanged(QInstaller::Settings)));
+    dialog.exec();
+
+    if (d->m_networkSettingsChanged) {
+        d->m_core->setCanceled();
+        QTimer::singleShot(0, d->m_gui, SLOT(restart()));
+        QTimer::singleShot(100, this, SLOT(restartWizard()));
+    }
+}
+
+void TabController::onCurrentIdChanged(int newId)
+{
+    if (d->m_gui && d->m_core) {
+        d->m_gui->showSettingsButton((newId == PackageManagerCore::Introduction) &
+            (!d->m_core->isOfflineOnly()) & (!d->m_core->isUninstaller()));
+    }
+}
+
+void TabController::onNetworkSettingsChanged(const QInstaller::Settings &settings)
+{
+    d->m_settings = settings;
+    d->m_networkSettingsChanged = true;
 }
 
 // -- private

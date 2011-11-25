@@ -25,14 +25,18 @@ include(../libinstaller/libinstaller.pri)
 
 QT += network
 
+FORMS += settingsdialog.ui
+
 HEADERS += installerbase_p.h \
            tabcontroller.h \
-           installerbasecommons.h
+           installerbasecommons.h \
+           settingsdialog.h
 
 SOURCES = installerbase.cpp \
           installerbase_p.cpp \
           tabcontroller.cpp \
-          installerbasecommons.cpp
+          installerbasecommons.cpp \
+          settingsdialog.cpp
 
 win32-msvc2005 {
   CONFIG += embed_manifest_exe #msvc2008 is doing this automaticaly
