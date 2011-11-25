@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     const KDSelfRestarter restarter(argc, argv);
     KDRunOnceChecker runCheck(QLatin1String("lockmyApp1234865.lock"));
 
-    const QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
+    QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
     try {
         if (args.contains(QLatin1String("--version"))) {
             InstallerBase::showVersion(QLatin1String(VERSION));
@@ -147,6 +147,7 @@ int main(int argc, char *argv[])
 
         // from here, the "normal" installer binary is running
         MyApplication app(argc, argv);
+        args = app.arguments();
 
         if (runCheck.isRunning(KDRunOnceChecker::ProcessList)) {
             if (runCheck.isRunning(KDRunOnceChecker::Lockfile))
@@ -278,8 +279,6 @@ int main(int argc, char *argv[])
                 PackageManagerCore::setNoForceInstallation(true);
             } else {
                 std::cerr << "Unknown option: " << argument << std::endl;
-                InstallerBase::showUsage();
-                return PackageManagerCore::Failure;
             }
         }
 
