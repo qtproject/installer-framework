@@ -81,12 +81,15 @@ public:
     QSet<Repository> repositories() const;
 
     QSet<Repository> defaultRepositories() const;
+    void setDefaultRepositories(const QSet<Repository> &repositories);
     void addDefaultRepositories(const QSet<Repository> &repositories);
 
     QSet<Repository> temporaryRepositories() const;
     void setTemporaryRepositories(const QSet<Repository> &repositories, bool replace);
+    void addTemporaryRepositories(const QSet<Repository> &repositories, bool replace);
 
     QSet<Repository> userRepositories() const;
+    void setUserRepositories(const QSet<Repository> &repositories);
     void addUserRepositories(const QSet<Repository> &repositories);
 
     QStringList certificateFiles() const;

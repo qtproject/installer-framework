@@ -391,6 +391,12 @@ QSet<Repository> Settings::defaultRepositories() const
     return variantListToSet<Repository>(d->m_data.values(scRepositories));
 }
 
+void Settings::setDefaultRepositories(const QSet<Repository> &repositories)
+{
+    d->m_data.remove(scRepositories);
+    addDefaultRepositories(repositories);
+}
+
 void Settings::addDefaultRepositories(const QSet<Repository> &repositories)
 {
     foreach (const Repository &repository, repositories)
@@ -404,6 +410,12 @@ QSet<Repository> Settings::temporaryRepositories() const
 
 void Settings::setTemporaryRepositories(const QSet<Repository> &repositories, bool replace)
 {
+    d->m_data.remove(scTmpRepositories);
+    addTemporaryRepositories(repositories, replace);
+}
+
+void Settings::addTemporaryRepositories(const QSet<Repository> &repositories, bool replace)
+{
     d->m_replacementRepos = replace;
     foreach (const Repository &repository, repositories)
         d->m_data.insertMulti(scTmpRepositories, QVariant().fromValue(repository));
@@ -412,6 +424,12 @@ void Settings::setTemporaryRepositories(const QSet<Repository> &repositories, bo
 QSet<Repository> Settings::userRepositories() const
 {
     return variantListToSet<Repository>(d->m_data.values(scUserRepositories));
+}
+
+void Settings::setUserRepositories(const QSet<Repository> &repositories)
+{
+    d->m_data.remove(scUserRepositories);
+    addUserRepositories(repositories);
 }
 
 void Settings::addUserRepositories(const QSet<Repository> &repositories)
