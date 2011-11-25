@@ -28,6 +28,8 @@
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
 
+#include <QtNetwork/QNetworkProxy>
+
 static QString format(double data)
 {
     if (data < 1024.0)
@@ -131,6 +133,22 @@ private:
 // http://get.qt.nokia.com/qt/source/qt-mac-opensource-4.7.4.dmg
 // ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.7.4.dmg
 
+class ProxyFactory : public KDUpdater::FileDownloaderProxyFactory
+{
+public:
+    ProxyFactory() {}
+
+    ProxyFactory *clone() const
+    {
+        return new ProxyFactory();
+    }
+
+    QList<QNetworkProxy> queryProxy(const QNetworkProxyQuery &query = QNetworkProxyQuery())
+    {
+        return QNetworkProxyFactory::systemProxyForQuery(query);
+    }
+};
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -143,6 +161,7 @@ int main(int argc, char *argv[])
     KDUpdater::FileDownloader *loader = KDUpdater::FileDownloaderFactory::instance().create(url.scheme());
     if (loader) {
         loader->setUrl(url);
+        loader->setProxyFactory(new ProxyFactory());
 
         Receiver r;
         r.connect(loader, SIGNAL(downloadStarted()), &r, SLOT(downloadStarted()));
