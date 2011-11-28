@@ -45,6 +45,7 @@ public:
     explicit IntroductionPageImpl(QInstaller::PackageManagerCore *core);
 
     int nextId() const;
+    bool validatePage();
 
     void showAll();
     void hideAll();
@@ -56,20 +57,24 @@ public Q_SLOTS:
     void setMessage(const QString &msg);
     void setErrorMessage(const QString &error);
 
-Q_SIGNALS:
-    void initUpdater();
-    void initUninstaller();
-    void initPackageManager();
-
 private Q_SLOTS:
     void setUpdater(bool value);
     void setUninstaller(bool value);
     void setPackageManager(bool value);
+    void onCoreNetworkSettingsChanged();
 
 private:
+    void entering();
+    void leaving();
+
     void showWidgets(bool show);
+    void callControlScript(const QString &callback);
 
 private:
+    bool m_updatesFetched;
+    bool m_updatesCompleted;
+    bool m_allPackagesFetched;
+
     QLabel *m_label;
     QLabel *m_errorLabel;
     QProgressBar *m_progressBar;

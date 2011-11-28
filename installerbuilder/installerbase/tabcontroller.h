@@ -54,18 +54,12 @@ public:
 
 public Q_SLOTS:
     int init();
-    int initUpdater();
-    int initUninstaller();
-    int initPackageManager();
 
 private Q_SLOTS:
     void restartWizard();
     void onSettingsButtonClicked();
     void onCurrentIdChanged(int newId);
     void onNetworkSettingsChanged(const QInstaller::Settings &settings);
-
-private:
-    IntroductionPageImpl *introductionPage() const;
 
 private:
     class Private;

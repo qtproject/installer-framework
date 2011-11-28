@@ -54,6 +54,8 @@ using namespace QInstaller;
 
 IntroductionPageImpl::IntroductionPageImpl(QInstaller::PackageManagerCore *core)
     : QInstaller::IntroductionPage(core)
+    , m_updatesFetched(false)
+    , m_allPackagesFetched(false)
 {
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
@@ -95,6 +97,9 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::PackageManagerCore *core)
     setWidget(widget);
 
     core->setCompleteUninstallation(core->isUninstaller());
+
+    connect(core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
+    connect(core, SIGNAL(coreNetworkSettingsChanged()), this, SLOT(onCoreNetworkSettingsChanged()));
 }
 
 int IntroductionPageImpl::nextId() const
@@ -106,6 +111,79 @@ int IntroductionPageImpl::nextId() const
         return PackageManagerCore::ComponentSelection;
 
     return QInstaller::IntroductionPage::nextId();
+}
+
+bool IntroductionPageImpl::validatePage()
+{
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isUninstaller())
+        return true;
+
+    setComplete(false);
+    gui()->setSettingsButtonEnabled(false);
+
+    const bool maintanence = core->isUpdater() || core->isPackageManager();
+    if (maintanence) {
+        showAll();
+        setMaintenanceToolsEnabled(false);
+    } else {
+        showMetaInfoUdate();
+    }
+
+    // fetch updater packages
+    if (core->isUpdater()) {
+        if (!m_updatesFetched) {
+            m_updatesFetched = core->fetchRemotePackagesTree();
+            if (!m_updatesFetched)
+                setErrorMessage(core->error());
+        }
+
+        callControlScript(QLatin1String("UpdaterSelectedCallback"));
+
+        if (m_updatesFetched) {
+            if (core->updaterComponents().count() <= 0)
+                setErrorMessage(tr("<b>No updates available.</b>"));
+            else
+                setComplete(true);
+        }
+    }
+
+    // fetch common packages
+    if (core->isInstaller() || core->isPackageManager()) {
+        bool localPackagesTreeFetched = false;
+        if (!m_allPackagesFetched) {
+            // first try to fetch the server side packages tree
+            m_allPackagesFetched = core->fetchRemotePackagesTree();
+            if (!m_allPackagesFetched) {
+                QString error = core->error();
+                if (core->isPackageManager()) {
+                    // if that fails and we're in maintenance mode, try to fetch local installed tree
+                    localPackagesTreeFetched = core->fetchLocalPackagesTree();
+                    if (localPackagesTreeFetched) {
+                        // if that succeeded, adjust error message
+                        error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
+                            "management available.") + QLatin1String("</font>");
+                    }
+                }
+                setErrorMessage(error);
+            }
+        }
+
+        callControlScript(QLatin1String("PackageManagerSelectedCallback"));
+
+        if (m_allPackagesFetched | localPackagesTreeFetched)
+            setComplete(true);
+    }
+
+    if (maintanence) {
+        showMaintenanceTools();
+        setMaintenanceToolsEnabled(true);
+    } else {
+        hideAll();
+    }
+    gui()->setSettingsButtonEnabled(true);
+
+    return isComplete();
 }
 
 void IntroductionPageImpl::showAll()
@@ -139,6 +217,8 @@ void IntroductionPageImpl::setMaintenanceToolsEnabled(bool enable)
     m_removeAllComponents->setEnabled(enable);
 }
 
+// -- public slots
+
 void IntroductionPageImpl::setMessage(const QString &msg)
 {
     m_label->setText(msg);
@@ -158,28 +238,70 @@ void IntroductionPageImpl::setErrorMessage(const QString &error)
     m_errorLabel->setPalette(palette);
 }
 
+void IntroductionPageImpl::callControlScript(const QString &callback)
+{
+    // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
+    // hide of pages depending on the components.
+    gui()->init();
+    gui()->callControlScriptMethod(callback);
+    gui()->triggerControlScriptForCurrentPage();
+}
+
+// -- private slots
+
 void IntroductionPageImpl::setUpdater(bool value)
 {
     if (value) {
+        entering();
+        gui()->showSettingsButton(true);
         packageManagerCore()->setUpdater();
-        emit initUpdater();
     }
 }
 
 void IntroductionPageImpl::setUninstaller(bool value)
 {
     if (value) {
+        entering();
+        gui()->showSettingsButton(false);
         packageManagerCore()->setUninstaller();
-        emit initUninstaller();
     }
 }
 
 void IntroductionPageImpl::setPackageManager(bool value)
 {
     if (value) {
+        entering();
+        gui()->showSettingsButton(true);
         packageManagerCore()->setPackageManager();
-        emit initPackageManager();
     }
+}
+
+void IntroductionPageImpl::onCoreNetworkSettingsChanged()
+{
+    m_updatesFetched = false;
+    m_allPackagesFetched = false;
+}
+
+// -- private
+
+void IntroductionPageImpl::entering()
+{
+    setComplete(true);
+    showWidgets(false);
+    setMessage(QString());
+    setErrorMessage(QString());
+
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isUninstaller() ||core->isUpdater() || core->isPackageManager()) {
+        showMaintenanceTools();
+        setMaintenanceToolsEnabled(true);
+    }
+}
+
+void IntroductionPageImpl::leaving()
+{
+    // TODO: force repaint on next page, keeps unpainted after fetch
+    QTimer::singleShot(100, gui()->page(nextId()), SLOT(repaint()));
 }
 
 void IntroductionPageImpl::showWidgets(bool show)

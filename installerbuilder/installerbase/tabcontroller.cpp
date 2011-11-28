@@ -36,11 +36,9 @@
 #include "settingsdialog.h"
 
 #include <common/utils.h>
-#include <component.h>
 #include <packagemanagercore.h>
 
 #include <QtCore/QTimer>
-
 #include <QtScript/QScriptEngine>
 
 using namespace QInstaller;
@@ -55,25 +53,18 @@ public:
     ~Private();
 
     bool m_init;
-    bool m_updatesFetched;
-    bool m_allPackagesFetched;
-    bool m_introPageConnected;
-
-    QInstaller::PackageManagerGui *m_gui;
-    QInstaller::PackageManagerCore *m_core;
-
     QString m_controlScript;
     QHash<QString, QString> m_params;
 
     Settings m_settings;
     bool m_networkSettingsChanged;
+
+    QInstaller::PackageManagerGui *m_gui;
+    QInstaller::PackageManagerCore *m_core;
 };
 
 TabController::Private::Private()
     : m_init(false)
-    , m_updatesFetched(false)
-    , m_allPackagesFetched(false)
-    , m_introPageConnected(false)
     , m_gui(0)
     , m_core(0)
     , m_networkSettingsChanged(false)
@@ -138,151 +129,15 @@ int TabController::init()
                 engine->newQObject(this));
         }
 
-        IntroductionPageImpl *introPage =
-            qobject_cast<IntroductionPageImpl*>(d->m_gui->page(PackageManagerCore::Introduction));
-        connect(introPage, SIGNAL(initUpdater()), this, SLOT(initUpdater()));
-        connect(introPage, SIGNAL(initUninstaller()), this, SLOT(initUninstaller()));
-        connect(introPage, SIGNAL(initPackageManager()), this, SLOT(initPackageManager()));
-
         connect(d->m_gui, SIGNAL(currentIdChanged(int)), this, SLOT(onCurrentIdChanged(int)));
         connect(d->m_gui, SIGNAL(settingsButtonClicked()), this, SLOT(onSettingsButtonClicked()));
     }
 
-    d->m_updatesFetched = false;
-    d->m_allPackagesFetched = false;
-
-    if (d->m_core->isUpdater())
-        return initUpdater();
-
-    if (d->m_core->isUninstaller())
-        return initUninstaller();
-
-    return initPackageManager();
-}
-
-int TabController::initUpdater()
-{
-    onCurrentIdChanged(d->m_gui->currentId());
-    IntroductionPageImpl *introPage = introductionPage();
-
-    introPage->setMessage(QString());
-    introPage->setErrorMessage(QString());
-    introPage->showAll();
-    introPage->setComplete(false);
-    introPage->setMaintenanceToolsEnabled(false);
-
-    if (!d->m_introPageConnected) {
-        d->m_introPageConnected = true;
-        connect(d->m_core, SIGNAL(metaJobInfoMessage(QString)), introPage, SLOT(setMessage(QString)));
-    }
-
-    d->m_gui->setWindowModality(Qt::WindowModal);
-    d->m_gui->init();   // Initialize/ reset the ui.
-    d->m_gui->show();
-    d->m_gui->setSettingsButtonEnabled(false);
-
-    if (!d->m_updatesFetched) {
-        d->m_updatesFetched = d->m_core->fetchRemotePackagesTree();
-        if (!d->m_updatesFetched)
-            introPage->setErrorMessage(d->m_core->error());
-    }
-
-    // Needs to be done after check repositories as only then the ui can handle hide of pages depending on
-    // the components.
-    d->m_gui->callControlScriptMethod(QLatin1String("UpdaterSelectedCallback"));
-    d->m_gui->triggerControlScriptForCurrentPage();
-
-    introPage->showMaintenanceTools();
-    introPage->setMaintenanceToolsEnabled(true);
-
-    if (d->m_updatesFetched) {
-        if (d->m_core->updaterComponents().count() <= 0)
-            introPage->setErrorMessage(tr("<b>No updates available.</b>"));
-        else
-            introPage->setComplete(true);
-    }
-    d->m_gui->setSettingsButtonEnabled(true);
-
-    return d->m_core->status();
-}
-
-int TabController::initUninstaller()
-{
-    onCurrentIdChanged(d->m_gui->currentId());
-    IntroductionPageImpl *introPage = introductionPage();
-
-    introPage->setMessage(QString());
-    introPage->setErrorMessage(QString());
-    introPage->setComplete(true);
-    introPage->showMaintenanceTools();
-
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 
+    onCurrentIdChanged(d->m_gui->currentId());
     return PackageManagerCore::Success;
-}
-
-int TabController::initPackageManager()
-{
-    onCurrentIdChanged(d->m_gui->currentId());
-    IntroductionPageImpl *introPage = introductionPage();
-
-    introPage->setMessage(QString());
-    introPage->setErrorMessage(QString());
-    introPage->setComplete(false);
-    introPage->showMetaInfoUdate();
-
-    if (d->m_core->isPackageManager()) {
-        introPage->showAll();
-        introPage->setMaintenanceToolsEnabled(false);
-    }
-
-    if (!d->m_introPageConnected) {
-        d->m_introPageConnected = true;
-        connect(d->m_core, SIGNAL(metaJobInfoMessage(QString)), introPage, SLOT(setMessage(QString)));
-    }
-
-    d->m_gui->setWindowModality(Qt::WindowModal);
-    d->m_gui->init();   // Initialize/ reset the ui.
-    d->m_gui->show();
-    d->m_gui->setSettingsButtonEnabled(false);
-
-    bool localPackagesTreeFetched = false;
-    if (!d->m_allPackagesFetched) {
-        // first try to fetch the server side packages tree
-        d->m_allPackagesFetched = d->m_core->fetchRemotePackagesTree();
-        if (!d->m_allPackagesFetched) {
-            QString error = d->m_core->error();
-            if (d->m_core->isPackageManager()) {
-                // if that fails and we're in maintenance mode, try to fetch local installed tree
-                localPackagesTreeFetched = d->m_core->fetchLocalPackagesTree();
-                if (localPackagesTreeFetched) {
-                    // if that succeeded, adjust error message
-                    error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
-                        "management available.") + QLatin1String("</font>");
-                }
-            }
-            introPage->setErrorMessage(error);
-        }
-    }
-
-    // Needs to be done after check repositories as only then the ui can handle hide of pages depending on
-    // the components.
-    d->m_gui->callControlScriptMethod(QLatin1String("PackageManagerSelectedCallback"));
-    d->m_gui->triggerControlScriptForCurrentPage();
-
-    if (d->m_core->isPackageManager()) {
-        introPage->showMaintenanceTools();
-        introPage->setMaintenanceToolsEnabled(true);
-    } else {
-        introPage->hideAll();
-    }
-
-    if (d->m_allPackagesFetched | localPackagesTreeFetched)
-        introPage->setComplete(true);
-    d->m_gui->setSettingsButtonEnabled(true);
-
-    return d->m_core->status();
 }
 
 // -- private slots
@@ -334,11 +189,4 @@ void TabController::onNetworkSettingsChanged(const QInstaller::Settings &setting
 {
     d->m_settings = settings;
     d->m_networkSettingsChanged = true;
-}
-
-// -- private
-
-IntroductionPageImpl *TabController::introductionPage() const
-{
-    return qobject_cast<IntroductionPageImpl*> (d->m_gui->page(PackageManagerCore::Introduction));
 }

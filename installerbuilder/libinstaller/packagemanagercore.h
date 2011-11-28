@@ -258,6 +258,7 @@ Q_SIGNALS:
     void wizardPageVisibilityChangeRequested(bool visible, int page);
 
     void setAutomatedPageSwitchEnabled(bool request);
+    void coreNetworkSettingsChanged();
 
 private:
     struct Data {

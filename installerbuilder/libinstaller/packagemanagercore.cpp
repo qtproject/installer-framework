@@ -616,6 +616,8 @@ void PackageManagerCore::networkSettingsChanged()
     if (d->isUpdater() || d->isPackageManager())
         d->writeMaintenanceConfigFiles();
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(proxyFactory());
+
+    emit coreNetworkSettingsChanged();
 }
 
 KDUpdater::FileDownloaderProxyFactory *PackageManagerCore::proxyFactory() const
