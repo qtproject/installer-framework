@@ -49,6 +49,8 @@ PackageManagerProxyFactory *PackageManagerProxyFactory::clone() const
 QList<QNetworkProxy> PackageManagerProxyFactory::queryProxy(const QNetworkProxyQuery &query)
 {
     const Settings &settings = m_core->settings();
+    QList<QNetworkProxy> list;
+
     if (settings.proxyType() == Settings::SystemProxy) {
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
         QUrl proxyUrl = QUrl::fromUserInput(QString::fromUtf8(qgetenv("http_proxy")));
@@ -60,7 +62,6 @@ QList<QNetworkProxy> PackageManagerProxyFactory::queryProxy(const QNetworkProxyQ
         return QNetworkProxyFactory::systemProxyForQuery(query);
     }
 
-    QList<QNetworkProxy> list;
     if ((settings.proxyType() == Settings::NoProxy))
         return list << QNetworkProxy(QNetworkProxy::NoProxy);
 
