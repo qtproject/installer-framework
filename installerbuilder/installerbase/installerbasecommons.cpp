@@ -254,6 +254,7 @@ void IntroductionPageImpl::setUpdater(bool value)
         entering();
         gui()->showSettingsButton(true);
         packageManagerCore()->setUpdater();
+        emit packageManagerCoreTypeChanged();
     }
 }
 
@@ -263,6 +264,7 @@ void IntroductionPageImpl::setUninstaller(bool value)
         entering();
         gui()->showSettingsButton(false);
         packageManagerCore()->setUninstaller();
+        emit packageManagerCoreTypeChanged();
     }
 }
 
@@ -272,6 +274,7 @@ void IntroductionPageImpl::setPackageManager(bool value)
         entering();
         gui()->showSettingsButton(true);
         packageManagerCore()->setPackageManager();
+        emit packageManagerCoreTypeChanged();
     }
 }
 
@@ -481,9 +484,7 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
     : PackageManagerGui(core, 0)
 {
     IntroductionPageImpl *intro = new IntroductionPageImpl(core);
-    connect(intro, SIGNAL(initUpdater()), this, SLOT(updateRestartPage()));
-    connect(intro, SIGNAL(initUninstaller()), this, SLOT(updateRestartPage()));
-    connect(intro, SIGNAL(initPackageManager()), this, SLOT(updateRestartPage()));
+    connect(intro, SIGNAL(packageManagerCoreTypeChanged()), this, SLOT(updateRestartPage()));
 
     setPage(PackageManagerCore::Introduction, intro);
     setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));

@@ -63,6 +63,9 @@ public Q_SLOTS:
     void setMessage(const QString &msg);
     void setErrorMessage(const QString &error);
 
+Q_SIGNALS:
+    void packageManagerCoreTypeChanged();
+
 private Q_SLOTS:
     void setUpdater(bool value);
     void setUninstaller(bool value);

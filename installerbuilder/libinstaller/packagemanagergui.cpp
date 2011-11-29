@@ -1916,10 +1916,10 @@ void FinishedPage::leaving()
 {
 #ifdef Q_WS_MAC
     gui()->setOption(QWizard::NoCancelButton, true);
-    if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton))
-        cancel->setVisible(false);
 #endif
 
+    if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton))
+        cancel->setVisible(false);
     gui()->updateButtonLayout();
 
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
