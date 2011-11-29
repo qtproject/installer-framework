@@ -280,6 +280,10 @@ void IntroductionPageImpl::setPackageManager(bool value)
 
 void IntroductionPageImpl::onCoreNetworkSettingsChanged()
 {
+    // force a repaint of the ui as after the settings dialog has been closed and the wizard has been
+    // restarted, the "Next" button looks still disabled.   TODO: figure out why this happens at all!
+    gui()->repaint();
+
     m_updatesFetched = false;
     m_allPackagesFetched = false;
 }
