@@ -132,6 +132,11 @@ int TabController::init()
         connect(d->m_gui, SIGNAL(settingsButtonClicked()), this, SLOT(onSettingsButtonClicked()));
     }
 
+    IntroductionPageImpl *page =
+        qobject_cast<IntroductionPageImpl*> (d->m_gui->page(PackageManagerCore::Introduction));
+    if (page)
+        page->onCoreNetworkSettingsChanged();
+
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 

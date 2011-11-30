@@ -60,6 +60,7 @@ public:
     void setMaintenanceToolsEnabled(bool enable);
 
 public Q_SLOTS:
+    void onCoreNetworkSettingsChanged();
     void setMessage(const QString &msg);
     void setErrorMessage(const QString &error);
 
@@ -70,7 +71,6 @@ private Q_SLOTS:
     void setUpdater(bool value);
     void setUninstaller(bool value);
     void setPackageManager(bool value);
-    void onCoreNetworkSettingsChanged();
 
 private:
     void entering();
