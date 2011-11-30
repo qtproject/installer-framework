@@ -134,9 +134,13 @@ int TabController::init()
 
     IntroductionPageImpl *page =
         qobject_cast<IntroductionPageImpl*> (d->m_gui->page(PackageManagerCore::Introduction));
-    if (page)
+    if (page) {
+        page->setMessage(QString());
+        page->setErrorMessage(QString());
         page->onCoreNetworkSettingsChanged();
+    }
 
+    d->m_gui->restart();
     d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 
@@ -176,8 +180,13 @@ void TabController::onSettingsButtonClicked()
 
     if (d->m_networkSettingsChanged) {
         d->m_core->setCanceled();
-        QTimer::singleShot(0, d->m_gui, SLOT(restart()));
-        QTimer::singleShot(100, this, SLOT(restartWizard()));
+        IntroductionPageImpl *page =
+            qobject_cast<IntroductionPageImpl*> (d->m_gui->page(PackageManagerCore::Introduction));
+        if (page) {
+            page->setMessage(QString());
+            page->setErrorMessage(QString());
+        }
+        restartWizard();
     }
 }
 
