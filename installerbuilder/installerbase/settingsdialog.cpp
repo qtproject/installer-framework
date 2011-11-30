@@ -108,11 +108,11 @@ QVariant RepositoryItem::data(int column, int role) const
                 case 0:
                     return data.toString().isEmpty() ? QLatin1String(" ") : data;
                 case 2:
-                    return m_repo.url().toString();
-                case 3:
                     return m_repo.username();
-                case 4:
+                case 3:
                     return m_repo.password();
+                case 4:
+                    return m_repo.url().toString();
                 default:
                     break;
             };
@@ -128,13 +128,13 @@ void RepositoryItem::setData(int column, int role, const QVariant &value)
         case Qt::EditRole: {
             switch (column) {
                 case 2:
-                    m_repo.setUrl(value.toUrl());
-                    break;
-                case 3:
                     m_repo.setUsername(value.toString());
                     break;
-                case 4:
+                case 3:
                     m_repo.setPassword(value.toString());
+                    break;
+                case 4:
+                    m_repo.setUrl(value.toUrl());
                     break;
                 default:
                     break;
@@ -282,6 +282,7 @@ void SettingsDialog::addRepository()
         parent->insertChild(index, item);
         m_ui->m_repositoriesView->editItem(item, 2);
         m_ui->m_repositoriesView->scrollToItem(item);
+        m_ui->m_repositoriesView->setCurrentItem(item);
     }
 }
 
@@ -327,8 +328,8 @@ void SettingsDialog::setupRepositoriesTreeWidget()
 {
     QTreeWidget *treeWidget = m_ui->m_repositoriesView;
     treeWidget->header()->setVisible(true);
-    treeWidget->setHeaderLabels(QStringList() << QString() << tr("Use") << tr("Repository") << tr("Username")
-        << tr("Password"));
+    treeWidget->setHeaderLabels(QStringList() << QString() << tr("Use") << tr("Username") << tr("Password")
+         << tr("Repository"));
     m_rootItems.append(new RepositoryItem(tr("Default repositories")));
     m_rootItems.append(new RepositoryItem(tr("Temporary repositories")));
     m_rootItems.append(new RepositoryItem(tr("User defined repositories")));
@@ -348,7 +349,7 @@ void SettingsDialog::setupRepositoriesTreeWidget()
     treeWidget->header()->setMinimumSectionSize(treeWidget->columnWidth(1));
     treeWidget->setItemDelegateForColumn(0, new PasswordDelegate(treeWidget));
     treeWidget->setItemDelegateForColumn(1, new PasswordDelegate(treeWidget));
-    treeWidget->setItemDelegateForColumn(4, m_delegate = new PasswordDelegate(treeWidget));
+    treeWidget->setItemDelegateForColumn(3, m_delegate = new PasswordDelegate(treeWidget));
     m_delegate->showPasswords(false);
     m_delegate->disableEditing(false);
 }
