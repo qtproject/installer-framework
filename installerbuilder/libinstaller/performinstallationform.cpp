@@ -74,14 +74,15 @@ void PerformInstallationForm::setupUi(QWidget *widget)
 
     m_progressLabel = new QLabel(widget);
     m_progressLabel->setObjectName(QLatin1String("ProgressLabel"));
+    m_progressLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     topLayout->addWidget(m_progressLabel);
 
     m_downloadStatus = new QLabel(widget);
     m_downloadStatus->setObjectName(QLatin1String("DownloadStatus"));
-    m_downloadStatus->setWordWrap(true);
+    m_downloadStatus->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     topLayout->addWidget(m_downloadStatus);
-    connect(ProgressCoordinator::instance(), SIGNAL(downloadStatusChanged(QString)), m_downloadStatus,
-        SLOT(setText(QString)));
+    connect(ProgressCoordinator::instance(), SIGNAL(downloadStatusChanged(QString)), this,
+        SLOT(onDownloadStatusChanged(QString)));
 
     m_detailsButton = new QPushButton(tr("&Show Details"), widget);
     m_detailsButton->setObjectName(QLatin1String("DetailsButton"));
@@ -126,7 +127,8 @@ void PerformInstallationForm::updateProgress()
 
     m_progressBar->setRange(0, 100);
     m_progressBar->setValue(progressPercentage);
-    m_progressLabel->setText(progressCoordninator->labelText());
+    m_progressLabel->setText(m_progressLabel->fontMetrics().elidedText(progressCoordninator->labelText(),
+        Qt::ElideRight, m_progressLabel->width()));
 }
 
 void PerformInstallationForm::toggleDetails()
@@ -179,4 +181,10 @@ void PerformInstallationForm::scrollDetailsToTheEnd()
 bool PerformInstallationForm::isShowingDetails() const
 {
     return m_detailsBrowser->isVisible();
+}
+
+void PerformInstallationForm::onDownloadStatusChanged(const QString &status)
+{
+    m_downloadStatus->setText(m_downloadStatus->fontMetrics().elidedText(status, Qt::ElideRight,
+        m_downloadStatus->width()));
 }

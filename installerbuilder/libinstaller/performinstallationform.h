@@ -64,6 +64,7 @@ public slots:
     void updateProgress();
     void toggleDetails();
     void clearDetailsBrowser();
+    void onDownloadStatusChanged(const QString &status);
 
 private:
     QProgressBar *m_progressBar;
