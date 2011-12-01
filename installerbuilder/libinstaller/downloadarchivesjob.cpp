@@ -241,7 +241,7 @@ void DownloadArchivesJob::registerFile()
             }
 
             const QByteArray archiveHash = hash.result().toHex();
-            if (archiveHash != m_currentHash) {
+            if ((archiveHash != m_currentHash) && (!m_canceled)) {
                 //TODO: Maybe we should try to download the file again automatically
                 const QMessageBox::Button res =
                     MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -276,6 +276,9 @@ void DownloadArchivesJob::downloadCanceled()
 
 void DownloadArchivesJob::downloadFailed(const QString &error)
 {
+    if (m_canceled)
+        return;
+
     const QMessageBox::StandardButton b =
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
         QLatin1String("archiveDownloadError"), tr("Download Error"), tr("Could not download archive: %1 : %2")

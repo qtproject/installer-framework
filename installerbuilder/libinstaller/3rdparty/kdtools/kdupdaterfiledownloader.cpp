@@ -1163,7 +1163,8 @@ void KDUpdater::HttpDownloader::httpReadyRead()
 
 void KDUpdater::HttpDownloader::httpError(QNetworkReply::NetworkError)
 {
-    httpDone(true);
+    if (!d->aborted)
+        httpDone(true);
 }
 
 void KDUpdater::HttpDownloader::cancelDownload()
