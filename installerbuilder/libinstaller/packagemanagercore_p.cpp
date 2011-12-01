@@ -585,10 +585,12 @@ void PackageManagerCorePrivate::initialize()
     connect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
 
     m_updaterApplication.updateSourcesInfo()->setFileName(QString());
-    m_updaterApplication.packagesInfo()->setFileName(componentsXmlPath());
-
-    m_updaterApplication.packagesInfo()->setApplicationName(m_settings.applicationName());
-    m_updaterApplication.packagesInfo()->setApplicationVersion(m_settings.applicationVersion());
+    KDUpdater::PackagesInfo &packagesInfo = *m_updaterApplication.packagesInfo();
+    packagesInfo.setFileName(componentsXmlPath());
+    if (packagesInfo.applicationName().isEmpty())
+        packagesInfo.setApplicationName(m_settings.applicationName());
+    if (packagesInfo.applicationVersion().isEmpty())
+        packagesInfo.setApplicationVersion(m_settings.applicationVersion());
 
     if (isInstaller()) {
         m_updaterApplication.addUpdateSource(m_settings.applicationName(), m_settings.applicationName(),
@@ -1401,9 +1403,14 @@ void PackageManagerCorePrivate::runInstaller()
             componentsInstallPartProgressSize = double(1);
 
         // Force an update on the components xml as the install dir might have changed.
-        m_updaterApplication.packagesInfo()->setFileName(componentsXmlPath());
+        KDUpdater::PackagesInfo &info = *m_updaterApplication.packagesInfo();
+        info.setFileName(componentsXmlPath());
         // Clear the packages as we might install into an already existing installation folder.
-        m_updaterApplication.packagesInfo()->clearPackageInfoList();
+        info.clearPackageInfoList();
+        // also update the applicatin name and version, might be set from a script as well
+        info.setApplicationName(m_core->value(QLatin1String("ProductName"), m_settings.applicationName()));
+        info.setApplicationVersion(m_core->value(QLatin1String("ProductVersion"),
+            m_settings.applicationVersion()));
 
         callBeginInstallation(componentsToInstall);
         stopProcessesForUpdates(componentsToInstall);
@@ -1988,12 +1995,14 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
 {
     LocalPackagesHash installedPackages;
 
-    KDUpdater::PackagesInfo &packagesInfo = *m_updaterApplication.packagesInfo();
     if (!isInstaller()) {
+        KDUpdater::PackagesInfo &packagesInfo = *m_updaterApplication.packagesInfo();
         if (!packagesInfo.isValid()) {
             packagesInfo.setFileName(componentsXmlPath());
-            packagesInfo.setApplicationName(m_settings.applicationName());
-            packagesInfo.setApplicationVersion(m_settings.applicationVersion());
+            if (packagesInfo.applicationName().isEmpty())
+                packagesInfo.setApplicationName(m_settings.applicationName());
+            if (packagesInfo.applicationVersion().isEmpty())
+                packagesInfo.setApplicationVersion(m_settings.applicationVersion());
         }
 
         if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError)
