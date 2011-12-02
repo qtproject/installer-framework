@@ -898,7 +898,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
             }
         } else if (runMode() == AllMode) {
             // relevant means all components which are not replaced
-            QList<Component*> relevantComponents;
+            QList<Component*> relevantComponents = rootComponents();
             foreach (QInstaller::Component *component, rootComponents())
                 relevantComponents += component->childComponents(true, AllMode);
             foreach (Component *component, relevantComponents) {
