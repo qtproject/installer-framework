@@ -1062,23 +1062,32 @@ QList<QVariant> PackageManagerCore::execute(const QString &program, const QStrin
     const QString &stdIn) const
 {
     QEventLoop loop;
-    QProcessWrapper p;
+    QProcessWrapper process;
 
-    connect(&p, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
-    p.start(program, arguments, stdIn.isNull() ? QIODevice::ReadOnly : QIODevice::ReadWrite);
+    QString adjustedProgram = replaceVariables(program);
+    QStringList adjustedArguments;
+    foreach (const QString &argument, arguments)
+        adjustedArguments.append(replaceVariables(argument));
+    QString adjustedStdIn = replaceVariables(stdIn);
 
-    if (!p.waitForStarted())
+    connect(&process, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
+    process.start(adjustedProgram, adjustedArguments,
+        adjustedStdIn.isNull() ? QIODevice::ReadOnly : QIODevice::ReadWrite);
+
+    if (!process.waitForStarted())
         return QList< QVariant >();
 
-    if (!stdIn.isNull()) {
-        p.write(stdIn.toLatin1());
-        p.closeWriteChannel();
+    if (!adjustedStdIn.isNull()) {
+        process.write(adjustedStdIn.toLatin1());
+        process.closeWriteChannel();
     }
 
-    if (p.state() != QProcessWrapper::NotRunning)
+    if (process.state() != QProcessWrapper::NotRunning)
         loop.exec();
 
-    return QList<QVariant>() << QString::fromLatin1(p.readAllStandardOutput()) << p.exitCode();
+    return QList<QVariant>() << QString::fromLatin1(process.readAllStandardOutput()) << process.exitCode();
+}
+
 }
 
 /*!
