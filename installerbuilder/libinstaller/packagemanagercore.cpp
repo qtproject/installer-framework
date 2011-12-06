@@ -1088,7 +1088,23 @@ QList<QVariant> PackageManagerCore::execute(const QString &program, const QStrin
     return QList<QVariant>() << QString::fromLatin1(process.readAllStandardOutput()) << process.exitCode();
 }
 
+/*!
+    Executes a program.
+
+    \param program The program that should be executed.
+    \param arguments Optional list of arguments.
+    \return If the command could not be executed, an false will be returned
+*/
+
+bool PackageManagerCore::executeDetached(const QString &program, const QStringList &arguments) const
+{
+    QString adjustedProgram = replaceVariables(program);
+    QStringList adjustedArguments;
+    foreach (const QString &argument, arguments)
+        adjustedArguments.append(replaceVariables(argument));
+    return QProcess::startDetached(adjustedProgram, adjustedArguments);
 }
+
 
 /*!
     Returns an environment variable.
