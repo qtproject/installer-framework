@@ -273,6 +273,17 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
     const QString &identifier, const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton button) const
 {
+    static QHash<MessageType, QString> messageTypeHash;
+    if (messageTypeHash.isEmpty()) {
+        messageTypeHash.insert(criticalType, QLatin1String("critical"));
+        messageTypeHash.insert(informationType, QLatin1String("information"));
+        messageTypeHash.insert(questionType, QLatin1String("question"));
+        messageTypeHash.insert(warningType, QLatin1String("warning"));
+    };
+
+    qDebug() << QString(QLatin1String("created %1 message box %2: '%3', %4")).arg(
+        messageTypeHash.value(messageType),identifier, title, text);
+
     if (QApplication::type() == QApplication::Tty)
         return button;
 
@@ -280,8 +291,6 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
         return m_automaticAnswers.value(identifier);
 
     if (m_defaultAction == AskUser) {
-        if (!identifier.isEmpty())
-            qDebug() << QString(QLatin1String("create message box with identifier: '%1'")).arg(identifier);
         switch (messageType) {
             case criticalType:
                 return showNewMessageBox(parent, QMessageBox::Critical, title, text, buttons, button);

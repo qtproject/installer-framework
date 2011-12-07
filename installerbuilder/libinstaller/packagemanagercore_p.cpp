@@ -1439,7 +1439,6 @@ void PackageManagerCorePrivate::runInstaller()
     } catch (const Error &err) {
         if (m_core->status() != PackageManagerCore::Canceled) {
             setStatus(PackageManagerCore::Failure);
-            verbose() << "INSTALLER FAILED: " << err.message() << std::endl;
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
             verbose() << "ROLLING BACK operations=" << m_performedOperationsCurrentSession.count()
@@ -1604,7 +1603,6 @@ void PackageManagerCorePrivate::runPackageUpdater()
     } catch (const Error &err) {
         if (m_core->status() != PackageManagerCore::Canceled) {
             setStatus(PackageManagerCore::Failure);
-            verbose() << "INSTALLER FAILED: " << err.message() << std::endl;
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
             verbose() << "ROLLING BACK operations=" << m_performedOperationsCurrentSession.count()
@@ -1697,7 +1695,6 @@ void PackageManagerCorePrivate::runUninstaller()
     } catch (const Error &err) {
         if (m_core->status() != PackageManagerCore::Canceled) {
             setStatus(PackageManagerCore::Failure);
-            verbose() << "INSTALLER FAILED: " << err.message() << std::endl;
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
         }

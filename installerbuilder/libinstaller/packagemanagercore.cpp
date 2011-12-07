@@ -403,7 +403,6 @@ void PackageManagerCore::installComponent(Component *component, double progressO
     } catch (const Error &error) {
         if (status() != PackageManagerCore::Canceled) {
             d->setStatus(PackageManagerCore::Failure);
-            verbose() << "INSTALLER FAILED: " << error.message() << std::endl;
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), error.message());
         }
