@@ -243,7 +243,6 @@ void IntroductionPageImpl::callControlScript(const QString &callback)
     // hide of pages depending on the components.
     gui()->init();
     gui()->callControlScriptMethod(callback);
-    gui()->triggerControlScriptForCurrentPage();
 }
 
 // -- private slots

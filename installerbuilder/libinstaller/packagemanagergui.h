@@ -67,7 +67,6 @@ public:
 
     void loadControlScript(const QString& scriptPath);
     void callControlScriptMethod(const QString& methodName);
-    void triggerControlScriptForCurrentPage();
 
     QScriptEngine *controlScriptEngine() const;
 

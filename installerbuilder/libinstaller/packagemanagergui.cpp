@@ -381,11 +381,6 @@ void PackageManagerGui::loadControlScript(const QString &scriptPath)
     verbose() << "Loaded control script " << qPrintable(scriptPath) << std::endl;
 }
 
-void PackageManagerGui::triggerControlScriptForCurrentPage()
-{
-    slotCurrentPageChanged(currentId());
-}
-
 void PackageManagerGui::slotCurrentPageChanged(int id)
 {
     QMetaObject::invokeMethod(this, "delayedControlScriptExecution", Qt::QueuedConnection,
