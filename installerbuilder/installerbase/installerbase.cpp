@@ -57,6 +57,9 @@
 #include <QtNetwork/QNetworkProxyFactory>
 
 #include <iostream>
+#include <fstream>
+
+#include <string>
 
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
@@ -85,6 +88,31 @@ static QSet<Repository> repositories(const QStringList &arguments, const int ind
 
 int main(int argc, char *argv[])
 {
+// hack to use cleanlooks if it is under Ubuntu 11.10
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+    std::string standardString;
+    std::string cleanLooks ="-style=cleanlooks";
+    std::ifstream input("/etc/lsb-release");
+    bool isUbuntu = false;
+    bool is11_10 = false;
+    while (std::getline(input, standardString)) {
+        if (standardString == "DISTRIB_ID=Ubuntu")
+            isUbuntu = true;
+        else if (standardString == "DISTRIB_RELEASE=11.10")
+            is11_10 = true;
+    }
+
+    if (isUbuntu && is11_10) {
+        char** newArgv = new char* [argc + 1];
+        for (int i = 0; i < argc; ++i) {
+            newArgv[i] = argv[i];
+        }
+        argc++;
+        newArgv[argc] = const_cast<char*>(cleanLooks.data());
+        argv = newArgv;
+    }
+#endif
+
     qsrand(QDateTime::currentDateTime().toTime_t());
     const KDSelfRestarter restarter(argc, argv);
     KDRunOnceChecker runCheck(QLatin1String("lockmyApp1234865.lock"));
