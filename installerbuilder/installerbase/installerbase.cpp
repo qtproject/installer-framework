@@ -103,12 +103,13 @@ int main(int argc, char *argv[])
     }
 
     if (isUbuntu && is11_10) {
-        char** newArgv = new char* [argc + 1];
-        for (int i = 0; i < argc; ++i) {
-            newArgv[i] = argv[i];
-        }
         argc++;
-        newArgv[argc] = const_cast<char*>(cleanLooks.data());
+        char **newArgv = new char* [argc];
+        newArgv[0] = argv[0];
+        newArgv[1] = const_cast<char*>(cleanLooks.data());
+        for (int i = 1; i < argc-1; ++i) {
+            newArgv[i+1] = argv[i];
+        }
         argv = newArgv;
     }
 #endif
