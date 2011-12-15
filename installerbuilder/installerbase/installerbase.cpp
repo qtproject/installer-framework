@@ -88,6 +88,8 @@ static QSet<Repository> repositories(const QStringList &arguments, const int ind
 
 int main(int argc, char *argv[])
 {
+    QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
+
 // hack to use cleanlooks if it is under Ubuntu 11.10
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     std::string standardString;
@@ -118,7 +120,6 @@ int main(int argc, char *argv[])
     const KDSelfRestarter restarter(argc, argv);
     KDRunOnceChecker runCheck(QLatin1String("lockmyApp1234865.lock"));
 
-    QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
     try {
         if (args.contains(QLatin1String("--version"))) {
             InstallerBase::showVersion(QLatin1String(VERSION));

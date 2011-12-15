@@ -99,18 +99,21 @@ int OperationRunner::runOperation(const QStringList &arguments)
             << "are working as expected." << std::endl;
     }
 
-    QStringList argumentList = arguments;
-    bool isPerformType = argumentList.contains(QLatin1String("--runoperation"));
-    bool isUndoType = argumentList.contains(QLatin1String("--undooperation"));
-    argumentList.removeFirst(); //the application name itself
-    argumentList.removeAll(QLatin1String("--runoperation"));
-    argumentList.removeAll(QLatin1String("--undooperation"));
-    argumentList.removeAll(QLatin1String("--verbose"));
+    bool isPerformType = arguments.contains(QLatin1String("--runoperation"));
+    bool isUndoType = arguments.contains(QLatin1String("--undooperation"));
 
     if ((!isPerformType && !isUndoType) || (isPerformType && isUndoType)) {
         std::cerr << "wrong arguments are used, cannot run this operation";
         return EXIT_FAILURE;
     }
+
+    QStringList argumentList;
+
+    if (isPerformType)
+        argumentList = arguments.mid(testStringList.indexOf("--runoperation") + 1);
+    else
+        argumentList = arguments.mid(testStringList.indexOf("--undooperation") + 1);
+
 
     try {
         const QString operationName = argumentList.takeFirst();
