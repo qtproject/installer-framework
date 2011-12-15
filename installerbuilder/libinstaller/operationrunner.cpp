@@ -110,9 +110,9 @@ int OperationRunner::runOperation(const QStringList &arguments)
     QStringList argumentList;
 
     if (isPerformType)
-        argumentList = arguments.mid(testStringList.indexOf("--runoperation") + 1);
+        argumentList = arguments.mid(arguments.indexOf(QLatin1String("--runoperation")) + 1);
     else
-        argumentList = arguments.mid(testStringList.indexOf("--undooperation") + 1);
+        argumentList = arguments.mid(arguments.indexOf(QLatin1String("--undooperation")) + 1);
 
 
     try {
