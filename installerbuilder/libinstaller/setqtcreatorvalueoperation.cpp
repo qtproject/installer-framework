@@ -75,7 +75,10 @@ bool SetQtCreatorValueOperation::performOperation()
     if (!group.isEmpty())
         settings.beginGroup(group);
 
-    settings.setValue(key, settingsValue);
+    if (settingsValue.contains(QLatin1String(",")))  // comma separated list of strings
+        settings.setValue(key, settingsValue.split(QRegExp(QLatin1String("\\s*,\\s*")), QString::SkipEmptyParts));
+    else
+        settings.setValue(key, settingsValue);
 
     if (!group.isEmpty())
         settings.endGroup();
