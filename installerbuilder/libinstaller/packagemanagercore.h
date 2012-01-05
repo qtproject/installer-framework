@@ -156,7 +156,7 @@ public:
     QList<Component*> rootComponents() const;
     void appendRootComponent(Component *components);
 
-    int updaterComponentCount() const;
+    Q_INVOKABLE int updaterComponentCount() const;
     Component *updaterComponent(int i) const;
     QList<Component*> updaterComponents() const;
     void appendUpdaterComponent(Component *components);
