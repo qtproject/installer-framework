@@ -53,6 +53,7 @@ static const QLatin1String scRepositories("Repositories");
 static const QLatin1String scCompressedSize("CompressedSize");
 static const QLatin1String scInstalledVersion("InstalledVersion");
 static const QLatin1String scUncompressedSize("UncompressedSize");
+static const QLatin1String scUncompressedSizeSum("UncompressedSizeSum");
 static const QLatin1String scRequiresAdminRights("RequiresAdminRights");
 
 // constants used throughout the components class

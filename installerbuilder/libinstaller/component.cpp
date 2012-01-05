@@ -184,9 +184,25 @@ void Component::loadDataFromPackage(const Package &package)
         loadLicenses(QString::fromLatin1("%1/%2/").arg(localTempPath(), name()), licenseHash);
 }
 
+quint64 Component::updateUncompressedSize()
+{
+    quint64 size = 0;
+
+    if (isSelected())
+        size = (quint64)value(scUncompressedSize).toDouble();
+
+    foreach (Component* comp, d->m_allChildComponents)
+        size += comp->updateUncompressedSize();
+
+    setValue(scUncompressedSizeSum, QString::number(size));
+    setData(uncompressedSize(), UncompressedSize);
+
+    return size;
+}
+
 QString Component::uncompressedSize() const
 {
-    double size = value(scUncompressedSize).toDouble();
+    double size = value(scUncompressedSizeSum).toDouble();
     if (size < 1000.0)
         return tr("%L1 Bytes").arg(size);
     size /= 1024.0;
@@ -196,6 +212,7 @@ QString Component::uncompressedSize() const
     if (size < 1000.0)
         return tr("%L1 MBytes").arg(size, 0, 'f', 2);
     size /= 1024.0;
+
     return tr("%L1 GBytes").arg(size, 0, 'f', 2);
 }
 

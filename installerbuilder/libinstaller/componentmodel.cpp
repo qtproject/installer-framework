@@ -171,8 +171,12 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, in
     component->setData(value, role);
 
     emit dataChanged(index, index);
-    if (role == Qt::CheckStateRole)
+    if (role == Qt::CheckStateRole) {
         emit checkStateChanged(index);
+        foreach (Component* comp, m_rootComponentList) {
+            comp->updateUncompressedSize();
+        }
+    }
 
     return true;
 }
@@ -380,6 +384,7 @@ void ComponentModel::slotModelReset()
 
     foreach (const QString &name, m_currentCheckedSet)
         setData(indexFromComponentName(name), Qt::Checked, Qt::CheckStateRole);
+
 }
 
 static Qt::CheckState verifyPartiallyChecked(Component *component)

@@ -146,6 +146,7 @@ public:
     QString name() const;
     QString displayName() const;
     QString uncompressedSize() const;
+    quint64 updateUncompressedSize();
 
     QUrl repositoryUrl() const;
     void setRepositoryUrl(const QUrl &url);
