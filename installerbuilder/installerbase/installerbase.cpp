@@ -53,6 +53,7 @@
 #include "kdupdaterfiledownloaderfactory.h"
 
 #include <QtCore/QTranslator>
+#include <QtGui/QMessageBox>
 
 #include <QtNetwork/QNetworkProxyFactory>
 
@@ -83,6 +84,23 @@ static QSet<Repository> repositories(const QStringList &arguments, const int ind
     return set;
 }
 
+static bool allowMaintenanceTool()
+{
+    try {
+        Settings m_settings = Settings(Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
+            QLatin1String(":/metadata/installer-config/")));
+
+        if (m_settings.value(QLatin1String("AllowExecuteMaintenanceTool"), QLatin1String("true")).toString().toLower()
+            == QLatin1String("true"))
+        {
+            return true;
+        }
+    } catch (const Error &e) {
+        qWarning("Could not parse Config: %s", qPrintable(e.message()));
+        return true;
+    }
+    return false;
+}
 
 // -- main
 
@@ -232,6 +250,16 @@ int main(int argc, char *argv[])
 
         // instantiate the installer we are actually going to use
         QInstaller::PackageManagerCore core(content.magicmaker(), content.performedOperations());
+        Settings m_settings = Settings(Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
+            QLatin1String(":/metadata/installer-config/")));
+
+        // check execution rights for the maintanance tool
+        if (!core.isInstaller() && !allowMaintenanceTool() && !args.contains(QLatin1String("--script"))) {
+            QString reason = m_settings.value(QLatin1String("DisallowExecuteReason"),
+                                QString::fromLatin1("You are not allowed to run %1.").arg(qAppName())).toString();
+            QMessageBox::information(0, QLatin1String("Update notification"), reason);
+            return 0;
+        }
 
         if (QInstaller::isVerbose()) {
             verbose() << "Resource tree after loading the in-binary resource: " << std::endl;
