@@ -7,10 +7,6 @@
 #include "Common/IntToString.h"
 #include "Common/StringConvert.h"
 
-#ifdef _WIN32
-//#include "Windows/DLL.h"
-#endif
-
 #include "Windows/FileDir.h"
 #include "Windows/FileFind.h"
 #include "Windows/FileName.h"

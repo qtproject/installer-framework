@@ -13,10 +13,6 @@
 
 #include "Windows/FileDir.h"
 #include "Windows/FileName.h"
-#ifdef _WIN32
-//#include "Windows/FileMapping.h"
-//#include "Windows/Synchronization.h"
-#endif
 
 #include "ArchiveCommandLine.h"
 #include "EnumDirItems.h"
