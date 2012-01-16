@@ -158,10 +158,29 @@ static void initResources()
 
 static void messageHandler(QtMsgType type, const char *msg)
 {
-    verbose() << msg << std::endl;
-    if (type != QtFatalMsg && QString::fromLatin1(msg).contains(QLatin1String("Object::connect: "))) {
-        //qFatal(msg);
+    // last character is a space from qDebug
+    QByteArray ba = QByteArray(msg).trimmed();
+
+    // remove quotes if the whole message is surrounded with them
+    if (ba.startsWith('"') && ba.endsWith('"'))
+        ba = ba.mid(1, ba.length()-2);
+
+    // prepend the message type, skip QtDebugMsg
+    switch (type) {
+        case QtWarningMsg: {
+            ba.prepend("Warning: ");
+        }   break;
+        case QtCriticalMsg: {
+            ba.prepend("Critical: ");
+        }   break;
+        case QtFatalMsg: {
+            ba.prepend("Fatal: ");
+        }   break;
+        default:
+            break;
     }
+
+    verbose() << ba.constData() << std::endl;
 }
 
 void QInstaller::init()
