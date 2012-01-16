@@ -129,7 +129,6 @@ MessageBoxHandler *MessageBoxHandler::instance()
 QWidget *MessageBoxHandler::currentBestSuitParent()
 {
     if (QApplication::type() == QApplication::Tty) {
-        Q_ASSERT_X(false, Q_FUNC_INFO, "We can't find a parent widget if we are a console application.");
         return 0;
     }
 
