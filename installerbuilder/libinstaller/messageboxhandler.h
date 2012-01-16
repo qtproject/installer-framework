@@ -109,7 +109,7 @@ private:
     QMessageBox::StandardButton showMessageBox(MessageType messageType, QWidget *parent,
         const QString &identifier, const QString &title, const QString &text,
         QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+        QMessageBox::StandardButton defaultButton = QMessageBox::NoButton) const;
 
 private:
     static MessageBoxHandler *m_instance;

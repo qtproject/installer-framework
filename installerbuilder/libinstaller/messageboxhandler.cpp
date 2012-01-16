@@ -271,7 +271,7 @@ static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBo
 
 QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messageType, QWidget *parent,
     const QString &identifier, const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
-    QMessageBox::StandardButton button) const
+    QMessageBox::StandardButton defaultButton) const
 {
     static QHash<MessageType, QString> messageTypeHash;
     if (messageTypeHash.isEmpty()) {
@@ -285,7 +285,7 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
         messageTypeHash.value(messageType),identifier, title, text);
 
     if (QApplication::type() == QApplication::Tty)
-        return button;
+        return defaultButton;
 
     if (m_automaticAnswers.contains(identifier))
         return m_automaticAnswers.value(identifier);
@@ -293,18 +293,18 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
     if (m_defaultAction == AskUser) {
         switch (messageType) {
             case criticalType:
-                return showNewMessageBox(parent, QMessageBox::Critical, title, text, buttons, button);
+                return showNewMessageBox(parent, QMessageBox::Critical, title, text, buttons, defaultButton);
             case informationType:
-                return showNewMessageBox(parent, QMessageBox::Information, title, text, buttons, button);
+                return showNewMessageBox(parent, QMessageBox::Information, title, text, buttons, defaultButton);
             case questionType:
-                return showNewMessageBox(parent, QMessageBox::Question, title, text, buttons, button);
+                return showNewMessageBox(parent, QMessageBox::Question, title, text, buttons, defaultButton);
             case warningType:
-                return showNewMessageBox(parent, QMessageBox::Warning, title, text, buttons, button);
+                return showNewMessageBox(parent, QMessageBox::Warning, title, text, buttons, defaultButton);
         }
     } else {
         return autoReply(buttons);
     }
 
     Q_ASSERT_X(false, Q_FUNC_INFO, "Something went really wrong.");
-    return button;
+    return defaultButton;
 }
