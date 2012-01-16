@@ -136,8 +136,8 @@ bool SetPathOnQtCoreOperation::performOperation()
     }
     QStringList libraryFiles;
 #ifdef Q_OS_WIN
-    libraryFiles << QString(QLatin1String("%1/QtCore4.dll")).arg(qtCoreLibraryDir);
-    libraryFiles << QString(QLatin1String("%1/QtCore4d.dll")).arg(qtCoreLibraryDir);
+    libraryFiles << QString::fromLatin1("%1/QtCore4.dll").arg(qtCoreLibraryDir);
+    libraryFiles << QString::fromLatin1("%1/QtCore4d.dll").arg(qtCoreLibraryDir);
 #else
     libraryFiles << qtCoreLibraryDir + QLatin1String("/libQtCore.so");
 #endif

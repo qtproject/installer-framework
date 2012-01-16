@@ -109,14 +109,14 @@ bool QtCreatorPersistentSettings::addToolChain(const QtCreatorToolChain &toolCha
     QVariantMap newToolChainVariantMap;
 
     newToolChainVariantMap.insert(QLatin1String(ID_KEY),
-        QString(QLatin1String("%1:%2.%3")).arg(toolChain.type, QFileInfo(toolChain.compilerPath
+        QString::fromLatin1("%1:%2.%3").arg(toolChain.type, QFileInfo(toolChain.compilerPath
             ).absoluteFilePath(), toolChain.abiString));
     newToolChainVariantMap.insert(QLatin1String(DISPLAY_NAME_KEY), toolChain.displayName);
-    newToolChainVariantMap.insert(QString(QLatin1String("ProjectExplorer.%1.Path")).arg(toolChain.key),
+    newToolChainVariantMap.insert(QString::fromLatin1("ProjectExplorer.%1.Path").arg(toolChain.key),
         QFileInfo(toolChain.compilerPath).absoluteFilePath());
-    newToolChainVariantMap.insert(QString(QLatin1String("ProjectExplorer.%1.TargetAbi")).arg(toolChain.key),
+    newToolChainVariantMap.insert(QString::fromLatin1("ProjectExplorer.%1.TargetAbi").arg(toolChain.key),
         toolChain.abiString);
-    newToolChainVariantMap.insert(QString(QLatin1String("ProjectExplorer.%1.Debugger")).arg(toolChain.key),
+    newToolChainVariantMap.insert(QString::fromLatin1("ProjectExplorer.%1.Debugger").arg(toolChain.key),
         QFileInfo(toolChain.debuggerPath).absoluteFilePath());
 
     m_toolChains.insert(QFileInfo(toolChain.compilerPath).absoluteFilePath(), newToolChainVariantMap);

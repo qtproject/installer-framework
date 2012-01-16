@@ -86,11 +86,11 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
         QFileInfo qmake(qmakePath);
 
         if (!qmake.exists()) {
-            qmakeOutput->append(QString(QLatin1String("%1 is not existing")).arg(qmakePath));
+            qmakeOutput->append(QString::fromLatin1("%1 is not existing").arg(qmakePath));
             return qmakeValueHash;
         }
         if (!qmake.isExecutable()) {
-            qmakeOutput->append(QString(QLatin1String("%1 is not executable")).arg(qmakePath));
+            qmakeOutput->append(QString::fromLatin1("%1 is not executable").arg(qmakePath));
             return qmakeValueHash;
         }
 
@@ -101,7 +101,7 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
         process.start(qmake.absoluteFilePath(), args, QIODevice::ReadOnly);
         if (process.waitForFinished(2000)) {
             if (process.exitStatus() == QProcess::CrashExit) {
-                QInstaller::verbose() << qPrintable(QString(QLatin1String("%1 was crashed")).arg(qmakePath) ) << std::endl;
+                QInstaller::verbose() << qmakePath << " was crashed" << std::endl;
                 return qmakeValueHash;
             }
             QByteArray output = process.readAllStandardOutput();

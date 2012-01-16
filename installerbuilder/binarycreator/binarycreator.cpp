@@ -555,7 +555,7 @@ int main(int argc, char **argv)
     templateBinary += QLatin1String(".exe");
 #endif
     if (!QFileInfo(templateBinary).exists())
-        templateBinary = QString(QLatin1String("%1/%2")).arg(qApp->applicationDirPath(), templateBinary);
+        templateBinary = QString::fromLatin1("%1/%2").arg(qApp->applicationDirPath(), templateBinary);
 
     QString target;
     QString configDir;

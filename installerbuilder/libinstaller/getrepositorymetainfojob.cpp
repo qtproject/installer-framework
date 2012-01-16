@@ -211,8 +211,8 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
     }
 
     //append a random string to avoid proxy caches
-    m_downloader->setUrl(QUrl(url.toString() + QString(QLatin1String("/Updates.xml?")).append(
-        QString::number(qrand() * qrand()))));
+    m_downloader->setUrl(QUrl(url.toString() + QString::fromLatin1("/Updates.xml?")
+        .append(QString::number(qrand() * qrand()))));
 
     QAuthenticator auth;
     auth.setUser(m_repository.username());

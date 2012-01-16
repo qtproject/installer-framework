@@ -97,20 +97,18 @@ void ProgressCoordinator::registerPartProgress(QObject *sender, const char *sign
 void ProgressCoordinator::partProgressChanged(double fraction)
 {
     if (fraction < 0 || fraction > 1) {
-        qWarning() << QString(QLatin1String("The fraction is outside from possible value:"))
-            << QString::number(fraction);
+        qWarning() << "The fraction is outside from possible value:" << QString::number(fraction);
         return;
     }
 
     double partProgressSize = m_senderPartProgressSizeHash.value(sender(), 0);
     if (partProgressSize == 0) {
-        qWarning() << QString(QLatin1String("It seems that this sender was not registered in the right way:"))
-            << sender();
+        qWarning() << "It seems that this sender was not registered in the right way:" << sender();
         return;
     }
 
     if (m_undoMode) {
-        //qDebug() << "fraction: " << fraction;
+        //qDebug() << "fraction:" << fraction;
         double maxSize = m_reachedPercentageBeforeUndo * partProgressSize;
         double pendingCalculatedPartPercentage = maxSize * fraction;
 

@@ -126,7 +126,7 @@ bool UFUncompressor::uncompress()
                 d->setError(tr("Could not create folder: %1/%2").arg(d->destination, fileName));
                 return false;
             }
-            fileEngine.setFileName(QString(QLatin1String("%1/%2")).arg(d->destination, fileName));
+            fileEngine.setFileName(QString::fromLatin1("%1/%2").arg(d->destination, fileName));
             fileEngine.setPermissions(header.permList[i] | QAbstractFileEngine::ExeOwnerPerm);
         } else {
            ++numExpectedFiles;
@@ -144,7 +144,7 @@ bool UFUncompressor::uncompress()
         }
         ufEntry.addToHash(hash);
 
-        const QString completeFileName = QString(QLatin1String( "%1/%2" )).arg(d->destination, ufEntry.fileName);
+        const QString completeFileName = QString::fromLatin1("%1/%2").arg(d->destination, ufEntry.fileName);
         
         const QByteArray ba = qUncompress(ufEntry.fileData);
         // check the size
