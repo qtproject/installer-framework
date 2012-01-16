@@ -32,8 +32,6 @@
 **************************************************************************/
 #include "qtpatch.h"
 
-#include "common/utils.h"
-
 #include <QString>
 #include <QStringList>
 #include <QFileInfo>
@@ -41,7 +39,7 @@
 #include <QTextStream>
 #include <QVector>
 #include <QTime>
-#include <QDebug>
+#include <QtCore/QDebug>
 #include <QCoreApplication>
 #include <QByteArrayMatcher>
 
@@ -101,7 +99,7 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
         process.start(qmake.absoluteFilePath(), args, QIODevice::ReadOnly);
         if (process.waitForFinished(2000)) {
             if (process.exitStatus() == QProcess::CrashExit) {
-                QInstaller::verbose() << qmakePath << " was crashed" << std::endl;
+                qDebug() << qmakePath << "was crashed";
                 return qmakeValueHash;
             }
             QByteArray output = process.readAllStandardOutput();
@@ -123,13 +121,13 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
             uiDetachedWait(waitTimeInMilliSeconds);
         }
         if (process.state() > QProcess::NotRunning ) {
-            QInstaller::verbose() << "qmake process is still running, need to kill it." << std::endl;
+            qDebug() << "qmake process is still running, need to kill it.";
             process.kill();
         }
 
     }
     if (qmakeValueHash.isEmpty())
-        QInstaller::verbose() << "Can't get any query output from qmake." << std::endl;
+        qDebug() << "Can't get any query output from qmake.";
     return qmakeValueHash;
 }
 
@@ -139,14 +137,14 @@ bool QtPatch::patchBinaryFile(const QString &fileName,
 {
     QFile file(fileName);
     if (!file.exists()) {
-        QInstaller::verbose() << "qpatch: warning: file `" << qPrintable(fileName) << "' not found" << std::endl;
+        qDebug() << "qpatch: warning: file" << fileName << "not found";
         return false;
     }
 
     openFileForPatching(&file);
     if (!file.isOpen()) {
-        QInstaller::verbose() << "qpatch: warning: file `" << qPrintable(fileName) << "' can not open." << std::endl;
-        QInstaller::verbose() << qPrintable(file.errorString()) << std::endl;
+        qDebug() << "qpatch: warning: file" << qPrintable(fileName) << "can not open.";
+        qDebug() << qPrintable(file.errorString());
         return false;
     }
 
@@ -162,7 +160,7 @@ bool QtPatch::patchBinaryFile(QIODevice *device,
                               const QByteArray &newQtPath)
 {
     if (!(device->openMode() == QIODevice::ReadWrite)) {
-        QInstaller::verbose() << "qpatch: warning: This function needs an open device for writing." << std::endl;
+        qDebug() << "qpatch: warning: This function needs an open device for writing.";
         return false;
     }
     const QByteArray source = device->readAll();
@@ -194,9 +192,8 @@ bool QtPatch::patchTextFile(const QString &fileName,
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly)) {
-        QInstaller::verbose() << "qpatch: warning: Open the file '"
-                              << qPrintable(fileName) << "' stopped: "
-                              << qPrintable(file.errorString()) << std::endl;
+        qDebug() << QString::fromLatin1("qpatch: warning: Open the file '%1' stopped: %2").arg(
+            fileName, file.errorString());
         return false;
     }
 
@@ -210,7 +207,7 @@ bool QtPatch::patchTextFile(const QString &fileName,
     }
 
     if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
-        QInstaller::verbose() << "qpatch: error: file `" << qPrintable(fileName) << "' not writable" << std::endl;
+        qDebug() << QString::fromLatin1("qpatch: error: file '%1' not writable").arg(fileName);
         return false;
     }
 
@@ -230,6 +227,7 @@ bool QtPatch::openFileForPatching(QFile *file)
         }
         return file->openMode() == QFile::ReadWrite;
     }
-    QInstaller::verbose() << "qpatch: error: File `" << qPrintable(file->fileName()) << "' is open, so it can not open it again." << std::endl;
+    qDebug() << QString::fromLatin1("qpatch: error: File '%1 is open, so it can not open it again.").arg(
+        file->fileName());
     return false;
 }

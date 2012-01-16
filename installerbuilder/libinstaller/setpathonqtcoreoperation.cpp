@@ -31,11 +31,11 @@
 **************************************************************************/
 #include "setpathonqtcoreoperation.h"
 
-#include "common/utils.h"
 #include "qtpatch.h"
 
 #include <QtCore/QByteArrayMatcher>
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
 
 using namespace QInstaller;
 
@@ -45,10 +45,9 @@ namespace {
         QFileInfo fileInfo(binaryPath);
 
         if (!fileInfo.exists()) {
-            verbose() << "qpatch: warning: file '" << qPrintable(binaryPath) << "' not found" << std::endl;
+            qDebug() << "qpatch: warning: file '" << binaryPath << "' not found";
             return QByteArray();
         }
-
 
         QFile file(binaryPath);
         int readOpenCount = 0;
@@ -58,9 +57,8 @@ namespace {
         }
         Q_ASSERT(file.isOpen());
         if (!file.isOpen()) {
-            verbose() << "qpatch: warning: file '" << qPrintable(binaryPath) << "' can not open as ReadOnly."
-                << std::endl;
-            verbose() << file.errorString() << std::endl;
+            qDebug() << "qpatch: warning: file '" << binaryPath << "' can not open as ReadOnly.";
+            qDebug() << file.errorString();
             return QByteArray();
         }
 
@@ -131,7 +129,7 @@ bool SetPathOnQtCoreOperation::performOperation()
     }
 
     if (255 < newValue.size()) {
-        verbose() << "qpatch: error: newQtDir needs to be less than 255 characters." << std::endl;
+        qDebug() << "qpatch: error: newQtDir needs to be less than 255 characters.";
         return false;
     }
     QStringList libraryFiles;
@@ -151,8 +149,7 @@ bool SetPathOnQtCoreOperation::performOperation()
 
             bool isPatched = QtPatch::patchBinaryFile(coreLibrary, oldValue, adjutedNewValue);
             if (!isPatched) {
-                QInstaller::verbose() << "qpatch: warning: could not patched the plugin path in "
-                    << qPrintable(coreLibrary) << std::endl;
+                qDebug() << "qpatch: warning: could not patched the plugin path in" << coreLibrary;
             }
         }
     }

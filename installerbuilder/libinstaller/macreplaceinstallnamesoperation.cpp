@@ -32,10 +32,10 @@
 **************************************************************************/
 #include "macreplaceinstallnamesoperation.h"
 
-#include "common/utils.h"
 #include "qprocesswrapper.h"
 
 #include <QtCore/QBuffer>
+#include <QtCore/QDebug>
 #include <QtCore/QDirIterator>
 
 
@@ -61,7 +61,6 @@ bool MacReplaceInstallNamesOperation::performOperation()
     // 5. other directory containing frameworks
     // 6. ...
 
-    verbose() << arguments().join(QLatin1String(";")) << std::endl;
     if (arguments().count() < 3) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments in %0: %1 arguments given, 3 expected.").arg(name())
@@ -138,7 +137,7 @@ bool MacReplaceInstallNamesOperation::apply(const QString &indicator, const QStr
 void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString &fileName, QString &frameworkId,
     QStringList &frameworks, QString &originalBuildDir)
 {
-    verbose() << "Relocator calling otool -l for " << fileName << std::endl;
+    qDebug() << "Relocator calling otool -l for" << fileName;
     QProcessWrapper otool;
     otool.start(QLatin1String("otool"), QStringList() << QLatin1String("-l") << fileName);
     if (!otool.waitForStarted()) {
@@ -190,10 +189,10 @@ void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString &fileN
             }
             if (originalBuildDir.endsWith(QLatin1Char('/')))
                 originalBuildDir.chop(1);
-            verbose() << "originalBuildDir is: " << originalBuildDir << std::endl;
+            qDebug() << "originalBuildDir is:" << originalBuildDir;
         }
     }
-    verbose() << "END - Relocator calling otool -l for " << fileName << std::endl;
+    qDebug() << "END - Relocator calling otool -l for" << fileName;
 }
 
 void MacReplaceInstallNamesOperation::relocateBinary(const QString &fileName)
@@ -203,9 +202,8 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString &fileName)
     QString originalBuildDir;
     extractExecutableInfo(fileName, frameworkId, frameworks, originalBuildDir);
 
-    verbose() << "got following informations(fileName, frameworkId, frameworks, orginalBuildDir): " << std::endl;
-    verbose() << fileName << ", " << frameworkId << ", " << frameworks.join(QLatin1String("|")) << ", "
-        << originalBuildDir << std::endl;
+    qDebug() << QString::fromLatin1("got following informations(fileName: %1, frameworkId: %2, frameworks: %3,"
+        "orginalBuildDir: %4)").arg(fileName, frameworkId, frameworks.join(QLatin1String("|")), originalBuildDir);
 
     QStringList args;
     if (frameworkId.contains(m_indicator) || QFileInfo(frameworkId).fileName() == frameworkId) {
@@ -256,7 +254,7 @@ void MacReplaceInstallNamesOperation::relocateFramework(const QString &directory
 
 bool MacReplaceInstallNamesOperation::execCommand(const QString &cmd, const QStringList &args)
 {
-    verbose() << "Relocator::execCommand " << cmd << " " << args << std::endl;
+    qDebug() << Q_FUNC_INFO << cmd << " " << args;
 
     QProcessWrapper process;
     process.start(cmd, args);

@@ -42,7 +42,7 @@
 #include <kdsavefile.h>
 
 #include <QCoreApplication>
-#include <QDebug>
+#include <QtCore/QDebug>
 #include <QDir>
 #include <QDirIterator>
 #include <QDomAttr>
@@ -231,7 +231,7 @@ static int assemble(Input input, const QString &configdir)
         appendFileData(&out, &exe);
 
         const qint64 dataBlockStart = out.pos();
-        verbose() << "Data block starts at " << dataBlockStart << std::endl;
+        qDebug() << "Data block starts at" << dataBlockStart;
 
         // append our self created resource file
         QFile res(input.binaryResourcePath);
@@ -263,8 +263,8 @@ static int assemble(Input input, const QString &configdir)
         input.componentIndexSegment = Range<qint64>::fromStartAndEnd(compIndexStart, out.pos()
             - dataBlockStart);
 
-        verbose() << "Component index: [" << input.componentIndexSegment.start() << ":"
-            << input.componentIndexSegment.end() << "]" << std::endl;
+        qDebug("Component index: [%llu:%llu]", input.componentIndexSegment.start(),
+            input.componentIndexSegment.end());
         appendInt64Range(&out, input.componentIndexSegment);
         foreach (const Range<qint64> &range, input.resourcePos)
             appendInt64Range(&out, range);
@@ -297,7 +297,7 @@ static int assemble(Input input, const QString &configdir)
     bundleBackup.release();
 
     if (createDMG) {
-        verbose() << "creating a DMG disk image...";
+        qDebug() << "creating a DMG disk image...";
         // no error handling as this is not fatal
         const QString mkdmgscript = QDir::temp().absoluteFilePath(QLatin1String("mkdmg.sh"));
         QFile::copy(QLatin1String(":/resources/mkdmg.sh"), mkdmgscript);
@@ -306,7 +306,7 @@ static int assemble(Input input, const QString &configdir)
         p.start(mkdmgscript, QStringList() << QFileInfo(out.fileName()).baseName() << bundle);
         p.waitForFinished();
         QFile::remove(mkdmgscript);
-        verbose() <<  "done." << mkdmgscript << std::endl;
+        qDebug() <<  "done." << mkdmgscript;
     }
 #endif
 
@@ -449,7 +449,7 @@ static QString createMetaDataDirectory(const PackageInfoVector &packages, const 
         if (next.contains("/.")) // skip files that are in directories starting with a point
             continue;
 
-        verbose() << "    Found configuration file: " << next << std::endl;
+        qDebug() << "    Found configuration file: " << next;
         const QFileInfo sourceFileInfo(next);
         const QString source = sourceFileInfo.absoluteFilePath();
         const QFileInfo targetFileInfo(configCopy, QFileInfo(next).fileName());
@@ -471,7 +471,7 @@ static QString createMetaDataDirectory(const PackageInfoVector &packages, const 
             QDomElement doc = dom.documentElement();
             QDomElement privateKey = doc.elementsByTagName(QLatin1String("PrivateKey")).item(0).toElement();
             if (!privateKey.isNull()) {
-                verbose() << "      It contains the RSA private key, removing it...";
+                qDebug() << "      It contains the RSA private key, removing it...";
                 if (doc.removeChild(privateKey).isNull())
                     throw Error(QObject::tr("Could not remove the private key from config.xml"));
             }
@@ -514,7 +514,7 @@ static QString createMetaDataDirectory(const PackageInfoVector &packages, const 
             openForWrite(&configXml, configXml.fileName());
             QTextStream stream(&configXml);
             dom.save(stream, 4);
-            verbose() << " done." << std::endl;
+            qDebug() << "      done.";
         }
     }
     return metapath;
@@ -642,7 +642,7 @@ int main(int argc, char **argv)
     if (configDir.isEmpty())
         return printErrorAndUsageAndExit(QObject::tr("Error: No configuration directory selected."));
 
-    verbose() << "Parsed arguments, ok." << std::endl;
+    qDebug() << "Parsed arguments, ok.";
 
     try {
         const PackageInfoVector packageList = createListOfPackages(components, packagesDirectory, !nodeps);
@@ -682,7 +682,7 @@ int main(int argc, char **argv)
 
         // now put the packages into the components section of the binary:
         for (PackageInfoVector::const_iterator it = packages.begin(); it != packages.end(); ++it) {
-            verbose() << "Creating component info for " << it->name << std::endl;
+            qDebug() << "Creating component info for" << it->name;
 
             Component comp;
             comp.setName(it->name.toUtf8());
@@ -691,11 +691,11 @@ int main(int argc, char **argv)
                 .entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
             foreach (const QFileInfo &archive, archives) {
                 const QSharedPointer<Archive> arch(new Archive(archive.absoluteFilePath()));
-                verbose() << "  Appending " << archive.filePath() << " (" << arch->size() << " bytes)"
-                    << std::endl;
+                qDebug() << QString::fromLatin1("    Appending %1 (%2 bytes)")
+                    .arg(archive.filePath(), QString::number(arch->size()));
                 comp.appendArchive(arch);
                 if (!privateKey.isEmpty()) {
-                    verbose() << "    Appending a RSA signature..." << std::endl;
+                    qDebug() << "    Appending a RSA signature...";
                     const QByteArray signature = crypto.sign(arch.data());
                     if (signature.isEmpty())
                         throw Error(QObject::tr("Could not create a RSA signature"));
@@ -704,8 +704,8 @@ int main(int argc, char **argv)
                         throw Error(QObject::tr("Created RSA signature could not be verified. Is "
                             "the given public key wrong?"));
                     }
-                    verbose() << "    Appending " << archive.fileName() << ".sig  ("
-                        << signature.size() << " bytes)" << std::endl;
+                    qDebug() << QString::fromLatin1("    Appending %1.sig  (%2 bytes)")
+                        .arg(archive.fileName(), signature.size());
                     const QSharedPointer<Archive> sigArch(new Archive(arch->name() + ".sig", signature));
                     comp.appendArchive(sigArch);
                 }
@@ -713,11 +713,11 @@ int main(int argc, char **argv)
             input.components.insertComponent(comp);
         }
 
-        verbose() << "Creating the binary" << std::endl;
+        qDebug() << "Creating the binary";
         const int result = assemble(input, configDir);
 
         // cleanup
-        verbose() << "Cleaning up..." << std::endl;
+        qDebug() << "Cleaning up...";
         QFile::remove(input.binaryResourcePath);
         foreach (const QString &resource, input.binaryResources)
             QFile::remove(resource);

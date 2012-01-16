@@ -34,7 +34,6 @@
 
 #include "common/errors.h"
 #include "common/fileutils.h"
-#include "common/utils.h"
 #include "fsengineclient.h"
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
@@ -689,7 +688,7 @@ void Component::addDownloadableArchive(const QString &path)
     Q_ASSERT(isFromOnlineRepository());
 
     const QString versionPrefix = value(scRemoteVersion);
-    verbose() << "addDownloadable " << path << std::endl;
+    qDebug() << "addDownloadable" << path;
     d->m_downloadableArchives.append(versionPrefix + path);
 }
 
@@ -935,8 +934,7 @@ bool Component::forcedInstallation() const
 void Component::setSelected(bool selected)
 {
     Q_UNUSED(selected)
-    verbose() << Q_FUNC_INFO << qPrintable(QString(QLatin1String("on \"%1\" is deprecated!!!")).arg(
-        d->m_componentName)) << std::endl;
+    qDebug() << Q_FUNC_INFO << QString::fromLatin1("on \"%1\" is deprecated!!!").arg(d->m_componentName);
 }
 
 void Component::addDependency(const QString &newDependency)
@@ -1000,7 +998,7 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
 
         if (valueFromScript.isValid())
             return valueFromScript.toBool();
-        verbose() << "value from script is not valid " << std::endl;
+        qDebug() << "value from script is not valid";
         return false;
     }
 
@@ -1039,7 +1037,7 @@ bool Component::isDefault() const
         }
         if (valueFromScript.isValid())
             return valueFromScript.toBool();
-        verbose() << "value from script is not valid " << std::endl;
+        qDebug() << "value from script is not valid";
         return false;
     }
 

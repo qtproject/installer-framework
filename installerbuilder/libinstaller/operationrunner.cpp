@@ -95,8 +95,8 @@ void OperationRunner::setVerbose(bool verbose)
 int OperationRunner::runOperation(const QStringList &arguments)
 {
     if (!init()) {
-        verbose() << "Could not init the package manager core - without this not all operations "
-            << "are working as expected." << std::endl;
+        qDebug() << "Could not init the package manager core - without this not all operations are working "
+            "as expected.";
     }
 
     bool isPerformType = arguments.contains(QLatin1String("--runoperation"));

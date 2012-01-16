@@ -37,7 +37,6 @@
 #include "createshortcutoperation.h"
 #include "common/errors.h"
 #include "common/fileutils.h"
-#include "common/utils.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -192,9 +191,8 @@ bool CreateShortcutOperation::undoOperation()
     const QString& linkLocation = args.at(1);
 
     // first remove the link
-    if (!deleteFileNowOrLater(linkLocation)) {
-        verbose() << QString(QLatin1String("Can't delete: %1")).arg(linkLocation) << std::endl;
-    }
+    if (!deleteFileNowOrLater(linkLocation))
+        qDebug() << "Can't delete:" << linkLocation;
 
     const QString linkPath = QFileInfo(linkLocation).absolutePath();
 
@@ -203,7 +201,7 @@ bool CreateShortcutOperation::undoOperation()
         QString possibleToDeleteDir = QDir::homePath() + QStringList(pathParts.mid(0, i)).join(QLatin1String("/"));
         removeSystemGeneratedFiles(possibleToDeleteDir);
         if (!possibleToDeleteDir.isEmpty() && QDir().rmdir(possibleToDeleteDir))
-            verbose() << QString(QLatin1String("deleted directory: %1")).arg(possibleToDeleteDir) << std::endl;
+            qDebug() << "Deleted directory:" << possibleToDeleteDir;
         else
             break;
     }

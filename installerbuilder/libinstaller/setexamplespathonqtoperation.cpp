@@ -32,11 +32,11 @@
 **************************************************************************/
 #include "setexamplespathonqtoperation.h"
 
-#include "common/utils.h"
 #include "qtpatch.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QSettings>
+#include <QtCore/QDebug>
 
 using namespace QInstaller;
 
@@ -82,8 +82,7 @@ bool SetExamplesPathOnQtOperation::performOperation()
     QByteArray oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_EXAMPLES"));
     bool oldQtPathFromQMakeIsEmpty = oldValue.isEmpty();
     if (oldQtPathFromQMakeIsEmpty) {
-        verbose() << "qpatch: warning: It was not able to get the old values from " << qPrintable(qmakePath)
-            << std::endl;
+        qDebug() << "qpatch: warning: It was not able to get the old values from" << qmakePath;
     }
 
     if (255 < newValue.size()) {
@@ -105,8 +104,7 @@ bool SetExamplesPathOnQtOperation::performOperation()
 
     bool isPatched = QtPatch::patchBinaryFile(qmakePath, oldValue, newValue);
     if (!isPatched) {
-        QInstaller::verbose() << "qpatch: warning: could not patched the example path in "
-            << qPrintable(qmakePath) << std::endl;
+        qDebug() << "qpatch: warning: could not patched the example path in" << qmakePath;
     }
 
     return true;

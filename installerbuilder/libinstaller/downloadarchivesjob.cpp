@@ -33,7 +33,6 @@
 #include "downloadarchivesjob.h"
 
 #include "common/binaryformatenginehandler.h"
-#include "common/utils.h"
 #include "component.h"
 #include "cryptosignatureverifier.h"
 #include "messageboxhandler.h"

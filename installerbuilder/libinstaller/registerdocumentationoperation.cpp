@@ -37,7 +37,7 @@
 #include <QString>
 #include <QFileInfo>
 #include <QDir>
-#include <QDebug>
+#include <QtCore/QDebug>
 
 using namespace QInstaller;
 
@@ -98,7 +98,7 @@ bool RegisterDocumentationOperation::performOperation()
     if (!settingsDir.exists())
         settingsDir.mkpath(settingsDir.absolutePath());
     const QString collectionFile = settingsDir.absolutePath() + QLatin1String("/helpcollection.qhc");
-    qDebug() << "collectionFile: " << collectionFile;
+    qDebug() << "collectionFile:" << collectionFile;
 
     if (!QFileInfo(helpFile).exists()) {
         setError(UserDefinedError);

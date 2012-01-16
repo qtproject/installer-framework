@@ -76,12 +76,12 @@ public slots:
 
     void downloadSpeed(qint64 speed)
     {
-        qDebug() << "Download speed: " << format(speed) + "/sec";
+        qDebug() << "Download speed:" << format(speed) + "/sec";
     }
 
     void downloadProgress(double progress)
     {
-        qDebug() << "Progress: " << progress;
+        qDebug() << "Progress:" << progress;
     }
 
     void estimatedDownloadTime(int time)
@@ -112,7 +112,7 @@ public slots:
         if (s >= 0 && minutes.isEmpty())
             seconds = QString::number(s) + (s < 2 ? " second" : " seconds");
 
-        qDebug() << days + hours + minutes + seconds + tr(" remaining.");
+        qDebug() << days + hours + minutes + seconds + tr("remaining.");
     }
 
     void downloadStatus(const QString &status)
@@ -122,7 +122,7 @@ public slots:
 
     void downloadProgress(qint64 bytesReceived, qint64 bytesToReceive)
     {
-        qDebug() << "Bytes received: " << bytesReceived << ", Bytes to receive: " << bytesToReceive;
+        qDebug() << "Bytes received:" << bytesReceived << ", Bytes to receive:" << bytesToReceive;
     }
 
 private:

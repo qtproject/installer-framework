@@ -34,7 +34,6 @@
 #include "installerbasecommons.h"
 #include "settingsdialog.h"
 
-#include <common/utils.h>
 #include <packagemanagercore.h>
 
 #include <QtCore/QTimer>
@@ -119,8 +118,7 @@ int TabController::init()
         d->m_init = true;
         // this should called as early as possible, to handle error message boxes for example
         if (!d->m_controlScript.isEmpty()) {
-            QInstaller::verbose() << "Non-interactive installation using script: "
-                << qPrintable(d->m_controlScript) << std::endl;
+            qDebug() << "Non-interactive installation using script:" << d->m_controlScript;
 
             d->m_gui->loadControlScript(d->m_controlScript);
             QScriptEngine *engine = d->m_gui->controlScriptEngine();

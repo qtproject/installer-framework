@@ -36,7 +36,6 @@
 #include "common/binaryformat.h"
 #include "common/errors.h"
 #include "common/fileutils.h"
-#include "common/utils.h"
 #include "component.h"
 #include "fsengineclient.h"
 #include "messageboxhandler.h"
@@ -384,7 +383,7 @@ void PackageManagerCorePrivate::clearComponentsToInstall()
 bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component *> &components)
 {
     if (components.isEmpty()) {
-        verbose() << "components list is empty in " << Q_FUNC_INFO << std::endl;
+        qDebug() << "components list is empty in" << Q_FUNC_INFO;
         return true;
     }
 
@@ -401,7 +400,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component 
         if (m_toInstallComponentIds.contains(component->name())) {
             QString errorMessage = QString::fromLatin1("Recursion detected component(%1) already added with "
                 "reason: \"%2\"").arg(component->name(), installReason(component));
-            verbose() << qPrintable(errorMessage) << std::endl;
+            qDebug() << qPrintable(errorMessage);
             m_componentsToInstallError.append(errorMessage);
             Q_ASSERT_X(!m_toInstallComponentIds.contains(component->name()), Q_FUNC_INFO,
                 qPrintable(errorMessage));
@@ -452,7 +451,7 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
             if (!dependencyComponent)
                 errorMessage = QString::fromLatin1("Can't find missing dependency (%1) for %2.");
             errorMessage = errorMessage.arg(dependencyComponentName, component->name());
-            verbose() << qPrintable(errorMessage) << std::endl;
+            qDebug() << qPrintable(errorMessage);
             m_componentsToInstallError.append(errorMessage);
             Q_ASSERT_X(false, Q_FUNC_INFO, qPrintable(errorMessage));
             return false;
@@ -463,7 +462,7 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
                 if (m_visitedComponents.value(component).contains(dependencyComponent)) {
                     QString errorMessage = QString::fromLatin1("Recursion detected component(%1) already "
                         "added with reason: \"%2\"").arg(component->name(), installReason(component));
-                    verbose() << qPrintable(errorMessage) << std::endl;
+                    qDebug() << qPrintable(errorMessage);
                     m_componentsToInstallError = errorMessage;
                     Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent), Q_FUNC_INFO,
                         qPrintable(errorMessage));
@@ -1015,9 +1014,10 @@ void PackageManagerCorePrivate::registerPathesForUninstallation(
 
 void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint64 size, bool writeBinaryLayout)
 {
-    verbose() << "Writing uninstaller: " << (uninstallerName()  + QLatin1String(".new")) << std::endl;
+    QString uninstallerRenamedName = uninstallerName() + QLatin1String(".new");
+    qDebug() << "Writing uninstaller:" << uninstallerRenamedName;
 
-    KDSaveFile out(uninstallerName() + QLatin1String(".new"));
+    KDSaveFile out(uninstallerRenamedName);
     openForWrite(&out, out.fileName()); // throws an exception in case of error
 
     if (!input->seek(0))
@@ -1143,7 +1143,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         op = createOwnedOperation(QLatin1String("Mkdir"));
         op->setArguments(QStringList() << (targetAppDirPath + QLatin1String("/../Resources/qt_menu.nib")));
         if (!op->performOperation()) {
-            verbose() << "ERROR in Mkdir operation: " << op->errorString() << std::endl;
+            qDebug() << "ERROR in Mkdir operation:" << op->errorString();
         }
 
         op = createOwnedOperation(QLatin1String("CopyDirectory"));
@@ -1215,7 +1215,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         bool replacementExists = false;
         const QString installerBaseBinary = m_core->replaceVariables(m_installerBaseBinaryUnreplaced);
         if (!installerBaseBinary.isEmpty() && QFileInfo(installerBaseBinary).exists()) {
-            verbose() << "Got a replacement installer base binary: " << installerBaseBinary << std::endl;
+            qDebug() << "Got a replacement installer base binary:" << installerBaseBinary;
 
             QFile replacementBinary(installerBaseBinary);
             try {
@@ -1226,14 +1226,14 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
                 newBinaryWritten = true;
                 replacementExists = true;
             } catch (const Error &error) {
-                verbose() << error.message() << std::endl;
+                qDebug() << error.message();
             }
 
             if (!replacementBinary.remove()) {
                 // Is there anything more sensible we can do with this error? I think not. It's not serious
                 // enough for throwing/ aborting the process.
-                verbose() << "Could not remove installer base binary (" << installerBaseBinary
-                    << ") after updating the uninstaller: " << replacementBinary.errorString() << std::endl;
+                qDebug() << QString::fromLatin1("Could not remove installer base binary (%1) after updating "
+                    "the uninstaller: %2").arg(installerBaseBinary, replacementBinary.errorString());
             }
             m_installerBaseBinaryUnreplaced.clear();
         }
@@ -1292,7 +1292,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         if (newBinaryWritten) {
             const bool restart = replacementExists && isUpdater() && (!statusCanceledOrFailed());
             deferredRename(uninstallerName() + QLatin1String(".new"), uninstallerName(), restart);
-            verbose() << "Maintenance tool restart: " << (restart ? "true." : "false.") << std::endl;
+            qDebug() << "Maintenance tool restart:" << (restart ? "true." : "false.");
         }
     } catch (const Error &err) {
         setStatus(PackageManagerCore::Failure);
@@ -1381,7 +1381,7 @@ void PackageManagerCorePrivate::runInstaller()
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
         const QList<Component*> componentsToInstall = m_core->orderedComponentsToInstall();
-        verbose() << "Install size: " << componentsToInstall.size() << " components" << std::endl;
+        qDebug() << "Install size:" << componentsToInstall.size() << "components";
 
         if (!adminRightsGained) {
             foreach (Component *component, m_core->orderedComponentsToInstall()) {
@@ -1441,8 +1441,7 @@ void PackageManagerCorePrivate::runInstaller()
             setStatus(PackageManagerCore::Failure);
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
-            verbose() << "ROLLING BACK operations=" << m_performedOperationsCurrentSession.count()
-                << std::endl;
+            qDebug() << "ROLLING BACK operations=" << m_performedOperationsCurrentSession.count();
         }
 
         m_core->rollBackInstallation();
@@ -1477,7 +1476,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
             adminRightsGained = m_core->gainAdminRights();
 
         const QList<Component *> componentsToInstall = m_core->orderedComponentsToInstall();
-        verbose() << "Install size: " << componentsToInstall.size() << " components " << std::endl;
+        qDebug() << "Install size:" << componentsToInstall.size() << "components";
 
         bool updateAdminRights = false;
         if (!adminRightsGained) {
@@ -1605,8 +1604,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
             setStatus(PackageManagerCore::Failure);
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
-            verbose() << "ROLLING BACK operations=" << m_performedOperationsCurrentSession.count()
-                << std::endl;
+            qDebug() << "ROLLING BACK operations=" << m_performedOperationsCurrentSession.count();
         }
 
         m_core->rollBackInstallation();
@@ -1659,10 +1657,10 @@ void PackageManagerCorePrivate::runUninstaller()
             try {
                 QInstaller::removeDirectory(startMenuDir);
             } catch (const Error &error) {
-                verbose() << "Could not remove " << startMenuDir << ": " << error.message() << std::endl;
+                qDebug() << QString::fromLatin1("Could not remove %1: %2").arg(startMenuDir, error.message());
             }
         } else {
-            verbose() << "Start menu dir not set." << std::endl;
+            qDebug() << "Start menu dir not set.";
         }
 
         // this will also delete the TargetDir on Windows
@@ -1670,7 +1668,7 @@ void PackageManagerCorePrivate::runUninstaller()
 
         if (QVariant(m_core->value(scRemoveTargetDir)).toBool()) {
             // on !Windows, we need to remove TargetDir manually
-            verbose() << "Complete uninstallation is chosen" << std::endl;
+            qDebug() << "Complete uninstallation is chosen";
             const QString target = targetDir();
             if (!target.isEmpty()) {
                 if (updateAdminRights && !adminRightsGained) {
@@ -1730,7 +1728,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         bool becameAdmin = false;
         if (!adminRightsGained && operation->value(QLatin1String("admin")).toBool()) {
             becameAdmin = m_core->gainAdminRights();
-            verbose() << operation->name() << " as admin: " << becameAdmin << std::endl;
+            qDebug() << operation->name() << "as admin:" << becameAdmin;
         }
 
         connectOperationToInstaller(operation, progressOperationSize);
@@ -1742,9 +1740,9 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         bool ignoreError = false;
         bool ok = PackageManagerCorePrivate::performOperationThreaded(operation);
         while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
-            verbose() << QString(QLatin1String("operation '%1' with arguments: '%2' failed: %3"))
+            qDebug() << QString::fromLatin1("Operation '%1' with arguments: '%2' failed: %3")
                 .arg(operation->name(), operation->arguments().join(QLatin1String("; ")),
-                operation->errorString()) << std::endl;;
+                operation->errorString());
             const QMessageBox::StandardButton button =
                 MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
@@ -1909,7 +1907,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                 becameAdmin = m_core->gainAdminRights();
 
             connectOperationToInstaller(undoOperation, progressSize);
-            verbose() << "undo operation=" << undoOperation->name() << std::endl;
+            qDebug() << "undo operation=" << undoOperation->name();
             performOperationThreaded(undoOperation, PackageManagerCorePrivate::Undo);
 
             const QString componentName = undoOperation->value(QLatin1String("component")).toString();
@@ -2083,7 +2081,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             try {
                 openForRead(&updatesFile, updatesFile.fileName());
             } catch(const Error &e) {
-                verbose() << tr("Error opening Updates.xml: ") << e.message() << std::endl;
+                qDebug() << "Error opening Updates.xml:" << e.message();
                 setStatus(PackageManagerCore::Failure, tr("Could not add temporary update source information."));
                 return false;
             }
@@ -2093,8 +2091,8 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             QString error;
             QDomDocument doc;
             if (!doc.setContent(&updatesFile, &error, &line, &column)) {
-                verbose() << tr("Parse error in File %4 : %1 at line %2 col %3").arg(error,
-                    QString::number(line), QString::number(column), updatesFile.fileName()) << std::endl;
+                qDebug() << QString::fromLatin1("Parse error in File %4 : %1 at line %2 col %3").arg(error,
+                    QString::number(line), QString::number(column), updatesFile.fileName());
                 setStatus(PackageManagerCore::Failure, tr("Could not add temporary update source information."));
                 return false;
             }
@@ -2165,7 +2163,7 @@ bool PackageManagerCorePrivate::appendComponentToUninstall(Component *component)
 bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Component*> &components)
 {
     if (components.isEmpty()) {
-        verbose() << "components list is empty in " << Q_FUNC_INFO << std::endl;
+        qDebug() << "components list is empty in" << Q_FUNC_INFO;
         return true;
     }
 

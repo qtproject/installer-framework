@@ -33,11 +33,11 @@
 #include "elevatedexecuteoperation.h"
 
 #include "environment.h"
-#include "common/utils.h"
 #include "qprocesswrapper.h"
 
-#include <QThread>
-#include <QProcessEnvironment>
+#include <QtCore/QThread>
+#include <QtCore/QProcessEnvironment>
+#include <QtCore/QDebug>
 
 using namespace QInstaller;
 
@@ -140,8 +140,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     process = new QProcessWrapper();
     if (!workingDirectory.isEmpty()) {
         process->setWorkingDirectory(workingDirectory);
-        QInstaller::verbose() << " ElevatedExecuteOperation setWorkingDirectory: " << workingDirectory
-            << std::endl;
+        qDebug() << "ElevatedExecuteOperation setWorkingDirectory:" << workingDirectory;
     }
 
     QProcessEnvironment penv;
@@ -164,16 +163,14 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
 #ifdef Q_OS_WIN
     if (args.count() == 1) {
         process->setNativeArguments(args.front());
-        QInstaller::verbose() << " ElevatedExecuteOperation setNativeArguments to start: " << args.front()
-            << std::endl;
+        qDebug() << "ElevatedExecuteOperation setNativeArguments to start:" << args.front();
         process->start(QString(), QStringList());
     } else
 #endif
     {
         process->start(args.front(), args.mid(1));
     }
-    QInstaller::verbose() << args.front() << " started, arguments: " << QStringList(args.mid(1))
-        .join(QLatin1String(" ")) << std::endl;
+    qDebug() << args.front() << "started, arguments:" << QStringList(args.mid(1)).join(QLatin1String(" "));
 
     bool success = false;
     //we still like the none blocking possibility to perform this operation without threads
@@ -234,12 +231,11 @@ void ElevatedExecuteOperation::Private::readProcessOutput()
     Q_ASSERT(process);
     Q_ASSERT(QThread::currentThread() == process->thread());
     if (QThread::currentThread() != process->thread()) {
-        QInstaller::verbose() << Q_FUNC_INFO << QLatin1String(" can only be called from the same thread as "
-            "the process is.") << std::endl;
+        qDebug() << Q_FUNC_INFO << "can only be called from the same thread as the process is.";
     }
     const QByteArray output = process->readAll();
     if (!output.isEmpty()) {
-        QInstaller::verbose() << QString::fromLocal8Bit(output) << std::endl;
+        qDebug() << output;
         emit q->outputTextChanged(QString::fromLocal8Bit(output));
     }
 }

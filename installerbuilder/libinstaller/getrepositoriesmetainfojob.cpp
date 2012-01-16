@@ -32,9 +32,10 @@
 **************************************************************************/
 #include "getrepositoriesmetainfojob.h"
 
-#include "common/utils.h"
 #include "getrepositorymetainfojob.h"
 #include "qinstallerglobal.h"
+
+#include <QtCore/QDebug>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -174,7 +175,7 @@ void GetRepositoriesMetaInfoJob::jobFinished(KDJob *j)
     if (job->error() == KDJob::Canceled
         || (job->error() >= KDJob::UserDefinedError && job->error() < QInstaller::UserIgnoreError)) {
             emit infoMessage(j, job->errorString());
-            verbose() << job->errorString() << std::endl;
+            qDebug() << job->errorString();
             emitFinishedWithError(job->error(), job->errorString());
             return;
     }

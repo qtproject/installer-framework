@@ -32,11 +32,11 @@
 **************************************************************************/
 #include "setpluginpathonqtcoreoperation.h"
 
-#include "common/utils.h"
 #include "qtpatch.h"
 
 #include <QtCore/QByteArrayMatcher>
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
 
 using namespace QInstaller;
 
@@ -46,7 +46,7 @@ namespace {
         QFileInfo fileInfo(binaryPath);
 
         if (!fileInfo.exists()) {
-            verbose() << "qpatch: warning: file '" << qPrintable(binaryPath) << "' not found" << std::endl;
+            qDebug() << QString::fromLatin1("qpatch: warning: file '%1' not found").arg(binaryPath);
             return QByteArray();
         }
 
@@ -58,9 +58,9 @@ namespace {
         }
         Q_ASSERT(file.isOpen());
         if (!file.isOpen()) {
-            verbose() << "qpatch: warning: file '" << qPrintable(binaryPath) << "' can not open as ReadOnly."
-                << std::endl;
-            verbose() << file.errorString() << std::endl;
+            qDebug() << QString::fromLatin1("qpatch: warning: file '%1' can not open as ReadOnly.").arg(
+                binaryPath);
+            qDebug() << file.errorString();
             return QByteArray();
         }
 
@@ -106,7 +106,7 @@ bool SetPluginPathOnQtCoreOperation::performOperation()
     const QByteArray newValue = QDir::toNativeSeparators(args.at(1)).toUtf8();
 
     if (255 < newValue.size()) {
-        verbose() << "qpatch: error: newQtDir needs to be less than 255 characters." << std::endl;
+        qDebug() << "qpatch: error: newQtDir needs to be less than 255 characters.";
         return false;
     }
     QStringList libraryFiles;
@@ -124,10 +124,8 @@ bool SetPluginPathOnQtCoreOperation::performOperation()
             QByteArray adjutedNewValue = QByteArray("qt_plugpath=%1").replace("%1", newValue);
 
             bool isPatched = QtPatch::patchBinaryFile(coreLibrary, oldValue, adjutedNewValue);
-            if (!isPatched) {
-                QInstaller::verbose() << "qpatch: warning: could not patched the plugin path in "
-                    << qPrintable(coreLibrary) << std::endl;
-            }
+            if (!isPatched)
+                qDebug() << "qpatch: warning: could not patched the plugin path in" << coreLibrary;
         }
     }
 

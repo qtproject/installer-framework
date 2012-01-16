@@ -1485,7 +1485,7 @@ bool PackageManagerCore::run()
             d->runPackageUpdater();
         return true;
     } catch (const Error &err) {
-        verbose() << "Caught Installer Error: " << err.message() << std::endl;
+        qDebug() << "Caught Installer Error:" << err.message();
         return false;
     }
 }
@@ -1514,7 +1514,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         if (isVerbose()) {
             static QString lastLocalPath;
             if (lastLocalPath != localPath)
-                verbose() << "Url is : " << localPath << std::endl;
+                qDebug() << "Url is:" << localPath;
             lastLocalPath = localPath;
         }
 
@@ -1584,7 +1584,7 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
             // if one component has a replaces which is not existing in the current component list anymore,
             // just ignore it
             if (!component) {
-                qDebug() << componentName << " - Does not exist in the repositories anymore.";
+                qDebug() << componentName << "- Does not exist in the repositories anymore.";
                 continue;
             }
             if (!d->componentsToReplace(data.runMode).contains(componentName)) {

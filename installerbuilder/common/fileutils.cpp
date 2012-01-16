@@ -33,7 +33,6 @@
 #include "fileutils.h"
 
 #include <common/errors.h>
-#include <common/utils.h>
 
 #include <QtCore/QDateTime>
 #include <QtCore/QDir>
@@ -41,6 +40,7 @@
 #include <QtCore/QEventLoop>
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QThread>
+#include <QtCore/QUrl>
 
 #include <errno.h>
 
@@ -306,7 +306,7 @@ void QInstaller::removeSystemGeneratedFiles(const QString &path)
 
 void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
-    verbose() << "Copying " << sourceDir << " to " << targetDir << std::endl;
+    qDebug() << "Copying" << sourceDir << "to" << targetDir;
     Q_ASSERT(QFileInfo(sourceDir).isDir());
     Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
     if (!QDir().mkpath(targetDir))
@@ -331,7 +331,7 @@ void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &
 
 void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
-    verbose() << "Moving " << sourceDir << " to " << targetDir << std::endl;
+    qDebug() << "Moving" << sourceDir << "to" << targetDir;
     Q_ASSERT(QFileInfo(sourceDir).isDir());
     Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
     if (!QDir().mkpath(targetDir))
@@ -406,7 +406,7 @@ QString QInstaller::createTemporaryDirectory(const QString &templ)
     if (!f.open())
         throw Error(QObject::tr("Could not create temporary folder for template %1: %2").arg(t, f.errorString()));
     const QString path = f.fileName() + QLatin1String("meta");
-    verbose() << "Creating meta data directory at " << path << std::endl;
+    qDebug() << "Creating meta data directory at" << path;
 
     QInstaller::mkpath(path);
     return path;

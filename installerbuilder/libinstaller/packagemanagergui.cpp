@@ -316,7 +316,7 @@ void PackageManagerGui::clickButton(int wb, int delay)
         QTimer::singleShot(delay, b, SLOT(click()));
     } else {
         // TODO: we should probably abort immediately here (faulty test script)
-        verbose() << "Button " << wb << " not found!" << std::endl;
+        qDebug() << "Button" << wb << "not found!";
     }
 }
 
@@ -378,7 +378,7 @@ void PackageManagerGui::loadControlScript(const QString &scriptPath)
     d->m_controlScript = comp;
     d->m_controlScript.construct();
 
-    verbose() << "Loaded control script " << qPrintable(scriptPath) << std::endl;
+    qDebug() << "Loaded control script" << scriptPath;
 }
 
 void PackageManagerGui::slotCurrentPageChanged(int id)
@@ -392,12 +392,11 @@ void PackageManagerGui::callControlScriptMethod(const QString &methodName)
     QScriptValue method = d->m_controlScript.property(QLatin1String("prototype")).property(methodName);
 
     if (!method.isValid()) {
-        verbose() << "Control script callback " << qPrintable(methodName) << " does not exist."
-            << std::endl;
+        qDebug() << "Control script callback" << methodName << "does not exist.";
         return;
     }
 
-    verbose() << "Calling control script callback " << qPrintable(methodName) << std::endl;
+    qDebug() << "Calling control script callback" << methodName;
 
     method.call(d->m_controlScript);
 
@@ -519,7 +518,7 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
             return p;
         }
     }
-    verbose() << "No page found for object name " << name << std::endl;
+    qDebug() << "No page found for object name" << name;
     return 0;
 }
 
@@ -578,7 +577,7 @@ void PackageManagerGui::setModified(bool value)
 
 void PackageManagerGui::showFinishedPage()
 {
-    verbose() << "SHOW FINISHED PAGE" << std::endl;
+    qDebug() << "SHOW FINISHED PAGE";
     if (d->m_autoSwitchPage)
         next();
     else
@@ -1436,7 +1435,7 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     QStringList dirs = dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
 
     if (core->value(QLatin1String("AllUsers")) == QLatin1String("true")) {
-        verbose() << "AllUsers set. Using HKEY_LOCAL_MACHINE" << std::endl;
+        qDebug() << "AllUsers set. Using HKEY_LOCAL_MACHINE";
         QSettings system(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\"
             "Explorer\\Shell Folders"), QSettings::NativeFormat);
         startMenuPath = system.value(QLatin1String("Common Programs"), QString()).toString();
@@ -1446,8 +1445,8 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
         dirs += dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
     }
 
-    verbose() << "StartMenuPath: \t" << startMenuPath << std::endl;
-    verbose() << "DesktopDir: \t" << core->value(QLatin1String("DesktopDir")) << std::endl;
+    qDebug() << "StartMenuPath: \t" << startMenuPath;
+    qDebug() << "DesktopDir: \t" << core->value(QLatin1String("DesktopDir"));
 
     m_listWidget = new QListWidget(this);
     if (!dirs.isEmpty()) {
@@ -1587,8 +1586,8 @@ void ReadyForInstallationPage::entering()
 
     // there is no better way atm to check this
     if (vol.size() == 0 && vol.availableSpace() == 0) {
-        verbose() << "Could not determine available space on device " << target << ". Continue silently."
-            << std::endl;
+        qDebug() << QString::fromLatin1("Could not determine available space on device %1. Continue silently."
+            ).arg(target);
         return;
     }
 
@@ -1603,8 +1602,8 @@ void ReadyForInstallationPage::entering()
     const bool tempInstFailure = tempOnSameVolume && available < realRequiredSpace
         + realRequiredTempSpace;
 
-    verbose() << "Disk space check on " << target << ": required: " << required
-        << ", available: " << available << ", size: " << vol.size() << std::endl;
+    qDebug() << QString::fromLatin1("Disk space check on %1: required: %2, available: %3, size: %4").arg(
+        target, QString::number(required), QString::number(available), QString::number(vol.size()));
 
     QString tempString;
     if (tempAvailable < realRequiredTempSpace || tempInstFailure) {
@@ -1852,8 +1851,6 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
 
 void FinishedPage::entering()
 {
-    verbose() << "FINISHED ENTERING: " << std::endl;
-
     if (m_commitButton) {
         disconnect(m_commitButton, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
         m_commitButton = 0;
@@ -1927,7 +1924,7 @@ void FinishedPage::handleFinishClicked()
     if (!m_runItCheckBox->isChecked() || program.isEmpty())
         return;
 
-    verbose() << "STARTING " << program << std::endl;
+    qDebug() << "starting" << program;
     QProcess::startDetached(program);
 }
 

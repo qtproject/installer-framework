@@ -552,21 +552,22 @@ void UpdateFinder::Private::createUpdateObjects(const UpdateSourceInfo &sourceIn
         if (info.data.contains(QLatin1String("RequiredCompatLevel")) &&
             info.data.value(QLatin1String("RequiredCompatLevel")).toInt() != application->compatLevel())
         {
-            qDebug() << "Update \"" << info.data.value( QLatin1String( "Name" ) ).toString() << "\" at \""
-                     << sourceInfo.name << "\"(\"" << sourceInfo.url.toString() << "\") requires a different compat level";
+            qDebug().nospace() << "Update \"" << info.data.value( QLatin1String( "Name" ) ).toString()
+                               << "\" at \"" << sourceInfo.name << "\"(\"" << sourceInfo.url.toString()
+                               << "\") requires a different compat level";
             continue; // Compatibility level mismatch
         }
 
         // If another update of the same name exists, then use the update coming from
         // a higher priority.
         if (!checkForUpdatePriority(sourceInfo, info)) {
-            qDebug() << "Skipping Update \""
-                     << info.data.value(QLatin1String("Name")).toString()
-                     << "\" from \""
-                     << sourceInfo.name
-                     << "\"(\""
-                     << sourceInfo.url.toString()
-                     << "\") because an update with the same name was found from a higher priority location";
+            qDebug().nospace() << "Skipping Update \""
+                               << info.data.value(QLatin1String("Name")).toString()
+                               << "\" from \""
+                               << sourceInfo.name
+                               << "\"(\""
+                               << sourceInfo.url.toString()
+                               << "\") because an update with the same name was found from a higher priority location";
 
             continue;
         }

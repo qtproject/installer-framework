@@ -31,10 +31,9 @@
 **
 **************************************************************************/
 #include "macrelocateqt.h"
-
-#include "common/utils.h"
 #include "macreplaceinstallnamesoperation.h"
 
+#include <QtCore/QDebug>
 #include <QtCore/QFile>
 
 
@@ -56,7 +55,7 @@ bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
         m_errorMessage = QLatin1String("targetDir can't be empty");
         return false;
     }
-    verbose() << "Relocator::apply(" << qtInstallDir << ")" << std::endl;
+    qDebug() << Q_FUNC_INFO << qtInstallDir;
 
     m_errorMessage.clear();
     m_installDir.clear();
@@ -74,7 +73,7 @@ bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
     //to get realy only the first subdirectory as an indicator like the old behaviour was till Mobility don't use this qt patch hack
     indicator = indicator.left(indicator.indexOf(QLatin1String("/"), 1));
 
-    verbose() << "Relocator uses indicator: " << indicator << std::endl;
+    qDebug() << "Relocator uses indicator:" << indicator;
     QString replacement = targetDir;
 
 

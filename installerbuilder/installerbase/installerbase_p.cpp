@@ -215,7 +215,7 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
         url = QLatin1String("file:///") + url.toString();
     m_downloader.reset(FileDownloaderFactory::instance().create(url.scheme()));
     if (m_downloader.isNull()) {
-        verbose() << tr("Scheme not supported: %1 (%2)").arg(url.scheme(), url.toString()) << std::endl;
+        qDebug() << QString::fromLatin1("Scheme not supported: %1 (%2)").arg(url.scheme(), url.toString());
         return EXIT_FAILURE;
     }
     m_downloader->setUrl(url);
@@ -239,8 +239,8 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
     }
 
     if (!m_downloader->isDownloaded()) {
-        verbose() << tr("Could not download file %s: . Error: %s.").arg(m_downloader->url().toString(),
-            m_downloader->errorString()) << std::endl;
+        qDebug() << QString::fromLatin1("Could not download file %1: . Error: %2.").arg(
+            m_downloader->url().toString(), m_downloader->errorString());
         return EXIT_FAILURE;
     }
 
@@ -249,17 +249,20 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
         if (archive.open(QIODevice::ReadOnly)) {
             try {
                 Lib7z::extractArchive(&archive, QDir::tempPath());
-                if (!archive.remove())
-                    verbose() << tr("Could not delete file %s: %s.").arg(target, archive.errorString());
+                if (!archive.remove()) {
+                    qDebug() << QString::fromLatin1("Could not delete file %1: %2.").arg(
+                        target, archive.errorString());
+                }
             } catch (const Lib7z::SevenZipException& e) {
-                verbose() << tr("Error while extracting %1: %2.").arg(target, e.message());
+                qDebug() << QString::fromLatin1("Error while extracting %1: %2.").arg(target, e.message());
                 return EXIT_FAILURE;
             } catch (...) {
-                verbose() << tr("Unknown exception caught while extracting %1.").arg(target);
+                qDebug() << QString::fromLatin1("Unknown exception caught while extracting %1.").arg(target);
                 return EXIT_FAILURE;
             }
         } else {
-            verbose() << tr("Could not open %1 for reading: %2.").arg(target, archive.errorString());
+            qDebug() << QString::fromLatin1("Could not open %1 for reading: %2.").arg(
+                target, archive.errorString());
             return EXIT_FAILURE;
         }
 #ifndef Q_OS_WIN
@@ -275,7 +278,7 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
         writeMaintenanceBinary(arguments.value(0), &installerBase, installerBase.size());
         deferredRename(arguments.value(0) + QLatin1String(".new"), arguments.value(0));
     } catch (const QInstaller::Error &error) {
-        verbose() << error.message() << std::endl;
+        qDebug() << error.message();
         return EXIT_FAILURE;
     }
 
@@ -336,27 +339,27 @@ void InstallerBase::showVersion(const QString &version)
 void InstallerBase::downloadStarted()
 {
     m_downloadFinished = false;
-    verbose() << tr("Download started! Source: ") << m_downloader->url().toString() << tr(", Target: ")
-        << m_downloader->downloadedFileName() << std::endl;
+    qDebug() << QString::fromLatin1("Download started! Source: %1, Target: %2").arg(
+        m_downloader->url().toString(), m_downloader->downloadedFileName());
 }
 
 void InstallerBase::downloadFinished()
 {
     m_downloadFinished = true;
-    verbose() << tr("Download finished! Source: ") << m_downloader->url().toString() << tr(", Target: ")
-        << m_downloader->downloadedFileName() << std::endl;
+    qDebug() << QString::fromLatin1("Download finished! Source: %1, Target: %2").arg(
+        m_downloader->url().toString(), m_downloader->downloadedFileName());
 }
 
 void InstallerBase::downloadProgress(double progress)
 {
-    verbose() << tr("Progress: ") << progress << std::endl;
+    qDebug() << "Progress: " << progress;
 }
 
 void InstallerBase::downloadAborted(const QString &error)
 {
     m_downloadFinished = true;
-    verbose() << tr("Download aborted! Source: ") << m_downloader->url().toString() << tr(", Target: ")
-        << m_downloader->downloadedFileName() << tr(", Error: ") << error << std::endl;
+    qDebug() << QString::fromLatin1("Download aborted! Source: %1, Target: %2, Error: %3").arg(
+        m_downloader->url().toString(), m_downloader->downloadedFileName(), error);
 }
 
 

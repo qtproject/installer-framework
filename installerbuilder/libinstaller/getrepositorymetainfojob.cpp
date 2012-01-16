@@ -34,7 +34,6 @@
 
 #include "constants.h"
 #include "common/errors.h"
-#include "common/utils.h"
 #include "cryptosignatureverifier.h"
 #include "lib7z_facade.h"
 #include "messageboxhandler.h"
@@ -139,7 +138,7 @@ Repository GetRepositoryMetaInfoJob::repository() const
 void GetRepositoryMetaInfoJob::setRepository(const Repository &r)
 {
     m_repository = r;
-    verbose() << "Setting repository with URL : " << r.url().toString() << std::endl;
+    qDebug() << "Setting repository with URL:" << r.url().toString();
 }
 
 int GetRepositoryMetaInfoJob::silentRetries() const
@@ -356,7 +355,7 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
         nextVersion = m_packageVersions.takeLast();
     }
 
-    verbose() << "fetching metadata of " << next << " in version " << nextVersion << std::endl;
+    qDebug() << "fetching metadata of" << next << "in version" << nextVersion;
 
     bool online = true;
     if (m_repository.url().scheme().isEmpty())

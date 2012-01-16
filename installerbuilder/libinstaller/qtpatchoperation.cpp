@@ -37,7 +37,6 @@
 #endif
 
 #include "constants.h"
-#include "common/utils.h"
 #include "packagemanagercore.h"
 
 #include <QMap>
@@ -45,7 +44,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDir>
-#include <QDebug>
+#include <QtCore/QDebug>
 
 using namespace QInstaller;
 
@@ -250,8 +249,7 @@ bool QtPatchOperation::performOperation()
             it.next();
             bool isPatched = QtPatch::patchBinaryFile(&file, it.key(), it.value());
             if (!isPatched) {
-                QInstaller::verbose() << "qpatch: warning: file '" << qPrintable(fileName)
-                    << "' could not patched" << std::endl;
+                qDebug() << QString::fromLatin1("qpatch: warning: file '%1' could not patched").arg(fileName);
             }
         }
     } //foreach (QString fileName, filesToPatch)

@@ -120,11 +120,11 @@ void ProgressCoordinator::partProgressChanged(double fraction)
         //Q_ASSERT(newCurrentCompletePercentage >= 0);
         //Q_ASSERT(newCurrentCompletePercentage <= 100);
         if (newCurrentCompletePercentage < 0) {
-            qDebug() << newCurrentCompletePercentage << " is smaller then 0 - this should happen max once";
+            qDebug() << newCurrentCompletePercentage << "is smaller then 0 - this should happen max once";
             newCurrentCompletePercentage = 0;
         }
         if (newCurrentCompletePercentage > 100) {
-            qDebug() << newCurrentCompletePercentage << " is bigger then 100 - this should happen max once";
+            qDebug() << newCurrentCompletePercentage << "is bigger then 100 - this should happen max once";
             newCurrentCompletePercentage = 100;
         }
 
@@ -152,12 +152,12 @@ void ProgressCoordinator::partProgressChanged(double fraction)
         //Q_ASSERT(newCurrentCompletePercentage >= 0);
         //Q_ASSERT(newCurrentCompletePercentage <= 100);
         if (newCurrentCompletePercentage < 0) {
-            qDebug() << newCurrentCompletePercentage << " is smaller then 0 - this should happen max once";
+            qDebug() << newCurrentCompletePercentage << "is smaller then 0 - this should happen max once";
             newCurrentCompletePercentage = 0;
         }
 
         if (newCurrentCompletePercentage > 100) {
-            qDebug() << newCurrentCompletePercentage << " is bigger then 100 - this should happen max once";
+            qDebug() << newCurrentCompletePercentage << "is bigger then 100 - this should happen max once";
             newCurrentCompletePercentage = 100;
         }
 

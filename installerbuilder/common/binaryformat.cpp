@@ -895,7 +895,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
             } catch (const Error &error) {
                 // this seems to be an unsupported dat file, try to read from original binary
                 c.m_binaryFile.clear();
-                verbose() << error.message();
+                qDebug() << error.message();
             }
         } else {
             c.m_binaryFile.clear();
@@ -925,11 +925,14 @@ BinaryLayout BinaryContent::readBinaryLayout(QIODevice *const file, qint64 cooki
     layout.indexSize = indexSize + sizeof(qint64);
     layout.endOfData = file->pos();
 
-    verbose() << "Operations start: "<< layout.operationsStart << "; " << "Operations end: "
-        << layout.operationsEnd << "; " << "Resource count: " << layout.resourceCount << "; "
-        << "Data block size: " << layout.dataBlockSize << "; " << "Magic marker: "
-        << layout.magicMarker << "; " << "Magic cookie: " << layout.magicCookie << "; "
-        << "Index size: " << layout.indexSize << "; " << "End of data: " << layout.endOfData << std::endl;
+    qDebug() << "Operations start:" << layout.operationsStart;
+    qDebug() << "Operations end:" << layout.operationsEnd;
+    qDebug() << "Resource count:" << layout.resourceCount;
+    qDebug() << "Data block size:" << layout.dataBlockSize;
+    qDebug() << "Magic marker:" << layout.magicMarker;
+    qDebug() << "Magic cookie:" << layout.magicCookie;
+    qDebug() << "Index size:" << layout.indexSize;
+    qDebug() << "End of data:" << layout.endOfData;
 
     const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
     const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
@@ -959,7 +962,7 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
         throw Error(QObject::tr("Could not seek to operation list"));
 
     const qint64 operationsCount = retrieveInt64(file.data());
-    verbose() << "Number of operations: " << operationsCount << std::endl;
+    qDebug() << "Number of operations:" << operationsCount;
 
     for (int i = 0; i < operationsCount; ++i) {
         const QString name = retrieveString(file.data());
@@ -989,14 +992,14 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
 
     if (isVerbose()) {
         const QVector<QInstallerCreator::Component> components = content.m_components.components();
-        verbose() << "Number of components loaded: " << components.count() << std::endl;
+        qDebug() << "Number of components loaded:" << components.count();
         foreach (const QInstallerCreator::Component &component, components) {
             const QVector<QSharedPointer<Archive> > archives = component.archives();
-            verbose() << "Loaded component " << component.name() << " containing " << archives.count()
-                << " archives:" << std::endl;
+            qDebug() << "Loaded component" << component.name() << "containing" << archives.count()
+                << "archives:";
             foreach (const QSharedPointer<Archive> &archive, archives) {
-                verbose() << "    Archive name: " << archive->name() << ", Archive size: "
-                    << archive->size() << " bytes" << std::endl;
+                qDebug().nospace() << "    Archive name:" << archive->name() << ", Archive size:"
+                    << archive->size() << "bytes";
             }
         }
     }

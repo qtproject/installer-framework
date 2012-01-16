@@ -76,7 +76,7 @@ static QSet<Repository> repositories(const QStringList &arguments, const int ind
         QStringList items = arguments.at(index).split(QLatin1Char(','));
         foreach (const QString &item, items) {
             set.insert(Repository(item, false));
-            verbose() << "Adding custom repository:" << item << std::endl;
+            qDebug() << "Adding custom repository:" << item;
         }
     } else {
         std::cerr << "No repository specified" << std::endl;
@@ -229,14 +229,14 @@ int main(int argc, char *argv[])
         }
 
         if (QInstaller::isVerbose()) {
-            verbose() << VERSION << std::endl;
-            verbose() << "Arguments: " << args << std::endl;
-            verbose() << "Resource tree before loading the in-binary resource: " << std::endl;
+            qDebug() << VERSION;
+            qDebug() << "Arguments:" << args;
+            qDebug() << "Resource tree before loading the in-binary resource:";
 
             QDir dir(QLatin1String(":/"));
             foreach (const QString &i, dir.entryList()) {
                 const QByteArray ba = i.toUtf8();
-                verbose() << "    :/" << ba.constData() << std::endl;
+                qDebug().nospace() << "    :/" << ba.constData();
             }
         }
 
@@ -262,15 +262,15 @@ int main(int argc, char *argv[])
         }
 
         if (QInstaller::isVerbose()) {
-            verbose() << "Resource tree after loading the in-binary resource: " << std::endl;
+            qDebug() << "Resource tree after loading the in-binary resource:";
 
             QDir dir = QDir(QLatin1String(":/"));
             foreach (const QString &i, dir.entryList())
-                verbose() << QString::fromLatin1("    :/%1").arg(i) << std::endl;
+                qDebug() << QString::fromLatin1("    :/%1").arg(i);
 
             dir = QDir(QLatin1String(":/metadata/"));
             foreach (const QString &i, dir.entryList())
-                verbose() << QString::fromLatin1("    :/metadata/%1").arg(i) << std::endl;
+                qDebug() << QString::fromLatin1("    :/metadata/%1").arg(i);
         }
 
         QString controlScript;

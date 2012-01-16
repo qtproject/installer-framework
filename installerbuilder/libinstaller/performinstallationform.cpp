@@ -35,7 +35,6 @@
 #include "lazyplaintextedit.h"
 #include "progresscoordinator.h"
 
-#include <common/utils.h>
 
 #include <QtGui/QLabel>
 #include <QtGui/QProgressBar>

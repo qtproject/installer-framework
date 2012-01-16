@@ -33,10 +33,10 @@
 #include "setdemospathonqtoperation.h"
 
 #include "qtpatch.h"
-#include "common/utils.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QSettings>
+#include <QtCore/QDebug>
 
 using namespace QInstaller;
 
@@ -82,8 +82,7 @@ bool SetDemosPathOnQtOperation::performOperation()
     QByteArray oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DEMOS"));
     bool oldQtPathFromQMakeIsEmpty = oldValue.isEmpty();
     if (oldQtPathFromQMakeIsEmpty) {
-        verbose() << "qpatch: warning: It was not able to get the old values from " << qPrintable(qmakePath)
-            << std::endl;
+        qDebug() << "qpatch: warning: It was not able to get the old values from" << qmakePath;
     }
 
     if (255 < newValue.size()) {
@@ -104,8 +103,7 @@ bool SetDemosPathOnQtOperation::performOperation()
 
     bool isPatched = QtPatch::patchBinaryFile(qmakePath, oldValue, newValue);
     if (!isPatched) {
-        QInstaller::verbose() << "qpatch: warning: could not patched the demo path in "
-            << qPrintable(qmakePath) << std::endl;
+        qDebug() << "qpatch: warning: could not patched the demo path in" << qmakePath;
     }
 
     return true;

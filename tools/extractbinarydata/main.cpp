@@ -143,7 +143,7 @@ int main(int argc, char **argv)
             openForRead(&installerBase, installerBase.fileName());
             writeMaintenanceBinary(arguments.at(1), &installerBase, installerBase.size());
         } catch (const Error &error) {
-            verbose() << error.message() << std::endl;
+            qDebug() << error.message();
             return EXIT_FAILURE;
         }
 
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
                 openForRead(&input, input.fileName());
                 layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
             } catch (const Error &error) {
-                verbose() << error.message() << std::endl;
+                qDebug() << error.message();
                 return EXIT_FAILURE;
             }
 
@@ -179,7 +179,7 @@ int main(int argc, char **argv)
                 file.close();
                 input.close();
             } catch (const Error &error) {
-                verbose() << error.message() << std::endl;
+                qDebug() << error.message();
                 return EXIT_FAILURE;
             }
         }

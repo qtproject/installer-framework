@@ -73,13 +73,13 @@ bool removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList 
     qDebug() << Q_FUNC_INFO << settings.fileName();
     settings.beginGroup(QLatin1String(QtVersionsSectionName));
     int qtVersionSizeValue = settings.value(QLatin1String("size")).toInt();
-    qDebug() << QLatin1String("qtVersionSizeValue: ") << qtVersionSizeValue;
+    qDebug() << "qtVersionSizeValue:" << qtVersionSizeValue;
 
     //read all settings for Qt Versions
     QHash<QString, QVariant> oldSettingsAsHash;
     foreach (const QString &key, settings.allKeys())
         oldSettingsAsHash.insert(key, settings.value(key));
-    qDebug() << QLatin1String("settings.allKeys(): ") << settings.allKeys();
+    qDebug() << "settings.allKeys():" << settings.allKeys();
 
     //get the installer added Qt Version settings ids
     QList<int> toRemoveIds;
@@ -96,7 +96,7 @@ bool removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList 
             }
         }
     }
-    qDebug() << QLatin1String("toRemoveIds: ") << toRemoveIds;
+    qDebug() << "toRemoveIds:" << toRemoveIds;
 
     //now write only the other Qt Versions to QtCreator settings
     it.toFront();
@@ -118,12 +118,8 @@ bool removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList 
             }
             QString newKey = QString::number(qtVersionIdMapper.value(numberAtTheBeginning)) + restOfTheKey;
             if (newKey.endsWith(QLatin1String("Id"))) {
-                qDebug() << QLatin1String("settings.setValue(newKey, qtVersionIdMapper.value(numberAtTheBeginning)): ")
-                         << newKey << QLatin1String("||") << qtVersionIdMapper.value(numberAtTheBeginning);
                 settings.setValue(newKey, qtVersionIdMapper.value(numberAtTheBeginning));
             } else {
-                qDebug() << QLatin1String("settings.setValue(newKey, it.value()): ")
-                         << newKey << QLatin1String("||") << it.value();
                 settings.setValue(newKey, it.value());
             }
         }
@@ -132,8 +128,6 @@ bool removeInstallerRegisteredQtVersions(QSettings &settings, const QStringList 
     settings.setValue(QLatin1String("size"), qtVersionIdMapper.count());
     settings.endGroup(); //QtVersionsSectionName
 
-    qDebug() << QLatin1String("qtVersionIdMapper.count(): ") << qtVersionIdMapper.count();
-    qDebug() << QLatin1String("qtVersionSizeValue - toRemoveIds.count(): ") << qtVersionSizeValue - toRemoveIds.count();
     if (qtVersionIdMapper.count() != qtVersionSizeValue - toRemoveIds.count()) {
         return false;
     }

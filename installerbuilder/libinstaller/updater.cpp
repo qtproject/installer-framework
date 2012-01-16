@@ -38,6 +38,7 @@
 #include "init.h"
 #include "packagemanagercore.h"
 
+#include <QtCore/QDebug>
 #include <QtXml/QDomDocument>
 
 #include <iostream>
@@ -62,7 +63,7 @@ bool Updater::checkForUpdates()
     content.registerEmbeddedQResources();
 
     if (content.magicmaker() == MagicInstallerMarker) {
-        verbose() << tr("Impossible to use an installer to check for updates!") << std::endl;
+        qDebug() << "Impossible to use an installer to check for updates!";
         return false;
     }
 
@@ -76,7 +77,7 @@ bool Updater::checkForUpdates()
     const QList<QInstaller::Component *> components = core.updaterComponents();
 
     if (components.isEmpty()) {
-        verbose() << tr("There are currently no updates available.") << std::endl;
+        qDebug() << "There are currently no updates available.";
         return false;
     }
 
