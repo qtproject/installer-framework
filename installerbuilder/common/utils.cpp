@@ -98,19 +98,9 @@ std::ostream &QInstaller::stdverbose()
     return null;
 }
 
-std::ostream &QInstaller::operator<<(std::ostream &os, const QUrl &url)
-{
-    return os << "QUrl( " << url.toString() << ")";
-}
-
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
 {
     return os << qPrintable(string);
-}
-
-std::ostream &QInstaller::operator<<(std::ostream &os, const QByteArray &array)
-{
-    return os << '"' << QString::fromAscii( array ) << '"';
 }
 
 //TODO from kdupdaterfiledownloader.cpp, use that one once merged

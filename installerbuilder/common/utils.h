@@ -55,18 +55,7 @@ namespace QInstaller {
     bool INSTALLER_EXPORT isVerbose();
 
     INSTALLER_EXPORT std::ostream& stdverbose();
-    INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QUrl &url);
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
-    INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QByteArray &array);
-    template <typename T>
-    std::ostream& operator<<(std::ostream &os, const QList<T> &list)
-    {
-        os << "(";
-        for (typename QList<T>::const_iterator it = list.begin(); it != list.end(); ++it)
-            os << *it;
-        os << ");";
-        return os;
-    }
 
     class VerboseWriter;
     INSTALLER_EXPORT VerboseWriter &verbose();
@@ -80,27 +69,7 @@ namespace QInstaller {
 
         static VerboseWriter *instance();
 
-        inline VerboseWriter &operator<<(bool t) { stdverbose() << t; stream << (t ? "true" : "false"); return *this; }
-        inline VerboseWriter &operator<<(int t) { stdverbose() << t; stream << t; return *this; }
-        inline VerboseWriter &operator<<(qint64 t) { stdverbose() << t; stream << t; return *this; }
-        inline VerboseWriter &operator<<(quint64 t) { stdverbose() << t; stream << t; return *this; }
-        inline VerboseWriter &operator<<(double t) { stdverbose() << t; stream << t; return *this; }
-        inline VerboseWriter &operator<<(std::string &t) { stdverbose() << t; stream << QString::fromStdString(t); return *this; }
-        inline VerboseWriter &operator<<(const QByteArray &t) { stdverbose() << t; stream << t; return *this; }
-        inline VerboseWriter &operator<<(const QString &t) { stdverbose() << t; stream << t; return *this; }
-        inline VerboseWriter &operator<<(const QStringRef &t) { return verbose() << t.toString(); }
-        inline VerboseWriter &operator<<(const QLatin1String &t) { stdverbose() << t; stream << t; return *this; }
         inline VerboseWriter &operator<<(const char *t) { stdverbose() << t; stream << t; return *this; }
-        inline VerboseWriter &operator<<(const QUrl &t) { return verbose() << t.toString(); }
-        template <typename T>
-        VerboseWriter &operator<<(const QList<T> &list)
-        {
-            verbose() << "List ( ";
-            for (typename QList< T >::const_iterator it = list.begin(); it != list.end(); ++it)
-                verbose() << *it <<"; ";
-            return verbose() << ");";
-        }
-
         inline VerboseWriter &operator<<(std::ostream& (*f)(std::ostream &s)) { stdverbose() << *f; stream << "\n"; return *this; }
     public slots:
         void setOutputStream(const QString &fileName);
