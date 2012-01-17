@@ -61,8 +61,10 @@ public:
     QString password() const;
     void setPassword(const QString &password);
 
-    uint qHash(const Repository &repository);
     bool operator==(const Repository &other) const;
+    bool operator!=(const Repository &other) const;
+
+    uint qHash(const Repository &repository);
     const Repository &operator=(const Repository &other);
 
     friend QDataStream &operator>>(QDataStream &istream, Repository &repository);

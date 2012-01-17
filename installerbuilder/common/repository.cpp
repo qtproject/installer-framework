@@ -152,13 +152,22 @@ void Repository::setPassword(const QString &password)
 }
 
 /*!
-    Compares the value of this repository to \a other and returns true if they are equal (same server,
-    default state, enabled state as well as username and password).
+    Compares the values of this repository to \a other and returns true if they are equal (same server,
+    default state, enabled state as well as username and password). \sa operator!=()
 */
 bool Repository::operator==(const Repository &other) const
 {
     return m_url == other.m_url && m_default == other.m_default && m_enabled == other.m_enabled
         && m_username == other.m_username && m_password == other.m_password;
+}
+
+/*!
+    Returns true if the \a other repository is not equal to this repository; otherwise returns false. Two
+    repositories are considered equal if they contain the same elements. \sa operator==()
+*/
+bool Repository::operator!=(const Repository &other) const
+{
+    return !(*this == other);
 }
 
 /*!
