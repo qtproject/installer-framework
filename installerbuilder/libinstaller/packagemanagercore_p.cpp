@@ -2042,6 +2042,8 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
     }
 
     m_repoFetched = true;
+    m_settings.updateRepositories(m_repoMetaInfoJob->redirects());
+
     return m_repoFetched;
 }
 

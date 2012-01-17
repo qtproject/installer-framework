@@ -89,6 +89,7 @@ public:
 
     bool hasReplacementRepos() const;
     QSet<Repository> repositories() const;
+    void updateRepositories(const QHash<Repository, Repository> &updates);
 
     QSet<Repository> defaultRepositories() const;
     void setDefaultRepositories(const QSet<Repository> &repositories);

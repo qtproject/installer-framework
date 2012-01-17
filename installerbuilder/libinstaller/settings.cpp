@@ -163,6 +163,25 @@ public:
             return path;
         return m_data.value(scPrefix).toString() + QLatin1String("/") + path;
     }
+
+    void updateRepositories(const QHash<Repository, Repository> &updates, const QString &repoType)
+    {
+        bool update = false;
+        QSet<Repository> repositories = variantListToSet<Repository>(m_data.values(repoType));
+        foreach (const Repository &repo, updates.keys()) {
+            if (repositories.contains(repo)) {
+                update = true;
+                repositories.remove(repo);
+                repositories.insert(updates.value(repo));
+            }
+        }
+
+        if (update) {
+            m_data.remove(repoType);
+            foreach (const Repository &repository, repositories)
+                m_data.insertMulti(repoType, QVariant().fromValue(repository));
+        }
+    }
 };
 
 
@@ -388,6 +407,16 @@ QSet<Repository> Settings::repositories() const
 
     return variantListToSet<Repository>(d->m_data.values(scRepositories)
         + d->m_data.values(scUserRepositories) + d->m_data.values(scTmpRepositories));
+}
+
+void Settings::updateRepositories(const QHash<Repository, Repository> &updates)
+{
+    if (updates.isEmpty())
+        return;
+
+    d->updateRepositories(updates, scRepositories);
+    d->updateRepositories(updates, scTmpRepositories);
+    d->updateRepositories(updates, scUserRepositories);
 }
 
 QSet<Repository> Settings::defaultRepositories() const

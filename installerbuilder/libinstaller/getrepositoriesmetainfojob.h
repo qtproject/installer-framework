@@ -54,6 +54,7 @@ public:
     explicit GetRepositoriesMetaInfoJob(const QByteArray &publicKey, QObject *parent = 0);
 
     QSet<Repository> repositories() const;
+    QHash<Repository, Repository> redirects() const;
     void setRepositories(const QSet<Repository> &repositories);
 
     QStringList temporaryDirectories() const;
@@ -86,6 +87,9 @@ private:
     bool m_haveIgnoredError;
     QString m_errorString;
     mutable TempDirDeleter m_tempDirDeleter;
+
+    Repository m_currentRepository;
+    QHash<Repository, Repository> m_redirects;
 };
 
 }   // namespace QInstaller

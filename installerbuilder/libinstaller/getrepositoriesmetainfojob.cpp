@@ -58,6 +58,11 @@ QSet<Repository> GetRepositoriesMetaInfoJob::repositories() const
     return m_repositories;
 }
 
+QHash<Repository, Repository> GetRepositoriesMetaInfoJob::redirects() const
+{
+    return m_redirects;
+}
+
 void GetRepositoriesMetaInfoJob::setRepositories(const QSet<Repository> &repos)
 {
     m_repositories = repos;
@@ -153,10 +158,11 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
     }
 
     m_job = new GetRepositoryMetaInfoJob(m_publicKey, this);
-    m_job->setSilentRetries(silentRetries());
-    m_job->setRepository(m_tmpRepositories.takeLast());
     connect(m_job, SIGNAL(finished(KDJob*)), this, SLOT(jobFinished(KDJob*)));
     connect(m_job, SIGNAL(infoMessage(KDJob*, QString)), this, SIGNAL(infoMessage(KDJob*, QString)));
+
+    m_job->setSilentRetries(silentRetries());
+    m_job->setRepository(m_currentRepository = m_tmpRepositories.takeLast());
     m_job->start();
 }
 
@@ -187,6 +193,8 @@ void GetRepositoriesMetaInfoJob::jobFinished(KDJob *j)
         const QString &tmpdir = job->releaseTemporaryDirectory();
         job->m_tempDirDeleter.passAndRelease(m_tempDirDeleter, tmpdir);
         m_repositoryByTemporaryDirectory.insert(tmpdir, job->repository());
+        if (m_currentRepository != job->repository())
+            m_redirects.insert(m_currentRepository, job->repository());
     }
     QMetaObject::invokeMethod(this, "fetchNextRepo", Qt::QueuedConnection);
 }
