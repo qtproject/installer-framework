@@ -14,11 +14,6 @@ DESTDIR = ../bin
 
 CONFIG += help
 
-contains(CONFIG, static): {
-    QTPLUGIN += qsqlite
-    DEFINES += USE_STATIC_SQLITE_PLUGIN
-}
-
 CONFIG -= app_bundle
 
 include(../libinstaller/libinstaller.pri)
