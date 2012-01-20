@@ -151,6 +151,11 @@ void GetRepositoryMetaInfoJob::setSilentRetries(int retries)
     m_silentRetries = retries;
 }
 
+QHash<QString, QPair<Repository, Repository> > GetRepositoryMetaInfoJob::repositoryUpdates() const
+{
+    return m_repositoryUpdates;
+}
+
 void GetRepositoryMetaInfoJob::doStart()
 {
     m_retriesLeft = m_silentRetries;
@@ -279,6 +284,54 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
     emit infoMessage(this, tr("Parsing component meta information..."));
 
     const QDomElement root = doc.documentElement();
+
+    m_repositoryUpdates.clear();
+    // search for additional repositories that we might need to check
+    const QDomNode repositoryUpdate  = root.firstChildElement(QLatin1String("RepositoryUpdate"));
+    if (!repositoryUpdate.isNull()) {
+        const QDomNodeList children = repositoryUpdate.toElement().childNodes();
+        for (int i = 0; i < children.count(); ++i) {
+            const QDomElement el = children.at(i).toElement();
+            if (!el.isNull() && el.tagName() == QLatin1String("Repository")) {
+                const QString action = el.attribute(QLatin1String("action"));
+                if (action == QLatin1String("add")) {
+                    // add a new repository to the defaults list
+                    Repository repository(el.attribute(QLatin1String("url")), true);
+                    repository.setUsername(el.attribute(QLatin1String("username")));
+                    repository.setPassword(el.attribute(QLatin1String("password")));
+                    m_repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
+
+                    qDebug() << "Added new repository:" << repository.url().toString();
+                } else if (action == QLatin1String("remove")) {
+                    // remove possible default repositories using the given server url
+                    Repository repository(el.attribute(QLatin1String("url")), true);
+                    m_repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
+
+                    qDebug() << "Repository to remove:" << repository.url().toString();
+                } else if (action == QLatin1String("replace")) {
+                    // replace possible default repositories using the given server url
+                    Repository oldRepository(el.attribute(QLatin1String("oldUrl")), true);
+                    Repository newRepository(el.attribute(QLatin1String("newUrl")), true);
+                    newRepository.setUsername(el.attribute(QLatin1String("username")));
+                    newRepository.setPassword(el.attribute(QLatin1String("password")));
+
+                    // store the new repository and the one old it replaces
+                    m_repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
+                    qDebug() << "Replace repository:" << oldRepository.url().toString() << "with:"
+                        << newRepository.url().toString();
+                } else {
+                    qDebug() << "Invalid additional repositories action set in updates.xml fetched from:"
+                        << m_repository.url().toString() << "Line:" << el.lineNumber();
+                }
+            }
+        }
+
+        if (!m_repositoryUpdates.isEmpty()) {
+            finished(QInstaller::RepositoryUpdatesReceived, tr("Repository updates received."));
+            return;
+        }
+    }
+
     const QDomNodeList children = root.childNodes();
     for (int i = 0; i < children.count(); ++i) {
         const QDomElement el = children.at(i).toElement();
@@ -293,10 +346,6 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     m_packageVersions << c2.at(j).toElement().text();
                 else if (c2.at(j).toElement().tagName() == QLatin1String("SHA1"))
                     m_packageHash << c2.at(j).toElement().text();
-        } else if (el.tagName() == QLatin1String("RedirectUpdateUrl")) { // received a new URL for package download
-            m_repository.setUrl(QUrl(el.text()));   // update the internal repo container
-            startUpdatesXmlDownload();  // ... and start over
-            return;
         }
     }
 

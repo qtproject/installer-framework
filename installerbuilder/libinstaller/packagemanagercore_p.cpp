@@ -2035,15 +2035,25 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
     }
 
     if (m_repoMetaInfoJob->isCanceled() || m_repoMetaInfoJob->error() != KDJob::NoError) {
-        if (m_repoMetaInfoJob->error() != QInstaller::UserIgnoreError) {
-            setStatus(PackageManagerCore::Failure, m_repoMetaInfoJob->errorString());
-            return m_repoFetched;
+        switch (m_repoMetaInfoJob->error()) {
+            case QInstaller::UserIgnoreError:
+                break;  // we can simply ignore this error, the user knows about it
+
+            case QInstaller::RepositoryUpdatesReceived:
+                if (m_settings.updateDefaultRepositories(m_repoMetaInfoJob->repositoryUpdates())
+                    == Settings::UpdatesApplied) {
+                    fetchMetaInformationFromRepositories(); // start over, we might have complete new repos
+                    return m_repoFetched;
+                }
+                break;
+
+            default:
+                setStatus(PackageManagerCore::Failure, m_repoMetaInfoJob->errorString());
+                return m_repoFetched;
         }
     }
 
     m_repoFetched = true;
-    m_settings.updateRepositories(m_repoMetaInfoJob->redirects());
-
     return m_repoFetched;
 }
 

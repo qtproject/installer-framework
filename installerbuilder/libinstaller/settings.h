@@ -45,6 +45,11 @@ class INSTALLER_EXPORT Settings
     Q_DECLARE_TR_FUNCTIONS(Settings)
 
 public:
+    enum Update {
+        UpdatesApplied,
+        NoUpdatesApplied
+    };
+
     enum ProxyType {
         NoProxy,
         SystemProxy,
@@ -89,11 +94,11 @@ public:
 
     bool hasReplacementRepos() const;
     QSet<Repository> repositories() const;
-    void updateRepositories(const QHash<Repository, Repository> &updates);
 
     QSet<Repository> defaultRepositories() const;
     void setDefaultRepositories(const QSet<Repository> &repositories);
     void addDefaultRepositories(const QSet<Repository> &repositories);
+    Settings::Update updateDefaultRepositories(const QHash<QString, QPair<Repository, Repository> > &updates);
 
     QSet<Repository> temporaryRepositories() const;
     void setTemporaryRepositories(const QSet<Repository> &repositories, bool replace);

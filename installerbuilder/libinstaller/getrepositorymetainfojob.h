@@ -28,6 +28,7 @@
 
 #include <kdjob.h>
 
+#include <QtCore/QHash>
 #include <QtCore/QPointer>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
@@ -65,6 +66,8 @@ public:
     QString temporaryDirectory() const;
     QString releaseTemporaryDirectory() const;
 
+    QHash<QString, QPair<Repository, Repository> > repositoryUpdates() const;
+
 private:
     /* reimp */ void doStart();
     /* reimp */ void doCancel();
@@ -100,6 +103,8 @@ private:
 
     bool m_waitForDone;
     QThreadPool m_threadPool;
+
+    QHash<QString, QPair<Repository, Repository> > m_repositoryUpdates;
 };
 
 }   // namespace QInstaller

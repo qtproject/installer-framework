@@ -55,7 +55,8 @@ enum INSTALLER_EXPORT JobError
     InvalidUpdatesXml,
     InvalidMetaInfo,
     ExtractionError,
-    UserIgnoreError
+    UserIgnoreError,
+    RepositoryUpdatesReceived
 };
 
 typedef KDUpdater::UpdateOperation Operation;

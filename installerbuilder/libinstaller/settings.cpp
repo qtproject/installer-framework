@@ -163,25 +163,6 @@ public:
             return path;
         return m_data.value(scPrefix).toString() + QLatin1String("/") + path;
     }
-
-    void updateRepositories(const QHash<Repository, Repository> &updates, const QString &repoType)
-    {
-        bool update = false;
-        QSet<Repository> repositories = variantListToSet<Repository>(m_data.values(repoType));
-        foreach (const Repository &repo, updates.keys()) {
-            if (repositories.contains(repo)) {
-                update = true;
-                repositories.remove(repo);
-                repositories.insert(updates.value(repo));
-            }
-        }
-
-        if (update) {
-            m_data.remove(repoType);
-            foreach (const Repository &repository, repositories)
-                m_data.insertMulti(repoType, QVariant().fromValue(repository));
-        }
-    }
 };
 
 
@@ -409,16 +390,6 @@ QSet<Repository> Settings::repositories() const
         + d->m_data.values(scUserRepositories) + d->m_data.values(scTmpRepositories));
 }
 
-void Settings::updateRepositories(const QHash<Repository, Repository> &updates)
-{
-    if (updates.isEmpty())
-        return;
-
-    d->updateRepositories(updates, scRepositories);
-    d->updateRepositories(updates, scTmpRepositories);
-    d->updateRepositories(updates, scUserRepositories);
-}
-
 QSet<Repository> Settings::defaultRepositories() const
 {
     return variantListToSet<Repository>(d->m_data.values(scRepositories));
@@ -434,6 +405,52 @@ void Settings::addDefaultRepositories(const QSet<Repository> &repositories)
 {
     foreach (const Repository &repository, repositories)
         d->m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
+}
+
+Settings::Update
+Settings::updateDefaultRepositories(const QHash<QString, QPair<Repository, Repository> > &updates)
+{
+    if (updates.isEmpty())
+        return Settings::NoUpdatesApplied;
+
+    QHash <QUrl, Repository> defaultRepos;
+    foreach (const QVariant &variant, d->m_data.values(scRepositories)) {
+        const Repository repository = variant.value<Repository>();
+        defaultRepos.insert(repository.url(), repository);
+    }
+
+    bool update = false;
+    QList<QPair<Repository, Repository> > values = updates.values(QLatin1String("replace"));
+    for (int a = 0; a < values.count(); ++a) {
+        const QPair<Repository, Repository> data = values.at(a);
+        if (defaultRepos.contains(data.second.url())) {
+            update = true;
+            defaultRepos.remove(data.second.url());
+            defaultRepos.insert(data.first.url(), data.first);
+        }
+    }
+
+    values = updates.values(QLatin1String("remove"));
+    for (int a = 0; a < values.count(); ++a) {
+        const QPair<Repository, Repository> data = values.at(a);
+        if (defaultRepos.contains(data.first.url())) {
+            update = true;
+            defaultRepos.remove(data.first.url());
+        }
+    }
+
+    values = updates.values(QLatin1String("add"));
+    for (int a = 0; a < values.count(); ++a) {
+        const QPair<Repository, Repository> data = values.at(a);
+        if (!defaultRepos.contains(data.first.url())) {
+            update = true;
+            defaultRepos.insert(data.first.url(), data.first);
+        }
+    }
+
+    if (update)
+        setDefaultRepositories(defaultRepos.values().toSet());
+    return update ? Settings::UpdatesApplied : Settings::NoUpdatesApplied;
 }
 
 QSet<Repository> Settings::temporaryRepositories() const
