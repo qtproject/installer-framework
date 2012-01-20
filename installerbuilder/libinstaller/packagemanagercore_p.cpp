@@ -606,6 +606,15 @@ void PackageManagerCorePrivate::initialize()
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 }
 
+bool PackageManagerCorePrivate::isOfflineOnly() const
+{
+    if (!isInstaller())
+        return false;
+
+    QSettingsWrapper confInternal(QLatin1String(":/config/config-internal.ini"), QSettingsWrapper::IniFormat);
+    return confInternal.value(QLatin1String("offlineOnly"), false).toBool();
+}
+
 QString PackageManagerCorePrivate::installerBinaryPath() const
 {
     return qApp->applicationFilePath();

@@ -83,6 +83,7 @@ public:
         = PackageManagerCorePrivate::Perform);
 
     void initialize();
+    bool isOfflineOnly() const;
 
     bool statusCanceledOrFailed() const;
     void setStatus(int status, const QString &error = QString());

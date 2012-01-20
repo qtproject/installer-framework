@@ -1375,11 +1375,7 @@ bool PackageManagerCore::isInstaller() const
 */
 bool PackageManagerCore::isOfflineOnly() const
 {
-    if (!d->isInstaller())
-        return false;
-
-    QSettingsWrapper confInternal(QLatin1String(":/config/config-internal.ini"), QSettingsWrapper::IniFormat);
-    return confInternal.value(QLatin1String("offlineOnly"), false).toBool();
+    return d->isOfflineOnly();
 }
 
 void PackageManagerCore::setUninstaller()
