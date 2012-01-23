@@ -37,6 +37,7 @@
 #include "cryptosignatureverifier.h"
 #include "lib7z_facade.h"
 #include "messageboxhandler.h"
+#include "packagemanagercore_p.h"
 #include "qinstallerglobal.h"
 
 #include <kdupdaterfiledownloader.h>
@@ -112,14 +113,15 @@ private:
 
 // -- GetRepositoryMetaInfoJob
 
-GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(const QByteArray &publicKey, QObject *parent)
+GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(PackageManagerCorePrivate *corePrivate, QObject *parent)
     : KDJob(parent),
     m_canceled(false),
     m_silentRetries(3),
     m_retriesLeft(m_silentRetries),
-    m_publicKey(publicKey),
+    m_publicKey(corePrivate->m_settings.publicKey()),
     m_downloader(0),
-    m_waitForDone(false)
+    m_waitForDone(false),
+    m_corePrivate(corePrivate)
 {
     setCapabilities(Cancelable);
 }
@@ -149,11 +151,6 @@ int GetRepositoryMetaInfoJob::silentRetries() const
 void GetRepositoryMetaInfoJob::setSilentRetries(int retries)
 {
     m_silentRetries = retries;
-}
-
-QHash<QString, QPair<Repository, Repository> > GetRepositoryMetaInfoJob::repositoryUpdates() const
-{
-    return m_repositoryUpdates;
 }
 
 void GetRepositoryMetaInfoJob::doStart()
@@ -284,11 +281,10 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
     emit infoMessage(this, tr("Parsing component meta information..."));
 
     const QDomElement root = doc.documentElement();
-
-    m_repositoryUpdates.clear();
     // search for additional repositories that we might need to check
     const QDomNode repositoryUpdate  = root.firstChildElement(QLatin1String("RepositoryUpdate"));
     if (!repositoryUpdate.isNull()) {
+        QHash<QString, QPair<Repository, Repository> > repositoryUpdates;
         const QDomNodeList children = repositoryUpdate.toElement().childNodes();
         for (int i = 0; i < children.count(); ++i) {
             const QDomElement el = children.at(i).toElement();
@@ -299,13 +295,13 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     Repository repository(el.attribute(QLatin1String("url")), true);
                     repository.setUsername(el.attribute(QLatin1String("username")));
                     repository.setPassword(el.attribute(QLatin1String("password")));
-                    m_repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
+                    repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
 
-                    qDebug() << "Added new repository:" << repository.url().toString();
+                    qDebug() << "Repository to add:" << repository.url().toString();
                 } else if (action == QLatin1String("remove")) {
                     // remove possible default repositories using the given server url
                     Repository repository(el.attribute(QLatin1String("url")), true);
-                    m_repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
+                    repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
 
                     qDebug() << "Repository to remove:" << repository.url().toString();
                 } else if (action == QLatin1String("replace")) {
@@ -316,7 +312,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     newRepository.setPassword(el.attribute(QLatin1String("password")));
 
                     // store the new repository and the one old it replaces
-                    m_repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
+                    repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
                     qDebug() << "Replace repository:" << oldRepository.url().toString() << "with:"
                         << newRepository.url().toString();
                 } else {
@@ -326,9 +322,14 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
             }
         }
 
-        if (!m_repositoryUpdates.isEmpty()) {
-            finished(QInstaller::RepositoryUpdatesReceived, tr("Repository updates received."));
-            return;
+        if (!repositoryUpdates.isEmpty()) {
+            if (m_corePrivate->m_settings.updateDefaultRepositories(repositoryUpdates)
+                == Settings::UpdatesApplied) {
+                    if (m_corePrivate->isUpdater() || m_corePrivate->isPackageManager())
+                        m_corePrivate->writeMaintenanceConfigFiles();
+                    finished(QInstaller::RepositoryUpdatesReceived, tr("Repository updates received."));
+                    return;
+            }
         }
     }
 

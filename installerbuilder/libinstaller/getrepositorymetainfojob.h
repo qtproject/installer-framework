@@ -28,7 +28,6 @@
 
 #include <kdjob.h>
 
-#include <QtCore/QHash>
 #include <QtCore/QPointer>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
@@ -46,6 +45,7 @@ namespace KDUpdater {
 namespace QInstaller {
 
 class GetRepositoriesMetaInfoJob;
+class PackageManagerCorePrivate;
 
 class INSTALLER_EXPORT GetRepositoryMetaInfoJob : public KDJob
 {
@@ -54,7 +54,7 @@ class INSTALLER_EXPORT GetRepositoryMetaInfoJob : public KDJob
     friend class QInstaller::GetRepositoriesMetaInfoJob;
 
 public:
-    explicit GetRepositoryMetaInfoJob(const QByteArray &publicKey = QByteArray(), QObject *parent = 0);
+    explicit GetRepositoryMetaInfoJob(PackageManagerCorePrivate *corePrivate, QObject *parent = 0);
     ~GetRepositoryMetaInfoJob();
 
     Repository repository() const;
@@ -65,8 +65,6 @@ public:
 
     QString temporaryDirectory() const;
     QString releaseTemporaryDirectory() const;
-
-    QHash<QString, QPair<Repository, Repository> > repositoryUpdates() const;
 
 private:
     /* reimp */ void doStart();
@@ -103,8 +101,7 @@ private:
 
     bool m_waitForDone;
     QThreadPool m_threadPool;
-
-    QHash<QString, QPair<Repository, Repository> > m_repositoryUpdates;
+    PackageManagerCorePrivate *m_corePrivate;
 };
 
 }   // namespace QInstaller

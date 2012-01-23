@@ -45,17 +45,14 @@ namespace KDUpdater {
 namespace QInstaller {
 
 class GetRepositoryMetaInfoJob;
+class PackageManagerCorePrivate;
 
 class INSTALLER_EXPORT GetRepositoriesMetaInfoJob : public KDJob
 {
     Q_OBJECT
 
 public:
-    explicit GetRepositoriesMetaInfoJob(const QByteArray &publicKey, QObject *parent = 0);
-
-    QSet<Repository> repositories() const;
-    void setRepositories(const QSet<Repository> &repositories);
-    QHash<QString, QPair<Repository, Repository> > repositoryUpdates() const;
+    explicit GetRepositoriesMetaInfoJob(PackageManagerCorePrivate *corePrivate);
 
     QStringList temporaryDirectories() const;
     QStringList releaseTemporaryDirectories() const;
@@ -77,18 +74,16 @@ private Q_SLOTS:
     void jobFinished(KDJob*);
 
 private:
-    QPointer<GetRepositoryMetaInfoJob> m_job;
-    const QByteArray m_publicKey;
     bool m_canceled;
     int m_silentRetries;
-    QSet<Repository> m_repositories;
-    QList<Repository> m_tmpRepositories;
-    QHash<QString, Repository> m_repositoryByTemporaryDirectory;
     bool m_haveIgnoredError;
-    QString m_errorString;
-    mutable TempDirDeleter m_tempDirDeleter;
+    PackageManagerCorePrivate *m_corePrivate;
 
-    QHash<QString, QPair<Repository, Repository> > m_repositoryUpdates;
+    QString m_errorString;
+    QList<Repository> m_repositories;
+    mutable TempDirDeleter m_tempDirDeleter;
+    QPointer<GetRepositoryMetaInfoJob> m_job;
+    QHash<QString, Repository> m_repositoryByTemporaryDirectory;
 };
 
 }   // namespace QInstaller

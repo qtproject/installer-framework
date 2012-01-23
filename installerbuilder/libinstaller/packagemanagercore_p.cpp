@@ -598,7 +598,7 @@ void PackageManagerCorePrivate::initialize()
     }
 
     if (!m_repoMetaInfoJob) {
-        m_repoMetaInfoJob = new GetRepositoriesMetaInfoJob(m_settings.publicKey(), this);
+        m_repoMetaInfoJob = new GetRepositoriesMetaInfoJob(this);
         m_repoMetaInfoJob->setAutoDelete(false);
         connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this, SLOT(infoMessage(KDJob*,
             QString)));
@@ -2032,9 +2032,6 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
     m_updateSourcesAdded = false;
 
     m_repoMetaInfoJob->reset();
-    if ((isInstaller() && !m_core->isOfflineOnly()) || (isUpdater() || isPackageManager()))
-        m_repoMetaInfoJob->setRepositories(m_settings.repositories());
-
     try {
         m_repoMetaInfoJob->start();
         m_repoMetaInfoJob->waitForFinished();
@@ -2047,15 +2044,6 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
         switch (m_repoMetaInfoJob->error()) {
             case QInstaller::UserIgnoreError:
                 break;  // we can simply ignore this error, the user knows about it
-
-            case QInstaller::RepositoryUpdatesReceived:
-                if (m_settings.updateDefaultRepositories(m_repoMetaInfoJob->repositoryUpdates())
-                    == Settings::UpdatesApplied) {
-                    fetchMetaInformationFromRepositories(); // start over, we might have complete new repos
-                    return m_repoFetched;
-                }
-                break;
-
             default:
                 setStatus(PackageManagerCore::Failure, m_repoMetaInfoJob->errorString());
                 return m_repoFetched;

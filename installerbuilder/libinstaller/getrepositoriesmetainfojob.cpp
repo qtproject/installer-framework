@@ -33,6 +33,7 @@
 #include "getrepositoriesmetainfojob.h"
 
 #include "getrepositorymetainfojob.h"
+#include "packagemanagercore_p.h"
 #include "qinstallerglobal.h"
 
 #include <QtCore/QDebug>
@@ -43,33 +44,14 @@ using namespace QInstaller;
 
 // -- GetRepositoriesMetaInfoJob
 
-GetRepositoriesMetaInfoJob::GetRepositoriesMetaInfoJob(const QByteArray &publicKey, QObject *parent)
-    : KDJob(parent),
-      m_publicKey(publicKey),
+GetRepositoriesMetaInfoJob::GetRepositoriesMetaInfoJob(PackageManagerCorePrivate *corePrivate)
+    : KDJob(corePrivate),
       m_canceled(false),
       m_silentRetries(3),
-      m_haveIgnoredError(false)
+      m_haveIgnoredError(false),
+      m_corePrivate(corePrivate)
 {
     setCapabilities(Cancelable);
-}
-
-QSet<Repository> GetRepositoriesMetaInfoJob::repositories() const
-{
-    return m_repositories;
-}
-
-void GetRepositoriesMetaInfoJob::setRepositories(const QSet<Repository> &repos)
-{
-    m_repositories = repos;
-    foreach (const Repository &repo, repos) {
-        if (repo.isEnabled())
-            m_tmpRepositories += repo;
-    }
-}
-
-QHash<QString, QPair<Repository, Repository> > GetRepositoriesMetaInfoJob::repositoryUpdates() const
-{
-    return m_repositoryUpdates;
 }
 
 QStringList GetRepositoriesMetaInfoJob::temporaryDirectories() const
@@ -111,7 +93,6 @@ void GetRepositoriesMetaInfoJob::reset()
     m_haveIgnoredError = false;
 
     m_repositories.clear();
-    m_tmpRepositories.clear();
     m_tempDirDeleter.releaseAndDeleteAll();
     m_repositoryByTemporaryDirectory.clear();
 
@@ -129,6 +110,14 @@ bool GetRepositoriesMetaInfoJob::isCanceled() const
 
 void GetRepositoriesMetaInfoJob::doStart()
 {
+    if ((m_corePrivate->isInstaller() && !m_corePrivate->isOfflineOnly())
+        || (m_corePrivate->isUpdater() || m_corePrivate->isPackageManager())) {
+            foreach (const Repository &repo, m_corePrivate->m_settings.repositories()) {
+                if (repo.isEnabled())
+                    m_repositories += repo;
+            }
+    }
+
     fetchNextRepo();
 }
 
@@ -151,7 +140,7 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
         return;
     }
 
-    if (m_tmpRepositories.isEmpty()) {
+    if (m_repositories.isEmpty()) {
         if (m_haveIgnoredError)
             emitFinishedWithError(QInstaller::UserIgnoreError, m_errorString);
         else
@@ -159,12 +148,12 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
         return;
     }
 
-    m_job = new GetRepositoryMetaInfoJob(m_publicKey, this);
+    m_job = new GetRepositoryMetaInfoJob(m_corePrivate, this);
     connect(m_job, SIGNAL(finished(KDJob*)), this, SLOT(jobFinished(KDJob*)));
     connect(m_job, SIGNAL(infoMessage(KDJob*, QString)), this, SIGNAL(infoMessage(KDJob*, QString)));
 
     m_job->setSilentRetries(silentRetries());
-    m_job->setRepository(m_tmpRepositories.takeLast());
+    m_job->setRepository(m_repositories.takeLast());
     m_job->start();
 }
 
@@ -188,13 +177,6 @@ void GetRepositoriesMetaInfoJob::jobFinished(KDJob *j)
             return;
     }
 
-    if (job->error() == QInstaller::RepositoryUpdatesReceived) {
-        qDebug() << job->errorString();
-        m_repositoryUpdates = job->repositoryUpdates();
-        emitFinishedWithError(job->error(), job->errorString());
-        return;
-    }
-
     if (job->error() == QInstaller::UserIgnoreError) {
         m_haveIgnoredError = true;
         m_errorString = job->errorString();
@@ -203,5 +185,11 @@ void GetRepositoriesMetaInfoJob::jobFinished(KDJob *j)
         job->m_tempDirDeleter.passAndRelease(m_tempDirDeleter, tmpdir);
         m_repositoryByTemporaryDirectory.insert(tmpdir, job->repository());
     }
-    QMetaObject::invokeMethod(this, "fetchNextRepo", Qt::QueuedConnection);
+
+    if (job->error() == QInstaller::RepositoryUpdatesReceived) {
+        reset();
+        QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
+    } else {
+        QMetaObject::invokeMethod(this, "fetchNextRepo", Qt::QueuedConnection);
+    }
 }
