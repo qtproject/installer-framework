@@ -137,15 +137,17 @@
 
   \bold Syntax: "RegisterQtInCreatorV2", \a displayname, \a qt_or_qmake_path, [\a system_root, [\a sbs_path]].
 
-  Registers the Qt version \a displayname to Qt Creator with \a qt_or_qmake_path (if the path does not end with the qmake binary, it will add bin/qmake to the path automatically). Optionally, you can specify a\ system_root which. For Symbian SDKs the instance root will be where Qt Creator will find the Symbian SDK root (EPOCROOT).  For Symbian SDKs supporting sbs, you add the \a sbs_path .
+  Registers the Qt version \a displayname to Qt Creator with \a qt_or_qmake_path (if the path does not end with the qmake binary, it will add bin/qmake to the path automatically). Optionally, you can specify a\ system_root which. For Symbian SDKs the instance root will be where Qt Creator will find the Symbian SDK root (EPOCROOT).  For Symbian SDKs supporting sbs, you add the \a sbs_path .
 
   \note The minimum Qt Creator version it supports is 2.2
 
 
-  \section2 RegisterQtInCreatorV2
+  \section2 RegisterQtInCreatorV23
 
   \bold Syntax: "RegisterQtInCreatorV23", \a displayname, \a qt_path, \a target, \a internal_id.
 
   Registers the Qt version \a displayname to Qt Creator with \a qt_path. Target means one of the Qt type in QtCreator(Symbian/Maemo/Desktop/Simulator/WinCE) and \a the internal_id is used to update or remove this Qt version.
 
   \note The minimum Qt Creator version it supports is 2.3
+
+*/
