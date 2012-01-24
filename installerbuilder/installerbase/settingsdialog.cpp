@@ -117,6 +117,21 @@ QVariant RepositoryItem::data(int column, int role) const
                     break;
             };
         }   break;
+
+        case Qt::ToolTipRole:
+            switch (column) {
+                case 1:
+                    return SettingsDialog::tr("Check this to use repository during fetch.");
+                case 2:
+                    return SettingsDialog::tr("Add the username to authenticate on the server.");
+                case 3:
+                    return SettingsDialog::tr("Add the password to authenticate on the server.");
+                case 4:
+                    return SettingsDialog::tr("The servers URL that contains a valid repository.");
+                default:
+                    return QVariant();
+            }   break;
+        break;
     };
 
     return data;
@@ -280,7 +295,7 @@ void SettingsDialog::addRepository()
     if (parent) {
         RepositoryItem *item = new RepositoryItem(QInstaller::Repository());
         parent->insertChild(index, item);
-        m_ui->m_repositoriesView->editItem(item, 2);
+        m_ui->m_repositoriesView->editItem(item, 4);
         m_ui->m_repositoriesView->scrollToItem(item);
         m_ui->m_repositoriesView->setCurrentItem(item);
     }
