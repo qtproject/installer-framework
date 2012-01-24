@@ -183,8 +183,11 @@ static void messageHandler(QtMsgType type, const char *msg)
     }
 
     verbose() << ba.constData() << std::endl;
-    if (type == QtFatalMsg)
-        abort();
+    if (type == QtFatalMsg) {
+        QtMsgHandler oldMsgHandler = qInstallMsgHandler(0);
+        qt_message_output(type, msg);
+        qInstallMsgHandler(oldMsgHandler);
+    }
 }
 
 void QInstaller::init()
