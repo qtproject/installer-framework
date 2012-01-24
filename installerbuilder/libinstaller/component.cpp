@@ -94,8 +94,14 @@ Component::~Component()
     if (!d->m_newlyInstalled)
         qDeleteAll(d->m_operations);
 
-    qDeleteAll(d->m_allChildComponents);
+    //we need to copy the list, because we are changing it with removeAll at top
+    //(this made the iterators broken in the past)
+    QList<Component*> copiedChildrenList = d->m_allChildComponents;
+    copiedChildrenList.detach(); //this makes it a real copy
+
+    qDeleteAll(copiedChildrenList);
     delete d;
+    d = 0;
 }
 
 void Component::loadDataFromPackage(const LocalPackage &package)
