@@ -183,7 +183,6 @@ bool startDetached(const QString &program, const QStringList &args, const QStrin
 bool QProcessWrapper::startDetached(const QString &program, const QStringList &arguments,
     const QString &workingDirectory, qint64 *pid)
 {
-    qDebug() << Q_FUNC_INFO << program << arguments;
     QProcessWrapper w;
     if (w.d->createSocket()) {
         const QPair<bool, qint64> result = callRemoteMethod<QPair<bool, qint64> >(w.d->stream,

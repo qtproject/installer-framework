@@ -75,7 +75,6 @@ bool AdminAuthorization::hasAdminRights()
 
 bool AdminAuthorization::execute(QWidget *, const QString &program, const QStringList &arguments)
 {
-    qDebug() << Q_FUNC_INFO;
     const QString file = QDir::toNativeSeparators(program);
     const QString args = QInstaller::createCommandline(QString(), arguments);
 
@@ -96,9 +95,10 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
     TempInfo.nShow = SW_NORMAL;
 
     
-    qDebug() << QLatin1String("\t starting elevated process with ::ShellExecuteExW( &TempInfo );");
+    qDebug() << QString::fromLatin1(" starting elevated process %1 %2 with ::ShellExecuteExW( &TempInfo );"
+        ).arg(program, arguments.join(QLatin1String(" ")));
     const bool result = ::ShellExecuteExW(&TempInfo);
-    qDebug() << QLatin1String("\t after starting elevated process");
+    qDebug() << QLatin1String("after starting elevated process");
     delete[] buffer;
     return result;
 }

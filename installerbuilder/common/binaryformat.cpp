@@ -995,11 +995,17 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
         qDebug() << "Number of components loaded:" << components.count();
         foreach (const QInstallerCreator::Component &component, components) {
             const QVector<QSharedPointer<Archive> > archives = component.archives();
-            qDebug() << "Loaded component" << component.name() << "containing" << archives.count()
-                << "archives:";
+            qDebug() << component.name().data() << "loaded ...";
+            QStringList archivesWithSize;
             foreach (const QSharedPointer<Archive> &archive, archives) {
-                qDebug().nospace() << "    Archive name:" << archive->name() << ", Archive size:"
-                    << archive->size() << "bytes";
+                QString archiveWithSize(QLatin1String("%1 - %2 Bytes"));
+                archiveWithSize = archiveWithSize.arg(QString::fromLocal8Bit(archive->name()),
+                    QString::number(archive->size()));
+                archivesWithSize.append(archiveWithSize);
+            }
+            if (!archivesWithSize.isEmpty()) {
+                qDebug() << " - " << archives.count() << "archives: "
+                    << qPrintable(archivesWithSize.join(QLatin1String("; ")));
             }
         }
     }

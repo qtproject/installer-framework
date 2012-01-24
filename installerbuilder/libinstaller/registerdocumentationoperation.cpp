@@ -98,7 +98,6 @@ bool RegisterDocumentationOperation::performOperation()
     if (!settingsDir.exists())
         settingsDir.mkpath(settingsDir.absolutePath());
     const QString collectionFile = settingsDir.absolutePath() + QLatin1String("/helpcollection.qhc");
-    qDebug() << "collectionFile:" << collectionFile;
 
     if (!QFileInfo(helpFile).exists()) {
         setError(UserDefinedError);
