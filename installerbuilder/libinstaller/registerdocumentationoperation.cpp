@@ -112,9 +112,10 @@ bool RegisterDocumentationOperation::performOperation()
         oldData.append(QLatin1Char(';'));
     const QString newData = oldData + QFileInfo(helpFile).absoluteFilePath();
     if (!help.setCustomValue(QLatin1String("AddedDocs"), newData)) {
-        setError(UserDefinedError);
-        setErrorString(help.error());
-        return false;
+        qWarning() << "Can't register doc file:" << helpFile << help.error();
+//        setError(UserDefinedError);
+//        setErrorString(help.error());
+//        return false;
     }
     return true;
 }
