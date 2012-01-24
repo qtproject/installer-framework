@@ -158,8 +158,10 @@ static void initResources()
 
 static void messageHandler(QtMsgType type, const char *msg)
 {
+    QByteArray ba(msg);
     // last character is a space from qDebug
-    QByteArray ba = QByteArray(msg).trimmed();
+    if (ba.endsWith(' '))
+        ba.chop(1);
 
     // remove quotes if the whole message is surrounded with them
     if (ba.startsWith('"') && ba.endsWith('"'))
