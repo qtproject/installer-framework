@@ -389,6 +389,9 @@ void PackageManagerGui::slotCurrentPageChanged(int id)
 
 void PackageManagerGui::callControlScriptMethod(const QString &methodName)
 {
+    if (!d->m_controlScript.isValid())
+        return;
+
     QScriptValue method = d->m_controlScript.property(QLatin1String("prototype")).property(methodName);
 
     if (!method.isValid()) {
