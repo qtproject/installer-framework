@@ -31,7 +31,7 @@
 
 
     \note Please report bugs in the Qt SDK bugtracking system
-    \l{http://bugreports.qt.nokia.com/browse/QTSDK}{here}.
+    \l{http://bugreports.qt-project.org/browse/QTIFW}{here}.
 
     \list
         \o Structure of a installer creation setup
