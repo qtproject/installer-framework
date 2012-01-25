@@ -1496,17 +1496,6 @@ void StartMenuDirectoryPage::currentItemChanged(QListWidgetItem *current)
 
 // -- ReadyForInstallationPage
 
-inline QString unitSizeText(const qint64 size)
-{
-    if (size < 10000)
-        return QString::number(size) + QLatin1Char(' ') + ReadyForInstallationPage::tr("Bytes");
-
-    if (size < 1024 * 10000)
-        return QString::number(size / 1024) + QLatin1Char(' ') + ReadyForInstallationPage::tr("kBytes");
-
-    return QString::number(size / 1024 / 1024) + QLatin1Char(' ') + ReadyForInstallationPage::tr("MBytes");
-}
-
 ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , m_msgLabel(new QLabel)
@@ -1612,10 +1601,12 @@ void ReadyForInstallationPage::entering()
     if (tempAvailable < realRequiredTempSpace || tempInstFailure) {
         if (tempOnSameVolume) {
             tempString = tr("Not enough disk space to store temporary files and the installation, "
-                "at least %1 are required").arg(unitSizeText(realRequiredTempSpace + realRequiredSpace));
+                "at least %1 are required").arg(humanReadableSize(realRequiredTempSpace + realRequiredSpace));
         } else {
-            tempString = tr("Not enough disk space to store temporary files, at least %1 are required")
-                .arg(unitSizeText(realRequiredTempSpace));
+            tempString = tr("Not enough disk space to store temporary files, at least %1 are required.")
+                .arg(humanReadableSize(realRequiredTempSpace));
+            setCommitPage(false);
+            m_msgLabel->setText(tempString);
         }
     }
 
