@@ -1591,8 +1591,8 @@ void ReadyForInstallationPage::entering()
     const quint64 realRequiredTempSpace = quint64(0.1 * tempRequired + tempRequired);
     const quint64 realRequiredSpace = quint64(2 * required);
 
-    const bool tempInstFailure = tempOnSameVolume && available < realRequiredSpace
-        + realRequiredTempSpace;
+    const bool tempInstFailure = tempOnSameVolume && (available < realRequiredSpace
+        + realRequiredTempSpace);
 
     qDebug() << QString::fromLatin1("Disk space check on %1: required: %2, available: %3, size: %4").arg(
         target, QString::number(required), QString::number(available), QString::number(vol.size()));
