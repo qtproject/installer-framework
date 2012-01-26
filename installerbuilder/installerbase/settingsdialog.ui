@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>491</width>
-    <height>387</height>
+    <height>517</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -76,7 +76,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="text">
-                 <string>Http proxy:</string>
+                 <string>HTTP proxy:</string>
                 </property>
                </widget>
               </item>
@@ -115,7 +115,7 @@
                <bool>false</bool>
               </property>
               <property name="text">
-               <string>Http proxy requieres authentication</string>
+               <string>HTTP proxy requires authentication</string>
               </property>
              </widget>
             </item>
@@ -202,7 +202,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="text">
-                 <string>Ftp proxy:</string>
+                 <string>FTP proxy:</string>
                 </property>
                </widget>
               </item>
@@ -241,7 +241,7 @@
                <bool>false</bool>
               </property>
               <property name="text">
-               <string>Ftp proxy requieres authentication</string>
+               <string>FTP proxy requires authentication</string>
               </property>
              </widget>
             </item>
