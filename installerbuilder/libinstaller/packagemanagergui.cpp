@@ -1573,8 +1573,8 @@ void ReadyForInstallationPage::entering()
     refreshTaskDetailsBrowser();
 
     const VolumeInfo vol = VolumeInfo::fromPath(target);
-    const VolumeInfo tempVolume = VolumeInfo::fromPath(QInstaller::generateTemporaryFileName());
-    const bool tempOnSameVolume = vol == tempVolume;
+    const VolumeInfo tempVolume = VolumeInfo::fromPath(QDir::tempPath());
+    const bool tempOnSameVolume = (vol == tempVolume);
 
     // there is no better way atm to check this
     if (vol.size() == 0 && vol.availableSpace() == 0) {
