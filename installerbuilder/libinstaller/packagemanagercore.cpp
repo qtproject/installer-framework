@@ -1577,13 +1577,7 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
     for (; it != data.replacementToExchangeables.constEnd(); ++it) {
         foreach (const QString &componentName, it.value()) {
             Component *component = components.take(componentName);
-            // if one component has a replaces which is not existing in the current component list anymore,
-            // just ignore it
-            if (!component) {
-                qDebug() << componentName << "- Does not exist in the repositories anymore.";
-                continue;
-            }
-            if (!d->componentsToReplace(data.runMode).contains(componentName)) {
+            if (!component && !d->componentsToReplace(data.runMode).contains(componentName)) {
                 component = new Component(this);
                 component->setValue(scName, componentName);
             } else {
