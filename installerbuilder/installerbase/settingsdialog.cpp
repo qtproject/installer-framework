@@ -293,7 +293,9 @@ void SettingsDialog::addRepository()
     }
 
     if (parent) {
-        RepositoryItem *item = new RepositoryItem(QInstaller::Repository());
+        QInstaller::Repository repository;
+        repository.setEnabled(true);
+        RepositoryItem *item = new RepositoryItem(repository);
         parent->insertChild(index, item);
         m_ui->m_repositoriesView->editItem(item, 4);
         m_ui->m_repositoriesView->scrollToItem(item);
