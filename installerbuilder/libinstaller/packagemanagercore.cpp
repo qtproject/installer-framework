@@ -1816,6 +1816,8 @@ void PackageManagerCore::updateDisplayVersions(const QString &displayKey)
 QString PackageManagerCore::findDisplayVersion(const QString &componentName,
     const QHash<QString, Component *> &components, const QString &versionKey, QHash<QString, bool> &visited)
 {
+    if (!components.contains(componentName))
+        return QString();
     const QString replaceWith = components.value(componentName)->value(scInheritVersion);
     visited[componentName] = true;
 
