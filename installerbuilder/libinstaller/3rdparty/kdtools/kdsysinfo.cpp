@@ -43,17 +43,34 @@ VolumeInfo::VolumeInfo()
 
 VolumeInfo VolumeInfo::fromPath(const QString &path)
 {
-    QDir targetPath(path);
+    QDir targetPath(QDir::cleanPath(path));
     QList<VolumeInfo> volumes = mountedVolumes();
+
     // sort by length to get the longest mount point (not just "/") first
     qSort(volumes.begin(), volumes.end(), PathLongerThan());
     foreach (const VolumeInfo &volume, volumes) {
-        QDir volumePath(volume.mountPath());
+        const QDir volumePath(volume.mountPath());
         if (targetPath == volumePath)
             return volume;
 #ifdef Q_OS_WIN
         if (QDir::toNativeSeparators(path).toLower().startsWith(volume.mountPath().toLower()))
 #else
+        // we need to take some care here, as canonical path might return an empty string if the target
+        // does not exist yet
+        if (targetPath.exists()) {
+            // the target exist, we can solve the path and if it fits return
+            if (targetPath.canonicalPath().startsWith(volume.mountPath()))
+                return volume;
+            continue;
+        }
+
+        // the target directory does not exist yet, we need to cd up till we find the first existing dir
+        while (targetPath.absolutePath() != QDir::rootPath()) {
+            if (targetPath.exists())
+                break;
+            targetPath.cdUp();
+        }
+
         if (targetPath.canonicalPath().startsWith(volume.mountPath()))
 #endif
             return volume;
