@@ -1077,6 +1077,8 @@ public:
         if (m_treeView->selectionModel()) {
             disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
                 this, SLOT(currentChanged(QModelIndex)));
+            disconnect(m_currentModel, SIGNAL(checkStateChanged(QModelIndex)), this,
+                SLOT(currentChanged(QModelIndex)));
         }
 
         m_currentModel = m_core->isUpdater() ? m_updaterModel : m_allModel;
@@ -1101,6 +1103,8 @@ public:
 
         connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(currentChanged(QModelIndex)));
+        connect(m_currentModel, SIGNAL(checkStateChanged(QModelIndex)), this,
+            SLOT(currentChanged(QModelIndex)));
 
         m_treeView->setCurrentIndex(m_currentModel->index(0, 0));
     }
@@ -1108,16 +1112,20 @@ public:
 public slots:
     void currentChanged(const QModelIndex &current)
     {
-        m_sizeLabel->clear();
-        m_descriptionLabel->clear();
+        // if there is not selection or the current selected node didn't change, return
+        if (!current.isValid() || current != m_treeView->selectionModel()->currentIndex())
+            return;
 
-        if (current.isValid()) {
-            m_descriptionLabel->setText(m_currentModel->data(m_currentModel->index(current.row(),
-                ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString());
-            if (!m_core->isUninstaller()) {
+        m_descriptionLabel->setText(m_currentModel->data(m_currentModel->index(current.row(),
+            ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString());
+
+        m_sizeLabel->clear();
+        if (!m_core->isUninstaller()) {
+            Component *component = m_currentModel->componentFromIndex(current);
+            if (component && component->updateUncompressedSize() > 0) {
                 const QVariantHash hash = q->elementsForPage(QLatin1String("ComponentSelectionPage"));
-                m_sizeLabel->setText(tr("%1").arg(hash.value(QLatin1String("ComponentSizeLabel"), tr("This "
-                    "component will occupy approximately %1 on your hard disk drive.")).toString()
+                m_sizeLabel->setText(tr("%1").arg(hash.value(QLatin1String("ComponentSizeLabel"),
+                    tr("This component will occupy approximately %1 on your hard disk drive.")).toString()
                     .arg(m_currentModel->data(m_currentModel->index(current.row(),
                     ComponentModelHelper::UncompressedSizeColumn, current.parent())).toString())));
             }
