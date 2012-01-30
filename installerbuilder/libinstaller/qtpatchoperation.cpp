@@ -184,6 +184,8 @@ bool QtPatchOperation::performOperation()
         patchFileListFile.setFileName(QLatin1String(":/files-to-patch-windows"));
     else if (type == QLatin1String("linux"))
         patchFileListFile.setFileName(QLatin1String(":/files-to-patch-linux"));
+    else if (type == QLatin1String("linux-emb-arm"))
+        patchFileListFile.setFileName(QLatin1String(":/files-to-patch-linux-emb-arm"));
     else if (type == QLatin1String("mac"))
         patchFileListFile.setFileName(QLatin1String(":/files-to-patch-macx"));
 
