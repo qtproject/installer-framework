@@ -1716,7 +1716,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
         component->loadDataFromPackage(installedPackages.value(key));
         d->m_updaterComponentsDeps.append(component);
         // Keep a list of local components that should be replaced
-        localReplaceMes.insert(component->name(), component);
+        if (replaceMes.contains(component->name()))
+            localReplaceMes.insert(component->name(), component);
     }
 
     // store all components that got a replacement, but do not modify the components list
