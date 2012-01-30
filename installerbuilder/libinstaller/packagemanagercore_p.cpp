@@ -346,17 +346,24 @@ void PackageManagerCorePrivate::clearAllComponentLists()
 
 void PackageManagerCorePrivate::clearUpdaterComponentLists()
 {
-    qDeleteAll(m_updaterComponents);
-    m_updaterComponents.clear();
+    QSet<Component*> usedComponents =
+        QSet<Component*>::fromList(m_updaterComponents + m_updaterComponentsDeps);
 
-    qDeleteAll(m_updaterComponentsDeps);
+    const QList<QPair<Component*, Component*> > list = m_componentsToReplaceUpdaterMode.values();
+    for (int i = 0; i < list.count(); ++i) {
+        if (usedComponents.contains(list.at(i).second))
+            qWarning() << "a replaceme was allready in the list - is that correct?";
+        else
+            usedComponents.insert(list.at(i).second);
+    }
+
+    qDeleteAll(usedComponents);
+
+    m_updaterComponents.clear();
     m_updaterComponentsDeps.clear();
 
     m_updaterDependencyReplacements.clear();
 
-    const QList<QPair<Component*, Component*> > list = m_componentsToReplaceUpdaterMode.values();
-    for (int i = 0; i < list.count(); ++i)
-        delete list.at(i).second;
     m_componentsToReplaceUpdaterMode.clear();
     m_componentsToInstallCalculated = false;
 }
