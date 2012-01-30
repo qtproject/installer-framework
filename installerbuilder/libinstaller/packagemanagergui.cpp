@@ -1553,8 +1553,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
 */
 void ReadyForInstallationPage::entering()
 {
-    setCommitPage(true);
-    const QString target = packageManagerCore()->value(scTargetDir);
+    setCommitPage(false);
 
     if (packageManagerCore()->isUninstaller()) {
         m_taskDetailsButton->setVisible(false);
@@ -1564,7 +1563,9 @@ void ReadyForInstallationPage::entering()
         m_msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
             "<font color=\"red\">The program dir %2 will be deleted completely</font>, "
             "including all content in that directory!")
-            .arg(productName(), QDir::toNativeSeparators(QDir(target).absolutePath())));
+            .arg(productName(), QDir::toNativeSeparators(QDir(packageManagerCore()->value(scTargetDir))
+            .absolutePath())));
+        setCommitPage(true);
         return;
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
         setButtonText(QWizard::CommitButton, tr("U&pdate"));
@@ -1580,65 +1581,78 @@ void ReadyForInstallationPage::entering()
 
     refreshTaskDetailsBrowser();
 
-    const VolumeInfo vol = VolumeInfo::fromPath(target);
     const VolumeInfo tempVolume = VolumeInfo::fromPath(QDir::tempPath());
-    const bool tempOnSameVolume = (vol == tempVolume);
+    const VolumeInfo targetVolume = VolumeInfo::fromPath(packageManagerCore()->value(scTargetDir));
 
-    // there is no better way atm to check this
-    if (vol.size() == 0 && vol.availableSize() == 0) {
-        qDebug() << QString::fromLatin1("Could not determine available space on device %1. Continue silently."
-            ).arg(target);
+    const quint64 tempVolumeAvailableSize = tempVolume.availableSize();
+    const quint64 installVolumeAvailableSize = targetVolume.availableSize();
+
+    // at the moment there is no better way to check this
+    if (targetVolume.size() == 0 && installVolumeAvailableSize == 0) {
+        qDebug() << QString::fromLatin1("Could not determine available space on device. Volume descriptor: %1,"
+            "Mount path: %2. Continue silently.").arg(targetVolume.volumeDescriptor(), targetVolume.mountPath());
+        setCommitPage(true);
+        return;     // TODO: Shouldn't this also disable the "Next" button?
+    }
+
+    const bool tempOnSameVolume = (targetVolume == tempVolume);
+    if (tempOnSameVolume) {
+        qDebug() << "Tmp and install folder are on the same volume. Volume mount point:" << targetVolume
+            .mountPath() << "Free space available:" << humanReadableSize(installVolumeAvailableSize);
+    } else {
+        qDebug() << "Tmp is on a different volume than the install folder. Tmp volume mount point:"
+            << tempVolume.mountPath() << "Free space available:" << humanReadableSize(tempVolumeAvailableSize)
+            << "Install volume mount point:" << targetVolume.mountPath() << "Free space "
+            "available:" << humanReadableSize(installVolumeAvailableSize);
+    }
+
+    const quint64 extraSpace = 256 * 1024 * 1024LL;
+    quint64 required(packageManagerCore()->requiredDiskSpace());
+    quint64 tempRequired(packageManagerCore()->requiredTemporaryDiskSpace());
+    if (required < extraSpace) {
+        required += 0.1 * required;
+        tempRequired += 0.1 * tempRequired;
+    } else {
+        required += extraSpace;
+        tempRequired += extraSpace;
+    }
+
+    qDebug() << "Installation space required:" << humanReadableSize(required) << "Temporary space required:"
+        << humanReadableSize(tempRequired);
+
+    if (tempOnSameVolume && (installVolumeAvailableSize <= (required + tempRequired))) {
+        m_msgLabel->setText(tr("Not enough disk space to store temporary files and the installation! "
+            "Available space: %1, at least required %2.").arg(humanReadableSize(installVolumeAvailableSize),
+            humanReadableSize(required + tempRequired)));
         return;
     }
 
-    const quint64 required(packageManagerCore()->requiredDiskSpace());
-    const quint64 tempRequired(packageManagerCore()->requiredTemporaryDiskSpace());
-
-    const quint64 available = vol.availableSize();
-    const quint64 tempAvailable = tempVolume.availableSize();
-    const quint64 realRequiredTempSpace = quint64(0.1 * tempRequired + tempRequired);
-    const quint64 realRequiredSpace = quint64(2 * required);
-
-    const bool tempInstFailure = tempOnSameVolume && (available < realRequiredSpace
-        + realRequiredTempSpace);
-
-    qDebug() << QString::fromLatin1("Disk space check on %1: required: %2, available: %3, size: %4").arg(
-        target, QString::number(required), QString::number(available), QString::number(vol.size()));
-
-    QString tempString;
-    if (tempAvailable < realRequiredTempSpace || tempInstFailure) {
-        if (tempOnSameVolume) {
-            tempString = tr("Not enough disk space to store temporary files and the installation, "
-                "at least %1 are required").arg(humanReadableSize(realRequiredTempSpace + realRequiredSpace));
-        } else {
-            tempString = tr("Not enough disk space to store temporary files, at least %1 are required.")
-                .arg(humanReadableSize(realRequiredTempSpace));
-            setCommitPage(false);
-            m_msgLabel->setText(tempString);
-        }
+    if (installVolumeAvailableSize < required) {
+        m_msgLabel->setText(tr("Not enough disk space to store all selected components! Available space: %1, "
+            "at least required: %2.").arg(humanReadableSize(installVolumeAvailableSize),
+            humanReadableSize(required)));
+        return;
     }
 
-    // error on not enough space
-    if (available < required || tempInstFailure) {
-        if (tempOnSameVolume) {
-            m_msgLabel->setText(tempString);
-        } else {
-            m_msgLabel->setText(tr("The volume you selected for installation has insufficient space "
-                "for the selected components. The installation requires approximately %1.")
-                .arg(humanReadableSize(required)) + tempString);
-        }
-        setCommitPage(false);
-    } else if (available - required < 0.01 * vol.size()) {
+    if (tempVolumeAvailableSize < tempRequired) {
+        m_msgLabel->setText(tr("Not enough disk space to store temporary files! Available space: %1, at "
+            "least required: %2.").arg(humanReadableSize(tempVolumeAvailableSize),
+            humanReadableSize(tempRequired)));
+        return;
+    }
+
+    if (installVolumeAvailableSize - required < 0.01 * targetVolume.size()) {
         // warn for less than 1% of the volume's space being free
         m_msgLabel->setText(tr("The volume you selected for installation seems to have sufficient space for "
             "installation, but there will be less than 1% of the volume's space available afterwards. %1")
             .arg(m_msgLabel->text()));
-    } else if (available - required < 100 * 1024 * 1024LL) {
+    } else if (installVolumeAvailableSize - required < 100 * 1024 * 1024LL) {
         // warn for less than 100MB being free
         m_msgLabel->setText(tr("The volume you selected for installation seems to have sufficient space for "
             "installation, but there will be less than 100 MB available afterwards. %1")
             .arg(m_msgLabel->text()));
     }
+    setCommitPage(true);
 }
 
 void ReadyForInstallationPage::refreshTaskDetailsBrowser()
