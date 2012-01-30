@@ -1585,7 +1585,7 @@ void ReadyForInstallationPage::entering()
     const bool tempOnSameVolume = (vol == tempVolume);
 
     // there is no better way atm to check this
-    if (vol.size() == 0 && vol.availableSpace() == 0) {
+    if (vol.size() == 0 && vol.availableSize() == 0) {
         qDebug() << QString::fromLatin1("Could not determine available space on device %1. Continue silently."
             ).arg(target);
         return;
@@ -1594,8 +1594,8 @@ void ReadyForInstallationPage::entering()
     const quint64 required(packageManagerCore()->requiredDiskSpace());
     const quint64 tempRequired(packageManagerCore()->requiredTemporaryDiskSpace());
 
-    const quint64 available = vol.availableSpace();
-    const quint64 tempAvailable = tempVolume.availableSpace();
+    const quint64 available = vol.availableSize();
+    const quint64 tempAvailable = tempVolume.availableSize();
     const quint64 realRequiredTempSpace = quint64(0.1 * tempRequired + tempRequired);
     const quint64 realRequiredSpace = quint64(2 * required);
 

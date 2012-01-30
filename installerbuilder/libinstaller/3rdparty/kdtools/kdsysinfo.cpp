@@ -22,61 +22,53 @@
 
 #include "kdsysinfo.h"
 
-#include <QDir>
-#include <QDebug>
-
-#include <algorithm>
+#include <QtCore/QDebug>
+#include <QtCore/QDir>
 
 using namespace KDUpdater;
 
-QDebug operator<<(QDebug dbg, VolumeInfo volume)
+struct PathLongerThan
 {
-    return dbg << "KDUpdater::Volume(" << volume.path() << ")";
-}
-
-//QPair<quint64, quint64> volumeSpace(const QString &volume);
-
-//QString volumeName(const QString &volume);
+    bool operator()(const VolumeInfo &lhs, const VolumeInfo &rhs) const
+    {
+        return lhs.mountPath().length() > rhs.mountPath().length();
+    }
+};
 
 VolumeInfo::VolumeInfo()
+    : m_size(0)
+    , m_availableSize(0)
 {
-    m_size = 0;
-    m_availableSpace = 0;
 }
 
-void VolumeInfo::setPath(const QString &path)
+VolumeInfo VolumeInfo::fromPath(const QString &path)
 {
-    m_path = path;
+    QDir targetPath(path);
+    QList<VolumeInfo> volumes = mountedVolumes();
+    // sort by length to get the longest mount point (not just "/") first
+    qSort(volumes.begin(), volumes.end(), PathLongerThan());
+    foreach (const VolumeInfo &volume, volumes) {
+        QDir volumePath(volume.mountPath());
+        if (targetPath == volumePath)
+            return volume;
+#ifdef Q_OS_WIN
+        if (QDir::toNativeSeparators(path).toLower().startsWith(volume.mountPath().toLower()))
+#else
+        if (targetPath.canonicalPath().startsWith(volume.mountPath()))
+#endif
+            return volume;
+    }
+    return VolumeInfo();
 }
 
-bool VolumeInfo::operator==(const VolumeInfo &other) const
+QString VolumeInfo::mountPath() const
 {
-    return m_name == other.m_name && m_path == other.m_path;
+    return m_mountPath;
 }
 
-void VolumeInfo::setName(const QString &name)
+void VolumeInfo::setMountPath(const QString &path)
 {
-    m_name = name;
-}
-
-QString VolumeInfo::name() const
-{
-    return m_name;
-}
-
-QString VolumeInfo::path() const
-{
-    return m_path;
-}
-
-quint64 VolumeInfo::size() const
-{
-    return m_size;
-}
-
-void VolumeInfo::setSize(const quint64 &size)
-{
-    m_size = size;
+    m_mountPath = path;
 }
 
 QString VolumeInfo::fileSystemType() const
@@ -89,38 +81,44 @@ void VolumeInfo::setFileSystemType(const QString &type)
     m_fileSystemType = type;
 }
 
-quint64 VolumeInfo::availableSpace() const
+QString VolumeInfo::volumeDescriptor() const
 {
-    return m_availableSpace;
+    return m_volumeDescriptor;
 }
 
-void VolumeInfo::setAvailableSpace(const quint64 &available)
+void VolumeInfo::setVolumeDescriptor(const QString &descriptor)
 {
-    m_availableSpace = available;
+    m_volumeDescriptor = descriptor;
 }
 
-struct PathLongerThan
+quint64 VolumeInfo::size() const
 {
-    bool operator()(const VolumeInfo &lhs, const VolumeInfo &rhs) const
-    {
-        return lhs.path().length() > rhs.path().length();
-    }
-};
+    return m_size;
+}
 
-VolumeInfo VolumeInfo::fromPath(const QString &path)
+void VolumeInfo::setSize(const quint64 &size)
 {
-    QList<VolumeInfo> volumes = mountedVolumes();
-    // sort by length to get the longest mount point (not just "/") first
-    std::sort(volumes.begin(), volumes.end(), PathLongerThan());
-    for (QList< VolumeInfo >::const_iterator it = volumes.constBegin(); it != volumes.constEnd(); ++it) {
-#ifdef Q_WS_WIN
-        if (QDir::toNativeSeparators(path).toLower().startsWith(it->path().toLower()))
-#else
-        if (QDir(path).canonicalPath().startsWith(it->path()))
-#endif
-            return *it;
-    }
-    return VolumeInfo();
+    m_size = size;
+}
+
+quint64 VolumeInfo::availableSize() const
+{
+    return m_availableSize;
+}
+
+void VolumeInfo::setAvailableSize(const quint64 &available)
+{
+    m_availableSize = available;
+}
+
+bool VolumeInfo::operator==(const VolumeInfo &other) const
+{
+    return m_volumeDescriptor == other.m_volumeDescriptor;
+}
+
+QDebug operator<<(QDebug dbg, VolumeInfo volume)
+{
+    return dbg << "KDUpdater::Volume(" << volume.mountPath() << ")";
 }
 
 QDebug operator<<(QDebug dbg, ProcessInfo process)

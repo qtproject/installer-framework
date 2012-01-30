@@ -65,7 +65,7 @@ QList<VolumeInfo> mountedVolumes()
     QFile f(QLatin1String("/etc/mtab"));
     if (!f.open(QIODevice::ReadOnly)) {
         qCritical("%s: Could not open %s: %s", Q_FUNC_INFO, qPrintable(f.fileName()), qPrintable(f.errorString()));
-        return QList<VolumeInfo>(); //better error-handling?
+        return result; //better error-handling?
     }
     
     QTextStream stream(&f);
@@ -73,25 +73,24 @@ QList<VolumeInfo> mountedVolumes()
         const QString s = stream.readLine();
         if (s.isNull())
             return result;
-        
+
         if (!s.startsWith(QLatin1Char('/')))
             continue;
 
-        const QStringList parts = s.split( QLatin1Char(' '), QString::SkipEmptyParts);
+        const QStringList parts = s.split(QLatin1Char(' '), QString::SkipEmptyParts);
 
         VolumeInfo v;
-        v.setName(parts.at(1));
-        v.setPath(parts.at(1));
+        v.setMountPath(parts.at(1));
+        v.setVolumeDescriptor(parts.at(0));
+        v.setFileSystemType(parts.value(2));
 
         struct statvfs data;
-        if (statvfs(qPrintable(v.name()), &data) == 0) {
+        if (statvfs(qPrintable(v.mountPath() + QLatin1String("/.")), &data) == 0) {
             v.setSize(quint64(static_cast<quint64>(data.f_blocks) * data.f_bsize));
-            v.setAvailableSpace(quint64(static_cast<quint64>(data.f_bavail) * data.f_bsize));
+            v.setAvailableSize(quint64(static_cast<quint64>(data.f_bavail) * data.f_bsize));
         }
-
-        result.push_back(v);
+        result.append(v);
     }
-
     return result;
 }
 

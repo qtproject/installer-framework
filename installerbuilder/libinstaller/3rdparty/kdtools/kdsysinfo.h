@@ -35,26 +35,30 @@ public:
     VolumeInfo();
     static VolumeInfo fromPath(const QString &path);
 
-    QString name() const;
-    QString path() const;
-    quint64 size() const;
+    QString mountPath() const;
+    void setMountPath(const QString &path);
+
     QString fileSystemType() const;
-    quint64 availableSpace() const;
+    void setFileSystemType(const QString &type);
+
+    QString volumeDescriptor() const;
+    void setVolumeDescriptor(const QString &descriptor);
+
+    quint64 size() const;
+    void setSize(const quint64 &size);
+
+    quint64 availableSize() const;
+    void setAvailableSize(const quint64 &available);
 
     bool operator==(const VolumeInfo &other) const;
 
-    void setPath(const QString &path);
-    void setName(const QString &name);
-    void setSize(const quint64 &size);
-    void setFileSystemType(const QString &type);
-    void setAvailableSpace(const quint64 &available);
-
 private:
-    QString m_path;
-    QString m_name;
+    QString m_mountPath;
     QString m_fileSystemType;
+    QString m_volumeDescriptor;
+
     quint64 m_size;
-    quint64 m_availableSpace;
+    quint64 m_availableSize;
 };
 
 struct ProcessInfo

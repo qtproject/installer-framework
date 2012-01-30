@@ -30,12 +30,6 @@
 
 namespace KDUpdater {
 
-static QString qt_mac_hfsunistr_to_qstring(const HFSUniStr255 *hfs)
-{
-    const QChar *charPointer = reinterpret_cast<const QChar *>(hfs->unicode);
-    return QString(charPointer, hfs->length);
-}
-
 quint64 installedMemory()
 {
     SInt32 mb = 0;
@@ -55,18 +49,18 @@ QList<VolumeInfo> mountedVolumes()
     while (FSGetVolumeInfo(kFSInvalidVolumeRefNum, ++i, &volume, kFSVolInfoFSInfo, &info, &volName, &ref) == 0) {
         UInt8 path[PATH_MAX + 1];
         if (FSRefMakePath(&ref, path, PATH_MAX) == 0) {
-            VolumeInfo v;
-            v.setName(qt_mac_hfsunistr_to_qstring(&volName));
-            v.setPath(QString::fromLocal8Bit(reinterpret_cast< char* >(path)));
-
             FSGetVolumeInfo(volume, 0, 0, kFSVolInfoSizes, &info, 0, 0);
+
+            VolumeInfo v;
             v.setSize(quint64(info.totalBytes));
-            v.setAvailableSpace(quint64(info.freeBytes));
+            v.setAvailableSize(quint64(info.freeBytes));
+            v.setMountPath(QString::fromLocal8Bit(reinterpret_cast< char* >(path)));
 
             struct statfs data;
-            if (statfs(qPrintable(v.path()), &data) == 0)
+            if (statfs(qPrintable(v.mountPath() + QLatin1String("/.")), &data) == 0) {
                 v.setFileSystemType(QLatin1String(data.f_fstypename));
-
+                v.setVolumeDescriptor(QLatin1String(data.f_mntfromname));
+            }
             result.append(v);
         }
     }
