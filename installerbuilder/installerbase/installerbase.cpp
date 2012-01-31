@@ -2,7 +2,7 @@
 **
 ** This file is part of Installer Framework
 **
-** Copyright (c) 2010, 2011 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (c) 2010, 2012 Nokia Corporation and/or its subsidiary(-ies).
 **
 ** Contact: Nokia Corporation (info@qt.nokia.com)
 **
