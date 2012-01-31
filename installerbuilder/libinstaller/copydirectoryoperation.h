@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** This file is part of Qt SDK**
+** This file is part of Installer Framework**
 **
 ** Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).*
 **
