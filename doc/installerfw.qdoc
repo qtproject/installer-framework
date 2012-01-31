@@ -23,7 +23,7 @@
         \o Mac OS-X (10.6 and following)
     \endlist
 
-    Those installers can either be stand-alone or download contant from a
+    Those installers can either be stand-alone or download content from a
     networking resource via http transfer. For installers fetching data from
     a webserver, tools are available to post install items after the initial
     setup as well as update mechanisms are provided as soon as those are
@@ -119,7 +119,7 @@
         \o \bold{ Version} The version of the product being installed
         \o \bold{ Title} The title text of the generated installer, i.e. its name
         \o \bold{ MaintenanceTitle} The title text of the generated maintenance tool, i.e. its name
-        \o \bold{ Pushblisher} The publisher of the software
+        \o \bold{ Publisher} The publisher of the software
         \o \bold{ ProductUrl} URL of the product
         \o \bold{ Logo} Filename for a logo used as QWizard::LogoPixmap
         \o \bold{ License} Filename of the license text to be accepted by the installing user
@@ -136,7 +136,7 @@
         \o \bold{ UninstallerName} File name of the generated uninstaller. Defaults to "uninstall". The platform specific executable suffixs is appended.
     \endlist
 
-    It is suggested that you place all files that are reffered inside the
+    It is suggested that you place all files that are referred inside the
     configuration also into the config directory. However, you can also use
     relative paths, which the tools will resolve relative to the location of
     the config.xml file.
@@ -256,7 +256,7 @@
 
     \section2 Additional features
 
-    Additonally, all files named in the package.xml - scripts, user interfaces
+    Additionally, all files named in the package.xml - scripts, user interfaces
     and translations - have to be in the meta data directory. Referring to
     previous example, the directory structure looks like this:
 
@@ -286,11 +286,11 @@
     Each component can have one or more components it depends on. This can be
     other real or virtual components. Every dependency as defined via its
     identifier and optionally its version. The version, if given, is separated
-    by the identifier by a dash ('-') and can be prefixed by a comparision
+    by the identifier by a dash ('-') and can be prefixed by a comparison
     operator like '=', '>', '<', '>=' or '<=', which means that the version of
     the matching package is compared to the required version and has to be
     equal, greater, less, greater or equal or less or equal as the version
-    number given in the dependency. If no comparision operator is given, it
+    number given in the dependency. If no comparison operator is given, it
     defaults to '='.
 
     \section3 Component Translation
@@ -348,7 +348,7 @@
     \section2 Contents of the data directory
 
     The data directory contains all the content, which will be extracted during
-    the installation phasis. There are multiple options of content:
+    the installation phases. There are multiple options of content:
 
     \list
     \o Copy all the files into the data location. The directory structure will
@@ -362,7 +362,7 @@
 
     \note Each of those ways has advantages and disadvantages. From our experience,
     using archivegen provides the best solution due to faster creation time
-    and compatilibility with 7zip.
+    and compatibility with 7zip.
 */
 
 /*!
@@ -407,7 +407,7 @@
     This is the binary used to append component information.
     On Windows, this defaults to be installerbase.exe in the current working directory. On Unix, installerbase is used.
 
-    -p or --packages directory Use directory as packaces directory
+    -p or --packages directory Use directory as packages directory
     Specifies the directory to get package, i.e. component information from. See Component Definition to find out how this directory need to look like. This setting defaults to the current working directory.
 
     -n or --nodeps Add only the selected packages to the compile. Don't add their dependencies.
@@ -421,7 +421,7 @@
     \endcode
 
     These parameters are followed by the name of the target binary and a list
-    of packages to be availabe for installation. Note that not only these
+    of packages to be available for installation. Note that not only these
     packages will be inside of the installer, but even all their dependencies
     and all packages sharing the same prefix, as long as you add the --nodeps
     flag.
@@ -478,7 +478,7 @@
     \list
     \o \bold Packages directory Directory containing the packages. Same as for binarycreator.
     \o \bold Configuration directory Directory containing the installer configuration. Same as for binarycreator.
-    \o \bold Repository directory Target directory to generate the repository. Must not yeut exist.
+    \o \bold Repository directory Target directory to generate the repository. Must not yet exist.
     \o \bold Components List of components to be placed into the repository. Includes dependencies.
     \endlist
 
