@@ -136,7 +136,7 @@ QModelIndex ComponentModel::index(int row, int column, const QModelIndex &parent
 
     \note An \bold invalid QVariant is returned if the given index is invalid. \bold Qt::CheckStateRole is
     only supported for the first column of the model. \bold Qt::EditRole, \bold Qt::DisplayRole and \bold
-    Qt::ToolTipRole are specificly handled for columns greather than the first column and translate to \bold
+    Qt::ToolTipRole are specifically handled for columns greater than the first column and translate to \bold
     Qt::UserRole \bold + \bold index.column().
 
 */
