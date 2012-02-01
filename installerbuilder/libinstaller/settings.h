@@ -109,6 +109,8 @@ public:
     void addUserRepositories(const QSet<Repository> &repositories);
 
     QStringList certificateFiles() const;
+    bool allowNoneAsciiCharacters() const;
+
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
     QVariantList values(const QString &key, const QVariantList &defaultValue = QVariantList()) const;
 

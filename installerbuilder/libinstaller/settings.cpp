@@ -366,6 +366,11 @@ QStringList Settings::certificateFiles() const
     return d->m_data.value(scSigningCertificate).toStringList();
 }
 
+bool Settings::allowNoneAsciiCharacters() const
+{
+    return d->m_data.value(scAllowNonAsciiCharacters).toBool();
+}
+
 QByteArray Settings::privateKey() const
 {
     return d->m_data.value(scPrivateKey).toByteArray();

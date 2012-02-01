@@ -85,6 +85,7 @@
     <RunProgram></RunProgram>
     <RunProgramDescription></RunProgramDescription>
     <StartMenuDir>Some Application Entry Dir</StartMenuDir>
+    <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
 
     <PublicKey>
         -----BEGIN PUBLIC KEY-----
@@ -133,7 +134,8 @@
         \o \bold{ PrivateKey} RSA private key to be used to sign components
         \o \bold{ TargetDir} Predefined target directory for installation
         \o \bold{ RemoteRepositories} List of remote repositories
-        \o \bold{ UninstallerName} File name of the generated uninstaller. Defaults to "uninstall". The platform specific executable suffixs is appended.
+        \o \bold{ UninstallerName} File name of the generated uninstaller. Defaults to "uninstall". The platform specific executable suffixes is appended.
+        \o \bold{ AllowNonAsciiCharacters } Set this to true if the installation path can contain non ASCII characters.
     \endlist
 
     It is suggested that you place all files that are referred inside the

@@ -396,12 +396,23 @@ bool TargetDirectoryPageImpl::validatePage()
     if (!QVariant(remove).toBool())
         return true;
 
-    const QDir dir(targetDir());
+    const QString targetDir = this->targetDir();
+    if (!packageManagerCore()->settings().allowNoneAsciiCharacters()) {
+        for (int i = 0; i < targetDir.length(); ++i) {
+            if (targetDir.at(i).unicode() & 0xff80) {
+                return failWithError(QLatin1String("NonAsciiTarget"), tr("The path or installation directory "
+                    "contains non ASCII characters. This is currently not supported! Please choose a different "
+                    "path or installation directory."));
+            }
+        }
+    }
+
+    const QDir dir(targetDir);
     // the directory exists and is empty...
     if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
         return true;
 
-    const QFileInfo fi(targetDir());
+    const QFileInfo fi(targetDir);
     if (fi.isDir()) {
         if (dir == QDir::root() || dir == QDir::home()) {
             return failWithError(QLatin1String("ForbiddenTargetDirectory"), tr("As the install directory "
@@ -416,7 +427,7 @@ bool TargetDirectoryPageImpl::validatePage()
         fileName += QLatin1String(".exe");
 #endif
 
-        QFileInfo fi2(targetDir() + QDir::separator() + fileName);
+        QFileInfo fi2(targetDir + QDir::separator() + fileName);
         if (fi2.exists()) {
             return askQuestion(QLatin1String("OverwriteTargetDirectory"),
                 TargetDirectoryPageImpl::tr("The folder you selected exists already and contains an "
