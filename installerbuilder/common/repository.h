@@ -29,6 +29,7 @@
 ** Nokia at info@qt.nokia.com.
 **
 **************************************************************************/
+
 #ifndef REPOSITORY_H
 #define REPOSITORY_H
 
