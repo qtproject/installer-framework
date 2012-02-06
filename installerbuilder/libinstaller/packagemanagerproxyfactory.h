@@ -29,6 +29,7 @@
 ** Nokia at info@qt.nokia.com.
 **
 **************************************************************************/
+
 #ifndef PACKAGEMANAGERPROXYFACTORY_H
 #define PACKAGEMANAGERPROXYFACTORY_H
 
