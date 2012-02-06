@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** This file is part of Qt Installer Framework
+** This file is part of Installer Framework
 **
 ** Copyright (c) 2011-2012 Nokia Corporation and/or its subsidiary(-ies).
 **
@@ -29,6 +29,7 @@
 ** Nokia at info@qt.nokia.com.
 **
 **************************************************************************/
+
 #include "setpathonqtcoreoperation.h"
 
 #include "qtpatch.h"
