@@ -1,24 +1,34 @@
-/****************************************************************************
-** Copyright (C) 2001-2010 Klaralvdalens Datakonsult AB.  All rights reserved.
+/**************************************************************************
 **
-** This file is part of the KD Tools library.
+** This file is part of Installer Framework
 **
-** Licensees holding valid commercial KD Tools licenses may use this file in
-** accordance with the KD Tools Commercial License Agreement provided with
-** the Software.
+** Copyright (c) 2011-2012 Nokia Corporation and/or its subsidiary(-ies).
+**
+** Contact: Nokia Corporation (info@qt.nokia.com)
 **
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU Lesser General Public License version 2 and version 3 as published by the
-** Free Software Foundation and appearing in the file LICENSE.LGPL included.
+** GNU Lesser General Public License Usage
 **
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+** This file may be used under the terms of the GNU Lesser General Public
+** License version 2.1 as published by the Free Software Foundation and
+** appearing in the file LICENSE.LGPL included in the packaging of this file.
+** Please review the following information to ensure the GNU Lesser General
+** Public License version 2.1 requirements will be met:
+** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** Contact info@kdab.com if any conditions of this licensing are not
-** clear to you.
+** In addition, as a special exception, Nokia gives you certain additional
+** rights. These rights are described in the Nokia Qt LGPL Exception
+** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
-**********************************************************************/
+** Other Usage
+**
+** Alternatively, this file may be used in accordance with the terms and
+** conditions contained in a signed written agreement between you and Nokia.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at info@qt.nokia.com.
+**
+**************************************************************************/
 
 #include <kdupdaterfiledownloader.h>
 #include <kdupdaterfiledownloaderfactory.h>
