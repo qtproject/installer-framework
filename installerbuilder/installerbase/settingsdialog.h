@@ -29,6 +29,7 @@
 ** Nokia at info@qt.nokia.com.
 **
 **************************************************************************/
+
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 

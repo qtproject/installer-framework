@@ -29,6 +29,7 @@
 ** Nokia at info@qt.nokia.com.
 **
 **************************************************************************/
+
 #include "installerbasecommons.h"
 
 #include <component.h>

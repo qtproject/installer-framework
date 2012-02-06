@@ -29,6 +29,7 @@
 ** Nokia at info@qt.nokia.com.
 **
 **************************************************************************/
+
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 

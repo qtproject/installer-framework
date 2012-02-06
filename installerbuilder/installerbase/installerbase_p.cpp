@@ -29,6 +29,7 @@
 ** Nokia at info@qt.nokia.com.
 **
 **************************************************************************/
+
 #include "installerbase_p.h"
 
 #include <common/binaryformat.h>

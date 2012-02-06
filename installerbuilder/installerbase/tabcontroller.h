@@ -29,6 +29,7 @@
 ** Nokia at info@qt.nokia.com.
 **
 **************************************************************************/
+
 #ifndef TABCONTROLLER_H
 #define TABCONTROLLER_H
 

@@ -2,7 +2,7 @@
 **
 ** This file is part of Installer Framework
 **
-** Copyright (c) 2010, 2011-2012 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (c) 2010-2012 Nokia Corporation and/or its subsidiary(-ies).
 **
 ** Contact: Nokia Corporation (info@qt.nokia.com)
 **
@@ -29,6 +29,7 @@
 ** Nokia at info@qt.nokia.com.
 **
 **************************************************************************/
+
 #ifndef INSTALLERBASECOMMONS_H
 #define INSTALLERBASECOMMONS_H
 

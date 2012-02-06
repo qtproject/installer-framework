@@ -29,6 +29,7 @@
 ** Nokia at info@qt.nokia.com.
 **
 **************************************************************************/
+
 #include <QtCore/QThread>
 #include <QtGui/QApplication>
 
