@@ -1,10 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Installer>
     <Name>Your application</Name>
     <Version>1.2.3</Version>
     <Title>Your application Installer</Title>
     <Publisher>Your vendor</Publisher>
-    <License>license.txt</License>
     <StartMenuDir>Super App</StartMenuDir>
     <TargetDir>@rootDir@InstallationDirectory</TargetDir>
 </Installer>
