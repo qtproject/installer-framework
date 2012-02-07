@@ -232,6 +232,7 @@ int main(int argc, char *argv[])
         if (QInstaller::isVerbose()) {
             qDebug() << VERSION;
             qDebug() << "Arguments:" << args;
+            qDebug() << "Language: " << QLocale().name().toLower();
             qDebug() << "Resource tree before loading the in-binary resource:";
 
             QDir dir(QLatin1String(":/"));
