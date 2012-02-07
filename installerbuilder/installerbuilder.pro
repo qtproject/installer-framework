@@ -8,3 +8,5 @@ test.target=test
 test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
+TRANSLATIONS += installerbase/translations/de_de.ts \
+    installerbase/translations/sv_se.ts

@@ -197,10 +197,5 @@ CONFIG( shared, static|shared ): {
 
 macx: LIBS += -framework Security
 
-TRANSLATIONS += translations/de_de.ts \
-    translations/sv_se.ts
-
 RESOURCES += ../common/openssl.qrc \
     resources/patch_file_lists.qrc
-
-
