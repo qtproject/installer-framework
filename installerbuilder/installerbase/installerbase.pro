@@ -18,6 +18,8 @@ CONFIG -= app_bundle
 
 include(../libinstaller/libinstaller.pri)
 
+RESOURCES += installerbase.qrc
+
 QT += network
 
 FORMS += settingsdialog.ui
