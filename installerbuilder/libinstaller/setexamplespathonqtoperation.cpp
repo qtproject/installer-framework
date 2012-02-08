@@ -74,7 +74,7 @@ bool SetExamplesPathOnQtOperation::performOperation()
     if (qmakeValueHash.isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("The output of \n%1 -query\n is not parseable. Please file a bugreport with this "
-            "dialog http://bugreports.qt.nokia.com.\noutput: \"%2\"").arg(QDir::toNativeSeparators(qmakePath),
+            "dialog https://bugreports.qt-project.org.\noutput: \"%2\"").arg(QDir::toNativeSeparators(qmakePath),
             QString::fromUtf8(qmakeOutput)));
         return false;
     }
