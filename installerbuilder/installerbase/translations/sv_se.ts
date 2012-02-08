@@ -2000,14 +2000,14 @@ Installing component %1</source>
     <message>
         <location filename="../../libinstaller/qtpatchoperation.cpp" line="155"/>
         <source>QMake from the current Qt version 
-(%1)is not existing. Please file a bugreport with this dialog at http://bugreports.qt.nokia.com.</source>
+(%1)is not existing. Please file a bugreport with this dialog at https://bugreports.qt-project.org.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libinstaller/qtpatchoperation.cpp" line="165"/>
         <source>The output of 
 %1 -query
-is not parseable. Please file a bugreport with this dialog http://bugreports.qt.nokia.com.
+is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
 output: &quot;%2&quot;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2318,7 +2318,7 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
         <location filename="../../libinstaller/setdemospathonqtoperation.cpp" line="76"/>
         <source>The output of 
 %1 -query
-is not parseable. Please file a bugreport with this dialog http://bugreports.qt.nokia.com.
+is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
 output: &quot;%2&quot;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2340,7 +2340,7 @@ needs to be less than 255 characters.</source>
         <location filename="../../libinstaller/setexamplespathonqtoperation.cpp" line="76"/>
         <source>The output of 
 %1 -query
- is not parseable. Please file a bugreport with this dialog http://bugreports.qt.nokia.com.
+ is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
 output: &quot;%2&quot;</source>
         <translation type="unfinished"></translation>
     </message>
