@@ -903,7 +903,7 @@ bool ExecuteOperation::performOperation()
     }
     if (!success) {
         setError(UserDefinedError);
-        setErrorString(tr("Execution failed: \"%1\"").arg(args.join(QLatin1String(" "))));
+        setErrorString(tr("Execution failed: %1").arg(args.join(QLatin1String(" "))));
     }
 
     return success;

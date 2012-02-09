@@ -62,7 +62,7 @@ bool LicenseOperation::performOperation()
     PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
     if (!core) {
         setError( UserDefinedError );
-        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
         return false;
     }
 

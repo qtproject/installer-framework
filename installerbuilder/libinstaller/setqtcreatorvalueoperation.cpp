@@ -60,7 +60,7 @@ bool SetQtCreatorValueOperation::performOperation()
 
     if (args.count() != 4) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 4 expected(rootInstallPath, "
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exactly 4 expected (rootInstallPath, "
             "group, key, value).").arg(name()).arg( arguments().count()));
         return false;
     }
@@ -90,7 +90,7 @@ bool SetQtCreatorValueOperation::performOperation()
         PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
         if (!core) {
             setError(UserDefinedError);
-            setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+            setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
             return false;
         }
         UpdateCreatorSettingsFrom21To22Operation updateCreatorSettingsOperation;

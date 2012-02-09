@@ -66,17 +66,17 @@ static QVector<PackageInfo> collectAvailablePackages(const QString &packagesDire
     const QFileInfoList entries = QDir(packagesDirectory)
         .entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
-        qDebug() << QString::fromLatin1("    found subdirectory \"%1\"").arg(it->fileName());
+        qDebug() << QString::fromLatin1("    found subdirectory %1").arg(it->fileName());
         //because the filter is QDir::Dirs - filename means the name of the subdirectory
         if (it->fileName().contains(QLatin1Char('-'))) {
-            qDebug() << "        , but it contains \"-\" which is not allowed, because it is used as the seperator"
-                "between the component name and the version number internally.";
-            throw QInstaller::Error(QObject::tr("Component %1 can't contain \"-\"").arg(it->fileName()));
+            qDebug() << "        , but it contains '-'' which is not allowed, because it is used as the seperator"
+                " between the component name and the version number internally.";
+            throw QInstaller::Error(QObject::tr("Component %1 can't contain '-'.").arg(it->fileName()));
         }
 
         QFile file(QString::fromLatin1("%1/meta/package.xml").arg(it->filePath()));
         if (!file.exists()) {
-            qDebug() << "     - but it contains no package information (meta/package.xml missing)";
+            qDebug() << "     - but it contains no package information (meta/package.xml missing).";
             throw QInstaller::Error(QObject::tr("Component %1 does not contain a package "
                 "description.").arg(it->fileName()));
         }
@@ -88,7 +88,7 @@ static QVector<PackageInfo> collectAvailablePackages(const QString &packagesDire
         int errorLine = 0;
         int errorColumn = 0;
         if (!doc.setContent(&file, &errorMessage, &errorLine, &errorColumn)) {
-            qDebug() << QString::fromLatin1("     - but it's package description is invalid. Error at line: %2, column: %3 -> %4").arg(
+            qDebug() << QString::fromLatin1("     - but its package description is invalid. Error at line: %2, column: %3 -> %4").arg(
                 QString::number(errorLine), QString::number(errorColumn), errorMessage);
             throw QInstaller::Error(QObject::tr("Component package description for %1 is invalid. "
                 "Error at line: %2, column: %3 -> %4").arg(it->fileName(), QString::number(errorLine),
@@ -99,7 +99,7 @@ static QVector<PackageInfo> collectAvailablePackages(const QString &packagesDire
             .firstChildElement(QLatin1String("Name")).text();
         if (name != it->fileName()) {
             throw QInstaller::Error(QObject::tr("Component folder name must match component name: "
-                "\"%1\" in %2/").arg(name, it->fileName()));
+                "%1 in %2/").arg(name, it->fileName()));
         }
 
         PackageInfo info;
@@ -203,7 +203,7 @@ static QVector<PackageInfo> calculateNeededPackages(const QStringList &component
             hitComponents.clear();
 
         if (hitComponents.contains(*it))
-            throw Error(QObject::tr("Circular dependencies detected").arg(*it));
+            throw Error(QObject::tr("Circular dependencies detected.").arg(*it));
         hitComponents.push_back(*it);
 
         recursion = true;
@@ -213,7 +213,7 @@ static QVector<PackageInfo> calculateNeededPackages(const QStringList &component
         if (info.name.isEmpty()) {
             qDebug() << "Not found :-o";
             qDebug() << "    Couldn't find package for component " << *it << " bailing out...";
-            throw Error(QObject::tr("Couldn't find package for component %1").arg(*it));
+            throw Error(QObject::tr("Couldn't find package for component %1.").arg(*it));
         }
         qDebug() << "Found.";
         if (!result.contains(info)) {
@@ -268,7 +268,7 @@ void QInstaller::compressDirectory(const QStringList &paths, const QString &arch
 {
     foreach (const QString &path, paths) {
         if (!QFileInfo(path).exists())
-            throw QInstaller::Error(QObject::tr("Folder %1 does not exist").arg(path));
+            throw QInstaller::Error(QObject::tr("Folder %1 does not exist.").arg(path));
     }
 
     QFile archive(archivePath);
@@ -308,7 +308,7 @@ void QInstaller::compressMetaDirectories(const QString &configDir, const QString
             const QByteArray signature = crypto.sign(finalTarget);
             QFile sigFile(finalTarget + QLatin1String(".sig"));
             if (!sigFile.open(QIODevice::WriteOnly)) {
-                throw QInstaller::Error(QObject::tr("Could not open %1 for writing")
+                throw QInstaller::Error(QObject::tr("Could not open %1 for writing.")
                     .arg(finalTarget));
             }
             sigFile.write(signature);
@@ -350,7 +350,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
 
     for (QVector<PackageInfo>::const_iterator it = packages.begin(); it != packages.end(); ++it) {
         const QString packageXmlPath = QString::fromLatin1("%1/meta/package.xml").arg(it->directory);
-        qDebug() << QString::fromLatin1("    Generating meta data for package %1 using %2").arg(
+        qDebug() << QString::fromLatin1("    Generating meta data for package %1 using %2.").arg(
             it->name, packageXmlPath);
 
         // remove existing entry for thes component from existing Updates.xml
@@ -372,7 +372,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
         int col = 0;
         int line = 0;
         if (!packageXml.setContent(&file, &errMsg, &line, &col)) {
-            throw Error(QObject::tr("Could not parse %1: %2:%3: %4 (%5)").arg(packageXmlPath,
+            throw Error(QObject::tr("Could not parse %1: line: %2, column: %3: %4 (%5)").arg(packageXmlPath,
                 QString::number(line), QString::number(col), errMsg, it->name));
         }
         const QDomNode package = packageXml.firstChildElement("Package");
@@ -456,7 +456,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
         root.appendChild(update);
 
         if (!QDir(metapath).mkpath(it->name))
-            throw Error(QObject::tr("Could not create directory %1").arg(it->name));
+            throw Error(QObject::tr("Could not create directory %1.").arg(it->name));
 
         // copy scripts
         const QString script = package.firstChildElement("Script").text();
@@ -480,7 +480,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
             QString toLocation(QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, script));
             if (!QFile::copy(fromLocation, toLocation)) {
                 qDebug() << "failed!";
-                throw Error(QObject::tr("Could not copy the script (%1) to its target location (%2)")
+                throw Error(QObject::tr("Could not copy the script %1 to its target location %2.")
                     .arg(fromLocation, toLocation));
             } else {
                 qDebug() << "    done.";
@@ -499,7 +499,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
             const QStringList uis = dir.entryList(QStringList(node.toElement().text()), QDir::Files);
             if (uis.isEmpty()) {
                 throw Error(QObject::tr("Couldn't find any user interface matching %1 while copying "
-                    "user interfaces of %2").arg(node.toElement().text(), it->name));
+                    "user interfaces of %2.").arg(node.toElement().text(), it->name));
             }
 
             for (QStringList::const_iterator ui = uis.begin(); ui != uis.end(); ++ui) {
@@ -510,7 +510,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                     QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, *ui))) {
                         qDebug() << "failed!";
                         throw Error(QObject::tr("Could not copy the UI file %1 to its target location "
-                            "(%2)").arg(*ui, it->name));
+                            "%2.").arg(*ui, it->name));
                 } else {
                     qDebug() << "done";
                 }
@@ -534,7 +534,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
             const QStringList qms = dir.entryList(QStringList(node.toElement().text()), QDir::Files);
             if (qms.isEmpty()) {
                 throw Error(QObject::tr("Could not find any user interface matching %1 while "
-                    "copying user interfaces of %2").arg(node.toElement().text(), it->name));
+                    "copying user interfaces of %2.").arg(node.toElement().text(), it->name));
             }
 
             for (QStringList::const_iterator qm = qms.begin(); qm != qms.end(); ++qm) {
@@ -545,7 +545,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                     QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, *qm))) {
                         qDebug() << "failed!";
                         throw Error(QObject::tr("Could not copy the translation %1 to its target "
-                            "location (%2)").arg(*qm, it->name));
+                            "location %2.").arg(*qm, it->name));
                 } else {
                     qDebug() << "done";
                 }
@@ -568,7 +568,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                     QString::fromLatin1("%1/meta/%2").arg(it->directory).arg(licenseFile);
                 if (!QFile::exists(sourceFile)) {
                     throw Error(QObject::tr("Could not find any license matching %1 while "
-                        "copying license files of %2").arg(licenseFile, it->name));
+                        "copying license files of %2.").arg(licenseFile, it->name));
                 }
 
                 qDebug() << "    Copying associated license file " << licenseFile << " into "
@@ -577,7 +577,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                     .arg(metapath, it->name, licenseFile))) {
                         qDebug() << "failed!";
                         throw Error(QObject::tr("Could not copy the license file %1 to its "
-                            "target location (%2)").arg(licenseFile, it->name));
+                            "target location %2.").arg(licenseFile, it->name));
                 } else {
                     qDebug() << "done.";
                 }

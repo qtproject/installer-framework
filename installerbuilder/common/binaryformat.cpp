@@ -120,10 +120,10 @@ static void appendFileData(QIODevice *out, const QString &fileName)
         return;
     uchar *data = file.map(0, size);
     if (!data)
-        throw Error(QInstaller::tr("Cannot map file %1").arg(file.fileName()));
+        throw Error(QInstaller::tr("Cannot map file %1.").arg(file.fileName()));
     blockingWrite(out, (const char *)data, size);
     if (!file.unmap(data))
-        throw Error(QInstaller::tr("Cannot unmap file %1").arg(file.fileName()));
+        throw Error(QInstaller::tr("Cannot unmap file %1.").arg(file.fileName()));
 }
 #endif
 

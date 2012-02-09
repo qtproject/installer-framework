@@ -46,7 +46,7 @@ namespace {
         QFileInfo fileInfo(binaryPath);
 
         if (!fileInfo.exists()) {
-            qDebug() << QString::fromLatin1("qpatch: warning: file '%1' not found").arg(binaryPath);
+            qDebug() << QString::fromLatin1("qpatch: warning: file %1 not found").arg(binaryPath);
             return QByteArray();
         }
 
@@ -59,7 +59,7 @@ namespace {
         }
         Q_ASSERT(file.isOpen());
         if (!file.isOpen()) {
-            qDebug() << QString::fromLatin1("qpatch: warning: file '%1' can not open as ReadOnly.").arg(
+            qDebug() << QString::fromLatin1("qpatch: warning: file %1 can not be opened as ReadOnly.").arg(
                 binaryPath);
             qDebug() << file.errorString();
             return QByteArray();
@@ -98,7 +98,7 @@ bool SetImportsPathOnQtCoreOperation::performOperation()
 
     if (args.count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 2 expected.").arg(name())
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exactly 2 expected.").arg(name())
             .arg(arguments().count()));
         return false;
     }
@@ -126,7 +126,7 @@ bool SetImportsPathOnQtCoreOperation::performOperation()
 
             bool isPatched = QtPatch::patchBinaryFile(coreLibrary, oldValue, adjutedNewValue);
             if (!isPatched) {
-                qDebug() << "qpatch: warning: could not patched the imports path in" << coreLibrary;
+                qDebug() << "qpatch: warning: could not patch the imports path in" << coreLibrary;
             }
         }
     }

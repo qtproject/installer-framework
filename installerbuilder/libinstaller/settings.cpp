@@ -204,7 +204,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
     QXmlStreamReader reader(&file);
     if (reader.readNextStartElement()) {
         if (reader.name() != QLatin1String("Installer"))
-            throw Error(tr("%1 is not valid: Installer root node expected").arg(path));
+            throw Error(tr("%1 is not valid: Installer root node expected.").arg(path));
     }
 
     QStringList blackList;

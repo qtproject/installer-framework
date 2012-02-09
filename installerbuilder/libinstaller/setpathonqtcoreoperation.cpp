@@ -100,7 +100,7 @@ bool SetPathOnQtCoreOperation::performOperation()
 
     if (args.count() != 3) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 3 expected.").arg(name())
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exactly 3 expected.").arg(name())
             .arg(arguments().count()));
         return false;
     }
@@ -124,7 +124,7 @@ bool SetPathOnQtCoreOperation::performOperation()
 
     if (!possibleTypes.contains(QString::fromUtf8(typeValue))) {
         setError(InvalidArguments);
-        setErrorString(tr("The second/type value needs to be one of: %1").arg(possibleTypes.join(
+        setErrorString(tr("The second type/value needs to be one of: %1").arg(possibleTypes.join(
             QLatin1String(", "))));
         return false;
     }
@@ -150,7 +150,7 @@ bool SetPathOnQtCoreOperation::performOperation()
 
             bool isPatched = QtPatch::patchBinaryFile(coreLibrary, oldValue, adjutedNewValue);
             if (!isPatched) {
-                qDebug() << "qpatch: warning: could not patched the plugin path in" << coreLibrary;
+                qDebug() << "qpatch: warning: could not patch the plugin path in" << coreLibrary;
             }
         }
     }

@@ -55,7 +55,7 @@ bool SetDemosPathOnQtOperation::performOperation()
 
     if (args.count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exact 2 expected.").arg(name())
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exactly 2 expected.").arg(name())
             .arg(arguments().count()));
         return false;
     }
@@ -74,7 +74,7 @@ bool SetDemosPathOnQtOperation::performOperation()
     if (qmakeValueHash.isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("The output of \n%1 -query\nis not parseable. Please file a bugreport with this "
-            "dialog https://bugreports.qt-project.org.\noutput: \"%2\"").arg(QDir::toNativeSeparators(qmakePath),
+            "dialog https://bugreports.qt-project.org.\noutput: %2").arg(QDir::toNativeSeparators(qmakePath),
             QString::fromUtf8(qmakeOutput)));
         return false;
     }
@@ -87,7 +87,7 @@ bool SetDemosPathOnQtOperation::performOperation()
 
     if (255 < newValue.size()) {
         setError(UserDefinedError);
-        setErrorString(tr("Qt patch error: new Qt demo path(%1)\nneeds to be less than 255 characters.")
+        setErrorString(tr("Qt patch error: new Qt demo path (%1)\nneeds to be less than 255 characters.")
             .arg(QString::fromLocal8Bit(newValue)) );
         return false;
     }
@@ -103,7 +103,7 @@ bool SetDemosPathOnQtOperation::performOperation()
 
     bool isPatched = QtPatch::patchBinaryFile(qmakePath, oldValue, newValue);
     if (!isPatched) {
-        qDebug() << "qpatch: warning: could not patched the demo path in" << qmakePath;
+        qDebug() << "qpatch: warning: could not patch the demo path in" << qmakePath;
     }
 
     return true;

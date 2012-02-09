@@ -50,7 +50,7 @@ bool SimpleMoveFileOperation::performOperation()
     const QStringList args = arguments();
     if (args.count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.").arg(name())
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exactly 2 expected.").arg(name())
             .arg(args.count()));
         return false;
     }
@@ -60,7 +60,7 @@ bool SimpleMoveFileOperation::performOperation()
 
     if (source.isEmpty() || target.isEmpty()) {
         setError(UserDefinedError);
-        setErrorString(tr("None of the arguments can be empty: source(\"%1\"), target(\"%2\").")
+        setErrorString(tr("None of the arguments can be empty: source(%1), target(%2).")
             .arg(source, target));
         return false;
     }
@@ -71,7 +71,7 @@ bool SimpleMoveFileOperation::performOperation()
     if (file.exists()) {
         if (!file.remove()) {
             setError(UserDefinedError);
-            setErrorString(tr("Can not copy source(\"%1\") to target(\"%2\"), because target is existing and "
+            setErrorString(tr("Can not copy source(%1) to target(%2), because target exists and is "
                 "not removable.").arg(source, target));
             return false;
         }
@@ -80,7 +80,7 @@ bool SimpleMoveFileOperation::performOperation()
     file.setFileName(source);
     if (!file.rename(target)) {
         setError(UserDefinedError);
-        setErrorString(tr("Can not move source(\"%1\") to target(\"%2\"), %3.").arg(source, target,
+        setErrorString(tr("Can not move source(%1) to target(%2): %3").arg(source, target,
             file.errorString()));
         return false;
     }

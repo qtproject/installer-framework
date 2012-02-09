@@ -275,7 +275,7 @@ bool UpdateCreatorSettingsFrom21To22Operation::performOperation()
 
     if (args.count() != 0) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 0 expected.")
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exactly 0 expected.")
             .arg(name()).arg(args.count()));
         return false;
     }
@@ -283,7 +283,7 @@ bool UpdateCreatorSettingsFrom21To22Operation::performOperation()
     PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
     if (!core) {
         setError(UserDefinedError);
-        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
         return false;
     }
     const QString &rootInstallPath = core->value(scTargetDir);
@@ -301,7 +301,7 @@ bool UpdateCreatorSettingsFrom21To22Operation::performOperation()
         QStringList qmakePathes = getQmakePathesOfAllInstallerRegisteredQtVersions(sdkSettings);
         if (!removeInstallerRegisteredQtVersions(userSettings, qmakePathes)) {
             setError(UserDefinedError);
-            setErrorString(tr("Can not remove previous registered Qt Versions in \"%1\" operation.").arg(name()));
+            setErrorString(tr("Can not remove previous registered Qt Versions in %1 operation.").arg(name()));
             return false;
         }
     }
