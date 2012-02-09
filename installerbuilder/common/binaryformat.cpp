@@ -305,7 +305,7 @@ Archive::~Archive()
 
 /*!
     Copies the archives contents to the path \a name.
-    If the archive is a zipped directory, \a name is threated as a directory. The archive gets extracted there.
+    If the archive is a zipped directory, \a name is treated as a directory. The archive gets extracted there.
 
     If the archive is a plain file and \a name an existing directory, it gets created
     with it's name. Otherwise it gets saved as \a name.
