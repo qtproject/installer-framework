@@ -81,12 +81,12 @@
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="624"/>
-        <source>Could not open file %1 for writing: %2.</source>
+        <source>Could not open file %1 for writing: %2</source>
         <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="643"/>
-        <source>Cannot find backup file for %1</source>
+        <source>Cannot find backup file for %1.</source>
         <translation>Konnte Sicherungsdatei für %1 nicht finden.</translation>
     </message>
     <message>
@@ -103,23 +103,23 @@
 <context>
     <name>KDUpdater::CopyOperation</name>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="112"/>
-        <source>Could not backup file %1</source>
-        <translation>Konnte Datei %1 nicht sichern.</translation>
-    </message>
-    <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="123"/>
         <source>Invalid arguments: %1 arguments given, 2 expected.</source>
         <translation>Ungültige Argumente: %1 Argumente erhalten, 2 erwartet.</translation>
     </message>
     <message>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="112"/>
+        <source>Could not backup file %1.</source>
+        <translation>Konnte Datei %1 nicht sichern.</translation>
+    </message>
+    <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="136"/>
-        <source>Could not remove destination file %1: %2.</source>
+        <source>Could not remove destination file %1: %2</source>
         <translation>Konnte Zieldatei %1 nicht entfernen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="145"/>
-        <source>Could not copy %1 to %2: %3.</source>
+        <source>Could not copy %1 to %2: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
     </message>
     <message>
@@ -160,8 +160,8 @@
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="906"/>
-        <source>Execution failed: &quot;%1&quot;</source>
-        <translation>Ausführung fehlgeschlagen: &quot;%1&quot;</translation>
+        <source>Execution failed: %1</source>
+        <translation>Ausführung fehlgeschlagen: %1</translation>
     </message>
 </context>
 <context>
@@ -344,7 +344,7 @@
     <name>KDUpdater::MoveOperation</name>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="233"/>
-        <source>Could not backup file %1</source>
+        <source>Could not backup file %1.</source>
         <translation>Konnte Datei %1 nicht sichern.</translation>
     </message>
     <message>
@@ -354,23 +354,23 @@
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="258"/>
-        <source>Could not remove destination file %1: %2.</source>
+        <source>Could not remove destination file %1: %2</source>
         <translation>Konnte Zieldatei %1 nicht entfernen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="268"/>
-        <source>Could not copy %1 to %2: %3.</source>
+        <source>Could not copy %1 to %2: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="290"/>
+        <source>Cannot remove file %1.</source>
+        <translation>Konnte Datei %1 nicht löschen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="284"/>
         <source>Cannot copy %1 to %2: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="290"/>
-        <source>Cannot remove file %1</source>
-        <translation>Konnte Datei %1 nicht löschen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="303"/>
@@ -387,23 +387,23 @@
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterpackagesinfo.cpp" line="284"/>
-        <source>The file &quot;%1&quot; does not exist</source>
-        <translation>Datei &quot;%1&quot; existiert nicht.</translation>
+        <source>The file %1 does not exist.</source>
+        <translation>Datei %1 existiert nicht.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterpackagesinfo.cpp" line="292"/>
-        <source>Could not open &quot;%1&quot;</source>
-        <translation>Konnte Datei &quot;%1&quot; nicht öffnen.</translation>
+        <source>Could not open %1.</source>
+        <translation>Konnte Datei %1 nicht öffnen.</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterpackagesinfo.cpp" line="317"/>
+        <source>Root element %1 unexpected, should be &apos;Packages&apos;.</source>
+        <translation>Unerwartetes Wurzelelement %1, erwartet wird &apos;Packages&apos;.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterpackagesinfo.cpp" line="304"/>
         <source>Parse error in %1 at %2, %3: %4</source>
         <translation>Ungültiges XML in Datei %1, Zeile %2, Spalte %3. Fehlermeldung: %4</translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterpackagesinfo.cpp" line="317"/>
-        <source>root element %1 unexpected, should be &quot;Packages&quot;</source>
-        <translation>Unerwartetes Wurzelelement %1, erwartet wird &quot;Packages&quot;.</translation>
     </message>
 </context>
 <context>
@@ -420,22 +420,22 @@
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="719"/>
-        <source>Could not open file %1 for reading: %2.</source>
+        <source>Could not open file %1 for reading: %2</source>
         <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="735"/>
-        <source>Could not open file %1 for writing: %2.</source>
+        <source>Could not open file %1 for writing: %2</source>
         <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="753"/>
-        <source>Cannot find backup file for %1</source>
+        <source>Cannot find backup file for %1.</source>
         <translation>Konnte Sicherungsdatei für %1 nicht finden.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="758"/>
-        <source>Cannot restore backup file for %1</source>
+        <source>Cannot restore backup file for %1.</source>
         <translation>Konnte Datei %1 nicht wiederherstellen.</translation>
     </message>
     <message>
@@ -458,7 +458,7 @@
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateoperations.cpp" line="547"/>
-        <source>Could not remove folder %1: %2.</source>
+        <source>Could not remove folder %1: %2</source>
         <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -471,8 +471,8 @@
     <name>KDUpdater::SignatureVerificationDownloader</name>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="1461"/>
-        <source>Could not download signature: scheme %1 not supported</source>
-        <translation>Konnte Unterschrift nicht herunterladen: Schema %1 nicht unterstützt.</translation>
+        <source>Could not download signature: scheme %1 not supported.</source>
+        <translation>Konnte Signatur nicht herunterladen: Schema %1 nicht unterstützt.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="1474"/>
@@ -495,37 +495,37 @@
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdatertask.cpp" line="179"/>
         <source>%1 started</source>
-        <translation>%1 gestartet.</translation>
+        <translation>%1 gestartet</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdatertask.cpp" line="192"/>
-        <source>&apos;%1&apos; cannot be stopped</source>
-        <translation>&apos;%1&apos; kann nicht abgebrochen werden.</translation>
+        <source>%1 cannot be stopped</source>
+        <translation>%1 kann nicht angehalten werden</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdatertask.cpp" line="210"/>
-        <source>Cannot stop task &apos;%1&apos;</source>
-        <translation>Kann Aufgabe &apos;%1&apos; nicht anhalten.</translation>
+        <source>Cannot stop task %1</source>
+        <translation>%1 kann nicht angehalten werden</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdatertask.cpp" line="229"/>
-        <source>&apos;%1&apos; cannot be paused</source>
-        <translation>&apos;%1&apos; kann nicht angehalten werden.</translation>
+        <source>%1 cannot be paused</source>
+        <translation>%1 kann nicht pausiert werden</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdatertask.cpp" line="247"/>
-        <source>Cannot pause task &apos;%1&apos;</source>
-        <translation>&apos;%1&apos; kann nicht angehalten werden.</translation>
+        <source>Cannot pause task %1</source>
+        <translation>%1 kann nicht pausiert werden</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdatertask.cpp" line="275"/>
-        <source>Cannot resume task &apos;%1&apos;</source>
-        <translation>Kann Aufgabe &apos;%1&apos; nicht wiederaufnehmen.</translation>
+        <source>Cannot resume task %1</source>
+        <translation>%1 kann nicht wiederaufgenommen werden</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdatertask.cpp" line="331"/>
         <source>%1 done</source>
-        <translation>%1 abgeschlossen.</translation>
+        <translation>%1 abgeschlossen</translation>
     </message>
 </context>
 <context>
@@ -548,7 +548,7 @@
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="126"/>
         <source>Could not create folder: %1/%2</source>
-        <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
+        <translation>Konnte Ordner %1/%2 nicht anlegen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="142"/>
@@ -879,7 +879,7 @@
     <name>Lib7z::ExtractItemJob</name>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1355"/>
-        <source>Could not list archive: QIODevice not set or already destroyed</source>
+        <source>Could not list archive: QIODevice not set or already destroyed.</source>
         <translation>Kann Archiv nicht anzeigen: QIODevice ist nicht gesetzt oder bereits zerstört.</translation>
     </message>
 </context>
@@ -887,7 +887,7 @@
     <name>Lib7z::ListArchiveJob</name>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="679"/>
-        <source>Could not list archive: QIODevice already destroyed</source>
+        <source>Could not list archive: QIODevice already destroyed.</source>
         <translation>Kann Archiv nicht anzeigen: QIODevice ist bereits zerstört.</translation>
     </message>
 </context>
@@ -895,27 +895,27 @@
     <name>QInstaller</name>
     <message>
         <location filename="../../common/binaryformat.cpp" line="123"/>
-        <source>Cannot map file %1</source>
-        <translation>Kann Datei %1 nicht mappen.</translation>
+        <source>Cannot map file %1.</source>
+        <translation>Kann Datei %1. nicht mappen.</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="126"/>
-        <source>Cannot unmap file %1</source>
-        <translation>Kann Datei %1 nicht unmappen.</translation>
+        <source>Cannot unmap file %1.</source>
+        <translation>Kann Datei %1. nicht unmappen.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::AddQtCreatorArrayValueOperation</name>
     <message>
         <location filename="../../libinstaller/addqtcreatorarrayvalueoperation.cpp" line="64"/>
-        <source>Invalid arguments in %0: %1 arguments given, exact 4 expected(group, arrayname, key, value).</source>
+        <source>Invalid arguments in %0: %1 arguments given, exactly 4 expected (group, arrayname, key, value).</source>
         <translation>Ungültige Argumente in %0: %1 Argumente erhalten, genau 4 erwartet (group, arrayname, key, value).</translation>
     </message>
     <message>
         <location filename="../../libinstaller/addqtcreatorarrayvalueoperation.cpp" line="73"/>
         <location filename="../../libinstaller/addqtcreatorarrayvalueoperation.cpp" line="125"/>
-        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation>Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
+        <source>Needed installer object in %1 operation is empty.</source>
+        <translation>Das für die Anweisung %1 benötigte Installerobjekt ist leer.</translation>
     </message>
 </context>
 <context>
@@ -1550,8 +1550,8 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/licenseoperation.cpp" line="65"/>
-        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation>Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
+        <source>Needed installer object in %1 operation is empty.</source>
+        <translation>Das für die Anweisung %1 benötigte Installerobjekt ist leer.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/licenseoperation.cpp" line="80"/>
@@ -1568,8 +1568,8 @@ Fehler beim Laden von %2</translation>
     <name>QInstaller::LineReplaceOperation</name>
     <message>
         <location filename="../../libinstaller/linereplaceoperation.cpp" line="60"/>
-        <source>Invalid arguments in %0: %1 arguments given, 3 expected.</source>
-        <translation>Ungültige Argumentein %0: %1 Argumente erhalten, 3 erwartet.</translation>
+        <source>Invalid arguments in %0: %1 arguments given, exactly 3 expected.</source>
+        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, genau 3 erwartet.</translation>
     </message>
 </context>
 <context>
@@ -2144,12 +2144,12 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1645"/>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die für die Installation ausgewählte Partition scheint genügend Platz zu bieten, aber es werden anschließend weniger als 1% der Partitionsgröße verfügbar sein. %1</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1650"/>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die für die Installation ausgewählte Partition scheint genügend Platz zu bieten, aber es werden anschließend weniger als 100 MiB verfügbar sein. %1</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1664"/>
@@ -2184,7 +2184,7 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
     <message>
         <location filename="../../libinstaller/registerdefaultdebuggeroperation.cpp" line="109"/>
         <source>Can&apos;t read from tool chains xml file(%1) correctly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann nicht aus der Toolchains XML Datei (%1) lesen.</translation>
     </message>
 </context>
 <context>
@@ -2210,12 +2210,12 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
     <message>
         <location filename="../../libinstaller/registerfiletypeoperation.cpp" line="59"/>
         <source>Invalid arguments in %0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Argumente in %0.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/registerfiletypeoperation.cpp" line="120"/>
         <source>Register File Type: Invalid arguments</source>
-        <translation type="unfinished"></translation>
+        <translation>Register File Type: Ungültige Argumente</translation>
     </message>
 </context>
 <context>
@@ -2223,17 +2223,17 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
     <message>
         <location filename="../../libinstaller/registerqtoperation.cpp" line="65"/>
         <source>Invalid arguments in %0: %1 arguments given, minimum 3 expected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, mindestens 3 erwartet.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/registerqtoperation.cpp" line="84"/>
         <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation type="unfinished">Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
+        <translation>Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/registerqtoperation.cpp" line="102"/>
         <source>Can&apos;t read from tool chains xml file(%1) correctly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann nicht aus der Toolchains XML Datei (%1) lesen.</translation>
     </message>
 </context>
 <context>
@@ -2242,18 +2242,18 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
         <location filename="../../libinstaller/registerqtv23operation.cpp" line="96"/>
         <location filename="../../libinstaller/registerqtv23operation.cpp" line="175"/>
         <source>Invalid arguments in %0: %1 arguments given, minimum 4 expected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, mindestens 4 erwartet.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/registerqtv23operation.cpp" line="104"/>
         <location filename="../../libinstaller/registerqtv23operation.cpp" line="183"/>
         <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation type="unfinished">Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
+        <translation>Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/registerqtv23operation.cpp" line="110"/>
         <source>The given TargetDir %1 is not a valid/existing dir.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das übergebene TargetDir %1 ist kein gültiger Ordner oder existiert nicht.</translation>
     </message>
 </context>
 <context>
@@ -2262,18 +2262,18 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
         <location filename="../../libinstaller/registerqtv2operation.cpp" line="63"/>
         <location filename="../../libinstaller/registerqtv2operation.cpp" line="139"/>
         <source>Invalid arguments in %0: %1 arguments given, minimum 2 expected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, mindestens 2 erwartet.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/registerqtv2operation.cpp" line="71"/>
         <location filename="../../libinstaller/registerqtv2operation.cpp" line="147"/>
         <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation type="unfinished">Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
+        <translation>Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/registerqtv2operation.cpp" line="77"/>
         <source>The given TargetDir %1 is not a valid/existing dir.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das übergebene TargetDir %1 ist kein gültiger Ordner oder existiert nicht.</translation>
     </message>
 </context>
 <context>
@@ -2282,25 +2282,25 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
         <location filename="../../libinstaller/registertoolchainoperation.cpp" line="66"/>
         <location filename="../../libinstaller/registertoolchainoperation.cpp" line="121"/>
         <source>Invalid arguments in %0: %1 arguments given, minimum 4 expected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, mindestens 4 erwartet.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/registertoolchainoperation.cpp" line="76"/>
         <location filename="../../libinstaller/registertoolchainoperation.cpp" line="131"/>
         <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation type="unfinished">Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
+        <translation>Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/registertoolchainoperation.cpp" line="101"/>
         <location filename="../../libinstaller/registertoolchainoperation.cpp" line="156"/>
         <source>Can&apos;t read from tool chains xml file(%1) correctly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann nicht aus der Toolchains XML Datei (%1) lesen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/registertoolchainoperation.cpp" line="108"/>
         <location filename="../../libinstaller/registertoolchainoperation.cpp" line="163"/>
         <source>Some arguments are not right in %1 operation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Einige Argumente sind in der %1 Anweisung nicht erlaubt.</translation>
     </message>
 </context>
 <context>
@@ -2329,19 +2329,19 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
     <message>
         <location filename="../../libinstaller/selfrestartoperation.cpp" line="61"/>
         <source>Self Restart: Only valid within updater or packagemanager mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Self Restart: Nur im updater oder packagemanager Modus erlaubt.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/selfrestartoperation.cpp" line="67"/>
         <source>Self Restart: Invalid arguments</source>
-        <translation type="unfinished"></translation>
+        <translation>Self Restart: Ungültige Argumente</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SetDemosPathOnQtOperation</name>
     <message>
         <location filename="../../libinstaller/setdemospathonqtoperation.cpp" line="58"/>
-        <source>Invalid arguments in %0: %1 arguments given, exact 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, exactly 2 expected.</source>
         <translation>Ungültige Argumente in %0: %1 Argumente erhalten, genau 2 erwartet.</translation>
     </message>
     <message>
@@ -2349,43 +2349,51 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
         <source>The output of 
 %1 -query
 is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
-output: &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+output: %2</source>
+        <translation>Die Ausgabe von 
+%1 -query
+ist ungültig. Bitte erstellen sie einen Bugreport unter https://bugreports.qt-project.org.
+Ausgabe: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/setdemospathonqtoperation.cpp" line="90"/>
-        <source>Qt patch error: new Qt demo path(%1)
+        <source>Qt patch error: new Qt demo path (%1)
 needs to be less than 255 characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt patch Fehler: neuer Qt-Demos Ordnername (%1)
+darf nicht mehr als 255 Zeichen lang sein.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SetExamplesPathOnQtOperation</name>
     <message>
         <location filename="../../libinstaller/setexamplespathonqtoperation.cpp" line="58"/>
-        <source>Invalid arguments in %0: %1 arguments given, exact 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, exactly 2 expected.</source>
         <translation>Ungültige Argumente in %0: %1 Argumente erhalten, genau 2 erwartet.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/setexamplespathonqtoperation.cpp" line="76"/>
         <source>The output of 
 %1 -query
- is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
-output: &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
+output: %2</source>
+        <translation>Die Ausgabe von 
+%1 -query
+ist ungültig. Bitte erstellen sie einen Bugreport unter https://bugreports.qt-project.org.
+Ausgabe: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/setexamplespathonqtoperation.cpp" line="90"/>
-        <source>Qt patch error: new Qt example path(%1)
- needs to be less than 255 characters.</source>
-        <translation type="unfinished"></translation>
+        <source>Qt patch error: new Qt example path (%1)
+needs to be less than 255 characters.</source>
+        <translation>Qt patch Fehler: neuer Qt-Examples Ordnername (%1)
+darf nicht mehr als 255 Zeichen lang sein.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SetImportsPathOnQtCoreOperation</name>
     <message>
         <location filename="../../libinstaller/setimportspathonqtcoreoperation.cpp" line="101"/>
-        <source>Invalid arguments in %0: %1 arguments given, exact 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, exactly 2 expected.</source>
         <translation>Ungültige Argumente in %0: %1 Argumente erhalten, genau 2 erwartet.</translation>
     </message>
 </context>
@@ -2393,20 +2401,20 @@ output: &quot;%2&quot;</source>
     <name>QInstaller::SetPathOnQtCoreOperation</name>
     <message>
         <location filename="../../libinstaller/setpathonqtcoreoperation.cpp" line="103"/>
-        <source>Invalid arguments in %0: %1 arguments given, exact 3 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, exactly 3 expected.</source>
         <translation>Ungültige Argumente in %0: %1 Argumente erhalten, genau 3 erwartet.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/setpathonqtcoreoperation.cpp" line="127"/>
-        <source>The second/type value needs to be one of: %1</source>
-        <translation type="unfinished"></translation>
+        <source>The second type/value needs to be one of: %1</source>
+        <translation>Der zweite Typ muss einen der folgenden Werte haben: %1</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SetPluginPathOnQtCoreOperation</name>
     <message>
         <location filename="../../libinstaller/setpluginpathonqtcoreoperation.cpp" line="100"/>
-        <source>Invalid arguments in %0: %1 arguments given, exact 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, exactly 2 expected.</source>
         <translation>Ungültige Argumente in %0: %1 Argumente erhalten, genau 2 erwartet.</translation>
     </message>
 </context>
@@ -2414,42 +2422,42 @@ output: &quot;%2&quot;</source>
     <name>QInstaller::SetQtCreatorValueOperation</name>
     <message>
         <location filename="../../libinstaller/setqtcreatorvalueoperation.cpp" line="63"/>
-        <source>Invalid arguments in %0: %1 arguments given, exact 4 expected(rootInstallPath, group, key, value).</source>
-        <translation type="unfinished"></translation>
+        <source>Invalid arguments in %0: %1 arguments given, exactly 4 expected (rootInstallPath, group, key, value).</source>
+        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, genau 4 erwartet (rootInstallPath, group, key, value).</translation>
     </message>
     <message>
         <location filename="../../libinstaller/setqtcreatorvalueoperation.cpp" line="93"/>
-        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation type="unfinished">Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
+        <source>Needed installer object in %1 operation is empty.</source>
+        <translation>Das für die Anweisung %1 benötigte Installerobjekt ist leer.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SimpleMoveFileOperation</name>
     <message>
         <location filename="../../libinstaller/simplemovefileoperation.cpp" line="53"/>
-        <source>Invalid arguments in %0: %1 arguments given, 2 expected.</source>
-        <translation>Ungültige Argumentein %0: %1 Argumente erhalten, 2 erwartet.</translation>
+        <source>Invalid arguments in %0: %1 arguments given, exactly 2 expected.</source>
+        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, genau 2 erwartet.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/simplemovefileoperation.cpp" line="63"/>
-        <source>None of the arguments can be empty: source(&quot;%1&quot;), target(&quot;%2&quot;).</source>
-        <translation type="unfinished"></translation>
+        <source>None of the arguments can be empty: source(%1), target(%2).</source>
+        <translation>Keins dieser Argumente darf leer sein: Quelle (%1), Ziel (%2).</translation>
     </message>
     <message>
         <location filename="../../libinstaller/simplemovefileoperation.cpp" line="74"/>
-        <source>Can not copy source(&quot;%1&quot;) to target(&quot;%2&quot;), because target is existing and not removable.</source>
-        <translation type="unfinished"></translation>
+        <source>Can not copy source(%1) to target(%2), because target exists and is not removable.</source>
+        <translation>Kann %1 nicht nach %2 kopieren, weil das Ziel bereits existiert und nicht entfernt werden kann.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/simplemovefileoperation.cpp" line="83"/>
-        <source>Can not move source(&quot;%1&quot;) to target(&quot;%2&quot;), %3.</source>
-        <translation type="unfinished"></translation>
+        <source>Can not move source(%1) to target(%2): %3</source>
+        <translation>Kann %1 nicht nach %2 verschieben. Fehlermeldung: %3</translation>
     </message>
     <message>
         <location filename="../../libinstaller/simplemovefileoperation.cpp" line="88"/>
         <location filename="../../libinstaller/simplemovefileoperation.cpp" line="98"/>
         <source>Move %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschiebe %1 nach %2.</translation>
     </message>
 </context>
 <context>
@@ -2457,12 +2465,12 @@ output: &quot;%2&quot;</source>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1423"/>
         <source>Start Menu shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Verknüpfungen im Startmenü</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1424"/>
         <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen sie den Ordner im Startmenü, in dem die Verknüpfungen zur Anwendung erstellt werden sollen. Sie können einen Namen angeben, um einen neuen Ordner anzulegen.</translation>
     </message>
 </context>
 <context>
@@ -2475,7 +2483,7 @@ output: &quot;%2&quot;</source>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1302"/>
         <source>Please specify the folder where %1 will be installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte geben sie den Ordner an, in dem %1 installiert werden soll.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1302"/>
@@ -2485,7 +2493,7 @@ output: &quot;%2&quot;</source>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1381"/>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1406"/>
         <source>%1</source>
-        <translation type="unfinished">!!%1</translation>
+        <translation>!!%1</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1316"/>
@@ -2502,7 +2510,7 @@ output: &quot;%2&quot;</source>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1355"/>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1370"/>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1356"/>
@@ -2517,7 +2525,7 @@ output: &quot;%2&quot;</source>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1381"/>
         <source>Warning</source>
-        <translation type="unfinished">Warnung</translation>
+        <translation>Warnung</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1382"/>
@@ -2534,18 +2542,18 @@ output: &quot;%2&quot;</source>
     <name>QInstaller::UpdateCreatorSettingsFrom21To22Operation</name>
     <message>
         <location filename="../../libinstaller/updatecreatorsettingsfrom21to22operation.cpp" line="278"/>
-        <source>Invalid arguments in %0: %1 arguments given, 0 expected.</source>
-        <translation>Ungültige Argumentein %0: %1 Argumente erhalten, 0 erwartet.</translation>
+        <source>Invalid arguments in %0: %1 arguments given, exactly 0 expected.</source>
+        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, genau 0 erwartet.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/updatecreatorsettingsfrom21to22operation.cpp" line="286"/>
-        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation>Das für die Anweisung &quot;%1&quot; benötigte Installerobjekt ist leer.</translation>
+        <source>Needed installer object in %1 operation is empty.</source>
+        <translation>Das für die Anweisung %1 benötigte Installerobjekt ist leer.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/updatecreatorsettingsfrom21to22operation.cpp" line="304"/>
-        <source>Can not remove previous registered Qt Versions in &quot;%1&quot; operation.</source>
-        <translation type="unfinished"></translation>
+        <source>Can not remove previous registered Qt Versions in %1 operation.</source>
+        <translation>Kann die bereits registrierte Qt Version in der %1 Anweisung nicht entfernen.</translation>
     </message>
 </context>
 <context>
@@ -2563,12 +2571,12 @@ output: &quot;%2&quot;</source>
     <message>
         <location filename="../../common/binaryformat.cpp" line="452"/>
         <source>Could not create archive from %1: Not a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann kein Archib aus %1 erstellen: Es ist keine Datei.</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="476"/>
         <source>Error while packing directory at %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Einpacken des Ordners %1.</translation>
     </message>
 </context>
 <context>
@@ -2583,133 +2591,133 @@ output: &quot;%2&quot;</source>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="357"/>
         <source>Could not create temporary file for generated rcc project file</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keine temporäre Datei für die erzeugte rcc Projektdatei anlegen.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="462"/>
         <location filename="../../binarycreator/binarycreator.cpp" line="508"/>
         <source>Could not copy %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte %1 nicht kopieren.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="476"/>
         <source>Could not remove the private key from config.xml</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte den privaten Schlüssel nicht aus der config.xml entfernen.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="577"/>
         <source>Error: Packages parameter missing argument.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Dem Packages Parameter fehlt ein Argument.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="580"/>
         <source>Error: Package directory not found at the specified location.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Paketordner konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="587"/>
         <source>Error: Package to exclude missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Die --exclude Option braucht die auszuschliessenden Komponenten als Argument.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="598"/>
         <source>Error: Template parameter missing argument.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Dem Template Parameter fehlt ein Argument.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="601"/>
         <source>Error: Template not found at the specified location.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Template konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="608"/>
         <source>Error: Config parameter missing argument.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Dem Config Parameter fehlt ein Argument.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="611"/>
         <source>Error: Config directory %1 not found at the specified location.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Konfigurationsordner konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="615"/>
         <source>Error: Configuration %1 is not a directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Konfiguration %1 ist kein Ordner.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="619"/>
         <source>Error: Config directory %1 is not readable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Konfigurationsordner %1 ist nicht lesbar.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="626"/>
         <source>Error: Resource files to include missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Die --resources Option braucht die einzuschliessenden Resourcen als Argument.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="637"/>
         <source>Error: Target parameter missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Der Target Parameter fehlt.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="640"/>
         <source>Error: No components selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Keine Komponenten ausgewählt.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="643"/>
         <source>Error: No configuration directory selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Keine Konfigurationsordner ausgewählt.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="701"/>
         <source>Could not create a RSA signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keine RSA Unterschrift erstellen.</translation>
     </message>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="704"/>
         <source>Created RSA signature could not be verified. Is the given public key wrong?</source>
-        <translation type="unfinished"></translation>
+        <translation>Die erstellte RSA Unterschrift konnte nicht überprüft werden. Ist der übergebene öffentliche Schlüssel korrekt?</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="74"/>
-        <source>Component %1 can&apos;t contain &quot;-&quot;</source>
-        <translation type="unfinished"></translation>
+        <source>Component %1 can&apos;t contain &apos;-&apos;.</source>
+        <translation>Komponentenname %1 enthält ein &apos;-&apos;, was nicht erlaubt ist.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="80"/>
         <source>Component %1 does not contain a package description.</source>
-        <translation type="unfinished"></translation>
+        <translation>Komponente %1 enthält keine Paketbeschreibung.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="93"/>
         <source>Component package description for %1 is invalid. Error at line: %2, column: %3 -&gt; %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Paketbeschreibung für Komponente %1 ist ungültig. Fehler in Zeile %2, Spalte %3. Fehlermeldung: %4</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="101"/>
-        <source>Component folder name must match component name: &quot;%1&quot; in %2/</source>
+        <source>Component folder name must match component name: %1 in %2/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../common/repositorygen.cpp" line="206"/>
+        <source>Circular dependencies detected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../common/repositorygen.cpp" line="216"/>
+        <source>Couldn&apos;t find package for component %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../common/repositorygen.cpp" line="271"/>
+        <source>Folder %1 does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="110"/>
         <source>Component version for %1 is invalid! &lt;Version&gt;%2&lt;/version&gt;</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../common/repositorygen.cpp" line="206"/>
-        <source>Circular dependencies detected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../common/repositorygen.cpp" line="216"/>
-        <source>Couldn&apos;t find package for component %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../common/repositorygen.cpp" line="271"/>
-        <source>Folder %1 does not exist</source>
-        <translation>Ordner %1 existiert nicht.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="301"/>
@@ -2719,54 +2727,58 @@ output: &quot;%2&quot;</source>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="311"/>
-        <location filename="../../common/repositorygen.cpp" line="729"/>
-        <source>Could not open %1 for writing</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen.</translation>
+        <source>Could not open %1 for writing.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="375"/>
-        <source>Could not parse %1: %2:%3: %4 (%5)</source>
+        <source>Could not parse %1: line: %2, column: %3: %4 (%5)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="459"/>
-        <source>Could not create directory %1</source>
-        <translation>Konnte Ordner %1 nicht anlegen.</translation>
+        <source>Could not create directory %1.</source>
+        <translation type="unfinished">Konnte Ordner %1. nicht anlegen.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="483"/>
-        <source>Could not copy the script (%1) to its target location (%2)</source>
+        <source>Could not copy the script %1 to its target location %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="501"/>
-        <source>Couldn&apos;t find any user interface matching %1 while copying user interfaces of %2</source>
+        <source>Couldn&apos;t find any user interface matching %1 while copying user interfaces of %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="512"/>
-        <source>Could not copy the UI file %1 to its target location (%2)</source>
+        <source>Could not copy the UI file %1 to its target location %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="536"/>
-        <source>Could not find any user interface matching %1 while copying user interfaces of %2</source>
+        <source>Could not find any user interface matching %1 while copying user interfaces of %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="547"/>
-        <source>Could not copy the translation %1 to its target location (%2)</source>
+        <source>Could not copy the translation %1 to its target location %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="570"/>
-        <source>Could not find any license matching %1 while copying license files of %2</source>
+        <source>Could not find any license matching %1 while copying license files of %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="579"/>
-        <source>Could not copy the license file %1 to its target location (%2)</source>
+        <source>Could not copy the license file %1 to its target location %2.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../common/repositorygen.cpp" line="729"/>
+        <source>Could not open %1 for writing</source>
+        <translation>Konnte Datei %1 nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="756"/>
@@ -2991,7 +3003,7 @@ output: &quot;%2&quot;</source>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="153"/>
         <source>Could not create folder: %1</source>
-        <translation type="unfinished">Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2 {1?}</translation>
+        <translation>Konnte Ordner %1 nicht anlegen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="188"/>
@@ -3074,7 +3086,7 @@ output: &quot;%2&quot;</source>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="799"/>
-        <source>Could not create file system lik at %1</source>
+        <source>Could not create file system link at %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3201,13 +3213,11 @@ output: &quot;%2&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/linereplaceoperation.cpp" line="71"/>
         <location filename="../../libinstaller/replaceoperation.cpp" line="71"/>
         <source>Failed to open %1 for reading</source>
         <translation>Konnte Datei nicht zum Lesen öffnen. Fehlermeldung: %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/linereplaceoperation.cpp" line="88"/>
         <location filename="../../libinstaller/replaceoperation.cpp" line="81"/>
         <source>Failed to open %1 for writing</source>
         <translation type="unfinished"></translation>
@@ -3215,12 +3225,12 @@ output: &quot;%2&quot;</source>
     <message>
         <location filename="../../libinstaller/packagemanagercore.cpp" line="77"/>
         <source>Invalid arguments: %1 arguments given, %2 to %3 expected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Argumente: %1 Argumente erhalten, %2 bis %3 erwartet.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagercore.cpp" line="81"/>
         <source>Invalid arguments: %1 arguments given, %2 expected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Argumente: %1 Argumente erhalten, %2 erwartet.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagercore.cpp" line="1028"/>
@@ -3269,17 +3279,27 @@ output: &quot;%2&quot;</source>
         <source>Failed to seek in file %1. Reason: %2.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../libinstaller/linereplaceoperation.cpp" line="71"/>
+        <source>Failed to open %1 for reading.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/linereplaceoperation.cpp" line="88"/>
+        <source>Failed to open %1 for writing.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
         <location filename="../../libinstaller/settings.cpp" line="202"/>
         <source>Could not open settings file %1 for reading: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Einstellungsdatei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/settings.cpp" line="207"/>
-        <source>%1 is not valid: Installer root node expected</source>
+        <source>%1 is not valid: Installer root node expected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3450,17 +3470,17 @@ output: &quot;%2&quot;</source>
     <message>
         <location filename="../installerbasecommons.cpp" line="343"/>
         <source>The installation path cannot be empty, please specify a valid folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Installationspfad darf nicht leer sein. Bitte einen gültigen Ordner angeben.</translation>
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="348"/>
         <source>The installation path cannot be relative, please specify an absolute path.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Installationspfad darf nicht relativ sein. Bitte einen absoluten Pfad angeben.</translation>
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="359"/>
         <source>The installation path must not contain !@#$%^&amp;*:,; or spaces, please specify a valid folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Installationspfad darf nicht die Zeichen !@#$%^&amp;*:,; oder Leerzeichen enthalten. Bitte einen gültigen Ordner angeben.</translation>
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="376"/>
@@ -3486,7 +3506,8 @@ output: &quot;%2&quot;</source>
         <location filename="../installerbasecommons.cpp" line="434"/>
         <source>The folder you selected exists already and contains an installation.
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Der ausgewählte Ordner existiert bereits und enthält eine Installation.
+Möchten sie diese überschreiben?</translation>
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="439"/>
@@ -3499,7 +3520,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../installerbasecommons.cpp" line="443"/>
         <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>
