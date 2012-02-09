@@ -281,7 +281,7 @@ void PackagesInfo::refresh()
     // if the file does not exist then we just skip the reading
     if (!file.exists()) {
         d->error = NotYetReadError;
-        d->errorMessage = tr("The file \"%1\" does not exist").arg(d->fileName);
+        d->errorMessage = tr("The file \"%1\" does not exist.").arg(d->fileName);
         emit reset();
         return;
     }
@@ -289,7 +289,7 @@ void PackagesInfo::refresh()
     // Open Packages.xml
     if (!file.open(QFile::ReadOnly)) {
         d->error = CouldNotReadPackageFileError;
-        d->errorMessage = tr("Could not open \"%1\"").arg(d->fileName);
+        d->errorMessage = tr("Could not open \"%1\".").arg(d->fileName);
         emit reset();
         return;
     }
@@ -314,7 +314,7 @@ void PackagesInfo::refresh()
     // Now populate information from the XML file.
     QDomElement rootE = doc.documentElement();
     if (rootE.tagName() != QLatin1String("Packages")) {
-        d->setInvalidContentError(tr("root element %1 unexpected, should be \"Packages\"").arg(rootE.tagName()));
+        d->setInvalidContentError(tr("Root element %1 unexpected, should be \"Packages\".").arg(rootE.tagName()));
         emit reset();
         return;
     }

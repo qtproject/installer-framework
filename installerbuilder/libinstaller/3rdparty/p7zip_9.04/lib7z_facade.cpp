@@ -676,7 +676,7 @@ void ListArchiveJob::doStart()
 {
     try {
         if (!d->archive)
-            throw SevenZipException(tr("Could not list archive: QIODevice already destroyed"));
+            throw SevenZipException(tr("Could not list archive: QIODevice already destroyed."));
         d->files = listArchive(d->archive);
     } catch (const SevenZipException& e) {
         setError(Failed);
@@ -796,7 +796,7 @@ public:
                     f.remove();
 #ifdef Q_OS_WIN
                     if (!CreateHardLinkWrapper(fi.absoluteFilePath(), QLatin1String(path))) {
-                        throw SevenZipException(QObject::tr("Could not create file system lik at %1")
+                        throw SevenZipException(QObject::tr("Could not create file system link at %1")
                             .arg(fi.absoluteFilePath()));
                     }
 #else
@@ -1352,7 +1352,7 @@ void ExtractItemJob::doStart()
 {
     try {
         if (!d->archive)
-            throw SevenZipException(tr("Could not list archive: QIODevice not set or already destroyed"));
+            throw SevenZipException(tr("Could not list archive: QIODevice not set or already destroyed."));
         if (d->target)
             extractArchive(d->archive, d->item, d->target, d->callback);
         else if (!d->item.path.isEmpty())

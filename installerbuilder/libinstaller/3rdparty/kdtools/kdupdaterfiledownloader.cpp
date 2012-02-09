@@ -1458,7 +1458,7 @@ void SignatureVerificationDownloader::dataDownloadCompleted()
     delete d->sigDownloader;
     d->sigDownloader = FileDownloaderFactory::instance().create(url.scheme(), this);
     if (!d->sigDownloader) {
-        setDownloadAborted(tr("Could not download signature: scheme %1 not supported").arg(url.scheme()));
+        setDownloadAborted(tr("Could not download signature: scheme %1 not supported.").arg(url.scheme()));
         return;
     }
     d->sigDownloader->setUrl(url);

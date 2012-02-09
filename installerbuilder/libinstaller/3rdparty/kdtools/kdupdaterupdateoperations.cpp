@@ -109,7 +109,7 @@ void CopyOperation::backup()
     // in QFile::copy...
     const bool success = QFile::rename(dest, value(QLatin1String("backupOfExistingDestination")).toString());
     if (!success)
-        setError(UserDefinedError, tr("Could not backup file %1").arg(dest));
+        setError(UserDefinedError, tr("Could not backup file %1.").arg(dest));
 }
 
 bool CopyOperation::performOperation()
@@ -133,7 +133,7 @@ bool CopyOperation::performOperation()
         QFile file(dest);
         if (!file.remove()) {
             setError(UserDefinedError);
-            setErrorString(tr("Could not remove destination file %1: %2.").arg(dest, file.errorString()));
+            setErrorString(tr("Could not remove destination file %1: %2").arg(dest, file.errorString()));
             return false;
         }
     }
@@ -142,7 +142,7 @@ bool CopyOperation::performOperation()
     const bool copied = file.copy(dest);
     if (!copied) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not copy %1 to %2: %3.").arg(source, dest, file.errorString()));
+        setErrorString(tr("Could not copy %1 to %2: %3").arg(source, dest, file.errorString()));
     }
     return copied;
 }
@@ -230,7 +230,7 @@ void MoveOperation::backup()
     // in QFile::copy...
     const bool success = QFile::rename(dest, value(QLatin1String("backupOfExistingDestination")).toString());
     if (!success)
-        setError(UserDefinedError, tr("Could not backup file %1").arg(dest));
+        setError(UserDefinedError, tr("Could not backup file %1.").arg(dest));
 }
 
 bool MoveOperation::performOperation()
@@ -255,7 +255,7 @@ bool MoveOperation::performOperation()
         QFile file(dest);
         if (!file.remove(dest)) {
             setError(UserDefinedError);
-            setErrorString(tr("Could not remove destination file %1: %2.").arg(dest, file.errorString()));
+            setErrorString(tr("Could not remove destination file %1: %2").arg(dest, file.errorString()));
             return false;
         }
     }
@@ -265,7 +265,7 @@ bool MoveOperation::performOperation()
     const bool copied = file.copy(source, dest);
     if (!copied) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not copy %1 to %2: %3.").arg(source, dest, file.errorString()));
+        setErrorString(tr("Could not copy %1 to %2: %3").arg(source, dest, file.errorString()));
         return false;
     }
 
@@ -287,7 +287,7 @@ bool MoveOperation::undoOperation()
 
     // second: delete the move destination
     if (!deleteFileNowOrLater(dest)) {
-        setError(UserDefinedError, tr("Cannot remove file %1"));
+        setError(UserDefinedError, tr("Cannot remove file %1."));
         return false;
     }
 
@@ -544,7 +544,7 @@ bool RmdirOperation::performOperation()
     setValue(QLatin1String("removed"), removed);
     if (!removed) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not remove folder %1: %2.").arg(dirName, QLatin1String(strerror(errno))));
+        setErrorString(tr("Could not remove folder %1: %2").arg(dirName, QLatin1String(strerror(errno))));
     }
     return removed;
 }
@@ -621,7 +621,7 @@ bool AppendFileOperation::performOperation()
         if (!QFile::rename(fName, newName) && QFile::copy(newName, fName) && file.open(QFile::Append)) {
             QFile::rename(newName, fName);
             setError(UserDefinedError);
-            setErrorString(tr("Could not open file %1 for writing: %2.").arg(file.fileName(), file.errorString()));
+            setErrorString(tr("Could not open file %1 for writing: %2").arg(file.fileName(), file.errorString()));
             return false;
         }
         deleteFileNowOrLater(newName);
@@ -640,7 +640,7 @@ bool AppendFileOperation::undoOperation()
     const QString filename = arguments().first();
     const QString backupOfFile = value(QLatin1String("backupOfFile")).toString();
     if (!backupOfFile.isEmpty() && !QFile::exists(backupOfFile)) {
-        setError(UserDefinedError, tr("Cannot find backup file for %1").arg(filename));
+        setError(UserDefinedError, tr("Cannot find backup file for %1.").arg(filename));
         return false;
     }
 
@@ -716,7 +716,7 @@ bool PrependFileOperation::performOperation()
     QFile file(fName);
     if (!file.open(QFile::ReadOnly)) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not open file %1 for reading: %2.").arg(file.fileName(), file.errorString()));
+        setErrorString(tr("Could not open file %1 for reading: %2").arg(file.fileName(), file.errorString()));
         return false;
     }
     QString fContents(QLatin1String(file.readAll()));
@@ -732,7 +732,7 @@ bool PrependFileOperation::performOperation()
         if (!QFile::rename(fName, newName) && QFile::copy(newName, fName) && file.open(QFile::WriteOnly)) {
             QFile::rename(newName, fName);
             setError(UserDefinedError);
-            setErrorString(tr("Could not open file %1 for writing: %2.").arg(file.fileName(), file.errorString()));
+            setErrorString(tr("Could not open file %1 for writing: %2").arg(file.fileName(), file.errorString()));
             return false;
         }
         deleteFileNowOrLater(newName);
@@ -750,12 +750,12 @@ bool PrependFileOperation::undoOperation()
     const QString filename = arguments().first();
     const QString backupOfFile = value(QLatin1String("backupOfFile")).toString();
     if (!backupOfFile.isEmpty() && !QFile::exists(backupOfFile)) {
-        setError(UserDefinedError, tr("Cannot find backup file for %1").arg(filename));
+        setError(UserDefinedError, tr("Cannot find backup file for %1.").arg(filename));
         return false;
     }
 
     if (!deleteFileNowOrLater(filename)) {
-        setError(UserDefinedError, tr("Cannot restore backup file for %1").arg(filename));
+        setError(UserDefinedError, tr("Cannot restore backup file for %1.").arg(filename));
         return false;
     }
 
