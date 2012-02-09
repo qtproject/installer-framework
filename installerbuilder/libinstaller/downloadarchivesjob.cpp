@@ -73,7 +73,7 @@ DownloadArchivesJob::~DownloadArchivesJob()
 {
     foreach (const QString &fileName, m_temporaryFiles) {
         QFile file(fileName);
-        if (!file.remove())
+        if (file.exists() && !file.remove())
             qWarning("Could not delete file %s: %s", qPrintable(fileName), qPrintable(file.errorString()));
     }
 
