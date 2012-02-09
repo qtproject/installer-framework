@@ -1381,7 +1381,7 @@ Fehler beim Laden von %2</translation>
     <message>
         <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="273"/>
         <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="372"/>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="507"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="502"/>
         <source>Download Error</source>
         <translation>Fehler beim Herunterladen</translation>
     </message>
@@ -1416,22 +1416,21 @@ Fehler beim Laden von %2</translation>
         <translation>Konnte Archiv mit Metainformationen %1 nicht öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="476"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="477"/>
         <source>Bad hash.</source>
         <translation>Ungültige Prüfsumme.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="495"/>
         <source>The RSA signature of one component could not be verified.</source>
-        <translation>Die Prüfsumme einer Komponente konnte nicht überprüft werden.</translation>
+        <translation type="obsolete">Die Prüfsumme einer Komponente konnte nicht überprüft werden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="498"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="476"/>
         <source>The hash of one component does not match the expected one.</source>
         <translation>Die Prüfsumme einer Komponente entsprach nicht der erwateten.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="501"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="496"/>
         <source>Could not download meta information for component: %1. Error: %2.</source>
         <translation>Konnte Metainformationen der Komponente %1 nicht herunterladen. Fehlermeldung: %2</translation>
     </message>
@@ -2499,12 +2498,13 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1316"/>
         <source>Alt+R</source>
         <comment>browse file system to choose a file</comment>
-        <translation type="unfinished">Alt+R</translation>
+        <translatorcomment>Dateisystem durchsuchen, um eine Datei auszuwählen</translatorcomment>
+        <translation>Alt+D</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1317"/>
         <source>B&amp;rowse...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Durchsuchen...</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1355"/>
@@ -2515,12 +2515,12 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1356"/>
         <source>The install directory cannot be empty, please specify a valid folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Name des Installationsverzeichnises darf nicht leer sein, bitte einen gültigen Ordner angeben.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1371"/>
         <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Da das Installationsverzeichnis komplett gelöscht wird, ist eine Installation nach %1 nicht zulässig.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1381"/>
@@ -2530,12 +2530,12 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1382"/>
         <source>You have selected an existing, non-empty folder for installation. Note that it will be completely wiped on uninstallation of this application. It is not advisable to install into this folder as installation might fail. Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie haben einen existierenden, nicht leeren Ordner für die Installation ausgewählt. Dieser wird bei der Deinstallation dieser Anwendung komplett gelöscht werden. Es wird nicht empfohlen, in diesen Ordner zu installaieren. Möchten sie trotzdem fortsetzen?</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1407"/>
         <source>Select Installation Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Installationsverzeichnis auswählen.</translation>
     </message>
 </context>
 <context>
@@ -2697,27 +2697,27 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../common/repositorygen.cpp" line="101"/>
         <source>Component folder name must match component name: %1 in %2/</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Komponentenordner muss den selben Namen haben wie die Komponente: %1 in %2/</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="206"/>
         <source>Circular dependencies detected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zyklische Abhängigkeiten gefunden.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="216"/>
         <source>Couldn&apos;t find package for component %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte kein Paket zur Komponente %1 finden.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="271"/>
         <source>Folder %1 does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Odner %1 existiert nicht.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="110"/>
         <source>Component version for %1 is invalid! &lt;Version&gt;%2&lt;/version&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Versionsnummer (%2) der Komponente %1 ist ungültig.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="301"/>
@@ -2728,52 +2728,52 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../common/repositorygen.cpp" line="311"/>
         <source>Could not open %1 for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei %1 nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="375"/>
         <source>Could not parse %1: line: %2, column: %3: %4 (%5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei %1 nicht auswerten. Zeile: %2, Spalte: %3 - %4 (%5)</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="459"/>
         <source>Could not create directory %1.</source>
-        <translation type="unfinished">Konnte Ordner %1. nicht anlegen.</translation>
+        <translation>Konnte Ordner %1. nicht anlegen.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="483"/>
         <source>Could not copy the script %1 to its target location %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte das Skript %1 nicht nach %2 kopieren.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="501"/>
         <source>Couldn&apos;t find any user interface matching %1 while copying user interfaces of %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keine mit %1 übereinstimmende Nutzungsschnittstelle beim Kopieren von %2 finden.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="512"/>
         <source>Could not copy the UI file %1 to its target location %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte die Nutzungsschnittstellendatei %1 nicht nach %2 kopieren.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="536"/>
         <source>Could not find any user interface matching %1 while copying user interfaces of %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keine mit %1 übereinstimmende Nutzungsschnittstelle beim Kopieren von %2 finden.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="547"/>
         <source>Could not copy the translation %1 to its target location %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte die Übersetzung %1 nicht nach %2 kopieren.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="570"/>
         <source>Could not find any license matching %1 while copying license files of %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keine mit %1 übereinstimmende Lizenz beim Kopieren von %2 finden.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="579"/>
         <source>Could not copy the license file %1 to its target location %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte die Lizenzdatei %1 nicht nach %2 kopieren.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="729"/>
@@ -2783,53 +2783,53 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../common/repositorygen.cpp" line="756"/>
         <source>Could not create repository folder for component %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Quellenordner für Komponente %1 nicht anlegen.</translation>
     </message>
     <message>
         <location filename="../../common/repositorygen.cpp" line="832"/>
         <source>Could not open %1 for writing: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../repogen/repogen.cpp" line="118"/>
         <source>Error: Package to exclude missing</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Die --exclude Option braucht die auszuschliessenden Komponenten als Argument.</translation>
     </message>
     <message>
         <location filename="../../repogen/repogen.cpp" line="127"/>
         <source>Error: Packages parameter missing argument</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Dem Packages Parameter fehlt ein Argument.</translation>
     </message>
     <message>
         <location filename="../../repogen/repogen.cpp" line="131"/>
         <source>Error: Package directory not found at the specified location</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Paketordner konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
         <location filename="../../repogen/repogen.cpp" line="139"/>
         <location filename="../../repogen/repogen.cpp" line="158"/>
         <source>Error: Config parameter missing argument</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Dem Config Parameter fehlt ein Argument.</translation>
     </message>
     <message>
         <location filename="../../repogen/repogen.cpp" line="142"/>
         <source>Error: Config directory %1 not found at the specified location</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Konfigurationsordner %1 konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
         <location filename="../../repogen/repogen.cpp" line="146"/>
         <source>Error: Configuration %1 is not a directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Konfiguration %1 ist kein Ordner.</translation>
     </message>
     <message>
         <location filename="../../repogen/repogen.cpp" line="150"/>
         <source>Error: Config directory %1 is not readable</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Konfigurationsordner %1 ist nicht lesbar.</translation>
     </message>
     <message>
         <location filename="../../repogen/repogen.cpp" line="197"/>
         <source>Repository target folder %1 already exists!</source>
-        <translation type="unfinished"></translation>
+        <translation>Quellenordner %1 existiert bereits!</translation>
     </message>
     <message>
         <location filename="../../tests/extractarchiveoperationtest/extractarchiveoperationtest.cpp" line="93"/>
@@ -3076,28 +3076,28 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1345"/>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1367"/>
         <source>Unknown exception caught (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbekannte Ausnahmebedingung (%1).</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="686"/>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1367"/>
         <source>Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehlgeschlagen</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="799"/>
         <source>Could not create file system link at %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keine Dateisystemverknüpfung (Hardlink) %1 anlegen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="804"/>
         <source>Could not create softlink at %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keine Dateisystemverknüpfung (Softlink) %1 anlegen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1183"/>
         <source>Could not create archive %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte kein Archiv %1 anlegen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1220"/>
@@ -3112,7 +3112,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1243"/>
         <source>Extracting %1 failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Entpacken von %1 fehlgeschlagen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1266"/>
@@ -3122,7 +3122,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1299"/>
         <source>Extraction failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Entpacken fehlgeschlagen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/adminauthorization_x11.cpp" line="74"/>
@@ -3183,14 +3183,12 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="494"/>
         <source>Bad signature</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ungültige Unterschrift</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="497"/>
         <source>Bad hash</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ungültige Prüfsumme.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/installiconsoperation.cpp" line="140"/>
@@ -3200,7 +3198,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/installiconsoperation.cpp" line="176"/>
         <source>Could not backup file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/installiconsoperation.cpp" line="200"/>
@@ -3220,7 +3218,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/replaceoperation.cpp" line="81"/>
         <source>Failed to open %1 for writing</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei %1 nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagercore.cpp" line="77"/>
@@ -3245,17 +3243,17 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="128"/>
         <source>kB</source>
-        <translation type="unfinished"></translation>
+        <translation>kB</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="131"/>
         <source>MB</source>
-        <translation type="unfinished"></translation>
+        <translation>MB</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="134"/>
         <source>GB</source>
-        <translation type="unfinished"></translation>
+        <translation>GB</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="330"/>
@@ -3272,7 +3270,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <location filename="../../libinstaller/registerfiletypeoperation.cpp" line="105"/>
         <location filename="../../libinstaller/registerfiletypeoperation.cpp" line="194"/>
         <source>Registering file types in only supported on Windows.</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrierung von Dateitypen wird nur unter Windows unterstützt.</translation>
     </message>
     <message>
         <location filename="../installerbase_p.cpp" line="406"/>
@@ -3282,12 +3280,12 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/linereplaceoperation.cpp" line="71"/>
         <source>Failed to open %1 for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei %1 nicht zum Lesen öffnen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/linereplaceoperation.cpp" line="88"/>
         <source>Failed to open %1 for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei %1 nicht zum Schreiben öffnen.</translation>
     </message>
 </context>
 <context>
@@ -3305,7 +3303,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/settings.cpp" line="235"/>
         <source>Multiple %1 elements found, but only one allowed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mehrere %1 Elemente gefunden, aber nur eins ist erlaubt.</translation>
     </message>
 </context>
 <context>

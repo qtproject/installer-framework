@@ -1374,7 +1374,7 @@ Error while loading %2</source>
     <message>
         <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="273"/>
         <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="372"/>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="507"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="502"/>
         <source>Download Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1409,22 +1409,17 @@ Error while loading %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="476"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="477"/>
         <source>Bad hash.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="495"/>
-        <source>The RSA signature of one component could not be verified.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="498"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="476"/>
         <source>The hash of one component does not match the expected one.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="501"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="496"/>
         <source>Could not download meta information for component: %1. Error: %2.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3142,16 +3137,6 @@ needs to be less than 255 characters.</source>
     <message>
         <location filename="../../libinstaller/fakestopprocessforupdateoperation.cpp" line="102"/>
         <source>Number of arguments does not match : one is required</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="494"/>
-        <source>Bad signature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="497"/>
-        <source>Bad hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
