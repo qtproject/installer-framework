@@ -473,6 +473,7 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
         QByteArray realFileHash = QString::fromLatin1(QCryptographicHash::hash(archContent,
             QCryptographicHash::Sha1).toHex()).toLatin1();
         if (expectedFileHash != realFileHash) {
+            emit infoMessage(this, tr("The hash of one component does not match the expected one."));
             metaDownloadError(tr("Bad hash."));
             return;
         }
@@ -491,12 +492,6 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
 
 void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
 {
-    if (err == QObject::tr("Bad signature"))
-        emit infoMessage(this, tr("The RSA signature of one component could not be verified."));
-
-    if (err == QObject::tr("Bad hash"))
-        emit infoMessage(this, tr("The hash of one component does not match the expected one."));
-
     if (m_retriesLeft <= 0) {
         const QString msg = tr("Could not download meta information for component: %1. Error: %2.")
             .arg(m_currentPackageName, err);
