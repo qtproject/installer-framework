@@ -239,7 +239,7 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
             if (pos < 0)
                 throw Error(QObject::tr("Searched whole file, no marker found"));
             if (!in->seek(pos)) {
-                throw Error(QObject::tr("Could not seek to %1 in file %2: %3.").arg(QString::number(pos),
+                throw Error(QObject::tr("Could not seek to %1 in file %2: %3").arg(QString::number(pos),
                     in->fileName(), in->errorString()));
             }
             const quint64 num = static_cast<quint64>(retrieveInt64(in));
@@ -249,7 +249,7 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
             }
             searched += 1;
         }
-        throw Error(QObject::tr("No marker found, stopped after %1 bytes").arg(QString::number(MAX_SEARCH)));
+        throw Error(QObject::tr("No marker found, stopped after %1 bytes.").arg(QString::number(MAX_SEARCH)));
     } catch (const Error& err) {
         in->seek(oldPos);
         throw err;
@@ -759,7 +759,7 @@ static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segm
         return 0;
 
     if (!file->seek(segment.start())) {
-        throw Error(QObject::tr("Could not seek to in-binary resource. (offset: %1, length: %2")
+        throw Error(QObject::tr("Could not seek to in-binary resource. (offset: %1, length: %2)")
             .arg(QString::number(segment.start()), QString::number(segment.length())));
     }
     sResourceVec.append(retrieveData(file, segment.length()));
@@ -913,7 +913,7 @@ BinaryLayout BinaryContent::readBinaryLayout(QIODevice *const file, qint64 cooki
 {
     const qint64 indexSize = 5 * sizeof(qint64);
     if (!file->seek(cookiePos - indexSize))
-        throw Error(QObject::tr("Could not seek to binary layout section!"));
+        throw Error(QObject::tr("Could not seek to binary layout section."));
 
     BinaryLayout layout;
     layout.operationsStart = retrieveInt64(file);
@@ -938,7 +938,7 @@ BinaryLayout BinaryContent::readBinaryLayout(QIODevice *const file, qint64 cooki
     const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
     for (int i = 0; i < layout.resourceCount; ++i) {
         if (!file->seek(layout.endOfData - layout.indexSize - resourceOffsetAndLengtSize * (i + 1)))
-            throw Error(QObject::tr("Could not seek to metadata index"));
+            throw Error(QObject::tr("Could not seek to metadata index."));
 
         const qint64 metadataResourceOffset = retrieveInt64(file);
         const qint64 metadataResourceLength = retrieveInt64(file);
@@ -959,7 +959,7 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
     const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
     const qint64 operationsStart = layout.operationsStart + dataBlockStart;
     if (!file->seek(operationsStart))
-        throw Error(QObject::tr("Could not seek to operation list"));
+        throw Error(QObject::tr("Could not seek to operation list."));
 
     const qint64 operationsCount = retrieveInt64(file.data());
     qDebug() << "Number of operations:" << operationsCount;
@@ -967,7 +967,7 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
     for (int i = 0; i < operationsCount; ++i) {
         const QString name = retrieveString(file.data());
         QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(name));
-        Q_ASSERT_X(!op.isNull(), __FUNCTION__, QString::fromLatin1("Invalid operation name: %1").arg(name)
+        Q_ASSERT_X(!op.isNull(), __FUNCTION__, QString::fromLatin1("Invalid operation name: %1.").arg(name)
             .toLatin1());
 
         if (!op->fromXml(retrieveString(file.data()))) {
@@ -981,11 +981,11 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
     const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
     const qint64 resourceSectionSize = resourceOffsetAndLengtSize * layout.resourceCount;
     if (!file->seek(layout.endOfData - layout.indexSize - resourceSectionSize - resourceOffsetAndLengtSize))
-        throw Error(QObject::tr("Could not seek to component index information"));
+        throw Error(QObject::tr("Could not seek to component index information."));
 
     const qint64 compIndexStart = retrieveInt64(file.data()) + dataBlockStart;
     if (!file->seek(compIndexStart))
-        throw Error(QObject::tr("Could not seek to component index"));
+        throw Error(QObject::tr("Could not seek to component index."));
 
     content.m_components = QInstallerCreator::ComponentIndex::read(file, dataBlockStart);
     content.handler.setComponentIndex(content.m_components);
@@ -995,7 +995,7 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
         qDebug() << "Number of components loaded:" << components.count();
         foreach (const QInstallerCreator::Component &component, components) {
             const QVector<QSharedPointer<Archive> > archives = component.archives();
-            qDebug() << component.name().data() << "loaded ...";
+            qDebug() << component.name().data() << "loaded...";
             QStringList archivesWithSize;
             foreach (const QSharedPointer<Archive> &archive, archives) {
                 QString archiveWithSize(QLatin1String("%1 - %2 Bytes"));

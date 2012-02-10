@@ -2805,12 +2805,12 @@ needs to be less than 255 characters.</source>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="242"/>
-        <source>Could not seek to %1 in file %2: %3.</source>
+        <source>Could not seek to %1 in file %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="252"/>
-        <source>No marker found, stopped after %1 bytes</source>
+        <source>No marker found, stopped after %1 bytes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2825,7 +2825,7 @@ needs to be less than 255 characters.</source>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="762"/>
-        <source>Could not seek to in-binary resource. (offset: %1, length: %2</source>
+        <source>Could not seek to in-binary resource. (offset: %1, length: %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2841,27 +2841,27 @@ needs to be less than 255 characters.</source>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="916"/>
-        <source>Could not seek to binary layout section!</source>
+        <source>Could not seek to binary layout section.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="941"/>
-        <source>Could not seek to metadata index</source>
+        <source>Could not seek to metadata index.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="962"/>
-        <source>Could not seek to operation list</source>
+        <source>Could not seek to operation list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="984"/>
-        <source>Could not seek to component index information</source>
+        <source>Could not seek to component index information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="988"/>
-        <source>Could not seek to component index</source>
+        <source>Could not seek to component index.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

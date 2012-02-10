@@ -2515,7 +2515,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1356"/>
         <source>The install directory cannot be empty, please specify a valid folder.</source>
-        <translation>Der Name des Installationsverzeichnises darf nicht leer sein, bitte einen gültigen Ordner angeben.</translation>
+        <translation>Der Name des Installationsverzeichnisses darf nicht leer sein, bitte einen gültigen Ordner angeben.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1371"/>
@@ -2844,89 +2844,89 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../common/binaryformat.cpp" line="240"/>
         <source>Searched whole file, no marker found</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesamte Datei durchsucht, kein Zauberkeks gefunden.</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="242"/>
-        <source>Could not seek to %1 in file %2: %3.</source>
-        <translation type="unfinished"></translation>
+        <source>Could not seek to %1 in file %2: %3</source>
+        <translation>Konnte nicht bis zur Position %1 in Datei %2 suchen. Fehlermeldung: %3</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="252"/>
-        <source>No marker found, stopped after %1 bytes</source>
-        <translation type="unfinished"></translation>
+        <source>No marker found, stopped after %1 bytes.</source>
+        <translation>Kein Zauberkeks gefunden, nach %1 Bytes abgebrochen.</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="258"/>
         <source>No marker found, unknown exception caught.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keinen Zauberkeks gefunden, unbekannte Ausnahmebedingung.</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="500"/>
         <source>Cannot create zipped file for path %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keine gepackte Datei aus Pfad %1 erstellen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="762"/>
-        <source>Could not seek to in-binary resource. (offset: %1, length: %2</source>
-        <translation type="unfinished"></translation>
+        <source>Could not seek to in-binary resource. (offset: %1, length: %2)</source>
+        <translation>Konnte nicht bis zur in der Binärdatei enthaltene Ressource suchen. (Offset: %1, Länge: %2)</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="769"/>
         <source>Could not register in-binary resource.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte in der Binärdatei enthaltene Ressource nicht registrieren.</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="873"/>
         <location filename="../../common/binaryformat.cpp" line="1031"/>
         <source>Could not open binary %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Binärdatei %1 nicht öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="916"/>
-        <source>Could not seek to binary layout section!</source>
-        <translation type="unfinished"></translation>
+        <source>Could not seek to binary layout section.</source>
+        <translation>Konnte nicht bis zum Abschnitt mit dem Layout der Binärdatei suchen.</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="941"/>
-        <source>Could not seek to metadata index</source>
-        <translation type="unfinished"></translation>
+        <source>Could not seek to metadata index.</source>
+        <translation>Konnte nicht bis zum Index der Metadaten suchen.</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="962"/>
-        <source>Could not seek to operation list</source>
-        <translation type="unfinished"></translation>
+        <source>Could not seek to operation list.</source>
+        <translation>Konnte nicht bis zur Anweisungsliste suchen.</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="984"/>
-        <source>Could not seek to component index information</source>
-        <translation type="unfinished"></translation>
+        <source>Could not seek to component index information.</source>
+        <translation>Konnte nicht bis zur Komponentenindexinformation suchen.</translation>
     </message>
     <message>
         <location filename="../../common/binaryformat.cpp" line="988"/>
-        <source>Could not seek to component index</source>
-        <translation type="unfinished"></translation>
+        <source>Could not seek to component index.</source>
+        <translation>Konnte nicht bis zum Komponentenindex suchen.</translation>
     </message>
     <message>
         <location filename="../../common/fileutils.cpp" line="146"/>
         <source>Cannot open file %1 for reading: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../common/fileutils.cpp" line="153"/>
         <location filename="../../common/fileutils.cpp" line="160"/>
         <source>Cannot open file %1 for writing: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../common/fileutils.cpp" line="169"/>
         <source>Write failed after %1 bytes: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schreiben ist nach %1 Bytes fehlgeschlagen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../common/fileutils.cpp" line="190"/>
         <source>Read failed after %1 bytes: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Lesen ist nach %1 Bytes fehlgeschlagen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../common/fileutils.cpp" line="219"/>
@@ -2963,42 +2963,42 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../common/fileutils.cpp" line="380"/>
         <source>Could not open temporary file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte temporäre Datei nicht öffnen. Fehlermeldung: %1</translation>
     </message>
     <message>
         <location filename="../../common/fileutils.cpp" line="397"/>
         <source>Could not open temporary file for template %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keine temporäre Datei für die Vorlage %1 öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../common/fileutils.cpp" line="407"/>
         <source>Could not create temporary folder for template %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keine temporäre Datei für die Vorlage %1 anlegen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdlockfile_unix.cpp" line="45"/>
         <source>Could not create lock file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keine Sperrdatei %1 anlegen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdlockfile_unix.cpp" line="55"/>
         <source>Could not write PID to lock file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte PID nicht in die Sperrdatei %1 schreiben. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdlockfile_unix.cpp" line="63"/>
         <source>Could not lock lock file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte keinen Exklusivzugriff auf Sperrdatei %1 erhalten. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdlockfile_unix.cpp" line="75"/>
         <source>Could not unlock lock file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Exklusivzugriff auf Sperrdatei %1 nicht abgeben. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="137"/>
         <source>Path exists but is not a folder: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Pfad %1 exisitiert, aber ist kein Ordner.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="153"/>
@@ -3008,57 +3008,57 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="188"/>
         <source>Could not create temporary file</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte temporäre Datei nicht anlegen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="205"/>
         <source>Could not retrieve property %1 for item %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Eigenschaft %2 von %2 nicht erhalten.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="228"/>
         <source>Property %1 for item %2 not of type VT_FILETIME but %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigenschaft %1 von %2 ist nicht vom Typ VT_FILETIME, sondern vom Typ %3.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="236"/>
         <source>Could not convert file time to local time</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte die Dateizeit nicht in die lokale Zeit umwandeln.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="240"/>
         <source>Could not convert local file time to system time</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte die lokale Dateizeit nicht in die Systemzeit umwandeln.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="569"/>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1148"/>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1321"/>
         <source>Could not load codecs</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Codecs nicht laden.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="572"/>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1153"/>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1326"/>
         <source>Could not retrieve default format</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Standardformat nicht finden.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="576"/>
         <source>Could not open archive</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Archiv nicht öffnen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="578"/>
         <source>No CArc found</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine CArc gefunden.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="642"/>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1228"/>
         <source>Could not retrieve number of items in archive</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Anzahl Dateien im Archiv nicht feststellen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="648"/>
@@ -3066,7 +3066,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="781"/>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1236"/>
         <source>Could not retrieve path of archive item %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Pfad des Archivs %1 nicht feststellen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="669"/>
@@ -3102,12 +3102,12 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1220"/>
         <source>CArc index %1 out of bounds [0, %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>CArc Index %1 ausserhalb der Grenzen [0, %2].</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1231"/>
         <source>Item index %1 out of bounds [0, %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Itemindex %1 ausserhalb der Grenzen [0, %2].</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1243"/>
@@ -3117,7 +3117,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1266"/>
         <source>Could not create output file for writing: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Ausgabedatei nicht zum Schreiben öffnen. Fehlermeldung: %1</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/p7zip_9.04/lib7z_facade.cpp" line="1299"/>
@@ -3128,18 +3128,18 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <location filename="../../libinstaller/adminauthorization_x11.cpp" line="74"/>
         <location filename="../../libinstaller/adminauthorization_x11.cpp" line="77"/>
         <source>Authorization required</source>
-        <translation type="unfinished"></translation>
+        <translation>Autorisierung benötigt.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/adminauthorization_x11.cpp" line="74"/>
         <location filename="../../libinstaller/adminauthorization_x11.cpp" line="78"/>
         <source>Enter your password to authorize for sudo:</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben sie ihr Passwort ein, um sich für sudo zu autentifizieren:</translation>
     </message>
     <message>
         <location filename="../../libinstaller/adminauthorization_x11.cpp" line="88"/>
         <source>Error acquiring admin rights</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erlangen von Administratorrechten.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/createdesktopentryoperation.cpp" line="129"/>
@@ -3159,7 +3159,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/createshortcutoperation.cpp" line="145"/>
         <source>Invalid arguments: %1 arguments given, 2 or 3 expected (optional: &quot;workingDirectory=...&quot;).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Argumente: %1 Argumente erhalten, 2 oder 3 erwartet (optional: &quot;workingDirectory=...&quot;).</translation>
     </message>
     <message>
         <location filename="../../libinstaller/createshortcutoperation.cpp" line="171"/>
@@ -3170,17 +3170,17 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/environmentvariablesoperation.cpp" line="89"/>
         <source>Registry path %1 is not writable</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrierungspfad %1 ist nicht beschreibbar.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/environmentvariablesoperation.cpp" line="101"/>
         <source>Could not write to registry path %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrierungspfad %1 ist nicht beschreibbar.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/fakestopprocessforupdateoperation.cpp" line="102"/>
         <source>Number of arguments does not match : one is required</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Anzahl Argumente: genau 1 erwartet.</translation>
     </message>
     <message>
         <source>Bad signature</source>
@@ -3193,7 +3193,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/installiconsoperation.cpp" line="140"/>
         <source>Invalid Argument: source folder must not be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiges Argument: Quellordner darf nicht leer sein.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/installiconsoperation.cpp" line="176"/>
@@ -3203,12 +3203,12 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/installiconsoperation.cpp" line="200"/>
         <source>Failed to copy file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei nicht nach %1 kopieren. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/installiconsoperation.cpp" line="210"/>
         <source>Could not create folder at %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/replaceoperation.cpp" line="71"/>
@@ -3233,12 +3233,12 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/packagemanagercore.cpp" line="1028"/>
         <source>Error while elevating access rights.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erlangen von Administratorrechten.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1040"/>
         <source>Failed to seek in file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchen in Datei %1 fehlgeschlagen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="128"/>
@@ -3264,7 +3264,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="367"/>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="373"/>
         <source>Exception while loading the control script %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausnahme beim Laden des Kontrollskripts: %1</translation>
     </message>
     <message>
         <location filename="../../libinstaller/registerfiletypeoperation.cpp" line="105"/>
@@ -3275,7 +3275,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../installerbase_p.cpp" line="406"/>
         <source>Failed to seek in file %1. Reason: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchen in Datei %1 fehlgeschlagen. Fehlermeldung: %2</translation>
     </message>
     <message>
         <location filename="../../libinstaller/linereplaceoperation.cpp" line="71"/>
@@ -3298,7 +3298,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libinstaller/settings.cpp" line="207"/>
         <source>%1 is not valid: Installer root node expected.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ist ungültig: &apos;Installer&apos; wird als Wurzelknoten erwartet.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/settings.cpp" line="235"/>
@@ -3493,12 +3493,12 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../installerbasecommons.cpp" line="404"/>
         <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Pfad zum Installationsverzeichnis enthält Zeichen ausserhalb des ASCII Zeichensatzes. Dies ist zur Zeit nicht unterstützt. Bitte wählen sie einen anderen Pfad für das Installationsverzeichnis.</translation>
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="419"/>
         <source>As the install directory is completely deleted installing in %1 is forbidden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Da das Installationsverzeichnis komplett gelöscht wird, ist eine Installation nach %1 nicht zulässig.</translation>
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="434"/>
@@ -3513,7 +3513,10 @@ Möchten sie diese überschreiben?</translation>
 Note that it will be completely wiped on uninstallation of this application.
 It is not advisable to install into this folder as installation might fail.
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie haben einen existierenden, nicht leeren Ordner für die Installation ausgewählt.
+Dieser wird bei der Deinstallation dieser Anwendung komplett gelöscht werden.
+Es wird nicht empfohlen, in diesen Ordner zu installaieren.
+Möchten sie trotzdem fortsetzen?</translation>
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="443"/>
