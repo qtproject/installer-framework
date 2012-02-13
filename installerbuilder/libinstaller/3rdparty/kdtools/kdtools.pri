@@ -38,12 +38,8 @@ HEADERS += $$PWD/kdupdater.h \
     $$PWD/kdupdaterupdateoperations.h \
     $$PWD/kdupdaterupdatesourcesinfo.h \
     $$PWD/kdupdatertask.h \
-    $$PWD/kdupdatersignatureverificationrunnable.h \
     $$PWD/kdupdaterupdatefinder.h \
     $$PWD/kdupdaterupdatesinfo_p.h \
-    $$PWD/kdupdaterupdateinstaller.h \
-    $$PWD/kdupdaterufuncompressor_p.h \
-    $$PWD/kdupdaterufcompresscommon_p.h \
     $$PWD/environment.h
 
 SOURCES += $$PWD/kdupdaterapplication.cpp \
@@ -59,12 +55,8 @@ SOURCES += $$PWD/kdupdaterapplication.cpp \
     $$PWD/kdupdaterupdateoperations.cpp \
     $$PWD/kdupdaterupdatesourcesinfo.cpp \
     $$PWD/kdupdatertask.cpp \
-    $$PWD/kdupdatersignatureverificationrunnable.cpp \
     $$PWD/kdupdaterupdatefinder.cpp \
     $$PWD/kdupdaterupdatesinfo.cpp \
-    $$PWD/kdupdaterupdateinstaller.cpp \
-    $$PWD/kdupdaterufuncompressor.cpp \
-    $$PWD/kdupdaterufcompresscommon.cpp \
     $$PWD/environment.cpp
 
 QT += gui

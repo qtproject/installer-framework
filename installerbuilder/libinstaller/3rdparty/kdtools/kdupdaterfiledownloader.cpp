@@ -1501,13 +1501,4 @@ void SignatureVerificationDownloader::signatureDownloadCompleted()
         return;
     }
     setDownloadCompleted(d->downloadedFileName);
-
-#if 0
-    SignatureVerificationRunnable *runnable = new SignatureVerificationRunnable;
-    runnable->setSignature(signature);
-    runnable->setData(dataFile.release());
-    runnable->setVerifier(d->verifier);
-    runnable->addResultListener(this, "verificationResult");
-    QThreadPool::globalInstance()->start(runnable);
-#endif
 }
