@@ -40,20 +40,25 @@
 
 #include <QtNetwork/QNetworkProxy>
 
-static QString format(double data)
+static QString humanReadableSize(quint64 intSize)
 {
-    if (data < 1024.0)
-        return QString::fromLatin1("%L1 B").arg(data);
-    data /= 1024.0;
-    if (data < 1024.0)
-        return QString::fromLatin1("%L1 KB").arg(data, 0, 'f', 2);
-    data /= 1024.0;
-    if (data < 1024.0)
-        return QString::fromLatin1("%L1 MB").arg(data, 0, 'f', 2);
-    data /= 1024.0;
-    return QString::fromLatin1("%L1 GB").arg(data, 0, 'f', 2);
-}
+    QString unit;
+    double size;
 
+    if (intSize < 1024 * 1024) {
+        size = 1. + intSize / 1024.;
+        unit = QObject::tr("kB");
+    } else if (intSize < 1024 * 1024 * 1024) {
+        size = 1. + intSize / 1024. / 1024.;
+        unit = QObject::tr("MB");
+    } else {
+        size = 1. + intSize / 1024. / 1024. / 1024.;
+        unit = QObject::tr("GB");
+    }
+
+    size = qRound(size * 10) / 10.0;
+    return QString::fromLatin1("%L1 %2").arg(size, 0, 'g', 4).arg(unit);
+}
 
 // -- Receiver
 
