@@ -91,7 +91,7 @@ public slots:
 
     void downloadSpeed(qint64 speed)
     {
-        qDebug() << "Download speed:" << format(speed) + "/sec";
+        qDebug() << "Download speed:" << humanReadableSize(speed) + "/sec";
     }
 
     void downloadProgress(double progress)
