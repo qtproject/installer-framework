@@ -25,11 +25,14 @@
 
 #include "kdtoolsglobal.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class KDTOOLS_EXPORT KDJob : public QObject
 {
     Q_OBJECT
+    class Private;
+
+    Q_PROPERTY(int timeout READ timeout WRITE setTimeout)
     Q_PROPERTY(bool autoDelete READ autoDelete WRITE setAutoDelete)
 
 public:
@@ -37,14 +40,14 @@ public:
     ~KDJob();
 
     enum Error {
-        NoError=0,
-        Canceled=1,
-        UserDefinedError=128
+        NoError = 0,
+        Canceled = 1,
+        UserDefinedError = 128
     };
 
     enum Capability {
-        NoCapabilities=0x0,
-        Cancelable=0x1
+        NoCapabilities = 0x0,
+        Cancelable = 0x1
     };
 
     Q_DECLARE_FLAGS(Capabilities, Capability)
@@ -64,23 +67,26 @@ public:
     quint64 totalAmount() const;
     quint64 processedAmount() const;
 
+    int timeout() const;
+    void setTimeout(int milliseconds);
+
 public Q_SLOTS:
     void start();
     void cancel();
 
 Q_SIGNALS:
-    void infoMessage(KDJob *, const QString &);
+    void started(KDJob *job);
+    void finished(KDJob *job);
 
-Q_SIGNALS:
-    void started(KDJob *);
-    void finished(KDJob *);
+    void infoMessage(KDJob *job, const QString &message);
     void progress(KDJob *job, quint64 processed, quint64 total);
 
 protected:
     virtual void doStart() = 0;
-    virtual void doCancel();
+    virtual void doCancel() = 0;
 
     void setCapabilities(Capabilities c);
+
     void setTotalAmount(quint64 amount);
     void setProcessedAmount(quint64 amount);
 
@@ -90,9 +96,10 @@ protected:
     void emitFinished();
     void emitFinishedWithError(int error, const QString &errorString);
 
+private Q_SLOTS:
+    void onFinished();
+
 private:
-    class Private;
-    friend class ::KDJob::Private;
     Private *d;
     Q_PRIVATE_SLOT(d, void delayedStart())
 };

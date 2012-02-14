@@ -22,16 +22,34 @@
 
 #include "kdjob.h"
 
-#include <QEventLoop>
+#include <QtCore/QDebug>
+#include <QtCore/QEventLoop>
+#include <QtCore/QTimer>
+
+
+// -- KDJob::Private
 
 class KDJob::Private
 {
     KDJob *const q;
+
 public:
     explicit Private(KDJob *qq)
-        : q(qq), error(KDJob::NoError), caps(KDJob::NoCapabilities), autoDelete(true),
-          totalAmount(100), processedAmount(0)
-    {}
+        : q(qq)
+        , error(KDJob::NoError)
+        , caps(KDJob::NoCapabilities)
+        , autoDelete(true)
+        , totalAmount(100)
+        , processedAmount(0)
+        , m_timeout(-1)
+    {
+        connect(&m_timer, SIGNAL(timeout()), q, SLOT(cancel()));
+    }
+
+    ~Private()
+    {
+        m_timer.stop();
+    }
 
     void delayedStart()
     {
@@ -43,21 +61,34 @@ public:
     {
         QEventLoop loop;
         q->connect(q, sig, &loop, SLOT(quit()));
+
+        if (m_timeout >= 0)
+            m_timer.start(m_timeout);
+        else
+            m_timer.stop();
+
         loop.exec();
     }
 
     int error;
     QString errorString;
     KDJob::Capabilities caps;
-    bool autoDelete : 1;
+    bool autoDelete;
     quint64 totalAmount;
     quint64 processedAmount;
+    int m_timeout;
+    QTimer m_timer;
 };
+
+
+// -- KDJob
 
 KDJob::KDJob(QObject *parent)
     : QObject(parent),
       d(new Private(this))
-{}
+{
+    connect(this, SIGNAL(finished(KDJob*)), this, SLOT(onFinished()));
+}
 
 KDJob::~KDJob()
 {
@@ -87,8 +118,6 @@ QString KDJob::errorString() const
 void KDJob::emitFinished()
 {
     emit finished(this);
-    if (d->autoDelete)
-        deleteLater();
 }
 
 void KDJob::emitFinishedWithError(int error, const QString &errorString)
@@ -138,14 +167,18 @@ void KDJob::start()
     QMetaObject::invokeMethod(this, "delayedStart", Qt::QueuedConnection);
 }
 
-void KDJob::doCancel()
-{
-}
-
 void KDJob::cancel()
 {
-    doCancel();
-    setError(Canceled);
+    if (d->caps & Cancelable) {
+        doCancel();
+        if (error() == NoError) {
+            setError(Canceled);
+            setErrorString(tr("Canceled"));
+        }
+        emitFinished();
+    } else {
+        qDebug() << "The current job can not be canceled, missing \"Cancelable\" capability!";
+    }
 }
 
 quint64 KDJob::totalAmount() const
@@ -153,7 +186,8 @@ quint64 KDJob::totalAmount() const
     return d->totalAmount;
 }
 
-quint64 KDJob::processedAmount() const {
+quint64 KDJob::processedAmount() const
+{
     return d->processedAmount;
 }
 
@@ -165,12 +199,37 @@ void KDJob::setTotalAmount(quint64 amount)
     emit progress(this, d->processedAmount, d->totalAmount);
 }
 
+/*!
+    Returns the timeout in milliseconds before the jobs cancel slot gets triggered. A return value of -1
+    means there is currently no timeout used for the job.
+*/
+int KDJob::timeout() const
+{
+    return d->m_timeout;
+}
+
+/*!
+    Sets the timeout in \a milliseconds before the jobs cancel slot gets triggered. \note Only jobs that
+    have the \bold KDJob::Cancelable capability can be canceled by an timeout. A value of -1 will stop the
+    timeout mechanism.
+*/
+void KDJob::setTimeout(int milliseconds)
+{
+    d->m_timeout = milliseconds;
+}
+
 void KDJob::setProcessedAmount(quint64 amount)
 {
     if (d->processedAmount == amount)
         return;
     d->processedAmount = amount;
     emit progress(this, d->processedAmount, d->totalAmount);
+}
+
+void KDJob::onFinished()
+{
+    if (d->autoDelete)
+        deleteLater();
 }
 
 #include "moc_kdjob.cpp"
