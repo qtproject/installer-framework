@@ -114,6 +114,11 @@ static int assemble(Input input, const QString &configdir)
     const QString configfile = QFileInfo(configdir, QLatin1String("config.xml")).absoluteFilePath();
     const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configdir);
 
+#ifdef Q_OS_WIN
+    if (input.outputPath.endsWith(QLatin1String(".exe")))
+        input.outputPath.chop(4);
+#endif
+
 #ifdef Q_WS_MAC
     if (QFileInfo(input.installerExePath).isBundle()) {
         const QString bundle = input.installerExePath;
@@ -122,7 +127,7 @@ static int assemble(Input input, const QString &configdir)
             QSettings::NativeFormat);
         input.installerExePath = QString::fromLatin1("%1/Contents/MacOS/%2").arg(bundle)
             .arg(s.value(QLatin1String("CFBundleExecutable"),
-            QFileInfo(input.installerExePath).baseName()).toString());
+            QFileInfo(input.installerExePath).completeBaseName()).toString());
     }
 
     const bool createDMG = input.outputPath.endsWith(QLatin1String(".dmg"));
@@ -148,7 +153,7 @@ static int assemble(Input input, const QString &configdir)
 
         const QString iconFile = QFile::exists(settings.icon()) ? settings.icon()
             : QString::fromLatin1(":/resources/default_icon_mac.icns");
-        const QString iconTargetFile = fi.baseName() + QLatin1String(".icns");
+        const QString iconTargetFile = fi.completeBaseName() + QLatin1String(".icns");
         QFile::copy(iconFile, fi.filePath() + QLatin1String("/Contents/Resources/") + iconTargetFile);
 
         QFile infoPList(fi.filePath() + QLatin1String("/Contents/Info.plist"));
@@ -169,7 +174,7 @@ static int assemble(Input input, const QString &configdir)
         plistStream << QLatin1String("    <key>CFBundleSignature</key>") << endl;
         plistStream << QLatin1String("    <string> ???? </string>") << endl;
         plistStream << QLatin1String("    <key>CFBundleExecutable</key>") << endl;
-        plistStream << QLatin1String("    <string>") << fi.baseName() << QLatin1String("</string>")
+        plistStream << QLatin1String("    <string>") << fi.completeBaseName() << QLatin1String("</string>")
             << endl;
         plistStream << QLatin1String("    <key>CFBundleIdentifier</key>") << endl;
         plistStream << QLatin1String("    <string>com.yourcompany.installerbase</string>") << endl;
@@ -180,7 +185,7 @@ static int assemble(Input input, const QString &configdir)
         plistStream << QLatin1String("</plist>") << endl;
 
         input.outputPath = QString::fromLatin1("%1/Contents/MacOS/%2").arg(input.outputPath)
-            .arg(fi.baseName());
+            .arg(fi.completeBaseName());
     }
 #endif
 
@@ -303,7 +308,7 @@ static int assemble(Input input, const QString &configdir)
         QFile::copy(QLatin1String(":/resources/mkdmg.sh"), mkdmgscript);
         ::chmod(qPrintable(mkdmgscript), 0755);
         QProcess p;
-        p.start(mkdmgscript, QStringList() << QFileInfo(out.fileName()).baseName() << bundle);
+        p.start(mkdmgscript, QStringList() << QFileInfo(out.fileName()).fileName() << bundle);
         p.waitForFinished();
         QFile::remove(mkdmgscript);
         qDebug() <<  "done." << mkdmgscript;
