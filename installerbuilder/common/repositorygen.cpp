@@ -533,8 +533,8 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
             const QDir dir(QString::fromLatin1("%1/meta").arg(it->directory));
             const QStringList qms = dir.entryList(QStringList(node.toElement().text()), QDir::Files);
             if (qms.isEmpty()) {
-                throw Error(QObject::tr("Could not find any user interface matching %1 while "
-                    "copying user interfaces of %2.").arg(node.toElement().text(), it->name));
+                throw Error(QObject::tr("Could not find any translation file matching %1 while "
+                    "copying translations of %2.").arg(node.toElement().text(), it->name));
             }
 
             for (QStringList::const_iterator qm = qms.begin(); qm != qms.end(); ++qm) {
