@@ -228,6 +228,7 @@ void KDJob::setProcessedAmount(quint64 amount)
 
 void KDJob::onFinished()
 {
+    d->m_timer.stop();
     if (d->autoDelete)
         deleteLater();
 }
