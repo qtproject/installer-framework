@@ -581,6 +581,30 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                 } else {
                     qDebug() << "done.";
                 }
+
+                // Translated License files
+                for (int j = 0; j < translations.size(); ++j) {
+                    QFileInfo translationFile(translations.at(j));
+                    QFileInfo untranslated(licenseFile);
+                    const QString &translatedLicenseFile =
+                        QString::fromLatin1("%2_%3.%4").arg(untranslated.baseName(),
+                            translationFile.baseName(), untranslated.completeSuffix());
+                    const QString &translatedSourceFile =
+                        QString::fromLatin1("%1/meta/%2").arg(it->directory).arg(translatedLicenseFile);
+                    if (!QFile::exists(translatedSourceFile)) {
+                        qDebug() << "Could not find translated license file" << translatedSourceFile;
+                        continue;
+                    }
+
+                    qDebug() << "\tCopying associated license file" << translatedLicenseFile << "into the meta package...";
+
+                    if (!QFile::copy(translatedSourceFile, QString::fromLatin1("%1/%2/%3")
+                        .arg(metapath, it->name, translatedLicenseFile))) {
+                            qDebug() << "\tfailed!";
+                    } else {
+                        qDebug() << "\tdone.";
+                    }
+                }
             }
         }
 
