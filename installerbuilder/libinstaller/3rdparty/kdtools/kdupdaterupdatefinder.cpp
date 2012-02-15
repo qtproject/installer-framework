@@ -489,25 +489,6 @@ QList<UpdateInfo> UpdateFinder::Private::applicableUpdates(UpdatesInfo *updatesI
             return retList;
     }
 
-#if 0
-    // Nokia-SDK: ignore ApplicationVersion, it has no purpose and just causes
-    // problems if someone bumps the config.xml application version accidentally
-    // Check to see if the update repository versions match with app version
-    if (!anyApp) {
-        QString appVersion = updatesInfo->applicationVersion();
-        appVersion = appVersion.replace(QLatin1String( ", " ), QLatin1String( "," ));
-        appVersion = appVersion.replace(QLatin1String( " ," ), QLatin1String( "," ));
-        QStringList versions = appVersion.split(QLatin1String( "," ), QString::SkipEmptyParts);
-
-        if (appNameIndex >= versions.count())
-            return retList; // please give us well formatted Updates.xml files.
-
-        QString version = versions.at(appNameIndex);
-        if (KDUpdater::compareVersion(this->application->applicationVersion(), version) != 0)
-            return retList;
-    }
-#endif
-
     // Check to see if version numbers match. This means that the version
     // number of the update should be greater than the version number of
     // the package that is currently installed.

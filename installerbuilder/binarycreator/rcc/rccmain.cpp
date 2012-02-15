@@ -246,10 +246,3 @@ int runRcc(int argc, char *argv[])
 }
 
 QT_END_NAMESPACE
-
-#if 0
-int main(int argc, char *argv[])
-{
-    return QT_PREPEND_NAMESPACE(runRcc)(argc, argv);
-}
-#endif

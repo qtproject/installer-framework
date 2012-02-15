@@ -106,27 +106,6 @@ Range<qint64> QInstaller::retrieveInt64Range(QIODevice *in)
     return Range<qint64>::fromStartAndLength(start, length);
 }
 
-
-
-#if 0
-// Faster or not?
-static void appendFileData(QIODevice *out, const QString &fileName)
-{
-    QFile file(fileName);
-    openForRead(file);
-    qint64 size = file.size();
-    QInstaller::appendInt64(out, size);
-    if (size == 0)
-        return;
-    uchar *data = file.map(0, size);
-    if (!data)
-        throw Error(QInstaller::tr("Cannot map file %1.").arg(file.fileName()));
-    blockingWrite(out, (const char *)data, size);
-    if (!file.unmap(data))
-        throw Error(QInstaller::tr("Cannot unmap file %1.").arg(file.fileName()));
-}
-#endif
-
 void QInstaller::appendData(QIODevice *out, QIODevice *in, qint64 size)
 {
     while (size > 0) {
