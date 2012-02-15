@@ -423,7 +423,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                         compressedComponentSize += QFile(recursDirIt.next()).size();
                     }
                 } else if (Lib7z::isSupportedArchive(fi.filePath())) {
-                    // if it's an archive already, list it's files and sum the uncompressed sizes
+                    // if it's an archive already, list its files and sum the uncompressed sizes
                     QFile archive(fi.filePath());
                     compressedComponentSize += archive.size();
                     archive.open(QIODevice::ReadOnly);
@@ -433,7 +433,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                             componentSize += fileIt->uncompressedSize;
                     }
                 } else {
-                    // otherwise just add it's size
+                    // otherwise just add its size
                     componentSize += fi.size();
                     compressedComponentSize += fi.size();
                 }
