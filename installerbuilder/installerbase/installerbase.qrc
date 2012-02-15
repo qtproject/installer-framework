@@ -1,4 +1,6 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>translations/de_de.qm</file>
+        <file>translations/qt_de.qm</file>
+    </qresource>
 </RCC>
