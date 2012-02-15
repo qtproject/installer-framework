@@ -505,7 +505,10 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
     }
 }
 
-
+/*!
+  Loads the text of the Licenses contained in the licenseHash.
+  This is saved into a new hash containing the filename and the text of that file.
+*/
 void Component::loadLicenses(const QString &directory, const QHash<QString, QVariant> &licenseHash)
 {
     QHash<QString, QVariant>::const_iterator it;
