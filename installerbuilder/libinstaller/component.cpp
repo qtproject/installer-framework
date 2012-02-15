@@ -514,10 +514,17 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
     QHash<QString, QVariant>::const_iterator it;
     for (it = licenseHash.begin(); it != licenseHash.end(); ++it) {
         const QString &fileName = it.value().toString();
-        QFile file(directory + fileName);
+        QFileInfo fileInfo(fileName);
+        QFile file(QString::fromLatin1("%1%2_%3.%4").arg(directory, fileInfo.baseName(),
+            QLocale().name().toLower(), fileInfo.completeSuffix()));
         if (!file.open(QIODevice::ReadOnly)) {
-            throw Error(tr("Could not open the requested license file at %1: %2").arg(fileName,
-                file.errorString()));
+            // No translated license, use untranslated file
+            qDebug("Unable to open translated license file. Using untranslated fallback.");
+            file.setFileName(directory + fileName);
+            if (!file.open(QIODevice::ReadOnly)) {
+                throw Error(tr("Could not open the requested license file at %1: %2").arg(fileName,
+                    file.errorString()));
+            }
         }
         d->m_licenses.insert(it.key(), qMakePair(fileName, QTextStream(&file).readAll()));
     }
