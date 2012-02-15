@@ -62,3 +62,8 @@ macx {
 }
 
 OTHER_FILES = $$HELP_DEP_FILES
+
+fixnavi.commands = \
+    cd $$replace(PWD, "/", $$QMAKE_DIR_SEP) && \
+    perl fixnavi.pl installerfw.qdoc .
+QMAKE_EXTRA_TARGETS += fixnavi
