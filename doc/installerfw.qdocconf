@@ -1,4 +1,4 @@
-project     = "installerfw"
+project     = "Qt Installer Framework Manual"
 description = "Qt Installer Framework Manual"
 
 headerdirs =

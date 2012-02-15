@@ -1,61 +1,102 @@
+/****************************************************************************
+**
+** This file is part of Qt Installer Framework
+**
+** Copyright (c) 2012 Nokia Corporation and/or its subsidiary(-ies).
+**
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+**
+** GNU Free Documentation License
+**
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of this
+** file.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at qt-info@nokia.com.
+**
+****************************************************************************/
+
 /*!
-    \contentspage{index.html}{InstallerFramework}
+    \contentspage{index.html}{Qt Installer Framework}
+    \previouspage noninteractive.html
     \page scripting.html
+    \nextpage operations.html
 
     \title Component Scripting
 
-    \section1 Scripting abilities inside of components
+    For each component, you can specify one script that is loaded and run by the
+    installer. The script format has to be compatible with QScriptEngine.
 
-    Each component can specify one script, which is loaded and run by the
-    installer. The format has to be compatible to QScriptEngine.
+    \section1 Construction
 
-    \section1 Contruction
+    The script has to contain a \c Component object that the installer creates
+    when it loads the script. Therefore, the script must contain at
+    least the \a Component() function, which performs initialization, such as
+    putting pages in the correct places or connecting signals and slots.
 
-    The script has to provide an object Component, which will be created by the
-    Installer when loading the script. Therefore the script must contains at
-    least a function Component(), which can do all the initialization needed,
-    like putting user interfaces in place or connecting signals/slots:
+    The following code snippet places the \a ErrorPage (which is the class
+    name of the user interface file loaded from errorpage.ui) in front of the
+    ready for installation page and sets its completeness to \c false.
 
     \code
     function Component()
     {
-        // let's assume we have a user interface ErrorPage - which should not be complete
+        // Add a user interface file called ErrorPage, which should not be complete
         installer.addWizardPage( component, "ErrorPage", QInstaller.ReadyForInstallation );
         component.userInterface( "ErrorPage" ).complete = false;
     }
     \endcode
 
-    The example above places the user interface "ErrorPage" (which is the class
-    name of the ui file loaded from errorpage.ui) in front of the installer
-    page "Ready for Installation" and sets his completeness to false. See the
-    documentation for addWizardPage and userInterface for details.
+    For more information, see the documentation for \a addWizardPage and
+    \a userInterface.
 
     \section1 Installer Hooks
 
-    You can add several hook methods into your script:
+    You can add the following hook methods into your script:
 
-    \list
-    \o \bold{Component.prototype.retranslateUi} is called, whenever the language of the Installer changes.
-    \o \bold{Component.prototype.createOperations} - see QInstaller::Component::createOperations
-    \o \bold{Component.prototype.createOperationsForArchive} - see QInstaller::Component::createOperationsForArchive
-    \o \bold{Component.prototype.createOperationsForPath} - see QInstaller::Component::createOperationsForPath
-    \endlist
+    \table
+        \header
+            \o  Method
+            \o  Description
+        \row
+            \o  \a{Component.prototype.retranslateUi}
+            \o  Called when the language of the installer changes.
+        \row
+            \o  \a{Component.prototype.createOperations}
+            \o  See \a QInstaller::Component::createOperations.
+        \row
+            \o  \a{Component.prototype.createOperationsForArchive}
+            \o  See \a QInstaller::Component::createOperationsForArchive.
+        \row
+            \o  \a{Component.prototype.createOperationsForPath}
+            \o  See \a QInstaller::Component::createOperationsForPath.
+    \endtable
 
-    \section1 Global variables
+    \section1 Global Variables
 
-    The Installer puts the following symbols into the scripts space:
+    The installer puts the following symbols into the script space:
 
-    \list
-    \o \bold{installer} A reference to the component's Installer
-    \o \bold{component} A reference to the component's Component
-    \endlist
+    \table
+        \header
+            \o  Symbol
+            \o  Description
+        \row
+            \o  installer
+            \o  Reference to the \a installer of the component
+        \row
+            \o  component
+            \o  Reference to the \a Component of the component
+    \endtable
 
-    All methods marked with \a Q_INVOKABLE as well as all signals, slots and
+    All methods marked with \a Q_INVOKABLE as well as all signals, slots, and
     properties can be used by the script.
 
-    \section1 Message boxes
+    \section1 Message Boxes
 
-    You can show a QMessageBox from within the script by using:
+    You can show a \a QMessageBox from within the script by using:
 
     \code
     QMessageBox.critical
@@ -64,27 +105,28 @@
     QMessageBox.warning
     \endcode
 
-    For your convenience, the values for QMessageBox::StandardButton are made
-    available by using QMessageBox.Ok, QMessageBox.Open, ...
+    For your convenience, the values for \a QMessageBox::StandardButton are made
+    available by using \a QMessageBox.Ok, \a QMessageBox.Open, and so on.
 
-    \section1 Adding operations to the component
+    \section1 Adding Operations to Components
 
-    In certain situations if it very useful to add custom operations after
-    extracting the content. Those include copying files as well as patching
-    content of files, etc.
-    Update operations can be created and added to the installation from within
-    a script using QInstaller::Component::addOperation.
-    Every operation has an unique key used for identification and up to five
-    parameters. Inside of the parameters, you can use variables as set in
-    QInstaller::Installer::setValue. See the list of
-    \l{Predefined variables}{predefined variables}.
+    You might want to add custom operations after extracting the content, when
+    copying files or patching file content, for example. You can create and add
+    update operations to the installation from within
+    a script using \a QInstaller::Component::addOperation.
 
-    A list of all available operations can be found \l{Operations}{here}
+    Each operation has a unique key used for identification and can take up to
+    five parameters. In the parameter values, you can use variables as set in
+    \a QInstaller::Installer::setValue. For more information, see
+    \l{Predefined Variables}.
 
-  \section1 Custom Operations
+    For a summary of all available operations, see \l{Operations}.
 
-  It is possible to register custom installation operations in the Installer. This works by deriving KDUpdater::UpdateOperation.
-  See the following code to know which methods must be implemented:
+    \section1 Registering Custom Operations
+
+    You can register custom installation operations in the installer by deriving
+    \a KDUpdater::UpdateOperation. The following code displays the methods that
+    you must implement:
 
   \code
   #include <KDUpdater/UpdateOperation>
@@ -152,33 +194,57 @@
   };
   \endcode
 
-  Finally, you need to register your custom operation class:
+    Finally, you need to register your custom operation class, as follows:
   \code
   #include <KDupdater/UpdateOperationFactory>
 
   KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< CustomOperation >( "CustomOperation" );
   \endcode
 
-  Now you can use your operation in the installer like every other of the predefined operations.
+    Now you can use your operation in the installer in the same way as the
+    predefined operations.
 
-  \section1 Predefined variables
+  \section1 Predefined Variables
 
-  Inside scripts you can use predefined variables to ease directory access. Those variables are
+    You can use the following predefined variables in scripts to facilitate
+    directory access:
 
-    \list
-    \o \bold ProductName The name of the product to be installed as defined in config.xml
-    \o \bold ProductVersion The version of the product to be installed as defined in config.xml
-    \o \bold Title The title of the installation program as defined in config.xml
-    \o \bold Publisher The publisher of the installation program as defined in config.xml
-    \o \bold Url Product URL as defined in config.xml
-    \o \bold StartMenuDir Start menu group as defined in config.xml. Applies only to Microsoft Windows
-    \o \bold LicenseFile File name of the program license as defined in config.xml
-    \o \bold TargetDir Target directory for installation as selected by the user.
-    \o \bold DesktopDir Directory containing the user's desktop.
-    \o \bold os The current platform, might be "x11", "win" or "mac"
-    \endlist
+    \table
+        \header
+            \o  Symbol
+            \o  Description
+        \row
+            \o  ProductName
+            \o  Name of the product to be installed, as defined in config.xml.
+        \row
+            \o  ProductVersion
+            \o  Version number of the product to be installed, as defined in
+                config.xml.
+        \row
+            \o  Title
+            \o  Title of the installation program, as defined in config.xml.
+        \row
+            \o  Publisher
+            \o  Publisher of the installation program, as defined in config.xml.
+        \row
+            \o  Url
+            \o  Product URL, as defined in config.xml.
+        \row
+            \o  StartMenuDir
+            \o  Start menu group, as defined in config.xml. Available on
+                Windows, only.
+        \row
+            \o  TargetDir
+            \o  Target directory for installation, as selected by the user.
+        \row
+            \o  DesktopDir
+            \o  Name of the directory that contains the user's desktop.
+        \row
+            \o  os
+            \o  Current platform: \c "x11", \c "win", or \c "mac".
+    \endtable
 
-    \note You can use these variables inside of the parameter list for
-    installation operations. \a{"{TargetDir}/settings.xml"} might be expanded
-    to \a{"C:/Program Files/My Program/settings.xml"}.
+    \note You can use the variables in the parameter list for installation
+    operations. For example, \c{"{TargetDir}/settings.xml"} might be expanded
+    to: \c{"C:/Program Files/My Program/settings.xml"}.
 */

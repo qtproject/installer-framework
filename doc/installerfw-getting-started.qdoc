@@ -1,0 +1,110 @@
+/****************************************************************************
+**
+** This file is part of Qt Installer Framework
+**
+** Copyright (c) 2012 Nokia Corporation and/or its subsidiary(-ies).
+**
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+**
+** GNU Free Documentation License
+**
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of this
+** file.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at qt-info@nokia.com.
+**
+****************************************************************************/
+
+/*!
+    \contentspage {index.html}{Qt Installer Framework}
+    \previouspage ifw-use-cases-settings.html
+    \page ifw-getting-started.html
+    \nextpage ifw-tutorial.html
+
+    \title Getting Started
+
+    Qt Installer Framework is developed as part of the Qt project. Fetch the
+    sources from Gitorious and build the necessary tools before you start to
+    create installers for your products.
+
+    \section1 Supported Platforms
+
+    You can use the Qt Installer Framework to create installers for all
+    platforms supported by
+    \l{http://doc.qt.nokia.com/5.0-snapshot/supported-platforms.html}
+    {desktop Qt}.
+
+    The installers have been tested on the following platforms:
+
+    \list
+        \o Microsoft Windows XP, and later
+        \o Ubuntu Linux 8.04, and later
+        \o Mac OS X 10.6, and later
+    \endlist
+
+    \section1 Configuring Qt
+
+    If you use a statically built Qt to create your installer, you do not have
+    to deliver Qt libraries, which enables you to distribute the installer as
+    one package.
+
+    \section2 Configuring Qt for Windows
+
+    Specify the following settings in the qmake.conf configuration file:
+
+    \code
+    MAKEFILE_GENERATOR      = MSVC.NET
+    TEMPLATE                = app
+    CONFIG                  += qt warn_on release incremental flat link_prl precompile_header autogen_precompile_source copy_dir_files debug_and_release debug_and_release_target
+    QT                      += core gui
+    DEFINES                 += UNICODE WIN32 QT_LARGEFILE_SUPPORT
+    QMAKE_COMPILER_DEFINES  += _MSC_VER=1400 WIN32
+    QMAKE_YACCFLAGS         = -d
+    QMAKE_CFLAGS            = -nologo -Zm200 -Zc:wchar_t-
+    QMAKE_CFLAGS_WARN_ON    = -W3
+    QMAKE_CFLAGS_WARN_OFF   = -W0
+    QMAKE_CFLAGS_RELEASE    = -O2 -MT
+    QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO += -O2 -MT -Zi
+    QMAKE_CFLAGS_DEBUG      = -Zi -MTd
+    QMAKE_CFLAGS_YACC       =
+    QMAKE_CFLAGS_LTCG       = -GL
+    \endcode
+
+    We recommend that you use the following options when you configure Qt for
+    Windows:
+
+    \code
+    configure.exe -platform win32-msvc20XX -release -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -no-svg -no-multimedia -no-declarative -no-declarative-debug -nomake examples -nomake demos -qt-sql-sqlite -plugin-sql-sqlite -opensource
+    \endcode
+
+    \section2 Configuring Qt for Linux and Mac OS X
+
+    We recommend that you use the following configuration options for Linux and
+    Mac OS X:
+
+    \code
+    configure -nomake examples -nomake demos -qt-zlib -qt-gif -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -opensource -developer-build -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -no-svg -release
+    \endcode
+
+    \section1 Setting up Qt Installer Framework
+
+    \list 1
+
+        \o  Clone the Qt Installer Framework source code from
+            \l{http://gitorious.org/qt-labs/installer-framework}
+            to get the sources for the tools.
+
+        \o  Build the \c installerbase, \c binarycreator, and \c repogen tool
+            in the \c installerbuilder directory, as any Qt project.
+
+    \endlist
+
+    \note To contribute patches to Qt Installer Framework, follow the standard
+    Qt processes and guidelines. For more information, see
+    \l{http://qt-project.org/}{Contribute to the Qt Project}.
+
+*/

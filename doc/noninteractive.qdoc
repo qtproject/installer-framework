@@ -1,97 +1,162 @@
+/****************************************************************************
+**
+** This file is part of Qt Installer Framework
+**
+** Copyright (c) 2012 Nokia Corporation and/or its subsidiary(-ies).
+**
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+**
+** GNU Free Documentation License
+**
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of this
+** file.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at qt-info@nokia.com.
+**
+****************************************************************************/
+
 /*!
-    \contentspage{index.html}{InstallerFramework}
+    \contentspage{index.html}{Qt Installer Framework}
+    \previouspage ifw-component-description.html
     \page noninteractive.html
+    \nextpage scripting.html
 
-    \title Non Interactive Installation
+    \title Installer Pages
 
-    \section1 Installer Page Callbacks
+    This section describes the functions that are called to implement the
+    installer pages and the widgets available on each page, such as push
+    buttons, radio buttons, and line edits.
 
-    \section2 builtinpages Built-in pages
+    \section1 Introduction Page
 
-    \section3 IntroductionPageCallback
+    Call the \a IntroductionPageCallback function to construct the introduction
+    page.
+
     Wizard buttons:
     \list
-    \o  Next
-    \o  Cancel
+        \o  \gui Next
+        \o  \gui Cancel
     \endlist
 
-    \section3 LicenseAgreementPageCallback
+    \section1 License Check Page
+
+    Call the \a LicenseAgreementPageCallback function to construct the license
+    check page.
+
     Wizard buttons:
     \list
-    \o Next
-    \o Cancel
-    \o Back
+        \o  \gui Next
+        \o  \gui Cancel
+        \o  \gui Back
     \endlist
 
     Radio buttons:
     \list
-    \o acceptLicenseRB (radio button): Accepts the license Agreement (unchecked by default)
-    \o rejectLicenseRB (radio button): Rejects the license Agreement (checked by default)
+    \o \a acceptLicenseRB
+
+       Accepts the license agreement. Not selected by default.
+    \o \a rejectLicenseRB
+
+       Rejects the license agreement. Selected by default.
     \endlist
 
-    \section3 TargetDirectoryPageCallback
+    \section1 Target Directory Selection Page
+
+    Call the \a TargetDirectoryPageCallback function to implement the target
+    directory selection page.
+
     Wizard buttons:
     \list
-    \o Next
-    \o Cancel
-    \o Back
+        \o \gui Next
+        \o \gui Cancel
+        \o \gui Back
     \endlist
 
-    targetDirectoryLE (line edit): The target directory for installation
+    To specify a default value for the target directory for installation, use
+    the \a targetDirectoryLE line edit widget.
 
-    \section3 ComponentSelectionPageCallback
+    \section1 Component Selection Page
+
+    Call the \a ComponentSelectionPageCallback function to implement the
+    component selection page.
+
     Wizard buttons:
     \list
-    \o Next
-    \o Cancel
-    \o Back
+        \o  \gui Next
+        \o  \gui Cancel
+        \o  \gui Back
     \endlist
 
     Methods:
     \list
-    \o selectComponent( id ): selects the component with the ID id (string)
-    \o deselectComponent( id ): deselects the component with the ID id (string)
+        \o  \a {selectComponent( id )}
+
+            Selects the component with \c id (string).
+        \o  \a {deselectComponent( id )}
+
+            Deselects the component with \c id (string).
     \endlist
 
-    In uninstallation mode, additional controls are available:
+    In uninstallation mode, additional radio buttons are available:
     \list
-    \o uninstallAllComponentsRB (radio button): Uninstall all components (default)
-    \o keepSelectedComponentsRB (radio button): Uninstall only unselected components (deselectComponent/selectComponent to modify them)
+        \o  \a uninstallAllComponentsRB
+
+            Uninstalls all components. Default.
+        \o  \a keepSelectedComponentsRB
+
+            Uninstalls only unselected components. Mark components selected
+            (\a selectComponent) or not selected (\a deselectComponent) to add
+            and remove components.
     \endlist
 
-    \section3 ReadyForInstallationPageCallback
-    Wizard buttons:
-    \list
-    \o Next ("Install")
-    \o Cancel
-    \o Back
-    \endlist
+    \section1 Ready for Installation Page
 
-    \section3 PerformInstallationPage
-
-    details.button (push button): Shows/hides installation details
-
-    Wizard buttons:
-    \list
-    \o Cancel
-    \endlist
-
-    \section3 FinishedPageCallback
+    Call the \a ReadyForInstallationPageCallback function to implement the ready
+    for installation page.
 
     Wizard buttons:
     \list
-    \o Finish
+        \o  \gui Install
+        \o  \gui Cancel
+        \o  \gui Back
     \endlist
 
-    \section2 Custom Pages
+    \section1 Perform Installation Page
+
+    Call the \a IntroductionPageCallback function to implement the perform
+    installation page.
+
+    To show or hide installation details, implement the \a details.button push
+    button widget.
+
+    Wizard buttons:
+    \list
+        \o  \gui Cancel
+    \endlist
+
+    \section1 Installation Finished Page
+
+    Call the \a FinishedPageCallback function to implement the installation
+    finished page.
+
+    Wizard buttons:
+    \list
+        \o  \gui Finish
+    \endlist
+
+    \section1 Custom Pages
 
     Custom pages are registered as \a{Dynamic${ObjectName}}, where \a{${ObjectName}}
     is the object name set in the UI file.
-    Thus the callback called is \a{Dynamic${ObjectName}Callback()}. Widgets can
+    Thus, the \a{Dynamic${ObjectName}Callback()} function is called. Widgets can
     be addressed using their object names (from the UI file):
     \code
     var page = pageWidgetByObjectName( "DynamicSomePage" )
-    page.myButton.click //direct child of the UI file's widgte
+    page.myButton.click //direct child of the UI file's widget
     page.someFancyWidget.subWidget.setText( "foobar" ) // nested widget
     \endcode
 
@@ -103,25 +168,30 @@
                       \o Possible Answers
                       \o Description
     \row
-                      \o cancelInstallation
+                      \o \a cancelInstallation
                       \o Yes, No
-                      \o Confirmation for canceling the installation (Cancel button in the wizard)
+                      \o Confirmation for canceling the installation when end
+                         users select \gui Cancel on the installer pages.
     \row
-                      \o overwriteTargetDirectory
+                      \o \a overwriteTargetDirectory
                       \o Yes, No
-                      \o Confirmation to use an already existing directory as target
+                      \o Confirmation for using an already existing directory as
+                         the target directory for installation.
     \row
-                      \o installationError
-                      \o Ok
-                      \o A fatal error occurred while performing the installation
+                      \o \a installationError
+                      \o OK
+                      \o A fatal error occurred while performing the
+                         installation.
     \row
-                      \o installationErrorWithRetry
+                      \o \a installationErrorWithRetry
                       \o Retry, Ignore, Cancel
-                      \o An error occurred while performing the installation, Retry possible
+                      \o An error occurred while performing the installation.
+                         End users can select \gui Retry to try again.
     \row
-                      \o metaInfoJobError
-                      \o Ok
-                      \o Error occurred retrieving meta information (online installer)
+                      \o \a metaInfoJobError
+                      \o OK
+                      \o An error occurred while retrieving meta information
+                         when using an online installer.
     \endtable
 
 */

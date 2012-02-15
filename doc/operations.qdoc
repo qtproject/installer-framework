@@ -1,153 +1,170 @@
+/****************************************************************************
+**
+** This file is part of Qt Installer Framework
+**
+** Copyright (c) 2012 Nokia Corporation and/or its subsidiary(-ies).
+**
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+**
+** GNU Free Documentation License
+**
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of this
+** file.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at qt-info@nokia.com.
+**
+****************************************************************************/
+
 /*!
-    \contentspage{index.html}{InstallerFramework}
+    \contentspage{index.html}{Qt Installer Framework}
+    \previouspage scripting.html
     \page operations.html
+    \nextpage ifw-tools.html
 
     \title Operations
 
-    \section1 Can be called manually on the uninstaller/installer if needed
+    You can call operations manually on the uninstaller or installer.
 
-    qt version registration for example:
+    For example, to register the Qt version in Qt Creator, call the
+    "RegisterQtInCreatorV23" operation with the following syntax:
     \code
     SDKMaintenanceTool --runoperation "RegisterQtInCreatorV23" "<displayname>" "<qtpath>" "<target: Symbian/Maemo/Desktop/Simulator/WinCE>" "<internal_ID>"
     \endcode
 
-    \section1 Following a list of all available operations
-
-    \section2 Copy
-
-  \bold Syntax: "Copy" \a source \a target
-
-  Copies a file from \a source to \a target.
-
-
-  \section2 Move
-
-  \bold Syntax: "Move" \a source \a target
-
-  Moves a file from \a source to \a target.
-
-
-  \section2 Delete
-
-  \bold Syntax: "Delete" \a filename
-
-  Deletes the file specified by \a filename.
-
-
-  \section2 Mkdir
-
-  \bold Syntax: "Mkdir" \a path
-
-  Creates the directory path \a path.
-
-
-  \section2 Rmdir
-
-  \bold Syntax: "Rmdir" \a path
-
-  Removes the directory path \a path.
-
-
-  \section2 AppendFile
-
-  \bold Syntax: "AppendFile" \a filename \a text
-
-  Appends \a text to the file specified by \a filename. \a is threated as ASCII text.
-
-
-  \section2 PrependFile
-
-  \bold Syntax: "PrependFile" \a filename \a text
-
-  Prepends \a text to the file specified by \a filename. \a is threated as ASCII text.
-
-
-  \section2 Execute
-
-  \bold Syntax: "Execute" [{\a exitcodes}] \a command [\a parameter1 [\a parameter2 [\a parameter3 [\a parameter4]]]]
-
-  Executes the command specified by \a command. Up to four parameters can be passed.
-
-  Optionally, you can pass a comma separated list of numbers in {} as first argument, which defines the "valid" exit codes
-  of the process, i.e. the codes the execution is considered being successful. This defaults to "{0}".
-
-  \section2 CreateShortcut
-
-  \bold Syntax: "CreateShortcut" \a filename \a linkname [\a arguments]
-
-  Creates a shortcut from the file specified by \a filename to \a linkname.
-  On Windows, this will create a .lnk file which can have \a arguments, on Unix this will create a symobic link.
-
-
-  \section2 CreateDesktopEntry
-
-  \bold Syntax: "CreateDesktopEntry" \a filename \a "key=value[\nkey2=value2[\nkey3=value3]]]"
-
-  Creates an INI-file like .desktop file as specified by freedesktop.org
-  If \a filename is absolute, the desktop entry is stored there. Otherwise it's stored in locations defined in $XDG_DATA_DIRS/applications
-  or $XDG_DATA_HOME/applications, including the default pathes for boths, as defined by freedesktop.org.
-
-  The key/value pairs are written in the file.
-
-  The file is set to a encoding of UTF-8.
-
-  \section2 InstallIcons
-
-  \bold Syntax: "InstallIcons" \a directory
-
-  Installs the contents of \a directory into a location as specified by freedesktop.org, i.e. in any of $XDG_DATA_DIRS/icons or /usr/share/icons
-  or $HOME/.icons. The files are removed from their initial location. Make sure to add this operation after the operation extracting them form the archive.
-
-  \section2 Extract
-
-  \bold Syntax: "Extract" \a archive \a targetdirectory
-
-  Extracts \a archive to \a targetdirectory
-
-
-  \section2 GlobalConfig
-
-  \bold Syntax: "GlobalConfig" \a company \a application \a key \a value <br>
-  \a or <br>
-  \bold Syntax: "GlobalConfig" \a filename \a key \a value
-
-  Stores \a value for \a key in a configuration file. The configuration file is either
-  specified by \a filename (using QSettings::NativeFormat, which might be the Windows registry)
-  or via the \a application and the \a company name.
-
-
-  \section2 EnvironmentVariable
-
-  \bold Syntax: "EnvironmentVariable" \a key \a value [[\a persistent] \a system]
-
-  Sets the envirnoment variable \a key to a \a value. If \a persistent is set to true, the variable
-  will be set persistently. This is currently only supported on Windows. If \a system is set to true, the
-  persistent variable will be set system wide, not only for the current user.
-
-
-  \section2 RegisterFileType
-
-  \bold Syntax: "RegisterFileType" \a extension \a command [\a description [\a contentType [\a icon]]].
-
-  Registers the file type with \a extension to be opened via \a command. Optionally, you can specify
-  a \a description, a \a contentType and an \a icon. This is currently only supported on Windows.
-
-
-  \section2 RegisterQtInCreatorV2
-
-  \bold Syntax: "RegisterQtInCreatorV2", \a displayname, \a qt_or_qmake_path, [\a system_root, [\a sbs_path]].
-
-  Registers the Qt version \a displayname to Qt Creator with \a qt_or_qmake_path (if the path does not end with the qmake binary, it will add bin/qmake to the path automatically). Optionally, you can specify a\ system_root which. For Symbian SDKs the instance root will be where Qt Creator will find the Symbian SDK root (EPOCROOT).  For Symbian SDKs supporting sbs, you add the \a sbs_path .
-
-  \note The minimum Qt Creator version it supports is 2.2
-
-
-  \section2 RegisterQtInCreatorV23
-
-  \bold Syntax: "RegisterQtInCreatorV23", \a displayname, \a qt_path, \a target, \a internal_id.
-
-  Registers the Qt version \a displayname to Qt Creator with \a qt_path. Target means one of the Qt type in QtCreator(Symbian/Maemo/Desktop/Simulator/WinCE) and \a the internal_id is used to update or remove this Qt version.
-
-  \note The minimum Qt Creator version it supports is 2.3
+    \section1 Summary of Operations
+
+    The following table summarizes the available operations and their syntax.
+
+    \table
+        \header
+            \o  Operation
+            \o  Syntax
+            \o  Use
+        \row
+            \o  Copy
+            \o  "Copy" \a source \a target
+            \o  Copies a file from \a source to \a target.
+        \row
+            \o  Move
+            \o  "Move" \a source \a target
+            \o  Moves a file from \a source to \a target.
+        \row
+            \o  Delete
+            \o  "Delete" \a filename
+            \o  Deletes the file specified by \a filename.
+        \row
+            \o  Mkdir
+            \o  "Mkdir" \a path
+            \o  Creates the directory path \a path.
+        \row
+            \o  Rmdir
+            \o  "Rmdir" \a path
+            \o  Removes the directory path \a path.
+        \row
+            \o  AppendFile
+            \o  "AppendFile" \a filename \a text
+            \o  Appends \a text to the file specified by \a filename. \a text is
+                treated as ASCII text.
+        \row
+            \o  PrependFile
+            \o  "PrependFile" \a filename \a text
+            \o  Prepends \a text to the file specified by \a filename. \a text
+                is treated as ASCII text.
+        \row
+            \o  Execute
+            \o  "Execute" [{\a exitcodes}] \a command [\a parameter1 [\a parameter2 [\a parameter3 [\a parameter4]]]]
+            \o  Executes the command specified by \a command. Up to four
+                parameters can be passed.
+
+                Optionally, you can pass a comma-separated list of exit codes
+                within curly brackets ({}) as the first argument to specify the
+                exit codes for successful execution. This defaults to "{0}".
+        \row
+            \o  CreateShortcut
+            \o  "CreateShortcut" \a filename \a linkname [\a arguments]
+            \o  Creates a shortcut from the file specified by \a filename to
+                \a linkname.
+                On Windows, this creates a .lnk file which can have
+                \a arguments. On Unix, this creates a symbolic link.
+        \row
+            \o  CreateDesktopEntry
+            \o  "CreateDesktopEntry" \a filename \a "key=value[\nkey2=value2[\nkey3=value3]]]"
+            \o  Creates a .desktop initialization file, as specified by
+                freedesktop.org.
+
+                If \a filename is absolute, the desktop entry is stored there.
+                Otherwise, it is stored in the location specified in
+                \c{$XDG_DATA_DIRS/applications} or
+                \c{$XDG_DATA_HOME/applications}, including the default paths for
+                both, as defined by freedesktop.org.
+
+                The key-value pairs are written to the file.
+
+                The file is set to use UTF-8 encoding.
+        \row
+            \o  InstallIcons
+            \o  "InstallIcons" \a directory
+            \o  Installs the contents of \a directory into a location, as
+                specified by freedesktop.org. That is, into
+                \c {$XDG_DATA_DIRS/icons}, \c {/usr/share/icons}, or
+                \c {$HOME/.icons}. The files are removed from their initial
+                location. Make sure to add this operation after the operation
+                that extracts the files from the archive.
+        \row
+            \o  Extract
+            \o  "Extract" \a archive \a targetdirectory
+            \o  Extracts \a archive to \a targetdirectory.
+
+        \row
+            \o  GlobalConfig
+            \o  "GlobalConfig" \a company \a application \a key \a value
+
+                or
+
+                "GlobalConfig" \a filename \a key \a value
+            \o  Stores \a value for \a key in a configuration file. The
+                configuration file is specified either by \a filename
+                (using \a QSettings::NativeFormat, which might be the Windows
+                registry) or by \a application and \a company name.
+        \row
+            \o  EnvironmentVariable
+            \o  "EnvironmentVariable" \a key \a value [[\a persistent] \a system]
+            \o  Sets the environment variable \a key to \a value. If
+                \a persistent is set to \c true, the variable is set
+                persistently. This is currently only supported on Windows.
+                If \a system is set to \c true, the persistent variable is set
+                system-wide, not only for the current user.
+        \row
+            \o  RegisterFileType
+            \o  "RegisterFileType" \a extension \a command [\a description [\a contentType [\a icon]]].
+            \o  Registers the file type with \a extension to be opened via
+                \a command. Optionally, you can specify \a description,
+                \a contentType, and \a icon. This is currently only supported on
+                Windows.
+        \row
+            \o  RegisterQtInCreatorV2
+            \o  "RegisterQtInCreatorV2", \a displayname, \a qt_or_qmake_path, [\a system_root, [\a sbs_path]].
+            \o  Registers the Qt version \a displayname to Qt Creator with
+                \a qt_or_qmake_path (if the path does not end with the qmake
+                binary, adds \c{bin/qmake} to the path automatically). Optionally,
+                you can specify \a system_root. For Symbian SDKs, Qt Creator
+                finds the Symbian SDK root (EPOCROOT) in the instance root. For
+                Symbian SDKs that support SBS, add \a sbs_path.
+
+                \note Supports Qt Creator 2.2, or later.
+        \row
+            \o  RegisterQtInCreatorV23
+            \o  "RegisterQtInCreatorV23", \a displayname, \a qt_path, \a target, \a internal_id.
+            \o  Registers the Qt version \a displayname to Qt Creator with
+                \a qt_path. \a target is a Qt version in Qt Creator (Symbian,
+                Maemo, Desktop, Qt Simulator, WinCE) and \a internal_id is used
+                to update or remove the Qt version.
+
+                \note Supports Qt Creator 2.3, or later.
+    \endtable
 
 */

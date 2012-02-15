@@ -1,3 +1,24 @@
+/****************************************************************************
+**
+** This file is part of Qt Installer Framework
+**
+** Copyright (c) 2012 Nokia Corporation and/or its subsidiary(-ies).
+**
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+**
+** GNU Free Documentation License
+**
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of this
+** file.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at qt-info@nokia.com.
+**
+****************************************************************************/
+
 // **********************************************************************
 // NOTE: the sections are not ordered by their logical order to avoid
 // reshuffling the file each time the index order changes (i.e., often).
@@ -5,71 +26,119 @@
 // **********************************************************************
 
 /*!
-    \contentspage{index.html}{InstallerFramework}
+    \contentspage{index.html}{Qt Installer Framework}
     \page index.html
-    \nextpage ifw-globalconfig.html
+    \nextpage ifw-overview.html
 
     \title Qt Installer Framework Manual
 
     \section1 Version 1.2.1
 
     The Qt Installer Framework provides a set of tools and utilities to
-    create installers for all supported desktop Qt platforms.
+    create installers for the supported desktop Qt platforms: Linux, Microsoft
+    Windows, and Mac OS X.
 
-    Tested platforms currently include:
-    \list
-        \o Microsoft Windows (Windows XP and following)
-        \o Linux (Ubuntu 8.04 and following)
-        \o Mac OS-X (10.6 and following)
-    \endlist
-
-    Those installers can either be stand-alone or download content from a
-    networking resource via http transfer. For installers fetching data from
-    a webserver, tools are available to post install items after the initial
-    setup as well as update mechanisms are provided as soon as those are
-    published on the server.
-
-
-    \note Please report bugs in the Qt SDK bugtracking system
-    \l{http://bugreports.qt-project.org/browse/QTIFW}{here}.
+    \note Report bugs and suggestions for the Qt Installer Framework project
+    in the \l{https://bugreports.qt-project.org/browse/QTIFW}{Qt Bugtracker}.
 
     \list
-        \o Structure of a installer creation setup
-            \list
-                \o \l{Global Configuration}
-                \o \l{Component Description}
-                \o \l{Included Tools}
-            \endlist
-        \o \l{Tutorial}
-        \o \l{Component Scripting}
-           \list
-                \o \l{Operations}
-           \endlist
-        \o Enhanced instructions
-           \list
-                \o \l{Creating online installers}
-                \o \l{Pure offline installers}
-                \o \l{Creating updates}
-                \o \l{Non Interactive Installation}
-           \endlist
-        \o \l{Known Issues}
+        \o  \l{Overview of Qt Installer Framework}
+        \o  \l{Using Qt Installers}
+        \list
+            \o  \l{Initial Installation}
+            \o  \l{Adding Components}
+            \o  \l{Removing Components}
+            \o  \l{Updating Components}
+            \o  \l{Specifying Settings}
+        \endlist
+        \o  \l{Getting Started}
+        \o  \l{Tutorial: Creating an Installer}
+        \o  \l{Creating Qt Installers}
+        \list
+            \o  \l{Creating Offline Installers}
+            \o  \l{Creating Online Installers}
+            \o  \l{Promoting Updates}
+            \o  \l{Customizing Installers}
+        \endlist
+        \o \l{Reference}
+        \list
+            \o  \l{Configuration File}
+            \o  \l{Package Directory}
+            \o  \l{Installer Pages}
+            \o  \l{Component Scripting}
+            \o  \l{Operations}
+            \o  \l{Tools}
+        \endlist
+        \o  \l{Known Issues}
     \endlist
 */
 
 /*!
     \contentspage index.html
-    \previouspage index.html
+    \previouspage ifw-tutorial.html
+    \page ifw-creating-installers.html
+    \nextpage ifw-offline-installers.html
+
+    \title Creating Qt Installers
+
+    The following steps are needed to create offline and online installers:
+
+    \list 1
+
+        \o  Create a \e {package directory} for the installable components.
+            For more information, see \l{Package Directory}.
+
+        \o  Create a configuration file called \c config.xml in the \c config
+            directory. It contains information about how to build the installer
+            binaries and online repositories. For more information about the
+            file format and available settings, see
+            \l{Configuration File}.
+
+        \o  Create a package information file called \c package.xml in the
+            \c {config\meta} directory. It contains settings for deployment and
+            the installation process. For more information, see
+            \l{Meta Directory}.
+
+        \o  Create installer content and copy it to the package directory.
+            For more information, see \l{Data Directory}.
+
+        \o  For online installers, use the \c repogen tool to create the
+            repository that contains the installable content and upload the
+            repository to a web server.
+
+        \o  Use the \c binarycreator tool to create the installer. For more
+            information, see \l{Tools}.
+
+    \endlist
+
+    For an example of how to create a simple installer that uses the predefined
+    installer pages, see \l{Tutorial: Creating an Installer}.
+
+    The following sections describe how to create different types of installers:
+
+    \list
+        \o  \l{Creating Offline Installers}
+        \o  \l{Creating Online Installers}
+        \o  \l{Promoting Updates}
+        \o  \l{Customizing Installers}
+    \endlist
+*/
+
+/*!
+    \contentspage index.html
+    \previouspage ifw-reference.html
     \page ifw-globalconfig.html
     \nextpage ifw-component-description.html
 
-    \title Global Configuration
+    \title Configuration File
 
-    For creation of installer binaries and online repositories, you need to
-    provide a config directory. This directory needs to contain at least a file
-    named \bold{config.xml} containing XML information about how to build the
-    installer.
+    A configuration file called \c config.xml specifies how to build the
+    installer binaries and online repositories. The file is located in the
+    \c config directory.
 
-    This file can look like this:
+    \section1 Configuration File Syntax
+
+    The configuration file has the following syntax:
 
     \code
 <?xml version="1.0"?>
@@ -80,7 +149,6 @@
     <Publisher>Your Company</Publisher>
     <ProductUrl>http://www.your-fantastic-company.com</ProductUrl>
     <Logo>logo.png</Logo>
-    <License>license.txt</License>
     <Watermark>watermark.png</Watermark>
     <RunProgram></RunProgram>
     <RunProgramDescription></RunProgramDescription>
@@ -113,77 +181,190 @@
 </Installer>
     \endcode
 
-    The following settings are contained in this file.
+    \section2 Summary of Configuration Settings
 
-    \list
-        \o \bold{ Name} The name of the product being installed
-        \o \bold{ Version} The version of the product being installed
-        \o \bold{ Title} The title text of the generated installer, i.e. its name
-        \o \bold{ MaintenanceTitle} The title text of the generated maintenance tool, i.e. its name
-        \o \bold{ Publisher} The publisher of the software
-        \o \bold{ ProductUrl} URL of the product
-        \o \bold{ Logo} Filename for a logo used as QWizard::LogoPixmap
-        \o \bold{ License} Filename of the license text to be accepted by the installing user
-        \o \bold{ Watermark} Filename for a watermark used as QWizard::WatermarkPixmap
-        \o \bold{ Background} Filename for an image used as QWizard::BackgroundPixmap
-        \o \bold{ RunProgram} Command executed after the installer is done, if the user accepts it
-        \o \bold{ RunProgramDescription} Text shown next to the checkbox for running the program. Defaults to "Run <Name>"
-        \o \bold{ StartMenuDir} Name of the predefined group in the Windows Start Menu
-        \o \bold{ Icon} Filename of the installer icon. On Windows, .ico is appended, on Mac, .icns is appended and on Linux, .png is appended.
-        \o \bold{ PublicKey} RSA public key to be used to verify component signatures
-        \o \bold{ PrivateKey} RSA private key to be used to sign components
-        \o \bold{ TargetDir} Predefined target directory for installation
-        \o \bold{ RemoteRepositories} List of remote repositories
-        \o \bold{ UninstallerName} File name of the generated uninstaller. Defaults to "uninstall". The platform specific executable suffixes is appended.
-        \o \bold{ AllowNonAsciiCharacters } Set this to true if the installation path can contain non ASCII characters.
-    \endlist
+    The following table summarizes the settings in the configuration file.
 
-    It is suggested that you place all files that are referred inside the
-    configuration also into the config directory. However, you can also use
-    relative paths, which the tools will resolve relative to the location of
+    \note We recommend that you place all files that you refer to in the
+    configuration file in the \c config directory. However, you can also use
+    relative paths, which the tools resolve relative to the location of
     the config.xml file.
 
-    \bold{Remote Repositories}
+    \table
+        \header
+            \o  Setting
+            \o  Description
+        \row
+            \o  Name
+            \o  Name of the product being installed.
+        \row
+            \o  Version
+            \o  Version number of the product being installed.
+        \row
+            \o  Title
+            \o  Name of the installer as displayed on the title bar.
+        \row
+            \o  MaintenanceTitle
+            \o  Name of the maintenance tool as displayed on the title bar.
+        \row
+            \o  Publisher
+            \o  Publisher of the software.
+        \row
+            \o  ProductUrl
+            \o  URL to a page that contains product information on your web
+                site.
+        \row
+            \o  Logo
+            \o  Filename for a logo used as \a QWizard::LogoPixmap.
+        \row
+            \o  Watermark
+            \o  Filename for a watermark used as \a QWizard::WatermarkPixmap.
+        \row
+            \o  Background
+            \o  Filename for an image used as \a QWizard::BackgroundPixmap.
+        \row
+            \o  RunProgram
+            \o  Command executed after the installer is done if the user accepts
+                the action.
+        \row
+            \o  RunProgramDescription
+            \o  Text shown next to the check box for running the program after
+                the installation. Defaults to \gui {Run <Name>}.
+        \row
+            \o  StartMenuDir
+            \o  Name of the default program group for the product in the Windows
+                \gui Start menu.
+        \row
+            \o  Icon
+            \o  Filename of the installer icon. On Windows, .ico is appended,
+                on Mac, .icns is appended, and on Linux, .png is appended.
+        \row
+            \o  PublicKey
+            \o  RSA public key that is used to verify component signatures.
+        \row
+            \o  PrivateKey
+            \o  RSA private key that is used to sign components.
+        \row
+            \o  TargetDir
+            \o  Default target directory for installation.
+        \row
+            \o  RemoteRepositories
+            \o  List of remote repositories. You can add several \c Repository
+                sections that each specify the \c Url to access the repository.
+                Optionally, you can add a \c Required section to specify whether
+                the installer should go ahead even if it cannot access the
+                server. Acceptable values are \c true and \c false. For more
+                information, see \l{Configuring Repositories}.
+        \row
+            \o  UninstallerName
+            \o  Filename of the generated uninstaller. Defaults to
+                \e uninstall. The platform-specific executable file extension is
+                appended.
+        \row
+            \o  AllowNonAsciiCharacters
+            \o  Set to \c true if the installation path can contain non-ASCII
+                characters.
+    \endtable
 
-    The installer configuration file can contain a list of several remote
-    repositories. Each of them has two properties. The first one is the
-    repository URL. In the example above, this is
-    "http://www.your-repo-location/packages/" The URL needs to contain a file
-    Updates.xml listing the available packages. See \l{Creating online installers}{Online Repository generation}
-    to read more about online repositories. The second parameter is called
-    "Required". If you set this to true, the installer won't work if this
-    repository is not available. In case the repository is accessed after an
-    installation, this will cause the maintenance tool to reject installation.
-    However, uninstallation is still possible. If you set it to false, the
-    installer will continue to work, but exclude any configuration which should
-    be on the server.
+*/
+
+/*!
+    \contentspage index.html
+    \previouspage ifw-updates.html
+    \page ifw-customizing-installers.html
+    \nextpage ifw-reference.html
+
+    \title Customizing Installers
+
+    The following sections describe how you can extend the predefined installer
+    by adding operations to the pages and by adding new pages and language
+    variants.
+
+    \section1 Adding Operations
+
+    Components can use the ECMAScript scripting language to perform additional
+    operations at any time during the installation process. Typically,
+    components manipulate files by moving, copying, or patching them.
+
+    For more information about scripting, see \l{Component Scripting}.
+
+    \section1 Adding Pages
+
+    A component can contain one or more user interface files, which are placed
+    into the installer by a script. The installer automatically loads all user
+    interface files listed in package.xml. You can access the loaded widgets
+    by calling \a QInstaller::Component::userInterface with the class name of
+    the widget, as illustrated by the following code snippet:
+
+    \code
+    component.userInterface( "MyPage" ).checkbox.checked = true;
+    \endcode
+
+    To add a new page to the installer, use
+    the \a QInstaller::Installer::addWizardPage method and specify the location
+    of the new page. For example, the following code adds an instance of
+    \a MyPage before the ready for installation page:
+
+    \code
+    installer.addWizardPage( component, "MyPage", QInstaller.ReadyForInstallation );
+    \endcode
+
+    \section1 Adding Widgets
+
+    You can also insert custom user interface elements into the installer as
+    single widgets (such as a check box).
+
+    To insert a single widget, use the
+    \a QInstaller::Installer::addWizardPageItem method.
+    For example, the following code snippet adds an instance of \a MyWidget to
+    the component selection page from within a script:
+
+    \code
+    installer.addWizardPageItem( component, "MyWidget", QInstaller.ComponentSelection );
+    \endcode
+
+    \section1 Translating Pages
+
+    The installer uses the Qt Translation system to support the translation of
+    user-readable output to several languages. To provide end users with
+    localized versions of strings contained in the component scripts and user
+    interfaces, create QTranslator files that the installation system loads
+    along with the the component. The installer loads the translation file that
+    matches the current system locale. For example, if the system locale is
+    German, the de_de.qm file is loaded.
+
+    Use the \a {qsTr()} function for literal text within scripts. Additionally,
+    you can add the \a Component.prototype.retranslateUi method to the script.
+    It is called when the language of the installer changes and the translation
+    file is loaded.
+
+    The context being used for translation is the basename of the script file
+    when using \a qsTr or the class name of the UI file when translating a user
+    interface.
+
 */
 
 /*!
     \contentspage index.html
     \previouspage ifw-globalconfig.html
     \page ifw-component-description.html
-    \nextpage ifw-tools.html
+    \nextpage noninteractive.html
 
-    \title Component Description
+    \title Package Directory
 
-    \section1 Documentation on how to create installer components.
+    Installers contain components that are either embedded to the installer
+    or loaded from a remote repository. In both cases, you need to use a file
+    format and structure for the components that the installer can read.
 
-    The Installer is based on the idea of having several components, which are
-    either embedded in the installer itself or loaded from a remote repository.
-    For both, embedding components into the installer and creating an online
-    repository, you need to keep your components in a certain format readable
-    by the installer.
+    \section1 Package Directory Structure
 
-    \section1 Directory Structure
+    Place all components in the same root directory, which is called the
+    \e {package directory}. The directory name acts as a domain-like identifier,
+    which identifies all components. For example, \c com.vendor.root.
 
-    All components need to be located inside the same root directory, which is
-    called \bold{package directory}. Components
-    are identified by a domain-like identifier. This has to be the name of the
-    directory the component data has to be placed in. Within this directory,
-    two subdirectories have to exist, called \bold{data} and \bold{meta}.
+    Within the root directory, create subdirectories called \c data and \c meta.
 
-    A package directory can look like this:
+    A package directory can look as follows:
     \code
     -packages
         - com.vendor.root
@@ -200,17 +381,18 @@
         - meta
     \endcode
 
+    \section1 Meta Directory
 
-    \section1 Contents of the meta data directory
+    The \c meta directory contains files that specify settings for deployment
+    and the installation process. The files are not extracted by the installer.
+    The directory must contain at least a package information file and all files
+    that you refer to in the package information file, such as scripts,
+    user interface files, and translations.
 
-    The meta data directory contains all files which are not to be extracted by
-    the installer but contain information about deployment and the installation
-    process.
+    \section2 Package Information File Syntax
 
-    \section2 package.xml
-
-    The file package.xml is the main source of information about the component.
-    The format of this file is XML and has for instance the following shape:
+    The package.xml file is the main source of information about a component.
+    The following is an example of a package file:
 
     \code
     <?xml version="1.0"?>
@@ -222,6 +404,9 @@
         <Name>com.vendor.root.component2</Name>
         <Dependencies>com.vendor.root.component1</Dependencies>
         <Virtual>false</Virtual>
+        <Licenses>
+            <License name="License Agreement" file="license.txt" />
+        </Licenses>
         <Script>installscript.qs</Script>
         <UserInterfaces>
               <UserInteface>specialpage.ui</UserInterface>
@@ -234,420 +419,576 @@
     </Package>
     \endcode
 
-    \section3 package value list
+    \section2 Summary of Package Information File Settings
 
+    \table
+        \header
+            \o  Setting
+            \o  Description
+        \row
+            \o  DisplayName
+            \o  Human-readable name of the component. Required.
+        \row
+            \o  Description
+            \o  Human-readable description of the component. Required.
+        \row
+            \o  Version
+            \o  Version number of the component in the following format:
+                [0-9]+((\.|-)[0-9]+)* such as 1-1; 1.2-2; 3.4.7. Required.
+        \row
+            \o  ReleaseDate
+            \o  Date when this component version was released. Optional.
+        \row
+            \o  Name
+            \o  Domain-like identification for this component. Required.
+        \row
+            \o  Dependencies
+            \o  Comma-separated list of identifiers of components that this
+                component depends on. Optionally, you can specify version
+                numbers, separated by a dash (-). You can prefix version numbers
+                with a comparison operator (=, >, <, >= or  <=). Optional. For
+                more information, see \l{Component Dependencies}.
+        \row
+            \o  AutoDependOn
+            \o  Opposite of dependencies. Defines that this component should be
+                loaded if the specified component is loaded.
+        \row
+            \o  Virtual
+            \o  Set to \c true to hide the component from the installer.
+        \row
+            \o  SortingPriority
+            \o  Priority of the component in the tree. The tree is sorted from
+                lowest to highest priority, with the lowest priority on the top.
+        \row
+            \o  Licenses
+            \o  List of license agreements to be accepted by the installing
+                user. To add several licenses, specify several \c License
+                sections that each specify the license \c name and \c file.
+        \row
+            \o  Script
+            \o  File name of a script being loaded. Optional.
+                For more information, see \l{Adding Operations}.
+        \row
+            \o  UserInterfaces
+            \o  List of pages to load. To add several pages, specify several
+                \c UserInterface sections that each specify the filename of a
+                page. Optional. For more information, see \l{Adding Pages}.
+        \row
+            \o  Translations
+            \o  List of translation files to load. To add several language
+                variants, specify several \c Translation sections that each
+                specify the filename of a language variant. Optional. For more
+                information, see \l{Translating Pages}.
+        \row
+            \o  UpdateText
+            \o  Description added to the component description if this is an
+                update to the component. Optional.
+        \row
+            \o  Default
+            \o  Possible values are: \c true, \c false, and \c script. Set to
+                \c true to preselect the component in the installer.
+                The boolean values are evaluated directly, while \c script is
+                resolved during runtime. Add the name of the script as a value
+                of the \c Script setting in this file. For an example script,
+                see \l{Selecting Default Contents}.
+        \row
+            \o  Essential
+            \o  Marks the package as essential to force a restart of the
+                \c UpdateAgent or \c MaintenanceTool. This is relevant for
+                updates found with \c UpdateAgent.
+        \row
+            \o  ForcedInstallation
+            \o  Determines that the package must always be installed. End users
+                cannot deselect it in the installer.
+        \row
+            \o  Replaces
+            \o  Comma-separated list of components to replace. Optional.
+    \endtable
+
+    \section2 Component Dependencies
+
+    Components can depend on one or several real or virtual components.
+    Dependencies are defined by using the component identifier and, optionally,
+    component version. Use a dash (-) to separate version numbers from
+    identifiers.
+
+    You can prefix version numbers with a comparison operator (=, >, <, >= or
+    <=) to indicate that the version number of the package is compared to the
+    required version and has to be equal to, greater than, less than, greater
+    than or equal to, or less than or equal to the version number specified in
+    the dependency. If no comparison operator is given, it defaults to =.
+
+    \section1 Data Directory
+
+    The \c data directory contains the content that is extracted during the
+    installation. The Qt Installer Framework uses the archivegen tool to extract
+    the files from a 7zip archive (.7z).
+
+    You have the following options:
     \list
-    \o \bold{DisplayName} The human readable name of the component - required.
-    \o \bold{Description} The human readable description of the component - required.
-    \o \bold{Version} The version number of the component needs the following format: [0-9]+((\.|-)[0-9]+)* such as 1-1; 1.2-2; 3.4.7 - required.
-    \o \bold{ReleaseDate} The day this component version was released - optional.
-    \o \bold{Name} domain-like identification for this component - required.
-    \o \bold{Dependencies} Comma-separated list of dependencies - optional.
-    \o \bold{AutoDependOn} Is the opposite of dependencies: "If foo is being loaded, load me also."
-    \o \bold{Virtual} Set to true if this is a virtual component not showing up in the installer.
-    \o \bold{SortingPriority} Priority of this component when visible in the tree. Lowest priority number is on top.
-    \o \bold{Script} File name of a script being loaded - optional.
-    \o \bold{UserInterfaces} One ore more file names of user interfaces being loaded - optional.
-    \o \bold{Translations} One ore more file names of translations being loaded - optional.
-    \o \bold{UpdateText} A description added to the component description if the component is an update - optional.
-    \o \bold{Default} If that value is set to true the component will be preselected in the installer mode
-    \o \bold{Essential} The package is marked as essential. This is relevant for updates found with UpdateAgent and it will force a restart of the UpdateAgent/MaintenanceTool.
-    \o \bold{ForcedInstallation} This packages must always be installed and can't get unchecked by the user.
-    \o \bold{Replaces} Comma-separated list of components to replace - optional.
+        \o  Copy the files to the \c data directory. Before the installer is
+            created, the files are packaged into a 7zip archive.
+        \o  Use the archivegen tool to package the files as a 7zip archive and
+            copy it to the \c data directory.
+        \o  Use some other tool to package the files as a 7zip compatible
+            archive and copy it to the \c data directory.
     \endlist
 
-    \section2 Additional features
-
-    Additionally, all files named in the package.xml - scripts, user interfaces
-    and translations - have to be in the meta data directory. Referring to
-    previous example, the directory structure looks like this:
-
-    \code
-    -packages
-        - com.vendor.root.component2
-            - data
-            - meta
-                - de_de.qm
-                - errorpage.ui
-                - installscript.qs
-                - package.xml
-                - specialpage.ui
-                - sv_se.qm
-    \endcode
-
-    \section3 Scripting
-
-    Each component can utilize ECMA scripting to perform additional operations
-    at any time of the installation process. Typical use cases are file
-    manipulations like moving, copying, patching.
-
-    For all full documentation on scripting, see \l{Component Scripting}{here}.
-
-    \section3 Component Dependencies
-
-    Each component can have one or more components it depends on. This can be
-    other real or virtual components. Every dependency as defined via its
-    identifier and optionally its version. The version, if given, is separated
-    by the identifier by a dash ('-') and can be prefixed by a comparison
-    operator like '=', '>', '<', '>=' or '<=', which means that the version of
-    the matching package is compared to the required version and has to be
-    equal, greater, less, greater or equal or less or equal as the version
-    number given in the dependency. If no comparison operator is given, it
-    defaults to '='.
-
-    \section3 Component Translation
-
-    As the installer makes use of the Qt Translation system, all user readable
-    output can be translated to other languages. To make this work for strings
-    contained in component scripts and user interfaces, components can provide
-    QTranslator files, which get loaded by the installation system when loading
-    the component. The Installer always loads the translation file with a name
-    matching the current system locale. For the system locale being German
-    (Germany), this would be de_de.qm.
-
-    Inside of scripts, you have to use the function qsTr() for literal text.
-    Additionally your script can contain a method Component.prototype.retranslateUi
-    which is called whenever the language of the Installer has changed, i.e.
-    after your translation file was loaded.
-
-    The context being used for translation is the basename of the script file
-    when using qsTr or the class name of the UI file when translating an user
-    interface.
-
-    \section3 Component User Interfaces
-
-    A component can contain one or more user interface files, which are placed
-    into the installer by the script. The installer is automatically loading
-    all ui files listed in the package.xml. You can access the loaded widgets
-    by calling QInstaller::Component::userInterface with the class name of the
-    widget:
-
-    \code
-    component.userInterface( "MyPage" ).checkbox.checked = true;
-    \endcode
-
-    There are two ways of inserting custom user interface widgets into the
-    installer: Inserting them as a single widget or inserting them as their own
-    page.
-
-    To insert them as a single widget, use QInstaller::Installer::addWizardPageItem.
-    From within the script, this is done by:
-
-    \code
-    // add the instance of MyWidget to the component selection page
-    installer.addWizardPageItem( component, "MyWidget", QInstaller.ComponentSelection );
-    \endcode
-
-    To add a completely new page into the Installer, you need to specify in
-    front of which page you want to add it. Adding the page is done with
-    QInstaller::Installer::addWizardPage.
-
-    \code
-    // add the instance of MyPage in front of the "Ready to Installation" page
-    installer.addWizardPage( component, "MyPage", QInstaller.ReadyForInstallation );
-    \endcode
-
-    \section2 Contents of the data directory
-
-    The data directory contains all the content, which will be extracted during
-    the installation phases. There are multiple options of content:
-
-    \list
-    \o Copy all the files into the data location. The directory structure will
-    be identical between the on in the data location and the installation
-    directory. Before the installer is created, the included tools will create
-    a 7zip archive.
-    \o Create a .7z archive via archivegen, which is included in the Installer
-    Framework.
-    \o Place a 7zip compatible archive into the data directory.
-    \endlist
-
-    \note Each of those ways has advantages and disadvantages. From our experience,
-    using archivegen provides the best solution due to faster creation time
+    \note Each of the above options has advantages and disadvantages. We
+    recommend that you use archivegen because it offers faster archive creation
     and compatibility with 7zip.
 */
 
 /*!
     \contentspage index.html
-    \previouspage ifw-component-description.html
+    \previouspage operations.html
     \page ifw-tools.html
-    \nextpage ifw-tutorial.html
+    \nextpage ifw-knownissues.html
 
-    \title Included Tools
+    \title Tools
+
+    The Qt Installer Framework contains the following tools:
+
+    \list
+
+        \o  \c installerbase
+
+        \o  \c binarycreator
+
+        \o  \c repogen
+
+    \endlist
 
     \section1 installerbase
-    \bold installerbase describes the core installer itself. All data and meta
-    information will be packed to this binary. For the installer creation
+    The \c installerbase tool describes the core installer itself. All data and
+    meta information will be packed to this binary. For the installer creation
     process you will not need to call it directly.
 
     \section1 binarycreator
-    Installers are created using binarycreator. This applies to online as well
-    as offline installers.
+    Use the \c binarycreator tool to create offline and online installers.
+    Component information and data are appended to the offline installer binary,
+    which enables the file extraction and post installation scripts to work
+    without an Internet connection.
 
-    In the offline case the component information and their data is appended to
-    the binary, allowing extraction and post installation scripts to work
-    without any internet connection.
+    Online installers store the location of the repository that contains the
+    data. On startup, they load the component information, not the data.
 
-    Online installers store the location of the repository and on startup load
-    the component information, not the data. Hence binarycreator does only a
-    partial job in the online case.
+    You can also create hybrid installers that store some components locally
+    and receive others via a network connection. For more information, see
+    ###TODO insert link here.
 
-    You can also create hybrid installers, which store some component locally
-    and receive others via a network connection. For more information, continue
-    reading at ###TODO insert link here.
+    For information about how to implement data integration into the
+    installer binary, see \a QInstaller::BinaryContent ###TODO insert link here.
 
-    For technical inside on the implementation of data integration into the
-    installer binary, read the information on QInstaller::BinaryContent ###TODO insert link here.
-    Please note that changing this configuration requires a recompilation of
-    installerbase.
+    \note If you change this configuration, you must recompile the
+    \c installerbase tool.
 
-    \section2 Usage
+    \section2 Using binarycreator
 
-    binarycreator expects the following parameters:
+    You can use the \c binarycreator tool to create offline and online
+    installers. Some options have default values, and therefore, you can omit
+    them.
+
+    To create an offline installer (in Windows), enter the following command:
+
+    \list
+
+        \o  On Windows:
     \code
-    -t or --template file Use file as input file
-    This is the binary used to append component information.
-    On Windows, this defaults to be installerbase.exe in the current working directory. On Unix, installerbase is used.
-
-    -p or --packages directory Use directory as packages directory
-    Specifies the directory to get package, i.e. component information from. See Component Definition to find out how this directory need to look like. This setting defaults to the current working directory.
-
-    -n or --nodeps Add only the selected packages to the compile. Don't add their dependencies.
-
-    -c or --config directory Use directory as config directory
-    Specifies the directory to be used for Installer Configuration.
-
-    -e or --exclude p1,...,pn Mark a comma separated list of packages to be retrieved from an online repository, i.e. not to be completely included in the installer binary.
-
-    -v or --verbose Verbose output. Add this if you are into lots of debug output.
+    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> <installer_name> <packages>
     \endcode
+
+        \o  On Linux and Mac OS X
+
+    \code
+    <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory> <installer_name> <packages>
+    \endcode
+
+    \endlist
+
+    To create an online installer, add the -e parameter which defines the
+    packages to install from an online repository on a web server:
+
+    \list
+
+        \o  On Windows:
+    \code
+    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> -e <packages> <installer_name> <packages>
+    \endcode
+
+        \o  On Linux and Mac OS X
+
+    \code
+    <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory> -e <packages> <installer_name> <packages>
+    \endcode
+
+    \endlist
+
+    \section2 Summary of binarycreator Parameters
+
+    The \c binarycreator tool accepts the following parameters:
+    \table
+        \header
+            \o  Parameter
+            \o  Use
+        \row
+            \o  -t or --template file
+            \o  Use \c file as an installer template binary to which the
+                component information is appended. If you omit this parameter,
+                the \c installerbase template is used.
+        \row
+            \o  -p or --packages directory
+            \o  Use \c directory as the \l{Package Directory Structure}
+                {package directory}.
+                Defaults to the current working directory.
+        \row
+            \o  -n or --nodeps
+            \o  Compile only the selected packages. Do not compile their
+                dependencies.
+        \row
+            \o  -c or --config directory
+            \o  Use \c directory as the \l{Configuration File}
+                {config directory}.
+        \row
+            \o  -e or --exclude p1,...,pn
+            \o  Comma-separated list of packages to retrieve from an online
+                repository. The packages are not included in the installer
+                binary.
+        \row
+            \o  --offline-only
+            \o  Create an offline installer that never accesses online
+                repositories.
+        \row
+            \o  -v or --verbose
+            \o  Display debug output.
+        \row
+            \o  -r or --resources
+            \o  Comma-separated list of resources to include in the installer
+                binary.
+    \endtable
 
     These parameters are followed by the name of the target binary and a list
-    of packages to be available for installation. Note that not only these
-    packages will be inside of the installer, but even all their dependencies
-    and all packages sharing the same prefix, as long as you add the --nodeps
-    flag.
+    of packages to be available for installation.
+
+    \note The listed packages are included in the installer, as well as all
+    their dependencies and all packages that share the same prefix, unless you
+    specify the \c --nodeps parameter.
 
     On Windows, the name of the target binary is automatically extended with
-    .exe, if it wasn't already added by the user. On Mac, the target will be
-    created as application bundle with extension .app, which as automatically
-    added, if not supplied. Additionally, the user can use a .dmg extension,
-    which will create a DMG disk image containing an .app bundle.
+    .exe, if you do not specify the extension. On Mac, the target is
+    created as an application bundle with the extension .app, which is automatically
+    added, if not supplied. Additionally, you can specify the .dmg extension,
+    which creates a DMG disk image that contains an .app bundle.
 
-    \section2 Example
-    \section3 Offline installer
-    \code
-    binarycreator.exe -c installer-config SDKInstaller.exe com.nokia.sdk
-    \endcode
-    This commands puts com.nokia.sdk as well as all packages com.nokia.sdk
-    depends on into the installer binary SDKInstaller.exe. Additionally, this
-    binary will contain all packages prefixed with com.nokia.sdk.*
+    \section2 Using Icons
 
-    \section3 Online installer
-    \code
-    binarycreator.exe -c installer-config -e com.nokia.sdk.qt,com.nokia.qtcreator SDKInstaller.exe com.nokia.sdk
-    \endcode
+    On Mac OS X, if the target binary is suffixed with .app, a Mac OS X
+    application bundle is created. The icon that you specify in config.xml is
+    extended with .icns and used as the icon for the created bundle.
 
-    The same as above, except that the data for com.nokia.sdk.qt and
-    com.nokia.qtcreator will be downloaded from a remote repository.
+    On Windows, the icon that you specify in config.xml is extended with .ico
+    and used as the application icon for the .exe file.
 
-    If your config.xml contains a RSA private key, components and data will be
-    signed with it. On installer runtime, this signature will be used to verify
-    the components. Note that the private key is not embedded in the installer
-    binary. If your private key is protected with a password, you will be asked
-    to provide the password.
-
-    \section2 Platform specific notes
-    \section3 Mac OS X
-
-    If the target binary is suffixed with .app, a shiny Mac OS X application bundle will be created
-    The icon set in the config.xml is extended with ".icns" and used as icon for a created bundle
-
-    \section3 Windows
-
-    The icon set in the config.xml is extended with ".ico" and used as application icon for the .exe file.
-
-    \section3 Linux
-
-    The icon set in the config.xml is extended with ".png" and used as window icon.
+    On Linux, the icon that you specify in config.xml is extended with .png and
+    used as the window icon.
 
     \section1 repogen
 
-    To generate online repositories, use the tool repogen.
-    \section2 Usage
+    Use the \c repogen tool to generate online repositories.
 
-    repogen expects the following parameters in this order:
-    \list
-    \o \bold Packages directory Directory containing the packages. Same as for binarycreator.
-    \o \bold Configuration directory Directory containing the installer configuration. Same as for binarycreator.
-    \o \bold Repository directory Target directory to generate the repository. Must not yet exist.
-    \o \bold Components List of components to be placed into the repository. Includes dependencies.
-    \endlist
+    The \c repogen tool expects the following parameters in the following order:
 
-    If your config.xml contains a RSA private key, components and data will be
-    signed with it. On installer runtime, this signature will be used to verify
-    the components. Note that the private key is not put into the repository.
-    If your private key is protected with a password, you will be asked to
+    \code
+    repogen.exe -p <package_directory> -c <config_directory> repository <repository_directory> <components>
+    \endcode
+
+    If config.xml contains a RSA private key, components and data are signed
+    with it. At installer runtime, the signature is used to verify the
+    components.
+
+    \note The private key is not included in the repository.
+    If the private key is protected with a password, end users are asked to
     provide the password.
 
-    When the repository has been created, you can upload it to anywhere. Just
-    put the location into the installer configuration when creating an installer
-    for it.
+    When the repository has been created, you can upload it anywhere. You must
+    specify the location in the installer configuration file when creating an
+    installer for it.
 
-    \section3 Example
-    \code
-    repogen.exe packages installer-config repository com.nokia.sdk.qt com.nokia.sdk.qtcreator
-    \endcode
+    \section2 Summary of repogen Parameters
 
-    This command creates a repository inside of repository containing
-    com.nokia.sdk.qt and com.nokia.sdk.qtcreator, including all dependencies.
-*/
-
-/*!
-    \contentspage index.html
-    \previouspage ifw-tutorial.html
-    \page ifw-online-installers.html
-    \nextpage ifw-offline-installers.html
-
-    \title Creating online installers
-
-    \section1 Configuration changes
-    Online installers fetch the repository description in addition to the one
-    stored inside of the binary. The technical effort is very little. Inside
-    the global \a{config.xml} file, you need to add the location of your
-    repository like this:
-    \code
-    <RemoteRepositories>
-         <Repository>
-                 <Url>http://www.yourcompany.com/repository</Url>
-         </Repository>
-    </RemoteRepositories>
-    \endcode
-
-    The \a Required tag describes, if the installer should go forward even
-    without accessing the server.
-
-    \section2 Creating the binaries
-    You will not need to change any of the arguments to create installer
-    binaries. The process of creating installer binaries is documented
-    \l{binarycreator}{here}.
-
-    \section2 Reducing the size of online installers
-    Even if a remote location is specified, this does not exclude the
-    components to be added to the installer binary itself. This results
-    in a bigger installer binary, which checks for the online repository.
-    This has the advantage, that if no newer version is available on the
-    server, the user will spare the additional download.
-
-    However, this is sometimes not the desired scenario. Instead the online
-    installer should not contain any data and fetch all its data from the
-    network connection.
-
-    To achieve this, use the \a{-n} parameter of binary creator and only add
-    the root component to the installer. Usually the root component is empty
-    and hence only adds the xml description of the root. For more information
-    and a list of available options, please refer to \l{binarycreator}{here}.
-*/
-
-/*!
-    \contentspage index.html
-    \previouspage ifw-online-installers.html
-    \page ifw-offline-installers.html
-    \nextpage ifw-updates.html
-
-    \title Pure offline installers
-
-    Pure offline installers describe the scenario in which the installer
-    does not try to connect to an online repository at all during the install
-    step. However, post installation as well as receiving updates will use
-    the description stored in the meta configuration (\a{config.xml}).
-
-    This is especially useful in cases where a corporate firewall does not
-    allow to connect to servers, but a successful installation is demanded.
-
-    To create such installers, \l{binarycreator} has the \a{--offline-only}
-    option which will output a installation binary with above settings.
+    \table
+        \header
+            \o  Parameter
+            \o  Use
+        \row
+            \o  -p or --packages directory
+            \o  Use \c directory as the \l{Package Directory Structure}
+                {package directory}.
+                Defaults to the current working directory.
+        \row
+            \o  -c or --config directory
+            \o  Use \c directory as the \l{Configuration File}
+                {config directory}.
+        \row
+            \o  repository directory
+            \o  Target directory to generate the repository. Must not yet exist.
+        \row
+            \o  components
+            \o  List of components to place into the repository. Includes
+                dependencies.
+        \row
+            \o  -e or --exclude p1,...,pn
+            \o  Comma-separated list of packages to be retrieved from an online
+                repository. The packages are not included in the installer
+                binary.
+        \row
+            \o  -u updateurl
+            \o  Receive updates from another repository.
+        \row
+            \o  --single
+            \o  Place only the specified packages in the repository, without
+                their dependencies.
+        \row
+            \o  -v or --verbose
+            \o  Display debug output.
+    \endtable
 */
 
 /*!
     \contentspage index.html
     \previouspage ifw-offline-installers.html
-    \page ifw-updates.html
-    \nextpage ifw-knownissues.html
+    \page ifw-online-installers.html
+    \nextpage ifw-updates.html
 
-    \title Creating updates
+    \title Creating Online Installers
 
-    Creating online installers has the advantage that updates can be promoted
-    to the users who have the product installed. This section describes the
-    steps to promote an update.
+    Online installers fetch the repository description (Updates.xml), in
+    addition to the one stored inside of the binary. Create a repository and
+    upload it to a web server. Then specify the location of the repository in
+    the config.xml file that you use to create the installer.
 
-    \section1 Configuration changes
+    \section1 Creating Repositories
 
-    The maintenance/updater tool downloads the update description on startup
-    and then compares the installed version with the promoted one on the server.
-    If the online version number is greater than the local one, the component
-    is displayed in the list of available updates.
+    Use the \c repogen tool to create online repositories:
 
-    To achieve this, the \a{Version} tag of the components needs to be increased.
+    repogen.exe -p <package_directory> -c <config_directory> repository <repository_directory> <components>
 
-    \section1 Recreating the repository
-    The easiest solution to provide an update is to recreate the online
-    repository and then upload it to the server location. This can be achieved
-    by reusing \l{repogen}.
+    For example, to create a repository that contains com.nokia.sdk.qt and
+    com.nokia.sdk.qtcreator, as well as their dependencies, enter the following
+    command:
 
-    \section1 Partial updates
-    \section2 Scenario description
-    Sometimes a full update of the whole repository might not be welcomed. The
-    reasons might be
+    \code
+    repogen.exe -p packages -c installer-config repository com.nokia.sdk.qt com.nokia.sdk.qtcreator
+    \endcode
+
+    When the repository has been created, upload it to a web server. You must
+    specify the location of the repository in the installer configuration file.
+
+    \section1 Configuring Repositories
+
+    The \c RemoteRepositories setting in the installer configuration file
+    (confix.xml) can contain a list of several repositories. Each of them can
+    have the following settings:
+
     \list
-    \o The size of the repository is very big, so that uploading takes a
-    significant amount of time
-    \o Updates need to be provided to a separate entity, where only changed
-    elements should be delivered to.
+
+        \o  URL, which points to a list of available components.
+
+        \o  Required, which determines whether the repository must be available
+            during the installation.
+
     \endlist
 
-    \note repogen recreates the 7zip archives each time it is being called. As
-    7zip stores the timestamp of included files (which get moved/copied during
-    this process), the sha sum of each archive changes. SHA sums are used to
-    verify the download of the archive and hence the SHA needs to match to the
-    7zip. As the SHAs are stored inside the global \a{Updates.xml} you will be
-    forced to upload the full repository. This can be circumvented by using the
-    \a{--single} option of repogen.
+    The URL needs to point to the Updates.xml file that lists the available
+    components. For example:
 
-    \section2 Implementation
-    When recreating the online repository, use the \a{--single} parameter. This
-    takes an existing repository as input and only changes the components,
-    which are specified as additional parameters. Only those SHA sums will be
-    changed in the global configuration as well.
+    \code
+    <RemoteRepositories>
+         <Repository>
+                 <Url>http://www.yourcompany.com/packages</Url>
+         </Repository>
+    </RemoteRepositories>
+    \endcode
 
-    \section3 Uploading partial updates
-    Assuming the repository has been updated like in above description, you will
-    not have to upload the whole repository again. Instead only the following
-    items are required:
-    \list
-    \o The component directory (usually something alike
-    \a{com.vendor.foo.updatedpart}.
-    \o The global \a{Updates.xml} stored in the root directory of the online
-    repository.
-    \endlist
+    The \a Required setting specifies whether the installer should go ahead even
+    if it cannot access the server. If you set \c Required to \c true, the
+    installer works only if it can access the repository. If the repository is
+    accessed after the installation, the maintenance tool rejects installation.
+    However, uninstallation is still possible. If you set it to \c false, the
+    installer continues to work, but excludes any configuration that should
+    be on the server.
 
-    \note The order of uploading is very important. In case you update the
-    repository on a live server, you should first update the component and
-    only afterwards the xml configuration. As the archive names include the
-    versioning the user will be provided with the old package until the update
-    has finished.
+    \section1 Creating Installer Binaries
+
+    To create an online installer by using the \c binarycreator tool, enter the
+    following command:
+
+    \code
+    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> -e <packages> <installer_name> <packages>
+    \endcode
+
+    For example, enter the following command to create an installer binary
+    called SDKInstaller.exe that will not contain data for com.nokia.sdk.qt and
+    com.nokia.qtcreator, because those packages are downloaded from a remote
+    repository:
+
+    \code
+    binarycreator.exe -c installer-config -e com.nokia.sdk.qt,com.nokia.qtcreator SDKInstaller.exe com.nokia.sdk
+    \endcode
+
+    If the config.xml contains an RSA private key, components and data are
+    signed with it. At installer runtime, the signature is used to verify
+    the components.
+
+    \note The private key is not embedded in the installer binary. If the
+    private key is protected with a password, end users are asked to provide the
+    password.
+
+    \section1 Reducing Installer Size
+    Even if the components are fetched from a web server, \c binarycreator adds
+    them to the installer binary by default. However, when the installer checks
+    the web server for updates, end users are spared a download if new versions
+    are not available.
+
+    Alternatively, you can create online installers that do not contain any data
+    and that fetch all the data from the web server. Use the \a{-n} parameter
+    of the \c binarycreator tool and only add the root component to the
+    installer. Usually the root component is empty and hence only adds the XML
+    description of the root.
+
+    For more information about the options that you have, see
+    \l{Summary of binarycreator Parameters}.
+*/
+
+/*!
+    \contentspage index.html
+    \previouspage ifw-creating-installers.html
+    \page ifw-offline-installers.html
+    \nextpage ifw-online-installers.html
+
+    \title Creating Offline Installers
+
+    Offline installers do not try to connect to an online repository at all
+    during installation. However, the metadata configuration (config.xml)
+    enables users to add and update components online.
+
+    Offline installers are especially useful in cases where a corporate firewall
+    does not allow end users to connect to web servers. The network
+    administrator can set up a local update service within the network.
+
+    To create offline installers, use the \a{--offline-only} option of the
+    \c binarycreator tool.
+
+    To create an offline installer in Windows, enter the following command:
+
+    \code
+    <location-of-ifw>\binarycreator.exe --offline-only -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> <installer_name> <packages>
+    \endcode
+
+    Some options have default values, and therefore, you can omit them.
+    For example, enter the following command to create an installer binary
+    called SDKInstaller.exe that contains the packages identified by
+    com.nokia.sdk and their dependencies:
+
+    \code
+    binarycreator.exe --offline-only -c installer-config SDKInstaller.exe com.nokia.sdk
+    \endcode
 
 */
 
 /*!
     \contentspage index.html
-    \previouspage ifw-updates.html
+    \previouspage ifw-online-installers.html
+    \page ifw-updates.html
+    \nextpage ifw-customizing-installers.html
+
+    \title Promoting Updates
+
+    Create online installers to be able to promote updates to end users who
+    install your product.
+
+    The following steps are needed to promote updates:
+
+    \list 1
+
+        \o  Copy the updated content to the package directory.
+
+        \o  Increase the value of the \a{Version} setting for the updated
+            components in the config.xml file.
+
+        \o  Use the \c repogen tool to recreate the online repository with the
+            updated contents and to generate the update.xml file in the root
+            directory of the repository.
+
+        \o  Upload the repository to the web server.
+
+        \o  Use the \c binarycreator tool to create the installer.
+
+    \endlist
+
+    \section1 Configuring Updates
+
+    The installer downloads the Update.xml file on
+    startup and compares the installed version with the version in the file. If
+    the online version number in the file is greater than the local one, the
+    installer displays it in the list of available updates.
+
+    Increase the value of the \a{Version} setting for the component in the
+    config.xml file.
+
+    \section1 Recreating Repositories
+
+    The easiest way to provide an update is to recreate the repository and
+    upload it to the web server. For more information, see
+    \l{Creating Repositories}.
+
+    \section1 Partially Updating Repositories
+
+    A full update of the whole repository might not be optimal if:
+    \list
+        \o  The repository is very large, as uploading would take a long time.
+        \o  You want to deliver only the changed components.
+    \endlist
+
+    \note repogen recreates the 7zip archives each time it is being called. As
+    7zip stores the timestamps of the included files (which are moved or copied
+    during this process), the SHA sum of each archive changes. SHA sums are used
+    to verify the download of the archive and hence the SHA needs to match the
+    7zip. As the SHAs are stored in the Updates.xml file you will be
+    forced to upload the full repository. This can be circumvented by using the
+    \a{--single} option of repogen.
+
+    \section2 Creating Partial Updates
+    When recreating the online repository, use the \a{--single} parameter. It
+    takes an existing repository as input and only changes the components that
+    are specified as additional parameters. Only those SHA sums are
+    changed in the global configuration as well.
+
+    \section2 Uploading Partial Updates
+    Upload the following items to the web server:
+    \list
+    \o The component directory (usually something like
+    \a{com.vendor.product.updatedpart}).
+    \o The global \a{Updates.xml} stored in the root directory of the online
+    repository.
+    \endlist
+
+    \note The order of uploading items is very important. If you update the
+    repository on a live server, first update the component and
+    then Updates.xml. The package names include version numbers, and therefore,
+    end users receive old packages until the new ones are fully uploaded.
+
+*/
+
+/*!
+    \contentspage index.html
+    \previouspage ifw-tools.html
     \page ifw-knownissues.html
-    \nextpage index.html
 
     \title Known Issues
 
-    Some of the items can be seen on the Nokia Qt SDK bugtracking system
-    \l{http://bugreports.qt.nokia.com/browse/QTSDK}{here}.
+    Check the \l{https://bugreports.qt-project.org/browse/QTIFW}{Qt Bugtracker}
+    for known issues in the Qt Installer Framework project. If you cannot find
+    the issue there, create a bug report.
 */
 

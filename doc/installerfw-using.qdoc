@@ -1,0 +1,355 @@
+/****************************************************************************
+**
+** This file is part of Qt Installer Framework
+**
+** Copyright (c) 2012 Nokia Corporation and/or its subsidiary(-ies).
+**
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+**
+** GNU Free Documentation License
+**
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of this
+** file.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at qt-info@nokia.com.
+**
+****************************************************************************/
+
+/*!
+    \contentspage {index.html}{Qt Installer Framework}
+    \previouspage ifw-overview.html
+    \page ifw-use-cases.html
+    \nextpage ifw-use-cases-install.html
+
+    \title Using Qt Installers
+
+    The end user experience is similar for both offline and online installers.
+    The installers consist of a package manager and an updater that enable end
+    users to add, update, and remove components.
+
+    You can support the following end user workflows:
+
+    \list
+
+        \o  \l{Initial Installation}
+
+        \o  \l{Adding Components}
+
+        \o  \l{Removing Components}
+
+        \o  \l{Updating Components}
+
+        \o  \l{Specifying Settings}
+
+    \endlist
+*/
+
+/*!
+    \contentspage index.html
+    \previouspage ifw-use-cases.html
+    \page ifw-use-cases-install.html
+    \nextpage ifw-use-cases-add.html
+
+    \title Initial Installation
+
+    The following image illustrates the default workflow for installing
+    applications:
+
+    \image ifw-user-flow-installing.png "Installation workflow"
+
+    This section uses the \e {Your Application Installer} example run on Windows
+    to illustrate the default workflow for end users. The installers have the
+    native look and feel on each supported desktop platform, and therefore they
+    look and feel different when run on Linux and Mac OS X.
+
+    The example files are stored in the \c{examples\tutorial} directory
+    in the Qt Installer Framework repository. You can use the \c binarycreator
+    tool to create \e {Your Application Installer}.
+
+    \section1 Starting Installer
+
+    When end users start the installer, the introduction page opens:
+
+    \image ifw-introduction-page.png "Introduction page"
+
+    You specify the name of the installer and the product to install in the
+    \c config.xml configuration file.
+
+    When end users select \gui Next, the target directory selection page opens.
+
+    \section1 Selecting Target Directory
+
+    End users must specify the target directory for the installation. You can
+    specify a default value in the \c config.xml configuration file.
+
+    \image ifw-target-directory-page.png "Target directory selection page"
+
+    When end users select \gui Next, the component selection page opens.
+
+    If the directory already contains files, a warning page opens:
+
+    \image ifw-warning-existing-installation.png "Warning page"
+
+    \section1 Selecting Components
+
+    The component selection page lists the components available for installation
+    and a short description of each component. End users select the components
+    to install. They can select \gui {Select All} to select all components,
+    \gui {Deselect All} to deselect them, or \gui Default to revert to the
+    default selection.
+
+    \image ifw-select-components.png "Component selection page"
+
+    You add the installable components to the \c data directory in the package
+    directory. You specify information about the components in the
+    \c package.xml file in the \c meta directory.
+
+    You can use a boolean operator or a script to specify whether a component is
+    selected by default.
+
+    When end users select \gui Next, the license check page opens.
+
+    \section1 Accepting License Agreements
+
+    On the license check page, end users must accept the terms of the license
+    agreement for the installation to continue.
+
+    \image ifw-license-check-page.png "License check page"
+
+    The license check page is displayed, if you specify a license file in the
+    \c package.xml file and copy the file to the \c meta directory.
+
+    \section1 Selecting Windows Program Group
+
+    On Windows, the Start menu directory selection page enables end users to
+    select the program group for the product in the Windows \gui Start menu.
+
+    \image ifw-win-program-group.png "Start menu directory selection page"
+
+    You specify a default value for the program group in the \c config.xml
+    configuration file.
+
+    When end users select \gui Next, the ready for installation page opens.
+
+    \section1 Installing Components
+
+    The ready for installation page informs end users that the installation can
+    begin when users select \gui Install.
+
+    \image ifw-ready-for-installation.png "Ready for installation page"
+
+    During the installation, the perform installation page displays information
+    about how the installation is progressing. End users can select
+    \gui {Show Details} to view more information.
+
+    \image ifw-perform-installation.png "Perform installation page"
+
+    When the installation is complete, the installation finished page opens.
+
+    \image ifw-installation-finished.png "Installation finished page"
+
+    To this page, you can add the option to start the installed product upon
+    closing the installer. You specify the product to start and the text to
+    display in the \c config.xml configuration file.
+*/
+
+/*!
+    \contentspage index.html
+    \previouspage ifw-use-cases-install.html
+    \page ifw-use-cases-add.html
+    \nextpage ifw-use-cases-remove.html
+
+    \title Adding Components
+
+    The following image illustrates the default workflow for installing
+    additional components:
+
+    \image ifw-user-flow-adding.png "Add components workflow"
+
+    This section uses the Qt SDK Maintenance Tool run on Windows to illustrate
+    how end users add components after the initial installation.
+
+    \section1 Starting Package Manager
+
+    When end users start the Maintenance Tool, the introduction page opens:
+
+    \image ifw-add-components-introduction.png "Introduction page"
+
+    When end users select \gui {Package manager}, and then \gui Next, the
+    component selection page opens.
+
+    \section1 Selecting Additional Components
+
+    The component selection page lists the components available for installation
+    and a short description of each component. Installed components are
+    displayed selected in the list. End users select additional components to
+    install. They can select \gui Reset to display the currently installed
+    components again.
+
+    \image ifw-add-components-selection.png "Component selection page"
+
+    When end users select \gui Next, the ready to update page opens.
+
+    \section1 Installing Selected Components
+
+    The ready to update page informs end users that the components are installed
+    when users select \gui Update.
+
+    \image ifw-ready-to-update.png "Ready to update page"
+
+    The update page displays information about how installation is progressing.
+    End users can select \gui {Show Details} to view more information.
+
+    \image ifw-perform-update.png "Update page"
+
+    When the installation is complete, the update finished page opens.
+
+    \image ifw-update-finished.png "Update finished page"
+
+*/
+
+/*!
+    \contentspage index.html
+    \previouspage ifw-use-cases-add.html
+    \page ifw-use-cases-remove.html
+    \nextpage ifw-use-cases-update.html
+
+    \title Removing Components
+
+    The following image illustrates the default workflow for removing either
+    all or some installed components:
+
+    \image ifw-user-flow-removing.png "Remove components workflow"
+
+    This section uses the Qt SDK Maintenance Tool run on Windows to illustrate
+    how end users remove components.
+
+    \section1 Removing All Components
+
+    When end users start the Maintenance Tool, the introduction page opens:
+
+    \image ifw-add-components-introduction.png "Introduction page"
+
+    End users can select \gui {Remove all components}, and then \gui Next, to
+    remove all installed components.
+
+    The ready to uninstall page informs end users that the uninstallation can
+    begin when users select \gui Uninstall.
+
+    \image ifw-ready-to-uninstall.png "Ready to uninstall page"
+
+    \section1 Removing Selected Components
+
+    End users can select \gui {Package manager}, and then \gui Next, to select
+    components to remove on the component selection page:
+
+    \image ifw-add-components-selection.png "Component selection page"
+
+    When end users deselect the components to remove, and then select \gui Next,
+    the ready to update page opens. It informs end users that the components are
+    removed when users select \gui Update.
+
+    \image ifw-ready-to-update.png "Ready to update page"
+
+    The update page displays information about how removal is progressing.
+    End users can select \gui {Show Details} to view more information.
+
+    \image ifw-removing-components.png "Update page"
+
+    When the removal is complete, the update finished page opens.
+
+    \image ifw-update-finished.png "Update finished page"
+*/
+
+/*!
+    \contentspage index.html
+    \previouspage ifw-use-cases-remove.html
+    \page ifw-use-cases-update.html
+    \nextpage ifw-use-cases-settings.html
+
+    \title Updating Components
+
+    The following image illustrates the default workflow for installing
+    additional components:
+
+    \image ifw-user-flow-updating.png "Updating workflow"
+
+    This section uses the Qt SDK Maintenance Tool run on Windows to illustrate
+    how end users remove components.
+
+    \section1 Starting Updater
+
+    When end users start the Maintenance Tool, the introduction page opens:
+
+    \image ifw-updating-introduction.png "Introduction page"
+
+    When end users select \gui {Update components}, and then \gui Next, the
+    component selection page opens.
+
+    \section1 Selecting Components to Update
+
+    The updater displays a list of available updates that end users can select
+    from.
+
+    \image ifw-updating-components.png "Component selection page"
+
+    When end users select \gui Next, the ready to update page opens.
+
+    \section1 Updating Selected Components
+
+    The ready to update page informs end users that the components are updated
+    when users select \gui Update.
+
+    \image ifw-ready-to-update.png "Ready to update page"
+
+    The update page displays information about how updating is progressing.
+    End users can select \gui {Show Details} to view more information.
+
+    \image ifw-perform-update.png "Update page"
+
+    When update is complete, the update finished page opens.
+
+    \image ifw-update-finished.png "Update finished page"
+*/
+
+/*!
+    \contentspage index.html
+    \previouspage ifw-use-cases-update.html
+    \page ifw-use-cases-settings.html
+    \nextpage ifw-getting-started.html
+
+    \title Specifying Settings
+
+    Settings pages enable end users to specify proxy settings or install add-on
+    components. End users select \gui Settings on the introduction page to
+    specify the settings.
+
+    \section1 Specifying Proxy Settings
+
+    By default, the installer does not use any proxy settings. End users can
+    select to use the system proxy settings or specify the proxy settings
+    manually.
+
+    \image ifw-settings-network.png "Network tab on Settings page"
+
+    \section1 Installing Add-on Components
+
+    To install add-on components, end users select the \gui Repositories tab.
+
+    \image ifw-settings-repositories.png "Repositories tab on Settings page"
+
+    If the web server requires authentication, end users can add their username
+    and password. To display passwords, end users select \gui {Show Passwords}.
+
+    To add their own repositories to the installer, end users can select
+    \gui Add and specify the URL that points to the repository.
+
+    Temporary repositories can be used only once, for initial installation.
+    After the installation, only default and user-defined repositories will be
+    available.
+
+*/

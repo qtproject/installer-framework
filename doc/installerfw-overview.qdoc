@@ -1,0 +1,84 @@
+/****************************************************************************
+**
+** This file is part of Qt Installer Framework
+**
+** Copyright (c) 2012 Nokia Corporation and/or its subsidiary(-ies).
+**
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+**
+** GNU Free Documentation License
+**
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of this
+** file.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at qt-info@nokia.com.
+**
+****************************************************************************/
+
+/*!
+    \contentspage {index.html}{Qt Installer Framework}
+    \previouspage index.html
+    \page ifw-overview.html
+    \nextpage ifw-use-cases.html
+
+    \title Overview of Qt Installer Framework
+
+    The Qt Installer Framework provides a set of tools and utilities to
+    create installers once, and deploy them across all the supported desktop
+    Qt platforms without rewriting the source code. The installers will have the
+    native look and feel on the platform where they are run: Linux, Microsoft
+    Windows, and Mac OS X.
+
+    The Qt Installer Framework tools generate installers with a set of pages
+    that guide the users during the installation, update, or uninstallation
+    process. You provide the installable content and specify information about
+    it, such as the name of the product and the installer and the text for the
+    license agreement.
+
+    You can customize the installers by adding widgets to the predefined pages
+    or by adding whole pages to provide users with additional options. You can
+    create scripts to add operations to the installer.
+
+    You can create either \e offline or \e online installers. Offline installers
+    contain all the installable components and do not require network
+    connections during or after the installation.
+
+    Online installers download components from a repository on a Web server.
+    They enable users to install additional components from the server after the
+    initial setup, as well as to receive automatic updates to content as soon as
+    the updates are published on the server.
+
+    \section1 Choosing Installer Type
+
+    You can provide end users with an offline or online installer, or both,
+    depending on your use cases.
+
+    Create an offline installer to enable users to directly download the
+    installation package on a media for installation on a computer later. You
+    can also distribute the installation package on a CD-ROM or USB stick, for
+    example.
+
+    Create an online installer if you expect the users to have reliable network
+    access, because it provides the users with automatic updates to installed
+    content and easy access to all content that is added later.
+
+    \section1 Promoting Updates
+
+    Create online installers to be able to promote updates to end users who
+    install your product. The easiest way to provide an update is to recreate
+    the repository and upload it to the web server. For large repositories, you
+    can update only the the changed components.
+
+    \section1 Providing Content for Installers
+
+    You can enable other content providers to add components to the installer
+    as add-on components. The component providers must set up repositories that
+    contain the installable components and deliver the URL that points to the
+    repositories to end users. End users must then configure the URL in the
+    installer. The add-on components are visible in the package manager.
+
+*/
