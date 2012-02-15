@@ -34,6 +34,7 @@
 #define SETTINGSDIALOG_H
 
 #include <common/repository.h>
+#include <kdjob.h>
 #include <settings.h>
 
 #include <QtGui/QDialog>
@@ -45,13 +46,45 @@ class QLocale;
 class QVariant;
 QT_END_NAMESPACE
 
-namespace Ui {
-    class SettingsDialog;
+namespace KDUpdater {
+    class FileDownloader;
 }
 
 namespace QInstaller {
     class PackageManagerCore;
 }
+
+namespace Ui {
+    class SettingsDialog;
+}
+
+
+// -- TestRepositoryJob
+
+class TestRepository : public KDJob
+{
+    Q_OBJECT
+
+public:
+
+    TestRepository(QObject *parent = 0);
+    ~TestRepository();
+
+    void setRepository(const QInstaller::Repository &repository);
+
+private:
+    void doStart();
+    void doCancel();
+
+private Q_SLOTS:
+    void downloadCompleted();
+    void downloadAborted(const QString &reason);
+
+private:
+    QInstaller::Repository m_repository;
+    KDUpdater::FileDownloader *m_downloader;
+};
+
 
 // -- PasswordDelegate
 
@@ -116,6 +149,7 @@ signals:
 
 private slots:
     void addRepository();
+    void testRepository();
     void updatePasswords();
     void removeRepository();
     void useTmpRepositories(bool use);
@@ -131,6 +165,7 @@ private:
     QInstaller::PackageManagerCore *m_core;
 
     bool m_showPasswords;
+    TestRepository m_testRepository;
     QList<QTreeWidgetItem*> m_rootItems;
 };
 
