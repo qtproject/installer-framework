@@ -409,12 +409,12 @@
         </Licenses>
         <Script>installscript.qs</Script>
         <UserInterfaces>
-              <UserInteface>specialpage.ui</UserInterface>
+            <UserInteface>specialpage.ui</UserInterface>
             <UserInteface>errorpage.ui</UserInterface>
         </UserInterfaces>
           <Translations>
             <Translation>sv_se.qm</Translation>
-              <Translation>de_de.qm</Translation>
+            <Translation>de_de.qm</Translation>
         </Translations>
     </Package>
     \endcode
@@ -464,6 +464,14 @@
             \o  List of license agreements to be accepted by the installing
                 user. To add several licenses, specify several \c License
                 sections that each specify the license \c name and \c file.
+                If there are translations listed for this component, the installer
+                will also look for translated licenses. These need to have the
+                same name as the originial license file but with an added
+                locale identifier.
+                If for example the license file is called license.txt and there is
+                German translation specified, the installer will also include
+                a license_de_de.txt file (and show that when installing on a
+                German system).
         \row
             \o  Script
             \o  File name of a script being loaded. Optional.
