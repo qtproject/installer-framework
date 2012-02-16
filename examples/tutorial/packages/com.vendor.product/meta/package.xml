@@ -8,6 +8,9 @@
     <Licenses>
         <License name="Beer Public License Agreement" file="license.txt" />
     </Licenses>
+    <Translations>
+        <Translation>de_de.qm</Translation>
+    </Translations>
     <Default>script</Default>
     <Script>installscript.qs</Script>
 </Package>
