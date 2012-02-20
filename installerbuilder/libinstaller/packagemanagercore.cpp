@@ -1524,8 +1524,11 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         // add downloadable archive from xml
         const QStringList downloadableArchives = data.package->data(scDownloadableArchives).toString()
             .split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
-        foreach (const QString downloadableArchive, downloadableArchives)
-            component->addDownloadableArchive(downloadableArchive);
+
+        if (component->isFromOnlineRepository()) {
+            foreach (const QString downloadableArchive, downloadableArchives)
+                component->addDownloadableArchive(downloadableArchive);
+        }
 
         const QStringList componentsToReplace = data.package->data(scReplaces).toString()
             .split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
