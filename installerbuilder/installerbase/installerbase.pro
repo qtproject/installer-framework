@@ -18,7 +18,21 @@ CONFIG -= app_bundle
 
 include(../libinstaller/libinstaller.pri)
 
+QM_FILES = qt_de.qm de_de.qm
+defineTest(testQmFiles) {
+    for(file, QM_FILES) {
+        !exists($$PWD/translations/$$file) {
+            message("File $$PWD/translations/$$file not found!")
+            return(false)
+        }
+    }
+    return(true)
+}
+
+if (testQmFiles()) {
 RESOURCES += installerbase.qrc
+}
+
 
 QT += network
 
