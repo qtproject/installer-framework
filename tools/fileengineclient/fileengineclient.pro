@@ -1,17 +1,13 @@
-TEMPLATE = app
-DEPENDPATH += . .. ../../installerbuilder/common
-INCLUDEPATH += . ..
+include(../../installerbuilder/installerbuilder.pri)
 
-DESTDIR = ../../installerbuilder/bin
+TEMPLATE = app
+INCLUDEPATH += . ..
+DEPENDPATH += . .. ../../installerbuilder/common
 
 CONFIG += console
 CONFIG -= app_bundle
 
 QT += network
 
-include(../../installerbuilder/libinstaller/libinstaller.pri)
-
 # Input
 SOURCES += fileengineclient.cpp
-
-LIBS = -L../../installerbuilder/lib -linstaller $$LIBS

@@ -1,16 +1,15 @@
+include(../installerbuilder.pri)
+
 TEMPLATE = app
 TARGET = repogen
-DEPENDPATH += . .. ../common
-INCLUDEPATH += . ..
 
-DESTDIR = ../bin
+INCLUDEPATH += . ..
+DEPENDPATH += . .. ../common
 
 CONFIG += console
 CONFIG -= app_bundle
 
 QT += xml
-
-include(../libinstaller/libinstaller.pri)
 
 # Input
 SOURCES += repogen.cpp \

@@ -1,3 +1,5 @@
+include(../installerbuilder.pri)
+
 TEMPLATE = app
 TARGET = installerbase
 
@@ -10,13 +12,8 @@ DEFINES += QT_NO_CAST_FROM_ASCII "_GIT_SHA1_=$$GIT_SHA1"
 
 win32:RC_FILE = installerbase.rc
 
-DESTDIR = ../bin
-
 CONFIG += help
-
 CONFIG -= app_bundle
-
-include(../libinstaller/libinstaller.pri)
 
 QM_FILES = qt_de.qm de_de.qm
 defineTest(testQmFiles) {
@@ -30,9 +27,8 @@ defineTest(testQmFiles) {
 }
 
 if (testQmFiles()) {
-RESOURCES += installerbase.qrc
+    RESOURCES += installerbase.qrc
 }
-
 
 QT += network
 
