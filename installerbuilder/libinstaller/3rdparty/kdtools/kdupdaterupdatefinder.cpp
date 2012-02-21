@@ -299,13 +299,13 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
             break;
 
         int pc = computePercent(downloadCompleteCount, updateXmlFDList.count());
-        q->reportProgress(pc, tr("Downloading Updates.xml from update-sources"));
+        q->reportProgress(pc, tr("Downloading Updates.xml from update sources."));
     }
 
     // All the downloaders have now either downloaded or aborted the
     // donwload of update XML files.
 
-    // Lets now get rid of update sources whose Updates.xml could not be downloaded
+    // Let's now get rid of update sources whose Updates.xml could not be downloaded
     for (int i = 0; i < updateXmlFDList.count(); i++) {
         FileDownloader *downloader = updateXmlFDList.at(i);
         if (downloader->isDownloaded())
@@ -350,7 +350,7 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
     if (updatesInfoList.isEmpty())
         return false;
 
-    q->reportProgress(49, tr("Updates.xml file(s) downloaded from update sources"));
+    q->reportProgress(49, tr("Updates.xml file(s) downloaded from update sources."));
     return true;
 }
 
@@ -383,7 +383,7 @@ bool UpdateFinder::Private::computeApplicableUpdates()
             if (compatUpdateInfo.data.contains(QLatin1String("CompatLevel")) && updateSource.priority < compatUpdateSourceInfo.priority)
                 continue;
 
-            // Lets look for comapt updates that provide compat level one-higher than
+            // Let's look for compat updates that provide compat level one-higher than
             // the application's current compat level.
             QList<UpdateInfo> updatesInfo = info->updatesInfo(CompatUpdate, reqCompatLevel);
 
@@ -398,15 +398,15 @@ bool UpdateFinder::Private::computeApplicableUpdates()
         if (found) {
             q->reportProgress(80, tr("Found compatibility update.."));
 
-            // Lets create an update for this compat update.
+            // Let's create an update for this compat update.
             QString updateName = tr("Compatibility level %1 update").arg(reqCompatLevel);
             QUrl url;
 
             // Pick a update file based on arch and OS.
             int pickUpdateFileIndex = pickUpdateFileInfo(compatUpdateInfo.updateFiles);
             if (pickUpdateFileIndex < 0) {
-                q->reportError(tr("Compatibility update for the required architecture and hardware configuration was not found"));
-                q->reportProgress(100, tr("Compatibility update not found"));
+                q->reportError(tr("Compatibility update for the required architecture and hardware configuration was not found."));
+                q->reportProgress(100, tr("Compatibility update not found."));
                 return false;
             }
 
@@ -422,13 +422,13 @@ bool UpdateFinder::Private::computeApplicableUpdates()
             updates.append(update);
 
             // Done
-            q->reportProgress(100, tr("Compatibility update found"));
+            q->reportProgress(100, tr("Compatibility update found."));
         } else {
-            q->reportProgress(100, tr("No compatibility updates found"));
+            q->reportProgress(100, tr("No compatibility updates found."));
         }
     }
     if (updateType & PackageUpdate) {
-        // We are not looking for normal updates, not compat ones.
+        // We are looking for normal updates, not compat ones.
         for (int i = 0; i < updatesInfoList.count(); i++) {
             // Fetch updates applicable to this application.
             UpdatesInfo *info = updatesInfoList.at(i);
@@ -449,11 +449,11 @@ bool UpdateFinder::Private::computeApplicableUpdates()
             // Report progress
             int pc = computePercent(i, updatesInfoList.count());
             pc = computeProgressPercentage(51, 100, pc);
-            q->reportProgress(pc, tr("Computing applicable updates"));
+            q->reportProgress(pc, tr("Computing applicable updates."));
         }
     }
 
-    q->reportProgress(99, tr("Application updates computed"));
+    q->reportProgress(99, tr("Application updates computed."));
     return true;
 }
 
