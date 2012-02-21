@@ -304,7 +304,7 @@ void InstallerBase::showUsage()
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --verbose" << std::setw(40)
         << "Show debug output on the console" << std::endl;
 
-    std::cout << "Developer:"<< std::endl;
+    std::cout << "\nDeveloper:"<< std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left)
         << "  --runoperation [operationName] [arguments...]" << std::setw(40)
         << "Perform an operation with a list of arguments" << std::endl;
@@ -315,11 +315,16 @@ void InstallerBase::showUsage()
         << "  --script [scriptName]" << std::setw(40) << "Execute a script" << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --no-force-installations"
         << std::setw(40) << "Enable deselection of forced components" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --addRepository [URI]"
+        << std::setw(40) << "Add a local or remote repo to the list of user defined repos." << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --addTempRepository [URI]"
-        << std::setw(40) << "Add a local or remote repo to the list of available repos." << std::endl;
+        << std::setw(40) << "Add a local or remote repo to the list of temporary available repos."
+        << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --setTempRepository [URI]"
-        << std::setw(40) << "Set the update URL to an arbitrary local or remote URI. URI must be prefixed "
-        "with the protocol, i.e. file:/// or http://" << std::endl;
+        << std::setw(40) << "Set a local or remote repo as tmp repo, it is the only one used during fetch."
+        << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << " " << std::setw(40) << "Note: URI "
+        "must be prefixed with the protocol, i.e. file:/// , http:// or ftp://" << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --show-virtual-components"
         << std::setw(40) << "Show virtual components in package manager and updater" << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left)
