@@ -137,6 +137,8 @@ qrc_*.cpp
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+*.sdf
+*.opensdf
 
 # MinGW generated files
 *.Debug
