@@ -40,7 +40,7 @@ using namespace KDUpdater;
    \class KDUpdater::UpdateFinder kdupdaterupdatefinder KDUpdaterUpdateFinder
    \brief Finds updates applicable for a \ref KDUpdater::Application
 
-   The KDUpdater::UpdateFinder class helps in searching for updates and installing it on the application. The
+   The KDUpdater::UpdateFinder class helps in searching for updates and installing them on the application. The
    class basically processes the application's \ref KDUpdater::PackagesInfo and the UpdateXMLs it aggregates
    from all the update sources described in KDUpdater::UpdateSourcesInfo and populates a list of
    \ref KDUpdater::Update objects. This list can then be passed to \ref KDUpdater::UpdateInstaller for
@@ -65,11 +65,11 @@ using namespace KDUpdater;
    updateFinder.run();
    finderProgressDlg.exec();
 
-// Control comes here after update finding is done or canceled.
+   // Control comes here after update finding is done or canceled.
 
-QList<KDUpdater::Update*> updates = updateFinder.updates();
-KDUpdater::UpdateInstaller updateInstaller;
-updateInstaller.installUpdates( updates );
+   QList<KDUpdater::Update*> updates = updateFinder.updates();
+   KDUpdater::UpdateInstaller updateInstaller;
+   updateInstaller.installUpdates( updates );
 
 \endcode
 */
@@ -168,7 +168,7 @@ void UpdateFinder::Private::clear()
    associated with the application.
 
    \note Each time this function is called, all the previously computed updates are discarded
-and its resources are freed.
+   and its resources are freed.
 */
 void UpdateFinder::Private::computeUpdates()
 {
@@ -182,7 +182,7 @@ void UpdateFinder::Private::computeUpdates()
     // First do some quick sanity checks on the packages info
     PackagesInfo *packages = application->packagesInfo();
     if (!packages) {
-        q->reportError(tr("Could not access the package information of this application"));
+        q->reportError(tr("Could not access the package information of this application."));
         return;
     }
     if (!packages->isValid()) {
@@ -193,7 +193,7 @@ void UpdateFinder::Private::computeUpdates()
     // Now do some quick sanity checks on the update sources info
     UpdateSourcesInfo *sources = application->updateSourcesInfo();
     if (!sources) {
-        q->reportError(tr("Could not access the update sources information of this application"));
+        q->reportError(tr("Could not access the update sources information of this application."));
         return;
     }
     if (!sources->isValid()) {
@@ -216,7 +216,7 @@ void UpdateFinder::Private::computeUpdates()
     }
 
     // All done
-    q->reportProgress(100, tr("%1 updates found").arg(updates.count()));
+    q->reportProgress(100, tr("%1 updates found.").arg(updates.count()));
     q->reportDone();
 }
 
@@ -359,7 +359,7 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
 
    This function runs through all the KDUpdater::UpdatesInfo objects created during
    the downloadUpdateXMLFiles() method and compares it with the data contained in
-   KDUpdater::PackagesInfo. There by figures out whether an update is applicable for
+   KDUpdater::PackagesInfo. Thereby figures out whether an update is applicable for
    this application or not.
 */
 bool UpdateFinder::Private::computeApplicableUpdates()
