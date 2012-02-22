@@ -142,7 +142,7 @@ bool IntroductionPageImpl::validatePage()
 
         if (m_updatesFetched) {
             if (core->updaterComponents().count() <= 0)
-                setErrorMessage(tr("<b>No updates available.</b>"));
+                setErrorMessage(QLatin1String("<b>") + tr("No updates available.") + QLatin1String("</b>"));
             else
                 setComplete(true);
         }
