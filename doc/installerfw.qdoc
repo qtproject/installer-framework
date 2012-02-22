@@ -409,8 +409,8 @@
         </Licenses>
         <Script>installscript.qs</Script>
         <UserInterfaces>
-            <UserInteface>specialpage.ui</UserInterface>
-            <UserInteface>errorpage.ui</UserInterface>
+            <UserInterface>specialpage.ui</UserInterface>
+            <UserInterface>errorpage.ui</UserInterface>
         </UserInterfaces>
           <Translations>
             <Translation>sv_se.qm</Translation>
