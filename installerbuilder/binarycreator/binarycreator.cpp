@@ -114,6 +114,10 @@ static int assemble(Input input, const QString &configdir)
     const QString configfile = QFileInfo(configdir, QLatin1String("config.xml")).absoluteFilePath();
     const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configdir);
 
+#ifdef Q_OS_LINUX
+    Q_UNUSED (settings)
+#endif
+
 #ifdef Q_OS_WIN
     if (input.outputPath.endsWith(QLatin1String(".exe")))
         input.outputPath.chop(4);
