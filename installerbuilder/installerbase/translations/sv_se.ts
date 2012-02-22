@@ -4,7 +4,7 @@
 <context>
     <name>Component</name>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="599"/>
+        <location filename="../../common/binaryformat.cpp" line="578"/>
         <source>Could not open archive %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -39,6 +39,14 @@
     <message>
         <location filename="../installerbasecommons.cpp" line="164"/>
         <source> Only local package management available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>KDJob</name>
+    <message>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdjob.cpp" line="176"/>
+        <source>Canceled</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -529,60 +537,6 @@
     </message>
 </context>
 <context>
-    <name>KDUpdater::UFUncompressor</name>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="92"/>
-        <source>Couldn&apos;t open file for reading: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="104"/>
-        <source>Couldn&apos;t read the file header.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="111"/>
-        <source>Wrong file format (magic number not found)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="126"/>
-        <source>Could not create folder: %1/%2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="142"/>
-        <source>Could not read information for entry %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="156"/>
-        <source>Could not uncompress entry %1, corrupt data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="162"/>
-        <source>Could not open file %1 for writing: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="173"/>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="186"/>
-        <source>Failed writing uncompressed data to %1: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="195"/>
-        <source>Corrupt file (wrong number of files)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterufuncompressor.cpp" line="203"/>
-        <source>Corrupt file (wrong hash)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>KDUpdater::Update</name>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdate.cpp" line="235"/>
@@ -611,33 +565,33 @@
 <context>
     <name>KDUpdater::UpdateFinder</name>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="185"/>
-        <source>Could not access the package information of this application</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="196"/>
-        <source>Could not access the update sources information of this application</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="219"/>
-        <source>%1 updates found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="302"/>
-        <source>Downloading Updates.xml from update-sources</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="315"/>
         <source>Could not download updates from %1 (&apos;%2&apos;)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="185"/>
+        <source>Could not access the package information of this application.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="196"/>
+        <source>Could not access the update sources information of this application.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="219"/>
+        <source>%1 updates found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="302"/>
+        <source>Downloading Updates.xml from update sources.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="353"/>
-        <source>Updates.xml file(s) downloaded from update sources</source>
+        <source>Updates.xml file(s) downloaded from update sources.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -657,106 +611,37 @@
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="408"/>
-        <source>Compatibility update for the required architecture and hardware configuration was not found</source>
+        <source>Compatibility update for the required architecture and hardware configuration was not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="409"/>
-        <source>Compatibility update not found</source>
+        <source>Compatibility update not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="425"/>
-        <source>Compatibility update found</source>
+        <source>Compatibility update found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="427"/>
-        <source>No compatibility updates found</source>
+        <source>No compatibility updates found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="452"/>
-        <source>Computing applicable updates</source>
+        <source>Computing applicable updates.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="456"/>
-        <source>Application updates computed</source>
+        <source>Application updates computed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="763"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="744"/>
         <source>Downloading Updates.xml from update sources</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>KDUpdater::UpdateInstaller</name>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="176"/>
-        <source>Downloading updates...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="180"/>
-        <source>Updates downloaded...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="193"/>
-        <source>Installing %1..</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="211"/>
-        <source>Finished installing updates. Now removing temporary files and directories..</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="228"/>
-        <source>Removed temporary files and directories</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="262"/>
-        <source>Could not download update &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="286"/>
-        <source>Couldn&apos;t uncompress update: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="297"/>
-        <source>Could not find UpdateInstructions.xml for %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="311"/>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="316"/>
-        <source>Could not read UpdateInstructions.xml of %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="323"/>
-        <source>Installing %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="350"/>
-        <source>Update operation %1 not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="376"/>
-        <source>Cannot execute &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdateinstaller.cpp" line="396"/>
-        <source>Finished installing update %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -892,19 +777,6 @@
     </message>
 </context>
 <context>
-    <name>QInstaller</name>
-    <message>
-        <location filename="../../common/binaryformat.cpp" line="123"/>
-        <source>Cannot map file %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../common/binaryformat.cpp" line="126"/>
-        <source>Cannot unmap file %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::AddQtCreatorArrayValueOperation</name>
     <message>
         <location filename="../../libinstaller/addqtcreatorarrayvalueoperation.cpp" line="64"/>
@@ -962,27 +834,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/component.cpp" line="516"/>
+        <location filename="../../libinstaller/component.cpp" line="525"/>
         <source>Could not open the requested license file at %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/component.cpp" line="826"/>
+        <location filename="../../libinstaller/component.cpp" line="836"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/component.cpp" line="826"/>
+        <location filename="../../libinstaller/component.cpp" line="836"/>
         <source>Error: Operation %1 does not exist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/component.cpp" line="1000"/>
+        <location filename="../../libinstaller/component.cpp" line="1010"/>
         <source>Can&apos;t resolve isAutoDependOn in %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/component.cpp" line="1040"/>
+        <location filename="../../libinstaller/component.cpp" line="1050"/>
         <source>Can&apos;t resolve isDefault in %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1601,7 +1473,7 @@ Downloading packages...</source>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagercore.cpp" line="407"/>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="1779"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="1782"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1646,7 +1518,7 @@ Downloading packages...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="1810"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="1813"/>
         <source>invalid</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2516,22 +2388,22 @@ needs to be less than 255 characters.</source>
 <context>
     <name>QInstallerCreator::Archive</name>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="324"/>
+        <location filename="../../common/binaryformat.cpp" line="303"/>
         <source>Could not create %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="433"/>
+        <location filename="../../common/binaryformat.cpp" line="412"/>
         <source>Could not open archive file %1 for reading.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="452"/>
+        <location filename="../../common/binaryformat.cpp" line="431"/>
         <source>Could not create archive from %1: Not a file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="476"/>
+        <location filename="../../common/binaryformat.cpp" line="455"/>
         <source>Error while packing directory at %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2541,7 +2413,7 @@ needs to be less than 255 characters.</source>
     <message>
         <location filename="../../binarycreator/binarycreator.cpp" line="189"/>
         <location filename="../../binarycreator/binarycreator.cpp" line="199"/>
-        <location filename="../../common/repositorygen.cpp" line="769"/>
+        <location filename="../../common/repositorygen.cpp" line="796"/>
         <source>Could not copy %1 to %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2657,17 +2529,17 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="206"/>
+        <location filename="../../common/repositorygen.cpp" line="209"/>
         <source>Circular dependencies detected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="216"/>
+        <location filename="../../common/repositorygen.cpp" line="219"/>
         <source>Couldn&apos;t find package for component %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="271"/>
+        <location filename="../../common/repositorygen.cpp" line="274"/>
         <source>Folder %1 does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2677,73 +2549,73 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="301"/>
-        <location filename="../../common/repositorygen.cpp" line="721"/>
+        <location filename="../../common/repositorygen.cpp" line="304"/>
+        <location filename="../../common/repositorygen.cpp" line="748"/>
         <source>Could not move %1 to %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="311"/>
+        <location filename="../../common/repositorygen.cpp" line="314"/>
         <source>Could not open %1 for writing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="375"/>
+        <location filename="../../common/repositorygen.cpp" line="378"/>
         <source>Could not parse %1: line: %2, column: %3: %4 (%5)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="459"/>
+        <location filename="../../common/repositorygen.cpp" line="462"/>
         <source>Could not create directory %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="483"/>
+        <location filename="../../common/repositorygen.cpp" line="486"/>
         <source>Could not copy the script %1 to its target location %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="501"/>
+        <location filename="../../common/repositorygen.cpp" line="504"/>
         <source>Couldn&apos;t find any user interface matching %1 while copying user interfaces of %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="512"/>
+        <location filename="../../common/repositorygen.cpp" line="515"/>
         <source>Could not copy the UI file %1 to its target location %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="536"/>
-        <source>Could not find any user interface matching %1 while copying user interfaces of %2.</source>
+        <location filename="../../common/repositorygen.cpp" line="539"/>
+        <source>Could not find any translation file matching %1 while copying translations of %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="547"/>
+        <location filename="../../common/repositorygen.cpp" line="550"/>
         <source>Could not copy the translation %1 to its target location %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="570"/>
+        <location filename="../../common/repositorygen.cpp" line="573"/>
         <source>Could not find any license matching %1 while copying license files of %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="579"/>
+        <location filename="../../common/repositorygen.cpp" line="582"/>
         <source>Could not copy the license file %1 to its target location %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="729"/>
+        <location filename="../../common/repositorygen.cpp" line="756"/>
         <source>Could not open %1 for writing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="756"/>
+        <location filename="../../common/repositorygen.cpp" line="783"/>
         <source>Could not create repository folder for component %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="832"/>
+        <location filename="../../common/repositorygen.cpp" line="859"/>
         <source>Could not open %1 for writing: %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2799,68 +2671,68 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="240"/>
+        <location filename="../../common/binaryformat.cpp" line="219"/>
         <source>Searched whole file, no marker found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="242"/>
+        <location filename="../../common/binaryformat.cpp" line="221"/>
         <source>Could not seek to %1 in file %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="252"/>
+        <location filename="../../common/binaryformat.cpp" line="231"/>
         <source>No marker found, stopped after %1 bytes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="258"/>
+        <location filename="../../common/binaryformat.cpp" line="237"/>
         <source>No marker found, unknown exception caught.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="500"/>
+        <location filename="../../common/binaryformat.cpp" line="479"/>
         <source>Cannot create zipped file for path %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="762"/>
+        <location filename="../../common/binaryformat.cpp" line="741"/>
         <source>Could not seek to in-binary resource. (offset: %1, length: %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="769"/>
+        <location filename="../../common/binaryformat.cpp" line="748"/>
         <source>Could not register in-binary resource.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="873"/>
-        <location filename="../../common/binaryformat.cpp" line="1031"/>
+        <location filename="../../common/binaryformat.cpp" line="852"/>
+        <location filename="../../common/binaryformat.cpp" line="1010"/>
         <source>Could not open binary %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="916"/>
+        <location filename="../../common/binaryformat.cpp" line="895"/>
         <source>Could not seek to binary layout section.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="941"/>
+        <location filename="../../common/binaryformat.cpp" line="920"/>
         <source>Could not seek to metadata index.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="962"/>
+        <location filename="../../common/binaryformat.cpp" line="941"/>
         <source>Could not seek to operation list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="984"/>
+        <location filename="../../common/binaryformat.cpp" line="963"/>
         <source>Could not seek to component index information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="988"/>
+        <location filename="../../common/binaryformat.cpp" line="967"/>
         <source>Could not seek to component index.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3222,7 +3094,7 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../installerbase_p.cpp" line="406"/>
+        <location filename="../installerbase_p.cpp" line="411"/>
         <source>Failed to seek in file %1. Reason: %2.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3346,68 +3218,83 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="383"/>
-        <location filename="../settingsdialog.cpp" line="311"/>
+        <location filename="../settingsdialog.ui" line="370"/>
+        <source>Test</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.ui" line="390"/>
+        <location filename="../settingsdialog.cpp" line="455"/>
         <source>Show Passwords</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="125"/>
+        <location filename="../settingsdialog.cpp" line="237"/>
         <source>Check this to use repository during fetch.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="127"/>
+        <location filename="../settingsdialog.cpp" line="239"/>
         <source>Add the username to authenticate on the server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="129"/>
+        <location filename="../settingsdialog.cpp" line="241"/>
         <source>Add the password to authenticate on the server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="131"/>
+        <location filename="../settingsdialog.cpp" line="243"/>
         <source>The servers URL that contains a valid repository.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="311"/>
+        <location filename="../settingsdialog.cpp" line="436"/>
+        <source>There was an error testing this repository.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.cpp" line="437"/>
+        <source>Do you want to disable the tested repository?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.cpp" line="455"/>
         <source>Hide Passwords</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="349"/>
+        <location filename="../settingsdialog.cpp" line="494"/>
         <source>Use</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="349"/>
+        <location filename="../settingsdialog.cpp" line="494"/>
         <source>Username</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="349"/>
+        <location filename="../settingsdialog.cpp" line="494"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="350"/>
+        <location filename="../settingsdialog.cpp" line="495"/>
         <source>Repository</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="351"/>
+        <location filename="../settingsdialog.cpp" line="496"/>
         <source>Default repositories</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="352"/>
+        <location filename="../settingsdialog.cpp" line="497"/>
         <source>Temporary repositories</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="353"/>
+        <location filename="../settingsdialog.cpp" line="498"/>
         <source>User defined repositories</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3466,6 +3353,34 @@ Do you want to continue?</source>
     <message>
         <location filename="../installerbasecommons.cpp" line="443"/>
         <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TestRepository</name>
+    <message>
+        <location filename="../settingsdialog.cpp" line="82"/>
+        <source>Empty repository URL.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.cpp" line="88"/>
+        <source>URL scheme not supported: %1 (%2).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.cpp" line="128"/>
+        <source>Could not parse Updates.xml! Error: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.cpp" line="133"/>
+        <source>Updates.xml could not be opened for reading!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.cpp" line="136"/>
+        <source>Updates.xml could not be found on server!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
