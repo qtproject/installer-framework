@@ -206,9 +206,11 @@ static bool supportedScheme(const QString &scheme)
 
 int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
 {
-    QInstaller::setVerbose(arguments.contains(QLatin1String("--verbose")));
+    QInstaller::setVerbose(arguments.contains(QLatin1String("--verbose"))
+                           || arguments.contains(QLatin1String("-v")));
 
     arguments.removeAll(QLatin1String("--verbose"));
+    arguments.removeAll(QLatin1String("-v"));
     arguments.removeAll(QLatin1String("--update-installerbase"));
 
     QUrl url = arguments.value(1);

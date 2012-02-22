@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
                 return 0;
 
             Updater u;
-            u.setVerbose(args.contains(QLatin1String("--verbose")));
+            u.setVerbose(args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("-v")));
             return u.checkForUpdates() ? 0 : 1;
         }
 
@@ -182,7 +182,8 @@ int main(int argc, char *argv[])
             || args.contains(QLatin1String("--undooperation"))) {
             MyCoreApplication app(argc, argv);
             OperationRunner o;
-            o.setVerbose(args.contains(QLatin1String("--verbose")));
+            o.setVerbose(args.contains(QLatin1String("--verbose"))
+                         || args.contains(QLatin1String("-v")));
             return o.runOperation(args);
         }
 
@@ -206,7 +207,7 @@ int main(int argc, char *argv[])
                 Sleep::sleep(1);
         }
 
-        if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("Verbose"))) {
+        if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("-v"))) {
             app.setVerbose();
             QInstaller::setVerbose(true);
         }
@@ -296,7 +297,7 @@ int main(int argc, char *argv[])
                 } else {
                     return PackageManagerCore::Failure;
                 }
-             } else if (argument == QLatin1String("--verbose") || argument == QLatin1String("Verbose")) {
+             } else if (argument == QLatin1String("--verbose") || argument == QLatin1String("-v")) {
                 core.setVerbose(true);
              } else if (argument == QLatin1String("--proxy")) {
                     core.settings().setProxyType(QInstaller::Settings::SystemProxy);
