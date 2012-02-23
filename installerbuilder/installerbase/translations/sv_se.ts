@@ -33,7 +33,7 @@
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="145"/>
-        <source>&lt;b&gt;No updates available.&lt;/b&gt;</source>
+        <source>No updates available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -862,34 +862,6 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1200"/>
-        <source>Select Components</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1211"/>
-        <source>Please select the components you want to update.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1212"/>
-        <source>Please select the components you want to install.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1213"/>
-        <source>Please select the components you want to uninstall.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1214"/>
-        <source>Select the components to install. Deselect installed components to uninstall them.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::ComponentSelectionPage::Private</name>
-    <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1001"/>
         <source>Component Name</source>
         <translation type="unfinished"></translation>
@@ -961,6 +933,31 @@
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1127"/>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1200"/>
+        <source>Select Components</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1211"/>
+        <source>Please select the components you want to update.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1212"/>
+        <source>Please select the components you want to install.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1213"/>
+        <source>Please select the components you want to uninstall.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1214"/>
+        <source>Select the components to install. Deselect installed components to uninstall them.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2411,100 +2408,100 @@ needs to be less than 255 characters.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="189"/>
-        <location filename="../../binarycreator/binarycreator.cpp" line="199"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="198"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="208"/>
         <location filename="../../common/repositorygen.cpp" line="796"/>
         <source>Could not copy %1 to %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="357"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="366"/>
         <source>Could not create temporary file for generated rcc project file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="462"/>
-        <location filename="../../binarycreator/binarycreator.cpp" line="508"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="471"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="517"/>
         <source>Could not copy %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="476"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="485"/>
         <source>Could not remove the private key from config.xml</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="577"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="586"/>
         <source>Error: Packages parameter missing argument.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="580"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="589"/>
         <source>Error: Package directory not found at the specified location.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="587"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="596"/>
         <source>Error: Package to exclude missing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="598"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="607"/>
         <source>Error: Template parameter missing argument.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="601"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="610"/>
         <source>Error: Template not found at the specified location.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="608"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="617"/>
         <source>Error: Config parameter missing argument.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="611"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="620"/>
         <source>Error: Config directory %1 not found at the specified location.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="615"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="624"/>
         <source>Error: Configuration %1 is not a directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="619"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="628"/>
         <source>Error: Config directory %1 is not readable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="626"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="635"/>
         <source>Error: Resource files to include missing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="637"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="646"/>
         <source>Error: Target parameter missing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="640"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="649"/>
         <source>Error: No components selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="643"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="652"/>
         <source>Error: No configuration directory selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="701"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="710"/>
         <source>Could not create a RSA signature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="704"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="713"/>
         <source>Created RSA signature could not be verified. Is the given public key wrong?</source>
         <translation type="unfinished"></translation>
     </message>

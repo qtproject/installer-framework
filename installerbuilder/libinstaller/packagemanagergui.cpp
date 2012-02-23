@@ -998,11 +998,11 @@ public:
             connect(model, SIGNAL(defaultCheckStateChanged(bool)), m_core,
                 SLOT(componentsToInstallNeedsRecalculation()));
 
-            model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal, tr("Component Name"));
+            model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal, ComponentSelectionPage::tr("Component Name"));
             model->setHeaderData(ComponentModelHelper::InstalledVersionColumn, Qt::Horizontal,
-                tr("Installed Version"));
-            model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal, tr("New Version"));
-            model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal, tr("Size"));
+                ComponentSelectionPage::tr("Installed Version"));
+            model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal, ComponentSelectionPage::tr("New Version"));
+            model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal, ComponentSelectionPage::tr("Size"));
         }
 
         QHBoxLayout *hlayout = new QHBoxLayout;
@@ -1033,14 +1033,14 @@ public:
         const QVariantHash hash = q->elementsForPage(QLatin1String("ComponentSelectionPage"));
         if (m_core->isInstaller()) {
             m_checkDefault->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
-            m_checkDefault->setShortcut(QKeySequence(tr("Alt+A", "select default components")));
-            m_checkDefault->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), tr("Def&ault"))
+            m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+A", "select default components")));
+            m_checkDefault->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), ComponentSelectionPage::tr("Def&ault"))
                 .toString());
         } else {
             m_checkDefault->setEnabled(false);
             m_checkDefault->setObjectName(QLatin1String("ResetComponentsButton"));
-            m_checkDefault->setShortcut(QKeySequence(tr("Alt+R", "reset to already installed components")));
-            m_checkDefault->setText(hash.value(QLatin1String("ResetComponentsButton"), tr("&Reset")).toString());
+            m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+R", "reset to already installed components")));
+            m_checkDefault->setText(hash.value(QLatin1String("ResetComponentsButton"), ComponentSelectionPage::tr("&Reset")).toString());
         }
         hlayout = new QHBoxLayout;
         hlayout->addWidget(m_checkDefault);
@@ -1049,15 +1049,15 @@ public:
         hlayout->addWidget(m_checkAll);
         connect(m_checkAll, SIGNAL(clicked()), this, SLOT(selectAll()));
         m_checkAll->setObjectName(QLatin1String("SelectAllComponentsButton"));
-        m_checkAll->setShortcut(QKeySequence(tr("Alt+S", "select all components")));
-        m_checkAll->setText(hash.value(QLatin1String("SelectAllComponentsButton"), tr("&Select All")).toString());
+        m_checkAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+S", "select all components")));
+        m_checkAll->setText(hash.value(QLatin1String("SelectAllComponentsButton"), ComponentSelectionPage::tr("&Select All")).toString());
 
         m_uncheckAll = new QPushButton;
         hlayout->addWidget(m_uncheckAll);
         connect(m_uncheckAll, SIGNAL(clicked()), this, SLOT(deselectAll()));
         m_uncheckAll->setObjectName(QLatin1String("DeselectAllComponentsButton"));
-        m_uncheckAll->setShortcut(QKeySequence(tr("Alt+D", "deselect all components")));
-        m_uncheckAll->setText(hash.value(QLatin1String("DeselectAllComponentsButton"), tr("&Deselect All"))
+        m_uncheckAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+D", "deselect all components")));
+        m_uncheckAll->setText(hash.value(QLatin1String("DeselectAllComponentsButton"), ComponentSelectionPage::tr("&Deselect All"))
             .toString());
 
         hlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
@@ -1123,8 +1123,8 @@ public slots:
             Component *component = m_currentModel->componentFromIndex(current);
             if (component && component->updateUncompressedSize() > 0) {
                 const QVariantHash hash = q->elementsForPage(QLatin1String("ComponentSelectionPage"));
-                m_sizeLabel->setText(tr("%1").arg(hash.value(QLatin1String("ComponentSizeLabel"),
-                    tr("This component will occupy approximately %1 on your hard disk drive.")).toString()
+                m_sizeLabel->setText(ComponentSelectionPage::tr("%1").arg(hash.value(QLatin1String("ComponentSizeLabel"),
+                    ComponentSelectionPage::tr("This component will occupy approximately %1 on your hard disk drive.")).toString()
                     .arg(m_currentModel->data(m_currentModel->index(current.row(),
                     ComponentModelHelper::UncompressedSizeColumn, current.parent())).toString())));
             }

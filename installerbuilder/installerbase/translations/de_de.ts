@@ -33,8 +33,12 @@
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="145"/>
+        <source>No updates available.</source>
+        <translation>Keine Aktualisierungen verfügbar.</translation>
+    </message>
+    <message>
         <source>&lt;b&gt;No updates available.&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Keine Aktualisierungen verfügbar.&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Keine Aktualisierungen verfügbar.&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="164"/>
@@ -1015,6 +1019,80 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1001"/>
+        <source>Component Name</source>
+        <translation>Komponentenname</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1003"/>
+        <source>Installed Version</source>
+        <translation>Installierte Version</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1004"/>
+        <source>New Version</source>
+        <translation>Neue Version</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1005"/>
+        <source>Size</source>
+        <translation>Grösse</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1036"/>
+        <source>Alt+A</source>
+        <comment>select default components</comment>
+        <translation>Alt+A</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1037"/>
+        <source>Def&amp;ault</source>
+        <translation>St&amp;andard</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1042"/>
+        <source>Alt+R</source>
+        <comment>reset to already installed components</comment>
+        <translation>Alt+Z</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1043"/>
+        <source>&amp;Reset</source>
+        <translation>&amp;Zurücksetzen</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1052"/>
+        <source>Alt+S</source>
+        <comment>select all components</comment>
+        <translation>Alt+S</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1053"/>
+        <source>&amp;Select All</source>
+        <translation>Alle au&amp;swählen</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1059"/>
+        <source>Alt+D</source>
+        <comment>deselect all components</comment>
+        <translation>Alt+B</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1060"/>
+        <source>&amp;Deselect All</source>
+        <translation>Alle a&amp;bwählen</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1126"/>
+        <source>%1</source>
+        <translation>!!%1</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1127"/>
+        <source>This component will occupy approximately %1 on your hard disk drive.</source>
+        <translation>Diese Komponente wird ungefähr %1 auf ihrer Festplatte belegen.</translation>
+    </message>
+    <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1200"/>
         <source>Select Components</source>
         <translation>Komponenten auswählen</translation>
@@ -1043,82 +1121,68 @@
 <context>
     <name>QInstaller::ComponentSelectionPage::Private</name>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1001"/>
         <source>Component Name</source>
-        <translation>Komponentenname</translation>
+        <translation type="obsolete">Komponentenname</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1003"/>
         <source>Installed Version</source>
-        <translation>Installierte Version</translation>
+        <translation type="obsolete">Installierte Version</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1004"/>
         <source>New Version</source>
-        <translation>Neue Version</translation>
+        <translation type="obsolete">Neue Version</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1005"/>
         <source>Size</source>
-        <translation>Grösse</translation>
+        <translation type="obsolete">Grösse</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1036"/>
         <source>Alt+A</source>
         <comment>select default components</comment>
         <translatorcomment>Standardkomponenten auswählen</translatorcomment>
-        <translation>Alt+A</translation>
+        <translation type="obsolete">Alt+A</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1037"/>
         <source>Def&amp;ault</source>
-        <translation>St&amp;andard</translation>
+        <translation type="obsolete">St&amp;andard</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1042"/>
         <source>Alt+R</source>
         <comment>reset to already installed components</comment>
         <translatorcomment>Auf die bereits installierten Komponenten zurücksetzen</translatorcomment>
-        <translation>Alt+R</translation>
+        <translation type="obsolete">Alt+R</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1043"/>
         <source>&amp;Reset</source>
-        <translation>Zu&amp;rücksetzen</translation>
+        <translation type="obsolete">Zu&amp;rücksetzen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1052"/>
         <source>Alt+S</source>
         <comment>select all components</comment>
         <translatorcomment>Alle Komponenten auswählen</translatorcomment>
-        <translation>Alt+S</translation>
+        <translation type="obsolete">Alt+S</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1053"/>
         <source>&amp;Select All</source>
-        <translation>Alle au&amp;swählen</translation>
+        <translation type="obsolete">Alle au&amp;swählen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1059"/>
         <source>Alt+D</source>
         <comment>deselect all components</comment>
         <translatorcomment>Alle Komponenten abwählen</translatorcomment>
-        <translation>Alt+B</translation>
+        <translation type="obsolete">Alt+B</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1060"/>
         <source>&amp;Deselect All</source>
-        <translation>Alle a&amp;bwählen</translation>
+        <translation type="obsolete">Alle a&amp;bwählen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1126"/>
         <source>%1</source>
-        <translation>!!%1</translation>
+        <translation type="obsolete">!!%1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1127"/>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>Diese Komponente wird ungefähr %1 auf ihrer Festplatte belegen.</translation>
+        <translation type="obsolete">Diese Komponente wird ungefähr %1 auf ihrer Festplatte belegen.</translation>
     </message>
 </context>
 <context>
@@ -2607,100 +2671,100 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="189"/>
-        <location filename="../../binarycreator/binarycreator.cpp" line="199"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="198"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="208"/>
         <location filename="../../common/repositorygen.cpp" line="796"/>
         <source>Could not copy %1 to %2: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="357"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="366"/>
         <source>Could not create temporary file for generated rcc project file</source>
         <translation>Konnte keine temporäre Datei für die erzeugte rcc Projektdatei anlegen.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="462"/>
-        <location filename="../../binarycreator/binarycreator.cpp" line="508"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="471"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="517"/>
         <source>Could not copy %1.</source>
         <translation>Konnte %1 nicht kopieren.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="476"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="485"/>
         <source>Could not remove the private key from config.xml</source>
         <translation>Konnte den privaten Schlüssel nicht aus der config.xml entfernen.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="577"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="586"/>
         <source>Error: Packages parameter missing argument.</source>
         <translation>Fehler: Dem Packages Parameter fehlt ein Argument.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="580"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="589"/>
         <source>Error: Package directory not found at the specified location.</source>
         <translation>Fehler: Paketordner konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="587"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="596"/>
         <source>Error: Package to exclude missing.</source>
         <translation>Fehler: Die --exclude Option braucht die auszuschliessenden Komponenten als Argument.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="598"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="607"/>
         <source>Error: Template parameter missing argument.</source>
         <translation>Fehler: Dem Template Parameter fehlt ein Argument.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="601"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="610"/>
         <source>Error: Template not found at the specified location.</source>
         <translation>Fehler: Template konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="608"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="617"/>
         <source>Error: Config parameter missing argument.</source>
         <translation>Fehler: Dem Config Parameter fehlt ein Argument.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="611"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="620"/>
         <source>Error: Config directory %1 not found at the specified location.</source>
         <translation>Fehler: Konfigurationsordner konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="615"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="624"/>
         <source>Error: Configuration %1 is not a directory.</source>
         <translation>Fehler: Konfiguration %1 ist kein Ordner.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="619"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="628"/>
         <source>Error: Config directory %1 is not readable.</source>
         <translation>Fehler: Konfigurationsordner %1 ist nicht lesbar.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="626"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="635"/>
         <source>Error: Resource files to include missing.</source>
         <translation>Fehler: Die --resources Option braucht die einzuschliessenden Resourcen als Argument.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="637"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="646"/>
         <source>Error: Target parameter missing.</source>
         <translation>Fehler: Der Target Parameter fehlt.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="640"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="649"/>
         <source>Error: No components selected.</source>
         <translation>Fehler: Keine Komponenten ausgewählt.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="643"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="652"/>
         <source>Error: No configuration directory selected.</source>
         <translation>Fehler: Keine Konfigurationsordner ausgewählt.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="701"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="710"/>
         <source>Could not create a RSA signature</source>
         <translation>Konnte keine RSA Unterschrift erstellen.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="704"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="713"/>
         <source>Created RSA signature could not be verified. Is the given public key wrong?</source>
         <translation>Die erstellte RSA Unterschrift konnte nicht überprüft werden. Ist der übergebene öffentliche Schlüssel korrekt?</translation>
     </message>
