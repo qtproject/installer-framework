@@ -226,10 +226,10 @@ static QVector<PackageInfo> calculateNeededPackages(const QStringList &component
                 QVector<PackageInfo> dependencies;
 
                 if (!info.dependencies.isEmpty()) {
-                    qDebug() << "    It depends on:";
+                    qDebug() << "\tIt depends on:";
                     for (QStringList::const_iterator dep = info.dependencies.begin();
                         dep != info.dependencies.end(); ++dep) {
-                        qDebug() << "        " << *dep;
+                        qDebug() << "\t\t" << *dep;
                     }
                     dependencies += calculateNeededPackages(info.dependencies, available);
                 }

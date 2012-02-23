@@ -458,7 +458,7 @@ static QString createMetaDataDirectory(const PackageInfoVector &packages, const 
         if (next.contains("/.")) // skip files that are in directories starting with a point
             continue;
 
-        qDebug() << "    Found configuration file: " << next;
+        qDebug() << "\tFound configuration file: " << next;
         const QFileInfo sourceFileInfo(next);
         const QString source = sourceFileInfo.absoluteFilePath();
         const QFileInfo targetFileInfo(configCopy, QFileInfo(next).fileName());
@@ -480,7 +480,7 @@ static QString createMetaDataDirectory(const PackageInfoVector &packages, const 
             QDomElement doc = dom.documentElement();
             QDomElement privateKey = doc.elementsByTagName(QLatin1String("PrivateKey")).item(0).toElement();
             if (!privateKey.isNull()) {
-                qDebug() << "      It contains the RSA private key, removing it...";
+                qDebug() << "\tIt contains the RSA private key, removing it...";
                 if (doc.removeChild(privateKey).isNull())
                     throw Error(QObject::tr("Could not remove the private key from config.xml"));
             }
@@ -523,7 +523,7 @@ static QString createMetaDataDirectory(const PackageInfoVector &packages, const 
             openForWrite(&configXml, configXml.fileName());
             QTextStream stream(&configXml);
             dom.save(stream, 4);
-            qDebug() << "      done.";
+            qDebug() << "\tdone.";
         }
     }
     return metapath;
@@ -700,11 +700,11 @@ int main(int argc, char **argv)
                 .entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
             foreach (const QFileInfo &archive, archives) {
                 const QSharedPointer<Archive> arch(new Archive(archive.absoluteFilePath()));
-                qDebug() << QString::fromLatin1("    Appending %1 (%2 bytes)")
+                qDebug() << QString::fromLatin1("\tAppending %1 (%2 bytes)")
                     .arg(archive.filePath(), QString::number(arch->size()));
                 comp.appendArchive(arch);
                 if (!privateKey.isEmpty()) {
-                    qDebug() << "    Appending a RSA signature...";
+                    qDebug() << "\tAppending a RSA signature...";
                     const QByteArray signature = crypto.sign(arch.data());
                     if (signature.isEmpty())
                         throw Error(QObject::tr("Could not create a RSA signature"));
@@ -713,7 +713,7 @@ int main(int argc, char **argv)
                         throw Error(QObject::tr("Created RSA signature could not be verified. Is "
                             "the given public key wrong?"));
                     }
-                    qDebug() << QString::fromLatin1("    Appending %1.sig  (%2 bytes)")
+                    qDebug() << QString::fromLatin1("\tAppending %1.sig (%2 bytes)")
                         .arg(archive.fileName(), signature.size());
                     const QSharedPointer<Archive> sigArch(new Archive(arch->name() + ".sig", signature));
                     comp.appendArchive(sigArch);
