@@ -363,7 +363,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
 {
     if (m_retriesLeft <= 0) {
-        const QString msg = tr("Could not fetch Updates.xml from repository: %1. Error: %2.")
+        const QString msg = tr("Could not fetch Updates.xml from repository: %1. Error: %2")
             .arg(m_repository.url().toString(), err);
 
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
@@ -493,7 +493,7 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
 void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
 {
     if (m_retriesLeft <= 0) {
-        const QString msg = tr("Could not download meta information for component: %1. Error: %2.")
+        const QString msg = tr("Could not download meta information for component: %1. Error: %2")
             .arg(m_currentPackageName, err);
 
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;

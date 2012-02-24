@@ -594,7 +594,8 @@ void KDUpdater::LocalFileDownloader::doDownload()
     d->source = new QFile(localFile, this);
     if (!d->source->open(QFile::ReadOnly)) {
         onError();
-        setDownloadAborted(tr("Cannot open source file for reading."));
+        setDownloadAborted(tr("Cannot open source file '%1' for reading.").arg(QFileInfo(localFile)
+            .fileName()));
         return;
     }
 
@@ -609,7 +610,8 @@ void KDUpdater::LocalFileDownloader::doDownload()
 
     if (!d->destination->isOpen()) {
         onError();
-        setDownloadAborted(tr("Cannot open destination file for writing."));
+        setDownloadAborted(tr("Cannot open destination file '%1' for writing.")
+            .arg(QFileInfo(d->destination->fileName()).fileName()));
         return;
     }
 
