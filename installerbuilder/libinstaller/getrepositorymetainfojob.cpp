@@ -340,13 +340,14 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
             continue;
         if (el.tagName() == QLatin1String("PackageUpdate")) {
             const QDomNodeList c2 = el.childNodes();
-            for (int j = 0; j < c2.count(); ++j)
+            for (int j = 0; j < c2.count(); ++j) {
                 if (c2.at(j).toElement().tagName() == scName)
                     m_packageNames << c2.at(j).toElement().text();
                 else if (c2.at(j).toElement().tagName() == scRemoteVersion)
                     m_packageVersions << c2.at(j).toElement().text();
                 else if (c2.at(j).toElement().tagName() == QLatin1String("SHA1"))
                     m_packageHash << c2.at(j).toElement().text();
+            }
         }
     }
 
@@ -478,9 +479,9 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
             return;
         }
         m_packageHash.removeLast();
-        m_currentPackageName.clear();
     }
     arch.close();
+    m_currentPackageName.clear();
 
     ZipRunnable *runnable = new ZipRunnable(fn, m_temporaryDirectory, m_downloader);
     connect(runnable, SIGNAL(finished(bool,QString)), this, SLOT(unzipFinished(bool,QString)));
