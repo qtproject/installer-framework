@@ -190,6 +190,29 @@ struct BinaryLayout
     qint64 endOfData;
 };
 
+class BinaryContentPrivate : public QSharedData
+{
+public:
+    BinaryContentPrivate(const QString &path);
+    BinaryContentPrivate(const BinaryContentPrivate &other);
+    ~BinaryContentPrivate();
+
+    qint64 m_magicMarker;
+    qint64 m_dataBlockStart;
+
+    QSharedPointer<QFile> m_appBinary;
+    QSharedPointer<QFile> m_binaryDataFile;
+
+    QList<Operation *> m_performedOperations;
+    QHash<QString, QString> m_performedOperationsData;
+
+    QVector<const uchar *> m_resourceMappings;
+    QVector<Range<qint64> > m_metadataResourceSegments;
+
+    QInstallerCreator::ComponentIndex m_componentIndex;
+    QInstallerCreator::BinaryFormatEngineHandler m_binaryFormatEngineHandler;
+};
+
 class INSTALLER_EXPORT BinaryContent
 {
     explicit BinaryContent(const QString &path);
@@ -197,28 +220,27 @@ class INSTALLER_EXPORT BinaryContent
 public:
     virtual ~BinaryContent();
 
+    static BinaryContent readAndRegisterFromApplicationFile();
+    static BinaryContent readAndRegisterFromBinary(const QString &path);
+
     static BinaryContent readFromApplicationFile();
     static BinaryContent readFromBinary(const QString &path);
+
     static BinaryLayout readBinaryLayout(QIODevice *const file, qint64 cookiePos);
+
+    int registerPerformedOperations();
+    OperationList performedOperations() const;
 
     qint64 magicMarker() const;
     int registerEmbeddedQResources();
-    OperationList performedOperations() const;
+    QInstallerCreator::ComponentIndex componentIndex() const;
 
 private:
     static void readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
         const BinaryLayout &layout);
 
 private:
-    QSharedPointer<QFile> m_binary;
-    QSharedPointer<QFile> m_binaryFile;
-    QInstallerCreator::ComponentIndex m_components;
-    QInstallerCreator::BinaryFormatEngineHandler handler;
-    QVector<Range<qint64> > m_metadataResourceSegments;
-    QVector<const uchar *> m_resourceMappings;
-    qint64 m_magicMarker;
-    qint64 m_dataBlockStart;
-    QStack<Operation *> m_performedOperations;
+    QSharedDataPointer<BinaryContentPrivate> d;
 };
 
 }

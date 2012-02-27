@@ -750,27 +750,83 @@ static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segm
     return (const uchar*)(sResourceVec.last().constData());
 }
 
-BinaryContent::BinaryContent(const QString &path)
-    : m_binary(new QFile(path))
-    , m_binaryFile(0)
-    , handler(m_components)
-    , m_magicMarker(0)
+
+// -- BinaryContentPrivate
+
+BinaryContentPrivate::BinaryContentPrivate(const QString &path)
+    : m_magicMarker(0)
     , m_dataBlockStart(0)
+    , m_appBinary(new QFile(path))
+    , m_binaryDataFile(0)
+    , m_binaryFormatEngineHandler(m_componentIndex)
+{
+}
+
+BinaryContentPrivate::BinaryContentPrivate(const BinaryContentPrivate &other)
+    : QSharedData(other)
+    , m_magicMarker(other.m_magicMarker)
+    , m_dataBlockStart(other.m_dataBlockStart)
+    , m_appBinary(other.m_appBinary)
+    , m_binaryDataFile(other.m_binaryDataFile)
+    , m_performedOperations(other.m_performedOperations)
+    , m_performedOperationsData(other.m_performedOperationsData)
+    , m_resourceMappings(other.m_resourceMappings)
+    , m_metadataResourceSegments(other.m_metadataResourceSegments)
+    , m_componentIndex(other.m_componentIndex)
+    , m_binaryFormatEngineHandler(other.m_binaryFormatEngineHandler)
+{
+}
+
+BinaryContentPrivate::~BinaryContentPrivate()
+{
+    foreach (const uchar *rccData, m_resourceMappings)
+        QResource::unregisterResource(rccData);
+    sResourceVec.clear();
+    m_resourceMappings.clear();
+}
+
+
+// -- BinaryContent
+
+BinaryContent::BinaryContent(const QString &path)
+    : d(new BinaryContentPrivate(path))
 {
 }
 
 BinaryContent::~BinaryContent()
 {
-    foreach (const uchar *rccData, m_resourceMappings)
-        QResource::unregisterResource(rccData);
 }
 
 /*!
-    Reads BinaryContent stored in the current application binary.
+    Reads binary content stored in the current application binary. Maps the embedded resources into memory
+    and instantiates performed operations if available.
+*/
+BinaryContent BinaryContent::readAndRegisterFromApplicationFile()
+{
+    BinaryContent c = BinaryContent::readFromApplicationFile();
+    c.registerEmbeddedQResources();
+    c.registerPerformedOperations();
+    return c;
+}
+
+/*!
+    Reads binary content stored in the passed application binary. Maps the embedded resources into memory
+    and instantiates performed operations if available.
+*/
+BinaryContent BinaryContent::readAndRegisterFromBinary(const QString &path)
+{
+    BinaryContent c = BinaryContent::readFromBinary(path);
+    c.registerEmbeddedQResources();
+    c.registerPerformedOperations();
+    return c;
+}
+
+/*!
+    Reads binary content stored in the current application binary.
 */
 BinaryContent BinaryContent::readFromApplicationFile()
 {
-    return BinaryContent::readFromBinary(QCoreApplication::applicationFilePath());
+    return BinaryContent::readFromBinary(QCoreApplication::applicationFilePath());;
 }
 
 /*!
@@ -848,12 +904,12 @@ BinaryContent BinaryContent::readFromApplicationFile()
 BinaryContent BinaryContent::readFromBinary(const QString &path)
 {
     BinaryContent c(path);
-    if (!c.m_binary->open(QIODevice::ReadOnly))
-        throw Error(QObject::tr("Could not open binary %1: %2").arg(path, c.m_binary->errorString()));
+    if (!c.d->m_appBinary->open(QIODevice::ReadOnly))
+        throw Error(QObject::tr("Could not open binary %1: %2").arg(path, c.d->m_appBinary->errorString()));
 
     // check for supported binary, will throw if we can't find a marker
-    const BinaryLayout layout = readBinaryLayout(c.m_binary.data(), findMagicCookie(c.m_binary.data(),
-        QInstaller::MagicCookie));
+    const BinaryLayout layout = readBinaryLayout(c.d->m_appBinary.data(),
+        findMagicCookie(c.d->m_appBinary.data(), QInstaller::MagicCookie));
 
     bool retry = true;
     if (layout.magicMarker != MagicInstallerMarker) {
@@ -863,26 +919,28 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
             binaryDataPath = fi.absoluteFilePath();
         fi.setFile(binaryDataPath);
 
-        c.m_binaryFile = QSharedPointer<QFile>(new QFile(fi.absolutePath() + QLatin1Char('/') + fi.baseName()
-            + QLatin1String(".dat")));
-        if (c.m_binaryFile->exists() && c.m_binaryFile->open(QIODevice::ReadOnly)) {
+        c.d->m_binaryDataFile = QSharedPointer<QFile>(new QFile(fi.absolutePath() + QLatin1Char('/')
+            + fi.baseName() + QLatin1String(".dat")));
+        if (c.d->m_binaryDataFile->exists() && c.d->m_binaryDataFile->open(QIODevice::ReadOnly)) {
             // check for supported binary data file, will throw if we can't find a marker
             try {
-                const qint64 cookiePos = findMagicCookie(c.m_binaryFile.data(), QInstaller::MagicCookieDat);
-                readBinaryData(c, c.m_binaryFile, readBinaryLayout(c.m_binaryFile.data(), cookiePos));
+                const qint64 cookiePos = findMagicCookie(c.d->m_binaryDataFile.data(),
+                    QInstaller::MagicCookieDat);
+                const BinaryLayout binaryLayout = readBinaryLayout(c.d->m_binaryDataFile.data(), cookiePos);
+                readBinaryData(c, c.d->m_binaryDataFile, binaryLayout);
                 retry = false;
             } catch (const Error &error) {
                 // this seems to be an unsupported dat file, try to read from original binary
-                c.m_binaryFile.clear();
+                c.d->m_binaryDataFile.clear();
                 qDebug() << error.message();
             }
         } else {
-            c.m_binaryFile.clear();
+            c.d->m_binaryDataFile.clear();
         }
     }
 
     if (retry)
-        readBinaryData(c, c.m_binary, layout);
+        readBinaryData(c, c.d->m_appBinary, layout);
 
     return c;
 }
@@ -932,8 +990,8 @@ BinaryLayout BinaryContent::readBinaryLayout(QIODevice *const file, qint64 cooki
 void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
     const BinaryLayout &layout)
 {
-    content.m_magicMarker = layout.magicMarker;
-    content.m_metadataResourceSegments = layout.metadataResourceSegments;
+    content.d->m_magicMarker = layout.magicMarker;
+    content.d->m_metadataResourceSegments = layout.metadataResourceSegments;
 
     const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
     const qint64 operationsStart = layout.operationsStart + dataBlockStart;
@@ -945,15 +1003,8 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
 
     for (int i = 0; i < operationsCount; ++i) {
         const QString name = retrieveString(file.data());
-        QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(name));
-        Q_ASSERT_X(!op.isNull(), __FUNCTION__, QString::fromLatin1("Invalid operation name: %1.").arg(name)
-            .toLatin1());
-
-        if (!op->fromXml(retrieveString(file.data()))) {
-            qWarning() << "Failed to load XML for operation:" << name;
-            continue;
-        }
-        content.m_performedOperations.push(op.take());
+        const QString data = retrieveString(file.data());
+        content.d->m_performedOperationsData.insert(name, data);
     }
 
     // seek to the position of the component index
@@ -966,11 +1017,11 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
     if (!file->seek(compIndexStart))
         throw Error(QObject::tr("Could not seek to component index."));
 
-    content.m_components = QInstallerCreator::ComponentIndex::read(file, dataBlockStart);
-    content.handler.setComponentIndex(content.m_components);
+    content.d->m_componentIndex = QInstallerCreator::ComponentIndex::read(file, dataBlockStart);
+    content.d->m_binaryFormatEngineHandler.setComponentIndex(content.d->m_componentIndex);
 
     if (isVerbose()) {
-        const QVector<QInstallerCreator::Component> components = content.m_components.components();
+        const QVector<QInstallerCreator::Component> components = content.d->m_componentIndex.components();
         qDebug() << "Number of components loaded:" << components.count();
         foreach (const QInstallerCreator::Component &component, components) {
             const QVector<QSharedPointer<Archive> > archives = component.archives();
@@ -990,13 +1041,43 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
     }
 }
 
+/*!
+    Registers already performed operations.
+*/
+int BinaryContent::registerPerformedOperations()
+{
+    if (d->m_performedOperations.count() > 0)
+        return d->m_performedOperations.count();
+
+    foreach (const QString &name, d->m_performedOperationsData.keys()) {
+        QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(name));
+        Q_ASSERT_X(!op.isNull(), __FUNCTION__, QString::fromLatin1("Invalid operation name: %1.").arg(name)
+            .toLatin1());
+
+        if (!op->fromXml(d->m_performedOperationsData.value(name))) {
+            qWarning() << "Failed to load XML for operation:" << name;
+            continue;
+        }
+        d->m_performedOperations.append(op.take());
+    }
+    return d->m_performedOperations.count();
+}
+
+/*!
+    Returns the operations performed during installation. Returns an empty list if no operations are
+    instantiated, performed or the binary is the installer application.
+*/
+OperationList BinaryContent::performedOperations() const
+{
+    return d->m_performedOperations;
+}
 
 /*!
     Returns the magic marker found in the binary. Returns 0 if no marker has been found.
 */
 qint64 BinaryContent::magicMarker() const
 {
-    return m_magicMarker;
+    return d->m_magicMarker;
 }
 
 /*!
@@ -1004,28 +1085,30 @@ qint64 BinaryContent::magicMarker() const
  */
 int BinaryContent::registerEmbeddedQResources()
 {
-    const bool hasBinaryDataFile = !m_binaryFile.isNull();
-    QFile *const data = hasBinaryDataFile ? m_binaryFile.data() : m_binary.data();
+    if (d->m_resourceMappings.count() > 0)
+        return d->m_resourceMappings.count();
+
+    const bool hasBinaryDataFile = !d->m_binaryDataFile.isNull();
+    QFile *const data = hasBinaryDataFile ? d->m_binaryDataFile.data() : d->m_appBinary.data();
     if (!data->isOpen() && !data->open(QIODevice::ReadOnly)) {
         throw Error(QObject::tr("Could not open binary %1: %2").arg(data->fileName(),
             data->errorString()));
     }
 
-    foreach (const Range<qint64> &i, m_metadataResourceSegments)
-        m_resourceMappings.append(addResourceFromBinary(data, i));
+    foreach (const Range<qint64> &i, d->m_metadataResourceSegments)
+        d->m_resourceMappings.append(addResourceFromBinary(data, i));
 
-    m_binary.clear();
+    d->m_appBinary.clear();
     if (hasBinaryDataFile)
-        m_binaryFile.clear();
+        d->m_binaryDataFile.clear();
 
-    return m_resourceMappings.count();
+    return d->m_resourceMappings.count();
 }
 
 /*!
-    Returns the operations performed during installation. Returns an empty list if no operations are
-    performed or the binary is the installer application.
+    Returns the binary component index as read from the file.
 */
-OperationList BinaryContent::performedOperations() const
+QInstallerCreator::ComponentIndex BinaryContent::componentIndex() const
 {
-    return m_performedOperations.toList();
+    return d->m_componentIndex;
 }
