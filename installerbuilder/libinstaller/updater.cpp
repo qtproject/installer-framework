@@ -59,9 +59,7 @@ void Updater::setVerbose(bool verbose)
 
 bool Updater::checkForUpdates()
 {
-    BinaryContent content = BinaryContent::readFromApplicationFile();
-    content.registerEmbeddedQResources();
-
+    BinaryContent content = BinaryContent::readAndRegisterFromApplicationFile();
     if (content.magicMarker() == MagicInstallerMarker) {
         qDebug() << "Impossible to use an installer to check for updates!";
         return false;

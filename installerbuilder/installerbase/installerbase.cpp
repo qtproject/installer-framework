@@ -247,9 +247,8 @@ int main(int argc, char *argv[])
         // the uninstaller for the recorded list of during the installation performed operations
         QInstaller::init();
 
-        // load the embedded binary resource
-        BinaryContent content = BinaryContent::readFromApplicationFile();
-        content.registerEmbeddedQResources();
+        // load and map the embedded binary resource, registers operations
+        BinaryContent content = BinaryContent::readAndRegisterFromApplicationFile();
 
         // instantiate the installer we are actually going to use
         QInstaller::PackageManagerCore core(content.magicMarker(), content.performedOperations());

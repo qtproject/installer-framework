@@ -74,8 +74,7 @@ OperationRunner::~OperationRunner()
 bool OperationRunner::init()
 {
     try {
-        BinaryContent content = BinaryContent::readFromApplicationFile();
-        content.registerEmbeddedQResources();
+        BinaryContent content = BinaryContent::readAndRegisterFromApplicationFile();
         m_core = new PackageManagerCore(content.magicMarker(), content.performedOperations());
     } catch (const Error &e) {
         std::cerr << qPrintable(e.message()) << std::endl;
