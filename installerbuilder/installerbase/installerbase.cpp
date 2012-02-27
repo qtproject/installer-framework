@@ -252,10 +252,11 @@ int main(int argc, char *argv[])
 
         // instantiate the installer we are actually going to use
         QInstaller::PackageManagerCore core(content.magicMarker(), content.performedOperations());
-        Settings m_settings = Settings(Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
+        Settings m_settings =
+            Settings(Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
             QLatin1String(":/metadata/installer-config/")));
 
-        // check execution rights for the maintanance tool
+        // check execution rights for the maintenance tool
         if (!core.isInstaller() && !allowMaintenanceTool() && !args.contains(QLatin1String("--script"))) {
             QString reason = m_settings.value(QLatin1String("DisallowExecuteReason"),
                                 QString::fromLatin1("You are not allowed to run %1.").arg(qAppName())).toString();
