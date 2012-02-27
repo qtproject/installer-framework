@@ -201,7 +201,7 @@ public:
     static BinaryContent readFromBinary(const QString &path);
     static BinaryLayout readBinaryLayout(QIODevice *const file, qint64 cookiePos);
 
-    qint64 magicmaker() const;
+    qint64 magicMarker() const;
     int registerEmbeddedQResources();
     OperationList performedOperations() const;
 
@@ -216,7 +216,7 @@ private:
     QInstallerCreator::BinaryFormatEngineHandler handler;
     QVector<Range<qint64> > m_metadataResourceSegments;
     QVector<const uchar *> m_resourceMappings;
-    qint64 m_magicmarker;
+    qint64 m_magicMarker;
     qint64 m_dataBlockStart;
     QStack<Operation *> m_performedOperations;
 };

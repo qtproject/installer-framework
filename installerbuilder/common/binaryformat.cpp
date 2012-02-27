@@ -754,7 +754,7 @@ BinaryContent::BinaryContent(const QString &path)
     : m_binary(new QFile(path))
     , m_binaryFile(0)
     , handler(m_components)
-    , m_magicmarker(0)
+    , m_magicMarker(0)
     , m_dataBlockStart(0)
 {
 }
@@ -932,7 +932,7 @@ BinaryLayout BinaryContent::readBinaryLayout(QIODevice *const file, qint64 cooki
 void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
     const BinaryLayout &layout)
 {
-    content.m_magicmarker = layout.magicMarker;
+    content.m_magicMarker = layout.magicMarker;
     content.m_metadataResourceSegments = layout.metadataResourceSegments;
 
     const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
@@ -994,9 +994,9 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
 /*!
     Returns the magic marker found in the binary. Returns 0 if no marker has been found.
 */
-qint64 BinaryContent::magicmaker() const
+qint64 BinaryContent::magicMarker() const
 {
-    return m_magicmarker;
+    return m_magicMarker;
 }
 
 /*!

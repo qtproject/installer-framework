@@ -62,12 +62,12 @@ bool Updater::checkForUpdates()
     BinaryContent content = BinaryContent::readFromApplicationFile();
     content.registerEmbeddedQResources();
 
-    if (content.magicmaker() == MagicInstallerMarker) {
+    if (content.magicMarker() == MagicInstallerMarker) {
         qDebug() << "Impossible to use an installer to check for updates!";
         return false;
     }
 
-    PackageManagerCore core(content.magicmaker(), content.performedOperations());
+    PackageManagerCore core(content.magicMarker(), content.performedOperations());
     core.setUpdater();
     PackageManagerCore::setVirtualComponentsVisible(true);
 

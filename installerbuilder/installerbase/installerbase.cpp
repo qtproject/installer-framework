@@ -252,7 +252,7 @@ int main(int argc, char *argv[])
         content.registerEmbeddedQResources();
 
         // instantiate the installer we are actually going to use
-        QInstaller::PackageManagerCore core(content.magicmaker(), content.performedOperations());
+        QInstaller::PackageManagerCore core(content.magicMarker(), content.performedOperations());
         Settings m_settings = Settings(Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
             QLatin1String(":/metadata/installer-config/")));
 
