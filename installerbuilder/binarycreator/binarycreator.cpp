@@ -620,8 +620,8 @@ int main(int argc, char **argv)
     qDebug() << "Parsed arguments, ok.";
 
     try {
-        const PackageInfoVector packageList = createListOfPackages(components, packagesDirectory, !nodeps);
-        const PackageInfoVector packages = QInstaller::filterBlacklisted(packageList, excludedPackages);
+        PackageInfoVector packages = QInstaller::filterBlacklisted(createListOfPackages(components,
+            packagesDirectory, !nodeps), excludedPackages);
         const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configDir);
         {
             QSettings confInternal(metaDir + "/config/config-internal.ini", QSettings::IniFormat);
@@ -638,41 +638,41 @@ int main(int argc, char **argv)
         if (!target.endsWith(QLatin1String(".exe")))
             target += QLatin1String(".exe");
 #endif
+        int result = EXIT_FAILURE;
+        {
+            Input input;
+            input.outputPath = target;
+            input.installerExePath = templateBinary;
+            input.binaryResourcePath = createBinaryResourceFile(metaDir);
+            input.binaryResources = createBinaryResourceFiles(resources);
 
-        Input input;
-        input.outputPath = target;
-        input.installerExePath = templateBinary;
-        input.binaryResourcePath = createBinaryResourceFile(metaDir);
-        input.binaryResources = createBinaryResourceFiles(resources);
+            QInstaller::copyComponentData(packagesDirectory, metaDir, packages);
 
-        // now put the packages into the components section of the binary:
-        for (PackageInfoVector::const_iterator it = packages.begin(); it != packages.end(); ++it) {
-            qDebug() << "Creating component info for" << it->name;
+            // now put the packages into the components section of the binary
+            foreach (const PackageInfo &info, packages) {
+                Component comp;
+                comp.setName(info.name.toUtf8());
 
-            Component comp;
-            comp.setName(it->name.toUtf8());
-            // append everything within the data directory
-            const QFileInfoList archives = QDir(QString::fromLatin1("%1/data").arg(it->directory))
-                .entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-            foreach (const QFileInfo &archive, archives) {
-                const QSharedPointer<Archive> arch(new Archive(archive.absoluteFilePath()));
-                qDebug() << QString::fromLatin1("\tAppending %1 (%2 bytes)").arg(archive.filePath(),
-                    QString::number(arch->size()));
-                comp.appendArchive(arch);
+                qDebug() << "Creating component info for" << info.name;
+                foreach (const QString &archive, info.copiedArchives) {
+                    const QSharedPointer<Archive> arch(new Archive(archive));
+                    qDebug() << QString::fromLatin1("\tAppending %1 (%2 bytes)").arg(archive,
+                        QString::number(arch->size()));
+                    comp.appendArchive(arch);
+                }
+                input.components.insertComponent(comp);
             }
-            input.components.insertComponent(comp);
+
+            qDebug() << "Creating the binary";
+            result = assemble(input, configDir);
+
+            // cleanup
+            qDebug() << "Cleaning up...";
+            QFile::remove(input.binaryResourcePath);
+            foreach (const QString &resource, input.binaryResources)
+                QFile::remove(resource);
         }
-
-        qDebug() << "Creating the binary";
-        const int result = assemble(input, configDir);
-
-        // cleanup
-        qDebug() << "Cleaning up...";
-        QFile::remove(input.binaryResourcePath);
-        foreach (const QString &resource, input.binaryResources)
-            QFile::remove(resource);
         removeDirectory(metaDir);
-
         return result;
     } catch (const Error &e) {
         std::cerr << e.message() << std::endl;
