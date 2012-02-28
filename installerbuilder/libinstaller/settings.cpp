@@ -49,8 +49,6 @@ static const QLatin1String scPages("Pages");
 static const QLatin1String scPrefix("Prefix");
 static const QLatin1String scLogoSmall("LogoSmall");
 static const QLatin1String scWatermark("Watermark");
-static const QLatin1String scPublicKey("PublicKey");
-static const QLatin1String scPrivateKey("PrivateKey");
 static const QLatin1String scProductUrl("ProductUrl");
 static const QLatin1String scBackground("Background");
 static const QLatin1String scAdminTargetDir("AdminTargetDir");
@@ -72,21 +70,6 @@ static QSet<T> variantListToSet(const QVariantList &list)
     foreach (const QVariant &variant, list)
         set.insert(variant.value<T>());
     return set;
-}
-
-static QString splitTrimmed(const QString &string)
-{
-    if (string.isEmpty())
-        return QString();
-
-    const QStringList input = string.split(QRegExp(QLatin1String("\n|\r\n")));
-
-    QStringList result;
-    foreach (const QString &line, input)
-        result.append(line.trimmed());
-    result.append(QString());
-
-    return result.join(QLatin1String("\n"));
 }
 
 static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault)
@@ -208,16 +191,13 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
     }
 
     QStringList blackList;
-    blackList << scPrivateKey << scPublicKey << scRemoteRepositories << scSigningCertificate << scPages;
+    blackList << scRemoteRepositories << scSigningCertificate << scPages;
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
     while (reader.readNextStartElement()) {
         const QString name = reader.name().toString();
         if (blackList.contains(name)) {
-            if (name == scPrivateKey || name == scPublicKey)
-                s.d->m_data.insert(name, splitTrimmed(reader.readElementText()));
-
             if (name == scSigningCertificate)
                 s.d->m_data.insertMulti(name, s.d->makeAbsolutePath(reader.readElementText()));
 
@@ -369,16 +349,6 @@ QStringList Settings::certificateFiles() const
 bool Settings::allowNoneAsciiCharacters() const
 {
     return d->m_data.value(scAllowNonAsciiCharacters).toBool();
-}
-
-QByteArray Settings::privateKey() const
-{
-    return d->m_data.value(scPrivateKey).toByteArray();
-}
-
-QByteArray Settings::publicKey() const
-{
-    return d->m_data.value(scPublicKey).toByteArray();
 }
 
 bool Settings::hasReplacementRepos() const

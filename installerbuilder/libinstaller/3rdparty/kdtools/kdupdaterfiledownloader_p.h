@@ -204,54 +204,6 @@ private:
     Private *d;
 };
 
-class SignatureVerificationResult;
-class SignatureVerifier;
-
-class SignatureVerificationDownloader : public FileDownloader
-{
-    Q_OBJECT
-
-public:
-    explicit SignatureVerificationDownloader(FileDownloader *downloader, QObject *parent = 0);
-    ~SignatureVerificationDownloader();
-
-    QUrl signatureUrl() const;
-    void setSignatureUrl(const QUrl &url);
-
-    const SignatureVerifier *signatureVerifier() const;
-    void setSignatureVerifier(const SignatureVerifier *verifier);
-
-    SignatureVerificationResult result() const;
-
-    bool canDownload() const;
-    bool isDownloaded() const;
-    QString downloadedFileName() const;
-    void setDownloadedFileName(const QString &name);
-    FileDownloader *clone(QObject *parent = 0) const;
-
-public Q_SLOTS:
-    void cancelDownload();
-
-protected:
-    void onError();
-    void onSuccess();
-
-private Q_SLOTS:
-    void doDownload();
-
-    void dataDownloadStarted();
-    void dataDownloadCanceled();
-    void dataDownloadCompleted();
-    void dataDownloadAborted(const QString &errorMessage);
-    void signatureDownloadCanceled();
-    void signatureDownloadCompleted();
-    void signatureDownloadAborted(const QString &errorMessage);
-
-private:
-    class Private;
-    Private *d;
-};
-
 } // namespace KDUpdater
 
 #endif // KD_UPDATER_FILE_DOWNLOADER_P_H

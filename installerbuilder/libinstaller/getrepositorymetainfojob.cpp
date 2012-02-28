@@ -34,7 +34,6 @@
 
 #include "constants.h"
 #include "common/errors.h"
-#include "cryptosignatureverifier.h"
 #include "lib7z_facade.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore_p.h"
@@ -118,7 +117,6 @@ GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(PackageManagerCorePrivate *co
     m_canceled(false),
     m_silentRetries(3),
     m_retriesLeft(m_silentRetries),
-    m_publicKey(corePrivate->m_settings.publicKey()),
     m_downloader(0),
     m_waitForDone(false),
     m_corePrivate(corePrivate)
@@ -204,7 +202,7 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
         return;
     }
 
-    m_downloader = FileDownloaderFactory::instance().create(url.scheme(), 0, QUrl(), this);
+    m_downloader = FileDownloaderFactory::instance().create(url.scheme(), this);
     if (!m_downloader) {
         finished(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2).").arg(url.scheme(),
             url.toString()));
@@ -415,14 +413,7 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     const QString repoUrl = m_repository.url().toString();
     const QUrl url = QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, next,
         online ? nextVersion : QString());
-
-    if (!m_publicKey.isEmpty()) {
-        const CryptoSignatureVerifier verifier(m_publicKey);
-        const QUrl sigUrl = QString::fromLatin1("%1/%2/meta.7z.sig").arg(repoUrl, next);
-        m_downloader = FileDownloaderFactory::instance().create(url.scheme(), &verifier, sigUrl, this);
-    } else {
         m_downloader = FileDownloaderFactory::instance().create(url.scheme(), this);
-    }
 
     if (!m_downloader) {
         m_currentPackageName.clear();

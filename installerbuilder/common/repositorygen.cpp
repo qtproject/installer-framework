@@ -32,7 +32,7 @@
 #include <common/fileutils.h>
 #include <common/errors.h>
 #include <common/repositorygen.h>
-#include <common/consolepasswordprovider.h>
+#include <kdupdater.h>
 #include <lib7z_facade.h>
 #include <settings.h>
 
@@ -260,16 +260,8 @@ void QInstaller::compressDirectory(const QStringList &paths, const QString &arch
     Lib7z::createArchive(&archive, paths);
 }
 
-void QInstaller::compressMetaDirectories(const QString &configDir, const QString &repoDir)
+void QInstaller::compressMetaDirectories(const QString &repoDir)
 {
-    const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
-    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
-
-    KDUpdaterCrypto crypto;
-    crypto.setPrivateKey(settings.privateKey());
-    ConsolePasswordProvider passwordProvider;
-    crypto.setPrivatePasswordProvider(&passwordProvider);
-
     QDir dir(repoDir);
     const QStringList sub = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
     foreach (const QString &i, sub) {
@@ -284,18 +276,6 @@ void QInstaller::compressMetaDirectories(const QString &configDir, const QString
         if (!tmp.rename(finalTarget)) {
             throw QInstaller::Error(QObject::tr("Could not move %1 to %2").arg(tmpTarget,
                 finalTarget));
-        }
-
-        // if we have a private key, sign the meta.7z file
-        if (!settings.privateKey().isEmpty()) {
-            qDebug() << "Adding a RSA signature to" << finalTarget;
-            const QByteArray signature = crypto.sign(finalTarget);
-            QFile sigFile(finalTarget + QLatin1String(".sig"));
-            if (!sigFile.open(QIODevice::WriteOnly)) {
-                throw QInstaller::Error(QObject::tr("Could not open %1 for writing.")
-                    .arg(finalTarget));
-            }
-            sigFile.write(signature);
         }
     }
 }
@@ -688,16 +668,9 @@ static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const
     }
 }
 
-void QInstaller::compressMetaDirectories(const QString &configDir, const QString &repoDir,
-    const QString &baseDir, const QMap<QString, QString> &versionMapping)
+void QInstaller::compressMetaDirectories(const QString &repoDir, const QString &baseDir,
+    const QMap<QString, QString> &versionMapping)
 {
-    const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
-    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
-
-    KDUpdaterCrypto crypto;
-    crypto.setPrivateKey(settings.privateKey());
-    ConsolePasswordProvider passwordProvider;
-    crypto.setPrivatePasswordProvider(&passwordProvider);
     QDomDocument doc;
     QDomElement root;
     // use existing Updates.xml, if any
@@ -731,34 +704,16 @@ void QInstaller::compressMetaDirectories(const QString &configDir, const QString
         const QString finalTarget = absPath + QLatin1String("/") + fn;
         if (!tmp.rename(finalTarget))
             throw QInstaller::Error(QObject::tr("Could not move %1 to %2").arg(tmpTarget, finalTarget));
-
-        // if we have a private key, sign the meta.7z file
-        if (!settings.privateKey().isEmpty()) {
-            qDebug() << "Adding a RSA signature to" << finalTarget;
-            const QByteArray signature = crypto.sign(finalTarget);
-            QFile sigFile(finalTarget + QLatin1String(".sig"));
-            if (!sigFile.open(QIODevice::WriteOnly))
-                throw QInstaller::Error(QObject::tr("Could not open %1 for writing").arg(finalTarget));
-
-            sigFile.write(signature);
-        }
     }
+
     openForWrite(&existingUpdatesXml, existingUpdatesXml.fileName());
     blockingWrite(&existingUpdatesXml, doc.toByteArray());
     existingUpdatesXml.close();
 }
 
-void QInstaller::copyComponentData(const QString &packageDir, const QString &configDir,
-    const QString &repoDir, const PackageInfoVector &infos)
+void QInstaller::copyComponentData(const QString &packageDir, const QString &repoDir,
+    const PackageInfoVector &infos)
 {
-    const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
-    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
-
-    KDUpdaterCrypto crypto;
-    crypto.setPrivateKey(settings.privateKey());
-    ConsolePasswordProvider passwordProvider;
-    crypto.setPrivatePasswordProvider(&passwordProvider);
-
     foreach (const PackageInfo &info, infos) {
         const QString i = info.name;
         qDebug() << "Copying component data for" << i;
@@ -829,22 +784,6 @@ void QInstaller::copyComponentData(const QString &packageDir, const QString &con
                 archiveHashFile.close();
                 archiveFile.close();
                 throw;
-            }
-        }
-
-        // if we have a private key, sign all target files - including those we compressed ourselves
-        if (!settings.privateKey().isEmpty()) {
-            const QDir compDataDir(QString::fromLatin1("%1/%2").arg(repoDir, i));
-            const QStringList targetFiles = compDataDir.entryList(QDir::Files);
-            for (QStringList::const_iterator it = targetFiles.begin(); it != targetFiles.end(); ++it) {
-                qDebug() << "Adding a RSA signature to" << *it;
-                const QByteArray signature = crypto.sign(compDataDir.absoluteFilePath(*it));
-                QFile sigFile(compDataDir.absoluteFilePath(*it) + QLatin1String(".sig"));
-                if (!sigFile.open(QIODevice::WriteOnly)) {
-                    throw QInstaller::Error(QObject::tr("Could not open %1 for writing: %2")
-                        .arg(sigFile.fileName(), sigFile.errorString()));
-                }
-                sigFile.write(signature);
             }
         }
     }

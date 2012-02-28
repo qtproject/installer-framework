@@ -149,7 +149,6 @@ static void initArchives()
 
 static void initResources()
 {
-    Q_INIT_RESOURCE(openssl);
     Q_INIT_RESOURCE(patch_file_lists);
 #if defined(USE_STATIC_SQLITE_PLUGIN)
     Q_IMPORT_PLUGIN(qsqlite); // RegisterDocumentationOperation needs this

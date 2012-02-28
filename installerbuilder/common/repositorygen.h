@@ -50,13 +50,12 @@ typedef QVector<PackageInfo> PackageInfoVector;
 
 QMap<QString, QString> buildPathToVersionMap(const PackageInfoVector &info);
 
+void compressMetaDirectories(const QString &repoDir);
 void compressDirectory(const QStringList &paths, const QString &archivePath);
-void compressMetaDirectories(const QString &configDir, const QString &repoDir);
-void compressMetaDirectories(const QString &configDir, const QString &repoDir,
-    const QString &baseDir, const QMap<QString, QString> &versionMapping);
+void compressMetaDirectories(const QString &repoDir, const QString &baseDir,
+    const QMap<QString, QString> &versionMapping);
 
-void copyComponentData(const QString &packageDir, const QString &configDir, const QString &repoDir,
-    const PackageInfoVector &infos);
+void copyComponentData(const QString &packageDir, const QString &repoDir, const PackageInfoVector &infos);
 
 void generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
     const PackageInfoVector &packages, const QString &appName,

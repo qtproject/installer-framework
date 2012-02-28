@@ -83,7 +83,7 @@ void TestRepository::doStart()
         return;
     }
 
-    m_downloader = KDUpdater::FileDownloaderFactory::instance().create(url.scheme(), 0, QUrl(), this);
+    m_downloader = KDUpdater::FileDownloaderFactory::instance().create(url.scheme(), this);
     if (!m_downloader) {
         emitFinishedWithError(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2).")
             .arg(url.scheme(), url.toString()));

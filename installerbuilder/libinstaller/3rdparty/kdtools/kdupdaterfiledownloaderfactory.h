@@ -38,7 +38,6 @@ QT_END_NAMESPACE
 namespace KDUpdater {
 
 class FileDownloader;
-class SignatureVerifier;
 
 class KDTOOLS_EXPORT FileDownloaderProxyFactory : public QNetworkProxyFactory
 {
@@ -60,9 +59,7 @@ public:
     {
         registerProduct<T>(scheme);
     }
-    FileDownloader *create(const QString &scheme, QObject *parent) const;
-    FileDownloader *create(const QString &scheme, const SignatureVerifier *verifier = 0,
-                           const QUrl &signatureUrl = QUrl(), QObject *parent = 0) const;
+    FileDownloader *create(const QString &scheme, QObject *parent = 0) const;
 
     static bool followRedirects();
     static void setFollowRedirects(bool val);

@@ -94,9 +94,6 @@ public:
     QString uninstallerName() const;
     QString uninstallerIniFile() const;
 
-    QByteArray privateKey() const;
-    QByteArray publicKey() const;
-
     QString configurationFileName() const;
 
     bool hasReplacementRepos() const;

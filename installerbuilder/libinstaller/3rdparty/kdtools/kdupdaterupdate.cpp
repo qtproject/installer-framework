@@ -92,9 +92,7 @@ Update::Update(Application *application, const UpdateSourceInfo &sourceInfo,
     d->uncompressedSize = uncompressedSize;
     d->sha1sum = sha1sum;
 
-    const SignatureVerifier *verifier = d->application->signatureVerifier(Application::Packages);
-
-    d->fileDownloader = FileDownloaderFactory::instance().create(updateUrl.scheme(), verifier, QUrl(), this);
+    d->fileDownloader = FileDownloaderFactory::instance().create(updateUrl.scheme(), this);
     if (d->fileDownloader) {
         d->fileDownloader->setUrl(d->updateUrl);
         d->fileDownloader->setSha1Sum(d->sha1sum);

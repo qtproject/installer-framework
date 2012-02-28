@@ -34,7 +34,6 @@
 
 #include "common/binaryformatenginehandler.h"
 #include "component.h"
-#include "cryptosignatureverifier.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
 
@@ -51,14 +50,13 @@ using namespace KDUpdater;
 /*!
     Creates a new DownloadArchivesJob with \a parent.
 */
-DownloadArchivesJob::DownloadArchivesJob(const QByteArray &publicKey, PackageManagerCore *core)
+DownloadArchivesJob::DownloadArchivesJob(PackageManagerCore *core)
     : KDJob(core),
       m_core(core),
       m_downloader(0),
       m_archivesDownloaded(0),
       m_archivesToDownloadCount(0),
       m_canceled(false),
-      m_publicKey(publicKey),
       m_lastFileProgress(0),
       m_progressChangedTimerId(0)
 {
@@ -302,17 +300,12 @@ void DownloadArchivesJob::finishWithError(const QString &error)
 KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &prefix)
 {
     KDUpdater::FileDownloader *downloader = 0;
-    const QString targetUrl = m_archivesToDownload.first().second;
-    const QString registerPath = m_archivesToDownload.first().first;
-
-    const QFileInfo fi = QFileInfo(registerPath);
+    const QFileInfo fi = QFileInfo(m_archivesToDownload.first().first);
     const Component *const component = m_core->componentByName(QFileInfo(fi.path()).fileName());
     if (component) {
-        const QUrl url(targetUrl + prefix);
+        const QUrl url(m_archivesToDownload.first().second + prefix);
         const QString &scheme = url.scheme();
-        const CryptoSignatureVerifier verifier(m_publicKey);
-        downloader = FileDownloaderFactory::instance().create(scheme, m_publicKey.isEmpty() ? 0 : &verifier,
-            QUrl(targetUrl + QLatin1String(".sig")), this);
+        downloader = FileDownloaderFactory::instance().create(scheme, this);
 
         if (downloader) {
             downloader->setUrl(url);

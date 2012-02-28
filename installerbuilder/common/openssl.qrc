@@ -1,7 +1,0 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-<qresource prefix="/openssllibs">
-	<file>libssl32.dll</file>
-	<file>libeay32.dll</file>
-</qresource>
-</RCC>

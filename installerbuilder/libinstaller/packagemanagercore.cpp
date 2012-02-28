@@ -364,8 +364,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nDownloading packages..."));
 
     // don't have it on the stack, since it keeps the temporary files
-    DownloadArchivesJob *const archivesJob =
-        new DownloadArchivesJob(d->m_settings.publicKey(), this);
+    DownloadArchivesJob *const archivesJob = new DownloadArchivesJob(this);
     archivesJob->setAutoDelete(false);
     archivesJob->setArchivesToDownload(archivesToDownload);
     connect(this, SIGNAL(installationInterrupted()), archivesJob, SLOT(cancel()));

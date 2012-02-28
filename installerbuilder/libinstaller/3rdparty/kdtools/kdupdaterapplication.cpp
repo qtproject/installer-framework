@@ -22,7 +22,6 @@
 
 #include "kdupdaterapplication.h"
 #include "kdupdaterpackagesinfo.h"
-#include "kdupdatersignatureverifier.h"
 #include "kdupdaterupdatesourcesinfo.h"
 
 #include <QCoreApplication>
@@ -121,7 +120,6 @@ struct Application::ApplicationData
     {
         delete packagesInfo;
         delete updateSourcesInfo;
-        qDeleteAll(verifiers);
         delete configurationInterface;
     }
    
@@ -130,7 +128,6 @@ struct Application::ApplicationData
     QString applicationDirectory;
     PackagesInfo *packagesInfo;
     UpdateSourcesInfo *updateSourcesInfo;
-    QMap<Application::SignatureTarget, const SignatureVerifier *> verifiers;
     QStringList filesForDelayedDeletion;
     ConfigurationInterface *configurationInterface;
 };
@@ -216,19 +213,6 @@ QString Application::applicationVersion() const
         return d->packagesInfo->applicationVersion();
 
     return QString();
-}
-
-const SignatureVerifier *Application::signatureVerifier(SignatureTarget target) const
-{
-    return d->verifiers.value(target);
-}
-
-void Application::setSignatureVerifier(SignatureTarget target, const SignatureVerifier *v)
-{
-    delete d->verifiers.value(target);
-    d->verifiers.remove(target);
-    if (v)
-        d->verifiers.insert(target, v->clone());
 }
 
 /*!

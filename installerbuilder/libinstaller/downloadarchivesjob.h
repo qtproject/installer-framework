@@ -56,7 +56,7 @@ class DownloadArchivesJob : public KDJob
     Q_OBJECT
 
 public:
-    explicit DownloadArchivesJob(const QByteArray &publicKey, PackageManagerCore *core = 0);
+    explicit DownloadArchivesJob(PackageManagerCore *core = 0);
     ~DownloadArchivesJob();
 
     void setArchivesToDownload(const QList<QPair<QString, QString> > &archives);
@@ -93,7 +93,6 @@ private:
     QList<QPair<QString, QString> > m_archivesToDownload;
 
     bool m_canceled;
-    const QByteArray m_publicKey;
     QSet<QString> m_temporaryFiles;
     QByteArray m_currentHash;
     double m_lastFileProgress;

@@ -33,7 +33,6 @@ QT_END_NAMESPACE
 namespace KDUpdater {
 
 class PackagesInfo;
-class SignatureVerifier;
 class UpdateSourcesInfo;
 
 class ConfigurationInterface
@@ -49,11 +48,6 @@ class KDTOOLS_EXPORT Application : public QObject
     Q_OBJECT
 
 public:
-    enum SignatureTarget {
-        Metadata,
-        Packages
-    };
-
     explicit Application(ConfigurationInterface *config = 0, QObject *parent = 0);
     ~Application();
 
@@ -65,9 +59,6 @@ public:
     QString applicationName() const;
     QString applicationVersion() const;
     int compatLevel() const;
-
-    const SignatureVerifier *signatureVerifier(SignatureTarget target) const;
-    void setSignatureVerifier(SignatureTarget target, const SignatureVerifier *verifier);
 
     void setPackagesXMLFileName(const QString &fileName);
     QString packagesXMLFileName() const;

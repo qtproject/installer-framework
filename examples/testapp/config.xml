@@ -6,36 +6,6 @@
     <Publisher>Nokia</Publisher>
     <ProductUrl>http://qt.nokia.com</ProductUrl>
 
-    <PublicKey>
-        -----BEGIN PUBLIC KEY-----
-        MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDzdb8ti9Ss5kmEY5rGf2HFEsj0
-        W6dXOXRIO4W3XXr37Rzc8JI4UMZd6lEcxF9mdnoqOOyhHQABI8/CB2t9HTsZPRPC
-        TCq43QLMfVMgI6A5Cgetv6osvZFgNG3nFAlRkLHw2gLO/zxoblY0wPq5p4xmYRh4
-        f/YjsgYeA2v9V9FBAQIDAQAB
-        -----END PUBLIC KEY-----
-    </PublicKey>
-
-    <PrivateKey>
-        -----BEGIN RSA PRIVATE KEY-----
-        Proc-Type: 4,ENCRYPTED
-        DEK-Info: DES-EDE3-CBC,C9D3A294C3702C32
-
-        unYGknjGs+FX+E5Bze/Kk2OZAvpJkYKhhJFJkiPekPy6FLPKDZX0oPyvNFjMnNPG
-        wXNQe7Yr2WVMlFFmm92yCFXyzIrokr5Q8mUZEb1aJKHPCjTk4gmfOSCnwYrqPcLk
-        XdFdr6e+yVsbaJ0zahPFQfaj4fUac9cK/qrMzwn1SxzYgW5+ZNp4KZVhWUkl8SE8
-        TiwDMCN3wLNHzrSZr65A6XFKw5euSyCqcaqDH+tvxvmFZjb8QBhFf9APlTAQKcoK
-        NrMGaUCOC96WDcKkj2iNLOUrp5vylo0/YDWKQdIsGHWGFV7L+M0aJgobdjKKXBKa
-        ywqVhjgMo0e/cS/Ywtfuj9A3K6PnOrizYL+ukTAWfJdxdU8p91BhuoFR4CsYAJAW
-        LZl/EfkCfJHOWgauGFkpvvaaIQMifJ6XObMZUVkYEi8e3jHxA653NmQIXRHoGgTW
-        pr7T/AvZgTdrY0AuMcFHaWvKYrJD0CNwLtA7I+kcEMMa0c9Q2ryI8/qLYSRMMpDk
-        fsUIiciPelpnruKGp8OQsrMPpmbDG2gYDA3y4aL7DDzZc8vx3ElsXcOU+Ri7asKR
-        1fRhhK7tFI+IhU6oHPM1QkX+85hZQR6Rr7w1dapBITCxv/uepJQJfEeur/utn1wB
-        EvSr8OSLgxFS7Nuc2R4vtHDb09DCSOqj0310GgtvI7NkrJqjx/dOmxjUEw29vRw6
-        1iaV7JrEkAlXn0cJRXaZ4ujxoIx2lBKoDDrQ8n1OUMxKDqKF/NWWh6yrCcsuG2kN
-        NBZ0kDxCbqe0cyKeCAFjtjUF1TsiAeXXZt+M3s12sKE0B5BXuir74A==
-        -----END RSA PRIVATE KEY-----
-    </PrivateKey>
-
     <!-- @homeDir@ and @rootDir@ are some of the supported vars -->
     <TargetDir>@homeDir@/testinstall</TargetDir>
     <RemoteRepositories>

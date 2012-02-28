@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 
     const QUrl url(a.arguments().value(1));
     qDebug() << url.toString();
-    KDUpdater::FileDownloader *loader = KDUpdater::FileDownloaderFactory::instance().create(url.scheme());
+    KDUpdater::FileDownloader *loader = KDUpdater::FileDownloaderFactory::instance().create(url.scheme(), 0);
     if (loader) {
         loader->setUrl(url);
         loader->setProxyFactory(new ProxyFactory());

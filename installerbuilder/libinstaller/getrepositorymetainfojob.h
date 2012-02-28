@@ -95,7 +95,6 @@ private:
     bool m_canceled;
     int m_silentRetries;
     int m_retriesLeft;
-    const QByteArray m_publicKey;
     Repository m_repository;
     QStringList m_packageNames;
     QStringList m_packageVersions;

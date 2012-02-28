@@ -205,7 +205,7 @@ int main(int argc, char** argv)
                 removeDirectory(fi.absoluteFilePath());
         }
 
-        copyComponentData(packagesDir, configDir, repositoryDir, packages);
+        copyComponentData(packagesDir, repositoryDir, packages);
 
         TempDirDeleter tmpDeleter;
         const QString metaTmp = createTemporaryDirectory();
@@ -215,10 +215,10 @@ int main(int argc, char** argv)
             configDir);
         generateMetaDataDirectory(metaTmp, repositoryDir, packages, settings.applicationName(),
             settings.applicationVersion(), redirectUpdateUrl);
-        compressMetaDirectories(configDir, metaTmp, metaTmp, pathToVersionMapping);
+        compressMetaDirectories(metaTmp, metaTmp, pathToVersionMapping);
 
         QFile::remove(QFileInfo(repositoryDir, QLatin1String("Updates.xml")).absoluteFilePath());
-        moveDirectoryContents(metaTmp,repositoryDir);
+        moveDirectoryContents(metaTmp, repositoryDir);
         return 0;
     } catch (const Lib7z::SevenZipException &e) {
         std::cerr << e.message() << std::endl;

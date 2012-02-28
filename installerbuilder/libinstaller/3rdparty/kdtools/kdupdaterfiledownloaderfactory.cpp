@@ -23,8 +23,6 @@
 #include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterfiledownloader_p.h"
 
-#include <cassert>
-
 /*!
    \internal
    \ingroup kdupdater
@@ -97,12 +95,6 @@ FileDownloaderFactory::~FileDownloaderFactory()
 */
 FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *parent) const
 {
-    return create(scheme, 0, QUrl(), parent);
-}
-
-FileDownloader *FileDownloaderFactory::create(const QString &scheme, const SignatureVerifier *verifier,
-                                              const QUrl &signatureUrl, QObject *parent) const
-{
     FileDownloader *downloader = KDGenericFactory<FileDownloader>::create(scheme);
     if (downloader != 0) {
         downloader->setParent(parent);
@@ -110,13 +102,7 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, const Signa
         if (d->m_factory)
             downloader->setProxyFactory(d->m_factory->clone());
     }
-    if (!verifier)
-        return downloader;
-
-    SignatureVerificationDownloader *svdl = new SignatureVerificationDownloader(downloader, parent);
-    svdl->setSignatureVerifier(verifier);
-    svdl->setSignatureUrl(signatureUrl);
-    return svdl;
+    return downloader;
 }
 
 /*!

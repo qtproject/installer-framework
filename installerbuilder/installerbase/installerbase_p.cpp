@@ -216,7 +216,7 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
     QUrl url = arguments.value(1);
     if (!supportedScheme(url.scheme()) && QFileInfo(url.toString()).exists())
         url = QLatin1String("file:///") + url.toString();
-    m_downloader.reset(FileDownloaderFactory::instance().create(url.scheme()));
+    m_downloader.reset(FileDownloaderFactory::instance().create(url.scheme(), 0));
     if (m_downloader.isNull()) {
         qDebug() << QString::fromLatin1("Scheme not supported: %1 (%2)").arg(url.scheme(), url.toString());
         return EXIT_FAILURE;

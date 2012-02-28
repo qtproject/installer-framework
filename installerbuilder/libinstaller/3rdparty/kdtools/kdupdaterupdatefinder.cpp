@@ -28,7 +28,6 @@
 #include "kdupdaterfiledownloader_p.h"
 #include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterupdatesinfo_p.h"
-#include "kdupdatersignatureverifier.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -262,8 +261,7 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
         UpdateSourceInfo info = updateSources->updateSourceInfo(i);
         QUrl updateXmlUrl = QString::fromLatin1("%1/Updates.xml").arg(info.url.toString());
 
-        const SignatureVerifier *verifier = application->signatureVerifier(Application::Metadata);
-        FileDownloader *downloader = FileDownloaderFactory::instance().create(updateXmlUrl.scheme(), verifier, QUrl(), q);
+        FileDownloader *downloader = FileDownloaderFactory::instance().create(updateXmlUrl.scheme(), q);
         if (!downloader)
             continue;
 

@@ -34,7 +34,6 @@
 #include <common/fileutils.h>
 #include <common/repositorygen.h>
 #include <common/utils.h>
-#include <common/consolepasswordprovider.h>
 #include <init.h>
 #include <kdsavefile.h>
 #include <settings.h>
@@ -43,6 +42,8 @@
 #include <QtCore/QProcess>
 #include <QtCore/QSettings>
 #include <QtCore/QTemporaryFile>
+
+#include <iostream>
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -460,16 +461,9 @@ static QString createMetaDataDirectory(const PackageInfoVector &packages, const 
             QDomDocument dom;
             dom.setContent(&configXml);
             configXml.close();
-            QDomElement doc = dom.documentElement();
-            QDomElement privateKey = doc.elementsByTagName(QLatin1String("PrivateKey")).item(0).toElement();
-            if (!privateKey.isNull()) {
-                qDebug() << "\tIt contains the RSA private key, removing it...";
-                if (doc.removeChild(privateKey).isNull())
-                    throw Error(QObject::tr("Could not remove the private key from config.xml"));
-            }
 
-            // afterward, iterate over all child elements, searching for relative file names
-            const QDomNodeList children = doc.childNodes();
+            // iterate over all child elements, searching for relative file names
+            const QDomNodeList children = dom.documentElement().childNodes();
             for (int i = 0; i < children.count(); ++i) {
                 QDomElement el = children.at(i).toElement();
                 if (el.isNull())
@@ -651,16 +645,6 @@ int main(int argc, char **argv)
         input.binaryResourcePath = createBinaryResourceFile(metaDir);
         input.binaryResources = createBinaryResourceFiles(resources);
 
-        const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
-        const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);
-        const QByteArray privateKey = settings.privateKey();
-
-        KDUpdaterCrypto crypto;
-        crypto.setPrivateKey(privateKey);
-        ConsolePasswordProvider passwordProvider;
-        crypto.setPrivatePasswordProvider(&passwordProvider);
-        crypto.setPublicKey(settings.publicKey());
-
         // now put the packages into the components section of the binary:
         for (PackageInfoVector::const_iterator it = packages.begin(); it != packages.end(); ++it) {
             qDebug() << "Creating component info for" << it->name;
@@ -672,24 +656,9 @@ int main(int argc, char **argv)
                 .entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
             foreach (const QFileInfo &archive, archives) {
                 const QSharedPointer<Archive> arch(new Archive(archive.absoluteFilePath()));
-                qDebug() << QString::fromLatin1("\tAppending %1 (%2 bytes)")
-                    .arg(archive.filePath(), QString::number(arch->size()));
+                qDebug() << QString::fromLatin1("\tAppending %1 (%2 bytes)").arg(archive.filePath(),
+                    QString::number(arch->size()));
                 comp.appendArchive(arch);
-                if (!privateKey.isEmpty()) {
-                    qDebug() << "\tAppending a RSA signature...";
-                    const QByteArray signature = crypto.sign(arch.data());
-                    if (signature.isEmpty())
-                        throw Error(QObject::tr("Could not create a RSA signature"));
-
-                    if (!crypto.verify(arch.data(), signature)) {
-                        throw Error(QObject::tr("Created RSA signature could not be verified. Is "
-                            "the given public key wrong?"));
-                    }
-                    qDebug() << QString::fromLatin1("\tAppending %1.sig (%2 bytes)")
-                        .arg(archive.fileName(), signature.size());
-                    const QSharedPointer<Archive> sigArch(new Archive(arch->name() + ".sig", signature));
-                    comp.appendArchive(sigArch);
-                }
             }
             input.components.insertComponent(comp);
         }

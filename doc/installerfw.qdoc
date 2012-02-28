@@ -154,21 +154,6 @@
     <RunProgramDescription></RunProgramDescription>
     <StartMenuDir>Some Application Entry Dir</StartMenuDir>
     <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
-
-    <PublicKey>
-        -----BEGIN PUBLIC KEY-----
-        ... key values ...
-        -----END PUBLIC KEY-----
-    </PublicKey>
-
-    <PrivateKey>
-        -----BEGIN RSA PRIVATE KEY-----
-        Proc-Type: 4,ENCRYPTED
-        DEK-Info: DES-EDE3-CBC,C9D3A294C3702C32
-        ... key values ...
-        -----END RSA PRIVATE KEY-----
-    </PrivateKey>
-
     <Icon>installericon</Icon>
 
     <!-- @homeDir@ and @rootDir@ are some of the supported vars -->
@@ -238,12 +223,6 @@
             \o  Icon
             \o  Filename of the installer icon. On Windows, .ico is appended,
                 on Mac, .icns is appended, and on Linux, .png is appended.
-        \row
-            \o  PublicKey
-            \o  RSA public key that is used to verify component signatures.
-        \row
-            \o  PrivateKey
-            \o  RSA private key that is used to sign components.
         \row
             \o  TargetDir
             \o  Default target directory for installation.
@@ -710,14 +689,6 @@
     repogen.exe -p <package_directory> -c <config_directory> repository <repository_directory> <components>
     \endcode
 
-    If config.xml contains a RSA private key, components and data are signed
-    with it. At installer runtime, the signature is used to verify the
-    components.
-
-    \note The private key is not included in the repository.
-    If the private key is protected with a password, end users are asked to
-    provide the password.
-
     When the repository has been created, you can upload it anywhere. You must
     specify the location in the installer configuration file when creating an
     installer for it.
@@ -843,14 +814,6 @@
     \code
     binarycreator.exe -c installer-config -e com.nokia.sdk.qt,com.nokia.qtcreator SDKInstaller.exe com.nokia.sdk
     \endcode
-
-    If the config.xml contains an RSA private key, components and data are
-    signed with it. At installer runtime, the signature is used to verify
-    the components.
-
-    \note The private key is not embedded in the installer binary. If the
-    private key is protected with a password, end users are asked to provide the
-    password.
 
     \section1 Reducing Installer Size
     Even if the components are fetched from a web server, \c binarycreator adds
