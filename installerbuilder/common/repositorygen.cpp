@@ -849,3 +849,12 @@ void QInstaller::copyComponentData(const QString &packageDir, const QString &con
         }
     }
 }
+
+PackageInfoVector QInstaller::filterBlacklisted(PackageInfoVector packages, const QStringList &blacklist)
+{
+    for (int i = packages.size() - 1; i >= 0; --i) {
+        if (blacklist.contains(packages[i].name))
+            packages.remove(i);
+    }
+    return packages;
+}

@@ -519,16 +519,6 @@ static int printErrorAndUsageAndExit(const QString &err)
     return EXIT_FAILURE;
 }
 
-static PackageInfoVector filterBlacklisted(const PackageInfoVector &packages, const QStringList &blacklist)
-{
-    PackageInfoVector result;
-    foreach (const PackageInfo &info, packages) {
-        if (!blacklist.contains(info.name))
-            result.append(info);
-    }
-    return result;
-}
-
 /*!
     Usage:
     binarycreator: [--help|-h] [-p|--packages packages directory] [-t|--template binary]
@@ -637,7 +627,7 @@ int main(int argc, char **argv)
 
     try {
         const PackageInfoVector packageList = createListOfPackages(components, packagesDirectory, !nodeps);
-        const PackageInfoVector packages = filterBlacklisted(packageList, excludedPackages);
+        const PackageInfoVector packages = QInstaller::filterBlacklisted(packageList, excludedPackages);
         const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configDir);
         {
             QSettings confInternal(metaDir + "/config/config-internal.ini", QSettings::IniFormat);
