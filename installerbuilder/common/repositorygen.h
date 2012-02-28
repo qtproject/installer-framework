@@ -33,9 +33,9 @@
 #ifndef QINSTALLER_REPOSITORYGEN_H
 #define QINSTALLER_REPOSITORYGEN_H
 
-#include <QString>
-#include <QStringList>
-#include <QVector>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QVector>
 
 namespace QInstaller {
 
@@ -46,20 +46,20 @@ struct PackageInfo
     QString directory;
     QStringList dependencies;
 };
+typedef QVector<PackageInfo> PackageInfoVector;
 
-
-QMap<QString, QString> buildPathToVersionMap(const QVector<PackageInfo> &info);
+QMap<QString, QString> buildPathToVersionMap(const PackageInfoVector &info);
 void compressMetaDirectories(const QString &configDir, const QString &repoDir, const QString &baseDir,
-                             const QMap<QString, QString> &versionMapping);
+    const QMap<QString, QString> &versionMapping);
 void compressMetaDirectories(const QString &configDir, const QString &repoDir);
 void compressDirectory(const QStringList &paths, const QString &archivePath);
 void copyComponentData(const QString &packageDir, const QString &configDir, const QString &repoDir,
-                       const QVector<PackageInfo> &infos);
+    const PackageInfoVector &infos);
 void generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
-                               const QVector<PackageInfo> &packages, const QString &appName,
-                               const QString& appVersion, const QString &redirectUpdateUrl = QString());
-QVector<PackageInfo> createListOfPackages(const QStringList &components, const QString &packagesDirectory,
-                                          bool addDependencies = true);
+    const PackageInfoVector &packages, const QString &appName,
+    const QString& appVersion, const QString &redirectUpdateUrl = QString());
+PackageInfoVector createListOfPackages(const QStringList &components, const QString &packagesDirectory,
+    bool addDependencies = true);
 
 } // namespace QInstaller
 

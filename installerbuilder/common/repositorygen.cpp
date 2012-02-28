@@ -50,11 +50,11 @@ static bool operator==(const PackageInfo &lhs, const PackageInfo &rhs)
 }
 QT_END_NAMESPACE
 
-static QVector<PackageInfo> collectAvailablePackages(const QString &packagesDirectory)
+static PackageInfoVector collectAvailablePackages(const QString &packagesDirectory)
 {
     qDebug() << "Collecting information about available packages...";
 
-    QVector< PackageInfo > dict;
+    PackageInfoVector dict;
     const QFileInfoList entries = QDir(packagesDirectory)
         .entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
@@ -120,7 +120,7 @@ static QVector<PackageInfo> collectAvailablePackages(const QString &packagesDire
 /*!
     Returns PackageInfo of package with right name and version
 */
-static PackageInfo findMatchingPackage(const QString &name, const QVector<PackageInfo> &available)
+static PackageInfo findMatchingPackage(const QString &name, const PackageInfoVector &available)
 {
     const QString id = name.contains(QChar::fromLatin1('-'))
         ? name.section(QChar::fromLatin1('-'), 0, 0) : name;
@@ -135,7 +135,7 @@ static PackageInfo findMatchingPackage(const QString &name, const QVector<Packag
     const bool allowLess = comparator.contains(QLatin1Char('<'));
     const bool allowMore = comparator.contains(QLatin1Char('>'));
 
-    for (QVector<PackageInfo>::const_iterator it = available.begin(); it != available.end(); ++it) {
+    for (PackageInfoVector::const_iterator it = available.begin(); it != available.end(); ++it) {
         if (it->name != id)
             continue;
         if (allowEqual && (version.isEmpty() || it->version == version))
@@ -161,9 +161,9 @@ static bool packageHasPrefix(const PackageInfo &package, const QString &prefix)
 /*!
     Returns true, when all \a packages start with \a prefix
 */
-static bool allPackagesHavePrefix(const QVector<PackageInfo> &packages, const QString &prefix)
+static bool allPackagesHavePrefix(const PackageInfoVector &packages, const QString &prefix)
 {
-    for (QVector< PackageInfo >::const_iterator it = packages.begin(); it != packages.end(); ++it) {
+    for (PackageInfoVector::const_iterator it = packages.begin(); it != packages.end(); ++it) {
         if (!packageHasPrefix(*it, prefix))
             return false;
     }
@@ -173,20 +173,20 @@ static bool allPackagesHavePrefix(const QVector<PackageInfo> &packages, const QS
 /*!
     Returns all packages out of \a all starting with \a prefix.
 */
-static QVector<PackageInfo> packagesWithPrefix(const QVector<PackageInfo> &all, const QString &prefix)
+static PackageInfoVector packagesWithPrefix(const PackageInfoVector &all, const QString &prefix)
 {
-    QVector<PackageInfo> result;
-    for (QVector<PackageInfo>::const_iterator it = all.begin(); it != all.end(); ++it) {
+    PackageInfoVector result;
+    for (PackageInfoVector::const_iterator it = all.begin(); it != all.end(); ++it) {
         if (packageHasPrefix(*it, prefix))
             result.push_back(*it);
     }
     return result;
 }
 
-static QVector<PackageInfo> calculateNeededPackages(const QStringList &components,
-    const QVector<PackageInfo> &available, bool addDependencies = true)
+static PackageInfoVector calculateNeededPackages(const QStringList &components,
+    const PackageInfoVector &available, bool addDependencies = true)
 {
-    QVector<PackageInfo> result;
+    PackageInfoVector result;
 
     for (QStringList::const_iterator it = components.begin(); it != components.end(); ++it) {
         static bool recursion = false;
@@ -213,7 +213,7 @@ static QVector<PackageInfo> calculateNeededPackages(const QStringList &component
             result.push_back(info);
 
             if (addDependencies) {
-                QVector<PackageInfo> dependencies;
+                PackageInfoVector dependencies;
 
                 if (!info.dependencies.isEmpty()) {
                     qDebug() << "\tIt depends on:";
@@ -226,15 +226,15 @@ static QVector<PackageInfo> calculateNeededPackages(const QStringList &component
                 // append all child items, as this package was requested explicitly
                 dependencies += packagesWithPrefix(available, info.name);
 
-                for (QVector<PackageInfo>::const_iterator dep = dependencies.begin();
+                for (PackageInfoVector::const_iterator dep = dependencies.begin();
                     dep != dependencies.end(); ++dep) {
                         if (result.contains(*dep))
                             continue;
 
                         result += *dep;
-                        const QVector<PackageInfo> depdeps = calculateNeededPackages(QStringList()
+                        const PackageInfoVector depdeps = calculateNeededPackages(QStringList()
                             << dep->name, available);
-                        for (QVector<PackageInfo>::const_iterator dep2 = depdeps.begin();
+                        for (PackageInfoVector::const_iterator dep2 = depdeps.begin();
                             dep2 != depdeps.end(); ++dep2)
                             if (!result.contains(*dep2))
                                 result += *dep2;
@@ -301,7 +301,7 @@ void QInstaller::compressMetaDirectories(const QString &configDir, const QString
 }
 
 void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
-    const QVector<PackageInfo> &packages, const QString &appName, const QString &appVersion,
+    const PackageInfoVector &packages, const QString &appName, const QString &appVersion,
     const QString &redirectUpdateUrl)
 {
     QString metapath = outDir;
@@ -332,7 +332,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
         root = doc.documentElement();
     }
 
-    for (QVector<PackageInfo>::const_iterator it = packages.begin(); it != packages.end(); ++it) {
+    for (PackageInfoVector::const_iterator it = packages.begin(); it != packages.end(); ++it) {
         const QString packageXmlPath = QString::fromLatin1("%1/meta/package.xml").arg(it->directory);
         qDebug() << QString::fromLatin1("\tGenerating meta data for package %1 using %2.").arg(
             it->name, packageXmlPath);
@@ -606,12 +606,12 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
     blockingWrite(&updatesXml, doc.toByteArray());
 }
 
-QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList &components,
+PackageInfoVector QInstaller::createListOfPackages(const QStringList &components,
     const QString &packagesDirectory, bool addDependencies)
 {
-    const QVector<PackageInfo> availablePackageInfos = collectAvailablePackages(packagesDirectory);
+    const PackageInfoVector availablePackageInfos = collectAvailablePackages(packagesDirectory);
     if (!addDependencies) {
-        QVector<PackageInfo> packageInfos;
+        PackageInfoVector packageInfos;
         foreach (const PackageInfo &info, availablePackageInfos) {
             if (components.contains(info.name))
                 packageInfos.append(info);
@@ -624,7 +624,7 @@ QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList &compone
     // so because they have two different behaviours we deactivate it here for now
 
     qDebug() << "Calculating dependencies for selected packages...";
-    QVector<PackageInfo> needed = calculateNeededPackages(components, availablePackageInfos, addDependencies);
+    PackageInfoVector needed = calculateNeededPackages(components, availablePackageInfos, addDependencies);
 
     qDebug() << "The following packages will be placed in the installer:";
     {
@@ -665,7 +665,7 @@ QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList &compone
     return needed;
 }
 
-QMap<QString, QString> QInstaller::buildPathToVersionMap(const QVector<PackageInfo> &info)
+QMap<QString, QString> QInstaller::buildPathToVersionMap(const PackageInfoVector &info)
 {
     QMap<QString, QString> map;
     foreach (const PackageInfo &inf, info)
@@ -749,7 +749,7 @@ void QInstaller::compressMetaDirectories(const QString &configDir, const QString
 }
 
 void QInstaller::copyComponentData(const QString &packageDir, const QString &configDir,
-    const QString &repoDir, const QVector<PackageInfo> &infos)
+    const QString &repoDir, const PackageInfoVector &infos)
 {
     const QString configfile = QFileInfo(configDir, QLatin1String("config.xml")).absoluteFilePath();
     const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configDir);

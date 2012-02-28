@@ -83,7 +83,7 @@ static QString makeAbsolute(const QString &path)
     return QDir::current().absoluteFilePath(path);
 }
 
-static QVector<PackageInfo> filterBlacklisted(QVector< PackageInfo > packages, const QStringList &blacklist)
+static PackageInfoVector filterBlacklisted(PackageInfoVector packages, const QStringList &blacklist)
 {
     for (int i = packages.size() - 1; i >= 0; --i) {
         if (blacklist.contains(packages[i].name))
@@ -201,12 +201,12 @@ int main(int argc, char** argv)
             throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!")
                 .arg(repositoryDir));
         }
-        const QVector<PackageInfo> packages = filterBlacklisted(createListOfPackages(components, packagesDir,
+        const PackageInfoVector packages = filterBlacklisted(createListOfPackages(components, packagesDir,
             !replaceSingleComponent), excludedPackages);
 
         QMap<QString, QString> pathToVersionMapping = buildPathToVersionMap(packages);
 
-        for (QVector<PackageInfo>::const_iterator it = packages.begin(); it != packages.end(); ++it) {
+        for (PackageInfoVector::const_iterator it = packages.begin(); it != packages.end(); ++it) {
             const QFileInfo fi(repositoryDir, it->name);
             if (fi.exists())
                 removeDirectory(fi.absoluteFilePath());

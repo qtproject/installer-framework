@@ -47,8 +47,6 @@
 using namespace QInstaller;
 using namespace QInstallerCreator;
 
-typedef QVector<PackageInfo> PackageInfoVector;
-
 struct Input {
     QString outputPath;
     QString installerExePath;
