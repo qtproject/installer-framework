@@ -124,7 +124,7 @@ static int assemble(Input input, const QString &configdir)
     Q_UNUSED (settings)
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     if (QFileInfo(input.installerExePath).isBundle()) {
         const QString bundle = input.installerExePath;
         // if the input file was a bundle
@@ -217,7 +217,7 @@ static int assemble(Input input, const QString &configdir)
         // no error handling as this is not fatal
         setApplicationIcon(tempFile, settings.icon());
     }
-#elif defined(Q_WS_MAC)
+#elif defined(Q_OS_MAC)
     if (isBundle) {
         // no error handling as this is not fatal
         const QString copyscript = QDir::temp().absoluteFilePath(QLatin1String("copylibsintobundle.sh"));
@@ -303,7 +303,7 @@ static int assemble(Input input, const QString &configdir)
 #endif
     QFile::remove(tempFile);
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     bundleBackup.release();
 
     if (createDMG) {
@@ -495,9 +495,9 @@ static QString createMetaDataDirectory(const PackageInfoVector &packages, const 
                     continue;
 
                 QFileInfo fi(absoluteConfigPath, el.text());
-#if defined(Q_WS_MAC)
+#if defined(Q_OS_MAC)
                 const QFileInfo fiIcon(absoluteConfigPath, el.text() + QLatin1String(".icns"));
-#elif defined(Q_WS_WIN)
+#elif defined(Q_OS_WIN)
                 const QFileInfo fiIcon(absoluteConfigPath, el.text() + QLatin1String(".ico"));
 #else
                 const QFileInfo fiIcon(absoluteConfigPath, el.text() + QLatin1String(".png"));
@@ -562,7 +562,7 @@ int main(int argc, char **argv)
     QInstaller::init();
 
     QString templateBinary = QLatin1String("installerbase");
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     templateBinary += QLatin1String(".exe");
 #endif
     if (!QFileInfo(templateBinary).exists())
@@ -664,12 +664,12 @@ int main(int argc, char **argv)
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
         }
 
-#if defined(Q_WS_MAC)
+#if defined(Q_OS_MAC)
         // on mac, we enforce building a bundle
         if (!target.endsWith(QLatin1String(".app")) && !target.endsWith(QLatin1String(".dmg"))) {
             target += QLatin1String(".app");
         }
-#elif defined(Q_WS_WIN)
+#elif defined(Q_OS_WIN)
         // on windows, we add .exe
         if (!target.endsWith(QLatin1String(".exe")))
             target += QLatin1String(".exe");
