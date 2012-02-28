@@ -29,38 +29,20 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
-#include <common/repositorygen.h>
-#include <common/errors.h>
 #include <common/binaryformat.h>
+#include <common/errors.h>
 #include <common/fileutils.h>
+#include <common/repositorygen.h>
 #include <common/utils.h>
 #include <common/consolepasswordprovider.h>
 #include <init.h>
+#include <kdsavefile.h>
 #include <settings.h>
 
-#include <kdsavefile.h>
-
-#include <QCoreApplication>
-#include <QtCore/QDebug>
-#include <QDir>
-#include <QDirIterator>
-#include <QDomAttr>
-#include <QDomDocument>
-#include <QFile>
-#include <QFileInfo>
-#include <QSettings>
-#include <QTemporaryFile>
-#include <QVector>
-#include <QProcess>
-
-#include <fstream>
-#include <iostream>
-
-#ifndef Q_WS_WIN
-#include <sys/types.h>
-#include <sys/stat.h>
-#endif
+#include <QtCore/QDirIterator>
+#include <QtCore/QProcess>
+#include <QtCore/QSettings>
+#include <QtCore/QTemporaryFile>
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -90,6 +72,7 @@ public:
             QFile::rename(bundle, backup);
         }
     }
+
     ~BundleBackup()
     {
         if (!backup.isEmpty()) {
@@ -98,7 +81,8 @@ public:
         }
     }
 
-    void release() const {
+    void release() const
+    {
         if (!backup.isEmpty())
             removeDirectory(backup);
         backup.clear();
@@ -121,7 +105,7 @@ static int assemble(Input input, const QString &configdir)
     const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configdir);
 
 #ifdef Q_OS_LINUX
-    Q_UNUSED (settings)
+Q_UNUSED(settings)
 #endif
 
 #ifdef Q_OS_MAC
@@ -320,7 +304,6 @@ static int assemble(Input input, const QString &configdir)
         qDebug() <<  "done." << mkdmgscript;
     }
 #endif
-
     return 0;
 }
 
@@ -346,7 +329,7 @@ static int runRcc(const QStringList &args)
 class WorkingDirectoryChange
 {
 public:
-    explicit WorkingDirectoryChange(const QString& path)
+    explicit WorkingDirectoryChange(const QString &path)
         : oldPath(QDir::currentPath())
     {
         QDir::setCurrent(path);
@@ -548,13 +531,12 @@ static PackageInfoVector filterBlacklisted(const PackageInfoVector &packages, co
     return result;
 }
 
-/**
- * Usage:
- * binarycreator: [--help|-h] [-p|--packages packages directory] [-t|--template binary]
- * -c|--config confdir target component ...
- *
- * template defaults to installerbase[.exe] in the same directory
- */
+/*!
+    Usage:
+    binarycreator: [--help|-h] [-p|--packages packages directory] [-t|--template binary]
+        -c|--config confdir target component ...
+    template defaults to installerbase[.exe] in the same directory
+*/
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);

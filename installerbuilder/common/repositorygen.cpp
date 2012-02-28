@@ -29,25 +29,17 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
-#include "repositorygen.h"
-
 #include <common/fileutils.h>
 #include <common/errors.h>
+#include <common/repositorygen.h>
 #include <common/consolepasswordprovider.h>
+#include <lib7z_facade.h>
 #include <settings.h>
 
-#include <QCryptographicHash>
-#include <QDir>
-#include <QDirIterator>
-#include <QDomAttr>
-#include <QDomDocument>
-#include <QTemporaryFile>
-#include <QVector>
+#include <QtCore/QCryptographicHash>
+#include <QtCore/QDirIterator>
 
-#include "lib7z_facade.h"
-
-#include <cassert>
+#include <QtXml/QDomDocument>
 
 using namespace QInstaller;
 
@@ -69,7 +61,7 @@ static QVector<PackageInfo> collectAvailablePackages(const QString &packagesDire
         qDebug() << QString::fromLatin1("\tfound subdirectory %1").arg(it->fileName());
         // because the filter is QDir::Dirs - filename means the name of the subdirectory
         if (it->fileName().contains(QLatin1Char('-'))) {
-            qDebug() << "\t, but it contains '-'' which is not allowed, because it is used as the seperator"
+            qDebug() << "\t, but it contains '-'' which is not allowed, because it is used as the separator"
                 " between the component name and the version number internally.";
             throw QInstaller::Error(QObject::tr("Component %1 can't contain '-'.").arg(it->fileName()));
         }
@@ -84,15 +76,15 @@ static QVector<PackageInfo> collectAvailablePackages(const QString &packagesDire
         file.open(QIODevice::ReadOnly);
 
         QDomDocument doc;
-        QString errorMessage;
+        QString error;
         int errorLine = 0;
         int errorColumn = 0;
-        if (!doc.setContent(&file, &errorMessage, &errorLine, &errorColumn)) {
-            qDebug() << QString::fromLatin1("\t- but its package description is invalid. Error at line: %2, column: %3 -> %4").arg(
-                QString::number(errorLine), QString::number(errorColumn), errorMessage);
+        if (!doc.setContent(&file, &error, &errorLine, &errorColumn)) {
+            qDebug() << QString::fromLatin1("\t- but its package description is invalid. Error at line: %2, "
+                "column: %3 -> %4").arg(QString::number(errorLine), QString::number(errorColumn), error);
             throw QInstaller::Error(QObject::tr("Component package description for %1 is invalid. "
                 "Error at line: %2, column: %3 -> %4").arg(it->fileName(), QString::number(errorLine),
-                QString::number(errorColumn), errorMessage));
+                QString::number(errorColumn), error));
         }
 
         const QString name = doc.firstChildElement(QLatin1String("Package"))
@@ -125,9 +117,9 @@ static QVector<PackageInfo> collectAvailablePackages(const QString &packagesDire
     return dict;
 }
 
-/**
- * Returns PackageInfo of package with right name and version
- */
+/*!
+    Returns PackageInfo of package with right name and version
+*/
 static PackageInfo findMatchingPackage(const QString &name, const QVector<PackageInfo> &available)
 {
     const QString id = name.contains(QChar::fromLatin1('-'))
@@ -136,8 +128,7 @@ static PackageInfo findMatchingPackage(const QString &name, const QVector<Packag
         ? name.section(QChar::fromLatin1('-'), 1, -1) : QString();
 
     QRegExp compEx(QLatin1String("([<=>]+)(.*)"));
-    const QString comparator = compEx.exactMatch(version)
-        ? compEx.cap(1) : QLatin1String("=");
+    const QString comparator = compEx.exactMatch(version) ? compEx.cap(1) : QLatin1String("=");
     version = compEx.exactMatch(version) ? compEx.cap(2) : version;
 
     const bool allowEqual = comparator.contains(QLatin1Char('='));
@@ -158,18 +149,18 @@ static PackageInfo findMatchingPackage(const QString &name, const QVector<Packag
     return PackageInfo();
 }
 
-/**
- * Returns true, when the \a package's identifier starts with, but not equals \a prefix.
- */
+/*!
+    Returns true, when the \a package's identifier starts with, but not equals \a prefix.
+*/
 static bool packageHasPrefix(const PackageInfo &package, const QString &prefix)
 {
     return package.name.startsWith(prefix)
         && package.name.mid(prefix.length(), 1) == QLatin1String(".");
 }
 
-/**
- * Returns true, when all \a packages start with \a prefix
- */
+/*!
+    Returns true, when all \a packages start with \a prefix
+*/
 static bool allPackagesHavePrefix(const QVector<PackageInfo> &packages, const QString &prefix)
 {
     for (QVector< PackageInfo >::const_iterator it = packages.begin(); it != packages.end(); ++it) {
@@ -179,11 +170,10 @@ static bool allPackagesHavePrefix(const QVector<PackageInfo> &packages, const QS
     return true;
 }
 
-/**
- * Returns all packages out of \a all starting with \a prefix.
- */
-static QVector<PackageInfo> packagesWithPrefix(const QVector<PackageInfo> &all,
-    const QString &prefix)
+/*!
+    Returns all packages out of \a all starting with \a prefix.
+*/
+static QVector<PackageInfo> packagesWithPrefix(const QVector<PackageInfo> &all, const QString &prefix)
 {
     QVector<PackageInfo> result;
     for (QVector<PackageInfo>::const_iterator it = all.begin(); it != all.end(); ++it) {
@@ -229,25 +219,25 @@ static QVector<PackageInfo> calculateNeededPackages(const QStringList &component
                     qDebug() << "\tIt depends on:";
                     for (QStringList::const_iterator dep = info.dependencies.begin();
                         dep != info.dependencies.end(); ++dep) {
-                        qDebug() << "\t\t" << *dep;
+                            qDebug() << "\t\t" << *dep;
                     }
                     dependencies += calculateNeededPackages(info.dependencies, available);
                 }
-                // append all child items, as this package was requested explicitely
+                // append all child items, as this package was requested explicitly
                 dependencies += packagesWithPrefix(available, info.name);
 
                 for (QVector<PackageInfo>::const_iterator dep = dependencies.begin();
                     dep != dependencies.end(); ++dep) {
-                    if (result.contains(*dep))
-                        continue;
+                        if (result.contains(*dep))
+                            continue;
 
-                    result += *dep;
-                    const QVector<PackageInfo> depdeps = calculateNeededPackages(QStringList()
-                        << dep->name, available);
-                    for (QVector<PackageInfo>::const_iterator dep2 = depdeps.begin();
-                        dep2 != depdeps.end(); ++dep2)
-                        if (!result.contains(*dep2))
-                            result += *dep2;
+                        result += *dep;
+                        const QVector<PackageInfo> depdeps = calculateNeededPackages(QStringList()
+                            << dep->name, available);
+                        for (QVector<PackageInfo>::const_iterator dep2 = depdeps.begin();
+                            dep2 != depdeps.end(); ++dep2)
+                            if (!result.contains(*dep2))
+                                result += *dep2;
                 }
             }
         }
@@ -256,15 +246,6 @@ static QVector<PackageInfo> calculateNeededPackages(const QStringList &component
     }
 
     return result;
-}
-
-namespace {
-    struct ArchiveFile {
-        ArchiveFile() : uncompressedSize(0) {}
-        quint64 uncompressedSize;
-        QByteArray sha1sum;
-        QString fileName;
-    };
 }
 
 void QInstaller::compressDirectory(const QStringList &paths, const QString &archivePath)
@@ -399,7 +380,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
             QDomElement element = doc.createElement(key);
             for (int  i = 0; i < node.attributes().size(); i++) {
                 element.setAttribute(node.attributes().item(i).toAttr().name(),
-                                     node.attributes().item(i).toAttr().value());
+                    node.attributes().item(i).toAttr().value());
             }
             update.appendChild(element).appendChild(doc.createTextNode(value));
         }
@@ -412,7 +393,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
         const QFileInfoList entries = !QDir(cmpDataDir + QLatin1String("/data")).exists()
             ? QDir(cmpDataDir).entryInfoList(QDir::Files | QDir::NoDotAndDotDot)
             : QDir(cmpDataDir + QLatin1String("/data")).entryInfoList(QDir::Files
-                | QDir::Dirs | QDir::NoDotAndDotDot);
+            | QDir::Dirs | QDir::NoDotAndDotDot);
 
         foreach (const QFileInfo &fi, entries) {
             if (fi.isHidden())
@@ -591,7 +572,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                     QFileInfo untranslated(licenseFile);
                     const QString &translatedLicenseFile =
                         QString::fromLatin1("%2_%3.%4").arg(untranslated.baseName(),
-                            translationFile.baseName(), untranslated.completeSuffix());
+                        translationFile.baseName(), untranslated.completeSuffix());
                     const QString &translatedSourceFile =
                         QString::fromLatin1("%1/meta/%2").arg(it->directory).arg(translatedLicenseFile);
                     if (!QFile::exists(translatedSourceFile)) {
@@ -599,7 +580,8 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                         continue;
                     }
 
-                    qDebug() << "\tCopying associated license file" << translatedLicenseFile << "into the meta package...";
+                    qDebug() << "\tCopying associated license file" << translatedLicenseFile
+                        << "into the meta package...";
 
                     if (!QFile::copy(translatedSourceFile, QString::fromLatin1("%1/%2/%3")
                         .arg(metapath, it->name, translatedLicenseFile))) {
@@ -638,7 +620,7 @@ QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList &compone
     }
     return availablePackageInfos;
 
-    // we don't want to have two different dependency checking codes (installer itself and repgen here)
+    // we don't want to have two different dependency checking codes (installer itself and repogen here)
     // so because they have two different behaviours we deactivate it here for now
 
     qDebug() << "Calculating dependencies for selected packages...";
@@ -664,12 +646,15 @@ QVector<PackageInfo> QInstaller::createListOfPackages(const QStringList &compone
             QString id = name.section(QChar::fromLatin1('.'), 0, -2);
             while (!id.isEmpty()) {
                 PackageInfo info;
-                if (!version.isEmpty())
-                    info = findMatchingPackage(QString::fromLatin1("%1-%2").arg(id, version), availablePackageInfos);
+                if (!version.isEmpty()) {
+                    info = findMatchingPackage(QString::fromLatin1("%1-%2").arg(id, version),
+                        availablePackageInfos);
+                }
                 if (info.name.isEmpty())
                     info = findMatchingPackage(id, availablePackageInfos);
                 if (!info.name.isEmpty() && !allPackagesHavePrefix(needed, id) && !needed.contains(info)) {
-                    qDebug() << QString::fromLatin1("Adding %1 as it is the virtual parent item of %2").arg(info.name, name);
+                    qDebug() << QString::fromLatin1("Adding %1 as it is the virtual parent item of %2")
+                        .arg(info.name, name);
                     needed.push_back(info);
                 }
                 id = id.section(QChar::fromLatin1('.'), 0, -2);
@@ -780,12 +765,12 @@ void QInstaller::copyComponentData(const QString &packageDir, const QString &con
         const QString dataDirPath = QString::fromLatin1("%1/%2/data").arg(packageDir, i);
         const QDir dataDir(dataDirPath);
         if (!QDir().mkpath(QString::fromLatin1("%1/%2").arg(repoDir, i))) {
-                throw QInstaller::Error(QObject::tr("Could not create repository folder for "
-                    "component %1").arg(i));
+            throw QInstaller::Error(QObject::tr("Could not create repository folder for "
+                "component %1").arg(i));
         }
 
         const QStringList files = dataDir.entryList(QDir::Files);
-        foreach (const QString& file, files) {
+        foreach (const QString &file, files) {
             QFile tmp(dataDir.absoluteFilePath(file));
             openForRead(&tmp, tmp.fileName());
 
@@ -847,7 +832,7 @@ void QInstaller::copyComponentData(const QString &packageDir, const QString &con
             }
         }
 
-        // if we have a private key, sign all target files - including those we compressed ourself
+        // if we have a private key, sign all target files - including those we compressed ourselves
         if (!settings.privateKey().isEmpty()) {
             const QDir compDataDir(QString::fromLatin1("%1/%2").arg(repoDir, i));
             const QStringList targetFiles = compDataDir.entryList(QDir::Files);

@@ -29,31 +29,25 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include <common/errors.h>
 #include <common/fileutils.h>
-#include <common/utils.h>
 #include <common/repositorygen.h>
+#include <common/utils.h>
 #include <settings.h>
+#include <init.h>
+#include <lib7z_facade.h>
 
-#include "lib7z_facade.h"
-#include "init.h"
-
-#include <QCoreApplication>
-#include <QDir>
-#include <QFileInfo>
-#include <QString>
-#include <QStringList>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
 
 #include <iostream>
 
-using namespace QInstaller;
 using namespace Lib7z;
+using namespace QInstaller;
 
 static void printUsage()
 {
-    const QString appName = QFileInfo( QCoreApplication::applicationFilePath() ).fileName();
-    //std::cout << "Usage: " << appName << " packages-dir config-dir repository-dir component1 [component2 ...]" << std::endl;
+    const QString appName = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     std::cout << "Usage: " << appName << " [options] repository-dir package1 [package2 ...]" << std::endl;
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
@@ -61,42 +55,49 @@ static void printUsage()
         << std::endl;
     std::cout << "  -c|--config dir        The directory containing the installer configuration "
         "files to use." << std::endl;
-    std::cout << "  -e|--exclude p1,...,pn exclude the given packages and their dependencies from the repository" << std::endl;
-    std::cout << "  -u|--updateurl url instructs clients to receive updates from a different location" << std::endl;
+    std::cout << "  -e|--exclude p1,...,pn exclude the given packages and their dependencies from the "
+        "repository" << std::endl;
+    std::cout << "  -u|--updateurl url instructs clients to receive updates from a different location"
+        << std::endl;
     std::cout << "  -v|--verbose           Verbose output" << std::endl;
-    std::cout << "     --single            Put only the given components (not their dependencies) into the (already existing) repository" << std::endl;
+    std::cout << "     --single            Put only the given components (not their dependencies) into the "
+        "(already existing) repository" << std::endl;
     std::cout << std::endl;
     std::cout << "Example:" << std::endl;
-    std::cout << "  " << appName << " -p ../examples/packages -c ../examples/config -u http://www.some-server.com:8080 repository/ com.nokia.sdk" << std::endl;
+    std::cout << "  " << appName << " -p ../examples/packages -c ../examples/config -u "
+        "http://www.some-server.com:8080 repository/ com.nokia.sdk" << std::endl;
 }
 
-static int printErrorAndUsageAndExit( const QString& err ) 
+static int printErrorAndUsageAndExit(const QString &err)
 {
-    std::cerr << qPrintable( err ) << std::endl << std::endl;
+    std::cerr << qPrintable(err) << std::endl << std::endl;
     printUsage();
     return 1;
 }
 
-static QString makeAbsolute( const QString& path ) {
-    QFileInfo fi( path );
-    if ( fi.isAbsolute() )
+static QString makeAbsolute(const QString &path)
+{
+    QFileInfo fi(path);
+    if (fi.isAbsolute())
         return path;
-    return QDir::current().absoluteFilePath( path );
+    return QDir::current().absoluteFilePath(path);
 }
 
-static QVector<PackageInfo> filterBlacklisted( QVector< PackageInfo > packages, const QStringList& blacklist ) 
+static QVector<PackageInfo> filterBlacklisted(QVector< PackageInfo > packages, const QStringList &blacklist)
 {
-    for( int i = packages.size() - 1; i >= 0; --i )
-        if ( blacklist.contains( packages[i].name ) )
-            packages.remove( i );
+    for (int i = packages.size() - 1; i >= 0; --i) {
+        if (blacklist.contains(packages[i].name))
+            packages.remove(i);
+    }
     return packages;
 }
 
-int main( int argc, char** argv ) {
+int main(int argc, char** argv)
+{
     try {
         QCoreApplication app(argc, argv);
 
-        init();
+        QInstaller::init();
 
         QStringList args = app.arguments().mid(1);
 
@@ -111,7 +112,7 @@ int main( int argc, char** argv ) {
         while (!args.isEmpty() && args.first().startsWith(QLatin1Char('-'))) {
             if (args.first() == QLatin1String("--verbose") || args.first() == QLatin1String("-v")) {
                 args.removeFirst();
-                setVerbose( true );
+                setVerbose(true);
             } else if (args.first() == QLatin1String("--exclude") || args.first() == QLatin1String("-e")) {
                 args.removeFirst();
                 if (args.isEmpty() || args.first().startsWith(QLatin1Char('-')))
@@ -166,42 +167,47 @@ int main( int argc, char** argv ) {
         }
 
         //TODO: adjust to the new argument/option usage
-        if ((packagesDir.isEmpty() && configDir.isEmpty() && args.count() < 4) || //use the old check
-            ((packagesDir.isEmpty() || configDir.isEmpty()) && args.count() < 3) || //only one dir set by the new options
-            (args.count() < 2)) { //both dirs set by the new options
-            printUsage();
-            return 1;
+        if ((packagesDir.isEmpty() && configDir.isEmpty() && args.count() < 4)
+            || ((packagesDir.isEmpty() || configDir.isEmpty()) && args.count() < 3) //use the old check
+            || (args.count() < 2)) {    //only one dir set by the new options
+                // both dirs set by the new options
+                printUsage();
+                return 1;
         }
- 
+
         int argsPosition = 0;
         bool needPrintUsage = false;
         if (packagesDir.isEmpty()) {
-            std::cout << "!!! A stand alone package directory argument is deprecated. Please use the pre argument." << std::endl;
+            std::cout << "!!! A stand alone package directory argument is deprecated. Please use the pre "
+                "argument." << std::endl;
             needPrintUsage |= true;
-            packagesDir = makeAbsolute( args[argsPosition++] );
+            packagesDir = makeAbsolute(args[argsPosition++]);
         }
 
         if (configDir.isEmpty()) {
-            std::cout << "!!! A stand alone config directory argument is deprecated. Please use the pre argument." << std::endl;
+            std::cout << "!!! A stand alone config directory argument is deprecated. Please use the pre "
+                "argument." << std::endl;
             needPrintUsage |= true;
-            configDir = makeAbsolute( args[argsPosition++] );
+            configDir = makeAbsolute(args[argsPosition++]);
         }
         if (needPrintUsage) {
             printUsage();
         }
 
-        const QString repositoryDir = makeAbsolute( args[argsPosition++] );
-        const QStringList components = args.mid( argsPosition );
+        const QString repositoryDir = makeAbsolute(args[argsPosition++]);
+        const QStringList components = args.mid(argsPosition);
 
-        if (!replaceSingleComponent && QFile::exists(repositoryDir))
-            throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!").arg(repositoryDir));
-
-        const QVector<PackageInfo> packages = filterBlacklisted(createListOfPackages(components, packagesDir, !replaceSingleComponent), excludedPackages);
+        if (!replaceSingleComponent && QFile::exists(repositoryDir)) {
+            throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!")
+                .arg(repositoryDir));
+        }
+        const QVector<PackageInfo> packages = filterBlacklisted(createListOfPackages(components, packagesDir,
+            !replaceSingleComponent), excludedPackages);
 
         QMap<QString, QString> pathToVersionMapping = buildPathToVersionMap(packages);
 
-        for (QVector<PackageInfo>::const_iterator it = packages.begin(); it != packages.end(); ++it ) {
-            const QFileInfo fi( repositoryDir, it->name );
+        for (QVector<PackageInfo>::const_iterator it = packages.begin(); it != packages.end(); ++it) {
+            const QFileInfo fi(repositoryDir, it->name);
             if (fi.exists())
                 removeDirectory(fi.absoluteFilePath());
         }
@@ -212,7 +218,8 @@ int main( int argc, char** argv ) {
         const QString metaTmp = createTemporaryDirectory();
         tmpDeleter.add(metaTmp);
 
-        const Settings &settings = Settings::fromFileAndPrefix(configDir + QLatin1String("/config.xml"), configDir);
+        const Settings &settings = Settings::fromFileAndPrefix(configDir + QLatin1String("/config.xml"),
+            configDir);
         generateMetaDataDirectory(metaTmp, repositoryDir, packages, settings.applicationName(),
             settings.applicationVersion(), redirectUpdateUrl);
         compressMetaDirectories(configDir, metaTmp, metaTmp, pathToVersionMapping);
@@ -220,11 +227,10 @@ int main( int argc, char** argv ) {
         QFile::remove(QFileInfo(repositoryDir, QLatin1String("Updates.xml")).absoluteFilePath());
         moveDirectoryContents(metaTmp,repositoryDir);
         return 0;
-    } catch ( const Lib7z::SevenZipException& e ) {
+    } catch (const Lib7z::SevenZipException &e) {
         std::cerr << e.message() << std::endl;
-    } catch ( const QInstaller::Error& e ) {
+    } catch (const QInstaller::Error &e) {
         std::cerr << e.message() << std::endl;
     }
     return 1;
 }
-
