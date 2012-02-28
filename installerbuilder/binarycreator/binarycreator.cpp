@@ -109,6 +109,12 @@ private:
     mutable QString backup;
 };
 
+static void chmod755(const QString &absolutFilePath)
+{
+    QFile::setPermissions(absolutFilePath, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner
+        | QFile::ReadGroup | QFile::ExeGroup | QFile::ReadOther | QFile::ExeOther);
+}
+
 static int assemble(Input input, const QString &configdir)
 {
     const QString configfile = QFileInfo(configdir, QLatin1String("config.xml")).absoluteFilePath();
@@ -217,7 +223,7 @@ static int assemble(Input input, const QString &configdir)
         const QString copyscript = QDir::temp().absoluteFilePath(QLatin1String("copylibsintobundle.sh"));
         QFile::copy(QLatin1String(":/resources/copylibsintobundle.sh"), copyscript);
         QFile::rename(tempFile, input.outputPath);
-        ::chmod(qPrintable(copyscript), 0755);
+        chmod755(copyscript);
         QProcess p;
         p.start(copyscript, QStringList() << bundle);
         p.waitForFinished();
@@ -293,7 +299,7 @@ static int assemble(Input input, const QString &configdir)
         return 1;
     }
 #ifndef Q_OS_WIN
-    ::chmod(qPrintable(out.fileName()), 0755);
+    chmod755(out.fileName());
 #endif
     QFile::remove(tempFile);
 
@@ -305,7 +311,8 @@ static int assemble(Input input, const QString &configdir)
         // no error handling as this is not fatal
         const QString mkdmgscript = QDir::temp().absoluteFilePath(QLatin1String("mkdmg.sh"));
         QFile::copy(QLatin1String(":/resources/mkdmg.sh"), mkdmgscript);
-        ::chmod(qPrintable(mkdmgscript), 0755);
+        chmod755(mkdmgscript);
+
         QProcess p;
         p.start(mkdmgscript, QStringList() << QFileInfo(out.fileName()).fileName() << bundle);
         p.waitForFinished();
