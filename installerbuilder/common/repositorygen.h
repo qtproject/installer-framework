@@ -45,6 +45,7 @@ struct PackageInfo
     QString version;
     QString directory;
     QStringList dependencies;
+    QStringList copiedArchives;
 };
 typedef QVector<PackageInfo> PackageInfoVector;
 
@@ -55,7 +56,7 @@ void compressDirectory(const QStringList &paths, const QString &archivePath);
 void compressMetaDirectories(const QString &repoDir, const QString &baseDir,
     const QMap<QString, QString> &versionMapping);
 
-void copyComponentData(const QString &packageDir, const QString &repoDir, const PackageInfoVector &infos);
+void copyComponentData(const QString &packageDir, const QString &repoDir, PackageInfoVector &infos);
 
 void generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
     const PackageInfoVector &packages, const QString &appName,

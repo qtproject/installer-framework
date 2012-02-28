@@ -711,78 +711,62 @@ void QInstaller::compressMetaDirectories(const QString &repoDir, const QString &
     existingUpdatesXml.close();
 }
 
-void QInstaller::copyComponentData(const QString &packageDir, const QString &repoDir,
-    const PackageInfoVector &infos)
+void QInstaller::copyComponentData(const QString &packageDir, const QString &repoDir, PackageInfoVector &infos)
 {
-    foreach (const PackageInfo &info, infos) {
-        const QString i = info.name;
-        qDebug() << "Copying component data for" << i;
-        const QString dataDirPath = QString::fromLatin1("%1/%2/data").arg(packageDir, i);
+    for (int i = 0; i < infos.count(); ++i) {
+        const PackageInfo info = infos.at(i);
+        const QString name = info.name;
+        qDebug() << "Copying component data for" << name;
+        const QString dataDirPath = QString::fromLatin1("%1/%2/data").arg(packageDir, name);
         const QDir dataDir(dataDirPath);
-        if (!QDir().mkpath(QString::fromLatin1("%1/%2").arg(repoDir, i))) {
-            throw QInstaller::Error(QObject::tr("Could not create repository folder for "
-                "component %1").arg(i));
+        if (!QDir().mkpath(QString::fromLatin1("%1/%2").arg(repoDir, name))) {
+            throw QInstaller::Error(QObject::tr("Could not create repository folder for component %1")
+                .arg(name));
         }
 
-        const QStringList files = dataDir.entryList(QDir::Files);
-        foreach (const QString &file, files) {
-            QFile tmp(dataDir.absoluteFilePath(file));
-            openForRead(&tmp, tmp.fileName());
-
-            const QString target = QString::fromLatin1("%1/%2/%4%3").arg(repoDir, i, file,
-                info.version);
-            qDebug() << QString::fromLatin1("Copying archive from %1 to %2").arg(tmp.fileName(), target);
-            if (!tmp.copy(target)) {
-                throw QInstaller::Error(QObject::tr("Could not copy %1 to %2: %3")
-                    .arg(tmp.fileName(), target, tmp.errorString()));
+        const QStringList entries = dataDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files);
+        foreach (const QString &entry, entries) {
+            QString target;
+            QFileInfo fileInfo(dataDir.absoluteFilePath(entry));
+            if (fileInfo.isFile()) {
+                target = QString::fromLatin1("%1/%2/%4%3").arg(repoDir, name, entry, info.version);
+                QFile tmp(dataDir.absoluteFilePath(entry));
+                qDebug() << QString::fromLatin1("Copying archive from %1 to %2").arg(tmp.fileName(), target);
+                openForRead(&tmp, tmp.fileName());
+                if (!tmp.copy(target)) {
+                    throw QInstaller::Error(QObject::tr("Could not copy %1 to %2: %3").arg(tmp.fileName(),
+                        target, tmp.errorString()));
+                }
+            } else if (fileInfo.isDir()) {
+                qDebug() << "Compressing data directory" << entry;
+                target = QString::fromLatin1("%1/%2/%4%3.7z").arg(repoDir, name, entry, info.version);
+                QInstaller::compressDirectory(QStringList() << dataDir.absoluteFilePath(entry), target);
+            } else {
+                continue;
             }
+            infos[i].copiedArchives.append(target);
+
             QFile archiveFile(target);
-            QString archiveHashFileName = archiveFile.fileName();
-            archiveHashFileName += QLatin1String(".sha1");
-            qDebug() << "Hash is stored in" << archiveHashFileName;
-            QFile archiveHashFile(archiveHashFileName);
+            QFile archiveHashFile(archiveFile.fileName() + QLatin1String(".sha1"));
+
+            qDebug() << "Hash is stored in" << archiveHashFile.fileName();
+            qDebug() << "Creating hash of archive" << archiveFile.fileName();
+
             try {
                 openForRead(&archiveFile, archiveFile.fileName());
-                openForWrite(&archiveHashFile, archiveHashFile.fileName());
                 const QByteArray archiveData = archiveFile.readAll();
                 archiveFile.close();
+
+                openForWrite(&archiveHashFile, archiveHashFile.fileName());
                 const QByteArray hashOfArchiveData = QCryptographicHash::hash(archiveData,
                     QCryptographicHash::Sha1).toHex();
                 archiveHashFile.write(hashOfArchiveData);
+                qDebug() << "Generated sha1 hash:" << hashOfArchiveData;
+                infos[i].copiedArchives.append(archiveHashFile.fileName());
                 archiveHashFile.close();
-
             } catch (const Error &/*e*/) {
-                archiveHashFile.close();
                 archiveFile.close();
-                throw;
-            }
-        }
-
-        const QStringList dirs = dataDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-        foreach (const QString &dir, dirs) {
-            qDebug() << "Compressing data directory" << dir;
-            const QString archiveName = QString::fromLatin1("%1/%2/%4%3.7z").arg(repoDir, i, dir,
-                info.version);
-            compressDirectory(QStringList() << dataDir.absoluteFilePath(dir), archiveName);
-            qDebug() << "Creating hash of archive"<< archiveName;
-            QFile archiveFile(archiveName);
-            QString archiveHashFileName = archiveFile.fileName();
-            archiveHashFileName += QLatin1String(".sha1");
-            qDebug() << "Hash is stored in"<< archiveHashFileName;
-            QFile archiveHashFile(archiveHashFileName);
-            try {
-                openForRead(&archiveFile, archiveFile.fileName());
-                openForWrite(&archiveHashFile, archiveHashFile.fileName());
-                const QByteArray archiveData = archiveFile.readAll();
-                archiveFile.close();
-                const QByteArray hashOfArchiveData = QCryptographicHash::hash(archiveData,
-                    QCryptographicHash::Sha1).toHex();
-                archiveHashFile.write(hashOfArchiveData);
                 archiveHashFile.close();
-            } catch(const Error &/*e*/) {
-                //std::cerr << e.message() << std::endl;
-                archiveHashFile.close();
-                archiveFile.close();
                 throw;
             }
         }
