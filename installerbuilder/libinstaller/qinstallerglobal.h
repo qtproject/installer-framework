@@ -48,6 +48,11 @@ QT_END_NAMESPACE
 
 namespace QInstaller {
 
+#define IFW_VERSION 0x010000
+#define IFW_VERSION_STRING  "1.0.0"
+#define IFW_VERSION_CHECK(major, minor, patch) \
+    ((major << 16)|(minor << 8)|(patch))
+
 enum INSTALLER_EXPORT RunMode
 {
     AllMode,
