@@ -339,13 +339,14 @@ SettingsDialog::SettingsDialog(QInstaller::PackageManagerCore *core, QWidget *pa
     connect(m_ui->m_addRepository, SIGNAL(clicked()), this, SLOT(addRepository()));
     connect(m_ui->m_showPasswords, SIGNAL(clicked()), this, SLOT(updatePasswords()));
     connect(m_ui->m_removeRepository, SIGNAL(clicked()), this, SLOT(removeRepository()));
-    connect(m_ui->m_useTmpRepositories, SIGNAL(clicked(bool)), this, SLOT(useTmpRepositories(bool)));
+    connect(m_ui->m_useTmpRepositories, SIGNAL(clicked(bool)), this, SLOT(useTmpRepositoriesOnly(bool)));
     connect(m_ui->m_repositoriesView, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
         this, SLOT(currentRepositoryChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
     connect(m_ui->m_testRepository, SIGNAL(clicked()), this, SLOT(testRepository()));
 
-    useTmpRepositories(settings.hasReplacementRepos());
+    useTmpRepositoriesOnly(settings.hasReplacementRepos());
     m_ui->m_useTmpRepositories->setChecked(settings.hasReplacementRepos());
+    m_ui->m_useTmpRepositories->setEnabled(settings.hasReplacementRepos());
     m_ui->m_repositoriesView->setCurrentItem(m_rootItems.at(settings.hasReplacementRepos()));
 }
 
@@ -414,6 +415,9 @@ void SettingsDialog::addRepository()
         m_ui->m_repositoriesView->editItem(item, 4);
         m_ui->m_repositoriesView->scrollToItem(item);
         m_ui->m_repositoriesView->setCurrentItem(item);
+
+        if (parent == m_rootItems.value(1))
+            m_ui->m_useTmpRepositories->setEnabled(parent->childCount() > 0);
     }
 }
 
@@ -463,12 +467,18 @@ void SettingsDialog::removeRepository()
     QTreeWidgetItem *item = m_ui->m_repositoriesView->currentItem();
     if (item && !m_rootItems.contains(item)) {
         QTreeWidgetItem *parent = item->parent();
-        if (parent)
+        if (parent) {
             delete parent->takeChild(parent->indexOfChild(item));
+            if (parent == m_rootItems.value(1) && parent->childCount() <= 0) {
+                useTmpRepositoriesOnly(false);
+                m_ui->m_useTmpRepositories->setChecked(false);
+                m_ui->m_useTmpRepositories->setEnabled(false);
+            }
+        }
     }
 }
 
-void SettingsDialog::useTmpRepositories(bool use)
+void SettingsDialog::useTmpRepositoriesOnly(bool use)
 {
     m_rootItems.at(0)->setDisabled(use);
     m_rootItems.at(2)->setDisabled(use);

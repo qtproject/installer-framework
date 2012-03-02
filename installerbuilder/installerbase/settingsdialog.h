@@ -152,7 +152,7 @@ private slots:
     void testRepository();
     void updatePasswords();
     void removeRepository();
-    void useTmpRepositories(bool use);
+    void useTmpRepositoriesOnly(bool use);
     void currentRepositoryChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
 private:
