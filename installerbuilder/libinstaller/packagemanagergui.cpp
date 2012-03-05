@@ -237,7 +237,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     if (m_core->isInstaller())
         setWindowTitle(tr("%1 Setup").arg(m_core->value(scTitle)));
     else
-        setWindowTitle(tr("%1").arg(m_core->value(scMaintenanceTitle)));
+        setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
 
 #ifndef Q_WS_MAC
     setWindowIcon(QIcon(m_core->settings().icon()));

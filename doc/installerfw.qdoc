@@ -189,9 +189,6 @@
             \o  Title
             \o  Name of the installer as displayed on the title bar.
         \row
-            \o  MaintenanceTitle
-            \o  Name of the maintenance tool as displayed on the title bar.
-        \row
             \o  Publisher
             \o  Publisher of the software.
         \row

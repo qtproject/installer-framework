@@ -73,7 +73,6 @@ static const QLatin1String scPublisher("Publisher");
 static const QLatin1String scRunProgram("RunProgram");
 static const QLatin1String scStartMenuDir("StartMenuDir");
 static const QLatin1String scRemoveTargetDir("RemoveTargetDir");
-static const QLatin1String scMaintenanceTitle("MaintenanceTitle");
 static const QLatin1String scRunProgramDescription("RunProgramDescription");
 static const QLatin1String scTargetConfigurationFile("TargetConfigurationFile");
 static const QLatin1String scAllowNonAsciiCharacters("AllowNonAsciiCharacters");

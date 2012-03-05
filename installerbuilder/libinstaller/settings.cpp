@@ -235,11 +235,6 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
     return s;
 }
 
-QString Settings::maintenanceTitle() const
-{
-    return d->m_data.value(scMaintenanceTitle).toString();
-}
-
 QString Settings::logo() const
 {
     return d->makeAbsolutePath(d->m_data.value(scLogo).toString());

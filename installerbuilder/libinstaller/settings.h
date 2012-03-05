@@ -74,7 +74,6 @@ public:
     QString logo() const;
     QString logoSmall() const;
     QString title() const;
-    QString maintenanceTitle() const;
     QString publisher() const;
     QString url() const;
     QString watermark() const;

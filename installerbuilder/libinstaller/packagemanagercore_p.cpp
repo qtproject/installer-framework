@@ -537,7 +537,6 @@ void PackageManagerCorePrivate::initialize()
     m_vars.insert(QLatin1String("ProductName"), m_settings.applicationName());
     m_vars.insert(QLatin1String("ProductVersion"), m_settings.applicationVersion());
     m_vars.insert(scTitle, m_settings.title());
-    m_vars.insert(scMaintenanceTitle, m_settings.maintenanceTitle());
     m_vars.insert(scPublisher, m_settings.publisher());
     m_vars.insert(QLatin1String("Url"), m_settings.url());
     m_vars.insert(scStartMenuDir, m_settings.startMenuDir());
