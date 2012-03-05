@@ -1004,7 +1004,7 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
     for (int i = 0; i < operationsCount; ++i) {
         const QString name = retrieveString(file.data());
         const QString data = retrieveString(file.data());
-        content.d->m_performedOperationsData.insert(name, data);
+        content.d->m_performedOperationsData.append(qMakePair(name, data));
     }
 
     // seek to the position of the component index
@@ -1049,13 +1049,14 @@ int BinaryContent::registerPerformedOperations()
     if (d->m_performedOperations.count() > 0)
         return d->m_performedOperations.count();
 
-    foreach (const QString &name, d->m_performedOperationsData.keys()) {
-        QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(name));
-        Q_ASSERT_X(!op.isNull(), __FUNCTION__, QString::fromLatin1("Invalid operation name: %1.").arg(name)
-            .toLatin1());
+    for (int i = 0; i < d->m_performedOperationsData.count(); ++ i) {
+        const QPair<QString, QString> opPair = d->m_performedOperationsData.at(i);
+        QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(opPair.first));
+        Q_ASSERT_X(!op.isNull(), __FUNCTION__, QString::fromLatin1("Invalid operation name: %1.")
+            .arg(opPair.first).toLatin1());
 
-        if (!op->fromXml(d->m_performedOperationsData.value(name))) {
-            qWarning() << "Failed to load XML for operation:" << name;
+        if (!op->fromXml(opPair.second)) {
+            qWarning() << "Failed to load XML for operation:" << opPair.first;
             continue;
         }
         d->m_performedOperations.append(op.take());

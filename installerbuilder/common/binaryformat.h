@@ -204,7 +204,7 @@ public:
     QSharedPointer<QFile> m_binaryDataFile;
 
     QList<Operation *> m_performedOperations;
-    QHash<QString, QString> m_performedOperationsData;
+    QList<QPair<QString, QString> > m_performedOperationsData;
 
     QVector<const uchar *> m_resourceMappings;
     QVector<Range<qint64> > m_metadataResourceSegments;
