@@ -567,8 +567,8 @@ void Component::createOperationsForPath(const QString &path)
 {
     const QFileInfo fi(path);
 
-    // don't copy over a signature
-    if (fi.suffix() == QLatin1String("sig") && QFileInfo(fi.dir(), fi.completeBaseName()).exists())
+    // don't copy over a checksum file
+    if (fi.suffix() == QLatin1String("sha1") && QFileInfo(fi.dir(), fi.completeBaseName()).exists())
         return;
 
     // the script can override this method
