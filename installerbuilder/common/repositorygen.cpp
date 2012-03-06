@@ -698,6 +698,10 @@ void QInstaller::compressMetaDirectories(const QString &repoDir, const QString &
         const QString fn = QLatin1String(versionPrefix.toLatin1() + "meta.7z");
         const QString tmpTarget = repoDir + QLatin1String("/") +fn;
         compressDirectory(QStringList() << absPath, tmpTarget);
+
+        // remove the files that got compressed
+        QInstaller::removeFiles(absPath, true);
+
         QFile tmp(tmpTarget);
         tmp.open(QFile::ReadOnly);
         QByteArray fileToCheck = tmp.readAll();
