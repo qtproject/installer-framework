@@ -352,7 +352,7 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
     const QList<QPair<Component*, Component*> > list = m_componentsToReplaceUpdaterMode.values();
     for (int i = 0; i < list.count(); ++i) {
         if (usedComponents.contains(list.at(i).second))
-            qWarning() << "a replaceme was allready in the list - is that correct?";
+            qWarning() << "a replacement was already in the list - is that correct?";
         else
             usedComponents.insert(list.at(i).second);
     }
@@ -716,7 +716,7 @@ Operation *PackageManagerCorePrivate::createOwnedOperation(const QString &type)
 
 /*!
     \internal
-    Removes \a opertion from the operations owned by the installer, returns the very same operation if the
+    Removes \a operation from the operations owned by the installer, returns the very same operation if the
     operation was found, otherwise 0.
  */
 Operation *PackageManagerCorePrivate::takeOwnedOperation(Operation *operation)
@@ -1212,7 +1212,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         //          |--- if we wrote a new maintenance tool, take this as output - if not, write out a new
         //                  one and set it as output file, remember we did this
         //          |--- append the binary data based on the loaded input file (see 2), make sure we force
-        //                 uncompression of the resource section if we read from a binary data file (see 4.1).
+        //                 uncompressing the resource section if we read from a binary data file (see 4.1).
         //
         // 4 - force a deferred rename on the .dat file (see 4.1)
         // 5 - force a deferred rename on the maintenance file (see 5.1)
@@ -1422,7 +1422,7 @@ void PackageManagerCorePrivate::runInstaller()
         info.setFileName(componentsXmlPath());
         // Clear the packages as we might install into an already existing installation folder.
         info.clearPackageInfoList();
-        // also update the applicatin name and version, might be set from a script as well
+        // also update the application name and version, might be set from a script as well
         info.setApplicationName(m_core->value(QLatin1String("ProductName"), m_settings.applicationName()));
         info.setApplicationVersion(m_core->value(QLatin1String("ProductVersion"),
             m_settings.applicationVersion()));
@@ -1820,7 +1820,7 @@ void PackageManagerCorePrivate::deleteUninstaller()
 #ifdef Q_OS_WIN
     // Since Windows does not support that the uninstaller deletes itself we  have to go with a rather dirty
     // hack. What we do is to create a batchfile that will try to remove the uninstaller once per second. Then
-    // we start that batchfile detached, finished our job and close ourself. Once that's done the batchfile
+    // we start that batchfile detached, finished our job and close ourselves. Once that's done the batchfile
     // will succeed in deleting our uninstall.exe and, if the installation directory was created but us and if
     // it's empty after the uninstall, deletes the installation-directory.
     const QString batchfile = QDir::toNativeSeparators(QFileInfo(QDir::tempPath(),
@@ -1860,7 +1860,7 @@ void PackageManagerCorePrivate::deleteUninstaller()
     if (!QProcessWrapper::startDetached(QLatin1String("cscript"), arguments, QDir::rootPath()))
         throw Error(tr("Cannot start uninstall"));
 #else
-    // every other platform has no problem if we just delete ourself now
+    // every other platform has no problem if we just delete ourselves now
     QFile uninstaller(QFileInfo(installerBinaryPath()).absoluteFilePath());
     uninstaller.remove();
 # ifdef Q_WS_MAC
