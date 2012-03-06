@@ -222,6 +222,14 @@ int main(int argc, char *argv[])
             app.installTranslator(translator);
         }
 
+        // install English translation as fallback so that correct license button text is used
+        const QString enLocaleFile = QString::fromLatin1(":/translations/en_us.qm");
+        if (QFile::exists(enLocaleFile)) {
+            QTranslator* const translator = new QTranslator(&app);
+            translator->load(enLocaleFile);
+            app.installTranslator(translator);
+        }
+
         // install "our" default translator
         const QString ourLocaleFile =
             QString::fromLatin1(":/translations/%1.qm").arg(QLocale().name().toLower());

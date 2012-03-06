@@ -18,7 +18,7 @@ CONFIG -= app_bundle
 
 include(../libinstaller/libinstaller.pri)
 
-QM_FILES = qt_de.qm de_de.qm
+QM_FILES = qt_de.qm de_de.qm en_us.qm
 defineTest(testQmFiles) {
     for(file, QM_FILES) {
         !exists($$PWD/translations/$$file) {
