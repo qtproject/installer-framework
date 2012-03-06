@@ -63,10 +63,7 @@ void generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
     const QString& appVersion, const QString &redirectUpdateUrl = QString());
 
 PackageInfoVector createListOfPackages(const QStringList &components, const QString &packagesDirectory,
-    bool addDependencies = true);
-
-PackageInfoVector filterBlacklisted(PackageInfoVector packages, const QStringList &blacklist);
-
+    const QStringList &excludedPackages, bool addDependencies = true);
 } // namespace QInstaller
 
 #endif // QINSTALLER_REPOSITORYGEN_H

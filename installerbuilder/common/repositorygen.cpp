@@ -50,7 +50,7 @@ static bool operator==(const PackageInfo &lhs, const PackageInfo &rhs)
 }
 QT_END_NAMESPACE
 
-static PackageInfoVector collectAvailablePackages(const QString &packagesDirectory)
+static PackageInfoVector collectAvailablePackages(const QString &packagesDirectory, const QStringList &excludedPackages)
 {
     qDebug() << "Collecting information about available packages...";
 
@@ -58,6 +58,8 @@ static PackageInfoVector collectAvailablePackages(const QString &packagesDirecto
     const QFileInfoList entries = QDir(packagesDirectory)
         .entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
+        if (excludedPackages.contains(it->fileName()))
+            continue;
         qDebug() << QString::fromLatin1("\tfound subdirectory %1").arg(it->fileName());
         // because the filter is QDir::Dirs - filename means the name of the subdirectory
         if (it->fileName().contains(QLatin1Char('-'))) {
@@ -587,9 +589,9 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
 }
 
 PackageInfoVector QInstaller::createListOfPackages(const QStringList &components,
-    const QString &packagesDirectory, bool addDependencies)
+    const QString &packagesDirectory, const QStringList &excludedPackages, bool addDependencies)
 {
-    const PackageInfoVector availablePackageInfos = collectAvailablePackages(packagesDirectory);
+    const PackageInfoVector availablePackageInfos = collectAvailablePackages(packagesDirectory, excludedPackages);
     if (!addDependencies) {
         PackageInfoVector packageInfos;
         foreach (const PackageInfo &info, availablePackageInfos) {
@@ -771,13 +773,4 @@ void QInstaller::copyComponentData(const QString &packageDir, const QString &rep
             }
         }
     }
-}
-
-PackageInfoVector QInstaller::filterBlacklisted(PackageInfoVector packages, const QStringList &blacklist)
-{
-    for (int i = packages.size() - 1; i >= 0; --i) {
-        if (blacklist.contains(packages[i].name))
-            packages.remove(i);
-    }
-    return packages;
 }

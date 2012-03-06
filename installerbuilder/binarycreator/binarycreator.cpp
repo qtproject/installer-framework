@@ -620,8 +620,8 @@ int main(int argc, char **argv)
     qDebug() << "Parsed arguments, ok.";
 
     try {
-        PackageInfoVector packages = QInstaller::filterBlacklisted(createListOfPackages(components,
-            packagesDirectory, !nodeps), excludedPackages);
+        PackageInfoVector packages = createListOfPackages(components, packagesDirectory, excludedPackages,
+            !nodeps);
         const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configDir);
         {
             QSettings confInternal(metaDir + "/config/config-internal.ini", QSettings::IniFormat);

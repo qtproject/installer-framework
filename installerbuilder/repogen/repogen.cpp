@@ -193,8 +193,8 @@ int main(int argc, char** argv)
                 .arg(repositoryDir));
         }
 
-        PackageInfoVector packages = filterBlacklisted(createListOfPackages(components, packagesDir,
-            !replaceSingleComponent), excludedPackages);
+        PackageInfoVector packages = createListOfPackages(components, packagesDir, excludedPackages,
+            !replaceSingleComponent);
         QMap<QString, QString> pathToVersionMapping = buildPathToVersionMap(packages);
 
         for (PackageInfoVector::const_iterator it = packages.begin(); it != packages.end(); ++it) {
