@@ -76,16 +76,15 @@ static PackageInfoVector collectAvailablePackages(const QString &packagesDirecto
         qDebug() << QString::fromLatin1("\tfound subdirectory %1").arg(it->fileName());
         // because the filter is QDir::Dirs - filename means the name of the subdirectory
         if (it->fileName().contains(QLatin1Char('-'))) {
-            qDebug() << "\t, but it contains '-'' which is not allowed, because it is used as the separator"
-                " between the component name and the version number internally.";
-            throw QInstaller::Error(QObject::tr("Component %1 can't contain '-'.").arg(it->fileName()));
+            throw QInstaller::Error(QObject::tr("Component %1 can't contain '-'. This is not allowed, because "
+                "it is used as the separator between the component name and the version number internally.").arg(
+                it->fileName()));
         }
 
         QFile file(QString::fromLatin1("%1/meta/package.xml").arg(it->filePath()));
         if (!file.exists()) {
-            qDebug() << "\t- but it contains no package information (meta/package.xml missing).";
             throw QInstaller::Error(QObject::tr("Component %1 does not contain a package "
-                "description.").arg(it->fileName()));
+                "description(meta/package.xml is missing).").arg(it->fileName()));
         }
 
         file.open(QIODevice::ReadOnly);
@@ -95,8 +94,6 @@ static PackageInfoVector collectAvailablePackages(const QString &packagesDirecto
         int errorLine = 0;
         int errorColumn = 0;
         if (!doc.setContent(&file, &error, &errorLine, &errorColumn)) {
-            qDebug() << QString::fromLatin1("\t- but its package description is invalid. Error at line: %2, "
-                "column: %3 -> %4").arg(QString::number(errorLine), QString::number(errorColumn), error);
             throw QInstaller::Error(QObject::tr("Component package description for %1 is invalid. "
                 "Error at line: %2, column: %3 -> %4").arg(it->fileName(), QString::number(errorLine),
                 QString::number(errorColumn), error));
