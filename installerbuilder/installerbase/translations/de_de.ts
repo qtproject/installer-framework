@@ -179,112 +179,112 @@
 <context>
     <name>KDUpdater::FileDownloader</name>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="53"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="51"/>
         <source>%L1 B</source>
         <translation>%L1 B</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="56"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="54"/>
         <source>%L1 KB</source>
         <translation>%L1 KB</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="59"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="57"/>
         <source>%L1 MB</source>
         <translation>%L1 MB</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="61"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="59"/>
         <source>%L1 GB</source>
         <translation>%L1 GB</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="300"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="298"/>
         <source>Could not reopen downloaded file %1 for reading: %2</source>
         <translation>Konnte heruntergeladene Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="316"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="314"/>
         <source>Download canceled.</source>
         <translation>Herunterladen abgebrochen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="323"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="321"/>
         <source>Cryptographic hashes do not match.</source>
         <translation>Prüfsummen stimmen nicht überein.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="327"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="325"/>
         <source>Download finished.</source>
         <translation>Heruntergeladen abgeschlossen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="429"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="427"/>
         <source> of </source>
         <translation> von </translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="432"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="430"/>
         <source> downloaded.</source>
         <translation> heruntergeladen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="435"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="433"/>
         <source>/sec</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="446"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="444"/>
         <source> day</source>
         <translation> Tag</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="446"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="444"/>
         <source> days</source>
         <translation> Tage</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="450"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="448"/>
         <source> hour</source>
         <translation> Stunde</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="450"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="448"/>
         <source> hours</source>
         <translation> Stunden</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="454"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="452"/>
         <source> minute</source>
         <translation> Minute</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="454"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="452"/>
         <source> minutes</source>
         <translation> Minuten</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="459"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="457"/>
         <source> second</source>
         <translation> Sekunde</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="459"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="457"/>
         <source> seconds</source>
         <translation> Sekunden</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="461"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="459"/>
         <source> - </source>
         <translation> - </translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="461"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="459"/>
         <source> remaining.</source>
         <translation> verbleibend.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="463"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="461"/>
         <source> - unknown time remaining.</source>
         <translation> - verbleibende Zeit unbekannt.</translation>
     </message>
@@ -318,14 +318,22 @@
 <context>
     <name>KDUpdater::LocalFileDownloader</name>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="597"/>
         <source>Cannot open source file for reading.</source>
-        <translation>Konnte Ausgangsdatei nicht zum Lesen öffnen.</translation>
+        <translation type="obsolete">Konnte Ausgangsdatei nicht zum Lesen öffnen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="612"/>
         <source>Cannot open destination file for writing.</source>
-        <translation>Konnte Zielatei nicht zum Schreiben öffnen.</translation>
+        <translation type="obsolete">Konnte Zielatei nicht zum Schreiben öffnen.</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="595"/>
+        <source>Cannot open source file &apos;%1&apos; for reading.</source>
+        <translation>Konnte Ausgangsdatei &apos;%1&apos; nicht zum Lesen öffnen.</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="611"/>
+        <source>Cannot open destination file &apos;%1&apos; for writing.</source>
+        <translation>Konnte Zieldatei &apos;%1&apos; nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="668"/>
@@ -482,24 +490,20 @@
 <context>
     <name>KDUpdater::SignatureVerificationDownloader</name>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="1461"/>
         <source>Could not download signature: scheme %1 not supported.</source>
-        <translation>Konnte Signatur nicht herunterladen: Schema %1 nicht unterstützt.</translation>
+        <translation type="obsolete">Konnte Signatur nicht herunterladen: Schema %1 nicht unterstützt.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="1474"/>
         <source>Downloading signature: %1</source>
-        <translation>Herunterladen der Unterschrift abgebrochen: %1</translation>
+        <translation type="obsolete">Herunterladen der Unterschrift abgebrochen: %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="1486"/>
         <source>Could not open signature file: %1</source>
-        <translation>Konnte Unterschriftdatei nicht öffnen: %1</translation>
+        <translation type="obsolete">Konnte Unterschriftdatei nicht öffnen: %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterfiledownloader.cpp" line="1492"/>
         <source>Could not open file for verification: %1</source>
-        <translation>Konnte Datei nicht zur Überprüfung öffnen: %1</translation>
+        <translation type="obsolete">Konnte Datei nicht zur Überprüfung öffnen: %1</translation>
     </message>
 </context>
 <context>
@@ -586,12 +590,12 @@
 <context>
     <name>KDUpdater::Update</name>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdate.cpp" line="235"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdate.cpp" line="233"/>
         <source>Downloading update...</source>
         <translation>Lade Aktualisierung herunter...</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdate.cpp" line="243"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdate.cpp" line="241"/>
         <source>Update downloaded</source>
         <translation>Aktualisierung heruntergeladen.</translation>
     </message>
@@ -628,7 +632,7 @@
         <translation type="obsolete">Lade Updates.xml von der Aktualisierungsquelle herunter.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="315"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="313"/>
         <source>Could not download updates from %1 (&apos;%2&apos;)</source>
         <translation>Konnte Aktualisierungen nicht von %1 (&apos;%2&apos;) herunterladen.</translation>
     </message>
@@ -637,72 +641,72 @@
         <translation type="obsolete">Datei Updates.xml von der Aktualisierungsquelle heruntergeladen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="185"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="184"/>
         <source>Could not access the package information of this application.</source>
         <translation>Konnte nicht auf die Paketinformationen dieser Anwendung zugreifen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="196"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="195"/>
         <source>Could not access the update sources information of this application.</source>
         <translation>Konnte nicht auf die Aktualisierungsinformationen dieser Anwendung zugreifen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="219"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="218"/>
         <source>%1 updates found.</source>
         <translation>%1 Aktualisierungen gefunden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="302"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="300"/>
         <source>Downloading Updates.xml from update sources.</source>
         <translation>Lade Updates.xml von der Aktualisierungsquelle herunter.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="353"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="351"/>
         <source>Updates.xml file(s) downloaded from update sources.</source>
         <translation>Datei Updates.xml von der Aktualisierungsquelle heruntergeladen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="374"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="372"/>
         <source>Looking for compatibility update...</source>
         <translation>Suche nach einer Kompatibilitätsaktualisierung...</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="399"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="397"/>
         <source>Found compatibility update..</source>
         <translation>Kompatibilitätsaktualisierung gefunden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="402"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="400"/>
         <source>Compatibility level %1 update</source>
         <translation>Kompatibilitätsaktualisierung auf Ebene %1.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="408"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="406"/>
         <source>Compatibility update for the required architecture and hardware configuration was not found.</source>
         <translation>Kompatibilitätsaktualisierung für die benötigte Architektur und Hardware nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="409"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="407"/>
         <source>Compatibility update not found.</source>
         <translation>Kompatibilitätsaktualisierung nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="425"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="423"/>
         <source>Compatibility update found.</source>
         <translation>Kompatibilitätsaktualisierung gefunden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="427"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="425"/>
         <source>No compatibility updates found.</source>
         <translation>Kompatibilitätsaktualisierung nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="452"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="450"/>
         <source>Computing applicable updates.</source>
         <translation>Berechne anwendbare Aktualisierungen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="456"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="454"/>
         <source>Application updates computed.</source>
         <translation>Anwendbare Aktualisierungen berechnet.</translation>
     </message>
@@ -731,7 +735,7 @@
         <translation type="obsolete">Anwendbare Aktualisierungen berechnet.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="744"/>
+        <location filename="../../libinstaller/3rdparty/kdtools/kdupdaterupdatefinder.cpp" line="742"/>
         <source>Downloading Updates.xml from update sources</source>
         <translation>Lade Updates.xml von der Aktualisierungsquelle herunter.</translation>
     </message>
@@ -1019,101 +1023,101 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1001"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="995"/>
         <source>Component Name</source>
         <translation>Komponentenname</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1003"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="997"/>
         <source>Installed Version</source>
         <translation>Installierte Version</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1004"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="998"/>
         <source>New Version</source>
         <translation>Neue Version</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1005"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="999"/>
         <source>Size</source>
         <translation>Grösse</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1036"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1030"/>
         <source>Alt+A</source>
         <comment>select default components</comment>
         <translation>Alt+A</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1037"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1031"/>
         <source>Def&amp;ault</source>
         <translation>St&amp;andard</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1042"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1036"/>
         <source>Alt+R</source>
         <comment>reset to already installed components</comment>
         <translation>Alt+Z</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1043"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1037"/>
         <source>&amp;Reset</source>
         <translation>&amp;Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1052"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1046"/>
         <source>Alt+S</source>
         <comment>select all components</comment>
         <translation>Alt+S</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1053"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1047"/>
         <source>&amp;Select All</source>
         <translation>Alle au&amp;swählen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1059"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1053"/>
         <source>Alt+D</source>
         <comment>deselect all components</comment>
         <translation>Alt+B</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1060"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1054"/>
         <source>&amp;Deselect All</source>
         <translation>Alle a&amp;bwählen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1126"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1120"/>
         <source>%1</source>
         <translation>!!%1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1127"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1121"/>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
         <translation>Diese Komponente wird ungefähr %1 auf ihrer Festplatte belegen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1200"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1194"/>
         <source>Select Components</source>
         <translation>Komponenten auswählen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1211"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1205"/>
         <source>Please select the components you want to update.</source>
         <translation>Bitte wählen sie die Komponenten aus, die sie aktualisieren möchten.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1212"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1206"/>
         <source>Please select the components you want to install.</source>
         <translation>Bitte wählen sie die Komponenten aus, die sie installieren möchten.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1213"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1207"/>
         <source>Please select the components you want to uninstall.</source>
         <translation>Bitte wählen sie die Komponenten aus, die sie entfernen möchten.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1214"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1208"/>
         <source>Select the components to install. Deselect installed components to uninstall them.</source>
         <translation>Bitte wählen sie die Komponenten aus, die sie installieren möchten. Wählen sie die Komponenten ab, die sie entfernen möchten.</translation>
     </message>
@@ -1247,66 +1251,66 @@
 <context>
     <name>QInstaller::DownloadArchivesJob</name>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="117"/>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="166"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="115"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="164"/>
         <source>Canceled</source>
         <translation>Abgebrochen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="153"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="151"/>
         <source>Downloading hash signature failed.</source>
         <translation>Herunterladen der Prüfsumme fehlgeschlagen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="247"/>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="283"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="245"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="281"/>
         <source>Download Error</source>
         <translation>Fehler beim Herunterladen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="247"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="245"/>
         <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
         <translation>Prüfsumme ungültig beim Herunterladen. Dies ist ein kurzzeitiger Fehler, bitte erneut versuchen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="252"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="250"/>
         <source>Could not verify Hash</source>
         <translation>Prüfsumme konnte nicht geprüft werden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="260"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="258"/>
         <source>Could not open %1</source>
         <translation>Konnte Datei &quot;%1&quot; nicht öffnen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="283"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="281"/>
         <source>Could not download archive: %1 : %2</source>
         <translation>Konnte Archiv %1 nicht herunterladen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="295"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="293"/>
         <source>Could not fetch archives: %1
 Error while loading %2</source>
         <translation>Konnte Archiv nicht laden. Fehler: %1
 Fehler beim Laden von %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="337"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="330"/>
         <source>Downloading archive hash for component: %1</source>
         <translation>Prüfsumme für Komponente %1 wird heruntergeladen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="339"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="332"/>
         <source>Downloading archive for component: %1</source>
         <translation>Archiv für Komponente %1 wird heruntergeladen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="342"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="335"/>
         <source>Scheme not supported: %1 (%2)</source>
         <translation>Schema &quot;%1&quot; nicht unterstützt in &quot;%2&quot;.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="345"/>
+        <location filename="../../libinstaller/downloadarchivesjob.cpp" line="338"/>
         <source>Could not find component for: %1.</source>
         <translation>Konnte keine Komponente für Datei %1 finden.</translation>
     </message>
@@ -1393,39 +1397,39 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1842"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1836"/>
         <source>Completing the %1 Wizard</source>
         <translation>Beende den %1 Assistenten.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1850"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1844"/>
         <source>Click Done to exit the %1 Wizard.</source>
         <translation>Klicken sie &quot;Fertig&quot;, um den %1 Assistenten zu beenden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1850"/>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1853"/>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1905"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1844"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1847"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1899"/>
         <source>%1</source>
         <translation>!!%1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1853"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1847"/>
         <source>Click Finish to exit the %1 Wizard.</source>
         <translation>Klicken sie &quot;Fertig&quot;, um den %1 Assistenten zu beenden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1884"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1878"/>
         <source>Restart</source>
         <translation>Neu starten</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1909"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1903"/>
         <source>Run %1 now.</source>
         <translation>Starte jetzt %1.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1915"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1909"/>
         <source>The %1 Wizard failed.</source>
         <translation>Der %1 Assistent ist fehlgeschlagen.</translation>
     </message>
@@ -1433,79 +1437,88 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::GetRepositoryMetaInfoJob</name>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="198"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="196"/>
         <source>Empty repository URL.</source>
         <translation>Leere Quelladresse.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="203"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="201"/>
         <source>Invalid repository URL: %1.</source>
         <translation>Ungültige Quelladresse: %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="209"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="207"/>
         <source>URL scheme not supported: %1 (%2).</source>
         <translation>Adressschema &quot;%1&quot; nicht unterstützt in Adresse &quot;%2&quot;.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="238"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="236"/>
         <source>Retrieving component meta information...</source>
         <translation>Empfange Komponentenmetainformationen...</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="254"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="252"/>
         <source>Could not move Updates.xml to target location: %1.</source>
         <translation>Konnte Updates.xml nicht an die Zieladresse verschieben. Fehlermeldung: %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="260"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="258"/>
         <source>Could not open Updates.xml for reading: %1.</source>
         <translation>Konnte Updates.xml nicht zum Lesen öffnen. Fehlermeldung: %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="268"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="266"/>
         <source>Could not fetch a valid version of Updates.xml from repository: %1. Error: %2.</source>
         <translation>Konnte keine gültige Version der Updates.xml aus der Quelle %1 herunterladen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="273"/>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="372"/>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="502"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="271"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="371"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="494"/>
         <source>Download Error</source>
         <translation>Fehler beim Herunterladen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="281"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="279"/>
         <source>Parsing component meta information...</source>
         <translation>Einlesen der Metainformationen...</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="330"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="328"/>
         <source>Repository updates received.</source>
         <translation>Quellenaktualisierung erhalten.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="355"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="354"/>
         <source>Finished updating component meta information...</source>
         <translation>Aktualisierung der Metainfoarmationen beendet...</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="366"/>
-        <source>Could not fetch Updates.xml from repository: %1. Error: %2.</source>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="365"/>
+        <source>Could not fetch Updates.xml from repository: %1. Error: %2</source>
         <translation>Konnte keine Updates.xml aus der Quelle %1 herunterladen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="388"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="488"/>
+        <source>Could not download meta information for component: %1. Error: %2</source>
+        <translation>Konnte Metainformationen der Komponente %1 nicht herunterladen. Fehlermeldung: %2</translation>
+    </message>
+    <message>
+        <source>Could not fetch Updates.xml from repository: %1. Error: %2.</source>
+        <translation type="obsolete">Konnte keine Updates.xml aus der Quelle %1 herunterladen. Fehlermeldung: %2</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="387"/>
         <source>Retrieving component information from remote repository...</source>
         <translation>Empfange Komponenten Informationen aus der Quelle...</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="464"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="456"/>
         <source>Could not open meta info archive: %1. Error: %2.</source>
         <translation>Konnte Archiv mit Metainformationen %1 nicht öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="477"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="469"/>
         <source>Bad hash.</source>
         <translation>Ungültige Prüfsumme.</translation>
     </message>
@@ -1514,30 +1527,29 @@ Fehler beim Laden von %2</translation>
         <translation type="obsolete">Die Prüfsumme einer Komponente konnte nicht überprüft werden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="476"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="468"/>
         <source>The hash of one component does not match the expected one.</source>
         <translation>Die Prüfsumme einer Komponente entsprach nicht der erwateten.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="496"/>
         <source>Could not download meta information for component: %1. Error: %2.</source>
-        <translation>Konnte Metainformationen der Komponente %1 nicht herunterladen. Fehlermeldung: %2</translation>
+        <translation type="obsolete">Konnte Metainformationen der Komponente %1 nicht herunterladen. Fehlermeldung: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::GetRepositoryMetaInfoJob::ZipRunnable</name>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="94"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="93"/>
         <source>Error while extracting %1: %2.</source>
         <translation>Fehler beim Auspacken von %1. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="96"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="95"/>
         <source>Unknown exception caught while extracting %1.</source>
         <translation>Beim Auspacken von %1 trat eine unbekannte Ausnahmebedingung auf.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="99"/>
+        <location filename="../../libinstaller/getrepositorymetainfojob.cpp" line="98"/>
         <source>Could not open %1 for reading: %2.</source>
         <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
     </message>
@@ -1606,27 +1618,35 @@ Fehler beim Laden von %2</translation>
         <translation>Alt+A</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="891"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="903"/>
+        <source>I do not accept the licenses.</source>
+        <translation>Ich akzeptiere die Bedingungen der obigen Lizenzvereinbarungen &amp;nicht. Bitte beachten sie, dass diese Auswahl bedeutet, dass sie die Installation und das Herunterladen des Qt SDK abbrechen und dass sie alle Kopien des Qt SDK und alle Teile davon, die sich in ihrem Besitz befinden, löschen müssen.</translation>
+    </message>
+    <message>
         <source>I h&lt;u&gt;a&lt;/u&gt;ve read and agree to the following terms contained in the license agreements accompanying the Qt SDK and additional items. I agree that my use of the Qt SDK is governed by the terms and conditions contained in these license agreements.</source>
-        <translation>Ich habe die Bedingungen der folgenden Lizenzvereinbarungen zum Qt SDK und dazugehörigen Bestandteilen gelesen und &amp;akzeptiert. Ich bin damit einverstanden, dass meine Benutzung des Qt SDK durch die Bedingungen in diesen Lizenzvereinbarungen bestimmt wird.</translation>
+        <translation type="obsolete">Ich habe die Bedingungen der folgenden Lizenzvereinbarungen zum Qt SDK und dazugehörigen Bestandteilen gelesen und &amp;akzeptiert. Ich bin damit einverstanden, dass meine Benutzung des Qt SDK durch die Bedingungen in diesen Lizenzvereinbarungen bestimmt wird.</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="891"/>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="906"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="903"/>
         <source>%1</source>
         <translation>!!%1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="899"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="891"/>
+        <source>I accept the licenses.</source>
+        <translation>Ich habe die Bedingungen der folgenden Lizenzvereinbarungen zum Qt SDK und dazugehörigen Bestandteilen gelesen und &amp;akzeptiert. Ich bin damit einverstanden, dass meine Benutzung des Qt SDK durch die Bedingungen in diesen Lizenzvereinbarungen bestimmt wird.</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="896"/>
         <source>Alt+D</source>
         <comment>do not agree license</comment>
         <translatorcomment>Der Lizenz nicht zustimmen</translatorcomment>
         <translation>Alt+N</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="906"/>
         <source>I &lt;u&gt;d&lt;/u&gt;o not accept the terms and conditions of the above listed license agreements. Please note by checking the box, you must cancel the installation or downloading the Qt SDK and must destroy all copies, or portions thereof, of the Qt SDK in your possessions.</source>
-        <translation>Ich akzeptiere die Bedingungen der obigen Lizenzvereinbarungen &amp;nicht. Bitte beachten sie, dass diese Auswahl bedeutet, dass sie die Installation und das Herunterladen des Qt SDK abbrechen und dass sie alle Kopien des Qt SDK und alle Teile davon, die sich in ihrem Besitz befinden, löschen müssen.</translation>
+        <translation type="obsolete">Ich akzeptiere die Bedingungen der obigen Lizenzvereinbarungen &amp;nicht. Bitte beachten sie, dass diese Auswahl bedeutet, dass sie die Installation und das Herunterladen des Qt SDK abbrechen und dass sie alle Kopien des Qt SDK und alle Teile davon, die sich in ihrem Besitz befinden, löschen müssen.</translation>
     </message>
 </context>
 <context>
@@ -1693,63 +1713,63 @@ Downloading packages...</source>
 Lade Pakete herunter...</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="389"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="388"/>
         <source>Installation canceled by user</source>
         <translation>Installation durch den Nutzer abgebrochen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="390"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="389"/>
         <source>All downloads finished.</source>
         <translation>Alle Herunterladeprozesse abgeschlossen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="407"/>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="1782"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="406"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="1781"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="423"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="422"/>
         <source>Cancelling the Installer</source>
         <translation>Breche den Installationsvorgang ab</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="466"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="465"/>
         <source>Authentication Error</source>
         <translation>Autentifizierungsfehler</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="466"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="465"/>
         <source>Some components could not be removed completely because admin rights could not be acquired: %1.</source>
         <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil die nötigen Systemverwalterrechte nicht erlangt werden konnten. Fehlermeldung: %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="471"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="470"/>
         <source>Unknown error.</source>
         <translation>Unbekannter Fehler.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="471"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="470"/>
         <source>Some components could not be removed completely because an unknown error happened.</source>
         <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil ein unbekannter Fehler auftrat.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="562"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="561"/>
         <source>Application not running in Package Manager mode!</source>
         <translation>Die Anwendung ist nicht im Paketverwaltermodus!</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="569"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="568"/>
         <source>No installed packages found.</source>
         <translation>Keine installierten Pakete gefunden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="646"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="645"/>
         <source>Application running in Uninstaller mode!</source>
         <translation>Die Anwendung befindet sich im Deinstallierermodus!</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="1813"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="1812"/>
         <source>invalid</source>
         <translation>ungültig</translation>
     </message>
@@ -1758,9 +1778,9 @@ Lade Pakete herunter...</translation>
     <name>QInstaller::PackageManagerCorePrivate</name>
     <message>
         <location filename="../../libinstaller/packagemanagercore_p.cpp" line="327"/>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1459"/>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1622"/>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1713"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1458"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1621"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1712"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
@@ -1785,27 +1805,27 @@ Lade Pakete herunter...</translation>
         <translation>Ausgewählte Komponenten ohne Abhängigkeiten</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="808"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="807"/>
         <source>Access error</source>
         <translation>Zugriffsfehler</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="809"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="808"/>
         <source>Format error</source>
         <translation>Formatfehler</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="810"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="809"/>
         <source>Could not write installer configuration to %1: %2</source>
         <translation>Konnte Einstellungen des Installers nicht nach %1 schreiben. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="927"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="926"/>
         <source>Stop Processes</source>
         <translation>Prozesse anhalten</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="927"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="926"/>
         <source>These processes should be stopped to continue:
 
 %1</source>
@@ -1814,161 +1834,161 @@ Lade Pakete herunter...</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="935"/>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1741"/>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1919"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="934"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1740"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1918"/>
         <source>Installation canceled by user</source>
         <translation>Installation durch den Nutzer abgebrochen</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1053"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1052"/>
         <source>Could not write uninstaller to %1: %2</source>
         <translation>Konnte Deinstaller nicht nach %1 schreiben. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1263"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1262"/>
         <source>Found a binary data file, but we are the installer and we should read the binary resource from our very own binary!</source>
         <translation>Binäre Quelldatei gefunden, aber als Installer sollten wir die binären Quellen aus unserer eigenen Binärdatei lesen!</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1287"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1286"/>
         <source>Could not write uninstaller binary data to %1: %2</source>
         <translation>Konnte Binäre Datei des Deinstallers nicht nach %1 schreiben. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1334"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1333"/>
         <source>ProductName should be set</source>
         <translation>ProductName muss gesetzt sein</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1359"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1358"/>
         <source>Variable &apos;TargetDir&apos; not set.</source>
         <translation>TargetDir muss gesetzt sein.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1397"/>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1583"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1396"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1582"/>
         <source>Preparing the installation...</source>
         <translation>Bereite Installation vor...</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1440"/>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1603"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1439"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1602"/>
         <source>Creating Uninstaller</source>
         <translation>Erstelle Deinstallierer</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1449"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1448"/>
         <source>
 Installation finished!</source>
         <translation>
 Installation abgeschlossen!</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1465"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1464"/>
         <source>
 Installation aborted!</source>
         <translation>
 Installation abgebrochen!</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1589"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1588"/>
         <source>Removing deselected components...</source>
         <translation>Entferne abgewählte Komponenten...</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1612"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1611"/>
         <source>
 Update finished!</source>
         <translation>
 Aktualisierung beendet!</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1628"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1627"/>
         <source>
 Update aborted!</source>
         <translation>
 Aktualisierung abgebrochen!</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1705"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1704"/>
         <source>
 Deinstallation finished!</source>
         <translation>
 Deinstallation abgeschlossen!</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1716"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1715"/>
         <source>
 Deinstallation aborted!</source>
         <translation>
 Deinstallation abgebrochen!</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1735"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1734"/>
         <source>
 Installing component %1</source>
         <translation>
 Installiere Komponente %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1764"/>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1936"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1763"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1935"/>
         <source>Installer Error</source>
         <translation>Installationsfehler</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1765"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1764"/>
         <source>Error during installation process (%1):
 %2</source>
         <translation>Fehler beim Installieren von Komponente %1:
 %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1831"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1830"/>
         <source>Cannot prepare uninstall</source>
         <translation>Kann Deinstallation nicht vorbereiten</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1862"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1861"/>
         <source>Cannot start uninstall</source>
         <translation>Kann Deinstallation nicht starten</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1937"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1936"/>
         <source>Error during uninstallation process:
 %1</source>
         <translation>Fehler bei der Deinstallation:
 %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1972"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1971"/>
         <source>Unknown error</source>
         <translation>Unbekannter Fehler</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1991"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1990"/>
         <source>Could not retrieve remote tree: %1.</source>
         <translation>Kann entfernten Baum nicht empfangen: %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="2020"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="2019"/>
         <source>Failure to read packages from: %1.</source>
         <translation>Fehler beim Lesen der Pakete von %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="2046"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="2045"/>
         <source>Could not retrieve meta information: %1</source>
         <translation>Konnte die Metainformationen nicht empfangen: %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="2101"/>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="2112"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="2100"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="2111"/>
         <source>Could not add temporary update source information.</source>
         <translation>Konnte Informationen zu temporären Aktualisierungsquellen nicht hinzufügen.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="2125"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="2124"/>
         <source>Could not find any update source information.</source>
         <translation>Konnte keine Informationen zu Aktualisierungsquellen finden.</translation>
     </message>
@@ -1981,9 +2001,13 @@ Installiere Komponente %1</translation>
         <translation>%1 Einrichtung</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="240"/>
         <source>%1</source>
-        <translation>!!%1</translation>
+        <translation type="obsolete">!!%1</translation>
+    </message>
+    <message>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="240"/>
+        <source>Maintain %1</source>
+        <translation>%1 verwalten</translation>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="540"/>
@@ -2059,37 +2083,37 @@ Installiere Komponente %1</translation>
 <context>
     <name>QInstaller::PerformInstallationPage</name>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1776"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1770"/>
         <source>&amp;Uninstall</source>
         <translation>&amp;Deinstallieren</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1777"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1771"/>
         <source>Uninstalling %1</source>
         <translation>Deinstalliere %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1781"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1775"/>
         <source>&amp;Update</source>
         <translation>&amp;Aktualisieren</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1782"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1776"/>
         <source>Updating components of %1</source>
         <translation>Aktualisiere Komponenten des %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1786"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1780"/>
         <source>&amp;Install</source>
         <translation>&amp;Installieren</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1787"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1781"/>
         <source>Installing %1</source>
         <translation>Installiere %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1805"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1799"/>
         <source>%1</source>
         <translation>!!%1</translation>
     </message>
@@ -2164,93 +2188,93 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
 <context>
     <name>QInstaller::ReadyForInstallationPage</name>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1527"/>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1706"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1521"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1700"/>
         <source>&amp;Show Details</source>
         <translation>&amp;Zeige Details</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1560"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1554"/>
         <source>U&amp;ninstall</source>
         <translation>&amp;Deinstallieren</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1561"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1555"/>
         <source>Ready to Uninstall</source>
         <translation>Bereit zum Deinstallieren</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1562"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1556"/>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program dir %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 von ihrem Computer zu entfernen. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Das Programmverzeichnis %2 wird vollständig gelöscht&lt;/font&gt;, inklusive allen Inhalten in diesem Ordner!</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1570"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1564"/>
         <source>U&amp;pdate</source>
         <translation>&amp;Aktualisieren</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1571"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1565"/>
         <source>Ready to Update Packages</source>
         <translation>Bereit zum Aktualisieren der Pakete</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1572"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1566"/>
         <source>Setup is now ready to begin updating your installation.</source>
         <translation>Das Einrichtungsprogramm ist jetzt bereit, ihre Installation zu aktualisieren.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1575"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1569"/>
         <source>&amp;Install</source>
         <translation>&amp;Installieren</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1576"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1570"/>
         <source>Ready to Install</source>
         <translation>Bereit zum Installieren</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1577"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1571"/>
         <source>Setup is now ready to begin installing %1 on your computer.</source>
         <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 auf ihrem Computer einzurichten.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1623"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1617"/>
         <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
         <translation>Nicht genügend Plattenplatz für temporäre Dateien und die Installation! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1630"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1624"/>
         <source>Not enough disk space to store all selected components! Available space: %1, at least required: %2.</source>
         <translation>Nicht genügend Plattenplatz für alle ausgewählten Komponenten! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1637"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1631"/>
         <source>Not enough disk space to store temporary files! Available space: %1, at least required: %2.</source>
         <translation>Nicht genügend Plattenplatz für temporäre Dateien! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1645"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1639"/>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
         <translation>Die für die Installation ausgewählte Partition scheint genügend Platz zu bieten, aber es werden anschließend weniger als 1% der Partitionsgröße verfügbar sein. %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1650"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1644"/>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
         <translation>Die für die Installation ausgewählte Partition scheint genügend Platz zu bieten, aber es werden anschließend weniger als 100 MiB verfügbar sein. %1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1664"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1658"/>
         <source>Can not resolve all dependencies!</source>
         <translation>Konnte nicht alle Abhängigkeiten auflösen!</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1682"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1676"/>
         <source>Components about to be removed.</source>
         <translation>Komponenten, die entfernt werden.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1706"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1700"/>
         <source>&amp;Hide Details</source>
         <translation>&amp;Verstecke Details</translation>
     </message>
@@ -2402,7 +2426,7 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1955"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1949"/>
         <source>Completing the %1 Setup Wizard</source>
         <translation>Vervollständige den %1 Assistenten</translation>
     </message>
@@ -2551,12 +2575,12 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
 <context>
     <name>QInstaller::StartMenuDirectoryPage</name>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1423"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1417"/>
         <source>Start Menu shortcuts</source>
         <translation>Verknüpfungen im Startmenü</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1424"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1418"/>
         <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new folder.</source>
         <translation>Wählen sie den Ordner im Startmenü, in dem die Verknüpfungen zur Anwendung erstellt werden sollen. Sie können einen Namen angeben, um einen neuen Ordner anzulegen.</translation>
     </message>
@@ -2564,65 +2588,65 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
 <context>
     <name>QInstaller::TargetDirectoryPage</name>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1294"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1288"/>
         <source>Installation Folder</source>
         <translation>Installationsverzeichnis</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1302"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1296"/>
         <source>Please specify the folder where %1 will be installed.</source>
         <translation>Bitte geben sie den Ordner an, in dem %1 installiert werden soll.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1302"/>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1317"/>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1355"/>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1370"/>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1381"/>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1406"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1296"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1311"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1349"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1364"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1375"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1400"/>
         <source>%1</source>
         <translation>!!%1</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1316"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1310"/>
         <source>Alt+R</source>
         <comment>browse file system to choose a file</comment>
         <translatorcomment>Dateisystem durchsuchen, um eine Datei auszuwählen</translatorcomment>
         <translation>Alt+D</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1317"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1311"/>
         <source>B&amp;rowse...</source>
         <translation>&amp;Durchsuchen...</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1355"/>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1370"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1349"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1364"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1356"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1350"/>
         <source>The install directory cannot be empty, please specify a valid folder.</source>
         <translation>Der Name des Installationsverzeichnisses darf nicht leer sein, bitte einen gültigen Ordner angeben.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1371"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1365"/>
         <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
         <translation>Da das Installationsverzeichnis komplett gelöscht wird, ist eine Installation nach %1 nicht zulässig.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1381"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1375"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1382"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1376"/>
         <source>You have selected an existing, non-empty folder for installation. Note that it will be completely wiped on uninstallation of this application. It is not advisable to install into this folder as installation might fail. Do you want to continue?</source>
         <translation>Sie haben einen existierenden, nicht leeren Ordner für die Installation ausgewählt. Dieser wird bei der Deinstallation dieser Anwendung komplett gelöscht werden. Es wird nicht empfohlen, in diesen Ordner zu installaieren. Möchten sie trotzdem fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagergui.cpp" line="1407"/>
+        <location filename="../../libinstaller/packagemanagergui.cpp" line="1401"/>
         <source>Select Installation Folder</source>
         <translation>Installationsverzeichnis auswählen.</translation>
     </message>
@@ -2671,181 +2695,177 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="198"/>
-        <location filename="../../binarycreator/binarycreator.cpp" line="208"/>
-        <location filename="../../common/repositorygen.cpp" line="796"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="182"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="192"/>
+        <location filename="../../common/repositorygen.cpp" line="743"/>
         <source>Could not copy %1 to %2: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="366"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="350"/>
         <source>Could not create temporary file for generated rcc project file</source>
         <translation>Konnte keine temporäre Datei für die erzeugte rcc Projektdatei anlegen.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="471"/>
-        <location filename="../../binarycreator/binarycreator.cpp" line="517"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="455"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="494"/>
         <source>Could not copy %1.</source>
         <translation>Konnte %1 nicht kopieren.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="485"/>
         <source>Could not remove the private key from config.xml</source>
-        <translation>Konnte den privaten Schlüssel nicht aus der config.xml entfernen.</translation>
+        <translation type="obsolete">Konnte den privaten Schlüssel nicht aus der config.xml entfernen.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="586"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="552"/>
         <source>Error: Packages parameter missing argument.</source>
         <translation>Fehler: Dem Packages Parameter fehlt ein Argument.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="589"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="555"/>
         <source>Error: Package directory not found at the specified location.</source>
         <translation>Fehler: Paketordner konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="596"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="562"/>
         <source>Error: Package to exclude missing.</source>
         <translation>Fehler: Die --exclude Option braucht die auszuschliessenden Komponenten als Argument.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="607"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="573"/>
         <source>Error: Template parameter missing argument.</source>
         <translation>Fehler: Dem Template Parameter fehlt ein Argument.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="610"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="576"/>
         <source>Error: Template not found at the specified location.</source>
         <translation>Fehler: Template konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="617"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="583"/>
         <source>Error: Config parameter missing argument.</source>
         <translation>Fehler: Dem Config Parameter fehlt ein Argument.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="620"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="586"/>
         <source>Error: Config directory %1 not found at the specified location.</source>
         <translation>Fehler: Konfigurationsordner konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="624"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="590"/>
         <source>Error: Configuration %1 is not a directory.</source>
         <translation>Fehler: Konfiguration %1 ist kein Ordner.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="628"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="594"/>
         <source>Error: Config directory %1 is not readable.</source>
         <translation>Fehler: Konfigurationsordner %1 ist nicht lesbar.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="635"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="601"/>
         <source>Error: Resource files to include missing.</source>
         <translation>Fehler: Die --resources Option braucht die einzuschliessenden Resourcen als Argument.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="646"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="612"/>
         <source>Error: Target parameter missing.</source>
         <translation>Fehler: Der Target Parameter fehlt.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="649"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="615"/>
         <source>Error: No components selected.</source>
         <translation>Fehler: Keine Komponenten ausgewählt.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="652"/>
+        <location filename="../../binarycreator/binarycreator.cpp" line="618"/>
         <source>Error: No configuration directory selected.</source>
         <translation>Fehler: Keine Konfigurationsordner ausgewählt.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="710"/>
         <source>Could not create a RSA signature</source>
-        <translation>Konnte keine RSA Unterschrift erstellen.</translation>
+        <translation type="obsolete">Konnte keine RSA Unterschrift erstellen.</translation>
     </message>
     <message>
-        <location filename="../../binarycreator/binarycreator.cpp" line="713"/>
         <source>Created RSA signature could not be verified. Is the given public key wrong?</source>
-        <translation>Die erstellte RSA Unterschrift konnte nicht überprüft werden. Ist der übergebene öffentliche Schlüssel korrekt?</translation>
+        <translation type="obsolete">Die erstellte RSA Unterschrift konnte nicht überprüft werden. Ist der übergebene öffentliche Schlüssel korrekt?</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="74"/>
+        <location filename="../../common/repositorygen.cpp" line="68"/>
         <source>Component %1 can&apos;t contain &apos;-&apos;.</source>
         <translation>Komponentenname %1 enthält ein &apos;-&apos;, was nicht erlaubt ist.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="80"/>
+        <location filename="../../common/repositorygen.cpp" line="74"/>
         <source>Component %1 does not contain a package description.</source>
         <translation>Komponente %1 enthält keine Paketbeschreibung.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="93"/>
+        <location filename="../../common/repositorygen.cpp" line="87"/>
         <source>Component package description for %1 is invalid. Error at line: %2, column: %3 -&gt; %4</source>
         <translation>Paketbeschreibung für Komponente %1 ist ungültig. Fehler in Zeile %2, Spalte %3. Fehlermeldung: %4</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="101"/>
+        <location filename="../../common/repositorygen.cpp" line="95"/>
         <source>Component folder name must match component name: %1 in %2/</source>
         <translation>Der Komponentenordner muss den selben Namen haben wie die Komponente: %1 in %2/</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="209"/>
+        <location filename="../../common/repositorygen.cpp" line="201"/>
         <source>Circular dependencies detected.</source>
         <translation>Zyklische Abhängigkeiten gefunden.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="219"/>
+        <location filename="../../common/repositorygen.cpp" line="211"/>
         <source>Couldn&apos;t find package for component %1.</source>
         <translation>Konnte kein Paket zur Komponente %1 finden.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="274"/>
+        <location filename="../../common/repositorygen.cpp" line="257"/>
         <source>Folder %1 does not exist.</source>
         <translation>Odner %1 existiert nicht.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="110"/>
+        <location filename="../../common/repositorygen.cpp" line="104"/>
         <source>Component version for %1 is invalid! &lt;Version&gt;%2&lt;/version&gt;</source>
         <translation>Versionsnummer (%2) der Komponente %1 ist ungültig.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="304"/>
-        <location filename="../../common/repositorygen.cpp" line="748"/>
+        <location filename="../../common/repositorygen.cpp" line="279"/>
+        <location filename="../../common/repositorygen.cpp" line="712"/>
         <source>Could not move %1 to %2</source>
         <translation>Konnte Datei %1 nicht nach %2 verschieben.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="314"/>
         <source>Could not open %1 for writing.</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen.</translation>
+        <translation type="obsolete">Konnte Datei %1 nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="378"/>
+        <location filename="../../common/repositorygen.cpp" line="341"/>
         <source>Could not parse %1: line: %2, column: %3: %4 (%5)</source>
         <translation>Konnte Datei %1 nicht auswerten. Zeile: %2, Spalte: %3 - %4 (%5)</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="462"/>
+        <location filename="../../common/repositorygen.cpp" line="425"/>
         <source>Could not create directory %1.</source>
         <translation>Konnte Ordner %1. nicht anlegen.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="486"/>
+        <location filename="../../common/repositorygen.cpp" line="449"/>
         <source>Could not copy the script %1 to its target location %2.</source>
         <translation>Konnte das Skript %1 nicht nach %2 kopieren.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="504"/>
+        <location filename="../../common/repositorygen.cpp" line="467"/>
         <source>Couldn&apos;t find any user interface matching %1 while copying user interfaces of %2.</source>
         <translation>Konnte keine mit %1 übereinstimmende Nutzungsschnittstelle beim Kopieren von %2 finden.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="515"/>
+        <location filename="../../common/repositorygen.cpp" line="478"/>
         <source>Could not copy the UI file %1 to its target location %2.</source>
         <translation>Konnte die Nutzungsschnittstellendatei %1 nicht nach %2 kopieren.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="539"/>
+        <location filename="../../common/repositorygen.cpp" line="502"/>
         <source>Could not find any translation file matching %1 while copying translations of %2.</source>
         <translation>Konnte keine mit %1 übereinstimmende Übersetzungsdatei beim Kopieren von %2 finden.</translation>
     </message>
@@ -2854,73 +2874,71 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <translation type="obsolete">Konnte keine mit %1 übereinstimmende Nutzungsschnittstelle beim Kopieren von %2 finden.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="550"/>
+        <location filename="../../common/repositorygen.cpp" line="513"/>
         <source>Could not copy the translation %1 to its target location %2.</source>
         <translation>Konnte die Übersetzung %1 nicht nach %2 kopieren.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="573"/>
+        <location filename="../../common/repositorygen.cpp" line="536"/>
         <source>Could not find any license matching %1 while copying license files of %2.</source>
         <translation>Konnte keine mit %1 übereinstimmende Lizenz beim Kopieren von %2 finden.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="582"/>
+        <location filename="../../common/repositorygen.cpp" line="545"/>
         <source>Could not copy the license file %1 to its target location %2.</source>
         <translation>Konnte die Lizenzdatei %1 nicht nach %2 kopieren.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="756"/>
         <source>Could not open %1 for writing</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen.</translation>
+        <translation type="obsolete">Konnte Datei %1 nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="783"/>
+        <location filename="../../common/repositorygen.cpp" line="729"/>
         <source>Could not create repository folder for component %1</source>
         <translation>Konnte Quellenordner für Komponente %1 nicht anlegen.</translation>
     </message>
     <message>
-        <location filename="../../common/repositorygen.cpp" line="859"/>
         <source>Could not open %1 for writing: %2</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
+        <translation type="obsolete">Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../repogen/repogen.cpp" line="118"/>
+        <location filename="../../repogen/repogen.cpp" line="110"/>
         <source>Error: Package to exclude missing</source>
         <translation>Fehler: Die --exclude Option braucht die auszuschliessenden Komponenten als Argument.</translation>
     </message>
     <message>
-        <location filename="../../repogen/repogen.cpp" line="127"/>
+        <location filename="../../repogen/repogen.cpp" line="119"/>
         <source>Error: Packages parameter missing argument</source>
         <translation>Fehler: Dem Packages Parameter fehlt ein Argument.</translation>
     </message>
     <message>
-        <location filename="../../repogen/repogen.cpp" line="131"/>
+        <location filename="../../repogen/repogen.cpp" line="123"/>
         <source>Error: Package directory not found at the specified location</source>
         <translation>Fehler: Paketordner konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
-        <location filename="../../repogen/repogen.cpp" line="139"/>
-        <location filename="../../repogen/repogen.cpp" line="158"/>
+        <location filename="../../repogen/repogen.cpp" line="131"/>
+        <location filename="../../repogen/repogen.cpp" line="150"/>
         <source>Error: Config parameter missing argument</source>
         <translation>Fehler: Dem Config Parameter fehlt ein Argument.</translation>
     </message>
     <message>
-        <location filename="../../repogen/repogen.cpp" line="142"/>
+        <location filename="../../repogen/repogen.cpp" line="134"/>
         <source>Error: Config directory %1 not found at the specified location</source>
         <translation>Fehler: Konfigurationsordner %1 konnte an der angegebenen Stelle nicht gefunden werden.</translation>
     </message>
     <message>
-        <location filename="../../repogen/repogen.cpp" line="146"/>
+        <location filename="../../repogen/repogen.cpp" line="138"/>
         <source>Error: Configuration %1 is not a directory</source>
         <translation>Fehler: Konfiguration %1 ist kein Ordner.</translation>
     </message>
     <message>
-        <location filename="../../repogen/repogen.cpp" line="150"/>
+        <location filename="../../repogen/repogen.cpp" line="142"/>
         <source>Error: Config directory %1 is not readable</source>
         <translation>Fehler: Konfigurationsordner %1 ist nicht lesbar.</translation>
     </message>
     <message>
-        <location filename="../../repogen/repogen.cpp" line="197"/>
+        <location filename="../../repogen/repogen.cpp" line="192"/>
         <source>Repository target folder %1 already exists!</source>
         <translation>Quellenordner %1 existiert bereits!</translation>
     </message>
@@ -2970,33 +2988,33 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <translation>Konnte in der Binärdatei enthaltene Ressource nicht registrieren.</translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="852"/>
-        <location filename="../../common/binaryformat.cpp" line="1010"/>
+        <location filename="../../common/binaryformat.cpp" line="908"/>
+        <location filename="../../common/binaryformat.cpp" line="1095"/>
         <source>Could not open binary %1: %2</source>
         <translation>Konnte Binärdatei %1 nicht öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="895"/>
+        <location filename="../../common/binaryformat.cpp" line="953"/>
         <source>Could not seek to binary layout section.</source>
         <translation>Konnte nicht bis zum Abschnitt mit dem Layout der Binärdatei suchen.</translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="920"/>
+        <location filename="../../common/binaryformat.cpp" line="978"/>
         <source>Could not seek to metadata index.</source>
         <translation>Konnte nicht bis zum Index der Metadaten suchen.</translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="941"/>
+        <location filename="../../common/binaryformat.cpp" line="999"/>
         <source>Could not seek to operation list.</source>
         <translation>Konnte nicht bis zur Anweisungsliste suchen.</translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="963"/>
+        <location filename="../../common/binaryformat.cpp" line="1014"/>
         <source>Could not seek to component index information.</source>
         <translation>Konnte nicht bis zur Komponentenindexinformation suchen.</translation>
     </message>
     <message>
-        <location filename="../../common/binaryformat.cpp" line="967"/>
+        <location filename="../../common/binaryformat.cpp" line="1018"/>
         <source>Could not seek to component index.</source>
         <translation>Konnte nicht bis zum Komponentenindex suchen.</translation>
     </message>
@@ -3324,12 +3342,12 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <translation>Ungültige Argumente: %1 Argumente erhalten, %2 erwartet.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore.cpp" line="1028"/>
+        <location filename="../../libinstaller/packagemanagercore.cpp" line="1027"/>
         <source>Error while elevating access rights.</source>
         <translation>Fehler beim Erlangen von Administratorrechten.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1040"/>
+        <location filename="../../libinstaller/packagemanagercore_p.cpp" line="1039"/>
         <source>Failed to seek in file %1: %2</source>
         <translation>Suchen in Datei %1 fehlgeschlagen. Fehlermeldung: %2</translation>
     </message>
@@ -3366,7 +3384,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <translation>Registrierung von Dateitypen wird nur unter Windows unterstützt.</translation>
     </message>
     <message>
-        <location filename="../installerbase_p.cpp" line="411"/>
+        <location filename="../installerbase_p.cpp" line="413"/>
         <source>Failed to seek in file %1. Reason: %2.</source>
         <translation>Suchen in Datei %1 fehlgeschlagen. Fehlermeldung: %2</translation>
     </message>
@@ -3384,17 +3402,17 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
 <context>
     <name>Settings</name>
     <message>
-        <location filename="../../libinstaller/settings.cpp" line="202"/>
+        <location filename="../../libinstaller/settings.cpp" line="185"/>
         <source>Could not open settings file %1 for reading: %2</source>
         <translation>Konnte Einstellungsdatei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/settings.cpp" line="207"/>
+        <location filename="../../libinstaller/settings.cpp" line="190"/>
         <source>%1 is not valid: Installer root node expected.</source>
         <translation>%1 ist ungültig: &apos;Installer&apos; wird als Wurzelknoten erwartet.</translation>
     </message>
     <message>
-        <location filename="../../libinstaller/settings.cpp" line="235"/>
+        <location filename="../../libinstaller/settings.cpp" line="215"/>
         <source>Multiple %1 elements found, but only one allowed.</source>
         <translation>Mehrere %1 Elemente gefunden, aber nur eins ist erlaubt.</translation>
     </message>
@@ -3496,7 +3514,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="390"/>
-        <location filename="../settingsdialog.cpp" line="455"/>
+        <location filename="../settingsdialog.cpp" line="459"/>
         <source>Show Passwords</source>
         <translation>Zeige Passwörter</translation>
     </message>
@@ -3521,52 +3539,52 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <translation>Adresse angeben, die auf eine gültige Quelle zeigt.</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="436"/>
+        <location filename="../settingsdialog.cpp" line="440"/>
         <source>There was an error testing this repository.</source>
         <translation>Beim testen des Repositories ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="437"/>
+        <location filename="../settingsdialog.cpp" line="441"/>
         <source>Do you want to disable the tested repository?</source>
         <translation>Soll das getestete Repository ausgeschaltet werden?</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="455"/>
+        <location filename="../settingsdialog.cpp" line="459"/>
         <source>Hide Passwords</source>
         <translation>Verstecke Passwörter</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="494"/>
+        <location filename="../settingsdialog.cpp" line="504"/>
         <source>Use</source>
         <translation>Nutze</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="494"/>
+        <location filename="../settingsdialog.cpp" line="504"/>
         <source>Username</source>
         <translation>Nutzername</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="494"/>
+        <location filename="../settingsdialog.cpp" line="504"/>
         <source>Password</source>
         <translation>Passwort</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="495"/>
+        <location filename="../settingsdialog.cpp" line="505"/>
         <source>Repository</source>
         <translation>Quelle</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="496"/>
+        <location filename="../settingsdialog.cpp" line="506"/>
         <source>Default repositories</source>
         <translation>Standardquellen</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="497"/>
+        <location filename="../settingsdialog.cpp" line="507"/>
         <source>Temporary repositories</source>
         <translation>Temporäre Quellen</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="498"/>
+        <location filename="../settingsdialog.cpp" line="508"/>
         <source>User defined repositories</source>
         <translation>Benutzerdefinierte Quellen</translation>
     </message>

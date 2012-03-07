@@ -888,10 +888,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     acceptLabel->setObjectName(QLatin1String("AcceptLicenseLabel"));
     acceptLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     const QVariantHash hash = elementsForPage(QLatin1String("LicenseAgreementPage"));
-    acceptLabel->setText(tr("%1").arg(hash.value(QLatin1String("AcceptLicenseLabel"), tr("I h<u>a</u>ve read "
-        "and agree to the following terms contained in the license agreements accompanying the Qt SDK and "
-        "additional items. I agree that my use of the Qt SDK is governed by the terms and conditions "
-        "contained in these license agreements.")).toString()));
+    acceptLabel->setText(tr("%1").arg(hash.value(QLatin1String("AcceptLicenseLabel"), tr("I accept the licenses.")).toString()));
 
     m_rejectRadioButton = new QRadioButton(this);
     ClickForwarder *rejectClickForwarder = new ClickForwarder(m_rejectRadioButton);
@@ -903,10 +900,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     rejectLabel->installEventFilter(rejectClickForwarder);
     rejectLabel->setObjectName(QLatin1String("RejectLicenseLabel"));
     rejectLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-    rejectLabel->setText(tr("%1").arg(hash.value(QLatin1String("RejectLicenseLabel"), tr("I <u>d</u>o not "
-        "accept the terms and conditions of the above listed license agreements. Please note by checking the "
-        "box, you must cancel the installation or downloading the Qt SDK and must destroy all copies, or "
-        "portions thereof, of the Qt SDK in your possessions.")).toString()));
+    rejectLabel->setText(tr("%1").arg(hash.value(QLatin1String("RejectLicenseLabel"), tr("I do not accept the licenses.")).toString()));
 
 #if defined(Q_WS_X11) || defined(Q_WS_MAC)
     QFont labelFont(font());
