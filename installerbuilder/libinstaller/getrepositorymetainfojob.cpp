@@ -90,12 +90,12 @@ public:
                 }
                 emit finished(true, QString());
             } catch (const Lib7z::SevenZipException& e) {
-                emit finished(false, tr("Error while extracting %1: %2.").arg(m_archive, e.message()));
+                emit finished(false, tr("Error while extracting %1. Error: %2").arg(m_archive, e.message()));
             } catch (...) {
                 emit finished(false, tr("Unknown exception caught while extracting %1.").arg(m_archive));
             }
         } else {
-            emit finished(false, tr("Could not open %1 for reading: %2.").arg(m_archive,
+            emit finished(false, tr("Could not open %1 for reading. Error: %2").arg(m_archive,
                 archive.errorString()));
         }
     }
@@ -182,7 +182,7 @@ QString GetRepositoryMetaInfoJob::releaseTemporaryDirectory() const
     return m_temporaryDirectory;
 }
 
-// updates.xml download
+// Updates.xml download
 
 void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
 {
@@ -198,18 +198,18 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
     }
 
     if (!url.isValid()) {
-        finished(QInstaller::InvalidUrl, tr("Invalid repository URL: %1.").arg(url.toString()));
+        finished(QInstaller::InvalidUrl, tr("Invalid repository URL: %1").arg(url.toString()));
         return;
     }
 
     m_downloader = FileDownloaderFactory::instance().create(url.scheme(), this);
     if (!m_downloader) {
-        finished(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2).").arg(url.scheme(),
+        finished(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2)").arg(url.scheme(),
             url.toString()));
         return;
     }
 
-    //append a random string to avoid proxy caches
+    // append a random string to avoid proxy caches
     m_downloader->setUrl(QUrl(url.toString() + QString::fromLatin1("/Updates.xml?")
         .append(QString::number(qrand() * qrand()))));
 
@@ -249,13 +249,13 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 
     QFile updatesFile(fn);
     if (!updatesFile.rename(m_temporaryDirectory + QLatin1String("/Updates.xml"))) {
-        finished(QInstaller::DownloadError, tr("Could not move Updates.xml to target location: %1.")
+        finished(QInstaller::DownloadError, tr("Could not move Updates.xml to target location. Error: %1")
             .arg(updatesFile.errorString()));
         return;
     }
 
     if (!updatesFile.open(QIODevice::ReadOnly)) {
-        finished(QInstaller::DownloadError, tr("Could not open Updates.xml for reading: %1.")
+        finished(QInstaller::DownloadError, tr("Could not open Updates.xml for reading. Error: %1")
             .arg(updatesFile.errorString()));
         return;
     }
@@ -264,7 +264,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
     QDomDocument doc;
     if (!doc.setContent(&updatesFile, &err)) {
         const QString msg =  tr("Could not fetch a valid version of Updates.xml from repository: %1. "
-            "Error: %2.").arg(m_repository.url().toString(), err);
+            "Error: %2").arg(m_repository.url().toString(), err);
 
         const QMessageBox::StandardButton b =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -314,7 +314,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     qDebug() << "Replace repository:" << oldRepository.url().toString() << "with:"
                         << newRepository.url().toString();
                 } else {
-                    qDebug() << "Invalid additional repositories action set in updates.xml fetched from:"
+                    qDebug() << "Invalid additional repositories action set in Updates.xml fetched from:"
                         << m_repository.url().toString() << "Line:" << el.lineNumber();
                 }
             }
@@ -453,13 +453,13 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
 
     QFile arch(fn);
     if (!arch.open(QIODevice::ReadOnly)) {
-        finished(QInstaller::ExtractionError, tr("Could not open meta info archive: %1. Error: %2.").arg(fn,
+        finished(QInstaller::ExtractionError, tr("Could not open meta info archive: %1. Error: %2").arg(fn,
             arch.errorString()));
         return;
     }
 
     if (!m_packageHash.isEmpty()) {
-        //verify file hash
+        // verify file hash
         QByteArray expectedFileHash = m_packageHash.back().toLatin1();
         QByteArray archContent = arch.readAll();
         QByteArray realFileHash = QString::fromLatin1(QCryptographicHash::hash(archContent,
