@@ -396,10 +396,7 @@ bool UpdateFinder::Private::computeApplicableUpdates()
         if (found) {
             q->reportProgress(80, tr("Found compatibility update."));
 
-            // Let's create an update for this compat update.
-            QString updateName = tr("Compatibility level %1 update").arg(reqCompatLevel);
-            QUrl url;
-
+            // Create an update for this compat update.
             // Pick a update file based on arch and OS.
             int pickUpdateFileIndex = pickUpdateFileInfo(compatUpdateInfo.updateFiles);
             if (pickUpdateFileIndex < 0) {
@@ -412,7 +409,7 @@ bool UpdateFinder::Private::computeApplicableUpdates()
             UpdateFileInfo fileInfo = compatUpdateInfo.updateFiles.at(pickUpdateFileIndex);
 
             // Create an update for this entry
-            url = QString::fromLatin1("%1/%2").arg(compatUpdateSourceInfo.url.toString(), fileInfo.fileName);
+            QUrl url = QString::fromLatin1("%1/%2").arg( compatUpdateSourceInfo.url.toString(), fileInfo.fileName);
             Update *update = q->constructUpdate(application, compatUpdateSourceInfo, CompatUpdate,
                                                 url, compatUpdateInfo.data, fileInfo.compressedSize,
                                                 fileInfo.uncompressedSize, fileInfo.sha1sum);
