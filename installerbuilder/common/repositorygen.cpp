@@ -53,6 +53,8 @@ void QInstaller::printRepositoryGenOptions()
     std::cout << "                            Defaults to the current working directory." << std::endl;
 
     std::cout << "  -e|--exclude p1,...,pn    exclude the given packages" << std::endl;
+    std::cout << "  --ignore-translations     Don't use any translation" << std::endl;
+    std::cout << "  --ignore-invalid-packages Ignore all invalid packages instead of aborting." << std::endl;
 }
 
 
@@ -67,6 +69,8 @@ static PackageInfoVector collectAvailablePackages(const QString &packagesDirecto
 {
     qDebug() << "Collecting information about available packages...";
 
+    bool ignoreInvalidPackages = qApp->arguments().contains(QString::fromLatin1("--ignore-invalid-packages"));
+
     PackageInfoVector dict;
     const QFileInfoList entries = QDir(packagesDirectory)
         .entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -76,6 +80,8 @@ static PackageInfoVector collectAvailablePackages(const QString &packagesDirecto
         qDebug() << QString::fromLatin1("\tfound subdirectory %1").arg(it->fileName());
         // because the filter is QDir::Dirs - filename means the name of the subdirectory
         if (it->fileName().contains(QLatin1Char('-'))) {
+            if (ignoreInvalidPackages)
+                continue;
             throw QInstaller::Error(QObject::tr("Component %1 can't contain '-'. This is not allowed, because "
                 "it is used as the separator between the component name and the version number internally.").arg(
                 it->fileName()));
@@ -83,6 +89,8 @@ static PackageInfoVector collectAvailablePackages(const QString &packagesDirecto
 
         QFile file(QString::fromLatin1("%1/meta/package.xml").arg(it->filePath()));
         if (!file.exists()) {
+            if (ignoreInvalidPackages)
+                continue;
             throw QInstaller::Error(QObject::tr("Component %1 does not contain a package "
                 "description(meta/package.xml is missing).").arg(it->fileName()));
         }
@@ -94,6 +102,8 @@ static PackageInfoVector collectAvailablePackages(const QString &packagesDirecto
         int errorLine = 0;
         int errorColumn = 0;
         if (!doc.setContent(&file, &error, &errorLine, &errorColumn)) {
+            if (ignoreInvalidPackages)
+                continue;
             throw QInstaller::Error(QObject::tr("Component package description for %1 is invalid. "
                 "Error at line: %2, column: %3 -> %4").arg(it->fileName(), QString::number(errorLine),
                 QString::number(errorColumn), error));
@@ -102,6 +112,8 @@ static PackageInfoVector collectAvailablePackages(const QString &packagesDirecto
         const QString name = doc.firstChildElement(QLatin1String("Package"))
             .firstChildElement(QLatin1String("Name")).text();
         if (name != it->fileName()) {
+            if (ignoreInvalidPackages)
+                continue;
             throw QInstaller::Error(QObject::tr("Component folder name must match component name: "
                 "%1 in %2/").arg(name, it->fileName()));
         }
@@ -111,6 +123,8 @@ static PackageInfoVector collectAvailablePackages(const QString &packagesDirecto
         info.version = doc.firstChildElement(QLatin1String("Package")).
             firstChildElement(QLatin1String("Version")).text();
         if (!QRegExp(QLatin1String("[0-9]+((\\.|-)[0-9]+)*")).exactMatch(info.version)) {
+            if (ignoreInvalidPackages)
+                continue;
             throw QInstaller::Error(QObject::tr("Component version for %1 is invalid! <Version>%2</version>")
                 .arg(it->fileName(), info.version));
         }
@@ -501,36 +515,39 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
         // copy translations
         const QDomNodeList qmNodes = package.firstChildElement("Translations").childNodes();
         QStringList translations;
-        for (int i = 0; i < qmNodes.count(); ++i) {
-            const QDomNode node = qmNodes.at(i);
-            if (node.nodeName() != QLatin1String("Translation"))
-                continue;
+        if (!qApp->arguments().contains(QString::fromLatin1("--ignore-translations"))) {
+            for (int i = 0; i < qmNodes.count(); ++i) {
+                const QDomNode node = qmNodes.at(i);
+                if (node.nodeName() != QLatin1String("Translation"))
+                    continue;
 
-            const QDir dir(QString::fromLatin1("%1/meta").arg(it->directory));
-            const QStringList qms = dir.entryList(QStringList(node.toElement().text()), QDir::Files);
-            if (qms.isEmpty()) {
-                throw Error(QObject::tr("Could not find any translation file matching %1 while "
-                    "copying translations of %2.").arg(node.toElement().text(), it->name));
-            }
+                const QDir dir(QString::fromLatin1("%1/meta").arg(it->directory));
+                const QStringList qms = dir.entryList(QStringList(node.toElement().text()), QDir::Files);
+                if (qms.isEmpty()) {
+                    throw Error(QObject::tr("Could not find any translation file matching %1 while "
+                        "copying translations of %2.").arg(node.toElement().text(), it->name));
+                }
 
-            for (QStringList::const_iterator qm = qms.begin(); qm != qms.end(); ++qm) {
-                qDebug() << "\tCopying associated translation " << *qm << " into the meta "
-                    "package...";
-                translations.push_back(*qm);
-                if (!QFile::copy(QString::fromLatin1("%1/meta/%2").arg(it->directory, *qm),
-                    QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, *qm))) {
-                        qDebug() << "failed!";
-                        throw Error(QObject::tr("Could not copy the translation %1 to its target "
-                            "location %2.").arg(*qm, it->name));
-                } else {
-                    qDebug() << "done";
+                for (QStringList::const_iterator qm = qms.begin(); qm != qms.end(); ++qm) {
+                    qDebug() << "\tCopying associated translation " << *qm << " into the meta "
+                        "package...";
+                    translations.push_back(*qm);
+                    if (!QFile::copy(QString::fromLatin1("%1/meta/%2").arg(it->directory, *qm),
+                        QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, *qm))) {
+                            qDebug() << "failed!";
+                            throw Error(QObject::tr("Could not copy the translation %1 to its target "
+                                "location %2.").arg(*qm, it->name));
+                    } else {
+                        qDebug() << "done";
+                    }
                 }
             }
-        }
 
-        if (!translations.isEmpty()) {
-            update.appendChild(doc.createElement(QLatin1String("Translations")))
-                .appendChild(doc.createTextNode(translations.join(QChar::fromLatin1(','))));
+            if (!translations.isEmpty()) {
+                update.appendChild(doc.createElement(QLatin1String("Translations")))
+                    .appendChild(doc.createTextNode(translations.join(QChar::fromLatin1(','))));
+            }
+
         }
 
         // copy license files
