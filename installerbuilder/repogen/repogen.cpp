@@ -51,17 +51,17 @@ static void printUsage()
     std::cout << "Usage: " << appName << " [options] repository-dir package1 [package2 ...]" << std::endl;
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
-    std::cout << "  -p|--packages dir      The directory containing the available packages."
-        << std::endl;
-    std::cout << "  -c|--config dir        The directory containing the installer configuration "
-        "files to use." << std::endl;
-    std::cout << "  -e|--exclude p1,...,pn exclude the given packages and their dependencies from the "
-        "repository" << std::endl;
-    std::cout << "  -u|--updateurl url instructs clients to receive updates from a different location"
-        << std::endl;
-    std::cout << "  -v|--verbose           Verbose output" << std::endl;
-    std::cout << "     --single            Put only the given components (not their dependencies) into the "
-        "(already existing) repository" << std::endl;
+
+    printRepositoryGenOptions();
+
+    std::cout << "  -u|--updateurl            url instructs clients to receive updates from a " << std::endl;
+    std::cout << "                            different location" << std::endl;
+
+    std::cout << "  --single                  Put only the given components (not their dependencies) " << std::endl;
+    std::cout << "                            into the (already existing) repository" << std::endl;
+
+    std::cout << "  -v|--verbose              Verbose output" << std::endl;
+
     std::cout << std::endl;
     std::cout << "Example:" << std::endl;
     std::cout << "  " << appName << " -p ../examples/packages -c ../examples/config -u "

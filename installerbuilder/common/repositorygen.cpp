@@ -41,7 +41,20 @@
 
 #include <QtXml/QDomDocument>
 
+#include <iostream>
+
 using namespace QInstaller;
+
+void QInstaller::printRepositoryGenOptions()
+{
+    std::cout << "  -c|--config dir           The directory containing the installer configuration" << std::endl;
+
+    std::cout << "  -p|--packages dir         The directory containing the available packages." << std::endl;
+    std::cout << "                            Defaults to the current working directory." << std::endl;
+
+    std::cout << "  -e|--exclude p1,...,pn    exclude the given packages" << std::endl;
+}
+
 
 QT_BEGIN_NAMESPACE
 static bool operator==(const PackageInfo &lhs, const PackageInfo &rhs)

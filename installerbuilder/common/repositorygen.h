@@ -39,6 +39,8 @@
 
 namespace QInstaller {
 
+void printRepositoryGenOptions();
+
 struct PackageInfo
 {
     QString name;
@@ -64,6 +66,7 @@ void generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
 
 PackageInfoVector createListOfPackages(const QStringList &components, const QString &packagesDirectory,
     const QStringList &excludedPackages, bool addDependencies = true);
+
 } // namespace QInstaller
 
 #endif // QINSTALLER_REPOSITORYGEN_H

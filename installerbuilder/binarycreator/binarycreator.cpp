@@ -388,25 +388,22 @@ static void printUsage()
     std::cout << "Usage: " << appName << " [options] target package1 [package2 ...]" << std::endl;
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
-    std::cout << "  -t|--template file     Use file as installer template binary" << std::endl;
-    std::cout << "                         If this parameter is not given, the template used"
-        << std::endl;
-    std::cout << "                         defaults to installerbase" << std::endl;
-    std::cout << "  -p|--packages dir      The directory containing the available packages."
-        << std::endl;
-    std::cout << "                         Defaults to the current working directory." << std::endl;
-    std::cout << "  -c|--config dir        The directory containing the installer configuration "
-        "files to use." << std::endl;
-    std::cout << "                         Mandatory." << std::endl;
-    std::cout << "  -n|--nodeps            Don't add dependencies of package1...n into the "
-        "installer (for online installers)" << std::endl;
-    std::cout << "  -e|--exclude p1,...,pn exclude the given packages and their dependencies from "
-        "the binary (for online installers)" << std::endl;
-    std::cout << "  --offline-only         Forces the installer to act as an offline installer, "
-        "i.e. never access online repositories" << std::endl;
-    std::cout << "  -v|--verbose           Verbose output" << std::endl;
-    std::cout << "  -r|--resources r1,.,rn include the given resource files into the binary" << std::endl;
+
+    std::cout << "  -t|--template file        Use file as installer template binary" << std::endl;
+    std::cout << "                            If this parameter is not given, the template used" << std::endl;
+    std::cout << "                            defaults to installerbase." << std::endl;
+
+    printRepositoryGenOptions();
+
+    std::cout << "  -n|--nodeps               Don't add dependencies of package1...n into the " << std::endl;
+    std::cout << "                            installer (for online installers)" << std::endl;
+
+    std::cout << "  --offline-only            Forces the installer to act as an offline installer, " << std::endl;
+    std::cout << "                            i.e. never access online repositories" << std::endl;
+
+    std::cout << "  -r|--resources r1,.,rn    include the given resource files into the binary" << std::endl;
     std::cout << std::endl;
+    std::cout << "  -v|--verbose              Verbose output" << std::endl;
     std::cout << "Packages are to be found in the current working directory and get listed as "
         "their names" << std::endl << std::endl;
     std::cout << "Example (offline installer):" << std::endl;
