@@ -536,7 +536,8 @@ int main(int argc, char **argv)
     bool offlineOnly = false;
     QStringList resources;
     QStringList components;
-    QStringList excludedPackages;
+    QStringList filteredPackages;
+    FilterType ftype = Exclude;
 
     const QStringList args = app.arguments().mid(1);
     for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -555,10 +556,23 @@ int main(int argc, char **argv)
             packagesDirectory = *it;
         } else if (*it == QLatin1String("-e") || *it == QLatin1String("--exclude")) {
             ++it;
+            if (!filteredPackages.isEmpty())
+                return printErrorAndUsageAndExit(QObject::tr("Error: --include and --exclude are mutually "
+                                                             "exclusive. Use either one or the other."));
             if (it == args.end() || it->startsWith(QLatin1String("-")))
                 return printErrorAndUsageAndExit(QObject::tr("Error: Package to exclude missing."));
-            excludedPackages = it->split(QLatin1Char(','));
-        } else if (*it == QLatin1String("-v") || *it == QLatin1String("--verbose")) {
+            filteredPackages = it->split(QLatin1Char(','));
+        } else if (*it == QLatin1String("-i") || *it == QLatin1String("--include")) {
+            ++it;
+            if (!filteredPackages.isEmpty())
+                return printErrorAndUsageAndExit(QObject::tr("Error: --include and --exclude are mutually "
+                                                             "exclusive. Use either one or the other."));
+            if (it == args.end() || it->startsWith(QLatin1String("-")))
+                return printErrorAndUsageAndExit(QObject::tr("Error: Package to include missing."));
+            filteredPackages = it->split(QLatin1Char(','));
+            ftype = Include;
+        }
+        else if (*it == QLatin1String("-v") || *it == QLatin1String("--verbose")) {
             QInstaller::setVerbose(true);
         } else if (*it == QLatin1String("-n") || *it == QLatin1String("--nodeps")) {
             nodeps = true;
@@ -617,8 +631,8 @@ int main(int argc, char **argv)
     qDebug() << "Parsed arguments, ok.";
 
     try {
-        PackageInfoVector packages = createListOfPackages(components, packagesDirectory, excludedPackages,
-            !nodeps);
+        PackageInfoVector packages = createListOfPackages(components, packagesDirectory, filteredPackages,
+            ftype, !nodeps);
         const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configDir);
         {
             QSettings confInternal(metaDir + "/config/config-internal.ini", QSettings::IniFormat);

@@ -92,11 +92,12 @@ int main(int argc, char** argv)
 
         QStringList args = app.arguments().mid(1);
 
-        QStringList excludedPackages;
+        QStringList filteredPackages;
         bool replaceSingleComponent = false;
         QString packagesDir;
         QString configDir;
         QString redirectUpdateUrl;
+        FilterType ftype = Exclude;
 
         //TODO: use a for loop without removing values from args like it is in binarycreator.cpp
         //for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -106,10 +107,23 @@ int main(int argc, char** argv)
                 setVerbose(true);
             } else if (args.first() == QLatin1String("--exclude") || args.first() == QLatin1String("-e")) {
                 args.removeFirst();
+                if (!filteredPackages.isEmpty())
+                    return printErrorAndUsageAndExit(QObject::tr("Error: --include and --exclude are mutually "
+                                                                 "exclusive. Use either one or the other."));
                 if (args.isEmpty() || args.first().startsWith(QLatin1Char('-')))
                     return printErrorAndUsageAndExit(QObject::tr("Error: Package to exclude missing"));
-                excludedPackages = args.first().split(QLatin1Char(','));
+                filteredPackages = args.first().split(QLatin1Char(','));
                 args.removeFirst();
+            } else if (args.first() == QLatin1String("--include") || args.first() == QLatin1String("-i")) {
+                args.removeFirst();
+                if (!filteredPackages.isEmpty())
+                    return printErrorAndUsageAndExit(QObject::tr("Error: --include and --exclude are mutual "
+                                                                 "exclusive options. Use either one or the other."));
+                if (args.isEmpty() || args.first().startsWith(QLatin1Char('-')))
+                    return printErrorAndUsageAndExit(QObject::tr("Error: Package to include missing"));
+                filteredPackages = args.first().split(QLatin1Char(','));
+                args.removeFirst();
+                ftype = Include;
             } else if (args.first() == QLatin1String("--single")) {
                 args.removeFirst();
                 replaceSingleComponent = true;
@@ -193,8 +207,8 @@ int main(int argc, char** argv)
                 .arg(repositoryDir));
         }
 
-        PackageInfoVector packages = createListOfPackages(components, packagesDir, excludedPackages,
-            !replaceSingleComponent);
+        PackageInfoVector packages = createListOfPackages(components, packagesDir, filteredPackages,
+            ftype, !replaceSingleComponent);
         QMap<QString, QString> pathToVersionMapping = buildPathToVersionMap(packages);
 
         for (PackageInfoVector::const_iterator it = packages.begin(); it != packages.end(); ++it) {

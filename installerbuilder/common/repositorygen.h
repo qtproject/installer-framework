@@ -51,6 +51,11 @@ struct PackageInfo
 };
 typedef QVector<PackageInfo> PackageInfoVector;
 
+enum FilterType {
+    Include,
+    Exclude
+};
+
 QMap<QString, QString> buildPathToVersionMap(const PackageInfoVector &info);
 
 void compressMetaDirectories(const QString &repoDir);
@@ -65,7 +70,7 @@ void generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
     const QString& appVersion, const QString &redirectUpdateUrl = QString());
 
 PackageInfoVector createListOfPackages(const QStringList &components, const QString &packagesDirectory,
-    const QStringList &excludedPackages, bool addDependencies = true);
+    const QStringList &filteredPackages, FilterType ftype, bool addDependencies = true);
 
 } // namespace QInstaller
 

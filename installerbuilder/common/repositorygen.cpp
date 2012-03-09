@@ -52,11 +52,12 @@ void QInstaller::printRepositoryGenOptions()
     std::cout << "  -p|--packages dir         The directory containing the available packages." << std::endl;
     std::cout << "                            Defaults to the current working directory." << std::endl;
 
-    std::cout << "  -e|--exclude p1,...,pn    exclude the given packages" << std::endl;
+    std::cout << "  -e|--exclude p1,...,pn    Exclude the given packages." << std::endl;
+    std::cout << "  -i|--include p1,...,pn    Include the given packages and their dependencies from the "
+              << "repository." << std::endl;
     std::cout << "  --ignore-translations     Don't use any translation" << std::endl;
     std::cout << "  --ignore-invalid-packages Ignore all invalid packages instead of aborting." << std::endl;
 }
-
 
 QT_BEGIN_NAMESPACE
 static bool operator==(const PackageInfo &lhs, const PackageInfo &rhs)
@@ -65,7 +66,8 @@ static bool operator==(const PackageInfo &lhs, const PackageInfo &rhs)
 }
 QT_END_NAMESPACE
 
-static PackageInfoVector collectAvailablePackages(const QString &packagesDirectory, const QStringList &excludedPackages)
+static PackageInfoVector collectAvailablePackages(const QString &packagesDirectory,
+                                                  const QStringList &filteredPackages, FilterType ftype)
 {
     qDebug() << "Collecting information about available packages...";
 
@@ -75,8 +77,13 @@ static PackageInfoVector collectAvailablePackages(const QString &packagesDirecto
     const QFileInfoList entries = QDir(packagesDirectory)
         .entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
-        if (excludedPackages.contains(it->fileName()))
-            continue;
+        if (ftype == Exclude) {
+            if (filteredPackages.contains(it->fileName()))
+                continue;
+        } else {
+            if (!filteredPackages.contains(it->fileName()))
+                continue;
+        }
         qDebug() << QString::fromLatin1("\tfound subdirectory %1").arg(it->fileName());
         // because the filter is QDir::Dirs - filename means the name of the subdirectory
         if (it->fileName().contains(QLatin1Char('-'))) {
@@ -616,9 +623,10 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
 }
 
 PackageInfoVector QInstaller::createListOfPackages(const QStringList &components,
-    const QString &packagesDirectory, const QStringList &excludedPackages, bool addDependencies)
+    const QString &packagesDirectory, const QStringList &filteredPackages, FilterType ftype, bool addDependencies)
 {
-    const PackageInfoVector availablePackageInfos = collectAvailablePackages(packagesDirectory, excludedPackages);
+    const PackageInfoVector availablePackageInfos = collectAvailablePackages(packagesDirectory,
+                                                                             filteredPackages, ftype);
     if (!addDependencies) {
         PackageInfoVector packageInfos;
         foreach (const PackageInfo &info, availablePackageInfos) {
