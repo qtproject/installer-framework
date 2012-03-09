@@ -114,7 +114,7 @@ private:
 GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(PackageManagerCorePrivate *corePrivate, QObject *parent)
     : KDJob(parent),
     m_canceled(false),
-    m_silentRetries(3),
+    m_silentRetries(4),
     m_retriesLeft(m_silentRetries),
     m_downloader(0),
     m_waitForDone(false),
@@ -208,8 +208,15 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
         return;
     }
 
+    QString UpdatesFileName;
+
+    if (m_retriesLeft == m_silentRetries)
+        UpdatesFileName = QString::fromLatin1("Updates_%1.xml").arg(QLocale().name().toLower());
+    else
+        UpdatesFileName = QString::fromLatin1("Updates.xml");
+
     // append a random string to avoid proxy caches
-    m_downloader->setUrl(QUrl(url.toString() + QString::fromLatin1("/Updates.xml?")
+    m_downloader->setUrl(QUrl(url.toString() + QString::fromLatin1("/%1?").arg(UpdatesFileName)
         .append(QString::number(qrand() * qrand()))));
 
     QAuthenticator auth;
