@@ -206,9 +206,10 @@ int main(int argc, char** argv)
         if (!components.isEmpty()) {
             std::cout << "Package names at the end of the command are deprecated"
                           " - please use --include or --exclude" << std::endl;
-            if (updateExistingRepository)
+            if (updateExistingRepository) {
                 filteredPackages.append(components);
-            filterType = Include;
+                filterType = Include;
+            }
         }
 
         if (!updateExistingRepository && QFile::exists(repositoryDir)) {
