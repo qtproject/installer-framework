@@ -48,7 +48,7 @@ using namespace QInstaller;
 static void printUsage()
 {
     const QString appName = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
-    std::cout << "Usage: " << appName << " [options] repository-dir package1 [package2 ...]" << std::endl;
+    std::cout << "Usage: " << appName << " [options] repository-dir" << std::endl;
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
 
@@ -57,8 +57,8 @@ static void printUsage()
     std::cout << "  -u|--updateurl            url instructs clients to receive updates from a " << std::endl;
     std::cout << "                            different location" << std::endl;
 
-    std::cout << "  --single                  Put only the given components (not their dependencies) " << std::endl;
-    std::cout << "                            into the (already existing) repository" << std::endl;
+    std::cout << "  --update                  Update a set of existing components (defined by --include " << std::endl;
+    std::cout << "                            or --exclude) in the repository" << std::endl;
 
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
 
@@ -93,11 +93,11 @@ int main(int argc, char** argv)
         QStringList args = app.arguments().mid(1);
 
         QStringList filteredPackages;
-        bool replaceSingleComponent = false;
+        bool updateExistingRepository = false;
         QString packagesDir;
         QString configDir;
         QString redirectUpdateUrl;
-        FilterType ftype = Exclude;
+        FilterType filterType = Exclude;
 
         //TODO: use a for loop without removing values from args like it is in binarycreator.cpp
         //for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -123,10 +123,10 @@ int main(int argc, char** argv)
                     return printErrorAndUsageAndExit(QObject::tr("Error: Package to include missing"));
                 filteredPackages = args.first().split(QLatin1Char(','));
                 args.removeFirst();
-                ftype = Include;
-            } else if (args.first() == QLatin1String("--single")) {
+                filterType = Include;
+            } else if (args.first() == QLatin1String("--single") || args.first() == QLatin1String("--update")) {
                 args.removeFirst();
-                replaceSingleComponent = true;
+                updateExistingRepository = true;
             } else if (args.first() == QLatin1String("-p") || args.first() == QLatin1String("--packages")) {
                 args.removeFirst();
                 if (args.isEmpty()) {
@@ -203,13 +203,20 @@ int main(int argc, char** argv)
         const QString repositoryDir = makeAbsolute(args[argsPosition++]);
         const QStringList components = args.mid(argsPosition);
 
-        if (!replaceSingleComponent && QFile::exists(repositoryDir)) {
+        if (!components.isEmpty()) {
+            std::cout << "Package names at the end of the command are deprecated"
+                          " - please use --include or --exclude" << std::endl;
+            if (updateExistingRepository)
+                filteredPackages.append(components);
+            filterType = Include;
+        }
+
+        if (!updateExistingRepository && QFile::exists(repositoryDir)) {
             throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!")
                 .arg(repositoryDir));
         }
 
-        PackageInfoVector packages = createListOfPackages(components, packagesDir, filteredPackages,
-            ftype, !replaceSingleComponent);
+        PackageInfoVector packages = createListOfPackages(packagesDir, filteredPackages, filterType);
         QMap<QString, QString> pathToVersionMapping = buildPathToVersionMap(packages);
 
         for (PackageInfoVector::const_iterator it = packages.begin(); it != packages.end(); ++it) {

@@ -385,7 +385,7 @@ static QStringList createBinaryResourceFiles(const QStringList &resources)
 static void printUsage()
 {
     const QString appName = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
-    std::cout << "Usage: " << appName << " [options] target package1 [package2 ...]" << std::endl;
+    std::cout << "Usage: " << appName << " [options] target" << std::endl;
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
 
@@ -408,12 +408,12 @@ static void printUsage()
         "their names" << std::endl << std::endl;
     std::cout << "Example (offline installer):" << std::endl;
     std::cout << "  " << appName << " --offline-only -c installer-config -p packages-directory -t "
-        "installerbase SDKInstaller.exe com.nokia.sdk" << std::endl;
+        "installerbase SDKInstaller.exe" << std::endl;
     std::cout << "Creates an offline installer for the SDK, containing all dependencies." << std::endl;
     std::cout << std::endl;
     std::cout << "Example (online installer):" << std::endl;
     std::cout << "  " << appName << " -c installer-config -p packages-directory -e com.nokia.sdk.qt,"
-        "com.nokia.qtcreator -t installerbase SDKInstaller.exe com.nokia.sdk" << std::endl;
+        "com.nokia.qtcreator -t installerbase SDKInstaller.exe" << std::endl;
     std::cout << std::endl;
     std::cout << "Creates an installer for the SDK without qt and qt creator." << std::endl;
     std::cout << std::endl;
@@ -575,6 +575,9 @@ int main(int argc, char **argv)
         else if (*it == QLatin1String("-v") || *it == QLatin1String("--verbose")) {
             QInstaller::setVerbose(true);
         } else if (*it == QLatin1String("-n") || *it == QLatin1String("--nodeps")) {
+            if (!filteredPackages.isEmpty())
+                return printErrorAndUsageAndExit(QObject::tr("for the --include and --exclude case you also "
+                                                             "have to ensure that nopdeps==false"));
             nodeps = true;
         } else if (*it == QLatin1String("--offline-only")) {
             offlineOnly = true;
@@ -621,11 +624,16 @@ int main(int argc, char **argv)
         }
     }
 
+    if (!components.isEmpty()) {
+        std::cout << "Package names at the end of the command are deprecated"
+                      " - please use --include or --exclude" << std::endl;
+        if (nodeps)
+            filteredPackages.append(components);
+        ftype = Include;
+    }
+
     if (target.isEmpty())
         return printErrorAndUsageAndExit(QObject::tr("Error: Target parameter missing."));
-
-    if (components.isEmpty())
-        return printErrorAndUsageAndExit(QObject::tr("Error: No components selected."));
 
     if (configDir.isEmpty())
         return printErrorAndUsageAndExit(QObject::tr("Error: No configuration directory selected."));
@@ -633,8 +641,7 @@ int main(int argc, char **argv)
     qDebug() << "Parsed arguments, ok.";
 
     try {
-        PackageInfoVector packages = createListOfPackages(components, packagesDirectory, filteredPackages,
-            ftype, !nodeps);
+        PackageInfoVector packages = createListOfPackages(packagesDirectory, filteredPackages, ftype);
         const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configDir);
         {
             QSettings confInternal(metaDir + "/config/config-internal.ini", QSettings::IniFormat);

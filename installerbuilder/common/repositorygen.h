@@ -69,8 +69,8 @@ void generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
     const PackageInfoVector &packages, const QString &appName,
     const QString& appVersion, const QString &redirectUpdateUrl = QString());
 
-PackageInfoVector createListOfPackages(const QStringList &components, const QString &packagesDirectory,
-    const QStringList &filteredPackages, FilterType ftype, bool addDependencies = true);
+PackageInfoVector createListOfPackages(const QString &packagesDirectory, const QStringList &filteredPackages,
+    FilterType ftype);
 
 } // namespace QInstaller
 

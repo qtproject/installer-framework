@@ -66,90 +66,6 @@ static bool operator==(const PackageInfo &lhs, const PackageInfo &rhs)
 }
 QT_END_NAMESPACE
 
-static PackageInfoVector collectAvailablePackages(const QString &packagesDirectory,
-                                                  const QStringList &filteredPackages, FilterType ftype)
-{
-    qDebug() << "Collecting information about available packages...";
-
-    bool ignoreInvalidPackages = qApp->arguments().contains(QString::fromLatin1("--ignore-invalid-packages"));
-
-    PackageInfoVector dict;
-    const QFileInfoList entries = QDir(packagesDirectory)
-        .entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
-    for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
-        if (ftype == Exclude) {
-            if (filteredPackages.contains(it->fileName()))
-                continue;
-        } else {
-            if (!filteredPackages.contains(it->fileName()))
-                continue;
-        }
-        qDebug() << QString::fromLatin1("\tfound subdirectory %1").arg(it->fileName());
-        // because the filter is QDir::Dirs - filename means the name of the subdirectory
-        if (it->fileName().contains(QLatin1Char('-'))) {
-            if (ignoreInvalidPackages)
-                continue;
-            throw QInstaller::Error(QObject::tr("Component %1 can't contain '-'. This is not allowed, because "
-                "it is used as the separator between the component name and the version number internally.").arg(
-                it->fileName()));
-        }
-
-        QFile file(QString::fromLatin1("%1/meta/package.xml").arg(it->filePath()));
-        if (!file.exists()) {
-            if (ignoreInvalidPackages)
-                continue;
-            throw QInstaller::Error(QObject::tr("Component %1 does not contain a package "
-                "description(meta/package.xml is missing).").arg(it->fileName()));
-        }
-
-        file.open(QIODevice::ReadOnly);
-
-        QDomDocument doc;
-        QString error;
-        int errorLine = 0;
-        int errorColumn = 0;
-        if (!doc.setContent(&file, &error, &errorLine, &errorColumn)) {
-            if (ignoreInvalidPackages)
-                continue;
-            throw QInstaller::Error(QObject::tr("Component package description for %1 is invalid. "
-                "Error at line: %2, column: %3 -> %4").arg(it->fileName(), QString::number(errorLine),
-                QString::number(errorColumn), error));
-        }
-
-        const QString name = doc.firstChildElement(QLatin1String("Package"))
-            .firstChildElement(QLatin1String("Name")).text();
-        if (name != it->fileName()) {
-            if (ignoreInvalidPackages)
-                continue;
-            throw QInstaller::Error(QObject::tr("Component folder name must match component name: "
-                "%1 in %2/").arg(name, it->fileName()));
-        }
-
-        PackageInfo info;
-        info.name = name;
-        info.version = doc.firstChildElement(QLatin1String("Package")).
-            firstChildElement(QLatin1String("Version")).text();
-        if (!QRegExp(QLatin1String("[0-9]+((\\.|-)[0-9]+)*")).exactMatch(info.version)) {
-            if (ignoreInvalidPackages)
-                continue;
-            throw QInstaller::Error(QObject::tr("Component version for %1 is invalid! <Version>%2</version>")
-                .arg(it->fileName(), info.version));
-        }
-        info.dependencies = doc.firstChildElement(QLatin1String("Package")).
-            firstChildElement(QLatin1String("Dependencies")).text().split(QRegExp(QLatin1String("\\b(,|, )\\b")),
-            QString::SkipEmptyParts);
-        info.directory = it->filePath();
-        dict.push_back(info);
-
-        qDebug() << QString::fromLatin1("\t- it provides the package %1 - %2").arg(name, info.version);
-    }
-
-    if (dict.isEmpty())
-        qDebug() << "No available packages found at the specified location.";
-
-    return dict;
-}
-
 /*!
     Returns PackageInfo of package with right name and version
 */
@@ -622,64 +538,88 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
     blockingWrite(&updatesXml, doc.toByteArray());
 }
 
-PackageInfoVector QInstaller::createListOfPackages(const QStringList &components,
-    const QString &packagesDirectory, const QStringList &filteredPackages, FilterType ftype, bool addDependencies)
+PackageInfoVector QInstaller::createListOfPackages(const QString &packagesDirectory,
+    const QStringList &filteredPackages, FilterType filterType)
 {
-    const PackageInfoVector availablePackageInfos = collectAvailablePackages(packagesDirectory,
-                                                                             filteredPackages, ftype);
-    if (!addDependencies) {
-        PackageInfoVector packageInfos;
-        foreach (const PackageInfo &info, availablePackageInfos) {
-            if (components.contains(info.name))
-                packageInfos.append(info);
+    qDebug() << "Collecting information about available packages...";
+
+    bool ignoreInvalidPackages = qApp->arguments().contains(QString::fromLatin1("--ignore-invalid-packages"));
+
+    PackageInfoVector dict;
+    const QFileInfoList entries = QDir(packagesDirectory)
+        .entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+    for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
+        if (filterType == Exclude) {
+            if (filteredPackages.contains(it->fileName()))
+                continue;
+        } else {
+            if (!filteredPackages.contains(it->fileName()))
+                continue;
         }
-        return packageInfos;
+        qDebug() << QString::fromLatin1("\tfound subdirectory %1").arg(it->fileName());
+        // because the filter is QDir::Dirs - filename means the name of the subdirectory
+        if (it->fileName().contains(QLatin1Char('-'))) {
+            if (ignoreInvalidPackages)
+                continue;
+            throw QInstaller::Error(QObject::tr("Component %1 can't contain '-'. This is not allowed, because "
+                "it is used as the separator between the component name and the version number internally.").arg(
+                it->fileName()));
+        }
+
+        QFile file(QString::fromLatin1("%1/meta/package.xml").arg(it->filePath()));
+        if (!file.exists()) {
+            if (ignoreInvalidPackages)
+                continue;
+            throw QInstaller::Error(QObject::tr("Component %1 does not contain a package "
+                "description(meta/package.xml is missing).").arg(it->fileName()));
+        }
+
+        file.open(QIODevice::ReadOnly);
+
+        QDomDocument doc;
+        QString error;
+        int errorLine = 0;
+        int errorColumn = 0;
+        if (!doc.setContent(&file, &error, &errorLine, &errorColumn)) {
+            if (ignoreInvalidPackages)
+                continue;
+            throw QInstaller::Error(QObject::tr("Component package description for %1 is invalid. "
+                "Error at line: %2, column: %3 -> %4").arg(it->fileName(), QString::number(errorLine),
+                QString::number(errorColumn), error));
+        }
+
+        const QString name = doc.firstChildElement(QLatin1String("Package"))
+            .firstChildElement(QLatin1String("Name")).text();
+        if (name != it->fileName()) {
+            if (ignoreInvalidPackages)
+                continue;
+            throw QInstaller::Error(QObject::tr("Component folder name must match component name: "
+                "%1 in %2/").arg(name, it->fileName()));
+        }
+
+        PackageInfo info;
+        info.name = name;
+        info.version = doc.firstChildElement(QLatin1String("Package")).
+            firstChildElement(QLatin1String("Version")).text();
+        if (!QRegExp(QLatin1String("[0-9]+((\\.|-)[0-9]+)*")).exactMatch(info.version)) {
+            if (ignoreInvalidPackages)
+                continue;
+            throw QInstaller::Error(QObject::tr("Component version for %1 is invalid! <Version>%2</version>")
+                .arg(it->fileName(), info.version));
+        }
+        info.dependencies = doc.firstChildElement(QLatin1String("Package")).
+            firstChildElement(QLatin1String("Dependencies")).text().split(QRegExp(QLatin1String("\\b(,|, )\\b")),
+            QString::SkipEmptyParts);
+        info.directory = it->filePath();
+        dict.push_back(info);
+
+        qDebug() << QString::fromLatin1("\t- it provides the package %1 - %2").arg(name, info.version);
     }
-    return availablePackageInfos;
 
-    // we don't want to have two different dependency checking codes (installer itself and repogen here)
-    // so because they have two different behaviours we deactivate it here for now
+    if (dict.isEmpty())
+        qDebug() << "No available packages found at the specified location.";
 
-    qDebug() << "Calculating dependencies for selected packages...";
-    PackageInfoVector needed = calculateNeededPackages(components, availablePackageInfos, addDependencies);
-
-    qDebug() << "The following packages will be placed in the installer:";
-    {
-        QDebug mergedDebugOutput = qDebug().nospace();
-        foreach (const PackageInfo &i, needed) {
-            mergedDebugOutput << "  " << i.name;
-            if (!i.version.isEmpty())
-                mergedDebugOutput << "-" << i.version;
-        }
-    } // to write mergedDebugOutput
-
-    // now just append the virtual parents (not including all their descendants!)
-    // like... if com.nokia.sdk.qt.qtcore was passed, even com.nokia.sdk.qt will show up in the tree
-    if (addDependencies) {
-        for (int i = 0; i < needed.count(); ++i) {
-            const PackageInfo& package = needed.at(i);
-            const QString name = package.name;
-            const QString version = package.version;
-            QString id = name.section(QChar::fromLatin1('.'), 0, -2);
-            while (!id.isEmpty()) {
-                PackageInfo info;
-                if (!version.isEmpty()) {
-                    info = findMatchingPackage(QString::fromLatin1("%1-%2").arg(id, version),
-                        availablePackageInfos);
-                }
-                if (info.name.isEmpty())
-                    info = findMatchingPackage(id, availablePackageInfos);
-                if (!info.name.isEmpty() && !allPackagesHavePrefix(needed, id) && !needed.contains(info)) {
-                    qDebug() << QString::fromLatin1("Adding %1 as it is the virtual parent item of %2")
-                        .arg(info.name, name);
-                    needed.push_back(info);
-                }
-                id = id.section(QChar::fromLatin1('.'), 0, -2);
-            }
-        }
-    }
-
-    return needed;
+    return dict;
 }
 
 QMap<QString, QString> QInstaller::buildPathToVersionMap(const PackageInfoVector &info)
