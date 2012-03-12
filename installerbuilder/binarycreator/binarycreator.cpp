@@ -627,9 +627,10 @@ int main(int argc, char **argv)
     if (!components.isEmpty()) {
         std::cout << "Package names at the end of the command are deprecated"
                       " - please use --include or --exclude" << std::endl;
-        if (nodeps)
+        if (nodeps) {
             filteredPackages.append(components);
-        ftype = Include;
+            ftype = Include;
+        }
     }
 
     if (target.isEmpty())
