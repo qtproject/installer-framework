@@ -1,5 +1,8 @@
-TEMPLATE=subdirs
 CONFIG += ordered
-SUBDIRS += fileengineclient fileengineserver extractbinarydata
+TEMPLATE = subdirs
+SUBDIRS += extractbinarydata \
+    maddehelper \
+    repocompare \
+    repogenfromonlinerepo
 
 
