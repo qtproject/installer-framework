@@ -223,6 +223,9 @@ public:
     bool needsRestart() const;
     bool finishedWithSuccess() const;
 
+    Q_INVOKABLE bool createLocalRepositoryFromBinary() const;
+    Q_INVOKABLE void setCreateLocalRepositoryFromBinary(bool create);
+
 public Q_SLOTS:
     bool runInstaller();
     bool runUninstaller();

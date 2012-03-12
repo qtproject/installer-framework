@@ -1610,8 +1610,15 @@ void ReadyForInstallationPage::entering()
         tempRequired += extraSpace;
     }
 
+    quint64 repositorySize = 0;
+    const bool createLocalRepository = packageManagerCore()->createLocalRepositoryFromBinary();
+    if (createLocalRepository) {
+        repositorySize = QFile(QCoreApplication::applicationFilePath()).size();
+        required += repositorySize; // if we create a local repository, take that space into account as well
+    }
+
     qDebug() << "Installation space required:" << humanReadableSize(required) << "Temporary space required:"
-        << humanReadableSize(tempRequired);
+        << humanReadableSize(tempRequired) << "Local repository size:" << humanReadableSize(repositorySize);
 
     if (tempOnSameVolume && (installVolumeAvailableSize <= (required + tempRequired))) {
         m_msgLabel->setText(tr("Not enough disk space to store temporary files and the installation! "

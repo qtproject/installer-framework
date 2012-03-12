@@ -246,6 +246,7 @@ private:
     QSet<Component*> m_componentsToUninstall;
     QString m_componentsToInstallError;
     FileDownloaderProxyFactory *m_proxyFactory;
+    bool m_createLocalRepositoryFromBinary;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

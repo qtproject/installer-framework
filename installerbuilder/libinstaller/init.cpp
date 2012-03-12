@@ -34,6 +34,7 @@
 
 #include "createshortcutoperation.h"
 #include "createdesktopentryoperation.h"
+#include "createlocalrepositoryoperation.h"
 #include "extractarchiveoperation.h"
 #include "globalsettingsoperation.h"
 #include "environmentvariablesoperation.h"
@@ -196,6 +197,7 @@ void QInstaller::init()
     UpdateOperationFactory &factory = UpdateOperationFactory::instance();
     factory.registerUpdateOperation<CreateShortcutOperation>(QLatin1String("CreateShortcut"));
     factory.registerUpdateOperation<CreateDesktopEntryOperation>(QLatin1String("CreateDesktopEntry"));
+    factory.registerUpdateOperation<CreateLocalRepositoryOperation>(QLatin1String("CreateLocalRepository"));
     factory.registerUpdateOperation<ExtractArchiveOperation>(QLatin1String("Extract"));
     factory.registerUpdateOperation<GlobalSettingsOperation>(QLatin1String("GlobalConfig"));
     factory.registerUpdateOperation<EnvironmentVariableOperation>(QLatin1String( "EnvironmentVariable"));

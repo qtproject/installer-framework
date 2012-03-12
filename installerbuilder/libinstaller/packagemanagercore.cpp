@@ -1832,3 +1832,15 @@ QString PackageManagerCore::findDisplayVersion(const QString &componentName,
 
     return findDisplayVersion(replaceWith, components, versionKey, visited);
 }
+
+bool PackageManagerCore::createLocalRepositoryFromBinary() const
+{
+    return d->m_createLocalRepositoryFromBinary;
+}
+
+void PackageManagerCore::setCreateLocalRepositoryFromBinary(bool create)
+{
+    if (!isOfflineOnly())
+        return;
+    d->m_createLocalRepositoryFromBinary = create;
+}

@@ -101,7 +101,8 @@ HEADERS += $$PWD/packagemanagercore.h \
     qprocesswrapper.h \
     qsettingswrapper.h \
     constants.h \
-    packagemanagerproxyfactory.h
+    packagemanagerproxyfactory.h \
+    createlocalrepositoryoperation.h
 
 SOURCES += $$PWD/packagemanagercore.cpp \
     $$PWD/packagemanagercore_p.cpp \
@@ -168,7 +169,8 @@ SOURCES += $$PWD/packagemanagercore.cpp \
     templates.cpp \
     qsettingswrapper.cpp \
     settings.cpp \
-    packagemanagerproxyfactory.cpp
+    packagemanagerproxyfactory.cpp \
+    createlocalrepositoryoperation.cpp
 
 macx {
     HEADERS +=  macrelocateqt.h \

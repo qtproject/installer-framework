@@ -164,6 +164,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_updateSourcesAdded(false)
     , m_componentsToInstallCalculated(false)
     , m_proxyFactory(0)
+    , m_createLocalRepositoryFromBinary(false)
 {
 }
 
@@ -186,6 +187,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_magicBinaryMarker(magicInstallerMaker)
     , m_componentsToInstallCalculated(false)
     , m_proxyFactory(0)
+    , m_createLocalRepositoryFromBinary(false)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
@@ -505,6 +507,7 @@ void PackageManagerCorePrivate::initialize()
 {
     m_coreCheckedHash.clear();
     m_componentsToInstallCalculated = false;
+    m_createLocalRepositoryFromBinary = false;
 
     // first set some common variables that may used e.g. as placeholder
     // in some of the settings variables or in a script or...
@@ -1430,11 +1433,49 @@ void PackageManagerCorePrivate::runInstaller()
         callBeginInstallation(componentsToInstall);
         stopProcessesForUpdates(componentsToInstall);
 
-        const int progressOperationCount = countProgressOperations(componentsToInstall);
+        const int progressOperationCount = countProgressOperations(componentsToInstall)
+            + (m_createLocalRepositoryFromBinary ? 1 : 0); // add one more operation as we support progress
         double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
+
+        if (m_createLocalRepositoryFromBinary) {
+            emit m_core->titleMessageChanged(tr("Creating local repository"));
+            ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QString());
+            ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Creating local repository"));
+
+            Operation *createRepo = createOwnedOperation(QLatin1String("CreateLocalRepository"));
+            if (createRepo) {
+                createRepo->setValue(QLatin1String("uninstall-only"), true);
+                createRepo->setValue(QLatin1String("installer"), QVariant::fromValue(m_core));
+                createRepo->setArguments(QStringList() << QCoreApplication::applicationFilePath() << target);
+
+                connectOperationToInstaller(createRepo, progressOperationSize);
+
+                bool success = performOperationThreaded(createRepo);
+                if (!success) {
+                    adminRightsGained = m_core->gainAdminRights();
+                    success = performOperationThreaded(createRepo);
+                }
+
+                if (success) {
+                    QSet<Repository> repos;
+                    foreach (Repository repo, m_settings.defaultRepositories()) {
+                        repo.setEnabled(false);
+                        repos.insert(repo);
+                    }
+                    repos.insert(Repository(QUrl::fromUserInput(createRepo
+                        ->value(QLatin1String("local-repo")).toString()), true));
+                    m_settings.setDefaultRepositories(repos);
+                    addPerformed(takeOwnedOperation(createRepo));
+                } else {
+                    MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+                        QLatin1String("installationError"), tr("Error"), createRepo->errorString());
+                    createRepo->undoOperation();
+                }
+            }
+        }
 
         emit m_core->titleMessageChanged(tr("Creating Uninstaller"));
 
