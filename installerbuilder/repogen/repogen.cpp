@@ -164,8 +164,9 @@ int main(int argc, char** argv)
                     return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument"));
                 redirectUpdateUrl = args.first();
                 args.removeFirst();
-            }
-            else {
+            } else if (args.first() == QLatin1String("--ignore-translations") || args.first() == QLatin1String("--ignore-invalid-packages")) {
+                args.removeFirst();
+            } else {
                 printUsage();
                 return 1;
             }

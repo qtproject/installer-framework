@@ -611,6 +611,8 @@ int main(int argc, char **argv)
             if (it == args.end() || it->startsWith(QLatin1String("-")))
                 return printErrorAndUsageAndExit(QObject::tr("Error: Resource files to include missing."));
             resources = it->split(QLatin1Char(','));
+        } else if (*it == QLatin1String("--ignore-translations") || *it == QLatin1String("--ignore-invalid-packages")) {
+            continue;
         } else {
             if (target.isEmpty())
                 target = *it;
