@@ -175,7 +175,8 @@ int main(int argc, char** argv)
         //TODO: adjust to the new argument/option usage
         if ((packagesDir.isEmpty() && configDir.isEmpty() && args.count() < 4)
             || ((packagesDir.isEmpty() || configDir.isEmpty()) && args.count() < 3) //use the old check
-            || (args.count() < 2)) {    //only one dir set by the new options
+            || (updateExistingRepository && args.count() != 1)
+            || (!updateExistingRepository && args.count() < 2)) {    //only one dir set by the new options
                 // both dirs set by the new options
                 printUsage();
                 return 1;
