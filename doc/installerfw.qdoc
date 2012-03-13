@@ -392,6 +392,7 @@
             <Translation>sv_se.qm</Translation>
             <Translation>de_de.qm</Translation>
         </Translations>
+        <DownloadableArchives>component2.7z, component2a.7z</DownloadableArchives>
     </Package>
     \endcode
 
@@ -487,6 +488,10 @@
         \row
             \o  Replaces
             \o  Comma-separated list of components to replace. Optional.
+
+        \row
+            \o  DownloadableArchives
+            \o  Lists the data files (separated by commas) for an online installer to download. Optional.
     \endtable
 
     \section2 Component Dependencies
