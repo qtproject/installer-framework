@@ -27,6 +27,6 @@ void RegisterArc(const CArcInfo *arcInfo);
 
 #define REGISTER_ARC(x) struct REGISTER_ARC_NAME(x) { \
     REGISTER_ARC_NAME(x)() { RegisterArc(&g_ArcInfo); }}; \
-    static REGISTER_ARC_NAME(x) g_RegisterArc;
-
+    static REGISTER_ARC_NAME(x) g_RegisterArc; \
+    void registerArc##x() { static REGISTER_ARC_NAME(x) g_RegisterArc; }
 #endif

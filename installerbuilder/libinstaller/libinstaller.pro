@@ -2,13 +2,10 @@ TEMPLATE = lib
 TARGET = installer
 DEPENDPATH += . \
     .. \
-    ../common \
-    3rdparty/kdtools 
+    ../common
 
 INCLUDEPATH += . \
-    .. \
-    3rdparty/kdtools
-
+    ..
 DESTDIR = $$OUT_PWD/../lib
 DLLDESTDIR = $$OUT_PWD/../bin
 
@@ -29,7 +26,7 @@ contains(CONFIG, static): {
     DEFINES += USE_STATIC_SQLITE_PLUGIN
 }
 
-include(3rdparty/p7zip_9.04/p7zip.pri)
+include(3rdparty/7zip/7zip.pri)
 include(3rdparty/kdtools/kdtools.pri)
 
 HEADERS += $$PWD/packagemanagercore.h \

@@ -1,0 +1,519 @@
+There are deleted files and very small changes to get the integration process of new versions very simple.
+--diff-filter=M means "modified" and
+--diff-filter=D means "deleted" files
+
+=== output of: git diff --diff-filter=M ===
+
+diff --git a/C/AesOpt.c b/C/AesOpt.c
+index 60cfd86..c0bd8bc 100644
+--- a/C/AesOpt.c
++++ b/C/AesOpt.c
+@@ -5,7 +5,7 @@
+ 
+ #ifdef MY_CPU_X86_OR_AMD64
+ #if _MSC_VER >= 1500
+-#define USE_INTEL_AES
++//#define USE_INTEL_AES
+ #endif
+ #endif
+ 
+diff --git a/CPP/7zip/Common/RegisterArc.h b/CPP/7zip/Common/RegisterArc.h
+index bc2a034..9b8cbd3 100644
+--- a/CPP/7zip/Common/RegisterArc.h
++++ b/CPP/7zip/Common/RegisterArc.h
+@@ -27,6 +27,6 @@ void RegisterArc(const CArcInfo *arcInfo);
+ 
+ #define REGISTER_ARC(x) struct REGISTER_ARC_NAME(x) { \
+     REGISTER_ARC_NAME(x)() { RegisterArc(&g_ArcInfo); }}; \
+-    static REGISTER_ARC_NAME(x) g_RegisterArc;
+-
++    static REGISTER_ARC_NAME(x) g_RegisterArc; \
++    void registerArc##x() { static REGISTER_ARC_NAME(x) g_RegisterArc; }
+ #endif
+diff --git a/CPP/7zip/Common/RegisterCodec.h b/CPP/7zip/Common/RegisterCodec.h
+index 786b4a4..d53c434 100644
+--- a/CPP/7zip/Common/RegisterCodec.h
++++ b/CPP/7zip/Common/RegisterCodec.h
+@@ -22,12 +22,13 @@ void RegisterCodec(const CCodecInfo *codecInfo);
+ 
+ #define REGISTER_CODEC(x) struct REGISTER_CODEC_NAME(x) { \
+     REGISTER_CODEC_NAME(x)() { RegisterCodec(&g_CodecInfo); }}; \
+-    static REGISTER_CODEC_NAME(x) g_RegisterCodec;
++    static REGISTER_CODEC_NAME(x) g_RegisterCodec; \
++    void registerCodec##x() { static REGISTER_CODEC_NAME(x) g_RegisterCodecs; }
+ 
+ #define REGISTER_CODECS_NAME(x) CRegisterCodecs ## x
+ #define REGISTER_CODECS(x) struct REGISTER_CODECS_NAME(x) { \
+     REGISTER_CODECS_NAME(x)() { for (int i = 0; i < sizeof(g_CodecsInfo) / sizeof(g_CodecsInfo[0]); i++) \
+     RegisterCodec(&g_CodecsInfo[i]); }}; \
+-    static REGISTER_CODECS_NAME(x) g_RegisterCodecs;
+-
++    static REGISTER_CODECS_NAME(x) g_RegisterCodecs; \
++    void registerCodec##x() { static REGISTER_CODECS_NAME(x) g_RegisterCodecs; }
+ #endif
+diff --git a/CPP/Common/MyString.h b/CPP/Common/MyString.h
+index eb3c52d..f483e39 100644
+--- a/CPP/Common/MyString.h
++++ b/CPP/Common/MyString.h
+@@ -7,6 +7,8 @@
+ 
+ #include "MyVector.h"
+ 
++#include <windows.h>
++
+ template <class T>
+ inline int MyStringLen(const T *s)
+ {
+
+=== output of: git diff --diff-filter=D --name-only ===
+Asm/arm/7zCrcOpt.asm
+Asm/x86/7zAsm.asm
+Asm/x86/7zCrcOpt.asm
+Asm/x86/AesOpt.asm
+C/Util/7z/7z.dsp
+C/Util/7z/7z.dsw
+C/Util/7z/7zMain.c
+C/Util/7z/makefile
+C/Util/7z/makefile.gcc
+C/Util/Lzma/LzmaUtil.c
+C/Util/Lzma/LzmaUtil.dsp
+C/Util/Lzma/LzmaUtil.dsw
+C/Util/Lzma/makefile
+C/Util/Lzma/makefile.gcc
+C/Util/LzmaLib/LzmaLib.def
+C/Util/LzmaLib/LzmaLib.dsp
+C/Util/LzmaLib/LzmaLib.dsw
+C/Util/LzmaLib/LzmaLibExports.c
+C/Util/LzmaLib/makefile
+C/Util/LzmaLib/resource.rc
+C/Util/SfxSetup/SfxSetup.c
+C/Util/SfxSetup/SfxSetup.dsp
+C/Util/SfxSetup/SfxSetup.dsw
+C/Util/SfxSetup/makefile
+C/Util/SfxSetup/makefile_con
+C/Util/SfxSetup/resource.rc
+C/Util/SfxSetup/setup.ico
+CPP/7zip/Aes.mak
+CPP/7zip/Archive/7z/7z.dsp
+CPP/7zip/Archive/7z/7z.dsw
+CPP/7zip/Archive/7z/makefile
+CPP/7zip/Archive/7z/resource.rc
+CPP/7zip/Archive/Archive.def
+CPP/7zip/Archive/Archive2.def
+CPP/7zip/Archive/Icons/7z.ico
+CPP/7zip/Archive/Icons/arj.ico
+CPP/7zip/Archive/Icons/bz2.ico
+CPP/7zip/Archive/Icons/cab.ico
+CPP/7zip/Archive/Icons/cpio.ico
+CPP/7zip/Archive/Icons/deb.ico
+CPP/7zip/Archive/Icons/dmg.ico
+CPP/7zip/Archive/Icons/fat.ico
+CPP/7zip/Archive/Icons/gz.ico
+CPP/7zip/Archive/Icons/hfs.ico
+CPP/7zip/Archive/Icons/iso.ico
+CPP/7zip/Archive/Icons/lzh.ico
+CPP/7zip/Archive/Icons/lzma.ico
+CPP/7zip/Archive/Icons/ntfs.ico
+CPP/7zip/Archive/Icons/rar.ico
+CPP/7zip/Archive/Icons/rpm.ico
+CPP/7zip/Archive/Icons/split.ico
+CPP/7zip/Archive/Icons/squashfs.ico
+CPP/7zip/Archive/Icons/tar.ico
+CPP/7zip/Archive/Icons/vhd.ico
+CPP/7zip/Archive/Icons/wim.ico
+CPP/7zip/Archive/Icons/xar.ico
+CPP/7zip/Archive/Icons/xz.ico
+CPP/7zip/Archive/Icons/z.ico
+CPP/7zip/Archive/Icons/zip.ico
+CPP/7zip/Archive/makefile
+CPP/7zip/Asm.mak
+CPP/7zip/Bundles/Alone/Alone.dsp
+CPP/7zip/Bundles/Alone/Alone.dsw
+CPP/7zip/Bundles/Alone/StdAfx.cpp
+CPP/7zip/Bundles/Alone/StdAfx.h
+CPP/7zip/Bundles/Alone/afxres.h
+CPP/7zip/Bundles/Alone/makefile
+CPP/7zip/Bundles/Alone/resource.rc
+CPP/7zip/Bundles/Alone7z/StdAfx.cpp
+CPP/7zip/Bundles/Alone7z/StdAfx.h
+CPP/7zip/Bundles/Alone7z/makefile
+CPP/7zip/Bundles/Alone7z/resource.rc
+CPP/7zip/Bundles/Fm/FM.dsp
+CPP/7zip/Bundles/Fm/FM.dsw
+CPP/7zip/Bundles/Fm/StdAfx.cpp
+CPP/7zip/Bundles/Fm/StdAfx.h
+CPP/7zip/Bundles/Fm/makefile
+CPP/7zip/Bundles/Fm/resource.rc
+CPP/7zip/Bundles/Format7z/StdAfx.cpp
+CPP/7zip/Bundles/Format7z/StdAfx.h
+CPP/7zip/Bundles/Format7z/makefile
+CPP/7zip/Bundles/Format7z/resource.rc
+CPP/7zip/Bundles/Format7zExtract/StdAfx.cpp
+CPP/7zip/Bundles/Format7zExtract/StdAfx.h
+CPP/7zip/Bundles/Format7zExtract/makefile
+CPP/7zip/Bundles/Format7zExtract/resource.rc
+CPP/7zip/Bundles/Format7zExtractR/StdAfx.cpp
+CPP/7zip/Bundles/Format7zExtractR/StdAfx.h
+CPP/7zip/Bundles/Format7zExtractR/makefile
+CPP/7zip/Bundles/Format7zExtractR/resource.rc
+CPP/7zip/Bundles/Format7zF/Format7z.dsp
+CPP/7zip/Bundles/Format7zF/Format7z.dsw
+CPP/7zip/Bundles/Format7zF/StdAfx.cpp
+CPP/7zip/Bundles/Format7zF/StdAfx.h
+CPP/7zip/Bundles/Format7zF/makefile
+CPP/7zip/Bundles/Format7zF/resource.rc
+CPP/7zip/Bundles/Format7zR/StdAfx.cpp
+CPP/7zip/Bundles/Format7zR/StdAfx.h
+CPP/7zip/Bundles/Format7zR/makefile
+CPP/7zip/Bundles/Format7zR/resource.rc
+CPP/7zip/Bundles/LzmaCon/LzmaAlone.cpp
+CPP/7zip/Bundles/LzmaCon/LzmaCon.dsp
+CPP/7zip/Bundles/LzmaCon/LzmaCon.dsw
+CPP/7zip/Bundles/LzmaCon/StdAfx.cpp
+CPP/7zip/Bundles/LzmaCon/StdAfx.h
+CPP/7zip/Bundles/LzmaCon/makefile
+CPP/7zip/Bundles/LzmaCon/makefile.gcc
+CPP/7zip/Bundles/SFXCon/7z.ico
+CPP/7zip/Bundles/SFXCon/Main.cpp
+CPP/7zip/Bundles/SFXCon/SFXCon.dsp
+CPP/7zip/Bundles/SFXCon/SFXCon.dsw
+CPP/7zip/Bundles/SFXCon/StdAfx.cpp
+CPP/7zip/Bundles/SFXCon/StdAfx.h
+CPP/7zip/Bundles/SFXCon/makefile
+CPP/7zip/Bundles/SFXCon/resource.rc
+CPP/7zip/Bundles/SFXSetup/ExtractCallback.cpp
+CPP/7zip/Bundles/SFXSetup/ExtractCallback.h
+CPP/7zip/Bundles/SFXSetup/ExtractEngine.cpp
+CPP/7zip/Bundles/SFXSetup/ExtractEngine.h
+CPP/7zip/Bundles/SFXSetup/Main.cpp
+CPP/7zip/Bundles/SFXSetup/SFXSetup.dsp
+CPP/7zip/Bundles/SFXSetup/SFXSetup.dsw
+CPP/7zip/Bundles/SFXSetup/StdAfx.cpp
+CPP/7zip/Bundles/SFXSetup/StdAfx.h
+CPP/7zip/Bundles/SFXSetup/makefile
+CPP/7zip/Bundles/SFXSetup/resource.h
+CPP/7zip/Bundles/SFXSetup/resource.rc
+CPP/7zip/Bundles/SFXSetup/setup.ico
+CPP/7zip/Bundles/SFXWin/7z.ico
+CPP/7zip/Bundles/SFXWin/Main.cpp
+CPP/7zip/Bundles/SFXWin/SFXWin.dsp
+CPP/7zip/Bundles/SFXWin/SFXWin.dsw
+CPP/7zip/Bundles/SFXWin/StdAfx.cpp
+CPP/7zip/Bundles/SFXWin/StdAfx.h
+CPP/7zip/Bundles/SFXWin/makefile
+CPP/7zip/Bundles/SFXWin/resource.h
+CPP/7zip/Bundles/SFXWin/resource.rc
+CPP/7zip/Bundles/makefile
+CPP/7zip/Compress/Codec.def
+CPP/7zip/Compress/makefile
+CPP/7zip/Crc.mak
+CPP/7zip/Crypto/Codec.def
+CPP/7zip/GuiCommon.rc
+CPP/7zip/MyVersionInfo.rc
+CPP/7zip/SubBuild.mak
+CPP/7zip/UI/Agent/Agent.cpp
+CPP/7zip/UI/Agent/Agent.h
+CPP/7zip/UI/Agent/AgentOut.cpp
+CPP/7zip/UI/Agent/AgentProxy.cpp
+CPP/7zip/UI/Agent/AgentProxy.h
+CPP/7zip/UI/Agent/ArchiveFolder.cpp
+CPP/7zip/UI/Agent/ArchiveFolderOpen.cpp
+CPP/7zip/UI/Agent/ArchiveFolderOut.cpp
+CPP/7zip/UI/Agent/IFolderArchive.h
+CPP/7zip/UI/Agent/UpdateCallbackAgent.cpp
+CPP/7zip/UI/Agent/UpdateCallbackAgent.h
+CPP/7zip/UI/Client7z/Client7z.cpp
+CPP/7zip/UI/Client7z/Client7z.dsp
+CPP/7zip/UI/Client7z/Client7z.dsw
+CPP/7zip/UI/Client7z/StdAfx.cpp
+CPP/7zip/UI/Client7z/StdAfx.h
+CPP/7zip/UI/Client7z/makefile
+CPP/7zip/UI/Console/Console.dsp
+CPP/7zip/UI/Console/Console.dsw
+CPP/7zip/UI/Console/makefile
+CPP/7zip/UI/Console/resource.rc
+CPP/7zip/UI/Explorer/7-zip.dll.manifest
+CPP/7zip/UI/Explorer/ContextMenu.cpp
+CPP/7zip/UI/Explorer/ContextMenu.h
+CPP/7zip/UI/Explorer/ContextMenuFlags.h
+CPP/7zip/UI/Explorer/DllExports.cpp
+CPP/7zip/UI/Explorer/Explorer.def
+CPP/7zip/UI/Explorer/Explorer.dsp
+CPP/7zip/UI/Explorer/Explorer.dsw
+CPP/7zip/UI/Explorer/MyMessages.cpp
+CPP/7zip/UI/Explorer/MyMessages.h
+CPP/7zip/UI/Explorer/OptionsDialog.cpp
+CPP/7zip/UI/Explorer/OptionsDialog.h
+CPP/7zip/UI/Explorer/RegistryContextMenu.cpp
+CPP/7zip/UI/Explorer/RegistryContextMenu.h
+CPP/7zip/UI/Explorer/StdAfx.cpp
+CPP/7zip/UI/Explorer/StdAfx.h
+CPP/7zip/UI/Explorer/makefile
+CPP/7zip/UI/Explorer/resource.h
+CPP/7zip/UI/Explorer/resource.rc
+CPP/7zip/UI/Explorer/resource2.rc
+CPP/7zip/UI/Far/ExtractEngine.cpp
+CPP/7zip/UI/Far/ExtractEngine.h
+CPP/7zip/UI/Far/Far.def
+CPP/7zip/UI/Far/Far.dsp
+CPP/7zip/UI/Far/Far.dsw
+CPP/7zip/UI/Far/FarPlugin.h
+CPP/7zip/UI/Far/FarUtils.cpp
+CPP/7zip/UI/Far/FarUtils.h
+CPP/7zip/UI/Far/Main.cpp
+CPP/7zip/UI/Far/Messages.h
+CPP/7zip/UI/Far/OverwriteDialog.cpp
+CPP/7zip/UI/Far/OverwriteDialog.h
+CPP/7zip/UI/Far/Plugin.cpp
+CPP/7zip/UI/Far/Plugin.h
+CPP/7zip/UI/Far/PluginCommon.cpp
+CPP/7zip/UI/Far/PluginDelete.cpp
+CPP/7zip/UI/Far/PluginRead.cpp
+CPP/7zip/UI/Far/PluginWrite.cpp
+CPP/7zip/UI/Far/ProgressBox.cpp
+CPP/7zip/UI/Far/ProgressBox.h
+CPP/7zip/UI/Far/StdAfx.cpp
+CPP/7zip/UI/Far/StdAfx.h
+CPP/7zip/UI/Far/UpdateCallback100.cpp
+CPP/7zip/UI/Far/UpdateCallback100.h
+CPP/7zip/UI/Far/makefile
+CPP/7zip/UI/Far/resource.rc
+CPP/7zip/UI/FileManager/7zFM.exe.manifest
+CPP/7zip/UI/FileManager/7zipLogo.ico
+CPP/7zip/UI/FileManager/AboutDialog.cpp
+CPP/7zip/UI/FileManager/AboutDialog.h
+CPP/7zip/UI/FileManager/AboutDialog.rc
+CPP/7zip/UI/FileManager/AboutDialogRes.h
+CPP/7zip/UI/FileManager/Add.bmp
+CPP/7zip/UI/FileManager/Add2.bmp
+CPP/7zip/UI/FileManager/App.cpp
+CPP/7zip/UI/FileManager/App.h
+CPP/7zip/UI/FileManager/AppState.h
+CPP/7zip/UI/FileManager/BrowseDialog.cpp
+CPP/7zip/UI/FileManager/BrowseDialog.h
+CPP/7zip/UI/FileManager/BrowseDialog.rc
+CPP/7zip/UI/FileManager/BrowseDialogRes.h
+CPP/7zip/UI/FileManager/ClassDefs.cpp
+CPP/7zip/UI/FileManager/ComboDialog.cpp
+CPP/7zip/UI/FileManager/ComboDialog.h
+CPP/7zip/UI/FileManager/ComboDialog.rc
+CPP/7zip/UI/FileManager/ComboDialogRes.h
+CPP/7zip/UI/FileManager/Copy.bmp
+CPP/7zip/UI/FileManager/Copy2.bmp
+CPP/7zip/UI/FileManager/CopyDialog.cpp
+CPP/7zip/UI/FileManager/CopyDialog.h
+CPP/7zip/UI/FileManager/CopyDialog.rc
+CPP/7zip/UI/FileManager/CopyDialogRes.h
+CPP/7zip/UI/FileManager/Delete.bmp
+CPP/7zip/UI/FileManager/Delete2.bmp
+CPP/7zip/UI/FileManager/DialogSize.h
+CPP/7zip/UI/FileManager/EditPage.cpp
+CPP/7zip/UI/FileManager/EditPage.h
+CPP/7zip/UI/FileManager/EditPage.rc
+CPP/7zip/UI/FileManager/EditPage2.rc
+CPP/7zip/UI/FileManager/EditPageRes.h
+CPP/7zip/UI/FileManager/EnumFormatEtc.cpp
+CPP/7zip/UI/FileManager/EnumFormatEtc.h
+CPP/7zip/UI/FileManager/Extract.bmp
+CPP/7zip/UI/FileManager/Extract2.bmp
+CPP/7zip/UI/FileManager/ExtractCallback.cpp
+CPP/7zip/UI/FileManager/ExtractCallback.h
+CPP/7zip/UI/FileManager/FM.cpp
+CPP/7zip/UI/FileManager/FM.dsp
+CPP/7zip/UI/FileManager/FM.dsw
+CPP/7zip/UI/FileManager/FM.ico
+CPP/7zip/UI/FileManager/FSDrives.cpp
+CPP/7zip/UI/FileManager/FSDrives.h
+CPP/7zip/UI/FileManager/FSFolder.cpp
+CPP/7zip/UI/FileManager/FSFolder.h
+CPP/7zip/UI/FileManager/FSFolderCopy.cpp
+CPP/7zip/UI/FileManager/FileFolderPluginOpen.cpp
+CPP/7zip/UI/FileManager/FileFolderPluginOpen.h
+CPP/7zip/UI/FileManager/FilePlugins.cpp
+CPP/7zip/UI/FileManager/FilePlugins.h
+CPP/7zip/UI/FileManager/FoldersPage.cpp
+CPP/7zip/UI/FileManager/FoldersPage.h
+CPP/7zip/UI/FileManager/FoldersPage.rc
+CPP/7zip/UI/FileManager/FoldersPage2.rc
+CPP/7zip/UI/FileManager/FoldersPageRes.h
+CPP/7zip/UI/FileManager/FormatUtils.cpp
+CPP/7zip/UI/FileManager/FormatUtils.h
+CPP/7zip/UI/FileManager/HelpUtils.cpp
+CPP/7zip/UI/FileManager/HelpUtils.h
+CPP/7zip/UI/FileManager/IFolder.h
+CPP/7zip/UI/FileManager/Info.bmp
+CPP/7zip/UI/FileManager/Info2.bmp
+CPP/7zip/UI/FileManager/LangPage.cpp
+CPP/7zip/UI/FileManager/LangPage.h
+CPP/7zip/UI/FileManager/LangPage.rc
+CPP/7zip/UI/FileManager/LangPageRes.h
+CPP/7zip/UI/FileManager/LangUtils.cpp
+CPP/7zip/UI/FileManager/LangUtils.h
+CPP/7zip/UI/FileManager/ListViewDialog.cpp
+CPP/7zip/UI/FileManager/ListViewDialog.h
+CPP/7zip/UI/FileManager/ListViewDialog.rc
+CPP/7zip/UI/FileManager/ListViewDialogRes.h
+CPP/7zip/UI/FileManager/MenuPage.cpp
+CPP/7zip/UI/FileManager/MenuPage.h
+CPP/7zip/UI/FileManager/MenuPage.rc
+CPP/7zip/UI/FileManager/MenuPage2.rc
+CPP/7zip/UI/FileManager/MenuPageRes.h
+CPP/7zip/UI/FileManager/MessagesDialog.cpp
+CPP/7zip/UI/FileManager/MessagesDialog.h
+CPP/7zip/UI/FileManager/MessagesDialog.rc
+CPP/7zip/UI/FileManager/MessagesDialogRes.h
+CPP/7zip/UI/FileManager/Move.bmp
+CPP/7zip/UI/FileManager/Move2.bmp
+CPP/7zip/UI/FileManager/MyCom2.h
+CPP/7zip/UI/FileManager/MyLoadMenu.cpp
+CPP/7zip/UI/FileManager/MyLoadMenu.h
+CPP/7zip/UI/FileManager/NetFolder.cpp
+CPP/7zip/UI/FileManager/NetFolder.h
+CPP/7zip/UI/FileManager/OpenCallback.cpp
+CPP/7zip/UI/FileManager/OpenCallback.h
+CPP/7zip/UI/FileManager/OptionsDialog.cpp
+CPP/7zip/UI/FileManager/OverwriteDialog.cpp
+CPP/7zip/UI/FileManager/OverwriteDialog.h
+CPP/7zip/UI/FileManager/OverwriteDialog.rc
+CPP/7zip/UI/FileManager/OverwriteDialogRes.h
+CPP/7zip/UI/FileManager/Panel.cpp
+CPP/7zip/UI/FileManager/Panel.h
+CPP/7zip/UI/FileManager/PanelCopy.cpp
+CPP/7zip/UI/FileManager/PanelCrc.cpp
+CPP/7zip/UI/FileManager/PanelDrag.cpp
+CPP/7zip/UI/FileManager/PanelFolderChange.cpp
+CPP/7zip/UI/FileManager/PanelItemOpen.cpp
+CPP/7zip/UI/FileManager/PanelItems.cpp
+CPP/7zip/UI/FileManager/PanelKey.cpp
+CPP/7zip/UI/FileManager/PanelListNotify.cpp
+CPP/7zip/UI/FileManager/PanelMenu.cpp
+CPP/7zip/UI/FileManager/PanelOperations.cpp
+CPP/7zip/UI/FileManager/PanelSelect.cpp
+CPP/7zip/UI/FileManager/PanelSort.cpp
+CPP/7zip/UI/FileManager/PanelSplitFile.cpp
+CPP/7zip/UI/FileManager/PasswordDialog.cpp
+CPP/7zip/UI/FileManager/PasswordDialog.h
+CPP/7zip/UI/FileManager/PasswordDialog.rc
+CPP/7zip/UI/FileManager/PasswordDialogRes.h
+CPP/7zip/UI/FileManager/PluginInterface.h
+CPP/7zip/UI/FileManager/PluginLoader.h
+CPP/7zip/UI/FileManager/PluginsPage.cpp
+CPP/7zip/UI/FileManager/PluginsPage.h
+CPP/7zip/UI/FileManager/PluginsPage.rc
+CPP/7zip/UI/FileManager/PluginsPageRes.h
+CPP/7zip/UI/FileManager/ProgramLocation.cpp
+CPP/7zip/UI/FileManager/ProgramLocation.h
+CPP/7zip/UI/FileManager/ProgressDialog.cpp
+CPP/7zip/UI/FileManager/ProgressDialog.h
+CPP/7zip/UI/FileManager/ProgressDialog.rc
+CPP/7zip/UI/FileManager/ProgressDialog2.cpp
+CPP/7zip/UI/FileManager/ProgressDialog2.h
+CPP/7zip/UI/FileManager/ProgressDialog2.rc
+CPP/7zip/UI/FileManager/ProgressDialog2Res.h
+CPP/7zip/UI/FileManager/ProgressDialog2a.rc
+CPP/7zip/UI/FileManager/ProgressDialogRes.h
+CPP/7zip/UI/FileManager/PropertyName.cpp
+CPP/7zip/UI/FileManager/PropertyName.h
+CPP/7zip/UI/FileManager/PropertyName.rc
+CPP/7zip/UI/FileManager/PropertyNameRes.h
+CPP/7zip/UI/FileManager/RegistryAssociations.cpp
+CPP/7zip/UI/FileManager/RegistryAssociations.h
+CPP/7zip/UI/FileManager/RegistryPlugins.cpp
+CPP/7zip/UI/FileManager/RegistryPlugins.h
+CPP/7zip/UI/FileManager/RegistryUtils.cpp
+CPP/7zip/UI/FileManager/RegistryUtils.h
+CPP/7zip/UI/FileManager/RootFolder.cpp
+CPP/7zip/UI/FileManager/RootFolder.h
+CPP/7zip/UI/FileManager/SettingsPage.cpp
+CPP/7zip/UI/FileManager/SettingsPage.h
+CPP/7zip/UI/FileManager/SettingsPage.rc
+CPP/7zip/UI/FileManager/SettingsPage2.rc
+CPP/7zip/UI/FileManager/SettingsPageRes.h
+CPP/7zip/UI/FileManager/SplitDialog.cpp
+CPP/7zip/UI/FileManager/SplitDialog.h
+CPP/7zip/UI/FileManager/SplitDialog.rc
+CPP/7zip/UI/FileManager/SplitDialogRes.h
+CPP/7zip/UI/FileManager/SplitUtils.cpp
+CPP/7zip/UI/FileManager/SplitUtils.h
+CPP/7zip/UI/FileManager/StdAfx.cpp
+CPP/7zip/UI/FileManager/StdAfx.h
+CPP/7zip/UI/FileManager/StringUtils.cpp
+CPP/7zip/UI/FileManager/StringUtils.h
+CPP/7zip/UI/FileManager/SysIconUtils.cpp
+CPP/7zip/UI/FileManager/SysIconUtils.h
+CPP/7zip/UI/FileManager/SystemPage.cpp
+CPP/7zip/UI/FileManager/SystemPage.h
+CPP/7zip/UI/FileManager/SystemPage.rc
+CPP/7zip/UI/FileManager/SystemPageRes.h
+CPP/7zip/UI/FileManager/Test.bmp
+CPP/7zip/UI/FileManager/Test2.bmp
+CPP/7zip/UI/FileManager/TextPairs.cpp
+CPP/7zip/UI/FileManager/TextPairs.h
+CPP/7zip/UI/FileManager/UpdateCallback100.cpp
+CPP/7zip/UI/FileManager/UpdateCallback100.h
+CPP/7zip/UI/FileManager/ViewSettings.cpp
+CPP/7zip/UI/FileManager/ViewSettings.h
+CPP/7zip/UI/FileManager/makefile
+CPP/7zip/UI/FileManager/resource.h
+CPP/7zip/UI/FileManager/resource.rc
+CPP/7zip/UI/FileManager/resourceGui.h
+CPP/7zip/UI/FileManager/resourceGui.rc
+CPP/7zip/UI/GUI/7zG.exe.manifest
+CPP/7zip/UI/GUI/BenchmarkDialog.cpp
+CPP/7zip/UI/GUI/BenchmarkDialog.h
+CPP/7zip/UI/GUI/BenchmarkDialog.rc
+CPP/7zip/UI/GUI/BenchmarkDialogRes.h
+CPP/7zip/UI/GUI/CompressDialog.cpp
+CPP/7zip/UI/GUI/CompressDialog.h
+CPP/7zip/UI/GUI/CompressDialog.rc
+CPP/7zip/UI/GUI/CompressDialogRes.h
+CPP/7zip/UI/GUI/Extract.rc
+CPP/7zip/UI/GUI/ExtractDialog.cpp
+CPP/7zip/UI/GUI/ExtractDialog.h
+CPP/7zip/UI/GUI/ExtractDialog.rc
+CPP/7zip/UI/GUI/ExtractDialogRes.h
+CPP/7zip/UI/GUI/ExtractGUI.cpp
+CPP/7zip/UI/GUI/ExtractGUI.h
+CPP/7zip/UI/GUI/ExtractRes.h
+CPP/7zip/UI/GUI/FM.ico
+CPP/7zip/UI/GUI/GUI.cpp
+CPP/7zip/UI/GUI/GUI.dsp
+CPP/7zip/UI/GUI/GUI.dsw
+CPP/7zip/UI/GUI/StdAfx.cpp
+CPP/7zip/UI/GUI/StdAfx.h
+CPP/7zip/UI/GUI/UpdateCallbackGUI.cpp
+CPP/7zip/UI/GUI/UpdateCallbackGUI.h
+CPP/7zip/UI/GUI/UpdateGUI.cpp
+CPP/7zip/UI/GUI/UpdateGUI.h
+CPP/7zip/UI/GUI/makefile
+CPP/7zip/UI/GUI/resource.rc
+CPP/7zip/UI/GUI/resource2.h
+CPP/7zip/UI/GUI/resource2.rc
+CPP/7zip/UI/makefile
+CPP/7zip/makefile
+CPP/Build.mak
+CPP/Windows/Control/ComboBox.cpp
+CPP/Windows/Control/ComboBox.h
+CPP/Windows/Control/CommandBar.h
+CPP/Windows/Control/Dialog.cpp
+CPP/Windows/Control/Dialog.h
+CPP/Windows/Control/Edit.h
+CPP/Windows/Control/ImageList.cpp
+CPP/Windows/Control/ImageList.h
+CPP/Windows/Control/ListView.cpp
+CPP/Windows/Control/ListView.h
+CPP/Windows/Control/ProgressBar.h
+CPP/Windows/Control/PropertyPage.cpp
+CPP/Windows/Control/PropertyPage.h
+CPP/Windows/Control/ReBar.h
+CPP/Windows/Control/Static.h
+CPP/Windows/Control/StatusBar.h
+CPP/Windows/Control/StdAfx.h
+CPP/Windows/Control/ToolBar.h
+CPP/Windows/Control/Trackbar.h
+CPP/Windows/Control/Window2.cpp
+CPP/Windows/Control/Window2.h
+DOC/7zip.hhp
+DOC/7zip.inf
+DOC/7zip.nsi
+DOC/7zip.wxs

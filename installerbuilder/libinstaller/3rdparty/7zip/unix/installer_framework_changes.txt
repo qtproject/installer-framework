@@ -1,0 +1,511 @@
+There are deleted files and very small changes to get the integration process of new versions very simple.
+--diff-filter=M means "modified" and
+--diff-filter=D means "deleted" files
+
+=== output of: git diff --diff-filter=M ===
+
+diff --git a/C/AesOpt.c b/C/AesOpt.c
+index 60cfd86..c0bd8bc 100644
+--- a/C/AesOpt.c
++++ b/C/AesOpt.c
+@@ -5,7 +5,7 @@
+ 
+ #ifdef MY_CPU_X86_OR_AMD64
+ #if _MSC_VER >= 1500
+-#define USE_INTEL_AES
++//#define USE_INTEL_AES
+ #endif
+ #endif
+ 
+diff --git a/CPP/7zip/Common/RegisterArc.h b/CPP/7zip/Common/RegisterArc.h
+index bc2a034..9b8cbd3 100644
+--- a/CPP/7zip/Common/RegisterArc.h
++++ b/CPP/7zip/Common/RegisterArc.h
+@@ -27,6 +27,6 @@ void RegisterArc(const CArcInfo *arcInfo);
+ 
+ #define REGISTER_ARC(x) struct REGISTER_ARC_NAME(x) { \
+     REGISTER_ARC_NAME(x)() { RegisterArc(&g_ArcInfo); }}; \
+-    static REGISTER_ARC_NAME(x) g_RegisterArc;
+-
++    static REGISTER_ARC_NAME(x) g_RegisterArc; \
++    void registerArc##x() { static REGISTER_ARC_NAME(x) g_RegisterArc; }
+ #endif
+diff --git a/CPP/7zip/Common/RegisterCodec.h b/CPP/7zip/Common/RegisterCodec.h
+index 786b4a4..d53c434 100644
+--- a/CPP/7zip/Common/RegisterCodec.h
++++ b/CPP/7zip/Common/RegisterCodec.h
+@@ -22,12 +22,13 @@ void RegisterCodec(const CCodecInfo *codecInfo);
+ 
+ #define REGISTER_CODEC(x) struct REGISTER_CODEC_NAME(x) { \
+     REGISTER_CODEC_NAME(x)() { RegisterCodec(&g_CodecInfo); }}; \
+-    static REGISTER_CODEC_NAME(x) g_RegisterCodec;
++    static REGISTER_CODEC_NAME(x) g_RegisterCodec; \
++    void registerCodec##x() { static REGISTER_CODEC_NAME(x) g_RegisterCodecs; }
+ 
+ #define REGISTER_CODECS_NAME(x) CRegisterCodecs ## x
+ #define REGISTER_CODECS(x) struct REGISTER_CODECS_NAME(x) { \
+     REGISTER_CODECS_NAME(x)() { for (int i = 0; i < sizeof(g_CodecsInfo) / sizeof(g_CodecsInfo[0]); i++) \
+     RegisterCodec(&g_CodecsInfo[i]); }}; \
+-    static REGISTER_CODECS_NAME(x) g_RegisterCodecs;
+-
++    static REGISTER_CODECS_NAME(x) g_RegisterCodecs; \
++    void registerCodec##x() { static REGISTER_CODECS_NAME(x) g_RegisterCodecs; }
+ #endif
+diff --git a/CPP/Common/MyString.h b/CPP/Common/MyString.h
+index eb3c52d..f483e39 100644
+--- a/CPP/Common/MyString.h
++++ b/CPP/Common/MyString.h
+@@ -7,6 +7,8 @@
+ 
+ #include "MyVector.h"
+ 
++#include <windows.h>
++
+ template <class T>
+ inline int MyStringLen(const T *s)
+ {
+
+=== output of: git diff --diff-filter=D --name-only ===
+Asm/x64/7zCrcT8U.asm
+Asm/x86/7zCrcT8U.asm
+CPP/7zip/Bundles/Alone/makefile
+CPP/7zip/Bundles/Alone/makefile.depend
+CPP/7zip/Bundles/Alone/makefile.list
+CPP/7zip/Bundles/Alone7z/makefile
+CPP/7zip/Bundles/Alone7z/makefile.depend
+CPP/7zip/Bundles/Alone7z/makefile.list
+CPP/7zip/Bundles/AloneGCOV/makefile
+CPP/7zip/Bundles/Format7zFree/makefile
+CPP/7zip/Bundles/Format7zFree/makefile.depend
+CPP/7zip/Bundles/Format7zFree/makefile.list
+CPP/7zip/Bundles/SFXCon/Main.cpp
+CPP/7zip/Bundles/SFXCon/makefile
+CPP/7zip/Bundles/SFXCon/makefile.depend
+CPP/7zip/Bundles/SFXCon/makefile.list
+CPP/7zip/CMAKE/CMakeLists_7zFM.txt
+CPP/7zip/CMAKE/CMakeLists_7zG.txt
+CPP/7zip/CMAKE/CMakeLists_7za.txt
+CPP/7zip/CMAKE/CMakeLists_ALL.txt
+CPP/7zip/CMAKE/CMakeLists_Format7zFree.txt
+CPP/7zip/CMAKE/generate.sh
+CPP/7zip/CMAKE/generate_xcode.sh
+CPP/7zip/Compress/LZMA_Alone/makefile
+CPP/7zip/Compress/Rar/makefile
+CPP/7zip/Compress/Rar/makefile.depend
+CPP/7zip/Compress/Rar/makefile.list
+CPP/7zip/PREMAKE/generate.sh
+CPP/7zip/PREMAKE/premake4.lua
+CPP/7zip/QMAKE/7ZA/7ZA.pro
+CPP/7zip/QMAKE/7ZA/7ZA_osx.pro
+CPP/7zip/QMAKE/test_emul/test_emul.pro
+CPP/7zip/TEST/TestUI/makefile
+CPP/7zip/TEST/TestUI/makefile.depend
+CPP/7zip/TEST/TestUI/makefile.list
+CPP/7zip/UI/Client7z/makefile
+CPP/7zip/UI/Client7z/makefile.depend
+CPP/7zip/UI/Client7z/makefile.list
+CPP/7zip/UI/ClientCodec/makefile
+CPP/7zip/UI/ClientCodec/makefile.depend
+CPP/7zip/UI/ClientCodec/makefile.list
+CPP/7zip/UI/Console/makefile
+CPP/7zip/UI/Console/makefile.depend
+CPP/7zip/UI/Console/makefile.list
+CPP/7zip/UI/Explorer/ContextMenu.h
+CPP/7zip/UI/Explorer/MyMessages.cpp
+CPP/7zip/UI/Explorer/MyMessages.h
+CPP/7zip/UI/FileManager/App.cpp
+CPP/7zip/UI/FileManager/App.h
+CPP/7zip/UI/FileManager/AppState.h
+CPP/7zip/UI/FileManager/BrowseDialog.h
+CPP/7zip/UI/FileManager/ClassDefs.cpp
+CPP/7zip/UI/FileManager/ComboDialog.cpp
+CPP/7zip/UI/FileManager/ComboDialog.h
+CPP/7zip/UI/FileManager/ComboDialogRes.h
+CPP/7zip/UI/FileManager/ComboDialog_rc.cpp
+CPP/7zip/UI/FileManager/CopyDialog.cpp
+CPP/7zip/UI/FileManager/CopyDialog.h
+CPP/7zip/UI/FileManager/CopyDialogRes.h
+CPP/7zip/UI/FileManager/CopyDialog_rc.cpp
+CPP/7zip/UI/FileManager/DialogSize.h
+CPP/7zip/UI/FileManager/ExtractCallback.cpp
+CPP/7zip/UI/FileManager/ExtractCallback.h
+CPP/7zip/UI/FileManager/FM.cpp
+CPP/7zip/UI/FileManager/FM_rc.cpp
+CPP/7zip/UI/FileManager/FSDrives.cpp
+CPP/7zip/UI/FileManager/FSDrives.h
+CPP/7zip/UI/FileManager/FSFolder.cpp
+CPP/7zip/UI/FileManager/FSFolder.h
+CPP/7zip/UI/FileManager/FSFolderCopy.cpp
+CPP/7zip/UI/FileManager/FileFolderPluginOpen.cpp
+CPP/7zip/UI/FileManager/FileFolderPluginOpen.h
+CPP/7zip/UI/FileManager/FormatUtils.cpp
+CPP/7zip/UI/FileManager/FormatUtils.h
+CPP/7zip/UI/FileManager/HelpUtils.h
+CPP/7zip/UI/FileManager/IFolder.h
+CPP/7zip/UI/FileManager/LangUtils.cpp
+CPP/7zip/UI/FileManager/LangUtils.h
+CPP/7zip/UI/FileManager/ListViewDialog.cpp
+CPP/7zip/UI/FileManager/ListViewDialog.h
+CPP/7zip/UI/FileManager/ListViewDialogRes.h
+CPP/7zip/UI/FileManager/ListViewDialog_rc.cpp
+CPP/7zip/UI/FileManager/MessagesDialog.cpp
+CPP/7zip/UI/FileManager/MessagesDialog.h
+CPP/7zip/UI/FileManager/MessagesDialogRes.h
+CPP/7zip/UI/FileManager/MessagesDialog_rc.cpp
+CPP/7zip/UI/FileManager/MyLoadMenu.cpp
+CPP/7zip/UI/FileManager/MyLoadMenu.h
+CPP/7zip/UI/FileManager/NetFolder.h.OUT
+CPP/7zip/UI/FileManager/OpenCallback.cpp
+CPP/7zip/UI/FileManager/OpenCallback.h
+CPP/7zip/UI/FileManager/OverwriteDialog.cpp
+CPP/7zip/UI/FileManager/OverwriteDialog.h
+CPP/7zip/UI/FileManager/OverwriteDialogRes.h
+CPP/7zip/UI/FileManager/OverwriteDialog_rc.cpp
+CPP/7zip/UI/FileManager/Panel.cpp
+CPP/7zip/UI/FileManager/Panel.h
+CPP/7zip/UI/FileManager/PanelCopy.cpp
+CPP/7zip/UI/FileManager/PanelCrc.cpp
+CPP/7zip/UI/FileManager/PanelCrc.cpp.back
+CPP/7zip/UI/FileManager/PanelFolderChange.cpp
+CPP/7zip/UI/FileManager/PanelItemOpen.cpp
+CPP/7zip/UI/FileManager/PanelItems.cpp
+CPP/7zip/UI/FileManager/PanelListNotify.cpp
+CPP/7zip/UI/FileManager/PanelMenu.cpp
+CPP/7zip/UI/FileManager/PanelOperations.cpp
+CPP/7zip/UI/FileManager/PanelSelect.cpp
+CPP/7zip/UI/FileManager/PanelSort.cpp
+CPP/7zip/UI/FileManager/PanelSplitFile.cpp
+CPP/7zip/UI/FileManager/PasswordDialog.cpp
+CPP/7zip/UI/FileManager/PasswordDialog.h
+CPP/7zip/UI/FileManager/PasswordDialogRes.h
+CPP/7zip/UI/FileManager/PasswordDialog_rc.cpp
+CPP/7zip/UI/FileManager/PluginInterface.h
+CPP/7zip/UI/FileManager/PluginLoader.h
+CPP/7zip/UI/FileManager/ProgramLocation.cpp
+CPP/7zip/UI/FileManager/ProgramLocation.h
+CPP/7zip/UI/FileManager/ProgressDialog2.cpp
+CPP/7zip/UI/FileManager/ProgressDialog2.h
+CPP/7zip/UI/FileManager/ProgressDialog2Res.h
+CPP/7zip/UI/FileManager/ProgressDialog2_rc.cpp
+CPP/7zip/UI/FileManager/ProgressDialogRes.h
+CPP/7zip/UI/FileManager/PropertyName.cpp
+CPP/7zip/UI/FileManager/PropertyName.h
+CPP/7zip/UI/FileManager/PropertyNameRes.h
+CPP/7zip/UI/FileManager/RegistryAssociations.cpp
+CPP/7zip/UI/FileManager/RegistryAssociations.h
+CPP/7zip/UI/FileManager/RegistryPlugins.h
+CPP/7zip/UI/FileManager/RegistryUtils.cpp
+CPP/7zip/UI/FileManager/RegistryUtils.h
+CPP/7zip/UI/FileManager/RootFolder.cpp
+CPP/7zip/UI/FileManager/RootFolder.h
+CPP/7zip/UI/FileManager/SplitDialog.cpp
+CPP/7zip/UI/FileManager/SplitDialog.h
+CPP/7zip/UI/FileManager/SplitDialogRes.h
+CPP/7zip/UI/FileManager/SplitDialog_rc.cpp
+CPP/7zip/UI/FileManager/SplitUtils.cpp
+CPP/7zip/UI/FileManager/SplitUtils.h
+CPP/7zip/UI/FileManager/StringUtils.cpp
+CPP/7zip/UI/FileManager/StringUtils.h
+CPP/7zip/UI/FileManager/SysIconUtils.cpp
+CPP/7zip/UI/FileManager/SysIconUtils.h
+CPP/7zip/UI/FileManager/TextPairs.cpp
+CPP/7zip/UI/FileManager/TextPairs.h
+CPP/7zip/UI/FileManager/UpdateCallback100.cpp
+CPP/7zip/UI/FileManager/UpdateCallback100.h
+CPP/7zip/UI/FileManager/ViewSettings.cpp
+CPP/7zip/UI/FileManager/ViewSettings.h
+CPP/7zip/UI/FileManager/err
+CPP/7zip/UI/FileManager/makefile
+CPP/7zip/UI/FileManager/makefile.depend
+CPP/7zip/UI/FileManager/makefile.list
+CPP/7zip/UI/FileManager/res/Add2PNG.h
+CPP/7zip/UI/FileManager/res/AddPNG.h
+CPP/7zip/UI/FileManager/res/Copy2PNG.h
+CPP/7zip/UI/FileManager/res/CopyPNG.h
+CPP/7zip/UI/FileManager/res/Delete2PNG.h
+CPP/7zip/UI/FileManager/res/DeletePNG.h
+CPP/7zip/UI/FileManager/res/Extract2PNG.h
+CPP/7zip/UI/FileManager/res/ExtractPNG.h
+CPP/7zip/UI/FileManager/res/Info2PNG.h
+CPP/7zip/UI/FileManager/res/InfoPNG.h
+CPP/7zip/UI/FileManager/res/Move2PNG.h
+CPP/7zip/UI/FileManager/res/MovePNG.h
+CPP/7zip/UI/FileManager/res/ParentFolder.h
+CPP/7zip/UI/FileManager/res/Test2PNG.h
+CPP/7zip/UI/FileManager/res/TestPNG.h
+CPP/7zip/UI/FileManager/resource.h
+CPP/7zip/UI/FileManager/resourceGui.h
+CPP/7zip/UI/FileManager/wxFM.cpp
+CPP/7zip/UI/GUI/makefile
+CPP/7zip/UI/GUI/makefile.depend
+CPP/7zip/UI/GUI/makefile.list
+CPP/7zip/UI/P7ZIP/FileDir.o
+CPP/7zip/UI/P7ZIP/FileFind.o
+CPP/7zip/UI/P7ZIP/IntToString.o
+CPP/7zip/UI/P7ZIP/MyString.o
+CPP/7zip/UI/P7ZIP/MyVector.o
+CPP/7zip/UI/P7ZIP/StringConvert.o
+CPP/7zip/UI/P7ZIP/Threads.o
+CPP/7zip/UI/P7ZIP/makefile
+CPP/7zip/UI/P7ZIP/makefile.depend
+CPP/7zip/UI/P7ZIP/makefile.list
+CPP/7zip/UI/P7ZIP/wine_date_and_time.o
+CPP/7zip/UI/P7ZIP/wxP7ZIP.o
+CPP/myWindows/makefile
+CPP/myWindows/makefile.depend
+CPP/myWindows/makefile.list
+GUI/Contents/Info.plist
+GUI/Contents/PkgInfo
+GUI/Contents/Resources/p7zip.icns
+GUI/Lang/af.txt
+GUI/Lang/ar.txt
+GUI/Lang/ast.txt
+GUI/Lang/az.txt
+GUI/Lang/ba.txt
+GUI/Lang/be.txt
+GUI/Lang/bg.txt
+GUI/Lang/bn.txt
+GUI/Lang/br.txt
+GUI/Lang/ca.txt
+GUI/Lang/cs.txt
+GUI/Lang/cy.txt
+GUI/Lang/da.txt
+GUI/Lang/de.txt
+GUI/Lang/el.txt
+GUI/Lang/en.ttt
+GUI/Lang/eo.txt
+GUI/Lang/es.txt
+GUI/Lang/et.txt
+GUI/Lang/eu.txt
+GUI/Lang/ext.txt
+GUI/Lang/fa.txt
+GUI/Lang/fi.txt
+GUI/Lang/fr.txt
+GUI/Lang/fur.txt
+GUI/Lang/fy.txt
+GUI/Lang/gl.txt
+GUI/Lang/gu.txt
+GUI/Lang/he.txt
+GUI/Lang/hi.txt
+GUI/Lang/hr.txt
+GUI/Lang/hu.txt
+GUI/Lang/hy.txt
+GUI/Lang/id.txt
+GUI/Lang/io.txt
+GUI/Lang/is.txt
+GUI/Lang/it.txt
+GUI/Lang/ja.txt
+GUI/Lang/ka.txt
+GUI/Lang/kk.txt
+GUI/Lang/ko.txt
+GUI/Lang/ku-ckb.txt
+GUI/Lang/ku.txt
+GUI/Lang/lt.txt
+GUI/Lang/lv.txt
+GUI/Lang/mk.txt
+GUI/Lang/mn.txt
+GUI/Lang/mr.txt
+GUI/Lang/ms.txt
+GUI/Lang/nb.txt
+GUI/Lang/ne.txt
+GUI/Lang/nl.txt
+GUI/Lang/nn.txt
+GUI/Lang/pa-in.txt
+GUI/Lang/pl.txt
+GUI/Lang/ps.txt
+GUI/Lang/pt-br.txt
+GUI/Lang/pt.txt
+GUI/Lang/ro.txt
+GUI/Lang/ru.txt
+GUI/Lang/sa.txt
+GUI/Lang/si.txt
+GUI/Lang/sk.txt
+GUI/Lang/sl.txt
+GUI/Lang/sq.txt
+GUI/Lang/sr-spc.txt
+GUI/Lang/sr-spl.txt
+GUI/Lang/sv.txt
+GUI/Lang/ta.txt
+GUI/Lang/th.txt
+GUI/Lang/tr.txt
+GUI/Lang/tt.txt
+GUI/Lang/ug.txt
+GUI/Lang/uk.txt
+GUI/Lang/uz.txt
+GUI/Lang/va.txt
+GUI/Lang/vi.txt
+GUI/Lang/zh-cn.txt
+GUI/Lang/zh-tw.txt
+GUI/help/7zip.hhc
+GUI/help/7zip.hhk
+GUI/help/cmdline/commands/add.htm
+GUI/help/cmdline/commands/bench.htm
+GUI/help/cmdline/commands/delete.htm
+GUI/help/cmdline/commands/extract.htm
+GUI/help/cmdline/commands/extract_full.htm
+GUI/help/cmdline/commands/index.htm
+GUI/help/cmdline/commands/list.htm
+GUI/help/cmdline/commands/style.css
+GUI/help/cmdline/commands/test.htm
+GUI/help/cmdline/commands/update.htm
+GUI/help/cmdline/exit_codes.htm
+GUI/help/cmdline/index.htm
+GUI/help/cmdline/style.css
+GUI/help/cmdline/switches/ar_exclude.htm
+GUI/help/cmdline/switches/ar_include.htm
+GUI/help/cmdline/switches/ar_no.htm
+GUI/help/cmdline/switches/charset.htm
+GUI/help/cmdline/switches/exclude.htm
+GUI/help/cmdline/switches/include.htm
+GUI/help/cmdline/switches/index.htm
+GUI/help/cmdline/switches/large_pages.htm
+GUI/help/cmdline/switches/list_tech.htm
+GUI/help/cmdline/switches/method.htm
+GUI/help/cmdline/switches/output_dir.htm
+GUI/help/cmdline/switches/overwrite.htm
+GUI/help/cmdline/switches/password.htm
+GUI/help/cmdline/switches/recurse.htm
+GUI/help/cmdline/switches/sfx.htm
+GUI/help/cmdline/switches/ssc.htm
+GUI/help/cmdline/switches/stdin.htm
+GUI/help/cmdline/switches/stdout.htm
+GUI/help/cmdline/switches/stop_switch.htm
+GUI/help/cmdline/switches/style.css
+GUI/help/cmdline/switches/type.htm
+GUI/help/cmdline/switches/update.htm
+GUI/help/cmdline/switches/volume.htm
+GUI/help/cmdline/switches/working_dir.htm
+GUI/help/cmdline/switches/yes.htm
+GUI/help/cmdline/syntax.htm
+GUI/help/fm/about.htm
+GUI/help/fm/benchmark.htm
+GUI/help/fm/index.htm
+GUI/help/fm/menu.htm
+GUI/help/fm/options.htm
+GUI/help/fm/plugins/7-zip/add.htm
+GUI/help/fm/plugins/7-zip/extract.htm
+GUI/help/fm/plugins/7-zip/index.htm
+GUI/help/fm/plugins/7-zip/style.css
+GUI/help/fm/plugins/index.htm
+GUI/help/fm/plugins/style.css
+GUI/help/fm/style.css
+GUI/help/general/7z.htm
+GUI/help/general/faq.htm
+GUI/help/general/formats.htm
+GUI/help/general/index.htm
+GUI/help/general/license.htm
+GUI/help/general/performance.htm
+GUI/help/general/style.css
+GUI/help/general/thanks.htm
+GUI/help/start.htm
+GUI/help/style.css
+GUI/kde3/p7zip_compress.desktop
+GUI/kde3/p7zip_compress2.desktop
+GUI/kde3/p7zip_extract.desktop
+GUI/kde3/p7zip_extract_subdir.desktop
+GUI/kde3/p7zip_extract_to.desktop
+GUI/kde3/p7zip_test.desktop
+GUI/kde3/readme.txt
+GUI/kde4/p7zip_compress.desktop
+GUI/kde4/p7zip_compress2.desktop
+GUI/kde4/p7zip_extract.desktop
+GUI/kde4/p7zip_extract_subdir.desktop
+GUI/kde4/p7zip_extract_to.desktop
+GUI/kde4/p7zip_test.desktop
+GUI/kde4/readme.txt
+GUI/p7zipForFilemanager
+GUI/p7zip_16.icns
+GUI/p7zip_16.png
+GUI/p7zip_16_ok.png
+GUI/p7zip_32.png
+GUI/p7zip_32.xpm
+check/check.sh
+check/check_7zr.sh
+check/check_Client7z.sh
+check/check_install.sh
+check/clean_all.sh
+check/my_86_filter/makefile
+check/my_86_filter/makefile.depend
+check/my_86_filter/makefile.list
+check/my_86_filter/my_86_filter.cpp
+check/test/7za.exe.lzma
+check/test/7za.exe.lzma86
+check/test/7za.exe.lzma_eos
+check/test/7za.exe.xz
+check/test/7za433_7zip_bzip2.7z
+check/test/7za433_7zip_lzma.7z
+check/test/7za433_7zip_lzma2.7z
+check/test/7za433_7zip_lzma2_bcj2.7z
+check/test/7za433_7zip_lzma2_crypto.7z
+check/test/7za433_7zip_lzma_bcj2.7z
+check/test/7za433_7zip_lzma_crypto.7z
+check/test/7za433_7zip_ppmd.7z
+check/test/7za433_7zip_ppmd_bcj2.7z
+check/test/7za433_tar.tar
+contrib/VirtualFileSystemForMidnightCommander/ChangeLog
+contrib/VirtualFileSystemForMidnightCommander/readme
+contrib/VirtualFileSystemForMidnightCommander/readme.u7z
+contrib/VirtualFileSystemForMidnightCommander/u7z
+contrib/gzip-like_CLI_wrapper_for_7z/README
+contrib/gzip-like_CLI_wrapper_for_7z/check/check.sh
+contrib/gzip-like_CLI_wrapper_for_7z/check/files.tar
+contrib/gzip-like_CLI_wrapper_for_7z/man1/p7zip.1
+contrib/gzip-like_CLI_wrapper_for_7z/p7zip
+contrib/qnx630sp3/qnx630sp3-shared
+contrib/qnx630sp3/qnx630sp3-static
+install.sh
+install_local_context_menu.sh
+integration_context_menu.txt
+makefile
+makefile.aix_gcc
+makefile.beos
+makefile.crc32
+makefile.cygwin
+makefile.cygwin_asm
+makefile.djgpp_old
+makefile.djgpp_watt
+makefile.freebsd5
+makefile.freebsd6
+makefile.glb
+makefile.gprof
+makefile.hpux-acc
+makefile.hpux-acc_64
+makefile.hpux-gcc
+makefile.linux_amd64
+makefile.linux_amd64_asm
+makefile.linux_amd64_asm_icc
+makefile.linux_any_cpu
+makefile.linux_any_cpu_gcc_4.X
+makefile.linux_clang_amd64
+makefile.linux_cross_arm
+makefile.linux_gcc_2.95_no_need_for_libstdc
+makefile.linux_other
+makefile.linux_s390x
+makefile.linux_x86_asm_gcc_4.X
+makefile.linux_x86_asm_gcc_4.X_fltk
+makefile.linux_x86_asm_gcc_mudflap_4.X
+makefile.linux_x86_asm_icc
+makefile.linux_x86_icc
+makefile.machine
+makefile.macosx_32bits
+makefile.macosx_32bits_asm
+makefile.macosx_32bits_ppc
+makefile.macosx_64bits
+makefile.macosx_llvm_64bits
+makefile.netbsd
+makefile.netware_asm_gcc_3.X
+makefile.oldmake
+makefile.openbsd
+makefile.openbsd_no_port
+makefile.qnx_shared.bin
+makefile.qnx_shared.so
+makefile.qnx_static
+makefile.rules
+makefile.solaris_sparc_CC_32
+makefile.solaris_sparc_CC_64
+makefile.solaris_sparc_gcc
+makefile.solaris_x86
+makefile.tru64
+man1/7z.1
+man1/7za.1
+man1/7zr.1

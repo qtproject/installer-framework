@@ -1,6 +1,8 @@
 #include "lib7z_facade.h"
 
+#ifndef Q_OS_WIN
 #include "StdAfx.h"
+#endif
 
 #include "Common/MyInitGuid.h"
 

@@ -7,6 +7,8 @@
 
 #include "MyVector.h"
 
+#include <windows.h>
+
 template <class T>
 inline int MyStringLen(const T *s)
 {
