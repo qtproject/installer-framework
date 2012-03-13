@@ -45,12 +45,7 @@
 
 #include <iostream>
 
-namespace QInstallerTools {
-
-static bool operator==(const PackageInfo &lhs, const PackageInfo &rhs)
-{
-    return lhs.name == rhs.name && lhs.version == rhs.version;
-}
+using namespace QInstallerTools;
 
 void QInstallerTools::printRepositoryGenOptions()
 {
@@ -64,38 +59,6 @@ void QInstallerTools::printRepositoryGenOptions()
               << "repository." << std::endl;
     std::cout << "  --ignore-translations     Don't use any translation" << std::endl;
     std::cout << "  --ignore-invalid-packages Ignore all invalid packages instead of aborting." << std::endl;
-}
-
-/*!
-    Returns PackageInfo of package with right name and version
-*/
-static PackageInfo findMatchingPackage(const QString &name, const PackageInfoVector &available)
-{
-    const QString id = name.contains(QChar::fromLatin1('-'))
-        ? name.section(QChar::fromLatin1('-'), 0, 0) : name;
-    QString version = name.contains(QChar::fromLatin1('-'))
-        ? name.section(QChar::fromLatin1('-'), 1, -1) : QString();
-
-    QRegExp compEx(QLatin1String("([<=>]+)(.*)"));
-    const QString comparator = compEx.exactMatch(version) ? compEx.cap(1) : QLatin1String("=");
-    version = compEx.exactMatch(version) ? compEx.cap(2) : version;
-
-    const bool allowEqual = comparator.contains(QLatin1Char('='));
-    const bool allowLess = comparator.contains(QLatin1Char('<'));
-    const bool allowMore = comparator.contains(QLatin1Char('>'));
-
-    for (PackageInfoVector::const_iterator it = available.begin(); it != available.end(); ++it) {
-        if (it->name != id)
-            continue;
-        if (allowEqual && (version.isEmpty() || it->version == version))
-            return *it;
-        if (allowLess && KDUpdater::compareVersion(version, it->version) > 0)
-            return *it;
-        if (allowMore && KDUpdater::compareVersion(version, it->version) < 0)
-            return *it;
-    }
-
-    return PackageInfo();
 }
 
 void QInstallerTools::compressDirectory(const QStringList &paths, const QString &archivePath)
@@ -655,5 +618,3 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
         }
     }
 }
-
-}   // namespace QInstallerTools
