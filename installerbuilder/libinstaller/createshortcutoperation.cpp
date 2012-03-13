@@ -29,24 +29,24 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
-#include <kdupdaterapplication.h>
-#include <kdupdaterpackagesinfo.h>
-
 #include "createshortcutoperation.h"
-#include "common/errors.h"
-#include "common/fileutils.h"
 
-#include <QDir>
-#include <QFileInfo>
-#include <QTemporaryFile>
+#include "errors.h"
+#include "fileutils.h"
+
+#include "kdupdaterapplication.h"
+#include "kdupdaterpackagesinfo.h"
+
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QTemporaryFile>
 
 #include <algorithm>
 #include <cerrno>
 
 #ifdef Q_WS_WIN
-#include <windows.h>
-#include <shlobj.h>
+#   include <windows.h>
+#   include <shlobj.h>
 #endif
 
 using namespace QInstaller;

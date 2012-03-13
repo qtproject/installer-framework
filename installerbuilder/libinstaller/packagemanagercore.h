@@ -29,11 +29,10 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #ifndef PACKAGEMANAGERCORE_H
 #define PACKAGEMANAGERCORE_H
 
-#include "common/repository.h"
+#include "repository.h"
 #include "qinstallerglobal.h"
 
 #include <QtCore/QHash>

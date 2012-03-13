@@ -29,14 +29,13 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "packagemanagercore_p.h"
 
 #include "adminauthorization.h"
-#include "common/binaryformat.h"
-#include "common/errors.h"
-#include "common/fileutils.h"
+#include "binaryformat.h"
 #include "component.h"
+#include "errors.h"
+#include "fileutils.h"
 #include "fsengineclient.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
@@ -44,12 +43,12 @@
 #include "qprocesswrapper.h"
 #include "qsettingswrapper.h"
 
-#include <kdsavefile.h>
-#include <kdselfrestarter.h>
+#include "kdsavefile.h"
+#include "kdselfrestarter.h"
 #include "kdupdaterfiledownloaderfactory.h"
-#include <kdupdaterupdatesourcesinfo.h>
-#include <kdupdaterupdateoperationfactory.h>
-#include <kdupdaterupdatefinder.h>
+#include "kdupdaterupdatesourcesinfo.h"
+#include "kdupdaterupdateoperationfactory.h"
+#include "kdupdaterupdatefinder.h"
 
 #include <QtCore/QtConcurrentRun>
 #include <QtCore/QCoreApplication>

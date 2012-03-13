@@ -29,10 +29,9 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "adminauthorization.h"
 
-#include <common/utils.h>
+#include "utils.h"
 
 #include <QtCore/QDebug>
 #include <QtCore/QDir>

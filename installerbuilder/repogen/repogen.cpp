@@ -29,12 +29,13 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-#include <common/errors.h>
-#include <common/fileutils.h>
-#include <common/repositorygen.h>
-#include <common/utils.h>
-#include <settings.h>
+#include "common/repositorygen.h"
+
+#include <errors.h>
+#include <fileutils.h>
 #include <init.h>
+#include <settings.h>
+#include <utils.h>
 #include <lib7z_facade.h>
 
 #include <QtCore/QDir>

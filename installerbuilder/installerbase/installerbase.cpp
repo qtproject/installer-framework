@@ -29,16 +29,14 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "installerbase_p.h"
 
 #include "installerbasecommons.h"
 #include "tabcontroller.h"
 
-#include <common/binaryformat.h>
-#include <common/errors.h>
-#include <common/fileutils.h>
-#include <common/utils.h>
+#include <binaryformat.h>
+#include <errors.h>
+#include <fileutils.h>
 #include <fsengineserver.h>
 #include <init.h>
 #include <lib7z_facade.h>
@@ -47,11 +45,12 @@
 #include <packagemanagergui.h>
 #include <qinstallerglobal.h>
 #include <settings.h>
+#include <utils.h>
 #include <updater.h>
 
 #include <kdselfrestarter.h>
 #include <kdrunoncechecker.h>
-#include "kdupdaterfiledownloaderfactory.h"
+#include <kdupdaterfiledownloaderfactory.h>
 
 #include <QtCore/QTranslator>
 #include <QtGui/QMessageBox>

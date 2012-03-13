@@ -29,13 +29,13 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 
-#include <common/repository.h>
-#include <kdjob.h>
+#include <repository.h>
 #include <settings.h>
+
+#include <kdjob.h>
 
 #include <QtGui/QDialog>
 #include <QtGui/QStyledItemDelegate>

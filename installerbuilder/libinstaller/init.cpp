@@ -29,7 +29,6 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "init.h"
 
 #include "createshortcutoperation.h"
@@ -69,15 +68,15 @@
 #include "minimumprogressoperation.h"
 
 #ifdef Q_OS_MAC
-    #include "macreplaceinstallnamesoperation.h"
+#   include "macreplaceinstallnamesoperation.h"
 #endif // Q_OS_MAC
 
-#include "common/utils.h"
+#include "utils.h"
 
-#include <kdupdaterupdateoperation.h>
-#include <kdupdaterupdateoperationfactory.h>
-#include <kdupdaterfiledownloader.h>
-#include <kdupdaterfiledownloaderfactory.h>
+#include "kdupdaterupdateoperation.h"
+#include "kdupdaterupdateoperationfactory.h"
+#include "kdupdaterfiledownloader.h"
+#include "kdupdaterfiledownloaderfactory.h"
 
 #include <QtPlugin>
 #include <QNetworkProxyFactory>

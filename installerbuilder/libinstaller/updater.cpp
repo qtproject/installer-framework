@@ -29,16 +29,16 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "updater.h"
 
-#include "common/binaryformat.h"
-#include "common/utils.h"
+#include "binaryformat.h"
 #include "component.h"
 #include "init.h"
 #include "packagemanagercore.h"
+#include "utils.h"
 
 #include <QtCore/QDebug>
+
 #include <QtXml/QDomDocument>
 
 #include <iostream>

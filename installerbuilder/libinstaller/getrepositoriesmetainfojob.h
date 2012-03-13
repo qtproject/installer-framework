@@ -29,21 +29,19 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #ifndef GETREPOSITORIESMETAINFOJOB_H
 #define GETREPOSITORIESMETAINFOJOB_H
 
-#include <kdjob.h>
+#include "fileutils.h"
+#include "installer_global.h"
+#include "repository.h"
+
+#include "kdjob.h"
 
 #include <QtCore/QList>
 #include <QtCore/QPointer>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
-
-#include <common/fileutils.h>
-#include <common/repository.h>
-
-#include "installer_global.h"
 
 namespace KDUpdater {
     class FileDownloader;

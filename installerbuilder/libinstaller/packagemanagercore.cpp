@@ -29,15 +29,13 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "packagemanagercore.h"
 
 #include "adminauthorization.h"
-#include "common/binaryformat.h"
-#include "common/errors.h"
-#include "common/utils.h"
+#include "binaryformat.h"
 #include "component.h"
 #include "downloadarchivesjob.h"
+#include "errors.h"
 #include "fsengineclient.h"
 #include "getrepositoriesmetainfojob.h"
 #include "messageboxhandler.h"
@@ -48,6 +46,7 @@
 #include "qprocesswrapper.h"
 #include "qsettingswrapper.h"
 #include "settings.h"
+#include "utils.h"
 
 #include <QtCore/QTemporaryFile>
 
@@ -56,11 +55,11 @@
 #include <QtScript/QScriptEngine>
 #include <QtScript/QScriptContext>
 
-#include <kdsysinfo.h>
-#include <kdupdaterupdateoperationfactory.h>
+#include "kdsysinfo.h"
+#include "kdupdaterupdateoperationfactory.h"
 
 #ifdef Q_OS_WIN
-#include "qt_windows.h"
+#   include "qt_windows.h"
 #endif
 
 using namespace QInstaller;

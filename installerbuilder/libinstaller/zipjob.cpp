@@ -29,13 +29,12 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
+#include <zipjob.h>
 
-#include <common/zipjob.h>
-
-#include <QDebug>
-#include <QDir>
-#include <QStringList>
-#include <QMetaType>
+#include <QtCore/QDebug>
+#include <QtCore/QDir>
+#include <QtCore/QMetaType>
+#include <QtCore/QStringList>
 
 #include <cassert>
 #include <climits>

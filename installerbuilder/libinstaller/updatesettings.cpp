@@ -29,11 +29,10 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "updatesettings.h"
 
-#include "common/errors.h"
-#include "common/repository.h"
+#include "errors.h"
+#include "repository.h"
 #include "settings.h"
 
 #include <QtCore/QDateTime>

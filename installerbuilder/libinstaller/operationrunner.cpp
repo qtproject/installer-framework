@@ -29,18 +29,17 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "operationrunner.h"
 
-#include "common/errors.h"
-#include "common/binaryformat.h"
-#include "common/utils.h"
+#include "binaryformat.h"
 #include "component.h"
+#include "errors.h"
 #include "init.h"
 #include "packagemanagercore.h"
+#include "utils.h"
 
-#include <kdupdaterupdateoperation.h>
-#include <kdupdaterupdateoperationfactory.h>
+#include "kdupdaterupdateoperation.h"
+#include "kdupdaterupdateoperationfactory.h"
 
 #include <iostream>
 

@@ -29,14 +29,16 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-#include <common/binaryformat.h>
-#include <common/errors.h>
-#include <common/fileutils.h>
-#include <common/repositorygen.h>
-#include <common/utils.h>
+#include "common/repositorygen.h"
+
+#include <binaryformat.h>
+#include <errors.h>
+#include <fileutils.h>
 #include <init.h>
-#include <kdsavefile.h>
 #include <settings.h>
+#include <utils.h>
+
+#include <kdsavefile.h>
 
 #include <QtCore/QDirIterator>
 #include <QtCore/QProcess>

@@ -29,20 +29,18 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "installerbase_p.h"
 
-#include <common/binaryformat.h>
-#include <common/errors.h>
-#include <common/fileutils.h>
-#include <common/utils.h>
+#include <binaryformat.h>
+#include <errors.h>
+#include <fileutils.h>
 #include <lib7z_facade.h>
 #include <qprocesswrapper.h>
-
-#include <kdupdaterfiledownloader.h>
-#include <kdupdaterfiledownloaderfactory.h>
+#include <utils.h>
 
 #include <kdsavefile.h>
+#include <kdupdaterfiledownloader.h>
+#include <kdupdaterfiledownloaderfactory.h>
 
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
@@ -56,19 +54,19 @@
 #include <iostream>
 
 #ifdef Q_OS_WIN
-#include <wincon.h>
+#   include <wincon.h>
 
-#ifndef ENABLE_INSERT_MODE
-#   define ENABLE_INSERT_MODE 0x0020
-#endif
+#   ifndef ENABLE_INSERT_MODE
+#       define ENABLE_INSERT_MODE 0x0020
+#   endif
 
-#ifndef ENABLE_QUICK_EDIT_MODE
-#   define ENABLE_QUICK_EDIT_MODE 0x0040
-#endif
+#   ifndef ENABLE_QUICK_EDIT_MODE
+#       define ENABLE_QUICK_EDIT_MODE 0x0040
+#   endif
 
-#ifndef ENABLE_EXTENDED_FLAGS
-#   define ENABLE_EXTENDED_FLAGS 0x0080
-#endif
+#   ifndef ENABLE_EXTENDED_FLAGS
+#       define ENABLE_EXTENDED_FLAGS 0x0080
+#   endif
 #endif
 
 using namespace KDUpdater;

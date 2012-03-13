@@ -30,12 +30,11 @@
 **
 **************************************************************************/
 
-#include <common/binaryformat.h>
-#include <common/errors.h>
-#include <common/fileutils.h>
-#include <common/utils.h>
-
+#include <binaryformat.h>
+#include <errors.h>
+#include <fileutils.h>
 #include <init.h>
+#include <utils.h>
 
 #include <kdsavefile.h>
 

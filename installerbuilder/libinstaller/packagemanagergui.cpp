@@ -29,23 +29,21 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "packagemanagergui.h"
 
 #include "component.h"
 #include "componentmodel.h"
+#include "errors.h"
+#include "fileutils.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
 #include "qinstallerglobal.h"
 #include "progresscoordinator.h"
 #include "performinstallationform.h"
 #include "settings.h"
+#include "utils.h"
 
-#include "common/errors.h"
-#include "common/utils.h"
-#include "common/fileutils.h"
-
-#include <kdsysinfo.h>
+#include "kdsysinfo.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QDynamicPropertyChangeEvent>

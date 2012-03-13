@@ -29,15 +29,14 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "mainwindow.h"
 
 #include "componentselectiondialog.h"
 #include "updateagent.h"
 #include "updatesettingsdialog.h"
 
-#include <common/binaryformat.h>
-#include <common/errors.h>
+#include <binaryformat.h>
+#include <errors.h>
 #include <updatesettings.h>
 
 #include <kdselfrestarter.h>

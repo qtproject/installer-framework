@@ -29,15 +29,14 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #ifndef EXTRACTARCHIVEOPERATION_P_H
 #define EXTRACTARCHIVEOPERATION_P_H
 
 #include "extractarchiveoperation.h"
 
+#include "fileutils.h"
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
-#include "common/fileutils.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QFile>

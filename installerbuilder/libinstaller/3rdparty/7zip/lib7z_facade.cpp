@@ -1,7 +1,10 @@
 #include "lib7z_facade.h"
 
+#include "errors.h"
+#include "fileutils.h"
+
 #ifndef Q_OS_WIN
-#include "StdAfx.h"
+#   include "StdAfx.h"
 #endif
 
 #include "Common/MyInitGuid.h"
@@ -35,9 +38,6 @@
 #include "Windows/FileName.h"
 #include "Windows/PropVariant.h"
 #include "Windows/PropVariantConversions.h"
-
-#include <common/errors.h>
-#include <common/fileutils.h>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>

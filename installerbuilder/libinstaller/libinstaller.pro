@@ -1,11 +1,9 @@
 TEMPLATE = lib
 TARGET = installer
-DEPENDPATH += . \
-    .. \
-    ../common
 
-INCLUDEPATH += . \
-    ..
+INCLUDEPATH += . ..
+DEPENDPATH += . .. 3rdparty/kdtools
+
 DESTDIR = $$OUT_PWD/../lib
 DLLDESTDIR = $$OUT_PWD/../bin
 
@@ -29,16 +27,16 @@ contains(CONFIG, static): {
 include(3rdparty/7zip/7zip.pri)
 include(3rdparty/kdtools/kdtools.pri)
 
-HEADERS += $$PWD/packagemanagercore.h \
-    $$PWD/packagemanagercore_p.h \
-    $$PWD/packagemanagergui.h \
-    ../common/binaryformat.h \
-    ../common/binaryformatengine.h \
-    ../common/binaryformatenginehandler.h \
-    ../common/repository.h \
-    ../common/zipjob.h \
-    ../common/utils.h \
-    ../common/errors.h \
+HEADERS += packagemanagercore.h \
+    packagemanagercore_p.h \
+    packagemanagergui.h \
+    binaryformat.h \
+    binaryformatengine.h \
+    binaryformatenginehandler.h \
+    repository.h \
+    zipjob.h \
+    utils.h \
+    errors.h \
     component.h \
     componentmodel.h \
     qinstallerglobal.h \
@@ -101,16 +99,16 @@ HEADERS += $$PWD/packagemanagercore.h \
     packagemanagerproxyfactory.h \
     createlocalrepositoryoperation.h
 
-SOURCES += $$PWD/packagemanagercore.cpp \
-    $$PWD/packagemanagercore_p.cpp \
-    $$PWD/packagemanagergui.cpp \
-    ../common/binaryformat.cpp \
-    ../common/binaryformatengine.cpp \
-    ../common/binaryformatenginehandler.cpp \
-    ../common/repository.cpp \
-    ../common/zipjob.cpp \
-    ../common/fileutils.cpp \
-    ../common/utils.cpp \
+SOURCES += packagemanagercore.cpp \
+    packagemanagercore_p.cpp \
+    packagemanagergui.cpp \
+    binaryformat.cpp \
+    binaryformatengine.cpp \
+    binaryformatenginehandler.cpp \
+    repository.cpp \
+    zipjob.cpp \
+    fileutils.cpp \
+    utils.cpp \
     component.cpp \
     componentmodel.cpp \
     qtpatch.cpp \

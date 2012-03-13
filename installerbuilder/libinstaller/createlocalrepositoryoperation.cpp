@@ -31,13 +31,14 @@
 **************************************************************************/
 #include "createlocalrepositoryoperation.h"
 
-#include "common/binaryformat.h"
-#include "common/errors.h"
-#include "common/fileutils.h"
+#include "binaryformat.h"
+#include "errors.h"
+#include "fileutils.h"
 #include "copydirectoryoperation.h"
-#include "kdupdaterupdateoperations.h"
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
+
+#include "kdupdaterupdateoperations.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>

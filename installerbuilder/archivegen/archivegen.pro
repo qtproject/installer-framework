@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = archivegen
 DEPENDPATH += . .. ../common
-INCLUDEPATH += . ..
+INCLUDEPATH += . .. ../common
 
 DESTDIR = ../bin
 
@@ -14,5 +14,5 @@ include(../libinstaller/libinstaller.pri)
 
 # Input
 SOURCES += archive.cpp \
-           ../common/repositorygen.cpp
-HEADERS += ../common/repositorygen.h
+           repositorygen.cpp
+HEADERS += repositorygen.h

@@ -29,18 +29,17 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "getrepositorymetainfojob.h"
 
 #include "constants.h"
-#include "common/errors.h"
+#include "errors.h"
 #include "lib7z_facade.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore_p.h"
 #include "qinstallerglobal.h"
 
-#include <kdupdaterfiledownloader.h>
-#include <kdupdaterfiledownloaderfactory.h>
+#include "kdupdaterfiledownloader.h"
+#include "kdupdaterfiledownloaderfactory.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QTimer>

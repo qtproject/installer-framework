@@ -29,16 +29,15 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "downloadarchivesjob.h"
 
-#include "common/binaryformatenginehandler.h"
+#include "binaryformatenginehandler.h"
 #include "component.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
 
-#include <kdupdaterfiledownloader.h>
-#include <kdupdaterfiledownloaderfactory.h>
+#include "kdupdaterfiledownloader.h"
+#include "kdupdaterfiledownloaderfactory.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QTimerEvent>

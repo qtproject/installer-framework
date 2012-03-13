@@ -29,19 +29,18 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "installiconsoperation.h"
 
-#include "common/fileutils.h"
+#include "fileutils.h"
 #include "packagemanagercore.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
 
 #if QT_VERSION >= 0x040600
-#include <QProcessEnvironment>
+#   include <QProcessEnvironment>
 #else
-#include <QProcess>
+#   include <QProcess>
 #endif
 
 using namespace QInstaller;

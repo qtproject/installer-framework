@@ -1,6 +1,6 @@
 include(../../installerbuilder/libinstaller/libinstaller.pri)
-DEPENDPATH += ../../installerbuilder/libinstaller ../../installerbuilder/common
-INCLUDEPATH += ../../installerbuilder/libinstaller ../../installerbuilder/common
+DEPENDPATH += . .. ../../installerbuilder/libinstaller
+INCLUDEPATH += . .. ../../installerbuilder/libinstaller
 
 TEMPLATE = app
 CONFIG += console

@@ -29,12 +29,11 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "updateagent.h"
 
-#include <common/binaryformatenginehandler.h>
-#include <common/binaryformat.h>
-#include <common/errors.h>
+#include <binaryformatenginehandler.h>
+#include <binaryformat.h>
+#include <errors.h>
 #include <component.h>
 #include <packagemanagercore.h>
 #include <updatesettings.h>

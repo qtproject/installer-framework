@@ -29,12 +29,14 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-#include <common/fileutils.h>
-#include <common/errors.h>
-#include <common/repositorygen.h>
-#include <kdupdater.h>
+#include "repositorygen.h"
+
+#include <fileutils.h>
+#include <errors.h>
 #include <lib7z_facade.h>
 #include <settings.h>
+
+#include <kdupdater.h>
 
 #include <QtCore/QCryptographicHash>
 #include <QtCore/QDirIterator>

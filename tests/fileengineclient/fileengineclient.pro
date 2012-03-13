@@ -1,5 +1,5 @@
 TEMPLATE = app
-DEPENDPATH += . .. ../../installerbuilder/common
+DEPENDPATH += . ..
 INCLUDEPATH += . ..
 
 DESTDIR = ../../installerbuilder/bin

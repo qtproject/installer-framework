@@ -1,21 +1,21 @@
 #ifndef LIB7Z_FACADE_H
 #define LIB7Z_FACADE_H
 
-#include <QCoreApplication>
-#include <QDateTime>
-#include <QFile>
-#include <QString>
-#include <QRunnable>
-#include <QVector>
-#include <QVariant>
-#include <QPoint>
-
-#include <stdexcept>
-#include <string>
+#include "installer_global.h"
 
 #include "Common/MyWindows.h"
 
-#include "../../installerbuilder/libinstaller/installer_global.h"
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDateTime>
+#include <QtCore/QFile>
+#include <QtCore/QPoint>
+#include <QtCore/QRunnable>
+#include <QtCore/QString>
+#include <QtCore/QVector>
+#include <QtCore/QVariant>
+
+#include <stdexcept>
+#include <string>
 
 QT_BEGIN_NAMESPACE
 class QStringList;

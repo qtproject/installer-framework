@@ -29,12 +29,11 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "settings.h"
 
-#include "common/errors.h"
-#include "common/repository.h"
+#include "errors.h"
 #include "qinstallerglobal.h"
+#include "repository.h"
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QStringList>

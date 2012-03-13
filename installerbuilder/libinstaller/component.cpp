@@ -29,11 +29,10 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "component.h"
 
-#include "common/errors.h"
-#include "common/fileutils.h"
+#include "errors.h"
+#include "fileutils.h"
 #include "fsengineclient.h"
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"

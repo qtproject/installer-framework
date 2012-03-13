@@ -29,10 +29,9 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "fsengineserver.h"
 
-#include <common/utils.h>
+#include "utils.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QFSFileEngine>

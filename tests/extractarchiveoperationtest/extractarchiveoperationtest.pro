@@ -8,8 +8,8 @@ CONFIG -= app_bundle
 QT += testlib script
 QT -= gui
 
-INCLUDEPATH += ../../installerbuilder/libinstaller ..
-DEPENDPATH += ../../installerbuilder/libinstaller ../../installerbuilder/common
+INCLUDEPATH += . .. ../../installerbuilder/libinstaller
+DEPENDPATH += . .. ../../installerbuilder/libinstaller
 
 include(../../installerbuilder/libinstaller/libinstaller.pri)
 

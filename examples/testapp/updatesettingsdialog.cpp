@@ -29,11 +29,10 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "updatesettingsdialog.h"
 #include "ui_updatesettingsdialog.h"
 
-#include <common/repository.h>
+#include <repository.h>
 #include <updatesettings.h>
 
 #include <QtCore/QDateTime>

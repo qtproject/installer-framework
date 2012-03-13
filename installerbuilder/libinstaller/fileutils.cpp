@@ -29,10 +29,9 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "fileutils.h"
 
-#include <common/errors.h>
+#include <errors.h>
 
 #include <QtCore/QDateTime>
 #include <QtCore/QDir>

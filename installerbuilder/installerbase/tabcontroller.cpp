@@ -29,7 +29,6 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-
 #include "tabcontroller.h"
 
 #include "installerbasecommons.h"
