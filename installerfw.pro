@@ -1,7 +1,7 @@
 CONFIG += ordered
 TEMPLATE = subdirs
-!macx:SUBDIRS += examples
 SUBDIRS += installerbuilder tools
+!macx:SUBDIRS += examples
 
 test.target = test
 test.depends = $(TARGET)
