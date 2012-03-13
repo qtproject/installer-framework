@@ -37,7 +37,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVector>
 
-namespace QInstaller {
+namespace QInstallerTools {
 
 void printRepositoryGenOptions();
 
@@ -72,6 +72,6 @@ void generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
 PackageInfoVector createListOfPackages(const QString &packagesDirectory, const QStringList &filteredPackages,
     FilterType ftype);
 
-} // namespace QInstaller
+} // namespace QInstallerTools
 
 #endif // QINSTALLER_REPOSITORYGEN_H

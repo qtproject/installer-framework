@@ -53,12 +53,13 @@ static void printUsage()
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
 
-    printRepositoryGenOptions();
+    QInstallerTools::printRepositoryGenOptions();
 
     std::cout << "  -u|--updateurl            url instructs clients to receive updates from a " << std::endl;
     std::cout << "                            different location" << std::endl;
 
-    std::cout << "  --update                  Update a set of existing components (defined by --include " << std::endl;
+    std::cout << "  --update                  Update a set of existing components (defined by --include "
+        << std::endl;
     std::cout << "                            or --exclude) in the repository" << std::endl;
 
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
@@ -98,7 +99,7 @@ int main(int argc, char** argv)
         QString packagesDir;
         QString configDir;
         QString redirectUpdateUrl;
-        FilterType filterType = Exclude;
+        QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
 
         //TODO: use a for loop without removing values from args like it is in binarycreator.cpp
         //for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -124,7 +125,7 @@ int main(int argc, char** argv)
                     return printErrorAndUsageAndExit(QObject::tr("Error: Package to include missing"));
                 filteredPackages = args.first().split(QLatin1Char(','));
                 args.removeFirst();
-                filterType = Include;
+                filterType = QInstallerTools::Include;
             } else if (args.first() == QLatin1String("--single") || args.first() == QLatin1String("--update")) {
                 args.removeFirst();
                 updateExistingRepository = true;
@@ -165,8 +166,9 @@ int main(int argc, char** argv)
                     return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument"));
                 redirectUpdateUrl = args.first();
                 args.removeFirst();
-            } else if (args.first() == QLatin1String("--ignore-translations") || args.first() == QLatin1String("--ignore-invalid-packages")) {
-                args.removeFirst();
+            } else if (args.first() == QLatin1String("--ignore-translations")
+                || args.first() == QLatin1String("--ignore-invalid-packages")) {
+                    args.removeFirst();
             } else {
                 printUsage();
                 return 1;
@@ -210,7 +212,7 @@ int main(int argc, char** argv)
                           " - please use --include or --exclude" << std::endl;
             if (updateExistingRepository) {
                 filteredPackages.append(components);
-                filterType = Include;
+                filterType = QInstallerTools::Include;
             }
         }
 
@@ -219,11 +221,12 @@ int main(int argc, char** argv)
                 .arg(repositoryDir));
         }
 
-        PackageInfoVector packages = createListOfPackages(packagesDir, filteredPackages, filterType);
+        QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDir,
+            filteredPackages, filterType);
         QMap<QString, QString> pathToVersionMapping = buildPathToVersionMap(packages);
 
-        for (PackageInfoVector::const_iterator it = packages.begin(); it != packages.end(); ++it) {
-            const QFileInfo fi(repositoryDir, it->name);
+        foreach (const QInstallerTools::PackageInfo &package, packages) {
+            const QFileInfo fi(repositoryDir, package.name);
             if (fi.exists())
                 removeDirectory(fi.absoluteFilePath());
         }
@@ -238,7 +241,7 @@ int main(int argc, char** argv)
             configDir);
         generateMetaDataDirectory(metaTmp, repositoryDir, packages, settings.applicationName(),
             settings.applicationVersion(), redirectUpdateUrl);
-        compressMetaDirectories(metaTmp, metaTmp, pathToVersionMapping);
+        QInstallerTools::compressMetaDirectories(metaTmp, metaTmp, pathToVersionMapping);
 
         QFile::remove(QFileInfo(repositoryDir, QLatin1String("Updates.xml")).absoluteFilePath());
         moveDirectoryContents(metaTmp, repositoryDir);

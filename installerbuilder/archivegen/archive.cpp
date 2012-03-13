@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
         QInstaller::init();
         QInstaller::setVerbose(true);
         const QStringList sourceDirectories = app.arguments().mid(2);
-        QInstaller::compressDirectory(sourceDirectories, app.arguments().at(1));
+        QInstallerTools::compressDirectory(sourceDirectories, app.arguments().at(1));
         return EXIT_SUCCESS;
     } catch (const Lib7z::SevenZipException &e) {
         std::cerr << e.message() << std::endl;

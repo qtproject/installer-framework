@@ -395,7 +395,7 @@ static void printUsage()
     std::cout << "                            If this parameter is not given, the template used" << std::endl;
     std::cout << "                            defaults to installerbase." << std::endl;
 
-    printRepositoryGenOptions();
+    QInstallerTools::printRepositoryGenOptions();
 
     std::cout << "  -n|--nodeps               Don't add dependencies of package1...n into the " << std::endl;
     std::cout << "                            installer (for online installers)" << std::endl;
@@ -421,8 +421,8 @@ static void printUsage()
     std::cout << std::endl;
 }
 
-static QString createMetaDataDirectory(const PackageInfoVector &packages, const QString &packagesDir,
-    const QString &configdir)
+static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector &packages,
+    const QString &packagesDir, const QString &configdir)
 {
     const QString configfile = QFileInfo(configdir, "config.xml").absoluteFilePath();
     const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, QString());
@@ -539,7 +539,7 @@ int main(int argc, char **argv)
     QStringList resources;
     QStringList components;
     QStringList filteredPackages;
-    FilterType ftype = Exclude;
+    QInstallerTools::FilterType ftype = QInstallerTools::Exclude;
 
     const QStringList args = app.arguments().mid(1);
     for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -572,7 +572,7 @@ int main(int argc, char **argv)
             if (it == args.end() || it->startsWith(QLatin1String("-")))
                 return printErrorAndUsageAndExit(QObject::tr("Error: Package to include missing."));
             filteredPackages = it->split(QLatin1Char(','));
-            ftype = Include;
+            ftype = QInstallerTools::Include;
         }
         else if (*it == QLatin1String("-v") || *it == QLatin1String("--verbose")) {
             QInstaller::setVerbose(true);
@@ -616,8 +616,9 @@ int main(int argc, char **argv)
             if (it == args.end() || it->startsWith(QLatin1String("-")))
                 return printErrorAndUsageAndExit(QObject::tr("Error: Resource files to include missing."));
             resources = it->split(QLatin1Char(','));
-        } else if (*it == QLatin1String("--ignore-translations") || *it == QLatin1String("--ignore-invalid-packages")) {
-            continue;
+        } else if (*it == QLatin1String("--ignore-translations")
+            || *it == QLatin1String("--ignore-invalid-packages")) {
+                continue;
         } else {
             if (target.isEmpty())
                 target = *it;
@@ -631,7 +632,7 @@ int main(int argc, char **argv)
                       " - please use --include or --exclude" << std::endl;
         if (nodeps) {
             filteredPackages.append(components);
-            ftype = Include;
+            ftype = QInstallerTools::Include;
         }
     }
 
@@ -644,7 +645,8 @@ int main(int argc, char **argv)
     qDebug() << "Parsed arguments, ok.";
 
     try {
-        PackageInfoVector packages = createListOfPackages(packagesDirectory, filteredPackages, ftype);
+        QInstallerTools::PackageInfoVector packages = createListOfPackages(packagesDirectory,
+            filteredPackages, ftype);
         const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configDir);
         {
             QSettings confInternal(metaDir + "/config/config-internal.ini", QSettings::IniFormat);
@@ -669,10 +671,10 @@ int main(int argc, char **argv)
             input.binaryResourcePath = createBinaryResourceFile(metaDir);
             input.binaryResources = createBinaryResourceFiles(resources);
 
-            QInstaller::copyComponentData(packagesDirectory, metaDir, packages);
+            QInstallerTools::copyComponentData(packagesDirectory, metaDir, packages);
 
             // now put the packages into the components section of the binary
-            foreach (const PackageInfo &info, packages) {
+            foreach (const QInstallerTools::PackageInfo &info, packages) {
                 Component comp;
                 comp.setName(info.name.toUtf8());
 

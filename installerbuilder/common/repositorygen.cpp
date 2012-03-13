@@ -45,9 +45,14 @@
 
 #include <iostream>
 
-using namespace QInstaller;
+namespace QInstallerTools {
 
-void QInstaller::printRepositoryGenOptions()
+static bool operator==(const PackageInfo &lhs, const PackageInfo &rhs)
+{
+    return lhs.name == rhs.name && lhs.version == rhs.version;
+}
+
+void QInstallerTools::printRepositoryGenOptions()
 {
     std::cout << "  -c|--config dir           The directory containing the installer configuration" << std::endl;
 
@@ -60,13 +65,6 @@ void QInstaller::printRepositoryGenOptions()
     std::cout << "  --ignore-translations     Don't use any translation" << std::endl;
     std::cout << "  --ignore-invalid-packages Ignore all invalid packages instead of aborting." << std::endl;
 }
-
-QT_BEGIN_NAMESPACE
-static bool operator==(const PackageInfo &lhs, const PackageInfo &rhs)
-{
-    return lhs.name == rhs.name && lhs.version == rhs.version;
-}
-QT_END_NAMESPACE
 
 /*!
     Returns PackageInfo of package with right name and version
@@ -100,7 +98,7 @@ static PackageInfo findMatchingPackage(const QString &name, const PackageInfoVec
     return PackageInfo();
 }
 
-void QInstaller::compressDirectory(const QStringList &paths, const QString &archivePath)
+void QInstallerTools::compressDirectory(const QStringList &paths, const QString &archivePath)
 {
     foreach (const QString &path, paths) {
         if (!QFileInfo(path).exists())
@@ -108,11 +106,11 @@ void QInstaller::compressDirectory(const QStringList &paths, const QString &arch
     }
 
     QFile archive(archivePath);
-    openForWrite(&archive, archivePath);
+    QInstaller::openForWrite(&archive, archivePath);
     Lib7z::createArchive(&archive, paths);
 }
 
-void QInstaller::compressMetaDirectories(const QString &repoDir)
+void QInstallerTools::compressMetaDirectories(const QString &repoDir)
 {
     QDir dir(repoDir);
     const QStringList sub = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -132,7 +130,7 @@ void QInstaller::compressMetaDirectories(const QString &repoDir)
     }
 }
 
-void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
+void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
     const PackageInfoVector &packages, const QString &appName, const QString &appVersion,
     const QString &redirectUpdateUrl)
 {
@@ -183,13 +181,13 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
 
         QDomDocument packageXml;
         QFile file(packageXmlPath);
-        openForRead(&file, packageXmlPath);
+        QInstaller::openForRead(&file, packageXmlPath);
         QString errMsg;
         int col = 0;
         int line = 0;
         if (!packageXml.setContent(&file, &errMsg, &line, &col)) {
-            throw Error(QObject::tr("Could not parse %1: line: %2, column: %3: %4 (%5)").arg(packageXmlPath,
-                QString::number(line), QString::number(col), errMsg, it->name));
+            throw QInstaller::Error(QObject::tr("Could not parse %1: line: %2, column: %3: %4 (%5)")
+                .arg(packageXmlPath, QString::number(line), QString::number(col), errMsg, it->name));
         }
         const QDomNode package = packageXml.firstChildElement("Package");
 
@@ -272,7 +270,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
         root.appendChild(update);
 
         if (!QDir(metapath).mkpath(it->name))
-            throw Error(QObject::tr("Could not create directory %1.").arg(it->name));
+            throw QInstaller::Error(QObject::tr("Could not create directory %1.").arg(it->name));
 
         // copy scripts
         const QString script = package.firstChildElement("Script").text();
@@ -296,7 +294,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
             QString toLocation(QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, script));
             if (!QFile::copy(fromLocation, toLocation)) {
                 qDebug() << "failed!";
-                throw Error(QObject::tr("Could not copy the script %1 to its target location %2.")
+                throw QInstaller::Error(QObject::tr("Could not copy the script %1 to its target location %2.")
                     .arg(fromLocation, toLocation));
             } else {
                 qDebug() << "\tdone.";
@@ -314,8 +312,8 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
             const QDir dir(QString::fromLatin1("%1/meta").arg(it->directory));
             const QStringList uis = dir.entryList(QStringList(node.toElement().text()), QDir::Files);
             if (uis.isEmpty()) {
-                throw Error(QObject::tr("Couldn't find any user interface matching %1 while copying "
-                    "user interfaces of %2.").arg(node.toElement().text(), it->name));
+                throw QInstaller::Error(QObject::tr("Couldn't find any user interface matching %1 while "
+                    "copying user interfaces of %2.").arg(node.toElement().text(), it->name));
             }
 
             for (QStringList::const_iterator ui = uis.begin(); ui != uis.end(); ++ui) {
@@ -325,8 +323,8 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                 if (!QFile::copy(QString::fromLatin1("%1/meta/%2").arg(it->directory, *ui),
                     QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, *ui))) {
                         qDebug() << "failed!";
-                        throw Error(QObject::tr("Could not copy the UI file %1 to its target location "
-                            "%2.").arg(*ui, it->name));
+                        throw QInstaller::Error(QObject::tr("Could not copy the UI file %1 to its target "
+                            "location %2.").arg(*ui, it->name));
                 } else {
                     qDebug() << "done";
                 }
@@ -350,8 +348,8 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                 const QDir dir(QString::fromLatin1("%1/meta").arg(it->directory));
                 const QStringList qms = dir.entryList(QStringList(node.toElement().text()), QDir::Files);
                 if (qms.isEmpty()) {
-                    throw Error(QObject::tr("Could not find any translation file matching %1 while "
-                        "copying translations of %2.").arg(node.toElement().text(), it->name));
+                    throw QInstaller::Error(QObject::tr("Could not find any translation file matching %1 "
+                        "while copying translations of %2.").arg(node.toElement().text(), it->name));
                 }
 
                 for (QStringList::const_iterator qm = qms.begin(); qm != qms.end(); ++qm) {
@@ -361,8 +359,8 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                     if (!QFile::copy(QString::fromLatin1("%1/meta/%2").arg(it->directory, *qm),
                         QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, *qm))) {
                             qDebug() << "failed!";
-                            throw Error(QObject::tr("Could not copy the translation %1 to its target "
-                                "location %2.").arg(*qm, it->name));
+                            throw QInstaller::Error(QObject::tr("Could not copy the translation %1 to its "
+                                "target location %2.").arg(*qm, it->name));
                     } else {
                         qDebug() << "done";
                     }
@@ -386,7 +384,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                 const QString &sourceFile =
                     QString::fromLatin1("%1/meta/%2").arg(it->directory).arg(licenseFile);
                 if (!QFile::exists(sourceFile)) {
-                    throw Error(QObject::tr("Could not find any license matching %1 while "
+                    throw QInstaller::Error(QObject::tr("Could not find any license matching %1 while "
                         "copying license files of %2.").arg(licenseFile, it->name));
                 }
 
@@ -395,7 +393,7 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
                 if (!QFile::copy(sourceFile, QString::fromLatin1("%1/%2/%3")
                     .arg(metapath, it->name, licenseFile))) {
                         qDebug() << "failed!";
-                        throw Error(QObject::tr("Could not copy the license file %1 to its "
+                        throw QInstaller::Error(QObject::tr("Could not copy the license file %1 to its "
                             "target location %2.").arg(licenseFile, it->name));
                 } else {
                     qDebug() << "done.";
@@ -437,11 +435,11 @@ void QInstaller::generateMetaDataDirectory(const QString &outDir, const QString 
     const QString updatesXmlFile = QFileInfo(metapath, "Updates.xml").absoluteFilePath();
     QFile updatesXml(updatesXmlFile);
 
-    openForWrite(&updatesXml, updatesXmlFile);
-    blockingWrite(&updatesXml, doc.toByteArray());
+    QInstaller::openForWrite(&updatesXml, updatesXmlFile);
+    QInstaller::blockingWrite(&updatesXml, doc.toByteArray());
 }
 
-PackageInfoVector QInstaller::createListOfPackages(const QString &packagesDirectory,
+PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesDirectory,
     const QStringList &filteredPackages, FilterType filterType)
 {
     qDebug() << "Collecting information about available packages...";
@@ -465,8 +463,8 @@ PackageInfoVector QInstaller::createListOfPackages(const QString &packagesDirect
             if (ignoreInvalidPackages)
                 continue;
             throw QInstaller::Error(QObject::tr("Component %1 can't contain '-'. This is not allowed, because "
-                "it is used as the separator between the component name and the version number internally.").arg(
-                it->fileName()));
+                "it is used as the separator between the component name and the version number internally.")
+                .arg(it->fileName()));
         }
 
         QFile file(QString::fromLatin1("%1/meta/package.xml").arg(it->filePath()));
@@ -525,7 +523,7 @@ PackageInfoVector QInstaller::createListOfPackages(const QString &packagesDirect
     return dict;
 }
 
-QMap<QString, QString> QInstaller::buildPathToVersionMap(const PackageInfoVector &info)
+QMap<QString, QString> QInstallerTools::buildPathToVersionMap(const PackageInfoVector &info)
 {
     QMap<QString, QString> map;
     foreach (const PackageInfo &inf, info)
@@ -548,7 +546,7 @@ static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const
     }
 }
 
-void QInstaller::compressMetaDirectories(const QString &repoDir, const QString &baseDir,
+void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QString &baseDir,
     const QMap<QString, QString> &versionMapping)
 {
     QDomDocument doc;
@@ -590,12 +588,13 @@ void QInstaller::compressMetaDirectories(const QString &repoDir, const QString &
             throw QInstaller::Error(QObject::tr("Could not move %1 to %2").arg(tmpTarget, finalTarget));
     }
 
-    openForWrite(&existingUpdatesXml, existingUpdatesXml.fileName());
-    blockingWrite(&existingUpdatesXml, doc.toByteArray());
+    QInstaller::openForWrite(&existingUpdatesXml, existingUpdatesXml.fileName());
+    QInstaller::blockingWrite(&existingUpdatesXml, doc.toByteArray());
     existingUpdatesXml.close();
 }
 
-void QInstaller::copyComponentData(const QString &packageDir, const QString &repoDir, PackageInfoVector &infos)
+void QInstallerTools::copyComponentData(const QString &packageDir, const QString &repoDir,
+    PackageInfoVector &infos)
 {
     for (int i = 0; i < infos.count(); ++i) {
         const PackageInfo info = infos.at(i);
@@ -616,7 +615,7 @@ void QInstaller::copyComponentData(const QString &packageDir, const QString &rep
                 target = QString::fromLatin1("%1/%2/%4%3").arg(repoDir, name, entry, info.version);
                 QFile tmp(dataDir.absoluteFilePath(entry));
                 qDebug() << QString::fromLatin1("Copying archive from %1 to %2").arg(tmp.fileName(), target);
-                openForRead(&tmp, tmp.fileName());
+                QInstaller::openForRead(&tmp, tmp.fileName());
                 if (!tmp.copy(target)) {
                     throw QInstaller::Error(QObject::tr("Could not copy %1 to %2: %3").arg(tmp.fileName(),
                         target, tmp.errorString()));
@@ -624,7 +623,7 @@ void QInstaller::copyComponentData(const QString &packageDir, const QString &rep
             } else if (fileInfo.isDir()) {
                 qDebug() << "Compressing data directory" << entry;
                 target = QString::fromLatin1("%1/%2/%4%3.7z").arg(repoDir, name, entry, info.version);
-                QInstaller::compressDirectory(QStringList() << dataDir.absoluteFilePath(entry), target);
+                QInstallerTools::compressDirectory(QStringList() << dataDir.absoluteFilePath(entry), target);
             } else {
                 continue;
             }
@@ -637,18 +636,18 @@ void QInstaller::copyComponentData(const QString &packageDir, const QString &rep
             qDebug() << "Creating hash of archive" << archiveFile.fileName();
 
             try {
-                openForRead(&archiveFile, archiveFile.fileName());
+                QInstaller::openForRead(&archiveFile, archiveFile.fileName());
                 const QByteArray archiveData = archiveFile.readAll();
                 archiveFile.close();
 
-                openForWrite(&archiveHashFile, archiveHashFile.fileName());
+                QInstaller::openForWrite(&archiveHashFile, archiveHashFile.fileName());
                 const QByteArray hashOfArchiveData = QCryptographicHash::hash(archiveData,
                     QCryptographicHash::Sha1).toHex();
                 archiveHashFile.write(hashOfArchiveData);
                 qDebug() << "Generated sha1 hash:" << hashOfArchiveData;
                 infos[i].copiedArchives.append(archiveHashFile.fileName());
                 archiveHashFile.close();
-            } catch (const Error &/*e*/) {
+            } catch (const QInstaller::Error &/*e*/) {
                 archiveFile.close();
                 archiveHashFile.close();
                 throw;
@@ -656,3 +655,5 @@ void QInstaller::copyComponentData(const QString &packageDir, const QString &rep
         }
     }
 }
+
+}   // namespace QInstallerTools
