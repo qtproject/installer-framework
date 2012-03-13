@@ -17,6 +17,4 @@ SOURCES = environmentvariabletest.cpp
 HEADERS = environmentvariabletest.h 
 
 LIBS = -L../../installerbuilder/lib -linstaller $$LIBS
-win32:LIBS += ole32.lib oleaut32.lib user32.lib
-win32:OBJECTS_DIR = .obj
 

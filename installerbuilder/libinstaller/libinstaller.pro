@@ -180,10 +180,11 @@ win32:SOURCES += adminauthorization_win.cpp
 macx:SOURCES += adminauthorization_mac.cpp
 unix:!macx: SOURCES += adminauthorization_x11.cpp
 
-win32:OBJECTS_DIR = .obj
-win32:LIBS += ole32.lib \
-    oleaut32.lib \
-    user32.lib
+# Needed by createshortcutoperation
+win32:LIBS += -lole32
+
+# Needed by 7zip
+win32:LIBS += -loleaut32 -lUser32
 
 # Needed by kdtools (in kdlog_win.cpp):
 win32:LIBS += advapi32.lib psapi.lib
@@ -191,7 +192,7 @@ macx:LIBS += -framework Carbon
 
 CONFIG( shared, static|shared ): {
   DEFINES += LIB_INSTALLER_SHARED
-  win32: LIBS += shell32.lib
+  win32: LIBS += -lshell32
 }
 
 macx: LIBS += -framework Security

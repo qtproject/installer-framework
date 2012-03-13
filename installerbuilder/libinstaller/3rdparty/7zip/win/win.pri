@@ -5,8 +5,6 @@ isEmpty(7ZIP_BASE): error(Please call qmake with 7ZIP_BASE=<path to nokia-sdk so
 
 CONFIG += no_batch # this is needed because we have a same named *.c and *.cpp file -> 7in
 
-win32:LIBS += -loleaut32 -luser32 -ladvapi32
-
 DEFINES += WIN_LONG_PATH _UNICODE _CRT_SECURE_NO_WARNINGS
 
 INCLUDEPATH += $$7ZIP_BASE/CPP
