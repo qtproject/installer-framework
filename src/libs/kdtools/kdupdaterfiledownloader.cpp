@@ -24,9 +24,9 @@
 #include "kdupdaterfiledownloaderfactory.h"
 
 #include <QFile>
-#include <QFtp>
-#include <QNetworkAccessManager>
-#include <QNetworkProxyFactory>
+#include <QtNetwork/QFtp>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkProxyFactory>
 #include <QPointer>
 #include <QUrl>
 #include <QTemporaryFile>

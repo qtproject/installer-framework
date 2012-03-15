@@ -23,8 +23,8 @@
 #include "kdupdaterupdatesinfo_p.h"
 
 #include <QCoreApplication>
-#include <QDomDocument>
-#include <QDomElement>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
 #include <QFile>
 #include <QSharedData>
 

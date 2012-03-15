@@ -33,7 +33,7 @@
 #include "registerdocumentationoperation.h"
 
 #include <QSettings>
-#include <QHelpEngine>
+#include <QtHelp/QHelpEngine>
 #include <QString>
 #include <QFileInfo>
 #include <QDir>

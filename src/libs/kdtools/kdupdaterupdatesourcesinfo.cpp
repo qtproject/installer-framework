@@ -23,10 +23,10 @@
 #include "kdupdaterupdatesourcesinfo.h"
 #include "kdupdaterapplication.h"
 
-#include <QDomElement>
-#include <QDomDocument>
-#include <QDomText>
-#include <QDomCDATASection>
+#include <QtXml/QDomElement>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomText>
+#include <QtXml/QDomCDATASection>
 #include <QFileInfo>
 #include <QFile>
 #include <QTextStream>

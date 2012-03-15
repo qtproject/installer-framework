@@ -79,7 +79,7 @@
 #include "kdupdaterfiledownloaderfactory.h"
 
 #include <QtPlugin>
-#include <QNetworkProxyFactory>
+#include <QtNetwork/QNetworkProxyFactory>
 
 #include <unix/C/7zCrc.h>
 

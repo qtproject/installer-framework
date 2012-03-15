@@ -24,8 +24,8 @@
 #include "kdupdaterapplication.h"
 
 #include <QFileInfo>
-#include <QDomDocument>
-#include <QDomElement>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
 #include <QVector>
 
 using namespace KDUpdater;
