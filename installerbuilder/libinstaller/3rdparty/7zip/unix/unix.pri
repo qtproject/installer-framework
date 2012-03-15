@@ -5,7 +5,7 @@ isEmpty(7ZIP_BASE): error(Please call qmake with 7ZIP_BASE=<path to nokia-sdk so
 
 DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE NDEBUG _REENTRANT ENV_UNIX BREAK_HANDLER UNICODE _UNICODE
 
-unix:!macx:DEFINES += ENV_MACOSX
+macx:DEFINES += ENV_MACOSX
 
 CXXFLAGS += -fvisibility
 
