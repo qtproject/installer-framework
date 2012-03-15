@@ -1,17 +1,16 @@
 TEMPLATE = app
 DEPENDPATH += . ..
 INCLUDEPATH += . ..
+TARGET = fileengineclient
 
-DESTDIR = ../../installerbuilder/bin
+include(../../installerfw.pri)
+
+QT -= gui
+QT += network
+LIBS += -linstaller
 
 CONFIG += console
 CONFIG -= app_bundle
+DESTDIR = $$IFW_APP_PATH
 
-QT += network
-
-include(../../installerbuilder/libinstaller/libinstaller.pri)
-
-# Input
 SOURCES += fileengineclient.cpp
-
-LIBS = -L../../installerbuilder/lib -linstaller $$LIBS

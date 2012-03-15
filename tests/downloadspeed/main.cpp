@@ -91,7 +91,7 @@ public slots:
 
     void downloadSpeed(qint64 speed)
     {
-        qDebug() << "Download speed:" << humanReadableSize(speed) + "/sec";
+        qDebug() << "Download speed:" << humanReadableSize(speed) + QLatin1String("/sec");
     }
 
     void downloadProgress(double progress)
@@ -113,19 +113,19 @@ public slots:
 
         QString days;
         if (d > 0)
-            days = QString::number(d) + (d < 2 ? " day" : " days") + QLatin1String(", ");
+            days = QString::number(d) + QLatin1String(d < 2 ? " day" : " days") + QLatin1String(", ");
 
         QString hours;
         if (h > 0)
-            hours = QString::number(h) + (h < 2 ? " hour" : " hours") + QLatin1String(", ");
+            hours = QString::number(h) + QLatin1String(h < 2 ? " hour" : " hours") + QLatin1String(", ");
 
         QString minutes;
         if (m > 0)
-            minutes = QString::number(m) + (m < 2 ? " minute" : " minutes");
+            minutes = QString::number(m) + QLatin1String(m < 2 ? " minute" : " minutes");
 
         QString seconds;
         if (s >= 0 && minutes.isEmpty())
-            seconds = QString::number(s) + (s < 2 ? " second" : " seconds");
+            seconds = QString::number(s) + QLatin1String(s < 2 ? " second" : " seconds");
 
         qDebug() << days + hours + minutes + seconds + tr("remaining.");
     }

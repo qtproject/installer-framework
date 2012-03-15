@@ -1,19 +1,17 @@
 TEMPLATE = app
+DEPENDPATH += . ..
+INCLUDEPATH += . ..
 TARGET = extractarchiveoperationtest
 
-DESTDIR = bin
+include(../../installerfw.pri)
 
-CONFIG -= app_bundle
-
-QT += testlib script
 QT -= gui
+QT += testlib
+LIBS += -linstaller
 
-INCLUDEPATH += . .. ../../installerbuilder/libinstaller
-DEPENDPATH += . .. ../../installerbuilder/libinstaller
+CONFIG += console
+CONFIG -= app_bundle
+DESTDIR = $$IFW_APP_PATH
 
-include(../../installerbuilder/libinstaller/libinstaller.pri)
-
+HEADERS = extractarchiveoperationtest.h
 SOURCES = extractarchiveoperationtest.cpp
-HEADERS = extractarchiveoperationtest.h 
-
-LIBS = -L../../installerbuilder/lib -linstaller $$LIBS

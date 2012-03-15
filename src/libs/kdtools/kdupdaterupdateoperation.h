@@ -28,7 +28,7 @@
 #include <QCoreApplication>
 #include <QStringList>
 #include <QVariant>
-#include <QDomDocument>
+#include <QtXml/QDomDocument>
 
 namespace KDUpdater {
 

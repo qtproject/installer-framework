@@ -1,33 +1,38 @@
 TEMPLATE = app
-TARGET =
+DEPENDPATH += . ..
+INCLUDEPATH += . ..
+TARGET = testapp
 
-include( ../../installerbuilder/libinstaller/libinstaller.pri )
-LIBS = -L$$OUT_PWD/../../installerbuilder/lib -linstaller $$LIBS
+include(../../installerfw.pri)
 
-DESTDIR = packages/com.nokia.testapp/data
-
-QT += script network xml sql
-CONFIG += uitools help
-contains(CONFIG, static): {
-    QTPLUGIN += qsqlite
-    DEFINES += USE_STATIC_SQLITE_PLUGIN
+!static {
+    warning("You can use this example only with a static build of Qt and IFW!")
 }
 
-# Input
-FORMS += componentselectiondialog.ui updatesettingsdialog.ui updatesettingswidget.ui
-HEADERS += mainwindow.h \
-    componentselectiondialog.h \
-    updatesettingsdialog.h \
-    updateagent.h \
-    updatesettingswidget.h
+LIBS += -linstaller
+DESTDIR = packages/com.nokia.testapp/data
 
-SOURCES += main.cpp mainwindow.cpp \
-    componentselectiondialog.cpp \
-    updatesettingsdialog.cpp \
-    updateagent.cpp \
-    updatesettingswidget.cpp
+FORMS += \
+        componentselectiondialog.ui \
+        updatesettingsdialog.ui \
+        updatesettingswidget.ui
+
+HEADERS += mainwindow.h \
+        componentselectiondialog.h \
+        updatesettingsdialog.h \
+        updateagent.h \
+        updatesettingswidget.h
+
+SOURCES += main.cpp \
+        mainwindow.cpp \
+        componentselectiondialog.cpp \
+        updatesettingsdialog.cpp \
+        updateagent.cpp \
+        updatesettingswidget.cpp
 
 RESOURCES += testapp.qrc
 
-macx:QMAKE_POST_LINK = ($$OUT_PWD/../../installerbuilder/bin/binarycreator -p packages -c config -t ../../installerbuilder/bin/installerbase TestAppInstaller.app com.nokia.testapp)
-win32:QMAKE_POST_LINK = ($$OUT_PWD\\..\\..\\installerbuilder\\bin\\binarycreator.exe -p $$PWD\\packages -c $$PWD\\config -t $$OUT_PWD\\..\\..\\installerbuilder\\bin\\installerbase.exe TestAppInstaller.exe com.nokia.testapp)
+isEqual(IFW_SOURCE_TREE, $$IFW_BUILD_TREE) {
+    macx:QMAKE_POST_LINK = ($$IFW_APP_PATH/binarycreator -p $$PWD/packages -c $$PWD/config -t $$IFW_APP_PATH/installerbase TestAppInstaller.app com.nokia.testapp)
+    win32:QMAKE_POST_LINK = ($$IFW_APP_PATH/binarycreator.exe -p $$PWD/packages -c $$PWD/config -t $$IFW_APP_PATH/installerbase.exe TestAppInstaller.exe com.nokia.testapp)
+}

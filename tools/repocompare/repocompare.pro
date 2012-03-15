@@ -1,20 +1,18 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2011-04-04T09:43:46
-#
-#-------------------------------------------------
-
-QT       += core gui network
-
-TARGET = repocompare
 TEMPLATE = app
+DEPENDPATH += . ..
+INCLUDEPATH += . ..
+TARGET = repocompare
 
+include(../../installerfw.pri)
+
+QT += network
+DESTDIR = $$IFW_APP_PATH
 
 SOURCES += main.cpp\
         mainwindow.cpp \
         repositorymanager.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS += mainwindow.h \
         repositorymanager.h
 
-FORMS    += mainwindow.ui
+FORMS += mainwindow.ui

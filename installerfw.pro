@@ -1,6 +1,6 @@
 CONFIG += ordered
 TEMPLATE = subdirs
-SUBDIRS += installerbuilder tools
+SUBDIRS += src tools
 !macx:SUBDIRS += examples
 
 test.target = test

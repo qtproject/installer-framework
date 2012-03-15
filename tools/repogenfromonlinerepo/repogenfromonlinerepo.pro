@@ -6,7 +6,7 @@ TARGET = repogenfromonlinerepo
 include(../../installerfw.pri)
 
 QT -= gui
-QT += xml network
+QT += network
 
 CONFIG += console
 CONFIG -= app_bundle

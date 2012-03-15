@@ -424,7 +424,7 @@ static void printUsage()
 static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector &packages,
     const QString &packagesDir, const QString &configdir)
 {
-    const QString configfile = QFileInfo(configdir, "config.xml").absoluteFilePath();
+    const QString configfile = QFileInfo(configdir, QLatin1String("config.xml")).absoluteFilePath();
     const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, QString());
 
     const QString metapath = createTemporaryDirectory();
@@ -438,7 +438,7 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
     QDirIterator it(absoluteConfigPath, QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
     while (it.hasNext()) {
         const QString next = it.next();
-        if (next.contains("/.")) // skip files that are in directories starting with a point
+        if (next.contains(QLatin1String("/."))) // skip files that are in directories starting with a point
             continue;
 
         qDebug() << "\tFound configuration file: " << next;
@@ -649,7 +649,8 @@ int main(int argc, char **argv)
             filteredPackages, ftype);
         const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configDir);
         {
-            QSettings confInternal(metaDir + "/config/config-internal.ini", QSettings::IniFormat);
+            QSettings confInternal(metaDir + QLatin1String("/config/config-internal.ini")
+                , QSettings::IniFormat);
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
         }
 

@@ -1,20 +1,17 @@
 TEMPLATE = app
-TARGET = tst_environmentvariable
+DEPENDPATH += . ..
+INCLUDEPATH += . ..
+TARGET = environmentvariable
 
-DESTDIR = bin
+include(../../installerfw.pri)
 
-CONFIG -= app_bundle
-
-QT += testlib script
 QT -= gui
+QT += testlib
+LIBS += -linstaller
 
-INCLUDEPATH += . .. ../../installerbuilder/libinstaller
-DEPENDPATH += . .. ../../installerbuilder/libinstaller
+CONFIG += console
+CONFIG -= app_bundle
+DESTDIR = $$IFW_APP_PATH
 
-include(../../installerbuilder/libinstaller/libinstaller.pri)
-
-SOURCES = environmentvariabletest.cpp
 HEADERS = environmentvariabletest.h 
-
-LIBS = -L../../installerbuilder/lib -linstaller $$LIBS
-
+SOURCES = environmentvariabletest.cpp

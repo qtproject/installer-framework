@@ -1,31 +1,20 @@
 TEMPLATE = lib
 TARGET = installer
-
+DEPENDPATH += . ..
 INCLUDEPATH += . ..
-DEPENDPATH += . .. 3rdparty/kdtools
 
-DESTDIR = $$OUT_PWD/../lib
-DLLDESTDIR = $$OUT_PWD/../bin
+include(../7zip/7zip.pri)
+include(../kdtools/kdtools.pri)
+include(../../../installerfw.pri)
 
-DEFINES += QT_NO_CAST_FROM_ASCII \
-    BUILD_LIB_INSTALLER
+DESTDIR = $$IFW_LIB_PATH
+DLLDESTDIR = $$IFW_APP_PATH
 
-CONFIG( shared, static|shared ){
-    DEFINES += KDTOOLS_SHARED
-}
+DEFINES += BUILD_LIB_INSTALLER
 
 QT += script \
     network \
-    sql
-CONFIG += help uitools
-
-contains(CONFIG, static): {
-    QTPLUGIN += qsqlite
-    DEFINES += USE_STATIC_SQLITE_PLUGIN
-}
-
-include(3rdparty/7zip/7zip.pri)
-include(3rdparty/kdtools/kdtools.pri)
+    xml
 
 HEADERS += packagemanagercore.h \
     packagemanagercore_p.h \
@@ -97,7 +86,8 @@ HEADERS += packagemanagercore.h \
     qsettingswrapper.h \
     constants.h \
     packagemanagerproxyfactory.h \
-    createlocalrepositoryoperation.h
+    createlocalrepositoryoperation.h \
+    lib7z_facade.h
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -165,34 +155,25 @@ SOURCES += packagemanagercore.cpp \
     qsettingswrapper.cpp \
     settings.cpp \
     packagemanagerproxyfactory.cpp \
-    createlocalrepositoryoperation.cpp
-
-macx {
-    HEADERS +=  macrelocateqt.h \
-                macreplaceinstallnamesoperation.h
-    SOURCES +=  macrelocateqt.cpp \
-                macreplaceinstallnamesoperation.cpp
-}
-
-win32:SOURCES += adminauthorization_win.cpp
-macx:SOURCES += adminauthorization_mac.cpp
-unix:!macx: SOURCES += adminauthorization_x11.cpp
-
-# Needed by createshortcutoperation
-win32:LIBS += -lole32
-
-# Needed by 7zip
-win32:LIBS += -loleaut32 -lUser32
-
-# Needed by kdtools (in kdlog_win.cpp):
-win32:LIBS += advapi32.lib psapi.lib
-macx:LIBS += -framework Carbon
-
-CONFIG( shared, static|shared ): {
-  DEFINES += LIB_INSTALLER_SHARED
-  win32: LIBS += -lshell32
-}
-
-macx: LIBS += -framework Security
+    createlocalrepositoryoperation.cpp \
+    lib7z_facade.cpp
 
 RESOURCES += resources/patch_file_lists.qrc
+
+macx {
+    HEADERS += macrelocateqt.h \
+               macreplaceinstallnamesoperation.h
+    SOURCES += adminauthorization_mac.cpp \
+               macrelocateqt.cpp \
+               macreplaceinstallnamesoperation.cpp
+}
+
+unix:!macx:SOURCES += adminauthorization_x11.cpp
+
+win32 {
+    SOURCES += adminauthorization_win.cpp
+    LIBS += -loleaut32 -lUser32     # 7zip
+    LIBS += advapi32.lib psapi.lib  # kdtools
+    LIBS += -lole32 # createshortcutoperation
+    CONFIG(shared, static|shared):LIBS += -lshell32
+}

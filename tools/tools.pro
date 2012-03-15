@@ -1,7 +1,11 @@
 CONFIG += ordered
 TEMPLATE = subdirs
-SUBDIRS += extractbinarydata \
+
+SUBDIRS += \
+    archivegen \
+    binarycreator \
+    extractbinarydata \
     repocompare \
+    repogen \
     repogenfromonlinerepo
 win32:SUBDIRS += maddehelper
-

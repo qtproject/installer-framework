@@ -3,16 +3,15 @@ TARGET = repogen
 DEPENDPATH += . .. ../common
 INCLUDEPATH += . .. ../common
 
-DESTDIR = ../bin
+include(../../installerfw.pri)
+
+QT -= gui
+LIBS += -linstaller
 
 CONFIG += console
 CONFIG -= app_bundle
+DESTDIR = $$IFW_APP_PATH
 
-QT += xml
-
-include(../libinstaller/libinstaller.pri)
-
-# Input
 SOURCES += repogen.cpp \
            repositorygen.cpp
 HEADERS += repositorygen.h

@@ -110,15 +110,15 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
     // use existing Updates.xml, if any
     QFile existingUpdatesXml(QFileInfo(dataDir, QLatin1String("Updates.xml")).absoluteFilePath());
     if (!existingUpdatesXml.open(QIODevice::ReadOnly) || !doc.setContent(&existingUpdatesXml)) {
-        root = doc.createElement("Updates");
-        root.appendChild(doc.createElement("ApplicationName")).appendChild(
+        root = doc.createElement(QLatin1String("Updates"));
+        root.appendChild(doc.createElement(QLatin1String("ApplicationName"))).appendChild(
             doc.createTextNode(appName));
-        root.appendChild(doc.createElement("ApplicationVersion")).appendChild(
+        root.appendChild(doc.createElement(QLatin1String("ApplicationVersion"))).appendChild(
             doc.createTextNode(appVersion));
-        root.appendChild(doc.createElement("Checksum")).appendChild(
+        root.appendChild(doc.createElement(QLatin1String("Checksum"))).appendChild(
             doc.createTextNode(QLatin1String("true")));
         if (!redirectUpdateUrl.isEmpty()) {
-            root.appendChild(doc.createElement("RedirectUpdateUrl")).appendChild(
+            root.appendChild(doc.createElement(QLatin1String("RedirectUpdateUrl"))).appendChild(
                 doc.createTextNode(redirectUpdateUrl));
         }
     } else {
@@ -152,9 +152,9 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
             throw QInstaller::Error(QObject::tr("Could not parse %1: line: %2, column: %3: %4 (%5)")
                 .arg(packageXmlPath, QString::number(line), QString::number(col), errMsg, it->name));
         }
-        const QDomNode package = packageXml.firstChildElement("Package");
+        const QDomNode package = packageXml.firstChildElement(QLatin1String("Package"));
 
-        QDomElement update = doc.createElement("PackageUpdate");
+        QDomElement update = doc.createElement(QLatin1String("PackageUpdate"));
 
         const QDomNodeList childNodes = package.childNodes();
         for (int i = 0; i < childNodes.count(); ++i) {
@@ -220,12 +220,13 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         }
 
         // add fake update files
-        const QStringList platforms = QStringList() << "Windows" << "MacOSX" << "Linux";
+        const QStringList platforms = QStringList() << QLatin1String("Windows") << QLatin1String("MacOSX")
+            << QLatin1String("Linux");
         foreach (const QString &platform, platforms) {
-            QDomElement file = doc.createElement("UpdateFile");
-            file.setAttribute("OS", platform);
-            file.setAttribute("UncompressedSize", componentSize);
-            file.setAttribute("CompressedSize", compressedComponentSize);
+            QDomElement file = doc.createElement(QLatin1String("UpdateFile"));
+            file.setAttribute(QLatin1String("OS"), platform);
+            file.setAttribute(QLatin1String("UncompressedSize"), componentSize);
+            file.setAttribute(QLatin1String("CompressedSize"), compressedComponentSize);
             file.appendChild(doc.createTextNode(QLatin1String("(null)")));
             update.appendChild(file);
         }
@@ -236,7 +237,7 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
             throw QInstaller::Error(QObject::tr("Could not create directory %1.").arg(it->name));
 
         // copy scripts
-        const QString script = package.firstChildElement("Script").text();
+        const QString script = package.firstChildElement(QLatin1String("Script")).text();
         if (!script.isEmpty()) {
 
             QFile scriptFile(script);
@@ -247,9 +248,10 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
             }
 
             // added the xml tag RequiresAdminRights to the xml if somewhere addElevatedOperation is used
-            if (scriptContent.contains("addElevatedOperation")) {
-                QDomElement requiresAdminRightsElement = doc.createElement("RequiresAdminRights");
-                requiresAdminRightsElement.appendChild(doc.createTextNode("true"));
+            if (scriptContent.contains(QLatin1String("addElevatedOperation"))) {
+                QDomElement requiresAdminRightsElement =
+                    doc.createElement(QLatin1String("RequiresAdminRights"));
+                requiresAdminRightsElement.appendChild(doc.createTextNode(QLatin1String("true")));
             }
 
             qDebug() << "\tCopying associated script" << script << "into the meta package...";
@@ -265,7 +267,7 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         }
 
         // copy user interfaces
-        const QDomNodeList uiNodes = package.firstChildElement("UserInterfaces").childNodes();
+        const QDomNodeList uiNodes = package.firstChildElement(QLatin1String("UserInterfaces")).childNodes();
         QStringList userinterfaces;
         for (int i = 0; i < uiNodes.count(); ++i) {
             const QDomNode node = uiNodes.at(i);
@@ -300,7 +302,7 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         }
 
         // copy translations
-        const QDomNodeList qmNodes = package.firstChildElement("Translations").childNodes();
+        const QDomNodeList qmNodes = package.firstChildElement(QLatin1String("Translations")).childNodes();
         QStringList translations;
         if (!qApp->arguments().contains(QString::fromLatin1("--ignore-translations"))) {
             for (int i = 0; i < qmNodes.count(); ++i) {
@@ -338,7 +340,7 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         }
 
         // copy license files
-        const QDomNodeList licenseNodes = package.firstChildElement("Licenses").childNodes();
+        const QDomNodeList licenseNodes = package.firstChildElement(QLatin1String("Licenses")).childNodes();
         for (int i = 0; i < licenseNodes.count(); ++i) {
             const QDomNode licenseNode = licenseNodes.at(i);
             if (licenseNode.nodeName() == QLatin1String("License")) {
@@ -390,12 +392,12 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         }
 
         if (licenseNodes.count() > 0)
-            update.appendChild(package.firstChildElement("Licenses").cloneNode());
+            update.appendChild(package.firstChildElement(QLatin1String("Licenses")).cloneNode());
     }
 
     doc.appendChild(root);
 
-    const QString updatesXmlFile = QFileInfo(metapath, "Updates.xml").absoluteFilePath();
+    const QString updatesXmlFile = QFileInfo(metapath, QLatin1String("Updates.xml")).absoluteFilePath();
     QFile updatesXml(updatesXmlFile);
 
     QInstaller::openForWrite(&updatesXml, updatesXmlFile);

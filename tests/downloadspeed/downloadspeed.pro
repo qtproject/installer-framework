@@ -1,11 +1,12 @@
 TEMPLATE = app
 DEPENDPATH += . ..
 INCLUDEPATH += . ..
-TARGET = extractbinarydata
+TARGET = downloadspeed
 
 include(../../installerfw.pri)
 
 QT -= gui
+QT += network
 LIBS += -linstaller
 
 CONFIG += console
