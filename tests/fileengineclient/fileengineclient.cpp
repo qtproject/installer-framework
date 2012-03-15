@@ -33,7 +33,7 @@
 #include <fsengineclient.h>
 
 #include <QProcess>
-#include <QApplication>
+#include <QCoreApplication>
 #include <QThread>
 #include <QDebug>
 
@@ -47,7 +47,7 @@ public:
     {
         m_process = processWrapper;
         QObject::connect(m_process, SIGNAL(readyRead()),
-            this, SLOT(readProcessOutput()), Qt::DirectConnection );
+            this, SLOT(readProcessOutput()), Qt::DirectConnection);
     }
     void clearSavedOutPut() { m_savedOutPut.clear(); }
     QByteArray savedOutPut() { return m_savedOutPut; }
@@ -58,10 +58,11 @@ public slots:
            Q_ASSERT(m_process);
            Q_ASSERT(QThread::currentThread() == m_process->thread());
            if (QThread::currentThread() != m_process->thread()) {
-               qDebug() << Q_FUNC_INFO << QLatin1String(" can only be called from the same thread as the process is.") ;
+               qDebug() << Q_FUNC_INFO << QLatin1String("can only be called from the same thread as the "
+                "process is.");
            }
            const QByteArray output = m_process->readAll();
-           if( !output.isEmpty() ) {
+           if (!output.isEmpty()) {
                m_savedOutPut.append(output);
                qDebug() << output;
            }
@@ -75,18 +76,19 @@ private:
 
 int main(int argc, char **argv)
 {
-    QApplication app(argc, argv);
+    QCoreApplication app(argc, argv);
 
 
     QString fileName(QLatin1String("give_me_some_output.bat"));
     QFile file(fileName);
     if (file.exists() && !file.remove()) {
-        qFatal( qPrintable( QString("something is wrong, can not delete: %1").arg(file.fileName()) ) );
+        qFatal(qPrintable(QString::fromLatin1("something is wrong, can not delete: %1").arg(file.fileName())));
         return -1;
     }
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        qFatal( qPrintable( QString("something is wrong, can not open for writing to: %1").arg(file.fileName()) ) );
+        qFatal(qPrintable(QString::fromLatin1("something is wrong, can not open for writing to: %1")
+            .arg(file.fileName())));
         return -2;
     }
 
@@ -94,7 +96,7 @@ int main(int argc, char **argv)
     out << QLatin1String("echo mega test output");
     if (!file.flush())
     {
-        qFatal( qPrintable( QString("something is wrong, can not write to: %1").arg(file.fileName()) ) );
+        qFatal(qPrintable(QString::fromLatin1("something is wrong, can not write to: %1").arg(file.fileName())));
         return -3;
     }
     file.close();
@@ -110,7 +112,7 @@ int main(int argc, char **argv)
         qDebug() << "1";
         {
             const QByteArray output = process.readAll();
-            if( !output.isEmpty() ) {
+            if (!output.isEmpty()) {
                 qDebug() << output;
             }
         }
@@ -118,7 +120,7 @@ int main(int argc, char **argv)
         qDebug() << "2";
         {
             const QByteArray output = process.readAll();
-            if( !output.isEmpty() ) {
+            if (!output.isEmpty()) {
                 qDebug() << output;
             }
         }
@@ -126,7 +128,7 @@ int main(int argc, char **argv)
         qDebug() << "3";
         {
             const QByteArray output = process.readAll();
-            if( !output.isEmpty() ) {
+            if (!output.isEmpty()) {
                 qDebug() << output;
             }
         }
@@ -146,7 +148,7 @@ int main(int argc, char **argv)
         qDebug() << "1";
         {
             const QByteArray output = process.readAll();
-            if( !output.isEmpty() ) {
+            if (!output.isEmpty()) {
                 qDebug() << output;
             }
         }
@@ -154,7 +156,7 @@ int main(int argc, char **argv)
         qDebug() << "2";
         {
             const QByteArray output = process.readAll();
-            if( !output.isEmpty() ) {
+            if (!output.isEmpty()) {
                 qDebug() << output;
             }
         }
@@ -162,7 +164,7 @@ int main(int argc, char **argv)
         qDebug() << "3";
         {
             const QByteArray output = process.readAll();
-            if( !output.isEmpty() ) {
+            if (!output.isEmpty()) {
                 qDebug() << output;
             }
         }
@@ -170,7 +172,8 @@ int main(int argc, char **argv)
     }
 
     if (firstOutPut != secondOutPut) {
-        qFatal( qPrintable( QString("Test failed: output is different between a normal QProcess and QProcessWrapper").arg(file.fileName()) ) );
+        qFatal(qPrintable(QString::fromLatin1("Test failed: output is different between a normal QProcess "
+            "and QProcessWrapper: %1").arg(file.fileName())));
         return -2;
     } else {
         qDebug() << QLatin1String("Test OK: QProcess works as expected.");

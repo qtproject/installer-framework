@@ -66,7 +66,7 @@ void EnvironmentVariableTest::testPersistentNonSystem()
     QVERIFY2(ok, qPrintable(op.errorString()));
 
     // Verify now...
-    QSettings settings("HKEY_CURRENT_USER\\Environment", QSettings::NativeFormat);
+    QSettings settings(QLatin1String("HKEY_CURRENT_USER\\Environment"), QSettings::NativeFormat);
     QVERIFY(value == settings.value(key).toString());
 
     // Remove the setting
@@ -94,7 +94,7 @@ void EnvironmentVariableTest::testNonPersistentNonSystem()
 
     QVERIFY2(ok, qPrintable(op.errorString()));
 
-    QString comp = qgetenv(qPrintable(key));
+    QString comp = QString::fromLocal8Bit(qgetenv(qPrintable(key)));
     QCOMPARE(value, comp);
 }
 

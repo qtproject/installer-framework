@@ -32,11 +32,11 @@
 
 #include <fsengineserver.h>
 
-#include <QApplication>
+#include <QCoreApplication>
 
 int main(int argc, char **argv)
 {
-    QApplication app(argc, argv);
+    QCoreApplication app(argc, argv);
     FSEngineServer server(39999);
     server.enableTestMode();
     return app.exec();

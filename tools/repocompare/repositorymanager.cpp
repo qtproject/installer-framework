@@ -75,7 +75,7 @@ void RepositoryManager::setProductionRepository(const QString &repo)
 {
     QUrl url(repo);
     if (!url.isValid()) {
-        QMessageBox::critical(0, "Error", "Specified URL is not valid");
+        QMessageBox::critical(0, QLatin1String("Error"), QLatin1String("Specified URL is not valid"));
         return;
     }
 
@@ -87,7 +87,7 @@ void RepositoryManager::setUpdateRepository(const QString &repo)
 {
     QUrl url(repo);
     if (!url.isValid()) {
-        QMessageBox::critical(0, "Error", "Specified URL is not valid");
+        QMessageBox::critical(0, QLatin1String("Error"), QLatin1String("Specified URL is not valid"));
         return;
     }
 
@@ -117,7 +117,7 @@ void RepositoryManager::createRepositoryMap(const QByteArray &data, QMap<QString
     while (!reader.atEnd()) {
         QXmlStreamReader::TokenType type = reader.readNext();
         if (type == QXmlStreamReader::StartElement) {
-            if (reader.name() == "PackageUpdate") {
+            if (reader.name() == QLatin1String("PackageUpdate")) {
                 // new package
                 if (!currentItem.isEmpty())
                     map.insert(currentItem, currentDescription);
@@ -125,15 +125,16 @@ void RepositoryManager::createRepositoryMap(const QByteArray &data, QMap<QString
                 currentDescription.version.clear();
                 currentDescription.checksum.clear();
             }
-            if (reader.name() == "SHA1")
+            if (reader.name() == QLatin1String("SHA1"))
                 currentDescription.checksum = reader.readElementText();
-            else if (reader.name() == "Version")
+            else if (reader.name() == QLatin1String("Version"))
                 currentDescription.version = reader.readElementText();
-            else if (reader.name() == "ReleaseDate")
-                currentDescription.releaseDate = QDate::fromString(reader.readElementText(), "yyyy-MM-dd");
-            else if (reader.name() == "UpdateText")
+            else if (reader.name() == QLatin1String("ReleaseDate")) {
+                currentDescription.releaseDate = QDate::fromString(reader.readElementText(),
+                    QLatin1String("yyyy-MM-dd"));
+            } else if (reader.name() == QLatin1String("UpdateText"))
                 currentDescription.updateText = reader.readElementText();
-            else if (reader.name() == "Name")
+            else if (reader.name() == QLatin1String("Name"))
                 currentItem = reader.readElementText();
         }
     }
@@ -163,12 +164,16 @@ bool RepositoryManager::updateRequired(const QString &componentName, QString *me
     const ComponentDescription &updateDescription = updateMap.value(componentName);
     if (createVersionNumber(productionDescription.version) < createVersionNumber(updateDescription.version)) {
         if (productionDescription.releaseDate > updateDescription.releaseDate) {
-            if (message)
-                *message = QString::fromLatin1("Error: Component %1 has wrong release date %2").arg(componentName).arg(updateDescription.releaseDate.toString());
+            if (message) {
+                *message = QString::fromLatin1("Error: Component %1 has wrong release date %2")
+                    .arg(componentName).arg(updateDescription.releaseDate.toString());
+            }
             return false;
         } else if (productionDescription.updateText == updateDescription.updateText)
-            if (message)
-                *message = QString::fromLatin1("Warning: Component %1 has no new update text: %2").arg(componentName).arg(updateDescription.updateText);
+            if (message) {
+                *message = QString::fromLatin1("Warning: Component %1 has no new update text: %2")
+                    .arg(componentName).arg(updateDescription.updateText);
+            }
         if (message && message->isEmpty())
             *message = QLatin1String("Ok");
         return true;
@@ -180,14 +185,15 @@ void RepositoryManager::writeUpdateFile(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
-        QMessageBox::critical(0, "Error", "Could not open File for saving");
+        QMessageBox::critical(0, QLatin1String("Error"), QLatin1String("Could not open File for saving"));
         return;
     }
 
     QStringList items;
-    for (QMap<QString, ComponentDescription>::const_iterator it = updateMap.begin(); it != updateMap.end(); ++it) {
-        if (it.value().update)
-            items.append(it.key());
+    for (QMap<QString, ComponentDescription>::const_iterator it = updateMap.begin(); it != updateMap.end();
+        ++it) {
+            if (it.value().update)
+                items.append(it.key());
     }
 
     file.write(items.join(QLatin1String(",")).toLatin1());

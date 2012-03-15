@@ -77,15 +77,15 @@ QString DownloadManager::saveFileName(const QUrl &url)
     QString basename = QFileInfo(path).fileName();
 
     if (basename.isEmpty())
-        basename = "download";
+        basename = QLatin1String("download");
 
     if (QFile::exists(basename)) {
         // already exists, rename the old one
         int i = 0;
-        while (QFile::exists(basename + ".old_" + QString::number(i)))
+        while (QFile::exists(basename + QLatin1String(".old_") + QString::number(i)))
             ++i;
 
-        QFile::rename(basename, basename + ".old_" + QString::number(i));
+        QFile::rename(basename, basename + QLatin1String(".old_") + QString::number(i));
         //basename += QString::number(i);
     }
 
@@ -135,17 +135,16 @@ void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
     double speed = bytesReceived * 1000.0 / downloadTime.elapsed();
     QString unit;
     if (speed < 1024) {
-        unit = "bytes/sec";
+        unit = QLatin1String("bytes/sec");
     } else if (speed < 1024*1024) {
         speed /= 1024;
-        unit = "kB/s";
+        unit = QLatin1String("kB/s");
     } else {
         speed /= 1024*1024;
-        unit = "MB/s";
+        unit = QLatin1String("MB/s");
     }
 
-    progressBar.setMessage(QString::fromLatin1("%1 %2")
-                           .arg(speed, 3, 'f', 1).arg(unit));
+    progressBar.setMessage(QString::fromLatin1("%1 %2").arg(speed, 3, 'f', 1).arg(unit));
     progressBar.update();
 }
 

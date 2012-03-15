@@ -126,15 +126,15 @@ void MainWindow::displayRepositories()
 
             item->setText(0, it.key());
             item->setText(indexIncrement + 3, it.value().version);
-            item->setText(indexIncrement + 4, it.value().releaseDate.toString("yyyy-MM-dd"));
+            item->setText(indexIncrement + 4, it.value().releaseDate.toString(QLatin1String("yyyy-MM-dd")));
             item->setText(indexIncrement + 5, it.value().checksum);
             item->setText(indexIncrement + 6, it.value().updateText);
             if (i != 0) {
                 QString errorText;
                 if (manager.updateRequired(it.key(), &errorText))
-                    item->setText(1, "Yes");
+                    item->setText(1, QLatin1String("Yes"));
                 else
-                    item->setText(1, "No");
+                    item->setText(1, QLatin1String("No"));
                 item->setText(2, errorText);
             }
         }
@@ -143,7 +143,7 @@ void MainWindow::displayRepositories()
 
 void MainWindow::createExportFile()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, "Export File");
+    QString fileName = QFileDialog::getSaveFileName(this, QLatin1String("Export File"));
     if (fileName.isEmpty())
         return;
     manager.writeUpdateFile(fileName);

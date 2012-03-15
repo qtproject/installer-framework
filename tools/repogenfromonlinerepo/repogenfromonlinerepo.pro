@@ -1,16 +1,20 @@
-QT       += core network xml
-
-QT       -= gui
-
-TARGET = repogenfromonlinerepo
-CONFIG   += console
-CONFIG   -= app_bundle
-
 TEMPLATE = app
+DEPENDPATH += . ..
+INCLUDEPATH += . ..
+TARGET = repogenfromonlinerepo
 
+include(../../installerfw.pri)
 
-SOURCES += main.cpp
-HEADERS += downloadmanager.h
-SOURCES += downloadmanager.cpp
-HEADERS += textprogressbar.h
-SOURCES += textprogressbar.cpp
+QT -= gui
+QT += xml network
+
+CONFIG += console
+CONFIG -= app_bundle
+DESTDIR = $$IFW_APP_PATH
+
+SOURCES += main.cpp \
+        downloadmanager.cpp \
+        textprogressbar.cpp
+
+HEADERS += downloadmanager.h \
+        textprogressbar.h

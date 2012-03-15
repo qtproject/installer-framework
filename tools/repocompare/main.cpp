@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     QCoreApplication::setApplicationName(QLatin1String("IFW_repocompare"));
-    if (a.arguments().contains("-i")) {
+    if (a.arguments().contains(QLatin1String("-i"))) {
         if (a.arguments().count() != 5) {
             qWarning() << "Usage: " << a.arguments().at(0) << " -i <production Repo> <update Repo> <outputFile>";
             return -1;

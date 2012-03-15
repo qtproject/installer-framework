@@ -123,7 +123,7 @@ void MainWindow::checkForUpdates()
         updatesInstalled();
     } catch (const QInstaller::Error &error) {
         QMessageBox::critical(this, tr("Check for Updates"), tr("Error while installing updates:\n%1")
-            .arg(error.what()));
+            .arg(error.message()));
         m_core.rollBackInstallation();
         settings.setLastResult(tr("Software Update failed."));
     } catch (...) {

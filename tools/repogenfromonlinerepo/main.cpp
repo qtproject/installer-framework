@@ -58,7 +58,8 @@ int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
 
-    QString repoUrl = "http://www.forum.nokia.com/nokiaqtsdkrepository/oppdatering/windows/online_ndk_repo";
+    QString repoUrl = QLatin1String("http://www.forum.nokia.com/nokiaqtsdkrepository/oppdatering/windows/"
+        "online_ndk_repo");
 
     QStringList args = app.arguments();
     for( QStringList::const_iterator it = args.constBegin(); it != args.constEnd(); ++it )
@@ -85,12 +86,12 @@ int main(int argc, char *argv[])
     DownloadManager downloadManager;
 
 // get Updates.xml to get to know what we can download
-    downloadManager.append(QUrl(repoUrl + "/Updates.xml"));
+    downloadManager.append(QUrl(repoUrl + QLatin1String("/Updates.xml")));
     QObject::connect( &downloadManager, SIGNAL( finished() ), &downloadEventLoop, SLOT( quit() ) );
     downloadEventLoop.exec();
 // END - get Updates.xml to get to know what we can download
 
-    QFile batchFile("download.bat");
+    QFile batchFile(QLatin1String("download.bat"));
     if (!batchFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
         qDebug() << "can not open " << QFileInfo(batchFile).absoluteFilePath();
         return app.exec();
@@ -98,14 +99,15 @@ int main(int argc, char *argv[])
 
     QTextStream batchFileOut(&batchFile);
 
-    const QString updatesXmlPath = "Updates.xml";
+    const QString updatesXmlPath = QLatin1String("Updates.xml");
 
     Q_ASSERT( !updatesXmlPath.isEmpty() );
     Q_ASSERT( QFile::exists( updatesXmlPath ) );
 
     QFile updatesFile( updatesXmlPath );
     if ( !updatesFile.open( QIODevice::ReadOnly ) ) {
-        //qDebug() << QString( "Could not open Updates.xml for reading: %1").arg( updatesFile.errorString() ) ;
+        //qDebug() << QString::fromLatin1("Could not open Updates.xml for reading: %1").arg( updatesFile
+        //    .errorString() ) ;
         return app.exec();
     }
 
@@ -114,7 +116,8 @@ int main(int argc, char *argv[])
     int line = 0;
     int col = 0;
     if ( !doc.setContent( &updatesFile, &err, &line, &col ) ) {
-        //qDebug() << QString( "Could not parse component index: %1:%2: %3").arg( QString::number( line ), QString::number( col ), err );
+        //qDebug() << QString::fromLatin1("Could not parse component index: %1:%2: %3")
+        //    .arg(QString::number(line), QString::number( col ), err );
         return app.exec();
     }
 
@@ -139,36 +142,38 @@ int main(int argc, char *argv[])
         const QDomElement el = children.at( i ).toElement();
         if ( el.isNull() )
             continue;
-        if ( el.tagName() == QString("PackageUpdate") ) {
+        if ( el.tagName() == QLatin1String("PackageUpdate") ) {
             const QDomNodeList c2 = el.childNodes();
 
             for ( int j = 0; j < c2.count(); ++j ) {
-                if ( c2.at( j ).toElement().tagName() == QString("Name") )
+                if ( c2.at( j ).toElement().tagName() == QLatin1String("Name") )
                     packageName = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("DisplayName") )
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("DisplayName") )
                     packageDisplayName = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("Description") )
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("Description") )
                     packageDescription = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("UpdateText") )
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("UpdateText") )
                     packageUpdateText = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("Version") )
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("Version") )
                     packageVersion = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("ReleaseDate") )
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("ReleaseDate") )
                     packageReleaseDate = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("SHA1") )
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("SHA1") )
                     packageHash = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("UserInterfaces") )
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("UserInterfaces") )
                     packageUserinterfacesAsString = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("Script") )
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("Script") )
                     packageScript = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("Dependencies") )
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("Dependencies") )
                     packageDependencies = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("ForcedInstallation") )
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("ForcedInstallation") )
                     packageForcedInstallation = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("InstallPriority") )
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("InstallPriority") )
                     packageInstallPriority = c2.at( j ).toElement().text();
-                else if ( c2.at( j ).toElement().tagName() == QString("Virtual") && c2.at( j ).toElement().text() == "true")
-                    packageIsVirtual = true;
+                else if ( c2.at( j ).toElement().tagName() == QLatin1String("Virtual") && c2.at( j )
+                    .toElement().text() == QLatin1String("true")) {
+                        packageIsVirtual = true;
+                }
             }
         }
         if (packageName.isEmpty()) {
@@ -177,7 +182,8 @@ int main(int argc, char *argv[])
 
         if ( !packageScript.isEmpty() ) {
         // get Updates.xml to get to know what we can download
-            downloadManager.append(QUrl(repoUrl + "/" + packageName + "/" + packageScript));
+            downloadManager.append(QUrl(repoUrl + QLatin1String("/") + packageName + QLatin1String("/")
+                + packageScript));
             QObject::connect( &downloadManager, SIGNAL( finished() ), &downloadEventLoop, SLOT( quit() ) );
             downloadEventLoop.exec();
         // END - get Updates.xml to get to know what we can download
@@ -194,11 +200,11 @@ int main(int argc, char *argv[])
             QTextStream in(&file);
             while (!in.atEnd()) {
                 QString line = in.readLine();
-                if(line.contains(".7z")) {
-                    int firstPosition = line.indexOf("\"");
+                if (line.contains(QLatin1String(".7z"))) {
+                    int firstPosition = line.indexOf(QLatin1String("\""));
                     QString subString = line.right(line.count() - firstPosition - 1); //-1 means "
                     //qDebug() << subString;
-                    int secondPosition = subString.indexOf("\"");
+                    int secondPosition = subString.indexOf(QLatin1String("\""));
                     sevenZString = subString.left(secondPosition);
                     //qDebug() << sevenZString;
                     break;
@@ -206,9 +212,9 @@ int main(int argc, char *argv[])
             }
             file.remove();
         }
-        QStringList packageUserinterfaces = packageUserinterfacesAsString.split(",");
+        QStringList packageUserinterfaces = packageUserinterfacesAsString.split(QLatin1String(","));
         packageUserinterfaces.removeAll(QString());
-        packageUserinterfaces.removeAll("");
+        packageUserinterfaces.removeAll(QLatin1String(""));
 
         QStringList fileList;
 
@@ -225,55 +231,67 @@ int main(int argc, char *argv[])
             fileList << packageScript;
         }
 
-        QFile packagesXml( QString( QCoreApplication::applicationDirPath() + "/" + packageName + ".xml" ));
+        QFile packagesXml( QString( QCoreApplication::applicationDirPath() + QLatin1String("/")
+            + packageName + QLatin1String(".xml")));
         packagesXml.open( QIODevice::WriteOnly );
         QTextStream packageAsXmlStream( &packagesXml );
-        packageAsXmlStream << QString( "<?xml version=\"1.0\"?>" ) << endl;
-        packageAsXmlStream << QString( "<Package>" ) << endl;
-        packageAsXmlStream << QString( "    <DisplayName>%1</DisplayName>" ).arg(packageDisplayName) << endl;
+        packageAsXmlStream << QLatin1String("<?xml version=\"1.0\"?>" ) << endl;
+        packageAsXmlStream << QLatin1String("<Package>" ) << endl;
+        packageAsXmlStream << QString::fromLatin1("    <DisplayName>%1</DisplayName>").arg(packageDisplayName)
+            << endl;
 
         if (!packageDescription.isEmpty()) {
-            packageAsXmlStream << QString( "    <Description>%1</Description>" ).arg(packageDescription) << endl;
+            packageAsXmlStream << QString::fromLatin1("    <Description>%1</Description>" )
+                .arg(packageDescription) << endl;
         }
 
         if (!packageUpdateText.isEmpty()) {
-            packageAsXmlStream << QString( "    <UpdateText>%1</UpdateText>" ).arg(packageUpdateText) << endl;
+            packageAsXmlStream << QString::fromLatin1("    <UpdateText>%1</UpdateText>" )
+                .arg(packageUpdateText) << endl;
         }
 
         if (!packageVersion.isEmpty()) {
-            packageAsXmlStream << QString( "    <Version>%1</Version>" ).arg(packageVersion) << endl;
+            packageAsXmlStream << QString::fromLatin1("    <Version>%1</Version>" )
+                .arg(packageVersion) << endl;
         }
 
         if (!packageReleaseDate.isEmpty()) {
-            packageAsXmlStream << QString( "    <ReleaseDate>%1</ReleaseDate>" ).arg(packageReleaseDate) << endl;
+            packageAsXmlStream << QString::fromLatin1("    <ReleaseDate>%1</ReleaseDate>" )
+                .arg(packageReleaseDate) << endl;
         }
-        packageAsXmlStream << QString( "    <Name>%1</Name>" ).arg(packageName) << endl;
+        packageAsXmlStream << QString::fromLatin1("    <Name>%1</Name>" ).arg(packageName) << endl;
 
         if (!packageScript.isEmpty()) {
-            packageAsXmlStream << QString( "    <Script>%1</Script>" ).arg(packageScript) << endl;
+            packageAsXmlStream << QString::fromLatin1("    <Script>%1</Script>" ).arg(packageScript) << endl;
         }
 
         if (packageIsVirtual) {
-            packageAsXmlStream << QString( "    <Virtual>true</Virtual>" ) << endl;
+            packageAsXmlStream << QString::fromLatin1("    <Virtual>true</Virtual>" ) << endl;
         }
 
-        if (!packageInstallPriority.isEmpty())
-            packageAsXmlStream << QString( "    <InstallPriority>%1</InstallPriority>" ).arg(packageInstallPriority) << endl;
+        if (!packageInstallPriority.isEmpty()) {
+            packageAsXmlStream << QString::fromLatin1("    <InstallPriority>%1</InstallPriority>" )
+                .arg(packageInstallPriority) << endl;
+        }
+        if (!packageDependencies.isEmpty()) {
+            packageAsXmlStream << QString::fromLatin1("    <Dependencies>%1</Dependencies>" )
+                .arg(packageDependencies) << endl;
+        }
 
-        if (!packageDependencies.isEmpty())
-            packageAsXmlStream << QString( "    <Dependencies>%1</Dependencies>" ).arg(packageDependencies) << endl;
-
-        if (!packageForcedInstallation.isEmpty())
-            packageAsXmlStream << QString( "    <ForcedInstallation>%1</ForcedInstallation>" ).arg(packageForcedInstallation) << endl;
+        if (!packageForcedInstallation.isEmpty()) {
+            packageAsXmlStream << QString::fromLatin1("    <ForcedInstallation>%1</ForcedInstallation>" )
+                .arg(packageForcedInstallation) << endl;
+        }
 
         if (!packageUserinterfaces.isEmpty()) {
-            packageAsXmlStream << QString( "    <UserInterfaces>" ) << endl;
+            packageAsXmlStream << QString::fromLatin1("    <UserInterfaces>" ) << endl;
             foreach(const QString userInterfaceFile, packageUserinterfaces) {
-                packageAsXmlStream << QString( "        <UserInterface>%1</UserInterface>" ).arg(userInterfaceFile) << endl;
+                packageAsXmlStream << QString::fromLatin1("        <UserInterface>%1</UserInterface>" )
+                    .arg(userInterfaceFile) << endl;
             }
-            packageAsXmlStream << QString( "    </UserInterfaces>" ) << endl;
+            packageAsXmlStream << QString::fromLatin1("    </UserInterfaces>" ) << endl;
         }
-        packageAsXmlStream << QString( "</Package>" ) << endl;
+        packageAsXmlStream << QString::fromLatin1("</Package>" ) << endl;
 
         batchFileOut << "rem download line BEGIN =============================================\n";
 
