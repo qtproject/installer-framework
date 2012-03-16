@@ -1189,7 +1189,7 @@ void Component::updateModelData(const QString &key, const QString &data)
         setData(QLatin1String("<html><body>") + value(scDescription) + QLatin1String("</body></html>"),
             Qt::ToolTipRole);
     } else {
-        setData(value(scDescription) + QLatin1String("<br><br>Update Info: ") + updateInfo, Qt::ToolTipRole);
+        setData(value(scDescription) + QLatin1String("<br><br>") + tr("Update Info: ") + updateInfo, Qt::ToolTipRole);
     }
 }
 
