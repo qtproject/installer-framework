@@ -1099,6 +1099,7 @@ bool PackageManagerCore::executeDetached(const QString &program, const QStringLi
     QStringList adjustedArguments;
     foreach (const QString &argument, arguments)
         adjustedArguments.append(replaceVariables(argument));
+    qDebug() << "run application as detached process:" << adjustedProgram << adjustedArguments;
     return QProcess::startDetached(adjustedProgram, adjustedArguments);
 }
 
