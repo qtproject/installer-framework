@@ -18,7 +18,14 @@ QCH_FILE = $$OUT_PWD/doc/installerfw.qch
 
 HELP_DEP_FILES = $$PWD/installerfw.qdoc \
                  $$PWD/scripting.qdoc \
-                 $$PWD/installerfw.qdocconf
+                 $$PWD/installerfw.qdocconf \
+                 $$PWD/installerfw-online.qdocconf \
+                 $$PWD/config/compat.qdocconf \
+                 $$PWD/config/macros.qdocconf \
+                 $$PWD/config/qt-cpp-ignore.qdocconf \
+                 $$PWD/config/qt-defines.qdocconf \
+                 $$PWD/config/qt-html-templates.qdocconf \
+                 $$PWD/config/qt-html-default-styles.qdocconf
 
 unix {
 html_docs.commands = $$QDOC $$PWD/installerfw.qdocconf
@@ -29,9 +36,9 @@ html_docs.depends += $$HELP_DEP_FILES
 html_docs.files = $$QHP_FILE
 
 unix {
-html_docs_online.commands = $$QDOC $$PWD/installerfw.qdocconf
+html_docs_online.commands = $$QDOC $$PWD/installerfw-online.qdocconf
 } else {
-html_docs_online.commands = \"$$QDOC $$PWD/installerfw.qdocconf\"
+html_docs_online.commands = \"$$QDOC $$PWD/installerfw-online.qdocconf\"
 }
 html_docs_online.depends += $$HELP_DEP_FILES
 html_docs_online.files = $$QHP_FILE

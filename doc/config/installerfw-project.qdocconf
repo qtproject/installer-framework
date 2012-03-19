@@ -1,0 +1,36 @@
+project     = "Qt Installer Framework Manual"
+description = "Qt Installer Framework Manual"
+
+headerdirs =
+sourcedirs = $SRCDIR
+imagedirs = $SRCDIR/images $SRCDIR/templates/images
+outputdir = $OUTDIR
+exampledirs = $SRCDIR
+indexes                 = qt.index
+
+include(compat.qdocconf)
+include(macros.qdocconf)
+include(qt-cpp-ignore.qdocconf)
+include(qt-defines.qdocconf)
+
+sources.fileextensions         = "*.qdoc"
+
+qhp.projects            = InstallerFramework
+qhp.InstallerFramework.file             = installerfw.qhp
+qhp.InstallerFramework.namespace        = com.nokia.qt.installerfw.121
+qhp.InstallerFramework.virtualFolder    = doc
+qhp.InstallerFramework.indexTitle       = Qt Installer Framework Manual
+qhp.InstallerFramework.filterAttributes = installerfw 121
+qhp.InstallerFramework.customFilters.InstallerFramework.name = Installer Framework
+qhp.InstallerFramework.customFilters.InstallerFramework.filterAttributes = installerfw
+qhp.InstallerFramework.indexRoot        =
+
+qhp.InstallerFramework.subprojects = manual
+qhp.InstallerFramework.subprojects.manual.title = Qt Installer Framework Manual
+qhp.InstallerFramework.subprojects.manual.indexTitle = Qt Installer Framework Manual
+qhp.InstallerFramework.subprojects.manual.type = manual
+
+# Doxygen compatibility commands
+
+macro.see                       = "\\sa"
+macro.function                  = "\\fn"
