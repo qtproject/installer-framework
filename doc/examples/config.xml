@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Installer>
+    <Name>Some Application</Name>
+    <Version>1.0.0</Version>
+    <Title>Some Application Setup</Title>
+    <Publisher>Your Company</Publisher>
+    <ProductUrl>http://www.your-fantastic-company.com</ProductUrl>
+    <Logo>logo.png</Logo>
+    <Watermark>watermark.png</Watermark>
+    <RunProgram></RunProgram>
+    <RunProgramDescription></RunProgramDescription>
+    <StartMenuDir>Some Application Entry Dir</StartMenuDir>
+    <UninstallerName>SDKMaintenanceTool</UninstallerName>
+    <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
+    <Icon>installericon</Icon>
+    <Background>background.png</Background>
+
+    <!-- @homeDir@ and @rootDir@ are some of the supported vars -->
+    <TargetDir>@homeDir@/testinstall</TargetDir>
+    <AdminTargetDir>@rootDir@/testinstall</AdminTargetDir>
+    <RemoteRepositories>
+        <Repository>
+            <Url>http://www.your-repo-location/packages/</Url>
+        </Repository>
+    </RemoteRepositories>
+</Installer>
