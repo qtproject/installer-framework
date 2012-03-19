@@ -295,6 +295,7 @@ void IntroductionPageImpl::entering()
     showWidgets(false);
     setMessage(QString());
     setErrorMessage(QString());
+    setButtonText(QWizard::CancelButton, tr("Quit"));
 
     PackageManagerCore *core = packageManagerCore();
     if (core->isUninstaller() ||core->isUpdater() || core->isPackageManager()) {
@@ -307,6 +308,7 @@ void IntroductionPageImpl::leaving()
 {
     // TODO: force repaint on next page, keeps unpainted after fetch
     QTimer::singleShot(100, gui()->page(nextId()), SLOT(repaint()));
+    setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
 }
 
 void IntroductionPageImpl::showWidgets(bool show)

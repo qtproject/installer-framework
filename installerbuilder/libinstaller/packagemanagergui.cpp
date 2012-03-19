@@ -529,7 +529,8 @@ QWidget *PackageManagerGui::currentPageWidget() const
 
 void PackageManagerGui::cancelButtonClicked()
 {
-    if (currentId() != PackageManagerCore::InstallationFinished) {
+    if (currentId() != PackageManagerCore::Introduction
+        && currentId() != PackageManagerCore::InstallationFinished) {
         PackageManagerPage *const page = qobject_cast<PackageManagerPage*> (currentPage());
         if (page && page->isInterruptible() && m_core->status() != PackageManagerCore::Canceled
             && m_core->status() != PackageManagerCore::Failure) {
@@ -550,7 +551,7 @@ void PackageManagerGui::cancelButtonClicked()
             const QMessageBox::StandardButton bt =
                 MessageBoxHandler::question(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("cancelInstallation"), tr("Question"),
-                tr("Do you want to abort the %1 application?").arg(app), QMessageBox::Yes | QMessageBox::No);
+                tr("Do you want to quit the %1 application?").arg(app), QMessageBox::Yes | QMessageBox::No);
             if (bt == QMessageBox::Yes)
                 QDialog::reject();
         }
