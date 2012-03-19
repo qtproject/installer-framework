@@ -175,46 +175,12 @@ int main(int argc, char** argv)
             }
         }
 
-        //TODO: adjust to the new argument/option usage
-        if ((packagesDir.isEmpty() && configDir.isEmpty() && args.count() < 4)
-            || ((packagesDir.isEmpty() || configDir.isEmpty()) && args.count() < 3) //use the old check
-            || (updateExistingRepository && args.count() != 1)
-            || (!updateExistingRepository && args.count() < 2)) {    //only one dir set by the new options
-                // both dirs set by the new options
+        if ((packagesDir.isEmpty() || configDir.isEmpty() || args.count() != 1)) {
                 printUsage();
                 return 1;
         }
 
-        int argsPosition = 0;
-        bool needPrintUsage = false;
-        if (packagesDir.isEmpty()) {
-            std::cout << "!!! A stand alone package directory argument is deprecated. Please use the pre "
-                "argument." << std::endl;
-            needPrintUsage |= true;
-            packagesDir = makeAbsolute(args[argsPosition++]);
-        }
-
-        if (configDir.isEmpty()) {
-            std::cout << "!!! A stand alone config directory argument is deprecated. Please use the pre "
-                "argument." << std::endl;
-            needPrintUsage |= true;
-            configDir = makeAbsolute(args[argsPosition++]);
-        }
-        if (needPrintUsage) {
-            printUsage();
-        }
-
-        const QString repositoryDir = makeAbsolute(args[argsPosition++]);
-        const QStringList components = args.mid(argsPosition);
-
-        if (!components.isEmpty()) {
-            std::cout << "Package names at the end of the command are deprecated"
-                          " - please use --include or --exclude" << std::endl;
-            if (updateExistingRepository) {
-                filteredPackages.append(components);
-                filterType = QInstallerTools::Include;
-            }
-        }
+        const QString repositoryDir = makeAbsolute(args.first());
 
         if (!updateExistingRepository && QFile::exists(repositoryDir)) {
             throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!")
