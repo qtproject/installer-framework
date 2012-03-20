@@ -283,8 +283,7 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
             }
 
             for (QStringList::const_iterator ui = uis.begin(); ui != uis.end(); ++ui) {
-                qDebug() << "\tCopying associated user interface " << *ui << " into the meta "
-                    "package...";
+                qDebug() << "\tCopying associated user interface" << *ui << "into the meta package...";
                 userinterfaces.push_back(*ui);
                 if (!QFile::copy(QString::fromLatin1("%1/meta/%2").arg(it->directory, *ui),
                     QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, *ui))) {
@@ -319,8 +318,7 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
                 }
 
                 for (QStringList::const_iterator qm = qms.begin(); qm != qms.end(); ++qm) {
-                    qDebug() << "\tCopying associated translation " << *qm << " into the meta "
-                        "package...";
+                    qDebug() << "\tCopying associated translation" << *qm << "into the meta package...";
                     translations.push_back(*qm);
                     if (!QFile::copy(QString::fromLatin1("%1/meta/%2").arg(it->directory, *qm),
                         QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, *qm))) {
@@ -354,8 +352,7 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
                         "copying license files of %2.").arg(licenseFile, it->name));
                 }
 
-                qDebug() << "\tCopying associated license file " << licenseFile << " into "
-                    "the meta package...";
+                qDebug() << "\tCopying associated license file" << licenseFile << "into the meta package...";
                 if (!QFile::copy(sourceFile, QString::fromLatin1("%1/%2/%3")
                     .arg(metapath, it->name, licenseFile))) {
                         qDebug() << "failed!";
