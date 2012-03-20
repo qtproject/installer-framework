@@ -545,31 +545,31 @@
 
         \o  On Windows:
     \code
-    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> <installer_name> <packages>
+    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> <installer_name>
     \endcode
 
         \o  On Linux and Mac OS X
 
     \code
-    <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory> <installer_name> <packages>
+    <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory> <installer_name>
     \endcode
 
     \endlist
 
-    To create an online installer, add the -e parameter which defines the
+    To create an online only installer, you can use the --online-only which defines all
     packages to install from an online repository on a web server:
 
     \list
 
         \o  On Windows:
     \code
-    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> -e <packages> <installer_name> <packages>
+    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> -e <packages> <installer_name>
     \endcode
 
         \o  On Linux and Mac OS X
 
     \code
-    <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory> -e <packages> <installer_name> <packages>
+    <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory> -e <packages> <installer_name>
     \endcode
 
     \endlist
@@ -592,9 +592,12 @@
                 {package directory}.
                 Defaults to the current working directory.
         \row
-            \o  -n or --nodeps
-            \o  Compile only the selected packages. Do not compile their
-                dependencies.
+            \o  -n or --online-only
+            \o  Compile without any component in the installer binary.
+        \row
+            \o  -f or --offline-only
+            \o  Create an offline installer that never accesses online
+                repositories.
         \row
             \o  -c or --config directory
             \o  Use \c directory as the \l{Configuration File}
@@ -605,16 +608,23 @@
                 repository. The packages are not included in the installer
                 binary.
         \row
-            \o  --offline-only
-            \o  Create an offline installer that never accesses online
-                repositories.
-        \row
-            \o  -v or --verbose
-            \o  Display debug output.
+            \o  -i or --include p1,...,pn
+            \o  Comma-separated list of packages to retrieve from the installer
+                binary. You cannot combine or merge \c {--include} and \c {--exclude}.
         \row
             \o  -r or --resources
             \o  Comma-separated list of resources to include in the installer
                 binary.
+        \row
+            \o  --ignore-translations
+            \o  Disable the use of translation files to make testing faster.
+        \row
+            \o  --ignore-invalid-packages
+            \o  Ignore component or package directories that do not have valid
+                metadata information (package.xml) to make testing faster.
+        \row
+            \o  -v or --verbose
+            \o  Display debug output.
     \endtable
 
     These parameters are followed by the name of the target binary and a list
@@ -649,7 +659,7 @@
     The \c repogen tool expects the following parameters in the following order:
 
     \code
-    repogen.exe -p <package_directory> -c <config_directory> repository <repository_directory> <components>
+    repogen.exe -p <package_directory> -c <config_directory> repository <repository_directory>
     \endcode
 
     When the repository has been created, you can upload it anywhere. You must
@@ -687,13 +697,24 @@
             \o  -u updateurl
             \o  Receive updates from another repository.
         \row
-            \o  --single
+            \o  --update
             \o  Place only the specified packages in the repository, without
-                their dependencies.
+                their dependencies. Make sure to also add the Updates.xml from
+                the repository to update. This option adds the files that you list
+                in the \c {--include} parameter to the end of the Updates.xml file.
         \row
             \o  -v or --verbose
             \o  Display debug output.
     \endtable
+    \note We recommend that you use the \c {--update} parameter to update an
+          existing repository, especially if you have a content delivery system.
+          In combination with the \c {--include} parameter which gets only the components
+          with incremented version numbers it generates an update which contains
+          only new files.
+          This helps you avoid updating components that have not changed and
+          this makes it much easier for a content delivery system to distribute only
+          new files, because only the updated components are assigned new SHA checksums.
+
 */
 
 /*!
@@ -711,16 +732,16 @@
 
     \section1 Creating Repositories
 
-    Use the \c repogen tool to create online repositories:
+    Use the \c repogen tool to create online repositories of all packages of one package directory:
 
-    repogen.exe -p <package_directory> -c <config_directory> repository <repository_directory> <components>
+    repogen.exe -p <package_directory> -c <config_directory> repository <repository_directory>
 
-    For example, to create a repository that contains com.nokia.sdk.qt and
-    com.nokia.sdk.qtcreator, as well as their dependencies, enter the following
+    For example, to create a repository that contains only com.nokia.sdk.qt and
+    com.nokia.sdk.qtcreator, enter the following
     command:
 
     \code
-    repogen.exe -p packages -c installer-config repository com.nokia.sdk.qt com.nokia.sdk.qtcreator
+    repogen.exe -p packages -c installer-config -i com.nokia.sdk.qt,com.nokia.sdk.qtcreator repository
     \endcode
 
     When the repository has been created, upload it to a web server. You must
@@ -766,7 +787,7 @@
     following command:
 
     \code
-    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> -e <packages> <installer_name> <packages>
+    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> -e <packages> <installer_name>
     \endcode
 
     For example, enter the following command to create an installer binary
@@ -775,7 +796,7 @@
     repository:
 
     \code
-    binarycreator.exe -c installer-config -e com.nokia.sdk.qt,com.nokia.qtcreator SDKInstaller.exe com.nokia.sdk
+    binarycreator.exe -p installer-packages -c installer-config -e com.nokia.sdk.qt,com.nokia.qtcreator SDKInstaller.exe
     \endcode
 
     \section1 Reducing Installer Size
@@ -816,7 +837,7 @@
     To create an offline installer in Windows, enter the following command:
 
     \code
-    <location-of-ifw>\binarycreator.exe --offline-only -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> <installer_name> <packages>
+    <location-of-ifw>\binarycreator.exe --offline-only -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> <installer_name>
     \endcode
 
     Some options have default values, and therefore, you can omit them.
@@ -825,7 +846,7 @@
     com.nokia.sdk and their dependencies:
 
     \code
-    binarycreator.exe --offline-only -c installer-config SDKInstaller.exe com.nokia.sdk
+    binarycreator.exe --offline-only -c installer-config -p installer-packes SDKInstaller.exe
     \endcode
 
 */
@@ -890,10 +911,10 @@
     to verify the download of the archive and hence the SHA needs to match the
     7zip. As the SHAs are stored in the Updates.xml file you will be
     forced to upload the full repository. This can be circumvented by using the
-    \a{--single} option of repogen.
+    \a{--update} option of repogen.
 
     \section2 Creating Partial Updates
-    When recreating the online repository, use the \a{--single} parameter. It
+    When recreating the online repository, use the \a{--update} parameter. It
     takes an existing repository as input and only changes the components that
     are specified as additional parameters. Only those SHA sums are
     changed in the global configuration as well.
