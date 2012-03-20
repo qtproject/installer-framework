@@ -397,15 +397,16 @@ static void printUsage()
 
     QInstallerTools::printRepositoryGenOptions();
 
-    std::cout << "  -n|--nodeps               Don't add dependencies of package1...n into the " << std::endl;
-    std::cout << "                            installer (for online installers)" << std::endl;
+    std::cout << "  -n|--online-only         Don't add any package into the installer" << std::endl;
+    std::cout << "                            (for online only installers)" << std::endl;
 
-    std::cout << "  --offline-only            Forces the installer to act as an offline installer, " << std::endl;
+    std::cout << "  -f|--offline-only        Forces the installer to act as an offline installer, " << std::endl;
     std::cout << "                            i.e. never access online repositories" << std::endl;
 
     std::cout << "  -r|--resources r1,.,rn    include the given resource files into the binary" << std::endl;
-    std::cout << std::endl;
+
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
+    std::cout << std::endl;
     std::cout << "Packages are to be found in the current working directory and get listed as "
         "their names" << std::endl << std::endl;
     std::cout << "Example (offline installer):" << std::endl;
@@ -512,12 +513,6 @@ static int printErrorAndUsageAndExit(const QString &err)
     return EXIT_FAILURE;
 }
 
-/*!
-    Usage:
-    binarycreator: [--help|-h] [-p|--packages packages directory] [-t|--template binary]
-        -c|--config confdir target component ...
-    template defaults to installerbase[.exe] in the same directory
-*/
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
@@ -534,10 +529,9 @@ int main(int argc, char **argv)
     QString target;
     QString configDir;
     QString packagesDirectory = QDir::currentPath();
-    bool nodeps = false;
+    bool onlineOnly = false;
     bool offlineOnly = false;
     QStringList resources;
-    QStringList components;
     QStringList filteredPackages;
     QInstallerTools::FilterType ftype = QInstallerTools::Exclude;
 
@@ -576,12 +570,19 @@ int main(int argc, char **argv)
         }
         else if (*it == QLatin1String("-v") || *it == QLatin1String("--verbose")) {
             QInstaller::setVerbose(true);
-        } else if (*it == QLatin1String("-n") || *it == QLatin1String("--nodeps")) {
-            if (!filteredPackages.isEmpty())
+        } else if (*it == QLatin1String("-n") || *it == QLatin1String("--online-only")) {
+            if (!filteredPackages.isEmpty()) {
                 return printErrorAndUsageAndExit(QObject::tr("for the --include and --exclude case you also "
-                                                             "have to ensure that nopdeps==false"));
-            nodeps = true;
-        } else if (*it == QLatin1String("--offline-only")) {
+                    "have to ensure that online-only==false, as that means include nothing"));
+            }
+            filteredPackages.append(QLatin1String("XXXXXXXXXXXXXXXXX_online_XXXXXXXXXXXXXXXXX"));
+            ftype = QInstallerTools::Include;
+            onlineOnly = true;
+        } else if (*it == QLatin1String("-f") || *it == QLatin1String("--offline-only")) {
+            if (onlineOnly) {
+                return printErrorAndUsageAndExit(QObject::tr("You cannot use --online-only and "
+                    "--offline-only at the same time."));
+            }
             offlineOnly = true;
         } else if (*it == QLatin1String("-t") || *it == QLatin1String("--template")) {
             ++it;
@@ -614,25 +615,22 @@ int main(int argc, char **argv)
         } else if (*it == QLatin1String("-r") || *it == QLatin1String("--resources")) {
             ++it;
             if (it == args.end() || it->startsWith(QLatin1String("-")))
-                return printErrorAndUsageAndExit(QObject::tr("Error: Resource files to include missing."));
+                return printErrorAndUsageAndExit(QObject::tr("Error: Resource files to include are missing."));
             resources = it->split(QLatin1Char(','));
         } else if (*it == QLatin1String("--ignore-translations")
             || *it == QLatin1String("--ignore-invalid-packages")) {
                 continue;
         } else {
-            if (target.isEmpty())
+            if (it->startsWith(QLatin1String("-"))) {
+                return printErrorAndUsageAndExit(QObject::tr("Error: Unknown option \"%1\" used. Maybe you "
+                    "are using an old syntax.").arg(*it));
+            } else if (target.isEmpty()) {
                 target = *it;
-            else
-                components.append(*it);
-        }
-    }
-
-    if (!components.isEmpty()) {
-        std::cout << "Package names at the end of the command are deprecated"
-                      " - please use --include or --exclude" << std::endl;
-        if (nodeps) {
-            filteredPackages.append(components);
-            ftype = QInstallerTools::Include;
+            } else {
+                return printErrorAndUsageAndExit(QObject::tr("Error: You are using an old syntax please add the "
+                    "component name with the include option")
+                    .arg(*it));
+            }
         }
     }
 

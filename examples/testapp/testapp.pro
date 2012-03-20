@@ -33,6 +33,6 @@ SOURCES += main.cpp \
 RESOURCES += testapp.qrc
 
 isEqual(IFW_SOURCE_TREE, $$IFW_BUILD_TREE) {
-    macx:QMAKE_POST_LINK = ($$IFW_APP_PATH/binarycreator -p $$PWD/packages -c $$PWD/config -t $$IFW_APP_PATH/installerbase TestAppInstaller.app com.nokia.testapp)
-    win32:QMAKE_POST_LINK = ($$IFW_APP_PATH/binarycreator.exe -p $$PWD/packages -c $$PWD/config -t $$IFW_APP_PATH/installerbase.exe TestAppInstaller.exe com.nokia.testapp)
+    macx:QMAKE_POST_LINK = ($$IFW_APP_PATH/binarycreator -p $$PWD/packages -c $$PWD/config -t $$IFW_APP_PATH/installerbase TestAppInstaller.app)
+    win32:QMAKE_POST_LINK = ($$IFW_APP_PATH/binarycreator.exe -p $$PWD/packages -c $$PWD/config -t $$IFW_APP_PATH/installerbase.exe TestAppInstaller.exe)
 }
