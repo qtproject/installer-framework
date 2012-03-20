@@ -55,8 +55,9 @@ void QInstallerTools::printRepositoryGenOptions()
     std::cout << "                            Defaults to the current working directory." << std::endl;
 
     std::cout << "  -e|--exclude p1,...,pn    Exclude the given packages." << std::endl;
-    std::cout << "  -i|--include p1,...,pn    Include the given packages and their dependencies from the "
-              << "repository." << std::endl;
+    std::cout << "  -i|--include p1,...,pn    Include the given packages and their dependencies" << std::endl;
+    std::cout << "                            from the repository." << std::endl;
+
     std::cout << "  --ignore-translations     Don't use any translation" << std::endl;
     std::cout << "  --ignore-invalid-packages Ignore all invalid packages instead of aborting." << std::endl;
 }

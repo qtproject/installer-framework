@@ -58,9 +58,8 @@ static void printUsage()
     std::cout << "  -u|--updateurl            url instructs clients to receive updates from a " << std::endl;
     std::cout << "                            different location" << std::endl;
 
-    std::cout << "  --update                  Update a set of existing components (defined by --include "
-        << std::endl;
-    std::cout << "                            or --exclude) in the repository" << std::endl;
+    std::cout << "  --update                  Update a set of existing components (defined by " << std::endl;
+    std::cout << "                            --include or --exclude) in the repository" << std::endl;
 
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
 
