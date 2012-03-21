@@ -115,28 +115,6 @@ TRANSLATOR QInstaller::PerformInstallationPage
 TRANSLATOR QInstaller::FinishedPage
 */
 
-
-static QString humanReadableSize(quint64 intSize)
-{
-    QString unit;
-    double size;
-
-    if (intSize < 1024 * 1024) {
-        size = 1. + intSize / 1024.;
-        unit = QObject::tr("kB");
-    } else if (intSize < 1024 * 1024 * 1024) {
-        size = 1. + intSize / 1024. / 1024.;
-        unit = QObject::tr("MB");
-    } else {
-        size = 1. + intSize / 1024. / 1024. / 1024.;
-        unit = QObject::tr("GB");
-    }
-
-    size = qRound(size * 10) / 10.0;
-    return QString::fromLatin1("%L1 %2").arg(size, 0, 'g', 4).arg(unit);
-}
-
-
 class DynamicInstallerPage : public PackageManagerPage
 {
 public:

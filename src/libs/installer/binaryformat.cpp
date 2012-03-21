@@ -228,7 +228,7 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
             }
             searched += 1;
         }
-        throw Error(QObject::tr("No marker found, stopped after %1 bytes.").arg(QString::number(MAX_SEARCH)));
+        throw Error(QObject::tr("No marker found, stopped after %1.").arg(humanReadableSize(MAX_SEARCH)));
     } catch (const Error& err) {
         in->seek(oldPos);
         throw err;
@@ -1028,9 +1028,9 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
             qDebug() << component.name().data() << "loaded...";
             QStringList archivesWithSize;
             foreach (const QSharedPointer<Archive> &archive, archives) {
-                QString archiveWithSize(QLatin1String("%1 - %2 Bytes"));
+                QString archiveWithSize(QLatin1String("%1 - %2"));
                 archiveWithSize = archiveWithSize.arg(QString::fromLocal8Bit(archive->name()),
-                    QString::number(archive->size()));
+                    humanReadableSize(archive->size()));
                 archivesWithSize.append(archiveWithSize);
             }
             if (!archivesWithSize.isEmpty()) {

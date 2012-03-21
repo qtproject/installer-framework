@@ -193,31 +193,15 @@ quint64 Component::updateUncompressedSize()
     quint64 size = 0;
 
     if (isSelected())
-        size = (quint64)value(scUncompressedSize).toDouble();
+        size = value(scUncompressedSize).toLongLong();
 
     foreach (Component* comp, d->m_allChildComponents)
         size += comp->updateUncompressedSize();
 
     setValue(scUncompressedSizeSum, QString::number(size));
-    setData(uncompressedSize(), UncompressedSize);
+    setData(humanReadableSize(size), UncompressedSize);
 
     return size;
-}
-
-QString Component::uncompressedSize() const
-{
-    double size = value(scUncompressedSizeSum).toDouble();
-    if (size < 1000.0)
-        return tr("%L1 Bytes").arg(size);
-    size /= 1024.0;
-    if (size < 1000.0)
-        return tr("%L1 kBytes").arg(size, 0, 'f', 2);
-    size /= 1024.0;
-    if (size < 1000.0)
-        return tr("%L1 MBytes").arg(size, 0, 'f', 2);
-    size /= 1024.0;
-
-    return tr("%L1 GBytes").arg(size, 0, 'f', 2);
 }
 
 void Component::markAsPerformedInstallation()
@@ -1181,8 +1165,10 @@ void Component::updateModelData(const QString &key, const QString &data)
     if (key == scDisplayVersion)
         setData(data, LocalDisplayVersion);
 
-    if (key == scUncompressedSize)
-        setData(uncompressedSize(), UncompressedSize);
+    if (key == scUncompressedSize) {
+        quint64 size = value(scUncompressedSizeSum).toLongLong();
+        setData(humanReadableSize(size), UncompressedSize);
+    }
 
     const QString &updateInfo = value(scUpdateText);
     if (!d->m_core->isUpdater() || updateInfo.isEmpty()) {

@@ -64,6 +64,8 @@ private:
     QSet<QString> m_paths;
 };
 
+    QString INSTALLER_EXPORT humanReadableSize(const qint64 &size, int precision = 2);
+
     void INSTALLER_EXPORT openForRead(QIODevice *dev, const QString &name);
     void INSTALLER_EXPORT openForWrite(QIODevice *dev, const QString &name);
     void INSTALLER_EXPORT openForAppend(QIODevice *dev, const QString &name);

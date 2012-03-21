@@ -682,8 +682,8 @@ int main(int argc, char **argv)
                 qDebug() << "Creating component info for" << info.name;
                 foreach (const QString &archive, info.copiedArchives) {
                     const QSharedPointer<Archive> arch(new Archive(archive));
-                    qDebug() << QString::fromLatin1("\tAppending %1 (%2 bytes)").arg(archive,
-                        QString::number(arch->size()));
+                    qDebug() << QString::fromLatin1("\tAppending %1 (%2)").arg(archive,
+                        humanReadableSize(arch->size()));
                     comp.appendArchive(arch);
                 }
                 input.components.insertComponent(comp);

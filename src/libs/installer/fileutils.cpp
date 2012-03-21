@@ -120,6 +120,26 @@ void TempDirDeleter::releaseAndDelete(const QString &path)
     }
 }
 
+QString QInstaller::humanReadableSize(const qint64 &size, int precision)
+{
+    double sizeAsDouble = size;
+    static QStringList measures;
+    if (measures.isEmpty())
+        measures << QString::fromLatin1("bytes") << QString::fromLatin1("KiB") << QString::fromLatin1("MiB")
+            << QString::fromLatin1("GiB") << QString::fromLatin1("TiB") << QString::fromLatin1("PiB")
+            << QString::fromLatin1("EiB") << QString::fromLatin1("ZiB") << QString::fromLatin1("YiB");
+
+    QStringListIterator it(measures);
+    QString measure(it.next());
+
+    while (sizeAsDouble >= 1024.0 && it.hasNext()) {
+        measure = it.next();
+        sizeAsDouble /= 1024.0;
+    }
+    return QString::fromLatin1("%1 %2").arg(sizeAsDouble, 0, 'f', precision).arg(measure);
+}
+
+
 
 // -- read, write operations
 

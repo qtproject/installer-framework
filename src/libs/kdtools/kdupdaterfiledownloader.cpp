@@ -23,6 +23,8 @@
 #include "kdupdaterfiledownloader_p.h"
 #include "kdupdaterfiledownloaderfactory.h"
 
+#include <fileutils.h>
+
 #include <QFile>
 #include <QtNetwork/QFtp>
 #include <QtNetwork/QNetworkAccessManager>
@@ -39,24 +41,11 @@
 #include <QTimerEvent>
 
 using namespace KDUpdater;
+using namespace QInstaller;
 
 static double calcProgress(qint32 done, qint32 total)
 {
     return total ? (double(done) / double(total)) : 0;
-}
-
-static QString format(double data)
-{
-    if (data < 1024.0)
-        return KDUpdater::FileDownloader::tr("%L1 B").arg(data);
-    data /= 1024.0;
-    if (data < 1024.0)
-        return KDUpdater::FileDownloader::tr("%L1 KB").arg(data, 0, 'f', 2);
-    data /= 1024.0;
-    if (data < 1024.0)
-        return KDUpdater::FileDownloader::tr("%L1 MB").arg(data, 0, 'f', 2);
-    data /= 1024.0;
-    return KDUpdater::FileDownloader::tr("%L1 GB").arg(data, 0, 'f', 2);
 }
 
 QByteArray KDUpdater::calculateHash(QIODevice* device, QCryptographicHash::Algorithm algo)
@@ -417,9 +406,10 @@ void KDUpdater::FileDownloader::emitDownloadStatus()
 {
     QString status;
     if (d->m_bytesToReceive > 0) {
-        QString bytesReceived = format(d->m_bytesReceived);
-        const QString bytesToReceive = format(d->m_bytesToReceive);
+        QString bytesReceived = humanReadableSize(d->m_bytesReceived);
+        const QString bytesToReceive = humanReadableSize(d->m_bytesToReceive);
 
+        // remove the unit from the bytesReceived value if bytesToReceive has the same
         const QString tmp = bytesToReceive.mid(bytesToReceive.indexOf(QLatin1Char(' ')));
         if (bytesReceived.endsWith(tmp))
             bytesReceived.chop(tmp.length());
@@ -427,10 +417,10 @@ void KDUpdater::FileDownloader::emitDownloadStatus()
         status = bytesReceived + tr(" of ") + bytesToReceive;
     } else {
         if (d->m_bytesReceived > 0)
-            status = format(d->m_bytesReceived) + tr(" downloaded.");
+            status = humanReadableSize(d->m_bytesReceived) + tr(" downloaded.");
     }
 
-    status += QLatin1String(" (") + format(d->m_downloadSpeed) + tr("/sec") + QLatin1Char(')');
+    status += QLatin1String(" (") + humanReadableSize(d->m_downloadSpeed) + tr("/sec") + QLatin1Char(')');
     if (d->m_bytesToReceive > 0 && d->m_downloadSpeed > 0) {
         const qint64 time = (d->m_bytesToReceive - d->m_bytesReceived) / d->m_downloadSpeed;
 
