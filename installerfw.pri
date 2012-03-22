@@ -2,6 +2,7 @@
     error("installerfw.pri already included")
 }
 IFW_PRI_INCLUDED = 1
+IFW_NEWLINE = $$escape_expand(\\n\\t)
 
 defineReplace(toNativeSeparators) {
     return($$replace(1, /, $$QMAKE_DIR_SEP))

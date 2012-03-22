@@ -1,11 +1,5 @@
 CONFIG += ordered
 TEMPLATE = subdirs
-SUBDIRS += src tools
-!macx:SUBDIRS += examples
-
-test.target = test
-test.depends = $(TARGET)
-QMAKE_EXTRA_TARGETS += test
-test.commands = (cd tests && $(QMAKE) && $(MAKE))
+SUBDIRS += src examples tests tools
 
 include (doc/doc.pri)
