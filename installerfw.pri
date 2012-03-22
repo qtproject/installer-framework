@@ -3,6 +3,10 @@
 }
 IFW_PRI_INCLUDED = 1
 
+defineReplace(toNativeSeparators) {
+    return($$replace(1, /, $$QMAKE_DIR_SEP))
+}
+
 defineReplace(cleanPath) {
     win32:1 ~= s|\\\\|/|g
     contains(1, ^/.*):pfx = /
@@ -26,6 +30,12 @@ isEmpty(IFW_BUILD_TREE) {
 IFW_SOURCE_TREE = $$PWD
 IFW_APP_PATH = $$IFW_BUILD_TREE/bin
 IFW_LIB_PATH = $$IFW_BUILD_TREE/lib
+
+RCC = $$cleanPath($$toNativeSeparators($$[QT_INSTALL_BINS]/rcc))
+LRELEASE = $$cleanPath($$toNativeSeparators($$[QT_INSTALL_BINS]/lrelease))
+
+win32:RCC = $${RCC}.exe
+win32:LRELEASE = $${LRELEASE}.exe
 
 INCLUDEPATH += \
     $$IFW_SOURCE_TREE/src/libs/7zip \
