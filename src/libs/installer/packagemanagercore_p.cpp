@@ -468,7 +468,7 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
         if ((!dependencyComponent->isInstalled() || dependencyComponent->updateRequested())
             && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
                 if (m_visitedComponents.value(component).contains(dependencyComponent)) {
-                    QString errorMessage = QString::fromLatin1("Recursion detected component(%1) already "
+                    QString errorMessage = QString::fromLatin1("Recursion detected component (%1) already "
                         "added with reason: \"%2\"").arg(component->name(), installReason(component));
                     qDebug() << qPrintable(errorMessage);
                     m_componentsToInstallError = errorMessage;
@@ -1097,7 +1097,7 @@ void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QF
     appendInt64Range(output, Range<qint64>::fromStartAndEnd(operationsStart, operationsEnd)
         .moved(-dataBlockStart));
     appendInt64(output, layout.resourceCount);
-    //data block size, from end of .exe to end of file
+    // data block size, from end of .exe to end of file
     appendInt64(output, output->pos() + 3 * sizeof(qint64) - dataBlockStart);
     appendInt64(output, MagicUninstallerMarker);
 }
@@ -1248,7 +1248,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 
             if (!replacementBinary.remove()) {
                 // Is there anything more sensible we can do with this error? I think not. It's not serious
-                // enough for throwing/ aborting the process.
+                // enough for throwing / aborting the process.
                 qDebug() << QString::fromLatin1("Could not remove installer base binary (%1) after updating "
                     "the uninstaller: %2").arg(installerBaseBinary, replacementBinary.errorString());
             }
@@ -1349,9 +1349,9 @@ void PackageManagerCorePrivate::runInstaller()
     bool adminRightsGained = false;
     try {
         setStatus(PackageManagerCore::Running);
-        emit installationStarted(); //resets also the ProgressCoordninator
+        emit installationStarted(); // resets also the ProgressCoordninator
 
-        //to have some progress for writeUninstaller
+        // to have some progress for writeUninstaller
         ProgressCoordinator::instance()->addReservePercentagePoints(1);
 
         static const QLatin1String sep("/");
@@ -2110,7 +2110,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
         return m_updateSourcesAdded;
     }
 
-    // forces an refresh/ clear on all update sources
+    // forces an refresh / clear on all update sources
     m_updaterApplication.updateSourcesInfo()->refresh();
     if (isInstaller()) {
         m_updaterApplication.addUpdateSource(m_settings.applicationName(), m_settings.applicationName(),
@@ -2146,7 +2146,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             QString error;
             QDomDocument doc;
             if (!doc.setContent(&updatesFile, &error, &line, &column)) {
-                qDebug() << QString::fromLatin1("Parse error in File %4 : %1 at line %2 col %3").arg(error,
+                qDebug() << QString::fromLatin1("Parse error in file %4: %1 at line %2 col %3").arg(error,
                     QString::number(line), QString::number(column), updatesFile.fileName());
                 setStatus(PackageManagerCore::Failure, tr("Could not add temporary update source information."));
                 return false;
@@ -2172,7 +2172,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
 void PackageManagerCorePrivate::realAppendToInstallComponents(Component *component)
 {
     if (!component->isInstalled() || component->updateRequested()) {
-        //remove the checkState method if we don't use selected in scripts
+        // remove the checkState method if we don't use selected in scripts
         setCheckedState(component, Qt::Checked);
 
         m_orderedComponentsToInstall.append(component);
@@ -2182,7 +2182,7 @@ void PackageManagerCorePrivate::realAppendToInstallComponents(Component *compone
 
 void PackageManagerCorePrivate::insertInstallReason(Component *component, const QString &reason)
 {
-    //keep the first reason
+    // keep the first reason
     if (m_toInstallComponentIdReasonHash.value(component->name()).isEmpty())
         m_toInstallComponentIdReasonHash.insert(component->name(), reason);
 }
