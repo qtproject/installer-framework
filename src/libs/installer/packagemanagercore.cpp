@@ -479,6 +479,10 @@ bool PackageManagerCore::isFileExtensionRegistered(const QString &extension) con
     return settings.value(QString::fromLatin1(".%1/Default").arg(extension)).isValid();
 }
 
+bool PackageManagerCore::fileExists(const QString &filePath) const
+{
+    return QFileInfo(filePath).exists();
+}
 
 // -- QInstaller
 

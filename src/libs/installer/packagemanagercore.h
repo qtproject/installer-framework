@@ -154,6 +154,7 @@ public:
     Q_INVOKABLE void setMessageBoxAutomaticAnswer(const QString &identifier, int button);
 
     Q_INVOKABLE bool isFileExtensionRegistered(const QString &extension) const;
+    Q_INVOKABLE bool fileExists(const QString &filePath) const;
 
 public:
     // component handling
