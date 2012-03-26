@@ -39,6 +39,7 @@
 #include <lib7z_facade.h>
 
 #include <QtCore/QDir>
+#include <QtCore/QDirIterator>
 #include <QtCore/QFileInfo>
 
 #include <iostream>
@@ -220,7 +221,11 @@ int main(int argc, char** argv)
             settings.applicationVersion(), redirectUpdateUrl);
         QInstallerTools::compressMetaDirectories(metaTmp, metaTmp, pathToVersionMapping);
 
-        QFile::remove(QFileInfo(repositoryDir, QLatin1String("Updates.xml")).absoluteFilePath());
+        QDirIterator it(repositoryDir, QStringList(QLatin1String("Updates*.xml")), QDir::Files | QDir::CaseSensitive);
+        while (it.hasNext()) {
+            it.next();
+            QFile::remove(it.fileInfo().absoluteFilePath());
+        }
         moveDirectoryContents(metaTmp, repositoryDir);
         return 0;
     } catch (const Lib7z::SevenZipException &e) {
