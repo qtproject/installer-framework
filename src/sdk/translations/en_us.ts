@@ -1483,7 +1483,7 @@ Downloading packages...</source>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagercore.cpp" line="405"/>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1780"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1785"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1513,22 +1513,22 @@ Downloading packages...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="560"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="564"/>
         <source>Application not running in Package Manager mode!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="567"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="571"/>
         <source>No installed packages found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="644"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="648"/>
         <source>Application running in Uninstaller mode!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1811"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1816"/>
         <source>invalid</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2786,7 +2786,7 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1026"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1030"/>
         <source>Error while elevating access rights.</source>
         <translation type="unfinished"></translation>
     </message>

@@ -1820,7 +1820,7 @@ Lade Pakete herunter...</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagercore.cpp" line="405"/>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1780"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1785"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
@@ -1850,22 +1850,22 @@ Lade Pakete herunter...</translation>
         <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil ein unbekannter Fehler auftrat.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="560"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="564"/>
         <source>Application not running in Package Manager mode!</source>
         <translation>Die Anwendung ist nicht im Paketverwaltermodus!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="567"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="571"/>
         <source>No installed packages found.</source>
         <translation>Keine installierten Pakete gefunden.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="644"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="648"/>
         <source>Application running in Uninstaller mode!</source>
         <translation>Die Anwendung befindet sich im Deinstallierermodus!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1811"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1816"/>
         <source>invalid</source>
         <translation>ungültig</translation>
     </message>
@@ -3391,7 +3391,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <translation>Ungültige Argumente: %1 Argumente erhalten, %2 erwartet.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1026"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1030"/>
         <source>Error while elevating access rights.</source>
         <translation>Fehler beim Erlangen von Administratorrechten.</translation>
     </message>
