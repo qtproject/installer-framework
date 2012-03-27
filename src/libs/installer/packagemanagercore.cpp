@@ -48,6 +48,7 @@
 #include "settings.h"
 #include "utils.h"
 
+#include <QtCore/QSettings>
 #include <QtCore/QTemporaryFile>
 
 #include <QtGui/QDesktopServices>
@@ -1117,10 +1118,19 @@ QString PackageManagerCore::environmentVariable(const QString &name) const
     const LPCWSTR n =  (LPCWSTR) name.utf16();
     LPTSTR buff = (LPTSTR) malloc(4096 * sizeof(TCHAR));
     DWORD getenvret = GetEnvironmentVariable(n, buff, 4096);
-    const QString actualValue = getenvret != 0
-        ? QString::fromUtf16((const unsigned short *) buff) : QString();
+    QString value = getenvret != 0 ? QString::fromUtf16((const unsigned short *) buff) : QString();
     free(buff);
-    return actualValue;
+
+    if (value.isEmpty()) {
+        static QLatin1String userEnvironmentRegistryPath("HKEY_CURRENT_USER\\Environment");
+        value = QSettings(userEnvironmentRegistryPath, QSettings::NativeFormat).value(name).toString();
+        if (value.isEmpty()) {
+            static QLatin1String systemEnvironmentRegistryPath("HKEY_LOCAL_MACHINE\\SYSTEM\\"
+                "CurrentControlSet\\Control\\Session Manager\\Environment");
+            value = QSettings(systemEnvironmentRegistryPath, QSettings::NativeFormat).value(name).toString();
+        }
+    }
+    return value;
 #else
     const char *pPath = name.isEmpty() ? 0 : getenv(name.toLatin1());
     return pPath ? QLatin1String(pPath) : QString();
