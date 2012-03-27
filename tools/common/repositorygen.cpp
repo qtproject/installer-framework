@@ -35,11 +35,14 @@
 #include <errors.h>
 #include <lib7z_facade.h>
 #include <settings.h>
+#include <qinstallerglobal.h>
 
 #include <kdupdater.h>
 
 #include <QtCore/QCryptographicHash>
 #include <QtCore/QDirIterator>
+
+#include <QtScript/QScriptEngine>
 
 #include <QtXml/QDomDocument>
 
@@ -240,12 +243,19 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         // copy scripts
         const QString script = package.firstChildElement(QLatin1String("Script")).text();
         if (!script.isEmpty()) {
+            const QString fromLocation(QString::fromLatin1("%1/meta/%2").arg(it->directory, script));
 
-            QFile scriptFile(script);
             QString scriptContent;
+            QFile scriptFile(fromLocation);
             if (scriptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
                 QTextStream in(&scriptFile);
                 scriptContent = in.readAll();
+            }
+            static QScriptEngine testScriptEngine;
+            testScriptEngine.evaluate(scriptContent, scriptFile.fileName());
+            if (testScriptEngine.hasUncaughtException()) {
+                throw QInstaller::Error(QObject::tr("Exception while loading the component script: %1")
+                    .arg(QInstaller::uncaughtExceptionString(&testScriptEngine, scriptFile.fileName())));
             }
 
             // added the xml tag RequiresAdminRights to the xml if somewhere addElevatedOperation is used
@@ -256,9 +266,8 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
             }
 
             qDebug() << "\tCopying associated script" << script << "into the meta package...";
-            QString fromLocation(QString::fromLatin1("%1/meta/%2").arg(it->directory, script));
             QString toLocation(QString::fromLatin1("%1/%2/%3").arg(metapath, it->name, script));
-            if (!QFile::copy(fromLocation, toLocation)) {
+            if (!scriptFile.copy(toLocation)) {
                 qDebug() << "failed!";
                 throw QInstaller::Error(QObject::tr("Could not copy the script %1 to its target location %2.")
                     .arg(fromLocation, toLocation));
