@@ -55,7 +55,8 @@ static void printUsage()
 
     QInstallerTools::printRepositoryGenOptions();
 
-    std::cout << "  -u|--updateurl            url instructs clients to receive updates from a " << std::endl;
+    std::cout << "  -r|--remove               Force removing target directory if existent." << std::endl;
+    std::cout << "  -u|--updateurl            URL instructs clients to receive updates from a " << std::endl;
     std::cout << "                            different location" << std::endl;
 
     std::cout << "  --update                  Update a set of existing components (defined by " << std::endl;
@@ -99,6 +100,7 @@ int main(int argc, char** argv)
         QString configDir;
         QString redirectUpdateUrl;
         QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
+        bool remove = false;
 
         //TODO: use a for loop without removing values from args like it is in binarycreator.cpp
         //for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -168,6 +170,9 @@ int main(int argc, char** argv)
             } else if (args.first() == QLatin1String("--ignore-translations")
                 || args.first() == QLatin1String("--ignore-invalid-packages")) {
                     args.removeFirst();
+            } else if (args.first() == QLatin1String("-r") || args.first() == QLatin1String("--remove")) {
+                remove = true;
+                args.removeFirst();
             } else {
                 printUsage();
                 return 1;
@@ -179,7 +184,14 @@ int main(int argc, char** argv)
                 return 1;
         }
 
+        if (remove && updateExistingRepository) {
+            throw QInstaller::Error(QObject::tr("Argument -r|--remove and --single|--update are mutually "
+                "exclusive!"));
+        }
+
         const QString repositoryDir = makeAbsolute(args.first());
+        if (remove)
+            QInstaller::removeDirectory(repositoryDir);
 
         if (!updateExistingRepository && QFile::exists(repositoryDir)) {
             throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!")
