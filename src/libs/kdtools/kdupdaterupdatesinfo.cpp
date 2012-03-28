@@ -27,6 +27,7 @@
 #include <QtXml/QDomElement>
 #include <QFile>
 #include <QSharedData>
+#include <QLocale>
 
 using namespace KDUpdater;
 
@@ -174,6 +175,17 @@ bool UpdatesInfo::UpdatesInfoData::parsePackageUpdateElement(const QDomElement &
         } else if (childE.tagName() == QLatin1String("Version")) {
             info.data.insert(QLatin1String("inheritVersionFrom"), childE.attribute(QLatin1String("inheritVersionFrom")));
             info.data[childE.tagName()] = childE.text();
+        } else if (childE.tagName() == QLatin1String("Description")) {
+
+            QString languageAttribute = childE.attribute(QLatin1String("xml:lang"));
+
+            if (!info.data.contains(QLatin1String("Description")) && (languageAttribute.isEmpty()))
+                info.data[childE.tagName()] = childE.text();
+
+            // overwrite default if we have a language specific description
+            if (languageAttribute == QLocale().name().toLower())
+                info.data[childE.tagName()] = childE.text();
+
         } else {
             info.data[childE.tagName()] = childE.text();
         }
