@@ -364,6 +364,10 @@ Q_SIGNALS:
 private Q_SLOTS:
     void installationStarted();
     void installationFinished();
+
+    void uninstallationStarted();
+    void uninstallationFinished();
+
     void toggleDetailsWereChanged();
 
 private:

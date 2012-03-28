@@ -1722,9 +1722,11 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     connect(m_performInstallationForm, SIGNAL(showDetailsChanged()), this, SLOT(toggleDetailsWereChanged()));
 
     connect(core, SIGNAL(installationStarted()), this, SLOT(installationStarted()));
-    connect(core, SIGNAL(uninstallationStarted()), this, SLOT(installationStarted()));
     connect(core, SIGNAL(installationFinished()), this, SLOT(installationFinished()));
-    connect(core, SIGNAL(uninstallationFinished()), this, SLOT(installationFinished()));
+
+    connect(core, SIGNAL(uninstallationStarted()), this, SLOT(uninstallationStarted()));
+    connect(core, SIGNAL(uninstallationFinished()), this, SLOT(uninstallationFinished()));
+
     connect(core, SIGNAL(titleMessageChanged(QString)), this, SLOT(setTitleMessage(QString)));
     connect(this, SIGNAL(setAutomatedPageSwitchEnabled(bool)), core,
         SIGNAL(setAutomatedPageSwitchEnabled(bool)));
@@ -1800,6 +1802,20 @@ void PerformInstallationPage::installationFinished()
         setComplete(true);
         setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::NextButton));
     }
+}
+
+void PerformInstallationPage::uninstallationStarted()
+{
+    m_performInstallationForm->startUpdateProgress();
+    if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton))
+        cancel->setEnabled(false);
+}
+
+void PerformInstallationPage::uninstallationFinished()
+{
+    installationFinished();
+    if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton))
+        cancel->setEnabled(false);
 }
 
 void PerformInstallationPage::toggleDetailsWereChanged()
