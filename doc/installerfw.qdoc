@@ -364,6 +364,11 @@
         \row
             \o  Description
             \o  Human-readable description of the component. Required.
+                Specify translations for the description as values of additional
+                Description tags, with the xml:lang attribute set to the correct locale.
+                If a localization that matches the locale is not found and an untranslated
+                version exists, that one will be used. Otherwise no Description will be
+                shown for that locale.
         \row
             \o  Version
             \o  Version number of the component in the following format:

@@ -2,6 +2,7 @@
 <Package>
     <DisplayName>QtGui</DisplayName>
     <Description>Qt gui libraries</Description>
+    <Description xml:lang="de_de">Qt GUI Bibliotheken</Description>
     <Version>1.2.3</Version>
     <ReleaseDate>2009-04-23</ReleaseDate>
     <Name>com.vendor.root.component2</Name>
