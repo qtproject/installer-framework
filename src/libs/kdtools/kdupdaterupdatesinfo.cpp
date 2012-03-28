@@ -58,7 +58,7 @@ public:
 void UpdatesInfo::UpdatesInfoData::setInvalidContentError(const QString &detail)
 {
     error = UpdatesInfo::InvalidContentError;
-    errorMessage = tr("Updates.Xml contains invalid content: %1").arg(detail);
+    errorMessage = tr("Updates.xml contains invalid content: %1").arg(detail);
 }
 
 void UpdatesInfo::UpdatesInfoData::parseFile(const QString &updateXmlFile)
@@ -86,7 +86,7 @@ void UpdatesInfo::UpdatesInfoData::parseFile(const QString &updateXmlFile)
 
     QDomElement rootE = doc.documentElement();
     if (rootE.tagName() != QLatin1String("Updates")) {
-        setInvalidContentError(tr("root element %1 unexpected, should be \"Updates\"").arg(rootE.tagName()));
+        setInvalidContentError(tr("Root element %1 unexpected, should be \"Updates\".").arg(rootE.tagName()));
         return;
     }
 
@@ -119,12 +119,12 @@ void UpdatesInfo::UpdatesInfoData::parseFile(const QString &updateXmlFile)
     }
 
     if (applicationName.isEmpty()) {
-        setInvalidContentError(tr("ApplicationName element is missing"));
+        setInvalidContentError(tr("ApplicationName element is missing."));
         return;
     }
     
     if (applicationVersion.isEmpty()) {
-        setInvalidContentError(tr("ApplicationVersion element is missing"));
+        setInvalidContentError(tr("ApplicationVersion element is missing."));
         return;
     }
     

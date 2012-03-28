@@ -357,7 +357,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 
     setTotalAmount(m_packageNames.count() + 1);
     setProcessedAmount(1);
-    emit infoMessage(this, tr("Finished updating component meta information..."));
+    emit infoMessage(this, tr("Finished updating component meta information."));
 
     if (m_packageNames.isEmpty())
         finished(KDJob::NoError);
@@ -424,7 +424,7 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     if (!m_downloader) {
         m_currentPackageName.clear();
         m_currentPackageVersion.clear();
-        qWarning() << "Scheme not supported: " << url.toString();
+        qWarning() << "Scheme not supported:" << url.toString();
         QMetaObject::invokeMethod(this, "fetchNextMetaInfo", Qt::QueuedConnection);
         return;
     }
