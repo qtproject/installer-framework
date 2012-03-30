@@ -234,8 +234,13 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
     foreach (const QFileInfo &fi, entries) {
         if (fi.isSymLink() || fi.isFile()) {
             QFile f(fi.filePath());
-            if (!f.remove() && !ignoreErrors)
-                throw Error(QObject::tr("Could not remove file %1: %2").arg(f.fileName(), f.errorString()));
+            if (!f.remove()) {
+                QString errorMessage = QObject::tr("Could not remove file %1: %2").arg(f.fileName(), f.errorString());
+                if (ignoreErrors)
+                    qWarning() << errorMessage;
+                else
+                    throw Error(errorMessage);
+            }
         }
     }
 }
@@ -259,8 +264,14 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
     removeFiles(path, ignoreErrors);
     foreach (const QString &dir, dirs) {
         errno = 0;
-        if (d.exists(path) && !d.rmdir(dir) && !ignoreErrors)
-            throw Error(QObject::tr("Could not remove folder %1: %2").arg(dir, QLatin1String(strerror(errno))));
+        if (d.exists(path) && !d.rmdir(dir)) {
+            QString errorMessage = QObject::tr("Could not remove folder %1: %2").arg(dir,
+                QLatin1String(strerror(errno)));
+            if (ignoreErrors)
+                qWarning() << errorMessage;
+            else
+                throw Error(errorMessage);
+        }
     }
 }
 

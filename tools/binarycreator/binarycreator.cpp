@@ -696,7 +696,7 @@ int main(int argc, char **argv)
             foreach (const QString &resource, input.binaryResources)
                 QFile::remove(resource);
         }
-        removeDirectory(metaDir);
+        removeDirectory(metaDir, true);
         return result;
     } catch (const Error &e) {
         std::cerr << e.message() << std::endl;
