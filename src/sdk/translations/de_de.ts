@@ -670,12 +670,12 @@
     <message>
         <location filename="../../libs/kdtools/kdupdaterupdatesinfo.cpp" line="123"/>
         <source>ApplicationName element is missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Element ApplicationName fehlt.</translation>
     </message>
     <message>
         <location filename="../../libs/kdtools/kdupdaterupdatesinfo.cpp" line="128"/>
         <source>ApplicationVersion element is missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Element ApplicationVersion fehlt.</translation>
     </message>
     <message>
         <location filename="../../libs/kdtools/kdupdaterupdatesinfo.cpp" line="195"/>
@@ -2571,7 +2571,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="207"/>
         <source>Could not retrieve property %1 for item %2</source>
-        <translation>Konnte Eigenschaft %2 von %2 nicht erhalten.</translation>
+        <translation>Konnte Eigenschaft %1 von %2 nicht erhalten.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="230"/>
