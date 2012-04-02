@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
     while (std::getline(input, standardString)) {
         if (standardString == "DISTRIB_ID=Ubuntu")
             isUbuntu = true;
-        else if (standardString == "DISTRIB_RELEASE=11.10")
+        else if ((standardString == "DISTRIB_RELEASE=11.10") || (standardString == "DISTRIB_RELEASE=12.04"))
             is11_10 = true;
     }
 
