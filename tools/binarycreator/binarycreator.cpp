@@ -458,7 +458,6 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
             throw Error(QObject::tr("Could not copy %1.").arg(source));
 
         if (sourceFileInfo.fileName() == QFileInfo(configFile).fileName()) {
-            // if we just copied the config.xml, make sure to remove the RSA private key from it :-o
             QFile configXml(targetDir.filePath(QLatin1String("config.xml")));
             configXml.open(QIODevice::ReadOnly);
             QDomDocument dom;
