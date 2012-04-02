@@ -98,7 +98,7 @@ int main(int argc, char** argv)
         QStringList filteredPackages;
         bool updateExistingRepository = false;
         QString packagesDir;
-        QString configDir;
+        QString configFile;
         QString redirectUpdateUrl;
         QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
         bool remove = false;
@@ -149,18 +149,18 @@ int main(int argc, char** argv)
                     return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument"));
                 const QFileInfo fi(args.first());
                 if (!fi.exists()) {
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Config directory %1 not found "
+                    return printErrorAndUsageAndExit(QObject::tr("Error: Config file %1 not found "
                         "at the specified location").arg(args.first()));
                 }
-                if (!fi.isDir()) {
+                if (!fi.isFile()) {
                     return printErrorAndUsageAndExit(QObject::tr("Error: Configuration %1 is not a "
-                        "directory").arg(args.first()));
+                        "file").arg(args.first()));
                 }
                 if (!fi.isReadable()) {
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Config directory %1 is not "
+                    return printErrorAndUsageAndExit(QObject::tr("Error: Config file %1 is not "
                         "readable").arg(args.first()));
                 }
-                configDir = args.first();
+                configFile = args.first();
                 args.removeFirst();
             } else if (args.first() == QLatin1String("-u") || args.first() == QLatin1String("--updateurl")) {
                 args.removeFirst();
@@ -180,7 +180,7 @@ int main(int argc, char** argv)
             }
         }
 
-        if ((packagesDir.isEmpty() || configDir.isEmpty() || args.count() != 1)) {
+        if ((packagesDir.isEmpty() || configFile.isEmpty() || args.count() != 1)) {
                 printUsage();
                 return 1;
         }
@@ -215,8 +215,8 @@ int main(int argc, char** argv)
         const QString metaTmp = createTemporaryDirectory();
         tmpDeleter.add(metaTmp);
 
-        const Settings &settings = Settings::fromFileAndPrefix(configDir + QLatin1String("/config.xml"),
-            configDir);
+        QString configDir = QFileInfo(configFile).canonicalPath();
+        const Settings &settings = Settings::fromFileAndPrefix(configFile, configDir);
         generateMetaDataDirectory(metaTmp, repositoryDir, packages, settings.applicationName(),
             settings.applicationVersion(), redirectUpdateUrl);
         QInstallerTools::compressMetaDirectories(metaTmp, metaTmp, pathToVersionMapping);

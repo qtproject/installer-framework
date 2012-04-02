@@ -100,10 +100,10 @@ static void chmod755(const QString &absolutFilePath)
         | QFile::ReadGroup | QFile::ExeGroup | QFile::ReadOther | QFile::ExeOther);
 }
 
-static int assemble(Input input, const QString &configdir)
+static int assemble(Input input, const QString &configFile)
 {
-    const QString configfile = QFileInfo(configdir, QLatin1String("config.xml")).absoluteFilePath();
-    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, configdir);
+    const QString configDir = QFileInfo(configFile).canonicalPath();
+    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configFile, configDir);
 
 #ifdef Q_OS_LINUX
 Q_UNUSED(settings)
@@ -423,10 +423,9 @@ static void printUsage()
 }
 
 static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector &packages,
-    const QString &packagesDir, const QString &configdir)
+    const QString &packagesDir, const QString &configFile)
 {
-    const QString configfile = QFileInfo(configdir, QLatin1String("config.xml")).absoluteFilePath();
-    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configfile, QString());
+    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configFile, QString());
 
     const QString metapath = createTemporaryDirectory();
     generateMetaDataDirectory(metapath, packagesDir, packages, settings.applicationName(),
@@ -434,7 +433,7 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
 
     const QString configCopy = metapath + QLatin1String("/installer-config");
     QInstaller::mkdir(configCopy);
-    QString absoluteConfigPath = QFileInfo(configdir).absoluteFilePath();
+    QString absoluteConfigPath = QFileInfo(configFile).absolutePath();
 
     QDirIterator it(absoluteConfigPath, QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
     while (it.hasNext()) {
@@ -445,7 +444,11 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
         qDebug() << "\tFound configuration file: " << next;
         const QFileInfo sourceFileInfo(next);
         const QString source = sourceFileInfo.absoluteFilePath();
-        const QFileInfo targetFileInfo(configCopy, QFileInfo(next).fileName());
+        QFileInfo targetFileInfo(configCopy, QFileInfo(next).fileName());
+
+        if (QFileInfo(next).fileName() == QFileInfo(configFile).fileName())
+            targetFileInfo.setFile(configCopy, QLatin1String("config.xml"));
+
         const QDir targetDir = targetFileInfo.dir();
         if (!targetDir.exists())
             QInstaller::mkpath(targetFileInfo.absolutePath());
@@ -454,7 +457,7 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
         if (!QFile::copy(source, target))
             throw Error(QObject::tr("Could not copy %1.").arg(source));
 
-        if (sourceFileInfo.fileName().toLower() == QLatin1String("config.xml")) {
+        if (sourceFileInfo.fileName() == QFileInfo(configFile).fileName()) {
             // if we just copied the config.xml, make sure to remove the RSA private key from it :-o
             QFile configXml(targetDir.filePath(QLatin1String("config.xml")));
             configXml.open(QIODevice::ReadOnly);
@@ -480,7 +483,7 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
                 if (!fi.exists() && fiIcon.exists())
                     fi = fiIcon;
 
-                if (!fi.exists() || fi.absolutePath() == QFileInfo(configdir).dir().absolutePath())
+                if (!fi.exists() || fi.absolutePath() == QFileInfo(configFile).dir().absolutePath())
                     continue;
 
                 if (fi.isDir())
@@ -527,7 +530,7 @@ int main(int argc, char **argv)
         templateBinary = QString::fromLatin1("%1/%2").arg(qApp->applicationDirPath(), templateBinary);
 
     QString target;
-    QString configDir;
+    QString configFile;
     QString packagesDirectory = QDir::currentPath();
     bool onlineOnly = false;
     bool offlineOnly = false;
@@ -600,18 +603,18 @@ int main(int argc, char **argv)
                 return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument."));
             const QFileInfo fi(*it);
             if (!fi.exists()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Config directory %1 not found at the "
+                return printErrorAndUsageAndExit(QObject::tr("Error: Config file %1 not found at the "
                     "specified location.").arg(*it));
             }
-            if (!fi.isDir()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Configuration %1 is not a directory.")
+            if (!fi.isFile()) {
+                return printErrorAndUsageAndExit(QObject::tr("Error: Configuration %1 is not a file.")
                     .arg(*it));
             }
             if (!fi.isReadable()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Config directory %1 is not readable.")
+                return printErrorAndUsageAndExit(QObject::tr("Error: Config file %1 is not readable.")
                     .arg(*it));
             }
-            configDir = *it;
+            configFile = *it;
         } else if (*it == QLatin1String("-r") || *it == QLatin1String("--resources")) {
             ++it;
             if (it == args.end() || it->startsWith(QLatin1String("-")))
@@ -637,15 +640,15 @@ int main(int argc, char **argv)
     if (target.isEmpty())
         return printErrorAndUsageAndExit(QObject::tr("Error: Target parameter missing."));
 
-    if (configDir.isEmpty())
-        return printErrorAndUsageAndExit(QObject::tr("Error: No configuration directory selected."));
+    if (configFile.isEmpty())
+        return printErrorAndUsageAndExit(QObject::tr("Error: No configuration file selected."));
 
     qDebug() << "Parsed arguments, ok.";
 
     try {
         QInstallerTools::PackageInfoVector packages = createListOfPackages(packagesDirectory,
             filteredPackages, ftype);
-        const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configDir);
+        const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configFile);
         {
             QSettings confInternal(metaDir + QLatin1String("/config/config-internal.ini")
                 , QSettings::IniFormat);
@@ -688,7 +691,7 @@ int main(int argc, char **argv)
             }
 
             qDebug() << "Creating the binary";
-            result = assemble(input, configDir);
+            result = assemble(input, configFile);
 
             // cleanup
             qDebug() << "Cleaning up...";

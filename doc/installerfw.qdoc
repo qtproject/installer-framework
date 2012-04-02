@@ -599,9 +599,9 @@
             \o  Create an offline installer that never accesses online
                 repositories.
         \row
-            \o  -c or --config directory
-            \o  Use \c directory as the \l{Configuration File}
-                {config directory}.
+            \o  -c or --config file
+            \o  Use \c file as the \l{Configuration File}
+                {config file}.
         \row
             \o  -e or --exclude p1,...,pn
             \o  Comma-separated list of packages to retrieve from an online
@@ -659,7 +659,7 @@
     The \c repogen tool expects the following parameters in the following order:
 
     \code
-    repogen.exe -p <package_directory> -c <config_directory> repository <repository_directory>
+    repogen.exe -p <package_directory> -c <config_file> repository <repository_directory>
     \endcode
 
     When the repository has been created, you can upload it anywhere. You must
@@ -678,9 +678,9 @@
                 {package directory}.
                 Defaults to the current working directory.
         \row
-            \o  -c or --config directory
-            \o  Use \c directory as the \l{Configuration File}
-                {config directory}.
+            \o  -c or --config file
+            \o  Use \c file as the \l{Configuration File}
+                {config file}.
         \row
             \o  repository directory
             \o  Target directory to generate the repository. Must not yet exist.
@@ -750,7 +750,7 @@
     \section1 Configuring Repositories
 
     The \c RemoteRepositories setting in the installer configuration file
-    (confix.xml) can contain a list of several repositories. Each of them can
+    (config.xml) can contain a list of several repositories. Each of them can
     have the following settings:
 
     \list
