@@ -67,7 +67,7 @@ static void printUsage()
 
     std::cout << std::endl;
     std::cout << "Example:" << std::endl;
-    std::cout << "  " << appName << " -p ../examples/packages -c ../examples/config -u "
+    std::cout << "  " << appName << " -p ../examples/packages -c ../examples/config/config.xml -u "
         "http://www.some-server.com:8080 repository/" << std::endl;
 }
 

@@ -52,7 +52,7 @@ using namespace QInstallerTools;
 
 void QInstallerTools::printRepositoryGenOptions()
 {
-    std::cout << "  -c|--config dir           The directory containing the installer configuration" << std::endl;
+    std::cout << "  -c|--config file          The file containing the installer configuration" << std::endl;
 
     std::cout << "  -p|--packages dir         The directory containing the available packages." << std::endl;
     std::cout << "                            Defaults to the current working directory." << std::endl;

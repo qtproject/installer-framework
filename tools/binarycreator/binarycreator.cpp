@@ -415,7 +415,7 @@ static void printUsage()
     std::cout << "Creates an offline installer for the SDK, containing all dependencies." << std::endl;
     std::cout << std::endl;
     std::cout << "Example (online installer):" << std::endl;
-    std::cout << "  " << appName << " -c installer-config -p packages-directory -e com.nokia.sdk.qt,"
+    std::cout << "  " << appName << " -c installer-config/config.xml -p packages-directory -e com.nokia.sdk.qt,"
         "com.nokia.qtcreator -t installerbase SDKInstaller.exe" << std::endl;
     std::cout << std::endl;
     std::cout << "Creates an installer for the SDK without qt and qt creator." << std::endl;
