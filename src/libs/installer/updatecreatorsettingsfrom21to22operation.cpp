@@ -222,11 +222,13 @@ void convertDefaultGDBInstallerSettings(QSettings &settings, QInstaller::Package
     //read all settings for GDBs
     QHash<QString, QString> abiToDefaultDebuggerHash;
     foreach (const QString &key, settings.allKeys()) {
-        QString oldValue = settings.value(key).toString();
-        QString gdbBinaryPath = oldValue.left(oldValue.indexOf(QLatin1String(",")));
+        QVariant oldValue = settings.value(key);
+        if (oldValue.type() != QVariant::StringList)
+            continue;
+        QStringList oldGdbEntry = oldValue.toStringList();
+        QString gdbBinaryPath = oldGdbEntry.takeFirst();
 
-        QString gdbTypesAsCommaSeperatedString = oldValue.mid(oldValue.indexOf(QLatin1String(",")));
-        QStringList gdbTypeList = gdbTypesAsCommaSeperatedString.split(QLatin1String(","));
+        QStringList gdbTypeList = oldGdbEntry;
         foreach (const QString &gdbType, gdbTypeList) {
             if (gdbType == QLatin1String("0")) {
                 abiToDefaultDebuggerHash.insert(QLatin1String("x86-linux-generic-elf-64bit"), gdbBinaryPath);
