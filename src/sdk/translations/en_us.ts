@@ -2323,17 +2323,17 @@ needs to be less than 255 characters.</source>
 <context>
     <name>QInstaller::UpdateCreatorSettingsFrom21To22Operation</name>
     <message>
-        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="278"/>
+        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="280"/>
         <source>Invalid arguments in %0: %1 arguments given, exactly 0 expected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="286"/>
+        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="288"/>
         <source>Needed installer object in %1 operation is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="304"/>
+        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="306"/>
         <source>Can not remove previous registered Qt Versions in %1 operation.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2457,44 +2457,44 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="263"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="268"/>
         <source>Could not remove folder %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="332"/>
-        <location filename="../../libs/installer/fileutils.cpp" line="357"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="343"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="368"/>
         <source>Could not create folder %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="344"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="355"/>
         <source>Could not copy file from %1 to %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="369"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="380"/>
         <source>Could not move file from %1 to %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="380"/>
-        <location filename="../../libs/installer/fileutils.cpp" line="389"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="391"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="400"/>
         <source>Could not create folder %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="399"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="410"/>
         <source>Could not open temporary file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="416"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="427"/>
         <source>Could not open temporary file for template %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="426"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="437"/>
         <source>Could not create temporary folder for template %1: %2</source>
         <translation type="unfinished"></translation>
     </message>

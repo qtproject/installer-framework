@@ -1247,7 +1247,7 @@ Fehler beim Laden von %2</translation>
     <message>
         <location filename="../../libs/installer/getrepositorymetainfojob.cpp" line="360"/>
         <source>Finished updating component meta information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Aktualisieren der Komponentenmetainformationen ist beendet.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/getrepositorymetainfojob.cpp" line="371"/>
@@ -2358,17 +2358,17 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
 <context>
     <name>QInstaller::UpdateCreatorSettingsFrom21To22Operation</name>
     <message>
-        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="278"/>
+        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="280"/>
         <source>Invalid arguments in %0: %1 arguments given, exactly 0 expected.</source>
         <translation>Ungültige Argumente in %0: %1 Argumente erhalten, genau 0 erwartet.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="286"/>
+        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="288"/>
         <source>Needed installer object in %1 operation is empty.</source>
         <translation>Das für die Anweisung %1 benötigte Installerobjekt ist leer.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="304"/>
+        <location filename="../../libs/installer/updatecreatorsettingsfrom21to22operation.cpp" line="306"/>
         <source>Can not remove previous registered Qt Versions in %1 operation.</source>
         <translation>Kann die bereits registrierte Qt Version in der %1 Anweisung nicht entfernen.</translation>
     </message>
@@ -2411,7 +2411,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libs/installer/binaryformat.cpp" line="231"/>
         <source>No marker found, stopped after %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Zauberkeks gefunden, abgebrochen nach %1.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/binaryformat.cpp" line="237"/>
@@ -2492,44 +2492,44 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="263"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="268"/>
         <source>Could not remove folder %1: %2</source>
         <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="332"/>
-        <location filename="../../libs/installer/fileutils.cpp" line="357"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="343"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="368"/>
         <source>Could not create folder %1</source>
         <translation>Konnte Ordner %1 nicht anlegen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="344"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="355"/>
         <source>Could not copy file from %1 to %2: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="369"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="380"/>
         <source>Could not move file from %1 to %2: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 verschieben. Fehlermeldung: %3</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="380"/>
-        <location filename="../../libs/installer/fileutils.cpp" line="389"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="391"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="400"/>
         <source>Could not create folder %1: %2</source>
         <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="399"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="410"/>
         <source>Could not open temporary file: %1</source>
         <translation>Konnte temporäre Datei nicht öffnen. Fehlermeldung: %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="416"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="427"/>
         <source>Could not open temporary file for template %1: %2</source>
         <translation>Konnte keine temporäre Datei für die Vorlage %1 öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fileutils.cpp" line="426"/>
+        <location filename="../../libs/installer/fileutils.cpp" line="437"/>
         <source>Could not create temporary folder for template %1: %2</source>
         <translation>Konnte keine temporäre Datei für die Vorlage %1 anlegen. Fehlermeldung: %2</translation>
     </message>
