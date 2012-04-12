@@ -1741,7 +1741,8 @@ void PackageManagerCorePrivate::runUninstaller()
         m_needToWriteUninstaller = false;
 
         setStatus(PackageManagerCore::Success);
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation finished!"));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(
+            tr("\nUninstallation completed successfully!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit uninstallationFinished();
@@ -1752,7 +1753,7 @@ void PackageManagerCorePrivate::runUninstaller()
                 QLatin1String("installationError"), tr("Error"), err.message());
         }
 
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nDeinstallation aborted!"));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUninstallation aborted!"));
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit uninstallationFinished();
