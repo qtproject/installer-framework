@@ -593,14 +593,13 @@ void Component::createOperationsForArchive(const QString &archive)
     if (callScriptMethod(QLatin1String("createOperationsForArchive"), QScriptValueList() << archive).isValid())
         return;
 
-    const QFileInfo fi(QString::fromLatin1("installer://%1/%2").arg(name(), archive));
-    const bool isZip = Lib7z::isSupportedArchive(fi.filePath());
+    const bool isZip = Lib7z::isSupportedArchive(archive);
 
     if (isZip) {
         // archives get completely extracted per default (if the script isn't doing other stuff)
-        addOperation(QLatin1String("Extract"), fi.filePath(), QLatin1String("@TargetDir@"));
+        addOperation(QLatin1String("Extract"), archive, QLatin1String("@TargetDir@"));
     } else {
-        createOperationsForPath(fi.filePath());
+        createOperationsForPath(archive);
     }
 }
 
@@ -611,7 +610,6 @@ void Component::beginInstallation()
         return;
     }
 }
-
 
 /*!
     Creates all operations needed to install this component.
@@ -655,12 +653,16 @@ QList<QPair<QString, bool> > Component::pathesForUninstallation() const
 }
 
 /*!
-    Contains the names of all archives known to this component. This does not contain archives added
-    with #addDownloadableArchive.
+    Contains the names of all archives known to this component. Even downloaded archives are mapped
+    to the installer:// url throw the used QFileEngineHandler during the download process.
 */
 QStringList Component::archives() const
 {
-    return QDir(QString::fromLatin1("installer://%1/").arg(name())).entryList();
+    QString pathString = QString::fromLatin1("installer://%1/").arg(name());
+    QStringList archivesNameList = QDir(pathString).entryList();
+    //RegExp "^" means line beginning
+    archivesNameList.replaceInStrings(QRegExp(QLatin1String("^")), pathString);
+    return archivesNameList;
 }
 
 /*!
