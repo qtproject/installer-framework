@@ -410,13 +410,14 @@ static void printUsage()
     std::cout << "Packages are to be found in the current working directory and get listed as "
         "their names" << std::endl << std::endl;
     std::cout << "Example (offline installer):" << std::endl;
-    std::cout << "  " << appName << " --offline-only -c installer-config -p packages-directory -t "
-        "installerbase SDKInstaller.exe" << std::endl;
+    char sep = QDir::separator().toAscii();
+    std::cout << "  " << appName << " --offline-only -c installer-config" << sep << "config.xml -p "
+        "packages-directory -t installerbase SDKInstaller.exe" << std::endl;
     std::cout << "Creates an offline installer for the SDK, containing all dependencies." << std::endl;
     std::cout << std::endl;
     std::cout << "Example (online installer):" << std::endl;
-    std::cout << "  " << appName << " -c installer-config/config.xml -p packages-directory -e com.nokia.sdk.qt,"
-        "com.nokia.qtcreator -t installerbase SDKInstaller.exe" << std::endl;
+    std::cout << "  " << appName << " -c installer-config" << sep << "config.xml -p packages-directory "
+        "-e com.nokia.sdk.qt,com.nokia.qtcreator -t installerbase SDKInstaller.exe" << std::endl;
     std::cout << std::endl;
     std::cout << "Creates an installer for the SDK without qt and qt creator." << std::endl;
     std::cout << std::endl;
