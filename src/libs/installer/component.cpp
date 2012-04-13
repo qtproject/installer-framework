@@ -559,20 +559,8 @@ void Component::createOperationsForPath(const QString &path)
         return;
 
     QString target;
-    static const QString zipPrefix = QString::fromLatin1("7z://installer://");
-    // if the path is an archive, remove the archive file name from the target path
-    if (path.startsWith(zipPrefix)) {
-        target = path.mid(zipPrefix.length() + name().length() + 1); // + 1 for the /
-        const int nextSlash = target.indexOf(QLatin1Char('/'));
-        if (nextSlash != -1)
-            target = target.mid(nextSlash);
-        else
-            target.clear();
-        target.prepend(QLatin1String("@TargetDir@"));
-    } else {
-        static const QString prefix = QString::fromLatin1("installer://");
-        target = QString::fromLatin1("@TargetDir@%1").arg(path.mid(prefix.length() + name().length()));
-    }
+    static const QString prefix = QString::fromLatin1("installer://");
+    target = QString::fromLatin1("@TargetDir@%1").arg(path.mid(prefix.length() + name().length()));
 
     if (fi.isFile()) {
         static const QString copy = QString::fromLatin1("Copy");

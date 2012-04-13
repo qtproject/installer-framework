@@ -716,7 +716,7 @@ QAbstractFileEngine* FSEngineClientHandler::create(const QString &fileName) cons
     d->maybeStartServer();
 
     static QRegExp re(QLatin1String("^[a-z0-9]*://.*$"));
-    if (re.exactMatch(fileName))  // stuff like installer:// 7z:// and so on
+    if (re.exactMatch(fileName))  // stuff like installer://
         return 0;
 
     if (fileName.isEmpty() || fileName.startsWith(QLatin1String(":")))
