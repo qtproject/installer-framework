@@ -23,6 +23,8 @@
 #include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterfiledownloader_p.h"
 
+#include <QtNetwork/QSslSocket>
+
 /*!
    \internal
    \ingroup kdupdater
@@ -64,6 +66,13 @@ FileDownloaderFactory::FileDownloaderFactory()
     registerFileDownloader<FtpDownloader>(QLatin1String("ftp"));
     registerFileDownloader<HttpDownloader>(QLatin1String("http"));
     registerFileDownloader<ResourceFileDownloader >(QLatin1String("resource"));
+
+#ifndef QT_NO_OPENSSL
+    // TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
+    if (QSslSocket::supportsSsl())
+        registerFileDownloader<HttpDownloader>(QLatin1String("https"));
+#endif
+
     d->m_followRedirects = false;
 }
 
@@ -98,6 +107,7 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *pa
     FileDownloader *downloader = KDGenericFactory<FileDownloader>::create(scheme);
     if (downloader != 0) {
         downloader->setParent(parent);
+        downloader->setScheme(scheme);
         downloader->setFollowRedirects(d->m_followRedirects);
         if (d->m_factory)
             downloader->setProxyFactory(d->m_factory->clone());
@@ -108,5 +118,5 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *pa
 /*!
    KDUpdater::FileDownloaderFactory::registerFileDownlooader
    Registers a new file downloader with the factory. If there is already a downloader with the same scheme,
-   the downloader is replaced. The ownership of the downloader is transfered to the factory.
+   the downloader is replaced. The ownership of the downloader is transferred to the factory.
 */

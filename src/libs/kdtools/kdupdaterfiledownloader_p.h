@@ -195,7 +195,10 @@ private Q_SLOTS:
     void httpDone(bool error);
     void httpReqFinished();
     void onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
-
+#ifndef QT_NO_OPENSSL
+    // TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
+    void onSslErrors(QNetworkReply* reply, const QList<QSslError> &errors);
+#endif
 private:
     void startDownload(const QUrl &url);
 

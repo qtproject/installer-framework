@@ -36,7 +36,7 @@
 #include <QCryptographicHash>
 #include <QThreadPool>
 #include <QDebug>
-
+#include <QSslError>
 #include <QBasicTimer>
 #include <QTimerEvent>
 
@@ -318,6 +318,11 @@ void KDUpdater::FileDownloader::sha1SumVerified(KDUpdater::HashVerificationJob *
 QString KDUpdater::FileDownloader::scheme() const
 {
     return d->scheme;
+}
+
+void KDUpdater::FileDownloader::setScheme(const QString &scheme)
+{
+    d->scheme = scheme;
 }
 
 void KDUpdater::FileDownloader::setAutoRemoveDownloadedFile(bool val)
@@ -1081,6 +1086,11 @@ KDUpdater::HttpDownloader::HttpDownloader(QObject *parent)
     : KDUpdater::FileDownloader(QLatin1String("http"), parent)
     , d(new Private(this))
 {
+#ifndef QT_NO_OPENSSL
+    // TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
+    connect(&d->manager, SIGNAL(sslErrors(QNetworkReply*, QList<QSslError>)),
+        this, SLOT(onSslErrors(QNetworkReply*, QList<QSslError>)));
+#endif
     connect(&d->manager, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)), this,
         SLOT(onAuthenticationRequired(QNetworkReply*, QAuthenticator*)));
 }
@@ -1282,3 +1292,22 @@ void KDUpdater::HttpDownloader::onAuthenticationRequired(QNetworkReply *reply, Q
         authenticator->setPassword(this->authenticator().password());
     }
 }
+
+#ifndef QT_NO_OPENSSL
+// TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
+void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QSslError> &errors)
+{
+    Q_UNUSED(reply)
+
+    QString errorString;
+    foreach (const QSslError &error, errors) {
+        if (!errorString.isEmpty())
+            errorString += QLatin1String(", ");
+        errorString += error.errorString();
+    }
+    qDebug() << errorString;
+
+    if (!d->aborted)
+        httpDone(true);
+}
+#endif

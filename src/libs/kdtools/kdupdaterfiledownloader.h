@@ -45,20 +45,22 @@ class KDTOOLS_EXPORT FileDownloader : public QObject
     Q_OBJECT
     Q_PROPERTY(bool autoRemoveDownloadedFile READ isAutoRemoveDownloadedFile WRITE setAutoRemoveDownloadedFile)
     Q_PROPERTY(QUrl url READ url WRITE setUrl)
-    Q_PROPERTY(QString scheme READ scheme)
+    Q_PROPERTY(QString scheme READ scheme WRITE setScheme)
 
 public:
     explicit FileDownloader(const QString &scheme, QObject *parent = 0);
     ~FileDownloader();
 
-    void setUrl(const QUrl &url);
     QUrl url() const;
+    void setUrl(const QUrl &url);
 
-    void setSha1Sum(const QByteArray &sha1);
     QByteArray sha1Sum() const;
+    void setSha1Sum(const QByteArray &sha1);
+
+    QString scheme() const;
+    void setScheme(const QString &scheme);
 
     QString errorString() const;
-    QString scheme() const;
 
     virtual bool canDownload() const = 0;
     virtual bool isDownloaded() const = 0;
