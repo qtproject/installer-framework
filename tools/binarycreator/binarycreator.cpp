@@ -386,6 +386,10 @@ static QStringList createBinaryResourceFiles(const QStringList &resources)
 
 static void printUsage()
 {
+    QString binaryEnding;
+#ifdef Q_OS_WIN
+    binaryEnding = QLatin1String(".exe");
+#endif
     const QString appName = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     std::cout << "Usage: " << appName << " [options] target" << std::endl;
     std::cout << std::endl;
@@ -412,12 +416,13 @@ static void printUsage()
     std::cout << "Example (offline installer):" << std::endl;
     char sep = QDir::separator().toAscii();
     std::cout << "  " << appName << " --offline-only -c installer-config" << sep << "config.xml -p "
-        "packages-directory -t installerbase SDKInstaller.exe" << std::endl;
+        "packages-directory -t installerbase" << binaryEnding << " SDKInstaller" << binaryEnding << std::endl;
     std::cout << "Creates an offline installer for the SDK, containing all dependencies." << std::endl;
     std::cout << std::endl;
     std::cout << "Example (online installer):" << std::endl;
     std::cout << "  " << appName << " -c installer-config" << sep << "config.xml -p packages-directory "
-        "-e com.nokia.sdk.qt,com.nokia.qtcreator -t installerbase SDKInstaller.exe" << std::endl;
+        "-e com.nokia.sdk.qt,com.nokia.qtcreator -t installerbase" << binaryEnding << " SDKInstaller"
+        << binaryEnding << std::endl;
     std::cout << std::endl;
     std::cout << "Creates an installer for the SDK without qt and qt creator." << std::endl;
     std::cout << std::endl;
@@ -523,11 +528,12 @@ int main(int argc, char **argv)
     QInstaller::init();
 
     QString templateBinary = QLatin1String("installerbase");
+    QString binaryEnding;
 #ifdef Q_OS_WIN
-    templateBinary += QLatin1String(".exe");
+    binaryEnding = QLatin1String(".exe");
 #endif
-    if (!QFileInfo(templateBinary).exists())
-        templateBinary = QString::fromLatin1("%1/%2").arg(qApp->applicationDirPath(), templateBinary);
+    if (!QFileInfo(templateBinary + binaryEnding).exists())
+        templateBinary = QString::fromLatin1("%1/%2").arg(qApp->applicationDirPath(), templateBinary + binaryEnding);
 
     QString target;
     QString configFile;
@@ -592,11 +598,15 @@ int main(int argc, char **argv)
             if (it == args.end()) {
                 return printErrorAndUsageAndExit(QObject::tr("Error: Template parameter missing argument."));
             }
-            if (!QFileInfo(*it).exists()) {
+            templateBinary = *it;
+            #ifdef Q_OS_WIN
+                if (!templateBinary.endsWith(binaryEnding))
+                    templateBinary = templateBinary + binaryEnding;
+            #endif
+            if (!QFileInfo(templateBinary).exists()) {
                 return printErrorAndUsageAndExit(QObject::tr("Error: Template not found at the specified "
                     "location."));
             }
-            templateBinary = *it;
         } else if (*it == QLatin1String("-c") || *it == QLatin1String("--config")) {
             ++it;
             if (it == args.end())
@@ -629,6 +639,10 @@ int main(int argc, char **argv)
                     "are using an old syntax.").arg(*it));
             } else if (target.isEmpty()) {
                 target = *it;
+                #ifdef Q_OS_WIN
+                    if (!target.endsWith(binaryEnding))
+                        target = target + binaryEnding;
+                #endif
             } else {
                 return printErrorAndUsageAndExit(QObject::tr("Error: You are using an old syntax please add the "
                     "component name with the include option")
@@ -660,10 +674,6 @@ int main(int argc, char **argv)
         if (!target.endsWith(QLatin1String(".app")) && !target.endsWith(QLatin1String(".dmg"))) {
             target += QLatin1String(".app");
         }
-#elif defined(Q_OS_WIN)
-        // on windows, we add .exe
-        if (!target.endsWith(QLatin1String(".exe")))
-            target += QLatin1String(".exe");
 #endif
         int result = EXIT_FAILURE;
         {
