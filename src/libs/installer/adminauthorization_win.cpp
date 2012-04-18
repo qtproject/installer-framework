@@ -77,7 +77,7 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
     const QString file = QDir::toNativeSeparators(program);
     const QString args = QInstaller::createCommandline(QString(), arguments);
 
-    const int len = GetShortPathNameW((wchar_t *)file.utf16(), 0, 0);
+    const int len = GetShortPathName((wchar_t *)file.utf16(), 0, 0);
     if (len == 0)
         return false;
     wchar_t *const buffer = new wchar_t[len];
@@ -96,7 +96,7 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
     
     qDebug() << QString::fromLatin1(" starting elevated process %1 %2 with ::ShellExecuteExW( &TempInfo );"
         ).arg(program, arguments.join(QLatin1String(" ")));
-    const bool result = ::ShellExecuteExW(&TempInfo);
+    const bool result = ::ShellExecuteEx(&TempInfo);
     qDebug() << QLatin1String("after starting elevated process");
     delete[] buffer;
     return result;
