@@ -58,6 +58,7 @@ namespace QInstaller {
 
 struct BinaryLayout;
 class Component;
+class ComponentModel;
 class TempDirDeleter;
 
 class PackageManagerCorePrivate : public QObject
@@ -182,12 +183,12 @@ public:
     QHash<QString, bool> m_sharedFlags;
     QString m_installerBaseBinaryUnreplaced;
 
-    QList<Component*> m_rootComponents;
-    QList<Component*> m_rootDependencyReplacements;
+    QList<QInstaller::Component*> m_rootComponents;
+    QList<QInstaller::Component*> m_rootDependencyReplacements;
 
-    QList<Component*> m_updaterComponents;
-    QList<Component*> m_updaterComponentsDeps;
-    QList<Component*> m_updaterDependencyReplacements;
+    QList<QInstaller::Component*> m_updaterComponents;
+    QList<QInstaller::Component*> m_updaterComponentsDeps;
+    QList<QInstaller::Component*> m_updaterDependencyReplacements;
 
     OperationList m_ownedOperations;
     OperationList m_performedOperationsOld;
@@ -247,6 +248,9 @@ private:
     QString m_componentsToInstallError;
     FileDownloaderProxyFactory *m_proxyFactory;
     bool m_createLocalRepositoryFromBinary;
+
+    ComponentModel *m_defaultModel;
+    ComponentModel *m_updaterModel;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

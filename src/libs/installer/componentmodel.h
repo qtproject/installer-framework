@@ -67,10 +67,6 @@ public:
         int role = Qt::EditRole);
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
-
-    void setRootComponents(QList<Component*> rootComponents);
-    void appendRootComponents(QList<Component*> rootComponents);
-
     PackageManagerCore *packageManagerCore() const;
 
     bool defaultCheckState() const;
@@ -84,6 +80,9 @@ public Q_SLOTS:
     void selectAll();
     void deselectAll();
     void selectDefault();
+
+    void setRootComponents(QList<QInstaller::Component*> rootComponents);
+    void appendRootComponents(QList<QInstaller::Component*> rootComponents);
 
 Q_SIGNALS:
     void defaultCheckStateChanged(bool changed);

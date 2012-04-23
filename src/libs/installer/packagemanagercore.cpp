@@ -34,6 +34,7 @@
 #include "adminauthorization.h"
 #include "binaryformat.h"
 #include "component.h"
+#include "componentmodel.h"
 #include "downloadarchivesjob.h"
 #include "errors.h"
 #include "fsengineclient.h"
@@ -48,6 +49,7 @@
 #include "settings.h"
 #include "utils.h"
 
+#include <QtCore/QMutex>
 #include <QtCore/QSettings>
 #include <QtCore/QTemporaryFile>
 
@@ -66,6 +68,7 @@
 
 using namespace QInstaller;
 
+static QMutex sModelMutex;
 static QFont sVirtualComponentsFont;
 
 static bool sNoForceInstallation = false;
@@ -614,6 +617,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
 
     emit finishAllComponentsReset();
     d->setStatus(Success);
+    emit setRootComponents(d->m_rootComponents);
 
     return true;
 }
@@ -1027,6 +1031,26 @@ QList<Component*> PackageManagerCore::dependencies(const Component *component, Q
             missingComponents.append(dependency);
     }
     return result;
+}
+
+ComponentModel *PackageManagerCore::defaultComponentModel() const
+{
+    QMutexLocker _(&sModelMutex);
+    if (!d->m_defaultModel) {
+        d->m_defaultModel = componentModel(const_cast<PackageManagerCore*> (this),
+            QLatin1String("AllComponentsModel"));
+    }
+    return d->m_defaultModel;
+}
+
+ComponentModel *PackageManagerCore::updaterComponentModel() const
+{
+    QMutexLocker _(&sModelMutex);
+    if (!d->m_updaterModel) {
+        d->m_updaterModel = componentModel(const_cast<PackageManagerCore*> (this),
+            QLatin1String("UpdaterComponentsModel"));
+    }
+    return d->m_updaterModel;
 }
 
 Settings &PackageManagerCore::settings() const
@@ -1669,6 +1693,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
         return false;
 
     emit finishAllComponentsReset();
+    emit setRootComponents(d->m_rootComponents);
     return true;
 }
 
@@ -1813,6 +1838,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     }
 
     emit finishUpdaterComponentsReset();
+    emit setRootComponents(d->m_updaterComponents);
     return true;
 }
 
@@ -1873,4 +1899,24 @@ void PackageManagerCore::setCreateLocalRepositoryFromBinary(bool create)
     if (!isOfflineOnly())
         return;
     d->m_createLocalRepositoryFromBinary = create;
+}
+
+ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, const QString &objectName) const
+{
+    ComponentModel *model = new ComponentModel(4, core);
+
+    model->setObjectName(objectName);
+    model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal,
+        ComponentModel::tr("Component Name"));
+    model->setHeaderData(ComponentModelHelper::InstalledVersionColumn, Qt::Horizontal,
+        ComponentModel::tr("Installed Version"));
+    model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal,
+        ComponentModel::tr("New Version"));
+    model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal,
+        ComponentModel::tr("Size"));
+    connect(this, SIGNAL(setRootComponents(QList<QInstaller::Component*>)), model,
+        SLOT(setRootComponents(QList<QInstaller::Component*>)), Qt::QueuedConnection);
+    connect(model, SIGNAL(defaultCheckStateChanged(bool)), this, SLOT(componentsToInstallNeedsRecalculation()));
+
+    return model;
 }

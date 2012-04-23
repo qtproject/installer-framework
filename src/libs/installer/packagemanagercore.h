@@ -47,6 +47,7 @@ namespace KDUpdater {
 namespace QInstaller {
 
 class Component;
+class ComponentModel;
 class PackageManagerCorePrivate;
 class Settings;
 
@@ -183,6 +184,9 @@ public:
     QList<Component*> dependees(const Component *component) const;
     QList<Component*> dependencies(const Component *component, QStringList &missingComponents) const;
 
+    ComponentModel *defaultComponentModel() const;
+    ComponentModel *updaterComponentModel() const;
+
     // convenience
     Q_INVOKABLE bool isInstaller() const;
     Q_INVOKABLE bool isOfflineOnly() const;
@@ -248,6 +252,7 @@ Q_SIGNALS:
     void finishButtonClicked();
 
     void metaJobInfoMessage(const QString &message);
+    void setRootComponents(const QList<QInstaller::Component*> &components);
 
     void startAllComponentsReset();
     void finishAllComponentsReset();
@@ -292,6 +297,8 @@ private:
     void updateDisplayVersions(const QString &displayKey);
     QString findDisplayVersion(const QString &componentName, const QHash<QString, QInstaller::Component*> &components,
                                const QString& versionKey, QHash<QString, bool> &visited);
+    ComponentModel *componentModel(PackageManagerCore *core, const QString &objectName) const;
+
 private:
     PackageManagerCorePrivate *const d;
     friend class PackageManagerCorePrivate;

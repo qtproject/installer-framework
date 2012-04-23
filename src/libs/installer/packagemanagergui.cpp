@@ -954,27 +954,14 @@ public:
         : q(qq)
         , m_core(core)
         , m_treeView(new QTreeView(q))
-        , m_allModel(new ComponentModel(4, m_core))
-        , m_updaterModel(new ComponentModel(4, m_core))
+        , m_allModel(m_core->defaultComponentModel())
+        , m_updaterModel(m_core->updaterComponentModel())
+        , m_currentModel(m_allModel)
     {
         m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
-        m_allModel->setObjectName(QLatin1String("AllComponentsModel"));
-        m_updaterModel->setObjectName(QLatin1String("UpdaterComponentsModel"));
 
-        int i = 0;
-        m_currentModel = m_allModel;
-        ComponentModel *list[] = { m_allModel, m_updaterModel, 0 };
-        while (ComponentModel *model = list[i++]) {
-            connect(model, SIGNAL(defaultCheckStateChanged(bool)), q, SLOT(setModified(bool)));
-            connect(model, SIGNAL(defaultCheckStateChanged(bool)), m_core,
-                SLOT(componentsToInstallNeedsRecalculation()));
-
-            model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal, ComponentSelectionPage::tr("Component Name"));
-            model->setHeaderData(ComponentModelHelper::InstalledVersionColumn, Qt::Horizontal,
-                ComponentSelectionPage::tr("Installed Version"));
-            model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal, ComponentSelectionPage::tr("New Version"));
-            model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal, ComponentSelectionPage::tr("Size"));
-        }
+        connect(m_allModel, SIGNAL(defaultCheckStateChanged(bool)), q, SLOT(setModified(bool)));
+        connect(m_updaterModel, SIGNAL(defaultCheckStateChanged(bool)), q, SLOT(setModified(bool)));
 
         QHBoxLayout *hlayout = new QHBoxLayout;
         hlayout->addWidget(m_treeView, 3);
@@ -1034,11 +1021,6 @@ public:
         hlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
             QSizePolicy::MinimumExpanding));
         layout->addLayout(hlayout);
-
-        connect(m_core, SIGNAL(finishAllComponentsReset()), this, SLOT(allComponentsChanged()),
-            Qt::QueuedConnection);
-        connect(m_core, SIGNAL(finishUpdaterComponentsReset()), this, SLOT(updaterComponentsChanged()),
-            Qt::QueuedConnection);
     }
 
     void updateTreeView()
@@ -1102,42 +1084,31 @@ public slots:
         }
     }
 
+    // TODO: all *select* function ignore the fact that components can be selected inside the tree view as
+    //       well, which will result in e.g. a disabled button state as long as "ALL" components not
+    //       unchecked again.
     void selectAll()
     {
         m_currentModel->selectAll();
 
-        m_checkAll->setEnabled(!m_currentModel->hasCheckedComponents());
-        m_uncheckAll->setEnabled(m_currentModel->hasCheckedComponents());
+        m_checkAll->setEnabled(false);
+        m_uncheckAll->setEnabled(true);
     }
 
     void deselectAll()
     {
         m_currentModel->deselectAll();
 
-        m_checkAll->setEnabled(m_currentModel->hasCheckedComponents());
-        m_uncheckAll->setEnabled(!m_currentModel->hasCheckedComponents());
+        m_checkAll->setEnabled(true);
+        m_uncheckAll->setEnabled(false);
     }
 
     void selectDefault()
     {
         m_currentModel->selectDefault();
 
-        // Do not apply special magic here to keep the enabled/ disabled state in sync with the checked
-        // components. We would need to implement the counter in the model, which has an unnecessary impact
-        // on the complexity and amount of code compared to what we gain in functionality.
         m_checkAll->setEnabled(true);
         m_uncheckAll->setEnabled(true);
-    }
-
-private slots:
-    void allComponentsChanged()
-    {
-        m_allModel->setRootComponents(m_core->rootComponents());
-    }
-
-    void updaterComponentsChanged()
-    {
-        m_updaterModel->setRootComponents(m_core->updaterComponents());
     }
 
 public:

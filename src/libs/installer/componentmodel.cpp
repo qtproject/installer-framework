@@ -229,44 +229,6 @@ Qt::ItemFlags ComponentModel::flags(const QModelIndex &index) const
 }
 
 /*!
-    Set's the passed \a rootComponents to be list of currently shown components. The model is repopulated and
-    the individual component checked state is used to show the check mark in front of the visual component
-    representation. The modelAboutToBeReset() and modelReset() signals are emitted.
-*/
-void ComponentModel::setRootComponents(QList<Component*> rootComponents)
-{
-    beginResetModel();
-
-    m_indexByNameCache.clear();
-    m_rootComponentList.clear();
-    m_initialCheckedSet.clear();
-    m_currentCheckedSet.clear();
-
-    m_rootIndex = 0;
-    m_rootComponentList = rootComponents;
-
-    endResetModel();
-}
-
-/*!
-    Appends the passed \a rootComponents to the currently shown list of components. The model is repopulated
-    and the individual component checked state is used to show the check mark in front of the visual component
-    representation. Already changed check states on the previous model are preserved. The modelAboutToBeReset()
-    and modelReset() signals are emitted.
-*/
-void ComponentModel::appendRootComponents(QList<Component*> rootComponents)
-{
-    beginResetModel();
-
-    m_indexByNameCache.clear();
-
-    m_rootIndex = m_rootComponentList.count() - 1;
-    m_rootComponentList += rootComponents;
-
-    endResetModel();
-}
-
-/*!
     Returns a pointer to the PackageManagerCore this model belongs to.
 */
 PackageManagerCore *ComponentModel::packageManagerCore() const
@@ -361,6 +323,44 @@ void ComponentModel::selectDefault()
     foreach (const QString &name, m_initialCheckedSet)
         setData(indexFromComponentName(name), Qt::Checked, Qt::CheckStateRole);
     emit defaultCheckStateChanged(m_initialCheckedSet != m_currentCheckedSet);
+}
+
+/*!
+    Set's the passed \a rootComponents to be list of currently shown components. The model is repopulated and
+    the individual component checked state is used to show the check mark in front of the visual component
+    representation. The modelAboutToBeReset() and modelReset() signals are emitted.
+*/
+void ComponentModel::setRootComponents(QList<QInstaller::Component*> rootComponents)
+{
+    beginResetModel();
+
+    m_indexByNameCache.clear();
+    m_rootComponentList.clear();
+    m_initialCheckedSet.clear();
+    m_currentCheckedSet.clear();
+
+    m_rootIndex = 0;
+    m_rootComponentList = rootComponents;
+
+    endResetModel();
+}
+
+/*!
+    Appends the passed \a rootComponents to the currently shown list of components. The model is repopulated
+    and the individual component checked state is used to show the check mark in front of the visual component
+    representation. Already changed check states on the previous model are preserved. The modelAboutToBeReset()
+    and modelReset() signals are emitted.
+*/
+void ComponentModel::appendRootComponents(QList<QInstaller::Component*> rootComponents)
+{
+    beginResetModel();
+
+    m_indexByNameCache.clear();
+
+    m_rootIndex = m_rootComponentList.count() - 1;
+    m_rootComponentList += rootComponents;
+
+    endResetModel();
 }
 
 // -- private slots

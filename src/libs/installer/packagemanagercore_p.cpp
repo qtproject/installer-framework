@@ -34,6 +34,7 @@
 #include "adminauthorization.h"
 #include "binaryformat.h"
 #include "component.h"
+#include "componentmodel.h"
 #include "errors.h"
 #include "fileutils.h"
 #include "fsengineclient.h"
@@ -168,6 +169,8 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_componentsToInstallCalculated(false)
     , m_proxyFactory(0)
     , m_createLocalRepositoryFromBinary(false)
+    , m_defaultModel(0)
+    , m_updaterModel(0)
 {
 }
 
@@ -191,6 +194,8 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_componentsToInstallCalculated(false)
     , m_proxyFactory(0)
     , m_createLocalRepositoryFromBinary(false)
+    , m_defaultModel(0)
+    , m_updaterModel(0)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
@@ -214,6 +219,9 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
 
     delete m_updateFinder;
     delete m_proxyFactory;
+
+    delete m_defaultModel;
+    delete m_updaterModel;
 }
 
 /*!
