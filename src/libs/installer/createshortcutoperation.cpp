@@ -44,7 +44,7 @@
 #include <algorithm>
 #include <cerrno>
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 #   include <windows.h>
 #   include <shlobj.h>
 #endif
@@ -53,7 +53,7 @@ using namespace QInstaller;
 
 static bool createLink(QString fileName, QString linkName, QString workingDir, QString arguments = QString())
 {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     bool ret = false;
     fileName = QDir::toNativeSeparators(fileName);
     linkName = QDir::toNativeSeparators(linkName);

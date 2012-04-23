@@ -215,7 +215,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     else
         setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
     setWindowIcon(QIcon(m_core->settings().icon()));
 #else
     setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
@@ -263,7 +263,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     for (int i = QWizard::BackButton; i < QWizard::CustomButton1; ++i)
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     resize(sizeHint() * 1.25);
 #else
     resize(sizeHint());
@@ -879,7 +879,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     rejectLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     rejectLabel->setText(hash.value(QLatin1String("RejectLicenseLabel"), tr("I do not accept the licenses.")).toString());
 
-#if defined(Q_WS_X11) || defined(Q_WS_MAC)
+#if defined(Q_WS_X11) || defined(Q_OS_MAC)
     QFont labelFont(font());
     labelFont.setPixelSize(9);
     acceptLabel->setFont(labelFont);
@@ -1840,7 +1840,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
 
     const QVariantHash hash = elementsForPage(QLatin1String("FinishedPage"));
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     m_msgLabel->setText(hash.value(QLatin1String("MessageLabel"), tr("Click Done to exit the %1 "
         "Wizard.")).toString().arg(productName()));
 #else
@@ -1867,7 +1867,7 @@ void FinishedPage::entering()
 
     setCommitPage(true);
     if (packageManagerCore()->isUpdater() || packageManagerCore()->isPackageManager()) {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
         gui()->setOption(QWizard::NoCancelButton, false);
 #endif
         if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton)) {
@@ -1915,7 +1915,7 @@ void FinishedPage::entering()
 
 void FinishedPage::leaving()
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     gui()->setOption(QWizard::NoCancelButton, true);
 #endif
 

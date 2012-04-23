@@ -52,7 +52,7 @@ bool RegisterFileTypeOperation::performOperation()
     // (description)
     // (content type)
     // (icon)
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     const QStringList args = arguments();
     if (args.count() < 2 || args.count() > 5) {
         setError(InvalidArguments);
@@ -114,7 +114,7 @@ bool RegisterFileTypeOperation::undoOperation()
     // (description)
     // (content type)
     // (icon)
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     const QStringList args = arguments();
     if (args.count() < 2 || args.count() > 5) {
         setErrorString(tr("Register File Type: Invalid arguments"));

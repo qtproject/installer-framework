@@ -327,9 +327,9 @@ void QInstaller::removeSystemGeneratedFiles(const QString &path)
 {
     if (path.isEmpty())
         return;
-#if defined Q_WS_MAC
+#if defined Q_OS_MAC
     QFile::remove(path + QLatin1String("/.DS_Store"));
-#elif defined Q_WS_WIN
+#elif defined Q_OS_WIN
     QFile::remove(path + QLatin1String("/Thumbs.db"));
 #endif
 }
@@ -442,7 +442,7 @@ QString QInstaller::createTemporaryDirectory(const QString &templ)
     return path;
 }
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 #include <windows.h>
 
 #pragma pack(push)

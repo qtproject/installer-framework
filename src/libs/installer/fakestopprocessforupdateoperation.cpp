@@ -49,7 +49,7 @@ static bool isProcessRunning(const QString &name, const QList<ProcessInfo> &proc
         if (it->name.isEmpty())
             continue;
 
-#ifndef Q_WS_WIN
+#ifndef Q_OS_WIN
         if (it->name == name)
             return true;
         const QFileInfo fi(it->name);

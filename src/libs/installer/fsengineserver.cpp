@@ -44,14 +44,14 @@
 
 typedef int descriptor_t;
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 #   include <windows.h>
 #endif
 
 bool startDetached(const QString &program, const QStringList &args, const QString &workingDirectory,
     qint64 *pid)
 {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     PROCESS_INFORMATION pinfo;
     STARTUPINFOW startupInfo = { sizeof(STARTUPINFO), 0, 0, 0,
         static_cast<ulong>(CW_USEDEFAULT), static_cast<ulong>(CW_USEDEFAULT),

@@ -63,6 +63,10 @@
 
 #include <errno.h>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 namespace QInstaller {
 
 static bool runOperation(Operation *op, PackageManagerCorePrivate::OperationType type)
@@ -224,7 +228,7 @@ bool PackageManagerCorePrivate::isProcessRunning(const QString &name,
         if (it->name.isEmpty())
             continue;
 
-#ifndef Q_WS_WIN
+#ifndef Q_OS_WIN
         if (it->name == name)
             return true;
         const QFileInfo fi(it->name);
@@ -514,13 +518,13 @@ void PackageManagerCorePrivate::initialize()
     m_vars.insert(QLatin1String("homeDir"), QDir::homePath());
     m_vars.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     m_vars.insert(QLatin1String("os"), QLatin1String("win"));
-#elif defined(Q_WS_MAC)
+#elif defined(Q_OS_MAC)
     m_vars.insert(QLatin1String("os"), QLatin1String("mac"));
 #elif defined(Q_WS_X11)
     m_vars.insert(QLatin1String("os"), QLatin1String("x11"));
-#elif defined(Q_WS_QWS)
+#elif defined(Q_OS_QWS)
     m_vars.insert(QLatin1String("os"), QLatin1String("Qtopia"));
 #else
     // TODO: add more platforms as needed...
@@ -576,7 +580,7 @@ void PackageManagerCorePrivate::initialize()
     }
 
     if (!m_core->isInstaller()) {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
         readMaintenanceConfigFiles(QCoreApplication::applicationDirPath() + QLatin1String("/../../.."));
 #else
         readMaintenanceConfigFiles(QCoreApplication::applicationDirPath());
@@ -733,7 +737,7 @@ Operation *PackageManagerCorePrivate::takeOwnedOperation(Operation *operation)
 QString PackageManagerCorePrivate::uninstallerName() const
 {
     QString filename = m_settings.uninstallerName();
-#if defined(Q_WS_MAC)
+#if defined(Q_OS_MAC)
     if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
         filename += QLatin1String(".app/Contents/MacOS/") + filename;
 #elif defined(Q_OS_WIN)
@@ -1124,7 +1128,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 
     writeMaintenanceConfigFiles();
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     // if it is a bundle, we need some stuff in it...
     const QString sourceAppDirPath = QCoreApplication::applicationDirPath();
     if (isInstaller() && QFileInfo(sourceAppDirPath + QLatin1String("/../..")).isBundle()) {
@@ -1904,7 +1908,7 @@ void PackageManagerCorePrivate::deleteUninstaller()
     // every other platform has no problem if we just delete ourselves now
     QFile uninstaller(QFileInfo(installerBinaryPath()).absoluteFilePath());
     uninstaller.remove();
-# ifdef Q_WS_MAC
+# ifdef Q_OS_MAC
     const QLatin1String cdUp("/../../..");
     if (QFileInfo(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath()).isBundle()) {
         removeDirectoryThreaded(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath());

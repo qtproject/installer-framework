@@ -1114,7 +1114,7 @@ bool PackageManagerCore::executeDetached(const QString &program, const QStringLi
 */
 QString PackageManagerCore::environmentVariable(const QString &name) const
 {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     const LPCWSTR n =  (LPCWSTR) name.utf16();
     LPTSTR buff = (LPTSTR) malloc(4096 * sizeof(TCHAR));
     DWORD getenvret = GetEnvironmentVariable(n, buff, 4096);
@@ -1192,7 +1192,7 @@ bool PackageManagerCore::versionMatches(const QString &version, const QString &r
 QString PackageManagerCore::findLibrary(const QString &name, const QStringList &paths)
 {
     QStringList findPaths = paths;
-#if defined(Q_WS_WIN)
+#if defined(Q_OS_WIN)
     return findPath(QString::fromLatin1("%1.lib").arg(name), findPaths);
 #else
     if (findPaths.isEmpty()) {
@@ -1201,7 +1201,7 @@ QString PackageManagerCore::findLibrary(const QString &name, const QStringList &
         findPaths.push_back(QLatin1String("/usr/local/lib"));
         findPaths.push_back(QLatin1String("/opt/local/lib"));
     }
-#if defined(Q_WS_MAC)
+#if defined(Q_OS_MAC)
     const QString dynamic = findPath(QString::fromLatin1("lib%1.dylib").arg(name), findPaths);
 #else
     const QString dynamic = findPath(QString::fromLatin1("lib%1.so*").arg(name), findPaths);
@@ -1246,7 +1246,7 @@ void PackageManagerCore::setInstallerBaseBinary(const QString &path)
 */
 QString PackageManagerCore::value(const QString &key, const QString &defaultValue) const
 {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     if (!d->m_vars.contains(key)) {
         static const QRegExp regex(QLatin1String("\\\\|/"));
         const QString filename = key.section(regex, 0, -2);

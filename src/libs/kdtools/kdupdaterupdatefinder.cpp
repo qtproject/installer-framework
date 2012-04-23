@@ -596,10 +596,10 @@ bool UpdateFinder::Private::checkForUpdatePriority(const UpdateSourceInfo &sourc
 
 int UpdateFinder::Private::pickUpdateFileInfo(const QList<UpdateFileInfo> &updateFiles)
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QString os = QLatin1String( "MacOSX" );
 #endif
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     QString os = QLatin1String( "Windows" );
 #endif
 #ifdef Q_WS_X11

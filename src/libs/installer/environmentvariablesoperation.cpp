@@ -37,7 +37,7 @@
 
 #include "environment.h"
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 # include <windows.h>
 #endif
 
@@ -57,7 +57,7 @@ void EnvironmentVariableOperation::backup()
 {
 }
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 static bool broadcastChange() {
     // Use SendMessageTimeout to Broadcast a message to the whole system to update settings of all
     // running applications. This is needed to activate the changes done above without logout+login.
@@ -138,7 +138,7 @@ bool EnvironmentVariableOperation::performOperation()
     const QString value = arguments().at(1);
     bool isPersistent = false;
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     isPersistent = arguments().count() >= 3 ? arguments().at(2) == QLatin1String("true") : true;
     const bool isSystemWide = arguments().count() >= 4 ? arguments().at(3) == QLatin1String("true") : false;
     QString oldvalue;
@@ -183,7 +183,7 @@ bool EnvironmentVariableOperation::undoOperation()
     const QString value = arguments().at(1);
     const QString oldvalue = this->value(QLatin1String("oldvalue")).toString();
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     const bool isPersistent = arguments().count() >= 3 ? arguments().at(2) == QLatin1String("true") : true;
 #else
    const bool isPersistent = false;
@@ -197,7 +197,7 @@ bool EnvironmentVariableOperation::undoOperation()
         return doUndo;
     }
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     const bool isSystemWide = arguments().count() >= 4 ? arguments().at(3) == QLatin1String("true") : false;
 
     const QString regPath = isSystemWide ? QLatin1String("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\"

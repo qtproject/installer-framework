@@ -422,7 +422,7 @@ bool TargetDirectoryPageImpl::validatePage()
         }
 
         QString fileName = packageManagerCore()->settings().uninstallerName();
-#if defined(Q_WS_MAC)
+#if defined(Q_OS_MAC)
         if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
             fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
 #elif defined(Q_OS_WIN)
