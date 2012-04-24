@@ -1531,7 +1531,7 @@ void ReadyForInstallationPage::entering()
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setTitle(titleForPage(objectName(), tr("Ready to Uninstall")));
         m_msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
-            "<font color=\"red\">The program dir %2 will be deleted completely</font>, "
+            "<font color=\"red\">The program directory %2 will be deleted completely</font>, "
             "including all content in that directory!")
             .arg(productName(), QDir::toNativeSeparators(QDir(packageManagerCore()->value(scTargetDir))
             .absolutePath())));

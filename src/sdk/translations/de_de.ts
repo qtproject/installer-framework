@@ -1919,7 +1919,7 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1533"/>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program dir %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 von ihrem Computer zu entfernen. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Das Programmverzeichnis %2 wird vollständig gelöscht&lt;/font&gt;, inklusive allen Inhalten in diesem Ordner!</translation>
     </message>
     <message>

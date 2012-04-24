@@ -1893,7 +1893,7 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1533"/>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program dir %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
