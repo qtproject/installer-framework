@@ -32,6 +32,9 @@
 
 #include "repository.h"
 
+#include <QFileInfo>
+#include <QStringList>
+
 namespace QInstaller {
 
 /*
@@ -66,6 +69,33 @@ Repository::Repository(const QUrl &url, bool isDefault)
     , m_enabled(true)
 {
     registerMetaType();
+}
+
+/*!
+    Constructs a new repository by setting it's address to \a repositoryUrl as string and it's
+    default state.
+
+    Note: user and password can be inside the \a repositoryUrl string: http://user:password@repository.url
+*/
+Repository Repository::fromUserInput(const QString &repositoryUrl, bool isDefault)
+{
+    QStringList supportedShemes;
+    supportedShemes << QLatin1String("http") << QLatin1String("https") <<  QLatin1String("ftp") <<
+        QLatin1String("file");
+
+    QUrl url = QUrl::fromUserInput(repositoryUrl);
+    if (!supportedShemes.contains(url.scheme()) && QFileInfo(url.toString()).exists())
+        url = QLatin1String("file:///") + url.toString();
+
+    QString userName = url.userName();
+    QString password = url.password();
+    url.setUserName(QString());
+    url.setPassword(QString());
+
+    Repository repository(url, isDefault);
+    repository.setUsername(userName);
+    repository.setPassword(password);
+    return repository;
 }
 
 /*!

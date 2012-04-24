@@ -763,9 +763,20 @@ bool PackageManagerCore::removeWizardPageItem(Component *component, const QStrin
     return false;
 }
 
+void PackageManagerCore::addUserRepository(const QString &repositoryUrl, bool isDefault)
+{
+    addUserRepositories(QSet<Repository>() << Repository::fromUserInput(repositoryUrl, isDefault));
+}
+
 void PackageManagerCore::addUserRepositories(const QSet<Repository> &repositories)
 {
     d->m_settings.addUserRepositories(repositories);
+}
+
+
+void PackageManagerCore::setTemporaryRepository(const QString &repositoryUrl)
+{
+    setTemporaryRepositories(QSet<Repository>() << Repository::fromUserInput(repositoryUrl, false));
 }
 
 /*!

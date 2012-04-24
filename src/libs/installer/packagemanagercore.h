@@ -147,7 +147,10 @@ public:
     bool testChecksum() const;
     void setTestChecksum(bool test);
 
+    Q_INVOKABLE void addUserRepository(const QString &repositoryUrl, bool isDefault);
     void addUserRepositories(const QSet<Repository> &repositories);
+
+    Q_INVOKABLE void setTemporaryRepository(const QString &repositoryUrl);
     void setTemporaryRepositories(const QSet<Repository> &repositories, bool replace = false);
 
     Q_INVOKABLE void autoAcceptMessageBoxes();
