@@ -86,6 +86,7 @@ QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *e
 QScriptValue qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *engine);
 QScriptValue qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine *engine);
 QScriptValue qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine);
+QScriptValue qFileDialogGetExistingDirectory(QScriptContext *context, QScriptEngine *engine);
 
 } // namespace QInstaller
 

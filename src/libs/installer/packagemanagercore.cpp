@@ -52,6 +52,7 @@
 #include <QtCore/QTemporaryFile>
 
 #include <QtGui/QDesktopServices>
+#include <QtGui/QFileDialog>
 
 #include <QtScript/QScriptEngine>
 #include <QtScript/QScriptContext>
@@ -179,6 +180,21 @@ QScriptValue QInstaller::qDesktopServicesStorageLocation(QScriptContext *context
     const QDesktopServices::StandardLocation location =
         static_cast< QDesktopServices::StandardLocation >(context->argument(0).toInt32());
     return QDesktopServices::storageLocation(location);
+}
+
+QScriptValue QInstaller::qFileDialogGetExistingDirectory( QScriptContext *context, QScriptEngine *engine )
+{
+    Q_UNUSED(engine);
+    const QScriptValue check = checkArguments(context, 0, 2);
+    if (check.isError())
+        return check;
+    QString caption;
+    QString dir;
+    if (context->argumentCount() > 0)
+        caption = context->argument(0).toString();
+    if (context->argumentCount() > 1)
+        dir = context->argument(1).toString();
+    return QFileDialog::getExistingDirectory(0, caption, dir);
 }
 
 QString QInstaller::uncaughtExceptionString(QScriptEngine *scriptEngine, const QString &context)

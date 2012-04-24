@@ -143,6 +143,10 @@ QScriptEngine *ComponentPrivate::scriptEngine()
     m_scriptEngine->globalObject().setProperty(QLatin1String("QDesktopServices"), desktopServices);
     m_scriptEngine->globalObject().setProperty(QLatin1String("component"), m_scriptEngine->newQObject(q));
 
+    QScriptValue fileDialog = m_scriptEngine->newArray();
+    fileDialog.setProperty(QLatin1String("getExistingDirectory"), m_scriptEngine->newFunction(qFileDialogGetExistingDirectory));
+    m_scriptEngine->globalObject().setProperty(QLatin1String("QFileDialog"), fileDialog);
+
     return m_scriptEngine;
 }
 
