@@ -202,7 +202,7 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString &fileName)
     QString originalBuildDir;
     extractExecutableInfo(fileName, frameworkId, frameworks, originalBuildDir);
 
-    qDebug() << QString::fromLatin1("got following informations(fileName: %1, frameworkId: %2, frameworks: %3,"
+    qDebug() << QString::fromLatin1("Got the following information(fileName: %1, frameworkId: %2, frameworks: %3,"
         "orginalBuildDir: %4)").arg(fileName, frameworkId, frameworks.join(QLatin1String("|")), originalBuildDir);
 
     QStringList args;

@@ -92,7 +92,7 @@ public:
    \li packages XML file name and its corresponding KDUpdater::PackagesInfo object
    \li update Sources XML file name and its corresponding KDUpdater::UpdateSourcesInfo object
 
-   User can also retrieve some informations from this class:
+   User can also retrieve some information from this class:
    \li application name
    \li application version
    \li compat level
