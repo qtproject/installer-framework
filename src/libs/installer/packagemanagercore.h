@@ -112,6 +112,9 @@ public:
     RunMode runMode() const;
     void reset(const QHash<QString, QString> &params);
 
+    Q_INVOKABLE void setDependsOnLocalInstallerBinary();
+    Q_INVOKABLE bool localInstallerBinaryUsed();
+
     Q_INVOKABLE QList<QVariant> execute(const QString &program,
         const QStringList &arguments = QStringList(), const QString &stdIn = QString()) const;
     Q_INVOKABLE bool executeDetached(const QString &program,

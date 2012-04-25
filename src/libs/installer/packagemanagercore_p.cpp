@@ -196,6 +196,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_createLocalRepositoryFromBinary(false)
     , m_defaultModel(0)
     , m_updaterModel(0)
+    , m_dependsOnLocalInstallerBinary(false)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
@@ -1358,6 +1359,15 @@ QString PackageManagerCorePrivate::registerPath() const
 
 void PackageManagerCorePrivate::runInstaller()
 {
+    if (m_dependsOnLocalInstallerBinary && !KDUpdater::pathIsOnLocalDevice(qApp->applicationFilePath())) {
+        setStatus(PackageManagerCore::Failure);
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation aborted!"));
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("installationError"), tr("Error"), tr("It is not possible to install from network location"));
+        emit installationFinished();
+        throw;
+    }
+
     bool adminRightsGained = false;
     try {
         setStatus(PackageManagerCore::Running);

@@ -1106,6 +1106,19 @@ bool PackageManagerCore::isProcessRunning(const QString &name) const
     return PackageManagerCorePrivate::isProcessRunning(name, runningProcesses());
 }
 
+void PackageManagerCore::setDependsOnLocalInstallerBinary()
+{
+    d->m_dependsOnLocalInstallerBinary = true;
+}
+
+bool PackageManagerCore::localInstallerBinaryUsed()
+{
+#ifdef Q_OS_WIN
+    return KDUpdater::pathIsOnLocalDevice(qApp->applicationFilePath());
+#endif
+    return true;
+}
+
 /*!
     Executes a program.
 
@@ -1116,7 +1129,6 @@ bool PackageManagerCore::isProcessRunning(const QString &name) const
             command as first item, the return code as second item.
     \note On Unix, the output is just the output to stdout, not to stderr.
 */
-
 QList<QVariant> PackageManagerCore::execute(const QString &program, const QStringList &arguments,
     const QString &stdIn) const
 {

@@ -119,6 +119,7 @@ protected Q_SLOTS:
 private Q_SLOTS:
     void onLanguageChanged();
     void customButtonClicked(int which);
+    void dependsOnLocalInstallerBinary();
 
 protected:
     bool event(QEvent *event);

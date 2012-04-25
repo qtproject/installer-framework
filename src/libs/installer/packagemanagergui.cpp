@@ -455,6 +455,7 @@ void PackageManagerGui::showEvent(QShowEvent *event)
     }
 #endif
     QWizard::showEvent(event);
+    QMetaObject::invokeMethod(this, "dependsOnLocalInstallerBinary", Qt::QueuedConnection);
 }
 
 void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
@@ -651,6 +652,18 @@ void PackageManagerGui::customButtonClicked(int which)
     if (QWizard::WizardButton(which) == QWizard::CustomButton1 && d->m_showSettingsButton)
         emit settingsButtonClicked();
 }
+
+void PackageManagerGui::dependsOnLocalInstallerBinary()
+{
+    if (m_core->settings().dependsOnLocalInstallerBinary() && !m_core->localInstallerBinaryUsed()) {
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("Installer_Needs_To_Be_Local_Error"), tr("Error"),
+            tr("It is not possible to install from network location.\n"
+               "Please copy the installer to a local drive"), QMessageBox::Ok);
+        rejectWithoutPrompt();
+    }
+}
+
 
 
 // -- PackageManagerPage

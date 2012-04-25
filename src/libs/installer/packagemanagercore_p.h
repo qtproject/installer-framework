@@ -194,6 +194,8 @@ public:
     OperationList m_performedOperationsOld;
     OperationList m_performedOperationsCurrentSession;
 
+    bool m_dependsOnLocalInstallerBinary;
+
 private slots:
     void infoMessage(KDJob *, const QString &message) {
         emit m_core->metaJobInfoMessage(message);

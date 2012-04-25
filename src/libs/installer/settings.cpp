@@ -57,6 +57,7 @@ static const QLatin1String scTmpRepositories("TemporaryRepositories");
 static const QLatin1String scUninstallerIniFile("UninstallerIniFile");
 static const QLatin1String scRemoteRepositories("RemoteRepositories");
 static const QLatin1String scSigningCertificate("SigningCertificate");
+static const QLatin1String scDependsOnLocalInstallerBinary("DependsOnLocalInstallerBinary");
 
 static const QLatin1String scFtpProxy("FtpProxy");
 static const QLatin1String scHttpProxy("HttpProxy");
@@ -230,6 +231,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
         s.d->m_data.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
     if (!s.d->m_data.contains(scUninstallerIniFile))
         s.d->m_data.insert(scUninstallerIniFile, s.uninstallerName() + QLatin1String(".ini"));
+    if (!s.d->m_data.contains(scDependsOnLocalInstallerBinary))
+        s.d->m_data.insert(scDependsOnLocalInstallerBinary, false);
 
     return s;
 }
@@ -343,6 +346,11 @@ QStringList Settings::certificateFiles() const
 bool Settings::allowNoneAsciiCharacters() const
 {
     return d->m_data.value(scAllowNonAsciiCharacters).toBool();
+}
+
+bool Settings::dependsOnLocalInstallerBinary() const
+{
+    return d->m_data.value(scDependsOnLocalInstallerBinary).toBool();
 }
 
 bool Settings::hasReplacementRepos() const
