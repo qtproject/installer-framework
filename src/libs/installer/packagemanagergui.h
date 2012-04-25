@@ -182,9 +182,8 @@ private:
     bool m_fresh;
     bool m_complete;
 
-    QInstaller::Component *validatorComponent;
-
     PackageManagerCore *m_core;
+    QInstaller::Component *validatorComponent;
 };
 
 

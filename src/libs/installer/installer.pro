@@ -117,7 +117,7 @@ SOURCES += packagemanagercore.cpp \
     registertoolchainoperation.cpp  \
     registerqtv2operation.cpp \
     registerqtv23operation.cpp \
-    registerqtvqnxoperation.h  \
+    registerqtvqnxoperation.cpp  \
     setqtcreatorvalueoperation.cpp \
     addqtcreatorarrayvalueoperation.cpp \
     copydirectoryoperation.cpp \
