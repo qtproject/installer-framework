@@ -58,6 +58,7 @@
 #include "registerqtoperation.h"
 #include "registerqtv2operation.h"
 #include "registerqtv23operation.h"
+#include "registerqtvqnxoperation.h"
 #include "setqtcreatorvalueoperation.h"
 #include "addqtcreatorarrayvalueoperation.h"
 #include "simplemovefileoperation.h"
@@ -213,6 +214,7 @@ void QInstaller::init()
     factory.registerUpdateOperation<RegisterQtInCreatorOperation>(QLatin1String("RegisterQtInCreator"));
     factory.registerUpdateOperation<RegisterQtInCreatorV2Operation>(QLatin1String("RegisterQtInCreatorV2"));
     factory.registerUpdateOperation<RegisterQtInCreatorV23Operation>(QLatin1String("RegisterQtInCreatorV23"));
+    factory.registerUpdateOperation<RegisterQtInCreatorQNXOperation>(QLatin1String("RegisterQtInCreatorQNX"));
     factory.registerUpdateOperation<RegisterToolChainOperation>(QLatin1String("RegisterToolChain") );
     factory.registerUpdateOperation<RegisterDefaultDebuggerOperation>(QLatin1String( "RegisterDefaultDebugger"));
     factory.registerUpdateOperation<SetDemosPathOnQtOperation>(QLatin1String("SetDemosPathOnQt"));

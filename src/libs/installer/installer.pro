@@ -45,6 +45,7 @@ HEADERS += packagemanagercore.h \
     registertoolchainoperation.h  \
     registerqtv2operation.h  \
     registerqtv23operation.h  \
+    registerqtvqnxoperation.h  \
     setqtcreatorvalueoperation.h \
     addqtcreatorarrayvalueoperation.h \
     copydirectoryoperation.h \
@@ -116,6 +117,7 @@ SOURCES += packagemanagercore.cpp \
     registertoolchainoperation.cpp  \
     registerqtv2operation.cpp \
     registerqtv23operation.cpp \
+    registerqtvqnxoperation.h  \
     setqtcreatorvalueoperation.cpp \
     addqtcreatorarrayvalueoperation.cpp \
     copydirectoryoperation.cpp \
