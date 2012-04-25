@@ -221,6 +221,8 @@ public:
     Q_INVOKABLE bool addWizardPageItem(QInstaller::Component *component, const QString &name, int page);
     Q_INVOKABLE bool removeWizardPageItem(QInstaller::Component *component, const QString &name);
     Q_INVOKABLE bool setDefaultPageVisible(int page, bool visible);
+    Q_INVOKABLE void setValidatorForCustomPage(QInstaller::Component *component, const QString &name,
+                                               const QString &callbackName);
 
     void rollBackInstallation();
 
@@ -276,6 +278,8 @@ Q_SIGNALS:
     void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardWidgetRemovalRequested(QWidget *widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
+    void setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,
+                                            const QString &callbackName);
 
     void setAutomatedPageSwitchEnabled(bool request);
     void coreNetworkSettingsChanged();

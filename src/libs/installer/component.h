@@ -193,6 +193,10 @@ public:
     bool isSelected() const;
     bool forcedInstallation() const;
 
+    void setValidatorCallbackName(const QString &name);
+
+    bool validatePage();
+
 public Q_SLOTS:
     void setSelected(bool selected);
     void setAutoCreateOperations(bool autoCreateOperations);
@@ -220,6 +224,7 @@ private:
         const QString &parameter10 = QString());
 
 private:
+    QString validatorCallbackName;
     ComponentPrivate *d;
 };
 

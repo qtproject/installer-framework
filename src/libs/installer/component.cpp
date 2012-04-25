@@ -917,6 +917,18 @@ bool Component::forcedInstallation() const
     return value(scForcedInstallation, scFalse).toLower() == scTrue;
 }
 
+void Component::setValidatorCallbackName(const QString &name)
+{
+    validatorCallbackName = name;
+}
+
+bool Component::validatePage()
+{
+    if (!validatorCallbackName.isEmpty())
+        return callScriptMethod(validatorCallbackName).toBool();
+    return true;
+}
+
 /*!
     Marks the component for installation. Emits the selectedChanged() signal if the check state changes.
 */

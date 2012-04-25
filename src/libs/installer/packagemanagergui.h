@@ -110,6 +110,8 @@ protected Q_SLOTS:
     void wizardPageVisibilityChangeRequested(bool visible, int page);
     void slotCurrentPageChanged(int id);
     void delayedControlScriptExecution(int id);
+    void setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,
+                                            const QString &callbackName);
 
     void setAutomatedPageSwitchEnabled(bool request);
 
@@ -149,6 +151,10 @@ public:
     virtual bool isInterruptible() const { return false; }
     PackageManagerGui* gui() const { return qobject_cast<PackageManagerGui*>(wizard()); }
 
+    void setValidatePageComponent(QInstaller::Component *component);
+
+    bool validatePage();
+
 protected:
     PackageManagerCore *packageManagerCore() const;
     QVariantHash elementsForPage(const QString &pageName) const;
@@ -175,6 +181,8 @@ private:
 private:
     bool m_fresh;
     bool m_complete;
+
+    QInstaller::Component *validatorComponent;
 
     PackageManagerCore *m_core;
 };

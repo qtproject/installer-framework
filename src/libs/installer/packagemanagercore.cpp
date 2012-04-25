@@ -736,6 +736,12 @@ bool PackageManagerCore::setDefaultPageVisible(int page, bool visible)
     return true;
 }
 
+void PackageManagerCore::setValidatorForCustomPage(Component *component, const QString &name,
+                                                   const QString &callbackName)
+{
+    emit setValidatorForCustomPageRequested(component, name, callbackName);
+}
+
 /*!
     Adds the widget with objectName() \a name registered by \a component as an GUI element
     into the installer's GUI wizard. The widget is added on \a page.

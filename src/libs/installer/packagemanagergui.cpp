@@ -255,6 +255,9 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     connect(m_core, SIGNAL(wizardPageVisibilityChangeRequested(bool, int)), this,
         SLOT(wizardPageVisibilityChangeRequested(bool, int)), Qt::QueuedConnection);
 
+    connect(m_core, SIGNAL(setValidatorForCustomPageRequested(QInstaller::Component*, QString, QString)),
+            this, SLOT(setValidatorForCustomPageRequested(QInstaller::Component*, QString, QString)));
+
     connect(m_core, SIGNAL(setAutomatedPageSwitchEnabled(bool)), this,
         SLOT(setAutomatedPageSwitchEnabled(bool)));
 
@@ -292,6 +295,22 @@ void PackageManagerGui::clickButton(int wb, int delay)
     } else {
         // TODO: we should probably abort immediately here (faulty test script)
         qDebug() << "Button" << wb << "not found!";
+    }
+}
+
+void PackageManagerGui::setValidatorForCustomPageRequested(Component *component, const QString &name,
+                                                           const QString &callbackName)
+{
+    component->setValidatorCallbackName(callbackName);
+
+    const QString componentName = QLatin1String("Dynamic") + name;
+    const QList<int> ids = pageIds();
+    foreach (const int i, ids) {
+        PackageManagerPage *const p = qobject_cast<PackageManagerPage*> (page(i));
+        if (p && p->objectName() == componentName) {
+            p->setValidatePageComponent(component);
+            return;
+        }
     }
 }
 
@@ -629,6 +648,7 @@ PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     : m_fresh(true)
     , m_complete(true)
     , m_core(core)
+    , validatorComponent(0)
 {
 }
 
@@ -704,6 +724,18 @@ void PackageManagerPage::setComplete(bool complete)
         }
     }
     emit completeChanged();
+}
+
+void PackageManagerPage::setValidatePageComponent(Component *component)
+{
+    validatorComponent = component;
+}
+
+bool PackageManagerPage::validatePage()
+{
+    if (validatorComponent)
+        return validatorComponent->validatePage();
+    return true;
 }
 
 void PackageManagerPage::insertWidget(QWidget *widget, const QString &siblingName, int offset)
