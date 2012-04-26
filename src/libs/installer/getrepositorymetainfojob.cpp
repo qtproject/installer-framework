@@ -208,15 +208,12 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
         return;
     }
 
-    QString UpdatesFileName;
-
+    QString updatesFileName = QString::fromLatin1("Updates.xml");
     if (m_retriesLeft == m_silentRetries)
-        UpdatesFileName = QString::fromLatin1("Updates_%1.xml").arg(QLocale().name().toLower());
-    else
-        UpdatesFileName = QString::fromLatin1("Updates.xml");
+        updatesFileName = QString::fromLatin1("Updates_%1.xml").arg(QLocale().name().toLower());
 
     // append a random string to avoid proxy caches
-    m_downloader->setUrl(QUrl(url.toString() + QString::fromLatin1("/%1?").arg(UpdatesFileName)
+    m_downloader->setUrl(QUrl(url.toString() + QString::fromLatin1("/%1?").arg(updatesFileName)
         .append(QString::number(qrand() * qrand()))));
 
     QAuthenticator auth;
@@ -419,7 +416,7 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     const QString repoUrl = m_repository.url().toString();
     const QUrl url = QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, next,
         online ? nextVersion : QString());
-        m_downloader = FileDownloaderFactory::instance().create(url.scheme(), this);
+    m_downloader = FileDownloaderFactory::instance().create(url.scheme(), this);
 
     if (!m_downloader) {
         m_currentPackageName.clear();
