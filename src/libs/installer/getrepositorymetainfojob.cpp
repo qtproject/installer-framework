@@ -226,6 +226,8 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
     connect(m_downloader, SIGNAL(downloadCanceled()), this, SLOT(updatesXmlDownloadCanceled()));
     connect(m_downloader, SIGNAL(downloadAborted(QString)), this,
         SLOT(updatesXmlDownloadError(QString)), Qt::QueuedConnection);
+    connect(m_downloader, SIGNAL(authenticatorChanged(QAuthenticator)), this,
+        SLOT(onAuthenticatorChanged(QAuthenticator)));
     m_downloader->download();
 }
 
@@ -440,6 +442,8 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(metaDownloadFinished()));
     connect(m_downloader, SIGNAL(downloadAborted(QString)), this, SLOT(metaDownloadError(QString)),
         Qt::QueuedConnection);
+    connect(m_downloader, SIGNAL(authenticatorChanged(QAuthenticator)), this,
+        SLOT(onAuthenticatorChanged(QAuthenticator)));
 
     m_downloader->download();
 }
@@ -510,6 +514,49 @@ void GetRepositoryMetaInfoJob::unzipFinished(bool ok, const QString &error)
 {
     if (!ok)
         finished(QInstaller::ExtractionError, error);
+}
+
+bool GetRepositoryMetaInfoJob::updateRepositories(QSet<Repository> *repositories, const QString &username,
+    const QString &password)
+{
+    if (!repositories->contains(m_repository))
+        return false;
+
+    repositories->remove(m_repository);
+    m_repository.setUsername(username);
+    m_repository.setPassword(password);
+    repositories->insert(m_repository);
+    return true;
+}
+
+void GetRepositoryMetaInfoJob::onAuthenticatorChanged(const QAuthenticator &authenticator)
+{
+    const QString username = authenticator.user();
+    const QString password = authenticator.password();
+    if (username != m_repository.username() || password != m_repository.password()) {
+        QSet<Repository> repositories = m_corePrivate->m_settings.defaultRepositories();
+        bool reposChanged = updateRepositories(&repositories, username, password);
+        if (reposChanged)
+            m_corePrivate->m_settings.setDefaultRepositories(repositories);
+
+        repositories = m_corePrivate->m_settings.temporaryRepositories();
+        reposChanged |= updateRepositories(&repositories, username, password);
+        if (reposChanged) {
+            m_corePrivate->m_settings.setTemporaryRepositories(repositories,
+            m_corePrivate->m_settings.hasReplacementRepos());
+        }
+
+        repositories = m_corePrivate->m_settings.userRepositories();
+        reposChanged |= updateRepositories(&repositories, username, password);
+        if (reposChanged)
+            m_corePrivate->m_settings.setUserRepositories(repositories);
+
+        if (reposChanged) {
+            if (m_corePrivate->isUpdater() || m_corePrivate->isPackageManager())
+                m_corePrivate->writeMaintenanceConfigFiles();
+            finished(QInstaller::RepositoryUpdatesReceived, tr("Repository updates received."));
+        }
+    }
 }
 
 #include "getrepositorymetainfojob.moc"

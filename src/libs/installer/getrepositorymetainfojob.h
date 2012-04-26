@@ -43,6 +43,8 @@
 #include <QtCore/QStringList>
 #include <QtCore/QThreadPool>
 
+#include <QAuthenticator>
+
 namespace KDUpdater {
     class FileDownloader;
 }
@@ -75,6 +77,8 @@ private:
     /* reimp */ void doStart();
     /* reimp */ void doCancel();
     void finished(int error, const QString &errorString = QString());
+    bool updateRepositories(QSet<Repository> *repositories, const QString &username,
+        const QString &password);
 
 private Q_SLOTS:
     void startUpdatesXmlDownload();
@@ -88,6 +92,7 @@ private Q_SLOTS:
     void metaDownloadError(const QString &error);
 
     void unzipFinished(bool status, const QString &error);
+    void onAuthenticatorChanged(const QAuthenticator &authenticator);
 
 private:
     bool m_canceled;

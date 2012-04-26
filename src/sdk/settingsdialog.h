@@ -42,6 +42,7 @@
 #include <QtGui/QTreeWidgetItem>
 
 QT_BEGIN_NAMESPACE
+class QAuthenticator;
 class QLocale;
 class QVariant;
 QT_END_NAMESPACE
@@ -70,6 +71,7 @@ public:
     TestRepository(QObject *parent = 0);
     ~TestRepository();
 
+    QInstaller::Repository repository() const;
     void setRepository(const QInstaller::Repository &repository);
 
 private:
@@ -79,6 +81,7 @@ private:
 private Q_SLOTS:
     void downloadCompleted();
     void downloadAborted(const QString &reason);
+    void onAuthenticatorChanged(const QAuthenticator &authenticator);
 
 private:
     QInstaller::Repository m_repository;

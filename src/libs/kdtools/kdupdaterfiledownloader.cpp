@@ -22,9 +22,11 @@
 
 #include "kdupdaterfiledownloader_p.h"
 #include "kdupdaterfiledownloaderfactory.h"
+#include "ui_authenticationdialog.h"
 
 #include <fileutils.h>
 
+#include <QDialog>
 #include <QFile>
 #include <QtNetwork/QFtp>
 #include <QtNetwork/QNetworkAccessManager>
@@ -507,10 +509,14 @@ QAuthenticator KDUpdater::FileDownloader::authenticator() const
 /*!
     Sets the authenticator object for this class to be \a authenticator. A authenticator is used to
     pass on the required authentication information. This might only be of use for http or ftp requests.
+    Emits the authenticator changed signal with the new authenticator in use.
 */
 void KDUpdater::FileDownloader::setAuthenticator(const QAuthenticator &authenticator)
 {
-    d->m_authenticator = authenticator;
+    if (d->m_authenticator.isNull() || (d->m_authenticator != authenticator)) {
+        d->m_authenticator = authenticator;
+        emit authenticatorChanged(authenticator);
+    }
 }
 
 // -- KDUpdater::LocalFileDownloader
@@ -1057,8 +1063,7 @@ struct KDUpdater::HttpDownloader::Private
         , destination(0)
         , downloaded(false)
         , aborted(false)
-        , retrying(false)
-        , m_authenticationDone(false)
+        , m_authenticationCount(0)
     {}
 
     HttpDownloader *const q;
@@ -1068,8 +1073,7 @@ struct KDUpdater::HttpDownloader::Private
     QString destFileName;
     bool downloaded;
     bool aborted;
-    bool retrying;
-    bool m_authenticationDone;
+    int m_authenticationCount;
 
     void shutDown()
     {
@@ -1256,7 +1260,7 @@ void KDUpdater::HttpDownloader::timerEvent(QTimerEvent *event)
 
 void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
 {
-    d->m_authenticationDone = false;
+    d->m_authenticationCount = 0;
     d->manager.setProxyFactory(proxyFactory());
     d->http = d->manager.get(QNetworkRequest(url));
 
@@ -1285,11 +1289,38 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
 
 void KDUpdater::HttpDownloader::onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
-    qDebug() << reply->readAll();
-    if (!d->m_authenticationDone) {
-        d->m_authenticationDone = true;
+    Q_UNUSED(reply)
+    // first try with the information we have already
+    if (d->m_authenticationCount == 0) {
+        d->m_authenticationCount++;
         authenticator->setUser(this->authenticator().user());
         authenticator->setPassword(this->authenticator().password());
+    } else if (d->m_authenticationCount == 1) {
+        // we failed to authenticate, ask for new credentials
+        QDialog dlg;
+        Ui::Dialog ui;
+        ui.setupUi(&dlg);
+        dlg.adjustSize();
+        ui.siteDescription->setText(tr("%1 at %2").arg(authenticator->realm()).arg(url().host()));
+
+        ui.userEdit->setText(this->authenticator().user());
+        ui.passwordEdit->setText(this->authenticator().password());
+
+        if (dlg.exec() == QDialog::Accepted) {
+            authenticator->setUser(ui.userEdit->text());
+            authenticator->setPassword(ui.passwordEdit->text());
+
+            // update the authenticator we used initially
+            QAuthenticator auth;
+            auth.setUser(ui.userEdit->text());
+            auth.setPassword(ui.passwordEdit->text());
+            emit authenticatorChanged(auth);
+        } else {
+            d->shutDown();
+            setDownloadAborted(tr("Authentication request canceled."));
+            emit downloadCanceled();
+        }
+        d->m_authenticationCount++;
     }
 }
 

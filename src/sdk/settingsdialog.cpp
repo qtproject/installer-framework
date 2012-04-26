@@ -63,6 +63,11 @@ TestRepository::~TestRepository()
         m_downloader->deleteLater();
 }
 
+QInstaller::Repository TestRepository::repository() const
+{
+    return m_repository;
+}
+
 void TestRepository::setRepository(const QInstaller::Repository &repository)
 {
     cancel();
@@ -98,6 +103,8 @@ void TestRepository::doStart()
     connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(downloadCompleted()));
     connect(m_downloader, SIGNAL(downloadAborted(QString)), this, SLOT(downloadAborted(QString)),
         Qt::QueuedConnection);
+    connect(m_downloader, SIGNAL(authenticatorChanged(QAuthenticator)), this,
+        SLOT(onAuthenticatorChanged(QAuthenticator)));
 
     m_downloader->setAutoRemoveDownloadedFile(true);
     m_downloader->setUrl(QUrl(url.toString() + QString::fromLatin1("/Updates.xml")));
@@ -148,6 +155,12 @@ void TestRepository::downloadCompleted()
 void TestRepository::downloadAborted(const QString &reason)
 {
     emitFinishedWithError(QInstaller::DownloadError, reason);
+}
+
+void TestRepository::onAuthenticatorChanged(const QAuthenticator &authenticator)
+{
+    m_repository.setUsername(authenticator.user());
+    m_repository.setPassword(authenticator.password());
 }
 
 
@@ -431,6 +444,7 @@ void SettingsDialog::testRepository()
         m_testRepository.setRepository(current->repository());
         m_testRepository.start();
         m_testRepository.waitForFinished();
+        current->setRepository(m_testRepository.repository());
 
         if (m_testRepository.error() > KDJob::NoError) {
             QMessageBox msgBox(this);

@@ -5,6 +5,8 @@ CONFIG(shared, static|shared) {
     DEFINES += BUILD_SHARED_KDTOOLS
 }
 
+FORMS += authenticationdialog.ui
+
 HEADERS += $$PWD/kdtoolsglobal.h \
     $$PWD/kdjob.h \
     $$PWD/kdgenericfactory.h \
