@@ -298,6 +298,17 @@ void PackageManagerGui::clickButton(int wb, int delay)
     }
 }
 
+bool PackageManagerGui::isButtonEnabled(int wb)
+{
+    if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) )) {
+        return b->isEnabled();
+    } else {
+        // TODO: we should probably abort immediately here (faulty test script)
+        qDebug() << "Button" << wb << "not found!";
+    }
+    return false;
+}
+
 void PackageManagerGui::setValidatorForCustomPageRequested(Component *component, const QString &name,
                                                            const QString &callbackName)
 {

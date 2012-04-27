@@ -82,6 +82,7 @@ public:
     Q_INVOKABLE QWidget* currentPageWidget() const;
     Q_INVOKABLE QString defaultButtonText(int wizardButton) const;
     Q_INVOKABLE void clickButton(int wizardButton, int delayInMs = 0);
+    Q_INVOKABLE bool isButtonEnabled(int wizardButton);
 
     Q_INVOKABLE void showSettingsButton(bool show);
     Q_INVOKABLE void setSettingsButtonEnabled(bool enable);
