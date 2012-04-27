@@ -181,7 +181,25 @@ public:
         : m_modified(false)
         , m_autoSwitchPage(true)
         , m_showSettingsButton(false)
-    { }
+    {
+        m_wizardButtonTypes.insert(QWizard::BackButton, QLatin1String("QWizard::BackButton"));
+        m_wizardButtonTypes.insert(QWizard::NextButton, QLatin1String("QWizard::NextButton"));
+        m_wizardButtonTypes.insert(QWizard::CommitButton, QLatin1String("QWizard::CommitButton"));
+        m_wizardButtonTypes.insert(QWizard::FinishButton, QLatin1String("QWizard::FinishButton"));
+        m_wizardButtonTypes.insert(QWizard::CancelButton, QLatin1String("QWizard::CancelButton"));
+        m_wizardButtonTypes.insert(QWizard::HelpButton, QLatin1String("QWizard::HelpButton"));
+        m_wizardButtonTypes.insert(QWizard::CustomButton1, QLatin1String("QWizard::CustomButton1"));
+        m_wizardButtonTypes.insert(QWizard::CustomButton2, QLatin1String("QWizard::CustomButton2"));
+        m_wizardButtonTypes.insert(QWizard::CustomButton3, QLatin1String("QWizard::CustomButton3"));
+        m_wizardButtonTypes.insert(QWizard::Stretch, QLatin1String("QWizard::Stretch"));
+    }
+
+    QString buttonType(int wizardButton)
+    {
+        return m_wizardButtonTypes.value(static_cast<QWizard::WizardButton>(wizardButton),
+            QLatin1String("unknown button"));
+    }
+
 
     bool m_modified;
     bool m_autoSwitchPage;
@@ -191,6 +209,7 @@ public:
 
     QScriptValue m_controlScript;
     QScriptEngine m_controlScriptEngine;
+    QMap<QWizard::WizardButton, QString> m_wizardButtonTypes;
 };
 
 
@@ -293,8 +312,7 @@ void PackageManagerGui::clickButton(int wb, int delay)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) )) {
         QTimer::singleShot(delay, b, SLOT(click()));
     } else {
-        // TODO: we should probably abort immediately here (faulty test script)
-        qDebug() << "Button" << wb << "not found!";
+        qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
     }
 }
 
@@ -303,8 +321,7 @@ bool PackageManagerGui::isButtonEnabled(int wb)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) )) {
         return b->isEnabled();
     } else {
-        // TODO: we should probably abort immediately here (faulty test script)
-        qDebug() << "Button" << wb << "not found!";
+        qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
     }
     return false;
 }
