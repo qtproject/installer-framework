@@ -481,7 +481,7 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
                 .arg(it->fileName(), info.version));
         }
         info.dependencies = doc.firstChildElement(QLatin1String("Package")).
-            firstChildElement(QLatin1String("Dependencies")).text().split(QRegExp(QLatin1String("\\b(,|, )\\b")),
+            firstChildElement(QLatin1String("Dependencies")).text().split(QInstaller::scCommaRegExp,
             QString::SkipEmptyParts);
         info.directory = it->filePath();
         dict.push_back(info);

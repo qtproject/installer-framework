@@ -53,6 +53,8 @@ namespace QInstaller {
 #define IFW_VERSION_CHECK(major, minor, patch) \
     ((major << 16)|(minor << 8)|(patch))
 
+static QRegExp scCommaRegExp(QLatin1String("\\b(,|, )\\b"));
+
 enum INSTALLER_EXPORT RunMode
 {
     AllMode,

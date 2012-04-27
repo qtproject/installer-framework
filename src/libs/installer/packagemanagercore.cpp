@@ -1602,7 +1602,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
 
         // add downloadable archive from xml
         const QStringList downloadableArchives = data.package->data(scDownloadableArchives).toString()
-            .split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
+            .split(scCommaRegExp, QString::SkipEmptyParts);
 
         if (component->isFromOnlineRepository()) {
             foreach (const QString downloadableArchive, downloadableArchives)
@@ -1610,7 +1610,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         }
 
         const QStringList componentsToReplace = data.package->data(scReplaces).toString()
-            .split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
+            .split(scCommaRegExp, QString::SkipEmptyParts);
 
         if (!componentsToReplace.isEmpty()) {
             // Store the component (this is a component that replaces others) and all components that
@@ -1760,8 +1760,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
 
             bool isValidUpdate = locals.contains(name);
             if (!isValidUpdate && !replaces.isEmpty()) {
-                const QStringList possibleNames = replaces.split(QRegExp(QLatin1String("\\b(,|, )\\b")),
-                    QString::SkipEmptyParts);
+                const QStringList possibleNames = replaces.split(scCommaRegExp, QString::SkipEmptyParts);
                 foreach (const QString &possibleName, possibleNames) {
                     if (locals.contains(possibleName)) {
                         isValidUpdate = true;

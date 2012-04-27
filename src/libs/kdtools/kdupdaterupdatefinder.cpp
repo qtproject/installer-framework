@@ -476,7 +476,7 @@ QList<UpdateInfo> UpdateFinder::Private::applicableUpdates(UpdatesInfo *updatesI
         appName = appName.replace(QLatin1String( " ," ), QLatin1String( "," ));
 
         // Catch hold of app names contained updatesInfo->applicationName()
-        QStringList apps = appName.split(QRegExp(QLatin1String("\\b(,|, )\\b")), QString::SkipEmptyParts);
+        QStringList apps = appName.split(scCommaRegExp, QString::SkipEmptyParts);
         appNameIndex = apps.indexOf(this->application->applicationName());
 
         // If the application appName isn't one of the app names, then

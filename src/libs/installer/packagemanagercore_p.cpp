@@ -2290,8 +2290,7 @@ bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Componen
 
                 foreach (Component *c, installedComponents) {
                     const QString replaces = c->value(scReplaces);
-                    QStringList possibleNames = replaces.split(QRegExp(QLatin1String("\\b(,|, )\\b")),
-                        QString::SkipEmptyParts);
+                    QStringList possibleNames = replaces.split(scCommaRegExp, QString::SkipEmptyParts);
                     possibleNames.append(c->name());
                     foreach (const QString &possibleName, possibleNames)
                         autoDependencies.removeAll(possibleName);

@@ -63,8 +63,6 @@ static const QLatin1String scUninstalled("Uninstalled");
 static const QLatin1String scCurrentState("CurrentState");
 static const QLatin1String scForcedInstallation("ForcedInstallation");
 
-static QRegExp scCommaRegExp(QLatin1String("\\b(,|, )\\b"));
-
 /*!
     \class QInstaller::Component
     Component describes a component within the installer.
