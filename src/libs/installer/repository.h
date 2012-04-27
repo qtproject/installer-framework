@@ -47,7 +47,7 @@ public:
     Repository(const Repository &other);
     explicit Repository(const QUrl &url, bool isDefault);
 
-    static Repository fromUserInput(const QString &repositoryUrl, bool isDefault = false);
+    static Repository fromUserInput(const QString &repositoryUrl);
 
     bool isValid() const;
     bool isDefault() const;

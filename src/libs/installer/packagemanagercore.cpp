@@ -769,29 +769,26 @@ bool PackageManagerCore::removeWizardPageItem(Component *component, const QStrin
     return false;
 }
 
-void PackageManagerCore::addUserRepository(const QString &repositoryUrl, bool isDefault)
+void PackageManagerCore::addUserRepositories(const QStringList &repositories)
 {
-    addUserRepositories(QSet<Repository>() << Repository::fromUserInput(repositoryUrl, isDefault));
-}
+    QSet<Repository> repositorySet;
+    foreach (const QString &repository, repositories)
+        repositorySet.insert(Repository::fromUserInput(repository));
 
-void PackageManagerCore::addUserRepositories(const QSet<Repository> &repositories)
-{
-    d->m_settings.addUserRepositories(repositories);
-}
-
-
-void PackageManagerCore::setTemporaryRepository(const QString &repositoryUrl)
-{
-    setTemporaryRepositories(QSet<Repository>() << Repository::fromUserInput(repositoryUrl, false));
+    d->m_settings.addUserRepositories(repositorySet);
 }
 
 /*!
     Sets additional repository for this instance of the installer or updater.
     Will be removed after invoking it again.
 */
-void PackageManagerCore::setTemporaryRepositories(const QSet<Repository> &repositories, bool replace)
+void PackageManagerCore::setTemporaryRepositories(const QStringList &repositories, bool replace)
 {
-    d->m_settings.setTemporaryRepositories(repositories, replace);
+    QSet<Repository> repositorySet;
+    foreach (const QString &repository, repositories)
+        repositorySet.insert(Repository::fromUserInput(repository));
+
+    d->m_settings.setTemporaryRepositories(repositorySet, replace);
 }
 
 /*!

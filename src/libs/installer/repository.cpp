@@ -77,7 +77,7 @@ Repository::Repository(const QUrl &url, bool isDefault)
 
     Note: user and password can be inside the \a repositoryUrl string: http://user:password@repository.url
 */
-Repository Repository::fromUserInput(const QString &repositoryUrl, bool isDefault)
+Repository Repository::fromUserInput(const QString &repositoryUrl)
 {
     QStringList supportedShemes;
     supportedShemes << QLatin1String("http") << QLatin1String("https") <<  QLatin1String("ftp") <<
@@ -92,7 +92,7 @@ Repository Repository::fromUserInput(const QString &repositoryUrl, bool isDefaul
     url.setUserName(QString());
     url.setPassword(QString());
 
-    Repository repository(url, isDefault);
+    Repository repository(url, false);
     repository.setUsername(userName);
     repository.setPassword(password);
     return repository;

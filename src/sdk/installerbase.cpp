@@ -70,19 +70,18 @@
 using namespace QInstaller;
 using namespace QInstallerCreator;
 
-static QSet<Repository> repositories(const QStringList &arguments, const int index)
+static QStringList repositories(const QStringList &arguments, const int index)
 {
-    QSet<Repository> set;
     if (index < arguments.size()) {
         QStringList items = arguments.at(index).split(QLatin1Char(','));
         foreach (const QString &item, items) {
-            set.insert(Repository(item, false));
             qDebug() << "Adding custom repository:" << item;
         }
+        return items;
     } else {
         std::cerr << "No repository specified" << std::endl;
     }
-    return set;
+    return QStringList();
 }
 
 // -- main
@@ -299,7 +298,7 @@ int main(int argc, char *argv[])
             } else if (argument == QLatin1String("--addTempRepository")
                 || argument == QLatin1String("--setTempRepository")) {
                     ++i;
-                    QSet<Repository> repoList = repositories(args, i);
+                    QStringList repoList = repositories(args, i);
                     if (repoList.isEmpty())
                         return PackageManagerCore::Failure;
 
@@ -309,7 +308,7 @@ int main(int argc, char *argv[])
                     core.setTemporaryRepositories(repoList, replace);
             } else if (argument == QLatin1String("--addRepository")) {
                 ++i;
-                QSet<Repository> repoList = repositories(args, i);
+                QStringList repoList = repositories(args, i);
                 if (repoList.isEmpty())
                     return PackageManagerCore::Failure;
                 core.addUserRepositories(repoList);
