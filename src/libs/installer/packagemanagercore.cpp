@@ -1940,7 +1940,7 @@ ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, con
     model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal,
         ComponentModel::tr("Size"));
     connect(this, SIGNAL(setRootComponents(QList<QInstaller::Component*>)), model,
-        SLOT(setRootComponents(QList<QInstaller::Component*>)), Qt::QueuedConnection);
+        SLOT(setRootComponents(QList<QInstaller::Component*>)));
     connect(model, SIGNAL(defaultCheckStateChanged(bool)), this, SLOT(componentsToInstallNeedsRecalculation()));
 
     return model;
