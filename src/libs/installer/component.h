@@ -132,6 +132,7 @@ public:
         const QString &parameter6 = QString(), const QString &parameter7 = QString(),
         const QString &parameter8 = QString(), const QString &parameter9 = QString(),
         const QString &parameter10 = QString());
+    Q_INVOKABLE bool addOperation(const QString &operation, const QStringList &parameters);
 
     void addElevatedOperation(Operation *operation);
     Q_INVOKABLE bool addElevatedOperation(const QString &operation,
@@ -140,6 +141,7 @@ public:
         const QString &parameter5 = QString(), const QString &parameter6 = QString(),
         const QString &parameter7 = QString(), const QString &parameter8 = QString(),
         const QString &parameter9 = QString(), const QString &parameter10 = QString());
+    Q_INVOKABLE bool addElevatedOperation(const QString &operation, const QStringList &parameters);
 
     QStringList downloadableArchives() const;
     Q_INVOKABLE void addDownloadableArchive(const QString &path);
@@ -222,6 +224,7 @@ private:
         const QString &parameter6 = QString(), const QString &parameter7 = QString(),
         const QString &parameter8 = QString(), const QString &parameter9 = QString(),
         const QString &parameter10 = QString());
+    Operation *createOperation(const QString &operation, const QStringList &parameters);
 
 private:
     QString validatorCallbackName;

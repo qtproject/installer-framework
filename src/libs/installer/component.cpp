@@ -802,21 +802,6 @@ Operation *Component::createOperation(const QString &operation, const QString &p
     const QString &parameter6, const QString &parameter7, const QString &parameter8, const QString &parameter9,
     const QString &parameter10)
 {
-    Operation *op = KDUpdater::UpdateOperationFactory::instance().create(operation);
-    if (op == 0) {
-        const QMessageBox::StandardButton button =
-            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("OperationDoesNotExistError"), tr("Error"), tr("Error: Operation %1 does not exist")
-                .arg(operation), QMessageBox::Abort | QMessageBox::Ignore);
-        if (button == QMessageBox::Abort)
-            d->m_operationsCreatedSuccessfully = false;
-        return op;
-    }
-
-    if (op->name() == QLatin1String("Delete"))
-        op->setValue(QLatin1String("performUndo"), false);
-    op->setValue(QLatin1String("installer"), qVariantFromValue(d->m_core));
-
     QStringList arguments;
     if (!parameter1.isNull())
         arguments.append(parameter1);
@@ -838,10 +823,32 @@ Operation *Component::createOperation(const QString &operation, const QString &p
         arguments.append(parameter9);
     if (!parameter10.isNull())
         arguments.append(parameter10);
-    op->setArguments(d->m_core->replaceVariables(arguments));
+
+    return createOperation(operation, arguments);
+}
+
+Operation *Component::createOperation(const QString &operation, const QStringList &parameters)
+{
+    Operation *op = KDUpdater::UpdateOperationFactory::instance().create(operation);
+    if (op == 0) {
+        const QMessageBox::StandardButton button =
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("OperationDoesNotExistError"), tr("Error"), tr("Error: Operation %1 does not exist")
+                .arg(operation), QMessageBox::Abort | QMessageBox::Ignore);
+        if (button == QMessageBox::Abort)
+            d->m_operationsCreatedSuccessfully = false;
+        return op;
+    }
+
+    if (op->name() == QLatin1String("Delete"))
+        op->setValue(QLatin1String("performUndo"), false);
+    op->setValue(QLatin1String("installer"), qVariantFromValue(d->m_core));
+
+    op->setArguments(d->m_core->replaceVariables(parameters));
 
     return op;
 }
+
 /*!
     Creates and adds an installation operation for \a operation. Add any number of \a parameter1,
     \a parameter2, \a parameter3, \a parameter4, \a parameter5 and \a parameter6. The contents of
@@ -854,6 +861,16 @@ bool Component::addOperation(const QString &operation, const QString &parameter1
 {
     if (Operation *op = createOperation(operation, parameter1, parameter2, parameter3, parameter4, parameter5,
         parameter6, parameter7, parameter8, parameter9, parameter10)) {
+            addOperation(op);
+            return true;
+    }
+
+    return false;
+}
+
+bool Component::addOperation(const QString &operation, const QStringList &parameters)
+{
+    if (Operation *op = createOperation(operation, parameters)) {
             addOperation(op);
             return true;
     }
@@ -875,6 +892,16 @@ bool Component::addElevatedOperation(const QString &operation, const QString &pa
 {
     if (Operation *op = createOperation(operation, parameter1, parameter2, parameter3, parameter4, parameter5,
         parameter6, parameter7, parameter8, parameter9, parameter10)) {
+            addElevatedOperation(op);
+            return true;
+    }
+
+    return false;
+}
+
+bool Component::addElevatedOperation(const QString &operation, const QStringList &parameters)
+{
+    if (Operation *op = createOperation(operation, parameters)) {
             addElevatedOperation(op);
             return true;
     }
