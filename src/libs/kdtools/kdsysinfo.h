@@ -70,9 +70,7 @@ struct ProcessInfo
 quint64 installedMemory();
 QList<VolumeInfo> mountedVolumes();
 QList<ProcessInfo> runningProcesses();
-#ifdef Q_OS_WIN
 bool  pathIsOnLocalDevice(const QString &path);
-#endif
 
 } // namespace KDUpdater
 

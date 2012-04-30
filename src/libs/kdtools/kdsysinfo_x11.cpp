@@ -115,4 +115,11 @@ QList<ProcessInfo> runningProcesses()
     return processes;
 }
 
+bool pathIsOnLocalDevice(const QString &path)
+{
+    Q_UNUSED(path);
+
+    return true;
+}
+
 } // namespace KDUpdater
