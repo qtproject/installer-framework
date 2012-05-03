@@ -106,7 +106,7 @@ private:
     QSet<QString> m_currentCheckedSet;
     QList<Component*> m_rootComponentList;
 
-    mutable QMap<QString, QPersistentModelIndex> m_indexByNameCache;
+    mutable QHash<QString, QPersistentModelIndex> m_indexByNameCache;
 };
 
 }   // namespace QInstaller

@@ -744,7 +744,7 @@ void UpdateFinder::Private::slotDownloadDone()
    \internal
  */
 Update *UpdateFinder::constructUpdate(Application *application, const UpdateSourceInfo &sourceInfo,
-    UpdateType type, const QUrl &updateUrl, const QMap<QString, QVariant> &data,
+    UpdateType type, const QUrl &updateUrl, const QHash<QString, QVariant> &data,
     quint64 compressedSize, quint64 uncompressedSize, const QByteArray &sha1sum )
 {
     return new Update(application, sourceInfo, type, updateUrl, data, compressedSize, uncompressedSize, sha1sum);

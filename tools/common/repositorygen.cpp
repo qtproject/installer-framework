@@ -495,9 +495,9 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
     return dict;
 }
 
-QMap<QString, QString> QInstallerTools::buildPathToVersionMap(const PackageInfoVector &info)
+QHash<QString, QString> QInstallerTools::buildPathToVersionMapping(const PackageInfoVector &info)
 {
-    QMap<QString, QString> map;
+    QHash<QString, QString> map;
     foreach (const PackageInfo &inf, info)
         map[inf.name] = inf.version;
     return map;
@@ -519,7 +519,7 @@ static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const
 }
 
 void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QString &baseDir,
-    const QMap<QString, QString> &versionMapping)
+    const QHash<QString, QString> &versionMapping)
 {
     QDomDocument doc;
     QDomElement root;

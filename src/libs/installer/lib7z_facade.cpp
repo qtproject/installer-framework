@@ -615,11 +615,11 @@ private:
     OpenArchiveInfoCleaner *m_cleaner;
 
     static QMutex m_mutex;
-    static QMap< QIODevice*, OpenArchiveInfo* > instances;
+    static QHash< QIODevice*, OpenArchiveInfo* > instances;
 };
 
 QMutex OpenArchiveInfo::m_mutex;
-QMap< QIODevice*, OpenArchiveInfo* > OpenArchiveInfo::instances;
+QHash< QIODevice*, OpenArchiveInfo* > OpenArchiveInfo::instances;
 
 void OpenArchiveInfoCleaner::deviceDestroyed(QObject* dev)
 {

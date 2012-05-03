@@ -204,12 +204,12 @@ public:
     bool m_modified;
     bool m_autoSwitchPage;
     bool m_showSettingsButton;
-    QMap<int, QWizardPage*> m_defaultPages;
-    QMap<int, QString> m_defaultButtonText;
+    QHash<int, QWizardPage*> m_defaultPages;
+    QHash<int, QString> m_defaultButtonText;
 
     QScriptValue m_controlScript;
     QScriptEngine m_controlScriptEngine;
-    QMap<QWizard::WizardButton, QString> m_wizardButtonTypes;
+    QHash<QWizard::WizardButton, QString> m_wizardButtonTypes;
 };
 
 

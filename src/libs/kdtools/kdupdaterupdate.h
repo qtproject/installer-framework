@@ -28,7 +28,7 @@
 
 #include <QUrl>
 #include <QDate>
-#include <QMap>
+#include <QHash>
 #include <QVariant>
 #include <QList>
 
@@ -80,7 +80,7 @@ private:
     bool doResume();
 
     Update(Application *application, const UpdateSourceInfo &sourceInfo,
-           UpdateType type, const QUrl &updateUrl, const QMap<QString, QVariant> &data,
+           UpdateType type, const QUrl &updateUrl, const QHash<QString, QVariant> &data,
            quint64 compressedSize, quint64 uncompressedSize, const QByteArray &sha1sum);
 };
 

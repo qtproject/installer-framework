@@ -31,7 +31,7 @@
 #include <QList>
 #include <QStringList>
 #include <QUrl>
-#include <QMap>
+#include <QHash>
 #include <QVariant>
 
 // Classes and structures in this header file are for internal use only.
@@ -57,7 +57,7 @@ struct UpdateFileInfo
 struct UpdateInfo
 {
     int type;
-    QMap<QString, QVariant> data;
+    QHash<QString, QVariant> data;
     QList<UpdateFileInfo> updateFiles;
 };
 

@@ -27,7 +27,7 @@
 #include "kdupdatertask.h"
 
 #include <QList>
-#include <QMap>
+#include <QHash>
 
 QT_BEGIN_NAMESPACE
 class QUrl;
@@ -60,7 +60,7 @@ private:
     bool doResume();
 
     Update *constructUpdate(Application *application, const UpdateSourceInfo &sourceInfo,
-                            UpdateType type, const QUrl &updateUrl, const QMap<QString, QVariant> &data,
+                            UpdateType type, const QUrl &updateUrl, const QHash<QString, QVariant> &data,
                             quint64 compressedSize, quint64 uncompressedSize, const QByteArray &sha1sum);
 
 private:

@@ -60,7 +60,7 @@ struct Update::UpdateData
     Update *q;
     Application *application;
     UpdateSourceInfo sourceInfo;
-    QMap<QString, QVariant> data;
+    QHash<QString, QVariant> data;
     QUrl updateUrl;
     UpdateType type;
     QList<UpdateOperation *> operations;
@@ -77,7 +77,7 @@ struct Update::UpdateData
    \internal
 */
 Update::Update(Application *application, const UpdateSourceInfo &sourceInfo,
-               UpdateType type, const QUrl &updateUrl, const QMap<QString, QVariant> &data,
+               UpdateType type, const QUrl &updateUrl, const QHash<QString, QVariant> &data,
                quint64 compressedSize, quint64 uncompressedSize, const QByteArray &sha1sum)
     : Task(QLatin1String("Update"), Stoppable, application),
       d(new UpdateData(this))

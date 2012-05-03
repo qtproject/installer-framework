@@ -39,7 +39,6 @@
 #include "constants.h"
 #include "packagemanagercore.h"
 
-#include <QMap>
 #include <QSet>
 #include <QFile>
 #include <QTextStream>
@@ -48,47 +47,47 @@
 
 using namespace QInstaller;
 
-static QMap<QByteArray, QByteArray> generatePatchValueMap(const QByteArray &newQtPath,
+static QHash<QByteArray, QByteArray> generatePatchValueHash(const QByteArray &newQtPath,
         const QHash<QString, QByteArray> &qmakeValueHash)
 {
-    QMap<QByteArray, QByteArray> replaceMap; //first == searchstring: second == replace string
+    QHash<QByteArray, QByteArray> replaceHash; //first == searchstring: second == replace string
     char nativeSeperator = QDir::separator().toAscii();
     QByteArray oldValue;
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_PREFIX"));
-    replaceMap.insert(QByteArray("qt_prfxpath=%1").replace("%1", oldValue),
+    replaceHash.insert(QByteArray("qt_prfxpath=%1").replace("%1", oldValue),
         QByteArray("qt_prfxpath=%1/").replace("%1/", newQtPath));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DOCS"));
-    replaceMap.insert(QByteArray("qt_docspath=%1").replace("%1", oldValue),
+    replaceHash.insert(QByteArray("qt_docspath=%1").replace("%1", oldValue),
         QByteArray("qt_docspath=%1/doc").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_HEADERS"));
-    replaceMap.insert(QByteArray("qt_hdrspath=%1").replace("%1", oldValue),
+    replaceHash.insert(QByteArray("qt_hdrspath=%1").replace("%1", oldValue),
         QByteArray("qt_hdrspath=%1/include").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_LIBS"));
-    replaceMap.insert(QByteArray("qt_libspath=%1").replace("%1", oldValue),
+    replaceHash.insert(QByteArray("qt_libspath=%1").replace("%1", oldValue),
         QByteArray("qt_libspath=%1/lib").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_BINS"));
-    replaceMap.insert(QByteArray("qt_binspath=%1").replace("%1", oldValue),
+    replaceHash.insert(QByteArray("qt_binspath=%1").replace("%1", oldValue),
         QByteArray("qt_binspath=%1/bin").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_PLUGINS"));
-    replaceMap.insert(QByteArray("qt_plugpath=%1").replace("%1", oldValue),
+    replaceHash.insert(QByteArray("qt_plugpath=%1").replace("%1", oldValue),
         QByteArray("qt_plugpath=%1/plugins").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_IMPORTS"));
-    replaceMap.insert(QByteArray("qt_impspath=%1").replace("%1", oldValue),
+    replaceHash.insert(QByteArray("qt_impspath=%1").replace("%1", oldValue),
         QByteArray("qt_impspath=%1/imports").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DATA"));
-    replaceMap.insert( QByteArray("qt_datapath=%1").replace("%1", oldValue),
+    replaceHash.insert( QByteArray("qt_datapath=%1").replace("%1", oldValue),
         QByteArray("qt_datapath=%1/").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_TRANSLATIONS"));
-    replaceMap.insert( QByteArray("qt_trnspath=%1").replace("%1", oldValue),
+    replaceHash.insert( QByteArray("qt_trnspath=%1").replace("%1", oldValue),
         QByteArray("qt_trnspath=%1/translations").replace("%1/", newQtPath + nativeSeperator));
 
     // This must not be patched. Commenting out to fix QTSDK-429
@@ -99,30 +98,30 @@ static QMap<QByteArray, QByteArray> generatePatchValueMap(const QByteArray &newQ
     //examples and demoes can patched outside separately,
     //but for cosmetic reasons - if the qt version gets no examples later.
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_EXAMPLES"));
-    replaceMap.insert( QByteArray("qt_xmplpath=%1").replace("%1", oldValue),
+    replaceHash.insert( QByteArray("qt_xmplpath=%1").replace("%1", oldValue),
         QByteArray("qt_xmplpath=%1/examples").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DEMOS"));
-    replaceMap.insert( QByteArray("qt_demopath=%1").replace("%1", oldValue),
+    replaceHash.insert( QByteArray("qt_demopath=%1").replace("%1", oldValue),
         QByteArray("qt_demopath=%1/demos").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_TESTS"));
-    replaceMap.insert(QByteArray("qt_tstspath=%1").replace("%1", oldValue),
+    replaceHash.insert(QByteArray("qt_tstspath=%1").replace("%1", oldValue),
         QByteArray("qt_tstspath=%1/tests").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_HOST_PREFIX"));
-    replaceMap.insert(QByteArray("qt_hpfxpath=%1").replace("%1", oldValue),
+    replaceHash.insert(QByteArray("qt_hpfxpath=%1").replace("%1", oldValue),
         QByteArray("qt_hpfxpath=%1/").replace("%1/", newQtPath));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_HOST_BINS"));
-    replaceMap.insert( QByteArray("qt_hbinpath=%1").replace("%1", oldValue),
+    replaceHash.insert( QByteArray("qt_hbinpath=%1").replace("%1", oldValue),
         QByteArray("qt_hbinpath=%1/bin").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_HOST_DATA"));
-    replaceMap.insert(QByteArray("qt_hdatpath=%1").replace("%1", oldValue),
+    replaceHash.insert(QByteArray("qt_hdatpath=%1").replace("%1", oldValue),
         QByteArray("qt_hdatpath=%1/").replace("%1/", newQtPath));
 
-    return replaceMap;
+    return replaceHash;
 }
 
 QtPatchOperation::QtPatchOperation()
@@ -244,7 +243,7 @@ bool QtPatchOperation::performOperation()
         prefix += QLatin1Char('/');
 
 //BEGIN - patch binary files
-    QMap<QByteArray, QByteArray> patchValueMap = generatePatchValueMap(newQtPath, qmakeValueHash);
+    QHash<QByteArray, QByteArray> patchValueHash = generatePatchValueHash(newQtPath, qmakeValueHash);
 
     foreach (QString fileName, filesToPatch) {
         fileName.prepend(prefix);
@@ -262,7 +261,7 @@ bool QtPatchOperation::performOperation()
             return false;
         }
 
-        QMapIterator<QByteArray, QByteArray> it(patchValueMap);
+        QHashIterator<QByteArray, QByteArray> it(patchValueHash);
         while (it.hasNext()) {
             it.next();
             bool isPatched = QtPatch::patchBinaryFile(&file, it.key(), it.value());

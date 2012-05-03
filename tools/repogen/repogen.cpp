@@ -201,7 +201,7 @@ int main(int argc, char** argv)
 
         QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDir,
             filteredPackages, filterType);
-        QMap<QString, QString> pathToVersionMapping = buildPathToVersionMap(packages);
+        QHash<QString, QString> pathToVersionMapping = buildPathToVersionMapping(packages);
 
         foreach (const QInstallerTools::PackageInfo &package, packages) {
             const QFileInfo fi(repositoryDir, package.name);

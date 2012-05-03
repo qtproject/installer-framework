@@ -82,7 +82,7 @@ public:
     QStringList m_downloadableArchives;
     QStringList m_stopProcessForUpdateRequests;
     QHash<QString, bool> m_unexistingScriptMethods;
-    QMap<QString, QPointer<QWidget> > m_userInterfaces;
+    QHash<QString, QPointer<QWidget> > m_userInterfaces;
 
     // < display name, < file name, file content > >
     QHash<QString, QPair<QString, QString> > m_licenses;

@@ -63,7 +63,6 @@ ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
 ComponentPrivate::~ComponentPrivate()
 {
     // Before we can delete the added widgets, they need to be removed from the wizard first.
-    QMap<QString, QPointer<QWidget> >::const_iterator it;
     foreach (const QString &widgetName, m_userInterfaces.keys()) {
         m_core->removeWizardPage(q, widgetName);
         m_core->removeWizardPageItem(q, widgetName);
