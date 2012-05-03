@@ -545,13 +545,13 @@
 
         \o  On Windows:
     \code
-    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> <installer_name>
+    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file> <installer_name>
     \endcode
 
         \o  On Linux and Mac OS X
 
     \code
-    <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory> <installer_name>
+    <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory>/<config_file> <installer_name>
     \endcode
 
     \endlist
@@ -563,13 +563,13 @@
 
         \o  On Windows:
     \code
-    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> -e <packages> <installer_name>
+    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file> -e <packages> <installer_name>
     \endcode
 
         \o  On Linux and Mac OS X
 
     \code
-    <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory> -e <packages> <installer_name>
+    <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory>/<config_file> -e <packages> <installer_name>
     \endcode
 
     \endlist
@@ -734,14 +734,14 @@
 
     Use the \c repogen tool to create online repositories of all packages of one package directory:
 
-    repogen.exe -p <package_directory> -c <config_directory> repository <repository_directory>
+    repogen.exe -p <package_directory> -c <config_directory>\<config_file> repository <repository_directory>
 
     For example, to create a repository that contains only com.nokia.sdk.qt and
     com.nokia.sdk.qtcreator, enter the following
     command:
 
     \code
-    repogen.exe -p packages -c installer-config -i com.nokia.sdk.qt,com.nokia.sdk.qtcreator repository
+    repogen.exe -p packages -c installer-config\config.xml -i com.nokia.sdk.qt,com.nokia.sdk.qtcreator repository
     \endcode
 
     When the repository has been created, upload it to a web server. You must
@@ -787,7 +787,7 @@
     following command:
 
     \code
-    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> -e <packages> <installer_name>
+    <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file> -e <packages> <installer_name>
     \endcode
 
     For example, enter the following command to create an installer binary
@@ -796,7 +796,7 @@
     repository:
 
     \code
-    binarycreator.exe -p installer-packages -c installer-config -e com.nokia.sdk.qt,com.nokia.qtcreator SDKInstaller.exe
+    binarycreator.exe -p installer-packages -c installer-config\config.xml -e com.nokia.sdk.qt,com.nokia.qtcreator SDKInstaller.exe
     \endcode
 
     \section1 Reducing Installer Size
@@ -837,7 +837,7 @@
     To create an offline installer in Windows, enter the following command:
 
     \code
-    <location-of-ifw>\binarycreator.exe --offline-only -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory> <installer_name>
+    <location-of-ifw>\binarycreator.exe --offline-only -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file> <installer_name>
     \endcode
 
     Some options have default values, and therefore, you can omit them.
