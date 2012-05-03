@@ -1729,17 +1729,6 @@ void PackageManagerCorePrivate::runUninstaller()
         runUndoOperations(undoOperations, undoOperationProgressSize, adminRightsGained, false);
         // No operation delete here, as all old undo operations are deleted in the destructor.
 
-        const QString startMenuDir = m_vars.value(scStartMenuDir);
-        if (!startMenuDir.isEmpty()) {
-            try {
-                QInstaller::removeDirectory(startMenuDir);
-            } catch (const Error &error) {
-                qDebug() << QString::fromLatin1("Could not remove %1: %2").arg(startMenuDir, error.message());
-            }
-        } else {
-            qDebug() << "Start menu dir not set.";
-        }
-
         // this will also delete the TargetDir on Windows
         deleteUninstaller();
 
