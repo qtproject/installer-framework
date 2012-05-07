@@ -1376,13 +1376,12 @@ void PackageManagerCorePrivate::runInstaller()
         // to have some progress for writeUninstaller
         ProgressCoordinator::instance()->addReservePercentagePoints(1);
 
-        static const QLatin1String sep("/");
-        const QString target = QDir::cleanPath(targetDir().replace(QRegExp(QLatin1String("\\\\|/")), sep));
+        const QString target = QDir::cleanPath(targetDir().replace(QLatin1Char('\\'), QLatin1Char('/')));
         if (target.isEmpty())
             throw Error(tr("Variable 'TargetDir' not set."));
 
         if (!QDir(target).exists()) {
-            const QString &pathToTarget = target.mid(0, target.lastIndexOf(sep));
+            const QString &pathToTarget = target.mid(0, target.lastIndexOf(QLatin1Char('/')));
             if (!QDir(pathToTarget).exists()) {
                 Operation *pathToTargetOp = createOwnedOperation(QLatin1String("Mkdir"));
                 pathToTargetOp->setArguments(QStringList() << pathToTarget);

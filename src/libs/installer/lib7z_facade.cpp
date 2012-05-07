@@ -110,9 +110,7 @@ struct DirectoryGuard {
         m_created(false),
         m_released(false)
     {
-        const QRegExp re(QLatin1String("\\\\|/"));
-        const QLatin1String sep("/");
-        m_path.replace(re, sep);
+        m_path.replace(QLatin1Char('\\'), QLatin1Char('/'));
     }
 
     ~DirectoryGuard()

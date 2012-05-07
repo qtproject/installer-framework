@@ -410,18 +410,15 @@ MkdirOperation::MkdirOperation()
 
 void MkdirOperation::backup()
 {
-    static const QRegExp re(QLatin1String("\\\\|/"));
-    static const QLatin1String sep("/");
-
     QString path = arguments().first();
-    path.replace(re, sep);
+    path.replace(QLatin1Char('\\'), QLatin1Char('/'));
 
     QDir createdDir = QDir::root();
 
     // find out, which part of the path is the first one we actually need to create
     int end = 0;
     while (true) {
-        QString p = path.section(sep, 0, ++end);
+        QString p = path.section(QLatin1Char('/'), 0, ++end);
         createdDir = QDir(p);
         if (!createdDir.exists())
             break;
