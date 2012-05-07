@@ -47,7 +47,7 @@ if (exists($$LRELEASE)) {
         IB_TRANSLATIONS += $$QT_TRANSLATIONS
     }
 
-    if (!isEmpty(SUCCESS)) {
+    if (contains(SUCCESS, true)) {
         updateqm.input = IB_TRANSLATIONS
         updateqm.output = $$PWD/translations/${QMAKE_FILE_BASE}.qm
         updateqm.commands = $$LRELEASE ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_OUT}
