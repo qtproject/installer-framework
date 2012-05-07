@@ -1722,10 +1722,6 @@ void PackageManagerCorePrivate::runUninstaller()
         const int uninstallOperationCount = countProgressOperations(undoOperations);
         const double undoOperationProgressSize = double(1) / double(uninstallOperationCount);
 
-        //yes uninstallation is like an update on the component so please inform the user to stop processes
-        callBeginInstallation(m_core->availableComponents());
-        stopProcessesForUpdates(m_core->availableComponents());
-
         runUndoOperations(undoOperations, undoOperationProgressSize, adminRightsGained, false);
         // No operation delete here, as all old undo operations are deleted in the destructor.
 
