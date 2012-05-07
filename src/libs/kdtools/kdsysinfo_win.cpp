@@ -210,6 +210,45 @@ QList<ProcessInfo> runningProcesses()
     return param.processes;
 }
 
+bool CALLBACK TerminateAppEnum(HWND hwnd, LPARAM lParam)
+{
+   DWORD dwID;
+   GetWindowThreadProcessId(hwnd, &dwID);
+
+   if (dwID == (DWORD)lParam)
+      PostMessage(hwnd, WM_CLOSE, 0, 0);
+
+   return true;
+}
+
+bool killProcess(const ProcessInfo &process, int msecs)
+{
+    DWORD dwTimeout = msecs;
+    if (msecs == -1)
+        dwTimeout = INFINITE;
+
+    // If we can't open the process with PROCESS_TERMINATE rights,
+    // then we give up immediately.
+    HANDLE hProc = OpenProcess(SYNCHRONIZE | PROCESS_TERMINATE, FALSE, process.id);
+
+    if (hProc == 0)
+        return false;
+
+    // TerminateAppEnum() posts WM_CLOSE to all windows whose PID
+    // matches your process's.
+    EnumWindows((WNDENUMPROC)TerminateAppEnum, (LPARAM)process.id);
+
+    // Wait on the handle. If it signals, great. If it times out,
+    // then you kill it.
+    bool returnValue = false;
+    if (WaitForSingleObject(hProc, dwTimeout) != WAIT_OBJECT_0)
+        returnValue = TerminateProcess(hProc, 0);
+
+    CloseHandle(hProc) ;
+
+    return returnValue;
+}
+
 // REPARSE_DATA_BUFFER structure from msdn help: http://msdn.microsoft.com/en-us/library/ff552012.aspx
 typedef struct _REPARSE_DATA_BUFFER {
     ULONG  ReparseTag;

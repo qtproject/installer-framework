@@ -122,4 +122,12 @@ bool pathIsOnLocalDevice(const QString &path)
     return true;
 }
 
+bool killProcess(const ProcessInfo &process, int msecs)
+{
+    Q_UNUSED(process);
+    Q_UNUSED(msecs);
+
+    return true;
+}
+
 } // namespace KDUpdater

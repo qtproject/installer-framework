@@ -213,6 +213,7 @@ public:
     Q_INVOKABLE quint64 requiredTemporaryDiskSpace() const;
 
     Q_INVOKABLE bool isProcessRunning(const QString &name) const;
+    Q_INVOKABLE bool killProcess(const QString &absoluteFilePath) const;
 
     Settings &settings() const;
 

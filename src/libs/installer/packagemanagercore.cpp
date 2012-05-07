@@ -49,6 +49,10 @@
 #include "settings.h"
 #include "utils.h"
 
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QtConcurrentRun>
+
 #include <QtCore/QMutex>
 #include <QtCore/QSettings>
 #include <QtCore/QTemporaryFile>
@@ -1102,6 +1106,42 @@ bool PackageManagerCore::isProcessRunning(const QString &name) const
 {
     return PackageManagerCorePrivate::isProcessRunning(name, runningProcesses());
 }
+
+/*!
+    Return true, if a process with \a absoluteFilePath could be killed or isn't running
+    Note: this is implemented in a semi blocking way (to keep the main thread to paint the UI)
+*/
+bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
+{
+    QString normalizedPath = replaceVariables(absoluteFilePath);
+    normalizedPath = QDir::cleanPath(normalizedPath.replace(QLatin1Char('\\'), QLatin1Char('/')));
+
+    QList<ProcessInfo> allProcesses = runningProcesses();
+    foreach (const ProcessInfo &process, allProcesses) {
+        QString processPath = process.name;
+        processPath =  QDir::cleanPath(processPath.replace(QLatin1Char('\\'), QLatin1Char('/')));
+
+        if (processPath == normalizedPath) {
+            qDebug() << QString::fromLatin1("try to kill process: %1(%2)").arg(process.name).arg(process.id);
+
+            //to keep the ui responsible use QtConcurrent::run
+            QFutureWatcher<bool> futureWatcher;
+            const QFuture<bool> future = QtConcurrent::run(KDUpdater::killProcess, process, 30000);
+
+            QEventLoop loop;
+            loop.connect(&futureWatcher, SIGNAL(finished()), SLOT(quit()), Qt::QueuedConnection);
+            futureWatcher.setFuture(future);
+
+            if (!future.isFinished())
+                loop.exec();
+
+            qDebug() << QString::fromLatin1("\"%1\" killed!").arg(process.name);
+            return future.result();
+        }
+    }
+    return true;
+}
+
 
 void PackageManagerCore::setDependsOnLocalInstallerBinary()
 {
