@@ -931,7 +931,6 @@ void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> 
         return;
 
     while (true) {
-        const QList<ProcessInfo> allProcesses = runningProcesses();  // FIXME: Unused?
         const QStringList processes = checkRunningProcessesFromList(processList);
         if (processes.isEmpty())
             return;
