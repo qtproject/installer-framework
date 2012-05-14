@@ -1011,9 +1011,9 @@ public:
         // TODO!
         return S_OK;
     }
-    void setSource(const QStringList &dir)
+    void setSourcePaths(const QStringList &paths)
     {
-        sourceDir = dir;
+        sourcePaths = paths;
     }
     void setTarget(QIODevice* archive)
     {
@@ -1024,7 +1024,7 @@ private:
     UpdateCallback* const q;
 
     QIODevice* target;
-    QStringList sourceDir;
+    QStringList sourcePaths;
 };
 
 class Lib7z::UpdateCallbackPrivate
@@ -1059,9 +1059,9 @@ UpdateCallbackImpl* UpdateCallback::impl()
     return d->impl();
 }
 
-void UpdateCallback::setSource(const QStringList &dir)
+void UpdateCallback::setSourcePaths(const QStringList &paths)
 {
-    d->impl()->setSource(dir);
+    d->impl()->setSourcePaths(paths);
 }
 
 void UpdateCallback::setTarget(QIODevice* target)
@@ -1134,7 +1134,7 @@ void ExtractItemJob::setTarget(QIODevice* dev)
     d->target = dev;
 }
 
-void Lib7z::createArchive(QIODevice* archive, const QStringList &sourceDirectories, UpdateCallback* callback)
+void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, UpdateCallback* callback)
 {
     assert(archive);
 
@@ -1142,8 +1142,7 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourceDirectori
     if (!callback)
         callback = dummyCallback.get();
 
-    try
-    {
+    try {
         std::auto_ptr< CCodecs > codecs(new CCodecs);
         throwIfNotOK(codecs->Load(), QObject::tr("Could not load codecs"));
 
@@ -1157,11 +1156,11 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourceDirectori
         const QString tempFile = generateTempFileName();
 
         NWildcard::CCensor censor;
-        foreach(QString dir, sourceDirectories) {
-            const UString sourceDirectoryPath = QString2UString(QDir::toNativeSeparators(dir));
-            if (UString2QString(sourceDirectoryPath) != QDir::toNativeSeparators(dir))
-                throw UString2QString(sourceDirectoryPath).toLatin1().data();
-            censor.AddItem(true, sourceDirectoryPath, true);
+        foreach (QString dir, sourcePaths) {
+            const UString sourcePath = QString2UString(QDir::toNativeSeparators(dir));
+            if (UString2QString(sourcePath) != QDir::toNativeSeparators(dir))
+                throw UString2QString(sourcePath).toLatin1().data();
+            censor.AddItem(true, sourcePath, true);
         }
 
         CUpdateOptions options;
@@ -1177,7 +1176,7 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourceDirectori
         CUpdateErrorInfo errorInfo;
 
         callback->setTarget(archive);
-        callback->setSource(sourceDirectories);
+        callback->setSourcePaths(sourcePaths);
         const HRESULT res = UpdateArchive(codecs.get(), censor, options, errorInfo, 0, callback->impl());
         if (res != S_OK || !QFile::exists(tempFile))
             throw SevenZipException(QObject::tr("Could not create archive %1").arg(tempFile));
