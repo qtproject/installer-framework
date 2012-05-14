@@ -1,9 +1,9 @@
 bin/qmake.exe
 bin/lrelease.exe
-bin/QtCore4.dll
-bin/QtCored4.dll
-lib/QtCore4.dll
-lib/QtCored4.dll
+bin/QtCore5.dll
+bin/QtCored5.dll
+lib/QtCore5.dll
+lib/QtCored5.dll
 %%
 mkspecs/default/qmake.conf
 demos/shared/libdemo_shared.prl
