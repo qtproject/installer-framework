@@ -343,7 +343,7 @@ QStringList Settings::certificateFiles() const
     return d->m_data.value(scSigningCertificate).toStringList();
 }
 
-bool Settings::allowNoneAsciiCharacters() const
+bool Settings::allowNonAsciiCharacters() const
 {
     return d->m_data.value(scAllowNonAsciiCharacters).toBool();
 }
