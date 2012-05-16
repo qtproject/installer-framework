@@ -572,22 +572,6 @@ void PackageManagerCorePrivate::initialize()
         m_vars.insert(scTargetDir, replaceVariables(m_settings.targetDir()));
     m_vars.insert(scRemoveTargetDir, replaceVariables(m_settings.removeTargetDir()));
 
-    QSettingsWrapper creatorSettings(QSettingsWrapper::IniFormat, QSettingsWrapper::UserScope,
-        QLatin1String("Nokia"), QLatin1String("QtCreator"));
-    QFileInfo info(creatorSettings.fileName());
-    if (info.exists()) {
-        m_vars.insert(QLatin1String("QtCreatorSettingsFile"), info.absoluteFilePath());
-        QDir settingsDirectory = info.absoluteDir();
-        if (settingsDirectory.exists(QLatin1String("qtversion.xml"))) {
-                m_vars.insert(QLatin1String("QtCreatorSettingsQtVersionFile"),
-                              settingsDirectory.absoluteFilePath(QLatin1String("qtversion.xml")));
-        }
-        if (settingsDirectory.exists(QLatin1String("toolChains.xml"))) {
-                m_vars.insert(QLatin1String("QtCreatorSettingsToolchainsFile"),
-                              settingsDirectory.absoluteFilePath(QLatin1String("toolChains.xml")));
-        }
-    }
-
     if (!m_core->isInstaller()) {
 #ifdef Q_OS_MAC
         readMaintenanceConfigFiles(QCoreApplication::applicationDirPath() + QLatin1String("/../../.."));

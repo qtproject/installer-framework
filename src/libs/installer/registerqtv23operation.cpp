@@ -32,7 +32,6 @@
 
 #include "registerqtv23operation.h"
 
-#include "constants.h"
 #include "packagemanagercore.h"
 #include "qtcreator_constants.h"
 #include "persistentsettings.h"
@@ -104,15 +103,14 @@ bool RegisterQtInCreatorV23Operation::performOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
-    if (rootInstallPath.isEmpty() || !QDir(rootInstallPath).exists()) {
+
+    if (core->value(scQtCreatorInstallerQtVersionFile).isEmpty()) {
         setError(UserDefinedError);
-        setErrorString(tr("The given TargetDir %1 is not a valid/existing dir.").arg(rootInstallPath));
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerQtVersionFile));
         return false;
     }
-
-    const QString qtVersionsFileName = rootInstallPath
-                                     + QLatin1String(QtVersionSettingsSuffixPath);
+    const QString qtVersionsFileName = core->value(scQtCreatorInstallerQtVersionFile);
     int argCounter = 0;
     const QString &versionName = args.at(argCounter++);
     const QString &path = QDir::toNativeSeparators(args.value(argCounter++));
@@ -183,10 +181,7 @@ bool RegisterQtInCreatorV23Operation::undoOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
-
-    const QString qtVersionsFileName = rootInstallPath
-                                     + QLatin1String(QtVersionSettingsSuffixPath);
+    const QString qtVersionsFileName = core->value(scQtCreatorInstallerQtVersionFile);
 
     ProjectExplorer::PersistentSettingsReader reader;
     // If no file, then it has been removed already

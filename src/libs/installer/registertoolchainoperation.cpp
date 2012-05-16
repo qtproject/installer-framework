@@ -32,7 +32,6 @@
 
 #include "registertoolchainoperation.h"
 
-#include "constants.h"
 #include "persistentsettings.h"
 #include "packagemanagercore.h"
 #include "qtcreator_constants.h"
@@ -76,8 +75,13 @@ bool RegisterToolChainOperation::performOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
-    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
+    if (core->value(scQtCreatorInstallerToolchainsFile).isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerToolchainsFile));
+        return false;
+    }
+    toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile);
 
     QtCreatorToolChain toolChain;
 
@@ -131,8 +135,7 @@ bool RegisterToolChainOperation::undoOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
-    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
+    toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile);
 
     QtCreatorToolChain toolChain;
 

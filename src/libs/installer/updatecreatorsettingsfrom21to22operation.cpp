@@ -32,7 +32,6 @@
 
 #include "updatecreatorsettingsfrom21to22operation.h"
 
-#include "constants.h"
 #include "registerdefaultdebuggeroperation.h"
 #include "registertoolchainoperation.h"
 #include "qtcreatorpersistentsettings.h"
@@ -288,12 +287,21 @@ bool UpdateCreatorSettingsFrom21To22Operation::performOperation()
         setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
 
-    QString toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
-
-    QSettings sdkSettings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-        QSettings::IniFormat);
+    if (core->value(scQtCreatorInstallerToolchainsFile).isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerToolchainsFile));
+        return false;
+    }
+    QString toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile);
+    if (core->value(scQtCreatorInstallerSettingsFile).isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerSettingsFile));
+        return false;
+    }
+    QSettings sdkSettings(core->value(scQtCreatorInstallerSettingsFile), QSettings::IniFormat);
 
     convertDefaultGDBInstallerSettings(sdkSettings, core);
 

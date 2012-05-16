@@ -32,7 +32,6 @@
 
 #include "registerdefaultdebuggeroperation.h"
 
-#include "constants.h"
 #include "persistentsettings.h"
 #include "packagemanagercore.h"
 #include "qtcreator_constants.h"
@@ -95,8 +94,13 @@ bool RegisterDefaultDebuggerOperation::performOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
-    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
+    if (core->value(scQtCreatorInstallerToolchainsFile).isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerToolchainsFile));
+        return false;
+    }
+    toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile);
 
     int argCounter = 0;
     const QString &abiString = args.at(argCounter++); //for example x86-windows-msys-pe-32bit
@@ -134,8 +138,7 @@ bool RegisterDefaultDebuggerOperation::undoOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
-    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
+    toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile);
 
     int argCounter = 0;
     const QString &abiString = args.at(argCounter++); //for example x86-windows-msys-pe-32bit

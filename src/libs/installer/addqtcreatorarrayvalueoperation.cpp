@@ -32,7 +32,6 @@
 
 #include "addqtcreatorarrayvalueoperation.h"
 
-#include "constants.h"
 #include "qtcreator_constants.h"
 #include "packagemanagercore.h"
 
@@ -66,17 +65,20 @@ bool AddQtCreatorArrayValueOperation::performOperation()
         return false;
     }
 
-
     PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
+    if (core->value(scQtCreatorInstallerSettingsFile).isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerSettingsFile));
+        return false;
+    }
 
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-        QSettings::IniFormat);
+    QSettings settings(core->value(scQtCreatorInstallerSettingsFile), QSettings::IniFormat);
 
     const QString &group = groupName(args.at(0));
     const QString &arrayName = args.at(1);
@@ -125,10 +127,7 @@ bool AddQtCreatorArrayValueOperation::undoOperation()
         setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
-
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-        QSettings::IniFormat);
+    QSettings settings(core->value(scQtCreatorInstallerSettingsFile), QSettings::IniFormat);
 
     const QString &group = groupName(args.at(0));
     const QString &arrayName = args.at(1);
