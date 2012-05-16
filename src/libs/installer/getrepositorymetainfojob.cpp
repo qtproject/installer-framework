@@ -31,7 +31,6 @@
 **************************************************************************/
 #include "getrepositorymetainfojob.h"
 
-#include "constants.h"
 #include "errors.h"
 #include "lib7z_facade.h"
 #include "messageboxhandler.h"
