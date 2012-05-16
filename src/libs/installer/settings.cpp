@@ -465,6 +465,11 @@ void Settings::addUserRepositories(const QSet<Repository> &repositories)
         d->m_data.insertMulti(scUserRepositories, QVariant().fromValue(repository));
 }
 
+bool Settings::containsValue(const QString &key) const
+{
+    return d->m_data.contains(key);
+}
+
 QVariant Settings::value(const QString &key, const QVariant &defaultValue) const
 {
     return d->m_data.value(key, defaultValue);

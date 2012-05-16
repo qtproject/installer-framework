@@ -1369,7 +1369,10 @@ QString PackageManagerCore::value(const QString &key, const QString &defaultValu
         return dir;
     }
 #endif
-    return d->m_vars.value(key, defaultValue);
+    if (d->m_vars.contains(key))
+        return d->m_vars.value(key);
+
+    return d->m_settings.value(key, defaultValue).toString();
 }
 
 /*!
@@ -1389,7 +1392,7 @@ void PackageManagerCore::setValue(const QString &key, const QString &value)
 */
 bool PackageManagerCore::containsValue(const QString &key) const
 {
-    return d->m_vars.contains(key);
+    return d->m_vars.contains(key) || d->m_settings.containsValue(key);
 }
 
 void PackageManagerCore::setSharedFlag(const QString &key, bool value)

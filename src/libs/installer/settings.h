@@ -115,6 +115,7 @@ public:
     QStringList certificateFiles() const;
     bool allowNonAsciiCharacters() const;
 
+    bool containsValue(const QString &key) const;
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
     QVariantList values(const QString &key, const QVariantList &defaultValue = QVariantList()) const;
 
