@@ -33,6 +33,7 @@
 #include "adminauthorization.h"
 
 #include <QtCore/QFile>
+#include <QDebug>
 
 #include <QtGui/QApplication>
 #include <QtGui/QInputDialog>
@@ -72,8 +73,8 @@ static QString getPassword(QWidget *)
     if (QApplication::type() == QApplication::GuiClient) {
         bool ok = false;
         const QString result = QInputDialog::getText(0, QObject::tr("Authorization required"),
-                                                     QObject::tr("Enter your password to authorize for sudo:"),
-                                                     QLineEdit::Password, QString(), &ok);
+           QObject::tr("Enter your password to authorize for sudo:"),
+           QLineEdit::Password, QString(), &ok);
         return ok ? result : QString();
     } else {
         std::cout << QObject::tr("Authorization required").toStdString() << std::endl;
@@ -95,6 +96,9 @@ static void printError(QWidget *parent, const QString &value)
 
 bool AdminAuthorization::execute(QWidget *parent, const QString &program, const QStringList &arguments)
 {
+    const QString fallback = program + QLatin1String(" ") + arguments.join(QLatin1String(" "));
+    qDebug() << "Fallback:" << fallback;
+
     // as we cannot pipe the password to su in QProcess, we need to setup a pseudo-terminal for it
     int masterFD = -1;
     int slaveFD = -1;
