@@ -88,7 +88,9 @@ HEADERS += packagemanagercore.h \
     constants.h \
     packagemanagerproxyfactory.h \
     createlocalrepositoryoperation.h \
-    lib7z_facade.h
+    lib7z_facade.h \
+    link.h \
+    createlinkoperation.h
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -158,7 +160,9 @@ SOURCES += packagemanagercore.cpp \
     settings.cpp \
     packagemanagerproxyfactory.cpp \
     createlocalrepositoryoperation.cpp \
-    lib7z_facade.cpp
+    lib7z_facade.cpp \
+    link.cpp \
+    createlinkoperation.cpp
 
 RESOURCES += resources/patch_file_lists.qrc
 

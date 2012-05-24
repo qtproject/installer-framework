@@ -22,6 +22,8 @@
 
 #include "kdsysinfo.h"
 
+#include "link.h"
+
 #include <windows.h>
 #include <Psapi.h>
 #include <Tlhelp32.h>
@@ -249,93 +251,6 @@ bool killProcess(const ProcessInfo &process, int msecs)
     return returnValue;
 }
 
-// REPARSE_DATA_BUFFER structure from msdn help: http://msdn.microsoft.com/en-us/library/ff552012.aspx
-typedef struct _REPARSE_DATA_BUFFER {
-    ULONG  ReparseTag;
-    USHORT ReparseDataLength;
-    USHORT Reserved;
-    union {
-        struct {
-            USHORT SubstituteNameOffset;
-            USHORT SubstituteNameLength;
-            USHORT PrintNameOffset;
-            USHORT PrintNameLength;
-            ULONG  Flags;
-            WCHAR  PathBuffer[1];
-        } SymbolicLinkReparseBuffer;
-        struct {
-            USHORT SubstituteNameOffset;
-            USHORT SubstituteNameLength;
-            USHORT PrintNameOffset;
-            USHORT PrintNameLength;
-            WCHAR  PathBuffer[1];
-        } MountPointReparseBuffer;
-        struct {
-            UCHAR DataBuffer[1];
-        } GenericReparseBuffer;
-    };
-} REPARSE_DATA_BUFFER, *PREPARSE_DATA_BUFFER;
-
-QString junctionTargetPath(const QString &path)
-{
-    HANDLE fileHandle;
-    fileHandle = CreateFile(path.utf16(), FILE_READ_EA, FILE_SHARE_READ | FILE_SHARE_WRITE |
-                            FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS |
-                            FILE_FLAG_OPEN_REPARSE_POINT, NULL);
-    if (fileHandle == INVALID_HANDLE_VALUE) {
-        qDebug() << QString::fromLatin1("Could not open: '%1'; error: %2\n").arg(path).arg(GetLastError());
-        return path;
-    }
-
-    REPARSE_DATA_BUFFER* reparseStructData = (REPARSE_DATA_BUFFER*)calloc(1, MAXIMUM_REPARSE_DATA_BUFFER_SIZE);
-
-    DWORD bytesReturned;
-    // fill the reparseStructData
-    BOOL isOk = DeviceIoControl(fileHandle, FSCTL_GET_REPARSE_POINT, NULL, 0, reparseStructData,
-                                MAXIMUM_REPARSE_DATA_BUFFER_SIZE, &bytesReturned, NULL);
-    if (isOk == FALSE) {
-        DWORD deviceIOControlError = GetLastError();
-        if (deviceIOControlError == ERROR_NOT_A_REPARSE_POINT)
-            qDebug() << QString::fromLatin1("Could not reparse information (windows symlink) for %1").arg(path);
-        else {
-            qDebug() << QString::fromLatin1("Get DeviceIoControl for %1 failed with error: %2").arg(
-                path).arg(deviceIOControlError);
-        }
-        CloseHandle(fileHandle);
-        return path;
-    }
-    CloseHandle(fileHandle);
-
-    QString realPath = path;
-    if (IsReparseTagMicrosoft(reparseStructData->ReparseTag)) {
-        size_t realPathLength = 0;
-        WCHAR *realPathWCHAR = 0;
-        if (reparseStructData->ReparseTag == IO_REPARSE_TAG_SYMLINK){
-            realPathLength = reparseStructData->SymbolicLinkReparseBuffer.PrintNameLength / sizeof(WCHAR);
-            realPathWCHAR = new WCHAR[realPathLength + 1];
-            wcsncpy_s(realPathWCHAR, realPathLength + 1, &reparseStructData->SymbolicLinkReparseBuffer.PathBuffer[
-                reparseStructData->SymbolicLinkReparseBuffer.PrintNameOffset / sizeof(WCHAR)], realPathLength);
-        } else if (reparseStructData->ReparseTag == IO_REPARSE_TAG_MOUNT_POINT) {
-            realPathLength = reparseStructData->MountPointReparseBuffer.PrintNameLength / sizeof(WCHAR);
-            realPathWCHAR = new WCHAR[realPathLength + 1];
-            wcsncpy_s(realPathWCHAR, realPathLength + 1, &reparseStructData->MountPointReparseBuffer.PathBuffer[
-                reparseStructData->MountPointReparseBuffer.PrintNameOffset / sizeof(WCHAR)], realPathLength);
-        } else {
-            qDebug() << QString::fromLatin1("Path %1 is not a symlink and not a mount point.").arg(path);
-        }
-        if (realPathLength != 0) {
-            realPathWCHAR[realPathLength] = 0;
-            realPath = QString::fromStdWString(realPathWCHAR);
-            delete [] realPathWCHAR;
-        }
-
-    } else {
-        qDebug() << QString::fromLatin1("Path %1 is not reparse point.").arg(path);
-    }
-    free(reparseStructData);
-    return realPath;
-}
-
 bool pathIsOnLocalDevice(const QString &path)
 {
     if (!QFileInfo(path).exists())
@@ -348,7 +263,7 @@ bool pathIsOnLocalDevice(const QString &path)
     do {
         if (QFileInfo(dir, QString()).isSymLink()) {
             QString currentPath = QFileInfo(dir, QString()).absoluteFilePath();
-            return pathIsOnLocalDevice(junctionTargetPath(currentPath));
+            return pathIsOnLocalDevice(Link(currentPath).targetPath());
         }
     } while (dir.cdUp());
 
