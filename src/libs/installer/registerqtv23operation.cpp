@@ -181,7 +181,17 @@ bool RegisterQtInCreatorV23Operation::undoOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString qtVersionsFileName = core->value(scQtCreatorInstallerQtVersionFile);
+
+    // default value is the old value to keep the possibility that old saved operations can run undo
+#ifdef Q_OS_MAC
+    QString qtVersionsFileName = core->value(scQtCreatorInstallerQtVersionFile,
+        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/Nokia/qtversion.xml").arg(
+        core->value(QLatin1String("TargetDir"))));
+#else
+    QString qtVersionsFileName = core->value(scQtCreatorInstallerQtVersionFile,
+        QString::fromLatin1("%1/QtCreator/share/qtcreator/Nokia/qtversion.xml").arg(core->value(
+        QLatin1String("TargetDir"))));
+#endif
 
     ProjectExplorer::PersistentSettingsReader reader;
     // If no file, then it has been removed already

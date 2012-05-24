@@ -288,20 +288,22 @@ bool UpdateCreatorSettingsFrom21To22Operation::performOperation()
         return false;
     }
 
-    if (core->value(scQtCreatorInstallerToolchainsFile).isEmpty()) {
+    QString toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile);
+    if (toolChainsXmlFilePath.isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("There is no value set for %1 on the installer object.").arg(
             scQtCreatorInstallerToolchainsFile));
         return false;
     }
-    QString toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile);
-    if (core->value(scQtCreatorInstallerSettingsFile).isEmpty()) {
+
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile);
+    if (qtCreatorInstallerSettingsFileName.isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("There is no value set for %1 on the installer object.").arg(
             scQtCreatorInstallerSettingsFile));
         return false;
     }
-    QSettings sdkSettings(core->value(scQtCreatorInstallerSettingsFile), QSettings::IniFormat);
+    QSettings sdkSettings(qtCreatorInstallerSettingsFileName, QSettings::IniFormat);
 
     convertDefaultGDBInstallerSettings(sdkSettings, core);
 

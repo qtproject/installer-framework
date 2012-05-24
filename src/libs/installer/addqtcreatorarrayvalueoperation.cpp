@@ -71,14 +71,16 @@ bool AddQtCreatorArrayValueOperation::performOperation()
         setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
         return false;
     }
-    if (core->value(scQtCreatorInstallerSettingsFile).isEmpty()) {
+
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile);
+    if (qtCreatorInstallerSettingsFileName.isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("There is no value set for %1 on the installer object.").arg(
             scQtCreatorInstallerSettingsFile));
         return false;
     }
 
-    QSettings settings(core->value(scQtCreatorInstallerSettingsFile), QSettings::IniFormat);
+    QSettings settings(qtCreatorInstallerSettingsFileName, QSettings::IniFormat);
 
     const QString &group = groupName(args.at(0));
     const QString &arrayName = args.at(1);
@@ -127,7 +129,19 @@ bool AddQtCreatorArrayValueOperation::undoOperation()
         setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
         return false;
     }
-    QSettings settings(core->value(scQtCreatorInstallerSettingsFile), QSettings::IniFormat);
+
+    // default value is the old value to keep the possibility that old saved operations can run undo
+#ifdef Q_OS_MAC
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile,
+        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini").arg(
+        core->value(QLatin1String("TargetDir"))));
+#else
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile,
+        QString::fromLatin1("%1/QtCreator/share/qtcreator/Nokia/QtCreator.ini").arg(core->value(
+        QLatin1String("TargetDir"))));
+#endif
+
+    QSettings settings(qtCreatorInstallerSettingsFileName, QSettings::IniFormat);
 
     const QString &group = groupName(args.at(0));
     const QString &arrayName = args.at(1);

@@ -130,15 +130,23 @@ bool RegisterDefaultDebuggerOperation::undoOperation()
         return false;
     }
 
-    QString toolChainsXmlFilePath;
-
     PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile);
+
+    // default value is the old value to keep the possibility that old saved operations can run undo
+#ifdef Q_OS_MAC
+    QString toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile,
+        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/Nokia/toolChains.xml").arg(
+        core->value(QLatin1String("TargetDir"))));
+#else
+    QString toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile,
+        QString::fromLatin1("%1/QtCreator/share/qtcreator/Nokia/toolChains.xml").arg(core->value(
+        QLatin1String("TargetDir"))));
+#endif
 
     int argCounter = 0;
     const QString &abiString = args.at(argCounter++); //for example x86-windows-msys-pe-32bit
