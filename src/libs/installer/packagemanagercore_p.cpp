@@ -1342,15 +1342,6 @@ QString PackageManagerCorePrivate::registerPath() const
 
 void PackageManagerCorePrivate::runInstaller()
 {
-    if (m_dependsOnLocalInstallerBinary && !KDUpdater::pathIsOnLocalDevice(qApp->applicationFilePath())) {
-        setStatus(PackageManagerCore::Failure);
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation aborted!"));
-        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("installationError"), tr("Error"), tr("It is not possible to install from network location"));
-        emit installationFinished();
-        throw;
-    }
-
     bool adminRightsGained = false;
     try {
         setStatus(PackageManagerCore::Running);
@@ -1404,6 +1395,18 @@ void PackageManagerCorePrivate::runInstaller()
         const QList<Component*> componentsToInstall = m_core->orderedComponentsToInstall();
         qDebug() << "Install size:" << componentsToInstall.size() << "components";
 
+        callBeginInstallation(componentsToInstall);
+        stopProcessesForUpdates(componentsToInstall);
+
+        if (m_dependsOnLocalInstallerBinary && !KDUpdater::pathIsOnLocalDevice(qApp->applicationFilePath())) {
+            setStatus(PackageManagerCore::Failure);
+            ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation aborted!"));
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+                QLatin1String("installationError"), tr("Error"), tr("It is not possible to install from network location"));
+            emit installationFinished();
+            throw;
+        }
+
         if (!adminRightsGained) {
             foreach (Component *component, m_core->orderedComponentsToInstall()) {
                 if (component->value(scRequiresAdminRights, scFalse) == scFalse)
@@ -1432,9 +1435,6 @@ void PackageManagerCorePrivate::runInstaller()
         info.setApplicationName(m_core->value(QLatin1String("ProductName"), m_settings.applicationName()));
         info.setApplicationVersion(m_core->value(QLatin1String("ProductVersion"),
             m_settings.applicationVersion()));
-
-        callBeginInstallation(componentsToInstall);
-        stopProcessesForUpdates(componentsToInstall);
 
         const int progressOperationCount = countProgressOperations(componentsToInstall)
             + (m_createLocalRepositoryFromBinary ? 1 : 0); // add one more operation as we support progress
@@ -1537,6 +1537,18 @@ void PackageManagerCorePrivate::runPackageUpdater()
         const QList<Component *> componentsToInstall = m_core->orderedComponentsToInstall();
         qDebug() << "Install size:" << componentsToInstall.size() << "components";
 
+        callBeginInstallation(componentsToInstall);
+        stopProcessesForUpdates(componentsToInstall);
+
+        if (m_dependsOnLocalInstallerBinary && !KDUpdater::pathIsOnLocalDevice(qApp->applicationFilePath())) {
+            setStatus(PackageManagerCore::Failure);
+            ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation aborted!"));
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+                QLatin1String("installationError"), tr("Error"), tr("It is not possible to install from network location"));
+            emit installationFinished();
+            throw;
+        }
+
         bool updateAdminRights = false;
         if (!adminRightsGained) {
             foreach (Component *component, componentsToInstall) {
@@ -1633,9 +1645,6 @@ void PackageManagerCorePrivate::runPackageUpdater()
             runUndoOperations(undoOperations, undoOperationProgressSize, adminRightsGained, true);
         }
         m_performedOperationsOld = nonRevertedOperations; // these are all operations left: those not reverted
-
-        callBeginInstallation(componentsToInstall);
-        stopProcessesForUpdates(componentsToInstall);
 
         const double progressOperationCount = countProgressOperations(componentsToInstall);
         const double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
