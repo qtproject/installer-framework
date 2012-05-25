@@ -245,14 +245,16 @@ QString Component::value(const QString &key, const QString &defaultValue) const
 */
 void Component::setValue(const QString &key, const QString &value)
 {
-    if (d->m_vars.value(key) == value)
+    QString normalizedValue = d->m_core->replaceVariables(value);
+
+    if (d->m_vars.value(key) == normalizedValue)
         return;
 
     if (key == scName)
-        d->m_componentName = value;
+        d->m_componentName = normalizedValue;
 
-    d->m_vars[key] = value;
-    emit valueChanged(key, value);
+    d->m_vars[key] = normalizedValue;
+    emit valueChanged(key, normalizedValue);
 }
 
 /*!

@@ -1380,11 +1380,12 @@ QString PackageManagerCore::value(const QString &key, const QString &defaultValu
 */
 void PackageManagerCore::setValue(const QString &key, const QString &value)
 {
-    if (d->m_vars.value(key) == value)
+    QString normalizedValue = replaceVariables(value);
+    if (d->m_vars.value(key) == normalizedValue)
         return;
 
-    d->m_vars.insert(key, value);
-    emit valueChanged(key, value);
+    d->m_vars.insert(key, normalizedValue);
+    emit valueChanged(key, normalizedValue);
 }
 
 /*!
