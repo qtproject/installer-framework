@@ -77,7 +77,8 @@ public:
     FileHandleWrapper(const QString &path)
         : m_dirHandle(INVALID_HANDLE_VALUE)
     {
-        m_dirHandle = CreateFile(path.utf16(), GENERIC_READ | GENERIC_WRITE, 0, 0,
+        QString normalizedPath = QString(path).replace(QLatin1Char('/'), QLatin1Char('\\'));
+        m_dirHandle = CreateFile(normalizedPath.utf16(), GENERIC_READ | GENERIC_WRITE, 0, 0,
             OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, 0);
         if (m_dirHandle == INVALID_HANDLE_VALUE) {
             qWarning() << QString::fromLatin1("Could not open: '%1'; error: %2\n").arg(path).arg(GetLastError());
@@ -116,8 +117,10 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
     }
 
     TCHAR szDestDir[1024] = L"\\??\\"; //you need this to create valid unicode junctions
+
+    QString normalizedTargetPath = QString(targetPath).replace(QLatin1Char('/'), QLatin1Char('\\'));
     //now we add the real absolute path
-    StringCchCat(szDestDir, 1024, targetPath.utf16());
+    StringCchCat(szDestDir, 1024, normalizedTargetPath.utf16());
 
     // Allocates a block of memory for an array of num elements(1) and initializes all its bits to zero.
     _REPARSE_DATA_BUFFER* reparseStructData = (_REPARSE_DATA_BUFFER*)calloc(1,
