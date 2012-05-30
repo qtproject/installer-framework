@@ -39,9 +39,10 @@ class Link
 {
 public:
     Link(const QString &path);
-    static Link create(const QString &linkPath, const QString &targetPath);
+    static Link create(const QString &link, const QString &targetPath);
     QString targetPath() const;
     bool targetExists();
+    bool exists();
     bool isValid();
     bool remove();
 

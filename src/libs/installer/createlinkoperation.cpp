@@ -65,7 +65,7 @@ bool CreateLinkOperation::performOperation()
     const QString& targetPath = args.at(1);
     Link link = Link::create(linkPath, targetPath);
 
-    if (!link.isValid()) {
+    if (!link.exists()) {
         setError(UserDefinedError);
         setErrorString(QObject::tr("Could not create link from %1 to %2.").arg(linkPath, targetPath));
         return false;

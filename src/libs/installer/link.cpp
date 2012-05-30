@@ -80,6 +80,7 @@ public:
         QString normalizedPath = QString(path).replace(QLatin1Char('/'), QLatin1Char('\\'));
         m_dirHandle = CreateFile(normalizedPath.utf16(), GENERIC_READ | GENERIC_WRITE, 0, 0,
             OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, 0);
+
         if (m_dirHandle == INVALID_HANDLE_VALUE) {
             qWarning() << QString::fromLatin1("Could not open: '%1'; error: %2\n").arg(path).arg(GetLastError());
         }
@@ -98,17 +99,42 @@ private:
     HANDLE m_dirHandle;
 };
 
+QString readWindowsSymLink(const QString &path)
+{
+    QString result;
+    FileHandleWrapper dirHandle(path);
+    if (dirHandle.handle() != INVALID_HANDLE_VALUE) {
+        REPARSE_DATA_BUFFER* reparseStructData = (REPARSE_DATA_BUFFER*)calloc(1, MAXIMUM_REPARSE_DATA_BUFFER_SIZE);
+        DWORD bytesReturned = 0;
+        if (::DeviceIoControl(dirHandle.handle(), FSCTL_GET_REPARSE_POINT, 0, 0, reparseStructData,
+            MAXIMUM_REPARSE_DATA_BUFFER_SIZE, &bytesReturned, 0)) {
+                if (reparseStructData->ReparseTag == IO_REPARSE_TAG_MOUNT_POINT) {
+                    int length = reparseStructData->MountPointReparseBuffer.SubstituteNameLength / sizeof(wchar_t);
+                    int offset = reparseStructData->MountPointReparseBuffer.SubstituteNameOffset / sizeof(wchar_t);
+                    const wchar_t* PathBuffer = &reparseStructData->MountPointReparseBuffer.PathBuffer[offset];
+                    result = QString::fromWCharArray(PathBuffer, length);
+                } else if (reparseStructData->ReparseTag == IO_REPARSE_TAG_SYMLINK) {
+                    int length = reparseStructData->SymbolicLinkReparseBuffer.SubstituteNameLength / sizeof(wchar_t);
+                    int offset = reparseStructData->SymbolicLinkReparseBuffer.SubstituteNameOffset / sizeof(wchar_t);
+                    const wchar_t* PathBuffer = &reparseStructData->SymbolicLinkReparseBuffer.PathBuffer[offset];
+                    result = QString::fromWCharArray(PathBuffer, length);
+                }
+                // cut-off "//?/" and "/??/"
+                if (result.size() > 4 && result.at(0) == QLatin1Char('\\') && result.at(2) == QLatin1Char('?') && result.at(3) == QLatin1Char('\\'))
+                    result = result.mid(4);
+        }
+        free(reparseStructData);
+    }
+    return result;
+}
+
 Link createJunction(const QString &linkPath, const QString &targetPath)
 {
-    bool junctionDirectoryExists = QFileInfo(linkPath).exists();
-    if (!junctionDirectoryExists)
-        junctionDirectoryExists = QDir().mkpath(linkPath);
-    if (!junctionDirectoryExists) {
+    if (!QDir().mkpath(linkPath)) {
         qWarning() << QString::fromLatin1("Could not create the mount directory: %1").arg(
             linkPath);
         return Link(linkPath);
     }
-
     FileHandleWrapper dirHandle(linkPath);
     if (dirHandle.handle() == INVALID_HANDLE_VALUE) {
         qWarning() << QString::fromLatin1("Could not open: '%1'; error: %2\n").arg(linkPath).arg(
@@ -180,7 +206,7 @@ bool removeJunction(const QString &path)
 Link createLnSymlink(const QString &linkPath, const QString &targetPath)
 {
     int linkedError = symlink(targetPath.toLocal8Bit(), linkPath.toLocal8Bit());
-    if (linkedError > 0) {
+    if (linkedError != 0) {
         qWarning() << QString::fromLatin1("Could not create a symlink: from '%1' to %2; error: %3"
                     ).arg(linkPath, targetPath).arg(linkedError);
     }
@@ -200,29 +226,48 @@ Link::Link(const QString &path) : m_path(path)
 {
 }
 
-Link Link::create(const QString &linkPath, const QString &targetPath)
+Link Link::create(const QString &link, const QString &targetPath)
 {
-    QFileInfo targetFileInfo(targetPath);
-    if (!targetFileInfo.exists()) {
-        qWarning() << QString::fromLatin1("\"%1\" does not exist - so nothing was created.");
-        return Link(linkPath);
+    QStringList pathParts = QFileInfo(link).absoluteFilePath().split(QLatin1Char('/'));
+    pathParts.removeLast();
+    QString linkPath = pathParts.join(QLatin1String("/"));
+    bool linkPathExists = QFileInfo(linkPath).exists();
+    if (!linkPathExists)
+        linkPathExists = QDir().mkpath(linkPath);
+    if (!linkPathExists) {
+        qWarning() << QString::fromLatin1("Could not create the needed directories: %1").arg(
+            link);
+        return Link(link);
     }
 
 #ifdef Q_OS_WIN
-    if (targetFileInfo.isDir())
-        return createJunction(linkPath, targetPath);
+    if (QFileInfo(targetPath).isDir())
+        return createJunction(link, targetPath);
 
     qWarning() << QString::fromLatin1("At the moment the %1 can not create anything else as "\
         "junctions for directories under windows").arg(QLatin1String(Q_FUNC_INFO));
-    return Link(linkPath);
+    return Link(link);
 #else
-    return createLnSymlink(linkPath, targetPath);
+    return createLnSymlink(link, targetPath);
 #endif
 }
 
 QString Link::targetPath() const
 {
+#ifdef Q_OS_WIN
+    return readWindowsSymLink(m_path);
+#else
     return QFileInfo(m_path).readLink();
+#endif
+}
+
+bool Link::exists()
+{
+#ifdef Q_OS_WIN
+    return QFileInfo(m_path).exists();
+#else
+    return QFileInfo(m_path).isSymLink();
+#endif
 }
 
 bool Link::targetExists()
@@ -237,7 +282,7 @@ bool Link::isValid()
 
 bool Link::remove()
 {
-    if (!isValid())
+    if (!QFileInfo(m_path).exists())
         return false;
 #ifdef Q_OS_WIN
     return removeJunction(m_path);
