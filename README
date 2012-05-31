@@ -1,4 +1,4 @@
-These are instructions to create the installer framework
+These are instructions to create the Installer Framework
 
 == Build ==
 To build an installer, it is advised to use a statically linked Qt.
