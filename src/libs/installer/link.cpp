@@ -144,9 +144,8 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
 
     TCHAR szDestDir[1024] = L"\\??\\"; //you need this to create valid unicode junctions
 
-    QString normalizedTargetPath = QString(targetPath).replace(QLatin1Char('/'), QLatin1Char('\\'));
     //now we add the real absolute path
-    StringCchCat(szDestDir, 1024, normalizedTargetPath.utf16());
+    StringCchCat(szDestDir, 1024, targetPath.utf16());
 
     // Allocates a block of memory for an array of num elements(1) and initializes all its bits to zero.
     _REPARSE_DATA_BUFFER* reparseStructData = (_REPARSE_DATA_BUFFER*)calloc(1,
@@ -229,7 +228,9 @@ Link::Link(const QString &path) : m_path(path)
 Link Link::create(const QString &link, const QString &targetPath)
 {
     QStringList pathParts = QFileInfo(link).absoluteFilePath().split(QLatin1Char('/'));
+
     pathParts.removeLast();
+
     QString linkPath = pathParts.join(QLatin1String("/"));
     bool linkPathExists = QFileInfo(linkPath).exists();
     if (!linkPathExists)
@@ -241,11 +242,13 @@ Link Link::create(const QString &link, const QString &targetPath)
     }
 
 #ifdef Q_OS_WIN
-    if (QFileInfo(targetPath).isDir())
+    QString normalizedTargetPath = QString(targetPath).replace(QLatin1Char('/'), QLatin1Char('\\'));
+    if (normalizedTargetPath.endsWith(QLatin1Char('\\')))
         return createJunction(link, targetPath);
 
     qWarning() << QString::fromLatin1("At the moment the %1 can not create anything else as "\
-        "junctions for directories under windows").arg(QLatin1String(Q_FUNC_INFO));
+        "junctions for directories under windows (targetPath needs a seperator at the end)").arg(
+        QLatin1String(Q_FUNC_INFO));
     return Link(link);
 #else
     return createLnSymlink(link, targetPath);
