@@ -285,7 +285,7 @@ bool Link::isValid()
 
 bool Link::remove()
 {
-    if (!QFileInfo(m_path).exists())
+    if (!exists())
         return false;
 #ifdef Q_OS_WIN
     return removeJunction(m_path);

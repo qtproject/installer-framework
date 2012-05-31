@@ -81,10 +81,10 @@ bool CreateLinkOperation::undoOperation()
     const QString& linkPath = args.at(0);
     const QString& targetPath = args.at(1);
 
-    if (!QFileInfo(linkPath).exists()) {
+    Link link = Link(linkPath);
+    if (!link.exists()) {
         return true;
     }
-    Link link = Link(linkPath);
     if (!link.remove()) {
         setError(UserDefinedError);
         setErrorString(QObject::tr("Could not remove link from %1 to %2.").arg(linkPath, targetPath));
