@@ -36,6 +36,9 @@
 #include <QDir>
 #include <QDebug>
 
+#ifdef Q_OS_LINUX
+#include <unistd.h>
+#endif
 
 #ifdef Q_OS_WIN
 #include <windows.h>

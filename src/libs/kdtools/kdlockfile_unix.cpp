@@ -28,6 +28,8 @@
 
 #include <sys/file.h>
 
+#include <unistd.h>
+
 KDLockFile::Private::~Private()
 {
     unlock();

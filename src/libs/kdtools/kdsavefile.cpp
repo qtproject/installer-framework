@@ -34,6 +34,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#ifdef Q_OS_LINUX
+#include <unistd.h>
+#endif
 
 static int permissionsToMode(QFile::Permissions p, bool *ok)
 {
