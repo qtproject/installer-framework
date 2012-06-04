@@ -1201,17 +1201,23 @@ QList<QVariant> PackageManagerCore::execute(const QString &program, const QStrin
 
     \param program The program that should be executed.
     \param arguments Optional list of arguments.
+    \param workingDirectory Optional working directory of the forked process.
     \return If the command could not be executed, an false will be returned
 */
 
-bool PackageManagerCore::executeDetached(const QString &program, const QStringList &arguments) const
+bool PackageManagerCore::executeDetached(const QString &program, const QStringList &arguments,
+    const QString &workingDirectory) const
 {
     QString adjustedProgram = replaceVariables(program);
     QStringList adjustedArguments;
+    QString adjustedWorkingDir = replaceVariables(workingDirectory);
     foreach (const QString &argument, arguments)
         adjustedArguments.append(replaceVariables(argument));
-    qDebug() << "run application as detached process:" << adjustedProgram << adjustedArguments;
-    return QProcess::startDetached(adjustedProgram, adjustedArguments);
+    qDebug() << "run application as detached process:" << adjustedProgram << adjustedArguments << adjustedWorkingDir;
+    if (workingDirectory.isEmpty())
+        return QProcess::startDetached(adjustedProgram, adjustedArguments);
+    else
+        return QProcess::startDetached(adjustedProgram, adjustedArguments, adjustedWorkingDir);
 }
 
 

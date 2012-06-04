@@ -118,7 +118,8 @@ public:
     Q_INVOKABLE QList<QVariant> execute(const QString &program,
         const QStringList &arguments = QStringList(), const QString &stdIn = QString()) const;
     Q_INVOKABLE bool executeDetached(const QString &program,
-        const QStringList &arguments = QStringList()) const;
+        const QStringList &arguments = QStringList(),
+        const QString &workingDirectory = QString()) const;
     Q_INVOKABLE QString environmentVariable(const QString &name) const;
 
     Q_INVOKABLE bool performOperation(const QString &name, const QStringList &arguments);
