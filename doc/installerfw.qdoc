@@ -207,10 +207,7 @@
             \o  RemoteRepositories
             \o  List of remote repositories. You can add several \c Repository
                 sections that each specify the \c Url to access the repository.
-                Optionally, you can add a \c Required section to specify whether
-                the installer should go ahead even if it cannot access the
-                server. Acceptable values are \c true and \c false. For more
-                information, see \l{Configuring Repositories}.
+                For more information, see \l{Configuring Repositories}.
         \row
             \o  UninstallerName
             \o  Filename of the generated uninstaller. Defaults to
@@ -757,9 +754,6 @@
 
         \o  URL, which points to a list of available components.
 
-        \o  Required, which determines whether the repository must be available
-            during the installation.
-
     \endlist
 
     The URL needs to point to the Updates.xml file that lists the available
@@ -769,17 +763,22 @@
     <RemoteRepositories>
          <Repository>
                  <Url>http://www.yourcompany.com/packages</Url>
+                 <Enabled>1</Enabled>
+                 <Username>user</Username>
+                 <Password>password</Password>
          </Repository>
     </RemoteRepositories>
     \endcode
 
-    The \a Required setting specifies whether the installer should go ahead even
-    if it cannot access the server. If you set \c Required to \c true, the
-    installer works only if it can access the repository. If the repository is
+    The installer works only if it can access the repository. If the repository is
     accessed after the installation, the maintenance tool rejects installation.
-    However, uninstallation is still possible. If you set it to \c false, the
-    installer continues to work, but excludes any configuration that should
-    be on the server.
+    However, uninstallation is still possible.
+    A repository can be enabled or disabled by default.
+    For repositories requiring authentication, the details can also be set here,
+    although entering a password here is usually not advisable as it is saved in plain
+    text. Authentication details not set here will be gotten at runtime using a dialog.
+    The user can work around these settings at runtime.
+
 
     \section1 Creating Installer Binaries
 
