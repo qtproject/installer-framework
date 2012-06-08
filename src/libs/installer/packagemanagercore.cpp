@@ -1552,12 +1552,7 @@ bool PackageManagerCore::isPackageManager() const
 */
 bool PackageManagerCore::runInstaller()
 {
-    try {
-        d->runInstaller();
-        return true;
-    } catch (...) {
-        return false;
-    }
+    return d->runInstaller();
 }
 
 /*!
@@ -1565,12 +1560,7 @@ bool PackageManagerCore::runInstaller()
 */
 bool PackageManagerCore::runUninstaller()
 {
-    try {
-        d->runUninstaller();
-        return true;
-    } catch (...) {
-        return false;
-    }
+    return d->runUninstaller();
 }
 
 /*!
@@ -1578,12 +1568,7 @@ bool PackageManagerCore::runUninstaller()
 */
 bool PackageManagerCore::runPackageUpdater()
 {
-    try {
-        d->runPackageUpdater();
-        return true;
-    } catch (...) {
-        return false;
-    }
+    return d->runPackageUpdater();
 }
 
 /*!
@@ -1601,18 +1586,13 @@ void PackageManagerCore::languageChanged()
 */
 bool PackageManagerCore::run()
 {
-    try {
-        if (isInstaller())
-            d->runInstaller();
-        else if (isUninstaller())
-            d->runUninstaller();
-        else if (isPackageManager() || isUpdater())
-            d->runPackageUpdater();
-        return true;
-    } catch (const Error &err) {
-        qDebug() << "Caught Installer Error:" << err.message();
-        return false;
-    }
+    if (isInstaller())
+        return d->runInstaller();
+    else if (isUninstaller())
+        return d->runUninstaller();
+    else if (isPackageManager() || isUpdater())
+        return d->runPackageUpdater();
+    return false;
 }
 
 /*!

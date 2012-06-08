@@ -1340,7 +1340,7 @@ QString PackageManagerCorePrivate::registerPath() const
     return QString();
 }
 
-void PackageManagerCorePrivate::runInstaller()
+bool PackageManagerCorePrivate::runInstaller()
 {
     bool adminRightsGained = false;
     try {
@@ -1399,12 +1399,7 @@ void PackageManagerCorePrivate::runInstaller()
         stopProcessesForUpdates(componentsToInstall);
 
         if (m_dependsOnLocalInstallerBinary && !KDUpdater::pathIsOnLocalDevice(qApp->applicationFilePath())) {
-            setStatus(PackageManagerCore::Failure);
-            ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation aborted!"));
-            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("installationError"), tr("Error"), tr("It is not possible to install from network location"));
-            emit installationFinished();
-            throw;
+            throw Error(tr("It is not possible to install from network location"));
         }
 
         if (!adminRightsGained) {
@@ -1509,20 +1504,18 @@ void PackageManagerCorePrivate::runInstaller()
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
-
-        throw;
+        return false;
     }
+    return true;
 }
 
-void PackageManagerCorePrivate::runPackageUpdater()
+bool PackageManagerCorePrivate::runPackageUpdater()
 {
     bool adminRightsGained = false;
+    if (m_completeUninstall) {
+        return runUninstaller();
+    }
     try {
-        if (m_completeUninstall) {
-            runUninstaller();
-            return;
-        }
-
         setStatus(PackageManagerCore::Running);
         emit installationStarted(); //resets also the ProgressCoordninator
 
@@ -1541,12 +1534,7 @@ void PackageManagerCorePrivate::runPackageUpdater()
         stopProcessesForUpdates(componentsToInstall);
 
         if (m_dependsOnLocalInstallerBinary && !KDUpdater::pathIsOnLocalDevice(qApp->applicationFilePath())) {
-            setStatus(PackageManagerCore::Failure);
-            ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation aborted!"));
-            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("installationError"), tr("Error"), tr("It is not possible to install from network location"));
-            emit installationFinished();
-            throw;
+            throw Error(tr("It is not possible to run that opertion from a network location"));
         }
 
         bool updateAdminRights = false;
@@ -1681,12 +1669,12 @@ void PackageManagerCorePrivate::runPackageUpdater()
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
-
-        throw;
+        return false;
     }
+    return true;
 }
 
-void PackageManagerCorePrivate::runUninstaller()
+bool PackageManagerCorePrivate::runUninstaller()
 {
     bool adminRightsGained = false;
     try {
@@ -1755,9 +1743,9 @@ void PackageManagerCorePrivate::runUninstaller()
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit uninstallationFinished();
-
-        throw;
+        return false;
     }
+    return true;
 }
 
 void PackageManagerCorePrivate::installComponent(Component *component, double progressOperationSize,

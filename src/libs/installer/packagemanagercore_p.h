@@ -115,16 +115,16 @@ public:
     bool appendComponentToInstall(Component *components);
     QString installReason(Component *component);
 
-    void runInstaller();
+    bool runInstaller();
     bool isInstaller() const;
 
-    void runUninstaller();
+    bool runUninstaller();
     bool isUninstaller() const;
 
     void runUpdater();
     bool isUpdater() const;
 
-    void runPackageUpdater();
+    bool runPackageUpdater();
     bool isPackageManager() const;
 
     QString replaceVariables(const QString &str) const;
