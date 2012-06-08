@@ -78,6 +78,7 @@ bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
 
 
     MacReplaceInstallNamesOperation operation;
+    operation.setComponentRootPath(qtInstallDir);
     QStringList arguments;
     arguments << indicator
               << replacement
