@@ -81,10 +81,7 @@ bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
     QStringList arguments;
     arguments << indicator
               << replacement
-              << qtInstallDir + QLatin1String("/plugins")
-              << qtInstallDir + QLatin1String("/lib")
-              << qtInstallDir + QLatin1String("/imports")
-              << qtInstallDir + QLatin1String("/bin");
+              << qtInstallDir;
 
     operation.setArguments(arguments);
     operation.performOperation();
