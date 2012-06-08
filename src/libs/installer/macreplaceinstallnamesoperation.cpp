@@ -42,6 +42,10 @@
 using namespace QInstaller;
 
 MacReplaceInstallNamesOperation::MacReplaceInstallNamesOperation()
+    : m_indicator(),
+    m_installationDir(),
+    m_componentRootPath()
+
 {
     setName(QLatin1String("ReplaceInstallNames"));
 }
@@ -134,6 +138,11 @@ bool MacReplaceInstallNamesOperation::apply(const QString &indicator, const QStr
     return error() == NoError;
 }
 
+void MacReplaceInstallNamesOperation::setComponentRootPath(const QString &path)
+{
+    m_componentRootPath = path;
+}
+
 void MacReplaceInstallNamesOperation::extractExecutableInfo(const QString &fileName, QString &frameworkId,
     QStringList &frameworks, QString &originalBuildDir)
 {
@@ -205,23 +214,35 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString &fileName)
     qDebug() << QString::fromLatin1("Got the following information(fileName: %1, frameworkId: %2, frameworks: %3,"
         "orginalBuildDir: %4)").arg(fileName, frameworkId, frameworks.join(QLatin1String("|")), originalBuildDir);
 
+    // Use regexp to find matches from frameworks and static libs
+    QRegExp frameworkRegexp(QLatin1String("Qt[3a-zA-Z]*\\.framework/"));
+    QRegExp dylibRegexp(QLatin1String("libQt.*\\.dylib"));
     QStringList args;
-    if (frameworkId.contains(m_indicator) || QFileInfo(frameworkId).fileName() == frameworkId) {
+    // change framework ID only if Qt library reference
+    if (frameworkId.indexOf(frameworkRegexp) >= 0) {
         args << QLatin1String("-id") << fileName << fileName;
         if (!execCommand(QLatin1String("install_name_tool"), args))
             return;
     }
 
+    // calculate path prefix which is the full installation path and
+    // /lib/ added so that it points to Qt installations libraries
+    QString prefix = m_componentRootPath + QLatin1String("/lib/");
 
+    // calculate path prefix which is the full installation path and
+    // /lib/ added so that it points to Qt installations libraries
     foreach (const QString &fw, frameworks) {
-        if (originalBuildDir.isEmpty() && fw.contains(m_indicator)) {
-            originalBuildDir = fw.left(fw.indexOf(m_indicator));
-        }
-        if (originalBuildDir.isEmpty() || !fw.contains(originalBuildDir))
+        int fraIndex = fw.indexOf(frameworkRegexp);
+        int dyIndex = fw.indexOf(dylibRegexp);
+        QString newPath;
+        if (fraIndex >= 0)
+            newPath = fw.mid(fraIndex);
+        else if (dyIndex >= 0)
+            newPath = fw.mid(dyIndex);
+        else
             continue;
-        QString newPath = fw;
-        newPath.replace(originalBuildDir, m_installationDir);
 
+        newPath = prefix + newPath;
         args.clear();
         args << QLatin1String("-change") << fw << newPath << fileName;
         if (!execCommand(QLatin1String("install_name_tool"), args))

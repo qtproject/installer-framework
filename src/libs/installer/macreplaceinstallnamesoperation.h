@@ -49,6 +49,7 @@ public:
     Operation *clone() const;
 
     bool apply(const QString &oldString, const QString &newString, const QString &frameworkDir);
+    void setComponentRootPath(const QString &path);
 
 private:
     void extractExecutableInfo(const QString &fileName, QString &frameworkId, QStringList &frameworks,
@@ -60,6 +61,7 @@ private:
 private:
     QString m_indicator;
     QString m_installationDir;
+    QString m_componentRootPath;
 };
 
 } // namespace QInstaller
