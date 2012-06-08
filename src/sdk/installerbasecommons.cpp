@@ -60,11 +60,13 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::PackageManagerCore *core)
     QVBoxLayout *layout = new QVBoxLayout(widget);
 
     m_packageManager = new QRadioButton(tr("Package manager"), this);
+    m_packageManager->setEnabled(false); // ### Todo: Remove for online installers after Beta
     layout->addWidget(m_packageManager);
     m_packageManager->setChecked(core->isPackageManager());
     connect(m_packageManager, SIGNAL(toggled(bool)), this, SLOT(setPackageManager(bool)));
 
     m_updateComponents = new QRadioButton(tr("Update components"), this);
+    m_updateComponents->setEnabled(false); // ### Todo: Remove for online installers after Beta
     layout->addWidget(m_updateComponents);
     m_updateComponents->setChecked(core->isUpdater());
     connect(m_updateComponents, SIGNAL(toggled(bool)), this, SLOT(setUpdater(bool)));
