@@ -1156,11 +1156,13 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, Up
         const QString tempFile = generateTempFileName();
 
         NWildcard::CCensor censor;
-        foreach (QString dir, sourcePaths) {
-            const UString sourcePath = QString2UString(QDir::toNativeSeparators(dir));
-            if (UString2QString(sourcePath) != QDir::toNativeSeparators(dir))
+        foreach (const QString &path, sourcePaths) {
+            const UString sourcePath = QString2UString(QDir::toNativeSeparators(path));
+            if (UString2QString(sourcePath) != QDir::toNativeSeparators(path))
                 throw UString2QString(sourcePath).toLatin1().data();
-            censor.AddItem(true, sourcePath, true);
+            // Only pass recursive with true if path is a directory, otherwise we include the file and
+            // possible folders located on the same directory level as the file into the created archive.
+            censor.AddItem(true, sourcePath, QFileInfo(path).isDir());
         }
 
         CUpdateOptions options;
