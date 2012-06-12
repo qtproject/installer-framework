@@ -7,7 +7,6 @@ include(../../installerfw.pri)
 
 QT -= gui
 QT += script
-LIBS += -linstaller
 
 CONFIG += console
 CONFIG -= app_bundle
