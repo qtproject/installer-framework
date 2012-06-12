@@ -208,7 +208,8 @@ bool removeJunction(const QString &path)
 #else
 Link createLnSymlink(const QString &linkPath, const QString &targetPath)
 {
-    int linkedError = symlink(targetPath.toLocal8Bit(), linkPath.toLocal8Bit());
+    int linkedError = symlink(QFileInfo(targetPath).absoluteFilePath().toUtf8(),
+        QFileInfo(linkPath).absoluteFilePath().toUtf8());
     if (linkedError != 0) {
         qWarning() << QString::fromLatin1("Could not create a symlink: from '%1' to %2; error: %3"
                     ).arg(linkPath, targetPath).arg(linkedError);
