@@ -87,7 +87,7 @@
     Mac OS X:
 
     \code
-    configure -nomake examples -nomake demos -qt-zlib -qt-gif -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -opensource -developer-build -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -no-svg -release
+    configure -nomake examples -nomake demos -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -opensource -developer-build -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -no-svg -release
     \endcode
 
     \section1 Setting up Qt Installer Framework
