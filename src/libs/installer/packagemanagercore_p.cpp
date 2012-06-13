@@ -1780,10 +1780,10 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         connectOperationCallMethodRequest(operation);
 
         // allow the operation to backup stuff before performing the operation
-        PackageManagerCorePrivate::performOperationThreaded(operation, PackageManagerCorePrivate::Backup);
+        performOperationThreaded(operation, PackageManagerCorePrivate::Backup);
 
         bool ignoreError = false;
-        bool ok = PackageManagerCorePrivate::performOperationThreaded(operation);
+        bool ok = performOperationThreaded(operation);
         while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
             qDebug() << QString::fromLatin1("Operation '%1' with arguments: '%2' failed: %3")
                 .arg(operation->name(), operation->arguments().join(QLatin1String("; ")),
@@ -1796,7 +1796,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
                 QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel, QMessageBox::Retry);
 
             if (button == QMessageBox::Retry)
-                ok = PackageManagerCorePrivate::performOperationThreaded(operation);
+                ok = performOperationThreaded(operation);
             else if (button == QMessageBox::Ignore)
                 ignoreError = true;
             else if (button == QMessageBox::Cancel)
