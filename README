@@ -40,11 +40,11 @@ configure -nomake examples -nomake demos -qt-zlib -qt-libtiff -qt-libpng -qt-lib
 To create an installer, use binarycreator:
  
 in windows;
-cd installerbuilder
+cd tests\test-installer
 create-test-installer.bat
 
 in unix;
-cd installerbuilder
+cd tests/test-installer
 create-test-installer.sh
 
 This creates an installer "test-installer.exe"/"test-installer" from the installerbase binary and the components required by the com.nokia.testapp package(examples\testapp\packages\com.nokia.testapp).
