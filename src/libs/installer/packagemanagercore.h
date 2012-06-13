@@ -229,7 +229,6 @@ public:
     void rollBackInstallation();
 
     int downloadNeededArchives(double partProgressSize);
-    void installComponent(Component *component, double progressOperationSize);
 
     bool needsRestart() const;
     bool finishedWithSuccess() const;

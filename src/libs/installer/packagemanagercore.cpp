@@ -414,23 +414,6 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     return archivesToDownload.count();
 }
 
-void PackageManagerCore::installComponent(Component *component, double progressOperationSize)
-{
-    Q_ASSERT(progressOperationSize);
-
-    d->setStatus(PackageManagerCore::Running);
-    try {
-        d->installComponent(component, progressOperationSize);
-        d->setStatus(PackageManagerCore::Success);
-    } catch (const Error &error) {
-        if (status() != PackageManagerCore::Canceled) {
-            d->setStatus(PackageManagerCore::Failure);
-            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("installationError"), tr("Error"), error.message());
-        }
-    }
-}
-
 /*!
     If a component marked as important was installed during update
     process true is returned.
