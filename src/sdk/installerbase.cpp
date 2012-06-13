@@ -322,6 +322,8 @@ int main(int argc, char *argv[])
                 core.addUserRepositories(repoList);
             } else if (argument == QLatin1String("--no-force-installations")) {
                 PackageManagerCore::setNoForceInstallation(true);
+            } else if (argument == QLatin1String("--create-offline-repository")) {
+                PackageManagerCore::setCreateLocalRepositoryFromBinary(true);
             } else {
                 std::cerr << "Unknown option: " << argument << std::endl;
             }

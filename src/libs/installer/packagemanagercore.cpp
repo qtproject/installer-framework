@@ -77,6 +77,7 @@ static QFont sVirtualComponentsFont;
 
 static bool sNoForceInstallation = false;
 static bool sVirtualComponentsVisible = false;
+static bool sCreateLocalRepositoryFromBinary = false;
 
 static QScriptValue checkArguments(QScriptContext *context, int amin, int amax)
 {
@@ -556,6 +557,18 @@ bool PackageManagerCore::noForceInstallation()
 void PackageManagerCore::setNoForceInstallation(bool value)
 {
     sNoForceInstallation = value;
+}
+
+/* static */
+bool PackageManagerCore::createLocalRepositoryFromBinary()
+{
+    return sCreateLocalRepositoryFromBinary;
+}
+
+/* static */
+void PackageManagerCore::setCreateLocalRepositoryFromBinary(bool create)
+{
+    sCreateLocalRepositoryFromBinary = create;
 }
 
 RunMode PackageManagerCore::runMode() const
@@ -1925,18 +1938,6 @@ QString PackageManagerCore::findDisplayVersion(const QString &componentName,
         return QString();
 
     return findDisplayVersion(replaceWith, components, versionKey, visited);
-}
-
-bool PackageManagerCore::createLocalRepositoryFromBinary() const
-{
-    return d->m_createLocalRepositoryFromBinary;
-}
-
-void PackageManagerCore::setCreateLocalRepositoryFromBinary(bool create)
-{
-    if (!isOfflineOnly())
-        return;
-    d->m_createLocalRepositoryFromBinary = create;
 }
 
 ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, const QString &objectName) const

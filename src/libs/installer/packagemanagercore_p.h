@@ -249,7 +249,6 @@ private:
     QSet<Component*> m_componentsToUninstall;
     QString m_componentsToInstallError;
     FileDownloaderProxyFactory *m_proxyFactory;
-    bool m_createLocalRepositoryFromBinary;
 
     ComponentModel *m_defaultModel;
     ComponentModel *m_updaterModel;

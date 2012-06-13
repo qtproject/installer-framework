@@ -303,6 +303,9 @@ void InstallerBase::showUsage()
         << "Set system proxy on Win and Mac. This option has no effect on Linux." << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --verbose" << std::setw(40)
         << "Show debug output on the console" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --create-offline-repository"
+        << std::setw(40) << "Offline installer only: Create a local repository inside the installation "
+        "directory based on the offline installer's content" << std::endl;
 
     std::cout << "\nDeveloper:"<< std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left)

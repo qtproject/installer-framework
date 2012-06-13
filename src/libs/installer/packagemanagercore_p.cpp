@@ -168,7 +168,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_updateSourcesAdded(false)
     , m_componentsToInstallCalculated(false)
     , m_proxyFactory(0)
-    , m_createLocalRepositoryFromBinary(false)
     , m_defaultModel(0)
     , m_updaterModel(0)
 {
@@ -193,7 +192,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_magicBinaryMarker(magicInstallerMaker)
     , m_componentsToInstallCalculated(false)
     , m_proxyFactory(0)
-    , m_createLocalRepositoryFromBinary(false)
     , m_defaultModel(0)
     , m_updaterModel(0)
     , m_dependsOnLocalInstallerBinary(false)
@@ -519,7 +517,6 @@ void PackageManagerCorePrivate::initialize()
 {
     m_coreCheckedHash.clear();
     m_componentsToInstallCalculated = false;
-    m_createLocalRepositoryFromBinary = false;
 
     // first set some common variables that may used e.g. as placeholder
     // in some of the settings variables or in a script or...
@@ -1433,13 +1430,14 @@ bool PackageManagerCorePrivate::runInstaller()
             m_settings.applicationVersion()));
 
         const int progressOperationCount = countProgressOperations(componentsToInstall)
-            + (m_createLocalRepositoryFromBinary ? 1 : 0); // add one more operation as we support progress
+            // add one more operation as we support progress
+            + (PackageManagerCore::createLocalRepositoryFromBinary() ? 1 : 0);
         double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
 
-        if (m_createLocalRepositoryFromBinary) {
+        if (m_core->isOfflineOnly() && PackageManagerCore::createLocalRepositoryFromBinary()) {
             emit m_core->titleMessageChanged(tr("Creating local repository"));
             ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QString());
             ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Creating local repository"));
