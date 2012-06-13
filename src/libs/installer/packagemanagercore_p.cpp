@@ -1029,6 +1029,7 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
 {
     QString uninstallerRenamedName = uninstallerName() + QLatin1String(".new");
     qDebug() << "Writing uninstaller:" << uninstallerRenamedName;
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Writing uninstaller."));
 
     KDSaveFile out(uninstallerRenamedName);
     openForWrite(&out, out.fileName()); // throws an exception in case of error
