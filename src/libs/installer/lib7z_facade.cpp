@@ -165,12 +165,6 @@ struct DirectoryGuard {
 };
 }
 
-static void throwIfNotOK(HRESULT result, const QString &msg)
-{
-    if (result != S_OK)
-        throw SevenZipException(msg);
-}
-
 static UString QString2UString(const QString &str)
 {
     return str.toStdWString().c_str();
@@ -202,8 +196,10 @@ return res;
 static NCOM::CPropVariant readProperty(IInArchive* archive, int index, int propId)
 {
     NCOM::CPropVariant prop;
-    throwIfNotOK(archive->GetProperty(index, propId, &prop), QObject::tr("Could not retrieve property %1 "
-        "for item %2").arg(QString::number(propId), QString::number(index)));
+    if (archive->GetProperty(index, propId, &prop) != S_OK) {
+        throw SevenZipException(QObject::tr("Could not retrieve property %1 for item %2")
+            .arg(QString::number(propId), QString::number(index)));
+    }
     return prop;
 }
 
@@ -566,14 +562,15 @@ private:
     OpenArchiveInfo(QIODevice* device)
         : codecs(new CCodecs)
     {
-        throwIfNotOK(codecs->Load(), QObject::tr("Could not load codecs"));
+        if (codecs->Load() != S_OK)
+            throw SevenZipException(QObject::tr("Could not load codecs"));
 
         if (!codecs->FindFormatForArchiveType(L"", formatIndices))
             throw SevenZipException(QObject::tr("Could not retrieve default format"));
 
         stream = new QIODeviceInStream(device);
-        throwIfNotOK(archiveLink.Open2(codecs.data(), formatIndices, false, stream, UString(), 0),
-            QObject::tr("Could not open archive"));
+        if (archiveLink.Open2(codecs.data(), formatIndices, false, stream, UString(), 0) != S_OK)
+            throw SevenZipException(QObject::tr("Could not open archive"));
         if (archiveLink.Arcs.Size() == 0)
             throw SevenZipException(QObject::tr("No CArc found"));
 
@@ -639,14 +636,16 @@ QVector<File> Lib7z::listArchive(QIODevice* archive)
             IInArchive* const arch = arc.Archive;
 
             UInt32 numItems = 0;
-            throwIfNotOK(arch->GetNumberOfItems(&numItems), QObject::tr("Could not retrieve number of items "
-                "in archive"));
+            if (arch->GetNumberOfItems(&numItems) != S_OK)
+                throw SevenZipException(QObject::tr("Could not retrieve number of items in archive"));
 
             flat.reserve(flat.size() + numItems);
             for (uint item = 0; item < numItems; ++item) {
                 UString s;
-                throwIfNotOK(arc.GetItemPath(item, s), QObject::tr("Could not retrieve path of archive item "
-                    "%1").arg(item));
+                if (arc.GetItemPath(item, s) != S_OK) {
+                    throw SevenZipException(QObject::tr("Could not retrieve path of archive item %1")
+                        .arg(item));
+                }
                 File f;
                 f.archiveIndex.setX(i);
                 f.archiveIndex.setY(item);
@@ -728,10 +727,10 @@ public:
             currentIndex = index;
 
             UString s;
-            throwIfNotOK(arc->GetItemPath(index, s), QObject::tr("Could not retrieve path of archive item "
-                "%1").arg(index));
-            const QString path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
+            if (arc->GetItemPath(index, s) != S_OK)
+                throw SevenZipException(QObject::tr("Could not retrieve path of archive item %1").arg(index));
 
+            const QString path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
             const QFileInfo fi(QString::fromLatin1("%1/%2").arg(targetDir, path));
             DirectoryGuard guard(fi.absolutePath());
             const QStringList directories = guard.tryCreate();
@@ -778,8 +777,10 @@ public:
             const QFile::Permissions permissions = getPermissions(arc->Archive, currentIndex, &hasPerm);
             if (hasPerm) {
                 UString s;
-                throwIfNotOK(arc->GetItemPath(currentIndex, s), QObject::tr("Could not retrieve path of "
-                    "archive item %1").arg(currentIndex));
+                if (arc->GetItemPath(currentIndex, s) != S_OK) {
+                    throw SevenZipException(QObject::tr("Could not retrieve path of archive item %1")
+                        .arg(currentIndex));
+                }
                 const QString path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
                 const QFileInfo fi(QString::fromLatin1("%1/%2").arg(targetDir, path));
                 QFile::setPermissions(fi.absoluteFilePath(), permissions);
@@ -1144,7 +1145,8 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, Up
 
     try {
         std::auto_ptr< CCodecs > codecs(new CCodecs);
-        throwIfNotOK(codecs->Load(), QObject::tr("Could not load codecs"));
+        if (codecs->Load() != S_OK)
+            throw SevenZipException(QObject::tr("Could not load codecs"));
 
         CIntVector formatIndices;
 
@@ -1226,22 +1228,25 @@ void Lib7z::extractArchive(QIODevice* archive, const File& item, QIODevice* targ
 
         const UInt32 itemIdx = item.archiveIndex.y();
         UInt32 numItems = 0;
-        throwIfNotOK(parchive->GetNumberOfItems(&numItems), QObject::tr("Could not retrieve number of items "
-            "in archive"));
+        if (parchive->GetNumberOfItems(&numItems) != S_OK)
+            throw SevenZipException(QObject::tr("Could not retrieve number of items in archive"));
+
         if (itemIdx >= numItems) {
             throw SevenZipException(QObject::tr("Item index %1 out of bounds [0, %2]").arg(itemIdx)
                 .arg(numItems - 1));
         }
 
         UString s;
-        throwIfNotOK(arc.GetItemPath(itemIdx, s), QObject::tr("Could not retrieve path of archive item %1")
-            .arg(itemIdx));
+        if (arc.GetItemPath(itemIdx, s) != S_OK)
+            throw SevenZipException(QObject::tr("Could not retrieve path of archive item %1").arg(itemIdx));
+
         assert(item.path == UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/')));
 
         callback->setTarget(target);
         const LONG extractResult = parchive->Extract(&itemIdx, 1, /*testmode=*/1, callback->impl());
         //TODO: how to interpret result?
-        throwIfNotOK(extractResult, QObject::tr("Extracting %1 failed.").arg(item.path));
+        if (extractResult != S_OK)
+            throw SevenZipException(QObject::tr("Extracting %1 failed.").arg(item.path));
     } catch (const char *err) {
         throw SevenZipException(err);
     } catch (...) {
@@ -1297,7 +1302,8 @@ void Lib7z::extractArchive(QIODevice* archive, const QString &targetDirectory, E
         callback->impl()->setArchive(&arc);
         const LONG extractResult = arch->Extract(0, static_cast< UInt32 >(-1), false, callback->impl());
         //TODO is it possible to get a more detailed error?
-        throwIfNotOK(extractResult, QObject::tr("Extraction failed."));
+        if (extractResult != S_OK)
+           throw SevenZipException(QObject::tr("Extraction failed."));
     }
 
     outDir.release();
@@ -1319,7 +1325,8 @@ bool Lib7z::isSupportedArchive(QIODevice* archive)
     const qint64 initialPos = archive->pos();
     try {
         std::auto_ptr<CCodecs> codecs(new CCodecs);
-        throwIfNotOK(codecs->Load(), QObject::tr("Could not load codecs"));
+        if (codecs->Load() != S_OK)
+            throw SevenZipException(QObject::tr("Could not load codecs"));
 
         CIntVector formatIndices;
 
