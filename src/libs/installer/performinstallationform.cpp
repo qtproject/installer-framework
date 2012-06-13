@@ -107,6 +107,8 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     m_updateTimer = new QTimer(widget);
     connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(updateProgress())); //updateProgress includes label
     m_updateTimer->setInterval(30);
+
+    m_progressBar->setRange(0, 100);
 }
 
 void PerformInstallationForm::setDetailsWidgetVisible(bool visible)
@@ -124,8 +126,12 @@ void PerformInstallationForm::updateProgress()
     QInstaller::ProgressCoordinator *progressCoordninator = QInstaller::ProgressCoordinator::instance();
     const int progressPercentage = progressCoordninator->progressInPercentage();
 
-    m_progressBar->setRange(0, 100);
     m_progressBar->setValue(progressPercentage);
+
+    static QString lastLabelText;
+    if (lastLabelText == progressCoordninator->labelText())
+        return;
+    lastLabelText = progressCoordninator->labelText();
     m_progressLabel->setText(m_progressLabel->fontMetrics().elidedText(progressCoordninator->labelText(),
         Qt::ElideRight, m_progressLabel->width()));
 }
