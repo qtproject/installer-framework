@@ -1483,6 +1483,7 @@ bool PackageManagerCorePrivate::runInstaller()
 
         // fake a possible wrong value to show a full progress bar
         const int progress = ProgressCoordinator::instance()->progressInPercentage();
+        // usually this should be only the reserved one from the beginning
         if (progress < 100)
             ProgressCoordinator::instance()->addManualPercentagePoints(100 - progress);
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
@@ -1648,6 +1649,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
 
         // fake a possible wrong value to show a full progress bar
         const int progress = ProgressCoordinator::instance()->progressInPercentage();
+        // usually this should be only the reserved one from the beginning
         if (progress < 100)
             ProgressCoordinator::instance()->addManualPercentagePoints(100 - progress);
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate finished!"));
