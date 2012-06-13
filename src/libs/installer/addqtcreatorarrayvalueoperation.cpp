@@ -32,7 +32,6 @@
 
 #include "addqtcreatorarrayvalueoperation.h"
 
-#include "constants.h"
 #include "qtcreator_constants.h"
 #include "packagemanagercore.h"
 
@@ -66,17 +65,22 @@ bool AddQtCreatorArrayValueOperation::performOperation()
         return false;
     }
 
-
     PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
 
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-        QSettings::IniFormat);
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile);
+    if (qtCreatorInstallerSettingsFileName.isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerSettingsFile));
+        return false;
+    }
+
+    QSettings settings(qtCreatorInstallerSettingsFileName, QSettings::IniFormat);
 
     const QString &group = groupName(args.at(0));
     const QString &arrayName = args.at(1);
@@ -125,10 +129,19 @@ bool AddQtCreatorArrayValueOperation::undoOperation()
         setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
 
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-        QSettings::IniFormat);
+    // default value is the old value to keep the possibility that old saved operations can run undo
+#ifdef Q_OS_MAC
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile,
+        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini").arg(
+        core->value(QLatin1String("TargetDir"))));
+#else
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile,
+        QString::fromLatin1("%1/QtCreator/share/qtcreator/Nokia/QtCreator.ini").arg(core->value(
+        QLatin1String("TargetDir"))));
+#endif
+
+    QSettings settings(qtCreatorInstallerSettingsFileName, QSettings::IniFormat);
 
     const QString &group = groupName(args.at(0));
     const QString &arrayName = args.at(1);

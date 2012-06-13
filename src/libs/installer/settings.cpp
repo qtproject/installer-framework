@@ -343,7 +343,7 @@ QStringList Settings::certificateFiles() const
     return d->m_data.value(scSigningCertificate).toStringList();
 }
 
-bool Settings::allowNoneAsciiCharacters() const
+bool Settings::allowNonAsciiCharacters() const
 {
     return d->m_data.value(scAllowNonAsciiCharacters).toBool();
 }
@@ -463,6 +463,11 @@ void Settings::addUserRepositories(const QSet<Repository> &repositories)
 {
     foreach (const Repository &repository, repositories)
         d->m_data.insertMulti(scUserRepositories, QVariant().fromValue(repository));
+}
+
+bool Settings::containsValue(const QString &key) const
+{
+    return d->m_data.contains(key);
 }
 
 QVariant Settings::value(const QString &key, const QVariant &defaultValue) const

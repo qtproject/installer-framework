@@ -401,7 +401,7 @@ bool TargetDirectoryPageImpl::validatePage()
         return true;
 
     const QString targetDir = this->targetDir();
-    if (!packageManagerCore()->settings().allowNoneAsciiCharacters()) {
+    if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
         for (int i = 0; i < targetDir.length(); ++i) {
             if (targetDir.at(i).unicode() & 0xff80) {
                 return failWithError(QLatin1String("NonAsciiTarget"), tr("The path or installation directory "

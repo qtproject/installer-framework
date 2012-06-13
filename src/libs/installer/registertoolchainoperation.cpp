@@ -32,7 +32,6 @@
 
 #include "registertoolchainoperation.h"
 
-#include "constants.h"
 #include "persistentsettings.h"
 #include "packagemanagercore.h"
 #include "qtcreator_constants.h"
@@ -76,8 +75,13 @@ bool RegisterToolChainOperation::performOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
-    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
+    if (core->value(scQtCreatorInstallerToolchainsFile).isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerToolchainsFile));
+        return false;
+    }
+    toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile);
 
     QtCreatorToolChain toolChain;
 
@@ -123,16 +127,23 @@ bool RegisterToolChainOperation::undoOperation()
         return false;
     }
 
-    QString toolChainsXmlFilePath;
-
     PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
-    toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
+
+    // default value is the old value to keep the possibility that old saved operations can run undo
+#ifdef Q_OS_MAC
+    QString toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile,
+        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/Nokia/toolChains.xml").arg(
+        core->value(QLatin1String("TargetDir"))));
+#else
+    QString toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile,
+        QString::fromLatin1("%1/QtCreator/share/qtcreator/Nokia/toolChains.xml").arg(core->value(
+        QLatin1String("TargetDir"))));
+#endif
 
     QtCreatorToolChain toolChain;
 

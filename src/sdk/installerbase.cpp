@@ -70,6 +70,8 @@
 using namespace QInstaller;
 using namespace QInstallerCreator;
 
+static const char installer_create_datetime_placeholder [32] = "MY_InstallerCreateDateTime_MY";
+
 static QStringList repositories(const QStringList &arguments, const int index)
 {
     if (index < arguments.size()) {
@@ -122,7 +124,16 @@ int main(int argc, char *argv[])
 
     try {
         if (args.contains(QLatin1String("--version"))) {
-            InstallerBase::showVersion(QLatin1String(VERSION));
+            QString versionOutPut;
+            QDateTime dateTimeCheck = QDateTime::fromString(QLatin1String(
+                installer_create_datetime_placeholder), QLatin1String("yyyy-MM-dd - HH:mm:ss"));
+            if (dateTimeCheck.isValid()) {
+                versionOutPut.append(QLatin1String("Installer creation time: "));
+                versionOutPut.append(QLatin1String(installer_create_datetime_placeholder));
+                versionOutPut.append(QLatin1String("\n"));
+            }
+            versionOutPut.append(QLatin1String(VERSION));
+            InstallerBase::showVersion(versionOutPut);
             return 0;
         }
 

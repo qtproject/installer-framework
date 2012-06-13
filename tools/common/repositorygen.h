@@ -59,7 +59,7 @@ enum FilterType {
 QHash<QString, QString> buildPathToVersionMapping(const PackageInfoVector &info);
 
 void compressMetaDirectories(const QString &repoDir);
-void compressDirectory(const QStringList &paths, const QString &archivePath);
+void compressPaths(const QStringList &paths, const QString &archivePath);
 void compressMetaDirectories(const QString &repoDir, const QString &baseDir,
     const QHash<QString, QString> &versionMapping);
 

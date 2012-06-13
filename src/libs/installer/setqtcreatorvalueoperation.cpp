@@ -37,6 +37,7 @@
 #include "packagemanagercore.h"
 
 #include <QtCore/QSettings>
+#include <QDebug>
 
 using namespace QInstaller;
 
@@ -65,13 +66,31 @@ bool SetQtCreatorValueOperation::performOperation()
         return false;
     }
 
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
+    if (!core) {
+        setError(UserDefinedError);
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
+
     const QString &rootInstallPath = args.at(0); //for example "C:\\Nokia_SDK\\"
+    if (!rootInstallPath.isEmpty()) {
+        qWarning() << QString::fromLatin1("Because of internal changes the first argument(\"%1\") on %2 "\
+            "operation is just ignored, please be aware of that").arg(rootInstallPath, name());
+    }
 
     const QString &group = groupName(args.at(1));
     const QString &key = args.at(2);
     const QString &settingsValue = args.at(3);
 {
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath), QSettings::IniFormat);
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile);
+    if (qtCreatorInstallerSettingsFileName.isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerSettingsFile));
+        return false;
+    }
+    QSettings settings(qtCreatorInstallerSettingsFileName, QSettings::IniFormat);
     if (!group.isEmpty())
         settings.beginGroup(group);
 
@@ -110,11 +129,33 @@ bool SetQtCreatorValueOperation::undoOperation()
     const QStringList args = arguments();
 
     const QString &rootInstallPath = args.at(0); //for example "C:\\Nokia_SDK\\"
+    if (!rootInstallPath.isEmpty()) {
+        qWarning() << QString::fromLatin1("Because of internal changes the first argument(\"%1\") on %2 "\
+            "operation is just ignored, please be aware of that").arg(rootInstallPath, name());
+    }
 
     const QString &group = groupName(args.at(1));
     const QString &key = args.at(2);
 
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath), QSettings::IniFormat);
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
+    if (!core) {
+        setError(UserDefinedError);
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
+
+    // default value is the old value to keep the possibility that old saved operations can run undo
+#ifdef Q_OS_MAC
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile,
+        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini").arg(
+        core->value(QLatin1String("TargetDir"))));
+#else
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile,
+        QString::fromLatin1("%1/QtCreator/share/qtcreator/Nokia/QtCreator.ini").arg(core->value(
+        QLatin1String("TargetDir"))));
+#endif
+
+    QSettings settings(qtCreatorInstallerSettingsFileName, QSettings::IniFormat);
     if (!group.isEmpty())
         settings.beginGroup(group);
 

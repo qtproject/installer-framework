@@ -1201,17 +1201,23 @@ QList<QVariant> PackageManagerCore::execute(const QString &program, const QStrin
 
     \param program The program that should be executed.
     \param arguments Optional list of arguments.
+    \param workingDirectory Optional working directory of the forked process.
     \return If the command could not be executed, an false will be returned
 */
 
-bool PackageManagerCore::executeDetached(const QString &program, const QStringList &arguments) const
+bool PackageManagerCore::executeDetached(const QString &program, const QStringList &arguments,
+    const QString &workingDirectory) const
 {
     QString adjustedProgram = replaceVariables(program);
     QStringList adjustedArguments;
+    QString adjustedWorkingDir = replaceVariables(workingDirectory);
     foreach (const QString &argument, arguments)
         adjustedArguments.append(replaceVariables(argument));
-    qDebug() << "run application as detached process:" << adjustedProgram << adjustedArguments;
-    return QProcess::startDetached(adjustedProgram, adjustedArguments);
+    qDebug() << "run application as detached process:" << adjustedProgram << adjustedArguments << adjustedWorkingDir;
+    if (workingDirectory.isEmpty())
+        return QProcess::startDetached(adjustedProgram, adjustedArguments);
+    else
+        return QProcess::startDetached(adjustedProgram, adjustedArguments, adjustedWorkingDir);
 }
 
 
@@ -1369,7 +1375,10 @@ QString PackageManagerCore::value(const QString &key, const QString &defaultValu
         return dir;
     }
 #endif
-    return d->m_vars.value(key, defaultValue);
+    if (d->m_vars.contains(key))
+        return d->m_vars.value(key);
+
+    return d->m_settings.value(key, defaultValue).toString();
 }
 
 /*!
@@ -1377,11 +1386,12 @@ QString PackageManagerCore::value(const QString &key, const QString &defaultValu
 */
 void PackageManagerCore::setValue(const QString &key, const QString &value)
 {
-    if (d->m_vars.value(key) == value)
+    QString normalizedValue = replaceVariables(value);
+    if (d->m_vars.value(key) == normalizedValue)
         return;
 
-    d->m_vars.insert(key, value);
-    emit valueChanged(key, value);
+    d->m_vars.insert(key, normalizedValue);
+    emit valueChanged(key, normalizedValue);
 }
 
 /*!
@@ -1389,7 +1399,7 @@ void PackageManagerCore::setValue(const QString &key, const QString &value)
 */
 bool PackageManagerCore::containsValue(const QString &key) const
 {
-    return d->m_vars.contains(key);
+    return d->m_vars.contains(key) || d->m_settings.containsValue(key);
 }
 
 void PackageManagerCore::setSharedFlag(const QString &key, bool value)
@@ -1542,12 +1552,7 @@ bool PackageManagerCore::isPackageManager() const
 */
 bool PackageManagerCore::runInstaller()
 {
-    try {
-        d->runInstaller();
-        return true;
-    } catch (...) {
-        return false;
-    }
+    return d->runInstaller();
 }
 
 /*!
@@ -1555,12 +1560,7 @@ bool PackageManagerCore::runInstaller()
 */
 bool PackageManagerCore::runUninstaller()
 {
-    try {
-        d->runUninstaller();
-        return true;
-    } catch (...) {
-        return false;
-    }
+    return d->runUninstaller();
 }
 
 /*!
@@ -1568,12 +1568,7 @@ bool PackageManagerCore::runUninstaller()
 */
 bool PackageManagerCore::runPackageUpdater()
 {
-    try {
-        d->runPackageUpdater();
-        return true;
-    } catch (...) {
-        return false;
-    }
+    return d->runPackageUpdater();
 }
 
 /*!
@@ -1591,18 +1586,13 @@ void PackageManagerCore::languageChanged()
 */
 bool PackageManagerCore::run()
 {
-    try {
-        if (isInstaller())
-            d->runInstaller();
-        else if (isUninstaller())
-            d->runUninstaller();
-        else if (isPackageManager() || isUpdater())
-            d->runPackageUpdater();
-        return true;
-    } catch (const Error &err) {
-        qDebug() << "Caught Installer Error:" << err.message();
-        return false;
-    }
+    if (isInstaller())
+        return d->runInstaller();
+    else if (isUninstaller())
+        return d->runUninstaller();
+    else if (isPackageManager() || isUpdater())
+        return d->runPackageUpdater();
+    return false;
 }
 
 /*!

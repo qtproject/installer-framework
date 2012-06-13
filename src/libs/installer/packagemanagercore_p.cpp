@@ -572,22 +572,6 @@ void PackageManagerCorePrivate::initialize()
         m_vars.insert(scTargetDir, replaceVariables(m_settings.targetDir()));
     m_vars.insert(scRemoveTargetDir, replaceVariables(m_settings.removeTargetDir()));
 
-    QSettingsWrapper creatorSettings(QSettingsWrapper::IniFormat, QSettingsWrapper::UserScope,
-        QLatin1String("Nokia"), QLatin1String("QtCreator"));
-    QFileInfo info(creatorSettings.fileName());
-    if (info.exists()) {
-        m_vars.insert(QLatin1String("QtCreatorSettingsFile"), info.absoluteFilePath());
-        QDir settingsDirectory = info.absoluteDir();
-        if (settingsDirectory.exists(QLatin1String("qtversion.xml"))) {
-                m_vars.insert(QLatin1String("QtCreatorSettingsQtVersionFile"),
-                              settingsDirectory.absoluteFilePath(QLatin1String("qtversion.xml")));
-        }
-        if (settingsDirectory.exists(QLatin1String("toolChains.xml"))) {
-                m_vars.insert(QLatin1String("QtCreatorSettingsToolchainsFile"),
-                              settingsDirectory.absoluteFilePath(QLatin1String("toolChains.xml")));
-        }
-    }
-
     if (!m_core->isInstaller()) {
 #ifdef Q_OS_MAC
         readMaintenanceConfigFiles(QCoreApplication::applicationDirPath() + QLatin1String("/../../.."));
@@ -931,7 +915,6 @@ void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> 
         return;
 
     while (true) {
-        const QList<ProcessInfo> allProcesses = runningProcesses();  // FIXME: Unused?
         const QStringList processes = checkRunningProcessesFromList(processList);
         if (processes.isEmpty())
             return;
@@ -1357,17 +1340,8 @@ QString PackageManagerCorePrivate::registerPath() const
     return QString();
 }
 
-void PackageManagerCorePrivate::runInstaller()
+bool PackageManagerCorePrivate::runInstaller()
 {
-    if (m_dependsOnLocalInstallerBinary && !KDUpdater::pathIsOnLocalDevice(qApp->applicationFilePath())) {
-        setStatus(PackageManagerCore::Failure);
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation aborted!"));
-        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("installationError"), tr("Error"), tr("It is not possible to install from network location"));
-        emit installationFinished();
-        throw;
-    }
-
     bool adminRightsGained = false;
     try {
         setStatus(PackageManagerCore::Running);
@@ -1421,6 +1395,13 @@ void PackageManagerCorePrivate::runInstaller()
         const QList<Component*> componentsToInstall = m_core->orderedComponentsToInstall();
         qDebug() << "Install size:" << componentsToInstall.size() << "components";
 
+        callBeginInstallation(componentsToInstall);
+        stopProcessesForUpdates(componentsToInstall);
+
+        if (m_dependsOnLocalInstallerBinary && !KDUpdater::pathIsOnLocalDevice(qApp->applicationFilePath())) {
+            throw Error(tr("It is not possible to install from network location"));
+        }
+
         if (!adminRightsGained) {
             foreach (Component *component, m_core->orderedComponentsToInstall()) {
                 if (component->value(scRequiresAdminRights, scFalse) == scFalse)
@@ -1449,9 +1430,6 @@ void PackageManagerCorePrivate::runInstaller()
         info.setApplicationName(m_core->value(QLatin1String("ProductName"), m_settings.applicationName()));
         info.setApplicationVersion(m_core->value(QLatin1String("ProductVersion"),
             m_settings.applicationVersion()));
-
-        callBeginInstallation(componentsToInstall);
-        stopProcessesForUpdates(componentsToInstall);
 
         const int progressOperationCount = countProgressOperations(componentsToInstall)
             + (m_createLocalRepositoryFromBinary ? 1 : 0); // add one more operation as we support progress
@@ -1526,20 +1504,18 @@ void PackageManagerCorePrivate::runInstaller()
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
-
-        throw;
+        return false;
     }
+    return true;
 }
 
-void PackageManagerCorePrivate::runPackageUpdater()
+bool PackageManagerCorePrivate::runPackageUpdater()
 {
     bool adminRightsGained = false;
+    if (m_completeUninstall) {
+        return runUninstaller();
+    }
     try {
-        if (m_completeUninstall) {
-            runUninstaller();
-            return;
-        }
-
         setStatus(PackageManagerCore::Running);
         emit installationStarted(); //resets also the ProgressCoordninator
 
@@ -1553,6 +1529,13 @@ void PackageManagerCorePrivate::runPackageUpdater()
 
         const QList<Component *> componentsToInstall = m_core->orderedComponentsToInstall();
         qDebug() << "Install size:" << componentsToInstall.size() << "components";
+
+        callBeginInstallation(componentsToInstall);
+        stopProcessesForUpdates(componentsToInstall);
+
+        if (m_dependsOnLocalInstallerBinary && !KDUpdater::pathIsOnLocalDevice(qApp->applicationFilePath())) {
+            throw Error(tr("It is not possible to run that opertion from a network location"));
+        }
 
         bool updateAdminRights = false;
         if (!adminRightsGained) {
@@ -1651,9 +1634,6 @@ void PackageManagerCorePrivate::runPackageUpdater()
         }
         m_performedOperationsOld = nonRevertedOperations; // these are all operations left: those not reverted
 
-        callBeginInstallation(componentsToInstall);
-        stopProcessesForUpdates(componentsToInstall);
-
         const double progressOperationCount = countProgressOperations(componentsToInstall);
         const double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
@@ -1689,12 +1669,12 @@ void PackageManagerCorePrivate::runPackageUpdater()
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
-
-        throw;
+        return false;
     }
+    return true;
 }
 
-void PackageManagerCorePrivate::runUninstaller()
+bool PackageManagerCorePrivate::runUninstaller()
 {
     bool adminRightsGained = false;
     try {
@@ -1763,9 +1743,9 @@ void PackageManagerCorePrivate::runUninstaller()
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit uninstallationFinished();
-
-        throw;
+        return false;
     }
+    return true;
 }
 
 void PackageManagerCorePrivate::installComponent(Component *component, double progressOperationSize,

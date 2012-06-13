@@ -43,6 +43,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QSettings>
 #include <QtCore/QString>
+#include <QDebug>
 
 using namespace QInstaller;
 
@@ -68,6 +69,11 @@ bool RegisterQtInCreatorOperation::performOperation()
     }
 
     const QString &rootInstallPath = args.value(0); //for example "C:\\Nokia_SDK\\"
+    if (!rootInstallPath.isEmpty()) {
+        qWarning() << QString::fromLatin1("Because of internal changes the first argument(\"%1\") on %2 "\
+            "operation is just ignored, please be aware of that").arg(rootInstallPath, name());
+    }
+
     const QString &versionName = args.value(1);
     const QString &path = args.value(2);
     QString mingwPath = args.value(3);
@@ -84,7 +90,14 @@ bool RegisterQtInCreatorOperation::performOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    QString toolChainsXmlFilePath = rootInstallPath + QLatin1String(ToolChainSettingsSuffixPath);
+
+    QString toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile);
+    if (toolChainsXmlFilePath.isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerToolchainsFile));
+        return false;
+    }
     bool isCreator22 = false;
     //in case of the fake installer this component doesn't exist
     Component *creatorComponent =
@@ -151,8 +164,13 @@ bool RegisterQtInCreatorOperation::performOperation()
         return true;
     }
 //END - this is for creator 2.2
-
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath), QSettings::IniFormat);
+    if (core->value(scQtCreatorInstallerSettingsFile).isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerSettingsFile));
+        return false;
+    }
+    QSettings settings(core->value(scQtCreatorInstallerSettingsFile), QSettings::IniFormat);
     const QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")).toString()
         .split(QLatin1String(";"));
 
@@ -191,8 +209,25 @@ bool RegisterQtInCreatorOperation::performOperation()
 //works with creator 2.1 and 2.2
 bool RegisterQtInCreatorOperation::undoOperation()
 {
-    const QString &rootInstallPath = arguments().value(0); //for example "C:\\Nokia_SDK\\"
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath), QSettings::IniFormat);
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
+    if (!core) {
+        setError(UserDefinedError);
+        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        return false;
+    }
+
+    // default value is the old value to keep the possibility that old saved operations can run undo
+#ifdef Q_OS_MAC
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile,
+        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini").arg(
+        core->value(QLatin1String("TargetDir"))));
+#else
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile,
+        QString::fromLatin1("%1/QtCreator/share/qtcreator/Nokia/QtCreator.ini").arg(core->value(
+        QLatin1String("TargetDir"))));
+#endif
+
+    QSettings settings(qtCreatorInstallerSettingsFileName, QSettings::IniFormat);
     const QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")).toString()
         .split(QLatin1String(";"));
 

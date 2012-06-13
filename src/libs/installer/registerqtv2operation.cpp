@@ -32,7 +32,6 @@
 
 #include "registerqtv2operation.h"
 
-#include "constants.h"
 #include "packagemanagercore.h"
 #include "qtcreator_constants.h"
 
@@ -71,12 +70,6 @@ bool RegisterQtInCreatorV2Operation::performOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
-    if (rootInstallPath.isEmpty() || !QDir(rootInstallPath).exists()) {
-        setError(UserDefinedError);
-        setErrorString(tr("The given TargetDir %1 is not a valid/existing dir.").arg(rootInstallPath));
-        return false;
-    }
 
     int argCounter = 0;
     const QString &versionName = args.value(argCounter++);
@@ -96,8 +89,13 @@ bool RegisterQtInCreatorV2Operation::performOperation()
     const QString &systemRoot = QDir::toNativeSeparators(args.value(argCounter++)); //Symbian SDK root for example
     const QString &sbsPath = QDir::toNativeSeparators(args.value(argCounter++));
 
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-                        QSettings::IniFormat);
+    if (core->value(scQtCreatorInstallerSettingsFile).isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+            scQtCreatorInstallerSettingsFile));
+        return false;
+    }
+    QSettings settings(core->value(scQtCreatorInstallerSettingsFile), QSettings::IniFormat);
 
     QString newVersions;
     QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")
@@ -147,7 +145,6 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
         return false;
     }
-    const QString &rootInstallPath = core->value(scTargetDir);
 
     int argCounter = 0;
     const QString &versionName = args.value(argCounter++);
@@ -164,8 +161,18 @@ bool RegisterQtInCreatorV2Operation::undoOperation()
     }
     qmakePath = QDir::toNativeSeparators(qmakePath);
 
-    QSettings settings(rootInstallPath + QLatin1String(QtCreatorSettingsSuffixPath),
-                        QSettings::IniFormat);
+    // default value is the old value to keep the possibility that old saved operations can run undo
+#ifdef Q_OS_MAC
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile,
+        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/Nokia/QtCreator.ini").arg(
+        core->value(QLatin1String("TargetDir"))));
+#else
+    QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile,
+        QString::fromLatin1("%1/QtCreator/share/qtcreator/Nokia/QtCreator.ini").arg(core->value(
+        QLatin1String("TargetDir"))));
+#endif
+
+    QSettings settings(qtCreatorInstallerSettingsFileName, QSettings::IniFormat);
 
     QString newVersions;
     QStringList oldNewQtVersions = settings.value(QLatin1String("NewQtVersions")

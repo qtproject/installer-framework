@@ -5,7 +5,6 @@ TARGET = installerbase
 
 include(../../installerfw.pri)
 
-LIBS += -linstaller
 QT += network script
 
 CONFIG -= app_bundle

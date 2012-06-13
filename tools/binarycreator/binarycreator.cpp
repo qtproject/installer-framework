@@ -31,6 +31,8 @@
 **************************************************************************/
 #include "common/repositorygen.h"
 
+#include <qtpatch.h>
+
 #include <binaryformat.h>
 #include <errors.h>
 #include <fileutils.h>
@@ -194,6 +196,11 @@ Q_UNUSED(settings)
         throw Error(QObject::tr("Could not copy %1 to %2: %3").arg(instExe.fileName(), tempFile,
             instExe.errorString()));
     }
+
+    QtPatch::patchBinaryFile(tempFile, QByteArray("MY_InstallerCreateDateTime_MY"),
+        QDateTime::currentDateTime().toString(QLatin1String("yyyy-MM-dd - HH:mm:ss")).toAscii());
+
+
     input.installerExePath = tempFile;
 
 #if defined(Q_OS_WIN)

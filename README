@@ -1,4 +1,4 @@
-These are instructions to create the installer framework
+These are instructions to create the Installer Framework
 
 == Build ==
 To build an installer, it is advised to use a statically linked Qt.
@@ -33,7 +33,7 @@ Recommended configure options for windows:
 configure.exe -platform win32-msvc20XX -release -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -no-svg -no-multimedia -no-declarative -no-declarative-debug -nomake examples -nomake demos -qt-sql-sqlite -plugin-sql-sqlite -opensource
 
 Recommended configure options for Linux:
-configure -nomake examples -nomake demos -qt-zlib -qt-gif -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -opensource -developer-build -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -no-svg -release
+configure -nomake examples -nomake demos -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -opensource -developer-build -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -no-svg -release
  
 == Create an Installer ==
 

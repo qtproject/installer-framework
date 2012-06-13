@@ -65,13 +65,8 @@ void QInstallerTools::printRepositoryGenOptions()
     std::cout << "  --ignore-invalid-packages Ignore all invalid packages instead of aborting." << std::endl;
 }
 
-void QInstallerTools::compressDirectory(const QStringList &paths, const QString &archivePath)
+void QInstallerTools::compressPaths(const QStringList &paths, const QString &archivePath)
 {
-    foreach (const QString &path, paths) {
-        if (!QFileInfo(path).exists())
-            throw QInstaller::Error(QObject::tr("Folder %1 does not exist.").arg(path));
-    }
-
     QFile archive(archivePath);
     QInstaller::openForWrite(&archive, archivePath);
     Lib7z::createArchive(&archive, paths);
@@ -87,7 +82,7 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir)
         const QString absPath = sd.absolutePath();
         const QString fn = QLatin1String("meta.7z");
         const QString tmpTarget = repoDir + QLatin1String("/") +fn;
-        compressDirectory(QStringList() << absPath, tmpTarget);
+        compressPaths(QStringList() << absPath, tmpTarget);
         QFile tmp(tmpTarget);
         const QString finalTarget = absPath + QLatin1String("/") + fn;
         if (!tmp.rename(finalTarget)) {
@@ -545,7 +540,7 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
         const QString absPath = sd.absolutePath();
         const QString fn = QLatin1String(versionPrefix.toLatin1() + "meta.7z");
         const QString tmpTarget = repoDir + QLatin1String("/") +fn;
-        compressDirectory(QStringList() << absPath, tmpTarget);
+        compressPaths(QStringList() << absPath, tmpTarget);
 
         // remove the files that got compressed
         QInstaller::removeFiles(absPath, true);
@@ -595,7 +590,7 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
             } else if (fileInfo.isDir()) {
                 qDebug() << "Compressing data directory" << entry;
                 target = QString::fromLatin1("%1/%2/%4%3.7z").arg(repoDir, name, entry, info.version);
-                QInstallerTools::compressDirectory(QStringList() << dataDir.absoluteFilePath(entry), target);
+                QInstallerTools::compressPaths(QStringList() << dataDir.absoluteFilePath(entry), target);
             } else {
                 continue;
             }

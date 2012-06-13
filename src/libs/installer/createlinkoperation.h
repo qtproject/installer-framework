@@ -2,7 +2,7 @@
 **
 ** This file is part of Installer Framework
 **
-** Copyright (c) 2011-2012 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (c) 2012 Nokia Corporation and/or its subsidiary(-ies).
 **
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
@@ -29,47 +29,26 @@
 ** Nokia at qt-info@nokia.com.
 **
 **************************************************************************/
-#include "common/repositorygen.h"
 
-#include <errors.h>
-#include <init.h>
-#include <lib7z_facade.h>
-#include <utils.h>
+#ifndef CREATELINKOPERATION_H
+#define CREATELINKOPERATION_H
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QFileInfo>
-#include <QtCore/QStringList>
+#include "qinstallerglobal.h"
 
-#include <iostream>
+namespace QInstaller {
 
-using namespace Lib7z;
-using namespace QInstaller;
-
-static void printUsage()
+class INSTALLER_EXPORT CreateLinkOperation : public Operation
 {
-    std::cout << "Usage: " << QFileInfo(QCoreApplication::applicationFilePath()).fileName()
-        << " directory.7z directories" << std::endl;
+public:
+    CreateLinkOperation();
+
+    void backup();
+    bool performOperation();
+    bool undoOperation();
+    bool testOperation();
+    Operation *clone() const;
+};
+
 }
 
-int main(int argc, char *argv[])
-{
-    try {
-        QCoreApplication app(argc, argv);
-
-        if (app.arguments().count() < 3) {
-            printUsage();
-            return EXIT_FAILURE;
-        }
-
-        QInstaller::init();
-        QInstaller::setVerbose(true);
-        const QStringList sourceDirectories = app.arguments().mid(2);
-        QInstallerTools::compressPaths(sourceDirectories, app.arguments().at(1));
-        return EXIT_SUCCESS;
-    } catch (const Lib7z::SevenZipException &e) {
-        std::cerr << e.message() << std::endl;
-    } catch (const QInstaller::Error &e) {
-        std::cerr << e.message() << std::endl;
-    }
-    return EXIT_FAILURE;
-}
+#endif

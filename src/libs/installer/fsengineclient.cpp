@@ -33,6 +33,7 @@
 #include "fsengineclient.h"
 
 #include "adminauthorization.h"
+#include "messageboxhandler.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMutex>
@@ -778,6 +779,23 @@ void FSEngineClientHandler::Private::maybeStartServer()
     if (startServerAsAdmin) {
         AdminAuthorization auth;
         serverStarted = auth.authorize() && auth.execute(0, serverCommand, serverArguments);
+
+        if (!serverStarted) {
+            // something went wrong with authorizing, either user pressed cancel or entered
+            // wrong password
+            const QString fallback = serverCommand + QLatin1String(" ") + serverArguments.join(QLatin1String(" "));
+
+            const QMessageBox::Button res =
+                QInstaller::MessageBoxHandler::critical(QInstaller::MessageBoxHandler::currentBestSuitParent(),
+                QObject::tr("Authorization Error"), QObject::tr("Couldn't get authorization."),
+                QObject::tr("Couldn't get authorization that is needed for continuing the installation.\n"
+                            "Either abort the installation or use the fallback solution by running\n"
+                            "%1\nas root and then clicking ok.").arg(fallback),
+                QMessageBox::Abort | QMessageBox::Ok, QMessageBox::Ok);
+
+            if (res == QMessageBox::Ok)
+                serverStarted = true;
+        }
     } else {
         serverStarted = QProcess::startDetached(serverCommand, serverArguments);
     }
