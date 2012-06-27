@@ -34,6 +34,7 @@
 #include "qtpatch.h"
 #ifdef Q_OS_MAC
 #include "macrelocateqt.h"
+#include "constants.h"
 #endif
 
 #include "packagemanagercore.h"
