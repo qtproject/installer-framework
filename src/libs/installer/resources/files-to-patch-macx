@@ -59,6 +59,7 @@ lib/pkgconfig/QtWebKit.pc
 lib/pkgconfig/QtXmlPatterns.pc
 lib/pkgconfig/QtXml.pc
 mkspecs/qconfig.pri
+mkspecs/qmodule.pri
 
 lib/libQtContacts.prl
 lib/libQtQuick.prl
