@@ -239,7 +239,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 #else
     setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
 #endif
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_LINUX) || defined(Q_OS_WIN)
     setWizardStyle(QWizard::ModernStyle);
     setSizeGripEnabled(true);
 #endif
