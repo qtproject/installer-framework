@@ -162,7 +162,7 @@ Q_UNUSED(settings)
         plistStream << QLatin1String("    <key>CFBundlePackageType</key>") << endl;
         plistStream << QLatin1String("    <string>APPL</string>") << endl;
         plistStream << QLatin1String("    <key>CFBundleGetInfoString</key>") << endl;
-        plistStream << QLatin1String("    <string>Created by Qt/QMake</string>") << endl;
+        plistStream << QLatin1String("    <string>") << QLatin1String(IFW_VERSION_STRING) << ("</string>") << endl;
         plistStream << QLatin1String("    <key>CFBundleSignature</key>") << endl;
         plistStream << QLatin1String("    <string> ???? </string>") << endl;
         plistStream << QLatin1String("    <key>CFBundleExecutable</key>") << endl;
