@@ -92,21 +92,18 @@ int main(int argc, char *argv[])
 {
     QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
 
-// hack to use cleanlooks if it is under Ubuntu 11.10
+// hack to use cleanlooks if it is under Ubuntu
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     std::string standardString;
     std::string cleanLooks ="-style=cleanlooks";
     std::ifstream input("/etc/lsb-release");
     bool isUbuntu = false;
-    bool is11_10 = false;
     while (std::getline(input, standardString)) {
         if (standardString == "DISTRIB_ID=Ubuntu")
             isUbuntu = true;
-        else if ((standardString == "DISTRIB_RELEASE=11.10") || (standardString == "DISTRIB_RELEASE=12.04"))
-            is11_10 = true;
     }
 
-    if (isUbuntu && is11_10) {
+    if (isUbuntu) {
         argc++;
         char **newArgv = new char* [argc];
         newArgv[0] = argv[0];
