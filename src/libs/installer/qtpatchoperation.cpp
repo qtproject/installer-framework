@@ -43,6 +43,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDir>
+#include <QDirIterator>
 #include <QtCore/QDebug>
 
 using namespace QInstaller;
@@ -211,6 +212,7 @@ bool QtPatchOperation::performOperation()
         return false;
     }
 
+    QStringList filters;
     QStringList filesToPatch, textFilesToPatch;
     bool readingTextFilesToPatch = false;
 
@@ -230,9 +232,13 @@ bool QtPatchOperation::performOperation()
             readingTextFilesToPatch = true;
 
         //with empty old path we don't know what we want to replace
-        else if (readingTextFilesToPatch && !oldQtPathFromQMakeIsEmpty)
+        else if (readingTextFilesToPatch && !oldQtPathFromQMakeIsEmpty) {
+            // check if file mask filter
+            if (line.startsWith(QLatin1String("*."), Qt::CaseInsensitive)) {
+                filters << line;
+            }
             textFilesToPatch.append(line);
-
+        }
         else
             filesToPatch.append(line);
     }
@@ -302,6 +308,15 @@ bool QtPatchOperation::performOperation()
     }
 #endif
 
+    // get file list defined by filters and patch them
+    QStringList filteredContent = getDirContent(prefix, filters);
+    foreach (QString fileName, filteredContent) {
+        if (QFile::exists(fileName)) {
+            QtPatch::patchTextFile(fileName, searchReplacePairs);
+        }
+    }
+
+    // patch single items
     foreach (QString fileName, textFilesToPatch) {
         fileName.prepend(prefix);
 
@@ -339,6 +354,22 @@ bool QtPatchOperation::performOperation()
     }
 
     return true;
+}
+
+QStringList QtPatchOperation::getDirContent(const QString& aPath, QStringList aFilters)
+{
+    QStringList list;
+    QDirIterator dirIterator(aPath, aFilters, QDir::AllDirs|QDir::Files|QDir::NoSymLinks,
+                             QDirIterator::Subdirectories);
+    while (dirIterator.hasNext()) {
+        dirIterator.next();
+        if (!dirIterator.fileInfo().isDir()) {
+            list.append(dirIterator.fileInfo().absoluteFilePath());
+            qDebug() << QString::fromLatin1("QtPatchOperation::getDirContent match: '%1'").arg(dirIterator.fileInfo().absoluteFilePath());
+        }
+    }
+
+    return list;
 }
 
 bool QtPatchOperation::undoOperation()

@@ -47,6 +47,9 @@ public:
     bool undoOperation();
     bool testOperation();
     Operation *clone() const;
+
+private:
+    QStringList getDirContent(const QString& aPath, QStringList aFilters);
 };
 
 } // namespace QInstaller
