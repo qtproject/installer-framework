@@ -62,14 +62,14 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::PackageManagerCore *core)
     m_packageManager = new QRadioButton(tr("Package manager"), this);
     m_packageManager->setEnabled(false); // ### Todo: Remove for online installers after Beta
     layout->addWidget(m_packageManager);
-    m_packageManager->setChecked(core->isPackageManager());
-    connect(m_packageManager, SIGNAL(toggled(bool)), this, SLOT(setPackageManager(bool)));
+    //m_packageManager->setChecked(core->isPackageManager()); // ### Todo: Remove for online installers after Beta
+    //connect(m_packageManager, SIGNAL(toggled(bool)), this, SLOT(setPackageManager(bool))); // ### Todo: Remove for online installers after Beta
 
     m_updateComponents = new QRadioButton(tr("Update components"), this);
     m_updateComponents->setEnabled(false); // ### Todo: Remove for online installers after Beta
     layout->addWidget(m_updateComponents);
-    m_updateComponents->setChecked(core->isUpdater());
-    connect(m_updateComponents, SIGNAL(toggled(bool)), this, SLOT(setUpdater(bool)));
+    //m_updateComponents->setChecked(core->isUpdater()); // ### Todo: Remove for online installers after Beta
+    //connect(m_updateComponents, SIGNAL(toggled(bool)), this, SLOT(setUpdater(bool))); // ### Todo: Remove for online installers after Beta
 
     m_removeAllComponents = new QRadioButton(tr("Remove all components"), this);
     layout->addWidget(m_removeAllComponents);
@@ -213,8 +213,8 @@ void IntroductionPageImpl::showMaintenanceTools()
 
 void IntroductionPageImpl::setMaintenanceToolsEnabled(bool enable)
 {
-    m_packageManager->setEnabled(enable);
-    m_updateComponents->setEnabled(enable);
+    //m_packageManager->setEnabled(enable); // ### Todo: Remove for online installers after Beta
+    //m_updateComponents->setEnabled(enable); // ### Todo: Remove for online installers after Beta
     m_removeAllComponents->setEnabled(enable);
 }
 
