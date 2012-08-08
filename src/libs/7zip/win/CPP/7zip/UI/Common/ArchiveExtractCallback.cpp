@@ -316,6 +316,8 @@ STDMETHODIMP CArchiveExtractCallback::GetStream(UInt32 index, ISequentialOutStre
               return E_FAIL;
           }
         }
+        default: // PQR for MinGW-w64: To avoid compiler warnings about unhandled cases.
+          break;
       }
       if (_overwriteMode == NExtract::NOverwriteMode::kAutoRename)
       {

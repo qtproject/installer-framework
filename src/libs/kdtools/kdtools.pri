@@ -17,7 +17,7 @@ HEADERS += $$PWD/kdtoolsglobal.h \
     $$PWD/kdsysinfo.h
 
 SOURCES += $$PWD/kdjob.cpp \
-    $$PWD/kdgenericfactory.cpp \
+#    $$PWD/kdgenericfactory.cpp \ # this has no content
     $$PWD/kdselfrestarter.cpp \
     $$PWD/kdsavefile.cpp \
     $$PWD/kdrunoncechecker.cpp \

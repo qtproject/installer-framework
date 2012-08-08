@@ -167,7 +167,7 @@ HRESULT CArc::OpenStream(
     {
       const CArcInfoEx &ai = codecs->Formats[orderIndices[i]];
       const CByteBuffer &sig = ai.StartSignature;
-      if (sig.GetCapacity() < kNumHashBytes)
+      if (sig.GetCapacity() < (unsigned int)kNumHashBytes) // PQR for MinGW-w64: Signed < Unsigned comparison.
         continue;
       UInt32 v = HASH_VAL(sig, 0);
       prevs[i] = hash[v];

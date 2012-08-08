@@ -38,11 +38,12 @@ struct CCompressionMethodMode
   UString Password;
 
   bool IsEmpty() const { return (Methods.IsEmpty() && !PasswordIsDefined); }
-  CCompressionMethodMode(): PasswordIsDefined(false)
+  CCompressionMethodMode():
       #ifndef _7ZIP_ST
-      , NumThreads(1)
+      NumThreads(1),
       #endif
-  {}
+      PasswordIsDefined(false)
+  {} // PQR for MinGW-w64: Initialization order.
 };
 
 }}

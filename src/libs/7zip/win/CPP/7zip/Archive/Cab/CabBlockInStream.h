@@ -24,7 +24,7 @@ public:
   bool DataError;
   bool MsZip;
 
-  CCabBlockInStream(): _buffer(0), ReservedSize(0), MsZip(false), DataError(false), TotalPackSize(0) {}
+  CCabBlockInStream(): _buffer(0), TotalPackSize(0), ReservedSize(0), DataError(false), MsZip(false)  {} // PQR for MinGW-w64: Initialization order.
   ~CCabBlockInStream();
   bool Create();
   void SetStream(ISequentialInStream *stream) {  _stream = stream; }

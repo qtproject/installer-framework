@@ -297,7 +297,7 @@ static inline bool TestSignature2(const Byte *p)
       return false;
   if (CrcCalc(p + 12, 20) == GetUi32(p + 8))
     return true;
-  for (i = 8; i < kHeaderSize; i++)
+  for (i = 8; i < (int)kHeaderSize; i++) // PQR for MinGW-w64: Signed < Unsigned comparison.
     if (p[i] != 0)
       return false;
   return (p[6] != 0 || p[7] != 0);
@@ -1165,7 +1165,7 @@ HRESULT CInArchive::ReadDatabase2(
     Byte buf[kCheckSize];
     RINOK(_stream->Seek(0, STREAM_SEEK_END, &cur2));
     int checkSize = kCheckSize;
-    if (cur2 - cur < kCheckSize)
+    if (cur2 - cur < (unsigned int)kCheckSize) // PQR for MinGW-w64: Initialization order.
       checkSize = (int)(cur2 - cur);
     RINOK(_stream->Seek(-checkSize, STREAM_SEEK_END, &cur2));
     
@@ -1173,7 +1173,7 @@ HRESULT CInArchive::ReadDatabase2(
 
     int i;
     for (i = (int)checkSize - 2; i >= 0; i--)
-      if (buf[i] == 0x17 && buf[i + 1] == 0x6 || buf[i] == 0x01 && buf[i + 1] == 0x04)
+      if ((buf[i] == 0x17 && buf[i + 1] == 0x6) || (buf[i] == 0x01 && buf[i + 1] == 0x04)) // PQR for MinGW-w64: Priority parentheses.
         break;
     if (i < 0)
       return S_FALSE;

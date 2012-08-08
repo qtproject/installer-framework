@@ -60,7 +60,8 @@ bool startDetached(const QString &program, const QStringList &args, const QStrin
     };
 
     const QString arguments = QInstaller::createCommandline(program, args);
-    const bool success = CreateProcess(0, const_cast<wchar_t *>(static_cast<const wchar_t *>(arguments.utf16())),
+    // PQR for MinGW-w64: Parameter #2 was const_cast<wchar_t *>(static_cast<const wchar_t *>(arguments.utf16())).
+    const bool success = CreateProcess(0, (LPWSTR)arguments.utf16(),
         0, 0, FALSE, CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_CONSOLE,
         0, (wchar_t*)workingDirectory.utf16(),
         &startupInfo, &pinfo);

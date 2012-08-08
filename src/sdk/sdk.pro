@@ -1,6 +1,6 @@
 TEMPLATE = app
 DEPENDPATH += . ..
-INCLUDEPATH += . .. 
+INCLUDEPATH += . ..
 TARGET = installerbase
 
 include(../../installerfw.pri)

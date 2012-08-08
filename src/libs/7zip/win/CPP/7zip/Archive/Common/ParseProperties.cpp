@@ -50,7 +50,7 @@ HRESULT ParsePropDictionaryValue(const UString &srcStringSpec, UInt32 &dicSize)
     return E_INVALIDARG;
   if (srcString.Length() == numDigits)
   {
-    if (number >= kLogarithmicSizeLimit)
+    if (number >= (unsigned int)kLogarithmicSizeLimit) // PQR for MinGW-w64: Signed < Unsigned comparison.
       return E_INVALIDARG;
     dicSize = (UInt32)1 << (int)number;
     return S_OK;

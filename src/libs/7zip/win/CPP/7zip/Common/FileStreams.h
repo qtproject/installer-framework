@@ -14,7 +14,6 @@
 #endif
 
 #include "../../Common/MyCom.h"
-
 #include "../IStream.h"
 
 class CInFileStream:

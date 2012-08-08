@@ -59,7 +59,7 @@ static bool CheckNameNum(const UString &name, const wchar_t *reservedName)
 
 static bool IsSupportedName(const UString &name)
 {
-  for (int i = 0; i < sizeof(g_ReservedNames) / sizeof(g_ReservedNames[0]); i++)
+  for (unsigned int i = 0; i < sizeof(g_ReservedNames) / sizeof(g_ReservedNames[0]); i++) // PQR for MinGW-w64: Signed < Unsigned comparison.
   {
     const wchar_t *reservedName = g_ReservedNames[i];
     int len = MyStringLen(reservedName);

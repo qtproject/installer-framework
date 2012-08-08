@@ -265,7 +265,7 @@ STDMETHODIMP CHandler::GetProperty(UInt32 index, PROPID propID, PROPVARIANT *val
             bool finded = false;
             if (item.CentralExtra.GetStrongCryptoField(f))
             {
-              for (int i = 0; i < sizeof(g_StrongCryptoPairs) / sizeof(g_StrongCryptoPairs[0]); i++)
+              for (unsigned int i = 0; i < sizeof(g_StrongCryptoPairs) / sizeof(g_StrongCryptoPairs[0]); i++) // PQR for MinGW-w64: Signed < Unsigned comparison.
               {
                 const CStrongCryptoPair &pair = g_StrongCryptoPairs[i];
                 if (f.AlgId == pair.Id)

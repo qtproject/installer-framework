@@ -846,7 +846,7 @@ HRESULT CEncoder::SetCoderProperties(const PROPID *propIDs, const PROPVARIANT *p
         UInt32 numPasses = prop.ulVal;
         if (numPasses == 0)
           numPasses = 1;
-        if (numPasses > kNumPassesMax)
+        if (numPasses > (unsigned int)kNumPassesMax) // PQR for MinGW-w64: Signed < Unsigned comparison.
           numPasses = kNumPassesMax;
         NumPasses = numPasses;
         m_OptimizeNumTables = (NumPasses > 1);
@@ -857,9 +857,9 @@ HRESULT CEncoder::SetCoderProperties(const PROPID *propIDs, const PROPVARIANT *p
         if (prop.vt != VT_UI4)
           return E_INVALIDARG;
         UInt32 dictionary = prop.ulVal / kBlockSizeStep;
-        if (dictionary < kBlockSizeMultMin)
+        if (dictionary < (unsigned int)kBlockSizeMultMin) // PQR for MinGW-w64: Signed < Unsigned comparison.
           dictionary = kBlockSizeMultMin;
-        else if (dictionary > kBlockSizeMultMax)
+        else if (dictionary > (unsigned int)kBlockSizeMultMax) // PQR for MinGW-w64: Signed < Unsigned comparison.
           dictionary = kBlockSizeMultMax;
         m_BlockSizeMult = dictionary;
         break;

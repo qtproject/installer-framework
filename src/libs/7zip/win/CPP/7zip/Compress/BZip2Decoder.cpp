@@ -291,7 +291,7 @@ static UInt32 NO_INLINE DecodeBlock2(const UInt32 *tt, UInt32 blockSize, UInt32 
     unsigned b = (unsigned)(tPos & 0xFF);
     tPos = tt[tPos >> 8];
     
-    if (numReps == kRleModeRepSize)
+    if (numReps == (unsigned int)kRleModeRepSize) // PQR for MinGW-w64: Signed < Unsigned comparison.
     {
       for (; b > 0; b--)
       {
@@ -395,7 +395,7 @@ static UInt32 NO_INLINE DecodeBlock2Rand(const UInt32 *tt, UInt32 blockSize, UIn
       randToGo--;
     }
     
-    if (numReps == kRleModeRepSize)
+    if (numReps == (unsigned int)kRleModeRepSize) // PQR for MinGW-w64: Signed < Unsigned comparison.
     {
       for (; b > 0; b--)
       {
@@ -904,7 +904,7 @@ STDMETHODIMP CNsisDecoder::Read(void *data, UInt32 size, UInt32 *processedSize)
     tPos = tt[tPos >> 8];
     blockSize--;
     
-    if (numReps == kRleModeRepSize)
+    if (numReps == (unsigned int)kRleModeRepSize) // PQR for MinGW-w64: Signed < Unsigned comparison.
     {
       numReps = 0;
       while (b)

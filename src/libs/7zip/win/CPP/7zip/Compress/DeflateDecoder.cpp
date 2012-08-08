@@ -12,11 +12,11 @@ static const int kLenIdFinished = -1;
 static const int kLenIdNeedInit = -2;
 
 CCoder::CCoder(bool deflate64Mode, bool deflateNSIS):
-    _deflate64Mode(deflate64Mode),
     _deflateNSIS(deflateNSIS),
+    _deflate64Mode(deflate64Mode),
     _keepHistory(false),
     _needInitInStream(true),
-    ZlibMode(false) {}
+    ZlibMode(false) {} // PQR for MinGW-w64: Initialization order.
 
 UInt32 CCoder::ReadBits(int numBits)
 {
@@ -90,14 +90,14 @@ bool CCoder::ReadTables(void)
   {
     int numLitLenLevels = ReadBits(kNumLenCodesFieldSize) + kNumLitLenCodesMin;
     _numDistLevels = ReadBits(kNumDistCodesFieldSize) + kNumDistCodesMin;
-    int numLevelCodes = ReadBits(kNumLevelCodesFieldSize) + kNumLevelCodesMin;
+    unsigned int numLevelCodes = ReadBits(kNumLevelCodesFieldSize) + kNumLevelCodesMin;
 
     if (!_deflate64Mode)
       if (_numDistLevels > kDistTableSize32)
         return false;
     
     Byte levelLevels[kLevelTableSize];
-    for (int i = 0; i < kLevelTableSize; i++)
+    for (unsigned int i = 0; i < kLevelTableSize; i++) // PQR for MinGW-w64: Signed < Unsigned comparison.
     {
       int position = kCodeLengthAlphabetOrder[i];
       if(i < numLevelCodes)

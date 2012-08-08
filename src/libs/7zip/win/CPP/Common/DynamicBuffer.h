@@ -20,7 +20,7 @@ template <class T> class CDynamicBuffer: public CBuffer<T>
     size_t newCap = this->_capacity + delta;
     if (newCap < delta)
       newCap = this->_capacity + size;
-    SetCapacity(newCap);
+    CBuffer<T>::SetCapacity(newCap); // PQR for MinGW-w64: template specification required.
   }
 public:
   CDynamicBuffer(): CBuffer<T>() {};

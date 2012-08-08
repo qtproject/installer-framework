@@ -619,7 +619,7 @@ HRESULT CFolderOutStream::FlushCorrupted()
 {
   const UInt32 kBufferSize = (1 << 10);
   Byte buffer[kBufferSize];
-  for (int i = 0; i < kBufferSize; i++)
+  for (unsigned int i = 0; i < kBufferSize; i++) // PQR for MinGW-w64: Signed < Unsigned comparison.
     buffer[i] = 0;
   for (;;)
   {

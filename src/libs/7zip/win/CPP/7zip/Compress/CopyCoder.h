@@ -17,7 +17,7 @@ class CCopyCoder:
   Byte *_buffer;
 public:
   UInt64 TotalSize;
-  CCopyCoder(): TotalSize(0), _buffer(0) {};
+  CCopyCoder(): _buffer(0), TotalSize(0) {} // PQR for MinGW-w64: Initialization order.
   ~CCopyCoder();
 
   MY_UNKNOWN_IMP1(ICompressGetInStreamProcessedSize)

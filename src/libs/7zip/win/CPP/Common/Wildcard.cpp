@@ -402,11 +402,12 @@ void CCensor::AddItem(bool include, const UString &path, bool recursive)
     }
   }
   int numAbsParts = 0;
-  if (isAbs)
+  if (isAbs) { // PQR for MinGW-w64: Explicit braces needed.
     if (pathParts.Size() > 1)
       numAbsParts = pathParts.Size() - 1;
     else
       numAbsParts = 1;
+  }
   UString prefix;
   for (int i = 0; i < numAbsParts; i++)
   {

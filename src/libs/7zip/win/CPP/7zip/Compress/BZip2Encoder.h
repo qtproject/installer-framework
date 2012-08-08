@@ -137,7 +137,7 @@ public:
   DWORD ThreadFunc();
   #endif
 
-  CThreadInfo(): m_BlockSorterIndex(0), m_Block(0) {}
+  CThreadInfo(): m_Block(0), m_BlockSorterIndex(0) {} // PQR for MinGW-w64: Initialization order.
   ~CThreadInfo() { Free(); }
   bool Alloc();
   void Free();

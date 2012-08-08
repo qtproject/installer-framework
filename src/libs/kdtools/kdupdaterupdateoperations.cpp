@@ -104,8 +104,8 @@ void CopyOperation::backup()
 
     setValue(QLatin1String("backupOfExistingDestination"), backupFileName(dest));
 
-    // race condition: The backup file could get created 
-    // by another process right now. But this is the same 
+    // race condition: The backup file could get created
+    // by another process right now. But this is the same
     // in QFile::copy...
     const bool success = QFile::rename(dest, value(QLatin1String("backupOfExistingDestination")).toString());
     if (!success)
@@ -179,9 +179,9 @@ QDomDocument CopyOperation::toXml() const
     // we don't want to save the backupOfExistingDestination
     if (!hasValue(QLatin1String("backupOfExistingDestination")))
         return UpdateOperation::toXml();
-    
+
     CopyOperation *const me = const_cast<CopyOperation *>(this);
-    
+
     const QVariant v = value(QLatin1String("backupOfExistingDestination"));
     me->clearValue(QLatin1String("backupOfExistingDestination"));
     const QDomDocument xml = UpdateOperation::toXml();
@@ -225,8 +225,8 @@ void MoveOperation::backup()
 
     setValue(QLatin1String("backupOfExistingDestination"), backupFileName(dest));
 
-    // race condition: The backup file could get created 
-    // by another process right now. But this is the same 
+    // race condition: The backup file could get created
+    // by another process right now. But this is the same
     // in QFile::copy...
     const bool success = QFile::rename(dest, value(QLatin1String("backupOfExistingDestination")).toString());
     if (!success)
@@ -389,9 +389,9 @@ QDomDocument DeleteOperation::toXml() const
     // we don't want to save the backupOfExistingFile
     if (!hasValue(QLatin1String("backupOfExistingFile")))
         return UpdateOperation::toXml();
-    
+
     DeleteOperation *const me = const_cast<DeleteOperation *>(this);
-    
+
     const QVariant v = value(QLatin1String("backupOfExistingFile"));
     me->clearValue(QLatin1String("backupOfExistingFile"));
     const QDomDocument xml = UpdateOperation::toXml();
@@ -847,7 +847,7 @@ bool ExecuteOperation::performOperation()
     }
 
     QList<int> allowedExitCodes;
-    
+
     QRegExp re(QLatin1String("^\\{((-?\\d+,)*-?\\d+)\\}$"));
     if (re.exactMatch(args.first())) {
         const QStringList numbers = re.cap(1).split(QLatin1Char(','));
@@ -865,7 +865,7 @@ bool ExecuteOperation::performOperation()
         args.pop_back();
 #ifdef Q_OS_WIN
         QString arguments = qt_create_commandline(args.front(), args.mid(1));
-        
+
         PROCESS_INFORMATION pinfo;
 
         STARTUPINFOW startupInfo = { sizeof(STARTUPINFO), 0, 0, 0,
@@ -873,7 +873,8 @@ bool ExecuteOperation::performOperation()
                                      static_cast< ulong >(CW_USEDEFAULT), static_cast< ulong >(CW_USEDEFAULT),
                                      0, 0, 0, STARTF_USESHOWWINDOW, SW_HIDE, 0, 0, 0, 0, 0
                                    };
-        success = CreateProcess(0, const_cast< wchar_t* >(static_cast< const wchar_t* >(arguments.utf16())),
+        // PQR for MinGW-w64: Parameter #2 was const_cast< wchar_t* >(static_cast< const wchar_t* >(arguments.utf16())).
+        success = CreateProcess(0, (LPWSTR)arguments.utf16(),
                                 0, 0, FALSE, CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_CONSOLE, 0,
                                 0,
                                 &startupInfo, &pinfo);
@@ -887,7 +888,7 @@ bool ExecuteOperation::performOperation()
     {
         Environment::instance().applyTo(&process); //apply non-persistent variables
         process.start(args.front(), args.mid(1));
-        
+
         QEventLoop loop;
         QObject::connect(&process, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
         QObject::connect(&process, SIGNAL(readyRead()), this, SLOT(readProcessOutput()));

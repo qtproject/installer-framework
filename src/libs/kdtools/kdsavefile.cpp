@@ -28,7 +28,8 @@
 #include <QtCore/QTemporaryFile>
 
 #ifdef Q_OS_WIN
-# include <io.h>
+    #include <io.h>
+    #include <share.h> // PQR for MinGW-w64: Required for _SH_DENYRW
 #endif
 #include <memory>
 #include <sys/stat.h>
@@ -92,9 +93,11 @@ static QString makeAbsolute(const QString &path)
 static int myOpen(const QString &path, int flags, int mode)
 {
 #ifdef Q_OS_WIN
-    int fd;
-    _wsopen_s(&fd, reinterpret_cast<const wchar_t *>(path.utf16()), flags, _SH_DENYRW, mode);
-    return fd;
+    // PQR for MinGW-w64: _wsopen_s doesn't exist in MSVCRT.dll, let's use _wsopen.
+    return _wsopen(reinterpret_cast<const wchar_t *>(path.utf16()), flags, _SH_DENYRW, mode);
+    //int fd;
+    //_wsopen_s(&fd, reinterpret_cast<const wchar_t *>(path.utf16()), flags, _SH_DENYRW, mode);
+    //return fd;
 #else
     return open(QFile::encodeName(path).constData(), flags, mode);
 #endif
