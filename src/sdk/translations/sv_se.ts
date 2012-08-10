@@ -1375,7 +1375,7 @@ Error while loading %2</source>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="891"/>
-        <source>I h&lt;u&gt;a&lt;/u&gt;ve read and agree to the following terms contained in the license agreements accompanying the Qt SDK and additional items. I agree that my use of the Qt SDK is governed by the terms and conditions contained in these license agreements.</source>
+        <source>I h&lt;u&gt;a&lt;/u&gt;ve read and agree to the following terms contained in the license agreements accompanying the Qt 5.0.0 Beta 1 and additional items. I agree that my use of the Qt 5.0.0 Beta 1 is governed by the terms and conditions contained in these license agreements.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1392,7 +1392,7 @@ Error while loading %2</source>
     </message>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="906"/>
-        <source>I &lt;u&gt;d&lt;/u&gt;o not accept the terms and conditions of the above listed license agreements. Please note by checking the box, you must cancel the installation or downloading the Qt SDK and must destroy all copies, or portions thereof, of the Qt SDK in your possessions.</source>
+        <source>I &lt;u&gt;d&lt;/u&gt;o not accept the terms and conditions of the above listed license agreements. Please note by checking the box, you must cancel the installation or downloading the Qt 5.0.0 Beta 1 and must destroy all copies, or portions thereof, of the Qt 5.0.0 Beta 1 in your possessions.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
