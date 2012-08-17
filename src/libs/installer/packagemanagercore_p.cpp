@@ -184,6 +184,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_completeUninstall(false)
     , m_needToWriteUninstaller(false)
     , m_performedOperationsOld(performedOperations)
+    , m_dependsOnLocalInstallerBinary(false)
     , m_core(core)
     , m_repoMetaInfoJob(0)
     , m_updates(false)
@@ -194,7 +195,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_proxyFactory(0)
     , m_defaultModel(0)
     , m_updaterModel(0)
-    , m_dependsOnLocalInstallerBinary(false)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
