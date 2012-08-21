@@ -263,7 +263,7 @@ STDMETHODIMP CHandler::UpdateItems(ISequentialOutStream *outStream, UInt32 numIt
         return E_INVALIDARG;
       if (options.IsAesMode)
       {
-        if (options.Password.Length() > (int)NCrypto::NWzAes::kPasswordSizeMax) // PQR for MinGW-w64: Signed < Unsigned comparison.
+        if (options.Password.Length() > NCrypto::NWzAes::kPasswordSizeMax)
           return E_INVALIDARG;
       }
       options.Password = UnicodeStringToMultiByte((const wchar_t *)password, CP_OEMCP);

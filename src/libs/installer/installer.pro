@@ -178,9 +178,8 @@ unix:!macx:SOURCES += adminauthorization_x11.cpp
 
 win32 {
     SOURCES += adminauthorization_win.cpp
-    LIBS += -loleaut32 -lUser32 # 7zip
-    LIBS += -ladvapi32 -lpsapi # kdtools - PQR for MinGW-w64: Changed to standard link flags.
-    LIBS += -lmpr -luuid # PQR for MinGW-w64: libMPR is for WNetGetUniversalName, libUUID is for IID_IUnknown and friends.
+    LIBS += -loleaut32 -lUser32     # 7zip
+    LIBS += advapi32.lib psapi.lib  # kdtools
     LIBS += -lole32 # createshortcutoperation
     CONFIG(shared, static|shared):LIBS += -lshell32
 }

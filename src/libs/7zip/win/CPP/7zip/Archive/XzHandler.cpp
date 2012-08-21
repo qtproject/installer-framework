@@ -177,7 +177,7 @@ static AString GetMethodString(const CXzFilter &f)
 {
   AString s;
 
-  for (unsigned int i = 0; i < sizeof(g_NamePairs) / sizeof(g_NamePairs[i]); i++) // PQR for MinGW-w64: Signed < Unsigned comparison.
+  for (int i = 0; i < sizeof(g_NamePairs) / sizeof(g_NamePairs[i]); i++)
     if (g_NamePairs[i].Id == f.id)
       s = g_NamePairs[i].Name;
   if (s.IsEmpty())

@@ -91,8 +91,8 @@ private:
     bool ReleaseInStream;
     CDecoderFlusher(CDecoder *decoder, bool releaseInStream):
       _decoder(decoder),
-      NeedFlush(true),
-      ReleaseInStream(releaseInStream) {} // PQR for MinGW-w64: Initialization order.
+      ReleaseInStream(releaseInStream),
+      NeedFlush(true) {}
     ~CDecoderFlusher()
     {
       if (NeedFlush)

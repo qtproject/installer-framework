@@ -62,15 +62,9 @@ static bool broadcastChange() {
     // Use SendMessageTimeout to Broadcast a message to the whole system to update settings of all
     // running applications. This is needed to activate the changes done above without logout+login.
     // Note that cmd.exe does not respond to any WM_SETTINGCHANGE messages...
-#ifdef __MINGW64__
-    PDWORD_PTR aResult = 0;
-    LRESULT sendresult = SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE,
-        0, (LPARAM) "Environment", SMTO_BLOCK | SMTO_ABORTIFHUNG, 5000, aResult);
-#else
     DWORD aResult = 0;
     LRESULT sendresult = SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE,
         0, (LPARAM) "Environment", SMTO_BLOCK | SMTO_ABORTIFHUNG, 5000, &aResult);
-#endif
     if (sendresult == 0 || aResult != 0) {
         qWarning("Failed to broadcast a WM_SETTINGCHANGE message\n");
         return false;

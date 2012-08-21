@@ -521,7 +521,7 @@ HRESULT CInArchive::FindCd(CCdInfo &cdInfo)
   {
     if (Get32(buf + i) == NSignature::kEndOfCentralDir)
     {
-      if (i >= (int)kZip64EcdLocatorSize) // PQR for MinGW-w64: Signed < Unsigned comparison.
+      if (i >= kZip64EcdLocatorSize)
       {
         const Byte *locator = buf + i - kZip64EcdLocatorSize;
         if (Get32(locator) == NSignature::kZip64EndOfCentralDirLocator)

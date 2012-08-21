@@ -82,7 +82,7 @@ static HRESULT GetNextItemReal(ISequentialInStream *stream, bool &filled, CItemE
         error = "There are no trailing zero-filled records";
       return S_OK;
     }
-    if (processedSize != (unsigned int)NFileHeader::kRecordSize) // PQR for MinGW-w64: Signed < Unsigned comparison.
+    if (processedSize != NFileHeader::kRecordSize)
     {
       error = "There is no correct record at the end of archive";
       return S_OK;

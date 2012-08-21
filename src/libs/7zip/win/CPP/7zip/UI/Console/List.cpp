@@ -202,7 +202,7 @@ void CFieldPrinter::Init(const CFieldInfoInit *standardFieldTable, int numItems)
 
 static UString GetPropName(PROPID propID, BSTR name)
 {
-  for (unsigned int i = 0; i < sizeof(kPropIdToName) / sizeof(kPropIdToName[0]); i++) // PQR for MinGW-w64: Signed < Unsigned.
+  for (int i = 0; i < sizeof(kPropIdToName) / sizeof(kPropIdToName[0]); i++)
   {
     const CPropIdToName &propIdToName = kPropIdToName[i];
     if (propIdToName.PropID == propID)

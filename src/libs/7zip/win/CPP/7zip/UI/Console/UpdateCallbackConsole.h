@@ -30,14 +30,14 @@ public:
 
   CUpdateCallbackConsole():
       m_PercentPrinter(1 << 16),
-      m_WarningsMode(false),
-      EnablePercents(true),
-      StdOutMode(false)
       #ifndef _NO_CRYPTO
-      ,PasswordIsDefined(false),
-      AskPassword(false)
+      PasswordIsDefined(false),
+      AskPassword(false),
       #endif
-      {} // PQR for MinGW-w64: Initialization order.
+      StdOutMode(false),
+      EnablePercents(true),
+      m_WarningsMode(false)
+      {}
   
   ~CUpdateCallbackConsole() { Finilize(); }
   void Init(CStdOutStream *outStream)

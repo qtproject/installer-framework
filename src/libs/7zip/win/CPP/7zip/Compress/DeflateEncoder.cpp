@@ -49,7 +49,7 @@ class CFastPosInit
 public:
   CFastPosInit()
   {
-    unsigned int i; // PQR for MinGW-w64: Signed < Unsigned comparison.
+    int i;
     for(i = 0; i < kNumLenSlots; i++)
     {
       int c = kLenStart32[i];

@@ -333,7 +333,7 @@ static wchar_t *g_ExeExts[] =
 
 static bool IsExeExt(const UString &ext)
 {
-  for (unsigned int i = 0; i < sizeof(g_ExeExts) / sizeof(g_ExeExts[0]); i++) // PQR for MinGW-w64: Signed < Unsigned comparison.
+  for (int i = 0; i < sizeof(g_ExeExts) / sizeof(g_ExeExts[0]); i++)
     if (ext.CompareNoCase(g_ExeExts[i]) == 0)
       return true;
   return false;

@@ -219,7 +219,7 @@ static HRESULT EnumerateDirItems(const NWildcard::CCensorNode &curNode,
           continue;
         }
         bool isDir = fi.IsDir();
-        if ((isDir && !item.ForDir) || (!isDir && !item.ForFile)) // PQR for MinGW-w64: Priority parentheses.
+        if (isDir && !item.ForDir || !isDir && !item.ForFile)
         {
           errorCodes.Add((DWORD)E_FAIL);
           errorPaths.Add(fullPath);

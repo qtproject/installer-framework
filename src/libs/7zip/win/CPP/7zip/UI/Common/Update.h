@@ -116,12 +116,12 @@ struct CUpdateOptions
   CUpdateOptions():
     UpdateArchiveItself(true),
     SfxMode(false),
-    OpenShareForWrite(false),
     StdInMode(false),
     StdOutMode(false),
     EMailMode(false),
-    EMailRemoveAfter(false)
-      {} // PQR for MinGW-w64: Initialization order.
+    EMailRemoveAfter(false),
+    OpenShareForWrite(false)
+      {};
 
   void SetAddActionCommand()
   {
