@@ -1,6 +1,6 @@
 TEMPLATE = app
-DEPENDPATH += . .. ../sdk
-INCLUDEPATH += . .. ../sdk
+DEPENDPATH += . ..
+INCLUDEPATH += . ..
 TARGET = installerbase
 
 include(../../installerfw.pri)
@@ -70,30 +70,22 @@ if (exists($$LRELEASE)) {
     }
 }
 
-# the following stuff get's shared with the original installer base
+FORMS += settingsdialog.ui
 
-HEADERS_SHARED = ../sdk/installerbase_p.h \
-                 ../sdk/tabcontroller.h \
-                 ../sdk/settingsdialog.h \
-
-SOURCE_SHARED = ../sdk/installerbase.cpp \
-                ../sdk/installerbase_p.cpp \
-                ../sdk/tabcontroller.cpp \
-                ../sdk/settingsdialog.cpp
-
-FORMS += ../sdk/settingsdialog.ui
-
-# things specifically for s40
-
-HEADERS += $$HEADERS_SHARED \
+HEADERS += installerbase_p.h \
+           tabcontroller.h \
            installerbasecommons.h \
+           settingsdialog.h \
            componentviewpage.h
 
-SOURCES = $$SOURCE_SHARED \
+SOURCES = installerbase.cpp \
+          installerbase_p.cpp \
+          tabcontroller.cpp \
           installerbasecommons.cpp \
+          settingsdialog.cpp \
           componentviewpage.cpp
 
-win32:RC_FILE = ../sdk/installerbase.rc
+win32:RC_FILE = installerbase.rc
 win32-msvc2005 {
   CONFIG += embed_manifest_exe #msvc2008 is doing this automatically
 }
