@@ -567,33 +567,50 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
         const PackageInfo info = infos.at(i);
         const QString name = info.name;
         qDebug() << "Copying component data for" << name;
-        const QString dataDirPath = QString::fromLatin1("%1/%2/data").arg(packageDir, name);
-        const QDir dataDir(dataDirPath);
-        if (!QDir().mkpath(QString::fromLatin1("%1/%2").arg(repoDir, name))) {
+
+        const QString namedRepoDir = QString::fromLatin1("%1/%2").arg(repoDir, name);
+        if (!QDir().mkpath(namedRepoDir)) {
             throw QInstaller::Error(QObject::tr("Could not create repository folder for component %1")
                 .arg(name));
         }
 
-        const QStringList entries = dataDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files);
-        foreach (const QString &entry, entries) {
-            QString target;
+        QStringList compressedFiles;
+        QStringList filesToCompress;
+        const QDir dataDir(QString::fromLatin1("%1/%2/data").arg(packageDir, name));
+        foreach (const QString &entry, dataDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files)) {
             QFileInfo fileInfo(dataDir.absoluteFilePath(entry));
             if (fileInfo.isFile()) {
-                target = QString::fromLatin1("%1/%2/%4%3").arg(repoDir, name, entry, info.version);
-                QFile tmp(dataDir.absoluteFilePath(entry));
-                qDebug() << QString::fromLatin1("Copying archive from %1 to %2").arg(tmp.fileName(), target);
-                QInstaller::openForRead(&tmp, tmp.fileName());
-                if (!tmp.copy(target)) {
-                    throw QInstaller::Error(QObject::tr("Could not copy %1 to %2: %3").arg(tmp.fileName(),
-                        target, tmp.errorString()));
+                const QString absoluteEntryFilePath = dataDir.absoluteFilePath(entry);
+                if (Lib7z::isSupportedArchive(absoluteEntryFilePath)) {
+                    QFile tmp(absoluteEntryFilePath);
+                    QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, entry, info.version);
+                    qDebug() << QString::fromLatin1("Copying archive from %1 to %2").arg(tmp.fileName(),
+                        target);
+                    if (!tmp.copy(target)) {
+                        throw QInstaller::Error(QObject::tr("Could not copy %1 to %2: %3").arg(tmp.fileName(),
+                            target, tmp.errorString()));
+                    }
+                    compressedFiles.append(target);
+                } else {
+                    filesToCompress.append(absoluteEntryFilePath);
                 }
             } else if (fileInfo.isDir()) {
                 qDebug() << "Compressing data directory" << entry;
-                target = QString::fromLatin1("%1/%2/%4%3.7z").arg(repoDir, name, entry, info.version);
+                QString target = QString::fromLatin1("%1/%3%2.7z").arg(namedRepoDir, entry, info.version);
                 QInstallerTools::compressPaths(QStringList() << dataDir.absoluteFilePath(entry), target);
-            } else {
-                continue;
+                compressedFiles.append(target);
             }
+        }
+
+        if (!filesToCompress.isEmpty()) {
+            qDebug() << "Compressing files found in data directory:" << filesToCompress;
+            QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, QLatin1String("content.7z"),
+                info.version);
+            QInstallerTools::compressPaths(filesToCompress, target);
+            compressedFiles.append(target);
+        }
+
+        foreach (const QString &target, compressedFiles) {
             infos[i].copiedArchives.append(target);
 
             QFile archiveFile(target);
