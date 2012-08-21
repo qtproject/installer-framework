@@ -279,7 +279,7 @@ void COutArchive::WriteFolder(const CFolder &folder)
       size_t propsSize = coder.Props.GetCapacity();
       
       UInt64 id = coder.MethodID;
-      unsigned int idSize; // PQR for MinGW-w64: Signed < Unsigned comparison.
+      int idSize;
       for (idSize = 1; idSize < sizeof(id); idSize++)
         if ((id >> (8 * idSize)) == 0)
           break;

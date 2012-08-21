@@ -907,7 +907,7 @@ struct CCrcThreads
 {
   UInt32 NumThreads;
   CCrcInfo *Items;
-  CCrcThreads(): NumThreads(0), Items(0) {} // PQR for MinGW-w64: Initialization order.
+  CCrcThreads(): Items(0), NumThreads(0) {}
   void WaitAll()
   {
     for (UInt32 i = 0; i < NumThreads; i++)

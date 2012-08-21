@@ -275,8 +275,6 @@ static void AddNameToCensor(NWildcard::CCensor &wildcardCensor,
     case NRecursedType::kRecursed:
       recursed = true;
       break;
-    default: // PQR for MinGW-w64: To avoid compiler warnings on unhandled cases.
-      break;
   }
   wildcardCensor.AddItem(include, name, recursed);
 }
@@ -744,8 +742,8 @@ static int FindCharset(const NCommandLineParser::CParser &parser, int keyIndex, 
 
   UString name = parser[keyIndex].PostStrings.Back();
   name.MakeUpper();
-  unsigned int i;
-  for (i = 0; i < sizeof(g_CodePagePairs) / sizeof(g_CodePagePairs[0]); i++) // PQR for MinGW-w64: Signed < Unsigned.
+  int i;
+  for (i = 0; i < sizeof(g_CodePagePairs) / sizeof(g_CodePagePairs[0]); i++)
   {
     const CCodePagePair &pair = g_CodePagePairs[i];
     if (name.Compare(pair.Name) == 0)

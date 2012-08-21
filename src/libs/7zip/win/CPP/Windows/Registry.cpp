@@ -116,8 +116,7 @@ LONG CKey::DeleteValue(LPCWSTR name)
 LONG CKey::SetValue(LPCTSTR name, UInt32 value)
 {
   MYASSERT(_object != NULL);
-  // PQR for MinGW-w64: Parameter #3 was NULL instead of 0.
-  return RegSetValueEx(_object, name, 0, REG_DWORD,
+  return RegSetValueEx(_object, name, NULL, REG_DWORD,
       (BYTE * const)&value, sizeof(UInt32));
 }
 
@@ -130,8 +129,7 @@ LONG CKey::SetValue(LPCTSTR name, LPCTSTR value)
 {
   MYASSERT(value != NULL);
   MYASSERT(_object != NULL);
-  // PQR for MinGW-w64: Parameter #3 was NULL instead of 0.
-  return RegSetValueEx(_object, name, 0, REG_SZ,
+  return RegSetValueEx(_object, name, NULL, REG_SZ,
       (const BYTE * )value, (lstrlen(value) + 1) * sizeof(TCHAR));
 }
 
@@ -165,8 +163,7 @@ LONG CKey::SetValue(LPCTSTR name, const void *value, UInt32 size)
 {
   MYASSERT(value != NULL);
   MYASSERT(_object != NULL);
-  // PQR for MinGW-w64: Parameter #3 was NULL instead of 0.
-  return RegSetValueEx(_object, name, 0, REG_BINARY,
+  return RegSetValueEx(_object, name, NULL, REG_BINARY,
       (const BYTE *)value, size);
 }
 
@@ -192,10 +189,9 @@ LONG CKey::SetKeyValue(LPCTSTR keyName, LPCTSTR valueName, LPCTSTR value)
 
 LONG CKey::QueryValue(LPCTSTR name, UInt32 &value)
 {
-  DWORD type = 0; // PQR for MinGW-w64: Changed NULL to 0 to avoid warning.
+  DWORD type = NULL;
   DWORD count = sizeof(DWORD);
-  // PQR for MinGW-w64: Parameter #3 was NULL instead of 0.
-  LONG res = RegQueryValueEx(_object, (LPTSTR)name, 0, &type,
+  LONG res = RegQueryValueEx(_object, (LPTSTR)name, NULL, &type,
     (LPBYTE)&value, &count);
   MYASSERT((res!=ERROR_SUCCESS) || (type == REG_DWORD));
   MYASSERT((res!=ERROR_SUCCESS) || (count == sizeof(UInt32)));
@@ -231,9 +227,8 @@ LONG CKey::GetValue_IfOk(LPCTSTR name, bool &value)
 LONG CKey::QueryValue(LPCTSTR name, LPTSTR value, UInt32 &count)
 {
   MYASSERT(count != NULL);
-  DWORD type = 0; // PQR for MinGW-w64: Changed NULL to 0 to avoid warning.
-  // PQR for MinGW-w64: Parameter #3 was NULL instead of 0.
-  LONG res = RegQueryValueEx(_object, (LPTSTR)name, 0, &type, (LPBYTE)value, (DWORD *)&count);
+  DWORD type = NULL;
+  LONG res = RegQueryValueEx(_object, (LPTSTR)name, NULL, &type, (LPBYTE)value, (DWORD *)&count);
   MYASSERT((res!=ERROR_SUCCESS) || (type == REG_SZ) || (type == REG_MULTI_SZ) || (type == REG_EXPAND_SZ));
   return res;
 }
@@ -241,9 +236,8 @@ LONG CKey::QueryValue(LPCTSTR name, LPTSTR value, UInt32 &count)
 LONG CKey::QueryValue(LPCTSTR name, CSysString &value)
 {
   value.Empty();
-  DWORD type = 0; // PQR for MinGW-w64: Changed NULL to 0 to avoid warning.
+  DWORD type = NULL;
   UInt32 currentSize = 0;
-  // PQR for MinGW-w64: Parameter #3 was NULL instead of 0.
   LONG res = RegQueryValueEx(_object, (LPTSTR)name, NULL, &type, NULL, (DWORD *)&currentSize);
   if (res != ERROR_SUCCESS && res != ERROR_MORE_DATA)
     return res;
@@ -288,8 +282,7 @@ LONG CKey::QueryValue(LPCWSTR name, UString &value)
 
 LONG CKey::QueryValue(LPCTSTR name, void *value, UInt32 &count)
 {
-  DWORD type = 0; // PQR for MinGW-w64: Changed NULL to 0 to avoid warning.
-  // PQR for MinGW-w64: Parameter #3 was NULL instead of 0.
+  DWORD type = NULL;
   LONG res = RegQueryValueEx(_object, (LPTSTR)name, NULL, &type, (LPBYTE)value, (DWORD *)&count);
   MYASSERT((res!=ERROR_SUCCESS) || (type == REG_BINARY));
   return res;
@@ -298,9 +291,8 @@ LONG CKey::QueryValue(LPCTSTR name, void *value, UInt32 &count)
 
 LONG CKey::QueryValue(LPCTSTR name, CByteBuffer &value, UInt32 &dataSize)
 {
-  DWORD type = 0; // PQR for MinGW-w64: Changed NULL to 0 to avoid warning.
+  DWORD type = NULL;
   dataSize = 0;
-  // PQR for MinGW-w64: Parameter #3 was NULL instead of 0.
   LONG res = RegQueryValueEx(_object, (LPTSTR)name, NULL, &type, NULL, (DWORD *)&dataSize);
   if (res != ERROR_SUCCESS && res != ERROR_MORE_DATA)
     return res;

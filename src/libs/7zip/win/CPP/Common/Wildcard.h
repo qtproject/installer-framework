@@ -32,8 +32,8 @@ class CCensorNode
   void AddItemSimple(bool include, CItem &item);
   bool CheckPath(UStringVector &pathParts, bool isFile, bool &include) const;
 public:
-  CCensorNode(): Parent(0) { }
-  CCensorNode(const UString &name, CCensorNode *parent): Parent(parent), Name(name) { } // PQR for MinGW-w64: Initialization order.
+  CCensorNode(): Parent(0) { };
+  CCensorNode(const UString &name, CCensorNode *parent): Name(name), Parent(parent) { };
   UString Name;
   CObjectVector<CCensorNode> SubNodes;
   CObjectVector<CItem> IncludeItems;

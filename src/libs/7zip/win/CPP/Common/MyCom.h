@@ -4,7 +4,6 @@
 #define __MYCOM_H
 
 #include "MyWindows.h"
-#include "unknwn.h" // PQR for MinGW-w64: To allow IID_IUnknown to be defined.
 
 #ifndef RINOK
 #define RINOK(x) { HRESULT __result_ = (x); if (__result_ != S_OK) return __result_; }

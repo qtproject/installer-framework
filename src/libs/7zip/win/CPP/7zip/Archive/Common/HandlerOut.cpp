@@ -161,7 +161,7 @@ static bool ConvertProperty(PROPVARIANT srcProp, VARTYPE varType, NCOM::CPropVar
     
 static int FindPropIdExact(const UString &name)
 {
-  for (unsigned int i = 0; i < sizeof(g_NameToPropID) / sizeof(g_NameToPropID[0]); i++) // PQR for MinGW-w64: Signed < Unsigned comparison.
+  for (int i = 0; i < sizeof(g_NameToPropID) / sizeof(g_NameToPropID[0]); i++)
     if (name.CompareNoCase(g_NameToPropID[i].Name) == 0)
       return i;
   return -1;
@@ -169,7 +169,7 @@ static int FindPropIdExact(const UString &name)
 
 static int FindPropIdStart(const UString &name)
 {
-  for (unsigned int i = 0; i < sizeof(g_NameToPropID) / sizeof(g_NameToPropID[0]); i++) // PQR for MinGW-w64: Signed < Unsigned comparison.
+  for (int i = 0; i < sizeof(g_NameToPropID) / sizeof(g_NameToPropID[0]); i++)
   {
     UString t = g_NameToPropID[i].Name;
     if (t.CompareNoCase(name.Left(t.Length())) == 0)

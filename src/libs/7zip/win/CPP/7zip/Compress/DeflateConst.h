@@ -114,7 +114,7 @@ struct CLevels
 
   void SetFixedLevels()
   {
-    unsigned int i; // PQR for MinGW-w64: Signed < Unsigned comparison.
+    int i;
     
     for (i = 0; i < 144; i++)
       litLenLevels[i] = 8;

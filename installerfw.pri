@@ -45,6 +45,12 @@ INCLUDEPATH += \
 win32:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/win/CPP
 unix:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/unix/CPP
 
+LIBS += -L$$IFW_LIB_PATH
+# The order is important. The linker needs to parse archives in reversed dependency order.
+equals(TEMPLATE, app):LIBS += -linstaller
+unix:!macx:LIBS += -lutil
+macx:LIBS += -framework Carbon -framework Security
+
 CONFIG += help uitools
 CONFIG(static, static|shared) {
     QTPLUGIN += qsqlite
@@ -62,10 +68,3 @@ static {
     win32:exists($$IFW_LIB_PATH/installer.lib):POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib
     unix:exists($$IFW_LIB_PATH/libinstaller.a):POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a
 }
-
-LIBS += -L$$IFW_LIB_PATH
-# The order is important for a static compilation. The linker needs to parse libs/objects in dependency order.
-equals(TEMPLATE, app):LIBS += -linstaller
-unix:!macx:LIBS += -lutil
-macx:LIBS += -framework Carbon -framework Security
-win32:LIBS *= -lmpr # PQR for MinGW-w64: Added -lmpr for WNetGetUniversalName.
