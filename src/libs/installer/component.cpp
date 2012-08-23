@@ -113,7 +113,7 @@ void Component::loadDataFromPackage(const LocalPackage &package)
     setValue(QLatin1String("LastUpdateDate"), package.lastUpdateDate.toString());
     setValue(QLatin1String("InstallDate"), package.installDate.toString());
     setValue(scUncompressedSize, QString::number(package.uncompressedSize));
-
+    setValue(scPackageStatus, QLatin1String("Installed"));
     QString dependstr;
     foreach (const QString &val, package.dependencies)
         dependstr += val + QLatin1String(",");
@@ -150,7 +150,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scDownloadableArchives, package.data(scDownloadableArchives).toString());
     setValue(scVirtual, package.data(scVirtual).toString());
     setValue(scSortingPriority, package.data(scSortingPriority).toString());
-
+    setValue(scPackageStatus, QLatin1String("Installed"));
     setValue(scEssential, package.data(scEssential).toString());
     setValue(scUpdateText, package.data(scUpdateText).toString());
     setValue(scNewComponent, package.data(scNewComponent).toString());
@@ -1198,6 +1198,8 @@ void Component::updateModelData(const QString &key, const QString &data)
         quint64 size = value(scUncompressedSizeSum).toLongLong();
         setData(humanReadableSize(size), UncompressedSize);
     }
+    if (key == scPackageStatus)
+        setData(data, PackageStatus);
 
     const QString &updateInfo = value(scUpdateText);
     if (!d->m_core->isUpdater() || updateInfo.isEmpty()) {

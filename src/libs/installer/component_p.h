@@ -101,14 +101,16 @@ public:
     enum Roles {
         LocalDisplayVersion = Qt::UserRole + 1,
         RemoteDisplayVersion = LocalDisplayVersion + 1,
-        UncompressedSize = RemoteDisplayVersion + 1
+        UncompressedSize = RemoteDisplayVersion + 1,
+        PackageStatus = UncompressedSize + 1
     };
 
     enum Column {
         NameColumn = 0,
         InstalledVersionColumn,
         NewVersionColumn,
-        UncompressedSizeColumn
+        UncompressedSizeColumn,
+        ComponentStatus
     };
 
     explicit ComponentModelHelper();

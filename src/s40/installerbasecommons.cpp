@@ -501,7 +501,6 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
     : PackageManagerGui(core, 0)
 {
     setPage(PackageManagerCore::Introduction + 1, new ComponentViewPage(core));
-    setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
     setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
     setPage(PackageManagerCore::ReadyForInstallation, new ReadyForInstallationPage(core));
     setPage(PackageManagerCore::PerformInstallation, new PerformInstallationPage(core));

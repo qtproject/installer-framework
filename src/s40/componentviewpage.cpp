@@ -49,6 +49,7 @@
 #include <QtGui/QRadioButton>
 #include <QtGui/QStackedWidget>
 #include <QtGui/QVBoxLayout>
+#include <QCheckBox>
 
 using namespace QInstaller;
 
@@ -64,66 +65,76 @@ ComponentViewPage::ComponentViewPage(QInstaller::PackageManagerCore *core)
     , m_updaterModel(m_core->updaterComponentModel())
     , m_currentModel(m_allModel)
 {
-
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ComponentViewPage"));
     setTitle(titleForPage(QLatin1String("ComponentViewPage"), tr("Select Components")));
 
+    m_core->setPackageManager();
+
+    setFixedSize(970, 860);
+    //resize(970, 860);
+    QVBoxLayout *vMainLayout = new QVBoxLayout;
+    QHBoxLayout *hMainLayout = new QHBoxLayout;
+    QHBoxLayout *hLayoutLeft = new QHBoxLayout;
+    QHBoxLayout *hLayoutRight= new QHBoxLayout;
+    //creating check box and buttons for sdk manager
+
+    showLabel = new QLabel(QLatin1String("Show:"));
+    hLayoutLeft->addWidget(showLabel);
+
+    showInstalled = new QCheckBox(QLatin1String("Installed"));
+    showInstalled->setChecked(true);
+    hLayoutLeft->addWidget(showInstalled);
+
+    showUpdates = new QCheckBox(QLatin1String("Updates/New"));
+    hLayoutLeft->addWidget(showUpdates);
+
+
+    hMainLayout->addLayout(hLayoutLeft);
+    hMainLayout->setAlignment(hLayoutLeft, Qt::AlignLeft);
+
+    hMainLayout->setAlignment(hLayoutRight, Qt::AlignRight);
 
 
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
-
-    connect(m_allModel, SIGNAL(defaultCheckStateChanged(bool)), this, SLOT(setModified(bool)));
-    connect(m_updaterModel, SIGNAL(defaultCheckStateChanged(bool)), this, SLOT(setModified(bool)));
-
-    m_descriptionLabel = new QLabel(this);
-    m_descriptionLabel->setWordWrap(true);
-    m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
-
-    m_sizeLabel = new QLabel(this);
-    m_sizeLabel->setWordWrap(true);
-    m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
-
-    m_checkDefault = new QPushButton;
-    connect(m_checkDefault, SIGNAL(clicked()), this, SLOT(selectDefault()));
-    connect(m_allModel, SIGNAL(defaultCheckStateChanged(bool)), m_checkDefault, SLOT(setEnabled(bool)));
-    const QVariantHash hash = elementsForPage(QLatin1String("ComponentViewPage"));
-    if (m_core->isInstaller()) {
-        m_checkDefault->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
-        m_checkDefault->setShortcut(QKeySequence(ComponentViewPage::tr("Alt+A", "select default components")));
-        m_checkDefault->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), ComponentViewPage::tr("Def&ault"))
-            .toString());
-    } else {
-        m_checkDefault->setEnabled(false);
-        m_checkDefault->setObjectName(QLatin1String("ResetComponentsButton"));
-        m_checkDefault->setShortcut(QKeySequence(ComponentViewPage::tr("Alt+R", "reset to already installed components")));
-        m_checkDefault->setText(hash.value(QLatin1String("ResetComponentsButton"), ComponentViewPage::tr("&Reset")).toString());
-    }
-
-    m_checkAll = new QPushButton;
-    connect(m_checkAll, SIGNAL(clicked()), this, SLOT(selectAll()));
-    m_checkAll->setObjectName(QLatin1String("SelectAllComponentsButton"));
-    m_checkAll->setShortcut(QKeySequence(ComponentViewPage::tr("Alt+S", "select all components")));
-    m_checkAll->setText(hash.value(QLatin1String("SelectAllComponentsButton"), ComponentViewPage::tr("&Select All")).toString());
-
-    m_uncheckAll = new QPushButton;
-    connect(m_uncheckAll, SIGNAL(clicked()), this, SLOT(deselectAll()));
-    m_uncheckAll->setObjectName(QLatin1String("DeselectAllComponentsButton"));
-    m_uncheckAll->setShortcut(QKeySequence(ComponentViewPage::tr("Alt+D", "deselect all components")));
-    m_uncheckAll->setText(hash.value(QLatin1String("DeselectAllComponentsButton"), ComponentViewPage::tr("&Deselect All"))
-        .toString());
-
+    m_treeView->setModel(m_allModel);
+    m_treeView->resizeColumnToContents ( 0 );
+    m_treeView->setExpanded(m_allModel->index(0,0), true);
     m_progressBar = new QProgressBar(this);
     m_progressBar->setRange(0, 0);
+    vMainLayout->addWidget(m_treeView);
 
-    m_errorLabel = new QLabel(this);
-    m_errorLabel->setWordWrap(true);
+    vMainLayout->addLayout(hMainLayout);
+    vMainLayout->addSpacing(5);
 
-    gui()->showSettingsButton(true);
+    QFrame* line = new QFrame;
+    line->setObjectName(QString::fromUtf8("line"));
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+
+    vMainLayout->addWidget(line);
+    vMainLayout->addWidget(m_progressBar);
+
+    progressStatusLabel = new QLabel (QLatin1String("Status:"));
+    vMainLayout->addWidget(progressStatusLabel);
+    setLayout(vMainLayout);
+    //setWindowTitle(QLatin1String("SDK Manager"));
+
+
+    //signal and slots
+    connect(showInstalled, SIGNAL(stateChanged(int)),
+            this, SLOT(showInstalledComponents()));
+    connect(showUpdates, SIGNAL(stateChanged(int)),
+            this, SLOT(showUpdateNewComponents()));
+
+    fetchComponentsData();
+
+    setButtonText(QWizard::NextButton, tr("Install"));
+
 
     connect(core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
-    connect(core, SIGNAL(coreNetworkSettingsChanged()), this, SLOT(onCoreNetworkSettingsChanged()));
+    //connect(core, SIGNAL(coreNetworkSettingsChanged()), this, SLOT(onCoreNetworkSettingsChanged()));
 }
 
 void ComponentViewPage::currentChanged(const QModelIndex &current)
@@ -152,36 +163,8 @@ ComponentViewPage::~ComponentViewPage()
 {
 }
 
-
-// TODO: all *select* function ignore the fact that components can be selected inside the tree view as
-//       well, which will result in e.g. a disabled button state as long as "ALL" components not
-//       unchecked again.
-void ComponentViewPage::selectAll()
-{
-    m_currentModel->selectAll();
-
-    m_checkAll->setEnabled(false);
-    m_uncheckAll->setEnabled(true);
-}
-
-void ComponentViewPage::deselectAll()
-{
-    m_currentModel->deselectAll();
-
-    m_checkAll->setEnabled(true);
-    m_uncheckAll->setEnabled(false);
-}
-
-void ComponentViewPage::selectDefault()
-{
-    m_currentModel->selectDefault();
-
-    m_checkAll->setEnabled(true);
-    m_uncheckAll->setEnabled(true);
-}
-
-/*!
-    Selects the component with /a id in the component tree.
+/*
+ Selects the component with /a id in the component tree.
 */
 void ComponentViewPage::selectComponent(const QString &id)
 {
@@ -190,8 +173,8 @@ void ComponentViewPage::selectComponent(const QString &id)
         m_currentModel->setData(idx, Qt::Checked, Qt::CheckStateRole);
 }
 
-/*!
-    Deselects the component with /a id in the component tree.
+/*
+  Deselects the component with /a id in the component tree.
 */
 void ComponentViewPage::deselectComponent(const QString &id)
 {
@@ -203,7 +186,6 @@ void ComponentViewPage::deselectComponent(const QString &id)
 
 void ComponentViewPage::updateTreeView()
 {
-    m_checkDefault->setVisible(m_core->isInstaller() || m_core->isPackageManager());
     if (m_treeView->selectionModel()) {
         disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(currentChanged(QModelIndex)));
@@ -240,100 +222,7 @@ void ComponentViewPage::updateTreeView()
 }
 
 
-bool ComponentViewPage::validatePage()
-{
-    PackageManagerCore *core = packageManagerCore();
 
-    setComplete(false);
-    gui()->setSettingsButtonEnabled(false);
-
-    const bool maintanence = core->isUpdater() || core->isPackageManager();
-    if (maintanence) {
-        showAll();
-    } else {
-        showMetaInfoUdate();
-    }
-
-    // fetch updater packages
-    if (core->isUpdater()) {
-        if (!m_updatesFetched) {
-            m_updatesFetched = core->fetchRemotePackagesTree();
-            if (!m_updatesFetched)
-                setErrorMessage(core->error());
-        }
-
-        callControlScript(QLatin1String("UpdaterSelectedCallback"));
-
-        if (m_updatesFetched) {
-            if (core->updaterComponents().count() <= 0)
-                setErrorMessage(QLatin1String("<b>") + tr("No updates available.") + QLatin1String("</b>"));
-            else
-                setComplete(true);
-        }
-    }
-
-    // fetch common packages
-    if (core->isInstaller() || core->isPackageManager()) {
-        bool localPackagesTreeFetched = false;
-        if (!m_allPackagesFetched) {
-            // first try to fetch the server side packages tree
-            m_allPackagesFetched = core->fetchRemotePackagesTree();
-            if (!m_allPackagesFetched) {
-                QString error = core->error();
-                if (core->isPackageManager()) {
-                    // if that fails and we're in maintenance mode, try to fetch local installed tree
-                    localPackagesTreeFetched = core->fetchLocalPackagesTree();
-                    if (localPackagesTreeFetched) {
-                        // if that succeeded, adjust error message
-                        error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
-                            "management available.") + QLatin1String("</font>");
-                    }
-                }
-                setErrorMessage(error);
-            }
-        }
-
-        callControlScript(QLatin1String("PackageManagerSelectedCallback"));
-
-        if (m_allPackagesFetched | localPackagesTreeFetched)
-            setComplete(true);
-    }
-
-    if (maintanence) {
-        showMaintenanceTools();
-    } else {
-        hideAll();
-    }
-    gui()->setSettingsButtonEnabled(true);
-
-    return isComplete();
-}
-
-void ComponentViewPage::showAll()
-{
-    showWidgets(true);
-}
-
-void ComponentViewPage::hideAll()
-{
-    showWidgets(false);
-}
-
-void ComponentViewPage::showMetaInfoUdate()
-{
-    showWidgets(false);
-    m_label->setVisible(true);
-    m_progressBar->setVisible(true);
-}
-
-void ComponentViewPage::showMaintenanceTools()
-{
-    showWidgets(true);
-    m_label->setVisible(false);
-    m_progressBar->setVisible(false);
-}
-
-// -- public slots
 
 void ComponentViewPage::setMessage(const QString &msg)
 {
@@ -342,66 +231,82 @@ void ComponentViewPage::setMessage(const QString &msg)
 
 void ComponentViewPage::setErrorMessage(const QString &error)
 {
-    QPalette palette;
-    const PackageManagerCore::Status s = packageManagerCore()->status();
-    if (s == PackageManagerCore::Failure || s == PackageManagerCore::Failure) {
-        palette.setColor(QPalette::WindowText, Qt::red);
-    } else {
-        palette.setColor(QPalette::WindowText, palette.color(QPalette::WindowText));
+//    QPalette palette;
+//    const PackageManagerCore::Status s = packageManagerCore()->status();
+//    if (s == PackageManagerCore::Failure || s == PackageManagerCore::Failure) {
+//        palette.setColor(QPalette::WindowText, Qt::red);
+//    } else {
+//        palette.setColor(QPalette::WindowText, palette.color(QPalette::WindowText));
+//    }
+
+//    m_errorLabel->setText(error);
+//    m_errorLabel->setPalette(palette);
+}
+
+
+//void ComponentViewPage::onCoreNetworkSettingsChanged()
+//{
+//    // force a repaint of the ui as after the settings dialog has been closed and the wizard has been
+//    // restarted, the "Next" button looks still disabled.   TODO: figure out why this happens at all!
+//    gui()->repaint();
+
+//    m_updatesFetched = false;
+//    m_allPackagesFetched = false;
+//}
+
+void ComponentViewPage::showInstalledComponents()
+{//required later
+}
+
+void ComponentViewPage::showUpdateNewComponents()
+{
+    if (showUpdates->checkState()){
+        setButtonText(QWizard::NextButton, tr("Update"));
+        m_core->setUpdater();
+        fetchUpdateComponent();
     }
-
-    m_errorLabel->setText(error);
-    m_errorLabel->setPalette(palette);
-}
-
-void ComponentViewPage::callControlScript(const QString &callback)
-{
-    // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
-    // hide of pages depending on the components.
-    gui()->init();
-    gui()->callControlScriptMethod(callback);
-}
-
-void ComponentViewPage::onCoreNetworkSettingsChanged()
-{
-    // force a repaint of the ui as after the settings dialog has been closed and the wizard has been
-    // restarted, the "Next" button looks still disabled.   TODO: figure out why this happens at all!
-    gui()->repaint();
-
-    m_updatesFetched = false;
+    else{
+    setButtonText(QWizard::NextButton, tr("Install"));
+    m_core->setPackageManager();
     m_allPackagesFetched = false;
-}
-
-// -- private
-
-void ComponentViewPage::entering()
-{
-    setComplete(true);
-    showWidgets(false);
-    setMessage(QString());
-    setErrorMessage(QString());
-    setButtonText(QWizard::CancelButton, tr("Quit"));
-
-    PackageManagerCore *core = packageManagerCore();
-    if (core->isUninstaller() ||core->isUpdater() || core->isPackageManager()) {
-        showMaintenanceTools();
+    fetchComponentsData();
     }
 }
 
-void ComponentViewPage::setModified(bool modified)
+void ComponentViewPage::fetchComponentsData()
 {
-    setComplete(modified);
+    m_updatesFetched = false;
+    // fetch common packages
+    bool localPackagesTreeFetched = false;
+    if (!m_allPackagesFetched) {
+        // first try to fetch the server side packages tree
+        m_allPackagesFetched = m_core->fetchRemotePackagesTree();
+        if (!m_allPackagesFetched) {
+            QString error = m_core->error();
+            if (m_core->isPackageManager()) {
+                // if that fails and we're in maintenance mode, try to fetch local installed tree
+                localPackagesTreeFetched = m_core->fetchLocalPackagesTree();
+                if (localPackagesTreeFetched) {
+                    // if that succeeded, adjust error message
+                    error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
+                        "management available.") + QLatin1String("</font>");
+                }
+            }
+            setErrorMessage(error);
+        }
+    }
 }
 
-void ComponentViewPage::leaving()
+
+void ComponentViewPage::fetchUpdateComponent()
 {
-    // TODO: force repaint on next page, keeps unpainted after fetch
-    QTimer::singleShot(100, gui()->page(nextId()), SLOT(repaint()));
-    setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
+   if (m_core->isUpdater()) {
+        if (!m_updatesFetched) {
+            m_updatesFetched = m_core->fetchRemotePackagesTree();
+            if (!m_updatesFetched)
+                setErrorMessage(m_core->error());
+        }
+    }
+
 }
 
-void ComponentViewPage::showWidgets(bool show)
-{
-    m_label->setVisible(show);
-    m_progressBar->setVisible(show);
-}

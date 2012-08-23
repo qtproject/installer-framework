@@ -55,47 +55,25 @@ public:
     explicit ComponentViewPage(QInstaller::PackageManagerCore *core);
     ~ComponentViewPage();
 
-    bool validatePage();
-
-    void showAll();
-    void hideAll();
-    void showMetaInfoUdate();
-    void showMaintenanceTools();
     void updateTreeView();
 
 public slots:
-    void onCoreNetworkSettingsChanged();
+   // void onCoreNetworkSettingsChanged();
     void setMessage(const QString &msg);
     void setErrorMessage(const QString &error);
 
 
 public slots:
     void currentChanged(const QModelIndex &current);
-
-    void selectAll();
-    void deselectAll();
-    void selectDefault();
     void selectComponent(const QString &id);
     void deselectComponent(const QString &id);
 
-signals:
-    void packageManagerCoreTypeChanged();
-
-
-    bool isComplete() const;
-
-
-protected:
-    void entering();
-
-private Q_SLOTS:
-    void setModified(bool modified);
+    void showInstalledComponents();
+    void showUpdateNewComponents();
 
 private:
-    void leaving();
-
-    void showWidgets(bool show);
-    void callControlScript(const QString &callback);
+    void fetchComponentsData();
+    void fetchUpdateComponent();
 
 private:
     bool m_updatesFetched;
@@ -103,8 +81,15 @@ private:
     bool m_allPackagesFetched;
 
     QLabel *m_label;
-    QLabel *m_errorLabel;
     QProgressBar *m_progressBar;
+
+    QPushButton* installButton;
+    QPushButton* cancelButton;
+    QLabel* showLabel;
+    QLabel* progressStatusLabel;
+    QLabel* progressLabel;
+    QCheckBox*  showInstalled;
+    QCheckBox* showUpdates;
 
 
     PackageManagerCore *m_core;
@@ -114,9 +99,6 @@ private:
     ComponentModel *m_currentModel;
     QLabel *m_sizeLabel;
     QLabel *m_descriptionLabel;
-    QPushButton *m_checkAll;
-    QPushButton *m_uncheckAll;
-    QPushButton *m_checkDefault;
 
 };
 } //namespace QInstaller

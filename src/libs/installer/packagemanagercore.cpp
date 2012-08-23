@@ -1917,8 +1917,11 @@ void PackageManagerCore::updateDisplayVersions(const QString &displayKey)
         const QString displayVersionRemote = findDisplayVersion(key, components, scRemoteVersion, visited);
         if (displayVersionRemote.isEmpty())
             components.value(key)->setValue(displayKey, tr("invalid"));
-        else
-            components.value(key)->setValue(displayKey, displayVersionRemote);
+        else {
+             components.value(key)->setValue(displayKey, displayVersionRemote);
+             if (displayVersionRemote > findDisplayVersion(key, components, scVersion, visited ) )
+                components.value(key)->setValue(scPackageStatus, tr("Updates available"));
+        }
     }
 
 }
@@ -1942,8 +1945,7 @@ QString PackageManagerCore::findDisplayVersion(const QString &componentName,
 
 ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, const QString &objectName) const
 {
-    ComponentModel *model = new ComponentModel(4, core);
-
+    ComponentModel *model = new ComponentModel(5, core);
     model->setObjectName(objectName);
     model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal,
         ComponentModel::tr("Component Name"));
@@ -1953,6 +1955,8 @@ ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, con
         ComponentModel::tr("New Version"));
     model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal,
         ComponentModel::tr("Size"));
+    model->setHeaderData(ComponentModelHelper::ComponentStatus, Qt::Horizontal,
+        ComponentModel::tr("Status"));
     connect(this, SIGNAL(setRootComponents(QList<QInstaller::Component*>)), model,
         SLOT(setRootComponents(QList<QInstaller::Component*>)));
     connect(model, SIGNAL(defaultCheckStateChanged(bool)), this, SLOT(componentsToInstallNeedsRecalculation()));
