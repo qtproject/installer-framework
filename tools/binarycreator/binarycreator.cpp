@@ -224,13 +224,30 @@ Q_UNUSED(settings)
     }
 #endif
 
+#ifdef Q_OS_MAC
+    QDir resourcePath(QFileInfo(input.outputPath).dir());
+    resourcePath.cdUp();
+    resourcePath.cd(QLatin1String("Resources"));
+    KDSaveFile out(resourcePath.filePath(QLatin1String("installer.dat")));
+#else
     KDSaveFile out(input.outputPath);
+#endif
     try {
+#ifdef Q_OS_MAC
+        openForWrite(&out, out.fileName());
+
+        QFile exe(input.installerExePath);
+        if (!exe.copy(input.outputPath)) {
+            throw Error(QObject::tr("Could not copy %1 to %2: %3").arg(exe.fileName(), input.outputPath,
+                exe.errorString()));
+        }
+#else
         openForWrite(&out, input.outputPath);
 
         QFile exe(input.installerExePath);
         openForRead(&exe, exe.fileName());
         appendFileData(&out, &exe);
+#endif
 
         const qint64 dataBlockStart = out.pos();
         qDebug() << "Data block starts at" << dataBlockStart;
