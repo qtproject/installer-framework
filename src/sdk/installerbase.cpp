@@ -244,8 +244,16 @@ int main(int argc, char *argv[])
         // the uninstaller for the recorded list of during the installation performed operations
         QInstaller::init();
 
+#ifdef Q_OS_MAC
+        // load the external binary resource
+        QDir resourcePath(QFileInfo(QCoreApplication::applicationFilePath()).dir());
+        resourcePath.cdUp();
+        resourcePath.cd(QLatin1String("Resources"));
+        BinaryContent content = BinaryContent::readAndRegisterFromBinary(resourcePath.filePath(QLatin1String("installer.dat")));
+#else
         // load and map the embedded binary resource, registers operations
         BinaryContent content = BinaryContent::readAndRegisterFromApplicationFile();
+#endif
 
         // instantiate the installer we are actually going to use
         QInstaller::PackageManagerCore core(content.magicMarker(), content.performedOperations());
