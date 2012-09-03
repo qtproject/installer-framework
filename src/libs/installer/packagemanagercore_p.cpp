@@ -1146,7 +1146,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         QTextStream in(&sourcePlist);
         QTextStream out(&targetPlist);
         const QString before = QLatin1String("<string>") + QFileInfo(QCoreApplication::applicationFilePath())
-            .baseName() + QLatin1String("</string>");
+            .fileName() + QLatin1String("</string>");
         const QString after = QLatin1String("<string>") + QFileInfo(uninstallerName()).baseName()
             + QLatin1String("</string>");
         while (!in.atEnd())
