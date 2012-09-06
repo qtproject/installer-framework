@@ -309,10 +309,12 @@ bool QtPatchOperation::performOperation()
 #endif
 
     // get file list defined by filters and patch them
-    QStringList filteredContent = getDirContent(prefix, filters);
-    foreach (QString fileName, filteredContent) {
-        if (QFile::exists(fileName)) {
-            QtPatch::patchTextFile(fileName, searchReplacePairs);
+    if (filters.count() > 0) {
+        const QStringList filteredContent = getDirContent(prefix, filters);
+        foreach (const QString &fileName, filteredContent) {
+            if (QFile::exists(fileName)) {
+                QtPatch::patchTextFile(fileName, searchReplacePairs);
+            }
         }
     }
 
