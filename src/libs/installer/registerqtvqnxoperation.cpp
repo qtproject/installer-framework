@@ -116,7 +116,7 @@ bool RegisterQtInCreatorQNXOperation::performOperation()
     const QString &path = QDir::toNativeSeparators(args.value(argCounter++));
     const QString versionQmakePath = absoluteQmakePath(path);
 
-    const QString &ndkPath = args.at(argCounter++);
+    const QString &sdkPath = args.at(argCounter++);
     const QString &versionSDKIdentifier = args.at(argCounter++);
     const QString &versionSystemRoot = fromNativeSeparatorsAllOS(args.value(argCounter++));
     const QString &versionSbsPath = fromNativeSeparatorsAllOS(args.value(argCounter++));
@@ -145,7 +145,7 @@ bool RegisterQtInCreatorQNXOperation::performOperation()
     map.insert(QLatin1String("Arch"), 1);
     map.insert(QLatin1String("Name"), versionName);
     map.insert(QLatin1String("QMakePath"), versionQmakePath);
-    map.insert(QLatin1String("NDKPath"), ndkPath);
+    map.insert(QLatin1String("SDKPath"), sdkPath);
     map.insert(QLatin1String("QtVersion.Type"),
                QLatin1String("Qt4ProjectManager.QtVersion.QNX"));
     map.insert(QLatin1String("isAutodetected"), true);
