@@ -1,0 +1,11 @@
+bin/qmake
+bin/lrelease
+lib/libQtCore.so
+%%
+*.la
+*.prl
+*.pc
+*.pri
+lib/cmake/Qt5LinguistTools/Qt5LinguistToolsConfig.cmake
+mkspecs/default-host/qmake.conf
+

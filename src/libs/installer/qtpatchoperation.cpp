@@ -139,10 +139,11 @@ bool QtPatchOperation::performOperation()
     // Arguments:
     // 1. type
     // 2. new/target qtpath
+    // 3. version if greather Qt4
 
-    if (arguments().count() != 2) {
+    if (arguments().count() != 3) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.").arg(name())
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 3 expected.").arg(name())
             .arg(arguments().count()));
         return false;
     }
@@ -157,7 +158,7 @@ bool QtPatchOperation::performOperation()
             "at this time."));
         return false;
     }
-    
+
     const QString newQtPathStr = QDir::toNativeSeparators(arguments().at(1));
     const QByteArray newQtPath = newQtPathStr.toUtf8();
 
@@ -195,15 +196,20 @@ bool QtPatchOperation::performOperation()
         return false;
     }
 
-    QFile patchFileListFile;
+    QString fileName;
     if (type == QLatin1String("windows"))
-        patchFileListFile.setFileName(QLatin1String(":/files-to-patch-windows"));
+        fileName = QString::fromLatin1(":/files-to-patch-windows");
     else if (type == QLatin1String("linux"))
-        patchFileListFile.setFileName(QLatin1String(":/files-to-patch-linux"));
+        fileName = QString::fromLatin1(":/files-to-patch-linux");
     else if (type == QLatin1String("linux-emb-arm"))
-        patchFileListFile.setFileName(QLatin1String(":/files-to-patch-linux-emb-arm"));
+        fileName = QString::fromLatin1(":/files-to-patch-linux-emb-arm");
     else if (type == QLatin1String("mac"))
-        patchFileListFile.setFileName(QLatin1String(":/files-to-patch-macx"));
+        fileName = QString::fromLatin1(":/files-to-patch-macx");
+
+    QFile patchFileListFile(fileName);
+    QString version = arguments().value(3).toLower();
+    if (!version.isEmpty())
+        patchFileListFile.setFileName(fileName + QLatin1Char('-') + version);
 
     if (!patchFileListFile.open(QFile::ReadOnly)) {
         setError(UserDefinedError);
@@ -337,7 +343,7 @@ bool QtPatchOperation::performOperation()
         return false;
     }
     Q_CHECK_PTR(core);
-    successMacRelocating = relocator.apply(newQtPathStr, core->value(scTargetDir));
+    successMacRelocating = relocator.apply(newQtPathStr, core->value(scTargetDir), version);
     if (!successMacRelocating) {
         setError(UserDefinedError);
         setErrorString(tr("Error while relocating Qt: %1").arg(relocator.errorMessage()));

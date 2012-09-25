@@ -42,7 +42,7 @@ class Relocator
 public:
     Relocator();
 
-    bool apply(const QString &qtInstallDir, const QString &targetDir);
+    bool apply(const QString &qtInstallDir, const QString &targetDir, const QString &version);
     QString errorMessage() const { return m_errorMessage; }
 
 private:

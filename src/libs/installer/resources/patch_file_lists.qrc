@@ -3,5 +3,8 @@
         <file>files-to-patch-linux</file>
         <file>files-to-patch-windows</file>
         <file>files-to-patch-macx</file>
+        <file>files-to-patch-linux-qt5</file>
+        <file>files-to-patch-windows-qt5</file>
+        <file>files-to-patch-macx-qt5</file>
     </qresource>
 </RCC>

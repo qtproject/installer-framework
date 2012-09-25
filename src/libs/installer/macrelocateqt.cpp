@@ -43,7 +43,7 @@ Relocator::Relocator()
 {
 }
 
-bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
+bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir, const QString &version)
 {
 //    Relocator::apply(/Users/rakeller/QtSDKtest2/Simulator/Qt/gcc)
 //    Relocator uses indicator: /QtSDKtest2operation 'QtPatch' with arguments: 'mac; /Users/rakeller/QtSDKtest2/Simulator/Qt/gcc' failed: Error while relocating Qt: "ReplaceInsta
@@ -81,11 +81,15 @@ bool Relocator::apply(const QString &qtInstallDir, const QString &targetDir)
     operation.setComponentRootPath(qtInstallDir);
     QStringList arguments;
     arguments << indicator
-              << replacement
-              << qtInstallDir + QLatin1String("/plugins")
-              << qtInstallDir + QLatin1String("/lib")
-              << qtInstallDir + QLatin1String("/imports")
-              << qtInstallDir + QLatin1String("/bin");
+              << replacement;
+    if (version.isEmpty()) {
+        arguments << qtInstallDir + QLatin1String("/plugins")
+            << qtInstallDir + QLatin1String("/lib")
+            << qtInstallDir + QLatin1String("/imports")
+            << qtInstallDir + QLatin1String("/bin");
+    } else {
+        arguments << qtInstallDir;
+    }
 
     operation.setArguments(arguments);
     operation.performOperation();
