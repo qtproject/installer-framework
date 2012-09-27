@@ -154,19 +154,21 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         const QDomNode package = packageXml.firstChildElement(QLatin1String("Package"));
 
         QDomElement update = doc.createElement(QLatin1String("PackageUpdate"));
+        QDomElement nameElement = doc.createElement(QLatin1String("Name"));
+        nameElement.appendChild(doc.createTextNode(it->name));
+        update.appendChild(nameElement);
+
+        // list of current unused or later transformed tags
+        QStringList blackList;
+        blackList << QLatin1String("UserInterfaces") << QLatin1String("Translations") <<
+            QLatin1String("Licenses") << QLatin1String("Name");
 
         const QDomNodeList childNodes = package.childNodes();
         for (int i = 0; i < childNodes.count(); ++i) {
             const QDomNode node = childNodes.at(i);
-            // just skip the comments...
-            if (node.isComment())
-                continue;
             const QString key = node.nodeName();
-            if (key == QLatin1String("UserInterfaces"))
-                continue;
-            if (key == QLatin1String("Translations"))
-                continue;
-            if (key == QLatin1String("Licenses"))
+            // just skip comments and some tags...
+            if (node.isComment() || blackList.contains(key))
                 continue;
             const QString value = node.toElement().text();
             QDomElement element = doc.createElement(key);
@@ -435,7 +437,8 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
         }
 
         QFile file(QString::fromLatin1("%1/meta/package.xml").arg(it->filePath()));
-        if (!file.exists()) {
+        QFileInfo fileInfo(file);
+        if (!fileInfo.exists()) {
             if (ignoreInvalidPackages)
                 continue;
             throw QInstaller::Error(QObject::tr("Component %1 does not contain a package "
@@ -451,29 +454,27 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
         if (!doc.setContent(&file, &error, &errorLine, &errorColumn)) {
             if (ignoreInvalidPackages)
                 continue;
-            throw QInstaller::Error(QObject::tr("Component package description for %1 is invalid. "
-                "Error at line: %2, column: %3 -> %4").arg(it->fileName(), QString::number(errorLine),
+            throw QInstaller::Error(QObject::tr("Component package description in %1 is invalid. "
+                "Error at line: %2, column: %3 -> %4").arg(fileInfo.absoluteFilePath(), QString::number(errorLine),
                 QString::number(errorColumn), error));
         }
 
         const QString name = doc.firstChildElement(QLatin1String("Package"))
             .firstChildElement(QLatin1String("Name")).text();
-        if (name != it->fileName()) {
-            if (ignoreInvalidPackages)
-                continue;
-            throw QInstaller::Error(QObject::tr("Component folder name must match component name: "
-                "%1 in %2/").arg(name, it->fileName()));
+        if (!name.isEmpty() && name != it->fileName()) {
+            qWarning() << QString::fromLatin1("The <Name> tag in the %1 is ignored - the installer uses the "
+                "path element right before the \"meta\" (\"%2\").").arg(fileInfo.absoluteFilePath(), it->fileName());
         }
 
         PackageInfo info;
-        info.name = name;
+        info.name = it->fileName();
         info.version = doc.firstChildElement(QLatin1String("Package")).
             firstChildElement(QLatin1String("Version")).text();
         if (!QRegExp(QLatin1String("[0-9]+((\\.|-)[0-9]+)*")).exactMatch(info.version)) {
             if (ignoreInvalidPackages)
                 continue;
             throw QInstaller::Error(QObject::tr("Component version for %1 is invalid! <Version>%2</version>")
-                .arg(it->fileName(), info.version));
+                .arg(fileInfo.absoluteFilePath(), info.version));
         }
         info.dependencies = doc.firstChildElement(QLatin1String("Package")).
             firstChildElement(QLatin1String("Dependencies")).text().split(QInstaller::scCommaRegExp,
