@@ -67,9 +67,9 @@ int main(int argc, char *argv[])
         QInstallerTools::compressPaths(sourceDirectories, app.arguments().at(1));
         return EXIT_SUCCESS;
     } catch (const Lib7z::SevenZipException &e) {
-        std::cerr << e.message() << std::endl;
+        std::cerr << "caught 7zip exception: " << e.message() << std::endl;
     } catch (const QInstaller::Error &e) {
-        std::cerr << e.message() << std::endl;
+        std::cerr << "caught exception: " << e.message() << std::endl;
     }
     return EXIT_FAILURE;
 }

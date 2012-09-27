@@ -229,9 +229,9 @@ int main(int argc, char** argv)
         moveDirectoryContents(metaTmp, repositoryDir);
         return 0;
     } catch (const Lib7z::SevenZipException &e) {
-        std::cerr << e.message() << std::endl;
+        std::cerr << "caught 7zip exception: " << e.message() << std::endl;
     } catch (const QInstaller::Error &e) {
-        std::cerr << e.message() << std::endl;
+        std::cerr << "caught exception: " << e.message() << std::endl;
     }
     return 1;
 }

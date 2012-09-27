@@ -84,6 +84,8 @@
 
 #include <unix/C/7zCrc.h>
 
+#include <iostream>
+
 namespace NArchive {
 namespace NBz2 { void registerArcBZip2(); }
 namespace NGz { void registerArcGZip(); }
@@ -180,6 +182,9 @@ static void messageHandler(QtMsgType type, const char *msg)
     }
 
     verbose() << ba.constData() << std::endl;
+    if (!isVerbose() && type != QtDebugMsg)
+        std::cout << ba.constData() << std::endl << std::endl;
+
     if (type == QtFatalMsg) {
         QtMsgHandler oldMsgHandler = qInstallMsgHandler(0);
         qt_message_output(type, msg);

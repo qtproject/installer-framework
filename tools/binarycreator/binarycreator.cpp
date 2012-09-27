@@ -737,7 +737,7 @@ int main(int argc, char **argv)
         removeDirectory(metaDir, true);
         return result;
     } catch (const Error &e) {
-        std::cerr << e.message() << std::endl;
+        std::cerr << "caught exception: " << e.message() << std::endl;
         return EXIT_FAILURE;
     } catch (...) {
         std::cerr << "Unknown exception caught" << std::endl;
