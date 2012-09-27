@@ -46,8 +46,6 @@ struct UpdateFileInfo
           uncompressedSize(0)
     {}
 
-    QString arch;
-    QString os;
     QString fileName;
     QByteArray sha1sum;
     quint64 compressedSize;

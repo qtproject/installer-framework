@@ -117,7 +117,6 @@ public:
                              const QList<UpdateInfo> &updateInfoList);
     bool checkForUpdatePriority(const UpdateSourceInfo &sourceInfo,
                                 const UpdateInfo &updateInfo);
-    int pickUpdateFileInfo(const QList<UpdateFileInfo> &updateFiles);
     void slotDownloadDone();
 };
 
@@ -396,17 +395,13 @@ bool UpdateFinder::Private::computeApplicableUpdates()
         if (found) {
             q->reportProgress(80, tr("Found compatibility update."));
 
-            // Create an update for this compat update.
-            // Pick a update file based on arch and OS.
-            int pickUpdateFileIndex = pickUpdateFileInfo(compatUpdateInfo.updateFiles);
-            if (pickUpdateFileIndex < 0) {
-                q->reportError(tr("Compatibility update for the required architecture and hardware configuration was "
-                                  "not found."));
-                q->reportProgress(100, tr("Compatibility update not found."));
+            if (compatUpdateInfo.updateFiles.isEmpty()) {
+                q->reportError(tr("Update not found."));
+                q->reportProgress(100, tr("Update not found."));
                 return false;
             }
 
-            UpdateFileInfo fileInfo = compatUpdateInfo.updateFiles.at(pickUpdateFileIndex);
+            UpdateFileInfo fileInfo = compatUpdateInfo.updateFiles.at(0);
 
             // Create an update for this entry
             QUrl url = QString::fromLatin1("%1/%2").arg( compatUpdateSourceInfo.url.toString(), fileInfo.fileName);
@@ -549,12 +544,10 @@ void UpdateFinder::Private::createUpdateObjects(const UpdateSourceInfo &sourceIn
             continue;
         }
 
-        // Pick a update file based on arch and OS.
-        int pickUpdateFileIndex = this->pickUpdateFileInfo(info.updateFiles);
-        if (pickUpdateFileIndex < 0)
+        if (info.updateFiles.isEmpty())
             continue;
 
-        UpdateFileInfo fileInfo = info.updateFiles.at(pickUpdateFileIndex);
+        UpdateFileInfo fileInfo = info.updateFiles.at(0);
 
         // Create an update for this entry
         QUrl url(QString::fromLatin1("%1/%2").arg( sourceInfo.url.toString(), fileInfo.fileName));
@@ -593,37 +586,6 @@ bool UpdateFinder::Private::checkForUpdatePriority(const UpdateSourceInfo &sourc
     // No update by that name was found, so what we have is a priority update.
     return true;
 }
-
-int UpdateFinder::Private::pickUpdateFileInfo(const QList<UpdateFileInfo> &updateFiles)
-{
-#ifdef Q_OS_MAC
-    QString os = QLatin1String( "MacOSX" );
-#endif
-#ifdef Q_OS_WIN
-    QString os = QLatin1String( "Windows" );
-#endif
-#ifdef Q_WS_X11
-    QString os = QLatin1String( "Linux" );
-#endif
-
-    QString arch = QLatin1String( "i386" ); // only one architecture considered for now.
-
-    for (int i = 0; i < updateFiles.count(); i++) {
-        UpdateFileInfo fileInfo = updateFiles.at(i);
-
-        if (fileInfo.arch != arch)
-            continue;
-
-        if (fileInfo.os != QLatin1String("Any") && fileInfo.os != os)
-            continue;
-
-        return i;
-    }
-
-    return -1;
-}
-
-
 
 //
 // UpdateFinder

@@ -152,8 +152,6 @@ bool UpdatesInfo::UpdatesInfoData::parsePackageUpdateElement(const QDomElement &
             info.data[childE.tagName()] = QUrl(childE.text());
         } else if (childE.tagName() == QLatin1String("UpdateFile")) {
             UpdateFileInfo ufInfo;
-            ufInfo.arch = childE.attribute(QLatin1String("Arch"), QLatin1String("i386"));
-            ufInfo.os = childE.attribute(QLatin1String("OS"));
             ufInfo.compressedSize = childE.attribute(QLatin1String("CompressedSize")).toLongLong();
             ufInfo.uncompressedSize = childE.attribute(QLatin1String("UncompressedSize")).toLongLong();
             ufInfo.sha1sum = QByteArray::fromHex(childE.attribute(QLatin1String("sha1sum")).toAscii());
@@ -231,8 +229,6 @@ bool UpdatesInfo::UpdatesInfoData::parseCompatUpdateElement(const QDomElement &u
             info.data[childE.tagName()] = QUrl(childE.text());
         } else if (childE.tagName() == QLatin1String("UpdateFile")) {
             UpdateFileInfo ufInfo;
-            ufInfo.arch = childE.attribute(QLatin1String("Arch"), QLatin1String("i386"));
-            ufInfo.os = childE.attribute(QLatin1String("OS"));
             ufInfo.fileName = childE.text();
             info.updateFiles.append(ufInfo);
         } else {

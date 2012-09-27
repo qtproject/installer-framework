@@ -220,17 +220,10 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
             }
         }
 
-        // add fake update files
-        const QStringList platforms = QStringList() << QLatin1String("Windows") << QLatin1String("MacOSX")
-            << QLatin1String("Linux");
-        foreach (const QString &platform, platforms) {
-            QDomElement file = doc.createElement(QLatin1String("UpdateFile"));
-            file.setAttribute(QLatin1String("OS"), platform);
-            file.setAttribute(QLatin1String("UncompressedSize"), componentSize);
-            file.setAttribute(QLatin1String("CompressedSize"), compressedComponentSize);
-            file.appendChild(doc.createTextNode(QLatin1String("(null)")));
-            update.appendChild(file);
-        }
+        QDomElement fileElement = doc.createElement(QLatin1String("UpdateFile"));
+        fileElement.setAttribute(QLatin1String("UncompressedSize"), componentSize);
+        fileElement.setAttribute(QLatin1String("CompressedSize"), compressedComponentSize);
+        update.appendChild(fileElement);
 
         root.appendChild(update);
 
