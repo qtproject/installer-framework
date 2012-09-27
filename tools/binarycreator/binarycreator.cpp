@@ -183,7 +183,7 @@ Q_UNUSED(settings)
 
     QTemporaryFile file(input.outputPath);
     if (!file.open()) {
-        throw Error(QObject::tr("Could not copy %1 to %2: %3").arg(input.installerExePath,
+        throw Error(QString::fromLatin1("Could not copy %1 to %2: %3").arg(input.installerExePath,
             input.outputPath, file.errorString()));
     }
 
@@ -193,7 +193,7 @@ Q_UNUSED(settings)
 
     QFile instExe(input.installerExePath);
     if (!instExe.copy(tempFile)) {
-        throw Error(QObject::tr("Could not copy %1 to %2: %3").arg(instExe.fileName(), tempFile,
+        throw Error(QString::fromLatin1("Could not copy %1 to %2: %3").arg(instExe.fileName(), tempFile,
             instExe.errorString()));
     }
 
@@ -238,7 +238,7 @@ Q_UNUSED(settings)
 
         QFile exe(input.installerExePath);
         if (!exe.copy(input.outputPath)) {
-            throw Error(QObject::tr("Could not copy %1 to %2: %3").arg(exe.fileName(), input.outputPath,
+            throw Error(QString::fromLatin1("Could not copy %1 to %2: %3").arg(exe.fileName(), input.outputPath,
                 exe.errorString()));
         }
 #else
@@ -373,7 +373,7 @@ static QString createBinaryResourceFile(const QString &directory)
 {
     QTemporaryFile projectFile(directory + QLatin1String("/rccprojectXXXXXX.qrc"));
     if (!projectFile.open())
-        throw Error(QObject::tr("Could not create temporary file for generated rcc project file"));
+        throw Error(QString::fromLatin1("Could not create temporary file for generated rcc project file"));
     projectFile.close();
 
     const WorkingDirectoryChange wd(directory);
@@ -485,7 +485,7 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
         const QString target = targetFileInfo.absoluteFilePath();
 
         if (!QFile::copy(source, target))
-            throw Error(QObject::tr("Could not copy %1.").arg(source));
+            throw Error(QString::fromLatin1("Could not copy %1.").arg(source));
 
         if (sourceFileInfo.fileName() == QFileInfo(configFile).fileName()) {
             QFile configXml(targetDir.filePath(QLatin1String("config.xml")));
@@ -523,7 +523,7 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
 
                 if (!QFile::exists(targetDir.absoluteFilePath(newName))) {
                     if (!QFile::copy(fi.absoluteFilePath(), targetDir.absoluteFilePath(newName)))
-                        throw Error(QObject::tr("Could not copy %1.").arg(el.text()));
+                        throw Error(QString::fromLatin1("Could not copy %1.").arg(el.text()));
                 }
                 el.removeChild(el.firstChild());
                 el.appendChild(dom.createTextNode(newName));
@@ -577,28 +577,28 @@ int main(int argc, char **argv)
         } else if (*it == QLatin1String("-p") || *it == QLatin1String("--packages")) {
             ++it;
             if (it == args.end()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Packages parameter missing argument."));
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Packages parameter missing argument."));
             }
             if (!QFileInfo(*it).exists()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Package directory not found at the "
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Package directory not found at the "
                     "specified location."));
             }
             packagesDirectory = *it;
         } else if (*it == QLatin1String("-e") || *it == QLatin1String("--exclude")) {
             ++it;
             if (!filteredPackages.isEmpty())
-                return printErrorAndUsageAndExit(QObject::tr("Error: --include and --exclude are mutually "
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: --include and --exclude are mutually "
                                                              "exclusive. Use either one or the other."));
             if (it == args.end() || it->startsWith(QLatin1String("-")))
-                return printErrorAndUsageAndExit(QObject::tr("Error: Package to exclude missing."));
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Package to exclude missing."));
             filteredPackages = it->split(QLatin1Char(','));
         } else if (*it == QLatin1String("-i") || *it == QLatin1String("--include")) {
             ++it;
             if (!filteredPackages.isEmpty())
-                return printErrorAndUsageAndExit(QObject::tr("Error: --include and --exclude are mutually "
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: --include and --exclude are mutually "
                                                              "exclusive. Use either one or the other."));
             if (it == args.end() || it->startsWith(QLatin1String("-")))
-                return printErrorAndUsageAndExit(QObject::tr("Error: Package to include missing."));
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Package to include missing."));
             filteredPackages = it->split(QLatin1Char(','));
             ftype = QInstallerTools::Include;
         }
@@ -606,7 +606,7 @@ int main(int argc, char **argv)
             QInstaller::setVerbose(true);
         } else if (*it == QLatin1String("-n") || *it == QLatin1String("--online-only")) {
             if (!filteredPackages.isEmpty()) {
-                return printErrorAndUsageAndExit(QObject::tr("for the --include and --exclude case you also "
+                return printErrorAndUsageAndExit(QString::fromLatin1("for the --include and --exclude case you also "
                     "have to ensure that online-only==false, as that means include nothing"));
             }
             filteredPackages.append(QLatin1String("XXXXXXXXXXXXXXXXX_online_XXXXXXXXXXXXXXXXX"));
@@ -614,14 +614,14 @@ int main(int argc, char **argv)
             onlineOnly = true;
         } else if (*it == QLatin1String("-f") || *it == QLatin1String("--offline-only")) {
             if (onlineOnly) {
-                return printErrorAndUsageAndExit(QObject::tr("You cannot use --online-only and "
+                return printErrorAndUsageAndExit(QString::fromLatin1("You cannot use --online-only and "
                     "--offline-only at the same time."));
             }
             offlineOnly = true;
         } else if (*it == QLatin1String("-t") || *it == QLatin1String("--template")) {
             ++it;
             if (it == args.end()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Template parameter missing argument."));
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Template parameter missing argument."));
             }
             templateBinary = *it;
 #ifdef Q_OS_WIN
@@ -629,38 +629,38 @@ int main(int argc, char **argv)
                 templateBinary = templateBinary + suffix;
 #endif
             if (!QFileInfo(templateBinary).exists()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Template not found at the specified "
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Template not found at the specified "
                     "location."));
             }
         } else if (*it == QLatin1String("-c") || *it == QLatin1String("--config")) {
             ++it;
             if (it == args.end())
-                return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument."));
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Config parameter missing argument."));
             const QFileInfo fi(*it);
             if (!fi.exists()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Config file %1 not found at the "
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Config file %1 not found at the "
                     "specified location.").arg(*it));
             }
             if (!fi.isFile()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Configuration %1 is not a file.")
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Configuration %1 is not a file.")
                     .arg(*it));
             }
             if (!fi.isReadable()) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Config file %1 is not readable.")
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Config file %1 is not readable.")
                     .arg(*it));
             }
             configFile = *it;
         } else if (*it == QLatin1String("-r") || *it == QLatin1String("--resources")) {
             ++it;
             if (it == args.end() || it->startsWith(QLatin1String("-")))
-                return printErrorAndUsageAndExit(QObject::tr("Error: Resource files to include are missing."));
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Resource files to include are missing."));
             resources = it->split(QLatin1Char(','));
         } else if (*it == QLatin1String("--ignore-translations")
             || *it == QLatin1String("--ignore-invalid-packages")) {
                 continue;
         } else {
             if (it->startsWith(QLatin1String("-"))) {
-                return printErrorAndUsageAndExit(QObject::tr("Error: Unknown option \"%1\" used. Maybe you "
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Unknown option \"%1\" used. Maybe you "
                     "are using an old syntax.").arg(*it));
             } else if (target.isEmpty()) {
                 target = *it;
@@ -669,7 +669,7 @@ int main(int argc, char **argv)
                     target = target + suffix;
 #endif
             } else {
-                return printErrorAndUsageAndExit(QObject::tr("Error: You are using an old syntax please add the "
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: You are using an old syntax please add the "
                     "component name with the include option")
                     .arg(*it));
             }
@@ -677,10 +677,10 @@ int main(int argc, char **argv)
     }
 
     if (target.isEmpty())
-        return printErrorAndUsageAndExit(QObject::tr("Error: Target parameter missing."));
+        return printErrorAndUsageAndExit(QString::fromLatin1("Error: Target parameter missing."));
 
     if (configFile.isEmpty())
-        return printErrorAndUsageAndExit(QObject::tr("Error: No configuration file selected."));
+        return printErrorAndUsageAndExit(QString::fromLatin1("Error: No configuration file selected."));
 
     qDebug() << "Parsed arguments, ok.";
 
