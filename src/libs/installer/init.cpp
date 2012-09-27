@@ -54,7 +54,6 @@
 #include "replaceoperation.h"
 #include "licenseoperation.h"
 #include "linereplaceoperation.h"
-#include "registerdocumentationoperation.h"
 #include "registerqtoperation.h"
 #include "registerqtv2operation.h"
 #include "registerqtv23operation.h"
@@ -152,9 +151,6 @@ static void initArchives()
 static void initResources()
 {
     Q_INIT_RESOURCE(patch_file_lists);
-#if defined(USE_STATIC_SQLITE_PLUGIN)
-    Q_IMPORT_PLUGIN(qsqlite); // RegisterDocumentationOperation needs this
-#endif
 }
 
 static void messageHandler(QtMsgType type, const char *msg)
@@ -211,7 +207,6 @@ void QInstaller::init()
     // added for NDK
     factory.registerUpdateOperation<SimpleMoveFileOperation>(QLatin1String("SimpleMoveFile"));
     factory.registerUpdateOperation<CopyDirectoryOperation>(QLatin1String("CopyDirectory"));
-    factory.registerUpdateOperation<RegisterDocumentationOperation>(QLatin1String("RegisterDocumentation"));
     factory.registerUpdateOperation<RegisterQtInCreatorOperation>(QLatin1String("RegisterQtInCreator"));
     factory.registerUpdateOperation<RegisterQtInCreatorV2Operation>(QLatin1String("RegisterQtInCreatorV2"));
     factory.registerUpdateOperation<RegisterQtInCreatorV23Operation>(QLatin1String("RegisterQtInCreatorV23"));

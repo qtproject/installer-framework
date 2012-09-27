@@ -40,7 +40,6 @@ HEADERS += packagemanagercore.h \
     setimportspathonqtcoreoperation.h \
     replaceoperation.h \
     linereplaceoperation.h \
-    registerdocumentationoperation.h \
     registerqtoperation.h  \
     registertoolchainoperation.h  \
     registerqtv2operation.h  \
@@ -114,7 +113,6 @@ SOURCES += packagemanagercore.cpp \
     setimportspathonqtcoreoperation.cpp \
     replaceoperation.cpp \
     linereplaceoperation.cpp \
-    registerdocumentationoperation.cpp \
     registerqtoperation.cpp \
     registertoolchainoperation.cpp  \
     registerqtv2operation.cpp \

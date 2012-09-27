@@ -51,11 +51,9 @@ equals(TEMPLATE, app):LIBS += -linstaller
 unix:!macx:LIBS += -lutil
 macx:LIBS += -framework Carbon -framework Security
 
-CONFIG += help uitools
+CONFIG += uitools
 CONFIG(static, static|shared) {
-    QTPLUGIN += qsqlite
     QT += script network xml
-    DEFINES += USE_STATIC_SQLITE_PLUGIN
 }
 
 GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
