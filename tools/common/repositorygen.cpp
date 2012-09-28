@@ -36,10 +36,10 @@
 #include <lib7z_facade.h>
 #include <settings.h>
 #include <qinstallerglobal.h>
+#include <utils.h>
 
 #include <kdupdater.h>
 
-#include <QtCore/QCryptographicHash>
 #include <QtCore/QDirIterator>
 
 #include <QtScript/QScriptEngine>
@@ -541,8 +541,7 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
 
         QFile tmp(tmpTarget);
         tmp.open(QFile::ReadOnly);
-        QByteArray fileToCheck = tmp.readAll();
-        QByteArray sha1Sum = QCryptographicHash::hash(fileToCheck, QCryptographicHash::Sha1);
+        const QByteArray sha1Sum = QInstaller::calculateHash(&tmp, QCryptographicHash::Sha1);
         writeSHA1ToNodeWithName(doc, elements, sha1Sum, path);
         const QString finalTarget = absPath + QLatin1String("/") + fn;
         if (!tmp.rename(finalTarget))
@@ -615,12 +614,11 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
 
             try {
                 QInstaller::openForRead(&archiveFile, archiveFile.fileName());
-                const QByteArray archiveData = archiveFile.readAll();
+                const QByteArray hashOfArchiveData = QInstaller::calculateHash(&archiveFile,
+                    QCryptographicHash::Sha1).toHex();
                 archiveFile.close();
 
                 QInstaller::openForWrite(&archiveHashFile, archiveHashFile.fileName());
-                const QByteArray hashOfArchiveData = QCryptographicHash::hash(archiveData,
-                    QCryptographicHash::Sha1).toHex();
                 archiveHashFile.write(hashOfArchiveData);
                 qDebug() << "Generated sha1 hash:" << hashOfArchiveData;
                 infos[i].copiedArchives.append(archiveHashFile.fileName());

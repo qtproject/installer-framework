@@ -28,14 +28,10 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
-#include <QtCore/QCryptographicHash>
 
 #include <QtNetwork/QAuthenticator>
 
 namespace KDUpdater {
-
-KDTOOLS_EXPORT QByteArray calculateHash(QIODevice *device, QCryptographicHash::Algorithm algo);
-KDTOOLS_EXPORT QByteArray calculateHash(const QString &path, QCryptographicHash::Algorithm algo);
 
 class HashVerificationJob;
 class FileDownloaderProxyFactory;

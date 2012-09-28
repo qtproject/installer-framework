@@ -35,7 +35,6 @@
 #include <QUrl>
 #include <QTemporaryFile>
 #include <QFileInfo>
-#include <QCryptographicHash>
 #include <QThreadPool>
 #include <QDebug>
 #include <QSslError>
@@ -48,29 +47,6 @@ using namespace QInstaller;
 static double calcProgress(qint32 done, qint32 total)
 {
     return total ? (double(done) / double(total)) : 0;
-}
-
-QByteArray KDUpdater::calculateHash(QIODevice* device, QCryptographicHash::Algorithm algo)
-{
-    Q_ASSERT(device);
-    QCryptographicHash hash(algo);
-    QByteArray buffer;
-    buffer.resize(512 * 1024);
-    while (true) {
-        const qint64 numRead = device->read(buffer.data(), buffer.size());
-        if (numRead <= 0)
-            return hash.result();
-        hash.addData(buffer.constData(), numRead);
-    }
-    return QByteArray(); // never reached
-}
-
-QByteArray KDUpdater::calculateHash(const QString &path, QCryptographicHash::Algorithm algo)
-{
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly))
-        return QByteArray();
-    return calculateHash(&file, algo);
 }
 
 

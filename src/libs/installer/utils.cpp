@@ -103,13 +103,11 @@ std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
     return os << qPrintable(string);
 }
 
-//TODO from kdupdaterfiledownloader.cpp, use that one once merged
 QByteArray QInstaller::calculateHash(QIODevice *device, QCryptographicHash::Algorithm algo)
 {
     Q_ASSERT(device);
     QCryptographicHash hash(algo);
-    QByteArray buffer;
-    buffer.resize(512 * 1024);
+    static QByteArray buffer(1024 * 1024, '\0');
     while (true) {
         const qint64 numRead = device->read(buffer.data(), buffer.size());
         if (numRead <= 0)
@@ -119,6 +117,13 @@ QByteArray QInstaller::calculateHash(QIODevice *device, QCryptographicHash::Algo
     return QByteArray(); // never reached
 }
 
+QByteArray QInstaller::calculateHash(const QString &path, QCryptographicHash::Algorithm algo)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly))
+        return QByteArray();
+    return calculateHash(&file, algo);
+}
 
 QString QInstaller::replaceVariables(const QHash<QString, QString> &vars, const QString &str)
 {

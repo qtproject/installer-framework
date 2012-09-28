@@ -50,6 +50,7 @@ QT_END_NAMESPACE
 namespace QInstaller {
 
     QByteArray INSTALLER_EXPORT calculateHash(QIODevice *device, QCryptographicHash::Algorithm algo);
+    QByteArray INSTALLER_EXPORT calculateHash(const QString &path, QCryptographicHash::Algorithm algo);
 
     QString INSTALLER_EXPORT replaceVariables(const QHash<QString,QString> &vars, const QString &str);
     QString INSTALLER_EXPORT replaceWindowsEnvironmentVariables(const QString &str);

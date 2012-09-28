@@ -36,6 +36,7 @@
 #include "messageboxhandler.h"
 #include "packagemanagercore_p.h"
 #include "qinstallerglobal.h"
+#include "utils.h"
 
 #include "kdupdaterfiledownloader.h"
 #include "kdupdaterfiledownloaderfactory.h"
@@ -466,10 +467,8 @@ void GetRepositoryMetaInfoJob::metaDownloadFinished()
 
     if (!m_packageHash.isEmpty()) {
         // verify file hash
-        QByteArray expectedFileHash = m_packageHash.back().toLatin1();
-        QByteArray archContent = arch.readAll();
-        QByteArray realFileHash = QString::fromLatin1(QCryptographicHash::hash(archContent,
-            QCryptographicHash::Sha1).toHex()).toLatin1();
+        const QByteArray expectedFileHash = m_packageHash.back().toLatin1();
+        const QByteArray realFileHash = QInstaller::calculateHash(&arch, QCryptographicHash::Sha1).toHex();
         if (expectedFileHash != realFileHash) {
             emit infoMessage(this, tr("The hash of one component does not match the expected one."));
             metaDownloadError(tr("Bad hash."));

@@ -35,6 +35,7 @@
 #include "component.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
+#include "utils.h"
 
 #include "kdupdaterfiledownloader.h"
 #include "kdupdaterfiledownloaderfactory.h"
@@ -227,16 +228,8 @@ void DownloadArchivesJob::registerFile()
     if (m_core->testChecksum()) {
         QFile archiveFile(tempFile);
         if (archiveFile.open(QFile::ReadOnly)) {
-            static QByteArray buffer(1024 * 1024, '\0');
-            QCryptographicHash hash(QCryptographicHash::Sha1);
-            while (true) {
-                const qint64 numRead = archiveFile.read(buffer.data(), buffer.size());
-                if (numRead <= 0)
-                    break;
-                hash.addData(buffer.constData(), numRead);
-            }
-
-            const QByteArray archiveHash = hash.result().toHex();
+            const QByteArray archiveHash = QInstaller::calculateHash(&archiveFile, QCryptographicHash::Sha1)
+                .toHex();
             if ((archiveHash != m_currentHash) && (!m_canceled)) {
                 //TODO: Maybe we should try to download the file again automatically
                 const QMessageBox::Button res =

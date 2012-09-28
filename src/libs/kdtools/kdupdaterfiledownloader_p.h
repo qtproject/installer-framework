@@ -25,7 +25,6 @@
 
 #include "kdupdaterfiledownloader.h"
 
-#include <QtCore/QCryptographicHash>
 #include <QtNetwork/QNetworkReply>
 
 // these classes are not a part of the public API
