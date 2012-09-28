@@ -88,6 +88,14 @@ public:
         }
     };
 
+    struct SortingPriorityGreaterThan
+    {
+        bool operator() (const Component *lhs, const Component *rhs) const
+        {
+            return lhs->value(scSortingPriority).toInt() > rhs->value(scSortingPriority).toInt();
+        }
+    };
+
     void loadDataFromPackage(const Package &package);
     void loadDataFromPackage(const LocalPackage &package);
 

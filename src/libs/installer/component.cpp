@@ -276,13 +276,14 @@ Component *Component::parentComponent() const
 
 /*!
     Appends \a component as a child of this component. If \a component already has a parent,
-    it is removed from the previous parent.
+    it is removed from the previous parent. If the \a component has as sorting priority set, the child list
+    is sorted in case of multiple components (high goes on top).
 */
 void Component::appendComponent(Component *component)
 {
     if (!component->isVirtual()) {
         d->m_childComponents.append(component);
-        std::sort(d->m_childComponents.begin(), d->m_childComponents.end(), Component::SortingPriorityLessThan());
+        std::sort(d->m_childComponents.begin(), d->m_childComponents.end(), SortingPriorityGreaterThan());
     } else {
         d->m_virtualChildComponents.append(component);
     }
