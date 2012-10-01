@@ -95,7 +95,7 @@ Update::Update(Application *application, const UpdateSourceInfo &sourceInfo,
     d->fileDownloader = FileDownloaderFactory::instance().create(updateUrl.scheme(), this);
     if (d->fileDownloader) {
         d->fileDownloader->setUrl(d->updateUrl);
-        d->fileDownloader->setSha1Sum(d->sha1sum);
+        d->fileDownloader->setAssumedSha1Sum(d->sha1sum);
         connect(d->fileDownloader, SIGNAL(downloadProgress(double)), this, SLOT(downloadProgress(double)));
         connect(d->fileDownloader, SIGNAL(downloadCanceled()), this, SIGNAL(stopped()));
         connect(d->fileDownloader, SIGNAL(downloadCompleted()), this, SIGNAL(finished()));

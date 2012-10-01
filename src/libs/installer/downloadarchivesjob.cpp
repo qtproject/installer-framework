@@ -217,31 +217,24 @@ void DownloadArchivesJob::registerFile()
 {
     Q_ASSERT(m_downloader != 0);
 
-    const QString tempFile = m_downloader->downloadedFileName();
-    if (m_core->testChecksum()) {
-        QFile archiveFile(tempFile);
-        if (archiveFile.open(QFile::ReadOnly)) {
-            const QByteArray archiveHash = QInstaller::calculateHash(&archiveFile, QCryptographicHash::Sha1)
-                .toHex();
-            if ((archiveHash != m_currentHash) && (!m_canceled)) {
-                //TODO: Maybe we should try to download the file again automatically
-                const QMessageBox::Button res =
-                    MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                    QLatin1String("DownloadError"), tr("Download Error"), tr("Hash verification while "
-                    "downloading failed. This is a temporary error, please retry."),
-                    QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Cancel);
+    if (m_canceled)
+        return;
 
-                if (res == QMessageBox::Cancel) {
-                    finishWithError(tr("Could not verify Hash"));
-                    return;
-                }
+    if (m_core->testChecksum() && m_currentHash != m_downloader->sha1Sum().toHex()) {
+        //TODO: Maybe we should try to download the file again automatically
+        const QMessageBox::Button res =
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("DownloadError"), tr("Download Error"), tr("Hash verification while "
+            "downloading failed. This is a temporary error, please retry."),
+            QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Cancel);
 
-                fetchNextArchiveHash();
-                return;
-            }
-        } else {
-            finishWithError(tr("Could not open %1").arg(tempFile));
+        if (res == QMessageBox::Cancel) {
+            finishWithError(tr("Could not verify Hash"));
+            return;
         }
+
+        fetchNextArchiveHash();
+        return;
     }
 
     ++m_archivesDownloaded;
@@ -251,9 +244,10 @@ void DownloadArchivesJob::registerFile()
         emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
     }
 
-    m_temporaryFiles.insert(tempFile);
+    m_temporaryFiles.insert(m_downloader->downloadedFileName());
     const QPair<QString, QString> pair = m_archivesToDownload.takeFirst();
-    QInstallerCreator::BinaryFormatEngineHandler::instance()->registerArchive(pair.first, tempFile);
+    QInstallerCreator::BinaryFormatEngineHandler::instance()->registerArchive(pair.first,
+        m_downloader->downloadedFileName());
 
     fetchNextArchiveHash();
 }

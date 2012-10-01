@@ -50,93 +50,6 @@ static double calcProgress(qint32 done, qint32 total)
 }
 
 
-// -- HashVerificationJob
-
-class HashVerificationJob::Private
-{
-public:
-    Private()
-        : hash(QCryptographicHash::Sha1)
-        , error(HashVerificationJob::ReadError)
-        , timerId(-1) { }
-
-    QPointer<QIODevice> device;
-    QByteArray sha1Sum;
-    QCryptographicHash hash;
-    HashVerificationJob::Error error;
-    int timerId;
-};
-
-HashVerificationJob::HashVerificationJob(QObject* parent)
-    : QObject(parent)
-    , d(new Private)
-{
-}
-
-HashVerificationJob::~HashVerificationJob()
-{
-    delete d;
-}
-
-void HashVerificationJob::setDevice(QIODevice* dev)
-{
-    d->device = dev;
-}
-
-void HashVerificationJob::setSha1Sum(const QByteArray &sum)
-{
-    d->sha1Sum = sum;
-}
-
-int HashVerificationJob::error() const
-{
-    return d->error;
-}
-
-bool HashVerificationJob::hasError() const
-{
-    return d->error != NoError;
-}
-
-void HashVerificationJob::start()
-{
-    Q_ASSERT(d->device);
-    d->timerId = startTimer(0);
-}
-
-void HashVerificationJob::emitFinished()
-{
-    emit finished(this);
-    deleteLater();
-}
-
-void HashVerificationJob::timerEvent(QTimerEvent*)
-{
-    Q_ASSERT(d->timerId >= 0);
-    if (d->sha1Sum.isEmpty()) {
-        killTimer(d->timerId);
-        d->timerId = -1;
-        d->error = NoError;
-        d->device->close();
-        emitFinished();
-        return;
-    }
-
-    QByteArray buf;
-    buf.resize(128 * 1024);
-    const qint64 read = d->device->read(buf.data(), buf.size());
-    if (read > 0) {
-        d->hash.addData(buf.constData(), read);
-        return;
-    }
-
-    d->error = d->hash.result() == d->sha1Sum ? NoError : SumsDifferError;
-    killTimer(d->timerId);
-    d->timerId = -1;
-    emitFinished();
-}
-
-
 // -- KDUpdater::FileDownloader
 
 /*!
@@ -171,7 +84,9 @@ void HashVerificationJob::timerEvent(QTimerEvent*)
 struct KDUpdater::FileDownloader::Private
 {
     Private()
-        : autoRemove(true)
+        : m_hash(QCryptographicHash::Sha1)
+        , m_assumedSha1Sum("")
+        , autoRemove(true)
         , m_speedTimerInterval(100)
         , m_bytesReceived(0)
         , m_bytesToReceive(0)
@@ -190,7 +105,10 @@ struct KDUpdater::FileDownloader::Private
 
     QUrl url;
     QString scheme;
-    QByteArray sha1Sum;
+
+    QCryptographicHash m_hash;
+    QByteArray m_assumedSha1Sum;
+
     QString errorString;
     bool autoRemove;
     bool followRedirect;
@@ -233,14 +151,19 @@ QUrl KDUpdater::FileDownloader::url() const
     return d->url;
 }
 
-void KDUpdater::FileDownloader::setSha1Sum(const QByteArray &sum)
-{
-    d->sha1Sum = sum;
-}
-
 QByteArray KDUpdater::FileDownloader::sha1Sum() const
 {
-    return d->sha1Sum;
+    return d->m_hash.result();
+}
+
+QByteArray KDUpdater::FileDownloader::assumedSha1Sum() const
+{
+    return d->m_assumedSha1Sum;
+}
+
+void KDUpdater::FileDownloader::setAssumedSha1Sum(const QByteArray &sum)
+{
+    d->m_assumedSha1Sum = sum;
 }
 
 QString FileDownloader::errorString() const
@@ -255,42 +178,22 @@ void FileDownloader::setDownloadAborted(const QString &error)
     emit downloadAborted(error);
 }
 
-void KDUpdater::FileDownloader::setDownloadCompleted(const QString &path)
+void KDUpdater::FileDownloader::setDownloadCompleted()
 {
-    HashVerificationJob *job = new HashVerificationJob;
-    QFile *file = new QFile(path, job);
-    if (!file->open(QIODevice::ReadOnly)) {
-        emit downloadProgress(1);
+    if (d->m_assumedSha1Sum.isEmpty() || (d->m_assumedSha1Sum == sha1Sum())) {
+        onSuccess();
+        emit downloadCompleted();
+        emit downloadStatus(tr("Download finished."));
+    } else {
         onError();
-        setDownloadAborted(tr("Could not reopen downloaded file %1 for reading: %2").arg(path,
-            file->errorString()));
-        delete job;
-        return;
+        setDownloadAborted(tr("Cryptographic hashes do not match."));
     }
-
-    job->setDevice(file);
-    job->setSha1Sum(d->sha1Sum);
-    connect(job, SIGNAL(finished(KDUpdater::HashVerificationJob*)), this,
-        SLOT(sha1SumVerified(KDUpdater::HashVerificationJob*)));
-    job->start();
 }
 
 void KDUpdater::FileDownloader::setDownloadCanceled()
 {
     emit downloadCanceled();
     emit downloadStatus(tr("Download canceled."));
-}
-
-void KDUpdater::FileDownloader::sha1SumVerified(KDUpdater::HashVerificationJob *job)
-{
-    if (job->hasError()) {
-        onError();
-        setDownloadAborted(tr("Cryptographic hashes do not match."));
-    } else {
-        onSuccess();
-        emit downloadCompleted();
-        emit downloadStatus(tr("Download finished."));
-    }
 }
 
 QString KDUpdater::FileDownloader::scheme() const
@@ -449,6 +352,16 @@ void KDUpdater::FileDownloader::emitEstimatedDownloadTime()
         return;
     }
     emit estimatedDownloadTime((d->m_bytesToReceive - d->m_bytesReceived) / d->m_downloadSpeed);
+}
+
+void KDUpdater::FileDownloader::addCheckSumData(const QByteArray &data)
+{
+    d->m_hash.addData(data);
+}
+
+void KDUpdater::FileDownloader::addCheckSumData(const char *data, int length)
+{
+    d->m_hash.addData(data, length);
 }
 
 /*!
@@ -649,6 +562,7 @@ void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent *event)
             toWrite -= numWritten;
         }
         addSample(numRead);
+        addCheckSumData(buffer.data(), numRead);
 
         if (numRead > 0) {
             setProgress(d->source->pos(), d->source->size());
@@ -661,7 +575,7 @@ void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent *event)
         killTimer(d->timerId);
         d->timerId = -1;
 
-        setDownloadCompleted(d->destination->fileName());
+        setDownloadCompleted();
     } else if (event->timerId() == downloadSpeedTimerId()) {
         emitDownloadSpeed();
         emitDownloadStatus();
@@ -701,13 +615,13 @@ void LocalFileDownloader::onError()
 struct KDUpdater::ResourceFileDownloader::Private
 {
     Private()
-        : downloaded(false),
-          timerId(-1)
+        : timerId(-1)
+        , downloaded(false)
     {}
 
-    QString destFileName;
-    bool downloaded;
     int timerId;
+    QFile destFile;
+    bool downloaded;
 };
 
 KDUpdater::ResourceFileDownloader::ResourceFileDownloader(QObject *parent)
@@ -748,17 +662,18 @@ void KDUpdater::ResourceFileDownloader::doDownload()
     // Open source and destination files
     QUrl url = this->url();
     url.setScheme(QString::fromLatin1("file"));
-    d->destFileName = QString::fromLatin1(":%1").arg(url.toLocalFile());
+    d->destFile.setFileName(QString::fromLatin1(":%1").arg(url.toLocalFile()));
 
-    // Start a timer and kickoff the copy process
-    d->timerId = startTimer(0); // as fast as possible
     emit downloadStarted();
     emit downloadProgress(0);
+
+    d->destFile.open(QIODevice::ReadOnly);
+    d->timerId = startTimer(0); // start as fast as possible
 }
 
 QString KDUpdater::ResourceFileDownloader::downloadedFileName() const
 {
-    return d->destFileName;
+    return d->destFile.fileName();
 }
 
 void KDUpdater::ResourceFileDownloader::setDownloadedFileName(const QString &/*name*/)
@@ -782,21 +697,55 @@ void KDUpdater::ResourceFileDownloader::cancelDownload()
     setDownloadCanceled();
 }
 
-void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent *)
+void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent *event)
 {
-    killTimer(d->timerId);
-    d->timerId = -1;
-    setDownloadCompleted(d->destFileName);
+    if (event->timerId() == d->timerId) {
+        if (!d->destFile.isOpen()) {
+            onError();
+            killTimer(d->timerId);
+            emit downloadProgress(1);
+            setDownloadAborted(tr("Could not read resource file \"%1\". Reason:").arg(downloadedFileName(),
+                d->destFile.errorString()));
+            return;
+        }
+
+        QByteArray buffer;
+        buffer.resize(32768);
+        const qint64 numRead = d->destFile.read(buffer.data(), buffer.size());
+
+        addSample(numRead);
+        addCheckSumData(buffer.data(), numRead);
+
+        if (numRead > 0) {
+            setProgress(d->destFile.pos(), d->destFile.size());
+            emit downloadProgress(calcProgress(d->destFile.pos(), d->destFile.size()));
+            return;
+        }
+
+        killTimer(d->timerId);
+        d->timerId = -1;
+        setDownloadCompleted();
+    } else if (event->timerId() == downloadSpeedTimerId()) {
+        emitDownloadSpeed();
+        emitDownloadStatus();
+        emitDownloadProgress();
+        emitEstimatedDownloadTime();
+    }
 }
 
 void KDUpdater::ResourceFileDownloader::onSuccess()
 {
+    d->destFile.close();
     d->downloaded = true;
+    stopDownloadSpeedTimer();
 }
 
 void KDUpdater::ResourceFileDownloader::onError()
 {
+    d->destFile.close();
     d->downloaded = false;
+    stopDownloadSpeedTimer();
+    d->destFile.setFileName(QString());
 }
 
 
@@ -939,7 +888,7 @@ void KDUpdater::FtpDownloader::ftpCmdFinished(int id, bool error)
     d->ftpCmdId = -1;
     d->destination->flush();
 
-    setDownloadCompleted(d->destination->fileName());
+    setDownloadCompleted();
 }
 
 void FtpDownloader::onSuccess()
@@ -1015,6 +964,7 @@ void KDUpdater::FtpDownloader::ftpReadyRead()
             written += numWritten;
         }
         addSample(written);
+        addCheckSumData(buffer.data(), read);
     }
 }
 
@@ -1138,6 +1088,7 @@ void KDUpdater::HttpDownloader::httpReadyRead()
             written += numWritten;
         }
         addSample(written);
+        addCheckSumData(buffer.data(), read);
     }
 }
 
@@ -1212,7 +1163,7 @@ void KDUpdater::HttpDownloader::httpReqFinished()
 
         httpReadyRead();
         d->destination->flush();
-        setDownloadCompleted(d->destination->fileName());
+        setDownloadCompleted();
         d->http->deleteLater();
         d->http = 0;
     }

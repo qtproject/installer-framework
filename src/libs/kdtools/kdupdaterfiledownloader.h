@@ -23,7 +23,6 @@
 #ifndef KD_UPDATER_FILE_DOWNLOADER_H
 #define KD_UPDATER_FILE_DOWNLOADER_H
 
-#include "kdupdater.h"
 #include "kdtoolsglobal.h"
 
 #include <QtCore/QObject>
@@ -51,7 +50,9 @@ public:
     void setUrl(const QUrl &url);
 
     QByteArray sha1Sum() const;
-    void setSha1Sum(const QByteArray &sha1);
+
+    QByteArray assumedSha1Sum() const;
+    void setAssumedSha1Sum(const QByteArray &sha1);
 
     QString scheme() const;
     void setScheme(const QString &scheme);
@@ -80,7 +81,6 @@ public:
 
 public Q_SLOTS:
     virtual void cancelDownload();
-    void sha1SumVerified(KDUpdater::HashVerificationJob *job);
 
 protected:
     virtual void onError() = 0;
@@ -105,7 +105,7 @@ private:
 
 protected:
     void setDownloadCanceled();
-    void setDownloadCompleted(const QString &filepath);
+    void setDownloadCompleted();
     void setDownloadAborted(const QString &error);
 
     void runDownloadSpeedTimer();
@@ -119,6 +119,9 @@ protected:
     void emitDownloadStatus();
     void emitDownloadProgress();
     void emitEstimatedDownloadTime();
+
+    void addCheckSumData(const QByteArray &data);
+    void addCheckSumData(const char *data, int length);
 
 private Q_SLOTS:
     virtual void doDownload() = 0;

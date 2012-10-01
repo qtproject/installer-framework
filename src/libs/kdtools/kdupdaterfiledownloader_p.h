@@ -31,41 +31,6 @@
 
 namespace KDUpdater {
 
-//TODO make it a KDJob once merged
-class HashVerificationJob : public QObject
-{
-    Q_OBJECT
-
-public:
-    enum Error {
-        NoError = 0,
-        ReadError = 128,
-        SumsDifferError
-    };
-
-    explicit HashVerificationJob(QObject *parent = 0);
-    ~HashVerificationJob();
-
-    void setDevice(QIODevice *dev);
-    void setSha1Sum(const QByteArray &data);
-
-    bool hasError() const;
-    int error() const;
-
-    void start();
-
-Q_SIGNALS:
-    void finished(KDUpdater::HashVerificationJob *);
-
-private:
-    void emitFinished();
-    void timerEvent(QTimerEvent *te);
-
-private:
-    class Private;
-    Private *d;
-};
-
 class LocalFileDownloader : public FileDownloader
 {
     Q_OBJECT
