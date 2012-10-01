@@ -211,18 +211,11 @@ void DownloadArchivesJob::timerEvent(QTimerEvent *event)
 }
 
 /*!
-    Registers the just downloaded file in the intaller's file system.
+    Registers the just downloaded file in the installer's file system.
 */
 void DownloadArchivesJob::registerFile()
 {
     Q_ASSERT(m_downloader != 0);
-
-    ++m_archivesDownloaded;
-    if (m_progressChangedTimerId) {
-        killTimer(m_progressChangedTimerId);
-        m_progressChangedTimerId = 0;
-        emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
-    }
 
     const QString tempFile = m_downloader->downloadedFileName();
     if (m_core->testChecksum()) {
@@ -249,6 +242,13 @@ void DownloadArchivesJob::registerFile()
         } else {
             finishWithError(tr("Could not open %1").arg(tempFile));
         }
+    }
+
+    ++m_archivesDownloaded;
+    if (m_progressChangedTimerId) {
+        killTimer(m_progressChangedTimerId);
+        m_progressChangedTimerId = 0;
+        emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
     }
 
     m_temporaryFiles.insert(tempFile);
