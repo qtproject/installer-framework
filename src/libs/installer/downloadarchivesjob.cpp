@@ -289,13 +289,13 @@ void DownloadArchivesJob::finishWithError(const QString &error)
         emitFinishedWithError(QInstaller::DownloadError, msg.arg(error, m_downloader->url().toString()));
 }
 
-KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &prefix)
+KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &suffix)
 {
     KDUpdater::FileDownloader *downloader = 0;
     const QFileInfo fi = QFileInfo(m_archivesToDownload.first().first);
     const Component *const component = m_core->componentByName(QFileInfo(fi.path()).fileName());
     if (component) {
-        const QUrl url(m_archivesToDownload.first().second + prefix);
+        const QUrl url(m_archivesToDownload.first().second + suffix);
         const QString &scheme = url.scheme();
         downloader = FileDownloaderFactory::instance().create(scheme, this);
 
@@ -316,11 +316,11 @@ KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &p
             if (scheme == QLatin1String("http") || scheme == QLatin1String("ftp") ||
                 scheme == QLatin1String("file")) {
                     downloader->setDownloadedFileName(component->localTempPath() + QLatin1String("/")
-                        + component->name() + QLatin1String("/") + fi.fileName() + prefix);
+                        + component->name() + QLatin1String("/") + fi.fileName() + suffix);
             }
 
             QString message = tr("Downloading archive hash for component: %1");
-            if (prefix.isEmpty())
+            if (suffix.isEmpty())
                 message = tr("Downloading archive for component: %1");
             emit outputTextChanged(message.arg(component->displayName()));
         } else {
