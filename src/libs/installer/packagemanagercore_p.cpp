@@ -1036,10 +1036,34 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
 
     appendData(&out, input, size);
     if (writeBinaryLayout) {
+#ifdef Q_WS_MAC
+        QDir resourcePath(QFileInfo(uninstallerRenamedName).dir());
+        if (!resourcePath.path().endsWith(QLatin1String("Contents/MacOS")))
+            throw Error(tr("Uninstaller is not a bundle"));
+        resourcePath.cdUp();
+        resourcePath.cd(QLatin1String("Resources"));
+        // It's a bit odd to have only the magic in the data file, but this simplifies
+        // other code a lot (since installers don't have any appended data either)
+        QString outPath = resourcePath.filePath(QLatin1String("installer.dat"));
+        KDSaveFile dataOut(outPath);
+        openForWrite(&dataOut, dataOut.fileName());
+        appendInt64(&dataOut, 0);   // operations start
+        appendInt64(&dataOut, 0);   // operations end
+        appendInt64(&dataOut, 0);   // resource count
+        appendInt64(&dataOut, 4 * sizeof(qint64));   // data block size
+        appendInt64(&dataOut, QInstaller::MagicUninstallerMarker);
+        appendInt64(&dataOut, QInstaller::MagicCookie);
+        dataOut.setPermissions(dataOut.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther);
+        if (!dataOut.commit(KDSaveFile::OverwriteExistingFile))
+            throw Error(tr("Could not write uninstaller data to %1: %2").arg(out.fileName(), out.errorString()));
+#else
+        appendInt64(&out, 0);   // operations start
+        appendInt64(&out, 0);   // operations end
         appendInt64(&out, 0);   // resource count
         appendInt64(&out, 4 * sizeof(qint64));   // data block size
         appendInt64(&out, QInstaller::MagicUninstallerMarker);
         appendInt64(&out, QInstaller::MagicCookie);
+#endif
     }
     out.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
         | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser);
@@ -1262,6 +1286,24 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             openForRead(&input, input.fileName());
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookieDat));
         } catch (const Error &/*error*/) {
+#ifdef Q_OS_MAC
+            // On Mac, data is always in a separate file so that the binary can be signed
+            QString binaryName = isInstaller() ? installerBinaryPath() : uninstallerName();
+            QDir dataPath(QFileInfo(binaryName).dir());
+            dataPath.cdUp();
+            dataPath.cd(QLatin1String("Resources"));
+            input.setFileName(dataPath.filePath(QLatin1String("installer.dat")));
+
+            openForRead(&input, input.fileName());
+            layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
+
+            if (!newBinaryWritten) {
+                newBinaryWritten = true;
+                QFile tmp(binaryName);
+                openForRead(&tmp, tmp.fileName());
+                writeUninstallerBinary(&tmp, tmp.size(), true);
+            }
+#else
             input.setFileName(isInstaller() ? installerBinaryPath() : uninstallerName());
             openForRead(&input, input.fileName());
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
@@ -1269,6 +1311,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
                 newBinaryWritten = true;
                 writeUninstallerBinary(&input, layout.endOfData - layout.dataBlockSize, true);
             }
+#endif
         }
 
         try {
