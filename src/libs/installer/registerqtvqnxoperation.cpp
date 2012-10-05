@@ -90,9 +90,9 @@ bool RegisterQtInCreatorQNXOperation::performOperation()
 {
     const QStringList args = arguments();
 
-    if (args.count() < 4) {
+    if (args.count() < 5) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 5 expected.")
                         .arg(name()).arg(args.count()));
         return false;
     }
@@ -117,6 +117,7 @@ bool RegisterQtInCreatorQNXOperation::performOperation()
     const QString versionQmakePath = absoluteQmakePath(path);
 
     const QString &sdkPath = args.at(argCounter++);
+    const QString &versionTypeIdentifier = args.at(argCounter++);
     const QString &versionSDKIdentifier = args.at(argCounter++);
     const QString &versionSystemRoot = fromNativeSeparatorsAllOS(args.value(argCounter++));
     const QString &versionSbsPath = fromNativeSeparatorsAllOS(args.value(argCounter++));
@@ -147,7 +148,7 @@ bool RegisterQtInCreatorQNXOperation::performOperation()
     map.insert(QLatin1String("QMakePath"), versionQmakePath);
     map.insert(QLatin1String("SDKPath"), sdkPath);
     map.insert(QLatin1String("QtVersion.Type"),
-               QLatin1String("Qt4ProjectManager.QtVersion.QNX"));
+               QLatin1String("Qt4ProjectManager.QtVersion.") + versionTypeIdentifier);
     map.insert(QLatin1String("isAutodetected"), true);
     map.insert(QLatin1String("autodetectionSource"),
                QLatin1String("SDK.") + versionSDKIdentifier);
