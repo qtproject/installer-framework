@@ -67,7 +67,8 @@ bool CopyDirectoryOperation::performOperation()
     const QStringList args = arguments();
     if (args.count() < 2 || args.count() > 3) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, expected: <source> <target> [overwrite]").arg(name())
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, expected: <source> <target>"
+                          "[forceOverwrite]").arg(name())
             .arg(args.count()));
         return false;
     }
@@ -81,7 +82,8 @@ bool CopyDirectoryOperation::performOperation()
             overwrite = true;
         } else {
             setError(InvalidArguments);
-            setErrorString(tr("Invalid argument in %0: Third argument needs to be forceOverwrite, if specified").arg(name()));
+            setErrorString(tr("Invalid argument in %0: Third argument needs to be forceOverwrite, "
+                              "if specified").arg(name()));
             return false;
         }
     }
