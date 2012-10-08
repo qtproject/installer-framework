@@ -866,7 +866,7 @@
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1098"/>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>Diese Komponente wird ungefähr %1 auf ihrer Festplatte belegen.</translation>
+        <translation>Diese Komponente wird ungefähr %1 auf Ihrer Festplatte belegen.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1171"/>
@@ -876,22 +876,22 @@
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1182"/>
         <source>Please select the components you want to update.</source>
-        <translation>Bitte wählen sie die Komponenten aus, die sie aktualisieren möchten.</translation>
+        <translation>Bitte wählen Sie die Komponenten aus, die Sie aktualisieren möchten.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1183"/>
         <source>Please select the components you want to install.</source>
-        <translation>Bitte wählen sie die Komponenten aus, die sie installieren möchten.</translation>
+        <translation>Bitte wählen Sie die Komponenten aus, die Sie installieren möchten.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1184"/>
         <source>Please select the components you want to uninstall.</source>
-        <translation>Bitte wählen sie die Komponenten aus, die sie entfernen möchten.</translation>
+        <translation>Bitte wählen Sie die Komponenten aus, die Sie entfernen möchten.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1185"/>
         <source>Select the components to install. Deselect installed components to uninstall them.</source>
-        <translation>Bitte wählen sie die Komponenten aus, die sie installieren möchten. Wählen sie die Komponenten ab, die sie entfernen möchten.</translation>
+        <translation>Bitte wählen Sie die Komponenten aus, die Sie installieren möchten. Wählen Sie die Komponenten ab, die Sie entfernen möchten.</translation>
     </message>
 </context>
 <context>
@@ -1167,12 +1167,12 @@ Fehler beim Laden von %2</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1844"/>
         <source>Click Done to exit the %1 Wizard.</source>
-        <translation>Klicken sie &quot;Fertig&quot;, um den %1 Assistenten zu beenden.</translation>
+        <translation>Klicken Sie &quot;Fertig&quot;, um den %1 Assistenten zu beenden.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1847"/>
         <source>Click Finish to exit the %1 Wizard.</source>
-        <translation>Klicken sie &quot;Fertig&quot;, um den %1 Assistenten zu beenden.</translation>
+        <translation>Klicken Sie &quot;Fertig&quot;, um den %1 Assistenten zu beenden.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1878"/>
@@ -1334,7 +1334,7 @@ Fehler beim Laden von %2</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="771"/>
         <source>Welcome to the %1 Setup Wizard.</source>
-        <translation>Willkomen zum %1 Einrichtungsassistenten.</translation>
+        <translation>Willkommen zum %1 Einrichtungsassistenten.</translation>
     </message>
 </context>
 <context>
@@ -1347,7 +1347,7 @@ Fehler beim Laden von %2</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="832"/>
         <source>Please read the following license agreement(s). You must accept the terms contained in these agreement(s) before continuing with the installation.</source>
-        <translation>Bitte lesen sie die folgenden Lizanzabkommen. Sie müssen die Bedingungen in diesen Abkommen akzeptieren, um die Installation fortsetzen zu können.</translation>
+        <translation>Bitte lesen Sie die folgenden Lizenzabkommen. Sie müssen die Bedingungen in diesen Abkommen akzeptieren, um die Installation fortsetzen zu können.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="858"/>
@@ -1359,7 +1359,7 @@ Fehler beim Laden von %2</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="880"/>
         <source>I do not accept the licenses.</source>
-        <translation>Ich akzeptiere die Bedingungen der obigen Lizenzvereinbarungen nicht. Bitte beachten sie, dass diese Auswahl bedeutet, dass sie die Installation und das Herunterladen des Qt SDK abbrechen und dass sie alle Kopien des Qt SDK und alle Teile davon, die sich in ihrem Besitz befinden, löschen müssen.</translation>
+        <translation>Ich akzeptiere die Bedingungen der obigen Lizenzvereinbarungen nicht. Bitte beachten Sie, dass diese Auswahl bedeutet, dass Sie die Installation und das Herunterladen des Qt SDK abbrechen und dass Sie alle Kopien des Qt SDK und alle Teile davon, die sich in Ihrem Besitz befinden, löschen müssen.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="868"/>
@@ -1746,7 +1746,7 @@ Installiere Komponente %1</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="518"/>
         <source>Do you want to abort the %1 process?</source>
-        <translation>Möchten sie den %1 Vorgang abbrechen?</translation>
+        <translation>Möchten Sie den %1 Vorgang abbrechen?</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="518"/>
@@ -1776,7 +1776,7 @@ Installiere Komponente %1</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="532"/>
         <source>Do you want to quit the %1 application?</source>
-        <translation>Möchten sie die %1 Anwendung beenden?</translation>
+        <translation>Möchten Sie die %1 Anwendung beenden?</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="573"/>
@@ -1849,7 +1849,7 @@ Installiere Komponente %1</translation>
         <source>QMake from the current Qt version 
 (%1)is not existing. Please file a bugreport with this dialog at https://bugreports.qt-project.org.</source>
         <translation>Das QMake der aktuell verwendeten Qt Version 
-(%1) kann nicht gefunden werden. Bitte erstellen sie einen Bugreport unter https://bugreports.qt-project.org.</translation>
+(%1) kann nicht gefunden werden. Bitte erstellen Sie einen Bugreport unter https://bugreports.qt-project.org.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/qtpatchoperation.cpp" line="165"/>
@@ -1859,7 +1859,7 @@ is not parseable. Please file a bugreport with this dialog https://bugreports.qt
 output: &quot;%2&quot;</source>
         <translation>Die Ausgabe von 
 %1 -query
-ist ungültig. Bitte erstellen sie einen Bugreport unter https://bugreports.qt-project.org.
+ist ungültig. Bitte erstellen Sie einen Bugreport unter https://bugreports.qt-project.org.
 Ausgabe: &quot;%2&quot;</translation>
     </message>
     <message>
@@ -1920,7 +1920,7 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1533"/>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 von ihrem Computer zu entfernen. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Das Programmverzeichnis %2 wird vollständig gelöscht&lt;/font&gt;, inklusive allen Inhalten in diesem Ordner!</translation>
+        <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 von Ihrem Computer zu entfernen. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Das Programmverzeichnis %2 wird vollständig gelöscht&lt;/font&gt;, inklusive allen Inhalten in diesem Ordner!</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1541"/>
@@ -1935,7 +1935,7 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1543"/>
         <source>Setup is now ready to begin updating your installation.</source>
-        <translation>Das Einrichtungsprogramm ist jetzt bereit, ihre Installation zu aktualisieren.</translation>
+        <translation>Das Einrichtungsprogramm ist jetzt bereit, Ihre Installation zu aktualisieren.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1546"/>
@@ -1950,7 +1950,7 @@ Eventuell hilft es, einen laufenden Virenscanner auszuschalten und den Installer
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1548"/>
         <source>Setup is now ready to begin installing %1 on your computer.</source>
-        <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 auf ihrem Computer einzurichten.</translation>
+        <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 auf Ihrem Computer einzurichten.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1601"/>
@@ -2178,7 +2178,7 @@ is not parseable. Please file a bugreport with this dialog https://bugreports.qt
 output: %2</source>
         <translation>Die Ausgabe von 
 %1 -query
-ist ungültig. Bitte erstellen sie einen Bugreport unter https://bugreports.qt-project.org.
+ist ungültig. Bitte erstellen Sie einen Bugreport unter https://bugreports.qt-project.org.
 Ausgabe: %2</translation>
     </message>
     <message>
@@ -2204,7 +2204,7 @@ is not parseable. Please file a bugreport with this dialog https://bugreports.qt
 output: %2</source>
         <translation>Die Ausgabe von 
 %1 -query
-ist ungültig. Bitte erstellen sie einen Bugreport unter https://bugreports.qt-project.org.
+ist ungültig. Bitte erstellen Sie einen Bugreport unter https://bugreports.qt-project.org.
 Ausgabe: %2</translation>
     </message>
     <message>
@@ -2296,7 +2296,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1395"/>
         <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new folder.</source>
-        <translation>Wählen sie den Ordner im Startmenü, in dem die Verknüpfungen zur Anwendung erstellt werden sollen. Sie können einen Namen angeben, um einen neuen Ordner anzulegen.</translation>
+        <translation>Wählen Sie den Ordner im Startmenü, in dem die Verknüpfungen zur Anwendung erstellt werden sollen. Sie können einen Namen angeben, um einen neuen Ordner anzulegen.</translation>
     </message>
 </context>
 <context>
@@ -2309,7 +2309,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1273"/>
         <source>Please specify the folder where %1 will be installed.</source>
-        <translation>Bitte geben sie den Ordner an, in dem %1 installiert werden soll.</translation>
+        <translation>Bitte geben Sie den Ordner an, in dem %1 installiert werden soll.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1287"/>
@@ -2347,7 +2347,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1353"/>
         <source>You have selected an existing, non-empty folder for installation. Note that it will be completely wiped on uninstallation of this application. It is not advisable to install into this folder as installation might fail. Do you want to continue?</source>
-        <translation>Sie haben einen existierenden, nicht leeren Ordner für die Installation ausgewählt. Dieser wird bei der Deinstallation dieser Anwendung komplett gelöscht werden. Es wird nicht empfohlen, in diesen Ordner zu installaieren. Möchten sie trotzdem fortsetzen?</translation>
+        <translation>Sie haben einen existierenden, nicht leeren Ordner für die Installation ausgewählt. Dieser wird bei der Deinstallation dieser Anwendung komplett gelöscht werden. Es wird nicht empfohlen, in diesen Ordner zu installieren. Möchten Sie trotzdem fortsetzen?</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1378"/>
@@ -2692,7 +2692,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <location filename="../../libs/installer/adminauthorization_x11.cpp" line="74"/>
         <location filename="../../libs/installer/adminauthorization_x11.cpp" line="78"/>
         <source>Enter your password to authorize for sudo:</source>
-        <translation>Geben sie ihr Passwort ein, um sich für sudo zu autentifizieren:</translation>
+        <translation>Geben Sie Ihr Passwort ein, um sich für sudo zu authentifizieren:</translation>
     </message>
     <message>
         <location filename="../../libs/installer/adminauthorization_x11.cpp" line="88"/>
@@ -2950,12 +2950,12 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../settingsdialog.cpp" line="239"/>
         <source>Add the username to authenticate on the server.</source>
-        <translation>Nutzernamen eintragen, um sich gegenüber der Quelle zu autentifizieren.</translation>
+        <translation>Nutzernamen eintragen, um sich gegenüber der Quelle zu authentifizieren.</translation>
     </message>
     <message>
         <location filename="../settingsdialog.cpp" line="241"/>
         <source>Add the password to authenticate on the server.</source>
-        <translation>Passwort eintragen, um sich gegenüber der Quelle zu autentifizieren.</translation>
+        <translation>Passwort eintragen, um sich gegenüber der Quelle zu authentifizieren.</translation>
     </message>
     <message>
         <location filename="../settingsdialog.cpp" line="243"/>
@@ -3043,7 +3043,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
     <message>
         <location filename="../installerbasecommons.cpp" line="405"/>
         <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
-        <translation>Der Pfad zum Installationsverzeichnis enthält Zeichen ausserhalb des ASCII Zeichensatzes. Dies ist zur Zeit nicht unterstützt. Bitte wählen sie einen anderen Pfad für das Installationsverzeichnis.</translation>
+        <translation>Der Pfad zum Installationsverzeichnis enthält Zeichen ausserhalb des ASCII Zeichensatzes. Dies ist zur Zeit nicht unterstützt. Bitte wählen Sie einen anderen Pfad für das Installationsverzeichnis.</translation>
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="420"/>
@@ -3055,7 +3055,7 @@ darf nicht mehr als 255 Zeichen lang sein.</translation>
         <source>The folder you selected exists already and contains an installation.
 Do you want to overwrite it?</source>
         <translation>Der ausgewählte Ordner existiert bereits und enthält eine Installation.
-Möchten sie diese überschreiben?</translation>
+Möchten Sie diese überschreiben?</translation>
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="440"/>
@@ -3065,8 +3065,8 @@ It is not advisable to install into this folder as installation might fail.
 Do you want to continue?</source>
         <translation>Sie haben einen existierenden, nicht leeren Ordner für die Installation ausgewählt.
 Dieser wird bei der Deinstallation dieser Anwendung komplett gelöscht werden.
-Es wird nicht empfohlen, in diesen Ordner zu installaieren.
-Möchten sie trotzdem fortsetzen?</translation>
+Es wird nicht empfohlen, in diesen Ordner zu installieren.
+Möchten Sie trotzdem fortsetzen?</translation>
     </message>
     <message>
         <location filename="../installerbasecommons.cpp" line="444"/>
