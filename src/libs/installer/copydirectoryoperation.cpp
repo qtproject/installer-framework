@@ -65,14 +65,26 @@ void CopyDirectoryOperation::backup()
 bool CopyDirectoryOperation::performOperation()
 {
     const QStringList args = arguments();
-    if (args.count() != 2) {
+    if (args.count() < 2 || args.count() > 3) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.").arg(name())
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, expected: <source> <target> [overwrite]").arg(name())
             .arg(args.count()));
         return false;
     }
     const QString sourcePath = args.at(0);
     const QString targetPath = args.at(1);
+    bool overwrite = false;
+
+    if (args.count() > 2) {
+        const QString overwriteStr = args.at(2);
+        if (overwriteStr == QLatin1String("forceOverwrite")) {
+            overwrite = true;
+        } else {
+            setError(InvalidArguments);
+            setErrorString(tr("Invalid argument in %0: Third argument needs to be forceOverwrite, if specified").arg(name()));
+            return false;
+        }
+    }
 
     const QFileInfo sourceInfo(sourcePath);
     const QFileInfo targetInfo(targetPath);
@@ -115,10 +127,18 @@ bool CopyDirectoryOperation::performOperation()
                 return false;
             }
         } else {
-            if (!QFile::copy(sourceDir.absoluteFilePath(itemName), targetDir.absoluteFilePath(relativePath))) {
-                setError(InvalidArguments);
-                setErrorString(tr("Could not copy %0 to %1").arg(sourceDir.absoluteFilePath(itemName))
-                    .arg(targetDir.absoluteFilePath(relativePath)));
+            const QString absolutePath = targetDir.absoluteFilePath(relativePath);
+            if (overwrite && QFile::exists(absolutePath) && !deleteFileNowOrLater(absolutePath)) {
+                setError(UserDefinedError);
+                setErrorString(tr("Failed to overwrite %1").arg(absolutePath));
+                return false;
+            }
+            QFile file(sourceDir.absoluteFilePath(itemName));
+            if (!file.copy(absolutePath)) {
+                setError(UserDefinedError);
+                setErrorString(tr("Could not copy %0 to %1, error was: %3").arg(sourceDir.absoluteFilePath(itemName),
+                               targetDir.absoluteFilePath(relativePath),
+                               file.errorString()));
                 return false;
             }
             autoPush.m_files.prepend(targetDir.absoluteFilePath(relativePath));
