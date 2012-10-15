@@ -546,7 +546,7 @@ Component Component::readFromIndexEntry(const QSharedPointer<QFile> &in, qint64 
 void Component::writeIndexEntry(QIODevice *out, qint64 positionOffset) const
 {
     appendByteArray(out, m_name);
-    const Range<qint64> relative = m_binarySegment.moved(positionOffset);
+    m_binarySegment.moved(positionOffset);
     appendInt64(out, binarySegment().start());
     appendInt64(out, binarySegment().length());
 }
