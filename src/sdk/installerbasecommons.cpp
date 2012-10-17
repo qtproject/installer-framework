@@ -131,19 +131,31 @@ bool IntroductionPageImpl::validatePage()
 
     // fetch updater packages
     if (core->isUpdater()) {
-        if (!m_updatesFetched) {
-            m_updatesFetched = core->fetchRemotePackagesTree();
-            if (!m_updatesFetched)
-                setErrorMessage(core->error());
+        bool reposAvailable = false;
+        foreach (const Repository &repo, core->settings().repositories()) {
+            if (repo.isEnabled() && repo.isValid()) {
+                reposAvailable = true;
+                break;
+            }
         }
+        if (reposAvailable) {
+            if (!m_updatesFetched) {
+                m_updatesFetched = core->fetchRemotePackagesTree();
+                if (!m_updatesFetched)
+                    setErrorMessage(core->error());
+            }
 
-        callControlScript(QLatin1String("UpdaterSelectedCallback"));
+            callControlScript(QLatin1String("UpdaterSelectedCallback"));
 
-        if (m_updatesFetched) {
-            if (core->updaterComponents().count() <= 0)
-                setErrorMessage(QLatin1String("<b>") + tr("No updates available.") + QLatin1String("</b>"));
-            else
-                setComplete(true);
+            if (m_updatesFetched) {
+                if (core->updaterComponents().count() <= 0)
+                    setErrorMessage(QLatin1String("<b>") + tr("No updates available.") + QLatin1String("</b>"));
+                else
+                    setComplete(true);
+            }
+        } else {
+            setErrorMessage(QLatin1String("<font color=\"red\">") + tr("At least one enabled and valid "
+                "repository required to search for updates.") + QLatin1String("</font>"));
         }
     }
 
@@ -212,8 +224,17 @@ void IntroductionPageImpl::showMaintenanceTools()
 void IntroductionPageImpl::setMaintenanceToolsEnabled(bool enable)
 {
     m_packageManager->setEnabled(enable);
-    m_updateComponents->setEnabled(enable);
     m_removeAllComponents->setEnabled(enable);
+
+    // if there is no repo, disable the updater functionality
+    if (packageManagerCore()->settings().repositories().isEmpty()) {
+        m_updateComponents->setEnabled(false);
+        // while we can add a repo, check the updater and remove it again, monitor checked state too
+        if (m_updateComponents->isChecked())
+            m_removeAllComponents->setChecked(true);
+    } else {
+        m_updateComponents->setEnabled(enable);
+    }
 }
 
 // -- public slots
