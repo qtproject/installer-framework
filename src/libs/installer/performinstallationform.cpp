@@ -97,7 +97,7 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     m_detailsBrowser->setReadOnly(true);
     m_detailsBrowser->setWordWrapMode(QTextOption::NoWrap);
     m_detailsBrowser->setObjectName(QLatin1String("DetailsBrowser"));
-    m_detailsBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_detailsBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     bottomLayout->addWidget(m_detailsBrowser);
 
     bottomLayout->setStretch(1, 10);
