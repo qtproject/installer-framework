@@ -223,6 +223,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
     }
 
     // Add some possible missing values
+    if (!s.d->m_data.contains(scIcon))
+        s.d->m_data.insert(scIcon, QLatin1String(":/installer"));
     if (!s.d->m_data.contains(scRemoveTargetDir))
         s.d->m_data.insert(scRemoveTargetDir, scTrue);
     if (!s.d->m_data.contains(scUninstallerName))

@@ -245,7 +245,6 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 #endif
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
-    setLayout(new QVBoxLayout(this));
 
     connect(this, SIGNAL(rejected()), m_core, SLOT(setCanceled()));
     connect(this, SIGNAL(interrupted()), m_core, SLOT(interrupt()));
@@ -284,12 +283,6 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
     for (int i = QWizard::BackButton; i < QWizard::CustomButton1; ++i)
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
-
-#ifdef Q_OS_MAC
-    resize(sizeHint() * 1.25);
-#else
-    resize(sizeHint());
-#endif
 }
 
 PackageManagerGui::~PackageManagerGui()
@@ -680,7 +673,6 @@ void PackageManagerGui::dependsOnLocalInstallerBinary()
         rejectWithoutPrompt();
     }
 }
-
 
 
 // -- PackageManagerPage

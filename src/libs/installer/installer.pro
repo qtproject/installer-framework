@@ -162,7 +162,8 @@ SOURCES += packagemanagercore.cpp \
     link.cpp \
     createlinkoperation.cpp
 
-RESOURCES += resources/patch_file_lists.qrc
+RESOURCES += resources/patch_file_lists.qrc \
+             resources/installer.qrc
 
 macx {
     HEADERS += macrelocateqt.h \
