@@ -119,8 +119,32 @@ public:
     qint64 write(const char *data, qint64 len);
 
 private:
-    template<typename T> T returnWithType() const;
-    template<typename T> T returnWithCastedType() const;
+    // these should be inline, since debugging on VS2010 fails without it (not sure about the reason)
+    template<typename T> inline T returnWithType() const
+    {
+        socket->flush();
+        if (!socket->bytesAvailable())
+            socket->waitForReadyRead();
+        quint32 test;
+        stream >> test;
+
+        T result;
+        stream >> result;
+        return result;
+    }
+
+    template<typename T> inline T returnWithCastedType() const
+    {
+        socket->flush();
+        if (!socket->bytesAvailable())
+            socket->waitForReadyRead();
+        quint32 test;
+        stream >> test;
+
+        int result;
+        stream >> result;
+        return static_cast<T>(result);
+    }
 
 private:
     friend class FSEngineClientHandler;
@@ -128,32 +152,6 @@ private:
     mutable QTcpSocket *socket;
     mutable QDataStream stream;
 };
-
-template<typename T> T FSEngineClient::returnWithType() const
-{
-    socket->flush();
-    if (!socket->bytesAvailable())
-        socket->waitForReadyRead();
-    quint32 test;
-    stream >> test;
-
-    T result;
-    stream >> result;
-    return result;
-}
-
-template<typename T> T FSEngineClient::returnWithCastedType() const
-{
-    socket->flush();
-    if (!socket->bytesAvailable())
-       socket->waitForReadyRead();
-    quint32 test;
-    stream >> test;
-
-    int result;
-    stream >> result;
-    return static_cast<T>(result);
-}
 
 /*!
  \internal
