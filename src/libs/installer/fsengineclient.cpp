@@ -783,7 +783,8 @@ void FSEngineClientHandler::Private::maybeStartServer()
         if (!serverStarted) {
             // something went wrong with authorizing, either user pressed cancel or entered
             // wrong password
-            const QString fallback = serverCommand + QLatin1String(" ") + serverArguments.join(QLatin1String(" "));
+            const QString fallback = serverCommand + QLatin1String(" ") + serverArguments
+                .join(QLatin1String(" "));
 
             const QMessageBox::Button res =
                 QInstaller::MessageBoxHandler::critical(QInstaller::MessageBoxHandler::currentBestSuitParent(),
@@ -800,11 +801,9 @@ void FSEngineClientHandler::Private::maybeStartServer()
         serverStarted = QProcess::startDetached(serverCommand, serverArguments);
     }
 
-    // now wait for the socket to arrive
-    QTcpSocket s;
-    while (serverStarting && serverStarted) {
-        if (FSEngineClientHandler::instance().connect(&s))
-            serverStarting = false;
+    if (serverStarted) {
+        QTcpSocket s;   // now wait for the socket to arrive
+        serverStarted = FSEngineClientHandler::instance().connect(&s);
     }
     serverStarting = false;
 }

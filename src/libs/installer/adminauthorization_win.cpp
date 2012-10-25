@@ -33,12 +33,24 @@
 
 #include "utils.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QDir>
-#include <QtCore/QStringList>
-#include <QtCore/QVector>
+#include <QDebug>
+#include <QDir>
 
 #include <windows.h>
+
+struct DeCoInitializer
+{
+    DeCoInitializer()
+        : neededCoInit(CoInitialize(NULL) == S_OK)
+    {
+    }
+    ~DeCoInitializer()
+    {
+        if (neededCoInit)
+            CoUninitialize();
+    }
+    bool neededCoInit;
+};
 
 AdminAuthorization::AdminAuthorization()
 {
@@ -74,30 +86,21 @@ bool AdminAuthorization::hasAdminRights()
 
 bool AdminAuthorization::execute(QWidget *, const QString &program, const QStringList &arguments)
 {
+    DeCoInitializer _;
+
     const QString file = QDir::toNativeSeparators(program);
     const QString args = QInstaller::createCommandline(QString(), arguments);
 
-    const int len = GetShortPathName((wchar_t *)file.utf16(), 0, 0);
-    if (len == 0)
-        return false;
-    wchar_t *const buffer = new wchar_t[len];
-    GetShortPathName((wchar_t *)file.utf16(), buffer, len);
+    SHELLEXECUTEINFOW shellExecuteInfo = { 0 };
+    shellExecuteInfo.nShow = SW_HIDE;
+    shellExecuteInfo.lpVerb = L"runas";
+    shellExecuteInfo.lpFile = (wchar_t *)file.utf16();
+    shellExecuteInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
+    shellExecuteInfo.lpParameters = (wchar_t *)args.utf16();
 
-    SHELLEXECUTEINFOW TempInfo = { 0 };
-    TempInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
-    TempInfo.fMask = 0;
-    TempInfo.hwnd = 0;
-    TempInfo.lpVerb = L"runas";
-    TempInfo.lpFile = buffer;
-    TempInfo.lpParameters = (wchar_t *)args.utf16();
-    TempInfo.lpDirectory = 0;
-    TempInfo.nShow = SW_NORMAL;
+    qDebug() << QString::fromLatin1("Starting elevated process %1 with arguments: %2.").arg(file, args);
+    ShellExecuteExW(&shellExecuteInfo);
+    qDebug() << "Finished starting elevated process.";
 
-    
-    qDebug() << QString::fromLatin1(" starting elevated process %1 %2 with ::ShellExecuteExW( &TempInfo );"
-        ).arg(program, arguments.join(QLatin1String(" ")));
-    const bool result = ::ShellExecuteEx(&TempInfo);
-    qDebug() << QLatin1String("after starting elevated process");
-    delete[] buffer;
-    return result;
+    return GetLastError() == ERROR_SUCCESS;
 }
