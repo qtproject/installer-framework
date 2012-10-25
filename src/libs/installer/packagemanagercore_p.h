@@ -36,6 +36,7 @@
 #include "getrepositoriesmetainfojob.h"
 #include "settings.h"
 #include "packagemanagercore.h"
+#include "packagemanagercoredata.h"
 
 #include <kdsysinfo.h>
 #include <kdupdaterapplication.h>
@@ -83,7 +84,7 @@ public:
     static bool performOperationThreaded(Operation *op, PackageManagerCorePrivate::OperationType type
         = PackageManagerCorePrivate::Perform);
 
-    void initialize();
+    void initialize(const QHash<QString, QString> &params);
     bool isOfflineOnly() const;
 
     bool statusCanceledOrFailed() const;
@@ -173,13 +174,12 @@ public:
     int m_status;
     QString m_error;
 
-    Settings m_settings;
     bool m_forceRestart;
     bool m_testChecksum;
     bool m_launchedAsRoot;
     bool m_completeUninstall;
     bool m_needToWriteUninstaller;
-    QHash<QString, QString> m_vars;
+    PackageManagerCoreData m_data;
     QHash<QString, bool> m_sharedFlags;
     QString m_installerBaseBinaryUnreplaced;
 

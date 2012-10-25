@@ -1787,20 +1787,19 @@ void PerformInstallationPage::entering()
     setComplete(false);
     setCommitPage(true);
 
-    const QString productName = packageManagerCore()->value(QLatin1String("ProductName"));
     if (packageManagerCore()->isUninstaller()) {
         setButtonText(QWizard::CommitButton, tr("&Uninstall"));
-        setTitle(titleForPage(objectName(), tr("Uninstalling %1")).arg(productName));
+        setTitle(titleForPage(objectName(), tr("Uninstalling %1")).arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runUninstaller()));
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
         setButtonText(QWizard::CommitButton, tr("&Update"));
-        setTitle(titleForPage(objectName(), tr("Updating components of %1")).arg(productName));
+        setTitle(titleForPage(objectName(), tr("Updating components of %1")).arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runPackageUpdater()));
     } else {
         setButtonText(QWizard::CommitButton, tr("&Install"));
-        setTitle(titleForPage(objectName(), tr("Installing %1")).arg(productName));
+        setTitle(titleForPage(objectName(), tr("Installing %1")).arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
     }

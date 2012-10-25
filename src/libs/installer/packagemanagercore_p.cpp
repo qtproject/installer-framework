@@ -513,61 +513,16 @@ QString PackageManagerCorePrivate::installReason(Component *component)
 }
 
 
-void PackageManagerCorePrivate::initialize()
+void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params)
 {
     m_coreCheckedHash.clear();
+    m_data = PackageManagerCoreData(params);
     m_componentsToInstallCalculated = false;
 
-    // first set some common variables that may used e.g. as placeholder
-    // in some of the settings variables or in a script or...
-    m_vars.insert(QLatin1String("rootDir"), QDir::rootPath());
-    m_vars.insert(QLatin1String("homeDir"), QDir::homePath());
-    m_vars.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
-
-#ifdef Q_OS_WIN
-    m_vars.insert(QLatin1String("os"), QLatin1String("win"));
-#elif defined(Q_OS_MAC)
-    m_vars.insert(QLatin1String("os"), QLatin1String("mac"));
-#elif defined(Q_WS_X11)
-    m_vars.insert(QLatin1String("os"), QLatin1String("x11"));
-#elif defined(Q_OS_QWS)
-    m_vars.insert(QLatin1String("os"), QLatin1String("Qtopia"));
-#else
-    // TODO: add more platforms as needed...
-#endif
-
-    try {
-        m_settings = Settings(Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
-            QLatin1String(":/metadata/installer-config/")));
-    } catch (const Error &e) {
-        qCritical("Could not parse Config: %s", qPrintable(e.message()));
-        // TODO: try better error handling
-        return;
-    }
-
-    // fill the variables defined in the settings
-    m_vars.insert(QLatin1String("ProductName"), m_settings.applicationName());
-    m_vars.insert(QLatin1String("ProductVersion"), m_settings.applicationVersion());
-    m_vars.insert(scTitle, m_settings.title());
-    m_vars.insert(scPublisher, m_settings.publisher());
-    m_vars.insert(QLatin1String("Url"), m_settings.url());
-    m_vars.insert(scStartMenuDir, m_settings.startMenuDir());
-    m_vars.insert(scTargetConfigurationFile, m_settings.configurationFileName());
-    m_vars.insert(QLatin1String("LogoPixmap"), m_settings.logo());
-    m_vars.insert(QLatin1String("LogoSmallPixmap"), m_settings.logoSmall());
-    m_vars.insert(QLatin1String("WatermarkPixmap"), m_settings.watermark());
-
-    m_vars.insert(scRunProgram, replaceVariables(m_settings.runProgram()));
-    const QString desc = m_settings.runProgramDescription();
-    if (!desc.isEmpty())
-        m_vars.insert(scRunProgramDescription, desc);
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
     if (m_launchedAsRoot)
-        m_vars.insert(scTargetDir, replaceVariables(m_settings.adminTargetDir()));
-    else
+        m_data.setValue(scTargetDir, replaceVariables(m_data.settings().adminTargetDir()));
 #endif
-        m_vars.insert(scTargetDir, replaceVariables(m_settings.targetDir()));
-    m_vars.insert(scRemoveTargetDir, replaceVariables(m_settings.removeTargetDir()));
 
     if (!m_core->isInstaller()) {
 #ifdef Q_OS_MAC
@@ -588,14 +543,21 @@ void PackageManagerCorePrivate::initialize()
     m_updaterApplication.updateSourcesInfo()->setFileName(QString());
     KDUpdater::PackagesInfo &packagesInfo = *m_updaterApplication.packagesInfo();
     packagesInfo.setFileName(componentsXmlPath());
-    if (packagesInfo.applicationName().isEmpty())
-        packagesInfo.setApplicationName(m_settings.applicationName());
-    if (packagesInfo.applicationVersion().isEmpty())
-        packagesInfo.setApplicationVersion(m_settings.applicationVersion());
+
+    if (packagesInfo.applicationName().isEmpty()) {
+        // TODO: this seems to be wrong, we should ask for ProductName defaulting to applicationName...
+        packagesInfo.setApplicationName(m_data.settings().applicationName());
+    }
+
+    if (packagesInfo.applicationVersion().isEmpty()) {
+        // TODO: this seems to be wrong, we should ask for ProductVersion defaulting to applicationVersion...
+        packagesInfo.setApplicationVersion(m_data.settings().applicationVersion());
+    }
 
     if (isInstaller()) {
-        m_updaterApplication.addUpdateSource(m_settings.applicationName(), m_settings.applicationName(),
-            QString(), QUrl(QLatin1String("resource://metadata/")), 0);
+        // TODO: this seems to be wrong, we should ask for ProductName defaulting to applicationName...
+        m_updaterApplication.addUpdateSource(m_data.settings().applicationName(),
+            m_data.settings().applicationName(), QString(), QUrl(QLatin1String("resource://metadata/")), 0);
         m_updaterApplication.updateSourcesInfo()->setModified(false);
     }
 
@@ -660,44 +622,12 @@ void PackageManagerCorePrivate::setStatus(int status, const QString &error)
 
 QString PackageManagerCorePrivate::replaceVariables(const QString &str) const
 {
-    static const QChar at = QLatin1Char('@');
-    QString res;
-    int pos = 0;
-    while (true) {
-        const int pos1 = str.indexOf(at, pos);
-        if (pos1 == -1)
-            break;
-        const int pos2 = str.indexOf(at, pos1 + 1);
-        if (pos2 == -1)
-            break;
-        res += str.mid(pos, pos1 - pos);
-        const QString name = str.mid(pos1 + 1, pos2 - pos1 - 1);
-        res += m_core->value(name);
-        pos = pos2 + 1;
-    }
-    res += str.mid(pos);
-    return res;
+    return m_data.replaceVariables(str);
 }
 
 QByteArray PackageManagerCorePrivate::replaceVariables(const QByteArray &ba) const
 {
-    static const QChar at = QLatin1Char('@');
-    QByteArray res;
-    int pos = 0;
-    while (true) {
-        const int pos1 = ba.indexOf(at, pos);
-        if (pos1 == -1)
-            break;
-        const int pos2 = ba.indexOf(at, pos1 + 1);
-        if (pos2 == -1)
-            break;
-        res += ba.mid(pos, pos1 - pos);
-        const QString name = QString::fromLocal8Bit(ba.mid(pos1 + 1, pos2 - pos1 - 1));
-        res += m_core->value(name).toLocal8Bit();
-        pos = pos2 + 1;
-    }
-    res += ba.mid(pos);
-    return res;
+    return m_data.replaceVariables(ba);
 }
 
 /*!
@@ -726,7 +656,7 @@ Operation *PackageManagerCorePrivate::takeOwnedOperation(Operation *operation)
 
 QString PackageManagerCorePrivate::uninstallerName() const
 {
-    QString filename = m_settings.uninstallerName();
+    QString filename = m_data.settings().uninstallerName();
 #if defined(Q_OS_MAC)
     if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
         filename += QLatin1String(".app/Contents/MacOS/") + filename;
@@ -783,18 +713,18 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
 void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
 {
     // write current state (variables) to the uninstaller ini file
-    const QString iniPath = targetDir() + QLatin1Char('/') + m_settings.uninstallerIniFile();
+    const QString iniPath = targetDir() + QLatin1Char('/') + m_data.settings().uninstallerIniFile();
 
-    QVariantHash vars;
+    QVariantHash variables;
     QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
-    foreach (const QString &key, m_vars.keys()) {
+    foreach (const QString &key, m_data.keys()) {
         if (key != scRunProgramDescription && key != scRunProgram)
-            vars.insert(key, m_vars.value(key));
+            variables.insert(key, m_data.value(key));
     }
-    cfg.setValue(QLatin1String("Variables"), vars);
+    cfg.setValue(QLatin1String("Variables"), variables);
 
     QVariantList repos;
-    foreach (const Repository &repo, m_settings.defaultRepositories())
+    foreach (const Repository &repo, m_data.settings().defaultRepositories())
         repos.append(QVariant().fromValue(repo));
     cfg.setValue(QLatin1String("DefaultRepositories"), repos);
 
@@ -813,16 +743,16 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
         writer.writeStartDocument();
 
         writer.writeStartElement(QLatin1String("Network"));
-            writer.writeTextElement(QLatin1String("ProxyType"), QString::number(m_settings.proxyType()));
+            writer.writeTextElement(QLatin1String("ProxyType"), QString::number(m_data.settings().proxyType()));
             writer.writeStartElement(QLatin1String("Ftp"));
-                const QNetworkProxy &ftpProxy = m_settings.ftpProxy();
+                const QNetworkProxy &ftpProxy = m_data.settings().ftpProxy();
                 writer.writeTextElement(QLatin1String("Host"), ftpProxy.hostName());
                 writer.writeTextElement(QLatin1String("Port"), QString::number(ftpProxy.port()));
                 writer.writeTextElement(QLatin1String("Username"), ftpProxy.user());
                 writer.writeTextElement(QLatin1String("Password"), ftpProxy.password());
             writer.writeEndElement();
             writer.writeStartElement(QLatin1String("Http"));
-                const QNetworkProxy &httpProxy = m_settings.httpProxy();
+                const QNetworkProxy &httpProxy = m_data.settings().httpProxy();
                 writer.writeTextElement(QLatin1String("Host"), httpProxy.hostName());
                 writer.writeTextElement(QLatin1String("Port"), QString::number(httpProxy.port()));
                 writer.writeTextElement(QLatin1String("Username"), httpProxy.user());
@@ -830,7 +760,7 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
             writer.writeEndElement();
 
             writer.writeStartElement(QLatin1String("Repositories"));
-            foreach (const Repository &repo, m_settings.userRepositories()) {
+            foreach (const Repository &repo, m_data.settings().userRepositories()) {
                 writer.writeStartElement(QLatin1String("Repository"));
                     writer.writeTextElement(QLatin1String("Host"), repo.url().toString());
                     writer.writeTextElement(QLatin1String("Username"), repo.username());
@@ -845,18 +775,18 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
 
 void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &targetDir)
 {
-    QSettingsWrapper cfg(targetDir + QLatin1Char('/') + m_settings.uninstallerIniFile(),
+    QSettingsWrapper cfg(targetDir + QLatin1Char('/') + m_data.settings().uninstallerIniFile(),
         QSettingsWrapper::IniFormat);
     const QVariantHash vars = cfg.value(QLatin1String("Variables")).toHash();
     for (QHash<QString, QVariant>::ConstIterator it = vars.constBegin(); it != vars.constEnd(); ++it)
-        m_vars.insert(it.key(), it.value().toString());
+        m_data.setValue(it.key(), it.value().toString());
 
     QSet<Repository> repos;
     const QVariantList variants = cfg.value(QLatin1String("DefaultRepositories")).toList();
     foreach (const QVariant &variant, variants)
         repos.insert(variant.value<Repository>());
     if (!repos.isEmpty())
-        m_settings.setDefaultRepositories(repos);
+        m_data.settings().setDefaultRepositories(repos);
 
     QFile file(targetDir + QLatin1String("/network.xml"));
     if (!file.open(QIODevice::ReadOnly))
@@ -870,13 +800,13 @@ void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &target
                     while (reader.readNextStartElement()) {
                         const QStringRef name = reader.name();
                         if (name == QLatin1String("Ftp")) {
-                            m_settings.setFtpProxy(readProxy(reader));
+                            m_data.settings().setFtpProxy(readProxy(reader));
                         } else if (name == QLatin1String("Http")) {
-                            m_settings.setHttpProxy(readProxy(reader));
+                            m_data.settings().setHttpProxy(readProxy(reader));
                         } else if (reader.name() == QLatin1String("Repositories")) {
-                            m_settings.addUserRepositories(readRepositories(reader, false));
+                            m_data.settings().addUserRepositories(readRepositories(reader, false));
                         } else if (name == QLatin1String("ProxyType")) {
-                            m_settings.setProxyType(Settings::ProxyType(reader.readElementText().toInt()));
+                            m_data.settings().setProxyType(Settings::ProxyType(reader.readElementText().toInt()));
                         } else {
                             reader.skipCurrentElement();
                         }
@@ -1275,7 +1205,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 
         QFile input;
         BinaryLayout layout;
-        const QString dataFile = targetDir() + QLatin1Char('/') + m_settings.uninstallerName()
+        const QString dataFile = targetDir() + QLatin1Char('/') + m_data.settings().uninstallerName()
             + QLatin1String(".dat");
         try {
             if (isInstaller()) {
@@ -1367,12 +1297,12 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 QString PackageManagerCorePrivate::registerPath() const
 {
 #ifdef Q_OS_WIN
-    QString productName = m_vars.value(QLatin1String("ProductName"));
+    const QString productName = m_data.value(QLatin1String("ProductName")).toString();
     if (productName.isEmpty())
         throw Error(tr("ProductName should be set"));
 
     QString path = QLatin1String("HKEY_CURRENT_USER");
-    if (m_vars.value(QLatin1String("AllUsers")) == scTrue)
+    if (m_data.value(QLatin1String("AllUsers")).toString() == scTrue)
         path = QLatin1String("HKEY_LOCAL_MACHINE");
 
     return path + QLatin1String("\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\")
@@ -1468,9 +1398,10 @@ bool PackageManagerCorePrivate::runInstaller()
         // Clear the packages as we might install into an already existing installation folder.
         info.clearPackageInfoList();
         // also update the application name and version, might be set from a script as well
-        info.setApplicationName(m_core->value(QLatin1String("ProductName"), m_settings.applicationName()));
-        info.setApplicationVersion(m_core->value(QLatin1String("ProductVersion"),
-            m_settings.applicationVersion()));
+        info.setApplicationName(m_data.value(QLatin1String("ProductName"),
+            m_data.settings().applicationName()).toString());
+        info.setApplicationVersion(m_data.value(QLatin1String("ProductVersion"),
+            m_data.settings().applicationVersion()).toString());
 
         const int progressOperationCount = countProgressOperations(componentsToInstall)
             // add one more operation as we support progress
@@ -1501,13 +1432,13 @@ bool PackageManagerCorePrivate::runInstaller()
 
                 if (success) {
                     QSet<Repository> repos;
-                    foreach (Repository repo, m_settings.defaultRepositories()) {
+                    foreach (Repository repo, m_data.settings().defaultRepositories()) {
                         repo.setEnabled(false);
                         repos.insert(repo);
                     }
                     repos.insert(Repository(QUrl::fromUserInput(createRepo
                         ->value(QLatin1String("local-repo")).toString()), true));
-                    m_settings.setDefaultRepositories(repos);
+                    m_data.settings().setDefaultRepositories(repos);
                     addPerformed(takeOwnedOperation(createRepo));
                 } else {
                     MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -1954,13 +1885,13 @@ void PackageManagerCorePrivate::registerUninstaller()
 {
 #ifdef Q_OS_WIN
     QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);
-    settings.setValue(scDisplayName, m_vars.value(QLatin1String("ProductName")));
-    settings.setValue(QLatin1String("DisplayVersion"), m_vars.value(QLatin1String("ProductVersion")));
+    settings.setValue(scDisplayName, m_data.value(QLatin1String("ProductName")));
+    settings.setValue(QLatin1String("DisplayVersion"), m_data.value(QLatin1String("ProductVersion")));
     const QString uninstaller = QDir::toNativeSeparators(uninstallerName());
     settings.setValue(QLatin1String("DisplayIcon"), uninstaller);
-    settings.setValue(scPublisher, m_vars.value(scPublisher));
-    settings.setValue(QLatin1String("UrlInfoAbout"), m_vars.value(QLatin1String("Url")));
-    settings.setValue(QLatin1String("Comments"), m_vars.value(scTitle));
+    settings.setValue(scPublisher, m_data.value(scPublisher));
+    settings.setValue(QLatin1String("UrlInfoAbout"), m_data.value(QLatin1String("Url")));
+    settings.setValue(QLatin1String("Comments"), m_data.value(scTitle));
     settings.setValue(QLatin1String("InstallDate"), QDateTime::currentDateTime().toString());
     settings.setValue(QLatin1String("InstallLocation"), QDir::toNativeSeparators(targetDir()));
     settings.setValue(QLatin1String("UninstallString"), uninstaller);
@@ -2081,9 +2012,9 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
         if (!packagesInfo.isValid()) {
             packagesInfo.setFileName(componentsXmlPath());
             if (packagesInfo.applicationName().isEmpty())
-                packagesInfo.setApplicationName(m_settings.applicationName());
+                packagesInfo.setApplicationName(m_data.settings().applicationName());
             if (packagesInfo.applicationVersion().isEmpty())
-                packagesInfo.setApplicationVersion(m_settings.applicationVersion());
+                packagesInfo.setApplicationVersion(m_data.settings().applicationVersion());
         }
 
         if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError)
@@ -2144,15 +2075,15 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
     // forces an refresh / clear on all update sources
     m_updaterApplication.updateSourcesInfo()->refresh();
     if (isInstaller()) {
-        m_updaterApplication.addUpdateSource(m_settings.applicationName(), m_settings.applicationName(),
-            QString(), QUrl(QLatin1String("resource://metadata/")), 0);
+        m_updaterApplication.addUpdateSource(m_data.settings().applicationName(),
+            m_data.settings().applicationName(), QString(), QUrl(QLatin1String("resource://metadata/")), 0);
         m_updaterApplication.updateSourcesInfo()->setModified(false);
     }
 
     m_updates = false;
     m_updateSourcesAdded = false;
 
-    const QString &appName = m_settings.applicationName();
+    const QString &appName = m_data.settings().applicationName();
     const QStringList tempDirs = m_repoMetaInfoJob->temporaryDirectories();
     foreach (const QString &tmpDir, tempDirs) {
         if (statusCanceledOrFailed())

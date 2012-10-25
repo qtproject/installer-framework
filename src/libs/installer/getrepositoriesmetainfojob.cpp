@@ -112,7 +112,7 @@ void GetRepositoriesMetaInfoJob::doStart()
 {
     if ((m_corePrivate->isInstaller() && !m_corePrivate->isOfflineOnly())
         || (m_corePrivate->isUpdater() || m_corePrivate->isPackageManager())) {
-            foreach (const Repository &repo, m_corePrivate->m_settings.repositories()) {
+            foreach (const Repository &repo, m_corePrivate->m_data.settings().repositories()) {
                 if (repo.isEnabled())
                     m_repositories += repo;
             }

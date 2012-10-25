@@ -89,9 +89,10 @@ HEADERS += packagemanagercore.h \
     createlocalrepositoryoperation.h \
     lib7z_facade.h \
     link.h \
-    createlinkoperation.h
+    createlinkoperation.h \
+    packagemanagercoredata.h
 
-SOURCES += packagemanagercore.cpp \
+    SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \
     binaryformat.cpp \
@@ -160,7 +161,8 @@ SOURCES += packagemanagercore.cpp \
     createlocalrepositoryoperation.cpp \
     lib7z_facade.cpp \
     link.cpp \
-    createlinkoperation.cpp
+    createlinkoperation.cpp \
+    packagemanagercoredata.cpp
 
 RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc

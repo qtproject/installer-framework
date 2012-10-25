@@ -295,9 +295,8 @@ void PackageManagerCore::reset(const QHash<QString, QString> &params)
     d->m_forceRestart = false;
     d->m_status = PackageManagerCore::Unfinished;
     d->m_installerBaseBinaryUnreplaced.clear();
-    d->m_vars.clear();
-    d->m_vars = params;
-    d->initialize();
+
+    d->initialize(params);
 }
 
 /*!
@@ -509,7 +508,7 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const OperationList &p
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
 
-    d->initialize();
+    d->initialize(QHash<QString, QString>());
 }
 
 PackageManagerCore::~PackageManagerCore()
@@ -775,7 +774,7 @@ void PackageManagerCore::addUserRepositories(const QStringList &repositories)
     foreach (const QString &repository, repositories)
         repositorySet.insert(Repository::fromUserInput(repository));
 
-    d->m_settings.addUserRepositories(repositorySet);
+    settings().addUserRepositories(repositorySet);
 }
 
 /*!
@@ -788,7 +787,7 @@ void PackageManagerCore::setTemporaryRepositories(const QStringList &repositorie
     foreach (const QString &repository, repositories)
         repositorySet.insert(Repository::fromUserInput(repository));
 
-    d->m_settings.setTemporaryRepositories(repositorySet, replace);
+    settings().setTemporaryRepositories(repositorySet, replace);
 }
 
 /*!
@@ -1069,7 +1068,7 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
 
 Settings &PackageManagerCore::settings() const
 {
-    return d->m_settings;
+    return d->m_data.settings();
 }
 
 /*!
@@ -1354,27 +1353,7 @@ void PackageManagerCore::setInstallerBaseBinary(const QString &path)
 */
 QString PackageManagerCore::value(const QString &key, const QString &defaultValue) const
 {
-#ifdef Q_OS_WIN
-    if (!d->m_vars.contains(key)) {
-        static const QRegExp regex(QLatin1String("\\\\|/"));
-        const QString filename = key.section(regex, 0, -2);
-        const QString regKey = key.section(regex, -1);
-        const QSettingsWrapper registry(filename, QSettingsWrapper::NativeFormat);
-        if (!filename.isEmpty() && !regKey.isEmpty() && registry.contains(regKey))
-            return registry.value(regKey).toString();
-    }
-#else
-    if (key == scTargetDir) {
-        const QString dir = d->m_vars.value(key, defaultValue);
-        if (dir.startsWith(QLatin1String("~/")))
-            return QDir::home().absoluteFilePath(dir.mid(2));
-        return dir;
-    }
-#endif
-    if (d->m_vars.contains(key))
-        return d->m_vars.value(key);
-
-    return d->m_settings.value(key, defaultValue).toString();
+    return d->m_data.value(key, defaultValue).toString();
 }
 
 /*!
@@ -1382,12 +1361,9 @@ QString PackageManagerCore::value(const QString &key, const QString &defaultValu
 */
 void PackageManagerCore::setValue(const QString &key, const QString &value)
 {
-    QString normalizedValue = replaceVariables(value);
-    if (d->m_vars.value(key) == normalizedValue)
-        return;
-
-    d->m_vars.insert(key, normalizedValue);
-    emit valueChanged(key, normalizedValue);
+    const QString normalizedValue = replaceVariables(value);
+    if (d->m_data.setValue(key, normalizedValue))
+        emit valueChanged(key, normalizedValue);
 }
 
 /*!
@@ -1395,7 +1371,7 @@ void PackageManagerCore::setValue(const QString &key, const QString &value)
 */
 bool PackageManagerCore::containsValue(const QString &key) const
 {
-    return d->m_vars.contains(key) || d->m_settings.containsValue(key);
+    return d->m_data.contains(key);
 }
 
 void PackageManagerCore::setSharedFlag(const QString &key, bool value)
@@ -1465,7 +1441,7 @@ QStringList PackageManagerCore::replaceVariables(const QStringList &str) const
 {
     QStringList result;
     foreach (const QString &s, str)
-        result.push_back(d->replaceVariables(s));
+        result.append(d->replaceVariables(s));
 
     return result;
 }

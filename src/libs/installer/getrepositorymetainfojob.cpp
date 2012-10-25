@@ -326,7 +326,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         }
 
         if (!repositoryUpdates.isEmpty()) {
-            if (m_corePrivate->m_settings.updateDefaultRepositories(repositoryUpdates)
+            if (m_corePrivate->m_data.settings().updateDefaultRepositories(repositoryUpdates)
                 == Settings::UpdatesApplied) {
                     if (m_corePrivate->isUpdater() || m_corePrivate->isPackageManager())
                         m_corePrivate->writeMaintenanceConfigFiles();
@@ -532,22 +532,22 @@ void GetRepositoryMetaInfoJob::onAuthenticatorChanged(const QAuthenticator &auth
     const QString username = authenticator.user();
     const QString password = authenticator.password();
     if (username != m_repository.username() || password != m_repository.password()) {
-        QSet<Repository> repositories = m_corePrivate->m_settings.defaultRepositories();
+        QSet<Repository> repositories = m_corePrivate->m_data.settings().defaultRepositories();
         bool reposChanged = updateRepositories(&repositories, username, password);
         if (reposChanged)
-            m_corePrivate->m_settings.setDefaultRepositories(repositories);
+            m_corePrivate->m_data.settings().setDefaultRepositories(repositories);
 
-        repositories = m_corePrivate->m_settings.temporaryRepositories();
+        repositories = m_corePrivate->m_data.settings().temporaryRepositories();
         reposChanged |= updateRepositories(&repositories, username, password);
         if (reposChanged) {
-            m_corePrivate->m_settings.setTemporaryRepositories(repositories,
-            m_corePrivate->m_settings.hasReplacementRepos());
+            m_corePrivate->m_data.settings().setTemporaryRepositories(repositories,
+            m_corePrivate->m_data.settings().hasReplacementRepos());
         }
 
-        repositories = m_corePrivate->m_settings.userRepositories();
+        repositories = m_corePrivate->m_data.settings().userRepositories();
         reposChanged |= updateRepositories(&repositories, username, password);
         if (reposChanged)
-            m_corePrivate->m_settings.setUserRepositories(repositories);
+            m_corePrivate->m_data.settings().setUserRepositories(repositories);
 
         if (reposChanged) {
             if (m_corePrivate->isUpdater() || m_corePrivate->isPackageManager())
