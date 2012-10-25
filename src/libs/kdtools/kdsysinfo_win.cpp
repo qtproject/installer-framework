@@ -25,10 +25,10 @@
 #include "link.h"
 
 #include <windows.h>
-#include <Psapi.h>
-#include <Tlhelp32.h>
+#include <psapi.h>
+#include <tlhelp32.h>
 
-#include <Winnetwk.h>
+#include <winnetwk.h>
 #pragma comment(lib, "mpr.lib")
 
 #include <QDebug>

@@ -42,7 +42,7 @@
 
 #ifdef Q_OS_WIN
 #include <windows.h>
-#include <Strsafe.h>
+#include <strsafe.h>
 
 // REPARSE_DATA_BUFFER structure from msdn help: http://msdn.microsoft.com/en-us/library/ff552012.aspx
 typedef struct _REPARSE_DATA_BUFFER {
