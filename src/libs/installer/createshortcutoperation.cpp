@@ -31,78 +31,66 @@
 **************************************************************************/
 #include "createshortcutoperation.h"
 
-#include "errors.h"
 #include "fileutils.h"
 
-#include "kdupdaterapplication.h"
-#include "kdupdaterpackagesinfo.h"
+#include <QDebug>
+#include <QDir>
 
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <QtCore/QTemporaryFile>
-
-#include <algorithm>
 #include <cerrno>
-
-#ifdef Q_OS_WIN
-#   include <windows.h>
-#   include <shlobj.h>
-#endif
 
 using namespace QInstaller;
 
-static bool createLink(QString fileName, QString linkName, QString workingDir, QString arguments = QString())
-{
 #ifdef Q_OS_WIN
-    bool ret = false;
-    fileName = QDir::toNativeSeparators(fileName);
-    linkName = QDir::toNativeSeparators(linkName);
+#include <windows.h>
+#include <shlobj.h>
+
+struct DeCoInitializer
+{
+    DeCoInitializer()
+        : neededCoInit(CoInitialize(NULL) == S_OK)
+    {
+    }
+    ~DeCoInitializer()
+    {
+        if (neededCoInit)
+            CoUninitialize();
+    }
+    bool neededCoInit;
+};
+#endif
+
+static bool createLink(const QString &fileName, const QString &linkName, QString workingDir,
+    QString arguments = QString())
+{
+    bool success = QFile::link(fileName, linkName);
+#ifdef Q_OS_WIN
+    if (!success)
+        return success;
+
     if (workingDir.isEmpty())
         workingDir = QFileInfo(fileName).absolutePath();
     workingDir = QDir::toNativeSeparators(workingDir);
 
-    //### assume that they add .lnk
+    // CoInitialize cleanup object
+    DeCoInitializer _;
 
-    IShellLink *psl;
-    bool neededCoInit = false;
+    IShellLink *psl = NULL;
+    if (FAILED(CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&psl)))
+        return success;
 
-    HRESULT hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void **)&psl);
+    psl->SetPath((wchar_t *)QDir::toNativeSeparators(fileName).utf16());
+    psl->SetWorkingDirectory((wchar_t *)workingDir.utf16());
+    if (!arguments.isNull())
+        psl->SetArguments((wchar_t*)arguments.utf16());
 
-    if (hres == CO_E_NOTINITIALIZED) { // COM was not initialized
-        neededCoInit = true;
-        CoInitialize(NULL);
-        hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void **)&psl);
+    IPersistFile *ppf = NULL;
+    if (SUCCEEDED(psl->QueryInterface(IID_IPersistFile, (void **)&ppf))) {
+        ppf->Save((wchar_t*)QDir::toNativeSeparators(linkName).utf16(), TRUE);
+        ppf->Release();
     }
-
-    if (SUCCEEDED(hres)) {
-        hres = psl->SetPath((wchar_t *)fileName.utf16());
-        if (SUCCEEDED(hres) && !arguments.isNull())
-            hres = psl->SetArguments((wchar_t*)arguments.utf16());
-        if (SUCCEEDED(hres)) {
-            hres = psl->SetWorkingDirectory((wchar_t *)workingDir.utf16());
-            if (SUCCEEDED(hres)) {
-                IPersistFile *ppf;
-                hres = psl->QueryInterface(IID_IPersistFile, (void **)&ppf);
-                if (SUCCEEDED(hres)) {
-                    hres = ppf->Save((wchar_t*)linkName.utf16(), TRUE);
-                    if (SUCCEEDED(hres))
-                        ret = true;
-                    ppf->Release();
-                }
-            }
-        }
-        psl->Release();
-    }
-
-    if (neededCoInit)
-        CoUninitialize();
-
-    return ret;
-#else
-    Q_UNUSED(workingDir)
-    Q_UNUSED(arguments)
-    return QFile::link(fileName, linkName);
+    psl->Release();
 #endif
+    return success;
 }
 
 /*
@@ -198,7 +186,7 @@ bool CreateShortcutOperation::undoOperation()
     QStringList pathParts = QString(linkPath).remove(QDir::homePath()).split(QLatin1String("/"));
     for (int i = pathParts.count(); i > 0; --i) {
         QString possibleToDeleteDir = QDir::homePath() + QStringList(pathParts.mid(0, i)).join(QLatin1String("/"));
-        removeSystemGeneratedFiles(possibleToDeleteDir);
+        QInstaller::removeSystemGeneratedFiles(possibleToDeleteDir);
         if (!possibleToDeleteDir.isEmpty() && QDir().rmdir(possibleToDeleteDir))
             qDebug() << "Deleted directory:" << possibleToDeleteDir;
         else
