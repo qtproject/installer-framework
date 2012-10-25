@@ -1756,6 +1756,11 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
 
         bool ignoreError = false;
         bool ok = performOperationThreaded(operation);
+        if (!ok) {
+            becameAdmin = m_core->gainAdminRights();
+            qDebug() << operation->name() << "as admin:" << becameAdmin;
+            ok = performOperationThreaded(operation);
+        }
         while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
             qDebug() << QString::fromLatin1("Operation '%1' with arguments: '%2' failed: %3")
                 .arg(operation->name(), operation->arguments().join(QLatin1String("; ")),
