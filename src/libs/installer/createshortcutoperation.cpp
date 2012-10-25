@@ -32,9 +32,11 @@
 #include "createshortcutoperation.h"
 
 #include "fileutils.h"
+#include "utils.h"
 
 #include <QDebug>
 #include <QDir>
+#include <QSettings>
 
 #include <cerrno>
 
@@ -59,6 +61,31 @@ struct DeCoInitializer
 };
 #endif
 
+struct StartsWithWorkingDirectory
+{
+    bool operator()(const QString &s)
+    {
+        return s.startsWith(QLatin1String("workingDirectory="));
+    }
+};
+
+static QString parentDirectory(const QString &current)
+{
+    return current.mid(0, current.lastIndexOf(QLatin1Char('/')));
+}
+
+static QString takeWorkingDirArgument(QStringList &args)
+{
+    // if the arguments contain an option in the form "workingDirectory=...", find it and consume it
+    QStringList::iterator wdiropt = std::find_if (args.begin(), args.end(), StartsWithWorkingDirectory());
+    if (wdiropt == args.end())
+        return QString();
+
+    const QString workingDir = wdiropt->mid(QString::fromLatin1("workingDirectory=").size());
+    args.erase(wdiropt);
+    return workingDir;
+}
+
 static bool createLink(const QString &fileName, const QString &linkName, QString workingDir,
     QString arguments = QString())
 {
@@ -78,6 +105,7 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
     if (FAILED(CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&psl)))
         return success;
 
+    // TODO: implement this server side, since there's not Qt equivalent to set working dir and arguments
     psl->SetPath((wchar_t *)QDir::toNativeSeparators(fileName).utf16());
     psl->SetWorkingDirectory((wchar_t *)workingDir.utf16());
     if (!arguments.isNull())
@@ -96,34 +124,26 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
     return success;
 }
 
-/*
-TRANSLATOR QInstaller::CreateShortcutOperation
-*/
+
+// -- CreateShortcutOperation
 
 CreateShortcutOperation::CreateShortcutOperation()
 {
     setName(QLatin1String("CreateShortcut"));
 }
 
-static bool isWorkingDirOption(const QString &s)
-{
-    return s.startsWith(QLatin1String("workingDirectory="));
-}
-
-static QString takeWorkingDirArgument(QStringList &args)
-{
-    QString workingDir;
-    // if the args contain an option in the form "workingDirectory=...", find it and consume it
-    QStringList::iterator wdiropt = std::find_if(args.begin(), args.end(), isWorkingDirOption);
-    if (wdiropt != args.end()) {
-        workingDir = wdiropt->mid(QString::fromLatin1("workingDirectory=").size());
-        args.erase(wdiropt);
-    }
-    return workingDir;
-}
-
 void CreateShortcutOperation::backup()
 {
+    QDir linkPath(QFileInfo(arguments().at(1)).absolutePath());
+
+    QStringList directoriesToCreate;
+    while (!linkPath.exists() && linkPath != QDir::root()) {
+        const QString absolutePath = linkPath.absolutePath();
+        directoriesToCreate.append(absolutePath);
+        linkPath = parentDirectory(absolutePath);
+    }
+
+    setValue(QLatin1String("createddirs"), directoriesToCreate);
 }
 
 bool CreateShortcutOperation::performOperation()
@@ -138,8 +158,8 @@ bool CreateShortcutOperation::performOperation()
         return false;
     }
 
-    const QString& linkTarget = args.at(0);
-    const QString& linkLocation = args.at(1);
+    const QString linkTarget = args.at(0);
+    const QString linkLocation = args.at(1);
     const QString targetArguments = args.value(2); //used value because it could be not existing
 
     const QString linkPath = QFileInfo(linkLocation).absolutePath();
@@ -153,7 +173,6 @@ bool CreateShortcutOperation::performOperation()
             QLatin1String(strerror(errno))));
         return false;
     }
-
 
     //remove a possible existing older one
     QString errorString;
@@ -176,26 +195,40 @@ bool CreateShortcutOperation::performOperation()
 
 bool CreateShortcutOperation::undoOperation()
 {
-    const QStringList args = arguments();
-
-    const QString& linkLocation = args.at(1);
-
-    // first remove the link
-    if (!deleteFileNowOrLater(linkLocation))
+    const QString &linkLocation = arguments().at(1);
+    if (!deleteFileNowOrLater(linkLocation) )
         qDebug() << "Can't delete:" << linkLocation;
 
-    const QString linkPath = QFileInfo(linkLocation).absolutePath();
-
-    QStringList pathParts = QString(linkPath).remove(QDir::homePath()).split(QLatin1String("/"));
-    for (int i = pathParts.count(); i > 0; --i) {
-        QString possibleToDeleteDir = QDir::homePath() + QStringList(pathParts.mid(0, i)).join(QLatin1String("/"));
-        QInstaller::removeSystemGeneratedFiles(possibleToDeleteDir);
-        if (!possibleToDeleteDir.isEmpty() && QDir().rmdir(possibleToDeleteDir))
-            qDebug() << "Deleted directory:" << possibleToDeleteDir;
-        else
+    QDir dir;   // remove all directories we created
+    const QStringList directoriesToDelete = value(QLatin1String("createddirs")).toStringList();
+    foreach (const QString &directory, directoriesToDelete) {
+        QInstaller::removeSystemGeneratedFiles(directory);
+        if (!dir.rmdir(directory))
             break;
     }
 
+#ifdef Q_OS_WIN
+    // special case on windows, multiple installations might leave empty folder inside the start menu
+    QSettings user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\"
+        "Explorer\\User Shell Folders"), QSettings::NativeFormat);
+    QSettings system(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\"
+        "Explorer\\Shell Folders"), QSettings::NativeFormat);
+
+    const QString userStartMenu = QDir::fromNativeSeparators(replaceWindowsEnvironmentVariables(user
+        .value(QLatin1String("Programs"), QString()).toString())).toLower();
+    const QString systemStartMenu = QDir::fromNativeSeparators(system.value(QLatin1String("Common Programs"))
+        .toString()).toLower();
+
+    // try to remove every empty folder until we fail
+    QString linkPath = QFileInfo(linkLocation).absolutePath().toLower();
+    if (linkPath.startsWith(userStartMenu) || linkPath.startsWith(systemStartMenu)) {
+        QInstaller::removeSystemGeneratedFiles(linkPath);
+        while (QDir().rmdir(linkPath)) {
+            linkPath = parentDirectory(linkPath);
+            QInstaller::removeSystemGeneratedFiles(linkPath);
+        }
+    }
+#endif
     return true;
 }
 
