@@ -89,6 +89,9 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
         ppf->Release();
     }
     psl->Release();
+#else
+    Q_UNUSED(arguments)
+    Q_UNUSED(workingDir)
 #endif
     return success;
 }
