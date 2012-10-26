@@ -29,9 +29,7 @@
 
 #ifdef Q_OS_WIN
 # include <io.h>
-# ifndef _SH_DENYRW
-#  define _SH_DENYRW 0x10  // MinGW build fix
-# endif
+# include <share.h> // Required for _SH_DENYRW
 #endif
 #include <memory>
 #include <sys/stat.h>
