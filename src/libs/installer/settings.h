@@ -122,6 +122,8 @@ public:
     QVariantHash titlesForPage(const QString &pageName) const;
     QVariantHash subTitlesForPage(const QString &pageName) const;
 
+    bool repositorySettingsPageVisible() const;
+
     Settings::ProxyType proxyType() const;
     void setProxyType(Settings::ProxyType type);
 

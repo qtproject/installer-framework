@@ -235,6 +235,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
         s.d->m_data.insert(scUninstallerIniFile, s.uninstallerName() + QLatin1String(".ini"));
     if (!s.d->m_data.contains(scDependsOnLocalInstallerBinary))
         s.d->m_data.insert(scDependsOnLocalInstallerBinary, false);
+    if (!s.d->m_data.contains(scRepositorySettingsPageVisible))
+        s.d->m_data.insert(scRepositorySettingsPageVisible, true);
 
     return s;
 }
@@ -499,6 +501,11 @@ QVariantHash Settings::subTitlesForPage(const QString &pageName) const
     if (!variant.canConvert<QVariantHash>())
         return QVariantHash();
     return variant.value<QVariantHash>();
+}
+
+bool Settings::repositorySettingsPageVisible() const
+{
+    return d->m_data.value(scRepositorySettingsPageVisible, true).toBool();
 }
 
 Settings::ProxyType Settings::proxyType() const

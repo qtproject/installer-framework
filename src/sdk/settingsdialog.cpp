@@ -361,6 +361,12 @@ SettingsDialog::SettingsDialog(QInstaller::PackageManagerCore *core, QWidget *pa
     m_ui->m_useTmpRepositories->setChecked(settings.hasReplacementRepos());
     m_ui->m_useTmpRepositories->setEnabled(settings.hasReplacementRepos());
     m_ui->m_repositoriesView->setCurrentItem(m_rootItems.at(settings.hasReplacementRepos()));
+
+    if (!settings.repositorySettingsPageVisible()) {
+        // workaround a inconvenience that the page won't hide inside a QTabWidget
+        m_ui->m_repositories->setParent(this);
+        m_ui->m_repositories->setVisible(settings.repositorySettingsPageVisible());
+    }
 }
 
 void SettingsDialog::accept()
