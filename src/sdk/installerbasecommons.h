@@ -80,6 +80,8 @@ private:
     void showWidgets(bool show);
     void callControlScript(const QString &callback);
 
+    bool validRepositoriesAvailable() const;
+
 private:
     bool m_updatesFetched;
     bool m_updatesCompleted;
