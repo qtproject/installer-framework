@@ -206,7 +206,7 @@ STDMETHODIMP CHandler::UpdateItems(ISequentialOutStream *outStream, UInt32 numIt
       if (tryUtf8)
       {
         int i;
-        for (i = 0; i < name.Length() && (unsigned)name[i] < 0x80; i++);
+        for (i = 0; i < name.Length() && (unsigned)name[i] < 0x80; i++) {}
         ui.IsUtf8 = (i != name.Length());
         if (!ConvertUnicodeToUTF8(name, ui.Name))
           return E_INVALIDARG;

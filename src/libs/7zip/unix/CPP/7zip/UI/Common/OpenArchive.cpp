@@ -177,7 +177,7 @@ HRESULT CArc::OpenStream(
     processedSize -= (kNumHashBytes - 1);
     for (UInt32 pos = 0; pos < processedSize; pos++)
     {
-      for (; pos < processedSize && hash[HASH_VAL(buf, pos)] == 0xFF; pos++);
+      for (; pos < processedSize && hash[HASH_VAL(buf, pos)] == 0xFF; pos++) {}
       if (pos == processedSize)
         break;
       UInt32 v = HASH_VAL(buf, pos);

@@ -338,7 +338,7 @@ HRESULT CInArchive::FindAndReadSignature(IInStream *stream, const UInt64 *search
     UInt32 numTests = numPrevBytes - kHeaderSize;
     for (UInt32 pos = 0; pos < numTests; pos++)
     {
-      for (; buffer[pos] != '7' && pos < numTests; pos++);
+      for (; buffer[pos] != '7' && pos < numTests; pos++) {}
       if (pos == numTests)
         break;
       if (TestSignature(buffer + pos))

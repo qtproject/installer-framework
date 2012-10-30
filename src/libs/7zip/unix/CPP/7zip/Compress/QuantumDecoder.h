@@ -147,7 +147,7 @@ public:
   {
     UInt32 threshold = rangeDecoder->GetThreshold(Freqs[0]);
     unsigned i;
-    for (i = 1; Freqs[i] > threshold; i++);
+    for (i = 1; Freqs[i] > threshold; i++) {}
     rangeDecoder->Decode(Freqs[i], Freqs[i - 1], Freqs[0]);
     unsigned res = Values[--i];
     do

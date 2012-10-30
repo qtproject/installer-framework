@@ -263,7 +263,7 @@ NO_INLINE void CCoder::GetMatches()
       const Byte *pby2 = pby - (distanceTmp[numPairs - 1] + 1);
       if (numAvail > m_MatchMaxLen)
         numAvail = m_MatchMaxLen;
-      for (; len < numAvail && pby[len] == pby2[len]; len++);
+      for (; len < numAvail && pby[len] == pby2[len]; len++) {}
       m_MatchDistances[i - 1] = (UInt16)len;
     }
   }

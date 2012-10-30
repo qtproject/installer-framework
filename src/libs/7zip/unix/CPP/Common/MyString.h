@@ -15,7 +15,7 @@ template <class T>
 inline int MyStringLen(const T *s)
 {
   int i;
-  for (i = 0; s[i] != '\0'; i++);
+  for (i = 0; s[i] != '\0'; i++) {}
   return i;
 }
 
@@ -23,7 +23,7 @@ template <class T>
 inline T * MyStringCopy(T *dest, const T *src)
 {
   T *destStart = dest;
-  while ((*dest++ = *src++) != 0);
+  while ((*dest++ = *src++) != 0) {}
   return destStart;
 }
 

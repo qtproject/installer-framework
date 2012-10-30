@@ -31,7 +31,7 @@ static bool OctalToNumber(const char *srcString, int size, UInt64 &res)
   sz[size] = 0;
   const char *end;
   int i;
-  for (i = 0; sz[i] == ' '; i++);
+  for (i = 0; sz[i] == ' '; i++) {}
   res = ConvertOctStringToUInt64(sz + i, &end);
   return (*end == ' ' || *end == 0);
 }

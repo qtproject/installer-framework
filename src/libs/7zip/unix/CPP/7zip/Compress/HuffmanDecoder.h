@@ -73,7 +73,7 @@ public:
     if (value < m_Limits[kNumTableBits])
       numBits = m_Lengths[value >> (kNumBitsMax - kNumTableBits)];
     else
-      for (numBits = kNumTableBits + 1; value >= m_Limits[numBits]; numBits++);
+      for (numBits = kNumTableBits + 1; value >= m_Limits[numBits]; numBits++) {}
     bitStream->MovePos(numBits);
     UInt32 index = m_Positions[numBits] +
       ((value - m_Limits[numBits - 1]) >> (kNumBitsMax - numBits));

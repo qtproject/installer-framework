@@ -37,7 +37,7 @@ CFileBase::~CFileBase()
 }
 
 bool CFileBase::Create(LPCSTR filename, DWORD dwDesiredAccess,
-    DWORD dwShareMode, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes,bool ignoreSymbolicLink)
+    DWORD /*dwShareMode*/, DWORD dwCreationDisposition, DWORD /*dwFlagsAndAttributes*/,bool ignoreSymbolicLink)
 {
   Close();
   

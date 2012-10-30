@@ -46,7 +46,7 @@ HRESULT FindSignatureInStream(ISequentialInStream *stream,
     for (UInt32 pos = 0; pos < numTests; pos++)
     {
       Byte b = signature[0];
-      for (; buffer[pos] != b && pos < numTests; pos++);
+      for (; buffer[pos] != b && pos < numTests; pos++) {}
       if (pos == numTests)
         break;
       if (memcmp(buffer + pos, signature, signatureSize) == 0)

@@ -16,7 +16,7 @@ struct CMtf8Encoder
   int FindAndMove(Byte v)
   {
     int pos;
-    for (pos = 0; Buf[pos] != v; pos++);
+    for (pos = 0; Buf[pos] != v; pos++) {}
     int resPos = pos;
     for (; pos >= 8; pos -= 8)
     {

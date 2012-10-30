@@ -624,7 +624,7 @@ void CThreadInfo::EncodeBlock2(const Byte *block, UInt32 blockSize, UInt32 numPa
     UInt32 blockSize0 = blockSize / 2;
     for (;(block[blockSize0] == block[blockSize0 - 1] ||
           block[blockSize0 - 1] == block[blockSize0 - 2]) &&
-          blockSize0 < blockSize; blockSize0++);
+          blockSize0 < blockSize; blockSize0++) {}
     if (blockSize0 < blockSize)
     {
       EncodeBlock2(block, blockSize0, numPasses - 1);
