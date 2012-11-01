@@ -117,6 +117,16 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
         ppf->Release();
     }
     psl->Release();
+
+    PIDLIST_ABSOLUTE pidl;  // Force start menu cache update
+    if (SUCCEEDED(SHGetKnownFolderIDList(FOLDERID_StartMenu, 0, 0, &pidl))) {
+        SHChangeNotify(SHCNE_UPDATEDIR, SHCNF_IDLIST, pidl, 0);
+        CoTaskMemFree(pidl);
+    }
+    if (SUCCEEDED(SHGetKnownFolderIDList(FOLDERID_CommonStartMenu, 0, 0, &pidl))) {
+        SHChangeNotify(SHCNE_UPDATEDIR, SHCNF_IDLIST, pidl, 0);
+        CoTaskMemFree(pidl);
+    }
 #else
     Q_UNUSED(arguments)
     Q_UNUSED(workingDir)
