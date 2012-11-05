@@ -32,9 +32,50 @@
 
 #include "registerfiletypeoperation.h"
 
+#include "packagemanagercore.h"
 #include "qsettingswrapper.h"
 
 using namespace QInstaller;
+
+#ifdef Q_OS_WIN
+#include <shlobj.h>
+
+
+struct StartsWithProgId
+{
+    bool operator()(const QString &s)
+    {
+        return s.startsWith(QLatin1String("ProgId="));
+    }
+};
+
+static QString takeProgIdArgument(QStringList &args)
+{
+    // if the arguments contain an option in the form "ProgId=...", find it and consume it
+    QStringList::iterator it = std::find_if (args.begin(), args.end(), StartsWithProgId());
+    if (it == args.end())
+        return QString();
+
+    const QString progId = it->mid(QString::fromLatin1("ProgId=").size());
+    args.erase(it);
+    return progId;
+}
+
+static QVariantHash readHive(QSettingsWrapper *const settings, const QString &hive)
+{
+    QVariantHash keyValues;
+
+    settings->beginGroup(hive);
+    foreach (const QString &key, settings->allKeys())
+        keyValues.insert(key, settings->value(key));
+    settings->endGroup();
+
+    return keyValues;
+}
+#endif
+
+
+// -- RegisterFileTypeOperation
 
 RegisterFileTypeOperation::RegisterFileTypeOperation()
 {
@@ -47,151 +88,128 @@ void RegisterFileTypeOperation::backup()
 
 bool RegisterFileTypeOperation::performOperation()
 {
-    // extension
-    // command
-    // (description)
-    // (content type)
-    // (icon)
 #ifdef Q_OS_WIN
-    const QStringList args = arguments();
+    QStringList args = arguments();
+    QString progId = takeProgIdArgument(args);
+
     if (args.count() < 2 || args.count() > 5) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments in %0").arg(name()));
         return false;
     }
 
+    bool allUsers = false;
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
+    if (core && core->value(QLatin1String("AllUsers")) == QLatin1String("true"))
+        allUsers = true;
+
+    QSettingsWrapper settings(QLatin1String(allUsers ? "HKEY_LOCAL_MACHINE" : "HKEY_CURRENT_USER")
+        , QSettingsWrapper::NativeFormat);
+
     const QString extension = args.at(0);
-    const QString command = args.at(1);
-    const QString description = args.value(2); // optional
-    const QString contentType = args.value(3); // optional
-    const QString icon = args.value(4); // optional
+    if (progId.isEmpty())
+        progId = QString::fromLatin1("%1_auto_file").arg(extension);
+    const QString classesProgId = QString::fromLatin1("Software/Classes/") + progId;
+    const QString classesFileType = QString::fromLatin1("Software/Classes/.%2").arg(extension);
+    const QString classesApplications = QString::fromLatin1("Software/Classes/Applications/") + progId;
 
-    const QString className = QString::fromLatin1("%1_auto_file").arg(extension);
-    const QString settingsPrefix = QString::fromLatin1("Software/Classes/");
+    // backup old value
+    setValue(QLatin1String("oldType"), readHive(&settings, classesFileType));
 
-    //QSettingsWrapper settings(QLatin1String("HKEY_CLASSES_ROOT"), QSettingsWrapper::NativeFormat);
-    QSettingsWrapper settings(QLatin1String("HKEY_CURRENT_USER"), QSettingsWrapper::NativeFormat);
-    // first backup the old values
-    setValue(QLatin1String("oldClass"), settings.value(QString::fromLatin1("%1.%2/Default").arg(settingsPrefix,
-        extension)));
-    setValue(QLatin1String("oldContentType"), settings.value(QString::fromLatin1("%1.%2/Content Type")
-        .arg(settingsPrefix, extension)));
+    // register new values
+    settings.setValue(QString::fromLatin1("%1/Default").arg(classesFileType), progId);
+    settings.setValue(QString::fromLatin1("%1/OpenWithProgIds/%2").arg(classesFileType, progId), QString());
+    settings.setValue(QString::fromLatin1("%1/shell/Open/Command/Default").arg(classesProgId), args.at(1));
+    settings.setValue(QString::fromLatin1("%1/shell/Open/Command/Default").arg(classesApplications), args.at(1));
 
-    // the file extension was not yet registered. Let's do so now
-    settings.setValue(QString::fromLatin1("%1.%2/Default").arg(settingsPrefix, extension), className);
-
-    // register the content type, if given
+    // content type (optional)
+    const QString contentType = args.value(3);
     if (!contentType.isEmpty())
-        settings.setValue(QString::fromLatin1("%1.%2/Content Type").arg(settingsPrefix, extension), contentType);
+        settings.setValue(QString::fromLatin1("%1/Content Type").arg(classesFileType), contentType);
 
-    setValue(QLatin1String("className"), className);
-    // register the description, if given
+    // description (optional)
+    const QString description = args.value(2);
     if (!description.isEmpty())
-        settings.setValue(QString::fromLatin1("%1%2/Default").arg(settingsPrefix, className), description);
+        settings.setValue(QString::fromLatin1("%1/Default").arg(classesProgId), description);
 
-    // register the icon, if given
-    if (!icon.isEmpty()) {
-        settings.setValue(QString::fromLatin1("%1%2/DefaultIcon/Default").arg(settingsPrefix,
-            className), icon);
-    }
+     // icon (optional)
+    const QString icon = args.value(4);
+    if (!icon.isEmpty())
+        settings.setValue(QString::fromLatin1("%1/DefaultIcon/Default").arg(classesProgId), icon);
 
-    // register the command to open the file
-    settings.setValue(QString::fromLatin1("%1%2/shell/Open/Command/Default").arg(settingsPrefix,
-        className), command);
+    // backup new value
+    setValue(QLatin1String("newType"), readHive(&settings, classesFileType));
+
+    // force the shell to invalidate its cache
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
 
     return true;
 #else
     setError(UserDefinedError);
-    setErrorString(QObject::tr("Registering file types in only supported on Windows."));
+    setErrorString(QObject::tr("Registering file types is only supported on Windows."));
     return false;
 #endif
 }
 
 bool RegisterFileTypeOperation::undoOperation()
 {
-    // extension
-    // command
-    // (description)
-    // (content type)
-    // (icon)
 #ifdef Q_OS_WIN
-    const QStringList args = arguments();
+    QStringList args = arguments();
+    QString progId = takeProgIdArgument(args);
+
     if (args.count() < 2 || args.count() > 5) {
         setErrorString(tr("Register File Type: Invalid arguments"));
         return false;
     }
+
+    bool allUsers = false;
+    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
+    if (core && core->value(QLatin1String("AllUsers")) == QLatin1String("true"))
+        allUsers = true;
+
+    QSettingsWrapper settings(QLatin1String(allUsers ? "HKEY_LOCAL_MACHINE" : "HKEY_CURRENT_USER")
+        , QSettingsWrapper::NativeFormat);
+
     const QString extension = args.at(0);
-    const QString command = args.at(1);
-    const QString description = args.value(2); // optional
-    const QString contentType = args.value(3); // optional
-    const QString icon = args.value(4); // optional
+    if (progId.isEmpty())
+        progId = QString::fromLatin1("%1_auto_file").arg(extension);
+    const QString classesProgId = QString::fromLatin1("Software/Classes/") + progId;
+    const QString classesFileType = QString::fromLatin1("Software/Classes/.%2").arg(extension);
+    const QString classesApplications = QString::fromLatin1("Software/Classes/Applications/") + progId;
 
-    const QString className = QString::fromLatin1("%1_auto_file").arg(extension);
-    const QString classes = QString::fromLatin1("Software/Classes/%1").arg(className);
-    const QString extensions = QString::fromLatin1("Software/Classes/.%1").arg(extension);
+    // Quoting MSDN here: When uninstalling an application, the ProgIDs and most other registry information
+    // associated with that application should be deleted as part of the uninstallation.However, applications
+    // that have taken ownership of a file type (by setting the Default value of the file type's
+    // HKEY...\.extension subkey to the ProgID of the application) should not attempt to remove that value
+    // when uninstalling. Leaving the data in place for the Default value avoids the difficulty of
+    // determining whether another application has taken ownership of the file type and overwritten the
+    // Default value after the original application was installed. Windows respects the Default value only
+    // if the ProgID found there is a registered ProgID. If the ProgID is unregistered, it is ignored.
 
-    QSettingsWrapper settings(QLatin1String("HKEY_CURRENT_USER"), QSettingsWrapper::NativeFormat);
-
-    const QString restoredClassName = value(QLatin1String("oldClassName")).toString();
-    // register the command to open the file
-    if (settings.value(QString::fromLatin1("%1/shell/Open/Command/Default").arg(classes)).toString() != command)
-        return false;
-    if (settings.value(QString::fromLatin1("%1/DefaultIcon/Default").arg(classes)).toString() != icon)
-        return false;
-    if (settings.value(QString::fromLatin1("%1/Default").arg(classes)).toString() != description)
-        return false;
-    if (settings.value(QString::fromLatin1("%1/Content Type").arg(extensions)).toString() != contentType)
-        return false;
-    if (settings.value(QString::fromLatin1("%1/Default").arg(extensions)).toString() != className)
-        return false;
-
-    const QLatin1String settingsPrefix("Software/Classes/");
-    const QVariant oldCommand = value(QLatin1String("oldCommand"));
-    if (!oldCommand.isNull()) {
-        settings.setValue(QString::fromLatin1("%1%2/shell/Open/Command/Default").arg(settingsPrefix,
-            restoredClassName), oldCommand);
+    // if the hive didn't change since we touched it
+    if (value(QLatin1String("newType")).toHash() == readHive(&settings, classesFileType)) {
+        // reset to the values we found
+        settings.remove(classesFileType);
+        settings.beginGroup(classesFileType);
+        const QVariantHash keyValues = value(QLatin1String("oldType")).toHash();
+        foreach (const QString &key, keyValues.keys())
+            settings.setValue(key, keyValues.value(key));
+        settings.endGroup();
     } else {
-        settings.remove(QString::fromLatin1("%1/shell/Open/Command/Default").arg(classes));
+        // some changes happened, remove the only save value we know about
+        settings.remove(QString::fromLatin1("%1/OpenWithProgIds/%2").arg(classesFileType, progId));
     }
 
-    // register the icon, if given
-    const QVariant oldIcon = value(QLatin1String("oldIcon"));
-    if (!oldIcon.isNull()) {
-        settings.setValue(QString::fromLatin1("%1%2/DefaultIcon/Default").arg(settingsPrefix,
-            restoredClassName), oldIcon);
-    } else {
-        settings.remove(QString::fromLatin1("%1%2/DefaultIcon/Default").arg(classes));
-    }
+    // remove ProgId and Applications entry
+    settings.remove(classesProgId);
+    settings.remove(classesApplications);
 
-    // register the description, if given
-    const QVariant oldDescription = value(QLatin1String("oldDescription"));
-    if (!oldDescription.isNull()) {
-        settings.setValue(QString::fromLatin1("%1%2/Default").arg(settingsPrefix, restoredClassName),
-            oldDescription);
-    } else {
-        settings.remove(QString::fromLatin1("%1%2/Default").arg(classes));
-    }
-
-    // content type
-    settings.remove(classes);
-
-    const QVariant oldContentType = value(QLatin1String("oldContentType"));
-    if(!oldContentType.isNull())
-        settings.setValue(QString::fromLatin1("%1/Content Type").arg(extensions), oldContentType);
-    else
-        settings.remove(QString::fromLatin1("%1/Content Type").arg(extensions));
-
-    // class
-
-    const QVariant oldClass = value(QLatin1String("oldClass"));
-    if(!oldClass.isNull())
-        settings.setValue(QString::fromLatin1("%1/Default").arg(extensions), oldClass);
-    else
-        settings.remove(extensions);
+    // force the shell to invalidate its cache
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
 
     return true;
 #else
-    setErrorString(QObject::tr("Registering file types in only supported on Windows."));
+    setErrorString(QObject::tr("Registering file types is only supported on Windows."));
     return false;
 #endif
 }
