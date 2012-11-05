@@ -37,8 +37,10 @@
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT RegisterFileTypeOperation : public Operation
+class INSTALLER_EXPORT RegisterFileTypeOperation : public QObject, public Operation
 {
+    Q_OBJECT
+
 public:
     RegisterFileTypeOperation();
 
