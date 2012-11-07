@@ -183,11 +183,10 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         quint64 componentSize = 0;
         quint64 compressedComponentSize = 0;
 
-        const QString cmpDataDir = QString::fromLatin1("%1/%2").arg(dataDir, it->name);
-        const QFileInfoList entries = !QDir(cmpDataDir + QLatin1String("/data")).exists()
-            ? QDir(cmpDataDir).entryInfoList(QDir::Files | QDir::NoDotAndDotDot)
-            : QDir(cmpDataDir + QLatin1String("/data")).entryInfoList(QDir::Files
-            | QDir::Dirs | QDir::NoDotAndDotDot);
+        const QDir::Filters filters = QDir::Files | QDir::NoDotAndDotDot;
+        const QDir cmpDataDir = QString::fromLatin1("%1/%2/data").arg(dataDir, it->name);
+        const QFileInfoList entries = cmpDataDir.exists() ? cmpDataDir.entryInfoList(filters | QDir::Dirs)
+            : QDir(QString::fromLatin1("%1/%2").arg(dataDir, it->name)).entryInfoList(filters);
 
         foreach (const QFileInfo &fi, entries) {
             if (fi.isHidden())
@@ -197,8 +196,9 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
                 if (fi.isDir()) {
                     QDirIterator recursDirIt(fi.filePath(), QDirIterator::Subdirectories);
                     while (recursDirIt.hasNext()) {
-                        componentSize += QFile(recursDirIt.next()).size();
-                        compressedComponentSize += QFile(recursDirIt.next()).size();
+                        const quint64 size = QFile(recursDirIt.next()).size();
+                        componentSize += size;
+                        compressedComponentSize += size;
                     }
                 } else if (Lib7z::isSupportedArchive(fi.filePath())) {
                     // if it's an archive already, list its files and sum the uncompressed sizes
@@ -212,8 +212,9 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
                     }
                 } else {
                     // otherwise just add its size
-                    componentSize += fi.size();
-                    compressedComponentSize += fi.size();
+                    const quint64 size = fi.size();
+                    componentSize += size;
+                    compressedComponentSize += size;
                 }
             } catch(...) {
                 // ignore, that's just about the sizes - and size doesn't matter, you know?
@@ -572,7 +573,7 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
         const QDir dataDir(QString::fromLatin1("%1/%2/data").arg(packageDir, name));
         foreach (const QString &entry, dataDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files)) {
             QFileInfo fileInfo(dataDir.absoluteFilePath(entry));
-            if (fileInfo.isFile()) {
+            if (fileInfo.isFile() && !fileInfo.isSymLink()) {
                 const QString absoluteEntryFilePath = dataDir.absoluteFilePath(entry);
                 if (Lib7z::isSupportedArchive(absoluteEntryFilePath)) {
                     QFile tmp(absoluteEntryFilePath);
@@ -592,6 +593,8 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
                 QString target = QString::fromLatin1("%1/%3%2.7z").arg(namedRepoDir, entry, info.version);
                 QInstallerTools::compressPaths(QStringList() << dataDir.absoluteFilePath(entry), target);
                 compressedFiles.append(target);
+            } else if (fileInfo.isSymLink()) {
+                filesToCompress.append(dataDir.absoluteFilePath(entry));
             }
         }
 
