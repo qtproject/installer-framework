@@ -217,6 +217,9 @@
             \o  AllowNonAsciiCharacters
             \o  Set to \c true if the installation path can contain non-ASCII
                 characters.
+        \row
+            \o  AllowSpaceInPath
+            \o  Set to \c true if the installation path can contain space characters.
     \endtable
 
 */
