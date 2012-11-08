@@ -372,14 +372,18 @@ QString TargetDirectoryPageImpl::targetDirWarning() const
     }
 
     QString dir = targetDir();
+    QString ambiguousChars = QLatin1String("[<>|?*!@#$%^&:,; ]");
+    if (packageManagerCore()->settings().allowSpaceInPath())
+        ambiguousChars.remove(QLatin1Char(' '));
+
 #ifdef Q_OS_WIN
     // remove e.g. "c:"
     dir = dir.mid(2);
 #endif
     // check if there are not allowed characters in the target path
-    if (dir.contains(QRegExp(QLatin1String("[!@#$%^&*: ,;]")))) {
-        return TargetDirectoryPageImpl::tr("The installation path must not contain !@#$%^&*:,; or spaces, "
-            "please specify a valid folder.");
+    if (dir.contains(QRegExp(ambiguousChars))) {
+        return TargetDirectoryPageImpl::tr("The installation path must not contain %1, "
+            "please specify a valid folder.").arg(ambiguousChars);
     }
 
     return QString();

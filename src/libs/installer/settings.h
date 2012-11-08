@@ -112,6 +112,7 @@ public:
     void setUserRepositories(const QSet<Repository> &repositories);
     void addUserRepositories(const QSet<Repository> &repositories);
 
+    bool allowSpaceInPath() const;
     QStringList certificateFiles() const;
     bool allowNonAsciiCharacters() const;
 

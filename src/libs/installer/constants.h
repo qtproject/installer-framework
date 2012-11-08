@@ -77,6 +77,7 @@ static const QLatin1String scRunProgramDescription("RunProgramDescription");
 static const QLatin1String scTargetConfigurationFile("TargetConfigurationFile");
 static const QLatin1String scAllowNonAsciiCharacters("AllowNonAsciiCharacters");
 static const QLatin1String scRepositorySettingsPageVisible("RepositorySettingsPageVisible");
+static const QLatin1String scAllowSpaceInPath("AllowSpaceInPath");
 }
 
 #endif  // CONSTANTS_H

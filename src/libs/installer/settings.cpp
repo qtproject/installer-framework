@@ -342,6 +342,11 @@ QString Settings::configurationFileName() const
     return d->m_data.value(scTargetConfigurationFile).toString();
 }
 
+bool Settings::allowSpaceInPath() const
+{
+    return d->m_data.value(scAllowSpaceInPath, false).toBool();
+}
+
 QStringList Settings::certificateFiles() const
 {
     return d->m_data.value(scSigningCertificate).toStringList();
@@ -349,7 +354,7 @@ QStringList Settings::certificateFiles() const
 
 bool Settings::allowNonAsciiCharacters() const
 {
-    return d->m_data.value(scAllowNonAsciiCharacters).toBool();
+    return d->m_data.value(scAllowNonAsciiCharacters, false).toBool();
 }
 
 bool Settings::dependsOnLocalInstallerBinary() const
