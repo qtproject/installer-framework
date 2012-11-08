@@ -6,8 +6,6 @@ TARGET = installerbase
 include(../../installerfw.pri)
 
 QT += network script
-
-CONFIG -= app_bundle
 DESTDIR = $$IFW_APP_PATH
 
 if (exists($$LRELEASE)) {

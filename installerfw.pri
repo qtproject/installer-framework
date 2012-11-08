@@ -65,4 +65,5 @@ CONFIG(shared, static|shared):DEFINES += LIB_INSTALLER_SHARED
 static {
     win32:exists($$IFW_LIB_PATH/installer.lib):POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib
     unix:exists($$IFW_LIB_PATH/libinstaller.a):POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a
+    macx:equals(TEMPLATE, app):CONFIG -= app_bundle
 }

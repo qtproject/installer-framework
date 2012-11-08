@@ -9,7 +9,6 @@ QT -= gui
 QT += script
 
 CONFIG += console
-CONFIG -= app_bundle
 DESTDIR = $$IFW_APP_PATH
 
 SOURCES += archive.cpp \
