@@ -1167,12 +1167,12 @@ Fehler beim Laden von %2</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1844"/>
         <source>Click Done to exit the %1 Wizard.</source>
-        <translation>Klicken Sie &quot;Fertig&quot;, um den %1 Assistenten zu beenden.</translation>
+        <translation>Klicken Sie &quot;Abschließen&quot;, um den %1 Assistenten zu beenden.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1847"/>
         <source>Click Finish to exit the %1 Wizard.</source>
-        <translation>Klicken Sie &quot;Fertig&quot;, um den %1 Assistenten zu beenden.</translation>
+        <translation>Klicken Sie &quot;Abschließen&quot;, um den %1 Assistenten zu beenden.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1878"/>
