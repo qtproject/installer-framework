@@ -37,6 +37,24 @@
 
 namespace QInstaller {
 
+struct MacBinaryInfo {
+    QString fileName;
+    QString dynamicLibId; // if that is empty, it is an executable
+    QStringList dependentDynamicLibs;
+
+    uint qHash(const MacBinaryInfo &info);
+    bool operator==(const MacBinaryInfo &rhs) const
+    {
+        return fileName == rhs.fileName;
+    }
+
+};
+
+inline uint qHash(const MacBinaryInfo &info)
+{
+    return qHash(info.fileName) ^ qHash(info.dynamicLibId);
+}
+
 class INSTALLER_EXPORT MacReplaceInstallNamesOperation : public Operation
 {
 public:
@@ -48,20 +66,12 @@ public:
     bool testOperation();
     Operation *clone() const;
 
-    bool apply(const QString &oldString, const QString &newString, const QString &frameworkDir);
-    void setComponentRootPath(const QString &path);
-
 private:
-    void extractExecutableInfo(const QString &fileName, QString &frameworkId, QStringList &frameworks,
-        QString &originalBuildDir);
-    void relocateFramework(const QString &directoryName);
-    void relocateBinary(const QString &fileName);
+    bool apply(const QString &searchString, const QString &replacement, const QString &searchDir);
+    QSet<MacBinaryInfo> collectPatchableBinaries(const QString &searchDir);
+    int updateExecutableInfo(MacBinaryInfo *binaryInfo);
+    void relocateBinary(const MacBinaryInfo &info, const QString &searchString, const QString &replacement);
     bool execCommand(const QString &cmd, const QStringList &args);
-
-private:
-    QString m_indicator;
-    QString m_installationDir;
-    QString m_componentRootPath;
 };
 
 } // namespace QInstaller

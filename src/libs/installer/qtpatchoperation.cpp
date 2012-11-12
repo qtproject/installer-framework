@@ -33,8 +33,7 @@
 #include "qtpatchoperation.h"
 #include "qtpatch.h"
 #ifdef Q_OS_MAC
-#include "macrelocateqt.h"
-#include "constants.h"
+#include "macreplaceinstallnamesoperation.h"
 #endif
 
 #include "packagemanagercore.h"
@@ -196,6 +195,23 @@ bool QtPatchOperation::performOperation()
         return false;
     }
 
+#ifdef Q_OS_MAC
+    // just try to patch here at the beginning to keep the unpatched qmake if mac install_names_tool fails
+    MacReplaceInstallNamesOperation operation;
+    operation.setArguments(QStringList()
+                           //can not use the old path which is wrong in the webkit case
+                           //<< QString::fromUtf8(oldQtPath)
+                           << QLatin1String("/lib/Qt") // search string
+                           << newQtPathStr + QLatin1String("/lib/Qt") //replace string
+                           << newQtPathStr //where
+                           );
+    if (!operation.performOperation()) {
+        setError(operation.error());
+        setErrorString(operation.errorString());
+        return false;
+    }
+#endif
+
     QString fileName;
     if (type == QLatin1String("windows"))
         fileName = QString::fromLatin1(":/files-to-patch-windows");
@@ -335,23 +351,6 @@ bool QtPatchOperation::performOperation()
     }
 //END - patch text files
 
-#ifdef Q_OS_MAC
-    Relocator relocator;
-    bool successMacRelocating = false;
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
-    if (!core) {
-        setError(UserDefinedError);
-        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
-        return false;
-    }
-    Q_CHECK_PTR(core);
-    successMacRelocating = relocator.apply(newQtPathStr, core->value(scTargetDir), version);
-    if (!successMacRelocating) {
-        setError(UserDefinedError);
-        setErrorString(tr("Error while relocating Qt: %1").arg(relocator.errorMessage()));
-        return false;
-    }
-#endif
     if (oldQtPathFromQMakeIsEmpty) {
         setError(UserDefinedError);
         setErrorString(tr("The installer was not able to get the unpatched path from \n%1.(maybe it is "

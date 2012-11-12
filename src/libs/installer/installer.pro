@@ -168,10 +168,9 @@ RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc
 
 macx {
-    HEADERS += macrelocateqt.h \
+    HEADERS += \
                macreplaceinstallnamesoperation.h
     SOURCES += adminauthorization_mac.cpp \
-               macrelocateqt.cpp \
                macreplaceinstallnamesoperation.cpp
 }
 
