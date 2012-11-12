@@ -215,7 +215,7 @@ void MacReplaceInstallNamesOperation::relocateBinary(const QString &fileName)
         "orginalBuildDir: %4)").arg(fileName, frameworkId, frameworks.join(QLatin1String("|")), originalBuildDir);
 
     // Use regexp to find matches from frameworks and static libs
-    QRegExp frameworkRegexp(QLatin1String("Qt[0-9a-zA-Z]*\\.framework/"));
+    QRegExp frameworkRegexp(QLatin1String("Qt[0-9a-zA-Z_]*\\.framework/"));
     QRegExp dylibRegexp(QLatin1String("libQt.*\\.dylib"));
     QStringList args;
     // change framework ID only if Qt library reference
