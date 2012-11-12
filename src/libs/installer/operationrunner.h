@@ -33,6 +33,7 @@
 #ifndef OPERATIONRUNNER_H
 #define OPERATIONRUNNER_H
 
+#include "binaryformat.h"
 #include "installer_global.h"
 
 QT_FORWARD_DECLARE_CLASS(QStringList)
@@ -44,7 +45,8 @@ class PackageManagerCore;
 class INSTALLER_EXPORT OperationRunner
 {
 public:
-    explicit OperationRunner();
+    OperationRunner();
+    explicit OperationRunner(const QString &path);
     ~OperationRunner();
 
     bool init();
@@ -53,6 +55,9 @@ public:
 
 private:
     PackageManagerCore *m_core;
+
+    QString m_path;
+    BinaryContent m_bc;
 };
 
 } // namespace QInstaller

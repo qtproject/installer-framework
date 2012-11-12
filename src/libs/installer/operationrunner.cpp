@@ -31,14 +31,11 @@
 **************************************************************************/
 #include "operationrunner.h"
 
-#include "binaryformat.h"
-#include "component.h"
 #include "errors.h"
 #include "init.h"
 #include "packagemanagercore.h"
 #include "utils.h"
 
-#include "kdupdaterupdateoperation.h"
 #include "kdupdaterupdateoperationfactory.h"
 
 #include <iostream>
@@ -62,7 +59,19 @@ using namespace QInstallerCreator;
 OperationRunner::OperationRunner()
     : m_core(0)
 {
-    QInstaller::init();
+    m_path = QCoreApplication::applicationFilePath();
+#ifdef Q_OS_MAC
+    QDir resourcePath(QFileInfo(m_path).dir());
+    resourcePath.cdUp();
+    resourcePath.cd(QLatin1String("Resources"));
+    m_path = resourcePath.filePath(QLatin1String("installer.dat"));
+#endif
+}
+
+OperationRunner::OperationRunner(const QString &path)
+    : m_core(0)
+    , m_path(path)
+{
 }
 
 OperationRunner::~OperationRunner()
@@ -73,8 +82,10 @@ OperationRunner::~OperationRunner()
 bool OperationRunner::init()
 {
     try {
-        BinaryContent content = BinaryContent::readAndRegisterFromApplicationFile();
-        m_core = new PackageManagerCore(content.magicMarker(), content.performedOperations());
+        QInstaller::init();
+
+        m_bc = BinaryContent::readAndRegisterFromBinary(m_path);
+        m_core = new PackageManagerCore(m_bc.magicMarker(), m_bc.performedOperations());
     } catch (const Error &e) {
         std::cerr << qPrintable(e.message()) << std::endl;
         return false;
