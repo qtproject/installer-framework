@@ -371,15 +371,22 @@ QString TargetDirectoryPageImpl::targetDirWarning() const
             "absolute path.");
     }
 
-    QString dir = targetDir();
+    QString dir = QDir::toNativeSeparators(targetDir());
+#ifdef Q_OS_WIN
+    if (dir.count() >= 3 && dir.indexOf(QRegExp(QLatin1String("[a-zA-Z]:"))) == 0
+        && dir.at(2) != QLatin1Char('\\')) {
+            return TargetDirectoryPageImpl::tr("The path you have entered is not valid, please make sure to "
+                "specify a valid drive.");
+    }
+
+    // remove e.g. "c:"
+    dir = dir.mid(2);
+#endif
+
     QString ambiguousChars = QLatin1String("[<>|?*!@#$%^&:,; ]");
     if (packageManagerCore()->settings().allowSpaceInPath())
         ambiguousChars.remove(QLatin1Char(' '));
 
-#ifdef Q_OS_WIN
-    // remove e.g. "c:"
-    dir = dir.mid(2);
-#endif
     // check if there are not allowed characters in the target path
     if (dir.contains(QRegExp(ambiguousChars))) {
         return TargetDirectoryPageImpl::tr("The installation path must not contain %1, "
