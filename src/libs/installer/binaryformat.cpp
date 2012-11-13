@@ -727,7 +727,6 @@ int ComponentIndex::componentCount() const
 }
 
 
-static QVector<QByteArray> sResourceVec;
 /*!
     \internal
     Registers the resource found at \a segment within \a file into the Qt resource system.
@@ -741,21 +740,27 @@ static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segm
         throw Error(QObject::tr("Could not seek to in-binary resource. (offset: %1, length: %2)")
             .arg(QString::number(segment.start()), QString::number(segment.length())));
     }
-    sResourceVec.append(retrieveData(file, segment.length()));
 
-    if (!QResource::registerResource((const uchar*)(sResourceVec.last().constData()),
-        QLatin1String(":/metadata"))) {
+    const QByteArray ba = retrieveData(file, segment.length());
+    if (!QResource::registerResource((const uchar*)(ba.constData()), QLatin1String(":/metadata")))
             throw Error(QObject::tr("Could not register in-binary resource."));
-    }
-    return (const uchar*)(sResourceVec.last().constData());
+    return (const uchar*)(ba.constData());
 }
 
 
 // -- BinaryContentPrivate
+BinaryContentPrivate::BinaryContentPrivate()
+    : m_magicMarker(Q_INT64_C(0))
+    , m_dataBlockStart(Q_INT64_C(0))
+    , m_appBinary(0)
+    , m_binaryDataFile(0)
+    , m_binaryFormatEngineHandler(m_componentIndex)
+{
+}
 
 BinaryContentPrivate::BinaryContentPrivate(const QString &path)
-    : m_magicMarker(0)
-    , m_dataBlockStart(0)
+    : m_magicMarker(Q_INT64_C(0))
+    , m_dataBlockStart(Q_INT64_C(0))
     , m_appBinary(new QFile(path))
     , m_binaryDataFile(0)
     , m_binaryFormatEngineHandler(m_componentIndex)
@@ -781,19 +786,24 @@ BinaryContentPrivate::~BinaryContentPrivate()
 {
     foreach (const uchar *rccData, m_resourceMappings)
         QResource::unregisterResource(rccData);
-    sResourceVec.clear();
     m_resourceMappings.clear();
 }
 
 
 // -- BinaryContent
 
+BinaryContent::BinaryContent()
+    : d(new BinaryContentPrivate)
+{
+}
+
 BinaryContent::BinaryContent(const QString &path)
     : d(new BinaryContentPrivate(path))
 {
 }
 
-BinaryContent::~BinaryContent()
+BinaryContent::BinaryContent(const BinaryContent &rhs)
+    : d(rhs.d)
 {
 }
 
@@ -826,7 +836,7 @@ BinaryContent BinaryContent::readAndRegisterFromBinary(const QString &path)
 */
 BinaryContent BinaryContent::readFromApplicationFile()
 {
-    return BinaryContent::readFromBinary(QCoreApplication::applicationFilePath());;
+    return BinaryContent::readFromBinary(QCoreApplication::applicationFilePath());
 }
 
 /*!
@@ -1091,7 +1101,7 @@ int BinaryContent::registerEmbeddedQResources()
 
     const bool hasBinaryDataFile = !d->m_binaryDataFile.isNull();
     QFile *const data = hasBinaryDataFile ? d->m_binaryDataFile.data() : d->m_appBinary.data();
-    if (!data->isOpen() && !data->open(QIODevice::ReadOnly)) {
+    if (data != 0 && !data->isOpen() && !data->open(QIODevice::ReadOnly)) {
         throw Error(QObject::tr("Could not open binary %1: %2").arg(data->fileName(),
             data->errorString()));
     }

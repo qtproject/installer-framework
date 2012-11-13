@@ -193,6 +193,7 @@ struct BinaryLayout
 class BinaryContentPrivate : public QSharedData
 {
 public:
+    BinaryContentPrivate();
     BinaryContentPrivate(const QString &path);
     BinaryContentPrivate(const BinaryContentPrivate &other);
     ~BinaryContentPrivate();
@@ -215,10 +216,9 @@ public:
 
 class INSTALLER_EXPORT BinaryContent
 {
-    explicit BinaryContent(const QString &path);
-
 public:
-    virtual ~BinaryContent();
+    BinaryContent();
+    BinaryContent(const BinaryContent &rhs);
 
     static BinaryContent readAndRegisterFromApplicationFile();
     static BinaryContent readAndRegisterFromBinary(const QString &path);
@@ -236,6 +236,7 @@ public:
     QInstallerCreator::ComponentIndex componentIndex() const;
 
 private:
+    explicit BinaryContent(const QString &path);
     static void readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
         const BinaryLayout &layout);
 
