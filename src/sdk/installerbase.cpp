@@ -120,6 +120,11 @@ int main(int argc, char *argv[])
     KDRunOnceChecker runCheck(QLatin1String("lockmyApp1234865.lock"));
 
     try {
+        if (args.contains(QLatin1String("--help")) || args.contains(QLatin1String("-h"))) {
+            InstallerBase::showUsage();
+            return 0;
+        }
+
         if (args.contains(QLatin1String("--version"))) {
             QString versionOutPut;
             QDateTime dateTimeCheck = QDateTime::fromString(QLatin1String(
@@ -308,9 +313,6 @@ int main(int argc, char *argv[])
             } else if ((argument == QLatin1String("--manage-packages")
                 || argument == QLatin1String("ManagePackages")) && core.isUninstaller()) {
                     core.setPackageManager();
-            } else if (argument == QLatin1String("--help") || argument == QLatin1String("-h")) {
-                InstallerBase::showUsage();
-                return PackageManagerCore::Success;
             } else if (argument == QLatin1String("--addTempRepository")
                 || argument == QLatin1String("--setTempRepository")) {
                     ++i;
