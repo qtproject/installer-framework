@@ -333,6 +333,12 @@ void InstallerBase::showUsage()
     std::cout << std::setw(55) << std::setiosflags(std::ios::left)
         << "  --update-installerbase [path/to/new/installerbase]" << std::setw(40)
         << "Patch a full installer with a new installer base" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --dump-binary-data [OPTION...] -o "
+        "path" << std::setw(40) << "Dumps the binary content into specified path (offline installer only)"
+        << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "                         -i   "
+        << std::setw(40) << "Path to binary data file, otherwise the current application is assumed to be "
+        "the input file." << std::endl;
 }
 
 /* static*/

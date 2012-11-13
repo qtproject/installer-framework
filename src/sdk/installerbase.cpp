@@ -189,6 +189,36 @@ int main(int argc, char *argv[])
             return InstallerBase().replaceMaintenanceToolBinary(args);
         }
 
+        if (args.contains(QLatin1String("--dump-binary-data"))) {
+            bool verbose = args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("-v"));
+
+            args = args.mid(args.indexOf(QLatin1String("--dump-binary-data")) + 1, 4);
+            // we expect at least -o and the output path
+            if (args.count() < 2 || !args.contains(QLatin1String("-o"))) {
+                InstallerBase::showUsage();
+                return EXIT_FAILURE;
+            }
+
+            // output path
+            const QString output = args.value(args.indexOf(QLatin1String("-o") + 1));
+            if (output.isEmpty()) {
+                InstallerBase::showUsage();
+                return EXIT_FAILURE;
+            }
+
+            MyCoreApplication app(argc, argv);
+
+            // input, if not given use current app
+            QString input = args.value(args.indexOf(QLatin1String("-i") + 1));
+            if (input.isEmpty())
+                 input = QCoreApplication::applicationFilePath();
+
+            OperationRunner o(input);
+            o.setVerbose(verbose);
+            return o.runOperation(QStringList(QLatin1String("--runoperation"))
+                << QLatin1String("CreateLocalRepository") << input << output);
+        }
+
         // from here, the "normal" installer binary is running
         MyApplication app(argc, argv);
         args = app.arguments();

@@ -153,15 +153,20 @@ bool CreateLocalRepositoryOperation::performOperation()
         return false;
     }
 
-    QString repoPath;
     try {
-        QString binaryPath = QFileInfo(args.at(0)).absoluteFilePath();
+        const QString binaryPath = QFileInfo(args.at(0)).absoluteFilePath();
         // Note the "/" at the end, important to make copy directory operation behave well
-        repoPath = QFileInfo(args.at(1)).absoluteFilePath() + QLatin1String("/repository/");
+        const QString repoPath = QFileInfo(args.at(1)).absoluteFilePath() + QLatin1Char('/');
+
+        // check if this is an offline version, otherwise there will be no binary data
+        PackageManagerCore *core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+        if (core && !core->isOfflineOnly()) {
+            throw QInstaller::Error(tr("Installer needs to be an offline version: %1.")
+                .arg(QDir::toNativeSeparators(binaryPath)));
+        }
 
         // if we're running as installer and install into an existing target, remove possible previous repos
-        PackageManagerCore *core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
-        if (core && core->isOfflineOnly() && QFile::exists(repoPath)) {
+        if (QFile::exists(repoPath)) {
             Static::fixPermissions(repoPath);
             QInstaller::removeDirectory(repoPath);
         }

@@ -1420,7 +1420,8 @@ bool PackageManagerCorePrivate::runInstaller()
             if (createRepo) {
                 createRepo->setValue(QLatin1String("uninstall-only"), true);
                 createRepo->setValue(QLatin1String("installer"), QVariant::fromValue(m_core));
-                createRepo->setArguments(QStringList() << QCoreApplication::applicationFilePath() << target);
+                createRepo->setArguments(QStringList() << QCoreApplication::applicationFilePath()
+                    << target + QLatin1String("/repository"));
 
                 connectOperationToInstaller(createRepo, progressOperationSize);
 
