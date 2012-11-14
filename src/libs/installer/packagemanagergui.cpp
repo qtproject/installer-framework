@@ -903,9 +903,6 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("LicenseAgreementPage"));
     setTitle(titleForPage(QLatin1String("LicenseAgreementPage"), tr("License Agreement")));
-    setSubTitle(subTitleForPage(QLatin1String("LicenseAgreementPage"), tr("Please read the following license "
-        "agreement(s). You must accept the terms contained in these agreement(s) before continuing with the "
-        "installation.")));
 
     m_licenseListWidget = new QListWidget(this);
     m_licenseListWidget->setObjectName(QLatin1String("LicenseListWidget"));
@@ -933,25 +930,22 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_acceptRadioButton->setObjectName(QLatin1String("AcceptLicenseRadioButton"));
     ClickForwarder *acceptClickForwarder = new ClickForwarder(m_acceptRadioButton);
 
-    QLabel *acceptLabel = new QLabel;
-    acceptLabel->setWordWrap(true);
-    acceptLabel->installEventFilter(acceptClickForwarder);
-    acceptLabel->setObjectName(QLatin1String("AcceptLicenseLabel"));
-    acceptLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-    const QVariantHash hash = elementsForPage(QLatin1String("LicenseAgreementPage"));
-    acceptLabel->setText(hash.value(QLatin1String("AcceptLicenseLabel"), tr("I accept the licenses.")).toString());
+    m_acceptLabel = new QLabel;
+    m_acceptLabel->setWordWrap(true);
+    m_acceptLabel->installEventFilter(acceptClickForwarder);
+    m_acceptLabel->setObjectName(QLatin1String("AcceptLicenseLabel"));
+    m_acceptLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
     m_rejectRadioButton = new QRadioButton(this);
     ClickForwarder *rejectClickForwarder = new ClickForwarder(m_rejectRadioButton);
     m_rejectRadioButton->setObjectName(QString::fromUtf8("RejectLicenseRadioButton"));
     m_rejectRadioButton->setShortcut(QKeySequence(tr("Alt+D", "do not agree license")));
 
-    QLabel *rejectLabel = new QLabel;
-    rejectLabel->setWordWrap(true);
-    rejectLabel->installEventFilter(rejectClickForwarder);
-    rejectLabel->setObjectName(QLatin1String("RejectLicenseLabel"));
-    rejectLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-    rejectLabel->setText(hash.value(QLatin1String("RejectLicenseLabel"), tr("I do not accept the licenses.")).toString());
+    m_rejectLabel = new QLabel;
+    m_rejectLabel->setWordWrap(true);
+    m_rejectLabel->installEventFilter(rejectClickForwarder);
+    m_rejectLabel->setObjectName(QLatin1String("RejectLicenseLabel"));
+    m_rejectLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
 #if defined(Q_OS_X11) || defined(Q_OS_MAC)
     QFont labelFont(font());
@@ -963,9 +957,9 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     QGridLayout *gridLayout = new QGridLayout;
     gridLayout->setColumnStretch(1, 1);
     gridLayout->addWidget(m_acceptRadioButton, 0, 0);
-    gridLayout->addWidget(acceptLabel, 0, 1);
+    gridLayout->addWidget(m_acceptLabel, 0, 1);
     gridLayout->addWidget(m_rejectRadioButton, 1, 0);
-    gridLayout->addWidget(rejectLabel, 1, 1);
+    gridLayout->addWidget(m_rejectLabel, 1, 1);
     layout->addLayout(gridLayout);
 
     connect(m_acceptRadioButton, SIGNAL(toggled(bool)), this, SIGNAL(completeChanged()));
@@ -989,6 +983,8 @@ void LicenseAgreementPage::entering()
         m_licenseListWidget->setVisible(licenseCount > 1);
         m_licenseListWidget->setCurrentItem(m_licenseListWidget->item(0));
     }
+
+    updateUi();
 }
 
 bool LicenseAgreementPage::isComplete() const
@@ -1014,6 +1010,31 @@ void LicenseAgreementPage::addLicenseItem(const QHash<QString, QPair<QString, QS
             QListWidgetItem *item = new QListWidgetItem(it.key(), m_licenseListWidget);
             item->setData(Qt::UserRole, it.value().second);
     }
+}
+
+void LicenseAgreementPage::updateUi()
+{
+    QString subTitleText;
+    QString acceptButtonText;
+    QString rejectButtonText;
+    if (m_licenseListWidget->count() == 1) {
+        subTitleText = tr("Please read the following license agreement. You must accept the terms "
+                          "contained in this agreement before continuing with the installation.");
+        acceptButtonText = tr("I accept the license.");
+        rejectButtonText = tr("I do not accept the license.");
+    } else {
+        subTitleText = tr("Please read the following license agreements. You must accept the terms "
+                          "contained in these agreements before continuing with the installation.");
+        acceptButtonText = tr("I accept the licenses.");
+        rejectButtonText = tr("I do not accept the licenses.");
+    }
+
+    setSubTitle(subTitleForPage(QLatin1String("LicenseAgreementPage", subTitleText));
+
+    const QVariantHash hash = elementsForPage(QLatin1String("LicenseAgreementPage"));
+    m_acceptLabel->setText(hash.value(QLatin1String("AcceptLicenseLabel"), acceptButtonText);
+    m_rejectLabel->setText(hash.value(QLatin1String("RejectLicenseLabel"), rejectButtonText);
+
 }
 
 

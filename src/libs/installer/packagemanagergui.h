@@ -235,6 +235,7 @@ private Q_SLOTS:
 
 private:
     void addLicenseItem(const QHash<QString, QPair<QString, QString> > &hash);
+    void updateUi();
 
 private:
     QTextBrowser *m_textBrowser;
@@ -242,6 +243,9 @@ private:
 
     QRadioButton *m_acceptRadioButton;
     QRadioButton *m_rejectRadioButton;
+
+    QLabel *m_acceptLabel;
+    QLabel *m_rejectLabel;
 };
 
 
