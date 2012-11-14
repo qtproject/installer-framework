@@ -37,7 +37,7 @@ configure -nomake examples -nomake demos -qt-zlib -qt-libtiff -qt-libpng -qt-lib
  
 == Create an Installer ==
 
-To create an installer, use binarycreator:
+To create an installer, use bin/binarycreator. The create-test-installer batch files run it for the example project:
  
 in windows;
 cd tests\test-installer
@@ -47,7 +47,7 @@ in unix;
 cd tests/test-installer
 create-test-installer.sh
 
-This creates an installer "test-installer.exe"/"test-installer" from the installerbase binary and the components required by the com.nokia.testapp package(examples\testapp\packages\com.nokia.testapp).
+This creates an installer "test-installer-offline"/"test-installer-online" and the components required by the com.nokia.testapp package(examples\testapp\packages\com.nokia.testapp) in the bin folder.
 
 == Create an Archive ==
 To create an 7zip archive named qt-copy.7z that contains the directory qt-copy use:
