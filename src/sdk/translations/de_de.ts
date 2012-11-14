@@ -1359,12 +1359,12 @@ Fehler beim Laden von %2</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="880"/>
         <source>I do not accept the licenses.</source>
-        <translation>Ich akzeptiere die Bedingungen der obigen Lizenzvereinbarungen nicht. Bitte beachten Sie, dass diese Auswahl bedeutet, dass Sie die Installation und das Herunterladen des Qt SDK abbrechen und dass Sie alle Kopien des Qt SDK und alle Teile davon, die sich in Ihrem Besitz befinden, löschen müssen.</translation>
+        <translation>Ich akzeptiere die Lizenzvereinbarungen nicht.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="868"/>
         <source>I accept the licenses.</source>
-        <translation>Ich habe die Bedingungen der folgenden Lizenzvereinbarungen zum Qt SDK und dazugehörigen Bestandteilen gelesen und akzeptiert. Ich bin damit einverstanden, dass meine Benutzung des Qt SDK durch die Bedingungen in diesen Lizenzvereinbarungen bestimmt wird.</translation>
+        <translation>Ich akzeptiere die Lizenzvereinbarungen.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="873"/>

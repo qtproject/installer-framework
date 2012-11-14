@@ -1355,12 +1355,11 @@ Error while loading %2</source>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="868"/>
         <source>I accept the licenses.</source>
-        <translation>I h&lt;u&gt;a&lt;/u&gt;ve read and agree to the following terms contained in the license agreements accompanying the Qt SDK and additional items. I agree that my use of the Qt SDK is governed by the terms and conditions contained in these license agreements.</translation>
-    </message>
+        <translation type="unfinished"></translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="880"/>
         <source>I do not accept the licenses.</source>
-        <translation>I &lt;u&gt;d&lt;/u&gt;o not accept the terms and conditions of the above listed license agreements. Please note by checking the box, you must cancel the installation or downloading the Qt SDK and must destroy all copies, or portions thereof, of the Qt SDK in your possessions.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="873"/>
