@@ -101,8 +101,7 @@
             \l{http://gitorious.org/qt-labs/installer-framework}
             to get the sources for the tools.
 
-        \o  Build the \c installerbase, \c binarycreator, and \c repogen tool
-            in the \c installerbuilder directory, as any Qt project.
+        \o  Build the tools by running the "qmake" from the static Qt, followed by "make" or "nmake".
 
     \endlist
 
