@@ -40,6 +40,7 @@
 #include <QtGui/QMessageBox>
 
 #include <cstdlib>
+#include <sys/resource.h>
 #include <unistd.h>
 #include <fcntl.h>
 
