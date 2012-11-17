@@ -46,6 +46,10 @@ using namespace QInstaller;
 #include <windows.h>
 #include <shlobj.h>
 
+#ifndef PIDLIST_ABSOLUTE
+typedef ITEMIDLIST *PIDLIST_ABSOLUTE;
+#endif
+
 struct DeCoInitializer
 {
     DeCoInitializer()
