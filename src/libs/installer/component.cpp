@@ -207,22 +207,6 @@ void Component::markAsPerformedInstallation()
     d->m_newlyInstalled = true;
 }
 
-/*!
-    \property Component::removeBeforeUpdate
-    Specifies whether this component gets removed by the installer system before it gets updated. Get this
-    property's value by using %removeBeforeUpdate(), and set it using %setRemoveBeforeUpdate(). The default
-    value is true.
-*/
-bool Component::removeBeforeUpdate() const
-{
-    return d->m_removeBeforeUpdate;
-}
-
-void Component::setRemoveBeforeUpdate(bool removeBeforeUpdate)
-{
-    d->m_removeBeforeUpdate = removeBeforeUpdate;
-}
-
 /*
     Returns a key/value based hash of all variables set for this component.
 */

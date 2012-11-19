@@ -71,7 +71,6 @@ class INSTALLER_EXPORT Component : public QObject, public QScriptable, public Co
     Q_PROPERTY(QStringList autoDependencies READ autoDependencies)
     Q_PROPERTY(bool fromOnlineRepository READ isFromOnlineRepository)
     Q_PROPERTY(QUrl repositoryUrl READ repositoryUrl)
-    Q_PROPERTY(bool removeBeforeUpdate READ removeBeforeUpdate WRITE setRemoveBeforeUpdate)
     Q_PROPERTY(bool default READ isDefault)
     Q_PROPERTY(bool installed READ isInstalled)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
@@ -166,9 +165,6 @@ public:
 
     QUrl repositoryUrl() const;
     void setRepositoryUrl(const QUrl &url);
-
-    bool removeBeforeUpdate() const;
-    void setRemoveBeforeUpdate(bool removeBeforeUpdate);
 
     Q_INVOKABLE void addDependency(const QString &newDependency);
     QStringList dependencies() const;

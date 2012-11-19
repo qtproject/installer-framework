@@ -52,7 +52,6 @@ ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
     m_minimumProgressOperation(0),
     m_newlyInstalled (false),
     m_operationsCreated(false),
-    m_removeBeforeUpdate(true),
     m_autoCreateOperations(true),
     m_operationsCreatedSuccessfully(true),
     m_updateIsAvailable(false),

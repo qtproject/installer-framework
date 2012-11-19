@@ -66,7 +66,6 @@ public:
 
     bool m_newlyInstalled;
     bool m_operationsCreated;
-    bool m_removeBeforeUpdate;
     bool m_autoCreateOperations;
     bool m_operationsCreatedSuccessfully;
     bool m_updateIsAvailable;
