@@ -4,7 +4,7 @@ These are instructions to create the Installer Framework
 To build an installer, it is advised to use a statically linked Qt.
 
 == Qt configuration under Windows ==
-- adjust the qmake.conf to have a real stand alone working installer(at the moment we are using msvc2005, but it should work with msvc2008 aswell)
+adjust the qmake.conf to have a real stand alone working installer(at the moment we are using msvc2005, but it should work with msvc2008 aswell)
 
 --- a/mkspecs/win32-msvc20XX/qmake.conf
 +++ b/mkspecs/win32-msvc20XX/qmake.conf
