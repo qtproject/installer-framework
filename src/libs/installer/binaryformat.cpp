@@ -40,8 +40,10 @@
 
 #include <kdupdaterupdateoperationfactory.h>
 
-#include <QtCore/QResource>
-#include <QtCore/QTemporaryFile>
+#include <QDir>
+#include <QFileInfo>
+#include <QResource>
+#include <QTemporaryFile>
 
 #include <errno.h>
 

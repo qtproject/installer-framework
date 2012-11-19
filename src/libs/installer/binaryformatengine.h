@@ -33,8 +33,6 @@
 #ifndef BINARYFORMATENGINE_H
 #define BINARYFORMATENGINE_H
 
-#include <QAbstractFileEngine>
-
 #include "binaryformat.h"
 
 namespace QInstallerCreator {

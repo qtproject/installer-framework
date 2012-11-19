@@ -51,7 +51,7 @@
 #include "kdupdaterupdateoperationfactory.h"
 #include "kdupdaterupdatefinder.h"
 
-#include <QtCore/QtConcurrentRun>
+#include <QtConcurrentRun>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
@@ -59,8 +59,8 @@
 #include <QtCore/QFutureWatcher>
 #include <QtCore/QTemporaryFile>
 
-#include <QtXml/QXmlStreamReader>
-#include <QtXml/QXmlStreamWriter>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 #include <errno.h>
 
@@ -966,7 +966,7 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
 
     appendData(&out, input, size);
     if (writeBinaryLayout) {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
         QDir resourcePath(QFileInfo(uninstallerRenamedName).dir());
         if (!resourcePath.path().endsWith(QLatin1String("Contents/MacOS")))
             throw Error(tr("Uninstaller is not a bundle"));

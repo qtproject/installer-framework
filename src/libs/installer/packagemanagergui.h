@@ -38,8 +38,8 @@
 #include <QtCore/QEvent>
 #include <QtCore/QMetaType>
 
-#include <QtGui/QWizard>
-#include <QtGui/QWizardPage>
+#include <QWizard>
+#include <QWizardPage>
 
 // FIXME: move to private classes
 QT_BEGIN_NAMESPACE

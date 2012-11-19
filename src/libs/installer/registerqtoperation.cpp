@@ -84,7 +84,7 @@ bool RegisterQtInCreatorOperation::performOperation()
     QString sbsPath = args.value(8);
 
 //this is for creator 2.2
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
+    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
@@ -209,7 +209,7 @@ bool RegisterQtInCreatorOperation::performOperation()
 //works with creator 2.1 and 2.2
 bool RegisterQtInCreatorOperation::undoOperation()
 {
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
+    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));

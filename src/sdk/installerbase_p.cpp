@@ -47,7 +47,7 @@
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QUrl>
 
-#include <QtGui/QMessageBox>
+#include <QMessageBox>
 
 #include <fstream>
 #include <iomanip>

@@ -36,11 +36,11 @@
 #include "progresscoordinator.h"
 
 
-#include <QtGui/QLabel>
-#include <QtGui/QProgressBar>
-#include <QtGui/QPushButton>
-#include <QtGui/QScrollBar>
-#include <QtGui/QVBoxLayout>
+#include <QLabel>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QScrollBar>
+#include <QVBoxLayout>
 
 #include <QtCore/QTimer>
 

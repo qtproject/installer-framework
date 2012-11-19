@@ -34,9 +34,9 @@
 
 #include <QtCore/QDebug>
 
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QDialogButtonBox>
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 #include <QtScript/QScriptEngine>
 #include <QtScript/QScriptValue>

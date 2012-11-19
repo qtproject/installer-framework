@@ -40,11 +40,11 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QTimer>
 
-#include <QtGui/QLabel>
-#include <QtGui/QProgressBar>
-#include <QtGui/QRadioButton>
-#include <QtGui/QStackedWidget>
-#include <QtGui/QVBoxLayout>
+#include <QLabel>
+#include <QProgressBar>
+#include <QRadioButton>
+#include <QStackedWidget>
+#include <QVBoxLayout>
 
 using namespace QInstaller;
 

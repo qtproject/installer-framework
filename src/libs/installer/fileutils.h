@@ -105,7 +105,7 @@ private:
     void INSTALLER_EXPORT mkdir(const QString &path);
     void INSTALLER_EXPORT mkpath(const QString &path);
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     /*!
         Sets the .ico file at \a icon as application icon for \a application.
     */

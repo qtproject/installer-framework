@@ -57,7 +57,7 @@ bool QInstaller::isVerbose()
     return verb;
 }
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 void qWinMsgHandler(QtMsgType t, const char *str);
 
 class debugstream : public std::ostream
@@ -88,7 +88,7 @@ private:
 std::ostream &QInstaller::stdverbose()
 {
     static std::fstream null;
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     static debugstream stream;
 #else
     static std::ostream& stream = std::cout;

@@ -66,7 +66,7 @@ bool SetQtCreatorValueOperation::performOperation()
         return false;
     }
 
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
+    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
@@ -106,7 +106,7 @@ bool SetQtCreatorValueOperation::performOperation()
 } //destruct QSettings
 
     if (group == QLatin1String("GdbBinaries21")) {
-        PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+        PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
         if (!core) {
             setError(UserDefinedError);
             setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
@@ -137,7 +137,7 @@ bool SetQtCreatorValueOperation::undoOperation()
     const QString &group = groupName(args.at(1));
     const QString &key = args.at(2);
 
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore *>(value(QLatin1String("installer")));
+    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));

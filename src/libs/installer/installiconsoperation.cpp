@@ -147,7 +147,7 @@ bool InstallIconsOperation::performOperation()
     QStringList backupFiles;
     QStringList createdDirectories;
 
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
 
     // iterate a second time to get the actual work done
     QDirIterator it(sourceDir.path(), QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot,

@@ -53,7 +53,7 @@
 #include <kdupdaterfiledownloaderfactory.h>
 
 #include <QtCore/QTranslator>
-#include <QtGui/QMessageBox>
+#include <QMessageBox>
 
 #include <QtNetwork/QNetworkProxyFactory>
 

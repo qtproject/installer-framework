@@ -53,28 +53,28 @@
 #include <QtCore/QSettings>
 #include <QtCore/QTimer>
 
-#include <QtGui/QApplication>
-#include <QtGui/QCheckBox>
-#include <QtGui/QDesktopServices>
-#include <QtGui/QFileDialog>
-#include <QtGui/QGridLayout>
-#include <QtGui/QFormLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QListWidget>
-#include <QtGui/QListWidgetItem>
-#include <QtGui/QMessageBox>
-#include <QtGui/QProgressBar>
-#include <QtGui/QPushButton>
-#include <QtGui/QRadioButton>
-#include <QtGui/QTextBrowser>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QTreeView>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QScrollBar>
-#include <QtGui/QShowEvent>
+#include <QApplication>
+#include <QCheckBox>
+#include <QDesktopServices>
+#include <QFileDialog>
+#include <QGridLayout>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QListWidgetItem>
+#include <QMessageBox>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QTextBrowser>
+#include <QTreeWidget>
+#include <QTreeView>
+#include <QVBoxLayout>
+#include <QScrollBar>
+#include <QShowEvent>
 
 #include <QtScript/QScriptEngine>
 
@@ -944,7 +944,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     rejectLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     rejectLabel->setText(hash.value(QLatin1String("RejectLicenseLabel"), tr("I do not accept the licenses.")).toString());
 
-#if defined(Q_WS_X11) || defined(Q_OS_MAC)
+#if defined(Q_OS_X11) || defined(Q_OS_MAC)
     QFont labelFont(font());
     labelFont.setPixelSize(9);
     acceptLabel->setFont(labelFont);

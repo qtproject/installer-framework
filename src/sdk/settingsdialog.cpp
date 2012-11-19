@@ -39,9 +39,9 @@
 
 #include <QtCore/QFile>
 
-#include <QtGui/QItemSelectionModel>
-#include <QtGui/QMessageBox>
-#include <QtGui/QTreeWidget>
+#include <QItemSelectionModel>
+#include <QMessageBox>
+#include <QTreeWidget>
 
 #include <QtXml/QDomDocument>
 

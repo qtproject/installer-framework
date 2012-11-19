@@ -65,7 +65,7 @@ bool AddQtCreatorArrayValueOperation::performOperation()
         return false;
     }
 
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
@@ -123,7 +123,7 @@ bool AddQtCreatorArrayValueOperation::undoOperation()
         return true;
     const QStringList args = arguments();
 
-    PackageManagerCore *const core = qVariantValue<PackageManagerCore*>(value(QLatin1String("installer")));
+    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));

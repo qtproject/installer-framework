@@ -51,7 +51,7 @@ static QHash<QByteArray, QByteArray> generatePatchValueHash(const QByteArray &ne
         const QHash<QString, QByteArray> &qmakeValueHash)
 {
     QHash<QByteArray, QByteArray> replaceHash; //first == searchstring: second == replace string
-    char nativeSeperator = QDir::separator().toAscii();
+    char nativeSeperator = QDir::separator().toLatin1();
     QByteArray oldValue;
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_PREFIX"));
@@ -95,7 +95,7 @@ static QHash<QByteArray, QByteArray> generatePatchValueHash(const QByteArray &ne
     //        replaceMap.insert( QByteArray("qt_stngpath=%1").replace("%1", oldValue),
     //                            QByteArray("qt_stngpath=%1").replace("%1", newQtPath));
 
-    //examples and demoes can patched outside separately,
+    //examples and demos can patched outside separately,
     //but for cosmetic reasons - if the qt version gets no examples later.
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_EXAMPLES"));
     replaceHash.insert( QByteArray("qt_xmplpath=%1").replace("%1", oldValue),

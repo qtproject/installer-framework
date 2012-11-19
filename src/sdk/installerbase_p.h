@@ -30,8 +30,8 @@
 **
 **************************************************************************/
 
-#include <QtCore/QThread>
-#include <QtGui/QApplication>
+#include <QThread>
+#include <QApplication>
 
 namespace KDUpdater {
     class FileDownloader;

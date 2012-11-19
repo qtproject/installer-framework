@@ -63,7 +63,7 @@ public:
 
     bool operator()(const ProcessInfo &info)
     {
-#ifndef Q_WS_WIN
+#ifndef Q_OS_WIN
         if (info.name == m_name)
             return true;
         const QFileInfo fi(info.name);

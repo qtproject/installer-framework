@@ -37,9 +37,9 @@
 
 #include <kdjob.h>
 
-#include <QtGui/QDialog>
-#include <QtGui/QStyledItemDelegate>
-#include <QtGui/QTreeWidgetItem>
+#include <QDialog>
+#include <QStyledItemDelegate>
+#include <QTreeWidgetItem>
 
 QT_BEGIN_NAMESPACE
 class QAuthenticator;

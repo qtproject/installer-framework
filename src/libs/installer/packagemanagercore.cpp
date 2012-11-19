@@ -57,8 +57,8 @@
 #include <QtCore/QSettings>
 #include <QtCore/QTemporaryFile>
 
-#include <QtGui/QDesktopServices>
-#include <QtGui/QFileDialog>
+#include <QDesktopServices>
+#include <QFileDialog>
 
 #include <QtScript/QScriptEngine>
 #include <QtScript/QScriptContext>

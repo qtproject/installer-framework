@@ -45,7 +45,7 @@
 #include <QtCore/QDirIterator>
 #include <QtCore/QTranslator>
 
-#include <QtGui/QApplication>
+#include <QApplication>
 
 #include <QtUiTools/QUiLoader>
 

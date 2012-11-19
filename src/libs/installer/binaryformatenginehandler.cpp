@@ -36,7 +36,6 @@
 
 #include <QDebug>
 #include <QFile>
-#include <QFSFileEngine>
 
 using namespace QInstallerCreator;
 

@@ -36,7 +36,7 @@
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QtGui/QDesktopServices>
 
 

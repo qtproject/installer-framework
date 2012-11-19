@@ -45,7 +45,7 @@
 #include <QtCore/QTimer>
 #include <QtCore/QUrl>
 
-#include <QtGui/QMessageBox>
+#include <QMessageBox>
 
 #include <QtNetwork/QAuthenticator>
 

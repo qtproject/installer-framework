@@ -35,12 +35,10 @@
 
 #include <installer_global.h>
 
-#include <QtCore/QHash>
-#include <QtCore/QObject>
-
-#include <QtGui/QMessageBox>
-
-#include <QtScript/QScriptable>
+#include <QHash>
+#include <QMessageBox>
+#include <QObject>
+#include <QScriptable>
 
 namespace QInstaller {
 
