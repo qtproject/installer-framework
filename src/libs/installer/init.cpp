@@ -54,16 +54,12 @@
 #include "replaceoperation.h"
 #include "licenseoperation.h"
 #include "linereplaceoperation.h"
-#include "registerqtoperation.h"
-#include "registerqtv2operation.h"
-#include "registerqtv23operation.h"
 #include "registerqtvqnxoperation.h"
 #include "setqtcreatorvalueoperation.h"
 #include "addqtcreatorarrayvalueoperation.h"
 #include "simplemovefileoperation.h"
 #include "registertoolchainoperation.h"
 #include "registerdefaultdebuggeroperation.h"
-#include "updatecreatorsettingsfrom21to22operation.h"
 #include "createlinkoperation.h"
 
 #include "minimumprogressoperation.h"
@@ -212,9 +208,6 @@ void QInstaller::init()
     // added for NDK
     factory.registerUpdateOperation<SimpleMoveFileOperation>(QLatin1String("SimpleMoveFile"));
     factory.registerUpdateOperation<CopyDirectoryOperation>(QLatin1String("CopyDirectory"));
-    factory.registerUpdateOperation<RegisterQtInCreatorOperation>(QLatin1String("RegisterQtInCreator"));
-    factory.registerUpdateOperation<RegisterQtInCreatorV2Operation>(QLatin1String("RegisterQtInCreatorV2"));
-    factory.registerUpdateOperation<RegisterQtInCreatorV23Operation>(QLatin1String("RegisterQtInCreatorV23"));
     factory.registerUpdateOperation<RegisterQtInCreatorQNXOperation>(QLatin1String("RegisterQtInCreatorQNX"));
     factory.registerUpdateOperation<RegisterToolChainOperation>(QLatin1String("RegisterToolChain") );
     factory.registerUpdateOperation<RegisterDefaultDebuggerOperation>(QLatin1String( "RegisterDefaultDebugger"));
@@ -228,7 +221,6 @@ void QInstaller::init()
     factory.registerUpdateOperation<QtPatchOperation>(QLatin1String("QtPatch"));
     factory.registerUpdateOperation<ReplaceOperation>(QLatin1String("Replace"));
     factory.registerUpdateOperation<LineReplaceOperation>(QLatin1String( "LineReplace" ) );
-    factory.registerUpdateOperation<UpdateCreatorSettingsFrom21To22Operation>(QLatin1String("UpdateCreatorSettingsFrom21To22"));
     factory.registerUpdateOperation<CreateLinkOperation>(QLatin1String("CreateLink"));
 
     factory.registerUpdateOperation<MinimumProgressOperation>(QLatin1String("MinimumProgress"));

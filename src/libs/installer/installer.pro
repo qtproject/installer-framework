@@ -39,10 +39,7 @@ HEADERS += packagemanagercore.h \
     setimportspathonqtcoreoperation.h \
     replaceoperation.h \
     linereplaceoperation.h \
-    registerqtoperation.h  \
     registertoolchainoperation.h  \
-    registerqtv2operation.h  \
-    registerqtv23operation.h  \
     registerqtvqnxoperation.h  \
     setqtcreatorvalueoperation.h \
     addqtcreatorarrayvalueoperation.h \
@@ -80,7 +77,6 @@ HEADERS += packagemanagercore.h \
     qtcreator_constants.h \
     qtcreatorpersistentsettings.h \
     registerdefaultdebuggeroperation.h \
-    updatecreatorsettingsfrom21to22operation.h \
     qprocesswrapper.h \
     qsettingswrapper.h \
     constants.h \
@@ -113,10 +109,7 @@ HEADERS += packagemanagercore.h \
     setimportspathonqtcoreoperation.cpp \
     replaceoperation.cpp \
     linereplaceoperation.cpp \
-    registerqtoperation.cpp \
     registertoolchainoperation.cpp  \
-    registerqtv2operation.cpp \
-    registerqtv23operation.cpp \
     registerqtvqnxoperation.cpp  \
     setqtcreatorvalueoperation.cpp \
     addqtcreatorarrayvalueoperation.cpp \
@@ -151,7 +144,6 @@ HEADERS += packagemanagercore.h \
     component_p.cpp \
     qtcreatorpersistentsettings.cpp \
     registerdefaultdebuggeroperation.cpp \
-    updatecreatorsettingsfrom21to22operation.cpp \
     qprocesswrapper.cpp \
     templates.cpp \
     qsettingswrapper.cpp \

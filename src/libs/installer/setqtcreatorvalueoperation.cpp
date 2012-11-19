@@ -33,7 +33,6 @@
 #include "setqtcreatorvalueoperation.h"
 
 #include "qtcreator_constants.h"
-#include "updatecreatorsettingsfrom21to22operation.h"
 #include "packagemanagercore.h"
 
 #include <QtCore/QSettings>
@@ -82,7 +81,7 @@ bool SetQtCreatorValueOperation::performOperation()
     const QString &group = groupName(args.at(1));
     const QString &key = args.at(2);
     const QString &settingsValue = args.at(3);
-{
+
     QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile);
     if (qtCreatorInstallerSettingsFileName.isEmpty()) {
         setError(UserDefinedError);
@@ -103,23 +102,6 @@ bool SetQtCreatorValueOperation::performOperation()
         settings.endGroup();
 
     settings.sync(); //be save ;)
-} //destruct QSettings
-
-    if (group == QLatin1String("GdbBinaries21")) {
-        PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
-        if (!core) {
-            setError(UserDefinedError);
-            setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
-            return false;
-        }
-        UpdateCreatorSettingsFrom21To22Operation updateCreatorSettingsOperation;
-        updateCreatorSettingsOperation.setValue(QLatin1String("installer"), QVariant::fromValue(core));
-        if (!updateCreatorSettingsOperation.performOperation()) {
-            setError(updateCreatorSettingsOperation.error());
-            setErrorString(updateCreatorSettingsOperation.errorString());
-            return false;
-        }
-    }
 
     return true;
 }
