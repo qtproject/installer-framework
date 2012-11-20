@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
             }
 
             // output path
-            const QString output = args.value(args.indexOf(QLatin1String("-o") + 1));
+            const QString output = args.at(args.indexOf(QLatin1String("-o")) + 1);
             if (output.isEmpty()) {
                 InstallerBase::showUsage();
                 return EXIT_FAILURE;
@@ -209,8 +209,11 @@ int main(int argc, char *argv[])
             MyCoreApplication app(argc, argv);
 
             // input, if not given use current app
-            QString input = args.value(args.indexOf(QLatin1String("-i") + 1));
-            if (input.isEmpty())
+            QString input;
+            if (args.indexOf(QLatin1String("-i")) >= 0)
+                input = args.value(args.indexOf(QLatin1String("-i")) + 1);
+
+            if (input.isEmpty() || input == QLatin1String("-o") || input == output)
                  input = QCoreApplication::applicationFilePath();
 
             OperationRunner o(input);
