@@ -1,11 +1,10 @@
-DEPENDPATH += $$PWD
 INCLUDEPATH += $$PWD
 
 CONFIG(shared, static|shared) {
     DEFINES += BUILD_SHARED_KDTOOLS
 }
 
-FORMS += authenticationdialog.ui
+FORMS += $$PWD/authenticationdialog.ui
 
 HEADERS += $$PWD/kdtoolsglobal.h \
     $$PWD/kdjob.h \

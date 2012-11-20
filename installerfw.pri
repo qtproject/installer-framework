@@ -51,7 +51,15 @@ equals(TEMPLATE, app):LIBS += -linstaller
 unix:!macx:LIBS += -lutil
 macx:LIBS += -framework Carbon -framework Security
 
-CONFIG += uitools
+isEqual(QT_MAJOR_VERSION, 4) {
+    CONFIG += uitools
+} else {
+    QT += uitools
+    contains(QT, gui): QT += widgets
+    contains(QT, core): QT += concurrent
+}
+
+CONFIG += depend_includepath
 CONFIG(static, static|shared) {
     QT += script network xml
 }

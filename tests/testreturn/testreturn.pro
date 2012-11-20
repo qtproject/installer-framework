@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = 
-DEPENDPATH += .
 INCLUDEPATH += .
 
 QT -= gui

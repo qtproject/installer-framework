@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = archivegen
-DEPENDPATH += . .. ../common
 INCLUDEPATH += . .. ../common
 
 include(../../installerfw.pri)
@@ -12,5 +11,5 @@ CONFIG += console
 DESTDIR = $$IFW_APP_PATH
 
 SOURCES += archive.cpp \
-        repositorygen.cpp
-HEADERS += repositorygen.h
+        ../common/repositorygen.cpp
+HEADERS += ../common/repositorygen.h

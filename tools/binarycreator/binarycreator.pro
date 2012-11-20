@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = binarycreator
-DEPENDPATH += . .. rcc ../common
 INCLUDEPATH += . .. rcc ../common
 
 include(../../installerfw.pri)
@@ -12,8 +11,8 @@ CONFIG += console
 DESTDIR = $$IFW_APP_PATH
 
 SOURCES = binarycreator.cpp \
-          rcc.cpp \
-          rccmain.cpp \
-          repositorygen.cpp
-HEADERS = rcc.h
+          rcc/rcc.cpp \
+          rcc/rccmain.cpp \
+          ../common/repositorygen.cpp
+HEADERS = rcc/rcc.h
 RESOURCES += binarycreator.qrc

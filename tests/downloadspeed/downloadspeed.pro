@@ -1,5 +1,4 @@
 TEMPLATE = app
-DEPENDPATH += . ..
 INCLUDEPATH += . ..
 TARGET = downloadspeed
 

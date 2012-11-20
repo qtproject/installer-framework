@@ -1,6 +1,5 @@
 TEMPLATE = lib
 TARGET = installer
-DEPENDPATH += . ..
 INCLUDEPATH += . ..
 
 include(../7zip/7zip.pri)
@@ -178,8 +177,7 @@ unix:!macx:SOURCES += adminauthorization_x11.cpp
 
 win32 {
     SOURCES += adminauthorization_win.cpp
-    LIBS += -loleaut32 -lUser32     # 7zip
-    LIBS += advapi32.lib psapi.lib  # kdtools
-    LIBS += -lole32 # createshortcutoperation
-    CONFIG(shared, static|shared):LIBS += -lshell32
+    LIBS += -loleaut32 -luser32     # 7zip
+    LIBS += -ladvapi32 -lpsapi      # kdtools
+    LIBS += -lole32 -lshell32       # createshortcutoperation
 }
