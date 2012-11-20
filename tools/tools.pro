@@ -10,7 +10,6 @@ EXTRASUBDIRS = \
     extractbinarydata \
     repocompare \
     repogenfromonlinerepo
-win32:EXTRASUBDIRS += maddehelper
 
 
 include(../installerfw.pri)
