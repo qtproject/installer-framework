@@ -207,7 +207,7 @@ public:
     QList<Operation *> m_performedOperations;
     QList<QPair<QString, QString> > m_performedOperationsData;
 
-    QVector<const uchar *> m_resourceMappings;
+    QVector<QByteArray> m_resourceMappings;
     QVector<Range<qint64> > m_metadataResourceSegments;
 
     QInstallerCreator::ComponentIndex m_componentIndex;

@@ -733,7 +733,7 @@ int ComponentIndex::componentCount() const
     \internal
     Registers the resource found at \a segment within \a file into the Qt resource system.
  */
-static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segment)
+static QByteArray addResourceFromBinary(QFile* file, const Range<qint64> &segment)
 {
     if (segment.length() <= 0)
         return 0;
@@ -743,10 +743,10 @@ static const uchar* addResourceFromBinary(QFile* file, const Range<qint64> &segm
             .arg(QString::number(segment.start()), QString::number(segment.length())));
     }
 
-    const QByteArray ba = retrieveData(file, segment.length());
-    if (!QResource::registerResource((const uchar*)(ba.constData()), QLatin1String(":/metadata")))
+    QByteArray ba = retrieveData(file, segment.length());
+    if (!QResource::registerResource((const uchar*)ba.constData(), QLatin1String(":/metadata")))
             throw Error(QObject::tr("Could not register in-binary resource."));
-    return (const uchar*)(ba.constData());
+    return ba;
 }
 
 
@@ -786,8 +786,8 @@ BinaryContentPrivate::BinaryContentPrivate(const BinaryContentPrivate &other)
 
 BinaryContentPrivate::~BinaryContentPrivate()
 {
-    foreach (const uchar *rccData, m_resourceMappings)
-        QResource::unregisterResource(rccData);
+    foreach (const QByteArray &rccData, m_resourceMappings)
+        QResource::unregisterResource((const uchar*)rccData.constData());
     m_resourceMappings.clear();
 }
 
