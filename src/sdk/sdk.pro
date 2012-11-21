@@ -81,6 +81,11 @@ SOURCES = installerbase.cpp \
 
 win32 {
     # Force to overwrite the default manifest file with our own extended version.
-    win32:RC_FILE = installerbase.rc
-    QMAKE_POST_LINK += $$quote(mt.exe -updateresource:$$IFW_APP_PATH/$${TARGET}.exe -manifest \"$${IFW_SOURCE_TREE}\\src\\sdk\\installerbase.manifest\")
+    isEqual(QT_MAJOR_VERSION, 4) {
+        win32:RC_FILE = installerbase.rc
+        QMAKE_POST_LINK += $$quote(mt.exe -updateresource:$$IFW_APP_PATH/$${TARGET}.exe -manifest \"$${IFW_SOURCE_TREE}\\src\\sdk\\installerbase.manifest\")
+    } else {
+        RC_FILE = installerbase_qt5.rc
+        QMAKE_MANIFEST = installerbase.manifest
+    }
 }
