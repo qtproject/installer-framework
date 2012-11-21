@@ -79,13 +79,8 @@ SOURCES = installerbase.cpp \
           installerbasecommons.cpp \
           settingsdialog.cpp
 
-win32:RC_FILE = installerbase.rc
-win32-msvc2005 {
-  CONFIG += embed_manifest_exe #msvc2008 is doing this automatically
-}
-
-embed_manifest_exe:win32-msvc2005 {
-    # The default configuration embed_manifest_exe overrides the manifest file
-    # already embedded via RC_FILE. Vs2008 already have the necessary manifest entry
-    QMAKE_POST_LINK += $$quote(mt.exe -updateresource:$$IFW_APP_PATH/$${TARGET}.exe -manifest \"$${IFW_SOURCE_TREE}\\src\\sdk\\$${TARGET}.exe.manifest\")
+win32 {
+    # Force to overwrite the default manifest file with our own extended version.
+    win32:RC_FILE = installerbase.rc
+    QMAKE_POST_LINK += $$quote(mt.exe -updateresource:$$IFW_APP_PATH/$${TARGET}.exe -manifest \"$${IFW_SOURCE_TREE}\\src\\sdk\\installerbase.manifest\")
 }
