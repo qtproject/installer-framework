@@ -198,7 +198,7 @@ Q_UNUSED(settings)
     }
 
     QtPatch::patchBinaryFile(tempFile, QByteArray("MY_InstallerCreateDateTime_MY"),
-        QDateTime::currentDateTime().toString(QLatin1String("yyyy-MM-dd - HH:mm:ss")).toAscii());
+        QDateTime::currentDateTime().toString(QLatin1String("yyyy-MM-dd - HH:mm:ss")).toLatin1());
 
 
     input.installerExePath = tempFile;
@@ -438,7 +438,7 @@ static void printUsage()
     std::cout << "Packages are to be found in the current working directory and get listed as "
         "their names" << std::endl << std::endl;
     std::cout << "Example (offline installer):" << std::endl;
-    char sep = QDir::separator().toAscii();
+    char sep = QDir::separator().toLatin1();
     std::cout << "  " << appName << " --offline-only -c installer-config" << sep << "config.xml -p "
         "packages-directory -t installerbase" << suffix << " SDKInstaller" << suffix << std::endl;
     std::cout << "Creates an offline installer for the SDK, containing all dependencies." << std::endl;
