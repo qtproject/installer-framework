@@ -70,13 +70,8 @@
 
 #include "utils.h"
 
-#include "kdupdaterupdateoperation.h"
 #include "kdupdaterupdateoperationfactory.h"
-#include "kdupdaterfiledownloader.h"
 #include "kdupdaterfiledownloaderfactory.h"
-
-#include <QtPlugin>
-#include <QtNetwork/QNetworkProxyFactory>
 
 #include <unix/C/7zCrc.h>
 
