@@ -53,22 +53,21 @@ macx:LIBS += -framework Carbon -framework Security
 
 isEqual(QT_MAJOR_VERSION, 4) {
     CONFIG += uitools
+    CONFIG(static, static|shared) {
+        DEFINES += QT_STATIC
+        QT += script network xml
+    }
 } else {
-    QT += uitools
+    QT += uitools xml
     contains(QT, gui): QT += widgets
-    contains(QT, core): QT += concurrent
+    contains(QT, core): QT += concurrent core-private
 }
 
 CONFIG += depend_includepath
-CONFIG(static, static|shared) {
-    QT += script network xml
-}
 
 GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
 DEFINES += QT_NO_CAST_FROM_ASCII "_GIT_SHA1_=$$GIT_SHA1"
 
-CONFIG(shared, static|shared):DEFINES += KDTOOLS_SHARED
-CONFIG(shared, static|shared):DEFINES += LIB_INSTALLER_SHARED
 
 static {
     win32:exists($$IFW_LIB_PATH/installer.lib):POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib

@@ -25,7 +25,7 @@
 
 #include <QtCore/QtGlobal>
 
-#ifdef KDTOOLS_SHARED
+#ifndef QT_STATIC
 #  ifdef BUILD_SHARED_KDTOOLS
 #    define KDTOOLS_EXPORT Q_DECL_EXPORT
 #  else

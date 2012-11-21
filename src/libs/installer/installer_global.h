@@ -28,14 +28,14 @@
 
 #include <QtCore/QtGlobal>
 
-#ifdef LIB_INSTALLER_SHARED
-#ifdef BUILD_LIB_INSTALLER
-#define INSTALLER_EXPORT Q_DECL_EXPORT
+#ifndef QT_STATIC
+#  ifdef BUILD_LIB_INSTALLER
+#    define INSTALLER_EXPORT Q_DECL_EXPORT
+#  else
+#    define INSTALLER_EXPORT Q_DECL_IMPORT
+#  endif
 #else
-#define INSTALLER_EXPORT Q_DECL_IMPORT
-#endif
-#else
-#define INSTALLER_EXPORT
+#  define INSTALLER_EXPORT
 #endif
 
 #endif //INSTALLER_GLOBAL_H

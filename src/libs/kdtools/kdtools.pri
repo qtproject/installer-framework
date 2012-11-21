@@ -1,8 +1,6 @@
 INCLUDEPATH += $$PWD
 
-CONFIG(shared, static|shared) {
-    DEFINES += BUILD_SHARED_KDTOOLS
-}
+DEFINES += BUILD_SHARED_KDTOOLS
 
 FORMS += $$PWD/authenticationdialog.ui
 
