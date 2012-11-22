@@ -91,43 +91,6 @@ private:
     Private *d;
 };
 
-class FtpDownloader : public FileDownloader
-{
-    Q_OBJECT
-
-public:
-    explicit FtpDownloader(QObject *parent = 0);
-    ~FtpDownloader();
-
-    bool canDownload() const;
-    bool isDownloaded() const;
-    QString downloadedFileName() const;
-    void setDownloadedFileName(const QString &name);
-    FtpDownloader *clone(QObject *parent = 0) const;
-
-public Q_SLOTS:
-    void cancelDownload();
-
-protected:
-    void onError();
-    void onSuccess();
-    void timerEvent(QTimerEvent *event);
-
-private Q_SLOTS:
-    void doDownload();
-
-    void ftpDone(bool error);
-    void ftpCmdStarted(int id);
-    void ftpCmdFinished(int id, bool error);
-    void ftpStateChanged(int state);
-    void ftpDataTransferProgress(qint64 done, qint64 total);
-    void ftpReadyRead();
-
-private:
-    struct Private;
-    Private *d;
-};
-
 class HttpDownloader : public FileDownloader
 {
     Q_OBJECT
