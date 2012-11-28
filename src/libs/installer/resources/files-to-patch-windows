@@ -1,9 +1,9 @@
 bin/qmake.exe
 bin/lrelease.exe
-bin/QtCore5.dll
-bin/QtCored5.dll
-lib/QtCore5.dll
-lib/QtCored5.dll
+bin/Qt5Core.dll
+bin/Qt5Cored.dll
+lib/Qt5Core.dll
+lib/Qt5Cored.dll
 %%
 *.la
 *.prl
