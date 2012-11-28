@@ -249,6 +249,7 @@ public Q_SLOTS:
     void componentsToInstallNeedsRecalculation();
 
 Q_SIGNALS:
+    void aboutCalculateComponentsToInstall() const;
     void componentAdded(QInstaller::Component *comp);
     void rootComponentsAdded(QList<QInstaller::Component*> components);
     void updaterComponentsAdded(QList<QInstaller::Component*> components);
