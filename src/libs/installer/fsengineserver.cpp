@@ -34,13 +34,18 @@
 #include "utils.h"
 
 #include <QtCore/QCoreApplication>
-#include <QtCore/QFSFileEngine>
 #include <QtCore/QProcess>
 #include <QtCore/QSettings>
 #include <QtCore/QStringList>
 #include <QtCore/QThread>
 
 #include <QtNetwork/QTcpSocket>
+
+#if QT_VERSION < 0x050000
+#  include <QtCore/QFSFileEngine>
+#else
+#  include <QtCore/private/qfsfileengine_p.h>
+#endif
 
 typedef int descriptor_t;
 

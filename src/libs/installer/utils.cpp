@@ -58,8 +58,6 @@ bool QInstaller::isVerbose()
 }
 
 #ifdef Q_OS_WIN
-void qWinMsgHandler(QtMsgType t, const char *str);
-
 class debugstream : public std::ostream
 {
     class buf : public std::stringbuf
@@ -72,7 +70,6 @@ class debugstream : public std::ostream
             std::string s = str();
             if (s[s.length() - 1] == '\n' )
                 s[s.length() - 1] = '\0'; // remove \n
-            qWinMsgHandler(QtDebugMsg, s.c_str());
             std::cout << s << std::endl;
             str(std::string());
             return 0;

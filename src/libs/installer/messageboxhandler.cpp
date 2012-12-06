@@ -128,9 +128,13 @@ MessageBoxHandler *MessageBoxHandler::instance()
 
 QWidget *MessageBoxHandler::currentBestSuitParent()
 {
-    if (QApplication::type() == QApplication::Tty) {
+#if QT_VERSION < 0x050000
+    if (QApplication::type() == QApplication::Tty)
         return 0;
-    }
+#else
+    if (qobject_cast<QApplication*> (qApp) == 0)
+        return 0;
+#endif
 
     if (qApp->activeModalWidget())
         return qApp->activeModalWidget();
@@ -283,8 +287,13 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
     qDebug() << QString::fromLatin1("created %1 message box %2: '%3', %4").arg(messageTypeHash
         .value(messageType),identifier, title, text);
 
+#if QT_VERSION < 0x050000
     if (QApplication::type() == QApplication::Tty)
         return defaultButton;
+#else
+    if (qobject_cast<QApplication*> (qApp) == 0)
+        return defaultButton;
+#endif
 
     if (m_automaticAnswers.contains(identifier))
         return m_automaticAnswers.value(identifier);

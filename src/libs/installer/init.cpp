@@ -146,7 +146,7 @@ static void initResources()
     Q_INIT_RESOURCE(patch_file_lists);
 }
 
-static void messageHandler(QtMsgType type, const char *msg)
+static QByteArray trimAndPrepend(QtMsgType type, const QByteArray &msg)
 {
     QByteArray ba(msg);
     // last character is a space from qDebug
@@ -155,31 +155,56 @@ static void messageHandler(QtMsgType type, const char *msg)
 
     // remove quotes if the whole message is surrounded with them
     if (ba.startsWith('"') && ba.endsWith('"'))
-        ba = ba.mid(1, ba.length()-2);
+        ba = ba.mid(1, ba.length() - 2);
 
     // prepend the message type, skip QtDebugMsg
     switch (type) {
-        case QtWarningMsg: {
+        case QtMsgType::QtWarningMsg:
             ba.prepend("Warning: ");
-        }   break;
-        case QtCriticalMsg: {
+        break;
+
+        case QtMsgType::QtCriticalMsg:
             ba.prepend("Critical: ");
-        }   break;
-        case QtFatalMsg: {
+        break;
+
+        case QtMsgType::QtFatalMsg:
             ba.prepend("Fatal: ");
-        }   break;
+        break;
+
         default:
             break;
     }
+    return ba;
+}
+
+#if QT_VERSION < 0x050000
+static void messageHandler(QtMsgType type, const char *msg)
+{
+    const QByteArray ba = trimAndPrepend(type, msg);
+#else
+void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    QByteArray ba = trimAndPrepend(type, msg.toLocal8Bit());
+    if (type != QtMsgType::QtDebugMsg) {
+        ba += QByteArray(" (") + context.file + QByteArray(":").append(context.line) + QByteArray(", ")
+            + context.function + QByteArray(")");
+    }
+#endif
 
     verbose() << ba.constData() << std::endl;
     if (!isVerbose() && type != QtDebugMsg)
         std::cout << ba.constData() << std::endl << std::endl;
 
     if (type == QtFatalMsg) {
+#if QT_VERSION < 0x050000
         QtMsgHandler oldMsgHandler = qInstallMsgHandler(0);
         qt_message_output(type, msg);
         qInstallMsgHandler(oldMsgHandler);
+#else
+        QtMessageHandler oldMsgHandler = qInstallMessageHandler(0);
+        qt_message_output(type, context, msg);
+        qInstallMessageHandler(oldMsgHandler);
+#endif
     }
 }
 
@@ -231,5 +256,9 @@ void QInstaller::init()
     ::initArchives();
 
    // qDebug -> verbose()
+#if QT_VERSION < 0x050000
    qInstallMsgHandler(messageHandler);
+#else
+   qInstallMessageHandler(messageHandler);
+#endif
 }

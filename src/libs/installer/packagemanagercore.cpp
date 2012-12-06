@@ -70,10 +70,15 @@
 #   include "qt_windows.h"
 #endif
 
+#if QT_VERSION >= 0x050000
+#   include <QStandardPaths>
+#endif
+
 using namespace QInstaller;
 
 static QMutex sModelMutex;
-static QFont sVirtualComponentsFont;
+static QFont *sVirtualComponentsFont = 0;
+static QMutex sVirtualComponentsFontMutex;
 
 static bool sNoForceInstallation = false;
 static bool sVirtualComponentsVisible = false;
@@ -174,9 +179,16 @@ QScriptValue QInstaller::qDesktopServicesDisplayName(QScriptContext *context, QS
     const QScriptValue check = checkArguments(context, 1, 1);
     if (check.isError())
         return check;
+
+#if QT_VERSION < 0x050000
     const QDesktopServices::StandardLocation location =
         static_cast< QDesktopServices::StandardLocation >(context->argument(0).toInt32());
     return QDesktopServices::displayName(location);
+#else
+    const QStandardPaths::StandardLocation location =
+        static_cast< QStandardPaths::StandardLocation >(context->argument(0).toInt32());
+    return QStandardPaths::displayName(location);
+#endif
 }
 
 QScriptValue QInstaller::qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine)
@@ -185,9 +197,16 @@ QScriptValue QInstaller::qDesktopServicesStorageLocation(QScriptContext *context
     const QScriptValue check = checkArguments(context, 1, 1);
     if (check.isError())
         return check;
+
+#if QT_VERSION < 0x050000
     const QDesktopServices::StandardLocation location =
         static_cast< QDesktopServices::StandardLocation >(context->argument(0).toInt32());
     return QDesktopServices::storageLocation(location);
+#else
+    const QStandardPaths::StandardLocation location =
+        static_cast< QStandardPaths::StandardLocation >(context->argument(0).toInt32());
+    return QStandardPaths::writableLocation(location);
+#endif
 }
 
 QScriptValue QInstaller::qFileDialogGetExistingDirectory( QScriptContext *context, QScriptEngine *engine )
@@ -525,13 +544,19 @@ PackageManagerCore::~PackageManagerCore()
 /* static */
 QFont PackageManagerCore::virtualComponentsFont()
 {
-    return sVirtualComponentsFont;
+    QMutexLocker _(&sVirtualComponentsFontMutex);
+    if (!sVirtualComponentsFont)
+        sVirtualComponentsFont = new QFont;
+    return *sVirtualComponentsFont;
 }
 
 /* static */
 void PackageManagerCore::setVirtualComponentsFont(const QFont &font)
 {
-    sVirtualComponentsFont = font;
+    QMutexLocker _(&sVirtualComponentsFontMutex);
+    if (sVirtualComponentsFont)
+        delete sVirtualComponentsFont;
+    sVirtualComponentsFont = new QFont(font);
 }
 
 /* static */

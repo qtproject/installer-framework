@@ -454,8 +454,13 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 */
 void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis)
 {
+#if QT_VERSION < 0x050000
     if (QApplication::type() == QApplication::Tty)
         return;
+#else
+    if (qobject_cast<QApplication*> (qApp) == 0)
+        return;
+#endif
 
     QDirIterator it(directory.path(), uis, QDir::Files);
     while (it.hasNext()) {

@@ -88,6 +88,9 @@ public:
     QList<QPair<QString, bool> > m_pathesForUninstallation;
 
 private:
+    QScriptValue getDesktopServices();
+
+private:
     QScriptEngine* m_scriptEngine;
 };
 

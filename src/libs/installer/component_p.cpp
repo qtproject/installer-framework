@@ -37,10 +37,15 @@
 #include "packagemanagercore.h"
 
 #include <QApplication>
-#include <QtGui/QDesktopServices>
 
+#if QT_VERSION < 0x050000
+#   include <QDesktopServices>
+#else
+#   include <QStandardPaths>
+#endif
 
 namespace QInstaller {
+
 
 // -- ComponentPrivate
 
@@ -88,26 +93,6 @@ QScriptEngine *ComponentPrivate::scriptEngine()
     // register QMessageBox::StandardButton enum in the script connection
     registerMessageBox(m_scriptEngine);
 
-    // register QDesktopServices in the script connection
-    QScriptValue desktopServices = m_scriptEngine->newArray();
-    setProperty(desktopServices, QLatin1String("DesktopLocation"), QDesktopServices::DesktopLocation);
-    setProperty(desktopServices, QLatin1String("DocumentsLocation"), QDesktopServices::DocumentsLocation);
-    setProperty(desktopServices, QLatin1String("FontsLocation"), QDesktopServices::FontsLocation);
-    setProperty(desktopServices, QLatin1String("ApplicationsLocation"), QDesktopServices::ApplicationsLocation);
-    setProperty(desktopServices, QLatin1String("MusicLocation"), QDesktopServices::MusicLocation);
-    setProperty(desktopServices, QLatin1String("MoviesLocation"), QDesktopServices::MoviesLocation);
-    setProperty(desktopServices, QLatin1String("PicturesLocation"), QDesktopServices::PicturesLocation);
-    setProperty(desktopServices, QLatin1String("TempLocation"), QDesktopServices::TempLocation);
-    setProperty(desktopServices, QLatin1String("HomeLocation"), QDesktopServices::HomeLocation);
-    setProperty(desktopServices, QLatin1String("DataLocation"), QDesktopServices::DataLocation);
-    setProperty(desktopServices, QLatin1String("CacheLocation"), QDesktopServices::CacheLocation);
-
-    desktopServices.setProperty(QLatin1String("openUrl"), m_scriptEngine->newFunction(qDesktopServicesOpenUrl));
-    desktopServices.setProperty(QLatin1String("displayName"),
-        m_scriptEngine->newFunction(qDesktopServicesDisplayName));
-    desktopServices.setProperty(QLatin1String("storageLocation"),
-        m_scriptEngine->newFunction(qDesktopServicesStorageLocation));
-
     // register ::WizardPage enum in the script connection
     QScriptValue qinstaller = m_scriptEngine->newArray();
     setProperty(qinstaller, QLatin1String("Introduction"), PackageManagerCore::Introduction);
@@ -138,11 +123,14 @@ QScriptEngine *ComponentPrivate::scriptEngine()
 
     m_scriptEngine->globalObject().setProperty(QLatin1String("QInstaller"), qinstaller);
     m_scriptEngine->globalObject().setProperty(QLatin1String("installer"), installerObject);
-    m_scriptEngine->globalObject().setProperty(QLatin1String("QDesktopServices"), desktopServices);
+
+    // register QDesktopServices in the script connection
+    m_scriptEngine->globalObject().setProperty(QLatin1String("QDesktopServices"), getDesktopServices());
     m_scriptEngine->globalObject().setProperty(QLatin1String("component"), m_scriptEngine->newQObject(q));
 
     QScriptValue fileDialog = m_scriptEngine->newArray();
-    fileDialog.setProperty(QLatin1String("getExistingDirectory"), m_scriptEngine->newFunction(qFileDialogGetExistingDirectory));
+    fileDialog.setProperty(QLatin1String("getExistingDirectory"),
+        m_scriptEngine->newFunction(qFileDialogGetExistingDirectory));
     m_scriptEngine->globalObject().setProperty(QLatin1String("QFileDialog"), fileDialog);
 
     return m_scriptEngine;
@@ -151,6 +139,48 @@ QScriptEngine *ComponentPrivate::scriptEngine()
 void ComponentPrivate::setProperty(QScriptValue &scriptValue, const QString &propertyName, int value)
 {
     scriptValue.setProperty(propertyName, m_scriptEngine->newVariant(value));
+}
+
+// -- private
+
+QScriptValue ComponentPrivate::getDesktopServices()
+{
+    QScriptValue desktopServices = m_scriptEngine->newArray();
+#if QT_VERSION < 0x050000
+    setProperty(desktopServices, QLatin1String("DesktopLocation"), QDesktopServices::DesktopLocation);
+    setProperty(desktopServices, QLatin1String("DesktopLocation"), QDesktopServices::DesktopLocation);
+    setProperty(desktopServices, QLatin1String("DocumentsLocation"), QDesktopServices::DocumentsLocation);
+    setProperty(desktopServices, QLatin1String("FontsLocation"), QDesktopServices::FontsLocation);
+    setProperty(desktopServices, QLatin1String("ApplicationsLocation"), QDesktopServices::ApplicationsLocation);
+    setProperty(desktopServices, QLatin1String("MusicLocation"), QDesktopServices::MusicLocation);
+    setProperty(desktopServices, QLatin1String("MoviesLocation"), QDesktopServices::MoviesLocation);
+    setProperty(desktopServices, QLatin1String("PicturesLocation"), QDesktopServices::PicturesLocation);
+    setProperty(desktopServices, QLatin1String("TempLocation"), QDesktopServices::TempLocation);
+    setProperty(desktopServices, QLatin1String("HomeLocation"), QDesktopServices::HomeLocation);
+    setProperty(desktopServices, QLatin1String("DataLocation"), QDesktopServices::DataLocation);
+    setProperty(desktopServices, QLatin1String("CacheLocation"), QDesktopServices::CacheLocation);
+#else
+    setProperty(desktopServices, QLatin1String("DesktopLocation"), QStandardPaths::DesktopLocation);
+    setProperty(desktopServices, QLatin1String("DesktopLocation"), QStandardPaths::DesktopLocation);
+    setProperty(desktopServices, QLatin1String("DocumentsLocation"), QStandardPaths::DocumentsLocation);
+    setProperty(desktopServices, QLatin1String("FontsLocation"), QStandardPaths::FontsLocation);
+    setProperty(desktopServices, QLatin1String("ApplicationsLocation"), QStandardPaths::ApplicationsLocation);
+    setProperty(desktopServices, QLatin1String("MusicLocation"), QStandardPaths::MusicLocation);
+    setProperty(desktopServices, QLatin1String("MoviesLocation"), QStandardPaths::MoviesLocation);
+    setProperty(desktopServices, QLatin1String("PicturesLocation"), QStandardPaths::PicturesLocation);
+    setProperty(desktopServices, QLatin1String("TempLocation"), QStandardPaths::TempLocation);
+    setProperty(desktopServices, QLatin1String("HomeLocation"), QStandardPaths::HomeLocation);
+    setProperty(desktopServices, QLatin1String("DataLocation"), QStandardPaths::DataLocation);
+    setProperty(desktopServices, QLatin1String("CacheLocation"), QStandardPaths::CacheLocation);
+#endif
+
+    desktopServices.setProperty(QLatin1String("openUrl"),
+        m_scriptEngine->newFunction(qDesktopServicesOpenUrl));
+    desktopServices.setProperty(QLatin1String("displayName"),
+        m_scriptEngine->newFunction(qDesktopServicesDisplayName));
+    desktopServices.setProperty(QLatin1String("storageLocation"),
+        m_scriptEngine->newFunction(qDesktopServicesStorageLocation));
+    return desktopServices;
 }
 
 

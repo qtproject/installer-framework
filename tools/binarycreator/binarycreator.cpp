@@ -343,6 +343,8 @@ static int runRcc(const QStringList &args)
     for (int i = 0; i < argc; ++i)
         argv[i] = qstrdup(qPrintable(args[i]));
 
+    // Note: this does not run the rcc provided by Qt, this one is using the compiled in binarycreator
+    //       version. If it happens that resource mapping fails, we might need to adapt the code here...
     const int result = runRcc(argc, argv.data());
 
     foreach (char *arg, argv)

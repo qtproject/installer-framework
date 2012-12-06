@@ -42,7 +42,9 @@
 
 #include <QtNetwork/QNetworkProxy>
 
-Q_DECLARE_METATYPE(QNetworkProxy)
+#if QT_VERSION < 0x050000
+    Q_DECLARE_METATYPE(QNetworkProxy)
+#endif
 
 namespace QInstaller {
 class Repository;
