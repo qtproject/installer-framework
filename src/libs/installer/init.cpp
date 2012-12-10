@@ -159,15 +159,15 @@ static QByteArray trimAndPrepend(QtMsgType type, const QByteArray &msg)
 
     // prepend the message type, skip QtDebugMsg
     switch (type) {
-        case QtMsgType::QtWarningMsg:
+        case QtWarningMsg:
             ba.prepend("Warning: ");
         break;
 
-        case QtMsgType::QtCriticalMsg:
+        case QtCriticalMsg:
             ba.prepend("Critical: ");
         break;
 
-        case QtMsgType::QtFatalMsg:
+        case QtFatalMsg:
             ba.prepend("Fatal: ");
         break;
 
