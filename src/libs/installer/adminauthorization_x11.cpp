@@ -35,9 +35,9 @@
 #include <QtCore/QFile>
 #include <QDebug>
 
-#include <QtGui/QApplication>
-#include <QtGui/QInputDialog>
-#include <QtGui/QMessageBox>
+#include <QApplication>
+#include <QInputDialog>
+#include <QMessageBox>
 
 #include <cstdlib>
 #include <sys/resource.h>
@@ -71,7 +71,12 @@ bool AdminAuthorization::authorize()
   
 static QString getPassword(QWidget *)
 {
-    if (QApplication::type() == QApplication::GuiClient) {
+#if QT_VERSION < 0x050000
+    if (QApplication::type() == QApplication::GuiClient)
+#else
+    if (qobject_cast<QApplication*> (qApp) != 0)
+#endif
+    {
         bool ok = false;
         const QString result = QInputDialog::getText(0, QObject::tr("Authorization required"),
            QObject::tr("Enter your password to authorize for sudo:"),
@@ -88,11 +93,17 @@ static QString getPassword(QWidget *)
 
 static void printError(QWidget *parent, const QString &value)
 {
+#if QT_VERSION < 0x050000
     if (QApplication::type() == QApplication::GuiClient)
+#else
+    if (qobject_cast<QApplication*> (qApp) != 0)
+#endif
+    {
         QMessageBox::critical(parent, QObject::tr( "Error acquiring admin rights" ), value,
-                              QMessageBox::Ok, QMessageBox::Ok);
-    else
+            QMessageBox::Ok, QMessageBox::Ok);
+    } else {
         std::cout << value.toStdString() << std::endl;
+    }
 }
 
 bool AdminAuthorization::execute(QWidget *parent, const QString &program, const QStringList &arguments)

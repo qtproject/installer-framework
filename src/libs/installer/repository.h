@@ -86,7 +86,7 @@ private:
 
 inline uint qHash(const Repository &repository)
 {
-    return qHash(repository.url().toString());
+    return qHash(repository.url());
 }
 
 QDataStream &operator>>(QDataStream &istream, Repository &repository);

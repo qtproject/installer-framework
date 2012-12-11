@@ -185,7 +185,7 @@ static void messageHandler(QtMsgType type, const char *msg)
 void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     QByteArray ba = trimAndPrepend(type, msg.toLocal8Bit());
-    if (type != QtMsgType::QtDebugMsg) {
+    if (type != QtDebugMsg) {
         ba += QByteArray(" (") + context.file + QByteArray(":").append(context.line) + QByteArray(", ")
             + context.function + QByteArray(")");
     }
