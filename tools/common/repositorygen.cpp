@@ -467,7 +467,7 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
         if (!QRegExp(QLatin1String("[0-9]+((\\.|-)[0-9]+)*")).exactMatch(info.version)) {
             if (ignoreInvalidPackages)
                 continue;
-            throw QInstaller::Error(QString::fromLatin1("Component version for %1 is invalid! <Version>%2</version>")
+            throw QInstaller::Error(QString::fromLatin1("Component version for %1 is invalid! <Version>%2</Version>")
                 .arg(fileInfo.absoluteFilePath(), info.version));
         }
         info.dependencies = doc.firstChildElement(QLatin1String("Package")).
