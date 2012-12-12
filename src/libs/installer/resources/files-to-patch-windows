@@ -1,5 +1,6 @@
 bin/qmake.exe
 bin/lrelease.exe
+bin/qdoc.exe
 bin/Qt5Core.dll
 bin/Qt5Cored.dll
 lib/Qt5Core.dll

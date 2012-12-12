@@ -4,7 +4,7 @@ bin/lconvert
 bin/lupdate
 bin/macdeployqt
 bin/qcollectiongenerator
-bin/qdoc3
+bin/qdoc
 bin/qhelpgenerator
 bin/qt3to4
 bin/xmlpatterns
