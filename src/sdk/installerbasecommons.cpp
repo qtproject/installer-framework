@@ -36,6 +36,8 @@
 #include <packagemanagercore.h>
 #include <settings.h>
 
+#include <productkeycheck.h>
+
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QTimer>
@@ -101,6 +103,8 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::PackageManagerCore *core)
 
     connect(core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
     connect(core, SIGNAL(coreNetworkSettingsChanged()), this, SLOT(onCoreNetworkSettingsChanged()));
+
+    m_updateComponents->setEnabled(ProductKeyCheck::instance()->hasValidKey());
 }
 
 int IntroductionPageImpl::nextId() const
@@ -214,7 +218,7 @@ void IntroductionPageImpl::showMaintenanceTools()
 void IntroductionPageImpl::setMaintenanceToolsEnabled(bool enable)
 {
     //m_packageManager->setEnabled(enable); // ### Todo: Remove for online installers after Beta
-    //m_updateComponents->setEnabled(enable); // ### Todo: Remove for online installers after Beta
+    //m_updateComponents->setEnabled(enable && ProductKeyCheck::instance()->hasValidKey()); // ### Todo: Remove for online installers after Beta
     m_removeAllComponents->setEnabled(enable);
 }
 

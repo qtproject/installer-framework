@@ -66,6 +66,7 @@
 #include "registerdefaultdebuggeroperation.h"
 #include "updatecreatorsettingsfrom21to22operation.h"
 #include "createlinkoperation.h"
+#include "applyproductkeyoperation.h"
 
 #include "minimumprogressoperation.h"
 
@@ -230,6 +231,7 @@ void QInstaller::init()
     factory.registerUpdateOperation<LineReplaceOperation>(QLatin1String( "LineReplace" ) );
     factory.registerUpdateOperation<UpdateCreatorSettingsFrom21To22Operation>(QLatin1String("UpdateCreatorSettingsFrom21To22"));
     factory.registerUpdateOperation<CreateLinkOperation>(QLatin1String("CreateLink"));
+    factory.registerUpdateOperation<ApplyProductKeyOperation>(QLatin1String( "ApplyProductKey" ) );
 
     factory.registerUpdateOperation<MinimumProgressOperation>(QLatin1String("MinimumProgress"));
     factory.registerUpdateOperation<LicenseOperation>(QLatin1String("License"));
