@@ -223,7 +223,7 @@ bool QtPatchOperation::performOperation()
         fileName = QString::fromLatin1(":/files-to-patch-macx");
 
     QFile patchFileListFile(fileName);
-    QString version = arguments().value(3).toLower();
+    QString version = arguments().value(2).toLower();
     if (!version.isEmpty())
         patchFileListFile.setFileName(fileName + QLatin1Char('-') + version);
 
