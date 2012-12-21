@@ -79,16 +79,34 @@
 
 namespace QInstaller {
 
-static bool runOperation(Operation *op, PackageManagerCorePrivate::OperationType type)
+class OperationTracer
 {
+public:
+    OperationTracer() {}
+    void trace(Operation *operation, const QString &state)
+    {
+        qDebug() << state << " operation: " << operation->name();
+        qDebug() << "   - arguments: " << operation->arguments().join(QLatin1String(", "));
+    }
+    ~OperationTracer() {
+        qDebug() << "Done";
+    }
+};
+
+static bool runOperation(Operation *operation, PackageManagerCorePrivate::OperationType type)
+{
+    OperationTracer tracer;
     switch (type) {
         case PackageManagerCorePrivate::Backup:
-            op->backup();
+            tracer.trace(operation, QLatin1String("backup"));
+            operation->backup();
             return true;
         case PackageManagerCorePrivate::Perform:
-            return op->performOperation();
+            tracer.trace(operation, QLatin1String("perform"));
+            return operation->performOperation();
         case PackageManagerCorePrivate::Undo:
-            return op->undoOperation();
+            tracer.trace(operation, QLatin1String("undo"));
+            return operation->undoOperation();
         default:
             Q_ASSERT(!"unexpected operation type");
     }
