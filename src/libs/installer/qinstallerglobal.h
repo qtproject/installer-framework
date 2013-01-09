@@ -57,8 +57,8 @@ QT_END_NAMESPACE
 
 namespace QInstaller {
 
-#define IFW_VERSION 0x010000
-#define IFW_VERSION_STRING  "1.0.0"
+#define IFW_VERSION 0x010202
+#define IFW_VERSION_STRING  "1.2.2"
 #define IFW_VERSION_CHECK(major, minor, patch) \
     ((major << 16)|(minor << 8)|(patch))
 
