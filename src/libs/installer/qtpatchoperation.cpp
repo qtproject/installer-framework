@@ -103,10 +103,11 @@ static QHash<QByteArray, QByteArray> generatePatchValueHash(const QByteArray &ne
     replaceHash.insert( QByteArray("qt_trnspath=%1").replace("%1", oldValue),
         QByteArray("qt_trnspath=%1/translations").replace("%1/", newQtPath + nativeSeperator));
 
-    // This must not be patched. Commenting out to fix QTSDK-429
-    //        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_CONFIGURATION"));
-    //        replaceMap.insert( QByteArray("qt_stngpath=%1").replace("%1", oldValue),
-    //                            QByteArray("qt_stngpath=%1").replace("%1", newQtPath));
+    // this shouldn't be patched on a Qt4 in some cases (see QTSDK-429),
+    // since Qt 5.0.1 it is inside the Qt directory - so it needs to be patched aswell
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_CONFIGURATION"));
+    replaceHash.insert( QByteArray("qt_stngpath=%1").replace("%1", oldValue),
+        QByteArray("qt_stngpath=%1/").replace("%1/", newQtPath));
 
     //examples and demoes can patched outside separately,
     //but for cosmetic reasons - if the qt version gets no examples later.
