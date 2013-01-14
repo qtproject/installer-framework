@@ -51,27 +51,27 @@
 #include "installiconsoperation.h"
 #include "elevatedexecuteoperation.h"
 #include "fakestopprocessforupdateoperation.h"
-
-//added for NDK
+#include "createlinkoperation.h"
+#include "simplemovefileoperation.h"
 #include "copydirectoryoperation.h"
+#include "replaceoperation.h"
+#include "linereplaceoperation.h"
+#include "minimumprogressoperation.h"
+#include "licenseoperation.h"
+
+// QtSDK specific
 #include "qtpatchoperation.h"
 #include "setdemospathonqtoperation.h"
 #include "setexamplespathonqtoperation.h"
 #include "setpluginpathonqtcoreoperation.h"
 #include "setimportspathonqtcoreoperation.h"
 #include "setpathonqtcoreoperation.h"
-#include "replaceoperation.h"
-#include "licenseoperation.h"
-#include "linereplaceoperation.h"
 #include "registerqtvqnxoperation.h"
 #include "setqtcreatorvalueoperation.h"
 #include "addqtcreatorarrayvalueoperation.h"
-#include "simplemovefileoperation.h"
 #include "registertoolchainoperation.h"
 #include "registerdefaultdebuggeroperation.h"
-#include "createlinkoperation.h"
 
-#include "minimumprogressoperation.h"
 
 #ifdef Q_OS_MAC
 #   include "macreplaceinstallnamesoperation.h"
@@ -227,19 +227,24 @@ void QInstaller::init()
     factory.registerUpdateOperation<CreateLocalRepositoryOperation>(QLatin1String("CreateLocalRepository"));
     factory.registerUpdateOperation<ExtractArchiveOperation>(QLatin1String("Extract"));
     factory.registerUpdateOperation<GlobalSettingsOperation>(QLatin1String("GlobalConfig"));
-    factory.registerUpdateOperation<EnvironmentVariableOperation>(QLatin1String( "EnvironmentVariable"));
+    factory.registerUpdateOperation<EnvironmentVariableOperation>(QLatin1String("EnvironmentVariable"));
     factory.registerUpdateOperation<RegisterFileTypeOperation>(QLatin1String("RegisterFileType"));
     factory.registerUpdateOperation<SelfRestartOperation>(QLatin1String("SelfRestart"));
     factory.registerUpdateOperation<InstallIconsOperation>(QLatin1String("InstallIcons"));
     factory.registerUpdateOperation<ElevatedExecuteOperation>(QLatin1String("Execute"));
     factory.registerUpdateOperation<FakeStopProcessForUpdateOperation>(QLatin1String("FakeStopProcessForUpdate"));
-
-    // added for NDK
+    factory.registerUpdateOperation<CreateLinkOperation>(QLatin1String("CreateLink"));
     factory.registerUpdateOperation<SimpleMoveFileOperation>(QLatin1String("SimpleMoveFile"));
     factory.registerUpdateOperation<CopyDirectoryOperation>(QLatin1String("CopyDirectory"));
+    factory.registerUpdateOperation<ReplaceOperation>(QLatin1String("Replace"));
+    factory.registerUpdateOperation<LineReplaceOperation>(QLatin1String("LineReplace"));
+    factory.registerUpdateOperation<MinimumProgressOperation>(QLatin1String("MinimumProgress"));
+    factory.registerUpdateOperation<LicenseOperation>(QLatin1String("License"));
+
+    // QtSDK specific
     factory.registerUpdateOperation<RegisterQtInCreatorQNXOperation>(QLatin1String("RegisterQtInCreatorQNX"));
-    factory.registerUpdateOperation<RegisterToolChainOperation>(QLatin1String("RegisterToolChain") );
-    factory.registerUpdateOperation<RegisterDefaultDebuggerOperation>(QLatin1String( "RegisterDefaultDebugger"));
+    factory.registerUpdateOperation<RegisterToolChainOperation>(QLatin1String("RegisterToolChain"));
+    factory.registerUpdateOperation<RegisterDefaultDebuggerOperation>(QLatin1String("RegisterDefaultDebugger"));
     factory.registerUpdateOperation<SetDemosPathOnQtOperation>(QLatin1String("SetDemosPathOnQt"));
     factory.registerUpdateOperation<SetExamplesPathOnQtOperation>(QLatin1String("SetExamplesPathOnQt"));
     factory.registerUpdateOperation<SetPluginPathOnQtCoreOperation>(QLatin1String("SetPluginPathOnQtCore"));
@@ -248,12 +253,6 @@ void QInstaller::init()
     factory.registerUpdateOperation<SetQtCreatorValueOperation>(QLatin1String("SetQtCreatorValue"));
     factory.registerUpdateOperation<AddQtCreatorArrayValueOperation>(QLatin1String("AddQtCreatorArrayValue"));
     factory.registerUpdateOperation<QtPatchOperation>(QLatin1String("QtPatch"));
-    factory.registerUpdateOperation<ReplaceOperation>(QLatin1String("Replace"));
-    factory.registerUpdateOperation<LineReplaceOperation>(QLatin1String( "LineReplace" ) );
-    factory.registerUpdateOperation<CreateLinkOperation>(QLatin1String("CreateLink"));
-
-    factory.registerUpdateOperation<MinimumProgressOperation>(QLatin1String("MinimumProgress"));
-    factory.registerUpdateOperation<LicenseOperation>(QLatin1String("License"));
 
     FileDownloaderFactory::setFollowRedirects(true);
 
