@@ -199,7 +199,7 @@ struct BinaryLayout
     qint64 endOfData;
 };
 
-class BinaryContentPrivate : public QSharedData
+class INSTALLER_EXPORT BinaryContentPrivate : public QSharedData
 {
 public:
     BinaryContentPrivate();
