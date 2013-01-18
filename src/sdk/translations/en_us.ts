@@ -1356,6 +1356,7 @@ Error while loading %2</source>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="868"/>
         <source>I accept the licenses.</source>
         <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="880"/>
         <source>I do not accept the licenses.</source>
