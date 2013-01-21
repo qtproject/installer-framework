@@ -1,14 +1,3 @@
-isEmpty(7ZIP_BASE): 7ZIP_BASE = $$(7ZIP_BASE)
-isEmpty(7ZIP_BASE): error(Please call qmake with 7ZIP_BASE=<path to nokia-sdk source directory> or add this line before you include that file in your pro file)
-
-7ZIP_BASE=$$7ZIP_BASE/win
-
-CONFIG += no_batch # this is needed because we have a same named *.c and *.cpp file -> 7in
-
-DEFINES += WIN_LONG_PATH _UNICODE _CRT_SECURE_NO_WARNINGS
-
-INCLUDEPATH += $$7ZIP_BASE/CPP
-
 #$(CONSOLE_OBJS): ../../UI/Console/$(*B).cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/BenchCon.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/ConsoleClose.cpp

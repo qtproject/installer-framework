@@ -1,4 +1,15 @@
-7ZIP_BASE=$$PWD
+win32 {
+    7ZIP_BASE=$$PWD/win
+    INCLUDEPATH += $$7ZIP_BASE/CPP
+    DEFINES += WIN_LONG_PATH _UNICODE
+}
 
-win32:include($$7ZIP_BASE/win/win.pri) #this is 7zip
-unix:include($$7ZIP_BASE/unix/unix.pri) #this is p7zip
+unix {
+    7ZIP_BASE=$$PWD/unix
+    INCLUDEPATH += $$7ZIP_BASE/CPP \
+         $$7ZIP_BASE/CPP/myWindows \
+        $$7ZIP_BASE/CPP/include_windows
+
+    macx:DEFINES += ENV_MACOSX
+    DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE NDEBUG _REENTRANT ENV_UNIX BREAK_HANDLER UNICODE _UNICODE
+}

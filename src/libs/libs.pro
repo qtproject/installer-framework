@@ -1,3 +1,3 @@
 CONFIG += ordered
 TEMPLATE = subdirs
-SUBDIRS += installer
+SUBDIRS += 7zip installer

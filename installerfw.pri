@@ -68,9 +68,10 @@ CONFIG += depend_includepath
 GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
 DEFINES += QT_NO_CAST_FROM_ASCII "_GIT_SHA1_=$$GIT_SHA1"
 
-
 static {
+    equals(TEMPLATE, app):LIBS += -l7z
+    macx:equals(TEMPLATE, app):CONFIG -= app_bundle
+
     win32:exists($$IFW_LIB_PATH/installer.lib):POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib
     unix:exists($$IFW_LIB_PATH/libinstaller.a):POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a
-    macx:equals(TEMPLATE, app):CONFIG -= app_bundle
 }

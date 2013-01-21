@@ -1,17 +1,3 @@
-isEmpty(7ZIP_BASE): 7ZIP_BASE = $$(7ZIP_BASE)
-isEmpty(7ZIP_BASE): error(Please call qmake with 7ZIP_BASE=<path to nokia-sdk source directory> or add this line before you include that file in your pro file)
-
-7ZIP_BASE=$$7ZIP_BASE/unix
-
-DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE NDEBUG _REENTRANT ENV_UNIX BREAK_HANDLER UNICODE _UNICODE
-
-macx:DEFINES += ENV_MACOSX
-
-QMAKE_CXXFLAGS += -fvisibility=hidden
-
-INCLUDEPATH += $$7ZIP_BASE/CPP \
-    $$7ZIP_BASE/CPP/myWindows \
-    $$7ZIP_BASE/CPP/include_windows
 
 SOURCES += $$7ZIP_BASE/CPP/myWindows/myGetTickCount.cpp \
                 $$7ZIP_BASE/CPP/myWindows/wine_date_and_time.cpp \
