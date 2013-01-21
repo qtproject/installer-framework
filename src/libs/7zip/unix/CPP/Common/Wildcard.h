@@ -33,7 +33,7 @@ class CCensorNode
   bool CheckPath(UStringVector &pathParts, bool isFile, bool &include) const;
 public:
   CCensorNode(): Parent(0) { };
-  CCensorNode(const UString &name, CCensorNode *parent): Name(name), Parent(parent) { };
+  CCensorNode(const UString &name, CCensorNode *parent): Parent(parent), Name(name) { };
   UString Name;
   CObjectVector<CCensorNode> SubNodes;
   CObjectVector<CItem> IncludeItems;

@@ -371,8 +371,16 @@ bool CreateLocalRepositoryOperation::undoOperation()
     errno = 0;
     const bool result = QDir::root().rmdir(createdDir.path());
     if (!result) {
+#ifdef Q_OS_WIN
+        char msg[128];
+        if (strerror_s(msg, sizeof msg, errno) != 0) {
+            setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(),
+                QString::fromLocal8Bit(msg)));
+        }
+#else
         setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(),
-             QLatin1String(strerror(errno))));
+             QString::fromLocal8Bit(strerror(errno))));
+#endif
     }
     setValue(QLatin1String("files"), QStringList());
 

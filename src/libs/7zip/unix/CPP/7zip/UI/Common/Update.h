@@ -116,11 +116,11 @@ struct CUpdateOptions
   CUpdateOptions():
     UpdateArchiveItself(true),
     SfxMode(false),
+    OpenShareForWrite(false),
     StdInMode(false),
     StdOutMode(false),
     EMailMode(false),
-    EMailRemoveAfter(false),
-    OpenShareForWrite(false)
+    EMailRemoveAfter(false)
       {};
 
   void SetAddActionCommand()

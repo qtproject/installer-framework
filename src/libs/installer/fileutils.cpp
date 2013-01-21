@@ -254,6 +254,18 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
     }
 }
 
+static QString errnoToQString(int error)
+{
+#ifdef Q_OS_WIN
+    char msg[128];
+    if (strerror_s(msg, sizeof msg, error) != 0)
+        return QString::fromLocal8Bit(msg);
+    return QString();
+#else
+    return QString::fromLocal8Bit(strerror(error));
+#endif
+}
+
 void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
 {
     if (path.isEmpty()) // QDir("") points to the working directory! We never want to remove that one.
@@ -275,7 +287,7 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
         errno = 0;
         if (d.exists(path) && !d.rmdir(dir)) {
             QString errorMessage = QObject::tr("Could not remove folder %1: %2").arg(dir,
-                QLatin1String(strerror(errno)));
+                errnoToQString(errno));
             if (ignoreErrors)
                 qWarning() << errorMessage;
             else
@@ -396,19 +408,15 @@ void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &
 void QInstaller::mkdir(const QString &path)
 {
     errno = 0;
-    if (!QDir().mkdir(QFileInfo(path).absoluteFilePath())) {
-        throw Error(QObject::tr("Could not create folder %1: %2").arg(path,
-            QString::fromLocal8Bit(strerror(errno))));
-    }
+    if (!QDir().mkdir(QFileInfo(path).absoluteFilePath()))
+        throw Error(QObject::tr("Could not create folder %1: %2").arg(path, errnoToQString(errno)));
 }
 
 void QInstaller::mkpath(const QString &path)
 {
     errno = 0;
-    if (!QDir().mkpath(QFileInfo(path).absoluteFilePath())) {
-        throw Error(QObject::tr("Could not create folder %1: %2").arg(path,
-            QString::fromLocal8Bit(strerror(errno))));
-    }
+    if (!QDir().mkpath(QFileInfo(path).absoluteFilePath()))
+        throw Error(QObject::tr("Could not create folder %1: %2").arg(path, errnoToQString(errno)));
 }
 
 QString QInstaller::generateTemporaryFileName(const QString &templ)

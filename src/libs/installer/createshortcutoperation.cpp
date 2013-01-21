@@ -192,8 +192,16 @@ bool CreateShortcutOperation::performOperation()
 
     if (!created) {
         setError(UserDefinedError);
+#ifdef Q_OS_WIN
+        char msg[128];
+        if (strerror_s(msg, sizeof msg, errno) != 0) {
+            setErrorString(tr("Could not create folder %1: %2.").arg(QDir::toNativeSeparators(linkPath),
+                QString::fromLocal8Bit(msg)));
+        }
+#else
         setErrorString(tr("Could not create folder %1: %2.").arg(QDir::toNativeSeparators(linkPath),
-            QLatin1String(strerror(errno))));
+            QString::fromLocal8Bit(strerror(errno))));
+#endif
         return false;
     }
 

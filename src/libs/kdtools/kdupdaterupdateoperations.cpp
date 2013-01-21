@@ -46,6 +46,18 @@
 
 using namespace KDUpdater;
 
+static QString errnoToQString(int error)
+{
+#ifdef Q_OS_WIN
+    char msg[128];
+    if (strerror_s(msg, sizeof msg, error) != 0)
+        return QString::fromLocal8Bit(msg);
+    return QString();
+#else
+    return QString::fromLocal8Bit(strerror(error));
+#endif
+}
+
 static bool removeDirectory(const QString &path, QString *errorString)
 {
     Q_ASSERT(errorString);
@@ -63,7 +75,7 @@ static bool removeDirectory(const QString &path, QString *errorString)
     errno = 0;
     const bool success = QDir().rmdir(path);
     if (errno)
-        *errorString = QLatin1String(strerror(errno));
+        *errorString = errnoToQString(errno);
     return success;
 }
 /*
@@ -486,7 +498,7 @@ bool MkdirOperation::undoOperation()
         if (errorString.isEmpty())
             setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errorString));
         else
-            setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), QLatin1String(strerror(errno))));
+            setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errnoToQString(errno)));
     }
     return result;
 }
@@ -541,7 +553,7 @@ bool RmdirOperation::performOperation()
     setValue(QLatin1String("removed"), removed);
     if (!removed) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not remove folder %1: %2").arg(dirName, QLatin1String(strerror(errno))));
+        setErrorString(tr("Could not remove folder %1: %2").arg(dirName, errnoToQString(errno)));
     }
     return removed;
 }
@@ -555,7 +567,7 @@ bool RmdirOperation::undoOperation()
     errno = 0;
     const bool success = fi.dir().mkdir(fi.fileName());
     if( !success)
-        setError(UserDefinedError, tr("Cannot recreate directory %1: %2").arg(fi.fileName(), QLatin1String(strerror(errno))));
+        setError(UserDefinedError, tr("Cannot recreate directory %1: %2").arg(fi.fileName(), errnoToQString(errno)));
 
     return success;
 }

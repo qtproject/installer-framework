@@ -185,8 +185,13 @@ static bool IsDST(const QDateTime& datetime = QDateTime())
 {
     const time_t seconds = static_cast< time_t >(datetime.isValid() ? datetime.toTime_t()
         : QDateTime::currentDateTime().toTime_t());
-    const tm* const t = localtime(&seconds);
-    return t->tm_isdst;
+#ifdef Q_OS_WIN
+    struct tm t;
+    localtime_s(&t, &seconds);
+#else
+    const struct tm &t = *localtime(&seconds);
+#endif
+    return t.tm_isdst;
 }
 
 static bool getFileTimeFromProperty(IInArchive* archive, int index, int propId, FILETIME *fileTime)
