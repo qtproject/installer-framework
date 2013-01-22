@@ -104,7 +104,7 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::PackageManagerCore *core)
     connect(core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
     connect(core, SIGNAL(coreNetworkSettingsChanged()), this, SLOT(onCoreNetworkSettingsChanged()));
 
-    m_updateComponents->setEnabled(ProductKeyCheck::instance()->hasValidKey());
+    // m_updateComponents->setEnabled(ProductKeyCheck::instance()->hasValidKey()); ### Todo: Remove for online installers
 }
 
 int IntroductionPageImpl::nextId() const
