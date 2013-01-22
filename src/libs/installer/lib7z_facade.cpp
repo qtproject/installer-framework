@@ -20,6 +20,7 @@
 #include "Windows/Error.h"
 #include "Windows/FileDir.h"
 #include "Windows/FileName.h"
+#include "Windows/FileIO.h"
 
 #include "7zip/ICoder.h"
 #include "7zip/IPassword.h"
@@ -216,19 +217,29 @@ static bool IsDST(const QDateTime& datetime = QDateTime())
     return t->tm_isdst;
 }
 
-static
-    QDateTime getDateTimeProperty(IInArchive* archive, int index, int propId, const QDateTime& defaultValue)
+static bool getFileTimeFromProperty(IInArchive* archive, int index, int propId, FILETIME *fileTime)
 {
     const NCOM::CPropVariant prop = readProperty(archive, index, propId);
     if (prop.vt != VT_FILETIME) {
         throw SevenZipException(QObject::tr("Property %1 for item %2 not of type VT_FILETIME but %3")
             .arg(QString::number(propId), QString::number(index), QString::number(prop.vt)));
     }
-    if (IsFileTimeZero(&prop.filetime))
+    *fileTime = prop.filetime;
+
+    if (IsFileTimeZero(fileTime))
+        return false;
+    return true;
+}
+
+static
+QDateTime getDateTimeProperty(IInArchive* archive, int index, int propId, const QDateTime& defaultValue)
+{
+    FILETIME fileTime;
+    if (!getFileTimeFromProperty(archive, index, propId, &fileTime))
         return defaultValue;
 
     FILETIME localFileTime;
-    if (!FileTimeToLocalFileTime(&prop.filetime, &localFileTime))
+    if (!FileTimeToLocalFileTime(&fileTime, &localFileTime))
         throw SevenZipException(QObject::tr("Could not convert file time to local time"));
 
     SYSTEMTIME st;
@@ -775,39 +786,66 @@ public:
         if (!targetDir.isEmpty()) {
             bool hasPerm;
             const QFile::Permissions permissions = getPermissions(arc->Archive, currentIndex, &hasPerm);
+
+            UString s;
+            if (arc->GetItemPath(currentIndex, s) != S_OK) {
+                throw SevenZipException(QObject::tr("Could not retrieve path of archive item %1")
+                    .arg(currentIndex));
+            }
+            const QString path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
+            const QString absFilePath = QFileInfo(QString::fromLatin1("%1/%2").arg(targetDir, path))
+                .absoluteFilePath();
+
             if (hasPerm) {
-                UString s;
-                if (arc->GetItemPath(currentIndex, s) != S_OK) {
-                    throw SevenZipException(QObject::tr("Could not retrieve path of archive item %1")
-                        .arg(currentIndex));
-                }
-                const QString path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
-                const QFileInfo fi(QString::fromLatin1("%1/%2").arg(targetDir, path));
-                QFile::setPermissions(fi.absoluteFilePath(), permissions);
+                QFile::setPermissions(absFilePath, permissions);
 
                 // do we have a symlink?
                 const quint32 attributes = getUInt32Property(arc->Archive, currentIndex, kpidAttrib, 0);
                 struct stat stat_info;
                 stat_info.st_mode = attributes >> 16;
                 if (S_ISLNK(stat_info.st_mode)) {
-                    QFile f(fi.absoluteFilePath());
+                    QFile f(absFilePath);
                     f.open(QIODevice::ReadOnly);
                     const QByteArray path = f.readAll();
                     f.close();
                     f.remove();
 #ifdef Q_OS_WIN
-                    if (!CreateHardLinkWrapper(fi.absoluteFilePath(), QLatin1String(path))) {
+                    if (!CreateHardLinkWrapper(absFilePath, QLatin1String(path))) {
                         throw SevenZipException(QObject::tr("Could not create file system link at %1")
-                            .arg(fi.absoluteFilePath()));
+                            .arg(absFilePath));
                     }
 #else
-                    if (!QFile::link(QString::fromLatin1(path), fi.absoluteFilePath())) {
+                    if (!QFile::link(QString::fromLatin1(path), absFilePath)) {
                         throw SevenZipException(QObject::tr("Could not create softlink at %1")
-                            .arg(fi.absoluteFilePath()));
+                            .arg(absFilePath));
                     }
 #endif
                 }
             }
+
+            try {
+                if (!absFilePath.isEmpty()) {
+                    // This might fail for archives without all properties, we can only be sure about
+                    // modification time, as it's always stored by default in 7z archives. Also note that
+                    // we restore modification time on Unix only, as access time and change time are
+                    // supposed to be set to the time of installation.
+                    FILETIME mTime;
+                    if (getFileTimeFromProperty(arc->Archive, currentIndex, kpidMTime, &mTime)) {
+                        NWindows::NFile::NIO::COutFile file;
+                        if (file.Open(QString2UString(absFilePath), 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL))
+                            file.SetTime(&mTime, &mTime, &mTime);
+                    }
+#ifdef Q_OS_WIN
+                    FILETIME cTime, aTime;
+                    bool success = getFileTimeFromProperty(arc->Archive, currentIndex, kpidCTime, &cTime);
+                    if (success && getFileTimeFromProperty(arc->Archive, currentIndex, kpidATime, &aTime)) {
+                        NWindows::NFile::NIO::COutFile file;
+                        if (file.Open(QString2UString(absFilePath), 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL))
+                            file.SetTime(&cTime, &aTime, &mTime);
+                    }
+#endif
+                }
+            } catch (...) {}
         }
 
         return S_OK;
@@ -1144,6 +1182,8 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, Up
         callback = dummyCallback.get();
 
     try {
+        callback->setTarget(archive);
+
         std::auto_ptr< CCodecs > codecs(new CCodecs);
         if (codecs->Load() != S_OK)
             throw SevenZipException(QObject::tr("Could not load codecs"));
@@ -1166,30 +1206,44 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, Up
             // possible folders located on the same directory level as the file into the created archive.
             censor.AddItem(true, sourcePath, QFileInfo(path).isDir());
         }
+        callback->setSourcePaths(sourcePaths);
 
-        CUpdateOptions options;
         CArchivePath archivePath;
         archivePath.ParseFromPath(QString2UString(tempFile));
+
         CUpdateArchiveCommand command;
         command.ArchivePath = archivePath;
         command.ActionSet = NUpdateArchive::kAddActionSet;
+
+        CUpdateOptions options;
         options.Commands.Add(command);
         options.ArchivePath = archivePath;
         options.MethodMode.FormatIndex = codecs->FindFormatForArchiveType(L"7z");
 
-        CUpdateErrorInfo errorInfo;
+        // preserve creation time
+        CProperty tc;
+        tc.Name = UString(L"TC");
+        tc.Value = UString(L"ON");
+        options.MethodMode.Properties.Add(tc);
 
-        callback->setTarget(archive);
-        callback->setSourcePaths(sourcePaths);
+        // preserve access time
+        CProperty ta;
+        ta.Name = UString(L"TA");
+        ta.Value = UString(L"ON");
+        options.MethodMode.Properties.Add(ta);
+
+        CUpdateErrorInfo errorInfo;
         const HRESULT res = UpdateArchive(codecs.get(), censor, options, errorInfo, 0, callback->impl());
         if (res != S_OK || !QFile::exists(tempFile))
             throw SevenZipException(QObject::tr("Could not create archive %1").arg(tempFile));
+
         {
             //TODO remove temp file even if one the following throws
             QFile file(tempFile);
             QInstaller::openForRead(&file, tempFile);
             QInstaller::blockingCopy(&file, archive, file.size());
         }
+
         QFile file(tempFile);
         if (!file.remove()) {
             qWarning("%s: Could not remove temporary file %s: %s", Q_FUNC_INFO, qPrintable(tempFile),
