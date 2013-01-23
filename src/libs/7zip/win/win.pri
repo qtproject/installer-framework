@@ -1,27 +1,27 @@
 #$(CONSOLE_OBJS): ../../UI/Console/$(*B).cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/BenchCon.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/ConsoleClose.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/ExtractCallbackConsole.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/List.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/BenchCon.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/ConsoleClose.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/ExtractCallbackConsole.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/List.cpp
 #SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/Main.cpp
 #SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/MainAr.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/OpenCallbackConsole.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/PercentPrinter.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/OpenCallbackConsole.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/PercentPrinter.cpp
 #SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/StdAfx.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/UpdateCallbackConsole.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/UserInputUtils.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/UpdateCallbackConsole.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Console/UserInputUtils.cpp
 
 #$(COMMON_OBJS): ../../../Common/$(*B).cpp
-SOURCES += $$7ZIP_BASE/CPP/Common/CommandLineParser.cpp
-SOURCES += $$7ZIP_BASE/CPP/Common/CRC.cpp
+#SOURCES += $$7ZIP_BASE/CPP/Common/CommandLineParser.cpp
+#SOURCES += $$7ZIP_BASE/CPP/Common/CRC.cpp
 #SOURCES += $$7ZIP_BASE/CPP/Common/C_FileIO.cpp
 SOURCES += $$7ZIP_BASE/CPP/Common/IntToString.cpp
-SOURCES += $$7ZIP_BASE/CPP/Common/ListFileUtils.cpp
+#SOURCES += $$7ZIP_BASE/CPP/Common/ListFileUtils.cpp
 SOURCES += $$7ZIP_BASE/CPP/Common/MyString.cpp
 SOURCES += $$7ZIP_BASE/CPP/Common/MyVector.cpp
-SOURCES += $$7ZIP_BASE/CPP/Common/NewHandler.cpp
-SOURCES += $$7ZIP_BASE/CPP/Common/StdInStream.cpp
-SOURCES += $$7ZIP_BASE/CPP/Common/StdOutStream.cpp
+#SOURCES += $$7ZIP_BASE/CPP/Common/NewHandler.cpp
+#SOURCES += $$7ZIP_BASE/CPP/Common/StdInStream.cpp
+#SOURCES += $$7ZIP_BASE/CPP/Common/StdOutStream.cpp
 SOURCES += $$7ZIP_BASE/CPP/Common/StringConvert.cpp
 SOURCES += $$7ZIP_BASE/CPP/Common/StringToInt.cpp
 SOURCES += $$7ZIP_BASE/CPP/Common/UTFConvert.cpp
@@ -29,24 +29,24 @@ SOURCES += $$7ZIP_BASE/CPP/Common/Wildcard.cpp
 
 #$(WIN_OBJS): ../../../Windows/$(*B).cpp
 SOURCES += $$7ZIP_BASE/CPP/Windows/DLL.cpp
-SOURCES += $$7ZIP_BASE/CPP/Windows/Error.cpp
+#SOURCES += $$7ZIP_BASE/CPP/Windows/Error.cpp
 SOURCES += $$7ZIP_BASE/CPP/Windows/FileDir.cpp
 SOURCES += $$7ZIP_BASE/CPP/Windows/FileFind.cpp
 SOURCES += $$7ZIP_BASE/CPP/Windows/FileIO.cpp
 #SOURCES += $$7ZIP_BASE/CPP/Windows/FileMapping.cpp
 SOURCES += $$7ZIP_BASE/CPP/Windows/FileName.cpp
-SOURCES += $$7ZIP_BASE/CPP/Windows/MemoryLock.cpp
+#SOURCES += $$7ZIP_BASE/CPP/Windows/MemoryLock.cpp
 SOURCES += $$7ZIP_BASE/CPP/Windows/PropVariant.cpp
 SOURCES += $$7ZIP_BASE/CPP/Windows/PropVariantConversions.cpp
-SOURCES += $$7ZIP_BASE/CPP/Windows/Registry.cpp
-SOURCES += $$7ZIP_BASE/CPP/Windows/Synchronization.cpp
+#SOURCES += $$7ZIP_BASE/CPP/Windows/Registry.cpp
+#SOURCES += $$7ZIP_BASE/CPP/Windows/Synchronization.cpp
 SOURCES += $$7ZIP_BASE/CPP/Windows/System.cpp
 SOURCES += $$7ZIP_BASE/CPP/Windows/Time.cpp
 
 #$(7ZIP_COMMON_OBJS): ../../Common/$(*B).cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Common/CreateCoder.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Common/CWrappers.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/Common/FilePathAutoRename.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/Common/FilePathAutoRename.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Common/FileStreams.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Common/FilterCoder.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Common/InBuffer.cpp
@@ -67,18 +67,18 @@ SOURCES += $$7ZIP_BASE/CPP/7zip/Common/StreamUtils.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Common/VirtThread.cpp
 
 #$(UI_COMMON_OBJS): ../../UI/Common/$(*B).cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/ArchiveCommandLine.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/ArchiveExtractCallback.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/ArchiveCommandLine.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/ArchiveExtractCallback.cpp
 #SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/ArchiveName.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/ArchiveOpenCallback.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/Bench.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/Bench.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/DefaultName.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/EnumDirItems.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/Extract.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/ExtractingFilePath.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/Extract.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/ExtractingFilePath.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/LoadCodecs.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/OpenArchive.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/PropIDUtils.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/PropIDUtils.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/SetProperties.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/SortUtils.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/TempFiles.cpp
@@ -87,8 +87,8 @@ SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/UpdateAction.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/UpdateCallback.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/UpdatePair.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/UpdateProduce.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/WorkDir.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/ZipRegistry.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/WorkDir.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/UI/Common/ZipRegistry.cpp
 
 #$(AR_OBJS): ../../Archive/$(*B).cpp
 #SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/ArchiveExports.cpp
@@ -104,7 +104,7 @@ SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/ZHandler.cpp #added to support more then
 #$(AR_COMMON_OBJS): ../../Archive/Common/$(*B).cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/Common/CoderMixer2.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/Common/CoderMixer2MT.cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/Common/CrossThreadProgress.cpp
+#SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/Common/CrossThreadProgress.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/Common/DummyOutStream.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/Common/FindSignature.cpp #added to support more then 7z
 SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/Common/HandlerOut.cpp

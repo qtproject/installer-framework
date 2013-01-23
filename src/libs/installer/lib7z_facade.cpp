@@ -9,47 +9,19 @@
 
 #include "Common/MyInitGuid.h"
 
-#include "Common/CommandLineParser.h"
-#include "Common/IntToString.h"
-#include "Common/MyException.h"
-#include "Common/StdOutStream.h"
-#include "Common/StringConvert.h"
-#include "Common/StringToInt.h"
-
-#include "Windows/Defs.h"
-#include "Windows/Error.h"
-#include "Windows/FileDir.h"
-#include "Windows/FileName.h"
-#include "Windows/FileIO.h"
-
-#include "7zip/ICoder.h"
-#include "7zip/IPassword.h"
-
-#include "7zip/UI/Common/ArchiveCommandLine.h"
-#include "7zip/UI/Common/ExitCode.h"
-#include "7zip/UI/Common/Extract.h"
+#include "7zip/Archive/IArchive.h"
+#include "7zip/UI/Common/OpenArchive.h"
 #include "7zip/UI/Common/Update.h"
-#include "7zip/UI/Common/ArchiveExtractCallback.h"
-#include "7zip/UI/Common/LoadCodecs.h"
-#include "7zip/UI/Common/PropIDUtils.h"
 
-#include "Windows/Defs.h"
-#include "Windows/Error.h"
-#include "Windows/FileDir.h"
-#include "Windows/FileName.h"
+#include "Windows/FileIO.h"
 #include "Windows/PropVariant.h"
 #include "Windows/PropVariantConversions.h"
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QIODevice>
-#include <QtCore/QMutex>
 #include <QtCore/QMutexLocker>
 #include <QtCore/QPointer>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
 #include <QtCore/QTemporaryFile>
 
 #ifdef _MSC_VER
