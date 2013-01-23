@@ -30,10 +30,10 @@ adjust the qmake.conf to have a real stand alone working installer (at the momen
  QMAKE_CFLAGS_LTCG       = -GL
 
 Recommended configure options for windows:
-configure.exe -platform win32-msvc20XX -release -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -no-multimedia -no-declarative -nomake examples -nomake demos -opensource
+configure.exe -opensource -release -static -no-multimedia -no-declarative -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -nomake examples -nomake demos
 
 Recommended configure options for Linux:
-configure -nomake examples -nomake demos -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -opensource -developer-build -static -no-webkit -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -no-svg -release
+configure -developer-build -opensource -release -static -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -no-svg -nomake examples -nomake demos
  
 == Create an Installer ==
 
