@@ -93,9 +93,13 @@ static QString makeAbsolute(const QString &path)
 static int myOpen(const QString &path, int flags, int mode)
 {
 #ifdef Q_OS_WIN
-    int fd;
-    _wsopen_s(&fd, reinterpret_cast<const wchar_t *>(path.utf16()), flags, _SH_DENYRW, mode);
-    return fd;
+     int fd;
+#ifdef Q_CC_MINGW
+    fd = _wsopen(reinterpret_cast<const wchar_t *>(path.utf16()), flags, _SH_DENYRW, mode);
+#else
+     _wsopen_s(&fd, reinterpret_cast<const wchar_t *>(path.utf16()), flags, _SH_DENYRW, mode);
+#endif
+     return fd;
 #else
     return open(QFile::encodeName(path).constData(), flags, mode);
 #endif

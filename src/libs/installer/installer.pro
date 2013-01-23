@@ -170,7 +170,11 @@ unix:!macx:SOURCES += adminauthorization_x11.cpp
 LIBS += -l7z
 win32 {
     SOURCES += adminauthorization_win.cpp
+
     LIBS += -loleaut32 -luser32     # 7zip
     LIBS += -ladvapi32 -lpsapi      # kdtools
     LIBS += -lole32 -lshell32       # createshortcutoperation
+
+    win32-g++*:LIBS += -lmpr -luuid
+    win32-g++*:QMAKE_CXXFLAGS += -Wno-missing-field-initializers
 }

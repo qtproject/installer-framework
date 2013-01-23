@@ -256,7 +256,7 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
 
 static QString errnoToQString(int error)
 {
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && !defined(Q_CC_MINGW)
     char msg[128];
     if (strerror_s(msg, sizeof msg, error) != 0)
         return QString::fromLocal8Bit(msg);

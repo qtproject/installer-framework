@@ -20,7 +20,7 @@ template <class T> class CDynamicBuffer: public CBuffer<T>
     size_t newCap = this->_capacity + delta;
     if (newCap < delta)
       newCap = this->_capacity + size;
-    SetCapacity(newCap);
+    this->SetCapacity(newCap);
   }
 public:
   CDynamicBuffer(): CBuffer<T>() {};
@@ -31,7 +31,7 @@ public:
     this->Free();
     if (buffer._capacity > 0)
     {
-      SetCapacity(buffer._capacity);
+      this->SetCapacity(buffer._capacity);
       memmove(this->_items, buffer._items, buffer._capacity * sizeof(T));
     }
     return *this;

@@ -185,7 +185,7 @@ static bool IsDST(const QDateTime& datetime = QDateTime())
 {
     const time_t seconds = static_cast< time_t >(datetime.isValid() ? datetime.toTime_t()
         : QDateTime::currentDateTime().toTime_t());
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && !defined(Q_CC_MINGW)
     struct tm t;
     localtime_s(&t, &seconds);
 #else

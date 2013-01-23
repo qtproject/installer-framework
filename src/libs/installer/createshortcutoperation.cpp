@@ -52,6 +52,11 @@
 using namespace QInstaller;
 
 #ifdef Q_OS_WIN
+#ifdef Q_CC_MINGW
+# ifndef _WIN32_WINNT
+#  define _WIN32_WINNT 0x0501
+# endif
+#endif
 #include <windows.h>
 #include <shlobj.h>
 
@@ -192,7 +197,7 @@ bool CreateShortcutOperation::performOperation()
 
     if (!created) {
         setError(UserDefinedError);
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && !defined(Q_CC_MINGW)
         char msg[128];
         if (strerror_s(msg, sizeof msg, errno) != 0) {
             setErrorString(tr("Could not create folder %1: %2.").arg(QDir::toNativeSeparators(linkPath),

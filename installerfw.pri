@@ -37,6 +37,7 @@ LRELEASE = $$cleanPath($$toNativeSeparators($$[QT_INSTALL_BINS]/lrelease))
 
 win32:RCC = $${RCC}.exe
 win32:LRELEASE = $${LRELEASE}.exe
+win32-g++*:QMAKE_CXXFLAGS += -Wno-attributes
 
 INCLUDEPATH += \
     $$IFW_SOURCE_TREE/src/libs/7zip \
@@ -69,7 +70,8 @@ GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
 DEFINES += QT_NO_CAST_FROM_ASCII "_GIT_SHA1_=$$GIT_SHA1"
 
 static {
-    equals(TEMPLATE, app):LIBS += -l7z
+    LIBS += -l7z
+    win32-g++*: LIBS += -lmpr -luuid
     macx:equals(TEMPLATE, app):CONFIG -= app_bundle
 
     win32:exists($$IFW_LIB_PATH/installer.lib):POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib

@@ -45,6 +45,12 @@
 #include <QDebug>
 #include <QDir>
 
+#ifdef Q_CC_MINGW
+# ifndef _WIN32_WINNT
+#  define _WIN32_WINNT 0x0501
+# endif
+#endif
+
 #include <windows.h>
 
 struct DeCoInitializer
@@ -74,7 +80,7 @@ bool AdminAuthorization::authorize()
 
 bool AdminAuthorization::hasAdminRights()
 {
-    SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
+    SID_IDENTIFIER_AUTHORITY authority = { SECURITY_NT_AUTHORITY };
     PSID adminGroup;
     // Initialize SID.
     if (!AllocateAndInitializeSid(&authority,

@@ -105,11 +105,13 @@ private:
     mutable QString backup;
 };
 
+#ifndef Q_OS_WIN
 static void chmod755(const QString &absolutFilePath)
 {
     QFile::setPermissions(absolutFilePath, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner
         | QFile::ReadGroup | QFile::ExeGroup | QFile::ReadOther | QFile::ExeOther);
 }
+#endif
 
 static int assemble(Input input, const QString &configFile)
 {

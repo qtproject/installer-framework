@@ -311,7 +311,7 @@ bool Archive::copy(const QString &name)
         errno = 0;
         const QString absoluteFilePath = fileInfo.absoluteFilePath();
         if (!fileInfo.exists() && !QDir().mkpath(absoluteFilePath)) {
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && !defined(Q_CC_MINGW)
             char msg[128];
             if (strerror_s(msg, sizeof msg, errno) != 0)
                 setErrorString(tr("Could not create %1: %2").arg(name, QString::fromLocal8Bit(msg)));

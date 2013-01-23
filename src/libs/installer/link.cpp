@@ -50,10 +50,19 @@
 #endif
 
 #ifdef Q_OS_WIN
-#include <windows.h>
-#include <strsafe.h>
+#ifdef Q_CC_MINGW
+# ifndef _WIN32_WINNT
+#  define _WIN32_WINNT 0x0501
+# endif
+#else
+# include <strsafe.h>
+#endif
 
-// REPARSE_DATA_BUFFER structure from msdn help: http://msdn.microsoft.com/en-us/library/ff552012.aspx
+#include <windows.h>
+#include <winioctl.h>
+
+#if !defined(REPARSE_DATA_BUFFER_HEADER_SIZE)
+
 typedef struct _REPARSE_DATA_BUFFER {
     ULONG  ReparseTag;
     USHORT ReparseDataLength;
@@ -79,8 +88,9 @@ typedef struct _REPARSE_DATA_BUFFER {
         } GenericReparseBuffer;
     };
 } REPARSE_DATA_BUFFER, *PREPARSE_DATA_BUFFER;
+#define REPARSE_DATA_BUFFER_HEADER_SIZE FIELD_OFFSET(REPARSE_DATA_BUFFER, GenericReparseBuffer)
 
-#define _REPARSE_DATA_BUFFER_HEADER_SIZE FIELD_OFFSET(_REPARSE_DATA_BUFFER, GenericReparseBuffer)
+#endif
 
 
 class FileHandleWrapper
@@ -154,35 +164,31 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
         return Link(linkPath);
     }
 
-    TCHAR szDestDir[1024] = L"\\??\\"; //you need this to create valid unicode junctions
-
-    QString normalizedTargetPath = QString(targetPath).replace(QLatin1Char('/'), QLatin1Char('\\'));
-    //now we add the real absolute path
-    StringCchCat(szDestDir, 1024, (wchar_t*)normalizedTargetPath.utf16());
+    const QString szDestDir = QString::fromLatin1("\\??\\").arg(targetPath).replace(QLatin1Char('/'),
+        QLatin1Char('\\'));
 
     // Allocates a block of memory for an array of num elements(1) and initializes all its bits to zero.
-    _REPARSE_DATA_BUFFER* reparseStructData = (_REPARSE_DATA_BUFFER*)calloc(1,
+    REPARSE_DATA_BUFFER* reparseStructData = (REPARSE_DATA_BUFFER*)calloc(1,
         MAXIMUM_REPARSE_DATA_BUFFER_SIZE);
-    const size_t destMountPointBytes = lstrlen(szDestDir) * sizeof(WCHAR);
-
-    reparseStructData->ReparseTag = IO_REPARSE_TAG_MOUNT_POINT;
-
-    // Reserved(USHORT) + SubstituteNameOffset(USHORT) + SubstituteNameLength(USHORT)
-    //      + PrintNameOffset(USHORT) + PrintNameLength(USHORT) + PathBuffer[1](WCHAR)
-    uint spaceAfterGeneralData = sizeof(USHORT) * 5 + sizeof(WCHAR); //should be 12
-    reparseStructData->ReparseDataLength = destMountPointBytes + spaceAfterGeneralData;
     reparseStructData->Reserved = 0;
-    reparseStructData->MountPointReparseBuffer.SubstituteNameOffset = 0;
-    reparseStructData->MountPointReparseBuffer.SubstituteNameLength = destMountPointBytes;
-    // + sizeof(WCHAR) means \0 termination at the end of the string
-    reparseStructData->MountPointReparseBuffer.PrintNameOffset = destMountPointBytes + sizeof(WCHAR);
+    reparseStructData->ReparseTag = IO_REPARSE_TAG_MOUNT_POINT;
     reparseStructData->MountPointReparseBuffer.PrintNameLength = 0;
-    StringCchCopy(reparseStructData->MountPointReparseBuffer.PathBuffer, 1024, szDestDir);
+    reparseStructData->MountPointReparseBuffer.SubstituteNameOffset = 0;
+    reparseStructData->MountPointReparseBuffer.SubstituteNameLength = szDestDir.length();
+    reparseStructData->MountPointReparseBuffer.PrintNameOffset = szDestDir.length() + sizeof(WCHAR);
 
+    uint spaceAfterGeneralData = sizeof(USHORT) * 5 + sizeof(WCHAR); //should be 12
+    reparseStructData->ReparseDataLength = szDestDir.length() + spaceAfterGeneralData;
+
+#ifndef Q_CC_MINGW
+    StringCchCopy(reparseStructData->MountPointReparseBuffer.PathBuffer, 1024, (wchar_t*)szDestDir.utf16());
+#else
+    wcsncpy(reparseStructData->MountPointReparseBuffer.PathBuffer, (wchar_t*)szDestDir.utf16(), 1024);
+#endif
 
     DWORD bytesReturned;
     if (!::DeviceIoControl(dirHandle.handle(), FSCTL_SET_REPARSE_POINT, reparseStructData,
-        reparseStructData->ReparseDataLength + _REPARSE_DATA_BUFFER_HEADER_SIZE, 0, 0,
+        reparseStructData->ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE, 0, 0,
         &bytesReturned, 0)) {
             qWarning() << QString::fromLatin1("Could not set the reparse point: for '%1' to %2; error: %3"
                 ).arg(linkPath, targetPath).arg(GetLastError());
@@ -193,7 +199,7 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
 bool removeJunction(const QString &path)
 {
     // Allocates a block of memory for an array of num elements(1) and initializes all its bits to zero.
-    _REPARSE_DATA_BUFFER* reparseStructData = (_REPARSE_DATA_BUFFER*)calloc(1,
+    REPARSE_DATA_BUFFER* reparseStructData = (REPARSE_DATA_BUFFER*)calloc(1,
         MAXIMUM_REPARSE_DATA_BUFFER_SIZE);
 
     reparseStructData->ReparseTag = IO_REPARSE_TAG_MOUNT_POINT;
