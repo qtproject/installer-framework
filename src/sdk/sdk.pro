@@ -8,8 +8,8 @@ QT += network script
 DESTDIR = $$IFW_APP_PATH
 
 if (exists($$LRELEASE)) {
-    QT_LANGUAGES = qt_de
-    IB_LANGUAGES = de_de en_us
+    QT_LANGUAGES = qt_de qt_ru
+    IB_LANGUAGES = de_de en_us ru_ru
     defineReplace(prependAll) {
         for(a,$$1):result += $$2$${a}$$3
         return($$result)

@@ -3,5 +3,7 @@
         <file>translations/de_de.qm</file>
         <file>translations/qt_de.qm</file>
         <file>translations/en_us.qm</file>
+        <file>translations/ru_ru.qm</file>
+        <file>translations/qt_ru.qm</file>
     </qresource>
 </RCC>
