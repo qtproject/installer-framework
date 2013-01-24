@@ -796,6 +796,13 @@ public:
                         throw SevenZipException(QObject::tr("Could not create softlink at %1")
                             .arg(absFilePath));
                     }
+
+                    // If we have a symlink, bail out after we have linked it to avoid deleting the link.
+                    // CFileBase::Create(...) seems to broken in regard of symlink handling. If the link
+                    // already exists, it simple does an unlink on it. So we can't set time values on the
+                    // symlink in the following code, as COutFile::Open(...) calls former mentioned Create()
+                    // function and thus the symlink is deleted.
+                    return S_OK;
 #endif
                 }
             }
