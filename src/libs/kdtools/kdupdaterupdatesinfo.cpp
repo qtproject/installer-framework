@@ -175,7 +175,7 @@ bool UpdatesInfo::UpdatesInfoData::parsePackageUpdateElement(const QDomElement &
             info.data[childE.tagName()] = childE.text();
         } else if (childE.tagName() == QLatin1String("Description")) {
 
-            QString languageAttribute = childE.attribute(QLatin1String("xml:lang"));
+            QString languageAttribute = childE.attribute(QLatin1String("xml:lang")).toLower();
 
             if (!info.data.contains(QLatin1String("Description")) && (languageAttribute.isEmpty()))
                 info.data[childE.tagName()] = childE.text();
