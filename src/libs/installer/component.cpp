@@ -508,7 +508,9 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
                     file.errorString()));
             }
         }
-        d->m_licenses.insert(it.key(), qMakePair(fileName, QTextStream(&file).readAll()));
+        QTextStream stream(&file);
+        stream.setCodec("UTF-8");
+        d->m_licenses.insert(it.key(), qMakePair(fileName, stream.readAll()));
     }
 }
 
