@@ -39,4 +39,4 @@
 ##
 #############################################################################
 
-../../installerbuilder/bin/binarycreator -t ../../installerbuilder/bin/installerbase -v -p ../../examples/testapp/packages -c ../../examples/testapp/config test-installer --offline-only com.nokia.testapp
+../../bin/binarycreator --offline-only -v -t ../../bin/installerbase -p ../../examples/testapp/packages -c ../../examples/testapp/config/config.xml ../../bin/test-installer-offline
