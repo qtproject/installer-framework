@@ -52,6 +52,28 @@ equals(TEMPLATE, app):LIBS += -linstaller
 unix:!macx:LIBS += -lutil
 macx:LIBS += -framework Carbon -framework Security
 
+
+#
+# Use same static/shared configuration as Qt
+#
+# Qt 5 sets QT_CONFIG
+# Qt 4 / Windows sets CONFIG
+# Qt 4 / Unix sets neither QT_CONFIG nor CONFIG
+#
+
+!contains(CONFIG, static|shared) {
+    contains(QT_CONFIG, static): CONFIG += static
+    contains(QT_CONFIG, shared): CONFIG += shared
+
+    !contains(CONFIG, static|shared) {
+        exists($$[QT_INSTALL_LIBS]/libQtCore.a)|exists($$[QT_INSTALL_LIBS]/libQtCore_debug.a) {
+            CONFIG += static
+        } else {
+            CONFIG += shared
+        }
+    }
+}
+
 isEqual(QT_MAJOR_VERSION, 4) {
     CONFIG += uitools
     CONFIG(static, static|shared) {
