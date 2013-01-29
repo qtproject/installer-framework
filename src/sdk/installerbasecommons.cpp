@@ -402,6 +402,17 @@ QString TargetDirectoryPageImpl::targetDirWarning() const
             "please specify a valid folder.").arg(ambiguousChars);
     }
 
+    dir = targetDir();
+    if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
+        for (int i = 0; i < dir.length(); ++i) {
+            if (dir.at(i).unicode() & 0xff80) {
+                return TargetDirectoryPageImpl::tr("The path or installation directory contains non ASCII "
+                    "characters. This is currently not supported! Please choose a different path or "
+                    "installation directory.");
+            }
+        }
+    }
+
     return QString();
 }
 
@@ -440,16 +451,6 @@ bool TargetDirectoryPageImpl::validatePage()
         return true;
 
     const QString targetDir = this->targetDir();
-    if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
-        for (int i = 0; i < targetDir.length(); ++i) {
-            if (targetDir.at(i).unicode() & 0xff80) {
-                return failWithError(QLatin1String("NonAsciiTarget"), tr("The path or installation directory "
-                    "contains non ASCII characters. This is currently not supported! Please choose a different "
-                    "path or installation directory."));
-            }
-        }
-    }
-
     const QDir dir(targetDir);
     // the directory exists and is empty...
     if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
