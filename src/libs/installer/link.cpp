@@ -54,12 +54,14 @@
 # ifndef _WIN32_WINNT
 #  define _WIN32_WINNT 0x0501
 # endif
-#else
-# include <strsafe.h>
 #endif
 
 #include <windows.h>
 #include <winioctl.h>
+
+#ifndef Q_CC_MINGW
+# include <strsafe.h>
+#endif
 
 #if !defined(REPARSE_DATA_BUFFER_HEADER_SIZE)
 
