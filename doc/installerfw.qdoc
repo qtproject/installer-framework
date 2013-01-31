@@ -405,7 +405,7 @@
         \row
             \o  SortingPriority
             \o  Priority of the component in the tree. The tree is sorted from
-                lowest to highest priority, with the lowest priority on the top.
+                highest to lowest priority, with the highest priority on the top.
         \row
             \o  Licenses
             \o  List of license agreements to be accepted by the installing
