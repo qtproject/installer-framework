@@ -55,6 +55,10 @@
 #include <QStackedWidget>
 #include <QVBoxLayout>
 
+#ifdef Q_OS_WIN
+#include <qt_windows.h>
+#endif
+
 using namespace QInstaller;
 
 
@@ -382,6 +386,12 @@ QString TargetDirectoryPageImpl::targetDirWarning() const
 
     QString dir = QDir::toNativeSeparators(targetDir());
 #ifdef Q_OS_WIN
+    // folder length (set by user) + maintenance tool name length (no extension) + extra padding
+    if ((dir.length() + packageManagerCore()->settings().uninstallerName().length() + 20) >= MAX_PATH) {
+            return TargetDirectoryPageImpl::tr("The path you have entered is too long, please make sure to "
+                "specify a valid path.");
+    }
+
     if (dir.count() >= 3 && dir.indexOf(QRegExp(QLatin1String("[a-zA-Z]:"))) == 0
         && dir.at(2) != QLatin1Char('\\')) {
             return TargetDirectoryPageImpl::tr("The path you have entered is not valid, please make sure to "
