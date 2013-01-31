@@ -188,7 +188,7 @@ QInstaller::VerboseWriter::~VerboseWriter()
         return;
 
     QFile output(logFileName);
-    if (output.open(QIODevice::ReadWrite | QIODevice::Append)) {
+    if (output.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text)) {
         QString logInfo;
         logInfo += QLatin1String("*************************************");
         logInfo += QLatin1String("Invoked:") + QDateTime::currentDateTime().toString();
