@@ -571,12 +571,15 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     KDUpdater::PackagesInfo &packagesInfo = *m_updaterApplication.packagesInfo();
     packagesInfo.setFileName(componentsXmlPath());
 
-    if (packagesInfo.applicationName().isEmpty()) {
+    // Note: force overwriting the application name and version in case we run as installer. Both will be
+    //       set to wrong initial values if we install into an already existing installation. This can happen
+    //       if the components.xml path has not been changed, but name or version of the new installer.
+    if (isInstaller() || packagesInfo.applicationName().isEmpty()) {
         // TODO: this seems to be wrong, we should ask for ProductName defaulting to applicationName...
         packagesInfo.setApplicationName(m_data.settings().applicationName());
     }
 
-    if (packagesInfo.applicationVersion().isEmpty()) {
+    if (isInstaller() || packagesInfo.applicationVersion().isEmpty()) {
         // TODO: this seems to be wrong, we should ask for ProductVersion defaulting to applicationVersion...
         packagesInfo.setApplicationVersion(m_data.settings().applicationVersion());
     }
