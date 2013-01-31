@@ -1956,13 +1956,14 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
 
             connectOperationToInstaller(undoOperation, progressSize);
             qDebug() << "undo operation=" << undoOperation->name();
-            performOperationThreaded(undoOperation, PackageManagerCorePrivate::Undo);
+
+            bool ignoreError = false;
+            bool ok = performOperationThreaded(undoOperation, PackageManagerCorePrivate::Undo);
 
             const QString componentName = undoOperation->value(QLatin1String("component")).toString();
-            if (undoOperation->error() != Operation::NoError) {
-                if (!componentName.isEmpty()) {
-                    bool run = true;
-                    while (run && m_core->status() != PackageManagerCore::Canceled) {
+
+            if (!componentName.isEmpty()) {
+                    while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
                         const QMessageBox::StandardButton button =
                             MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
                             QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
@@ -1970,14 +1971,11 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                             QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Retry);
 
                         if (button == QMessageBox::Retry) {
-                            performOperationThreaded(undoOperation, Undo);
-                            if (undoOperation->error() == Operation::NoError)
-                                run = false;
+                            ok = performOperationThreaded(undoOperation, Undo);
                         } else if (button == QMessageBox::Ignore) {
-                            run = false;
+                            ignoreError = true;
                         }
                     }
-                }
             }
 
             if (!componentName.isEmpty()) {
