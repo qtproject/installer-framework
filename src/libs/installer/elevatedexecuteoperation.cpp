@@ -115,6 +115,15 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
         args.removeAll(workingDirectoryArgument);
     }
 
+    QString customErrorMessage;
+    QStringList filteredCustomErrorMessage = args.filter(QLatin1String("errormessage="),
+        Qt::CaseInsensitive);
+    if (!filteredCustomErrorMessage.isEmpty()) {
+        QString customErrorMessageArgument = filteredCustomErrorMessage.at(0);
+        customErrorMessage = customErrorMessageArgument;
+        customErrorMessage.replace(QLatin1String("errormessage="), QString(), Qt::CaseInsensitive);
+        args.removeAll(customErrorMessageArgument);
+    }
 
     if (args.last().endsWith(QLatin1String("showStandardError"))) {
         showStandardError = true;
@@ -214,8 +223,12 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
 
     if (!allowedExitCodes.contains(process->exitCode())) {
         q->setError(UserDefinedError);
-        q->setErrorString(tr("Execution failed(Unexpected exit code: %1): \"%2\"")
-            .arg(QString::number(process->exitCode()), callstr));
+        if (customErrorMessage.isEmpty()) {
+            q->setErrorString(tr("Execution failed(Unexpected exit code: %1): \"%2\"")
+                .arg(QString::number(process->exitCode()), callstr));
+        } else {
+            q->setErrorString(customErrorMessage);
+        }
         returnValue = false;
     }
 
