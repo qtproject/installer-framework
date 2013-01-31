@@ -413,7 +413,7 @@
                 sections that each specify the license \c name and \c file.
                 If there are translations listed for this component, the installer
                 will also look for translated licenses. These need to have the
-                same name as the originial license file but with an added
+                same name as the original license file but with an added
                 locale identifier.
                 If for example the license file is called license.txt and there is
                 German translation specified, the installer will also include

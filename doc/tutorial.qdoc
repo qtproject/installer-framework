@@ -178,12 +178,12 @@
 
     \o On Windows:
     \code
-    ..\..\bin\binarycreator.exe -c config -p packages YourInstaller.exe com.vendor.product
+    ..\..\bin\binarycreator.exe -c config\config.xml -p packages YourInstaller.exe
     \endcode
 
     \o On Linux or Mac OS X:
     \code
-    ../../bin/binarycreator -c config -p packages YourInstaller com.vendor.product
+    ../../bin/binarycreator -c config\config.xml -p packages YourInstaller
     \endcode
 
     \endlist
