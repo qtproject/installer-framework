@@ -121,6 +121,14 @@ private:
     void INSTALLER_EXPORT mkpath(const QString &path);
 
 #ifdef Q_OS_WIN
+    QString INSTALLER_EXPORT getLongPathName(const QString &name);
+    QString INSTALLER_EXPORT getShortPathName(const QString &name);
+
+    /*!
+        Makes sure that capitalization of directories is canonical.
+    */
+    QString INSTALLER_EXPORT normalizePathName(const QString &name);
+
     /*!
         Sets the .ico file at \a icon as application icon for \a application.
     */

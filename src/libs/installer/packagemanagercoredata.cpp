@@ -41,6 +41,7 @@
 #include "packagemanagercoredata.h"
 
 #include "errors.h"
+#include "fileutils.h"
 #include "qsettingswrapper.h"
 
 #include <QDir>
@@ -132,6 +133,19 @@ bool PackageManagerCoreData::setValue(const QString &key, const QString &normali
 
 QVariant PackageManagerCoreData::value(const QString &key, const QVariant &_default) const
 {
+    if (key == scTargetDir) {
+        QString dir = m_variables.value(key);
+        if (dir.isEmpty())
+            dir = m_settings.value(key, _default).toString();
+#ifdef Q_OS_WIN
+        return QInstaller::normalizePathName(dir);
+#else
+        if (dir.startsWith(QLatin1String("~/")))
+            return QDir::home().absoluteFilePath(dir.mid(2));
+        return dir;
+#endif
+    }
+
 #ifdef Q_OS_WIN
     if (!m_variables.contains(key)) {
         static const QRegExp regex(QLatin1String("\\\\|/"));
@@ -141,14 +155,8 @@ QVariant PackageManagerCoreData::value(const QString &key, const QVariant &_defa
         if (!filename.isEmpty() && !regKey.isEmpty() && registry.contains(regKey))
             return registry.value(regKey).toString();
     }
-#else
-    if (key == scTargetDir) {
-        const QString dir = m_variables.value(key, _default.toString());
-        if (dir.startsWith(QLatin1String("~/")))
-            return QDir::home().absoluteFilePath(dir.mid(2));
-        return dir;
-    }
 #endif
+
     if (m_variables.contains(key))
         return m_variables.value(key);
 

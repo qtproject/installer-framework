@@ -462,6 +462,52 @@ QString QInstaller::createTemporaryDirectory(const QString &templ)
 #ifdef Q_OS_WIN
 #include <windows.h>
 
+QString QInstaller::getShortPathName(const QString &name)
+{
+    if (name.isEmpty())
+        return name;
+
+    // Determine length, then convert.
+    const LPCTSTR nameC = reinterpret_cast<LPCTSTR>(name.utf16()); // MinGW
+    const DWORD length = GetShortPathName(nameC, NULL, 0);
+    if (length == 0)
+        return name;
+    QScopedArrayPointer<TCHAR> buffer(new TCHAR[length]);
+    GetShortPathName(nameC, buffer.data(), length);
+    const QString rc = QString::fromUtf16(reinterpret_cast<const ushort *>(buffer.data()), length - 1);
+    return rc;
+}
+
+QString QInstaller::getLongPathName(const QString &name)
+{
+    if (name.isEmpty())
+        return name;
+
+    // Determine length, then convert.
+    const LPCTSTR nameC = reinterpret_cast<LPCTSTR>(name.utf16()); // MinGW
+    const DWORD length = GetLongPathName(nameC, NULL, 0);
+    if (length == 0)
+        return name;
+    QScopedArrayPointer<TCHAR> buffer(new TCHAR[length]);
+    GetLongPathName(nameC, buffer.data(), length);
+    const QString rc = QString::fromUtf16(reinterpret_cast<const ushort *>(buffer.data()), length - 1);
+    return rc;
+}
+
+QString QInstaller::normalizePathName(const QString &name)
+{
+    QString canonicalName = getShortPathName(name);
+    if (canonicalName.isEmpty())
+        return name;
+    canonicalName = getLongPathName(canonicalName);
+    if (canonicalName.isEmpty())
+        return name;
+    // Upper case drive letter
+    if (canonicalName.size() > 2 && canonicalName.at(1) == QLatin1Char(':'))
+        canonicalName[0] = canonicalName.at(0).toUpper();
+    return canonicalName;
+}
+
 #pragma pack(push)
 #pragma pack(2)
 
