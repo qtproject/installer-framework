@@ -462,26 +462,32 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
                 QString::number(errorColumn), error));
         }
 
-        const QString name = doc.firstChildElement(QLatin1String("Package"))
-            .firstChildElement(QLatin1String("Name")).text();
+        const QDomElement packageElement = doc.firstChildElement(QLatin1String("Package"));
+        const QString name = packageElement.firstChildElement(QLatin1String("Name")).text();
         if (!name.isEmpty() && name != it->fileName()) {
             qWarning() << QString::fromLatin1("The <Name> tag in the \"%1\" is ignored - the installer uses the "
                 "path element right before the \"meta\" (\"%2\").").arg(fileInfo.absoluteFilePath(), it->fileName());
         }
 
+        const QString releaseDate = packageElement.firstChildElement(QLatin1String("ReleaseDate")).text();
+        if (releaseDate.isEmpty() || (!QDate::fromString(releaseDate, Qt::ISODate).isValid())) {
+            if (ignoreInvalidPackages)
+                continue;
+            throw QInstaller::Error(QString::fromLatin1("Release date for %1 is invalid! <ReleaseDate>%2"
+                "</ReleaseDate>. Supported format: YYYY-MM-DD").arg(fileInfo.absoluteFilePath(), releaseDate));
+        }
+
         PackageInfo info;
         info.name = it->fileName();
-        info.version = doc.firstChildElement(QLatin1String("Package")).
-            firstChildElement(QLatin1String("Version")).text();
+        info.version = packageElement.firstChildElement(QLatin1String("Version")).text();
         if (!QRegExp(QLatin1String("[0-9]+((\\.|-)[0-9]+)*")).exactMatch(info.version)) {
             if (ignoreInvalidPackages)
                 continue;
             throw QInstaller::Error(QString::fromLatin1("Component version for %1 is invalid! <Version>%2</Version>")
                 .arg(fileInfo.absoluteFilePath(), info.version));
         }
-        info.dependencies = doc.firstChildElement(QLatin1String("Package")).
-            firstChildElement(QLatin1String("Dependencies")).text().split(QInstaller::scCommaRegExp,
-            QString::SkipEmptyParts);
+        info.dependencies = packageElement.firstChildElement(QLatin1String("Dependencies")).text()
+            .split(QInstaller::scCommaRegExp, QString::SkipEmptyParts);
         info.directory = it->filePath();
         dict.push_back(info);
 
