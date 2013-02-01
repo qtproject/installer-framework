@@ -32,7 +32,7 @@ adjust the qmake.conf to have a real stand alone working installer (at the momen
 Recommended configure options for windows:
 configure.exe -opensource -release -static -no-multimedia -no-declarative -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -nomake examples -nomake demos
 
-Recommended configure options for Linux:
+Recommended configure options for Linux and MacOS:
 configure -opensource -release -static -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -no-svg -nomake examples -nomake demos
  
 == Create an Installer ==
@@ -46,6 +46,9 @@ create-test-installer.bat
 in unix;
 cd tests/test-installer
 create-test-installer.sh
+
+   NOTE: Under MacOS you have to copy the dir $QTDIR/src/gui/mac/qt_menu.nib to <INSTALLER_APP_DIR>/Resources/qt_menu.nib.
+         for example: cp -r ../../qt4/src/gui/mac/qt_menu.nib ./test-installer-offline.app/Contents/Resources
 
 This creates an installer "test-installer-offline"/"test-installer-online" and the components required by the com.nokia.testapp package(examples\testapp\packages\com.nokia.testapp) in the bin folder.
 
