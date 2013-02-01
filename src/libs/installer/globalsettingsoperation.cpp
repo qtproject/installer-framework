@@ -126,7 +126,7 @@ QSettingsWrapper *GlobalSettingsOperation::setup(QString *key, QString *value, c
     }
 
     setError(InvalidArguments);
-    setErrorString(tr("Invalid arguments in 0%: %1 arguments given, at least 3 expected.")
+    setErrorString(tr("Invalid arguments in %0: %1 arguments given, at least 3 expected.")
         .arg(name()).arg(arguments.count()));
     return 0;
 }
