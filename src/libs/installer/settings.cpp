@@ -231,6 +231,11 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
             .arg(reader.errorString()).arg(reader.lineNumber()).arg(reader.columnNumber()));
     }
 
+    if (s.d->m_data.value(scName).isNull())
+        throw Error(QString::fromLatin1("Missing or empty <Name> tag in %1.").arg(file.fileName()));
+    if (s.d->m_data.value(scVersion).isNull())
+        throw Error(QString::fromLatin1("Missing or empty <Version> tag in %1.").arg(file.fileName()));
+
     // Add some possible missing values
     if (!s.d->m_data.contains(scIcon))
         s.d->m_data.insert(scIcon, QLatin1String(":/installer"));
