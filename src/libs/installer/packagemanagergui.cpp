@@ -947,11 +947,11 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_rejectLabel->setObjectName(QLatin1String("RejectLicenseLabel"));
     m_rejectLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
-#if defined(Q_OS_X11) || defined(Q_OS_MAC)
+#ifdef Q_OS_UNIX
     QFont labelFont(font());
     labelFont.setPixelSize(9);
-    acceptLabel->setFont(labelFont);
-    rejectLabel->setFont(labelFont);
+    m_acceptLabel->setFont(labelFont);
+    m_rejectLabel->setFont(labelFont);
 #endif
 
     QGridLayout *gridLayout = new QGridLayout;
