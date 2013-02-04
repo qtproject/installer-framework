@@ -1601,7 +1601,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
 
             // Filter out the create target dir undo operation, it's only needed for full uninstall.
             // Note: We filter for unnamed operations as well, since old installations had the remove target
-            //  dir operation without the "uninstall-only", which will result in an complete uninstallation
+            //  dir operation without the "uninstall-only", which will result in a complete uninstallation
             //  during an update for the maintenance tool.
             if (operation->value(QLatin1String("uninstall-only")).toBool()
                 || operation->value(QLatin1String("component")).toString().isEmpty()) {
@@ -1807,7 +1807,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         }
 
         if (ok || operation->error() > Operation::InvalidArguments) {
-            // Remember that the operation was performed, what allows us to undo it if a following operation
+            // Remember that the operation was performed, that allows us to undo it if a following operation
             // fails or if this operation failed but still needs an undo call to cleanup.
             addPerformed(operation);
             operation->setValue(QLatin1String("component"), component->name());
