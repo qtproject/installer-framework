@@ -1029,11 +1029,11 @@ void LicenseAgreementPage::updateUi()
         rejectButtonText = tr("I do not accept the licenses.");
     }
 
-    setSubTitle(subTitleForPage(QLatin1String("LicenseAgreementPage", subTitleText));
+    setSubTitle(subTitleForPage(QLatin1String("LicenseAgreementPage"), subTitleText));
 
     const QVariantHash hash = elementsForPage(QLatin1String("LicenseAgreementPage"));
-    m_acceptLabel->setText(hash.value(QLatin1String("AcceptLicenseLabel"), acceptButtonText);
-    m_rejectLabel->setText(hash.value(QLatin1String("RejectLicenseLabel"), rejectButtonText);
+    m_acceptLabel->setText(hash.value(QLatin1String("AcceptLicenseLabel"), acceptButtonText).toString());
+    m_rejectLabel->setText(hash.value(QLatin1String("RejectLicenseLabel"), rejectButtonText).toString());
 
 }
 
