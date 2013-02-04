@@ -1539,7 +1539,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         stopProcessesForUpdates(componentsToInstall);
 
         if (m_dependsOnLocalInstallerBinary && !KDUpdater::pathIsOnLocalDevice(qApp->applicationFilePath())) {
-            throw Error(tr("It is not possible to run that opertion from a network location"));
+            throw Error(tr("It is not possible to run that operation from a network location"));
         }
 
         bool updateAdminRights = false;
