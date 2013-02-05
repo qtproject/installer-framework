@@ -67,6 +67,10 @@ static QHash<QByteArray, QByteArray> generatePatchValueHash(const QByteArray &ne
     replaceHash.insert(QByteArray("qt_prfxpath=%1").replace("%1", oldValue),
         QByteArray("qt_prfxpath=%1/").replace("%1/", newQtPath));
 
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_ARCHDATA"));
+    replaceHash.insert(QByteArray("qt_adatpath=%1").replace("%1", oldValue),
+        QByteArray("qt_adatpath=%1/").replace("%1/", newQtPath));
+
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DOCS"));
     replaceHash.insert(QByteArray("qt_docspath=%1").replace("%1", oldValue),
         QByteArray("qt_docspath=%1/doc").replace("%1/", newQtPath + nativeSeperator));
@@ -90,6 +94,10 @@ static QHash<QByteArray, QByteArray> generatePatchValueHash(const QByteArray &ne
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_IMPORTS"));
     replaceHash.insert(QByteArray("qt_impspath=%1").replace("%1", oldValue),
         QByteArray("qt_impspath=%1/imports").replace("%1/", newQtPath + nativeSeperator));
+
+    oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_QML"));
+    replaceHash.insert(QByteArray("qt_qml2path=%1").replace("%1", oldValue),
+        QByteArray("qt_qml2path=%1/qml").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DATA"));
     replaceHash.insert( QByteArray("qt_datapath=%1").replace("%1", oldValue),
