@@ -85,7 +85,7 @@ static QHash<QByteArray, QByteArray> generatePatchValueHash(const QByteArray &ne
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_LIBEXECS"));
     replaceHash.insert(QByteArray("qt_lbexpath=%1").replace("%1", oldValue),
-        QByteArray("qt_lbexpath=%1/lib").replace("%1/", newQtPath + nativeSeperator));
+        QByteArray("qt_lbexpath=%1/libexec").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_BINS"));
     replaceHash.insert(QByteArray("qt_binspath=%1").replace("%1", oldValue),
