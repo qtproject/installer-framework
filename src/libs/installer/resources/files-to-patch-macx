@@ -10,6 +10,7 @@ bin/qt3to4
 bin/xmlpatterns
 bin/xmlpatternsvalidator
 lib/QtCore.framework/QtCore
+lib/QtCore.framework/QtCore_debug
 bin/Designer.app/Contents/MacOS/Designer
 bin/Linguist.app/Contents/MacOS/Linguist
 bin/qhelpconverter.app/Contents/MacOS/qhelpconverter
