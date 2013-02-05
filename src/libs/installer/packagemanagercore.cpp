@@ -957,6 +957,7 @@ Component *PackageManagerCore::componentByName(const QString &name) const
 */
 bool PackageManagerCore::calculateComponentsToInstall() const
 {
+    emit aboutCalculateComponentsToInstall();
     if (!d->m_componentsToInstallCalculated) {
         d->clearComponentsToInstall();
         QList<Component*> components;
