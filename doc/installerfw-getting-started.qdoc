@@ -65,7 +65,7 @@
     your compiler.
 
     If you are using e.g. the Microsoft Visual Studio 2010 compiler, you edit
-    mkspecs\win32-msvc2010\qmake.conf and replace in the CFLAGS sections
+    \c{mkspecs\win32-msvc2010\qmake.conf} and replace in the CFLAGS sections
     '-MD' with '-MT'. Furthermore you should remove 'embed_manifest_dll'
     and 'embed_manifest_exe' from CONFIG:
 
