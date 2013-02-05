@@ -55,7 +55,8 @@ namespace {
         QFileInfo fileInfo(binaryPath);
 
         if (!fileInfo.exists()) {
-            qDebug() << "qpatch: warning: file '" << binaryPath << "' not found";
+            qDebug() << QString::fromLatin1("qpatch: warning: file '%1' not found.").arg(
+                        binaryPath);
             return QByteArray();
         }
 
@@ -67,7 +68,8 @@ namespace {
         }
         Q_ASSERT(file.isOpen());
         if (!file.isOpen()) {
-            qDebug() << "qpatch: warning: file '" << binaryPath << "' can not open as ReadOnly.";
+            qDebug() << QString::fromLatin1("qpatch: warning: file '%1' can not be opened as ReadOnly.").arg(
+                        binaryPath);
             qDebug() << file.errorString();
             return QByteArray();
         }
@@ -86,10 +88,10 @@ namespace {
 
         int stringEndPosition = offset;
 
-        //go to the position where other data starts
+        // go to the position where the other data starts
         while (source.at(stringEndPosition++) != '\0') {}
 
-        //after search string till the first \0 it should be our looking for QByteArray
+        // between the search string and the first \0 is the QByteArray we are looking for
         return source.mid(offset + searchValue.size(), stringEndPosition - offset);
     }
 }
@@ -138,7 +140,7 @@ bool SetPathOnQtCoreOperation::performOperation()
         return false;
     }
 
-    if (255 < newValue.size()) {
+    if (newValue.size() >= 255) {
         qDebug() << "qpatch: error: newQtDir needs to be less than 255 characters.";
         return false;
     }

@@ -83,7 +83,7 @@ bool SetDemosPathOnQtOperation::performOperation()
     if (qmakeValueHash.isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("The output of \n%1 -query\nis not parseable. Please file a bugreport with this "
-            "dialog https://bugreports.qt-project.org.\noutput: %2").arg(QDir::toNativeSeparators(qmakePath),
+            "dialog at https://bugreports.qt-project.org.\noutput: %2").arg(QDir::toNativeSeparators(qmakePath),
             QString::fromUtf8(qmakeOutput)));
         return false;
     }
@@ -91,7 +91,7 @@ bool SetDemosPathOnQtOperation::performOperation()
     QByteArray oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_DEMOS"));
     bool oldQtPathFromQMakeIsEmpty = oldValue.isEmpty();
     if (oldQtPathFromQMakeIsEmpty) {
-        qDebug() << "qpatch: warning: It was not able to get the old values from" << qmakePath;
+        qDebug() << "qpatch: warning: It was not possible to get the old values from" << qmakePath;
     }
 
     if (newValue.size() >= 255) {

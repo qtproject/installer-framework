@@ -67,7 +67,7 @@ namespace {
         }
         Q_ASSERT(file.isOpen());
         if (!file.isOpen()) {
-            qDebug() << QString::fromLatin1("qpatch: warning: file '%1' can not open as ReadOnly.").arg(
+            qDebug() << QString::fromLatin1("qpatch: warning: file '%1' can not be opened as ReadOnly.").arg(
                 binaryPath);
             qDebug() << file.errorString();
             return QByteArray();
@@ -86,7 +86,7 @@ namespace {
 
         int stringEndPosition = offset;
         while(source.at(stringEndPosition++) != '\0') {}
-        //after search string till the first \0 it should be our looking for QByteArray
+        // between the search string and the first \0 is the QByteArray we are looking for
         return source.mid(offset + searchValue.size(), stringEndPosition - offset);
     }
 }

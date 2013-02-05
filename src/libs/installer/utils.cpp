@@ -317,7 +317,7 @@ static QString qt_create_commandline(const QString &program, const QStringList &
         }
         programName.replace(QLatin1Char('/'), QLatin1Char('\\'));
 
-        // add the prgram as the first arg ... it works better
+        // add the program as the first arg ... it works better
         args = programName + QLatin1Char(' ');
     }
 
