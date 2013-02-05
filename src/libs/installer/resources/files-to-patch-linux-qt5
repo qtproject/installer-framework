@@ -1,7 +1,7 @@
 bin/qmake
 bin/lrelease
 bin/qdoc
-lib/libQtCore.so
+lib/libQt5Core.so
 %%
 *.la
 *.prl
