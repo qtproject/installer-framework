@@ -291,16 +291,33 @@ int main(int argc, char *argv[])
         // the uninstaller for the recorded list of during the installation performed operations
         QInstaller::init();
 
+        QString binaryFile = QCoreApplication::applicationFilePath();
+        const int index = args.indexOf(QLatin1String("--binarydatafile"));
+        if (index >= 0) {
+            binaryFile = args.value(index + 1);
+            if (binaryFile.isEmpty()) {
+                std::cerr << QFileInfo(app.applicationFilePath()).fileName() << " --binarydatafile [missing "
+                    "argument]" << std::endl;
+                return PackageManagerCore::Failure;
+            }
+
+            // Consume the arguments to avoid "Unknown option" output. Also there's no need to check for a
+            // valid binary, will throw in readAndRegisterFromBinary(...) if the magic cookie can't be found.
+            args.removeAt(index + 1);
+            args.removeAll(QLatin1String("--binarydatafile"));
+        }
+
 #ifdef Q_OS_MAC
-        // load the external binary resource
-        QDir resourcePath(QFileInfo(QCoreApplication::applicationFilePath()).dir());
-        resourcePath.cdUp();
-        resourcePath.cd(QLatin1String("Resources"));
-        BinaryContent content = BinaryContent::readAndRegisterFromBinary(resourcePath.filePath(QLatin1String("installer.dat")));
-#else
-        // load and map the embedded binary resource, registers operations
-        BinaryContent content = BinaryContent::readAndRegisterFromApplicationFile();
+        // Load the external binary resource if we got one passed, otherwise assume we are a bundle. In that
+        // case we need to figure out the path into the bundles resources folder to get the binary data.
+        if (index < 0) {
+            QDir resourcePath(QFileInfo(binaryFile).dir());
+            resourcePath.cdUp();
+            resourcePath.cd(QLatin1String("Resources"));
+            binaryFile = resourcePath.filePath(QLatin1String("installer.dat"));
+        }
 #endif
+        BinaryContent content = BinaryContent::readAndRegisterFromBinary(binaryFile);
 
         // instantiate the installer we are actually going to use
         QInstaller::PackageManagerCore core(content.magicMarker(), content.performedOperations());

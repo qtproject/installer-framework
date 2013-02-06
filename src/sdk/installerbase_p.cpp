@@ -340,6 +340,9 @@ void InstallerBase::showUsage()
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --show-virtual-components"
         << std::setw(40) << "Show virtual components in package manager and updater" << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left)
+        << "  --binarydatafile [path/to/binary/data/file]" << std::setw(40) << "Use the binary data of "
+        "another installer or maintenance tool." << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
         << "  --update-installerbase [path/to/new/installerbase]" << std::setw(40)
         << "Patch a full installer with a new installer base" << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --dump-binary-data [OPTION...] -o "
