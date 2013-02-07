@@ -115,7 +115,7 @@ bool SetImportsPathOnQtCoreOperation::performOperation()
     const QString qtCoreLibraryDir = args.at(0);
     const QByteArray newValue = QDir::toNativeSeparators(args.at(1)).toUtf8();
 
-    if (255 < newValue.size()) {
+    if (newValue.size() >= 255) {
         qDebug() << "qpatch: error: newQtDir needs to be less than 255 characters.";
         return false;
     }

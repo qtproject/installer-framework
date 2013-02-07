@@ -94,7 +94,7 @@ bool SetDemosPathOnQtOperation::performOperation()
         qDebug() << "qpatch: warning: It was not able to get the old values from" << qmakePath;
     }
 
-    if (255 < newValue.size()) {
+    if (newValue.size() >= 255) {
         setError(UserDefinedError);
         setErrorString(tr("Qt patch error: new Qt demo path (%1)\nneeds to be less than 255 characters.")
             .arg(QString::fromLocal8Bit(newValue)) );
