@@ -47,6 +47,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.icon(), QLatin1String(":/installer.png"));
 #endif
     QCOMPARE(settings.runProgram(), QString());
+    QCOMPARE(settings.runProgramArguments(), QString());
     QCOMPARE(settings.runProgramDescription(), QString());
     QCOMPARE(settings.adminTargetDir(), QString());
     QCOMPARE(settings.removeTargetDir(), QLatin1String("true"));

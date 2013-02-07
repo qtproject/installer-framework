@@ -2011,11 +2011,13 @@ void FinishedPage::leaving()
 void FinishedPage::handleFinishClicked()
 {
     const QString program = packageManagerCore()->replaceVariables(packageManagerCore()->value(scRunProgram));
+    const QStringList args = packageManagerCore()->replaceVariables(
+                packageManagerCore()->value(scRunProgramArguments)).split(QLatin1Char(' '));
     if (!m_runItCheckBox->isChecked() || program.isEmpty())
         return;
 
-    qDebug() << "starting" << program;
-    QProcess::startDetached(program);
+    qDebug() << "starting" << program << args;
+    QProcess::startDetached(program, args);
 }
 
 

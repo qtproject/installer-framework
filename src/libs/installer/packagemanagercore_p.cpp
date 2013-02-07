@@ -761,7 +761,7 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
     QVariantHash variables;
     QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
     foreach (const QString &key, m_data.keys()) {
-        if (key != scRunProgramDescription && key != scRunProgram)
+        if (key != scRunProgramDescription && key != scRunProgram && key != scRunProgramArguments)
             variables.insert(key, m_data.value(key));
     }
     cfg.setValue(QLatin1String("Variables"), variables);

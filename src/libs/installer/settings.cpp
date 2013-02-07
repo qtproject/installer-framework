@@ -360,6 +360,11 @@ QString Settings::runProgram() const
     return d->m_data.value(scRunProgram).toString();
 }
 
+QString Settings::runProgramArguments() const
+{
+    return d->m_data.value(scRunProgramArguments).toString();
+}
+
 QString Settings::runProgramDescription() const
 {
     return d->m_data.value(scRunProgramDescription).toString();

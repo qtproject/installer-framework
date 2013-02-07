@@ -27,6 +27,7 @@ File should contain all elements we allow in a config.xml
     <RemoveTargetDir>true</RemoveTargetDir>
 
     <RunProgram>myapp</RunProgram>
+    <RunProgramArguments>foo bar</RunProgramArguments>
     <RunProgramDescription>Launch MyApp</RunProgramDescription>
 
     <DependsOnLocalInstallerBinary>true</DependsOnLocalInstallerBinary>

@@ -200,6 +200,9 @@
             \o  Command executed after the installer is done if the user accepts
                 the action.
         \row
+            \o  RunProgramArguments
+            \o  Arguments passed to the program specified in RunProgram.
+        \row
             \o  RunProgramDescription
             \o  Text shown next to the check box for running the program after
                 the installation. Defaults to \gui {Run <Name>}.

@@ -95,6 +95,7 @@ public:
     QString applicationVersion() const;
 
     QString runProgram() const;
+    QString runProgramArguments() const;
     QString runProgramDescription() const;
     QString startMenuDir() const;
     QString targetDir() const;

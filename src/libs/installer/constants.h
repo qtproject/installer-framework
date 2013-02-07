@@ -80,6 +80,7 @@ static const QLatin1String scSortingPriority("SortingPriority");
 static const QLatin1String scTitle("Title");
 static const QLatin1String scPublisher("Publisher");
 static const QLatin1String scRunProgram("RunProgram");
+static const QLatin1String scRunProgramArguments("RunProgramArguments");
 static const QLatin1String scStartMenuDir("StartMenuDir");
 static const QLatin1String scRemoveTargetDir("RemoveTargetDir");
 static const QLatin1String scRunProgramDescription("RunProgramDescription");
