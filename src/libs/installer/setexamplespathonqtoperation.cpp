@@ -96,7 +96,7 @@ bool SetExamplesPathOnQtOperation::performOperation()
 
     if (newValue.size() >= 255) {
         setError(UserDefinedError);
-        setErrorString(tr("Qt patch error: new Qt example path (%1)\nneeds to be less than 255 characters.")
+        setErrorString(tr("Qt patch error: new Qt example path '%1'\nneeds to be less than 255 characters.")
             .arg(QString::fromLocal8Bit(newValue)));
         return false;
     }
