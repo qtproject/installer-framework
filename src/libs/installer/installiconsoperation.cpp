@@ -135,14 +135,16 @@ void InstallIconsOperation::backup()
 bool InstallIconsOperation::performOperation()
 {
     const QStringList args = arguments();
-    if (args.count() != 1) {
+    if ((args.count() != 1) && (args.count() != 2)) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 1 expected.").arg(name()).arg(args
-            .count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 1 or 2 expected (Sourcepath, [Vendorprefix]).")
+                       .arg(name()).arg(args.count()));
         return false;
     }
 
-    const QString source = args.first();
+    const QString source = args.at(0);
+    const QString vendor = args.value(1);
+
     if (source.isEmpty()) {
         setError(InvalidArguments);
         setErrorString(QObject::tr("Invalid Argument: source folder must not be empty."));
@@ -169,12 +171,27 @@ bool InstallIconsOperation::performOperation()
             return true;
 
         const QString source = it.next();
-        const QString target = targetDir.absoluteFilePath(sourceDir.relativeFilePath(source));
+        QString target = targetDir.absoluteFilePath(sourceDir.relativeFilePath(source));
 
         emit outputTextChanged(target);
 
         const QFileInfo fi = it.fileInfo();
         if (!fi.isDir()) {
+
+            // exchange prefix with vendor if vendor is set
+            if (!vendor.isEmpty()) {
+                // path of the target file
+                const QString targetPath = QFileInfo(target).absolutePath() + QLatin1String("/");
+
+                // filename with replaced vendor string
+                const QString targetFile = vendor
+                    + fi.baseName().section(QLatin1Char('-'), 1, -1, QString::SectionIncludeLeadingSep)
+                    + fi.completeSuffix();
+
+                // target is the file with full path and replaced vendor string
+                target = targetPath + targetFile;
+            }
+
             if (QFile(target).exists()) {
                 // first backup...
                 const QString backup = generateTemporaryFileName(target + QLatin1String("XXXXXX"));
