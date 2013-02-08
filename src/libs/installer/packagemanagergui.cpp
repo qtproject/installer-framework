@@ -823,9 +823,26 @@ void PackageManagerPage::setVisible(bool visible)
 
 int PackageManagerPage::nextId() const
 {
-    return QWizardPage::nextId();
-}
+    const int next = QWizardPage::nextId(); // the page to show next
+    if (next == PackageManagerCore::LicenseCheck) {
+        // calculate the page after the license page
+        const int nextNextId = gui()->pageIds().value(gui()->pageIds().indexOf(next) + 1, -1);
+        const PackageManagerCore *const core = packageManagerCore();
+        if (core->isUninstaller())
+            return nextNextId;  // forcibly hide the license page if we run as uninstaller
 
+        core->calculateComponentsToInstall();
+        foreach (Component* component, core->orderedComponentsToInstall()) {
+            if ((core->isPackageManager() || core->isUpdater()) && component->isInstalled())
+                continue;   // package manager or updater, hide as long as the component is installed
+
+            if (!component->licenses().isEmpty())
+                return next;    // we found a component not installed with a license, need to show the page
+        }
+        return nextNextId;  // no component with a license or all components with license installed
+    }
+    return next;    // default, show the next page
+}
 
 // -- IntroductionPage
 

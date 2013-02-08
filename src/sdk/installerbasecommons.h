@@ -133,9 +133,7 @@ class InstallerGui : public QInstaller::PackageManagerGui
 
 public:
     explicit InstallerGui(QInstaller::PackageManagerCore *core);
-
     virtual void init();
-    virtual int nextId() const;
 };
 
 
@@ -147,9 +145,7 @@ class MaintenanceGui : public QInstaller::PackageManagerGui
 
 public:
     explicit MaintenanceGui(QInstaller::PackageManagerCore *core);
-
     virtual void init();
-    virtual int nextId() const;
 
 private Q_SLOTS:
     void updateRestartPage();

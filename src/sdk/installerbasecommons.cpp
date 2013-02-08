@@ -526,25 +526,6 @@ void InstallerGui::init()
 {
 }
 
-int InstallerGui::nextId() const
-{
-    const int next = QWizard::nextId();
-    if (next == PackageManagerCore::LicenseCheck) {
-        PackageManagerCore *const core = packageManagerCore();
-        const int nextNextId = pageIds().value(pageIds().indexOf(next)+ 1, -1);
-        if (!core->isInstaller())
-            return nextNextId;
-
-        core->calculateComponentsToInstall();
-        foreach (Component* component, core->orderedComponentsToInstall()) {
-            if (!component->licenses().isEmpty())
-                return next;
-        }
-        return nextNextId;
-    }
-    return next;
-}
-
 
 // -- MaintenanceGui
 
@@ -571,27 +552,6 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
 
 void MaintenanceGui::init()
 {
-}
-
-int MaintenanceGui::nextId() const
-{
-    const int next = QWizard::nextId();
-    if (next == PackageManagerCore::LicenseCheck) {
-        PackageManagerCore *const core = packageManagerCore();
-        const int nextNextId = pageIds().value(pageIds().indexOf(next)+ 1, -1);
-        if (!core->isPackageManager() && !core->isUpdater())
-            return nextNextId;
-
-        core->calculateComponentsToInstall();
-        foreach (Component* component, core->orderedComponentsToInstall()) {
-            if (component->isInstalled())
-                continue;
-            if (!component->licenses().isEmpty())
-                return next;
-        }
-        return nextNextId;
-    }
-    return next;
 }
 
 void MaintenanceGui::updateRestartPage()
