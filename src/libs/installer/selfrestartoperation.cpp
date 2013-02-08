@@ -61,7 +61,7 @@ bool SelfRestartOperation::performOperation()
     PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {
         setError(UserDefinedError);
-        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        setErrorString(tr("Installer object needed in '%1' operation is empty.").arg(name()));
         return false;
     }
 

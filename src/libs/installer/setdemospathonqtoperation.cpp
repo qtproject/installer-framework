@@ -82,7 +82,7 @@ bool SetDemosPathOnQtOperation::performOperation()
 
     if (qmakeValueHash.isEmpty()) {
         setError(UserDefinedError);
-        setErrorString(tr("The output of \n%1 -query\nis not parseable. Please file a bugreport with this "
+        setErrorString(tr("The output of \n'%1 -query'\nis not parseable. Please file a bugreport with this "
             "dialog at https://bugreports.qt-project.org.\noutput: %2").arg(QDir::toNativeSeparators(qmakePath),
             QString::fromUtf8(qmakeOutput)));
         return false;

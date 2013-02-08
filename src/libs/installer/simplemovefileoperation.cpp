@@ -69,7 +69,7 @@ bool SimpleMoveFileOperation::performOperation()
 
     if (source.isEmpty() || target.isEmpty()) {
         setError(UserDefinedError);
-        setErrorString(tr("None of the arguments can be empty: source (%1), target (%2).")
+        setErrorString(tr("None of the arguments can be empty: source '%1', target '%2'.")
             .arg(source, target));
         return false;
     }
