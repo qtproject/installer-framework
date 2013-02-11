@@ -356,6 +356,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
                     component->setCheckState(Qt::Checked);
             }
         }
+        std::sort(m_rootComponents.begin(), m_rootComponents.end(), Component::SortingPriorityGreaterThan());
     } catch (const Error &error) {
         clearAllComponentLists();
         emit m_core->finishAllComponentsReset();

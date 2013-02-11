@@ -1884,6 +1884,9 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                     }
                 }
             }
+
+            std::sort(d->m_updaterComponents.begin(), d->m_updaterComponents.end(),
+                Component::SortingPriorityGreaterThan());
         } else {
             // we have no updates, no need to store possible dependencies
             d->clearUpdaterComponentLists();
