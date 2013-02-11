@@ -382,7 +382,7 @@
             \o  Version
             \o  Version number of the component in the following format:
                 [0-9]+((\.|-)[0-9]+)* such as 1-1; 1.2-2; 3.4.7. Required.
-            \o  If a package needs to show the version number from a child rather than it's own (due to
+                If a package needs to show the version number from a child rather than it's own (due to
                 grouping of child packages) one can specify the attribute inheritVersionFrom with the package
                 name the version needs to be inherited from.
         \row
