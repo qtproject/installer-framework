@@ -186,7 +186,7 @@ bool InstallIconsOperation::performOperation()
                 // filename with replaced vendor string
                 const QString targetFile = vendor
                     + fi.baseName().section(QLatin1Char('-'), 1, -1, QString::SectionIncludeLeadingSep)
-                    + fi.completeSuffix();
+                    + QLatin1String(".") + fi.completeSuffix();
 
                 // target is the file with full path and replaced vendor string
                 target = targetPath + targetFile;
