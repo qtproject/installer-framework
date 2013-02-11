@@ -149,11 +149,11 @@ bool RegisterDefaultDebuggerOperation::undoOperation()
     // default value is the old value to keep the possibility that old saved operations can run undo
 #ifdef Q_OS_MAC
     QString toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile,
-        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/Nokia/toolChains.xml").arg(
+        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/QtProject/toolChains.xml").arg(
         core->value(QLatin1String("TargetDir"))));
 #else
     QString toolChainsXmlFilePath = core->value(scQtCreatorInstallerToolchainsFile,
-        QString::fromLatin1("%1/QtCreator/share/qtcreator/Nokia/toolChains.xml").arg(core->value(
+        QString::fromLatin1("%1/QtCreator/share/qtcreator/QtProject/toolChains.xml").arg(core->value(
         QLatin1String("TargetDir"))));
 #endif
 

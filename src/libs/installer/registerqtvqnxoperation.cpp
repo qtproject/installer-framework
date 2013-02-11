@@ -197,11 +197,11 @@ bool RegisterQtInCreatorQNXOperation::undoOperation()
     // default value is the old value to keep the possibility that old saved operations can run undo
 #ifdef Q_OS_MAC
     QString qtVersionsFileName = core->value(scQtCreatorInstallerQtVersionFile,
-        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/Nokia/qtversion.xml").arg(
+        QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/QtProject/qtversion.xml").arg(
         core->value(QLatin1String("TargetDir"))));
 #else
     QString qtVersionsFileName = core->value(scQtCreatorInstallerQtVersionFile,
-        QString::fromLatin1("%1/QtCreator/share/qtcreator/Nokia/qtversion.xml").arg(core->value(
+        QString::fromLatin1("%1/QtCreator/share/qtcreator/QtProject/qtversion.xml").arg(core->value(
         QLatin1String("TargetDir"))));
 #endif
 
