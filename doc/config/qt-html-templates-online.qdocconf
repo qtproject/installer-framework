@@ -9,12 +9,11 @@ HTML.postheader = \
     "    <div id=\"narrowsearch\"></div>\n" \
     "    <div id=\"nav-topright\">\n" \
     "      <ul>\n" \
-    "        <li class=\"nav-topright-home\"><a href=\"http://qt.nokia.com/\">Qt HOME</a></li>\n" \
-    "        <li class=\"nav-topright-dev\"><a href=\"http://qt-project.org/\">DEV</a></li>\n" \
-    "        <li class=\"nav-topright-labs\"><a href=\"http://labs.qt.nokia.com/blogs/\">LABS</a></li>\n" \
+    "        <li class=\"nav-topright-home\"><a href=\"http://qt.digia.com/\">Qt HOME</a></li>\n" \
+    "        <li class=\"nav-topright-dev\"><a href=\"http://wiki.qt-project.org/\">DEV</a></li>\n" \
     "        <li class=\"nav-topright-doc nav-topright-doc-active\"><a href=\"http://qt-project.org/doc/\">\n" \
     "          DOC</a></li>\n" \
-    "        <li class=\"nav-topright-blog\"><a href=\"http://blog.qt.nokia.com/\">BLOG</a></li>\n" \
+    "        <li class=\"nav-topright-blog\"><a href=\"http://blog.qt.digia.com/\">BLOG</a></li>\n" \
     "      </ul>\n" \
     "    </div>\n" \
     "    <div id=\"shortCut\">\n" \
@@ -103,7 +102,8 @@ HTML.footer = \
     "      <span></span>\n" \
     "    </div>\n" \
     "  </div> \n" \
-    "<div class=\"footer\">\n" \
+    "  <div class=\"footer\">\n" \
+    "    <p>\n" \
     "    <p>\n" \
     "      <acronym title=\"Copyright\">&copy;</acronym> 2013 Digia Plc and/or its\n" \
     "      subsidiaries. Documentation contributions included herein are the copyrights of\n" \
@@ -122,8 +122,8 @@ HTML.footer = \
     "      in Finland and/or other countries worldwide. All other trademarks are property\n" \
     "      of their respective owners. <a title=\"Privacy Policy\"\n" \
     "      href=\"http://en.gitorious.org/privacy_policy/\">Privacy Policy</a></p>\n" \
-    "</div>\n" \
-        "\n" \
+    "  </div>\n" \
+    "\n" \
     "  <script src=\"scripts/functions.js\" type=\"text/javascript\"></script>\n" \
     "  <script type=\"text/javascript\">\n" \
     "  var _gaq = _gaq || [];\n" \

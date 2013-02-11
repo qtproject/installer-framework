@@ -1,11 +1,11 @@
-project     = "Qt Installer Framework Manual"
+project     = "Qt Installer Framework"
 description = "Qt Installer Framework Manual"
 
 headerdirs =
 sourcedirs = $SRCDIR
 imagedirs = $SRCDIR/images $SRCDIR/templates/images
 outputdir = $OUTDIR
-exampledirs = $SRCDIR
+exampledirs = $SRCDIR $SRCDIR/examples
 indexes                 = qt.index
 
 include(compat.qdocconf)
@@ -16,13 +16,13 @@ include(qt-defines.qdocconf)
 sources.fileextensions         = "*.qdoc"
 
 qhp.projects            = InstallerFramework
-qhp.InstallerFramework.file             = installerfw.qhp
-qhp.InstallerFramework.namespace        = com.nokia.qt.installerfw.121
+qhp.InstallerFramework.file             = ifw.qhp
+qhp.InstallerFramework.namespace        = org.qt-project.ifw.121
 qhp.InstallerFramework.virtualFolder    = doc
 qhp.InstallerFramework.indexTitle       = Qt Installer Framework Manual
-qhp.InstallerFramework.filterAttributes = installerfw 121
+qhp.InstallerFramework.filterAttributes = ifw
 qhp.InstallerFramework.customFilters.InstallerFramework.name = Installer Framework
-qhp.InstallerFramework.customFilters.InstallerFramework.filterAttributes = installerfw
+qhp.InstallerFramework.customFilters.InstallerFramework.filterAttributes = ifw
 qhp.InstallerFramework.indexRoot        =
 
 qhp.InstallerFramework.subprojects = manual

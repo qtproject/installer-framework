@@ -51,9 +51,9 @@ $('.feedback').click(function() {
 var lookupCount = 0;
 var articleCount = 0;
 var exampleCount = 0;
-var qturl = ""; // change from "http://doc.qt.nokia.com/4.6/" to 0 so we can have relative links
+var qturl = ""; // change from "http://doc.qt.digia.com/4.6/" to 0 so we can have relative links
 
-function processNokiaData(response){
+function processData(response){
 	var propertyTags = response.getElementsByTagName('page');
 	
  	for (var i=0; i< propertyTags.length; i++) {
@@ -180,7 +180,7 @@ else
 				$('.searching').remove(); 
 				$('#pageType').removeClass('loading');
 				$('.list ul').prepend('<li class="menuAlert searching">Searching...</li>');
-                processNokiaData(response);
+                processData(response);
 
  }     
               });

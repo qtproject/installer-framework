@@ -1,20 +1,28 @@
 # Adapted from doc/doc.pri in Qt Creator.
 
-QDOC_BIN = $$[QT_INSTALL_BINS]/qdoc3
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QDOC_BIN = $$[QT_INSTALL_BINS]/qdoc
+} else {
+    QDOC_BIN = $$[QT_INSTALL_BINS]/qdoc3
+}
 win32:QDOC_BIN = $$replace(QDOC_BIN, "/", "\\")
 
 unix {
-    QDOC = SRCDIR=$$PWD OUTDIR=$$OUT_PWD/doc/html QT_MOBILITY_SOURCE_PATH=$$QT_MOBILITY_SOURCE_PATH $$QDOC_BIN
+    QDOC = SRCDIR=$$PWD OUTDIR=$$OUT_PWD/doc/html $$QDOC_BIN
     HELPGENERATOR = $$[QT_INSTALL_BINS]/qhelpgenerator
 } else {
-    QDOC = set SRCDIR=$$PWD&& set OUTDIR=$$OUT_PWD/doc/html&& set QT_MOBILITY_SOURCE_PATH=$$QT_MOBILITY_SOURCE_PATH&& $$QDOC_BIN
+    QDOC = set SRCDIR=$$PWD&& set OUTDIR=$$OUT_PWD/doc/html&& $$QDOC_BIN
     # Always run qhelpgenerator inside its own cmd; this is a workaround for
     # an unusual bug which causes qhelpgenerator.exe to do nothing
     HELPGENERATOR = cmd /C $$replace($$list($$[QT_INSTALL_BINS]/qhelpgenerator.exe), "/", "\\")
 }
 
-QHP_FILE = $$OUT_PWD/doc/html/installerfw.qhp
-QCH_FILE = $$OUT_PWD/doc/installerfw.qch
+greaterThan(QT_MAJOR_VERSION, 4) {
+    HELPGENERATOR = $$HELPGENERATOR -platform minimal
+}
+
+QHP_FILE = $$OUT_PWD/doc/html/ifw.qhp
+QCH_FILE = $$OUT_PWD/doc/ifw.qch
 
 HELP_DEP_FILES = $$PWD/installerfw.qdoc \
                  $$PWD/scripting.qdoc \
