@@ -163,10 +163,10 @@
             \o  Description
         \row
             \o  Name
-            \o  Name of the product being installed.
+            \o  Name of the product being installed. This is mandatory.
         \row
             \o  Version
-            \o  Version number of the product being installed.
+            \o  Version number of the product being installed. This is mandatory.
         \row
             \o  Title
             \o  Name of the installer as displayed on the title bar.
@@ -178,8 +178,15 @@
             \o  URL to a page that contains product information on your web
                 site.
         \row
+            \o  Icon
+            \o  Filename for a custom installer icon. The actual file is looked up by attaching
+                a '.icns' (Mac OS X), '.ico' (Windows) or '.png' (Unix) suffix.
+        \row
             \o  Logo
             \o  Filename for a logo used as \a QWizard::LogoPixmap.
+        \row
+            \o  LogoSmall
+            \o  Filename for a logo used as \a QWizard::LogoSmallPixmap.
         \row
             \o  Watermark
             \o  Filename for a watermark used as \a QWizard::WatermarkPixmap.
@@ -199,10 +206,6 @@
             \o  Name of the default program group for the product in the Windows
                 \gui Start menu.
         \row
-            \o  Icon
-            \o  Filename of the installer icon. On Windows, .ico is appended,
-                on Mac, .icns is appended, and on Linux, .png is appended.
-        \row
             \o  TargetDir
             \o  Default target directory for installation.
         \row
@@ -220,6 +223,13 @@
                 \e uninstall. The platform-specific executable file extension is
                 appended.
         \row
+            \o  UninstallerIniFile
+            \o  Filename for the configuration of the generated uninstaller. Defaults to
+                \e {UninstallerName}.ini.
+        \row
+            \o  RemoveTargetDir
+            \o  Set to \c false if the target directory should not be deleted when uninstalling.
+        \row
             \o  AllowNonAsciiCharacters
             \o  Set to \c true if the installation path can contain non-ASCII
                 characters.
@@ -229,6 +239,17 @@
         \row
             \o  AllowSpaceInPath
             \o  Set to \c true if the installation path can contain space characters.
+        \row
+            \o  DependsOnLocalInstallerBinary
+            \o  Set to \c true if you want to prohibit installation from an external resource, such
+                as a network drive. This might make sense for e.g. very big installers.
+                The option is only used on Windows.
+        \row
+            \o  TargetConfigurationFile
+            \o  Filename for the configuration file on the target. Default is components.xml.
+        \row
+            \o  Pages
+            \o  List of pages.
     \endtable
 
 */
