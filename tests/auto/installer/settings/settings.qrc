@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/tutorial_config.xml</file>
+        <file>data/malformed_config.xml</file>
+    </qresource>
+</RCC>

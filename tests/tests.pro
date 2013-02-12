@@ -2,6 +2,7 @@ CONFIG += ordered
 TEMPLATE = subdirs
 
 EXTRASUBDIRS = \
+        auto \
         downloadspeed \
         environmentvariable \
         extractarchiveoperationtest \
