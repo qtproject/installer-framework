@@ -761,8 +761,18 @@
 <context>
     <name>QInstaller::AddQtCreatorArrayValueOperation</name>
     <message>
+        <location filename="../../libs/installer/addqtcreatorarrayvalueoperation.cpp" line="73"/>
+        <source>exactly 4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../libs/installer/addqtcreatorarrayvalueoperation.cpp" line="72"/>
-        <source>Invalid arguments in %0: %1 arguments given, exactly 4 expected (group, arrayname, key, value).</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/addqtcreatorarrayvalueoperation.cpp" line="73"/>
+        <source> (group, arrayname, key, value)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -834,22 +844,22 @@
 <context>
     <name>QInstaller::ComponentModel</name>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1959"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1960"/>
         <source>Component Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1961"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1962"/>
         <source>Installed Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1963"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1964"/>
         <source>New Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1965"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1966"/>
         <source>Size</source>
         <translation type="unfinished"></translation>
     </message>
@@ -934,37 +944,47 @@
 <context>
     <name>QInstaller::CopyDirectoryOperation</name>
     <message>
-        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="79"/>
-        <source>Invalid arguments in %0: %1 arguments given, expected: &lt;source&gt; &lt;target&gt;[forceOverwrite]</source>
+        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="80"/>
+        <source>2 or 3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="94"/>
+        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="79"/>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="80"/>
+        <source> (&lt;source&gt; &lt;target&gt; [forceOverwrite])</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="93"/>
         <source>Invalid argument in %0: Third argument needs to be forceOverwrite, if specified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="104"/>
+        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="103"/>
         <source>Invalid arguments in %0: Directories are invalid: %1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="137"/>
+        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="136"/>
         <source>Could not create %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="144"/>
+        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="143"/>
         <source>Failed to overwrite %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="150"/>
+        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="149"/>
         <source>Could not copy %0 to %1, error was: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="171"/>
+        <location filename="../../libs/installer/copydirectoryoperation.cpp" line="170"/>
         <source>Could not remove %0</source>
         <translation type="unfinished"></translation>
     </message>
@@ -973,7 +993,12 @@
     <name>QInstaller::CreateDesktopEntryOperation</name>
     <message>
         <location filename="../../libs/installer/createdesktopentryoperation.cpp" line="146"/>
-        <source>Invalid arguments in %0: %1 arguments given, 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/createdesktopentryoperation.cpp" line="147"/>
+        <source>exactly 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -984,6 +1009,19 @@
     <message>
         <location filename="../../libs/installer/createdesktopentryoperation.cpp" line="163"/>
         <source>Could not write Desktop Entry at %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::CreateLinkOperation</name>
+    <message>
+        <location filename="../../libs/installer/createlinkoperation.cpp" line="68"/>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/createlinkoperation.cpp" line="69"/>
+        <source>exactly 2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1001,7 +1039,12 @@
     </message>
     <message>
         <location filename="../../libs/installer/createlocalrepositoryoperation.cpp" line="160"/>
-        <source>Invalid arguments in %0: %1 arguments given, 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/createlocalrepositoryoperation.cpp" line="161"/>
+        <source>exactly 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1053,6 +1096,21 @@
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
+    <message>
+        <location filename="../../libs/installer/createshortcutoperation.cpp" line="184"/>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/createshortcutoperation.cpp" line="185"/>
+        <source>2 or 3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/createshortcutoperation.cpp" line="185"/>
+        <source> (optional: &apos;workingDirectory=...&apos;)</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../../libs/installer/createshortcutoperation.cpp" line="203"/>
         <location filename="../../libs/installer/createshortcutoperation.cpp" line="207"/>
@@ -1130,7 +1188,12 @@ Error while loading %2</source>
     <name>QInstaller::ElevatedExecuteOperation</name>
     <message>
         <location filename="../../libs/installer/elevatedexecuteoperation.cpp" line="90"/>
-        <source>Invalid arguments in %1: %2 arguments given, at least 1 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/elevatedexecuteoperation.cpp" line="91"/>
+        <source>at least 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1157,8 +1220,13 @@ Error while loading %2</source>
 <context>
     <name>QInstaller::EnvironmentVariableOperation</name>
     <message>
-        <location filename="../../libs/installer/environmentvariablesoperation.cpp" line="141"/>
-        <source>Invalid arguments in %0: %1 arguments given, 2-3 expected.</source>
+        <location filename="../../libs/installer/environmentvariablesoperation.cpp" line="142"/>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/environmentvariablesoperation.cpp" line="143"/>
+        <source>2 or 3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1166,7 +1234,12 @@ Error while loading %2</source>
     <name>QInstaller::ExtractArchiveOperation</name>
     <message>
         <location filename="../../libs/installer/extractarchiveoperation.cpp" line="67"/>
-        <source>Invalid arguments in %0: %1 arguments given, 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/extractarchiveoperation.cpp" line="68"/>
+        <source>exactly 2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1358,8 +1431,13 @@ Error while loading %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/globalsettingsoperation.cpp" line="129"/>
-        <source>Invalid arguments in %0: %1 arguments given, at least 3 expected.</source>
+        <location filename="../../libs/installer/globalsettingsoperation.cpp" line="117"/>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/globalsettingsoperation.cpp" line="118"/>
+        <source>3 or 4</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1367,7 +1445,17 @@ Error while loading %2</source>
     <name>QInstaller::InstallIconsOperation</name>
     <message>
         <location filename="../../libs/installer/installiconsoperation.cpp" line="140"/>
-        <source>Invalid arguments in %0: %1 arguments given, 1 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/installiconsoperation.cpp" line="141"/>
+        <source>1 or 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/installiconsoperation.cpp" line="141"/>
+        <source> (Sourcepath, [Vendorprefix])</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1461,7 +1549,12 @@ Error while loading %2</source>
     <name>QInstaller::LineReplaceOperation</name>
     <message>
         <location filename="../../libs/installer/linereplaceoperation.cpp" line="69"/>
-        <source>Invalid arguments in %0: %1 arguments given, exactly 3 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/linereplaceoperation.cpp" line="70"/>
+        <source>exactly 3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1469,7 +1562,12 @@ Error while loading %2</source>
     <name>QInstaller::MacReplaceInstallNamesOperation</name>
     <message>
         <location filename="../../libs/installer/macreplaceinstallnamesoperation.cpp" line="73"/>
-        <source>Invalid arguments in %0: %1 arguments given, 3 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/macreplaceinstallnamesoperation.cpp" line="74"/>
+        <source>at least 3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1512,7 +1610,7 @@ Downloading packages...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1897"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1898"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1557,7 +1655,7 @@ Downloading packages...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1929"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1930"/>
         <source>invalid</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1923,23 +2021,28 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::QtPatchOperation</name>
     <message>
-        <location filename="../../libs/installer/qtpatchoperation.cpp" line="154"/>
-        <source>Invalid arguments in %0: %1 arguments given, 3 expected.</source>
+        <location filename="../../libs/installer/qtpatchoperation.cpp" line="166"/>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/qtpatchoperation.cpp" line="165"/>
+        <location filename="../../libs/installer/qtpatchoperation.cpp" line="167"/>
+        <source>exactly 3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/qtpatchoperation.cpp" line="177"/>
         <source>First argument should be &apos;linux&apos;, &apos;mac&apos; or &apos;windows&apos;. No other type is supported at this time.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/qtpatchoperation.cpp" line="180"/>
+        <location filename="../../libs/installer/qtpatchoperation.cpp" line="192"/>
         <source>QMake from the current Qt version 
 (%1)is not existing. Please file a bugreport with this dialog at https://bugreports.qt-project.org.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/qtpatchoperation.cpp" line="190"/>
+        <location filename="../../libs/installer/qtpatchoperation.cpp" line="202"/>
         <source>The output of 
 %1 -query
 is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
@@ -1947,19 +2050,19 @@ output: &quot;%2&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/qtpatchoperation.cpp" line="202"/>
+        <location filename="../../libs/installer/qtpatchoperation.cpp" line="214"/>
         <source>Qt patch error: new Qt dir(%1)
 needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/qtpatchoperation.cpp" line="241"/>
-        <location filename="../../libs/installer/qtpatchoperation.cpp" line="296"/>
+        <location filename="../../libs/installer/qtpatchoperation.cpp" line="253"/>
+        <location filename="../../libs/installer/qtpatchoperation.cpp" line="308"/>
         <source>Qt patch error: Can not open %1.(%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/qtpatchoperation.cpp" line="365"/>
+        <location filename="../../libs/installer/qtpatchoperation.cpp" line="377"/>
         <source>The installer was not able to get the unpatched path from 
 %1.(maybe it is broken or removed)
 It tried to patch the Qt binaries, but all other files in Qt are unpatched.
@@ -2065,7 +2168,6 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
 <context>
     <name>QInstaller::RegisterDefaultDebuggerOperation</name>
     <message>
-        <location filename="../../libs/installer/registerdefaultdebuggeroperation.cpp" line="93"/>
         <location filename="../../libs/installer/registerdefaultdebuggeroperation.cpp" line="137"/>
         <source>Invalid arguments in %0: %1 arguments given, 2 expected.</source>
         <translation type="unfinished"></translation>
@@ -2074,6 +2176,16 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
         <location filename="../../libs/installer/registerdefaultdebuggeroperation.cpp" line="103"/>
         <location filename="../../libs/installer/registerdefaultdebuggeroperation.cpp" line="145"/>
         <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/registerdefaultdebuggeroperation.cpp" line="93"/>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/registerdefaultdebuggeroperation.cpp" line="94"/>
+        <source>exactly 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2091,11 +2203,16 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <name>QInstaller::RegisterFileTypeOperation</name>
     <message>
         <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="106"/>
-        <source>Invalid arguments in %0</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="170"/>
+        <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="107"/>
+        <source>2 to 5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="171"/>
         <source>Register File Type: Invalid arguments</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2104,7 +2221,12 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <name>QInstaller::RegisterQtInCreatorQNXOperation</name>
     <message>
         <location filename="../../libs/installer/registerqtvqnxoperation.cpp" line="104"/>
-        <source>Invalid arguments in %0: %1 arguments given, minimum 5 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/registerqtvqnxoperation.cpp" line="105"/>
+        <source>at least 5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2127,26 +2249,39 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
 <context>
     <name>QInstaller::RegisterToolChainOperation</name>
     <message>
-        <location filename="../../libs/installer/registertoolchainoperation.cpp" line="74"/>
+        <location filename="../../libs/installer/registertoolchainoperation.cpp" line="75"/>
+        <source>at least 4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/registertoolchainoperation.cpp" line="84"/>
+        <source>Needed installer object in &apos;%1&apos; operation is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/registertoolchainoperation.cpp" line="89"/>
+        <source>There is no value set for &apos;%1&apos; on the installer object.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../libs/installer/registertoolchainoperation.cpp" line="134"/>
         <source>Invalid arguments in %0: %1 arguments given, minimum 4 expected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/registertoolchainoperation.cpp" line="84"/>
         <location filename="../../libs/installer/registertoolchainoperation.cpp" line="142"/>
         <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libs/installer/registertoolchainoperation.cpp" line="89"/>
-        <source>There is no value set for %1 on the installer object.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/registertoolchainoperation.cpp" line="114"/>
         <location filename="../../libs/installer/registertoolchainoperation.cpp" line="176"/>
         <source>Can&apos;t read from tool chains xml file(%1) correctly.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/registertoolchainoperation.cpp" line="74"/>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2160,7 +2295,12 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <name>QInstaller::ReplaceOperation</name>
     <message>
         <location filename="../../libs/installer/replaceoperation.cpp" line="69"/>
-        <source>Invalid arguments in %0: %1 arguments given, 3 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/replaceoperation.cpp" line="70"/>
+        <source>exactly 3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2176,7 +2316,7 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <name>QInstaller::SelfRestartOperation</name>
     <message>
         <location filename="../../libs/installer/selfrestartoperation.cpp" line="64"/>
-        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
+        <source>Installer object needed in &apos;%1&apos; operation is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2194,20 +2334,25 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <name>QInstaller::SetDemosPathOnQtOperation</name>
     <message>
         <location filename="../../libs/installer/setdemospathonqtoperation.cpp" line="67"/>
-        <source>Invalid arguments in %0: %1 arguments given, exactly 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/setdemospathonqtoperation.cpp" line="68"/>
+        <source>exactly 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/setdemospathonqtoperation.cpp" line="85"/>
         <source>The output of 
-%1 -query
-is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
+&apos;%1 -query&apos;
+is not parseable. Please file a bugreport with this dialog at https://bugreports.qt-project.org.
 output: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/setdemospathonqtoperation.cpp" line="99"/>
-        <source>Qt patch error: new Qt demo path (%1)
+        <source>Qt patch error: new Qt demo path &apos;%1&apos;
 needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2216,20 +2361,25 @@ needs to be less than 255 characters.</source>
     <name>QInstaller::SetExamplesPathOnQtOperation</name>
     <message>
         <location filename="../../libs/installer/setexamplespathonqtoperation.cpp" line="67"/>
-        <source>Invalid arguments in %0: %1 arguments given, exactly 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/setexamplespathonqtoperation.cpp" line="68"/>
+        <source>exactly 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/setexamplespathonqtoperation.cpp" line="85"/>
         <source>The output of 
-%1 -query
-is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
+&apos;%1 -query&apos;
+is not parseable. Please file a bugreport with this dialog at https://bugreports.qt-project.org.
 output: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/setexamplespathonqtoperation.cpp" line="99"/>
-        <source>Qt patch error: new Qt example path (%1)
+        <source>Qt patch error: new Qt example path &apos;%1&apos;
 needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2238,19 +2388,35 @@ needs to be less than 255 characters.</source>
     <name>QInstaller::SetImportsPathOnQtCoreOperation</name>
     <message>
         <location filename="../../libs/installer/setimportspathonqtcoreoperation.cpp" line="110"/>
-        <source>Invalid arguments in %0: %1 arguments given, exactly 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/setimportspathonqtcoreoperation.cpp" line="111"/>
+        <source>exactly 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/setimportspathonqtcoreoperation.cpp" line="120"/>
+        <source>Qt patch error: new Qt imports path &apos;%1&apos;
+needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SetPathOnQtCoreOperation</name>
     <message>
-        <location filename="../../libs/installer/setpathonqtcoreoperation.cpp" line="112"/>
-        <source>Invalid arguments in %0: %1 arguments given, exactly 3 expected.</source>
+        <location filename="../../libs/installer/setpathonqtcoreoperation.cpp" line="114"/>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/setpathonqtcoreoperation.cpp" line="136"/>
+        <location filename="../../libs/installer/setpathonqtcoreoperation.cpp" line="115"/>
+        <source>exactly 3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/setpathonqtcoreoperation.cpp" line="138"/>
         <source>The second type/value needs to be one of: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2259,7 +2425,18 @@ needs to be less than 255 characters.</source>
     <name>QInstaller::SetPluginPathOnQtCoreOperation</name>
     <message>
         <location filename="../../libs/installer/setpluginpathonqtcoreoperation.cpp" line="109"/>
-        <source>Invalid arguments in %0: %1 arguments given, exactly 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/setpluginpathonqtcoreoperation.cpp" line="110"/>
+        <source>exactly 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/setpluginpathonqtcoreoperation.cpp" line="119"/>
+        <source>Qt patch error: new Qt plugin path &apos;%1&apos;
+needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2267,18 +2444,32 @@ needs to be less than 255 characters.</source>
     <name>QInstaller::SetQtCreatorValueOperation</name>
     <message>
         <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="72"/>
-        <source>Invalid arguments in %0: %1 arguments given, exactly 4 expected (rootInstallPath, group, key, value).</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="73"/>
+        <source>exactly 4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="73"/>
+        <source> (rootInstallPath, group, key, value)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="80"/>
-        <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="134"/>
         <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="97"/>
-        <source>There is no value set for %1 on the installer object.</source>
+        <source>There is no value set for &apos;%1&apos; on the installer object.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="134"/>
+        <source>Needed installer object in &apos;%1&apos; operation is empty.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2286,28 +2477,33 @@ needs to be less than 255 characters.</source>
     <name>QInstaller::SimpleMoveFileOperation</name>
     <message>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="62"/>
-        <source>Invalid arguments in %0: %1 arguments given, exactly 2 expected.</source>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/simplemovefileoperation.cpp" line="63"/>
+        <source>exactly 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="72"/>
-        <source>None of the arguments can be empty: source(%1), target(%2).</source>
+        <source>None of the arguments can be empty: source &apos;%1&apos;, target &apos;%2&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="83"/>
-        <source>Can not copy source(%1) to target(%2), because target exists and is not removable.</source>
+        <source>Can not move source &apos;%1&apos; to target &apos;%2&apos;, because target exists and is not removable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="92"/>
-        <source>Can not move source(%1) to target(%2): %3</source>
+        <source>Can not move source &apos;%1&apos; to target &apos;%2&apos;: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="97"/>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="107"/>
-        <source>Move %1 to %2.</source>
+        <source>Move &apos;%1&apos; to &apos;%2&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2712,23 +2908,18 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/createdesktopentryoperation.cpp" line="189"/>
+        <location filename="../../libs/installer/createdesktopentryoperation.cpp" line="188"/>
         <source>Could not delete file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/createdesktopentryoperation.cpp" line="200"/>
+        <location filename="../../libs/installer/createdesktopentryoperation.cpp" line="199"/>
         <source>Could not restore backup file into %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/createshortcutoperation.cpp" line="184"/>
-        <source>Invalid arguments: %1 arguments given, 2 or 3 expected (optional: &quot;workingDirectory=...&quot;).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../libs/installer/createshortcutoperation.cpp" line="217"/>
-        <location filename="../../libs/installer/installiconsoperation.cpp" line="197"/>
+        <location filename="../../libs/installer/installiconsoperation.cpp" line="214"/>
         <source>Failed to overwrite %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2743,38 +2934,23 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fakestopprocessforupdateoperation.cpp" line="111"/>
-        <source>Number of arguments does not match : one is required</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libs/installer/installiconsoperation.cpp" line="148"/>
+        <location filename="../../libs/installer/installiconsoperation.cpp" line="150"/>
         <source>Invalid Argument: source folder must not be empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/installiconsoperation.cpp" line="184"/>
+        <location filename="../../libs/installer/installiconsoperation.cpp" line="201"/>
         <source>Could not backup file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/installiconsoperation.cpp" line="208"/>
+        <location filename="../../libs/installer/installiconsoperation.cpp" line="225"/>
         <source>Failed to copy file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/installiconsoperation.cpp" line="218"/>
+        <location filename="../../libs/installer/installiconsoperation.cpp" line="235"/>
         <source>Could not create folder at %1: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libs/installer/linereplaceoperation.cpp" line="80"/>
-        <source>Failed to open %1 for reading.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libs/installer/linereplaceoperation.cpp" line="97"/>
-        <source>Failed to open %1 for writing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2788,7 +2964,7 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1118"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1119"/>
         <source>Error while elevating access rights.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2819,13 +2995,8 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../installerbase_p.cpp" line="429"/>
+        <location filename="../installerbase_p.cpp" line="432"/>
         <source>Failed to seek in file %1. Reason: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libs/installer/createlinkoperation.cpp" line="68"/>
-        <source>Invalid arguments: %1 arguments given, 2 expected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2857,27 +3028,32 @@ as root and then clicking ok.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="158"/>
-        <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="221"/>
+        <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="159"/>
+        <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="222"/>
         <source>Registering file types is only supported on Windows.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/linereplaceoperation.cpp" line="80"/>
+        <source>Failed to open &apos;%1&apos; for reading.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/linereplaceoperation.cpp" line="97"/>
+        <source>Failed to open &apos;%1&apos; for writing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/fakestopprocessforupdateoperation.cpp" line="111"/>
+        <source>Number of arguments does not match: one is required</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
-        <location filename="../../libs/installer/settings.cpp" line="194"/>
+        <location filename="../../libs/installer/settings.cpp" line="208"/>
         <source>Could not open settings file %1 for reading: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libs/installer/settings.cpp" line="199"/>
-        <source>%1 is not valid: Installer root node expected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libs/installer/settings.cpp" line="224"/>
-        <source>Multiple %1 elements found, but only one allowed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
