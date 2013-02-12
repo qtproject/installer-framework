@@ -29,9 +29,6 @@ File should contain all elements we allow in a config.xml
     <RunProgram>myapp</RunProgram>
     <RunProgramDescription>Launch MyApp</RunProgramDescription>
 
-    <SigningCertificate>certificate1</SigningCertificate>
-    <SigningCertificate>certificate2</SigningCertificate>
-
     <DependsOnLocalInstallerBinary>true</DependsOnLocalInstallerBinary>
     <AllowSpaceInPath>true</AllowSpaceInPath>
     <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>

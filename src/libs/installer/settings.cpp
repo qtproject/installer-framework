@@ -65,7 +65,6 @@ static const QLatin1String scUserRepositories("UserRepositories");
 static const QLatin1String scTmpRepositories("TemporaryRepositories");
 static const QLatin1String scUninstallerIniFile("UninstallerIniFile");
 static const QLatin1String scRemoteRepositories("RemoteRepositories");
-static const QLatin1String scSigningCertificate("SigningCertificate");
 static const QLatin1String scDependsOnLocalInstallerBinary("DependsOnLocalInstallerBinary");
 
 static const QLatin1String scFtpProxy("FtpProxy");
@@ -220,13 +219,13 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
                 << scIcon << scLogo << scLogoSmall << scWatermark << scBackground
                 << scStartMenuDir << scUninstallerName << scUninstallerIniFile << scRemoveTargetDir
                 << scRunProgram << scRunProgramDescription
-                << scSigningCertificate << scDependsOnLocalInstallerBinary
+                << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scPages;
 
     QStringList blackList;
-    blackList << scRemoteRepositories << scSigningCertificate << scPages;
+    blackList << scRemoteRepositories << scPages;
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
@@ -240,9 +239,6 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
             reader.raiseError(QString::fromLatin1("Unexpected attribute for element '%1'.").arg(name));
 
         if (blackList.contains(name)) {
-            if (name == scSigningCertificate)
-                s.d->m_data.insertMulti(name, s.d->makeAbsolutePath(reader.readElementText()));
-
             if (name == scRemoteRepositories)
                 s.addDefaultRepositories(readRepositories(reader, true));
 
@@ -392,11 +388,6 @@ QString Settings::configurationFileName() const
 bool Settings::allowSpaceInPath() const
 {
     return d->m_data.value(scAllowSpaceInPath, false).toBool();
-}
-
-QStringList Settings::certificateFiles() const
-{
-    return d->m_data.value(scSigningCertificate).toStringList();
 }
 
 bool Settings::allowNonAsciiCharacters() const

@@ -51,7 +51,6 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.repositorySettingsPageVisible(), true);
     QCOMPARE(settings.hasReplacementRepos(), false);
     QCOMPARE(settings.allowSpaceInPath(), false);
-    QCOMPARE(settings.certificateFiles(), QStringList());
     QCOMPARE(settings.allowNonAsciiCharacters(), false);
 
     QCOMPARE(settings.hasReplacementRepos(), false);
