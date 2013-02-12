@@ -12,12 +12,15 @@ class tst_Settings : public QObject
     Q_OBJECT
 
 private slots:
-    void loadConfig();
+    void loadTutorialConfig();
+    void loadFullConfig();
+    void loadEmptyConfig();
     void loadNotExistingConfig();
     void loadMalformedConfig();
+    void loadUnknownElementConfig();
 };
 
-void tst_Settings::loadConfig()
+void tst_Settings::loadTutorialConfig()
 {
     Settings settings =
             Settings::fromFileAndPrefix(":///data/tutorial_config.xml", ":///data");
@@ -62,12 +65,31 @@ void tst_Settings::loadConfig()
     QCOMPARE(settings.httpProxy(), QNetworkProxy());
 }
 
+void tst_Settings::loadFullConfig()
+{
+    Settings settings =
+            Settings::fromFileAndPrefix(":///data/full_config.xml", ":///data");
+}
+
+void tst_Settings::loadEmptyConfig()
+{
+    try {
+        Settings::fromFileAndPrefix(":/data/empty_config.xml", ":/data");
+    } catch (const Error &error) {
+        QCOMPARE(error.message(), QLatin1String("Missing or empty <Name> tag in :/data/empty_config.xml."));
+        return;
+    }
+    QFAIL("No exception thrown");
+}
+
 void tst_Settings::loadNotExistingConfig()
 {
     try {
         Settings::fromFileAndPrefix(":/data/inexisting_config.xml", ":/data");
     } catch (const Error &error) {
-        QVERIFY(error.message() == ("Could not open settings file :/data/inexisting_config.xml for reading: Unknown error"));
+        QCOMPARE(error.message(), QLatin1String("Could not open settings file "
+                                                ":/data/inexisting_config.xml for reading: "
+                                                "Unknown error"));
         return;
     }
     QFAIL("No exception thrown");
@@ -78,7 +100,20 @@ void tst_Settings::loadMalformedConfig()
     try {
         Settings::fromFileAndPrefix(":/data/malformed_config.xml", ":/data");
     } catch (const Error &error) {
-        QVERIFY(error.message().startsWith("Xml parse error"));
+        QCOMPARE(error.message(), QLatin1String("Error in :/data/malformed_config.xml, line 9, column 0: "
+                                           "Premature end of document."));
+        return;
+    }
+    QFAIL("No exception thrown");
+}
+
+void tst_Settings::loadUnknownElementConfig()
+{
+    try {
+        Settings::fromFileAndPrefix(":/data/unknown_element_config.xml", ":/data");
+    } catch (const Error &error) {
+        QCOMPARE(error.message(), QLatin1String("Error in :/data/unknown_element_config.xml, line 5, "
+                                                "column 13: Unexpected element 'unknown'."));
         return;
     }
     QFAIL("No exception thrown");

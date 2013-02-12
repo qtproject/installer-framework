@@ -1,6 +1,10 @@
 <RCC>
     <qresource prefix="/">
-        <file>data/tutorial_config.xml</file>
+        <file>data/empty_config.xml</file>
+        <file>data/full_config.xml</file>
         <file>data/malformed_config.xml</file>
+        <file>data/minimal_config.xml</file>
+        <file>data/tutorial_config.xml</file>
+        <file>data/unknown_element_config.xml</file>
     </qresource>
 </RCC>

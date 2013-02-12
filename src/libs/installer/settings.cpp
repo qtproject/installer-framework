@@ -97,12 +97,22 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
                 else if (reader.name() == QLatin1String("Enabled"))
                     repo.setEnabled(bool(reader.readElementText().toInt()));
                 else
-                    reader.skipCurrentElement();
+                    reader.raiseError(QString::fromLatin1("Unexpected element '%1'.").arg(
+                                          reader.name().toString()));
+
+                if (!reader.attributes().isEmpty())
+                    reader.raiseError(QString::fromLatin1("Unexpected attribute for element '%1'.").arg(
+                                          reader.name().toString()));
             }
             set.insert(repo);
         } else {
-            reader.skipCurrentElement();
+            reader.raiseError(QString::fromLatin1("Unexpected element '%1'.").arg(
+                                  reader.name().toString()));
         }
+
+        if (!reader.attributes().isEmpty())
+            reader.raiseError(QString::fromLatin1("Unexpected attribute for element '%1'.").arg(
+                              reader.name().toString()));
     }
     return set;
 }
@@ -121,7 +131,10 @@ static QHash<QString, QVariantHash> readPages(QXmlStreamReader &reader)
     while (reader.readNextStartElement()) {
         if (reader.name() == QLatin1String("Page")) {
             QVariantHash pageElements;
-            QString pageName = reader.attributes().value(QLatin1String("name")).toString();
+            const QString pageName = reader.attributes().value(QLatin1String("name")).toString();
+            if (pageName.isEmpty())
+                reader.raiseError(QLatin1String("Expected non-empty attribute 'name' for element 'Page'."));
+
             while (reader.readNextStartElement()) {
                 const QString name = reader.name().toString();
                 if (name == QLatin1String("Title") || name == QLatin1String("SubTitle")) {
@@ -131,6 +144,8 @@ static QHash<QString, QVariantHash> readPages(QXmlStreamReader &reader)
                 }
             }
             hash.insert(pageName, pageElements);
+        } else {
+            reader.raiseError(QString::fromLatin1("Unexpected element '%1'.").arg(reader.name().toString()));
         }
     }
     return hash;
@@ -196,8 +211,19 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
     QXmlStreamReader reader(&file);
     if (reader.readNextStartElement()) {
         if (reader.name() != QLatin1String("Installer"))
-            throw Error(tr("%1 is not valid: Installer root node expected.").arg(path));
+            reader.raiseError(QString::fromLatin1("Unexpected element '%1' as root element.").arg(
+                                  reader.name().toString()));
     }
+    QStringList elementList;
+    elementList << scName << scVersion << scTitle << scPublisher << scProductUrl
+                << scTargetDir << scAdminTargetDir
+                << scIcon << scLogo << scLogoSmall << scWatermark << scBackground
+                << scStartMenuDir << scUninstallerName << scUninstallerIniFile << scRemoveTargetDir
+                << scRunProgram << scRunProgramDescription
+                << scSigningCertificate << scDependsOnLocalInstallerBinary
+                << scAllowSpaceInPath << scAllowNonAsciiCharacters
+                << scRepositorySettingsPageVisible << scTargetConfigurationFile
+                << scRemoteRepositories << scPages;
 
     QStringList blackList;
     blackList << scRemoteRepositories << scSigningCertificate << scPages;
@@ -206,6 +232,13 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
     s.d->m_data.insert(scPrefix, prefix);
     while (reader.readNextStartElement()) {
         const QString name = reader.name().toString();
+
+        if (!elementList.contains(name))
+            reader.raiseError(QString::fromLatin1("Unexpected element '%1'.").arg(name));
+
+        if (!reader.attributes().isEmpty())
+            reader.raiseError(QString::fromLatin1("Unexpected attribute for element '%1'.").arg(name));
+
         if (blackList.contains(name)) {
             if (name == scSigningCertificate)
                 s.d->m_data.insertMulti(name, s.d->makeAbsolutePath(reader.readElementText()));
@@ -221,14 +254,14 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
             }
         } else {
             if (s.d->m_data.contains(name))
-                throw Error(tr("Multiple %1 elements found, but only one allowed.").arg(name));
+                reader.raiseError(QString::fromLatin1("Element '%1' has been defined before.").arg(name));
             s.d->m_data.insert(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
         }
     }
 
     if (reader.error() != QXmlStreamReader::NoError) {
-        throw Error(QString::fromLatin1("Xml parse error in %1: %2 Line: %3, Column: %4").arg(path)
-            .arg(reader.errorString()).arg(reader.lineNumber()).arg(reader.columnNumber()));
+        throw Error(QString::fromLatin1("Error in %1, line %2, column %3: %4")
+                    .arg(path).arg(reader.lineNumber()).arg(reader.columnNumber()).arg(reader.errorString()));
     }
 
     if (s.d->m_data.value(scName).isNull())

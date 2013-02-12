@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+File should contain all elements we allow in a config.xml
+-->
+
+<Installer>
+    <Name>Your application</Name>
+    <Version>1.2.3</Version>
+    <Title>Your application Installer</Title>
+    <Publisher>Your vendor</Publisher>
+    <ProductUrl>Your vendor</ProductUrl>
+
+    <TargetDir>@homeDir@InstallationDirectory</TargetDir>
+    <AdminTargetDir>@rootDir@InstallationDirectory</AdminTargetDir>
+
+    <Icon>icon</Icon>
+    <Logo>logo</Logo>
+    <LogoSmall>logo_small</LogoSmall>
+    <Watermark>watermark</Watermark>
+    <Background>background</Background>
+
+    <StartMenuDir>Super App</StartMenuDir>
+
+    <UninstallerName>uninstaller</UninstallerName>
+    <UninstallerIniFile>uninstaller.ini</UninstallerIniFile>
+    <RemoveTargetDir>true</RemoveTargetDir>
+
+    <RunProgram>myapp</RunProgram>
+    <RunProgramDescription>Launch MyApp</RunProgramDescription>
+
+    <SigningCertificate>certificate1</SigningCertificate>
+    <SigningCertificate>certificate2</SigningCertificate>
+
+    <DependsOnLocalInstallerBinary>true</DependsOnLocalInstallerBinary>
+    <AllowSpaceInPath>true</AllowSpaceInPath>
+    <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
+    <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
+    <TargetConfigurationFile>components.xml</TargetConfigurationFile>
+
+    <RemoteRepositories>
+        <Repository>
+            <Url>http://www.yourcompany.com/packages</Url>
+            <Enabled>1</Enabled>
+            <Username>user</Username>
+            <Password>password</Password>
+        </Repository>
+    </RemoteRepositories>
+
+    <Pages>
+       <Page name="IntroductionPage">
+           <Title>
+               <Default>Introduction Page Title</Default>
+           </Title>
+           <SubTitle>
+               <Default>Introduction Page Sub Title</Default>
+           </SubTitle>
+           <MessageLabel>Introduction Page Message Label</MessageLabel>
+       </Page>
+       <Page name="LicenseAgreementPage">
+           <Title>
+               <Default>License Agreement Page Title</Default>
+           </Title>
+           <SubTitle>
+               <Default>License Agreement Page Sub Title</Default>
+           </SubTitle>
+           <AcceptLicenseLabel>Accept License Radio Button</AcceptLicenseLabel>
+           <RejectLicenseLabel>Reject License Radio Button</RejectLicenseLabel>
+       </Page>
+       <Page name="ComponentSelectionPage">
+           <Title>
+               <Default>Component Selection Page Title</Default>
+               <Updater>Component Selection Page Sub Title Updater</Updater>
+               <Installer>Component Selection Page Sub Title Installer</Installer>
+               <Uninstaller>Component Selection Page Sub Title Uninstaller</Uninstaller>
+               <PackageManager>Component Selection Page Sub Title Package Manager</PackageManager>
+           </Title>
+           <SubTitle>
+               <Default>Component Selection Page Sub Title</Default>
+               <Updater>Component Selection Page Sub Title Updater</Updater>
+               <Installer>Component Selection Page Sub Title Installer</Installer>
+               <Uninstaller>Component Selection Page Sub Title Uninstaller</Uninstaller>
+               <PackageManager>Component Selection Page Sub Title Package Manager</PackageManager>
+           </SubTitle>
+           <SelectDefaultComponentsButton>Default Button</SelectDefaultComponentsButton>
+           <SelectAllComponentsButton>Select All Button</SelectAllComponentsButton>
+           <DeselectAllComponentsButton>Deselect All Button</DeselectAllComponentsButton>
+           <ComponentSizeLabel>Component Size Label</ComponentSizeLabel>
+       </Page>
+       <Page name="TargetDirectoryPage">
+           <Title>
+               <Default>Target Directory Page Title</Default>
+           </Title>
+           <SubTitle>
+               <Default>Target Directory Page Sub Title</Default>
+           </SubTitle>
+           <MessageLabel>Target Directory Page Message Label</MessageLabel>
+           <BrowseDirectoryButton>Browse Directory Button</BrowseDirectoryButton>
+           <EmptyTargetDirectoryMessage>Empty Target Directory Message</EmptyTargetDirectoryMessage>
+           <ForbiddenTargetDirectoryMessage>Forbidden Target Directory Message</ForbiddenTargetDirectoryMessage>
+           <OverwriteTargetDirectoryMessage>Overwrite Target Directory Message</OverwriteTargetDirectoryMessage>
+           <SelectInstallationFolderCaption>Select Installation Folder Caption</SelectInstallationFolderCaption>
+       </Page>
+       <Page name="StartMenuDirectoryPage">
+           <Title>
+               <Default>Start Menu Directory Page Title</Default>
+           </Title>
+           <SubTitle>
+               <Default>Start Menu Directory Page Sub Title</Default>
+           </SubTitle>
+       </Page>
+       <Page name="ReadyForInstallationPage">
+           <Title>
+               <Default>Ready for Installation Page Title</Default>
+               <Updater>Ready for Installation Page Title Updater</Updater>
+               <Installer>Ready for Installation Page Title Installer</Installer>
+               <Uninstaller>Ready for Installation Page Title Uninstaller</Uninstaller>
+               <PackageManager>Ready for Installation Page Title Package Manager</PackageManager>
+           </Title>
+           <SubTitle>
+               <Default>Ready for Installation Page Sub Title</Default>
+               <Updater>Ready for Installation Page Sub Title Updater</Updater>
+               <Installer>Ready for Installation Page Sub Title Installer</Installer>
+               <Uninstaller>Ready for Installation Page Sub Title Uninstaller</Uninstaller>
+               <PackageManager>Ready for Installation Page Sub Title Package Manager</PackageManager>
+           </SubTitle>
+           <MessageLabel>Ready for Installation Page Message Label</MessageLabel>
+       </Page>
+       <Page name="PerformInstallationPage">
+           <Title>
+               <Default>Perform Installation Page Title</Default>
+               <Updater>Perform Installation Page Title Updater</Updater>
+               <Installer>Perform Installation Page Title Installer</Installer>
+               <Uninstaller>Perform Installation Page Title Uninstaller</Uninstaller>
+               <PackageManager>Perform Installation Page Title Package Manager</PackageManager>
+           </Title>
+           <SubTitle>
+               <Default>Perform Installation Page Sub Title</Default>
+               <Updater>Perform Installation Page Sub Title Updater</Updater>
+               <Installer>Perform Installation Page Sub Title Installer</Installer>
+               <Uninstaller>Perform Installation Page Sub Title Uninstaller</Uninstaller>
+               <PackageManager>Perform Installation Page Sub Title Package Manager</PackageManager>
+           </SubTitle>
+       </Page>
+       <Page name ="FinishedPage">
+           <Title>
+               <Default>Finished Page Title</Default>
+               <Updater>Finished Page Title Updater</Updater>
+               <Installer>Finished Page Title Installer</Installer>
+               <Uninstaller>Finished Page Title Uninstaller</Uninstaller>
+               <PackageManager>Finished Page Title Package Manager</PackageManager>
+           </Title>
+           <SubTitle>
+               <Default>Finished Page Sub Title</Default>
+               <Updater>Finished Page Sub Title Updater</Updater>
+               <Installer>Finished Page Sub Title Installer</Installer>
+               <Uninstaller>Finished Page Sub Title Uninstaller</Uninstaller>
+               <PackageManager>Finished Page Sub Title Package Manager</PackageManager>
+           </SubTitle>
+           <MessageLabel>Finished Page Message Label</MessageLabel>
+       </Page>
+       <Page name="RestartPage">
+           <Title>
+               <Default>Restart Page Title</Default>
+           </Title>
+           <SubTitle>
+               <Default>Restart Page Sub Title</Default>
+           </SubTitle>
+       </Page>
+   </Pages>
+</Installer>
