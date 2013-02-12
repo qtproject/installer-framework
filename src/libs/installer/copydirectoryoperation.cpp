@@ -76,9 +76,8 @@ bool CopyDirectoryOperation::performOperation()
     const QStringList args = arguments();
     if (args.count() < 2 || args.count() > 3) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, expected: <source> <target>"
-                          "[forceOverwrite]").arg(name())
-            .arg(args.count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("2 or 3"), tr(" (<source> <target> [forceOverwrite])")));
         return false;
     }
     const QString sourcePath = args.at(0);

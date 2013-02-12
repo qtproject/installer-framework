@@ -101,8 +101,8 @@ bool RegisterQtInCreatorQNXOperation::performOperation()
 
     if (args.count() < 5) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 5 expected.")
-                        .arg(name()).arg(args.count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("at least 5"), QLatin1String("")));
         return false;
     }
 

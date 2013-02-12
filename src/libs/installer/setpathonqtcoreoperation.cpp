@@ -111,8 +111,8 @@ bool SetPathOnQtCoreOperation::performOperation()
 
     if (args.count() != 3) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exactly 3 expected.").arg(name())
-            .arg(arguments().count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("exactly 3"), QLatin1String("")));
         return false;
     }
 

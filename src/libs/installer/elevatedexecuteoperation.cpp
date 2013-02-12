@@ -87,8 +87,8 @@ bool ElevatedExecuteOperation::performOperation()
     // command line of the external program to execute.
     if (arguments().isEmpty()) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %1: %2 arguments given, at least 1 expected.").arg(name(),
-            QString::number(arguments().count())));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("at least 1"), QLatin1String("")));
         return false;
     }
     QStringList args;

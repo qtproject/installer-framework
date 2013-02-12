@@ -181,8 +181,8 @@ bool CreateShortcutOperation::performOperation()
 
     if (args.count() != 2 && args.count() != 3) {
         setError(InvalidArguments);
-        setErrorString(QObject::tr("Invalid arguments: %1 arguments given, 2 or 3 expected (optional: "
-            "\"workingDirectory=...\").").arg(args.count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("2 or 3"), tr(" (optional: 'workingDirectory=...')")));
         return false;
     }
 

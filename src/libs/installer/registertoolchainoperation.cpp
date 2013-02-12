@@ -71,8 +71,8 @@ bool RegisterToolChainOperation::performOperation()
 
     if (args.count() < 4) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, minimum 4 expected.")
-            .arg(name()).arg(args.count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("at least 4"), QLatin1String("")));
         return false;
     }
 
@@ -81,12 +81,12 @@ bool RegisterToolChainOperation::performOperation()
     PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {
         setError(UserDefinedError);
-        setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+        setErrorString(tr("Needed installer object in '%1' operation is empty.").arg(name()));
         return false;
     }
     if (core->value(scQtCreatorInstallerToolchainsFile).isEmpty()) {
         setError(UserDefinedError);
-        setErrorString(tr("There is no value set for %1 on the installer object.").arg(
+        setErrorString(tr("There is no value set for '%1' on the installer object.").arg(
             scQtCreatorInstallerToolchainsFile));
         return false;
     }

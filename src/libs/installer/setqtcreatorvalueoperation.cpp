@@ -69,8 +69,8 @@ bool SetQtCreatorValueOperation::performOperation()
 
     if (args.count() != 4) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, exactly 4 expected (rootInstallPath, "
-            "group, key, value).").arg(name()).arg( arguments().count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("exactly 4"), tr(" (rootInstallPath, group, key, value)")));
         return false;
     }
 

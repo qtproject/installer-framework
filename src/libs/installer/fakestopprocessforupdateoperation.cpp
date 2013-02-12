@@ -109,7 +109,7 @@ bool FakeStopProcessForUpdateOperation::undoOperation()
     setError(KDUpdater::UpdateOperation::NoError);
     if (arguments().size() != 1) {
         setError(KDUpdater::UpdateOperation::InvalidArguments, QObject::tr("Number of arguments does not "
-            "match : one is required"));
+            "match: one is required"));
         return false;
     }
 

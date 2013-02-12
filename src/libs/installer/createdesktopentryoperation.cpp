@@ -84,11 +84,11 @@ QString CreateDesktopEntryOperation::absoluteFileName()
         directory = QDir(*it).absoluteFilePath(QLatin1String("applications"));
         QDir dir(directory);
 
-        // let's see wheter this dir exists or we're able to create it
+        // let's see whether this dir exists or we're able to create it
         if (!dir.exists() && !QDir().mkpath(directory))
             continue;
 
-        // we just try wheter we're able to open the file in ReadWrite
+        // we just try whether we're able to open the file in ReadWrite
         QFile file(QDir(directory).absoluteFilePath(filename));
         const bool existed = file.exists();
         if (!file.open(QIODevice::ReadWrite))
@@ -143,8 +143,8 @@ bool CreateDesktopEntryOperation::performOperation()
     const QStringList args = arguments();
     if (args.count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.").arg(name()).arg(args
-            .count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("exactly 2"), QLatin1String("")));
         return false;
     }
 

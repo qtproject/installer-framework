@@ -103,7 +103,8 @@ bool RegisterFileTypeOperation::performOperation()
 
     if (args.count() < 2 || args.count() > 5) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0").arg(name()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("2 to 5"), QLatin1String("")));
         return false;
     }
 

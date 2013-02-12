@@ -64,8 +64,8 @@ bool ExtractArchiveOperation::performOperation()
     const QStringList args = arguments();
     if (args.count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2 expected.").arg(name()).arg(args
-            .count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("exactly 2"), QLatin1String("")));
         return false;
     }
 

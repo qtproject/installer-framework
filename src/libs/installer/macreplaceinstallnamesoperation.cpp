@@ -70,8 +70,8 @@ bool MacReplaceInstallNamesOperation::performOperation()
 
     if (arguments().count() < 3) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 3 expected.").arg(name())
-            .arg(arguments().count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("at least 3"), QLatin1String("")));
         return false;
     }
 

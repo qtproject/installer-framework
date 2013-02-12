@@ -137,8 +137,8 @@ bool InstallIconsOperation::performOperation()
     const QStringList args = arguments();
     if ((args.count() != 1) && (args.count() != 2)) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 1 or 2 expected (Sourcepath, [Vendorprefix]).")
-                       .arg(name()).arg(args.count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("1 or 2"), tr(" (Sourcepath, [Vendorprefix])")));
         return false;
     }
 

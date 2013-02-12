@@ -45,7 +45,7 @@ using namespace QInstaller;
 
 MinimumProgressOperation::MinimumProgressOperation()
 {
-    //this shouldn't be call able by script, but we need a name for the binary format
+    // This shouldn't be callable by script, but we need a name for the binary format
     setName(QLatin1String("MinimumProgress"));
 }
 

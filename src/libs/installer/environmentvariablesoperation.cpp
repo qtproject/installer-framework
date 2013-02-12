@@ -136,10 +136,11 @@ UpdateOperation::Error undoSetting(const QString &regPath,
 
 bool EnvironmentVariableOperation::performOperation()
 {
-    if (arguments().count() < 2 || arguments().count() > 4) {
+    QStringList args = arguments();
+    if (args.count() != 2 && args.count() != 3) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, 2-3 expected.")
-                        .arg(name()).arg(arguments().count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("2 or 3"), QLatin1String("")));
         return false;
     }
 

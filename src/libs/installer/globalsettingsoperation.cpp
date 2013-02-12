@@ -112,6 +112,13 @@ Operation *GlobalSettingsOperation::clone() const
 
 QSettingsWrapper *GlobalSettingsOperation::setup(QString *key, QString *value, const QStringList &arguments)
 {
+    if (arguments.count() != 3 && arguments.count() != 4) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments.count()).arg(tr("3 or 4"), QLatin1String("")));
+        return 0;
+    }
+
     if (arguments.count() == 4) {
         const QString &company = arguments.at(0);
         const QString &application = arguments.at(1);
@@ -125,8 +132,5 @@ QSettingsWrapper *GlobalSettingsOperation::setup(QString *key, QString *value, c
         return new QSettingsWrapper(filename, QSettingsWrapper::NativeFormat);
     }
 
-    setError(InvalidArguments);
-    setErrorString(tr("Invalid arguments in %0: %1 arguments given, at least 3 expected.")
-        .arg(name()).arg(arguments.count()));
     return 0;
 }
