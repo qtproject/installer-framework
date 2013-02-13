@@ -7,11 +7,13 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 win32:QDOC_BIN = $$replace(QDOC_BIN, "/", "\\")
 
+IFW_VERSION_TAG = $$replace(IFW_VERSION, "[-.]", )
+
 unix {
-    QDOC = SRCDIR=$$PWD OUTDIR=$$OUT_PWD/doc/html $$QDOC_BIN
+    QDOC = SRCDIR=$$PWD OUTDIR=$$OUT_PWD/doc/html IFW_VERSION=$$IFW_VERSION IFW_VERSION_TAG=$$IFW_VERSION_TAG $$QDOC_BIN
     HELPGENERATOR = $$[QT_INSTALL_BINS]/qhelpgenerator
 } else {
-    QDOC = set SRCDIR=$$PWD&& set OUTDIR=$$OUT_PWD/doc/html&& $$QDOC_BIN
+    QDOC = set SRCDIR=$$PWD&& set OUTDIR=$$OUT_PWD/doc/html&& set IFW_VERSION=$$IFW_VERSION&& setIFW_VERSION_TAG=$$IFW_VERSION_TAG&& $$QDOC_BIN
     # Always run qhelpgenerator inside its own cmd; this is a workaround for
     # an unusual bug which causes qhelpgenerator.exe to do nothing
     HELPGENERATOR = cmd /C $$replace($$list($$[QT_INSTALL_BINS]/qhelpgenerator.exe), "/", "\\")

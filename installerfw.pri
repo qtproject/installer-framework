@@ -2,6 +2,9 @@
     error("installerfw.pri already included")
 }
 IFW_PRI_INCLUDED = 1
+
+IFW_VERSION = 1.2.81
+
 IFW_NEWLINE = $$escape_expand(\\n\\t)
 
 defineReplace(toNativeSeparators) {

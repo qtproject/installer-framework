@@ -17,7 +17,7 @@ sources.fileextensions         = "*.qdoc"
 
 qhp.projects            = InstallerFramework
 qhp.InstallerFramework.file             = ifw.qhp
-qhp.InstallerFramework.namespace        = org.qt-project.ifw.121
+qhp.InstallerFramework.namespace        = org.qt-project.ifw.$IFW_VERSION_TAG
 qhp.InstallerFramework.virtualFolder    = doc
 qhp.InstallerFramework.indexTitle       = Qt Installer Framework Manual
 qhp.InstallerFramework.filterAttributes = ifw
