@@ -170,7 +170,6 @@ bool CreateDesktopEntryOperation::performOperation()
     QTextStream stream(&file);
     stream.setCodec("UTF-8");
     stream << QLatin1String("[Desktop Entry]") << endl;
-    stream << QLatin1String("Encoding=UTF-8") << endl;
 
     // Type=Application\nExec=qtcreator\nPath=...
     const QStringList pairs = values.split(QLatin1Char('\n'));
