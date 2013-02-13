@@ -57,11 +57,6 @@ QT_END_NAMESPACE
 
 namespace QInstaller {
 
-#define IFW_VERSION 0x010202
-#define IFW_VERSION_STRING  "1.2.2"
-#define IFW_VERSION_CHECK(major, minor, patch) \
-    ((major << 16)|(minor << 8)|(patch))
-
 static QRegExp scCommaRegExp(QLatin1String("\\b(,|, )\\b"));
 
 enum INSTALLER_EXPORT RunMode

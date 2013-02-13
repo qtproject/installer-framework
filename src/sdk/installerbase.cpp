@@ -73,7 +73,7 @@
 
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
-#define VERSION "IFW Version: \"" IFW_VERSION_STRING "\", Installer base SHA1: \"" QUOTE(_GIT_SHA1_) \
+#define VERSION "IFW Version: \"" QUOTE(IFW_VERSION) "\", Installer base SHA1: \"" QUOTE(_GIT_SHA1_) \
     "\", Build date: " QUOTE(__DATE__) "."
 
 using namespace QInstaller;
