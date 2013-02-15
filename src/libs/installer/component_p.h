@@ -106,7 +106,7 @@ private:
 
 // -- ComponentModelHelper
 
-class ComponentModelHelper
+class INSTALLER_EXPORT ComponentModelHelper
 {
 public:
     enum Roles {
