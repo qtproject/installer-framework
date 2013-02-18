@@ -5,7 +5,6 @@ TARGET = fileengineserver
 include(../../installerfw.pri)
 
 QT -= gui
-LIBS += -linstaller
 
 CONFIG += console
 CONFIG -= app_bundle
