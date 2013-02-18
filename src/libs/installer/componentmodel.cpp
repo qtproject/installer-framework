@@ -103,7 +103,7 @@ int ComponentModel::columnCount(const QModelIndex &parent) const
 }
 
 /*!
-    Returns the parent of the child item with the given \a parent. If the item has no parent, an invalid
+    Returns the parent of the child item with the given \a child. If the item has no parent, an invalid
     QModelIndex is returned.
 */
 QModelIndex ComponentModel::parent(const QModelIndex &child) const
@@ -112,13 +112,9 @@ QModelIndex ComponentModel::parent(const QModelIndex &child) const
         return QModelIndex();
 
     if (Component *childComponent = componentFromIndex(child)) {
-        if (Component *parent = childComponent->parentComponent()) {
-            if (!m_rootComponentList.contains(parent))
-                return createIndex(parent->indexInParent(), 0, parent);
-            return createIndex(child.row(), 0, parent);
-        }
+        if (Component *parent = childComponent->parentComponent())
+            return indexFromComponentName(parent->name());
     }
-
     return QModelIndex();
 }
 
