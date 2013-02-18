@@ -85,7 +85,8 @@ public:
                     handler->setComponentIndex(QInstallerCreator::ComponentIndex());
 
                     PackageManagerCore core(QInstaller::MagicUpdaterMarker);
-                    core.setTemporaryRepositories(settings.repositories());
+                    // TODO: check what this should have done
+                    //core.setTemporaryRepositories(settings.repositories());
                     if (!core.fetchRemotePackagesTree())
                         throw Error(tr("Software Update failed."));
                     settings.setLastResult(tr("Software Update run successfully."));

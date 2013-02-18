@@ -42,7 +42,7 @@
 #ifndef UPDATESETTINGSWIDGET_H
 #define UPDATESETTINGSWIDGET_H
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
 class UpdateSettingsWidget : public QWidget
 {

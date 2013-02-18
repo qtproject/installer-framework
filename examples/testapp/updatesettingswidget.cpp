@@ -44,9 +44,8 @@
 #include <repository.h>
 #include <updatesettings.h>
 
-#include <QtCore/QDateTime>
-
-#include <QtGui/QStringListModel>
+#include <QDateTime>
+#include <QStringListModel>
 
 using namespace QInstaller;
 

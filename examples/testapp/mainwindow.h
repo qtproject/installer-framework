@@ -43,7 +43,7 @@
 #include <packagemanagercore.h>
 #include <settings.h>
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 
 class UpdateSettingsDialog;
 

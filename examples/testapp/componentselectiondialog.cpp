@@ -46,8 +46,8 @@
 #include <componentmodel.h>
 #include <packagemanagercore.h>
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QPushButton>
+#include <QHeaderView>
+#include <QPushButton>
 
 using namespace QInstaller;
 

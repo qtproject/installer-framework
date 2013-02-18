@@ -50,12 +50,12 @@
 
 #include <kdselfrestarter.h>
 
-#include <QtGui/QAbstractButton>
-#include <QtGui/QApplication>
-#include <QtGui/QLabel>
-#include <QtGui/QMenuBar>
-#include <QtGui/QMessageBox>
-#include <QtGui/QProgressDialog>
+#include <QAbstractButton>
+#include <QApplication>
+#include <QLabel>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QProgressDialog>
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -97,7 +97,8 @@ void MainWindow::checkForUpdates()
 
     UpdateSettings settings;
     try {
-        m_core.setTemporaryRepositories(settings.repositories());
+        // TODO: check what this should have done
+        //m_core.setTemporaryRepositories(settings.repositories());
         settings.setLastCheck(QDateTime::currentDateTime());
 
         if (!m_core.fetchRemotePackagesTree()) {

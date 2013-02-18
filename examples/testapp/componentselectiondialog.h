@@ -42,7 +42,7 @@
 #ifndef COMPONENTSELECTIONDIALOG_H
 #define COMPONENTSELECTIONDIALOG_H
 
-#include <QtGui/QDialog>
+#include <QDialog>
 
 namespace QInstaller {
     class PackageManagerCore;

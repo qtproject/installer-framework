@@ -42,7 +42,7 @@
 #ifndef UPDATESETTINGSDIALOG_H
 #define UPDATESETTINGSDIALOG_H
 
-#include <QtGui/QDialog>
+#include <QDialog>
 
 class UpdateSettingsDialog : public QDialog
 {
