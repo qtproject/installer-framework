@@ -59,12 +59,6 @@ namespace QInstaller {
 
 static QRegExp scCommaRegExp(QLatin1String("\\b(,|, )\\b"));
 
-enum INSTALLER_EXPORT RunMode
-{
-    AllMode,
-    UpdaterMode
-};
-
 enum INSTALLER_EXPORT JobError
 {
     InvalidUrl = 0x24B04,

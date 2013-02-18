@@ -121,7 +121,6 @@ public:
     bool fetchRemotePackagesTree();
 
     bool run();
-    RunMode runMode() const;
     void reset(const QHash<QString, QString> &params);
 
     Q_INVOKABLE void setDependsOnLocalInstallerBinary();
@@ -297,7 +296,6 @@ Q_SIGNALS:
 
 private:
     struct Data {
-        RunMode runMode;
         Package *package;
         QHash<QString, Component*> *components;
         const LocalPackagesHash *installedPackages;

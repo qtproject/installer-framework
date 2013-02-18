@@ -373,7 +373,7 @@ void ComponentModel::appendRootComponents(QList<QInstaller::Component*> rootComp
 void ComponentModel::slotModelReset()
 {
     QList<QInstaller::Component*> components = m_rootComponentList;
-    if (m_core->runMode() == QInstaller::AllMode) {
+    if (!m_core->isUpdater()) {
         for (int i = m_rootIndex; i < m_rootComponentList.count(); ++i)
             components.append(m_rootComponentList.at(i)->childs());
     }
@@ -384,7 +384,7 @@ void ComponentModel::slotModelReset()
     }
     m_currentCheckedSet += m_initialCheckedSet;
 
-    if (m_core->runMode() == QInstaller::AllMode)
+    if (!m_core->isUpdater())
         select(Qt::Unchecked);
 
     foreach (const QString &name, m_currentCheckedSet)

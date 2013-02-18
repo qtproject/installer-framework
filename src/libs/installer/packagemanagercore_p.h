@@ -117,8 +117,8 @@ public:
 
     void clearAllComponentLists();
     void clearUpdaterComponentLists();
-    QList<Component*> &replacementDependencyComponents(RunMode mode);
-    QHash<QString, QPair<Component*, Component*> > &componentsToReplace(RunMode mode);
+    QList<Component*> &replacementDependencyComponents();
+    QHash<QString, QPair<Component*, Component*> > &componentsToReplace();
 
     void clearComponentsToInstall();
     bool appendComponentsToInstall(const QList<Component*> &components);

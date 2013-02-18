@@ -219,7 +219,7 @@ int ComponentModelHelper::indexInParent() const
 {
     int index = 0;
     if (Component *parent = m_componentPrivate->m_parentComponent->parentComponent())
-        index = parent->childComponents(false, AllMode).indexOf(m_componentPrivate->m_parentComponent);
+        index = parent->childComponents(false).indexOf(m_componentPrivate->m_parentComponent);
     return (index >= 0 ? index : 0);
 }
 

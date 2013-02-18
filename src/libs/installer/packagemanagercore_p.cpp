@@ -408,14 +408,14 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
     m_componentsToInstallCalculated = false;
 }
 
-QList<Component *> &PackageManagerCorePrivate::replacementDependencyComponents(RunMode mode)
+QList<Component *> &PackageManagerCorePrivate::replacementDependencyComponents()
 {
-    return mode == AllMode ? m_rootDependencyReplacements : m_updaterDependencyReplacements;
+    return (!isUpdater()) ? m_rootDependencyReplacements : m_updaterDependencyReplacements;
 }
 
-QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::componentsToReplace(RunMode mode)
+QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::componentsToReplace()
 {
-    return mode == AllMode ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
+    return (!isUpdater()) ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
 }
 
 void PackageManagerCorePrivate::clearComponentsToInstall()
@@ -439,7 +439,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component 
         relevantComponentForAutoDependOn = m_updaterComponents + m_updaterComponentsDeps;
     else {
         foreach (QInstaller::Component *component, m_rootComponents)
-            relevantComponentForAutoDependOn += component->childComponents(true, AllMode);
+            relevantComponentForAutoDependOn += component->childComponents(true);
     }
 
     QList<Component*> notAppendedComponents; // for example components with unresolved dependencies
@@ -1982,7 +1982,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
             if (!componentName.isEmpty()) {
                 Component *component = m_core->componentByName(componentName);
                 if (!component)
-                    component = componentsToReplace(m_core->runMode()).value(componentName).second;
+                    component = componentsToReplace().value(componentName).second;
                 if (component) {
                     component->setUninstalled();
                     packages.removePackage(component->name());

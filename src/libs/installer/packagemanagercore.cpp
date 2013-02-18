@@ -129,12 +129,12 @@ Component *PackageManagerCore::subComponentByName(const QInstaller::PackageManag
     if (check != 0 && componentMatches(check, name, version))
         return check;
 
-    if (installer->runMode() == AllMode) {
+    if (!installer->isUpdater()) {
         QList<Component*> rootComponents;
         if (check == 0)
             rootComponents = installer->rootComponents();
         else
-            rootComponents = check->childComponents(false, AllMode);
+            rootComponents = check->childComponents(false);
 
         foreach (QInstaller::Component *component, rootComponents) {
             Component *const result = subComponentByName(installer, name, version, component);
@@ -485,7 +485,7 @@ void PackageManagerCore::rollBackInstallation()
             if (!componentName.isEmpty()) {
                 Component *component = componentByName(componentName);
                 if (!component)
-                    component = d->componentsToReplace(runMode()).value(componentName).second;
+                    component = d->componentsToReplace().value(componentName).second;
                 if (component) {
                     component->setUninstalled();
                     packages.removePackage(component->name());
@@ -604,11 +604,6 @@ void PackageManagerCore::setCreateLocalRepositoryFromBinary(bool create)
     sCreateLocalRepositoryFromBinary = create;
 }
 
-RunMode PackageManagerCore::runMode() const
-{
-    return isUpdater() ? UpdaterMode : AllMode;
-}
-
 bool PackageManagerCore::fetchLocalPackagesTree()
 {
     d->setStatus(Running);
@@ -718,7 +713,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
         return false;
 
     bool success = false;
-    if (runMode() == AllMode)
+    if (!isUpdater())
         success = fetchAllPackages(packages, installedPackages);
     else {
         success = fetchUpdaterPackages(packages, installedPackages);
@@ -927,7 +922,7 @@ QList<Component*> PackageManagerCore::availableComponents() const
 
     QList<Component*> result = d->m_rootComponents;
     foreach (QInstaller::Component *component, d->m_rootComponents)
-        result += component->childComponents(true, AllMode);
+        result += component->childComponents(true);
     return result + d->m_rootDependencyReplacements;
 }
 
@@ -961,21 +956,23 @@ bool PackageManagerCore::calculateComponentsToInstall() const
     if (!d->m_componentsToInstallCalculated) {
         d->clearComponentsToInstall();
         QList<Component*> components;
-        if (runMode() == UpdaterMode) {
+        if (isUpdater()) {
             foreach (Component *component, updaterComponents()) {
                 if (component->updateRequested())
                     components.append(component);
             }
-        } else if (runMode() == AllMode) {
+        } else if (!isUpdater()) {
             // relevant means all components which are not replaced
             QList<Component*> relevantComponents = rootComponents();
             foreach (QInstaller::Component *component, rootComponents())
-                relevantComponents += component->childComponents(true, AllMode);
+                relevantComponents += component->childComponents(true);
             foreach (Component *component, relevantComponents) {
                 // ask for all components which will be installed to get all dependencies
-                // even dependencies wich are changed without an increased version
-                if (component->installationRequested() || (component->isInstalled() && !component->uninstallationRequested()))
-                    components.append(component);
+                // even dependencies which are changed without an increased version
+                if (component->installationRequested() || (component->isInstalled()
+                    && !component->uninstallationRequested())) {
+                        components.append(component);
+                }
             }
         }
 
@@ -998,10 +995,10 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 */
 bool PackageManagerCore::calculateComponentsToUninstall() const
 {
-    if (runMode() == UpdaterMode)
+    if (isUpdater())
         return true;
 
-    // hack to avoid removeing needed dependencies
+    // hack to avoid removing needed dependencies
     QSet<Component*>  componentsToInstall = d->m_orderedComponentsToInstall.toSet();
 
     QList<Component*> components;
@@ -1704,14 +1701,14 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
                     qWarning() << componentName << "- Does not exist in the repositories anymore.";
                 continue;
             }
-            if (!component && !d->componentsToReplace(data.runMode).contains(componentName)) {
+            if (!component && !d->componentsToReplace().contains(componentName)) {
                 component = new Component(this);
                 component->setValue(scName, componentName);
             } else {
                 component->loadComponentScript();
-                d->replacementDependencyComponents(data.runMode).append(component);
+                d->replacementDependencyComponents().append(component);
             }
-            d->componentsToReplace(data.runMode).insert(componentName, qMakePair(it.key(), component));
+            d->componentsToReplace().insert(componentName, qMakePair(it.key(), component));
         }
     }
 }
@@ -1724,7 +1721,6 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     QHash<QString, QInstaller::Component*> components;
 
     Data data;
-    data.runMode = AllMode;
     data.components = &components;
     data.installedPackages = &locals;
 
@@ -1768,7 +1764,6 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     QHash<QString, QInstaller::Component *> components;
 
     Data data;
-    data.runMode = UpdaterMode;
     data.components = &components;
     data.installedPackages = &locals;
 
