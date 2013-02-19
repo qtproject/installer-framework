@@ -172,13 +172,20 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         blackList << QLatin1String("UserInterfaces") << QLatin1String("Translations") <<
             QLatin1String("Licenses") << QLatin1String("Name");
 
+        bool foundDefault = false;
+        bool foundVirtual = false;
         const QDomNodeList childNodes = package.childNodes();
         for (int i = 0; i < childNodes.count(); ++i) {
             const QDomNode node = childNodes.at(i);
             const QString key = node.nodeName();
-            // just skip comments and some tags...
+
+            if (key == QLatin1String("Default"))
+                foundDefault = true;
+            if (key == QLatin1String("Virtual"))
+                foundVirtual = true;
             if (node.isComment() || blackList.contains(key))
-                continue;
+                continue;   // just skip comments and some tags...
+
             const QString value = node.toElement().text();
             QDomElement element = doc.createElement(key);
             for (int  i = 0; i < node.attributes().size(); i++) {
@@ -186,6 +193,11 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
                     node.attributes().item(i).toAttr().value());
             }
             update.appendChild(element).appendChild(doc.createTextNode(value));
+        }
+
+        if (foundDefault && foundVirtual) {
+            throw QInstaller::Error(QString::fromLatin1("Error: <Default> and <Virtual> elements are "
+                "mutually exclusive. File: '%0'").arg(packageXmlPath));
         }
 
         // get the size of the data
