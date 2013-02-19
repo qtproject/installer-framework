@@ -134,7 +134,7 @@ Component *PackageManagerCore::subComponentByName(const QInstaller::PackageManag
         if (check == 0)
             rootComponents = installer->rootComponents();
         else
-            rootComponents = check->childComponents(false);
+            rootComponents = check->childComponents(Component::DirectChildrenOnly);
 
         foreach (QInstaller::Component *component, rootComponents) {
             Component *const result = subComponentByName(installer, name, version, component);
@@ -922,7 +922,7 @@ QList<Component*> PackageManagerCore::availableComponents() const
 
     QList<Component*> result = d->m_rootComponents;
     foreach (QInstaller::Component *component, d->m_rootComponents)
-        result += component->childComponents(true);
+        result += component->childComponents(Component::Descendants);
     return result + d->m_rootDependencyReplacements;
 }
 
@@ -965,7 +965,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
             // relevant means all components which are not replaced
             QList<Component*> relevantComponents = rootComponents();
             foreach (QInstaller::Component *component, rootComponents())
-                relevantComponents += component->childComponents(true);
+                relevantComponents += component->childComponents(Component::Descendants);
             foreach (Component *component, relevantComponents) {
                 // ask for all components which will be installed to get all dependencies
                 // even dependencies which are changed without an increased version

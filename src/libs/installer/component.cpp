@@ -303,23 +303,22 @@ void Component::removeComponent(Component *component)
 }
 
 /*!
-    Returns a list of child components. If \a recursive is set to true, the returned list contains not only
-    the direct children, but all ancestors. Note: The returned list does include ALL children, non virtual
-    components as well as virtual components.
+    Returns a list of child components. If \a kind is set to DirectChildrenOnly, the returned list contains
+    only the direct children, if set to Descendants it will also include all descendants of the components
+    children. Note: The returned list does include ALL children, non virtual components as well as virtual
+    components.
 */
-QList<Component*> Component::childComponents(bool recursive) const
+QList<Component *> Component::childComponents(Kind kind) const
 {
-    QList<Component*> result;
     if (d->m_core->isUpdater())
+        return QList<Component*>();
+
+    QList<Component *> result = d->m_allChildComponents;
+    if (kind == Kind::DirectChildrenOnly)
         return result;
 
-    if (!recursive)
-        return d->m_allChildComponents;
-
-    foreach (Component *component, d->m_allChildComponents) {
-        result.append(component);
-        result += component->childComponents(true);
-    }
+    foreach (Component *component, d->m_allChildComponents)
+        result += component->childComponents(kind);
     return result;
 }
 

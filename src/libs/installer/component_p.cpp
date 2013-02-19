@@ -218,8 +218,10 @@ int ComponentModelHelper::childCount() const
 int ComponentModelHelper::indexInParent() const
 {
     int index = 0;
-    if (Component *parent = m_componentPrivate->m_parentComponent->parentComponent())
-        index = parent->childComponents(false).indexOf(m_componentPrivate->m_parentComponent);
+    if (Component *parent = m_componentPrivate->m_parentComponent->parentComponent()) {
+        index = parent->childComponents(Component::DirectChildrenOnly)
+            .indexOf(m_componentPrivate->m_parentComponent);
+    }
     return (index >= 0 ? index : 0);
 }
 

@@ -85,6 +85,12 @@ class INSTALLER_EXPORT Component : public QObject, public QScriptable, public Co
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
 
 public:
+    enum Kind
+    {
+        Descendants = 0x1000,     // all descendants of the current component (children, grandchildren, etc.)
+        DirectChildrenOnly = 0x2000     // all child components of the current component
+    };
+
     explicit Component(PackageManagerCore *core);
     ~Component();
 
@@ -117,7 +123,7 @@ public:
     Component *parentComponent() const;
     void appendComponent(Component *component);
     void removeComponent(Component *component);
-    QList<Component*> childComponents(bool recursive) const;
+    QList<Component*> childComponents(Component::Kind kind) const;
 
     void loadComponentScript();
 

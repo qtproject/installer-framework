@@ -439,7 +439,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component 
         relevantComponentForAutoDependOn = m_updaterComponents + m_updaterComponentsDeps;
     else {
         foreach (QInstaller::Component *component, m_rootComponents)
-            relevantComponentForAutoDependOn += component->childComponents(true);
+            relevantComponentForAutoDependOn += component->childComponents(Component::Descendants);
     }
 
     QList<Component*> notAppendedComponents; // for example components with unresolved dependencies
