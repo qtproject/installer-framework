@@ -251,7 +251,8 @@
             \o  Filename for the configuration file on the target. Default is components.xml.
         \row
             \o  Pages
-            \o  List of pages.
+            \o  Custom strings for labels in the installer pages. Deprecated,
+                see \l{Translating Pages} instead.
     \endtable
 
 */
@@ -330,6 +331,9 @@
     when using \a qsTr or the class name of the UI file when translating a user
     interface.
 
+    \note The translation system can also be used to customize the UI. Use e.g.
+    an \c en_en.ts file to replace any text in the installer with a custom English
+    version.
 */
 
 /*!

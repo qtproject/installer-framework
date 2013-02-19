@@ -243,6 +243,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
                 s.addDefaultRepositories(readRepositories(reader, true));
 
             if (name == scPages) {
+                qWarning() << "Deprecated element 'Pages'.";
                 QHash<QString, QVariantHash> pages = readPages(reader);
                 const QStringList &keys = pages.keys();
                 foreach (const QString &key, keys)
