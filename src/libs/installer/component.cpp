@@ -314,7 +314,7 @@ QList<Component *> Component::childComponents(Kind kind) const
         return QList<Component*>();
 
     QList<Component *> result = d->m_allChildComponents;
-    if (kind == Kind::DirectChildrenOnly)
+    if (kind == DirectChildrenOnly)
         return result;
 
     foreach (Component *component, d->m_allChildComponents)
