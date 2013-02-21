@@ -39,7 +39,13 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.url(), QString());
     QCOMPARE(settings.watermark(), QLatin1String(":///data/"));
     QCOMPARE(settings.background(), QLatin1String(":///data/"));
+#if defined(Q_OS_WIN)
+    QCOMPARE(settings.icon(), QLatin1String(":/installer.ico"));
+#elif defined(Q_OS_MAC)
+    QCOMPARE(settings.icon(), QLatin1String(":/installer.icns"));
+#else
     QCOMPARE(settings.icon(), QLatin1String(":/installer.png"));
+#endif
     QCOMPARE(settings.runProgram(), QString());
     QCOMPARE(settings.runProgramDescription(), QString());
     QCOMPARE(settings.adminTargetDir(), QString());
@@ -66,12 +72,15 @@ void tst_Settings::loadTutorialConfig()
 
 void tst_Settings::loadFullConfig()
 {
+    QTest::ignoreMessage(QtWarningMsg, "Deprecated element 'Pages'. ");
     Settings settings =
             Settings::fromFileAndPrefix(":///data/full_config.xml", ":///data");
 }
 
 void tst_Settings::loadEmptyConfig()
 {
+    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Missing or empty <Name> tag in "
+                         ":/data/empty_config.xml.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/empty_config.xml", ":/data");
     } catch (const Error &error) {
@@ -83,6 +92,9 @@ void tst_Settings::loadEmptyConfig()
 
 void tst_Settings::loadNotExistingConfig()
 {
+    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Could not open settings file "
+                         ":/data/inexisting_config.xml for reading: "
+                         "Unknown error\" ");
     try {
         Settings::fromFileAndPrefix(":/data/inexisting_config.xml", ":/data");
     } catch (const Error &error) {
@@ -96,6 +108,8 @@ void tst_Settings::loadNotExistingConfig()
 
 void tst_Settings::loadMalformedConfig()
 {
+    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in :/data/malformed_config.xml, "
+                         "line 9, column 0: Premature end of document.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/malformed_config.xml", ":/data");
     } catch (const Error &error) {
@@ -108,6 +122,8 @@ void tst_Settings::loadMalformedConfig()
 
 void tst_Settings::loadUnknownElementConfig()
 {
+    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in :/data/unknown_element_config.xml, line 5, "
+                         "column 13: Unexpected element 'unknown'.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/unknown_element_config.xml", ":/data");
     } catch (const Error &error) {

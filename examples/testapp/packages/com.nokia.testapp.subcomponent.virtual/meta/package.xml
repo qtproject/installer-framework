@@ -6,5 +6,4 @@
     <Name>com.nokia.testapp.subcomponent.virtual</Name>
     <Virtual>true</Virtual>
     <Script>installscript.qs</Script>
-    <Default>script</Default>
 </Package>

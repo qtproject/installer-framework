@@ -200,7 +200,7 @@ quint64 Component::updateUncompressedSize()
     quint64 size = 0;
 
     if (isSelected())
-        size = value(scUncompressedSize).toLongLong();
+        size = d->m_vars.value(scUncompressedSize).toLongLong();
 
     foreach (Component* comp, d->m_allChildComponents)
         size += comp->updateUncompressedSize();
@@ -225,11 +225,14 @@ QHash<QString,QString> Component::variables() const
 }
 
 /*!
-    Returns the value of variable name \a key.
-    If \a key is not known yet, \a defaultValue is returned.
+    Returns the value of variable name \a key. If \a key is not known yet, \a defaultValue is returned.
+    Note: If a component is virtual and you ask for the component value with key "Default", it will always
+    return false.
 */
 QString Component::value(const QString &key, const QString &defaultValue) const
 {
+    if (key == scDefault)
+        return isDefault() ? scTrue : scFalse;
     return d->m_vars.value(key, defaultValue);
 }
 
@@ -335,12 +338,12 @@ QString Component::name() const
 */
 QString Component::displayName() const
 {
-    return value(scDisplayName);
+    return d->m_vars.value(scDisplayName);
 }
 
 void Component::loadComponentScript()
 {
-    const QString script = value(scScript);
+    const QString script = d->m_vars.value(scScript);
     if (!localTempPath().isEmpty() && !script.isEmpty())
         loadComponentScript(QString::fromLatin1("%1/%2/%3").arg(localTempPath(), name(), script));
 }
@@ -676,9 +679,8 @@ void Component::addDownloadableArchive(const QString &path)
 {
     Q_ASSERT(isFromOnlineRepository());
 
-    const QString versionPrefix = value(scRemoteVersion);
     qDebug() << "addDownloadable" << path;
-    d->m_downloadableArchives.append(versionPrefix + path);
+    d->m_downloadableArchives.append(d->m_vars.value(scRemoteVersion) + path);
 }
 
 /*!
@@ -926,7 +928,7 @@ void Component::setAutoCreateOperations(bool autoCreateOperations)
 
 bool Component::isVirtual() const
 {
-    return value(scVirtual, scFalse).toLower() == scTrue;
+    return d->m_vars.value(scVirtual, scFalse).toLower() == scTrue;
 }
 
 /*!
@@ -941,7 +943,7 @@ bool Component::isSelected() const
 
 bool Component::forcedInstallation() const
 {
-    return value(scForcedInstallation, scFalse).toLower() == scTrue;
+    return d->m_vars.value(scForcedInstallation, scFalse).toLower() == scTrue;
 }
 
 void Component::setValidatorCallbackName(const QString &name)
@@ -967,7 +969,7 @@ void Component::setSelected(bool selected)
 
 void Component::addDependency(const QString &newDependency)
 {
-    QString oldDependencies = value(scDependencies);
+    QString oldDependencies = d->m_vars.value(scDependencies);
     if (oldDependencies.isEmpty())
         setValue(scDependencies, newDependency);
     else
@@ -981,13 +983,13 @@ void Component::addDependency(const QString &newDependency)
 */
 QStringList Component::dependencies() const
 {
-    return value(scDependencies).split(scCommaRegExp, QString::SkipEmptyParts);
+    return d->m_vars.value(scDependencies).split(scCommaRegExp, QString::SkipEmptyParts);
 }
 
 QStringList Component::autoDependencies() const
 {
     QStringList autoDependencyStringList =
-        value(scAutoDependOn).split(scCommaRegExp, QString::SkipEmptyParts);
+        d->m_vars.value(scAutoDependOn).split(scCommaRegExp, QString::SkipEmptyParts);
     autoDependencyStringList.removeAll(QLatin1String("script"));
     return autoDependencyStringList;
 }
@@ -1048,12 +1050,16 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
 }
 
 /*!
-    Determines if the component is a default one.
+    Determines if the component is a default one. Note: if a component is virtual, this function will always
+    return false.
 */
 bool Component::isDefault() const
 {
+     if (isVirtual())
+         return false;
+
     // the script can override this method
-    if (value(scDefault).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
+    if (d->m_vars.value(scDefault).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
         QScriptValue valueFromScript;
         try {
             valueFromScript = callScriptMethod(QLatin1String("isDefault"));
@@ -1069,7 +1075,7 @@ bool Component::isDefault() const
         return false;
     }
 
-    return value(scDefault).compare(scTrue, Qt::CaseInsensitive) == 0;
+    return d->m_vars.value(scDefault).compare(scTrue, Qt::CaseInsensitive) == 0;
 }
 
 /*!
@@ -1077,7 +1083,7 @@ bool Component::isDefault() const
 */
 bool Component::isInstalled() const
 {
-    return scInstalled == value(scCurrentState);
+    return scInstalled == d->m_vars.value(scCurrentState);
 }
 
 /*!
@@ -1126,7 +1132,7 @@ void Component::setUninstalled()
 */
 bool Component::isUninstalled() const
 {
-    return scUninstalled == value(scCurrentState);
+    return scUninstalled == d->m_vars.value(scCurrentState);
 }
 
 /*!
@@ -1195,16 +1201,17 @@ void Component::updateModelData(const QString &key, const QString &data)
         setData(data, LocalDisplayVersion);
 
     if (key == scUncompressedSize) {
-        quint64 size = value(scUncompressedSizeSum).toLongLong();
+        quint64 size = d->m_vars.value(scUncompressedSizeSum).toLongLong();
         setData(humanReadableSize(size), UncompressedSize);
     }
 
-    const QString &updateInfo = value(scUpdateText);
+    const QString &updateInfo = d->m_vars.value(scUpdateText);
     if (!d->m_core->isUpdater() || updateInfo.isEmpty()) {
-        setData(QLatin1String("<html><body>") + value(scDescription) + QLatin1String("</body></html>"),
-            Qt::ToolTipRole);
+        setData(QLatin1String("<html><body>") + d->m_vars.value(scDescription)
+            + QLatin1String("</body></html>"), Qt::ToolTipRole);
     } else {
-        setData(value(scDescription) + QLatin1String("<br><br>") + tr("Update Info: ") + updateInfo, Qt::ToolTipRole);
+        setData(d->m_vars.value(scDescription) + QLatin1String("<br><br>") + tr("Update Info: ")
+            + updateInfo, Qt::ToolTipRole);
     }
 }
 

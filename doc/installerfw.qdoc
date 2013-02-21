@@ -49,7 +49,7 @@
 
     \list
         \o  \l{Overview of Qt Installer Framework}
-        \o  \l{Using Qt Installers}
+        \o  \l{Using Installers}
         \list
             \o  \l{Initial Installation}
             \o  \l{Adding Components}
@@ -59,7 +59,7 @@
         \endlist
         \o  \l{Getting Started}
         \o  \l{Tutorial: Creating an Installer}
-        \o  \l{Creating Qt Installers}
+        \o  \l{Creating Installers}
         \list
             \o  \l{Creating Offline Installers}
             \o  \l{Creating Online Installers}
@@ -85,7 +85,7 @@
     \page ifw-creating-installers.html
     \nextpage ifw-offline-installers.html
 
-    \title Creating Qt Installers
+    \title Creating Installers
 
     The following steps are needed to create offline and online installers:
 
@@ -138,17 +138,19 @@
 
     \title Configuration File
 
-    A configuration file called \c config.xml specifies how to build the
-    installer binaries and online repositories. The file is located in the
+    The configuration file customizes the UI and behavior of an installer.
+    The file is typically called \c config.xml and located in the
     \c config directory.
 
-    \section1 Configuration File Syntax
+    A minimal configuration file consists of an \c <Installer> root element
+    with \c <Name> and \c <Version> elements as children. All other elements
+    are optional, and can appear in arbitrary order.
 
-    The configuration file has the following syntax:
+    The following example shows a typical configuration file:
 
     \quotefile examples/config.xml
 
-    \section2 Summary of Configuration Settings
+    \section1 Supported Configuration Settings
 
     The following table summarizes the settings in the configuration file.
 
@@ -172,7 +174,7 @@
             \o  Name of the installer as displayed on the title bar.
         \row
             \o  Publisher
-            \o  Publisher of the software.
+            \o  Publisher of the software (as shown in the Windows Control Panel).
         \row
             \o  ProductUrl
             \o  URL to a page that contains product information on your web
@@ -249,7 +251,8 @@
             \o  Filename for the configuration file on the target. Default is components.xml.
         \row
             \o  Pages
-            \o  List of pages.
+            \o  Custom strings for labels in the installer pages. Deprecated,
+                see \l{Translating Pages} instead.
     \endtable
 
 */
@@ -328,6 +331,9 @@
     when using \a qsTr or the class name of the UI file when translating a user
     interface.
 
+    \note The translation system can also be used to customize the UI. Use e.g.
+    an \c en_en.ts file to replace any text in the installer with a custom English
+    version.
 */
 
 /*!
