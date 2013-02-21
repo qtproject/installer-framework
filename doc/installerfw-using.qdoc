@@ -27,7 +27,7 @@
 
 /*!
     \contentspage {index.html}{Qt Installer Framework}
-    \previouspage ifw-overview.html
+    \previouspage ifw-getting-started.html
     \page ifw-use-cases.html
     \nextpage ifw-use-cases-install.html
 
@@ -326,7 +326,7 @@
     \contentspage index.html
     \previouspage ifw-use-cases-update.html
     \page ifw-use-cases-settings.html
-    \nextpage ifw-getting-started.html
+    \nextpage ifw-tutorial.html
 
     \title Specifying Settings
 

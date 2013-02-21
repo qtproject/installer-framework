@@ -49,6 +49,7 @@
 
     \list
         \o  \l{Overview of Qt Installer Framework}
+        \o  \l{Getting Started}
         \o  \l{End User Workflows}
         \list
             \o  \l{Initial Installation}
@@ -57,7 +58,6 @@
             \o  \l{Updating Components}
             \o  \l{Specifying Settings}
         \endlist
-        \o  \l{Getting Started}
         \o  \l{Tutorial: Creating an Installer}
         \o  \l{Creating Installers}
         \list
