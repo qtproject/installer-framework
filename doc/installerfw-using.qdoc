@@ -31,7 +31,7 @@
     \page ifw-use-cases.html
     \nextpage ifw-use-cases-install.html
 
-    \title Using Qt Installers
+    \title Using Installers
 
     The end user experience is similar for both offline and online installers.
     The installers consist of a package manager and an updater that enable end

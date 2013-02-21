@@ -49,7 +49,7 @@
 
     \list
         \o  \l{Overview of Qt Installer Framework}
-        \o  \l{Using Qt Installers}
+        \o  \l{Using Installers}
         \list
             \o  \l{Initial Installation}
             \o  \l{Adding Components}
@@ -59,7 +59,7 @@
         \endlist
         \o  \l{Getting Started}
         \o  \l{Tutorial: Creating an Installer}
-        \o  \l{Creating Qt Installers}
+        \o  \l{Creating Installers}
         \list
             \o  \l{Creating Offline Installers}
             \o  \l{Creating Online Installers}
@@ -85,7 +85,7 @@
     \page ifw-creating-installers.html
     \nextpage ifw-offline-installers.html
 
-    \title Creating Qt Installers
+    \title Creating Installers
 
     The following steps are needed to create offline and online installers:
 
