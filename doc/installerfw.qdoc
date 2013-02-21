@@ -49,7 +49,7 @@
 
     \list
         \o  \l{Overview of Qt Installer Framework}
-        \o  \l{Using Installers}
+        \o  \l{End User Workflows}
         \list
             \o  \l{Initial Installation}
             \o  \l{Adding Components}
