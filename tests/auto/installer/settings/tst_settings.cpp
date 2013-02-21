@@ -79,7 +79,7 @@ void tst_Settings::loadFullConfig()
 
 void tst_Settings::loadEmptyConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "Error-Exception: \"Missing or empty <Name> tag in "
+    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Missing or empty <Name> tag in "
                          ":/data/empty_config.xml.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/empty_config.xml", ":/data");
@@ -92,7 +92,7 @@ void tst_Settings::loadEmptyConfig()
 
 void tst_Settings::loadNotExistingConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "Error-Exception: \"Could not open settings file "
+    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Could not open settings file "
                          ":/data/inexisting_config.xml for reading: "
                          "Unknown error\" ");
     try {
@@ -108,7 +108,7 @@ void tst_Settings::loadNotExistingConfig()
 
 void tst_Settings::loadMalformedConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "Error-Exception: \"Error in :/data/malformed_config.xml, "
+    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in :/data/malformed_config.xml, "
                          "line 9, column 0: Premature end of document.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/malformed_config.xml", ":/data");
@@ -122,7 +122,7 @@ void tst_Settings::loadMalformedConfig()
 
 void tst_Settings::loadUnknownElementConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "Error-Exception: \"Error in :/data/unknown_element_config.xml, line 5, "
+    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in :/data/unknown_element_config.xml, line 5, "
                          "column 13: Unexpected element 'unknown'.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/unknown_element_config.xml", ":/data");
