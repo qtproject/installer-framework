@@ -27,7 +27,14 @@ QHP_FILE = $$OUT_PWD/doc/html/ifw.qhp
 QCH_FILE = $$OUT_PWD/doc/ifw.qch
 
 HELP_DEP_FILES = $$PWD/installerfw.qdoc \
+                 $$PWD/installerfw-getting-started.qdoc \
+                 $$PWD/installerfw-overview.qdoc \
+                 $$PWD/installerfw-reference.qdoc \
+                 $$PWD/installerfw-using.qdoc \
+                 $$PWD/noninteractive.qdoc \
+                 $$PWD/operations.qdoc \
                  $$PWD/scripting.qdoc \
+                 $$PWD/tutorial.qdoc \
                  $$PWD/installerfw.qdocconf \
                  $$PWD/installerfw-online.qdocconf \
                  $$PWD/config/compat.qdocconf \
