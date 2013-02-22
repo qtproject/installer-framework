@@ -53,6 +53,9 @@
 
 #include <iostream>
 
+#define QUOTE_(x) #x
+#define QUOTE(x) QUOTE_(x)
+
 using namespace Lib7z;
 using namespace QInstaller;
 
@@ -76,7 +79,7 @@ static void printUsage()
 
     std::cout << std::endl;
     std::cout << "Example:" << std::endl;
-    std::cout << "  " << appName << " -p ../examples/packages -c ../examples/config/config.xml -u "
+    std::cout << "  " << appName << " -p ../examples/packages -u "
         "http://www.some-server.com:8080 repository/" << std::endl;
 }
 
@@ -107,7 +110,6 @@ int main(int argc, char** argv)
         QStringList filteredPackages;
         bool updateExistingRepository = false;
         QString packagesDir;
-        QString configFile;
         QString redirectUpdateUrl;
         QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
         bool remove = false;
@@ -156,21 +158,8 @@ int main(int argc, char** argv)
                 args.removeFirst();
                 if (args.isEmpty())
                     return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument"));
-                const QFileInfo fi(args.first());
-                if (!fi.exists()) {
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Config file %1 not found "
-                        "at the specified location").arg(args.first()));
-                }
-                if (!fi.isFile()) {
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Configuration %1 is not a "
-                        "file").arg(args.first()));
-                }
-                if (!fi.isReadable()) {
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Config file %1 is not "
-                        "readable").arg(args.first()));
-                }
-                configFile = args.first();
                 args.removeFirst();
+                std::cout << "Config file parameter is deprecated and ignored." << std::endl;
             } else if (args.first() == QLatin1String("-u") || args.first() == QLatin1String("--updateurl")) {
                 args.removeFirst();
                 if (args.isEmpty())
@@ -189,7 +178,7 @@ int main(int argc, char** argv)
             }
         }
 
-        if ((packagesDir.isEmpty() || configFile.isEmpty() || args.count() != 1)) {
+        if (packagesDir.isEmpty() || (args.count() != 1)) {
                 printUsage();
                 return 1;
         }
@@ -224,10 +213,8 @@ int main(int argc, char** argv)
         const QString metaTmp = createTemporaryDirectory();
         tmpDeleter.add(metaTmp);
 
-        QString configDir = QFileInfo(configFile).canonicalPath();
-        const Settings &settings = Settings::fromFileAndPrefix(configFile, configDir);
-        generateMetaDataDirectory(metaTmp, repositoryDir, packages, settings.applicationName(),
-            settings.applicationVersion(), redirectUpdateUrl);
+        generateMetaDataDirectory(metaTmp, repositoryDir, packages, QLatin1String("{AnyApplication}"),
+            QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), redirectUpdateUrl);
         QInstallerTools::compressMetaDirectories(metaTmp, metaTmp, pathToVersionMapping);
 
         QDirIterator it(repositoryDir, QStringList(QLatin1String("Updates*.xml")), QDir::Files | QDir::CaseSensitive);
