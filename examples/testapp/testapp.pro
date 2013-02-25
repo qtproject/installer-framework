@@ -8,7 +8,6 @@ include(../../installerfw.pri)
     warning("You can use this example only with a static build of Qt and IFW!")
 }
 
-LIBS += -linstaller
 DESTDIR = packages/com.nokia.testapp/data
 
 FORMS += \
