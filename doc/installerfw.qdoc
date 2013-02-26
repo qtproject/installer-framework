@@ -414,7 +414,7 @@
                 name the version needs to be inherited from.
         \row
             \o  ReleaseDate
-            \o  Date when this component version was released. Optional.
+            \o  Date when this component version was released. Required.
         \row
             \o  Name
             \o  Domain-like identification for this component. Required.
