@@ -74,7 +74,7 @@ QList<VolumeInfo> mountedVolumes()
         if (s.isNull())
             return result;
 
-        if (!s.startsWith(QLatin1Char('/')))
+        if (!s.startsWith(QLatin1Char('/')) && !s.startsWith(QLatin1String("tmpfs ") + QDir::tempPath()))
             continue;
 
         const QStringList parts = s.split(QLatin1Char(' '), QString::SkipEmptyParts);
