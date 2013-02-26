@@ -250,7 +250,14 @@
             \o  Current platform: \c "x11", \c "win", or \c "mac".
     \endtable
 
-    \note You can use the variables in the parameter list for installation
-    operations. For example, \c{"{TargetDir}/settings.xml"} might be expanded
-    to: \c{"C:/Program Files/My Program/settings.xml"}.
+    The variables can be resolved by calls to \c installer.value(). If embedded
+    in '@' they can also be part of strings passed as arguments to installation
+    operations:
+
+    \code
+    if (installer.value("os") === "win") {
+        component.addOperation("CreateShortcut", "@TargetDir@/MyApp.exe", "@StartMenuDir@/MyApp.lnk");
+    }
+    \endcode
+
 */
