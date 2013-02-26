@@ -8,7 +8,7 @@ include(../../installerfw.pri)
     warning("You can use this example only with a static build of Qt and IFW!")
 }
 
-DESTDIR = packages/com.nokia.testapp/data
+DESTDIR = $$IFW_BUILD_TREE/examples/testapp/packages/com.nokia.testapp/data
 
 FORMS += \
         componentselectiondialog.ui \
@@ -30,7 +30,16 @@ SOURCES += main.cpp \
 
 RESOURCES += testapp.qrc
 
-isEqual(IFW_SOURCE_TREE, $$IFW_BUILD_TREE) {
-    macx:QMAKE_POST_LINK = ($$IFW_APP_PATH/binarycreator -p $$PWD/packages -c $$PWD/config -t $$IFW_APP_PATH/installerbase TestAppInstaller.app)
-    win32:QMAKE_POST_LINK = ($$IFW_APP_PATH/binarycreator.exe -p $$PWD/packages -c $$PWD/config -t $$IFW_APP_PATH/installerbase.exe TestAppInstaller.exe)
+macx {
+    QMAKE_POST_LINK = ($$IFW_APP_PATH/binarycreator -p $$IFW_SOURCE_TREE/examples/testapp/packages \
+        -c $$IFW_SOURCE_TREE/examples/testapp/config/config.xml -t $$IFW_APP_PATH/installerbase \
+         TestAppInstaller.app
+} win32: {
+    QMAKE_POST_LINK = ($$IFW_APP_PATH/binarycreator.exe -p $$IFW_SOURCE_TREE/examples/testapp/packages \
+        -c $$IFW_SOURCE_TREE/examples/testapp/config/config.xml -t $$IFW_APP_PATH/installerbase.exe \
+         TestAppInstaller.exe)
+} else {
+    QMAKE_POST_LINK = ($$IFW_APP_PATH/binarycreator -p $$IFW_SOURCE_TREE/examples/testapp/packages \
+        -c $$IFW_SOURCE_TREE/examples/testapp/config/config.xml -t $$IFW_APP_PATH/installerbase \
+         TestAppInstaller)
 }
