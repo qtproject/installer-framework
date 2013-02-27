@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Start Menu Shortcut Example</Name>
+    <Version>1.0.0</Version>
+    <Title>Start Menu Shortcut Example</Title>
+    <Publisher>Qt-Project</Publisher>
+    <!-- Directory name is used in component.xml -->
+    <StartMenuDir>Qt Installer Framework Example</StartMenuDir>
+    <TargetDir>@homeDir@/IFWStartMenuExample</TargetDir>
+</Installer>
