@@ -33,12 +33,12 @@
 
     \title Operations
 
-    You can test operations manually on the uninstaller or installer.
+    The operations are prepared by component scripts and performed by the
+    installer.
 
-    For example, to copy a file:
-    \code
-    SDKMaintenanceTool --runoperation "Copy" "<source>" "<target>"
-    \endcode
+    Internally, each operation has a \e DO step that contains instructions for
+    the installer and an \e UNDO step that contains instructions for the
+    uninstaller.
 
     \section1 Summary of Operations
 
@@ -171,5 +171,14 @@
                 \a contentType, and \a icon. This is currently only supported on
                 Windows.
     \endtable
+
+    If errors occur, you can test operations manually on the uninstaller or
+    installer. However, variables are not resolved, so you need to use absolute
+    values.
+
+    For example, to test copying a file:
+    \code
+    Installer --runoperation "Copy" "<source>" "<target>"
+    \endcode
 
 */

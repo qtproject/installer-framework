@@ -33,8 +33,9 @@
 
     \title Component Scripting
 
-    For each component, you can specify one script that is loaded and run by the
-    installer. The script format has to be compatible with QScriptEngine.
+    For each component, you can specify one script that prepares the operations
+    to be performed by the installer. The script format has to be
+    compatible with QScriptEngine.
 
     \section1 Construction
 
