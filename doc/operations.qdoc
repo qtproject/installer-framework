@@ -81,13 +81,24 @@
                 is treated as ASCII text.
         \row
             \o  Execute
-            \o  "Execute" [{\a exitcodes}] \a command [\a parameter1 [\a parameter2 [\a parameter3 [\a parameter4]]]]
-            \o  Executes the command specified by \a command. Up to four
-                parameters can be passed.
+            \o  "Execute" [{\a exitcodes}] \a command [\a parameter1 [\a parameter... [\a parameter10]]]
+            \o  Executes the command specified by \a command. Up to 10
+                parameters can be passed. If that is not enough, you can use a JavaScript string array.
 
                 Optionally, you can pass a comma-separated list of exit codes
                 within curly brackets ({}) as the first argument to specify the
                 exit codes for successful execution. This defaults to "{0}".
+
+                Other optional named arguments are: "workingdirectory=<your_working_dir>";
+                "errormessage=<your_custom_errormessage>"
+
+                In addition, a special argument, UNDOEXECUTE, separates the DO step of the operation
+                from the UNDO step.
+
+                example:
+                \code
+                component.addOperation("Execute", "touch", "test.txt", "UNDOEXECUTE", "rm", "test.txt")
+                \endcode
         \row
             \o  CreateShortcut
             \o  "CreateShortcut" \a filename \a linkname [\a arguments]
