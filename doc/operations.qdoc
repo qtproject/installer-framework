@@ -33,12 +33,11 @@
 
     \title Operations
 
-    You can call operations manually on the uninstaller or installer.
+    You can test operations manually on the uninstaller or installer.
 
-    For example, to register the Qt version in Qt Creator, call the
-    "RegisterQtInCreatorV23" operation with the following syntax:
+    For example, to copy a file:
     \code
-    SDKMaintenanceTool --runoperation "RegisterQtInCreatorV23" "<displayname>" "<qtpath>" "<target: Symbian/Maemo/Desktop/Simulator/WinCE>" "<internal_ID>"
+    SDKMaintenanceTool --runoperation "Copy" "<source>" "<target>"
     \endcode
 
     \section1 Summary of Operations
