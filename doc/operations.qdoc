@@ -151,26 +151,6 @@
                 \a command. Optionally, you can specify \a description,
                 \a contentType, and \a icon. This is currently only supported on
                 Windows.
-        \row
-            \o  RegisterQtInCreatorV2
-            \o  "RegisterQtInCreatorV2", \a displayname, \a qt_or_qmake_path, [\a system_root, [\a sbs_path]].
-            \o  Registers the Qt version \a displayname to Qt Creator with
-                \a qt_or_qmake_path (if the path does not end with the qmake
-                binary, adds \c{bin/qmake} to the path automatically). Optionally,
-                you can specify \a system_root. For Symbian SDKs, Qt Creator
-                finds the Symbian SDK root (EPOCROOT) in the instance root. For
-                Symbian SDKs that support SBS, add \a sbs_path.
-
-                \note Supports Qt Creator 2.2, or later.
-        \row
-            \o  RegisterQtInCreatorV23
-            \o  "RegisterQtInCreatorV23", \a displayname, \a qt_path, \a target, \a internal_id.
-            \o  Registers the Qt version \a displayname to Qt Creator with
-                \a qt_path. \a target is a Qt version in Qt Creator (Symbian,
-                Maemo, Desktop, Qt Simulator, WinCE) and \a internal_id is used
-                to update or remove the Qt version.
-
-                \note Supports Qt Creator 2.3, or later.
     \endtable
 
 */
