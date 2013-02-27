@@ -80,6 +80,15 @@
             \o  Prepends \a text to the file specified by \a filename. \a text
                 is treated as ASCII text.
         \row
+            \o  Replace
+            \o  "Replace" \a file \a search \ replace
+            \o  Opens \a file to find \a search string and replaces that with the \a replace string.
+        \row
+            \o  LineReplace
+            \o  "LineReplace" \a file \a search \ replace
+            \o  Opens \a file to find lines that start with \a search string and
+                replaces that with the \a replace string.
+        \row
             \o  Execute
             \o  "Execute" [{\a exitcodes}] \a command [\a parameter1 [\a parameter... [\a parameter10]]]
             \o  Executes the command specified by \a command. Up to 10
