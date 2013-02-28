@@ -1,4 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    settings
+    settings \
+    repository \
+    fakestopprocessforupdateoperation

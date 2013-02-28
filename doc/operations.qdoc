@@ -33,13 +33,12 @@
 
     \title Operations
 
-    You can call operations manually on the uninstaller or installer.
+    The operations are prepared by component scripts and performed by the
+    installer.
 
-    For example, to register the Qt version in Qt Creator, call the
-    "RegisterQtInCreatorV23" operation with the following syntax:
-    \code
-    SDKMaintenanceTool --runoperation "RegisterQtInCreatorV23" "<displayname>" "<qtpath>" "<target: Symbian/Maemo/Desktop/Simulator/WinCE>" "<internal_ID>"
-    \endcode
+    Internally, each operation has a \e DO step that contains instructions for
+    the installer and an \e UNDO step that contains instructions for the
+    uninstaller.
 
     \section1 Summary of Operations
 
@@ -81,14 +80,34 @@
             \o  Prepends \a text to the file specified by \a filename. \a text
                 is treated as ASCII text.
         \row
+            \o  Replace
+            \o  "Replace" \a file \a search \ replace
+            \o  Opens \a file to find \a search string and replaces that with the \a replace string.
+        \row
+            \o  LineReplace
+            \o  "LineReplace" \a file \a search \ replace
+            \o  Opens \a file to find lines that start with \a search string and
+                replaces that with the \a replace string.
+        \row
             \o  Execute
-            \o  "Execute" [{\a exitcodes}] \a command [\a parameter1 [\a parameter2 [\a parameter3 [\a parameter4]]]]
-            \o  Executes the command specified by \a command. Up to four
-                parameters can be passed.
+            \o  "Execute" [{\a exitcodes}] \a command [\a parameter1 [\a parameter... [\a parameter10]]]
+            \o  Executes the command specified by \a command. Up to 10
+                parameters can be passed. If that is not enough, you can use a JavaScript string array.
 
                 Optionally, you can pass a comma-separated list of exit codes
                 within curly brackets ({}) as the first argument to specify the
                 exit codes for successful execution. This defaults to "{0}".
+
+                Other optional named arguments are: "workingdirectory=<your_working_dir>";
+                "errormessage=<your_custom_errormessage>"
+
+                In addition, a special argument, UNDOEXECUTE, separates the DO step of the operation
+                from the UNDO step.
+
+                example:
+                \code
+                component.addOperation("Execute", "touch", "test.txt", "UNDOEXECUTE", "rm", "test.txt")
+                \endcode
         \row
             \o  CreateShortcut
             \o  "CreateShortcut" \a filename \a linkname [\a arguments]
@@ -151,26 +170,15 @@
                 \a command. Optionally, you can specify \a description,
                 \a contentType, and \a icon. This is currently only supported on
                 Windows.
-        \row
-            \o  RegisterQtInCreatorV2
-            \o  "RegisterQtInCreatorV2", \a displayname, \a qt_or_qmake_path, [\a system_root, [\a sbs_path]].
-            \o  Registers the Qt version \a displayname to Qt Creator with
-                \a qt_or_qmake_path (if the path does not end with the qmake
-                binary, adds \c{bin/qmake} to the path automatically). Optionally,
-                you can specify \a system_root. For Symbian SDKs, Qt Creator
-                finds the Symbian SDK root (EPOCROOT) in the instance root. For
-                Symbian SDKs that support SBS, add \a sbs_path.
-
-                \note Supports Qt Creator 2.2, or later.
-        \row
-            \o  RegisterQtInCreatorV23
-            \o  "RegisterQtInCreatorV23", \a displayname, \a qt_path, \a target, \a internal_id.
-            \o  Registers the Qt version \a displayname to Qt Creator with
-                \a qt_path. \a target is a Qt version in Qt Creator (Symbian,
-                Maemo, Desktop, Qt Simulator, WinCE) and \a internal_id is used
-                to update or remove the Qt version.
-
-                \note Supports Qt Creator 2.3, or later.
     \endtable
+
+    If errors occur, you can test operations manually on the uninstaller or
+    installer. However, variables are not resolved, so you need to use absolute
+    values.
+
+    For example, to test copying a file:
+    \code
+    Installer --runoperation "Copy" "<source>" "<target>"
+    \endcode
 
 */

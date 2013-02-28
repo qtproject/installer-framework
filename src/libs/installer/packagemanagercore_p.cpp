@@ -82,30 +82,42 @@ namespace QInstaller {
 class OperationTracer
 {
 public:
-    OperationTracer() {}
-    void trace(Operation *operation, const QString &state)
+    OperationTracer(Operation *operation) : m_operation(0)
     {
-        qDebug() << state << " operation: " << operation->name();
-        qDebug() << "   - arguments: " << operation->arguments().join(QLatin1String(", "));
+        // don't create output for that hacky pseudo operation
+        if (operation->name() != QLatin1String("MinimumProgress"))
+            m_operation = operation;
+    }
+    void trace(const QString &state)
+    {
+        if (!m_operation)
+            return;
+        qDebug() << QString::fromLatin1("%1 operation: %2").arg(state, m_operation->name());
+        qDebug() << QString::fromLatin1("\t- arguments: %1").arg(m_operation->arguments()
+            .join(QLatin1String(", ")));
     }
     ~OperationTracer() {
+        if (!m_operation)
+            return;
         qDebug() << "Done";
     }
+private:
+    Operation *m_operation;
 };
 
 static bool runOperation(Operation *operation, PackageManagerCorePrivate::OperationType type)
 {
-    OperationTracer tracer;
+    OperationTracer tracer(operation);
     switch (type) {
         case PackageManagerCorePrivate::Backup:
-            tracer.trace(operation, QLatin1String("backup"));
+            tracer.trace(QLatin1String("backup"));
             operation->backup();
             return true;
         case PackageManagerCorePrivate::Perform:
-            tracer.trace(operation, QLatin1String("perform"));
+            tracer.trace(QLatin1String("perform"));
             return operation->performOperation();
         case PackageManagerCorePrivate::Undo:
-            tracer.trace(operation, QLatin1String("undo"));
+            tracer.trace(QLatin1String("undo"));
             return operation->undoOperation();
         default:
             Q_ASSERT(!"unexpected operation type");

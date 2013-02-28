@@ -621,17 +621,12 @@ int main(int argc, char **argv)
             QInstaller::setVerbose(true);
         } else if (*it == QLatin1String("-n") || *it == QLatin1String("--online-only")) {
             if (!filteredPackages.isEmpty()) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("for the --include and --exclude case you also "
-                    "have to ensure that online-only==false, as that means include nothing"));
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: 'online-only' option cannot be used "
+                    "in conjunction with the 'include' or 'exclude' option. An 'online-only' installer will never "
+                    "contain any components apart from the root component."));
             }
-            filteredPackages.append(QLatin1String("XXXXXXXXXXXXXXXXX_online_XXXXXXXXXXXXXXXXX"));
-            ftype = QInstallerTools::Include;
             onlineOnly = true;
         } else if (*it == QLatin1String("-f") || *it == QLatin1String("--offline-only")) {
-            if (onlineOnly) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("You cannot use --online-only and "
-                    "--offline-only at the same time."));
-            }
             offlineOnly = true;
         } else if (*it == QLatin1String("-t") || *it == QLatin1String("--template")) {
             ++it;
@@ -689,6 +684,16 @@ int main(int argc, char **argv)
                     .arg(*it));
             }
         }
+    }
+
+    if (onlineOnly && offlineOnly) {
+        return printErrorAndUsageAndExit(QString::fromLatin1("You cannot use --online-only and "
+            "--offline-only at the same time."));
+    }
+
+    if (onlineOnly) {
+        filteredPackages.append(QLatin1String("XXXXXXXXXXXXXXXXX_online_XXXXXXXXXXXXXXXXX"));
+        ftype = QInstallerTools::Include;
     }
 
     if (target.isEmpty())

@@ -73,7 +73,7 @@ VolumeInfo VolumeInfo::fromPath(const QString &path)
             if (parts.isEmpty())
                 targetPath = QDir(QDir::rootPath());
             else
-                targetPath = QDir(parts.join(QDir::separator()));
+                targetPath = QDir(QLatin1Char('/') + parts.join(QDir::separator()));
         }
 
         if (targetPath.canonicalPath().startsWith(volume.mountPath()))
