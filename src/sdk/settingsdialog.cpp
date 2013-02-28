@@ -54,6 +54,8 @@
 
 #include <QtXml/QDomDocument>
 
+using namespace QInstaller;
+
 
 // -- TestRepositoryJob
 
@@ -72,12 +74,12 @@ TestRepository::~TestRepository()
         m_downloader->deleteLater();
 }
 
-QInstaller::Repository TestRepository::repository() const
+Repository TestRepository::repository() const
 {
     return m_repository;
 }
 
-void TestRepository::setRepository(const QInstaller::Repository &repository)
+void TestRepository::setRepository(const Repository &repository)
 {
     cancel();
 
@@ -93,13 +95,13 @@ void TestRepository::doStart()
 
     const QUrl url = m_repository.url();
     if (url.isEmpty()) {
-        emitFinishedWithError(QInstaller::InvalidUrl, tr("Empty repository URL."));
+        emitFinishedWithError(InvalidUrl, tr("Empty repository URL."));
         return;
     }
 
     m_downloader = KDUpdater::FileDownloaderFactory::instance().create(url.scheme(), this);
     if (!m_downloader) {
-        emitFinishedWithError(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2).")
+        emitFinishedWithError(InvalidUrl, tr("URL scheme not supported: %1 (%2).")
             .arg(url.scheme(), url.toString()));
         return;
     }
@@ -132,7 +134,7 @@ void TestRepository::doCancel()
 void TestRepository::downloadCompleted()
 {
     QString errorMsg;
-    int error = QInstaller::DownloadError;
+    int error = DownloadError;
 
     if (m_downloader->isDownloaded()) {
         QFile file(m_downloader->downloadedFileName());
@@ -140,7 +142,7 @@ void TestRepository::downloadCompleted()
             QDomDocument doc;
             QString errorMsg;
             if (!doc.setContent(&file, &errorMsg)) {
-                error = QInstaller::InvalidUpdatesXml;
+                error = InvalidUpdatesXml;
                 errorMsg = tr("Could not parse Updates.xml! Error: %1.");
             } else {
                 error = NoError;
@@ -163,7 +165,7 @@ void TestRepository::downloadCompleted()
 
 void TestRepository::downloadAborted(const QString &reason)
 {
-    emitFinishedWithError(QInstaller::DownloadError, reason);
+    emitFinishedWithError(DownloadError, reason);
 }
 
 void TestRepository::onAuthenticatorChanged(const QAuthenticator &authenticator)
@@ -214,7 +216,7 @@ RepositoryItem::RepositoryItem(const QString &label)
     m_repo = QInstaller::Repository(QUrl(), true);
 }
 
-RepositoryItem::RepositoryItem(const QInstaller::Repository &repo)
+RepositoryItem::RepositoryItem(const Repository &repo)
     : QTreeWidgetItem(QTreeWidgetItem::UserType)
     , m_repo(repo)
 {
@@ -302,9 +304,9 @@ void RepositoryItem::setData(int column, int role, const QVariant &value)
     QTreeWidgetItem::setData(column, role, value);
 }
 
-QSet<QInstaller::Repository> RepositoryItem::repositories() const
+QSet<Repository> RepositoryItem::repositories() const
 {
-    QSet<QInstaller::Repository> set;
+    QSet<Repository> set;
     for (int i = 0; i < childCount(); ++i) {
         if (QTreeWidgetItem *item = child(i)) {
             if (item->type() == QTreeWidgetItem::UserType) {
@@ -319,7 +321,7 @@ QSet<QInstaller::Repository> RepositoryItem::repositories() const
 
 // -- SettingsDialog
 
-SettingsDialog::SettingsDialog(QInstaller::PackageManagerCore *core, QWidget *parent)
+SettingsDialog::SettingsDialog(PackageManagerCore *core, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui::SettingsDialog)
     , m_core(core)
@@ -328,15 +330,15 @@ SettingsDialog::SettingsDialog(QInstaller::PackageManagerCore *core, QWidget *pa
     m_ui->setupUi(this);
     setupRepositoriesTreeWidget();
 
-    const QInstaller::Settings &settings = m_core->settings();
+    const Settings &settings = m_core->settings();
     switch (settings.proxyType()) {
-        case QInstaller::Settings::NoProxy:
+        case Settings::NoProxy:
             m_ui->m_noProxySettings->setChecked(true);
             break;
-        case QInstaller::Settings::SystemProxy:
+        case Settings::SystemProxy:
             m_ui->m_systemProxySettings->setChecked(true);
             break;
-        case QInstaller::Settings::UserDefinedProxy:
+        case Settings::UserDefinedProxy:
             m_ui->m_manualProxySettings->setChecked(true);
             break;
         default:
@@ -381,8 +383,8 @@ SettingsDialog::SettingsDialog(QInstaller::PackageManagerCore *core, QWidget *pa
 void SettingsDialog::accept()
 {
     bool settingsChanged = false;
-    QInstaller::Settings newSettings;
-    const QInstaller::Settings &settings = m_core->settings();
+    Settings newSettings;
+    const Settings &settings = m_core->settings();
 
     // set possible updated default repositories
     newSettings.setDefaultRepositories((dynamic_cast<RepositoryItem*> (m_rootItems.at(0)))->repositories());
@@ -399,14 +401,14 @@ void SettingsDialog::accept()
     settingsChanged |= (settings.userRepositories() != newSettings.userRepositories());
 
     // update proxy type
-    newSettings.setProxyType(QInstaller::Settings::NoProxy);
+    newSettings.setProxyType(Settings::NoProxy);
     if (m_ui->m_systemProxySettings->isChecked())
-        newSettings.setProxyType(QInstaller::Settings::SystemProxy);
+        newSettings.setProxyType(Settings::SystemProxy);
     else if (m_ui->m_manualProxySettings->isChecked())
-        newSettings.setProxyType(QInstaller::Settings::UserDefinedProxy);
+        newSettings.setProxyType(Settings::UserDefinedProxy);
     settingsChanged |= settings.proxyType() != newSettings.proxyType();
 
-    if (newSettings.proxyType() == QInstaller::Settings::UserDefinedProxy) {
+    if (newSettings.proxyType() == Settings::UserDefinedProxy) {
         // update ftp proxy settings
         newSettings.setFtpProxy(QNetworkProxy(QNetworkProxy::HttpProxy, m_ui->m_ftpProxy->text(),
             m_ui->m_ftpProxyPort->value(), m_ui->m_ftpProxyUser->text(), m_ui->m_ftpProxyPass->text()));
@@ -436,7 +438,7 @@ void SettingsDialog::addRepository()
     }
 
     if (parent) {
-        QInstaller::Repository repository;
+        Repository repository;
         repository.setEnabled(true);
         RepositoryItem *item = new RepositoryItem(repository);
         parent->insertChild(index, item);
@@ -537,7 +539,7 @@ void SettingsDialog::setupRepositoriesTreeWidget()
     m_rootItems.append(new RepositoryItem(tr("User defined repositories")));
     treeWidget->addTopLevelItems(m_rootItems);
 
-    const QInstaller::Settings &settings = m_core->settings();
+    const Settings &settings = m_core->settings();
     insertRepositories(settings.userRepositories(), m_rootItems.at(2));
     insertRepositories(settings.defaultRepositories(), m_rootItems.at(0));
     insertRepositories(settings.temporaryRepositories(), m_rootItems.at(1));
@@ -562,9 +564,9 @@ void SettingsDialog::setupRepositoriesTreeWidget()
     m_delegate->disableEditing(false);
 }
 
-void SettingsDialog::insertRepositories(const QSet<QInstaller::Repository> repos, QTreeWidgetItem *rootItem)
+void SettingsDialog::insertRepositories(const QSet<Repository> repos, QTreeWidgetItem *rootItem)
 {
     rootItem->setFirstColumnSpanned(true);
-    foreach (const QInstaller::Repository &repo, repos)
+    foreach (const Repository &repo, repos)
         rootItem->addChild(new RepositoryItem(repo));
 }
