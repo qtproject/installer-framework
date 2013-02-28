@@ -3,6 +3,12 @@ description = "Qt Installer Framework Manual"
 
 headerdirs =
 sourcedirs = $SRCDIR
+
+# Contains documentation for JS API
+sources = $SRCDIR/../src/libs/installer/packagemanagercore.cpp \
+          $SRCDIR/../src/libs/installer/component.cpp \
+          $SRCDIR/../src/libs/installer/messageboxhandler.cpp
+
 imagedirs = $SRCDIR/images $SRCDIR/templates/images
 outputdir = $OUTDIR
 exampledirs = $SRCDIR $SRCDIR/examples
@@ -13,7 +19,7 @@ include(macros.qdocconf)
 include(qt-cpp-ignore.qdocconf)
 include(qt-defines.qdocconf)
 
-sources.fileextensions         = "*.qdoc"
+sources.fileextensions         = "*.qdoc *.cpp"
 
 qhp.projects            = InstallerFramework
 qhp.InstallerFramework.file             = ifw.qhp
@@ -34,3 +40,10 @@ qhp.InstallerFramework.subprojects.manual.type = manual
 
 macro.see                       = "\\sa"
 macro.function                  = "\\fn"
+
+
+# We 'misuse' QML doc commands to generate JS documentation
+# (only works with qdoc from Qt 5)
+
+outputprefixes = QML
+outputprefixes.QML =

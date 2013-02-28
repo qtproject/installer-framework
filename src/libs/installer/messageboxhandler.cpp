@@ -51,6 +51,89 @@
 #include <QScriptValue>
 #include <QMetaEnum>
 
+/*!
+    \qmltype QMessageBox
+    \inqmlmodule scripting
+
+    \brief The QMessageBox type provides a modal dialog for informing the
+    user or asking the user a question and receiving an answer.
+
+
+    \code
+    var result = QMessageBox.question("quit.question", "Installer", "Do you want to quit the installer?",
+                                      QMessageBox.Yes | QMessageBox.No);
+    if (result == QMessageBox.Yes) {
+       // ...
+    }
+    \endcode
+
+    \section2 Buttons
+
+    QMessageBox defines a list of common buttons:
+    \list
+    \li QMessageBox.Ok
+    \li QMessageBox.Open
+    \li QMessageBox.Save
+    \li QMessageBox.Cancel
+    \li QMessageBox.Close
+    \li QMessageBox.Discard
+    \li QMessageBox.Apply
+    \li QMessageBox.Reset
+    \li QMessageBox.RestoreDefaults
+    \li QMessageBox.Help
+    \li QMessageBox.SaveAll
+    \li QMessageBox.Yes
+    \li QMessageBox.YesToAll
+    \li QMessageBox.No
+    \li QMessageBox.NoToAll
+    \li QMessageBox.Abort
+    \li QMessageBox.Retry
+    \li QMessageBox.Ignore
+    \li QMessageBox.NoButton
+    \endlist
+
+    \section2 Scripted Installations
+
+    Sometimes it is useful to automatically close message boxes, for example during a scripted
+    installation. This can be achieved by calling
+    Installer::setMessageBoxAutomaticAnswer, Installer::autoAcceptMessageBoxes,
+    Installer::autoRejectMessageBoxes. The \c identifier argument in the method calls
+    allows to identify specific message boxes for this purpose.
+ */
+
+
+/*!
+    \qmlmethod Button QMessageBox::critical(string identifier, string title, string text,
+    Buttons buttons = QMessageBox.Ok, Button button
+    = QMessageBox.NoButton)
+
+    Opens a critical message box with the given \a title and \a text.
+*/
+
+/*!
+    \qmlmethod Button QMessageBox::information(string identifier, string title, string text,
+    Buttons buttons = QMessageBox.Ok, Button button
+    = QMessageBox.NoButton)
+
+    Opens an information message box with the given \a title and \a text.
+*/
+
+/*!
+    \qmlmethod Button QMessageBox::question(string identifier, string title, string text,
+    Buttons buttons = QMessageBox.Yes | QMessageBox.No, Button button
+    = QMessageBox.NoButton)
+
+    Opens a question message box with the given \a title and \a text.
+*/
+
+/*!
+    \qmlmethod Button QMessageBox::warning(string identifier, string title, string text,
+    Buttons buttons = QMessageBox.Ok, Button button
+    = QMessageBox.NoButton)
+
+    Opens a warning message box with the given \a title and \a text.
+*/
+
 QScriptValue QInstaller::registerMessageBox(QScriptEngine *scriptEngine)
 {
     // register QMessageBox::StandardButton enum in the script connection

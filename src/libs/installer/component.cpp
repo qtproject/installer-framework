@@ -75,9 +75,130 @@ static const QLatin1String scCurrentState("CurrentState");
 static const QLatin1String scForcedInstallation("ForcedInstallation");
 
 /*!
-    \class QInstaller::Component
-    Component describes a component within the installer.
+    \qmltype Component
+    \inqmlmodule scripting
+
+    \brief Represents an installer component in Qt Script.
+
+    The object represents the component an install script belongs to. It is accessible through the
+    global \c component variable:
+
+    \code
+    function Component()
+    {
+        print("component: " + component.displayName);
+    }
+    \endcode
 */
+
+/*!
+    \qmlproperty string Component::name
+
+    Returns the name of the component as set in the \c <Name> tag of the package
+    information file.
+*/
+
+/*!
+    \qmlproperty string Component::displayName
+
+    Returns the name of the component as shown in the user interface.
+*/
+
+/*!
+    \qmlproperty boolean Component::selected
+
+    Indicates whether the component is currently selected.
+*/
+
+/*!
+    \qmlproperty boolean Component::autoCreateOperations
+
+    Specifies whether some standard operations for the component should be
+    automatically created when the installation starts. The default is \c true.
+*/
+
+/*!
+    \qmlproperty stringlist Component::archives
+
+    Returns the list of archive URL's (prefixed with \c installer://) registered
+    for the component.
+
+    \sa addDownloadableArchive, removeDownloadableArchive
+*/
+
+/*!
+    \qmlproperty stringlist Component::dependencies
+
+    This read-only property contains components this component depends on.
+*/
+
+/*!
+    \qmlproperty stringlist Component::autoDependencies
+
+    Returns the value of the \c <AutoDependsOn> tag in the package information file.
+*/
+
+/*!
+    \qmlproperty boolean Component::fromOnlineRepository
+
+    Returns whether this component has been loaded from an online repository.
+
+    \sa isFromOnlineRepository
+*/
+
+/*!
+    \qmlproperty url Component::repositoryUrl
+
+    Returns the repository URL the component is downloaded from.
+    When this component is not downloaded from an online repository, returns an empty #QUrl.
+
+*/
+
+/*!
+    \qmlproperty boolean Component::default
+
+    This read-only property indicates if the component is a default one.
+
+    \note Always \c false for virtual components.
+
+    \sa isDefault
+*/
+
+/*!
+    \qmlproperty boolean Component::installed
+
+    This read-only property returns if the component is installed.
+
+    \sa isInstalled
+*/
+
+/*!
+    \qmlproperty boolean Component::enabled
+
+    Indicates whether the component is currently enabled. The property is both readable and writable.
+*/
+
+/*!
+    \qmlsignal Component::loaded()
+
+    Emitted when the component has been loaded.
+*/
+
+
+/*!
+    \qmlsignal Component::selectedChanged(boolean isSelected)
+
+    Emitted when the component selection has changed to \a isSelected.
+*/
+
+/*!
+    \qmlsignal Component::valueChanged(string key, string value)
+
+    Emitted when the variable with name \a key has changed to \a value.
+
+    \sa setValue
+*/
+
 
 /*!
     Constructor. Creates a new Component inside of \a installer.
@@ -227,9 +348,11 @@ QHash<QString,QString> Component::variables() const
 }
 
 /*!
+    \qmlmethod string Component::value(string key, string value = "")
+
     Returns the value of variable name \a key. If \a key is not known yet, \a defaultValue is returned.
     Note: If a component is virtual and you ask for the component value with key "Default", it will always
-    return false.
+    return \c false.
 */
 QString Component::value(const QString &key, const QString &defaultValue) const
 {
@@ -239,6 +362,8 @@ QString Component::value(const QString &key, const QString &defaultValue) const
 }
 
 /*!
+    \qmlmethod void Component::setValue(string key, string value)
+
     Sets the value of the variable with \a key to \a value.
 */
 void Component::setValue(const QString &key, const QString &value)
@@ -354,7 +479,7 @@ void Component::loadComponentScript()
     Loads the script at \a fileName into this component's script engine. The installer and all its
     components as well as other useful stuff are being exported into the script.
     Read \link componentscripting Component Scripting \endlink for details.
-    \throws Error when either the script at \a fileName couldn't be opened, or the QScriptEngine
+    Throws an error when either the script at \a fileName couldn't be opened, or the QScriptEngine
     couldn't evaluate the script.
 */
 void Component::loadComponentScript(const QString &fileName)
@@ -443,7 +568,7 @@ QScriptValue Component::callScriptMethod(const QString &methodName, const QScrip
     Loads the translations matching the name filters \a qms inside \a directory. Only translations
     with a \link QFileInfo::baseName() baseName \endlink matching the current locales \link
     QLocale::name() name \endlink are loaded.
-    Read \ref componenttranslation for details.
+    Read \l componenttranslation for details.
 */
 void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 {
@@ -463,7 +588,7 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 /*!
     Loads the user interface files matching the name filters \a uis inside \a directory. The loaded
     interface can be accessed via userInterfaces by using the class name set in the ui file.
-    Read \ref componentuserinterfaces for details.
+    Read \l componentuserinterfaces for details.
 */
 void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis)
 {
@@ -530,8 +655,11 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
     }
 }
 
+
 /*!
-    Contains a list of all user interface class names known to this component.
+    \qmlproperty stringlist Component::userInterfaces
+
+    Returns a list of all user interface class names known to this component.
 */
 QStringList Component::userInterfaces() const
 {
@@ -544,6 +672,8 @@ QHash<QString, QPair<QString, QString> > Component::licenses() const
 }
 
 /*!
+    \qmlmethod QWidget Component::userInterface(string name)
+
     Returns the QWidget created for \a name or 0 if the widget already has been deleted or cannot be found.
 */
 QWidget *Component::userInterface(const QString &name) const
@@ -552,9 +682,11 @@ QWidget *Component::userInterface(const QString &name) const
 }
 
 /*!
+    \qmlmethod void Component::createOperationsForPath(string path)
+
     Creates all operations needed to install this component's \a path. \a path is a full qualified
-    filename including the component's name. This methods gets called from
-    Component::createOperationsForArchive. You can override this method by providing a method with
+    filename including the component's name. This method gets called from
+    Component::createOperationsForArchive. You can override it by providing a method with
     the same name in the component script.
 
     \note RSA signature files are omitted by this method.
@@ -594,6 +726,8 @@ void Component::createOperationsForPath(const QString &path)
 }
 
 /*!
+    \qmlmethod void Component::createOperationsForArchive(string archive)
+
     Creates all operations needed to install this component's \a archive. This method gets called
     from Component::createOperations. You can override this method by providing a method with the
     same name in the component script.
@@ -626,6 +760,22 @@ void Component::createOperationsForArchive(const QString &archive)
     }
 }
 
+/*!
+    \qmlmethod void Component::beginInstallation()
+
+    Starts the component installation.
+    You can override this method by providing a method with the same name in the component script.
+
+    \code
+    Component.prototype.beginInstallation = function()
+    {
+        // call default implementation
+        component.beginInstallation();
+        // ...
+    }
+    \endcode
+
+*/
 void Component::beginInstallation()
 {
     // the script can override this method
@@ -635,6 +785,8 @@ void Component::beginInstallation()
 }
 
 /*!
+    \qmlmethod void Component::createOperations()
+
     Creates all operations needed to install this component.
     You can override this method by providing a method with the same name in the component script.
 
@@ -657,8 +809,10 @@ void Component::createOperations()
 }
 
 /*!
+    \qmlmethod void Component::registerPathForUninstallation(string path, boolean wipe = false)
+
     Registers the file or directory at \a path for being removed when this component gets uninstalled.
-    In case of a directory, this will be recursive. If \a wipe is set to true, the directory will
+    In case of a directory, this will be recursive. If \a wipe is set to \c true, the directory will
     also be deleted if it contains changes done by the user after installation.
 */
 void Component::registerPathForUninstallation(const QString &path, bool wipe)
@@ -667,6 +821,8 @@ void Component::registerPathForUninstallation(const QString &path, bool wipe)
 }
 
 /*!
+    \qmlmethod QList<QPair<string, boolean> > Component::pathesForUninstallation()
+
     Returns the list of paths previously registered for uninstallation with
     #registerPathForUninstallation.
 */
@@ -689,11 +845,13 @@ QStringList Component::archives() const
 }
 
 /*!
+    \qmlmethod void Component::addDownloadableArchive(string path)
+
     Adds the archive \a path to this component. This can only be called when this component was
     downloaded from an online repository. When adding \a path, it will be downloaded from the
     repository when the installation starts.
 
-    Read \ref sec_repogen for details. \sa fromOnlineRepository
+    \sa removeDownloadableArchive, fromOnlineRepository, archives
 */
 void Component::addDownloadableArchive(const QString &path)
 {
@@ -704,10 +862,12 @@ void Component::addDownloadableArchive(const QString &path)
 }
 
 /*!
+    \qmlmethod void Component::removeDownloadableArchive(string path)
+
     Removes the archive \a path previously added via addDownloadableArchive from this component.
     This can only be called when this component was downloaded from an online repository.
 
-    Read \ref sec_repogen for details.
+    \sa addDownloadableArchive, fromOnlineRepository, archives
 */
 void Component::removeDownloadableArchive(const QString &path)
 {
@@ -724,7 +884,9 @@ QStringList Component::downloadableArchives() const
 }
 
 /*!
-    Adds a request for quitting the process @p process before installing/updating/uninstalling the
+    \qmlmethod void Component::addStopProcessForUpdateRequest(string process)
+
+    Adds a request for quitting the process \a process before installing/updating/uninstalling the
     component.
 */
 void Component::addStopProcessForUpdateRequest(const QString &process)
@@ -733,7 +895,9 @@ void Component::addStopProcessForUpdateRequest(const QString &process)
 }
 
 /*!
-    Removes the request for quitting the process @p process again.
+    \qmlmethod void Component::removeStopProcessForUpdateRequest(string process)
+
+    Removes the request for quitting the process \a process again.
 */
 void Component::removeStopProcessForUpdateRequest(const QString &process)
 {
@@ -741,7 +905,9 @@ void Component::removeStopProcessForUpdateRequest(const QString &process)
 }
 
 /*!
-    Convenience: Add/remove request depending on @p requested (add if @p true, remove if @p false).
+    \qmlmethod void Component::setStopProcessForUpdateRequest(string process, boolean requested)
+
+    Convenience: Add/remove request depending on \a requested (add if \c true, remove if \c false).
 */
 void Component::setStopProcessForUpdateRequest(const QString &process, bool requested)
 {
@@ -760,7 +926,7 @@ QStringList Component::stopProcessForUpdateRequests() const
 }
 
 /*!
-    Returns the operations needed to install this component. If autoCreateOperations is true,
+    Returns the operations needed to install this component. If autoCreateOperations is \c true,
     createOperations is called, if no operations have been auto-created yet.
 */
 OperationList Component::operations() const
@@ -872,10 +1038,9 @@ Operation *Component::createOperation(const QString &operation, const QStringLis
 }
 
 /*!
-    Creates and adds an installation operation for \a operation. Add any number of \a parameter1,
-    \a parameter2, \a parameter3, \a parameter4, \a parameter5 and \a parameter6. The contents of
-    the parameters get variables like "@TargetDir@" replaced with their values, if contained.
-    \sa installeroperations
+    \qmlmethod boolean Component::addOperation(string operation, string parameter1 = "", string parameter2 = "", ..., string parameter10 = "")
+
+    Convenience method for calling addOperation(string, stringlist) with up to 10 arguments.
 */
 bool Component::addOperation(const QString &operation, const QString &parameter1, const QString &parameter2,
     const QString &parameter3, const QString &parameter4, const QString &parameter5, const QString &parameter6,
@@ -890,6 +1055,13 @@ bool Component::addOperation(const QString &operation, const QString &parameter1
     return false;
 }
 
+/*!
+    \qmlmethod boolean Component::addOperation(string operation, stringlist parameters)
+
+    Creates and adds an installation operation for \a operation. Add any number of parameters.
+    The contents of the parameters get variables like "@TargetDir@" replaced with their values,
+    if contained.
+*/
 bool Component::addOperation(const QString &operation, const QStringList &parameters)
 {
     if (Operation *op = createOperation(operation, parameters)) {
@@ -901,11 +1073,9 @@ bool Component::addOperation(const QString &operation, const QStringList &parame
 }
 
 /*!
-    Creates and adds an installation operation for \a operation. Add any number of \a parameter1,
-    \a parameter2, \a parameter3, \a parameter4, \a parameter5 and \a parameter6. The contents of
-    the parameters get variables like "@TargetDir@" replaced with their values, if contained.
-    \a operation is executed with elevated rights.
-    \sa installeroperations
+    \qmlmethod boolean Component::addElevatedOperation(string operation, string parameter1 = "", string parameter2 = "", ..., string parameter10 = "")
+
+    Convenience method for calling addElevatedOperation(string, stringlist) with up to 10 arguments.
 */
 bool Component::addElevatedOperation(const QString &operation, const QString &parameter1,
     const QString &parameter2, const QString &parameter3, const QString &parameter4, const QString &parameter5,
@@ -921,6 +1091,14 @@ bool Component::addElevatedOperation(const QString &operation, const QString &pa
     return false;
 }
 
+/*!
+    \qmlmethod boolean Component::addElevatedOperation(string operation, stringlist parameters)
+
+    Creates and adds an installation operation for \a operation. Add any number of parameters.
+    The contents of the parameters get variables like "@TargetDir@" replaced with their values,
+    if contained. \a operation is executed with elevated rights.
+
+*/
 bool Component::addElevatedOperation(const QString &operation, const QStringList &parameters)
 {
     if (Operation *op = createOperation(operation, parameters)) {
@@ -933,7 +1111,7 @@ bool Component::addElevatedOperation(const QString &operation, const QStringList
 
 /*!
     Specifies whether operations should be automatically created when the installation starts. This
-    would be done by calling #createOperations. If you set this to false, it's completely up to the
+    would be done by calling #createOperations. If you set this to \c false, it is completely up to the
     component's script to create all operations.
 */
 bool Component::autoCreateOperations() const
@@ -941,6 +1119,11 @@ bool Component::autoCreateOperations() const
     return d->m_autoCreateOperations;
 }
 
+/*!
+    \qmlmethod void Component::setAutoCreateOperations(boolean autoCreateOperations)
+
+    Setter for the \l autoCreateOperations property.
+ */
 void Component::setAutoCreateOperations(bool autoCreateOperations)
 {
     d->m_autoCreateOperations = autoCreateOperations;
@@ -952,9 +1135,7 @@ bool Component::isVirtual() const
 }
 
 /*!
-    \property Component::selected
-    Specifies whether this component is selected for installation. Get this property's value by using
-    %isSelected(), and set it using %setSelected().
+    Specifies whether this component is selected for installation.
 */
 bool Component::isSelected() const
 {
@@ -979,13 +1160,25 @@ bool Component::validatePage()
 }
 
 /*!
+    \qmlmethod void Component::setSelected(boolean selected)
+
     Marks the component for installation. Emits the selectedChanged() signal if the check state changes.
+
+    \note This method does not do anything and is deprecated since 1.3.
 */
 void Component::setSelected(bool selected)
 {
     Q_UNUSED(selected)
     qDebug() << Q_FUNC_INFO << QString::fromLatin1("on '%1' is deprecated.").arg(d->m_componentName);
 }
+
+/*!
+    \qmlmethod void Component::addDependency(string newDependency)
+
+    Adds a new component \a newDependency to the list of dependencies.
+
+    \sa dependencies
+*/
 
 void Component::addDependency(const QString &newDependency)
 {
@@ -999,7 +1192,7 @@ void Component::addDependency(const QString &newDependency)
 
 /*!
     Contains this component dependencies.
-    Read \ref componentdependencies for details.
+    Read \l componentdependencies for details.
 */
 QStringList Component::dependencies() const
 {
@@ -1010,11 +1203,14 @@ QStringList Component::autoDependencies() const
 {
     QStringList autoDependencyStringList =
         d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+    qDebug() << Q_FUNC_INFO << autoDependencyStringList;
     autoDependencyStringList.removeAll(QLatin1String("script"));
     return autoDependencyStringList;
 }
 
 /*!
+    \qmlmethod void Component::setInstalled()
+
     Set's the components state to installed.
 */
 void Component::setInstalled()
@@ -1023,8 +1219,10 @@ void Component::setInstalled()
 }
 
 /*!
-    Determines if the component comes as an auto dependency. Returns true if the component needs to be
-    installed.
+    \qmlmethod boolean Component::isAutoDependOn(QSet<string> componentsToInstall)
+
+    Determines if the component comes as an auto dependency. Returns \c true if the component needs
+    to be installed.
 */
 bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
 {
@@ -1070,8 +1268,13 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
 }
 
 /*!
-    Determines if the component is a default one. Note: if a component is virtual, this function will always
-    return false.
+    \qmlmethod boolean Component::isDefault()
+
+    Indicates if the component is a default one.
+
+    \note Always returns \c false for virtual components.
+
+    \sa default
 */
 bool Component::isDefault() const
 {
@@ -1099,6 +1302,8 @@ bool Component::isDefault() const
 }
 
 /*!
+    \qmlmethod boolean Component::isInstalled()
+
     Determines if the component is installed.
 */
 bool Component::isInstalled() const
@@ -1107,6 +1312,8 @@ bool Component::isInstalled() const
 }
 
 /*!
+    \qmlmethod boolean Component::installationRequested()
+
     Determines if the user wants to install the component
 */
 bool Component::installationRequested() const
@@ -1115,6 +1322,8 @@ bool Component::installationRequested() const
 }
 
 /*!
+    \qmlmethod void Component::setUpdateAvailable(boolean isUpdateAvailable)
+
     Sets a flag that the core found an update
 */
 void Component::setUpdateAvailable(bool isUpdateAvailable)
@@ -1123,6 +1332,8 @@ void Component::setUpdateAvailable(bool isUpdateAvailable)
 }
 
 /*!
+    \qmlmethod boolean Component::updateRequested()
+
     Determines if the user wants to install the update for this component
 */
 bool Component::updateRequested()
@@ -1131,7 +1342,9 @@ bool Component::updateRequested()
 }
 
 /*!
-    Returns true if that component will be changed (update/installation/uninstallation)
+    \qmlmethod boolean Component::componentChangeRequested()
+
+    Returns \c true if that component will be changed (update/installation/uninstallation).
 */
 bool Component::componentChangeRequested()
 {
@@ -1140,6 +1353,8 @@ bool Component::componentChangeRequested()
 
 
 /*!
+    \qmlmethod void Component::setUninstalled()
+
     Sets the component state to uninstalled.
 */
 void Component::setUninstalled()
@@ -1148,6 +1363,8 @@ void Component::setUninstalled()
 }
 
 /*!
+    \qmlmethod boolean Component::isUninstalled()
+
     Determines if the component is uninstalled.
 */
 bool Component::isUninstalled() const
@@ -1156,6 +1373,8 @@ bool Component::isUninstalled() const
 }
 
 /*!
+    \qmlmethod boolean Component::uninstallationRequested()
+
     Determines if the user wants to uninstall the component.
 */
 bool Component::uninstallationRequested() const
@@ -1166,10 +1385,11 @@ bool Component::uninstallationRequested() const
 }
 
 /*!
-    \property Component::fromOnlineRepository
+    \qmlmethod boolean Component::isFromOnlineRepository()
 
-    Determines whether this component has been loaded from an online repository. Get this property's
-    value by using %isFromOnlineRepository. \sa addDownloadableArchive
+    Determines whether this component has been loaded from an online repository.
+
+    \sa addDownloadableArchive, fromOnlineRepository
 */
 bool Component::isFromOnlineRepository() const
 {

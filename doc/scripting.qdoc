@@ -57,8 +57,8 @@
     }
     \endcode
 
-    For more information, see the documentation for \a addWizardPage and
-    \a userInterface.
+    For more information, see the documentation for \l QInstaller::addWizardPage and
+    \l Component::userInterface.
 
     \section1 Installer Hooks
 
@@ -73,13 +73,13 @@
             \o  Called when the language of the installer changes.
         \row
             \o  \a{Component.prototype.createOperations}
-            \o  See \a QInstaller::Component::createOperations.
+            \o  See \l Component::createOperations.
         \row
             \o  \a{Component.prototype.createOperationsForArchive}
-            \o  See \a QInstaller::Component::createOperationsForArchive.
+            \o  See \l Component::createOperationsForArchive.
         \row
             \o  \a{Component.prototype.createOperationsForPath}
-            \o  See \a QInstaller::Component::createOperationsForPath.
+            \o  See \l Component::createOperationsForPath.
     \endtable
 
     \section1 Global Variables
@@ -92,25 +92,22 @@
             \o  Description
         \row
             \o  installer
-            \o  Reference to the \a installer of the component
+            \o  Reference to the \l QInstaller of the component
         \row
             \o  component
-            \o  Reference to the \a Component of the component
+            \o  Reference to the \l Component of the component
     \endtable
-
-    All methods marked with \a Q_INVOKABLE as well as all signals, slots, and
-    properties can be used by the script.
 
     \section1 Message Boxes
 
-    You can show a \a QMessageBox from within the script by using:
+    You can show a \l QMessageBox from within the script by using:
 
-    \code
-    QMessageBox.critical
-    QMessageBox.information
-    QMessageBox.question
-    QMessageBox.warning
-    \endcode
+    \list
+    \li \l QMessageBox::critical
+    \li \l QMessageBox::information
+    \li \l QMessageBox::question
+    \li \l QMessageBox::warning
+    \endlist
 
     For your convenience, the values for \a QMessageBox::StandardButton are made
     available by using \a QMessageBox.Ok, \a QMessageBox.Open, and so on.
