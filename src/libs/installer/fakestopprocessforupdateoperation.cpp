@@ -41,53 +41,10 @@
 
 #include "fakestopprocessforupdateoperation.h"
 
-#include <kdsysinfo.h>
-#include <QtCore/QDir>
-
-#include <algorithm>
+#include "messageboxhandler.h"
+#include "packagemanagercore.h"
 
 using namespace KDUpdater;
-
-/*!
-    Copied from QInstaller with some adjustments
-    Return true, if a process with \a name is running. On Windows, the comparision is case-insensitive.
-*/
-static bool isProcessRunning(const QString &name, const QList<ProcessInfo> &processes)
-{
-    for (QList<ProcessInfo>::const_iterator it = processes.constBegin(); it != processes.constEnd(); ++it) {
-        if (it->name.isEmpty())
-            continue;
-
-#ifndef Q_OS_WIN
-        if (it->name == name)
-            return true;
-        const QFileInfo fi(it->name);
-        if (fi.fileName() == name || fi.baseName() == name)
-            return true;
-#else
-        if (it->name.toLower() == name.toLower())
-            return true;
-        if (it->name.toLower() == QDir::toNativeSeparators(name.toLower()))
-            return true;
-        const QFileInfo fi(it->name);
-        if (fi.fileName().toLower() == name.toLower() || fi.baseName().toLower() == name.toLower())
-            return true;
-#endif
-    }
-    return false;
-}
-
-static QStringList checkRunningProcessesFromList(const QStringList &processList)
-{
-    const QList<ProcessInfo> allProcesses = runningProcesses();
-    QStringList stillRunningProcesses;
-    foreach (const QString &process, processList) {
-        if (!process.isEmpty() && isProcessRunning(process, allProcesses))
-            stillRunningProcesses.append(process);
-    }
-    return stillRunningProcesses;
-}
-
 using namespace QInstaller;
 
 FakeStopProcessForUpdateOperation::FakeStopProcessForUpdateOperation()
@@ -113,18 +70,31 @@ bool FakeStopProcessForUpdateOperation::undoOperation()
         return false;
     }
 
-    QStringList processList = arguments()[0].split(QLatin1String(","), QString::SkipEmptyParts);
-    qSort(processList);
-    processList.erase(std::unique(processList.begin(), processList.end()), processList.end());
-    if (!processList.isEmpty()) {
-        const QStringList processes = checkRunningProcessesFromList(processList);
-        if (!processes.isEmpty()) {
-            setError(KDUpdater::UpdateOperation::UserDefinedError, tr("These processes should be stopped to "
-                "continue:\n\n%1").arg(QDir::toNativeSeparators(processes.join(QLatin1String("\n")))));
-        }
+    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
+    if (!core) {
+        setError(KDUpdater::UpdateOperation::UserDefinedError, QObject::tr("Could not get package manager "
+            "core."));
         return false;
     }
-    return true;
+
+    QStringList processes = arguments().at(0).split(QLatin1Char(','), QString::SkipEmptyParts);
+    for (int i = processes.count() - 1; i >= 0; --i) {
+        if (!core->isProcessRunning(processes.at(i)))
+            processes.removeAt(i);
+    }
+
+    if (processes.isEmpty())
+        return true;
+
+    if (processes.count() == 1) {
+        setError(UpdateOperation::UserDefinedError, QObject::tr("This process should be stopped before "
+            "continuing: %1").arg(processes.first()));
+    } else {
+        const QString sep = QString::fromWCharArray(L"\n   \u2022 ");   // Unicode bullet
+        setError(UpdateOperation::UserDefinedError, QObject::tr("These processes should be stopped before "
+            "continuing: %1").arg(sep + processes.join(sep)));
+    }
+    return false;
 }
 
 bool FakeStopProcessForUpdateOperation::testOperation()

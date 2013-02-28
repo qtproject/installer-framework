@@ -46,8 +46,10 @@
 
 namespace QInstaller {
 
-class FakeStopProcessForUpdateOperation : public Operation
+class INSTALLER_EXPORT FakeStopProcessForUpdateOperation : public QObject, public Operation
 {
+    Q_OBJECT
+
 public:
     FakeStopProcessForUpdateOperation();
 
