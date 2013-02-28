@@ -25,7 +25,6 @@
 
 #include "kdupdater.h"
 #include <QObject>
-#include <QRegExp>
 
 QT_BEGIN_NAMESPACE
 class QUrl;
@@ -36,7 +35,6 @@ namespace KDUpdater {
 class PackagesInfo;
 class UpdateSourcesInfo;
 
-static QRegExp scCommaRegExp(QLatin1String("\\b(,|, )\\b"));
 class ConfigurationInterface
 {
 public:

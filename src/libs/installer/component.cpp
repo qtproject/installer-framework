@@ -43,6 +43,7 @@
 #include "errors.h"
 #include "fileutils.h"
 #include "fsengineclient.h"
+#include "globals.h"
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
 #include "messageboxhandler.h"
@@ -181,13 +182,13 @@ void Component::loadDataFromPackage(const Package &package)
     }
 
     setLocalTempPath(QInstaller::pathFromUrl(package.sourceInfo().url));
-    const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString().split(scCommaRegExp,
-        QString::SkipEmptyParts);
+    const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()
+        .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
     if (!uis.isEmpty())
         loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), uis);
 
-    const QStringList qms = package.data(QLatin1String("Translations")).toString().split(scCommaRegExp,
-        QString::SkipEmptyParts);
+    const QStringList qms = package.data(QLatin1String("Translations")).toString()
+        .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
     if (!qms.isEmpty())
         loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), qms);
 
@@ -994,13 +995,13 @@ void Component::addDependency(const QString &newDependency)
 */
 QStringList Component::dependencies() const
 {
-    return d->m_vars.value(scDependencies).split(scCommaRegExp, QString::SkipEmptyParts);
+    return d->m_vars.value(scDependencies).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
 }
 
 QStringList Component::autoDependencies() const
 {
     QStringList autoDependencyStringList =
-        d->m_vars.value(scAutoDependOn).split(scCommaRegExp, QString::SkipEmptyParts);
+        d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
     autoDependencyStringList.removeAll(QLatin1String("script"));
     return autoDependencyStringList;
 }

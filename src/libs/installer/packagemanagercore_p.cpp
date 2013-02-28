@@ -47,6 +47,7 @@
 #include "errors.h"
 #include "fileutils.h"
 #include "fsengineclient.h"
+#include "globals.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
 #include "progresscoordinator.h"
@@ -2283,8 +2284,8 @@ bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Componen
 
                 foreach (Component *c, installedComponents) {
                     const QString replaces = c->value(scReplaces);
-                    QStringList possibleNames = replaces.split(scCommaRegExp, QString::SkipEmptyParts);
-                    possibleNames.append(c->name());
+                    const QStringList possibleNames = replaces.split(QInstaller::commaRegExp(),
+                        QString::SkipEmptyParts) << c->name();
                     foreach (const QString &possibleName, possibleNames)
                         autoDependencies.removeAll(possibleName);
                 }

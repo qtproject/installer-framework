@@ -42,6 +42,7 @@
 
 #include <fileutils.h>
 #include <errors.h>
+#include <globals.h>
 #include <lib7z_facade.h>
 #include <settings.h>
 #include <qinstallerglobal.h>
@@ -508,7 +509,7 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
                 .arg(fileInfo.absoluteFilePath(), info.version));
         }
         info.dependencies = packageElement.firstChildElement(QLatin1String("Dependencies")).text()
-            .split(QInstaller::scCommaRegExp, QString::SkipEmptyParts);
+            .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
         info.directory = it->filePath();
         dict.push_back(info);
 

@@ -21,6 +21,7 @@
 **********************************************************************/
 #include "kdupdaterpackagesinfo.h"
 #include "kdupdaterapplication.h"
+#include "globals.h"
 
 #include <QFileInfo>
 #include <QtXml/QDomDocument>
@@ -511,9 +512,10 @@ void PackagesInfo::PackagesInfoData::addPackageFrom(const QDomElement &packageE)
             info.virtualComp = childNodeE.text().toLower() == QLatin1String("true") ? true : false;
         else if (childNodeE.tagName() == QLatin1String("Size"))
             info.uncompressedSize = childNodeE.text().toULongLong();
-        else if (childNodeE.tagName() == QLatin1String("Dependencies"))
-            info.dependencies = childNodeE.text().split(scCommaRegExp, QString::SkipEmptyParts);
-        else if (childNodeE.tagName() == QLatin1String("ForcedInstallation"))
+        else if (childNodeE.tagName() == QLatin1String("Dependencies")) {
+            info.dependencies = childNodeE.text().split(QInstaller::commaRegExp(),
+                QString::SkipEmptyParts);
+        } else if (childNodeE.tagName() == QLatin1String("ForcedInstallation"))
             info.forcedInstallation = childNodeE.text().toLower() == QLatin1String( "true" ) ? true : false;
         else if (childNodeE.tagName() == QLatin1String("LastUpdateDate"))
             info.lastUpdateDate = QDate::fromString(childNodeE.text(), Qt::ISODate);

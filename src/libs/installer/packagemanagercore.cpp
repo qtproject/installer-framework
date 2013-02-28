@@ -48,6 +48,7 @@
 #include "downloadarchivesjob.h"
 #include "errors.h"
 #include "fsengineclient.h"
+#include "globals.h"
 #include "getrepositoriesmetainfojob.h"
 #include "messageboxhandler.h"
 #include "packagemanagerproxyfactory.h"
@@ -86,9 +87,9 @@
 
 using namespace QInstaller;
 
-static QMutex sModelMutex;
+Q_GLOBAL_STATIC(QMutex, globalModelMutex);
 static QFont *sVirtualComponentsFont = 0;
-static QMutex sVirtualComponentsFontMutex;
+Q_GLOBAL_STATIC(QMutex, globalVirtualComponentsFontMutex);
 
 static bool sNoForceInstallation = false;
 static bool sVirtualComponentsVisible = false;
@@ -554,7 +555,7 @@ PackageManagerCore::~PackageManagerCore()
 /* static */
 QFont PackageManagerCore::virtualComponentsFont()
 {
-    QMutexLocker _(&sVirtualComponentsFontMutex);
+    QMutexLocker _(globalVirtualComponentsFontMutex());
     if (!sVirtualComponentsFont)
         sVirtualComponentsFont = new QFont;
     return *sVirtualComponentsFont;
@@ -563,7 +564,7 @@ QFont PackageManagerCore::virtualComponentsFont()
 /* static */
 void PackageManagerCore::setVirtualComponentsFont(const QFont &font)
 {
-    QMutexLocker _(&sVirtualComponentsFontMutex);
+    QMutexLocker _(globalVirtualComponentsFontMutex());
     if (sVirtualComponentsFont)
         delete sVirtualComponentsFont;
     sVirtualComponentsFont = new QFont(font);
@@ -1086,7 +1087,7 @@ QList<Component*> PackageManagerCore::dependencies(const Component *component, Q
 
 ComponentModel *PackageManagerCore::defaultComponentModel() const
 {
-    QMutexLocker _(&sModelMutex);
+    QMutexLocker _(globalModelMutex());
     if (!d->m_defaultModel) {
         d->m_defaultModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("AllComponentsModel"));
@@ -1096,7 +1097,7 @@ ComponentModel *PackageManagerCore::defaultComponentModel() const
 
 ComponentModel *PackageManagerCore::updaterComponentModel() const
 {
-    QMutexLocker _(&sModelMutex);
+    QMutexLocker _(globalModelMutex());
     if (!d->m_updaterModel) {
         d->m_updaterModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("UpdaterComponentsModel"));
@@ -1642,7 +1643,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
 
         // add downloadable archive from xml
         const QStringList downloadableArchives = data.package->data(scDownloadableArchives).toString()
-            .split(scCommaRegExp, QString::SkipEmptyParts);
+            .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
 
         if (component->isFromOnlineRepository()) {
             foreach (const QString downloadableArchive, downloadableArchives)
@@ -1650,7 +1651,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         }
 
         const QStringList componentsToReplace = data.package->data(scReplaces).toString()
-            .split(scCommaRegExp, QString::SkipEmptyParts);
+            .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
 
         if (!componentsToReplace.isEmpty()) {
             // Store the component (this is a component that replaces others) and all components that
@@ -1798,7 +1799,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
 
             bool isValidUpdate = locals.contains(name);
             if (!isValidUpdate && !replaces.isEmpty()) {
-                const QStringList possibleNames = replaces.split(scCommaRegExp, QString::SkipEmptyParts);
+                const QStringList possibleNames = replaces.split(QInstaller::commaRegExp(),
+                    QString::SkipEmptyParts);
                 foreach (const QString &possibleName, possibleNames) {
                     if (locals.contains(possibleName)) {
                         isValidUpdate = true;

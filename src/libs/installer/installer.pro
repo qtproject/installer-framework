@@ -104,7 +104,8 @@ HEADERS += packagemanagercore.h \
     createlinkoperation.h \
     packagemanagercoredata.h \
     registerqtincreatorqnxoperation.h \
-    applyproductkeyoperation.h
+    applyproductkeyoperation.h \
+    globals.h
 
     SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -173,7 +174,8 @@ HEADERS += packagemanagercore.h \
     createlinkoperation.cpp \
     packagemanagercoredata.cpp \
     registerqtincreatorqnxoperation.cpp \
-    applyproductkeyoperation.cpp
+    applyproductkeyoperation.cpp \
+    globals.cpp
 
 RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc

@@ -29,6 +29,8 @@
 #include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterupdatesinfo_p.h"
 
+#include "globals.h"
+
 #include <QCoreApplication>
 #include <QDebug>
 
@@ -471,7 +473,7 @@ QList<UpdateInfo> UpdateFinder::Private::applicableUpdates(UpdatesInfo *updatesI
         appName = appName.replace(QLatin1String( " ," ), QLatin1String( "," ));
 
         // Catch hold of app names contained updatesInfo->applicationName()
-        QStringList apps = appName.split(scCommaRegExp, QString::SkipEmptyParts);
+        QStringList apps = appName.split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
         appNameIndex = apps.indexOf(this->application->applicationName());
 
         // If the application appName isn't one of the app names, then

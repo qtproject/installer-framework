@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,54 +38,10 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+#include "globals.h"
 
-#ifndef QINSTALLER_GLOBAL_H
-#define QINSTALLER_GLOBAL_H
-
-#include <installer_global.h>
-
-#include <kdupdaterupdate.h>
-#include <kdupdaterupdateoperation.h>
-#include <kdupdaterpackagesinfo.h>
-
-QT_BEGIN_NAMESPACE
-class QScriptContext;
-class QScriptEngine;
-class QScriptValue;
-QT_END_NAMESPACE
-
-
-namespace QInstaller {
-
-enum INSTALLER_EXPORT JobError
+Q_GLOBAL_STATIC_WITH_ARGS(QRegExp, staticCommaRegExp, (QLatin1String("\\b(,|, )\\b")));
+QRegExp QInstaller::commaRegExp()
 {
-    InvalidUrl = 0x24B04,
-    Timeout,
-    DownloadError,
-    InvalidUpdatesXml,
-    InvalidMetaInfo,
-    ExtractionError,
-    UserIgnoreError,
-    RepositoryUpdatesReceived
-};
-
-typedef KDUpdater::UpdateOperation Operation;
-typedef QList<QInstaller::Operation*> OperationList;
-
-typedef KDUpdater::Update Package;
-typedef QList<QInstaller::Package*> PackagesList;
-
-typedef KDUpdater::PackageInfo LocalPackage;
-typedef QHash<QString, LocalPackage> LocalPackagesHash;
-
-QString INSTALLER_EXPORT uncaughtExceptionString(QScriptEngine *scriptEngine, const QString &context = QString());
-QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine);
-
-QScriptValue qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *engine);
-QScriptValue qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine *engine);
-QScriptValue qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine);
-QScriptValue qFileDialogGetExistingDirectory(QScriptContext *context, QScriptEngine *engine);
-
-} // namespace QInstaller
-
-#endif // QINSTALLER_GLOBAL_H
+    return *staticCommaRegExp();
+}
