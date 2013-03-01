@@ -43,7 +43,6 @@
 
 #include "getrepositorymetainfojob.h"
 #include "packagemanagercore_p.h"
-#include "qinstallerglobal.h"
 
 #include <QtCore/QDebug>
 

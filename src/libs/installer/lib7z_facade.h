@@ -3,14 +3,14 @@
 
 #include "installer_global.h"
 
+#include <QCoreApplication>
 #include <QDateTime>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QFile>
-#include <QtCore/QPoint>
-#include <QtCore/QRunnable>
-#include <QtCore/QString>
-#include <QtCore/QVector>
-#include <QtCore/QVariant>
+#include <QFile>
+#include <QPoint>
+#include <QRunnable>
+#include <QString>
+#include <QVariant>
+#include <QVector>
 
 #include "Common/MyWindows.h"
 

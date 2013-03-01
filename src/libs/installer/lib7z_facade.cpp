@@ -17,12 +17,12 @@
 #include "Windows/PropVariant.h"
 #include "Windows/PropVariantConversions.h"
 
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <QtCore/QIODevice>
+#include <QDir>
+#include <QFileInfo>
+#include <QIODevice>
 #include <QtCore/QMutexLocker>
-#include <QtCore/QPointer>
-#include <QtCore/QTemporaryFile>
+#include <QPointer>
+#include <QTemporaryFile>
 
 #ifdef _MSC_VER
 #pragma warning(disable:4297)

@@ -47,8 +47,8 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-#include <QtScript/QScriptEngine>
-#include <QtScript/QScriptValue>
+#include <QScriptEngine>
+#include <QScriptValue>
 
 QScriptValue QInstaller::registerMessageBox(QScriptEngine *scriptEngine)
 {

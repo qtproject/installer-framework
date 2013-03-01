@@ -52,7 +52,6 @@
 #include "packagemanagercore_p.h"
 #include "packagemanagerproxyfactory.h"
 #include "progresscoordinator.h"
-#include "qinstallerglobal.h"
 #include "qprocesswrapper.h"
 #include "qsettingswrapper.h"
 #include "settings.h"

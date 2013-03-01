@@ -41,7 +41,6 @@
 #include "settings.h"
 
 #include "errors.h"
-#include "qinstallerglobal.h"
 #include "repository.h"
 
 #include <QtCore/QFileInfo>

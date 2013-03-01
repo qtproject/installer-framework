@@ -45,7 +45,6 @@
 #include "fsengineclient.h"
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
-#include "qinstallerglobal.h"
 #include "messageboxhandler.h"
 
 #include <kdupdaterupdatesourcesinfo.h>

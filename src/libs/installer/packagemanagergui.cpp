@@ -46,7 +46,6 @@
 #include "fileutils.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
-#include "qinstallerglobal.h"
 #include "progresscoordinator.h"
 #include "performinstallationform.h"
 #include "settings.h"

@@ -43,18 +43,15 @@
 #define PACKAGEMANAGERCORE_P_H
 
 #include "getrepositoriesmetainfojob.h"
-#include "settings.h"
 #include "packagemanagercore.h"
 #include "packagemanagercoredata.h"
+#include "qinstallerglobal.h"
 
-#include <kdsysinfo.h>
-#include <kdupdaterapplication.h>
-#include <kdupdaterupdatefinder.h>
+#include "kdsysinfo.h"
+#include "kdupdaterapplication.h"
+#include "kdupdaterfiledownloaderfactory.h"
 
-#include <QtCore/QHash>
-#include <QtCore/QObject>
-#include <QtCore/QPair>
-#include <QtCore/QPointer>
+#include <QObject>
 
 class FSEngineClientHandler;
 class KDJob;
