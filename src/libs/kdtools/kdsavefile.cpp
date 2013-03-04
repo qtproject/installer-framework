@@ -22,10 +22,10 @@
 
 #include "kdsavefile.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QDir>
-#include <QtCore/QPointer>
-#include <QtCore/QTemporaryFile>
+#include <QDebug>
+#include <QDir>
+#include <QPointer>
+#include <QTemporaryFile>
 
 #ifdef Q_OS_WIN
 # include <io.h>

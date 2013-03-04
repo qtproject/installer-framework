@@ -25,9 +25,9 @@
 
 #include <kdtoolsglobal.h>
 
-#include <QtCore/QIODevice>
-#include <QtCore/QFile>
-#include <QtCore/QString>
+#include <QIODevice>
+#include <QFile>
+#include <QString>
 
 class KDTOOLS_EXPORT KDSaveFile : public QIODevice
 {
