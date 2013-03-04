@@ -116,7 +116,7 @@ static void myClose(int fd)
 
 static bool touchFile(const QString &path, QFile::Permissions p)
 {
-    bool ok;
+    bool ok = false;
     const int mode = permissionsToMode(p, &ok);
     if (!ok)
         return false;
@@ -139,6 +139,7 @@ static bool touchFile(const QString &path, QFile::Permissions p)
 static QFile *createFile(const QString &path, QIODevice::OpenMode m, QFile::Permissions p, bool *openOk)
 {
     Q_ASSERT(openOk);
+    *openOk = false;
     if (!touchFile(path, p))
         return 0;
     std::auto_ptr<QFile> file(new QFile(path));
@@ -203,8 +204,8 @@ public:
     bool recreateTemporaryFile(QIODevice::OpenMode mode)
     {
         deleteTempFile();
-        bool ok;
-        tmpFile = createFile(generateTempFileName( filename ), mode, permissions, &ok);
+        bool ok = false;
+        tmpFile = createFile(generateTempFileName(filename), mode, permissions, &ok);
         QObject::connect(tmpFile, SIGNAL(aboutToClose()), q, SIGNAL(aboutToClose()));
         QObject::connect(tmpFile, SIGNAL(bytesWritten(qint64)), q, SIGNAL(bytesWritten(qint64)));
         QObject::connect(tmpFile, SIGNAL(readChannelFinished()), q, SIGNAL(readChannelFinished()));
