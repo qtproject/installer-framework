@@ -217,7 +217,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
                 << scTargetDir << scAdminTargetDir
                 << scIcon << scLogo << scLogoSmall << scWatermark << scBackground
                 << scStartMenuDir << scUninstallerName << scUninstallerIniFile << scRemoveTargetDir
-                << scRunProgram << scRunProgramDescription
+                << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
