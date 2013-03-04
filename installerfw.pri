@@ -86,9 +86,10 @@ isEqual(QT_MAJOR_VERSION, 4) {
         QT += script network xml
     }
 } else {
-    QT += uitools xml
-    contains(QT, gui): QT += widgets
-    contains(QT, core): QT += concurrent core-private
+    QT += uitools core-private
+    CONFIG(static, static|shared) {
+        QT += concurrent network script xml
+    }
 }
 
 CONFIG += depend_includepath

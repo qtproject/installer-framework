@@ -4,6 +4,10 @@ TARGET = testapp
 
 include(../../installerfw.pri)
 
+isEqual(QT_MAJOR_VERSION, 5) {
+    QT += widgets
+}
+
 !static {
     warning("You can use this example only with a static build of Qt and IFW!")
 }
