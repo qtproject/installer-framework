@@ -593,6 +593,12 @@ void Component::createOperationsForPath(const QString &path)
 */
 void Component::createOperationsForArchive(const QString &archive)
 {
+    const QFileInfo fi(archive);
+
+    // don't do anything with sha1 files
+    if (fi.suffix() == QLatin1String("sha1") && QFileInfo(fi.dir(), fi.completeBaseName()).exists())
+        return;
+
     // the script can override this method
     if (callScriptMethod(QLatin1String("createOperationsForArchive"), QScriptValueList() << archive).isValid())
         return;
