@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Quit an installer</DisplayName>
+    <Description>Quits the installer in a nice way, if there is something missing</Description>
+    <Version>1.0.1</Version>
+    <ReleaseDate>2013-02-27</ReleaseDate>
+    <Script>installscript.js</Script>
+</Package>
