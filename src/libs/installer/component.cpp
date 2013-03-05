@@ -51,6 +51,8 @@
 #include <kdupdaterupdatesourcesinfo.h>
 #include <kdupdaterupdateoperationfactory.h>
 
+#include <productkeycheck.h>
+
 #include <QtCore/QDirIterator>
 #include <QtCore/QTranslator>
 
@@ -499,6 +501,10 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
     QHash<QString, QVariant>::const_iterator it;
     for (it = licenseHash.begin(); it != licenseHash.end(); ++it) {
         const QString &fileName = it.value().toString();
+
+        if (!ProductKeyCheck::instance()->isValidLicense(fileName))
+            continue;
+
         QFileInfo fileInfo(fileName);
         QFile file(QString::fromLatin1("%1%2_%3.%4").arg(directory, fileInfo.baseName(),
             QLocale().name().toLower(), fileInfo.completeSuffix()));

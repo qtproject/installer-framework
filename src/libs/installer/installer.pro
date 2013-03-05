@@ -6,6 +6,19 @@ include(../7zip/7zip.pri)
 include(../kdtools/kdtools.pri)
 include(../../../installerfw.pri)
 
+# productkeycheck API
+# call qmake "PRODUCTKEYCHECK_PRI_FILE=<your_path_to_pri_file>"
+# content of that pri file needs to be:
+#   SOURCES += $$PWD/productkeycheck.cpp
+#   ...
+#   your files if needed
+HEADERS += productkeycheck.h
+!isEmpty(PRODUCTKEYCHECK_PRI_FILE) {
+    include($$PRODUCTKEYCHECK_PRI_FILE)
+} else {
+    SOURCES += productkeycheck.cpp
+}
+
 DESTDIR = $$IFW_LIB_PATH
 DLLDESTDIR = $$IFW_APP_PATH
 
@@ -90,7 +103,8 @@ HEADERS += packagemanagercore.h \
     lib7z_facade.h \
     link.h \
     createlinkoperation.h \
-    packagemanagercoredata.h
+    packagemanagercoredata.h \
+    applyproductkeyoperation.h
 
     SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -158,7 +172,8 @@ HEADERS += packagemanagercore.h \
     lib7z_facade.cpp \
     link.cpp \
     createlinkoperation.cpp \
-    packagemanagercoredata.cpp
+    packagemanagercoredata.cpp \
+    applyproductkeyoperation.cpp
 
 RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc

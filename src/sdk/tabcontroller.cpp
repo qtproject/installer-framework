@@ -45,6 +45,8 @@
 
 #include <packagemanagercore.h>
 
+#include <productkeycheck.h>
+
 #include <QtCore/QTimer>
 #include <QtScript/QScriptEngine>
 
@@ -123,6 +125,10 @@ void TabController::setManagerParams(const QHash<QString, QString> &params)
 
 int TabController::init()
 {
+    if (!ProductKeyCheck::instance()->hasValidKey() && d->m_core->isInstaller()) {
+        return PackageManagerCore::Failure;
+    }
+
     if (!d->m_init) {
         d->m_init = true;
         // this should called as early as possible, to handle error message boxes for example
