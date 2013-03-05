@@ -1,0 +1,6 @@
+Create an installer that uses the extract archive hook to modify the target path.
+
+Generate installer with
+
+binarycreator --offline-only -c config/config.xml -p packages installer
+
