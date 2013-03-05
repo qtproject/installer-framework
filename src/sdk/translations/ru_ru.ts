@@ -230,7 +230,7 @@
     <message>
         <location filename="../../libs/kdtools/kdupdaterfiledownloader.cpp" line="302"/>
         <source> of </source>
-        <translation>из</translation>
+        <translation> из </translation>
     </message>
     <message>
         <location filename="../../libs/kdtools/kdupdaterfiledownloader.cpp" line="305"/>
@@ -763,17 +763,17 @@
     <message>
         <location filename="../../libs/installer/addqtcreatorarrayvalueoperation.cpp" line="73"/>
         <source>exactly 4</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 4</translation>
     </message>
     <message>
         <location filename="../../libs/installer/addqtcreatorarrayvalueoperation.cpp" line="72"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/addqtcreatorarrayvalueoperation.cpp" line="73"/>
         <source> (group, arrayname, key, value)</source>
-        <translation type="unfinished"></translation>
+        <translation> (группа, имя массива, ключ, значение)</translation>
     </message>
     <message>
         <location filename="../../libs/installer/addqtcreatorarrayvalueoperation.cpp" line="80"/>
@@ -790,53 +790,53 @@
 <context>
     <name>QInstaller::Component</name>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="360"/>
+        <location filename="../../libs/installer/component.cpp" line="363"/>
         <source>Could not open the requested script file at %1: %2.</source>
         <translation>Невозможно открыть файл сценария %1: %2.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="365"/>
-        <location filename="../../libs/installer/component.cpp" line="385"/>
+        <location filename="../../libs/installer/component.cpp" line="368"/>
+        <location filename="../../libs/installer/component.cpp" line="388"/>
         <source>Exception while loading the component script: %1</source>
         <translation>При загрузке сценария компонента возникло исключение: %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="454"/>
+        <location filename="../../libs/installer/component.cpp" line="457"/>
         <source>Could not open the requested translation file at %1</source>
         <translation>Невозможно открыть файл перевода %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="478"/>
+        <location filename="../../libs/installer/component.cpp" line="481"/>
         <source>Could not open the requested UI file at %1: %2</source>
         <translation>Невозможно открыть UI файл %1: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="507"/>
+        <location filename="../../libs/installer/component.cpp" line="510"/>
         <source>Could not open the requested license file at %1: %2</source>
         <translation>Невозможно открыть файл лицензии %1: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="837"/>
+        <location filename="../../libs/installer/component.cpp" line="839"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="837"/>
+        <location filename="../../libs/installer/component.cpp" line="839"/>
         <source>Error: Operation %1 does not exist</source>
         <translation>Ошибка: операция %1 не существует</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="1023"/>
+        <location filename="../../libs/installer/component.cpp" line="1025"/>
         <source>Can&apos;t resolve isAutoDependOn in %1</source>
         <translation>Невозможно выполнить метод &quot;isAutoDependOn&quot; в сценарии %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="1063"/>
+        <location filename="../../libs/installer/component.cpp" line="1069"/>
         <source>Can&apos;t resolve isDefault in %1</source>
         <translation>Невозможно выполнить метод &quot;isDefault&quot; в сценарии %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="1208"/>
+        <location filename="../../libs/installer/component.cpp" line="1214"/>
         <source>Update Info: </source>
         <translation>Информация об обновлении:</translation>
     </message>
@@ -844,22 +844,22 @@
 <context>
     <name>QInstaller::ComponentModel</name>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1960"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1963"/>
         <source>Component Name</source>
         <translation>Имя компонента</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1962"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1965"/>
         <source>Installed Version</source>
         <translation>Установленная версия</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1964"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1967"/>
         <source>New Version</source>
         <translation>Новая версия</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1966"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1969"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
@@ -867,80 +867,80 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1089"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1106"/>
         <source>Alt+A</source>
         <comment>select default components</comment>
         <translatorcomment>набор компонентов по умолчанию</translatorcomment>
         <translation>Alt+A</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1090"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1107"/>
         <source>Def&amp;ault</source>
         <translation>&amp;По умолчанию</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1095"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1112"/>
         <source>Alt+R</source>
         <comment>reset to already installed components</comment>
         <translatorcomment>отменить выбор новых компонентов</translatorcomment>
         <translation>Alt+R</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1096"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1113"/>
         <source>&amp;Reset</source>
         <translation>&amp;Отменить</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1105"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1122"/>
         <source>Alt+S</source>
         <comment>select all components</comment>
         <translatorcomment>выбрать все компоненты</translatorcomment>
         <translation>Alt+S</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1106"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1123"/>
         <source>&amp;Select All</source>
         <translation>&amp;Выбрать всё</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1112"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1129"/>
         <source>Alt+D</source>
         <comment>deselect all components</comment>
         <translatorcomment>снять отметки выбора со всех компонентов</translatorcomment>
         <translation>Alt+D</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1113"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1130"/>
         <source>&amp;Deselect All</source>
         <translation>&amp;Снять отметки выбора со всех компонентов</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1175"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1192"/>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
         <translation>Этот компонент займёт приблизительно %1 на жестком диске.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1237"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1254"/>
         <source>Select Components</source>
         <translation>Выбор компонентов</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1248"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1265"/>
         <source>Please select the components you want to update.</source>
         <translation>Пожалуйста, выберите компоненты, которые вы хотите обновить.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1249"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1266"/>
         <source>Please select the components you want to install.</source>
         <translation>Пожалуйста, выберите компоненты, которые вы хотите установить.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1250"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1267"/>
         <source>Please select the components you want to uninstall.</source>
         <translation>Пожалуйста, выберите компоненты, которые вы хотите удалить.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1251"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1268"/>
         <source>Select the components to install. Deselect installed components to uninstall them.</source>
         <translation>Выберите компоненты для установки.Для удаления уже установленных компонентов снимите отметки выбора.</translation>
     </message>
@@ -950,17 +950,17 @@
     <message>
         <location filename="../../libs/installer/copydirectoryoperation.cpp" line="80"/>
         <source>2 or 3</source>
-        <translation type="unfinished"></translation>
+        <translation>2 или 3</translation>
     </message>
     <message>
         <location filename="../../libs/installer/copydirectoryoperation.cpp" line="79"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/copydirectoryoperation.cpp" line="80"/>
         <source> (&lt;source&gt; &lt;target&gt; [forceOverwrite])</source>
-        <translation type="unfinished"></translation>
+        <translation> (&lt;источник&gt; &lt;назначение&gt; [forceOverwrite])</translation>
     </message>
     <message>
         <location filename="../../libs/installer/copydirectoryoperation.cpp" line="93"/>
@@ -998,12 +998,12 @@
     <message>
         <location filename="../../libs/installer/createdesktopentryoperation.cpp" line="146"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/createdesktopentryoperation.cpp" line="147"/>
         <source>exactly 2</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/createdesktopentryoperation.cpp" line="156"/>
@@ -1021,12 +1021,12 @@
     <message>
         <location filename="../../libs/installer/createlinkoperation.cpp" line="68"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/createlinkoperation.cpp" line="69"/>
         <source>exactly 2</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 2</translation>
     </message>
 </context>
 <context>
@@ -1044,12 +1044,12 @@
     <message>
         <location filename="../../libs/installer/createlocalrepositoryoperation.cpp" line="160"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/createlocalrepositoryoperation.cpp" line="161"/>
         <source>exactly 2</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/createlocalrepositoryoperation.cpp" line="173"/>
@@ -1103,17 +1103,17 @@
     <message>
         <location filename="../../libs/installer/createshortcutoperation.cpp" line="184"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/createshortcutoperation.cpp" line="185"/>
         <source>2 or 3</source>
-        <translation type="unfinished"></translation>
+        <translation>2 или 3</translation>
     </message>
     <message>
         <location filename="../../libs/installer/createshortcutoperation.cpp" line="185"/>
         <source> (optional: &apos;workingDirectory=...&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation> (необязательно: &apos;workingDirectory=...&apos;)</translation>
     </message>
     <message>
         <location filename="../../libs/installer/createshortcutoperation.cpp" line="203"/>
@@ -1194,12 +1194,12 @@ Error while loading %2</source>
     <message>
         <location filename="../../libs/installer/elevatedexecuteoperation.cpp" line="90"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/elevatedexecuteoperation.cpp" line="91"/>
         <source>at least 1</source>
-        <translation type="unfinished"></translation>
+        <translation>по крайней мере 1</translation>
     </message>
     <message>
         <location filename="../../libs/installer/elevatedexecuteoperation.cpp" line="153"/>
@@ -1227,12 +1227,12 @@ Error while loading %2</source>
     <message>
         <location filename="../../libs/installer/environmentvariablesoperation.cpp" line="142"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/environmentvariablesoperation.cpp" line="143"/>
         <source>2 or 3</source>
-        <translation type="unfinished"></translation>
+        <translation>2 или 3</translation>
     </message>
 </context>
 <context>
@@ -1240,12 +1240,12 @@ Error while loading %2</source>
     <message>
         <location filename="../../libs/installer/extractarchiveoperation.cpp" line="67"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/extractarchiveoperation.cpp" line="68"/>
         <source>exactly 2</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 2</translation>
     </message>
 </context>
 <context>
@@ -1268,50 +1268,38 @@ Error while loading %2</source>
     <message>
         <location filename="../../libs/installer/extractarchiveoperation_p.h" line="200"/>
         <source>Unknown exception caught while extracting %1.</source>
-        <translation>В процессе извлечения %1 возникло  неизвестное исключение.</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::FakeStopProcessForUpdateOperation</name>
-    <message>
-        <location filename="../../libs/installer/fakestopprocessforupdateoperation.cpp" line="122"/>
-        <source>These processes should be stopped to continue:
-
-%1</source>
-        <translation>Для продолжения необходимо остановить процессы:
-
-%1</translation>
+        <translation>В процессе извлечения %1 возникло неизвестное исключение.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1901"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1918"/>
         <source>Completing the %1 Wizard</source>
         <translation>Завершение установки %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1909"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1926"/>
         <source>Click Done to exit the %1 Wizard.</source>
         <translation>Нажмите &quot;Готово&quot; для выхода из мастера установки %1.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1912"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1929"/>
         <source>Click Finish to exit the %1 Wizard.</source>
         <translation>Нажмите &quot;Завершить&quot; для выхода из мастера установки %1.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1943"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1960"/>
         <source>Restart</source>
         <translation>Перезапустить</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1968"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1985"/>
         <source>Run %1 now.</source>
         <translation>Запустить %1 сейчас.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1974"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1991"/>
         <source>The %1 Wizard failed.</source>
         <translation>Установка %1 не удалась.</translation>
     </message>
@@ -1440,12 +1428,12 @@ Error while loading %2</source>
     <message>
         <location filename="../../libs/installer/globalsettingsoperation.cpp" line="117"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/globalsettingsoperation.cpp" line="118"/>
         <source>3 or 4</source>
-        <translation type="unfinished"></translation>
+        <translation>3 или 4</translation>
     </message>
 </context>
 <context>
@@ -1453,28 +1441,28 @@ Error while loading %2</source>
     <message>
         <location filename="../../libs/installer/installiconsoperation.cpp" line="140"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/installiconsoperation.cpp" line="141"/>
         <source>1 or 2</source>
-        <translation type="unfinished"></translation>
+        <translation>1 или 2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/installiconsoperation.cpp" line="141"/>
         <source> (Sourcepath, [Vendorprefix])</source>
-        <translation type="unfinished"></translation>
+        <translation> (источник, [префикс поставщика])</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::IntroductionPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="839"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="856"/>
         <source>Setup - %1</source>
         <translation>Установка - %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="845"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="862"/>
         <source>Welcome to the %1 Setup Wizard.</source>
         <translation>Добро пожаловать в мастер установки %1.</translation>
     </message>
@@ -1482,49 +1470,49 @@ Error while loading %2</source>
 <context>
     <name>QInstaller::LicenseAgreementPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="905"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="922"/>
         <source>License Agreement</source>
         <translation>Лицензионное соглашение</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="929"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="946"/>
         <source>Alt+A</source>
         <comment>agree license</comment>
         <translation>Alt+A</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1021"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1038"/>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, прочитайте следующее лицензионное соглашение. Вы должны согласиться со всеми условиями этого соглашения перед продолжением установки.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1023"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1040"/>
         <source>I accept the license.</source>
-        <translation type="unfinished"></translation>
+        <translation>Я согласен(а) с лицензией.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1024"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1041"/>
         <source>I do not accept the license.</source>
-        <translation type="unfinished"></translation>
+        <translation>Я не согласен(а) с лицензией.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1026"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1043"/>
         <source>Please read the following license agreements. You must accept the terms contained in these agreements before continuing with the installation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, прочитайте следующие лицензионные соглашения. Вы должны согласиться со всеми условиями этих соглашений перед продолжением установки.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1028"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1045"/>
         <source>I accept the licenses.</source>
         <translation>Я согласен(а) с лиценией.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="942"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="959"/>
         <source>Alt+D</source>
         <comment>do not agree license</comment>
         <translation>Alt+D</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1029"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1046"/>
         <source>I do not accept the licenses.</source>
         <translation>Я не согласен(а) с лицензией.</translation>
     </message>
@@ -1557,12 +1545,12 @@ Error while loading %2</source>
     <message>
         <location filename="../../libs/installer/linereplaceoperation.cpp" line="69"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/linereplaceoperation.cpp" line="70"/>
         <source>exactly 3</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 3</translation>
     </message>
 </context>
 <context>
@@ -1570,12 +1558,12 @@ Error while loading %2</source>
     <message>
         <location filename="../../libs/installer/macreplaceinstallnamesoperation.cpp" line="73"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/macreplaceinstallnamesoperation.cpp" line="74"/>
         <source>at least 3</source>
-        <translation type="unfinished"></translation>
+        <translation>по крайней мере 3</translation>
     </message>
     <message>
         <location filename="../../libs/installer/macreplaceinstallnamesoperation.cpp" line="83"/>
@@ -1658,12 +1646,12 @@ Downloading packages...</source>
         <translation>Приложение запущено в режиме удаления!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1898"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1901"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1930"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1933"/>
         <source>invalid</source>
         <translation>недопустимая версия</translation>
     </message>
@@ -1671,56 +1659,56 @@ Downloading packages...</source>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="366"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1476"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1502"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1668"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1745"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="379"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1489"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1515"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1681"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1758"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="478"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="491"/>
         <source>Component(s) added as automatic dependencies</source>
         <translation>Компоненты были добавлены как автоматические зависимости</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="520"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="533"/>
         <source>Added as dependency for %1.</source>
         <translation>Добавлен как зависимость для %1.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="529"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="542"/>
         <source>Component(s) that have resolved Dependencies</source>
         <translation>Компоненты, которые избавлены от зависимостей</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="538"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="551"/>
         <source>Selected Component(s) without Dependencies</source>
         <translation>Выбранные компоненты без зависимостей</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="763"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="776"/>
         <source>Access error</source>
         <translation>Ошибка доступа</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="764"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="777"/>
         <source>Format error</source>
         <translation>Ошибка форматирования</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="765"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="778"/>
         <source>Could not write installer configuration to %1: %2</source>
         <translation>Невозможно записать файл конфигурации программы установки в %1: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="881"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="894"/>
         <source>Stop Processes</source>
         <translation>Остановить процессы</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="881"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="894"/>
         <source>These processes should be stopped to continue:
 
 %1</source>
@@ -1729,34 +1717,34 @@ Downloading packages...</source>
 %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="889"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1773"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1951"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="902"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1786"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1964"/>
         <source>Installation canceled by user</source>
         <translation>Установка отменена пользователем</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="989"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1002"/>
         <source>Writing uninstaller.</source>
         <translation>Запись программы удаления.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1002"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1015"/>
         <source>Uninstaller is not a bundle</source>
         <translation>Программа удаления не является пакетом приложения</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1018"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1031"/>
         <source>Could not write uninstaller data to %1: %2</source>
         <translation>Невозможно записать данные программы удаления в %1: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1032"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1045"/>
         <source>Could not write uninstaller to %1: %2</source>
         <translation>Невозможно записать программу удаления в %1: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1242"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1255"/>
         <source>Found a binary data file, but we are the installer and we should read the binary resource from our very own binary!</source>
         <translation variants="yes">
             <lengthvariant>Найден бинарный файл с данными, но программа установки может читать бинарные файлы только из собственного исполняемого файла!</lengthvariant>
@@ -1764,159 +1752,159 @@ Downloading packages...</source>
         </translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1285"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1298"/>
         <source>Could not write uninstaller binary data to %1: %2</source>
         <translation>Невозможно записать бинарные данные программы удаления в %1: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1332"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1345"/>
         <source>ProductName should be set</source>
         <translation>Необходимо задать ProductName</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1356"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1369"/>
         <source>Variable &apos;TargetDir&apos; not set.</source>
         <translation>Переменная &apos;TargetDir&apos; не определена.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1394"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1631"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1407"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1644"/>
         <source>Preparing the installation...</source>
         <translation>Подготовка к установке...</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1403"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1416"/>
         <source>It is not possible to install from network location</source>
         <translation>Невозможно произвести установку из сетевого источника</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1445"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1447"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1458"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1460"/>
         <source>Creating local repository</source>
         <translation>Создаётся локальный репозиторий</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1482"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1648"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1495"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1661"/>
         <source>Creating Uninstaller</source>
         <translation>Создание программы удаления</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1492"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1505"/>
         <source>
 Installation finished!</source>
         <translation>
 Установка завершена!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1508"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1521"/>
         <source>
 Installation aborted!</source>
         <translation>
 Установка прервана!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1542"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1555"/>
         <source>It is not possible to run that operation from a network location</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно выполнить эту операцию по сети</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1637"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1650"/>
         <source>Removing deselected components...</source>
         <translation>Удаление компонентов...</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1658"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1671"/>
         <source>
 Update finished!</source>
         <translation>
 Обновление завершено!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1674"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1687"/>
         <source>
 Update aborted!</source>
         <translation>
 Обновление прервано!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1737"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1750"/>
         <source>
 Uninstallation completed successfully!</source>
         <translation>
 Удаление успешно завершено!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1748"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1761"/>
         <source>
 Uninstallation aborted!</source>
         <translation>
 Удаление прервано!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1767"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1780"/>
         <source>
 Installing component %1</source>
         <translation>
 Установка компонента %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1796"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1969"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1809"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1982"/>
         <source>Installer Error</source>
         <translation>Ошибка программы установки</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1797"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1810"/>
         <source>Error during installation process (%1):
 %2</source>
         <translation>Ошибка во время процесса установки (%1): %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1863"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1876"/>
         <source>Cannot prepare uninstall</source>
         <translation>Невозможно подготовиться к удалению</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1894"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1907"/>
         <source>Cannot start uninstall</source>
         <translation>Невозможно начать удаление</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1970"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1983"/>
         <source>Error during uninstallation process:
 %1</source>
         <translation>Ошибка в процессе установки:
 %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2002"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2015"/>
         <source>Unknown error</source>
         <translation>Неизвестная ошибка</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2021"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2034"/>
         <source>Could not retrieve remote tree: %1.</source>
         <translation>Невозможно загрузить удалённую структуру: %1.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2050"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2063"/>
         <source>Failure to read packages from: %1.</source>
         <translation>Не удалось прочитать пакеты из: %1.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2076"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2089"/>
         <source>Could not retrieve meta information: %1</source>
         <translation>Невозможно загрузить метаданные: %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2131"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2142"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2144"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2155"/>
         <source>Could not add temporary update source information.</source>
         <translation>Невозможно добавить информацию о временном сервере обновления.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2155"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2168"/>
         <source>Could not find any update source information.</source>
         <translation>Невозможно найти информацию об источниках обновления.</translation>
     </message>
@@ -2009,32 +1997,32 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::PerformInstallationPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1821"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1838"/>
         <source>&amp;Uninstall</source>
         <translation>&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1822"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1839"/>
         <source>Uninstalling %1</source>
         <translation>Удаление %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1826"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1843"/>
         <source>&amp;Update</source>
         <translation>&amp;Обновить</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1827"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1844"/>
         <source>Updating components of %1</source>
         <translation>Обновление компонентов %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1831"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1848"/>
         <source>&amp;Install</source>
         <translation>&amp;Установить</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1832"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1849"/>
         <source>Installing %1</source>
         <translation>Установка %1</translation>
     </message>
@@ -2044,12 +2032,12 @@ Please copy the installer to a local drive</source>
     <message>
         <location filename="../../libs/installer/qtpatchoperation.cpp" line="166"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/qtpatchoperation.cpp" line="167"/>
         <source>exactly 3</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 3</translation>
     </message>
     <message>
         <location filename="../../libs/installer/qtpatchoperation.cpp" line="177"/>
@@ -2069,10 +2057,9 @@ Please copy the installer to a local drive</source>
 %1 -query
 is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
 output: &quot;%2&quot;</source>
-        <translation>Выходные данные 
-%1 -очереди
-не могут быть разобраны. Пожалуйста, отправьте сообщение об ошибке, используя форму на вебсайте https://bugreports.qt-project.org.
-выходные данные: &quot;%2&quot;</translation>
+        <translation>Невозможно разобрать вывод запроса %1.
+Пожалуйста, отправьте сообщение об ошибке, используя форму на вебсайте https://bugreports.qt-project.org.
+вывод: &quot;%2&quot;</translation>
     </message>
     <message>
         <location filename="../../libs/installer/qtpatchoperation.cpp" line="214"/>
@@ -2104,93 +2091,93 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
 <context>
     <name>QInstaller::ReadyForInstallationPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1564"/>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1750"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1581"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1767"/>
         <source>&amp;Show Details</source>
         <translation>&amp;Показать подробности</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1597"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1614"/>
         <source>U&amp;ninstall</source>
         <translation>У&amp;далить</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1598"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1615"/>
         <source>Ready to Uninstall</source>
         <translation>Всё готово к удалению</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1599"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1616"/>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>Программа установки готова начать удаление %1 с вашего компьютера. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Директория с программой %2 будет полностью удалена&lt;/font&gt;, включая содержимое этой директории!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1607"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1624"/>
         <source>U&amp;pdate</source>
         <translation>О&amp;бновить</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1608"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1625"/>
         <source>Ready to Update Packages</source>
         <translation>Готов к обновлению пакетов</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1609"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1626"/>
         <source>Setup is now ready to begin updating your installation.</source>
         <translation>Программа установки готова к обновлению файлов.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1612"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1629"/>
         <source>&amp;Install</source>
         <translation>&amp;Установить</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1613"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1630"/>
         <source>Ready to Install</source>
         <translation>Всё готово к установке</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1614"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1631"/>
         <source>Setup is now ready to begin installing %1 on your computer.</source>
         <translation>Программа установки готова начать установку %1 на ваш компьютер.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1667"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1684"/>
         <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
         <translation>Недостаточно места на диске для сохранения временных файлов и файлов установки! Доступно: %1, требуется как минимум %2.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1674"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1691"/>
         <source>Not enough disk space to store all selected components! Available space: %1, at least required: %2.</source>
         <translation>Недостаточно места на диске для сохранения всех выбранных компонентов! Доступно: %1, требуется как минимум: %2.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1681"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1698"/>
         <source>Not enough disk space to store temporary files! Available space: %1, at least required: %2.</source>
         <translation>Недостаточно места на диске для сохранения временных файлов! Доступно: %1, требуется как минимум %2.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1689"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1706"/>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
         <translation>На выбранном Вами диске достаточно места для установки. Тем не менее, после завершения установки на диске останется меньше 1% свободного места. %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1694"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1711"/>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
         <translation>На выбранном Вами диске достаточно места для установки. Тем не менее, после завершения установки на диске останется меньше 100 МБ свободного места. %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1708"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1725"/>
         <source>Can not resolve all dependencies!</source>
         <translation>Невозможно разрешить все зависимости!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1726"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1743"/>
         <source>Components about to be removed.</source>
         <translation>Компоненты готовы к удалению.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1750"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1767"/>
         <source>&amp;Hide Details</source>
         <translation>&amp;Скрыть подробности</translation>
     </message>
@@ -2211,12 +2198,12 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <message>
         <location filename="../../libs/installer/registerdefaultdebuggeroperation.cpp" line="93"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/registerdefaultdebuggeroperation.cpp" line="94"/>
         <source>exactly 2</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/registerdefaultdebuggeroperation.cpp" line="108"/>
@@ -2234,12 +2221,12 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <message>
         <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="106"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="107"/>
         <source>2 to 5</source>
-        <translation type="unfinished"></translation>
+        <translation>от 2 до 5</translation>
     </message>
     <message>
         <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="171"/>
@@ -2252,12 +2239,12 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <message>
         <location filename="../../libs/installer/registerqtvqnxoperation.cpp" line="104"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/registerqtvqnxoperation.cpp" line="105"/>
         <source>at least 5</source>
-        <translation type="unfinished"></translation>
+        <translation>по крайней мере 5</translation>
     </message>
     <message>
         <location filename="../../libs/installer/registerqtvqnxoperation.cpp" line="112"/>
@@ -2281,17 +2268,17 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <message>
         <location filename="../../libs/installer/registertoolchainoperation.cpp" line="75"/>
         <source>at least 4</source>
-        <translation type="unfinished"></translation>
+        <translation>по крайней мерe 4</translation>
     </message>
     <message>
         <location filename="../../libs/installer/registertoolchainoperation.cpp" line="84"/>
         <source>Needed installer object in &apos;%1&apos; operation is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует необходимый объект программы установки в операции &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/registertoolchainoperation.cpp" line="89"/>
         <source>There is no value set for &apos;%1&apos; on the installer object.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует значение элемента %1 в объекте программы установки.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/registertoolchainoperation.cpp" line="134"/>
@@ -2312,7 +2299,7 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <message>
         <location filename="../../libs/installer/registertoolchainoperation.cpp" line="74"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../libs/installer/registertoolchainoperation.cpp" line="121"/>
@@ -2326,18 +2313,18 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <message>
         <location filename="../../libs/installer/replaceoperation.cpp" line="69"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/replaceoperation.cpp" line="70"/>
         <source>exactly 3</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 3</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2014"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2031"/>
         <source>Completing the %1 Setup Wizard</source>
         <translation>Завершение %1 мастера установки</translation>
     </message>
@@ -2347,7 +2334,7 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <message>
         <location filename="../../libs/installer/selfrestartoperation.cpp" line="64"/>
         <source>Installer object needed in &apos;%1&apos; operation is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует необходимый объект программы установки в операции &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/selfrestartoperation.cpp" line="70"/>
@@ -2365,12 +2352,12 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <message>
         <location filename="../../libs/installer/setdemospathonqtoperation.cpp" line="67"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setdemospathonqtoperation.cpp" line="68"/>
         <source>exactly 2</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setdemospathonqtoperation.cpp" line="85"/>
@@ -2378,13 +2365,17 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
 &apos;%1 -query&apos;
 is not parseable. Please file a bugreport with this dialog at https://bugreports.qt-project.org.
 output: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно разобрать вывод запроса
+%1.
+Пожалуйста, отправьте сообщение об ошибке, используя форму на вебсайте https://bugreports.qt-project.org.
+вывод: &quot;%2&quot;</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setdemospathonqtoperation.cpp" line="99"/>
         <source>Qt patch error: new Qt demo path &apos;%1&apos;
 needs to be less than 255 characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка патча Qt: новый путь к демо Qt &apos;%1&apos;
+должен быть короче 255 символов.</translation>
     </message>
 </context>
 <context>
@@ -2392,12 +2383,12 @@ needs to be less than 255 characters.</source>
     <message>
         <location filename="../../libs/installer/setexamplespathonqtoperation.cpp" line="67"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setexamplespathonqtoperation.cpp" line="68"/>
         <source>exactly 2</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setexamplespathonqtoperation.cpp" line="85"/>
@@ -2405,13 +2396,17 @@ needs to be less than 255 characters.</source>
 &apos;%1 -query&apos;
 is not parseable. Please file a bugreport with this dialog at https://bugreports.qt-project.org.
 output: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно разобрать вывод запроса
+%1.
+Пожалуйста, отправьте сообщение об ошибке, используя форму на вебсайте https://bugreports.qt-project.org.
+вывод: &quot;%2&quot;</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setexamplespathonqtoperation.cpp" line="99"/>
         <source>Qt patch error: new Qt example path &apos;%1&apos;
 needs to be less than 255 characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка патча Qt: новый путь к примерам Qt &apos;%1&apos;
+должен быть короче 255 символов.</translation>
     </message>
 </context>
 <context>
@@ -2419,18 +2414,19 @@ needs to be less than 255 characters.</source>
     <message>
         <location filename="../../libs/installer/setimportspathonqtcoreoperation.cpp" line="110"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setimportspathonqtcoreoperation.cpp" line="111"/>
         <source>exactly 2</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setimportspathonqtcoreoperation.cpp" line="120"/>
         <source>Qt patch error: new Qt imports path &apos;%1&apos;
 needs to be less than 255 characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка патча Qt: новый путь к импортам Qt &apos;%1&apos;
+должен быть короче 255 символов.</translation>
     </message>
 </context>
 <context>
@@ -2438,12 +2434,12 @@ needs to be less than 255 characters.</source>
     <message>
         <location filename="../../libs/installer/setpathonqtcoreoperation.cpp" line="114"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setpathonqtcoreoperation.cpp" line="115"/>
         <source>exactly 3</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 3</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setpathonqtcoreoperation.cpp" line="138"/>
@@ -2456,18 +2452,19 @@ needs to be less than 255 characters.</source>
     <message>
         <location filename="../../libs/installer/setpluginpathonqtcoreoperation.cpp" line="109"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setpluginpathonqtcoreoperation.cpp" line="110"/>
         <source>exactly 2</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setpluginpathonqtcoreoperation.cpp" line="119"/>
         <source>Qt patch error: new Qt plugin path &apos;%1&apos;
 needs to be less than 255 characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка патча Qt: новый путь к плагинам Qt &apos;%1&apos;
+должен быть короче 255 символов.</translation>
     </message>
 </context>
 <context>
@@ -2475,32 +2472,32 @@ needs to be less than 255 characters.</source>
     <message>
         <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="72"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="73"/>
         <source>exactly 4</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 4</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="73"/>
         <source> (rootInstallPath, group, key, value)</source>
-        <translation type="unfinished"></translation>
+        <translation> (корневой каталог установки, группа, ключ, значение)</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="80"/>
         <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation>Отсутствует необходимый объект установщика в операции &quot;%1&quot;.</translation>
+        <translation>Отсутствует необходимый объект программы установки в операции &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="97"/>
         <source>There is no value set for &apos;%1&apos; on the installer object.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует значение элемента %1 в объекте программы установки.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/setqtcreatorvalueoperation.cpp" line="134"/>
         <source>Needed installer object in &apos;%1&apos; operation is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует необходимый объект программы установки в операции &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -2508,44 +2505,44 @@ needs to be less than 255 characters.</source>
     <message>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="62"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="63"/>
         <source>exactly 2</source>
-        <translation type="unfinished"></translation>
+        <translation>ровно 2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="72"/>
         <source>None of the arguments can be empty: source &apos;%1&apos;, target &apos;%2&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Все аргументы должны быть непустыми: источник &apos;%1&apos;, назначение &apos;%2&apos;.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="83"/>
         <source>Can not move source &apos;%1&apos; to target &apos;%2&apos;, because target exists and is not removable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно переместить &apos;%1&apos; в &apos;%2&apos;, потому что файл назначения существует и не может быть удалён.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="92"/>
         <source>Can not move source &apos;%1&apos; to target &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно переместить &apos;%1&apos; в &apos;%2&apos;: &apos;%3&apos;</translation>
     </message>
     <message>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="97"/>
         <location filename="../../libs/installer/simplemovefileoperation.cpp" line="107"/>
         <source>Move &apos;%1&apos; to &apos;%2&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемещение &apos;%1&apos; в &apos;%2&apos;.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::StartMenuDirectoryPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1460"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1477"/>
         <source>Start Menu shortcuts</source>
         <translation>Ярлыки меню &quot;Пуск&quot;</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1461"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1478"/>
         <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new folder.</source>
         <translation>Выберите папку в меню &quot;Пуск&quot;, в которой вы хотите создать ярлыки программы. Для создания новой папки введите её имя.</translation>
     </message>
@@ -2553,55 +2550,55 @@ needs to be less than 255 characters.</source>
 <context>
     <name>QInstaller::TargetDirectoryPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1331"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1348"/>
         <source>Installation Folder</source>
         <translation>Папка установки</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1339"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1356"/>
         <source>Please specify the folder where %1 will be installed.</source>
         <translation>Пожалуйста, укажите папку, в которую вы хотите установить %1.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1353"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1370"/>
         <source>Alt+R</source>
         <comment>browse file system to choose a file</comment>
         <translatorcomment>открывает окно выбора файла</translatorcomment>
         <translation>Alt+R</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1354"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1371"/>
         <source>B&amp;rowse...</source>
         <translation>О&amp;бзор...</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1392"/>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1407"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1409"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1424"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1393"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1410"/>
         <source>The install directory cannot be empty, please specify a valid folder.</source>
         <translation>Папка для установки не может быть пустой, выберите другую папку.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1408"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1425"/>
         <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
         <translation>Так как установочная директория полностью удалена, установка в %1 запрещена.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1418"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1435"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1419"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1436"/>
         <source>You have selected an existing, non-empty folder for installation. Note that it will be completely wiped on uninstallation of this application. It is not advisable to install into this folder as installation might fail. Do you want to continue?</source>
         <translation>Папка, которую Вы выбрали для установки приложения, уже содержит файлы. Она будет полностью очищена при удалении приложения. Не рекомендуется производить установку в эту папку, так как установка может не удасться. Вы хотите продолжить?</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1444"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1461"/>
         <source>Select Installation Folder</source>
         <translation>Выберите папку для установки</translation>
     </message>
@@ -3011,7 +3008,7 @@ as root and then clicking ok.</source>
         <translation>Ошибка при попытке повысить уровень доступа.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="995"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1008"/>
         <source>Failed to seek in file %1: %2</source>
         <translation>Поиск в файле %1 не удался: %2</translation>
     </message>
@@ -3070,17 +3067,32 @@ as root and then clicking ok.</source>
     <message>
         <location filename="../../libs/installer/linereplaceoperation.cpp" line="80"/>
         <source>Failed to open &apos;%1&apos; for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно открыть &apos;%1&apos; на чтение.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/linereplaceoperation.cpp" line="97"/>
         <source>Failed to open &apos;%1&apos; for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно открыть &apos;%1&apos; на запись.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/fakestopprocessforupdateoperation.cpp" line="111"/>
+        <location filename="../../libs/installer/fakestopprocessforupdateoperation.cpp" line="68"/>
         <source>Number of arguments does not match: one is required</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество аргументов не совпадает: требуется 1</translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/fakestopprocessforupdateoperation.cpp" line="75"/>
+        <source>Could not get package manager core.</source>
+        <translation>Невозможно получить ядро менеджера пакетов.</translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/fakestopprocessforupdateoperation.cpp" line="90"/>
+        <source>This process should be stopped before continuing: %1</source>
+        <translation>Перед продолжением необходимо завершить процесс %1</translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/fakestopprocessforupdateoperation.cpp" line="94"/>
+        <source>These processes should be stopped before continuing: %1</source>
+        <translation>Перед продолжением необходимо завершить эти процессы: %1</translation>
     </message>
 </context>
 <context>

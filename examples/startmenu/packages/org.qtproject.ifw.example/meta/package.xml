@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <Name>org.qtproject.ifw.example</Name>
+    <DisplayName>README.txt</DisplayName>
+    <Description>A README.txt, accessible through a start menu entry.</Description>
+    <ReleaseDate>2013-01-01</ReleaseDate>
+    <Version>1.0.0-1</Version>
+    <Script>installscript.qs</Script>
+</Package>

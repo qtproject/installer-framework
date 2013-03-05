@@ -38,11 +38,14 @@ HELP_DEP_FILES = $$PWD/installerfw.qdoc \
                  $$PWD/installerfw.qdocconf \
                  $$PWD/installerfw-online.qdocconf \
                  $$PWD/config/compat.qdocconf \
+                 $$PWD/config/installerfw-project.qdocconf \
                  $$PWD/config/macros.qdocconf \
                  $$PWD/config/qt-cpp-ignore.qdocconf \
                  $$PWD/config/qt-defines.qdocconf \
-                 $$PWD/config/qt-html-templates.qdocconf \
-                 $$PWD/config/qt-html-default-styles.qdocconf
+                 $$PWD/config/qt-html-default-styles.qdocconf \
+                 $$PWD/config/qt-html-online-styles.qdocconf \
+                 $$PWD/config/qt-html-templates-online.qdocconf \
+                 $$PWD/config/qt-html-templates.qdocconf
 
 unix {
 html_docs.commands = $$QDOC $$PWD/installerfw.qdocconf
