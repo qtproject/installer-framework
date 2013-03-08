@@ -172,6 +172,7 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
 
         bool foundDefault = false;
         bool foundVirtual = false;
+        bool foundDisplayName = false;
         const QDomNodeList childNodes = package.childNodes();
         for (int i = 0; i < childNodes.count(); ++i) {
             const QDomNode node = childNodes.at(i);
@@ -181,6 +182,8 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
                 foundDefault = true;
             if (key == QLatin1String("Virtual"))
                 foundVirtual = true;
+            if (key == QLatin1String("DisplayName"))
+                foundDisplayName = true;
             if (node.isComment() || blackList.contains(key))
                 continue;   // just skip comments and some tags...
 
@@ -196,6 +199,13 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         if (foundDefault && foundVirtual) {
             throw QInstaller::Error(QString::fromLatin1("Error: <Default> and <Virtual> elements are "
                 "mutually exclusive. File: '%0'").arg(packageXmlPath));
+        }
+
+        if (!foundDisplayName) {
+            qWarning() << "No DisplayName tag found, using component Name instead.";
+            QDomElement displayNameElement = doc.createElement(QLatin1String("DisplayName"));
+            displayNameElement.appendChild(doc.createTextNode(it->name));
+            update.appendChild(displayNameElement);
         }
 
         // get the size of the data
