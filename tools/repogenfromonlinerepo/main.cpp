@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 
 // get Updates.xml to get to know what we can download
     downloadManager.append(QUrl(repoUrl + QLatin1String("/Updates.xml")));
-    QObject::connect( &downloadManager, SIGNAL( finished() ), &downloadEventLoop, SLOT( quit() ) );
+    QObject::connect(&downloadManager, SIGNAL(finished()), &downloadEventLoop, SLOT(quit()));
     downloadEventLoop.exec();
 // END - get Updates.xml to get to know what we can download
 
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
         // get Updates.xml to get to know what we can download
             downloadManager.append(QUrl(repoUrl + QLatin1String("/") + packageName + QLatin1String("/")
                 + packageScript));
-            QObject::connect( &downloadManager, SIGNAL( finished() ), &downloadEventLoop, SLOT( quit() ) );
+            QObject::connect(&downloadManager, SIGNAL(finished()), &downloadEventLoop, SLOT(quit()));
             downloadEventLoop.exec();
         // END - get Updates.xml to get to know what we can download
 
