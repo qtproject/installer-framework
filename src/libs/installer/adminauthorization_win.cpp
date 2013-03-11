@@ -91,9 +91,9 @@ bool AdminAuthorization::hasAdminRights()
                                   &adminGroup))
         return false;
 
-    BOOL isInAdminGroup = FALSE;
+    bool isInAdminGroup = false;
     if (!CheckTokenMembership(0, adminGroup, &isInAdminGroup))
-        isInAdminGroup = FALSE;
+        isInAdminGroup = false;
 
     FreeSid(adminGroup);
     return isInAdminGroup;

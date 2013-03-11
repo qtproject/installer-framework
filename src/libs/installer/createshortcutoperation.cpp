@@ -132,7 +132,7 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
 
     IPersistFile *ppf = NULL;
     if (SUCCEEDED(psl->QueryInterface(IID_IPersistFile, (void **)&ppf))) {
-        ppf->Save((wchar_t*)QDir::toNativeSeparators(linkName).utf16(), TRUE);
+        ppf->Save((wchar_t*)QDir::toNativeSeparators(linkName).utf16(), true);
         ppf->Release();
     }
     psl->Release();

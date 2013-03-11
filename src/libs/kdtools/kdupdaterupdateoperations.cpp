@@ -886,7 +886,7 @@ bool ExecuteOperation::performOperation()
                                      0, 0, 0, STARTF_USESHOWWINDOW, SW_HIDE, 0, 0, 0, 0, 0
                                    };
         success = CreateProcess(0, (wchar_t*)arguments.utf16(),
-                                0, 0, FALSE, CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_CONSOLE, 0,
+                                0, 0, false, CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_CONSOLE, 0,
                                 0,
                                 &startupInfo, &pinfo);
 

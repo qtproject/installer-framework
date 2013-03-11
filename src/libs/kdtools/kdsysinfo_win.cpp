@@ -247,7 +247,7 @@ bool killProcess(const ProcessInfo &process, int msecs)
 
     // If we can't open the process with PROCESS_TERMINATE rights,
     // then we give up immediately.
-    HANDLE hProc = OpenProcess(SYNCHRONIZE | PROCESS_TERMINATE, FALSE, process.id);
+    HANDLE hProc = OpenProcess(SYNCHRONIZE | PROCESS_TERMINATE, false, process.id);
 
     if (hProc == 0)
         return false;
