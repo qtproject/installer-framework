@@ -39,8 +39,8 @@
 **
 **************************************************************************/
 
-#ifndef REGISTERQTINCREATORVQNXOPERATION_H
-#define REGISTERQTINCREATORVQNXOPERATION_H
+#ifndef REGISTERQTINCREATORQNXOPERATION_H
+#define REGISTERQTINCREATORQNXOPERATION_H
 
 #include "qinstallerglobal.h"
 
@@ -60,4 +60,4 @@ public:
 
 } // namespace QInstaller
 
-#endif // REGISTERQTINCREATORVQNXOPERATION_H
+#endif // REGISTERQTINCREATORQNXOPERATION_H

@@ -39,8 +39,8 @@
 **
 **************************************************************************/
 
-#ifndef PROGRESSCOORDNINATOR_H
-#define PROGRESSCOORDNINATOR_H
+#ifndef PROGRESSCOORDINATOR_H
+#define PROGRESSCOORDINATOR_H
 
 #include <QtCore/QHash>
 #include <QtCore/QObject>
@@ -102,4 +102,4 @@ private:
 
 } //namespace QInstaller
 
-#endif //PROGRESSCOORDNINATOR_H
+#endif //PROGRESSCOORDINATOR_H

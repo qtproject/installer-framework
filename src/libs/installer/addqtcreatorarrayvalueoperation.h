@@ -39,8 +39,8 @@
 **
 **************************************************************************/
 
-#ifndef ADDQTCREATORVALUEOPERATION_H
-#define ADDQTCREATORVALUEOPERATION_H
+#ifndef ADDQTCREATORARRAYVALUEOPERATION_H
+#define ADDQTCREATORARRAYVALUEOPERATION_H
 
 #include "qinstallerglobal.h"
 
@@ -60,4 +60,4 @@ public:
 
 } // namespace QInstaller
 
-#endif // ADDQTCREATORVALUEOPERATION_H
+#endif // ADDQTCREATORARRAYVALUEOPERATION_H

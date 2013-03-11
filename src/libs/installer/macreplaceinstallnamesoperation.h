@@ -39,8 +39,8 @@
 **
 **************************************************************************/
 
-#ifndef MACREPLACEINSTALLNAMEOPERATION_H
-#define MACREPLACEINSTALLNAMEOPERATION_H
+#ifndef MACREPLACEINSTALLNAMESOPERATION_H
+#define MACREPLACEINSTALLNAMESOPERATION_H
 
 #include "qinstallerglobal.h"
 
@@ -85,4 +85,4 @@ private:
 
 } // namespace QInstaller
 
-#endif // MACREPLACEINSTALLNAMEOPERATION_H
+#endif // MACREPLACEINSTALLNAMESOPERATION_H
