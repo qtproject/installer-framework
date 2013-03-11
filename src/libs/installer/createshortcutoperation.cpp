@@ -107,8 +107,9 @@ static QString takeWorkingDirArgument(QStringList &args)
 static bool createLink(const QString &fileName, const QString &linkName, QString workingDir,
     QString arguments = QString())
 {
-    bool success = QFile::link(fileName, linkName);
 #ifdef Q_OS_WIN
+    bool success = QFile::link(fileName, linkName);
+
     if (!success)
         return success;
 
@@ -145,11 +146,16 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
         SHChangeNotify(SHCNE_UPDATEDIR, SHCNF_IDLIST, pidl, 0);
         CoTaskMemFree(pidl);
     }
+
+    return success;
 #else
     Q_UNUSED(arguments)
     Q_UNUSED(workingDir)
+    Q_UNUSED(fileName)
+    Q_UNUSED(linkName)
+
+    return true;
 #endif
-    return success;
 }
 
 
