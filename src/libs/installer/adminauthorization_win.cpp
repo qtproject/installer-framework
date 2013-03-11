@@ -92,7 +92,7 @@ bool AdminAuthorization::hasAdminRights()
         return false;
 
     bool isInAdminGroup = false;
-    if (!CheckTokenMembership(0, adminGroup, &isInAdminGroup))
+    if (!CheckTokenMembership(0, adminGroup, (int*)&isInAdminGroup))
         isInAdminGroup = false;
 
     FreeSid(adminGroup);
