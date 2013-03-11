@@ -186,7 +186,7 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
 
             const QString value = node.toElement().text();
             QDomElement element = doc.createElement(key);
-            for (int  i = 0; i < node.attributes().size(); i++) {
+            for (int  i = 0; i < node.attributes().size(); ++i) {
                 element.setAttribute(node.attributes().item(i).toAttr().name(),
                     node.attributes().item(i).toAttr().value());
             }

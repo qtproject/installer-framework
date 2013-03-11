@@ -194,7 +194,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
                 const QString line = QString::fromLatin1(buf, bytes);
                 if (re.indexIn(line) != -1) {
                     const QString password = getPassword(parent);
-                    if (password == QString()) {
+                    if (password.isEmpty()) {
                         QByteArray pwd = password.toLatin1();
                         for (int i = 0; i < 3; ++i) {
                             ::write(masterFD, pwd.data(), pwd.length());

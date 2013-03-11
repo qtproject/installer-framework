@@ -38,7 +38,7 @@
    update operations. Concrete implementations of this class must perform a single update
    operation like copy, move, delete etc.
 
-   \note Two seperate threads cannot be using a single instance of KDUpdater::UpdateOperation
+   \note Two separate threads cannot be using a single instance of KDUpdater::UpdateOperation
    at the same time.
 */
 

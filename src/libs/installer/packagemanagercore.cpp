@@ -39,6 +39,7 @@
 **
 **************************************************************************/
 #include "packagemanagercore.h"
+#include "packagemanagercore_p.h"
 
 #include "adminauthorization.h"
 #include "binaryformat.h"
@@ -49,7 +50,6 @@
 #include "fsengineclient.h"
 #include "getrepositoriesmetainfojob.h"
 #include "messageboxhandler.h"
-#include "packagemanagercore_p.h"
 #include "packagemanagerproxyfactory.h"
 #include "progresscoordinator.h"
 #include "qprocesswrapper.h"
@@ -1035,7 +1035,7 @@ QString PackageManagerCore::installReason(Component *component) const
 }
 
 /*!
-    Returns a list of components that dependend on \a component. The list can be empty. Note: Auto
+    Returns a list of components that depend on \a component. The list can be empty. Note: Auto
     installed dependencies are not resolved.
 */
 QList<Component*> PackageManagerCore::dependees(const Component *_component) const

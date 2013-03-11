@@ -753,7 +753,7 @@ void FSEngineClientHandler::setActive(bool active)
 }
 
 /*!
-    Returns, wheter this FSEngineClientHandler is active or not.
+    Returns true when this FSEngineClientHandler is active.
 */
 bool FSEngineClientHandler::isActive() const
 {
