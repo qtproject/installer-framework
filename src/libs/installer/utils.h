@@ -81,7 +81,7 @@ namespace QInstaller {
     {
         Q_OBJECT
     public:
-        VerboseWriter(QObject *parent = 0);
+        explicit VerboseWriter(QObject *parent = 0);
         ~VerboseWriter();
 
         static VerboseWriter *instance();

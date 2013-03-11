@@ -77,7 +77,7 @@ class TestRepository : public KDJob
 
 public:
 
-    TestRepository(QObject *parent = 0);
+    explicit TestRepository(QObject *parent = 0);
     ~TestRepository();
 
     QInstaller::Repository repository() const;
@@ -105,7 +105,7 @@ class PasswordDelegate : public QStyledItemDelegate
     Q_OBJECT
 
 public:
-    PasswordDelegate(QWidget *parent = 0)
+    explicit PasswordDelegate(QWidget *parent = 0)
         : QStyledItemDelegate(parent)
         , m_showPasswords(true)
         , m_disabledEditor(true)
@@ -129,8 +129,8 @@ private:
 class RepositoryItem : public QTreeWidgetItem
 {
 public:
-    RepositoryItem(const QString &label);
-    RepositoryItem(const QInstaller::Repository &repo);
+    explicit RepositoryItem(const QString &label);
+    explicit RepositoryItem(const QInstaller::Repository &repo);
 
     QVariant data(int column, int role) const;
     void setData(int column, int role, const QVariant &value);
@@ -151,7 +151,7 @@ class SettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    SettingsDialog(QInstaller::PackageManagerCore *core, QWidget *parent = 0);
+    explicit SettingsDialog(QInstaller::PackageManagerCore *core, QWidget *parent = 0);
 
 public slots:
     void accept();

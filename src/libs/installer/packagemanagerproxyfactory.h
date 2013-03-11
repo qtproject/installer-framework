@@ -51,7 +51,7 @@ class PackageManagerCore;
 class PackageManagerProxyFactory : public KDUpdater::FileDownloaderProxyFactory
 {
 public:
-    PackageManagerProxyFactory(const PackageManagerCore *const core);
+    explicit PackageManagerProxyFactory(const PackageManagerCore *const core);
 
     PackageManagerProxyFactory *clone() const;
     QList<QNetworkProxy> queryProxy(const QNetworkProxyQuery &query = QNetworkProxyQuery());

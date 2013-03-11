@@ -54,7 +54,7 @@ class DownloadManager: public QObject
 {
     Q_OBJECT
 public:
-    DownloadManager(QObject *parent = 0);
+    explicit DownloadManager(QObject *parent = 0);
 
     void append(const QUrl &url);
     void append(const QStringList &urlList);

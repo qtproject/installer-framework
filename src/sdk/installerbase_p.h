@@ -66,7 +66,7 @@ class InstallerBase : public QObject
     Q_OBJECT
 
 public:
-    InstallerBase(QObject *parent = 0);
+    explicit InstallerBase(QObject *parent = 0);
     ~InstallerBase();
 
     int replaceMaintenanceToolBinary(QStringList arguments);

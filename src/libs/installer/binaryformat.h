@@ -203,7 +203,7 @@ class INSTALLER_EXPORT BinaryContentPrivate : public QSharedData
 {
 public:
     BinaryContentPrivate();
-    BinaryContentPrivate(const QString &path);
+    explicit BinaryContentPrivate(const QString &path);
     BinaryContentPrivate(const BinaryContentPrivate &other);
     ~BinaryContentPrivate();
 
