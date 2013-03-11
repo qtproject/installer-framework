@@ -1270,8 +1270,9 @@ QString PackageManagerCore::environmentVariable(const QString &name) const
     }
     return value;
 #else
-    const char *pPath = name.isEmpty() ? 0 : getenv(name.toLatin1());
-    return pPath ? QLatin1String(pPath) : QString();
+    if (name.isEmpty())
+        return QString();
+    return QString::fromUtf8(qgetenv(name.toLatin1()));
 #endif
 }
 
