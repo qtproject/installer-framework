@@ -1071,8 +1071,10 @@ public:
     {
         m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
 
-        connect(m_allModel, SIGNAL(defaultCheckStateChanged(bool)), q, SLOT(setModified(bool)));
-        connect(m_updaterModel, SIGNAL(defaultCheckStateChanged(bool)), q, SLOT(setModified(bool)));
+        connect(m_allModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
+            SLOT(onCheckStateChanged(QInstaller::ComponentModel::ModelState)));
+        connect(m_updaterModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
+            SLOT(onCheckStateChanged(QInstaller::ComponentModel::ModelState)));
 
         QHBoxLayout *hlayout = new QHBoxLayout;
         hlayout->addWidget(m_treeView, 3);
@@ -1098,7 +1100,6 @@ public:
 
         m_checkDefault = new QPushButton;
         connect(m_checkDefault, SIGNAL(clicked()), this, SLOT(selectDefault()));
-        connect(m_allModel, SIGNAL(defaultCheckStateChanged(bool)), m_checkDefault, SLOT(setEnabled(bool)));
         const QVariantHash hash = q->elementsForPage(QLatin1String("ComponentSelectionPage"));
         if (m_core->isInstaller()) {
             m_checkDefault->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
@@ -1175,8 +1176,8 @@ public:
 public slots:
     void currentChanged(const QModelIndex &current)
     {
-        // if there is not selection or the current selected node didn't change, return
-        if (!current.isValid() || current != m_treeView->selectionModel()->currentIndex())
+        // if there is no selection, return
+        if (!current.isValid())
             return;
 
         m_descriptionLabel->setText(m_currentModel->data(m_currentModel->index(current.row(),
@@ -1184,42 +1185,51 @@ public slots:
 
         m_sizeLabel->clear();
         if (!m_core->isUninstaller()) {
-            Component *component = m_currentModel->componentFromIndex(current);
-            if (component && component->updateUncompressedSize() > 0) {
-                const QVariantHash hash = q->elementsForPage(QLatin1String("ComponentSelectionPage"));
-                m_sizeLabel->setText(hash.value(QLatin1String("ComponentSizeLabel"),
-                    ComponentSelectionPage::tr("This component will occupy approximately %1 on your hard disk drive.")).toString()
-                    .arg(m_currentModel->data(m_currentModel->index(current.row(),
-                    ComponentModelHelper::UncompressedSizeColumn, current.parent())).toString()));
+            const QModelIndex currentSelected = m_treeView->selectionModel()->currentIndex();
+            if (!currentSelected.isValid())
+                return;
+
+            Component *component = m_currentModel->componentFromIndex(currentSelected);
+            if (component == 0)
+                return;
+
+            if (component->updateUncompressedSize() > 0) {
+                m_sizeLabel->setText(q->elementsForPage(QLatin1String("ComponentSelectionPage"))
+                    .value(QLatin1String("ComponentSizeLabel"), ComponentSelectionPage::tr("This component "
+                    "will occupy approximately %1 on your hard disk drive.")).toString()
+                    .arg(humanReadableSize(component->value(scUncompressedSizeSum).toLongLong())));
             }
         }
     }
 
-    // TODO: all *select* function ignore the fact that components can be selected inside the tree view as
-    //       well, which will result in e.g. a disabled button state as long as "ALL" components not
-    //       unchecked again.
     void selectAll()
     {
-        m_currentModel->selectAll();
-
-        m_checkAll->setEnabled(false);
-        m_uncheckAll->setEnabled(true);
+        m_currentModel->setCheckedState(ComponentModel::AllChecked);
     }
 
     void deselectAll()
     {
-        m_currentModel->deselectAll();
-
-        m_checkAll->setEnabled(true);
-        m_uncheckAll->setEnabled(false);
+        m_currentModel->setCheckedState(ComponentModel::AllUnchecked);
     }
 
     void selectDefault()
     {
-        m_currentModel->selectDefault();
+        m_currentModel->setCheckedState(ComponentModel::DefaultChecked);
+    }
 
-        m_checkAll->setEnabled(true);
-        m_uncheckAll->setEnabled(true);
+    void onCheckStateChanged(QInstaller::ComponentModel::ModelState state)
+    {
+        q->setModified(state != ComponentModel::DefaultChecked);
+
+        // If all components in the checked list are only checkable when run without forced installation, set
+        // ComponentModel::AllUnchecked as well, as we cannot uncheck anything. Helps to keep the UI correct.
+        if ((!m_core->noForceInstallation()) && (m_currentModel->checked() == m_currentModel->uncheckable()))
+                state |= ComponentModel::AllUnchecked;
+
+        // enable the button if the corresponding flag is not set
+        m_checkAll->setEnabled(state.testFlag(ComponentModel::AllChecked) == false);
+        m_uncheckAll->setEnabled(state.testFlag(ComponentModel::AllUnchecked) == false);
+        m_checkDefault->setEnabled(state.testFlag(ComponentModel::DefaultChecked) == false);
     }
 
 public:
@@ -1330,8 +1340,8 @@ void ComponentSelectionPage::setModified(bool modified)
 bool ComponentSelectionPage::isComplete() const
 {
     if (packageManagerCore()->isInstaller() || packageManagerCore()->isUpdater())
-        return d->m_currentModel->hasCheckedComponents();
-    return !d->m_currentModel->defaultCheckState();
+        return d->m_currentModel->checked().count();
+    return d->m_currentModel->checkedState() != ComponentModel::DefaultChecked;
 }
 
 

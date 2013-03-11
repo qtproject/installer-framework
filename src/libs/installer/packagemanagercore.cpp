@@ -1970,7 +1970,8 @@ ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, con
         ComponentModel::tr("Size"));
     connect(this, SIGNAL(setRootComponents(QList<QInstaller::Component*>)), model,
         SLOT(setRootComponents(QList<QInstaller::Component*>)));
-    connect(model, SIGNAL(defaultCheckStateChanged(bool)), this, SLOT(componentsToInstallNeedsRecalculation()));
+    connect(model, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
+        SLOT(componentsToInstallNeedsRecalculation()));
 
     return model;
 }

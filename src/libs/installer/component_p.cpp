@@ -202,8 +202,8 @@ ComponentModelHelper::ComponentModelHelper()
 }
 
 /*!
-    Returns the number of child components. Depending if virtual components are visible or not the count might
-    differ from what one will get if calling Component::childComponents(...).count().
+    Returns the number of child components. Depending if virtual components are visible or not,
+    the count might differ from what one will get if calling Component::childComponents(...).count().
 */
 int ComponentModelHelper::childCount() const
 {
@@ -213,51 +213,38 @@ int ComponentModelHelper::childCount() const
 }
 
 /*!
-    Returns the index of this component as seen from it's parent.
+    Returns the component at index position in the list. Index must be a valid position in
+    the list (i.e., index >= 0 && index < childCount()). Otherwise it returns 0.
 */
-int ComponentModelHelper::indexInParent() const
+Component *ComponentModelHelper::childAt(int index) const
 {
-    int index = 0;
-    if (Component *parent = m_componentPrivate->m_parentComponent->parentComponent()) {
-        index = parent->childComponents(Component::DirectChildrenOnly)
-            .indexOf(m_componentPrivate->m_parentComponent);
-    }
-    return (index >= 0 ? index : 0);
+    if (index < 0 && index >= childCount())
+        return 0;
+
+    if (m_componentPrivate->m_core->virtualComponentsVisible())
+        return m_componentPrivate->m_allChildComponents.value(index, 0);
+    return m_componentPrivate->m_childComponents.value(index, 0);
 }
 
 /*!
-    Returns all children and whose children depending if virtual components are visible or not.
+    Returns all descendants of this component depending if virtual components are visible or not.
 */
-QList<Component*> ComponentModelHelper::childs() const
+QList<Component*> ComponentModelHelper::childItems() const
 {
     QList<Component*> *components = &m_componentPrivate->m_childComponents;
     if (m_componentPrivate->m_core->virtualComponentsVisible())
         components = &m_componentPrivate->m_allChildComponents;
 
     QList<Component*> result;
-    foreach (Component *component, *components) {
+    foreach (Component *const component, *components) {
         result.append(component);
-        result += component->childs();
+        result += component->childItems();
     }
     return result;
 }
 
 /*!
-    Returns the component at index position in the list. Index must be a valid position in
-    the list (i.e., index >= 0 && index < childCount()). Otherwise it returns 0.
-*/
-Component *ComponentModelHelper::childAt(int index) const
-{
-    if (index >= 0 && index < childCount()) {
-        if (m_componentPrivate->m_core->virtualComponentsVisible())
-            return m_componentPrivate->m_allChildComponents.value(index, 0);
-        return m_componentPrivate->m_childComponents.value(index, 0);
-    }
-    return 0;
-}
-
-/*!
-    Determines if the components installations status can be changed. The default value is true.
+    Determines if the installation status of the component can be changed. The default value is true.
 */
 bool ComponentModelHelper::isEnabled() const
 {
@@ -265,7 +252,7 @@ bool ComponentModelHelper::isEnabled() const
 }
 
 /*!
-    Enables oder disables ability to change the components installations status.
+    Enables or disables the ability to change the installation status of the components.
 */
 void ComponentModelHelper::setEnabled(bool enabled)
 {
@@ -273,7 +260,7 @@ void ComponentModelHelper::setEnabled(bool enabled)
 }
 
 /*!
-    Returns whether the component is tristate; that is, if it's checkable with three separate states.
+    Returns whether the component is tri-state; that is, if it's checkable with three separate states.
     The default value is false.
 */
 bool ComponentModelHelper::isTristate() const
@@ -282,10 +269,10 @@ bool ComponentModelHelper::isTristate() const
 }
 
 /*!
-    Sets whether the component is tristate. If tristate is true, the component is checkable with three
+    Sets whether the component is tri-state. If tri-state is true, the component is checkable with three
     separate states; otherwise, the component is checkable with two states.
 
-    (Note that this also requires that the component is checkable; see isCheckable().)
+    Note: this also requires that the component is checkable. \sa isCheckable()
 */
 void ComponentModelHelper::setTristate(bool tristate)
 {

@@ -57,10 +57,22 @@ class PackageManagerCore;
 class INSTALLER_EXPORT ComponentModel : public QAbstractItemModel
 {
     Q_OBJECT
+    typedef QSet<Component *> ComponentSet;
+    typedef QList<Component *> ComponentList;
 
 public:
+    enum ModelStateFlag {
+        AllChecked = 0x01,
+        AllUnchecked = 0x02,
+        DefaultChecked = 0x04,
+        PartiallyChecked = 0x08
+    };
+    Q_DECLARE_FLAGS(ModelState, ModelStateFlag);
+
     explicit ComponentModel(int columns, PackageManagerCore *core = 0);
     ~ComponentModel();
+
+    Qt::ItemFlags flags(const QModelIndex &index) const;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -75,49 +87,50 @@ public:
     bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
         int role = Qt::EditRole);
 
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-    PackageManagerCore *packageManagerCore() const;
+    QSet<Component *> checked() const;
+    QSet<Component *> partially() const;
+    QSet<Component *> unchecked() const;
+    QSet<Component *> uncheckable() const;
 
-    bool defaultCheckState() const;
-    bool hasCheckedComponents() const;
-    QList<Component*> checkedComponents() const;
+    PackageManagerCore *core() const;
+    ComponentModel::ModelState checkedState() const;
 
     QModelIndex indexFromComponentName(const QString &name) const;
     Component* componentFromIndex(const QModelIndex &index) const;
 
 public Q_SLOTS:
-    void selectAll();
-    void deselectAll();
-    void selectDefault();
-
     void setRootComponents(QList<QInstaller::Component*> rootComponents);
-    void appendRootComponents(QList<QInstaller::Component*> rootComponents);
+    void setCheckedState(QInstaller::ComponentModel::ModelStateFlag state);
 
 Q_SIGNALS:
-    void defaultCheckStateChanged(bool changed);
     void checkStateChanged(const QModelIndex &index);
+    void checkStateChanged(QInstaller::ComponentModel::ModelState state);
 
 private Q_SLOTS:
     void slotModelReset();
-    void slotCheckStateChanged(const QModelIndex &index);
 
 private:
-    QSet<QString> select(Qt::CheckState state);
-    void updateCache(const QModelIndex &parent) const;
-    QModelIndexList collectComponents(const QModelIndex &parent) const;
+    void updateAndEmitModelState();
+    void collectComponents(Component *const component, const QModelIndex &parent) const;
+    QSet<QModelIndex> updateCheckedState(const ComponentSet &components, Qt::CheckState state);
 
 private:
     PackageManagerCore *m_core;
 
-    int m_rootIndex;
+    ModelState m_modelState;
+    ComponentSet m_uncheckable;
     QVector<QVariant> m_headerData;
-    QSet<QString> m_initialCheckedSet;
-    QSet<QString> m_currentCheckedSet;
-    QList<Component*> m_rootComponentList;
+    ComponentList m_rootComponentList;
 
+    QHash<Qt::CheckState, ComponentSet> m_initialCheckedState;
+    QHash<Qt::CheckState, ComponentSet> m_currentCheckedState;
     mutable QHash<QString, QPersistentModelIndex> m_indexByNameCache;
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS(ComponentModel::ModelState);
 
 }   // namespace QInstaller
+
+Q_DECLARE_METATYPE(QInstaller::ComponentModel::ModelState);
+Q_DECLARE_METATYPE(QInstaller::ComponentModel::ModelStateFlag);
 
 #endif // COMPONENTMODEL_H

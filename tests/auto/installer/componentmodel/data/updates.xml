@@ -1,0 +1,132 @@
+<Updates>
+    <ApplicationName>Your application</ApplicationName>
+    <ApplicationVersion>1.2.3</ApplicationVersion>
+    <Checksum>true</Checksum>
+    <PackageUpdate>
+        <Name>com.vendor.product</Name>
+        <DisplayName>The root component</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>true</Default>
+        <Script>installscript.qs</Script>
+        <SortingPriority>1</SortingPriority>
+        <ForcedInstallation>true</ForcedInstallation>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>com.vendor.second.product</Name>
+        <DisplayName>The second root component</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>false</Default>
+        <Script>installscript.qs</Script>
+        <SortingPriority>1</SortingPriority>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>com.vendor.second.product.subnode</Name>
+        <DisplayName>A sub node component for the second root</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>false</Default>
+        <Script>installscript.qs</Script>
+        <SortingPriority>1</SortingPriority>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>com.vendor.second.product.subnode.sub</Name>
+        <DisplayName>A subcomponent for the second sub node of the second root</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>false</Default>
+        <Script>installscript.qs</Script>
+        <SortingPriority>1</SortingPriority>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>com.vendor.second.product.sub</Name>
+        <DisplayName>A subcomponent for the second root</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Script>installscript.qs</Script>
+        <Default>true</Default>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>com.vendor.second.product.sub1</Name>
+        <DisplayName>A subcomponent for the second root</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>false</Default>
+        <Script>installscript.qs</Script>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>com.vendor.second.product.virtual</Name>
+        <DisplayName>A virtual subcomponent for the second root</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Script>installscript.qs</Script>
+        <Virtual>true</Virtual>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>com.vendor.third.product.virtual</Name>
+        <DisplayName>A virtual root component</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>true</Default>
+        <Script>installscript.qs</Script>
+        <SortingPriority>0</SortingPriority>
+        <Virtual>true</Virtual>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+</Updates>

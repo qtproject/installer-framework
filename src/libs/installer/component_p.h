@@ -125,10 +125,8 @@ public:
     explicit ComponentModelHelper();
 
     int childCount() const;
-    int indexInParent() const;
-
-    QList<Component*> childs() const;
     Component* childAt(int index) const;
+    QList<Component*> childItems() const;
 
     bool isEnabled() const;
     void setEnabled(bool enabled);

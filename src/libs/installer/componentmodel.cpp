@@ -47,17 +47,18 @@
 namespace QInstaller {
 
 /*!
-    \fn void defaultCheckStateChanged(bool changed)
+    \fn void checkStateChanged(const QModelIndex &index)
 
-    This signal is emitted whenever the default check state of a model is changed. The \a changed value
-    indicates whether the model has it's initial checked state or some components changed it's checked state.
+    This signal is emitted whenever the check state of a component is changed. The \a index value indicates
+    the QModelIndex representation of the component as seen from the model.
 */
 
 /*!
-    \fn void checkStateChanged(const QModelIndex &index)
+    \fn void checkStateChanged(QInstaller::ComponentModel::ModelState state)
 
-    This signal is emitted whenever the default check state of a component is changed. The \a index value
-    indicates the QModelIndex representation of the component as seen from the model.
+    This signal is emitted whenever the check state of a model is changed after all check state
+    calculations have taken place. The \a state value indicates whether the model has its default checked
+    state, all components are checked/ unchecked or some individual components checked state has changed.
 */
 
 
@@ -67,12 +68,10 @@ namespace QInstaller {
 ComponentModel::ComponentModel(int columns, PackageManagerCore *core)
     : QAbstractItemModel(core)
     , m_core(core)
-    , m_rootIndex(0)
+    , m_modelState(DefaultChecked)
 {
     m_headerData.insert(0, columns, QVariant());
-
     connect(this, SIGNAL(modelReset()), this, SLOT(slotModelReset()));
-    connect(this, SIGNAL(checkStateChanged(QModelIndex)), this, SLOT(slotCheckStateChanged(QModelIndex)));
 }
 
 /*!
@@ -83,8 +82,25 @@ ComponentModel::~ComponentModel()
 }
 
 /*!
-    Returns the number of items under the given \a parent. When the parent is valid it means that rowCount is
-    returning the number of items of parent.
+    Returns the item flags for the given \a index.
+
+    The class implementation returns a combination of flags that enables the item (Qt::ItemIsEnabled), allows
+    it to be selected (Qt::ItemIsSelectable) and to be checked (Qt::ItemIsUserCheckable).
+*/
+Qt::ItemFlags ComponentModel::flags(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return Qt::NoItemFlags;
+
+    if (Component *component = componentFromIndex(index))
+        return component->flags();
+
+    return Qt::ItemFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+}
+
+/*!
+    Returns the number of items under the given \a parent. When the parent is valid it means that rowCount
+    is returning the number of items of parent.
 */
 int ComponentModel::rowCount(const QModelIndex &parent) const
 {
@@ -160,9 +176,9 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
 }
 
 /*!
-    Sets the \a role data for the item at \a index to \a value. Returns true if successful; otherwise returns
-    false. The dataChanged() signal is emitted if the data was successfully set. The checkStateChanged() and
-    defaultCheckStateChanged() signal are emitted in addition if the check state of the item is set.
+    Sets the \a role data for the item at \a index to \a value. Returns true if successful;
+    otherwise returns false. The dataChanged() signal is emitted if the data was successfully set.
+    The checkStateChanged() signals are emitted in addition if the check state of the item is set.
 */
 bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -173,14 +189,17 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, in
     if (!component)
         return false;
 
-    component->setData(value, role);
-
-    emit dataChanged(index, index);
     if (role == Qt::CheckStateRole) {
-        emit checkStateChanged(index);
-        foreach (Component* comp, m_rootComponentList) {
-            comp->updateUncompressedSize();
+        ComponentSet nodes = component->childItems().toSet();
+        QSet<QModelIndex> changed = updateCheckedState(nodes << component, Qt::CheckState(value.toInt()));
+        foreach (const QModelIndex &index, changed) {
+            emit dataChanged(index, index);
+            emit checkStateChanged(index);
         }
+        updateAndEmitModelState();     // update the internal state
+    } else {
+        component->setData(value, role);
+        emit dataChanged(index, index);
     }
 
     return true;
@@ -217,72 +236,69 @@ bool ComponentModel::setHeaderData(int section, Qt::Orientation orientation, con
 }
 
 /*!
-    Returns the item flags for the given \a index.
-
-    The class implementation returns a combination of flags that enables the item (Qt::ItemIsEnabled), allows
-    it to be selected (Qt::ItemIsSelectable) and to be checked (Qt::ItemIsUserCheckable).
+    Returns a list of checked components.
 */
-Qt::ItemFlags ComponentModel::flags(const QModelIndex &index) const
+QSet<Component *> ComponentModel::checked() const
 {
-    if (!index.isValid())
-        return Qt::NoItemFlags;
+    return m_currentCheckedState[Qt::Checked];
+}
 
-    if (Component *component = componentFromIndex(index))
-        return component->flags();
+/*!
+    Returns a list of partially checked components.
+*/
+QSet<Component *> ComponentModel::partially() const
+{
+    return m_currentCheckedState[Qt::PartiallyChecked];
+}
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+/*!
+    Returns a list of unchecked components.
+*/
+QSet<Component *> ComponentModel::unchecked() const
+{
+    return m_currentCheckedState[Qt::Unchecked];
+}
+
+/*!
+    Returns a list of components whose check state can't be changed. If package manager core is run with no
+    forced installation argument, the list will always be empty.
+*/
+QSet<Component *> ComponentModel::uncheckable() const
+{
+    return m_uncheckable;
 }
 
 /*!
     Returns a pointer to the PackageManagerCore this model belongs to.
 */
-PackageManagerCore *ComponentModel::packageManagerCore() const
+PackageManagerCore *ComponentModel::core() const
 {
     return m_core;
 }
 
 /*!
-    Returns true if no changes to the components checked state have been done, otherwise returns false.
+    Returns the current state check state of the model.
 */
-bool ComponentModel::defaultCheckState() const
+ComponentModel::ModelState ComponentModel::checkedState() const
 {
-    return m_initialCheckedSet == m_currentCheckedSet;
+    return m_modelState;
 }
 
 /*!
-    Returns true if this model has checked components, otherwise returns false.
-*/
-bool ComponentModel::hasCheckedComponents() const
-{
-    return !m_currentCheckedSet.isEmpty();
-}
-
-/*!
-    Returns a list of checked components.
-*/
-QList<Component*> ComponentModel::checkedComponents() const
-{
-    QList<Component*> list;
-    foreach (const QString &name, m_currentCheckedSet)
-        list.append(componentFromIndex(indexFromComponentName(name)));
-    return list;
-}
-
-/*!
-    Translates between a given component \a name and it's associated QModelIndex. Returns the QModelIndex that
-    represents the component or an invalid QModelIndex if the component does not exist in the model.
+    Translates between a given component \a name and its associated QModelIndex. Returns the QModelIndex
+    that represents the component or an invalid QModelIndex if the component does not exist in the model.
 */
 QModelIndex ComponentModel::indexFromComponentName(const QString &name) const
 {
     if (m_indexByNameCache.isEmpty()) {
         for (int i = 0; i < m_rootComponentList.count(); ++i)
-            updateCache(index(i, 0, QModelIndex()));
+            collectComponents(m_rootComponentList.at(i), index(i, 0, QModelIndex()));
     }
     return m_indexByNameCache.value(name, QModelIndex());
 }
 
 /*!
-    Translates between a given QModelIndex \a index and it's associated Component. Returns the Component if
+    Translates between a given QModelIndex \a index and its associated Component. Returns the component if
     the index is valid or 0 if an invalid QModelIndex is given.
 */
 Component *ComponentModel::componentFromIndex(const QModelIndex &index) const
@@ -292,242 +308,218 @@ Component *ComponentModel::componentFromIndex(const QModelIndex &index) const
     return 0;
 }
 
+
 // -- public slots
 
 /*!
-    Invoking this slot results in an checked state for every component the has a visual representation in the
-    model. Note that components are not changed if they are not checkable. The checkStateChanged() and
-    defaultCheckStateChanged() signal are emitted.
-*/
-void ComponentModel::selectAll()
-{
-    m_currentCheckedSet = m_currentCheckedSet.unite(select(Qt::Checked));
-    emit defaultCheckStateChanged(m_initialCheckedSet != m_currentCheckedSet);
-}
+    Sets the passed \a rootComponents to be the list of currently shown components.
 
-/*!
-    Invoking this slot results in an unchecked state for every component the has a visual representation in
-    the model. Note that components are not changed if they are not checkable. The checkStateChanged() and
-    defaultCheckStateChanged() signal are emitted.
-*/
-void ComponentModel::deselectAll()
-{
-    m_currentCheckedSet = m_currentCheckedSet.subtract(select(Qt::Unchecked));
-    emit defaultCheckStateChanged(m_initialCheckedSet != m_currentCheckedSet);
-}
-
-/*!
-    Invoking this slot results in an checked state for every component the has a visual representation in the
-    model when the model was setup during setRootComponents() or appendRootComponents(). Note that components
-    are not changed it they are not checkable. The checkStateChanged() and defaultCheckStateChanged() signal
-    are emitted.
-*/
-void ComponentModel::selectDefault()
-{
-    m_currentCheckedSet = m_currentCheckedSet.subtract(select(Qt::Unchecked));
-    foreach (const QString &name, m_initialCheckedSet)
-        setData(indexFromComponentName(name), Qt::Checked, Qt::CheckStateRole);
-    emit defaultCheckStateChanged(m_initialCheckedSet != m_currentCheckedSet);
-}
-
-/*!
-    Set's the passed \a rootComponents to be list of currently shown components. The model is repopulated and
-    the individual component checked state is used to show the check mark in front of the visual component
-    representation. The modelAboutToBeReset() and modelReset() signals are emitted.
+    The model is repopulated and the individual component checked state is used to show the check mark in
+    front of the visual component representation. The modelAboutToBeReset() and modelReset() signals are
+    emitted.
 */
 void ComponentModel::setRootComponents(QList<QInstaller::Component*> rootComponents)
 {
     beginResetModel();
 
+    m_uncheckable.clear();
     m_indexByNameCache.clear();
-    m_rootComponentList.clear();
-    m_initialCheckedSet.clear();
-    m_currentCheckedSet.clear();
+    m_initialCheckedState.clear();
+    m_currentCheckedState.clear();
+    m_modelState = DefaultChecked;
 
-    m_rootIndex = 0;
-    m_rootComponentList = rootComponents;
-
+    // show virtual components only in case we run as updater or if the core engine is set to show them
+    const bool showVirtuals = m_core->isUpdater() || m_core->virtualComponentsVisible();
+    foreach (Component *const component, rootComponents) {
+        if ((!showVirtuals) && component->isVirtual())
+            continue;
+        m_rootComponentList.append(component);
+    }
     endResetModel();
 }
 
 /*!
-    Appends the passed \a rootComponents to the currently shown list of components. The model is repopulated
-    and the individual component checked state is used to show the check mark in front of the visual component
-    representation. Already changed check states on the previous model are preserved. The modelAboutToBeReset()
-    and modelReset() signals are emitted.
+    Sets the check state of every component in the model to be \a state.
+
+    The ComponentModel::PartiallyChecked flag is ignored by this function. Note that components are not
+    changed if they are not checkable. The dataChanged() and checkStateChanged() signals are emitted.
 */
-void ComponentModel::appendRootComponents(QList<QInstaller::Component*> rootComponents)
+void ComponentModel::setCheckedState(QInstaller::ComponentModel::ModelStateFlag state)
 {
-    beginResetModel();
+    QSet<QModelIndex> changed;
+    switch (state) {
+        case AllChecked:
+            changed = updateCheckedState(m_currentCheckedState[Qt::Unchecked], Qt::Checked);
+        break;
+        case AllUnchecked:
+            changed = updateCheckedState(m_currentCheckedState[Qt::Checked], Qt::Unchecked);
+        break;
+        case DefaultChecked:
+            // record all changes, to be able to update the UI properly
+            changed = updateCheckedState(m_currentCheckedState[Qt::Checked], Qt::Unchecked);
+            changed += updateCheckedState(m_initialCheckedState[Qt::Checked], Qt::Checked);
+        break;
+        default:
+            break;
+    }
 
-    m_indexByNameCache.clear();
+    if (changed.isEmpty())
+        return;
 
-    m_rootIndex = m_rootComponentList.count() - 1;
-    m_rootComponentList += rootComponents;
-
-    endResetModel();
+    // notify about changes done to the model
+    foreach (const QModelIndex &index, changed) {
+        emit dataChanged(index, index);
+        emit checkStateChanged(index);
+    }
+    updateAndEmitModelState();     // update the internal state
 }
+
 
 // -- private slots
 
 void ComponentModel::slotModelReset()
 {
-    QList<QInstaller::Component*> components = m_rootComponentList;
+    ComponentList components = m_rootComponentList;
     if (!m_core->isUpdater()) {
-        for (int i = m_rootIndex; i < m_rootComponentList.count(); ++i)
-            components.append(m_rootComponentList.at(i)->childs());
+        foreach (Component *const component, m_rootComponentList)
+            components += component->childItems();
     }
 
-    foreach (Component *child, components) {
-        if (child->checkState() == Qt::Checked && !child->isTristate())
-            m_initialCheckedSet.insert(child->name());
+    ComponentSet checked;
+    foreach (Component *const component, components) {
+        if (component->checkState() == Qt::Checked)
+            checked.insert(component);
     }
-    m_currentCheckedSet += m_initialCheckedSet;
 
-    if (!m_core->isUpdater())
-        select(Qt::Unchecked);
+    updateCheckedState(checked, Qt::Checked);
+    foreach (Component *const component, components) {
+        if (!component->isCheckable())
+            m_uncheckable.insert(component);
+        m_initialCheckedState[component->checkState()].insert(component);
+    }
 
-    foreach (const QString &name, m_currentCheckedSet)
-        setData(indexFromComponentName(name), Qt::Checked, Qt::CheckStateRole);
-
+    m_currentCheckedState = m_initialCheckedState;
+    updateAndEmitModelState();     // update the internal state
 }
+
+
+// -- private
+
+void ComponentModel::updateAndEmitModelState()
+{
+    m_modelState = ComponentModel::DefaultChecked;
+    if (m_initialCheckedState != m_currentCheckedState)
+        m_modelState = ComponentModel::PartiallyChecked;
+
+    if (checked().count() == 0 && partially().count() == 0) {
+        m_modelState |= ComponentModel::AllUnchecked;
+        m_modelState &= ~ComponentModel::PartiallyChecked;
+    }
+
+    if (unchecked().count() == 0 && partially().count() == 0) {
+        m_modelState |= ComponentModel::AllChecked;
+        m_modelState &= ~ComponentModel::PartiallyChecked;
+    }
+
+    emit checkStateChanged(m_modelState);
+}
+
+void ComponentModel::collectComponents(Component *const component, const QModelIndex &parent) const
+{
+    m_indexByNameCache.insert(component->name(), parent);
+    for (int i = 0; i < component->childCount(); ++i)
+        collectComponents(component->childAt(i), index(i, 0, parent));
+}
+
+namespace ComponentModelPrivate {
+
+struct NameGreaterThan
+{
+    bool operator() (const Component *lhs, const Component *rhs) const
+    {
+        return lhs->name() > rhs->name();
+    }
+};
 
 static Qt::CheckState verifyPartiallyChecked(Component *component)
 {
     int checked = 0;
     int unchecked = 0;
-    int virtualChilds = 0;
 
     const int count = component->childCount();
     for (int i = 0; i < count; ++i) {
-        Component *const child = component->childAt(i);
-        if (!child->isVirtual()) {
-            switch (component->childAt(i)->checkState()) {
-                case Qt::Checked: {
-                    ++checked;
-                }    break;
-                case Qt::Unchecked: {
-                    ++unchecked;
-                }    break;
-                default:
-                    break;
-            }
-        } else {
-            ++virtualChilds;
+        switch (component->childAt(i)->checkState()) {
+            case Qt::Checked: {
+                ++checked;
+            }   break;
+            case Qt::Unchecked: {
+                ++unchecked;
+            }   break;
+            default:
+                break;
         }
     }
 
-    if ((checked + virtualChilds) == count)
+    if (checked == count)
         return Qt::Checked;
 
-    if ((unchecked + virtualChilds) == count)
+    if (unchecked == count)
         return Qt::Unchecked;
 
     return Qt::PartiallyChecked;
 }
 
-void ComponentModel::slotCheckStateChanged(const QModelIndex &index)
+}   // namespace ComponentModelPrivate
+
+QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &components, Qt::CheckState state)
 {
-    Component *component = componentFromIndex(index);
-    if (!component)
-        return;
-
-    if (component->checkState() == Qt::Checked && !component->isTristate())
-        m_currentCheckedSet.insert(component->name());
-    else if (component->checkState() == Qt::Unchecked && !component->isTristate())
-        m_currentCheckedSet.remove(component->name());
-    emit defaultCheckStateChanged(m_initialCheckedSet != m_currentCheckedSet);
-
-    if (component->isVirtual())
-        return;
-
-    const Qt::CheckState state = component->checkState();
-    if (component->isTristate()) {
-        if (state == Qt::PartiallyChecked) {
-            component->setCheckState(verifyPartiallyChecked(component));
-            return;
-        }
-
-        QModelIndexList notCheckable;
-        foreach (Component *child, component->childs()) {
-            const QModelIndex &idx = indexFromComponentName(child->name());
-            if (child->isCheckable()) {
-                if (child->checkState() != state && !child->isVirtual())
-                    setData(idx, state, Qt::CheckStateRole);
-            } else {
-                notCheckable.append(idx);
-            }
-        }
-
-        if (state == Qt::Unchecked && !notCheckable.isEmpty()) {
-            foreach (const QModelIndex &idx, notCheckable)
-                setData(idx, idx.data(Qt::CheckStateRole), Qt::CheckStateRole);
-        }
-    } else {
-        QList<Component*> parents;
-        while (0 != component->parentComponent()) {
-            parents.append(component->parentComponent());
-            component = parents.last();
-        }
-
-        foreach (Component *parent, parents) {
-            if (parent->isCheckable()) {
-                const QModelIndex &idx = indexFromComponentName(parent->name());
-                if (parent->checkState() == Qt::PartiallyChecked) {
-                    setData(idx, verifyPartiallyChecked(parent), Qt::CheckStateRole);
-                } else {
-                    setData(idx, Qt::PartiallyChecked, Qt::CheckStateRole);
-                }
+    // get all parent nodes for the components we're going to update
+    ComponentSet nodes = components;
+    foreach (Component *const component, components) {
+        if (Component *parent = component->parentComponent()) {
+            nodes.insert(parent);
+            while (parent->parentComponent() != 0) {
+                parent = parent->parentComponent();
+                nodes.insert(parent);
             }
         }
     }
-}
 
-// -- private
+    QSet<QModelIndex> changed;
+    // sort the nodes, so we can start in descending order to check node and tri-state nodes properly
+    ComponentList sortedNodes = nodes.toList();
+    std::sort(sortedNodes.begin(), sortedNodes.end(), ComponentModelPrivate::NameGreaterThan());
+    foreach (Component *const node, sortedNodes) {
+        if (!node->isCheckable())
+            continue;
 
-QSet<QString> ComponentModel::select(Qt::CheckState state)
-{
-    QSet<QString> changed;
-    for (int i = 0; i < m_rootComponentList.count(); ++i) {
-        QSet<QString> tmp;
-        QList<Component*> children = m_rootComponentList.at(i)->childs();
-        children.prepend(m_rootComponentList.at(i));    // we need to take the root item into account as well
-        foreach (Component *child, children) {
-            if (child->isCheckable() && !child->isTristate() && child->checkState() != state) {
-                tmp.insert(child->name());
-                child->setCheckState(state);
-            }
-        }
-        if (!tmp.isEmpty()) {
-            changed += tmp;
-            setData(index(i, 0, QModelIndex()), state, Qt::CheckStateRole);
+        Qt::CheckState newState = state;
+        const Qt::CheckState recentState = node->checkState();
+        if (node->isTristate())
+            newState = ComponentModelPrivate::verifyPartiallyChecked(node);
+        if (recentState == newState)
+            continue;
+
+        node->setCheckState(newState);
+        changed.insert(indexFromComponentName(node->name()));
+
+        m_currentCheckedState[Qt::Checked].remove(node);
+        m_currentCheckedState[Qt::Unchecked].remove(node);
+        m_currentCheckedState[Qt::PartiallyChecked].remove(node);
+
+        switch (newState) {
+            case Qt::Checked:
+                m_currentCheckedState[Qt::Checked].insert(node);
+            break;
+            case Qt::Unchecked:
+                m_currentCheckedState[Qt::Unchecked].insert(node);
+            break;
+            case Qt::PartiallyChecked:
+                m_currentCheckedState[Qt::PartiallyChecked].insert(node);
+            break;
         }
     }
     return changed;
-}
-
-void ComponentModel::updateCache(const QModelIndex &parent) const
-{
-    const QModelIndexList &list = collectComponents(parent);
-    foreach (const QModelIndex &index, list) {
-        if (Component *component = componentFromIndex(index))
-            m_indexByNameCache.insert(component->name(), index);
-    }
-    m_indexByNameCache.insert((static_cast<Component*> (parent.internalPointer()))->name(), parent);
-}
-
-QModelIndexList ComponentModel::collectComponents(const QModelIndex &parent) const
-{
-    QModelIndexList list;
-    for (int i = 0; i < rowCount(parent) ; ++i) {
-        const QModelIndex &next = index(i, 0, parent);
-        if (Component *component = componentFromIndex(next)) {
-            if (component->childCount() > 0)
-                list += collectComponents(next);
-        }
-        list.append(next);
-    }
-    return list;
 }
 
 } // namespace QInstaller
