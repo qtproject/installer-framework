@@ -4,7 +4,12 @@ TARGET = installerbase
 
 include(../../installerfw.pri)
 
-QT += network script
+QT += network script xml
+
+isEqual(QT_MAJOR_VERSION, 5) {
+  QT += widgets
+}
+
 DESTDIR = $$IFW_APP_PATH
 
 if (exists($$LRELEASE)) {

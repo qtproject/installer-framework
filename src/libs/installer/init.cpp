@@ -58,6 +58,7 @@
 #include "linereplaceoperation.h"
 #include "minimumprogressoperation.h"
 #include "licenseoperation.h"
+#include "applyproductkeyoperation.h"
 
 // QtSDK specific
 #include "qtpatchoperation.h"
@@ -240,6 +241,7 @@ void QInstaller::init()
     factory.registerUpdateOperation<LineReplaceOperation>(QLatin1String("LineReplace"));
     factory.registerUpdateOperation<MinimumProgressOperation>(QLatin1String("MinimumProgress"));
     factory.registerUpdateOperation<LicenseOperation>(QLatin1String("License"));
+    factory.registerUpdateOperation<ApplyProductKeyOperation>(QLatin1String("ApplyProductKey"));
 
     // QtSDK specific
     factory.registerUpdateOperation<RegisterQtInCreatorQNXOperation>(QLatin1String("RegisterQtInCreatorQNX"));

@@ -60,7 +60,9 @@
 #include "kdupdaterupdateoperationfactory.h"
 #include "kdupdaterupdatefinder.h"
 
-#include <QtConcurrentRun>
+#include <productkeycheck.h>
+
+#include <QtCore/QtConcurrentRun>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
@@ -555,6 +557,16 @@ QString PackageManagerCorePrivate::installReason(Component *component)
 
 void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params)
 {
+    if (!ProductKeyCheck::instance()->hasValidKey()) {
+        if (m_core->isInstaller()) {
+            setStatus(PackageManagerCore::Failure, ProductKeyCheck::instance()->lastErrorString());
+        } else {
+            MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("ProductKeyCheckError"), ProductKeyCheck::instance()->lastErrorString(),
+            ProductKeyCheck::instance()->maintainanceToolDetailErrorNotice(), QMessageBox::Ok);
+        }
+    }
+
     m_coreCheckedHash.clear();
     m_data = PackageManagerCoreData(params);
     m_componentsToInstallCalculated = false;

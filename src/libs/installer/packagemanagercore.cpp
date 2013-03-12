@@ -57,6 +57,8 @@
 #include "settings.h"
 #include "utils.h"
 
+#include <productkeycheck.h>
+
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
@@ -694,6 +696,11 @@ bool PackageManagerCore::fetchRemotePackagesTree()
 
     if (isUninstaller()) {
         d->setStatus(Failure, tr("Application running in Uninstaller mode!"));
+        return false;
+    }
+
+    if (!ProductKeyCheck::instance()->hasValidKey()) {
+        d->setStatus(Failure, ProductKeyCheck::instance()->lastErrorString());
         return false;
     }
 
