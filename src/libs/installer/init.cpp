@@ -66,7 +66,7 @@
 #include "setpluginpathonqtcoreoperation.h"
 #include "setimportspathonqtcoreoperation.h"
 #include "setpathonqtcoreoperation.h"
-#include "registerqtvqnxoperation.h"
+#include "registerqtincreatorqnxoperation.h"
 #include "setqtcreatorvalueoperation.h"
 #include "addqtcreatorarrayvalueoperation.h"
 #include "registertoolchainoperation.h"

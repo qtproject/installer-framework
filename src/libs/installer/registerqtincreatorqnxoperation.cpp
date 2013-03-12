@@ -39,7 +39,7 @@
 **
 **************************************************************************/
 
-#include "registerqtvqnxoperation.h"
+#include "registerqtincreatorqnxoperation.h"
 
 #include "packagemanagercore.h"
 #include "qtcreator_constants.h"

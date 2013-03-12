@@ -40,7 +40,6 @@ HEADERS += packagemanagercore.h \
     replaceoperation.h \
     linereplaceoperation.h \
     registertoolchainoperation.h  \
-    registerqtvqnxoperation.h  \
     setqtcreatorvalueoperation.h \
     addqtcreatorarrayvalueoperation.h \
     copydirectoryoperation.h \
@@ -85,7 +84,8 @@ HEADERS += packagemanagercore.h \
     lib7z_facade.h \
     link.h \
     createlinkoperation.h \
-    packagemanagercoredata.h
+    packagemanagercoredata.h \
+    registerqtincreatorqnxoperation.h
 
     SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -110,7 +110,6 @@ HEADERS += packagemanagercore.h \
     replaceoperation.cpp \
     linereplaceoperation.cpp \
     registertoolchainoperation.cpp  \
-    registerqtvqnxoperation.cpp  \
     setqtcreatorvalueoperation.cpp \
     addqtcreatorarrayvalueoperation.cpp \
     copydirectoryoperation.cpp \
@@ -153,7 +152,8 @@ HEADERS += packagemanagercore.h \
     lib7z_facade.cpp \
     link.cpp \
     createlinkoperation.cpp \
-    packagemanagercoredata.cpp
+    packagemanagercoredata.cpp \
+    registerqtincreatorqnxoperation.cpp
 
 RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc
