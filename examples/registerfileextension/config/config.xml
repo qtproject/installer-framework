@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Register File Extension Example</Name>
+    <Version>1.0.0</Version>
+    <Title>Register File Extension Example</Title>
+    <Publisher>Qt-Project</Publisher>
+    <StartMenuDir>Register File Extension Example</StartMenuDir>
+    <TargetDir>@homeDir@/IFWRegisterFileExtensionExample</TargetDir>
+</Installer>
