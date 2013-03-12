@@ -1259,12 +1259,13 @@ bool PackageManagerCore::executeDetached(const QString &program, const QStringLi
 */
 QString PackageManagerCore::environmentVariable(const QString &name) const
 {
+    if (name.isEmpty())
+        return QString();
+
 #ifdef Q_OS_WIN
-    const LPCWSTR n =  (LPCWSTR) name.utf16();
-    LPTSTR buff = (LPTSTR) malloc(4096 * sizeof(TCHAR));
-    DWORD getenvret = GetEnvironmentVariable(n, buff, 4096);
-    QString value = getenvret != 0 ? QString::fromUtf16((const unsigned short *) buff) : QString();
-    free(buff);
+    static TCHAR buffer[32767];
+    DWORD size = GetEnvironmentVariable(LPCWSTR(name.utf16()), buffer, 32767);
+    QString value = QString::fromUtf16((const unsigned short *) buffer, size);
 
     if (value.isEmpty()) {
         static QLatin1String userEnvironmentRegistryPath("HKEY_CURRENT_USER\\Environment");
@@ -1277,8 +1278,6 @@ QString PackageManagerCore::environmentVariable(const QString &name) const
     }
     return value;
 #else
-    if (name.isEmpty())
-        return QString();
     return QString::fromUtf8(qgetenv(name.toLatin1()));
 #endif
 }
