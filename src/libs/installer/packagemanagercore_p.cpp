@@ -62,7 +62,7 @@
 
 #include <productkeycheck.h>
 
-#include <QtCore/QtConcurrentRun>
+#include <QtConcurrentRun>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
