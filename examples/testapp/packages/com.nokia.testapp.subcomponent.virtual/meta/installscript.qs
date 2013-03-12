@@ -1,4 +1,0 @@
-// constructor
-function Component()
-{
-}

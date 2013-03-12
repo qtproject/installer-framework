@@ -1,8 +1,0 @@
-<RCC>
-  <qresource prefix="/metadata/installer-config">
-    <file>config.xml</file>
-  </qresource>
-  <qresource>
-    <file>logo.png</file>
-  </qresource>
-</RCC>

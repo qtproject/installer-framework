@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<Package>
-    <DisplayName>Test App</DisplayName>
-    <Description>Installs the complete Nokia SDK.</Description>
-    <Version inheritVersionFrom="com.nokia.testapp.subcomponent.alwaysvisible">1</Version>
-    <ReleaseDate>2009-12-03</ReleaseDate>
-    <Name>com.nokia.testapp</Name>
-    <Script>installscript.js</Script>
-</Package>
