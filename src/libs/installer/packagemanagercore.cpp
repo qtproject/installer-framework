@@ -550,6 +550,10 @@ PackageManagerCore::~PackageManagerCore()
         QInstaller::VerboseWriter::instance()->setOutputStream(logFileName);
     }
     delete d;
+
+    QMutexLocker _(&sVirtualComponentsFontMutex);
+    delete sVirtualComponentsFont;
+    sVirtualComponentsFont = 0;
 }
 
 /* static */

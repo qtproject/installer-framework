@@ -47,10 +47,8 @@ ProductKeyCheck::~ProductKeyCheck()
 
 ProductKeyCheck *ProductKeyCheck::instance()
 {
-    static ProductKeyCheck *instance = 0;
-    if (instance == 0)
-        instance = new ProductKeyCheck();
-    return instance;
+    static ProductKeyCheck instance;
+    return &instance;
 }
 
 bool ProductKeyCheck::hasValidKey()
