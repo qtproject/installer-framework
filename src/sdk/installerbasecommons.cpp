@@ -441,8 +441,9 @@ bool TargetDirectoryPageImpl::askQuestion(const QString &identifier, const QStri
     QMessageBox::StandardButton bt =
         MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(), identifier,
         TargetDirectoryPageImpl::tr("Warning"), message, QMessageBox::Yes | QMessageBox::No);
+#ifndef Q_OS_MAC
     QTimer::singleShot(100, wizard()->page(nextId()), SLOT(repaint()));
-
+#endif
     return bt == QMessageBox::Yes;
 }
 
@@ -450,8 +451,9 @@ bool TargetDirectoryPageImpl::failWithError(const QString &identifier, const QSt
 {
     MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), identifier,
         TargetDirectoryPageImpl::tr("Error"), message);
+#ifndef Q_OS_MAC
     QTimer::singleShot(100, wizard()->page(nextId()), SLOT(repaint()));
-
+#endif
     return false;
 }
 

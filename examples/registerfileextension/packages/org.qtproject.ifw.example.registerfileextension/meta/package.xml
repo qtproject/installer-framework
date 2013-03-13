@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>register a file extension</DisplayName>
+    <Description>Register a random generated file extension to open with notepad.exe</Description>
+    <ReleaseDate>2013-01-01</ReleaseDate>
+    <Version>1.0.0-1</Version>
+    <Script>installscript.qs</Script>
+    <UserInterfaces>
+        <UserInterface>registerfilecheckboxesform.ui</UserInterface>
+        <UserInterface>openfilecheckboxesform.ui</UserInterface>
+    </UserInterfaces>
+</Package>

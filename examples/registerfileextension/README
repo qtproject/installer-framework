@@ -1,0 +1,6 @@
+Shows how to register a special file suffix on Windows.
+
+Generate installer with
+
+binarycreator --offline-only -c config/config.xml -p packages installer
+
