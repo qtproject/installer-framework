@@ -24,9 +24,14 @@ DLLDESTDIR = $$IFW_APP_PATH
 
 DEFINES += BUILD_LIB_INSTALLER
 
-QT += script \
+QT += \
+    script \
     network \
     xml
+
+isEqual(QT_MAJOR_VERSION, 5) {
+  QT += concurrent widgets core-private
+}
 
 HEADERS += packagemanagercore.h \
     packagemanagercore_p.h \
