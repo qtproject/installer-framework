@@ -485,10 +485,10 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
     QDirIterator it(absoluteConfigPath, QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
     while (it.hasNext()) {
         const QString next = it.next();
-        if (next.contains(QLatin1String("/."))) // skip files that are in directories starting with a point
+        if (next.contains(QLatin1String("/."))) // skip files that are in directories starting with a dot
             continue;
 
-        qDebug() << "\tFound configuration file: " << next;
+        qDebug() << "Found configuration file: " << next;
         const QFileInfo sourceFileInfo(next);
         const QString source = sourceFileInfo.absoluteFilePath();
         QFileInfo targetFileInfo(configCopy, QFileInfo(next).fileName());
@@ -740,7 +740,7 @@ int main(int argc, char **argv)
                 qDebug() << "Creating component info for" << info.name;
                 foreach (const QString &archive, info.copiedArchives) {
                     const QSharedPointer<Archive> arch(new Archive(archive));
-                    qDebug() << QString::fromLatin1("\tAppending %1 (%2)").arg(archive,
+                    qDebug() << QString::fromLatin1("Appending %1 (%2)").arg(archive,
                         humanReadableSize(arch->size()));
                     comp.appendArchive(arch);
                 }
