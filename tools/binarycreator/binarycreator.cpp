@@ -542,8 +542,7 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
                     if (!QFile::copy(elementFileInfo.absoluteFilePath(), targetDir.absoluteFilePath(newName)))
                         throw Error(QString::fromLatin1("Could not copy %1.").arg(domElement.text()));
                 }
-                domElement.removeChild(domElement.firstChild());
-                domElement.appendChild(dom.createTextNode(newName));
+                domElement.replaceChild(dom.createTextNode(newName), domElement.firstChild());
             }
 
             openForWrite(&configXml, configXml.fileName());
