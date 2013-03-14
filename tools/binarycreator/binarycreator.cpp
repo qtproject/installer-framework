@@ -478,8 +478,8 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
     generateMetaDataDirectory(metapath, packagesDir, packages, settings.applicationName(),
         settings.applicationVersion());
 
-    const QString configCopy = metapath + QLatin1String("/installer-config");
-    QInstaller::mkdir(configCopy);
+    const QString tempConfigDirPath = metapath + QLatin1String("/installer-config");
+    QInstaller::mkdir(tempConfigDirPath);
     QString absoluteConfigPath = QFileInfo(configFile).absolutePath();
 
     QDirIterator it(absoluteConfigPath, QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
@@ -491,10 +491,10 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
         qDebug() << "Found configuration file: " << next;
         const QFileInfo sourceFileInfo(next);
         const QString source = sourceFileInfo.absoluteFilePath();
-        QFileInfo targetFileInfo(configCopy, QFileInfo(next).fileName());
+        QFileInfo targetFileInfo(tempConfigDirPath, QFileInfo(next).fileName());
 
         if (QFileInfo(next).fileName() == QFileInfo(configFile).fileName())
-            targetFileInfo.setFile(configCopy, QLatin1String("config.xml"));
+            targetFileInfo.setFile(tempConfigDirPath, QLatin1String("config.xml"));
 
         const QDir targetDir = targetFileInfo.dir();
         if (!targetDir.exists())
@@ -514,42 +514,42 @@ static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector 
             // iterate over all child elements, searching for relative file names
             const QDomNodeList children = dom.documentElement().childNodes();
             for (int i = 0; i < children.count(); ++i) {
-                QDomElement el = children.at(i).toElement();
-                if (el.isNull())
+                QDomElement domElement = children.at(i).toElement();
+                if (domElement.isNull())
                     continue;
 
-                QFileInfo fi(absoluteConfigPath, el.text());
+                QFileInfo elementFileInfo(absoluteConfigPath, domElement.text());
 #if defined(Q_OS_MAC)
-                const QFileInfo fiIcon(absoluteConfigPath, el.text() + QLatin1String(".icns"));
+                const QFileInfo iconFileInfo(absoluteConfigPath, domElement.text() + QLatin1String(".icns"));
 #elif defined(Q_OS_WIN)
-                const QFileInfo fiIcon(absoluteConfigPath, el.text() + QLatin1String(".ico"));
+                const QFileInfo iconFileInfo(absoluteConfigPath, domElement.text() + QLatin1String(".ico"));
 #else
-                const QFileInfo fiIcon(absoluteConfigPath, el.text() + QLatin1String(".png"));
+                const QFileInfo iconFileInfo(absoluteConfigPath, domElement.text() + QLatin1String(".png"));
 #endif
-                if (!fi.exists() && fiIcon.exists())
-                    fi = fiIcon;
+                if (!elementFileInfo.exists() && iconFileInfo.exists())
+                    elementFileInfo = iconFileInfo;
 
-                if (!fi.exists() || fi.absolutePath() == QFileInfo(configFile).dir().absolutePath())
+                if (!elementFileInfo.exists() || elementFileInfo.absolutePath() == QFileInfo(configFile).dir().absolutePath())
                     continue;
 
-                if (fi.isDir())
+                if (elementFileInfo.isDir())
                     continue;
 
-                const QString newName = el.text().replace(QRegExp(QLatin1String("\\\\|/|\\.")),
+                const QString newName = domElement.text().replace(QRegExp(QLatin1String("\\\\|/|\\.")),
                     QLatin1String("_"));
 
                 if (!QFile::exists(targetDir.absoluteFilePath(newName))) {
-                    if (!QFile::copy(fi.absoluteFilePath(), targetDir.absoluteFilePath(newName)))
-                        throw Error(QString::fromLatin1("Could not copy %1.").arg(el.text()));
+                    if (!QFile::copy(elementFileInfo.absoluteFilePath(), targetDir.absoluteFilePath(newName)))
+                        throw Error(QString::fromLatin1("Could not copy %1.").arg(domElement.text()));
                 }
-                el.removeChild(el.firstChild());
-                el.appendChild(dom.createTextNode(newName));
+                domElement.removeChild(domElement.firstChild());
+                domElement.appendChild(dom.createTextNode(newName));
             }
 
             openForWrite(&configXml, configXml.fileName());
             QTextStream stream(&configXml);
             dom.save(stream, 4);
-            qDebug() << "\tdone.";
+            qDebug() << "done.\n";
         }
     }
     return metapath;
