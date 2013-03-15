@@ -9,11 +9,16 @@ win32:QDOC_BIN = $$replace(QDOC_BIN, "/", "\\")
 
 IFW_VERSION_TAG = $$replace(IFW_VERSION, "[-.]", )
 
+defineReplace(cmdEnv) {
+    !equals(QMAKE_DIR_SEP, /): 1 ~= s,^(.*)$,(set \\1) &&,g
+    return("$$1")
+}
+
+QDOC = $$cmdEnv(SRCDIR=$$PWD OUTDIR=$$OUT_PWD/doc/html IFW_VERSION=$$IFW_VERSION IFW_VERSION_TAG=$$IFW_VERSION_TAG QT_INSTALL_DOCS=$$[QT_INSTALL_DOCS]) $$QDOC_BIN
+
 unix {
-    QDOC = SRCDIR=$$PWD OUTDIR=$$OUT_PWD/doc/html IFW_VERSION=$$IFW_VERSION IFW_VERSION_TAG=$$IFW_VERSION_TAG $$QDOC_BIN
     HELPGENERATOR = $$[QT_INSTALL_BINS]/qhelpgenerator
 } else {
-    QDOC = set SRCDIR=$$PWD&& set OUTDIR=$$OUT_PWD/doc/html&& set IFW_VERSION=$$IFW_VERSION&& setIFW_VERSION_TAG=$$IFW_VERSION_TAG&& $$QDOC_BIN
     # Always run qhelpgenerator inside its own cmd; this is a workaround for
     # an unusual bug which causes qhelpgenerator.exe to do nothing
     HELPGENERATOR = cmd /C $$replace($$list($$[QT_INSTALL_BINS]/qhelpgenerator.exe), "/", "\\")
@@ -47,19 +52,11 @@ HELP_DEP_FILES = $$PWD/installerfw.qdoc \
                  $$PWD/config/qt-html-templates-online.qdocconf \
                  $$PWD/config/qt-html-templates.qdocconf
 
-unix {
 html_docs.commands = $$QDOC $$PWD/installerfw.qdocconf
-} else {
-html_docs.commands = \"$$QDOC $$PWD/installerfw.qdocconf\"
-}
 html_docs.depends += $$HELP_DEP_FILES
 html_docs.files = $$QHP_FILE
 
-unix {
 html_docs_online.commands = $$QDOC $$PWD/installerfw-online.qdocconf
-} else {
-html_docs_online.commands = \"$$QDOC $$PWD/installerfw-online.qdocconf\"
-}
 html_docs_online.depends += $$HELP_DEP_FILES
 html_docs_online.files = $$QHP_FILE
 
