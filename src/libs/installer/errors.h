@@ -54,7 +54,10 @@ class Error : public std::runtime_error
 public:
     explicit Error(const QString &message)
         : std::runtime_error(message.toStdString())
-        , m_message (message) { qDebug() << "create Error-Exception:" << message; }
+        , m_message (message)
+    {
+        qDebug() << "create Error-Exception:";
+    }
     virtual ~Error() throw() {}
 
     QString message() const { return m_message; }
