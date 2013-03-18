@@ -35,7 +35,6 @@ void tst_Settings::loadTutorialConfig()
 
     // default values
     QCOMPARE(settings.logo(), QLatin1String(":///data/"));
-    QCOMPARE(settings.logoSmall(), QLatin1String(":///data/"));
     QCOMPARE(settings.url(), QString());
     QCOMPARE(settings.watermark(), QLatin1String(":///data/"));
     QCOMPARE(settings.background(), QLatin1String(":///data/"));

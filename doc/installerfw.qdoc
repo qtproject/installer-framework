@@ -187,9 +187,6 @@
             \o  Logo
             \o  Filename for a logo used as \a QWizard::LogoPixmap.
         \row
-            \o  LogoSmall
-            \o  Filename for a logo used as \a QWizard::LogoSmallPixmap.
-        \row
             \o  Watermark
             \o  Filename for a watermark used as \a QWizard::WatermarkPixmap.
         \row

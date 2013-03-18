@@ -83,7 +83,6 @@ public:
     static Settings fromFileAndPrefix(const QString &path, const QString &prefix);
 
     QString logo() const;
-    QString logoSmall() const;
     QString title() const;
     QString publisher() const;
     QString url() const;
