@@ -85,6 +85,8 @@
 
 #include <unix/C/7zCrc.h>
 
+#include <QtPlugin>
+
 #include <iostream>
 
 namespace NArchive {
@@ -151,10 +153,17 @@ static void initArchives()
     CrcGenerateTable();
 }
 
+#if defined(QT_STATIC)
 static void initResources()
 {
     Q_INIT_RESOURCE(patch_file_lists);
+    Q_INIT_RESOURCE(installer);
+# if QT_VERSION < 0x050000
+    Q_IMPORT_PLUGIN(qico)
+    Q_UNUSED(qt_plugin_instance_qico());
+# endif
 }
+#endif
 
 static QByteArray trimAndPrepend(QtMsgType type, const QByteArray &msg)
 {
@@ -220,7 +229,10 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
 void QInstaller::init()
 {
+#if defined(QT_STATIC)
+    ::initArchives();
     ::initResources();
+#endif
 
     UpdateOperationFactory &factory = UpdateOperationFactory::instance();
     factory.registerUpdateOperation<CreateShortcutOperation>(QLatin1String("CreateShortcut"));
@@ -261,9 +273,6 @@ void QInstaller::init()
 #ifdef Q_OS_MAC
     factory.registerUpdateOperation<MacReplaceInstallNamesOperation>(QLatin1String("ReplaceInstallNames"));
 #endif // Q_OS_MAC
-
-    // load 7z stuff, if we're a static lib
-    ::initArchives();
 
    // qDebug -> verbose()
 #if QT_VERSION < 0x050000
