@@ -16,7 +16,6 @@ File should contain all elements we allow in a config.xml
 
     <Icon>icon</Icon>
     <Logo>logo</Logo>
-    <LogoSmall>logo_small</LogoSmall>
     <Watermark>watermark</Watermark>
     <Background>background</Background>
 
