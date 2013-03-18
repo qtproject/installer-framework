@@ -56,7 +56,7 @@ public:
         : std::runtime_error(message.toStdString())
         , m_message (message)
     {
-        qDebug() << "create Error-Exception:";
+        qDebug() << "create Error-Exception:" << message;
     }
     virtual ~Error() throw() {}
 
