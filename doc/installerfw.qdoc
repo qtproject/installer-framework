@@ -182,7 +182,15 @@
         \row
             \o  Icon
             \o  Filename for a custom installer icon. The actual file is looked up by attaching
-                a '.icns' (Mac OS X), '.ico' (Windows) or '.png' (Unix) suffix.
+                a '.icns' (Mac OS X), '.ico' (Windows) or '.png' (Unix) suffix. Deprecated,
+                use InstallerApplicationIcon and / or InstallerWindowIcon instead.
+        \row
+            \o  InstallerApplicationIcon
+            \o  Filename for a custom installer icon. The actual file is looked up by attaching
+                a '.icns' (Mac OS X), '.ico' (Windows). No functionality on Unix.
+        \row
+            \o  InstallerWindowIcon
+            \o  Filename for a custom window icon in PNG format for the Installer application.
         \row
             \o  Logo
             \o  Filename for a logo used as \a QWizard::LogoPixmap.

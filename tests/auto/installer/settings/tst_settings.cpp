@@ -40,10 +40,16 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.background(), QLatin1String(":///data/"));
 #if defined(Q_OS_WIN)
     QCOMPARE(settings.icon(), QLatin1String(":/installer.ico"));
+    QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.ico"));
+    QCOMPARE(settings.installerWindowIcon(), QLatin1String(":/installer.ico"));
 #elif defined(Q_OS_MAC)
     QCOMPARE(settings.icon(), QLatin1String(":/installer.icns"));
+    QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.icns"));
+    QCOMPARE(settings.installerWindowIcon(), QLatin1String(":/installer.icns"));
 #else
     QCOMPARE(settings.icon(), QLatin1String(":/installer.png"));
+    QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.png"));
+    QCOMPARE(settings.installerWindowIcon(), QLatin1String(":/installer.png"));
 #endif
     QCOMPARE(settings.runProgram(), QString());
     QCOMPARE(settings.runProgramArguments(), QString());
@@ -73,6 +79,7 @@ void tst_Settings::loadTutorialConfig()
 void tst_Settings::loadFullConfig()
 {
     QTest::ignoreMessage(QtWarningMsg, "Deprecated element 'Pages'. ");
+    QTest::ignoreMessage(QtWarningMsg, "Deprecated element 'Icon'. ");
     Settings settings =
             Settings::fromFileAndPrefix(":///data/full_config.xml", ":///data");
 }

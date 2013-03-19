@@ -89,6 +89,9 @@ public:
     QString watermark() const;
     QString background() const;
     QString icon() const;
+    QString installerApplicationIcon() const;
+    QString installerWindowIcon() const;
+    QString systemIconSuffix() const;
 
     QString applicationName() const;
     QString applicationVersion() const;

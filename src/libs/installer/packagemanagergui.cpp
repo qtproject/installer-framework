@@ -243,7 +243,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
 
 #ifndef Q_OS_MAC
-    setWindowIcon(QIcon(m_core->settings().icon()));
+    setWindowIcon(QIcon(m_core->settings().installerWindowIcon()));
 #else
     setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
 #endif

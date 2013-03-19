@@ -51,6 +51,8 @@
 using namespace QInstaller;
 
 static const QLatin1String scIcon("Icon");
+static const QLatin1String scInstallerApplicationIcon("InstallerApplicationIcon");
+static const QLatin1String scInstallerWindowIcon("InstallerWindowIcon");
 static const QLatin1String scLogo("Logo");
 static const QLatin1String scPages("Pages");
 static const QLatin1String scPrefix("Prefix");
@@ -214,7 +216,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
     QStringList elementList;
     elementList << scName << scVersion << scTitle << scPublisher << scProductUrl
                 << scTargetDir << scAdminTargetDir
-                << scIcon << scLogo << scWatermark << scBackground
+                << scIcon << scInstallerApplicationIcon << scInstallerWindowIcon
+                << scLogo << scWatermark << scBackground
                 << scStartMenuDir << scUninstallerName << scUninstallerIniFile << scRemoveTargetDir
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
@@ -235,6 +238,9 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
 
         if (!reader.attributes().isEmpty())
             reader.raiseError(QString::fromLatin1("Unexpected attribute for element '%1'.").arg(name));
+
+        if (name == scIcon)
+            qWarning() << "Deprecated element 'Icon'.";
 
         if (blackList.contains(name)) {
             if (name == scRemoteRepositories)
@@ -267,6 +273,10 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
     // Add some possible missing values
     if (!s.d->m_data.contains(scIcon))
         s.d->m_data.insert(scIcon, QLatin1String(":/installer"));
+    if (!s.d->m_data.contains(scInstallerApplicationIcon))
+        s.d->m_data.insert(scInstallerApplicationIcon, s.d->m_data.value(scIcon));
+    if (!s.d->m_data.contains(scInstallerWindowIcon))
+        s.d->m_data.insert(scInstallerWindowIcon, s.d->m_data.value(scIcon).toString() + s.systemIconSuffix());
     if (!s.d->m_data.contains(scRemoveTargetDir))
         s.d->m_data.insert(scRemoveTargetDir, scTrue);
     if (!s.d->m_data.contains(scUninstallerName))
@@ -325,14 +335,29 @@ QString Settings::background() const
 
 QString Settings::icon() const
 {
-    const QString icon = d->makeAbsolutePath(d->m_data.value(scIcon).toString());
-#if defined(Q_OS_MAC)
-    return icon + QLatin1String(".icns");
-#elif defined(Q_OS_WIN)
-    return icon + QLatin1String(".ico");
-#endif
-    return icon + QLatin1String(".png");
+    return d->makeAbsolutePath(d->m_data.value(scIcon).toString() + systemIconSuffix());
 }
+
+QString Settings::installerApplicationIcon() const
+{
+    return d->makeAbsolutePath(d->m_data.value(scInstallerApplicationIcon).toString() + systemIconSuffix());
+}
+
+QString Settings::installerWindowIcon() const
+{
+    return d->makeAbsolutePath(d->m_data.value(scInstallerWindowIcon).toString());
+}
+
+QString Settings::systemIconSuffix() const
+{
+#if defined(Q_OS_MAC)
+    return QLatin1String(".icns");
+#elif defined(Q_OS_WIN)
+    return QLatin1String(".ico");
+#endif
+    return QLatin1String(".png");
+}
+
 
 QString Settings::removeTargetDir() const
 {

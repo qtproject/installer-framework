@@ -154,8 +154,13 @@ Q_UNUSED(settings)
             pkgInfoStream << QLatin1String("APPL????") << endl;
         }
 
-        const QString iconFile = QFile::exists(settings.icon()) ? settings.icon()
-            : QString::fromLatin1(":/resources/default_icon_mac.icns");
+        if (QFile::exists(settings.installerApplicationIcon())) {
+            const QString iconFile = settings.installerApplicationIcon();
+        } else {
+            const QString iconFile = QFile::exists(settings.icon()) ? settings.icon()
+                : QString::fromLatin1(":/resources/default_icon_mac.icns");
+        }
+
         const QString iconTargetFile = fi.completeBaseName() + QLatin1String(".icns");
         QFile::copy(iconFile, fi.filePath() + QLatin1String("/Contents/Resources/") + iconTargetFile);
 
@@ -218,9 +223,13 @@ Q_UNUSED(settings)
 
 #if defined(Q_OS_WIN)
     // setting the windows icon must happen before we append our binary data - otherwise they get lost :-/
-    if (QFile::exists(settings.icon())) {
+    if (QFile::exists(settings.installerApplicationIcon())) {
         // no error handling as this is not fatal
-        setApplicationIcon(tempFile, settings.icon());
+        setApplicationIcon(tempFile, settings.installerApplicationIcon());
+    } else {
+        if (QFile::exists(settings.icon())) {
+            setApplicationIcon(tempFile, settings.icon());
+        }
     }
 #elif defined(Q_OS_MAC)
     if (isBundle) {
