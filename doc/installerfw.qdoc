@@ -198,6 +198,9 @@
             \o  Watermark
             \o  Filename for a watermark used as \a QWizard::WatermarkPixmap.
         \row
+            \o  Banner
+            \o  Filename for a banner used as \a QWizard::BannerPixmap.
+        \row
             \o  Background
             \o  Filename for an image used as \a QWizard::BackgroundPixmap.
         \row

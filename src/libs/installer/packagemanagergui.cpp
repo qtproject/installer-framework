@@ -133,6 +133,7 @@ public:
         setObjectName(QLatin1String("Dynamic") + widget->objectName());
         setPixmap(QWizard::LogoPixmap, logoPixmap());
         setPixmap(QWizard::WatermarkPixmap, QPixmap());
+        setPixmap(QWizard::BannerPixmap, QPixmap());
 
         setLayout(new QVBoxLayout);
         setSubTitle(QString());
@@ -703,6 +704,11 @@ QPixmap PackageManagerPage::watermarkPixmap() const
     return QPixmap(m_core->value(QLatin1String("WatermarkPixmap")));
 }
 
+QPixmap PackageManagerPage::bannerPixmap() const
+{
+    return QPixmap(m_core->value(QLatin1String("BannerPixmap")));
+}
+
 QPixmap PackageManagerPage::logoPixmap() const
 {
     return QPixmap(m_core->value(QLatin1String("LogoPixmap")));
@@ -817,6 +823,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     setObjectName(QLatin1String("IntroductionPage"));
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
     setTitle(tr("Setup - %1").arg(productName()));
+    setPixmap(QWizard::BannerPixmap, bannerPixmap());
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
@@ -879,6 +886,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
+    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("LicenseAgreementPage"));
     setTitle(tr("License Agreement"));
 
@@ -1216,6 +1224,7 @@ ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
+    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("ComponentSelectionPage"));
     setTitle(tr("Select Components"));
 }
@@ -1309,6 +1318,7 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
+    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("TargetDirectoryPage"));
     setTitle(tr("Installation Folder"));
 
@@ -1429,6 +1439,7 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
+    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("StartMenuDirectoryPage"));
     setTitle(tr("Start Menu shortcuts"));
     setSubTitle(tr("Select the Start Menu in which you would like to create the program's shortcuts. You can "
@@ -1519,6 +1530,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
+    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("ReadyForInstallationPage"));
 
     QVBoxLayout *baseLayout = new QVBoxLayout();
@@ -1748,6 +1760,7 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
+    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("PerformInstallationPage"));
 
     m_performInstallationForm->setupUi(this);
@@ -1869,6 +1882,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     setObjectName(QLatin1String("FinishedPage"));
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
     setTitle(tr("Completing the %1 Wizard").arg(productName()));
+    setPixmap(QWizard::BannerPixmap, bannerPixmap());
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
@@ -1980,6 +1994,7 @@ RestartPage::RestartPage(PackageManagerCore *core)
     setObjectName(QLatin1String("RestartPage"));
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
     setTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
+    setPixmap(QWizard::BannerPixmap, bannerPixmap());
 
     setFinalPage(false);
     setCommitPage(false);

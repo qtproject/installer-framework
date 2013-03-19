@@ -56,6 +56,7 @@ static const QLatin1String scInstallerWindowIcon("InstallerWindowIcon");
 static const QLatin1String scLogo("Logo");
 static const QLatin1String scPrefix("Prefix");
 static const QLatin1String scWatermark("Watermark");
+static const QLatin1String scBanner("Banner");
 static const QLatin1String scProductUrl("ProductUrl");
 static const QLatin1String scBackground("Background");
 static const QLatin1String scAdminTargetDir("AdminTargetDir");
@@ -182,7 +183,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
     elementList << scName << scVersion << scTitle << scPublisher << scProductUrl
                 << scTargetDir << scAdminTargetDir
                 << scIcon << scInstallerApplicationIcon << scInstallerWindowIcon
-                << scLogo << scWatermark << scBackground
+                << scLogo << scWatermark << scBanner << scBackground
                 << scStartMenuDir << scUninstallerName << scUninstallerIniFile << scRemoveTargetDir
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
@@ -280,6 +281,11 @@ QString Settings::url() const
 QString Settings::watermark() const
 {
     return d->makeAbsolutePath(d->m_data.value(scWatermark).toString());
+}
+
+QString Settings::banner() const
+{
+    return d->makeAbsolutePath(d->m_data.value(scBanner).toString());
 }
 
 QString Settings::background() const

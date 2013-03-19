@@ -90,6 +90,7 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(scTargetConfigurationFile, m_settings.configurationFileName());
     m_variables.insert(QLatin1String("LogoPixmap"), m_settings.logo());
     m_variables.insert(QLatin1String("WatermarkPixmap"), m_settings.watermark());
+    m_variables.insert(QLatin1String("BannerPixmap"), m_settings.banner());
 
     const QString description = m_settings.runProgramDescription();
     if (!description.isEmpty())

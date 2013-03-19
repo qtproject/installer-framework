@@ -37,6 +37,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.logo(), QLatin1String(":///data/"));
     QCOMPARE(settings.url(), QString());
     QCOMPARE(settings.watermark(), QLatin1String(":///data/"));
+    QCOMPARE(settings.banner(), QLatin1String(":///data/"));
     QCOMPARE(settings.background(), QLatin1String(":///data/"));
 #if defined(Q_OS_WIN)
     QCOMPARE(settings.icon(), QLatin1String(":/installer.ico"));

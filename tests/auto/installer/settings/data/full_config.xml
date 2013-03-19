@@ -19,6 +19,7 @@ File should contain all elements we allow in a config.xml
     <InstallerWindowIcon>icon</InstallerWindowIcon>
     <Logo>logo</Logo>
     <Watermark>watermark</Watermark>
+    <Banner>banner</Banner>
     <Background>background</Background>
 
     <StartMenuDir>Super App</StartMenuDir>

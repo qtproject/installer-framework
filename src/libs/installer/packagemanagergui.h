@@ -155,6 +155,7 @@ public:
     virtual QPixmap logoPixmap() const;
     virtual QString productName() const;
     virtual QPixmap watermarkPixmap() const;
+    virtual QPixmap bannerPixmap() const;
 
     virtual bool isComplete() const;
     void setComplete(bool complete);

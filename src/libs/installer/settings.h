@@ -87,6 +87,7 @@ public:
     QString publisher() const;
     QString url() const;
     QString watermark() const;
+    QString banner() const;
     QString background() const;
     QString icon() const;
     QString installerApplicationIcon() const;
