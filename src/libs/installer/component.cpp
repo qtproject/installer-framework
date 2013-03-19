@@ -976,7 +976,7 @@ bool Component::validatePage()
 void Component::setSelected(bool selected)
 {
     Q_UNUSED(selected)
-    qDebug() << Q_FUNC_INFO << QString::fromLatin1("on \"%1\" is deprecated!!!").arg(d->m_componentName);
+    qDebug() << Q_FUNC_INFO << QString::fromLatin1("on '%1' is deprecated.").arg(d->m_componentName);
 }
 
 void Component::addDependency(const QString &newDependency)
