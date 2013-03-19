@@ -1,10 +1,8 @@
 bin/qmake
 bin/lrelease
-lib/libQtCore.so
 %%
 *.la
 *.prl
 *.pc
 *.pri
-mkspecs/default-host/qmake.conf
 
