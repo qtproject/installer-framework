@@ -551,7 +551,7 @@ PackageManagerCore::~PackageManagerCore()
     }
     delete d;
 
-    QMutexLocker _(&sVirtualComponentsFontMutex);
+    QMutexLocker _(globalVirtualComponentsFontMutex());
     delete sVirtualComponentsFont;
     sVirtualComponentsFont = 0;
 }
