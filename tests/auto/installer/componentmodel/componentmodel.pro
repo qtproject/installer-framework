@@ -1,7 +1,7 @@
 include(../../qttest.pri)
 
 QT -= gui
-QT += network
+QT += network xml
 
 SOURCES += tst_componentmodel.cpp
 
