@@ -393,8 +393,11 @@ void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &
     while (it.hasNext()) {
         const QFileInfo i(it.next());
         if (i.isDir()) {
-            moveDirectoryContents(QDir(sourceDir).absoluteFilePath(i.fileName()),
-                QDir(targetDir).absoluteFilePath(i.fileName()));
+            // only copy directories that are not the target to avoid loop dir creations
+            QString newSource = QDir(sourceDir).absoluteFilePath(i.fileName());
+            if (QDir(newSource) != QDir(targetDir)) {
+                moveDirectoryContents(newSource, QDir(targetDir).absoluteFilePath(i.fileName()));
+            }
         } else {
             QFile f(i.filePath());
             const QString target = QDir(targetDir).absoluteFilePath(i.fileName());
