@@ -154,10 +154,11 @@ Q_UNUSED(settings)
             pkgInfoStream << QLatin1String("APPL????") << endl;
         }
 
+        QString iconFile;
         if (QFile::exists(settings.installerApplicationIcon())) {
-            const QString iconFile = settings.installerApplicationIcon();
+            iconFile = settings.installerApplicationIcon();
         } else {
-            const QString iconFile = QFile::exists(settings.icon()) ? settings.icon()
+            iconFile = QFile::exists(settings.icon()) ? settings.icon()
                 : QString::fromLatin1(":/resources/default_icon_mac.icns");
         }
 
