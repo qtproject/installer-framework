@@ -113,15 +113,8 @@ static void chmod755(const QString &absolutFilePath)
 }
 #endif
 
-static int assemble(Input input, const QString &configFile)
+static int assemble(Input input, const QInstaller::Settings &settings)
 {
-    const QString configDir = QFileInfo(configFile).canonicalPath();
-    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configFile, configDir);
-
-#ifdef Q_OS_LINUX
-Q_UNUSED(settings)
-#endif
-
 #ifdef Q_OS_MAC
     if (QFileInfo(input.installerExePath).isBundle()) {
         const QString bundle = input.installerExePath;
@@ -181,7 +174,10 @@ Q_UNUSED(settings)
         plistStream << QLatin1String("    <key>CFBundleGetInfoString</key>") << endl;
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
-        plistStream << QLatin1String("    <string>") << QLatin1String(QUOTE(IFW_VERSION)) << ("</string>") << endl;
+        plistStream << QLatin1String("    <string>") << QLatin1String(QUOTE(IFW_VERSION)) << ("</string>")
+            << endl;
+#undef QUOTE
+#undef QUOTE_
         plistStream << QLatin1String("    <key>CFBundleSignature</key>") << endl;
         plistStream << QLatin1String("    <string> ???? </string>") << endl;
         plistStream << QLatin1String("    <key>CFBundleExecutable</key>") << endl;
@@ -198,6 +194,8 @@ Q_UNUSED(settings)
         input.outputPath = QString::fromLatin1("%1/Contents/MacOS/%2").arg(input.outputPath)
             .arg(fi.completeBaseName());
     }
+#elif defined(Q_OS_LINUX)
+    Q_UNUSED(settings)
 #endif
 
     QTemporaryFile file(input.outputPath);
@@ -696,14 +694,11 @@ int main(int argc, char **argv)
     int exitCode = EXIT_FAILURE;
     const QString tmpMetaDir = createTemporaryDirectory();
     try {
+        const Settings settings = Settings::fromFileAndPrefix(configFile, QFileInfo(configFile).absolutePath());
         QInstallerTools::PackageInfoVector packages = createListOfPackages(packagesDirectory,
             filteredPackages, ftype);
-        {
-            const Settings settings = Settings::fromFileAndPrefix(configFile, QString());
-            generateMetaDataDirectory(tmpMetaDir, packagesDirectory, packages, settings.applicationName(),
+        generateMetaDataDirectory(tmpMetaDir, packagesDirectory, packages, settings.applicationName(),
                 settings.applicationVersion());
-        }
-
         copyInstallerConfigurationToDirectory(configFile, tmpMetaDir + QLatin1String("/installer-config"));
         {
             QSettings confInternal(tmpMetaDir + QLatin1String("/config/config-internal.ini")
@@ -741,7 +736,7 @@ int main(int argc, char **argv)
             }
 
             qDebug() << "Creating the binary";
-            exitCode = assemble(input, configFile);
+            exitCode = assemble(input, settings);
 
             // cleanup
             qDebug() << "Cleaning up...";
