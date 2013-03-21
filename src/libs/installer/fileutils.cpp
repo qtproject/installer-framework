@@ -358,7 +358,6 @@ void QInstaller::removeSystemGeneratedFiles(const QString &path)
 
 void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
-    qDebug() << "Copying" << sourceDir << "to" << targetDir;
     Q_ASSERT(QFileInfo(sourceDir).isDir());
     Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
     if (!QDir().mkpath(targetDir))
@@ -383,7 +382,6 @@ void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &
 
 void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
-    qDebug() << "Moving" << sourceDir << "to" << targetDir;
     Q_ASSERT(QFileInfo(sourceDir).isDir());
     Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
     if (!QDir().mkpath(targetDir))
