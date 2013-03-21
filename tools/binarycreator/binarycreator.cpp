@@ -321,14 +321,14 @@ Q_UNUSED(settings)
     } catch (const Error &e) {
         qCritical("Error occurred while assembling the installer: %s", qPrintable(e.message()));
         QFile::remove(tempFile);
-        return 1;
+        return EXIT_FAILURE;
     }
 
     if (!out.commit(KDSaveFile::OverwriteExistingFile)) {
         qCritical("Could not write installer to %s: %s", qPrintable(out.fileName()),
             qPrintable(out.errorString()));
         QFile::remove(tempFile);
-        return 1;
+        return EXIT_FAILURE;
     }
 #ifndef Q_OS_WIN
     chmod755(out.fileName());
@@ -352,7 +352,7 @@ Q_UNUSED(settings)
         qDebug() <<  "done." << mkdmgscript;
     }
 #endif
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 QT_BEGIN_NAMESPACE
@@ -715,31 +715,31 @@ int main(int argc, char **argv)
 
     qDebug() << "Parsed arguments, ok.";
 
+    int exitCode = EXIT_FAILURE;
+    QString tmpMetaDir;
     try {
         QInstallerTools::PackageInfoVector packages = createListOfPackages(packagesDirectory,
             filteredPackages, ftype);
-        const QString metaDir = createMetaDataDirectory(packages, packagesDirectory, configFile);
+        tmpMetaDir = createMetaDataDirectory(packages, packagesDirectory, configFile);
         {
-            QSettings confInternal(metaDir + QLatin1String("/config/config-internal.ini")
+            QSettings confInternal(tmpMetaDir + QLatin1String("/config/config-internal.ini")
                 , QSettings::IniFormat);
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
         }
 
 #if defined(Q_OS_MAC)
         // on mac, we enforce building a bundle
-        if (!target.endsWith(QLatin1String(".app")) && !target.endsWith(QLatin1String(".dmg"))) {
+        if (!target.endsWith(QLatin1String(".app")) && !target.endsWith(QLatin1String(".dmg")))
             target += QLatin1String(".app");
-        }
 #endif
-        int result = EXIT_FAILURE;
         {
             Input input;
             input.outputPath = target;
             input.installerExePath = templateBinary;
-            input.binaryResourcePath = createBinaryResourceFile(metaDir);
+            input.binaryResourcePath = createBinaryResourceFile(tmpMetaDir);
             input.binaryResources = createBinaryResourceFiles(resources);
 
-            QInstallerTools::copyComponentData(packagesDirectory, metaDir, packages);
+            QInstallerTools::copyComponentData(packagesDirectory, tmpMetaDir, packages);
 
             // now put the packages into the components section of the binary
             foreach (const QInstallerTools::PackageInfo &info, packages) {
@@ -757,7 +757,7 @@ int main(int argc, char **argv)
             }
 
             qDebug() << "Creating the binary";
-            result = assemble(input, configFile);
+            exitCode = assemble(input, configFile);
 
             // cleanup
             qDebug() << "Cleaning up...";
@@ -765,14 +765,11 @@ int main(int argc, char **argv)
             foreach (const QString &resource, input.binaryResources)
                 QFile::remove(resource);
         }
-        removeDirectory(metaDir, true);
-        return result;
     } catch (const Error &e) {
         std::cerr << "caught exception: " << e.message() << std::endl;
-        return EXIT_FAILURE;
     } catch (...) {
         std::cerr << "Unknown exception caught" << std::endl;
-        return EXIT_FAILURE;
     }
-    return EXIT_FAILURE;
+    removeDirectory(tmpMetaDir, true);
+    return exitCode;
 }
