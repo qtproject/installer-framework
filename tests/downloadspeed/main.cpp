@@ -42,32 +42,14 @@
 #include <kdupdaterfiledownloader.h>
 #include <kdupdaterfiledownloaderfactory.h>
 
+#include <fileutils.h>
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
 
 #include <QtNetwork/QNetworkProxy>
-
-static QString humanReadableSize(quint64 intSize)
-{
-    QString unit;
-    double size;
-
-    if (intSize < 1024 * 1024) {
-        size = 1. + intSize / 1024.;
-        unit = QObject::tr("kB");
-    } else if (intSize < 1024 * 1024 * 1024) {
-        size = 1. + intSize / 1024. / 1024.;
-        unit = QObject::tr("MB");
-    } else {
-        size = 1. + intSize / 1024. / 1024. / 1024.;
-        unit = QObject::tr("GB");
-    }
-
-    size = qRound(size * 10) / 10.0;
-    return QString::fromLatin1("%L1 %2").arg(size, 0, 'g', 4).arg(unit);
-}
 
 // -- Receiver
 
@@ -100,7 +82,8 @@ public slots:
 
     void downloadSpeed(qint64 speed)
     {
-        qDebug() << "Download speed:" << humanReadableSize(speed) + QLatin1String("/sec");
+        qDebug() << "Download speed:" <<
+            QInstaller::humanReadableSize(speed) + QLatin1String("/sec");
     }
 
     void downloadProgress(double progress)
