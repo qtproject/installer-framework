@@ -229,8 +229,8 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
 void QInstaller::init()
 {
-#if defined(QT_STATIC)
     ::initArchives();
+#if defined(QT_STATIC)
     ::initResources();
 #endif
 
