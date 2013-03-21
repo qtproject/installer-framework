@@ -190,9 +190,6 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories;
 
-    QStringList blackList;
-    blackList << scRemoteRepositories;
-
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
     while (reader.readNextStartElement()) {
@@ -207,12 +204,12 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
         if (name == scIcon)
             qWarning() << "Deprecated element 'Icon'.";
 
-        if (blackList.contains(name)) {
-            if (name == scRemoteRepositories)
-                s.addDefaultRepositories(readRepositories(reader, true));
+        if (s.d->m_data.contains(name))
+            reader.raiseError(QString::fromLatin1("Element '%1' has been defined before.").arg(name));
+
+        if (name == scRemoteRepositories) {
+            s.addDefaultRepositories(readRepositories(reader, true));
         } else {
-            if (s.d->m_data.contains(name))
-                reader.raiseError(QString::fromLatin1("Element '%1' has been defined before.").arg(name));
             s.d->m_data.insert(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
         }
     }
