@@ -49,6 +49,7 @@
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QThread>
 #include <QtCore/QUrl>
+#include <QImageReader>
 
 #include <errno.h>
 
@@ -357,7 +358,6 @@ void QInstaller::removeSystemGeneratedFiles(const QString &path)
 
 void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
-    qDebug() << "Copying" << sourceDir << "to" << targetDir;
     Q_ASSERT(QFileInfo(sourceDir).isDir());
     Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
     if (!QDir().mkpath(targetDir))
@@ -382,7 +382,6 @@ void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &
 
 void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
-    qDebug() << "Moving" << sourceDir << "to" << targetDir;
     Q_ASSERT(QFileInfo(sourceDir).isDir());
     Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
     if (!QDir().mkpath(targetDir))
@@ -392,8 +391,11 @@ void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &
     while (it.hasNext()) {
         const QFileInfo i(it.next());
         if (i.isDir()) {
-            moveDirectoryContents(QDir(sourceDir).absoluteFilePath(i.fileName()),
-                QDir(targetDir).absoluteFilePath(i.fileName()));
+            // only copy directories that are not the target to avoid loop dir creations
+            QString newSource = QDir(sourceDir).absoluteFilePath(i.fileName());
+            if (QDir(newSource) != QDir(targetDir)) {
+                moveDirectoryContents(newSource, QDir(targetDir).absoluteFilePath(i.fileName()));
+            }
         } else {
             QFile f(i.filePath());
             const QString target = QDir(targetDir).absoluteFilePath(i.fileName());
@@ -557,20 +559,21 @@ typedef struct {
 
 void QInstaller::setApplicationIcon(const QString &application, const QString &icon)
 {
-    wchar_t* const path = new wchar_t[application.length() + 1];
-    QDir::toNativeSeparators(application).toWCharArray(path);
-    path[application.length()] = 0;
-
-    HANDLE updateRes = BeginUpdateResource(path, false);
-    delete[] path;
-
     QFile iconFile(icon);
-    if (!iconFile.open(QIODevice::ReadOnly))
+    if (!iconFile.open(QIODevice::ReadOnly)) {
+        qWarning() << QString::fromLatin1("Could not use '%1' as application icon: %2.")
+            .arg(icon, iconFile.errorString());
         return;
+    }
+
+    if (QImageReader::imageFormat(icon) != "ico") {
+        qWarning() << QString::fromLatin1("Could not use '%1' as application icon, unsupported format %2.")
+            .arg(icon, QLatin1String(QImageReader::imageFormat(icon)));
+        return;
+    }
 
     QByteArray temp = iconFile.readAll();
-
-    ICONDIR* ig = reinterpret_cast< ICONDIR* >(temp.data());
+    ICONDIR* ig = reinterpret_cast<ICONDIR*> (temp.data());
 
     DWORD newSize = sizeof(GRPICONDIR) + sizeof(GRPICONDIRENTRY) * (ig->idCount - 1);
     GRPICONDIR* newDir = reinterpret_cast< GRPICONDIR* >(new char[newSize]);
@@ -578,6 +581,7 @@ void QInstaller::setApplicationIcon(const QString &application, const QString &i
     newDir->idType = ig->idType;
     newDir->idCount = ig->idCount;
 
+    HANDLE updateRes = BeginUpdateResourceW((wchar_t*)QDir::toNativeSeparators(application).utf16(), false);
     for (int i = 0; i < ig->idCount; ++i) {
         char* temp1 = temp.data() + ig->idEntries[i].dwImageOffset;
         DWORD size1 = ig->idEntries[i].dwBytesInRes;
@@ -591,16 +595,16 @@ void QInstaller::setApplicationIcon(const QString &application, const QString &i
         newDir->idEntries[i].dwBytesInRes = ig->idEntries[i].dwBytesInRes;
         newDir->idEntries[i].nID = i + 1;
 
-        UpdateResource(updateRes, RT_ICON, MAKEINTRESOURCE(i + 1),
+        UpdateResourceW(updateRes, RT_ICON, MAKEINTRESOURCE(i + 1),
             MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), temp1, size1);
     }
 
-    UpdateResource(updateRes, RT_GROUP_ICON, L"IDI_ICON1", MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), newDir
-        , newSize);
+    UpdateResourceW(updateRes, RT_GROUP_ICON, L"IDI_ICON1", MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL),
+        newDir, newSize);
 
     delete [] newDir;
 
-    EndUpdateResource(updateRes, false);
+    EndUpdateResourceW(updateRes, false);
 }
 
 #endif

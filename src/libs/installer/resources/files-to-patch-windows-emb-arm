@@ -1,0 +1,7 @@
+bin/qmake.exe
+bin/lrelease.exe
+%%
+*.la
+*.prl
+*.pc
+*.pri

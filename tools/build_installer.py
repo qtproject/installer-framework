@@ -1,0 +1,102 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import shutil
+import string
+import subprocess
+import sys
+
+args = {}
+
+src_dir = ''
+build_dir = ''
+package_dir = ''
+archive_file = ''
+target_path = ''
+
+def parse_arguments():
+    global args
+
+    parser = argparse.ArgumentParser(description='Build installer for installer framework.')
+    parser.add_argument('--clean', dest='clean', action='store_true', help='delete all previous build artifacts')
+    parser.add_argument('--static-qmake', dest='qmake', required=True, help='path to qmake that will be used to build the tools')
+    parser.add_argument('--doc-qmake', dest='doc_qmake', required=True, help='path to qmake that will be used to generate the documentation')
+    parser.add_argument('--make', dest='make', required=True, help='make command')
+
+    args = parser.parse_args()
+
+def run(args):
+    print 'calling ' + string.join(args)
+    subprocess.check_call(args)
+
+def init():
+    global src_dir
+    global build_dir
+    global package_dir
+    global target_path
+
+    src_dir = os.path.dirname(os.path.abspath(os.path.dirname(sys.argv[0])))
+    root_dir = os.path.dirname(src_dir)
+    basename = os.path.basename(src_dir)
+    build_dir = os.path.join(root_dir, basename + '_build')
+    package_dir = os.path.join(root_dir, basename + '_pkg')
+    target_path = os.path.join(root_dir, 'ifw')
+
+    print 'source dir: ' + src_dir
+    print 'build dir: ' + build_dir
+    print 'package dir: ' + package_dir
+    print 'target path: ' + target_path
+
+    if args.clean and os.path.exists(build_dir):
+        print 'delete existing build dir ...'
+        shutil.rmtree(build_dir)
+    if not os.path.exists(build_dir):
+        os.makedirs(build_dir)
+
+    if os.path.exists(package_dir):
+        print 'delete existing package dir ...'
+        shutil.rmtree(package_dir)
+    os.makedirs(package_dir)
+
+def build_docs():
+    print 'building documentation ...'
+    os.chdir(build_dir)
+    run((args.doc_qmake, src_dir))
+    run((args.make, 'docs'))
+    print 'success!'
+
+def build():
+    print 'building sources ...'
+    os.chdir(build_dir)
+    run((args.qmake, src_dir))
+    run((args.make))
+
+def package():
+    global package_dir
+    print 'package ...'
+    os.chdir(package_dir)
+    shutil.copytree(os.path.join(build_dir, 'bin'), os.path.join(package_dir, 'bin'), ignore = shutil.ignore_patterns("*.exe.manifest"))
+    shutil.copytree(os.path.join(build_dir, 'doc'), os.path.join(package_dir, 'doc'))
+    shutil.copytree(os.path.join(src_dir, 'examples'), os.path.join(package_dir, 'examples'))
+    shutil.copy(os.path.join(src_dir, 'README'), package_dir)
+    # create 7z
+    archive_file = os.path.join(src_dir, 'dist', 'packages', 'org.qtproject.ifw.binaries', 'data', 'data.7z')
+    if not os.path.exists(os.path.dirname(archive_file)):
+        os.makedirs(os.path.dirname(archive_file))
+    run((os.path.join(package_dir, 'bin', 'archivegen'), archive_file, '*'))
+    # run installer
+    binary_creator = os.path.join(build_dir, 'bin', 'binarycreator')
+    config_file = os.path.join(src_dir, 'dist', 'config', 'config.xml')
+    package_dir = os.path.join(src_dir, 'dist', 'packages')
+    installer_path = os.path.join(src_dir, 'dist', 'packages')
+    run((binary_creator, '--offline-only', '-c', config_file, '-p', package_dir, target_path))
+
+
+parse_arguments()
+init()
+build_docs()
+build()
+package()
+
+print 'DONE, installer is at ' + target_path
