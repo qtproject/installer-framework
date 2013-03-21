@@ -848,10 +848,11 @@ void KDUpdater::HttpDownloader::httpReadyRead()
         while (written < read) {
             const qint64 numWritten = d->destination->write(buffer.data() + written, read - written);
             if (numWritten < 0) {
-                const QString err = d->destination->errorString();
+                const QString error = d->destination->errorString();
+                const QString fileName = d->destination->fileName();
                 d->shutDown();
-                setDownloadAborted(tr("Cannot download %1: Writing to temporary file failed: %2")
-                    .arg(url().toString(), err));
+                setDownloadAborted(tr("Cannot download %1: Writing to file '%2' failed: %3")
+                    .arg(url().toString(), fileName, error));
                 return;
             }
             written += numWritten;
@@ -977,9 +978,11 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
     }
 
     if (!d->destination->isOpen()) {
+        const QString error = d->destination->errorString();
+        const QString fileName = d->destination->fileName();
         d->shutDown();
-        setDownloadAborted(tr("Cannot download %1: Could not create temporary file: %2").arg(url.toString(),
-            d->destination->errorString()));
+        setDownloadAborted(tr("Cannot download %1: Could not create %2: %3").arg(
+            url.toString(), fileName, error));
     }
 }
 
