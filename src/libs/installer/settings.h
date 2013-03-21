@@ -133,9 +133,6 @@ public:
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
     QVariantList values(const QString &key, const QVariantList &defaultValue = QVariantList()) const;
 
-    QVariantHash titlesForPage(const QString &pageName) const;
-    QVariantHash subTitlesForPage(const QString &pageName) const;
-
     bool repositorySettingsPageVisible() const;
 
     Settings::ProxyType proxyType() const;

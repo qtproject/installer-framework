@@ -54,7 +54,6 @@ static const QLatin1String scIcon("Icon");
 static const QLatin1String scInstallerApplicationIcon("InstallerApplicationIcon");
 static const QLatin1String scInstallerWindowIcon("InstallerWindowIcon");
 static const QLatin1String scLogo("Logo");
-static const QLatin1String scPages("Pages");
 static const QLatin1String scPrefix("Prefix");
 static const QLatin1String scWatermark("Watermark");
 static const QLatin1String scProductUrl("ProductUrl");
@@ -114,40 +113,6 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
                               reader.name().toString()));
     }
     return set;
-}
-
-static QVariantHash readTitles(QXmlStreamReader &reader)
-{
-    QVariantHash hash;
-    while (reader.readNextStartElement())
-        hash.insert(reader.name().toString(), reader.readElementText(QXmlStreamReader::SkipChildElements));
-    return hash;
-}
-
-static QHash<QString, QVariantHash> readPages(QXmlStreamReader &reader)
-{
-    QHash<QString, QVariantHash> hash;
-    while (reader.readNextStartElement()) {
-        if (reader.name() == QLatin1String("Page")) {
-            QVariantHash pageElements;
-            const QString pageName = reader.attributes().value(QLatin1String("name")).toString();
-            if (pageName.isEmpty())
-                reader.raiseError(QLatin1String("Expected non-empty attribute 'name' for element 'Page'."));
-
-            while (reader.readNextStartElement()) {
-                const QString name = reader.name().toString();
-                if (name == QLatin1String("Title") || name == QLatin1String("SubTitle")) {
-                    pageElements.insert(name, readTitles(reader));
-                } else {
-                    pageElements.insert(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
-                }
-            }
-            hash.insert(pageName, pageElements);
-        } else {
-            reader.raiseError(QString::fromLatin1("Unexpected element '%1'.").arg(reader.name().toString()));
-        }
-    }
-    return hash;
 }
 
 
@@ -223,10 +188,10 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
                 << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
-                << scRemoteRepositories << scPages;
+                << scRemoteRepositories;
 
     QStringList blackList;
-    blackList << scRemoteRepositories << scPages;
+    blackList << scRemoteRepositories;
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
@@ -245,14 +210,6 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
         if (blackList.contains(name)) {
             if (name == scRemoteRepositories)
                 s.addDefaultRepositories(readRepositories(reader, true));
-
-            if (name == scPages) {
-                qWarning() << "Deprecated element 'Pages'.";
-                QHash<QString, QVariantHash> pages = readPages(reader);
-                const QStringList &keys = pages.keys();
-                foreach (const QString &key, keys)
-                    s.d->m_data.insert(key, pages.value(key));
-            }
         } else {
             if (s.d->m_data.contains(name))
                 reader.raiseError(QString::fromLatin1("Element '%1' has been defined before.").arg(name));
@@ -550,24 +507,6 @@ QVariantList Settings::values(const QString &key, const QVariantList &defaultVal
 {
     QVariantList list = d->m_data.values(key);
     return list.isEmpty() ? defaultValue : list;
-}
-
-QVariantHash Settings::titlesForPage(const QString &pageName) const
-{
-    const QVariantHash hash = d->m_data.value(pageName).toHash();
-    const QVariant variant = hash.value(QLatin1String("Title"), QVariant());
-    if (!variant.canConvert<QVariantHash>())
-        return QVariantHash();
-    return variant.value<QVariantHash>();
-}
-
-QVariantHash Settings::subTitlesForPage(const QString &pageName) const
-{
-    const QVariantHash hash = d->m_data.value(pageName).toHash();
-    const QVariant variant = hash.value(QLatin1String("SubTitle"), QVariant());
-    if (!variant.canConvert<QVariantHash>())
-        return QVariantHash();
-    return variant.value<QVariantHash>();
 }
 
 bool Settings::repositorySettingsPageVisible() const

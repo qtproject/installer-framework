@@ -257,10 +257,6 @@
         \row
             \o  TargetConfigurationFile
             \o  Filename for the configuration file on the target. Default is components.xml.
-        \row
-            \o  Pages
-            \o  Custom strings for labels in the installer pages. Deprecated,
-                see \l{Translating Pages} instead.
     \endtable
 
 */

@@ -698,41 +698,6 @@ PackageManagerCore *PackageManagerPage::packageManagerCore() const
     return m_core;
 }
 
-QVariantHash PackageManagerPage::elementsForPage(const QString &pageName) const
-{
-    const QVariant variant = m_core->settings().value(pageName);
-
-    QVariantHash hash;
-    if (variant.canConvert<QVariantHash>())
-        hash = variant.value<QVariantHash>();
-    return hash;
-}
-
-QString PackageManagerPage::titleForPage(const QString &pageName, const QString &value) const
-{
-    return titleFromHash(m_core->settings().titlesForPage(pageName), value);
-}
-
-QString PackageManagerPage::subTitleForPage(const QString &pageName, const QString &value) const
-{
-    return titleFromHash(m_core->settings().subTitlesForPage(pageName), value);
-}
-
-QString PackageManagerPage::titleFromHash(const QVariantHash &hash, const QString &value) const
-{
-    QString defaultValue = hash.value(QLatin1String("Default")).toString();
-    if (defaultValue.isEmpty())
-        defaultValue = value;
-
-    if (m_core->isUpdater())
-        return hash.value(QLatin1String("Updater"), defaultValue).toString();
-    if (m_core->isInstaller())
-        return hash.value(QLatin1String("Installer"), defaultValue).toString();
-    if (m_core->isPackageManager())
-        return hash.value(QLatin1String("PackageManager"), defaultValue).toString();
-    return hash.value(QLatin1String("Uninstaller"), defaultValue).toString();
-}
-
 QPixmap PackageManagerPage::watermarkPixmap() const
 {
     return QPixmap(m_core->value(QLatin1String("WatermarkPixmap")));
@@ -851,15 +816,12 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
 {
     setObjectName(QLatin1String("IntroductionPage"));
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
-    setSubTitle(subTitleForPage(QLatin1String("IntroductionPage")));
-    setTitle(titleForPage(QLatin1String("IntroductionPage"), tr("Setup - %1")).arg(productName()));
+    setTitle(tr("Setup - %1").arg(productName()));
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
-    const QVariantHash hash = elementsForPage(QLatin1String("IntroductionPage"));
-    m_msgLabel->setText(hash.value(QLatin1String("MessageLabel"), tr("Welcome to the %1 "
-        "Setup Wizard.")).toString().arg(productName()));
+    m_msgLabel->setText(tr("Welcome to the %1 Setup Wizard.").arg(productName()));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);
@@ -918,7 +880,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("LicenseAgreementPage"));
-    setTitle(titleForPage(QLatin1String("LicenseAgreementPage"), tr("License Agreement")));
+    setTitle(tr("License Agreement"));
 
     m_licenseListWidget = new QListWidget(this);
     m_licenseListWidget->setObjectName(QLatin1String("LicenseListWidget"));
@@ -1045,11 +1007,10 @@ void LicenseAgreementPage::updateUi()
         rejectButtonText = tr("I do not accept the licenses.");
     }
 
-    setSubTitle(subTitleForPage(QLatin1String("LicenseAgreementPage"), subTitleText));
+    setSubTitle(subTitleText);
 
-    const QVariantHash hash = elementsForPage(QLatin1String("LicenseAgreementPage"));
-    m_acceptLabel->setText(hash.value(QLatin1String("AcceptLicenseLabel"), acceptButtonText).toString());
-    m_rejectLabel->setText(hash.value(QLatin1String("RejectLicenseLabel"), rejectButtonText).toString());
+    m_acceptLabel->setText(acceptButtonText);
+    m_rejectLabel->setText(rejectButtonText);
 
 }
 
@@ -1100,17 +1061,15 @@ public:
 
         m_checkDefault = new QPushButton;
         connect(m_checkDefault, SIGNAL(clicked()), this, SLOT(selectDefault()));
-        const QVariantHash hash = q->elementsForPage(QLatin1String("ComponentSelectionPage"));
         if (m_core->isInstaller()) {
             m_checkDefault->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
             m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+A", "select default components")));
-            m_checkDefault->setText(hash.value(QLatin1String("SelectDefaultComponentsButton"), ComponentSelectionPage::tr("Def&ault"))
-                .toString());
+            m_checkDefault->setText(ComponentSelectionPage::tr("Def&ault"));
         } else {
             m_checkDefault->setEnabled(false);
             m_checkDefault->setObjectName(QLatin1String("ResetComponentsButton"));
             m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+R", "reset to already installed components")));
-            m_checkDefault->setText(hash.value(QLatin1String("ResetComponentsButton"), ComponentSelectionPage::tr("&Reset")).toString());
+            m_checkDefault->setText(ComponentSelectionPage::tr("&Reset"));
         }
         hlayout = new QHBoxLayout;
         hlayout->addWidget(m_checkDefault);
@@ -1120,15 +1079,14 @@ public:
         connect(m_checkAll, SIGNAL(clicked()), this, SLOT(selectAll()));
         m_checkAll->setObjectName(QLatin1String("SelectAllComponentsButton"));
         m_checkAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+S", "select all components")));
-        m_checkAll->setText(hash.value(QLatin1String("SelectAllComponentsButton"), ComponentSelectionPage::tr("&Select All")).toString());
+        m_checkAll->setText(ComponentSelectionPage::tr("&Select All"));
 
         m_uncheckAll = new QPushButton;
         hlayout->addWidget(m_uncheckAll);
         connect(m_uncheckAll, SIGNAL(clicked()), this, SLOT(deselectAll()));
         m_uncheckAll->setObjectName(QLatin1String("DeselectAllComponentsButton"));
         m_uncheckAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+D", "deselect all components")));
-        m_uncheckAll->setText(hash.value(QLatin1String("DeselectAllComponentsButton"), ComponentSelectionPage::tr("&Deselect All"))
-            .toString());
+        m_uncheckAll->setText(ComponentSelectionPage::tr("&Deselect All"));
 
         hlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
             QSizePolicy::MinimumExpanding));
@@ -1194,9 +1152,8 @@ public slots:
                 return;
 
             if (component->updateUncompressedSize() > 0) {
-                m_sizeLabel->setText(q->elementsForPage(QLatin1String("ComponentSelectionPage"))
-                    .value(QLatin1String("ComponentSizeLabel"), ComponentSelectionPage::tr("This component "
-                    "will occupy approximately %1 on your hard disk drive.")).toString()
+                m_sizeLabel->setText(ComponentSelectionPage::tr("This component "
+                    "will occupy approximately %1 on your hard disk drive.")
                     .arg(humanReadableSize(component->value(scUncompressedSizeSum).toLongLong())));
             }
         }
@@ -1260,7 +1217,7 @@ ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ComponentSelectionPage"));
-    setTitle(titleForPage(QLatin1String("ComponentSelectionPage"), tr("Select Components")));
+    setTitle(tr("Select Components"));
 }
 
 ComponentSelectionPage::~ComponentSelectionPage()
@@ -1282,7 +1239,7 @@ void ComponentSelectionPage::entering()
     if (core->isInstaller()) index = 1;
     if (core->isUninstaller()) index = 2;
     if (core->isPackageManager()) index = 3;
-    setSubTitle(subTitleForPage(QLatin1String("ComponentSelectionPage"), tr(strings[index])));
+    setSubTitle(tr(strings[index]));
 
     d->updateTreeView();
     setModified(isComplete());
@@ -1353,17 +1310,14 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("TargetDirectoryPage"));
-    setSubTitle(subTitleForPage(QLatin1String("TargetDirectoryPage")));
-    setTitle(titleForPage(QLatin1String("TargetDirectoryPage"), tr("Installation Folder")));
+    setTitle(tr("Installation Folder"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QLabel *msgLabel = new QLabel(this);
     msgLabel->setWordWrap(true);
     msgLabel->setObjectName(QLatin1String("MessageLabel"));
-    const QVariantHash hash = elementsForPage(QLatin1String("TargetDirectoryPage"));
-    msgLabel->setText(hash.value(QLatin1String("MessageLabel"), tr("Please specify the folder "
-        "where %1 will be installed.")).toString().arg(productName()));
+    msgLabel->setText(tr("Please specify the folder where %1 will be installed.").arg(productName()));
     layout->addWidget(msgLabel);
 
     QHBoxLayout *hlayout = new QHBoxLayout;
@@ -1377,8 +1331,7 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     browseButton->setObjectName(QLatin1String("BrowseDirectoryButton"));
     connect(browseButton, SIGNAL(clicked()), this, SLOT(dirRequested()));
     browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
-    browseButton->setText(hash.value(QLatin1String("BrowseDirectoryButton"), tr("B&rowse..."))
-        .toString());
+    browseButton->setText(tr("B&rowse..."));
     hlayout->addWidget(browseButton);
 
     layout->addLayout(hlayout);
@@ -1412,12 +1365,10 @@ void TargetDirectoryPage::initializePage()
 
 bool TargetDirectoryPage::validatePage()
 {
-    const QVariantHash hash = elementsForPage(QLatin1String("TargetDirectoryPage"));
     if (targetDir().isEmpty()) {
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("EmptyTargetDirectoryMessage"), tr("Error"), hash
-            .value(QLatin1String("EmptyTargetDirectoryMessage"), tr("The install directory cannot be "
-            "empty, please specify a valid folder.")).toString(), QMessageBox::Ok);
+            QLatin1String("EmptyTargetDirectoryMessage"), tr("Error"), tr("The install directory cannot be "
+            "empty, please specify a valid folder."), QMessageBox::Ok);
         return false;
     }
 
@@ -1430,9 +1381,8 @@ bool TargetDirectoryPage::validatePage()
         // it exists, but is not empty
         if (dir == QDir::root()) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("ForbiddenTargetDirectoryMessage"), tr("Error"), hash
-                .value(QLatin1String("ForbiddenTargetDirectoryMessage"), tr("As the install directory is "
-                "completely deleted, installing in %1 is forbidden.")).toString().arg(QDir::rootPath()),
+                QLatin1String("ForbiddenTargetDirectoryMessage"), tr("Error"), tr("As the install directory "
+                "is completely deleted on uninstall, installing in %1 is forbidden.").arg(QDir::rootPath()),
                 QMessageBox::Ok);
             return false;
         }
@@ -1441,11 +1391,10 @@ bool TargetDirectoryPage::validatePage()
             return true;
 
         return MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("OverwriteTargetDirectoryMessage"), tr("Warning"), hash
-            .value(QLatin1String("OverwriteTargetDirectoryMessage"), tr("You have selected an existing, "
+            QLatin1String("OverwriteTargetDirectoryMessage"), tr("Warning"), tr("You have selected an existing, "
             "non-empty folder for installation. Note that it will be completely wiped on uninstallation of "
             "this application. It is not advisable to install into this folder as installation might fail. "
-            "Do you want to continue?")).toString(), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
+            "Do you want to continue?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
     }
     return true;
 }
@@ -1465,9 +1414,7 @@ void TargetDirectoryPage::targetDirSelected()
 
 void TargetDirectoryPage::dirRequested()
 {
-    const QVariantHash hash = elementsForPage(QLatin1String("TargetDirectoryPage"));
-    const QString newDirName = QFileDialog::getExistingDirectory(this, hash
-        .value(QLatin1String("SelectInstallationFolderCaption"), tr("Select Installation Folder")).toString(),
+    const QString newDirName = QFileDialog::getExistingDirectory(this, tr("Select Installation Folder"),
         targetDir());
     if (newDirName.isEmpty() || newDirName == targetDir())
         return;
@@ -1483,9 +1430,9 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("StartMenuDirectoryPage"));
-    setTitle(titleForPage(QLatin1String("StartMenuDirectoryPage"), tr("Start Menu shortcuts")));
-    setSubTitle(subTitleForPage(QLatin1String("StartMenuDirectoryPage"), tr("Select the Start Menu in which "
-        "you would like to create the program's shortcuts. You can also enter a name to create a new folder.")));
+    setTitle(tr("Start Menu shortcuts"));
+    setSubTitle(tr("Select the Start Menu in which you would like to create the program's shortcuts. You can "
+                   "also enter a name to create a new folder."));
 
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setObjectName(QLatin1String("LineEdit"));
@@ -1573,7 +1520,6 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ReadyForInstallationPage"));
-    setSubTitle(subTitleForPage(QLatin1String("ReadyForInstallationPage")));
 
     QVBoxLayout *baseLayout = new QVBoxLayout();
     baseLayout->setObjectName(QLatin1String("BaseLayout"));
@@ -1621,7 +1567,7 @@ void ReadyForInstallationPage::entering()
         m_taskDetailsButton->setVisible(false);
         m_taskDetailsBrowser->setVisible(false);
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
-        setTitle(titleForPage(objectName(), tr("Ready to Uninstall")));
+        setTitle(tr("Ready to Uninstall"));
         m_msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
             "<font color=\"red\">The program directory %2 will be deleted completely</font>, "
             "including all content in that directory!")
@@ -1631,12 +1577,12 @@ void ReadyForInstallationPage::entering()
         return;
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
         setButtonText(QWizard::CommitButton, tr("U&pdate"));
-        setTitle(titleForPage(objectName(), tr("Ready to Update Packages")));
+        setTitle(tr("Ready to Update Packages"));
         m_msgLabel->setText(tr("Setup is now ready to begin updating your installation."));
     } else {
         Q_ASSERT(packageManagerCore()->isInstaller());
         setButtonText(QWizard::CommitButton, tr("&Install"));
-        setTitle(titleForPage(objectName(), tr("Ready to Install")));
+        setTitle(tr("Ready to Install"));
         m_msgLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
             .arg(productName()));
     }
@@ -1803,7 +1749,6 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("PerformInstallationPage"));
-    setSubTitle(subTitleForPage(QLatin1String("PerformInstallationPage")));
 
     m_performInstallationForm->setupUi(this);
 
@@ -1845,17 +1790,17 @@ void PerformInstallationPage::entering()
 
     if (packageManagerCore()->isUninstaller()) {
         setButtonText(QWizard::CommitButton, tr("&Uninstall"));
-        setTitle(titleForPage(objectName(), tr("Uninstalling %1")).arg(productName()));
+        setTitle(tr("Uninstalling %1").arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runUninstaller()));
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
         setButtonText(QWizard::CommitButton, tr("&Update"));
-        setTitle(titleForPage(objectName(), tr("Updating components of %1")).arg(productName()));
+        setTitle(tr("Updating components of %1").arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runPackageUpdater()));
     } else {
         setButtonText(QWizard::CommitButton, tr("&Install"));
-        setTitle(titleForPage(objectName(), tr("Installing %1")).arg(productName()));
+        setTitle(tr("Installing %1").arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
     }
@@ -1923,20 +1868,16 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
 {
     setObjectName(QLatin1String("FinishedPage"));
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
-    setSubTitle(subTitleForPage(QLatin1String("FinishedPage")));
-    setTitle(titleForPage(QLatin1String("FinishedPage"), tr("Completing the %1 Wizard")).arg(productName()));
+    setTitle(tr("Completing the %1 Wizard").arg(productName()));
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
 
-    const QVariantHash hash = elementsForPage(QLatin1String("FinishedPage"));
 #ifdef Q_OS_MAC
-    m_msgLabel->setText(hash.value(QLatin1String("MessageLabel"), tr("Click Done to exit the %1 "
-        "Wizard.")).toString().arg(productName()));
+    m_msgLabel->setText(tr("Click Done to exit the %1 Wizard.").arg(productName()));
 #else
-    m_msgLabel->setText(hash.value(QLatin1String("MessageLabel"), tr("Click Finish to exit the "
-        "%1 Wizard.")).toString().arg(productName()));
+    m_msgLabel->setText(tr("Click Finish to exit the %1 Wizard.").arg(productName()));
 #endif
 
     m_runItCheckBox = new QCheckBox(this);
@@ -2038,9 +1979,7 @@ RestartPage::RestartPage(PackageManagerCore *core)
 {
     setObjectName(QLatin1String("RestartPage"));
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
-    setSubTitle(subTitleForPage(QLatin1String("RestartPage")));
-    setTitle(titleForPage(QLatin1String("RestartPage"), tr("Completing the %1 Setup Wizard"))
-        .arg(productName()));
+    setTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
 
     setFinalPage(false);
     setCommitPage(false);

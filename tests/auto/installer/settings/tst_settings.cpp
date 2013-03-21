@@ -78,7 +78,6 @@ void tst_Settings::loadTutorialConfig()
 
 void tst_Settings::loadFullConfig()
 {
-    QTest::ignoreMessage(QtWarningMsg, "Deprecated element 'Pages'. ");
     QTest::ignoreMessage(QtWarningMsg, "Deprecated element 'Icon'. ");
     Settings settings =
             Settings::fromFileAndPrefix(":///data/full_config.xml", ":///data");
