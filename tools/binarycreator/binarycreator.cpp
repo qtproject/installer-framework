@@ -479,89 +479,67 @@ static void printUsage()
     std::cout << std::endl;
 }
 
-static QString createMetaDataDirectory(const QInstallerTools::PackageInfoVector &packages,
-    const QString &packagesDir, const QString &configFile)
+void copyInstallerConfigurationToDirectory(const QString &configFile, const QString &targetDir)
 {
-    const QInstaller::Settings &settings = QInstaller::Settings::fromFileAndPrefix(configFile, QString());
+    qDebug() << "Begin to copy configuration file and data.";
 
-    const QString metapath = createTemporaryDirectory();
-    generateMetaDataDirectory(metapath, packagesDir, packages, settings.applicationName(),
-        settings.applicationVersion());
+    const QString sourceConfigFile = QFileInfo(configFile).absoluteFilePath();
+    const QString targetConfigFile = targetDir + QLatin1String("/config.xml");
+    QInstallerTools::copyWithException(sourceConfigFile, targetConfigFile, QLatin1String("configuration"));
 
-    const QString tempConfigDirPath = metapath + QLatin1String("/installer-config");
-    QInstaller::mkdir(tempConfigDirPath);
-    QString absoluteConfigPath = QFileInfo(configFile).absolutePath();
+    QFile configXml(targetConfigFile);
+    QInstaller::openForRead(&configXml, configXml.fileName());
 
-    QDirIterator it(absoluteConfigPath, QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        const QString next = it.next();
-        if (next.contains(QLatin1String("/."))) // skip files that are in directories starting with a dot
+    QDomDocument dom;
+    dom.setContent(&configXml);
+    configXml.close();
+
+    // iterate over all child elements, searching for relative file names
+    const QDomNodeList children = dom.documentElement().childNodes();
+    const QString sourceConfigFilePath = QFileInfo(sourceConfigFile).absolutePath();
+    for (int i = 0; i < children.count(); ++i) {
+        QDomElement domElement = children.at(i).toElement();
+        if (domElement.isNull())
             continue;
 
-        qDebug() << "Found configuration file: " << next;
-        const QFileInfo sourceFileInfo(next);
-        const QString source = sourceFileInfo.absoluteFilePath();
-        QFileInfo targetFileInfo(tempConfigDirPath, QFileInfo(next).fileName());
+        const QString tagName = domElement.tagName();
+        const QString elementText = domElement.text();
+        qDebug() << QString::fromLatin1("Read dom element: <%1>%2</%1>.").arg(tagName, elementText);
 
-        if (QFileInfo(next).fileName() == QFileInfo(configFile).fileName())
-            targetFileInfo.setFile(tempConfigDirPath, QLatin1String("config.xml"));
+        QString newName = domElement.text().replace(QRegExp(QLatin1String("\\\\|/|\\.|:")),
+            QLatin1String("_"));
 
-        const QDir targetDir = targetFileInfo.dir();
-        if (!targetDir.exists())
-            QInstaller::mkpath(targetFileInfo.absolutePath());
-        const QString target = targetFileInfo.absoluteFilePath();
-
-        if (!QFile::copy(source, target))
-            throw Error(QString::fromLatin1("Could not copy %1.").arg(source));
-
-        if (sourceFileInfo.fileName() == QFileInfo(configFile).fileName()) {
-            QFile configXml(targetDir.filePath(QLatin1String("config.xml")));
-            configXml.open(QIODevice::ReadOnly);
-            QDomDocument dom;
-            dom.setContent(&configXml);
-            configXml.close();
-
-            // iterate over all child elements, searching for relative file names
-            const QDomNodeList children = dom.documentElement().childNodes();
-            for (int i = 0; i < children.count(); ++i) {
-                QDomElement domElement = children.at(i).toElement();
-                if (domElement.isNull())
-                    continue;
-
-                QFileInfo elementFileInfo(absoluteConfigPath, domElement.text());
+        QString targetFile;
+        QFileInfo elementFileInfo;
+        if (tagName == QLatin1String("Icon") || tagName == QLatin1String("InstallerApplicationIcon")) {
 #if defined(Q_OS_MAC)
-                const QFileInfo iconFileInfo(absoluteConfigPath, domElement.text() + QLatin1String(".icns"));
+            const QString suffix = QLatin1String(".icns");
 #elif defined(Q_OS_WIN)
-                const QFileInfo iconFileInfo(absoluteConfigPath, domElement.text() + QLatin1String(".ico"));
+            const QString suffix = QLatin1String(".ico");
 #else
-                const QFileInfo iconFileInfo(absoluteConfigPath, domElement.text() + QLatin1String(".png"));
+            const QString suffix = QLatin1String(".png");
 #endif
-                if (!elementFileInfo.exists() && iconFileInfo.exists())
-                    elementFileInfo = iconFileInfo;
-
-                if (!elementFileInfo.exists() || elementFileInfo.absolutePath() == QFileInfo(configFile).dir().absolutePath())
-                    continue;
-
-                if (elementFileInfo.isDir())
-                    continue;
-
-                const QString newName = domElement.text().replace(QRegExp(QLatin1String("\\\\|/|\\.")),
-                    QLatin1String("_"));
-
-                if (!QFile::exists(targetDir.absoluteFilePath(newName))) {
-                    if (!QFile::copy(elementFileInfo.absoluteFilePath(), targetDir.absoluteFilePath(newName)))
-                        throw Error(QString::fromLatin1("Could not copy %1.").arg(domElement.text()));
-                }
-                domElement.replaceChild(dom.createTextNode(newName), domElement.firstChild());
-            }
-
-            openForWrite(&configXml, configXml.fileName());
-            QTextStream stream(&configXml);
-            dom.save(stream, 4);
-            qDebug() << "done.\n";
+            elementFileInfo = QFileInfo(sourceConfigFilePath, elementText + suffix);
+            targetFile = targetDir + QLatin1Char('/') + newName + suffix;
+        } else {
+            elementFileInfo = QFileInfo(sourceConfigFilePath, elementText);
+            const QString suffix = elementFileInfo.completeSuffix();
+            if (!suffix.isEmpty())
+                newName.append(QLatin1Char('.') + suffix);
+            targetFile = targetDir + QLatin1Char('/') + newName;
         }
+        if (!elementFileInfo.exists() || elementFileInfo.isDir())
+            continue;
+
+        domElement.replaceChild(dom.createTextNode(newName), domElement.firstChild());
+        QInstallerTools::copyWithException(elementFileInfo.absoluteFilePath(), targetFile, tagName);
     }
-    return metapath;
+
+    QInstaller::openForWrite(&configXml, configXml.fileName());
+    QTextStream stream(&configXml);
+    dom.save(stream, 4);
+
+    qDebug() << "done.\n";
 }
 
 static int printErrorAndUsageAndExit(const QString &err)
@@ -716,11 +694,17 @@ int main(int argc, char **argv)
     qDebug() << "Parsed arguments, ok.";
 
     int exitCode = EXIT_FAILURE;
-    QString tmpMetaDir;
+    const QString tmpMetaDir = createTemporaryDirectory();
     try {
         QInstallerTools::PackageInfoVector packages = createListOfPackages(packagesDirectory,
             filteredPackages, ftype);
-        tmpMetaDir = createMetaDataDirectory(packages, packagesDirectory, configFile);
+        {
+            const Settings settings = Settings::fromFileAndPrefix(configFile, QString());
+            generateMetaDataDirectory(tmpMetaDir, packagesDirectory, packages, settings.applicationName(),
+                settings.applicationVersion());
+        }
+
+        copyInstallerConfigurationToDirectory(configFile, tmpMetaDir + QLatin1String("/installer-config"));
         {
             QSettings confInternal(tmpMetaDir + QLatin1String("/config/config-internal.ini")
                 , QSettings::IniFormat);
