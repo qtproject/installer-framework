@@ -5,7 +5,7 @@ TARGET = extractbinarydata
 include(../../installerfw.pri)
 
 QT -= gui
-LIBS += -linstaller
+LIBS += -linstaller -l7z
 
 CONFIG += console
 CONFIG -= app_bundle

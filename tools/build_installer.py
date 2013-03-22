@@ -23,6 +23,7 @@ def parse_arguments():
     parser.add_argument('--static-qmake', dest='qmake', required=True, help='path to qmake that will be used to build the tools')
     parser.add_argument('--doc-qmake', dest='doc_qmake', required=True, help='path to qmake that will be used to generate the documentation')
     parser.add_argument('--make', dest='make', required=True, help='make command')
+    parser.add_argument('--targetdir', dest='target_dir', required=True, help='directory the generated installer will be placed in')
 
     args = parser.parse_args()
 
@@ -41,7 +42,7 @@ def init():
     basename = os.path.basename(src_dir)
     build_dir = os.path.join(root_dir, basename + '_build')
     package_dir = os.path.join(root_dir, basename + '_pkg')
-    target_path = os.path.join(root_dir, 'ifw')
+    target_path = os.path.join(args.target_dir, 'ifw')
 
     print 'source dir: ' + src_dir
     print 'build dir: ' + build_dir
@@ -53,6 +54,11 @@ def init():
         shutil.rmtree(build_dir)
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
+
+    if os.path.exists(args.target_dir):
+        print 'delete existing target dir ...'
+        shutil.rmtree(args.target_dir)
+    os.makedirs(args.target_dir)
 
     if os.path.exists(package_dir):
         print 'delete existing package dir ...'

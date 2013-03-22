@@ -72,9 +72,8 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
 #endif
 
     try {
-        m_settings =
-            Settings(Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
-            QLatin1String(":/metadata/installer-config/")));
+        m_settings = Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
+            QLatin1String(":/metadata/installer-config/"));
     } catch (const Error &e) {
         // TODO: try better error handling
         qCritical("Could not parse Config: %s", qPrintable(e.message()));
