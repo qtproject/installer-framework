@@ -75,26 +75,21 @@ void QInstallerTools::printRepositoryGenOptions()
 
 void QInstallerTools::copyWithException(const QString &source, const QString &target, const QString &kind)
 {
-    QFile sourceFile(source);
     qDebug() << QString::fromLatin1("Copying associated %1 file '%2'").arg(kind, source);
 
     const QFileInfo targetFileInfo(target);
-    const QDir targetDir = targetFileInfo.dir();
-    if (!targetDir.exists())
+    if (!targetFileInfo.dir().exists())
         QInstaller::mkpath(targetFileInfo.absolutePath());
 
-    // in the case of an existing target the error String does not show the file
-    if (targetFileInfo.exists()) {
-        qDebug() << "failed!\n";
-        throw QInstaller::Error(QString::fromLatin1("Could not copy the %1 file from\n'%2' to '%3'\nError: '%4'."
-            ).arg(kind, source, target, QLatin1String("Target already exist.")));
-    }
-
+    QFile sourceFile(source);
     if (!sourceFile.copy(target)) {
         qDebug() << "failed!\n";
-        throw QInstaller::Error(QString::fromLatin1("Could not copy the %1 file.\nError: '%2'"
-            ).arg(kind, sourceFile.errorString()));
+        throw QInstaller::Error(QString::fromLatin1("Could not copy the %1 file from\n'%2' to '%3'\nError: "
+            "'%4'.").arg(kind, source, target,
+            /* in case of an existing target the error String does not show the file */
+            (targetFileInfo.exists() ? QLatin1String("Target already exist.") : sourceFile.errorString())));
     }
+
     qDebug() << "done.\n";
 }
 
