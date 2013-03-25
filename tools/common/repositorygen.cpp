@@ -107,26 +107,26 @@ void QInstallerTools::compressPaths(const QStringList &paths, const QString &arc
     Lib7z::createArchive(&archive, paths);
 }
 
-void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
+void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &metaDataDir,
     const PackageInfoVector &packages, const QString &appName, const QString &appVersion,
     const QString &redirectUpdateUrl)
 {
-    const QString metapath = makePathAbsolute(outDir);
+    const QString metapath = makePathAbsolute(_targetDir);
     if (!QFile::exists(metapath))
         QInstaller::mkpath(metapath);
 
     QDomDocument doc;
     QDomElement root;
     // use existing Updates.xml, if any
-    QFile existingUpdatesXml(QFileInfo(dataDir, QLatin1String("Updates.xml")).absoluteFilePath());
+    QFile existingUpdatesXml(QFileInfo(metaDataDir, QLatin1String("Updates.xml")).absoluteFilePath());
     if (!existingUpdatesXml.open(QIODevice::ReadOnly) || !doc.setContent(&existingUpdatesXml)) {
         root = doc.createElement(QLatin1String("Updates"));
-        root.appendChild(doc.createElement(QLatin1String("ApplicationName"))).appendChild(
-            doc.createTextNode(appName));
-        root.appendChild(doc.createElement(QLatin1String("ApplicationVersion"))).appendChild(
-            doc.createTextNode(appVersion));
-        root.appendChild(doc.createElement(QLatin1String("Checksum"))).appendChild(
-            doc.createTextNode(QLatin1String("true")));
+        root.appendChild(doc.createElement(QLatin1String("ApplicationName"))).appendChild(doc
+            .createTextNode(appName));
+        root.appendChild(doc.createElement(QLatin1String("ApplicationVersion"))).appendChild(doc
+            .createTextNode(appVersion));
+        root.appendChild(doc.createElement(QLatin1String("Checksum"))).appendChild(doc
+            .createTextNode(QLatin1String("true")));
         if (!redirectUpdateUrl.isEmpty()) {
             root.appendChild(doc.createElement(QLatin1String("RedirectUpdateUrl"))).appendChild(
                 doc.createTextNode(redirectUpdateUrl));
@@ -217,9 +217,9 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         quint64 compressedComponentSize = 0;
 
         const QDir::Filters filters = QDir::Files | QDir::NoDotAndDotDot;
-        const QDir componentDataDir = QString::fromLatin1("%1/%2/data").arg(dataDir, it->name);
+        const QDir componentDataDir = QString::fromLatin1("%1/%2/data").arg(metaDataDir, it->name);
         const QFileInfoList entries = componentDataDir.exists() ? componentDataDir.entryInfoList(filters | QDir::Dirs)
-            : QDir(QString::fromLatin1("%1/%2").arg(dataDir, it->name)).entryInfoList(filters);
+            : QDir(QString::fromLatin1("%1/%2").arg(metaDataDir, it->name)).entryInfoList(filters);
 
         qDebug() << QString::fromLatin1("calculate size of directory: %1").arg(componentDataDir.absolutePath());
         foreach (const QFileInfo &fi, entries) {
@@ -572,10 +572,10 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
 }
 
 void QInstallerTools::copyComponentData(const QString &packageDir, const QString &repoDir,
-    PackageInfoVector &infos)
+    PackageInfoVector *const infos)
 {
-    for (int i = 0; i < infos.count(); ++i) {
-        const PackageInfo info = infos.at(i);
+    for (int i = 0; i < infos->count(); ++i) {
+        const PackageInfo info = infos->at(i);
         const QString name = info.name;
         qDebug() << "Copying component data for" << name;
 
@@ -624,7 +624,7 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
         }
 
         foreach (const QString &target, compressedFiles) {
-            infos[i].copiedArchives.append(target);
+            (*infos)[i].copiedArchives.append(target);
 
             QFile archiveFile(target);
             QFile archiveHashFile(archiveFile.fileName() + QLatin1String(".sha1"));
@@ -641,7 +641,7 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
                 QInstaller::openForWrite(&archiveHashFile, archiveHashFile.fileName());
                 archiveHashFile.write(hashOfArchiveData);
                 qDebug() << "Generated sha1 hash:" << hashOfArchiveData;
-                infos[i].copiedArchives.append(archiveHashFile.fileName());
+                (*infos)[i].copiedArchives.append(archiveHashFile.fileName());
                 archiveHashFile.close();
             } catch (const QInstaller::Error &/*e*/) {
                 archiveFile.close();

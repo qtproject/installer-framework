@@ -478,7 +478,7 @@ static void printUsage()
     std::cout << std::endl;
 }
 
-void copyInstallerConfigurationToDirectory(const QString &configFile, const QString &targetDir)
+void copyConfigData(const QString &configFile, const QString &targetDir)
 {
     qDebug() << "Begin to copy configuration file and data.";
 
@@ -698,9 +698,9 @@ int main(int argc, char **argv)
         const Settings settings = Settings::fromFileAndPrefix(configFile, QFileInfo(configFile).absolutePath());
         QInstallerTools::PackageInfoVector packages = createListOfPackages(packagesDirectory,
             filteredPackages, ftype);
-        generateMetaDataDirectory(tmpMetaDir, packagesDirectory, packages, settings.applicationName(),
-                settings.applicationVersion());
-        copyInstallerConfigurationToDirectory(configFile, tmpMetaDir + QLatin1String("/installer-config"));
+        copyMetaData(tmpMetaDir, packagesDirectory, packages, settings.applicationName(),
+            settings.applicationVersion());
+        copyConfigData(configFile, tmpMetaDir + QLatin1String("/installer-config"));
         {
             QSettings confInternal(tmpMetaDir + QLatin1String("/config/config-internal.ini")
                 , QSettings::IniFormat);
@@ -721,7 +721,7 @@ int main(int argc, char **argv)
             input.binaryResourcePath = createBinaryResourceFile(tmpMetaDir);
             input.binaryResources = createBinaryResourceFiles(resources);
 
-            QInstallerTools::copyComponentData(packagesDirectory, tmpMetaDir, packages);
+            QInstallerTools::copyComponentData(packagesDirectory, tmpMetaDir, &packages);
 
             // now put the packages into the components section of the binary
             foreach (const QInstallerTools::PackageInfo &info, packages) {

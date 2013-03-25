@@ -199,13 +199,13 @@ int main(int argc, char** argv)
                 removeDirectory(fi.absoluteFilePath());
         }
 
-        copyComponentData(packagesDir, repositoryDir, packages);
+        copyComponentData(packagesDir, repositoryDir, &packages);
 
         TempDirDeleter tmpDeleter;
         const QString metaTmp = createTemporaryDirectory();
         tmpDeleter.add(metaTmp);
 
-        generateMetaDataDirectory(metaTmp, repositoryDir, packages, QLatin1String("{AnyApplication}"),
+        copyMetaData(metaTmp, repositoryDir, packages, QLatin1String("{AnyApplication}"),
             QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), redirectUpdateUrl);
         QInstallerTools::compressMetaDirectories(metaTmp, metaTmp, pathToVersionMapping);
 

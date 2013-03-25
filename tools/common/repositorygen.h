@@ -73,11 +73,9 @@ void compressPaths(const QStringList &paths, const QString &archivePath);
 void compressMetaDirectories(const QString &repoDir, const QString &baseDir,
     const QHash<QString, QString> &versionMapping);
 
-void copyComponentData(const QString &packageDir, const QString &repoDir, PackageInfoVector &infos);
-
-void generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
-    const PackageInfoVector &packages, const QString &appName,
-    const QString& appVersion, const QString &redirectUpdateUrl = QString());
+void copyMetaData(const QString &outDir, const QString &dataDir, const PackageInfoVector &packages,
+    const QString &appName, const QString& appVersion, const QString &redirectUpdateUrl = QString());
+void copyComponentData(const QString &packageDir, const QString &repoDir, PackageInfoVector *const infos);
 
 PackageInfoVector createListOfPackages(const QString &packagesDirectory, const QStringList &filteredPackages,
     FilterType ftype);
