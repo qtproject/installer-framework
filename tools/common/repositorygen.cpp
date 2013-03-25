@@ -416,8 +416,7 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
     bool ignoreInvalidPackages = qApp->arguments().contains(QString::fromLatin1("--ignore-invalid-packages"));
 
     PackageInfoVector dict;
-    const QFileInfoList entries = QDir(packagesDirectory)
-        .entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+    const QFileInfoList entries = QDir(packagesDirectory).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
         if (filterType == Exclude) {
             if (filteredPackages.contains(it->fileName()))
@@ -431,9 +430,9 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
         if (it->fileName().contains(QLatin1Char('-'))) {
             if (ignoreInvalidPackages)
                 continue;
-            throw QInstaller::Error(QString::fromLatin1("Component '%1' mustn't contain '-'. This is not allowed, because "
-                "dashes are used as the separator between the component name and the version number internally.")
-                .arg(it->fileName()));
+            throw QInstaller::Error(QString::fromLatin1("Component '%1' mustn't contain '-'. This is not "
+                "allowed, because dashes are used as the separator between the component name and the "
+                "version number internally.").arg(it->fileName()));
         }
 
         QFile file(QString::fromLatin1("%1/meta/package.xml").arg(it->filePath()));
@@ -557,8 +556,10 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
         const QByteArray sha1Sum = QInstaller::calculateHash(&tmp, QCryptographicHash::Sha1);
         writeSHA1ToNodeWithName(doc, elements, sha1Sum, path);
         const QString finalTarget = absPath + QLatin1String("/") + fn;
-        if (!tmp.rename(finalTarget))
-            throw QInstaller::Error(QString::fromLatin1("Could not move '%1' to '%2'").arg(tmpTarget, finalTarget));
+        if (!tmp.rename(finalTarget)) {
+            throw QInstaller::Error(QString::fromLatin1("Could not move '%1' to '%2'").arg(tmpTarget,
+                finalTarget));
+        }
     }
 
     QInstaller::openForWrite(&existingUpdatesXml, existingUpdatesXml.fileName());
@@ -593,8 +594,8 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
                     qDebug() << QString::fromLatin1("Copying archive from '%1' to '%2'").arg(tmp.fileName(),
                         target);
                     if (!tmp.copy(target)) {
-                        throw QInstaller::Error(QString::fromLatin1("Could not copy '%1' to '%2': %3").arg(tmp.fileName(),
-                            target, tmp.errorString()));
+                        throw QInstaller::Error(QString::fromLatin1("Could not copy '%1' to '%2': %3")
+                            .arg(tmp.fileName(), target, tmp.errorString()));
                     }
                     compressedFiles.append(target);
                 } else {
