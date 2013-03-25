@@ -455,7 +455,7 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 
         QScopedPointer<QTranslator> translator(new QTranslator(this));
         if (!translator->load(filename))
-            throw Error(tr("Could not open the requested translation file at %1").arg(filename));
+            throw Error(tr("Could not open the requested translation file '%1'.").arg(filename));
         qApp->installTranslator(translator.take());
     }
 }
@@ -479,15 +479,23 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
     while (it.hasNext()) {
         QFile file(it.next());
         if (!file.open(QIODevice::ReadOnly)) {
-            throw Error(tr("Could not open the requested UI file at %1: %2").arg(it.fileName(),
+            throw Error(tr("Could not open the requested UI file '%1'. Error: %2").arg(it.fileName(),
                 file.errorString()));
         }
 
         static QUiLoader loader;
         loader.setTranslationEnabled(true);
         loader.setLanguageChangeEnabled(true);
-        QWidget *const w = loader.load(&file, MessageBoxHandler::currentBestSuitParent());
-        d->m_userInterfaces.insert(w->objectName(), w);
+        QWidget *const widget = loader.load(&file, MessageBoxHandler::currentBestSuitParent());
+        if (!widget) {
+            throw Error(tr("Could not load the requested UI file '%1'. Error: %2").arg(it.fileName(),
+#if QT_VERSION < 0x050000
+                tr("An error has occurred while reading the UI file.")));
+#else
+                loader.errorString()));
+#endif
+        }
+        d->m_userInterfaces.insert(widget->objectName(), widget);
     }
 }
 
@@ -512,7 +520,7 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
             qDebug("Unable to open translated license file. Using untranslated fallback.");
             file.setFileName(directory + fileName);
             if (!file.open(QIODevice::ReadOnly)) {
-                throw Error(tr("Could not open the requested license file at %1: %2").arg(fileName,
+                throw Error(tr("Could not open the requested license file '%1'. Error: %2").arg(fileName,
                     file.errorString()));
             }
         }
