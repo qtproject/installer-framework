@@ -90,14 +90,6 @@ static int printErrorAndUsageAndExit(const QString &err)
     return 1;
 }
 
-static QString makeAbsolute(const QString &path)
-{
-    QFileInfo fi(path);
-    if (fi.isAbsolute())
-        return path;
-    return QDir::current().absoluteFilePath(path);
-}
-
 int main(int argc, char** argv)
 {
     try {
@@ -188,7 +180,7 @@ int main(int argc, char** argv)
                 "exclusive!"));
         }
 
-        const QString repositoryDir = makeAbsolute(args.first());
+        const QString repositoryDir = QInstallerTools::makePathAbsolute(args.first());
         if (remove)
             QInstaller::removeDirectory(repositoryDir);
 

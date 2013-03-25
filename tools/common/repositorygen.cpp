@@ -73,6 +73,13 @@ void QInstallerTools::printRepositoryGenOptions()
     std::cout << "  --ignore-invalid-packages Ignore all invalid packages instead of aborting." << std::endl;
 }
 
+QString QInstallerTools::makePathAbsolute(const QString &path)
+{
+    if (QFileInfo(path).isRelative())
+        return QDir::current().absoluteFilePath(path);
+    return path;
+}
+
 void QInstallerTools::copyWithException(const QString &source, const QString &target, const QString &kind)
 {
     qDebug() << QString::fromLatin1("Copying associated %1 file '%2'").arg(kind, source);
@@ -104,10 +111,7 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
     const PackageInfoVector &packages, const QString &appName, const QString &appVersion,
     const QString &redirectUpdateUrl)
 {
-    QString metapath = outDir;
-    if (QFileInfo(metapath).isRelative())
-        metapath = QDir::cleanPath(QDir::current().absoluteFilePath(metapath));
-
+    const QString metapath = makePathAbsolute(outDir);
     if (!QFile::exists(metapath))
         QInstaller::mkpath(metapath);
 

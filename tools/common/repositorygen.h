@@ -65,6 +65,7 @@ enum FilterType {
     Exclude
 };
 
+QString makePathAbsolute(const QString &path);
 QHash<QString, QString> buildPathToVersionMapping(const PackageInfoVector &info);
 
 void copyWithException(const QString &source, const QString &target, const QString &kind = QString());
