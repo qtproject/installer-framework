@@ -693,13 +693,14 @@ int main(int argc, char **argv)
     qDebug() << "Parsed arguments, ok.";
 
     int exitCode = EXIT_FAILURE;
-    const QString tmpMetaDir = createTemporaryDirectory();
+    const QString tmpMetaDir = QInstaller::createTemporaryDirectory();
     try {
         const Settings settings = Settings::fromFileAndPrefix(configFile, QFileInfo(configFile).absolutePath());
-        QInstallerTools::PackageInfoVector packages = createListOfPackages(packagesDirectory,
+        QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectory,
             filteredPackages, ftype);
-        copyMetaData(tmpMetaDir, packagesDirectory, packages, settings.applicationName(),
+        QInstallerTools::copyMetaData(tmpMetaDir, packagesDirectory, packages, settings.applicationName(),
             settings.applicationVersion());
+
         copyConfigData(configFile, tmpMetaDir + QLatin1String("/installer-config"));
         {
             QSettings confInternal(tmpMetaDir + QLatin1String("/config/config-internal.ini")
@@ -748,10 +749,11 @@ int main(int argc, char **argv)
                 QFile::remove(resource);
         }
     } catch (const Error &e) {
-        std::cerr << "caught exception: " << e.message() << std::endl;
+        std::cerr << "Caught exception: " << e.message() << std::endl;
     } catch (...) {
         std::cerr << "Unknown exception caught" << std::endl;
     }
-    removeDirectory(tmpMetaDir, true);
+
+    QInstaller::removeDirectory(tmpMetaDir, true);
     return exitCode;
 }

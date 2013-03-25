@@ -92,6 +92,8 @@ static int printErrorAndUsageAndExit(const QString &err)
 
 int main(int argc, char** argv)
 {
+    QString tmpMetaDir;
+    int exitCode = EXIT_FAILURE;
     try {
         QCoreApplication app(argc, argv);
 
@@ -191,7 +193,7 @@ int main(int argc, char** argv)
 
         QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDir,
             filteredPackages, filterType);
-        QHash<QString, QString> pathToVersionMapping = buildPathToVersionMapping(packages);
+        QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(packages);
 
         foreach (const QInstallerTools::PackageInfo &package, packages) {
             const QFileInfo fi(repositoryDir, package.name);
@@ -199,27 +201,27 @@ int main(int argc, char** argv)
                 removeDirectory(fi.absoluteFilePath());
         }
 
-        copyComponentData(packagesDir, repositoryDir, &packages);
-
-        TempDirDeleter tmpDeleter;
-        const QString metaTmp = createTemporaryDirectory();
-        tmpDeleter.add(metaTmp);
-
-        copyMetaData(metaTmp, repositoryDir, packages, QLatin1String("{AnyApplication}"),
+        tmpMetaDir = QInstaller::createTemporaryDirectory();
+        QInstallerTools::copyComponentData(packagesDir, repositoryDir, &packages);
+        QInstallerTools::copyMetaData(tmpMetaDir, repositoryDir, packages, QLatin1String("{AnyApplication}"),
             QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), redirectUpdateUrl);
-        QInstallerTools::compressMetaDirectories(metaTmp, metaTmp, pathToVersionMapping);
+        QInstallerTools::compressMetaDirectories(tmpMetaDir, tmpMetaDir, pathToVersionMapping);
 
         QDirIterator it(repositoryDir, QStringList(QLatin1String("Updates*.xml")), QDir::Files | QDir::CaseSensitive);
         while (it.hasNext()) {
             it.next();
             QFile::remove(it.fileInfo().absoluteFilePath());
         }
-        moveDirectoryContents(metaTmp, repositoryDir);
-        return 0;
+        QInstaller::moveDirectoryContents(tmpMetaDir, repositoryDir);
+        exitCode = EXIT_SUCCESS;
     } catch (const Lib7z::SevenZipException &e) {
-        std::cerr << "caught 7zip exception: " << e.message() << std::endl;
+        std::cerr << "Caught 7zip exception: " << e.message() << std::endl;
     } catch (const QInstaller::Error &e) {
-        std::cerr << "caught exception: " << e.message() << std::endl;
+        std::cerr << "Caught exception: " << e.message() << std::endl;
+    } catch (...) {
+        std::cerr << "Unknown exception caught" << std::endl;
     }
-    return 1;
+
+    QInstaller::removeDirectory(tmpMetaDir, true);
+    return exitCode;
 }
