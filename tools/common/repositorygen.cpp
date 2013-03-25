@@ -100,26 +100,6 @@ void QInstallerTools::compressPaths(const QStringList &paths, const QString &arc
     Lib7z::createArchive(&archive, paths);
 }
 
-void QInstallerTools::compressMetaDirectories(const QString &repoDir)
-{
-    QDir dir(repoDir);
-    const QStringList sub = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-    foreach (const QString &i, sub) {
-        QDir sd(dir);
-        sd.cd(i);
-        const QString absPath = sd.absolutePath();
-        const QString fn = QLatin1String("meta.7z");
-        const QString tmpTarget = repoDir + QLatin1String("/") +fn;
-        compressPaths(QStringList() << absPath, tmpTarget);
-        QFile tmp(tmpTarget);
-        const QString finalTarget = absPath + QLatin1String("/") + fn;
-        if (!tmp.rename(finalTarget)) {
-            throw QInstaller::Error(QString::fromLatin1("Could not move file from '%1' to '%2'").arg(tmpTarget,
-                finalTarget));
-        }
-    }
-}
-
 void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QString &dataDir,
     const PackageInfoVector &packages, const QString &appName, const QString &appVersion,
     const QString &redirectUpdateUrl)
