@@ -48,7 +48,6 @@
 
 namespace QInstallerTools {
 
-void printRepositoryGenOptions();
 
 struct PackageInfo
 {
@@ -65,10 +64,14 @@ enum FilterType {
     Exclude
 };
 
+void printRepositoryGenOptions();
 QString makePathAbsolute(const QString &path);
+void copyWithException(const QString &source, const QString &target, const QString &kind = QString());
+
+PackageInfoVector createListOfPackages(const QString &packagesDirectory, const QStringList &filteredPackages,
+    FilterType ftype);
 QHash<QString, QString> buildPathToVersionMapping(const PackageInfoVector &info);
 
-void copyWithException(const QString &source, const QString &target, const QString &kind = QString());
 void compressPaths(const QStringList &paths, const QString &archivePath);
 void compressMetaDirectories(const QString &repoDir, const QString &baseDir,
     const QHash<QString, QString> &versionMapping);
@@ -77,8 +80,6 @@ void copyMetaData(const QString &outDir, const QString &dataDir, const PackageIn
     const QString &appName, const QString& appVersion, const QString &redirectUpdateUrl = QString());
 void copyComponentData(const QString &packageDir, const QString &repoDir, PackageInfoVector *const infos);
 
-PackageInfoVector createListOfPackages(const QString &packagesDirectory, const QStringList &filteredPackages,
-    FilterType ftype);
 
 } // namespace QInstallerTools
 
