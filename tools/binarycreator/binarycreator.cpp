@@ -46,6 +46,7 @@
 #include <errors.h>
 #include <fileutils.h>
 #include <init.h>
+#include <repository.h>
 #include <settings.h>
 #include <utils.h>
 
@@ -703,6 +704,8 @@ int main(int argc, char **argv)
         {
             QSettings confInternal(tmpMetaDir + QLatin1String("/config/config-internal.ini")
                 , QSettings::IniFormat);
+            // assume offline installer if there are no repositories
+            offlineOnly |= settings.repositories().isEmpty();
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
         }
 
