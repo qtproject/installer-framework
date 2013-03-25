@@ -24,22 +24,19 @@
 #define KD_UPDATER_UPDATE_INFO_H
 
 #include "kdupdater.h"
+#include "kdupdaterupdatesinfodata_p.h"
 
-#include <QSharedDataPointer>
-#include <QString>
-#include <QDate>
-#include <QList>
-#include <QStringList>
-#include <QUrl>
 #include <QHash>
+#include <QSharedData>
+#include <QString>
 #include <QVariant>
 
-// Classes and structures in this header file are for internal use only.
 // They are not a part of the public API
+// Classes and structures in this header file are for internal use only but still exported for auto tests.
 
 namespace KDUpdater {
 
-struct UpdateFileInfo
+struct KDTOOLS_EXPORT UpdateFileInfo
 {
     UpdateFileInfo()
         : compressedSize(0),
@@ -52,14 +49,14 @@ struct UpdateFileInfo
     quint64 uncompressedSize;
 };
 
-struct UpdateInfo
+struct KDTOOLS_EXPORT UpdateInfo
 {
     int type;
     QHash<QString, QVariant> data;
     QList<UpdateFileInfo> updateFiles;
 };
 
-class UpdatesInfo
+class KDTOOLS_EXPORT UpdatesInfo
 {
 public:
     enum Error
@@ -90,7 +87,6 @@ public:
     QList<UpdateInfo> updatesInfo(int type = AllUpdate, int compatLevel = -1) const;
 
 private:
-    struct UpdatesInfoData;
     QSharedDataPointer<UpdatesInfoData> d;
 };
 

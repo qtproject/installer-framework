@@ -2,7 +2,6 @@
 #include "componentmodel.h"
 
 #include "kdupdaterupdatesinfo_p.h"
-#include "kdupdaterupdatesinfo.cpp"
 #include "kdupdaterupdatesourcesinfo.h"
 
 #include "packagemanagercore.h"

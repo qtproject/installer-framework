@@ -22,47 +22,29 @@
 
 #include "kdupdaterupdatesinfo_p.h"
 
-#include <QCoreApplication>
-#include <QtXml/QDomDocument>
-#include <QtXml/QDomElement>
 #include <QFile>
-#include <QSharedData>
 #include <QLocale>
+#include <QUrl>
 
 using namespace KDUpdater;
 
-//
-// UpdatesInfo::UpdatesInfoData
-//
-struct UpdatesInfo::UpdatesInfoData : public QSharedData
+UpdatesInfoData::UpdatesInfoData()
+     : error(UpdatesInfo::NotYetReadError)
+     , compatLevel(-1)
 {
-    Q_DECLARE_TR_FUNCTIONS(KDUpdater::UpdatesInfoData)
+}
 
-public:
-    UpdatesInfoData() : error(UpdatesInfo::NotYetReadError), compatLevel(-1) { }
+UpdatesInfoData::~UpdatesInfoData()
+{
+}
 
-    QString errorMessage;
-    UpdatesInfo::Error error;
-    QString updateXmlFile;
-    QString applicationName;
-    QString applicationVersion;
-    int compatLevel;
-    QList<UpdateInfo> updateInfoList;
-
-    void parseFile(const QString &updateXmlFile);
-    bool parsePackageUpdateElement(const QDomElement &updateE);
-    bool parseCompatUpdateElement(const QDomElement &updateE);
-
-    void setInvalidContentError(const QString &detail);
-};
-
-void UpdatesInfo::UpdatesInfoData::setInvalidContentError(const QString &detail)
+void UpdatesInfoData::setInvalidContentError(const QString &detail)
 {
     error = UpdatesInfo::InvalidContentError;
     errorMessage = tr("Updates.xml contains invalid content: %1").arg(detail);
 }
 
-void UpdatesInfo::UpdatesInfoData::parseFile(const QString &updateXmlFile)
+void UpdatesInfoData::parseFile(const QString &updateXmlFile)
 {
     QFile file(updateXmlFile);
     if (!file.open(QFile::ReadOnly)) {
@@ -133,7 +115,7 @@ void UpdatesInfo::UpdatesInfoData::parseFile(const QString &updateXmlFile)
     errorMessage.clear();
 }
 
-bool UpdatesInfo::UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
+bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
 {
     if (updateE.isNull())
         return false;
@@ -210,7 +192,7 @@ bool UpdatesInfo::UpdatesInfoData::parsePackageUpdateElement(const QDomElement &
     return true;
 }
 
-bool UpdatesInfo::UpdatesInfoData::parseCompatUpdateElement(const QDomElement &updateE)
+bool UpdatesInfoData::parseCompatUpdateElement(const QDomElement &updateE)
 {
     if (updateE.isNull())
         return false;
@@ -260,7 +242,7 @@ bool UpdatesInfo::UpdatesInfoData::parseCompatUpdateElement(const QDomElement &u
 // UpdatesInfo
 //
 UpdatesInfo::UpdatesInfo()
-    : d(new UpdatesInfo::UpdatesInfoData)
+    : d(new UpdatesInfoData)
 {
 }
 

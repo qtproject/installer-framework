@@ -36,7 +36,8 @@ HEADERS += $$PWD/kdupdater.h \
     $$PWD/kdupdatertask.h \
     $$PWD/kdupdaterupdatefinder.h \
     $$PWD/kdupdaterupdatesinfo_p.h \
-    $$PWD/environment.h
+    $$PWD/environment.h \
+    $$PWD/kdupdaterupdatesinfodata_p.h
 
 SOURCES += $$PWD/kdupdaterapplication.cpp \
     $$PWD/kdupdaterfiledownloader.cpp \
