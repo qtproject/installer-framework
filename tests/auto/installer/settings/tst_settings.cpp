@@ -24,8 +24,7 @@ private slots:
 
 void tst_Settings::loadTutorialConfig()
 {
-    Settings settings =
-            Settings::fromFileAndPrefix(":///data/tutorial_config.xml", ":///data");
+    Settings settings = Settings::fromFileAndPrefix(":///data/tutorial_config.xml", ":///data");
 
     // specified values
     QCOMPARE(settings.applicationName(), QLatin1String("Your application"));
@@ -74,8 +73,7 @@ void tst_Settings::loadTutorialConfig()
 void tst_Settings::loadFullConfig()
 {
     QTest::ignoreMessage(QtWarningMsg, "Deprecated element 'Pages'. ");
-    Settings settings =
-            Settings::fromFileAndPrefix(":///data/full_config.xml", ":///data");
+    Settings settings = Settings::fromFileAndPrefix(":///data/full_config.xml", ":///data");
 }
 
 void tst_Settings::loadEmptyConfig()
@@ -123,8 +121,8 @@ void tst_Settings::loadMalformedConfig()
 
 void tst_Settings::loadUnknownElementConfigInStrictParseMode()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in :/data/unknown_element_config.xml, line 5, "
-                         "column 13: Unexpected element 'unknown'.\" ");
+    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in :/data/unknown_element_config.xml, "
+        "line 5, column 13: Unexpected element 'unknown'.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/unknown_element_config.xml", ":/data");
     } catch (const Error &error) {
@@ -144,7 +142,7 @@ void tst_Settings::loadUnknownElementConfigInRelaxedParseMode()
             Settings::RelaxedParseMode);
         QCOMPARE(settings.title(), QLatin1String("Your application Installer"));
     } catch (const Error &error) {
-        QFAIL(qPrintable(QString::fromLatin1("Got an exception in FaultTolerantParseMode: %1").arg(error.message())));
+        QFAIL(qPrintable(QString::fromLatin1("Got an exception in TolerantParseMode: %1").arg(error.message())));
     }
 }
 
