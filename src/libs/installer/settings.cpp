@@ -79,38 +79,57 @@ static QSet<T> variantListToSet(const QVariantList &list)
     return set;
 }
 
-static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault)
+static void raiseError(QXmlStreamReader &reader, const QString &error, Settings::ParseMode parseMode)
+{
+    if (parseMode == Settings::StrictParseMode) {
+        reader.raiseError(error);
+    } else {
+        QFile *xmlFile = qobject_cast<QFile*>(reader.device());
+        if (xmlFile) {
+            qWarning() << QString::fromLatin1("Ignoring following settings reader error in %1, line %2, "
+                "column %3: %4").arg(xmlFile->fileName()).arg(reader.lineNumber()).arg(reader.columnNumber())
+                .arg(reader.errorString());
+        } else {
+            qWarning("Ignoring following settings reader error: %s", qPrintable(error));
+        }
+    }
+}
+
+static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode)
 {
     QSet<Repository> set;
     while (reader.readNextStartElement()) {
         if (reader.name() == QLatin1String("Repository")) {
             Repository repo(QString(), isDefault);
             while (reader.readNextStartElement()) {
-                if (reader.name() == QLatin1String("Url"))
+                if (reader.name() == QLatin1String("Url")) {
                     repo.setUrl(reader.readElementText());
-                else if (reader.name() == QLatin1String("Username"))
+                } else if (reader.name() == QLatin1String("Username")) {
                     repo.setUsername(reader.readElementText());
-                else if (reader.name() == QLatin1String("Password"))
+                } else if (reader.name() == QLatin1String("Password")) {
                     repo.setPassword(reader.readElementText());
-                else if (reader.name() == QLatin1String("Enabled"))
+                } else if (reader.name() == QLatin1String("Enabled")) {
                     repo.setEnabled(bool(reader.readElementText().toInt()));
-                else
-                    reader.raiseError(QString::fromLatin1("Unexpected element '%1'.").arg(
-                                          reader.name().toString()));
+                } else {
+                    raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name()
+                        .toString()), parseMode);
+                }
 
-                if (!reader.attributes().isEmpty())
-                    reader.raiseError(QString::fromLatin1("Unexpected attribute for element '%1'.").arg(
-                                          reader.name().toString()));
+                if (!reader.attributes().isEmpty()) {
+                    raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.")
+                        .arg(reader.name().toString()), parseMode);
+                }
             }
             set.insert(repo);
         } else {
-            reader.raiseError(QString::fromLatin1("Unexpected element '%1'.").arg(
-                                  reader.name().toString()));
+            raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name().toString()),
+                parseMode);
         }
 
-        if (!reader.attributes().isEmpty())
-            reader.raiseError(QString::fromLatin1("Unexpected attribute for element '%1'.").arg(
-                              reader.name().toString()));
+        if (!reader.attributes().isEmpty()) {
+            raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.").arg(reader
+                .name().toString()), parseMode);
+        }
     }
     return set;
 }
@@ -123,32 +142,32 @@ static QVariantHash readTitles(QXmlStreamReader &reader)
     return hash;
 }
 
-static QHash<QString, QVariantHash> readPages(QXmlStreamReader &reader)
+static QHash<QString, QVariantHash> readPages(QXmlStreamReader &reader, Settings::ParseMode parseMode)
 {
     QHash<QString, QVariantHash> hash;
     while (reader.readNextStartElement()) {
         if (reader.name() == QLatin1String("Page")) {
             QVariantHash pageElements;
             const QString pageName = reader.attributes().value(QLatin1String("name")).toString();
-            if (pageName.isEmpty())
-                reader.raiseError(QLatin1String("Expected non-empty attribute 'name' for element 'Page'."));
-
+            if (pageName.isEmpty()) {
+                raiseError(reader, QLatin1String("Expected non-empty attribute 'name' for element 'Page'."),
+                    parseMode);
+            }
             while (reader.readNextStartElement()) {
                 const QString name = reader.name().toString();
-                if (name == QLatin1String("Title") || name == QLatin1String("SubTitle")) {
+                if (name == QLatin1String("Title") || name == QLatin1String("SubTitle"))
                     pageElements.insert(name, readTitles(reader));
-                } else {
+                else
                     pageElements.insert(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
-                }
             }
             hash.insert(pageName, pageElements);
         } else {
-            reader.raiseError(QString::fromLatin1("Unexpected element '%1'.").arg(reader.name().toString()));
+            raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name().toString()),
+                parseMode);
         }
     }
     return hash;
 }
-
 
 // -- Settings::Private
 
@@ -195,7 +214,7 @@ Settings& Settings::operator=(const Settings &other)
 }
 
 /* static */
-Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
+Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix, ParseMode parseMode)
 {
     QFile file(path);
     QFile overrideConfig(QLatin1String(":/overrideconfig.xml"));
@@ -208,9 +227,10 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
 
     QXmlStreamReader reader(&file);
     if (reader.readNextStartElement()) {
-        if (reader.name() != QLatin1String("Installer"))
-            reader.raiseError(QString::fromLatin1("Unexpected element '%1' as root element.").arg(
-                                  reader.name().toString()));
+        if (reader.name() != QLatin1String("Installer")) {
+            raiseError(reader, QString::fromLatin1("Unexpected element '%1' as root element.").arg(reader
+                .name().toString()), parseMode);
+        }
     }
     QStringList elementList;
     elementList << scName << scVersion << scTitle << scPublisher << scProductUrl
@@ -230,34 +250,37 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix)
     s.d->m_data.insert(scPrefix, prefix);
     while (reader.readNextStartElement()) {
         const QString name = reader.name().toString();
-
         if (!elementList.contains(name))
-            reader.raiseError(QString::fromLatin1("Unexpected element '%1'.").arg(name));
+            raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(name), parseMode);
 
-        if (!reader.attributes().isEmpty())
-            reader.raiseError(QString::fromLatin1("Unexpected attribute for element '%1'.").arg(name));
+        if (!reader.attributes().isEmpty()) {
+            raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.").arg(name),
+                parseMode);
+        }
 
         if (blackList.contains(name)) {
             if (name == scRemoteRepositories)
-                s.addDefaultRepositories(readRepositories(reader, true));
+                s.addDefaultRepositories(readRepositories(reader, true, parseMode));
 
             if (name == scPages) {
                 qWarning() << "Deprecated element 'Pages'.";
-                QHash<QString, QVariantHash> pages = readPages(reader);
+                QHash<QString, QVariantHash> pages = readPages(reader, parseMode);
                 const QStringList &keys = pages.keys();
                 foreach (const QString &key, keys)
                     s.d->m_data.insert(key, pages.value(key));
             }
         } else {
-            if (s.d->m_data.contains(name))
+            if (s.d->m_data.contains(name)) {
+                // instead of raising parse mode based error, raise a real error
                 reader.raiseError(QString::fromLatin1("Element '%1' has been defined before.").arg(name));
+            }
             s.d->m_data.insert(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
         }
     }
 
     if (reader.error() != QXmlStreamReader::NoError) {
-        throw Error(QString::fromLatin1("Error in %1, line %2, column %3: %4")
-                    .arg(path).arg(reader.lineNumber()).arg(reader.columnNumber()).arg(reader.errorString()));
+        throw Error(QString::fromLatin1("Error in %1, line %2, column %3: %4").arg(path).arg(reader
+            .lineNumber()).arg(reader.columnNumber()).arg(reader.errorString()));
     }
 
     if (s.d->m_data.value(scName).isNull())

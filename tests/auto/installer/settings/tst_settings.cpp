@@ -17,7 +17,8 @@ private slots:
     void loadEmptyConfig();
     void loadNotExistingConfig();
     void loadMalformedConfig();
-    void loadUnknownElementConfig();
+    void loadUnknownElementConfigInStrictParseMode();
+    void loadUnknownElementConfigInRelaxedParseMode();
 };
 
 void tst_Settings::loadTutorialConfig()
@@ -119,7 +120,7 @@ void tst_Settings::loadMalformedConfig()
     QFAIL("No exception thrown");
 }
 
-void tst_Settings::loadUnknownElementConfig()
+void tst_Settings::loadUnknownElementConfigInStrictParseMode()
 {
     QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in :/data/unknown_element_config.xml, line 5, "
                          "column 13: Unexpected element 'unknown'.\" ");
@@ -131,6 +132,19 @@ void tst_Settings::loadUnknownElementConfig()
         return;
     }
     QFAIL("No exception thrown");
+}
+
+void tst_Settings::loadUnknownElementConfigInRelaxedParseMode()
+{
+    QTest::ignoreMessage(QtWarningMsg, "\"Ignoring following settings reader error in "
+        ":/data/unknown_element_config.xml, line 5, column 13: \" ");
+    try {
+        Settings settings = Settings::fromFileAndPrefix(":/data/unknown_element_config.xml", ":/data",
+            Settings::RelaxedParseMode);
+        QCOMPARE(settings.title(), QLatin1String("Your application Installer"));
+    } catch (const Error &error) {
+        QFAIL(qPrintable(QString::fromLatin1("Got an exception in FaultTolerantParseMode: %1").arg(error.message())));
+    }
 }
 
 QTEST_MAIN(tst_Settings)
