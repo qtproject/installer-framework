@@ -1105,10 +1105,10 @@ public:
     {
         m_checkDefault->setVisible(m_core->isInstaller() || m_core->isPackageManager());
         if (m_treeView->selectionModel()) {
-            disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-                this, SLOT(currentChanged(QModelIndex)));
             disconnect(m_currentModel, SIGNAL(checkStateChanged(QModelIndex)), this,
-                SLOT(currentChanged(QModelIndex)));
+                SLOT(currentCheckedChanged(QModelIndex)));
+            disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+                this, SLOT(currentSelectedChanged(QModelIndex)));
         }
 
         m_currentModel = m_core->isUpdater() ? m_updaterModel : m_allModel;
@@ -1131,39 +1131,38 @@ public:
             hasChildren = m_currentModel->hasChildren(m_currentModel->index(row, 0));
         m_treeView->setRootIsDecorated(hasChildren);
 
-        connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(currentChanged(QModelIndex)));
         connect(m_currentModel, SIGNAL(checkStateChanged(QModelIndex)), this,
-            SLOT(currentChanged(QModelIndex)));
+            SLOT(currentCheckedChanged(QModelIndex)));
+        connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(currentSelectedChanged(QModelIndex)));
 
         m_treeView->setCurrentIndex(m_currentModel->index(0, 0));
     }
 
 public slots:
-    void currentChanged(const QModelIndex &current)
+    void currentCheckedChanged(const QModelIndex &current)
     {
-        // if there is no selection, return
+        if (m_treeView->selectionModel()->currentIndex() == current)
+            currentSelectedChanged(current);
+    }
+
+    void currentSelectedChanged(const QModelIndex &current)
+    {
         if (!current.isValid())
             return;
 
+        m_sizeLabel->setText(QString());
         m_descriptionLabel->setText(m_currentModel->data(m_currentModel->index(current.row(),
             ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString());
 
-        m_sizeLabel->clear();
-        if (!m_core->isUninstaller()) {
-            const QModelIndex currentSelected = m_treeView->selectionModel()->currentIndex();
-            if (!currentSelected.isValid())
-                return;
+        Component *component = m_currentModel->componentFromIndex(current);
+        if ((m_core->isUninstaller()) || (!component))
+            return;
 
-            Component *component = m_currentModel->componentFromIndex(currentSelected);
-            if (component == 0)
-                return;
-
-            if (component->updateUncompressedSize() > 0) {
-                m_sizeLabel->setText(ComponentSelectionPage::tr("This component "
-                    "will occupy approximately %1 on your hard disk drive.")
-                    .arg(humanReadableSize(component->value(scUncompressedSizeSum).toLongLong())));
-            }
+        if ((component->checkState() != Qt::Unchecked) && (component->updateUncompressedSize() > 0)) {
+            m_sizeLabel->setText(ComponentSelectionPage::tr("This component "
+                "will occupy approximately %1 on your hard disk drive.")
+                .arg(humanReadableSize(component->value(scUncompressedSizeSum).toLongLong())));
         }
     }
 
