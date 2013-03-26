@@ -1,9 +1,10 @@
-#include <QTest>
 #include "settings.h"
 #include "errors.h"
 #include "repository.h"
 
 #include <QFile>
+#include <QString>
+#include <QTest>
 
 using namespace QInstaller;
 
