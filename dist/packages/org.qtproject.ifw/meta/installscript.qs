@@ -9,4 +9,6 @@ function Component()
 
     // do not show component selection page
     installer.setDefaultPageVisible(QInstaller.ComponentSelection, false);
+    // no startmenu entry so no need to ask where to create it
+    installer.setDefaultPageVisible(QInstaller.StartMenuSelection, false);
 }
