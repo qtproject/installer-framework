@@ -205,8 +205,9 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 {
     QByteArray ba = trimAndPrepend(type, msg.toLocal8Bit());
     if (type != QtDebugMsg) {
-        ba += QByteArray(" (") + context.file + QByteArray(":").append(context.line) + QByteArray(", ")
-            + context.function + QByteArray(")");
+        ba += QString(QStringLiteral(" (%1:%2, %3)")).arg(
+                    QString::fromLatin1(context.file)).arg(context.line).arg(
+                    QString::fromLatin1(context.function)).toLocal8Bit();
     }
 #endif
 
