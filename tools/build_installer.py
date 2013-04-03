@@ -24,6 +24,8 @@ def parse_arguments():
     parser.add_argument('--doc-qmake', dest='doc_qmake', required=True, help='path to qmake that will be used to generate the documentation')
     parser.add_argument('--make', dest='make', required=True, help='make command')
     parser.add_argument('--targetdir', dest='target_dir', required=True, help='directory the generated installer will be placed in')
+    if sys.platform == 'darwin':
+        parser.add_argument('--qt_menu_nib', dest='menu_nib', required=True, help='location of qt_menu.nib (usually src/gui/mac/qt_menu.nib)')
 
     args = parser.parse_args()
 
@@ -97,6 +99,8 @@ def package():
     package_dir = os.path.join(src_dir, 'dist', 'packages')
     installer_path = os.path.join(src_dir, 'dist', 'packages')
     run((binary_creator, '--offline-only', '-c', config_file, '-p', package_dir, target_path))
+    if sys.platform == 'darwin':
+        shutil.copytree(args.menu_nib, target_path + '.app/Contents/Resources/qt_menu.nib')
 
 
 parse_arguments()

@@ -74,13 +74,19 @@ public:
         UserDefinedProxy
     };
 
+    enum ParseMode {
+        StrictParseMode,
+        RelaxedParseMode
+    };
+
     explicit Settings();
     ~Settings();
 
     Settings(const Settings &other);
     Settings &operator=(const Settings &other);
 
-    static Settings fromFileAndPrefix(const QString &path, const QString &prefix);
+    static Settings fromFileAndPrefix(const QString &path, const QString &prefix,
+        ParseMode parseMode = StrictParseMode);
 
     QString logo() const;
     QString title() const;

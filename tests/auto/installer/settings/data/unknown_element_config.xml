@@ -3,4 +3,5 @@
     <Name>Your application</Name>
     <Version>1.2.3</Version>
     <unknown></unknown>
+    <Title>Your application Installer</Title>
 </Installer>

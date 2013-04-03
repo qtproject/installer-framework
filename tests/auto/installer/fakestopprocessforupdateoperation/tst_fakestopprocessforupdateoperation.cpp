@@ -2,6 +2,7 @@
 #include "packagemanagercore.h"
 
 #include <QFileInfo>
+#include <QString>
 #include <QTest>
 
 using namespace KDUpdater;
