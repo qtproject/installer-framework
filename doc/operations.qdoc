@@ -132,13 +132,15 @@
                 The file is set to use UTF-8 encoding.
         \row
             \o  InstallIcons
-            \o  "InstallIcons" \a directory
+            \o  "InstallIcons" \a directory \a [Vendorprefix]
             \o  Installs the contents of \a directory into a location, as
                 specified by freedesktop.org. That is, into
                 \c {$XDG_DATA_DIRS/icons}, \c {/usr/share/icons}, or
                 \c {$HOME/.icons}. The files are removed from their initial
                 location. Make sure to add this operation after the operation
                 that extracts the files from the archive.
+                If you provide a \a Vendorprefix it replaces all characters up to the
+                first dash (-) in the filename of the icon with this prefix.
         \row
             \o  Extract
             \o  "Extract" \a archive \a targetdirectory
