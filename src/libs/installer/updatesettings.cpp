@@ -153,7 +153,7 @@ QSet<Repository> UpdateSettings::repositories() const
     try {
         if(result.isEmpty()) {
             result = Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
-                QLatin1String(":/metadata/installer-config/")).userRepositories();
+                QLatin1String(":/metadata/installer-config/"), Settings::RelaxedParseMode).userRepositories();
         }
     } catch (const Error &error) {
         qDebug("Could not parse config: %s", qPrintable(error.message()));

@@ -1,5 +1,6 @@
 #include "repository.h"
 
+#include <QString>
 #include <QTest>
 
 using namespace QInstaller;
