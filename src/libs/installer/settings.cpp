@@ -228,8 +228,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
     QXmlStreamReader reader(&file);
     if (reader.readNextStartElement()) {
         if (reader.name() != QLatin1String("Installer")) {
-            raiseError(reader, QString::fromLatin1("Unexpected element '%1' as root element.").arg(reader
-                .name().toString()), parseMode);
+            reader.raiseError(QString::fromLatin1("Unexpected element '%1' as root element.").arg(reader
+                .name().toString()));
         }
     }
     QStringList elementList;
