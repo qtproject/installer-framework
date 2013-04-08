@@ -692,6 +692,9 @@ PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     , m_core(core)
     , validatorComponent(0)
 {
+    setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
+    setPixmap(QWizard::BannerPixmap, bannerPixmap());
+    setPixmap(QWizard::LogoPixmap, logoPixmap());
 }
 
 PackageManagerCore *PackageManagerPage::packageManagerCore() const
@@ -821,9 +824,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     , m_widget(0)
 {
     setObjectName(QLatin1String("IntroductionPage"));
-    setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
     setTitle(tr("Setup - %1").arg(productName()));
-    setPixmap(QWizard::BannerPixmap, bannerPixmap());
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
@@ -884,9 +885,7 @@ private:
 LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
-    setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
-    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("LicenseAgreementPage"));
     setTitle(tr("License Agreement"));
 
@@ -1221,9 +1220,7 @@ ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , d(new Private(this, core))
 {
-    setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
-    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("ComponentSelectionPage"));
     setTitle(tr("Select Components"));
 }
@@ -1315,9 +1312,7 @@ bool ComponentSelectionPage::isComplete() const
 TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
-    setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
-    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("TargetDirectoryPage"));
     setTitle(tr("Installation Folder"));
 
@@ -1436,9 +1431,7 @@ void TargetDirectoryPage::dirRequested()
 StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
-    setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
-    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("StartMenuDirectoryPage"));
     setTitle(tr("Start Menu shortcuts"));
     setSubTitle(tr("Select the Start Menu in which you would like to create the program's shortcuts. You can "
@@ -1527,9 +1520,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , m_msgLabel(new QLabel)
 {
-    setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
-    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("ReadyForInstallationPage"));
 
     QVBoxLayout *baseLayout = new QVBoxLayout();
@@ -1757,9 +1748,7 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , m_performInstallationForm(new PerformInstallationForm(this))
 {
-    setPixmap(QWizard::LogoPixmap, logoPixmap());
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
-    setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setObjectName(QLatin1String("PerformInstallationPage"));
 
     m_performInstallationForm->setupUi(this);
@@ -1879,9 +1868,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     , m_commitButton(0)
 {
     setObjectName(QLatin1String("FinishedPage"));
-    setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
     setTitle(tr("Completing the %1 Wizard").arg(productName()));
-    setPixmap(QWizard::BannerPixmap, bannerPixmap());
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
@@ -1991,9 +1978,7 @@ RestartPage::RestartPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
     setObjectName(QLatin1String("RestartPage"));
-    setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
     setTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
-    setPixmap(QWizard::BannerPixmap, bannerPixmap());
 
     setFinalPage(false);
     setCommitPage(false);
