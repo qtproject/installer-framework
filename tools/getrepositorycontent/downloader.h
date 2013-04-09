@@ -38,8 +38,13 @@
 **
 ****************************************************************************/
 
-#ifndef DOWNLOADMANAGER_H
-#define DOWNLOADMANAGER_H
+#ifndef DOWNLOADER_H
+#define DOWNLOADER_H
+
+#include "textprogressbar.h"
+
+#include <kdupdaterfiledownloader.h>
+#include <kdupdaterfiledownloaderfactory.h>
 
 #include <QFile>
 #include <QObject>
@@ -48,37 +53,24 @@
 #include <QUrl>
 #include <QNetworkAccessManager>
 
-#include "textprogressbar.h"
-
-class DownloadManager: public QObject
+class Downloader : public QObject
 {
     Q_OBJECT
 public:
-    explicit DownloadManager(QObject *parent = 0);
-
-    void append(const QUrl &url);
-    void append(const QStringList &urlList);
-    QString saveFileName(const QUrl &url);
-
+    explicit Downloader(const QUrl &source, const QString &target);
+    void run();
 signals:
     void finished();
-
 private slots:
-    void startNextDownload();
-    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void downloadFinished();
-    void downloadReadyRead();
+    void downloadFinished(const QString &message = QString());
+    void downloadSpeed(qint64 speed);
+    void downloadProgress(qint64 bytesReceived, qint64 bytesToReceive);
 
 private:
-    QNetworkAccessManager manager;
-    QQueue<QUrl> downloadQueue;
-    QNetworkReply *currentDownload;
-    QFile output;
-    QTime downloadTime;
     TextProgressBar progressBar;
-
-    int downloadedCount;
-    int totalCount;
+    QUrl m_source;
+    QString m_target;
+    KDUpdater::FileDownloader *m_fileDownloader;
 };
 
-#endif
+#endif // DOWNLOADER_H

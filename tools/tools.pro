@@ -9,7 +9,7 @@ SUBDIRS += \
 EXTRASUBDIRS = \
     extractbinarydata \
     repocompare \
-    repogenfromonlinerepo
+    getrepositorycontent
 
 
 include(../installerfw.pri)
