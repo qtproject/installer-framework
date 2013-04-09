@@ -161,7 +161,8 @@ bool QtPatchOperation::performOperation()
     // 2. new/target qtpath
     // 3. version if greather Qt4
 
-    if (arguments().count() != 3) {
+    // the possible 2 argument case is here to support old syntax
+    if (arguments().count() < 2 || arguments().count() > 3) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
             .arg(name()).arg(arguments().count()).arg(tr("exactly 3"), QLatin1String("")));
