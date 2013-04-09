@@ -4,4 +4,4 @@ bin/lrelease.exe
 *.la
 *.prl
 *.pc
-*.pri
+
