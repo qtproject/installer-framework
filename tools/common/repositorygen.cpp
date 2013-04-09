@@ -253,6 +253,8 @@ void QInstallerTools::generateMetaDataDirectory(const QString &outDir, const QSt
         QDomElement fileElement = doc.createElement(QLatin1String("UpdateFile"));
         fileElement.setAttribute(QLatin1String("UncompressedSize"), componentSize);
         fileElement.setAttribute(QLatin1String("CompressedSize"), compressedComponentSize);
+        // adding the OS attribute to be compatible with old sdks
+        fileElement.setAttribute(QLatin1String("OS"), QLatin1String("Any"));
         update.appendChild(fileElement);
 
         root.appendChild(update);
