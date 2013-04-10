@@ -1625,15 +1625,23 @@ QString PackageManagerCore::findLibrary(const QString &name, const QStringList &
 #if defined(Q_OS_WIN)
     return findPath(QString::fromLatin1("%1.lib").arg(name), findPaths);
 #else
+#if defined(Q_OS_MAC)
     if (findPaths.isEmpty()) {
         findPaths.push_back(QLatin1String("/lib"));
         findPaths.push_back(QLatin1String("/usr/lib"));
         findPaths.push_back(QLatin1String("/usr/local/lib"));
         findPaths.push_back(QLatin1String("/opt/local/lib"));
     }
-#if defined(Q_OS_MAC)
     const QString dynamic = findPath(QString::fromLatin1("lib%1.dylib").arg(name), findPaths);
 #else
+    if (findPaths.isEmpty()) {
+        findPaths.push_back(QLatin1String("/lib"));
+        findPaths.push_back(QLatin1String("/usr/lib"));
+        findPaths.push_back(QLatin1String("/usr/local/lib"));
+        findPaths.push_back(QLatin1String("/lib64"));
+        findPaths.push_back(QLatin1String("/usr/lib64"));
+        findPaths.push_back(QLatin1String("/usr/local/lib64"));
+    }
     const QString dynamic = findPath(QString::fromLatin1("lib%1.so*").arg(name), findPaths);
 #endif
     if (!dynamic.isEmpty())
