@@ -90,7 +90,7 @@ static void raiseError(QXmlStreamReader &reader, const QString &error, Settings:
         if (xmlFile) {
             qWarning() << QString::fromLatin1("Ignoring following settings reader error in %1, line %2, "
                 "column %3: %4").arg(xmlFile->fileName()).arg(reader.lineNumber()).arg(reader.columnNumber())
-                .arg(reader.errorString());
+                .arg(error);
         } else {
             qWarning("Ignoring following settings reader error: %s", qPrintable(error));
         }
