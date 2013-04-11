@@ -105,10 +105,10 @@ int main(int argc, char *argv[])
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     std::string standardString;
     std::string cleanLooks ="-style=cleanlooks";
-    std::ifstream input("/etc/lsb-release");
+    std::ifstream input("/etc/os-release");
     bool isUbuntu = false;
     while (std::getline(input, standardString)) {
-        if (standardString == "DISTRIB_ID=Ubuntu")
+        if (standardString == "ID=ubuntu")
             isUbuntu = true;
     }
 
