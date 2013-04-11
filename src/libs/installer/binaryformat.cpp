@@ -1079,8 +1079,10 @@ int BinaryContent::registerPerformedOperations()
     for (int i = 0; i < d->m_performedOperationsData.count(); ++ i) {
         const QPair<QString, QString> opPair = d->m_performedOperationsData.at(i);
         QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(opPair.first));
-        Q_ASSERT_X(!op.isNull(), __FUNCTION__, QString::fromLatin1("Invalid operation name: %1.")
-            .arg(opPair.first).toLatin1());
+        if (op.isNull()) {
+            qWarning() << QString::fromLatin1("Failed to load unknown operation %1").arg(opPair.first);
+            continue;
+        }
 
         if (!op->fromXml(opPair.second)) {
             qWarning() << "Failed to load XML for operation:" << opPair.first;

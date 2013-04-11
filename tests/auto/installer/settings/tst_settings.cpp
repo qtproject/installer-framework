@@ -144,7 +144,7 @@ void tst_Settings::loadUnknownElementConfigInStrictParseMode()
 void tst_Settings::loadUnknownElementConfigInRelaxedParseMode()
 {
     QTest::ignoreMessage(QtWarningMsg, "\"Ignoring following settings reader error in "
-        ":/data/unknown_element_config.xml, line 5, column 13: \" ");
+        ":/data/unknown_element_config.xml, line 5, column 13: Unexpected element 'unknown'.\" ");
     try {
         Settings settings = Settings::fromFileAndPrefix(":/data/unknown_element_config.xml", ":/data",
             Settings::RelaxedParseMode);
