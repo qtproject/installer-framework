@@ -73,6 +73,26 @@ bool CreateHardLinkWrapper(const QString &dest, const QString &file)
 using namespace Lib7z;
 using namespace NWindows;
 
+
+namespace Lib7z {
+    Q_GLOBAL_STATIC(QReadWriteLock, lastErrorReadWriteLock)
+    Q_GLOBAL_STATIC(QString, getLastErrorString)
+
+    QString lastError()
+    {
+        QReadLocker locker(lastErrorReadWriteLock());
+        Q_UNUSED(locker)
+        return *getLastErrorString();
+    }
+
+    void setLastError(const QString &errorString)
+    {
+        QWriteLocker locker(lastErrorReadWriteLock());
+        Q_UNUSED(locker)
+        *getLastErrorString() = errorString;
+    }
+}
+
 namespace {
 /**
 * RAII class to create a directory (tryCreate()) and delete it on destruction unless released.
@@ -273,35 +293,49 @@ namespace Lib7z {
 class QIODeviceSequentialOutStream : public ISequentialOutStream, public CMyUnknownImp
 {
 public:
+    enum DestructorBehavior{
+        CloseAndDeleteIODeviceAtDestructor,
+        KeepIODeviceAtItIsAtDestructor
+    };
+
     MY_UNKNOWN_IMP
-        explicit QIODeviceSequentialOutStream(QIODevice* device);
+    explicit QIODeviceSequentialOutStream(QIODevice* device, DestructorBehavior behavior);
     ~QIODeviceSequentialOutStream();
+    QString errorString() const;
 
     /* reimp */ STDMETHOD(Write)(const void* data, UInt32 size, UInt32* processedSize);
 
 private:
     QPointer<QIODevice> m_device;
-    const bool closeOnDestroy;
+    const DestructorBehavior m_destructorBehavior;
+    QString m_errorString;
 };
 
-QIODeviceSequentialOutStream::QIODeviceSequentialOutStream(QIODevice* device)
-    : ISequentialOutStream(),
-    CMyUnknownImp(),
-    m_device(device),
-    closeOnDestroy(!device->isOpen())
+QIODeviceSequentialOutStream::QIODeviceSequentialOutStream(QIODevice* device, DestructorBehavior behavior)
+    : ISequentialOutStream()
+    , CMyUnknownImp()
+    , m_device(device)
+    , m_destructorBehavior(behavior)
 {
-    assert(m_device);
-    if (closeOnDestroy)
-        m_device->open(QIODevice::WriteOnly);
+    Q_ASSERT(m_device);
+
+    if (!m_device->open(QIODevice::WriteOnly)) {
+        m_errorString = m_device->errorString();
+    }
 }
 
 QIODeviceSequentialOutStream::~QIODeviceSequentialOutStream()
 {
-    if (closeOnDestroy)
-    {
+    if (m_destructorBehavior == CloseAndDeleteIODeviceAtDestructor) {
         m_device->close();
         delete m_device;
+        m_device = 0;
     }
+}
+
+QString QIODeviceSequentialOutStream::errorString() const
+{
+    return m_errorString;
 }
 
 HRESULT QIODeviceSequentialOutStream::Write(const void* data, UInt32 size, UInt32* processedSize)
@@ -309,21 +343,31 @@ HRESULT QIODeviceSequentialOutStream::Write(const void* data, UInt32 size, UInt3
     if (!m_device) {
         if (processedSize)
             *processedSize = 0;
+        m_errorString = QObject::tr("No device set for output stream");
         return E_FAIL;
     }
-    if (closeOnDestroy && !m_device->isOpen()) {
+    if (!m_device->isOpen()) {
         const bool opened = m_device->open(QIODevice::WriteOnly);
         if (!opened) {
             if (processedSize)
                 *processedSize = 0;
+            m_errorString = m_device->errorString();
             return E_FAIL;
         }
     }
 
     const qint64 written = m_device->write(reinterpret_cast<const char*>(data), size);
+    if (written == -1) {
+        if (processedSize)
+            *processedSize = 0;
+        m_errorString = m_device->errorString();
+        return E_FAIL;
+    }
+
     if (processedSize)
         *processedSize = written;
-    return written >= 0 ? S_OK : E_FAIL;
+    m_errorString = QString();
+    return S_OK;
 }
 
 class QIODeviceInStream : public IInStream, public CMyUnknownImp
@@ -704,9 +748,15 @@ public:
     /* reimp */ STDMETHOD(GetStream)(UInt32 index, ISequentialOutStream** outStream, Int32 askExtractMode)
     {
         Q_UNUSED(askExtractMode)
-            *outStream = 0;
+        *outStream = 0;
         if (device != 0) {
-            CMyComPtr<ISequentialOutStream> stream = new QIODeviceSequentialOutStream(device);
+            QIODeviceSequentialOutStream *qOutStream = new QIODeviceSequentialOutStream(device,
+                QIODeviceSequentialOutStream::KeepIODeviceAtItIsAtDestructor);
+            if (!qOutStream->errorString().isEmpty()) {
+                Lib7z::setLastError(qOutStream->errorString());
+                return E_FAIL;
+            }
+            CMyComPtr<ISequentialOutStream> stream = qOutStream;
             *outStream = stream.Detach();
             return S_OK;
         } else if (!targetDir.isEmpty()) {
@@ -715,11 +765,14 @@ public:
             currentIndex = index;
 
             UString s;
-            if (arc->GetItemPath(index, s) != S_OK)
-                throw SevenZipException(QObject::tr("Could not retrieve path of archive item %1").arg(index));
+            if (arc->GetItemPath(index, s) != S_OK) {
+                Lib7z::setLastError(QObject::tr("Could not retrieve path of archive item %1").arg(index));
+                return E_FAIL;
+            }
 
             const QString path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
             const QFileInfo fi(QString::fromLatin1("%1/%2").arg(targetDir, path));
+
             DirectoryGuard guard(fi.absolutePath());
             const QStringList directories = guard.tryCreate();
 
@@ -729,8 +782,8 @@ public:
                 QDir(fi.absolutePath()).mkdir(fi.fileName());
 
             // this makes sure that all directories created get removed as well
-            for (QStringList::const_iterator it = directories.begin(); it != directories.end(); ++it)
-                q->setCurrentFile(*it);
+            foreach (const QString &directory, directories)
+                q->setCurrentFile(directory);
 
             if (!isDir && !q->prepareForFile(fi.absoluteFilePath()))
                 return E_FAIL;
@@ -738,8 +791,22 @@ public:
             q->setCurrentFile(fi.absoluteFilePath());
 
             if (!isDir) {
-                CMyComPtr< ISequentialOutStream > stream = new QIODeviceSequentialOutStream(new QFile(fi
-                    .absoluteFilePath()));
+#ifndef Q_OS_WIN
+                // do not follow symlinks, so we need to remove an existing one
+                if (fi.isSymLink() && (!QFile::remove(fi.absoluteFilePath()))) {
+                    Lib7z::setLastError(QObject::tr("Could not remove already existing "
+                        "symlink. %1").arg(fi.absoluteFilePath()));
+                    return E_FAIL;
+                }
+#endif
+                QIODeviceSequentialOutStream *qOutStream = new QIODeviceSequentialOutStream(
+                    new QFile(fi.absoluteFilePath()), QIODeviceSequentialOutStream::CloseAndDeleteIODeviceAtDestructor);
+                if (!qOutStream->errorString().isEmpty()) {
+                    Lib7z::setLastError(QObject::tr("Could not open file: %1 (%2)").arg(
+                        fi.absoluteFilePath(), qOutStream->errorString()));
+                    return E_FAIL;
+                }
+                CMyComPtr<ISequentialOutStream> stream = qOutStream;
                 *outStream = stream;
                 stream.Detach();
             }
@@ -761,50 +828,56 @@ public:
         Q_UNUSED(resultEOperationResult)
 
         if (!targetDir.isEmpty()) {
-            bool hasPerm;
+            bool hasPerm = false;
             const QFile::Permissions permissions = getPermissions(arc->Archive, currentIndex, &hasPerm);
 
             UString s;
             if (arc->GetItemPath(currentIndex, s) != S_OK) {
-                throw SevenZipException(QObject::tr("Could not retrieve path of archive item %1")
+                Lib7z::setLastError(QObject::tr("Could not retrieve path of archive item %1")
                     .arg(currentIndex));
+                return E_FAIL;
             }
             const QString path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
             const QString absFilePath = QFileInfo(QString::fromLatin1("%1/%2").arg(targetDir, path))
                 .absoluteFilePath();
 
-            if (hasPerm) {
-                QFile::setPermissions(absFilePath, permissions);
-
-                // do we have a symlink?
-                const quint32 attributes = getUInt32Property(arc->Archive, currentIndex, kpidAttrib, 0);
-                struct stat stat_info;
-                stat_info.st_mode = attributes >> 16;
-                if (S_ISLNK(stat_info.st_mode)) {
-                    QFile f(absFilePath);
-                    f.open(QIODevice::ReadOnly);
-                    const QByteArray path = f.readAll();
-                    f.close();
-                    f.remove();
+            // do we have a symlink?
+            const quint32 attributes = getUInt32Property(arc->Archive, currentIndex, kpidAttrib, 0);
+            struct stat stat_info;
+            stat_info.st_mode = attributes >> 16;
+            if (S_ISLNK(stat_info.st_mode)) {
 #ifdef Q_OS_WIN
-                    if (!CreateHardLinkWrapper(absFilePath, QLatin1String(path))) {
-                        throw SevenZipException(QObject::tr("Could not create file system link at %1")
-                            .arg(absFilePath));
-                    }
+                qFatal(QString::fromLatin1("Creating a link from archive is not implemented for windows. "
+                    "Link filename: %1").arg(absFilePath).toLatin1());
+                // TODO
+//                if (!CreateHardLinkWrapper(absFilePath, QLatin1String(symlinkTarget))) {
+//                    return S_FALSE;
+//                }
 #else
-                    if (!QFile::link(QString::fromLatin1(path), absFilePath)) {
-                        throw SevenZipException(QObject::tr("Could not create softlink at %1")
-                            .arg(absFilePath));
-                    }
-
-                    // If we have a symlink, bail out after we have linked it to avoid deleting the link.
-                    // CFileBase::Create(...) seems to broken in regard of symlink handling. If the link
-                    // already exists, it simple does an unlink on it. So we can't set time values on the
-                    // symlink in the following code, as COutFile::Open(...) calls former mentioned Create()
-                    // function and thus the symlink is deleted.
-                    return S_OK;
-#endif
+                QFileInfo symlinkPlaceHolderFileInfo(absFilePath);
+                if (symlinkPlaceHolderFileInfo.isSymLink()) {
+                    Lib7z::setLastError(QObject::tr("Could not create symlink at '%1'. "
+                        "Another one is already existing.").arg(absFilePath));
+                    return E_FAIL;
                 }
+                QFile symlinkPlaceHolderFile(absFilePath);
+                if (!symlinkPlaceHolderFile.open(QIODevice::ReadOnly)) {
+                    Lib7z::setLastError(QObject::tr("Could not read symlink target from file '%1'."
+                        ).arg(absFilePath));
+                    return E_FAIL;
+                }
+
+                const QByteArray symlinkTarget = symlinkPlaceHolderFile.readAll();
+                symlinkPlaceHolderFile.close();
+                symlinkPlaceHolderFile.remove();
+                QFile targetFile(QString::fromLatin1(symlinkTarget));
+                if (!targetFile.link(absFilePath)) {
+                    Lib7z::setLastError(QObject::tr("Could not create symlink at %1. %2").arg(
+                        absFilePath, targetFile.errorString()));
+                    return E_FAIL;
+                }
+                return S_OK;
+#endif
             }
 
             try {
@@ -830,6 +903,9 @@ public:
 #endif
                 }
             } catch (...) {}
+
+            if (hasPerm)
+                QFile::setPermissions(absFilePath, permissions);
         }
 
         return S_OK;
@@ -1157,6 +1233,46 @@ void ExtractItemJob::setTarget(QIODevice* dev)
     d->target = dev;
 }
 
+namespace{
+    QString errorMessageFrom7zResult(const LONG & extractResult)
+    {
+        if (!Lib7z::lastError().isEmpty())
+            return Lib7z::lastError();
+
+        QString errorMessage = QObject::tr("internal code: %1");
+        switch (extractResult) {
+            case S_OK:
+                qFatal("S_OK value is not a valid error code.");
+            break;
+            case E_NOTIMPL:
+                errorMessage = errorMessage.arg(QLatin1String("E_NOTIMPL"));
+            break;
+            case E_NOINTERFACE:
+                errorMessage = errorMessage.arg(QLatin1String("E_NOINTERFACE"));
+            break;
+            case E_ABORT:
+                errorMessage = errorMessage.arg(QLatin1String("E_ABORT"));
+            break;
+            case E_FAIL:
+                errorMessage = errorMessage.arg(QLatin1String("E_FAIL"));
+            break;
+            case STG_E_INVALIDFUNCTION:
+                errorMessage = errorMessage.arg(QLatin1String("STG_E_INVALIDFUNCTION"));
+            break;
+            case E_OUTOFMEMORY:
+                errorMessage = QObject::tr("not enough memory");
+            break;
+            case E_INVALIDARG:
+                errorMessage = errorMessage.arg(QLatin1String("E_INVALIDARG"));
+            break;
+            default:
+                errorMessage = QObject::tr("Error: %1").arg(extractResult);
+            break;
+        }
+        return errorMessage;
+    }
+}
+
 void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, UpdateCallback* callback)
 {
     assert(archive);
@@ -1219,7 +1335,8 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, Up
         CUpdateErrorInfo errorInfo;
         const HRESULT res = UpdateArchive(codecs.get(), censor, options, errorInfo, 0, callback->impl());
         if (res != S_OK || !QFile::exists(tempFile))
-            throw SevenZipException(QObject::tr("Could not create archive %1").arg(tempFile));
+            throw SevenZipException(QObject::tr("Could not create archive %1. %2").arg(
+                tempFile, errorMessageFrom7zResult(res)));
 
         {
             //TODO remove temp file even if one the following throws
@@ -1282,9 +1399,10 @@ void Lib7z::extractArchive(QIODevice* archive, const File& item, QIODevice* targ
 
         callback->setTarget(target);
         const LONG extractResult = parchive->Extract(&itemIdx, 1, /*testmode=*/1, callback->impl());
-        //TODO: how to interpret result?
+
         if (extractResult != S_OK)
-            throw SevenZipException(QObject::tr("Extracting %1 failed.").arg(item.path));
+            throw SevenZipException(errorMessageFrom7zResult(extractResult));
+
     } catch (const char *err) {
         throw SevenZipException(err);
     } catch (...) {
@@ -1339,9 +1457,9 @@ void Lib7z::extractArchive(QIODevice* archive, const QString &targetDirectory, E
         IInArchive* const arch = arc.Archive;
         callback->impl()->setArchive(&arc);
         const LONG extractResult = arch->Extract(0, static_cast< UInt32 >(-1), false, callback->impl());
-        //TODO is it possible to get a more detailed error?
+
         if (extractResult != S_OK)
-           throw SevenZipException(QObject::tr("Extraction failed."));
+            throw SevenZipException(errorMessageFrom7zResult(extractResult));
     }
 
     outDir.release();
@@ -1407,7 +1525,8 @@ void ExtractItemJob::doStart()
             extractArchive(d->archive, d->targetDirectory, d->callback);
     } catch (const SevenZipException& e) {
         setError(Failed);
-        setErrorString(e.message());
+        setErrorString(QObject::tr("Error while extracting '%1': %2").arg(
+            d->item.path, e.message()));
     } catch (...) {
         setError(Failed);
         setErrorString(QObject::tr("Unknown exception caught (%1)").arg(QObject::tr("Failed")));
