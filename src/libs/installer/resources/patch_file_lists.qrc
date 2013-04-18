@@ -3,5 +3,6 @@
         <file>files-to-patch-linux</file>
         <file>files-to-patch-windows</file>
         <file>files-to-patch-macx</file>
+        <file>files-to-patch-linux-emb-arm</file>
     </qresource>
 </RCC>
