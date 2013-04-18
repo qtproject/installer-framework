@@ -65,12 +65,13 @@ Repository::Repository(const Repository &other)
     , m_enabled(other.m_enabled)
     , m_username(other.m_username)
     , m_password(other.m_password)
+    , m_displayname(other.m_displayname)
 {
     registerMetaType();
 }
 
 /*!
-    Constructs a new repository by setting it's address to \a url and it's default state.
+    Constructs a new repository by setting its address to \a url and its default state.
 */
 Repository::Repository(const QUrl &url, bool isDefault)
     : m_url(url)
@@ -81,7 +82,7 @@ Repository::Repository(const QUrl &url, bool isDefault)
 }
 
 /*!
-    Constructs a new repository by setting it's address to \a repositoryUrl as string and it's
+    Constructs a new repository by setting its address to \a repositoryUrl as string and its
     default state.
 
     Note: user and password can be inside the \a repositoryUrl string: http://user:password@repository.url
@@ -192,13 +193,29 @@ void Repository::setPassword(const QString &password)
 }
 
 /*!
+    Returns the Name for the repository to be displayed instead of the URL
+*/
+QString Repository::displayname() const
+{
+    return m_displayname.isEmpty() ? m_url.toString() : m_displayname;
+}
+
+/*!
+    Sets the DisplayName of the repository to \a displayname.
+*/
+void Repository::setDisplayName(const QString &displayname)
+{
+    m_displayname = displayname;
+}
+
+/*!
     Compares the values of this repository to \a other and returns true if they are equal (same server,
     default state, enabled state as well as username and password). \sa operator!=()
 */
 bool Repository::operator==(const Repository &other) const
 {
     return m_url == other.m_url && m_default == other.m_default && m_enabled == other.m_enabled
-        && m_username == other.m_username && m_password == other.m_password;
+        && m_username == other.m_username && m_password == other.m_password && m_displayname == other.m_displayname;
 }
 
 /*!
@@ -223,6 +240,7 @@ const Repository &Repository::operator=(const Repository &other)
     m_enabled = other.m_enabled;
     m_username = other.m_username;
     m_password = other.m_password;
+    m_displayname = other.m_displayname;
 
     return *this;
 }
@@ -235,18 +253,20 @@ void Repository::registerMetaType()
 
 QDataStream &operator>>(QDataStream &istream, Repository &repository)
 {
-    QByteArray url, username, password;
-    istream >> url >> repository.m_default >> repository.m_enabled >> username >> password;
+    QByteArray url, username, password, displayname;
+    istream >> url >> repository.m_default >> repository.m_enabled >> username >> password >> displayname;
     repository.setUrl(QUrl::fromEncoded(QByteArray::fromBase64(url)));
     repository.setUsername(QString::fromUtf8(QByteArray::fromBase64(username)));
     repository.setPassword(QString::fromUtf8(QByteArray::fromBase64(password)));
+    repository.setDisplayName(QString::fromUtf8(QByteArray::fromBase64(displayname)));
     return istream;
 }
 
 QDataStream &operator<<(QDataStream &ostream, const Repository &repository)
 {
     return ostream << repository.m_url.toEncoded().toBase64() << repository.m_default << repository.m_enabled
-        << repository.m_username.toUtf8().toBase64() << repository.m_password.toUtf8().toBase64();
+        << repository.m_username.toUtf8().toBase64() << repository.m_password.toUtf8().toBase64()
+        << repository.m_displayname.toUtf8().toBase64();
 }
 
 }

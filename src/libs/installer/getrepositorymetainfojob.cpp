@@ -146,7 +146,7 @@ Repository GetRepositoryMetaInfoJob::repository() const
 void GetRepositoryMetaInfoJob::setRepository(const Repository &r)
 {
     m_repository = r;
-    qDebug() << "Setting repository with URL:" << r.url().toString();
+    qDebug() << "Setting repository with URL:" << r.displayname();
 }
 
 int GetRepositoryMetaInfoJob::silentRetries() const
@@ -307,6 +307,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     Repository repository(el.attribute(QLatin1String("url")), true);
                     repository.setUsername(el.attribute(QLatin1String("username")));
                     repository.setPassword(el.attribute(QLatin1String("password")));
+                    repository.setDisplayName(el.attribute(QLatin1String("displayname")));
                     repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
 
                     qDebug() << "Repository to add:" << repository.url().toString();
@@ -322,6 +323,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     Repository newRepository(el.attribute(QLatin1String("newUrl")), true);
                     newRepository.setUsername(el.attribute(QLatin1String("username")));
                     newRepository.setPassword(el.attribute(QLatin1String("password")));
+                    newRepository.setDisplayName(el.attribute(QLatin1String("displayname")));
 
                     // store the new repository and the one old it replaces
                     repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
@@ -524,7 +526,7 @@ void GetRepositoryMetaInfoJob::unzipFinished(bool ok, const QString &error)
 }
 
 bool GetRepositoryMetaInfoJob::updateRepositories(QSet<Repository> *repositories, const QString &username,
-    const QString &password)
+    const QString &password, const QString &displayname)
 {
     if (!repositories->contains(m_repository))
         return false;
@@ -532,6 +534,7 @@ bool GetRepositoryMetaInfoJob::updateRepositories(QSet<Repository> *repositories
     repositories->remove(m_repository);
     m_repository.setUsername(username);
     m_repository.setPassword(password);
+    m_repository.setDisplayName(displayname);
     repositories->insert(m_repository);
     return true;
 }

@@ -795,6 +795,7 @@
         \o  Enabled, with 0 disabling this repository.
         \o  Username, which is used as user on a protected repository.
         \o  Password, which sets the password to use on a protected repository.
+        \o  DisplayName, which optionally sets a String to display instead of the URL.
 
     \endlist
 
@@ -804,10 +805,11 @@
     \code
     <RemoteRepositories>
          <Repository>
-                 <Url>http://www.yourcompany.com/packages</Url>
+                 <Url>http://www.example.com/packages</Url>
                  <Enabled>1</Enabled>
                  <Username>user</Username>
                  <Password>password</Password>
+                 <DisplayName>Example repository</DisplayName>
          </Repository>
     </RemoteRepositories>
     \endcode

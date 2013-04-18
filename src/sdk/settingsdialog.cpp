@@ -247,7 +247,7 @@ QVariant RepositoryItem::data(int column, int role) const
                 case 3:
                     return m_repo.password();
                 case 4:
-                    return m_repo.url().toString();
+                    return m_repo.displayname();
                 default:
                     break;
             };

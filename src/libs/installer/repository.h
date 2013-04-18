@@ -73,6 +73,9 @@ public:
     QString password() const;
     void setPassword(const QString &password);
 
+    QString displayname() const;
+    void setDisplayName(const QString &displayname);
+
     bool operator==(const Repository &other) const;
     bool operator!=(const Repository &other) const;
 
@@ -91,6 +94,7 @@ private:
     bool m_enabled;
     QString m_username;
     QString m_password;
+    QString m_displayname;
 };
 
 inline uint qHash(const Repository &repository)
