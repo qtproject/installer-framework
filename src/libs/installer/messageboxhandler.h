@@ -110,6 +110,8 @@ public:
         QMessageBox::StandardButtons buttons = QMessageBox::Ok,
         QMessageBox::StandardButton button = QMessageBox::NoButton) const;
 
+    static QList<QMessageBox::Button> orderedButtons();
+
 private Q_SLOTS:
     //this removes the slot from the script area
     virtual void deleteLater() {

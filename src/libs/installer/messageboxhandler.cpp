@@ -151,6 +151,19 @@ QWidget *MessageBoxHandler::currentBestSuitParent()
     return qApp->activeWindow();
 }
 
+QList<QMessageBox::Button> MessageBoxHandler::orderedButtons()
+{
+    static QList<QMessageBox::Button> buttons;
+    if (!buttons.isEmpty())
+        return buttons;
+    buttons << QMessageBox::YesToAll << QMessageBox::Yes << QMessageBox::Ok << QMessageBox::Apply
+        << QMessageBox::SaveAll << QMessageBox::Save <<QMessageBox::Retry << QMessageBox::Ignore
+        << QMessageBox::Help << QMessageBox::RestoreDefaults << QMessageBox::Reset << QMessageBox::Open
+        << QMessageBox::Cancel << QMessageBox::Close << QMessageBox::Abort << QMessageBox::Discard
+        << QMessageBox::No << QMessageBox::NoToAll;
+    return buttons;
+}
+
 void MessageBoxHandler::setDefaultAction(DefaultAction defaultAction)
 {
     if (m_defaultAction == defaultAction)
@@ -159,11 +172,7 @@ void MessageBoxHandler::setDefaultAction(DefaultAction defaultAction)
 
     m_buttonOrder.clear();
     if (m_defaultAction != AskUser) {
-        m_buttonOrder << QMessageBox::YesToAll << QMessageBox::Yes << QMessageBox::Ok << QMessageBox::Apply
-        << QMessageBox::SaveAll << QMessageBox::Save <<QMessageBox::Retry << QMessageBox::Ignore
-        << QMessageBox::Help << QMessageBox::RestoreDefaults << QMessageBox::Reset << QMessageBox::Open
-        << QMessageBox::Cancel << QMessageBox::Close << QMessageBox::Abort << QMessageBox::Discard
-        << QMessageBox::No << QMessageBox::NoToAll;
+        m_buttonOrder = orderedButtons();
     }
 
     if (m_defaultAction == Reject) {
