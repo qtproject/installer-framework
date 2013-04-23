@@ -58,12 +58,12 @@ using namespace QInstaller;
 // -- PerformInstallationForm
 
 PerformInstallationForm::PerformInstallationForm(QObject *parent)
-    : QObject(parent),
-      m_progressBar(0),
-      m_progressLabel(0),
-      m_detailsButton(0),
-      m_detailsBrowser(0),
-      m_updateTimer(0)
+    : QObject(parent)
+    , m_progressBar(0)
+    , m_progressLabel(0)
+    , m_detailsButton(0)
+    , m_detailsBrowser(0)
+    , m_updateTimer(0)
 {
 }
 

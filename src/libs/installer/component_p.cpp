@@ -59,17 +59,17 @@ namespace QInstaller {
 // -- ComponentPrivate
 
 ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
-    : q(qq),
-    m_core(core),
-    m_parentComponent(0),
-    m_licenseOperation(0),
-    m_minimumProgressOperation(0),
-    m_newlyInstalled (false),
-    m_operationsCreated(false),
-    m_autoCreateOperations(true),
-    m_operationsCreatedSuccessfully(true),
-    m_updateIsAvailable(false),
-    m_scriptEngine(0)
+    : q(qq)
+    , m_core(core)
+    , m_parentComponent(0)
+    , m_licenseOperation(0)
+    , m_minimumProgressOperation(0)
+    , m_newlyInstalled (false)
+    , m_operationsCreated(false)
+    , m_autoCreateOperations(true)
+    , m_operationsCreatedSuccessfully(true)
+    , m_updateIsAvailable(false)
+    , m_scriptEngine(0)
 {
 }
 

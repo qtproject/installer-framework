@@ -54,13 +54,13 @@ uint qHash(QPointer<QObject> key)
 QT_END_NAMESPACE
 
 ProgressCoordinator::ProgressCoordinator(QObject *parent)
-    : QObject(parent),
-    m_currentCompletePercentage(0),
-    m_currentBasePercentage(0),
-    m_manualAddedPercentage(0),
-    m_reservedPercentage(0),
-    m_undoMode(false),
-    m_reachedPercentageBeforeUndo(0)
+    : QObject(parent)
+    , m_currentCompletePercentage(0)
+    , m_currentBasePercentage(0)
+    , m_manualAddedPercentage(0)
+    , m_reservedPercentage(0)
+    , m_undoMode(false)
+    , m_reachedPercentageBeforeUndo(0)
 {
     // it has to be in the main thread to be able refresh the ui with processEvents
     Q_ASSERT(thread() == qApp->thread());

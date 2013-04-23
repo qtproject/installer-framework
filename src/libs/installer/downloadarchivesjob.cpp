@@ -60,14 +60,14 @@ using namespace KDUpdater;
     Creates a new DownloadArchivesJob with \a parent.
 */
 DownloadArchivesJob::DownloadArchivesJob(PackageManagerCore *core)
-    : KDJob(core),
-      m_core(core),
-      m_downloader(0),
-      m_archivesDownloaded(0),
-      m_archivesToDownloadCount(0),
-      m_canceled(false),
-      m_lastFileProgress(0),
-      m_progressChangedTimerId(0)
+    : KDJob(core)
+    , m_core(core)
+    , m_downloader(0)
+    , m_archivesDownloaded(0)
+    , m_archivesToDownloadCount(0)
+    , m_canceled(false)
+    , m_lastFileProgress(0)
+    , m_progressChangedTimerId(0)
 {
     setCapabilities(Cancelable);
 }

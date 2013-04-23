@@ -54,7 +54,9 @@ class ElevatedExecuteOperation::Private
 {
 public:
     explicit Private(ElevatedExecuteOperation *qq)
-        : q(qq), process(0), showStandardError(false)
+        : q(qq)
+        , process(0)
+        , showStandardError(false)
     {
     }
 

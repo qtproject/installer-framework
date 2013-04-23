@@ -53,11 +53,11 @@ using namespace QInstaller;
 // -- GetRepositoriesMetaInfoJob
 
 GetRepositoriesMetaInfoJob::GetRepositoriesMetaInfoJob(PackageManagerCorePrivate *corePrivate)
-    : KDJob(corePrivate),
-      m_canceled(false),
-      m_silentRetries(3),
-      m_haveIgnoredError(false),
-      m_corePrivate(corePrivate)
+    : KDJob(corePrivate)
+    , m_canceled(false)
+    , m_silentRetries(3)
+    , m_haveIgnoredError(false)
+    , m_corePrivate(corePrivate)
 {
     setCapabilities(Cancelable);
 }

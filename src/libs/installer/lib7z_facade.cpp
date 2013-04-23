@@ -100,9 +100,9 @@ namespace {
 */
 struct DirectoryGuard {
     explicit DirectoryGuard(const QString &path)
-        : m_path(path),
-        m_created(false),
-        m_released(false)
+        : m_path(path)
+        , m_created(false)
+        , m_released(false)
     {
         m_path.replace(QLatin1Char('\\'), QLatin1Char('/'));
     }
@@ -725,12 +725,12 @@ class Lib7z::ExtractCallbackImpl : public IArchiveExtractCallback, public CMyUnk
 public:
     MY_UNKNOWN_IMP
         explicit ExtractCallbackImpl(ExtractCallback* qq)
-        : q(qq),
-        currentIndex(0),
-        arc(0),
-        total(0),
-        completed(0),
-        device(0)
+        : q(qq)
+        , currentIndex(0)
+        , arc(0)
+        , total(0)
+        , completed(0)
+        , device(0)
     {
     }
 
@@ -1173,9 +1173,9 @@ class ExtractItemJob::Private
 {
 public:
     Private(ExtractItemJob* qq)
-        : q(qq),
-        target(0),
-        callback(new ExtractCallbackJobImpl(q))
+        : q(qq)
+        , target(0)
+        , callback(new ExtractCallbackJobImpl(q))
     {
     }
 

@@ -169,9 +169,9 @@ class FSEngineClientIterator : public QAbstractFileEngineIterator
 {
 public:
     FSEngineClientIterator(QDir::Filters filters, const QStringList &nameFilters, const QStringList &files)
-        : QAbstractFileEngineIterator(filters, nameFilters),
-          entries(files),
-          index(-1)
+        : QAbstractFileEngineIterator(filters, nameFilters)
+        , entries(files)
+        , index(-1)
     {
     }
 
@@ -588,13 +588,13 @@ class FSEngineClientHandler::Private
 {
 public:
     Private()
-        : mutex(QMutex::Recursive),
-          port(0),
-          startServerAsAdmin(false),
-          serverStarted(false),
-          serverStarting(false),
-          active(false),
-          thread(new StillAliveThread)
+        : mutex(QMutex::Recursive)
+        , port(0)
+        , startServerAsAdmin(false)
+        , serverStarted(false)
+        , serverStarting(false)
+        , active(false)
+        , thread(new StillAliveThread)
     {
         thread->moveToThread(thread);
     }

@@ -256,18 +256,18 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
     pre-zipped and gets delivered as it is. If it's a directory, it gets zipped by Archive.
  */
 Archive::Archive(const QString &path)
-    : m_device(0),
-      m_isTempFile(false),
-      m_path(path),
-      m_name(QFileInfo(path).fileName().toUtf8())
+    : m_device(0)
+    , m_isTempFile(false)
+    , m_path(path)
+    , m_name(QFileInfo(path).fileName().toUtf8())
 {
 }
 
 Archive::Archive(const QByteArray &identifier, const QByteArray &data)
-    : m_device(0),
-      m_isTempFile(true),
-      m_path(generateTemporaryFileName()),
-      m_name(identifier)
+    : m_device(0)
+    , m_isTempFile(true)
+    , m_path(generateTemporaryFileName())
+    , m_name(identifier)
 {
     QFile file(m_path);
     file.open(QIODevice::WriteOnly);
@@ -278,10 +278,10 @@ Archive::Archive(const QByteArray &identifier, const QByteArray &data)
     Creates an archive identified by \a identifier providing a data \a segment within a \a device.
  */
 Archive::Archive(const QByteArray &identifier, const QSharedPointer<QFile> &device, const Range<qint64> &segment)
-    : m_device(device),
-      m_segment(segment),
-      m_isTempFile(false),
-      m_name(identifier)
+    : m_device(device)
+    , m_segment(segment)
+    , m_isTempFile(false)
+    , m_name(identifier)
 {
 }
 

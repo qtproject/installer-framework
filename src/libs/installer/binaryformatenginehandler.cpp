@@ -69,8 +69,8 @@ BinaryFormatEngineHandler::BinaryFormatEngineHandler(const ComponentIndex &index
 }
 
 BinaryFormatEngineHandler::BinaryFormatEngineHandler(const BinaryFormatEngineHandler &other)
-    : QAbstractFileEngineHandler(),
-      d(new Private(other.d->index))
+    : QAbstractFileEngineHandler()
+    , d(new Private(other.d->index))
 {
     s_instance = this;
 }

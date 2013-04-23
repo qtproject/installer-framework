@@ -49,9 +49,9 @@ class StringListIterator : public QAbstractFileEngineIterator
 {
 public:
     StringListIterator( const QStringList &list, QDir::Filters filters, const QStringList &nameFilters)
-        : QAbstractFileEngineIterator(filters, nameFilters),
-          list(list),
-          index(-1)
+        : QAbstractFileEngineIterator(filters, nameFilters)
+        , list(list)
+        , index(-1)
     {
     }
 

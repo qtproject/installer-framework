@@ -129,11 +129,11 @@ class FSEngineConnectionThread : public QThread
     Q_OBJECT
 public:
     FSEngineConnectionThread(descriptor_t socketDescriptor, QObject *parent)
-        : QThread(parent),
-          descriptor(socketDescriptor),
-          settings(0),
-          process(0),
-          signalReceiver(0)
+        : QThread(parent)
+        , descriptor(socketDescriptor)
+        , settings(0)
+        , process(0)
+        , signalReceiver(0)
     {}
 
 protected:

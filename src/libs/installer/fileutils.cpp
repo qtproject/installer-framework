@@ -304,9 +304,9 @@ class RemoveDirectoryThread : public QThread
 {
 public:
     explicit RemoveDirectoryThread(const QString &path, bool ignoreErrors = false, QObject *parent = 0)
-        : QThread(parent),
-          p(path),
-          ignore(ignoreErrors)
+        : QThread(parent)
+        , p(path)
+        , ignore(ignoreErrors)
     {
     }
 

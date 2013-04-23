@@ -112,13 +112,13 @@ private:
 // -- GetRepositoryMetaInfoJob
 
 GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(PackageManagerCorePrivate *corePrivate, QObject *parent)
-    : KDJob(parent),
-    m_canceled(false),
-    m_silentRetries(4),
-    m_retriesLeft(m_silentRetries),
-    m_downloader(0),
-    m_waitForDone(false),
-    m_corePrivate(corePrivate)
+    : KDJob(parent)
+    , m_canceled(false)
+    , m_silentRetries(4)
+    , m_retriesLeft(m_silentRetries)
+    , m_downloader(0)
+    , m_waitForDone(false)
+    , m_corePrivate(corePrivate)
 {
     setCapabilities(Cancelable);
 }

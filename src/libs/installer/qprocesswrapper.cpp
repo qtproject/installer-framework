@@ -54,9 +54,9 @@ class QProcessWrapper::Private
 {
 public:
     Private(QProcessWrapper *qq)
-        : q(qq),
-          ignoreTimer(false),
-          socket(0)
+        : q(qq)
+        , ignoreTimer(false)
+        , socket(0)
     {}
 
     bool createSocket()
@@ -119,8 +119,8 @@ public:
 // -- QProcessWrapper
 
 QProcessWrapper::QProcessWrapper(QObject *parent)
-    : QObject(parent),
-      d(new Private(this))
+    : QObject(parent)
+    , d(new Private(this))
 {
     connect(&d->process, SIGNAL(bytesWritten(qint64)), SIGNAL(bytesWritten(qint64)));
     connect(&d->process, SIGNAL(aboutToClose()), SIGNAL(aboutToClose()));

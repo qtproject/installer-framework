@@ -56,38 +56,38 @@ class QSettingsWrapper::Private
 {
 public:
     Private(const QString &organization, const QString &application)
-        : native(true),
-        settings(organization, application),
-        socket(0)
+        : native(true)
+        , settings(organization, application)
+        , socket(0)
     {
     }
 
     Private(QSettings::Scope scope, const QString &organization, const QString &application)
-        : native(true),
-        settings(scope, organization, application),
-        socket(0)
+        : native(true)
+        , settings(scope, organization, application)
+        , socket(0)
     {
     }
 
     Private(QSettings::Format format, QSettings::Scope scope, const QString &organization,
         const QString &application)
-        : native(format == QSettings::NativeFormat),
-        settings(format, scope, organization, application),
-        socket(0)
+        : native(format == QSettings::NativeFormat)
+        , settings(format, scope, organization, application)
+        , socket(0)
     {
     }
 
     Private(const QString &fileName, QSettings::Format format)
-        : native(format == QSettings::NativeFormat),
-        fileName(fileName),
-        settings(fileName, format),
-        socket(0)
+        : native(format == QSettings::NativeFormat)
+        , fileName(fileName)
+        , settings(fileName, format)
+        , socket(0)
     {
     }
 
     Private()
-        : native(true),
-        socket(0)
+        : native(true)
+        , socket(0)
     {
     }
 
