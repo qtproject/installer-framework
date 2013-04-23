@@ -88,12 +88,12 @@ Repository::Repository(const QUrl &url, bool isDefault)
 */
 Repository Repository::fromUserInput(const QString &repositoryUrl)
 {
-    QStringList supportedShemes;
-    supportedShemes << QLatin1String("http") << QLatin1String("https") <<  QLatin1String("ftp") <<
+    QStringList supportedSchemes;
+    supportedSchemes << QLatin1String("http") << QLatin1String("https") <<  QLatin1String("ftp") <<
         QLatin1String("file");
 
     QUrl url = QUrl::fromUserInput(repositoryUrl);
-    if (!supportedShemes.contains(url.scheme()) && QFileInfo(url.toString()).exists())
+    if (!supportedSchemes.contains(url.scheme()) && QFileInfo(url.toString()).exists())
         url = QLatin1String("file:///") + url.toString();
 
     QString userName = url.userName();

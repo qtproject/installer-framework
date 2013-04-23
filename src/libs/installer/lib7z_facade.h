@@ -23,7 +23,6 @@ template <typename T> class QVector;
 QT_END_NAMESPACE
 
 namespace Lib7z {
-
     class INSTALLER_EXPORT SevenZipException : public std::runtime_error {
     public:
         explicit SevenZipException( const QString& msg ) : std::runtime_error( msg.toStdString() ), m_message( msg ) {}

@@ -190,12 +190,7 @@ public:
             Lib7z::extractArchive(&archive, targetDir, callback);
             emit finished(true, QString());
         } catch (const Lib7z::SevenZipException& e) {
-#ifdef Q_OS_WIN
-            emit finished(false, tr("Error while extracting %1: %2. (Maybe the target dir(%3) is blocked by "
-                "another process.)").arg(archivePath, e.message(), targetDir));
-#else
-            emit finished(false, tr("Error while extracting %1: %2.").arg(archivePath, e.message()));
-#endif
+            emit finished(false, tr("Error while extracting '%1': %2").arg(archivePath, e.message()));
         } catch (...) {
             emit finished(false, tr("Unknown exception caught while extracting %1.").arg(archivePath));
         }

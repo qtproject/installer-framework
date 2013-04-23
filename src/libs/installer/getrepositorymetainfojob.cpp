@@ -89,7 +89,7 @@ public:
                 }
                 emit finished(true, QString());
             } catch (const Lib7z::SevenZipException& e) {
-                emit finished(false, tr("Error while extracting %1. Error: %2").arg(m_archive, e.message()));
+                emit finished(false, tr("Error while extracting '%1': %2").arg(m_archive, e.message()));
             } catch (...) {
                 emit finished(false, tr("Unknown exception caught while extracting %1.").arg(m_archive));
             }

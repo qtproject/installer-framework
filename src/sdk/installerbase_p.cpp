@@ -260,11 +260,11 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
             try {
                 Lib7z::extractArchive(&archive, QDir::tempPath());
                 if (!archive.remove()) {
-                    qDebug() << QString::fromLatin1("Could not delete file %1: %2.").arg(
+                    qDebug() << QString::fromLatin1("Could not delete file %1: %2").arg(
                         target, archive.errorString());
                 }
             } catch (const Lib7z::SevenZipException& e) {
-                qDebug() << QString::fromLatin1("Error while extracting %1: %2.").arg(target, e.message());
+                qDebug() << QString::fromLatin1("Error while extracting '%1': %2").arg(target, e.message());
                 return EXIT_FAILURE;
             } catch (...) {
                 qDebug() << QString::fromLatin1("Unknown exception caught while extracting %1.").arg(target);
