@@ -4,4 +4,5 @@ SUBDIRS += \
     settings \
     repository \
     componentmodel \
-    fakestopprocessforupdateoperation
+    fakestopprocessforupdateoperation \
+    messageboxhandler

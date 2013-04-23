@@ -49,74 +49,32 @@
 
 #include <QScriptEngine>
 #include <QScriptValue>
+#include <QMetaEnum>
 
 QScriptValue QInstaller::registerMessageBox(QScriptEngine *scriptEngine)
 {
     // register QMessageBox::StandardButton enum in the script connection
     QScriptValue messageBox = scriptEngine->newQObject(MessageBoxHandler::instance());
-    messageBox.setProperty(QLatin1String("Ok"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Yes)));
-    messageBox.setProperty(QLatin1String("Open"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Open)));
-    messageBox.setProperty(QLatin1String("Save"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Save)));
-    messageBox.setProperty(QLatin1String("Cancel"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Cancel)));
-    messageBox.setProperty(QLatin1String("Close"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Close)));
-    messageBox.setProperty(QLatin1String("Discard"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Discard)));
-    messageBox.setProperty(QLatin1String("Apply"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Apply)));
-    messageBox.setProperty(QLatin1String("Reset"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Reset)));
-    messageBox.setProperty(QLatin1String("RestoreDefaults"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::RestoreDefaults)));
-    messageBox.setProperty(QLatin1String("Help"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Help)));
-    messageBox.setProperty(QLatin1String("SaveAll"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::SaveAll)));
-    messageBox.setProperty(QLatin1String("Yes"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Yes)));
-    messageBox.setProperty(QLatin1String("YesToAll"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::YesToAll)));
-    messageBox.setProperty(QLatin1String("No"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::No)));
-    messageBox.setProperty(QLatin1String("NoToAll"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::NoToAll)));
-    messageBox.setProperty(QLatin1String("Abort"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Abort)));
-    messageBox.setProperty(QLatin1String("Retry"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Retry)));
-    messageBox.setProperty(QLatin1String("Ignore"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::Ignore)));
-    messageBox.setProperty(QLatin1String("NoButton"),
-        scriptEngine->newVariant(static_cast<int>(QMessageBox::NoButton)));
+
+    const QMetaObject &messageBoxMetaObject = QMessageBox::staticMetaObject;
+    int index = messageBoxMetaObject.indexOfEnumerator("StandardButtons");
+
+    QMetaEnum metaEnum = messageBoxMetaObject.enumerator(index);
+    for (int i = 0; i < metaEnum.keyCount(); i++) {
+        int enumValue = metaEnum.value(i);
+        if (enumValue < QMessageBox::FirstButton)
+            continue;
+        messageBox.setProperty(QString::fromLatin1(metaEnum.valueToKey(metaEnum.value(i))),
+            scriptEngine->newVariant(enumValue));
+        if (enumValue == QMessageBox::LastButton)
+            break;
+    }
     scriptEngine->globalObject().setProperty(QLatin1String("QMessageBox"), messageBox);
 
     return messageBox;
 }
 
 using namespace QInstaller;
-
-template <typename T>
-static QList<T> reversed(const QList<T> &list)
-{
-    qFatal("This seems to be broken, check this!!!!");
-    // TODO: Figure out what should happen here. See setDefaultAction(...).
-#if 1
-    // Note: This does not what the function name implies???
-    QList<T> res = list;
-    qCopyBackward(list.begin(), list.end(), res.end());
-    return res;
-#else
-    // Note: This does what the function name implies, but we need to check if this is what we want.
-    QList<T> res = list;
-    std::reverse(res.begin(), res.end());
-    return res;
-#endif
-}
-
 
 // -- MessageBoxHandler
 
@@ -178,7 +136,7 @@ void MessageBoxHandler::setDefaultAction(DefaultAction defaultAction)
     if (m_defaultAction == Reject) {
         // If we want to reject everything, we need the lowest button. For example, if Cancel is existing it
         // could use Cancel, but if Close is existing it will use Close.
-        m_buttonOrder = reversed(m_buttonOrder);
+        std::reverse(m_buttonOrder.begin(), m_buttonOrder.end());
     }
 }
 
