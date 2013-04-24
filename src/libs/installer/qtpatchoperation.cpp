@@ -111,7 +111,10 @@ static QHash<QByteArray, QByteArray> generatePatchValueHash(const QByteArray &ne
     replaceHash.insert( QByteArray("qt_trnspath=%1").replace("%1", oldValue),
         QByteArray("qt_trnspath=%1/translations").replace("%1/", newQtPath + nativeSeperator));
 
-    // This must not be patched. Commenting out to fix QTSDK-429
+    // This must not be patched!
+    // On desktop there should be a correct default path (for example "/etc/xdg"),
+    // but on some other targets you need to use "-sysconfdir </your/default/config/path"
+    // while building Qt to get a correct QT_INSTALL_CONFIGURATION value
     //        oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_CONFIGURATION"));
     //        replaceMap.insert( QByteArray("qt_stngpath=%1").replace("%1", oldValue),
     //                            QByteArray("qt_stngpath=%1").replace("%1", newQtPath));
