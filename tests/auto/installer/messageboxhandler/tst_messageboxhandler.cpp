@@ -6,6 +6,9 @@
 #include <QScriptEngine>
 #include <QDebug>
 
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+
 using namespace QInstaller;
 
 namespace QTest {
@@ -64,7 +67,7 @@ private slots:
 
     void testDefaultAction()
     {
-        int standardButtons = QMessageBox::FirstButton;
+        int standardButtons = QMessageBox::NoButton;
         QList<QMessageBox::Button> orderedButtons = MessageBoxHandler::orderedButtons();
         MessageBoxHandler *messageBoxHandler = MessageBoxHandler::instance();
 
@@ -74,9 +77,16 @@ private slots:
         QString testMessage(QLatin1String("This is a test error message."));
 
         const char *ignoreMessage("\"created critical message box TestError: 'A test error', This is a test error message.\" ");
+        /* initialize random seed: */
+        srand(time(0));
         do {
             standardButtons += QMessageBox::FirstButton;
 
+            /* generate secret number between 1 and 10: */
+            int iSecret = rand() % 10 + 1;
+            // use only every 5th run to reduce the time which it takes to run this test
+            if (iSecret > 2)
+                continue;
             QTest::ignoreMessage(QtDebugMsg, ignoreMessage);
             const QMessageBox::StandardButton returnButton = static_cast<QMessageBox::StandardButton>(
                 messageBoxHandler->critical(testidentifier, testTitle, testMessage,
@@ -94,7 +104,6 @@ private slots:
             QCOMPARE(returnButton, wantedButton);
 
         } while (standardButtons < m_maxStandardButtons);
-
     }
 
 private:
