@@ -25,4 +25,9 @@ for(SUBDIR, EXTRASUBDIRS) {
 !isEqual(IFW_SOURCE_TREE, $$IFW_BUILD_TREE) {
     tests.depends = mkdir
 }
-QMAKE_EXTRA_TARGETS += tests
+QMAKE_EXTRA_TARGETS *= tests
+
+# forward make "check" target to autotests
+check.commands += cd $$PWD/auto && $(QMAKE) $$PWD/auto && $(MAKE) check
+check.depends = first
+QMAKE_EXTRA_TARGETS *= check
