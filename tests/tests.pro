@@ -28,6 +28,6 @@ for(SUBDIR, EXTRASUBDIRS) {
 QMAKE_EXTRA_TARGETS *= tests
 
 # forward make "check" target to autotests
-check.commands += cd $$PWD/auto && $(QMAKE) $$PWD/auto && $(MAKE) check
+check.commands += cd $$PWD/auto && $(QMAKE) -r $$PWD/auto && $(MAKE) check
 check.depends = first
 QMAKE_EXTRA_TARGETS *= check
