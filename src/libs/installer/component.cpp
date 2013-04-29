@@ -1203,7 +1203,6 @@ QStringList Component::autoDependencies() const
 {
     QStringList autoDependencyStringList =
         d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
-    qDebug() << Q_FUNC_INFO << autoDependencyStringList;
     autoDependencyStringList.removeAll(QLatin1String("script"));
     return autoDependencyStringList;
 }
