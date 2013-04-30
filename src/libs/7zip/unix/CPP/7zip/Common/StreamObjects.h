@@ -48,7 +48,7 @@ public:
   ~CByteDynBuffer() { Free(); }
   void Free();
   size_t GetCapacity() const { return  _capacity; }
-  operator Byte*() const { return _buf; };
+  operator Byte*() { return _buf; };
   operator const Byte*() const { return _buf; };
   bool EnsureCapacity(size_t capacity);
 };

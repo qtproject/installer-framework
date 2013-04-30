@@ -83,74 +83,63 @@
 #include "kdupdaterupdateoperationfactory.h"
 #include "kdupdaterfiledownloaderfactory.h"
 
-#include <unix/C/7zCrc.h>
+#include "7zCrc.h"
 
 #include <QtPlugin>
 
 #include <iostream>
 
 namespace NArchive {
-namespace NBz2 { void registerArcBZip2(); }
-namespace NGz { void registerArcGZip(); }
-namespace NLzma { namespace NLzmaAr { void registerArcLzma(); } }
-namespace NLzma { namespace NLzma86Ar { void registerArcLzma86(); } }
-namespace NSplit { void registerArcSplit(); }
-namespace NXz { void registerArcxz(); }
-namespace NZ { void registerArcZ(); }
+    namespace NXz {
+        void registerArcxz();
+    }
+    namespace NSplit {
+        void registerArcSplit();
+    }
+    namespace NLzma {
+        namespace NLzmaAr {
+            void registerArcLzma();
+        }
+        namespace NLzma86Ar {
+            void registerArcLzma86();
+        }
+    }
 }
 
 void registerArc7z();
-void registerArcCab();
-void registerArcTar();
-void registerArcZip();
 
+void registerCodecBCJ();
 void registerCodecBCJ2();
-void registerCodecBCJ();
-void registerCodecBCJ();
-void registerCodecByteSwap();
-void registerCodecBZip2();
-void registerCodecCopy();
-void registerCodecDeflate64();
-void registerCodecDeflate();
-void registerCodecDelta();
-void registerCodecLZMA2();
-void registerCodecLZMA();
-void registerCodecPPMD();
-void registerCodec7zAES();
 
-using namespace NArchive;
+void registerCodecLZMA();
+void registerCodecLZMA2();
+
+void registerCodecDelta();
+void registerCodecBranch();
+void registerCodecByteSwap();
+
 using namespace KDUpdater;
 using namespace QInstaller;
 
 static void initArchives()
 {
-    NBz2::registerArcBZip2();
-    NGz::registerArcGZip();
-    NLzma::NLzmaAr::registerArcLzma();
-    NLzma::NLzma86Ar::registerArcLzma86();
-    NSplit::registerArcSplit();
-    NXz::registerArcxz();
-    NZ::registerArcZ();
-    registerArc7z();
-    registerArcCab();
-    registerArcTar();
-    registerArcZip();
-
-    registerCodecBCJ2();
-    registerCodecBCJ();
-    registerCodecBCJ();
-    registerCodecByteSwap();
-    registerCodecBZip2();
-    registerCodecCopy();
-    registerCodecDeflate64();
-    registerCodecDeflate();
-    registerCodecDelta();
-    registerCodecLZMA2();
-    registerCodecLZMA();
-    registerCodecPPMD();
-    registerCodec7zAES();
-
     CrcGenerateTable();
+
+    registerArc7z();
+
+    registerCodecBCJ();
+    registerCodecBCJ2();
+    registerCodecLZMA();
+    registerCodecLZMA2();
+
+    registerCodecDelta();
+    registerCodecBranch();
+    registerCodecByteSwap();
+
+    NArchive::NXz::registerArcxz();
+    NArchive::NSplit::registerArcSplit();
+    NArchive::NLzma::NLzmaAr::registerArcLzma();
+    NArchive::NLzma::NLzma86Ar::registerArcLzma86();
 }
 
 #if defined(QT_STATIC)
