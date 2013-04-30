@@ -85,7 +85,6 @@ namespace Lib7z {
 
         QFile::Permissions permissions;
         QString path;
-        QString name;
         QDateTime mtime;
         quint64 uncompressedSize;
         quint64 compressedSize;
@@ -151,20 +150,32 @@ namespace Lib7z {
             void deviceDestroyed(QObject*);
     };
 
-    /*
-     * @throws Lib7z::SevenZipException
-     */
-    void INSTALLER_EXPORT extractArchive( QIODevice* archive, const File& item, QIODevice* out, ExtractCallback* callback=0 );
+    /*!
+        Extracts the given File \a file from \a archive into output device \a out using the provided extract
+        callback \a callback.
 
-    /*
-     * @throws Lib7z::SevenZipException
-     */
-    void INSTALLER_EXPORT extractArchive( QIODevice* archive, const File& item, const QString& targetDirectory, ExtractCallback* callback=0 );
+        Throws Lib7z::SevenZipException on error.
+    */
+    void INSTALLER_EXPORT extractFileFromArchive(QIODevice* archive, const File& item, QIODevice* out,
+        ExtractCallback* callback=0 );
 
-    /*
-     * @throws Lib7z::SevenZipException
-     */
-    void INSTALLER_EXPORT extractArchive( QIODevice* archive, const QString& targetDirectory, ExtractCallback* callback=0 );
+    /*!
+        Extracts the given File \a file from \a archive into target directory \a targetDirectory using the
+        provided extract callback \a callback. The output filename is deduced from the \a file path name.
+
+        Throws Lib7z::SevenZipException on error.
+    */
+    void INSTALLER_EXPORT extractFileFromArchive(QIODevice* archive, const File& item,
+        const QString& targetDirectory, ExtractCallback* callback = 0);
+
+    /*!
+        Extracts the given \a archive content into target directory \a targetDirectory using the
+        provided extract callback \a callback. The output filenames are deduced from the \a archive content.
+
+        Throws Lib7z::SevenZipException on error.
+    */
+    void INSTALLER_EXPORT extractArchive(QIODevice* archive, const QString& targetDirectory,
+        ExtractCallback* callback = 0);
 
     /*
      * @thows Lib7z::SevenZipException

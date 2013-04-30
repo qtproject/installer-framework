@@ -1402,7 +1402,8 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, Up
     }
 }
 
-void Lib7z::extractArchive(QIODevice* archive, const File& item, QIODevice* target, ExtractCallback* callback)
+void Lib7z::extractFileFromArchive(QIODevice* archive, const File& item, QIODevice* target,
+    ExtractCallback* callback)
 {
     assert(archive);
     assert(target);
@@ -1452,7 +1453,7 @@ void Lib7z::extractArchive(QIODevice* archive, const File& item, QIODevice* targ
     }
 }
 
-void Lib7z::extractArchive(QIODevice* archive, const File& item, const QString &targetDirectory,
+void Lib7z::extractFileFromArchive(QIODevice* archive, const File& item, const QString &targetDirectory,
     ExtractCallback* callback)
 {
     assert(archive);
@@ -1472,7 +1473,7 @@ void Lib7z::extractArchive(QIODevice* archive, const File& item, const QString &
     if (item.permissions)
         out.setPermissions(item.permissions);
     callback->setTarget(&out);
-    extractArchive(archive, item, &out, callback);
+    extractFileFromArchive(archive, item, &out, callback);
     outDir.release();
 }
 
@@ -1559,9 +1560,9 @@ void ExtractItemJob::doStart()
         if (!d->archive)
             throw SevenZipException(tr("Could not list archive: QIODevice not set or already destroyed."));
         if (d->target)
-            extractArchive(d->archive, d->item, d->target, d->callback);
+            extractFileFromArchive(d->archive, d->item, d->target, d->callback);
         else if (!d->item.path.isEmpty())
-            extractArchive(d->archive, d->item, d->targetDirectory, d->callback);
+            extractFileFromArchive(d->archive, d->item, d->targetDirectory, d->callback);
         else
             extractArchive(d->archive, d->targetDirectory, d->callback);
     } catch (const SevenZipException& e) {
