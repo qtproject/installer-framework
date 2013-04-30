@@ -471,7 +471,7 @@ static void printUsage()
     std::cout << std::endl;
     std::cout << "Example (online installer):" << std::endl;
     std::cout << "  " << appName << " -c installer-config" << sep << "config.xml -p packages-directory "
-        "-e com.nokia.sdk.qt,com.nokia.qtcreator -t installerbase" << suffix << " SDKInstaller"
+        "-e org.qt-project.sdk.qt,org.qt-project.qtcreator -t installerbase" << suffix << " SDKInstaller"
         << suffix << std::endl;
     std::cout << std::endl;
     std::cout << "Creates an installer for the SDK without qt and qt creator." << std::endl;

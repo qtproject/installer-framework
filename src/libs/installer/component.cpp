@@ -389,8 +389,8 @@ PackageManagerCore *Component::packageManagerCore() const
 }
 
 /*!
-    Returns the parent of this component. If this component is com.nokia.sdk.qt, its
-    parent is com.nokia.sdk, as far as this exists.
+    Returns the parent of this component. If this component is org.qt-project.sdk.qt, its
+    parent is org.qt-project.sdk, as far as this exists.
 */
 Component *Component::parentComponent() const
 {

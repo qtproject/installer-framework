@@ -782,12 +782,12 @@
 
     repogen.exe -p <package_directory> -c <config_directory>\<config_file> repository <repository_directory>
 
-    For example, to create a repository that contains only com.nokia.sdk.qt and
-    com.nokia.sdk.qtcreator, enter the following
+    For example, to create a repository that contains only org.qt-project.sdk.qt and
+    org.qt-project.sdk.qtcreator, enter the following
     command:
 
     \code
-    repogen.exe -p packages -c installer-config\config.xml -i com.nokia.sdk.qt,com.nokia.sdk.qtcreator repository
+    repogen.exe -p packages -c installer-config\config.xml -i org.qt-project.sdk.qt,org.qt-project.sdk.qtcreator repository
     \endcode
 
     When the repository has been created, upload it to a web server. You must
@@ -842,12 +842,12 @@
     \endcode
 
     For example, enter the following command to create an installer binary
-    called SDKInstaller.exe that will not contain data for com.nokia.sdk.qt and
-    com.nokia.qtcreator, because those packages are downloaded from a remote
+    called SDKInstaller.exe that will not contain data for org.qt-project.sdk.qt and
+    org.qt-project.qtcreator, because those packages are downloaded from a remote
     repository:
 
     \code
-    binarycreator.exe -p installer-packages -c installer-config\config.xml -e com.nokia.sdk.qt,com.nokia.qtcreator SDKInstaller.exe
+    binarycreator.exe -p installer-packages -c installer-config\config.xml -e org.qt-project.sdk.qt,org.qt-project.qtcreator SDKInstaller.exe
     \endcode
 
     \section1 Reducing Installer Size
@@ -894,7 +894,7 @@
     Some options have default values, and therefore, you can omit them.
     For example, enter the following command to create an installer binary
     called SDKInstaller.exe that contains the packages identified by
-    com.nokia.sdk and their dependencies:
+    org.qt-project.sdk and their dependencies:
 
     \code
     binarycreator.exe --offline-only -c installer-config -p installer-packes SDKInstaller.exe

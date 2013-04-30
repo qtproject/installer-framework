@@ -1259,7 +1259,7 @@ QList<Component*> PackageManagerCore::availableComponents() const
     \qmlmethod Component QInstaller::componentByName(string name)
 
     Returns a component matching \a name. \a name can also contains a version requirement.
-    E.g. "com.nokia.sdk.qt" returns any component with that name, "com.nokia.sdk.qt->=4.5" requires
+    E.g. "org.qt-project.sdk.qt" returns any component with that name, "org.qt-project.sdk.qt->=4.5" requires
     the returned component to have at least version 4.5.
     If no component matches the requirement, 0 is returned.
 */
