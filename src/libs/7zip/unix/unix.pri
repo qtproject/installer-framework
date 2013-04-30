@@ -129,4 +129,4 @@ SOURCES += $$7ZIP_BASE/C/XzEnc.c
 SOURCES += $$7ZIP_BASE/C/Sha256.c
 
 SOURCES += \
-$$7ZIP_BASE/CPP/myWindows/wine_date_and_time.cpp
+$$7ZIP_BASE/CPP/myWindows/myDateAndTime.cpp
