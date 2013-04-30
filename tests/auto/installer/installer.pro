@@ -5,4 +5,5 @@ SUBDIRS += \
     repository \
     componentmodel \
     fakestopprocessforupdateoperation \
-    messageboxhandler
+    messageboxhandler \
+    extractarchiveoperationtest

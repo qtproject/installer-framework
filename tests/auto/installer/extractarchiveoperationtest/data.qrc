@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/valid.7z</file>
+        <file>data/invalid.7z</file>
+    </qresource>
+</RCC>

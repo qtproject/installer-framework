@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -39,28 +39,63 @@
 **
 **************************************************************************/
 
-#ifndef EXTRACTIONARCHIVEOPERATIONTEST_H
-#define EXTRACTIONARCHIVEOPERATIONTEST_H
+#include "init.h"
+#include "extractarchiveoperation.h"
 
+#include <QDir>
 #include <QObject>
+#include <QTest>
 
-#include <QtTest/QtTest>
+using namespace KDUpdater;
+using namespace QInstaller;
 
-class ExtractArchiveOperationTest : public QObject
+class tst_extractarchiveoperationtest : public QObject
 {
     Q_OBJECT
 
-public:
-    ExtractArchiveOperationTest();
+private slots:
+    void initTestCase()
+    {
+        QInstaller::init();
+    }
 
-private Q_SLOTS:
-    void testExtraction();
-    void testInvalidArchive();
-    void testExtractionErrors();
+    void testMissingArguments()
+    {
+        ExtractArchiveOperation op;
 
-private:
-    void init(const QString &);
-    void cleanup(const QString &);
+        QVERIFY(op.testOperation());
+        QVERIFY(!op.performOperation());
+        //QVERIFY(!op.undoOperation());     Can't test for failure as we run into Q_ASSERT
+
+        QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
+        QCOMPARE(op.errorString(), QString("Invalid arguments in Extract: 0 arguments given, exactly 2 expected."));
+
+    }
+
+    void testExtractOperationValidFile()
+    {
+        ExtractArchiveOperation op;
+        op.setArguments(QStringList() << ":///data/valid.7z" << QDir::tempPath());
+
+        QVERIFY(op.testOperation());
+        QVERIFY(op.performOperation());
+        QVERIFY(op.undoOperation());
+    }
+
+    void testExtractOperationInvalidFile()
+    {
+        ExtractArchiveOperation op;
+        op.setArguments(QStringList() << ":///data/invalid.7z" << QDir::tempPath());
+
+        QVERIFY(op.testOperation());
+        QVERIFY(!op.performOperation());
+        QVERIFY(op.undoOperation());
+
+        QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::UserDefinedError);
+        QCOMPARE(op.errorString(), QString("Error while extracting ':///data/invalid.7z': Could not open archive"));
+    }
 };
 
-#endif // EXTRACTARCHIVEOPERATIONTEST_H
+QTEST_MAIN(tst_extractarchiveoperationtest)
+
+#include "tst_extractarchiveoperationtest.moc"
