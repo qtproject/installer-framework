@@ -51,7 +51,7 @@
 
 namespace QInstaller {
 
-QScriptValue registerMessageBox(QScriptEngine *scriptEngine);
+QScriptValue INSTALLER_EXPORT registerMessageBox(QScriptEngine *scriptEngine);
 
 class INSTALLER_EXPORT MessageBoxHandler : public QObject, private QScriptable
 {
