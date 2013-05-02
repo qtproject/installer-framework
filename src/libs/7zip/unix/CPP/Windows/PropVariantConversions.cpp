@@ -76,13 +76,10 @@ bool ConvertFileTimeToString(const FILETIME &ft, char *s, bool includeTime, bool
 #else
   BOOLEAN WINAPI RtlTimeToSecondsSince1970( const LARGE_INTEGER *Time, DWORD *Seconds );
 
-  FILETIME filetime;
-  LocalFileTimeToFileTime(&ft, &filetime);
-
   LARGE_INTEGER  ltime;
 
-  ltime.QuadPart = filetime.dwHighDateTime;
-  ltime.QuadPart = (ltime.QuadPart << 32) | filetime.dwLowDateTime;
+  ltime.QuadPart = ft.dwHighDateTime;
+  ltime.QuadPart = (ltime.QuadPart << 32) | ft.dwLowDateTime;
 
   DWORD dw;
   RtlTimeToSecondsSince1970(&ltime, &dw );

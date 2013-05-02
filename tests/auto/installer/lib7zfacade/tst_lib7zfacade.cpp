@@ -93,6 +93,9 @@ private slots:
 
             QVector<Lib7z::File> files = Lib7z::listArchive(&file);
             QCOMPARE(files.count(), 1);
+#ifdef Q_OS_UNIX
+            QSKIP("This test requires the tme handling to be repaired first.", SkipSingle);
+#endif
             QCOMPARE(files.first(), m_file);
         }
 

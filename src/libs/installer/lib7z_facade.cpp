@@ -277,8 +277,12 @@ QDateTime getDateTimeProperty(IInArchive* archive, int index, int propId, const 
         return defaultValue;
 
     FILETIME localFileTime;
-    if (!FileTimeToLocalFileTime(&fileTime, &localFileTime))
-        throw SevenZipException(QObject::tr("Could not convert file time to local time"));
+#ifndef Q_OS_UNIX
+        if (!FileTimeToLocalFileTime(&fileTime, &localFileTime))
+            throw SevenZipException(QObject::tr("Could not convert file time to local time"));
+#else
+    localFileTime = fileTime;
+#endif
 
     SYSTEMTIME st;
     if (!BOOLToBool(FileTimeToSystemTime(&localFileTime, &st)))
