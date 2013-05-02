@@ -10,26 +10,6 @@ namespace NTime {
 
 static const UInt32 kFileTimeStartYear = 1601;
 
-bool DosTimeToFileTime(UInt32 dosTime, FILETIME &fileTime)
-{
-  return BOOLToBool(::DosDateTimeToFileTime((UInt16)(dosTime >> 16), (UInt16)(dosTime & 0xFFFF), &fileTime));
-}
-
-static const UInt32 kHighDosTime = 0xFF9FBF7D;
-static const UInt32 kLowDosTime = 0x210000;
-
-bool FileTimeToDosTime(const FILETIME &fileTime, UInt32 &dosTime)
-{
-  WORD datePart, timePart;
-  if (!::FileTimeToDosDateTime(&fileTime, &datePart, &timePart))
-  {
-    dosTime = (fileTime.dwHighDateTime >= 0x01C00000) ? kHighDosTime : kLowDosTime;
-    return false;
-  }
-  dosTime = (((UInt32)datePart) << 16) + timePart;
-  return true;
-}
-
 static const UInt32 kNumTimeQuantumsInSecond = 10000000;
 static const UInt64 kUnixTimeStartValue = ((UInt64)kNumTimeQuantumsInSecond) * 60 * 60 * 24 * 134774;
 

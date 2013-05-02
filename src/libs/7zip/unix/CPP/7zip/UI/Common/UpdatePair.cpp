@@ -28,13 +28,6 @@ static int MyCompareTime(NFileTimeType::EEnum fileTimeType, const FILETIME &time
         FileTimeToUnixTime(time2, unixTime2);
         return MyCompare(unixTime1, unixTime2);
       }
-    case NFileTimeType::kDOS:
-      {
-        UInt32 dosTime1, dosTime2;
-        FileTimeToDosTime(time1, dosTime1);
-        FileTimeToDosTime(time2, dosTime2);
-        return MyCompare(dosTime1, dosTime2);
-      }
   }
   throw 4191618;
 }

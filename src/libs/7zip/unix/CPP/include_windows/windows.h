@@ -142,8 +142,6 @@ typedef struct _SYSTEMTIME {
 extern "C" {
 #endif
 
-BOOL WINAPI DosDateTimeToFileTime(WORD,WORD,FILETIME *);
-BOOL WINAPI FileTimeToDosDateTime(CONST FILETIME *,WORD *, WORD *);
 BOOL WINAPI FileTimeToLocalFileTime(CONST FILETIME *,FILETIME *);
 BOOL WINAPI FileTimeToSystemTime(CONST FILETIME *,SYSTEMTIME *);
 BOOL WINAPI LocalFileTimeToFileTime(CONST FILETIME *,FILETIME *);
