@@ -5,7 +5,6 @@ EXTRASUBDIRS = \
         auto \
         downloadspeed \
         environmentvariable \
-        extractarchiveoperationtest \
         fileengineclient \
         fileengineserver
 
