@@ -73,7 +73,6 @@
 #include "registertoolchainoperation.h"
 #include "registerdefaultdebuggeroperation.h"
 
-
 #ifdef Q_OS_MAC
 #   include "macreplaceinstallnamesoperation.h"
 #endif // Q_OS_MAC
