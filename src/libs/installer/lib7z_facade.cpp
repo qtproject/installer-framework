@@ -334,40 +334,39 @@ namespace Lib7z {
 class QIODeviceSequentialOutStream : public ISequentialOutStream, public CMyUnknownImp
 {
 public:
-    enum DestructorBehavior{
-        CloseAndDeleteIODeviceAtDestructor,
-        KeepIODeviceAtItIsAtDestructor
+    enum Behavior {
+        KeepDeviceUntouched,
+        CloseAndDeleteDevice
     };
 
     MY_UNKNOWN_IMP
-    explicit QIODeviceSequentialOutStream(QIODevice* device, DestructorBehavior behavior);
+    explicit QIODeviceSequentialOutStream(QIODevice* device, Behavior behavior);
     ~QIODeviceSequentialOutStream();
     QString errorString() const;
 
     /* reimp */ STDMETHOD(Write)(const void* data, UInt32 size, UInt32* processedSize);
 
 private:
-    QPointer<QIODevice> m_device;
-    const DestructorBehavior m_destructorBehavior;
+    Behavior m_behavior;
     QString m_errorString;
+    QPointer<QIODevice> m_device;
 };
 
-QIODeviceSequentialOutStream::QIODeviceSequentialOutStream(QIODevice* device, DestructorBehavior behavior)
+QIODeviceSequentialOutStream::QIODeviceSequentialOutStream(QIODevice* device, Behavior behavior)
     : ISequentialOutStream()
     , CMyUnknownImp()
+    , m_behavior(behavior)
     , m_device(device)
-    , m_destructorBehavior(behavior)
 {
     Q_ASSERT(m_device);
 
-    if (!m_device->open(QIODevice::WriteOnly)) {
+    if (!device->isOpen() && !m_device->open(QIODevice::WriteOnly))
         m_errorString = m_device->errorString();
-    }
 }
 
 QIODeviceSequentialOutStream::~QIODeviceSequentialOutStream()
 {
-    if (m_destructorBehavior == CloseAndDeleteIODeviceAtDestructor) {
+    if (m_behavior == CloseAndDeleteDevice) {
         m_device->close();
         delete m_device;
         m_device = 0;
@@ -792,7 +791,7 @@ public:
         *outStream = 0;
         if (device != 0) {
             QIODeviceSequentialOutStream *qOutStream = new QIODeviceSequentialOutStream(device,
-                QIODeviceSequentialOutStream::KeepIODeviceAtItIsAtDestructor);
+                QIODeviceSequentialOutStream::KeepDeviceUntouched);
             if (!qOutStream->errorString().isEmpty()) {
                 Lib7z::setLastError(qOutStream->errorString());
                 return E_FAIL;
@@ -841,7 +840,7 @@ public:
                 }
 #endif
                 QIODeviceSequentialOutStream *qOutStream = new QIODeviceSequentialOutStream(
-                    new QFile(fi.absoluteFilePath()), QIODeviceSequentialOutStream::CloseAndDeleteIODeviceAtDestructor);
+                    new QFile(fi.absoluteFilePath()), QIODeviceSequentialOutStream::CloseAndDeleteDevice);
                 if (!qOutStream->errorString().isEmpty()) {
                     Lib7z::setLastError(QObject::tr("Could not open file: %1 (%2)").arg(
                         fi.absoluteFilePath(), qOutStream->errorString()));
@@ -1440,13 +1439,15 @@ void Lib7z::extractFileFromArchive(QIODevice* archive, const File& item, QIODevi
         assert(item.path == UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/')));
 
         callback->setTarget(target);
-        const LONG extractResult = parchive->Extract(&itemIdx, 1, /*testmode=*/1, callback->impl());
+        const LONG extractResult = parchive->Extract(&itemIdx, 1, /*testmode=*/0, callback->impl());
 
         if (extractResult != S_OK)
             throw SevenZipException(errorMessageFrom7zResult(extractResult));
 
     } catch (const char *err) {
         throw SevenZipException(err);
+    } catch (const Lib7z::SevenZipException& e) {
+        throw e;
     } catch (...) {
         throw SevenZipException(QObject::tr("Unknown exception caught (%1)")
             .arg(QString::fromLatin1(Q_FUNC_INFO)));
@@ -1470,10 +1471,10 @@ void Lib7z::extractFileFromArchive(QIODevice* archive, const File& item, const Q
         throw SevenZipException(QObject::tr("Could not create output file for writing: %1")
             .arg(fi.absoluteFilePath()));
     }
-    if (item.permissions)
-        out.setPermissions(item.permissions);
     callback->setTarget(&out);
     extractFileFromArchive(archive, item, &out, callback);
+    if (item.permissions)
+        out.setPermissions(item.permissions);
     outDir.release();
 }
 

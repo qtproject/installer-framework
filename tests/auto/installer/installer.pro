@@ -6,4 +6,5 @@ SUBDIRS += \
     componentmodel \
     fakestopprocessforupdateoperation \
     messageboxhandler \
-    extractarchiveoperationtest
+    extractarchiveoperationtest \
+    lib7zfacade
