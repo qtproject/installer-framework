@@ -1,0 +1,7 @@
+bin/qmake.exe
+bin/lrelease.exe
+bin/qdoc.exe
+%%
+*.la
+*.prl
+*.pc

@@ -4,5 +4,6 @@
         <file>files-to-patch-windows</file>
         <file>files-to-patch-macx</file>
         <file>files-to-patch-linux-emb-arm</file>
+        <file>files-to-patch-windows-emb-arm</file>
     </qresource>
 </RCC>
