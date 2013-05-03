@@ -1,0 +1,54 @@
+There are deleted files and very small changes to get the integration process of new versions very simple.
+--diff-filter=M means "modified" and
+--diff-filter=D means "deleted" files
+
+=== output of: git diff --diff-filter=M ===
+
+diff --git a/CPP/7zip/Common/RegisterArc.h b/CPP/7zip/Common/RegisterArc.h
+index bc2a034..9b8cbd3 100644
+--- a/CPP/7zip/Common/RegisterArc.h
++++ b/CPP/7zip/Common/RegisterArc.h
+@@ -27,6 +27,6 @@ void RegisterArc(const CArcInfo *arcInfo);
+ 
+ #define REGISTER_ARC(x) struct REGISTER_ARC_NAME(x) { \
+     REGISTER_ARC_NAME(x)() { RegisterArc(&g_ArcInfo); }}; \
+-    static REGISTER_ARC_NAME(x) g_RegisterArc;
+-
++    static REGISTER_ARC_NAME(x) g_RegisterArc; \
++    void registerArc##x() { static REGISTER_ARC_NAME(x) g_RegisterArc; }
+ #endif
+diff --git a/CPP/7zip/Common/RegisterCodec.h b/CPP/7zip/Common/RegisterCodec.h
+index 786b4a4..d53c434 100644
+--- a/CPP/7zip/Common/RegisterCodec.h
++++ b/CPP/7zip/Common/RegisterCodec.h
+@@ -22,12 +22,13 @@ void RegisterCodec(const CCodecInfo *codecInfo);
+ 
+ #define REGISTER_CODEC(x) struct REGISTER_CODEC_NAME(x) { \
+     REGISTER_CODEC_NAME(x)() { RegisterCodec(&g_CodecInfo); }}; \
+-    static REGISTER_CODEC_NAME(x) g_RegisterCodec;
++    static REGISTER_CODEC_NAME(x) g_RegisterCodec; \
++    void registerCodec##x() { static REGISTER_CODEC_NAME(x) g_RegisterCodecs; }
+ 
+ #define REGISTER_CODECS_NAME(x) CRegisterCodecs ## x
+ #define REGISTER_CODECS(x) struct REGISTER_CODECS_NAME(x) { \
+     REGISTER_CODECS_NAME(x)() { for (int i = 0; i < sizeof(g_CodecsInfo) / sizeof(g_CodecsInfo[0]); i++) \
+     RegisterCodec(&g_CodecsInfo[i]); }}; \
+-    static REGISTER_CODECS_NAME(x) g_RegisterCodecs;
+-
++    static REGISTER_CODECS_NAME(x) g_RegisterCodecs; \
++    void registerCodec##x() { static REGISTER_CODECS_NAME(x) g_RegisterCodecs; }
+ #endif
+diff --git a/CPP/Common/MyString.h b/CPP/Common/MyString.h
+index eb3c52d..f483e39 100644
+--- a/CPP/Common/MyString.h
++++ b/CPP/Common/MyString.h
+@@ -7,6 +7,8 @@
+ 
+ #include "MyVector.h"
+ 
++#include <windows.h>
++
+ template <class T>
+ inline int MyStringLen(const T *s)
+ {
+
