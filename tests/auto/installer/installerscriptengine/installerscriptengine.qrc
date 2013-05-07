@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/auto-install.qs</file>
+        <file>data/component1.qs</file>
+        <file>data/component2.qs</file>
+    </qresource>
+</RCC>

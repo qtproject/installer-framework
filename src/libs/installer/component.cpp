@@ -468,6 +468,11 @@ QString Component::displayName() const
     return d->m_vars.value(scDisplayName);
 }
 
+QScriptEngine *Component::scriptEngine()
+{
+    return d->scriptEngine();
+}
+
 void Component::loadComponentScript()
 {
     const QString script = d->m_vars.value(scScript);

@@ -125,6 +125,7 @@ public:
     void removeComponent(Component *component);
     QList<Component*> childComponents(Component::Kind kind) const;
 
+    QScriptEngine *scriptEngine();
     void loadComponentScript();
 
     //move this to private

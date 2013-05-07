@@ -7,4 +7,5 @@ SUBDIRS += \
     fakestopprocessforupdateoperation \
     messageboxhandler \
     extractarchiveoperationtest \
-    lib7zfacade
+    lib7zfacade \
+    installerscriptengine
