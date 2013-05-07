@@ -100,6 +100,7 @@ private slots:
     {
        try {
             // ignore retranslateUi which is called by loadComponentScript
+            setExpectedScriptOutput("Component constructor - OK");
             setExpectedScriptOutput("retranslateUi - OK");
             m_component->loadComponentScript(":///data/component1.qs");
 

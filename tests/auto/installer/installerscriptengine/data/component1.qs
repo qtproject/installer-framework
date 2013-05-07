@@ -1,5 +1,6 @@
 function Component()
 {
+    print("Component constructor - OK");
 }
 
 Component.prototype.retranslateUi = function()
