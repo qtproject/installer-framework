@@ -521,11 +521,6 @@ InstallerGui::InstallerGui(PackageManagerCore *core)
     setPage(PackageManagerCore::ReadyForInstallation, new ReadyForInstallationPage(core));
     setPage(PackageManagerCore::PerformInstallation, new PerformInstallationPage(core));
     setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
-
-    bool ok = false;
-    const int startPage = core->value(QLatin1String("GuiStartPage")).toInt(&ok);
-    if(ok)
-        setStartId(startPage);
 }
 
 void InstallerGui::init()
