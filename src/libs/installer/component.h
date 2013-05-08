@@ -125,7 +125,6 @@ public:
     void removeComponent(Component *component);
     QList<Component*> childComponents(Component::Kind kind) const;
 
-    QScriptEngine *scriptEngine();
     void loadComponentScript();
 
     //move this to private
@@ -227,10 +226,6 @@ Q_SIGNALS:
     void loaded();
     void selectedChanged(bool selected);
     void valueChanged(const QString &key, const QString &value);
-
-protected:
-    QScriptValue callScriptMethod(const QString &name,
-        const QScriptValueList &parameters = QScriptValueList()) const;
 
 private Q_SLOTS:
     void updateModelData(const QString &key, const QString &value);

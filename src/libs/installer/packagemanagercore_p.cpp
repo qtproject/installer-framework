@@ -43,6 +43,7 @@
 #include "adminauthorization.h"
 #include "binaryformat.h"
 #include "component.h"
+#include "scriptengine.h"
 #include "componentmodel.h"
 #include "errors.h"
 #include "fileutils.h"
@@ -209,6 +210,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_componentsToInstallCalculated(false)
+    , m_scriptEngine(0)
     , m_proxyFactory(0)
     , m_defaultModel(0)
     , m_updaterModel(0)
@@ -234,6 +236,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(magicInstallerMaker)
     , m_componentsToInstallCalculated(false)
+    , m_scriptEngine(0)
     , m_proxyFactory(0)
     , m_defaultModel(0)
     , m_updaterModel(0)
@@ -259,6 +262,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
         m_FSEngineClientHandler->setActive(false);
 
     delete m_updateFinder;
+    delete m_scriptEngine;
     delete m_proxyFactory;
 
     delete m_defaultModel;
@@ -383,6 +387,13 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
         return false;
     }
     return true;
+}
+
+ScriptEngine *PackageManagerCorePrivate::scriptEngine()
+{
+    if (!m_scriptEngine)
+        m_scriptEngine = new ScriptEngine(m_core);
+    return m_scriptEngine;
 }
 
 void PackageManagerCorePrivate::clearAllComponentLists()

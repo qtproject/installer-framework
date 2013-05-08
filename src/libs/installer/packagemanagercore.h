@@ -57,6 +57,7 @@ namespace QInstaller {
 
 class Component;
 class ComponentModel;
+class ScriptEngine;
 class PackageManagerCorePrivate;
 class Settings;
 
@@ -173,7 +174,10 @@ public:
     Q_INVOKABLE bool fileExists(const QString &filePath) const;
 
 public:
+    ScriptEngine *scriptEngine();
+
     // component handling
+
     int rootComponentCount() const;
     Component *rootComponent(int i) const;
     QList<Component*> rootComponents() const;

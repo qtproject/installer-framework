@@ -39,6 +39,7 @@
 **
 **************************************************************************/
 #include "component.h"
+#include "scriptengine.h"
 
 #include "errors.h"
 #include "fileutils.h"
@@ -468,11 +469,6 @@ QString Component::displayName() const
     return d->m_vars.value(scDisplayName);
 }
 
-QScriptEngine *Component::scriptEngine()
-{
-    return d->scriptEngine();
-}
-
 void Component::loadComponentScript()
 {
     const QString script = d->m_vars.value(scScript);
@@ -481,7 +477,7 @@ void Component::loadComponentScript()
 }
 
 /*!
-    Loads the script at \a fileName into this component's script engine. The installer and all its
+    Loads the script at \a fileName into ScriptEngine. The installer and all its
     components as well as other useful stuff are being exported into the script.
     Read \link componentscripting Component Scripting \endlink for details.
     Throws an error when either the script at \a fileName couldn't be opened, or the QScriptEngine
@@ -489,42 +485,15 @@ void Component::loadComponentScript()
 */
 void Component::loadComponentScript(const QString &fileName)
 {
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly)) {
-        throw Error(tr("Could not open the requested script file at %1: %2.").arg(fileName, file.errorString()));
-    }
+    ScriptEngine *scriptEngine = d->m_core->scriptEngine();
 
-    d->scriptEngine()->evaluate(QLatin1String(file.readAll()), fileName);
-    if (d->scriptEngine()->hasUncaughtException()) {
-        throw Error(tr("Exception while loading the component script: %1")
-            .arg(uncaughtExceptionString(d->scriptEngine()/*, QFileInfo(file).absoluteFilePath()*/)));
-    }
+    QString scriptInjection(QString::fromLatin1(
+        "var component = installer.componentByName('%1');").arg(name()));
 
-    const QList<Component*> components = d->m_core->availableComponents();
-    QScriptValue comps = d->scriptEngine()->newArray(components.count());
-    for (int i = 0; i < components.count(); ++i)
-        comps.setProperty(i, d->scriptEngine()->newQObject(components[i]));
-
-    d->scriptEngine()->globalObject().property(QLatin1String("installer"))
-        .setProperty(QLatin1String("components"), comps);
-
-    QScriptValue comp = d->scriptEngine()->evaluate(QLatin1String("Component"), fileName);
-    if (!d->scriptEngine()->hasUncaughtException()) {
-        d->m_scriptComponent = comp;
-        d->m_scriptComponent.construct();
-    }
-
-    //evaluate("Component") and construct can have an exception
-    if (d->scriptEngine()->hasUncaughtException()) {
-        throw Error(tr("Exception while loading the component script: %1")
-            .arg(uncaughtExceptionString(d->scriptEngine(), QFileInfo(file).absoluteFilePath())));
-    }
+    d->m_scriptContext = scriptEngine->loadInConext(QLatin1String("Component"), fileName, scriptInjection);
 
     emit loaded();
     languageChanged();
-
-    //Solves a freeze seen on updater/ package manger restart.
-    QCoreApplication::processEvents();
 }
 
 /*!
@@ -534,39 +503,7 @@ void Component::loadComponentScript(const QString &fileName)
 */
 void Component::languageChanged()
 {
-    callScriptMethod(QLatin1String("retranslateUi"));
-}
-
-/*!
-    Tries to call the method with \a name within the script and returns the result. If the method
-    doesn't exist, an invalid result is returned. If the method has an uncaught exception, its
-    string representation is thrown as an Error exception.
-
-    \note The method is not called, if the current script context is the same method, to avoid
-    infinite recursion.
-*/
-QScriptValue Component::callScriptMethod(const QString &methodName, const QScriptValueList &arguments) const
-{
-    if (!d->m_unexistingScriptMethods.value(methodName, true))
-        return QScriptValue();
-
-    // don't allow such a recursion
-    if (d->scriptEngine()->currentContext()->backtrace().first().startsWith(methodName))
-        return QScriptValue();
-
-    QScriptValue method = d->m_scriptComponent.property(QString::fromLatin1("prototype"))
-        .property(methodName);
-    if (!method.isValid()) // this marks the method to be called not any longer
-        d->m_unexistingScriptMethods[methodName] = false;
-
-    const QScriptValue result = method.call(d->m_scriptComponent, arguments);
-    if (!result.isValid())
-        return result;
-
-    if (d->scriptEngine()->hasUncaughtException())
-        throw Error(uncaughtExceptionString(d->scriptEngine()/*, name()*/));
-
-    return result;
+    d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext, QLatin1String("retranslateUi"));
 }
 
 /*!
@@ -709,8 +646,10 @@ void Component::createOperationsForPath(const QString &path)
         return;
 
     // the script can override this method
-    if (callScriptMethod(QLatin1String("createOperationsForPath"), QScriptValueList() << path).isValid())
+    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+        QLatin1String("createOperationsForPath"), QScriptValueList() << path).isValid()) {
         return;
+    }
 
     QString target;
     static const QString prefix = QString::fromLatin1("installer://");
@@ -752,8 +691,10 @@ void Component::createOperationsForArchive(const QString &archive)
         return;
 
     // the script can override this method
-    if (callScriptMethod(QLatin1String("createOperationsForArchive"), QScriptValueList() << archive).isValid())
+    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+        QLatin1String("createOperationsForArchive"), QScriptValueList() << archive).isValid()) {
         return;
+    }
 
     const bool isZip = Lib7z::isSupportedArchive(archive);
 
@@ -784,7 +725,8 @@ void Component::createOperationsForArchive(const QString &archive)
 void Component::beginInstallation()
 {
     // the script can override this method
-    if (callScriptMethod(QLatin1String("beginInstallation")).isValid()) {
+    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+        QLatin1String("beginInstallation")).isValid()) {
         return;
     }
 }
@@ -802,7 +744,8 @@ void Component::beginInstallation()
 void Component::createOperations()
 {
     // the script can override this method
-    if (callScriptMethod(QLatin1String("createOperations")).isValid()) {
+    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+        QLatin1String("createOperations")).isValid()) {
         d->m_operationsCreated = true;
         return;
     }
@@ -1160,7 +1103,7 @@ void Component::setValidatorCallbackName(const QString &name)
 bool Component::validatePage()
 {
     if (!validatorCallbackName.isEmpty())
-        return callScriptMethod(validatorCallbackName).toBool();
+        return d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext, validatorCallbackName).toBool();
     return true;
 }
 
@@ -1240,7 +1183,8 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
     if (autoDependOnList.first().compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
         QScriptValue valueFromScript;
         try {
-            valueFromScript = callScriptMethod(QLatin1String("isAutoDependOn"));
+            valueFromScript = d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+                QLatin1String("isAutoDependOn"));
         } catch (const Error &error) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("isAutoDependOnError"), tr("Can't resolve isAutoDependOn in %1"
@@ -1289,7 +1233,8 @@ bool Component::isDefault() const
     if (d->m_vars.value(scDefault).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
         QScriptValue valueFromScript;
         try {
-            valueFromScript = callScriptMethod(QLatin1String("isDefault"));
+            valueFromScript = d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+                QLatin1String("isDefault"));
         } catch (const Error &error) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("isDefaultError"), tr("Can't resolve isDefault in %1").arg(name()),

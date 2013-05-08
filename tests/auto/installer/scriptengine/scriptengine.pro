@@ -5,7 +5,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
 }
 
-SOURCES += tst_installerscriptengine.cpp
+SOURCES += tst_scriptengine.cpp
 
 RESOURCES += \
-    installerscriptengine.qrc
+    scriptengine.qrc

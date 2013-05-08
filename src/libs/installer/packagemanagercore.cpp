@@ -71,9 +71,6 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 
-#include <QtScript/QScriptEngine>
-#include <QtScript/QScriptContext>
-
 #include "kdsysinfo.h"
 #include "kdupdaterupdateoperationfactory.h"
 
@@ -352,20 +349,6 @@ static bool sNoForceInstallation = false;
 static bool sVirtualComponentsVisible = false;
 static bool sCreateLocalRepositoryFromBinary = false;
 
-static QScriptValue checkArguments(QScriptContext *context, int amin, int amax)
-{
-    if (context->argumentCount() < amin || context->argumentCount() > amax) {
-        if (amin != amax) {
-            return context->throwError(QObject::tr("Invalid arguments: %1 arguments given, %2 to "
-                "%3 expected.").arg(QString::number(context->argumentCount()),
-                QString::number(amin), QString::number(amax)));
-        }
-        return context->throwError(QObject::tr("Invalid arguments: %1 arguments given, %2 expected.")
-            .arg(QString::number(context->argumentCount()), QString::number(amin)));
-    }
-    return QScriptValue();
-}
-
 static bool componentMatches(const Component *component, const QString &name,
     const QString &version = QString())
 {
@@ -409,97 +392,6 @@ Component *PackageManagerCore::subComponentByName(const QInstaller::PackageManag
         }
     }
     return 0;
-}
-
-/*!
-    Scriptable version of PackageManagerCore::componentByName(QString).
-    \sa PackageManagerCore::componentByName
- */
-QScriptValue QInstaller::qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine)
-{
-    const QScriptValue check = checkArguments(context, 1, 1);
-    if (check.isError())
-        return check;
-
-    // well... this is our "this" pointer
-    PackageManagerCore *const core = dynamic_cast<PackageManagerCore*>(engine->globalObject()
-        .property(QLatin1String("installer")).toQObject());
-
-    const QString name = context->argument(0).toString();
-    return engine->newQObject(core->componentByName(name));
-}
-
-QScriptValue QInstaller::qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *engine)
-{
-    Q_UNUSED(engine);
-    const QScriptValue check = checkArguments(context, 1, 1);
-    if (check.isError())
-        return check;
-    QString url = context->argument(0).toString();
-    url.replace(QLatin1String("\\\\"), QLatin1String("/"));
-    url.replace(QLatin1String("\\"), QLatin1String("/"));
-    return QDesktopServices::openUrl(QUrl::fromUserInput(url));
-}
-
-QScriptValue QInstaller::qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine *engine)
-{
-    Q_UNUSED(engine);
-    const QScriptValue check = checkArguments(context, 1, 1);
-    if (check.isError())
-        return check;
-
-#if QT_VERSION < 0x050000
-    const QDesktopServices::StandardLocation location =
-        static_cast< QDesktopServices::StandardLocation >(context->argument(0).toInt32());
-    return QDesktopServices::displayName(location);
-#else
-    const QStandardPaths::StandardLocation location =
-        static_cast< QStandardPaths::StandardLocation >(context->argument(0).toInt32());
-    return QStandardPaths::displayName(location);
-#endif
-}
-
-QScriptValue QInstaller::qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine)
-{
-    Q_UNUSED(engine);
-    const QScriptValue check = checkArguments(context, 1, 1);
-    if (check.isError())
-        return check;
-
-#if QT_VERSION < 0x050000
-    const QDesktopServices::StandardLocation location =
-        static_cast< QDesktopServices::StandardLocation >(context->argument(0).toInt32());
-    return QDesktopServices::storageLocation(location);
-#else
-    const QStandardPaths::StandardLocation location =
-        static_cast< QStandardPaths::StandardLocation >(context->argument(0).toInt32());
-    return QStandardPaths::writableLocation(location);
-#endif
-}
-
-QScriptValue QInstaller::qFileDialogGetExistingDirectory( QScriptContext *context, QScriptEngine *engine )
-{
-    Q_UNUSED(engine);
-    const QScriptValue check = checkArguments(context, 0, 2);
-    if (check.isError())
-        return check;
-    QString caption;
-    QString dir;
-    if (context->argumentCount() > 0)
-        caption = context->argument(0).toString();
-    if (context->argumentCount() > 1)
-        dir = context->argument(1).toString();
-    return QFileDialog::getExistingDirectory(0, caption, dir);
-}
-
-QString QInstaller::uncaughtExceptionString(QScriptEngine *scriptEngine, const QString &context)
-{
-    QString error(QLatin1String("\n\n%1\n\nBacktrace:\n\t%2"));
-    if (!context.isEmpty())
-        error.prepend(context);
-
-    return error.arg(scriptEngine->uncaughtException().toString(), scriptEngine->uncaughtExceptionBacktrace()
-        .join(QLatin1String("\n\t")));
 }
 
 void PackageManagerCore::writeUninstaller()
@@ -801,6 +693,8 @@ bool PackageManagerCore::fileExists(const QString &filePath) const
 PackageManagerCore::PackageManagerCore()
     : d(new PackageManagerCorePrivate(this))
 {
+    qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
+    qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
 }
 
 PackageManagerCore::PackageManagerCore(qint64 magicmaker, const OperationList &performedOperations)
@@ -1160,6 +1054,11 @@ bool PackageManagerCore::testChecksum() const
 void PackageManagerCore::setTestChecksum(bool test)
 {
     d->m_testChecksum = test;
+}
+
+ScriptEngine *PackageManagerCore::scriptEngine()
+{
+    return d->scriptEngine();
 }
 
 /*!

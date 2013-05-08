@@ -47,8 +47,7 @@
 #include <QtCore/QPointer>
 #include <QtCore/QStringList>
 #include <QtCore/QUrl>
-
-#include <QtScript/QScriptEngine>
+#include <QScriptValue>
 
 namespace QInstaller {
 
@@ -62,10 +61,6 @@ class ComponentPrivate
 public:
     explicit ComponentPrivate(PackageManagerCore *core, Component *qq);
     ~ComponentPrivate();
-
-    QScriptEngine *scriptEngine();
-
-    void setProperty(QScriptValue &scriptValue, const QString &propertyName, int value);
 
     PackageManagerCore *m_core;
     Component *m_parentComponent;
@@ -82,25 +77,18 @@ public:
     QString m_componentName;
     QUrl m_repositoryUrl;
     QString m_localTempPath;
-    QScriptValue m_scriptComponent;
+    QScriptValue m_scriptContext;
     QHash<QString, QString> m_vars;
     QList<Component*> m_childComponents;
     QList<Component*> m_allChildComponents;
     QList<Component*> m_virtualChildComponents;
     QStringList m_downloadableArchives;
     QStringList m_stopProcessForUpdateRequests;
-    QHash<QString, bool> m_unexistingScriptMethods;
     QHash<QString, QPointer<QWidget> > m_userInterfaces;
 
     // < display name, < file name, file content > >
     QHash<QString, QPair<QString, QString> > m_licenses;
     QList<QPair<QString, bool> > m_pathesForUninstallation;
-
-private:
-    QScriptValue getDesktopServices();
-
-private:
-    QScriptEngine* m_scriptEngine;
 };
 
 

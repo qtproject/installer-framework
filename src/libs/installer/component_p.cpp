@@ -69,7 +69,6 @@ ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
     , m_autoCreateOperations(true)
     , m_operationsCreatedSuccessfully(true)
     , m_updateIsAvailable(false)
-    , m_scriptEngine(0)
 {
 }
 
@@ -87,111 +86,6 @@ ComponentPrivate::~ComponentPrivate()
     foreach (const QPointer<QWidget> widget, m_userInterfaces)
         delete widget.data();
 }
-
-QScriptEngine *ComponentPrivate::scriptEngine()
-{
-    if (m_scriptEngine != 0)
-        return m_scriptEngine;
-
-
-    m_scriptEngine = new QScriptEngine(q);
-
-    // register translation stuff
-    m_scriptEngine->installTranslatorFunctions();
-
-    // register QMessageBox::StandardButton enum in the script connection
-    registerMessageBox(m_scriptEngine);
-
-    // register ::WizardPage enum in the script connection
-    QScriptValue qinstaller = m_scriptEngine->newArray();
-    setProperty(qinstaller, QLatin1String("Introduction"), PackageManagerCore::Introduction);
-    setProperty(qinstaller, QLatin1String("LicenseCheck"), PackageManagerCore::LicenseCheck);
-    setProperty(qinstaller, QLatin1String("TargetDirectory"), PackageManagerCore::TargetDirectory);
-    setProperty(qinstaller, QLatin1String("ComponentSelection"), PackageManagerCore::ComponentSelection);
-    setProperty(qinstaller, QLatin1String("StartMenuSelection"), PackageManagerCore::StartMenuSelection);
-    setProperty(qinstaller, QLatin1String("ReadyForInstallation"), PackageManagerCore::ReadyForInstallation);
-    setProperty(qinstaller, QLatin1String("PerformInstallation"), PackageManagerCore::PerformInstallation);
-    setProperty(qinstaller, QLatin1String("InstallationFinished"), PackageManagerCore::InstallationFinished);
-    setProperty(qinstaller, QLatin1String("End"), PackageManagerCore::End);
-
-    // register ::Status enum in the script connection
-    setProperty(qinstaller, QLatin1String("Success"), PackageManagerCore::Success);
-    setProperty(qinstaller, QLatin1String("Failure"), PackageManagerCore::Failure);
-    setProperty(qinstaller, QLatin1String("Running"), PackageManagerCore::Running);
-    setProperty(qinstaller, QLatin1String("Canceled"), PackageManagerCore::Canceled);
-
-    // maybe used by old scripts
-    setProperty(qinstaller, QLatin1String("InstallerFailed"), PackageManagerCore::Failure);
-    setProperty(qinstaller, QLatin1String("InstallerSucceeded"), PackageManagerCore::Success);
-    setProperty(qinstaller, QLatin1String("InstallerUnfinished"), PackageManagerCore::Unfinished);
-    setProperty(qinstaller, QLatin1String("InstallerCanceledByUser"), PackageManagerCore::Canceled);
-
-    QScriptValue installerObject = m_scriptEngine->newQObject(m_core);
-    installerObject.setProperty(QLatin1String("componentByName"), m_scriptEngine
-        ->newFunction(qInstallerComponentByName, 1));
-
-    m_scriptEngine->globalObject().setProperty(QLatin1String("QInstaller"), qinstaller);
-    m_scriptEngine->globalObject().setProperty(QLatin1String("installer"), installerObject);
-
-    // register QDesktopServices in the script connection
-    m_scriptEngine->globalObject().setProperty(QLatin1String("QDesktopServices"), getDesktopServices());
-    m_scriptEngine->globalObject().setProperty(QLatin1String("component"), m_scriptEngine->newQObject(q));
-
-    QScriptValue fileDialog = m_scriptEngine->newArray();
-    fileDialog.setProperty(QLatin1String("getExistingDirectory"),
-        m_scriptEngine->newFunction(qFileDialogGetExistingDirectory));
-    m_scriptEngine->globalObject().setProperty(QLatin1String("QFileDialog"), fileDialog);
-
-    return m_scriptEngine;
-}
-
-void ComponentPrivate::setProperty(QScriptValue &scriptValue, const QString &propertyName, int value)
-{
-    scriptValue.setProperty(propertyName, m_scriptEngine->newVariant(value));
-}
-
-// -- private
-
-QScriptValue ComponentPrivate::getDesktopServices()
-{
-    QScriptValue desktopServices = m_scriptEngine->newArray();
-#if QT_VERSION < 0x050000
-    setProperty(desktopServices, QLatin1String("DesktopLocation"), QDesktopServices::DesktopLocation);
-    setProperty(desktopServices, QLatin1String("DesktopLocation"), QDesktopServices::DesktopLocation);
-    setProperty(desktopServices, QLatin1String("DocumentsLocation"), QDesktopServices::DocumentsLocation);
-    setProperty(desktopServices, QLatin1String("FontsLocation"), QDesktopServices::FontsLocation);
-    setProperty(desktopServices, QLatin1String("ApplicationsLocation"), QDesktopServices::ApplicationsLocation);
-    setProperty(desktopServices, QLatin1String("MusicLocation"), QDesktopServices::MusicLocation);
-    setProperty(desktopServices, QLatin1String("MoviesLocation"), QDesktopServices::MoviesLocation);
-    setProperty(desktopServices, QLatin1String("PicturesLocation"), QDesktopServices::PicturesLocation);
-    setProperty(desktopServices, QLatin1String("TempLocation"), QDesktopServices::TempLocation);
-    setProperty(desktopServices, QLatin1String("HomeLocation"), QDesktopServices::HomeLocation);
-    setProperty(desktopServices, QLatin1String("DataLocation"), QDesktopServices::DataLocation);
-    setProperty(desktopServices, QLatin1String("CacheLocation"), QDesktopServices::CacheLocation);
-#else
-    setProperty(desktopServices, QLatin1String("DesktopLocation"), QStandardPaths::DesktopLocation);
-    setProperty(desktopServices, QLatin1String("DesktopLocation"), QStandardPaths::DesktopLocation);
-    setProperty(desktopServices, QLatin1String("DocumentsLocation"), QStandardPaths::DocumentsLocation);
-    setProperty(desktopServices, QLatin1String("FontsLocation"), QStandardPaths::FontsLocation);
-    setProperty(desktopServices, QLatin1String("ApplicationsLocation"), QStandardPaths::ApplicationsLocation);
-    setProperty(desktopServices, QLatin1String("MusicLocation"), QStandardPaths::MusicLocation);
-    setProperty(desktopServices, QLatin1String("MoviesLocation"), QStandardPaths::MoviesLocation);
-    setProperty(desktopServices, QLatin1String("PicturesLocation"), QStandardPaths::PicturesLocation);
-    setProperty(desktopServices, QLatin1String("TempLocation"), QStandardPaths::TempLocation);
-    setProperty(desktopServices, QLatin1String("HomeLocation"), QStandardPaths::HomeLocation);
-    setProperty(desktopServices, QLatin1String("DataLocation"), QStandardPaths::DataLocation);
-    setProperty(desktopServices, QLatin1String("CacheLocation"), QStandardPaths::CacheLocation);
-#endif
-
-    desktopServices.setProperty(QLatin1String("openUrl"),
-        m_scriptEngine->newFunction(qDesktopServicesOpenUrl));
-    desktopServices.setProperty(QLatin1String("displayName"),
-        m_scriptEngine->newFunction(qDesktopServicesDisplayName));
-    desktopServices.setProperty(QLatin1String("storageLocation"),
-        m_scriptEngine->newFunction(qDesktopServicesStorageLocation));
-    return desktopServices;
-}
-
 
 // -- ComponentModelHelper
 

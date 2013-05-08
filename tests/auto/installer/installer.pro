@@ -8,4 +8,4 @@ SUBDIRS += \
     messageboxhandler \
     extractarchiveoperationtest \
     lib7zfacade \
-    installerscriptengine
+    scriptengine

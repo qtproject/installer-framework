@@ -84,8 +84,6 @@ public:
     void loadControlScript(const QString& scriptPath);
     void callControlScriptMethod(const QString& methodName);
 
-    QScriptEngine *controlScriptEngine() const;
-
     Q_INVOKABLE PackageManagerPage* page(int pageId) const;
     Q_INVOKABLE QWidget* pageWidgetByObjectName(const QString& name) const;
     Q_INVOKABLE QWidget* currentPageWidget() const;

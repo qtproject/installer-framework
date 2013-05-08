@@ -1,5 +1,7 @@
-#include "messageboxhandler.h"
-#include "qinstallerglobal.h"
+#include <messageboxhandler.h>
+#include <qinstallerglobal.h>
+#include <scriptengine.h>
+#include <packagemanagercore.h>
 
 #include <QTest>
 #include <QMetaEnum>
@@ -43,23 +45,24 @@ private slots:
             if (enumValue == QMessageBox::LastButton)
                 break;
         }
-        QInstaller::registerMessageBox(&m_scriptEngine);
     }
 
     void testScriptButtonValues()
     {
+        PackageManagerCore core;
+        ScriptEngine scriptEngine(&core);
         QMapIterator<QMessageBox::StandardButton, QString> i(m_standardButtonValueMap);
         while (i.hasNext()) {
             i.next();
             QString scriptString = QString::fromLatin1("QMessageBox.%1").arg(i.value());
-            QScriptValue scriptValue(m_scriptEngine.evaluate(scriptString));
+            QScriptValue scriptValue(scriptEngine.evaluate(scriptString));
 
             QVERIFY2(!scriptValue.isUndefined(), qPrintable(
                 QString::fromLatin1("It seems that %1 is undefined.").arg(scriptString)));
 
             qint32 evaluatedValue = scriptValue.toInt32();
-            QVERIFY2(!m_scriptEngine.hasUncaughtException(), qPrintable(
-                QInstaller::uncaughtExceptionString(&m_scriptEngine)));
+            QVERIFY2(!scriptEngine.hasUncaughtException(), qPrintable(
+                QInstaller::uncaughtExceptionString(&scriptEngine)));
 
             QCOMPARE(static_cast<QMessageBox::StandardButton>(evaluatedValue), i.key());
         }
@@ -109,7 +112,6 @@ private slots:
 private:
     QMap<QMessageBox::StandardButton, QString> m_standardButtonValueMap;
     int m_maxStandardButtons;
-    QScriptEngine m_scriptEngine;
 };
 
 QTEST_MAIN(tst_MessageBoxHandler)

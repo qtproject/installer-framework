@@ -47,10 +47,6 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-#include <QScriptEngine>
-#include <QScriptValue>
-#include <QMetaEnum>
-
 /*!
     \qmltype QMessageBox
     \inqmlmodule scripting
@@ -133,29 +129,6 @@
 
     Opens a warning message box with the given \a title and \a text.
 */
-
-QScriptValue QInstaller::registerMessageBox(QScriptEngine *scriptEngine)
-{
-    // register QMessageBox::StandardButton enum in the script connection
-    QScriptValue messageBox = scriptEngine->newQObject(MessageBoxHandler::instance());
-
-    const QMetaObject &messageBoxMetaObject = QMessageBox::staticMetaObject;
-    int index = messageBoxMetaObject.indexOfEnumerator("StandardButtons");
-
-    QMetaEnum metaEnum = messageBoxMetaObject.enumerator(index);
-    for (int i = 0; i < metaEnum.keyCount(); i++) {
-        int enumValue = metaEnum.value(i);
-        if (enumValue < QMessageBox::FirstButton)
-            continue;
-        messageBox.setProperty(QString::fromLatin1(metaEnum.valueToKey(metaEnum.value(i))),
-            scriptEngine->newVariant(enumValue));
-        if (enumValue == QMessageBox::LastButton)
-            break;
-    }
-    scriptEngine->globalObject().setProperty(QLatin1String("QMessageBox"), messageBox);
-
-    return messageBox;
-}
 
 using namespace QInstaller;
 

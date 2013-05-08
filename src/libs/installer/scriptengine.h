@@ -39,38 +39,49 @@
 **
 **************************************************************************/
 
-#ifndef QINSTALLER_GLOBAL_H
-#define QINSTALLER_GLOBAL_H
+#ifndef SCRIPTENGINE_H
+#define SCRIPTENGINE_H
 
-#include <installer_global.h>
+#include "qinstallerglobal.h"
 
-#include <kdupdaterupdate.h>
-#include <kdupdaterupdateoperation.h>
-#include <kdupdaterpackagesinfo.h>
+#include <QtScript/QScriptEngine>
 
 namespace QInstaller {
 
-enum INSTALLER_EXPORT JobError
+QString INSTALLER_EXPORT uncaughtExceptionString(const QScriptEngine *scriptEngine, const QString &context = QString());
+QScriptValue INSTALLER_EXPORT qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine);
+
+QScriptValue INSTALLER_EXPORT qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *engine);
+QScriptValue INSTALLER_EXPORT qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine *engine);
+QScriptValue INSTALLER_EXPORT qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine);
+
+QScriptValue INSTALLER_EXPORT qFileDialogGetExistingDirectory(QScriptContext *context, QScriptEngine *engine);
+QScriptValue INSTALLER_EXPORT qFileDialogGetOpenFileName(QScriptContext *context, QScriptEngine *engine);
+
+QScriptValue INSTALLER_EXPORT checkArguments(QScriptContext *context, int minimalArgumentCount, int maximalArgumentCount);
+
+class PackageManagerCore;
+
+class INSTALLER_EXPORT ScriptEngine : public QScriptEngine
 {
-    InvalidUrl = 0x24B04,
-    Timeout,
-    DownloadError,
-    InvalidUpdatesXml,
-    InvalidMetaInfo,
-    ExtractionError,
-    UserIgnoreError,
-    RepositoryUpdatesReceived
+    Q_OBJECT
+    Q_DISABLE_COPY(ScriptEngine)
+
+public:
+    explicit ScriptEngine(PackageManagerCore *core);
+    ~ScriptEngine();
+    void setGuiQObject(QObject *guiQObject);
+    QScriptValue callScriptMethod(const QScriptValue &scriptContext, const QString &name,
+        const QScriptValueList &parameters = QScriptValueList()) const;
+
+    QScriptValue loadInConext(const QString &context, const QString &fileName, const QString &scriptInjection = QString());
+
+private:
+    QScriptValue generateMessageBoxObject();
+    QScriptValue generateDesktopServicesObject();
+    QScriptValue generateQInstallerObject();
+    PackageManagerCore *m_core;
 };
+}
 
-typedef KDUpdater::UpdateOperation Operation;
-typedef QList<QInstaller::Operation*> OperationList;
-
-typedef KDUpdater::Update Package;
-typedef QList<QInstaller::Package*> PackagesList;
-
-typedef KDUpdater::PackageInfo LocalPackage;
-typedef QHash<QString, LocalPackage> LocalPackagesHash;
-
-} // namespace QInstaller
-
-#endif // QINSTALLER_GLOBAL_H
+#endif // SCRIPTENGINE_H

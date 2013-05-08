@@ -47,12 +47,11 @@
 #include <settings.h>
 #include <qinstallerglobal.h>
 #include <utils.h>
+#include <scriptengine.h>
 
 #include <kdupdater.h>
 
 #include <QtCore/QDirIterator>
-
-#include <QtScript/QScriptEngine>
 
 #include <QtXml/QDomDocument>
 

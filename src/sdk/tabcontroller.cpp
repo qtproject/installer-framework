@@ -48,7 +48,6 @@
 #include <productkeycheck.h>
 
 #include <QtCore/QTimer>
-#include <QtScript/QScriptEngine>
 
 using namespace QInstaller;
 
@@ -106,7 +105,7 @@ void TabController::setGui(QInstaller::PackageManagerGui *gui)
     connect(d->m_gui, SIGNAL(gotRestarted()), this, SLOT(restartWizard()));
 }
 
-void TabController::setControlScript (const QString &script)
+void TabController::setControlScript(const QString &script)
 {
     d->m_controlScript = script;
 }
@@ -136,9 +135,6 @@ int TabController::init()
             qDebug() << "Non-interactive installation using script:" << d->m_controlScript;
 
             d->m_gui->loadControlScript(d->m_controlScript);
-            QScriptEngine *engine = d->m_gui->controlScriptEngine();
-            engine->globalObject().setProperty(QLatin1String("tabController"),
-                engine->newQObject(this));
         }
 
         connect(d->m_gui, SIGNAL(currentIdChanged(int)), this, SLOT(onCurrentIdChanged(int)));

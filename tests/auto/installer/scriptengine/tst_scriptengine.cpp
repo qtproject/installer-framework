@@ -2,12 +2,12 @@
 #include <errors.h>
 #include <packagemanagercore.h>
 #include <packagemanagergui.h>
+#include <scriptengine.h>
 
 #include <QTest>
 #include <QSet>
 #include <QFile>
 #include <QString>
-#include <QScriptEngine>
 
 using namespace QInstaller;
 
@@ -35,7 +35,7 @@ public:
 };
 
 
-class tst_InstallerScriptEngine : public QObject
+class tst_ScriptEngine : public QObject
 {
     Q_OBJECT
 
@@ -51,7 +51,7 @@ private slots:
         m_component->setValue("Default", "Script");
         m_component->setValue(scName, "component.test.name");
 
-        m_scriptEngine = m_component->scriptEngine();
+        m_scriptEngine = m_core.scriptEngine();
     }
 
     void testScriptPrint()
@@ -59,7 +59,7 @@ private slots:
         setExpectedScriptOutput("test");
         m_scriptEngine->evaluate("print(\"test\");");
         if (m_scriptEngine->hasUncaughtException()) {
-            QFAIL(qPrintable(QString::fromLatin1("installerScriptEngine hasUncaughtException:\n %1").arg(
+            QFAIL(qPrintable(QString::fromLatin1("ScriptEngine hasUncaughtException:\n %1").arg(
                 uncaughtExceptionString(m_scriptEngine))));
         }
     }
@@ -69,7 +69,7 @@ private slots:
         setExpectedScriptOutput("object");
         m_scriptEngine->evaluate("print(typeof installer)");
         if (m_scriptEngine->hasUncaughtException()) {
-            QFAIL(qPrintable(QString::fromLatin1("installerScriptEngine hasUncaughtException:\n %1").arg(
+            QFAIL(qPrintable(QString::fromLatin1("ScriptEngine hasUncaughtException:\n %1").arg(
                 uncaughtExceptionString(m_scriptEngine))));
         }
     }
@@ -82,7 +82,7 @@ private slots:
         setExpectedScriptOutput("component.test.name");
         m_scriptEngine->evaluate(printComponentNameScript);
         if (m_scriptEngine->hasUncaughtException()) {
-            QFAIL(qPrintable(QString::fromLatin1("installerScriptEngine hasUncaughtException:\n %1").arg(
+            QFAIL(qPrintable(QString::fromLatin1("ScriptEngine hasUncaughtException:\n %1").arg(
                 uncaughtExceptionString(m_scriptEngine))));
         }
     }
@@ -140,14 +140,15 @@ private slots:
         Component testComponent(&core);
 
         const QString debugMesssage(
-            "create Error-Exception: \"Exception while loading the component script: :///data/component2.qs\n\n"
+            "create Error-Exception: \"Exception while loading the component script: ':///data/component2.qs\n\n"
             "ReferenceError: Can't find variable: broken\n\n"
             "Backtrace:\n"
 #if QT_VERSION < 0x050000
-                "\t<anonymous>()@:///data/component2.qs:5\" ");
+                "\t<anonymous>()@:///data/component2.qs:5'\" ");
 #else
             "\tComponent() at :///data/component2.qs:5\n"
-            "\t<global>() at -1\" ");
+            "\t<anonymous>() at :///data/component2.qs:7\n"
+            "\t<global>() at :///data/component2.qs:7'\" ");
 #endif
         try {
             // ignore Output from script
@@ -161,25 +162,27 @@ private slots:
 
     void loadSimpleAutoRunScript()
     {
-        TestGui testGui(&m_core);
-        setExpectedScriptOutput("Loaded control script \":///data/auto-install.qs\" ");
-        testGui.loadControlScript(":///data/auto-install.qs");
-        QCOMPARE(m_core.value("GuiTestValue"), QString("hello"));
+        try {
+            TestGui testGui(&m_core);
+            setExpectedScriptOutput("Loaded control script \":///data/auto-install.qs\" ");
+            testGui.loadControlScript(":///data/auto-install.qs");
+            QCOMPARE(m_core.value("GuiTestValue"), QString("hello"));
 
-        testGui.show();
-        // show event calls automatically the first callback which does not exist
-        setExpectedScriptOutput("Control script callback \"IntroductionPageCallback\" does not exist. ");
-        // give some time to the event triggering mechanism
-        qApp->processEvents();
+            testGui.show();
+            // show event calls automatically the first callback which does not exist
+            setExpectedScriptOutput("Control script callback \"IntroductionPageCallback\" does not exist. ");
+            // give some time to the event triggering mechanism
+            qApp->processEvents();
 
-        setExpectedScriptOutput("Calling control script callback \"ComponentSelectionPageCallback\" ");
-        // inside the auto-install script we are clicking the next button, with a not existing button
-        QTest::ignoreMessage(QtWarningMsg, "Button with type:  \"unknown button\" not found! ");
-        testGui.callProtectedDelayedControlScriptExecution(PackageManagerCore::ComponentSelection);
+            // inside the auto-install script we are clicking the next button, with a not existing button
+            QTest::ignoreMessage(QtWarningMsg, "Button with type:  \"unknown button\" not found! ");
+            testGui.callProtectedDelayedControlScriptExecution(PackageManagerCore::ComponentSelection);
 
-        setExpectedScriptOutput("Calling control script callback \"FinishedPageCallback\" ");
-        setExpectedScriptOutput("FinishedPageCallback - OK");
-        testGui.callProtectedDelayedControlScriptExecution(PackageManagerCore::InstallationFinished);
+            setExpectedScriptOutput("FinishedPageCallback - OK");
+            testGui.callProtectedDelayedControlScriptExecution(PackageManagerCore::InstallationFinished);
+        } catch (const Error &error) {
+            QFAIL(qPrintable(error.message()));
+        }
     }
 
 private:
@@ -197,6 +200,6 @@ private:
 };
 
 
-QTEST_MAIN(tst_InstallerScriptEngine)
+QTEST_MAIN(tst_ScriptEngine)
 
-#include "tst_installerscriptengine.moc"
+#include "tst_scriptengine.moc"

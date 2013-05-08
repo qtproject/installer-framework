@@ -50,6 +50,7 @@
 #include "performinstallationform.h"
 #include "settings.h"
 #include "utils.h"
+#include "scriptengine.h"
 
 #include "kdsysinfo.h"
 
@@ -83,8 +84,6 @@
 #include <QVBoxLayout>
 #include <QScrollBar>
 #include <QShowEvent>
-
-#include <QtScript/QScriptEngine>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -216,18 +215,12 @@ public:
     QHash<int, QWizardPage*> m_defaultPages;
     QHash<int, QString> m_defaultButtonText;
 
-    QScriptValue m_controlScript;
-    QScriptEngine m_controlScriptEngine;
+    QScriptValue m_controlScriptContext;
     QHash<QWizard::WizardButton, QString> m_wizardButtonTypes;
 };
 
 
 // -- PackageManagerGui
-
-QScriptEngine *PackageManagerGui::controlScriptEngine() const
-{
-    return &d->m_controlScriptEngine;
-}
 
 /*!
     \class QInstaller::PackageManagerGui
@@ -292,6 +285,8 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
     for (int i = QWizard::BackButton; i < QWizard::CustomButton1; ++i)
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
+
+    m_core->scriptEngine()->setGuiQObject(this);
 }
 
 PackageManagerGui::~PackageManagerGui()
@@ -350,58 +345,8 @@ void PackageManagerGui::setValidatorForCustomPageRequested(Component *component,
 */
 void PackageManagerGui::loadControlScript(const QString &scriptPath)
 {
-    QFile file(scriptPath);
-    if (!file.open(QIODevice::ReadOnly)) {
-        throw Error(QObject::tr("Could not open the requested script file at %1: %2")
-            .arg(scriptPath, file.errorString()));
-    }
-
-    QScriptValue installerObject = d->m_controlScriptEngine.newQObject(m_core);
-    installerObject.setProperty(QLatin1String("componentByName"), d->m_controlScriptEngine
-        .newFunction(qInstallerComponentByName, 1));
-
-    d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("installer"),
-        installerObject);
-    d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("gui"),
-        d->m_controlScriptEngine.newQObject(this));
-    d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("packagemanagergui"),
-        d->m_controlScriptEngine.newQObject(this));
-    registerMessageBox(&d->m_controlScriptEngine);
-
-#undef REGISTER_BUTTON
-#define REGISTER_BUTTON(x)    buttons.setProperty(QLatin1String(#x), \
-    d->m_controlScriptEngine.newVariant(static_cast<int>(QWizard::x)));
-
-    QScriptValue buttons = d->m_controlScriptEngine.newArray();
-    REGISTER_BUTTON(BackButton)
-    REGISTER_BUTTON(NextButton)
-    REGISTER_BUTTON(CommitButton)
-    REGISTER_BUTTON(FinishButton)
-    REGISTER_BUTTON(CancelButton)
-    REGISTER_BUTTON(HelpButton)
-    REGISTER_BUTTON(CustomButton1)
-    REGISTER_BUTTON(CustomButton2)
-    REGISTER_BUTTON(CustomButton3)
-
-#undef REGISTER_BUTTON
-
-    d->m_controlScriptEngine.globalObject().setProperty(QLatin1String("buttons"), buttons);
-
-    d->m_controlScriptEngine.evaluate(QLatin1String(file.readAll()), scriptPath);
-    if (d->m_controlScriptEngine.hasUncaughtException()) {
-        throw Error(QObject::tr("Exception while loading the control script %1")
-            .arg(uncaughtExceptionString(&(d->m_controlScriptEngine)/*, scriptPath*/)));
-    }
-
-    QScriptValue comp = d->m_controlScriptEngine.evaluate(QLatin1String("Controller"));
-    if (d->m_controlScriptEngine.hasUncaughtException()) {
-        throw Error(QObject::tr("Exception while loading the control script %1")
-            .arg(uncaughtExceptionString(&(d->m_controlScriptEngine)/*, scriptPath*/)));
-    }
-
-    d->m_controlScript = comp;
-    d->m_controlScript.construct();
-
+    d->m_controlScriptContext = m_core->scriptEngine()->loadInConext(
+        QLatin1String("Controller"), scriptPath);
     qDebug() << "Loaded control script" << scriptPath;
 }
 
@@ -413,24 +358,18 @@ void PackageManagerGui::slotCurrentPageChanged(int id)
 
 void PackageManagerGui::callControlScriptMethod(const QString &methodName)
 {
-    if (!d->m_controlScript.isValid())
+    if (!d->m_controlScriptContext.isValid())
         return;
+    try {
+        QScriptValue returnValue = m_core->scriptEngine()->callScriptMethod(
+            d->m_controlScriptContext, methodName);
 
-    QScriptValue method = d->m_controlScript.property(QLatin1String("prototype")).property(methodName);
-
-    if (!method.isValid()) {
-        qDebug() << "Control script callback" << methodName << "does not exist.";
-        return;
-    }
-
-    qDebug() << "Calling control script callback" << methodName;
-
-    method.call(d->m_controlScript);
-
-    if (d->m_controlScriptEngine.hasUncaughtException()) {
-        qCritical()
-            << uncaughtExceptionString(&(d->m_controlScriptEngine) /*, QLatin1String("control script")*/);
-        // TODO: handle error
+        if (!returnValue.isValid()) {
+            qDebug() << "Control script callback" << methodName << "does not exist.";
+            return;
+        }
+    } catch (const QInstaller::Error &e) {
+        qCritical() << qPrintable(e.message());
     }
 }
 

@@ -65,6 +65,7 @@ namespace QInstaller {
 
 struct BinaryLayout;
 class Component;
+class ScriptEngine;
 class ComponentModel;
 class TempDirDeleter;
 
@@ -112,6 +113,7 @@ public:
 
     bool buildComponentTree(QHash<QString, Component*> &components, bool loadScript);
 
+    ScriptEngine *scriptEngine();
     void clearAllComponentLists();
     void clearUpdaterComponentLists();
     QList<Component*> &replacementDependencyComponents();
@@ -238,6 +240,7 @@ private:
     qint64 m_magicBinaryMarker;
     bool m_componentsToInstallCalculated;
 
+    ScriptEngine *m_scriptEngine;
     // < name (component to replace), < replacement component, component to replace > >
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceAllMode;
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceUpdaterMode;

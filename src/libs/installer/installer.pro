@@ -44,6 +44,7 @@ HEADERS += packagemanagercore.h \
     utils.h \
     errors.h \
     component.h \
+    scriptengine.h \
     componentmodel.h \
     qinstallerglobal.h \
     qtpatch.h \
@@ -118,6 +119,7 @@ HEADERS += packagemanagercore.h \
     fileutils.cpp \
     utils.cpp \
     component.cpp \
+    scriptengine.cpp \
     componentmodel.cpp \
     qtpatch.cpp \
     persistentsettings.cpp \
