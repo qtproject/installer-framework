@@ -43,7 +43,7 @@ private slots:
     void initTestCase()
     {
         m_component = new Component(&m_core);
-        // append the component to the packagemanager which deletes it at destructor
+        // append the component to the package manager which deletes it at destructor
         // (it calls clearAllComponentLists which calls qDeleteAll(m_rootComponents);)
         m_core.appendRootComponent(m_component);
 
@@ -76,7 +76,7 @@ private slots:
 
     void testComponentByName()
     {
-        const QString printComponentNameScript = QString::fromLatin1("var correctComponent = " \
+        const QString printComponentNameScript = QString::fromLatin1("var correctComponent = "
             "installer.componentByName('%1');\nprint(correctComponent.name);").arg(m_component->name());
 
         setExpectedScriptOutput("component.test.name");
@@ -89,7 +89,7 @@ private slots:
 
     void testComponentByWrongName()
     {
-        const QString printComponentNameScript = QString::fromLatin1( "var brokenComponent = " \
+        const QString printComponentNameScript = QString::fromLatin1( "var brokenComponent = "
             "installer.componentByName('%1');\nprint(brokenComponent.name);").arg("MyNotExistingComponentName");
 
         m_scriptEngine->evaluate(printComponentNameScript);
@@ -132,18 +132,23 @@ private slots:
         } catch (const Error &error) {
             QFAIL(qPrintable(error.message()));
         }
-
     }
+
     void loadBrokenComponentScript()
     {
         PackageManagerCore core;
         Component testComponent(&core);
 
         const QString debugMesssage(
-            "create Error-Exception: \"Exception while loading the component script: :///data/component2.qs\n\n" \
-            "ReferenceError: Can't find variable: broken\n\n" \
-            "Backtrace:\n" \
+            "create Error-Exception: \"Exception while loading the component script: :///data/component2.qs\n\n"
+            "ReferenceError: Can't find variable: broken\n\n"
+            "Backtrace:\n"
+#if QT_VERSION < 0x050000
                 "\t<anonymous>()@:///data/component2.qs:5\" ");
+#else
+            "\tComponent() at :///data/component2.qs:5\n"
+            "\t<global>() at -1\" ");
+#endif
         try {
             // ignore Output from script
             setExpectedScriptOutput("script function: Component");
