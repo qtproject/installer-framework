@@ -257,10 +257,6 @@ static bool IsDST(const QDateTime& datetime = QDateTime())
 
 static bool getFileTimeFromProperty(IInArchive* archive, int index, int propId, FILETIME *fileTime)
 {
-// TODO: fix getFileTimeFromProperty under unix systems, till then just ignore the property
-#ifndef Q_OS_WIN
-    return false;
-#endif
     const NCOM::CPropVariant prop = readProperty(archive, index, propId);
     if (prop.vt != VT_FILETIME) {
         throw SevenZipException(QObject::tr("Property %1 for item %2 not of type VT_FILETIME but %3")
@@ -281,12 +277,8 @@ QDateTime getDateTimeProperty(IInArchive* archive, int index, int propId, const 
         return defaultValue;
 
     FILETIME localFileTime;
-#ifndef Q_OS_UNIX
-        if (!FileTimeToLocalFileTime(&fileTime, &localFileTime))
-            throw SevenZipException(QObject::tr("Could not convert file time to local time"));
-#else
-    localFileTime = fileTime;
-#endif
+    if (!FileTimeToLocalFileTime(&fileTime, &localFileTime))
+        throw SevenZipException(QObject::tr("Could not convert file time to local time"));
 
     SYSTEMTIME st;
     if (!BOOLToBool(FileTimeToSystemTime(&localFileTime, &st)))

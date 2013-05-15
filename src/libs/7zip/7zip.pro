@@ -1,6 +1,6 @@
 include(../../../installerfw.pri)
 
-QT =
+QT = core
 TARGET = 7z
 TEMPLATE = lib
 INCLUDEPATH += . ..
