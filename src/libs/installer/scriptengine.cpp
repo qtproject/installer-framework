@@ -258,14 +258,14 @@ QScriptValue ScriptEngine::loadInConext(const QString &context, const QString &f
 
     // create inside closure in one line to keep linenumber in the right order
     // which is used as a debug output in an exception case
+    // scriptContent will be added as the last arg command to prevent wrong
+    // replacements of %1, %2 or %3 inside the scriptContent
     QString scriptContent = QString::fromLatin1(
-        "(function() { %1 %2 ; return new %3; })();");
+        "(function() { %1 %3 ; return new %2; })();");
 
-    scriptContent = scriptContent.arg(scriptInjection);
-
-    // add file content to it
-    scriptContent = scriptContent.arg(QLatin1String(file.readAll()));
-    scriptContent = scriptContent.arg(context);
+    // merging everything together and as last we are adding the file content to prevent wrong
+    // replacements of %1 %2 or %3 inside the javascript code
+    scriptContent = scriptContent.arg(scriptInjection, context, QLatin1String(file.readAll()));
     QScriptValue scriptContext = evaluate(scriptContent, fileName);
 
     if (hasUncaughtException()) {
