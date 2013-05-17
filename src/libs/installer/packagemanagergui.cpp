@@ -725,10 +725,13 @@ void PackageManagerPage::setVisible(bool visible)
         return;
     }
 
-    if (visible)
+    if (visible) {
         entering();
-    else
+        emit entered();
+    } else {
         leaving();
+        emit left();
+    }
 }
 
 int PackageManagerPage::nextId() const

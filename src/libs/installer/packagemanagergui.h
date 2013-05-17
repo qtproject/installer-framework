@@ -164,6 +164,9 @@ public:
     void setValidatePageComponent(QInstaller::Component *component);
 
     bool validatePage();
+signals:
+    void entered();
+    void left();
 
 protected:
     PackageManagerCore *packageManagerCore() const;
