@@ -487,8 +487,10 @@ void Component::loadComponentScript(const QString &fileName)
 {
     ScriptEngine *scriptEngine = d->m_core->scriptEngine();
 
+    // introduce the component object as javascript value and call the name to check that it
+    // was successful
     QString scriptInjection(QString::fromLatin1(
-        "var component = installer.componentByName('%1');").arg(name()));
+        "var component = installer.componentByName('%1'); component.name;").arg(name()));
 
     d->m_scriptContext = scriptEngine->loadInConext(QLatin1String("Component"), fileName, scriptInjection);
 

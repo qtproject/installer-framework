@@ -2222,14 +2222,18 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
 
     try {
         if (!components.isEmpty()) {
-            // load the scripts and append all components w/o parent to the direct list
+            // append all components w/o parent to the direct list
+            foreach (QInstaller::Component *component, components) {
+                appendUpdaterComponent(component);
+            }
+
+            // after everything is set up, load the scripts
             foreach (QInstaller::Component *component, components) {
                 if (d->statusCanceledOrFailed())
                     return false;
 
                 component->loadComponentScript();
                 component->setCheckState(Qt::Checked);
-                appendUpdaterComponent(component);
             }
 
             // after everything is set up, check installed components
