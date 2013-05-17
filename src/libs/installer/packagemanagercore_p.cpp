@@ -764,6 +764,8 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
                     repo.setUsername(reader.readElementText());
                 else if (reader.name() == QLatin1String("Password"))
                     repo.setPassword(reader.readElementText());
+                else if (reader.name() == QLatin1String("DisplayName"))
+                    repo.setDisplayName(reader.readElementText());
                 else if (reader.name() == QLatin1String("Enabled"))
                     repo.setEnabled(bool(reader.readElementText().toInt()));
                 else

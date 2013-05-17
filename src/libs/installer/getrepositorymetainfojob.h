@@ -87,7 +87,7 @@ private:
     /* reimp */ void doCancel();
     void finished(int error, const QString &errorString = QString());
     bool updateRepositories(QSet<Repository> *repositories, const QString &username,
-        const QString &password);
+                            const QString &password, const QString &displayname = QString());
 
 private Q_SLOTS:
     void startUpdatesXmlDownload();
