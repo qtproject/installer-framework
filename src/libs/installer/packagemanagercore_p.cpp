@@ -569,13 +569,13 @@ QString PackageManagerCorePrivate::installReason(Component *component)
 
 void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params)
 {
-    if (!ProductKeyCheck::instance()->hasValidKey()) {
+    if (!ProductKeyCheck::instance(m_core)->hasValidKey()) {
         if (m_core->isInstaller()) {
-            setStatus(PackageManagerCore::Failure, ProductKeyCheck::instance()->lastErrorString());
+            setStatus(PackageManagerCore::Failure, ProductKeyCheck::instance(m_core)->lastErrorString());
         } else {
             MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("ProductKeyCheckError"), ProductKeyCheck::instance()->lastErrorString(),
-            ProductKeyCheck::instance()->maintainanceToolDetailErrorNotice(), QMessageBox::Ok);
+            QLatin1String("ProductKeyCheckError"), ProductKeyCheck::instance(m_core)->lastErrorString(),
+            ProductKeyCheck::instance(m_core)->maintainanceToolDetailErrorNotice(), QMessageBox::Ok);
         }
     }
 

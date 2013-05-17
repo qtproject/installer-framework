@@ -34,6 +34,11 @@
 
 #include <QString>
 #include <QHash>
+#include <QPointer>
+
+namespace QInstaller{
+    class PackageManagerCore;
+}
 
 class ProductKeyCheckPrivate;
 
@@ -41,7 +46,8 @@ class INSTALLER_EXPORT ProductKeyCheck
 {
 public:
     ~ProductKeyCheck();
-    static ProductKeyCheck *instance();
+    static ProductKeyCheck *instance(QInstaller::PackageManagerCore *core = 0);
+    static void setPackageManagerCore(QInstaller::PackageManagerCore *core);
 
     // was validLicense
     bool hasValidKey();

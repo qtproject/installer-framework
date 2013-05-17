@@ -576,7 +576,7 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
     for (it = licenseHash.begin(); it != licenseHash.end(); ++it) {
         const QString &fileName = it.value().toString();
 
-        if (!ProductKeyCheck::instance()->isValidLicense(fileName))
+        if (!ProductKeyCheck::instance(d->m_core)->isValidLicense(fileName))
             continue;
 
         QFileInfo fileInfo(fileName);

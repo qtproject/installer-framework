@@ -869,8 +869,8 @@ bool PackageManagerCore::fetchRemotePackagesTree()
         return false;
     }
 
-    if (!ProductKeyCheck::instance()->hasValidKey()) {
-        d->setStatus(Failure, ProductKeyCheck::instance()->lastErrorString());
+    if (!ProductKeyCheck::instance(this)->hasValidKey()) {
+        d->setStatus(Failure, ProductKeyCheck::instance(this)->lastErrorString());
         return false;
     }
 

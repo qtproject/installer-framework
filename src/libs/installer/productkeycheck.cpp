@@ -28,11 +28,15 @@
 **************************************************************************/
 
 #include <productkeycheck.h>
-
+#include <packagemanagercore.h>
 
 class ProductKeyCheckPrivate
 {
+    public:
+        static QPointer<QInstaller::PackageManagerCore> core;
 };
+
+QPointer<QInstaller::PackageManagerCore> ProductKeyCheckPrivate::core = 0;
 
 
 ProductKeyCheck::ProductKeyCheck()
@@ -45,11 +49,19 @@ ProductKeyCheck::~ProductKeyCheck()
     delete d;
 }
 
-ProductKeyCheck *ProductKeyCheck::instance()
+ProductKeyCheck *ProductKeyCheck::instance(QInstaller::PackageManagerCore *core)
 {
     static ProductKeyCheck instance;
+    if (core)
+        instance.setPackageManagerCore(core);
     return &instance;
 }
+
+void ProductKeyCheck::setPackageManagerCore(QInstaller::PackageManagerCore *core)
+{
+    ProductKeyCheckPrivate::core = core;
+}
+
 
 bool ProductKeyCheck::hasValidKey()
 {
