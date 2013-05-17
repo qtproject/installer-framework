@@ -1,0 +1,7 @@
+Shows how to change small things in the ui from a component script.
+This shouldn't be used for translations.
+
+Generate installer with
+
+binarycreator --offline-only -c config/config.xml -p packages installer
+
