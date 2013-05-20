@@ -1,5 +1,6 @@
 bin/qmake
 bin/lrelease
+bin/qdoc
 %%
 *.la
 *.prl
