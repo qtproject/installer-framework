@@ -136,8 +136,10 @@ private slots:
 
     void loadBrokenComponentScript()
     {
-        PackageManagerCore core;
-        Component testComponent(&core);
+        Component testComponent(&m_core);
+        testComponent.setValue(scName, "broken.component");
+
+        m_core.appendRootComponent(&testComponent);
 
         const QString debugMesssage(
             "create Error-Exception: \"Exception while loading the component script: ':///data/component2.qs\n\n"
