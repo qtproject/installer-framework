@@ -136,10 +136,12 @@ private slots:
 
     void loadBrokenComponentScript()
     {
-        Component testComponent(&m_core);
-        testComponent.setValue(scName, "broken.component");
+        Component *testComponent = new Component(&m_core);
+        testComponent->setValue(scName, "broken.component");
 
-        m_core.appendRootComponent(&testComponent);
+        // now m_core becomes the owner of testComponent
+        // so it will delete it then at the destuctor
+        m_core.appendRootComponent(testComponent);
 
         const QString debugMesssage(
             "create Error-Exception: \"Exception while loading the component script: ':///data/component2.qs\n\n"
@@ -156,7 +158,7 @@ private slots:
             // ignore Output from script
             setExpectedScriptOutput("script function: Component");
             setExpectedScriptOutput(qPrintable(debugMesssage));
-            testComponent.loadComponentScript(":///data/component2.qs");
+            testComponent->loadComponentScript(":///data/component2.qs");
         } catch (const Error &error) {
             QVERIFY2(debugMesssage.contains(error.message()), "There was some unexpected error.");
         }
