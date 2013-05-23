@@ -7,7 +7,8 @@ include(../../installerfw.pri)
 QT -= gui
 
 CONFIG += console
-CONFIG -= app_bundle
 DESTDIR = $$IFW_APP_PATH
 
 SOURCES += fileengineserver.cpp
+
+macx:include(../../no_app_bundle.pri)

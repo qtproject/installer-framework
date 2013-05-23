@@ -16,3 +16,5 @@ SOURCES = binarycreator.cpp \
           ../common/repositorygen.cpp
 HEADERS = rcc/rcc.h
 RESOURCES += binarycreator.qrc
+
+macx:include(../../no_app_bundle.pri)

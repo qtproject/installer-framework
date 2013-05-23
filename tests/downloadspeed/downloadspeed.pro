@@ -8,7 +8,9 @@ QT -= gui
 QT += network
 
 CONFIG += console
-CONFIG -= app_bundle
+
 DESTDIR = $$IFW_APP_PATH
 
 SOURCES += main.cpp
+
+macx:include(../../no_app_bundle.pri)

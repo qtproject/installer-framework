@@ -102,7 +102,6 @@ DEFINES += QT_NO_CAST_FROM_ASCII "_GIT_SHA1_=$$GIT_SHA1" IFW_VERSION=$$IFW_VERSI
 static {
     LIBS += -l7z
     win32-g++*: LIBS += -lmpr -luuid
-    macx:equals(TEMPLATE, app):CONFIG -= app_bundle
 
     win32:exists($$IFW_LIB_PATH/installer.lib):POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib
     unix:exists($$IFW_LIB_PATH/libinstaller.a):POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a

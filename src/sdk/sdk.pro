@@ -96,3 +96,5 @@ win32 {
         QMAKE_MANIFEST = installerbase.manifest
     }
 }
+
+macx:include(../../no_app_bundle.pri)

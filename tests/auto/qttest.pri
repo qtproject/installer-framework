@@ -4,7 +4,6 @@ include(../../installerfw.pri)
 isEmpty(TEMPLATE):TEMPLATE=app
 QT += testlib
 CONFIG += qt warn_on console depend_includepath testcase
-CONFIG -= app_bundle
 
 DEFINES -= QT_NO_CAST_FROM_ASCII
 # prefix test binary with tst_
@@ -16,3 +15,4 @@ DEFINES -= QT_NO_CAST_FROM_ASCII
 #    # the below gets added to later by testcase.prf
 #    check.commands = cd . & set PATH=$$lib;%PATH%& cmd /c
 #}
+macx:include(../../no_app_bundle.pri)

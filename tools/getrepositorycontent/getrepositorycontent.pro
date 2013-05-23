@@ -20,3 +20,4 @@ HEADERS += \
     downloader.h \
     domnodedebugstreamoperator.h
 
+macx:include(../../no_app_bundle.pri)

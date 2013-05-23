@@ -5,7 +5,6 @@ TARGET = repocompare
 include(../../installerfw.pri)
 
 QT += network
-CONFIG -= app_bundle
 DESTDIR = $$IFW_APP_PATH
 
 SOURCES += main.cpp\
@@ -16,3 +15,5 @@ HEADERS += mainwindow.h \
         repositorymanager.h
 
 FORMS += mainwindow.ui
+
+macx:include(../../no_app_bundle.pri)
