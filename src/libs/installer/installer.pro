@@ -14,6 +14,10 @@ include(../../../installerfw.pri)
 #   your files if needed
 HEADERS += productkeycheck.h
 !isEmpty(PRODUCTKEYCHECK_PRI_FILE) {
+    # use undocumented no_batch config which disable the implicit rules on msvc compilers
+    # this fixes the problem that same cpp files in different directories are overwritting
+    # each other
+    CONFIG += no_batch
     include($$PRODUCTKEYCHECK_PRI_FILE)
 } else {
     SOURCES += productkeycheck.cpp
