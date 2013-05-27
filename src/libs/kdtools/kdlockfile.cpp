@@ -55,37 +55,3 @@ bool KDLockFile::unlock()
 {
     return d->unlock();
 }
-
-
-#ifdef KDTOOLSCORE_UNITTESTS
-
-#include <KDUnitTest/Test>
-#include <QDebug>
-#include <QDir>
-
-KDAB_UNITTEST_SIMPLE( KDLockFile, "kdcoretools" ) {
-    {
-        KDLockFile f( QLatin1String("/jlksdfdsfjkldsf-doesnotexist/file") );
-        const bool locked = f.lock();
-        assertFalse( locked );
-        qDebug() << f.errorString();
-        assertTrue( !f.errorString().isEmpty() );
-        if ( !locked )
-            assertTrue( f.unlock() );
-    }
-    {
-        KDLockFile f( QDir::currentPath() + QLatin1String("/kdlockfile-test") );
-        const bool locked = f.lock();
-        assertTrue( locked );
-        if ( !locked )
-            qDebug() << f.errorString();
-        assertEqual( locked, f.errorString().isEmpty() );
-        const bool unlocked = f.unlock();
-        assertTrue( unlocked );
-        if ( !unlocked )
-            qDebug() << f.errorString();
-        assertEqual( unlocked, f.errorString().isEmpty() );
-    }
-}
-
-#endif // KDTOOLSCORE_UNITTESTS
