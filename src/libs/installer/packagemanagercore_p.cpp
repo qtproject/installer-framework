@@ -60,7 +60,6 @@
 #include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterupdatesourcesinfo.h"
 #include "kdupdaterupdateoperationfactory.h"
-#include "kdupdaterupdatefinder.h"
 
 #include <productkeycheck.h>
 
@@ -203,6 +202,7 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     : m_updateFinder(0)
+    , m_updaterApplication(new DummyConfigurationInterface)
     , m_FSEngineClientHandler(0)
     , m_core(core)
     , m_repoMetaInfoJob(0)
@@ -220,6 +220,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const OperationList &performedOperations)
     : m_updateFinder(0)
+    , m_updaterApplication(new DummyConfigurationInterface)
     , m_FSEngineClientHandler(initFSEngineClientHandler())
     , m_status(PackageManagerCore::Unfinished)
     , m_forceRestart(false)

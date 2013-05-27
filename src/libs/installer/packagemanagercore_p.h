@@ -50,6 +50,7 @@
 #include "kdsysinfo.h"
 #include "kdupdaterapplication.h"
 #include "kdupdaterfiledownloaderfactory.h"
+#include "kdupdaterupdatefinder.h"
 
 #include <QObject>
 
@@ -68,6 +69,26 @@ class Component;
 class ScriptEngine;
 class ComponentModel;
 class TempDirDeleter;
+
+/*
+    The default configuration interface implementation does call QSettings to save files for later deletion,
+    though according to QSettings there should nothing be written if QSettings is not setup properly (which
+    we do not in our case). Still, caused by a broken QSettings implementation at least on Linux we write an
+    empty config file which resulted in QTIFW-196. To workaround the issue we now use this empty dummy class.
+*/
+class DummyConfigurationInterface : public KDUpdater::ConfigurationInterface
+{
+public:
+    QVariant value(const QString &key) const
+    {
+        Q_UNUSED(key)
+        return QVariant();
+    }
+    void setValue(const QString &key, const QVariant &value)
+    {
+        qDebug() << "DummyConfigurationInterface called with key:" << key << "and value:" << value;
+    }
+};
 
 class PackageManagerCorePrivate : public QObject
 {
