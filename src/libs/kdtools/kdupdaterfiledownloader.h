@@ -32,7 +32,6 @@
 
 namespace KDUpdater {
 
-class HashVerificationJob;
 class FileDownloaderProxyFactory;
 
 class KDTOOLS_EXPORT FileDownloader : public QObject
