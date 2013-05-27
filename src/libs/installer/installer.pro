@@ -197,7 +197,7 @@ unix:!macx:SOURCES += adminauthorization_x11.cpp
 
 LIBS += -l7z
 win32 {
-    SOURCES += adminauthorization_win.cpp
+    SOURCES += adminauthorization_win.cpp sysinfo_win.cpp
 
     LIBS += -loleaut32 -luser32     # 7zip
     LIBS += -ladvapi32 -lpsapi      # kdtools
