@@ -138,8 +138,11 @@ static int assemble(Input input, const QInstaller::Settings &settings)
     if (isBundle) {
         // output should be a bundle
         const QFileInfo fi(input.outputPath);
+
+        const QString contentsResourcesPath = fi.filePath() + QLatin1String("/Contents/Resources/");
+
         QInstaller::mkpath(fi.filePath() + QLatin1String("/Contents/MacOS"));
-        QInstaller::mkpath(fi.filePath() + QLatin1String("/Contents/Resources"));
+        QInstaller::mkpath(contentsResourcesPath);
 
         {
             QFile pkgInfo(fi.filePath() + QLatin1String("/Contents/PkgInfo"));
@@ -157,7 +160,11 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         }
 
         const QString iconTargetFile = fi.completeBaseName() + QLatin1String(".icns");
-        QFile::copy(iconFile, fi.filePath() + QLatin1String("/Contents/Resources/") + iconTargetFile);
+        QFile::copy(iconFile, contentsResourcesPath + iconTargetFile);
+        if (QDir(qApp->applicationDirPath() + QLatin1String("/qt_menu.nib")).exists()) {
+            copyDirectoryContents(qApp->applicationDirPath() + QLatin1String("/qt_menu.nib"),
+                contentsResourcesPath + QLatin1String("/qt_menu.nib"));
+        }
 
         QFile infoPList(fi.filePath() + QLatin1String("/Contents/Info.plist"));
         infoPList.open(QIODevice::WriteOnly);
