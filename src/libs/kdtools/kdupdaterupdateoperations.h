@@ -25,10 +25,6 @@
 
 #include "kdupdaterupdateoperation.h"
 
-#include <QDir>
-#include <QObject>
-#include <QProcess>
-
 namespace KDUpdater {
 
 class KDTOOLS_EXPORT CopyOperation : public UpdateOperation
@@ -120,56 +116,6 @@ public:
     bool undoOperation();
     bool testOperation();
     PrependFileOperation *clone() const;
-};
-
-class KDTOOLS_EXPORT ExecuteOperation : public QObject, public UpdateOperation
-{
-    Q_OBJECT
-
-public:
-    ExecuteOperation();
-
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
-    ExecuteOperation *clone() const;
-
-public Q_SLOTS:
-    void cancelOperation();
-
-private Q_SLOTS:
-    void readProcessOutput();
-
-Q_SIGNALS:
-    void outputTextChanged(const QString &text);
-
-private:
-    QProcess process;
-};
-
-class KDTOOLS_EXPORT UpdatePackageOperation : public UpdateOperation
-{
-public:
-    UpdatePackageOperation();
-
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
-    UpdatePackageOperation *clone() const;
-};
-
-class KDTOOLS_EXPORT UpdateCompatOperation : public UpdateOperation
-{
-public:
-    UpdateCompatOperation();
-
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
-    UpdateCompatOperation *clone() const;
 };
 
 } // namespace KDUpdater

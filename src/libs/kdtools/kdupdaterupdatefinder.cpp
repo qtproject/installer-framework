@@ -25,14 +25,13 @@
 #include "kdupdaterupdatesourcesinfo.h"
 #include "kdupdaterpackagesinfo.h"
 #include "kdupdaterupdate.h"
-#include "kdupdaterfiledownloader_p.h"
+#include "kdupdaterfiledownloader.h"
 #include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterupdatesinfo_p.h"
 
 #include "globals.h"
 
 #include <QCoreApplication>
-#include <QDebug>
 
 using namespace KDUpdater;
 
@@ -82,11 +81,8 @@ using namespace KDUpdater;
 class UpdateFinder::Private
 {
 public:
-    Private(UpdateFinder *qq) :
-        q(qq),
-        application(0),
-        updateType(PackageUpdate)
-    {}
+    Private(UpdateFinder *qq)
+        : q(qq), application(0) {}
 
     ~Private()
     {
@@ -98,7 +94,6 @@ public:
     UpdateFinder *q;
     Application *application;
     QList<Update *> updates;
-    UpdateTypes updateType;
 
     // Temporary structure that notes down information about updates.
     bool cancel;
@@ -113,12 +108,9 @@ public:
     bool downloadUpdateXMLFiles();
     bool computeApplicableUpdates();
 
-    QList<UpdateInfo> applicableUpdates(UpdatesInfo *updatesInfo,
-                                        bool addNewPackages = false);
-    void createUpdateObjects(const UpdateSourceInfo &sourceInfo,
-                             const QList<UpdateInfo> &updateInfoList);
-    bool checkForUpdatePriority(const UpdateSourceInfo &sourceInfo,
-                                const UpdateInfo &updateInfo);
+    QList<UpdateInfo> applicableUpdates(UpdatesInfo *updatesInfo);
+    void createUpdateObjects(const UpdateSourceInfo &sourceInfo, const QList<UpdateInfo> &updateInfoList);
+    bool checkForUpdatePriority(const UpdateSourceInfo &sourceInfo, const UpdateInfo &updateInfo);
     void slotDownloadDone();
 };
 
@@ -176,8 +168,8 @@ void UpdateFinder::Private::computeUpdates()
     // 1. Downloading Update XML files from all the update sources
     // 2. Matching updates with Package XML and figuring out available updates
 
-    cancel = false;
     clear();
+    cancel = false;
 
     // First do some quick sanity checks on the packages info
     PackagesInfo *packages = application->packagesInfo();
@@ -259,8 +251,8 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
 
     // Create FileDownloader and UpdatesInfo for each update
     for (int i = 0; i < updateSources->updateSourceInfoCount(); i++) {
-        UpdateSourceInfo info = updateSources->updateSourceInfo(i);
-        QUrl updateXmlUrl = QString::fromLatin1("%1/Updates.xml").arg(info.url.toString());
+        const UpdateSourceInfo info = updateSources->updateSourceInfo(i);
+        const QUrl updateXmlUrl = QString::fromLatin1("%1/Updates.xml").arg(info.url.toString());
 
         FileDownloader *downloader = FileDownloaderFactory::instance().create(updateXmlUrl.scheme(), q);
         if (!downloader)
@@ -269,82 +261,49 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
         downloader->setUrl(updateXmlUrl);
         downloader->setAutoRemoveDownloadedFile(true);
 
-        UpdatesInfo *updatesInfo = new UpdatesInfo;
         updateSourceInfoList.append(info);
         updateXmlFDList.append(downloader);
-        updatesInfoList.append(updatesInfo);
+        updatesInfoList.append(new UpdatesInfo);
 
-        connect(downloader, SIGNAL(downloadCompleted()),
-                q, SLOT(slotDownloadDone()));
-        connect(downloader, SIGNAL(downloadCanceled()),
-                q, SLOT(slotDownloadDone()));
-        connect(downloader, SIGNAL(downloadAborted(QString)),
-                q, SLOT(slotDownloadDone()));
+        connect(downloader, SIGNAL(downloadCompleted()), q, SLOT(slotDownloadDone()));
+        connect(downloader, SIGNAL(downloadCanceled()), q, SLOT(slotDownloadDone()));
+        connect(downloader, SIGNAL(downloadAborted(QString)), q, SLOT(slotDownloadDone()));
     }
 
     // Trigger download of Updates.xml file
     downloadCompleteCount = 0;
-    for (int i = 0; i < updateXmlFDList.count(); i++) {
-        FileDownloader *downloader = updateXmlFDList.at(i);
+    foreach (FileDownloader *const downloader, updateXmlFDList)
         downloader->download();
-    }
 
     // Wait until all downloaders have completed their downloads.
     while (true) {
         QCoreApplication::processEvents();
         if (cancel)
             return false;
+
         if (downloadCompleteCount == updateXmlFDList.count())
             break;
 
-        int pc = computePercent(downloadCompleteCount, updateXmlFDList.count());
-        q->reportProgress(pc, tr("Downloading Updates.xml from update sources."));
+        q->reportProgress(computePercent(downloadCompleteCount, updateXmlFDList.count()),
+            tr("Downloading Updates.xml from update sources."));
     }
 
-    // All the downloaders have now either downloaded or aborted the
-    // download of update XML files.
-
-    // Let's now get rid of update sources whose Updates.xml could not be downloaded
-    for (int i = 0; i < updateXmlFDList.count(); i++) {
-        FileDownloader *downloader = updateXmlFDList.at(i);
-        if (downloader->isDownloaded())
-            continue;
-
-        UpdateSourceInfo info = updateSourceInfoList.at(i);
-        QString msg = tr("Could not download updates from %1 ('%2')").arg(info.name, info.url.toString());
-        q->reportError(msg);
-
-        delete updatesInfoList[i];
-        delete downloader;
-        updateXmlFDList.removeAt(i);
-        updatesInfoList.removeAt(i);
-        updateSourceInfoList.removeAt(i);
-        --i;
-    }
-
-    if (updatesInfoList.isEmpty())
-        return false;
-
-    // Lets parse the downloaded update XML files and get rid of the downloaders.
-    for (int i = 0; i < updateXmlFDList.count(); i++) {
-        FileDownloader *downloader = updateXmlFDList.at(i);
-        UpdatesInfo *updatesInfo = updatesInfoList.at(i);
-
-        updatesInfo->setFileName(downloader->downloadedFileName());
-
-        if (!updatesInfo->isValid()) {
-            QString msg = updatesInfo->errorString();
-            q->reportError(msg);
-
-            delete updatesInfoList[i];
-            delete downloader;
-            updateXmlFDList.removeAt(i);
-            updatesInfoList.removeAt(i);
-            --i;
+    for (int i = updateXmlFDList.count() - 1; i >= 0; --i) {
+        UpdatesInfo *const updatesInfo = updatesInfoList.at(i);
+        FileDownloader *const downloader = updateXmlFDList.takeAt(i);
+        if (downloader->isDownloaded()) {
+            updatesInfo->setFileName(downloader->downloadedFileName());
+            if (!updatesInfo->isValid()) {
+                q->reportError(updatesInfo->errorString());
+                delete updatesInfoList.takeAt(i);   // updates info
+            }
+        } else {
+            delete updatesInfoList.takeAt(i);   // updates info
+            const UpdateSourceInfo info = updateSourceInfoList.takeAt(i);
+            q->reportError(tr("Could not download updates from %1 ('%2')").arg(info.name, info.url.toString()));
         }
+        delete downloader;
     }
-    qDeleteAll(updateXmlFDList);
-    updateXmlFDList.clear();
 
     if (updatesInfoList.isEmpty())
         return false;
@@ -363,109 +322,43 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
 */
 bool UpdateFinder::Private::computeApplicableUpdates()
 {
-    if (updateType & CompatUpdate) {
-        UpdateInfo compatUpdateInfo;
-        UpdateSourceInfo compatUpdateSourceInfo;
+    for (int i = 0; i < updatesInfoList.count(); i++) {
+        // Fetch updates applicable to this application.
+        QList<UpdateInfo> updates = applicableUpdates(updatesInfoList.at(i));
+        if (!updates.count())
+            continue;
 
-        // Required compat level
-        int reqCompatLevel = application->compatLevel() + 1;
+        if (cancel)
+            return false;
+        const UpdateSourceInfo updateSource = updateSourceInfoList.at(i);
 
-        q->reportProgress(60, tr("Looking for compatibility update..."));
+        // Create Update objects for updates that have a valid
+        // UpdateFile
+        createUpdateObjects(updateSource, updates);
+        if (cancel)
+            return false;
 
-        // We are only interested in compat updates.
-        for (int i = 0; i < updatesInfoList.count(); i++) {
-            UpdatesInfo *info = updatesInfoList.at(i);
-            UpdateSourceInfo updateSource = updateSourceInfoList.at(i);
-
-            // If we already have a compat update, just check if the source currently being
-            // considered has a higher priority or not.
-            if (compatUpdateInfo.data.contains(QLatin1String("CompatLevel")) && updateSource.priority < compatUpdateSourceInfo.priority)
-                continue;
-
-            // Let's look for compat updates that provide compat level one-higher than
-            // the application's current compat level.
-            QList<UpdateInfo> updatesInfo = info->updatesInfo(CompatUpdate, reqCompatLevel);
-
-            if (updatesInfo.count() == 0)
-                continue;
-
-            compatUpdateInfo = updatesInfo.at(0);
-            compatUpdateSourceInfo = updateSource;
-        }
-
-        bool found = compatUpdateInfo.data.contains(QLatin1String("CompatLevel"));
-        if (found) {
-            q->reportProgress(80, tr("Found compatibility update."));
-
-            if (compatUpdateInfo.updateFiles.isEmpty()) {
-                q->reportError(tr("Update not found."));
-                q->reportProgress(100, tr("Update not found."));
-                return false;
-            }
-
-            UpdateFileInfo fileInfo = compatUpdateInfo.updateFiles.at(0);
-
-            // Create an update for this entry
-            QUrl url = QString::fromLatin1("%1/%2").arg( compatUpdateSourceInfo.url.toString(), fileInfo.fileName);
-            Update *update = q->constructUpdate(application, compatUpdateSourceInfo, CompatUpdate,
-                                                url, compatUpdateInfo.data, fileInfo.compressedSize,
-                                                fileInfo.uncompressedSize, fileInfo.sha1sum);
-
-            // Register the update
-            updates.append(update);
-
-            // Done
-            q->reportProgress(100, tr("Compatibility update found."));
-        } else {
-            q->reportProgress(100, tr("No compatibility updates found."));
-        }
-    }
-    if (updateType & PackageUpdate) {
-        // We are looking for normal updates, not compat ones.
-        for (int i = 0; i < updatesInfoList.count(); i++) {
-            // Fetch updates applicable to this application.
-            UpdatesInfo *info = updatesInfoList.at(i);
-            QList<UpdateInfo> updates = applicableUpdates(info , updateType & NewPackage);
-            if (!updates.count())
-                continue;
-
-            if (cancel)
-                return false;
-            UpdateSourceInfo updateSource = updateSourceInfoList.at(i);
-
-            // Create Update objects for updates that have a valid
-            // UpdateFile
-            createUpdateObjects(updateSource, updates);
-            if (cancel)
-                return false;
-
-            // Report progress
-            int pc = computePercent(i, updatesInfoList.count());
-            pc = computeProgressPercentage(51, 100, pc);
-            q->reportProgress(pc, tr("Computing applicable updates."));
-        }
+        // Report progress
+        q->reportProgress(computeProgressPercentage(51, 100, computePercent(i, updatesInfoList.count())),
+            tr("Computing applicable updates."));
     }
 
     q->reportProgress(99, tr("Application updates computed."));
     return true;
 }
 
-QList<UpdateInfo> UpdateFinder::Private::applicableUpdates(UpdatesInfo *updatesInfo, bool addNewPackages)
+QList<UpdateInfo> UpdateFinder::Private::applicableUpdates(UpdatesInfo *updatesInfo)
 {
-    QList<UpdateInfo> retList;
-
-    if (!updatesInfo || updatesInfo->updateInfoCount( PackageUpdate ) == 0)
-        return retList;
+    const QList<UpdateInfo> dummy;
+    if (!updatesInfo || updatesInfo->updateInfoCount() == 0)
+        return dummy;
 
     PackagesInfo *packages = this->application->packagesInfo();
     if (!packages)
-        return retList;
+        return dummy;
 
     // Check to see if the updates info contains updates for any application
-    bool anyApp = updatesInfo->applicationName() == QLatin1String("{AnyApplication}");
-    int appNameIndex = -1;
-
-    if (!anyApp) {
+    if (updatesInfo->applicationName() != QLatin1String("{AnyApplication}")) {
         // updatesInfo->applicationName() describes one application or a series of
         // application names separated by commas.
         QString appName = updatesInfo->applicationName();
@@ -473,90 +366,28 @@ QList<UpdateInfo> UpdateFinder::Private::applicableUpdates(UpdatesInfo *updatesI
         appName = appName.replace(QLatin1String( " ," ), QLatin1String( "," ));
 
         // Catch hold of app names contained updatesInfo->applicationName()
-        QStringList apps = appName.split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
-        appNameIndex = apps.indexOf(this->application->applicationName());
-
-        // If the application appName isn't one of the app names, then
-        // the updates are not applicable.
-        if (appNameIndex < 0)
-            return retList;
+        // If the application appName isn't one of the app names, then the updates are not applicable.
+        const QStringList apps = appName.split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+        if (apps.indexOf(this->application->applicationName()) < 0)
+            return dummy;
     }
-
-    // Check to see if version numbers match. This means that the version
-    // number of the update should be greater than the version number of
-    // the package that is currently installed.
-    QList<UpdateInfo> updateList = updatesInfo->updatesInfo(PackageUpdate);
-    for (int i = 0; i < updatesInfo->updateInfoCount(PackageUpdate); i++) {
-        UpdateInfo updateInfo = updateList.at(i);
-        if (!addNewPackages) {
-            int pkgInfoIdx = packages->findPackageInfo( updateInfo.data.value(QLatin1String("Name")).toString());
-            if (pkgInfoIdx < 0)
-                continue;
-
-            PackageInfo pkgInfo = packages->packageInfo(pkgInfoIdx);
-
-            // First check to see if the update version is higher than package version
-            QString updateVersion = updateInfo.data.value(QLatin1String("Version")).toString();
-            QString pkgVersion = pkgInfo.version;
-            if (KDUpdater::compareVersion(updateVersion, pkgVersion) <= 0)
-                continue;
-
-            // It is quite possible that we may have already installed the update.
-            // Lets check the last update date of the package and the release date
-            // of the update. This way we can compare and figure out if the update
-            // has been installed or not.
-            QDate pkgDate = pkgInfo.lastUpdateDate;
-            QDate updateDate = updateInfo.data.value(QLatin1String("ReleaseDate")).toDate();
-            if (pkgDate > updateDate)
-                continue;
-        }
-
-        // Bingo, we found an update :-)
-        retList.append(updateInfo);
-    }
-
-    return retList;
+    return updatesInfo->updatesInfo();
 }
 
-void UpdateFinder::Private::createUpdateObjects(const UpdateSourceInfo &sourceInfo, const QList<UpdateInfo> &updateInfoList)
+void UpdateFinder::Private::createUpdateObjects(const UpdateSourceInfo &sourceInfo,
+    const QList<UpdateInfo> &updateInfoList)
 {
-    for (int i = 0; i < updateInfoList.count(); i++) {
-        UpdateInfo info = updateInfoList.at(i);
-        // Compat level checks
-        if (info.data.contains(QLatin1String("RequiredCompatLevel")) &&
-            info.data.value(QLatin1String("RequiredCompatLevel")).toInt() != application->compatLevel())
-        {
-            qDebug().nospace() << "Update \"" << info.data.value( QLatin1String( "Name" ) ).toString()
-                               << "\" at \"" << sourceInfo.name << "\"(\"" << sourceInfo.url.toString()
-                               << "\") requires a different compat level";
-            continue; // Compatibility level mismatch
-        }
-
-        // If another update of the same name exists, then use the update coming from
-        // a higher priority.
+    foreach (const UpdateInfo &info, updateInfoList) {
+        // If another update of the same name exists, then use the update coming from a higher priority.
         if (!checkForUpdatePriority(sourceInfo, info)) {
-            qDebug().nospace() << "Skipping Update \""
-                               << info.data.value(QLatin1String("Name")).toString()
-                               << "\" from \""
-                               << sourceInfo.name
-                               << "\"(\""
-                               << sourceInfo.url.toString()
-                               << "\") because an update with the same name was found from a higher priority location";
-
+            qDebug().nospace() << "Skipping Update \"" << info.data.value(QLatin1String("Name")).toString()
+                << "\" from \"" << sourceInfo.name << "\"(\"" << sourceInfo.url.toString()
+                << "\") because an update with the same name was found from a higher priority location";
             continue;
         }
 
-        if (info.updateFiles.isEmpty())
-            continue;
-
-        UpdateFileInfo fileInfo = info.updateFiles.at(0);
-
-        // Create an update for this entry
-        QUrl url(QString::fromLatin1("%1/%2").arg( sourceInfo.url.toString(), fileInfo.fileName));
-        Update *update = q->constructUpdate(application, sourceInfo, PackageUpdate, url, info.data, fileInfo.compressedSize, fileInfo.uncompressedSize, fileInfo.sha1sum);
-
-        // Register the update
-        this->updates.append(update);
+        // Create and register the update
+        this->updates.append(new Update(sourceInfo.priority, sourceInfo.url, info.data));
     }
 }
 
@@ -570,14 +401,14 @@ bool UpdateFinder::Private::checkForUpdatePriority(const UpdateSourceInfo &sourc
         // Bingo, update was previously found elsewhere.
 
         // If the existing update comes from a higher priority server, then cool :)
-        if (update->sourceInfo().priority > sourceInfo.priority)
+        if (update->priority() > sourceInfo.priority)
             return false;
 
         // If the existing update has a higher version number, keep it
-        if (KDUpdater::compareVersion(update->data(QLatin1String("Version")).toString(),
-                                      updateInfo.data.value(QLatin1String("Version")).toString()) > 0)
-            return false;
-
+        if (KDUpdater::compareVersion(update->data(QLatin1String("Version")).toString(), updateInfo.data
+            .value(QLatin1String("Version")).toString()) > 0) {
+                return false;
+        }
         // Otherwise the old update must be deleted.
         this->updates.removeAll(update);
         delete update;
@@ -612,37 +443,12 @@ UpdateFinder::~UpdateFinder()
 }
 
 /*!
-   Returns a pointer to the update application for which this function computes all
-   the updates.
-*/
-Application *UpdateFinder::application() const
-{
-    return d->application;
-}
-
-/*!
    Returns a list of KDUpdater::Update objects. The update objects returned in this list
    are made children of the \ref KDUpdater::Application object associated with this class.
 */
 QList<Update *> UpdateFinder::updates() const
 {
     return d->updates;
-}
-
-/*!
-   Looks only for a certain type of update. By default, only package update
-*/
-void UpdateFinder::setUpdateType(UpdateTypes type)
-{
-    d->updateType = type;
-}
-
-/*!
-   Returns the type of updates searched
-*/
-UpdateTypes UpdateFinder::updateType() const
-{
-    return d->updateType;
 }
 
 /*!
@@ -702,16 +508,6 @@ void UpdateFinder::Private::slotDownloadDone()
     int pc = computePercent(downloadCompleteCount, updateXmlFDList.count());
     pc = computeProgressPercentage(0, 45, pc);
     q->reportProgress( pc, tr("Downloading Updates.xml from update sources.") );
-}
-
-/*!
-   \internal
- */
-Update *UpdateFinder::constructUpdate(Application *application, const UpdateSourceInfo &sourceInfo,
-    UpdateType type, const QUrl &updateUrl, const QHash<QString, QVariant> &data,
-    quint64 compressedSize, quint64 uncompressedSize, const QByteArray &sha1sum )
-{
-    return new Update(application, sourceInfo, type, updateUrl, data, compressedSize, uncompressedSize, sha1sum);
 }
 
 

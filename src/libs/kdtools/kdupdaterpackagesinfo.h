@@ -33,9 +33,6 @@
 
 namespace KDUpdater {
 
-class Application;
-class UpdateInstaller;
-
 struct KDTOOLS_EXPORT PackageInfo
 {
     QString name;
@@ -69,8 +66,6 @@ public:
         InvalidContentError
     };
 
-    Application *application() const;
-
     bool isValid() const;
     QString errorString() const;
     Error error() const;
@@ -91,9 +86,6 @@ public:
     QVector<KDUpdater::PackageInfo> packageInfos() const;
     void writeToDisk();
 
-    int compatLevel() const;
-    void setCompatLevel(int level);
-
     bool installPackage(const QString &pkgName, const QString &version, const QString &title = QString(),
                         const QString &description = QString(), const QStringList &dependencies = QStringList(),
                         bool forcedInstallation = false, bool virtualComp = false, quint64 uncompressedSize = 0,
@@ -109,11 +101,10 @@ Q_SIGNALS:
     void reset();
 
 protected:
-    explicit PackagesInfo(Application *application = 0);
+    friend class Application;
+    explicit PackagesInfo(QObject *parent = 0);
 
 private:
-    friend class Application;
-    friend class UpdateInstaller;
     struct PackagesInfoData;
     PackagesInfoData *d;
 };

@@ -44,12 +44,10 @@ public:
     QString updateXmlFile;
     QString applicationName;
     QString applicationVersion;
-    int compatLevel;
     QList<UpdateInfo> updateInfoList;
 
     void parseFile(const QString &updateXmlFile);
     bool parsePackageUpdateElement(const QDomElement &updateE);
-    bool parseCompatUpdateElement(const QDomElement &updateE);
 
     void setInvalidContentError(const QString &detail);
 };

@@ -2054,7 +2054,6 @@ PackagesList PackageManagerCorePrivate::remotePackages()
 
     m_updateFinder = new KDUpdater::UpdateFinder(&m_updaterApplication);
     m_updateFinder->setAutoDelete(false);
-    m_updateFinder->setUpdateType(KDUpdater::PackageUpdate | KDUpdater::NewPackage);
     m_updateFinder->run();
 
     if (m_updateFinder->updates().isEmpty()) {

@@ -23,7 +23,7 @@
 #ifndef KD_UPDATER_H
 #define KD_UPDATER_H
 
-#include <kdtoolsglobal.h>
+#include "kdtoolsglobal.h"
 
 namespace KDUpdater
 {
@@ -36,16 +36,6 @@ namespace KDUpdater
         ECannotStopTask,
         EUnknown
     };
-
-    enum UpdateType {
-        PackageUpdate = 0x1,
-        CompatUpdate = 0x2,
-        NewPackage = 0x4,
-        AllUpdate = PackageUpdate | CompatUpdate
-    };
-    Q_DECLARE_FLAGS( UpdateTypes, UpdateType )
-    Q_DECLARE_OPERATORS_FOR_FLAGS( UpdateTypes )
-
     KDTOOLS_EXPORT int compareVersion(const QString &v1, const QString &v2);
 }
 

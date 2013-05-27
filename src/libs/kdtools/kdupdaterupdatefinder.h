@@ -23,35 +23,26 @@
 #ifndef KD_UPDATER_UPDATE_FINDER_H
 #define KD_UPDATER_UPDATE_FINDER_H
 
-#include "kdupdater.h"
 #include "kdupdatertask.h"
 
-#include <QList>
 #include <QHash>
-
-QT_BEGIN_NAMESPACE
-class QUrl;
-QT_END_NAMESPACE
+#include <QUrl>
 
 namespace KDUpdater {
 
 class Application;
 class Update;
-struct UpdateSourceInfo;
 
 class KDTOOLS_EXPORT UpdateFinder : public Task
 {
     Q_OBJECT
+    class Private;
 
 public:
     explicit UpdateFinder(Application *application);
     ~UpdateFinder();
 
-    Application *application() const;
     QList<Update *> updates() const;
-
-    void setUpdateType(UpdateTypes type);
-    UpdateTypes updateType() const;
 
 private:
     void doRun();
@@ -59,12 +50,10 @@ private:
     bool doPause();
     bool doResume();
 
-    Update *constructUpdate(Application *application, const UpdateSourceInfo &sourceInfo,
-                            UpdateType type, const QUrl &updateUrl, const QHash<QString, QVariant> &data,
-                            quint64 compressedSize, quint64 uncompressedSize, const QByteArray &sha1sum);
+    Update *constructUpdate(int priority, const QUrl &sourceInfoUrl, const QHash<QString, QVariant> &data,
+        quint64 compressedSize, quint64 uncompressedSize) const;
 
 private:
-    class Private;
     Private *d;
     Q_PRIVATE_SLOT(d, void slotDownloadDone())
 };

@@ -268,15 +268,14 @@ void Component::loadDataFromPackage(const LocalPackage &package)
 void Component::loadDataFromPackage(const Package &package)
 {
     Q_ASSERT(&package);
-    Q_ASSERT(!package.name().isEmpty());
 
     setValue(scName, package.data(scName).toString());
     setValue(scDisplayName, package.data(scDisplayName).toString());
     setValue(scDescription, package.data(scDescription).toString());
     setValue(scDefault, package.data(scDefault).toString());
     setValue(scAutoDependOn, package.data(scAutoDependOn).toString());
-    setValue(scCompressedSize, QString::number(package.compressedSize()));
-    setValue(scUncompressedSize, QString::number(package.uncompressedSize()));
+    setValue(scCompressedSize, QString::number(0));
+    setValue(scUncompressedSize, QString::number(0));
     setValue(scRemoteVersion, package.data(scRemoteVersion).toString());
     setValue(scInheritVersion, package.data(scInheritVersion).toString());
     setValue(scDependencies, package.data(scDependencies).toString());
@@ -303,7 +302,7 @@ void Component::loadDataFromPackage(const Package &package)
         setCheckState(Qt::Checked);
     }
 
-    setLocalTempPath(QInstaller::pathFromUrl(package.sourceInfo().url));
+    setLocalTempPath(QInstaller::pathFromUrl(package.sourceInfoUrl()));
     const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()
         .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
     if (!uis.isEmpty())

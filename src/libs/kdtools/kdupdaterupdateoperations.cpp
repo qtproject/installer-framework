@@ -21,28 +21,15 @@
 **********************************************************************/
 
 #include "kdupdaterupdateoperations.h"
-#include "kdupdaterapplication.h"
-#include "kdupdaterpackagesinfo.h"
-#include "environment.h"
+#include "errors.h"
+#include "fileutils.h"
 
-#include <QFile>
 #include <QDir>
-#include <QDirIterator>
-#include <QProcess>
+#include <QFile>
 #include <QTextStream>
-#include <QDebug>
 #include <QTemporaryFile>
 
-
 #include <cerrno>
-
-#define SUPPORT_DETACHED_PROCESS_EXECUTION
-
-#ifdef SUPPORT_DETACHED_PROCESS_EXECUTION
-#ifdef Q_OS_WIN
-#include <windows.h>
-#endif
-#endif
 
 using namespace KDUpdater;
 
@@ -58,26 +45,6 @@ static QString errnoToQString(int error)
 #endif
 }
 
-static bool removeDirectory(const QString &path, QString *errorString)
-{
-    Q_ASSERT(errorString);
-    const QFileInfoList entries = QDir(path).entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden);
-    for (QFileInfoList::const_iterator it = entries.constBegin(); it != entries.constEnd(); ++it) {
-        if (it->isDir() && !it->isSymLink()) {
-            removeDirectory(it->filePath(), errorString);
-        } else {
-            QFile f(it->filePath());
-            if (!f.remove())
-                return false;
-        }
-    }
-
-    errno = 0;
-    const bool success = QDir().rmdir(path);
-    if (errno)
-        *errorString = errnoToQString(errno);
-    return success;
-}
 /*
  * \internal
  * Returns a filename for a temporary file based on \a templateName
@@ -116,31 +83,26 @@ void CopyOperation::backup()
 
     setValue(QLatin1String("backupOfExistingDestination"), backupFileName(dest));
 
-    // race condition: The backup file could get created 
-    // by another process right now. But this is the same 
+    // race condition: The backup file could get created by another process right now. But this is the same
     // in QFile::copy...
-    const bool success = QFile::rename(dest, value(QLatin1String("backupOfExistingDestination")).toString());
-    if (!success)
+    if (!QFile::rename(dest, value(QLatin1String("backupOfExistingDestination")).toString()))
         setError(UserDefinedError, tr("Could not backup file %1.").arg(dest));
 }
 
 bool CopyOperation::performOperation()
 {
-    // We need two args to complete the copy operation.
-    // First arg provides the complete file name of source
+    // We need two args to complete the copy operation. First arg provides the complete file name of source
     // Second arg provides the complete file name of dest
-    QStringList args = this->arguments();
+    const QStringList args = this->arguments();
     if (args.count() != 2) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(args.count()));
         return false;
     }
-    QString source = args.first();
-    QString dest = args.last();
 
-    // If destination file exists, then we cannot use QFile::copy()
-    // because it does not overwrite an existing file. So we remove
-    // the destination file.
+    const QString dest = args.last();
+    // If destination file exists, we cannot use QFile::copy() because it does not overwrite an existing
+    // file. So we remove the destination file.
     if (QFile::exists(dest)) {
         QFile file(dest);
         if (!file.remove()) {
@@ -150,11 +112,11 @@ bool CopyOperation::performOperation()
         }
     }
 
-    QFile file(source);
+    QFile file(args.first());
     const bool copied = file.copy(dest);
     if (!copied) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not copy %1 to %2: %3").arg(source, dest, file.errorString()));
+        setErrorString(tr("Could not copy %1 to %2: %3").arg(file.fileName(), dest, file.errorString()));
     }
     return copied;
 }
@@ -191,9 +153,9 @@ QDomDocument CopyOperation::toXml() const
     // we don't want to save the backupOfExistingDestination
     if (!hasValue(QLatin1String("backupOfExistingDestination")))
         return UpdateOperation::toXml();
-    
+
     CopyOperation *const me = const_cast<CopyOperation *>(this);
-    
+
     const QVariant v = value(QLatin1String("backupOfExistingDestination"));
     me->clearValue(QLatin1String("backupOfExistingDestination"));
     const QDomDocument xml = UpdateOperation::toXml();
@@ -237,32 +199,26 @@ void MoveOperation::backup()
 
     setValue(QLatin1String("backupOfExistingDestination"), backupFileName(dest));
 
-    // race condition: The backup file could get created 
-    // by another process right now. But this is the same 
+    // race condition: The backup file could get created by another process right now. But this is the same
     // in QFile::copy...
-    const bool success = QFile::rename(dest, value(QLatin1String("backupOfExistingDestination")).toString());
-    if (!success)
+    if (!QFile::rename(dest, value(QLatin1String("backupOfExistingDestination")).toString()))
         setError(UserDefinedError, tr("Could not backup file %1.").arg(dest));
 }
 
 bool MoveOperation::performOperation()
 {
-    // We need two args to complete the copy operation.
-    // First arg provides the complete file name of source
-    // Second arg provides the complete file name of dest
-    QStringList args = this->arguments();
+    // We need two args to complete the copy operation. // First arg provides the complete file name of
+    // source, second arg provides the complete file name of dest
+    const QStringList args = this->arguments();
     if (args.count() != 2) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(args.count()));
         return false;
     }
 
-    QString source = args.first();
-    QString dest = args.last();
-
-    // If destination file exists, then we cannot use QFile::copy()
-    // because it does not overwrite an existing file. So we remove
-    // the destination file.
+    const QString dest = args.last();
+    // If destination file exists, then we cannot use QFile::copy() because it does not overwrite an existing
+    // file. So we remove the destination file.
     if (QFile::exists(dest)) {
         QFile file(dest);
         if (!file.remove(dest)) {
@@ -273,27 +229,23 @@ bool MoveOperation::performOperation()
     }
 
     // Copy source to destination.
-    QFile file(source);
-    const bool copied = file.copy(source, dest);
-    if (!copied) {
+    QFile file(args.first());
+    if (!file.copy(dest)) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not copy %1 to %2: %3").arg(source, dest, file.errorString()));
+        setErrorString(tr("Could not copy %1 to %2: %3").arg(file.fileName(), dest, file.errorString()));
         return false;
     }
-
-    return deleteFileNowOrLater(source);
+    return deleteFileNowOrLater(file.fileName());
 }
 
 bool MoveOperation::undoOperation()
 {
     const QStringList args = arguments();
-    const QString& source = args.first();
-    const QString& dest = args.last();
-
+    const QString dest = args.last();
     // first: copy back the destination to source
     QFile destF(dest);
-    if (!destF.copy(source)) {
-        setError(UserDefinedError, tr("Cannot copy %1 to %2: %3").arg(dest, source, destF.errorString()));
+    if (!destF.copy(args.first())) {
+        setError(UserDefinedError, tr("Cannot copy %1 to %2: %3").arg(dest, args.first(), destF.errorString()));
         return false;
     }
 
@@ -310,7 +262,7 @@ bool MoveOperation::undoOperation()
 
     // otherwise we have to copy the backup back:
     QFile backupF(value(QLatin1String("backupOfExistingDestination")).toString());
-    const  bool success = backupF.rename(dest);
+    const bool success = backupF.rename(dest);
     if (!success)
         setError(UserDefinedError, tr("Cannot restore backup file for %1: %2").arg(dest, backupF.errorString()));
 
@@ -347,25 +299,22 @@ void DeleteOperation::backup()
 {
     const QString fileName = arguments().first();
     setValue(QLatin1String("backupOfExistingFile"), backupFileName(fileName));
+
     QFile file(fileName);
-    const bool success = file.copy(value(QLatin1String("backupOfExistingFile")).toString());
-    if (!success)
+    if (!file.copy(value(QLatin1String("backupOfExistingFile")).toString()))
         setError(UserDefinedError, tr("Cannot create backup of %1: %2").arg(fileName, file.errorString()));
 }
 
 bool DeleteOperation::performOperation()
 {
-    // Requires only one parameter. That is the name of
-    // the file to remove.
-    QStringList args = this->arguments();
+    // Requires only one parameter. That is the name of the file to remove.
+    const QStringList args = this->arguments();
     if (args.count() != 1) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments: %1 arguments given, 1 expected.").arg(args.count()));
         return false;
     }
-
-    const QString fName = args.first();
-    return deleteFileNowOrLater(fName);
+    return deleteFileNowOrLater(args.first());
 }
 
 bool DeleteOperation::undoOperation()
@@ -378,7 +327,6 @@ bool DeleteOperation::undoOperation()
     const bool success = backupF.copy(fileName) && deleteFileNowOrLater(backupF.fileName());
     if (!success)
         setError(UserDefinedError, tr("Cannot restore backup file for %1: %2").arg(fileName, backupF.errorString()));
-
     return success;
 }
 
@@ -401,9 +349,9 @@ QDomDocument DeleteOperation::toXml() const
     // we don't want to save the backupOfExistingFile
     if (!hasValue(QLatin1String("backupOfExistingFile")))
         return UpdateOperation::toXml();
-    
+
     DeleteOperation *const me = const_cast<DeleteOperation *>(this);
-    
+
     const QVariant v = value(QLatin1String("backupOfExistingFile"));
     me->clearValue(QLatin1String("backupOfExistingFile"));
     const QDomDocument xml = UpdateOperation::toXml();
@@ -448,13 +396,14 @@ bool MkdirOperation::performOperation()
 {
     // Requires only one parameter. That is the name of
     // the file to remove.
-    QStringList args = this->arguments();
+    const QStringList args = this->arguments();
     if (args.count() != 1) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments: %1 arguments given, 1 expected.").arg(args.count()));
         return false;
     }
-    QString dirName = args.first();
+
+    const QString dirName = args.first();
     const bool created = QDir::root().mkpath(dirName);
     if (!created) {
         setError(UserDefinedError);
@@ -481,25 +430,23 @@ bool MkdirOperation::undoOperation()
     if (!createdDir.exists())
         return true;
 
-    QString errorString;
-    if (forceremoval)
-        return removeDirectory(createdDir.path(), &errorString);
+    if (forceremoval) {
+        try {
+            QInstaller::removeDirectory(createdDir.path());
+        } catch (const QInstaller::Error &error) {
+            setError(UserDefinedError, error.message());
+            return false;
+        }
+        return true;
+    }
 
-    // even remove some hidden, OS-created files in there
-#if defined Q_OS_MAC
-    QFile::remove(createdDir.path() + QLatin1String("/.DS_Store"));
-#elif defined Q_OS_WIN
-    QFile::remove(createdDir.path() + QLatin1String("/Thumbs.db"));
-#endif
+    // remove some hidden, OS-created files in there
+    QInstaller::removeSystemGeneratedFiles(createdDir.path());
 
     errno = 0;
     const bool result = QDir::root().rmdir(createdDir.path());
-    if (!result) {
-        if (errorString.isEmpty())
-            setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errorString));
-        else
-            setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errnoToQString(errno)));
-    }
+    if (!result)
+        setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errnoToQString(errno)));
     return result;
 }
 
@@ -520,8 +467,8 @@ MkdirOperation *MkdirOperation::clone() const
 
 RmdirOperation::RmdirOperation()
 {
-    setValue(QLatin1String("removed"), false);
     setName(QLatin1String("Rmdir"));
+    setValue(QLatin1String("removed"), false);
 }
 
 void RmdirOperation::backup()
@@ -531,29 +478,27 @@ void RmdirOperation::backup()
 
 bool RmdirOperation::performOperation()
 {
-    // Requires only one parameter. That is the name of
-    // the file to remove.
-    QStringList args = this->arguments();
+    // Requires only one parameter. That is the name of the file to remove.
+    const QStringList args = this->arguments();
     if (args.count() != 1) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments: %1 arguments given, 1 expected.").arg(args.count()));
         return false;
     }
 
-    QString dirName = args.first();
-    QDir dir(dirName);
+    QDir dir(args.first());
     if (!dir.exists()) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not remove folder %1: The folder does not exist.").arg(dirName));
+        setErrorString(tr("Could not remove folder %1: The folder does not exist.").arg(args.first()));
         return false;
     }
 
     errno = 0;
-    const bool removed = dir.rmdir(dirName);
+    const bool removed = dir.rmdir(args.first());
     setValue(QLatin1String("removed"), removed);
     if (!removed) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not remove folder %1: %2").arg(dirName, errnoToQString(errno)));
+        setErrorString(tr("Could not remove folder %1: %2").arg(args.first(), errnoToQString(errno)));
     }
     return removed;
 }
@@ -563,8 +508,8 @@ bool RmdirOperation::undoOperation()
    if (!value(QLatin1String("removed")).toBool())
         return true;
 
-    const QFileInfo fi(arguments().first());
     errno = 0;
+    const QFileInfo fi(arguments().first());
     const bool success = fi.dir().mkdir(fi.fileName());
     if( !success)
         setError(UserDefinedError, tr("Cannot recreate directory %1: %2").arg(fi.fileName(), errnoToQString(errno)));
@@ -610,19 +555,16 @@ void AppendFileOperation::backup()
 
 bool AppendFileOperation::performOperation()
 {
-    // This operation takes two arguments. First argument is the name
-    // of the file into which a text has to be appended. Second argument
-    // is the text to append.
-    QStringList args = this->arguments();
+    // This operation takes two arguments. First argument is the name of the file into which a text has to be
+    // appended. Second argument is the text to append.
+    const QStringList args = this->arguments();
     if (args.count() != 2) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(args.count()));
         return false;
     }
 
-    QString fName = args.first();
-    QString text = args.last();
-
+    const QString fName = args.first();
     QFile file(fName);
     if (!file.open(QFile::Append)) {
         // first we rename the file, then we copy it to the real target and open the copy - the renamed original is then marked for deletion
@@ -637,7 +579,7 @@ bool AppendFileOperation::performOperation()
     }
 
     QTextStream ts(&file);
-    ts << text;
+    ts << args.last();
     file.close();
 
     return true;
@@ -711,16 +653,14 @@ bool PrependFileOperation::performOperation()
     // This operation takes two arguments. First argument is the name
     // of the file into which a text has to be appended. Second argument
     // is the text to append.
-    QStringList args = this->arguments();
+    const QStringList args = this->arguments();
     if (args.count() != 2) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(args.count()));
         return false;
     }
 
-    QString fName = args.first();
-    QString text = args.last();
-
+    const QString fName = args.first();
     // Load the file first.
     QFile file(fName);
     if (!file.open(QFile::ReadOnly)) {
@@ -728,11 +668,13 @@ bool PrependFileOperation::performOperation()
         setErrorString(tr("Could not open file %1 for reading: %2").arg(file.fileName(), file.errorString()));
         return false;
     }
+
+    // TODO: fix this, use a text stream
     QString fContents(QLatin1String(file.readAll()));
     file.close();
 
     // Prepend text to the file text
-    fContents = text + fContents;
+    fContents = args.last() + fContents;
 
     // Now re-open the file in write only mode.
     if (!file.open(QFile::WriteOnly)) {
@@ -789,279 +731,4 @@ bool PrependFileOperation::testOperation()
 PrependFileOperation *PrependFileOperation::clone() const
 {
     return new PrependFileOperation;
-}
-
-
-////////////////////////////////////////////////////////////////////////////
-// KDUpdater::ExecuteOperation
-////////////////////////////////////////////////////////////////////////////
-
-ExecuteOperation::ExecuteOperation()
-    : QObject()
-{
-    setName(QLatin1String("Execute"));
-}
-
-void ExecuteOperation::backup()
-{
-    // this is not possible, since the process can do whatever...
-}
-
-#if defined(SUPPORT_DETACHED_PROCESS_EXECUTION) && defined(Q_OS_WIN)
-// stolen from qprocess_win.cpp
-static QString qt_create_commandline(const QString &program, const QStringList &arguments)
-{
-    QString args;
-    if (!program.isEmpty()) {
-        QString programName = program;
-        if (!programName.startsWith(QLatin1Char('\"')) && !programName.endsWith(QLatin1Char('\"')) && programName.contains(QLatin1Char(' ')))
-            programName = QLatin1Char('\"') + programName + QLatin1Char('\"');
-        programName.replace(QLatin1Char('/'), QLatin1Char('\\'));
-
-        // add the prgram as the first arg ... it works better
-        args = programName + QLatin1Char(' ');
-    }
-
-    for (int i = 0; i < arguments.size(); ++i) {
-        QString tmp = arguments.at(i);
-        // in the case of \" already being in the string the \ must also be escaped
-        tmp.replace(QLatin1String("\\\""), QLatin1String("\\\\\""));
-        // escape a single " because the arguments will be parsed
-        tmp.replace(QLatin1Char('\"'), QLatin1String("\\\""));
-        if (tmp.isEmpty() || tmp.contains(QLatin1Char(' ')) || tmp.contains(QLatin1Char('\t'))) {
-            // The argument must not end with a \ since this would be interpreted
-            // as escaping the quote -- rather put the \ behind the quote: e.g.
-            // rather use "foo"\ than "foo\"
-            QString endQuote(QLatin1Char('\"'));
-            int i = tmp.length();
-            while (i > 0 && tmp.at(i - 1) == QLatin1Char('\\')) {
-                --i;
-                endQuote += QLatin1Char('\\');
-            }
-            args += QLatin1String(" \"") + tmp.left(i) + endQuote;
-        } else {
-            args += QLatin1Char(' ') + tmp;
-        }
-    }
-    return args;
-}
-#endif
-
-bool ExecuteOperation::performOperation()
-{
-    // This operation receives only one argument. It is the complete
-    // command line of the external program to execute.
-    QStringList args = this->arguments();
-    if (args.isEmpty()) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(args.count()));
-        return false;
-    }
-
-    QList<int> allowedExitCodes;
-    
-    QRegExp re(QLatin1String("^\\{((-?\\d+,)*-?\\d+)\\}$"));
-    if (re.exactMatch(args.first())) {
-        const QStringList numbers = re.cap(1).split(QLatin1Char(','));
-        for (QStringList::const_iterator it = numbers.begin(); it != numbers.end(); ++it)
-            allowedExitCodes.push_back(it->toInt());
-        args.pop_front();
-    } else {
-        allowedExitCodes.push_back(0);
-    }
-
-    bool success = false;
-#ifdef SUPPORT_DETACHED_PROCESS_EXECUTION
-    // unix style: when there's an ampersand after the command, it's started detached
-    if (args.count() >= 2 && args.last() == QLatin1String("&")) {
-        args.pop_back();
-#ifdef Q_OS_WIN
-        QString arguments = qt_create_commandline(args.front(), args.mid(1));
-        
-        PROCESS_INFORMATION pinfo;
-
-        STARTUPINFOW startupInfo = { sizeof(STARTUPINFO), 0, 0, 0,
-                                     static_cast< ulong >(CW_USEDEFAULT), static_cast< ulong >(CW_USEDEFAULT),
-                                     static_cast< ulong >(CW_USEDEFAULT), static_cast< ulong >(CW_USEDEFAULT),
-                                     0, 0, 0, STARTF_USESHOWWINDOW, SW_HIDE, 0, 0, 0, 0, 0
-                                   };
-        success = CreateProcess(0, (wchar_t*)arguments.utf16(),
-                                0, 0, false, CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_CONSOLE, 0,
-                                0,
-                                &startupInfo, &pinfo);
-
-#else
-        success = QProcess::startDetached(args.front(), args.mid(1));
-#endif
-    }
-    else
-#endif
-    {
-        Environment::instance().applyTo(&process); //apply non-persistent variables
-        process.start(args.front(), args.mid(1));
-        
-        QEventLoop loop;
-        QObject::connect(&process, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
-        QObject::connect(&process, SIGNAL(readyRead()), this, SLOT(readProcessOutput()));
-        success = process.waitForStarted(-1);
-        if (success) {
-            loop.exec();
-            setValue(QLatin1String("ExitCode"), process.exitCode());
-            success = allowedExitCodes.contains(process.exitCode());
-        }
-    }
-    if (!success) {
-        setError(UserDefinedError);
-        setErrorString(tr("Execution failed: %1").arg(args.join(QLatin1String(" "))));
-    }
-
-    return success;
-}
-
-/*!
- Cancels the ExecuteOperation. This methods tries to terminate the process
- gracefully by calling QProcess::terminate. After 10 seconds, the process gets killed.
- */
-void ExecuteOperation::cancelOperation()
-{
-    if (process.state() == QProcess::Running)
-        process.terminate();
-    if (!process.waitForFinished(10000))
-        process.kill();
-}
-
-void ExecuteOperation::readProcessOutput()
-{
-    QByteArray output = process.readAll();
-    if (!output.isEmpty())
-        emit outputTextChanged(QString::fromLocal8Bit(output));
-}
-
-bool ExecuteOperation::undoOperation()
-{
-    // this is not possible, since the process can do whatever...
-    return false;
-}
-
-bool ExecuteOperation::testOperation()
-{
-    // TODO
-    return true;
-}
-
-ExecuteOperation *ExecuteOperation::clone() const
-{
-    return new ExecuteOperation;
-}
-
-
-////////////////////////////////////////////////////////////////////////////
-// KDUpdater::UpdatePackageOperation
-////////////////////////////////////////////////////////////////////////////
-
-UpdatePackageOperation::UpdatePackageOperation()
-{
-    setName(QLatin1String("UpdatePackage"));
-}
-
-void UpdatePackageOperation::backup()
-{
-    const PackageInfo info = application()->packagesInfo()->packageInfo(application()->packagesInfo()->findPackageInfo(arguments().first()));
-    setValue(QLatin1String("oldVersion"), info.version);
-    setValue(QLatin1String("oldDate"), info.lastUpdateDate);
-}
-
-bool UpdatePackageOperation::performOperation()
-{
-    // This operation receives three arguments : the name of the package
-    // the new version and the release date
-    const QStringList args = this->arguments();
-    if (args.count() != 3) {
-        setError(InvalidArguments, tr("Invalid arguments: %1 arguments given, 3 expected.").arg(args.count()));
-        return false;
-    }
-
-    const QString &packageName = args.at(0);
-    const QString &version = args.at(1);
-    const QDate date = QDate::fromString(args.at(2));
-    const bool success = application()->packagesInfo()->updatePackage(packageName, version, date);
-    if (!success)
-        setError(UserDefinedError, tr("Cannot update %1-%2").arg(packageName, version));
-
-    return success;
-}
-
-bool UpdatePackageOperation::undoOperation()
-{
-    const QString packageName = arguments().first();
-    const QString version = arguments().at(1);
-    const QString oldVersion = value(QLatin1String("oldVersion")).toString();
-    const QDate oldDate = value(QLatin1String("oldDate")).toDate();
-    const bool success = application()->packagesInfo()->updatePackage(packageName, oldVersion, oldDate);
-    if (!success)
-        setError(UserDefinedError, tr("Cannot restore %1-%2").arg(packageName, version));
-
-    return success;
-}
-
-bool UpdatePackageOperation::testOperation()
-{
-    // TODO
-    return true;
-}
-
-UpdatePackageOperation *UpdatePackageOperation::clone() const
-{
-    return new UpdatePackageOperation;
-}
-
-
-////////////////////////////////////////////////////////////////////////////
-// KDUpdater::UpdateCompatOperation
-////////////////////////////////////////////////////////////////////////////
-
-UpdateCompatOperation::UpdateCompatOperation()
-{
-    setName(QLatin1String("UpdateCompatLevel"));
-}
-
-void UpdateCompatOperation::backup()
-{
-    setValue(QLatin1String("oldCompatLevel"), application()->packagesInfo()->compatLevel());
-}
-
-bool UpdateCompatOperation::performOperation()
-{
-    // This operation receives one argument : the new compat level
-    const QStringList args = this->arguments();
-    if (args.count() != 1) {
-        setError(InvalidArguments, tr("Invalid arguments: %1 arguments given, 1 expected.").arg(args.count()));
-        return false;
-    }
-
-    const int level = args.first().toInt();
-    application()->packagesInfo()->setCompatLevel(level);
-    return true;
-}
-
-bool UpdateCompatOperation::undoOperation()
-{
-    if (!hasValue(QLatin1String("oldCompatLevel"))) {
-        setError(UserDefinedError, tr("Cannot restore previous compat-level"));
-        return false;
-    }
-
-    application()->packagesInfo()->setCompatLevel(value(QLatin1String("oldCompatLevel")).toInt());
-    return true;
-}
-
-bool UpdateCompatOperation::testOperation()
-{
-    // TODO
-    return true;
-}
-
-UpdateCompatOperation *UpdateCompatOperation::clone() const
-{
-    return new UpdateCompatOperation;
 }

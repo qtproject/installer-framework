@@ -63,7 +63,7 @@ using namespace KDUpdater;
    Constructor
 */
 UpdateOperation::UpdateOperation()
-    : m_error(0), m_application(0)
+    : m_error(0)
 {}
 
 /*!
@@ -150,15 +150,6 @@ void UpdateOperation::setArguments(const QStringList &args)
 }
 
 /*!
-   Sets the Application for this operation.
-   This may be used by some operations
-*/
-void UpdateOperation::setApplication(Application *application)
-{
-    m_application = application;
-}
-
-/*!
    Returns the last set function arguments.
 */
 QStringList UpdateOperation::arguments() const
@@ -207,7 +198,6 @@ void UpdateOperation::setError(int error, const QString &errorString)
 void UpdateOperation::clear()
 {
     m_arguments.clear();
-    m_application = 0;
 }
 
 QStringList UpdateOperation::filesForDelayedDeletion() const
@@ -245,14 +235,6 @@ bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorSt
     }
     registerForDelayedDeletion(QStringList(backup));
     return true;
-}
-
-/*!
-   Returns a pointer to the current Application
-*/
-Application *UpdateOperation::application() const
-{
-    return m_application;
 }
 
 /*!

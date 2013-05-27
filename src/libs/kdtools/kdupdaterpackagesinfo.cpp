@@ -20,7 +20,6 @@
 **
 **********************************************************************/
 #include "kdupdaterpackagesinfo.h"
-#include "kdupdaterapplication.h"
 #include "globals.h"
 
 #include <QFileInfo>
@@ -76,18 +75,14 @@ using namespace KDUpdater;
 struct PackagesInfo::PackagesInfoData
 {
     PackagesInfoData() :
-        application(0),
         error(PackagesInfo::NotYetReadError),
-        compatLevel(-1),
         modified(false)
     {}
-    Application *application;
     QString errorMessage;
     PackagesInfo::Error error;
     QString fileName;
     QString applicationName;
     QString applicationVersion;
-    int compatLevel;
     bool modified;
 
     QVector<PackageInfo> packageInfoList;
@@ -105,11 +100,10 @@ void PackagesInfo::PackagesInfoData::setInvalidContentError(const QString &detai
 /*!
    \internal
 */
-PackagesInfo::PackagesInfo(Application *application)
-    : QObject(application),
+PackagesInfo::PackagesInfo(QObject *parent)
+    : QObject(parent),
       d(new PackagesInfoData())
 {
-    d->application = application;
 }
 
 /*!
@@ -119,15 +113,6 @@ PackagesInfo::~PackagesInfo()
 {
     writeToDisk();
     delete d;
-}
-
-/*!
-   Returns a pointer to the application, whose package information this class provides
-   access to.
-*/
-Application *PackagesInfo::application() const
-{
-    return d->application;
 }
 
 /*!
@@ -234,14 +219,6 @@ PackageInfo PackagesInfo::packageInfo(int index) const
 }
 
 /*!
-   Returns the compat level of the application.
-*/
-int PackagesInfo::compatLevel() const
-{
-    return d->compatLevel;
-}
-
-/*!
    This function returns the index of the package whose name is \c pkgName. If no such
    package was found, this function returns -1.
 */
@@ -332,22 +309,11 @@ void PackagesInfo::refresh()
             d->applicationVersion = childNodeE.text();
         else if (childNodeE.tagName() == QLatin1String("Package"))
             d->addPackageFrom(childNodeE);
-        else if (childNodeE.tagName() == QLatin1String("CompatLevel"))
-            d->compatLevel = childNodeE.text().toInt();
     }
 
     d->error = NoError;
     d->errorMessage.clear();
     emit reset();
-}
-
-/*!
-   Sets the application compat level.
-*/
-void PackagesInfo::setCompatLevel(int level)
-{
-    d->compatLevel = level;
-    d->modified = true;
 }
 
 /*!
@@ -434,8 +400,6 @@ void PackagesInfo::writeToDisk()
 
         addTextChildHelper(&root, QLatin1String("ApplicationName"), d->applicationName);
         addTextChildHelper(&root, QLatin1String("ApplicationVersion"), d->applicationVersion);
-        if (d->compatLevel != -1)
-            addTextChildHelper(&root, QLatin1String( "CompatLevel" ), QString::number(d->compatLevel));
 
         Q_FOREACH (const PackageInfo &info, d->packageInfoList) {
             QDomElement package = doc.createElement(QLatin1String("Package"));

@@ -68,7 +68,4 @@ UpdateOperationFactory::UpdateOperationFactory()
     registerUpdateOperation<RmdirOperation>(QLatin1String("Rmdir"));
     registerUpdateOperation<AppendFileOperation>(QLatin1String("AppendFile"));
     registerUpdateOperation<PrependFileOperation>(QLatin1String("PrependFile"));
-    registerUpdateOperation<ExecuteOperation>(QLatin1String("Execute"));
-    registerUpdateOperation<UpdatePackageOperation>(QLatin1String("UpdatePackage"));
-    registerUpdateOperation<UpdateCompatOperation>(QLatin1String("UpdateCompat"));
 }

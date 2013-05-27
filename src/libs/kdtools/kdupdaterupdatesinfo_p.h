@@ -28,7 +28,6 @@
 
 #include <QHash>
 #include <QSharedData>
-#include <QString>
 #include <QVariant>
 
 // They are not a part of the public API
@@ -36,24 +35,9 @@
 
 namespace KDUpdater {
 
-struct KDTOOLS_EXPORT UpdateFileInfo
-{
-    UpdateFileInfo()
-        : compressedSize(0),
-          uncompressedSize(0)
-    {}
-
-    QString fileName;
-    QByteArray sha1sum;
-    quint64 compressedSize;
-    quint64 uncompressedSize;
-};
-
 struct KDTOOLS_EXPORT UpdateInfo
 {
-    int type;
     QHash<QString, QVariant> data;
-    QList<UpdateFileInfo> updateFiles;
 };
 
 class KDTOOLS_EXPORT UpdatesInfo
@@ -72,19 +56,19 @@ public:
     ~UpdatesInfo();
 
     bool isValid() const;
-    QString errorString() const;
-    Error error() const;
 
-    void setFileName(const QString &updateXmlFile);
+    Error error() const;
+    QString errorString() const;
+
     QString fileName() const;
+    void setFileName(const QString &updateXmlFile);
 
     QString applicationName() const;
     QString applicationVersion() const;
-    int compatLevel() const;
 
-    int updateInfoCount(int type = AllUpdate) const;
+    int updateInfoCount() const;
     UpdateInfo updateInfo(int index) const;
-    QList<UpdateInfo> updatesInfo(int type = AllUpdate, int compatLevel = -1) const;
+    QList<UpdateInfo> updatesInfo() const;
 
 private:
     QSharedDataPointer<UpdatesInfoData> d;

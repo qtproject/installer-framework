@@ -23,12 +23,9 @@
 #ifndef KD_UPDATER_APPLICATION_H
 #define KD_UPDATER_APPLICATION_H
 
-#include "kdupdater.h"
-#include <QObject>
+#include "kdtoolsglobal.h"
 
-QT_BEGIN_NAMESPACE
-class QUrl;
-QT_END_NAMESPACE
+#include <QSettings>
 
 namespace KDUpdater {
 
@@ -38,9 +35,20 @@ class UpdateSourcesInfo;
 class ConfigurationInterface
 {
 public:
-    virtual ~ConfigurationInterface();
-    virtual QVariant value(const QString &key ) const = 0;
-    virtual void setValue(const QString &key, const QVariant &value) = 0;
+    virtual ~ConfigurationInterface() {}
+    virtual QVariant value(const QString &key) const
+    {
+        QSettings settings;
+        settings.beginGroup(QLatin1String("KDUpdater"));
+        return settings.value(key);
+    }
+
+    virtual void setValue(const QString &key, const QVariant &value)
+    {
+        QSettings settings;
+        settings.beginGroup(QLatin1String("KDUpdater"));
+        settings.setValue(key, value);
+    }
 };
 
 class KDTOOLS_EXPORT Application : public QObject
@@ -58,7 +66,6 @@ public:
 
     QString applicationName() const;
     QString applicationVersion() const;
-    int compatLevel() const;
 
     void setPackagesXMLFileName(const QString &fileName);
     QString packagesXMLFileName() const;

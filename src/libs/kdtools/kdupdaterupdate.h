@@ -23,65 +23,28 @@
 #ifndef KD_UPDATER_UPDATE_H
 #define KD_UPDATER_UPDATE_H
 
-#include "kdupdater.h"
-#include "kdupdatertask.h"
-
-#include <QUrl>
-#include <QDate>
 #include <QHash>
+#include <QUrl>
 #include <QVariant>
-#include <QList>
 
 namespace KDUpdater {
 
-class Application;
-struct UpdateSourceInfo;
-class UpdateFinder;
-class UpdateOperation;
-
-class KDTOOLS_EXPORT Update : public Task
+class Update
 {
-    Q_OBJECT
-
 public:
-    ~Update();
+    QVariant data(const QString &name, const QVariant &defaultValue = QVariant()) const;
 
-    Application *application() const;
-
-    UpdateType type() const;
-    QUrl updateUrl() const;
-    QDate releaseDate() const;
-    QVariant data(const QString &m_name, const QVariant &defaultValue = QVariant()) const;
-    UpdateSourceInfo sourceInfo() const;
-
-    bool canDownload() const;
-    bool isDownloaded() const;
-    void download() { run(); }
-    QString downloadedFileName() const;
-
-    QList<UpdateOperation *> operations() const;
-
-    quint64 compressedSize() const;
-    quint64 uncompressedSize() const;
-
-private Q_SLOTS:
-    void downloadProgress(double);
-    void downloadAborted(const QString &msg);
-    void downloadCompleted();
+    int priority() const;
+    QUrl sourceInfoUrl() const;
 
 private:
     friend class UpdateFinder;
-    struct UpdateData;
-    UpdateData *d;
+    Update(int p, const QUrl &sourceInfoUrl, const QHash<QString, QVariant> &data);
 
-    void doRun();
-    bool doStop();
-    bool doPause();
-    bool doResume();
-
-    Update(Application *application, const UpdateSourceInfo &sourceInfo,
-           UpdateType type, const QUrl &updateUrl, const QHash<QString, QVariant> &data,
-           quint64 compressedSize, quint64 uncompressedSize, const QByteArray &sha1sum);
+private:
+    int m_priority;
+    QUrl m_sourceInfoUrl;
+    QHash<QString, QVariant> m_data;
 };
 
 } // namespace KDUpdater

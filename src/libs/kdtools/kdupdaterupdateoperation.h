@@ -32,8 +32,6 @@
 
 namespace KDUpdater {
 
-class Application;
-
 class KDTOOLS_EXPORT UpdateOperation
 {
     Q_DECLARE_TR_FUNCTIONS(UpdateOperation)
@@ -57,7 +55,6 @@ public:
     void setValue(const QString &name, const QVariant &value);
 
     void setArguments(const QStringList &args);
-    void setApplication(Application *application);
     QStringList arguments() const;
     void clear();
     QString errorString() const;
@@ -76,7 +73,6 @@ public:
 
 protected:
     void setName(const QString &name);
-    Application *application() const;
     void setErrorString(const QString &errorString);
     void setError(int error, const QString &errorString = QString());
     void registerForDelayedDeletion(const QStringList &files);
@@ -87,7 +83,6 @@ private:
     QStringList m_arguments;
     QString m_errorString;
     int m_error;
-    Application *m_application;
     QVariantMap m_values;
     QStringList m_delayedDeletionFiles;
 };

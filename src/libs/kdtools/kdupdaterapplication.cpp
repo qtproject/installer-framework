@@ -27,7 +27,6 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
-#include <QSettings>
 
 using namespace KDUpdater;
 
@@ -55,32 +54,6 @@ medium-to-large scale software systems.
    \namespace KDUpdater
 */
 
-ConfigurationInterface::~ConfigurationInterface()
-{
-}
-
-namespace {
-
-class DefaultConfigImpl : public ConfigurationInterface
-{
-public:
-    QVariant value(const QString &key) const
-    {
-        QSettings settings;
-        settings.beginGroup(QLatin1String("KDUpdater"));
-        return settings.value(key);
-    }
-
-    void setValue(const QString &key, const QVariant &value)
-    {
-        QSettings settings;
-        settings.beginGroup(QLatin1String("KDUpdater"));
-        settings.setValue(key, value);
-    }
-};
-
-} // namespace anon
-
 /*!
    \class KDUpdater::Application kdupdaterapplication.h KDUpdaterApplication
    \ingroup kdupdater
@@ -95,7 +68,6 @@ public:
    User can also retrieve some information from this class:
    \li application name
    \li application version
-   \li compat level
 */
 
 struct Application::ApplicationData
@@ -103,7 +75,7 @@ struct Application::ApplicationData
     explicit ApplicationData(ConfigurationInterface *config) :
         packagesInfo(0),
         updateSourcesInfo(0),
-        configurationInterface(config ? config : new DefaultConfigImpl)
+        configurationInterface(config ? config : new ConfigurationInterface)
     {
         const QStringList oldFiles = configurationInterface->value(QLatin1String("FilesForDelayedDeletion")).toStringList();
         Q_FOREACH(const QString &i, oldFiles) { //TODO this should happen asnyc and report errors, I guess
@@ -161,7 +133,7 @@ Application::~Application()
 }
 
 /*!
- Returns a previousle created Application instance.
+ Returns a previously created Application instance.
  */
 Application *Application::instance()
 {
@@ -213,17 +185,6 @@ QString Application::applicationVersion() const
         return d->packagesInfo->applicationVersion();
 
     return QString();
-}
-
-/*!
-   Returns the compat level that this application is in.
-*/
-int Application::compatLevel() const
-{
-    if (d->packagesInfo->isValid())
-        return d->packagesInfo->compatLevel();
-
-    return -1;
 }
 
 void Application::addUpdateSource(const QString &name, const QString &title,

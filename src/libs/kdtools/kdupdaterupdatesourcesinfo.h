@@ -23,15 +23,13 @@
 #ifndef KD_UPDATER_UPDATE_SOURCES_INFO_H
 #define KD_UPDATER_UPDATE_SOURCES_INFO_H
 
-#include "kdupdater.h"
+#include "kdtoolsglobal.h"
 
 #include <QObject>
 #include <QVariant>
 #include <QUrl>
 
 namespace KDUpdater {
-
-class Application;
 
 struct KDTOOLS_EXPORT UpdateSourceInfo
 {
@@ -68,8 +66,6 @@ public:
         CouldNotSaveChangesError
     };
 
-    Application *application() const;
-
     bool isValid() const;
     QString errorString() const;
     Error error() const;
@@ -85,11 +81,10 @@ public:
 
     void addUpdateSourceInfo(const UpdateSourceInfo &info);
     void removeUpdateSourceInfo(const UpdateSourceInfo &info);
-    void removeUpdateSourceInfoAt(int index);
-    void setUpdateSourceInfoAt(int index, const UpdateSourceInfo &info);
 
 protected:
-    explicit UpdateSourcesInfo(Application *application);
+    friend class Application;
+    explicit UpdateSourcesInfo(QObject *parent = 0);
 
 public Q_SLOTS:
     void refresh();
@@ -98,13 +93,10 @@ Q_SIGNALS:
     void reset();
     void updateSourceInfoAdded(const UpdateSourceInfo &info);
     void updateSourceInfoRemoved(const UpdateSourceInfo &info);
-    void updateSourceInfoChanged(const UpdateSourceInfo &newInfo,
-                                 const UpdateSourceInfo &oldInfo);
 
 private:
-    friend class Application;
     struct UpdateSourcesInfoData;
-    UpdateSourcesInfoData *d;
+    QScopedPointer<UpdateSourcesInfoData> d;
 };
 
 } // namespace KDUpdater

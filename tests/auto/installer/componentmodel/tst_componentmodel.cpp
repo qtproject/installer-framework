@@ -420,7 +420,7 @@ private:
     {
         UpdatesInfo updatesInfo;
         updatesInfo.setFileName(":///data/updates.xml");
-        const QList<UpdateInfo> updateInfos = updatesInfo.updatesInfo(PackageUpdate);
+        const QList<UpdateInfo> updateInfos = updatesInfo.updatesInfo();
 
         QHash<QString, Component*> components;
         foreach (const UpdateInfo &info, updateInfos) {
