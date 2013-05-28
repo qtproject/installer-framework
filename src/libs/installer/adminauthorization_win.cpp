@@ -81,7 +81,7 @@ bool AdminAuthorization::authorize()
 bool AdminAuthorization::hasAdminRights()
 {
     SID_IDENTIFIER_AUTHORITY authority = { SECURITY_NT_AUTHORITY };
-    PSID adminGroup;
+    PSID adminGroup = 0;
     // Initialize SID.
     if (!AllocateAndInitializeSid(&authority,
                                   2,
@@ -91,12 +91,12 @@ bool AdminAuthorization::hasAdminRights()
                                   &adminGroup))
         return false;
 
-    bool isInAdminGroup = false;
-    if (!CheckTokenMembership(0, adminGroup, (int*)&isInAdminGroup))
-        isInAdminGroup = false;
+    BOOL isInAdminGroup = FALSE;
+    if (CheckTokenMembership(0, adminGroup, &isInAdminGroup))
+        isInAdminGroup = TRUE;
 
     FreeSid(adminGroup);
-    return isInAdminGroup;
+    return (isInAdminGroup == BOOL(TRUE));
 }
 
 bool AdminAuthorization::execute(QWidget *, const QString &program, const QStringList &arguments)
