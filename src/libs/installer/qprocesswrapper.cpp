@@ -392,6 +392,14 @@ QString QProcessWrapper::workingDirectory() const
     return static_cast<QString>(d->process.workingDirectory());
 }
 
+QString QProcessWrapper::errorString() const
+{
+    const Private::TimerBlocker blocker(this);
+    if (d->createSocket())
+        return callRemoteMethod<QString>(d->stream, QLatin1String("QProcess::errorString"));
+    return static_cast<QString>(d->process.errorString());
+}
+
 void QProcessWrapper::setEnvironment(const QStringList &param1)
 {
     const Private::TimerBlocker blocker(this);

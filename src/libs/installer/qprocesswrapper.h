@@ -100,6 +100,7 @@ public:
     bool waitForFinished(int msecs = 30000);
     void setEnvironment(const QStringList &environment);
     QString workingDirectory() const;
+    QString errorString() const;
     qint64 write(const QByteArray &byteArray);
     QProcessWrapper::ProcessChannel readChannel() const;
     void setReadChannel(QProcessWrapper::ProcessChannel channel);

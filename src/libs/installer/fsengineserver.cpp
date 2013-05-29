@@ -448,6 +448,8 @@ QByteArray FSEngineConnectionThread::handleCommand(const QString &command)
         returnStream << process->waitForStarted(msecs);
     } else if (command == QLatin1String("QProcess::workingDirectory")) {
         returnStream << process->workingDirectory();
+    } else if (command == QLatin1String("QProcess::errorString")) {
+        returnStream << process->errorString();
     } else if (command == QLatin1String("QProcess::write")) {
         QByteArray byteArray;
         receivedStream >> byteArray;

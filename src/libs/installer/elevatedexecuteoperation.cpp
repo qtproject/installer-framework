@@ -204,7 +204,8 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     if (!success) {
         q->setError(UserDefinedError);
         //TODO: pass errorString() through the wrapper */
-        q->setErrorString(tr("Execution failed: Could not start: \"%1\"").arg(callstr));
+        q->setErrorString(tr("Execution failed: Could not start: \"%1\"(%2)").arg(callstr,
+            process->errorString()));
         returnValue = false;
     }
 
