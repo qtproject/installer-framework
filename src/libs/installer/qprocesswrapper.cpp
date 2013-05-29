@@ -63,7 +63,7 @@ public:
     {
         if (!FSEngineClientHandler::instance().isActive())
             return false;
-        if (socket != 0 && socket->state() == static_cast< int >(QAbstractSocket::ConnectedState))
+        if (socket != 0 && socket->state() == static_cast<int>(QAbstractSocket::ConnectedState))
             return true;
         if (socket != 0)
             delete socket;
@@ -293,7 +293,7 @@ int QProcessWrapper::exitCode() const
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())
         return callRemoteMethod<int>(d->stream, QLatin1String("QProcess::exitCode"));
-    return static_cast< int>(d->process.exitCode());
+    return static_cast<int>(d->process.exitCode());
 }
 
 QProcessWrapper::ExitStatus QProcessWrapper::exitStatus() const
@@ -301,7 +301,7 @@ QProcessWrapper::ExitStatus QProcessWrapper::exitStatus() const
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())
         return callRemoteMethod<QProcessWrapper::ExitStatus>(d->stream, QLatin1String("QProcess::exitStatus"));
-    return static_cast< QProcessWrapper::ExitStatus>(d->process.exitStatus());
+    return static_cast<QProcessWrapper::ExitStatus>(d->process.exitStatus());
 }
 
 void QProcessWrapper::kill()
@@ -352,7 +352,7 @@ QProcessWrapper::ProcessState QProcessWrapper::state() const
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())
         return callRemoteMethod<QProcessWrapper::ProcessState>(d->stream, QLatin1String("QProcess::state"));
-    return static_cast< QProcessWrapper::ProcessState>(d->process.state());
+    return static_cast<QProcessWrapper::ProcessState>(d->process.state());
 }
 
 void QProcessWrapper::terminate()
@@ -371,7 +371,7 @@ QProcessWrapper::ProcessChannel QProcessWrapper::readChannel() const
         return callRemoteMethod<QProcessWrapper::ProcessChannel>(d->stream,
             QLatin1String("QProcess::readChannel"));
     }
-    return static_cast< QProcessWrapper::ProcessChannel>(d->process.readChannel());
+    return static_cast<QProcessWrapper::ProcessChannel>(d->process.readChannel());
 }
 
 QProcessWrapper::ProcessChannelMode QProcessWrapper::processChannelMode() const
@@ -381,7 +381,7 @@ QProcessWrapper::ProcessChannelMode QProcessWrapper::processChannelMode() const
         return callRemoteMethod<QProcessWrapper::ProcessChannelMode>(d->stream,
             QLatin1String("QProcess::processChannelMode"));
     }
-    return static_cast< QProcessWrapper::ProcessChannelMode>(d->process.processChannelMode());
+    return static_cast<QProcessWrapper::ProcessChannelMode>(d->process.processChannelMode());
 }
 
 QString QProcessWrapper::workingDirectory() const
@@ -389,7 +389,7 @@ QString QProcessWrapper::workingDirectory() const
     const Private::TimerBlocker blocker(this);
     if (d->createSocket())
         return callRemoteMethod<QString>(d->stream, QLatin1String("QProcess::workingDirectory"));
-    return static_cast< QString>(d->process.workingDirectory());
+    return static_cast<QString>(d->process.workingDirectory());
 }
 
 void QProcessWrapper::setEnvironment(const QStringList &param1)
