@@ -209,6 +209,8 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core)
 
     globalObject().property(QLatin1String("installer"))
         .setProperty(QLatin1String("components"), scriptComponentsObject);
+
+    connect(this, SIGNAL(signalHandlerException(QScriptValue)), SLOT(handleException(QScriptValue)));
 }
 
 ScriptEngine::~ScriptEngine()
@@ -279,6 +281,12 @@ QScriptValue ScriptEngine::loadInConext(const QString &context, const QString &f
     return scriptContext;
 }
 
+void ScriptEngine::handleException(const QScriptValue &value)
+{
+    if (!value.engine())
+        return;
+    throw Error(uncaughtExceptionString(this, tr("Fatal error while evaluating a script.")));
+}
 
 /*!
     Tries to call the method with \a name within the script and returns the result. If the method

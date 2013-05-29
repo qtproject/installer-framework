@@ -71,11 +71,12 @@ public:
     explicit ScriptEngine(PackageManagerCore *core);
     ~ScriptEngine();
     void setGuiQObject(QObject *guiQObject);
-    QScriptValue callScriptMethod(const QScriptValue &scriptContext, const QString &name,
-        const QScriptValueList &parameters = QScriptValueList()) const;
+    QScriptValue callScriptMethod(const QScriptValue &scriptContext, const QString &methodName,
+        const QScriptValueList &arguments = QScriptValueList()) const;
 
     QScriptValue loadInConext(const QString &context, const QString &fileName, const QString &scriptInjection = QString());
-
+private slots:
+    void handleException(const QScriptValue &value);
 private:
     QScriptValue generateMessageBoxObject();
     QScriptValue generateDesktopServicesObject();

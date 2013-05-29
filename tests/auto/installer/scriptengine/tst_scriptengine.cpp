@@ -11,8 +11,6 @@
 
 using namespace QInstaller;
 
-// -- InstallerGui
-
 class TestGui : public QInstaller::PackageManagerGui
 {
     Q_OBJECT
@@ -34,6 +32,18 @@ public:
     }
 };
 
+class EmitSignalObject : public QObject
+{
+    Q_OBJECT
+
+public:
+    EmitSignalObject() {}
+    ~EmitSignalObject() {}
+    void produceSignal() { emit emitted(); }
+signals:
+    void emitted();
+};
+
 
 class tst_ScriptEngine : public QObject
 {
@@ -52,6 +62,42 @@ private slots:
         m_component->setValue(scName, "component.test.name");
 
         m_scriptEngine = m_core.scriptEngine();
+    }
+
+    void testBrokenJSMethodConnect()
+    {
+        EmitSignalObject emiter;
+        m_scriptEngine->globalObject().setProperty(QLatin1String("emiter"),
+            m_scriptEngine->newQObject(&emiter));
+
+        QScriptValue context = m_scriptEngine->loadInConext(QLatin1String("BrokenConnect"),
+            ":///data/broken_connect.qs");
+
+        QVERIFY(context.isValid());
+
+        if (m_scriptEngine->hasUncaughtException()) {
+            QFAIL(qPrintable(QString::fromLatin1("ScriptEngine hasUncaughtException:\n %1").arg(
+                uncaughtExceptionString(m_scriptEngine))));
+        }
+
+        const QString debugMesssage(
+            "create Error-Exception: \"Fatal error while evaluating a script.\n\n"
+            "ReferenceError: Can't find variable: foo\n\n"
+            "Backtrace:\n"
+#if QT_VERSION < 0x050000
+                "\t<anonymous>()@:///data/broken_connect.qs:10\" ");
+#else
+            "\treceive() at :///data/broken_connect.qs:10\n"
+            "\t<global>() at -1\" ");
+#endif
+        try {
+            // ignore Output from script
+            setExpectedScriptOutput("function receive()");
+            setExpectedScriptOutput(qPrintable(debugMesssage));
+            emiter.produceSignal();
+        } catch (const Error &error) {
+            QVERIFY2(debugMesssage.contains(error.message()), "There was some unexpected error.");
+        }
     }
 
     void testScriptPrint()
@@ -199,7 +245,7 @@ private:
 
     PackageManagerCore m_core;
     Component *m_component;
-    QScriptEngine *m_scriptEngine;
+    ScriptEngine *m_scriptEngine;
 
 };
 
