@@ -86,7 +86,8 @@ public:
     }
     void setValue(const QString &key, const QVariant &value)
     {
-        qDebug() << "DummyConfigurationInterface called with key:" << key << "and value:" << value;
+        if (value.isNull())
+            qDebug() << "DummyConfigurationInterface called with key:" << key << "and value:" << value;
     }
 };
 
