@@ -49,6 +49,7 @@
 
 QT_BEGIN_NAMESPACE
 class QByteArray;
+class QFileInfo;
 class QIODevice;
 class QUrl;
 QT_END_NAMESPACE
@@ -119,6 +120,8 @@ private:
 
     void INSTALLER_EXPORT mkdir(const QString &path);
     void INSTALLER_EXPORT mkpath(const QString &path);
+
+    quint64 INSTALLER_EXPORT fileSize(const QFileInfo &info);
 
 #ifdef Q_OS_WIN
     QString INSTALLER_EXPORT getLongPathName(const QString &name);

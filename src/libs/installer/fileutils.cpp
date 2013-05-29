@@ -53,6 +53,12 @@
 
 #include <errno.h>
 
+#ifdef Q_OS_UNIX
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
 using namespace QInstaller;
 
 
@@ -469,6 +475,7 @@ QString QInstaller::createTemporaryDirectory(const QString &templ)
 # endif
 #include <windows.h>
 
+
 QString QInstaller::getShortPathName(const QString &name)
 {
     if (name.isEmpty())
@@ -607,4 +614,31 @@ void QInstaller::setApplicationIcon(const QString &application, const QString &i
     EndUpdateResourceW(updateRes, false);
 }
 
+static quint64 symlinkSizeWin(const QString &path)
+{
+    WIN32_FILE_ATTRIBUTE_DATA fileAttributeData;
+    if (GetFileAttributesEx((wchar_t*)(path.utf16()), GetFileExInfoStandard, &fileAttributeData) == FALSE)
+        return quint64(0);
+
+    LARGE_INTEGER size;
+    size.LowPart = fileAttributeData.nFileSizeLow;
+    size.HighPart = fileAttributeData.nFileSizeHigh;
+    return quint64(size.QuadPart);
+}
+
 #endif
+
+quint64 QInstaller::fileSize(const QFileInfo &info)
+{
+    if (!info.isSymLink())
+        return info.size();
+
+#ifndef Q_OS_WIN
+    struct stat buffer;
+    if (lstat(qPrintable(info.absoluteFilePath()), &buffer) != 0)
+        return quint64(0);
+    return quint64(buffer.st_size);
+#else
+    return symlinkSizeWin(info.absoluteFilePath());
+#endif
+}

@@ -255,7 +255,8 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                 if (fi.isDir()) {
                     QDirIterator recursDirIt(fi.filePath(), QDirIterator::Subdirectories);
                     while (recursDirIt.hasNext()) {
-                        const quint64 size = QFile(recursDirIt.next()).size();
+                        recursDirIt.next();
+                        const quint64 size = QInstaller::fileSize(recursDirIt.fileInfo());
                         componentSize += size;
                         compressedComponentSize += size;
                     }
@@ -271,7 +272,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                         componentSize += fileIt->uncompressedSize;
                 } else {
                     // otherwise just add its size
-                    const quint64 size = fi.size();
+                    const quint64 size = QInstaller::fileSize(fi);
                     componentSize += size;
                     compressedComponentSize += size;
                 }
