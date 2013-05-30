@@ -121,6 +121,7 @@ protected:
 
     void addCheckSumData(const QByteArray &data);
     void addCheckSumData(const char *data, int length);
+    void resetCheckSumData();
 
 private Q_SLOTS:
     virtual void doDownload() = 0;

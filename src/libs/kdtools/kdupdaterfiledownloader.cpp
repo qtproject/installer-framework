@@ -363,6 +363,12 @@ void KDUpdater::FileDownloader::addCheckSumData(const char *data, int length)
     d->m_hash.addData(data, length);
 }
 
+void KDUpdater::FileDownloader::resetCheckSumData()
+{
+    d->m_hash.reset();
+}
+
+
 /*!
     Returns a copy of the proxy factory that this FileDownloader object is using to determine the proxies to
     be used for requests.
@@ -778,6 +784,7 @@ struct KDUpdater::HttpDownloader::Private
         destination->close();
         destination->deleteLater();
         destination = 0;
+        q->resetCheckSumData();
     }
 };
 
