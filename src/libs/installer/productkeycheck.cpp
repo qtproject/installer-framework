@@ -84,7 +84,7 @@ QString ProductKeyCheck::maintainanceToolDetailErrorNotice()
 }
 
 // to filter none valid licenses
-bool ProductKeyCheck::isValidLicense(const QString &/*fileName*/)
+bool ProductKeyCheck::isValidLicenseTextFile(const QString &/*fileName*/)
 {
     return true;
 }

@@ -58,7 +58,7 @@ public:
     bool applyKey(const QStringList &arguments);
 
     // to filter none valid licenses
-    bool isValidLicense(const QString &fileName);
+    bool isValidLicenseTextFile(const QString &fileName);
 
 private:
     ProductKeyCheck();
