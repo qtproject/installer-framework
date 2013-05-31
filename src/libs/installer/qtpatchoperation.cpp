@@ -147,7 +147,7 @@ static QHash<QByteArray, QByteArray> generatePatchValueHash(const QByteArray &ne
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_HOST_LIBS"));
     replaceHash.insert(QByteArray("qt_hlibpath=%1").replace("%1", oldValue),
-        QByteArray("qt_hlibpath=%1/lib").replace("%1/", newQtPath));
+        QByteArray("qt_hlibpath=%1/lib").replace("%1/", newQtPath + nativeSeperator));
 
     return replaceHash;
 }
