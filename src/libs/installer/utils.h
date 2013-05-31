@@ -57,6 +57,7 @@ class QIODevice;
 QT_END_NAMESPACE
 
 namespace QInstaller {
+    void INSTALLER_EXPORT uiDetachedWait(int ms);
 
     QByteArray INSTALLER_EXPORT calculateHash(QIODevice *device, QCryptographicHash::Algorithm algo);
     QByteArray INSTALLER_EXPORT calculateHash(const QString &path, QCryptographicHash::Algorithm algo);

@@ -62,6 +62,7 @@
 
 // QtSDK specific
 #include "qtpatchoperation.h"
+#include "consumeoutputoperation.h"
 #include "setdemospathonqtoperation.h"
 #include "setexamplespathonqtoperation.h"
 #include "setpluginpathonqtcoreoperation.h"
@@ -243,6 +244,7 @@ void QInstaller::init()
     factory.registerUpdateOperation<MinimumProgressOperation>(QLatin1String("MinimumProgress"));
     factory.registerUpdateOperation<LicenseOperation>(QLatin1String("License"));
     factory.registerUpdateOperation<ApplyProductKeyOperation>(QLatin1String("ApplyProductKey"));
+    factory.registerUpdateOperation<ConsumeOutputOperation>(QLatin1String("ConsumeOutput"));
 
     // QtSDK specific
     factory.registerUpdateOperation<RegisterQtInCreatorQNXOperation>(QLatin1String("RegisterQtInCreatorQNX"));

@@ -39,9 +39,11 @@ IFW_LIB_PATH = $$IFW_BUILD_TREE/lib
 
 RCC = $$cleanPath($$toNativeSeparators($$[QT_INSTALL_BINS]/rcc))
 LRELEASE = $$cleanPath($$toNativeSeparators($$[QT_INSTALL_BINS]/lrelease))
+QMAKE_BINARY = $$cleanPath($$toNativeSeparators($$[QT_INSTALL_BINS]/qmake))
 
 win32:RCC = $${RCC}.exe
 win32:LRELEASE = $${LRELEASE}.exe
+win32:QMAKE_BINARY = $${QMAKE_BINARY}.exe
 win32-g++*:QMAKE_CXXFLAGS += -Wno-attributes
 
 INCLUDEPATH += \

@@ -8,4 +8,5 @@ SUBDIRS += \
     messageboxhandler \
     extractarchiveoperationtest \
     lib7zfacade \
-    scriptengine
+    scriptengine \
+    consumeoutputoperationtest

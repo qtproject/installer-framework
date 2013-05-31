@@ -46,7 +46,7 @@
 
 namespace QInstaller {
 
-class QtPatchOperation : public Operation
+class INSTALLER_EXPORT QtPatchOperation : public Operation
 {
 public:
     QtPatchOperation();

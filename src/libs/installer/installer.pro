@@ -55,6 +55,7 @@ HEADERS += packagemanagercore.h \
     persistentsettings.h \
     projectexplorer_export.h \
     qtpatchoperation.h \
+    consumeoutputoperation.h \
     setpathonqtcoreoperation.h \
     setdemospathonqtoperation.h \
     setexamplespathonqtoperation.h \
@@ -128,6 +129,7 @@ HEADERS += packagemanagercore.h \
     qtpatch.cpp \
     persistentsettings.cpp \
     qtpatchoperation.cpp  \
+    consumeoutputoperation.cpp \
     setpathonqtcoreoperation.cpp \
     setdemospathonqtoperation.cpp \
     setexamplespathonqtoperation.cpp \

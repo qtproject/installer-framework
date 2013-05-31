@@ -45,6 +45,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QProcessEnvironment>
 #include <QtCore/QVector>
+#include <QCoreApplication>
 
 #if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
 #   include "qt_windows.h"
@@ -53,6 +54,39 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
+
+#ifdef Q_OS_WIN
+#include <windows.h> // for Sleep
+#endif
+#ifdef Q_OS_UNIX
+#include <errno.h>
+#include <signal.h>
+#include <time.h>
+#endif
+
+namespace {
+void sleepCopiedFromQTest(int ms)
+{
+    if (ms < 0)
+        return;
+#ifdef Q_OS_WIN
+    Sleep(uint(ms));
+#else
+    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
+    nanosleep(&ts, NULL);
+#endif
+}
+}
+void QInstaller::uiDetachedWait(int ms)
+{
+    QTime timer;
+    timer.start();
+    do {
+        QCoreApplication::processEvents(QEventLoop::AllEvents, ms);
+        sleepCopiedFromQTest(10);
+    } while (timer.elapsed() < ms);
+}
 
 static bool verb = false;
 

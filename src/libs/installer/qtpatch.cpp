@@ -40,6 +40,7 @@
 **************************************************************************/
 
 #include "qtpatch.h"
+#include "utils.h"
 
 #include <QString>
 #include <QStringList>
@@ -52,35 +53,20 @@
 #include <QCoreApplication>
 #include <QByteArrayMatcher>
 
-#ifdef Q_OS_WIN
-#include <windows.h> // for Sleep
-#endif
-#ifdef Q_OS_UNIX
-#include <errno.h>
-#include <signal.h>
-#include <time.h>
-#endif
-
-static void sleepCopiedFromQTest(int ms)
+QHash<QString, QByteArray> QtPatch::readQmakeOutput(const QByteArray &data)
 {
-    if (ms < 0)
-        return;
-#ifdef Q_OS_WIN
-    Sleep(uint(ms));
-#else
-    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
-    nanosleep(&ts, NULL);
-#endif
-}
-
-static void uiDetachedWait(int ms)
-{
-    QTime timer;
-    timer.start();
-    do {
-        QCoreApplication::processEvents(QEventLoop::AllEvents, ms);
-        sleepCopiedFromQTest(10);
-    } while (timer.elapsed() < ms);
+    QHash<QString, QByteArray> qmakeValueHash;
+    QTextStream stream(data, QIODevice::ReadOnly);
+    while (!stream.atEnd()) {
+        const QString line = stream.readLine();
+        const int index = line.indexOf(QLatin1Char(':'));
+        if (index != -1) {
+            QString value = line.mid(index+1);
+            if (value != QLatin1String("**Unknown**") )
+                qmakeValueHash.insert(line.left(index), value.toUtf8());
+        }
+    }
+    return qmakeValueHash;
 }
 
 QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteArray *qmakeOutput)
@@ -113,21 +99,12 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
             }
             QByteArray output = process.readAllStandardOutput();
             qmakeOutput->append(output);
-            QTextStream stream(&output);
-            while (!stream.atEnd()) {
-                const QString line = stream.readLine();
-                const int index = line.indexOf(QLatin1Char(':'));
-                if (index != -1) {
-                    QString value = line.mid(index+1);
-                    if (value != QLatin1String("**Unknown**") )
-                        qmakeValueHash.insert(line.left(index), value.toUtf8());
-                }
-            }
+            qmakeValueHash = readQmakeOutput(output);
         }
         if (qmakeValueHash.isEmpty()) {
             ++waitCount;
             static const int waitTimeInMilliSeconds = 500;
-            uiDetachedWait(waitTimeInMilliSeconds);
+            QInstaller::uiDetachedWait(waitTimeInMilliSeconds);
         }
         if (process.state() > QProcess::NotRunning ) {
             qDebug() << "qmake process is still running, need to kill it.";
@@ -232,7 +209,7 @@ bool QtPatch::openFileForPatching(QFile *file)
         while (!file->open(QFile::ReadWrite) && waitCount < 60) {
             ++waitCount;
             static const int waitTimeInMilliSeconds = 500;
-            uiDetachedWait(waitTimeInMilliSeconds);
+            QInstaller::uiDetachedWait(waitTimeInMilliSeconds);
         }
         return file->openMode() == QFile::ReadWrite;
     }

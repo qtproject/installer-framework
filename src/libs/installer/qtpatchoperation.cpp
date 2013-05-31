@@ -176,7 +176,24 @@ bool QtPatchOperation::performOperation()
         return false;
     }
 
-    QString type = arguments().at(0);
+    QStringList args = arguments();
+    QString qmakeOutputInstallerKey;
+    QStringList filteredQmakeOutputInstallerKey = args.filter(QLatin1String("QmakeOutputInstallerKey="),
+        Qt::CaseInsensitive);
+    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
+    if (!filteredQmakeOutputInstallerKey.isEmpty()) {
+        if (!core) {
+            setError(UserDefinedError);
+            setErrorString(tr("Needed installer object in \"%1\" operation is empty.").arg(name()));
+            return false;
+        }
+        QString qmakeOutputInstallerKeyArgument = filteredQmakeOutputInstallerKey.at(0);
+        qmakeOutputInstallerKey = qmakeOutputInstallerKeyArgument;
+        qmakeOutputInstallerKey.replace(QLatin1String("QmakeOutputInstallerKey="), QString(), Qt::CaseInsensitive);
+        args.removeAll(qmakeOutputInstallerKeyArgument);
+    }
+
+    QString type = args.at(0);
     bool isPlatformSupported = type.contains(QLatin1String("linux"), Qt::CaseInsensitive)
         || type.contains(QLatin1String("windows"), Qt::CaseInsensitive)
         || type.contains(QLatin1String("mac"), Qt::CaseInsensitive);
@@ -187,31 +204,42 @@ bool QtPatchOperation::performOperation()
         return false;
     }
 
-    const QString newQtPathStr = QDir::toNativeSeparators(arguments().at(1));
-    const QByteArray newQtPath = newQtPathStr.toUtf8();
+    if (!filteredQmakeOutputInstallerKey.isEmpty() && core->value(qmakeOutputInstallerKey).isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("Could not find the needed QmakeOutputInstallerKey(%1) value on the installer "
+            "object. The ConsumeOutput operation on the valid qmake needs to be called first.").arg(
+            qmakeOutputInstallerKey));
+        return false;
+    }
 
+    const QString newQtPathStr = QDir::toNativeSeparators(args.at(1));
+    const QByteArray newQtPath = newQtPathStr.toUtf8();
     QString qmakePath = QString::fromUtf8(newQtPath) + QLatin1String("/bin/qmake");
 #ifdef Q_OS_WIN
     qmakePath = qmakePath + QLatin1String(".exe");
 #endif
 
-    if (!QFile::exists(qmakePath)) {
-        setError(UserDefinedError);
-        setErrorString(tr("QMake from the current Qt version \n(%1)is not existing. Please file a bugreport "
-            "with this dialog at https://bugreports.qt-project.org.").arg(QDir::toNativeSeparators(qmakePath)));
-        return false;
+    QHash<QString, QByteArray> qmakeValueHash;
+    if (!core->value(qmakeOutputInstallerKey).isEmpty()) {
+        qmakeValueHash = QtPatch::readQmakeOutput(core->value(qmakeOutputInstallerKey).toLatin1());
+    } else {
+        if (!QFile::exists(qmakePath)) {
+            setError(UserDefinedError);
+            setErrorString(tr("QMake from the current Qt version \n(%1)is not existing. Please file a bugreport "
+                "with this dialog at https://bugreports.qt-project.org.").arg(QDir::toNativeSeparators(qmakePath)));
+            return false;
+        }
+        QByteArray qmakeOutput;
+        qmakeValueHash = QtPatch::qmakeValues(qmakePath, &qmakeOutput);
+        if (qmakeValueHash.isEmpty()) {
+            setError(UserDefinedError);
+            setErrorString(tr("The output of \n%1 -query\nis not parseable. Please file a bugreport with this "
+                "dialog https://bugreports.qt-project.org.\noutput: \"%2\"").arg(QDir::toNativeSeparators(qmakePath),
+                QString::fromUtf8(qmakeOutput)));
+            return false;
+        }
     }
 
-    QByteArray qmakeOutput;
-    QHash<QString, QByteArray> qmakeValueHash = QtPatch::qmakeValues(qmakePath, &qmakeOutput);
-
-    if (qmakeValueHash.isEmpty()) {
-        setError(UserDefinedError);
-        setErrorString(tr("The output of \n%1 -query\nis not parseable. Please file a bugreport with this "
-            "dialog https://bugreports.qt-project.org.\noutput: \"%2\"").arg(QDir::toNativeSeparators(qmakePath),
-            QString::fromUtf8(qmakeOutput)));
-        return false;
-    }
 
     const QByteArray oldQtPath = qmakeValueHash.value(QLatin1String("QT_INSTALL_PREFIX"));
     bool oldQtPathFromQMakeIsEmpty = oldQtPath.isEmpty();
@@ -246,13 +274,11 @@ bool QtPatchOperation::performOperation()
         fileName = QString::fromLatin1(":/files-to-patch-windows");
     else if (type == QLatin1String("linux"))
         fileName = QString::fromLatin1(":/files-to-patch-linux");
-    else if (type == QLatin1String("linux-emb-arm"))
-        fileName = QString::fromLatin1(":/files-to-patch-linux-emb-arm");
     else if (type == QLatin1String("mac"))
         fileName = QString::fromLatin1(":/files-to-patch-macx");
 
     QFile patchFileListFile(fileName);
-    QString version = arguments().value(2).toLower();
+    QString version = args.value(2).toLower();
     if (!version.isEmpty())
         patchFileListFile.setFileName(fileName + QLatin1Char('-') + version);
 
