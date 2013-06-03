@@ -98,7 +98,7 @@
     \list 1
 
         \o  Clone the Qt Installer Framework source code from
-            \l{http://gitorious.org/qt-labs/installer-framework}
+            \l{http://gitorious.org/installer-framework}
             to get the sources for the tools.
 
         \o  Build the tools by running the "qmake" from the static Qt, followed by "make" or "nmake".
