@@ -267,7 +267,10 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 
     QString err;
     QDomDocument doc;
-    if (!doc.setContent(&updatesFile, &err)) {
+    const bool success = doc.setContent(&updatesFile, &err);
+    updatesFile.close();
+
+    if (!success) {
         const QString msg =  tr("Could not fetch a valid version of Updates.xml from repository: %1. "
             "Error: %2").arg(m_repository.url().toString(), err);
 
