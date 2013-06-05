@@ -1,3 +1,41 @@
+1.4
+- Added exceptionhandler code for connected signals/JS methods.
+- Now properly calculates the file size for symlinks. (QTIFW-137)
+- Fixed downloading when the server redirects.
+- Changed two fatals to warnings.
+- Added errorString to execute operation error output.
+- Implemented configuration interface. (QTIFW-196)
+- Introduced no_app_bundle.pri for Mac.
+- Added a change installer ui example.
+- Added entered/left signals to pages.
+- Forwarded packagemanager core to ProductKeyCheck class.
+- Added installerscriptengine.
+- Replaced the external date and time implementation.
+- Now only uses the basic LZMA SDK (instead of all of 7zip).
+- Forwarded make "check" target to autotests.
+- Added documentation for JS API.
+- Fixed messageboxhandler.
+- Added INSTALL file, cleaned up README.
+- Now sets the subTitle to " " if empty on Linux as well.
+- Now checks for os-release instead of lsb-release on Linux.
+- Added getrepositorycontent tool.
+- Now provides documentation for Vendorprefix parameter.
+- Fixed output of line number in log.
+- Fixed broken update behavior (in the size and description label).
+- Binarycreator now assumes offline installer if there are no repositories. (QTIFW-224)
+- Rewrote copy configuration function. (QTIFW-221)
+- Added banner pixmap to the wizard.
+- Removed previously deprecated Pages config.xml element.
+- Deprecated Icon, introduce replacements for config.xml.
+- Added component model behavior auto test and fix broken model. (QTIFW-84, QTIFW-213)
+- Made CreateShortcut operation a NOOP on non-Windows systems.
+- Added RunProgramArguments to config.xml.
+- Qt5 SDK specific fixes.
+- Minor documentation fixes and additions.
+- Added more autotests.
+- Bugfixes
+- Cleaned up the Code.
+
 1.3.1
 - Enabled Qt4 patch syntax in QtPatchOperation.
 - Added the OS attribute to be compatible with old sdks.
