@@ -77,7 +77,7 @@ void compressMetaDirectories(const QString &repoDir, const QString &baseDir,
     const QHash<QString, QString> &versionMapping);
 
 void copyMetaData(const QString &outDir, const QString &dataDir, const PackageInfoVector &packages,
-    const QString &appName, const QString& appVersion, const QString &redirectUpdateUrl = QString());
+    const QString &appName, const QString& appVersion);
 void copyComponentData(const QString &packageDir, const QString &repoDir, PackageInfoVector *const infos);
 
 

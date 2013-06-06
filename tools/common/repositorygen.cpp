@@ -135,8 +135,7 @@ static QStringList copyFilesFromNode(const QString &parentNode, const QString &c
 }
 
 void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &metaDataDir,
-    const PackageInfoVector &packages, const QString &appName, const QString &appVersion,
-    const QString &redirectUpdateUrl)
+    const PackageInfoVector &packages, const QString &appName, const QString &appVersion)
 {
     const QString targetDir = makePathAbsolute(_targetDir);
     if (!QFile::exists(targetDir))
@@ -160,7 +159,6 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             }
         }
         existingUpdatesXml.close();
-        // TODO: maybe we should replace or remove an existing redirect with the one given, if so
     } else {
         root = doc.createElement(QLatin1String("Updates"));
         root.appendChild(doc.createElement(QLatin1String("ApplicationName"))).appendChild(doc
@@ -169,10 +167,6 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             .createTextNode(appVersion));
         root.appendChild(doc.createElement(QLatin1String("Checksum"))).appendChild(doc
             .createTextNode(QLatin1String("true")));
-        if (!redirectUpdateUrl.isEmpty()) {
-            root.appendChild(doc.createElement(QLatin1String("RedirectUpdateUrl"))).appendChild(doc
-                .createTextNode(redirectUpdateUrl));
-        }
     }
 
     foreach (const PackageInfo &info, packages) {
