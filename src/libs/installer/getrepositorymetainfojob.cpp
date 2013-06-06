@@ -373,7 +373,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
 {
     if (m_retriesLeft <= 0) {
         const QString msg = tr("Could not fetch Updates.xml from repository: %1. Error: %2")
-            .arg(m_repository.url().toString(), err);
+            .arg(m_repository.displayname(), err);
 
         QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
         const QMessageBox::StandardButton b =
