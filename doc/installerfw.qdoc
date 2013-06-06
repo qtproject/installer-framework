@@ -986,6 +986,41 @@
     then Updates.xml. The package names include version numbers, and therefore,
     end users receive old packages until the new ones are fully uploaded.
 
+    \section1 Changing Repositories
+
+    To have the current update repository point to other repositories, edit the
+    Updates.xml file in the current repository. You can add, replace, or remove
+    repositories.
+
+    \section2 Adding Repositories
+    To update a repository, add the following code to Updates.xml:
+
+    \code
+    <RepositoryUpdate>
+     <Repository action="add" url="http://www.example.com/repository" name="user" password="password"
+                 displayname="Example Repository" />
+    </RepositoryUpdate>
+    \endcode
+
+    \section2 Removing Repositories
+    To remove a repository, add the following code to Updates.xml:
+
+    \code
+    <RepositoryUpdate>
+     <Repository action="remove" url="http://www.example.com/repository" />
+    </RepositoryUpdate>
+    \endcode
+
+    \section2 Replacing repositories
+    To replace one repository with another, add the following code to Updates.xml:
+
+    \code
+    <RepositoryUpdate>
+     <Repository action="replace" oldurl="http://www.example.com/repository"
+                 newurl="http://www.example.com/newrepository" name="user" password="password"
+                 displayname="New Example Repository" />
+    </RepositoryUpdate>
+    \endcode
 */
 
 /*!
