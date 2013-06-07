@@ -1,0 +1,40 @@
+The Qt Installer Framework sources include third party code:
+
+============================================================
+
+P7zip
+
+Sources for p7zip are under src/libs/7zip/unix. The library
+is released under the GNU LGPL with unRAR restriction. See
+src/libs/7zip/unix/DOCS/License.txt for details. The folder
+contains also parts of Wine, which is distributed under the
+LGPL 2.1 or newer.
+
+The copyright of the 7z is owned by Igor Pavlov, the
+copyright of the original unRAR code is owned by Alexander
+Roshal.
+
+============================================================
+
+7zip
+
+Sources for p7zip are under src/libs/7zip/win.
+
+The library is released under the GNU LGPL with unRAR restriction.
+See src/libs/7zip/win/DOC/License.txt for details.
+
+The copyright of the 7z is owned by Igor Pavlov, the
+copyright of the original unRAR code is owned by Alexander
+Roshal.
+
+============================================================
+
+KD Tools
+
+Sources for the KD Tools library are under src/libs/kdtools.
+
+The library is licensed under LGPL 2, LGPL 3, and a commercial
+KD Tools license.
+
+The copyright is owned by  Klaralvdalens
+Datakonsult AB.
