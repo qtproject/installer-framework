@@ -143,7 +143,7 @@ void TestRepository::downloadCompleted()
             QString errorMsg;
             if (!doc.setContent(&file, &errorMsg)) {
                 error = InvalidUpdatesXml;
-                errorMsg = tr("Could not parse Updates.xml! Error: %1.");
+                errorMsg = tr("Could not parse Updates.xml! Error: %1.").arg(errorMsg);
             } else {
                 error = NoError;
             }
