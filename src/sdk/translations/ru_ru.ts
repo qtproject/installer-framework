@@ -198,17 +198,6 @@
     </message>
 </context>
 <context>
-    <name>KDUpdater::ExecuteOperation</name>
-    <message>
-        <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation type="obsolete">Недопустимое количество параметров: передано %1, ожидается 2.</translation>
-    </message>
-    <message>
-        <source>Execution failed: %1</source>
-        <translation type="obsolete">Не удалось выполнить: %1</translation>
-    </message>
-</context>
-<context>
     <name>KDUpdater::FileDownloader</name>
     <message>
         <location filename="../../libs/kdtools/kdupdaterfiledownloader.cpp" line="185"/>
@@ -299,22 +288,14 @@
 <context>
     <name>KDUpdater::HttpDownloader</name>
     <message>
-        <source>Cannot download %1: Writing to temporary file failed: %2</source>
-        <translation type="obsolete">Невозможно загрузить %1: Сбой записи во временный файл: %2</translation>
-    </message>
-    <message>
-        <source>Cannot download %1: Could not create temporary file: %2</source>
-        <translation type="obsolete">Невозможно загрузить %1: Невозможно создать временный файл: %2</translation>
-    </message>
-    <message>
         <location filename="../../libs/kdtools/kdupdaterfiledownloader.cpp" line="861"/>
         <source>Cannot download %1: Writing to file &apos;%2&apos; failed: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно загрузить %1: Сбой записи в файл %2 - %3</translation>
     </message>
     <message>
         <location filename="../../libs/kdtools/kdupdaterfiledownloader.cpp" line="991"/>
         <source>Cannot download %1: Could not create %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно загрузить %1: Невозможно создать %2: %3</translation>
     </message>
     <message>
         <location filename="../../libs/kdtools/kdupdaterfiledownloader.cpp" line="1010"/>
@@ -537,28 +518,6 @@
     </message>
 </context>
 <context>
-    <name>KDUpdater::Update</name>
-    <message>
-        <source>Downloading update...</source>
-        <translation type="obsolete">Загрузка обновления...</translation>
-    </message>
-    <message>
-        <source>Update downloaded</source>
-        <translation type="obsolete">Обновление загружено</translation>
-    </message>
-</context>
-<context>
-    <name>KDUpdater::UpdateCompatOperation</name>
-    <message>
-        <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation type="obsolete">Недопустимые параметры: передано %1, ожидается 1.</translation>
-    </message>
-    <message>
-        <source>Cannot restore previous compat-level</source>
-        <translation type="obsolete">Невозможно восстановить прежний уровень совместимости</translation>
-    </message>
-</context>
-<context>
     <name>KDUpdater::UpdateFinder</name>
     <message>
         <location filename="../../libs/kdtools/kdupdaterupdatefinder.cpp" line="177"/>
@@ -592,26 +551,6 @@
         <translation>Загрузка файла Updates.xml завершена.</translation>
     </message>
     <message>
-        <source>Looking for compatibility update...</source>
-        <translation type="obsolete">Идёт поиск обновления совметимости...</translation>
-    </message>
-    <message>
-        <source>Found compatibility update.</source>
-        <translation type="obsolete">Найдено обновление совместимости.</translation>
-    </message>
-    <message>
-        <source>Update not found.</source>
-        <translation type="obsolete">Обновление не найдено.</translation>
-    </message>
-    <message>
-        <source>Compatibility update found.</source>
-        <translation type="obsolete">Найдено обновление совместимости.</translation>
-    </message>
-    <message>
-        <source>No compatibility updates found.</source>
-        <translation type="obsolete">Обновления совместимости не найдены.</translation>
-    </message>
-    <message>
         <location filename="../../libs/kdtools/kdupdaterupdatefinder.cpp" line="343"/>
         <source>Computing applicable updates.</source>
         <translation>Подготовка обновлений приложения.</translation>
@@ -620,21 +559,6 @@
         <location filename="../../libs/kdtools/kdupdaterupdatefinder.cpp" line="346"/>
         <source>Application updates computed.</source>
         <translation>Обновления подготовлены.</translation>
-    </message>
-</context>
-<context>
-    <name>KDUpdater::UpdatePackageOperation</name>
-    <message>
-        <source>Invalid arguments: %1 arguments given, 3 expected.</source>
-        <translation type="obsolete">Недопустимое количество параметров: передано %1, ожидается 3.</translation>
-    </message>
-    <message>
-        <source>Cannot update %1-%2</source>
-        <translation type="obsolete">Невозможно обновить %1-%2</translation>
-    </message>
-    <message>
-        <source>Cannot restore %1-%2</source>
-        <translation type="obsolete">Невозможно восстановить %1-%2</translation>
     </message>
 </context>
 <context>
@@ -713,22 +637,6 @@
         <source>PackageUpdate element without ReleaseDate</source>
         <translation>У элемента PackageUpdate отсутствует поле &quot;ReleaseDate&quot;</translation>
     </message>
-    <message>
-        <source>PackageUpdate element without UpdateFile</source>
-        <translation type="obsolete">У элемента PackageUpdate отсутствует поле &quot;UpdateFile&quot;</translation>
-    </message>
-    <message>
-        <source>CompatUpdate element without CompatLevel</source>
-        <translation type="obsolete">У элемента CompatUpdate отсутствует поле &quot;CompatLevel&quot;</translation>
-    </message>
-    <message>
-        <source>CompatUpdate element without ReleaseDate</source>
-        <translation type="obsolete">У элемента CompatUpdate отсутствует поле &quot;ReleaseDate&quot;</translation>
-    </message>
-    <message>
-        <source>CompatUpdate element without UpdateFile</source>
-        <translation type="obsolete">У элемента CompatUpdate отсутствует поле &quot;UpdateFile&quot;</translation>
-    </message>
 </context>
 <context>
     <name>Lib7z::ExtractItemJob</name>
@@ -756,7 +664,7 @@
     <message>
         <location filename="../../libs/installer/addqtcreatorarrayvalueoperation.cpp" line="72"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, ожидается%2%3.</translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/addqtcreatorarrayvalueoperation.cpp" line="73"/>
@@ -778,49 +686,29 @@
 <context>
     <name>QInstaller::Component</name>
     <message>
-        <source>Could not open the requested script file at %1: %2.</source>
-        <translation type="obsolete">Невозможно открыть файл сценария %1: %2.</translation>
-    </message>
-    <message>
-        <source>Exception while loading the component script: %1</source>
-        <translation type="obsolete">При загрузке сценария компонента возникло исключение: %1</translation>
-    </message>
-    <message>
-        <source>Could not open the requested translation file at %1</source>
-        <translation type="obsolete">Невозможно открыть файл перевода %1</translation>
-    </message>
-    <message>
-        <source>Could not open the requested UI file at %1: %2</source>
-        <translation type="obsolete">Невозможно открыть UI файл %1: %2</translation>
-    </message>
-    <message>
-        <source>Could not open the requested license file at %1: %2</source>
-        <translation type="obsolete">Невозможно открыть файл лицензии %1: %2</translation>
-    </message>
-    <message>
         <location filename="../../libs/installer/component.cpp" line="526"/>
         <source>Could not open the requested translation file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно открыть файл перевода %1.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/component.cpp" line="550"/>
         <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно открыть UI файл %1. Ошибка: %2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/component.cpp" line="559"/>
         <source>Could not load the requested UI file &apos;%1&apos;. Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно загрузить UI файл %1. Ошибка: %2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/component.cpp" line="561"/>
         <source>An error has occurred while reading the UI file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Произошла ошибка при чтении UI файла.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/component.cpp" line="591"/>
         <source>Could not open the requested license file &apos;%1&apos;. Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно открыть файл лицензии %1. Ошибка: %2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/component.cpp" line="973"/>
@@ -957,32 +845,32 @@
     <message>
         <location filename="../../libs/installer/consumeoutputoperation.cpp" line="71"/>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое количество параметров в %0: передано %1, ожидается %2%3.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/consumeoutputoperation.cpp" line="72"/>
         <source>at least 2</source>
-        <translation type="unfinished">по крайней мерe 2</translation>
+        <translation>по крайней мерe 2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/consumeoutputoperation.cpp" line="80"/>
         <source>Needed installer object in %1 operation is empty.</source>
-        <translation type="unfinished">Отсутствует необходимый объект программы установки в операции %1.</translation>
+        <translation>Отсутствует необходимый объект программы установки в операции %1.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/consumeoutputoperation.cpp" line="87"/>
         <source>Can not save the output of %1 to an empty installer key value.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно сохранить вывод операции %1 по пустому ключу.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/consumeoutputoperation.cpp" line="101"/>
         <source>File &apos;%1&apos; does not exist or is not an executable binary.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл %1 не существует или не является исполняемым.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/consumeoutputoperation.cpp" line="119"/>
         <source>Running &apos;%1&apos; resulted in a crash.</source>
-        <translation type="unfinished"></translation>
+        <translation>Запуск %1 завершился крахом.</translation>
     </message>
 </context>
 <context>
@@ -1249,11 +1137,7 @@ Error while loading %2</source>
     <message>
         <location filename="../../libs/installer/elevatedexecuteoperation.cpp" line="207"/>
         <source>Execution failed: Could not start: &quot;%1&quot;(%2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Execution failed: Could not start: &quot;%1&quot;</source>
-        <translation type="obsolete">Не удалось исполнить: Невозможно запустить: &quot;%1&quot;</translation>
+        <translation>Не удалось исполнить: невозможно запустить: &quot;%1&quot;(%2)</translation>
     </message>
     <message>
         <location filename="../../libs/installer/elevatedexecuteoperation.cpp" line="223"/>
@@ -1302,15 +1186,7 @@ Error while loading %2</source>
     <message>
         <location filename="../../libs/installer/extractarchiveoperation_p.h" line="193"/>
         <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error while extracting %1: %2. (Maybe the target dir(%3) is blocked by another process.)</source>
-        <translation type="obsolete">Ошибка в процессе извлечения %1: %2. (Возможно, директория назначения(%3) блокирована другим процессом.)</translation>
-    </message>
-    <message>
-        <source>Error while extracting %1: %2.</source>
-        <translation type="obsolete">Ошибка в процессе извлечения %1: %2.</translation>
+        <translation>Ошибка при извлечении %1: %2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/extractarchiveoperation_p.h" line="195"/>
@@ -1445,13 +1321,9 @@ Error while loading %2</source>
 <context>
     <name>QInstaller::GetRepositoryMetaInfoJob::ZipRunnable</name>
     <message>
-        <source>Error while extracting %1. Error: %2</source>
-        <translation type="obsolete">Ошибка в процессе извлечения %1. Ошибка: %2</translation>
-    </message>
-    <message>
         <location filename="../../libs/installer/getrepositorymetainfojob.cpp" line="92"/>
         <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при извлечении %1: %2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/getrepositorymetainfojob.cpp" line="94"/>
@@ -2093,7 +1965,7 @@ Please copy the installer to a local drive</source>
     <message>
         <location filename="../../libs/installer/qtpatchoperation.cpp" line="187"/>
         <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует необходимый объект установщика в операции &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/qtpatchoperation.cpp" line="202"/>
@@ -2103,7 +1975,7 @@ Please copy the installer to a local drive</source>
     <message>
         <location filename="../../libs/installer/qtpatchoperation.cpp" line="209"/>
         <source>Could not find the needed QmakeOutputInstallerKey(%1) value on the installer object. The ConsumeOutput operation on the valid qmake needs to be called first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно найти значение QmakeOutputInstallerKey(%1) в объекте установщика. Сначала должна быть выполнена операция ConsumeOutput для рабочего qmake&apos;а.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/qtpatchoperation.cpp" line="228"/>
@@ -2395,22 +2267,22 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <message>
         <location filename="../../libs/installer/scriptengine.cpp" line="257"/>
         <source>Could not open the requested script file at %1: %2.</source>
-        <translation type="unfinished">Невозможно открыть файл сценария %1: %2.</translation>
+        <translation>Невозможно открыть файл сценария %1: %2.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/scriptengine.cpp" line="274"/>
         <source>Exception while loading the component script: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Возникло исключение при загрузке компонента сценария: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../libs/installer/scriptengine.cpp" line="278"/>
         <source>Could not load the component script inside a script context: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно загрузить компонент сценария внутри контекста сценария: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../libs/installer/scriptengine.cpp" line="288"/>
         <source>Fatal error while evaluating a script.</source>
-        <translation type="unfinished"></translation>
+        <translation>Произошла неисправимая ошибка при выполнении сценария.</translation>
     </message>
 </context>
 <context>
@@ -2669,11 +2541,7 @@ needs to be less than 255 characters.</source>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1328"/>
         <source>As the install directory is completely deleted on uninstall, installing in %1 is forbidden.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
-        <translation type="obsolete">Так как установочная директория полностью удалена, установка в %1 запрещена.</translation>
+        <translation>Установка в %1 запрещена, так как установочная директория полностью удалена во время деинсталляции.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1338"/>
@@ -2989,7 +2857,7 @@ as root and then clicking ok.</source>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="386"/>
         <source>No device set for output stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Не задан QIODevice для потока вывода</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="638"/>
@@ -3048,64 +2916,52 @@ as root and then clicking ok.</source>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="837"/>
         <source>Could not remove already existing symlink. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно удалить существующую символьную ссылку. %1</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="845"/>
         <source>Could not open file: %1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно открыть файл: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="899"/>
         <source>Could not create symlink at &apos;%1&apos;. Another one is already existing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно создать символьную ссылку %1, потому что ссылка уже существует.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="905"/>
         <source>Could not read symlink target from file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно прочитать цель символьной ссылки из файла %1.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="915"/>
         <source>Could not create symlink at %1. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно создать символьную ссылку %1. %2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="1282"/>
         <source>internal code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>внутренний код ошибки: %1</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="1303"/>
         <source>not enough memory</source>
-        <translation type="unfinished"></translation>
+        <translation>недостаточно памяти</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="1309"/>
         <source>Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: %1</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="1378"/>
         <source>Could not create archive %1. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно создать архив %1. %2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="1571"/>
         <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not create file system link at %1</source>
-        <translation type="obsolete">Невозможно создать ссылку в %1</translation>
-    </message>
-    <message>
-        <source>Could not create softlink at %1</source>
-        <translation type="obsolete">Невозможно создать символическую ссылку в %1</translation>
-    </message>
-    <message>
-        <source>Could not create archive %1</source>
-        <translation type="obsolete">Невозможно создать архив %1</translation>
+        <translation>Ошибка при извлечении %1: %2</translation>
     </message>
     <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="1419"/>
@@ -3118,17 +2974,9 @@ as root and then clicking ok.</source>
         <translation>Индекс файла %1 вне лимитов [0, %2]</translation>
     </message>
     <message>
-        <source>Extracting %1 failed.</source>
-        <translation type="obsolete">Не удалось извлечь %1.</translation>
-    </message>
-    <message>
         <location filename="../../libs/installer/lib7z_facade.cpp" line="1471"/>
         <source>Could not create output file for writing: %1</source>
         <translation>Невозможно создать выходной файл для записи: %1</translation>
-    </message>
-    <message>
-        <source>Extraction failed.</source>
-        <translation type="obsolete">Не удалось извлечь.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/scriptengine.cpp" line="89"/>
@@ -3149,14 +2997,6 @@ as root and then clicking ok.</source>
         <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1035"/>
         <source>Failed to seek in file %1: %2</source>
         <translation>Поиск в файле %1 не удался: %2</translation>
-    </message>
-    <message>
-        <source>Could not open the requested script file at %1: %2</source>
-        <translation type="obsolete">Невозможно открыть заданный файл сценария в %1: %2</translation>
-    </message>
-    <message>
-        <source>Exception while loading the control script %1</source>
-        <translation type="obsolete">При загрузке контрольного сценария %1 возникло исключение</translation>
     </message>
     <message>
         <location filename="../../libs/installer/registerfiletypeoperation.cpp" line="159"/>
@@ -3335,77 +3175,77 @@ as root and then clicking ok.</source>
     </message>
     <message>
         <location filename="../settingsdialog.ui" line="390"/>
-        <location filename="../settingsdialog.cpp" line="490"/>
+        <location filename="../settingsdialog.cpp" line="495"/>
         <source>Show Passwords</source>
         <translation>Показывать пароль</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="261"/>
+        <location filename="../settingsdialog.cpp" line="266"/>
         <source>Check this to use repository during fetch.</source>
         <translation>Поставьте флажок, чтобы использовать репозиторий в процессе получения.</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="263"/>
+        <location filename="../settingsdialog.cpp" line="268"/>
         <source>Add the username to authenticate on the server.</source>
         <translation>Добавить логин для аутентификации на сервере.</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="265"/>
+        <location filename="../settingsdialog.cpp" line="270"/>
         <source>Add the password to authenticate on the server.</source>
         <translation>Добавить пароль для аутентификации на сервере.</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="267"/>
+        <location filename="../settingsdialog.cpp" line="272"/>
         <source>The servers URL that contains a valid repository.</source>
         <translation>Адреса серверов, которые содержат рабочие репозиторий.</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="471"/>
+        <location filename="../settingsdialog.cpp" line="476"/>
         <source>There was an error testing this repository.</source>
         <translation>Ошибка в процессе тестирования репозитория.</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="472"/>
+        <location filename="../settingsdialog.cpp" line="477"/>
         <source>Do you want to disable the tested repository?</source>
         <translation>Вы хотите отключить проверенный репозиторий?</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="490"/>
+        <location filename="../settingsdialog.cpp" line="495"/>
         <source>Hide Passwords</source>
         <translation>Скрыть пароли</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="535"/>
+        <location filename="../settingsdialog.cpp" line="540"/>
         <source>Use</source>
         <translation>Использовать</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="535"/>
+        <location filename="../settingsdialog.cpp" line="540"/>
         <source>Username</source>
         <translation>Логин</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="535"/>
+        <location filename="../settingsdialog.cpp" line="540"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="536"/>
+        <location filename="../settingsdialog.cpp" line="541"/>
         <source>Repository</source>
         <translation>Репозиторий</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="537"/>
+        <location filename="../settingsdialog.cpp" line="542"/>
         <source>Default repositories</source>
         <translation>Репозитории по умолчанию</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="538"/>
+        <location filename="../settingsdialog.cpp" line="543"/>
         <source>Temporary repositories</source>
         <translation>Временные репозитории</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="539"/>
+        <location filename="../settingsdialog.cpp" line="544"/>
         <source>User defined repositories</source>
         <translation>Использовать назначенные репозитории</translation>
     </message>
@@ -3494,17 +3334,22 @@ Do you want to continue?</source>
         <translation>Эта схема URL не поддерживается: %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="146"/>
+        <location filename="../settingsdialog.cpp" line="131"/>
+        <source>Got a timeout while testing: &apos;%1&apos;</source>
+        <translation>Таймаут во время теста %1</translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.cpp" line="151"/>
         <source>Could not parse Updates.xml! Error: %1.</source>
         <translation>Невозможно разобрать Updates.xml! Ошибка: %1.</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="151"/>
+        <location filename="../settingsdialog.cpp" line="156"/>
         <source>Updates.xml could not be opened for reading!</source>
         <translation>Невозможно открыть Updates.xml на чтение!</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.cpp" line="154"/>
+        <location filename="../settingsdialog.cpp" line="159"/>
         <source>Updates.xml could not be found on server!</source>
         <translation>Невозможно найти Updates.xml на сервере!</translation>
     </message>
