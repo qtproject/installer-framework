@@ -1,4 +1,6 @@
 1.4
+- Now allows to ignore SSL errors.
+- Implemented dedicated translation settings support.
 - Added exceptionhandler code for connected signals/JS methods.
 - Now properly calculates the file size for symlinks. (QTIFW-137)
 - Fixed downloading when the server redirects.
@@ -34,6 +36,7 @@
 - Minor documentation fixes and additions.
 - Added more autotests.
 - Bugfixes
+- Updated translations
 - Cleaned up the Code.
 
 1.3.1
