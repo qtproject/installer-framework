@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 
         QStringList filteredPackages;
         bool updateExistingRepository = false;
-        QString packagesDir;
+        QStringList packagesDirectories;
         QString redirectUpdateUrl;
         QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
         bool remove = false;
@@ -146,7 +146,7 @@ int main(int argc, char** argv)
                     return printErrorAndUsageAndExit(QObject::tr("Error: Package directory not found "
                         "at the specified location"));
                 }
-                packagesDir = args.first();
+                packagesDirectories.append(args.first());
                 args.removeFirst();
             } else if (args.first() == QLatin1String("-c") || args.first() == QLatin1String("--config")) {
                 args.removeFirst();
@@ -172,7 +172,7 @@ int main(int argc, char** argv)
             }
         }
 
-        if (packagesDir.isEmpty() || (args.count() != 1)) {
+        if (packagesDirectories.isEmpty() || (args.count() != 1)) {
                 printUsage();
                 return 1;
         }
@@ -191,7 +191,7 @@ int main(int argc, char** argv)
                 .arg(repositoryDir));
         }
 
-        QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDir,
+        QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectories,
             filteredPackages, filterType);
         QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(packages);
 
@@ -202,7 +202,7 @@ int main(int argc, char** argv)
         }
 
         tmpMetaDir = QInstaller::createTemporaryDirectory();
-        QInstallerTools::copyComponentData(packagesDir, repositoryDir, &packages);
+        QInstallerTools::copyComponentData(packagesDirectories, repositoryDir, &packages);
         QInstallerTools::copyMetaData(tmpMetaDir, repositoryDir, packages, QLatin1String("{AnyApplication}"),
             QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), redirectUpdateUrl);
         QInstallerTools::compressMetaDirectories(tmpMetaDir, tmpMetaDir, pathToVersionMapping);

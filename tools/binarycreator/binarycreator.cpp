@@ -467,9 +467,7 @@ static void printUsage()
     std::cout << "  -r|--resources r1,.,rn    include the given resource files into the binary" << std::endl;
 
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
-    std::cout << std::endl;
-    std::cout << "Packages are to be found in the current working directory and get listed as "
-        "their names" << std::endl << std::endl;
+    std::cout << std::endl << std::endl;
     std::cout << "Example (offline installer):" << std::endl;
     char sep = QDir::separator().toLatin1();
     std::cout << "  " << appName << " --offline-only -c installer-config" << sep << "config.xml -p "
@@ -572,7 +570,7 @@ int main(int argc, char **argv)
 
     QString target;
     QString configFile;
-    QString packagesDirectory = QDir::currentPath();
+    QStringList packagesDirectories;
     bool onlineOnly = false;
     bool offlineOnly = false;
     QStringList resources;
@@ -593,7 +591,7 @@ int main(int argc, char **argv)
                 return printErrorAndUsageAndExit(QString::fromLatin1("Error: Package directory not found at the "
                     "specified location."));
             }
-            packagesDirectory = *it;
+            packagesDirectories.append(*it);
         } else if (*it == QLatin1String("-e") || *it == QLatin1String("--exclude")) {
             ++it;
             if (!filteredPackages.isEmpty())
@@ -697,15 +695,18 @@ int main(int argc, char **argv)
     if (configFile.isEmpty())
         return printErrorAndUsageAndExit(QString::fromLatin1("Error: No configuration file selected."));
 
+    if (packagesDirectories.isEmpty())
+        return printErrorAndUsageAndExit(QString::fromLatin1("Error: Package directory parameter missing."));
+
     qDebug() << "Parsed arguments, ok.";
 
     int exitCode = EXIT_FAILURE;
     const QString tmpMetaDir = QInstaller::createTemporaryDirectory();
     try {
         const Settings settings = Settings::fromFileAndPrefix(configFile, QFileInfo(configFile).absolutePath());
-        QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectory,
+        QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectories,
             filteredPackages, ftype);
-        QInstallerTools::copyMetaData(tmpMetaDir, packagesDirectory, packages, settings.applicationName(),
+        QInstallerTools::copyMetaData(tmpMetaDir, packagesDirectories.first(), packages, settings.applicationName(),
             settings.applicationVersion());
 
         copyConfigData(configFile, tmpMetaDir + QLatin1String("/installer-config"));
@@ -729,7 +730,7 @@ int main(int argc, char **argv)
             input.binaryResourcePath = createBinaryResourceFile(tmpMetaDir);
             input.binaryResources = createBinaryResourceFiles(resources);
 
-            QInstallerTools::copyComponentData(packagesDirectory, tmpMetaDir, &packages);
+            QInstallerTools::copyComponentData(packagesDirectories, tmpMetaDir, &packages);
 
             // now put the packages into the components section of the binary
             foreach (const QInstallerTools::PackageInfo &info, packages) {

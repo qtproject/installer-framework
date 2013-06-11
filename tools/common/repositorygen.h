@@ -68,7 +68,7 @@ void printRepositoryGenOptions();
 QString makePathAbsolute(const QString &path);
 void copyWithException(const QString &source, const QString &target, const QString &kind = QString());
 
-PackageInfoVector createListOfPackages(const QString &packagesDirectory, const QStringList &filteredPackages,
+PackageInfoVector createListOfPackages(const QStringList &packagesDirectory, const QStringList &filteredPackages,
     FilterType ftype);
 QHash<QString, QString> buildPathToVersionMapping(const PackageInfoVector &info);
 
@@ -78,7 +78,7 @@ void compressMetaDirectories(const QString &repoDir, const QString &baseDir,
 
 void copyMetaData(const QString &outDir, const QString &dataDir, const PackageInfoVector &packages,
     const QString &appName, const QString& appVersion, const QString &redirectUpdateUrl = QString());
-void copyComponentData(const QString &packageDir, const QString &repoDir, PackageInfoVector *const infos);
+void copyComponentData(const QStringList &packageDir, const QString &repoDir, PackageInfoVector *const infos);
 
 
 } // namespace QInstallerTools

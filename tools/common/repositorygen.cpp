@@ -62,7 +62,7 @@ using namespace QInstallerTools;
 void QInstallerTools::printRepositoryGenOptions()
 {
     std::cout << "  -p|--packages dir         The directory containing the available packages." << std::endl;
-    std::cout << "                            Defaults to the current working directory." << std::endl;
+    std::cout << "                            This entry can be given multiple times." << std::endl;
 
     std::cout << "  -e|--exclude p1,...,pn    Exclude the given packages." << std::endl;
     std::cout << "  -i|--include p1,...,pn    Include the given packages and their dependencies" << std::endl;
@@ -364,7 +364,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
     QInstaller::blockingWrite(&targetUpdatesXml, doc.toByteArray());
 }
 
-PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesDirectory,
+PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packagesDirectories,
     const QStringList &filteredPackages, FilterType filterType)
 {
     qDebug() << "\nCollecting information about available packages...";
@@ -372,7 +372,9 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
     bool ignoreInvalidPackages = qApp->arguments().contains(QString::fromLatin1("--ignore-invalid-packages"));
 
     PackageInfoVector dict;
-    const QFileInfoList entries = QDir(packagesDirectory).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+    QFileInfoList entries;
+    foreach (const QString &packagesDirectory, packagesDirectories)
+        entries.append(QDir(packagesDirectory).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot));
     for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
         if (filterType == Exclude) {
             if (filteredPackages.contains(it->fileName()))
@@ -523,7 +525,7 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
     existingUpdatesXml.close();
 }
 
-void QInstallerTools::copyComponentData(const QString &packageDir, const QString &repoDir,
+void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QString &repoDir,
     PackageInfoVector *const infos)
 {
     for (int i = 0; i < infos->count(); ++i) {
@@ -539,31 +541,33 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
 
         QStringList compressedFiles;
         QStringList filesToCompress;
-        const QDir dataDir(QString::fromLatin1("%1/%2/data").arg(packageDir, name));
-        foreach (const QString &entry, dataDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files)) {
-            QFileInfo fileInfo(dataDir.absoluteFilePath(entry));
-            if (fileInfo.isFile() && !fileInfo.isSymLink()) {
-                const QString absoluteEntryFilePath = dataDir.absoluteFilePath(entry);
-                if (Lib7z::isSupportedArchive(absoluteEntryFilePath)) {
-                    QFile tmp(absoluteEntryFilePath);
-                    QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, entry, info.version);
-                    qDebug() << QString::fromLatin1("Copying archive from '%1' to '%2'").arg(tmp.fileName(),
-                        target);
-                    if (!tmp.copy(target)) {
-                        throw QInstaller::Error(QString::fromLatin1("Could not copy '%1' to '%2': %3")
-                            .arg(tmp.fileName(), target, tmp.errorString()));
+        foreach (const QString &packageDir, packageDirs) {
+            const QDir dataDir(QString::fromLatin1("%1/%2/data").arg(packageDir, name));
+            foreach (const QString &entry, dataDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files)) {
+                QFileInfo fileInfo(dataDir.absoluteFilePath(entry));
+                if (fileInfo.isFile() && !fileInfo.isSymLink()) {
+                    const QString absoluteEntryFilePath = dataDir.absoluteFilePath(entry);
+                    if (Lib7z::isSupportedArchive(absoluteEntryFilePath)) {
+                        QFile tmp(absoluteEntryFilePath);
+                        QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, entry, info.version);
+                        qDebug() << QString::fromLatin1("Copying archive from '%1' to '%2'").arg(tmp.fileName(),
+                            target);
+                        if (!tmp.copy(target)) {
+                            throw QInstaller::Error(QString::fromLatin1("Could not copy '%1' to '%2': %3")
+                                .arg(tmp.fileName(), target, tmp.errorString()));
+                        }
+                        compressedFiles.append(target);
+                    } else {
+                        filesToCompress.append(absoluteEntryFilePath);
                     }
+                } else if (fileInfo.isDir()) {
+                    qDebug() << "Compressing data directory" << entry;
+                    QString target = QString::fromLatin1("%1/%3%2.7z").arg(namedRepoDir, entry, info.version);
+                    QInstallerTools::compressPaths(QStringList() << dataDir.absoluteFilePath(entry), target);
                     compressedFiles.append(target);
-                } else {
-                    filesToCompress.append(absoluteEntryFilePath);
+                } else if (fileInfo.isSymLink()) {
+                    filesToCompress.append(dataDir.absoluteFilePath(entry));
                 }
-            } else if (fileInfo.isDir()) {
-                qDebug() << "Compressing data directory" << entry;
-                QString target = QString::fromLatin1("%1/%3%2.7z").arg(namedRepoDir, entry, info.version);
-                QInstallerTools::compressPaths(QStringList() << dataDir.absoluteFilePath(entry), target);
-                compressedFiles.append(target);
-            } else if (fileInfo.isSymLink()) {
-                filesToCompress.append(dataDir.absoluteFilePath(entry));
             }
         }
 
