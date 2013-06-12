@@ -204,7 +204,7 @@ bool QtPatchOperation::performOperation()
         return false;
     }
 
-    if (!filteredQmakeOutputInstallerKey.isEmpty() && core->value(qmakeOutputInstallerKey).isEmpty()) {
+    if (core && !filteredQmakeOutputInstallerKey.isEmpty() && core->value(qmakeOutputInstallerKey).isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("Could not find the needed QmakeOutputInstallerKey(%1) value on the installer "
             "object. The ConsumeOutput operation on the valid qmake needs to be called first.").arg(
@@ -220,7 +220,7 @@ bool QtPatchOperation::performOperation()
 #endif
 
     QHash<QString, QByteArray> qmakeValueHash;
-    if (!core->value(qmakeOutputInstallerKey).isEmpty()) {
+    if (core && !core->value(qmakeOutputInstallerKey).isEmpty()) {
         qmakeValueHash = QtPatch::readQmakeOutput(core->value(qmakeOutputInstallerKey).toLatin1());
     } else {
         if (!QFile::exists(qmakePath)) {
