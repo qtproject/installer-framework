@@ -118,7 +118,6 @@ CreateDesktopEntryOperation::CreateDesktopEntryOperation()
 
 CreateDesktopEntryOperation::~CreateDesktopEntryOperation()
 {
-    deleteFileNowOrLater(value(QLatin1String("backupOfExistingDesktopEntry")).toString());
 }
 
 void CreateDesktopEntryOperation::backup()
