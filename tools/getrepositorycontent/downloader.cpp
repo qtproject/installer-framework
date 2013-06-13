@@ -67,6 +67,10 @@ Downloader::Downloader(const QUrl &source, const QString &target)
     , m_fileDownloader(0)
 {
     m_fileDownloader = KDUpdater::FileDownloaderFactory::instance().create(m_source.scheme(), this);
+    if (!m_fileDownloader) {
+        qWarning() << "No downloader registered for scheme: " << m_source.scheme();
+        return;
+    }
     m_fileDownloader->setDownloadedFileName(target);
 
     if (m_fileDownloader) {

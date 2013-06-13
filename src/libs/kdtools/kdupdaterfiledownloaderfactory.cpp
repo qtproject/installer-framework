@@ -71,6 +71,8 @@ FileDownloaderFactory::FileDownloaderFactory()
     // TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
     if (QSslSocket::supportsSsl())
         registerFileDownloader<HttpDownloader>(QLatin1String("https"));
+    else
+        qWarning() << "Could not register file downloader for https protocol: QSslSocket::supportsSsl() returns false";
 #endif
 
     d->m_followRedirects = false;
