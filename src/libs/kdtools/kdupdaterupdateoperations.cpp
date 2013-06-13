@@ -58,19 +58,26 @@ static QString errnoToQString(int error)
 #endif
 }
 
-static bool removeDirectory(const QString &path, QString *errorString)
+static bool removeDirectory(const QString &path, QString *errorString, bool force = true)
 {
     Q_ASSERT(errorString);
     const QFileInfoList entries = QDir(path).entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden);
     for (QFileInfoList::const_iterator it = entries.constBegin(); it != entries.constEnd(); ++it) {
         if (it->isDir() && !it->isSymLink()) {
-            removeDirectory(it->filePath(), errorString);
-        } else {
+            removeDirectory(it->filePath(), errorString, force);
+        } else if (force) {
             QFile f(it->filePath());
             if (!f.remove())
                 return false;
         }
     }
+
+    // even remove some hidden, OS-created files in there
+#if defined Q_OS_MAC
+    QFile::remove(path + QLatin1String("/.DS_Store"));
+#elif defined Q_OS_WIN
+    QFile::remove(path + QLatin1String("/Thumbs.db"));
+#endif
 
     errno = 0;
     const bool success = QDir().rmdir(path);
@@ -446,8 +453,7 @@ void MkdirOperation::backup()
 
 bool MkdirOperation::performOperation()
 {
-    // Requires only one parameter. That is the name of
-    // the file to remove.
+    // Requires only one parameter. That is the path which should be created
     QStringList args = this->arguments();
     if (args.count() != 1) {
         setError(InvalidArguments);
@@ -467,7 +473,10 @@ bool MkdirOperation::undoOperation()
 {
     Q_ASSERT(arguments().count() == 1);
 
-    QDir createdDir = QDir(value(QLatin1String("createddir")).toString());
+    QString createdDirValue = value(QLatin1String("createddir")).toString();
+    if (createdDirValue.isEmpty())
+        createdDirValue = arguments().first();
+    QDir createdDir = QDir(createdDirValue);
     const bool forceremoval = QVariant(value(QLatin1String("forceremoval"))).toBool();
 
     // Since refactoring we know the mkdir operation which is creating the target path. If we do a full
@@ -482,18 +491,9 @@ bool MkdirOperation::undoOperation()
         return true;
 
     QString errorString;
-    if (forceremoval)
-        return removeDirectory(createdDir.path(), &errorString);
 
-    // even remove some hidden, OS-created files in there
-#if defined Q_OS_MAC
-    QFile::remove(createdDir.path() + QLatin1String("/.DS_Store"));
-#elif defined Q_OS_WIN
-    QFile::remove(createdDir.path() + QLatin1String("/Thumbs.db"));
-#endif
+    const bool result = removeDirectory(createdDir.path(), &errorString, forceremoval);
 
-    errno = 0;
-    const bool result = QDir::root().rmdir(createdDir.path());
     if (!result) {
         if (errorString.isEmpty())
             setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errorString));

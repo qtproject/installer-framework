@@ -3,4 +3,5 @@ TEMPLATE = subdirs
 SUBDIRS += \
     settings \
     repository \
-    fakestopprocessforupdateoperation
+    fakestopprocessforupdateoperation \
+    mkdiroperationtest
