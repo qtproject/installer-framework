@@ -9,4 +9,5 @@ SUBDIRS += \
     extractarchiveoperationtest \
     lib7zfacade \
     scriptengine \
-    consumeoutputoperationtest
+    consumeoutputoperationtest \
+    mkdiroperationtest

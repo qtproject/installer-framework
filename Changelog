@@ -43,5 +43,6 @@
 - Now continues on unknown operations.
 - Fixed error handling in 7z lib.
 - Added a DisplayName setting for repositories. (QTIFW-244)
+- Chinese Translation added
 - Documentation fixes and additions.
-- Bugfixes
+- Bugfixes (QTIFW-271 et al)
