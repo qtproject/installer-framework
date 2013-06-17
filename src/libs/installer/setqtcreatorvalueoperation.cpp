@@ -110,7 +110,7 @@ bool SetQtCreatorValueOperation::performOperation()
     if (!group.isEmpty())
         settings.endGroup();
 
-    settings.sync(); //be save ;)
+    settings.sync(); //be safe ;)
 
     return true;
 }

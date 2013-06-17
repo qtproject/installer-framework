@@ -103,7 +103,7 @@ bool AddQtCreatorArrayValueOperation::performOperation()
     int arraySize = settings.beginReadArray(arrayName);
     for (int i = 0; i < arraySize; ++i) {
         settings.setArrayIndex(i);
-        //if it is already there we have nothing todo
+        //if it is already there we have nothing to do
         if (settings.value(key).toString() == value)
             return true;
         oldArrayValues.append(settings.value(key).toString());
@@ -121,7 +121,7 @@ bool AddQtCreatorArrayValueOperation::performOperation()
     settings.setValue(key, value);
     settings.endArray();
 
-    settings.sync(); //be save ;)
+    settings.sync(); //be safe ;)
     setValue(QLatin1String("ArrayValueSet"), true);
     return true;
 }
@@ -178,7 +178,7 @@ bool AddQtCreatorArrayValueOperation::undoOperation()
     }
     settings.endArray();
 
-    settings.sync(); //be save ;)
+    settings.sync(); //be safe ;)
     return true;
 }
 
