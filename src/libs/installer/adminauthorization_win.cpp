@@ -137,6 +137,7 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
     shellExecuteInfo.lpFile = (wchar_t *)file.utf16();
     shellExecuteInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
     shellExecuteInfo.lpParameters = (wchar_t *)args.utf16();
+    shellExecuteInfo.fMask = SEE_MASK_NOASYNC;
 
     qDebug() << QString::fromLatin1("Starting elevated process %1 with arguments: %2.").arg(file, args);
 
