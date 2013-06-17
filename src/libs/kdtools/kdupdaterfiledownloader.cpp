@@ -1031,6 +1031,9 @@ void KDUpdater::HttpDownloader::onAuthenticationRequired(QNetworkReply *reply, Q
 }
 
 #ifndef QT_NO_OPENSSL
+
+#include "messageboxhandler.h"
+
 // TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
 void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QSslError> &errors)
 {
@@ -1044,7 +1047,34 @@ void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QS
     }
     qDebug() << errorString;
 
-    if (!d->aborted)
-        httpDone(true);
+    const QStringList arguments = QCoreApplication::arguments();
+    if (arguments.contains(QLatin1String("--script")) || arguments.contains(QLatin1String("Script"))) {
+        reply->ignoreSslErrors();
+        return;
+    }
+    // TODO: Remove above code once we have a proper implementation for message box handler supporting
+    // methods used in the following code, right now we return here cause the message box is not scriptable.
+
+    QMessageBox msgBox(MessageBoxHandler::currentBestSuitParent());
+    msgBox.setDetailedText(errorString);
+    msgBox.setIcon(QMessageBox::Warning);
+    msgBox.setWindowModality(Qt::WindowModal);
+    msgBox.setWindowTitle(tr("Secure Connection Failed"));
+    msgBox.setText(tr("There was an error during connection to: %1.").arg(url().toString()));
+    msgBox.setInformativeText(QString::fromLatin1("<ul><li>%1</li><li>%2</li></ul>").arg(tr("This could be "
+        "a problem with the server's configuration, or it could be someone trying to impersonate the "
+        "server."), tr("If you have connected to this server successfully in the past or trust this server, "
+        "the error may be temporary and you can try again.")));
+
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+    msgBox.setButtonText(QMessageBox::Yes, tr("Try again"));
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+
+    if (msgBox.exec() == QMessageBox::Cancel) {
+        if (!d->aborted)
+            httpDone(true);
+    } else {
+        reply->ignoreSslErrors();
+    }
 }
 #endif
