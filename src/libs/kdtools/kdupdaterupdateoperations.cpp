@@ -592,9 +592,23 @@ bool AppendFileOperation::performOperation()
     QFile file(fName);
     if (!file.open(QFile::Append)) {
         // first we rename the file, then we copy it to the real target and open the copy - the renamed original is then marked for deletion
+        bool error = false;
         const QString newName = backupFileName(fName);
-        if (!QFile::rename(fName, newName) && QFile::copy(newName, fName) && file.open(QFile::Append)) {
+
+        if (!QFile::rename(fName, newName))
+            error = true;
+
+        if (!error && !QFile::copy(newName, fName)) {
+            error = true;
             QFile::rename(newName, fName);
+        }
+
+        if (!error && !file.open(QFile::Append)) {
+            error = true;
+            deleteFileNowOrLater(newName);
+        }
+
+        if (error) {
             setError(UserDefinedError);
             setErrorString(tr("Could not open file '%1' for writing: %2").arg(file.fileName(), file.errorString()));
             return false;
