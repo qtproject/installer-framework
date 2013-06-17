@@ -458,7 +458,7 @@ static void printUsage()
 
     std::cout << "  -c|--config file          The file containing the installer configuration" << std::endl;
 
-    std::cout << "  -n|--online-only          Don't add any package into the installer" << std::endl;
+    std::cout << "  -n|--online-only          Do not add any package into the installer" << std::endl;
     std::cout << "                             (for online only installers)" << std::endl;
 
     std::cout << "  -f|--offline-only         Forces the installer to act as an offline installer, " << std::endl;

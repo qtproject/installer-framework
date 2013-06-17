@@ -82,7 +82,7 @@ private slots:
 
         const QString debugMesssage(
             "create Error-Exception: \"Fatal error while evaluating a script.\n\n"
-            "ReferenceError: Can't find variable: foo\n\n"
+            "ReferenceError: Cannot find variable: foo\n\n"
             "Backtrace:\n"
 #if QT_VERSION < 0x050000
                 "\t<anonymous>()@:///data/broken_connect.qs:10\" ");
@@ -191,7 +191,7 @@ private slots:
 
         const QString debugMesssage(
             "create Error-Exception: \"Exception while loading the component script: ':///data/component2.qs\n\n"
-            "ReferenceError: Can't find variable: broken\n\n"
+            "ReferenceError: Cannot find variable: broken\n\n"
             "Backtrace:\n"
 #if QT_VERSION < 0x050000
                 "\t<anonymous>()@:///data/component2.qs:5'\" ");

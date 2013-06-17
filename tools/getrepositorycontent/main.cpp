@@ -221,7 +221,7 @@ QHash<QString, ComponentData> downLoadRepository(const QString &repositoryUrl, c
         itComponentData.next();
         QString componentDirectory = QDir(repositoryTarget).filePath(itComponentData.key());
         if (!QDir().mkpath(componentDirectory))
-            qWarning() << "couldn't create:" << componentDirectory;
+            qWarning() << "could not create:" << componentDirectory;
 
         foreach (const QString &download, itComponentData.value().m_downloadDownloadableArchives) {
             const QString fileTarget(componentDirectory + QDir::separator() + download);
@@ -377,7 +377,7 @@ int main(int argc, char *argv[])
             QDir().mkpath(pathToTarget);
             QFile file;
             if (!file.copy(absoluteSourceFilePath, target)) {
-                qWarning() << QString::fromLatin1("copy file %1 to %2 wasn't working %3").arg(
+                qWarning() << QString::fromLatin1("copy file %1 to %2 was not working %3").arg(
                     absoluteSourceFilePath, target, file.errorString());
             }
         }

@@ -523,7 +523,7 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
         if (dependencyComponent == 0) {
             QString errorMessage;
             if (!dependencyComponent)
-                errorMessage = QString::fromLatin1("Can't find missing dependency (%1) for %2.");
+                errorMessage = QString::fromLatin1("Cannot find missing dependency (%1) for %2.");
             errorMessage = errorMessage.arg(dependencyComponentName, component->name());
             qDebug() << qPrintable(errorMessage);
             m_componentsToInstallError.append(errorMessage);

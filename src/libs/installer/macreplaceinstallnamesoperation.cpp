@@ -148,7 +148,7 @@ int MacReplaceInstallNamesOperation::updateExecutableInfo(MacBinaryInfo *binaryI
     QProcessWrapper otool;
     otool.start(QLatin1String("otool"), QStringList() << QLatin1String("-l") << binaryInfo->fileName);
     if (!otool.waitForStarted()) {
-        setError(UserDefinedError, tr("Can't invoke otool. Is Xcode installed?"));
+        setError(UserDefinedError, tr("Cannot invoke otool. Is Xcode installed?"));
         return -1;
     }
     otool.waitForFinished();
@@ -231,7 +231,7 @@ bool MacReplaceInstallNamesOperation::execCommand(const QString &cmd, const QStr
     QProcessWrapper process;
     process.start(cmd, args);
     if (!process.waitForStarted()) {
-        setError(UserDefinedError, tr("Can't start process %0.").arg(cmd));
+        setError(UserDefinedError, tr("Cannot start process %0.").arg(cmd));
         return false;
     }
     process.waitForFinished();

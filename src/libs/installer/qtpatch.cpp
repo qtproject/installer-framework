@@ -113,7 +113,7 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
 
     }
     if (qmakeValueHash.isEmpty())
-        qDebug() << "Can't get any query output from qmake.";
+        qDebug() << "Cannot get any query output from qmake.";
     return qmakeValueHash;
 }
 

@@ -68,7 +68,7 @@ void QInstallerTools::printRepositoryGenOptions()
     std::cout << "  -i|--include p1,...,pn    Include the given packages and their dependencies" << std::endl;
     std::cout << "                            from the repository." << std::endl;
 
-    std::cout << "  --ignore-translations     Don't use any translation" << std::endl;
+    std::cout << "  --ignore-translations     Do not use any translation" << std::endl;
     std::cout << "  --ignore-invalid-packages Ignore all invalid packages instead of aborting." << std::endl;
 }
 
@@ -120,7 +120,7 @@ static QStringList copyFilesFromNode(const QString &parentNode, const QString &c
         const QString filter = attr.isEmpty() ? node.toElement().text() : node.toElement().attribute(attr);
         const QStringList files = dir.entryList(QStringList(filter), QDir::Files);
         if (files.isEmpty()) {
-            throw QInstaller::Error(QString::fromLatin1("Couldn't find any %1 matching '%2' "
+            throw QInstaller::Error(QString::fromLatin1("Could not find any %1 matching '%2' "
                 "while copying %1 of '%3'.").arg(kind, filter, info.name));
         }
 
@@ -388,7 +388,7 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
         if (it->fileName().contains(QLatin1Char('-'))) {
             if (ignoreInvalidPackages)
                 continue;
-            throw QInstaller::Error(QString::fromLatin1("Component '%1' mustn't contain '-'. This is not "
+            throw QInstaller::Error(QString::fromLatin1("Component '%1' must not contain '-'. This is not "
                 "allowed, because dashes are used as the separator between the component name and the "
                 "version number internally.").arg(it->fileName()));
         }

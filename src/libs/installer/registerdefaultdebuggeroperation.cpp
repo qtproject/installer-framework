@@ -119,7 +119,7 @@ bool RegisterDefaultDebuggerOperation::performOperation()
 
     if (!creatorToolChainSettings.init(toolChainsXmlFilePath)) {
         setError(UserDefinedError);
-        setErrorString(tr("Can't read from tool chains xml file(%1) correctly.")
+        setErrorString(tr("Cannot read from tool chains xml file(%1) correctly.")
             .arg(toolChainsXmlFilePath));
         return false;
     }

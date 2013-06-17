@@ -922,7 +922,7 @@ void Component::addOperation(Operation *operation)
 void Component::addElevatedOperation(Operation *operation)
 {
     if (value(scRequiresAdminRights, scFalse) != scTrue) {
-        qWarning() << QString::fromLatin1("component %1 uses addElevatedOperation in the script, but it doesn't"
+        qWarning() << QString::fromLatin1("component %1 uses addElevatedOperation in the script, but it does not"
             "have the needed RequiresAdminRights tag").arg(name());
     }
     addOperation(operation);
@@ -1188,7 +1188,7 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
                 QLatin1String("isAutoDependOn"));
         } catch (const Error &error) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("isAutoDependOnError"), tr("Can't resolve isAutoDependOn in %1"
+                QLatin1String("isAutoDependOnError"), tr("Cannot resolve isAutoDependOn in %1"
                     ).arg(name()), error.message());
             return false;
         }
@@ -1238,7 +1238,7 @@ bool Component::isDefault() const
                 QLatin1String("isDefault"));
         } catch (const Error &error) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("isDefaultError"), tr("Can't resolve isDefault in %1").arg(name()),
+                QLatin1String("isDefaultError"), tr("Cannot resolve isDefault in %1").arg(name()),
                     error.message());
             return false;
         }

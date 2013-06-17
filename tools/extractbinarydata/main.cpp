@@ -181,7 +181,7 @@ int main(int argc, char **argv)
                 file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
                     | QFile::ReadOther);
                 if (!file.commit(KDSaveFile::OverwriteExistingFile)) {
-                    throw Error(QString::fromLatin1("Couldn't write binary data to %1. Reason: %2").arg(file
+                    throw Error(QString::fromLatin1("Could not write binary data to %1. Reason: %2").arg(file
                         .fileName(), file.errorString()));
                 }
                 file.close();
