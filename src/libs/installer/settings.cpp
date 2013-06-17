@@ -67,6 +67,7 @@ static const QLatin1String scTmpRepositories("TemporaryRepositories");
 static const QLatin1String scUninstallerIniFile("UninstallerIniFile");
 static const QLatin1String scRemoteRepositories("RemoteRepositories");
 static const QLatin1String scDependsOnLocalInstallerBinary("DependsOnLocalInstallerBinary");
+static const QLatin1String scTranslations("Translations");
 
 static const QLatin1String scFtpProxy("FtpProxy");
 static const QLatin1String scHttpProxy("HttpProxy");
@@ -95,6 +96,25 @@ static void raiseError(QXmlStreamReader &reader, const QString &error, Settings:
             qWarning("Ignoring following settings reader error: %s", qPrintable(error));
         }
     }
+}
+
+static QStringList readTranslations(QXmlStreamReader &reader, Settings::ParseMode parseMode)
+{
+    QStringList translations;
+    while (reader.readNextStartElement()) {
+        if (reader.name() == QLatin1String("Translation")) {
+            translations.append(reader.readElementText().toLower());
+        } else {
+            raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name().toString()),
+                parseMode);
+        }
+
+        if (!reader.attributes().isEmpty()) {
+            raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.").arg(reader
+                .name().toString()), parseMode);
+        }
+    }
+    return translations;
 }
 
 static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode)
@@ -212,7 +232,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
-                << scRemoteRepositories;
+                << scRemoteRepositories << scTranslations;
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
@@ -232,7 +252,9 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         if (s.d->m_data.contains(name))
             reader.raiseError(QString::fromLatin1("Element '%1' has been defined before.").arg(name));
 
-        if (name == scRemoteRepositories) {
+         if (name == scTranslations) {
+            s.setTranslations(readTranslations(reader, parseMode));
+         } else if (name == scRemoteRepositories) {
             s.addDefaultRepositories(readRepositories(reader, true, parseMode));
         } else {
             s.d->m_data.insert(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
@@ -575,4 +597,18 @@ QNetworkProxy Settings::httpProxy() const
 void Settings::setHttpProxy(const QNetworkProxy &proxy)
 {
     d->m_data.insert(scHttpProxy, QVariant::fromValue(proxy));
+}
+
+QStringList Settings::translations() const
+{
+    const QVariant variant = d->m_data.values(scTranslations);
+    if (variant.canConvert<QStringList>())
+        return variant.value<QStringList>();
+    return QStringList();
+}
+
+void Settings::setTranslations(const QStringList &translations)
+{
+    d->m_data.remove(scTranslations);
+    d->m_data.insert(scTranslations, translations);
 }

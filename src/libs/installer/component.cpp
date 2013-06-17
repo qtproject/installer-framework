@@ -46,8 +46,9 @@
 #include "fsengineclient.h"
 #include "globals.h"
 #include "lib7z_facade.h"
-#include "packagemanagercore.h"
 #include "messageboxhandler.h"
+#include "packagemanagercore.h"
+#include "settings.h"
 
 #include <kdupdaterupdatesourcesinfo.h>
 #include <kdupdaterupdateoperationfactory.h>
@@ -516,10 +517,22 @@ void Component::languageChanged()
 void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 {
     QDirIterator it(directory.path(), qms, QDir::Files);
+    const QStringList translations = d->m_core->settings().translations();
+    const QString uiLanguage = QLocale().uiLanguages().value(0, QLatin1String("en_us"))
+        .replace(QLatin1Char('-'), QLatin1Char('_'));
     while (it.hasNext()) {
         const QString filename = it.next();
-        if (QFileInfo(filename).baseName().toLower() != QLocale().name().toLower())
-            continue;
+        const QString basename = QFileInfo(filename).baseName();
+        if (!uiLanguage.startsWith(QFileInfo(filename).baseName(), Qt::CaseInsensitive))
+            continue; // do not load the file if it does not match the UI language
+
+        if (!translations.isEmpty()) {
+            bool found = false;
+            foreach (const QString &translation, translations)
+                found |= translation.startsWith(basename, Qt::CaseInsensitive);
+            if (!found) // don't load the file if it does match the UI language but is not allowed to be used
+                continue;
+        }
 
         QScopedPointer<QTranslator> translator(new QTranslator(this));
         if (!translator->load(filename))

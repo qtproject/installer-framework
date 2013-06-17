@@ -46,4 +46,9 @@ File should contain all elements we allow in a config.xml
             <Password>password</Password>
         </Repository>
     </RemoteRepositories>
+
+    <Translations>
+        <Translation>de_de</Translation>
+        <Translation>qt_de</Translation>
+    </Translations>
 </Installer>

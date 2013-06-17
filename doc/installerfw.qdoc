@@ -260,6 +260,12 @@
         \row
             \o  TargetConfigurationFile
             \o  Filename for the configuration file on the target. Default is components.xml.
+        \row
+            \o  Translations
+            \o  List of language codes to be used for translating the user interface. To add several language
+                variants, specify several Translation sections that each specify the name of a language
+                variant. Optional. For more information, see \l{Translating Pages}.
+
     \endtable
 
 */
