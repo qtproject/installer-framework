@@ -489,9 +489,8 @@ bool TargetDirectoryPageImpl::validatePage()
 
         QFileInfo fi2(targetDir + QDir::separator() + fileName);
         if (fi2.exists()) {
-            return askQuestion(QLatin1String("OverwriteTargetDirectory"),
-                TargetDirectoryPageImpl::tr("The folder you selected exists already and contains an "
-                "installation.\nDo you want to overwrite it?"));
+            return failWithError(QLatin1String("TargetDirectoryInUse"), tr("The folder you selected already "
+                "exists and contains an installation. Choose a different target for installation."));
         }
 
         return askQuestion(QLatin1String("OverwriteTargetDirectory"),
