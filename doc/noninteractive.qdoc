@@ -161,7 +161,7 @@
     Thus, the \a{Dynamic${ObjectName}Callback()} function is called. Widgets can
     be addressed using their object names (from the UI file):
     \code
-    var page = pageWidgetByObjectName( "DynamicSomePage" )
+    var page = gui.pageWidgetByObjectName( "DynamicSomePage" )
     page.myButton.click //direct child of the UI file's widget
     page.someFancyWidget.subWidget.setText( "foobar" ) // nested widget
     \endcode
