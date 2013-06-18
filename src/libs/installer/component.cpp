@@ -554,7 +554,7 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
         static QUiLoader loader;
         loader.setTranslationEnabled(true);
         loader.setLanguageChangeEnabled(true);
-        QWidget *const widget = loader.load(&file, MessageBoxHandler::currentBestSuitParent());
+        QWidget *const widget = loader.load(&file, 0);
         if (!widget) {
             throw Error(tr("Could not load the requested UI file '%1'. Error: %2").arg(it.fileName(),
 #if QT_VERSION < 0x050000
