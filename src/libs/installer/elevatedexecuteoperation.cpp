@@ -232,6 +232,12 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
         } else {
             q->setErrorString(customErrorMessage);
         }
+
+        QByteArray standardErrorOutput = process->readAllStandardError();
+        // in error case it would be useful to see something in verbose output
+        if (!standardErrorOutput.isEmpty())
+            qWarning() << standardErrorOutput;
+
         returnValue = false;
     }
 
@@ -260,7 +266,10 @@ void ElevatedExecuteOperation::Private::readProcessOutput()
     }
     const QByteArray output = process->readAll();
     if (!output.isEmpty()) {
-        qDebug() << output;
+        if (q->error() == UserDefinedError)
+            qWarning() << output;
+        else
+            qDebug() << output;
         emit q->outputTextChanged(QString::fromLocal8Bit(output));
     }
 }
