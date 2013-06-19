@@ -1087,7 +1087,7 @@ void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QS
             httpDone(true);
     } else {
         reply->ignoreSslErrors();
-        KDUpdater::FileDownloaderFactory::instance()->setIgnoreSslErrors(true);
+        KDUpdater::FileDownloaderFactory::instance().setIgnoreSslErrors(true);
     }
 }
 #endif
