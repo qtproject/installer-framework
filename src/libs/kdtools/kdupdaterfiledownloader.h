@@ -78,6 +78,9 @@ public:
     QAuthenticator authenticator() const;
     void setAuthenticator(const QAuthenticator &authenticator);
 
+    bool ignoreSslErrors();
+    void setIgnoreSslErrors(bool ignore);
+
 public Q_SLOTS:
     virtual void cancelDownload();
 

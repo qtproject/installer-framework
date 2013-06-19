@@ -93,6 +93,7 @@ struct KDUpdater::FileDownloader::Private
         , m_sampleIndex(0)
         , m_downloadSpeed(0)
         , m_factory(0)
+        , m_ignoreSslErrors(false)
     {
         memset(m_samples, 0, sizeof(m_samples));
     }
@@ -125,6 +126,7 @@ struct KDUpdater::FileDownloader::Private
 
     QAuthenticator m_authenticator;
     FileDownloaderProxyFactory *m_factory;
+    bool m_ignoreSslErrors;
 };
 
 KDUpdater::FileDownloader::FileDownloader(const QString &scheme, QObject *parent)
@@ -411,6 +413,16 @@ void KDUpdater::FileDownloader::setAuthenticator(const QAuthenticator &authentic
         d->m_authenticator = authenticator;
         emit authenticatorChanged(authenticator);
     }
+}
+
+bool KDUpdater::FileDownloader::ignoreSslErrors()
+{
+    return d->m_ignoreSslErrors;
+}
+
+void KDUpdater::FileDownloader::setIgnoreSslErrors(bool ignore)
+{
+    d->m_ignoreSslErrors = ignore;
 }
 
 // -- KDUpdater::LocalFileDownloader
@@ -1038,7 +1050,6 @@ void KDUpdater::HttpDownloader::onAuthenticationRequired(QNetworkReply *reply, Q
 void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QSslError> &errors)
 {
     Q_UNUSED(reply)
-
     QString errorString;
     foreach (const QSslError &error, errors) {
         if (!errorString.isEmpty())
@@ -1048,9 +1059,10 @@ void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QS
     qDebug() << errorString;
 
     const QStringList arguments = QCoreApplication::arguments();
-    if (arguments.contains(QLatin1String("--script")) || arguments.contains(QLatin1String("Script"))) {
-        reply->ignoreSslErrors();
-        return;
+    if (arguments.contains(QLatin1String("--script")) || arguments.contains(QLatin1String("Script"))
+        || ignoreSslErrors()) {
+            reply->ignoreSslErrors();
+            return;
     }
     // TODO: Remove above code once we have a proper implementation for message box handler supporting
     // methods used in the following code, right now we return here cause the message box is not scriptable.
@@ -1075,6 +1087,7 @@ void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QS
             httpDone(true);
     } else {
         reply->ignoreSslErrors();
+        KDUpdater::FileDownloaderFactory::instance()->setIgnoreSslErrors(true);
     }
 }
 #endif

@@ -66,6 +66,9 @@ public:
 
     static void setProxyFactory(FileDownloaderProxyFactory *factory);
 
+    static bool ignoreSslErrors();
+    static void setIgnoreSslErrors(bool ignore);
+
 private:
     FileDownloaderFactory();
 

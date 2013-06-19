@@ -46,6 +46,7 @@ struct FileDownloaderFactory::FileDownloaderFactoryData
     ~FileDownloaderFactoryData() { delete m_factory; }
 
     bool m_followRedirects;
+    bool m_ignoreSslErrors;
     FileDownloaderProxyFactory *m_factory;
 };
 
@@ -94,6 +95,16 @@ void FileDownloaderFactory::setProxyFactory(FileDownloaderProxyFactory *factory)
     FileDownloaderFactory::instance().d->m_factory = factory;
 }
 
+bool FileDownloaderFactory::ignoreSslErrors()
+{
+    return FileDownloaderFactory::instance().d->m_ignoreSslErrors;
+}
+
+void FileDownloaderFactory::setIgnoreSslErrors(bool ignore)
+{
+    FileDownloaderFactory::instance().d->m_ignoreSslErrors = ignore;
+}
+
 FileDownloaderFactory::~FileDownloaderFactory()
 {
     delete d;
@@ -111,6 +122,7 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *pa
         downloader->setParent(parent);
         downloader->setScheme(scheme);
         downloader->setFollowRedirects(d->m_followRedirects);
+        downloader->setIgnoreSslErrors(d->m_ignoreSslErrors);
         if (d->m_factory)
             downloader->setProxyFactory(d->m_factory->clone());
     }
