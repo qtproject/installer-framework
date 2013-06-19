@@ -196,10 +196,8 @@ bool CreateShortcutOperation::performOperation()
     const QString linkLocation = args.at(1);
     const QString targetArguments = args.value(2); //used value because it could be not existing
 
-    const QString linkPath = QFileInfo(linkLocation).absolutePath();
-
-    const bool linkPathAlreadyExists = QDir(linkPath).exists();
-    const bool created = linkPathAlreadyExists || QDir::root().mkpath(linkPath);
+    const QString linkPath = QFileInfo(linkLocation).absolutePath().trimmed();
+    const bool created = QDir(linkPath).exists() || QDir::root().mkpath(linkPath);
 
     if (!created) {
         setError(UserDefinedError);

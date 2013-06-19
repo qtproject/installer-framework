@@ -1430,12 +1430,12 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
 
 QString StartMenuDirectoryPage::startMenuDir() const
 {
-    return m_lineEdit->text();
+    return m_lineEdit->text().trimmed();
 }
 
 void StartMenuDirectoryPage::setStartMenuDir(const QString &startMenuDir)
 {
-    m_lineEdit->setText(startMenuDir);
+    m_lineEdit->setText(startMenuDir.trimmed());
 }
 
 void StartMenuDirectoryPage::leaving()
