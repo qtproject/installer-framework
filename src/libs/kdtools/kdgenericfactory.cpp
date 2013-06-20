@@ -1,24 +1,43 @@
 /****************************************************************************
-** Copyright (C) 2001-2010 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
-** This file is part of the KD Tools library.
+** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Contact: http://www.qt-project.org/legal
 **
-** Licensees holding valid commercial KD Tools licenses may use this file in
-** accordance with the KD Tools Commercial License Agreement provided with
-** the Software.
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:LGPL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
+**
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
+** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU Lesser General Public License version 2 and version 3 as published by the
-** Free Software Foundation and appearing in the file LICENSE.LGPL included.
+** $QT_END_LICENSE$
 **
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-** Contact info@kdab.com if any conditions of this licensing are not
-** clear to you.
-**
-**********************************************************************/
+****************************************************************************/
 
 #include "kdgenericfactory.h"
 
@@ -31,7 +50,7 @@
    (The exception safety of this class has not been evaluated yet.)
 
    KDGenericFactory is an implemention of of the factory pattern. It can be used to
-   "produce" instances of different classes having a common superclass 
+   "produce" instances of different classes having a common superclass
    T_Product. The user of the
    factory registers those producable classes in the factory by using an identifier
    (T_Identifier, defaulting to QString). That identifer can then be used to
@@ -44,10 +63,10 @@
 
    \li\link QHash::const_iterator a nested %const_iterator \endlink typedef for an iterator type that when dereferenced has type ((const) reference to) FactoryFunction (Qt convention),
    \li\link QHash::insert %insert( T_Identifier, FactoryFunction ) \endlink, which must overwrite any existing entries with the same identifier.
-   \li\link QHash::find %find( T_Identifier ) \endlink, 
+   \li\link QHash::find %find( T_Identifier ) \endlink,
    \li\link QHash::end %end() \endlink,
-   \li\link QHash::size %size() \endlink, 
-   \li\link QHash::remove %remove( T_Identifier ) \endlink, and 
+   \li\link QHash::size %size() \endlink,
+   \li\link QHash::remove %remove( T_Identifier ) \endlink, and
    \li\link QHash::keys %keys ) \endlink, returning a QList<T_Identifier>.
 
    The only two class templates that currently match this concept are
@@ -59,7 +78,7 @@
    instead of just FactoryFunction.
 
    \section general-use General Use
-    
+
    The following example shows how the general use case of KDGenericFactory looks like:
 
    \code
@@ -87,10 +106,10 @@
 
        // lets create some stuff - here comes our tasty apple:
        Fruit* myApple = fruitPlantation.create( "Apple" );
-       
+
        // and a pear, please:
        Fruit* myPear = fruitPlantation.create( "Pear" );
-       
+
        // ohh - that doesn't work, returns a null pointer:
        Fruit* myCherry = fruitPlantation.create( "Cherry" );
    }
@@ -106,7 +125,7 @@
 
 /*!
     \typedef KDGenericFactory::FactoryFunction
-    
+
     This typedef defines a factory function producing an object of type T_Product.
 */
 
@@ -116,7 +135,7 @@
    Registers a product of type T, identified by \a name in the factory.
    Any type with the same name gets unregistered.
 
-   If a product was registered via this method, it will be created using its 
+   If a product was registered via this method, it will be created using its
    default constructor.
 */
 
