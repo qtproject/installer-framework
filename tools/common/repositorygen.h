@@ -68,7 +68,7 @@ void printRepositoryGenOptions();
 QString makePathAbsolute(const QString &path);
 void copyWithException(const QString &source, const QString &target, const QString &kind = QString());
 
-PackageInfoVector createListOfPackages(const QString &packagesDirectory, const QStringList &filteredPackages,
+PackageInfoVector createListOfPackages(const QString &packagesDirectory, QStringList *packagesToFilter,
     FilterType ftype);
 QHash<QString, QString> buildPathToVersionMapping(const PackageInfoVector &info);
 

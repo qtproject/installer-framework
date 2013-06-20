@@ -704,7 +704,7 @@ int main(int argc, char **argv)
     try {
         const Settings settings = Settings::fromFileAndPrefix(configFile, QFileInfo(configFile).absolutePath());
         QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectory,
-            filteredPackages, ftype);
+            &filteredPackages, ftype);
         QInstallerTools::copyMetaData(tmpMetaDir, packagesDirectory, packages, settings.applicationName(),
             settings.applicationVersion());
 

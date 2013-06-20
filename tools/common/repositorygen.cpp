@@ -359,7 +359,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
 }
 
 PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesDirectory,
-    const QStringList &filteredPackages, FilterType filterType)
+    QStringList *packagesToFilter, FilterType filterType)
 {
     qDebug() << "\nCollecting information about available packages...";
 
@@ -369,11 +369,16 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
     const QFileInfoList entries = QDir(packagesDirectory).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
         if (filterType == Exclude) {
-            if (filteredPackages.contains(it->fileName()))
+            // Check for current file in exclude list, if found, skip it and remove it from exclude list
+            if (packagesToFilter->contains(it->fileName())) {
+                packagesToFilter->removeAll(it->fileName());
                 continue;
+            }
         } else {
-            if (!filteredPackages.contains(it->fileName()))
+            // Check for current file in include list, if not found, skip it; if found, remove it from include list
+            if (!packagesToFilter->contains(it->fileName()))
                 continue;
+            packagesToFilter->removeAll(it->fileName());
         }
         qDebug() << QString::fromLatin1("found subdirectory '%1'").arg(it->fileName());
         // because the filter is QDir::Dirs - filename means the name of the subdirectory
@@ -438,6 +443,10 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
         dict.push_back(info);
 
         qDebug() << QString::fromLatin1("- it provides the package %1 - %2").arg(info.name, info.version);
+    }
+
+    if (!packagesToFilter->isEmpty()) {
+        qWarning() << "The following explicitly given packages could not be found\n in package directory:" << *packagesToFilter;
     }
 
     if (dict.isEmpty())

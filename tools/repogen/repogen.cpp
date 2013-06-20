@@ -183,7 +183,7 @@ int main(int argc, char** argv)
         }
 
         QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDir,
-            filteredPackages, filterType);
+            &filteredPackages, filterType);
         QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(packages);
 
         foreach (const QInstallerTools::PackageInfo &package, packages) {
