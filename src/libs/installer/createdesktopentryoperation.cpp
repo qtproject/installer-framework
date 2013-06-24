@@ -164,7 +164,7 @@ bool CreateDesktopEntryOperation::performOperation()
     }
 
     QFile::setPermissions(filename, QFile::ReadOwner | QFile::WriteOwner | QFile::ReadUser | QFile::ReadGroup
-        | QFile::ReadOther);
+        | QFile::ReadOther | QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
 
     QTextStream stream(&file);
     stream.setCodec("UTF-8");
