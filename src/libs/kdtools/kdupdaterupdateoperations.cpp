@@ -203,7 +203,7 @@ bool CopyOperation::undoOperation()
 
     QFile destFile(destination);
     // first remove the dest
-    if (!destFile.remove()) {
+    if (destFile.exists() && !destFile.remove()) {
         setError(UserDefinedError, tr("Could not delete file %1: %2").arg(destination, destFile.errorString()));
         return false;
     }
