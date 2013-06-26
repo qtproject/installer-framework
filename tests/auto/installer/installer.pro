@@ -10,4 +10,5 @@ SUBDIRS += \
     lib7zfacade \
     scriptengine \
     consumeoutputoperationtest \
-    mkdiroperationtest
+    mkdiroperationtest \
+    copyoperationtest

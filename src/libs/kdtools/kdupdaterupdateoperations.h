@@ -59,6 +59,9 @@ public:
     CopyOperation *clone() const;
 
     QDomDocument toXml() const;
+private:
+    QString sourcePath();
+    QString destinationPath();
 };
 
 class KDTOOLS_EXPORT MoveOperation : public UpdateOperation

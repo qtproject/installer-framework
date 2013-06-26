@@ -47,6 +47,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QTemporaryFile>
+#include <QFileInfo>
 
 #include <cerrno>
 
@@ -120,62 +121,90 @@ CopyOperation::~CopyOperation()
     deleteFileNowOrLater(value(QLatin1String("backupOfExistingDestination")).toString());
 }
 
+QString CopyOperation::sourcePath()
+{
+    return arguments().first();
+}
+
+QString CopyOperation::destinationPath()
+{
+    QString destination = arguments().last();
+
+    // if the target is a directory use the source filename to complete the destination path
+    if (QFileInfo(destination).isDir())
+        destination = QDir(destination).filePath(QFileInfo(sourcePath()).fileName());
+    return destination;
+}
+
+
 void CopyOperation::backup()
 {
-    const QString dest = arguments().last();
-    if (!QFile::exists(dest)) {
+    QString destination = destinationPath();
+
+    if (!QFile::exists(destination)) {
         clearValue(QLatin1String("backupOfExistingDestination"));
         return;
     }
 
-    setValue(QLatin1String("backupOfExistingDestination"), backupFileName(dest));
+    setValue(QLatin1String("backupOfExistingDestination"), backupFileName(destination));
 
     // race condition: The backup file could get created by another process right now. But this is the same
     // in QFile::copy...
-    if (!QFile::rename(dest, value(QLatin1String("backupOfExistingDestination")).toString()))
-        setError(UserDefinedError, tr("Could not backup file %1.").arg(dest));
+    if (!QFile::rename(destination, value(QLatin1String("backupOfExistingDestination")).toString()))
+        setError(UserDefinedError, tr("Could not backup file %1.").arg(destination));
 }
 
 bool CopyOperation::performOperation()
 {
     // We need two args to complete the copy operation. First arg provides the complete file name of source
     // Second arg provides the complete file name of dest
-    const QStringList args = this->arguments();
-    if (args.count() != 2) {
+    if (arguments().count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(args.count()));
+        setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(arguments().count()));
         return false;
     }
 
-    const QString dest = args.last();
+    QString source = sourcePath();
+    QString destination = destinationPath();
+
+    QFile sourceFile(source);
+    if (!sourceFile.exists()) {
+        setError(UserDefinedError);
+        setErrorString(tr("Could not copy a none existing file: %1").arg(source));
+        return false;
+    }
     // If destination file exists, we cannot use QFile::copy() because it does not overwrite an existing
     // file. So we remove the destination file.
-    if (QFile::exists(dest)) {
-        QFile file(dest);
-        if (!file.remove()) {
+    QFile destinationFile(destination);
+    if (destinationFile.exists()) {
+        if (!destinationFile.remove()) {
             setError(UserDefinedError);
-            setErrorString(tr("Could not remove destination file %1: %2").arg(dest, file.errorString()));
+            setErrorString(tr("Could not remove destination file %1: %2").arg(destination, destinationFile.errorString()));
             return false;
         }
     }
 
-    QFile file(args.first());
-    const bool copied = file.copy(dest);
+    const bool copied = sourceFile.copy(destination);
     if (!copied) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not copy %1 to %2: %3").arg(file.fileName(), dest, file.errorString()));
+        setErrorString(tr("Could not copy %1 to %2: %3").arg(source, destination, sourceFile.errorString()));
     }
     return copied;
 }
 
 bool CopyOperation::undoOperation()
 {
-   const QString dest = arguments().last();
+    QString source = sourcePath();
+    QString destination = destinationPath();
 
-    QFile destF(dest);
+    // if the target is a directory use the source filename to complete the destination path
+    if (QFileInfo(destination).isDir())
+        destination = destination + QDir::separator() + QFileInfo(source).fileName();
+
+    QFile destFile(destination);
     // first remove the dest
-    if (!destF.remove()) {
-        setError(UserDefinedError, tr("Could not delete file %1: %2").arg(dest, destF.errorString()));
+    if (!destFile.remove()) {
+        setError(UserDefinedError, tr("Could not delete file %1: %2").arg(destination, destFile.errorString()));
         return false;
     }
 
@@ -184,11 +213,11 @@ bool CopyOperation::undoOperation()
     if (!hasValue(QLatin1String("backupOfExistingDestination")))
         return true;
 
-    QFile backupF(value(QLatin1String("backupOfExistingDestination")).toString());
+    QFile backupFile(value(QLatin1String("backupOfExistingDestination")).toString());
     // otherwise we have to copy the backup back:
-    const bool success = backupF.rename(dest);
+    const bool success = backupFile.rename(destination);
     if (!success)
-        setError(UserDefinedError, tr("Could not restore backup file into %1: %2").arg(dest, backupF.errorString()));
+        setError(UserDefinedError, tr("Could not restore backup file into %1: %2").arg(destination, backupFile.errorString()));
     return success;
 }
 
