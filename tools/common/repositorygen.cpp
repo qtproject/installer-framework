@@ -135,8 +135,7 @@ static QStringList copyFilesFromNode(const QString &parentNode, const QString &c
 }
 
 void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &metaDataDir,
-    const PackageInfoVector &packages, const QString &appName, const QString &appVersion,
-    const QString &redirectUpdateUrl)
+    const PackageInfoVector &packages, const QString &appName, const QString &appVersion)
 {
     const QString targetDir = makePathAbsolute(_targetDir);
     if (!QFile::exists(targetDir))
@@ -160,7 +159,6 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             }
         }
         existingUpdatesXml.close();
-        // TODO: maybe we should replace or remove an existing redirect with the one given, if so
     } else {
         root = doc.createElement(QLatin1String("Updates"));
         root.appendChild(doc.createElement(QLatin1String("ApplicationName"))).appendChild(doc
@@ -169,10 +167,6 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             .createTextNode(appVersion));
         root.appendChild(doc.createElement(QLatin1String("Checksum"))).appendChild(doc
             .createTextNode(QLatin1String("true")));
-        if (!redirectUpdateUrl.isEmpty()) {
-            root.appendChild(doc.createElement(QLatin1String("RedirectUpdateUrl"))).appendChild(doc
-                .createTextNode(redirectUpdateUrl));
-        }
     }
 
     foreach (const PackageInfo &info, packages) {
@@ -365,7 +359,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
 }
 
 PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packagesDirectories,
-    const QStringList &filteredPackages, FilterType filterType)
+    QStringList *packagesToFilter, FilterType filterType)
 {
     qDebug() << "\nCollecting information about available packages...";
 
@@ -377,11 +371,16 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
         entries.append(QDir(packagesDirectory).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot));
     for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
         if (filterType == Exclude) {
-            if (filteredPackages.contains(it->fileName()))
+            // Check for current file in exclude list, if found, skip it and remove it from exclude list
+            if (packagesToFilter->contains(it->fileName())) {
+                packagesToFilter->removeAll(it->fileName());
                 continue;
+            }
         } else {
-            if (!filteredPackages.contains(it->fileName()))
+            // Check for current file in include list, if not found, skip it; if found, remove it from include list
+            if (!packagesToFilter->contains(it->fileName()))
                 continue;
+            packagesToFilter->removeAll(it->fileName());
         }
         qDebug() << QString::fromLatin1("found subdirectory '%1'").arg(it->fileName());
         // because the filter is QDir::Dirs - filename means the name of the subdirectory
@@ -446,6 +445,10 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
         dict.push_back(info);
 
         qDebug() << QString::fromLatin1("- it provides the package %1 - %2").arg(info.name, info.version);
+    }
+
+    if (!packagesToFilter->isEmpty()) {
+        qWarning() << "The following explicitly given packages could not be found\n in package directory:" << *packagesToFilter;
     }
 
     if (dict.isEmpty())

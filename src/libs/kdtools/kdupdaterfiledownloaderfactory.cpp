@@ -1,24 +1,43 @@
 /****************************************************************************
-** Copyright (C) 2001-2010 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
-** This file is part of the KD Tools library.
+** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Contact: http://www.qt-project.org/legal
 **
-** Licensees holding valid commercial KD Tools licenses may use this file in
-** accordance with the KD Tools Commercial License Agreement provided with
-** the Software.
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:LGPL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
+**
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
+** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU Lesser General Public License version 2 and version 3 as published by the
-** Free Software Foundation and appearing in the file LICENSE.LGPL included.
+** $QT_END_LICENSE$
 **
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-** Contact info@kdab.com if any conditions of this licensing are not
-** clear to you.
-**
-**********************************************************************/
+****************************************************************************/
 
 #include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterfiledownloader_p.h"
@@ -46,6 +65,7 @@ struct FileDownloaderFactory::FileDownloaderFactoryData
     ~FileDownloaderFactoryData() { delete m_factory; }
 
     bool m_followRedirects;
+    bool m_ignoreSslErrors;
     FileDownloaderProxyFactory *m_factory;
 };
 
@@ -71,6 +91,8 @@ FileDownloaderFactory::FileDownloaderFactory()
     // TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
     if (QSslSocket::supportsSsl())
         registerFileDownloader<HttpDownloader>(QLatin1String("https"));
+    else
+        qWarning() << "Could not register file downloader for https protocol: QSslSocket::supportsSsl() returns false";
 #endif
 
     d->m_followRedirects = false;
@@ -92,6 +114,16 @@ void FileDownloaderFactory::setProxyFactory(FileDownloaderProxyFactory *factory)
     FileDownloaderFactory::instance().d->m_factory = factory;
 }
 
+bool FileDownloaderFactory::ignoreSslErrors()
+{
+    return FileDownloaderFactory::instance().d->m_ignoreSslErrors;
+}
+
+void FileDownloaderFactory::setIgnoreSslErrors(bool ignore)
+{
+    FileDownloaderFactory::instance().d->m_ignoreSslErrors = ignore;
+}
+
 FileDownloaderFactory::~FileDownloaderFactory()
 {
     delete d;
@@ -109,6 +141,7 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *pa
         downloader->setParent(parent);
         downloader->setScheme(scheme);
         downloader->setFollowRedirects(d->m_followRedirects);
+        downloader->setIgnoreSslErrors(d->m_ignoreSslErrors);
         if (d->m_factory)
             downloader->setProxyFactory(d->m_factory->clone());
     }

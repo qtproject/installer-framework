@@ -76,6 +76,8 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.proxyType(), Settings::NoProxy);
     QCOMPARE(settings.ftpProxy(), QNetworkProxy());
     QCOMPARE(settings.httpProxy(), QNetworkProxy());
+
+    QCOMPARE(settings.translations(), QStringList());
 }
 
 void tst_Settings::loadFullConfig()

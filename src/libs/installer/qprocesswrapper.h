@@ -84,6 +84,7 @@ public:
     void terminate();
     QByteArray readAll();
     QByteArray readAllStandardOutput();
+    QByteArray readAllStandardError();
     void setWorkingDirectory(const QString &dir);
 
     void start(const QString &program);

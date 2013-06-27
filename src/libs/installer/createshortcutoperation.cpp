@@ -79,12 +79,17 @@ struct DeCoInitializer
 };
 #endif
 
-struct StartsWithWorkingDirectory
+struct StartsWith
 {
-    bool operator()(const QString &s)
+    StartsWith(const QString &searchTerm)
+        : m_searchTerm(searchTerm) {}
+
+    bool operator()(const QString &searchString)
     {
-        return s.startsWith(QLatin1String("workingDirectory="));
+        return searchString.startsWith(m_searchTerm);
     }
+
+    QString m_searchTerm;
 };
 
 static QString parentDirectory(const QString &current)
@@ -92,20 +97,21 @@ static QString parentDirectory(const QString &current)
     return current.mid(0, current.lastIndexOf(QLatin1Char('/')));
 }
 
-static QString takeWorkingDirArgument(QStringList &args)
+static QString takeArgument(const QString argument, QStringList *arguments)
 {
-    // if the arguments contain an option in the form "workingDirectory=...", find it and consume it
-    QStringList::iterator wdiropt = std::find_if (args.begin(), args.end(), StartsWithWorkingDirectory());
-    if (wdiropt == args.end())
+    // if the arguments contain an option in the form "argument=...", find it and consume it
+    QStringList::iterator it = std::find_if(arguments->begin(), arguments->end(), StartsWith(argument));
+    if (it == arguments->end())
         return QString();
 
-    const QString workingDir = wdiropt->mid(QString::fromLatin1("workingDirectory=").size());
-    args.erase(wdiropt);
-    return workingDir;
+    const QString value = it->mid(argument.size());
+    arguments->erase(it);
+    return value;
 }
 
 static bool createLink(const QString &fileName, const QString &linkName, QString workingDir,
-    QString arguments = QString())
+    const QString &arguments = QString(), const QString &iconPath = QString(),
+    const QString &iconId = QString())
 {
 #ifdef Q_OS_WIN
     bool success = QFile::link(fileName, linkName);
@@ -129,6 +135,8 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
     psl->SetWorkingDirectory((wchar_t *)workingDir.utf16());
     if (!arguments.isNull())
         psl->SetArguments((wchar_t*)arguments.utf16());
+    if (!iconPath.isNull())
+        psl->SetIconLocation((wchar_t*)(iconPath.utf16()), iconId.toInt());
 
     IPersistFile *ppf = NULL;
     if (SUCCEEDED(psl->QueryInterface(IID_IPersistFile, (void **)&ppf))) {
@@ -153,7 +161,8 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
     Q_UNUSED(workingDir)
     Q_UNUSED(fileName)
     Q_UNUSED(linkName)
-
+    Q_UNUSED(iconPath)
+    Q_UNUSED(iconId)
     return true;
 #endif
 }
@@ -183,12 +192,16 @@ void CreateShortcutOperation::backup()
 bool CreateShortcutOperation::performOperation()
 {
     QStringList args = arguments();
-    const QString workingDir = takeWorkingDirArgument(args);
+
+    const QString iconId = takeArgument(QString::fromLatin1("iconId="), &args);
+    const QString iconPath = takeArgument(QString::fromLatin1("iconPath="), &args);
+    const QString workingDir = takeArgument(QString::fromLatin1("workingDirectory="), &args);
 
     if (args.count() != 2 && args.count() != 3) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("2 or 3"), tr(" (optional: 'workingDirectory=...')")));
+            .arg(name()).arg(arguments().count()).arg(tr("2 or 3"),
+            tr(" (optional: 'workingDirectory=...', 'iconPath=...', 'iconId=...')")));
         return false;
     }
 
@@ -196,10 +209,8 @@ bool CreateShortcutOperation::performOperation()
     const QString linkLocation = args.at(1);
     const QString targetArguments = args.value(2); //used value because it could be not existing
 
-    const QString linkPath = QFileInfo(linkLocation).absolutePath();
-
-    const bool linkPathAlreadyExists = QDir(linkPath).exists();
-    const bool created = linkPathAlreadyExists || QDir::root().mkpath(linkPath);
+    const QString linkPath = QFileInfo(linkLocation).absolutePath().trimmed();
+    const bool created = QDir(linkPath).exists() || QDir::root().mkpath(linkPath);
 
     if (!created) {
         setError(UserDefinedError);
@@ -225,7 +236,7 @@ bool CreateShortcutOperation::performOperation()
         return false;
     }
 
-    const bool linked = createLink(linkTarget, linkLocation, workingDir, targetArguments);
+    const bool linked = createLink(linkTarget, linkLocation, workingDir, targetArguments, iconPath, iconId);
     if (!linked) {
         setError(UserDefinedError);
         setErrorString(tr("Could not create link %1: %2").arg(QDir::toNativeSeparators(linkLocation),

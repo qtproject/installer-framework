@@ -408,6 +408,8 @@ QByteArray FSEngineConnectionThread::handleCommand(const QString &command)
         returnStream << process->readAll();
     } else if (command == QLatin1String("QProcess::readAllStandardOutput")) {
         returnStream << process->readAllStandardOutput();
+    } else if (command == QLatin1String("QProcess::readAllStandardError")) {
+        returnStream << process->readAllStandardError();
     } else if (command == QLatin1String("QProcess::startDetached")) {
         QString program;
         QStringList arguments;

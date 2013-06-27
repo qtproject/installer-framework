@@ -1,24 +1,43 @@
 /****************************************************************************
-** Copyright (C) 2001-2010 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
-** This file is part of the KD Tools library.
+** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Contact: http://www.qt-project.org/legal
 **
-** Licensees holding valid commercial KD Tools licenses may use this file in
-** accordance with the KD Tools Commercial License Agreement provided with
-** the Software.
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:LGPL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
+**
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
+** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU Lesser General Public License version 2 and version 3 as published by the
-** Free Software Foundation and appearing in the file LICENSE.LGPL included.
+** $QT_END_LICENSE$
 **
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-** Contact info@kdab.com if any conditions of this licensing are not
-** clear to you.
-**
-**********************************************************************/
+****************************************************************************/
 
 #include "kdupdaterupdateoperations.h"
 #include "errors.h"
@@ -28,6 +47,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QTemporaryFile>
+#include <QFileInfo>
 
 #include <cerrno>
 
@@ -43,6 +63,34 @@ static QString errnoToQString(int error)
 #else
     return QString::fromLocal8Bit(strerror(error));
 #endif
+}
+
+static bool removeDirectory(const QString &path, QString *errorString, bool force = true)
+{
+    Q_ASSERT(errorString);
+    const QFileInfoList entries = QDir(path).entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden);
+    for (QFileInfoList::const_iterator it = entries.constBegin(); it != entries.constEnd(); ++it) {
+        if (it->isDir() && !it->isSymLink()) {
+            removeDirectory(it->filePath(), errorString, force);
+        } else if (force) {
+            QFile f(it->filePath());
+            if (!f.remove())
+                return false;
+        }
+    }
+
+    // even remove some hidden, OS-created files in there
+#if defined Q_OS_MAC
+    QFile::remove(path + QLatin1String("/.DS_Store"));
+#elif defined Q_OS_WIN
+    QFile::remove(path + QLatin1String("/Thumbs.db"));
+#endif
+
+    errno = 0;
+    const bool success = QDir().rmdir(path);
+    if (errno)
+        *errorString = errnoToQString(errno);
+    return success;
 }
 
 /*
@@ -73,62 +121,90 @@ CopyOperation::~CopyOperation()
     deleteFileNowOrLater(value(QLatin1String("backupOfExistingDestination")).toString());
 }
 
+QString CopyOperation::sourcePath()
+{
+    return arguments().first();
+}
+
+QString CopyOperation::destinationPath()
+{
+    QString destination = arguments().last();
+
+    // if the target is a directory use the source filename to complete the destination path
+    if (QFileInfo(destination).isDir())
+        destination = QDir(destination).filePath(QFileInfo(sourcePath()).fileName());
+    return destination;
+}
+
+
 void CopyOperation::backup()
 {
-    const QString dest = arguments().last();
-    if (!QFile::exists(dest)) {
+    QString destination = destinationPath();
+
+    if (!QFile::exists(destination)) {
         clearValue(QLatin1String("backupOfExistingDestination"));
         return;
     }
 
-    setValue(QLatin1String("backupOfExistingDestination"), backupFileName(dest));
+    setValue(QLatin1String("backupOfExistingDestination"), backupFileName(destination));
 
     // race condition: The backup file could get created by another process right now. But this is the same
     // in QFile::copy...
-    if (!QFile::rename(dest, value(QLatin1String("backupOfExistingDestination")).toString()))
-        setError(UserDefinedError, tr("Could not backup file %1.").arg(dest));
+    if (!QFile::rename(destination, value(QLatin1String("backupOfExistingDestination")).toString()))
+        setError(UserDefinedError, tr("Could not backup file %1.").arg(destination));
 }
 
 bool CopyOperation::performOperation()
 {
     // We need two args to complete the copy operation. First arg provides the complete file name of source
     // Second arg provides the complete file name of dest
-    const QStringList args = this->arguments();
-    if (args.count() != 2) {
+    if (arguments().count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(args.count()));
+        setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(arguments().count()));
         return false;
     }
 
-    const QString dest = args.last();
+    QString source = sourcePath();
+    QString destination = destinationPath();
+
+    QFile sourceFile(source);
+    if (!sourceFile.exists()) {
+        setError(UserDefinedError);
+        setErrorString(tr("Could not copy a none existing file: %1").arg(source));
+        return false;
+    }
     // If destination file exists, we cannot use QFile::copy() because it does not overwrite an existing
     // file. So we remove the destination file.
-    if (QFile::exists(dest)) {
-        QFile file(dest);
-        if (!file.remove()) {
+    QFile destinationFile(destination);
+    if (destinationFile.exists()) {
+        if (!destinationFile.remove()) {
             setError(UserDefinedError);
-            setErrorString(tr("Could not remove destination file %1: %2").arg(dest, file.errorString()));
+            setErrorString(tr("Could not remove destination file %1: %2").arg(destination, destinationFile.errorString()));
             return false;
         }
     }
 
-    QFile file(args.first());
-    const bool copied = file.copy(dest);
+    const bool copied = sourceFile.copy(destination);
     if (!copied) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not copy %1 to %2: %3").arg(file.fileName(), dest, file.errorString()));
+        setErrorString(tr("Could not copy %1 to %2: %3").arg(source, destination, sourceFile.errorString()));
     }
     return copied;
 }
 
 bool CopyOperation::undoOperation()
 {
-   const QString dest = arguments().last();
+    QString source = sourcePath();
+    QString destination = destinationPath();
 
-    QFile destF(dest);
+    // if the target is a directory use the source filename to complete the destination path
+    if (QFileInfo(destination).isDir())
+        destination = destination + QDir::separator() + QFileInfo(source).fileName();
+
+    QFile destFile(destination);
     // first remove the dest
-    if (!destF.remove()) {
-        setError(UserDefinedError, tr("Could not delete file %1: %2").arg(dest, destF.errorString()));
+    if (destFile.exists() && !destFile.remove()) {
+        setError(UserDefinedError, tr("Could not delete file %1: %2").arg(destination, destFile.errorString()));
         return false;
     }
 
@@ -137,11 +213,11 @@ bool CopyOperation::undoOperation()
     if (!hasValue(QLatin1String("backupOfExistingDestination")))
         return true;
 
-    QFile backupF(value(QLatin1String("backupOfExistingDestination")).toString());
+    QFile backupFile(value(QLatin1String("backupOfExistingDestination")).toString());
     // otherwise we have to copy the backup back:
-    const bool success = backupF.rename(dest);
+    const bool success = backupFile.rename(destination);
     if (!success)
-        setError(UserDefinedError, tr("Could not restore backup file into %1: %2").arg(dest, backupF.errorString()));
+        setError(UserDefinedError, tr("Could not restore backup file into %1: %2").arg(destination, backupFile.errorString()));
     return success;
 }
 
@@ -394,9 +470,8 @@ void MkdirOperation::backup()
 
 bool MkdirOperation::performOperation()
 {
-    // Requires only one parameter. That is the name of
-    // the file to remove.
-    const QStringList args = this->arguments();
+    // Requires only one parameter. That is the path which should be created
+    QStringList args = this->arguments();
     if (args.count() != 1) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments: %1 arguments given, 1 expected.").arg(args.count()));
@@ -416,7 +491,10 @@ bool MkdirOperation::undoOperation()
 {
     Q_ASSERT(arguments().count() == 1);
 
-    QDir createdDir = QDir(value(QLatin1String("createddir")).toString());
+    QString createdDirValue = value(QLatin1String("createddir")).toString();
+    if (createdDirValue.isEmpty())
+        createdDirValue = arguments().first();
+    QDir createdDir = QDir(createdDirValue);
     const bool forceremoval = QVariant(value(QLatin1String("forceremoval"))).toBool();
 
     // Since refactoring we know the mkdir operation which is creating the target path. If we do a full
@@ -430,23 +508,16 @@ bool MkdirOperation::undoOperation()
     if (!createdDir.exists())
         return true;
 
-    if (forceremoval) {
-        try {
-            QInstaller::removeDirectory(createdDir.path());
-        } catch (const QInstaller::Error &error) {
-            setError(UserDefinedError, error.message());
-            return false;
-        }
-        return true;
+    QString errorString;
+
+    const bool result = removeDirectory(createdDir.path(), &errorString, forceremoval);
+
+    if (!result) {
+        if (errorString.isEmpty())
+            setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errorString));
+        else
+            setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errnoToQString(errno)));
     }
-
-    // remove some hidden, OS-created files in there
-    QInstaller::removeSystemGeneratedFiles(createdDir.path());
-
-    errno = 0;
-    const bool result = QDir::root().rmdir(createdDir.path());
-    if (!result)
-        setError(UserDefinedError, tr("Cannot remove directory %1: %2").arg(createdDir.path(), errnoToQString(errno)));
     return result;
 }
 
@@ -560,7 +631,8 @@ bool AppendFileOperation::performOperation()
     const QStringList args = this->arguments();
     if (args.count() != 2) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(args.count()));
+        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
+            .arg(name()).arg(arguments().count()).arg(tr("exactly 2"), QLatin1String("")));
         return false;
     }
 
@@ -568,11 +640,25 @@ bool AppendFileOperation::performOperation()
     QFile file(fName);
     if (!file.open(QFile::Append)) {
         // first we rename the file, then we copy it to the real target and open the copy - the renamed original is then marked for deletion
+        bool error = false;
         const QString newName = backupFileName(fName);
-        if (!QFile::rename(fName, newName) && QFile::copy(newName, fName) && file.open(QFile::Append)) {
+
+        if (!QFile::rename(fName, newName))
+            error = true;
+
+        if (!error && !QFile::copy(newName, fName)) {
+            error = true;
             QFile::rename(newName, fName);
+        }
+
+        if (!error && !file.open(QFile::Append)) {
+            error = true;
+            deleteFileNowOrLater(newName);
+        }
+
+        if (error) {
             setError(UserDefinedError);
-            setErrorString(tr("Could not open file %1 for writing: %2").arg(file.fileName(), file.errorString()));
+            setErrorString(tr("Could not open file '%1' for writing: %2").arg(file.fileName(), file.errorString()));
             return false;
         }
         deleteFileNowOrLater(newName);

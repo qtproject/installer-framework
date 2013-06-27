@@ -47,6 +47,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSharedDataPointer>
+#include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
 #include <QtNetwork/QNetworkProxy>
@@ -150,6 +151,9 @@ public:
 
     QNetworkProxy httpProxy() const;
     void setHttpProxy(const QNetworkProxy &proxy);
+
+    QStringList translations() const;
+    void setTranslations(const QStringList &translations);
 
 private:
     class Private;

@@ -782,8 +782,17 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
 
 void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
 {
+    bool gainedAdminRights = false;
     // write current state (variables) to the uninstaller ini file
     const QString iniPath = targetDir() + QLatin1Char('/') + m_data.settings().uninstallerIniFile();
+    {
+        QFile tmp(iniPath); // force gaining admin rights in case we haven't done already and we need it
+        if (!tmp.open(QIODevice::ReadWrite) || !tmp.isWritable()) {
+            if (!m_FSEngineClientHandler->isActive())   // check if nobody did it before...
+                gainedAdminRights = m_core->gainAdminRights();
+        }
+        tmp.close();
+    }
 
     QVariantHash variables;
     QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
@@ -800,6 +809,8 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
 
     cfg.sync();
     if (cfg.status() != QSettingsWrapper::NoError) {
+        if (gainedAdminRights)
+            m_core->dropAdminRights();
         const QString reason = cfg.status() == QSettingsWrapper::AccessError ? tr("Access error")
             : tr("Format error");
         throw Error(tr("Could not write installer configuration to %1: %2").arg(iniPath, reason));
@@ -841,6 +852,9 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
             writer.writeEndElement();
         writer.writeEndElement();
     }
+
+    if (gainedAdminRights)
+        m_core->dropAdminRights();
 }
 
 void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &targetDir)

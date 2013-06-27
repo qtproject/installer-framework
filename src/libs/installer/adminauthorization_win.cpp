@@ -49,6 +49,9 @@
 # ifndef _WIN32_WINNT
 #  define _WIN32_WINNT 0x0501
 # endif
+# ifndef SEE_MASK_NOASYNC
+#  define SEE_MASK_NOASYNC 0x00000100
+# endif
 #endif
 
 #include <windows.h>
@@ -99,6 +102,31 @@ bool AdminAuthorization::hasAdminRights()
     return isInAdminGroup;
 }
 
+//copied from qsystemerror.cpp in Qt
+static QString windowsErrorString(int errorCode)
+{
+    QString ret;
+    wchar_t *string = 0;
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM,
+                  NULL,
+                  errorCode,
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                  (LPWSTR)&string,
+                  0,
+                  NULL);
+    ret = QString::fromWCharArray(string);
+    LocalFree((HLOCAL)string);
+
+    if (ret.isEmpty() && errorCode == ERROR_MOD_NOT_FOUND)
+        ret = QString::fromLatin1("The specified module could not be found.");
+
+    ret.append(QLatin1String(" (0x"));
+    ret.append(QString::number(uint(errorCode), 16).rightJustified(8, QLatin1Char('0')));
+    ret.append(QLatin1String(")"));
+
+    return ret;
+}
+
 bool AdminAuthorization::execute(QWidget *, const QString &program, const QStringList &arguments)
 {
     DeCoInitializer _;
@@ -112,10 +140,16 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
     shellExecuteInfo.lpFile = (wchar_t *)file.utf16();
     shellExecuteInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
     shellExecuteInfo.lpParameters = (wchar_t *)args.utf16();
+    shellExecuteInfo.fMask = SEE_MASK_NOASYNC;
 
     qDebug() << QString::fromLatin1("Starting elevated process %1 with arguments: %2.").arg(file, args);
-    ShellExecuteExW(&shellExecuteInfo);
-    qDebug() << "Finished starting elevated process.";
 
-    return GetLastError() == ERROR_SUCCESS;
+    if (ShellExecuteExW(&shellExecuteInfo)) {
+        qDebug() << "Finished starting elevated process.";
+        return true;
+    } else {
+        qWarning() << QString::fromLatin1("Error while starting elevated process: %1, "
+            "Error: %2").arg(program, windowsErrorString(GetLastError()));
+    }
+    return false;
 }

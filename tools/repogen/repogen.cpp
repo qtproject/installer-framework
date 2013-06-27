@@ -69,8 +69,6 @@ static void printUsage()
     QInstallerTools::printRepositoryGenOptions();
 
     std::cout << "  -r|--remove               Force removing target directory if existent." << std::endl;
-    std::cout << "  -u|--updateurl            URL instructs clients to receive updates from a " << std::endl;
-    std::cout << "                            different location" << std::endl;
 
     std::cout << "  --update                  Update a set of existing components (defined by " << std::endl;
     std::cout << "                            --include or --exclude) in the repository" << std::endl;
@@ -104,7 +102,6 @@ int main(int argc, char** argv)
         QStringList filteredPackages;
         bool updateExistingRepository = false;
         QStringList packagesDirectories;
-        QString redirectUpdateUrl;
         QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
         bool remove = false;
 
@@ -154,12 +151,6 @@ int main(int argc, char** argv)
                     return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument"));
                 args.removeFirst();
                 std::cout << "Config file parameter is deprecated and ignored." << std::endl;
-            } else if (args.first() == QLatin1String("-u") || args.first() == QLatin1String("--updateurl")) {
-                args.removeFirst();
-                if (args.isEmpty())
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument"));
-                redirectUpdateUrl = args.first();
-                args.removeFirst();
             } else if (args.first() == QLatin1String("--ignore-translations")
                 || args.first() == QLatin1String("--ignore-invalid-packages")) {
                     args.removeFirst();
@@ -192,7 +183,7 @@ int main(int argc, char** argv)
         }
 
         QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectories,
-            filteredPackages, filterType);
+            &filteredPackages, filterType);
         QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(packages);
 
         foreach (const QInstallerTools::PackageInfo &package, packages) {
@@ -204,7 +195,7 @@ int main(int argc, char** argv)
         tmpMetaDir = QInstaller::createTemporaryDirectory();
         QInstallerTools::copyComponentData(packagesDirectories, repositoryDir, &packages);
         QInstallerTools::copyMetaData(tmpMetaDir, repositoryDir, packages, QLatin1String("{AnyApplication}"),
-            QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), redirectUpdateUrl);
+            QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
         QInstallerTools::compressMetaDirectories(tmpMetaDir, tmpMetaDir, pathToVersionMapping);
 
         QDirIterator it(repositoryDir, QStringList(QLatin1String("Updates*.xml")), QDir::Files | QDir::CaseSensitive);

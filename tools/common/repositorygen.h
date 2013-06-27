@@ -68,7 +68,7 @@ void printRepositoryGenOptions();
 QString makePathAbsolute(const QString &path);
 void copyWithException(const QString &source, const QString &target, const QString &kind = QString());
 
-PackageInfoVector createListOfPackages(const QStringList &packagesDirectory, const QStringList &filteredPackages,
+PackageInfoVector createListOfPackages(const QStringList &packagesDirectories, QStringList *packagesToFilter,
     FilterType ftype);
 QHash<QString, QString> buildPathToVersionMapping(const PackageInfoVector &info);
 
@@ -77,7 +77,7 @@ void compressMetaDirectories(const QString &repoDir, const QString &baseDir,
     const QHash<QString, QString> &versionMapping);
 
 void copyMetaData(const QString &outDir, const QString &dataDir, const PackageInfoVector &packages,
-    const QString &appName, const QString& appVersion, const QString &redirectUpdateUrl = QString());
+    const QString &appName, const QString& appVersion);
 void copyComponentData(const QStringList &packageDir, const QString &repoDir, PackageInfoVector *const infos);
 
 

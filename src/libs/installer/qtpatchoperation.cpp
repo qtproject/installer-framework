@@ -167,12 +167,13 @@ bool QtPatchOperation::performOperation()
     // 1. type
     // 2. new/target qtpath
     // 3. version if greather Qt4
+    // optional QmakeOutputInstallerKey=<used_installer_value>
 
     // the possible 2 argument case is here to support old syntax
-    if (arguments().count() < 2 || arguments().count() > 3) {
+    if (arguments().count() < 2 && arguments().count() > 4) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("exactly 3"), QLatin1String("")));
+            .arg(name()).arg(arguments().count()).arg(tr("3 or 4"), QLatin1String("")));
         return false;
     }
 
@@ -204,7 +205,7 @@ bool QtPatchOperation::performOperation()
         return false;
     }
 
-    if (!filteredQmakeOutputInstallerKey.isEmpty() && core->value(qmakeOutputInstallerKey).isEmpty()) {
+    if (core && !filteredQmakeOutputInstallerKey.isEmpty() && core->value(qmakeOutputInstallerKey).isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("Could not find the needed QmakeOutputInstallerKey(%1) value on the installer "
             "object. The ConsumeOutput operation on the valid qmake needs to be called first.").arg(
@@ -220,7 +221,7 @@ bool QtPatchOperation::performOperation()
 #endif
 
     QHash<QString, QByteArray> qmakeValueHash;
-    if (!core->value(qmakeOutputInstallerKey).isEmpty()) {
+    if (core && !core->value(qmakeOutputInstallerKey).isEmpty()) {
         qmakeValueHash = QtPatch::readQmakeOutput(core->value(qmakeOutputInstallerKey).toLatin1());
     } else {
         if (!QFile::exists(qmakePath)) {

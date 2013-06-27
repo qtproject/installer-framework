@@ -329,6 +329,14 @@ QByteArray QProcessWrapper::readAllStandardOutput()
     return d->process.readAllStandardOutput();
 }
 
+QByteArray QProcessWrapper::readAllStandardError()
+{
+    const Private::TimerBlocker blocker(this);
+    if (d->createSocket())
+        return callRemoteMethod<QByteArray>(d->stream, QLatin1String("QProcess::readAllStandardError"));
+    return d->process.readAllStandardError();
+}
+
 void QProcessWrapper::start(const QString &param1, const QStringList &param2, QIODevice::OpenMode param3)
 {
     const Private::TimerBlocker blocker(this);
