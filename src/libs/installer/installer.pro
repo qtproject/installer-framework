@@ -52,18 +52,10 @@ HEADERS += packagemanagercore.h \
     componentmodel.h \
     qinstallerglobal.h \
     qtpatch.h \
-    persistentsettings.h \
-    projectexplorer_export.h \
     qtpatchoperation.h \
     consumeoutputoperation.h \
-    setpathonqtcoreoperation.h \
-    setdemospathonqtoperation.h \
-    setexamplespathonqtoperation.h \
-    setpluginpathonqtcoreoperation.h \
-    setimportspathonqtcoreoperation.h \
     replaceoperation.h \
     linereplaceoperation.h \
-    registertoolchainoperation.h  \
     setqtcreatorvalueoperation.h \
     addqtcreatorarrayvalueoperation.h \
     copydirectoryoperation.h \
@@ -98,8 +90,6 @@ HEADERS += packagemanagercore.h \
     licenseoperation.h \
     component_p.h \
     qtcreator_constants.h \
-    qtcreatorpersistentsettings.h \
-    registerdefaultdebuggeroperation.h \
     qprocesswrapper.h \
     qsettingswrapper.h \
     constants.h \
@@ -109,7 +99,6 @@ HEADERS += packagemanagercore.h \
     link.h \
     createlinkoperation.h \
     packagemanagercoredata.h \
-    registerqtincreatorqnxoperation.h \
     applyproductkeyoperation.h \
     globals.h
 
@@ -127,17 +116,10 @@ HEADERS += packagemanagercore.h \
     scriptengine.cpp \
     componentmodel.cpp \
     qtpatch.cpp \
-    persistentsettings.cpp \
     qtpatchoperation.cpp  \
     consumeoutputoperation.cpp \
-    setpathonqtcoreoperation.cpp \
-    setdemospathonqtoperation.cpp \
-    setexamplespathonqtoperation.cpp \
-    setpluginpathonqtcoreoperation.cpp \
-    setimportspathonqtcoreoperation.cpp \
     replaceoperation.cpp \
     linereplaceoperation.cpp \
-    registertoolchainoperation.cpp  \
     setqtcreatorvalueoperation.cpp \
     addqtcreatorarrayvalueoperation.cpp \
     copydirectoryoperation.cpp \
@@ -169,8 +151,6 @@ HEADERS += packagemanagercore.h \
     getrepositoriesmetainfojob.cpp \
     licenseoperation.cpp \
     component_p.cpp \
-    qtcreatorpersistentsettings.cpp \
-    registerdefaultdebuggeroperation.cpp \
     qprocesswrapper.cpp \
     templates.cpp \
     qsettingswrapper.cpp \
@@ -181,7 +161,6 @@ HEADERS += packagemanagercore.h \
     link.cpp \
     createlinkoperation.cpp \
     packagemanagercoredata.cpp \
-    registerqtincreatorqnxoperation.cpp \
     applyproductkeyoperation.cpp \
     globals.cpp
 

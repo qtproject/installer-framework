@@ -63,16 +63,8 @@
 // QtSDK specific
 #include "qtpatchoperation.h"
 #include "consumeoutputoperation.h"
-#include "setdemospathonqtoperation.h"
-#include "setexamplespathonqtoperation.h"
-#include "setpluginpathonqtcoreoperation.h"
-#include "setimportspathonqtcoreoperation.h"
-#include "setpathonqtcoreoperation.h"
-#include "registerqtincreatorqnxoperation.h"
 #include "setqtcreatorvalueoperation.h"
 #include "addqtcreatorarrayvalueoperation.h"
-#include "registertoolchainoperation.h"
-#include "registerdefaultdebuggeroperation.h"
 
 #ifdef Q_OS_MAC
 #   include "macreplaceinstallnamesoperation.h"
@@ -247,14 +239,6 @@ void QInstaller::init()
     factory.registerUpdateOperation<ConsumeOutputOperation>(QLatin1String("ConsumeOutput"));
 
     // QtSDK specific
-    factory.registerUpdateOperation<RegisterQtInCreatorQNXOperation>(QLatin1String("RegisterQtInCreatorQNX"));
-    factory.registerUpdateOperation<RegisterToolChainOperation>(QLatin1String("RegisterToolChain"));
-    factory.registerUpdateOperation<RegisterDefaultDebuggerOperation>(QLatin1String("RegisterDefaultDebugger"));
-    factory.registerUpdateOperation<SetDemosPathOnQtOperation>(QLatin1String("SetDemosPathOnQt"));
-    factory.registerUpdateOperation<SetExamplesPathOnQtOperation>(QLatin1String("SetExamplesPathOnQt"));
-    factory.registerUpdateOperation<SetPluginPathOnQtCoreOperation>(QLatin1String("SetPluginPathOnQtCore"));
-    factory.registerUpdateOperation<SetImportsPathOnQtCoreOperation>(QLatin1String("SetImportsPathOnQtCore"));
-    factory.registerUpdateOperation<SetPathOnQtCoreOperation>(QLatin1String("SetPathOnQtCore"));
     factory.registerUpdateOperation<SetQtCreatorValueOperation>(QLatin1String("SetQtCreatorValue"));
     factory.registerUpdateOperation<AddQtCreatorArrayValueOperation>(QLatin1String("AddQtCreatorArrayValue"));
     factory.registerUpdateOperation<QtPatchOperation>(QLatin1String("QtPatch"));
