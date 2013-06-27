@@ -406,7 +406,7 @@ QString TargetDirectoryPageImpl::targetDirWarning() const
     dir = dir.mid(2);
 #endif
 
-    QString ambiguousChars = QLatin1String("[<>|?*!@#$%^&:,; ]");
+    QString ambiguousChars = QLatin1String("~[<>|?*!@#$%^&:,; ]");
     if (packageManagerCore()->settings().allowSpaceInPath())
         ambiguousChars.remove(QLatin1Char(' '));
 
