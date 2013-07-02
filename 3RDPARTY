@@ -33,8 +33,8 @@ KD Tools
 
 Sources for the KD Tools library are under src/libs/kdtools.
 
-The library is licensed under LGPL 2, LGPL 3, and a commercial
-KD Tools license.
+The library is released under the same license as the rest of the installer
+framework (GPL 3.0/LGPL 2.1 with Digia exception/Digia Commercial License).
 
 The copyright is owned by  Klaralvdalens
 Datakonsult AB.
