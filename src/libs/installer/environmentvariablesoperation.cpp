@@ -71,7 +71,7 @@ static bool broadcastChange() {
     // Use SendMessageTimeout to Broadcast a message to the whole system to update settings of all
     // running applications. This is needed to activate the changes done above without logout+login.
     // Note that cmd.exe does not respond to any WM_SETTINGCHANGE messages...
-    DWORD aResult = 0;
+    DWORD_PTR aResult = 0;
     LRESULT sendresult = SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE,
         0, (LPARAM) "Environment", SMTO_BLOCK | SMTO_ABORTIFHUNG, 5000, &aResult);
     if (sendresult == 0 || aResult != 0) {
