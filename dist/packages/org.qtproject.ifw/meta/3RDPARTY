@@ -1,0 +1,26 @@
+The Qt Installer Framework sources include third party code:
+
+============================================================
+
+LZMA SDK
+
+Parts of the sources from the LZMA SDK , version 9.20 are
+under src/libs/7zip/unix and src/libs/7z/win.
+
+The LZMA SDK is written and placed in the public domain by
+Igor Pavlov. Some code in LZMA SDK is based on public domain
+code from another developers:
+1) PPMd var.H (2001): Dmitry Shkarin
+2) SHA-256: Wei Dai (Crypto++ library)
+
+============================================================
+
+KD Tools
+
+Sources for the KD Tools library are under src/libs/kdtools.
+
+The library is released under the same license as the rest
+of the installer framework (GPL 3.0/LGPL 2.1 with Digia
+exception/Digia Commercial License).
+
+The copyright is owned by Klaralvdalens Datakonsult AB.
