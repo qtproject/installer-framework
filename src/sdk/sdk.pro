@@ -13,8 +13,8 @@ isEqual(QT_MAJOR_VERSION, 5) {
 DESTDIR = $$IFW_APP_PATH
 
 if (exists($$LRELEASE)) {
-    QT_LANGUAGES = qt_de qt_ru qt_zh_CN
-    IB_LANGUAGES = de_de en_us ru_ru zh_cn
+    QT_LANGUAGES = qt_de qt_ru qt_zh_CN qt_ja
+    IB_LANGUAGES = de_de en_us ru_ru zh_cn ja_jp
     defineReplace(prependAll) {
         for(a,$$1):result += $$2$${a}$$3
         return($$result)
