@@ -49,6 +49,7 @@
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QThread>
 #include <QtCore/QUrl>
+#include <QtCore/QCoreApplication>
 #include <QImageReader>
 
 #include <errno.h>
@@ -141,9 +142,15 @@ QString QInstaller::humanReadableSize(const qint64 &size, int precision)
     double sizeAsDouble = size;
     static QStringList measures;
     if (measures.isEmpty())
-        measures << QString::fromLatin1("bytes") << QString::fromLatin1("KiB") << QString::fromLatin1("MiB")
-            << QString::fromLatin1("GiB") << QString::fromLatin1("TiB") << QString::fromLatin1("PiB")
-            << QString::fromLatin1("EiB") << QString::fromLatin1("ZiB") << QString::fromLatin1("YiB");
+        measures << QCoreApplication::translate("QInstaller", "bytes")
+                 << QCoreApplication::translate("QInstaller", "KiB")
+                 << QCoreApplication::translate("QInstaller", "MiB")
+                 << QCoreApplication::translate("QInstaller", "GiB")
+                 << QCoreApplication::translate("QInstaller", "TiB")
+                 << QCoreApplication::translate("QInstaller", "PiB")
+                 << QCoreApplication::translate("QInstaller", "EiB")
+                 << QCoreApplication::translate("QInstaller", "ZiB")
+                 << QCoreApplication::translate("QInstaller", "YiB");
 
     QStringListIterator it(measures);
     QString measure(it.next());

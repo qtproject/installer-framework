@@ -227,7 +227,7 @@ void UpdateFinder::Private::computeUpdates()
     }
 
     // All done
-    q->reportProgress(100, tr("%1 updates found.").arg(updates.count()));
+    q->reportProgress(100, tr("%n update(s) found.", "", updates.count()));
     q->reportDone();
 }
 

@@ -320,13 +320,13 @@ void KDUpdater::FileDownloader::emitDownloadStatus()
         if (bytesReceived.endsWith(tmp))
             bytesReceived.chop(tmp.length());
 
-        status = bytesReceived + tr(" of ") + bytesToReceive;
+        status = tr("%1 of %2").arg(bytesReceived).arg(bytesToReceive);
     } else {
         if (d->m_bytesReceived > 0)
-            status = humanReadableSize(d->m_bytesReceived) + tr(" downloaded.");
+            status = tr("%1 downloaded.").arg(humanReadableSize(d->m_bytesReceived));
     }
 
-    status += QLatin1String(" (") + humanReadableSize(d->m_downloadSpeed) + tr("/sec") + QLatin1Char(')');
+    status += QLatin1Char(' ') + tr("(%1/sec)").arg(humanReadableSize(d->m_downloadSpeed));
     if (d->m_bytesToReceive > 0 && d->m_downloadSpeed > 0) {
         const qint64 time = (d->m_bytesToReceive - d->m_bytesReceived) / d->m_downloadSpeed;
 
@@ -337,22 +337,22 @@ void KDUpdater::FileDownloader::emitDownloadStatus()
 
         QString days;
         if (d > 0)
-            days = QString::number(d) + (d < 2 ? tr(" day") : tr(" days")) + QLatin1String(", ");
+            days = tr("%n day(s), ", "", d);
 
         QString hours;
         if (h > 0)
-            hours = QString::number(h) + (h < 2 ? tr(" hour") : tr(" hours")) + QLatin1String(", ");
+            hours = tr("%n hour(s), ", "", h);
 
         QString minutes;
         if (m > 0)
-            minutes = QString::number(m) + (m < 2 ? tr(" minute") : tr(" minutes"));
+            minutes = tr("%n minute(s)", "", m);
 
         QString seconds;
         if (s >= 0 && minutes.isEmpty()) {
             s = (s <= 0 ? 1 : s);
-            seconds = QString::number(s) + (s < 2 ? tr(" second") : tr(" seconds"));
+            seconds = tr("%n second(s)", "", s);
         }
-        status += tr(" - ") + days + hours + minutes + seconds + tr(" remaining.");
+        status += tr(" - %1%2%3%4 remaining.").arg(days).arg(hours).arg(minutes).arg(seconds);
     } else {
         status += tr(" - unknown time remaining.");
     }
