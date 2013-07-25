@@ -995,7 +995,7 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
     operation->setValue(QLatin1String("installer"), qVariantFromValue(d->m_core));
 
     operation->setArguments(d->m_core->replaceVariables(parameters));
-
+    operation->setValue(QLatin1String("component"), name());
     return operation;
 }
 

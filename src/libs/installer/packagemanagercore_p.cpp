@@ -95,7 +95,8 @@ public:
     {
         if (!m_operation)
             return;
-        qDebug() << QString::fromLatin1("%1 operation: %2").arg(state, m_operation->name());
+        qDebug() << QString::fromLatin1("%1 %2 operation: %3").arg(state, m_operation->value(
+            QLatin1String("component")).toString(), m_operation->name());
         qDebug() << QString::fromLatin1("\t- arguments: %1").arg(m_operation->arguments()
             .join(QLatin1String(", ")));
     }
@@ -1864,7 +1865,6 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
             // Remember that the operation was performed, that allows us to undo it if a following operation
             // fails or if this operation failed but still needs an undo call to cleanup.
             addPerformed(operation);
-            operation->setValue(QLatin1String("component"), component->name());
         }
 
         if (becameAdmin)
