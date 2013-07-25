@@ -230,7 +230,8 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
         }
 
         if (!foundDisplayName) {
-            qWarning() << "No DisplayName tag found, using component Name instead.";
+            qWarning() << QString::fromLatin1("No DisplayName tag found at '%1', using component Name instead."
+                ).arg(info.name);
             QDomElement displayNameElement = doc.createElement(QLatin1String("DisplayName"));
             update.appendChild(displayNameElement).appendChild(doc.createTextNode(info.name));
         }
