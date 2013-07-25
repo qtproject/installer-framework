@@ -485,6 +485,8 @@
             \o  Default
             \o  Possible values are: \c true, \c false, and \c script. Set to
                 \c true to preselect the component in the installer.
+                This takes effect only on components that have no visible
+                child components.
                 The boolean values are evaluated directly, while \c script is
                 resolved during runtime. Add the name of the script as a value
                 of the \c Script setting in this file. For an example script,
