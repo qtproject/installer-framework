@@ -233,13 +233,13 @@ private Q_SLOTS:
 private:
     void setLocalTempPath(const QString &tempPath);
 
-    Operation *createOperation(const QString &operation, const QString &parameter1 = QString(),
+    Operation *createOperation(const QString &operationName, const QString &parameter1 = QString(),
         const QString &parameter2 = QString(), const QString &parameter3 = QString(),
         const QString &parameter4 = QString(), const QString &parameter5 = QString(),
         const QString &parameter6 = QString(), const QString &parameter7 = QString(),
         const QString &parameter8 = QString(), const QString &parameter9 = QString(),
         const QString &parameter10 = QString());
-    Operation *createOperation(const QString &operation, const QStringList &parameters);
+    Operation *createOperation(const QString &operationName, const QStringList &parameters);
 
 private:
     QString validatorCallbackName;
