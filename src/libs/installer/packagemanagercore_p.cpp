@@ -2017,22 +2017,18 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
             const QString componentName = undoOperation->value(QLatin1String("component")).toString();
 
             if (!componentName.isEmpty()) {
-                    while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
-                        const QMessageBox::StandardButton button =
-                            MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-                            QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
-                            tr("Error during uninstallation process:\n%1").arg(undoOperation->errorString()),
-                            QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Retry);
+                while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
+                    const QMessageBox::StandardButton button =
+                        MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
+                        QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
+                        tr("Error during uninstallation process:\n%1").arg(undoOperation->errorString()),
+                        QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Retry);
 
-                        if (button == QMessageBox::Retry) {
-                            ok = performOperationThreaded(undoOperation, Undo);
-                        } else if (button == QMessageBox::Ignore) {
-                            ignoreError = true;
-                        }
-                    }
-            }
-
-            if (!componentName.isEmpty()) {
+                    if (button == QMessageBox::Retry)
+                        ok = performOperationThreaded(undoOperation, Undo);
+                    else if (button == QMessageBox::Ignore)
+                        ignoreError = true;
+                }
                 Component *component = m_core->componentByName(componentName);
                 if (!component)
                     component = componentsToReplace().value(componentName).second;
