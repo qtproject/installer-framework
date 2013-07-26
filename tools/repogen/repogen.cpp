@@ -177,7 +177,9 @@ int main(int argc, char** argv)
         if (remove)
             QInstaller::removeDirectory(repositoryDir);
 
-        if (!updateExistingRepository && QFile::exists(repositoryDir)) {
+        if (!updateExistingRepository && QFile::exists(repositoryDir) && !QDir(repositoryDir).entryList(
+            QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty()) {
+
             throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!")
                 .arg(repositoryDir));
         }
