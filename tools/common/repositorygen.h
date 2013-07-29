@@ -55,7 +55,7 @@ struct PackageInfo
     QString version;
     QString directory;
     QStringList dependencies;
-    QStringList copiedArchives;
+    QStringList copiedFiles;
 };
 typedef QVector<PackageInfo> PackageInfoVector;
 

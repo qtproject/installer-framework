@@ -580,7 +580,7 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
         }
 
         foreach (const QString &target, compressedFiles) {
-            (*infos)[i].copiedArchives.append(target);
+            (*infos)[i].copiedFiles.append(target);
 
             QFile archiveFile(target);
             QFile archiveHashFile(archiveFile.fileName() + QLatin1String(".sha1"));
@@ -597,7 +597,7 @@ void QInstallerTools::copyComponentData(const QString &packageDir, const QString
                 QInstaller::openForWrite(&archiveHashFile, archiveHashFile.fileName());
                 archiveHashFile.write(hashOfArchiveData);
                 qDebug() << "Generated sha1 hash:" << hashOfArchiveData;
-                (*infos)[i].copiedArchives.append(archiveHashFile.fileName());
+                (*infos)[i].copiedFiles.append(archiveHashFile.fileName());
                 archiveHashFile.close();
             } catch (const QInstaller::Error &/*e*/) {
                 archiveFile.close();
