@@ -155,6 +155,9 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
             // overwrite default if we have a language specific description
             if (languageAttribute == QLocale().name().toLower())
                 info.data[childE.tagName()] = childE.text();
+        } else if (childE.tagName() == QLatin1String("UpdateFile")) {
+            info.data[QLatin1String("CompressedSize")] = childE.attribute(QLatin1String("CompressedSize"));
+            info.data[QLatin1String("UncompressedSize")] = childE.attribute(QLatin1String("UncompressedSize"));
         } else {
             info.data[childE.tagName()] = childE.text();
         }

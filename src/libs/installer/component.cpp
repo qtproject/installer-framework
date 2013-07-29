@@ -275,8 +275,8 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scDescription, package.data(scDescription).toString());
     setValue(scDefault, package.data(scDefault).toString());
     setValue(scAutoDependOn, package.data(scAutoDependOn).toString());
-    setValue(scCompressedSize, QString::number(0));
-    setValue(scUncompressedSize, QString::number(0));
+    setValue(scCompressedSize, package.data(scCompressedSize).toString());
+    setValue(scUncompressedSize, package.data(scUncompressedSize).toString());
     setValue(scRemoteVersion, package.data(scRemoteVersion).toString());
     setValue(scInheritVersion, package.data(scInheritVersion).toString());
     setValue(scDependencies, package.data(scDependencies).toString());
