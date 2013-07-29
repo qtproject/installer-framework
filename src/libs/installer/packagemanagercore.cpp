@@ -192,12 +192,6 @@
 */
 
 /*!
-    \qmlsignal QInstaller::setRootComponents(list<Component> components)
-
-    Triggered with the list of new root components (for example after an online update).
-*/
-
-/*!
     \qmlsignal QInstaller::startAllComponentsReset()
 
     Triggered when the list of components starts to get updated.
@@ -206,9 +200,9 @@
 */
 
 /*!
-    \qmlsignal QInstaller::finishAllComponentsReset()
+    \qmlsignal QInstaller::finishAllComponentsReset(list<Component> rootComponents)
 
-    Triggered when the list of components has been updated.
+    Triggered when the list of new root components has been updated.
 
     \sa startAllComponentsReset
 */
@@ -220,9 +214,9 @@
 */
 
 /*!
-    \qmlsignal QInstaller::finishUpdaterComponentsReset()
+    \qmlsignal QInstaller::finishUpdaterComponentsReset(list<Component> componentsWithUpdates)
 
-    Triggered when components have been updated during a remote update.
+    Triggered when the list of available remote updates has been updated.
 */
 
 /*!
@@ -814,9 +808,8 @@ bool PackageManagerCore::fetchLocalPackagesTree()
 
     updateDisplayVersions(scDisplayVersion);
 
-    emit finishAllComponentsReset();
+    emit finishAllComponentsReset(d->m_rootComponents);
     d->setStatus(Success);
-    emit setRootComponents(d->m_rootComponents);
 
     return true;
 }
@@ -1315,6 +1308,8 @@ ComponentModel *PackageManagerCore::defaultComponentModel() const
         d->m_defaultModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("AllComponentsModel"));
     }
+    connect(this, SIGNAL(finishAllComponentsReset(QList<QInstaller::Component*>)), d->m_defaultModel,
+        SLOT(setRootComponents(QList<QInstaller::Component*>)));
     return d->m_defaultModel;
 }
 
@@ -1325,6 +1320,8 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
         d->m_updaterModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("UpdaterComponentsModel"));
     }
+    connect(this, SIGNAL(finishUpdaterComponentsReset(QList<QInstaller::Component*>)), d->m_updaterModel,
+        SLOT(setRootComponents(QList<QInstaller::Component*>)));
     return d->m_updaterModel;
 }
 
@@ -2133,8 +2130,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     if (!d->buildComponentTree(components, true))
         return false;
 
-    emit finishAllComponentsReset();
-    emit setRootComponents(d->m_rootComponents);
+    emit finishAllComponentsReset(d->m_rootComponents);
     return true;
 }
 
@@ -2275,7 +2271,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
         }
     } catch (const Error &error) {
         d->clearUpdaterComponentLists();
-        emit finishUpdaterComponentsReset();
+        emit finishUpdaterComponentsReset(QList<QInstaller::Component*>());
         d->setStatus(Failure, error.message());
 
         // TODO: make sure we remove all message boxes inside the library at some point.
@@ -2284,8 +2280,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
         return false;
     }
 
-    emit finishUpdaterComponentsReset();
-    emit setRootComponents(d->m_updaterComponents);
+    emit finishUpdaterComponentsReset(d->m_updaterComponents);
     return true;
 }
 
@@ -2349,8 +2344,6 @@ ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, con
         ComponentModel::tr("New Version"));
     model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal,
         ComponentModel::tr("Size"));
-    connect(this, SIGNAL(setRootComponents(QList<QInstaller::Component*>)), model,
-        SLOT(setRootComponents(QList<QInstaller::Component*>)));
     connect(model, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
         SLOT(componentsToInstallNeedsRecalculation()));
 

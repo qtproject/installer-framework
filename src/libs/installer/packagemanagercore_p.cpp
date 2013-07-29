@@ -380,7 +380,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
         std::sort(m_rootComponents.begin(), m_rootComponents.end(), Component::SortingPriorityGreaterThan());
     } catch (const Error &error) {
         clearAllComponentLists();
-        emit m_core->finishAllComponentsReset();
+        emit m_core->finishAllComponentsReset(QList<QInstaller::Component*>());
         setStatus(PackageManagerCore::Failure, error.message());
 
         // TODO: make sure we remove all message boxes inside the library at some point.

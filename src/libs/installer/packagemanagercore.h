@@ -271,13 +271,12 @@ Q_SIGNALS:
     void finishButtonClicked();
 
     void metaJobInfoMessage(const QString &message);
-    void setRootComponents(const QList<QInstaller::Component*> &components);
 
     void startAllComponentsReset();
-    void finishAllComponentsReset();
+    void finishAllComponentsReset(const QList<QInstaller::Component*> &rootComponents);
 
     void startUpdaterComponentsReset();
-    void finishUpdaterComponentsReset();
+    void finishUpdaterComponentsReset(const QList<QInstaller::Component*> &componentsWithUpdates);
 
     void installationStarted();
     void installationInterrupted();
