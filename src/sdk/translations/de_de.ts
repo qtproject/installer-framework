@@ -2057,7 +2057,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     <name>QInstaller::PerformInstallationPage</name>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="1733"/>
-        <source>&amp;Uninstall</source>
+        <source>U&amp;ninstall</source>
         <translation>&amp;Deinstallieren</translation>
     </message>
     <message>

@@ -1606,7 +1606,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::PerformInstallationPage</name>
     <message>
-        <source>&amp;Uninstall</source>
+        <source>U&amp;ninstall</source>
         <translation>卸载(&amp;U)</translation>
     </message>
     <message>

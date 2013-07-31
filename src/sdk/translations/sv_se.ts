@@ -1815,7 +1815,7 @@ Installing component %1</source>
     <name>QInstaller::PerformInstallationPage</name>
     <message>
         <location filename="../../libinstaller/packagemanagergui.cpp" line="1776"/>
-        <source>&amp;Uninstall</source>
+        <source>U&amp;ninstall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

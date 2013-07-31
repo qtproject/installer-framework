@@ -1730,7 +1730,7 @@ void PerformInstallationPage::entering()
     setCommitPage(true);
 
     if (packageManagerCore()->isUninstaller()) {
-        setButtonText(QWizard::CommitButton, tr("&Uninstall"));
+        setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setTitle(tr("Uninstalling %1").arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runUninstaller()));
