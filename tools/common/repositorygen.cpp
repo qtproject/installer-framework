@@ -446,7 +446,8 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QString &packagesD
         qDebug() << QString::fromLatin1("- it provides the package %1 - %2").arg(info.name, info.version);
     }
 
-    if (!packagesToFilter->isEmpty()) {
+    if (!packagesToFilter->isEmpty() && packagesToFilter->at(0) != QString::fromLatin1(
+        "X_fake_filter_component_for_online_only_installer_X")) {
         qWarning() << "The following explicitly given packages could not be found\n in package directory:" << *packagesToFilter;
     }
 

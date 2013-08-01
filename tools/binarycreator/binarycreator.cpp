@@ -687,7 +687,7 @@ int main(int argc, char **argv)
     }
 
     if (onlineOnly) {
-        filteredPackages.append(QLatin1String("XXXXXXXXXXXXXXXXX_online_XXXXXXXXXXXXXXXXX"));
+        filteredPackages.append(QLatin1String("X_fake_filter_component_for_online_only_installer_X"));
         ftype = QInstallerTools::Include;
     }
 
