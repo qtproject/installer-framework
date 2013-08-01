@@ -201,6 +201,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
         bool foundDefault = false;
         bool foundVirtual = false;
         bool foundDisplayName = false;
+        bool foundDownloadableArchives = false;
         const QDomNode package = packageXml.firstChildElement(QLatin1String("Package"));
         const QDomNodeList childNodes = package.childNodes();
         for (int i = 0; i < childNodes.count(); ++i) {
@@ -213,6 +214,8 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                 foundVirtual = true;
             if (key == QLatin1String("DisplayName"))
                 foundDisplayName = true;
+            if (key == QLatin1String("DownloadableArchives"))
+                foundDownloadableArchives = true;
             if (node.isComment() || blackList.contains(key))
                 continue;   // just skip comments and some tags...
 
@@ -296,6 +299,11 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                 QTextStream in(&scriptFile);
                 scriptContent = in.readAll();
             }
+
+            // if the user isn't aware of the downloadable archives value we will add it automatically later
+            foundDownloadableArchives |= scriptContent.contains(QLatin1String("addDownloadableArchive"))
+                || scriptContent.contains(QLatin1String("removeDownloadableArchive"));
+
             static QScriptEngine testScriptEngine;
             testScriptEngine.evaluate(scriptContent, scriptFile.fileName());
             if (testScriptEngine.hasUncaughtException()) {
@@ -311,6 +319,21 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
 
             const QString toLocation(QString::fromLatin1("%1/%2/%3").arg(targetDir, info.name, script));
             copyWithException(scriptFile.fileName(), toLocation, QLatin1String("script"));
+        }
+
+        // write DownloadableArchives tag if that is missed by the user
+        if (!foundDownloadableArchives && !info.copiedFiles.isEmpty()) {
+            QStringList realContentFiles;
+            foreach (const QString &filePath, info.copiedFiles) {
+                if (!filePath.endsWith(QLatin1String(".sha1"), Qt::CaseInsensitive)) {
+                    const QString fileName = QFileInfo(filePath).fileName();
+                    // remove unnecessary version string from filename and add it to the list
+                    realContentFiles.append(fileName.mid(info.version.count()));
+                }
+            }
+
+            update.appendChild(doc.createElement(QLatin1String("DownloadableArchives"))).appendChild(doc
+                .createTextNode(realContentFiles.join(QChar::fromLatin1(','))));
         }
 
         // copy user interfaces

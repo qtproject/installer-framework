@@ -506,7 +506,11 @@
 
         \row
             \o  DownloadableArchives
-            \o  Lists the data files (separated by commas) for an online installer to download. Optional.
+            \o  Lists the data files (separated by commas) for an online
+                installer to download.
+                If there is some data inside the component and the package.xml
+                and/or the script has no DownloadableArchives value, the
+                repogen tool registers the found data automatically.
     \endtable
 
     \section2 Component Dependencies
