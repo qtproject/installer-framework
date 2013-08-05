@@ -324,6 +324,7 @@ void ComponentModel::setRootComponents(QList<QInstaller::Component*> rootCompone
 
     m_uncheckable.clear();
     m_indexByNameCache.clear();
+    m_rootComponentList.clear();
     m_initialCheckedState.clear();
     m_currentCheckedState.clear();
     m_modelState = DefaultChecked;
