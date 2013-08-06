@@ -111,7 +111,8 @@ HEADERS += packagemanagercore.h \
     packagemanagercoredata.h \
     registerqtincreatorqnxoperation.h \
     applyproductkeyoperation.h \
-    globals.h
+    globals.h \
+    graph.h
 
     SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
