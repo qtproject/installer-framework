@@ -980,9 +980,9 @@ public:
         m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
 
         connect(m_allModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
-            SLOT(onCheckStateChanged(QInstaller::ComponentModel::ModelState)));
+            SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
         connect(m_updaterModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
-            SLOT(onCheckStateChanged(QInstaller::ComponentModel::ModelState)));
+            SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
 
         QHBoxLayout *hlayout = new QHBoxLayout;
         hlayout->addWidget(m_treeView, 3);
@@ -1044,8 +1044,6 @@ public:
     {
         m_checkDefault->setVisible(m_core->isInstaller() || m_core->isPackageManager());
         if (m_treeView->selectionModel()) {
-            disconnect(m_currentModel, SIGNAL(checkStateChanged(QModelIndex)), this,
-                SLOT(currentCheckedChanged(QModelIndex)));
             disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
                 this, SLOT(currentSelectedChanged(QModelIndex)));
         }
@@ -1070,8 +1068,6 @@ public:
             hasChildren = m_currentModel->hasChildren(m_currentModel->index(row, 0));
         m_treeView->setRootIsDecorated(hasChildren);
 
-        connect(m_currentModel, SIGNAL(checkStateChanged(QModelIndex)), this,
-            SLOT(currentCheckedChanged(QModelIndex)));
         connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(currentSelectedChanged(QModelIndex)));
 
@@ -1079,12 +1075,6 @@ public:
     }
 
 public slots:
-    void currentCheckedChanged(const QModelIndex &current)
-    {
-        if (m_treeView->selectionModel()->currentIndex() == current)
-            currentSelectedChanged(current);
-    }
-
     void currentSelectedChanged(const QModelIndex &current)
     {
         if (!current.isValid())
@@ -1098,7 +1088,7 @@ public slots:
         if ((m_core->isUninstaller()) || (!component))
             return;
 
-        if ((component->checkState() != Qt::Unchecked) && (component->updateUncompressedSize() > 0)) {
+        if (component->isSelected() && (component->value(scUncompressedSizeSum).toLongLong() > 0)) {
             m_sizeLabel->setText(ComponentSelectionPage::tr("This component "
                 "will occupy approximately %1 on your hard disk drive.")
                 .arg(humanReadableSize(component->value(scUncompressedSizeSum).toLongLong())));
@@ -1120,10 +1110,9 @@ public slots:
         m_currentModel->setCheckedState(ComponentModel::DefaultChecked);
     }
 
-    void onCheckStateChanged(QInstaller::ComponentModel::ModelState state)
+    void onModelStateChanged(QInstaller::ComponentModel::ModelState state)
     {
         q->setModified(state != ComponentModel::DefaultChecked);
-
         // If all components in the checked list are only checkable when run without forced installation, set
         // ComponentModel::AllUnchecked as well, as we cannot uncheck anything. Helps to keep the UI correct.
         if ((!m_core->noForceInstallation()) && (m_currentModel->checked() == m_currentModel->uncheckable()))
@@ -1133,6 +1122,10 @@ public slots:
         m_checkAll->setEnabled(state.testFlag(ComponentModel::AllChecked) == false);
         m_uncheckAll->setEnabled(state.testFlag(ComponentModel::AllUnchecked) == false);
         m_checkDefault->setEnabled(state.testFlag(ComponentModel::DefaultChecked) == false);
+
+        // update the current selected node (important to reflect possible sub-node changes)
+        if (m_treeView->selectionModel())
+            currentSelectedChanged(m_treeView->selectionModel()->currentIndex());
     }
 
 public:

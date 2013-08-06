@@ -399,10 +399,6 @@ void ComponentModel::slotModelReset()
         m_initialCheckedState[component->checkState()].insert(component);
     }
 
-    // update all checked components uncompressed size (important for nodes)
-    foreach (QInstaller::Component *component, checked)
-        component->updateUncompressedSize();
-
     m_currentCheckedState = m_initialCheckedState;
     updateAndEmitModelState();     // update the internal state
 }
@@ -524,6 +520,10 @@ QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compone
             break;
         }
     }
+
+    // update all nodes uncompressed size
+    foreach (Component *const node, m_rootComponentList)
+        node->updateUncompressedSize(); // this is a recursive call
     return changed;
 }
 
