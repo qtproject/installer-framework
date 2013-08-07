@@ -1,4 +1,7 @@
 1.4
+- Fixed a crash in the package manager. (QTIFW-313)
+- Fixed component selection showing wrong package sizes. (QTIFW-302)
+- Better handling of dependencies while updating. (QTIFW-318)
 - Now allows to ignore SSL errors.
 - Implemented dedicated translation settings support.
 - Added exceptionhandler code for connected signals/JS methods.
