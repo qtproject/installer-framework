@@ -157,6 +157,8 @@ public:
     QStringList replaceVariables(const QStringList &str) const;
 
     void writeUninstaller();
+    void writeMaintenanceConfigFiles();
+
     QString uninstallerName() const;
     QString installerBinaryPath() const;
 

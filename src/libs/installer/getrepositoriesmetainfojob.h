@@ -59,14 +59,14 @@ namespace KDUpdater {
 namespace QInstaller {
 
 class GetRepositoryMetaInfoJob;
-class PackageManagerCorePrivate;
+class PackageManagerCore;
 
 class INSTALLER_EXPORT GetRepositoriesMetaInfoJob : public KDJob
 {
     Q_OBJECT
 
 public:
-    explicit GetRepositoriesMetaInfoJob(PackageManagerCorePrivate *corePrivate);
+    explicit GetRepositoriesMetaInfoJob(PackageManagerCore *core);
 
     QStringList temporaryDirectories() const;
     QStringList releaseTemporaryDirectories() const;
@@ -91,7 +91,7 @@ private:
     bool m_canceled;
     int m_silentRetries;
     bool m_haveIgnoredError;
-    PackageManagerCorePrivate *m_corePrivate;
+    PackageManagerCore *m_core;
 
     QString m_errorString;
     QList<Repository> m_repositories;

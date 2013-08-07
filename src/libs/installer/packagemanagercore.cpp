@@ -413,6 +413,11 @@ void PackageManagerCore::writeUninstaller()
     }
 }
 
+void PackageManagerCore::writeMaintenanceConfigFiles()
+{
+    d->writeMaintenanceConfigFiles();
+}
+
 void PackageManagerCore::reset(const QHash<QString, QString> &params)
 {
     d->m_completeUninstall = false;

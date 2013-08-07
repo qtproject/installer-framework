@@ -111,14 +111,14 @@ private:
 
 // -- GetRepositoryMetaInfoJob
 
-GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(PackageManagerCorePrivate *corePrivate, QObject *parent)
+GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(PackageManagerCore *core, QObject *parent)
     : KDJob(parent)
     , m_canceled(false)
     , m_silentRetries(4)
     , m_retriesLeft(m_silentRetries)
     , m_downloader(0)
     , m_waitForDone(false)
-    , m_corePrivate(corePrivate)
+    , m_core(core)
 {
     setCapabilities(Cancelable);
 }
@@ -331,12 +331,11 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         }
 
         if (!repositoryUpdates.isEmpty()) {
-            if (m_corePrivate->m_data.settings().updateDefaultRepositories(repositoryUpdates)
-                == Settings::UpdatesApplied) {
-                    if (m_corePrivate->isUpdater() || m_corePrivate->isPackageManager())
-                        m_corePrivate->writeMaintenanceConfigFiles();
-                    finished(QInstaller::RepositoryUpdatesReceived, tr("Repository updates received."));
-                    return;
+            if (m_core->settings().updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
+                if (m_core->isUpdater() || m_core->isPackageManager())
+                    m_core->writeMaintenanceConfigFiles();
+                finished(QInstaller::RepositoryUpdatesReceived, tr("Repository updates received."));
+                return;
             }
         }
     }
@@ -538,26 +537,26 @@ void GetRepositoryMetaInfoJob::onAuthenticatorChanged(const QAuthenticator &auth
     const QString username = authenticator.user();
     const QString password = authenticator.password();
     if (username != m_repository.username() || password != m_repository.password()) {
-        QSet<Repository> repositories = m_corePrivate->m_data.settings().defaultRepositories();
+        QSet<Repository> repositories = m_core->settings().defaultRepositories();
         bool reposChanged = updateRepositories(&repositories, username, password);
         if (reposChanged)
-            m_corePrivate->m_data.settings().setDefaultRepositories(repositories);
+            m_core->settings().setDefaultRepositories(repositories);
 
-        repositories = m_corePrivate->m_data.settings().temporaryRepositories();
+        repositories = m_core->settings().temporaryRepositories();
         reposChanged |= updateRepositories(&repositories, username, password);
         if (reposChanged) {
-            m_corePrivate->m_data.settings().setTemporaryRepositories(repositories,
-            m_corePrivate->m_data.settings().hasReplacementRepos());
+            m_core->settings().setTemporaryRepositories(repositories,
+            m_core->settings().hasReplacementRepos());
         }
 
-        repositories = m_corePrivate->m_data.settings().userRepositories();
+        repositories = m_core->settings().userRepositories();
         reposChanged |= updateRepositories(&repositories, username, password);
         if (reposChanged)
-            m_corePrivate->m_data.settings().setUserRepositories(repositories);
+            m_core->settings().setUserRepositories(repositories);
 
         if (reposChanged) {
-            if (m_corePrivate->isUpdater() || m_corePrivate->isPackageManager())
-                m_corePrivate->writeMaintenanceConfigFiles();
+            if (m_core->isUpdater() || m_core->isPackageManager())
+                m_core->writeMaintenanceConfigFiles();
             finished(QInstaller::RepositoryUpdatesReceived, tr("Repository updates received."));
         }
     }
