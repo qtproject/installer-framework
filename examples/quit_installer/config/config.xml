@@ -5,5 +5,5 @@
     <Title>Quit Installer Example</Title>
     <Publisher>Qt-Project</Publisher>
     <StartMenuDir>Qt Installer Framework Example</StartMenuDir>
-    <TargetDir>@homeDir@/IFWQuitInstallerExample</TargetDir>
+    <TargetDir>@HomeDir@/IFWQuitInstallerExample</TargetDir>
 </Installer>

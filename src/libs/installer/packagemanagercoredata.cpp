@@ -57,6 +57,8 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     // in a script or...
     m_variables.insert(QLatin1String("rootDir"), QDir::rootPath());
     m_variables.insert(QLatin1String("homeDir"), QDir::homePath());
+    m_variables.insert(QLatin1String("RootDir"), QDir::rootPath());
+    m_variables.insert(QLatin1String("HomeDir"), QDir::homePath());
     m_variables.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
 
 #ifdef Q_OS_WIN

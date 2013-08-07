@@ -5,5 +5,5 @@
     <Title>Change installer UI Example</Title>
     <Publisher>Qt-Project</Publisher>
     <StartMenuDir>Change installer UI Example</StartMenuDir>
-    <TargetDir>@homeDir@/IFWChangeInstallerUIExample</TargetDir>
+    <TargetDir>@HomeDir@/IFWChangeInstallerUIExample</TargetDir>
 </Installer>
