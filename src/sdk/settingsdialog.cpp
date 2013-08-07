@@ -45,6 +45,7 @@
 #include <kdupdaterfiledownloader.h>
 #include <kdupdaterfiledownloaderfactory.h>
 #include <packagemanagercore.h>
+#include <productkeycheck.h>
 
 #include <QtCore/QFile>
 
@@ -572,6 +573,9 @@ void SettingsDialog::setupRepositoriesTreeWidget()
 void SettingsDialog::insertRepositories(const QSet<Repository> repos, QTreeWidgetItem *rootItem)
 {
     rootItem->setFirstColumnSpanned(true);
-    foreach (const Repository &repo, repos)
-        rootItem->addChild(new RepositoryItem(repo));
+    foreach (const Repository &repo, repos) {
+        RepositoryItem *item = new RepositoryItem(repo);
+        rootItem->addChild(item);
+        item->setHidden(!ProductKeyCheck::instance(m_core)->isValidRepository(repo));
+    }
 }

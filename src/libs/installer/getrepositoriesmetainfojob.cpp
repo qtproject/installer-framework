@@ -42,6 +42,7 @@
 #include "getrepositoriesmetainfojob.h"
 
 #include "getrepositorymetainfojob.h"
+#include "productkeycheck.h"
 #include "packagemanagercore_p.h"
 
 #include <QtCore/QDebug>
@@ -120,8 +121,9 @@ void GetRepositoriesMetaInfoJob::doStart()
 {
     if ((m_core->isInstaller() && !m_core->isOfflineOnly()) || (m_core->isUpdater()
         || m_core->isPackageManager())) {
+            const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance(m_core);
             foreach (const Repository &repo, m_core->settings().repositories()) {
-                if (repo.isEnabled())
+                if (repo.isEnabled() && productKeyCheck->isValidRepository(repo))
                     m_repositories += repo;
             }
     }

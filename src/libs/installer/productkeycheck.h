@@ -38,6 +38,7 @@
 
 namespace QInstaller{
     class PackageManagerCore;
+    class Repository;
 }
 
 class ProductKeyCheckPrivate;
@@ -59,6 +60,9 @@ public:
 
     // to filter none valid licenses
     bool isValidLicenseTextFile(const QString &fileName);
+
+    // to filter repositories not matching the license
+    bool isValidRepository(const QInstaller::Repository &repository) const;
 
 private:
     ProductKeyCheck();
