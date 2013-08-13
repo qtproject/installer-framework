@@ -887,9 +887,39 @@ bool PackageManagerCore::fetchRemotePackagesTree()
         return false;
 
     bool success = false;
-    if (!isUpdater())
+    if (!isUpdater()) {
         success = fetchAllPackages(packages, installedPackages);
-    else {
+        if (success && !d->statusCanceledOrFailed() && isPackageManager()) {
+            foreach (Package *const update, packages) {
+                if (update->data(scEssential, scFalse).toString().toLower() == scTrue) {
+                    const QString name = update->data(scName).toString();
+                    if (!installedPackages.contains(name)) {
+                        success = false;
+                        break;  // unusual, the maintenance tool should always be available
+                    }
+
+                    const LocalPackage localPackage = installedPackages.value(name);
+                    const QString updateVersion = update->data(scRemoteVersion).toString();
+                    if (KDUpdater::compareVersion(updateVersion, localPackage.version) <= 0)
+                        break;  // remote version equals or is less than the installed maintenance tool
+
+                    const QDate updateDate = update->data(scReleaseDate).toDate();
+                    if (localPackage.lastUpdateDate >= updateDate)
+                        break;  // remote release date equals or is less than the installed maintenance tool
+
+                    success = false;
+                    break;  // we found a newer version of the maintenance tool
+                }
+            }
+
+            if (!success && !d->statusCanceledOrFailed()) {
+                updateDisplayVersions(scRemoteDisplayVersion);
+                d->setStatus(ForceUpdate, tr("There is an important update available, please run the "
+                    "updater first."));
+                return false;
+            }
+        }
+    } else {
         success = fetchUpdaterPackages(packages, installedPackages);
     }
 
@@ -2185,7 +2215,9 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                 }
             }
 
-            if (!isValidUpdate)
+            // break if the update is not valid and if it's not the maintenance tool (we might get an update
+            // for the maintenance tool even if it's not currently installed - possible offline installation)
+            if (!isValidUpdate && (update->data(scEssential, scFalse).toString().toLower() == scFalse))
                 continue;   // Update for not installed package found, skip it.
 
             const LocalPackage &localPackage = locals.value(name);

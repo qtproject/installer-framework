@@ -82,7 +82,8 @@ public:
         Failure = EXIT_FAILURE,
         Running,
         Canceled,
-        Unfinished
+        Unfinished,
+        ForceUpdate
     };
     Status status() const;
     QString error() const;
