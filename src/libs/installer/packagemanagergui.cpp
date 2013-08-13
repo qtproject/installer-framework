@@ -1112,7 +1112,7 @@ public slots:
 
     void onModelStateChanged(QInstaller::ComponentModel::ModelState state)
     {
-        q->setModified(state != ComponentModel::DefaultChecked);
+        q->setModified(state.testFlag(ComponentModel::DefaultChecked) == false);
         // If all components in the checked list are only checkable when run without forced installation, set
         // ComponentModel::AllUnchecked as well, as we cannot uncheck anything. Helps to keep the UI correct.
         if ((!m_core->noForceInstallation()) && (m_currentModel->checked() == m_currentModel->uncheckable()))
@@ -1236,7 +1236,7 @@ bool ComponentSelectionPage::isComplete() const
 {
     if (packageManagerCore()->isInstaller() || packageManagerCore()->isUpdater())
         return d->m_currentModel->checked().count();
-    return d->m_currentModel->checkedState() != ComponentModel::DefaultChecked;
+    return d->m_currentModel->checkedState().testFlag(ComponentModel::DefaultChecked) == false;
 }
 
 
