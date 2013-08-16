@@ -254,19 +254,97 @@ bool QtPatchOperation::performOperation()
     }
 
 #ifdef Q_OS_MAC
-    // just try to patch here at the beginning to keep the unpatched qmake if mac install_names_tool fails
-    MacReplaceInstallNamesOperation operation;
-    operation.setArguments(QStringList()
-                           //can not use the old path which is wrong in the webkit case
-                           //<< QString::fromUtf8(oldQtPath)
-                           << QLatin1String("/lib/Qt") // search string
-                           << newQtPathStr + QLatin1String("/lib/Qt") //replace string
-                           << newQtPathStr //where
-                           );
-    if (!operation.performOperation()) {
-        setError(operation.error());
-        setErrorString(operation.errorString());
-        return false;
+    // looking for /lib/Qt wasn't enough for all libs and frameworks,
+    // at the Qt4 case we had for example: /lib/libQtCLucene* and /lib/phonon*
+    // so now we find every possible replace string inside dynlib dependencies
+    // and we reduce it to few as possible search strings
+    QStringList possibleSearchStringList;
+    QDirIterator dirIterator(newQtPathStr + QLatin1String("/lib/"));
+    while (dirIterator.hasNext()) {
+        const QString possibleSearchString = QString(dirIterator.next()).remove(newQtPathStr);
+        const QFileInfo fileInfo = dirIterator.fileInfo();
+        if (fileInfo.isSymLink())
+            continue;
+        if (fileInfo.isDir()) {
+            if (possibleSearchString.endsWith(QLatin1String(".framework")))
+                possibleSearchStringList.append(possibleSearchString);
+            else
+                continue;
+        }
+        if (possibleSearchString.endsWith(QLatin1String(".dylib")))
+            possibleSearchStringList.append(possibleSearchString);
+    }
+
+    // now we have this in possibleSearchStringList at Qt 4.8.6
+//    "/lib/libQtCLucene.4.8.6.dylib"
+//    "/lib/libQtCLucene_debug.4.8.6.dylib"
+//    "/lib/phonon.framework"
+//    "/lib/QtCore.framework"
+//    "/lib/QtDeclarative.framework"
+//    "/lib/QtDesigner.framework"
+//    "/lib/QtDesignerComponents.framework"
+//    "/lib/QtGui.framework"
+//    "/lib/QtHelp.framework"
+//    "/lib/QtMultimedia.framework"
+//    "/lib/QtNetwork.framework"
+//    "/lib/QtOpenGL.framework"
+//    "/lib/QtScript.framework"
+//    "/lib/QtScriptTools.framework"
+//    "/lib/QtSql.framework"
+//    "/lib/QtSvg.framework"
+//    "/lib/QtTest.framework"
+//    "/lib/QtWebKit.framework"
+//    "/lib/QtXml.framework"
+//    "/lib/QtXmlPatterns.framework"
+
+    // so then we reduce the possible filter strings as much as possible
+    QStringList searchStringList;
+
+    // as the minimal search string use the subdirector lib + one letter from the name
+    int minFilterLength = QString(QLatin1String("/lib/")).length() + 1;
+
+    while (!possibleSearchStringList.isEmpty()) {
+        QString firstSearchString = possibleSearchStringList.first();
+        int filterLength = minFilterLength;
+        int lastFilterCount = 0;
+        QString lastFilterString;
+        // now filter as long as we find something more then 1
+        for (; filterLength < firstSearchString.length(); ++filterLength) {
+            QString filterString(firstSearchString.left(filterLength));
+            QStringList filteredStringList(possibleSearchStringList.filter(filterString));
+            // found a valid filter
+            if (lastFilterCount > filteredStringList.count()) {
+                possibleSearchStringList = QList<QString>::fromSet(possibleSearchStringList.toSet() -
+                    possibleSearchStringList.filter(lastFilterString).toSet());
+                searchStringList.append(lastFilterString);
+                break;
+            } else if (lastFilterCount == 1){ //in case there is only one we can use the complete name
+                possibleSearchStringList = QList<QString>::fromSet(possibleSearchStringList.toSet() -
+                    possibleSearchStringList.filter(firstSearchString).toSet());
+                searchStringList.append(firstSearchString);
+                break;
+            } else {
+                lastFilterCount = possibleSearchStringList.filter(filterString).count();
+                lastFilterString = filterString;
+            }
+        }
+    }
+
+    // in the tested Qt 4.8.6 case we have searchStringList ("/lib/libQtCLucene", "/lib/Qt", "/lib/phonon")
+    foreach (const QString &searchString, searchStringList) {
+        MacReplaceInstallNamesOperation operation;
+        operation.setArguments(QStringList()
+                               //can not use the old path which is wrong in the webkit case
+                               //<< QString::fromUtf8(oldQtPath)
+                               << searchString
+                               << newQtPathStr + searchString //replace string
+                               << newQtPathStr //where
+                               );
+        if (!operation.performOperation()) {
+            setError(operation.error());
+            setErrorString(operation.errorString());
+            return false;
+        }
     }
 #endif
 
