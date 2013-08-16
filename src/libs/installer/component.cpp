@@ -1403,6 +1403,9 @@ void Component::updateModelData(const QString &key, const QString &data)
     if (key == scDisplayVersion)
         setData(data, LocalDisplayVersion);
 
+    if (key == scReleaseDate)
+        setData(data, ReleaseDate);
+
     if (key == scUncompressedSize) {
         quint64 size = d->m_vars.value(scUncompressedSizeSum).toLongLong();
         setData(humanReadableSize(size), UncompressedSize);

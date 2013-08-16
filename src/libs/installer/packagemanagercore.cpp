@@ -2370,7 +2370,7 @@ QString PackageManagerCore::findDisplayVersion(const QString &componentName,
 
 ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, const QString &objectName) const
 {
-    ComponentModel *model = new ComponentModel(4, core);
+    ComponentModel *model = new ComponentModel(5, core);
 
     model->setObjectName(objectName);
     model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal,
@@ -2379,6 +2379,8 @@ ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, con
         ComponentModel::tr("Installed Version"));
     model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal,
         ComponentModel::tr("New Version"));
+    model->setHeaderData(ComponentModelHelper::ReleaseDateColumn, Qt::Horizontal,
+        ComponentModel::tr("Release Date"));
     model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal,
         ComponentModel::tr("Size"));
     connect(model, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
