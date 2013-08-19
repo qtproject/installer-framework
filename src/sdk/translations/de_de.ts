@@ -1542,7 +1542,7 @@ Fehler beim Laden von %2</translation>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="946"/>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
-        <translation>Bitte lesen Sie das folgenden Lizenzabkommen. Sie müssen die Bedingungen in diesem Abkommen akzeptieren, um die Installation fortsetzen zu können.</translation>
+        <translation>Bitte lesen Sie das folgende Lizenzabkommen. Sie müssen die Bedingungen in diesem Abkommen akzeptieren, um die Installation fortsetzen zu können.</translation>
     </message>
     <message>
         <location filename="../../libs/installer/packagemanagergui.cpp" line="948"/>
