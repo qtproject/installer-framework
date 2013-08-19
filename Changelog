@@ -1,4 +1,6 @@
 1.4
+- Force updating of Essential components. (QTIFW-38, QTIFW-155)
+- Display release date in Updater and Packagemanager. (QTIFW-25)
 - Fixed a crash in the package manager. (QTIFW-313)
 - Fixed component selection showing wrong package sizes. (QTIFW-302)
 - Better handling of dependencies while updating. (QTIFW-318)
