@@ -372,6 +372,7 @@ TargetDirectoryPageImpl::TargetDirectoryPageImpl(PackageManagerCore *core)
 
     m_warningLabel = new QLabel(this);
     m_warningLabel->setPalette(palette);
+    m_warningLabel->setWordWrap(true);
 
     insertWidget(m_warningLabel, QLatin1String("MessageLabel"), 2);
 }
@@ -412,7 +413,7 @@ QString TargetDirectoryPageImpl::targetDirWarning() const
 
     // check if there are not allowed characters in the target path
     if (dir.contains(QRegExp(ambiguousChars))) {
-        return TargetDirectoryPageImpl::tr("The installation path must not contain %1, \n"
+        return TargetDirectoryPageImpl::tr("The installation path must not contain %1, "
             "please specify a valid folder.").arg(ambiguousChars);
     }
 
