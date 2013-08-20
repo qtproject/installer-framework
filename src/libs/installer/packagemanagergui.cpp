@@ -55,10 +55,8 @@
 #include "kdsysinfo.h"
 
 #include <QtCore/QDir>
-#include <QtCore/QDynamicPropertyChangeEvent>
 #include <QtCore/QPair>
 #include <QtCore/QProcess>
-#include <QtCore/QRegExp>
 #include <QtCore/QSettings>
 #include <QtCore/QTimer>
 
@@ -66,7 +64,6 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QGridLayout>
-#include <QFormLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
@@ -74,14 +71,11 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QMessageBox>
-#include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QTextBrowser>
-#include <QTreeWidget>
 #include <QTreeView>
 #include <QVBoxLayout>
-#include <QScrollBar>
 #include <QShowEvent>
 
 using namespace KDUpdater;
