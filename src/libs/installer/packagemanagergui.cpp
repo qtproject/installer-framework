@@ -1849,6 +1849,13 @@ void FinishedPage::entering()
             m_commitButton = cancel;
             cancel->setEnabled(true);
             cancel->setVisible(true);
+            // we don't use the usual FinishButton so we need to connect the misused CancelButton
+            connect(cancel, SIGNAL(clicked()), gui(), SIGNAL(finishButtonClicked()));
+            connect(cancel, SIGNAL(clicked()), packageManagerCore(), SIGNAL(finishButtonClicked()));
+            // for the moment we don't want the rejected signal connected
+            disconnect(gui(), SIGNAL(rejected()), packageManagerCore(), SLOT(setCanceled()));
+
+            connect(gui()->button(QWizard::CommitButton), SIGNAL(clicked()), this, SLOT(cleanupChangedConnects()));
         }
         setButtonText(QWizard::CommitButton, tr("Restart"));
         setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::FinishButton));
@@ -1914,6 +1921,17 @@ void FinishedPage::handleFinishClicked()
     QProcess::startDetached(program, args);
 }
 
+void FinishedPage::cleanupChangedConnects()
+{
+    if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton)) {
+        // remove the workaround connect from entering page
+        disconnect(cancel, SIGNAL(clicked()), gui(), SIGNAL(finishButtonClicked()));
+        disconnect(cancel, SIGNAL(clicked()), packageManagerCore(), SIGNAL(finishButtonClicked()));
+        connect(gui(), SIGNAL(rejected()), packageManagerCore(), SLOT(setCanceled()));
+
+        disconnect(gui()->button(QWizard::CommitButton), SIGNAL(clicked()), this, SLOT(cleanupChangedConnects()));
+    }
+}
 
 // -- RestartPage
 
