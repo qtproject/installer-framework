@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>component1</DisplayName>
+    <Version>1.0.1</Version>
+    <ReleaseDate>2013-08-21</ReleaseDate>
+    <Script>installscript.js</Script>
+</Package>
