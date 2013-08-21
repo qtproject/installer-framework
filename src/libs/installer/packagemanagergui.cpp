@@ -306,6 +306,12 @@ QString PackageManagerGui::defaultButtonText(int wizardButton) const
 
 void PackageManagerGui::clickButton(int wb, int delay)
 {
+    // transform the FinishButton to CancelButton, because of the needed misuse of the
+    // CancelButton as a FinishButton to have some more control of closing the wizard
+    if (!m_core->isInstaller() && currentId() == PackageManagerCore::InstallationFinished &&
+        wb == QWizard::FinishButton) {
+        wb = QWizard::CancelButton;
+    }
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) ))
         QTimer::singleShot(delay, b, SLOT(click()));
     else
@@ -314,6 +320,12 @@ void PackageManagerGui::clickButton(int wb, int delay)
 
 bool PackageManagerGui::isButtonEnabled(int wb)
 {
+    // transform the FinishButton to CancelButton, because of the needed misuse of the
+    // CancelButton as a FinishButton to have some more control of closing the wizard
+    if (!m_core->isInstaller() && currentId() == PackageManagerCore::InstallationFinished &&
+        wb == QWizard::FinishButton) {
+        wb = QWizard::CancelButton;
+    }
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) ))
         return b->isEnabled();
 
