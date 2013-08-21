@@ -520,7 +520,6 @@ void PackageManagerGui::cancelButtonClicked()
 
 void PackageManagerGui::rejectWithoutPrompt()
 {
-    m_core->setCanceled();
     QDialog::reject();
 }
 
