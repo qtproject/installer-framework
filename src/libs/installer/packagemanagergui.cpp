@@ -306,20 +306,18 @@ QString PackageManagerGui::defaultButtonText(int wizardButton) const
 
 void PackageManagerGui::clickButton(int wb, int delay)
 {
-    if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) )) {
+    if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) ))
         QTimer::singleShot(delay, b, SLOT(click()));
-    } else {
+    else
         qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
-    }
 }
 
 bool PackageManagerGui::isButtonEnabled(int wb)
 {
-    if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) )) {
+    if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) ))
         return b->isEnabled();
-    } else {
-        qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
-    }
+
+    qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
     return false;
 }
 
