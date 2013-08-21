@@ -162,16 +162,19 @@ QScriptValue qFileDialogGetExistingDirectory(QScriptContext *context, QScriptEng
 QScriptValue qFileDialogGetOpenFileName(QScriptContext *context, QScriptEngine *engine)
 {
     Q_UNUSED(engine);
-    const QScriptValue check = checkArguments(context, 0, 2);
+    const QScriptValue check = checkArguments(context, 0, 3);
     if (check.isError())
         return check;
     QString caption;
     QString dir;
+    QString fileNameFilter;
     if (context->argumentCount() > 0)
         caption = context->argument(0).toString();
     if (context->argumentCount() > 1)
         dir = context->argument(1).toString();
-    return QFileDialog::getExistingDirectory(0, caption, dir);
+    if (context->argumentCount() > 2)
+        fileNameFilter = context->argument(2).toString();
+    return QFileDialog::getOpenFileName(0, caption, dir, fileNameFilter);
 }
 
 } //namespace QInstaller
@@ -200,6 +203,8 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core)
     QScriptValue fileDialog = newArray();
     fileDialog.setProperty(QLatin1String("getExistingDirectory"),
         newFunction(qFileDialogGetExistingDirectory));
+    fileDialog.setProperty(QLatin1String("getOpenFileName"),
+        newFunction(qFileDialogGetOpenFileName));
     globalObject().setProperty(QLatin1String("QFileDialog"), fileDialog);
 
     const QList<Component*> components = m_core->availableComponents();
