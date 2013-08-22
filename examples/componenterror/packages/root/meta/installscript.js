@@ -49,7 +49,7 @@ function abortInstaller()
     installer.setDefaultPageVisible(QInstaller.PerformInstallation, false);
     installer.setDefaultPageVisible(QInstaller.LicenseCheck, false);
 
-    var abortText = "<font color='red' size=6>" + qsTr("The installation has been failed.") + "</font>";
+    var abortText = "<font color='red' size=6>" + qsTr("The installation has failed.") + "</font>";
 
     var error_list = installer.value("component_errors").split(";;;");
     abortText += "<ul>";
