@@ -100,6 +100,7 @@ CONFIG += depend_includepath
 
 GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
 DEFINES += QT_NO_CAST_FROM_ASCII "_GIT_SHA1_=$$GIT_SHA1" IFW_VERSION=$$IFW_VERSION
+DEFINES += IFW_REPOSITORY_FORMAT_VERSION=$$IFW_REPOSITORY_FORMAT_VERSION
 
 static {
     LIBS += -l7z
