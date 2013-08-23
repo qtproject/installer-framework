@@ -853,7 +853,15 @@ BinaryContent BinaryContent::readAndRegisterFromBinary(const QString &path)
 */
 BinaryContent BinaryContent::readFromApplicationFile()
 {
+#ifdef Q_OS_MAC
+    // On Mac, data is always in a separate file so that the binary can be signed
+    QDir dataPath(QCoreApplication::applicationFilePath());
+    dataPath.cdUp();
+    dataPath.cd(QLatin1String("Resources"));
+    return BinaryContent::readFromBinary(dataPath.filePath(QLatin1String("installer.dat")));
+#else
     return BinaryContent::readFromBinary(QCoreApplication::applicationFilePath());
+#endif
 }
 
 /*!
