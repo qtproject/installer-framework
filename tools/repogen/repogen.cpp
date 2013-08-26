@@ -130,7 +130,7 @@ int main(int argc, char** argv)
                 filteredPackages = args.first().split(QLatin1Char(','));
                 args.removeFirst();
                 filterType = QInstallerTools::Include;
-            } else if (args.first() == QLatin1String("--single") || args.first() == QLatin1String("--update")) {
+            } else if (args.first() == QLatin1String("--update")) {
                 args.removeFirst();
                 updateExistingRepository = true;
             } else if (args.first() == QLatin1String("-p") || args.first() == QLatin1String("--packages")) {
@@ -169,7 +169,7 @@ int main(int argc, char** argv)
         }
 
         if (remove && updateExistingRepository) {
-            throw QInstaller::Error(QObject::tr("Argument -r|--remove and --single|--update are mutually "
+            throw QInstaller::Error(QObject::tr("Argument -r|--remove and --update are mutually "
                 "exclusive!"));
         }
 
@@ -177,7 +177,9 @@ int main(int argc, char** argv)
         if (remove)
             QInstaller::removeDirectory(repositoryDir);
 
-        if (!updateExistingRepository && QFile::exists(repositoryDir)) {
+        if (!updateExistingRepository && QFile::exists(repositoryDir) && !QDir(repositoryDir).entryList(
+            QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty()) {
+
             throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!")
                 .arg(repositoryDir));
         }

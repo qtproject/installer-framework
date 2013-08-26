@@ -685,7 +685,7 @@ int main(int argc, char **argv)
     }
 
     if (onlineOnly) {
-        filteredPackages.append(QLatin1String("XXXXXXXXXXXXXXXXX_online_XXXXXXXXXXXXXXXXX"));
+        filteredPackages.append(QLatin1String("X_fake_filter_component_for_online_only_installer_X"));
         ftype = QInstallerTools::Include;
     }
 
@@ -738,7 +738,7 @@ int main(int argc, char **argv)
                 comp.setName(info.name.toUtf8());
 
                 qDebug() << "Creating component info for" << info.name;
-                foreach (const QString &archive, info.copiedArchives) {
+                foreach (const QString &archive, info.copiedFiles) {
                     const QSharedPointer<Archive> arch(new Archive(archive));
                     qDebug() << QString::fromLatin1("Appending %1 (%2)").arg(archive,
                         humanReadableSize(arch->size()));

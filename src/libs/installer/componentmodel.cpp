@@ -324,9 +324,16 @@ void ComponentModel::setRootComponents(QList<QInstaller::Component*> rootCompone
 
     m_uncheckable.clear();
     m_indexByNameCache.clear();
-    m_initialCheckedState.clear();
-    m_currentCheckedState.clear();
+    m_rootComponentList.clear();
     m_modelState = DefaultChecked;
+
+    // Initialize these with an empty set for every possible state, cause we compare the hashes later in
+    // updateAndEmitModelState(). The comparison than might lead to wrong results if one of the checked
+    // states is absent initially.
+    m_initialCheckedState[Qt::Checked] = ComponentSet();
+    m_initialCheckedState[Qt::Unchecked] = ComponentSet();
+    m_initialCheckedState[Qt::PartiallyChecked] = ComponentSet();
+    m_currentCheckedState = m_initialCheckedState;  // both should be equal
 
     // show virtual components only in case we run as updater or if the core engine is set to show them
     const bool showVirtuals = m_core->isUpdater() || m_core->virtualComponentsVisible();
@@ -519,6 +526,10 @@ QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compone
             break;
         }
     }
+
+    // update all nodes uncompressed size
+    foreach (Component *const node, m_rootComponentList)
+        node->updateUncompressedSize(); // this is a recursive call
     return changed;
 }
 

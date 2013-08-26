@@ -198,9 +198,8 @@ void MacReplaceInstallNamesOperation::relocateBinary(const MacBinaryInfo &info, 
 
 
     // change framework ID only if dynamicLibId isn't only the filename, if it has no relative path ("@")
-    // and is not existing at the current looking for location
     if (!info.dynamicLibId.isEmpty() && (info.dynamicLibId != QFileInfo(info.fileName).fileName())
-        && !info.dynamicLibId.contains(QLatin1String("@")) && !QFileInfo(info.dynamicLibId).exists()) {
+        && !info.dynamicLibId.contains(QLatin1String("@"))) {
             // error is set inside the execCommand method
             if (!execCommand(QLatin1String("install_name_tool"), QStringList(QLatin1String("-id"))
                     << info.fileName << info.fileName)) {

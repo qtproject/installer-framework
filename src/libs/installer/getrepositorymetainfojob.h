@@ -61,7 +61,7 @@ namespace KDUpdater {
 namespace QInstaller {
 
 class GetRepositoriesMetaInfoJob;
-class PackageManagerCorePrivate;
+class PackageManagerCore;
 
 class INSTALLER_EXPORT GetRepositoryMetaInfoJob : public KDJob
 {
@@ -70,7 +70,7 @@ class INSTALLER_EXPORT GetRepositoryMetaInfoJob : public KDJob
     friend class QInstaller::GetRepositoriesMetaInfoJob;
 
 public:
-    explicit GetRepositoryMetaInfoJob(PackageManagerCorePrivate *corePrivate, QObject *parent = 0);
+    explicit GetRepositoryMetaInfoJob(PackageManagerCore *core, QObject *parent = 0);
     ~GetRepositoryMetaInfoJob();
 
     Repository repository() const;
@@ -119,7 +119,7 @@ private:
 
     bool m_waitForDone;
     QThreadPool m_threadPool;
-    PackageManagerCorePrivate *m_corePrivate;
+    PackageManagerCore *m_core;
 };
 
 }   // namespace QInstaller

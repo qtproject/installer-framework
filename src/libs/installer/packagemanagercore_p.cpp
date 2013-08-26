@@ -49,6 +49,7 @@
 #include "fileutils.h"
 #include "fsengineclient.h"
 #include "globals.h"
+#include "graph.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
 #include "progresscoordinator.h"
@@ -95,7 +96,8 @@ public:
     {
         if (!m_operation)
             return;
-        qDebug() << QString::fromLatin1("%1 operation: %2").arg(state, m_operation->name());
+        qDebug() << QString::fromLatin1("%1 %2 operation: %3").arg(state, m_operation->value(
+            QLatin1String("component")).toString(), m_operation->name());
         qDebug() << QString::fromLatin1("\t- arguments: %1").arg(m_operation->arguments()
             .join(QLatin1String(", ")));
     }
@@ -379,7 +381,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
         std::sort(m_rootComponents.begin(), m_rootComponents.end(), Component::SortingPriorityGreaterThan());
     } catch (const Error &error) {
         clearAllComponentLists();
-        emit m_core->finishAllComponentsReset();
+        emit m_core->finishAllComponentsReset(QList<QInstaller::Component*>());
         setStatus(PackageManagerCore::Failure, error.message());
 
         // TODO: make sure we remove all message boxes inside the library at some point.
@@ -630,7 +632,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     }
 
     if (!m_repoMetaInfoJob) {
-        m_repoMetaInfoJob = new GetRepositoriesMetaInfoJob(this);
+        m_repoMetaInfoJob = new GetRepositoriesMetaInfoJob(m_core);
         m_repoMetaInfoJob->setAutoDelete(false);
         connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this, SLOT(infoMessage(KDJob*,
             QString)));
@@ -1328,9 +1330,15 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 #endif
         }
 
+        performedOperations = sortOperationsBasedOnComponentDependencies(
+            performedOperations);
+
+        m_core->setValue(QLatin1String("installedOperationAreSorted"), QLatin1String("true"));
+
         try {
             KDSaveFile file(dataFile + QLatin1String(".new"));
             openForWrite(&file, file.fileName());
+
             writeUninstallerBinaryData(&file, &input, performedOperations, layout);
             appendInt64(&file, MagicCookieDat);
             file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
@@ -1611,8 +1619,14 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         OperationList nonRevertedOperations;
         QHash<QString, Component *> componentsByName;
 
+        // order the operations in the right component dependency order
+        // next loop will save the needed operations in reverse order for uninstallation
+        OperationList performedOperationsOld = m_performedOperationsOld;
+        if (m_core->value(QLatin1String("installedOperationAreSorted")) != QLatin1String("true"))
+            performedOperationsOld = sortOperationsBasedOnComponentDependencies(m_performedOperationsOld);
+
         // build a list of undo operations based on the checked state of the component
-        foreach (Operation *operation, m_performedOperationsOld) {
+        foreach (Operation *operation, performedOperationsOld) {
             const QString &name = operation->value(QLatin1String("component")).toString();
             Component *component = componentsByName.value(name, 0);
             if (!component)
@@ -1663,6 +1677,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
                     continue;
             }
 
+            // uninstallation should be in reverse order so prepend it here
             undoOperations.prepend(operation);
             updateAdminRights |= operation->value(QLatin1String("admin")).toBool();
         }
@@ -1864,7 +1879,6 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
             // Remember that the operation was performed, that allows us to undo it if a following operation
             // fails or if this operation failed but still needs an undo call to cleanup.
             addPerformed(operation);
-            operation->setValue(QLatin1String("component"), component->name());
         }
 
         if (becameAdmin)
@@ -2017,22 +2031,18 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
             const QString componentName = undoOperation->value(QLatin1String("component")).toString();
 
             if (!componentName.isEmpty()) {
-                    while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
-                        const QMessageBox::StandardButton button =
-                            MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-                            QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
-                            tr("Error during uninstallation process:\n%1").arg(undoOperation->errorString()),
-                            QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Retry);
+                while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
+                    const QMessageBox::StandardButton button =
+                        MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
+                        QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
+                        tr("Error during uninstallation process:\n%1").arg(undoOperation->errorString()),
+                        QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Retry);
 
-                        if (button == QMessageBox::Retry) {
-                            ok = performOperationThreaded(undoOperation, Undo);
-                        } else if (button == QMessageBox::Ignore) {
-                            ignoreError = true;
-                        }
-                    }
-            }
-
-            if (!componentName.isEmpty()) {
+                    if (button == QMessageBox::Retry)
+                        ok = performOperationThreaded(undoOperation, Undo);
+                    else if (button == QMessageBox::Ignore)
+                        ignoreError = true;
+                }
                 Component *component = m_core->componentByName(componentName);
                 if (!component)
                     component = componentsToReplace().value(componentName).second;
@@ -2357,6 +2367,37 @@ void PackageManagerCorePrivate::connectOperationCallMethodRequest(Operation *con
                     this, SLOT(handleMethodInvocationRequest(QString)), Qt::BlockingQueuedConnection);
         }
     }
+}
+
+OperationList PackageManagerCorePrivate::sortOperationsBasedOnComponentDependencies(const OperationList &operationList)
+{
+    OperationList sortedOperations;
+    QHash<QString, OperationList> componentOperationHash;
+
+    // sort component unrelated operations to the beginning
+    foreach (Operation *operation, operationList) {
+        const QString componentName = operation->value(QLatin1String("component")).toString();
+        if (componentName.isEmpty())
+            sortedOperations.append(operation);
+        else {
+            OperationList componentOperationList = componentOperationHash.value(componentName);
+            componentOperationList.append(operation);
+            componentOperationHash.insert(operation->value(QLatin1String("component")).toString(),
+                componentOperationList);
+        }
+    }
+
+    // create the complete component graph
+    Graph<QString> componentGraph;
+    foreach (const Component* componentNode, m_core->availableComponents()) {
+        componentGraph.addNode(componentNode->name());
+        componentGraph.addEdges(componentNode->name(), componentNode->dependencies());
+    }
+
+    foreach (const QString &componentName, componentGraph.sort())
+        sortedOperations.append(componentOperationHash.value(componentName));
+
+    return sortedOperations;
 }
 
 void PackageManagerCorePrivate::handleMethodInvocationRequest(const QString &invokableMethodName)

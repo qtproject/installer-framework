@@ -246,6 +246,12 @@
         \row
             \o  os
             \o  Current platform: \c "x11", \c "win", or \c "mac".
+        \row
+            \o  RootDir
+            \o  Root directory of the filesystem.
+        \row
+            \o  HomeDir
+            \o  Home directory of the current user.
     \endtable
 
     The variables can be resolved by calls to \c installer.value(). If embedded

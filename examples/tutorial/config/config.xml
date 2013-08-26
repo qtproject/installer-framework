@@ -5,5 +5,5 @@
     <Title>Your application Installer</Title>
     <Publisher>Your vendor</Publisher>
     <StartMenuDir>Super App</StartMenuDir>
-    <TargetDir>@rootDir@InstallationDirectory</TargetDir>
+    <TargetDir>@RootDir@InstallationDirectory</TargetDir>
 </Installer>

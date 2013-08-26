@@ -167,6 +167,7 @@ public:
     int countProgressOperations(const OperationList &operations);
     void connectOperationToInstaller(Operation *const operation, double progressOperationPartSize);
     void connectOperationCallMethodRequest(Operation *const operation);
+    OperationList sortOperationsBasedOnComponentDependencies(const OperationList &operationList);
 
     Operation *createOwnedOperation(const QString &type);
     Operation *takeOwnedOperation(Operation *operation);

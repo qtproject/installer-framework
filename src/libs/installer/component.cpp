@@ -275,8 +275,8 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scDescription, package.data(scDescription).toString());
     setValue(scDefault, package.data(scDefault).toString());
     setValue(scAutoDependOn, package.data(scAutoDependOn).toString());
-    setValue(scCompressedSize, QString::number(0));
-    setValue(scUncompressedSize, QString::number(0));
+    setValue(scCompressedSize, package.data(scCompressedSize).toString());
+    setValue(scUncompressedSize, package.data(scUncompressedSize).toString());
     setValue(scRemoteVersion, package.data(scRemoteVersion).toString());
     setValue(scInheritVersion, package.data(scInheritVersion).toString());
     setValue(scDependencies, package.data(scDependencies).toString());
@@ -948,7 +948,7 @@ bool Component::operationsCreatedSuccessfully() const
     return d->m_operationsCreatedSuccessfully;
 }
 
-Operation *Component::createOperation(const QString &operation, const QString &parameter1,
+Operation *Component::createOperation(const QString &operationName, const QString &parameter1,
     const QString &parameter2, const QString &parameter3, const QString &parameter4, const QString &parameter5,
     const QString &parameter6, const QString &parameter7, const QString &parameter8, const QString &parameter9,
     const QString &parameter10)
@@ -975,29 +975,29 @@ Operation *Component::createOperation(const QString &operation, const QString &p
     if (!parameter10.isNull())
         arguments.append(parameter10);
 
-    return createOperation(operation, arguments);
+    return createOperation(operationName, arguments);
 }
 
-Operation *Component::createOperation(const QString &operation, const QStringList &parameters)
+Operation *Component::createOperation(const QString &operationName, const QStringList &parameters)
 {
-    Operation *op = KDUpdater::UpdateOperationFactory::instance().create(operation);
-    if (op == 0) {
+    Operation *operation = KDUpdater::UpdateOperationFactory::instance().create(operationName);
+    if (operation == 0) {
         const QMessageBox::StandardButton button =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
             QLatin1String("OperationDoesNotExistError"), tr("Error"), tr("Error: Operation %1 does not exist")
-                .arg(operation), QMessageBox::Abort | QMessageBox::Ignore);
+                .arg(operationName), QMessageBox::Abort | QMessageBox::Ignore);
         if (button == QMessageBox::Abort)
             d->m_operationsCreatedSuccessfully = false;
-        return op;
+        return operation;
     }
 
-    if (op->name() == QLatin1String("Delete"))
-        op->setValue(QLatin1String("performUndo"), false);
-    op->setValue(QLatin1String("installer"), qVariantFromValue(d->m_core));
+    if (operation->name() == QLatin1String("Delete"))
+        operation->setValue(QLatin1String("performUndo"), false);
+    operation->setValue(QLatin1String("installer"), qVariantFromValue(d->m_core));
 
-    op->setArguments(d->m_core->replaceVariables(parameters));
-
-    return op;
+    operation->setArguments(d->m_core->replaceVariables(parameters));
+    operation->setValue(QLatin1String("component"), name());
+    return operation;
 }
 
 /*!
@@ -1403,6 +1403,9 @@ void Component::updateModelData(const QString &key, const QString &data)
 
     if (key == scDisplayVersion)
         setData(data, LocalDisplayVersion);
+
+    if (key == scReleaseDate)
+        setData(data, ReleaseDate);
 
     if (key == scUncompressedSize) {
         quint64 size = d->m_vars.value(scUncompressedSizeSum).toLongLong();

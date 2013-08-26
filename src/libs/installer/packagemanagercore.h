@@ -82,7 +82,8 @@ public:
         Failure = EXIT_FAILURE,
         Running,
         Canceled,
-        Unfinished
+        Unfinished,
+        ForceUpdate
     };
     Status status() const;
     QString error() const;
@@ -157,6 +158,8 @@ public:
     QStringList replaceVariables(const QStringList &str) const;
 
     void writeUninstaller();
+    void writeMaintenanceConfigFiles();
+
     QString uninstallerName() const;
     QString installerBinaryPath() const;
 
@@ -271,13 +274,12 @@ Q_SIGNALS:
     void finishButtonClicked();
 
     void metaJobInfoMessage(const QString &message);
-    void setRootComponents(const QList<QInstaller::Component*> &components);
 
     void startAllComponentsReset();
-    void finishAllComponentsReset();
+    void finishAllComponentsReset(const QList<QInstaller::Component*> &rootComponents);
 
     void startUpdaterComponentsReset();
-    void finishUpdaterComponentsReset();
+    void finishUpdaterComponentsReset(const QList<QInstaller::Component*> &componentsWithUpdates);
 
     void installationStarted();
     void installationInterrupted();

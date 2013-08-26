@@ -177,7 +177,7 @@ bool IntroductionPageImpl::validatePage()
             m_allPackagesFetched = core->fetchRemotePackagesTree();
             if (!m_allPackagesFetched) {
                 QString error = core->error();
-                if (core->isPackageManager()) {
+                if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
                     // if that fails and we're in maintenance mode, try to fetch local installed tree
                     localPackagesTreeFetched = core->fetchLocalPackagesTree();
                     if (localPackagesTreeFetched) {
@@ -366,6 +366,7 @@ TargetDirectoryPageImpl::TargetDirectoryPageImpl(PackageManagerCore *core)
 
     m_warningLabel = new QLabel(this);
     m_warningLabel->setPalette(palette);
+    m_warningLabel->setWordWrap(true);
 
     insertWidget(m_warningLabel, QLatin1String("MessageLabel"), 2);
 }
@@ -400,7 +401,7 @@ QString TargetDirectoryPageImpl::targetDirWarning() const
     dir = dir.mid(2);
 #endif
 
-    QString ambiguousChars = QLatin1String("[<>|?*!@#$%^&:,; ]");
+    QString ambiguousChars = QLatin1String("[~<>|?*!@#$%^&:,; ]");
     if (packageManagerCore()->settings().allowSpaceInPath())
         ambiguousChars.remove(QLatin1Char(' '));
 

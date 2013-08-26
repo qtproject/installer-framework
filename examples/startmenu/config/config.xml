@@ -6,5 +6,5 @@
     <Publisher>Qt-Project</Publisher>
     <!-- Directory name is used in component.xml -->
     <StartMenuDir>Qt Installer Framework Example</StartMenuDir>
-    <TargetDir>@homeDir@/IFWStartMenuExample</TargetDir>
+    <TargetDir>@HomeDir@/IFWStartMenuExample</TargetDir>
 </Installer>

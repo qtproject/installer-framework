@@ -117,9 +117,11 @@ public Q_SLOTS:
             case PackageManagerCore::Failure:
                 state = E_FAIL;
                 break;
-            case PackageManagerCore::Unfinished: // fall through
-            case PackageManagerCore::Success:
-            case PackageManagerCore::Running:
+            default:    // fall through
+                // PackageManagerCore::Unfinished, PackageManagerCore::Success, PackageManagerCore::Running
+                // PackageManagerCore::ForceUpdate
+
+                // already set
                 //state = S_OK;
                 break;
         }

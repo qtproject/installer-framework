@@ -192,12 +192,6 @@
 */
 
 /*!
-    \qmlsignal QInstaller::setRootComponents(list<Component> components)
-
-    Triggered with the list of new root components (for example after an online update).
-*/
-
-/*!
     \qmlsignal QInstaller::startAllComponentsReset()
 
     Triggered when the list of components starts to get updated.
@@ -206,9 +200,9 @@
 */
 
 /*!
-    \qmlsignal QInstaller::finishAllComponentsReset()
+    \qmlsignal QInstaller::finishAllComponentsReset(list<Component> rootComponents)
 
-    Triggered when the list of components has been updated.
+    Triggered when the list of new root components has been updated.
 
     \sa startAllComponentsReset
 */
@@ -220,9 +214,9 @@
 */
 
 /*!
-    \qmlsignal QInstaller::finishUpdaterComponentsReset()
+    \qmlsignal QInstaller::finishUpdaterComponentsReset(list<Component> componentsWithUpdates)
 
-    Triggered when components have been updated during a remote update.
+    Triggered when the list of available remote updates has been updated.
 */
 
 /*!
@@ -417,6 +411,11 @@ void PackageManagerCore::writeUninstaller()
                 QMessageBox::Ok, QMessageBox::Ok);
         }
     }
+}
+
+void PackageManagerCore::writeMaintenanceConfigFiles()
+{
+    d->writeMaintenanceConfigFiles();
 }
 
 void PackageManagerCore::reset(const QHash<QString, QString> &params)
@@ -814,9 +813,8 @@ bool PackageManagerCore::fetchLocalPackagesTree()
 
     updateDisplayVersions(scDisplayVersion);
 
-    emit finishAllComponentsReset();
+    emit finishAllComponentsReset(d->m_rootComponents);
     d->setStatus(Success);
-    emit setRootComponents(d->m_rootComponents);
 
     return true;
 }
@@ -889,9 +887,39 @@ bool PackageManagerCore::fetchRemotePackagesTree()
         return false;
 
     bool success = false;
-    if (!isUpdater())
+    if (!isUpdater()) {
         success = fetchAllPackages(packages, installedPackages);
-    else {
+        if (success && !d->statusCanceledOrFailed() && isPackageManager()) {
+            foreach (Package *const update, packages) {
+                if (update->data(scEssential, scFalse).toString().toLower() == scTrue) {
+                    const QString name = update->data(scName).toString();
+                    if (!installedPackages.contains(name)) {
+                        success = false;
+                        break;  // unusual, the maintenance tool should always be available
+                    }
+
+                    const LocalPackage localPackage = installedPackages.value(name);
+                    const QString updateVersion = update->data(scRemoteVersion).toString();
+                    if (KDUpdater::compareVersion(updateVersion, localPackage.version) <= 0)
+                        break;  // remote version equals or is less than the installed maintenance tool
+
+                    const QDate updateDate = update->data(scReleaseDate).toDate();
+                    if (localPackage.lastUpdateDate >= updateDate)
+                        break;  // remote release date equals or is less than the installed maintenance tool
+
+                    success = false;
+                    break;  // we found a newer version of the maintenance tool
+                }
+            }
+
+            if (!success && !d->statusCanceledOrFailed()) {
+                updateDisplayVersions(scRemoteDisplayVersion);
+                d->setStatus(ForceUpdate, tr("There is an important update available, please run the "
+                    "updater first."));
+                return false;
+            }
+        }
+    } else {
         success = fetchUpdaterPackages(packages, installedPackages);
     }
 
@@ -1315,6 +1343,8 @@ ComponentModel *PackageManagerCore::defaultComponentModel() const
         d->m_defaultModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("AllComponentsModel"));
     }
+    connect(this, SIGNAL(finishAllComponentsReset(QList<QInstaller::Component*>)), d->m_defaultModel,
+        SLOT(setRootComponents(QList<QInstaller::Component*>)));
     return d->m_defaultModel;
 }
 
@@ -1325,6 +1355,8 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
         d->m_updaterModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("UpdaterComponentsModel"));
     }
+    connect(this, SIGNAL(finishUpdaterComponentsReset(QList<QInstaller::Component*>)), d->m_updaterModel,
+        SLOT(setRootComponents(QList<QInstaller::Component*>)));
     return d->m_updaterModel;
 }
 
@@ -2141,8 +2173,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     if (!d->buildComponentTree(components, true))
         return false;
 
-    emit finishAllComponentsReset();
-    emit setRootComponents(d->m_rootComponents);
+    emit finishAllComponentsReset(d->m_rootComponents);
     return true;
 }
 
@@ -2192,7 +2223,9 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                 }
             }
 
-            if (!isValidUpdate)
+            // break if the update is not valid and if it's not the maintenance tool (we might get an update
+            // for the maintenance tool even if it's not currently installed - possible offline installation)
+            if (!isValidUpdate && (update->data(scEssential, scFalse).toString().toLower() == scFalse))
                 continue;   // Update for not installed package found, skip it.
 
             const LocalPackage &localPackage = locals.value(name);
@@ -2283,7 +2316,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
         }
     } catch (const Error &error) {
         d->clearUpdaterComponentLists();
-        emit finishUpdaterComponentsReset();
+        emit finishUpdaterComponentsReset(QList<QInstaller::Component*>());
         d->setStatus(Failure, error.message());
 
         // TODO: make sure we remove all message boxes inside the library at some point.
@@ -2292,8 +2325,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
         return false;
     }
 
-    emit finishUpdaterComponentsReset();
-    emit setRootComponents(d->m_updaterComponents);
+    emit finishUpdaterComponentsReset(d->m_updaterComponents);
     return true;
 }
 
@@ -2346,7 +2378,7 @@ QString PackageManagerCore::findDisplayVersion(const QString &componentName,
 
 ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, const QString &objectName) const
 {
-    ComponentModel *model = new ComponentModel(4, core);
+    ComponentModel *model = new ComponentModel(5, core);
 
     model->setObjectName(objectName);
     model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal,
@@ -2355,10 +2387,10 @@ ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, con
         ComponentModel::tr("Installed Version"));
     model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal,
         ComponentModel::tr("New Version"));
+    model->setHeaderData(ComponentModelHelper::ReleaseDateColumn, Qt::Horizontal,
+        ComponentModel::tr("Release Date"));
     model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal,
         ComponentModel::tr("Size"));
-    connect(this, SIGNAL(setRootComponents(QList<QInstaller::Component*>)), model,
-        SLOT(setRootComponents(QList<QInstaller::Component*>)));
     connect(model, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
         SLOT(componentsToInstallNeedsRecalculation()));
 

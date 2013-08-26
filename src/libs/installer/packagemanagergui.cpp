@@ -299,20 +299,30 @@ QString PackageManagerGui::defaultButtonText(int wizardButton) const
 
 void PackageManagerGui::clickButton(int wb, int delay)
 {
-    if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) )) {
-        QTimer::singleShot(delay, b, SLOT(click()));
-    } else {
-        qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
+    // transform the FinishButton to CancelButton, because of the needed misuse of the
+    // CancelButton as a FinishButton to have some more control of closing the wizard
+    if (!m_core->isInstaller() && currentId() == PackageManagerCore::InstallationFinished &&
+        wb == QWizard::FinishButton) {
+        wb = QWizard::CancelButton;
     }
+    if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) ))
+        QTimer::singleShot(delay, b, SLOT(click()));
+    else
+        qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
 }
 
 bool PackageManagerGui::isButtonEnabled(int wb)
 {
-    if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) )) {
-        return b->isEnabled();
-    } else {
-        qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
+    // transform the FinishButton to CancelButton, because of the needed misuse of the
+    // CancelButton as a FinishButton to have some more control of closing the wizard
+    if (!m_core->isInstaller() && currentId() == PackageManagerCore::InstallationFinished &&
+        wb == QWizard::FinishButton) {
+        wb = QWizard::CancelButton;
     }
+    if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) ))
+        return b->isEnabled();
+
+    qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
     return false;
 }
 
@@ -970,9 +980,9 @@ public:
         m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
 
         connect(m_allModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
-            SLOT(onCheckStateChanged(QInstaller::ComponentModel::ModelState)));
+            SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
         connect(m_updaterModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
-            SLOT(onCheckStateChanged(QInstaller::ComponentModel::ModelState)));
+            SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
 
         QHBoxLayout *hlayout = new QHBoxLayout;
         hlayout->addWidget(m_treeView, 3);
@@ -1034,8 +1044,6 @@ public:
     {
         m_checkDefault->setVisible(m_core->isInstaller() || m_core->isPackageManager());
         if (m_treeView->selectionModel()) {
-            disconnect(m_currentModel, SIGNAL(checkStateChanged(QModelIndex)), this,
-                SLOT(currentCheckedChanged(QModelIndex)));
             disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
                 this, SLOT(currentSelectedChanged(QModelIndex)));
         }
@@ -1060,8 +1068,6 @@ public:
             hasChildren = m_currentModel->hasChildren(m_currentModel->index(row, 0));
         m_treeView->setRootIsDecorated(hasChildren);
 
-        connect(m_currentModel, SIGNAL(checkStateChanged(QModelIndex)), this,
-            SLOT(currentCheckedChanged(QModelIndex)));
         connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(currentSelectedChanged(QModelIndex)));
 
@@ -1069,12 +1075,6 @@ public:
     }
 
 public slots:
-    void currentCheckedChanged(const QModelIndex &current)
-    {
-        if (m_treeView->selectionModel()->currentIndex() == current)
-            currentSelectedChanged(current);
-    }
-
     void currentSelectedChanged(const QModelIndex &current)
     {
         if (!current.isValid())
@@ -1088,7 +1088,7 @@ public slots:
         if ((m_core->isUninstaller()) || (!component))
             return;
 
-        if ((component->checkState() != Qt::Unchecked) && (component->updateUncompressedSize() > 0)) {
+        if (component->isSelected() && (component->value(scUncompressedSizeSum).toLongLong() > 0)) {
             m_sizeLabel->setText(ComponentSelectionPage::tr("This component "
                 "will occupy approximately %1 on your hard disk drive.")
                 .arg(humanReadableSize(component->value(scUncompressedSizeSum).toLongLong())));
@@ -1110,10 +1110,9 @@ public slots:
         m_currentModel->setCheckedState(ComponentModel::DefaultChecked);
     }
 
-    void onCheckStateChanged(QInstaller::ComponentModel::ModelState state)
+    void onModelStateChanged(QInstaller::ComponentModel::ModelState state)
     {
-        q->setModified(state != ComponentModel::DefaultChecked);
-
+        q->setModified(state.testFlag(ComponentModel::DefaultChecked) == false);
         // If all components in the checked list are only checkable when run without forced installation, set
         // ComponentModel::AllUnchecked as well, as we cannot uncheck anything. Helps to keep the UI correct.
         if ((!m_core->noForceInstallation()) && (m_currentModel->checked() == m_currentModel->uncheckable()))
@@ -1123,6 +1122,10 @@ public slots:
         m_checkAll->setEnabled(state.testFlag(ComponentModel::AllChecked) == false);
         m_uncheckAll->setEnabled(state.testFlag(ComponentModel::AllUnchecked) == false);
         m_checkDefault->setEnabled(state.testFlag(ComponentModel::DefaultChecked) == false);
+
+        // update the current selected node (important to reflect possible sub-node changes)
+        if (m_treeView->selectionModel())
+            currentSelectedChanged(m_treeView->selectionModel()->currentIndex());
     }
 
 public:
@@ -1233,7 +1236,7 @@ bool ComponentSelectionPage::isComplete() const
 {
     if (packageManagerCore()->isInstaller() || packageManagerCore()->isUpdater())
         return d->m_currentModel->checked().count();
-    return d->m_currentModel->checkedState() != ComponentModel::DefaultChecked;
+    return d->m_currentModel->checkedState().testFlag(ComponentModel::DefaultChecked) == false;
 }
 
 
@@ -1836,6 +1839,13 @@ void FinishedPage::entering()
             m_commitButton = cancel;
             cancel->setEnabled(true);
             cancel->setVisible(true);
+            // we don't use the usual FinishButton so we need to connect the misused CancelButton
+            connect(cancel, SIGNAL(clicked()), gui(), SIGNAL(finishButtonClicked()));
+            connect(cancel, SIGNAL(clicked()), packageManagerCore(), SIGNAL(finishButtonClicked()));
+            // for the moment we don't want the rejected signal connected
+            disconnect(gui(), SIGNAL(rejected()), packageManagerCore(), SLOT(setCanceled()));
+
+            connect(gui()->button(QWizard::CommitButton), SIGNAL(clicked()), this, SLOT(cleanupChangedConnects()));
         }
         setButtonText(QWizard::CommitButton, tr("Restart"));
         setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::FinishButton));
@@ -1901,6 +1911,17 @@ void FinishedPage::handleFinishClicked()
     QProcess::startDetached(program, args);
 }
 
+void FinishedPage::cleanupChangedConnects()
+{
+    if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton)) {
+        // remove the workaround connect from entering page
+        disconnect(cancel, SIGNAL(clicked()), gui(), SIGNAL(finishButtonClicked()));
+        disconnect(cancel, SIGNAL(clicked()), packageManagerCore(), SIGNAL(finishButtonClicked()));
+        connect(gui(), SIGNAL(rejected()), packageManagerCore(), SLOT(setCanceled()));
+
+        disconnect(gui()->button(QWizard::CommitButton), SIGNAL(clicked()), this, SLOT(cleanupChangedConnects()));
+    }
+}
 
 // -- RestartPage
 

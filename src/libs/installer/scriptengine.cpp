@@ -407,6 +407,8 @@ QScriptValue ScriptEngine::generateQInstallerObject()
     qinstaller.setProperty(QLatin1String("Failure"), PackageManagerCore::Failure);
     qinstaller.setProperty(QLatin1String("Running"), PackageManagerCore::Running);
     qinstaller.setProperty(QLatin1String("Canceled"), PackageManagerCore::Canceled);
+    qinstaller.setProperty(QLatin1String("Unfinished"), PackageManagerCore::Unfinished);
+    qinstaller.setProperty(QLatin1String("ForceUpdate"), PackageManagerCore::ForceUpdate);
 
     return qinstaller;
 }

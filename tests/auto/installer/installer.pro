@@ -11,4 +11,6 @@ SUBDIRS += \
     scriptengine \
     consumeoutputoperationtest \
     mkdiroperationtest \
-    copyoperationtest
+    copyoperationtest \
+    solver
+

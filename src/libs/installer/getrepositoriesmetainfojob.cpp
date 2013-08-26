@@ -42,6 +42,7 @@
 #include "getrepositoriesmetainfojob.h"
 
 #include "getrepositorymetainfojob.h"
+#include "productkeycheck.h"
 #include "packagemanagercore_p.h"
 
 #include <QtCore/QDebug>
@@ -52,12 +53,12 @@ using namespace QInstaller;
 
 // -- GetRepositoriesMetaInfoJob
 
-GetRepositoriesMetaInfoJob::GetRepositoriesMetaInfoJob(PackageManagerCorePrivate *corePrivate)
-    : KDJob(corePrivate)
+GetRepositoriesMetaInfoJob::GetRepositoriesMetaInfoJob(PackageManagerCore *core)
+    : KDJob(core)
     , m_canceled(false)
     , m_silentRetries(3)
     , m_haveIgnoredError(false)
-    , m_corePrivate(corePrivate)
+    , m_core(core)
 {
     setCapabilities(Cancelable);
 }
@@ -118,10 +119,11 @@ bool GetRepositoriesMetaInfoJob::isCanceled() const
 
 void GetRepositoriesMetaInfoJob::doStart()
 {
-    if ((m_corePrivate->isInstaller() && !m_corePrivate->isOfflineOnly())
-        || (m_corePrivate->isUpdater() || m_corePrivate->isPackageManager())) {
-            foreach (const Repository &repo, m_corePrivate->m_data.settings().repositories()) {
-                if (repo.isEnabled())
+    if ((m_core->isInstaller() && !m_core->isOfflineOnly()) || (m_core->isUpdater()
+        || m_core->isPackageManager())) {
+            const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance(m_core);
+            foreach (const Repository &repo, m_core->settings().repositories()) {
+                if (repo.isEnabled() && productKeyCheck->isValidRepository(repo))
                     m_repositories += repo;
             }
     }
@@ -156,7 +158,7 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
         return;
     }
 
-    m_job = new GetRepositoryMetaInfoJob(m_corePrivate, this);
+    m_job = new GetRepositoryMetaInfoJob(m_core, this);
     connect(m_job, SIGNAL(finished(KDJob*)), this, SLOT(jobFinished(KDJob*)));
     connect(m_job, SIGNAL(infoMessage(KDJob*, QString)), this, SIGNAL(infoMessage(KDJob*, QString)));
 

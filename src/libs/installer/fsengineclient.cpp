@@ -44,6 +44,8 @@
 #include "adminauthorization.h"
 #include "messageboxhandler.h"
 
+#include <QElapsedTimer>
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMutex>
 #include <QtCore/QProcess>
@@ -809,8 +811,14 @@ void FSEngineClientHandler::Private::maybeStartServer()
     }
 
     if (serverStarted) {
-        QTcpSocket s;   // now wait for the socket to arrive
-        serverStarted = FSEngineClientHandler::instance().connect(&s);
+        QElapsedTimer t;
+        t.start();
+        while (serverStarting && serverStarted
+               && t.elapsed() < 30000) { // 30 seconds ought to be enough for the app to start
+            QTcpSocket s;
+            if (FSEngineClientHandler::instance().connect(&s))
+                serverStarting = false;
+        }
     }
     serverStarting = false;
 }

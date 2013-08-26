@@ -485,6 +485,8 @@
             \o  Default
             \o  Possible values are: \c true, \c false, and \c script. Set to
                 \c true to preselect the component in the installer.
+                This takes effect only on components that have no visible
+                child components.
                 The boolean values are evaluated directly, while \c script is
                 resolved during runtime. Add the name of the script as a value
                 of the \c Script setting in this file. For an example script,
@@ -493,7 +495,10 @@
             \o  Essential
             \o  Marks the package as essential to force a restart of the
                 \c UpdateAgent or \c MaintenanceTool. This is relevant for
-                updates found with \c UpdateAgent.
+                updates found with \c UpdateAgent. If there are updates available
+                for an essential component, the package manager stays disabled
+                until that component is updated. Newly introduced essential components
+                are automatically installed when running the updater.
         \row
             \o  ForcedInstallation
             \o  Determines that the package must always be installed. End users
@@ -504,7 +509,11 @@
 
         \row
             \o  DownloadableArchives
-            \o  Lists the data files (separated by commas) for an online installer to download. Optional.
+            \o  Lists the data files (separated by commas) for an online
+                installer to download.
+                If there is some data inside the component and the package.xml
+                and/or the script has no DownloadableArchives value, the
+                repogen tool registers the found data automatically.
     \endtable
 
     \section2 Component Dependencies

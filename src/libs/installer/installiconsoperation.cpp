@@ -45,6 +45,7 @@
 
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
+#include <QDebug>
 
 #if QT_VERSION >= 0x040600
 #   include <QProcessEnvironment>
@@ -121,10 +122,6 @@ InstallIconsOperation::InstallIconsOperation()
 InstallIconsOperation::~InstallIconsOperation()
 {
     const QStringList backupFiles = value(QLatin1String("backupfiles")).toStringList();
-    for (QStringList::const_iterator it = backupFiles.begin(); it != backupFiles.end(); it += 2) {
-        const QString& backup = *(it + 1);
-        deleteFileNowOrLater(backup);
-    }
 }
 
 void InstallIconsOperation::backup()
@@ -164,8 +161,6 @@ bool InstallIconsOperation::performOperation()
     QDirIterator it(sourceDir.path(), QDir::Dirs | QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot,
         QDirIterator::Subdirectories);
     while (it.hasNext()) {
-        qApp->processEvents();
-
         const int status = core->status();
         if (status == PackageManagerCore::Canceled || status == PackageManagerCore::Failure)
             return true;
@@ -194,7 +189,7 @@ bool InstallIconsOperation::performOperation()
 
             if (QFile(target).exists()) {
                 // first backup...
-                const QString backup = generateTemporaryFileName(target + QLatin1String("XXXXXX"));
+                const QString backup = generateTemporaryFileName(target);
                 QFile bf(target);
                 if (!bf.copy(backup)) {
                     setError(UserDefinedError);
@@ -251,12 +246,10 @@ bool InstallIconsOperation::performOperation()
 
 bool InstallIconsOperation::undoOperation()
 {
-    bool success = true;
-
+    QStringList warningMessages;
     // first copy back all files to their origin
     const QStringList files = value(QLatin1String("files")).toStringList();
     for (QStringList::const_iterator it = files.begin(); it != files.end(); it += 2) {
-        qApp->processEvents();
 
         const QString& source = *it;
         const QString& target = *(it + 1);
@@ -264,10 +257,11 @@ bool InstallIconsOperation::undoOperation()
         // first make sure the "source" path is valid
         QDir().mkpath(QFileInfo(source).absolutePath());
 
-        // now copy target to source (feels weird, I know...)
-        success = QFile::copy(target, source) && success;
-        // and remove target
-        success = QFile::remove(target) && success;
+        QFile installedTarget(target);
+        if (installedTarget.exists() && !(installedTarget.copy(source) && installedTarget.remove())) {
+            warningMessages << QString::fromLatin1("Could not move file from '%1' to '%2', error: %3)").arg(
+                target, source, installedTarget.errorString());
+        }
     }
 
     // then copy back and remove all backuped files
@@ -278,11 +272,17 @@ bool InstallIconsOperation::undoOperation()
 
         // remove the target
         if (QFile::exists(target))
-            success = deleteFileNowOrLater(target) && success;
+            deleteFileNowOrLater(target);
         // then copy the backup onto the target
-        success = QFile::copy(backup, target) && success;
+        if (!QFile::copy(backup, target)) {
+            warningMessages << QString::fromLatin1("Could not restore the backup '%1' to '%2'").arg(
+                backup, target);
+        }
+
         // finally remove the backp
-        success = deleteFileNowOrLater(backup) && success;
+        if (!deleteFileNowOrLater(backup))
+            warningMessages << QString::fromLatin1("Could not remove the backup '%1'").arg(backup);
+
     }
 
     // then remove all directories created by us
@@ -290,10 +290,19 @@ bool InstallIconsOperation::undoOperation()
     for (QStringList::const_iterator it = createdDirectories.begin(); it != createdDirectories.end(); ++it) {
         const QDir dir(*it);
         removeSystemGeneratedFiles(dir.absolutePath());
-        success = QDir::root().rmdir(dir.path());
+        if (dir.exists() && !QDir::root().rmdir(dir.path()))
+            warningMessages << QString::fromLatin1("Could not remove directory '%1'").arg(dir.path());
     }
 
-    return success;
+    if (!warningMessages.isEmpty()) {
+        qWarning() << QString::fromLatin1("Undo of operation '%1' with arguments '%2' had some problems.").arg(
+            name(), arguments().join(QLatin1String(", ")));
+        foreach (const QString &message, warningMessages) {
+            qWarning() << message;
+        }
+    }
+
+    return true;
 }
 
 bool InstallIconsOperation::testOperation()

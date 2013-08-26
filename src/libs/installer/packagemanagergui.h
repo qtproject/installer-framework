@@ -403,6 +403,7 @@ public:
 
 public Q_SLOTS:
     void handleFinishClicked();
+    void cleanupChangedConnects();
 
 protected:
     void entering();
