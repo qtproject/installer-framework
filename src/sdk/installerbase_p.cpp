@@ -308,6 +308,10 @@ void InstallerBase::showUsage()
         << "Show current version" << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --checkupdates" << std::setw(40)
         << "Check for updates and return an XML file of the available updates" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --updater" << std::setw(40)
+        << "Start in updater mode." << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --manage-packages" << std::setw(40)
+        << "Start in packagemanager mode." << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --proxy" << std::setw(40)
         << "Set system proxy on Win and Mac. This option has no effect on Linux." << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --verbose" << std::setw(40)
@@ -337,6 +341,8 @@ void InstallerBase::showUsage()
         << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << " " << std::setw(40) << "Note: URI "
         "must be prefixed with the protocol, i.e. file:/// , http:// or ftp://" << std::endl;
+    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << " " << std::setw(40) << "Note: URI "
+        "can consist of multiple addresses separated by comma only." << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --show-virtual-components"
         << std::setw(40) << "Show virtual components in package manager and updater" << std::endl;
     std::cout << std::setw(55) << std::setiosflags(std::ios::left)
