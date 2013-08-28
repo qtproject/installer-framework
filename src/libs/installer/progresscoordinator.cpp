@@ -138,7 +138,7 @@ void ProgressCoordinator::partProgressChanged(double fraction)
         }
 
         if (qRound(m_currentCompletePercentage) < qRound(newCurrentCompletePercentage)) {
-            qWarning("This should not happen!");
+            qDebug("Something is wrong with the calculation of the progress.");
         }
 
         m_currentCompletePercentage = newCurrentCompletePercentage;
@@ -171,7 +171,7 @@ void ProgressCoordinator::partProgressChanged(double fraction)
         }
 
         if (qRound(m_currentCompletePercentage) > qRound(newCurrentCompletePercentage)) {
-            qWarning("This should not happen!");
+            qDebug("Something is wrong with the calculation of the progress.");
         }
         m_currentCompletePercentage = newCurrentCompletePercentage;
 
