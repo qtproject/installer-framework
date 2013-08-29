@@ -441,7 +441,7 @@
         \row
             \o  AutoDependOn
             \o  Opposite of dependencies. Defines that this component should be
-                loaded if the specified component is loaded.
+                loaded if all of the specified components are loaded.
         \row
             \o  Virtual
             \o  Set to \c true to hide the component from the installer.
