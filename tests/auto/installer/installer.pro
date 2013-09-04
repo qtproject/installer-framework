@@ -12,5 +12,6 @@ SUBDIRS += \
     consumeoutputoperationtest \
     mkdiroperationtest \
     copyoperationtest \
-    solver
+    solver \
+    binaryformat
 
