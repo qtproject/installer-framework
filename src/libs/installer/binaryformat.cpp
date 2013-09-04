@@ -55,6 +55,7 @@
 #include <QTemporaryFile>
 
 #include <errno.h>
+#include <string.h>
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -220,33 +221,26 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
     Q_ASSERT(in);
     Q_ASSERT(in->isOpen());
     Q_ASSERT(in->isReadable());
-    const qint64 oldPos = in->pos();
-    const qint64 MAX_SEARCH = 1024 * 1024;  // stop searching after one MB
-    qint64 searched = 0;
-    try {
-        while (searched < MAX_SEARCH) {
-            const qint64 pos = in->size() - searched - sizeof(qint64);
-            if (pos < 0)
-                throw Error(QObject::tr("Searched whole file, no marker found"));
-            if (!in->seek(pos)) {
-                throw Error(QObject::tr("Could not seek to %1 in file %2: %3").arg(QString::number(pos),
-                    in->fileName(), in->errorString()));
-            }
-            const quint64 num = static_cast<quint64>(retrieveInt64(in));
-            if (num == magicCookie) {
-                in->seek(oldPos);
-                return pos;
-            }
-            searched += 1;
-        }
-        throw Error(QObject::tr("No marker found, stopped after %1.").arg(humanReadableSize(MAX_SEARCH)));
-    } catch (const Error& err) {
-        in->seek(oldPos);
-        throw err;
-    } catch (...) {
-        in->seek(oldPos);
-        throw Error(QObject::tr("No marker found, unknown exception caught."));
+
+    const qint64 fileSize = in->size();
+    const size_t markerSize = sizeof(qint64);
+
+    // Search through 1MB, if smaller through the whole file. Note: QFile::map() does not change QFile::pos().
+    const qint64 maxSearch = qMin((1024LL * 1024LL), fileSize);
+    const uchar *const mapped = in->map(fileSize - maxSearch, maxSearch);
+    if (!mapped) {
+        throw Error(QObject::tr("Could not map %1 from file %2: %3").arg(QString::number(maxSearch),
+            in->fileName(), in->errorString()));
     }
+
+    qint64 searched = maxSearch - markerSize;
+    while (searched >= 0) {
+        if (memcmp(&magicCookie, (mapped + searched), markerSize) == 0)
+            return (fileSize - maxSearch) + searched;
+        searched -= markerSize;
+    }
+    throw Error(QObject::tr("No marker found, stopped after %1.").arg(humanReadableSize(maxSearch)));
+
     return -1; // never reached
 }
 
