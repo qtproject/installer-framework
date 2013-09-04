@@ -43,10 +43,12 @@
 #include <errors.h>
 #include <fileutils.h>
 #include <init.h>
+#include <kdupdater.h>
 #include <settings.h>
 #include <utils.h>
 #include <lib7z_facade.h>
 
+#include <QDomDocument>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
 #include <QtCore/QFileInfo>
@@ -73,12 +75,16 @@ static void printUsage()
     std::cout << "  --update                  Update a set of existing components (defined by " << std::endl;
     std::cout << "                            --include or --exclude) in the repository" << std::endl;
 
+    std::cout << "  --update-new-components   Update a set of existing components (defined by " << std::endl;
+    std::cout << "                            --include or --exclude) in the repository with all new components"
+        << std::endl;
+
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
 
     std::cout << std::endl;
     std::cout << "Example:" << std::endl;
-    std::cout << "  " << appName << " -p ../examples/packages -u "
-        "http://www.example.com:8080 repository/" << std::endl;
+    std::cout << "  " << appName << " -p ../examples/packages -u http://www.example.com:8080 repository/"
+        << std::endl;
 }
 
 static int printErrorAndUsageAndExit(const QString &err)
@@ -104,6 +110,7 @@ int main(int argc, char** argv)
         QString packagesDir;
         QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
         bool remove = false;
+        bool updateExistingRepositoryWithNewComponents = false;
 
         //TODO: use a for loop without removing values from args like it is in binarycreator.cpp
         //for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -133,6 +140,9 @@ int main(int argc, char** argv)
             } else if (args.first() == QLatin1String("--update")) {
                 args.removeFirst();
                 updateExistingRepository = true;
+            } else if (args.first() == QLatin1String("--update-new-components")) {
+                args.removeFirst();
+                updateExistingRepositoryWithNewComponents = true;
             } else if (args.first() == QLatin1String("-p") || args.first() == QLatin1String("--packages")) {
                 args.removeFirst();
                 if (args.isEmpty()) {
@@ -168,16 +178,17 @@ int main(int argc, char** argv)
                 return 1;
         }
 
-        if (remove && updateExistingRepository) {
-            throw QInstaller::Error(QObject::tr("Argument -r|--remove and --update are mutually "
-                "exclusive!"));
+        const bool update = updateExistingRepository || updateExistingRepositoryWithNewComponents;
+        if (remove && update) {
+            throw QInstaller::Error(QObject::tr("Argument -r|--remove and --update|--update-new-components "
+                "are mutually exclusive!"));
         }
 
         const QString repositoryDir = QInstallerTools::makePathAbsolute(args.first());
         if (remove)
             QInstaller::removeDirectory(repositoryDir);
 
-        if (!updateExistingRepository && QFile::exists(repositoryDir) && !QDir(repositoryDir).entryList(
+        if (!update && QFile::exists(repositoryDir) && !QDir(repositoryDir).entryList(
             QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty()) {
 
             throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!")
@@ -186,6 +197,52 @@ int main(int argc, char** argv)
 
         QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDir,
             &filteredPackages, filterType);
+
+        if (updateExistingRepositoryWithNewComponents) {
+            QDomDocument doc;
+            QFile file(repositoryDir + QLatin1String("/Updates.xml"));
+            if (file.open(QFile::ReadOnly) && doc.setContent(&file)) {
+                const QDomElement root = doc.documentElement();
+                if (root.tagName() != QLatin1String("Updates"))
+                    throw QInstaller::Error(QObject::tr("Invalid content in '%1'.").arg(file.fileName()));
+                file.close(); // close the file, we read the content already
+
+                // read the already existing updates xml content
+                const QDomNodeList children = root.childNodes();
+                QHash <QString, QInstallerTools::PackageInfo> hash;
+                for (int i = 0; i < children.count(); ++i) {
+                    const QDomElement el = children.at(i).toElement();
+                    if ((!el.isNull()) && (el.tagName() == QLatin1String("PackageUpdate"))) {
+                        QInstallerTools::PackageInfo info;
+                        const QDomNodeList c2 = el.childNodes();
+                        for (int j = 0; j < c2.count(); ++j) {
+                            if (c2.at(j).toElement().tagName() == scName)
+                                info.name = c2.at(j).toElement().text();
+                            else if (c2.at(j).toElement().tagName() == scRemoteVersion)
+                                info.version = c2.at(j).toElement().text();
+                        }
+                        hash.insert(info.name, info);
+                    }
+                }
+
+                // remove all components that have no update (decision based on the version tag)
+                for (int i = packages.count() - 1; i >= 0; --i) {
+                    const QInstallerTools::PackageInfo info = packages.at(i);
+                    if (!hash.contains(info.name))
+                        continue;   // the component is not there, keep it
+
+                    if (KDUpdater::compareVersion(info.version, hash.value(info.name).version) < 1)
+                        packages.remove(i); // the version did not change, no need to update the component
+                }
+
+                if (packages.isEmpty()) {
+                    std::cout << QString::fromLatin1("Could not find new components to update '%1'.")
+                        .arg(repositoryDir);
+                    return EXIT_SUCCESS;
+                }
+            }
+        }
+
         QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(packages);
 
         foreach (const QInstallerTools::PackageInfo &package, packages) {
