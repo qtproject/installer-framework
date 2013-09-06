@@ -979,6 +979,12 @@ void KDUpdater::HttpDownloader::httpReqFinished()
 
 void KDUpdater::HttpDownloader::httpReadProgress(qint64 done, qint64 total)
 {
+    if (d->http) {
+        const QUrl redirectUrl = d->http->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+        if (followRedirects() && redirectUrl.isValid())
+            return; // if we are a redirection, do not emit the progress
+    }
+
     setProgress(done, total);
     emit downloadProgress(calcProgress(done, total));
 }
