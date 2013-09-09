@@ -298,59 +298,69 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
 /* static*/
 void InstallerBase::showUsage()
 {
+#define WIDTH1 46
+#define WIDTH2 40
     MyApplicationConsole c;
     std::cout << "Usage: SDKMaintenanceTool [OPTIONS]" << std::endl << std::endl;
 
     std::cout << "User:"<<std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --help" << std::setw(40)
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --help" << std::setw(WIDTH2)
         << "Show commandline usage" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --version" << std::setw(40)
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --version" << std::setw(WIDTH2)
         << "Show current version" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --checkupdates" << std::setw(40)
-        << "Check for updates and return an XML file of the available updates" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --proxy" << std::setw(40)
-        << "Set system proxy on Win and Mac. This option has no effect on Linux." << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --verbose" << std::setw(40)
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --checkupdates" << std::setw(WIDTH2)
+        << "Check for updates and return an XML file describing" << std::endl
+        << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "the available updates" << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --updater" << std::setw(WIDTH2)
+        << "Start in updater mode." << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --manage-packages" << std::setw(WIDTH2)
+        << "Start in packagemanager mode." << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --proxy" << std::setw(WIDTH2)
+        << "Set system proxy on Win and Mac." << std::endl
+        << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "This option has no effect on Linux." << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --verbose" << std::setw(WIDTH2)
         << "Show debug output on the console" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --create-offline-repository"
-        << std::setw(40) << "Offline installer only: Create a local repository inside the installation "
-        "directory based on the offline installer's content" << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --create-offline-repository"
+        << std::setw(WIDTH2) << "Offline installer only: Create a local repository inside the" << std::endl
+        << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "installation directory based on the offline" << std::endl
+        << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "installer's content." << std::endl;
 
     std::cout << "\nDeveloper:"<< std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-        << "  --runoperation [operationName] [arguments...]" << std::setw(40)
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left)
+        << "  --runoperation [OPERATION] [arguments...]" << std::setw(WIDTH2)
         << "Perform an operation with a list of arguments" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-        << "  --undooperation [operationName] [arguments...]" << std::setw(40)
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left)
+        << "  --undooperation [OPERATION] [arguments...]" << std::setw(WIDTH2)
         << "Undo an operation with a list of arguments" <<std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-        << "  --script [scriptName]" << std::setw(40) << "Execute a script" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --no-force-installations"
-        << std::setw(40) << "Enable deselection of forced components" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --addRepository [URI]"
-        << std::setw(40) << "Add a local or remote repo to the list of user defined repos." << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --addTempRepository [URI]"
-        << std::setw(40) << "Add a local or remote repo to the list of temporary available repos."
-        << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --setTempRepository [URI]"
-        << std::setw(40) << "Set a local or remote repo as tmp repo, it is the only one used during fetch."
-        << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << " " << std::setw(40) << "Note: URI "
-        "must be prefixed with the protocol, i.e. file:/// , http:// or ftp://" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --show-virtual-components"
-        << std::setw(40) << "Show virtual components in package manager and updater" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-        << "  --binarydatafile [path/to/binary/data/file]" << std::setw(40) << "Use the binary data of "
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left)
+        << "  --script [scriptName]" << std::setw(WIDTH2) << "Execute a script" << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --no-force-installations"
+        << std::setw(WIDTH2) << "Enable deselection of forced components" << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --addRepository [URI]"
+        << std::setw(WIDTH2) << "Add a local or remote repo to the list of user defined repos." << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --addTempRepository [URI]"
+        << std::setw(WIDTH2) << "Add a local or remote repo to the list of temporary available" << std::endl
+        << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "repos." << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --setTempRepository [URI]"
+        << std::setw(WIDTH2) << "Set a local or remote repo as tmp repo, it is the only one" << std::endl
+        << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "used during fetch." << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << " " << std::setw(WIDTH2) << "Note: URI "
+        "must be prefixed with the protocol, i.e. file:///" << std::endl
+        << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "http:// or ftp://. It can consist of multiple" << std::endl
+        << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "addresses separated by comma only." << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --show-virtual-components"
+        << std::setw(WIDTH2) << "Show virtual components in package manager and updater" << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left)
+        << "  --binarydatafile [binary_data_file]" << std::setw(WIDTH2) << "Use the binary data of "
         "another installer or maintenance tool." << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left)
-        << "  --update-installerbase [path/to/new/installerbase]" << std::setw(40)
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left)
+        << "  --update-installerbase [new_installerbase]" << std::setw(WIDTH2)
         << "Patch a full installer with a new installer base" << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "  --dump-binary-data [OPTION...] -o "
-        "path" << std::setw(40) << "Dumps the binary content into specified path (offline installer only)"
-        << std::endl;
-    std::cout << std::setw(55) << std::setiosflags(std::ios::left) << "                         -i   "
-        << std::setw(40) << "Path to binary data file, otherwise the current application is assumed to be "
-        "the input file." << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --dump-binary-data -i [PATH] -o [PATH]"
+        << std::setw(WIDTH2) << "Dumps the binary content into specified output path (offline" << std::endl
+        << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "installer only)." << std::endl
+        << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "Input path pointing to binary data file, if omitted" << std::endl
+        << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "the current application is used as input." << std::endl;
 }
 
 /* static*/
