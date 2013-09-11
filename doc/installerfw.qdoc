@@ -1007,34 +1007,35 @@
     Updates.xml file in the current repository. You can add, replace, or remove
     repositories.
 
-    \section2 Adding Repositories
-    To update a repository, add the following code to Updates.xml:
-
     \code
     <RepositoryUpdate>
-     <Repository action="add" url="http://www.example.com/repository" name="user" password="password"
-                 displayname="Example Repository" />
+      <Repository action="..." OPTIONS />
+      <Repository action="..." OPTIONS />
     </RepositoryUpdate>
+    \endcode
+
+    \section2 Adding Repositories
+    To update a repository, add the following code to the RepositoryUpdate section:
+
+    \code
+    <Repository action="add" url="http://www.example.com/repository" name="user" password="password"
+                 displayname="Example Repository" />
     \endcode
 
     \section2 Removing Repositories
-    To remove a repository, add the following code to Updates.xml:
+    To remove a repository, add the following code to the RepositoryUpdate section:
 
     \code
-    <RepositoryUpdate>
-     <Repository action="remove" url="http://www.example.com/repository" />
-    </RepositoryUpdate>
+    <Repository action="remove" url="http://www.example.com/repository" />
     \endcode
 
     \section2 Replacing repositories
-    To replace one repository with another, add the following code to Updates.xml:
+    To replace one repository with another, add the following code to the RepositoryUpdate section:
 
     \code
-    <RepositoryUpdate>
-     <Repository action="replace" oldurl="http://www.example.com/repository"
-                 newurl="http://www.example.com/newrepository" name="user" password="password"
-                 displayname="New Example Repository" />
-    </RepositoryUpdate>
+    <Repository action="replace" oldurl="http://www.example.com/repository"
+                newurl="http://www.example.com/newrepository" name="user" password="password"
+                displayname="New Example Repository" />
     \endcode
 */
 
