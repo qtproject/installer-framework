@@ -62,7 +62,6 @@
 #include <QtCore/QSettings>
 #include <QtCore/QTimer>
 
-#include <QApplication>
 #include <QCheckBox>
 #include <QDesktopServices>
 #include <QFileDialog>
@@ -727,8 +726,6 @@ QWidget *PackageManagerPage::findWidget(const QString &objectName) const
 void PackageManagerPage::setVisible(bool visible)
 {
     QWizardPage::setVisible(visible);
-    qApp->processEvents();
-
     if (m_fresh && !visible) {
         // this is only hit once when the page gets added to the wizard
         m_fresh = false;

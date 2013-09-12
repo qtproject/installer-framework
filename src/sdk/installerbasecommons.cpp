@@ -317,10 +317,6 @@ void IntroductionPageImpl::setPackageManager(bool value)
 
 void IntroductionPageImpl::onCoreNetworkSettingsChanged()
 {
-    // force a repaint of the ui as after the settings dialog has been closed and the wizard has been
-    // restarted, the "Next" button looks still disabled.   TODO: figure out why this happens at all!
-    gui()->repaint();
-
     m_updatesFetched = false;
     m_allPackagesFetched = false;
 }
@@ -344,8 +340,6 @@ void IntroductionPageImpl::entering()
 
 void IntroductionPageImpl::leaving()
 {
-    // TODO: force repaint on next page, keeps unpainted after fetch
-    QTimer::singleShot(100, gui()->page(nextId()), SLOT(repaint()));
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
 }
 
@@ -442,9 +436,6 @@ bool TargetDirectoryPageImpl::askQuestion(const QString &identifier, const QStri
     QMessageBox::StandardButton bt =
         MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(), identifier,
         TargetDirectoryPageImpl::tr("Warning"), message, QMessageBox::Yes | QMessageBox::No);
-#ifndef Q_OS_MAC
-    QTimer::singleShot(100, wizard()->page(nextId()), SLOT(repaint()));
-#endif
     return bt == QMessageBox::Yes;
 }
 
@@ -452,9 +443,6 @@ bool TargetDirectoryPageImpl::failWithError(const QString &identifier, const QSt
 {
     MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), identifier,
         TargetDirectoryPageImpl::tr("Error"), message);
-#ifndef Q_OS_MAC
-    QTimer::singleShot(100, wizard()->page(nextId()), SLOT(repaint()));
-#endif
     return false;
 }
 
