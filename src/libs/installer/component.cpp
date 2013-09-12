@@ -211,6 +211,7 @@ Component::Component(PackageManagerCore *core)
     setPrivate(d);
 
     connect(this, SIGNAL(valueChanged(QString, QString)), this, SLOT(updateModelData(QString, QString)));
+    qRegisterMetaType<QList<QInstaller::Component*> >("QList<QInstaller::Component*>");
 }
 
 /*!
