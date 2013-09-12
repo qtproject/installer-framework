@@ -182,7 +182,7 @@ void DownloadArchivesJob::fetchNextArchive()
     if (m_downloader != 0)
         m_downloader->deleteLater();
 
-    m_downloader = setupDownloader();
+    m_downloader = setupDownloader(QString(), m_core->value(QLatin1String("UrlQueryString")));
     if (!m_downloader) {
         m_archivesToDownload.removeFirst();
         QMetaObject::invokeMethod(this, "fetchNextArchive", Qt::QueuedConnection);
@@ -292,13 +292,16 @@ void DownloadArchivesJob::finishWithError(const QString &error)
         emitFinishedWithError(QInstaller::DownloadError, msg.arg(error, m_downloader->url().toString()));
 }
 
-KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &suffix)
+KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &suffix, const QString &queryString)
 {
     KDUpdater::FileDownloader *downloader = 0;
     const QFileInfo fi = QFileInfo(m_archivesToDownload.first().first);
     const Component *const component = m_core->componentByName(QFileInfo(fi.path()).fileName());
     if (component) {
-        const QUrl url(m_archivesToDownload.first().second + suffix);
+        QString fullQueryString;
+        if (!queryString.isEmpty())
+            fullQueryString = QLatin1String("?") + queryString;
+        const QUrl url(m_archivesToDownload.first().second + suffix + fullQueryString);
         const QString &scheme = url.scheme();
         downloader = FileDownloaderFactory::instance().create(scheme, this);
 

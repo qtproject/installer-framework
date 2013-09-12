@@ -1,3 +1,6 @@
+1.4.1
+- Added support to pass a query string when downloading archives. (QTIFW-329)
+
 1.4
 - Force updating of Essential components. (QTIFW-38, QTIFW-155)
 - Display release date in Updater and Packagemanager. (QTIFW-25)

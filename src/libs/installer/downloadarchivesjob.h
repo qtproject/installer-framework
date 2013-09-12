@@ -91,7 +91,7 @@ protected Q_SLOTS:
     void emitDownloadProgress(double progress);
 
 private:
-    KDUpdater::FileDownloader *setupDownloader(const QString &suffix = QString());
+    KDUpdater::FileDownloader *setupDownloader(const QString &suffix = QString(), const QString &queryString = QString());
 
 private:
     PackageManagerCore *m_core;
