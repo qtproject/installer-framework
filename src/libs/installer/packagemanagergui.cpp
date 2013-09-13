@@ -135,7 +135,7 @@ public:
         setPixmap(QWizard::BannerPixmap, QPixmap());
 
         setLayout(new QVBoxLayout);
-        setSubTitle(QString());
+        setSubTitle(QLatin1String(" "));
         setTitle(widget->windowTitle());
         m_widget->setProperty("complete", true);
         m_widget->setProperty("final", false);
