@@ -453,14 +453,18 @@ QString QInstaller::generateTemporaryFileName(const QString &templ)
     return f.fileName();
 }
 
-QString QInstaller::createTemporaryDirectory(const QString &templ)
+QString QInstaller::createTemporaryDirectory(const QString &templateName)
 {
-    const QString t = QDir::tempPath() + QLatin1String("/") + templ + QLatin1String("XXXXXX");
-    QTemporaryFile f(t);
-    if (!f.open())
-        throw Error(QObject::tr("Could not create temporary folder for template %1: %2").arg(t, f.errorString()));
-    const QString path = f.fileName() + QLatin1String("meta");
-    qDebug() << "\nCreating meta data directory at" << path;
+    QString path = QDir::tempPath() + QLatin1String("/") + templateName + QLatin1String("XXXXXX");
+    {
+        QTemporaryFile f(path);
+        if (!f.open()) {
+            throw Error(QObject::tr("Could not create temporary directory %1: %2").arg(f.fileName(),
+                f.errorString()));
+        }
+        path = f.fileName();
+    }
+    qDebug() << "\nCreating temporary directory at:" << path;
 
     QInstaller::mkpath(path);
     return path;

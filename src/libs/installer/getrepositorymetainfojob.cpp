@@ -245,7 +245,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
     Q_ASSERT(QFile::exists(fn));
 
     try {
-        m_temporaryDirectory = createTemporaryDirectory(QLatin1String("remoterepo"));
+        m_temporaryDirectory = createTemporaryDirectory(QLatin1String("remoterepo-"));
         m_tempDirDeleter.add(m_temporaryDirectory);
     } catch (const QInstaller::Error& e) {
         finished(QInstaller::ExtractionError, e.message());
