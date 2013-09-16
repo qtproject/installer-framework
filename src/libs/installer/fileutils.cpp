@@ -282,8 +282,7 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
     QDirIterator it(path, QDir::NoDotAndDotDot | QDir::Dirs | QDir::NoSymLinks | QDir::Hidden,
         QDirIterator::Subdirectories);
     while (it.hasNext()) {
-        it.next();
-        dirs.prepend(it.filePath());
+        dirs.prepend(it.next());
         removeFiles(dirs.at(0), ignoreErrors);
     }
 
