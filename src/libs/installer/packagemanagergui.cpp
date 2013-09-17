@@ -1877,7 +1877,7 @@ void FinishedPage::entering()
         if (!finishedText.isEmpty())
             m_msgLabel->setText(finishedText);
 
-        if (!packageManagerCore()->value(scRunProgram).isEmpty()) {
+        if (!packageManagerCore()->isUninstaller() && !packageManagerCore()->value(scRunProgram).isEmpty()) {
             m_runItCheckBox->show();
             m_runItCheckBox->setText(packageManagerCore()->value(scRunProgramDescription, tr("Run %1 now."))
                 .arg(productName()));
