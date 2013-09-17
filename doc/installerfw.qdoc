@@ -199,10 +199,10 @@
             \o  Filename for a watermark used as \a QWizard::WatermarkPixmap.
         \row
             \o  Banner
-            \o  Filename for a banner used as \a QWizard::BannerPixmap.
+            \o  Filename for a banner used as \a QWizard::BannerPixmap (only used by ModernStyle).
         \row
             \o  Background
-            \o  Filename for an image used as \a QWizard::BackgroundPixmap.
+            \o  Filename for an image used as \a QWizard::BackgroundPixmap (only used by MacStyle).
         \row
             \o  RunProgram
             \o  Command executed after the installer is done if the user accepts
