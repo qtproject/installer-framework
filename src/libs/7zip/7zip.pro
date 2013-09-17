@@ -1,8 +1,7 @@
-include(../../../installerfw.pri)
-
 QT = core
 TARGET = 7z
 TEMPLATE = lib
+include(../../../installerfw.pri)
 INCLUDEPATH += . ..
 CONFIG += staticlib
 DESTDIR = $$IFW_LIB_PATH
