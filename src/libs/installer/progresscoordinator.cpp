@@ -137,9 +137,9 @@ void ProgressCoordinator::partProgressChanged(double fraction)
             newCurrentCompletePercentage = 100;
         }
 
-        if (qRound(m_currentCompletePercentage) < qRound(newCurrentCompletePercentage)) {
+        // In undo mode, the progress has to go backward, new has to be smaller than current
+        if (qRound(m_currentCompletePercentage) < qRound(newCurrentCompletePercentage))
             qDebug("Something is wrong with the calculation of the progress.");
-        }
 
         m_currentCompletePercentage = newCurrentCompletePercentage;
         if (fraction == 1) {
@@ -170,9 +170,10 @@ void ProgressCoordinator::partProgressChanged(double fraction)
             newCurrentCompletePercentage = 100;
         }
 
-        if (qRound(m_currentCompletePercentage) > qRound(newCurrentCompletePercentage)) {
+        // In normal mode, the progress has to go forward, new has to be larger than current
+        if (qRound(m_currentCompletePercentage) > qRound(newCurrentCompletePercentage))
             qDebug("Something is wrong with the calculation of the progress.");
-        }
+
         m_currentCompletePercentage = newCurrentCompletePercentage;
 
         if (fraction == 1 || fraction == 0) {
