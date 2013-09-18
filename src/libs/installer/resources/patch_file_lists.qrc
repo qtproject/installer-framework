@@ -8,7 +8,7 @@
         <file>files-to-patch-macx-qt5</file>
         <file>files-to-patch-linux-emb-arm</file>
         <file>files-to-patch-windows-emb-arm</file>
-        <file>files-to-patch-macx-emb-arm</file>
+        <file>files-to-patch-macx-emb-arm-qt5</file>
         <file>files-to-patch-linux-emb-arm-qt5</file>
     </qresource>
 </RCC>
