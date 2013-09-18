@@ -107,7 +107,8 @@ static {
     win32-g++*: LIBS += -lmpr -luuid
 
     equals(TEMPLATE, app) {
-        win32:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib $$IFW_LIB_PATH/7z.lib
+        win32-msvc*:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib $$IFW_LIB_PATH/7z.lib
+        win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
         unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
     }
 }
