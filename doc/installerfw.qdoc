@@ -449,6 +449,7 @@
         \row
             \o  Virtual
             \o  Set to \c true to hide the component from the installer.
+                Note that setting this on a root component does not work.
         \row
             \o  SortingPriority
             \o  Priority of the component in the tree. The tree is sorted from
