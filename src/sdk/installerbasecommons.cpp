@@ -75,16 +75,19 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::PackageManagerCore *core)
     QVBoxLayout *layout = new QVBoxLayout(widget);
 
     m_packageManager = new QRadioButton(tr("Package manager"), this);
+    m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
     layout->addWidget(m_packageManager);
     m_packageManager->setChecked(core->isPackageManager());
     connect(m_packageManager, SIGNAL(toggled(bool)), this, SLOT(setPackageManager(bool)));
 
     m_updateComponents = new QRadioButton(tr("Update components"), this);
+    m_updateComponents->setObjectName(QLatin1String("UpdaterRadioButton"));
     layout->addWidget(m_updateComponents);
     m_updateComponents->setChecked(core->isUpdater());
     connect(m_updateComponents, SIGNAL(toggled(bool)), this, SLOT(setUpdater(bool)));
 
     m_removeAllComponents = new QRadioButton(tr("Remove all components"), this);
+    m_removeAllComponents->setObjectName(QLatin1String("UninstallerRadioButton"));
     layout->addWidget(m_removeAllComponents);
     m_removeAllComponents->setChecked(core->isUninstaller());
     connect(m_removeAllComponents, SIGNAL(toggled(bool)), this, SLOT(setUninstaller(bool)));
