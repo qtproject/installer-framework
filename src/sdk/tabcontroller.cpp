@@ -150,7 +150,6 @@ int TabController::init()
     }
 
     d->m_gui->restart();
-    d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 
     onCurrentIdChanged(d->m_gui->currentId());
