@@ -46,7 +46,7 @@
 #include <QTest>
 #include <QTemporaryFile>
 
-static const qint64 scTinySize = 51200LL;
+static const qint64 scTinySize = 72704LL;
 static const qint64 scSmallSize = 524288LL;
 static const qint64 scLargeSize = 2097152LL;
 
@@ -92,7 +92,7 @@ private slots:
 
     void testFindMagicCookieWithError()
     {
-        QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"No marker found, stopped after 50.00 KiB.\" ");
+        QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"No marker found, stopped after 71.00 KiB.\" ");
 
         QTemporaryFile file;
         file.open();
@@ -103,7 +103,7 @@ private slots:
             // throws
             QInstaller::findMagicCookie(&file, QInstaller::MagicCookie);
         } catch (const QInstaller::Error &error) {
-            QCOMPARE(qPrintable(error.message()), "No marker found, stopped after 50.00 KiB.");
+            QCOMPARE(qPrintable(error.message()), "No marker found, stopped after 71.00 KiB.");
         } catch (...) {
             QFAIL("Unexpected error.");
         }

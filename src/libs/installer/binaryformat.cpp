@@ -237,7 +237,7 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
     while (searched >= 0) {
         if (memcmp(&magicCookie, (mapped + searched), markerSize) == 0)
             return (fileSize - maxSearch) + searched;
-        searched -= markerSize;
+        --searched;
     }
     throw Error(QObject::tr("No marker found, stopped after %1.").arg(humanReadableSize(maxSearch)));
 
