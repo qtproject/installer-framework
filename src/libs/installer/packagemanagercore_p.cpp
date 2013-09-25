@@ -922,7 +922,7 @@ void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> 
     foreach (const Component *component, components)
         processList << m_core->replaceVariables(component->stopProcessForUpdateRequests());
 
-    qSort(processList);
+    std::sort(processList.begin(), processList.end());
     processList.erase(std::unique(processList.begin(), processList.end()), processList.end());
     if (processList.isEmpty())
         return;

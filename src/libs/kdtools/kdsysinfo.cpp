@@ -66,7 +66,7 @@ VolumeInfo VolumeInfo::fromPath(const QString &path)
     QList<VolumeInfo> volumes = mountedVolumes();
 
     // sort by length to get the longest mount point (not just "/") first
-    qSort(volumes.begin(), volumes.end(), PathLongerThan());
+    std::sort(volumes.begin(), volumes.end(), PathLongerThan());
     foreach (const VolumeInfo &volume, volumes) {
         const QDir volumePath(volume.mountPath());
         if (targetPath == volumePath)

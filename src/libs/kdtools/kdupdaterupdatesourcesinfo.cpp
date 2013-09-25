@@ -250,7 +250,7 @@ void UpdateSourcesInfo::addUpdateSourceInfo(const UpdateSourceInfo &info)
     if (d->updateSourceInfoList.contains(info))
         return;
     d->updateSourceInfoList.push_back(info);
-    qSort(d->updateSourceInfoList.begin(), d->updateSourceInfoList.end(), UpdateSourceInfoPriorityHigherThan());
+    std::sort(d->updateSourceInfoList.begin(), d->updateSourceInfoList.end(), UpdateSourceInfoPriorityHigherThan());
     emit updateSourceInfoAdded(info);
     d->modified = true;
 }
