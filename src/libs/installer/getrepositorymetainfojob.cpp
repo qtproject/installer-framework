@@ -244,20 +244,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
     Q_ASSERT(!fn.isEmpty());
     Q_ASSERT(QFile::exists(fn));
 
-    try {
-        m_temporaryDirectory = createTemporaryDirectory(QLatin1String("remoterepo-"));
-        m_tempDirDeleter.add(m_temporaryDirectory);
-    } catch (const QInstaller::Error& e) {
-        finished(QInstaller::ExtractionError, e.message());
-        return;
-    }
-
     QFile updatesFile(fn);
-    if (!updatesFile.rename(m_temporaryDirectory + QLatin1String("/Updates.xml"))) {
-        finished(QInstaller::DownloadError, tr("Could not move Updates.xml to target location. Error: %1")
-            .arg(updatesFile.errorString()));
-        return;
-    }
 
     if (!updatesFile.open(QIODevice::ReadOnly)) {
         finished(QInstaller::DownloadError, tr("Could not open Updates.xml for reading. Error: %1")
@@ -356,6 +343,19 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     m_packageHash << c2.at(j).toElement().text();
             }
         }
+    }
+
+    try {
+        m_temporaryDirectory = createTemporaryDirectory(QLatin1String("remoterepo-"));
+        m_tempDirDeleter.add(m_temporaryDirectory);
+    } catch (const QInstaller::Error& e) {
+        finished(QInstaller::ExtractionError, e.message());
+        return;
+    }
+    if (!updatesFile.rename(m_temporaryDirectory + QLatin1String("/Updates.xml"))) {
+        finished(QInstaller::DownloadError, tr("Could not move Updates.xml to target location. Error: %1")
+            .arg(updatesFile.errorString()));
+        return;
     }
 
     setTotalAmount(m_packageNames.count() + 1);
