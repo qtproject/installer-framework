@@ -49,6 +49,8 @@
 #include "kdupdaterfiledownloader.h"
 #include "kdupdaterfiledownloaderfactory.h"
 
+#include "productkeycheck.h"
+
 #include <QTimer>
 
 
@@ -289,9 +291,10 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     repository.setUsername(el.attribute(QLatin1String("username")));
                     repository.setPassword(el.attribute(QLatin1String("password")));
                     repository.setDisplayName(el.attribute(QLatin1String("displayname")));
-                    repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
-
-                    qDebug() << "Repository to add:" << repository.url().toString();
+                    if (ProductKeyCheck::instance()->isValidRepository(repository)) {
+                        repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
+                        qDebug() << "Repository to add:" << repository.url().toString();
+                    }
                 } else if (action == QLatin1String("remove")) {
                     // remove possible default repositories using the given server url
                     Repository repository(el.attribute(QLatin1String("url")), true);
@@ -306,10 +309,12 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     newRepository.setPassword(el.attribute(QLatin1String("password")));
                     newRepository.setDisplayName(el.attribute(QLatin1String("displayname")));
 
-                    // store the new repository and the one old it replaces
-                    repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
-                    qDebug() << "Replace repository:" << oldRepository.url().toString() << "with:"
-                        << newRepository.url().toString();
+                    if (ProductKeyCheck::instance()->isValidRepository(newRepository)) {
+                        // store the new repository and the one old it replaces
+                        repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
+                        qDebug() << "Replace repository:" << oldRepository.url().toString() << "with:"
+                            << newRepository.url().toString();
+                    }
                 } else {
                     qDebug() << "Invalid additional repositories action set in Updates.xml fetched from:"
                         << m_repository.url().toString() << "Line:" << el.lineNumber();
