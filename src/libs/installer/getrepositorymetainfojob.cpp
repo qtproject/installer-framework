@@ -318,7 +318,28 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         }
 
         if (!repositoryUpdates.isEmpty()) {
-            if (m_core->settings().updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
+            const QSet<Repository> temporaries = m_core->settings().temporaryRepositories();
+            // in case the temp repository introduced something new, we only want that temporary
+            if (temporaries.contains(m_repository)) {
+
+                QSet<Repository> childTempRepositories;
+                typedef QPair<Repository, Repository> RepositoryPair;
+
+                QList<RepositoryPair> values = repositoryUpdates.values(QLatin1String("add"));
+                foreach (const RepositoryPair &value, values)
+                    childTempRepositories.insert(value.first);
+
+                values = repositoryUpdates.values(QLatin1String("replace"));
+                foreach (const RepositoryPair &value, values)
+                    childTempRepositories.insert(value.first);
+
+                QSet<Repository> newChildTempRepositories = childTempRepositories.subtract(temporaries);
+                if (newChildTempRepositories.count() > 0) {
+                    m_core->settings().addTemporaryRepositories(newChildTempRepositories, true);
+                    finished(QInstaller::RepositoryUpdatesReceived, tr("Repository updates received."));
+                    return;
+                }
+            } else if (m_core->settings().updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
                 if (m_core->isUpdater() || m_core->isPackageManager())
                     m_core->writeMaintenanceConfigFiles();
                 finished(QInstaller::RepositoryUpdatesReceived, tr("Repository updates received."));
