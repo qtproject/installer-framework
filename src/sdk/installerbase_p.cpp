@@ -135,6 +135,11 @@ public:
         m_oldCerr = std::cerr.rdbuf();
         m_newCerr.open("CONOUT$");
         std::cerr.rdbuf(m_newCerr.rdbuf());
+
+        HMENU systemMenu = GetSystemMenu(GetConsoleWindow(), FALSE);
+        if (systemMenu != NULL)
+            RemoveMenu(systemMenu, SC_CLOSE, MF_BYCOMMAND);
+        DrawMenuBar(GetConsoleWindow());
 #endif
     }
     ~MyApplicationConsole()
