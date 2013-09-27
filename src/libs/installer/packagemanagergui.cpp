@@ -254,7 +254,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     connect(m_core, SIGNAL(installationFinished()), this, SLOT(showFinishedPage()), Qt::QueuedConnection);
     connect(m_core, SIGNAL(uninstallationFinished()), this, SLOT(showFinishedPage()), Qt::QueuedConnection);
 
-    connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(slotCurrentPageChanged(int)));
+    connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(executeControlScript(int)));
     connect(this, SIGNAL(currentIdChanged(int)), m_core, SIGNAL(currentPageChanged(int)));
     connect(button(QWizard::FinishButton), SIGNAL(clicked()), this, SIGNAL(finishButtonClicked()));
     connect(button(QWizard::FinishButton), SIGNAL(clicked()), m_core, SIGNAL(finishButtonClicked()));
@@ -359,12 +359,6 @@ void PackageManagerGui::loadControlScript(const QString &scriptPath)
     qDebug() << "Loaded control script" << scriptPath;
 }
 
-void PackageManagerGui::slotCurrentPageChanged(int id)
-{
-    QMetaObject::invokeMethod(this, "delayedControlScriptExecution", Qt::QueuedConnection,
-        Q_ARG(int, id));
-}
-
 void PackageManagerGui::callControlScriptMethod(const QString &methodName)
 {
     if (!d->m_controlScriptContext.isValid())
@@ -382,9 +376,9 @@ void PackageManagerGui::callControlScriptMethod(const QString &methodName)
     }
 }
 
-void PackageManagerGui::delayedControlScriptExecution(int id)
+void PackageManagerGui::executeControlScript(int pageId)
 {
-    if (PackageManagerPage *const p = qobject_cast<PackageManagerPage*> (page(id)))
+    if (PackageManagerPage *const p = qobject_cast<PackageManagerPage*> (page(pageId)))
         callControlScriptMethod(p->objectName() + QLatin1String("Callback"));
 }
 
