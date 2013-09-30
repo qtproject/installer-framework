@@ -63,7 +63,14 @@
 #include <iostream>
 
 #ifdef Q_OS_WIN
+# ifdef Q_CC_MINGW
+#   ifndef _WIN32_WINNT
+#  define _WIN32_WINNT 0x0501
+# endif
+#endif
+
 #   include <wincon.h>
+#   include <windows.h>
 
 #   ifndef ENABLE_INSERT_MODE
 #       define ENABLE_INSERT_MODE 0x0020
