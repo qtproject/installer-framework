@@ -199,14 +199,14 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
     }
 
     if (!url.isValid()) {
-        finished(QInstaller::InvalidUrl, tr("Invalid repository URL: %1").arg(url.toString()));
+        finished(QInstaller::InvalidUrl, tr("Invalid repository URL: %1").arg(m_repository.displayname()));
         return;
     }
 
     m_downloader = FileDownloaderFactory::instance().create(url.scheme(), this);
     if (!m_downloader) {
         finished(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2)").arg(url.scheme(),
-            url.toString()));
+            m_repository.displayname()));
         return;
     }
 
@@ -261,7 +261,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 
     if (!success) {
         const QString msg =  tr("Could not fetch a valid version of Updates.xml from repository: %1. "
-            "Error: %2").arg(m_repository.url().toString(), err);
+            "Error: %2").arg(m_repository.displayname(), err);
 
         const QMessageBox::StandardButton b =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -293,14 +293,14 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     repository.setDisplayName(el.attribute(QLatin1String("displayname")));
                     if (ProductKeyCheck::instance()->isValidRepository(repository)) {
                         repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
-                        qDebug() << "Repository to add:" << repository.url().toString();
+                        qDebug() << "Repository to add:" << repository.displayname();
                     }
                 } else if (action == QLatin1String("remove")) {
                     // remove possible default repositories using the given server url
                     Repository repository(el.attribute(QLatin1String("url")), true);
                     repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
 
-                    qDebug() << "Repository to remove:" << repository.url().toString();
+                    qDebug() << "Repository to remove:" << repository.displayname();
                 } else if (action == QLatin1String("replace")) {
                     // replace possible default repositories using the given server url
                     Repository oldRepository(el.attribute(QLatin1String("oldUrl")), true);
@@ -312,12 +312,12 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     if (ProductKeyCheck::instance()->isValidRepository(newRepository)) {
                         // store the new repository and the one old it replaces
                         repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
-                        qDebug() << "Replace repository:" << oldRepository.url().toString() << "with:"
-                            << newRepository.url().toString();
+                        qDebug() << "Replace repository:" << oldRepository.displayname() << "with:"
+                            << newRepository.displayname();
                     }
                 } else {
                     qDebug() << "Invalid additional repositories action set in Updates.xml fetched from:"
-                        << m_repository.url().toString() << "Line:" << el.lineNumber();
+                        << m_repository.displayname() << "Line:" << el.lineNumber();
                 }
             }
         }
@@ -453,7 +453,7 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     if (!m_downloader) {
         m_currentPackageName.clear();
         m_currentPackageVersion.clear();
-        qWarning() << "Scheme not supported:" << url.toString();
+        qWarning() << "Scheme not supported:" << m_repository.displayname();
         QMetaObject::invokeMethod(this, "fetchNextMetaInfo", Qt::QueuedConnection);
         return;
     }
