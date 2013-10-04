@@ -1265,13 +1265,18 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         bool newBinaryWritten = false;
         bool replacementExists = false;
         const QString installerBaseBinary = m_core->replaceVariables(m_installerBaseBinaryUnreplaced);
-        if (!installerBaseBinary.isEmpty() && QFileInfo(installerBaseBinary).exists()) {
+        if (!installerBaseBinary.isEmpty() && !QFileInfo(installerBaseBinary).exists()) {
+            qWarning() << "The current installer base binary could not updated with a not existing '%1'. "
+                "Please fix the 'installer.setInstallerBaseBinary(<temp_installer_base_binary_path>)' call "
+                "in your scripts.";
+        } else if (!installerBaseBinary.isEmpty()) {
             qDebug() << "Got a replacement installer base binary:" << installerBaseBinary;
 
             QFile replacementBinary(installerBaseBinary);
             try {
                 openForRead(&replacementBinary, replacementBinary.fileName());
                 writeUninstallerBinary(&replacementBinary, replacementBinary.size(), true);
+                qDebug() << "Wrote the binary with the new replacement.";
 
                 m_forceRestart = true;
                 newBinaryWritten = true;
@@ -1280,7 +1285,10 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
                 qDebug() << error.message();
             }
 
-            if (!replacementBinary.remove()) {
+            if (replacementBinary.remove()) {
+                qDebug() << QString::fromLatin1("Removed temporary installer base replacement binary file: %1").arg(
+                    installerBaseBinary);
+            } else {
                 // Is there anything more sensible we can do with this error? I think not. It's not serious
                 // enough for throwing / aborting the process.
                 qDebug() << QString::fromLatin1("Could not remove installer base binary (%1) after updating "
