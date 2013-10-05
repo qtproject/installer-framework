@@ -100,6 +100,7 @@ public:
     QString installerApplicationIcon() const;
     QString installerWindowIcon() const;
     QString systemIconSuffix() const;
+    QString wizardStyle() const;
 
     QString applicationName() const;
     QString applicationVersion() const;

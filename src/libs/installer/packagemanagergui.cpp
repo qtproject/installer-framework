@@ -238,6 +238,10 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     setWizardStyle(QWizard::ModernStyle);
     setSizeGripEnabled(true);
 #endif
+
+    if (!m_core->settings().wizardStyle().isEmpty())
+        setWizardStyle(getStyle(m_core->settings().wizardStyle()));
+
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
 
@@ -285,6 +289,19 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 PackageManagerGui::~PackageManagerGui()
 {
     delete d;
+}
+
+QWizard::WizardStyle PackageManagerGui::getStyle(const QString &name)
+{
+    if (name == QLatin1String("Classic"))
+        return QWizard::ClassicStyle;
+    else if (name == QLatin1String("Modern"))
+        return QWizard::ModernStyle;
+    else if (name == QLatin1String("Mac"))
+        return QWizard::MacStyle;
+    else if (name == QLatin1String("Aero"))
+        return QWizard::AeroStyle;
+    return QWizard::ModernStyle;
 }
 
 void PackageManagerGui::setAutomatedPageSwitchEnabled(bool request)

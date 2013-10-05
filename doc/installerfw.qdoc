@@ -204,6 +204,9 @@
             \o  Background
             \o  Filename for an image used as \a QWizard::BackgroundPixmap.
         \row
+            \o  WizardStyle
+            \o  Set the wizard style to be used ("Modern", "Mac", "Aero" or "Classic").
+        \row
             \o  RunProgram
             \o  Command executed after the installer is done if the user accepts
                 the action.

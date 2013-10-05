@@ -88,6 +88,7 @@ static const QLatin1String scTargetConfigurationFile("TargetConfigurationFile");
 static const QLatin1String scAllowNonAsciiCharacters("AllowNonAsciiCharacters");
 static const QLatin1String scRepositorySettingsPageVisible("RepositorySettingsPageVisible");
 static const QLatin1String scAllowSpaceInPath("AllowSpaceInPath");
+static const QLatin1String scWizardStyle("WizardStyle");
 }
 
 #endif  // CONSTANTS_H

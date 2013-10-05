@@ -230,7 +230,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scStartMenuDir << scUninstallerName << scUninstallerIniFile << scRemoveTargetDir
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
-                << scAllowSpaceInPath << scAllowNonAsciiCharacters
+                << scAllowSpaceInPath << scAllowNonAsciiCharacters << scWizardStyle
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations;
 
@@ -342,6 +342,11 @@ QString Settings::background() const
 QString Settings::icon() const
 {
     return d->makeAbsolutePath(d->m_data.value(scIcon).toString() + systemIconSuffix());
+}
+
+QString Settings::wizardStyle() const
+{
+    return d->m_data.value(scWizardStyle).toString();
 }
 
 QString Settings::installerApplicationIcon() const

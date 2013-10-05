@@ -95,6 +95,7 @@ public:
     Q_INVOKABLE void setSettingsButtonEnabled(bool enable);
 
     void updateButtonLayout();
+    static QWizard::WizardStyle getStyle(const QString &name);
 
 Q_SIGNALS:
     void interrupted();

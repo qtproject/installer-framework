@@ -21,6 +21,7 @@ File should contain all elements we allow in a config.xml
     <Watermark>watermark</Watermark>
     <Banner>banner</Banner>
     <Background>background</Background>
+    <WizardStyle>Modern</WizardStyle>
 
     <StartMenuDir>Super App</StartMenuDir>
 
