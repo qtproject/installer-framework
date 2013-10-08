@@ -103,10 +103,28 @@ void ProgressCoordinator::registerPartProgress(QObject *sender, const char *sign
     Q_ASSERT(isConnected);
 }
 
+
+/*!
+    This slot gets the progress changed signals from different tasks. The values 0 and 1 are handled as
+    special values.
+
+    0 - is just ignored, so you can use a timer which gives the progress, e.g. like a downloader does.
+    1 - means the task is finished, even if there comes another 1 from that task, so it will be ignored.
+*/
 void ProgressCoordinator::partProgressChanged(double fraction)
 {
     if (fraction < 0 || fraction > 1) {
         qWarning() << "The fraction is outside from possible value:" << QString::number(fraction);
+        return;
+    }
+
+    // no fraction no change
+    if (fraction == 0)
+        return;
+
+    // ignore senders sending 100% multiple times
+    if (fraction == 1 && m_senderPendingCalculatedPercentageHash.contains(sender())
+        && m_senderPendingCalculatedPercentageHash.value(sender()) == 0) {
         return;
     }
 
@@ -176,7 +194,7 @@ void ProgressCoordinator::partProgressChanged(double fraction)
 
         m_currentCompletePercentage = newCurrentCompletePercentage;
 
-        if (fraction == 1 || fraction == 0) {
+        if (fraction == 1) {
             m_currentBasePercentage = m_currentBasePercentage + pendingCalculatedPartPercentage;
             m_senderPendingCalculatedPercentageHash.insert(sender(), 0);
         } else {
