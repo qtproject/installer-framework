@@ -8,5 +8,5 @@ host-bin/qdoc
 *.la
 *.prl
 *.pc
-*.pri
-*.cmake
+
+
