@@ -2397,9 +2397,11 @@ OperationList PackageManagerCorePrivate::sortOperationsBasedOnComponentDependenc
 
     // create the complete component graph
     Graph<QString> componentGraph;
+    const QRegExp dash(QLatin1String("-.*"));
     foreach (const Component* componentNode, m_core->availableComponents()) {
         componentGraph.addNode(componentNode->name());
-        componentGraph.addEdges(componentNode->name(), componentNode->dependencies());
+        const QStringList dependencies = componentNode->dependencies().replaceInStrings(dash,QString());
+        componentGraph.addEdges(componentNode->name(), dependencies);
     }
 
     foreach (const QString &componentName, componentGraph.sort())
