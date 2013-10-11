@@ -138,7 +138,7 @@ QVariant PackageManagerCoreData::value(const QString &key, const QVariant &_defa
     if (key == scTargetDir) {
         QString dir = m_variables.value(key);
         if (dir.isEmpty())
-            dir = m_settings.value(key, _default).toString();
+            dir = replaceVariables(m_settings.value(key, _default).toString());
 #ifdef Q_OS_WIN
         return QInstaller::normalizePathName(dir);
 #else
