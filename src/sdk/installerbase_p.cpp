@@ -63,14 +63,8 @@
 #include <iostream>
 
 #ifdef Q_OS_WIN
-# ifdef Q_CC_MINGW
-#   ifndef _WIN32_WINNT
-#  define _WIN32_WINNT 0x0501
-# endif
-#endif
-
-#   include <wincon.h>
 #   include <windows.h>
+#   include <wincon.h>
 
 #   ifndef ENABLE_INSERT_MODE
 #       define ENABLE_INSERT_MODE 0x0020
@@ -142,11 +136,12 @@ public:
         m_oldCerr = std::cerr.rdbuf();
         m_newCerr.open("CONOUT$");
         std::cerr.rdbuf(m_newCerr.rdbuf());
-
+#   ifndef Q_CC_MINGW
         HMENU systemMenu = GetSystemMenu(GetConsoleWindow(), FALSE);
         if (systemMenu != NULL)
             RemoveMenu(systemMenu, SC_CLOSE, MF_BYCOMMAND);
         DrawMenuBar(GetConsoleWindow());
+#   endif
 #endif
     }
     ~MyApplicationConsole()
