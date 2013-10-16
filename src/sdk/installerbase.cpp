@@ -61,6 +61,7 @@
 #include <kdrunoncechecker.h>
 #include <kdupdaterfiledownloaderfactory.h>
 
+#include <QDirIterator>
 #include <QtCore/QTranslator>
 #include <QMessageBox>
 
@@ -254,11 +255,10 @@ int main(int argc, char *argv[])
             qDebug() << "Resource tree before loading the in-binary resource:";
             qDebug() << "Language: " << QLocale().uiLanguages().value(0, QLatin1String("No UI language set"));
 
-            QDir dir(QLatin1String(":/"));
-            foreach (const QString &i, dir.entryList()) {
-                const QByteArray ba = i.toUtf8();
-                qDebug().nospace() << "    :/" << ba.constData();
-            }
+            QDirIterator it(QLatin1String(":/"), QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
+                QDirIterator::Subdirectories);
+            while (it.hasNext())
+                qDebug() << QString::fromLatin1("    %1").arg(it.next());
         }
 
         // register custom operations before reading the binary content cause they may used in
@@ -362,18 +362,10 @@ int main(int argc, char *argv[])
 
         if (QInstaller::isVerbose()) {
             qDebug() << "Resource tree after loading the in-binary resource:";
-
-            QDir dir = QDir(QLatin1String(":/"));
-            foreach (const QString &i, dir.entryList())
-                qDebug() << QString::fromLatin1("    :/%1").arg(i);
-
-            dir = QDir(QLatin1String(":/metadata/"));
-            foreach (const QString &i, dir.entryList())
-                qDebug() << QString::fromLatin1("    :/metadata/%1").arg(i);
-
-            dir = QDir(QLatin1String(":/translations/"));
-            foreach (const QString &i, dir.entryList())
-                qDebug() << QString::fromLatin1("    :/translations/%1").arg(i);
+            QDirIterator it(QLatin1String(":/"), QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
+                QDirIterator::Subdirectories);
+            while (it.hasNext())
+                qDebug() << QString::fromLatin1("    %1").arg(it.next());
         }
 
         const QString directory = QLatin1String(":/translations");
