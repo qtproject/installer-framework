@@ -242,6 +242,7 @@ public:
 
     qint64 magicMarker() const;
     int registerEmbeddedQResources();
+    void registerAsDefaultQResource(const QString &path);
     QInstallerCreator::ComponentIndex componentIndex() const;
 
 private:

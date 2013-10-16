@@ -796,7 +796,7 @@ BinaryContentPrivate::BinaryContentPrivate(const BinaryContentPrivate &other)
 BinaryContentPrivate::~BinaryContentPrivate()
 {
     foreach (const QByteArray &rccData, m_resourceMappings)
-        QResource::unregisterResource((const uchar*)rccData.constData());
+        QResource::unregisterResource((const uchar*)rccData.constData(), QLatin1String(":/metadata"));
     m_resourceMappings.clear();
 }
 
@@ -1135,6 +1135,27 @@ int BinaryContent::registerEmbeddedQResources()
         d->m_binaryDataFile.clear();
 
     return d->m_resourceMappings.count();
+}
+
+/*!
+    Registers the passed file as default resource content. If the embedded resources are already mapped into
+    memory, it will replace the first with the new content.
+*/
+void BinaryContent::registerAsDefaultQResource(const QString &path)
+{
+    QFile resource(path);
+    bool success = resource.open(QIODevice::ReadOnly);
+    if (success && (d->m_resourceMappings.count() > 0)) {
+        success = QResource::unregisterResource((const uchar*)d->m_resourceMappings.takeFirst().constData(),
+            QLatin1String(":/metadata"));
+    }
+
+    if (success) {
+        d->m_resourceMappings.prepend(addResourceFromBinary(&resource, Range<qint64>::fromStartAndEnd(0,
+            resource.size())));
+    } else {
+        qWarning() << QString::fromLatin1("Could not register '%1' as default resource.").arg(path);
+    }
 }
 
 /*!

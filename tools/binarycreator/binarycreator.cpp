@@ -400,7 +400,7 @@ private:
     const QString oldPath;
 };
 
-static QString createBinaryResourceFile(const QString &directory)
+static QString createBinaryResourceFile(const QString &directory, const QString &binaryName)
 {
     QTemporaryFile projectFile(directory + QLatin1String("/rccprojectXXXXXX.qrc"));
     if (!projectFile.open())
@@ -408,16 +408,19 @@ static QString createBinaryResourceFile(const QString &directory)
     projectFile.close();
 
     const WorkingDirectoryChange wd(directory);
-    const QString binaryName = generateTemporaryFileName();
     const QString projectFileName = QFileInfo(projectFile.fileName()).absoluteFilePath();
 
     // 1. create the .qrc file
-    runRcc(QStringList() << QLatin1String("rcc") << QLatin1String("-project")
-        << QLatin1String("-o") << projectFileName);
+    if (runRcc(QStringList() << QLatin1String("rcc") << QLatin1String("-project") << QLatin1String("-o")
+        << projectFileName) != EXIT_SUCCESS) {
+            throw Error(QString::fromLatin1("Could not create rcc project file."));
+    }
 
     // 2. create the binary resource file from the .qrc file
-    runRcc(QStringList() << QLatin1String("rcc") << QLatin1String("-binary")
-        << QLatin1String("-o") << binaryName << projectFileName);
+    if (runRcc(QStringList() << QLatin1String("rcc") << QLatin1String("-binary") << QLatin1String("-o")
+        << binaryName << projectFileName) != EXIT_SUCCESS) {
+            throw Error(QString::fromLatin1("Could not compile rcc project file."));
+    }
 
     return binaryName;
 }
@@ -467,6 +470,9 @@ static void printUsage()
     std::cout << "  -r|--resources r1,.,rn    include the given resource files into the binary" << std::endl;
 
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
+    std::cout << "  -rcc|--compile-resource   Compiles the default resource and outputs the result into"
+        << std::endl;
+    std::cout << "                            'update.rcc' in the current path." << std::endl;
     std::cout << std::endl;
     std::cout << "Packages are to be found in the current working directory and get listed as "
         "their names" << std::endl << std::endl;
@@ -483,6 +489,9 @@ static void printUsage()
     std::cout << std::endl;
     std::cout << "Creates an installer for the SDK without qt and qt creator." << std::endl;
     std::cout << std::endl;
+    std::cout << "Example update.rcc:" << std::endl;
+    std::cout << "  " << appName << " -c installer-config" << sep << "config.xml -p packages-directory "
+        "-rcc" << std::endl;
 }
 
 void copyConfigData(const QString &configFile, const QString &targetDir)
@@ -578,6 +587,7 @@ int main(int argc, char **argv)
     QStringList resources;
     QStringList filteredPackages;
     QInstallerTools::FilterType ftype = QInstallerTools::Exclude;
+    bool compileResource = false;
 
     const QStringList args = app.arguments().mid(1);
     for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -663,6 +673,8 @@ int main(int argc, char **argv)
         } else if (*it == QLatin1String("--ignore-translations")
             || *it == QLatin1String("--ignore-invalid-packages")) {
                 continue;
+        } else if (*it == QLatin1String("-rcc") || *it == QLatin1String("--compile-resource")) {
+            compileResource = true;
         } else {
             if (it->startsWith(QLatin1String("-"))) {
                 return printErrorAndUsageAndExit(QString::fromLatin1("Error: Unknown option \"%1\" used. Maybe you "
@@ -691,7 +703,7 @@ int main(int argc, char **argv)
         ftype = QInstallerTools::Include;
     }
 
-    if (target.isEmpty())
+    if (target.isEmpty() && compileResource)
         return printErrorAndUsageAndExit(QString::fromLatin1("Error: Target parameter missing."));
 
     if (configFile.isEmpty())
@@ -722,11 +734,11 @@ int main(int argc, char **argv)
         if (!target.endsWith(QLatin1String(".app")) && !target.endsWith(QLatin1String(".dmg")))
             target += QLatin1String(".app");
 #endif
-        {
+        if (!compileResource) {
             Input input;
             input.outputPath = target;
             input.installerExePath = templateBinary;
-            input.binaryResourcePath = createBinaryResourceFile(tmpMetaDir);
+            input.binaryResourcePath = createBinaryResourceFile(tmpMetaDir, generateTemporaryFileName());
             input.binaryResources = createBinaryResourceFiles(resources);
 
             QInstallerTools::copyComponentData(packagesDirectory, tmpMetaDir, &packages);
@@ -754,6 +766,9 @@ int main(int argc, char **argv)
             QFile::remove(input.binaryResourcePath);
             foreach (const QString &resource, input.binaryResources)
                 QFile::remove(resource);
+        } else {
+            createBinaryResourceFile(tmpMetaDir, QDir::currentPath() + QLatin1String("/update.rcc"));
+            exitCode = EXIT_SUCCESS;
         }
     } catch (const Error &e) {
         std::cerr << "Caught exception: " << e.message() << std::endl;

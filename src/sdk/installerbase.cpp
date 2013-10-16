@@ -360,6 +360,11 @@ int main(int argc, char *argv[])
             }
         }
 
+        // this needs to happen after we parse the arguments, but before we use the actual resources
+        const QString newDefaultResource = core.value(QString::fromLatin1("DefaultResourceReplacement"));
+        if (!newDefaultResource.isEmpty())
+            content.registerAsDefaultQResource(newDefaultResource);
+
         if (QInstaller::isVerbose()) {
             qDebug() << "Resource tree after loading the in-binary resource:";
             QDirIterator it(QLatin1String(":/"), QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
