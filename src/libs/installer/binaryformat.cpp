@@ -1146,8 +1146,10 @@ void BinaryContent::registerAsDefaultQResource(const QString &path)
     QFile resource(path);
     bool success = resource.open(QIODevice::ReadOnly);
     if (success && (d->m_resourceMappings.count() > 0)) {
-        success = QResource::unregisterResource((const uchar*)d->m_resourceMappings.takeFirst().constData(),
+        success = QResource::unregisterResource((const uchar*)d->m_resourceMappings.first().constData(),
             QLatin1String(":/metadata"));
+        if (success)
+            d->m_resourceMappings.remove(0);
     }
 
     if (success) {
