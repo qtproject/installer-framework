@@ -703,7 +703,7 @@ int main(int argc, char **argv)
         ftype = QInstallerTools::Include;
     }
 
-    if (target.isEmpty() && compileResource)
+    if (target.isEmpty() && !compileResource)
         return printErrorAndUsageAndExit(QString::fromLatin1("Error: Target parameter missing."));
 
     if (configFile.isEmpty())
