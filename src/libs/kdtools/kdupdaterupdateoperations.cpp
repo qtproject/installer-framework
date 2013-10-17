@@ -165,7 +165,7 @@ bool CopyOperation::performOperation()
     QFile sourceFile(source);
     if (!sourceFile.exists()) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not copy a none existing file: %1").arg(source));
+        setErrorString(tr("Could not copy a non-existent file: %1").arg(source));
         return false;
     }
     // If destination file exists, we cannot use QFile::copy() because it does not overwrite an existing
