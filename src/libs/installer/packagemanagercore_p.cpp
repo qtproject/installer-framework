@@ -225,7 +225,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_updaterApplication(new DummyConfigurationInterface)
     , m_FSEngineClientHandler(initFSEngineClientHandler())
     , m_status(PackageManagerCore::Unfinished)
-    , m_forceRestart(false)
+    , m_needsHardRestart(false)
     , m_testChecksum(false)
     , m_launchedAsRoot(AdminAuthorization::hasAdminRights())
     , m_completeUninstall(false)
@@ -1290,7 +1290,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
                 writeUninstallerBinary(&replacementBinary, replacementBinary.size(), true);
                 qDebug() << "Wrote the binary with the new replacement.";
 
-                m_forceRestart = true;
+                m_needsHardRestart = true;
                 newBinaryWritten = true;
                 replacementExists = true;
             } catch (const Error &error) {
@@ -1911,7 +1911,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
             throw Error(operation->errorString());
 
         if (component->value(scEssential, scFalse) == scTrue)
-            m_forceRestart = true;
+            m_needsHardRestart = true;
     }
 
     registerPathesForUninstallation(component->pathesForUninstallation(), component->name());

@@ -1943,7 +1943,7 @@ int RestartPage::nextId() const
 
 void RestartPage::entering()
 {
-    if (!packageManagerCore()->needsRestart()) {
+    if (!packageManagerCore()->needsHardRestart()) {
         if (QAbstractButton *finish = wizard()->button(QWizard::FinishButton))
             finish->setVisible(false);
         QMetaObject::invokeMethod(this, "restart", Qt::QueuedConnection);
