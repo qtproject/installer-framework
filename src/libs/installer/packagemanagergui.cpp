@@ -524,6 +524,7 @@ void PackageManagerGui::cancelButtonClicked()
                 QDialog::reject();
         }
     } else {
+        m_core->setNeedsHardRestart(false);
         QDialog::reject();
     }
 }

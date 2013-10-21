@@ -1290,7 +1290,6 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
                 writeUninstallerBinary(&replacementBinary, replacementBinary.size(), true);
                 qDebug() << "Wrote the binary with the new replacement.";
 
-                m_needsHardRestart = true;
                 newBinaryWritten = true;
                 replacementExists = true;
             } catch (const Error &error) {
@@ -1389,7 +1388,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         deferredRename(dataFile + QLatin1String(".new"), dataFile, false);
 
         if (newBinaryWritten) {
-            const bool restart = replacementExists && isUpdater() && (!statusCanceledOrFailed());
+            const bool restart = replacementExists && isUpdater() && (!statusCanceledOrFailed()) && m_needsHardRestart;
             deferredRename(uninstallerName() + QLatin1String(".new"), uninstallerName(), restart);
             qDebug() << "Maintenance tool restart:" << (restart ? "true." : "false.");
         }
