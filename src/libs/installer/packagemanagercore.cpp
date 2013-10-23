@@ -421,7 +421,7 @@ void PackageManagerCore::writeMaintenanceConfigFiles()
 void PackageManagerCore::reset(const QHash<QString, QString> &params)
 {
     d->m_completeUninstall = false;
-    d->m_forceRestart = false;
+    d->m_needsHardRestart = false;
     d->m_status = PackageManagerCore::Unfinished;
     d->m_installerBaseBinaryUnreplaced.clear();
 
@@ -596,10 +596,16 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     If a component marked as important was installed during update
     process true is returned.
 */
-bool PackageManagerCore::needsRestart() const
+bool PackageManagerCore::needsHardRestart() const
 {
-    return d->m_forceRestart;
+    return d->m_needsHardRestart;
 }
+
+void PackageManagerCore::setNeedsHardRestart(bool needsHardRestart)
+{
+    d->m_needsHardRestart = needsHardRestart;
+}
+
 
 void PackageManagerCore::rollBackInstallation()
 {

@@ -71,9 +71,12 @@ public:
         ExtractArchiveOperation *const op = m_op;//dynamic_cast< ExtractArchiveOperation* >(parent());
         Q_ASSERT(op != 0);
 
+        int removedCounter = 0;
         foreach (const QString &file, m_files) {
+            removedCounter++;
             const QFileInfo fi(file);
-            emit outputTextChanged(file);
+            emit currentFileChanged(file);
+            emit progressChanged(double(removedCounter) / m_files.count());
             if (fi.isFile() || fi.isSymLink()) {
                 op->deleteFileNowOrLater(fi.absoluteFilePath());
             } else if (fi.isDir()) {
@@ -85,7 +88,8 @@ public:
     }
 
 Q_SIGNALS:
-    void outputTextChanged(const QString &filename);
+    void currentFileChanged(const QString &filename);
+    void progressChanged(double);
 
 private:
     QStringList m_files;
@@ -105,7 +109,8 @@ public:
     Callback() : state(S_OK), createBackups(true) {}
 
 Q_SIGNALS:
-    void progressChanged(const QString &filename);
+    void currentFileChanged(const QString &filename);
+    void progressChanged(double progress);
 
 public Q_SLOTS:
     void statusChanged(QInstaller::PackageManagerCore::Status status)
@@ -130,7 +135,7 @@ public Q_SLOTS:
 protected:
     void setCurrentFile(const QString &filename)
     {
-        emit progressChanged(QDir::toNativeSeparators(filename));
+        emit currentFileChanged(QDir::toNativeSeparators(filename));
     }
 
     static QString generateBackupName(const QString &fn)
@@ -161,8 +166,9 @@ protected:
         return true;
     }
 
-    HRESULT setCompleted(quint64 /*completed*/, quint64 /*total*/)
+    HRESULT setCompleted(quint64 completed, quint64 total)
     {
+        emit progressChanged(double(completed) / total);
         return state;
     }
 };

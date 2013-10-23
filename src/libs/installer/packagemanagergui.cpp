@@ -128,7 +128,7 @@ public:
         setPixmap(QWizard::BannerPixmap, QPixmap());
 
         setLayout(new QVBoxLayout);
-        setSubTitle(QString());
+        setSubTitle(QLatin1String(" "));
         setTitle(widget->windowTitle());
         m_widget->setProperty("complete", true);
         m_widget->setProperty("final", false);
@@ -248,7 +248,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     connect(m_core, SIGNAL(installationFinished()), this, SLOT(showFinishedPage()), Qt::QueuedConnection);
     connect(m_core, SIGNAL(uninstallationFinished()), this, SLOT(showFinishedPage()), Qt::QueuedConnection);
 
-    connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(slotCurrentPageChanged(int)));
+    connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(executeControlScript(int)));
     connect(this, SIGNAL(currentIdChanged(int)), m_core, SIGNAL(currentPageChanged(int)));
     connect(button(QWizard::FinishButton), SIGNAL(clicked()), this, SIGNAL(finishButtonClicked()));
     connect(button(QWizard::FinishButton), SIGNAL(clicked()), m_core, SIGNAL(finishButtonClicked()));
@@ -301,8 +301,8 @@ void PackageManagerGui::clickButton(int wb, int delay)
 {
     // transform the FinishButton to CancelButton, because of the needed misuse of the
     // CancelButton as a FinishButton to have some more control of closing the wizard
-    if (!m_core->isInstaller() && currentId() == PackageManagerCore::InstallationFinished &&
-        wb == QWizard::FinishButton) {
+    if ((m_core->isUpdater() || m_core->isPackageManager()) && currentId() ==
+        PackageManagerCore::InstallationFinished && wb == QWizard::FinishButton) {
         wb = QWizard::CancelButton;
     }
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) ))
@@ -315,8 +315,8 @@ bool PackageManagerGui::isButtonEnabled(int wb)
 {
     // transform the FinishButton to CancelButton, because of the needed misuse of the
     // CancelButton as a FinishButton to have some more control of closing the wizard
-    if (!m_core->isInstaller() && currentId() == PackageManagerCore::InstallationFinished &&
-        wb == QWizard::FinishButton) {
+    if ((m_core->isUpdater() || m_core->isPackageManager()) && currentId() ==
+        PackageManagerCore::InstallationFinished && wb == QWizard::FinishButton) {
         wb = QWizard::CancelButton;
     }
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb) ))
@@ -353,12 +353,6 @@ void PackageManagerGui::loadControlScript(const QString &scriptPath)
     qDebug() << "Loaded control script" << scriptPath;
 }
 
-void PackageManagerGui::slotCurrentPageChanged(int id)
-{
-    QMetaObject::invokeMethod(this, "delayedControlScriptExecution", Qt::QueuedConnection,
-        Q_ARG(int, id));
-}
-
 void PackageManagerGui::callControlScriptMethod(const QString &methodName)
 {
     if (!d->m_controlScriptContext.isValid())
@@ -376,9 +370,9 @@ void PackageManagerGui::callControlScriptMethod(const QString &methodName)
     }
 }
 
-void PackageManagerGui::delayedControlScriptExecution(int id)
+void PackageManagerGui::executeControlScript(int pageId)
 {
-    if (PackageManagerPage *const p = qobject_cast<PackageManagerPage*> (page(id)))
+    if (PackageManagerPage *const p = qobject_cast<PackageManagerPage*> (page(pageId)))
         callControlScriptMethod(p->objectName() + QLatin1String("Callback"));
 }
 
@@ -524,6 +518,7 @@ void PackageManagerGui::cancelButtonClicked()
                 QDialog::reject();
         }
     } else {
+        m_core->setNeedsHardRestart(false);
         QDialog::reject();
     }
 }
@@ -1870,7 +1865,7 @@ void FinishedPage::entering()
         if (!finishedText.isEmpty())
             m_msgLabel->setText(finishedText);
 
-        if (!packageManagerCore()->value(scRunProgram).isEmpty()) {
+        if (!packageManagerCore()->isUninstaller() && !packageManagerCore()->value(scRunProgram).isEmpty()) {
             m_runItCheckBox->show();
             m_runItCheckBox->setText(packageManagerCore()->value(scRunProgramDescription, tr("Run %1 now."))
                 .arg(productName()));
@@ -1903,7 +1898,7 @@ void FinishedPage::handleFinishClicked()
 {
     const QString program = packageManagerCore()->replaceVariables(packageManagerCore()->value(scRunProgram));
     const QStringList args = packageManagerCore()->replaceVariables(
-                packageManagerCore()->value(scRunProgramArguments)).split(QLatin1Char(' '));
+        packageManagerCore()->value(scRunProgramArguments)).split(QLatin1Char(' '), QString::SkipEmptyParts);
     if (!m_runItCheckBox->isChecked() || program.isEmpty())
         return;
 
@@ -1942,7 +1937,7 @@ int RestartPage::nextId() const
 
 void RestartPage::entering()
 {
-    if (!packageManagerCore()->needsRestart()) {
+    if (!packageManagerCore()->needsHardRestart()) {
         if (QAbstractButton *finish = wizard()->button(QWizard::FinishButton))
             finish->setVisible(false);
         QMetaObject::invokeMethod(this, "restart", Qt::QueuedConnection);

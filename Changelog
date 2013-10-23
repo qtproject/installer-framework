@@ -1,3 +1,11 @@
+1.4.1
+- Added support to pass a query string when downloading archives. (QTIFW-329)
+- Fixed progress display for redirected HTTP Downloads. (QTIFW-267)
+- Add support to repogen to update only newer components. (QTIFW-234)
+- Added more autotests.
+- Improved documentation.
+- Minor bugfixes.
+
 1.4
 - Force updating of Essential components. (QTIFW-38, QTIFW-155)
 - Display release date in Updater and Packagemanager. (QTIFW-25)
@@ -41,6 +49,7 @@
 - Minor documentation fixes and additions.
 - Added more autotests.
 - Bugfixes
+- Added Japanese translation.
 - Updated translations
 - Cleaned up the Code.
 

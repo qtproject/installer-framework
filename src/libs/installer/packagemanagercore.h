@@ -248,7 +248,8 @@ public:
 
     int downloadNeededArchives(double partProgressSize);
 
-    bool needsRestart() const;
+    bool needsHardRestart() const;
+    void setNeedsHardRestart(bool needsHardRestart = true);
     bool finishedWithSuccess() const;
 
 public Q_SLOTS:

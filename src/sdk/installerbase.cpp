@@ -61,6 +61,7 @@
 #include <kdrunoncechecker.h>
 #include <kdupdaterfiledownloaderfactory.h>
 
+#include <QDirIterator>
 #include <QtCore/QTranslator>
 #include <QMessageBox>
 
@@ -254,11 +255,10 @@ int main(int argc, char *argv[])
             qDebug() << "Resource tree before loading the in-binary resource:";
             qDebug() << "Language: " << QLocale().uiLanguages().value(0, QLatin1String("No UI language set"));
 
-            QDir dir(QLatin1String(":/"));
-            foreach (const QString &i, dir.entryList()) {
-                const QByteArray ba = i.toUtf8();
-                qDebug().nospace() << "    :/" << ba.constData();
-            }
+            QDirIterator it(QLatin1String(":/"), QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
+                QDirIterator::Subdirectories);
+            while (it.hasNext())
+                qDebug() << QString::fromLatin1("    %1").arg(it.next());
         }
 
         // register custom operations before reading the binary content cause they may used in
@@ -295,59 +295,6 @@ int main(int argc, char *argv[])
 
         // instantiate the installer we are actually going to use
         QInstaller::PackageManagerCore core(content.magicMarker(), content.performedOperations());
-
-        if (QInstaller::isVerbose()) {
-            qDebug() << "Resource tree after loading the in-binary resource:";
-
-            QDir dir = QDir(QLatin1String(":/"));
-            foreach (const QString &i, dir.entryList())
-                qDebug() << QString::fromLatin1("    :/%1").arg(i);
-
-            dir = QDir(QLatin1String(":/metadata/"));
-            foreach (const QString &i, dir.entryList())
-                qDebug() << QString::fromLatin1("    :/metadata/%1").arg(i);
-
-            dir = QDir(QLatin1String(":/translations/"));
-            foreach (const QString &i, dir.entryList())
-                qDebug() << QString::fromLatin1("    :/translations/%1").arg(i);
-        }
-
-        const QString directory = QLatin1String(":/translations");
-        const QStringList translations = core.settings().translations();
-
-        // install the default Qt translator
-        QScopedPointer<QTranslator> translator(new QTranslator(&app));
-        foreach (const QLocale locale, QLocale().uiLanguages()) {
-            // As there is no qt_en.qm, we simply end the search when the next
-            // preferred language is English.
-            if (locale.language() == QLocale::English)
-                break;
-            if (translator->load(locale, QLatin1String("qt"), QString::fromLatin1("_"), directory)) {
-                app.installTranslator(translator.take());
-                break;
-            }
-        }
-
-        translator.reset(new QTranslator(&app));
-        // install English translation as fallback so that correct license button text is used
-        if (translator->load(QLatin1String("en_us"), directory))
-            app.installTranslator(translator.take());
-
-        if (translations.isEmpty()) {
-            translator.reset(new QTranslator(&app));
-            foreach (const QLocale locale, QLocale().uiLanguages()) {
-                if (translator->load(locale, QLatin1String(""), QLatin1String(""), directory)) {
-                    app.installTranslator(translator.take());
-                    break;
-                }
-            }
-        } else {
-            foreach (const QString &translation, translations) {
-                translator.reset(new QTranslator(&app));
-                if (translator->load(translation, QLatin1String(":/translations")))
-                    app.installTranslator(translator.take());
-            }
-        }
 
         QString controlScript;
         QHash<QString, QString> params;
@@ -410,6 +357,56 @@ int main(int argc, char *argv[])
                 PackageManagerCore::setCreateLocalRepositoryFromBinary(true);
             } else {
                 std::cerr << "Unknown option: " << argument << std::endl;
+            }
+        }
+
+        // this needs to happen after we parse the arguments, but before we use the actual resources
+        const QString newDefaultResource = core.value(QString::fromLatin1("DefaultResourceReplacement"));
+        if (!newDefaultResource.isEmpty())
+            content.registerAsDefaultQResource(newDefaultResource);
+
+        if (QInstaller::isVerbose()) {
+            qDebug() << "Resource tree after loading the in-binary resource:";
+            QDirIterator it(QLatin1String(":/"), QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
+                QDirIterator::Subdirectories);
+            while (it.hasNext())
+                qDebug() << QString::fromLatin1("    %1").arg(it.next());
+        }
+
+        const QString directory = QLatin1String(":/translations");
+        const QStringList translations = core.settings().translations();
+
+        // install the default Qt translator
+        QScopedPointer<QTranslator> translator(new QTranslator(&app));
+        foreach (const QLocale locale, QLocale().uiLanguages()) {
+            // As there is no qt_en.qm, we simply end the search when the next
+            // preferred language is English.
+            if (locale.language() == QLocale::English)
+                break;
+            if (translator->load(locale, QLatin1String("qt"), QString::fromLatin1("_"), directory)) {
+                app.installTranslator(translator.take());
+                break;
+            }
+        }
+
+        translator.reset(new QTranslator(&app));
+        // install English translation as fallback so that correct license button text is used
+        if (translator->load(QLatin1String("en_us"), directory))
+            app.installTranslator(translator.take());
+
+        if (translations.isEmpty()) {
+            translator.reset(new QTranslator(&app));
+            foreach (const QLocale locale, QLocale().uiLanguages()) {
+                if (translator->load(locale, QLatin1String(""), QLatin1String(""), directory)) {
+                    app.installTranslator(translator.take());
+                    break;
+                }
+            }
+        } else {
+            foreach (const QString &translation, translations) {
+                translator.reset(new QTranslator(&app));
+                if (translator->load(translation, QLatin1String(":/translations")))
+                    app.installTranslator(translator.take());
             }
         }
 

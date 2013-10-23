@@ -211,6 +211,7 @@ Component::Component(PackageManagerCore *core)
     setPrivate(d);
 
     connect(this, SIGNAL(valueChanged(QString, QString)), this, SLOT(updateModelData(QString, QString)));
+    qRegisterMetaType<QList<QInstaller::Component*> >("QList<QInstaller::Component*>");
 }
 
 /*!
@@ -899,6 +900,7 @@ OperationList Component::operations() const
         if (!d->m_minimumProgressOperation) {
             d->m_minimumProgressOperation = KDUpdater::UpdateOperationFactory::instance()
                 .create(QLatin1String("MinimumProgress"));
+            d->m_minimumProgressOperation->setValue(QLatin1String("component"), name());
             d->m_operations.append(d->m_minimumProgressOperation);
         }
 
@@ -906,6 +908,7 @@ OperationList Component::operations() const
             d->m_licenseOperation = KDUpdater::UpdateOperationFactory::instance()
                 .create(QLatin1String("License"));
             d->m_licenseOperation->setValue(QLatin1String("installer"), QVariant::fromValue(d->m_core));
+            d->m_licenseOperation->setValue(QLatin1String("component"), name());
 
             QVariantMap licenses;
             const QList<QPair<QString, QString> > values = d->m_licenses.values();

@@ -55,6 +55,7 @@
 #include <QTemporaryFile>
 
 #include <errno.h>
+#include <string.h>
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
@@ -220,33 +221,26 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
     Q_ASSERT(in);
     Q_ASSERT(in->isOpen());
     Q_ASSERT(in->isReadable());
-    const qint64 oldPos = in->pos();
-    const qint64 MAX_SEARCH = 1024 * 1024;  // stop searching after one MB
-    qint64 searched = 0;
-    try {
-        while (searched < MAX_SEARCH) {
-            const qint64 pos = in->size() - searched - sizeof(qint64);
-            if (pos < 0)
-                throw Error(QObject::tr("Searched whole file, no marker found"));
-            if (!in->seek(pos)) {
-                throw Error(QObject::tr("Could not seek to %1 in file %2: %3").arg(QString::number(pos),
-                    in->fileName(), in->errorString()));
-            }
-            const quint64 num = static_cast<quint64>(retrieveInt64(in));
-            if (num == magicCookie) {
-                in->seek(oldPos);
-                return pos;
-            }
-            searched += 1;
-        }
-        throw Error(QObject::tr("No marker found, stopped after %1.").arg(humanReadableSize(MAX_SEARCH)));
-    } catch (const Error& err) {
-        in->seek(oldPos);
-        throw err;
-    } catch (...) {
-        in->seek(oldPos);
-        throw Error(QObject::tr("No marker found, unknown exception caught."));
+
+    const qint64 fileSize = in->size();
+    const size_t markerSize = sizeof(qint64);
+
+    // Search through 1MB, if smaller through the whole file. Note: QFile::map() does not change QFile::pos().
+    const qint64 maxSearch = qMin((1024LL * 1024LL), fileSize);
+    const uchar *const mapped = in->map(fileSize - maxSearch, maxSearch);
+    if (!mapped) {
+        throw Error(QObject::tr("Could not map %1 from file %2: %3").arg(QString::number(maxSearch),
+            in->fileName(), in->errorString()));
     }
+
+    qint64 searched = maxSearch - markerSize;
+    while (searched >= 0) {
+        if (memcmp(&magicCookie, (mapped + searched), markerSize) == 0)
+            return (fileSize - maxSearch) + searched;
+        --searched;
+    }
+    throw Error(QObject::tr("No marker found, stopped after %1.").arg(humanReadableSize(maxSearch)));
+
     return -1; // never reached
 }
 
@@ -802,7 +796,7 @@ BinaryContentPrivate::BinaryContentPrivate(const BinaryContentPrivate &other)
 BinaryContentPrivate::~BinaryContentPrivate()
 {
     foreach (const QByteArray &rccData, m_resourceMappings)
-        QResource::unregisterResource((const uchar*)rccData.constData());
+        QResource::unregisterResource((const uchar*)rccData.constData(), QLatin1String(":/metadata"));
     m_resourceMappings.clear();
 }
 
@@ -1141,6 +1135,29 @@ int BinaryContent::registerEmbeddedQResources()
         d->m_binaryDataFile.clear();
 
     return d->m_resourceMappings.count();
+}
+
+/*!
+    Registers the passed file as default resource content. If the embedded resources are already mapped into
+    memory, it will replace the first with the new content.
+*/
+void BinaryContent::registerAsDefaultQResource(const QString &path)
+{
+    QFile resource(path);
+    bool success = resource.open(QIODevice::ReadOnly);
+    if (success && (d->m_resourceMappings.count() > 0)) {
+        success = QResource::unregisterResource((const uchar*)d->m_resourceMappings.first().constData(),
+            QLatin1String(":/metadata"));
+        if (success)
+            d->m_resourceMappings.remove(0);
+    }
+
+    if (success) {
+        d->m_resourceMappings.prepend(addResourceFromBinary(&resource, Range<qint64>::fromStartAndEnd(0,
+            resource.size())));
+    } else {
+        qWarning() << QString::fromLatin1("Could not register '%1' as default resource.").arg(path);
+    }
 }
 
 /*!

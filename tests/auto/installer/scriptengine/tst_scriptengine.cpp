@@ -26,9 +26,9 @@ public:
 
     virtual void init() {}
 
-    void callProtectedDelayedControlScriptExecution(int id)
+    void callProtectedDelayedExecuteControlScript(int id)
     {
-        delayedControlScriptExecution(id);
+        executeControlScript(id);
     }
 };
 
@@ -218,18 +218,16 @@ private slots:
             testGui.loadControlScript(":///data/auto-install.qs");
             QCOMPARE(m_core.value("GuiTestValue"), QString("hello"));
 
-            testGui.show();
             // show event calls automatically the first callback which does not exist
             setExpectedScriptOutput("Control script callback \"IntroductionPageCallback\" does not exist. ");
-            // give some time to the event triggering mechanism
-            qApp->processEvents();
+            testGui.show();
 
             // inside the auto-install script we are clicking the next button, with a not existing button
             QTest::ignoreMessage(QtWarningMsg, "Button with type:  \"unknown button\" not found! ");
-            testGui.callProtectedDelayedControlScriptExecution(PackageManagerCore::ComponentSelection);
+            testGui.callProtectedDelayedExecuteControlScript(PackageManagerCore::ComponentSelection);
 
             setExpectedScriptOutput("FinishedPageCallback - OK");
-            testGui.callProtectedDelayedControlScriptExecution(PackageManagerCore::InstallationFinished);
+            testGui.callProtectedDelayedExecuteControlScript(PackageManagerCore::InstallationFinished);
         } catch (const Error &error) {
             QFAIL(qPrintable(error.message()));
         }

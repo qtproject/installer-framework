@@ -49,6 +49,8 @@
 #include "kdupdaterfiledownloader.h"
 #include "kdupdaterfiledownloaderfactory.h"
 
+#include "productkeycheck.h"
+
 #include <QTimer>
 
 
@@ -197,14 +199,14 @@ void GetRepositoryMetaInfoJob::startUpdatesXmlDownload()
     }
 
     if (!url.isValid()) {
-        finished(QInstaller::InvalidUrl, tr("Invalid repository URL: %1").arg(url.toString()));
+        finished(QInstaller::InvalidUrl, tr("Invalid repository URL: %1").arg(m_repository.displayname()));
         return;
     }
 
     m_downloader = FileDownloaderFactory::instance().create(url.scheme(), this);
     if (!m_downloader) {
         finished(QInstaller::InvalidUrl, tr("URL scheme not supported: %1 (%2)").arg(url.scheme(),
-            url.toString()));
+            m_repository.displayname()));
         return;
     }
 
@@ -244,20 +246,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
     Q_ASSERT(!fn.isEmpty());
     Q_ASSERT(QFile::exists(fn));
 
-    try {
-        m_temporaryDirectory = createTemporaryDirectory(QLatin1String("remoterepo"));
-        m_tempDirDeleter.add(m_temporaryDirectory);
-    } catch (const QInstaller::Error& e) {
-        finished(QInstaller::ExtractionError, e.message());
-        return;
-    }
-
     QFile updatesFile(fn);
-    if (!updatesFile.rename(m_temporaryDirectory + QLatin1String("/Updates.xml"))) {
-        finished(QInstaller::DownloadError, tr("Could not move Updates.xml to target location. Error: %1")
-            .arg(updatesFile.errorString()));
-        return;
-    }
 
     if (!updatesFile.open(QIODevice::ReadOnly)) {
         finished(QInstaller::DownloadError, tr("Could not open Updates.xml for reading. Error: %1")
@@ -272,7 +261,7 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
 
     if (!success) {
         const QString msg =  tr("Could not fetch a valid version of Updates.xml from repository: %1. "
-            "Error: %2").arg(m_repository.url().toString(), err);
+            "Error: %2").arg(m_repository.displayname(), err);
 
         const QMessageBox::StandardButton b =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -302,15 +291,16 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     repository.setUsername(el.attribute(QLatin1String("username")));
                     repository.setPassword(el.attribute(QLatin1String("password")));
                     repository.setDisplayName(el.attribute(QLatin1String("displayname")));
-                    repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
-
-                    qDebug() << "Repository to add:" << repository.url().toString();
+                    if (ProductKeyCheck::instance()->isValidRepository(repository)) {
+                        repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
+                        qDebug() << "Repository to add:" << repository.displayname();
+                    }
                 } else if (action == QLatin1String("remove")) {
                     // remove possible default repositories using the given server url
                     Repository repository(el.attribute(QLatin1String("url")), true);
                     repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
 
-                    qDebug() << "Repository to remove:" << repository.url().toString();
+                    qDebug() << "Repository to remove:" << repository.displayname();
                 } else if (action == QLatin1String("replace")) {
                     // replace possible default repositories using the given server url
                     Repository oldRepository(el.attribute(QLatin1String("oldUrl")), true);
@@ -319,19 +309,42 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     newRepository.setPassword(el.attribute(QLatin1String("password")));
                     newRepository.setDisplayName(el.attribute(QLatin1String("displayname")));
 
-                    // store the new repository and the one old it replaces
-                    repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
-                    qDebug() << "Replace repository:" << oldRepository.url().toString() << "with:"
-                        << newRepository.url().toString();
+                    if (ProductKeyCheck::instance()->isValidRepository(newRepository)) {
+                        // store the new repository and the one old it replaces
+                        repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
+                        qDebug() << "Replace repository:" << oldRepository.displayname() << "with:"
+                            << newRepository.displayname();
+                    }
                 } else {
                     qDebug() << "Invalid additional repositories action set in Updates.xml fetched from:"
-                        << m_repository.url().toString() << "Line:" << el.lineNumber();
+                        << m_repository.displayname() << "Line:" << el.lineNumber();
                 }
             }
         }
 
         if (!repositoryUpdates.isEmpty()) {
-            if (m_core->settings().updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
+            const QSet<Repository> temporaries = m_core->settings().temporaryRepositories();
+            // in case the temp repository introduced something new, we only want that temporary
+            if (temporaries.contains(m_repository)) {
+
+                QSet<Repository> childTempRepositories;
+                typedef QPair<Repository, Repository> RepositoryPair;
+
+                QList<RepositoryPair> values = repositoryUpdates.values(QLatin1String("add"));
+                foreach (const RepositoryPair &value, values)
+                    childTempRepositories.insert(value.first);
+
+                values = repositoryUpdates.values(QLatin1String("replace"));
+                foreach (const RepositoryPair &value, values)
+                    childTempRepositories.insert(value.first);
+
+                QSet<Repository> newChildTempRepositories = childTempRepositories.subtract(temporaries);
+                if (newChildTempRepositories.count() > 0) {
+                    m_core->settings().addTemporaryRepositories(newChildTempRepositories, true);
+                    finished(QInstaller::RepositoryUpdatesReceived, tr("Repository updates received."));
+                    return;
+                }
+            } else if (m_core->settings().updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
                 if (m_core->isUpdater() || m_core->isPackageManager())
                     m_core->writeMaintenanceConfigFiles();
                 finished(QInstaller::RepositoryUpdatesReceived, tr("Repository updates received."));
@@ -356,6 +369,19 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
                     m_packageHash << c2.at(j).toElement().text();
             }
         }
+    }
+
+    try {
+        m_temporaryDirectory = createTemporaryDirectory(QLatin1String("remoterepo-"));
+        m_tempDirDeleter.add(m_temporaryDirectory);
+    } catch (const QInstaller::Error& e) {
+        finished(QInstaller::ExtractionError, e.message());
+        return;
+    }
+    if (!updatesFile.rename(m_temporaryDirectory + QLatin1String("/Updates.xml"))) {
+        finished(QInstaller::DownloadError, tr("Could not move Updates.xml to target location. Error: %1")
+            .arg(updatesFile.errorString()));
+        return;
     }
 
     setTotalAmount(m_packageNames.count() + 1);
@@ -427,7 +453,7 @@ void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
     if (!m_downloader) {
         m_currentPackageName.clear();
         m_currentPackageVersion.clear();
-        qWarning() << "Scheme not supported:" << url.toString();
+        qWarning() << "Scheme not supported:" << m_repository.displayname();
         QMetaObject::invokeMethod(this, "fetchNextMetaInfo", Qt::QueuedConnection);
         return;
     }
