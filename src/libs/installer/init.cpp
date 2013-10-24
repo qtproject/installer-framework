@@ -139,9 +139,12 @@ static void initResources()
 {
     Q_INIT_RESOURCE(patch_file_lists);
     Q_INIT_RESOURCE(installer);
+    // Qt5 or better qmake generates that automatically, so this is only needed on Qt4
 # if QT_VERSION < 0x050000
     Q_IMPORT_PLUGIN(qico)
     Q_UNUSED(qt_plugin_instance_qico());
+    Q_IMPORT_PLUGIN(qtaccessiblewidgets)
+    Q_UNUSED(qt_plugin_instance_qtaccessiblewidgets());
 # endif
 }
 #endif

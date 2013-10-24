@@ -87,14 +87,14 @@ macx:LIBS += -framework Carbon -framework Security
 isEqual(QT_MAJOR_VERSION, 4) {
     CONFIG += uitools
     CONFIG(static, static|shared) {
-        QTPLUGIN += qico
+        QTPLUGIN += qico qtaccessiblewidgets
         DEFINES += QT_STATIC
         QT += script network xml
     }
 } else {
     QT += uitools core-private
     CONFIG(static, static|shared) {
-        QTPLUGIN += qico
+        QTPLUGIN += qico qtaccessiblewidgets
         QT += concurrent network script xml
     }
 }
