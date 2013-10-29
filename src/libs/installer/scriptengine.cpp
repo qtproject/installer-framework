@@ -189,6 +189,7 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core)
     installTranslatorFunctions();
 
     globalObject().setProperty(QLatin1String("QMessageBox"), generateMessageBoxObject());
+    globalObject().setProperty(QLatin1String("buttons"), generateWizardButtonsObject());
     globalObject().setProperty(QLatin1String("QDesktopServices"), generateDesktopServicesObject());
     globalObject().setProperty(QLatin1String("QInstaller"), generateQInstallerObject());
 
@@ -219,25 +220,6 @@ ScriptEngine::~ScriptEngine()
 
 void ScriptEngine::setGuiQObject(QObject *guiQObject)
 {
-    if (qobject_cast<QWizard*>(guiQObject)) {
-#undef REGISTER_BUTTON
-#define REGISTER_BUTTON(x)    buttons.setProperty(QLatin1String(#x), \
-        newVariant(static_cast<int>(QWizard::x)));
-
-        QScriptValue buttons = newArray();
-        REGISTER_BUTTON(BackButton)
-        REGISTER_BUTTON(NextButton)
-        REGISTER_BUTTON(CommitButton)
-        REGISTER_BUTTON(FinishButton)
-        REGISTER_BUTTON(CancelButton)
-        REGISTER_BUTTON(HelpButton)
-        REGISTER_BUTTON(CustomButton1)
-        REGISTER_BUTTON(CustomButton2)
-        REGISTER_BUTTON(CustomButton3)
-
-#undef REGISTER_BUTTON
-        globalObject().setProperty(QLatin1String("buttons"), buttons);
-    }
     globalObject().setProperty(QLatin1String("gui"), newQObject(guiQObject));
 }
 
@@ -318,6 +300,27 @@ QScriptValue ScriptEngine::callScriptMethod(const QScriptValue &scriptContext,
     return result;
 }
 
+
+QScriptValue ScriptEngine::generateWizardButtonsObject()
+{
+#undef REGISTER_BUTTON
+#define REGISTER_BUTTON(x)    buttons.setProperty(QLatin1String(#x), \
+    newVariant(static_cast<int>(QWizard::x)));
+
+    QScriptValue buttons = newArray();
+    REGISTER_BUTTON(BackButton)
+    REGISTER_BUTTON(NextButton)
+    REGISTER_BUTTON(CommitButton)
+    REGISTER_BUTTON(FinishButton)
+    REGISTER_BUTTON(CancelButton)
+    REGISTER_BUTTON(HelpButton)
+    REGISTER_BUTTON(CustomButton1)
+    REGISTER_BUTTON(CustomButton2)
+    REGISTER_BUTTON(CustomButton3)
+
+#undef REGISTER_BUTTON
+    return buttons;
+}
 
 /*!
     generates QMessageBox::StandardButton enum as an QScriptValue array
