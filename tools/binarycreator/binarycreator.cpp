@@ -354,7 +354,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         chmod755(mkdmgscript);
 
         QProcess p;
-        p.start(mkdmgscript, QStringList() << QFileInfo(out.fileName()).fileName() << bundle);
+        p.start(mkdmgscript, QStringList() << QFileInfo(input.outputPath).fileName() << bundle);
         p.waitForFinished();
         QFile::remove(mkdmgscript);
         qDebug() <<  "done." << mkdmgscript;
