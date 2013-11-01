@@ -67,19 +67,15 @@ void EnvironmentVariableOperation::backup()
 }
 
 #ifdef Q_OS_WIN
-static bool broadcastChange() {
+static void broadcastEnvironmentChange()
+{
     // Use SendMessageTimeout to Broadcast a message to the whole system to update settings of all
     // running applications. This is needed to activate the changes done above without logout+login.
-    // Note that cmd.exe does not respond to any WM_SETTINGCHANGE messages...
     DWORD_PTR aResult = 0;
-    LRESULT sendresult = SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE,
-        0, (LPARAM) "Environment", SMTO_BLOCK | SMTO_ABORTIFHUNG, 5000, &aResult);
-    if (sendresult == 0 || aResult != 0) {
-        qWarning("Failed to broadcast a WM_SETTINGCHANGE message\n");
-        return false;
-    }
-
-    return true;
+    LRESULT sendresult = SendMessageTimeoutW(HWND_BROADCAST, WM_SETTINGCHANGE,
+        0, (LPARAM) L"Environment", SMTO_BLOCK | SMTO_ABORTIFHUNG, 5000, &aResult);
+    if (sendresult == 0 || aResult != 0)
+        qWarning("Failed to broadcast the WM_SETTINGCHANGE message.");
 }
 #endif
 
@@ -169,8 +165,9 @@ bool EnvironmentVariableOperation::performOperation()
             setErrorString(errorString);
             return false;
         }
-        const bool bret = broadcastChange();
-        Q_UNUSED(bret); // this is not critical, so fall-through
+
+        broadcastEnvironmentChange();
+
         setValue(QLatin1String("oldvalue"), oldvalue);
         return true;
     }
