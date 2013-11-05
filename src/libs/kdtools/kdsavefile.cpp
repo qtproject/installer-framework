@@ -299,7 +299,7 @@ bool KDSaveFile::open(OpenMode mode)
     return opened;
 }
 
-bool KDSaveFile::atEnd()
+bool KDSaveFile::atEnd() const
 {
     return d->tmpFile ? d->tmpFile->atEnd() : QIODevice::atEnd();
 }
