@@ -42,13 +42,15 @@
 #ifndef PROGRESSCOORDINATOR_H
 #define PROGRESSCOORDINATOR_H
 
+#include "installer_global.h"
+
 #include <QtCore/QHash>
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
 
 namespace QInstaller {
 
-class ProgressCoordinator : public QObject
+class INSTALLER_EXPORT ProgressCoordinator : public QObject
 {
     Q_OBJECT
 

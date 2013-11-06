@@ -13,5 +13,6 @@ SUBDIRS += \
     mkdiroperationtest \
     copyoperationtest \
     solver \
-    binaryformat
+    binaryformat \
+    packagemanagercore
 

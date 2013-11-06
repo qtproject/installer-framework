@@ -635,6 +635,19 @@ void PackageManagerCore::rollBackInstallation()
             const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
                 && operation->value(QLatin1String("admin")).toBool() && gainAdminRights();
 
+            if (operation->hasValue(QLatin1String("uninstall-only"))) {
+                // We know the mkdir operation which is creating the target path. If we do a
+                // full uninstall, prevent a forced remove of the full install path including the
+                // target , instead try to remove the target only and only if it is empty,
+                // otherwise fail silently. Note: we will ever experience this only -if-
+                // RemoveTargetDir is set, otherwise the operation does not exist at all.
+                const bool isMkDir = (operation->name() == QLatin1String("Mkdir"));
+                const bool forceremoval = QVariant(value(QLatin1String("forceremoval"))).toBool();
+                const bool uninstallOnly = operation->value(QLatin1String("uninstall-only")).toBool();
+                if (isMkDir && uninstallOnly && forceremoval)
+                    operation->setValue(QLatin1String("forceremoval"), false);
+            }
+
             PackageManagerCorePrivate::performOperationThreaded(operation, PackageManagerCorePrivate::Undo);
 
             const QString componentName = operation->value(QLatin1String("component")).toString();
