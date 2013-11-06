@@ -642,9 +642,9 @@ void PackageManagerCore::rollBackInstallation()
                 // otherwise fail silently. Note: we will ever experience this only -if-
                 // RemoveTargetDir is set, otherwise the operation does not exist at all.
                 const bool isMkDir = (operation->name() == QLatin1String("Mkdir"));
-                const bool forceremoval = QVariant(value(QLatin1String("forceremoval"))).toBool();
+                const bool removeTargetDir = QVariant(value(scRemoveTargetDir)).toBool();
                 const bool uninstallOnly = operation->value(QLatin1String("uninstall-only")).toBool();
-                if (isMkDir && uninstallOnly && forceremoval)
+                if (isMkDir && uninstallOnly && removeTargetDir)
                     operation->setValue(QLatin1String("forceremoval"), false);
             }
 
