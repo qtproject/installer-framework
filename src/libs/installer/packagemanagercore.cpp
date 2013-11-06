@@ -428,6 +428,19 @@ void PackageManagerCore::reset(const QHash<QString, QString> &params)
     d->initialize(params);
 }
 
+void PackageManagerCore::setGuiObject(QObject *gui)
+{
+    if (gui == d->m_guiObject)
+        return;
+    d->m_guiObject = gui;
+    emit guiObjectChanged(gui);
+}
+
+QObject *PackageManagerCore::guiObject() const
+{
+    return d->m_guiObject;
+}
+
 /*!
     \qmlmethod void QInstaller::setCompleteUninstallation(bool complete)
 
@@ -1090,9 +1103,14 @@ void PackageManagerCore::setTestChecksum(bool test)
     d->m_testChecksum = test;
 }
 
-ScriptEngine *PackageManagerCore::scriptEngine()
+ScriptEngine *PackageManagerCore::componentScriptEngine() const
 {
-    return d->scriptEngine();
+    return d->componentScriptEngine();
+}
+
+ScriptEngine *PackageManagerCore::controlScriptEngine() const
+{
+    return d->controlScriptEngine();
 }
 
 /*!

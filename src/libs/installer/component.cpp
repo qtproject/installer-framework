@@ -486,14 +486,12 @@ void Component::loadComponentScript()
 */
 void Component::loadComponentScript(const QString &fileName)
 {
-    ScriptEngine *scriptEngine = d->m_core->scriptEngine();
-
     // introduce the component object as javascript value and call the name to check that it
     // was successful
     QString scriptInjection(QString::fromLatin1(
         "var component = installer.componentByName('%1'); component.name;").arg(name()));
 
-    d->m_scriptContext = scriptEngine->loadInConext(QLatin1String("Component"), fileName, scriptInjection);
+    d->m_scriptContext = d->scriptEngine()->loadInConext(QLatin1String("Component"), fileName, scriptInjection);
 
     emit loaded();
     languageChanged();
@@ -506,7 +504,7 @@ void Component::loadComponentScript(const QString &fileName)
 */
 void Component::languageChanged()
 {
-    d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext, QLatin1String("retranslateUi"));
+    d->scriptEngine()->callScriptMethod(d->m_scriptContext, QLatin1String("retranslateUi"));
 }
 
 /*!
@@ -661,7 +659,7 @@ void Component::createOperationsForPath(const QString &path)
         return;
 
     // the script can override this method
-    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
         QLatin1String("createOperationsForPath"), QScriptValueList() << path).isValid()) {
         return;
     }
@@ -706,7 +704,7 @@ void Component::createOperationsForArchive(const QString &archive)
         return;
 
     // the script can override this method
-    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
         QLatin1String("createOperationsForArchive"), QScriptValueList() << archive).isValid()) {
         return;
     }
@@ -740,7 +738,7 @@ void Component::createOperationsForArchive(const QString &archive)
 void Component::beginInstallation()
 {
     // the script can override this method
-    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
         QLatin1String("beginInstallation")).isValid()) {
         return;
     }
@@ -759,7 +757,7 @@ void Component::beginInstallation()
 void Component::createOperations()
 {
     // the script can override this method
-    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
         QLatin1String("createOperations")).isValid()) {
         d->m_operationsCreated = true;
         return;
@@ -1120,7 +1118,8 @@ void Component::setValidatorCallbackName(const QString &name)
 bool Component::validatePage()
 {
     if (!validatorCallbackName.isEmpty())
-        return d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext, validatorCallbackName).toBool();
+        return d->scriptEngine()->callScriptMethod(
+            d->m_scriptContext, validatorCallbackName).toBool();
     return true;
 }
 
@@ -1200,7 +1199,7 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
     if (autoDependOnList.first().compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
         QScriptValue valueFromScript;
         try {
-            valueFromScript = d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+            valueFromScript = d->scriptEngine()->callScriptMethod(d->m_scriptContext,
                 QLatin1String("isAutoDependOn"));
         } catch (const Error &error) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -1250,7 +1249,7 @@ bool Component::isDefault() const
     if (d->m_vars.value(scDefault).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
         QScriptValue valueFromScript;
         try {
-            valueFromScript = d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+            valueFromScript = d->scriptEngine()->callScriptMethod(d->m_scriptContext,
                 QLatin1String("isDefault"));
         } catch (const Error &error) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),

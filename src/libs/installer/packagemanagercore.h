@@ -125,6 +125,9 @@ public:
     bool run();
     void reset(const QHash<QString, QString> &params);
 
+    void setGuiObject(QObject *gui);
+    QObject *guiObject() const;
+
     Q_INVOKABLE void setDependsOnLocalInstallerBinary();
     Q_INVOKABLE bool localInstallerBinaryUsed();
 
@@ -177,7 +180,8 @@ public:
     Q_INVOKABLE bool fileExists(const QString &filePath) const;
 
 public:
-    ScriptEngine *scriptEngine();
+    ScriptEngine *componentScriptEngine() const;
+    ScriptEngine *controlScriptEngine() const;
 
     // component handling
 
@@ -300,6 +304,8 @@ Q_SIGNALS:
 
     void setAutomatedPageSwitchEnabled(bool request);
     void coreNetworkSettingsChanged();
+
+    void guiObjectChanged(QObject *gui);
 
 private:
     struct Data {

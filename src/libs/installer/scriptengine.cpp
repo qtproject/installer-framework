@@ -212,6 +212,9 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core)
         .setProperty(QLatin1String("components"), scriptComponentsObject);
 
     connect(this, SIGNAL(signalHandlerException(QScriptValue)), SLOT(handleException(QScriptValue)));
+
+    connect(core, SIGNAL(guiObjectChanged(QObject*)), this, SLOT(setGuiQObject(QObject*)));
+    setGuiQObject(core->guiObject());
 }
 
 ScriptEngine::~ScriptEngine()

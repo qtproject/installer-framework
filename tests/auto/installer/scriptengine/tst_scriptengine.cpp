@@ -61,7 +61,7 @@ private slots:
         m_component->setValue("Default", "Script");
         m_component->setValue(scName, "component.test.name");
 
-        m_scriptEngine = m_core.scriptEngine();
+        m_scriptEngine = m_core.componentScriptEngine();
     }
 
     void testBrokenJSMethodConnect()

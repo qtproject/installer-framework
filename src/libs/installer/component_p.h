@@ -53,6 +53,7 @@ namespace QInstaller {
 
 class Component;
 class PackageManagerCore;
+class ScriptEngine;
 
 class ComponentPrivate
 {
@@ -61,6 +62,8 @@ class ComponentPrivate
 public:
     explicit ComponentPrivate(PackageManagerCore *core, Component *qq);
     ~ComponentPrivate();
+
+    ScriptEngine *scriptEngine() const;
 
     PackageManagerCore *m_core;
     Component *m_parentComponent;
