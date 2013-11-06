@@ -279,7 +279,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     for (int i = QWizard::BackButton; i < QWizard::CustomButton1; ++i)
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
 
-    m_core->scriptEngine()->setGuiQObject(this);
+    m_core->setGuiObject(this);
 }
 
 PackageManagerGui::~PackageManagerGui()
@@ -348,7 +348,7 @@ void PackageManagerGui::setValidatorForCustomPageRequested(Component *component,
 */
 void PackageManagerGui::loadControlScript(const QString &scriptPath)
 {
-    d->m_controlScriptContext = m_core->scriptEngine()->loadInConext(
+    d->m_controlScriptContext = m_core->controlScriptEngine()->loadInConext(
         QLatin1String("Controller"), scriptPath);
     qDebug() << "Loaded control script" << scriptPath;
 }
@@ -358,7 +358,7 @@ void PackageManagerGui::callControlScriptMethod(const QString &methodName)
     if (!d->m_controlScriptContext.isValid())
         return;
     try {
-        QScriptValue returnValue = m_core->scriptEngine()->callScriptMethod(
+        QScriptValue returnValue = m_core->controlScriptEngine()->callScriptMethod(
             d->m_controlScriptContext, methodName);
 
         if (!returnValue.isValid()) {

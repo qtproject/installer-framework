@@ -60,7 +60,6 @@ class QListWidget;
 class QListWidgetItem;
 class QRadioButton;
 class QTextBrowser;
-class QScriptEngine;
 QT_END_NAMESPACE
 
 namespace QInstaller {

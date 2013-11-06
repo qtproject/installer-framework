@@ -87,6 +87,11 @@ ComponentPrivate::~ComponentPrivate()
         delete widget.data();
 }
 
+ScriptEngine *ComponentPrivate::scriptEngine() const
+{
+    return m_core->componentScriptEngine();
+}
+
 // -- ComponentModelHelper
 
 ComponentModelHelper::ComponentModelHelper()

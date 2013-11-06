@@ -212,10 +212,12 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_componentsToInstallCalculated(false)
-    , m_scriptEngine(0)
+    , m_componentScriptEngine(0)
+    , m_controlScriptEngine(0)
     , m_proxyFactory(0)
     , m_defaultModel(0)
     , m_updaterModel(0)
+    , m_guiObject(0)
 {
 }
 
@@ -239,10 +241,12 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(magicInstallerMaker)
     , m_componentsToInstallCalculated(false)
-    , m_scriptEngine(0)
+    , m_componentScriptEngine(0)
+    , m_controlScriptEngine(0)
     , m_proxyFactory(0)
     , m_defaultModel(0)
     , m_updaterModel(0)
+    , m_guiObject(0)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
@@ -265,11 +269,13 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
         m_FSEngineClientHandler->setActive(false);
 
     delete m_updateFinder;
-    delete m_scriptEngine;
     delete m_proxyFactory;
 
     delete m_defaultModel;
     delete m_updaterModel;
+
+    // at the moment the tabcontroller deletes the m_gui, this needs to be changed in the future
+    // delete m_gui;
 }
 
 /*!
@@ -392,11 +398,30 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
     return true;
 }
 
-ScriptEngine *PackageManagerCorePrivate::scriptEngine()
+void PackageManagerCorePrivate::cleanUpComponentEnvironment()
 {
-    if (!m_scriptEngine)
-        m_scriptEngine = new ScriptEngine(m_core);
-    return m_scriptEngine;
+    // clean up already downloaded data
+    if (QInstallerCreator::BinaryFormatEngineHandler::instance())
+        QInstallerCreator::BinaryFormatEngineHandler::instance()->resetRegisteredArchives();
+
+    // there could be still some references to already deleted components,
+    // so we need to remove the current component script engine
+    delete m_componentScriptEngine;
+    m_componentScriptEngine = 0;
+}
+
+ScriptEngine *PackageManagerCorePrivate::componentScriptEngine() const
+{
+    if (!m_componentScriptEngine)
+        m_componentScriptEngine = new ScriptEngine(m_core);
+    return m_componentScriptEngine;
+}
+
+ScriptEngine *PackageManagerCorePrivate::controlScriptEngine() const
+{
+    if (!m_controlScriptEngine)
+        m_controlScriptEngine = new ScriptEngine(m_core);
+    return m_controlScriptEngine;
 }
 
 void PackageManagerCorePrivate::clearAllComponentLists()
@@ -411,6 +436,8 @@ void PackageManagerCorePrivate::clearAllComponentLists()
         delete list.at(i).second;
     m_componentsToReplaceAllMode.clear();
     m_componentsToInstallCalculated = false;
+
+    cleanUpComponentEnvironment();
 }
 
 void PackageManagerCorePrivate::clearUpdaterComponentLists()
@@ -435,6 +462,8 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
 
     m_componentsToReplaceUpdaterMode.clear();
     m_componentsToInstallCalculated = false;
+
+    cleanUpComponentEnvironment();
 }
 
 QList<Component *> &PackageManagerCorePrivate::replacementDependencyComponents()

@@ -122,3 +122,10 @@ void BinaryFormatEngineHandler::registerArchive(const QString &pathName, const Q
     c.appendArchive(newArchive);
     d->index.insertComponent(c);
 }
+
+void BinaryFormatEngineHandler::resetRegisteredArchives()
+{
+    QVector<QInstallerCreator::Component> registeredComponents = d->index.components();
+    foreach (const QInstallerCreator::Component &component, registeredComponents)
+        d->index.removeComponent(component.name());
+}

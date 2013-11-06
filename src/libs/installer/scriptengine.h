@@ -70,14 +70,15 @@ class INSTALLER_EXPORT ScriptEngine : public QScriptEngine
 public:
     explicit ScriptEngine(PackageManagerCore *core);
     ~ScriptEngine();
-    void setGuiQObject(QObject *guiQObject);
     QScriptValue callScriptMethod(const QScriptValue &scriptContext, const QString &methodName,
         const QScriptValueList &arguments = QScriptValueList()) const;
 
     QScriptValue loadInConext(const QString &context, const QString &fileName, const QString &scriptInjection = QString());
 private slots:
     void handleException(const QScriptValue &value);
+    void setGuiQObject(QObject *guiQObject);
 private:
+    QScriptValue generateWizardButtonsObject();
     QScriptValue generateMessageBoxObject();
     QScriptValue generateDesktopServicesObject();
     QScriptValue generateQInstallerObject();

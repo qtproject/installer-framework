@@ -67,6 +67,7 @@ public:
     static BinaryFormatEngineHandler *instance();
 
     void registerArchive(const QString &fileName, const QString &path);
+    void resetRegisteredArchives();
 
 private:
     class Private;
