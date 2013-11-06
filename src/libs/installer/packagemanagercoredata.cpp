@@ -44,7 +44,13 @@
 #include "fileutils.h"
 #include "qsettingswrapper.h"
 
+#include <QDesktopServices>
 #include <QDir>
+
+#ifdef Q_OS_WIN
+# include <windows.h>
+# include <shlobj.h>
+#endif
 
 namespace QInstaller
 {
@@ -60,6 +66,20 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(QLatin1String("RootDir"), QDir::rootPath());
     m_variables.insert(QLatin1String("HomeDir"), QDir::homePath());
     m_variables.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
+
+    QString dir = QLatin1String("/opt");
+#ifdef Q_OS_WIN
+    TCHAR buffer[MAX_PATH + 1] = { 0 };
+    SHGetFolderPath(0, CSIDL_PROGRAM_FILES, 0, 0, buffer);
+    dir = QString::fromWCharArray(buffer);
+#elif Q_OS_MAC
+# if QT_VERSION < 0x050000
+    dir = QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation);
+# else
+    dir = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation).value(0);
+# endif
+#endif
+    m_variables.insert(QLatin1String("ApplicationsDir"), dir);
 
 #ifdef Q_OS_WIN
     m_variables.insert(QLatin1String("os"), QLatin1String("win"));

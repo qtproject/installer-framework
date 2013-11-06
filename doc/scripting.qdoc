@@ -252,6 +252,10 @@
         \row
             \o  HomeDir
             \o  Home directory of the current user.
+        \row
+            \o  ApplicationsDir
+            \o  Applications directory. For example, \c {C:\Program Files} on Windows,
+            \c {/opt} on Linux and \c {/Applications} on Mac OS X.
     \endtable
 
     The variables can be resolved by calls to \c installer.value(). If embedded
@@ -263,5 +267,4 @@
         component.addOperation("CreateShortcut", "@TargetDir@/MyApp.exe", "@StartMenuDir@/MyApp.lnk");
     }
     \endcode
-
 */
