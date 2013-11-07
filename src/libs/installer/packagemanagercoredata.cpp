@@ -72,7 +72,7 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     TCHAR buffer[MAX_PATH + 1] = { 0 };
     SHGetFolderPath(0, CSIDL_PROGRAM_FILES, 0, 0, buffer);
     dir = QString::fromWCharArray(buffer);
-#elif Q_OS_MAC
+#elif defined (Q_OS_MAC)
 # if QT_VERSION < 0x050000
     dir = QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation);
 # else
