@@ -545,11 +545,12 @@ quint64 PackageManagerCore::requiredDiskSpace() const
  */
 quint64 PackageManagerCore::requiredTemporaryDiskSpace() const
 {
-    quint64 result = 0;
+    if (isOfflineOnly())
+        return 0;
 
+    quint64 result = 0;
     foreach (QInstaller::Component *component, orderedComponentsToInstall())
         result += size(component, scCompressedSize);
-
     return result;
 }
 
