@@ -216,6 +216,10 @@ QByteArray QInstaller::retrieveCompressedData(QIODevice *in, qint64 size)
     return qUncompress(ba);
 }
 
+/*!
+    Search through 1MB, if smaller through the whole file. Note: QFile::map() does
+    not change QFile::pos(). Fallback to read the file content in case we can't map it.
+*/
 qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
 {
     Q_ASSERT(in);
@@ -224,18 +228,28 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
 
     const qint64 fileSize = in->size();
     const size_t markerSize = sizeof(qint64);
-
-    // Search through 1MB, if smaller through the whole file. Note: QFile::map() does not change QFile::pos().
     const qint64 maxSearch = qMin((1024LL * 1024LL), fileSize);
-    const uchar *const mapped = in->map(fileSize - maxSearch, maxSearch);
+
+    QByteArray data(maxSearch, Qt::Uninitialized);
+    uchar *const mapped = in->map(fileSize - maxSearch, maxSearch);
     if (!mapped) {
-        throw Error(QObject::tr("Could not map %1 from file %2: %3").arg(QString::number(maxSearch),
-            in->fileName(), in->errorString()));
+        const int pos = in->pos();
+        try {
+            in->seek(fileSize - maxSearch);
+            blockingRead(in, data.data(), maxSearch);
+            in->seek(pos);
+        } catch (const Error &error) {
+            in->seek(pos);
+            throw error;
+        }
+    } else {
+        data = QByteArray((const char*)mapped, maxSearch);
+        in->unmap(mapped);
     }
 
     qint64 searched = maxSearch - markerSize;
     while (searched >= 0) {
-        if (memcmp(&magicCookie, (mapped + searched), markerSize) == 0)
+        if (memcmp(&magicCookie, (data.data() + searched), markerSize) == 0)
             return (fileSize - maxSearch) + searched;
         --searched;
     }
