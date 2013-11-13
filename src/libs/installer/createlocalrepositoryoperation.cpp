@@ -365,8 +365,7 @@ bool CreateLocalRepositoryOperation::undoOperation()
     if (createdDir == QDir::root() || !createdDir.exists())
         return true;
 
-    QFile::remove(createdDir.path() + QLatin1String("/.DS_Store"));
-    QFile::remove(createdDir.path() + QLatin1String("/Thumbs.db"));
+    QInstaller::removeSystemGeneratedFiles(createdDir.path());
 
     errno = 0;
     const bool result = QDir::root().rmdir(createdDir.path());
