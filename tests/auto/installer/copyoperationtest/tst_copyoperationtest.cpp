@@ -39,9 +39,9 @@
 **
 **************************************************************************/
 
-#include "init.h"
-#include "kdupdaterupdateoperations.h"
-#include "utils.h"
+#include <init.h>
+#include <kdupdaterupdateoperations.h>
+#include <utils.h>
 
 #include <QDir>
 #include <QObject>
