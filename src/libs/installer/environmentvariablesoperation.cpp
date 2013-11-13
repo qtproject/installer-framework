@@ -157,9 +157,7 @@ bool EnvironmentVariableOperation::performOperation()
 
         Error err = NoError;
 
-        err = isSystemWide
-            ? writeSetting<QSettingsWrapper>(regPath, name, value, &errorString, &oldvalue)
-            : writeSetting<QSettingsWrapper>(regPath, name, value, &errorString, &oldvalue);
+        err = writeSetting<QSettingsWrapper>(regPath, name, value, &errorString, &oldvalue);
         if (err != NoError) {
             setError(err);
             setErrorString(errorString);
@@ -212,9 +210,7 @@ bool EnvironmentVariableOperation::undoOperation()
 
     QString errorString;
 
-    const Error err = isSystemWide
-        ? undoSetting<QSettingsWrapper>(regPath, name, value, oldvalue, &errorString)
-        : undoSetting<QSettingsWrapper>(regPath, name, value, oldvalue, &errorString);
+    const Error err = undoSetting<QSettingsWrapper>(regPath, name, value, oldvalue, &errorString);
 
     if (err != NoError) {
         setError(err);
