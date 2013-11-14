@@ -14,5 +14,5 @@ SUBDIRS += \
     copyoperationtest \
     solver \
     binaryformat \
-    packagemanagercore
-
+    packagemanagercore \
+    settingsoperation

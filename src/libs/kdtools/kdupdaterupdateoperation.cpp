@@ -176,6 +176,40 @@ QStringList UpdateOperation::arguments() const
     return m_arguments;
 }
 
+struct StartsWith
+{
+    StartsWith(const QString &searchTerm)
+        : m_searchTerm(searchTerm) {}
+
+    bool operator()(const QString &searchString)
+    {
+        return searchString.startsWith(m_searchTerm);
+    }
+
+    QString m_searchTerm;
+};
+
+
+QString UpdateOperation::argumentKeyValue(const QString &key, const QString &defaultValue) const
+{
+    const QString keySeparater(key + QLatin1String("="));
+    const QStringList tArguments(arguments());
+    QStringList::const_iterator it = std::find_if(tArguments.begin(), tArguments.end(),
+        StartsWith(keySeparater));
+    if (it == tArguments.end())
+        return defaultValue;
+
+    const QString value = it->mid(keySeparater.size());
+
+    it = std::find_if(++it, tArguments.end(), StartsWith(keySeparater));
+    if (it != tArguments.end()) {
+        qWarning() << QString::fromLatin1("There are multiple keys in the arguments calling"
+            " '%1'. Only the first found '%2' is used: '%3'").arg(name(), key, arguments().join(
+            QLatin1String("; ")));
+    }
+    return value;
+}
+
 /*!
    Returns error details in case performOperation() failed.
 */
