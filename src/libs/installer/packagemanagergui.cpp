@@ -1903,9 +1903,9 @@ void FinishedPage::leaving()
 
 void FinishedPage::handleFinishClicked()
 {
-    const QString program = packageManagerCore()->replaceVariables(packageManagerCore()->value(scRunProgram));
+    const QString program = packageManagerCore()->replaceVariables(packageManagerCore()->settings().runProgram());
     const QStringList args = packageManagerCore()->replaceVariables(
-        packageManagerCore()->value(scRunProgramArguments)).split(QLatin1Char(' '), QString::SkipEmptyParts);
+        packageManagerCore()->settings().runProgramArguments()).split(QLatin1Char(' '), QString::SkipEmptyParts);
     if (!m_runItCheckBox->isChecked() || program.isEmpty())
         return;
 
