@@ -102,7 +102,8 @@ HEADERS += packagemanagercore.h \
     applyproductkeyoperation.h \
     globals.h \
     graph.h \
-    settingsoperation.h
+    settingsoperation.h \
+    testrepository.h
 
     SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -165,7 +166,8 @@ HEADERS += packagemanagercore.h \
     packagemanagercoredata.cpp \
     applyproductkeyoperation.cpp \
     globals.cpp \
-    settingsoperation.cpp
+    settingsoperation.cpp \
+    testrepository.cpp
 
 RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc

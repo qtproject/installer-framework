@@ -43,8 +43,7 @@
 
 #include <repository.h>
 #include <settings.h>
-
-#include <kdjob.h>
+#include <testrepository.h>
 
 #include <QDialog>
 #include <QStyledItemDelegate>
@@ -56,10 +55,6 @@ class QLocale;
 class QVariant;
 QT_END_NAMESPACE
 
-namespace KDUpdater {
-    class FileDownloader;
-}
-
 namespace QInstaller {
     class PackageManagerCore;
 }
@@ -67,36 +62,6 @@ namespace QInstaller {
 namespace Ui {
     class SettingsDialog;
 }
-
-
-// -- TestRepositoryJob
-
-class TestRepository : public KDJob
-{
-    Q_OBJECT
-
-public:
-
-    explicit TestRepository(QObject *parent = 0);
-    ~TestRepository();
-
-    QInstaller::Repository repository() const;
-    void setRepository(const QInstaller::Repository &repository);
-
-private:
-    void doStart();
-    void doCancel();
-
-private Q_SLOTS:
-    void downloadCompleted();
-    void downloadAborted(const QString &reason);
-    void onAuthenticatorChanged(const QAuthenticator &authenticator);
-
-private:
-    QInstaller::Repository m_repository;
-    KDUpdater::FileDownloader *m_downloader;
-};
-
 
 // -- PasswordDelegate
 
@@ -177,7 +142,7 @@ private:
     QInstaller::PackageManagerCore *m_core;
 
     bool m_showPasswords;
-    TestRepository m_testRepository;
+    QInstaller::TestRepository m_testRepository;
     QList<QTreeWidgetItem*> m_rootItems;
 };
 
