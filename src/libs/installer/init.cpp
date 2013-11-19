@@ -59,6 +59,7 @@
 #include "minimumprogressoperation.h"
 #include "licenseoperation.h"
 #include "applyproductkeyoperation.h"
+#include "settingsoperation.h"
 
 // QtSDK specific
 #include "qtpatchoperation.h"
@@ -240,6 +241,7 @@ void QInstaller::init()
     factory.registerUpdateOperation<LicenseOperation>(QLatin1String("License"));
     factory.registerUpdateOperation<ApplyProductKeyOperation>(QLatin1String("ApplyProductKey"));
     factory.registerUpdateOperation<ConsumeOutputOperation>(QLatin1String("ConsumeOutput"));
+    factory.registerUpdateOperation<SettingsOperation>(QLatin1String("Settings"));
 
     // QtSDK specific
     factory.registerUpdateOperation<SetQtCreatorValueOperation>(QLatin1String("SetQtCreatorValue"));
