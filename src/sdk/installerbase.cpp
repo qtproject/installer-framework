@@ -173,12 +173,21 @@ int main(int argc, char *argv[])
 #endif
 
         if (args.contains(QLatin1String("--checkupdates"))) {
+#ifdef Q_OS_WIN
+            MyApplication app(argc, argv);
+#else
             MyCoreApplication app(argc, argv);
+#endif
             if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
                 return 0;
 
             Updater u;
-            u.setVerbose(args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("-v")));
+            if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("-v"))) {
+#ifdef Q_OS_WIN
+                app.setVerbose();
+#endif
+                u.setVerbose(true);
+            }
             return u.checkForUpdates() ? 0 : 1;
         }
 
