@@ -118,6 +118,8 @@
     copying files or patching file content, for example. You can create and add
     update operations to the installation from within
     a script using \a QInstaller::Component::addOperation.
+    If you need to run an operation that requires administrative rights, use
+    \a QInstaller::Component::addElevatedOperation instead.
 
     Each operation has a unique key used for identification and can take up to
     five parameters. In the parameter values, you can use variables as set in
