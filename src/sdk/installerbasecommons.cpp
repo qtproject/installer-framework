@@ -43,6 +43,7 @@
 #include <component.h>
 #include <messageboxhandler.h>
 #include <packagemanagercore.h>
+#include <packagemanagerpagefactory.h>
 #include <settings.h>
 
 #include <productkeycheck.h>
@@ -502,6 +503,10 @@ bool TargetDirectoryPageImpl::validatePage()
 InstallerGui::InstallerGui(PackageManagerCore *core)
     : PackageManagerGui(core, 0)
 {
+    ProductKeyCheck *checker = ProductKeyCheck::instance(core);
+    foreach (const int id, checker->registeredPages())
+        setPage(id, PackageManagerPageFactory::instance().create(id, core));
+
     setPage(PackageManagerCore::Introduction, new IntroductionPageImpl(core));
     setPage(PackageManagerCore::TargetDirectory, new TargetDirectoryPageImpl(core));
     setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));

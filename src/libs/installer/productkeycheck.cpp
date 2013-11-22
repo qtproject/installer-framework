@@ -89,9 +89,13 @@ bool ProductKeyCheck::isValidLicenseTextFile(const QString &/*fileName*/)
     return true;
 }
 
-
 bool ProductKeyCheck::isValidRepository(const QInstaller::Repository &repository) const
 {
     Q_UNUSED(repository)
     return true;
+}
+
+QList<int> ProductKeyCheck::registeredPages() const
+{
+    return QList<int>();
 }

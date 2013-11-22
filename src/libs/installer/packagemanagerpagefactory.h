@@ -1,6 +1,6 @@
-/****************************************************************************
+/**************************************************************************
 **
-** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -37,67 +37,36 @@
 **
 ** $QT_END_LICENSE$
 **
-****************************************************************************/
+**************************************************************************/
 
-#ifndef KDTOOLS__KDGENERICFACTORY_H
-#define KDTOOLS__KDGENERICFACTORY_H
+#ifndef PACKAGEMANAGERPAGEFACTORY_H
+#define PACKAGEMANAGERPAGEFACTORY_H
 
-#include <kdtoolsglobal.h>
+#include <kdgenericfactory.h>
+#include <packagemanagergui.h>
 
-#include <QtCore/QHash>
+namespace QInstaller {
 
-template <typename T_Product, typename T_Identifier = QString, typename T_Argument = QString>
-class KDGenericFactory
+class PackageManagerCore;
+class PackageManagerPage;
+
+class INSTALLER_EXPORT PackageManagerPageFactory : public KDGenericFactory<PackageManagerPage,
+    int, QInstaller::PackageManagerCore*>
 {
+    Q_DISABLE_COPY(PackageManagerPageFactory)
+
 public:
-    virtual ~KDGenericFactory() {}
-
-    typedef T_Product *(*FactoryFunction)();
-    typedef T_Product *(*FactoryFunctionWithArg)(const T_Argument &arg);
-
-    template <typename T>
-    void registerProduct(const T_Identifier &name)
+    static PackageManagerPageFactory &instance();
+    template<typename T> void registerPackageManagerPage(int id)
     {
-        map.insert(name, &KDGenericFactory::create<T>);
+        registerProductWithArg<T>(id);
     }
-
-    T_Product *create(const T_Identifier &name) const
-    {
-        const typename QHash<T_Identifier, FactoryFunction>::const_iterator it = map.find(name);
-        if (it == map.end())
-            return 0;
-        return (*it)();
-    }
-
-    template <typename T>
-    void registerProductWithArg(const T_Identifier &name)
-    {
-        map2.insert(name, &KDGenericFactory::create<T>);
-    }
-
-    T_Product *createWithArg(const T_Identifier &name, const T_Argument &arg) const
-    {
-        const typename QHash<T_Identifier, FactoryFunctionWithArg>::const_iterator it = map2.find(name);
-        if (it == map2.end())
-            return 0;
-        return (*it)(arg);
-    }
+    PackageManagerPage *create(int id, QInstaller::PackageManagerCore *core) const;
 
 private:
-    template <typename T>
-    static T_Product *create()
-    {
-        return new T;
-    }
-
-    template <typename T>
-    static T_Product *create(const T_Argument &arg)
-    {
-        return new T(arg);
-    }
-
-    QHash<T_Identifier, FactoryFunction> map;
-    QHash<T_Identifier, FactoryFunctionWithArg> map2;
+    PackageManagerPageFactory() {}
 };
 
-#endif
+} // namespace QInstaller
+
+#endif // PACKAGEMANAGERPAGEFACTORY_H
