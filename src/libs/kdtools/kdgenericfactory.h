@@ -58,7 +58,12 @@ public:
     template <typename T>
     void registerProduct(const T_Identifier &name)
     {
-        map.insert(name, &KDGenericFactory::create<T>);
+#ifdef Q_CC_MSVC
+        FactoryFunction function = &KDGenericFactory::create<T>;
+#else // compile fix for old gcc
+        FactoryFunction function = &create<T>;
+#endif
+        map.insert(name, function);
     }
 
     T_Product *create(const T_Identifier &name) const
@@ -72,7 +77,12 @@ public:
     template <typename T>
     void registerProductWithArg(const T_Identifier &name)
     {
-        map2.insert(name, &KDGenericFactory::create<T>);
+#ifdef Q_CC_MSVC
+        FactoryFunction function = &KDGenericFactory::create<T>;
+#else // compile fix for old gcc
+        FactoryFunction function = &create<T>;
+#endif
+        map2.insert(name, function);
     }
 
     T_Product *createWithArg(const T_Identifier &name, const T_Argument &arg) const
