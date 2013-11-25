@@ -61,6 +61,8 @@
 #include <kdrunoncechecker.h>
 #include <kdupdaterfiledownloaderfactory.h>
 
+#include <productkeycheck.h>
+
 #include <QDirIterator>
 #include <QtCore/QTranslator>
 #include <QMessageBox>
@@ -304,6 +306,7 @@ int main(int argc, char *argv[])
 
         // instantiate the installer we are actually going to use
         QInstaller::PackageManagerCore core(content.magicMarker(), content.performedOperations());
+        ProductKeyCheck::instance()->init(&core);
 
         QString controlScript;
         QHash<QString, QString> params;

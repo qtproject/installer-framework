@@ -121,7 +121,7 @@ void GetRepositoriesMetaInfoJob::doStart()
 {
     if ((m_core->isInstaller() && !m_core->isOfflineOnly()) || (m_core->isUpdater()
         || m_core->isPackageManager())) {
-            const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance(m_core);
+            const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
             foreach (const Repository &repo, m_core->settings().repositories()) {
                 if (repo.isEnabled() && productKeyCheck->isValidRepository(repo))
                     m_repositories += repo;

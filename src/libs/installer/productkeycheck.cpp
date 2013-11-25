@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (c) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (c) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of Installer Framework
@@ -27,41 +27,23 @@
 **
 **************************************************************************/
 
-#include <productkeycheck.h>
-#include <packagemanagercore.h>
-
-class ProductKeyCheckPrivate
-{
-    public:
-        static QPointer<QInstaller::PackageManagerCore> core;
-};
-
-QPointer<QInstaller::PackageManagerCore> ProductKeyCheckPrivate::core = 0;
-
+#include "productkeycheck.h"
+#include "packagemanagercore.h"
 
 ProductKeyCheck::ProductKeyCheck()
-    : d(new ProductKeyCheckPrivate())
 {
 }
 
-ProductKeyCheck::~ProductKeyCheck()
-{
-    delete d;
-}
-
-ProductKeyCheck *ProductKeyCheck::instance(QInstaller::PackageManagerCore *core)
+ProductKeyCheck *ProductKeyCheck::instance()
 {
     static ProductKeyCheck instance;
-    if (core)
-        instance.setPackageManagerCore(core);
     return &instance;
 }
 
-void ProductKeyCheck::setPackageManagerCore(QInstaller::PackageManagerCore *core)
+void ProductKeyCheck::init(QInstaller::PackageManagerCore *core)
 {
-    ProductKeyCheckPrivate::core = core;
+    Q_UNUSED(core)
 }
-
 
 bool ProductKeyCheck::hasValidKey()
 {

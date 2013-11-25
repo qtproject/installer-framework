@@ -503,10 +503,13 @@ bool TargetDirectoryPageImpl::validatePage()
 InstallerGui::InstallerGui(PackageManagerCore *core)
     : PackageManagerGui(core, 0)
 {
-    ProductKeyCheck *checker = ProductKeyCheck::instance(core);
-    foreach (const int id, checker->registeredPages())
-        setPage(id, PackageManagerPageFactory::instance().create(id, core));
-
+    ProductKeyCheck *checker = ProductKeyCheck::instance();
+    foreach (const int id, checker->registeredPages()) {
+        PackageManagerPage *page = PackageManagerPageFactory::instance().create(id, core);
+        Q_ASSERT_X(page, Q_FUNC_INFO, qPrintable(QString::fromLatin1("Page with %1 couldn't be "
+            "constructed.").arg(id)));
+        setPage(id, page);
+    }
     setPage(PackageManagerCore::Introduction, new IntroductionPageImpl(core));
     setPage(PackageManagerCore::TargetDirectory, new TargetDirectoryPageImpl(core));
     setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));

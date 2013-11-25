@@ -450,6 +450,6 @@ void SettingsDialog::insertRepositories(const QSet<Repository> repos, QTreeWidge
     foreach (const Repository &repo, repos) {
         RepositoryItem *item = new RepositoryItem(repo);
         rootItem->addChild(item);
-        item->setHidden(!ProductKeyCheck::instance(m_core)->isValidRepository(repo));
+        item->setHidden(!ProductKeyCheck::instance()->isValidRepository(repo));
     }
 }
