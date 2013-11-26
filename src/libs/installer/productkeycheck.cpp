@@ -30,8 +30,18 @@
 #include "productkeycheck.h"
 #include "packagemanagercore.h"
 
-ProductKeyCheck::ProductKeyCheck()
+class ProductKeyCheckPrivate
 {
+};
+
+ProductKeyCheck::ProductKeyCheck()
+    : d(new ProductKeyCheckPrivate())
+{
+}
+
+ProductKeyCheck::~ProductKeyCheck()
+{
+    delete d;
 }
 
 ProductKeyCheck *ProductKeyCheck::instance()

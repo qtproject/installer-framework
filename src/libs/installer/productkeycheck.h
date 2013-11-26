@@ -44,6 +44,7 @@ class ProductKeyCheckPrivate;
 class INSTALLER_EXPORT ProductKeyCheck
 {
 public:
+    ~ProductKeyCheck();
     static ProductKeyCheck *instance();
     void init(QInstaller::PackageManagerCore *core);
 
@@ -65,6 +66,7 @@ public:
 
 private:
     ProductKeyCheck();
+    ProductKeyCheckPrivate *const d;
     Q_DISABLE_COPY(ProductKeyCheck)
 };
 
