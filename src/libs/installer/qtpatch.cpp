@@ -93,12 +93,12 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
         QProcess process;
         process.start(qmake.absoluteFilePath(), args, QIODevice::ReadOnly);
         if (process.waitForFinished(2000)) {
+            QByteArray output = process.readAllStandardOutput();
+            qmakeOutput->append(output);
             if (process.exitStatus() == QProcess::CrashExit) {
                 qDebug() << qmakePath << "was crashed";
                 return qmakeValueHash;
             }
-            QByteArray output = process.readAllStandardOutput();
-            qmakeOutput->append(output);
             qmakeValueHash = readQmakeOutput(output);
         }
         if (qmakeValueHash.isEmpty()) {
