@@ -340,6 +340,7 @@ void IntroductionPageImpl::entering()
         showMaintenanceTools();
         setMaintenanceToolsEnabled(true);
     }
+    setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
 }
 
 void IntroductionPageImpl::leaving()

@@ -162,6 +162,10 @@ public:
     void setValidatePageComponent(QInstaller::Component *component);
 
     bool validatePage();
+
+    bool settingsButtonRequested() const { return m_needsSettingsButton; }
+    void setSettingsButtonRequested(bool request) { m_needsSettingsButton = request; }
+
 signals:
     void entered();
     void left();
@@ -185,6 +189,7 @@ protected:
 private:
     bool m_fresh;
     bool m_complete;
+    bool m_needsSettingsButton;
 
     PackageManagerCore *m_core;
     QInstaller::Component *validatorComponent;

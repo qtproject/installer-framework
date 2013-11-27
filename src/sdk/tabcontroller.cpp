@@ -196,9 +196,9 @@ void TabController::onSettingsButtonClicked()
 
 void TabController::onCurrentIdChanged(int newId)
 {
-    if (d->m_gui && d->m_core) {
-        d->m_gui->showSettingsButton((newId == PackageManagerCore::Introduction) &
-            (!d->m_core->isOfflineOnly()) & (!d->m_core->isUninstaller()));
+    if (d->m_gui) {
+        if (PackageManagerPage *page = d->m_gui->page(newId))
+            d->m_gui->showSettingsButton(page->settingsButtonRequested());
     }
 }
 

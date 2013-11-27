@@ -623,6 +623,7 @@ void PackageManagerGui::dependsOnLocalInstallerBinary()
 PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     : m_fresh(true)
     , m_complete(true)
+    , m_needsSettingsButton(false)
     , m_core(core)
     , validatorComponent(0)
 {
