@@ -79,8 +79,10 @@ QList<QNetworkProxy> PackageManagerProxyFactory::queryProxy(const QNetworkProxyQ
         if (query.url().scheme() == QLatin1String("ftp"))
             return list << settings.ftpProxy();
 
-        if (query.url().scheme() == QLatin1String("http"))
-            return list << settings.httpProxy();
+        if ((query.url().scheme() == QLatin1String("http"))
+            || (query.url().scheme() == QLatin1String("https"))) {
+                return list << settings.httpProxy();
+            }
     }
     return list << QNetworkProxy(QNetworkProxy::DefaultProxy);
 }
