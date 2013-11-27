@@ -563,6 +563,11 @@ bool Settings::repositorySettingsPageVisible() const
     return d->m_data.value(scRepositorySettingsPageVisible, true).toBool();
 }
 
+void Settings::setRepositorySettingsPageVisible(bool visible)
+{
+    d->m_data.insert(scRepositorySettingsPageVisible, visible);
+}
+
 Settings::ProxyType Settings::proxyType() const
 {
     return Settings::ProxyType(d->m_data.value(scProxyType, Settings::NoProxy).toInt());

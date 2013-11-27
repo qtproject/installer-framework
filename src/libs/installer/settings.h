@@ -142,6 +142,7 @@ public:
     QVariantList values(const QString &key, const QVariantList &defaultValue = QVariantList()) const;
 
     bool repositorySettingsPageVisible() const;
+    void setRepositorySettingsPageVisible(bool visible);
 
     Settings::ProxyType proxyType() const;
     void setProxyType(Settings::ProxyType type);
