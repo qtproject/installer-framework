@@ -114,6 +114,10 @@ bool ConsumeOutputOperation::performOperation()
         process.start(executable.absoluteFilePath(), processArguments, QIODevice::ReadOnly);
         if (process.waitForFinished(10000)) {
             if (process.exitStatus() == QProcess::CrashExit) {
+                qWarning() << executable.absoluteFilePath() << processArguments
+                           << "crashed with exit code" << process.exitCode()
+                           << "standard output: " << process.readAllStandardOutput()
+                           << "error output: " << process.readAllStandardError();
                 setError(UserDefinedError);
                 setErrorString(tr("Running '%1' resulted in a crash.").arg(
                     QDir::toNativeSeparators(executable.absoluteFilePath())));
