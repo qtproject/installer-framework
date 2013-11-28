@@ -104,14 +104,13 @@ bool ConsumeOutputOperation::performOperation()
     }
 
     QByteArray executableOutput;
-    QProcess process;
 
 
     const QStringList processArguments = arguments().mid(2);
     // in some cases it is not runable, because another process is blocking it(filewatcher ...)
     int waitCount = 0;
     while (executableOutput.isEmpty() && waitCount < 60) {
-
+        QProcess process;
         process.start(executable.absoluteFilePath(), processArguments, QIODevice::ReadOnly);
         if (process.waitForFinished(2000)) {
             if (process.exitStatus() == QProcess::CrashExit) {
