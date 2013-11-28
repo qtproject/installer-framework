@@ -96,7 +96,8 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
             QByteArray output = process.readAllStandardOutput();
             qmakeOutput->append(output);
             if (process.exitStatus() == QProcess::CrashExit) {
-                qDebug() << qmakePath << "was crashed";
+                qWarning() << qmakePath << QString::fromLatin1(" crashed with exit code: %1").arg(
+                    process.exitCode());
                 return qmakeValueHash;
             }
             qmakeValueHash = readQmakeOutput(output);
