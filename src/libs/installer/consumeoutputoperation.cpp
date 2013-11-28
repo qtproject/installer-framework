@@ -109,10 +109,10 @@ bool ConsumeOutputOperation::performOperation()
     const QStringList processArguments = arguments().mid(2);
     // in some cases it is not runable, because another process is blocking it(filewatcher ...)
     int waitCount = 0;
-    while (executableOutput.isEmpty() && waitCount < 60) {
+    while (executableOutput.isEmpty() && waitCount < 3) {
         QProcess process;
         process.start(executable.absoluteFilePath(), processArguments, QIODevice::ReadOnly);
-        if (process.waitForFinished(2000)) {
+        if (process.waitForFinished(10000)) {
             if (process.exitStatus() == QProcess::CrashExit) {
                 setError(UserDefinedError);
                 setErrorString(tr("Running '%1' resulted in a crash.").arg(

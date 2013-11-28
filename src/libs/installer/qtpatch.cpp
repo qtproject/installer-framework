@@ -75,7 +75,7 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
 
     // in some cases qmake is not runable, because another process is blocking it(filewatcher ...)
     int waitCount = 0;
-    while (qmakeValueHash.isEmpty() && waitCount < 60) {
+    while (qmakeValueHash.isEmpty() && waitCount < 3) {
         QFileInfo qmake(qmakePath);
 
         if (!qmake.exists()) {
@@ -92,7 +92,7 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
 
         QProcess process;
         process.start(qmake.absoluteFilePath(), args, QIODevice::ReadOnly);
-        if (process.waitForFinished(2000)) {
+        if (process.waitForFinished(10000)) {
             QByteArray output = process.readAllStandardOutput();
             qmakeOutput->append(output);
             if (process.exitStatus() == QProcess::CrashExit) {
