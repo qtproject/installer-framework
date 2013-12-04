@@ -533,6 +533,14 @@ void InstallerGui::init()
 MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
     : PackageManagerGui(core, 0)
 {
+    ProductKeyCheck *checker = ProductKeyCheck::instance();
+    foreach (const int id, checker->registeredPages()) {
+        PackageManagerPage *page = PackageManagerPageFactory::instance().create(id, core);
+        Q_ASSERT_X(page, Q_FUNC_INFO, qPrintable(QString::fromLatin1("Page with %1 couldn't be "
+            "constructed.").arg(id)));
+        setPage(id, page);
+    }
+
     IntroductionPageImpl *intro = new IntroductionPageImpl(core);
     connect(intro, SIGNAL(packageManagerCoreTypeChanged()), this, SLOT(updateRestartPage()));
 
