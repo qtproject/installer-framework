@@ -35,6 +35,7 @@
 
     The operations are prepared by component scripts and performed by the
     installer.
+    \note Operations are performed threaded.
 
     Internally, each operation has a \e DO step that contains instructions for
     the installer and an \e UNDO step that contains instructions for the
