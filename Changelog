@@ -2,6 +2,23 @@
 - Added support to pass a query string when downloading archives. (QTIFW-329)
 - Fixed progress display for redirected HTTP Downloads. (QTIFW-267)
 - Add support to repogen to update only newer components. (QTIFW-234)
+- Don't show RunProgram after uninstall. (QTIFW-366)
+- Fix broken random name generation for temporary directories. (QTIFW-354)
+- Removed unnecessary WindowModal in the gui. (QTIFW-364)
+- Made some previously missed elements scriptable. (QTIFW-372)
+- Fixed searching for magic marker.
+- Now create the temp remoterepo directory later to avoid conflicts.
+- Disable close button during installer run to avoid crashes.
+- Child repositories added by setTempRepository are no longer default. (QTIFW-373)
+- Ignore filtered repositories as early as possible to avoid hang.
+- Connect extract operation to progress calculation. (QTIFW-11, QTIFW-141)
+- Fixed target dir for root installations and empty AdminTargetDir.
+- Fixed broken dependency resolver.
+- Implemented a way to replace the default resource.
+- Renamed forceRestart to needsHardRestart.
+- Made installer apps retina-ready.
+- Restart on the wizard now cleans up component leftovers.
+- Read file content in case mmap fails (fallback).  (QTIFW-400)
 - Added more autotests.
 - Improved documentation.
 - Minor bugfixes.
@@ -54,6 +71,8 @@
 - Cleaned up the Code.
 
 1.3.1
+- Fixed missing magic cookie in installer binary on Mac. (QTIFW-322)
+- Fixed UNDO of MkDirOperation and CopyOperation.
 - Enabled Qt4 patch syntax in QtPatchOperation.
 - Added the OS attribute to be compatible with old sdks.
 - Show the error string not the empty errorString when parsing Settings.
