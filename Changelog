@@ -1,3 +1,20 @@
+1.5.0
+- Fixed generation of random temp directory name. (QTIFW-427)
+- Now reuses http proxy settings for https.
+- Allow a page to force showing the settings button.
+- Read qmake output even if it crashed.
+- Implemented factory to be able to insert wizard pages dynamically.
+- Open a console window (Windows) to show the verbose output. (QTIFW-403)
+- Added new settingsoperation.
+- Offline installer do not require any temporary space.
+- Now .dmg files are named after the application bundle on Mac OS X.
+- Introduced ApplicationsDir variable. (QTIFW-258)
+- Now never delete the install directory if it's not empty.
+- Environment variables changes are now propagated to the system. (QTIFW-391)
+- Build installers with accessibility plugin. (QTBUG-34296)
+- Improved documentation.
+- Minor bugfixes.
+
 1.4.1
 - Added support to pass a query string when downloading archives. (QTIFW-329)
 - Fixed progress display for redirected HTTP Downloads. (QTIFW-267)
