@@ -128,8 +128,8 @@ public:
         setPixmap(QWizard::BannerPixmap, QPixmap());
 
         setLayout(new QVBoxLayout);
-        setSubTitle(QString());
-        setTitle(widget->windowTitle());
+        setColoredSubTitle(QString());
+        setColoredTitle(widget->windowTitle());
         m_widget->setProperty("complete", true);
         m_widget->setProperty("final", false);
         widget->installEventFilter(this);
@@ -152,7 +152,7 @@ protected:
         if (obj == m_widget) {
             switch(event->type()) {
             case QEvent::WindowTitleChange:
-                setTitle(m_widget->windowTitle());
+                setColoredTitle(m_widget->windowTitle());
                 break;
 
             case QEvent::DynamicPropertyChange:
@@ -648,6 +648,12 @@ PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     , m_core(core)
     , validatorComponent(0)
 {
+    if (!m_core->settings().titleColor().isEmpty())
+        m_titleColor = m_core->settings().titleColor();
+    else {
+        QColor defaultColor = style()->standardPalette().text().color();
+        m_titleColor = defaultColor.name();
+    }
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
     setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setPixmap(QWizard::LogoPixmap, logoPixmap());
@@ -676,6 +682,18 @@ QPixmap PackageManagerPage::logoPixmap() const
 QString PackageManagerPage::productName() const
 {
     return m_core->value(QLatin1String("ProductName"));
+}
+
+void PackageManagerPage::setColoredTitle(const QString &title)
+{
+    QString coloredTitle = QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, title);
+    setTitle(coloredTitle);
+}
+
+void PackageManagerPage::setColoredSubTitle(const QString &subTitle)
+{
+    QString coloredTitle = QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, subTitle);
+    setSubTitle(coloredTitle);
 }
 
 bool PackageManagerPage::isComplete() const
@@ -781,7 +799,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     , m_widget(0)
 {
     setObjectName(QLatin1String("IntroductionPage"));
-    setTitle(tr("Setup - %1").arg(productName()));
+    setColoredTitle(tr("Setup - %1").arg(productName()));
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
@@ -844,7 +862,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("LicenseAgreementPage"));
-    setTitle(tr("License Agreement"));
+    setColoredTitle(tr("License Agreement"));
 
     m_licenseListWidget = new QListWidget(this);
     m_licenseListWidget->setObjectName(QLatin1String("LicenseListWidget"));
@@ -971,7 +989,7 @@ void LicenseAgreementPage::updateUi()
         rejectButtonText = tr("I do not accept the licenses.");
     }
 
-    setSubTitle(subTitleText);
+    setColoredSubTitle(subTitleText);
 
     m_acceptLabel->setText(acceptButtonText);
     m_rejectLabel->setText(rejectButtonText);
@@ -1172,7 +1190,7 @@ ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ComponentSelectionPage"));
-    setTitle(tr("Select Components"));
+    setColoredTitle(tr("Select Components"));
 }
 
 ComponentSelectionPage::~ComponentSelectionPage()
@@ -1194,7 +1212,7 @@ void ComponentSelectionPage::entering()
     if (core->isInstaller()) index = 1;
     if (core->isUninstaller()) index = 2;
     if (core->isPackageManager()) index = 3;
-    setSubTitle(tr(strings[index]));
+    setColoredSubTitle(tr(strings[index]));
 
     d->updateTreeView();
     setModified(isComplete());
@@ -1264,7 +1282,7 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("TargetDirectoryPage"));
-    setTitle(tr("Installation Folder"));
+    setColoredTitle(tr("Installation Folder"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
 
@@ -1383,8 +1401,8 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("StartMenuDirectoryPage"));
-    setTitle(tr("Start Menu shortcuts"));
-    setSubTitle(tr("Select the Start Menu in which you would like to create the program's shortcuts. You can "
+    setColoredTitle(tr("Start Menu shortcuts"));
+    setColoredSubTitle(tr("Select the Start Menu in which you would like to create the program's shortcuts. You can "
                    "also enter a name to create a new folder."));
 
     m_lineEdit = new QLineEdit(this);
@@ -1519,7 +1537,7 @@ void ReadyForInstallationPage::entering()
         m_taskDetailsButton->setVisible(false);
         m_taskDetailsBrowser->setVisible(false);
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
-        setTitle(tr("Ready to Uninstall"));
+        setColoredTitle(tr("Ready to Uninstall"));
         m_msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
             "<font color=\"red\">The program directory %2 will be deleted completely</font>, "
             "including all content in that directory!")
@@ -1529,12 +1547,12 @@ void ReadyForInstallationPage::entering()
         return;
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
         setButtonText(QWizard::CommitButton, tr("U&pdate"));
-        setTitle(tr("Ready to Update Packages"));
+        setColoredTitle(tr("Ready to Update Packages"));
         m_msgLabel->setText(tr("Setup is now ready to begin updating your installation."));
     } else {
         Q_ASSERT(packageManagerCore()->isInstaller());
         setButtonText(QWizard::CommitButton, tr("&Install"));
-        setTitle(tr("Ready to Install"));
+        setColoredTitle(tr("Ready to Install"));
         m_msgLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
             .arg(productName()));
     }
@@ -1741,17 +1759,17 @@ void PerformInstallationPage::entering()
 
     if (packageManagerCore()->isUninstaller()) {
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
-        setTitle(tr("Uninstalling %1").arg(productName()));
+        setColoredTitle(tr("Uninstalling %1").arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runUninstaller()));
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
         setButtonText(QWizard::CommitButton, tr("&Update"));
-        setTitle(tr("Updating components of %1").arg(productName()));
+        setColoredTitle(tr("Updating components of %1").arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runPackageUpdater()));
     } else {
         setButtonText(QWizard::CommitButton, tr("&Install"));
-        setTitle(tr("Installing %1").arg(productName()));
+        setColoredTitle(tr("Installing %1").arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
     }
@@ -1769,7 +1787,7 @@ void PerformInstallationPage::leaving()
 
 void PerformInstallationPage::setTitleMessage(const QString &title)
 {
-    setTitle(title);
+    setColoredTitle(title);
 }
 
 // -- private slots
@@ -1818,7 +1836,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     , m_commitButton(0)
 {
     setObjectName(QLatin1String("FinishedPage"));
-    setTitle(tr("Completing the %1 Wizard").arg(productName()));
+    setColoredTitle(tr("Completing the %1 Wizard").arg(productName()));
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
@@ -1895,7 +1913,7 @@ void FinishedPage::entering()
         }
     } else {
         // TODO: how to handle this using the config.xml
-        setTitle(tr("The %1 Wizard failed.").arg(productName()));
+        setColoredTitle(tr("The %1 Wizard failed.").arg(productName()));
     }
 
     m_runItCheckBox->hide();
@@ -1946,7 +1964,7 @@ RestartPage::RestartPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
     setObjectName(QLatin1String("RestartPage"));
-    setTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
+    setColoredTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
 
     setFinalPage(false);
     setCommitPage(false);

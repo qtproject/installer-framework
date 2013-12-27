@@ -230,7 +230,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scStartMenuDir << scUninstallerName << scUninstallerIniFile << scRemoveTargetDir
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
-                << scAllowSpaceInPath << scAllowNonAsciiCharacters << scWizardStyle
+                << scAllowSpaceInPath << scAllowNonAsciiCharacters << scWizardStyle << scTitleColor
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations;
 
@@ -347,6 +347,11 @@ QString Settings::icon() const
 QString Settings::wizardStyle() const
 {
     return d->m_data.value(scWizardStyle).toString();
+}
+
+QString Settings::titleColor() const
+{
+    return d->m_data.value(scTitleColor).toString();
 }
 
 QString Settings::installerApplicationIcon() const

@@ -156,6 +156,9 @@ public:
     virtual QPixmap watermarkPixmap() const;
     virtual QPixmap bannerPixmap() const;
 
+    void setColoredTitle(const QString &title);
+    void setColoredSubTitle(const QString &subTitle);
+
     virtual bool isComplete() const;
     void setComplete(bool complete);
 
@@ -188,6 +191,7 @@ protected:
 private:
     bool m_fresh;
     bool m_complete;
+    QString m_titleColor;
 
     PackageManagerCore *m_core;
     QInstaller::Component *validatorComponent;

@@ -207,6 +207,10 @@
             \o  WizardStyle
             \o  Set the wizard style to be used ("Modern", "Mac", "Aero" or "Classic").
         \row
+            \o  TitleColor
+            \o  Set the color of the titles and subtitles (takes an HTML color code,
+                such as "#88FF33").
+        \row
             \o  RunProgram
             \o  Command executed after the installer is done if the user accepts
                 the action.
