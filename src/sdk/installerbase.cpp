@@ -41,6 +41,7 @@
 #include "installerbase_p.h"
 
 #include "installerbasecommons.h"
+#include "sdkapp.h"
 #include "tabcontroller.h"
 
 #include <binaryformat.h>
@@ -153,7 +154,7 @@ int main(int argc, char *argv[])
 
         // this is the FSEngineServer as an admin rights process upon request:
         if (args.count() >= 3 && args[1] == QLatin1String("--startserver")) {
-            MyCoreApplication app(argc, argv);
+            SDKApp<QCoreApplication> app(argc, argv);
             FSEngineServer* const server = new FSEngineServer(args[2].toInt());
             if (args.count() >= 4)
                 server->setAuthorizationKey(args[3]);
@@ -175,19 +176,13 @@ int main(int argc, char *argv[])
 #endif
 
         if (args.contains(QLatin1String("--checkupdates"))) {
-#ifdef Q_OS_WIN
-            MyApplication app(argc, argv);
-#else
-            MyCoreApplication app(argc, argv);
-#endif
+            SDKApp<QCoreApplication> app(argc, argv);
             if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
                 return 0;
 
             Updater u;
             if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("-v"))) {
-#ifdef Q_OS_WIN
                 app.setVerbose();
-#endif
                 u.setVerbose(true);
             }
             return u.checkForUpdates() ? 0 : 1;
@@ -195,7 +190,7 @@ int main(int argc, char *argv[])
 
         if (args.contains(QLatin1String("--runoperation"))
             || args.contains(QLatin1String("--undooperation"))) {
-            MyCoreApplication app(argc, argv);
+            SDKApp<QCoreApplication> app(argc, argv);
             OperationRunner o;
             o.setVerbose(args.contains(QLatin1String("--verbose"))
                          || args.contains(QLatin1String("-v")));
@@ -203,7 +198,7 @@ int main(int argc, char *argv[])
         }
 
         if (args.contains(QLatin1String("--update-installerbase"))) {
-            MyCoreApplication app(argc, argv);
+            SDKApp<QCoreApplication> app(argc, argv);
             if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
                 return 0;
 
@@ -227,7 +222,7 @@ int main(int argc, char *argv[])
                 return EXIT_FAILURE;
             }
 
-            MyCoreApplication app(argc, argv);
+            SDKApp<QCoreApplication> app(argc, argv);
 
             // input, if not given use current app
             QString input;
@@ -244,7 +239,7 @@ int main(int argc, char *argv[])
         }
 
         // from here, the "normal" installer binary is running
-        MyApplication app(argc, argv);
+        SDKApp<QApplication> app(argc, argv);
         args = app.arguments();
 
         if (runCheck.isRunning(KDRunOnceChecker::ProcessList)) {

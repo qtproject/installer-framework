@@ -39,6 +39,7 @@
 **
 **************************************************************************/
 #include "installerbase_p.h"
+#include "console.h"
 
 #include <binaryformat.h>
 #include <errors.h>
@@ -58,145 +59,12 @@
 
 #include <QMessageBox>
 
-#include <fstream>
 #include <iomanip>
 #include <iostream>
-
-#ifdef Q_OS_WIN
-#   include <windows.h>
-#   include <wincon.h>
-
-#   ifndef ENABLE_INSERT_MODE
-#       define ENABLE_INSERT_MODE 0x0020
-#   endif
-
-#   ifndef ENABLE_QUICK_EDIT_MODE
-#       define ENABLE_QUICK_EDIT_MODE 0x0040
-#   endif
-
-#   ifndef ENABLE_EXTENDED_FLAGS
-#       define ENABLE_EXTENDED_FLAGS 0x0080
-#   endif
-#endif
 
 using namespace KDUpdater;
 using namespace QInstaller;
 using namespace QInstallerCreator;
-
-
-// -- MyCoreApplication
-
-MyCoreApplication::MyCoreApplication(int &argc, char **argv)
-    : QCoreApplication(argc, argv)
-{
-}
-
-// re-implemented from QCoreApplication so we can throw exceptions in scripts and slots
-bool MyCoreApplication::notify(QObject *receiver, QEvent *event)
-{
-    try {
-        return QCoreApplication::notify(receiver, event);
-    } catch(std::exception &e) {
-        qFatal("Exception thrown: %s", e.what());
-    }
-    return false;
-}
-
-
-// -- MyApplicationConsole
-
-class MyApplicationConsole
-{
-public:
-    MyApplicationConsole()
-    {
-#ifdef Q_OS_WIN
-        AllocConsole();
-
-        HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
-        if (handle != INVALID_HANDLE_VALUE) {
-            COORD largestConsoleWindowSize = GetLargestConsoleWindowSize(handle);
-            largestConsoleWindowSize.X -= 3;
-            largestConsoleWindowSize.Y = 5000;
-            SetConsoleScreenBufferSize(handle, largestConsoleWindowSize);
-        }
-
-        handle = GetStdHandle(STD_INPUT_HANDLE);
-        if (handle != INVALID_HANDLE_VALUE)
-            SetConsoleMode(handle, ENABLE_INSERT_MODE | ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS);
-
-        m_oldCin = std::cin.rdbuf();
-        m_newCin.open("CONIN$");
-        std::cin.rdbuf(m_newCin.rdbuf());
-
-        m_oldCout = std::cout.rdbuf();
-        m_newCout.open("CONOUT$");
-        std::cout.rdbuf(m_newCout.rdbuf());
-
-        m_oldCerr = std::cerr.rdbuf();
-        m_newCerr.open("CONOUT$");
-        std::cerr.rdbuf(m_newCerr.rdbuf());
-#   ifndef Q_CC_MINGW
-        HMENU systemMenu = GetSystemMenu(GetConsoleWindow(), FALSE);
-        if (systemMenu != NULL)
-            RemoveMenu(systemMenu, SC_CLOSE, MF_BYCOMMAND);
-        DrawMenuBar(GetConsoleWindow());
-#   endif
-#endif
-    }
-    ~MyApplicationConsole()
-    {
-#ifdef Q_OS_WIN
-        system("PAUSE");
-
-        std::cin.rdbuf(m_oldCin);
-        std::cerr.rdbuf(m_oldCerr);
-        std::cout.rdbuf(m_oldCout);
-
-        FreeConsole();
-#endif
-    }
-
-private:
-    std::ifstream m_newCin;
-    std::ofstream m_newCout;
-    std::ofstream m_newCerr;
-
-    std::streambuf* m_oldCin;
-    std::streambuf* m_oldCout;
-    std::streambuf* m_oldCerr;
-};
-
-
-// -- MyApplication
-
-MyApplication::MyApplication(int &argc, char **argv)
-    : QApplication(argc, argv)
-    , m_console(0)
-{
-}
-
-MyApplication::~MyApplication()
-{
-    delete m_console;
-}
-
-void MyApplication::setVerbose()
-{
-    if (!m_console)
-        m_console = new MyApplicationConsole;
-}
-
-// re-implemented from QApplication so we can throw exceptions in scripts and slots
-bool MyApplication::notify(QObject *receiver, QEvent *event)
-{
-    try {
-        return QApplication::notify(receiver, event);
-    } catch(std::exception &e) {
-        qFatal("Exception thrown: %s", e.what());
-    }
-    return false;
-}
 
 
 // -- InstallerBase
@@ -307,7 +175,7 @@ void InstallerBase::showUsage()
 {
 #define WIDTH1 46
 #define WIDTH2 40
-    MyApplicationConsole c;
+    Console c;
     std::cout << "Usage: SDKMaintenanceTool [OPTIONS]" << std::endl << std::endl;
 
     std::cout << "User:"<<std::endl;
@@ -373,7 +241,7 @@ void InstallerBase::showUsage()
 /* static*/
 void InstallerBase::showVersion(const QString &version)
 {
-    MyApplicationConsole c;
+    Console c;
     std::cout << qPrintable(version) << std::endl;
 }
 

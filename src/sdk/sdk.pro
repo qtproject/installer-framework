@@ -76,7 +76,9 @@ FORMS += settingsdialog.ui
 HEADERS += installerbase_p.h \
            tabcontroller.h \
            installerbasecommons.h \
-           settingsdialog.h
+           settingsdialog.h \
+           console.h \
+           sdkapp.h
 
 SOURCES = installerbase.cpp \
           installerbase_p.cpp \

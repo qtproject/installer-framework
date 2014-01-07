@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -39,54 +39,46 @@
 **
 **************************************************************************/
 
-#ifndef INSTALLERBASE_P_H
-#define INSTALLERBASE_P_H
+#ifndef SDKAPP_H
+#define SDKAPP_H
 
-#include <QThread>
+#include "console.h"
 
-namespace KDUpdater {
-    class FileDownloader;
-}
+#include <QApplication>
 
-QT_BEGIN_NAMESPACE
-class QFile;
-QT_END_NAMESPACE
-
-class Sleep : public QThread
+template<class T>
+class SDKApp : public T
 {
 public:
-    static void sleep(unsigned long ms)
+    SDKApp(int argc, char** argv)
+        : T(argc, argv)
+        , m_console(0)
     {
-        QThread::usleep(ms);
     }
-};
 
-class InstallerBase : public QObject
-{
-    Q_OBJECT
+    virtual ~SDKApp()
+    {
+        delete m_console;
+    }
 
-public:
-    explicit InstallerBase(QObject *parent = 0);
-    ~InstallerBase();
+    void setVerbose()
+    {
+        if (!m_console)
+            m_console = new Console;
+    }
 
-    int replaceMaintenanceToolBinary(QStringList arguments);
-
-    static void showUsage();
-    static void showVersion(const QString &version);
-
-private slots:
-    void downloadStarted();
-    void downloadFinished();
-    void downloadProgress(double progress);
-    void downloadAborted(const QString &error);
-
-private:
-    void deferredRename(const QString &source, const QString &target);
-    void writeMaintenanceBinary(const QString &target, QFile *source, qint64 size);
+    virtual bool notify(QObject *receiver, QEvent *event)
+    {
+        try {
+            return T::notify(receiver, event);
+        } catch (std::exception &e) {
+            qFatal("Exception thrown: %s", e.what());
+        }
+        return false;
+    }
 
 private:
-    volatile bool m_downloadFinished;
-    QScopedPointer<KDUpdater::FileDownloader> m_downloader;
+    Console *m_console;
 };
 
-#endif  // INSTALLERBASE_P_H
+#endif  // SDKAPP_H
