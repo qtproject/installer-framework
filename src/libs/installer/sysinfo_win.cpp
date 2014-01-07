@@ -45,6 +45,7 @@
 #include <qt_windows.h>
 #include <psapi.h>
 #include <tlhelp32.h>
+#include <winbase.h>
 #include <winnetwk.h>
 
 #ifndef Q_CC_MINGW
