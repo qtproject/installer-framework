@@ -45,16 +45,13 @@
 #include <QDebug>
 #include <QDir>
 
+#include <qt_windows.h>
+
 #ifdef Q_CC_MINGW
-# ifndef _WIN32_WINNT
-#  define _WIN32_WINNT 0x0501
-# endif
 # ifndef SEE_MASK_NOASYNC
 #  define SEE_MASK_NOASYNC 0x00000100
 # endif
 #endif
-
-#include <windows.h>
 
 struct DeCoInitializer
 {

@@ -521,13 +521,7 @@ QString QInstaller::createTemporaryDirectory(const QString &templateName)
 }
 
 #ifdef Q_OS_WIN
-# ifdef Q_CC_MINGW
-#  ifndef _WIN32_WINNT
-#   define _WIN32_WINNT 0x0501
-#  endif
-# endif
-#include <windows.h>
-
+#include <qt_windows.h>
 
 QString QInstaller::getShortPathName(const QString &name)
 {

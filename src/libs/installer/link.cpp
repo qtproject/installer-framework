@@ -50,13 +50,7 @@
 #endif
 
 #ifdef Q_OS_WIN
-#ifdef Q_CC_MINGW
-# ifndef _WIN32_WINNT
-#  define _WIN32_WINNT 0x0501
-# endif
-#endif
-
-#include <windows.h>
+#include <qt_windows.h>
 #include <winioctl.h>
 
 #ifndef Q_CC_MINGW

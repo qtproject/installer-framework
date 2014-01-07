@@ -47,7 +47,7 @@
 #include <QtCore/QVector>
 #include <QCoreApplication>
 
-#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
+#if defined(Q_OS_WIN) || defined(Q_OS_WINCE)
 #   include "qt_windows.h"
 #endif
 
@@ -55,10 +55,6 @@
 #include <iostream>
 #include <sstream>
 
-
-#ifdef Q_OS_WIN
-#include <windows.h> // for Sleep
-#endif
 #ifdef Q_OS_UNIX
 #include <errno.h>
 #include <signal.h>
