@@ -104,7 +104,15 @@ HEADERS += packagemanagercore.h \
     graph.h \
     settingsoperation.h \
     testrepository.h \
-    packagemanagerpagefactory.h
+    packagemanagerpagefactory.h \
+    abstracttask.h\
+    abstractfiletask.h \
+    copyfiletask.h \
+    downloadfiletask.h \
+    downloadfiletask_p.h \
+    unziptask.h \
+    observer.h \
+    runextensions.h
 
     SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -169,7 +177,12 @@ HEADERS += packagemanagercore.h \
     globals.cpp \
     settingsoperation.cpp \
     testrepository.cpp \
-    packagemanagerpagefactory.cpp
+    packagemanagerpagefactory.cpp \
+    abstractfiletask.cpp \
+    copyfiletask.cpp \
+    downloadfiletask.cpp \
+    unziptask.cpp \
+    observer.cpp
 
 RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc

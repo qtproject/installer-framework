@@ -15,4 +15,5 @@ SUBDIRS += \
     solver \
     binaryformat \
     packagemanagercore \
-    settingsoperation
+    settingsoperation \
+    task
