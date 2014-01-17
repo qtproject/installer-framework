@@ -104,17 +104,20 @@ bool ConsumeOutputOperation::performOperation()
     }
 
     QByteArray executableOutput;
-    QProcess process;
 
 
     const QStringList processArguments = arguments().mid(2);
     // in some cases it is not runable, because another process is blocking it(filewatcher ...)
     int waitCount = 0;
-    while (executableOutput.isEmpty() && waitCount < 60) {
-
+    while (executableOutput.isEmpty() && waitCount < 3) {
+        QProcess process;
         process.start(executable.absoluteFilePath(), processArguments, QIODevice::ReadOnly);
-        if (process.waitForFinished(2000)) {
+        if (process.waitForFinished(10000)) {
             if (process.exitStatus() == QProcess::CrashExit) {
+                qWarning() << executable.absoluteFilePath() << processArguments
+                           << "crashed with exit code" << process.exitCode()
+                           << "standard output: " << process.readAllStandardOutput()
+                           << "error output: " << process.readAllStandardError();
                 setError(UserDefinedError);
                 setErrorString(tr("Running '%1' resulted in a crash.").arg(
                     QDir::toNativeSeparators(executable.absoluteFilePath())));

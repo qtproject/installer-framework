@@ -53,13 +53,13 @@ Adjust the qmake.conf to have a real stand alone working installer:
 
 Recommended configure options for Microsoft Windows:
 
-configure.exe -opensource -release -static -no-multimedia -no-declarative -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -nomake examples -nomake demos
+configure.exe -opensource -release -static -accessibility -no-multimedia -no-declarative -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -nomake examples -nomake demos
 
 ### Linux & Mac OS X
 
 Recommended configure options for Linux and Mac OS X:
 
-configure -opensource -release -static -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -no-svg -nomake examples -nomake demos
+configure -opensource -release -static -accessibility -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -no-svg -nomake examples -nomake demos
 
 
 Build the Framework

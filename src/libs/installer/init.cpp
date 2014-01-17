@@ -59,6 +59,7 @@
 #include "minimumprogressoperation.h"
 #include "licenseoperation.h"
 #include "applyproductkeyoperation.h"
+#include "settingsoperation.h"
 
 // QtSDK specific
 #include "qtpatchoperation.h"
@@ -139,9 +140,12 @@ static void initResources()
 {
     Q_INIT_RESOURCE(patch_file_lists);
     Q_INIT_RESOURCE(installer);
+    // Qt5 or better qmake generates that automatically, so this is only needed on Qt4
 # if QT_VERSION < 0x050000
     Q_IMPORT_PLUGIN(qico)
     Q_UNUSED(qt_plugin_instance_qico());
+    Q_IMPORT_PLUGIN(qtaccessiblewidgets)
+    Q_UNUSED(qt_plugin_instance_qtaccessiblewidgets());
 # endif
 }
 #endif
@@ -237,6 +241,7 @@ void QInstaller::init()
     factory.registerUpdateOperation<LicenseOperation>(QLatin1String("License"));
     factory.registerUpdateOperation<ApplyProductKeyOperation>(QLatin1String("ApplyProductKey"));
     factory.registerUpdateOperation<ConsumeOutputOperation>(QLatin1String("ConsumeOutput"));
+    factory.registerUpdateOperation<SettingsOperation>(QLatin1String("Settings"));
 
     // QtSDK specific
     factory.registerUpdateOperation<SetQtCreatorValueOperation>(QLatin1String("SetQtCreatorValue"));

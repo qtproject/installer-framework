@@ -46,6 +46,7 @@ bool ApplyProductKeyOperation::performOperation()
     if (!ProductKeyCheck::instance()->applyKey(arguments())) {
         setError(UserDefinedError);
         setErrorString(ProductKeyCheck::instance()->lastErrorString());
+        return false;
     }
     return true;
 }

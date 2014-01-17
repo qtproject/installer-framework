@@ -78,7 +78,7 @@
 #include <errno.h>
 
 #ifdef Q_OS_WIN
-#include <windows.h>
+#include <qt_windows.h>
 #endif
 
 namespace QInstaller {
@@ -212,10 +212,12 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_componentsToInstallCalculated(false)
-    , m_scriptEngine(0)
+    , m_componentScriptEngine(0)
+    , m_controlScriptEngine(0)
     , m_proxyFactory(0)
     , m_defaultModel(0)
     , m_updaterModel(0)
+    , m_guiObject(0)
 {
 }
 
@@ -225,7 +227,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_updaterApplication(new DummyConfigurationInterface)
     , m_FSEngineClientHandler(initFSEngineClientHandler())
     , m_status(PackageManagerCore::Unfinished)
-    , m_forceRestart(false)
+    , m_needsHardRestart(false)
     , m_testChecksum(false)
     , m_launchedAsRoot(AdminAuthorization::hasAdminRights())
     , m_completeUninstall(false)
@@ -239,10 +241,12 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(magicInstallerMaker)
     , m_componentsToInstallCalculated(false)
-    , m_scriptEngine(0)
+    , m_componentScriptEngine(0)
+    , m_controlScriptEngine(0)
     , m_proxyFactory(0)
     , m_defaultModel(0)
     , m_updaterModel(0)
+    , m_guiObject(0)
 {
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
@@ -265,11 +269,13 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
         m_FSEngineClientHandler->setActive(false);
 
     delete m_updateFinder;
-    delete m_scriptEngine;
     delete m_proxyFactory;
 
     delete m_defaultModel;
     delete m_updaterModel;
+
+    // at the moment the tabcontroller deletes the m_gui, this needs to be changed in the future
+    // delete m_gui;
 }
 
 /*!
@@ -392,11 +398,30 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
     return true;
 }
 
-ScriptEngine *PackageManagerCorePrivate::scriptEngine()
+void PackageManagerCorePrivate::cleanUpComponentEnvironment()
 {
-    if (!m_scriptEngine)
-        m_scriptEngine = new ScriptEngine(m_core);
-    return m_scriptEngine;
+    // clean up already downloaded data, don't reset registered archives in offline installer case
+    if (QInstallerCreator::BinaryFormatEngineHandler::instance() && !m_core->isInstaller())
+        QInstallerCreator::BinaryFormatEngineHandler::instance()->resetRegisteredArchives();
+
+    // there could be still some references to already deleted components,
+    // so we need to remove the current component script engine
+    delete m_componentScriptEngine;
+    m_componentScriptEngine = 0;
+}
+
+ScriptEngine *PackageManagerCorePrivate::componentScriptEngine() const
+{
+    if (!m_componentScriptEngine)
+        m_componentScriptEngine = new ScriptEngine(m_core);
+    return m_componentScriptEngine;
+}
+
+ScriptEngine *PackageManagerCorePrivate::controlScriptEngine() const
+{
+    if (!m_controlScriptEngine)
+        m_controlScriptEngine = new ScriptEngine(m_core);
+    return m_controlScriptEngine;
 }
 
 void PackageManagerCorePrivate::clearAllComponentLists()
@@ -411,6 +436,8 @@ void PackageManagerCorePrivate::clearAllComponentLists()
         delete list.at(i).second;
     m_componentsToReplaceAllMode.clear();
     m_componentsToInstallCalculated = false;
+
+    cleanUpComponentEnvironment();
 }
 
 void PackageManagerCorePrivate::clearUpdaterComponentLists()
@@ -435,6 +462,8 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
 
     m_componentsToReplaceUpdaterMode.clear();
     m_componentsToInstallCalculated = false;
+
+    cleanUpComponentEnvironment();
 }
 
 QList<Component *> &PackageManagerCorePrivate::replacementDependencyComponents()
@@ -572,16 +601,6 @@ QString PackageManagerCorePrivate::installReason(Component *component)
 
 void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params)
 {
-    if (!ProductKeyCheck::instance(m_core)->hasValidKey()) {
-        if (m_core->isInstaller()) {
-            setStatus(PackageManagerCore::Failure, ProductKeyCheck::instance(m_core)->lastErrorString());
-        } else {
-            MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("ProductKeyCheckError"), ProductKeyCheck::instance(m_core)->lastErrorString(),
-            ProductKeyCheck::instance(m_core)->maintainanceToolDetailErrorNotice(), QMessageBox::Ok);
-        }
-    }
-
     m_coreCheckedHash.clear();
     m_data = PackageManagerCoreData(params);
     m_componentsToInstallCalculated = false;
@@ -1094,7 +1113,25 @@ void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QF
     const qint64 dataBlockStart = output->pos();
 
     QVector<Range<qint64> >resourceSegments;
-    foreach (const Range<qint64> &segment, layout.metadataResourceSegments) {
+    QVector<Range<qint64> >existingResourceSegments = layout.metadataResourceSegments;
+
+    const QString newDefaultResource = m_core->value(QString::fromLatin1("DefaultResourceReplacement"));
+    if (!newDefaultResource.isEmpty()) {
+        QFile file(newDefaultResource);
+        if (file.open(QIODevice::ReadOnly)) {
+            resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos(), file.size()));
+            appendData(output, &file, file.size());
+            existingResourceSegments.remove(0);
+
+            file.remove();  // clear all possible leftovers
+            m_core->setValue(QString::fromLatin1("DefaultResourceReplacement"), QString());
+        } else {
+            qWarning() << QString::fromLatin1("Could not replace default resource with '%1'.")
+                .arg(newDefaultResource);
+        }
+    }
+
+    foreach (const Range<qint64> &segment, existingResourceSegments) {
         input->seek(segment.start());
         resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos(), segment.length()));
         appendData(output, input, segment.length());
@@ -1155,8 +1192,6 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         performOperationThreaded(op);
         performedOperations.append(takeOwnedOperation(op));
     }
-
-    writeMaintenanceConfigFiles();
 
 #ifdef Q_OS_MAC
     // if it is a bundle, we need some stuff in it...
@@ -1264,7 +1299,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 
         bool newBinaryWritten = false;
         bool replacementExists = false;
-        const QString installerBaseBinary = m_core->replaceVariables(m_installerBaseBinaryUnreplaced);
+        const QString installerBaseBinary = replaceVariables(m_installerBaseBinaryUnreplaced);
         if (!installerBaseBinary.isEmpty() && QFileInfo(installerBaseBinary).exists()) {
             qDebug() << "Got a replacement installer base binary:" << installerBaseBinary;
 
@@ -1272,8 +1307,8 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             try {
                 openForRead(&replacementBinary, replacementBinary.fileName());
                 writeUninstallerBinary(&replacementBinary, replacementBinary.size(), true);
+                qDebug() << "Wrote the binary with the new replacement.";
 
-                m_forceRestart = true;
                 newBinaryWritten = true;
                 replacementExists = true;
             } catch (const Error &error) {
@@ -1283,10 +1318,17 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             if (!replacementBinary.remove()) {
                 // Is there anything more sensible we can do with this error? I think not. It's not serious
                 // enough for throwing / aborting the process.
-                qDebug() << QString::fromLatin1("Could not remove installer base binary (%1) after updating "
+                qDebug() << QString::fromLatin1("Could not remove installer base binary '%1' after updating "
                     "the uninstaller: %2").arg(installerBaseBinary, replacementBinary.errorString());
+            } else {
+                qDebug() << QString::fromLatin1("Removed installer base binary '%1' after updating the "
+                    "uninstaller/ maintenance tool.").arg(installerBaseBinary);
             }
             m_installerBaseBinaryUnreplaced.clear();
+        } else if (!installerBaseBinary.isEmpty() && !QFileInfo(installerBaseBinary).exists()) {
+            qWarning() << QString::fromLatin1("The current uninstaller/ maintenance tool could not be "
+                "updated. '%1' does not exist. Please fix the 'setInstallerBaseBinary(<temp_installer_base_"
+                "binary_path>)' call in your script.").arg(installerBaseBinary);
         }
 
         QFile input;
@@ -1330,9 +1372,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 #endif
         }
 
-        performedOperations = sortOperationsBasedOnComponentDependencies(
-            performedOperations);
-
+        performedOperations = sortOperationsBasedOnComponentDependencies(performedOperations);
         m_core->setValue(QLatin1String("installedOperationAreSorted"), QLatin1String("true"));
 
         try {
@@ -1363,10 +1403,11 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             appendInt64(&file, MagicCookie);
         }
         input.close();
+        writeMaintenanceConfigFiles();
         deferredRename(dataFile + QLatin1String(".new"), dataFile, false);
 
         if (newBinaryWritten) {
-            const bool restart = replacementExists && isUpdater() && (!statusCanceledOrFailed());
+            const bool restart = replacementExists && isUpdater() && (!statusCanceledOrFailed()) && m_needsHardRestart;
             deferredRename(uninstallerName() + QLatin1String(".new"), uninstallerName(), restart);
             qDebug() << "Maintenance tool restart:" << (restart ? "true." : "false.");
         }
@@ -1888,7 +1929,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
             throw Error(operation->errorString());
 
         if (component->value(scEssential, scFalse) == scTrue)
-            m_forceRestart = true;
+            m_needsHardRestart = true;
     }
 
     registerPathesForUninstallation(component->pathesForUninstallation(), component->name());
@@ -2389,9 +2430,11 @@ OperationList PackageManagerCorePrivate::sortOperationsBasedOnComponentDependenc
 
     // create the complete component graph
     Graph<QString> componentGraph;
+    const QRegExp dash(QLatin1String("-.*"));
     foreach (const Component* componentNode, m_core->availableComponents()) {
         componentGraph.addNode(componentNode->name());
-        componentGraph.addEdges(componentNode->name(), componentNode->dependencies());
+        const QStringList dependencies = componentNode->dependencies().replaceInStrings(dash,QString());
+        componentGraph.addEdges(componentNode->name(), dependencies);
     }
 
     foreach (const QString &componentName, componentGraph.sort())

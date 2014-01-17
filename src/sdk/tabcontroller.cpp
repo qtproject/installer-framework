@@ -124,10 +124,6 @@ void TabController::setManagerParams(const QHash<QString, QString> &params)
 
 int TabController::init()
 {
-    if (!ProductKeyCheck::instance()->hasValidKey() && d->m_core->isInstaller()) {
-        return PackageManagerCore::Failure;
-    }
-
     if (!d->m_init) {
         d->m_init = true;
         // this should called as early as possible, to handle error message boxes for example
@@ -150,7 +146,6 @@ int TabController::init()
     }
 
     d->m_gui->restart();
-    d->m_gui->setWindowModality(Qt::WindowModal);
     d->m_gui->show();
 
     onCurrentIdChanged(d->m_gui->currentId());
@@ -201,9 +196,9 @@ void TabController::onSettingsButtonClicked()
 
 void TabController::onCurrentIdChanged(int newId)
 {
-    if (d->m_gui && d->m_core) {
-        d->m_gui->showSettingsButton((newId == PackageManagerCore::Introduction) &
-            (!d->m_core->isOfflineOnly()) & (!d->m_core->isUninstaller()));
+    if (d->m_gui) {
+        if (PackageManagerPage *page = d->m_gui->page(newId))
+            d->m_gui->showSettingsButton(page->settingsButtonRequested());
     }
 }
 

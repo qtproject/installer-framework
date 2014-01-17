@@ -12,5 +12,7 @@ SUBDIRS += \
     consumeoutputoperationtest \
     mkdiroperationtest \
     copyoperationtest \
-    solver
-
+    solver \
+    binaryformat \
+    packagemanagercore \
+    settingsoperation

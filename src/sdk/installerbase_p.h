@@ -39,8 +39,10 @@
 **
 **************************************************************************/
 
+#ifndef INSTALLERBASE_P_H
+#define INSTALLERBASE_P_H
+
 #include <QThread>
-#include <QApplication>
 
 namespace KDUpdater {
     class FileDownloader;
@@ -49,8 +51,6 @@ namespace KDUpdater {
 QT_BEGIN_NAMESPACE
 class QFile;
 QT_END_NAMESPACE
-
-class MyApplicationConsole;
 
 class Sleep : public QThread
 {
@@ -89,22 +89,4 @@ private:
     QScopedPointer<KDUpdater::FileDownloader> m_downloader;
 };
 
-class MyCoreApplication : public QCoreApplication
-{
-public:
-    MyCoreApplication(int &argc, char **argv);
-    virtual bool notify(QObject *receiver, QEvent *event);
-};
-
-class MyApplication : public QApplication
-{
-public:
-    MyApplication(int &argc, char **argv);
-    ~MyApplication();
-
-    void setVerbose();
-    virtual bool notify(QObject *receiver, QEvent *event);
-
-private:
-    MyApplicationConsole *m_console;
-};
+#endif  // INSTALLERBASE_P_H

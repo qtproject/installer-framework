@@ -135,7 +135,10 @@ public:
 
     bool buildComponentTree(QHash<QString, Component*> &components, bool loadScript);
 
-    ScriptEngine *scriptEngine();
+    void cleanUpComponentEnvironment();
+    ScriptEngine *componentScriptEngine() const;
+    ScriptEngine *controlScriptEngine() const;
+
     void clearAllComponentLists();
     void clearUpdaterComponentLists();
     QList<Component*> &replacementDependencyComponents();
@@ -205,7 +208,7 @@ public:
     int m_status;
     QString m_error;
 
-    bool m_forceRestart;
+    bool m_needsHardRestart;
     bool m_testChecksum;
     bool m_launchedAsRoot;
     bool m_completeUninstall;
@@ -263,7 +266,8 @@ private:
     qint64 m_magicBinaryMarker;
     bool m_componentsToInstallCalculated;
 
-    ScriptEngine *m_scriptEngine;
+    mutable ScriptEngine *m_componentScriptEngine;
+    mutable ScriptEngine *m_controlScriptEngine;
     // < name (component to replace), < replacement component, component to replace > >
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceAllMode;
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceUpdaterMode;
@@ -284,6 +288,8 @@ private:
 
     ComponentModel *m_defaultModel;
     ComponentModel *m_updaterModel;
+
+    QObject *m_guiObject;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

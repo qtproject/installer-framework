@@ -164,6 +164,7 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
 
     const QUrl url(a.arguments().value(1));
+    KDUpdater::FileDownloaderFactory::setFollowRedirects(true);
     qDebug() << url.toString();
     KDUpdater::FileDownloader *loader = KDUpdater::FileDownloaderFactory::instance().create(url.scheme(), 0);
     if (loader) {

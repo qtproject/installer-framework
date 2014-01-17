@@ -3,7 +3,7 @@
 }
 IFW_PRI_INCLUDED = 1
 
-IFW_VERSION = 1.4.81
+IFW_VERSION = 1.5.0
 
 IFW_REPOSITORY_FORMAT_VERSION = 1.0.0
 
@@ -56,6 +56,9 @@ unix:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/unix/CPP
 LIBS += -L$$IFW_LIB_PATH
 # The order is important. The linker needs to parse archives in reversed dependency order.
 equals(TEMPLATE, app):LIBS += -linstaller
+win32:equals(TEMPLATE, app) {
+    LIBS += -luser32
+}
 unix:!macx:LIBS += -lutil
 macx:LIBS += -framework Carbon -framework Security
 
@@ -84,14 +87,14 @@ macx:LIBS += -framework Carbon -framework Security
 isEqual(QT_MAJOR_VERSION, 4) {
     CONFIG += uitools
     CONFIG(static, static|shared) {
-        QTPLUGIN += qico
+        QTPLUGIN += qico qtaccessiblewidgets
         DEFINES += QT_STATIC
         QT += script network xml
     }
 } else {
     QT += uitools core-private
     CONFIG(static, static|shared) {
-        QTPLUGIN += qico
+        QTPLUGIN += qico qtaccessiblewidgets
         QT += concurrent network script xml
     }
 }
@@ -106,6 +109,9 @@ static {
     LIBS += -l7z
     win32-g++*: LIBS += -lmpr -luuid
 
-    win32:exists($$IFW_LIB_PATH/installer.lib):POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib
-    unix:exists($$IFW_LIB_PATH/libinstaller.a):POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a
+    equals(TEMPLATE, app) {
+        win32-msvc*:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib $$IFW_LIB_PATH/7z.lib
+        win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
+        unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
+    }
 }

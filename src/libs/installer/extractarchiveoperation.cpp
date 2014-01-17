@@ -75,13 +75,12 @@ bool ExtractArchiveOperation::performOperation()
     Receiver receiver;
     Callback callback;
 
-    // usually we have to connect it as queued connection but then some blocking work is in the main thread
-    connect(&callback, SIGNAL(progressChanged(QString)), this, SLOT(slotProgressChanged(QString)),
-        Qt::DirectConnection);
+    connect(&callback, SIGNAL(currentFileChanged(QString)), this, SLOT(fileFinished(QString)));
+    connect(&callback, SIGNAL(progressChanged(double)), this, SIGNAL(progressChanged(double)));
 
     if (PackageManagerCore *core = this->value(QLatin1String("installer")).value<PackageManagerCore*>()) {
         connect(core, SIGNAL(statusChanged(QInstaller::PackageManagerCore::Status)), &callback,
-            SLOT(statusChanged(QInstaller::PackageManagerCore::Status)), Qt::QueuedConnection);
+            SLOT(statusChanged(QInstaller::PackageManagerCore::Status)));
     }
 
     //Runnable is derived from QRunable which will be deleted by the ThreadPool -> no parent is needed
@@ -125,8 +124,8 @@ bool ExtractArchiveOperation::undoOperation()
     const QStringList files = value(QLatin1String("files")).toStringList();
 
     WorkerThread *const thread = new WorkerThread(this, files);
-    connect(thread, SIGNAL(outputTextChanged(QString)), this, SIGNAL(outputTextChanged(QString)),
-        Qt::QueuedConnection);
+    connect(thread, SIGNAL(currentFileChanged(QString)), this, SIGNAL(outputTextChanged(QString)));
+    connect(thread, SIGNAL(progressChanged(double)), this, SIGNAL(progressChanged(double)));
 
     QEventLoop loop;
     connect(thread, SIGNAL(finished()), &loop, SLOT(quit()), Qt::QueuedConnection);
@@ -149,7 +148,7 @@ Operation *ExtractArchiveOperation::clone() const
 /*!
     This slot is direct connected to the caller so please don't call it from another thread in the same time.
 */
-void ExtractArchiveOperation::slotProgressChanged(const QString &filename)
+void ExtractArchiveOperation::fileFinished(const QString &filename)
 {
     QStringList files = value(QLatin1String("files")).toStringList();
     files.prepend(filename);

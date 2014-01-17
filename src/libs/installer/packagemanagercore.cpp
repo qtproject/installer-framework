@@ -421,11 +421,24 @@ void PackageManagerCore::writeMaintenanceConfigFiles()
 void PackageManagerCore::reset(const QHash<QString, QString> &params)
 {
     d->m_completeUninstall = false;
-    d->m_forceRestart = false;
+    d->m_needsHardRestart = false;
     d->m_status = PackageManagerCore::Unfinished;
     d->m_installerBaseBinaryUnreplaced.clear();
 
     d->initialize(params);
+}
+
+void PackageManagerCore::setGuiObject(QObject *gui)
+{
+    if (gui == d->m_guiObject)
+        return;
+    d->m_guiObject = gui;
+    emit guiObjectChanged(gui);
+}
+
+QObject *PackageManagerCore::guiObject() const
+{
+    return d->m_guiObject;
 }
 
 /*!
@@ -532,11 +545,12 @@ quint64 PackageManagerCore::requiredDiskSpace() const
  */
 quint64 PackageManagerCore::requiredTemporaryDiskSpace() const
 {
-    quint64 result = 0;
+    if (isOfflineOnly())
+        return 0;
 
+    quint64 result = 0;
     foreach (QInstaller::Component *component, orderedComponentsToInstall())
         result += size(component, scCompressedSize);
-
     return result;
 }
 
@@ -596,10 +610,16 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     If a component marked as important was installed during update
     process true is returned.
 */
-bool PackageManagerCore::needsRestart() const
+bool PackageManagerCore::needsHardRestart() const
 {
-    return d->m_forceRestart;
+    return d->m_needsHardRestart;
 }
+
+void PackageManagerCore::setNeedsHardRestart(bool needsHardRestart)
+{
+    d->m_needsHardRestart = needsHardRestart;
+}
+
 
 void PackageManagerCore::rollBackInstallation()
 {
@@ -628,6 +648,19 @@ void PackageManagerCore::rollBackInstallation()
             Operation *const operation = d->m_performedOperationsCurrentSession.takeLast();
             const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
                 && operation->value(QLatin1String("admin")).toBool() && gainAdminRights();
+
+            if (operation->hasValue(QLatin1String("uninstall-only"))) {
+                // We know the mkdir operation which is creating the target path. If we do a
+                // full uninstall, prevent a forced remove of the full install path including the
+                // target , instead try to remove the target only and only if it is empty,
+                // otherwise fail silently. Note: we will ever experience this only -if-
+                // RemoveTargetDir is set, otherwise the operation does not exist at all.
+                const bool isMkDir = (operation->name() == QLatin1String("Mkdir"));
+                const bool removeTargetDir = QVariant(value(scRemoveTargetDir)).toBool();
+                const bool uninstallOnly = operation->value(QLatin1String("uninstall-only")).toBool();
+                if (isMkDir && uninstallOnly && removeTargetDir)
+                    operation->setValue(QLatin1String("forceremoval"), false);
+            }
 
             PackageManagerCorePrivate::performOperationThreaded(operation, PackageManagerCorePrivate::Undo);
 
@@ -867,8 +900,8 @@ bool PackageManagerCore::fetchRemotePackagesTree()
         return false;
     }
 
-    if (!ProductKeyCheck::instance(this)->hasValidKey()) {
-        d->setStatus(Failure, ProductKeyCheck::instance(this)->lastErrorString());
+    if (!ProductKeyCheck::instance()->hasValidKey()) {
+        d->setStatus(Failure, ProductKeyCheck::instance()->lastErrorString());
         return false;
     }
 
@@ -1084,9 +1117,14 @@ void PackageManagerCore::setTestChecksum(bool test)
     d->m_testChecksum = test;
 }
 
-ScriptEngine *PackageManagerCore::scriptEngine()
+ScriptEngine *PackageManagerCore::componentScriptEngine() const
 {
-    return d->scriptEngine();
+    return d->componentScriptEngine();
+}
+
+ScriptEngine *PackageManagerCore::controlScriptEngine() const
+{
+    return d->controlScriptEngine();
 }
 
 /*!

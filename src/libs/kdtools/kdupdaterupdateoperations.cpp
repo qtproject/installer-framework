@@ -65,29 +65,24 @@ static QString errnoToQString(int error)
 #endif
 }
 
-static bool removeDirectory(const QString &path, QString *errorString, bool force = true)
+static bool removeDirectory(const QString &path, QString *errorString, bool force)
 {
     Q_ASSERT(errorString);
-    const QFileInfoList entries = QDir(path).entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden);
-    for (QFileInfoList::const_iterator it = entries.constBegin(); it != entries.constEnd(); ++it) {
-        if (it->isDir() && !it->isSymLink()) {
-            removeDirectory(it->filePath(), errorString, force);
-        } else if (force) {
-            QFile f(it->filePath());
-            if (!f.remove())
-                return false;
-        }
+
+    QDir dir = path;
+    const QFileInfoList entries = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden);
+    foreach (const QFileInfo &entry, entries) {
+        if (entry.isDir() && (!entry.isSymLink()))
+            removeDirectory(entry.filePath(), errorString, force);
+        else if (force && (!QFile(entry.filePath()).remove()))
+            return false;
     }
 
     // even remove some hidden, OS-created files in there
-#if defined Q_OS_MAC
-    QFile::remove(path + QLatin1String("/.DS_Store"));
-#elif defined Q_OS_WIN
-    QFile::remove(path + QLatin1String("/Thumbs.db"));
-#endif
+    QInstaller::removeSystemGeneratedFiles(path);
 
     errno = 0;
-    const bool success = QDir().rmdir(path);
+    const bool success = dir.rmdir(path);
     if (errno)
         *errorString = errnoToQString(errno);
     return success;
@@ -170,7 +165,7 @@ bool CopyOperation::performOperation()
     QFile sourceFile(source);
     if (!sourceFile.exists()) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not copy a none existing file: %1").arg(source));
+        setErrorString(tr("Could not copy a non-existent file: %1").arg(source));
         return false;
     }
     // If destination file exists, we cannot use QFile::copy() because it does not overwrite an existing

@@ -108,7 +108,7 @@ private:
         Creates a temporary directory
         @throws QInstaller::Error if creating the temporary directory fails
     */
-    QString INSTALLER_EXPORT createTemporaryDirectory(const QString &templ=QString());
+    QString INSTALLER_EXPORT createTemporaryDirectory(const QString &templateName = QString());
 
     QString INSTALLER_EXPORT generateTemporaryFileName(const QString &templ=QString());
 

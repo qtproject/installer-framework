@@ -99,7 +99,7 @@
         <translation>無効な引数: %1個の引数が渡されましたが、必要なのは2個です。</translation>
     </message>
     <message>
-        <source>Could not copy a none existing file: %1</source>
+        <source>Could not copy a non-existent file: %1</source>
         <translation>存在しないファイルはコピーできません: %1</translation>
     </message>
     <message>

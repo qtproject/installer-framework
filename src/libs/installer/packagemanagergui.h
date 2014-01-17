@@ -60,7 +60,6 @@ class QListWidget;
 class QListWidgetItem;
 class QRadioButton;
 class QTextBrowser;
-class QScriptEngine;
 QT_END_NAMESPACE
 
 namespace QInstaller {
@@ -117,8 +116,7 @@ protected Q_SLOTS:
     void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardWidgetRemovalRequested(QWidget *widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
-    void slotCurrentPageChanged(int id);
-    void delayedControlScriptExecution(int id);
+    void executeControlScript(int pageId);
     void setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,
                                             const QString &callbackName);
 
@@ -168,6 +166,10 @@ public:
     void setValidatePageComponent(QInstaller::Component *component);
 
     bool validatePage();
+
+    bool settingsButtonRequested() const { return m_needsSettingsButton; }
+    void setSettingsButtonRequested(bool request) { m_needsSettingsButton = request; }
+
 signals:
     void entered();
     void left();
@@ -192,6 +194,7 @@ private:
     bool m_fresh;
     bool m_complete;
     QString m_titleColor;
+    bool m_needsSettingsButton;
 
     PackageManagerCore *m_core;
     QInstaller::Component *validatorComponent;

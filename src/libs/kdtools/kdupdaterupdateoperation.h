@@ -75,6 +75,7 @@ public:
 
     void setArguments(const QStringList &args);
     QStringList arguments() const;
+    QString argumentKeyValue(const QString & key, const QString &defaultValue = QString()) const;
     void clear();
     QString errorString() const;
     int error() const;

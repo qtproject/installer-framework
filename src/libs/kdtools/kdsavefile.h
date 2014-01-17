@@ -76,7 +76,7 @@ public:
     bool resize(qint64 size);
     int handle() const;
 
-    bool atEnd();
+    bool atEnd() const;
     qint64 bytesAvailable() const;
     qint64 bytesToWrite() const;
     bool canReadLine() const;

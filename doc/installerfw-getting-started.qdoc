@@ -81,7 +81,7 @@
     Windows:
 
     \code
-    configure.exe -opensource -release -static -no-multimedia -no-declarative -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -nomake examples -nomake demos
+    configure.exe -opensource -release -static -accessibility -no-multimedia -no-declarative -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -nomake examples -nomake demos
     \endcode
 
     \section2 Configuring Qt for Linux and Mac OS X
@@ -90,7 +90,7 @@
     Mac OS X:
 
     \code
-    configure -opensource -release -static -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -no-svg -nomake examples -nomake demos
+    configure -opensource -release -static -accessibility -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -no-svg -nomake examples -nomake demos
     \endcode
 
     \section1 Setting up Qt Installer Framework

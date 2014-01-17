@@ -64,9 +64,10 @@ public:
 
 Q_SIGNALS:
     void outputTextChanged(const QString &progress);
+    void progressChanged(double);
 
 private Q_SLOTS:
-    void slotProgressChanged(const QString &progress);
+    void fileFinished(const QString &progress);
 
 private:
     class Callback;

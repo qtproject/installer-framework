@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (c) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (c) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of Installer Framework
@@ -30,11 +30,9 @@
 #ifndef PRODUCTKEYCHECK_H
 #define PRODUCTKEYCHECK_H
 
-#include "qinstallerglobal.h"
+#include "installer_global.h"
 
 #include <QString>
-#include <QHash>
-#include <QPointer>
 
 namespace QInstaller{
     class PackageManagerCore;
@@ -47,8 +45,8 @@ class INSTALLER_EXPORT ProductKeyCheck
 {
 public:
     ~ProductKeyCheck();
-    static ProductKeyCheck *instance(QInstaller::PackageManagerCore *core = 0);
-    static void setPackageManagerCore(QInstaller::PackageManagerCore *core);
+    static ProductKeyCheck *instance();
+    void init(QInstaller::PackageManagerCore *core);
 
     // was validLicense
     bool hasValidKey();
@@ -64,9 +62,12 @@ public:
     // to filter repositories not matching the license
     bool isValidRepository(const QInstaller::Repository &repository) const;
 
+    QList<int> registeredPages() const;
+
 private:
     ProductKeyCheck();
     ProductKeyCheckPrivate *const d;
+    Q_DISABLE_COPY(ProductKeyCheck)
 };
 
 #endif // PRODUCTKEYCHECK_H

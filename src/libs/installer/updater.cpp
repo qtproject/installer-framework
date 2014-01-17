@@ -40,6 +40,7 @@
 **************************************************************************/
 #include "updater.h"
 
+#include "productkeycheck.h"
 #include "binaryformat.h"
 #include "component.h"
 #include "init.h"
@@ -77,6 +78,7 @@ bool Updater::checkForUpdates()
     PackageManagerCore core(content.magicMarker(), content.performedOperations());
     core.setUpdater();
     PackageManagerCore::setVirtualComponentsVisible(true);
+    ProductKeyCheck::instance()->init(&core);
 
     if (!core.fetchRemotePackagesTree())
         return false;

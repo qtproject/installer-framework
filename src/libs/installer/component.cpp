@@ -211,6 +211,7 @@ Component::Component(PackageManagerCore *core)
     setPrivate(d);
 
     connect(this, SIGNAL(valueChanged(QString, QString)), this, SLOT(updateModelData(QString, QString)));
+    qRegisterMetaType<QList<QInstaller::Component*> >("QList<QInstaller::Component*>");
 }
 
 /*!
@@ -485,14 +486,12 @@ void Component::loadComponentScript()
 */
 void Component::loadComponentScript(const QString &fileName)
 {
-    ScriptEngine *scriptEngine = d->m_core->scriptEngine();
-
     // introduce the component object as javascript value and call the name to check that it
     // was successful
     QString scriptInjection(QString::fromLatin1(
         "var component = installer.componentByName('%1'); component.name;").arg(name()));
 
-    d->m_scriptContext = scriptEngine->loadInConext(QLatin1String("Component"), fileName, scriptInjection);
+    d->m_scriptContext = d->scriptEngine()->loadInConext(QLatin1String("Component"), fileName, scriptInjection);
 
     emit loaded();
     languageChanged();
@@ -505,7 +504,7 @@ void Component::loadComponentScript(const QString &fileName)
 */
 void Component::languageChanged()
 {
-    d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext, QLatin1String("retranslateUi"));
+    d->scriptEngine()->callScriptMethod(d->m_scriptContext, QLatin1String("retranslateUi"));
 }
 
 /*!
@@ -590,7 +589,7 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
     for (it = licenseHash.begin(); it != licenseHash.end(); ++it) {
         const QString &fileName = it.value().toString();
 
-        if (!ProductKeyCheck::instance(d->m_core)->isValidLicenseTextFile(fileName))
+        if (!ProductKeyCheck::instance()->isValidLicenseTextFile(fileName))
             continue;
 
         QFileInfo fileInfo(fileName);
@@ -660,7 +659,7 @@ void Component::createOperationsForPath(const QString &path)
         return;
 
     // the script can override this method
-    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
         QLatin1String("createOperationsForPath"), QScriptValueList() << path).isValid()) {
         return;
     }
@@ -705,7 +704,7 @@ void Component::createOperationsForArchive(const QString &archive)
         return;
 
     // the script can override this method
-    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
         QLatin1String("createOperationsForArchive"), QScriptValueList() << archive).isValid()) {
         return;
     }
@@ -739,7 +738,7 @@ void Component::createOperationsForArchive(const QString &archive)
 void Component::beginInstallation()
 {
     // the script can override this method
-    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
         QLatin1String("beginInstallation")).isValid()) {
         return;
     }
@@ -758,7 +757,7 @@ void Component::beginInstallation()
 void Component::createOperations()
 {
     // the script can override this method
-    if (d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
         QLatin1String("createOperations")).isValid()) {
         d->m_operationsCreated = true;
         return;
@@ -899,6 +898,7 @@ OperationList Component::operations() const
         if (!d->m_minimumProgressOperation) {
             d->m_minimumProgressOperation = KDUpdater::UpdateOperationFactory::instance()
                 .create(QLatin1String("MinimumProgress"));
+            d->m_minimumProgressOperation->setValue(QLatin1String("component"), name());
             d->m_operations.append(d->m_minimumProgressOperation);
         }
 
@@ -906,6 +906,7 @@ OperationList Component::operations() const
             d->m_licenseOperation = KDUpdater::UpdateOperationFactory::instance()
                 .create(QLatin1String("License"));
             d->m_licenseOperation->setValue(QLatin1String("installer"), QVariant::fromValue(d->m_core));
+            d->m_licenseOperation->setValue(QLatin1String("component"), name());
 
             QVariantMap licenses;
             const QList<QPair<QString, QString> > values = d->m_licenses.values();
@@ -1118,7 +1119,8 @@ void Component::setValidatorCallbackName(const QString &name)
 bool Component::validatePage()
 {
     if (!validatorCallbackName.isEmpty())
-        return d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext, validatorCallbackName).toBool();
+        return d->scriptEngine()->callScriptMethod(
+            d->m_scriptContext, validatorCallbackName).toBool();
     return true;
 }
 
@@ -1198,7 +1200,7 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
     if (autoDependOnList.first().compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
         QScriptValue valueFromScript;
         try {
-            valueFromScript = d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+            valueFromScript = d->scriptEngine()->callScriptMethod(d->m_scriptContext,
                 QLatin1String("isAutoDependOn"));
         } catch (const Error &error) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -1248,7 +1250,7 @@ bool Component::isDefault() const
     if (d->m_vars.value(scDefault).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
         QScriptValue valueFromScript;
         try {
-            valueFromScript = d->m_core->scriptEngine()->callScriptMethod(d->m_scriptContext,
+            valueFromScript = d->scriptEngine()->callScriptMethod(d->m_scriptContext,
                 QLatin1String("isDefault"));
         } catch (const Error &error) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),

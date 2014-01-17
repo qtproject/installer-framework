@@ -40,7 +40,6 @@
 **************************************************************************/
 
 #include "kdsysinfo.h"
-
 #include "link.h"
 
 #ifdef Q_CC_MINGW
@@ -49,10 +48,10 @@
 # endif
 #endif
 
-#include <windows.h>
+#include <qt_windows.h>
 #include <psapi.h>
 #include <tlhelp32.h>
-
+#include <winbase.h>
 #include <winnetwk.h>
 
 #ifndef Q_CC_MINGW
