@@ -188,6 +188,9 @@ static void messageHandler(QtMsgType type, const char *msg)
 #else
 void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
+    // suppress warning from QPA minimal plugin
+    if (msg.contains(QLatin1String("This plugin does not support propagateSizeHints")))
+        return;
     QByteArray ba = trimAndPrepend(type, msg.toLocal8Bit());
     if (type != QtDebugMsg) {
         ba += QString(QStringLiteral(" (%1:%2, %3)")).arg(

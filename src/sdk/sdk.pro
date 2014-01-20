@@ -8,6 +8,12 @@ QT += network script xml
 
 isEqual(QT_MAJOR_VERSION, 5) {
   QT += widgets
+  # add the minimal plugin in static case to be able to start the installer
+  # headless with: installer-binary -platform minimal
+  # using QT += qpa_minimal_plugin would result in a minimal only compiled version
+  !win32:CONFIG(static, static|shared) {
+    QTPLUGIN += qminimal
+  }
 }
 
 DESTDIR = $$IFW_APP_PATH
