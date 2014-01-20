@@ -60,7 +60,11 @@ EnvironmentVariableTest::EnvironmentVariableTest()
 void EnvironmentVariableTest::testPersistentNonSystem()
 {
 #ifndef Q_OS_WIN
-    QSKIP("This operation only works on Windows",SkipSingle);
+    #if QT_VERSION < 0x050000
+        QSKIP("This operation only works on Windows", SkipSingle);
+    #else
+        QSKIP("This operation only works on Windows");
+    #endif
 #endif
     KDUpdater::Application app;
     QString key = QLatin1String("IFW_TestKey");
@@ -89,7 +93,11 @@ void EnvironmentVariableTest::testPersistentNonSystem()
 void EnvironmentVariableTest::testNonPersistentNonSystem()
 {
 #ifndef Q_OS_WIN
-    QSKIP("This operation only works on Windows",SkipSingle);
+    #if QT_VERSION < 0x050000
+        QSKIP("This operation only works on Windows", SkipSingle);
+    #else
+        QSKIP("This operation only works on Windows");
+    #endif
 #endif
     KDUpdater::Application app;
     QString key = QLatin1String("IFW_TestKey");
