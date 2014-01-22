@@ -96,6 +96,7 @@ namespace QInstaller {
         QTextStream stream;
         QBuffer preFileBuffer;
         QString logFileName;
+        QString currentDateTimeAsString;
     };
 
 }

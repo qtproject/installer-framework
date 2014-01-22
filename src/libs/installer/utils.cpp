@@ -206,6 +206,7 @@ QInstaller::VerboseWriter::VerboseWriter(QObject *parent) : QObject(parent)
 {
     preFileBuffer.open(QIODevice::ReadWrite);
     stream.setDevice(&preFileBuffer);
+    currentDateTimeAsString = QDateTime::currentDateTime().toString();
 }
 
 QInstaller::VerboseWriter::~VerboseWriter()
@@ -220,8 +221,9 @@ QInstaller::VerboseWriter::~VerboseWriter()
     QFile output(logFileName);
     if (output.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text)) {
         QString logInfo;
-        logInfo += QLatin1String("*************************************");
-        logInfo += QLatin1String("Invoked:") + QDateTime::currentDateTime().toString();
+        logInfo += QLatin1String("************************************* Invoked: ");
+        logInfo += currentDateTimeAsString;
+        logInfo += QLatin1String("\n");
         output.write(logInfo.toLocal8Bit());
         output.write(preFileBuffer.data());
         output.close();

@@ -50,7 +50,7 @@ template<class T>
 class SDKApp : public T
 {
 public:
-    SDKApp(int argc, char** argv)
+    SDKApp(int& argc, char** argv)
         : T(argc, argv)
         , m_console(0)
     {
