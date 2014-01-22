@@ -51,6 +51,7 @@
 #if QT_VERSION < 0x050000
 #include <qtconcurrentexception.h>
 #define QException QtConcurrent::Exception
+#define QUnhandledException QtConcurrent::UnhandledException
 #endif
 
 namespace QInstaller {
