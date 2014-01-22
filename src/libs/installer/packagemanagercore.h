@@ -278,6 +278,7 @@ Q_SIGNALS:
     void currentPageChanged(int page);
     void finishButtonClicked();
 
+    void metaJobProgress(int progress);
     void metaJobInfoMessage(const QString &message);
 
     void startAllComponentsReset();

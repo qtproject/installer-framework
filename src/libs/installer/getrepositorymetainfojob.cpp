@@ -53,7 +53,6 @@
 
 #include <QTimer>
 
-
 using namespace KDUpdater;
 using namespace QInstaller;
 
@@ -65,19 +64,12 @@ class GetRepositoryMetaInfoJob::ZipRunnable : public QObject, public QRunnable
     Q_OBJECT
 
 public:
-    ZipRunnable(const QString &archive, const QString &targetDir, QPointer<FileDownloader> downloader)
+    ZipRunnable(const QString &archive, const QString &targetDir)
         : QObject()
         , QRunnable()
         , m_archive(archive)
         , m_targetDir(targetDir)
-        , m_downloader(downloader)
     {}
-
-    ~ZipRunnable()
-    {
-        if (m_downloader)
-            m_downloader->deleteLater();
-    }
 
     void run()
     {
@@ -107,7 +99,6 @@ Q_SIGNALS:
 private:
     const QString m_archive;
     const QString m_targetDir;
-    QPointer<FileDownloader> m_downloader;
 };
 
 
@@ -119,9 +110,10 @@ GetRepositoryMetaInfoJob::GetRepositoryMetaInfoJob(PackageManagerCore *core, QOb
     , m_silentRetries(4)
     , m_retriesLeft(m_silentRetries)
     , m_downloader(0)
-    , m_waitForDone(false)
     , m_core(core)
+    , m_watcher(0)
 {
+    setTotalAmount(100);
     setCapabilities(Cancelable);
 }
 
@@ -154,7 +146,13 @@ void GetRepositoryMetaInfoJob::setSilentRetries(int retries)
 
 void GetRepositoryMetaInfoJob::doStart()
 {
+    m_canceled = false;
+    setProcessedAmount(0);
+    m_packageHash.clear();
+    m_packageNames.clear();
+    m_packageVersions.clear();
     m_retriesLeft = m_silentRetries;
+
     startUpdatesXmlDownload();
 }
 
@@ -163,11 +161,16 @@ void GetRepositoryMetaInfoJob::doCancel()
     m_canceled = true;
     if (m_downloader)
         m_downloader->cancelDownload();
+    if (m_watcher)
+        m_watcher->cancel();
+#if QT_VERSION >= 0x050200
+    m_threadPool.clear();
+#endif
+    m_threadPool.waitForDone();
 }
 
 void GetRepositoryMetaInfoJob::finished(int error, const QString &errorString)
 {
-    m_waitForDone = true;
     m_threadPool.waitForDone();
     (error > KDJob::NoError) ? emitFinishedWithError(error, errorString) : emitFinished();
 }
@@ -384,14 +387,15 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadFinished()
         return;
     }
 
-    setTotalAmount(m_packageNames.count() + 1);
     setProcessedAmount(1);
     emit infoMessage(this, tr("Finished updating component meta information."));
 
-    if (m_packageNames.isEmpty())
+    if (m_packageNames.isEmpty()) {
         finished(KDJob::NoError);
-    else
-        fetchNextMetaInfo();
+        setProcessedAmount(100);
+    } else {
+        downloadMetaInfo();
+    }
 }
 
 void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
@@ -417,131 +421,83 @@ void GetRepositoryMetaInfoJob::updatesXmlDownloadError(const QString &err)
 
 // meta data download
 
-void GetRepositoryMetaInfoJob::fetchNextMetaInfo()
+void GetRepositoryMetaInfoJob::downloadMetaInfo()
 {
     emit infoMessage(this, tr("Retrieving component information from remote repository..."));
-
     if (m_canceled) {
-        finished(KDJob::Canceled, m_downloader->errorString());
+        finished(KDJob::Canceled, tr("Meta data download canceled."));
         return;
     }
 
-    if (m_packageNames.isEmpty() && m_currentPackageName.isEmpty()) {
+    if (m_packageNames.isEmpty()) {
         finished(KDJob::NoError);
         return;
     }
-
-    QString next = m_currentPackageName;
-    QString nextVersion = m_currentPackageVersion;
-    if (next.isEmpty()) {
-        m_retriesLeft = m_silentRetries;
-        next = m_packageNames.takeLast();
-        nextVersion = m_packageVersions.takeLast();
-    }
-
-    qDebug() << "fetching metadata of" << next << "in version" << nextVersion;
 
     bool online = true;
     if (m_repository.url().scheme().isEmpty())
         online = false;
 
+    QList<FileTaskItem> items;
     const QString repoUrl = m_repository.url().toString();
-    const QUrl url = QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, next,
-        online ? nextVersion : QString());
-    m_downloader = FileDownloaderFactory::instance().create(url.scheme(), this);
-
-    if (!m_downloader) {
-        m_currentPackageName.clear();
-        m_currentPackageVersion.clear();
-        qWarning() << "Scheme not supported:" << m_repository.displayname();
-        QMetaObject::invokeMethod(this, "fetchNextMetaInfo", Qt::QueuedConnection);
-        return;
+    for (int i = 0; i < m_packageNames.count(); ++i) {
+        items.append(FileTaskItem(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl,
+            m_packageNames.at(i), (online ? m_packageVersions.at(i) : QString()))));
+        items[i].insert(FileTaskRole::Checksum, m_packageHash.value(i).toLatin1());
     }
-
-    m_currentPackageName = next;
-    m_currentPackageVersion = nextVersion;
-    m_downloader->setUrl(url);
-    m_downloader->setAutoRemoveDownloadedFile(true);
 
     QAuthenticator auth;
     auth.setUser(m_repository.username());
     auth.setPassword(m_repository.password());
-    m_downloader->setAuthenticator(auth);
 
-    connect(m_downloader, SIGNAL(downloadCanceled()), this, SLOT(metaDownloadCanceled()));
-    connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(metaDownloadFinished()));
-    connect(m_downloader, SIGNAL(downloadAborted(QString)), this, SLOT(metaDownloadError(QString)),
-        Qt::QueuedConnection);
-    connect(m_downloader, SIGNAL(authenticatorChanged(QAuthenticator)), this,
-        SLOT(onAuthenticatorChanged(QAuthenticator)));
+    m_metaDataTask.setTaskItems(items);
+    m_metaDataTask.setAuthenticator(auth);
+    m_metaDataTask.setProxyFactory(m_core->proxyFactory()->clone());
 
-    m_downloader->download();
+    m_watcher = new QFutureWatcher<FileTaskResult>(this);
+    connect(m_watcher, SIGNAL(finished()), this, SLOT(metaInfoDownloadFinished()));
+    connect(m_watcher, SIGNAL(progressValueChanged(int)), this, SLOT(onProgressValueChanged(int)));
+    m_watcher->setFuture(QtConcurrent::run(&DownloadFileTask::doTask, &m_metaDataTask));
 }
 
-void GetRepositoryMetaInfoJob::metaDownloadCanceled()
+void GetRepositoryMetaInfoJob::metaInfoDownloadFinished()
 {
-    finished(KDJob::Canceled, m_downloader->errorString());
-}
-
-void GetRepositoryMetaInfoJob::metaDownloadFinished()
-{
-    const QString fn = m_downloader->downloadedFileName();
-    Q_ASSERT(!fn.isEmpty());
-
-    QFile arch(fn);
-    if (!arch.open(QIODevice::ReadOnly)) {
-        finished(QInstaller::ExtractionError, tr("Could not open meta info archive: %1. Error: %2").arg(fn,
-            arch.errorString()));
-        return;
-    }
-
-    if (!m_packageHash.isEmpty()) {
-        // verify file hash
-        const QByteArray expectedFileHash = m_packageHash.back().toLatin1();
-        const QByteArray realFileHash = QInstaller::calculateHash(&arch, QCryptographicHash::Sha1).toHex();
-        if (expectedFileHash != realFileHash) {
-            emit infoMessage(this, tr("The hash of one component does not match the expected one."));
-            metaDownloadError(tr("Bad hash."));
-            return;
+    QFutureWatcher<FileTaskResult> *task = static_cast<QFutureWatcher<FileTaskResult> *>(sender());
+    try {
+        task->waitForFinished();
+        QFuture<FileTaskResult> future = task->future();
+        if (future.resultCount() > 0) {
+            foreach (const FileTaskResult &result, future.results()) {
+                ZipRunnable *runnable = new ZipRunnable(result.target(), m_temporaryDirectory);
+                connect(runnable, SIGNAL(finished(bool, QString)), this, SLOT(unzipFinished(bool,
+                    QString)));
+                m_threadPool.start(runnable);
+            }
         }
-        m_packageHash.removeLast();
+        finished(KDJob::NoError);
+    } catch (FileTaskException &e) {
+        doCancel();
+        finished(KDJob::Canceled, e.message());
+    } catch (QUnhandledException &e) {
+        doCancel();
+        finished(KDJob::Canceled, QLatin1String(e.what()));
+    } catch (...) {
+        doCancel();
+        finished(KDJob::Canceled, tr("Unknown exception."));
     }
-    arch.close();
-    m_currentPackageName.clear();
-
-    ZipRunnable *runnable = new ZipRunnable(fn, m_temporaryDirectory, m_downloader);
-    connect(runnable, SIGNAL(finished(bool,QString)), this, SLOT(unzipFinished(bool,QString)));
-    m_threadPool.start(runnable);
-
-    if (!m_waitForDone)
-        fetchNextMetaInfo();
 }
 
-void GetRepositoryMetaInfoJob::metaDownloadError(const QString &err)
+void GetRepositoryMetaInfoJob::onProgressValueChanged(int progress)
 {
-    if (m_retriesLeft <= 0) {
-        const QString msg = tr("Could not download meta information for component: %1. Error: %2")
-            .arg(m_currentPackageName, err);
-
-        QMessageBox::StandardButtons buttons = QMessageBox::Retry | QMessageBox::Cancel;
-        const QMessageBox::StandardButton b =
-            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("updatesXmlDownloadError"), tr("Download Error"), msg, buttons);
-
-        if (b == QMessageBox::Cancel || b == QMessageBox::NoButton) {
-            finished(KDJob::Canceled, msg);
-            return;
-        }
-    }
-
-    m_retriesLeft--;
-    QTimer::singleShot(1500, this, SLOT(fetchNextMetaInfo()));
+    setProcessedAmount(progress + 1);
 }
 
 void GetRepositoryMetaInfoJob::unzipFinished(bool ok, const QString &error)
 {
-    if (!ok)
+    if (!ok) {
+        doCancel();
         finished(QInstaller::ExtractionError, error);
+    }
 }
 
 bool GetRepositoryMetaInfoJob::updateRepositories(QSet<Repository> *repositories, const QString &username,

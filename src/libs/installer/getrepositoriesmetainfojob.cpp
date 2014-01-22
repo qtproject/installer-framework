@@ -60,6 +60,7 @@ GetRepositoriesMetaInfoJob::GetRepositoriesMetaInfoJob(PackageManagerCore *core)
     , m_haveIgnoredError(false)
     , m_core(core)
 {
+    setTotalAmount(100);
     setCapabilities(Cancelable);
 }
 
@@ -161,6 +162,8 @@ void GetRepositoriesMetaInfoJob::fetchNextRepo()
     m_job = new GetRepositoryMetaInfoJob(m_core, this);
     connect(m_job, SIGNAL(finished(KDJob*)), this, SLOT(jobFinished(KDJob*)));
     connect(m_job, SIGNAL(infoMessage(KDJob*, QString)), this, SIGNAL(infoMessage(KDJob*, QString)));
+    connect(m_job, SIGNAL(progress(KDJob*, quint64, quint64)), this, SIGNAL(progress(KDJob*,
+        quint64, quint64)));
 
     m_job->setSilentRetries(silentRetries());
     m_job->setRepository(m_repositories.takeLast());

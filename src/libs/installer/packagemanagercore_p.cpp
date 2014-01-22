@@ -653,8 +653,10 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     if (!m_repoMetaInfoJob) {
         m_repoMetaInfoJob = new GetRepositoriesMetaInfoJob(m_core);
         m_repoMetaInfoJob->setAutoDelete(false);
-        connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this, SLOT(infoMessage(KDJob*,
-            QString)));
+        connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this,
+            SLOT(infoMessage(KDJob*, QString)));
+        connect(m_repoMetaInfoJob, SIGNAL(progress(KDJob *, quint64, quint64)), this,
+            SLOT(infoProgress(KDJob *, quint64, quint64)));
     }
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 }

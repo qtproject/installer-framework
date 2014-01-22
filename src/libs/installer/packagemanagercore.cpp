@@ -185,10 +185,16 @@
 */
 
 /*!
+    \qmlsignal QInstaller::metaJobProgress(int progress)
+
+    Triggered with progress updates of the while communicating with a remote repository. Progress
+    ranges from 0 to 100.
+*/
+
+/*!
     \qmlsignal QInstaller::metaJobInfoMessage(string message)
 
     Triggered with informative updates of the communication with a remote repository.
-    This is only useful for debugging purposes.
 */
 
 /*!

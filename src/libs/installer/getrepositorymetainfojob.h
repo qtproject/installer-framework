@@ -41,18 +41,19 @@
 #ifndef GETREPOSITORYMETAINFOJOB_H
 #define GETREPOSITORYMETAINFOJOB_H
 
+#include "downloadfiletask.h"
+
 #include "fileutils.h"
 #include "installer_global.h"
 #include "repository.h"
 
 #include "kdjob.h"
 
-#include <QtCore/QPointer>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QThreadPool>
-
 #include <QAuthenticator>
+#include <QFutureWatcher>
+#include <QString>
+#include <QStringList>
+#include <QThreadPool>
 
 namespace KDUpdater {
     class FileDownloader;
@@ -66,6 +67,8 @@ class PackageManagerCore;
 class INSTALLER_EXPORT GetRepositoryMetaInfoJob : public KDJob
 {
     Q_OBJECT
+    Q_DISABLE_COPY(GetRepositoryMetaInfoJob)
+
     class ZipRunnable;
     friend class QInstaller::GetRepositoriesMetaInfoJob;
 
@@ -95,12 +98,11 @@ private Q_SLOTS:
     void updatesXmlDownloadFinished();
     void updatesXmlDownloadError(const QString &error);
 
-    void fetchNextMetaInfo();
-    void metaDownloadCanceled();
-    void metaDownloadFinished();
-    void metaDownloadError(const QString &error);
-
+    void downloadMetaInfo();
+    void metaInfoDownloadFinished();
+    void onProgressValueChanged(int progress);
     void unzipFinished(bool status, const QString &error);
+
     void onAuthenticatorChanged(const QAuthenticator &authenticator);
 
 private:
@@ -111,15 +113,15 @@ private:
     QStringList m_packageNames;
     QStringList m_packageVersions;
     QStringList m_packageHash;
-    QPointer<KDUpdater::FileDownloader> m_downloader;
-    QString m_currentPackageName;
-    QString m_currentPackageVersion;
+    KDUpdater::FileDownloader *m_downloader;
     QString m_temporaryDirectory;
     mutable TempDirDeleter m_tempDirDeleter;
 
-    bool m_waitForDone;
     QThreadPool m_threadPool;
     PackageManagerCore *m_core;
+
+    DownloadFileTask m_metaDataTask;
+    QFutureWatcher<FileTaskResult> *m_watcher;
 };
 
 }   // namespace QInstaller

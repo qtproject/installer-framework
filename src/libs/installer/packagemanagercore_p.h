@@ -234,6 +234,9 @@ private slots:
     void infoMessage(KDJob *, const QString &message) {
         emit m_core->metaJobInfoMessage(message);
     }
+    void infoProgress(KDJob *, quint64 progress, quint64) {
+        emit m_core->metaJobProgress(progress);
+    }
 
     void handleMethodInvocationRequest(const QString &invokableMethodName);
 
