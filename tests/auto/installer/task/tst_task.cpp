@@ -79,14 +79,12 @@ private slots:
 
             QCOMPARE(started.count(), 1);
             QCOMPARE(finished.count(), 0);
-            QCOMPARE(progress.count(), 1);
 
             watcher.waitForFinished();
             QTest::qWait(10); // Spin the event loop to deliver queued signals.
 
             QCOMPARE(started.count(), 1);
             QCOMPARE(finished.count(), 1);
-            QVERIFY(progress.count() > 2);
 
             FileTaskResult result = watcher.result();
             QCOMPARE(watcher.future().resultCount(), 1);
@@ -119,14 +117,12 @@ private slots:
 
             QCOMPARE(started.count(), 1);
             QCOMPARE(finished.count(), 0);
-            QCOMPARE(progress.count(), 1);
 
             watcher.waitForFinished();
             QTest::qWait(10); // Spin the event loop to deliver queued signals.
 
             QCOMPARE(started.count(), 1);
             QCOMPARE(finished.count(), 1);
-            QVERIFY(progress.count() > 2);
 
             FileTaskResult result = watcher.result();
             QCOMPARE(watcher.future().resultCount(), 1);
