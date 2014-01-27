@@ -153,56 +153,44 @@
         <translation> - 残り時間: 不明。</translation>
     </message>
     <message>
-        <source> of </source>
-        <translation> / </translation>
+        <source>%1 of %2</source>
+        <translation>%1 / %2</translation>
     </message>
     <message>
-        <source> downloaded.</source>
-        <translation> ダウンロードしました。</translation>
+        <source>%1 downloaded.</source>
+        <translation>%1 ダウンロードしました。</translation>
     </message>
     <message>
-        <source>/sec</source>
-        <translation>/秒</translation>
+        <source>(%1/sec)</source>
+        <translation>(%1/秒)</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation>
+            <numerusform>%n 日 </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n hour(s), </source>
+        <translation>
+            <numerusform>%n 時間 </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n minute(s)</source>
+        <translation>
+            <numerusform>%n 分 </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n second(s)</source>
+        <translation>
+            <numerusform>%n 秒 </numerusform>
+        </translation>
     </message>
     <message>
-        <source> day</source>
-        <translation>日</translation>
-    </message>
-    <message>
-        <source> days</source>
-        <translation>日</translation>
-    </message>
-    <message>
-        <source> hour</source>
-        <translation>時間</translation>
-    </message>
-    <message>
-        <source> hours</source>
-        <translation>時間</translation>
-    </message>
-    <message>
-        <source> minute</source>
-        <translation>分</translation>
-    </message>
-    <message>
-        <source> minutes</source>
-        <translation>分</translation>
-    </message>
-    <message>
-        <source> second</source>
-        <translation> 秒</translation>
-    </message>
-    <message>
-        <source> seconds</source>
-        <translation> 秒</translation>
-    </message>
-    <message>
-        <source> - </source>
-        <translation> - </translation>
-    </message>
-    <message>
-        <source> remaining.</source>
-        <translation>の残り時間。</translation>
+        <source> - %1%2%3%4 remaining.</source>
+        <translation>- 残り時間 %1%2%3%4。</translation>
     </message>
 </context>
 <context>
@@ -446,9 +434,11 @@
         <source>Application updates computed.</source>
         <translation>アプリケーションに更新を適用しました。</translation>
     </message>
-    <message>
-        <source>%1 updates found.</source>
-        <translation>%1個の更新が見つかりました。</translation>
+    <message numerus="yes">
+        <source>%n update(s) found.</source>
+        <translation>
+            <numerusform>%n個の更新が見つかりました。</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -528,6 +518,45 @@
     </message>
 </context>
 <context>
+    <name>QInstaller</name>
+    <message>
+        <source>bytes</source>
+        <translation>バイト</translation>
+    </message>
+    <message>
+        <source>KiB</source>
+        <translation>KB</translation>
+    </message>
+    <message>
+        <source>MiB</source>
+        <translation>MB</translation>
+    </message>
+    <message>
+        <source>GiB</source>
+        <translation>GB</translation>
+    </message>
+    <message>
+        <source>TiB</source>
+        <translation>TB</translation>
+    </message>
+    <message>
+        <source>PiB</source>
+        <translation>PB</translation>
+    </message>
+    <message>
+        <source>EiB</source>
+        <translation>EB</translation>
+    </message>
+    <message>
+        <source>ZiB</source>
+        <translation>ZB</translation>
+    </message>
+    <message>
+        <source>YiB</source>
+        <translation>YB</translation>
+    </message>
+</context>
+<context>
     <name>QInstaller::AddQtCreatorArrayValueOperation</name>
     <message>
         <source>exactly 4</source>
@@ -585,11 +614,11 @@
         <translation>更新情報: </translation>
     </message>
     <message>
-        <source>Can&apos;t resolve isAutoDependOn in %1</source>
+        <source>Cannot resolve isAutoDependOn in %1</source>
         <translation>%1 の isAutoDependOn を解決できません</translation>
     </message>
     <message>
-        <source>Can&apos;t resolve isDefault in %1</source>
+        <source>Cannot resolve isDefault in %1</source>
         <translation>%1 の isDefault を解決できません</translation>
     </message>
 </context>
@@ -1210,11 +1239,11 @@ Error while loading %2</source>
         <translation>与えられた引数のうち、少なくとも一つが空です。引数1=%1, 引数2=%2, 引数3=%3</translation>
     </message>
     <message>
-        <source>Can&apos;t invoke otool. Is Xcode installed?</source>
+        <source>Cannot invoke otool. Is Xcode installed?</source>
         <translation>otool を起動できません。Xcode はインストールされていますか?</translation>
     </message>
     <message>
-        <source>Can&apos;t start process %0.</source>
+        <source>Cannot start process %0.</source>
         <translation>プロセス %0 を起動できません。</translation>
     </message>
 </context>
@@ -1569,8 +1598,8 @@ Please copy the installer to a local drive</source>
         <translation>%1のインストール</translation>
     </message>
     <message>
-        <source>&amp;Uninstall</source>
-        <translation>アンインストール(&amp;U)</translation>
+        <source>U&amp;ninstall</source>
+        <translation>アンインストール(&amp;N)</translation>
     </message>
 </context>
 <context>
@@ -1709,33 +1738,6 @@ Qt のバイナリにパッチを適用しようとしましたが、Qt の他�
     </message>
 </context>
 <context>
-    <name>QInstaller::RegisterDefaultDebuggerOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, 2 expected.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは2個です。</translation>
-    </message>
-    <message>
-        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation>&quot;%1&quot; のインストーラ作成に必要な操作が見つかりません。</translation>
-    </message>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
-    </message>
-    <message>
-        <source>exactly 2</source>
-        <translation>2個</translation>
-    </message>
-    <message>
-        <source>There is no value set for %1 on the installer object.</source>
-        <translation>インストーラの %1 用に値が設定されていません。</translation>
-    </message>
-    <message>
-        <source>Can&apos;t read from tool chains xml file(%1) correctly.</source>
-        <translation>ツールチェイン XML ファイル(%1) を正常に読み込むことができません。</translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::RegisterFileTypeOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
@@ -1748,64 +1750,6 @@ Qt のバイナリにパッチを適用しようとしましたが、Qt の他�
     <message>
         <source>Register File Type: Invalid arguments</source>
         <translation>ファイル形式の登録: 無効な引数</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::RegisterQtInCreatorQNXOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
-    </message>
-    <message>
-        <source>at least 5</source>
-        <translation>少なくとも5個</translation>
-    </message>
-    <message>
-        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation>&quot;%1&quot; のインストーラ作成に必要な操作が見つかりません。</translation>
-    </message>
-    <message>
-        <source>There is no value set for %1 on the installer object.</source>
-        <translation>インストーラの %1 用に値が設定されていません。</translation>
-    </message>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, minimum 4 expected.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは少なくとも4個です。</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::RegisterToolChainOperation</name>
-    <message>
-        <source>at least 4</source>
-        <translation>少なくとも4個</translation>
-    </message>
-    <message>
-        <source>Needed installer object in &apos;%1&apos; operation is empty.</source>
-        <translation>&apos;%1&apos; のインストーラ作成に必要な操作が見つかりません。</translation>
-    </message>
-    <message>
-        <source>There is no value set for &apos;%1&apos; on the installer object.</source>
-        <translation>インストーラの %1 用に値が設定されていません。</translation>
-    </message>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, minimum 4 expected.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは少なくとも4個です。</translation>
-    </message>
-    <message>
-        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation>&quot;%1&quot; のインストーラ作成に必要な操作が見つかりません。</translation>
-    </message>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
-    </message>
-    <message>
-        <source>Some arguments are not right in %1 operation.</source>
-        <translation>いくつかの引数が %1 の操作には正しくありません。</translation>
-    </message>
-    <message>
-        <source>Can&apos;t read from tool chains xml file(%1) correctly.</source>
-        <translation>ツールチェイン XML ファイル(%1) を正常に読み込むことができません。</translation>
     </message>
 </context>
 <context>
@@ -1861,109 +1805,6 @@ Qt のバイナリにパッチを適用しようとしましたが、Qt の他�
     </message>
 </context>
 <context>
-    <name>QInstaller::SetDemosPathOnQtOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
-    </message>
-    <message>
-        <source>exactly 2</source>
-        <translation>2個</translation>
-    </message>
-    <message>
-        <source>The output of 
-&apos;%1 -query&apos;
-is not parseable. Please file a bugreport with this dialog at https://bugreports.qt-project.org.
-output: %2</source>
-        <translation>以下の出力がパースできません。
-%1 -query
-このダイアログから https://bugreports.qt-project.org へバグ報告をしてください。
-出力: &quot;%2&quot;</translation>
-    </message>
-    <message>
-        <source>Qt patch error: new Qt demo path &apos;%1&apos;
-needs to be less than 255 characters.</source>
-        <translation>Qt パッチエラー: 新しい Qt デモのパス &apos;%1&apos;
-は255文字以下である必要があります。</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::SetExamplesPathOnQtOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
-    </message>
-    <message>
-        <source>exactly 2</source>
-        <translation>2個</translation>
-    </message>
-    <message>
-        <source>The output of 
-&apos;%1 -query&apos;
-is not parseable. Please file a bugreport with this dialog at https://bugreports.qt-project.org.
-output: %2</source>
-        <translation>以下の出力がパースできません。
-%1 -query
-このダイアログから https://bugreports.qt-project.org へバグ報告をしてください。
-出力: &quot;%2&quot;</translation>
-    </message>
-    <message>
-        <source>Qt patch error: new Qt example path &apos;%1&apos;
-needs to be less than 255 characters.</source>
-        <translation>Qt パッチエラー: 新しい Qt サンプルのパス &apos;%1&apos;
-は255文字以下である必要があります。</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::SetImportsPathOnQtCoreOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
-    </message>
-    <message>
-        <source>exactly 2</source>
-        <translation>2個</translation>
-    </message>
-    <message>
-        <source>Qt patch error: new Qt imports path &apos;%1&apos;
-needs to be less than 255 characters.</source>
-        <translation>Qt パッチエラー: 新しい Qt の import パス &apos;%1&apos;
-は255文字以下である必要があります。</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::SetPathOnQtCoreOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
-    </message>
-    <message>
-        <source>exactly 3</source>
-        <translation>3個</translation>
-    </message>
-    <message>
-        <source>The second type/value needs to be one of: %1</source>
-        <translation>二番目の引数の型あるいは値は右記のいずれかである必要があります: %1</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::SetPluginPathOnQtCoreOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
-    </message>
-    <message>
-        <source>exactly 2</source>
-        <translation>2個</translation>
-    </message>
-    <message>
-        <source>Qt patch error: new Qt plugin path &apos;%1&apos;
-needs to be less than 255 characters.</source>
-        <translation>Qt パッチエラー: 新しい Qt のプラグインパス &apos;%1&apos;
-は255文字以下である必要があります。</translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::SetQtCreatorValueOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
@@ -1988,6 +1829,17 @@ needs to be less than 255 characters.</source>
     <message>
         <source>Needed installer object in &apos;%1&apos; operation is empty.</source>
         <translation>&apos;%1&apos; のインストーラ作成に必要な操作が見つかりません。</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::SettingsOperation</name>
+    <message>
+        <source>Missing argument(s) &apos;%1&apos; calling &apos;%2&apos; with arguments &apos;%3&apos;.</source>
+        <translation>&apos;%2&apos; を引数 &apos;%3&apos; で呼び出しましたが、&apos;%1&apos; の引数が不足しています。</translation>
+    </message>
+    <message>
+        <source>Current method argument calling &apos;%1&apos; with arguments &apos;%2&apos; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
+        <translation>&apos;%1&apos; の呼び出し時に method 引数の値として &apos;%2&apos; はサポートされていません。set, remove, add_array_value, remove_array_value を使用してください。</translation>
     </message>
 </context>
 <context>
@@ -2073,6 +1925,33 @@ needs to be less than 255 characters.</source>
     </message>
 </context>
 <context>
+    <name>QInstaller::TestRepository</name>
+    <message>
+        <source>Empty repository URL.</source>
+        <translation>リポジトリの URL が空です。</translation>
+    </message>
+    <message>
+        <source>URL scheme not supported: %1 (%2).</source>
+        <translation>この URL スキームはサポートしてません: %1 (%2)</translation>
+    </message>
+    <message>
+        <source>Got a timeout while testing: &apos;%1&apos;</source>
+        <translation>テスト中にタイムアウトが発生しました: &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Could not parse Updates.xml! Error: %1.</source>
+        <translation>Updates.xml を解析できませんでした! エラー: %1</translation>
+    </message>
+    <message>
+        <source>Updates.xml could not be opened for reading!</source>
+        <translation>読み込み用に Updates.xml を開けませんでした!</translation>
+    </message>
+    <message>
+        <source>Updates.xml could not be found on server!</source>
+        <translation>サーバ上に Updates.xml が見つかりませんでした!</translation>
+    </message>
+</context>
+<context>
     <name>QInstallerCreator::Archive</name>
     <message>
         <source>Could not create %1: %2</source>
@@ -2094,20 +1973,8 @@ needs to be less than 255 characters.</source>
 <context>
     <name>QObject</name>
     <message>
-        <source>Searched whole file, no marker found</source>
-        <translation>ファイル全体を検索しましたが、マーカーが見つかりませんでした</translation>
-    </message>
-    <message>
-        <source>Could not seek to %1 in file %2: %3</source>
-        <translation>ファイル %2 の %1 へシークできませんでした: %3</translation>
-    </message>
-    <message>
         <source>No marker found, stopped after %1.</source>
         <translation>マーカーが見つからなかったため、%1 で停止しました。</translation>
-    </message>
-    <message>
-        <source>No marker found, unknown exception caught.</source>
-        <translation>マーカーが見つかりませんでした。未知の例外が発生しました。</translation>
     </message>
     <message>
         <source>Cannot create zipped file for path %1: %2</source>
@@ -2192,10 +2059,6 @@ needs to be less than 255 characters.</source>
     <message>
         <source>Could not open temporary file for template %1: %2</source>
         <translation>テンプレート %1 用の一時ファイルを開けませんでした: %2</translation>
-    </message>
-    <message>
-        <source>Could not create temporary folder for template %1: %2</source>
-        <translation>テンプレート %1 用の一時フォルダを作成できませんでした: %2</translation>
     </message>
     <message>
         <source>Could not create lock file %1: %2</source>
@@ -2446,11 +2309,19 @@ needs to be less than 255 characters.</source>
         <translation>続行するにはこれらのプロセスを終了してください: %1</translation>
     </message>
     <message>
-        <source>Couldn&apos;t get authorization.</source>
+        <source>Could not create temporary directory at %1: %2</source>
+        <translation>テンプレート用の一時ディレクトリを %1 に作成できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Could not create temporary directory at %1: unknown error</source>
+        <translation>テンプレート用の一時フォルダを %1 に作成できませんでした: 未知のエラー</translation>
+    </message>
+    <message>
+        <source>Could not get authorization.</source>
         <translation>認証することができませんでした。</translation>
     </message>
     <message>
-        <source>Couldn&apos;t get authorization that is needed for continuing the installation.
+        <source>Could not get authorization that is needed for continuing the installation.
 Either abort the installation or use the fallback solution by running
 %1
 as root and then clicking ok.</source>
@@ -2459,12 +2330,243 @@ as root and then clicking ok.</source>
 %1
 を実行した後に「OK」をクリックしてください。</translation>
     </message>
+    <message>
+        <source>Failed to seek in file %1. Reason: %2.</source>
+        <translation>ファイル %1 のシークに失敗しました: %2</translation>
+    </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
         <source>Could not open settings file %1 for reading: %2</source>
         <translation>読み込み用に設定ファイル %1 を開けませんでした: %2</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsDialog</name>
+    <message>
+        <source>Settings</source>
+        <translation>設定</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation>ネットワーク</translation>
+    </message>
+    <message>
+        <source>No proxy</source>
+        <translation>プロキシを使用しない</translation>
+    </message>
+    <message>
+        <source>System proxy settings</source>
+        <translation>システムのプロキシ設定を使用する</translation>
+    </message>
+    <message>
+        <source>Manual proxy configuration</source>
+        <translation>手動でプロキシを設定する</translation>
+    </message>
+    <message>
+        <source>HTTP proxy:</source>
+        <translation>HTTP プロキシ:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>ポート:</translation>
+    </message>
+    <message>
+        <source>HTTP proxy requires authentication</source>
+        <translation>HTTP プロキシで認証が必要</translation>
+    </message>
+    <message>
+        <source>Username:</source>
+        <translation>ユーザ名:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>パスワード:</translation>
+    </message>
+    <message>
+        <source>FTP proxy:</source>
+        <translation>FTP プロキシ:</translation>
+    </message>
+    <message>
+        <source>FTP proxy requires authentication</source>
+        <translation>FTP プロキシで認証が必要</translation>
+    </message>
+    <message>
+        <source>Repositories</source>
+        <translation>リポジトリ</translation>
+    </message>
+    <message>
+        <source>Add Username and Password for authentication if needed.</source>
+        <translation>認証が必要な場合はユーザ名とパスワードを記述してください。</translation>
+    </message>
+    <message>
+        <source>Use temporary repositories only</source>
+        <translation>一時リポジトリのみを使用する</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>追加</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>削除</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation>テスト</translation>
+    </message>
+    <message>
+        <source>Show Passwords</source>
+        <translation>パスワードを表示する</translation>
+    </message>
+    <message>
+        <source>Check this to use repository during fetch.</source>
+        <translation>このリポジトリの内容を取得する場合はチェックしてください。</translation>
+    </message>
+    <message>
+        <source>Add the username to authenticate on the server.</source>
+        <translation>サーバでの認証用ユーザ名を追加してください。</translation>
+    </message>
+    <message>
+        <source>Add the password to authenticate on the server.</source>
+        <translation>サーバでの認証用パスワードを追加してください。</translation>
+    </message>
+    <message>
+        <source>The servers URL that contains a valid repository.</source>
+        <translation>有効なリポジトリを含むサーバのURLです。</translation>
+    </message>
+    <message>
+        <source>There was an error testing this repository.</source>
+        <translation>このリポジトリのテスト中にエラーが発生しました。</translation>
+    </message>
+    <message>
+        <source>Do you want to disable the tested repository?</source>
+        <translation>このテスト済みリポジトリを無効にしますか?</translation>
+    </message>
+    <message>
+        <source>Hide Passwords</source>
+        <translation>パスワードを隠す</translation>
+    </message>
+    <message>
+        <source>Use</source>
+        <translation>利用</translation>
+    </message>
+    <message>
+        <source>Username</source>
+        <translation>ユーザ名</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation>パスワード</translation>
+    </message>
+    <message>
+        <source>Repository</source>
+        <translation>リポジトリ</translation>
+    </message>
+    <message>
+        <source>Default repositories</source>
+        <translation>デフォルトリポジトリ</translation>
+    </message>
+    <message>
+        <source>Temporary repositories</source>
+        <translation>一時リポジトリ</translation>
+    </message>
+    <message>
+        <source>User defined repositories</source>
+        <translation>ユーザ定義リポジトリ</translation>
+    </message>
+</context>
+<context>
+    <name>IntroductionPageImpl</name>
+    <message>
+        <source>Package manager</source>
+        <translation>パッケージマネージャ</translation>
+    </message>
+    <message>
+        <source>Update components</source>
+        <translation>コンポーネントの更新</translation>
+    </message>
+    <message>
+        <source>Remove all components</source>
+        <translation>すべてのコンポーネントの削除</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote installation sources...</source>
+        <translation>リモートのインストール元から情報を取得しています...</translation>
+    </message>
+    <message>
+        <source>At least one valid and enabled repository required for this action to succeed.</source>
+        <translation>このアクションの実行にはひとつ以上の有効なリポジトリが必要です。</translation>
+    </message>
+    <message>
+        <source>No updates available.</source>
+        <translation>新しい更新はありません。</translation>
+    </message>
+    <message>
+        <source> Only local package management available.</source>
+        <translation> ローカルのパッケージ管理のみ利用できます。</translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation>終了</translation>
+    </message>
+</context>
+<context>
+    <name>TargetDirectoryPageImpl</name>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid folder.</source>
+        <translation>インストール先のパスは空にできません。有効なフォルダを指定してください。</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>インストール先のパスに相対パスは使用できません。絶対パスで指定してください。</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>入力したパスが長すぎます。有効なパスかどうか確認してください。</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>入力したパスは無効です。有効なドライブかどうか確認してください。</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain %1, please specify a valid folder.</source>
+        <translation>インストール先のパスに %1 は使用できません。有効なフォルダを指定してください。</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>インストール先のディレクトリあるいはそれまでのパスに非 ASCII 文字が含まれています。そのようなパスへのインストールはサポートされていません。別のディレクトリあるいはパスを選択してください。</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>エラー</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted installing in %1 is forbidden.</source>
+        <translation>インストールしたディレクトリはアンインストール時に完全に削除されるため、%1 へのインストールは許可できません。</translation>
+    </message>
+    <message>
+        <source>The folder you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>選択されたフォルダは既に存在し、インストール済みです。他のインストール先を選択してください。</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty folder for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this folder as installation might fail.
+Do you want to continue?</source>
+        <translation>既存の空ではないフォルダをインストール先に選択しました。
+このアプリケーションをアンインストールする時にはこのフォルダすべてが消去されることに注意してください。
+このフォルダへのインストールは失敗する可能性もあり推奨されません。
+インストールを継続しますか?</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>既存のファイルあるいはシンボリックリンクを選択しました。他のインストール先を選択してください。</translation>
     </message>
 </context>
 </TS>
