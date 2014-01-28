@@ -36,9 +36,9 @@ IFW_SOURCE_TREE = $$PWD
 IFW_APP_PATH = $$IFW_BUILD_TREE/bin
 IFW_LIB_PATH = $$IFW_BUILD_TREE/lib
 
-RCC = $$cleanPath($$toNativeSeparators($$[QT_INSTALL_BINS]/rcc))
-LRELEASE = $$cleanPath($$toNativeSeparators($$[QT_INSTALL_BINS]/lrelease))
-QMAKE_BINARY = $$cleanPath($$toNativeSeparators($$[QT_INSTALL_BINS]/qmake))
+RCC = $$toNativeSeparators($$cleanPath($$[QT_INSTALL_BINS]/rcc))
+LRELEASE = $$toNativeSeparators($$cleanPath($$[QT_INSTALL_BINS]/lrelease))
+QMAKE_BINARY = $$toNativeSeparators($$cleanPath($$[QT_INSTALL_BINS]/qmake))
 
 win32:RCC = $${RCC}.exe
 win32:LRELEASE = $${LRELEASE}.exe
