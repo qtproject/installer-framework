@@ -1,3 +1,12 @@
+1.5.1
+- The checkupdates option handles no-network situations better. (QTIFW-431)
+- Fixed random crash while accessing arguments.
+- Fixed I18N on Windows.
+- Qt5 compatibility fixes.
+- Updated translations.
+
+Thanks go to Takumi Asaki for contributions.
+
 1.5.0
 - Fixed generation of random temp directory name. (QTIFW-427)
 - Now reuses http proxy settings for https.
