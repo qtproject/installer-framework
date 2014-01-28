@@ -61,14 +61,12 @@ struct Data
 {
     Data()
         : file(0), observer(0) {}
-    Data(QFile *f, FileTaskObserver *o)
-        : file(f), observer(o) {}
-    Data(QFile *f, FileTaskObserver *o, const QByteArray &e)
-        : file(f), observer(o), expectedCheckSum(e)
+    Data(QFile *f, FileTaskObserver *o, const FileTaskItem &fti)
+        : file(f), observer(o), taskItem(fti)
     {}
     QFile *file;
     FileTaskObserver *observer;
-    QByteArray expectedCheckSum;
+    FileTaskItem taskItem;
 };
 
 class Downloader : public QObject
@@ -81,7 +79,7 @@ public:
     ~Downloader();
 
     void download(QFutureInterface<FileTaskResult> &fi, const QList<FileTaskItem> &items,
-        const QAuthenticator &authenticator, QNetworkProxyFactory *networkProxyFactory);
+        QNetworkProxyFactory *networkProxyFactory);
 
 signals:
     void finished();
@@ -106,7 +104,6 @@ private:
     int m_finished;
     QNetworkAccessManager m_nam;
     QList<FileTaskItem> m_items;
-    QAuthenticator m_authenticator;
     QHash<QNetworkReply*, Data> m_downloads;
     QMultiHash<QNetworkReply*, QUrl> m_redirects;
 };

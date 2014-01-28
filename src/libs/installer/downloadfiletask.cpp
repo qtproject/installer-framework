@@ -75,11 +75,10 @@ Downloader::~Downloader()
 }
 
 void Downloader::download(QFutureInterface<FileTaskResult> &fi, const QList<FileTaskItem> &items,
-    const QAuthenticator &authenticator, QNetworkProxyFactory *networkProxyFactory)
+    QNetworkProxyFactory *networkProxyFactory)
 {
     m_items = items;
     m_futureInterface = &fi;
-    m_authenticator = authenticator;
 
     fi.reportStarted();
     fi.setExpectedResultCount(items.count());
@@ -173,8 +172,8 @@ void Downloader::onFinished(QNetworkReply *reply)
                 delete data.file;
                 delete data.observer;
 
-                FileTaskItem taskItem(url.toString(), filename);
-                taskItem.insert(TaskRole::Checksum, data.expectedCheckSum);
+                FileTaskItem taskItem = data.taskItem;
+                taskItem.insert(TaskRole::SourceFile, url.toString());
                 QNetworkReply *const redirectReply = startDownload(taskItem);
 
                 foreach (const QUrl &redirect, redirects)
@@ -199,14 +198,15 @@ void Downloader::onFinished(QNetworkReply *reply)
         data.observer->addBytesTransfered(ba.size());
         data.observer->addCheckSumData(ba.data(), ba.size());
     }
-    m_futureInterface->reportResult(FileTaskResult(filename, data.observer->checkSum()));
 
-    if (!data.expectedCheckSum.isEmpty()) {
-        if (data.expectedCheckSum != data.observer->checkSum().toHex()) {
+    const QByteArray expectedCheckSum = data.taskItem.value(TaskRole::Checksum).toByteArray();
+    if (!expectedCheckSum.isEmpty()) {
+        if (expectedCheckSum != data.observer->checkSum().toHex()) {
             m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Checksum"
                 " mismatch detected '%1'.").arg(reply->url().toString())));
         }
     }
+    m_futureInterface->reportResult(FileTaskResult(filename, data.observer->checkSum(), data.taskItem));
 
     data.file->close();
     delete data.file;
@@ -259,14 +259,15 @@ void Downloader::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 
 void Downloader::onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
-    Q_UNUSED(reply)
-    if (!authenticator)
+    if (!authenticator || !reply || !m_downloads.contains(reply))
         return;
 
-    if (!m_authenticator.user().isEmpty()) {
-        authenticator->setUser(m_authenticator.user());
-        authenticator->setPassword(m_authenticator.password());
-        m_authenticator = QAuthenticator(); // clear so we fail on next call
+    FileTaskItem *item = &m_downloads[reply].taskItem;
+    const QAuthenticator auth = item->value(TaskRole::Authenticator).value<QAuthenticator>();
+    if (!auth.user().isEmpty()) {
+        authenticator->setUser(auth.user());
+        authenticator->setPassword(auth.password());
+        item->insert(TaskRole::Authenticator, QVariant()); // clear so we fail on next call
     } else {
         m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Could not "
             "authenticate using the provided credentials. Source: '%1'.").arg(reply->url()
@@ -314,8 +315,7 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
     }
 
     QNetworkReply *reply = m_nam.get(QNetworkRequest(source));
-    m_downloads.insert(reply, Data(file.take(), new FileTaskObserver(QCryptographicHash::Sha1),
-        item.value(TaskRole::Checksum).toByteArray()));
+    m_downloads.insert(reply, Data(file.take(), new FileTaskObserver(QCryptographicHash::Sha1), item));
 
     connect(reply, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,
@@ -373,9 +373,16 @@ void DownloadFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
     QEventLoop el;
     Downloader downloader;
     connect(&downloader, SIGNAL(finished()), &el, SLOT(quit()));
-    downloader.download(fi, taskItems(), m_authenticator, (m_proxyFactory.isNull() ? 0
-        : m_proxyFactory->clone())); // Downloader takes ownership of this copy.
-    el.exec();  // That's tricky here, we run our own event loop to keep QNAM working
+
+    QList<FileTaskItem> items = taskItems();
+    if (!m_authenticator.isNull()) {
+        for (int i = 0; i < items.count(); ++i) {
+            if (items.at(i).value(TaskRole::Authenticator).isNull())
+                items[i].insert(TaskRole::Authenticator, QVariant::fromValue(m_authenticator));
+        }
+    }
+    downloader.download(fi, items, (m_proxyFactory.isNull() ? 0 : m_proxyFactory->clone()));
+    el.exec();  // That's tricky here, we need to run our own event loop to keep QNAM working.
 }
 
 }   // namespace QInstaller

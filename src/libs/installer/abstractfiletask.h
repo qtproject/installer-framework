@@ -60,6 +60,7 @@ namespace TaskRole {
 enum
 {
     Checksum,
+    TaskItem,
     SourceFile,
     TargetFile,
     UserRole = 1000
@@ -88,14 +89,16 @@ class FileTaskResult : public AbstractTaskData
 {
 public:
     FileTaskResult() {}
-    FileTaskResult(const QString &t, const QByteArray &c)
+    FileTaskResult(const QString &t, const QByteArray &c, const FileTaskItem &i)
     {
         insert(TaskRole::Checksum, c);
         insert(TaskRole::TargetFile, t);
+        insert(TaskRole::TaskItem, QVariant::fromValue(i));
     }
 
     QString target() const { return value(TaskRole::TargetFile).toString(); }
     QByteArray checkSum() const { return value(TaskRole::Checksum).toByteArray(); }
+    FileTaskItem taskItem() const { return value(TaskRole::TaskItem).value<FileTaskItem>(); }
 };
 
 class FileTaskException : public QException

@@ -46,8 +46,16 @@
 #include "kdupdaterfiledownloaderfactory.h"
 
 #include <QAuthenticator>
+Q_DECLARE_METATYPE(QAuthenticator)
 
 namespace QInstaller {
+
+namespace TaskRole {
+enum
+{
+    Authenticator = TaskRole::TargetFile + 10
+};
+}
 
 class INSTALLER_EXPORT DownloadFileTask : public AbstractFileTask
 {
