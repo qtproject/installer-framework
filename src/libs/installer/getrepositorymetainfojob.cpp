@@ -443,7 +443,7 @@ void GetRepositoryMetaInfoJob::downloadMetaInfo()
     for (int i = 0; i < m_packageNames.count(); ++i) {
         items.append(FileTaskItem(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl,
             m_packageNames.at(i), (online ? m_packageVersions.at(i) : QString()))));
-        items[i].insert(FileTaskRole::Checksum, m_packageHash.value(i).toLatin1());
+        items[i].insert(TaskRole::Checksum, m_packageHash.value(i).toLatin1());
     }
 
     QAuthenticator auth;

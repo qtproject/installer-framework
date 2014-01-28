@@ -174,7 +174,7 @@ void Downloader::onFinished(QNetworkReply *reply)
                 delete data.observer;
 
                 FileTaskItem taskItem(url.toString(), filename);
-                taskItem.insert(FileTaskRole::Checksum, data.expectedCheckSum);
+                taskItem.insert(TaskRole::Checksum, data.expectedCheckSum);
                 QNetworkReply *const redirectReply = startDownload(taskItem);
 
                 foreach (const QUrl &redirect, redirects)
@@ -315,7 +315,7 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
 
     QNetworkReply *reply = m_nam.get(QNetworkRequest(source));
     m_downloads.insert(reply, Data(file.take(), new FileTaskObserver(QCryptographicHash::Sha1),
-        item.value(FileTaskRole::Checksum).toByteArray()));
+        item.value(TaskRole::Checksum).toByteArray()));
 
     connect(reply, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,

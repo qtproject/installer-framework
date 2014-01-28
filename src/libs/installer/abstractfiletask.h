@@ -56,7 +56,7 @@
 
 namespace QInstaller {
 
-namespace FileTaskRole {
+namespace TaskRole {
 enum
 {
     Checksum,
@@ -72,16 +72,16 @@ public:
     FileTaskItem() {}
     explicit FileTaskItem(const QString &s)
     {
-        insert(FileTaskRole::SourceFile, s);
+        insert(TaskRole::SourceFile, s);
     }
     FileTaskItem(const QString &s, const QString &t)
     {
-        insert(FileTaskRole::SourceFile, s);
-        insert(FileTaskRole::TargetFile, t);
+        insert(TaskRole::SourceFile, s);
+        insert(TaskRole::TargetFile, t);
     }
 
-    QString source() const { return value(FileTaskRole::SourceFile).toString(); }
-    QString target() const { return value(FileTaskRole::TargetFile).toString(); }
+    QString source() const { return value(TaskRole::SourceFile).toString(); }
+    QString target() const { return value(TaskRole::TargetFile).toString(); }
 };
 
 class FileTaskResult : public TaskData
@@ -90,12 +90,12 @@ public:
     FileTaskResult() {}
     FileTaskResult(const QString &t, const QByteArray &c)
     {
-        insert(FileTaskRole::Checksum, c);
-        insert(FileTaskRole::TargetFile, t);
+        insert(TaskRole::Checksum, c);
+        insert(TaskRole::TargetFile, t);
     }
 
-    QString target() const { return value(FileTaskRole::TargetFile).toString(); }
-    QByteArray checkSum() const { return value(FileTaskRole::Checksum).toByteArray(); }
+    QString target() const { return value(TaskRole::TargetFile).toString(); }
+    QByteArray checkSum() const { return value(TaskRole::Checksum).toByteArray(); }
 };
 
 class FileTaskException : public QException
