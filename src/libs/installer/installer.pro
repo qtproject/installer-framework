@@ -70,7 +70,6 @@ HEADERS += packagemanagercore.h \
     installiconsoperation.h \
     selfrestartoperation.h \
     settings.h \
-    getrepositorymetainfojob.h \
     downloadarchivesjob.h \
     init.h \
     updater.h \
@@ -86,7 +85,6 @@ HEADERS += packagemanagercore.h \
     minimumprogressoperation.h \
     performinstallationform.h \
     messageboxhandler.h \
-    getrepositoriesmetainfojob.h \
     licenseoperation.h \
     component_p.h \
     qtcreator_constants.h \
@@ -112,7 +110,9 @@ HEADERS += packagemanagercore.h \
     downloadfiletask_p.h \
     unziptask.h \
     observer.h \
-    runextensions.h
+    runextensions.h \
+    metadatajob.h \
+    metadatajob_p.h
 
     SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -144,7 +144,6 @@ HEADERS += packagemanagercore.h \
     environmentvariablesoperation.cpp \
     installiconsoperation.cpp \
     selfrestartoperation.cpp \
-    getrepositorymetainfojob.cpp \
     downloadarchivesjob.cpp \
     init.cpp \
     updater.cpp \
@@ -160,7 +159,6 @@ HEADERS += packagemanagercore.h \
     minimumprogressoperation.cpp \
     performinstallationform.cpp \
     messageboxhandler.cpp \
-    getrepositoriesmetainfojob.cpp \
     licenseoperation.cpp \
     component_p.cpp \
     qprocesswrapper.cpp \
@@ -182,7 +180,8 @@ HEADERS += packagemanagercore.h \
     copyfiletask.cpp \
     downloadfiletask.cpp \
     unziptask.cpp \
-    observer.cpp
+    observer.cpp \
+    metadatajob.cpp
 
 RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc

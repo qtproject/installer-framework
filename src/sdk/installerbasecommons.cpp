@@ -116,6 +116,7 @@ IntroductionPageImpl::IntroductionPageImpl(QInstaller::PackageManagerCore *core)
 
     core->setCompleteUninstallation(core->isUninstaller());
 
+    connect(core, SIGNAL(metaJobProgress(int)), this, SLOT(onProgressChanged(int)));
     connect(core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
     connect(core, SIGNAL(coreNetworkSettingsChanged()), this, SLOT(onCoreNetworkSettingsChanged()));
 
@@ -249,6 +250,12 @@ void IntroductionPageImpl::setMessage(const QString &msg)
     m_label->setText(msg);
 }
 
+void IntroductionPageImpl::onProgressChanged(int progress)
+{
+    m_progressBar->setRange(0, 100);
+    m_progressBar->setValue(progress);
+}
+
 void IntroductionPageImpl::setErrorMessage(const QString &error)
 {
     QPalette palette;
@@ -335,6 +342,8 @@ void IntroductionPageImpl::entering()
     setErrorMessage(QString());
     setButtonText(QWizard::CancelButton, tr("Quit"));
 
+    m_progressBar->setValue(0);
+    m_progressBar->setRange(0, 0);
     PackageManagerCore *core = packageManagerCore();
     if (core->isUninstaller() ||core->isUpdater() || core->isPackageManager()) {
         showMaintenanceTools();
@@ -345,6 +354,8 @@ void IntroductionPageImpl::entering()
 
 void IntroductionPageImpl::leaving()
 {
+    m_progressBar->setValue(0);
+    m_progressBar->setRange(0, 0);
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
 }
 

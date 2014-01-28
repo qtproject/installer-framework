@@ -72,6 +72,7 @@ public:
 public Q_SLOTS:
     void onCoreNetworkSettingsChanged();
     void setMessage(const QString &msg);
+    void onProgressChanged(int progress);
     void setErrorMessage(const QString &error);
 
 Q_SIGNALS:

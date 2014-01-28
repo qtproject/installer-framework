@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,68 +38,70 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#ifndef GETREPOSITORIESMETAINFOJOB_H
-#define GETREPOSITORIESMETAINFOJOB_H
 
+#ifndef METADATAJOB_H
+#define METADATAJOB_H
+
+#include "downloadfiletask.h"
 #include "fileutils.h"
-#include "installer_global.h"
+#include "kdjob.h"
 #include "repository.h"
 
-#include "kdjob.h"
-
-#include <QtCore/QList>
-#include <QtCore/QPointer>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-
-namespace KDUpdater {
-    class FileDownloader;
-}
+#include <QFutureWatcher>
 
 namespace QInstaller {
 
-class GetRepositoryMetaInfoJob;
 class PackageManagerCore;
 
-class INSTALLER_EXPORT GetRepositoriesMetaInfoJob : public KDJob
+struct Metadata
+{
+    QString directory;
+    Repository repository;
+};
+
+class INSTALLER_EXPORT MetadataJob : public KDJob
 {
     Q_OBJECT
+    Q_DISABLE_COPY(MetadataJob)
+
+    enum Status {
+        XmlDownloadRetry,
+        XmlDownloadFailure,
+        XmlDownloadSuccess
+    };
 
 public:
-    explicit GetRepositoriesMetaInfoJob(PackageManagerCore *core);
+    explicit MetadataJob(QObject *parent = 0);
+    ~MetadataJob();
 
-    QStringList temporaryDirectories() const;
-    QStringList releaseTemporaryDirectories() const;
-    Repository repositoryForTemporaryDirectory(const QString &tmpDir) const;
+    QList<Metadata> metadata() const { return m_metadata.values(); }
+    Repository repositoryForDirectory(const QString &directory) const;
+    void setPackageManagerCore(PackageManagerCore *core) { m_core = core; }
 
-    int numberOfRetrievedRepositories() const;
+private slots:
+    void doStart();
+    void doCancel();
 
-    int silentRetries() const;
-    void setSilentRetries(int retries);
-
-    void reset();
-    bool isCanceled() const;
-
-private Q_SLOTS:
-    /* reimp */ void doStart();
-    /* reimp */ void doCancel();
-
-    void fetchNextRepo();
-    void jobFinished(KDJob*);
+    void xmlTaskFinished();
+    void unzipTaskFinished();
+    void metadataTaskFinished();
+    void progressChanged(int progress);
 
 private:
-    bool m_canceled;
-    int m_silentRetries;
-    bool m_haveIgnoredError;
+    void reset();
+    Status parseUpdatesXml(const QList<FileTaskResult> &results);
+
+private:
     PackageManagerCore *m_core;
 
-    QString m_errorString;
-    QList<Repository> m_repositories;
-    mutable TempDirDeleter m_tempDirDeleter;
-    QPointer<GetRepositoryMetaInfoJob> m_job;
-    QHash<QString, Repository> m_repositoryByTemporaryDirectory;
+    QList<FileTaskItem> m_packages;
+    TempDirDeleter m_tempDirDeleter;
+    QHash<QString, Metadata> m_metadata;
+    QFutureWatcher<FileTaskResult> m_xmlTask;
+    QFutureWatcher<FileTaskResult> m_metadataTask;
+    QHash<QFutureWatcher<void> *, QObject*> m_unzipTasks;
 };
 
 }   // namespace QInstaller
 
-#endif // GETREPOSITORIESMETAINFOJOB_H
+#endif  // METADATAJOB_H

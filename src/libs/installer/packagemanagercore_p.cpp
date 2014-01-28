@@ -207,7 +207,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_updaterApplication(new DummyConfigurationInterface)
     , m_FSEngineClientHandler(0)
     , m_core(core)
-    , m_repoMetaInfoJob(0)
     , m_updates(false)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
@@ -235,7 +234,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_performedOperationsOld(performedOperations)
     , m_dependsOnLocalInstallerBinary(false)
     , m_core(core)
-    , m_repoMetaInfoJob(0)
     , m_updates(false)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
@@ -650,14 +648,13 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
         m_updaterApplication.updateSourcesInfo()->setModified(false);
     }
 
-    if (!m_repoMetaInfoJob) {
-        m_repoMetaInfoJob = new GetRepositoriesMetaInfoJob(m_core);
-        m_repoMetaInfoJob->setAutoDelete(false);
-        connect(m_repoMetaInfoJob, SIGNAL(infoMessage(KDJob*, QString)), this,
-            SLOT(infoMessage(KDJob*, QString)));
-        connect(m_repoMetaInfoJob, SIGNAL(progress(KDJob *, quint64, quint64)), this,
-            SLOT(infoProgress(KDJob *, quint64, quint64)));
-    }
+    m_metadataJob.disconnect();
+    m_metadataJob.setAutoDelete(false);
+    m_metadataJob.setPackageManagerCore(m_core);
+    connect(&m_metadataJob, SIGNAL(infoMessage(KDJob*, QString)), this,
+        SLOT(infoMessage(KDJob*, QString)));
+    connect(&m_metadataJob, SIGNAL(progress(KDJob *, quint64, quint64)), this,
+        SLOT(infoProgress(KDJob *, quint64, quint64)));
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 }
 
@@ -2174,21 +2171,21 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
     m_repoFetched = false;
     m_updateSourcesAdded = false;
 
-    m_repoMetaInfoJob->reset();
     try {
-        m_repoMetaInfoJob->start();
-        m_repoMetaInfoJob->waitForFinished();
+        m_metadataJob.start();
+        m_metadataJob.waitForFinished();
     } catch (Error &error) {
-        setStatus(PackageManagerCore::Failure, tr("Could not retrieve meta information: %1").arg(error.message()));
+        setStatus(PackageManagerCore::Failure, tr("Could not retrieve meta information: %1")
+            .arg(error.message()));
         return m_repoFetched;
     }
 
-    if (m_repoMetaInfoJob->isCanceled() || m_repoMetaInfoJob->error() != KDJob::NoError) {
-        switch (m_repoMetaInfoJob->error()) {
+    if (m_metadataJob.error() != KDJob::NoError) {
+        switch (m_metadataJob.error()) {
             case QInstaller::UserIgnoreError:
                 break;  // we can simply ignore this error, the user knows about it
             default:
-                setStatus(PackageManagerCore::Failure, m_repoMetaInfoJob->errorString());
+                setStatus(PackageManagerCore::Failure, m_metadataJob.errorString());
                 return m_repoFetched;
         }
     }
@@ -2202,7 +2199,8 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
     if (m_updateSourcesAdded)
         return m_updateSourcesAdded;
 
-    if (m_repoMetaInfoJob->temporaryDirectories().isEmpty()) {
+    const QList<Metadata> metadata = m_metadataJob.metadata();
+    if (metadata.isEmpty()) {
         m_updateSourcesAdded = true;
         return m_updateSourcesAdded;
     }
@@ -2211,7 +2209,8 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
     m_updaterApplication.updateSourcesInfo()->refresh();
     if (isInstaller()) {
         m_updaterApplication.addUpdateSource(m_data.settings().applicationName(),
-            m_data.settings().applicationName(), QString(), QUrl(QLatin1String("resource://metadata/")), 0);
+            m_data.settings().applicationName(), QString(),
+            QUrl(QLatin1String("resource://metadata/")), 0);
         m_updaterApplication.updateSourcesInfo()->setModified(false);
     }
 
@@ -2219,16 +2218,15 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
     m_updateSourcesAdded = false;
 
     const QString &appName = m_data.settings().applicationName();
-    const QStringList tempDirs = m_repoMetaInfoJob->temporaryDirectories();
-    foreach (const QString &tmpDir, tempDirs) {
+    foreach (const Metadata &data, metadata) {
         if (statusCanceledOrFailed())
             return false;
 
-        if (tmpDir.isEmpty())
+        if (data.directory.isEmpty())
             continue;
 
         if (parseChecksum) {
-            const QString updatesXmlPath = tmpDir + QLatin1String("/Updates.xml");
+            const QString updatesXmlPath = data.directory + QLatin1String("/Updates.xml");
             QFile updatesFile(updatesXmlPath);
             try {
                 openForRead(&updatesFile, updatesFile.fileName());
@@ -2253,7 +2251,8 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             if (!checksum.isNull())
                 m_core->setTestChecksum(checksum.toElement().text().toLower() == scTrue);
         }
-        m_updaterApplication.addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(tmpDir), 1);
+        m_updaterApplication.addUpdateSource(appName, appName, QString(),
+            QUrl::fromLocalFile(data.directory), 1);
     }
     m_updaterApplication.updateSourcesInfo()->setModified(false);
 

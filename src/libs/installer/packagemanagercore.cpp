@@ -49,7 +49,6 @@
 #include "errors.h"
 #include "fsengineclient.h"
 #include "globals.h"
-#include "getrepositoriesmetainfojob.h"
 #include "messageboxhandler.h"
 #include "packagemanagerproxyfactory.h"
 #include "progresscoordinator.h"
@@ -465,8 +464,7 @@ void PackageManagerCore::setCompleteUninstallation(bool complete)
  */
 void PackageManagerCore::cancelMetaInfoJob()
 {
-    if (d->m_repoMetaInfoJob)
-        d->m_repoMetaInfoJob->cancel();
+    d->m_metadataJob.cancel();
 }
 
 /*!
@@ -2093,8 +2091,9 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
             lastLocalPath = localPath;
         }
 
-        if (d->m_repoMetaInfoJob) {
-            const Repository &repo = d->m_repoMetaInfoJob->repositoryForTemporaryDirectory(localPath);
+
+        const Repository repo = d->m_metadataJob.repositoryForDirectory(localPath);
+        if (repo.isValid()) {
             component->setRepositoryUrl(repo.url());
             component->setValue(QLatin1String("username"), repo.username());
             component->setValue(QLatin1String("password"), repo.password());

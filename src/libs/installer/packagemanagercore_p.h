@@ -42,7 +42,7 @@
 #ifndef PACKAGEMANAGERCORE_P_H
 #define PACKAGEMANAGERCORE_P_H
 
-#include "getrepositoriesmetainfojob.h"
+#include "metadatajob.h"
 #include "packagemanagercore.h"
 #include "packagemanagercoredata.h"
 #include "qinstallerglobal.h"
@@ -95,6 +95,7 @@ class PackageManagerCorePrivate : public QObject
 {
     Q_OBJECT
     friend class PackageManagerCore;
+    Q_DISABLE_COPY(PackageManagerCorePrivate)
 
 public:
     enum OperationType {
@@ -261,7 +262,7 @@ private:
 
 private:
     PackageManagerCore *m_core;
-    GetRepositoriesMetaInfoJob *m_repoMetaInfoJob;
+    MetadataJob m_metadataJob;
 
     bool m_updates;
     bool m_repoFetched;
