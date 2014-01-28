@@ -51,7 +51,7 @@ namespace QInstaller {
 class TaskData
 {
 public:
-    TaskData() {}
+    TaskData() { qRegisterMetaType<QInstaller::TaskData>();  }
     QVariant value(int role) const { return m_data.value(role); }
     void insert(int key, const QVariant &value) { m_data.insert(key, value); }
 
@@ -72,5 +72,7 @@ public:
 };
 
 }   // namespace QInstaller
+
+Q_DECLARE_METATYPE(QInstaller::TaskData)
 
 #endif // ABSTRACTTASK_H
