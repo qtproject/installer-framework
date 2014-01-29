@@ -3,10 +3,9 @@
 }
 IFW_PRI_INCLUDED = 1
 
-IFW_VERSION = 1.5.0
+IFW_VERSION = 1.5.1
 
 IFW_REPOSITORY_FORMAT_VERSION = 1.0.0
-
 IFW_NEWLINE = $$escape_expand(\\n\\t)
 
 defineReplace(toNativeSeparators) {
