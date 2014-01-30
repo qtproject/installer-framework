@@ -66,7 +66,7 @@ enum
 };
 }
 
-class FileTaskItem : public TaskData
+class FileTaskItem : public AbstractTaskData
 {
 public:
     FileTaskItem() {}
@@ -84,7 +84,7 @@ public:
     QString target() const { return value(TaskRole::TargetFile).toString(); }
 };
 
-class FileTaskResult : public TaskData
+class FileTaskResult : public AbstractTaskData
 {
 public:
     FileTaskResult() {}

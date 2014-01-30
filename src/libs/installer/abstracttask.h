@@ -48,16 +48,19 @@
 
 namespace QInstaller {
 
-class TaskData
+class AbstractTaskData
 {
 public:
-    TaskData() { qRegisterMetaType<QInstaller::TaskData>();  }
+    AbstractTaskData() {}
+    virtual ~AbstractTaskData() = 0;
+
     QVariant value(int role) const { return m_data.value(role); }
     void insert(int key, const QVariant &value) { m_data.insert(key, value); }
 
 private:
     QHash<int, QVariant> m_data;
 };
+inline AbstractTaskData::~AbstractTaskData() {}
 
 template <typename T>
 class AbstractTask : public QObject
@@ -72,7 +75,5 @@ public:
 };
 
 }   // namespace QInstaller
-
-Q_DECLARE_METATYPE(QInstaller::TaskData)
 
 #endif // ABSTRACTTASK_H
