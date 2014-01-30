@@ -75,10 +75,6 @@ private slots:
             QSignalSpy progress(&watcher, SIGNAL(progressValueChanged(int)));
 
             watcher.setFuture(QtConcurrent::run(&CopyFileTask::doTask, &fileTask));
-            QTest::qWait(10); // Spin the event loop to deliver queued signals.
-
-            QCOMPARE(started.count(), 1);
-            QCOMPARE(finished.count(), 0);
 
             watcher.waitForFinished();
             QTest::qWait(10); // Spin the event loop to deliver queued signals.
@@ -113,10 +109,6 @@ private slots:
             QSignalSpy progress(&watcher, SIGNAL(progressValueChanged(int)));
 
             watcher.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, &fileTask));
-            QTest::qWait(10); // Spin the event loop to deliver queued signals.
-
-            QCOMPARE(started.count(), 1);
-            QCOMPARE(finished.count(), 0);
 
             watcher.waitForFinished();
             QTest::qWait(10); // Spin the event loop to deliver queued signals.
