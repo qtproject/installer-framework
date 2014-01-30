@@ -54,7 +54,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#ifdef Q_OS_LINUX
+#ifdef Q_OS_UNIX
 #include <unistd.h>
 #endif
 
