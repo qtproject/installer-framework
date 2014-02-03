@@ -15,7 +15,8 @@ Notes
 - To build an installer, it is advised to use a statically linked Qt. See the
   documentation at
   http://doc-snapshot.qt-project.org/qtifw-master/ifw-getting-started.html
-- At the moment, only building with Qt 4.8.x is supported.
+- At the moment, building with Qt 4.8.x and Qt 5.2.x is supported.
+- Qt IFW 2.0 and on will only support building with Qt 5.
 
 
 Getting Help
