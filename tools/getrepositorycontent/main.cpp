@@ -394,13 +394,11 @@ int main(int argc, char *argv[])
     QHashIterator<QString, ComponentData> itComponentData(componentDataHash);
     while (itComponentData.hasNext()) {
         itComponentData.next();
-        if (itComponentData.value().m_script.isEmpty())
-            continue;
 
         QString componentScript = QFileInfo(QString::fromLatin1("%1/%2/meta/%3").arg(
             packageDirectoryTarget, itComponentData.key(), itComponentData.value().m_script)).absoluteFilePath();
 
-        QString packagesXml = QFileInfo(QString::fromLatin1("%1/%2/meta/packages.xml").arg(
+        QString packagesXml = QFileInfo(QString::fromLatin1("%1/%2/meta/package.xml").arg(
             packageDirectoryTarget, itComponentData.key())).absoluteFilePath();
 
         QFile packagesXmlFile(packagesXml);
@@ -428,7 +426,7 @@ int main(int argc, char *argv[])
         QDir().mkpath(dataRepositoryPath);
 
         QFile componentScriptFile(componentScript);
-        if (!componentScriptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        if (!itComponentData.value().m_script.isEmpty() && !componentScriptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
             qDebug() << QString::fromLatin1("Can not read %1 %2").arg(componentScript, componentScriptFile.errorString());
             continue;
         }
