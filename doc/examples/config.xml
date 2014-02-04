@@ -5,6 +5,8 @@
     <Title>Some Application Setup</Title>
     <Publisher>Your Company</Publisher>
     <ProductUrl>http://www.your-fantastic-company.com</ProductUrl>
+    <InstallerWindowIcon>installericon</InstallerWindowIcon>
+    <InstallerApplicationIcon>installericon</InstallerApplicationIcon>
     <Logo>logo.png</Logo>
     <Watermark>watermark.png</Watermark>
     <RunProgram></RunProgram>
@@ -13,7 +15,6 @@
     <StartMenuDir>Some Application Entry Dir</StartMenuDir>
     <UninstallerName>SDKMaintenanceTool</UninstallerName>
     <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
-    <Icon>installericon</Icon>
     <Background>background.png</Background>
 
     <!-- @homeDir@ and @rootDir@ are some of the supported vars -->
