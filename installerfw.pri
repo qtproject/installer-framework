@@ -11,6 +11,9 @@ IFW_NEWLINE = $$escape_expand(\\n\\t)
 defineReplace(toNativeSeparators) {
     return($$replace(1, /, $$QMAKE_DIR_SEP))
 }
+defineReplace(fromNativeSeparators) {
+    return($$replace(1, \\\\, /))
+}
 
 defineReplace(cleanPath) {
     win32:1 ~= s|\\\\|/|g
