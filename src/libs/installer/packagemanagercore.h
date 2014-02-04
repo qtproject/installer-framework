@@ -138,6 +138,7 @@ public:
         const QString &workingDirectory = QString()) const;
     Q_INVOKABLE QString environmentVariable(const QString &name) const;
 
+    Q_INVOKABLE bool operationExists(const QString &name);
     Q_INVOKABLE bool performOperation(const QString &name, const QStringList &arguments);
 
     Q_INVOKABLE static bool versionMatches(const QString &version, const QString &requirement);
