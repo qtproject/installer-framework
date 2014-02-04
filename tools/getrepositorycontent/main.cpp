@@ -69,10 +69,11 @@ static void printUsage()
     const QString appName = QFileInfo( QCoreApplication::applicationFilePath() ).fileName();
     std::cout << "Usage: " << qPrintable(appName)
         << " --url <repository_url> --repository <empty_repository_dir> --packages <empty_packages_dir>" << std::endl;
-    std::cout << "  --url           URL to fetch all the content from." << std::endl;
-    std::cout << "  --repository    Target directory for the repository content." << std::endl;
-    std::cout << "  --packages      The packages target directory where it creates the needed content to create new installers or repositories." << std::endl;
-    std::cout << "  --clean         Removes all the content if there is an existing repository or packages dir" << std::endl;
+    std::cout << "  --url              URL to fetch all the content from." << std::endl;
+    std::cout << "  --repository       Target directory for the repository content." << std::endl;
+    std::cout << "  --packages         The packages target directory where it creates the needed content to create new installers or repositories." << std::endl;
+    std::cout << "  --clean            Removes all the content if there is an existing repository or packages dir" << std::endl;
+    std::cout << "  --only-metacontent Download only the meta content of the components." << std::endl;
 
     std::cout << "Example:" << std::endl;
     std::cout << "  " << qPrintable(appName) << " --url http://www.example.com/repository/" <<
@@ -196,8 +197,12 @@ QHash<QString, ComponentData> downLoadRepository(const QString &repositoryUrl, c
                     QStringList tDownloadList = packageUpdateEntry.toElement().text().split(
                         QInstaller::commaRegExp(), QString::SkipEmptyParts);
                     foreach (const QString &download, tDownloadList) {
-                        currentComponentData.m_downloadDownloadableArchives.append(
-                            currentComponentData.m_version + download);
+                        if (qApp->arguments().contains(QLatin1String("--only-metacontent"))) {
+                            qDebug() << "Skip download: <url> + " << currentPackageName + QLatin1String("/") + currentComponentData.m_version + download;
+                        } else {
+                            currentComponentData.m_downloadDownloadableArchives.append(
+                                currentComponentData.m_version + download);
+                        }
                         currentComponentData.m_downloadDownloadableArchives.append(
                             currentComponentData.m_version + download + QLatin1String(".sha1"));
                     }
@@ -283,6 +288,8 @@ int main(int argc, char *argv[])
         if (*itArgument == QString::fromLatin1("-h") || *itArgument == QString::fromLatin1("--help")) {
             printUsage();
             return 0;
+        } else if (*itArgument == QString::fromLatin1("--only-metacontent")) {
+            // just consume that argument, it will be used later via qApp->arguments
         } else if (*itArgument == QString::fromLatin1("--clean")) {
             clean = true;
         } else if (*itArgument == QString::fromLatin1("-u") || *itArgument == QString::fromLatin1("--url")) {
