@@ -377,17 +377,17 @@
     \code
     -packages
         - com.vendor.root
-        - data
-        - meta
-    - com.vendor.root.component1
-        - data
-        - meta
-    - com.vendor.root.component1.subcomponent1
-        - data
-        - meta
-    - com.vendor.root.component2
-        - data
-        - meta
+            - data
+            - meta
+        - com.vendor.root.component1
+            - data
+            - meta
+        - com.vendor.root.component1.subcomponent1
+            - data
+            - meta
+        - com.vendor.root.component2
+            - data
+            - meta
     \endcode
 
     \section1 Meta Directory
