@@ -183,7 +183,7 @@
 
     \o On Linux or Mac OS X:
     \code
-    ../../bin/binarycreator -c config\config.xml -p packages YourInstaller
+    ../../bin/binarycreator -c config/config.xml -p packages YourInstaller
     \endcode
 
     \endlist

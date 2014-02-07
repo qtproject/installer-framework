@@ -1633,6 +1633,18 @@ QString PackageManagerCore::environmentVariable(const QString &name) const
 #endif
 }
 
+bool PackageManagerCore::operationExists(const QString &name)
+{
+    static QSet<QString> existingOperations;
+    if (existingOperations.contains(name))
+        return true;
+    QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(name));
+    if (!op.data())
+        return false;
+    existingOperations.insert(name);
+    return true;
+}
+
 /*!
     \qmlmethod boolean QInstaller::performOperation(string name, stringlist arguments)
 

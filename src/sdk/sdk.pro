@@ -12,7 +12,7 @@ isEqual(QT_MAJOR_VERSION, 5) {
 
 DESTDIR = $$IFW_APP_PATH
 
-if (exists($$LRELEASE)) {
+exists($$LRELEASE) {
     QT_LANGUAGES = qt_de qt_ru qt_zh_CN qt_ja
     IB_LANGUAGES = de_de en_us ru_ru zh_cn ja_jp
     defineReplace(prependAll) {
@@ -56,7 +56,7 @@ if (exists($$LRELEASE)) {
         updateqm.CONFIG += no_link target_predeps
         QMAKE_EXTRA_COMPILERS += updateqm
 
-        if (exists($$RCC)) {
+        exists($$RCC) {
             RESOURCE_IB_TRANSLATIONS = $$prependAll(IB_LANGUAGES, $$PWD/translations/,.qm)
             RESOURCE_QT_TRANSLATIONS = $$prependAll(QT_LANGUAGES, $$PWD/translations/,.qm)
             RESOURCE = $$PWD/installerbase.qrc

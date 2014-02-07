@@ -384,17 +384,17 @@
     \code
     -packages
         - com.vendor.root
-        - data
-        - meta
-    - com.vendor.root.component1
-        - data
-        - meta
-    - com.vendor.root.component1.subcomponent1
-        - data
-        - meta
-    - com.vendor.root.component2
-        - data
-        - meta
+            - data
+            - meta
+        - com.vendor.root.component1
+            - data
+            - meta
+        - com.vendor.root.component1.subcomponent1
+            - data
+            - meta
+        - com.vendor.root.component2
+            - data
+            - meta
     \endcode
 
     \section1 Meta Directory
@@ -732,7 +732,7 @@
     The \c repogen tool expects the following parameters in the following order:
 
     \code
-    repogen.exe -p <package_directory> -c <config_file> repository <repository_directory>
+    repogen.exe -p <package_directory> <repository_directory>
     \endcode
 
     When the repository has been created, you can upload it anywhere. You must
@@ -750,10 +750,6 @@
             \o  Use \c directory as the \l{Package Directory Structure}
                 {package directory}.
                 Defaults to the current working directory.
-        \row
-            \o  -c or --config file
-            \o  Use \c file as the \l{Configuration File}
-                {config file}.
         \row
             \o  repository directory
             \o  Target directory to generate the repository. Must not yet exist.

@@ -370,9 +370,13 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
         foreach (QInstaller::Component *component, components) {
             if (statusCanceledOrFailed())
                 return false;
-
             if (loadScript)
                 component->loadComponentScript();
+        }
+        // now we can preselect components in the tree
+        foreach (QInstaller::Component *component, components) {
+            if (statusCanceledOrFailed())
+                return false;
 
             // set the checked state for all components without child (means without tristate)
             if (component->isCheckable() && !component->isTristate()) {
