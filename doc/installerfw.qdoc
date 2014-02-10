@@ -756,9 +756,6 @@
                 repository. The packages are not included in the installer
                 binary.
         \row
-            \o  -u updateurl
-            \o  Receive updates from another repository.
-        \row
             \o  --update
             \o  Place only the specified packages in the repository, without
                 their dependencies. Make sure to also add the Updates.xml from
@@ -796,14 +793,14 @@
 
     Use the \c repogen tool to create online repositories of all packages of one package directory:
 
-    repogen.exe -p <package_directory> -c <config_directory>\<config_file> repository <repository_directory>
+    repogen.exe -p <package_directory> <repository_directory>
 
     For example, to create a repository that contains only org.qt-project.sdk.qt and
     org.qt-project.sdk.qtcreator, enter the following
     command:
 
     \code
-    repogen.exe -p packages -c installer-config\config.xml -i org.qt-project.sdk.qt,org.qt-project.sdk.qtcreator repository
+    repogen.exe -p packages -i org.qt-project.sdk.qt,org.qt-project.sdk.qtcreator repository
     \endcode
 
     When the repository has been created, upload it to a web server. You must
