@@ -938,10 +938,10 @@
         \o  Copy the updated content to the package directory.
 
         \o  Increase the value of the \a{Version} setting for the updated
-            components in the config.xml file.
+            components in the package.xml file.
 
         \o  Use the \c repogen tool to recreate the online repository with the
-            updated contents and to generate the update.xml file in the root
+            updated contents and to generate the Updates.xml file in the root
             directory of the repository.
 
         \o  Upload the repository to the web server.
@@ -952,13 +952,13 @@
 
     \section1 Configuring Updates
 
-    The installer downloads the Update.xml file on
+    The installer downloads the Updates.xml file on
     startup and compares the installed version with the version in the file. If
     the online version number in the file is greater than the local one, the
     installer displays it in the list of available updates.
 
     Increase the value of the \a{Version} setting for the component in the
-    config.xml file.
+    package.xml file.
 
     \section1 Recreating Repositories
 
