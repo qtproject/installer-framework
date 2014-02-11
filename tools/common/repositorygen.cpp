@@ -446,8 +446,14 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
                 "path element right before the 'meta' ('%2').").arg(fileInfo.absoluteFilePath(), it->fileName());
         }
 
-        const QString releaseDate = packageElement.firstChildElement(QLatin1String("ReleaseDate")).text();
-        if (releaseDate.isEmpty() || (!QDate::fromString(releaseDate, Qt::ISODate).isValid())) {
+        QString releaseDate = packageElement.firstChildElement(QLatin1String("ReleaseDate")).text();
+        if (releaseDate.isEmpty()) {
+            qWarning("Release date for '%s' is empty! Using the current date instead.",
+                qPrintable(fileInfo.absoluteFilePath()));
+            releaseDate = QDate::currentDate().toString(Qt::ISODate);
+        }
+
+        if (!QDate::fromString(releaseDate, Qt::ISODate).isValid()) {
             if (ignoreInvalidPackages)
                 continue;
             throw QInstaller::Error(QString::fromLatin1("Release date for '%1' is invalid! <ReleaseDate>%2"
