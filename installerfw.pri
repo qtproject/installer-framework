@@ -99,6 +99,7 @@ isEqual(QT_MAJOR_VERSION, 4) {
         QTPLUGIN += qico qtaccessiblewidgets
         QT += concurrent network script xml
     }
+    CONFIG += no_private_qt_headers_warning
 }
 
 CONFIG += depend_includepath
