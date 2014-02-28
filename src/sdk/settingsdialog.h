@@ -53,14 +53,14 @@ QT_BEGIN_NAMESPACE
 class QAuthenticator;
 class QLocale;
 class QVariant;
+
+namespace Ui {
+    class SettingsDialog;
+}
 QT_END_NAMESPACE
 
 namespace QInstaller {
     class PackageManagerCore;
-}
-
-namespace Ui {
-    class SettingsDialog;
 }
 
 // -- PasswordDelegate
