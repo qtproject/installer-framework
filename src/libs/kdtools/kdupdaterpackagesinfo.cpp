@@ -55,7 +55,7 @@ using namespace KDUpdater;
    \brief Provides access to information about packages installed on the application side.
 
    This class parses the XML package file specified via the setFileName() method and
-   provides access to the the information defined within the package file through an
+   provides access to the information defined within the package file through an
    easy to use API. You can:
    \li get application name via the \ref applicationName() method
    \li get application version via the \ref applicationVersion() method

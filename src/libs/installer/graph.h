@@ -144,7 +144,7 @@ private:
         foreach (const T &adjacency, edges(node))
             visit(adjacency, resolvedNodes, visitedNodes);
 
-        // append this node the the ordered list
+        // append this node to the ordered list
         resolvedNodes->append(node);
     }
 

@@ -335,7 +335,7 @@
     user-readable output to several languages. To provide end users with
     localized versions of strings contained in the component scripts and user
     interfaces, create QTranslator files that the installation system loads
-    along with the the component. The installer loads the translation file that
+    along with the component. The installer loads the translation file that
     matches the current system locale. For example, if the system locale is
     German, the de_de.qm file is loaded.
 

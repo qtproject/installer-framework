@@ -53,7 +53,7 @@ _registry["HKEY_USERS"] = _winreg.HKEY_USERS
 _registry["HKEY_CURRENT_CONFIG"] = _winreg.HKEY_CURRENT_CONFIG
 
 def splitKey( key ):
-    key, seperator, subKey = key.partition( '\\' )
+    key, separator, subKey = key.partition( '\\' )
     return _registry[key], subKey
     
 def checkKey( key, value, expectedData ):
