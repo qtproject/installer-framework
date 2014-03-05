@@ -68,6 +68,15 @@ class KDTOOLS_EXPORT FileDownloaderProxyFactory : public QNetworkProxyFactory
 class KDTOOLS_EXPORT FileDownloaderFactory : public KDGenericFactory<FileDownloader>
 {
     Q_DISABLE_COPY(FileDownloaderFactory)
+    struct FileDownloaderFactoryData {
+        FileDownloaderFactoryData() : m_factory(0) {}
+        ~FileDownloaderFactoryData() { delete m_factory; }
+
+        bool m_followRedirects;
+        bool m_ignoreSslErrors;
+        QStringList m_supportedSchemes;
+        FileDownloaderProxyFactory *m_factory;
+    };
 
 public:
     static FileDownloaderFactory &instance();
@@ -77,6 +86,7 @@ public:
     void registerFileDownloader(const QString &scheme)
     {
         registerProduct<T>(scheme);
+        d->m_supportedSchemes.append(scheme);
     }
     FileDownloader *create(const QString &scheme, QObject *parent = 0) const;
 
@@ -88,11 +98,13 @@ public:
     static bool ignoreSslErrors();
     static void setIgnoreSslErrors(bool ignore);
 
+    static QStringList supportedSchemes();
+    static bool isSupportedScheme(const QString &scheme);
+
 private:
     FileDownloaderFactory();
 
 private:
-    struct FileDownloaderFactoryData;
     FileDownloaderFactoryData *d;
 };
 

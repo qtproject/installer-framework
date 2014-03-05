@@ -714,7 +714,7 @@ QString KDUpdater::ResourceFileDownloader::downloadedFileName() const
 
 void KDUpdater::ResourceFileDownloader::setDownloadedFileName(const QString &/*name*/)
 {
-    Q_ASSERT_X(false, "KDUpdater::ResourceFileDownloader::setDownloadedFileName", "Not supported!");
+    // Not supported!
 }
 
 KDUpdater::ResourceFileDownloader *KDUpdater::ResourceFileDownloader::clone(QObject *parent) const
