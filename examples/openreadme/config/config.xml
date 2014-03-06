@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Qt Installer Framework - Open ReadMe Example</Name>
+    <Version>1.0.0</Version>
+    <Title>Qt Installer Framework -  Open Readme Example</Title>
+    <Publisher>Qt-Project</Publisher>
+    <StartMenuDir>Qt Installer Framework - 'Open ReadMe' Example</StartMenuDir>
+    <TargetDir>@homeDir@/IFWOpenReadMeExample</TargetDir>
+</Installer>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Open readme</DisplayName>
+    <Description>Show checkbox asking whether to open Readme at the end</Description>
+    <ReleaseDate>2013-01-01</ReleaseDate>
+    <Version>1.0.0-1</Version>
+    <Script>installscript.qs</Script>
+    <UserInterfaces>
+        <UserInterface>readmecheckboxform.ui</UserInterface>
+    </UserInterfaces>
+</Package>
