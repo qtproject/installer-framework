@@ -1538,7 +1538,6 @@ bool PackageManagerCore::localInstallerBinaryUsed()
 QList<QVariant> PackageManagerCore::execute(const QString &program, const QStringList &arguments,
     const QString &stdIn) const
 {
-    QEventLoop loop;
     QProcessWrapper process;
 
     QString adjustedProgram = replaceVariables(program);
@@ -1547,7 +1546,6 @@ QList<QVariant> PackageManagerCore::execute(const QString &program, const QStrin
         adjustedArguments.append(replaceVariables(argument));
     QString adjustedStdIn = replaceVariables(stdIn);
 
-    connect(&process, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
     process.start(adjustedProgram, adjustedArguments,
         adjustedStdIn.isNull() ? QIODevice::ReadOnly : QIODevice::ReadWrite);
 
@@ -1559,8 +1557,7 @@ QList<QVariant> PackageManagerCore::execute(const QString &program, const QStrin
         process.closeWriteChannel();
     }
 
-    if (process.state() != QProcessWrapper::NotRunning)
-        loop.exec();
+    process.waitForFinished(-1);
 
     return QList<QVariant>() << QString::fromLatin1(process.readAllStandardOutput()) << process.exitCode();
 }
