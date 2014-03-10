@@ -868,13 +868,6 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_rejectLabel->setObjectName(QLatin1String("RejectLicenseLabel"));
     m_rejectLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
-#ifdef Q_OS_UNIX
-    QFont labelFont(font());
-    labelFont.setPixelSize(9);
-    m_acceptLabel->setFont(labelFont);
-    m_rejectLabel->setFont(labelFont);
-#endif
-
     QGridLayout *gridLayout = new QGridLayout;
     gridLayout->setColumnStretch(1, 1);
     gridLayout->addWidget(m_acceptRadioButton, 0, 0);
