@@ -174,11 +174,10 @@ static QFile *createFile(const QString &path, QIODevice::OpenMode m, QFile::Perm
  */
 static QString generateTempFileName(const QString &path)
 {
-    const QString tmp = path + QLatin1String("tmp.dsfdf.%1"); //TODO: use random suffix
-    int count = 1;
-    while (QFile::exists(tmp.arg(count)))
-        ++count;
-    return tmp.arg(count);
+    QTemporaryFile tmpfile(path);
+    tmpfile.open();
+    const QString tmp = tmpfile.fileName();
+    return tmp;
 }
 
 /*!
