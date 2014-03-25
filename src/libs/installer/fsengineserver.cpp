@@ -467,7 +467,14 @@ QByteArray FSEngineConnectionThread::handleCommand(const QString &command)
         receivedStream >> byteArray;
         returnStream << process->write(byteArray);
     }
+#ifdef Q_OS_WIN
+    else if (command == QLatin1String("QProcess::setNativeArguments")) {
+        QString arguments;
+        receivedStream >> arguments;
+        process->setNativeArguments(arguments);
+    }
 
+#endif
     // from here, QFSEngine handling
     else if (command == QLatin1String("QFSFileEngine::atEnd")) {
         returnStream << engine.atEnd();
