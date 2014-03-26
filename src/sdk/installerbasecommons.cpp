@@ -399,6 +399,19 @@ QString TargetDirectoryPageImpl::targetDirWarning() const
             "absolute path.");
     }
 
+    QDir target(targetDir());
+    target = target.canonicalPath();
+
+    if (target.isRoot()) {
+        return TargetDirectoryPageImpl::tr("As the install directory is completely deleted, installing "
+            "in %1 is forbidden.").arg(QDir::toNativeSeparators(QDir::rootPath()));
+    }
+
+    if (target == QDir::home()) {
+        return TargetDirectoryPageImpl::tr("As the install directory is completely deleted, installing "
+            "in %1 is forbidden.").arg(QDir::toNativeSeparators(QDir::homePath()));
+    }
+
     QString dir = QDir::toNativeSeparators(targetDir());
 #ifdef Q_OS_WIN
     // folder length (set by user) + maintenance tool name length (no extension) + extra padding
@@ -479,11 +492,6 @@ bool TargetDirectoryPageImpl::validatePage()
 
     const QFileInfo fi(targetDir);
     if (fi.isDir()) {
-        if (dir == QDir::root() || dir == QDir::home()) {
-            return failWithError(QLatin1String("ForbiddenTargetDirectory"), tr("As the install directory "
-                "is completely deleted installing in %1 is forbidden.").arg(QDir::rootPath()));
-        }
-
         QString fileName = packageManagerCore()->settings().uninstallerName();
 #if defined(Q_OS_MAC)
         if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
