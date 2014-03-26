@@ -383,7 +383,7 @@ bool KDSaveFile::commit(KDSaveFile::CommitMode mode)
     }
     if (mode == OverwriteExistingFile) {
         QFile tmp(backup);
-        const bool removed = !tmp.exists() || tmp.remove(backup);
+        const bool removed = !tmp.exists() || tmp.remove();
         if (!removed)
             qWarning() << "Could not remove the backup: " << tmp.errorString();
     }
