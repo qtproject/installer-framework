@@ -123,9 +123,7 @@ public:
         , m_widget(widget)
     {
         setObjectName(QLatin1String("Dynamic") + widget->objectName());
-        setPixmap(QWizard::LogoPixmap, logoPixmap());
         setPixmap(QWizard::WatermarkPixmap, QPixmap());
-        setPixmap(QWizard::BannerPixmap, QPixmap());
 
         setLayout(new QVBoxLayout);
         setSubTitle(QLatin1String(" "));
