@@ -206,11 +206,11 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
                     ::write(masterFD, pwd.data(), pwd.length());
                     ::write(masterFD, "\n", 1);
                     ::read(masterFD, buf, pwd.length() + 1);
-                }                
+                }
             }
             if (bytes == 0)
                 ::usleep(100000);
-        }        
+        }
         if (!errData.isEmpty()) {
             printError(parent, QString::fromLocal8Bit(errData.constData()));
             return false;
@@ -223,9 +223,9 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         ::close(pipedData[1]);
         if (exited)
             return exitStatus == 0;
-            
+
         return false;
-    }    
+    }
 
     // child process
     else {
@@ -234,7 +234,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         for (int sig = 1; sig < NSIG; ++sig)
             signal(sig, SIG_DFL);
         signal(SIGHUP, SIG_IGN);
-      
+
         ::setsid();
 
         ::ioctl(slaveFD, TIOCSCTTY, 1);
