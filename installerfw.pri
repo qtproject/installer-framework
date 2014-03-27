@@ -41,13 +41,17 @@ IFW_LIB_PATH = $$IFW_BUILD_TREE/lib
 
 RCC = $$toNativeSeparators($$cleanPath($$[QT_INSTALL_BINS]/rcc))
 LRELEASE = $$toNativeSeparators($$cleanPath($$[QT_INSTALL_BINS]/lrelease))
+LUPDATE = $$toNativeSeparators($$cleanPath($$[QT_INSTALL_BINS]/lupdate))
 LCONVERT = $$toNativeSeparators($$cleanPath($$[QT_INSTALL_BINS]/lconvert))
 QMAKE_BINARY = $$toNativeSeparators($$cleanPath($$[QT_INSTALL_BINS]/qmake))
 
-win32:RCC = $${RCC}.exe
-win32:LRELEASE = $${LRELEASE}.exe
-win32:LCONVERT = $${LCONVERT}.exe
-win32:QMAKE_BINARY = $${QMAKE_BINARY}.exe
+win32 {
+    RCC = $${RCC}.exe
+    LRELEASE = $${LRELEASE}.exe
+    LUPDATE = $${LUPDATE}.exe
+    LCONVERT = $${LCONVERT}.exe
+    QMAKE_BINARY = $${QMAKE_BINARY}.exe
+}
 win32-g++*:QMAKE_CXXFLAGS += -Wno-attributes
 
 INCLUDEPATH += \

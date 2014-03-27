@@ -342,7 +342,7 @@
     user-readable output to several languages. To provide end users with
     localized versions of strings contained in the component scripts and user
     interfaces, create QTranslator files that the installation system loads
-    along with the the component. The installer loads the translation file that
+    along with the component. The installer loads the translation file that
     matches the current system locale. For example, if the system locale is
     German, the de_de.qm file is loaded.
 
@@ -763,9 +763,6 @@
                 repository. The packages are not included in the installer
                 binary.
         \row
-            \o  -u updateurl
-            \o  Receive updates from another repository.
-        \row
             \o  --update
             \o  Place only the specified packages in the repository, without
                 their dependencies. Make sure to also add the Updates.xml from
@@ -803,14 +800,14 @@
 
     Use the \c repogen tool to create online repositories of all packages of one package directory:
 
-    repogen.exe -p <package_directory> -c <config_directory>\<config_file> repository <repository_directory>
+    repogen.exe -p <package_directory> <repository_directory>
 
     For example, to create a repository that contains only org.qt-project.sdk.qt and
     org.qt-project.sdk.qtcreator, enter the following
     command:
 
     \code
-    repogen.exe -p packages -c installer-config\config.xml -i org.qt-project.sdk.qt,org.qt-project.sdk.qtcreator repository
+    repogen.exe -p packages -i org.qt-project.sdk.qt,org.qt-project.sdk.qtcreator repository
     \endcode
 
     When the repository has been created, upload it to a web server. You must
@@ -945,10 +942,10 @@
         \o  Copy the updated content to the package directory.
 
         \o  Increase the value of the \a{Version} setting for the updated
-            components in the config.xml file.
+            components in the package.xml file.
 
         \o  Use the \c repogen tool to recreate the online repository with the
-            updated contents and to generate the update.xml file in the root
+            updated contents and to generate the Updates.xml file in the root
             directory of the repository.
 
         \o  Upload the repository to the web server.
@@ -959,13 +956,13 @@
 
     \section1 Configuring Updates
 
-    The installer downloads the Update.xml file on
+    The installer downloads the Updates.xml file on
     startup and compares the installed version with the version in the file. If
     the online version number in the file is greater than the local one, the
     installer displays it in the list of available updates.
 
     Increase the value of the \a{Version} setting for the component in the
-    config.xml file.
+    package.xml file.
 
     \section1 Recreating Repositories
 

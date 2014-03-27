@@ -40,6 +40,7 @@
 **************************************************************************/
 
 #include "repository.h"
+#include "kdupdaterfiledownloaderfactory.h"
 
 #include <QFileInfo>
 #include <QStringList>
@@ -89,11 +90,8 @@ Repository::Repository(const QUrl &url, bool isDefault)
 */
 Repository Repository::fromUserInput(const QString &repositoryUrl)
 {
-    QStringList supportedSchemes;
-    supportedSchemes << QLatin1String("http") << QLatin1String("https") <<  QLatin1String("ftp") <<
-        QLatin1String("file");
-
     QUrl url = QUrl::fromUserInput(repositoryUrl);
+    const QStringList supportedSchemes = KDUpdater::FileDownloaderFactory::supportedSchemes();
     if (!supportedSchemes.contains(url.scheme()) && QFileInfo(url.toString()).exists())
         url = QLatin1String("file:///") + url.toString();
 

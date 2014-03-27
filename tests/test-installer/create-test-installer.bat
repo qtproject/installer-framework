@@ -106,7 +106,7 @@ IF "%ONLINE_INSTALLER%" EQU "true" (
 IF "%REPOGEN%" EQU "true" (
   echo create online repository
   @IF exist ..\..\bin\repository rmdir /S /Q ..\..\bin\repository
-  ..\..\bin\repogen.exe -p ..\..\examples\testapp\packages -c ..\..\examples\testapp\config\config.xml ..\..\bin\repository
+  ..\..\bin\repogen.exe -p ..\..\examples\testapp\packages ..\..\bin\repository
   @if %ERRORLEVEL% NEQ 0 goto error_marker ELSE goto done_marker
 )
 

@@ -77,7 +77,7 @@
     Create online installers to be able to promote updates to end users who
     install your product. The easiest way to provide an update is to recreate
     the repository and upload it to the web server. For large repositories, you
-    can update only the the changed components.
+    can update only the changed components.
 
     \section1 Providing Content for Installers
 

@@ -59,16 +59,6 @@
 
 using namespace KDUpdater;
 
-struct FileDownloaderFactory::FileDownloaderFactoryData
-{
-    FileDownloaderFactoryData() : m_factory(0) {}
-    ~FileDownloaderFactoryData() { delete m_factory; }
-
-    bool m_followRedirects;
-    bool m_ignoreSslErrors;
-    FileDownloaderProxyFactory *m_factory;
-};
-
 FileDownloaderFactory& FileDownloaderFactory::instance()
 {
     static KDUpdater::FileDownloaderFactory theFactory;
@@ -127,6 +117,17 @@ void FileDownloaderFactory::setIgnoreSslErrors(bool ignore)
 FileDownloaderFactory::~FileDownloaderFactory()
 {
     delete d;
+}
+
+QStringList FileDownloaderFactory::supportedSchemes()
+{
+    return FileDownloaderFactory::instance().d->m_supportedSchemes;
+}
+
+bool FileDownloaderFactory::isSupportedScheme(const QString &scheme)
+{
+    return FileDownloaderFactory::instance().d->m_supportedSchemes.contains(scheme
+        , Qt::CaseInsensitive);
 }
 
 /*!

@@ -319,10 +319,9 @@ KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &s
                 Qt::QueuedConnection);
             connect(downloader, SIGNAL(downloadStatus(QString)), this, SIGNAL(downloadStatusChanged(QString)));
 
-            if (scheme == QLatin1String("http") || scheme == QLatin1String("ftp") ||
-                scheme == QLatin1String("file")) {
-                    downloader->setDownloadedFileName(component->localTempPath() + QLatin1String("/")
-                        + component->name() + QLatin1String("/") + fi.fileName() + suffix);
+            if (FileDownloaderFactory::isSupportedScheme(scheme)) {
+                downloader->setDownloadedFileName(component->localTempPath() + QLatin1Char('/')
+                    + component->name() + QLatin1Char('/') + fi.fileName() + suffix);
             }
 
             QString message = tr("Downloading archive hash for component: %1");

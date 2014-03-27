@@ -177,19 +177,21 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         QRegExp re(QLatin1String("[Pp]assword.*:"));
         QByteArray errData;
         flags = ::fcntl(masterFD, F_GETFD);
-//        if (flags != -1)
-//            ::fcntl(masterFD, F_SETFL, flags | O_NONBLOCK);
         int bytes = 0;
         int errBytes = 0;
         char buf[1024];
+        char errBuf[1024];
         while (bytes >= 0) {
             int state;
             if (::waitpid(child, &state, WNOHANG) == -1)
                 break;
             bytes = ::read(masterFD, buf, 1023);
-            errBytes = ::read(pipedData[0], buf, 1023);
+            errBytes = ::read(pipedData[0], errBuf, 1023);
             if (errBytes > 0)
+            {
                 errData.append(buf, errBytes);
+                errBytes=0;
+            }
             if (bytes > 0) {
                 const QString line = QString::fromLatin1(buf, bytes);
                 if (re.indexIn(line) != -1) {

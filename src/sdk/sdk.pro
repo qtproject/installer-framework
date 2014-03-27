@@ -37,6 +37,37 @@ exists($$LRELEASE) {
     IB_TRANSLATIONS = $$prependAll(IB_LANGUAGES, $$PWD/translations/,.ts)
     QT_TRANSLATIONS = $$prependAll(QT_LANGUAGES, $$[QT_INSTALL_TRANSLATIONS]/,.ts)
 
+    wd = $$toNativeSeparators($$IFW_SOURCE_TREE)
+    sources = src
+    lupdate_opts = -locations relative -no-ui-lines -no-sort
+
+    for(file, IB_TRANSLATIONS) {
+        lang = $$replace(file, .*/([^/]*)\\.ts, \\1)
+        v = ts-$${lang}.commands
+        $$v = cd $$wd && $$LUPDATE $$lupdate_opts $$sources -ts $$file
+        QMAKE_EXTRA_TARGETS += ts-$$lang
+    }
+    ts-all.commands = cd $$wd && $$LUPDATE $$lupdate_opts $$sources -ts $$IB_TRANSLATIONS
+    QMAKE_EXTRA_TARGETS += ts-all
+
+    isEqual(QMAKE_DIR_SEP, /) {
+        commit-ts.commands = \
+            cd $$wd; \
+            git add -N src/sdk/translations/*_??.ts && \
+            for f in `git diff-files --name-only src/sdk/translations/*_??.ts`; do \
+                $$LCONVERT -locations none -i \$\$f -o \$\$f; \
+            done; \
+            git add src/sdk/translations/*_??.ts && git commit
+    } else {
+        commit-ts.commands = \
+            cd $$wd && \
+            git add -N src/sdk/translations/*_??.ts && \
+            for /f usebackq %%f in (`git diff-files --name-only src/sdk/translations/*_??.ts`) do \
+                $$LCONVERT -locations none -i %%f -o %%f $$escape_expand(\\n\\t) \
+            cd $$wd && git add src/sdk/translations/*_??.ts && git commit
+    }
+    QMAKE_EXTRA_TARGETS += commit-ts
+
     if (!testFiles(QT_TRANSLATIONS)) {
         QT_COMPILED_TRANSLATIONS = $$prependAll(QT_LANGUAGES, $$[QT_INSTALL_TRANSLATIONS]/,.qm)
         if (testFiles(QT_COMPILED_TRANSLATIONS)) {

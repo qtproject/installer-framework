@@ -79,13 +79,6 @@ InstallerBase::~InstallerBase()
 {
 }
 
-static bool supportedScheme(const QString &scheme)
-{
-    if (scheme == QLatin1String("http") || scheme == QLatin1String("ftp") || scheme == QLatin1String("file"))
-        return true;
-    return false;
-}
-
 int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
 {
     QInstaller::setVerbose(arguments.contains(QLatin1String("--verbose"))
@@ -96,7 +89,7 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
     arguments.removeAll(QLatin1String("--update-installerbase"));
 
     QUrl url = arguments.value(1);
-    if (!supportedScheme(url.scheme()) && QFileInfo(url.toString()).exists())
+    if (!FileDownloaderFactory::isSupportedScheme(url.scheme()) && QFileInfo(url.toString()).exists())
         url = QLatin1String("file:///") + url.toString();
     m_downloader.reset(FileDownloaderFactory::instance().create(url.scheme(), 0));
     if (m_downloader.isNull()) {
@@ -107,7 +100,7 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
     m_downloader->setAutoRemoveDownloadedFile(true);
 
     QString target = QDir::tempPath() + QLatin1String("/") + QFileInfo(arguments.at(1)).fileName();
-    if (supportedScheme(url.scheme()))
+    if (FileDownloaderFactory::isSupportedScheme(url.scheme()))
         m_downloader->setDownloadedFileName(target);
 
     connect(m_downloader.data(), SIGNAL(downloadStarted()), this, SLOT(downloadStarted()));
