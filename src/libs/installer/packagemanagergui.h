@@ -83,9 +83,12 @@ public:
     void loadControlScript(const QString& scriptPath);
     void callControlScriptMethod(const QString& methodName);
 
-    Q_INVOKABLE PackageManagerPage* page(int pageId) const;
-    Q_INVOKABLE QWidget* pageWidgetByObjectName(const QString& name) const;
+    Q_INVOKABLE QWidget *pageById(int id) const;
+    Q_INVOKABLE QWidget *pageByObjectName(const QString &name) const;
+
     Q_INVOKABLE QWidget* currentPageWidget() const;
+    Q_INVOKABLE QWidget* pageWidgetByObjectName(const QString &name) const;
+
     Q_INVOKABLE QString defaultButtonText(int wizardButton) const;
     Q_INVOKABLE void clickButton(int wizardButton, int delayInMs = 0);
     Q_INVOKABLE bool isButtonEnabled(int wizardButton);

@@ -116,6 +116,8 @@ TRANSLATOR QInstaller::FinishedPage
 
 class DynamicInstallerPage : public PackageManagerPage
 {
+    Q_OBJECT
+
 public:
     explicit DynamicInstallerPage(QWidget *widget, PackageManagerCore *core = 0)
         : PackageManagerPage(core)
@@ -124,13 +126,17 @@ public:
         setObjectName(QLatin1String("Dynamic") + widget->objectName());
         setPixmap(QWizard::WatermarkPixmap, QPixmap());
 
-        setLayout(new QVBoxLayout);
         setColoredSubTitle(QLatin1String(" "));
         setColoredTitle(widget->windowTitle());
         m_widget->setProperty("complete", true);
         m_widget->setProperty("final", false);
+        m_widget->setProperty("commit", false);
         widget->installEventFilter(this);
+
+        setLayout(new QVBoxLayout);
         layout()->addWidget(widget);
+        layout()->setContentsMargins(0, 0, 0, 0);
+        layout()->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
     }
 
     QWidget *widget() const
@@ -156,6 +162,8 @@ protected:
                 emit completeChanged();
                 if (m_widget->property("final").toBool() != isFinalPage())
                     setFinalPage(m_widget->property("final").toBool());
+                if (m_widget->property("commit").toBool() != isCommitPage())
+                    setFinalPage(m_widget->property("commit").toBool());
                 break;
 
             default:
@@ -505,31 +513,40 @@ void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
     }
 }
 
-PackageManagerPage *PackageManagerGui::page(int pageId) const
+QWidget *PackageManagerGui::pageById(int id) const
 {
-    return qobject_cast<PackageManagerPage*> (QWizard::page(pageId));
+    return page(id);
 }
 
-QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
+QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
 {
     const QList<int> ids = pageIds();
     foreach (const int i, ids) {
         PackageManagerPage *const p = qobject_cast<PackageManagerPage*> (page(i));
-        if (p && p->objectName() == name) {
-            // For dynamic pages, return the contained widget (as read from the UI file), not the
-            // wrapper page
-            if (DynamicInstallerPage *dp = dynamic_cast<DynamicInstallerPage*>(p))
-                return dp->widget();
+        if (p && p->objectName() == name)
             return p;
-        }
     }
-    qDebug() << "No page found for object name" << name;
+    qWarning() << "No page found for object name" << name;
     return 0;
 }
 
 QWidget *PackageManagerGui::currentPageWidget() const
 {
     return currentPage();
+}
+
+QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
+{
+    QWidget *const widget = pageByObjectName(name);
+    if (PackageManagerPage *const p = qobject_cast<PackageManagerPage*> (widget)) {
+        // For dynamic pages, return the contained widget (as read from the UI file), not the
+        // wrapper page
+        if (DynamicInstallerPage *dp = qobject_cast<DynamicInstallerPage *>(p))
+            return dp->widget();
+        return p;
+    }
+    qWarning() << "No page found for object name" << name;
+    return 0;
 }
 
 void PackageManagerGui::cancelButtonClicked()
