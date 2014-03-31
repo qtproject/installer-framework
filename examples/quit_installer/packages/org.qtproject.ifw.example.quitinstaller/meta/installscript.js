@@ -51,6 +51,7 @@ function Component()
         installer.setDefaultPageVisible(QInstaller.StartMenuSelection, false);
         installer.setDefaultPageVisible(QInstaller.PerformInstallation, false);
         installer.setDefaultPageVisible(QInstaller.LicenseCheck, false);
+        gui.clickButton(buttons.NextButton);
     } else {
         installer.setValue("FinishedText",
             "<font color='green' size=10>The installer was not quit from javascript.</font>");
