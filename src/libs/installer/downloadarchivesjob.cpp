@@ -324,15 +324,14 @@ KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &s
                     + component->name() + QLatin1Char('/') + fi.fileName() + suffix);
             }
 
-            QString message = tr("Downloading archive hash for component: %1");
-            if (suffix.isEmpty())
-                message = tr("Downloading archive for component: %1");
-            emit outputTextChanged(message.arg(component->displayName()));
+            emit outputTextChanged(tr("Downloading archive '%1' for component: %2")
+                .arg(fi.fileName() + suffix, component->displayName()));
         } else {
             emit outputTextChanged(tr("Scheme not supported: %1 (%2)").arg(scheme, url.toString()));
         }
     } else {
-        emit outputTextChanged(tr("Could not find component for: %1.").arg(QFileInfo(fi.path()).fileName()));
+        emit outputTextChanged(tr("Could not find component for: %1.").arg(QFileInfo(fi.path())
+            .fileName()));
     }
     return downloader;
 }
