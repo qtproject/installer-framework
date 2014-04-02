@@ -62,7 +62,7 @@
 using namespace KDUpdater;
 using namespace QInstaller;
 
-static double calcProgress(qint32 done, qint32 total)
+static double calcProgress(qint64 done, qint64 total)
 {
     return total ? (double(done) / double(total)) : 0;
 }
