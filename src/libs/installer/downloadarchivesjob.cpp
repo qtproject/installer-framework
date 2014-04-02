@@ -284,7 +284,7 @@ void DownloadArchivesJob::downloadFailed(const QString &error)
 
 void DownloadArchivesJob::finishWithError(const QString &error)
 {
-    const FileDownloader *const dl = dynamic_cast<const FileDownloader*> (sender());
+    const FileDownloader *const dl = qobject_cast<const FileDownloader*> (sender());
     const QString msg = tr("Could not fetch archives: %1\nError while loading %2");
     if (dl != 0)
         emitFinishedWithError(QInstaller::DownloadError, msg.arg(error, dl->url().toString()));

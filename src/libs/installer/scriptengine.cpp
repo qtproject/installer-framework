@@ -75,7 +75,7 @@ QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *e
         return check;
 
     // well... this is our "this" pointer
-    PackageManagerCore *const core = dynamic_cast<PackageManagerCore*>(engine->globalObject()
+    PackageManagerCore *const core = qobject_cast<PackageManagerCore*>(engine->globalObject()
         .property(QLatin1String("installer")).toQObject());
 
     const QString name = context->argument(0).toString();
