@@ -1403,6 +1403,10 @@ bool TargetDirectoryPage::validatePage()
 
 void TargetDirectoryPage::entering()
 {
+    if (QPushButton *const b = qobject_cast<QPushButton *>(gui()->button(QWizard::NextButton))) {
+        b->setDefault(true);
+        b->setFocus();
+    }
 }
 
 void TargetDirectoryPage::leaving()
@@ -1536,6 +1540,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     baseLayout->addLayout(topLayout);
 
     m_taskDetailsButton = new QPushButton(tr("&Show Details"), this);
+    m_taskDetailsButton->setFocusPolicy(Qt::NoFocus);
     m_taskDetailsButton->setObjectName(QLatin1String("TaskDetailsButton"));
     m_taskDetailsButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
     connect(m_taskDetailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
@@ -1927,8 +1932,13 @@ void FinishedPage::entering()
         setButtonText(QWizard::CommitButton, tr("Restart"));
         setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::FinishButton));
     } else {
-        if (packageManagerCore()->isInstaller())
+        if (packageManagerCore()->isInstaller()) {
             m_commitButton = wizard()->button(QWizard::FinishButton);
+            if (QPushButton *const b = qobject_cast<QPushButton *>(m_commitButton)) {
+                b->setDefault(true);
+                b->setFocus();
+            }
+        }
 
         gui()->setOption(QWizard::NoCancelButton, true);
         if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton))
