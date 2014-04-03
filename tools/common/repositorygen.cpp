@@ -293,12 +293,18 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
         // copy script file
         const QString script = package.firstChildElement(QLatin1String("Script")).text();
         if (!script.isEmpty()) {
-            QString scriptContent;
             QFile scriptFile(QString::fromLatin1("%1/meta/%2").arg(info.directory, script));
-            if (scriptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                QTextStream in(&scriptFile);
-                scriptContent = in.readAll();
+            if (!scriptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                throw QInstaller::Error(QString::fromLatin1("Could not open component script: '%1'")
+                    .arg(scriptFile.fileName()));
             }
+
+            QString scriptContent = QString::fromLatin1(
+                "(function() {"
+                "    %1;"
+                "    if (typeof Component == \"undefined\")"
+                "        throw \"Missing Component constructor. Please check your script.\";"
+                "})();").arg(QTextStream(&scriptFile).readAll());
 
             // if the user isn't aware of the downloadable archives value we will add it automatically later
             foundDownloadableArchives |= scriptContent.contains(QLatin1String("addDownloadableArchive"))
@@ -307,8 +313,9 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             static QScriptEngine testScriptEngine;
             testScriptEngine.evaluate(scriptContent, scriptFile.fileName());
             if (testScriptEngine.hasUncaughtException()) {
-                throw QInstaller::Error(QString::fromLatin1("Exception while loading component script: '%1'")
-                    .arg(QInstaller::uncaughtExceptionString(&testScriptEngine, scriptFile.fileName())));
+                throw QInstaller::Error(QString::fromLatin1("Exception while loading component "
+                    "script: '%1'").arg(QInstaller::uncaughtExceptionString(&testScriptEngine,
+                    scriptFile.fileName())));
             }
 
             // add RequiresAdminRights tag to xml if addElevatedOperation is used somewhere

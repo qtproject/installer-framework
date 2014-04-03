@@ -41,6 +41,7 @@
 #include "scriptengine.h"
 
 #include "component.h"
+#include "globals.h"
 #include "packagemanagercore.h"
 #include "messageboxhandler.h"
 #include "errors.h"
@@ -248,16 +249,17 @@ QScriptValue ScriptEngine::loadInConext(const QString &context, const QString &f
             fileName, file.errorString()));
     }
 
-    // create inside closure in one line to keep linenumber in the right order
-    // which is used as a debug output in an exception case
-    // scriptContent will be added as the last arg command to prevent wrong
-    // replacements of %1, %2 or %3 inside the scriptContent
+    // Create a closure. Put the content in the first line to keep line number order in case of an
+    // exception. Script content will be added as the last argument to the command to prevent wrong
+    // replacements of %1, %2 or %3 inside the javascript code.
     QString scriptContent = QString::fromLatin1(
-        "(function() { %1 %3 ; return new %2; })();");
-
-    // merging everything together and as last we are adding the file content to prevent wrong
-    // replacements of %1 %2 or %3 inside the javascript code
-    scriptContent = scriptContent.arg(scriptInjection, context, QLatin1String(file.readAll()));
+        "(function() {"
+        "    %1 %3 ;"
+        "    if (typeof %2 != \"undefined\")"
+        "        return new %2;"
+        "    else"
+        "        throw \"Missing Component constructor. Please check your script.\";"
+        "})();").arg(scriptInjection, context, QLatin1String(file.readAll()));
     QScriptValue scriptContext = evaluate(scriptContent, fileName);
 
     if (hasUncaughtException()) {
