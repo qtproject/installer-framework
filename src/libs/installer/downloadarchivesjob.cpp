@@ -145,14 +145,13 @@ void DownloadArchivesJob::finishedHashDownload()
 {
     Q_ASSERT(m_downloader != 0);
 
-    const QString tempFile = m_downloader->downloadedFileName();
-    QFile sha1HashFile(tempFile);
-    if (sha1HashFile.open(QFile::ReadOnly))
+    QFile sha1HashFile(m_downloader->downloadedFileName());
+    if (sha1HashFile.open(QFile::ReadOnly)) {
         m_currentHash = sha1HashFile.readAll();
-    else
+        fetchNextArchive();
+    } else {
         finishWithError(tr("Downloading hash signature failed."));
-
-    fetchNextArchive();
+    }
 }
 
 /*!
@@ -176,7 +175,7 @@ void DownloadArchivesJob::fetchNextArchive()
     m_downloader = setupDownloader(QString(), m_core->value(QLatin1String("UrlQueryString")));
     if (!m_downloader) {
         m_archivesToDownload.removeFirst();
-        QMetaObject::invokeMethod(this, "fetchNextArchive", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "fetchNextArchiveHash", Qt::QueuedConnection);
         return;
     }
 
@@ -232,22 +231,18 @@ void DownloadArchivesJob::registerFile()
             finishWithError(tr("Could not verify Hash"));
             return;
         }
+    } else {
+        ++m_archivesDownloaded;
+        if (m_progressChangedTimerId) {
+            killTimer(m_progressChangedTimerId);
+            m_progressChangedTimerId = 0;
+            emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
+        }
 
-        fetchNextArchiveHash();
-        return;
+        const QPair<QString, QString> pair = m_archivesToDownload.takeFirst();
+        QInstallerCreator::BinaryFormatEngineHandler::instance()->registerArchive(pair.first,
+            m_downloader->downloadedFileName());
     }
-
-    ++m_archivesDownloaded;
-    if (m_progressChangedTimerId) {
-        killTimer(m_progressChangedTimerId);
-        m_progressChangedTimerId = 0;
-        emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
-    }
-
-    const QPair<QString, QString> pair = m_archivesToDownload.takeFirst();
-    QInstallerCreator::BinaryFormatEngineHandler::instance()->registerArchive(pair.first,
-        m_downloader->downloadedFileName());
-
     fetchNextArchiveHash();
 }
 
