@@ -45,7 +45,6 @@
 #include <kdjob.h>
 
 #include <QtCore/QPair>
-#include <QtCore/QSet>
 
 QT_BEGIN_NAMESPACE
 class QTimerEvent;
@@ -65,9 +64,10 @@ class DownloadArchivesJob : public KDJob
     Q_OBJECT
 
 public:
-    explicit DownloadArchivesJob(PackageManagerCore *core = 0);
+    explicit DownloadArchivesJob(PackageManagerCore *core);
     ~DownloadArchivesJob();
 
+    int numberOfDownloads() const { return m_archivesDownloaded; }
     void setArchivesToDownload(const QList<QPair<QString, QString> > &archives);
 
 Q_SIGNALS:
@@ -102,7 +102,6 @@ private:
     QList<QPair<QString, QString> > m_archivesToDownload;
 
     bool m_canceled;
-    QSet<QString> m_temporaryFiles;
     QByteArray m_currentHash;
     double m_lastFileProgress;
     int m_progressChangedTimerId;

@@ -582,32 +582,32 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 
     ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nDownloading packages..."));
 
-    // don't have it on the stack, since it keeps the temporary files
-    DownloadArchivesJob *const archivesJob = new DownloadArchivesJob(this);
-    archivesJob->setAutoDelete(false);
-    archivesJob->setArchivesToDownload(archivesToDownload);
-    connect(this, SIGNAL(installationInterrupted()), archivesJob, SLOT(cancel()));
-    connect(archivesJob, SIGNAL(outputTextChanged(QString)), ProgressCoordinator::instance(),
+    DownloadArchivesJob archivesJob(this);
+    archivesJob.setAutoDelete(false);
+    archivesJob.setArchivesToDownload(archivesToDownload);
+    connect(this, SIGNAL(installationInterrupted()), &archivesJob, SLOT(cancel()));
+    connect(&archivesJob, SIGNAL(outputTextChanged(QString)), ProgressCoordinator::instance(),
         SLOT(emitLabelAndDetailTextChanged(QString)));
-    connect(archivesJob, SIGNAL(downloadStatusChanged(QString)), ProgressCoordinator::instance(),
+    connect(&archivesJob, SIGNAL(downloadStatusChanged(QString)), ProgressCoordinator::instance(),
         SIGNAL(downloadStatusChanged(QString)));
 
-    ProgressCoordinator::instance()->registerPartProgress(archivesJob, SIGNAL(progressChanged(double)),
-        partProgressSize);
+    ProgressCoordinator::instance()->registerPartProgress(&archivesJob,
+        SIGNAL(progressChanged(double)), partProgressSize);
 
-    archivesJob->start();
-    archivesJob->waitForFinished();
+    archivesJob.start();
+    archivesJob.waitForFinished();
 
-    if (archivesJob->error() == KDJob::Canceled)
+    if (archivesJob.error() == KDJob::Canceled)
         interrupt();
-    else if (archivesJob->error() != KDJob::NoError)
-        throw Error(archivesJob->errorString());
+    else if (archivesJob.error() != KDJob::NoError)
+        throw Error(archivesJob.errorString());
 
     if (d->statusCanceledOrFailed())
         throw Error(tr("Installation canceled by user"));
+
     ProgressCoordinator::instance()->emitDownloadStatus(tr("All downloads finished."));
 
-    return archivesToDownload.count();
+    return archivesJob.numberOfDownloads();
 }
 
 /*!
@@ -1883,7 +1883,8 @@ void PackageManagerCore::interrupt()
  */
 void PackageManagerCore::setCanceled()
 {
-    cancelMetaInfoJob();
+    if (!d->m_repoFetched)
+        cancelMetaInfoJob();
     d->setStatus(PackageManagerCore::Canceled);
 }
 

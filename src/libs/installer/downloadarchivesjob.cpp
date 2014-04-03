@@ -74,16 +74,9 @@ DownloadArchivesJob::DownloadArchivesJob(PackageManagerCore *core)
 
 /*!
     Destroys the DownloadArchivesJob.
-    All temporary files get deleted.
 */
 DownloadArchivesJob::~DownloadArchivesJob()
 {
-    foreach (const QString &fileName, m_temporaryFiles) {
-        QFile file(fileName);
-        if (file.exists() && !file.remove())
-            qWarning("Could not delete file %s: %s", qPrintable(fileName), qPrintable(file.errorString()));
-    }
-
     if (m_downloader)
         m_downloader->deleteLater();
 }
@@ -158,8 +151,6 @@ void DownloadArchivesJob::finishedHashDownload()
         m_currentHash = sha1HashFile.readAll();
     else
         finishWithError(tr("Downloading hash signature failed."));
-
-    m_temporaryFiles.insert(tempFile);
 
     fetchNextArchive();
 }
@@ -253,7 +244,6 @@ void DownloadArchivesJob::registerFile()
         emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
     }
 
-    m_temporaryFiles.insert(m_downloader->downloadedFileName());
     const QPair<QString, QString> pair = m_archivesToDownload.takeFirst();
     QInstallerCreator::BinaryFormatEngineHandler::instance()->registerArchive(pair.first,
         m_downloader->downloadedFileName());
