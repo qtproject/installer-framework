@@ -258,6 +258,12 @@
             \o  ApplicationsDir
             \o  Applications directory. For example, \c {C:\Program Files} on Windows,
             \c {/opt} on Linux and \c {/Applications} on Mac OS X.
+        \row
+            \o  InstallerDirPath
+            \o  The directory that contains the installer application executable.
+        \row
+            \o  InstallerFilePath
+            \o  The file path of the installer application executable.
     \endtable
 
     The variables can be resolved by calls to \c installer.value(). If embedded

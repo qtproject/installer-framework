@@ -66,6 +66,8 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(QLatin1String("RootDir"), QDir::rootPath());
     m_variables.insert(QLatin1String("HomeDir"), QDir::homePath());
     m_variables.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
+    m_variables.insert(QLatin1String("InstallerDirPath"), QCoreApplication::applicationDirPath());
+    m_variables.insert(QLatin1String("InstallerFilePath"), QCoreApplication::applicationFilePath());
 
     QString dir = QLatin1String("/opt");
 #ifdef Q_OS_WIN
