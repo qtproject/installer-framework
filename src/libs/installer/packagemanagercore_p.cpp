@@ -1499,6 +1499,7 @@ bool PackageManagerCorePrivate::runInstaller()
         ProgressCoordinator::instance()->addManualPercentagePoints(1);
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
+        m_core->calculateComponentsToInstall();
         const QList<Component*> componentsToInstall = m_core->orderedComponentsToInstall();
         qDebug() << "Install size:" << componentsToInstall.size() << "components";
 
@@ -1510,7 +1511,7 @@ bool PackageManagerCorePrivate::runInstaller()
         }
 
         if (!adminRightsGained) {
-            foreach (Component *component, m_core->orderedComponentsToInstall()) {
+            foreach (Component *component, componentsToInstall) {
                 if (component->value(scRequiresAdminRights, scFalse) == scFalse)
                     continue;
 
