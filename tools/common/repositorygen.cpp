@@ -299,12 +299,12 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                     .arg(scriptFile.fileName()));
             }
 
-            QString scriptContent = QString::fromLatin1(
-                "(function() {"
-                "    %1;"
+            const QString scriptContent = QLatin1String("(function() {")
+                + QString::fromUtf8(scriptFile.readAll())
+                + QLatin1String(";"
                 "    if (typeof Component == \"undefined\")"
                 "        throw \"Missing Component constructor. Please check your script.\";"
-                "})();").arg(QTextStream(&scriptFile).readAll());
+                "})();");
 
             // if the user isn't aware of the downloadable archives value we will add it automatically later
             foundDownloadableArchives |= scriptContent.contains(QLatin1String("addDownloadableArchive"))
