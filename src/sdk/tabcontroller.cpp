@@ -137,8 +137,8 @@ int TabController::init()
         connect(d->m_gui, SIGNAL(settingsButtonClicked()), this, SLOT(onSettingsButtonClicked()));
     }
 
-    IntroductionPageImpl *page =
-        qobject_cast<IntroductionPageImpl*> (d->m_gui->page(PackageManagerCore::Introduction));
+    IntroductionPage *page =
+        qobject_cast<IntroductionPage*> (d->m_gui->page(PackageManagerCore::Introduction));
     if (page) {
         page->setMessage(QString());
         page->setErrorMessage(QString());
@@ -184,8 +184,8 @@ void TabController::onSettingsButtonClicked()
 
     if (d->m_networkSettingsChanged) {
         d->m_core->setCanceled();
-        IntroductionPageImpl *page =
-            qobject_cast<IntroductionPageImpl*> (d->m_gui->page(PackageManagerCore::Introduction));
+        IntroductionPage *page =
+            qobject_cast<IntroductionPage*> (d->m_gui->page(PackageManagerCore::Introduction));
         if (page) {
             page->setMessage(QString());
             page->setErrorMessage(QString());

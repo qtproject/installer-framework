@@ -58,6 +58,7 @@ class QLabel;
 class QLineEdit;
 class QListWidget;
 class QListWidgetItem;
+class QProgressBar;
 class QRadioButton;
 class QTextBrowser;
 QT_END_NAMESPACE
@@ -213,12 +214,51 @@ class INSTALLER_EXPORT IntroductionPage : public PackageManagerPage
 public:
     explicit IntroductionPage(PackageManagerCore *core);
 
-    void setWidget(QWidget *widget);
     void setText(const QString &text);
 
+    int nextId() const;
+    bool validatePage();
+
+    void showAll();
+    void hideAll();
+    void showMetaInfoUdate();
+    void showMaintenanceTools();
+    void setMaintenanceToolsEnabled(bool enable);
+
+    public Q_SLOTS:
+    void onCoreNetworkSettingsChanged();
+    void setMessage(const QString &msg);
+    void onProgressChanged(int progress);
+    void setErrorMessage(const QString &error);
+
+Q_SIGNALS:
+    void packageManagerCoreTypeChanged();
+
+    private Q_SLOTS:
+    void setUpdater(bool value);
+    void setUninstaller(bool value);
+    void setPackageManager(bool value);
+
 private:
+    void entering();
+    void leaving();
+
+    void showWidgets(bool show);
+    void callControlScript(const QString &callback);
+
+    bool validRepositoriesAvailable() const;
+
+private:
+    bool m_updatesFetched;
+    bool m_allPackagesFetched;
+
+    QLabel *m_label;
     QLabel *m_msgLabel;
-    QWidget *m_widget;
+    QLabel *m_errorLabel;
+    QProgressBar *m_progressBar;
+    QRadioButton *m_packageManager;
+    QRadioButton *m_updateComponents;
+    QRadioButton *m_removeAllComponents;
 };
 
 

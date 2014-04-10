@@ -51,6 +51,7 @@
 #include "settings.h"
 #include "utils.h"
 #include "scriptengine.h"
+#include "productkeycheck.h"
 
 #include "kdsysinfo.h"
 
@@ -70,6 +71,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QMessageBox>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QTextBrowser>
@@ -845,31 +847,322 @@ int PackageManagerPage::nextId() const
 
 IntroductionPage::IntroductionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
-    , m_widget(0)
+    , m_updatesFetched(false)
+    , m_allPackagesFetched(false)
+    , m_label(0)
+    , m_msgLabel(0)
+    , m_errorLabel(0)
+    , m_progressBar(0)
+    , m_packageManager(0)
+    , m_updateComponents(0)
+    , m_removeAllComponents(0)
 {
     setObjectName(QLatin1String("IntroductionPage"));
     setColoredTitle(tr("Setup - %1").arg(productName()));
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    setLayout(layout);
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
     m_msgLabel->setText(tr("Welcome to the %1 Setup Wizard.").arg(productName()));
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    setLayout(layout);
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *boxLayout = new QVBoxLayout(widget);
+
+    m_packageManager = new QRadioButton(tr("Package manager"), this);
+    m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
+    boxLayout->addWidget(m_packageManager);
+    m_packageManager->setChecked(core->isPackageManager());
+    connect(m_packageManager, SIGNAL(toggled(bool)), this, SLOT(setPackageManager(bool)));
+
+    m_updateComponents = new QRadioButton(tr("Update components"), this);
+    m_updateComponents->setObjectName(QLatin1String("UpdaterRadioButton"));
+    boxLayout->addWidget(m_updateComponents);
+    m_updateComponents->setChecked(core->isUpdater());
+    connect(m_updateComponents, SIGNAL(toggled(bool)), this, SLOT(setUpdater(bool)));
+
+    m_removeAllComponents = new QRadioButton(tr("Remove all components"), this);
+    m_removeAllComponents->setObjectName(QLatin1String("UninstallerRadioButton"));
+    boxLayout->addWidget(m_removeAllComponents);
+    m_removeAllComponents->setChecked(core->isUninstaller());
+    connect(m_removeAllComponents, SIGNAL(toggled(bool)), this, SLOT(setUninstaller(bool)));
+    connect(m_removeAllComponents, SIGNAL(toggled(bool)), core, SLOT(setCompleteUninstallation(bool)));
+
+    boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    m_label = new QLabel(this);
+    m_label->setWordWrap(true);
+    m_label->setText(tr("Retrieving information from remote installation sources..."));
+    boxLayout->addWidget(m_label);
+
+    m_progressBar = new QProgressBar(this);
+    m_progressBar->setRange(0, 0);
+    boxLayout->addWidget(m_progressBar);
+
+    boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    m_errorLabel = new QLabel(this);
+    m_errorLabel->setWordWrap(true);
+    boxLayout->addWidget(m_errorLabel);
+
     layout->addWidget(m_msgLabel);
+    layout->addWidget(widget);
     layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    core->setCompleteUninstallation(core->isUninstaller());
+
+    connect(core, SIGNAL(metaJobProgress(int)), this, SLOT(onProgressChanged(int)));
+    connect(core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
+    connect(core, SIGNAL(coreNetworkSettingsChanged()), this, SLOT(onCoreNetworkSettingsChanged()));
+
+    m_updateComponents->setEnabled(ProductKeyCheck::instance()->hasValidKey());
 }
 
-void IntroductionPage::setWidget(QWidget *widget)
+int IntroductionPage::nextId() const
 {
-    if (m_widget) {
-        layout()->removeWidget(m_widget);
-        delete m_widget;
+    if (packageManagerCore()->isUninstaller())
+        return PackageManagerCore::ReadyForInstallation;
+
+    if (packageManagerCore()->isUpdater() || packageManagerCore()->isPackageManager())
+        return PackageManagerCore::ComponentSelection;
+
+    return PackageManagerPage::nextId();
+}
+
+bool IntroductionPage::validatePage()
+{
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isUninstaller())
+        return true;
+
+    setComplete(false);
+    if (!validRepositoriesAvailable()) {
+        setErrorMessage(QLatin1String("<font color=\"red\">") + tr("At least one valid and enabled "
+            "repository required for this action to succeed.") + QLatin1String("</font>"));
+        return isComplete();
     }
-    m_widget = widget;
-    if (m_widget)
-        static_cast<QVBoxLayout*>(layout())->addWidget(m_widget, 1);
+
+    gui()->setSettingsButtonEnabled(false);
+    const bool maintanence = core->isUpdater() || core->isPackageManager();
+    if (maintanence) {
+        showAll();
+        setMaintenanceToolsEnabled(false);
+    } else {
+        showMetaInfoUdate();
+    }
+
+    // fetch updater packages
+    if (core->isUpdater()) {
+        if (!m_updatesFetched) {
+            m_updatesFetched = core->fetchRemotePackagesTree();
+            if (!m_updatesFetched)
+                setErrorMessage(core->error());
+        }
+
+        callControlScript(QLatin1String("UpdaterSelectedCallback"));
+
+        if (m_updatesFetched) {
+            if (core->updaterComponents().count() <= 0)
+                setErrorMessage(QLatin1String("<b>") + tr("No updates available.") + QLatin1String("</b>"));
+            else
+                setComplete(true);
+        }
+    }
+
+    // fetch common packages
+    if (core->isInstaller() || core->isPackageManager()) {
+        bool localPackagesTreeFetched = false;
+        if (!m_allPackagesFetched) {
+            // first try to fetch the server side packages tree
+            m_allPackagesFetched = core->fetchRemotePackagesTree();
+            if (!m_allPackagesFetched) {
+                QString error = core->error();
+                if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
+                    // if that fails and we're in maintenance mode, try to fetch local installed tree
+                    localPackagesTreeFetched = core->fetchLocalPackagesTree();
+                    if (localPackagesTreeFetched) {
+                        // if that succeeded, adjust error message
+                        error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
+                            "management available.") + QLatin1String("</font>");
+                    }
+                }
+                setErrorMessage(error);
+            }
+        }
+
+        callControlScript(QLatin1String("PackageManagerSelectedCallback"));
+
+        if (m_allPackagesFetched | localPackagesTreeFetched)
+            setComplete(true);
+    }
+
+    if (maintanence) {
+        showMaintenanceTools();
+        setMaintenanceToolsEnabled(true);
+    } else {
+        hideAll();
+    }
+    gui()->setSettingsButtonEnabled(true);
+
+    return isComplete();
+}
+
+void IntroductionPage::showAll()
+{
+    showWidgets(true);
+}
+
+void IntroductionPage::hideAll()
+{
+    showWidgets(false);
+}
+
+void IntroductionPage::showMetaInfoUdate()
+{
+    showWidgets(false);
+    m_label->setVisible(true);
+    m_progressBar->setVisible(true);
+}
+
+void IntroductionPage::showMaintenanceTools()
+{
+    showWidgets(true);
+    m_label->setVisible(false);
+    m_progressBar->setVisible(false);
+}
+
+void IntroductionPage::setMaintenanceToolsEnabled(bool enable)
+{
+    m_packageManager->setEnabled(enable);
+    m_updateComponents->setEnabled(enable && ProductKeyCheck::instance()->hasValidKey());
+    m_removeAllComponents->setEnabled(enable);
+}
+
+// -- public slots
+
+void IntroductionPage::setMessage(const QString &msg)
+{
+    m_label->setText(msg);
+}
+
+void IntroductionPage::onProgressChanged(int progress)
+{
+    m_progressBar->setRange(0, 100);
+    m_progressBar->setValue(progress);
+}
+
+void IntroductionPage::setErrorMessage(const QString &error)
+{
+    QPalette palette;
+    const PackageManagerCore::Status s = packageManagerCore()->status();
+    if (s == PackageManagerCore::Failure || s == PackageManagerCore::Failure) {
+        palette.setColor(QPalette::WindowText, Qt::red);
+    } else {
+        palette.setColor(QPalette::WindowText, palette.color(QPalette::WindowText));
+    }
+
+    m_errorLabel->setText(error);
+    m_errorLabel->setPalette(palette);
+}
+
+void IntroductionPage::callControlScript(const QString &callback)
+{
+    // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
+    // hide of pages depending on the components.
+    gui()->init();
+    gui()->callControlScriptMethod(callback);
+}
+
+bool IntroductionPage::validRepositoriesAvailable() const
+{
+    const PackageManagerCore *const core = packageManagerCore();
+    bool valid = (core->isInstaller() && core->isOfflineOnly()) || core->isUninstaller();
+
+    if (!valid) {
+        foreach (const Repository &repo, core->settings().repositories()) {
+            if (repo.isEnabled() && repo.isValid()) {
+                valid = true;
+                break;
+            }
+        }
+    }
+    return valid;
+}
+
+// -- private slots
+
+void IntroductionPage::setUpdater(bool value)
+{
+    if (value) {
+        entering();
+        gui()->showSettingsButton(true);
+        packageManagerCore()->setUpdater();
+        emit packageManagerCoreTypeChanged();
+    }
+}
+
+void IntroductionPage::setUninstaller(bool value)
+{
+    if (value) {
+        entering();
+        gui()->showSettingsButton(false);
+        packageManagerCore()->setUninstaller();
+        emit packageManagerCoreTypeChanged();
+    }
+}
+
+void IntroductionPage::setPackageManager(bool value)
+{
+    if (value) {
+        entering();
+        gui()->showSettingsButton(true);
+        packageManagerCore()->setPackageManager();
+        emit packageManagerCoreTypeChanged();
+    }
+}
+
+void IntroductionPage::onCoreNetworkSettingsChanged()
+{
+    m_updatesFetched = false;
+    m_allPackagesFetched = false;
+}
+
+// -- private
+
+void IntroductionPage::entering()
+{
+    setComplete(true);
+    showWidgets(false);
+    setMessage(QString());
+    setErrorMessage(QString());
+    setButtonText(QWizard::CancelButton, tr("Quit"));
+
+    m_progressBar->setValue(0);
+    m_progressBar->setRange(0, 0);
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isUninstaller() || core->isUpdater() || core->isPackageManager()) {
+        showMaintenanceTools();
+        setMaintenanceToolsEnabled(true);
+    }
+    setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
+}
+
+void IntroductionPage::leaving()
+{
+    m_progressBar->setValue(0);
+    m_progressBar->setRange(0, 0);
+    setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
+}
+
+void IntroductionPage::showWidgets(bool show)
+{
+    m_label->setVisible(show);
+    m_progressBar->setVisible(show);
+    m_packageManager->setVisible(show);
+    m_updateComponents->setVisible(show);
+    m_removeAllComponents->setVisible(show);
 }
 
 void IntroductionPage::setText(const QString &text)
