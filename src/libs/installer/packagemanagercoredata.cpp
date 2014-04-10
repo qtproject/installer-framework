@@ -43,6 +43,7 @@
 #include "errors.h"
 #include "fileutils.h"
 #include "qsettingswrapper.h"
+#include "utils.h"
 
 #include <QDesktopServices>
 #include <QDir>
@@ -93,6 +94,26 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(QLatin1String("os"), QLatin1String("Qtopia"));
 #else
     // TODO: add more platforms as needed...
+#endif
+
+#ifdef Q_OS_WIN
+    QSettingsWrapper user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\"
+        "CurrentVersion\\Explorer\\User Shell Folders"), QSettingsWrapper::NativeFormat);
+    QSettingsWrapper system(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\"
+        "CurrentVersion\\Explorer\\Shell Folders"), QSettingsWrapper::NativeFormat);
+
+    const QString programs = user.value(QLatin1String("Programs"), QString()).toString();
+    const QString allPrograms = system.value(QLatin1String("Common Programs"), QString()).toString();
+
+    QString desktop;
+    if (m_variables.value(QLatin1String("AllUsers")) == scTrue) {
+        desktop = system.value(QLatin1String("Desktop")).toString();
+    } else {
+        desktop = user.value(QLatin1String("Desktop")).toString();
+    }
+    m_variables.insert(QLatin1String("DesktopDir"), replaceWindowsEnvironmentVariables(desktop));
+    m_variables.insert(QLatin1String("UserStartMenuProgramsPath"), replaceWindowsEnvironmentVariables(programs));
+    m_variables.insert(QLatin1String("AllUsersStartMenuProgramsPath"), replaceWindowsEnvironmentVariables(allPrograms));
 #endif
 
     try {

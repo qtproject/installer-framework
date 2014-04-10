@@ -237,14 +237,14 @@
             \o  Product URL, as defined in config.xml.
         \row
             \o  StartMenuDir
-            \o  Start menu group, as defined in config.xml. Available on
-                Windows, only.
+            \o  Start menu group, as defined in config.xml. Only available on Windows.
         \row
             \o  TargetDir
             \o  Target directory for installation, as selected by the user.
         \row
             \o  DesktopDir
             \o  Name of the directory that contains the user's desktop.
+            \o  Only available on Windows.
         \row
             \o  os
             \o  Current platform: \c "x11", \c "win", or \c "mac".
@@ -264,6 +264,16 @@
         \row
             \o  InstallerFilePath
             \o  The file path of the installer application executable.
+        \row
+            \o  UserStartMenuProgramsPath
+            \o  The path to the folder containing the items in the Start menu of the user.
+            \o  For example, \c {C:\Users\USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs}
+            \o  Only available on Windows.
+        \row
+            \o  AllUsersStartMenuProgramsPath
+            \o  The path to the folder containing the items in the Start menu for all users.
+            \o  For example, \c {C:\ProgramData\Microsoft\Windows\Start Menu\Programs}
+            \o  Only available on Windows.
     \endtable
 
     The variables can be resolved by calls to \c installer.value(). If embedded

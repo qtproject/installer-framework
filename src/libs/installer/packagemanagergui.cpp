@@ -57,7 +57,6 @@
 #include <QtCore/QDir>
 #include <QtCore/QPair>
 #include <QtCore/QProcess>
-#include <QtCore/QSettings>
 #include <QtCore/QTimer>
 
 #include <QCheckBox>
@@ -1441,45 +1440,19 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
 
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setObjectName(QLatin1String("LineEdit"));
+    m_lineEdit->setText(core->value(scStartMenuDir, productName()));
 
-    QString startMenuDir = core->value(scStartMenuDir);
-    if (startMenuDir.isEmpty())
-        startMenuDir = productName();
-    m_lineEdit->setText(startMenuDir);
-
-    // grab existing start menu folders
-    QSettings user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\"
-        "Explorer\\User Shell Folders"), QSettings::NativeFormat);
-    // User Shell Folders uses %USERPROFILE%
-    startMenuPath = replaceWindowsEnvironmentVariables(user.value(QLatin1String("Programs"),
-        QString()).toString());
-    core->setValue(QLatin1String("DesktopDir"), replaceWindowsEnvironmentVariables(user
-        .value(QLatin1String("Desktop")).toString()));
-
-    QDir dir(startMenuPath); // user only dirs
-    QStringList dirs = dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
-
-    if (core->value(QLatin1String("AllUsers")) == QLatin1String("true")) {
-        qDebug() << "AllUsers set. Using HKEY_LOCAL_MACHINE";
-        QSettings system(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\"
-            "CurrentVersion\\Explorer\\Shell Folders"), QSettings::NativeFormat);
-        startMenuPath = system.value(QLatin1String("Common Programs"), QString()).toString();
-        core->setValue(QLatin1String("DesktopDir"),system.value(QLatin1String("Desktop"))
-            .toString());
-
-        dir.setPath(startMenuPath); // system only dirs
-        dirs += dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
+    startMenuPath = core->value(QLatin1String("UserStartMenuProgramsPath"));
+    QStringList dirs = QDir(startMenuPath).entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
+    if (core->value(QLatin1String("AllUsers")) == scTrue) {
+        startMenuPath = core->value(QLatin1String("AllUsersStartMenuProgramsPath"));
+        dirs += QDir(startMenuPath).entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
     }
-
-    qDebug() << "StartMenuPath: \t" << startMenuPath;
-    qDebug() << "DesktopDir: \t" << core->value(QLatin1String("DesktopDir"));
+    dirs.removeDuplicates();
 
     m_listWidget = new QListWidget(this);
-    if (!dirs.isEmpty()) {
-        dirs.removeDuplicates();
-        foreach (const QString &dir, dirs)
-            new QListWidgetItem(dir, m_listWidget);
-    }
+    foreach (const QString &dir, dirs)
+        new QListWidgetItem(dir, m_listWidget);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(m_lineEdit);
