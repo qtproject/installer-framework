@@ -108,6 +108,7 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void slotModelReset();
+    void onVirtualStateChanged();
 
 private:
     void updateAndEmitModelState();

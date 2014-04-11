@@ -1395,6 +1395,11 @@ void Component::updateModelData(const QString &key, const QString &data)
     if (key == scVirtual) {
         if (data.toLower() == scTrue)
             setData(d->m_core->virtualComponentsFont(), Qt::FontRole);
+        if (Component *const parent = parentComponent()) {
+            parent->removeComponent(this);
+            parent->appendComponent(this);
+        }
+        emit virtualStateChanged();
     }
 
     if (key == scRemoteDisplayVersion)
