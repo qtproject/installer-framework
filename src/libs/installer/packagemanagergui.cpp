@@ -449,6 +449,7 @@ void PackageManagerGui::showEvent(QShowEvent *event)
                 }
             }
         }
+        setMinimumSize(size());
     }
     QWizard::showEvent(event);
     QMetaObject::invokeMethod(this, "dependsOnLocalInstallerBinary", Qt::QueuedConnection);
