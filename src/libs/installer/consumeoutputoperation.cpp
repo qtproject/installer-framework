@@ -140,7 +140,7 @@ bool ConsumeOutputOperation::performOperation()
         qWarning() << QString::fromLatin1("Cannot get any query output from executable: '%1'").arg(
             executable.absoluteFilePath());
     }
-    core->setValue(installerKeyName, QString::fromLatin1(executableOutput));
+    core->setValue(installerKeyName, QString::fromLocal8Bit(executableOutput));
     return true;
 }
 
