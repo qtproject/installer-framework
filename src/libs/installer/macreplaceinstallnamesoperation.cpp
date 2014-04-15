@@ -146,9 +146,9 @@ bool MacReplaceInstallNamesOperation::apply(const QString &searchString, const Q
 int MacReplaceInstallNamesOperation::updateExecutableInfo(MacBinaryInfo *binaryInfo)
 {
     QProcessWrapper otool;
-    otool.start(QLatin1String("otool"), QStringList() << QLatin1String("-l") << binaryInfo->fileName);
+    otool.start(QLatin1String("xcrun"), QStringList(QLatin1String("otool")) << QLatin1String("-l") << binaryInfo->fileName);
     if (!otool.waitForStarted()) {
-        setError(UserDefinedError, tr("Cannot invoke otool. Is Xcode installed?"));
+        setError(UserDefinedError, tr("Cannot run otool. Is Xcode installed?"));
         return -1;
     }
     otool.waitForFinished();
@@ -201,8 +201,8 @@ void MacReplaceInstallNamesOperation::relocateBinary(const MacBinaryInfo &info, 
     if (!info.dynamicLibId.isEmpty() && (info.dynamicLibId != QFileInfo(info.fileName).fileName())
         && !info.dynamicLibId.contains(QLatin1String("@"))) {
             // error is set inside the execCommand method
-            if (!execCommand(QLatin1String("install_name_tool"), QStringList(QLatin1String("-id"))
-                    << info.fileName << info.fileName)) {
+            if (!execCommand(QLatin1String("xcrun"), QStringList(QLatin1String("install_name_tool"))
+                    << QLatin1String("-id") << info.fileName << info.fileName)) {
                 return;
             }
     }
@@ -220,7 +220,7 @@ void MacReplaceInstallNamesOperation::relocateBinary(const MacBinaryInfo &info, 
 
     // error is set inside the execCommand method
     // last argument is the file target which will be patched
-    execCommand(QLatin1String("install_name_tool"), args << info.fileName);
+    execCommand(QLatin1String("xcrun"), QStringList(QLatin1String("install_name_tool")) << args << info.fileName);
 }
 
 bool MacReplaceInstallNamesOperation::execCommand(const QString &cmd, const QStringList &args)
