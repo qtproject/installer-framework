@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Dynamic page installer example</DisplayName>
+    <Description>Can be used as reference on how to build installer independent of predefined installer pages.</Description>
+    <Version>1.0.0</Version>
+    <ReleaseDate>2014-04-07</ReleaseDate>
+    <Script>installscript.js</Script>
+    <UserInterfaces>
+        <UserInterface>targetwidget.ui</UserInterface>
+        <UserInterface>installationwidget.ui</UserInterface>
+        <UserInterface>licensewidget.ui</UserInterface>
+        <UserInterface>readytoinstallwidget.ui</UserInterface>
+    </UserInterfaces>
+    <Name>org.qtproject.ifw.example.dynamicpage</Name>
+</Package>

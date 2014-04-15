@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Dynamic Page Installer Example</Name>
+    <Version>1.0.0</Version>
+    <Title>Dynamic Page Installer Example</Title>
+    <Publisher>Qt-Project</Publisher>
+    <StartMenuDir>Qt Installer Framework Example</StartMenuDir>
+    <TargetDir>@HomeDir@/IFWDynamicPageInstallerExample</TargetDir>
+</Installer>

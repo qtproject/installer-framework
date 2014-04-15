@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Example Component 1</DisplayName>
+    <Description>Dummy component with default property set.</Description>
+    <Version>1.0.0</Version>
+    <ReleaseDate>2014-04-07</ReleaseDate>
+    <Default>true</Default>
+    <Script>installscript.qs</Script>
+    <Name>org.qtproject.ifw.example.dynamicpage.node1</Name>
+</Package>

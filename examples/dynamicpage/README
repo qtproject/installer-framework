@@ -1,0 +1,6 @@
+Shows how to build an installer from script side using dynamic pages.
+
+Generate installer with
+
+binarycreator --offline-only -c config/config.xml -r resources/additional.qrc -p packages installer
+
