@@ -171,8 +171,13 @@ public:
     QVariantHash m_data;
     bool m_replacementRepos;
 
-    QString makeAbsolutePath(const QString &path) const
+    QString absolutePathFromKey(const QString &key, const QString &suffix = QString()) const
     {
+        const QString value = m_data.value(key).toString();
+        if (value.isEmpty())
+            return QString();
+
+        const QString path = value + suffix;
         if (QFileInfo(path).isAbsolute())
             return path;
         return m_data.value(scPrefix).toString() + QLatin1String("/") + path;
@@ -296,7 +301,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
 
 QString Settings::logo() const
 {
-    return d->makeAbsolutePath(d->m_data.value(scLogo).toString());
+    return d->absolutePathFromKey(scLogo);
 }
 
 QString Settings::title() const
@@ -326,22 +331,22 @@ QString Settings::url() const
 
 QString Settings::watermark() const
 {
-    return d->makeAbsolutePath(d->m_data.value(scWatermark).toString());
+    return d->absolutePathFromKey(scWatermark);
 }
 
 QString Settings::banner() const
 {
-    return d->makeAbsolutePath(d->m_data.value(scBanner).toString());
+    return d->absolutePathFromKey(scBanner);
 }
 
 QString Settings::background() const
 {
-    return d->makeAbsolutePath(d->m_data.value(scBackground).toString());
+    return d->absolutePathFromKey(scBackground);
 }
 
 QString Settings::icon() const
 {
-    return d->makeAbsolutePath(d->m_data.value(scIcon).toString() + systemIconSuffix());
+    return d->absolutePathFromKey(scIcon, systemIconSuffix());
 }
 
 QString Settings::wizardStyle() const
@@ -356,12 +361,12 @@ QString Settings::titleColor() const
 
 QString Settings::installerApplicationIcon() const
 {
-    return d->makeAbsolutePath(d->m_data.value(scInstallerApplicationIcon).toString() + systemIconSuffix());
+    return d->absolutePathFromKey(scInstallerApplicationIcon, systemIconSuffix());
 }
 
 QString Settings::installerWindowIcon() const
 {
-    return d->makeAbsolutePath(d->m_data.value(scInstallerWindowIcon).toString());
+    return d->absolutePathFromKey(scInstallerWindowIcon);
 }
 
 QString Settings::systemIconSuffix() const
