@@ -299,17 +299,23 @@ public:
 
     void initializePage();
     bool validatePage();
+    bool isComplete() const;
 
 protected:
     void entering();
     void leaving();
 
 private Q_SLOTS:
-    void targetDirSelected();
     void dirRequested();
 
 private:
+    QString targetDirWarning() const;
+    bool askQuestion(const QString &identifier, const QString &message);
+    bool failWithError(const QString &identifier, const QString &message);
+
+private:
     QLineEdit *m_lineEdit;
+    QLabel *m_warningLabel;
 };
 
 

@@ -58,10 +58,6 @@
 #include <QStackedWidget>
 #include <QVBoxLayout>
 
-#ifdef Q_OS_WIN
-#include <qt_windows.h>
-#endif
-
 using namespace QInstaller;
 
 
@@ -369,155 +365,6 @@ void IntroductionPageImpl::showWidgets(bool show)
 }
 
 
-// -- TargetDirectoryPageImpl
-
-/*!
-    A custom target directory selection based due to the no-space restriction...
-*/
-TargetDirectoryPageImpl::TargetDirectoryPageImpl(PackageManagerCore *core)
-  : TargetDirectoryPage(core)
-{
-    QPalette palette;
-    palette.setColor(QPalette::WindowText, Qt::red);
-
-    m_warningLabel = new QLabel(this);
-    m_warningLabel->setPalette(palette);
-    m_warningLabel->setWordWrap(true);
-
-    insertWidget(m_warningLabel, QLatin1String("MessageLabel"), 2);
-}
-
-QString TargetDirectoryPageImpl::targetDirWarning() const
-{
-    if (targetDir().isEmpty()) {
-        return TargetDirectoryPageImpl::tr("The installation path cannot be empty, please specify a valid "
-            "folder.");
-    }
-
-    if (QDir(targetDir()).isRelative()) {
-        return TargetDirectoryPageImpl::tr("The installation path cannot be relative, please specify an "
-            "absolute path.");
-    }
-
-    QDir target(targetDir());
-    target = target.canonicalPath();
-
-    if (target.isRoot()) {
-        return TargetDirectoryPageImpl::tr("As the install directory is completely deleted, installing "
-            "in %1 is forbidden.").arg(QDir::toNativeSeparators(QDir::rootPath()));
-    }
-
-    if (target == QDir::home()) {
-        return TargetDirectoryPageImpl::tr("As the install directory is completely deleted, installing "
-            "in %1 is forbidden.").arg(QDir::toNativeSeparators(QDir::homePath()));
-    }
-
-    QString dir = QDir::toNativeSeparators(targetDir());
-#ifdef Q_OS_WIN
-    // folder length (set by user) + maintenance tool name length (no extension) + extra padding
-    if ((dir.length() + packageManagerCore()->settings().uninstallerName().length() + 20) >= MAX_PATH) {
-            return TargetDirectoryPageImpl::tr("The path you have entered is too long, please make sure to "
-                "specify a valid path.");
-    }
-
-    if (dir.count() >= 3 && dir.indexOf(QRegExp(QLatin1String("[a-zA-Z]:"))) == 0
-        && dir.at(2) != QLatin1Char('\\')) {
-            return TargetDirectoryPageImpl::tr("The path you have entered is not valid, please make sure to "
-                "specify a valid drive.");
-    }
-
-    // remove e.g. "c:"
-    dir = dir.mid(2);
-#endif
-
-    QString ambiguousChars = QLatin1String("[~<>|?*!@#$%^&:,; ]");
-    if (packageManagerCore()->settings().allowSpaceInPath())
-        ambiguousChars.remove(QLatin1Char(' '));
-
-    // check if there are not allowed characters in the target path
-    if (dir.contains(QRegExp(ambiguousChars))) {
-        return TargetDirectoryPageImpl::tr("The installation path must not contain %1, "
-            "please specify a valid folder.").arg(ambiguousChars);
-    }
-
-    dir = targetDir();
-    if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
-        for (int i = 0; i < dir.length(); ++i) {
-            if (dir.at(i).unicode() & 0xff80) {
-                return TargetDirectoryPageImpl::tr("The path or installation directory contains non ASCII "
-                    "characters. This is currently not supported! Please choose a different path or "
-                    "installation directory.");
-            }
-        }
-    }
-
-    return QString();
-}
-
-bool TargetDirectoryPageImpl::isComplete() const
-{
-    m_warningLabel->setText(targetDirWarning());
-    return m_warningLabel->text().isEmpty();
-}
-
-bool TargetDirectoryPageImpl::askQuestion(const QString &identifier, const QString &message)
-{
-    QMessageBox::StandardButton bt =
-        MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(), identifier,
-        TargetDirectoryPageImpl::tr("Warning"), message, QMessageBox::Yes | QMessageBox::No);
-    return bt == QMessageBox::Yes;
-}
-
-bool TargetDirectoryPageImpl::failWithError(const QString &identifier, const QString &message)
-{
-    MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), identifier,
-        TargetDirectoryPageImpl::tr("Error"), message);
-    return false;
-}
-
-bool TargetDirectoryPageImpl::validatePage()
-{
-    if (!isVisible())
-        return true;
-
-    const QString remove = packageManagerCore()->value(QLatin1String("RemoveTargetDir"));
-    if (!QVariant(remove).toBool())
-        return true;
-
-    const QString targetDir = this->targetDir();
-    const QDir dir(targetDir);
-    // the directory exists and is empty...
-    if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
-        return true;
-
-    const QFileInfo fi(targetDir);
-    if (fi.isDir()) {
-        QString fileName = packageManagerCore()->settings().uninstallerName();
-#if defined(Q_OS_MAC)
-        if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
-            fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
-#elif defined(Q_OS_WIN)
-        fileName += QLatin1String(".exe");
-#endif
-
-        QFileInfo fi2(targetDir + QDir::separator() + fileName);
-        if (fi2.exists()) {
-            return failWithError(QLatin1String("TargetDirectoryInUse"), tr("The folder you selected already "
-                "exists and contains an installation. Choose a different target for installation."));
-        }
-
-        return askQuestion(QLatin1String("OverwriteTargetDirectory"),
-            tr("You have selected an existing, non-empty folder for installation.\nNote that it will be "
-            "completely wiped on uninstallation of this application.\nIt is not advisable to install into "
-            "this folder as installation might fail.\nDo you want to continue?"));
-    } else if (fi.isFile() || fi.isSymLink()) {
-        return failWithError(QLatin1String("WrongTargetDirectory"), tr("You have selected an existing file "
-            "or symlink, please choose a different target for installation."));
-    }
-    return true;
-}
-
-
 // -- InstallerGui
 
 InstallerGui::InstallerGui(PackageManagerCore *core)
@@ -531,7 +378,7 @@ InstallerGui::InstallerGui(PackageManagerCore *core)
         setPage(id, page);
     }
     setPage(PackageManagerCore::Introduction, new IntroductionPageImpl(core));
-    setPage(PackageManagerCore::TargetDirectory, new TargetDirectoryPageImpl(core));
+    setPage(PackageManagerCore::TargetDirectory, new TargetDirectoryPage(core));
     setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
     setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
 #ifdef Q_OS_WIN

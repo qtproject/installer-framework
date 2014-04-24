@@ -106,26 +106,6 @@ private:
 };
 
 
-// --TargetDirectoryPageImpl
-
-class TargetDirectoryPageImpl : public QInstaller::TargetDirectoryPage
-{
-    Q_OBJECT
-
-public:
-    explicit TargetDirectoryPageImpl(QInstaller::PackageManagerCore *core);
-
-    QString targetDirWarning() const;
-    bool isComplete() const;
-    bool askQuestion(const QString &identifier, const QString &message);
-    bool failWithError(const QString &identifier, const QString &message);
-    bool validatePage();
-
-private:
-    QLabel *m_warningLabel;
-};
-
-
 // -- InstallerGui
 
 class InstallerGui : public QInstaller::PackageManagerGui

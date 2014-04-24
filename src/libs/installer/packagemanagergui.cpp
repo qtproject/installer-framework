@@ -77,6 +77,10 @@
 #include <QVBoxLayout>
 #include <QShowEvent>
 
+#ifdef Q_OS_WIN
+#   include <qt_windows.h>
+#endif
+
 using namespace KDUpdater;
 using namespace QInstaller;
 
@@ -1351,6 +1355,16 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     hlayout->addWidget(browseButton);
 
     layout->addLayout(hlayout);
+
+    QPalette palette;
+    palette.setColor(QPalette::WindowText, Qt::red);
+
+    m_warningLabel = new QLabel(this);
+    m_warningLabel->setPalette(palette);
+    m_warningLabel->setWordWrap(true);
+    m_warningLabel->setObjectName(QLatin1String("WarningLabel"));
+    layout->addWidget(m_warningLabel);
+
     setLayout(layout);
 }
 
@@ -1381,38 +1395,42 @@ void TargetDirectoryPage::initializePage()
 
 bool TargetDirectoryPage::validatePage()
 {
-    if (targetDir().isEmpty()) {
-        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("EmptyTargetDirectoryMessage"), tr("Error"), tr("The install directory "
-            "cannot be empty, please specify a valid folder."), QMessageBox::Ok);
-        return false;
-    }
-
-    const QDir dir(targetDir());
-    // it exists, but is empty (might be created by the Browse button (getExistingDirectory)
-    if (dir.exists() && dir.entryList(QDir::NoDotAndDotDot).isEmpty())
+    if (!isVisible())
         return true;
 
-    if (dir.exists() && dir.isReadable()) {
-        // it exists, but is not empty
-        if (dir == QDir::root()) {
-            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("ForbiddenTargetDirectoryMessage"), tr("Error"), tr("As the install "
-                "directory is completely deleted on uninstall, installing in %1 is forbidden.")
-                .arg(QDir::rootPath()),
-                QMessageBox::Ok);
-            return false;
+    const QString remove = packageManagerCore()->value(QLatin1String("RemoveTargetDir"));
+    if (!QVariant(remove).toBool())
+        return true;
+
+    const QString targetDir = this->targetDir();
+    const QDir dir(targetDir);
+    // the directory exists and is empty...
+    if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
+        return true;
+
+    const QFileInfo fi(targetDir);
+    if (fi.isDir()) {
+        QString fileName = packageManagerCore()->settings().uninstallerName();
+#if defined(Q_OS_MAC)
+        if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
+            fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
+#elif defined(Q_OS_WIN)
+        fileName += QLatin1String(".exe");
+#endif
+
+        QFileInfo fi2(targetDir + QDir::separator() + fileName);
+        if (fi2.exists()) {
+            return failWithError(QLatin1String("TargetDirectoryInUse"), tr("The folder you selected already "
+                "exists and contains an installation. Choose a different target for installation."));
         }
 
-        if (!QVariant(packageManagerCore()->value(scRemoveTargetDir)).toBool())
-            return true;
-
-        return MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("OverwriteTargetDirectoryMessage"), tr("Warning"), tr("You have "
-            "selected an existing, non-empty folder for installation. Note that it will be "
-            "completely wiped on uninstallation of this application. It is not advisable to "
-            "install into this folder as installation might fail. Do you want to continue?"),
-            QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
+        return askQuestion(QLatin1String("OverwriteTargetDirectory"),
+            tr("You have selected an existing, non-empty folder for installation.\nNote that it will be "
+            "completely wiped on uninstallation of this application.\nIt is not advisable to install into "
+            "this folder as installation might fail.\nDo you want to continue?"));
+    } else if (fi.isFile() || fi.isSymLink()) {
+        return failWithError(QLatin1String("WrongTargetDirectory"), tr("You have selected an existing file "
+            "or symlink, please choose a different target for installation."));
     }
     return true;
 }
@@ -1430,10 +1448,6 @@ void TargetDirectoryPage::leaving()
     packageManagerCore()->setValue(scTargetDir, targetDir());
 }
 
-void TargetDirectoryPage::targetDirSelected()
-{
-}
-
 void TargetDirectoryPage::dirRequested()
 {
     const QString newDirName = QFileDialog::getExistingDirectory(this,
@@ -1441,6 +1455,94 @@ void TargetDirectoryPage::dirRequested()
     if (newDirName.isEmpty() || newDirName == targetDir())
         return;
     m_lineEdit->setText(QDir::toNativeSeparators(newDirName));
+}
+
+bool TargetDirectoryPage::isComplete() const
+{
+    m_warningLabel->setText(targetDirWarning());
+    return m_warningLabel->text().isEmpty();
+}
+
+QString TargetDirectoryPage::targetDirWarning() const
+{
+    if (targetDir().isEmpty()) {
+        return tr("The installation path cannot be empty, please specify a valid "
+            "folder.");
+    }
+
+    if (QDir(targetDir()).isRelative()) {
+        return tr("The installation path cannot be relative, please specify an "
+            "absolute path.");
+    }
+
+    QDir target(targetDir());
+    target = target.canonicalPath();
+
+    if (target.isRoot()) {
+        return tr("As the install directory is completely deleted, installing "
+            "in %1 is forbidden.").arg(QDir::toNativeSeparators(QDir::rootPath()));
+    }
+
+    if (target == QDir::home()) {
+        return tr("As the install directory is completely deleted, installing "
+            "in %1 is forbidden.").arg(QDir::toNativeSeparators(QDir::homePath()));
+    }
+
+    QString dir = QDir::toNativeSeparators(targetDir());
+#ifdef Q_OS_WIN
+    // folder length (set by user) + maintenance tool name length (no extension) + extra padding
+    if ((dir.length() + packageManagerCore()->settings().uninstallerName().length() + 20) >= MAX_PATH) {
+            return tr("The path you have entered is too long, please make sure to "
+                "specify a valid path.");
+    }
+
+    if (dir.count() >= 3 && dir.indexOf(QRegExp(QLatin1String("[a-zA-Z]:"))) == 0
+        && dir.at(2) != QLatin1Char('\\')) {
+            return tr("The path you have entered is not valid, please make sure to "
+                "specify a valid drive.");
+    }
+
+    // remove e.g. "c:"
+    dir = dir.mid(2);
+#endif
+
+    QString ambiguousChars = QLatin1String("[~<>|?*!@#$%^&:,; ]");
+    if (packageManagerCore()->settings().allowSpaceInPath())
+        ambiguousChars.remove(QLatin1Char(' '));
+
+    // check if there are not allowed characters in the target path
+    if (dir.contains(QRegExp(ambiguousChars))) {
+        return tr("The installation path must not contain %1, "
+            "please specify a valid folder.").arg(ambiguousChars);
+    }
+
+    dir = targetDir();
+    if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
+        for (int i = 0; i < dir.length(); ++i) {
+            if (dir.at(i).unicode() & 0xff80) {
+                return tr("The path or installation directory contains non ASCII "
+                    "characters. This is currently not supported! Please choose a different path or "
+                    "installation directory.");
+            }
+        }
+    }
+
+    return QString();
+}
+
+bool TargetDirectoryPage::askQuestion(const QString &identifier, const QString &message)
+{
+    QMessageBox::StandardButton bt =
+        MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(), identifier,
+        tr("Warning"), message, QMessageBox::Yes | QMessageBox::No);
+    return bt == QMessageBox::Yes;
+}
+
+bool TargetDirectoryPage::failWithError(const QString &identifier, const QString &message)
+{
+    MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), identifier,
+        tr("Error"), message);
+    return false;
 }
 
 
