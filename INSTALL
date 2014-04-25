@@ -59,8 +59,11 @@ configure.exe -opensource -release -static -accessibility -no-multimedia -no-dec
 
 Recommended configure options for Linux and Mac OS X:
 
+Qt 4.8:
 configure -opensource -release -static -accessibility -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -no-svg -nomake examples -nomake demos
 
+Qt 5:
+configure -opensource -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-dbus -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip declarative
 
 Build the Framework
 ---------------------
