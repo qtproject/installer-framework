@@ -35,11 +35,11 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.targetDir(), QLatin1String("@rootDir@InstallationDirectory"));
 
     // default values
-    QCOMPARE(settings.logo(), QLatin1String(":///data/"));
+    QCOMPARE(settings.logo(), QString());
     QCOMPARE(settings.url(), QString());
-    QCOMPARE(settings.watermark(), QLatin1String(":///data/"));
-    QCOMPARE(settings.banner(), QLatin1String(":///data/"));
-    QCOMPARE(settings.background(), QLatin1String(":///data/"));
+    QCOMPARE(settings.watermark(), QString());
+    QCOMPARE(settings.banner(), QString());
+    QCOMPARE(settings.background(), QString());
 #if defined(Q_OS_WIN)
     QCOMPARE(settings.icon(), QLatin1String(":/installer.ico"));
     QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.ico"));
