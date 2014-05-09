@@ -289,8 +289,14 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 const QString repoUrl = metadata.repository.url().toString();
                 FileTaskItem item(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl,
                     packageName, (online ? packageVersion : QString())));
+
+                QAuthenticator authenticator;
+                authenticator.setUser(metadata.repository.username());
+                authenticator.setPassword(metadata.repository.password());
+
                 item.insert(TaskRole::UserRole, metadata.directory);
                 item.insert(TaskRole::Checksum, packageHash.toLatin1());
+                item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                 m_packages.append(item);
             }
         }
