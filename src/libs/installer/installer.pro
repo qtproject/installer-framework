@@ -44,7 +44,6 @@ HEADERS += packagemanagercore.h \
     binaryformatengine.h \
     binaryformatenginehandler.h \
     repository.h \
-    zipjob.h \
     utils.h \
     errors.h \
     component.h \
@@ -121,7 +120,6 @@ HEADERS += packagemanagercore.h \
     binaryformatengine.cpp \
     binaryformatenginehandler.cpp \
     repository.cpp \
-    zipjob.cpp \
     fileutils.cpp \
     utils.cpp \
     component.cpp \

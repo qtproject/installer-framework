@@ -105,8 +105,6 @@ public:
     qint64 size() const;
 
     bool createZippedFile();
-    bool isZippedDirectory() const;
-    bool copy(const QString &name);
 
     QByteArray name() const;
     void setName(const QByteArray &name);
