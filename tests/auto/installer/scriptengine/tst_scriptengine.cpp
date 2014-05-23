@@ -64,6 +64,44 @@ private slots:
         m_scriptEngine = m_core.componentScriptEngine();
     }
 
+    void testDefaultScriptEngineValues()
+    {
+        const QJSValue global = m_scriptEngine->globalObject();
+        QCOMPARE(global.hasProperty(QLatin1String("print")), true);
+
+        QCOMPARE(global.hasProperty(QLatin1String("installer")), true);
+        QCOMPARE(global.property(QLatin1String("installer"))
+            .hasProperty(QLatin1String("componentByName")), true);
+        QCOMPARE(global.property(QLatin1String("installer"))
+            .hasProperty(QLatin1String("components")), true);
+
+        QCOMPARE(global.hasProperty(QLatin1String("console")), true);
+        QCOMPARE(global.property(QLatin1String("console"))
+            .hasProperty(QLatin1String("log")), true);
+
+        QCOMPARE(global.hasProperty(QLatin1String("QFileDialog")), true);
+        QCOMPARE(global.property(QLatin1String("QFileDialog"))
+            .hasProperty(QLatin1String("getExistingDirectory")), true);
+        QCOMPARE(global.property(QLatin1String("QFileDialog"))
+            .hasProperty(QLatin1String("getOpenFileName")), true);
+
+        QCOMPARE(global.hasProperty(QLatin1String("InstallerProxy")), true);
+        QCOMPARE(global.property(QLatin1String("InstallerProxy"))
+            .hasProperty(QLatin1String("componentByName")), true);
+
+        QCOMPARE(global.hasProperty(QLatin1String("QDesktopServices")), true);
+        QCOMPARE(global.property(QLatin1String("QDesktopServices"))
+            .hasProperty(QLatin1String("openUrl")), true);
+        QCOMPARE(global.property(QLatin1String("QDesktopServices"))
+            .hasProperty(QLatin1String("displayName")), true);
+        QCOMPARE(global.property(QLatin1String("QDesktopServices"))
+            .hasProperty(QLatin1String("storageLocation")), true);
+
+        QCOMPARE(global.hasProperty(QLatin1String("buttons")), true);
+        QCOMPARE(global.hasProperty(QLatin1String("QInstaller")), true);
+        QCOMPARE(global.hasProperty(QLatin1String("QMessageBox")), true);
+    }
+
     void testBrokenJSMethodConnect()
     {
         EmitSignalObject emiter;
