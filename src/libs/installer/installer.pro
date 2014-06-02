@@ -110,7 +110,8 @@ HEADERS += packagemanagercore.h \
     observer.h \
     runextensions.h \
     metadatajob.h \
-    metadatajob_p.h
+    metadatajob_p.h \
+    installer_global.h
 
     SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
