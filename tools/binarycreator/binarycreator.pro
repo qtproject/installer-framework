@@ -5,7 +5,7 @@ INCLUDEPATH += . .. rcc ../common
 include(../../installerfw.pri)
 
 QT -= gui
-QT += script xml
+QT += qml xml
 
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH

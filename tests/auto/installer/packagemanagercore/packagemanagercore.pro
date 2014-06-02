@@ -1,6 +1,6 @@
 include(../../qttest.pri)
 
-QT += script
+QT += qml
 
 SOURCES += tst_packagemanagercore.cpp
 

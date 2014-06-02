@@ -1,7 +1,7 @@
 include(../../qttest.pri)
 
 QT -= gui
-QT += testlib
+QT += testlib qml
 
 SOURCES = tst_consumeoutputoperationtest.cpp
 

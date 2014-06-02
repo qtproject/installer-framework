@@ -51,9 +51,6 @@
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
 
-#include <QtScript/QScriptable>
-#include <QtScript/QScriptValueList>
-
 QT_FORWARD_DECLARE_CLASS(QDebug)
 
 namespace KDUpdater {
@@ -65,7 +62,7 @@ namespace QInstaller {
 
 class PackageManagerCore;
 
-class INSTALLER_EXPORT Component : public QObject, public QScriptable, public ComponentModelHelper
+class INSTALLER_EXPORT Component : public QObject, public ComponentModelHelper
 {
     Q_OBJECT
     Q_DISABLE_COPY(Component)

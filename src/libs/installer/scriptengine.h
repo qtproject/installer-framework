@@ -44,46 +44,47 @@
 
 #include "qinstallerglobal.h"
 
-#include <QtScript/QScriptEngine>
+#include <QJSValue>
+#include <QJSEngine>
 
 namespace QInstaller {
 
-QString INSTALLER_EXPORT uncaughtExceptionString(const QScriptEngine *scriptEngine, const QString &context = QString());
-QScriptValue INSTALLER_EXPORT qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine);
-
-QScriptValue INSTALLER_EXPORT qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *engine);
-QScriptValue INSTALLER_EXPORT qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine *engine);
-QScriptValue INSTALLER_EXPORT qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine);
-
-QScriptValue INSTALLER_EXPORT qFileDialogGetExistingDirectory(QScriptContext *context, QScriptEngine *engine);
-QScriptValue INSTALLER_EXPORT qFileDialogGetOpenFileName(QScriptContext *context, QScriptEngine *engine);
-
-QScriptValue INSTALLER_EXPORT checkArguments(QScriptContext *context, int minimalArgumentCount, int maximalArgumentCount);
-
 class PackageManagerCore;
 
-class INSTALLER_EXPORT ScriptEngine : public QScriptEngine
+class INSTALLER_EXPORT ScriptEngine : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(ScriptEngine)
 
 public:
-    explicit ScriptEngine(PackageManagerCore *core);
-    ~ScriptEngine();
-    QScriptValue callScriptMethod(const QScriptValue &scriptContext, const QString &methodName,
-        const QScriptValueList &arguments = QScriptValueList()) const;
+    explicit ScriptEngine(PackageManagerCore *core = 0);
 
-    QScriptValue loadInConext(const QString &context, const QString &fileName, const QString &scriptInjection = QString());
+    QJSValue globalObject() const { return m_engine.globalObject(); }
+    QJSValue newQObject(QObject *object) { return m_engine.newQObject(object); }
+    QJSValue evaluate(const QString &program, const QString &fileName = QString(),
+        int lineNumber = 1);
+
+    void addQObjectChildren(QObject *root);
+    QJSValue loadInContext(const QString &context, const QString &fileName,
+        const QString &scriptInjection = QString());
+    QJSValue callScriptMethod(const QJSValue &context, const QString &methodName,
+        const QJSValueList &arguments = QJSValueList());
+
 private slots:
-    void handleException(const QScriptValue &value);
     void setGuiQObject(QObject *guiQObject);
+
 private:
-    QScriptValue generateWizardButtonsObject();
-    QScriptValue generateMessageBoxObject();
-    QScriptValue generateDesktopServicesObject();
-    QScriptValue generateQInstallerObject();
-    PackageManagerCore *m_core;
+    QJSValue generateMessageBoxObject();
+    QJSValue generateQInstallerObject();
+    QJSValue generateWizardButtonsObject();
+    QJSValue generateDesktopServicesObject();
+
+private:
+    QJSEngine m_engine;
+    QHash<QString, QStringList> m_callstack;
 };
+
 }
+Q_DECLARE_METATYPE(QInstaller::ScriptEngine*)
 
 #endif // SCRIPTENGINE_H

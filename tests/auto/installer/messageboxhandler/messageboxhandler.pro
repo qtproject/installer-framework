@@ -1,5 +1,5 @@
 include(../../qttest.pri)
 
-QT += script widgets
+QT += qml widgets
 
 SOURCES += tst_messageboxhandler.cpp

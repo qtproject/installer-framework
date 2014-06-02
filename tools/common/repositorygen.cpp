@@ -310,12 +310,12 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             foundDownloadableArchives |= scriptContent.contains(QLatin1String("addDownloadableArchive"))
                 || scriptContent.contains(QLatin1String("removeDownloadableArchive"));
 
-            static QScriptEngine testScriptEngine;
-            testScriptEngine.evaluate(scriptContent, scriptFile.fileName());
-            if (testScriptEngine.hasUncaughtException()) {
+            static QInstaller::ScriptEngine testScriptEngine;
+            const QJSValue value = testScriptEngine.evaluate(scriptContent, scriptFile.fileName());
+            if (value.isError()) {
                 throw QInstaller::Error(QString::fromLatin1("Exception while loading component "
-                    "script: '%1'").arg(QInstaller::uncaughtExceptionString(&testScriptEngine,
-                    scriptFile.fileName())));
+                    "script: '%1'. (%2)").arg(scriptFile.fileName(), value.toString().isEmpty() ?
+                    QString::fromLatin1("Unknown error.") : value.toString()));
             }
 
             // add RequiresAdminRights tag to xml if addElevatedOperation is used somewhere

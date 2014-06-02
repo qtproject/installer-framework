@@ -488,10 +488,9 @@ void Component::loadComponentScript(const QString &fileName)
 {
     // introduce the component object as javascript value and call the name to check that it
     // was successful
-    QString scriptInjection(QString::fromLatin1(
-        "var component = installer.componentByName('%1'); component.name;").arg(name()));
-
-    d->m_scriptContext = d->scriptEngine()->loadInConext(QLatin1String("Component"), fileName, scriptInjection);
+    d->m_scriptContext = d->scriptEngine()->loadInContext(QLatin1String("Component"), fileName,
+        QString::fromLatin1("var component = installer.componentByName('%1'); component.name;")
+        .arg(name()));
 
     emit loaded();
     languageChanged();
@@ -650,9 +649,9 @@ void Component::createOperationsForPath(const QString &path)
         return;
 
     // the script can override this method
-    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
-        QLatin1String("createOperationsForPath"), QScriptValueList() << path).isValid()) {
-        return;
+    if (!d->scriptEngine()->callScriptMethod(d->m_scriptContext,
+        QLatin1String("createOperationsForPath"), QJSValueList() << path).isUndefined()) {
+            return;
     }
 
     QString target;
@@ -695,9 +694,9 @@ void Component::createOperationsForArchive(const QString &archive)
         return;
 
     // the script can override this method
-    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
-        QLatin1String("createOperationsForArchive"), QScriptValueList() << archive).isValid()) {
-        return;
+    if (!d->scriptEngine()->callScriptMethod(d->m_scriptContext,
+        QLatin1String("createOperationsForArchive"), QJSValueList() << archive).isUndefined()) {
+            return;
     }
 
     const bool isZip = Lib7z::isSupportedArchive(archive);
@@ -729,10 +728,7 @@ void Component::createOperationsForArchive(const QString &archive)
 void Component::beginInstallation()
 {
     // the script can override this method
-    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
-        QLatin1String("beginInstallation")).isValid()) {
-        return;
-    }
+    d->scriptEngine()->callScriptMethod(d->m_scriptContext, QLatin1String("beginInstallation"));
 }
 
 /*!
@@ -748,10 +744,10 @@ void Component::beginInstallation()
 void Component::createOperations()
 {
     // the script can override this method
-    if (d->scriptEngine()->callScriptMethod(d->m_scriptContext,
-        QLatin1String("createOperations")).isValid()) {
-        d->m_operationsCreated = true;
-        return;
+    if (!d->scriptEngine()->callScriptMethod(d->m_scriptContext, QLatin1String("createOperations"))
+        .isUndefined()) {
+            d->m_operationsCreated = true;
+            return;
     }
 
     foreach (const QString &archive, archives())
@@ -1110,8 +1106,7 @@ void Component::setValidatorCallbackName(const QString &name)
 bool Component::validatePage()
 {
     if (!validatorCallbackName.isEmpty())
-        return d->scriptEngine()->callScriptMethod(
-            d->m_scriptContext, validatorCallbackName).toBool();
+        return d->scriptEngine()->callScriptMethod(d->m_scriptContext, validatorCallbackName).toBool();
     return true;
 }
 
@@ -1189,7 +1184,7 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
 
     // The script can override this method and determines if the component needs to be installed.
     if (autoDependOnList.first().compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
-        QScriptValue valueFromScript;
+        QJSValue valueFromScript;
         try {
             valueFromScript = d->scriptEngine()->callScriptMethod(d->m_scriptContext,
                 QLatin1String("isAutoDependOn"));
@@ -1200,9 +1195,10 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
             return false;
         }
 
-        if (valueFromScript.isValid())
+        if (!valueFromScript.isError())
             return valueFromScript.toBool();
-        qDebug() << "value from script is not valid";
+        qDebug() << "Value from script is not valid." << (valueFromScript.toString().isEmpty()
+            ? QString::fromLatin1("Unknown error.") : valueFromScript.toString());
         return false;
     }
 
@@ -1239,7 +1235,7 @@ bool Component::isDefault() const
 
     // the script can override this method
     if (d->m_vars.value(scDefault).compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
-        QScriptValue valueFromScript;
+        QJSValue valueFromScript;
         try {
             valueFromScript = d->scriptEngine()->callScriptMethod(d->m_scriptContext,
                 QLatin1String("isDefault"));
@@ -1249,9 +1245,10 @@ bool Component::isDefault() const
                     error.message());
             return false;
         }
-        if (valueFromScript.isValid())
+        if (!valueFromScript.isError())
             return valueFromScript.toBool();
-        qDebug() << "value from script is not valid";
+        qDebug() << "Value from script is not valid." << (valueFromScript.toString().isEmpty()
+            ? QString::fromLatin1("Unknown error.") : valueFromScript.toString());
         return false;
     }
 

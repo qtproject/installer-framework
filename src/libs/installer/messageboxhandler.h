@@ -47,11 +47,10 @@
 #include <QHash>
 #include <QMessageBox>
 #include <QObject>
-#include <QScriptable>
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT MessageBoxHandler : public QObject, private QScriptable
+class INSTALLER_EXPORT MessageBoxHandler : public QObject
 {
     Q_OBJECT
 
@@ -134,5 +133,7 @@ private:
 };
 
 }
+Q_DECLARE_METATYPE(QMessageBox::StandardButton)
+Q_DECLARE_METATYPE(QMessageBox::StandardButtons)
 
 #endif // QINSTALLER_MESSAGEBOXHANDLER_H

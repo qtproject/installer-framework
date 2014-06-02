@@ -29,7 +29,7 @@ DLLDESTDIR = $$IFW_APP_PATH
 DEFINES += BUILD_LIB_INSTALLER
 
 QT += \
-    script \
+    qml \
     network \
     xml \
     concurrent \
@@ -111,7 +111,8 @@ HEADERS += packagemanagercore.h \
     runextensions.h \
     metadatajob.h \
     metadatajob_p.h \
-    installer_global.h
+    installer_global.h \
+    scriptengine_p.h
 
     SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \

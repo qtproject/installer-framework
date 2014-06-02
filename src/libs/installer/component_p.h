@@ -44,8 +44,8 @@
 
 #include "qinstallerglobal.h"
 
+#include <QJSValue>
 #include <QPointer>
-#include <QScriptValue>
 #include <QStringList>
 #include <QUrl>
 
@@ -80,7 +80,7 @@ public:
     QString m_componentName;
     QUrl m_repositoryUrl;
     QString m_localTempPath;
-    QScriptValue m_scriptContext;
+    QJSValue m_scriptContext;
     QHash<QString, QString> m_vars;
     QList<Component*> m_childComponents;
     QList<Component*> m_allChildComponents;

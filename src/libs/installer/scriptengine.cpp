@@ -40,201 +40,94 @@
 **************************************************************************/
 #include "scriptengine.h"
 
-#include "component.h"
-#include "globals.h"
-#include "packagemanagercore.h"
 #include "messageboxhandler.h"
 #include "errors.h"
+#include "scriptengine_p.h"
 
-#include <QDesktopServices>
-#include <QFileDialog>
 #include <QMetaEnum>
+#include <QQmlEngine>
+#include <QUuid>
 #include <QWizard>
 
-using namespace QInstaller;
-
 namespace QInstaller {
-
-QString uncaughtExceptionString(const QScriptEngine *scriptEngine, const QString &context)
-{
-    QString error(QLatin1String("\n\n%1\n\nBacktrace:\n\t%2"));
-    if (!context.isEmpty())
-        error.prepend(context);
-
-    return error.arg(scriptEngine->uncaughtException().toString(), scriptEngine->uncaughtExceptionBacktrace()
-        .join(QLatin1String("\n\t")));
-}
-
-/*!
-    Scriptable version of PackageManagerCore::componentByName(QString).
-    \sa PackageManagerCore::componentByName
- */
-QScriptValue qInstallerComponentByName(QScriptContext *context, QScriptEngine *engine)
-{
-    const QScriptValue check = checkArguments(context, 1, 1);
-    if (check.isError())
-        return check;
-
-    // well... this is our "this" pointer
-    PackageManagerCore *const core = qobject_cast<PackageManagerCore*>(engine->globalObject()
-        .property(QLatin1String("installer")).toQObject());
-
-    const QString name = context->argument(0).toString();
-    return engine->newQObject(core->componentByName(name));
-}
-
-QScriptValue checkArguments(QScriptContext *context, int minimalArgumentCount, int maximalArgumentCount)
-{
-    if (context->argumentCount() < minimalArgumentCount || context->argumentCount() > maximalArgumentCount) {
-        if (minimalArgumentCount != maximalArgumentCount) {
-            return context->throwError(QObject::tr("Invalid arguments: %1 arguments given, %2 to "
-                "%3 expected.").arg(QString::number(context->argumentCount()),
-                QString::number(minimalArgumentCount), QString::number(maximalArgumentCount)));
-        }
-        return context->throwError(QObject::tr("Invalid arguments: %1 arguments given, %2 expected.")
-            .arg(QString::number(context->argumentCount()), QString::number(minimalArgumentCount)));
-    }
-    return QScriptValue();
-}
-
-QScriptValue qDesktopServicesOpenUrl(QScriptContext *context, QScriptEngine *engine)
-{
-    Q_UNUSED(engine);
-    const QScriptValue check = checkArguments(context, 1, 1);
-    if (check.isError())
-        return check;
-    QString url = context->argument(0).toString();
-    url.replace(QLatin1String("\\\\"), QLatin1String("/"));
-    url.replace(QLatin1String("\\"), QLatin1String("/"));
-    return QDesktopServices::openUrl(QUrl::fromUserInput(url));
-}
-
-QScriptValue qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine *engine)
-{
-    Q_UNUSED(engine);
-    const QScriptValue check = checkArguments(context, 1, 1);
-    if (check.isError())
-        return check;
-
-    const QStandardPaths::StandardLocation location =
-        static_cast< QStandardPaths::StandardLocation >(context->argument(0).toInt32());
-    return QStandardPaths::displayName(location);
-}
-
-QScriptValue qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine)
-{
-    Q_UNUSED(engine);
-    const QScriptValue check = checkArguments(context, 1, 1);
-    if (check.isError())
-        return check;
-
-    const QStandardPaths::StandardLocation location =
-        static_cast< QStandardPaths::StandardLocation >(context->argument(0).toInt32());
-    return QStandardPaths::writableLocation(location);
-}
-
-QScriptValue qFileDialogGetExistingDirectory(QScriptContext *context, QScriptEngine *engine)
-{
-    Q_UNUSED(engine);
-    const QScriptValue check = checkArguments(context, 0, 2);
-    if (check.isError())
-        return check;
-    QString caption;
-    QString dir;
-    if (context->argumentCount() > 0)
-        caption = context->argument(0).toString();
-    if (context->argumentCount() > 1)
-        dir = context->argument(1).toString();
-    return QFileDialog::getExistingDirectory(0, caption, dir);
-}
-
-QScriptValue qFileDialogGetOpenFileName(QScriptContext *context, QScriptEngine *engine)
-{
-    Q_UNUSED(engine);
-    const QScriptValue check = checkArguments(context, 0, 3);
-    if (check.isError())
-        return check;
-    QString caption;
-    QString dir;
-    QString fileNameFilter;
-    if (context->argumentCount() > 0)
-        caption = context->argument(0).toString();
-    if (context->argumentCount() > 1)
-        dir = context->argument(1).toString();
-    if (context->argumentCount() > 2)
-        fileNameFilter = context->argument(2).toString();
-    return QFileDialog::getOpenFileName(0, caption, dir, fileNameFilter);
-}
-
-} //namespace QInstaller
-
 
 /*!
     \class QInstaller::ScriptEngine
     prepare and run the component scripts
 */
 ScriptEngine::ScriptEngine(PackageManagerCore *core)
-    : QScriptEngine(core)
-    , m_core(core)
+    : QObject(core)
 {
-    // register translation stuff
-    installTranslatorFunctions();
+    QJSValue global = m_engine.globalObject();
+    global.setProperty(QLatin1String("console"), m_engine.newQObject(new ConsoleProxy));
+    global.setProperty(QLatin1String("QFileDialog"), m_engine.newQObject(new QFileDialogProxy));
+    const QJSValue proxy = m_engine.newQObject(new InstallerProxy(&m_engine, core));
+    global.setProperty(QLatin1String("InstallerProxy"), proxy);
+    global.setProperty(QLatin1String("print"), m_engine.newQObject(new ConsoleProxy)
+        .property(QLatin1String("log")));
 
-    globalObject().setProperty(QLatin1String("QMessageBox"), generateMessageBoxObject());
-    globalObject().setProperty(QLatin1String("buttons"), generateWizardButtonsObject());
-    globalObject().setProperty(QLatin1String("QDesktopServices"), generateDesktopServicesObject());
-    globalObject().setProperty(QLatin1String("QInstaller"), generateQInstallerObject());
+    global.setProperty(QLatin1String("QInstaller"), generateQInstallerObject());
+    global.setProperty(QLatin1String("buttons"), generateWizardButtonsObject());
+    global.setProperty(QLatin1String("QMessageBox"), generateMessageBoxObject());
+    global.setProperty(QLatin1String("QDesktopServices"), generateDesktopServicesObject());
 
-    QScriptValue installerObject = newQObject(m_core);
-    installerObject.setProperty(QLatin1String("componentByName"), newFunction(qInstallerComponentByName, 1));
+    if (core) {
+        setGuiQObject(core->guiObject());
+        QQmlEngine::setObjectOwnership(core, QQmlEngine::CppOwnership);
+        global.setProperty(QLatin1String("installer"), m_engine.newQObject(core));
+        connect(core, SIGNAL(guiObjectChanged(QObject*)), this, SLOT(setGuiQObject(QObject*)));
 
-    globalObject().setProperty(QLatin1String("installer"), installerObject);
+        const QList<Component*> components = core->availableComponents();
+        QJSValue scriptComponentsObject = m_engine.newArray(components.count());
+        for (int i = 0; i < components.count(); ++i)
+            scriptComponentsObject.setProperty(i, newQObject(components[i]));
+        global.property(QLatin1String("installer")).setProperty(QLatin1String("components"),
+            scriptComponentsObject);
+    } else {
+        global.setProperty(QLatin1String("installer"), m_engine.newQObject(new QObject));
+    }
 
-    QScriptValue fileDialog = newArray();
-    fileDialog.setProperty(QLatin1String("getExistingDirectory"),
-        newFunction(qFileDialogGetExistingDirectory));
-    fileDialog.setProperty(QLatin1String("getOpenFileName"),
-        newFunction(qFileDialogGetOpenFileName));
-    globalObject().setProperty(QLatin1String("QFileDialog"), fileDialog);
-
-    const QList<Component*> components = m_core->availableComponents();
-    QScriptValue scriptComponentsObject = newArray(components.count());
-    for (int i = 0; i < components.count(); ++i)
-        scriptComponentsObject.setProperty(i, newQObject(components[i]));
-
-    globalObject().property(QLatin1String("installer"))
-        .setProperty(QLatin1String("components"), scriptComponentsObject);
-
-    connect(this, SIGNAL(signalHandlerException(QScriptValue)), SLOT(handleException(QScriptValue)));
-
-    connect(core, SIGNAL(guiObjectChanged(QObject*)), this, SLOT(setGuiQObject(QObject*)));
-    setGuiQObject(core->guiObject());
+    global.property(QLatin1String("installer")).setProperty(QLatin1String("componentByName"),
+        proxy.property(QLatin1String("componentByName")));
 }
 
-ScriptEngine::~ScriptEngine()
+QJSValue ScriptEngine::evaluate(const QString &program, const QString &fileName, int lineNumber)
 {
+    return m_engine.evaluate(program, fileName, lineNumber);
 }
 
-void ScriptEngine::setGuiQObject(QObject *guiQObject)
+void ScriptEngine::addQObjectChildren(QObject *root)
 {
-    globalObject().setProperty(QLatin1String("gui"), newQObject(guiQObject));
+    if ((!root) || root->objectName().isEmpty())
+        return;
+
+    const QObjectList children = root->children();
+    QJSValue jsParent = newQObject(root);
+    m_engine.globalObject().setProperty(root->objectName(), jsParent);
+
+    foreach (QObject *const child, children) {
+        if (child->objectName().isEmpty())
+            continue;
+        jsParent.setProperty(child->objectName(), m_engine.newQObject(child));
+        addQObjectChildren(child);
+    }
 }
 
 /*!
     Loads a script into the given \a context at \a fileName inside the ScriptEngine.
 
-    The installer and all its components as well as other useful stuff are being exported into the script.
-    Read \link componentscripting Component Scripting \endlink for details.
+    The installer and all its components as well as other useful stuff are being exported into the
+    script. Read \link componentscripting Component Scripting \endlink for details.
     \throws Error when either the script at \a fileName couldn't be opened, or the QScriptEngine
     couldn't evaluate the script.
 */
-QScriptValue ScriptEngine::loadInConext(const QString &context, const QString &fileName,
+QJSValue ScriptEngine::loadInContext(const QString &context, const QString &fileName,
     const QString &scriptInjection)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        throw Error(tr("Could not open the requested script file at %1: %2.").arg(
-            fileName, file.errorString()));
+        throw Error(tr("Could not open the requested script file at %1: %2.")
+            .arg(fileName, file.errorString()));
     }
 
     // Create a closure. Put the content in the first line to keep line number order in case of an
@@ -248,149 +141,162 @@ QScriptValue ScriptEngine::loadInConext(const QString &context, const QString &f
         "    else"
         "        throw \"Missing Component constructor. Please check your script.\";"
         "})();").arg(context);
-    QScriptValue scriptContext = evaluate(scriptContent, fileName);
-
-    if (hasUncaughtException()) {
-        throw Error(tr("Exception while loading the component script: '%1'").arg(
-            uncaughtExceptionString(this, QFileInfo(file).absoluteFilePath())));
-    }
-    if (!scriptContext.isValid()) {
-        throw Error(tr("Could not load the component script inside a script context: '%1'").arg(
-            QFileInfo(file).absoluteFilePath()));
+    QJSValue scriptContext = evaluate(scriptContent, fileName);
+    scriptContext.setProperty(QLatin1String("Uuid"), QUuid::createUuid().toString());
+    if (scriptContext.isError()) {
+        throw Error(tr("Exception while loading the component script '%1'. (%2)").arg(
+            QFileInfo(file).absoluteFilePath(), scriptContext.toString().isEmpty() ?
+            QString::fromLatin1("Unknown error.") : scriptContext.toString()));
     }
     return scriptContext;
 }
 
-void ScriptEngine::handleException(const QScriptValue &value)
-{
-    if (!value.engine())
-        return;
-    throw Error(uncaughtExceptionString(this, tr("Fatal error while evaluating a script.")));
-}
-
 /*!
     Tries to call the method with \a name within the script and returns the result. If the method
-    doesn't exist, an invalid result is returned. If the method has an uncaught exception, its
-    string representation is thrown as an Error exception.
+    doesn't exist or is not callable, an undefined result is returned. If the call to the method
+    succeeds and the return value is still undefined, a null value will be returned instead.
+    If the method call has an exception, its string representation is thrown as an Error exception.
 
     \note The method is not called, if the current script context is the same method, to avoid
     infinite recursion.
 */
-QScriptValue ScriptEngine::callScriptMethod(const QScriptValue &scriptContext,
-    const QString &methodName, const QScriptValueList &arguments) const
+QJSValue ScriptEngine::callScriptMethod(const QJSValue &scriptContext, const QString &methodName,
+    const QJSValueList &arguments)
 {
-    // don't allow such a recursion
-    if (currentContext()->backtrace().first().startsWith(methodName))
-        return QScriptValue();
+    // don't allow a recursion
+    const QString key = scriptContext.property(QLatin1String("Uuid")).toString();
+    QStringList stack = m_callstack.value(key);
+    if (m_callstack.contains(key) && stack.value(stack.size() - 1).startsWith(methodName))
+        return QJSValue(QJSValue::UndefinedValue);
 
-    QScriptValue method = scriptContext.property(methodName);
-    // this marks the method to be called not any longer
-    if (!method.isValid())
-        return QScriptValue();
+    stack.append(methodName);
+    m_callstack.insert(key, stack);
 
-    const QScriptValue result = method.call(scriptContext, arguments);
-    if (!result.isValid())
-        return result;
+    QJSValue method = scriptContext.property(methodName);
+    if (!method.isCallable())
+        return QJSValue(QJSValue::UndefinedValue);
+    if (method.isError()) {
+        throw Error(method.toString().isEmpty() ? QString::fromLatin1("Unknown error.")
+            : method.toString());
+    }
 
-    if (hasUncaughtException())
-        throw Error(uncaughtExceptionString(this));
+    const QJSValue result = method.call(arguments);
+    if (result.isError()) {
+        throw Error(result.toString().isEmpty() ? QString::fromLatin1("Unknown error.")
+            : result.toString());
+    }
 
-    return result;
+    stack.removeLast();
+    m_callstack.insert(key, stack);
+    return result.isUndefined() ? QJSValue(QJSValue::NullValue) : result;
 }
 
 
-QScriptValue ScriptEngine::generateWizardButtonsObject()
+// -- private slots
+
+void ScriptEngine::setGuiQObject(QObject *guiQObject)
 {
-#undef REGISTER_BUTTON
-#define REGISTER_BUTTON(x)    buttons.setProperty(QLatin1String(#x), \
-    newVariant(static_cast<int>(QWizard::x)));
+    QQmlEngine::setObjectOwnership(guiQObject, QQmlEngine::CppOwnership);
+    m_engine.globalObject().setProperty(QLatin1String("gui"), m_engine.newQObject(guiQObject));
+}
 
-    QScriptValue buttons = newArray();
-    REGISTER_BUTTON(BackButton)
-    REGISTER_BUTTON(NextButton)
-    REGISTER_BUTTON(CommitButton)
-    REGISTER_BUTTON(FinishButton)
-    REGISTER_BUTTON(CancelButton)
-    REGISTER_BUTTON(HelpButton)
-    REGISTER_BUTTON(CustomButton1)
-    REGISTER_BUTTON(CustomButton2)
-    REGISTER_BUTTON(CustomButton3)
 
-#undef REGISTER_BUTTON
+// -- private
+
+#undef SETPROPERTY
+#define SETPROPERTY(a, x, t) a.setProperty(QLatin1String(#x), QJSValue(t::x));
+
+QJSValue ScriptEngine::generateWizardButtonsObject()
+{
+    QJSValue buttons = m_engine.newArray();
+    SETPROPERTY(buttons, BackButton, QWizard)
+    SETPROPERTY(buttons, NextButton, QWizard)
+    SETPROPERTY(buttons, CommitButton, QWizard)
+    SETPROPERTY(buttons, FinishButton, QWizard)
+    SETPROPERTY(buttons, CancelButton, QWizard)
+    SETPROPERTY(buttons, HelpButton, QWizard)
+    SETPROPERTY(buttons, CustomButton1, QWizard)
+    SETPROPERTY(buttons, CustomButton2, QWizard)
+    SETPROPERTY(buttons, CustomButton3, QWizard)
     return buttons;
 }
 
 /*!
     generates QMessageBox::StandardButton enum as an QScriptValue array
 */
-QScriptValue ScriptEngine::generateMessageBoxObject()
+QJSValue ScriptEngine::generateMessageBoxObject()
 {
-    // register QMessageBox::StandardButton enum in the script connection
-    QScriptValue messageBox = newQObject(MessageBoxHandler::instance());
+    QJSValue messageBox = m_engine.newQObject(MessageBoxHandler::instance());
 
     const QMetaObject &messageBoxMetaObject = QMessageBox::staticMetaObject;
-    int index = messageBoxMetaObject.indexOfEnumerator("StandardButtons");
+    const int index = messageBoxMetaObject.indexOfEnumerator("StandardButtons");
 
-    QMetaEnum metaEnum = messageBoxMetaObject.enumerator(index);
+    QJSValue value = m_engine.newArray();
+    value.setProperty(QLatin1String("NoButton"), QJSValue(QMessageBox::NoButton));
+
+    const QMetaEnum metaEnum = messageBoxMetaObject.enumerator(index);
     for (int i = 0; i < metaEnum.keyCount(); i++) {
-        int enumValue = metaEnum.value(i);
-        if (enumValue < QMessageBox::FirstButton)
-            continue;
-        messageBox.setProperty(QLatin1String(metaEnum.valueToKey(metaEnum.value(i))), newVariant(enumValue));
+        const int enumValue = metaEnum.value(i);
+        if (enumValue >= QMessageBox::FirstButton)
+            value.setProperty(QLatin1String(metaEnum.valueToKey(enumValue)), QJSValue(enumValue));
         if (enumValue == QMessageBox::LastButton)
             break;
     }
 
+    messageBox.setPrototype(value);
     return messageBox;
 }
 
-QScriptValue ScriptEngine::generateDesktopServicesObject()
+QJSValue ScriptEngine::generateDesktopServicesObject()
 {
-    QScriptValue desktopServices = newArray();
-    desktopServices.setProperty(QLatin1String("DesktopLocation"), QStandardPaths::DesktopLocation);
-    desktopServices.setProperty(QLatin1String("DesktopLocation"), QStandardPaths::DesktopLocation);
-    desktopServices.setProperty(QLatin1String("DocumentsLocation"), QStandardPaths::DocumentsLocation);
-    desktopServices.setProperty(QLatin1String("FontsLocation"), QStandardPaths::FontsLocation);
-    desktopServices.setProperty(QLatin1String("ApplicationsLocation"), QStandardPaths::ApplicationsLocation);
-    desktopServices.setProperty(QLatin1String("MusicLocation"), QStandardPaths::MusicLocation);
-    desktopServices.setProperty(QLatin1String("MoviesLocation"), QStandardPaths::MoviesLocation);
-    desktopServices.setProperty(QLatin1String("PicturesLocation"), QStandardPaths::PicturesLocation);
-    desktopServices.setProperty(QLatin1String("TempLocation"), QStandardPaths::TempLocation);
-    desktopServices.setProperty(QLatin1String("HomeLocation"), QStandardPaths::HomeLocation);
-    desktopServices.setProperty(QLatin1String("DataLocation"), QStandardPaths::DataLocation);
-    desktopServices.setProperty(QLatin1String("CacheLocation"), QStandardPaths::CacheLocation);
+    QJSValue desktopServices = m_engine.newArray();
+    SETPROPERTY(desktopServices, DesktopLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, DocumentsLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, FontsLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, ApplicationsLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, MusicLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, MoviesLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, PicturesLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, TempLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, HomeLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, DataLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, CacheLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, GenericDataLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, RuntimeLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, ConfigLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, DownloadLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, GenericCacheLocation, QStandardPaths)
+    SETPROPERTY(desktopServices, GenericConfigLocation, QStandardPaths)
 
-    desktopServices.setProperty(QLatin1String("openUrl"),
-        newFunction(qDesktopServicesOpenUrl));
-    desktopServices.setProperty(QLatin1String("displayName"),
-        newFunction(qDesktopServicesDisplayName));
-    desktopServices.setProperty(QLatin1String("storageLocation"),
-        newFunction(qDesktopServicesStorageLocation));
-    return desktopServices;
+    QJSValue object = m_engine.newQObject(new QDesktopServicesProxy);
+    object.setPrototype(desktopServices);   // attach the properties
+    return object;
 }
 
-QScriptValue ScriptEngine::generateQInstallerObject()
+QJSValue ScriptEngine::generateQInstallerObject()
 {
     // register ::WizardPage enum in the script connection
-    QScriptValue qinstaller = newArray();
-    qinstaller.setProperty(QLatin1String("Introduction"), PackageManagerCore::Introduction);
-    qinstaller.setProperty(QLatin1String("LicenseCheck"), PackageManagerCore::LicenseCheck);
-    qinstaller.setProperty(QLatin1String("TargetDirectory"), PackageManagerCore::TargetDirectory);
-    qinstaller.setProperty(QLatin1String("ComponentSelection"), PackageManagerCore::ComponentSelection);
-    qinstaller.setProperty(QLatin1String("StartMenuSelection"), PackageManagerCore::StartMenuSelection);
-    qinstaller.setProperty(QLatin1String("ReadyForInstallation"), PackageManagerCore::ReadyForInstallation);
-    qinstaller.setProperty(QLatin1String("PerformInstallation"), PackageManagerCore::PerformInstallation);
-    qinstaller.setProperty(QLatin1String("InstallationFinished"), PackageManagerCore::InstallationFinished);
-    qinstaller.setProperty(QLatin1String("End"), PackageManagerCore::End);
+    QJSValue qinstaller = m_engine.newArray();
+    SETPROPERTY(qinstaller, Introduction, PackageManagerCore)
+    SETPROPERTY(qinstaller, LicenseCheck, PackageManagerCore)
+    SETPROPERTY(qinstaller, TargetDirectory, PackageManagerCore)
+    SETPROPERTY(qinstaller, ComponentSelection, PackageManagerCore)
+    SETPROPERTY(qinstaller, StartMenuSelection, PackageManagerCore)
+    SETPROPERTY(qinstaller, ReadyForInstallation, PackageManagerCore)
+    SETPROPERTY(qinstaller, PerformInstallation, PackageManagerCore)
+    SETPROPERTY(qinstaller, InstallationFinished, PackageManagerCore)
+    SETPROPERTY(qinstaller, End, PackageManagerCore)
 
     // register ::Status enum in the script connection
-    qinstaller.setProperty(QLatin1String("Success"), PackageManagerCore::Success);
-    qinstaller.setProperty(QLatin1String("Failure"), PackageManagerCore::Failure);
-    qinstaller.setProperty(QLatin1String("Running"), PackageManagerCore::Running);
-    qinstaller.setProperty(QLatin1String("Canceled"), PackageManagerCore::Canceled);
-    qinstaller.setProperty(QLatin1String("Unfinished"), PackageManagerCore::Unfinished);
-    qinstaller.setProperty(QLatin1String("ForceUpdate"), PackageManagerCore::ForceUpdate);
-
+    SETPROPERTY(qinstaller, Success, PackageManagerCore)
+    SETPROPERTY(qinstaller, Failure, PackageManagerCore)
+    SETPROPERTY(qinstaller, Running, PackageManagerCore)
+    SETPROPERTY(qinstaller, Canceled, PackageManagerCore)
+    SETPROPERTY(qinstaller, Unfinished, PackageManagerCore)
+    SETPROPERTY(qinstaller, ForceUpdate, PackageManagerCore)
     return qinstaller;
 }
 
+#undef SETPROPERTY
+
+}   // namespace QInstaller

@@ -5,7 +5,6 @@
 
 #include <QTest>
 #include <QMetaEnum>
-#include <QScriptEngine>
 #include <QDebug>
 
 #include <stdlib.h>     /* srand, rand */
@@ -50,50 +49,42 @@ private slots:
     void testScriptButtonValues()
     {
         PackageManagerCore core;
-        ScriptEngine scriptEngine(&core);
+        ScriptEngine *scriptEngine = new ScriptEngine(&core);
         QMapIterator<QMessageBox::StandardButton, QString> i(m_standardButtonValueMap);
         while (i.hasNext()) {
             i.next();
-            QString scriptString = QString::fromLatin1("QMessageBox.%1").arg(i.value());
-            QScriptValue scriptValue(scriptEngine.evaluate(scriptString));
+            const QString scriptString = QString::fromLatin1("QMessageBox.%1").arg(i.value());
+            const QJSValue scriptValue = scriptEngine->evaluate(scriptString);
 
+            QVERIFY2(!scriptValue.isError(), qPrintable(scriptValue.toString()));
             QVERIFY2(!scriptValue.isUndefined(), qPrintable(
                 QString::fromLatin1("It seems that %1 is undefined.").arg(scriptString)));
-
-            qint32 evaluatedValue = scriptValue.toInt32();
-            QVERIFY2(!scriptEngine.hasUncaughtException(), qPrintable(
-                QInstaller::uncaughtExceptionString(&scriptEngine)));
-
-            QCOMPARE(static_cast<QMessageBox::StandardButton>(evaluatedValue), i.key());
+            QCOMPARE(static_cast<QMessageBox::StandardButton>(scriptValue.toInt()), i.key());
         }
     }
 
     void testDefaultAction()
     {
+        const char ignoreMessage[] = "\"created critical message box TestError: 'A test error', "
+            "This is a test error message.\" ";
+        srand(time(0)); /* initialize random seed: */
+
         int standardButtons = QMessageBox::NoButton;
-        QList<QMessageBox::Button> orderedButtons = MessageBoxHandler::orderedButtons();
-        MessageBoxHandler *messageBoxHandler = MessageBoxHandler::instance();
-
-        messageBoxHandler->setDefaultAction(MessageBoxHandler::Reject);
-        QString testidentifier(QLatin1String("TestError"));
-        QString testTitle(QLatin1String("A test error"));
-        QString testMessage(QLatin1String("This is a test error message."));
-
-        const char *ignoreMessage("\"created critical message box TestError: 'A test error', This is a test error message.\" ");
-        /* initialize random seed: */
-        srand(time(0));
+        MessageBoxHandler::instance()->setDefaultAction(MessageBoxHandler::Reject);
+        const QList<QMessageBox::Button> orderedButtons = MessageBoxHandler::orderedButtons();
         do {
             standardButtons += QMessageBox::FirstButton;
 
             /* generate secret number between 1 and 10: */
-            int iSecret = rand() % 10 + 1;
+            const int iSecret = rand() % 10 + 1;
             // use only every 5th run to reduce the time which it takes to run this test
             if (iSecret > 2)
                 continue;
+
             QTest::ignoreMessage(QtDebugMsg, ignoreMessage);
-            const QMessageBox::StandardButton returnButton = static_cast<QMessageBox::StandardButton>(
-                messageBoxHandler->critical(testidentifier, testTitle, testMessage,
-                static_cast<QMessageBox::StandardButton>(standardButtons)));
+            int returnButton = MessageBoxHandler::instance()->critical(QLatin1String("TestError"),
+                QLatin1String("A test error"), QLatin1String("This is a test error message."),
+                static_cast<QMessageBox::StandardButton>(standardButtons));
 
             QMessageBox::StandardButton wantedButton = QMessageBox::NoButton;
             // find the last button which is the wanted reject button in the current
@@ -104,8 +95,7 @@ private slots:
             }
 
             QVERIFY2(wantedButton != QMessageBox::NoButton, "Could not find a wantedButton.");
-            QCOMPARE(returnButton, wantedButton);
-
+            QCOMPARE(static_cast<QMessageBox::StandardButton>(returnButton), wantedButton);
         } while (standardButtons < m_maxStandardButtons);
     }
 

@@ -231,25 +231,29 @@ QMessageBox::StandardButton MessageBoxHandler::warning(QWidget *parent, const QS
 int MessageBoxHandler::critical(const QString &identifier, const QString &title, const QString &text,
     QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
 {
-    return showMessageBox(criticalType, currentBestSuitParent(), identifier, title, text, buttons, button);
+    return showMessageBox(criticalType, currentBestSuitParent(), identifier, title, text,
+        QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
 }
 
 int MessageBoxHandler::information(const QString &identifier, const QString &title, const QString &text,
     QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
 {
-    return showMessageBox(informationType, currentBestSuitParent(), identifier, title, text, buttons, button);
+    return showMessageBox(informationType, currentBestSuitParent(), identifier, title, text,
+        QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
 }
 
 int MessageBoxHandler::question(const QString &identifier, const QString &title, const QString &text,
     QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
 {
-    return showMessageBox(questionType, currentBestSuitParent(), identifier, title, text, buttons, button);
+    return showMessageBox(questionType, currentBestSuitParent(), identifier, title, text,
+        QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
 }
 
 int MessageBoxHandler::warning(const QString &identifier, const QString &title, const QString &text,
     QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
 {
-    return showMessageBox(warningType, currentBestSuitParent(), identifier, title, text, buttons, button);
+    return showMessageBox(warningType, currentBestSuitParent(), identifier, title, text,
+        QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
 }
 
 // -- private

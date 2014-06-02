@@ -219,7 +219,7 @@ public:
     QHash<int, QWizardPage*> m_defaultPages;
     QHash<int, QString> m_defaultButtonText;
 
-    QScriptValue m_controlScriptContext;
+    QJSValue m_controlScriptContext;
     QHash<QWizard::WizardButton, QString> m_wizardButtonTypes;
 };
 
@@ -403,20 +403,19 @@ void PackageManagerGui::setValidatorForCustomPageRequested(Component *component,
 */
 void PackageManagerGui::loadControlScript(const QString &scriptPath)
 {
-    d->m_controlScriptContext = m_core->controlScriptEngine()->loadInConext(
+    d->m_controlScriptContext = m_core->controlScriptEngine()->loadInContext(
         QLatin1String("Controller"), scriptPath);
     qDebug() << "Loaded control script" << scriptPath;
 }
 
 void PackageManagerGui::callControlScriptMethod(const QString &methodName)
 {
-    if (!d->m_controlScriptContext.isValid())
+    if (d->m_controlScriptContext.isUndefined())
         return;
     try {
-        QScriptValue returnValue = m_core->controlScriptEngine()->callScriptMethod(
+        const QJSValue returnValue = m_core->controlScriptEngine()->callScriptMethod(
             d->m_controlScriptContext, methodName);
-
-        if (!returnValue.isValid()) {
+        if (returnValue.isUndefined()) {
             qDebug() << "Control script callback" << methodName << "does not exist.";
             return;
         }
@@ -480,7 +479,10 @@ void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
         --pageId;
 
     // add it
-    setPage(pageId, new DynamicInstallerPage(widget, m_core));
+    DynamicInstallerPage *dynamicPage = new DynamicInstallerPage(widget, m_core);
+    packageManagerCore()->controlScriptEngine()->addQObjectChildren(dynamicPage);
+    packageManagerCore()->componentScriptEngine()->addQObjectChildren(dynamicPage);
+    setPage(pageId, dynamicPage);
 }
 
 void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
@@ -500,8 +502,11 @@ void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
     QInstaller::PackageManagerCore::WizardPage page)
 {
     Q_ASSERT(widget);
-    if (QWizardPage *const p = QWizard::page(page))
+    if (QWizardPage *const p = QWizard::page(page)) {
         p->layout()->addWidget(widget);
+        packageManagerCore()->controlScriptEngine()->addQObjectChildren(p);
+        packageManagerCore()->componentScriptEngine()->addQObjectChildren(p);
+    }
 }
 
 void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)

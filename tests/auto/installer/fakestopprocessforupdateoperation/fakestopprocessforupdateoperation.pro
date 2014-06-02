@@ -1,6 +1,6 @@
 include(../../qttest.pri)
 
 QT -= gui
-QT += network script
+QT += network qml
 
 SOURCES += tst_fakestopprocessforupdateoperation.cpp
