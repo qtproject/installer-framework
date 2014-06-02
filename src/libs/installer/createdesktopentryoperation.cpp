@@ -43,14 +43,11 @@
 #include "errors.h"
 #include "fileutils.h"
 
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
-#include <QtCore/QTextStream>
-#include <QtCore/QProcess>
-#if QT_VERSION >= 0x040600
-#   include <QtCore/QProcessEnvironment>
-#endif
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QProcessEnvironment>
+#include <QTextStream>
 
 using namespace QInstaller;
 

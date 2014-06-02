@@ -43,15 +43,10 @@
 #include "fileutils.h"
 #include "packagemanagercore.h"
 
-#include <QtCore/QDir>
-#include <QtCore/QDirIterator>
 #include <QDebug>
-
-#if QT_VERSION >= 0x040600
-#   include <QProcessEnvironment>
-#else
-#   include <QProcess>
-#endif
+#include <QDir>
+#include <QDirIterator>
+#include <QProcessEnvironment>
 
 using namespace QInstaller;
 
@@ -61,19 +56,9 @@ QString InstallIconsOperation::targetDirectory()
     if (hasValue(QLatin1String("targetdirectory")))
         return value(QLatin1String("targetdirectory")).toString();
 
-#if QT_VERSION >= 0x040600
     const QProcessEnvironment env;
     QStringList XDG_DATA_DIRS = env.value(QLatin1String("XDG_DATA_DIRS")).split(QLatin1Char(':'),
         QString::SkipEmptyParts);
-#else
-    QStringList XDG_DATA_DIRS;
-    const QStringList env = QProcess::systemEnvironment();
-    for (QStringList::const_iterator it = env.begin(); it != env.end(); ++it) {
-        if (it->startsWith(QLatin1String("XDG_DATA_DIRS=")))
-            XDG_DATA_DIRS = it->mid(it->indexOf(QLatin1Char('=')) + 1).split(QLatin1Char(':'));
-     }
-#endif
-
     XDG_DATA_DIRS.push_back(QLatin1String("/usr/share/pixmaps")); // default path
     XDG_DATA_DIRS.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share/icons"))); // default path
     XDG_DATA_DIRS.push_back(QDir::home().absoluteFilePath(QLatin1String(".icons"))); // default path
