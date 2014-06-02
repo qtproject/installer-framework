@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -42,15 +42,20 @@
 #ifndef QPROCESSWRAPPER_H
 #define QPROCESSWRAPPER_H
 
-#include <installer_global.h>
+#include "remoteobject.h"
 
-#include<QtCore/QIODevice>
-#include<QtCore/QObject>
-#include<QtCore/QProcess>
+#include <QIODevice>
+#include <QProcess>
+#include <QReadWriteLock>
+#include <QTimer>
 
-class INSTALLER_EXPORT QProcessWrapper : public QObject
+namespace QInstaller {
+
+class INSTALLER_EXPORT QProcessWrapper : public RemoteObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(QProcessWrapper)
+
 public:
     enum ProcessState {
         NotRunning,
@@ -77,36 +82,43 @@ public:
     explicit QProcessWrapper(QObject *parent = 0);
     ~QProcessWrapper();
 
-    void closeWriteChannel();
     int exitCode() const;
+    ProcessState state() const;
     ExitStatus exitStatus() const;
+
+    QString workingDirectory() const;
+    void setWorkingDirectory(const QString &dir);
+
+    QStringList environment() const;
+    void setEnvironment(const QStringList &environment);
+
+    QProcessWrapper::ProcessChannel readChannel() const;
+    void setReadChannel(QProcessWrapper::ProcessChannel channel);
+
+    QProcessWrapper::ProcessChannelMode processChannelMode() const;
+    void setProcessChannelMode(QProcessWrapper::ProcessChannelMode channel);
+
+    bool waitForStarted(int msecs = 30000);
+    bool waitForFinished(int msecs = 30000);
+
+    void start(const QString &program, const QStringList &arguments,
+        QIODevice::OpenMode mode = QIODevice::ReadWrite);
+    void start(const QString &program, QIODevice::OpenMode mode = QIODevice::ReadWrite);
+
+    void closeWriteChannel();
     void kill();
     void terminate();
     QByteArray readAll();
     QByteArray readAllStandardOutput();
     QByteArray readAllStandardError();
-    void setWorkingDirectory(const QString &dir);
-
-    void start(const QString &program);
-    void start(const QString &program, const QStringList &arguments,
-        QIODevice::OpenMode mode = QIODevice::ReadWrite);
 
     static bool startDetached(const QString &program);
     static bool startDetached(const QString &program, const QStringList &arguments);
     static bool startDetached(const QString &program, const QStringList &arguments,
         const QString &workingDirectory, qint64 *pid = 0);
 
-    ProcessState state() const;
-    bool waitForStarted(int msecs = 30000);
-    bool waitForFinished(int msecs = 30000);
-    void setEnvironment(const QStringList &environment);
-    QString workingDirectory() const;
     QString errorString() const;
     qint64 write(const QByteArray &byteArray);
-    QProcessWrapper::ProcessChannel readChannel() const;
-    void setReadChannel(QProcessWrapper::ProcessChannel channel);
-    QProcessWrapper::ProcessChannelMode processChannelMode() const;
-    void setProcessChannelMode(QProcessWrapper::ProcessChannelMode channel);
 #ifdef Q_OS_WIN
     void setNativeArguments(const QString &arguments);
 #endif
@@ -127,12 +139,19 @@ Q_SIGNALS:
 public Q_SLOTS:
     void cancel();
 
-protected:
-    void timerEvent(QTimerEvent *event);
+private slots:
+    void processSignals();
 
 private:
-    class Private;
-    Private *d;
+    QTimer m_timer;
+    QProcess process;
+    mutable QReadWriteLock m_lock;
 };
+
+} // namespace QInstaller
+
+Q_DECLARE_METATYPE(QProcess::ExitStatus)
+Q_DECLARE_METATYPE(QProcess::ProcessError)
+Q_DECLARE_METATYPE(QProcess::ProcessState)
 
 #endif  // QPROCESSWRAPPER_H

@@ -74,8 +74,6 @@ HEADERS += packagemanagercore.h \
     operationrunner.h \
     updatesettings.h \
     adminauthorization.h \
-    fsengineclient.h \
-    fsengineserver.h \
     elevatedexecuteoperation.h \
     fakestopprocessforupdateoperation.h \
     lazyplaintextedit.h \
@@ -158,8 +156,6 @@ SOURCES += packagemanagercore.cpp \
     operationrunner.cpp \
     updatesettings.cpp \
     adminauthorization.cpp \
-    fsengineclient.cpp \
-    fsengineserver.cpp \
     elevatedexecuteoperation.cpp \
     fakestopprocessforupdateoperation.cpp \
     lazyplaintextedit.cpp \
@@ -170,7 +166,6 @@ SOURCES += packagemanagercore.cpp \
     licenseoperation.cpp \
     component_p.cpp \
     qprocesswrapper.cpp \
-    templates.cpp \
     qsettingswrapper.cpp \
     settings.cpp \
     packagemanagerproxyfactory.cpp \

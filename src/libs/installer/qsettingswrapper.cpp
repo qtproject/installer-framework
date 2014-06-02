@@ -41,13 +41,10 @@
 
 #include "qsettingswrapper.h"
 
-#include "fsengineclient.h"
-#include "templates.cpp"
+#include <QSettings>
+#include <QStringList>
 
-#include <QtCore/QSettings>
-#include <QtCore/QThread>
-
-#include <QtNetwork/QTcpSocket>
+namespace QInstaller {
 
 
 // -- QSettingsWrapper::Private
@@ -56,320 +53,286 @@ class QSettingsWrapper::Private
 {
 public:
     Private(const QString &organization, const QString &application)
-        : native(true)
+        : m_native(true)
+        , m_application(application)
+        , m_organization(organization)
+        , m_scope(QSettings::UserScope)
+        , m_format(QSettings::NativeFormat)
         , settings(organization, application)
-        , socket(0)
     {
     }
 
     Private(QSettings::Scope scope, const QString &organization, const QString &application)
-        : native(true)
+        : m_native(true)
+        , m_application(application)
+        , m_organization(organization)
+        , m_scope(scope)
+        , m_format(QSettings::NativeFormat)
         , settings(scope, organization, application)
-        , socket(0)
     {
     }
 
     Private(QSettings::Format format, QSettings::Scope scope, const QString &organization,
         const QString &application)
-        : native(format == QSettings::NativeFormat)
+        : m_native(format == QSettings::NativeFormat)
+        , m_application(application)
+        , m_organization(organization)
+        , m_scope(scope)
+        , m_format(format)
         , settings(format, scope, organization, application)
-        , socket(0)
     {
     }
 
     Private(const QString &fileName, QSettings::Format format)
-        : native(format == QSettings::NativeFormat)
-        , fileName(fileName)
+        : m_native(format == QSettings::NativeFormat)
+        , m_filename(fileName)
         , settings(fileName, format)
-        , socket(0)
     {
+        m_format = format;
+        m_scope = settings.scope();
+        m_application = settings.applicationName();
+        m_organization = settings.organizationName();
     }
 
-    Private()
-        : native(true)
-        , socket(0)
-    {
-    }
-
-    bool createSocket()
-    {
-        if (!native || !FSEngineClientHandler::instance().isActive())
-            return false;
-
-        if (socket != 0 && socket->state() == static_cast<int>(QAbstractSocket::ConnectedState))
-            return true;
-
-        if (socket != 0)
-            delete socket;
-
-        socket = new QTcpSocket;
-        if (!FSEngineClientHandler::instance().connect(socket))
-            return false;
-
-        stream.setDevice(socket);
-        stream.setVersion(QDataStream::Qt_4_2);
-
-        stream << QString::fromLatin1("createQSettings");
-        stream << this->fileName;
-        socket->flush();
-        stream.device()->waitForReadyRead(-1);
-        quint32 test;
-        stream >> test;
-        stream.device()->readAll();
-        return true;
-    }
-
-    const bool native;
-    const QString fileName;
+    bool m_native;
     QSettings settings;
-    mutable QTcpSocket *socket;
-    mutable QDataStream stream;
+    QString m_filename;
+    QString m_application;
+    QString m_organization;
+    QSettings::Scope m_scope;
+    QSettings::Format m_format;
 };
 
 
 // -- QSettingsWrapper
 
-QSettingsWrapper::QSettingsWrapper(const QString &organization, const QString &application, QObject *parent)
-    : QObject(parent)
+QSettingsWrapper::QSettingsWrapper(const QString &organization, const QString &application,
+        QObject *parent)
+    : RemoteObject(QLatin1String(Protocol::QSettings), parent)
     , d(new Private(organization, application))
 {
 }
 
 QSettingsWrapper::QSettingsWrapper(QSettingsWrapper::Scope scope, const QString &organization,
         const QString &application, QObject *parent)
-    : QObject(parent)
+    : RemoteObject(QLatin1String(Protocol::QSettings), parent)
     , d(new Private(static_cast<QSettings::Scope>(scope), organization, application))
 {
 }
 
 QSettingsWrapper::QSettingsWrapper(QSettingsWrapper::Format format, QSettingsWrapper::Scope scope,
         const QString &organization, const QString &application, QObject *parent)
-    : QObject(parent)
+    : RemoteObject(QLatin1String(Protocol::QSettings), parent)
     , d(new Private(static_cast<QSettings::Format>(format), static_cast<QSettings::Scope> (scope),
         organization, application))
 {
 }
 
-QSettingsWrapper::QSettingsWrapper(const QString &fileName, QSettingsWrapper::Format format, QObject *parent)
-    : QObject(parent)
+QSettingsWrapper::QSettingsWrapper(const QString &fileName, QSettingsWrapper::Format format,
+        QObject *parent)
+    : RemoteObject(QLatin1String(Protocol::QSettings), parent)
     , d(new Private(fileName, static_cast<QSettings::Format>(format)))
-{
-}
-
-QSettingsWrapper::QSettingsWrapper(QObject *parent)
-    : QObject(parent)
-    , d(new Private)
 {
 }
 
 QSettingsWrapper::~QSettingsWrapper()
 {
-    if (d->socket != 0) {
-        d->stream << QString::fromLatin1("destroyQSettings");
-        d->socket->flush();
-        quint32 result;
-        d->stream >> result;
-
-        if (QThread::currentThread() == d->socket->thread()) {
-            d->socket->close();
-            delete d->socket;
-        } else {
-            d->socket->deleteLater();
-        }
-    }
     delete d;
 }
 
 QStringList QSettingsWrapper::allKeys() const
 {
-    if (d->createSocket())
-        return callRemoteMethod<QStringList>(d->stream, QLatin1String("QSettings::allKeys"));
-    return static_cast<QStringList>(d->settings.allKeys());
+    if (createSocket())
+        return callRemoteMethod<QStringList>(QLatin1String(Protocol::QSettingsAllKeys));
+    return d->settings.allKeys();
 }
 
 QString QSettingsWrapper::applicationName() const
 {
-    if (d->createSocket())
-        return callRemoteMethod<QString>(d->stream, QLatin1String("QSettings::applicationName"));
-    return static_cast<QString>(d->settings.applicationName());
+    if (createSocket())
+        return callRemoteMethod<QString>(QLatin1String(Protocol::QSettingsApplicationName));
+    return d->settings.applicationName();
 }
 
 void QSettingsWrapper::beginGroup(const QString &param1)
 {
-    if (d->createSocket())
-        callRemoteVoidMethod(d->stream, QLatin1String("QSettings::beginGroup"), param1);
+    if (createSocket())
+        callRemoteMethod(QLatin1String(Protocol::QSettingsBeginGroup), param1, dummy);
     else
         d->settings.beginGroup(param1);
 }
 
 int QSettingsWrapper::beginReadArray(const QString &param1)
 {
-    if (d->createSocket())
-        return callRemoteMethod<int>(d->stream, QLatin1String("QSettings::beginReadArray"), param1);
+    if (createSocket())
+        return callRemoteMethod<int>(QLatin1String(Protocol::QSettingsBeginReadArray), param1);
     return d->settings.beginReadArray(param1);
 }
 
 void QSettingsWrapper::beginWriteArray(const QString &param1, int param2)
 {
-    if (d->createSocket())
-        callRemoteVoidMethod(d->stream, QLatin1String("QSettings::beginWriteArray"), param1, param2);
+    if (createSocket())
+        callRemoteMethod(QLatin1String(Protocol::QSettingsBeginWriteArray), param1, param2);
     else
         d->settings.beginWriteArray(param1, param2);
 }
 
 QStringList QSettingsWrapper::childGroups() const
 {
-    if (d->createSocket())
-        return callRemoteMethod<QStringList>(d->stream, QLatin1String("QSettings::childGroups"));
-    return static_cast<QStringList>(d->settings.childGroups());
+    if (createSocket())
+        return callRemoteMethod<QStringList>(QLatin1String(Protocol::QSettingsChildGroups));
+    return d->settings.childGroups();
 }
 
 QStringList QSettingsWrapper::childKeys() const
 {
-    if (d->createSocket())
-        return callRemoteMethod<QStringList>(d->stream, QLatin1String("QSettings::childKeys"));
-    return static_cast<QStringList>(d->settings.childKeys());
+    if (createSocket())
+        return callRemoteMethod<QStringList>(QLatin1String(Protocol::QSettingsChildKeys));
+    return d->settings.childKeys();
 }
 
 void QSettingsWrapper::clear()
 {
-    if (d->createSocket())
-        callRemoteVoidMethod<void>(d->stream, QLatin1String("QSettings::clear"));
+    if (createSocket())
+        callRemoteMethod(QLatin1String(Protocol::QSettingsClear));
     else d->settings.clear();
 }
 
 bool QSettingsWrapper::contains(const QString &param1) const
 {
-    if (d->createSocket())
-        return callRemoteMethod<bool>(d->stream, QLatin1String("QSettings::contains"), param1);
+    if (createSocket())
+        return callRemoteMethod<bool>(QLatin1String(Protocol::QSettingsContains), param1);
     return d->settings.contains(param1);
 }
 
 void QSettingsWrapper::endArray()
 {
-    if (d->createSocket())
-        callRemoteVoidMethod<void>(d->stream, QLatin1String("QSettings::endArray"));
+    if (createSocket())
+        callRemoteMethod(QLatin1String(Protocol::QSettingsEndArray));
     else
         d->settings.endArray();
 }
 
 void QSettingsWrapper::endGroup()
 {
-    if (d->createSocket())
-        callRemoteVoidMethod<void>(d->stream, QLatin1String("QSettings::endGroup"));
+    if (createSocket())
+        callRemoteMethod(QLatin1String(Protocol::QSettingsEndGroup));
     else
         d->settings.endGroup();
 }
 
 bool QSettingsWrapper::fallbacksEnabled() const
 {
-    if (d->createSocket())
-        return callRemoteMethod<bool>(d->stream, QLatin1String("QSettings::fallbacksEnabled"));
-    return static_cast<bool>(d->settings.fallbacksEnabled());
+    if (createSocket())
+        return callRemoteMethod<bool>(QLatin1String(Protocol::QSettingsFallbacksEnabled));
+    return d->settings.fallbacksEnabled();
 }
 
 QString QSettingsWrapper::fileName() const
 {
-    if (d->createSocket())
-        return callRemoteMethod<QString>(d->stream, QLatin1String("QSettings::fileName"));
-    return static_cast<QString>(d->settings.fileName());
+    if (createSocket())
+        return callRemoteMethod<QString>(QLatin1String(Protocol::QSettingsFileName));
+    return d->settings.fileName();
 }
 
 QSettingsWrapper::Format QSettingsWrapper::format() const
 {
+    // No need to talk to the server, we've setup the local settings object the same way.
     return static_cast<QSettingsWrapper::Format>(d->settings.format());
 }
 
 QString QSettingsWrapper::group() const
 {
-    if (d->createSocket())
-        return callRemoteMethod<QString>(d->stream, QLatin1String("QSettings::group"));
-    return static_cast<QString>(d->settings.group());
-}
-
-QTextCodec* QSettingsWrapper::iniCodec() const
-{
-    return d->settings.iniCodec();
+    if (createSocket())
+        return callRemoteMethod<QString>(QLatin1String(Protocol::QSettingsGroup));
+    return d->settings.group();
 }
 
 bool QSettingsWrapper::isWritable() const
 {
-    if (d->createSocket())
-        return callRemoteMethod<bool>(d->stream, QLatin1String("QSettings::isWritable"));
-    return static_cast<bool>(d->settings.isWritable());
+    if (createSocket())
+        return callRemoteMethod<bool>(QLatin1String(Protocol::QSettingsIsWritable));
+    return d->settings.isWritable();
 }
 
 QString QSettingsWrapper::organizationName() const
 {
-    if (d->createSocket())
-        return callRemoteMethod<QString>(d->stream, QLatin1String("QSettings::organizationName"));
-    return static_cast<QString>(d->settings.organizationName());
+    if (createSocket())
+        return callRemoteMethod<QString>(QLatin1String(Protocol::QSettingsOrganizationName));
+    return d->settings.organizationName();
 }
 
 void QSettingsWrapper::remove(const QString &param1)
 {
-    if (d->createSocket())
-        callRemoteVoidMethod(d->stream, QLatin1String("QSettings::remove"), param1);
-    else d->settings.remove(param1);
+    if (createSocket())
+        callRemoteMethod(QLatin1String(Protocol::QSettingsRemove), param1, dummy);
+    else
+        d->settings.remove(param1);
 }
 
 QSettingsWrapper::Scope QSettingsWrapper::scope() const
 {
+    // No need to talk to the server, we've setup the local settings object the same way.
     return static_cast<QSettingsWrapper::Scope>(d->settings.scope());
 }
 
 void QSettingsWrapper::setArrayIndex(int param1)
 {
-    if (d->createSocket())
-        callRemoteVoidMethod(d->stream, QLatin1String("QSettings::setArrayIndex"), param1);
+    if (createSocket())
+        callRemoteMethod(QLatin1String(Protocol::QSettingsSetArrayIndex), param1, dummy);
     else
         d->settings.setArrayIndex(param1);
 }
 
 void QSettingsWrapper::setFallbacksEnabled(bool param1)
 {
-    if (d->createSocket())
-        callRemoteVoidMethod(d->stream, QLatin1String("QSettings::setFallbacksEnabled"), param1);
+    if (createSocket())
+        callRemoteMethod(QLatin1String(Protocol::QSettingsSetFallbacksEnabled), param1, dummy);
     else
         d->settings.setFallbacksEnabled(param1);
 }
 
-void QSettingsWrapper::setIniCodec(QTextCodec *codec)
-{
-    d->settings.setIniCodec(codec);
-}
-
-void QSettingsWrapper::setIniCodec(const char *codecName)
-{
-    d->settings.setIniCodec(codecName);
-}
-
 void QSettingsWrapper::setValue(const QString &param1, const QVariant &param2)
 {
-    if (d->createSocket())
-        callRemoteVoidMethod(d->stream, QLatin1String("QSettings::setValue"), param1, param2);
+    if (createSocket())
+        callRemoteMethod(QLatin1String(Protocol::QSettingsSetValue), param1, param2);
     else
         d->settings.setValue(param1, param2);
 }
 
 QSettingsWrapper::Status QSettingsWrapper::status() const
 {
-    if (d->createSocket())
-        return callRemoteMethod<QSettingsWrapper::Status>(d->stream, QLatin1String("QSettings::status"));
+    if (createSocket()) {
+        return static_cast<QSettingsWrapper::Status>
+            (callRemoteMethod<int>(QLatin1String(Protocol::QSettingsStatus)));
+    }
     return static_cast<QSettingsWrapper::Status>(d->settings.status());
 }
 
 void QSettingsWrapper::sync()
 {
-    if (d->createSocket())
-        callRemoteVoidMethod<void>(d->stream, QLatin1String("QSettings::sync"));
+    if (createSocket())
+        callRemoteMethod(QLatin1String(Protocol::QSettingsSync));
     else
         d->settings.sync();
 }
 
 QVariant QSettingsWrapper::value(const QString &param1, const QVariant &param2) const
 {
-    if (d->createSocket())
-        return callRemoteMethod<QVariant>(d->stream, QLatin1String("QSettings::value"), param1, param2);
+    if (createSocket())
+        return callRemoteMethod<QVariant>(QLatin1String(Protocol::QSettingsValue), param1, param2);
     return d->settings.value(param1, param2);
 }
+
+
+// -- private
+
+bool QSettingsWrapper::createSocket() const
+{
+    if (!d->m_native)
+        return false;
+    return (const_cast<QSettingsWrapper *>(this))->connectToServer(QVariantList()
+        << d->m_application << d->m_organization << d->m_scope << d->m_format << d->m_filename);
+}
+
+} // namespace QInstaller

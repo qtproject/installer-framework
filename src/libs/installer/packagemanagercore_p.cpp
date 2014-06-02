@@ -47,7 +47,7 @@
 #include "componentmodel.h"
 #include "errors.h"
 #include "fileutils.h"
-#include "fsengineclient.h"
+#include "remotefileengine.h"
 #include "globals.h"
 #include "graph.h"
 #include "messageboxhandler.h"
@@ -55,6 +55,7 @@
 #include "progresscoordinator.h"
 #include "qprocesswrapper.h"
 #include "qsettingswrapper.h"
+#include "remoteclient.h"
 
 #include "kdsavefile.h"
 #include "kdselfrestarter.h"
@@ -130,26 +131,6 @@ static bool runOperation(Operation *operation, PackageManagerCorePrivate::Operat
     return false;
 }
 
-/*!
-    \internal
-    Creates and initializes a FSEngineClientHandler -> makes us get admin rights for QFile operations
-*/
-static FSEngineClientHandler *sClientHandlerInstance = 0;
-static FSEngineClientHandler *initFSEngineClientHandler()
-{
-    if (sClientHandlerInstance == 0) {
-        sClientHandlerInstance = &FSEngineClientHandler::instance();
-
-        // Initialize the created FSEngineClientHandler instance.
-        const int port = 30000 + qrand() % 1000;
-        sClientHandlerInstance->init(port);
-        sClientHandlerInstance->setStartServerCommand(QCoreApplication::applicationFilePath(),
-            QStringList() << QLatin1String("--startserver") << QString::number(port)
-            << sClientHandlerInstance->authorizationKey(), true);
-    }
-    return sClientHandlerInstance;
-}
-
 static QStringList checkRunningProcessesFromList(const QStringList &processList)
 {
     const QList<ProcessInfo> allProcesses = runningProcesses();
@@ -205,7 +186,6 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     : m_updateFinder(0)
     , m_updaterApplication(new DummyConfigurationInterface)
-    , m_FSEngineClientHandler(0)
     , m_core(core)
     , m_updates(false)
     , m_repoFetched(false)
@@ -217,6 +197,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_defaultModel(0)
     , m_updaterModel(0)
     , m_guiObject(0)
+    , m_remoteFileEngineHandler(0)
 {
 }
 
@@ -224,7 +205,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
         const OperationList &performedOperations)
     : m_updateFinder(0)
     , m_updaterApplication(new DummyConfigurationInterface)
-    , m_FSEngineClientHandler(initFSEngineClientHandler())
     , m_status(PackageManagerCore::Unfinished)
     , m_needsHardRestart(false)
     , m_testChecksum(false)
@@ -245,7 +225,16 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_defaultModel(0)
     , m_updaterModel(0)
     , m_guiObject(0)
+    , m_remoteFileEngineHandler(new RemoteFileEngineHandler)
 {
+    // Creates and initializes a remote client, makes us get admin rights for QFile, QSettings
+    // and QProcess operations.
+    int port = 30000 + qrand() % 1000;
+    RemoteClient::instance().init(port, QHostAddress::LocalHost, RemoteClient::Release);
+    RemoteClient::instance().setStartServerCommand(QCoreApplication::applicationFilePath(),
+        QStringList() << QLatin1String("--startserver") << QString::number(port)
+        << RemoteClient::instance().authorizationKey(), RemoteClient::Administrator);
+
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
     connect(this, SIGNAL(uninstallationStarted()), m_core, SIGNAL(uninstallationStarted()));
@@ -262,9 +251,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     qDeleteAll(m_performedOperationsOld);
     qDeleteAll(m_performedOperationsCurrentSession);
 
-    // check for fake installer case
-    if (m_FSEngineClientHandler)
-        m_FSEngineClientHandler->setActive(false);
+    RemoteClient::instance().setActive(false);
 
     delete m_updateFinder;
     delete m_proxyFactory;
@@ -812,7 +799,7 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
     {
         QFile tmp(iniPath); // force gaining admin rights in case we haven't done already and we need it
         if (!tmp.open(QIODevice::ReadWrite) || !tmp.isWritable()) {
-            if (!m_FSEngineClientHandler->isActive())   // check if nobody did it before...
+            if (!RemoteClient::instance().isActive())   // check if nobody did it before...
                 gainedAdminRights = m_core->gainAdminRights();
         }
         tmp.close();

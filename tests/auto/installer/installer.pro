@@ -16,4 +16,5 @@ SUBDIRS += \
     binaryformat \
     packagemanagercore \
     settingsoperation \
-    task
+    task \
+    clientserver

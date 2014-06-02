@@ -44,10 +44,9 @@
 
 #include "qinstallerglobal.h"
 
-class QSettingsWrapper;
-
 namespace QInstaller {
 
+class QSettingsWrapper;
 class INSTALLER_EXPORT GlobalSettingsOperation : public Operation
 {
 public:

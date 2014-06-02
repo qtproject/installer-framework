@@ -4,10 +4,7 @@ TEMPLATE = subdirs
 EXTRASUBDIRS = \
         auto \
         downloadspeed \
-        environmentvariable \
-        fileengineclient \
-        fileengineserver
-
+        environmentvariable
 
 include(../installerfw.pri)
 

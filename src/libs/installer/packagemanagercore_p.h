@@ -46,6 +46,7 @@
 #include "packagemanagercore.h"
 #include "packagemanagercoredata.h"
 #include "qinstallerglobal.h"
+#include "remotefileengine.h"
 
 #include "kdsysinfo.h"
 #include "kdupdaterapplication.h"
@@ -54,7 +55,6 @@
 
 #include <QObject>
 
-class FSEngineClientHandler;
 class KDJob;
 
 QT_FORWARD_DECLARE_CLASS(QFile)
@@ -204,7 +204,6 @@ signals:
 public:
     UpdateFinder *m_updateFinder;
     Application m_updaterApplication;
-    FSEngineClientHandler *m_FSEngineClientHandler;
 
     int m_status;
     QString m_error;
@@ -294,6 +293,7 @@ private:
     ComponentModel *m_updaterModel;
 
     QObject *m_guiObject;
+    QScopedPointer<RemoteFileEngineHandler> m_remoteFileEngineHandler;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

@@ -42,26 +42,29 @@
 #ifndef QSETTINGSWRAPPER_H
 #define QSETTINGSWRAPPER_H
 
-#include <installer_global.h>
+#include "protocol.h"
+#include "remoteobject.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QVariant>
+#include <QVariant>
 
-class INSTALLER_EXPORT QSettingsWrapper : public QObject
+namespace QInstaller {
+
+class INSTALLER_EXPORT QSettingsWrapper : public RemoteObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(QSettingsWrapper)
 
 public:
+    enum Status {
+        NoError = 0,
+        AccessError,
+        FormatError
+    };
+
     enum Format {
         NativeFormat,
         IniFormat,
-        InvalidFormat
-    };
-
-    enum Status {
-        NoError,
-        AccessError,
-        FormatError
+        InvalidFormat = 16
     };
 
     enum Scope {
@@ -69,48 +72,85 @@ public:
         SystemScope
     };
 
-    explicit QSettingsWrapper(QObject *parent = 0);
-    explicit QSettingsWrapper(const QString &organization, const QString &application = QString(),
-        QObject *parent = 0);
-    QSettingsWrapper(const QString &fileName, QSettingsWrapper::Format format, QObject *parent = 0);
-    QSettingsWrapper(QSettingsWrapper::Scope scope, const QString &organization,
+    explicit QSettingsWrapper(const QString &organization,
         const QString &application = QString(), QObject *parent = 0);
-    QSettingsWrapper(QSettingsWrapper::Format format, QSettingsWrapper::Scope scope,
-        const QString &organization, const QString &application = QString(), QObject *parent = 0);
+    QSettingsWrapper(Scope scope, const QString &organization,
+        const QString &application = QString(), QObject *parent = 0);
+    QSettingsWrapper(Format format, Scope scope, const QString &organization,
+        const QString &application = QString(), QObject *parent = 0);
+    QSettingsWrapper(const QString &fileName, Format format, QObject *parent = 0);
     ~QSettingsWrapper();
 
-    QStringList allKeys() const;
-    QString applicationName() const;
+    void clear();
+    void sync();
+    Status status() const;
+
     void beginGroup(const QString &prefix);
+    void endGroup();
+    QString group() const;
+
     int beginReadArray(const QString &prefix);
     void beginWriteArray(const QString &prefix, int size = -1);
-    QStringList childGroups() const;
-    QStringList childKeys() const;
-    void clear();
-    bool contains(const QString &key) const;
     void endArray();
-    void endGroup();
-    bool fallbacksEnabled() const;
-    QString fileName() const;
-    QSettingsWrapper::Format format() const;
-    QString group() const;
-    QTextCodec* iniCodec() const;
-    bool isWritable() const;
-    QString organizationName() const;
-    void remove(const QString &key);
-    QSettingsWrapper::Scope scope() const;
     void setArrayIndex(int i);
-    void setFallbacksEnabled(bool b);
-    void setIniCodec(QTextCodec *codec);
-    void setIniCodec(const char *codecName);
+
+    QStringList allKeys() const;
+    QStringList childKeys() const;
+    QStringList childGroups() const;
+    bool isWritable() const;
+
     void setValue(const QString &key, const QVariant &value);
-    QSettingsWrapper::Status status() const;
-    void sync();
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
+
+    void remove(const QString &key);
+    bool contains(const QString &key) const;
+
+    void setFallbacksEnabled(bool b);
+    bool fallbacksEnabled() const;
+
+    QString fileName() const;
+    Format format() const;
+    Scope scope() const;
+    QString organizationName() const;
+    QString applicationName() const;
+
+private:
+    bool createSocket() const;
+
+private: // we cannot support the following functionality
+    explicit QSettingsWrapper(QObject *parent = 0)
+        : RemoteObject(QLatin1String(Protocol::QSettings), parent)
+    {}
+
+    void setIniCodec(QTextCodec * /*codec*/);
+    void setIniCodec(const char * /*codecName*/);
+    QTextCodec *iniCodec() const { return 0; }
+
+    static void setDefaultFormat(Format /*format*/);
+    static Format defaultFormat() { return NativeFormat; }
+    static void setSystemIniPath(const QString & /*dir*/);
+    static void setUserIniPath(const QString & /*dir*/);
+    static void setPath(Format /*format*/, Scope /*scope*/, const QString & /*path*/);
+
+    typedef QMap<QString, QVariant> SettingsMap;
+    typedef bool(*ReadFunc)(QIODevice &device, SettingsMap &map);
+    typedef bool(*WriteFunc)(QIODevice &device, const SettingsMap &map);
+
+    static Format registerFormat(const QString &extension, ReadFunc readFunc, WriteFunc writeFunc,
+        Qt::CaseSensitivity caseSensitivity = Qt::CaseSensitive)
+    {
+        Q_UNUSED(extension)
+        Q_UNUSED(readFunc)
+        Q_UNUSED(writeFunc)
+        Q_UNUSED(caseSensitivity)
+        return NativeFormat;
+    }
 
 private:
     class Private;
     Private *d;
 };
+
+} // namespace QInstaller
 
 #endif  // QSETTINGSWRAPPER_H

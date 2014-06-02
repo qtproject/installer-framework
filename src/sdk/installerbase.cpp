@@ -47,7 +47,7 @@
 #include <binaryformat.h>
 #include <errors.h>
 #include <fileutils.h>
-#include <fsengineserver.h>
+#include <remoteserver.h>
 #include <init.h>
 #include <lib7z_facade.h>
 #include <operationrunner.h>
@@ -163,10 +163,12 @@ int main(int argc, char *argv[])
         // this is the FSEngineServer as an admin rights process upon request:
         if (args.count() >= 3 && args[1] == QLatin1String("--startserver")) {
             SDKApp<QCoreApplication> app(argc, argv);
-            FSEngineServer* const server = new FSEngineServer(args[2].toInt());
+            RemoteServer *const server = new RemoteServer();
+            QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
+            server->init(args[2].toInt(), QHostAddress::LocalHost, RemoteServer::Release);
             if (args.count() >= 4)
                 server->setAuthorizationKey(args[3]);
-            QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
+            server->start();
             return app.exec();
         }
 

@@ -43,11 +43,11 @@
 
 #include "errors.h"
 #include "fileutils.h"
-#include "fsengineclient.h"
 #include "globals.h"
 #include "lib7z_facade.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
+#include "remoteclient.h"
 #include "settings.h"
 
 #include <kdupdaterupdatesourcesinfo.h>
@@ -912,7 +912,7 @@ OperationList Component::operations() const
 void Component::addOperation(Operation *operation)
 {
     d->m_operations.append(operation);
-    if (FSEngineClientHandler::instance().isActive())
+    if (RemoteClient::instance().isActive())
         operation->setValue(QLatin1String("admin"), true);
 }
 

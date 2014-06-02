@@ -47,13 +47,13 @@
 #include "componentmodel.h"
 #include "downloadarchivesjob.h"
 #include "errors.h"
-#include "fsengineclient.h"
 #include "globals.h"
 #include "messageboxhandler.h"
 #include "packagemanagerproxyfactory.h"
 #include "progresscoordinator.h"
 #include "qprocesswrapper.h"
 #include "qsettingswrapper.h"
+#include "remoteclient.h"
 #include "settings.h"
 #include "utils.h"
 
@@ -648,7 +648,7 @@ void PackageManagerCore::rollBackInstallation()
     while (!d->m_performedOperationsCurrentSession.isEmpty()) {
         try {
             Operation *const operation = d->m_performedOperationsCurrentSession.takeLast();
-            const bool becameAdmin = !d->m_FSEngineClientHandler->isActive()
+            const bool becameAdmin = !RemoteClient::instance().isActive()
                 && operation->value(QLatin1String("admin")).toBool() && gainAdminRights();
 
             if (operation->hasValue(QLatin1String("uninstall-only"))) {
@@ -1417,8 +1417,8 @@ bool PackageManagerCore::gainAdminRights()
     if (AdminAuthorization::hasAdminRights())
         return true;
 
-    d->m_FSEngineClientHandler->setActive(true);
-    if (!d->m_FSEngineClientHandler->isActive())
+    RemoteClient::instance().setActive(true);
+    if (!RemoteClient::instance().isActive())
         throw Error(QObject::tr("Error while elevating access rights."));
     return true;
 }
@@ -1432,7 +1432,7 @@ bool PackageManagerCore::gainAdminRights()
 */
 void PackageManagerCore::dropAdminRights()
 {
-    d->m_FSEngineClientHandler->setActive(false);
+    RemoteClient::instance().setActive(false);
 }
 
 /*!
