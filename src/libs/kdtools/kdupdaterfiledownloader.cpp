@@ -823,8 +823,7 @@ KDUpdater::HttpDownloader::HttpDownloader(QObject *parent)
     : KDUpdater::FileDownloader(QLatin1String("http"), parent)
     , d(new Private(this))
 {
-#ifndef QT_NO_OPENSSL
-    // TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     connect(&d->manager, SIGNAL(sslErrors(QNetworkReply*, QList<QSslError>)),
         this, SLOT(onSslErrors(QNetworkReply*, QList<QSslError>)));
 #endif
@@ -1067,11 +1066,10 @@ void KDUpdater::HttpDownloader::onAuthenticationRequired(QNetworkReply *reply, Q
     }
 }
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 
 #include "messageboxhandler.h"
 
-// TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
 void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QSslError> &errors)
 {
     Q_UNUSED(reply)

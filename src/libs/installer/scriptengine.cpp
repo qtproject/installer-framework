@@ -116,15 +116,9 @@ QScriptValue qDesktopServicesDisplayName(QScriptContext *context, QScriptEngine 
     if (check.isError())
         return check;
 
-#if QT_VERSION < 0x050000
-    const QDesktopServices::StandardLocation location =
-        static_cast< QDesktopServices::StandardLocation >(context->argument(0).toInt32());
-    return QDesktopServices::displayName(location);
-#else
     const QStandardPaths::StandardLocation location =
         static_cast< QStandardPaths::StandardLocation >(context->argument(0).toInt32());
     return QStandardPaths::displayName(location);
-#endif
 }
 
 QScriptValue qDesktopServicesStorageLocation(QScriptContext *context, QScriptEngine *engine)
@@ -134,15 +128,9 @@ QScriptValue qDesktopServicesStorageLocation(QScriptContext *context, QScriptEng
     if (check.isError())
         return check;
 
-#if QT_VERSION < 0x050000
-    const QDesktopServices::StandardLocation location =
-        static_cast< QDesktopServices::StandardLocation >(context->argument(0).toInt32());
-    return QDesktopServices::storageLocation(location);
-#else
     const QStandardPaths::StandardLocation location =
         static_cast< QStandardPaths::StandardLocation >(context->argument(0).toInt32());
     return QStandardPaths::writableLocation(location);
-#endif
 }
 
 QScriptValue qFileDialogGetExistingDirectory(QScriptContext *context, QScriptEngine *engine)
@@ -359,20 +347,6 @@ QScriptValue ScriptEngine::generateMessageBoxObject()
 QScriptValue ScriptEngine::generateDesktopServicesObject()
 {
     QScriptValue desktopServices = newArray();
-#if QT_VERSION < 0x050000
-    desktopServices.setProperty(QLatin1String("DesktopLocation"), QDesktopServices::DesktopLocation);
-    desktopServices.setProperty(QLatin1String("DesktopLocation"), QDesktopServices::DesktopLocation);
-    desktopServices.setProperty(QLatin1String("DocumentsLocation"), QDesktopServices::DocumentsLocation);
-    desktopServices.setProperty(QLatin1String("FontsLocation"), QDesktopServices::FontsLocation);
-    desktopServices.setProperty(QLatin1String("ApplicationsLocation"), QDesktopServices::ApplicationsLocation);
-    desktopServices.setProperty(QLatin1String("MusicLocation"), QDesktopServices::MusicLocation);
-    desktopServices.setProperty(QLatin1String("MoviesLocation"), QDesktopServices::MoviesLocation);
-    desktopServices.setProperty(QLatin1String("PicturesLocation"), QDesktopServices::PicturesLocation);
-    desktopServices.setProperty(QLatin1String("TempLocation"), QDesktopServices::TempLocation);
-    desktopServices.setProperty(QLatin1String("HomeLocation"), QDesktopServices::HomeLocation);
-    desktopServices.setProperty(QLatin1String("DataLocation"), QDesktopServices::DataLocation);
-    desktopServices.setProperty(QLatin1String("CacheLocation"), QDesktopServices::CacheLocation);
-#else
     desktopServices.setProperty(QLatin1String("DesktopLocation"), QStandardPaths::DesktopLocation);
     desktopServices.setProperty(QLatin1String("DesktopLocation"), QStandardPaths::DesktopLocation);
     desktopServices.setProperty(QLatin1String("DocumentsLocation"), QStandardPaths::DocumentsLocation);
@@ -385,7 +359,6 @@ QScriptValue ScriptEngine::generateDesktopServicesObject()
     desktopServices.setProperty(QLatin1String("HomeLocation"), QStandardPaths::HomeLocation);
     desktopServices.setProperty(QLatin1String("DataLocation"), QStandardPaths::DataLocation);
     desktopServices.setProperty(QLatin1String("CacheLocation"), QStandardPaths::CacheLocation);
-#endif
 
     desktopServices.setProperty(QLatin1String("openUrl"),
         newFunction(qDesktopServicesOpenUrl));

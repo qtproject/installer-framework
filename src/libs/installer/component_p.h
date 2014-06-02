@@ -44,10 +44,10 @@
 
 #include "qinstallerglobal.h"
 
-#include <QtCore/QPointer>
-#include <QtCore/QStringList>
-#include <QtCore/QUrl>
+#include <QPointer>
 #include <QScriptValue>
+#include <QStringList>
+#include <QUrl>
 
 namespace QInstaller {
 

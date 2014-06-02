@@ -239,7 +239,7 @@ void Downloader::onError(QNetworkReply::NetworkError error)
 
 void Downloader::onSslErrors(const QList<QSslError> &sslErrors)
 {
-#if defined(QT_NO_SSL) || defined(QT_NO_OPENSSL)
+#ifdef QT_NO_SSL
     Q_UNUSED(sslErrors);
 #else
     foreach (const QSslError &error, sslErrors)
@@ -320,8 +320,7 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
     connect(reply, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,
         SLOT(onError(QNetworkReply::NetworkError)));
-#ifndef QT_NO_OPENSSL
-    // TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)), SLOT(onSslErrors(QList<QSslError>)));
 #endif
     connect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(onDownloadProgress(qint64,

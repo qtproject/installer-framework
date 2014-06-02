@@ -77,8 +77,7 @@ FileDownloaderFactory::FileDownloaderFactory()
     registerFileDownloader<HttpDownloader>(QLatin1String("http"));
     registerFileDownloader<ResourceFileDownloader >(QLatin1String("resource"));
 
-#ifndef QT_NO_OPENSSL
-    // TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     if (QSslSocket::supportsSsl())
         registerFileDownloader<HttpDownloader>(QLatin1String("https"));
     else

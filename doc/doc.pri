@@ -1,10 +1,6 @@
 # Adapted from doc/doc.pri in Qt Creator.
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QDOC_BIN = $$[QT_INSTALL_BINS]/qdoc
-} else {
-    QDOC_BIN = $$[QT_INSTALL_BINS]/qdoc3
-}
+QDOC_BIN = $$[QT_INSTALL_BINS]/qdoc
 win32:QDOC_BIN = $$replace(QDOC_BIN, "/", "\\")
 
 IFW_VERSION_TAG = $$replace(IFW_VERSION, "[-.]", )
@@ -23,10 +19,7 @@ unix {
     # an unusual bug which causes qhelpgenerator.exe to do nothing
     HELPGENERATOR = cmd /C $$replace($$list($$[QT_INSTALL_BINS]/qhelpgenerator.exe), "/", "\\")
 }
-
-greaterThan(QT_MAJOR_VERSION, 4) {
-    HELPGENERATOR = $$HELPGENERATOR -platform minimal
-}
+HELPGENERATOR = $$HELPGENERATOR -platform minimal
 
 QHP_FILE = $$OUT_PWD/doc/html/ifw.qhp
 QCH_FILE = $$OUT_PWD/doc/ifw.qch

@@ -45,12 +45,7 @@
 #include "installer_global.h"
 
 #include <QtNetwork/QHostAddress>
-
-#if QT_VERSION < 0x050000
-#  include <QtCore/QAbstractFileEngineHandler>
-#else
-#  include <QtCore/private/qabstractfileengine_p.h>
-#endif
+#include <QtCore/private/qabstractfileengine_p.h>
 
 QT_BEGIN_NAMESPACE
 class QTcpSocket;

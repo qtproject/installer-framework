@@ -428,13 +428,8 @@ void SettingsDialog::setupRepositoriesTreeWidget()
     for (int i = 0; i < treeWidget->model()->columnCount(); ++i)
         treeWidget->resizeColumnToContents(i);
 
-#if QT_VERSION < 0x050000
-    treeWidget->header()->setResizeMode(0, QHeaderView::Fixed);
-    treeWidget->header()->setResizeMode(1, QHeaderView::Fixed);
-#else
     treeWidget->header()->setSectionResizeMode(0, QHeaderView::Fixed);
     treeWidget->header()->setSectionResizeMode(1, QHeaderView::Fixed);
-#endif
 
     treeWidget->header()->setMinimumSectionSize(treeWidget->columnWidth(1));
     treeWidget->setItemDelegateForColumn(0, new PasswordDelegate(treeWidget));

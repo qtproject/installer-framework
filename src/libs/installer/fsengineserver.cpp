@@ -50,11 +50,7 @@
 
 #include <QtNetwork/QTcpSocket>
 
-#if QT_VERSION < 0x050000
-#  include <QtCore/QFSFileEngine>
-#else
-#  include <QtCore/private/qfsfileengine_p.h>
-#endif
+#include <QtCore/private/qfsfileengine_p.h>
 
 typedef int descriptor_t;
 

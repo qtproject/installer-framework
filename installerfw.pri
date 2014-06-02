@@ -92,23 +92,12 @@ macx:LIBS += -framework Carbon -framework Security
     }
 }
 
-isEqual(QT_MAJOR_VERSION, 4) {
-    CONFIG += uitools
-    CONFIG(static, static|shared) {
-        QTPLUGIN += qico qtaccessiblewidgets
-        DEFINES += QT_STATIC
-        QT += script network xml
-    }
-} else {
-    QT += uitools core-private
-    CONFIG(static, static|shared) {
-        QTPLUGIN += qico qtaccessiblewidgets
-        QT += concurrent network script xml
-    }
-    CONFIG += no_private_qt_headers_warning
+QT += uitools core-private
+CONFIG(static, static|shared) {
+    QTPLUGIN += qico qtaccessiblewidgets
+    QT += concurrent network script xml
 }
-
-CONFIG += depend_includepath
+CONFIG += depend_includepath no_private_qt_headers_warning
 
 GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
 DEFINES += QT_NO_CAST_FROM_ASCII "_GIT_SHA1_=$$GIT_SHA1" IFW_VERSION=$$IFW_VERSION

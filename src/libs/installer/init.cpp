@@ -140,13 +140,6 @@ static void initResources()
 {
     Q_INIT_RESOURCE(patch_file_lists);
     Q_INIT_RESOURCE(installer);
-    // Qt5 or better qmake generates that automatically, so this is only needed on Qt4
-# if QT_VERSION < 0x050000
-    Q_IMPORT_PLUGIN(qico)
-    Q_UNUSED(qt_plugin_instance_qico());
-    Q_IMPORT_PLUGIN(qtaccessiblewidgets)
-    Q_UNUSED(qt_plugin_instance_qtaccessiblewidgets());
-# endif
 }
 #endif
 
@@ -181,11 +174,6 @@ static QByteArray trimAndPrepend(QtMsgType type, const QByteArray &msg)
     return ba;
 }
 
-#if QT_VERSION < 0x050000
-static void messageHandler(QtMsgType type, const char *msg)
-{
-    const QByteArray ba = trimAndPrepend(type, msg);
-#else
 void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     // suppress warning from QPA minimal plugin
@@ -197,22 +185,15 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
                     QString::fromLatin1(context.file)).arg(context.line).arg(
                     QString::fromLatin1(context.function)).toLocal8Bit();
     }
-#endif
 
     verbose() << ba.constData() << std::endl;
     if (!isVerbose() && type != QtDebugMsg)
         std::cout << ba.constData() << std::endl << std::endl;
 
     if (type == QtFatalMsg) {
-#if QT_VERSION < 0x050000
-        QtMsgHandler oldMsgHandler = qInstallMsgHandler(0);
-        qt_message_output(type, msg);
-        qInstallMsgHandler(oldMsgHandler);
-#else
         QtMessageHandler oldMsgHandler = qInstallMessageHandler(0);
         qt_message_output(type, context, msg);
         qInstallMessageHandler(oldMsgHandler);
-#endif
     }
 }
 
@@ -256,11 +237,5 @@ void QInstaller::init()
 #ifdef Q_OS_MAC
     factory.registerUpdateOperation<MacReplaceInstallNamesOperation>(QLatin1String("ReplaceInstallNames"));
 #endif // Q_OS_MAC
-
-   // qDebug -> verbose()
-#if QT_VERSION < 0x050000
-   qInstallMsgHandler(messageHandler);
-#else
    qInstallMessageHandler(messageHandler);
-#endif
 }

@@ -76,11 +76,7 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     SHGetFolderPath(0, CSIDL_PROGRAM_FILES, 0, 0, buffer);
     dir = QString::fromWCharArray(buffer);
 #elif defined (Q_OS_MAC)
-# if QT_VERSION < 0x050000
-    dir = QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation);
-# else
     dir = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation).value(0);
-# endif
 #endif
     m_variables.insert(QLatin1String("ApplicationsDir"), dir);
 

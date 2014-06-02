@@ -547,13 +547,8 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 */
 void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis)
 {
-#if QT_VERSION < 0x050000
-    if (QApplication::type() == QApplication::Tty)
-        return;
-#else
     if (qobject_cast<QApplication*> (qApp) == 0)
         return;
-#endif
 
     QDirIterator it(directory.path(), uis, QDir::Files);
     while (it.hasNext()) {
@@ -569,11 +564,7 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
         QWidget *const widget = loader.load(&file, 0);
         if (!widget) {
             throw Error(tr("Could not load the requested UI file '%1'. Error: %2").arg(it.fileName(),
-#if QT_VERSION < 0x050000
-                tr("An error has occurred while reading the UI file.")));
-#else
                 loader.errorString()));
-#endif
         }
         d->m_userInterfaces.insert(widget->objectName(), widget);
     }

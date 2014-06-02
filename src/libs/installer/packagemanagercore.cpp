@@ -77,9 +77,7 @@
 #   include "qt_windows.h"
 #endif
 
-#if QT_VERSION >= 0x050000
-#   include <QStandardPaths>
-#endif
+#include <QStandardPaths>
 
 /*!
     \qmltype QInstaller
