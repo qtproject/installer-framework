@@ -104,12 +104,6 @@ private:
     void INSTALLER_EXPORT removeDirectoryThreaded(const QString &path, bool ignoreErrors = false);
     void INSTALLER_EXPORT removeSystemGeneratedFiles(const QString &path);
 
-    /*!
-        Creates a temporary directory
-        @throws QInstaller::Error if creating the temporary directory fails
-    */
-    QString INSTALLER_EXPORT createTemporaryDirectory(const QString &templateName = QString());
-
     QString INSTALLER_EXPORT generateTemporaryFileName(const QString &templ=QString());
 
     void INSTALLER_EXPORT moveDirectoryContents(const QString &sourceDir, const QString &targetDir);

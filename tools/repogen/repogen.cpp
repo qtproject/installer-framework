@@ -52,6 +52,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
 #include <QtCore/QFileInfo>
+#include <QTemporaryDir>
 
 #include <iostream>
 
@@ -251,7 +252,9 @@ int main(int argc, char** argv)
                 removeDirectory(fi.absoluteFilePath());
         }
 
-        tmpMetaDir = QInstaller::createTemporaryDirectory();
+        QTemporaryDir tmp;
+        tmp.setAutoRemove(false);
+        tmpMetaDir = tmp.path();
         QInstallerTools::copyComponentData(packagesDirectories, repositoryDir, &packages);
         QInstallerTools::copyMetaData(tmpMetaDir, repositoryDir, packages, QLatin1String("{AnyApplication}"),
             QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));

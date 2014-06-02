@@ -56,6 +56,7 @@
 #include <QtCore/QProcess>
 #include <QtCore/QSettings>
 #include <QtCore/QTemporaryFile>
+#include <QTemporaryDir>
 
 #include <iostream>
 
@@ -717,7 +718,9 @@ int main(int argc, char **argv)
     qDebug() << "Parsed arguments, ok.";
 
     int exitCode = EXIT_FAILURE;
-    const QString tmpMetaDir = QInstaller::createTemporaryDirectory();
+    QTemporaryDir tmp;
+    tmp.setAutoRemove(false);
+    const QString tmpMetaDir = tmp.path();
     try {
         const Settings settings = Settings::fromFileAndPrefix(configFile, QFileInfo(configFile).absolutePath());
         QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectories,

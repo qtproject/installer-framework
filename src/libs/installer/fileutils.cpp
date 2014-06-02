@@ -460,66 +460,6 @@ QString QInstaller::generateTemporaryFileName(const QString &templ)
     return f.fileName();
 }
 
-static char *installer_mkdtemp(char *templateName)
-{
-    QDir newDir;
-#if defined(Q_OS_QNX ) || defined(Q_OS_WIN) || defined(Q_OS_ANDROID)
-    static const char letters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    const size_t length = strlen(templateName);
-
-    char *XXXXXX = templateName + length - 6;
-
-    if ((length < 6u) || strncmp(XXXXXX, "XXXXXX", 6))
-        return 0;
-
-    for (int i = 0; i < 256; ++i) {
-        /* Fill in the random bits.  */
-        int v = qrand();
-        XXXXXX[0] = letters[v % 62];
-        v /= 62;
-        XXXXXX[1] = letters[v % 62];
-        v = qrand();
-        XXXXXX[2] = letters[v % 62];
-        v /= 62;
-        XXXXXX[3] = letters[v % 62];
-        v = qrand();
-        XXXXXX[4] = letters[v % 62];
-        v /= 62;
-        XXXXXX[5] = letters[v % 62];
-
-        QString templateNameStr = QFile::decodeName(templateName);
-
-        newDir = QDir(templateNameStr);
-        if (newDir.mkpath(templateNameStr))
-            return templateName;
-    }
-    return 0;
-#else
-    return mkdtemp(templateName);
-#endif
-}
-
-QString QInstaller::createTemporaryDirectory(const QString &templateName)
-{
-    // TODO: use QTemporaryDir if we switched to Qt5
-    QString path = QDir::tempPath() + QLatin1String("/") + templateName + QLatin1String("XXXXXX");
-    path = QFile::decodeName(installer_mkdtemp(QFile::encodeName(path).data()));
-    if (path.isEmpty()) {
-        QTemporaryFile f(path);
-        if (!f.open()) {
-            throw Error(QObject::tr("Could not create temporary directory at %1: %2"
-                ).arg(QFileInfo(f).absolutePath(), f.errorString()));
-        } else {
-            throw Error(QObject::tr("Could not create temporary directory at %1: unknown error"
-                ).arg(QFileInfo(f).absolutePath()));
-        }
-    }
-
-    qDebug() << "Temporary directory created:" << path;
-    return path;
-}
-
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
 

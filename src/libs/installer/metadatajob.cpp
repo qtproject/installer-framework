@@ -39,13 +39,13 @@
 **
 **************************************************************************/
 #include "metadatajob.h"
-#include "errors.h"
-#include "messageboxhandler.h"
+
 #include "metadatajob_p.h"
 #include "packagemanagercore.h"
 #include "productkeycheck.h"
-#include "qinstallerglobal.h"
 #include "settings.h"
+
+#include <QTemporaryDir>
 
 namespace QInstaller {
 
@@ -241,13 +241,15 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
             return XmlDownloadFailure;
 
         Metadata metadata;
-        try {
-            metadata.directory = createTemporaryDirectory(QLatin1String("remoterepo-"));
-            m_tempDirDeleter.add(metadata.directory);
-        } catch (const QInstaller::Error &error) {
-            qDebug() << error.message();
+        QTemporaryDir tmp(QDir::tempPath() + QLatin1String("/remoterepo-XXXXXX"));
+        if (!tmp.isValid()) {
+            qDebug() << "Could not create unique temporary directory.";
             return XmlDownloadFailure;
         }
+
+        tmp.setAutoRemove(false);
+        metadata.directory = tmp.path();
+        m_tempDirDeleter.add(metadata.directory);
 
         QFile file(result.target());
         if (!file.rename(metadata.directory + QLatin1String("/Updates.xml"))) {
