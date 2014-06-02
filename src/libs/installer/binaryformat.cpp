@@ -45,7 +45,6 @@
 #include "fileutils.h"
 #include "lib7z_facade.h"
 #include "utils.h"
-#include "zipjob.h"
 
 #include <kdupdaterupdateoperationfactory.h>
 
@@ -59,14 +58,6 @@
 
 using namespace QInstaller;
 using namespace QInstallerCreator;
-
-/*
-TRANSLATOR QInstallerCreator::Archive
-*/
-
-/*
-TRANSLATOR QInstallerCreator::Component
-*/
 
 static inline QByteArray &theBuffer(int size)
 {
@@ -88,9 +79,6 @@ void QInstaller::retrieveFileData(QIODevice *out, QIODevice *in)
 {
     qint64 size = QInstaller::retrieveInt64(in);
     appendData(in, out, size);
-/*    QByteArray &b = theBuffer(size);
-    blockingRead(in, b.data(), size);
-    blockingWrite(out, b.constData(), size);*/
 }
 
 void QInstaller::appendInt64(QIODevice *out, qint64 n)
@@ -302,58 +290,6 @@ Archive::~Archive()
 }
 
 /*!
-    Copies the archives contents to the path \a name.
-    If the archive is a zipped directory, \a name is treated as a directory. The archive gets extracted there.
-
-    If the archive is a plain file and \a name an existing directory, it gets created
-    with it's name. Otherwise it gets saved as \a name.
-    Note that if a file with the \a name already exists, copy() return false (i.e. Archive will not overwrite it).
- */
-bool Archive::copy(const QString &name)
-{
-    const QFileInfo fileInfo(name);
-    if (isZippedDirectory()) {
-        if (fileInfo.exists() && !fileInfo.isDir())
-            return false;
-
-        errno = 0;
-        const QString absoluteFilePath = fileInfo.absoluteFilePath();
-        if (!fileInfo.exists() && !QDir().mkpath(absoluteFilePath)) {
-#if defined(Q_OS_WIN) && !defined(Q_CC_MINGW)
-            char msg[128];
-            if (strerror_s(msg, sizeof msg, errno) != 0)
-                setErrorString(tr("Could not create %1: %2").arg(name, QString::fromLocal8Bit(msg)));
-#else
-            setErrorString(tr("Could not create %1: %2").arg(name, QString::fromLocal8Bit(strerror(errno))));
-#endif
-            return false;
-        }
-
-        if (isOpen())
-            close();
-        open(QIODevice::ReadOnly);
-
-        UnzipJob job;
-        job.setInputDevice(this);
-        job.setOutputPath(absoluteFilePath);
-        job.run();
-    } else {
-        if (isOpen())
-            close();
-        open(QIODevice::ReadOnly);
-
-        QFile target(fileInfo.isDir() ? QString::fromLatin1("%1/%2").arg(name)
-            .arg(QString::fromUtf8(m_name.data(), m_name.count())) : name);
-        if (target.exists())
-            return false;
-        target.open(QIODevice::WriteOnly);
-        blockingCopy(this, &target, size());
-    }
-    close();
-    return true;
-}
-
-/*!
     \reimp
  */
 bool Archive::seek(qint64 pos)
@@ -361,34 +297,6 @@ bool Archive::seek(qint64 pos)
     if (m_inputFile.isOpen())
         return m_inputFile.seek(pos) && QIODevice::seek(pos);
     return QIODevice::seek(pos);
-}
-
-/*!
-    Returns true, if this archive was created by zipping a directory.
- */
-bool Archive::isZippedDirectory() const
-{
-    if (m_device == 0) {
-        // easy, just check whether it's a dir
-        return QFileInfo(m_path).isDir();
-    }
-
-    // more complex, check the zip header magic
-    Archive* const arch = const_cast<Archive*> (this);
-
-    const bool notOpened = !isOpen();
-    if (notOpened)
-        arch->open(QIODevice::ReadOnly);
-    const qint64 p = pos();
-    arch->seek(0);
-
-    const QByteArray ba = arch->read(4);
-    const bool result = ba == QByteArray("\x50\x4b\x03\04");
-
-    arch->seek(p);
-    if (notOpened)
-        arch->close();
-    return result;
 }
 
 QByteArray Archive::name() const

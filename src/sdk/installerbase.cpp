@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -103,6 +103,14 @@ static QStringList repositories(const QStringList &arguments, const int index)
 
 int main(int argc, char *argv[])
 {
+// increase maximum numbers of file descriptors
+#if defined (Q_OS_MAC)
+    struct rlimit rl;
+    getrlimit(RLIMIT_NOFILE, &rl);
+    rl.rlim_cur = qMin((rlim_t)OPEN_MAX, rl.rlim_max);
+    setrlimit(RLIMIT_NOFILE, &rl);
+#endif
+
     QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
 
 // hack to use cleanlooks if it is under Ubuntu

@@ -90,12 +90,12 @@ bool ConsumeOutputOperation::performOperation()
     }
 
     QString executablePath = arguments().at(1);
+    QFileInfo executable(executablePath);
 #ifdef Q_OS_WIN
-    if (!QFile::exists(executablePath))
-        executablePath = executablePath + QLatin1String(".exe");
+    if (!executable.exists() && executable.suffix().isEmpty())
+        executable = QFileInfo(executablePath + QLatin1String(".exe"));
 #endif
 
-    const QFileInfo executable(executablePath);
     if (!executable.exists() || !executable.isExecutable()) {
         setError(UserDefinedError);
         setErrorString(tr("File '%1' does not exist or is not an executable binary.").arg(
@@ -140,7 +140,7 @@ bool ConsumeOutputOperation::performOperation()
         qWarning() << QString::fromLatin1("Cannot get any query output from executable: '%1'").arg(
             executable.absoluteFilePath());
     }
-    core->setValue(installerKeyName, QString::fromLatin1(executableOutput));
+    core->setValue(installerKeyName, QString::fromLocal8Bit(executableOutput));
     return true;
 }
 

@@ -100,6 +100,7 @@ void MetadataJob::doStart()
             }
         }
         DownloadFileTask *const xmlTask = new DownloadFileTask(items);
+        xmlTask->setProxyFactory(m_core->proxyFactory());
         m_xmlTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, xmlTask));
     } else {
         emitFinished();
@@ -135,6 +136,7 @@ void MetadataJob::xmlTaskFinished()
     if (status == XmlDownloadSuccess) {
         setProcessedAmount(0);
         DownloadFileTask *const metadataTask = new DownloadFileTask(m_packages);
+        metadataTask->setProxyFactory(m_core->proxyFactory());
         m_metadataTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, metadataTask));
         emit infoMessage(this, tr("Retrieving meta information from remote repository..."));
     } else if (status == XmlDownloadRetry) {
@@ -289,8 +291,14 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 const QString repoUrl = metadata.repository.url().toString();
                 FileTaskItem item(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl,
                     packageName, (online ? packageVersion : QString())));
+
+                QAuthenticator authenticator;
+                authenticator.setUser(metadata.repository.username());
+                authenticator.setPassword(metadata.repository.password());
+
                 item.insert(TaskRole::UserRole, metadata.directory);
                 item.insert(TaskRole::Checksum, packageHash.toLatin1());
+                item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                 m_packages.append(item);
             }
         }

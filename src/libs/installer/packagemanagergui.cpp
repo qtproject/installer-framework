@@ -239,6 +239,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         setWindowTitle(tr("%1 Setup").arg(m_core->value(scTitle)));
     else
         setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
+    setWindowFlags(windowFlags() &~ Qt::WindowContextHelpButtonHint);
 
 #ifndef Q_OS_MAC
     setWindowIcon(QIcon(m_core->settings().installerWindowIcon()));

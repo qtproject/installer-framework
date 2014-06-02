@@ -45,6 +45,7 @@
 
 #include <QEventLoop>
 #include <QFile>
+#include <QFileInfo>
 #include <QNetworkProxyFactory>
 #include <QSslError>
 #include <QTemporaryFile>
@@ -307,8 +308,14 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
     } else {
         file.reset(new QFile(target));
     }
+
+    if (file->exists() && (!QFileInfo(file->fileName()).isFile())) {
+        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Target file "
+            "'%1' already exists but is not a file.").arg(file->fileName())));
+        return 0;
+    }
+
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        file->remove();
         m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Could not open "
             "target '%1' for write. Error: %2.").arg(file->fileName(), file->errorString())));
         return 0;

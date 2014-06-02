@@ -58,7 +58,7 @@ function handleFile()
     local BUNDLE=$2
 
     # all dynamic libs directly needed by the bundle, which are not in /System/Library or in /usr/lib (which are system default libs, which we don't want)
-    local LIBS=`otool -L $FILE | grep -v 'executable_path' | grep -v '/System/Library' | grep -v '/usr/lib' | grep '/' | sed -ne 's,^ *\(.*\) (.*,\1,p'`
+    local LIBS=`xcrun otool -L $FILE | grep -v 'executable_path' | grep -v '/System/Library' | grep -v '/usr/lib' | grep '/' | sed -ne 's,^ *\(.*\) (.*,\1,p'`
 
     local lib
     for lib in $LIBS; do
@@ -111,7 +111,7 @@ function handleFile()
                 handleFile "$BUNDLE/Contents/Frameworks/$NEWFRAMEWORKPATH" "$BUNDLE"
             fi
             # and inform the dynamic linker about this
-            install_name_tool -change $lib @executable_path/../Frameworks/$NEWFRAMEWORKPATH $FILE
+            xcrun install_name_tool -change $lib @executable_path/../Frameworks/$NEWFRAMEWORKPATH $FILE
 
 
         # this part handles 'normal' dynamic libraries (.dylib)
@@ -137,7 +137,7 @@ function handleFile()
             fi
 
             # and inform the dynamic linker about this
-            install_name_tool -change $lib @executable_path/../Frameworks/$NAME $FILE
+            xcrun install_name_tool -change $lib @executable_path/../Frameworks/$NAME $FILE
         fi
 
         fi
@@ -163,13 +163,13 @@ function handleQtPlugins()
         if echo $plugin | grep 'debug' >/dev/null; then
             #if [ $IS_DEBUG -eq 1 ]; then
                 cp "$PLUGINPATH/$CLASS/$plugin" $BUNDLE/Contents/plugins/$CLASS
-                install_name_tool -change $plugin @executable_path/../plugins/$CLASS/$plugin $EXECUTABLE
+                xcrun install_name_tool -change $plugin @executable_path/../plugins/$CLASS/$plugin $EXECUTABLE
                 handleFile $BUNDLE/Contents/plugins/$CLASS/$plugin $BUNDLE
             #fi
         else
             #if [ $IS_DEBUG -eq 0 ]; then
                 cp "$PLUGINPATH/$CLASS/$plugin" $BUNDLE/Contents/plugins/$CLASS
-                install_name_tool -change $plugin @executable_path/../plugins/$CLASS/$plugin $EXECUTABLE
+                xcrun install_name_tool -change $plugin @executable_path/../plugins/$CLASS/$plugin $EXECUTABLE
                 handleFile $BUNDLE/Contents/plugins/$CLASS/$plugin $BUNDLE
             #fi
         fi
