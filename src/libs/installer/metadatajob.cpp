@@ -286,13 +286,15 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     if (c2.at(j).toElement().tagName() == scName)
                         packageName = c2.at(j).toElement().text();
                     else if (c2.at(j).toElement().tagName() == scRemoteVersion)
-                        packageVersion = c2.at(j).toElement().text();
+                        packageVersion = (online ? c2.at(j).toElement().text() : QString());
                     else if (c2.at(j).toElement().tagName() == QLatin1String("SHA1"))
                         packageHash = c2.at(j).toElement().text();
                 }
+
                 const QString repoUrl = metadata.repository.url().toString();
-                FileTaskItem item(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl,
-                    packageName, (online ? packageVersion : QString())));
+                FileTaskItem item(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, packageName,
+                    packageVersion), metadata.directory + QString::fromLatin1("/%1.meta.7z")
+                    .arg(packageName));
 
                 QAuthenticator authenticator;
                 authenticator.setUser(metadata.repository.username());

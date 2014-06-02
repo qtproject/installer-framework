@@ -73,14 +73,7 @@ public:
     UnzipArchiveTask(const QString &arcive, const QString &target)
         : m_archive(arcive), m_targetDir(target)
     {}
-    ~UnzipArchiveTask()
-    {
-        QFile file(m_archive);
-        if (!file.remove()) {
-            qWarning("Could not delete file %s: %s", qPrintable(m_archive), qPrintable(file
-                .errorString()));
-        }
-    }
+
     void doTask(QFutureInterface<void> &fi)
     {
         fi.reportStarted();
