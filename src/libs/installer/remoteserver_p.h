@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,19 +38,86 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#ifndef INSTALLER_GLOBAL_H
-#define INSTALLER_GLOBAL_H
 
-#include <QtCore/QtGlobal>
+#ifndef REMOTESERVER_P_H
+#define REMOTESERVER_P_H
 
-#ifndef QT_STATIC
-#  ifdef BUILD_LIB_INSTALLER
-#    define INSTALLER_EXPORT Q_DECL_EXPORT
-#  else
-#    define INSTALLER_EXPORT Q_DECL_IMPORT
-#  endif
-#else
-#  define INSTALLER_EXPORT
-#endif
+#include "remoteserver.h"
+#include "remoteserverconnection.h"
 
-#endif //INSTALLER_GLOBAL_H
+#include <QPointer>
+#include <QTcpServer>
+#include <QTimer>
+
+namespace QInstaller {
+
+class TcpServer : public QTcpServer
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(TcpServer)
+
+public:
+    TcpServer(quint16 port, const QHostAddress &address, RemoteServer *server)
+        : QTcpServer(0)
+        , m_port(port)
+        , m_address(address)
+        , m_server(server)
+    {
+        listen(m_address, m_port);
+    }
+
+    ~TcpServer() {
+        const QList<QThread *> threads = findChildren<QThread *>();
+        foreach (QThread *thread, threads) {
+            thread->quit();
+            thread->wait();
+        }
+    }
+
+signals:
+    void newIncommingConnection();
+
+private:
+    void incomingConnection(qintptr socketDescriptor) Q_DECL_OVERRIDE {
+        QThread *const thread = new RemoteServerConnection(socketDescriptor, m_server);
+        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+        thread->start();
+        emit newIncommingConnection();
+    }
+
+private:
+    quint16 m_port;
+    QHostAddress m_address;
+    QPointer<RemoteServer> m_server;
+};
+
+class RemoteServerPrivate
+{
+    Q_DECLARE_PUBLIC(RemoteServer)
+    Q_DISABLE_COPY(RemoteServerPrivate)
+
+public:
+    explicit RemoteServerPrivate(RemoteServer *server)
+        : q_ptr(server)
+        , m_tcpServer(0)
+        , m_watchdog(new QTimer)
+    {
+        m_watchdog->setInterval(30000);
+        m_watchdog->setSingleShot(true);
+    }
+
+private:
+    RemoteServer *q_ptr;
+    TcpServer *m_tcpServer;
+
+    QString m_key;
+    quint16 m_port;
+    QThread m_thread;
+    QHostAddress m_address;
+    RemoteServer::Mode m_mode;
+    QScopedPointer<QTimer> m_watchdog;
+};
+
+} // namespace QInstaller
+
+#endif // REMOTESERVER_P_H

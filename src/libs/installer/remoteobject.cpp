@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,19 +38,68 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#ifndef INSTALLER_GLOBAL_H
-#define INSTALLER_GLOBAL_H
 
-#include <QtCore/QtGlobal>
+#include "remoteobject.h"
 
-#ifndef QT_STATIC
-#  ifdef BUILD_LIB_INSTALLER
-#    define INSTALLER_EXPORT Q_DECL_EXPORT
-#  else
-#    define INSTALLER_EXPORT Q_DECL_IMPORT
-#  endif
-#else
-#  define INSTALLER_EXPORT
-#endif
+#include "protocol.h"
+#include "remoteclient.h"
 
-#endif //INSTALLER_GLOBAL_H
+namespace QInstaller {
+
+RemoteObject::RemoteObject(const QString &wrappedType, QObject *parent)
+    : QObject(parent)
+    , m_socket(0)
+    , dummy(0)
+    , m_type(wrappedType)
+{
+    Q_ASSERT_X(!m_type.isEmpty(), Q_FUNC_INFO, "The wrapped Qt type needs to be passed as "
+        "argument and cannot be empty.");
+}
+
+RemoteObject::~RemoteObject()
+{
+    if (m_socket) {
+        m_stream << QString::fromLatin1(Protocol::Destroy) << m_type;
+        m_socket->waitForBytesWritten(-1);
+    }
+}
+
+bool RemoteObject::connectToServer(const QVariantList &arguments)
+{
+    if (!RemoteClient::instance().isActive())
+        return false;
+
+    if (m_socket && (m_socket->state() == QAbstractSocket::ConnectedState))
+        return true;
+
+    if (m_socket)
+        m_socket->deleteLater();
+
+    m_socket = RemoteClient::instance().connect();
+    if (!m_socket)
+        return false;
+
+    m_stream.setDevice(m_socket);
+    m_stream << QString::fromLatin1(Protocol::Create) << m_type;
+    foreach (const QVariant &arg, arguments)
+        m_stream << arg;
+    m_socket->waitForBytesWritten(-1);
+
+    return true;
+}
+
+bool RemoteObject::isConnectedToServer() const
+{
+    if ((!m_socket) || (!RemoteClient::instance().isActive()))
+        return false;
+    if (m_socket && (m_socket->state() == QAbstractSocket::ConnectedState))
+        return true;
+    return false;
+}
+
+void RemoteObject::callRemoteMethod(const QString &name)
+{
+    writeData(name, dummy, dummy, dummy);
+}
+
+} // namespace QInstaller

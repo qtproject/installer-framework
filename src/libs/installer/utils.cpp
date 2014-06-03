@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -82,6 +82,55 @@ void QInstaller::uiDetachedWait(int ms)
         QCoreApplication::processEvents(QEventLoop::AllEvents, ms);
         sleepCopiedFromQTest(10);
     } while (timer.elapsed() < ms);
+}
+
+/*!
+    Starts the program \a program with the arguments \a arguments in a new process, and detaches
+    from it. Returns true on success; otherwise returns false. If the calling process exits, the
+    detached process will continue to live.
+
+    Note that arguments that contain spaces are not passed to the process as separate arguments.
+
+    Unix:    The started process will run in its own session and act like a daemon.
+    Windows: Arguments that contain spaces are wrapped in quotes. The started process will run as
+             a regular standalone process.
+
+    The process will be started in the directory \a workingDirectory.
+
+    If the function is successful then \a *pid is set to the process identifier of the started
+    process.
+
+    Additional note: The difference in using this function over its equivalent from QProcess
+                     appears on Windows. While this function will truly detach and not show a GUI
+                     window for the started process, the QProcess version will.
+*/
+bool QInstaller::startDetached(const QString &program, const QStringList &arguments,
+    const QString &workingDirectory, qint64 *pid)
+{
+    bool success = false;
+#ifdef Q_OS_WIN
+    PROCESS_INFORMATION pinfo;
+    STARTUPINFOW startupInfo = { sizeof(STARTUPINFO), 0, 0, 0,
+        static_cast<ulong>(CW_USEDEFAULT), static_cast<ulong>(CW_USEDEFAULT),
+        static_cast<ulong>(CW_USEDEFAULT), static_cast<ulong>(CW_USEDEFAULT),
+        0, 0, 0, STARTF_USESHOWWINDOW, SW_HIDE, 0, 0, 0, 0, 0
+    };  // That's the difference over QProcess::startDetached(): STARTF_USESHOWWINDOW, SW_HIDE.
+
+    const QString commandline = QInstaller::createCommandline(program, arguments);
+    if (CreateProcessW(0, (wchar_t*) commandline.utf16(),
+        0, 0, false, CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_CONSOLE,
+        0, workingDirectory.isEmpty() ? 0 : (wchar_t*) workingDirectory.utf16(),
+        &startupInfo, &pinfo)) {
+        success = true;
+        CloseHandle(pinfo.hThread);
+        CloseHandle(pinfo.hProcess);
+        if (pid)
+            *pid = pinfo.dwProcessId;
+    }
+#else
+    success = QProcess::startDetached(program, arguments, workingDirectory, pid);
+#endif
+    return success;
 }
 
 static bool verb = false;

@@ -112,9 +112,18 @@ HEADERS += packagemanagercore.h \
     metadatajob.h \
     metadatajob_p.h \
     installer_global.h \
-    scriptengine_p.h
+    scriptengine_p.h \
+    protocol.h \
+    remoteobject.h \
+    remoteclient.h \
+    remoteserver.h \
+    remoteclient_p.h \
+    remoteserver_p.h \
+    remotefileengine.h \
+    remoteserverconnection.h \
+    remoteserverconnection_p.h
 
-    SOURCES += packagemanagercore.cpp \
+SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \
     binaryformat.cpp \
@@ -180,7 +189,12 @@ HEADERS += packagemanagercore.h \
     downloadfiletask.cpp \
     unziptask.cpp \
     observer.cpp \
-    metadatajob.cpp
+    metadatajob.cpp \
+    remoteobject.cpp \
+    remoteclient.cpp \
+    remoteserver.cpp \
+    remotefileengine.cpp \
+    remoteserverconnection.cpp
 
 RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc

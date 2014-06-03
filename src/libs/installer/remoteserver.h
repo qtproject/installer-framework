@@ -39,69 +39,49 @@
 **
 **************************************************************************/
 
-#ifndef QINSTALLER_UTILS_H
-#define QINSTALLER_UTILS_H
+#ifndef REMOTESERVER_H
+#define REMOTESERVER_H
 
 #include "installer_global.h"
 
-#include <QtCore/QBuffer>
-#include <QtCore/QCryptographicHash>
-#include <QtCore/QHash>
-#include <QtCore/QUrl>
-#include <QtCore/QTextStream>
-
-#include <ostream>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
-class QIODevice;
+class QHostAddress;
 QT_END_NAMESPACE
 
 namespace QInstaller {
-    void INSTALLER_EXPORT uiDetachedWait(int ms);
-    bool INSTALLER_EXPORT startDetached(const QString &program, const QStringList &arguments,
-        const QString &workingDirectory, qint64 *pid = 0);
 
-    QByteArray INSTALLER_EXPORT calculateHash(QIODevice *device, QCryptographicHash::Algorithm algo);
-    QByteArray INSTALLER_EXPORT calculateHash(const QString &path, QCryptographicHash::Algorithm algo);
+class RemoteServerPrivate;
 
-    QString INSTALLER_EXPORT replaceVariables(const QHash<QString,QString> &vars, const QString &str);
-    QString INSTALLER_EXPORT replaceWindowsEnvironmentVariables(const QString &str);
-    QStringList INSTALLER_EXPORT parseCommandLineArgs(int argc, char **argv);
+class INSTALLER_EXPORT RemoteServer : public QObject
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(RemoteServer)
+    Q_DECLARE_PRIVATE(RemoteServer)
 
-#ifdef Q_OS_WIN
-    QString createCommandline(const QString &program, const QStringList &arguments);
-#endif
-
-    void INSTALLER_EXPORT setVerbose(bool v);
-    bool INSTALLER_EXPORT isVerbose();
-
-    INSTALLER_EXPORT std::ostream& stdverbose();
-    INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
-
-    class VerboseWriter;
-    INSTALLER_EXPORT VerboseWriter &verbose();
-
-    class INSTALLER_EXPORT VerboseWriter : public QObject
-    {
-        Q_OBJECT
-    public:
-        explicit VerboseWriter(QObject *parent = 0);
-        ~VerboseWriter();
-
-        static VerboseWriter *instance();
-
-        inline VerboseWriter &operator<<(const char *t) { stdverbose() << t; stream << t; return *this; }
-        inline VerboseWriter &operator<<(std::ostream& (*f)(std::ostream &s)) { stdverbose() << *f; stream << "\n"; return *this; }
-    public slots:
-        void setOutputStream(const QString &fileName);
-
-    private:
-        QTextStream stream;
-        QBuffer preFileBuffer;
-        QString logFileName;
-        QString currentDateTimeAsString;
+public:
+    enum Mode {
+        Debug,
+        Release
     };
 
-}
+    explicit RemoteServer(QObject *parent = 0);
+    ~RemoteServer();
 
-#endif // QINSTALLER_UTILS_H
+    void start();
+    void init(quint16 port, const QHostAddress &address, Mode mode);
+
+    QString authorizationKey() const;
+    void setAuthorizationKey(const QString &key);
+
+private slots:
+    void restartWatchdog();
+
+private:
+    QScopedPointer<RemoteServerPrivate> d_ptr;
+};
+
+} // namespace QInstaller
+
+#endif // REMOTESERVER_H

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,19 +38,52 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#ifndef INSTALLER_GLOBAL_H
-#define INSTALLER_GLOBAL_H
 
-#include <QtCore/QtGlobal>
+#ifndef REMOTESERVERCONNECTION_H
+#define REMOTESERVERCONNECTION_H
 
-#ifndef QT_STATIC
-#  ifdef BUILD_LIB_INSTALLER
-#    define INSTALLER_EXPORT Q_DECL_EXPORT
-#  else
-#    define INSTALLER_EXPORT Q_DECL_IMPORT
-#  endif
-#else
-#  define INSTALLER_EXPORT
-#endif
+#include <QPointer>
+#include <QThread>
 
-#endif //INSTALLER_GLOBAL_H
+#include <QtCore/private/qfsfileengine_p.h>
+
+QT_BEGIN_NAMESPACE
+class QProcess;
+class QSettings;
+QT_END_NAMESPACE
+
+namespace QInstaller {
+
+class QProcessSignalReceiver;
+class RemoteServer;
+
+class RemoteServerConnection : public QThread
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(RemoteServerConnection)
+
+public:
+    RemoteServerConnection(qintptr socketDescriptor, RemoteServer *parent);
+
+    void run() Q_DECL_OVERRIDE;
+
+private:
+    template <typename T>
+    void sendData(QDataStream &stream, const T &arg);
+    void handleQProcess(const QString &command, QDataStream &receivedStream);
+    void handleQSettings(const QString &command, QDataStream &receivedStream);
+    void handleQFSFileEngine(const QString &command, QDataStream &receivedStream);
+
+private:
+    qintptr m_socketDescriptor;
+
+    QProcess *m_process;
+    QSettings *m_settings;
+    QFSFileEngine *m_engine;
+    QPointer<RemoteServer> m_server;
+    QProcessSignalReceiver *m_signalReceiver;
+};
+
+} // namespace QInstaller
+
+#endif // REMOTESERVERCONNECTION_H
