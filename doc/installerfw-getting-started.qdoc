@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -81,7 +81,7 @@
     Windows:
 
     \code
-    configure.exe -opensource -release -static -accessibility -no-multimedia -no-declarative -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -nomake examples -nomake demos
+    configure -opensource -release -static -target xp -no-opengl -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtscript -skip qtsensors
     \endcode
 
     \section2 Configuring Qt for Linux and Mac OS X
@@ -90,7 +90,7 @@
     Mac OS X:
 
     \code
-    configure -opensource -release -static -accessibility -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -no-svg -nomake examples -nomake demos
+    configure -opensource -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
     \endcode
 
     \section1 Setting up Qt Installer Framework

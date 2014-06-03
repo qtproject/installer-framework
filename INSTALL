@@ -54,7 +54,7 @@ Adjust the qmake.conf to have a real stand alone working installer:
 
 Recommended configure options for Microsoft Windows:
 
-configure.exe -opensource -release -static -accessibility -no-multimedia -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -nomake examples -nomake demos -skip qtquick1 -skip qtscript -skip qtlocation
+configure -opensource -release -static -target xp -no-opengl -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtscript -skip qtsensors
 
 ### Linux & Mac OS X
 
