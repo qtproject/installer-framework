@@ -198,7 +198,7 @@ void QInstaller::openForWrite(QIODevice *dev, const QString &name)
 void QInstaller::openForAppend(QIODevice *dev, const QString &name)
 {
     Q_ASSERT(dev);
-    if (!dev->open(QIODevice::ReadWrite | QIODevice::Append))
+    if (!dev->open(QIODevice::WriteOnly | QIODevice::Append))
         throw Error(QObject::tr("Cannot open file %1 for writing: %2").arg(name, dev->errorString()));
 }
 

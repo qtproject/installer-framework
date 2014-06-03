@@ -82,7 +82,6 @@ private slots:
 
 private:
     void deferredRename(const QString &source, const QString &target);
-    void writeMaintenanceBinary(const QString &target, QFile *source, qint64 size);
 
 private:
     volatile bool m_downloadFinished;

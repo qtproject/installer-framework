@@ -211,7 +211,8 @@ int main(int argc, char *argv[])
             SDKApp<QCoreApplication> app(argc, argv);
             if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
                 return 0;
-
+            if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("-v")))
+                app.setVerbose();
             return InstallerBase().replaceMaintenanceToolBinary(args);
         }
 

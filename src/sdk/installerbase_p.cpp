@@ -44,6 +44,7 @@
 #include <binaryformat.h>
 #include <errors.h>
 #include <fileutils.h>
+#include <init.h>
 #include <lib7z_facade.h>
 #include <qprocesswrapper.h>
 #include <utils.h>
@@ -81,6 +82,7 @@ InstallerBase::~InstallerBase()
 
 int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
 {
+    QInstaller::init();
     QInstaller::setVerbose(arguments.contains(QLatin1String("--verbose"))
                            || arguments.contains(QLatin1String("-v")));
 
@@ -88,20 +90,16 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
     arguments.removeAll(QLatin1String("-v"));
     arguments.removeAll(QLatin1String("--update-installerbase"));
 
-    QUrl url = arguments.value(1);
-    if (!FileDownloaderFactory::isSupportedScheme(url.scheme()) && QFileInfo(url.toString()).exists())
-        url = QLatin1String("file:///") + url.toString();
+    const QUrl url = QUrl::fromUserInput(arguments.value(1));
     m_downloader.reset(FileDownloaderFactory::instance().create(url.scheme(), 0));
     if (m_downloader.isNull()) {
-        qDebug() << QString::fromLatin1("Scheme not supported: %1 (%2)").arg(url.scheme(), url.toString());
+        qDebug() << QString::fromLatin1("Scheme not supported: %1 (%2)").arg(url.scheme(),
+            url.toString());
         return EXIT_FAILURE;
     }
     m_downloader->setUrl(url);
-    m_downloader->setAutoRemoveDownloadedFile(true);
-
-    QString target = QDir::tempPath() + QLatin1String("/") + QFileInfo(arguments.at(1)).fileName();
-    if (FileDownloaderFactory::isSupportedScheme(url.scheme()))
-        m_downloader->setDownloadedFileName(target);
+    m_downloader->setAutoRemoveDownloadedFile(false);
+    qDebug() << QString::fromLatin1("Downloading file '%1'.").arg(url.toString());
 
     connect(m_downloader.data(), SIGNAL(downloadStarted()), this, SLOT(downloadStarted()));
     connect(m_downloader.data(), SIGNAL(downloadCanceled()), this, SLOT(downloadFinished()));
@@ -122,39 +120,52 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
         return EXIT_FAILURE;
     }
 
-    if (Lib7z::isSupportedArchive(target)) {
-        QFile archive(target);
+    QString newInstallerBasePath = m_downloader->downloadedFileName();
+    if (Lib7z::isSupportedArchive(newInstallerBasePath)) {
+        QFile archive(newInstallerBasePath);
         if (archive.open(QIODevice::ReadOnly)) {
             try {
                 Lib7z::extractArchive(&archive, QDir::tempPath());
+                const QVector<Lib7z::File> files = Lib7z::listArchive(&archive);
+                newInstallerBasePath = QDir::tempPath() + QLatin1Char('/') + files.value(0).path;
+
                 if (!archive.remove()) {
                     qDebug() << QString::fromLatin1("Could not delete file %1: %2").arg(
-                        target, archive.errorString());
+                        newInstallerBasePath, archive.errorString());
                 }
             } catch (const Lib7z::SevenZipException& e) {
-                qDebug() << QString::fromLatin1("Error while extracting '%1': %2").arg(target, e.message());
+                qDebug() << QString::fromLatin1("Error while extracting '%1': %2")
+                    .arg(newInstallerBasePath, e.message());
                 return EXIT_FAILURE;
             } catch (...) {
-                qDebug() << QString::fromLatin1("Unknown exception caught while extracting %1.").arg(target);
+                qDebug() << QString::fromLatin1("Unknown exception caught while extracting %1.")
+                    .arg(newInstallerBasePath);
                 return EXIT_FAILURE;
             }
         } else {
-            qDebug() << QString::fromLatin1("Could not open %1 for reading: %2.").arg(
-                target, archive.errorString());
+            qDebug() << QString::fromLatin1("Could not open %1 for reading: %2.")
+                .arg(newInstallerBasePath, archive.errorString());
             return EXIT_FAILURE;
         }
-#ifndef Q_OS_WIN
-        target = QDir::tempPath() + QLatin1String("/.tempSDKMaintenanceTool");
-#else
-        target = QDir::tempPath() + QLatin1String("/temp/SDKMaintenanceToolBase.exe");
-#endif
     }
 
+    qDebug() << QString::fromLatin1("New installer base path '%1'.").arg(newInstallerBasePath);
+
     try {
-        QFile installerBase(target);
-        QInstaller::openForRead(&installerBase, installerBase.fileName());
-        writeMaintenanceBinary(arguments.value(0), &installerBase, installerBase.size());
-        deferredRename(arguments.value(0) + QLatin1String(".new"), arguments.value(0));
+        {
+            QFile installerBaseNew(newInstallerBasePath);
+            QInstaller::openForAppend(&installerBaseNew, installerBaseNew.fileName());
+
+            installerBaseNew.seek(installerBaseNew.size());
+            QInstaller::appendInt64(&installerBaseNew, 0);   // resource count
+            QInstaller::appendInt64(&installerBaseNew, 4 * sizeof(qint64));   // data block size
+            QInstaller::appendInt64(&installerBaseNew, QInstaller::MagicUninstallerMarker);
+            QInstaller::appendInt64(&installerBaseNew, QInstaller::MagicCookie);
+
+            QFile installerBaseOld(arguments.value(0));
+            installerBaseNew.setPermissions(installerBaseOld.permissions());
+        }
+        deferredRename(newInstallerBasePath, arguments.value(0));
     } catch (const QInstaller::Error &error) {
         qDebug() << error.message();
         return EXIT_FAILURE;
@@ -285,6 +296,11 @@ void InstallerBase::deferredRename(const QString &oldName, const QString &newNam
         batch << QString::fromLatin1("backup = \"%1.bak\"\n").arg(QDir::toNativeSeparators(newName));
         batch << "on error resume next\n";
 
+        batch << "while fso.FileExists(backup)\n";
+        batch << "    fso.DeleteFile(backup)\n";
+        batch << "    WScript.Sleep(1000)\n";
+        batch << "wend\n";
+
         batch << "while fso.FileExists(file)\n";
         batch << "    fso.MoveFile file, backup\n";
         batch << "    WScript.Sleep(1000)\n";
@@ -296,32 +312,8 @@ void InstallerBase::deferredRename(const QString &oldName, const QString &newNam
     QProcessWrapper::startDetached(QLatin1String("cscript"), QStringList() << QLatin1String("//Nologo")
         << QDir::toNativeSeparators(vbScript.fileName()));
 #else
+    QFile::remove(newName + QLatin1String(".bak"));
     QFile::rename(newName, newName + QLatin1String(".bak"));
     QFile::rename(oldName, newName);
 #endif
-}
-
-void InstallerBase::writeMaintenanceBinary(const QString &target, QFile *const source, qint64 size)
-{
-    KDSaveFile out(target + QLatin1String(".new"));
-    QInstaller::openForWrite(&out, out.fileName()); // throws an exception in case of error
-
-    if (!source->seek(0)) {
-        throw QInstaller::Error(QObject::tr("Failed to seek in file %1. Reason: %2.").arg(source->fileName(),
-            source->errorString()));
-    }
-
-    QInstaller::appendData(&out, source, size);
-    QInstaller::appendInt64(&out, 0);   // resource count
-    QInstaller::appendInt64(&out, 4 * sizeof(qint64));   // data block size
-    QInstaller::appendInt64(&out, QInstaller::MagicUninstallerMarker);
-    QInstaller::appendInt64(&out, QInstaller::MagicCookie);
-
-    out.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
-        | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser);
-
-    if (!out.commit(KDSaveFile::OverwriteExistingFile)) {
-        throw QInstaller::Error(QString::fromLatin1("Could not write new maintenance-tool to %1. Reason: %2.")
-            .arg(out.fileName(), out.errorString()));
-    }
 }
