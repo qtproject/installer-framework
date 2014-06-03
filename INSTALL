@@ -16,8 +16,9 @@ Build Qt
 ---------------------
 
 To build an installer, it is advised to use a statically linked Qt. For maximum
-portability we recommend the latest version of the Qt 4.x series. See the Qt
-documentation for the prerequisites and steps to build Qt from sources.
+portability we recommend the latest version of the Qt 5.x series. The minimal
+required version is Qt 5.3.0 See the Qt documentation for the prerequisites and
+steps to build Qt from sources.
 
 ### Windows
 
@@ -53,17 +54,13 @@ Adjust the qmake.conf to have a real stand alone working installer:
 
 Recommended configure options for Microsoft Windows:
 
-configure.exe -opensource -release -static -accessibility -no-multimedia -no-declarative -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -nomake examples -nomake demos
+configure.exe -opensource -release -static -accessibility -no-multimedia -no-phonon -no-dbus -no-opengl -no-qt3support -no-xmlpatterns -nomake examples -nomake demos -skip qtquick1 -skip qtscript -skip qtlocation
 
 ### Linux & Mac OS X
 
 Recommended configure options for Linux and Mac OS X:
 
-Qt 4.8:
-configure -opensource -release -static -accessibility -qt-zlib -qt-libtiff -qt-libpng -qt-libmng -qt-libjpeg -no-phonon -no-dbus -no-opengl -no-qt3support -no-webkit -no-xmlpatterns -no-svg -nomake examples -nomake demos
-
-Qt 5:
-configure -opensource -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-dbus -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtdeclarative
+configure -opensource -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
 
 Build the Framework
 ---------------------
