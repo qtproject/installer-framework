@@ -48,9 +48,9 @@ namespace QInstaller {
 
 RemoteObject::RemoteObject(const QString &wrappedType, QObject *parent)
     : QObject(parent)
-    , m_socket(0)
     , dummy(0)
     , m_type(wrappedType)
+    , m_socket(0)
 {
     Q_ASSERT_X(!m_type.isEmpty(), Q_FUNC_INFO, "The wrapped Qt type needs to be passed as "
         "argument and cannot be empty.");

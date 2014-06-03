@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -95,12 +95,12 @@ public:
     }
 
     bool m_native;
-    QSettings settings;
     QString m_filename;
     QString m_application;
     QString m_organization;
     QSettings::Scope m_scope;
     QSettings::Format m_format;
+    QSettings settings;
 };
 
 
