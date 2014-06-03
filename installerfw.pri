@@ -8,6 +8,29 @@ IFW_VERSION = 1.6.81
 IFW_REPOSITORY_FORMAT_VERSION = 1.0.0
 IFW_NEWLINE = $$escape_expand(\\n\\t)
 
+defineTest(minQtVersion) {
+    maj = $$1
+    min = $$2
+    patch = $$3
+    isEqual(QT_MAJOR_VERSION, $$maj) {
+        isEqual(QT_MINOR_VERSION, $$min) {
+            isEqual(QT_PATCH_VERSION, $$patch) {
+                return(true)
+            }
+            greaterThan(QT_PATCH_VERSION, $$patch) {
+                return(true)
+            }
+        }
+        greaterThan(QT_MINOR_VERSION, $$min) {
+            return(true)
+        }
+    }
+    greaterThan(QT_MAJOR_VERSION, $$maj) {
+        return(true)
+    }
+    return(false)
+}
+
 defineReplace(toNativeSeparators) {
     return($$replace(1, /, $$QMAKE_DIR_SEP))
 }
