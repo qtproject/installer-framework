@@ -95,24 +95,12 @@ macx:LIBS += -framework Carbon -framework Security
 
 
 #
+# Qt 5 sets QT_CONFIG
 # Use same static/shared configuration as Qt
 #
-# Qt 5 sets QT_CONFIG
-# Qt 4 / Windows sets CONFIG
-# Qt 4 / Unix sets neither QT_CONFIG nor CONFIG
-#
-
 !contains(CONFIG, static|shared) {
     contains(QT_CONFIG, static): CONFIG += static
     contains(QT_CONFIG, shared): CONFIG += shared
-
-    !contains(CONFIG, static|shared) {
-        exists($$[QT_INSTALL_LIBS]/libQtCore.a)|exists($$[QT_INSTALL_LIBS]/libQtCore_debug.a) {
-            CONFIG += static
-        } else {
-            CONFIG += shared
-        }
-    }
 }
 
 QT += uitools core-private
