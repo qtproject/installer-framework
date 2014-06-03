@@ -88,14 +88,13 @@ void RemoteClient::init(quint16 port, const QHostAddress &address, Mode mode)
     d->init(port, address, mode);
 }
 
-QTcpSocket *RemoteClient::connect() const
+bool RemoteClient::connect(QTcpSocket *socket) const
 {
     Q_D(const RemoteClient);
     if (d->m_quit)
-        return 0;
+        return false;
 
     int tries = 3;
-    QScopedPointer<QTcpSocket> socket(new QTcpSocket);
     while ((tries > 0) && (!d->m_quit)) {
         socket->connectToHost(d->m_address, d->m_port);
 
@@ -108,10 +107,10 @@ QTcpSocket *RemoteClient::connect() const
                 continue;
         }
         if ((socket->state() != QAbstractSocket::ConnectedState) || d->m_quit)
-            return 0;
+            return false;
 
         QDataStream stream;
-        stream.setDevice(socket.data());
+        stream.setDevice(socket);
         stream << QString::fromLatin1(Protocol::Authorize) << d->m_key;
 
         socket->waitForBytesWritten(-1);
@@ -121,9 +120,9 @@ QTcpSocket *RemoteClient::connect() const
         quint32 size; stream >> size;
         bool authorized; stream >> authorized;
         if (authorized && (!d->m_quit))
-            return socket.take();
+            return true;
     }
-    return 0;
+    return false;
 }
 
 bool RemoteClient::isActive() const

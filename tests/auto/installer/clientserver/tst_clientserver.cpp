@@ -77,8 +77,9 @@ private slots:
         server.start();
 
         RemoteClient::instance().init(39999, QHostAddress::LocalHost, RemoteClient::Debug);
-        QScopedPointer<QTcpSocket> socket(QInstaller::RemoteClient::instance().connect());
-        QVERIFY2(!socket.isNull(), "Socket is NULL, could not connect to server.");
+        QTcpSocket socket;
+        QVERIFY2(RemoteClient::instance().connect(&socket), "Socket is NULL, could "
+            "not connect to server.");
     }
 
     void testQSettingsWrapper()

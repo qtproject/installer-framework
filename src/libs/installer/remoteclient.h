@@ -73,7 +73,7 @@ public:
     };
     static RemoteClient &instance();
 
-    QTcpSocket *connect() const;
+    bool connect(QTcpSocket *socket) const;
     void init(quint16 port, const QHostAddress &address, Mode mode);
 
     QString authorizationKey() const;

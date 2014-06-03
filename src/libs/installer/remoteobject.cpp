@@ -75,10 +75,11 @@ bool RemoteObject::connectToServer(const QVariantList &arguments)
     if (m_socket)
         m_socket->deleteLater();
 
-    m_socket = RemoteClient::instance().connect();
-    if (!m_socket)
+    QScopedPointer<QTcpSocket> socket(new QTcpSocket);
+    if (!RemoteClient::instance().connect(socket.data()))
         return false;
 
+    m_socket = socket.take();
     m_stream.setDevice(m_socket);
     m_stream << QString::fromLatin1(Protocol::Create) << m_type;
     foreach (const QVariant &arg, arguments)

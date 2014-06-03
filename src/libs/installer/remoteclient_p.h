@@ -90,7 +90,8 @@ private slots:
         {
             // Try to connect to the server. If we succeed the server side running watchdog gets
             // restarted and the server keeps running for another 30 seconds.
-            QScopedPointer<QTcpSocket> socket(m_client->connect());
+            QTcpSocket socket;
+            m_client->connect(&socket);
         }
 
         m_timer->start(1000);
@@ -134,9 +135,9 @@ public:
         if (m_mode == RemoteClient::Release) {
             QObject *const object = new KeepAliveObject(q_ptr);
             object->moveToThread(&m_thread);
+            QObject::connect(&m_thread, SIGNAL(started()), object, SLOT(run()));
             QObject::connect(&m_thread, SIGNAL(finished()), object, SLOT(deleteLater()));
             m_thread.start();
-            QTimer::singleShot(0, object, SLOT(run()));
         } else if (mode == RemoteClient::Debug) {
             m_active = true;
             m_serverStarted = true;
@@ -188,8 +189,8 @@ public:
              // 30 seconds ought to be enough for the app to start
             while (m_serverStarting && m_serverStarted && t.elapsed() < 30000) {
                 Q_Q(RemoteClient);
-                QScopedPointer<QTcpSocket> socket(q->connect());
-                if (socket)
+                QTcpSocket socket;
+                if (q->connect(&socket))
                     m_serverStarting = false;
             }
         }
@@ -206,13 +207,13 @@ public:
             return;
 
         Q_Q(RemoteClient);
-        QScopedPointer<QTcpSocket> socket(q->connect());
-        if (socket) {
-            QDataStream stream(socket.data());
+        QTcpSocket socket;
+        if (q->connect(&socket)) {
+            QDataStream stream(&socket);
             stream << QString::fromLatin1(Protocol::Authorize);
             stream << m_key;
             stream << QString::fromLatin1(Protocol::Shutdown);
-            socket->flush();
+            socket.flush();
         }
         m_serverStarted = false;
     }
