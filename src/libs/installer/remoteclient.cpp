@@ -49,6 +49,14 @@
 
 namespace QInstaller {
 
+class RemoteClientGuard
+{
+public:
+    RemoteClient client;
+};
+Q_GLOBAL_STATIC(RemoteClientGuard, remoteClientGuard);
+static RemoteClientGuard *gGuard = remoteClientGuard();
+
 RemoteClient::RemoteClient()
     : d_ptr(new RemoteClientPrivate(this))
 {
@@ -64,8 +72,7 @@ RemoteClient::~RemoteClient()
 
 RemoteClient &RemoteClient::instance()
 {
-    static RemoteClient instance;
-    return instance;
+    return gGuard->client;
 }
 
 QString RemoteClient::authorizationKey() const

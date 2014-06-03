@@ -60,6 +60,7 @@ class INSTALLER_EXPORT RemoteClient : public QObject
     Q_OBJECT
     Q_DISABLE_COPY(RemoteClient)
     Q_DECLARE_PRIVATE(RemoteClient)
+    friend class RemoteClientGuard;
 
 public:
     enum Mode {
