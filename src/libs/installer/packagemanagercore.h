@@ -199,10 +199,10 @@ public:
     QList<Component*> availableComponents() const;
     Component *componentByName(const QString &identifier) const;
 
-    bool calculateComponentsToInstall() const;
+    Q_INVOKABLE bool calculateComponentsToInstall() const;
     QList<Component*> orderedComponentsToInstall() const;
 
-    bool calculateComponentsToUninstall() const;
+    Q_INVOKABLE bool calculateComponentsToUninstall() const;
     QList<Component*> componentsToUninstall() const;
 
     QString componentsToInstallError() const;
@@ -270,6 +270,9 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void aboutCalculateComponentsToInstall() const;
+    void finishedCalculateComponentsToInstall() const;
+    void aboutCalculateComponentsToUninstall() const;
+    void finishedCalculateComponentsToUninstall() const;
     void componentAdded(QInstaller::Component *comp);
     void rootComponentsAdded(QList<QInstaller::Component*> components);
     void updaterComponentsAdded(QList<QInstaller::Component*> components);
