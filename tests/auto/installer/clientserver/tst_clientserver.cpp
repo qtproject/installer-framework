@@ -93,8 +93,10 @@ private slots:
         wrapper.clear();
         QCOMPARE(wrapper.isConnectedToServer(), true);
         wrapper.sync();
+        wrapper.setFallbacksEnabled(false);
 
         QSettings settings("digia", "clientserver");
+        settings.setFallbacksEnabled(false);
 
         QCOMPARE(settings.fileName(), wrapper.fileName());
         QCOMPARE(int(settings.format()), int(wrapper.format()));
