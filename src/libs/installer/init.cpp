@@ -186,6 +186,9 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
                     QString::fromLatin1(context.function)).toLocal8Bit();
     }
 
+    if (!VerboseWriter::instance())
+        return;
+
     verbose() << ba.constData() << std::endl;
     if (!isVerbose() && type != QtDebugMsg)
         std::cout << ba.constData() << std::endl << std::endl;
