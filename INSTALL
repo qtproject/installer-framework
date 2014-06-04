@@ -55,13 +55,13 @@ Adjust the qmake.conf to have a real stand alone working installer:
 
 Recommended configure options for Microsoft Windows:
 
-configure -opensource -release -static -target xp -no-opengl -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtscript -skip qtsensors
+configure -prefix %CD%\qtbase -release -static -target xp -no-opengl -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtscript -skip qtsensors
 
 ### Linux & Mac OS X
 
 Recommended configure options for Linux and Mac OS X:
 
-configure -opensource -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
+./configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
 
 Build the Framework
 ---------------------
