@@ -273,7 +273,12 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         metadata.repository = item.value(TaskRole::UserRole).value<Repository>();
         const bool online = !(metadata.repository.url().scheme()).isEmpty();
 
+        bool testCheckSum = true;
         const QDomElement root = doc.documentElement();
+        const QDomNode checksum = root.firstChildElement(QLatin1String("Checksum"));
+        if (!checksum.isNull())
+            testCheckSum = (checksum.toElement().text().toLower() == scTrue);
+
         QDomNodeList children = root.childNodes();
         for (int i = 0; i < children.count(); ++i) {
             const QDomElement el = children.at(i).toElement();
@@ -285,7 +290,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                         packageName = c2.at(j).toElement().text();
                     else if (c2.at(j).toElement().tagName() == scRemoteVersion)
                         packageVersion = c2.at(j).toElement().text();
-                    else if (c2.at(j).toElement().tagName() == QLatin1String("SHA1"))
+                    else if ((c2.at(j).toElement().tagName() == QLatin1String("SHA1")) && testCheckSum)
                         packageHash = c2.at(j).toElement().text();
                 }
                 const QString repoUrl = metadata.repository.url().toString();
