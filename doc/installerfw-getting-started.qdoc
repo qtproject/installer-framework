@@ -33,9 +33,9 @@
 
     \title Getting Started
 
-    Qt Installer Framework is developed as part of the Qt project. Fetch the
-    sources from Gitorious and build the necessary tools before you start to
-    create installers for your products.
+    Qt Installer Framework is developed as part of the Qt project. The
+    framework itself uses Qt. However, it can be used to install all kind of
+    applications, including (but not limited to) applications built with Qt.
 
     \section1 Supported Platforms
 
@@ -52,13 +52,19 @@
         \o Mac OS X 10.6, and later
     \endlist
 
-    \section1 Configuring Qt
+    \section1 Building from Sources
 
-    If you use a statically built Qt to create your installer, you do not have
-    to deliver Qt libraries, which enables you to distribute the installer as
-    one package.
+    The following steps describe how to build the Qt Installer Framework
+    yourself. You can skip this if you have downloaded a pre-built version
+    of the framework.
 
-    \section2 Configuring Qt for Windows
+    \section2 Configuring Qt
+
+    If you use a statically built Qt to build the Qt Installer Framework
+    you do not have to deliver Qt libraries, which enables you to distribute
+    installers as one file.
+
+    \section3 Configuring Qt for Windows
 
     Before running configure you should tweak Qt to statically link in the C
     runtime library. This can be done by changing the default mkspec of
@@ -84,7 +90,7 @@
     configure -opensource -release -static -target xp -no-opengl -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtscript -skip qtsensors
     \endcode
 
-    \section2 Configuring Qt for Linux and Mac OS X
+    \section3 Configuring Qt for Linux and Mac OS X
 
     We recommend that you use the following configuration options for Linux and
     Mac OS X:
@@ -93,7 +99,7 @@
     configure -opensource -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
     \endcode
 
-    \section1 Setting up Qt Installer Framework
+    \section2 Setting up Qt Installer Framework
 
     \list 1
 

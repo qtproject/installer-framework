@@ -12,13 +12,14 @@ Use Git to check out the Qt Installer Framework sources that are hosted at:
 http://qt.gitorious.org/installer-framework
 
 
-Build Qt
+Build a static Qt
 ---------------------
 
-To build an installer, it is advised to use a statically linked Qt. For maximum
-portability we recommend the latest version of the Qt 5.x series. The minimal
-required version is Qt 5.3.0 See the Qt documentation for the prerequisites and
-steps to build Qt from sources.
+Building the Qt Installer Framework from sources requires Qt (version 5.3.0
+or newer). If you want to ship your installer as a single file you have to build
+Qt and the Qt Installer Framework statically.
+
+See the Qt documentation for the prerequisites and steps to build Qt from sources.
 
 ### Windows
 
