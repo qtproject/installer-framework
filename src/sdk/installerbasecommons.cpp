@@ -40,6 +40,8 @@
 **************************************************************************/
 #include "installerbasecommons.h"
 
+#include <packagemanagercore.h>
+#include <scriptengine.h>
 #include <packagemanagerpagefactory.h>
 #include <productkeycheck.h>
 
@@ -73,6 +75,10 @@ InstallerGui::InstallerGui(PackageManagerCore *core)
 
 void InstallerGui::init()
 {
+    foreach (const int id, pageIds()) {
+        packageManagerCore()->controlScriptEngine()->addQObjectChildren(page(id));
+        packageManagerCore()->componentScriptEngine()->addQObjectChildren(page(id));
+    }
 }
 
 
@@ -109,6 +115,10 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
 
 void MaintenanceGui::init()
 {
+    foreach (const int id, pageIds()) {
+        packageManagerCore()->controlScriptEngine()->addQObjectChildren(page(id));
+        packageManagerCore()->componentScriptEngine()->addQObjectChildren(page(id));
+    }
 }
 
 void MaintenanceGui::updateRestartPage()
