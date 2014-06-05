@@ -1,3 +1,51 @@
-# Run qdoc from the directory that contains this file.
-include(config/installerfw-project.qdocconf)
-include(config/qt-html-templates.qdocconf)
+include($QT_INSTALL_DOCS/global/qt-html-templates-offline.qdocconf)
+include($QT_INSTALL_DOCS/global/macros.qdocconf)
+include($QT_INSTALL_DOCS/global/qt-cpp-defines.qdocconf)
+include($QT_INSTALL_DOCS/global/compat.qdocconf)
+include($QT_INSTALL_DOCS/global/fileextensions.qdocconf)
+
+project     = "Qt Installer Framework"
+description = "Qt Installer Framework Manual"
+
+headerdirs =
+sourcedirs = $SRCDIR
+
+# Contains documentation for JS API
+sources = $SRCDIR/../src/libs/installer/packagemanagercore.cpp \
+          $SRCDIR/../src/libs/installer/component.cpp \
+          $SRCDIR/../src/libs/installer/messageboxhandler.cpp
+
+imagedirs = $SRCDIR/images $SRCDIR/templates/images
+outputdir = $OUTDIR
+exampledirs = $SRCDIR $SRCDIR/examples
+
+sources.fileextensions         = "*.qdoc *.cpp"
+
+qhp.projects            = InstallerFramework
+qhp.InstallerFramework.file             = ifw.qhp
+qhp.InstallerFramework.namespace        = org.qt-project.ifw.$IFW_VERSION_TAG
+qhp.InstallerFramework.virtualFolder    = doc
+qhp.InstallerFramework.indexTitle       = Qt Installer Framework Manual
+qhp.InstallerFramework.filterAttributes = ifw
+qhp.InstallerFramework.customFilters.InstallerFramework.name = Installer Framework
+qhp.InstallerFramework.customFilters.InstallerFramework.filterAttributes = ifw
+qhp.InstallerFramework.indexRoot        =
+
+qhp.InstallerFramework.subprojects = manual
+qhp.InstallerFramework.subprojects.manual.title = Qt Installer Framework Manual
+qhp.InstallerFramework.subprojects.manual.indexTitle = Qt Installer Framework Manual
+qhp.InstallerFramework.subprojects.manual.type = manual
+
+macro.ifwversion = $IFW_VERSION
+
+# Doxygen compatibility commands
+
+macro.see                       = "\\sa"
+macro.function                  = "\\fn"
+
+
+# We 'misuse' QML doc commands to generate JS documentation
+# (only works with qdoc from Qt 5)
+
+outputprefixes = QML
+outputprefixes.QML =
