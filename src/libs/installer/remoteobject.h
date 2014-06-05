@@ -132,7 +132,7 @@ private:
     {
         // Force compiler error while passing anything different then Dummy* to the function.
         // It really doesn't make sense to send any pointer over to the server, so bail early.
-        static_cast<Dummy*> (dummy);
+        Q_UNUSED(static_cast<Dummy*> (dummy))
         return false;
     }
 
