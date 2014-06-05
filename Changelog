@@ -3,9 +3,17 @@
 - Fixed random crash while accessing arguments.
 - Fixed I18N on Windows.
 - Qt5 compatibility fixes.
+- Fixed for path handling on Windows.
+- Fixed preselection of components from another component.
+- Added operationExists method on script side.
+- Unified access to the supported schemes.
+- Implemented missing setNativeArguments wrapper. (QTIFW-310)
+- Fixed banner image not working in dynamic pages. (QTIFW-471)
+- Fixed hang when entering wrong sudo password. (QTIFW-409 and QTIFW-451)
+- Documentation improvements.
 - Updated translations.
 
-Thanks go to Takumi Asaki for contributions.
+Thanks go to Takumi Asaki and Sergey Belyashov for contributions.
 
 1.5.0
 - Fixed generation of random temp directory name. (QTIFW-427)
