@@ -258,7 +258,7 @@
             \o  Set to \c false to hide the repository settings page inside the settings dialog.
         \row
             \o  AllowSpaceInPath
-            \o  Set to \c true if the installation path can contain space characters.
+            \o  Set to \c false if the installation path cannot contain space characters.
         \row
             \o  DependsOnLocalInstallerBinary
             \o  Set to \c true if you want to prohibit installation from an external resource, such

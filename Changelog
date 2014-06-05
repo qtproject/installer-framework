@@ -1,3 +1,6 @@
+2.0
+- Change the default value of AllowSpaceInPath in config.xml to true
+
 1.5.1
 - The checkupdates option handles no-network situations better. (QTIFW-431)
 - Fixed random crash while accessing arguments.

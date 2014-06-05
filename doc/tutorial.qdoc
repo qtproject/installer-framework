@@ -188,10 +188,6 @@
 
     \endlist
 
-    \note You have to either call \c lrelease on the included .ts file before building
-    the installer or add \c --ignore-translations as a parameter to the binarycreator
-    call.
-
     The installer is created in the current directory and you can deliver it to
     end users.
 
