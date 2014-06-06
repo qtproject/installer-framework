@@ -56,6 +56,8 @@ namespace QInstaller {
 class ConsoleProxy : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(ConsoleProxy)
+
 public:
     ConsoleProxy() {}
 
@@ -66,6 +68,8 @@ public slots :
 class InstallerProxy : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(InstallerProxy)
+
 public:
     InstallerProxy(QJSEngine *engine, PackageManagerCore *core)
         : m_engine(engine), m_core(core) {}
@@ -85,6 +89,8 @@ private:
 class QFileDialogProxy : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(QFileDialogProxy)
+
 public:
     QFileDialogProxy() {}
 
@@ -100,6 +106,8 @@ public slots :
 class QDesktopServicesProxy : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(QDesktopServicesProxy)
+
 public:
     QDesktopServicesProxy() {}
 
