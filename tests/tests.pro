@@ -1,8 +1,8 @@
 CONFIG += ordered
 TEMPLATE = subdirs
 
+SUBDIRS += auto
 EXTRASUBDIRS = \
-        auto \
         downloadspeed \
         environmentvariable
 
@@ -22,8 +22,3 @@ for(SUBDIR, EXTRASUBDIRS) {
     tests.depends = mkdir
 }
 QMAKE_EXTRA_TARGETS *= tests
-
-# forward make "check" target to autotests
-check.commands += cd $$PWD/auto && $(QMAKE) -r $$PWD/auto && $(MAKE) check
-check.depends = first
-QMAKE_EXTRA_TARGETS *= check
