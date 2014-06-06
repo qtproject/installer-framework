@@ -126,10 +126,32 @@ public slots :
     }
 };
 
-}
+#if QT_VERSION < 0x050400
+class QCoreApplicationProxy : public QObject
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(QCoreApplicationProxy)
+
+public:
+    QCoreApplicationProxy() {}
+
+public slots:
+    QString qsTr(const QString &text = QString(), const QString &disambiguation = QString(), int n = -1) const
+    {
+        return QCoreApplication::translate(QCoreApplication::applicationName().toUtf8().constData(),
+            text.toUtf8().constData(), disambiguation.toUtf8().constData(), n);
+    }
+};
+#endif
+
+} // namespace QInstaller
+
 Q_DECLARE_METATYPE(QInstaller::ConsoleProxy*)
 Q_DECLARE_METATYPE(QInstaller::InstallerProxy*)
 Q_DECLARE_METATYPE(QInstaller::QFileDialogProxy*)
 Q_DECLARE_METATYPE(QInstaller::QDesktopServicesProxy*)
+#if QT_VERSION < 0x050400
+Q_DECLARE_METATYPE(QInstaller::QCoreApplicationProxy*)
+#endif
 
 #endif // SCRIPTENGINE_H

@@ -65,7 +65,12 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core)
     global.setProperty(QLatin1String("InstallerProxy"), proxy);
     global.setProperty(QLatin1String("print"), m_engine.newQObject(new ConsoleProxy)
         .property(QLatin1String("log")));
-
+#if QT_VERSION < 0x050400
+    global.setProperty(QLatin1String("qsTr"), m_engine.newQObject(new QCoreApplicationProxy)
+        .property(QStringLiteral("qsTr")));
+#else
+    m_engine.installTranslatorFunctions();
+#endif
     global.setProperty(QLatin1String("QInstaller"), generateQInstallerObject());
     global.setProperty(QLatin1String("buttons"), generateWizardButtonsObject());
     global.setProperty(QLatin1String("QMessageBox"), generateMessageBoxObject());
