@@ -79,8 +79,11 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core)
 
         const QList<Component*> components = core->availableComponents();
         QJSValue scriptComponentsObject = m_engine.newArray(components.count());
-        for (int i = 0; i < components.count(); ++i)
-            scriptComponentsObject.setProperty(i, newQObject(components[i]));
+        for (int i = 0; i < components.count(); ++i) {
+            Component *const component = components.at(i);
+            QQmlEngine::setObjectOwnership(component, QQmlEngine::CppOwnership);
+            scriptComponentsObject.setProperty(i, newQObject(component));
+        }
         global.property(QLatin1String("installer")).setProperty(QLatin1String("components"),
             scriptComponentsObject);
     } else {
