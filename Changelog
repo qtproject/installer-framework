@@ -1,3 +1,12 @@
+1.6.0
+- No longer requires Xcode command line tools on Mac. (QTBUG-38015)
+- Use local encoding to parse executable output in ConsumeOutput.
+- Avoid 'Too many open files' on Mac.
+- Fixed HTTP proxy settings not having any effect. (QTIFW-498)
+- Made it possible to calculate dependencies from script. (QTIFW-503)
+- Bugfixes (QTBUG-38343, QTIFW-488)
+- Code cleanup
+
 1.5.1
 - The checkupdates option handles no-network situations better. (QTIFW-431)
 - Fixed random crash while accessing arguments.
