@@ -115,7 +115,7 @@ void RemoteServerConnection::run()
                             QSettings::Scope(scope.toInt()), organization.toString(), application
                             .toString());
                     } else {
-                        m_settings = new QSettings(fileName.toString(), QSettings::NativeFormat);
+                        m_settings = new QSettings(fileName.toString(), QSettings::Format(format.toInt()));
                     }
                 } else if (type == QLatin1String(Protocol::QProcess)) {
                     if (m_process)

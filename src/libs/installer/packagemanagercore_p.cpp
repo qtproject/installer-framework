@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -793,17 +793,8 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
 
 void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
 {
-    bool gainedAdminRights = false;
     // write current state (variables) to the uninstaller ini file
     const QString iniPath = targetDir() + QLatin1Char('/') + m_data.settings().uninstallerIniFile();
-    {
-        QFile tmp(iniPath); // force gaining admin rights in case we haven't done already and we need it
-        if (!tmp.open(QIODevice::ReadWrite) || !tmp.isWritable()) {
-            if (!RemoteClient::instance().isActive())   // check if nobody did it before...
-                gainedAdminRights = m_core->gainAdminRights();
-        }
-        tmp.close();
-    }
 
     QVariantHash variables;
     QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
@@ -817,11 +808,9 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
     foreach (const Repository &repo, m_data.settings().defaultRepositories())
         repos.append(QVariant().fromValue(repo));
     cfg.setValue(QLatin1String("DefaultRepositories"), repos);
-
     cfg.sync();
+
     if (cfg.status() != QSettingsWrapper::NoError) {
-        if (gainedAdminRights)
-            m_core->dropAdminRights();
         const QString reason = cfg.status() == QSettingsWrapper::AccessError ? tr("Access error")
             : tr("Format error");
         throw Error(tr("Could not write installer configuration to %1: %2").arg(iniPath, reason));
@@ -863,9 +852,6 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
             writer.writeEndElement();
         writer.writeEndElement();
     }
-
-    if (gainedAdminRights)
-        m_core->dropAdminRights();
 }
 
 void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &targetDir)

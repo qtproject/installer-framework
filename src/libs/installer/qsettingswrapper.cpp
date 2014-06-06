@@ -53,8 +53,7 @@ class QSettingsWrapper::Private
 {
 public:
     Private(const QString &organization, const QString &application)
-        : m_native(true)
-        , m_application(application)
+        : m_application(application)
         , m_organization(organization)
         , m_scope(QSettings::UserScope)
         , m_format(QSettings::NativeFormat)
@@ -63,8 +62,7 @@ public:
     }
 
     Private(QSettings::Scope scope, const QString &organization, const QString &application)
-        : m_native(true)
-        , m_application(application)
+        : m_application(application)
         , m_organization(organization)
         , m_scope(scope)
         , m_format(QSettings::NativeFormat)
@@ -74,8 +72,7 @@ public:
 
     Private(QSettings::Format format, QSettings::Scope scope, const QString &organization,
         const QString &application)
-        : m_native(format == QSettings::NativeFormat)
-        , m_application(application)
+        : m_application(application)
         , m_organization(organization)
         , m_scope(scope)
         , m_format(format)
@@ -84,8 +81,7 @@ public:
     }
 
     Private(const QString &fileName, QSettings::Format format)
-        : m_native(format == QSettings::NativeFormat)
-        , m_filename(fileName)
+        : m_filename(fileName)
         , settings(fileName, format)
     {
         m_format = format;
@@ -94,7 +90,6 @@ public:
         m_organization = settings.organizationName();
     }
 
-    bool m_native;
     QString m_filename;
     QString m_application;
     QString m_organization;
@@ -329,8 +324,10 @@ QVariant QSettingsWrapper::value(const QString &param1, const QVariant &param2) 
 
 bool QSettingsWrapper::createSocket() const
 {
-    if (!d->m_native)
-        return false;
+    if ((d->m_format != QSettings::NativeFormat) && (d->m_format != QSettings::IniFormat)) {
+        Q_ASSERT_X(false, Q_FUNC_INFO, "Settings wrapper does not support any different format "
+            "then QSettingsWrapper::NativeFormat and QSettingsWrapper::IniFormat.");
+    }
     return (const_cast<QSettingsWrapper *>(this))->connectToServer(QVariantList()
         << d->m_application << d->m_organization << d->m_scope << d->m_format << d->m_filename);
 }
