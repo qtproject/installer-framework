@@ -64,7 +64,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.dependsOnLocalInstallerBinary(), false);
     QCOMPARE(settings.repositorySettingsPageVisible(), true);
     QCOMPARE(settings.hasReplacementRepos(), false);
-    QCOMPARE(settings.allowSpaceInPath(), false);
+    QCOMPARE(settings.allowSpaceInPath(), true);
     QCOMPARE(settings.allowNonAsciiCharacters(), false);
 
     QCOMPARE(settings.hasReplacementRepos(), false);
