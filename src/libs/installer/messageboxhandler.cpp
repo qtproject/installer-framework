@@ -228,29 +228,29 @@ QMessageBox::StandardButton MessageBoxHandler::warning(QWidget *parent, const QS
 
 // -- invokable
 
-int MessageBoxHandler::critical(const QString &identifier, const QString &title, const QString &text,
-    QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
+int MessageBoxHandler::critical(const QString &identifier, const QString &title,
+    const QString &text, int buttons, int button) const
 {
     return showMessageBox(criticalType, currentBestSuitParent(), identifier, title, text,
         QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
 }
 
-int MessageBoxHandler::information(const QString &identifier, const QString &title, const QString &text,
-    QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
+int MessageBoxHandler::information(const QString &identifier, const QString &title,
+    const QString &text, int buttons, int button) const
 {
     return showMessageBox(informationType, currentBestSuitParent(), identifier, title, text,
         QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
 }
 
-int MessageBoxHandler::question(const QString &identifier, const QString &title, const QString &text,
-    QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
+int MessageBoxHandler::question(const QString &identifier, const QString &title,
+    const QString &text, int buttons, int button) const
 {
     return showMessageBox(questionType, currentBestSuitParent(), identifier, title, text,
         QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
 }
 
 int MessageBoxHandler::warning(const QString &identifier, const QString &title, const QString &text,
-    QMessageBox::StandardButtons buttons, QMessageBox::StandardButton button) const
+    int buttons, int button) const
 {
     return showMessageBox(warningType, currentBestSuitParent(), identifier, title, text,
         QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));

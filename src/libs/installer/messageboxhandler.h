@@ -92,20 +92,16 @@ public:
         QMessageBox::StandardButton button = QMessageBox::NoButton);
 
     Q_INVOKABLE int critical(const QString &identifier, const QString &title, const QString &text,
-        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+        int buttons = QMessageBox::Ok, int button = QMessageBox::NoButton) const;
 
     Q_INVOKABLE int information(const QString &identifier, const QString &title, const QString &text,
-        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+        int buttons = QMessageBox::Ok, int button = QMessageBox::NoButton) const;
 
     Q_INVOKABLE int question(const QString &identifier, const QString &title, const QString &text,
-        QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+        int buttons = QMessageBox::Yes | QMessageBox::No, int button = QMessageBox::NoButton) const;
 
     Q_INVOKABLE int warning(const QString &identifier, const QString &title, const QString &text,
-        QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-        QMessageBox::StandardButton button = QMessageBox::NoButton) const;
+        int buttons = QMessageBox::Ok, int button = QMessageBox::NoButton) const;
 
     static QList<QMessageBox::Button> orderedButtons();
 

@@ -42,9 +42,9 @@
 function Component()
 {
     var result = QMessageBox["question"]("test.quit", "Installer", "Do you want to quit the installer?<br>" +
-        "This message box was created through javascript.", QMessageBox.Yes | QMessageBox.No);
-    if (result == QMessageBox.Yes) {
-        installer.setValue("FinishedText", "<font color='red' size=10>This installer was aborted.</font>");
+        "This message box was created through javascript.", QMessageBox.Ok | QMessageBox.Cancel);
+    if (result == QMessageBox.Ok) {
+        installer.setValue("FinishedText", "<font color='red' size=10>This installer was quit.</font>");
         installer.setDefaultPageVisible(QInstaller.TargetDirectory, false);
         installer.setDefaultPageVisible(QInstaller.ReadyForInstallation, false);
         installer.setDefaultPageVisible(QInstaller.ComponentSelection, false);
