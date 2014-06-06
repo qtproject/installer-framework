@@ -59,24 +59,24 @@
 
 namespace QInstaller {
 
-class KeepAliveObject : public QObject
+class KeepAliveThread : public QThread
 {
     Q_OBJECT
-    Q_DISABLE_COPY(KeepAliveObject)
+    Q_DISABLE_COPY(KeepAliveThread)
 
 public:
-    KeepAliveObject(RemoteClient *client)
+    KeepAliveThread(RemoteClient *client)
         : m_timer(0)
         , m_client(client)
     {
     }
 
-public slots:
-    void run()
+    void run() Q_DECL_OVERRIDE
     {
         m_timer = new QTimer(this);
         connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
         m_timer->start(1000);
+        exec();    // start the event loop to make the timer work
     }
 
 private slots:
@@ -84,8 +84,11 @@ private slots:
     {
         m_timer->stop();
 
-        if (!m_client)
+        if (!m_client) {
+            quit();
+            wait();
             return;
+        }
 
         {
             // Try to connect to the server. If we succeed the server side running watchdog gets
@@ -116,14 +119,15 @@ public:
         , m_serverStarted(false)
         , m_serverStarting(false)
         , m_active(false)
+        , m_thread(new KeepAliveThread(parent))
         , m_quit(false)
     {
+        m_thread->moveToThread(m_thread);
     }
 
     ~RemoteClientPrivate()
     {
-        m_thread.quit();
-        m_thread.wait();
+        QMetaObject::invokeMethod(m_thread, "quit");
     }
 
     void init(quint16 port, const QHostAddress &address, RemoteClient::Mode mode)
@@ -132,16 +136,12 @@ public:
         m_mode = mode;
         m_address = address;
 
-        if (m_mode == RemoteClient::Release) {
-            QObject *const object = new KeepAliveObject(q_ptr);
-            object->moveToThread(&m_thread);
-            QObject::connect(&m_thread, SIGNAL(started()), object, SLOT(run()));
-            QObject::connect(&m_thread, SIGNAL(finished()), object, SLOT(deleteLater()));
-            m_thread.start();
-        } else if (mode == RemoteClient::Debug) {
+        if (mode == RemoteClient::Debug) {
             m_active = true;
             m_serverStarted = true;
             m_key = QLatin1String(Protocol::DebugAuthorizationKey);
+        } else if (m_mode == RemoteClient::Release) {
+            m_thread->start();
         } else {
             Q_ASSERT_X(false, Q_FUNC_INFO, "RemoteClient mode not set properly.");
         }
@@ -231,7 +231,7 @@ private:
     QString m_serverCommand;
     QStringList m_serverArguments;
     QString m_key;
-    QThread m_thread;
+    QThread *m_thread;
     RemoteClient::Mode m_mode;
     volatile bool m_quit;
 };
