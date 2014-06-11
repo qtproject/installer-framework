@@ -207,6 +207,9 @@ QByteArray QInstaller::retrieveCompressedData(QIODevice *in, qint64 size)
 /*!
     Search through 1MB, if smaller through the whole file. Note: QFile::map() does
     not change QFile::pos(). Fallback to read the file content in case we can't map it.
+
+    Note: Failing to map the file can happen for example while having a remote connection
+          established to the admin server process and we do not support map over the socket.
 */
 qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
 {
