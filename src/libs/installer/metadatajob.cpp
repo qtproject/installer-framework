@@ -162,12 +162,14 @@ void MetadataJob::unzipTaskFinished()
         reset();
         emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during extracting."));
     }
+
+    if (error() != KDJob::NoError)
+        return;
+
     delete m_unzipTasks.value(watcher);
     m_unzipTasks.remove(watcher);
     delete watcher;
 
-    if (error() != KDJob::NoError)
-        return;
     if (m_unzipTasks.isEmpty()) {
         setProcessedAmount(100);
         emitFinished();
@@ -226,10 +228,13 @@ void MetadataJob::reset()
     try {
         m_xmlTask.cancel();
         m_metadataTask.cancel();
-        foreach (QFutureWatcher<void> *const watcher, m_unzipTasks.keys())
+        foreach (QFutureWatcher<void> *const watcher, m_unzipTasks.keys()) {
             watcher->cancel();
+            watcher->deleteLater();
+        }
         foreach (QObject *const object, m_unzipTasks)
             object->deleteLater();
+        m_unzipTasks.clear();
     } catch (...) {}
     m_tempDirDeleter.releaseAndDeleteAll();
 }
