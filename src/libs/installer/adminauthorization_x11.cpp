@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -69,31 +69,20 @@
 #define SU_COMMAND "/usr/bin/sudo"
 //#define SU_COMMAND "/bin/echo"
 
-AdminAuthorization::AdminAuthorization()
-{
-}
+namespace QInstaller {
 
-bool AdminAuthorization::authorize()
+static QString getPassword(QWidget *parent)
 {
-    return true;
-}
-  
-static QString getPassword(QWidget *)
-{
-#if QT_VERSION < 0x050000
-    if (QApplication::type() == QApplication::GuiClient)
-#else
-    if (qobject_cast<QApplication*> (qApp) != 0)
-#endif
-    {
+    if (qobject_cast<QApplication*> (qApp) != 0) {
         bool ok = false;
-        const QString result = QInputDialog::getText(0, QObject::tr("Authorization required"),
+        const QString result = QInputDialog::getText(parent, QObject::tr("Authorization required"),
            QObject::tr("Enter your password to authorize for sudo:"),
            QLineEdit::Password, QString(), &ok);
         return ok ? result : QString();
     } else {
         std::cout << QObject::tr("Authorization required").toStdString() << std::endl;
-        std::cout << QObject::tr("Enter your password to authorize for sudo:").toStdString() << std::endl;
+        std::cout << QObject::tr("Enter your password to authorize for sudo:").toStdString()
+            << std::endl;
         std::string password;
         std::cin >> password;
         return QString::fromStdString(password);
@@ -102,12 +91,7 @@ static QString getPassword(QWidget *)
 
 static void printError(QWidget *parent, const QString &value)
 {
-#if QT_VERSION < 0x050000
-    if (QApplication::type() == QApplication::GuiClient)
-#else
-    if (qobject_cast<QApplication*> (qApp) != 0)
-#endif
-    {
+    if (qobject_cast<QApplication*> (qApp) != 0) {
         QMessageBox::critical(parent, QObject::tr( "Error acquiring admin rights" ), value,
             QMessageBox::Ok, QMessageBox::Ok);
     } else {
@@ -280,3 +264,5 @@ bool AdminAuthorization::hasAdminRights()
 {
     return getuid() == 0;
 }
+
+} // namespace QInstaller

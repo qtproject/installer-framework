@@ -155,7 +155,6 @@ SOURCES += packagemanagercore.cpp \
     updater.cpp \
     operationrunner.cpp \
     updatesettings.cpp \
-    adminauthorization.cpp \
     elevatedexecuteoperation.cpp \
     fakestopprocessforupdateoperation.cpp \
     lazyplaintextedit.cpp \

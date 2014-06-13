@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -44,71 +44,31 @@
 #include <Security/Authorization.h>
 #include <Security/AuthorizationTags.h>
 
-#include <QtCore/QStringList>
-#include <QtCore/QVector>
+#include <QStringList>
+#include <QVector>
 
 #include <unistd.h>
 
-
-// -- AdminAuthorization::Private
-
-class AdminAuthorization::Private
-{
-public:
-    Private() : auth(0) { }
-
-    AuthorizationRef auth;
-};
-
-
-// -- AdminAuthorization
-
-AdminAuthorization::AdminAuthorization()
-    : d(new Private)
-{
-    AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &d->auth);
-}
-
-AdminAuthorization::~AdminAuthorization()
-{
-    AuthorizationFree(d->auth, kAuthorizationFlagDestroyRights);
-    delete d;
-}
-
-bool AdminAuthorization::authorize()
-{
-    if (geteuid() == 0)
-        setAuthorized();
-
-    if (isAuthorized())
-        return true;
-
-    AuthorizationItem item;
-    item.name = kAuthorizationRightExecute;
-    item.valueLength = 0;
-    item.value = NULL;
-    item.flags = 0;
-
-    AuthorizationRights rights;
-    rights.count = 1;
-    rights.items = &item;
-
-    const AuthorizationFlags flags = kAuthorizationFlagDefaults | kAuthorizationFlagInteractionAllowed
-        | kAuthorizationFlagPreAuthorize | kAuthorizationFlagExtendRights;
-
-    const OSStatus result = AuthorizationCopyRights(d->auth, &rights, kAuthorizationEmptyEnvironment,
-        flags, 0);
-    if (result != errAuthorizationSuccess)
-        return false;
-
-    seteuid(0);
-    setAuthorized();
-    emit authorized();
-    return true;
-}
+namespace QInstaller {
 
 bool AdminAuthorization::execute(QWidget *, const QString &program, const QStringList &arguments)
 {
+    AuthorizationRef authorizationRef;
+    OSStatus status = AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment,
+        kAuthorizationFlagDefaults, &authorizationRef);
+    if (status != errAuthorizationSuccess)
+        return false;
+
+    AuthorizationItem item = { kAuthorizationRightExecute, 0, 0, 0 };
+    AuthorizationRights rights = { 1, &item };
+    const AuthorizationFlags flags = kAuthorizationFlagDefaults | kAuthorizationFlagInteractionAllowed
+        | kAuthorizationFlagPreAuthorize | kAuthorizationFlagExtendRights;
+
+    status = AuthorizationCopyRights(authorizationRef, &rights, kAuthorizationEmptyEnvironment,
+        flags, 0);
+    if (status != errAuthorizationSuccess)
+        return false;
+
     QVector<char *> args;
     QVector<QByteArray> utf8Args;
     foreach (const QString &argument, arguments) {
@@ -118,12 +78,16 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
     args.push_back(0);
 
     const QByteArray utf8Program = program.toUtf8();
-    const OSStatus result = AuthorizationExecuteWithPrivileges(d->auth, utf8Program.data(),
+    status = AuthorizationExecuteWithPrivileges(authorizationRef, utf8Program.data(),
         kAuthorizationFlagDefaults, args.data(), 0);
-    return result == errAuthorizationSuccess;
+
+    AuthorizationFree(authorizationRef, kAuthorizationFlagDestroyRights);
+    return status == errAuthorizationSuccess;
 }
 
 bool AdminAuthorization::hasAdminRights()
 {
     return geteuid() == 0;
 }
+
+} // namespace QInstaller

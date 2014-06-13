@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -53,6 +53,8 @@
 # endif
 #endif
 
+namespace QInstaller {
+
 struct DeCoInitializer
 {
     DeCoInitializer()
@@ -66,17 +68,6 @@ struct DeCoInitializer
     }
     bool neededCoInit;
 };
-
-AdminAuthorization::AdminAuthorization()
-{
-}
-
-bool AdminAuthorization::authorize()
-{
-    setAuthorized();
-    emit authorized();
-    return true;
-}
 
 bool AdminAuthorization::hasAdminRights()
 {
@@ -150,3 +141,5 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
     }
     return false;
 }
+
+} // namespace QInstaller

@@ -158,8 +158,7 @@ public:
         m_serverStarting = true;
 
         if (m_startServerAsAdmin) {
-            AdminAuthorization auth;
-            m_serverStarted = auth.authorize() && auth.execute(0, m_serverCommand, m_serverArguments);
+             m_serverStarted = AdminAuthorization::execute(0, m_serverCommand, m_serverArguments);
 
             if (!m_serverStarted) {
                 // something went wrong with authorizing, either user pressed cancel or entered

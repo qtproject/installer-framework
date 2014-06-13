@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -42,51 +42,17 @@
 #ifndef ADMINAUTHORIZATION_H
 #define ADMINAUTHORIZATION_H
 
-#include <QtCore/QObject>
+#include <QWidget>
 
-class AdminAuthorizationBase
+namespace QInstaller {
+
+class AdminAuthorization
 {
-protected:
-    AdminAuthorizationBase();
-
 public:
-    virtual ~AdminAuthorizationBase() {}
-
-    virtual bool authorize() = 0;
-    bool isAuthorized() const;
-
-protected:  
-    void setAuthorized();
-
-private:
-    bool m_authorized;
-};
-
-class AdminAuthorization : public QObject, public AdminAuthorizationBase
-{
-    Q_OBJECT
-    Q_PROPERTY(bool authorized READ isAuthorized)
-
-public:
-    AdminAuthorization();
-#ifdef Q_OS_MAC
-    ~AdminAuthorization();
-#endif
-
-    bool execute(QWidget *dialogParent, const QString &programs, const QStringList &arguments);
     static bool hasAdminRights();
-
-public Q_SLOTS:
-    bool authorize();
-
-Q_SIGNALS:
-    void authorized();
-
-#ifdef Q_OS_MAC
-private:
-    class Private;
-    Private *d;
-#endif
+    static bool execute(QWidget *parent, const QString &programs, const QStringList &arguments);
 };
+
+} // namespace QInstaller
 
 #endif // ADMINAUTHORIZATION_H
