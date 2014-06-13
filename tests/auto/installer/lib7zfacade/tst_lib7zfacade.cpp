@@ -94,11 +94,7 @@ private slots:
             QVector<Lib7z::File> files = Lib7z::listArchive(&file);
             QCOMPARE(files.count(), 1);
 #ifdef Q_OS_UNIX
-    #if QT_VERSION < 0x050000
-            QSKIP("This test requires the time handling to be repaired first.", SkipSingle);
-    #else
             QSKIP("This test requires the time handling to be repaired first.");
-    #endif
 #endif
             QCOMPARE(files.first(), m_file);
         }

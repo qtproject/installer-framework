@@ -287,11 +287,7 @@ private slots:
             QCOMPARE(verifySettings.value(testKeys.at(0)).isNull(), false);
 
             QStringList verifyFirstValue = verifySettings.value(testKeys.at(0)).toStringList();
-#if QT_VERSION < 0x050000
-            QCOMPARE(verifyFirstValue.contains(QLatin1String("value3")), QBool(false));
-#else
             QCOMPARE(verifyFirstValue.contains(QLatin1String("value3")), false);
-#endif
             QCOMPARE(verifySettings.value(testKeys.at(0)), verifySettings.value(testKeys.at(1)));
             QCOMPARE(verifySettings.value(testKeys.at(1)), verifySettings.value(testKeys.at(2)));
         }
