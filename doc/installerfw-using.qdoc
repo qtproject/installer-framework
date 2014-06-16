@@ -41,15 +41,15 @@
 
     \list
 
-        \o  \l{Initial Installation}
+        \li \l{Initial Installation}
 
-        \o  \l{Adding Components}
+        \li \l{Adding Components}
 
-        \o  \l{Removing Components}
+        \li \l{Removing Components}
 
-        \o  \l{Updating Components}
+        \li \l{Updating Components}
 
-        \o  \l{Specifying Settings}
+        \li \l{Specifying Settings}
 
     \endlist
 */

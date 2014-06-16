@@ -37,12 +37,12 @@
     Framework:
 
     \list
-        \o  \l{Configuration File}
-        \o  \l{Package Directory}
-        \o  \l{Installer Pages}
-        \o  \l{Tools}
-        \o  \l{Component Scripting}
-        \o  \l{Operations}
+        \li \l{Configuration File}
+        \li \l{Package Directory}
+        \li \l{Installer Pages}
+        \li \l{Tools}
+        \li \l{Component Scripting}
+        \li \l{Operations}
     \endlist
 
 */

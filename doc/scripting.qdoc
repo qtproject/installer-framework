@@ -66,20 +66,20 @@
 
     \table
         \header
-            \o  Method
-            \o  Description
+            \li Method
+            \li Description
         \row
-            \o  \a{Component.prototype.retranslateUi}
-            \o  Called when the language of the installer changes.
+            \li \a{Component.prototype.retranslateUi}
+            \li Called when the language of the installer changes.
         \row
-            \o  \a{Component.prototype.createOperations}
-            \o  See \l Component::createOperations.
+            \li \a{Component.prototype.createOperations}
+            \li See \l Component::createOperations.
         \row
-            \o  \a{Component.prototype.createOperationsForArchive}
-            \o  See \l Component::createOperationsForArchive.
+            \li \a{Component.prototype.createOperationsForArchive}
+            \li See \l Component::createOperationsForArchive.
         \row
-            \o  \a{Component.prototype.createOperationsForPath}
-            \o  See \l Component::createOperationsForPath.
+            \li \a{Component.prototype.createOperationsForPath}
+            \li See \l Component::createOperationsForPath.
     \endtable
 
     \section1 Global Variables
@@ -88,14 +88,14 @@
 
     \table
         \header
-            \o  Symbol
-            \o  Description
+            \li Symbol
+            \li Description
         \row
-            \o  installer
-            \o  Reference to the \l QInstaller of the component
+            \li installer
+            \li Reference to the \l QInstaller of the component
         \row
-            \o  component
-            \o  Reference to the \l Component of the component
+            \li component
+            \li Reference to the \l Component of the component
     \endtable
 
     \section1 Message Boxes
@@ -217,63 +217,63 @@
 
     \table
         \header
-            \o  Symbol
-            \o  Description
+            \li Symbol
+            \li Description
         \row
-            \o  ProductName
-            \o  Name of the product to be installed, as defined in config.xml.
+            \li ProductName
+            \li Name of the product to be installed, as defined in config.xml.
         \row
-            \o  ProductVersion
-            \o  Version number of the product to be installed, as defined in
+            \li ProductVersion
+            \li Version number of the product to be installed, as defined in
                 config.xml.
         \row
-            \o  Title
-            \o  Title of the installation program, as defined in config.xml.
+            \li Title
+            \li Title of the installation program, as defined in config.xml.
         \row
-            \o  Publisher
-            \o  Publisher of the installation program, as defined in config.xml.
+            \li Publisher
+            \li Publisher of the installation program, as defined in config.xml.
         \row
-            \o  Url
-            \o  Product URL, as defined in config.xml.
+            \li Url
+            \li Product URL, as defined in config.xml.
         \row
-            \o  StartMenuDir
-            \o  Start menu group, as defined in config.xml. Only available on Windows.
+            \li StartMenuDir
+            \li Start menu group, as defined in config.xml. Only available on Windows.
         \row
-            \o  TargetDir
-            \o  Target directory for installation, as selected by the user.
+            \li TargetDir
+            \li Target directory for installation, as selected by the user.
         \row
-            \o  DesktopDir
-            \o  Name of the directory that contains the user's desktop.
-            \o  Only available on Windows.
+            \li DesktopDir
+            \li Name of the directory that contains the user's desktop.
+            \li Only available on Windows.
         \row
-            \o  os
-            \o  Current platform: \c "x11", \c "win", or \c "mac".
+            \li os
+            \li Current platform: \c "x11", \c "win", or \c "mac".
         \row
-            \o  RootDir
-            \o  Root directory of the filesystem.
+            \li RootDir
+            \li Root directory of the filesystem.
         \row
-            \o  HomeDir
-            \o  Home directory of the current user.
+            \li HomeDir
+            \li Home directory of the current user.
         \row
-            \o  ApplicationsDir
-            \o  Applications directory. For example, \c {C:\Program Files} on Windows,
+            \li ApplicationsDir
+            \li Applications directory. For example, \c {C:\Program Files} on Windows,
             \c {/opt} on Linux and \c {/Applications} on Mac OS X.
         \row
-            \o  InstallerDirPath
-            \o  The directory that contains the installer application executable.
+            \li InstallerDirPath
+            \li The directory that contains the installer application executable.
         \row
-            \o  InstallerFilePath
-            \o  The file path of the installer application executable.
+            \li InstallerFilePath
+            \li The file path of the installer application executable.
         \row
-            \o  UserStartMenuProgramsPath
-            \o  The path to the folder containing the items in the Start menu of the user.
-            \o  For example, \c {C:\Users\USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs}
-            \o  Only available on Windows.
+            \li UserStartMenuProgramsPath
+            \li The path to the folder containing the items in the Start menu of the user.
+            \li For example, \c {C:\Users\USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs}
+            \li Only available on Windows.
         \row
-            \o  AllUsersStartMenuProgramsPath
-            \o  The path to the folder containing the items in the Start menu for all users.
-            \o  For example, \c {C:\ProgramData\Microsoft\Windows\Start Menu\Programs}
-            \o  Only available on Windows.
+            \li AllUsersStartMenuProgramsPath
+            \li The path to the folder containing the items in the Start menu for all users.
+            \li For example, \c {C:\ProgramData\Microsoft\Windows\Start Menu\Programs}
+            \li Only available on Windows.
     \endtable
 
     The variables can be resolved by calls to \c installer.value(). If embedded

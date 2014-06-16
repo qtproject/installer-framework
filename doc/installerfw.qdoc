@@ -48,34 +48,34 @@
     in the \l{https://bugreports.qt-project.org/browse/QTIFW}{Qt Bugtracker}.
 
     \list
-        \o  \l{Overview of Qt Installer Framework}
-        \o  \l{Getting Started}
-        \o  \l{End User Workflows}
+        \li \l{Overview of Qt Installer Framework}
+        \li \l{Getting Started}
+        \li \l{End User Workflows}
         \list
-            \o  \l{Initial Installation}
-            \o  \l{Adding Components}
-            \o  \l{Removing Components}
-            \o  \l{Updating Components}
-            \o  \l{Specifying Settings}
+            \li \l{Initial Installation}
+            \li \l{Adding Components}
+            \li \l{Removing Components}
+            \li \l{Updating Components}
+            \li \l{Specifying Settings}
         \endlist
-        \o  \l{Tutorial: Creating an Installer}
-        \o  \l{Creating Installers}
+        \li \l{Tutorial: Creating an Installer}
+        \li \l{Creating Installers}
         \list
-            \o  \l{Creating Offline Installers}
-            \o  \l{Creating Online Installers}
-            \o  \l{Promoting Updates}
-            \o  \l{Customizing Installers}
+            \li \l{Creating Offline Installers}
+            \li \l{Creating Online Installers}
+            \li \l{Promoting Updates}
+            \li \l{Customizing Installers}
         \endlist
-        \o \l{Reference}
+        \li \l{Reference}
         \list
-            \o  \l{Configuration File}
-            \o  \l{Package Directory}
-            \o  \l{Installer Pages}
-            \o  \l{Component Scripting}
-            \o  \l{Operations}
-            \o  \l{Tools}
+            \li \l{Configuration File}
+            \li \l{Package Directory}
+            \li \l{Installer Pages}
+            \li \l{Component Scripting}
+            \li \l{Operations}
+            \li \l{Tools}
         \endlist
-        \o  \l{Known Issues}
+        \li \l{Known Issues}
     \endlist
 */
 
@@ -91,28 +91,28 @@
 
     \list 1
 
-        \o  Create a \e {package directory} for the installable components.
+        \li Create a \e {package directory} for the installable components.
             For more information, see \l{Package Directory}.
 
-        \o  Create a configuration file called \c config.xml in the \c config
+        \li Create a configuration file called \c config.xml in the \c config
             directory. It contains information about how to build the installer
             binaries and online repositories. For more information about the
             file format and available settings, see
             \l{Configuration File}.
 
-        \o  Create a package information file called \c package.xml in the
+        \li Create a package information file called \c package.xml in the
             \c {config\meta} directory. It contains settings for deployment and
             the installation process. For more information, see
             \l{Meta Directory}.
 
-        \o  Create installer content and copy it to the package directory.
+        \li Create installer content and copy it to the package directory.
             For more information, see \l{Data Directory}.
 
-        \o  For online installers, use the \c repogen tool to create the
+        \li For online installers, use the \c repogen tool to create the
             repository that contains the installable content and upload the
             repository to a web server.
 
-        \o  Use the \c binarycreator tool to create the installer. For more
+        \li Use the \c binarycreator tool to create the installer. For more
             information, see \l{Tools}.
 
     \endlist
@@ -123,10 +123,10 @@
     The following sections describe how to create different types of installers:
 
     \list
-        \o  \l{Creating Offline Installers}
-        \o  \l{Creating Online Installers}
-        \o  \l{Promoting Updates}
-        \o  \l{Customizing Installers}
+        \li \l{Creating Offline Installers}
+        \li \l{Creating Online Installers}
+        \li \l{Promoting Updates}
+        \li \l{Customizing Installers}
     \endlist
 */
 
@@ -161,120 +161,120 @@
 
     \table
         \header
-            \o  Setting
-            \o  Description
+            \li Setting
+            \li Description
         \row
-            \o  Name
-            \o  Name of the product being installed. This is mandatory.
+            \li Name
+            \li Name of the product being installed. This is mandatory.
         \row
-            \o  Version
-            \o  Version number of the product being installed. This is mandatory.
+            \li Version
+            \li Version number of the product being installed. This is mandatory.
         \row
-            \o  Title
-            \o  Name of the installer as displayed on the title bar.
+            \li Title
+            \li Name of the installer as displayed on the title bar.
         \row
-            \o  Publisher
-            \o  Publisher of the software (as shown in the Windows Control Panel).
+            \li Publisher
+            \li Publisher of the software (as shown in the Windows Control Panel).
         \row
-            \o  ProductUrl
-            \o  URL to a page that contains product information on your web
+            \li ProductUrl
+            \li URL to a page that contains product information on your web
                 site.
         \row
-            \o  Icon
-            \o  Filename for a custom installer icon. The actual file is looked up by attaching
+            \li Icon
+            \li Filename for a custom installer icon. The actual file is looked up by attaching
                 a '.icns' (Mac OS X), '.ico' (Windows) or '.png' (Unix) suffix. Deprecated,
                 use InstallerApplicationIcon and / or InstallerWindowIcon instead.
         \row
-            \o  InstallerApplicationIcon
-            \o  Filename for a custom installer icon. The actual file is looked up by attaching
+            \li InstallerApplicationIcon
+            \li Filename for a custom installer icon. The actual file is looked up by attaching
                 a '.icns' (Mac OS X), '.ico' (Windows). No functionality on Unix.
         \row
-            \o  InstallerWindowIcon
-            \o  Filename for a custom window icon in PNG format for the Installer application.
+            \li InstallerWindowIcon
+            \li Filename for a custom window icon in PNG format for the Installer application.
         \row
-            \o  Logo
-            \o  Filename for a logo used as \a QWizard::LogoPixmap.
+            \li Logo
+            \li Filename for a logo used as \a QWizard::LogoPixmap.
         \row
-            \o  Watermark
-            \o  Filename for a watermark used as \a QWizard::WatermarkPixmap.
+            \li Watermark
+            \li Filename for a watermark used as \a QWizard::WatermarkPixmap.
         \row
-            \o  Banner
-            \o  Filename for a banner used as \a QWizard::BannerPixmap (only used by ModernStyle).
+            \li Banner
+            \li Filename for a banner used as \a QWizard::BannerPixmap (only used by ModernStyle).
         \row
-            \o  Background
-            \o  Filename for an image used as \a QWizard::BackgroundPixmap (only used by MacStyle).
+            \li Background
+            \li Filename for an image used as \a QWizard::BackgroundPixmap (only used by MacStyle).
         \row
-            \o  WizardStyle
-            \o  Set the wizard style to be used ("Modern", "Mac", "Aero" or "Classic").
+            \li WizardStyle
+            \li Set the wizard style to be used ("Modern", "Mac", "Aero" or "Classic").
         \row
-            \o  TitleColor
-            \o  Set the color of the titles and subtitles (takes an HTML color code,
+            \li TitleColor
+            \li Set the color of the titles and subtitles (takes an HTML color code,
                 such as "#88FF33").
         \row
-            \o  RunProgram
-            \o  Command executed after the installer is done if the user accepts
+            \li RunProgram
+            \li Command executed after the installer is done if the user accepts
                 the action.
         \row
-            \o  RunProgramArguments
-            \o  Arguments passed to the program specified in RunProgram.
+            \li RunProgramArguments
+            \li Arguments passed to the program specified in RunProgram.
         \row
-            \o  RunProgramDescription
-            \o  Text shown next to the check box for running the program after
+            \li RunProgramDescription
+            \li Text shown next to the check box for running the program after
                 the installation. Defaults to \gui {Run <Name>}.
         \row
-            \o  StartMenuDir
-            \o  Name of the default program group for the product in the Windows
+            \li StartMenuDir
+            \li Name of the default program group for the product in the Windows
                 \gui Start menu.
         \row
-            \o  TargetDir
-            \o  Default target directory for installation.
+            \li TargetDir
+            \li Default target directory for installation.
         \row
-            \o  AdminTargetDir
-            \o  Default target directory for installation with administrator
+            \li AdminTargetDir
+            \li Default target directory for installation with administrator
                 rights.
         \row
-            \o  RemoteRepositories
-            \o  List of remote repositories. You can add several \c Repository
+            \li RemoteRepositories
+            \li List of remote repositories. You can add several \c Repository
                 sections that each specify the \c Url to access the repository.
                 For more information, see \l{Configuring Repositories}.
         \row
-            \o  UninstallerName
-            \o  Filename of the generated uninstaller. Defaults to
+            \li UninstallerName
+            \li Filename of the generated uninstaller. Defaults to
                 \e uninstall. The platform-specific executable file extension is
                 appended.
         \row
-            \o  UninstallerIniFile
-            \o  Filename for the configuration of the generated uninstaller. Defaults to
+            \li UninstallerIniFile
+            \li Filename for the configuration of the generated uninstaller. Defaults to
                 \e {UninstallerName}.ini.
         \row
-            \o  RemoveTargetDir
-            \o  Set to \c false if the target directory should not be deleted when uninstalling.
+            \li RemoveTargetDir
+            \li Set to \c false if the target directory should not be deleted when uninstalling.
         \row
-            \o  AllowNonAsciiCharacters
-            \o  Set to \c true if the installation path can contain non-ASCII
+            \li AllowNonAsciiCharacters
+            \li Set to \c true if the installation path can contain non-ASCII
                 characters.
         \row
-            \o  RepositorySettingsPageVisible
-            \o  Set to \c false to hide the repository settings page inside the settings dialog.
+            \li RepositorySettingsPageVisible
+            \li Set to \c false to hide the repository settings page inside the settings dialog.
         \row
-            \o  AllowSpaceInPath
-            \o  Set to \c false if the installation path cannot contain space characters.
+            \li AllowSpaceInPath
+            \li Set to \c false if the installation path cannot contain space characters.
         \row
-            \o  DependsOnLocalInstallerBinary
-            \o  Set to \c true if you want to prohibit installation from an external resource, such
+            \li DependsOnLocalInstallerBinary
+            \li Set to \c true if you want to prohibit installation from an external resource, such
                 as a network drive. This might make sense for e.g. very big installers.
                 The option is only used on Windows.
         \row
-            \o  TargetConfigurationFile
-            \o  Filename for the configuration file on the target. Default is components.xml.
+            \li TargetConfigurationFile
+            \li Filename for the configuration file on the target. Default is components.xml.
         \row
-            \o  Translations
-            \o  List of language codes to be used for translating the user interface. To add several language
+            \li Translations
+            \li List of language codes to be used for translating the user interface. To add several language
                 variants, specify several Translation sections that each specify the name of a language
                 variant. Optional. For more information, see \l{Translating Pages}.
         \row
-            \o  UrlQueryString
-            \o  This string needs to be in the form "key=value" and will be appended to archive download
+            \li UrlQueryString
+            \li This string needs to be in the form "key=value" and will be appended to archive download
                 requests. This can be used to transmit information to the webserver hosting the repository.
 
     \endtable
@@ -416,54 +416,54 @@
 
     \table
         \header
-            \o  Setting
-            \o  Description
+            \li Setting
+            \li Description
         \row
-            \o  DisplayName
-            \o  Human-readable name of the component. Required.
+            \li DisplayName
+            \li Human-readable name of the component. Required.
         \row
-            \o  Description
-            \o  Human-readable description of the component. Required.
+            \li Description
+            \li Human-readable description of the component. Required.
                 Specify translations for the description as values of additional
                 Description tags, with the xml:lang attribute set to the correct locale.
                 If a localization that matches the locale is not found and an untranslated
                 version exists, that one will be used. Otherwise no Description will be
                 shown for that locale.
         \row
-            \o  Version
-            \o  Version number of the component in the following format:
+            \li Version
+            \li Version number of the component in the following format:
                 [0-9]+((\.|-)[0-9]+)* such as 1-1; 1.2-2; 3.4.7. Required.
                 If a package needs to show the version number from a child rather than it's own (due to
                 grouping of child packages) one can specify the attribute inheritVersionFrom with the package
                 name the version needs to be inherited from.
         \row
-            \o  ReleaseDate
-            \o  Date when this component version was released. Required.
+            \li ReleaseDate
+            \li Date when this component version was released. Required.
         \row
-            \o  Name
-            \o  Domain-like identification for this component. Required.
+            \li Name
+            \li Domain-like identification for this component. Required.
         \row
-            \o  Dependencies
-            \o  Comma-separated list of identifiers of components that this
+            \li Dependencies
+            \li Comma-separated list of identifiers of components that this
                 component depends on. Optionally, you can specify version
                 numbers, separated by a dash (-). You can prefix version numbers
                 with a comparison operator (=, >, <, >= or  <=). Optional. For
                 more information, see \l{Component Dependencies}.
         \row
-            \o  AutoDependOn
-            \o  Opposite of dependencies. Defines that this component should be
+            \li AutoDependOn
+            \li Opposite of dependencies. Defines that this component should be
                 loaded if all of the specified components are loaded.
         \row
-            \o  Virtual
-            \o  Set to \c true to hide the component from the installer.
+            \li Virtual
+            \li Set to \c true to hide the component from the installer.
                 Note that setting this on a root component does not work.
         \row
-            \o  SortingPriority
-            \o  Priority of the component in the tree. The tree is sorted from
+            \li SortingPriority
+            \li Priority of the component in the tree. The tree is sorted from
                 highest to lowest priority, with the highest priority on the top.
         \row
-            \o  Licenses
-            \o  List of license agreements to be accepted by the installing
+            \li Licenses
+            \li List of license agreements to be accepted by the installing
                 user. To add several licenses, specify several \c License
                 sections that each specify the license \c name and \c file.
                 If there are translations listed for this component, the installer
@@ -475,27 +475,27 @@
                 a license_de_de.txt file (and show that when installing on a
                 German system).
         \row
-            \o  Script
-            \o  File name of a script being loaded. Optional.
+            \li Script
+            \li File name of a script being loaded. Optional.
                 For more information, see \l{Adding Operations}.
         \row
-            \o  UserInterfaces
-            \o  List of pages to load. To add several pages, specify several
+            \li UserInterfaces
+            \li List of pages to load. To add several pages, specify several
                 \c UserInterface sections that each specify the filename of a
                 page. Optional. For more information, see \l{Adding Pages}.
         \row
-            \o  Translations
-            \o  List of translation files to load. To add several language
+            \li Translations
+            \li List of translation files to load. To add several language
                 variants, specify several \c Translation sections that each
                 specify the filename of a language variant. Optional. For more
                 information, see \l{Translating Pages}.
         \row
-            \o  UpdateText
-            \o  Description added to the component description if this is an
+            \li UpdateText
+            \li Description added to the component description if this is an
                 update to the component. Optional.
         \row
-            \o  Default
-            \o  Possible values are: \c true, \c false, and \c script. Set to
+            \li Default
+            \li Possible values are: \c true, \c false, and \c script. Set to
                 \c true to preselect the component in the installer.
                 This takes effect only on components that have no visible
                 child components.
@@ -504,24 +504,24 @@
                 of the \c Script setting in this file. For an example script,
                 see \l{Selecting Default Contents}.
         \row
-            \o  Essential
-            \o  Marks the package as essential to force a restart of the
+            \li Essential
+            \li Marks the package as essential to force a restart of the
                 \c UpdateAgent or \c MaintenanceTool. This is relevant for
                 updates found with \c UpdateAgent. If there are updates available
                 for an essential component, the package manager stays disabled
                 until that component is updated. Newly introduced essential components
                 are automatically installed when running the updater.
         \row
-            \o  ForcedInstallation
-            \o  Determines that the package must always be installed. End users
+            \li ForcedInstallation
+            \li Determines that the package must always be installed. End users
                 cannot deselect it in the installer.
         \row
-            \o  Replaces
-            \o  Comma-separated list of components to replace. Optional.
+            \li Replaces
+            \li Comma-separated list of components to replace. Optional.
 
         \row
-            \o  DownloadableArchives
-            \o  Lists the data files (separated by commas) for an online
+            \li DownloadableArchives
+            \li Lists the data files (separated by commas) for an online
                 installer to download.
                 If there is some data inside the component and the package.xml
                 and/or the script has no DownloadableArchives value, the
@@ -549,11 +549,11 @@
 
     You have the following options:
     \list
-        \o  Copy the files to the \c data directory. Before the installer is
+        \li Copy the files to the \c data directory. Before the installer is
             created, the files are packaged into a 7zip archive.
-        \o  Use the archivegen tool to package the files as a 7zip archive and
+        \li Use the archivegen tool to package the files as a 7zip archive and
             copy it to the \c data directory.
-        \o  Use some other tool to package the files as a 7zip compatible
+        \li Use some other tool to package the files as a 7zip compatible
             archive and copy it to the \c data directory.
     \endlist
 
@@ -574,11 +574,11 @@
 
     \list
 
-        \o  \c installerbase
+        \li \c installerbase
 
-        \o  \c binarycreator
+        \li \c binarycreator
 
-        \o  \c repogen
+        \li \c repogen
 
     \endlist
 
@@ -616,12 +616,12 @@
 
     \list
 
-        \o  On Windows:
+        \li On Windows:
     \code
     <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file> <installer_name>
     \endcode
 
-        \o  On Linux and Mac OS X
+        \li On Linux and Mac OS X
 
     \code
     <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory>/<config_file> <installer_name>
@@ -634,12 +634,12 @@
 
     \list
 
-        \o  On Windows:
+        \li On Windows:
     \code
     <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file> -e <packages> <installer_name>
     \endcode
 
-        \o  On Linux and Mac OS X
+        \li On Linux and Mac OS X
 
     \code
     <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory>/<config_file> -e <packages> <installer_name>
@@ -652,52 +652,52 @@
     The \c binarycreator tool accepts the following parameters:
     \table
         \header
-            \o  Parameter
-            \o  Use
+            \li Parameter
+            \li Use
         \row
-            \o  -t or --template file
-            \o  Use \c file as an installer template binary to which the
+            \li -t or --template file
+            \li Use \c file as an installer template binary to which the
                 component information is appended. If you omit this parameter,
                 the \c installerbase template is used.
         \row
-            \o  -p or --packages directory
-            \o  Use \c directory as the \l{Package Directory Structure}
+            \li -p or --packages directory
+            \li Use \c directory as the \l{Package Directory Structure}
                 {package directory}.
                 Defaults to the current working directory.
         \row
-            \o  -n or --online-only
-            \o  Compile without any component in the installer binary.
+            \li -n or --online-only
+            \li Compile without any component in the installer binary.
         \row
-            \o  -f or --offline-only
-            \o  Create an offline installer that never accesses online
+            \li -f or --offline-only
+            \li Create an offline installer that never accesses online
                 repositories.
         \row
-            \o  -c or --config file
-            \o  Use \c file as the \l{Configuration File}
+            \li -c or --config file
+            \li Use \c file as the \l{Configuration File}
                 {config file}.
         \row
-            \o  -e or --exclude p1,...,pn
-            \o  Comma-separated list of packages to retrieve from an online
+            \li -e or --exclude p1,...,pn
+            \li Comma-separated list of packages to retrieve from an online
                 repository. The packages are not included in the installer
                 binary.
         \row
-            \o  -i or --include p1,...,pn
-            \o  Comma-separated list of packages to retrieve from the installer
+            \li -i or --include p1,...,pn
+            \li Comma-separated list of packages to retrieve from the installer
                 binary. You cannot combine or merge \c {--include} and \c {--exclude}.
         \row
-            \o  -r or --resources
-            \o  Comma-separated list of resources to include in the installer
+            \li -r or --resources
+            \li Comma-separated list of resources to include in the installer
                 binary.
         \row
-            \o  --ignore-translations
-            \o  Disable the use of translation files to make testing faster.
+            \li --ignore-translations
+            \li Disable the use of translation files to make testing faster.
         \row
-            \o  --ignore-invalid-packages
-            \o  Ignore component or package directories that do not have valid
+            \li --ignore-invalid-packages
+            \li Ignore component or package directories that do not have valid
                 metadata information (package.xml) to make testing faster.
         \row
-            \o  -v or --verbose
-            \o  Display debug output.
+            \li -v or --verbose
+            \li Display debug output.
     \endtable
 
     These parameters are followed by the name of the target binary and a list
@@ -743,34 +743,34 @@
 
     \table
         \header
-            \o  Parameter
-            \o  Use
+            \li Parameter
+            \li Use
         \row
-            \o  -p or --packages directory
-            \o  Use \c directory as the \l{Package Directory Structure}
+            \li -p or --packages directory
+            \li Use \c directory as the \l{Package Directory Structure}
                 {package directory}.
                 Defaults to the current working directory.
         \row
-            \o  repository directory
-            \o  Target directory to generate the repository. Must not yet exist.
+            \li repository directory
+            \li Target directory to generate the repository. Must not yet exist.
         \row
-            \o  components
-            \o  List of components to place into the repository. Includes
+            \li components
+            \li List of components to place into the repository. Includes
                 dependencies.
         \row
-            \o  -e or --exclude p1,...,pn
-            \o  Comma-separated list of packages to be retrieved from an online
+            \li -e or --exclude p1,...,pn
+            \li Comma-separated list of packages to be retrieved from an online
                 repository. The packages are not included in the installer
                 binary.
         \row
-            \o  --update
-            \o  Place only the specified packages in the repository, without
+            \li --update
+            \li Place only the specified packages in the repository, without
                 their dependencies. Make sure to also add the Updates.xml from
                 the repository to update. This option adds the files that you list
                 in the \c {--include} parameter to the end of the Updates.xml file.
         \row
-            \o  -v or --verbose
-            \o  Display debug output.
+            \li -v or --verbose
+            \li Display debug output.
     \endtable
     \note We recommend that you use the \c {--update} parameter to update an
           existing repository, especially if you have a content delivery system.
@@ -821,11 +821,11 @@
 
     \list
 
-        \o  URL, which points to a list of available components.
-        \o  Enabled, with 0 disabling this repository.
-        \o  Username, which is used as user on a protected repository.
-        \o  Password, which sets the password to use on a protected repository.
-        \o  DisplayName, which optionally sets a String to display instead of the URL.
+        \li URL, which points to a list of available components.
+        \li Enabled, with 0 disabling this repository.
+        \li Username, which is used as user on a protected repository.
+        \li Password, which sets the password to use on a protected repository.
+        \li DisplayName, which optionally sets a String to display instead of the URL.
 
     \endlist
 
@@ -939,18 +939,18 @@
 
     \list 1
 
-        \o  Copy the updated content to the package directory.
+        \li Copy the updated content to the package directory.
 
-        \o  Increase the value of the \a{Version} setting for the updated
+        \li Increase the value of the \a{Version} setting for the updated
             components in the package.xml file.
 
-        \o  Use the \c repogen tool to recreate the online repository with the
+        \li Use the \c repogen tool to recreate the online repository with the
             updated contents and to generate the Updates.xml file in the root
             directory of the repository.
 
-        \o  Upload the repository to the web server.
+        \li Upload the repository to the web server.
 
-        \o  Use the \c binarycreator tool to create the installer.
+        \li Use the \c binarycreator tool to create the installer.
 
     \endlist
 
@@ -974,8 +974,8 @@
 
     A full update of the whole repository might not be optimal if:
     \list
-        \o  The repository is very large, as uploading would take a long time.
-        \o  You want to deliver only the changed components.
+        \li The repository is very large, as uploading would take a long time.
+        \li You want to deliver only the changed components.
     \endlist
 
     \note repogen recreates the 7zip archives each time it is being called. As
@@ -995,9 +995,9 @@
     \section2 Uploading Partial Updates
     Upload the following items to the web server:
     \list
-    \o The component directory (usually something like
+    \li The component directory (usually something like
     \a{com.vendor.product.updatedpart}).
-    \o The global \a{Updates.xml} stored in the root directory of the online
+    \li The global \a{Updates.xml} stored in the root directory of the online
     repository.
     \endlist
 

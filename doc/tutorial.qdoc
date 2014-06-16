@@ -43,18 +43,18 @@
 
     \list 1
 
-        \o  Create a \e {package directory} that will contain all the
+        \li Create a \e {package directory} that will contain all the
             configuration files and installable packages.
 
-        \o  Create a \e {configuration file} that contains information about how
+        \li Create a \e {configuration file} that contains information about how
             to build the installer binaries and online repositories.
 
-        \o  Create a \e {package information file} that contains information
+        \li Create a \e {package information file} that contains information
             about the installable components.
 
-        \o  Create installer content and copy it to the package directory.
+        \li Create installer content and copy it to the package directory.
 
-        \o  Use the \c binarycreator tool to create the \e installer.
+        \li Use the \c binarycreator tool to create the \e installer.
 
             The installer pages are created by using the information you provide
             in the configuration and package information file.
@@ -86,10 +86,10 @@
 
     \list
 
-        \o  The \c Title section specifies the installer name displayed on the
+        \li The \c Title section specifies the installer name displayed on the
             title bar (1).
 
-        \o  The \c Name section specifies the application name that is added to
+        \li The \c Name section specifies the application name that is added to
             the page name and introduction text (2).
 
     \endlist
@@ -118,10 +118,10 @@
 
     \list
 
-        \o  The \c DisplayName section specifies the name of the component in
+        \li The \c DisplayName section specifies the name of the component in
             the list of components (1).
 
-        \o  The \c Description section specifies the text that is displayed when
+        \li The \c Description section specifies the text that is displayed when
             the component is selected (2).
 
     \endlist
@@ -176,12 +176,12 @@
 
     \list
 
-    \o On Windows:
+    \li On Windows:
     \code
     ..\..\bin\binarycreator.exe -c config\config.xml -p packages YourInstaller.exe
     \endcode
 
-    \o On Linux or Mac OS X:
+    \li On Linux or Mac OS X:
     \code
     ../../bin/binarycreator -c config/config.xml -p packages YourInstaller
     \endcode

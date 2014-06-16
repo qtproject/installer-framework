@@ -44,8 +44,8 @@
 
     Wizard buttons:
     \list
-        \o  \gui Next
-        \o  \gui Cancel
+        \li \gui Next
+        \li \gui Cancel
     \endlist
 
     \section1 License Check Page
@@ -55,17 +55,17 @@
 
     Wizard buttons:
     \list
-        \o  \gui Next
-        \o  \gui Cancel
-        \o  \gui Back
+        \li \gui Next
+        \li \gui Cancel
+        \li \gui Back
     \endlist
 
     Radio buttons:
     \list
-    \o \a acceptLicenseRB
+    \li \a acceptLicenseRB
 
        Accepts the license agreement. Not selected by default.
-    \o \a rejectLicenseRB
+    \li \a rejectLicenseRB
 
        Rejects the license agreement. Selected by default.
     \endlist
@@ -77,9 +77,9 @@
 
     Wizard buttons:
     \list
-        \o \gui Next
-        \o \gui Cancel
-        \o \gui Back
+        \li \gui Next
+        \li \gui Cancel
+        \li \gui Back
     \endlist
 
     To specify a default value for the target directory for installation, use
@@ -92,27 +92,27 @@
 
     Wizard buttons:
     \list
-        \o  \gui Next
-        \o  \gui Cancel
-        \o  \gui Back
+        \li \gui Next
+        \li \gui Cancel
+        \li \gui Back
     \endlist
 
     Methods:
     \list
-        \o  \a {selectComponent( id )}
+        \li \a {selectComponent( id )}
 
             Selects the component with \c id (string).
-        \o  \a {deselectComponent( id )}
+        \li \a {deselectComponent( id )}
 
             Deselects the component with \c id (string).
     \endlist
 
     In uninstallation mode, additional radio buttons are available:
     \list
-        \o  \a uninstallAllComponentsRB
+        \li \a uninstallAllComponentsRB
 
             Uninstalls all components. Default.
-        \o  \a keepSelectedComponentsRB
+        \li \a keepSelectedComponentsRB
 
             Uninstalls only unselected components. Mark components selected
             (\a selectComponent) or not selected (\a deselectComponent) to add
@@ -126,9 +126,9 @@
 
     Wizard buttons:
     \list
-        \o  \gui Install
-        \o  \gui Cancel
-        \o  \gui Back
+        \li \gui Install
+        \li \gui Cancel
+        \li \gui Back
     \endlist
 
     \section1 Perform Installation Page
@@ -141,7 +141,7 @@
 
     Wizard buttons:
     \list
-        \o  \gui Cancel
+        \li \gui Cancel
     \endlist
 
     \section1 Installation Finished Page
@@ -151,7 +151,7 @@
 
     Wizard buttons:
     \list
-        \o  \gui Finish
+        \li \gui Finish
     \endlist
 
     \section1 Custom Pages
@@ -170,33 +170,33 @@
     \section1 Message Boxes
     \table
     \header
-                      \o Identifier
-                      \o Possible Answers
-                      \o Description
+                      \li Identifier
+                      \li Possible Answers
+                      \li Description
     \row
-                      \o \a cancelInstallation
-                      \o Yes, No
-                      \o Confirmation for canceling the installation when end
+                      \li \a cancelInstallation
+                      \li Yes, No
+                      \li Confirmation for canceling the installation when end
                          users select \gui Cancel on the installer pages.
     \row
-                      \o \a overwriteTargetDirectory
-                      \o Yes, No
-                      \o Confirmation for using an already existing directory as
+                      \li \a overwriteTargetDirectory
+                      \li Yes, No
+                      \li Confirmation for using an already existing directory as
                          the target directory for installation.
     \row
-                      \o \a installationError
-                      \o OK
-                      \o A fatal error occurred while performing the
+                      \li \a installationError
+                      \li OK
+                      \li A fatal error occurred while performing the
                          installation.
     \row
-                      \o \a installationErrorWithRetry
-                      \o Retry, Ignore, Cancel
-                      \o An error occurred while performing the installation.
+                      \li \a installationErrorWithRetry
+                      \li Retry, Ignore, Cancel
+                      \li An error occurred while performing the installation.
                          End users can select \gui Retry to try again.
     \row
-                      \o \a metaInfoJobError
-                      \o OK
-                      \o An error occurred while retrieving meta information
+                      \li \a metaInfoJobError
+                      \li OK
+                      \li An error occurred while retrieving meta information
                          when using an online installer.
     \endtable
 
