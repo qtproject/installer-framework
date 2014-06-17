@@ -2416,7 +2416,12 @@ OperationList PackageManagerCorePrivate::sortOperationsBasedOnComponentDependenc
         componentGraph.addEdges(componentNode->name(), dependencies);
     }
 
-    foreach (const QString &componentName, componentGraph.sort())
+    const QStringList resolvedComponents = componentGraph.sort();
+    if (componentGraph.hasCycle()) {
+        throw Error(tr("Dependency cycle between components detected: '%1' and '%2'.")
+            .arg(componentGraph.cycle().first, componentGraph.cycle().second));
+    }
+    foreach (const QString &componentName, resolvedComponents)
         sortedOperations.append(componentOperationHash.value(componentName));
 
     return sortedOperations;
