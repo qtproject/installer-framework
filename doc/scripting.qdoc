@@ -257,7 +257,7 @@
         \row
             \li ApplicationsDir
             \li Applications directory. For example, \c {C:\Program Files} on Windows,
-            \c {/opt} on Linux and \c {/Applications} on Mac OS X.
+            \c {/opt} on Linux and \c {/Applications} on OS X.
         \row
             \li InstallerDirPath
             \li The directory that contains the installer application executable.

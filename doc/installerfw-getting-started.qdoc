@@ -49,7 +49,7 @@
     \list
         \li Microsoft Windows XP, and later
         \li Ubuntu Linux 8.04, and later
-        \li Mac OS X 10.6, and later
+        \li OS X 10.6, and later
     \endlist
 
     \section1 Building from Sources
@@ -90,10 +90,10 @@
     configure -prefix %CD%\qtbase -release -static -target xp -no-opengl -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtscript -skip qtsensors
     \endcode
 
-    \section3 Configuring Qt for Linux and Mac OS X
+    \section3 Configuring Qt for Linux and OS X
 
     We recommend that you use the following configuration options for Linux and
-    Mac OS X:
+    OS X:
 
     \code
     ./configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation

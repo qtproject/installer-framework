@@ -70,7 +70,7 @@
     This section uses the \e {Your Application Installer} example run on Windows
     to illustrate the default workflow for end users. The installers have the
     native look and feel on each supported desktop platform, and therefore they
-    look and feel different when run on Linux and Mac OS X.
+    look and feel different when run on Linux and OS X.
 
     The example files are stored in the \c{examples\tutorial} directory
     in the Qt Installer Framework repository. You can use the \c binarycreator
