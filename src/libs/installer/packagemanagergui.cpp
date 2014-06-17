@@ -1682,10 +1682,14 @@ void TargetDirectoryPage::initializePage()
     QString targetDir = packageManagerCore()->value(scTargetDir);
     if (targetDir.isEmpty()) {
         targetDir = QDir::homePath() + QDir::separator();
-        // prevent spaces in the default target directory
-        if (targetDir.contains(QLatin1Char(' ')))
-            targetDir = QDir::rootPath();
-        targetDir += productName().remove(QLatin1Char(' '));
+        if (!packageManagerCore()->settings().allowSpaceInPath()) {
+            // prevent spaces in the default target directory
+            if (targetDir.contains(QLatin1Char(' ')))
+                targetDir = QDir::rootPath();
+            targetDir += productName().remove(QLatin1Char(' '));
+        } else {
+            targetDir += productName();
+        }
     }
     m_lineEdit->setText(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));
 
