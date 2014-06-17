@@ -100,16 +100,17 @@
 
     \section1 Message Boxes
 
-    You can show a \l QMessageBox from within the script by using:
+    You can show a QMessageBox from within the script by using the following
+    static members:
 
     \list
-    \li \l QMessageBox::critical
-    \li \l QMessageBox::information
-    \li \l QMessageBox::question
-    \li \l QMessageBox::warning
+    \li QMessageBox::critical()
+    \li QMessageBox::information()
+    \li QMessageBox::question()
+    \li QMessageBox::warning()
     \endlist
 
-    For your convenience, the values for \a QMessageBox::StandardButton are made
+    For your convenience, the values for QMessageBox::StandardButton are made
     available by using \a QMessageBox.Ok, \a QMessageBox.Open, and so on.
 
     \section1 Adding Operations to Components

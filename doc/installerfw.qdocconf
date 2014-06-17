@@ -21,6 +21,8 @@ exampledirs = $SRCDIR $SRCDIR/examples
 
 sources.fileextensions         = "*.qdoc *.cpp"
 
+indexes = $QT_INSTALL_DOCS/qtwidgets/qtwidgets.index
+
 qhp.projects            = InstallerFramework
 qhp.InstallerFramework.file             = ifw.qhp
 qhp.InstallerFramework.namespace        = org.qt-project.ifw.$IFW_VERSION_TAG
