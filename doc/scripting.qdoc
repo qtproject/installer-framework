@@ -244,7 +244,8 @@
         \row
             \li DesktopDir
             \li Name of the directory that contains the user's desktop.
-            \li Only available on Windows.
+
+            Only available on Windows.
         \row
             \li os
             \li Current platform: \c "x11", \c "win", or \c "mac".
@@ -256,8 +257,10 @@
             \li Home directory of the current user.
         \row
             \li ApplicationsDir
-            \li Applications directory. For example, \c {C:\Program Files} on Windows,
-            \c {/opt} on Linux and \c {/Applications} on OS X.
+            \li Applications directory.
+
+                For example, \c {C:\Program Files} on Windows,
+                \c {/opt} on Linux and \c {/Applications} on OS X.
         \row
             \li InstallerDirPath
             \li The directory that contains the installer application executable.
@@ -267,13 +270,17 @@
         \row
             \li UserStartMenuProgramsPath
             \li The path to the folder containing the items in the Start menu of the user.
-            \li For example, \c {C:\Users\USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs}
-            \li Only available on Windows.
+
+                For example, \c {C:\Users\USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs}
+
+                Only available on Windows.
         \row
             \li AllUsersStartMenuProgramsPath
             \li The path to the folder containing the items in the Start menu for all users.
-            \li For example, \c {C:\ProgramData\Microsoft\Windows\Start Menu\Programs}
-            \li Only available on Windows.
+
+                For example, \c {C:\ProgramData\Microsoft\Windows\Start Menu\Programs}
+
+                Only available on Windows.
     \endtable
 
     The variables can be resolved by calls to \c installer.value(). If embedded
