@@ -566,7 +566,7 @@
     \contentspage index.html
     \previouspage operations.html
     \page ifw-tools.html
-    \nextpage ifw-knownissues.html
+    \nextpage ifw-cpp-classes.html
 
     \title Tools
 
@@ -1046,7 +1046,7 @@
 
 /*!
     \contentspage index.html
-    \previouspage ifw-tools.html
+    \previouspage ifw-cpp-classes.html
     \page ifw-knownissues.html
 
     \title Known Issues

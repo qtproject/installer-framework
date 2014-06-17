@@ -7,13 +7,8 @@ include($QT_INSTALL_DOCS/global/fileextensions.qdocconf)
 project     = "Qt Installer Framework"
 description = "Qt Installer Framework Manual"
 
-headerdirs =
-sourcedirs = $SRCDIR
-
-# Contains documentation for JS API
-sources = $SRCDIR/../src/libs/installer/packagemanagercore.cpp \
-          $SRCDIR/../src/libs/installer/component.cpp \
-          $SRCDIR/../src/libs/installer/messageboxhandler.cpp
+headerdirs = ../src/libs/installer
+sourcedirs = ../src/libs/installer
 
 imagedirs = $SRCDIR/images $SRCDIR/templates/images
 outputdir = $OUTDIR
