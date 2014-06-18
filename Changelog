@@ -1,5 +1,21 @@
-2.0
-- Change the default value of AllowSpaceInPath in config.xml to true
+2.0.0
+- Require Qt 5.3 as a minimal version, Qt 4 code removed.
+- Changed the default value of AllowSpaceInPath in config.xml to true.
+- Made cycles in component dependencies fatal.
+- Respect AllowSpaceInPath everywhere.
+- Fixed crash while canceling the meta data unzip task.
+- Fixed replacing of the maintenance tool binary.
+- Introduced new classes for client-server communication.
+- Replaced qscript with js engine.
+- Added an example how to use dynamic pages.
+- Provided an API to get all wizard pages from java script. (QTIFW-477)
+- Made the installer binary paths available for scripts.  (QTIFW-424)
+- Various bugs fixed.
+- Improved documentation.
+- Documentation fixes
+- Only support Qt 5 on documentation side as well.
+
+Thanks go to Sze Howe Koh for contributions.
 
 1.6.0
 - No longer requires Xcode command line tools on Mac. (QTBUG-38015)
