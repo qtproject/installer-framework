@@ -87,7 +87,7 @@ private slots:
 
         QList<QString> resolved = graph.sort();
         foreach (const QString &value, resolved)
-            qDebug(qPrintable(value));
+            qDebug("%s", qPrintable(value));
     }
 
     void sortGraphReverse()
@@ -104,7 +104,7 @@ private slots:
 
         QList<QString> resolved = graph.sortReverse();
         foreach (const QString &value, resolved)
-            qDebug(qPrintable(value));
+            qDebug("%s", qPrintable(value));
     }
 
     void sortGraphCycle()
@@ -120,7 +120,7 @@ private slots:
 
         QList<Data> resolved = graph.sort();
         foreach (const Data &value, resolved)
-            qDebug(qPrintable(value.data()));
+            qDebug("%s", qPrintable(value.data()));
 
         QPair<Data, Data> cycle = graph.cycle();
         qDebug("Found cycle: %s", graph.hasCycle() ? "true" : "false");
