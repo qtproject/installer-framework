@@ -1,14 +1,31 @@
 2.0
 - Change the default value of AllowSpaceInPath in config.xml to true
 
+1.6.0
+- No longer requires Xcode command line tools on Mac. (QTBUG-38015)
+- Use local encoding to parse executable output in ConsumeOutput.
+- Avoid 'Too many open files' on Mac.
+- Fixed HTTP proxy settings not having any effect. (QTIFW-498)
+- Made it possible to calculate dependencies from script. (QTIFW-503)
+- Bugfixes (QTBUG-38343, QTIFW-488)
+- Code cleanup
+
 1.5.1
 - The checkupdates option handles no-network situations better. (QTIFW-431)
 - Fixed random crash while accessing arguments.
 - Fixed I18N on Windows.
 - Qt5 compatibility fixes.
+- Fixed for path handling on Windows.
+- Fixed preselection of components from another component.
+- Added operationExists method on script side.
+- Unified access to the supported schemes.
+- Implemented missing setNativeArguments wrapper. (QTIFW-310)
+- Fixed banner image not working in dynamic pages. (QTIFW-471)
+- Fixed hang when entering wrong sudo password. (QTIFW-409 and QTIFW-451)
+- Documentation improvements.
 - Updated translations.
 
-Thanks go to Takumi Asaki for contributions.
+Thanks go to Takumi Asaki and Sergey Belyashov for contributions.
 
 1.5.0
 - Fixed generation of random temp directory name. (QTIFW-427)

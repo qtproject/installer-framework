@@ -127,6 +127,24 @@
 */
 
 /*!
+    \qmlsignal QInstaller::finishedCalculateComponentsToInstall()
+
+    Emitted after the ordered list of components to install was calculated.
+*/
+
+/*!
+    \qmlsignal QInstaller::aboutCalculateComponentsToUninstall()
+
+    Emitted before the ordered list of components to uninstall is calculated.
+*/
+
+/*!
+    \qmlsignal QInstaller::finishedCalculateComponentsToUninstall()
+
+    Emitted after the ordered list of components to uninstall was calculated.
+*/
+
+/*!
     \qmlsignal QInstaller::componentAdded(Component component)
 
     Emitted when a new root component has been added.
@@ -1245,8 +1263,12 @@ Component *PackageManagerCore::componentByName(const QString &name) const
 }
 
 /*!
-    Calculates an ordered list of components to install based on the current run mode. Also auto installed
-    dependencies are resolved.
+    \qmlmethod boolean QInstaller::calculateComponentsToInstall()
+
+    Calculates an ordered list of components to install based on the current run mode. Also auto
+    installed dependencies are resolved. The aboutCalculateComponentsToInstall() signal is emitted
+    before the calculation starts, the finishedCalculateComponentsToInstall() signal once all
+    calculations are done.
 */
 bool PackageManagerCore::calculateComponentsToInstall() const
 {
@@ -1276,6 +1298,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
 
         d->m_componentsToInstallCalculated = d->appendComponentsToInstall(components);
     }
+    emit finishedCalculateComponentsToInstall();
     return d->m_componentsToInstallCalculated;
 }
 
@@ -1288,26 +1311,32 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 }
 
 /*!
-    Calculates a list of components to uninstall based on the current run mode. Auto installed dependencies
-    are resolved as well.
+    \qmlmethod boolean QInstaller::calculateComponentsToUninstall()
+
+    Calculates a list of components to uninstall based on the current run mode. Auto installed
+    dependencies are not yet resolved.  The aboutCalculateComponentsToUninstall() signal is emitted
+    before the calculation starts, the finishedCalculateComponentsToUninstall() signal once all
+    calculations are done.
 */
 bool PackageManagerCore::calculateComponentsToUninstall() const
 {
-    if (isUpdater())
-        return true;
+    bool result = true;
+    emit aboutCalculateComponentsToUninstall();
+    if (!isUpdater()) {
+        // hack to avoid removing needed dependencies
+        QSet<Component*>  componentsToInstall = d->m_orderedComponentsToInstall.toSet();
 
-    // hack to avoid removing needed dependencies
-    QSet<Component*>  componentsToInstall = d->m_orderedComponentsToInstall.toSet();
+        QList<Component*> components;
+        foreach (Component *component, availableComponents()) {
+            if (component->uninstallationRequested() && !componentsToInstall.contains(component))
+                components.append(component);
+        }
 
-    QList<Component*> components;
-    foreach (Component *component, availableComponents()) {
-        if (component->uninstallationRequested() && !componentsToInstall.contains(component))
-            components.append(component);
+        d->m_componentsToUninstall.clear();
+        result = d->appendComponentsToUninstall(components);
     }
-
-
-    d->m_componentsToUninstall.clear();
-    return d->appendComponentsToUninstall(components);
+    emit finishedCalculateComponentsToUninstall();
+    return result;
 }
 
 /*!
