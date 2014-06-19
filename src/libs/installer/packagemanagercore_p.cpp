@@ -2012,7 +2012,8 @@ void PackageManagerCorePrivate::registerUninstaller()
     settings.setValue(QLatin1String("InstallDate"), QDateTime::currentDateTime().toString());
     settings.setValue(QLatin1String("InstallLocation"), QDir::toNativeSeparators(targetDir()));
     settings.setValue(QLatin1String("UninstallString"), uninstaller);
-    settings.setValue(QLatin1String("ModifyPath"), uninstaller + QLatin1String(" --manage-packages"));
+    settings.setValue(QLatin1String("ModifyPath"), QString(uninstaller
+        + QLatin1String(" --manage-packages")));
     settings.setValue(QLatin1String("EstimatedSize"), QFileInfo(installerBinaryPath()).size());
     settings.setValue(QLatin1String("NoModify"), 0);
     settings.setValue(QLatin1String("NoRepair"), 1);
