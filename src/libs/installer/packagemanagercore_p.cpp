@@ -54,6 +54,7 @@
 #include "packagemanagercore.h"
 #include "progresscoordinator.h"
 #include "qprocesswrapper.h"
+#include "protocol.h"
 #include "qsettingswrapper.h"
 #include "remoteclient.h"
 
@@ -230,10 +231,10 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     // Creates and initializes a remote client, makes us get admin rights for QFile, QSettings
     // and QProcess operations.
     int port = 30000 + qrand() % 1000;
-    RemoteClient::instance().init(port, QHostAddress::LocalHost, RemoteClient::Release);
+    RemoteClient::instance().init(port, QHostAddress::LocalHost, Protocol::Mode::Release);
     RemoteClient::instance().setStartServerCommand(QCoreApplication::applicationFilePath(),
         QStringList() << QLatin1String("--startserver") << QString::number(port)
-        << RemoteClient::instance().authorizationKey(), RemoteClient::Administrator);
+        << RemoteClient::instance().authorizationKey(), Protocol::StartAs::SuperUser);
 
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));

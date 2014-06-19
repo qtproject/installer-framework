@@ -43,6 +43,7 @@
 #define REMOTESERVER_H
 
 #include "installer_global.h"
+#include "protocol.h"
 
 #include <QObject>
 
@@ -61,16 +62,11 @@ class INSTALLER_EXPORT RemoteServer : public QObject
     Q_DECLARE_PRIVATE(RemoteServer)
 
 public:
-    enum Mode {
-        Debug,
-        Release
-    };
-
     explicit RemoteServer(QObject *parent = 0);
     ~RemoteServer();
 
     void start();
-    void init(quint16 port, const QHostAddress &address, Mode mode);
+    void init(quint16 port, const QHostAddress &address, Protocol::Mode mode);
 
     QString authorizationKey() const;
     void setAuthorizationKey(const QString &key);

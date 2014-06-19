@@ -43,6 +43,7 @@
 #define REMOTECLIENT_H
 
 #include "installer_global.h"
+#include "protocol.h"
 
 #include <QObject>
 
@@ -63,19 +64,10 @@ class INSTALLER_EXPORT RemoteClient : public QObject
     friend class RemoteClientGuard;
 
 public:
-    enum Mode {
-        Debug,
-        Release
-    };
-
-    enum StartAs {
-        User,
-        Administrator
-    };
     static RemoteClient &instance();
 
     bool connect(QTcpSocket *socket) const;
-    void init(quint16 port, const QHostAddress &address, Mode mode);
+    void init(quint16 port, const QHostAddress &address, Protocol::Mode mode);
 
     QString authorizationKey() const;
     void setAuthorizationKey(const QString &key);
@@ -83,8 +75,9 @@ public:
     bool isActive() const;
     void setActive(bool active);
 
-    void setStartServerCommand(const QString &command, StartAs startAs);
-    void setStartServerCommand(const QString &command, const QStringList &arguments, StartAs start);
+    void setStartServerCommand(const QString &command, Protocol::StartAs startAs);
+    void setStartServerCommand(const QString &command, const QStringList &arguments,
+        Protocol::StartAs start);
 
 private:
     RemoteClient();

@@ -56,6 +56,7 @@
 #include <QTcpSocket>
 #include <QThread>
 #include <QTimer>
+#include <QUuid>
 
 namespace QInstaller {
 
@@ -114,12 +115,15 @@ public:
     RemoteClientPrivate(RemoteClient *parent)
         : q_ptr(parent)
         , m_mutex(QMutex::Recursive)
-        , m_port(0)
-        , m_startServerAsAdmin(false)
+        , m_address(Protocol::DefaultHostAddress)
+        , m_port(Protocol::DefaultPort)
+        , m_startServerAs(Protocol::StartAs::User)
         , m_serverStarted(false)
         , m_serverStarting(false)
         , m_active(false)
+        , m_key(QLatin1String(Protocol::DefaultAuthorizationKey))
         , m_thread(new KeepAliveThread(parent))
+        , m_mode(Protocol::Mode::Debug)
         , m_quit(false)
     {
         m_thread->moveToThread(m_thread);
@@ -127,20 +131,20 @@ public:
 
     ~RemoteClientPrivate()
     {
-        QMetaObject::invokeMethod(m_thread, "quit");
+        QMetaObject::invokeMethod(m_thread, "quit", Qt::QueuedConnection);
     }
 
-    void init(quint16 port, const QHostAddress &address, RemoteClient::Mode mode)
+    void init(quint16 port, const QHostAddress &address, Protocol::Mode mode)
     {
         m_port = port;
         m_mode = mode;
         m_address = address;
 
-        if (mode == RemoteClient::Debug) {
+        if (mode == Protocol::Mode::Debug) {
             m_active = true;
             m_serverStarted = true;
-            m_key = QLatin1String(Protocol::DebugAuthorizationKey);
-        } else if (m_mode == RemoteClient::Release) {
+        } else if (m_mode == Protocol::Mode::Release) {
+            m_key = QUuid::createUuid().toString();
             m_thread->start();
         } else {
             Q_ASSERT_X(false, Q_FUNC_INFO, "RemoteClient mode not set properly.");
@@ -156,9 +160,8 @@ public:
             return;
 
         m_serverStarting = true;
-
-        if (m_startServerAsAdmin) {
-             m_serverStarted = AdminAuthorization::execute(0, m_serverCommand, m_serverArguments);
+        if (m_startServerAs == Protocol::StartAs::SuperUser) {
+            m_serverStarted = AdminAuthorization::execute(0, m_serverCommand, m_serverArguments);
 
             if (!m_serverStarted) {
                 // something went wrong with authorizing, either user pressed cancel or entered
@@ -223,7 +226,7 @@ private:
     QHostAddress m_address;
     quint16 m_port;
     QString m_socket;
-    bool m_startServerAsAdmin;
+    Protocol::StartAs m_startServerAs;
     bool m_serverStarted;
     bool m_serverStarting;
     bool m_active;
@@ -231,7 +234,7 @@ private:
     QStringList m_serverArguments;
     QString m_key;
     QThread *m_thread;
-    RemoteClient::Mode m_mode;
+    Protocol::Mode m_mode;
     volatile bool m_quit;
 };
 

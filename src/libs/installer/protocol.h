@@ -45,11 +45,24 @@
 namespace QInstaller {
 namespace Protocol {
 
+enum struct Mode {
+    Debug,
+    Release
+};
+
+enum struct StartAs {
+    User,
+    SuperUser
+};
+
+const unsigned short DefaultPort = 39999;
+const int DefaultHostAddress = 2; // QHostAddress::LocalHost
+const char DefaultAuthorizationKey[] = "DefaultAuthorizationKey";
+
 const char Create[] = "Create";
 const char Destroy[] = "Destroy";
 const char Shutdown[] = "Shutdown";
 const char Authorize[] = "Authorize";
-const char DebugAuthorizationKey[] = "DebugAuthorizationKey";
 
 // QProcessWrapper
 const char QProcess[] = "QProcess";

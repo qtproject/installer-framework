@@ -42,6 +42,7 @@
 #ifndef REMOTESERVER_P_H
 #define REMOTESERVER_P_H
 
+#include "protocol.h"
 #include "remoteserver.h"
 #include "remoteserverconnection.h"
 
@@ -100,6 +101,10 @@ public:
     explicit RemoteServerPrivate(RemoteServer *server)
         : q_ptr(server)
         , m_tcpServer(0)
+        , m_key(QLatin1String(Protocol::DefaultAuthorizationKey))
+        , m_port(Protocol::DefaultPort)
+        , m_address(Protocol::DefaultHostAddress)
+        , m_mode(Protocol::Mode::Debug)
         , m_watchdog(new QTimer)
     {
         m_watchdog->setInterval(30000);
@@ -114,7 +119,7 @@ private:
     quint16 m_port;
     QThread m_thread;
     QHostAddress m_address;
-    RemoteServer::Mode m_mode;
+    Protocol::Mode m_mode;
     QScopedPointer<QTimer> m_watchdog;
 };
 

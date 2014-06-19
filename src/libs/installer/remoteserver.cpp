@@ -40,8 +40,6 @@
 **************************************************************************/
 
 #include "remoteserver.h"
-
-#include "protocol.h"
 #include "remoteserver_p.h"
 
 namespace QInstaller {
@@ -75,11 +73,9 @@ void RemoteServer::start()
     connect (d->m_tcpServer, SIGNAL(newIncommingConnection()), this, SLOT(restartWatchdog()));
     d->m_thread.start();
 
-    if (d->m_mode == RemoteServer::Release) {
+    if (d->m_mode == Protocol::Mode::Release) {
         connect(d->m_watchdog.data(), SIGNAL(timeout()), this, SLOT(deleteLater()));
         d->m_watchdog->start();
-    } else {
-        setAuthorizationKey(QLatin1String(Protocol::DebugAuthorizationKey));
     }
 }
 
@@ -101,7 +97,7 @@ void RemoteServer::setAuthorizationKey(const QString &authorizationKey)
     d->m_key = authorizationKey;
 }
 
-void RemoteServer::init(quint16 port, const QHostAddress &address, Mode mode)
+void RemoteServer::init(quint16 port, const QHostAddress &address, Protocol::Mode mode)
 {
     Q_D(RemoteServer);
     d->m_port = port;

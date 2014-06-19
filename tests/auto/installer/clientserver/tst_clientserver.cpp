@@ -39,6 +39,7 @@
 **
 **************************************************************************/
 
+#include <protocol.h>
 #include <qprocesswrapper.h>
 #include <qsettingswrapper.h>
 #include <remoteclient.h>
@@ -62,7 +63,7 @@ private slots:
     void testServerConnection()
     {
         RemoteServer server;
-        server.init(39999, QHostAddress::LocalHost, RemoteServer::Debug);
+        server.init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
         server.start();
 
         QTcpSocket socket;
@@ -73,18 +74,18 @@ private slots:
     void testClientConnection()
     {
         RemoteServer server;
-        server.init(39999, QHostAddress::LocalHost, RemoteServer::Debug);
+        server.init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
         server.start();
 
         QTcpSocket socket;
-        RemoteClient::instance().init(39999, QHostAddress::LocalHost, RemoteClient::Debug);
+        RemoteClient::instance().init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
         QVERIFY2(RemoteClient::instance().connect(&socket), "Could not connect to server.");
     }
 
     void testQSettingsWrapper()
     {
         RemoteServer server;
-        server.init(39999, QHostAddress::LocalHost, RemoteServer::Debug);
+        server.init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
         server.start();
 
         QSettingsWrapper wrapper("digia", "clientserver");
@@ -200,7 +201,7 @@ private slots:
     void testQProcessWrapper()
     {
         RemoteServer server;
-        server.init(39999, QHostAddress::LocalHost, RemoteServer::Debug);
+        server.init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
         server.start();
 
         {
@@ -297,7 +298,7 @@ private slots:
     void testRemoteFileEngine()
     {
         RemoteServer server;
-        server.init(39999, QHostAddress::LocalHost, RemoteServer::Debug);
+        server.init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
         server.start();
 
         QString filename;

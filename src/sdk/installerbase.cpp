@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
             SDKApp<QCoreApplication> app(argc, argv);
             RemoteServer *const server = new RemoteServer();
             QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
-            server->init(args[2].toInt(), QHostAddress::LocalHost, RemoteServer::Release);
+            server->init(args[2].toInt(), QHostAddress::LocalHost, Protocol::Mode::Release);
             if (args.count() >= 4)
                 server->setAuthorizationKey(args[3]);
             server->start();

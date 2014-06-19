@@ -40,12 +40,9 @@
 **************************************************************************/
 
 #include "remoteclient.h"
-
-#include "protocol.h"
 #include "remoteclient_p.h"
 
 #include <QElapsedTimer>
-#include <QUuid>
 
 namespace QInstaller {
 
@@ -60,8 +57,6 @@ static RemoteClientGuard *gGuard = remoteClientGuard();
 RemoteClient::RemoteClient()
     : d_ptr(new RemoteClientPrivate(this))
 {
-    Q_D(RemoteClient);
-    d->m_key = QUuid::createUuid().toString();
 }
 
 RemoteClient::~RemoteClient()
@@ -89,7 +84,7 @@ void RemoteClient::setAuthorizationKey(const QString &key)
     d->m_key = key;
 }
 
-void RemoteClient::init(quint16 port, const QHostAddress &address, Mode mode)
+void RemoteClient::init(quint16 port, const QHostAddress &address, Protocol::Mode mode)
 {
     Q_D(RemoteClient);
     d->init(port, address, mode);
@@ -110,7 +105,8 @@ bool RemoteClient::connect(QTcpSocket *socket) const
         while ((socket->state() == QAbstractSocket::ConnectingState)
             && (stopWatch.elapsed() < 10000) && (!d->m_quit)) {
                 --tries;
-                qApp->processEvents();
+                if (!QCoreApplication::closingDown())
+                    qApp->processEvents();
                 continue;
         }
         if ((socket->state() != QAbstractSocket::ConnectedState) || d->m_quit)
@@ -148,19 +144,19 @@ void RemoteClient::setActive(bool active)
     }
 }
 
-void RemoteClient::setStartServerCommand(const QString &command, StartAs startAs)
+void RemoteClient::setStartServerCommand(const QString &command, Protocol::StartAs startAs)
 {
     setStartServerCommand(command, QStringList(), startAs);
 }
 
 void RemoteClient::setStartServerCommand(const QString &command, const QStringList &arguments,
-    StartAs startAs)
+    Protocol::StartAs startAs)
 {
     Q_D(RemoteClient);
     d->maybeStopServer();
     d->m_serverCommand = command;
     d->m_serverArguments = arguments;
-    d->m_startServerAsAdmin = startAs;
+    d->m_startServerAs = startAs;
 }
 
 } // namespace QInstaller
