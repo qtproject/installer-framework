@@ -5,11 +5,11 @@ INCLUDEPATH += . .. rcc ../common
 include(../../installerfw.pri)
 
 QT -= gui
+QTPLUGIN += qico qtaccessiblewidgets
 QT += qml xml
 
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH
-
 SOURCES = binarycreator.cpp \
           rcc/rcc.cpp \
           rcc/rccmain.cpp \
