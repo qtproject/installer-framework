@@ -127,7 +127,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
 
     if (::openpty(&masterFD, &slaveFD, ptsn, 0, 0))
         return false;
-    
+
     masterFD = ::posix_openpt(O_RDWR | O_NOCTTY);
     if (masterFD < 0)
         return false;
@@ -138,7 +138,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         ::close(masterFD);
         return false;
     }
-  
+
     ::revoke(ttyName);
     ::unlockpt(masterFD);
 
@@ -252,7 +252,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         getrlimit(RLIMIT_NOFILE, &rlp);
         for (int i = 3; i < static_cast<int>(rlp.rlim_cur); ++i)
             ::close(i);
- 
+
         char **argp = (char **) ::malloc(arguments.count() + 4 * sizeof(char *));
         QList<QByteArray> args;
         args.push_back(SU_COMMAND);
