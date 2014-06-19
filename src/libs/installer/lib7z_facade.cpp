@@ -1317,20 +1317,20 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, Up
 {
     assert(archive);
 
-    std::auto_ptr< UpdateCallback > dummyCallback(callback ? 0 : new UpdateCallback);
+    QScopedPointer<UpdateCallback> dummyCallback(callback ? 0 : new UpdateCallback);
     if (!callback)
-        callback = dummyCallback.get();
+        callback = dummyCallback.data();
 
     try {
         callback->setTarget(archive);
 
-        std::auto_ptr< CCodecs > codecs(new CCodecs);
+        QScopedPointer<CCodecs> codecs(new CCodecs);
         if (codecs->Load() != S_OK)
             throw SevenZipException(QObject::tr("Could not load codecs"));
 
         CIntVector formatIndices;
 
-        if (!codecs.get()->FindFormatForArchiveType(L"", formatIndices))
+        if (!codecs.data()->FindFormatForArchiveType(L"", formatIndices))
             throw SevenZipException(QObject::tr("Could not retrieve default format"));
 
         // yes this is crap, but there seems to be no streaming solution to this...
@@ -1373,7 +1373,7 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, Up
         options.MethodMode.Properties.Add(ta);
 
         CUpdateErrorInfo errorInfo;
-        const HRESULT res = UpdateArchive(codecs.get(), censor, options, errorInfo, 0, callback->impl());
+        const HRESULT res = UpdateArchive(codecs.data(), censor, options, errorInfo, 0, callback->impl());
         if (res != S_OK || !QFile::exists(tempFile))
             throw SevenZipException(QObject::tr("Could not create archive %1. %2").arg(
                 tempFile, errorMessageFrom7zResult(res)));
@@ -1459,9 +1459,9 @@ void Lib7z::extractFileFromArchive(QIODevice* archive, const File& item, const Q
 {
     assert(archive);
 
-    std::auto_ptr<ExtractCallback> dummyCallback(callback ? 0 : new ExtractCallback);
+    QScopedPointer<ExtractCallback> dummyCallback(callback ? 0 : new ExtractCallback);
     if (!callback)
-        callback = dummyCallback.get();
+        callback = dummyCallback.data();
 
     QFileInfo fi(targetDirectory + QLatin1String("/") + item.path);
     DirectoryGuard outDir(fi.absolutePath());
@@ -1482,9 +1482,9 @@ void Lib7z::extractArchive(QIODevice* archive, const QString &targetDirectory, E
 {
     assert(archive);
 
-    std::auto_ptr<ExtractCallback> dummyCallback(callback ? 0 : new ExtractCallback);
+    QScopedPointer<ExtractCallback> dummyCallback(callback ? 0 : new ExtractCallback);
     if (!callback)
-        callback = dummyCallback.get();
+        callback = dummyCallback.data();
 
     callback->setTarget(targetDirectory);
 
@@ -1523,20 +1523,20 @@ bool Lib7z::isSupportedArchive(QIODevice* archive)
     assert(!archive->isSequential());
     const qint64 initialPos = archive->pos();
     try {
-        std::auto_ptr<CCodecs> codecs(new CCodecs);
+        QScopedPointer<CCodecs> codecs(new CCodecs);
         if (codecs->Load() != S_OK)
             throw SevenZipException(QObject::tr("Could not load codecs"));
 
         CIntVector formatIndices;
 
-        if (!codecs.get()->FindFormatForArchiveType(L"", formatIndices))
+        if (!codecs->FindFormatForArchiveType(L"", formatIndices))
             throw SevenZipException(QObject::tr("Could not retrieve default format"));
 
         CArchiveLink archiveLink;
         //CMyComPtr is needed, otherwise it crashes in OpenStream()
         const CMyComPtr<IInStream> stream = new QIODeviceInStream(archive);
 
-        const HRESULT result = archiveLink.Open2(codecs.get(), formatIndices, /*stdInMode*/false, stream,
+        const HRESULT result = archiveLink.Open2(codecs.data(), formatIndices, /*stdInMode*/false, stream,
             UString(), 0);
 
         archive->seek(initialPos);
