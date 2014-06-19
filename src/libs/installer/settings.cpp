@@ -282,7 +282,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
     if (!s.d->m_data.contains(scInstallerApplicationIcon))
         s.d->m_data.insert(scInstallerApplicationIcon, s.d->m_data.value(scIcon));
     if (!s.d->m_data.contains(scInstallerWindowIcon))
-        s.d->m_data.insert(scInstallerWindowIcon, s.d->m_data.value(scIcon).toString() + s.systemIconSuffix());
+        s.d->m_data.insert(scInstallerWindowIcon,
+                           QString(s.d->m_data.value(scIcon).toString() + s.systemIconSuffix()));
     if (!s.d->m_data.contains(scRemoveTargetDir))
         s.d->m_data.insert(scRemoveTargetDir, scTrue);
     if (!s.d->m_data.contains(scUninstallerName))
@@ -290,7 +291,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
     if (!s.d->m_data.contains(scTargetConfigurationFile))
         s.d->m_data.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
     if (!s.d->m_data.contains(scUninstallerIniFile))
-        s.d->m_data.insert(scUninstallerIniFile, s.uninstallerName() + QLatin1String(".ini"));
+        s.d->m_data.insert(scUninstallerIniFile, QString(s.uninstallerName() + QLatin1String(".ini")));
     if (!s.d->m_data.contains(scDependsOnLocalInstallerBinary))
         s.d->m_data.insert(scDependsOnLocalInstallerBinary, false);
     if (!s.d->m_data.contains(scRepositorySettingsPageVisible))

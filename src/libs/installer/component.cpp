@@ -1409,11 +1409,15 @@ void Component::updateModelData(const QString &key, const QString &data)
 
     const QString &updateInfo = d->m_vars.value(scUpdateText);
     if (!d->m_core->isUpdater() || updateInfo.isEmpty()) {
-        setData(QLatin1String("<html><body>") + d->m_vars.value(scDescription)
-            + QLatin1String("</body></html>"), Qt::ToolTipRole);
+        const QString tooltipText
+                = QString::fromLatin1("<html><body>%1</body></html>").arg(d->m_vars.value(scDescription));
+        setData(tooltipText, Qt::ToolTipRole);
     } else {
-        setData(d->m_vars.value(scDescription) + QLatin1String("<br><br>") + tr("Update Info: ")
-            + updateInfo, Qt::ToolTipRole);
+        const QString tooltipText
+                = d->m_vars.value(scDescription) + QLatin1String("<br><br>")
+                + tr("Update Info: ") + updateInfo;
+
+        setData(tooltipText, Qt::ToolTipRole);
     }
 }
 
