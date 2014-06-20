@@ -44,6 +44,7 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QSettings>
 
 #include <qt_windows.h>
 
@@ -118,6 +119,19 @@ static QString windowsErrorString(int errorCode)
 bool AdminAuthorization::execute(QWidget *, const QString &program, const QStringList &arguments)
 {
     DeCoInitializer _;
+
+    // AdminAuthorization::execute uses UAC to ask for admin privileges. If the user is no
+    // administrator yet and the computer's policies are set to not use UAC (which is the case
+    // in some corporate networks), the call to execute() will simply succeed and not at all
+    // launch the child process. To avoid this, we detect this situation here and return early.
+    if (!hasAdminRights()) {
+        QLatin1String key("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\"
+            "Policies\\System");
+        QSettings registry(key, QSettings::NativeFormat);
+        const QVariant enableLUA = registry.value(QLatin1String("EnableLUA"));
+        if ((enableLUA.type() == QVariant::Int) && (enableLUA.toInt() == 0))
+            return false;
+    }
 
     const QString file = QDir::toNativeSeparators(program);
     const QString args = QInstaller::createCommandline(QString(), arguments);
