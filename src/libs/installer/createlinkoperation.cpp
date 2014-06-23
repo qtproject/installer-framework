@@ -76,7 +76,7 @@ bool CreateLinkOperation::performOperation()
 
     if (!link.exists()) {
         setError(UserDefinedError);
-        setErrorString(QObject::tr("Could not create link from %1 to %2.").arg(linkPath, targetPath));
+        setErrorString(tr("Could not create link from %1 to %2.").arg(linkPath, targetPath));
         return false;
     }
 
@@ -96,7 +96,7 @@ bool CreateLinkOperation::undoOperation()
     }
     if (!link.remove()) {
         setError(UserDefinedError);
-        setErrorString(QObject::tr("Could not remove link from %1 to %2.").arg(linkPath, targetPath));
+        setErrorString(tr("Could not remove link from %1 to %2.").arg(linkPath, targetPath));
         return false;
     }
 

@@ -112,8 +112,10 @@ static void removeFiles(const QString &path, AutoHelper *const helper)
     foreach (const QFileInfo &fi, entries) {
         if (fi.isSymLink() || fi.isFile()) {
             QFile f(fi.filePath());
-            if (!f.remove())
-                throw Error(QObject::tr("Could not remove file %1: %2").arg(f.fileName(), f.errorString()));
+            if (!f.remove()) {
+                throw Error(CreateLocalRepositoryOperation::tr("Could not remove file %1: %2")
+                    .arg(f.fileName(), f.errorString()));
+            }
             helper->m_files.removeAll(f.fileName());
         }
     }
@@ -129,8 +131,8 @@ static QString createArchive(const QString repoPath, const QString &sourceDir, c
     Lib7z::createArchive(&archive, QStringList() << sourceDir);
     removeFiles(sourceDir, helper); // cleanup the files we compressed
     if (!archive.rename(sourceDir + fileName)) {
-        throw Error(CreateLocalRepositoryOperation::tr("Could not move file %1 to %2. Error: %3").arg(archive
-            .fileName(), sourceDir + fileName, archive.errorString()));
+        throw Error(CreateLocalRepositoryOperation::tr("Could not move file %1 to %2. Error: %3")
+            .arg(archive.fileName(), sourceDir + fileName, archive.errorString()));
     }
     return archive.fileName();
 }

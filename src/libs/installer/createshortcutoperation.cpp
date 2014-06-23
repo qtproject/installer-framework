@@ -226,7 +226,7 @@ bool CreateShortcutOperation::performOperation()
     QString errorString;
     if (QFile::exists(linkLocation) && !deleteFileNowOrLater(linkLocation, &errorString)) {
         setError(UserDefinedError);
-        setErrorString(QObject::tr("Failed to overwrite %1: %2").arg(QDir::toNativeSeparators(linkLocation),
+        setErrorString(tr("Failed to overwrite %1: %2").arg(QDir::toNativeSeparators(linkLocation),
             errorString));
         return false;
     }

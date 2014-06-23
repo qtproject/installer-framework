@@ -121,20 +121,32 @@ int main(int argc, char** argv)
                 setVerbose(true);
             } else if (args.first() == QLatin1String("--exclude") || args.first() == QLatin1String("-e")) {
                 args.removeFirst();
-                if (!filteredPackages.isEmpty())
-                    return printErrorAndUsageAndExit(QObject::tr("Error: --include and --exclude are mutually "
-                                                                 "exclusive. Use either one or the other."));
-                if (args.isEmpty() || args.first().startsWith(QLatin1Char('-')))
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Package to exclude missing"));
+                if (!filteredPackages.isEmpty()) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: --include and --exclude are mutually exclusive. Use either one or "
+                        "the other."));
+                }
+
+                if (args.isEmpty() || args.first().startsWith(QLatin1Char('-'))) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Package to exclude missing"));
+                }
+
                 filteredPackages = args.first().split(QLatin1Char(','));
                 args.removeFirst();
             } else if (args.first() == QLatin1String("--include") || args.first() == QLatin1String("-i")) {
                 args.removeFirst();
-                if (!filteredPackages.isEmpty())
-                    return printErrorAndUsageAndExit(QObject::tr("Error: --include and --exclude are mutual "
-                                                                 "exclusive options. Use either one or the other."));
-                if (args.isEmpty() || args.first().startsWith(QLatin1Char('-')))
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Package to include missing"));
+                if (!filteredPackages.isEmpty()) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: --include and --exclude are mutual exclusive options. Use either "
+                        "one or the other."));
+                }
+
+                if (args.isEmpty() || args.first().startsWith(QLatin1Char('-'))) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Package to include missing"));
+                }
+
                 filteredPackages = args.first().split(QLatin1Char(','));
                 args.removeFirst();
                 filterType = QInstallerTools::Include;
@@ -147,19 +159,24 @@ int main(int argc, char** argv)
             } else if (args.first() == QLatin1String("-p") || args.first() == QLatin1String("--packages")) {
                 args.removeFirst();
                 if (args.isEmpty()) {
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Packages parameter missing "
-                        "argument"));
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Packages parameter missing argument"));
                 }
+
                 if (!QFileInfo(args.first()).exists()) {
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Package directory not found "
-                        "at the specified location"));
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Package directory not found at the specified location"));
                 }
+
                 packagesDirectories.append(args.first());
                 args.removeFirst();
             } else if (args.first() == QLatin1String("-c") || args.first() == QLatin1String("--config")) {
                 args.removeFirst();
-                if (args.isEmpty())
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument"));
+                if (args.isEmpty()) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Config parameter missing argument"));
+                }
+
                 args.removeFirst();
                 std::cout << "Config file parameter is deprecated and ignored." << std::endl;
             } else if (args.first() == QLatin1String("--ignore-translations")
@@ -181,8 +198,8 @@ int main(int argc, char** argv)
 
         const bool update = updateExistingRepository || updateExistingRepositoryWithNewComponents;
         if (remove && update) {
-            throw QInstaller::Error(QObject::tr("Argument -r|--remove and --update|--update-new-components "
-                "are mutually exclusive!"));
+            throw QInstaller::Error(QCoreApplication::translate("QInstaller",
+                "Argument -r|--remove and --update|--update-new-components are mutually exclusive!"));
         }
 
         const QString repositoryDir = QInstallerTools::makePathAbsolute(args.first());
@@ -192,8 +209,8 @@ int main(int argc, char** argv)
         if (!update && QFile::exists(repositoryDir) && !QDir(repositoryDir).entryList(
             QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty()) {
 
-            throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!")
-                .arg(repositoryDir));
+            throw QInstaller::Error(QCoreApplication::translate("QInstaller",
+                "Repository target folder %1 already exists!").arg(repositoryDir));
         }
 
         QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectories,
@@ -204,8 +221,10 @@ int main(int argc, char** argv)
             QFile file(repositoryDir + QLatin1String("/Updates.xml"));
             if (file.open(QFile::ReadOnly) && doc.setContent(&file)) {
                 const QDomElement root = doc.documentElement();
-                if (root.tagName() != QLatin1String("Updates"))
-                    throw QInstaller::Error(QObject::tr("Invalid content in '%1'.").arg(file.fileName()));
+                if (root.tagName() != QLatin1String("Updates")) {
+                    throw QInstaller::Error(QCoreApplication::translate("QInstaller",
+                        "Invalid content in '%1'.").arg(file.fileName()));
+                }
                 file.close(); // close the file, we read the content already
 
                 // read the already existing updates xml content

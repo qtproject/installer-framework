@@ -1044,7 +1044,7 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
     QInstaller::openForWrite(&out); // throws an exception in case of error
 
     if (!input->seek(0))
-        throw Error(QObject::tr("Failed to seek in file %1: %2").arg(input->fileName(), input->errorString()));
+        throw Error(tr("Failed to seek in file %1: %2").arg(input->fileName(), input->errorString()));
 
     QInstaller::appendData(&out, input, size);
     if (writeBinaryLayout) {

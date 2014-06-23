@@ -171,10 +171,11 @@ public:
 
                 const QMessageBox::Button res =
                     MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                    QObject::tr("Authorization Error"), QObject::tr("Could not get authorization."),
-                    QObject::tr("Could not get authorization that is needed for continuing the "
-                        "installation.\n Either abort the installation or use the fallback "
-                        "solution by running\n%1\nas root and then clicking ok.").arg(fallback),
+                    RemoteClient::tr("Authorization Error"),
+                    RemoteClient::tr("Could not get authorization."),
+                    RemoteClient::tr("Could not get authorization that is needed for continuing "
+                    "the installation.\n Either abort the installation or use the fallback "
+                    "solution by running\n%1\nas root and then clicking OK.").arg(fallback),
                     QMessageBox::Abort | QMessageBox::Ok, QMessageBox::Ok);
 
                 if (res == QMessageBox::Ok)

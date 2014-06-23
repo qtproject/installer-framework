@@ -156,7 +156,7 @@ bool RegisterFileTypeOperation::performOperation()
     return true;
 #else
     setError(UserDefinedError);
-    setErrorString(QObject::tr("Registering file types is only supported on Windows."));
+    setErrorString(tr("Registering file types is only supported on Windows."));
     return false;
 #endif
 }
@@ -219,7 +219,7 @@ bool RegisterFileTypeOperation::undoOperation()
 
     return true;
 #else
-    setErrorString(QObject::tr("Registering file types is only supported on Windows."));
+    setErrorString(tr("Registering file types is only supported on Windows."));
     return false;
 #endif
 }

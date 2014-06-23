@@ -129,7 +129,7 @@ bool InstallIconsOperation::performOperation()
 
     if (source.isEmpty()) {
         setError(InvalidArguments);
-        setErrorString(QObject::tr("Invalid Argument: source folder must not be empty."));
+        setErrorString(tr("Invalid Argument: source folder must not be empty."));
         return false;
     }
 
@@ -178,7 +178,7 @@ bool InstallIconsOperation::performOperation()
                 QFile bf(target);
                 if (!bf.copy(backup)) {
                     setError(UserDefinedError);
-                    setErrorString(QObject::tr("Could not backup file %1: %2").arg(target, bf.errorString()));
+                    setErrorString(tr("Could not backup file %1: %2").arg(target, bf.errorString()));
                     undoOperation();
                     return false;
                 }
@@ -191,7 +191,7 @@ bool InstallIconsOperation::performOperation()
                 QString errStr;
                 if (!deleteFileNowOrLater(target, &errStr)) {
                     setError(UserDefinedError);
-                    setErrorString(QObject::tr("Failed to overwrite %1: %2").arg(target, errStr));
+                    setErrorString(tr("Failed to overwrite %1: %2").arg(target, errStr));
                     undoOperation();
                     return false;
                 }
@@ -202,7 +202,7 @@ bool InstallIconsOperation::performOperation()
             QFile cf(source);
             if (!cf.copy(target)) {
                 setError(UserDefinedError);
-                setErrorString(QObject::tr("Failed to copy file %1: %2").arg(target, cf.errorString()));
+                setErrorString(tr("Failed to copy file %1: %2").arg(target, cf.errorString()));
                 undoOperation();
                 return false;
             }
@@ -212,7 +212,7 @@ bool InstallIconsOperation::performOperation()
             setValue(QLatin1String("files"), files);
         } else if (fi.isDir() && !QDir(target).exists()) {
             if (!QDir().mkpath(target)) {
-                setErrorString(QObject::tr("Could not create folder at %1: %2").arg(target, qt_error_string()));
+                setErrorString(tr("Could not create folder at %1: %2").arg(target, qt_error_string()));
                 undoOperation();
                 return false;
             }

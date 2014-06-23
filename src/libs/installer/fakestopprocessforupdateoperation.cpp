@@ -65,14 +65,14 @@ bool FakeStopProcessForUpdateOperation::undoOperation()
 {
     setError(KDUpdater::UpdateOperation::NoError);
     if (arguments().size() != 1) {
-        setError(KDUpdater::UpdateOperation::InvalidArguments, QObject::tr("Number of arguments does not "
+        setError(KDUpdater::UpdateOperation::InvalidArguments, tr("Number of arguments does not "
             "match: one is required"));
         return false;
     }
 
     PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {
-        setError(KDUpdater::UpdateOperation::UserDefinedError, QObject::tr("Could not get package manager "
+        setError(KDUpdater::UpdateOperation::UserDefinedError, tr("Could not get package manager "
             "core."));
         return false;
     }
@@ -87,11 +87,11 @@ bool FakeStopProcessForUpdateOperation::undoOperation()
         return true;
 
     if (processes.count() == 1) {
-        setError(UpdateOperation::UserDefinedError, QObject::tr("This process should be stopped before "
+        setError(UpdateOperation::UserDefinedError, tr("This process should be stopped before "
             "continuing: %1").arg(processes.first()));
     } else {
         const QString sep = QString::fromWCharArray(L"\n   \u2022 ");   // Unicode bullet
-        setError(UpdateOperation::UserDefinedError, QObject::tr("These processes should be stopped before "
+        setError(UpdateOperation::UserDefinedError, tr("These processes should be stopped before "
             "continuing: %1").arg(sep + processes.join(sep)));
     }
     return false;

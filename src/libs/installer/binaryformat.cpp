@@ -96,7 +96,8 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
             return (fileSize - maxSearch) + searched;
         --searched;
     }
-    throw Error(QObject::tr("No marker found, stopped after %1.").arg(humanReadableSize(maxSearch)));
+    throw Error(QCoreApplication::translate("QInstaller", "No marker found, stopped after %1.")
+        .arg(humanReadableSize(maxSearch)));
 
     return -1; // never reached
 }
@@ -264,8 +265,8 @@ qint64 Archive::size() const
     if (fi.isDir()) {
         if (m_inputFile.fileName().isEmpty() || !m_inputFile.exists()) {
             if (!const_cast< Archive* >(this)->createZippedFile()) {
-                throw Error(QObject::tr("Cannot create zipped file for path %1: %2").arg(m_path,
-                    errorString()));
+                throw Error(QCoreApplication::translate("Archive",
+                    "Cannot create zipped file for path %1: %2").arg(m_path, errorString()));
             }
         }
         Q_ASSERT(!m_inputFile.fileName().isEmpty());
@@ -525,18 +526,22 @@ static QByteArray addResourceFromBinary(QFile* file, const Range<qint64> &segmen
         return 0;
 
     if (!file->seek(segment.start())) {
-        throw Error(QObject::tr("Could not seek to in-binary resource. (offset: %1, length: %2)")
+        throw Error(QCoreApplication::translate("BinaryContent",
+            "Could not seek to in-binary resource. (offset: %1, length: %2)")
             .arg(QString::number(segment.start()), QString::number(segment.length())));
     }
 
     QByteArray ba = QInstaller::retrieveData(file, segment.length());
-    if (!QResource::registerResource((const uchar*)ba.constData(), QLatin1String(":/metadata")))
-            throw Error(QObject::tr("Could not register in-binary resource."));
+    if (!QResource::registerResource((const uchar*)ba.constData(), QLatin1String(":/metadata"))) {
+            throw Error(QCoreApplication::translate("BinaryContent",
+                "Could not register in-binary resource."));
+    }
     return ba;
 }
 
 
 // -- BinaryContentPrivate
+
 BinaryContentPrivate::BinaryContentPrivate()
     : m_magicMarker(Q_INT64_C(0))
     , m_dataBlockStart(Q_INT64_C(0))
@@ -710,9 +715,10 @@ BinaryContent BinaryContent::readFromApplicationFile()
 BinaryContent BinaryContent::readFromBinary(const QString &path)
 {
     BinaryContent c(path);
-    if (!c.d->m_appBinary->open(QIODevice::ReadOnly))
-        throw Error(QObject::tr("Could not open binary %1: %2").arg(path, c.d->m_appBinary->errorString()));
-
+    if (!c.d->m_appBinary->open(QIODevice::ReadOnly)) {
+        throw Error(QCoreApplication::translate("BinaryContent", "Could not open binary %1: %2")
+            .arg(path, c.d->m_appBinary->errorString()));
+    }
     // check for supported binary, will throw if we can't find a marker
     const BinaryLayout layout = readBinaryLayout(c.d->m_appBinary.data(),
         findMagicCookie(c.d->m_appBinary.data(), QInstaller::MagicCookie));
@@ -755,8 +761,10 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
 BinaryLayout BinaryContent::readBinaryLayout(QFile *const file, qint64 cookiePos)
 {
     const qint64 indexSize = 5 * sizeof(qint64);
-    if (!file->seek(cookiePos - indexSize))
-        throw Error(QObject::tr("Could not seek to binary layout section."));
+    if (!file->seek(cookiePos - indexSize)) {
+        throw Error(QCoreApplication::translate("BinaryContent",
+            "Could not seek to binary layout section."));
+    }
 
     BinaryLayout layout;
     layout.operationsStart = QInstaller::retrieveInt64(file);
@@ -780,9 +788,12 @@ BinaryLayout BinaryContent::readBinaryLayout(QFile *const file, qint64 cookiePos
     const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
     const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
     for (int i = 0; i < layout.resourceCount; ++i) {
-        if (!file->seek(layout.endOfData - layout.indexSize - resourceOffsetAndLengtSize * (i + 1)))
-            throw Error(QObject::tr("Could not seek to metadata index."));
-
+        const qint64 offset = layout.endOfData - layout.indexSize
+            - (resourceOffsetAndLengtSize * (i + 1));
+        if (!file->seek(offset)) {
+            throw Error(QCoreApplication::translate("BinaryContent",
+                "Could not seek to metadata index."));
+        }
         const qint64 metadataResourceOffset = QInstaller::retrieveInt64(file);
         const qint64 metadataResourceLength = QInstaller::retrieveInt64(file);
         layout.metadataResourceSegments.append(Range<qint64>::fromStartAndLength(metadataResourceOffset
@@ -802,7 +813,7 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
     const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
     const qint64 operationsStart = layout.operationsStart + dataBlockStart;
     if (!file->seek(operationsStart))
-        throw Error(QObject::tr("Could not seek to operation list."));
+        throw Error(QCoreApplication::translate("BinaryContent", "Could not seek to operation list."));
 
     const qint64 operationsCount = QInstaller::retrieveInt64(file.data());
     qDebug() << "Number of operations:" << operationsCount;
@@ -816,12 +827,15 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
     // seek to the position of the component index
     const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
     const qint64 resourceSectionSize = resourceOffsetAndLengtSize * layout.resourceCount;
-    if (!file->seek(layout.endOfData - layout.indexSize - resourceSectionSize - resourceOffsetAndLengtSize))
-        throw Error(QObject::tr("Could not seek to component index information."));
-
+    const qint64 offset = layout.endOfData - layout.indexSize - resourceSectionSize
+        - resourceOffsetAndLengtSize;
+    if (!file->seek(offset)) {
+        throw Error(QCoreApplication::translate("BinaryContent",
+            "Could not seek to component index information."));
+    }
     const qint64 compIndexStart = QInstaller::retrieveInt64(file.data()) + dataBlockStart;
     if (!file->seek(compIndexStart))
-        throw Error(QObject::tr("Could not seek to component index."));
+        throw Error(QCoreApplication::translate("BinaryContent", "Could not seek to component index."));
 
     content.d->m_componentIndex = QInstallerCreator::ComponentIndex::read(file, dataBlockStart);
     content.d->m_binaryFormatEngineHandler.setComponentIndex(content.d->m_componentIndex);
@@ -900,8 +914,8 @@ int BinaryContent::registerEmbeddedQResources()
     const bool hasBinaryDataFile = !d->m_binaryDataFile.isNull();
     QFile *const data = hasBinaryDataFile ? d->m_binaryDataFile.data() : d->m_appBinary.data();
     if (data != 0 && !data->isOpen() && !data->open(QIODevice::ReadOnly)) {
-        throw Error(QObject::tr("Could not open binary %1: %2").arg(data->fileName(),
-            data->errorString()));
+        throw Error(QCoreApplication::translate("BinaryContent", "Could not open binary %1: %2")
+            .arg(data->fileName(), data->errorString()));
     }
 
     foreach (const Range<qint64> &i, d->m_metadataResourceSegments)

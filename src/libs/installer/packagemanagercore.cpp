@@ -1448,7 +1448,7 @@ bool PackageManagerCore::gainAdminRights()
 
     RemoteClient::instance().setActive(true);
     if (!RemoteClient::instance().isActive())
-        throw Error(QObject::tr("Error while elevating access rights."));
+        throw Error(tr("Error while elevating access rights."));
     return true;
 }
 

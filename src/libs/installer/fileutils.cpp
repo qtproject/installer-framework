@@ -188,11 +188,11 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
         if (fi.isSymLink() || fi.isFile()) {
             QFile f(fi.filePath());
             if (!f.remove()) {
-                QString errorMessage = QObject::tr("Could not remove file %1: %2").arg(f.fileName(), f.errorString());
-                if (ignoreErrors)
-                    qWarning() << errorMessage;
-                else
+                const QString errorMessage = QCoreApplication::translate("QInstaller",
+                    "Could not remove file %1: %2").arg(f.fileName(), f.errorString());
+                if (!ignoreErrors)
                     throw Error(errorMessage);
+                qWarning() << errorMessage;
             }
         }
     }
@@ -229,12 +229,11 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
     foreach (const QString &dir, dirs) {
         errno = 0;
         if (d.exists(path) && !d.rmdir(dir)) {
-            QString errorMessage = QObject::tr("Could not remove folder %1: %2").arg(dir,
-                errnoToQString(errno));
-            if (ignoreErrors)
-                qWarning() << errorMessage;
-            else
+            const QString errorMessage = QCoreApplication::translate("QInstaller",
+                "Could not remove folder %1: %2").arg(dir, errnoToQString(errno));
+            if (!ignoreErrors)
                 throw Error(errorMessage);
+            qWarning() << errorMessage;
         }
     }
 }
@@ -302,9 +301,10 @@ void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &
 {
     Q_ASSERT(QFileInfo(sourceDir).isDir());
     Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
-    if (!QDir().mkpath(targetDir))
-        throw Error(QObject::tr("Could not create folder %1").arg(targetDir));
-
+    if (!QDir().mkpath(targetDir)) {
+        throw Error(QCoreApplication::translate("QInstaller", "Could not create folder %1")
+            .arg(targetDir));
+    }
     QDirIterator it(sourceDir, QDir::NoDotAndDotDot | QDir::AllEntries);
     while (it.hasNext()) {
         const QFileInfo i(it.next());
@@ -315,7 +315,8 @@ void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &
             QFile f(i.filePath());
             const QString target = QDir(targetDir).absoluteFilePath(i.fileName());
             if (!f.copy(target)) {
-                throw Error(QObject::tr("Could not copy file from %1 to %2: %3").arg(f.fileName(), target,
+                throw Error(QCoreApplication::translate("QInstaller",
+                    "Could not copy file from %1 to %2: %3").arg(f.fileName(), target,
                     f.errorString()));
             }
         }
@@ -326,9 +327,10 @@ void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &
 {
     Q_ASSERT(QFileInfo(sourceDir).isDir());
     Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
-    if (!QDir().mkpath(targetDir))
-        throw Error(QObject::tr("Could not create folder %1").arg(targetDir));
-
+    if (!QDir().mkpath(targetDir)) {
+        throw Error(QCoreApplication::translate("QInstaller", "Could not create folder %1")
+            .arg(targetDir));
+    }
     QDirIterator it(sourceDir, QDir::NoDotAndDotDot | QDir::AllEntries);
     while (it.hasNext()) {
         const QFileInfo i(it.next());
@@ -342,7 +344,8 @@ void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &
             QFile f(i.filePath());
             const QString target = QDir(targetDir).absoluteFilePath(i.fileName());
             if (!f.rename(target)) {
-                throw Error(QObject::tr("Could not move file from %1 to %2: %3").arg(f.fileName(), target,
+                throw Error(QCoreApplication::translate("QInstaller",
+                    "Could not move file from %1 to %2: %3").arg(f.fileName(), target,
                     f.errorString()));
             }
         }
@@ -352,23 +355,29 @@ void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &
 void QInstaller::mkdir(const QString &path)
 {
     errno = 0;
-    if (!QDir().mkdir(QFileInfo(path).absoluteFilePath()))
-        throw Error(QObject::tr("Could not create folder %1: %2").arg(path, errnoToQString(errno)));
+    if (!QDir().mkdir(QFileInfo(path).absoluteFilePath())) {
+        throw Error(QCoreApplication::translate("QInstaller", "Could not create folder %1: %2")
+            .arg(path, errnoToQString(errno)));
+    }
 }
 
 void QInstaller::mkpath(const QString &path)
 {
     errno = 0;
-    if (!QDir().mkpath(QFileInfo(path).absoluteFilePath()))
-        throw Error(QObject::tr("Could not create folder %1: %2").arg(path, errnoToQString(errno)));
+    if (!QDir().mkpath(QFileInfo(path).absoluteFilePath())) {
+        throw Error(QCoreApplication::translate("QInstaller", "Could not create folder %1: %2")
+            .arg(path, errnoToQString(errno)));
+    }
 }
 
 QString QInstaller::generateTemporaryFileName(const QString &templ)
 {
     if (templ.isEmpty()) {
         QTemporaryFile f;
-        if (!f.open())
-            throw Error(QObject::tr("Could not open temporary file: %1").arg(f.errorString()));
+        if (!f.open()) {
+            throw Error(QCoreApplication::translate("QInstaller",
+                "Could not open temporary file: %1").arg(f.errorString()));
+        }
         return f.fileName();
     }
 
@@ -384,8 +393,10 @@ QString QInstaller::generateTemporaryFileName(const QString &templ)
         ++count;
 
     QFile f(tmp.arg(templ, suffix).arg(count));
-    if (!f.open(QIODevice::WriteOnly))
-        throw Error(QObject::tr("Could not open temporary file for template %1: %2").arg(templ, f.errorString()));
+    if (!f.open(QIODevice::WriteOnly)) {
+        throw Error(QCoreApplication::translate("QInstaller",
+            "Could not open temporary file for template %1: %2").arg(templ, f.errorString()));
+    }
     f.remove();
     return f.fileName();
 }

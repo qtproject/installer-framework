@@ -77,7 +77,7 @@ bool LineReplaceOperation::performOperation()
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         setError(UserDefinedError);
-        setErrorString(QObject::tr("Failed to open '%1' for reading.").arg(fileName));
+        setErrorString(tr("Failed to open '%1' for reading.").arg(fileName));
         return false;
     }
 
@@ -94,7 +94,7 @@ bool LineReplaceOperation::performOperation()
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         setError(UserDefinedError);
-        setErrorString(QObject::tr("Failed to open '%1' for writing.").arg(fileName));
+        setErrorString(tr("Failed to open '%1' for writing.").arg(fileName));
         return false;
     }
 

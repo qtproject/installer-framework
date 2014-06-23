@@ -167,9 +167,10 @@ struct DirectoryGuard {
         const QFileInfo fi(m_path);
         if (fi.exists() && fi.isDir())
             return QStringList();
-        if (fi.exists() && !fi.isDir())
-            throw SevenZipException(QObject::tr("Path exists but is not a folder: %1").arg(m_path));
-
+        if (fi.exists() && !fi.isDir()) {
+            throw SevenZipException(QCoreApplication::translate("DirectoryGuard",
+                "Path exists but is not a folder: %1").arg(m_path));
+        }
         QStringList created;
 
         QDir toCreate(m_path);
@@ -183,9 +184,10 @@ struct DirectoryGuard {
 
         QDir dir(m_path);
         m_created = dir.mkpath(m_path);
-        if (!m_created)
-            throw SevenZipException(QObject::tr("Could not create folder: %1").arg(m_path));
-
+        if (!m_created) {
+            throw SevenZipException(QCoreApplication::translate("DirectoryGuard",
+                "Could not create folder: %1").arg(m_path));
+        }
         return created;
     }
 
@@ -212,8 +214,10 @@ static QString UString2QString(const UString& str)
 static QString generateTempFileName()
 {
     QTemporaryFile tmp;
-    if (!tmp.open())
-        throw SevenZipException(QObject::tr("Could not create temporary file"));
+    if (!tmp.open()) {
+        throw SevenZipException(QCoreApplication::translate("QInstaller",
+            "Could not create temporary file"));
+    }
     return QDir::toNativeSeparators(tmp.fileName());
 }
 
@@ -231,8 +235,9 @@ static NCOM::CPropVariant readProperty(IInArchive* archive, int index, int propI
 {
     NCOM::CPropVariant prop;
     if (archive->GetProperty(index, propId, &prop) != S_OK) {
-        throw SevenZipException(QObject::tr("Could not retrieve property %1 for item %2")
-            .arg(QString::number(propId), QString::number(index)));
+        throw SevenZipException(QCoreApplication::translate("QInstaller",
+            "Could not retrieve property %1 for item %2").arg(QString::number(propId),
+            QString::number(index)));
     }
     return prop;
 }
@@ -259,8 +264,9 @@ static bool getFileTimeFromProperty(IInArchive* archive, int index, int propId, 
 {
     const NCOM::CPropVariant prop = readProperty(archive, index, propId);
     if (prop.vt != VT_FILETIME) {
-        throw SevenZipException(QObject::tr("Property %1 for item %2 not of type VT_FILETIME but %3")
-            .arg(QString::number(propId), QString::number(index), QString::number(prop.vt)));
+        throw SevenZipException(QCoreApplication::translate("QInstaller",
+            "Property %1 for item %2 not of type VT_FILETIME but %3").arg(QString::number(propId),
+            QString::number(index), QString::number(prop.vt)));
     }
     *fileTime = prop.filetime;
 
@@ -277,13 +283,15 @@ QDateTime getDateTimeProperty(IInArchive* archive, int index, int propId, const 
         return defaultValue;
 
     FILETIME localFileTime;
-    if (!FileTimeToLocalFileTime(&fileTime, &localFileTime))
-        throw SevenZipException(QObject::tr("Could not convert file time to local time"));
-
+    if (!FileTimeToLocalFileTime(&fileTime, &localFileTime)) {
+        throw SevenZipException(QCoreApplication::translate("QInstaller",
+            "Could not convert file time to local time"));
+    }
     SYSTEMTIME st;
-    if (!BOOLToBool(FileTimeToSystemTime(&localFileTime, &st)))
-        throw SevenZipException(QObject::tr("Could not convert local file time to system time"));
-
+    if (!BOOLToBool(FileTimeToSystemTime(&localFileTime, &st))) {
+        throw SevenZipException(QCoreApplication::translate("QInstaller",
+            "Could not convert local file time to system time"));
+    }
     const QDate date(st.wYear, st.wMonth, st.wDay);
     const QTime time(st.wHour, st.wMinute, st.wSecond);
     QDateTime result(date, time);
@@ -383,7 +391,8 @@ HRESULT QIODeviceSequentialOutStream::Write(const void* data, UInt32 size, UInt3
     if (!m_device) {
         if (processedSize)
             *processedSize = 0;
-        m_errorString = QObject::tr("No device set for output stream");
+        m_errorString = QCoreApplication::translate("QIODeviceSequentialOutStream",
+            "No device set for output stream");
         return E_FAIL;
     }
     if (!m_device->isOpen()) {
@@ -634,17 +643,21 @@ private:
     OpenArchiveInfo(QFileDevice* device)
         : codecs(new CCodecs)
     {
-        if (codecs->Load() != S_OK)
-            throw SevenZipException(QObject::tr("Could not load codecs"));
-
-        if (!codecs->FindFormatForArchiveType(L"", formatIndices))
-            throw SevenZipException(QObject::tr("Could not retrieve default format"));
-
+        if (codecs->Load() != S_OK) {
+            throw SevenZipException(QCoreApplication::translate("OpenArchiveInfo",
+                "Could not load codecs"));
+        }
+        if (!codecs->FindFormatForArchiveType(L"", formatIndices)) {
+            throw SevenZipException(QCoreApplication::translate("OpenArchiveInfo",
+                "Could not retrieve default format"));
+        }
         stream = new QIODeviceInStream(device);
-        if (archiveLink.Open2(codecs.data(), formatIndices, false, stream, UString(), 0) != S_OK)
-            throw SevenZipException(QObject::tr("Could not open archive"));
+        if (archiveLink.Open2(codecs.data(), formatIndices, false, stream, UString(), 0) != S_OK) {
+            throw SevenZipException(QCoreApplication::translate("OpenArchiveInfo",
+                "Could not open archive"));
+        }
         if (archiveLink.Arcs.Size() == 0)
-            throw SevenZipException(QObject::tr("No CArc found"));
+            throw SevenZipException(QCoreApplication::translate("OpenArchiveInfo", "No CArc found"));
 
         m_cleaner = new OpenArchiveInfoCleaner();
         m_cleaner->moveToThread(device->thread());
@@ -708,15 +721,16 @@ QVector<File> Lib7z::listArchive(QFileDevice* archive)
             IInArchive* const arch = arc.Archive;
 
             UInt32 numItems = 0;
-            if (arch->GetNumberOfItems(&numItems) != S_OK)
-                throw SevenZipException(QObject::tr("Could not retrieve number of items in archive"));
-
+            if (arch->GetNumberOfItems(&numItems) != S_OK) {
+                throw SevenZipException(QCoreApplication::translate("Lib7z",
+                    "Could not retrieve number of items in archive"));
+            }
             flat.reserve(flat.size() + numItems);
             for (uint item = 0; item < numItems; ++item) {
                 UString s;
                 if (arc.GetItemPath(item, s) != S_OK) {
-                    throw SevenZipException(QObject::tr("Could not retrieve path of archive item %1")
-                        .arg(item));
+                    throw SevenZipException(QCoreApplication::translate("Lib7z",
+                        "Could not retrieve path of archive item %1").arg(item));
                 }
                 File f;
                 f.archiveIndex.setX(i);
@@ -737,8 +751,8 @@ QVector<File> Lib7z::listArchive(QFileDevice* archive)
     } catch (const char *err) {
         throw SevenZipException(err);
     } catch (...) {
-        throw SevenZipException(QObject::tr("Unknown exception caught (%1)")
-            .arg(QString::fromLatin1(Q_FUNC_INFO)));
+        throw SevenZipException(QCoreApplication::translate("Lib7z",
+            "Unknown exception caught (%1)").arg(QString::fromLatin1(Q_FUNC_INFO)));
     }
     return QVector<File>(); // never reached
 }
@@ -754,7 +768,7 @@ void ListArchiveJob::doStart()
         setErrorString(e.message());
     } catch (...) {
         setError(Failed);
-        setErrorString(QObject::tr("Unknown exception caught (%1)").arg(QObject::tr("Failed")));
+        setErrorString(tr("Unknown exception caught (%1)").arg(tr("Failed")));
     }
     emitResult();
 }
@@ -806,7 +820,8 @@ public:
 
             UString s;
             if (arc->GetItemPath(index, s) != S_OK) {
-                Lib7z::setLastError(QObject::tr("Could not retrieve path of archive item %1").arg(index));
+                Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
+                    "Could not retrieve path of archive item %1").arg(index));
                 return E_FAIL;
             }
 
@@ -834,16 +849,17 @@ public:
 #ifndef Q_OS_WIN
                 // do not follow symlinks, so we need to remove an existing one
                 if (fi.isSymLink() && (!QFile::remove(fi.absoluteFilePath()))) {
-                    Lib7z::setLastError(QObject::tr("Could not remove already existing "
-                        "symlink. %1").arg(fi.absoluteFilePath()));
+                    Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
+                        "Could not remove already existing symlink. %1").arg(fi.absoluteFilePath()));
                     return E_FAIL;
                 }
 #endif
                 QIODeviceSequentialOutStream *qOutStream = new QIODeviceSequentialOutStream(
                     new QFile(fi.absoluteFilePath()), QIODeviceSequentialOutStream::CloseAndDeleteDevice);
                 if (!qOutStream->errorString().isEmpty()) {
-                    Lib7z::setLastError(QObject::tr("Could not open file: %1 (%2)").arg(
-                        fi.absoluteFilePath(), qOutStream->errorString()));
+                    Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
+                        "Could not open file: %1 (%2)").arg(fi.absoluteFilePath(),
+                        qOutStream->errorString()));
                     return E_FAIL;
                 }
                 CMyComPtr<ISequentialOutStream> stream = qOutStream;
@@ -873,8 +889,8 @@ public:
 
             UString s;
             if (arc->GetItemPath(currentIndex, s) != S_OK) {
-                Lib7z::setLastError(QObject::tr("Could not retrieve path of archive item %1")
-                    .arg(currentIndex));
+                Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
+                    "Could not retrieve path of archive item %1").arg(currentIndex));
                 return E_FAIL;
             }
             const QString path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
@@ -896,14 +912,15 @@ public:
 #else
                 QFileInfo symlinkPlaceHolderFileInfo(absFilePath);
                 if (symlinkPlaceHolderFileInfo.isSymLink()) {
-                    Lib7z::setLastError(QObject::tr("Could not create symlink at '%1'. "
-                        "Another one is already existing.").arg(absFilePath));
+                    Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
+                        "Could not create symlink at '%1'. Another one is already existing.")
+                        .arg(absFilePath));
                     return E_FAIL;
                 }
                 QFile symlinkPlaceHolderFile(absFilePath);
                 if (!symlinkPlaceHolderFile.open(QIODevice::ReadOnly)) {
-                    Lib7z::setLastError(QObject::tr("Could not read symlink target from file '%1'."
-                        ).arg(absFilePath));
+                    Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
+                        "Could not read symlink target from file '%1'.").arg(absFilePath));
                     return E_FAIL;
                 }
 
@@ -912,8 +929,9 @@ public:
                 symlinkPlaceHolderFile.remove();
                 QFile targetFile(QString::fromLatin1(symlinkTarget));
                 if (!targetFile.link(absFilePath)) {
-                    Lib7z::setLastError(QObject::tr("Could not create symlink at %1. %2").arg(
-                        absFilePath, targetFile.errorString()));
+                    Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
+                        "Could not create symlink at %1. %2").arg(absFilePath,
+                        targetFile.errorString()));
                     return E_FAIL;
                 }
                 return S_OK;
@@ -1279,7 +1297,7 @@ namespace{
         if (!Lib7z::lastError().isEmpty())
             return Lib7z::lastError();
 
-        QString errorMessage = QObject::tr("internal code: %1");
+        QString errorMessage = QCoreApplication::translate("Lib7z", "internal code: %1");
         switch (extractResult) {
             case S_OK:
                 qFatal("S_OK value is not a valid error code.");
@@ -1300,13 +1318,13 @@ namespace{
                 errorMessage = errorMessage.arg(QLatin1String("STG_E_INVALIDFUNCTION"));
             break;
             case E_OUTOFMEMORY:
-                errorMessage = QObject::tr("not enough memory");
+                errorMessage = QCoreApplication::translate("Lib7z", "not enough memory");
             break;
             case E_INVALIDARG:
                 errorMessage = errorMessage.arg(QLatin1String("E_INVALIDARG"));
             break;
             default:
-                errorMessage = QObject::tr("Error: %1").arg(extractResult);
+                errorMessage = QCoreApplication::translate("Lib7z", "Error: %1").arg(extractResult);
             break;
         }
         return errorMessage;
@@ -1326,12 +1344,14 @@ void Lib7z::createArchive(QFileDevice* archive, const QStringList &sourcePaths, 
 
         QScopedPointer<CCodecs> codecs(new CCodecs);
         if (codecs->Load() != S_OK)
-            throw SevenZipException(QObject::tr("Could not load codecs"));
+            throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not load codecs"));
 
         CIntVector formatIndices;
 
-        if (!codecs.data()->FindFormatForArchiveType(L"", formatIndices))
-            throw SevenZipException(QObject::tr("Could not retrieve default format"));
+        if (!codecs.data()->FindFormatForArchiveType(L"", formatIndices)) {
+            throw SevenZipException(QCoreApplication::translate("Lib7z",
+                "Could not retrieve default format"));
+        }
 
         // yes this is crap, but there seems to be no streaming solution to this...
 
@@ -1374,9 +1394,10 @@ void Lib7z::createArchive(QFileDevice* archive, const QStringList &sourcePaths, 
 
         CUpdateErrorInfo errorInfo;
         const HRESULT res = UpdateArchive(codecs.data(), censor, options, errorInfo, 0, callback->impl());
-        if (res != S_OK || !QFile::exists(tempFile))
-            throw SevenZipException(QObject::tr("Could not create archive %1. %2").arg(
-                tempFile, errorMessageFrom7zResult(res)));
+        if (res != S_OK || !QFile::exists(tempFile)) {
+            throw SevenZipException(QCoreApplication::translate("Lib7z",
+                "Could not create archive %1. %2").arg(tempFile, errorMessageFrom7zResult(res)));
+        }
 
         {
             //TODO remove temp file even if one the following throws
@@ -1396,7 +1417,7 @@ void Lib7z::createArchive(QFileDevice* archive, const QStringList &sourcePaths, 
     } catch (const QInstaller::Error &err) {
         throw SevenZipException(err.message());
     } catch (...) {
-        throw SevenZipException(QObject::tr("Unknown exception caught (%1)")
+        throw SevenZipException(QCoreApplication::translate("Lib7z", "Unknown exception caught (%1)")
             .arg(QString::fromLatin1(Q_FUNC_INFO)));
     }
 }
@@ -1416,26 +1437,29 @@ void Lib7z::extractFileFromArchive(QFileDevice* archive, const File& item, QFile
 
         const int arcIdx = item.archiveIndex.x();
         if (arcIdx < 0 || arcIdx >= openArchive->archiveLink.Arcs.Size()) {
-            throw SevenZipException(QObject::tr("CArc index %1 out of bounds [0, %2]")
-                .arg(openArchive->archiveLink.Arcs.Size() - 1));
+            throw SevenZipException(QCoreApplication::translate("Lib7z",
+                "CArc index %1 out of bounds [0, %2]").arg(openArchive->archiveLink.Arcs.Size() - 1));
         }
         const CArc& arc = openArchive->archiveLink.Arcs[arcIdx];
         IInArchive* const parchive = arc.Archive;
 
         const UInt32 itemIdx = item.archiveIndex.y();
         UInt32 numItems = 0;
-        if (parchive->GetNumberOfItems(&numItems) != S_OK)
-            throw SevenZipException(QObject::tr("Could not retrieve number of items in archive"));
+        if (parchive->GetNumberOfItems(&numItems) != S_OK) {
+            throw SevenZipException(QCoreApplication::translate("Lib7z",
+                "Could not retrieve number of items in archive"));
+        }
 
         if (itemIdx >= numItems) {
-            throw SevenZipException(QObject::tr("Item index %1 out of bounds [0, %2]").arg(itemIdx)
-                .arg(numItems - 1));
+            throw SevenZipException(QCoreApplication::translate("Lib7z",
+                "Item index %1 out of bounds [0, %2]").arg(itemIdx).arg(numItems - 1));
         }
 
         UString s;
-        if (arc.GetItemPath(itemIdx, s) != S_OK)
-            throw SevenZipException(QObject::tr("Could not retrieve path of archive item %1").arg(itemIdx));
-
+        if (arc.GetItemPath(itemIdx, s) != S_OK) {
+            throw SevenZipException(QCoreApplication::translate("Lib7z",
+                "Could not retrieve path of archive item %1").arg(itemIdx));
+        }
         assert(item.path == UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/')));
 
         callback->setTarget(target);
@@ -1449,7 +1473,7 @@ void Lib7z::extractFileFromArchive(QFileDevice* archive, const File& item, QFile
     } catch (const Lib7z::SevenZipException& e) {
         throw e;
     } catch (...) {
-        throw SevenZipException(QObject::tr("Unknown exception caught (%1)")
+        throw SevenZipException(QCoreApplication::translate("Lib7z", "Unknown exception caught (%1)")
             .arg(QString::fromLatin1(Q_FUNC_INFO)));
     }
 }
@@ -1468,8 +1492,8 @@ void Lib7z::extractFileFromArchive(QFileDevice* archive, const File& item,
     outDir.tryCreate();
     QFile out(fi.absoluteFilePath());
     if (!out.open(QIODevice::WriteOnly)) { //TODO use tmp file
-        throw SevenZipException(QObject::tr("Could not create output file for writing: %1")
-            .arg(fi.absoluteFilePath()));
+        throw SevenZipException(QCoreApplication::translate("Lib7z",
+            "Could not create output file for writing: %1").arg(fi.absoluteFilePath()));
     }
     callback->setTarget(&out);
     extractFileFromArchive(archive, item, &out, callback);
@@ -1526,13 +1550,14 @@ bool Lib7z::isSupportedArchive(QFileDevice* archive)
     try {
         QScopedPointer<CCodecs> codecs(new CCodecs);
         if (codecs->Load() != S_OK)
-            throw SevenZipException(QObject::tr("Could not load codecs"));
+            throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not load codecs"));
 
         CIntVector formatIndices;
 
-        if (!codecs->FindFormatForArchiveType(L"", formatIndices))
-            throw SevenZipException(QObject::tr("Could not retrieve default format"));
-
+        if (!codecs->FindFormatForArchiveType(L"", formatIndices)) {
+            throw SevenZipException(QCoreApplication::translate("Lib7z",
+                "Could not retrieve default format"));
+        }
         CArchiveLink archiveLink;
         //CMyComPtr is needed, otherwise it crashes in OpenStream()
         const CMyComPtr<IInStream> stream = new QIODeviceInStream(archive);
@@ -1550,7 +1575,7 @@ bool Lib7z::isSupportedArchive(QFileDevice* archive)
         throw SevenZipException(err);
     } catch (...) {
         archive->seek(initialPos);
-        throw SevenZipException(QObject::tr("Unknown exception caught (%1)")
+        throw SevenZipException(QCoreApplication::translate("Lib7z", "Unknown exception caught (%1)")
             .arg(QString::fromLatin1(Q_FUNC_INFO)));
     }
     return false; // never reached
@@ -1569,11 +1594,10 @@ void ExtractItemJob::doStart()
             extractArchive(d->archive, d->targetDirectory, d->callback);
     } catch (const SevenZipException& e) {
         setError(Failed);
-        setErrorString(QObject::tr("Error while extracting '%1': %2").arg(
-            d->item.path, e.message()));
+        setErrorString(tr("Error while extracting '%1': %2").arg(d->item.path, e.message()));
     } catch (...) {
         setError(Failed);
-        setErrorString(QObject::tr("Unknown exception caught (%1)").arg(QObject::tr("Failed")));
+        setErrorString(tr("Unknown exception caught (%1)").arg(tr("Failed")));
     }
     emitResult();
 }
