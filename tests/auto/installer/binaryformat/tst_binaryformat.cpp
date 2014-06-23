@@ -41,7 +41,7 @@
 
 #include <binaryformat.h>
 #include <errors.h>
-#include <fileutils.h>
+#include <fileio.h>
 
 #include <QTest>
 #include <QTemporaryFile>

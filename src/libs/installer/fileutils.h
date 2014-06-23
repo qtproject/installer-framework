@@ -48,9 +48,7 @@
 #include <QtCore/QStringList>
 
 QT_BEGIN_NAMESPACE
-class QByteArray;
 class QFileInfo;
-class QIODevice;
 class QUrl;
 QT_END_NAMESPACE
 
@@ -81,15 +79,6 @@ private:
 };
 
     QString INSTALLER_EXPORT humanReadableSize(const qint64 &size, int precision = 2);
-
-    void INSTALLER_EXPORT openForRead(QIODevice *dev, const QString &name);
-    void INSTALLER_EXPORT openForWrite(QIODevice *dev, const QString &name);
-    void INSTALLER_EXPORT openForAppend(QIODevice *dev, const QString &name);
-
-    qint64 INSTALLER_EXPORT blockingRead(QIODevice *in, char *buffer, qint64 size);
-    void INSTALLER_EXPORT blockingCopy(QIODevice *in, QIODevice *out, qint64 size);
-    qint64 INSTALLER_EXPORT blockingWrite(QIODevice *out, const char *buffer, qint64 size);
-    qint64 INSTALLER_EXPORT blockingWrite(QIODevice *out, const QByteArray& ba);
 
     /*!
         Removes the directory at \a path recursively.

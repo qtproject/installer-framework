@@ -246,8 +246,8 @@ private:
     void unregisterUninstaller();
 
     void writeUninstallerBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
-    void writeUninstallerBinaryData(QIODevice *output, QFile *const input, const OperationList &performed,
-        const BinaryLayout &layout);
+    void writeUninstallerBinaryData(QFileDevice *output, QFile *const input,
+        const OperationList &performed, const BinaryLayout &layout);
 
     void runUndoOperations(const OperationList &undoOperations, double undoOperationProgressSize,
         bool adminRightsGained, bool deleteOperation);

@@ -46,50 +46,15 @@
 #include "range.h"
 #include "qinstallerglobal.h"
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QFile>
-#include <QtCore/QHash>
-#include <QtCore/QStack>
-#include <QtCore/QVector>
-#include <QtCore/QSharedPointer>
-
-namespace QInstaller {
-    static const qint64 MagicInstallerMarker = 0x12023233UL;
-    static const qint64 MagicUninstallerMarker = 0x12023234UL;
-
-    static const qint64 MagicUpdaterMarker =  0x12023235UL;
-    static const qint64 MagicPackageManagerMarker = 0x12023236UL;
-
-    // this cookie is put at the end of the file to determine whether we have data
-    static const quint64 MagicCookie = 0xc2630a1c99d668f8LL;
-    static const quint64 MagicCookieDat = 0xc2630a1c99d668f9LL;
-
-    qint64 INSTALLER_EXPORT findMagicCookie(QFile *file, quint64 magicCookie = MagicCookie);
-    void INSTALLER_EXPORT appendFileData(QIODevice *out, QIODevice *in);
-    void INSTALLER_EXPORT appendInt64(QIODevice *out, qint64 n);
-    void INSTALLER_EXPORT appendInt64Range(QIODevice *out, const Range<qint64> &r);
-    void INSTALLER_EXPORT appendData(QIODevice *out, QIODevice *in, qint64 size);
-    void INSTALLER_EXPORT appendByteArray(QIODevice *out, const QByteArray &ba);
-    void INSTALLER_EXPORT appendString(QIODevice *out, const QString &str);
-    void INSTALLER_EXPORT appendStringList(QIODevice *out, const QStringList &list);
-    void INSTALLER_EXPORT appendDictionary(QIODevice *out, const QHash<QString,QString> &dict);
-    qint64 INSTALLER_EXPORT appendCompressedData(QIODevice *out, QIODevice *in, qint64 size);
-
-    void INSTALLER_EXPORT retrieveFileData(QIODevice *out, QIODevice *in);
-    qint64 INSTALLER_EXPORT retrieveInt64(QIODevice *in);
-    Range<qint64> INSTALLER_EXPORT retrieveInt64Range(QIODevice *in);
-    QByteArray INSTALLER_EXPORT retrieveByteArray(QIODevice *in);
-    QString INSTALLER_EXPORT retrieveString(QIODevice *in);
-    QStringList INSTALLER_EXPORT retrieveStringList(QIODevice *in);
-    QHash<QString,QString> INSTALLER_EXPORT retrieveDictionary(QIODevice *in);
-    QByteArray INSTALLER_EXPORT retrieveData(QIODevice *in, qint64 size);
-    QByteArray INSTALLER_EXPORT retrieveCompressedData(QIODevice *in, qint64 size);
-}
+#include <QFile>
+#include <QHash>
+#include <QSharedPointer>
+#include <QVector>
 
 namespace QInstallerCreator {
 class Component;
 
-class INSTALLER_EXPORT Archive : public QIODevice
+class INSTALLER_EXPORT Archive : public QFileDevice
 {
     Q_OBJECT
 public:
@@ -113,7 +78,7 @@ protected:
     qint64 readData(char *data, qint64 maxSize);
     qint64 writeData(const char *data, qint64 maxSize);
 
-    Range< qint64 > binarySegment() const;
+    Range<qint64> binarySegment() const;
 
 private:
     //used when when reading from the installer
@@ -135,9 +100,9 @@ public:
     virtual ~Component();
 
     static Component readFromIndexEntry(const QSharedPointer<QFile> &dev, qint64 offset);
-    void writeIndexEntry(QIODevice *dev, qint64 offset) const;
+    void writeIndexEntry(QFileDevice *dev, qint64 offset) const;
 
-    void writeData(QIODevice *dev, qint64 positionOffset) const;
+    void writeData(QFileDevice *dev, qint64 positionOffset) const;
     void readData(const QSharedPointer<QFile> &dev, qint64 offset);
 
     QByteArray name() const;
@@ -169,8 +134,8 @@ class INSTALLER_EXPORT ComponentIndex
 public:
     ComponentIndex();
     static ComponentIndex read(const QSharedPointer<QFile> &dev, qint64 offset);
-    void writeIndex(QIODevice *dev, qint64 offset) const;
-    void writeComponentData(QIODevice *dev, qint64 offset) const;
+    void writeIndex(QFileDevice *dev, qint64 offset) const;
+    void writeComponentData(QFileDevice *dev, qint64 offset) const;
     Component componentByName(const QByteArray &name) const;
     void insertComponent(const Component &name);
     void removeComponent(const QByteArray &name);
@@ -183,6 +148,18 @@ private:
 }
 
 namespace QInstaller {
+
+static const qint64 MagicInstallerMarker = 0x12023233UL;
+static const qint64 MagicUninstallerMarker = 0x12023234UL;
+
+static const qint64 MagicUpdaterMarker = 0x12023235UL;
+static const qint64 MagicPackageManagerMarker = 0x12023236UL;
+
+// this cookie is put at the end of the file to determine whether we have data
+static const quint64 MagicCookie = 0xc2630a1c99d668f8LL;
+static const quint64 MagicCookieDat = 0xc2630a1c99d668f9LL;
+
+qint64 INSTALLER_EXPORT findMagicCookie(QFile *file, quint64 magicCookie = MagicCookie);
 
 struct BinaryLayout
 {
@@ -233,7 +210,7 @@ public:
     static BinaryContent readFromApplicationFile();
     static BinaryContent readFromBinary(const QString &path);
 
-    static BinaryLayout readBinaryLayout(QIODevice *const file, qint64 cookiePos);
+    static BinaryLayout readBinaryLayout(QFile *const file, qint64 cookiePos);
 
     int registerPerformedOperations();
     OperationList performedOperations() const;

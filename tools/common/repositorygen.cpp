@@ -40,6 +40,7 @@
 **************************************************************************/
 #include "repositorygen.h"
 
+#include <fileio.h>
 #include <fileutils.h>
 #include <errors.h>
 #include <globals.h>
@@ -102,7 +103,7 @@ void QInstallerTools::copyWithException(const QString &source, const QString &ta
 void QInstallerTools::compressPaths(const QStringList &paths, const QString &archivePath)
 {
     QFile archive(archivePath);
-    QInstaller::openForWrite(&archive, archivePath);
+    QInstaller::openForWrite(&archive);
     Lib7z::createArchive(&archive, paths);
 }
 
@@ -178,7 +179,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             packageXmlPath);
 
         QFile file(packageXmlPath);
-        QInstaller::openForRead(&file, packageXmlPath);
+        QInstaller::openForRead(&file);
 
         QString errMsg;
         int line = 0;
@@ -262,7 +263,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                     // if it's an archive already, list its files and sum the uncompressed sizes
                     QFile archive(fi.filePath());
                     compressedComponentSize += archive.size();
-                    QInstaller::openForRead(&archive, archive.fileName());
+                    QInstaller::openForRead(&archive);
 
                     QVector<Lib7z::File>::const_iterator fileIt;
                     const QVector<Lib7z::File> files = Lib7z::listArchive(&archive);
@@ -385,7 +386,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
     doc.appendChild(root);
 
     QFile targetUpdatesXml(targetDir + QLatin1String("/Updates.xml"));
-    QInstaller::openForWrite(&targetUpdatesXml, targetUpdatesXml.fileName());
+    QInstaller::openForWrite(&targetUpdatesXml);
     QInstaller::blockingWrite(&targetUpdatesXml, doc.toByteArray());
 }
 
@@ -561,7 +562,7 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
         }
     }
 
-    QInstaller::openForWrite(&existingUpdatesXml, existingUpdatesXml.fileName());
+    QInstaller::openForWrite(&existingUpdatesXml);
     QInstaller::blockingWrite(&existingUpdatesXml, doc.toByteArray());
     existingUpdatesXml.close();
 }
@@ -630,12 +631,12 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
             qDebug() << "Creating hash of archive" << archiveFile.fileName();
 
             try {
-                QInstaller::openForRead(&archiveFile, archiveFile.fileName());
+                QInstaller::openForRead(&archiveFile);
                 const QByteArray hashOfArchiveData = QInstaller::calculateHash(&archiveFile,
                     QCryptographicHash::Sha1).toHex();
                 archiveFile.close();
 
-                QInstaller::openForWrite(&archiveHashFile, archiveHashFile.fileName());
+                QInstaller::openForWrite(&archiveHashFile);
                 archiveHashFile.write(hashOfArchiveData);
                 qDebug() << "Generated sha1 hash:" << hashOfArchiveData;
                 (*infos)[i].copiedFiles.append(archiveHashFile.fileName());

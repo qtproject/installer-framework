@@ -102,8 +102,8 @@ namespace Lib7z {
         ExtractCallback();
         virtual ~ExtractCallback();
 
-        void setTarget( QIODevice* archive );
-        void setTarget( const QString& dir );
+        void setTarget(QFileDevice* archive);
+        void setTarget(const QString& dir );
 
     protected:
         /**
@@ -133,8 +133,8 @@ namespace Lib7z {
         UpdateCallback();
         virtual ~UpdateCallback();
 
-        void setTarget( QIODevice* archive );
-        void setSourcePaths( const QStringList& paths );
+        void setTarget(QFileDevice* archive);
+        void setSourcePaths(const QStringList& paths);
 
         virtual UpdateCallbackImpl* impl();
 
@@ -151,53 +151,54 @@ namespace Lib7z {
     };
 
     /*!
-        Extracts the given File \a file from \a archive into output device \a out using the provided extract
-        callback \a callback.
+        Extracts the given File \a file from \a archive into output device \a out using the
+        provided extract callback \a callback.
 
         Throws Lib7z::SevenZipException on error.
     */
-    void INSTALLER_EXPORT extractFileFromArchive(QIODevice* archive, const File& item, QIODevice* out,
-        ExtractCallback* callback=0 );
+    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice* archive, const File& item,
+        QFileDevice* out, ExtractCallback* callback=0 );
 
     /*!
-        Extracts the given File \a file from \a archive into target directory \a targetDirectory using the
-        provided extract callback \a callback. The output filename is deduced from the \a file path name.
+        Extracts the given File \a file from \a archive into target directory \a targetDirectory
+        using the provided extract callback \a callback. The output filename is deduced from the
+        \a file path name.
 
         Throws Lib7z::SevenZipException on error.
     */
-    void INSTALLER_EXPORT extractFileFromArchive(QIODevice* archive, const File& item,
+    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice* archive, const File& item,
         const QString& targetDirectory, ExtractCallback* callback = 0);
 
     /*!
         Extracts the given \a archive content into target directory \a targetDirectory using the
-        provided extract callback \a callback. The output filenames are deduced from the \a archive content.
+        provided extract callback \a callback. The output filenames are deduced from the \a archive
+        content.
 
         Throws Lib7z::SevenZipException on error.
     */
-    void INSTALLER_EXPORT extractArchive(QIODevice* archive, const QString& targetDirectory,
+    void INSTALLER_EXPORT extractArchive(QFileDevice* archive, const QString& targetDirectory,
         ExtractCallback* callback = 0);
 
     /*
      * @thows Lib7z::SevenZipException
      */
-    void INSTALLER_EXPORT createArchive( QIODevice* archive, const QStringList& sourcePaths, UpdateCallback* callback = 0 );
+    void INSTALLER_EXPORT createArchive(QFileDevice* archive, const QStringList& sourcePaths,
+        UpdateCallback* callback = 0 );
 
     /*
      * @throws Lib7z::SevenZipException
      */
-    QVector<File> INSTALLER_EXPORT listArchive( QIODevice* archive );
+    QVector<File> INSTALLER_EXPORT listArchive(QFileDevice* archive);
 
     /*
      * @throws Lib7z::SevenZipException
      */
-    bool INSTALLER_EXPORT isSupportedArchive( QIODevice* archive );
+    bool INSTALLER_EXPORT isSupportedArchive(QFileDevice* archive);
 
     /*
      * @throws Lib7z::SevenZipException
      */
-    bool INSTALLER_EXPORT isSupportedArchive( const QString& archive );
-
-
+    bool INSTALLER_EXPORT isSupportedArchive(const QString& archive);
 
     enum Error {
         NoError=0,
@@ -207,7 +208,8 @@ namespace Lib7z {
 
     class ExtractCallbackJobImpl;
 
-    class INSTALLER_EXPORT Job : public QObject, public QRunnable {
+    class INSTALLER_EXPORT Job : public QObject, public QRunnable
+    {
         friend class ::Lib7z::ExtractCallbackJobImpl;
         Q_OBJECT
     public:
@@ -246,8 +248,8 @@ namespace Lib7z {
         explicit ListArchiveJob( QObject* parent=0 );
         ~ListArchiveJob();
 
-        QIODevice* archive() const;
-        void setArchive( QIODevice* archive );
+        QFileDevice* archive() const;
+        void setArchive(QFileDevice* archive);
 
         QVector<File> index() const;
 
@@ -270,13 +272,13 @@ namespace Lib7z {
         File item() const;
         void setItem( const File& item );
 
-        QIODevice* archive() const;
-        void setArchive( QIODevice* archive );
+        QFileDevice* archive() const;
+        void setArchive(QFileDevice* archive);
 
         QString targetDirectory() const;
         void setTargetDirectory( const QString& dir );
 
-        void setTarget( QIODevice* dev );
+        void setTarget(QFileDevice* dev);
 
     private:
         /* reimp */ void doStart();

@@ -1,6 +1,6 @@
-/****************************************************************************
+/**************************************************************************
 **
-** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -37,67 +37,49 @@
 **
 ** $QT_END_LICENSE$
 **
-****************************************************************************/
+**************************************************************************/
 
-#ifndef KDTOOLS_KDSAVEFILE_H
-#define KDTOOLS_KDSAVEFILE_H
+#ifndef FILEIO_H
+#define FILEIO_H
 
-#include <kdtoolsglobal.h>
+#include "installer_global.h"
 
-#include <QIODevice>
-#include <QFile>
-#include <QString>
+QT_BEGIN_NAMESPACE
+class QByteArray;
+class QFileDevice;
+class QString;
+QT_END_NAMESPACE
 
-class KDTOOLS_EXPORT KDSaveFile : public QFileDevice
-{
-    Q_OBJECT
+template <typename T>
+class Range;
 
-public:
-    explicit KDSaveFile(const QString &filename = QString(), QObject *parent = 0);
-    ~KDSaveFile();
+namespace QInstaller {
 
-    enum CommitMode {
-        BackupExistingFile = 1,
-        OverwriteExistingFile = 2
-    };
+qint64 INSTALLER_EXPORT retrieveInt64(QFileDevice *in);
+void INSTALLER_EXPORT appendInt64(QFileDevice *out, qint64 n);
 
-    bool commit(CommitMode = BackupExistingFile);
+Range<qint64> INSTALLER_EXPORT retrieveInt64Range(QFileDevice *in);
+void INSTALLER_EXPORT appendInt64Range(QFileDevice *out, const Range<qint64> &r);
 
-    QString fileName() const;
-    void setFileName(const QString &filename);
+QString INSTALLER_EXPORT retrieveString(QFileDevice *in);
+void INSTALLER_EXPORT appendString(QFileDevice *out, const QString &str);
 
-    QFile::Permissions permissions() const;
-    bool setPermissions(QFile::Permissions);
+QByteArray INSTALLER_EXPORT retrieveByteArray(QFileDevice *in);
+void INSTALLER_EXPORT appendByteArray(QFileDevice *out, const QByteArray &ba);
 
-    QString backupExtension() const;
-    void setBackupExtension(const QString &extension);
+QByteArray INSTALLER_EXPORT retrieveData(QFileDevice *in, qint64 size);
+void INSTALLER_EXPORT appendData(QFileDevice *out, QFileDevice *in, qint64 size);
 
-    bool flush();
-    bool resize(qint64 size);
-    int handle() const;
+void INSTALLER_EXPORT openForRead(QFileDevice *dev);
+void INSTALLER_EXPORT openForWrite(QFileDevice *dev);
+void INSTALLER_EXPORT openForAppend(QFileDevice *dev);
 
-    bool atEnd() const;
-    qint64 bytesAvailable() const;
-    qint64 bytesToWrite() const;
-    bool canReadLine() const;
-    void close();
-    bool isSequential() const;
-    bool open(OpenMode mode = QIODevice::ReadWrite); //only valid: WriteOnly, ReadWrite
-    qint64 pos() const;
-    bool reset();
-    bool seek(qint64 pos);
-    qint64 size() const;
-    bool waitForBytesWritten(int msecs);
-    bool waitForReadyRead(int msecs);
+qint64 INSTALLER_EXPORT blockingRead(QFileDevice *in, char *buffer, qint64 size);
+qint64 INSTALLER_EXPORT blockingCopy(QFileDevice *in, QFileDevice *out, qint64 size);
 
-private:
-    qint64 readData(char *data, qint64 maxSize);
-    qint64 readLineData(char *data, qint64 maxSize);
-    qint64 writeData(const char *data, qint64 maxSize);
+qint64 INSTALLER_EXPORT blockingWrite(QFileDevice *out, const QByteArray &data);
+qint64 INSTALLER_EXPORT blockingWrite(QFileDevice *out, const char *data, qint64 size);
 
-private:
-    class Private;
-    Private *d;
-};
+} // namespace QInstaller
 
-#endif // KDTOOLS_KDSAVEFILE_H
+#endif // FILEIO_H

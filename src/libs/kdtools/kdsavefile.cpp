@@ -258,7 +258,7 @@ public:
 
 
 KDSaveFile::KDSaveFile(const QString &filename, QObject *parent)
-    : QIODevice(parent), d( new Private(makeAbsolute(filename), this))
+    : QFileDevice(parent), d(new Private(makeAbsolute(filename), this))
 {}
 
 KDSaveFile::~KDSaveFile()

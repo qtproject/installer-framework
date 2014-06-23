@@ -46,7 +46,7 @@
 #include "scriptengine.h"
 #include "componentmodel.h"
 #include "errors.h"
-#include "fileutils.h"
+#include "fileio.h"
 #include "remotefileengine.h"
 #include "globals.h"
 #include "graph.h"
@@ -149,7 +149,7 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
     QStringList arguments;
     {
         QTemporaryFile f(QDir::temp().absoluteFilePath(QLatin1String("deferredrenameXXXXXX.vbs")));
-        openForWrite(&f, f.fileName());
+        QInstaller::openForWrite(&f);
         f.setAutoRemove(false);
 
         arguments << QDir::toNativeSeparators(f.fileName()) << QDir::toNativeSeparators(oldName)
@@ -1041,12 +1041,12 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
     ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Writing uninstaller."));
 
     KDSaveFile out(uninstallerRenamedName);
-    openForWrite(&out, out.fileName()); // throws an exception in case of error
+    QInstaller::openForWrite(&out); // throws an exception in case of error
 
     if (!input->seek(0))
         throw Error(QObject::tr("Failed to seek in file %1: %2").arg(input->fileName(), input->errorString()));
 
-    appendData(&out, input, size);
+    QInstaller::appendData(&out, input, size);
     if (writeBinaryLayout) {
 #ifdef Q_OS_MAC
         QDir resourcePath(QFileInfo(uninstallerRenamedName).dir());
@@ -1058,23 +1058,23 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
         // other code a lot (since installers don't have any appended data either)
         QString outPath = resourcePath.filePath(QLatin1String("installer.dat"));
         KDSaveFile dataOut(outPath);
-        openForWrite(&dataOut, dataOut.fileName());
-        appendInt64(&dataOut, 0);   // operations start
-        appendInt64(&dataOut, 0);   // operations end
-        appendInt64(&dataOut, 0);   // resource count
-        appendInt64(&dataOut, 4 * sizeof(qint64));   // data block size
-        appendInt64(&dataOut, QInstaller::MagicUninstallerMarker);
-        appendInt64(&dataOut, QInstaller::MagicCookie);
+        QInstaller::openForWrite(&dataOut);
+        QInstaller::appendInt64(&dataOut, 0);   // operations start
+        QInstaller::appendInt64(&dataOut, 0);   // operations end
+        QInstaller::appendInt64(&dataOut, 0);   // resource count
+        QInstaller::appendInt64(&dataOut, 4 * sizeof(qint64));   // data block size
+        QInstaller::appendInt64(&dataOut, QInstaller::MagicUninstallerMarker);
+        QInstaller::appendInt64(&dataOut, QInstaller::MagicCookie);
         dataOut.setPermissions(dataOut.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther);
         if (!dataOut.commit(KDSaveFile::OverwriteExistingFile))
             throw Error(tr("Could not write uninstaller data to %1: %2").arg(out.fileName(), out.errorString()));
 #else
-        appendInt64(&out, 0);   // operations start
-        appendInt64(&out, 0);   // operations end
-        appendInt64(&out, 0);   // resource count
-        appendInt64(&out, 4 * sizeof(qint64));   // data block size
-        appendInt64(&out, QInstaller::MagicUninstallerMarker);
-        appendInt64(&out, QInstaller::MagicCookie);
+        QInstaller::appendInt64(&out, 0);   // operations start
+        QInstaller::appendInt64(&out, 0);   // operations end
+        QInstaller::appendInt64(&out, 0);   // resource count
+        QInstaller::appendInt64(&out, 4 * sizeof(qint64));   // data block size
+        QInstaller::appendInt64(&out, QInstaller::MagicUninstallerMarker);
+        QInstaller::appendInt64(&out, QInstaller::MagicCookie);
 #endif
     }
     out.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
@@ -1084,7 +1084,7 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
         throw Error(tr("Could not write uninstaller to %1: %2").arg(out.fileName(), out.errorString()));
 }
 
-void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QFile *const input,
+void PackageManagerCorePrivate::writeUninstallerBinaryData(QFileDevice *output, QFile *const input,
     const OperationList &performedOperations, const BinaryLayout &layout)
 {
     const qint64 dataBlockStart = output->pos();
@@ -1097,7 +1097,7 @@ void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QF
         QFile file(newDefaultResource);
         if (file.open(QIODevice::ReadOnly)) {
             resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos(), file.size()));
-            appendData(output, &file, file.size());
+            QInstaller::appendData(output, &file, file.size());
             existingResourceSegments.remove(0);
 
             file.remove();  // clear all possible leftovers
@@ -1111,43 +1111,43 @@ void PackageManagerCorePrivate::writeUninstallerBinaryData(QIODevice *output, QF
     foreach (const Range<qint64> &segment, existingResourceSegments) {
         input->seek(segment.start());
         resourceSegments.append(Range<qint64>::fromStartAndLength(output->pos(), segment.length()));
-        appendData(output, input, segment.length());
+        QInstaller::appendData(output, input, segment.length());
     }
 
     const qint64 operationsStart = output->pos();
-    appendInt64(output, performedOperations.count());
+    QInstaller::appendInt64(output, performedOperations.count());
     foreach (Operation *operation, performedOperations) {
         // the installer can't be put into XML, remove it first
         operation->clearValue(QLatin1String("installer"));
 
-        appendString(output, operation->name());
-        appendString(output, operation->toXml().toString());
+        QInstaller::appendString(output, operation->name());
+        QInstaller::appendString(output, operation->toXml().toString());
 
         // for the ui not to get blocked
         qApp->processEvents();
     }
-    appendInt64(output, performedOperations.count());
+    QInstaller::appendInt64(output, performedOperations.count());
     const qint64 operationsEnd = output->pos();
 
     // we don't save any component-indexes.
     const qint64 numComponents = 0;
-    appendInt64(output, numComponents); // for the indexes
+    QInstaller::appendInt64(output, numComponents); // for the indexes
     // we don't save any components.
     const qint64 compIndexStart = output->pos();
-    appendInt64(output, numComponents); // and 2 times number of components,
-    appendInt64(output, numComponents); // one before and one after the components
+    QInstaller::appendInt64(output, numComponents); // and 2 times number of components,
+    QInstaller::appendInt64(output, numComponents); // one before and one after the components
     const qint64 compIndexEnd = output->pos();
 
-    appendInt64Range(output, Range<qint64>::fromStartAndEnd(compIndexStart, compIndexEnd)
+    QInstaller::appendInt64Range(output, Range<qint64>::fromStartAndEnd(compIndexStart, compIndexEnd)
         .moved(-dataBlockStart));
     foreach (const Range<qint64> segment, resourceSegments)
-        appendInt64Range(output, segment.moved(-dataBlockStart));
-    appendInt64Range(output, Range<qint64>::fromStartAndEnd(operationsStart, operationsEnd)
+        QInstaller::appendInt64Range(output, segment.moved(-dataBlockStart));
+    QInstaller::appendInt64Range(output, Range<qint64>::fromStartAndEnd(operationsStart, operationsEnd)
         .moved(-dataBlockStart));
-    appendInt64(output, layout.resourceCount);
+    QInstaller::appendInt64(output, layout.resourceCount);
     // data block size, from end of .exe to end of file
-    appendInt64(output, output->pos() + 3 * sizeof(qint64) - dataBlockStart);
-    appendInt64(output, MagicUninstallerMarker);
+    QInstaller::appendInt64(output, output->pos() + 3 * sizeof(qint64) -dataBlockStart);
+    QInstaller::appendInt64(output, MagicUninstallerMarker);
 }
 
 void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperations)
@@ -1189,9 +1189,9 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 
         // patch the Info.plist after copying it
         QFile sourcePlist(sourceAppDirPath + QLatin1String("/../Info.plist"));
-        openForRead(&sourcePlist, sourcePlist.fileName());
+        QInstaller::openForRead(&sourcePlist);
         QFile targetPlist(targetAppDirPath + QLatin1String("/../Info.plist"));
-        openForWrite(&targetPlist, targetPlist.fileName());
+        QInstaller::openForWrite(&targetPlist);
 
         QTextStream in(&sourcePlist);
         QTextStream out(&targetPlist);
@@ -1282,7 +1282,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 
             QFile replacementBinary(installerBaseBinary);
             try {
-                openForRead(&replacementBinary, replacementBinary.fileName());
+                QInstaller::openForRead(&replacementBinary);
                 writeUninstallerBinary(&replacementBinary, replacementBinary.size(), true);
                 qDebug() << "Wrote the binary with the new replacement.";
 
@@ -1318,7 +1318,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
                     "binary resource from our very own binary!"));
             }
             input.setFileName(dataFile);
-            openForRead(&input, input.fileName());
+            QInstaller::openForRead(&input);
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookieDat));
         } catch (const Error &/*error*/) {
 #ifdef Q_OS_MAC
@@ -1329,18 +1329,18 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             dataPath.cd(QLatin1String("Resources"));
             input.setFileName(dataPath.filePath(QLatin1String("installer.dat")));
 
-            openForRead(&input, input.fileName());
+            QInstaller::openForRead(&input);
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
 
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
                 QFile tmp(binaryName);
-                openForRead(&tmp, tmp.fileName());
+                QInstaller::openForRead(&tmp);
                 writeUninstallerBinary(&tmp, tmp.size(), true);
             }
 #else
             input.setFileName(isInstaller() ? installerBinaryPath() : uninstallerName());
-            openForRead(&input, input.fileName());
+            QInstaller::openForRead(&input);
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
@@ -1354,10 +1354,10 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 
         try {
             KDSaveFile file(dataFile + QLatin1String(".new"));
-            openForWrite(&file, file.fileName());
+            QInstaller::openForWrite(&file);
 
             writeUninstallerBinaryData(&file, &input, performedOperations, layout);
-            appendInt64(&file, MagicCookieDat);
+            QInstaller::appendInt64(&file, MagicCookieDat);
             file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
                 | QFile::ReadOther);
             if (!file.commit(KDSaveFile::OverwriteExistingFile)) {
@@ -1368,16 +1368,16 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
                 QFile tmp(isInstaller() ? installerBinaryPath() : uninstallerName());
-                openForRead(&tmp, tmp.fileName());
+                QInstaller::openForRead(&tmp);
                 BinaryLayout tmpLayout = BinaryContent::readBinaryLayout(&tmp, findMagicCookie(&tmp, MagicCookie));
                 writeUninstallerBinary(&tmp, tmpLayout.endOfData - tmpLayout.dataBlockSize, false);
             }
 
             QFile file(uninstallerName() + QLatin1String(".new"));
-            openForAppend(&file, file.fileName());
+            QInstaller::openForAppend(&file);
             file.seek(file.size());
             writeUninstallerBinaryData(&file, &input, performedOperations, layout);
-            appendInt64(&file, MagicCookie);
+            QInstaller::appendInt64(&file, MagicCookie);
         }
         input.close();
         writeMaintenanceConfigFiles();
@@ -2209,7 +2209,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             const QString updatesXmlPath = data.directory + QLatin1String("/Updates.xml");
             QFile updatesFile(updatesXmlPath);
             try {
-                openForRead(&updatesFile, updatesFile.fileName());
+                QInstaller::openForRead(&updatesFile);
             } catch(const Error &e) {
                 qDebug() << "Error opening Updates.xml:" << e.message();
                 setStatus(PackageManagerCore::Failure, tr("Could not add temporary update source information."));

@@ -41,7 +41,7 @@
 
 #include <copyfiletask.h>
 #include <downloadfiletask.h>
-#include <fileutils.h>
+#include <fileio.h>
 
 #include <QFutureWatcher>
 #include <QSignalSpy>

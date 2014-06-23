@@ -42,167 +42,19 @@
 #include "binaryformat.h"
 
 #include "errors.h"
+#include "fileio.h"
 #include "fileutils.h"
 #include "lib7z_facade.h"
 #include "utils.h"
 
-#include <kdupdaterupdateoperationfactory.h>
+#include "kdupdaterupdateoperationfactory.h"
 
-#include <QDir>
-#include <QFileInfo>
+#include <QDebug>
 #include <QResource>
 #include <QTemporaryFile>
 
-#include <errno.h>
-#include <string.h>
-
 using namespace QInstaller;
 using namespace QInstallerCreator;
-
-static inline QByteArray &theBuffer(int size)
-{
-    static QByteArray b;
-    if (size > b.size())
-        b.resize(size);
-    return b;
-}
-
-void QInstaller::appendFileData(QIODevice *out, QIODevice *in)
-{
-    Q_ASSERT(!in->isSequential());
-    const qint64 size = in->size();
-    blockingCopy(in, out, size);
-}
-
-
-void QInstaller::retrieveFileData(QIODevice *out, QIODevice *in)
-{
-    qint64 size = QInstaller::retrieveInt64(in);
-    appendData(in, out, size);
-}
-
-void QInstaller::appendInt64(QIODevice *out, qint64 n)
-{
-    blockingWrite(out, reinterpret_cast<const char*>(&n), sizeof(n));
-}
-
-void QInstaller::appendInt64Range(QIODevice *out, const Range<qint64> &r)
-{
-    appendInt64(out, r.start());
-    appendInt64(out, r.length());
-}
-
-qint64 QInstaller::retrieveInt64(QIODevice *in)
-{
-    qint64 n = 0;
-    blockingRead(in, reinterpret_cast<char*>(&n), sizeof(n));
-    return n;
-}
-
-Range<qint64> QInstaller::retrieveInt64Range(QIODevice *in)
-{
-    const quint64 start = retrieveInt64(in);
-    const quint64 length = retrieveInt64(in);
-    return Range<qint64>::fromStartAndLength(start, length);
-}
-
-void QInstaller::appendData(QIODevice *out, QIODevice *in, qint64 size)
-{
-    while (size > 0) {
-        const qint64 nextSize = qMin(size, 16384LL);
-        QByteArray &b = theBuffer(nextSize);
-        blockingRead(in, b.data(), nextSize);
-        blockingWrite(out, b.constData(), nextSize);
-        size -= nextSize;
-    }
-}
-
-void QInstaller::appendString(QIODevice *out, const QString &str)
-{
-    appendByteArray(out, str.toUtf8());
-}
-
-void QInstaller::appendByteArray(QIODevice *out, const QByteArray &ba)
-{
-    appendInt64(out, ba.size());
-    blockingWrite(out, ba.constData(), ba.size());
-}
-
-void QInstaller::appendStringList(QIODevice *out, const QStringList &list)
-{
-    appendInt64(out, list.size());
-    foreach (const QString &s, list)
-        appendString(out, s);
-}
-
-void QInstaller::appendDictionary(QIODevice *out, const QHash<QString,QString> &dict)
-{
-    appendInt64(out, dict.size());
-    foreach (const QString &key, dict.keys()) {
-        appendString(out, key);
-        appendString(out, dict.value(key));
-    }
-}
-
-qint64 QInstaller::appendCompressedData(QIODevice *out, QIODevice *in, qint64 size)
-{
-    QByteArray ba;
-    ba.resize(size);
-    blockingRead(in, ba.data(), size);
-
-    QByteArray cba = qCompress(ba);
-    blockingWrite(out, cba, cba.size());
-    return cba.size();
-}
-
-QString QInstaller::retrieveString(QIODevice *in)
-{
-    const QByteArray b = retrieveByteArray(in);
-    return QString::fromUtf8(b);
-}
-
-QByteArray QInstaller::retrieveByteArray(QIODevice *in)
-{
-    QByteArray ba;
-    const qint64 n = retrieveInt64(in);
-    ba.resize(n);
-    blockingRead(in, ba.data(), n);
-    return ba;
-}
-
-QStringList QInstaller::retrieveStringList(QIODevice *in)
-{
-    QStringList list;
-    for (qint64 i = retrieveInt64(in); --i >= 0;)
-        list << retrieveString(in);
-    return list;
-}
-
-QHash<QString,QString> QInstaller::retrieveDictionary(QIODevice *in)
-{
-    QHash<QString,QString> dict;
-    for (qint64 i = retrieveInt64(in); --i >= 0;) {
-        QString key = retrieveString(in);
-        dict.insert(key, retrieveString(in));
-    }
-    return dict;
-}
-
-QByteArray QInstaller::retrieveData(QIODevice *in, qint64 size)
-{
-    QByteArray ba;
-    ba.resize(size);
-    blockingRead(in, ba.data(), size);
-    return ba;
-}
-
-QByteArray QInstaller::retrieveCompressedData(QIODevice *in, qint64 size)
-{
-    QByteArray ba;
-    ba.resize(size);
-    blockingRead(in, ba.data(), size);
-    return qUncompress(ba);
-}
 
 /*!
     Search through 1MB, if smaller through the whole file. Note: QFile::map() does
@@ -227,7 +79,7 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
         const int pos = in->pos();
         try {
             in->seek(fileSize - maxSearch);
-            blockingRead(in, data.data(), maxSearch);
+            QInstaller::blockingRead(in, data.data(), maxSearch);
             in->seek(pos);
         } catch (const Error &error) {
             in->seek(pos);
@@ -471,27 +323,27 @@ void Component::setBinarySegment(const Range<qint64> &r)
 Component Component::readFromIndexEntry(const QSharedPointer<QFile> &in, qint64 offset)
 {
     Component c;
-    c.m_name = retrieveByteArray(in.data());
-    c.m_binarySegment = retrieveInt64Range(in.data()).moved(offset);
+    c.m_name = QInstaller::retrieveByteArray(in.data());
+    c.m_binarySegment = QInstaller::retrieveInt64Range(in.data()).moved(offset);
 
     c.readData(in, offset);
 
     return c;
 }
 
-void Component::writeIndexEntry(QIODevice *out, qint64 positionOffset) const
+void Component::writeIndexEntry(QFileDevice *out, qint64 positionOffset) const
 {
-    appendByteArray(out, m_name);
+    QInstaller::appendByteArray(out, m_name);
     m_binarySegment.moved(positionOffset);
-    appendInt64(out, binarySegment().start());
-    appendInt64(out, binarySegment().length());
+    QInstaller::appendInt64(out, binarySegment().start());
+    QInstaller::appendInt64(out, binarySegment().length());
 }
 
-void Component::writeData(QIODevice *out, qint64 offset) const
+void Component::writeData(QFileDevice *out, qint64 offset) const
 {
     const qint64 dataBegin = out->pos() + offset;
 
-    appendInt64(out, m_archives.count());
+    QInstaller::appendInt64(out, m_archives.count());
 
     qint64 start = out->pos() + offset;
 
@@ -503,9 +355,9 @@ void Component::writeData(QIODevice *out, qint64 offset) const
 
     QList<qint64> starts;
     foreach (const QSharedPointer<Archive> &archive, m_archives) {
-        appendByteArray(out, archive->name());
+        QInstaller::appendByteArray(out, archive->name());
         starts.push_back(start);
-        appendInt64Range(out, Range<qint64>::fromStartAndLength(start, archive->size()));
+        QInstaller::appendInt64Range(out, Range<qint64>::fromStartAndLength(start, archive->size()));
         start += archive->size();
     }
 
@@ -520,7 +372,7 @@ void Component::writeData(QIODevice *out, qint64 offset) const
         Q_UNUSED(expectedStart);
         Q_UNUSED(actualStart);
         Q_ASSERT(expectedStart == actualStart);
-        blockingCopy(archive.data(), out, archive->size());
+        QInstaller::blockingCopy(archive.data(), out, archive->size());
     }
 
     m_binarySegment = Range<qint64>::fromStartAndEnd(dataBegin, out->pos() + offset);
@@ -531,13 +383,13 @@ void Component::readData(const QSharedPointer<QFile> &in, qint64 offset)
     const qint64 pos = in->pos();
 
     in->seek(m_binarySegment.start());
-    const qint64 count = retrieveInt64(in.data());
+    const qint64 count = QInstaller::retrieveInt64(in.data());
 
     QVector<QByteArray> names;
     QVector<Range<qint64> > ranges;
     for (int i = 0; i < count; ++i) {
-        names.push_back(retrieveByteArray(in.data()));
-        ranges.push_back(retrieveInt64Range(in.data()).moved(offset));
+        names.push_back(QInstaller::retrieveByteArray(in.data()));
+        ranges.push_back(QInstaller::retrieveInt64Range(in.data()).moved(offset));
     }
 
     for (int i = 0; i < ranges.count(); ++i)
@@ -612,26 +464,26 @@ ComponentIndex::ComponentIndex()
 ComponentIndex ComponentIndex::read(const QSharedPointer<QFile> &dev, qint64 offset)
 {
     ComponentIndex result;
-    const qint64 size = retrieveInt64(dev.data());
+    const qint64 size = QInstaller::retrieveInt64(dev.data());
     for (int i = 0; i < size; ++i)
         result.insertComponent(Component::readFromIndexEntry(dev, offset));
-    retrieveInt64(dev.data());
+    QInstaller::retrieveInt64(dev.data());
     return result;
 }
 
-void ComponentIndex::writeIndex(QIODevice *out, qint64 offset) const
+void ComponentIndex::writeIndex(QFileDevice *out, qint64 offset) const
 {
     // Q: why do we write the size twice?
     // A: for us to be able to read it beginning from the end of the file as well
-    appendInt64(out, componentCount());
+    QInstaller::appendInt64(out, componentCount());
     foreach (const Component& i, components())
         i.writeIndexEntry(out, offset);
-    appendInt64(out, componentCount());
+    QInstaller::appendInt64(out, componentCount());
 }
 
-void ComponentIndex::writeComponentData(QIODevice *out, qint64 offset) const
+void ComponentIndex::writeComponentData(QFileDevice *out, qint64 offset) const
 {
-    appendInt64(out, componentCount());
+    QInstaller::appendInt64(out, componentCount());
 
     foreach (const Component &component, m_components)
         component.writeData(out, offset);
@@ -677,7 +529,7 @@ static QByteArray addResourceFromBinary(QFile* file, const Range<qint64> &segmen
             .arg(QString::number(segment.start()), QString::number(segment.length())));
     }
 
-    QByteArray ba = retrieveData(file, segment.length());
+    QByteArray ba = QInstaller::retrieveData(file, segment.length());
     if (!QResource::registerResource((const uchar*)ba.constData(), QLatin1String(":/metadata")))
             throw Error(QObject::tr("Could not register in-binary resource."));
     return ba;
@@ -900,19 +752,19 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
 }
 
 /* static */
-BinaryLayout BinaryContent::readBinaryLayout(QIODevice *const file, qint64 cookiePos)
+BinaryLayout BinaryContent::readBinaryLayout(QFile *const file, qint64 cookiePos)
 {
     const qint64 indexSize = 5 * sizeof(qint64);
     if (!file->seek(cookiePos - indexSize))
         throw Error(QObject::tr("Could not seek to binary layout section."));
 
     BinaryLayout layout;
-    layout.operationsStart = retrieveInt64(file);
-    layout.operationsEnd = retrieveInt64(file);
-    layout.resourceCount = retrieveInt64(file);
-    layout.dataBlockSize = retrieveInt64(file);
-    layout.magicMarker = retrieveInt64(file);
-    layout.magicCookie = retrieveInt64(file);
+    layout.operationsStart = QInstaller::retrieveInt64(file);
+    layout.operationsEnd = QInstaller::retrieveInt64(file);
+    layout.resourceCount = QInstaller::retrieveInt64(file);
+    layout.dataBlockSize = QInstaller::retrieveInt64(file);
+    layout.magicMarker = QInstaller::retrieveInt64(file);
+    layout.magicCookie = QInstaller::retrieveInt64(file);
     layout.indexSize = indexSize + sizeof(qint64);
     layout.endOfData = file->pos();
 
@@ -931,8 +783,8 @@ BinaryLayout BinaryContent::readBinaryLayout(QIODevice *const file, qint64 cooki
         if (!file->seek(layout.endOfData - layout.indexSize - resourceOffsetAndLengtSize * (i + 1)))
             throw Error(QObject::tr("Could not seek to metadata index."));
 
-        const qint64 metadataResourceOffset = retrieveInt64(file);
-        const qint64 metadataResourceLength = retrieveInt64(file);
+        const qint64 metadataResourceOffset = QInstaller::retrieveInt64(file);
+        const qint64 metadataResourceLength = QInstaller::retrieveInt64(file);
         layout.metadataResourceSegments.append(Range<qint64>::fromStartAndLength(metadataResourceOffset
              + dataBlockStart, metadataResourceLength));
     }
@@ -952,12 +804,12 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
     if (!file->seek(operationsStart))
         throw Error(QObject::tr("Could not seek to operation list."));
 
-    const qint64 operationsCount = retrieveInt64(file.data());
+    const qint64 operationsCount = QInstaller::retrieveInt64(file.data());
     qDebug() << "Number of operations:" << operationsCount;
 
     for (int i = 0; i < operationsCount; ++i) {
-        const QString name = retrieveString(file.data());
-        const QString data = retrieveString(file.data());
+        const QString name = QInstaller::retrieveString(file.data());
+        const QString data = QInstaller::retrieveString(file.data());
         content.d->m_performedOperationsData.append(qMakePair(name, data));
     }
 
@@ -967,7 +819,7 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
     if (!file->seek(layout.endOfData - layout.indexSize - resourceSectionSize - resourceOffsetAndLengtSize))
         throw Error(QObject::tr("Could not seek to component index information."));
 
-    const qint64 compIndexStart = retrieveInt64(file.data()) + dataBlockStart;
+    const qint64 compIndexStart = QInstaller::retrieveInt64(file.data()) + dataBlockStart;
     if (!file->seek(compIndexStart))
         throw Error(QObject::tr("Could not seek to component index."));
 

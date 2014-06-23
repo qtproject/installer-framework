@@ -41,7 +41,7 @@
 #include "lib7z_facade.h"
 
 #include "errors.h"
-#include "fileutils.h"
+#include "fileio.h"
 
 #ifndef Q_OS_WIN
 #   include "StdAfx.h"
@@ -598,7 +598,7 @@ void Job::start()
 class ListArchiveJob::Private
 {
 public:
-    QPointer<QIODevice> archive;
+    QPointer<QFileDevice> archive;
     QVector<File> files;
 };
 
@@ -613,12 +613,12 @@ ListArchiveJob::~ListArchiveJob()
     delete d;
 }
 
-QIODevice* ListArchiveJob::archive() const
+QFileDevice* ListArchiveJob::archive() const
 {
     return d->archive;
 }
 
-void ListArchiveJob::setArchive(QIODevice* device)
+void ListArchiveJob::setArchive(QFileDevice* device)
 {
     d->archive = device;
 }
@@ -631,7 +631,7 @@ QVector<File> ListArchiveJob::index() const
 class OpenArchiveInfo
 {
 private:
-    OpenArchiveInfo(QIODevice* device)
+    OpenArchiveInfo(QFileDevice* device)
         : codecs(new CCodecs)
     {
         if (codecs->Load() != S_OK)
@@ -657,7 +657,7 @@ public:
         m_cleaner->deleteLater();
     }
 
-    static OpenArchiveInfo* value(QIODevice* device)
+    static OpenArchiveInfo* value(QFileDevice* device)
     {
         QMutexLocker _(&m_mutex);
         if (!instances.contains(device))
@@ -665,7 +665,7 @@ public:
         return instances.value(device);
     }
 
-    static OpenArchiveInfo* take(QIODevice *device)
+    static OpenArchiveInfo* take(QFileDevice *device)
     {
         QMutexLocker _(&m_mutex);
         if (instances.contains(device))
@@ -690,12 +690,12 @@ QHash< QIODevice*, OpenArchiveInfo* > OpenArchiveInfo::instances;
 
 void OpenArchiveInfoCleaner::deviceDestroyed(QObject* dev)
 {
-    QIODevice* device = static_cast<QIODevice*>(dev);
+    QFileDevice* device = static_cast<QFileDevice*>(dev);
     Q_ASSERT(device);
     delete OpenArchiveInfo::take(device);
 }
 
-QVector<File> Lib7z::listArchive(QIODevice* archive)
+QVector<File> Lib7z::listArchive(QFileDevice* archive)
 {
     assert(archive);
     try {
@@ -1012,7 +1012,7 @@ const ExtractCallbackImpl* ExtractCallback::impl() const
     return d->impl;
 }
 
-void ExtractCallback::setTarget(QIODevice* dev)
+void ExtractCallback::setTarget(QFileDevice* dev)
 {
     d->impl->setTarget(dev);
 }
@@ -1203,7 +1203,7 @@ void UpdateCallback::setSourcePaths(const QStringList &paths)
     d->impl()->setSourcePaths(paths);
 }
 
-void UpdateCallback::setTarget(QIODevice* target)
+void UpdateCallback::setTarget(QFileDevice* target)
 {
     d->impl()->setTarget(target);
 }
@@ -1220,9 +1220,9 @@ public:
 
     ExtractItemJob* q;
     File item;
-    QPointer<QIODevice> archive;
+    QPointer<QFileDevice> archive;
     QString targetDirectory;
-    QIODevice* target;
+    QFileDevice* target;
     ExtractCallback* callback;
 };
 
@@ -1247,12 +1247,12 @@ void ExtractItemJob::setItem(const File& item)
     d->item = item;
 }
 
-QIODevice* ExtractItemJob::archive() const
+QFileDevice* ExtractItemJob::archive() const
 {
     return d->archive;
 }
 
-void ExtractItemJob::setArchive(QIODevice* archive)
+void ExtractItemJob::setArchive(QFileDevice* archive)
 {
     d->archive = archive;
 }
@@ -1268,7 +1268,7 @@ void ExtractItemJob::setTargetDirectory(const QString &dir)
     d->target = 0;
 }
 
-void ExtractItemJob::setTarget(QIODevice* dev)
+void ExtractItemJob::setTarget(QFileDevice* dev)
 {
     d->target = dev;
 }
@@ -1313,7 +1313,7 @@ namespace{
     }
 }
 
-void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, UpdateCallback* callback)
+void Lib7z::createArchive(QFileDevice* archive, const QStringList &sourcePaths, UpdateCallback* callback)
 {
     assert(archive);
 
@@ -1381,7 +1381,7 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, Up
         {
             //TODO remove temp file even if one the following throws
             QFile file(tempFile);
-            QInstaller::openForRead(&file, tempFile);
+            QInstaller::openForRead(&file);
             QInstaller::blockingCopy(&file, archive, file.size());
         }
 
@@ -1401,7 +1401,7 @@ void Lib7z::createArchive(QIODevice* archive, const QStringList &sourcePaths, Up
     }
 }
 
-void Lib7z::extractFileFromArchive(QIODevice* archive, const File& item, QIODevice* target,
+void Lib7z::extractFileFromArchive(QFileDevice* archive, const File& item, QFileDevice* target,
     ExtractCallback* callback)
 {
     assert(archive);
@@ -1454,8 +1454,8 @@ void Lib7z::extractFileFromArchive(QIODevice* archive, const File& item, QIODevi
     }
 }
 
-void Lib7z::extractFileFromArchive(QIODevice* archive, const File& item, const QString &targetDirectory,
-    ExtractCallback* callback)
+void Lib7z::extractFileFromArchive(QFileDevice* archive, const File& item,
+    const QString &targetDirectory, ExtractCallback* callback)
 {
     assert(archive);
 
@@ -1478,7 +1478,8 @@ void Lib7z::extractFileFromArchive(QIODevice* archive, const File& item, const Q
     outDir.release();
 }
 
-void Lib7z::extractArchive(QIODevice* archive, const QString &targetDirectory, ExtractCallback* callback)
+void Lib7z::extractArchive(QFileDevice* archive, const QString &targetDirectory,
+    ExtractCallback* callback)
 {
     assert(archive);
 
@@ -1517,7 +1518,7 @@ bool Lib7z::isSupportedArchive(const QString &archive)
     return isSupportedArchive(&file);
 }
 
-bool Lib7z::isSupportedArchive(QIODevice* archive)
+bool Lib7z::isSupportedArchive(QFileDevice* archive)
 {
     assert(archive);
     assert(!archive->isSequential());

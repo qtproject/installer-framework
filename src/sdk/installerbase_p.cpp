@@ -43,7 +43,7 @@
 
 #include <binaryformat.h>
 #include <errors.h>
-#include <fileutils.h>
+#include <fileio.h>
 #include <init.h>
 #include <lib7z_facade.h>
 #include <qprocesswrapper.h>
@@ -154,7 +154,7 @@ int InstallerBase::replaceMaintenanceToolBinary(QStringList arguments)
     try {
         {
             QFile installerBaseNew(newInstallerBasePath);
-            QInstaller::openForAppend(&installerBaseNew, installerBaseNew.fileName());
+            QInstaller::openForAppend(&installerBaseNew);
 
             installerBaseNew.seek(installerBaseNew.size());
             QInstaller::appendInt64(&installerBaseNew, 0);   // resource count
@@ -286,7 +286,7 @@ void InstallerBase::deferredRename(const QString &oldName, const QString &newNam
 #ifdef Q_OS_WIN
     QTemporaryFile vbScript(QDir::temp().absoluteFilePath(QLatin1String("deferredrenameXXXXXX.vbs")));
     {
-        openForWrite(&vbScript, vbScript.fileName());
+        QInstaller::openForWrite(&vbScript);
         vbScript.setAutoRemove(false);
 
         QTextStream batch(&vbScript);

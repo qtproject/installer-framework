@@ -42,6 +42,7 @@
 
 #include "binaryformat.h"
 #include "errors.h"
+#include "fileio.h"
 #include "fileutils.h"
 #include "copydirectoryoperation.h"
 #include "lib7z_facade.h"
@@ -124,7 +125,7 @@ static QString createArchive(const QString repoPath, const QString &sourceDir, c
     const QString fileName = QString::fromLatin1("/%1meta.7z").arg(version);
 
     QFile archive(repoPath + fileName);
-    QInstaller::openForWrite(&archive, archive.fileName());
+    QInstaller::openForWrite(&archive);
     Lib7z::createArchive(&archive, QStringList() << sourceDir);
     removeFiles(sourceDir, helper); // cleanup the files we compressed
     if (!archive.rename(sourceDir + fileName)) {
@@ -262,7 +263,7 @@ bool CreateLocalRepositoryOperation::performOperation()
         file->seek(bl.endOfData - bl.indexSize - resourceSectionSize - resourceOffsetAndLengtSize);
 
         const qint64 dataBlockStart = bl.endOfData - bl.dataBlockSize;
-        file->seek(retrieveInt64(file.data()) + dataBlockStart);
+        file->seek(QInstaller::retrieveInt64(file.data()) + dataBlockStart);
         QInstallerCreator::ComponentIndex componentIndex = QInstallerCreator::ComponentIndex::read(file,
             dataBlockStart);
 
@@ -289,7 +290,7 @@ bool CreateLocalRepositoryOperation::performOperation()
                             continue;
 
                         QFile target(absoluteTargetPath + QDir::separator() + QString::fromUtf8(a->name()));
-                        QInstaller::openForWrite(&target, target.fileName());
+                        QInstaller::openForWrite(&target);
                         QInstaller::blockingCopy(a.data(), &target, a->size());
                         helper.m_files.prepend(target.fileName());
                         emit outputTextChanged(helper.m_files.first());

@@ -44,6 +44,7 @@
 
 #include <binaryformat.h>
 #include <errors.h>
+#include <fileio.h>
 #include <fileutils.h>
 #include <init.h>
 #include <repository.h>
@@ -266,7 +267,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
 #endif
     try {
 #ifdef Q_OS_MAC
-        openForWrite(&out, out.fileName());
+        QInstaller::openForWrite(&out);
 
         QFile exe(input.installerExePath);
         if (!exe.copy(input.outputPath)) {
@@ -274,11 +275,11 @@ static int assemble(Input input, const QInstaller::Settings &settings)
                 exe.errorString()));
         }
 #else
-        openForWrite(&out, input.outputPath);
+        QInstaller::openForWrite(&out);
 
         QFile exe(input.installerExePath);
-        openForRead(&exe, exe.fileName());
-        appendFileData(&out, &exe);
+        QInstaller::openForRead(&exe);
+        QInstaller::appendData(&out, &exe, exe.size());
 #endif
 
         const qint64 dataBlockStart = out.pos();
@@ -286,24 +287,24 @@ static int assemble(Input input, const QInstaller::Settings &settings)
 
         // append our self created resource file
         QFile res(input.binaryResourcePath);
-        openForRead(&res, res.fileName());
-        appendFileData(&out, &res);
+        QInstaller::openForRead(&res);
+        QInstaller::appendData(&out, &res, res.size());
         input.resourcePos.append(Range<qint64>::fromStartAndEnd(out.pos() - res.size(), out.pos())
             .moved(-dataBlockStart));
 
         // append given resource files
         foreach (const QString &resource, input.binaryResources) {
             QFile res(resource);
-            openForRead(&res, res.fileName());
-            appendFileData(&out, &res);
+            QInstaller::openForRead(&res);
+            QInstaller::appendData(&out, &res, res.size());
             input.resourcePos.append(Range<qint64>::fromStartAndEnd(out.pos() - res.size(), out.pos())
                 .moved(-dataBlockStart));
         }
 
         // zero operations cause we are not the uninstaller
         const qint64 operationsStart = out.pos();
-        appendInt64(&out, 0);
-        appendInt64(&out, 0);
+        QInstaller::appendInt64(&out, 0);
+        QInstaller::appendInt64(&out, 0);
         input.operationsPos = Range<qint64>::fromStartAndEnd(operationsStart, out.pos())
             .moved(-dataBlockStart);
 
@@ -316,16 +317,16 @@ static int assemble(Input input, const QInstaller::Settings &settings)
 
         qDebug("Component index: [%llu:%llu]", input.componentIndexSegment.start(),
             input.componentIndexSegment.end());
-        appendInt64Range(&out, input.componentIndexSegment);
+        QInstaller::appendInt64Range(&out, input.componentIndexSegment);
         foreach (const Range<qint64> &range, input.resourcePos)
-            appendInt64Range(&out, range);
-        appendInt64Range(&out, input.operationsPos);
-        appendInt64(&out, input.resourcePos.count());
+            QInstaller::appendInt64Range(&out, range);
+        QInstaller::appendInt64Range(&out, input.operationsPos);
+        QInstaller::appendInt64(&out, input.resourcePos.count());
 
         //data block size, from end of .exe to end of file
-        appendInt64(&out, out.pos() + 3 * sizeof(qint64) - dataBlockStart);
-        appendInt64(&out, QInstaller::MagicInstallerMarker);
-        appendInt64(&out, QInstaller::MagicCookie);
+        QInstaller::appendInt64(&out, out.pos() + 3 * sizeof(qint64) -dataBlockStart);
+        QInstaller::appendInt64(&out, QInstaller::MagicInstallerMarker);
+        QInstaller::appendInt64(&out, QInstaller::MagicCookie);
 
     } catch (const Error &e) {
         qCritical("Error occurred while assembling the installer: %s", qPrintable(e.message()));
@@ -506,7 +507,7 @@ void copyConfigData(const QString &configFile, const QString &targetDir)
     QInstallerTools::copyWithException(sourceConfigFile, targetConfigFile, QLatin1String("configuration"));
 
     QFile configXml(targetConfigFile);
-    QInstaller::openForRead(&configXml, configXml.fileName());
+    QInstaller::openForRead(&configXml);
 
     QDomDocument dom;
     dom.setContent(&configXml);
@@ -553,7 +554,7 @@ void copyConfigData(const QString &configFile, const QString &targetDir)
         QInstallerTools::copyWithException(elementFileInfo.absoluteFilePath(), targetFile, tagName);
     }
 
-    QInstaller::openForWrite(&configXml, configXml.fileName());
+    QInstaller::openForWrite(&configXml);
     QTextStream stream(&configXml);
     dom.save(stream, 4);
 
