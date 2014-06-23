@@ -715,45 +715,33 @@ BinaryContent BinaryContent::readFromApplicationFile()
 BinaryContent BinaryContent::readFromBinary(const QString &path)
 {
     BinaryContent c(path);
-    if (!c.d->m_appBinary->open(QIODevice::ReadOnly)) {
-        throw Error(QCoreApplication::translate("BinaryContent", "Could not open binary %1: %2")
-            .arg(path, c.d->m_appBinary->errorString()));
+
+    // Try to read the binary layout of the calling application. We need to figure out
+    // if we are in installer or an unistaller (maintenance, package manager, updater) binary.
+    QInstaller::openForRead(c.d->m_appBinary.data());
+    quint64 cookiePos = findMagicCookie(c.d->m_appBinary.data(), QInstaller::MagicCookie);
+    if (!c.d->m_appBinary->seek(cookiePos - sizeof(qint64))) {   // seek to read the marker
+        throw Error(QCoreApplication::translate("BinaryContent",
+            "Could not seek to %1 to read the magic marker.").arg(cookiePos - sizeof(qint64)));
     }
-    // check for supported binary, will throw if we can't find a marker
-    const BinaryLayout layout = readBinaryLayout(c.d->m_appBinary.data(),
-        findMagicCookie(c.d->m_appBinary.data(), QInstaller::MagicCookie));
+    const qint64 magicMarker = QInstaller::retrieveInt64(c.d->m_appBinary.data());
 
-    bool retry = true;
-    if (layout.magicMarker != MagicInstallerMarker) {
-        QString binaryDataPath = path;
-        QFileInfo fi(path + QLatin1String("/../../.."));
-        if (QFileInfo(fi.absoluteFilePath()).isBundle())
-            binaryDataPath = fi.absoluteFilePath();
-        fi.setFile(binaryDataPath);
+    if (magicMarker != MagicInstallerMarker) {
+        // We are not an installer, so we need to read the data from the .dat file.
+        QFileInfo fi(path);
+        if (QFileInfo(fi.absoluteFilePath() + QLatin1String("/../../..")).isBundle())
+            fi.setFile(fi.absoluteFilePath()); // On OSX it's not inside the bundle, deserves TODO.
 
-        c.d->m_binaryDataFile = QSharedPointer<QFile>(new QFile(fi.absolutePath() + QLatin1Char('/')
-            + fi.baseName() + QLatin1String(".dat")));
-        if (c.d->m_binaryDataFile->exists() && c.d->m_binaryDataFile->open(QIODevice::ReadOnly)) {
-            // check for supported binary data file, will throw if we can't find a marker
-            try {
-                const qint64 cookiePos = findMagicCookie(c.d->m_binaryDataFile.data(),
-                    QInstaller::MagicCookieDat);
-                const BinaryLayout binaryLayout = readBinaryLayout(c.d->m_binaryDataFile.data(), cookiePos);
-                readBinaryData(c, c.d->m_binaryDataFile, binaryLayout);
-                retry = false;
-            } catch (const Error &error) {
-                // this seems to be an unsupported dat file, try to read from original binary
-                c.d->m_binaryDataFile.clear();
-                qDebug() << error.message();
-            }
-        } else {
-            c.d->m_binaryDataFile.clear();
-        }
+        c.d->m_binaryDataFile.reset(new QFile(fi.absolutePath() + QLatin1Char('/') + fi.baseName()
+            + QLatin1String(".dat")));
+        QInstaller::openForRead(c.d->m_binaryDataFile.data());
+        cookiePos = findMagicCookie(c.d->m_binaryDataFile.data(), QInstaller::MagicCookieDat);
+        readBinaryData(c, c.d->m_binaryDataFile, readBinaryLayout(c.d->m_binaryDataFile.data(),
+            cookiePos));
+    } else {
+        // We are an installer, all data is appended to our binary itself.
+        readBinaryData(c, c.d->m_appBinary, readBinaryLayout(c.d->m_appBinary.data(), cookiePos));
     }
-
-    if (retry)
-        readBinaryData(c, c.d->m_appBinary, layout);
-
     return c;
 }
 

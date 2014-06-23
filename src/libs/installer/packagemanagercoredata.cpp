@@ -112,14 +112,8 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(QLatin1String("AllUsersStartMenuProgramsPath"), replaceWindowsEnvironmentVariables(allPrograms));
 #endif
 
-    try {
-        m_settings = Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
-            QLatin1String(":/metadata/installer-config/"), Settings::RelaxedParseMode);
-    } catch (const Error &e) {
-        // TODO: try better error handling
-        qCritical("Could not parse Config: %s", qPrintable(e.message()));
-        return;
-    }
+    m_settings = Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
+        QLatin1String(":/metadata/installer-config/"), Settings::RelaxedParseMode);
 
     // fill the variables defined in the settings
     m_variables.insert(QLatin1String("ProductName"), m_settings.applicationName());
