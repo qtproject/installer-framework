@@ -25,7 +25,7 @@ See the Qt documentation for the prerequisites and steps to build Qt from source
 
 Adjust the qmake.conf to have a real stand alone working installer:
 
-- add 'embed_manifest_dll embed_manifest_exe' to CONFIG line
+- remove 'embed_manifest_dll embed_manifest_exe' from CONFIG line
 - replace -MD, -MDd with -MT, -MTD in the CFLAGS lines
 
 'git diff' should show you something like:
