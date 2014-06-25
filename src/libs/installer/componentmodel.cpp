@@ -155,10 +155,11 @@ QModelIndex ComponentModel::index(int row, int column, const QModelIndex &parent
 /*!
     Returns the data stored under the given \a role for the item referred to by the \a index.
 
-    \note An \bold invalid QVariant is returned if the given index is invalid. \bold Qt::CheckStateRole is
-    only supported for the first column of the model. \bold Qt::EditRole, \bold Qt::DisplayRole and \bold
-    Qt::ToolTipRole are specifically handled for columns greater than the first column and translate to \bold
-    Qt::UserRole \bold + \bold index.column().
+    \note An \e invalid QVariant is returned if the given index is invalid.
+    Qt::CheckStateRole is only supported for the first column of the model.
+    Qt::EditRole, Qt::DisplayRole and Qt::ToolTipRole are specifically handled
+    for columns greater than the first column and translate to
+    \c {Qt::UserRole + index.column()}.
 
 */
 QVariant ComponentModel::data(const QModelIndex &index, int role) const
@@ -207,7 +208,8 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, in
 
 /*!
     Returns the data for the given \a role and \a section in the header with the specified \a orientation.
-    An \bold invalid QVariant is returned if \a section is out of bounds, \a orientation is not Qt::Horizontal
+    An \e invalid QVariant is returned if \a section is out of bounds,
+    \a orientation is not Qt::Horizontal
     or \a role is anything else than Qt::DisplayRole.
 */
 QVariant ComponentModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -222,7 +224,7 @@ QVariant ComponentModel::headerData(int section, Qt::Orientation orientation, in
     \a value supplied. Returns true if the header's data was updated; otherwise returns false. The
     headerDataChanged() signal is emitted if the data was successfully set.
 
-    \note Only \bold Qt::Horizontal orientation is supported.
+    \note Only Qt::Horizontal orientation is supported.
 */
 bool ComponentModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
 {

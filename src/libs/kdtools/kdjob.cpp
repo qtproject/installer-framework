@@ -229,7 +229,8 @@ int KDJob::timeout() const
 
 /*!
     Sets the timeout in \a milliseconds before the jobs cancel slot gets triggered. \note Only jobs that
-    have the \bold KDJob::Cancelable capability can be canceled by an timeout. A value of -1 will stop the
+    have the \c KDJob::Cancelable capability can be canceled by a timeout. A
+    value of -1 will stop the
     timeout mechanism.
 */
 void KDJob::setTimeout(int milliseconds)
