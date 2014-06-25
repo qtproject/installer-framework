@@ -33,9 +33,13 @@
 
     \title End User Workflows
 
-    The end user experience is similar for both offline and online installers.
-    The installers consist of a package manager and an updater that enable end
-    users to add, update, and remove components.
+    The end user experience is similar for offline and online installers.
+    Along with your application, the installers install a maintenance tool that
+    consists of a package manager, an updater, and an uninstaller. End users can
+    use the maintenance tool to add, update, and remove components. The
+    maintenance tool connects to an external repository to fetch the components
+    to add or update. You can specify the repository in the configuration file
+    or end users can specify it in the maintenance tool settings.
 
     You can support the following end user workflows:
 
@@ -171,13 +175,22 @@
 
     \title Adding Components
 
+    If end users did not select all the components available for installation
+    during the initial installation, they can use the package manager to install
+    the remaining components from a repository later. The package manager is
+    part of a maintenance tool that is installed together with the application
+    during the initial installation. This only works if a repository that
+    contains the components is available either locally or externally.
+
     The following image illustrates the default workflow for installing
     additional components:
 
     \image ifw-user-flow-adding.png "Add components workflow"
 
-    This section uses the Qt SDK Maintenance Tool run on Windows to illustrate
-    how end users add components after the initial installation.
+    This section uses the \e {Maintenance Tool} installed by the Qt 5 installer
+    run on OS X as an example implementation of how end users can add components
+    after the initial installation. The Maintenance Tool contains the package
+    manager, updater, and uninstaller.
 
     \section1 Starting Package Manager
 
@@ -185,7 +198,7 @@
 
     \image ifw-add-components-introduction.png "Introduction page"
 
-    When end users select \gui {Package manager}, and then \gui Next, the
+    When end users select \gui {Package manager}, and then \gui Continue, the
     component selection page opens.
 
     \section1 Selecting Additional Components
@@ -196,16 +209,16 @@
     install. They can select \gui Reset to display the currently installed
     components again.
 
-    \image ifw-add-components-selection.png "Component selection page"
+    \image ifw-add-components-selection.png "Select Components page"
 
-    When end users select \gui Next, the ready to update page opens.
+    When end users select \gui Continue, the ready to update page opens.
 
     \section1 Installing Selected Components
 
     The ready to update page informs end users that the components are installed
     when users select \gui Update.
 
-    \image ifw-ready-to-update.png "Ready to update page"
+    \image ifw-ready-to-update.png "Ready to Update Packages page"
 
     The update page displays information about how installation is progressing.
     End users can select \gui {Show Details} to view more information.
@@ -231,8 +244,8 @@
 
     \image ifw-user-flow-removing.png "Remove components workflow"
 
-    This section uses the Qt SDK Maintenance Tool run on Windows to illustrate
-    how end users remove components.
+    This section uses the Qt 5 Maintenance Tool run on OS X as an example
+    implementation of how end users can remove all or selected components.
 
     \section1 Removing All Components
 
@@ -240,7 +253,7 @@
 
     \image ifw-add-components-introduction.png "Introduction page"
 
-    End users can select \gui {Remove all components}, and then \gui Next, to
+    End users can select \gui {Remove all components}, and then \gui Continue, to
     remove all installed components.
 
     The ready to uninstall page informs end users that the uninstallation can
@@ -250,12 +263,12 @@
 
     \section1 Removing Selected Components
 
-    End users can select \gui {Package manager}, and then \gui Next, to select
+    End users can select \gui {Package manager}, and then \gui Continue, to select
     components to remove on the component selection page:
 
     \image ifw-add-components-selection.png "Component selection page"
 
-    When end users deselect the components to remove, and then select \gui Next,
+    When end users deselect the components to remove, and then select \gui Continue,
     the ready to update page opens. It informs end users that the components are
     removed when users select \gui Update.
 
@@ -279,13 +292,13 @@
 
     \title Updating Components
 
-    The following image illustrates the default workflow for installing
-    additional components:
+    The following image illustrates the default workflow for updating installed
+    components:
 
     \image ifw-user-flow-updating.png "Updating workflow"
 
-    This section uses the Qt SDK Maintenance Tool run on Windows to illustrate
-    how end users remove components.
+    This section uses the Qt 5 Maintenance Tool run on OS X as an example
+    implementation of how end users can update installed components.
 
     \section1 Starting Updater
 
@@ -293,7 +306,7 @@
 
     \image ifw-updating-introduction.png "Introduction page"
 
-    When end users select \gui {Update components}, and then \gui Next, the
+    When end users select \gui {Update components}, and then \gui Continue, the
     component selection page opens.
 
     \section1 Selecting Components to Update
@@ -303,12 +316,12 @@
 
     \image ifw-updating-components.png "Component selection page"
 
-    When end users select \gui Next, the ready to update page opens.
+    When end users select \gui Continue, the ready to update page opens.
 
     \section1 Updating Selected Components
 
     The ready to update page informs end users that the components are updated
-    when users select \gui Update.
+    when they select \gui Update.
 
     \image ifw-ready-to-update.png "Ready to update page"
 
