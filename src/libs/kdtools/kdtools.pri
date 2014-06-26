@@ -8,7 +8,6 @@ HEADERS += $$PWD/kdtoolsglobal.h \
     $$PWD/kdjob.h \
     $$PWD/kdgenericfactory.h \
     $$PWD/kdselfrestarter.h \
-    $$PWD/kdsavefile.h \
     $$PWD/kdrunoncechecker.h \
     $$PWD/kdlockfile.h \
     $$PWD/kdsysinfo.h
@@ -16,7 +15,6 @@ HEADERS += $$PWD/kdtoolsglobal.h \
 SOURCES += $$PWD/kdjob.cpp \
     $$PWD/kdgenericfactory.cpp \
     $$PWD/kdselfrestarter.cpp \
-    $$PWD/kdsavefile.cpp \
     $$PWD/kdrunoncechecker.cpp \
     $$PWD/kdlockfile.cpp \
     $$PWD/kdsysinfo.cpp

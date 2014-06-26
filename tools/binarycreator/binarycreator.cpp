@@ -51,8 +51,6 @@
 #include <settings.h>
 #include <utils.h>
 
-#include <kdsavefile.h>
-
 #include <QtCore/QDirIterator>
 #include <QtCore/QProcess>
 #include <QtCore/QSettings>
@@ -257,27 +255,35 @@ static int assemble(Input input, const QInstaller::Settings &settings)
     }
 #endif
 
+    QTemporaryFile out;
+    QString targetName = input.outputPath;
 #ifdef Q_OS_MAC
     QDir resourcePath(QFileInfo(input.outputPath).dir());
     resourcePath.cdUp();
     resourcePath.cd(QLatin1String("Resources"));
-    KDSaveFile out(resourcePath.filePath(QLatin1String("installer.dat")));
-#else
-    KDSaveFile out(input.outputPath);
+    targetName = resourcePath.filePath(QLatin1String("installer.dat"));
 #endif
-    try {
-#ifdef Q_OS_MAC
-        QInstaller::openForWrite(&out);
 
+    {
+        QFile target(targetName);
+        if (target.exists() && !target.remove()) {
+            qCritical("Could not remove target %s: %s", qPrintable(target.fileName()),
+                qPrintable(target.errorString()));
+            QFile::remove(tempFile);
+            return EXIT_FAILURE;
+        }
+    }
+
+    try {
+        QInstaller::openForWrite(&out);
         QFile exe(input.installerExePath);
+
+#ifdef Q_OS_MAC
         if (!exe.copy(input.outputPath)) {
-            throw Error(QString::fromLatin1("Could not copy %1 to %2: %3").arg(exe.fileName(), input.outputPath,
-                exe.errorString()));
+            throw Error(QString::fromLatin1("Could not copy %1 to %2: %3").arg(exe.fileName(),
+                input.outputPath, exe.errorString()));
         }
 #else
-        QInstaller::openForWrite(&out);
-
-        QFile exe(input.installerExePath);
         QInstaller::openForRead(&exe);
         QInstaller::appendData(&out, &exe, exe.size());
 #endif
@@ -334,12 +340,14 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         return EXIT_FAILURE;
     }
 
-    if (!out.commit(KDSaveFile::OverwriteExistingFile)) {
-        qCritical("Could not write installer to %s: %s", qPrintable(out.fileName()),
-            qPrintable(out.errorString()));
+    if (!out.rename(targetName)) {
+        qCritical("Could not write installer to %s: %s", targetName.toUtf8().constData(),
+            out.errorString().toUtf8().constData());
         QFile::remove(tempFile);
         return EXIT_FAILURE;
     }
+    out.setAutoRemove(false);
+
 #ifndef Q_OS_WIN
     chmod755(out.fileName());
 #endif

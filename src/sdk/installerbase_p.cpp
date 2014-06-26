@@ -49,7 +49,6 @@
 #include <qprocesswrapper.h>
 #include <utils.h>
 
-#include <kdsavefile.h>
 #include <kdupdaterfiledownloader.h>
 #include <kdupdaterfiledownloaderfactory.h>
 

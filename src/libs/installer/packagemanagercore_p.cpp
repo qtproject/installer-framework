@@ -58,7 +58,6 @@
 #include "qsettingswrapper.h"
 #include "remoteclient.h"
 
-#include "kdsavefile.h"
 #include "kdselfrestarter.h"
 #include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterupdatesourcesinfo.h"
@@ -1040,7 +1039,7 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
     qDebug() << "Writing uninstaller:" << uninstallerRenamedName;
     ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Writing uninstaller."));
 
-    KDSaveFile out(uninstallerRenamedName);
+    QTemporaryFile out;
     QInstaller::openForWrite(&out); // throws an exception in case of error
 
     if (!input->seek(0))
@@ -1056,8 +1055,7 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
         resourcePath.cd(QLatin1String("Resources"));
         // It's a bit odd to have only the magic in the data file, but this simplifies
         // other code a lot (since installers don't have any appended data either)
-        QString outPath = resourcePath.filePath(QLatin1String("installer.dat"));
-        KDSaveFile dataOut(outPath);
+        QTemporaryFile dataOut;
         QInstaller::openForWrite(&dataOut);
         QInstaller::appendInt64(&dataOut, 0);   // operations start
         QInstaller::appendInt64(&dataOut, 0);   // operations end
@@ -1065,9 +1063,13 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
         QInstaller::appendInt64(&dataOut, 4 * sizeof(qint64));   // data block size
         QInstaller::appendInt64(&dataOut, QInstaller::MagicUninstallerMarker);
         QInstaller::appendInt64(&dataOut, QInstaller::MagicCookie);
-        dataOut.setPermissions(dataOut.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther);
-        if (!dataOut.commit(KDSaveFile::OverwriteExistingFile))
-            throw Error(tr("Could not write uninstaller data to %1: %2").arg(out.fileName(), out.errorString()));
+        dataOut.setPermissions(dataOut.permissions() | QFile::WriteUser | QFile::ReadGroup
+            | QFile::ReadOther);
+        if (!dataOut.rename(resourcePath.filePath(QLatin1String("installer.dat")))) {
+            throw Error(tr("Could not write uninstaller data to %1: %2").arg(out.fileName(),
+                out.errorString()));
+        }
+        dataOut.setAutoRemove(false);
 #else
         QInstaller::appendInt64(&out, 0);   // operations start
         QInstaller::appendInt64(&out, 0);   // operations end
@@ -1080,8 +1082,19 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
     out.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
         | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser);
 
-    if (!out.commit(KDSaveFile::OverwriteExistingFile))
-        throw Error(tr("Could not write uninstaller to %1: %2").arg(out.fileName(), out.errorString()));
+    {
+        QFile dummy(uninstallerRenamedName);
+        if (dummy.exists() && !dummy.remove()) {
+            throw Error(tr("Could not remove data file '%1': %2").arg(dummy.fileName(),
+                dummy.errorString()));
+        }
+    }
+
+    if (!out.rename(uninstallerRenamedName)) {
+        throw Error(tr("Could not write uninstaller to %1: %2").arg(uninstallerRenamedName,
+            out.errorString()));
+    }
+    out.setAutoRemove(false);
 }
 
 void PackageManagerCorePrivate::writeUninstallerBinaryData(QFileDevice *output, QFile *const input,
@@ -1353,17 +1366,25 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         m_core->setValue(QLatin1String("installedOperationAreSorted"), QLatin1String("true"));
 
         try {
-            KDSaveFile file(dataFile + QLatin1String(".new"));
+            QTemporaryFile file;
             QInstaller::openForWrite(&file);
 
             writeUninstallerBinaryData(&file, &input, performedOperations, layout);
             QInstaller::appendInt64(&file, MagicCookieDat);
             file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
                 | QFile::ReadOther);
-            if (!file.commit(KDSaveFile::OverwriteExistingFile)) {
-                throw Error(tr("Could not write uninstaller binary data to %1: %2").arg(file.fileName(),
-                    file.errorString()));
+
+            QFile dummy(dataFile + QLatin1String(".new"));
+            if (dummy.exists() && !dummy.remove()) {
+                throw Error(tr("Could not remove data file '%1': %2").arg(dummy.fileName(),
+                    dummy.errorString()));
             }
+
+            if (!file.rename(dataFile + QLatin1String(".new"))) {
+                throw Error(tr("Could not write uninstaller binary data to %1: %2")
+                    .arg(file.fileName(), file.errorString()));
+            }
+            file.setAutoRemove(false);
         } catch (const Error &/*error*/) {
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
