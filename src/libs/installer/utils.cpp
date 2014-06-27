@@ -41,11 +41,12 @@
 
 #include "utils.h"
 
-#include <QtCore/QDateTime>
-#include <QtCore/QDir>
-#include <QtCore/QProcessEnvironment>
-#include <QtCore/QVector>
 #include <QCoreApplication>
+#include <QDateTime>
+#include <QDir>
+#include <QProcessEnvironment>
+#include <QThread>
+#include <QVector>
 
 #if defined(Q_OS_WIN) || defined(Q_OS_WINCE)
 #   include "qt_windows.h"
@@ -61,26 +62,13 @@
 #include <time.h>
 #endif
 
-namespace {
-void sleepCopiedFromQTest(int ms)
-{
-    if (ms < 0)
-        return;
-#ifdef Q_OS_WIN
-    Sleep(uint(ms));
-#else
-    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
-    nanosleep(&ts, NULL);
-#endif
-}
-}
 void QInstaller::uiDetachedWait(int ms)
 {
     QTime timer;
     timer.start();
     do {
         QCoreApplication::processEvents(QEventLoop::AllEvents, ms);
-        sleepCopiedFromQTest(10);
+        QThread::msleep(10UL);
     } while (timer.elapsed() < ms);
 }
 
