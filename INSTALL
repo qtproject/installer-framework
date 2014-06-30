@@ -57,11 +57,18 @@ Recommended configure options for Microsoft Windows:
 
 configure -prefix %CD%\qtbase -release -static -target xp -no-opengl -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtscript -skip qtsensors
 
-### Linux & Mac OS X
+### Linux
 
-Recommended configure options for Linux and Mac OS X:
+Recommended configure options for Linux:
 
-./configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
+configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
+
+### OS X
+
+Recommended configure options for OS X:
+
+configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
+
 
 Build the Framework
 ---------------------
