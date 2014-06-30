@@ -5,8 +5,10 @@ INCLUDEPATH += . .. rcc ../common
 include(../../installerfw.pri)
 
 QT -= gui
-QTPLUGIN += qico qtaccessiblewidgets
+QTPLUGIN += qico
 QT += qml xml
+
+!minQtVersion(5,4,0): QTPLUGIN += qtaccessiblewidgets
 
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH
