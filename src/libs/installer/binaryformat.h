@@ -52,14 +52,11 @@
 #include <QVector>
 
 namespace QInstallerCreator {
-class Component;
 
-class INSTALLER_EXPORT Archive : public QFileDevice
+class INSTALLER_EXPORT Archive : public QIODevice
 {
-    Q_OBJECT
 public:
     explicit Archive(const QString &path);
-    Archive(const QByteArray &name, const QByteArray &data);
     Archive(const QByteArray &name, const QSharedPointer<QFile> &device, const Range<qint64> &segment);
     ~Archive();
 
@@ -69,26 +66,20 @@ public:
     bool seek(qint64 pos);
     qint64 size() const;
 
-    bool createZippedFile();
-
     QByteArray name() const;
     void setName(const QByteArray &name);
 
-protected:
+    void copyData(QFileDevice *out) { copyData(this, out); }
+    static void copyData(Archive *archive, QFileDevice *out);
+
+private:
     qint64 readData(char *data, qint64 maxSize);
     qint64 writeData(const char *data, qint64 maxSize);
 
-    Range<qint64> binarySegment() const;
-
 private:
-    //used when when reading from the installer
     QSharedPointer<QFile> m_device;
     const Range<qint64> m_segment;
-
-    //used when creating the installer, archive input file
     QFile m_inputFile;
-    const bool m_isTempFile;
-    const QString m_path;
     QByteArray m_name;
 };
 
@@ -97,9 +88,8 @@ class INSTALLER_EXPORT Component
     Q_DECLARE_TR_FUNCTIONS(Component)
 
 public:
-    virtual ~Component();
-
     static Component readFromIndexEntry(const QSharedPointer<QFile> &dev, qint64 offset);
+
     void writeIndexEntry(QFileDevice *dev, qint64 offset) const;
 
     void writeData(QFileDevice *dev, qint64 positionOffset) const;
@@ -107,12 +97,6 @@ public:
 
     QByteArray name() const;
     void setName(const QByteArray &ba);
-
-    QString dataDirectory() const;
-    void setDataDirectory(const QString &path);
-
-    Range<qint64> binarySegment() const;
-    void setBinarySegment(const Range<qint64> &r);
 
     void appendArchive(const QSharedPointer<Archive> &archive);
     QSharedPointer<Archive> archiveByName(const QByteArray &name) const;

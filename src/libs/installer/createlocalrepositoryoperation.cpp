@@ -293,7 +293,7 @@ bool CreateLocalRepositoryOperation::performOperation()
 
                         QFile target(absoluteTargetPath + QDir::separator() + QString::fromUtf8(a->name()));
                         QInstaller::openForWrite(&target);
-                        QInstaller::blockingCopy(a.data(), &target, a->size());
+                        a->copyData(&target);
                         helper.m_files.prepend(target.fileName());
                         emit outputTextChanged(helper.m_files.first());
                     }

@@ -115,10 +115,8 @@ void BinaryFormatEngineHandler::registerArchive(const QString &pathName, const Q
     if (c.name().isEmpty())
         c.setName(comp.toUtf8());
 
-    QList< QSharedPointer<Archive> > registered;
     QSharedPointer<Archive> newArchive(new Archive(archive));
     newArchive->setName(archiveName.toUtf8());
-    registered.push_back(newArchive);
     c.appendArchive(newArchive);
     d->index.insertComponent(c);
 }

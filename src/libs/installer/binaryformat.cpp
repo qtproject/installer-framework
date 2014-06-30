@@ -44,7 +44,6 @@
 #include "errors.h"
 #include "fileio.h"
 #include "fileutils.h"
-#include "lib7z_facade.h"
 #include "utils.h"
 
 #include "kdupdaterupdateoperationfactory.h"
@@ -52,9 +51,6 @@
 #include <QDebug>
 #include <QResource>
 #include <QTemporaryFile>
-
-using namespace QInstaller;
-using namespace QInstallerCreator;
 
 /*!
     Search through 1MB, if smaller through the whole file. Note: QFile::map() does
@@ -102,28 +98,30 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
     return -1; // never reached
 }
 
+
+namespace QInstallerCreator {
+
+/*!
+    \class Archive
+    \brief The Archive class provides an interface for reading from an underlying device.
+
+    Archive is an interface for reading inside a binary file, but is not supposed to write to
+    the binary it wraps. The Archive class is created by either passing a path to an already
+    zipped archive or by passing an identifier and segment inside an already existing binary,
+    passed as device.
+
+    The archive name can be set at any time using setName(). The segment passed inside the
+    constructor represents the offset and size of the archive inside the binary file.
+*/
+
 /*!
     Creates an archive providing the data in \a path.
-    \a path can be a path to a file or to a directory. If it's a file, it's considered to be
-    pre-zipped and gets delivered as it is. If it's a directory, it gets zipped by Archive.
  */
 Archive::Archive(const QString &path)
     : m_device(0)
-    , m_isTempFile(false)
-    , m_path(path)
     , m_name(QFileInfo(path).fileName().toUtf8())
 {
-}
-
-Archive::Archive(const QByteArray &identifier, const QByteArray &data)
-    : m_device(0)
-    , m_isTempFile(true)
-    , m_path(generateTemporaryFileName())
-    , m_name(identifier)
-{
-    QFile file(m_path);
-    file.open(QIODevice::WriteOnly);
-    file.write(data);
+    m_inputFile.setFileName(path);
 }
 
 /*!
@@ -132,7 +130,6 @@ Archive::Archive(const QByteArray &identifier, const QByteArray &data)
 Archive::Archive(const QByteArray &identifier, const QSharedPointer<QFile> &device, const Range<qint64> &segment)
     : m_device(device)
     , m_segment(segment)
-    , m_isTempFile(false)
     , m_name(identifier)
 {
 }
@@ -141,8 +138,6 @@ Archive::~Archive()
 {
     if (isOpen())
         close();
-    if (m_isTempFile)
-        QFile::remove(m_path);
 }
 
 /*!
@@ -171,8 +166,6 @@ void Archive::setName(const QByteArray &name)
 void Archive::close()
 {
     m_inputFile.close();
-    if (QFileInfo(m_path).isDir())
-        m_inputFile.remove();
     QIODevice::close();
 }
 
@@ -194,57 +187,11 @@ bool Archive::open(OpenMode mode)
     if (m_device != 0)
         return QIODevice::open(mode);
 
-    const QFileInfo fi(m_path);
-    if (fi.isFile()) {
-        m_inputFile.setFileName(m_path);
-        if (!m_inputFile.open(mode)) {
-            setErrorString(tr("Could not open archive file %1 for reading.").arg(m_path));
-            return false;
-        }
-        setOpenMode(mode);
-        return true;
-    }
-
-    if (fi.isDir()) {
-        if (m_inputFile.fileName().isEmpty() || !m_inputFile.exists()) {
-            if (!createZippedFile())
-                return false;
-        }
-        Q_ASSERT(!m_inputFile.fileName().isEmpty());
-        if (!m_inputFile.open(mode))
-            return false;
-        setOpenMode(mode);
-        return true;
-    }
-
-    setErrorString(tr("Could not create archive from %1: Not a file.").arg(m_path));
-    return false;
-}
-
-bool Archive::createZippedFile()
-{
-    QTemporaryFile file;
-    file.setAutoRemove(false);
-    if (!file.open())
-        return false;
-
-    m_inputFile.setFileName(file.fileName());
-    file.close();
-    m_inputFile.open(QIODevice::ReadWrite);
-    try {
-        Lib7z::createArchive(&m_inputFile, QStringList() << m_path);
-    } catch(Lib7z::SevenZipException &e) {
-        m_inputFile.close();
-        setErrorString(e.message());
+    if (!m_inputFile.open(mode)) {
+        setErrorString(m_inputFile.errorString());
         return false;
     }
-
-    if (!Lib7z::isSupportedArchive(&m_inputFile)) {
-        m_inputFile.close();
-        setErrorString(tr("Error while packing directory at %1").arg(m_path));
-        return false;
-    }
-    m_inputFile.close();
+    setOpenMode(mode);
     return true;
 }
 
@@ -253,26 +200,9 @@ bool Archive::createZippedFile()
  */
 qint64 Archive::size() const
 {
-    // if we got a device, we just pass the length of the segment
     if (m_device != 0)
         return m_segment.length();
-
-    const QFileInfo fi(m_path);
-    // if we got a regular file, we pass the size of the file
-    if (fi.isFile())
-        return fi.size();
-
-    if (fi.isDir()) {
-        if (m_inputFile.fileName().isEmpty() || !m_inputFile.exists()) {
-            if (!const_cast< Archive* >(this)->createZippedFile()) {
-                throw Error(QCoreApplication::translate("Archive",
-                    "Cannot create zipped file for path %1: %2").arg(m_path, errorString()));
-            }
-        }
-        Q_ASSERT(!m_inputFile.fileName().isEmpty());
-        return m_inputFile.size();
-    }
-    return 0;
+    return m_inputFile.size();
 }
 
 /*!
@@ -301,6 +231,29 @@ qint64 Archive::writeData(const char* data, qint64 maxSize)
     return -1;
 }
 
+void Archive::copyData(Archive *archive, QFileDevice *out)
+{
+    qint64 left = archive->size();
+    char data[4096];
+    while (left > 0) {
+        const qint64 len = qMin<qint64>(left, 4096);
+        const qint64 bytesRead = archive->read(data, len);
+        if (bytesRead != len) {
+            throw QInstaller::Error(tr("Read failed after % 1 bytes: % 2")
+                .arg(QString::number(archive->size() - left), archive->errorString()));
+        }
+        const qint64 bytesWritten = out->write(data, len);
+        if (bytesWritten != len) {
+            throw QInstaller::Error(tr("Write failed after % 1 bytes: % 2")
+                .arg(QString::number(archive->size() - left), out->errorString()));
+        }
+        left -= len;
+    }
+}
+
+
+// -- Component
+
 QByteArray Component::name() const
 {
     return m_name;
@@ -309,16 +262,6 @@ QByteArray Component::name() const
 void Component::setName(const QByteArray &ba)
 {
     m_name = ba;
-}
-
-Range<qint64> Component::binarySegment() const
-{
-    return m_binarySegment;
-}
-
-void Component::setBinarySegment(const Range<qint64> &r)
-{
-    m_binarySegment = r;
 }
 
 Component Component::readFromIndexEntry(const QSharedPointer<QFile> &in, qint64 offset)
@@ -336,8 +279,8 @@ void Component::writeIndexEntry(QFileDevice *out, qint64 positionOffset) const
 {
     QInstaller::appendByteArray(out, m_name);
     m_binarySegment.moved(positionOffset);
-    QInstaller::appendInt64(out, binarySegment().start());
-    QInstaller::appendInt64(out, binarySegment().length());
+    QInstaller::appendInt64(out, m_binarySegment.start());
+    QInstaller::appendInt64(out, m_binarySegment.length());
 }
 
 void Component::writeData(QFileDevice *out, qint64 offset) const
@@ -364,8 +307,8 @@ void Component::writeData(QFileDevice *out, qint64 offset) const
 
     foreach (const QSharedPointer<Archive> &archive, m_archives) {
         if (!archive->open(QIODevice::ReadOnly)) {
-            throw Error(tr("Could not open archive %1: %2").arg(QLatin1String(archive->name()),
-                archive->errorString()));
+            throw QInstaller::Error(tr("Could not open archive %1: %2")
+                .arg(QString::fromUtf8(archive->name()), archive->errorString()));
         }
 
         const qint64 expectedStart = starts.takeFirst();
@@ -373,7 +316,7 @@ void Component::writeData(QFileDevice *out, qint64 offset) const
         Q_UNUSED(expectedStart);
         Q_UNUSED(actualStart);
         Q_ASSERT(expectedStart == actualStart);
-        QInstaller::blockingCopy(archive.data(), out, archive->size());
+        archive->copyData(out);
     }
 
     m_binarySegment = Range<qint64>::fromStartAndEnd(dataBegin, out->pos() + offset);
@@ -399,16 +342,6 @@ void Component::readData(const QSharedPointer<QFile> &in, qint64 offset)
     in->seek(pos);
 }
 
-QString Component::dataDirectory() const
-{
-    return m_dataDirectory;
-}
-
-void Component::setDataDirectory(const QString &path)
-{
-    m_dataDirectory = path;
-}
-
 bool Component::operator<(const Component& other) const
 {
     if (m_name != other.name())
@@ -419,13 +352,6 @@ bool Component::operator<(const Component& other) const
 bool Component::operator==(const Component& other) const
 {
     return m_name == other.m_name && m_binarySegment == other.m_binarySegment;
-}
-
-/*!
-    Destroys this component.
- */
-Component::~Component()
-{
 }
 
 /*!
@@ -515,6 +441,9 @@ int ComponentIndex::componentCount() const
     return m_components.size();
 }
 
+} // namespace QInstallerCreator
+
+namespace QInstaller {
 
 /*!
     \internal
@@ -832,14 +761,12 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
         const QVector<QInstallerCreator::Component> components = content.d->m_componentIndex.components();
         qDebug() << "Number of components loaded:" << components.count();
         foreach (const QInstallerCreator::Component &component, components) {
-            const QVector<QSharedPointer<Archive> > archives = component.archives();
+            const QVector<QSharedPointer<QInstallerCreator::Archive> > archives = component.archives();
             qDebug() << component.name().data() << "loaded...";
             QStringList archivesWithSize;
-            foreach (const QSharedPointer<Archive> &archive, archives) {
-                QString archiveWithSize(QLatin1String("%1 - %2"));
-                archiveWithSize = archiveWithSize.arg(QString::fromLocal8Bit(archive->name()),
-                    humanReadableSize(archive->size()));
-                archivesWithSize.append(archiveWithSize);
+            foreach (const QSharedPointer<QInstallerCreator::Archive> &archive, archives) {
+                archivesWithSize.append(QString::fromLatin1("%1 - %2")
+                    .arg(QString::fromUtf8(archive->name()), humanReadableSize(archive->size())));
             }
             if (!archivesWithSize.isEmpty()) {
                 qDebug() << " - " << archives.count() << "archives: "
@@ -946,3 +873,5 @@ QInstallerCreator::ComponentIndex BinaryContent::componentIndex() const
 {
     return d->m_componentIndex;
 }
+
+} // namespace QInstaller
