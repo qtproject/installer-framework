@@ -55,19 +55,19 @@ Adjust the qmake.conf to have a real stand alone working installer:
 
 Recommended configuration options for Microsoft Windows:
 
-configure -prefix %CD%\qtbase -release -static -target xp -no-opengl -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtlocation -skip qtscript -skip qtsensors
+configure -prefix %CD%\qtbase -release -static -target xp -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns
 
 ### Linux
 
 Recommended configuration options for Linux:
 
-configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
+configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns
 
 ### OS X
 
 Recommended configuration options for OS X:
 
-configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
+configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns
 
 
 Build the Framework
