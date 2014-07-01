@@ -110,8 +110,8 @@ public:
     QString adminTargetDir() const;
 
     QString removeTargetDir() const;
-    QString uninstallerName() const;
-    QString uninstallerIniFile() const;
+    QString maintenanceToolName() const;
+    QString maintenanceToolIniFile() const;
 
     QString configurationFileName() const;
 

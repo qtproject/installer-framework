@@ -58,8 +58,8 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.runProgramDescription(), QString());
     QCOMPARE(settings.adminTargetDir(), QString());
     QCOMPARE(settings.removeTargetDir(), QLatin1String("true"));
-    QCOMPARE(settings.uninstallerName(), QLatin1String("uninstall"));
-    QCOMPARE(settings.uninstallerIniFile(), QLatin1String("uninstall.ini"));
+    QCOMPARE(settings.maintenanceToolName(), QLatin1String("maintenancetool"));
+    QCOMPARE(settings.maintenanceToolIniFile(), QLatin1String("maintenancetool.ini"));
     QCOMPARE(settings.configurationFileName(), QLatin1String("components.xml"));
     QCOMPARE(settings.dependsOnLocalInstallerBinary(), false);
     QCOMPARE(settings.repositorySettingsPageVisible(), true);

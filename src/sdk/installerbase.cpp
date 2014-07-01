@@ -278,8 +278,8 @@ int main(int argc, char *argv[])
                 qDebug() << QString::fromLatin1("    %1").arg(it.next());
         }
 
-        // register custom operations before reading the binary content cause they may used in
-        // the uninstaller for the recorded list of during the installation performed operations
+        // register custom operations before reading the binary content because they may be used in
+        // the maintenance tool for the recorded list or during the installation performed operations
         QInstaller::init();
 
         QString binaryFile = QCoreApplication::applicationFilePath();

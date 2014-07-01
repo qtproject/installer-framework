@@ -25,8 +25,8 @@ File should contain all elements we allow in a config.xml
 
     <StartMenuDir>Super App</StartMenuDir>
 
-    <UninstallerName>uninstaller</UninstallerName>
-    <UninstallerIniFile>uninstaller.ini</UninstallerIniFile>
+    <MaintenanceToolName>maintenancetool</MaintenanceToolName>
+    <MaintenanceToolIniFile>maintenancetool.ini</MaintenanceToolIniFile>
     <RemoveTargetDir>true</RemoveTargetDir>
 
     <RunProgram>myapp</RunProgram>

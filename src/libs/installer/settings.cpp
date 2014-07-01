@@ -61,10 +61,10 @@ static const QLatin1String scBanner("Banner");
 static const QLatin1String scProductUrl("ProductUrl");
 static const QLatin1String scBackground("Background");
 static const QLatin1String scAdminTargetDir("AdminTargetDir");
-static const QLatin1String scUninstallerName("UninstallerName");
+static const QLatin1String scMaintenanceToolName("MaintenanceToolName");
 static const QLatin1String scUserRepositories("UserRepositories");
 static const QLatin1String scTmpRepositories("TemporaryRepositories");
-static const QLatin1String scUninstallerIniFile("UninstallerIniFile");
+static const QLatin1String scMaintenanceToolIniFile("MaintenanceToolIniFile");
 static const QLatin1String scRemoteRepositories("RemoteRepositories");
 static const QLatin1String scDependsOnLocalInstallerBinary("DependsOnLocalInstallerBinary");
 static const QLatin1String scTranslations("Translations");
@@ -232,7 +232,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scTargetDir << scAdminTargetDir
                 << scIcon << scInstallerApplicationIcon << scInstallerWindowIcon
                 << scLogo << scWatermark << scBanner << scBackground
-                << scStartMenuDir << scUninstallerName << scUninstallerIniFile << scRemoveTargetDir
+                << scStartMenuDir << scMaintenanceToolName << scMaintenanceToolIniFile << scRemoveTargetDir
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scWizardStyle << scTitleColor
@@ -286,12 +286,12 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                            QString(s.d->m_data.value(scIcon).toString() + s.systemIconSuffix()));
     if (!s.d->m_data.contains(scRemoveTargetDir))
         s.d->m_data.insert(scRemoveTargetDir, scTrue);
-    if (!s.d->m_data.contains(scUninstallerName))
-        s.d->m_data.insert(scUninstallerName, QLatin1String("uninstall"));
+    if (!s.d->m_data.contains(scMaintenanceToolName))
+        s.d->m_data.insert(scMaintenanceToolName, QLatin1String("maintenancetool"));
     if (!s.d->m_data.contains(scTargetConfigurationFile))
         s.d->m_data.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
-    if (!s.d->m_data.contains(scUninstallerIniFile))
-        s.d->m_data.insert(scUninstallerIniFile, QString(s.uninstallerName() + QLatin1String(".ini")));
+    if (!s.d->m_data.contains(scMaintenanceToolIniFile))
+        s.d->m_data.insert(scMaintenanceToolIniFile, QString(s.maintenanceToolName() + QLatin1String(".ini")));
     if (!s.d->m_data.contains(scDependsOnLocalInstallerBinary))
         s.d->m_data.insert(scDependsOnLocalInstallerBinary, false);
     if (!s.d->m_data.contains(scRepositorySettingsPageVisible))
@@ -386,14 +386,14 @@ QString Settings::removeTargetDir() const
     return d->m_data.value(scRemoveTargetDir).toString();
 }
 
-QString Settings::uninstallerName() const
+QString Settings::maintenanceToolName() const
 {
-    return d->m_data.value(scUninstallerName).toString();
+    return d->m_data.value(scMaintenanceToolName).toString();
 }
 
-QString Settings::uninstallerIniFile() const
+QString Settings::maintenanceToolIniFile() const
 {
-    return d->m_data.value(scUninstallerIniFile).toString();
+    return d->m_data.value(scMaintenanceToolIniFile).toString();
 }
 
 QString Settings::runProgram() const

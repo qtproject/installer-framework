@@ -239,14 +239,14 @@
                 sections that each specify the \c Url to access the repository.
                 For more information, see \l{Configuring Repositories}.
         \row
-            \li UninstallerName
-            \li Filename of the generated uninstaller. Defaults to
-                \e uninstall. The platform-specific executable file extension is
+            \li MaintenanceToolName
+            \li Filename of the generated maintenance tool. Defaults to
+                \e maintenancetool. The platform-specific executable file extension is
                 appended.
         \row
-            \li UninstallerIniFile
-            \li Filename for the configuration of the generated uninstaller. Defaults to
-                \e {UninstallerName}.ini.
+            \li MaintenanceToolIniFile
+            \li Filename for the configuration of the generated maintenance tool. Defaults to
+                \e {MaintenanceToolName}.ini.
         \row
             \li RemoveTargetDir
             \li Set to \c false if the target directory should not be deleted when uninstalling.

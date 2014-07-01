@@ -16,6 +16,9 @@
 - Improved documentation.
 - Documentation fixes
 - Only support Qt 5 on documentation side as well.
+- Renamed settings inside config.xml:
+  - UninstallerName renamed to MaintenanceToolName (default value changed to "maintenancetool")
+  - UninstallerIniFile renamed to MaintenanceToolIniFile
 
 Thanks go to Sze Howe Koh, Ray Donnelly and Sascha Cunz for contributions.
 

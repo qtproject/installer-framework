@@ -210,7 +210,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_testChecksum(false)
     , m_launchedAsRoot(AdminAuthorization::hasAdminRights())
     , m_completeUninstall(false)
-    , m_needToWriteUninstaller(false)
+    , m_needToWriteMaintenanceTool(false)
     , m_performedOperationsOld(performedOperations)
     , m_dependsOnLocalInstallerBinary(false)
     , m_core(core)
@@ -733,9 +733,9 @@ Operation *PackageManagerCorePrivate::takeOwnedOperation(Operation *operation)
     return operation;
 }
 
-QString PackageManagerCorePrivate::uninstallerName() const
+QString PackageManagerCorePrivate::maintenanceToolName() const
 {
-    QString filename = m_data.settings().uninstallerName();
+    QString filename = m_data.settings().maintenanceToolName();
 #if defined(Q_OS_OSX)
     if (QInstaller::isInBundle(QCoreApplication::applicationDirPath()))
         filename += QLatin1String(".app/Contents/MacOS/") + filename;
@@ -793,8 +793,8 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
 
 void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
 {
-    // write current state (variables) to the uninstaller ini file
-    const QString iniPath = targetDir() + QLatin1Char('/') + m_data.settings().uninstallerIniFile();
+    // write current state (variables) to the maintenance tool ini file
+    const QString iniPath = targetDir() + QLatin1Char('/') + m_data.settings().maintenanceToolIniFile();
 
     QVariantHash variables;
     QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
@@ -856,7 +856,7 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
 
 void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &targetDir)
 {
-    QSettingsWrapper cfg(targetDir + QLatin1Char('/') + m_data.settings().uninstallerIniFile(),
+    QSettingsWrapper cfg(targetDir + QLatin1Char('/') + m_data.settings().maintenanceToolIniFile(),
         QSettingsWrapper::IniFormat);
     const QVariantHash vars = cfg.value(QLatin1String("Variables")).toHash();
     for (QHash<QString, QVariant>::ConstIterator it = vars.constBegin(); it != vars.constEnd(); ++it)
@@ -1033,11 +1033,11 @@ void PackageManagerCorePrivate::registerPathsForUninstallation(
     }
 }
 
-void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint64 size, bool writeBinaryLayout)
+void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, qint64 size, bool writeBinaryLayout)
 {
-    QString uninstallerRenamedName = uninstallerName() + QLatin1String(".new");
-    qDebug() << "Writing uninstaller:" << uninstallerRenamedName;
-    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Writing uninstaller."));
+    QString maintenanceToolRenamedName = maintenanceToolName() + QLatin1String(".new");
+    qDebug() << "Writing maintenance tool:" << maintenanceToolRenamedName;
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Writing maintenance tool."));
 
     QTemporaryFile out;
     QInstaller::openForWrite(&out); // throws an exception in case of error
@@ -1048,9 +1048,9 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
     QInstaller::appendData(&out, input, size);
     if (writeBinaryLayout) {
 #ifdef Q_OS_OSX
-        QDir resourcePath(QFileInfo(uninstallerRenamedName).dir());
+        QDir resourcePath(QFileInfo(maintenanceToolRenamedName).dir());
         if (!resourcePath.path().endsWith(QLatin1String("Contents/MacOS")))
-            throw Error(tr("Uninstaller is not a bundle"));
+            throw Error(tr("Maintenance tool is not a bundle"));
         resourcePath.cdUp();
         resourcePath.cd(QLatin1String("Resources"));
         // It's a bit odd to have only the magic in the data file, but this simplifies
@@ -1066,7 +1066,7 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
         dataOut.setPermissions(dataOut.permissions() | QFile::WriteUser | QFile::ReadGroup
             | QFile::ReadOther);
         if (!dataOut.rename(resourcePath.filePath(QLatin1String("installer.dat")))) {
-            throw Error(tr("Could not write uninstaller data to %1: %2").arg(out.fileName(),
+            throw Error(tr("Could not write maintenance tool data to %1: %2").arg(out.fileName(),
                 out.errorString()));
         }
         dataOut.setAutoRemove(false);
@@ -1083,21 +1083,21 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
         | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser);
 
     {
-        QFile dummy(uninstallerRenamedName);
+        QFile dummy(maintenanceToolRenamedName);
         if (dummy.exists() && !dummy.remove()) {
             throw Error(tr("Could not remove data file '%1': %2").arg(dummy.fileName(),
                 dummy.errorString()));
         }
     }
 
-    if (!out.rename(uninstallerRenamedName)) {
-        throw Error(tr("Could not write uninstaller to %1: %2").arg(uninstallerRenamedName,
+    if (!out.rename(maintenanceToolRenamedName)) {
+        throw Error(tr("Could not write maintenance tool to %1: %2").arg(maintenanceToolRenamedName,
             out.errorString()));
     }
     out.setAutoRemove(false);
 }
 
-void PackageManagerCorePrivate::writeUninstallerBinaryData(QFileDevice *output, QFile *const input,
+void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *output, QFile *const input,
     const OperationList &performedOperations, const BinaryLayout &layout)
 {
     const qint64 dataBlockStart = output->pos();
@@ -1163,7 +1163,7 @@ void PackageManagerCorePrivate::writeUninstallerBinaryData(QFileDevice *output, 
     QInstaller::appendInt64(output, MagicUninstallerMarker);
 }
 
-void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperations)
+void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOperations)
 {
     bool gainedAdminRights = false;
     QTemporaryFile tempAdminFile(targetDir() + QLatin1String("/testjsfdjlkdsjflkdsjfldsjlfds")
@@ -1173,9 +1173,9 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         gainedAdminRights = true;
     }
 
-    const QString targetAppDirPath = QFileInfo(uninstallerName()).path();
+    const QString targetAppDirPath = QFileInfo(maintenanceToolName()).path();
     if (!QDir().exists(targetAppDirPath)) {
-        // create the directory containing the uninstaller (like a bundle structor, on Mac...)
+        // create the directory containing the maintenance tool (like a bundle structure on OS X...)
         Operation *op = createOwnedOperation(QLatin1String("Mkdir"));
         op->setArguments(QStringList() << targetAppDirPath);
         performOperationThreaded(op, Backup);
@@ -1210,7 +1210,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         QTextStream out(&targetPlist);
         const QString before = QLatin1String("<string>") + QFileInfo(QCoreApplication::applicationFilePath())
             .fileName() + QLatin1String("</string>");
-        const QString after = QLatin1String("<string>") + QFileInfo(uninstallerName()).baseName()
+        const QString after = QLatin1String("<string>") + QFileInfo(maintenanceToolName()).baseName()
             + QLatin1String("</string>");
         while (!in.atEnd())
             out << in.readLine().replace(before, after) << endl;
@@ -1296,7 +1296,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             QFile replacementBinary(installerBaseBinary);
             try {
                 QInstaller::openForRead(&replacementBinary);
-                writeUninstallerBinary(&replacementBinary, replacementBinary.size(), true);
+                writeMaintenanceToolBinary(&replacementBinary, replacementBinary.size(), true);
                 qDebug() << "Wrote the binary with the new replacement.";
 
                 newBinaryWritten = true;
@@ -1309,21 +1309,21 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
                 // Is there anything more sensible we can do with this error? I think not. It's not serious
                 // enough for throwing / aborting the process.
                 qDebug() << QString::fromLatin1("Could not remove installer base binary '%1' after updating "
-                    "the uninstaller: %2").arg(installerBaseBinary, replacementBinary.errorString());
+                    "the maintenance tool: %2").arg(installerBaseBinary, replacementBinary.errorString());
             } else {
                 qDebug() << QString::fromLatin1("Removed installer base binary '%1' after updating the "
-                    "uninstaller/ maintenance tool.").arg(installerBaseBinary);
+                    "maintenance tool.").arg(installerBaseBinary);
             }
             m_installerBaseBinaryUnreplaced.clear();
         } else if (!installerBaseBinary.isEmpty() && !QFileInfo(installerBaseBinary).exists()) {
-            qWarning() << QString::fromLatin1("The current uninstaller/ maintenance tool could not be "
+            qWarning() << QString::fromLatin1("The current maintenance tool could not be "
                 "updated. '%1' does not exist. Please fix the 'setInstallerBaseBinary(<temp_installer_base_"
                 "binary_path>)' call in your script.").arg(installerBaseBinary);
         }
 
         QFile input;
         BinaryLayout layout;
-        const QString dataFile = targetDir() + QLatin1Char('/') + m_data.settings().uninstallerName()
+        const QString dataFile = targetDir() + QLatin1Char('/') + m_data.settings().maintenanceToolName()
             + QLatin1String(".dat");
         try {
             if (isInstaller()) {
@@ -1336,7 +1336,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         } catch (const Error &/*error*/) {
 #ifdef Q_OS_OSX
             // On Mac, data is always in a separate file so that the binary can be signed
-            QString binaryName = isInstaller() ? installerBinaryPath() : uninstallerName();
+            QString binaryName = isInstaller() ? installerBinaryPath() : maintenanceToolName();
             QDir dataPath(QFileInfo(binaryName).dir());
             dataPath.cdUp();
             dataPath.cd(QLatin1String("Resources"));
@@ -1349,15 +1349,15 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
                 newBinaryWritten = true;
                 QFile tmp(binaryName);
                 QInstaller::openForRead(&tmp);
-                writeUninstallerBinary(&tmp, tmp.size(), true);
+                writeMaintenanceToolBinary(&tmp, tmp.size(), true);
             }
 #else
-            input.setFileName(isInstaller() ? installerBinaryPath() : uninstallerName());
+            input.setFileName(isInstaller() ? installerBinaryPath() : maintenanceToolName());
             QInstaller::openForRead(&input);
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
-                writeUninstallerBinary(&input, layout.endOfData - layout.dataBlockSize, true);
+                writeMaintenanceToolBinary(&input, layout.endOfData - layout.dataBlockSize, true);
             }
 #endif
         }
@@ -1369,7 +1369,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             QTemporaryFile file;
             QInstaller::openForWrite(&file);
 
-            writeUninstallerBinaryData(&file, &input, performedOperations, layout);
+            writeMaintenanceToolBinaryData(&file, &input, performedOperations, layout);
             QInstaller::appendInt64(&file, MagicCookieDat);
             file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
                 | QFile::ReadOther);
@@ -1381,23 +1381,23 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             }
 
             if (!file.rename(dataFile + QLatin1String(".new"))) {
-                throw Error(tr("Could not write uninstaller binary data to %1: %2")
+                throw Error(tr("Could not write maintenance tool binary data to %1: %2")
                     .arg(file.fileName(), file.errorString()));
             }
             file.setAutoRemove(false);
         } catch (const Error &/*error*/) {
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
-                QFile tmp(isInstaller() ? installerBinaryPath() : uninstallerName());
+                QFile tmp(isInstaller() ? installerBinaryPath() : maintenanceToolName());
                 QInstaller::openForRead(&tmp);
                 BinaryLayout tmpLayout = BinaryContent::readBinaryLayout(&tmp, findMagicCookie(&tmp, MagicCookie));
-                writeUninstallerBinary(&tmp, tmpLayout.endOfData - tmpLayout.dataBlockSize, false);
+                writeMaintenanceToolBinary(&tmp, tmpLayout.endOfData - tmpLayout.dataBlockSize, false);
             }
 
-            QFile file(uninstallerName() + QLatin1String(".new"));
+            QFile file(maintenanceToolName() + QLatin1String(".new"));
             QInstaller::openForAppend(&file);
             file.seek(file.size());
-            writeUninstallerBinaryData(&file, &input, performedOperations, layout);
+            writeMaintenanceToolBinaryData(&file, &input, performedOperations, layout);
             QInstaller::appendInt64(&file, MagicCookie);
         }
         input.close();
@@ -1406,14 +1406,14 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 
         if (newBinaryWritten) {
             const bool restart = replacementExists && isUpdater() && (!statusCanceledOrFailed()) && m_needsHardRestart;
-            deferredRename(uninstallerName() + QLatin1String(".new"), uninstallerName(), restart);
+            deferredRename(maintenanceToolName() + QLatin1String(".new"), maintenanceToolName(), restart);
             qDebug() << "Maintenance tool restart:" << (restart ? "true." : "false.");
         }
     } catch (const Error &err) {
         setStatus(PackageManagerCore::Failure);
         if (gainedAdminRights)
             m_core->dropAdminRights();
-        m_needToWriteUninstaller = false;
+        m_needToWriteMaintenanceTool = false;
         throw err;
     }
 
@@ -1422,7 +1422,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 
     commitSessionOperations();
 
-    m_needToWriteUninstaller = false;
+    m_needToWriteMaintenanceTool = false;
 }
 
 QString PackageManagerCorePrivate::registerPath() const
@@ -1449,7 +1449,7 @@ bool PackageManagerCorePrivate::runInstaller()
         setStatus(PackageManagerCore::Running);
         emit installationStarted(); // resets also the ProgressCoordninator
 
-        // to have some progress for writeUninstaller
+        // to have some progress for writeMaintenanceTool
         ProgressCoordinator::instance()->addReservePercentagePoints(1);
 
         const QString target = QDir::cleanPath(targetDir().replace(QLatin1Char('\\'), QLatin1Char('/')));
@@ -1581,10 +1581,10 @@ bool PackageManagerCorePrivate::runInstaller()
             }
         }
 
-        emit m_core->titleMessageChanged(tr("Creating Uninstaller"));
+        emit m_core->titleMessageChanged(tr("Creating Maintenance Tool"));
 
-        writeUninstaller(m_performedOperationsOld + m_performedOperationsCurrentSession);
-        registerUninstaller();
+        writeMaintenanceTool(m_performedOperationsOld + m_performedOperationsCurrentSession);
+        registerMaintenanceTool();
 
         // fake a possible wrong value to show a full progress bar
         const int progress = ProgressCoordinator::instance()->progressInPercentage();
@@ -1754,10 +1754,10 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
 
-        emit m_core->titleMessageChanged(tr("Creating Uninstaller"));
+        emit m_core->titleMessageChanged(tr("Creating Maintenance Tool"));
 
         commitSessionOperations(); //end session, move ops to "old"
-        m_needToWriteUninstaller = true;
+        m_needToWriteMaintenanceTool = true;
 
         // fake a possible wrong value to show a full progress bar
         const int progress = ProgressCoordinator::instance()->progressInPercentage();
@@ -1820,7 +1820,7 @@ bool PackageManagerCorePrivate::runUninstaller()
         // No operation delete here, as all old undo operations are deleted in the destructor.
 
         // this will also delete the TargetDir on Windows
-        deleteUninstaller();
+        deleteMaintenanceTool();
 
         if (QVariant(m_core->value(scRemoveTargetDir)).toBool()) {
             // on !Windows, we need to remove TargetDir manually
@@ -1838,8 +1838,8 @@ bool PackageManagerCorePrivate::runUninstaller()
             }
         }
 
-        unregisterUninstaller();
-        m_needToWriteUninstaller = false;
+        unregisterMaintenanceTool();
+        m_needToWriteMaintenanceTool = false;
 
         setStatus(PackageManagerCore::Success);
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(
@@ -1956,11 +1956,11 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
 
 // -- private
 
-void PackageManagerCorePrivate::deleteUninstaller()
+void PackageManagerCorePrivate::deleteMaintenanceTool()
 {
 #ifdef Q_OS_WIN
-    // Since Windows does not support that the uninstaller deletes itself we  have to go with a rather dirty
-    // hack. What we do is to create a batchfile that will try to remove the uninstaller once per second. Then
+    // Since Windows does not support that the maintenance tool deletes itself we have to go with a rather dirty
+    // hack. What we do is to create a batchfile that will try to remove the maintenance tool once per second. Then
     // we start that batchfile detached, finished our job and close ourselves. Once that's done the batchfile
     // will succeed in deleting our uninstall.exe and, if the installation directory was created but us and if
     // it's empty after the uninstall, deletes the installation-directory.
@@ -2002,8 +2002,8 @@ void PackageManagerCorePrivate::deleteUninstaller()
         throw Error(tr("Cannot start uninstall"));
 #else
     // every other platform has no problem if we just delete ourselves now
-    QFile uninstaller(QFileInfo(installerBinaryPath()).absoluteFilePath());
-    uninstaller.remove();
+    QFile maintenanceTool(QFileInfo(installerBinaryPath()).absoluteFilePath());
+    maintenanceTool.remove();
 # ifdef Q_OS_OSX
     if (QInstaller::isInBundle(installerBinaryPath())) {
         const QLatin1String cdUp("/../../..");
@@ -2020,21 +2020,21 @@ void PackageManagerCorePrivate::deleteUninstaller()
     }
 }
 
-void PackageManagerCorePrivate::registerUninstaller()
+void PackageManagerCorePrivate::registerMaintenanceTool()
 {
 #ifdef Q_OS_WIN
     QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);
     settings.setValue(scDisplayName, m_data.value(QLatin1String("ProductName")));
     settings.setValue(QLatin1String("DisplayVersion"), m_data.value(QLatin1String("ProductVersion")));
-    const QString uninstaller = QDir::toNativeSeparators(uninstallerName());
-    settings.setValue(QLatin1String("DisplayIcon"), uninstaller);
+    const QString maintenanceTool = QDir::toNativeSeparators(maintenanceToolName());
+    settings.setValue(QLatin1String("DisplayIcon"), maintenanceTool);
     settings.setValue(scPublisher, m_data.value(scPublisher));
     settings.setValue(QLatin1String("UrlInfoAbout"), m_data.value(QLatin1String("Url")));
     settings.setValue(QLatin1String("Comments"), m_data.value(scTitle));
     settings.setValue(QLatin1String("InstallDate"), QDateTime::currentDateTime().toString());
     settings.setValue(QLatin1String("InstallLocation"), QDir::toNativeSeparators(targetDir()));
-    settings.setValue(QLatin1String("UninstallString"), uninstaller);
-    settings.setValue(QLatin1String("ModifyPath"), QString(uninstaller
+    settings.setValue(QLatin1String("UninstallString"), maintenanceTool);
+    settings.setValue(QLatin1String("ModifyPath"), QString(maintenanceTool
         + QLatin1String(" --manage-packages")));
     settings.setValue(QLatin1String("EstimatedSize"), QFileInfo(installerBinaryPath()).size());
     settings.setValue(QLatin1String("NoModify"), 0);
@@ -2042,7 +2042,7 @@ void PackageManagerCorePrivate::registerUninstaller()
 #endif
 }
 
-void PackageManagerCorePrivate::unregisterUninstaller()
+void PackageManagerCorePrivate::unregisterMaintenanceTool()
 {
 #ifdef Q_OS_WIN
     QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);

@@ -409,11 +409,11 @@ Component *PackageManagerCore::subComponentByName(const QInstaller::PackageManag
     return 0;
 }
 
-void PackageManagerCore::writeUninstaller()
+void PackageManagerCore::writeMaintenanceTool()
 {
-    if (d->m_needToWriteUninstaller) {
+    if (d->m_needToWriteMaintenanceTool) {
         try {
-            d->writeUninstaller(d->m_performedOperationsOld + d->m_performedOperationsCurrentSession);
+            d->writeMaintenanceTool(d->m_performedOperationsOld + d->m_performedOperationsCurrentSession);
 
             bool gainedAdminRights = false;
             QTemporaryFile tempAdminFile(d->targetDir()
@@ -425,10 +425,10 @@ void PackageManagerCore::writeUninstaller()
             d->m_updaterApplication.packagesInfo()->writeToDisk();
             if (gainedAdminRights)
                 dropAdminRights();
-            d->m_needToWriteUninstaller = false;
+            d->m_needToWriteMaintenanceTool = false;
         } catch (const Error &error) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("WriteError"), tr("Error writing Uninstaller"), error.message(),
+                QLatin1String("WriteError"), tr("Error writing Maintenance Tool"), error.message(),
                 QMessageBox::Ok, QMessageBox::Ok);
         }
     }
@@ -1768,7 +1768,7 @@ QString PackageManagerCore::findPath(const QString &name, const QStringList &pat
 /*!
     \qmlmethod void QInstaller::setInstallerBaseBinary(string path)
 
-    Sets the "installerbase" binary to use when writing the package manager/uninstaller.
+    Sets the "installerbase" binary to use when writing the maintenance tool.
     Set this if an update to installerbase is available.
 
     If not set, the executable segment of the running un/installer will be used.
@@ -1869,7 +1869,7 @@ QString PackageManagerCore::error() const
 */
 bool PackageManagerCore::finishedWithSuccess() const
 {
-    return d->m_status == PackageManagerCore::Success || d->m_needToWriteUninstaller;
+    return d->m_status == PackageManagerCore::Success || d->m_needToWriteMaintenanceTool;
 }
 
 /*!
@@ -2083,11 +2083,11 @@ bool PackageManagerCore::run()
 }
 
 /*!
-    Returns the path name of the uninstaller binary.
+    Returns the path name of the maintenance tool binary.
 */
-QString PackageManagerCore::uninstallerName() const
+QString PackageManagerCore::maintenanceToolName() const
 {
-    return d->uninstallerName();
+    return d->maintenanceToolName();
 }
 
 bool PackageManagerCore::updateComponentData(struct Data &data, Component *component)

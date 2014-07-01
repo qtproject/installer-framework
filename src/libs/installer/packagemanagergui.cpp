@@ -1713,7 +1713,7 @@ bool TargetDirectoryPage::validatePage()
 
     const QFileInfo fi(targetDir);
     if (fi.isDir()) {
-        QString fileName = packageManagerCore()->settings().uninstallerName();
+        QString fileName = packageManagerCore()->settings().maintenanceToolName();
 #if defined(Q_OS_OSX)
         if (QInstaller::isInBundle(QCoreApplication::applicationDirPath()))
             fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
@@ -1794,7 +1794,7 @@ QString TargetDirectoryPage::targetDirWarning() const
     QString dir = QDir::toNativeSeparators(targetDir());
 #ifdef Q_OS_WIN
     // folder length (set by user) + maintenance tool name length (no extension) + extra padding
-    if ((dir.length() + packageManagerCore()->settings().uninstallerName().length() + 20) >= MAX_PATH) {
+    if ((dir.length() + packageManagerCore()->settings().maintenanceToolName().length() + 20) >= MAX_PATH) {
             return tr("The path you have entered is too long, please make sure to "
                 "specify a valid path.");
     }

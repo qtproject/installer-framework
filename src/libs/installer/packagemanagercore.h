@@ -161,10 +161,10 @@ public:
     QByteArray replaceVariables(const QByteArray &str) const;
     QStringList replaceVariables(const QStringList &str) const;
 
-    void writeUninstaller();
+    void writeMaintenanceTool();
     void writeMaintenanceConfigFiles();
 
-    QString uninstallerName() const;
+    QString maintenanceToolName() const;
     QString installerBinaryPath() const;
 
     bool testChecksum() const;

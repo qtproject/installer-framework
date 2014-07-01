@@ -95,7 +95,7 @@ TabController::TabController(QObject *parent)
 
 TabController::~TabController()
 {
-    d->m_core->writeUninstaller();
+    d->m_core->writeMaintenanceTool();
     delete d;
 }
 

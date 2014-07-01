@@ -123,13 +123,13 @@ public:
     QString targetDir() const;
     QString registerPath() const;
 
-    QString uninstallerName() const;
+    QString maintenanceToolName() const;
     QString installerBinaryPath() const;
 
     void writeMaintenanceConfigFiles();
     void readMaintenanceConfigFiles(const QString &targetDir);
 
-    void writeUninstaller(OperationList performedOperations);
+    void writeMaintenanceTool(OperationList performedOperations);
 
     QString componentsXmlPath() const;
     QString configurationFileName() const;
@@ -212,7 +212,7 @@ public:
     bool m_testChecksum;
     bool m_launchedAsRoot;
     bool m_completeUninstall;
-    bool m_needToWriteUninstaller;
+    bool m_needToWriteMaintenanceTool;
     PackageManagerCoreData m_data;
     QHash<QString, bool> m_sharedFlags;
     QString m_installerBaseBinaryUnreplaced;
@@ -241,12 +241,12 @@ private slots:
     void handleMethodInvocationRequest(const QString &invokableMethodName);
 
 private:
-    void deleteUninstaller();
-    void registerUninstaller();
-    void unregisterUninstaller();
+    void deleteMaintenanceTool();
+    void registerMaintenanceTool();
+    void unregisterMaintenanceTool();
 
-    void writeUninstallerBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
-    void writeUninstallerBinaryData(QFileDevice *output, QFile *const input,
+    void writeMaintenanceToolBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
+    void writeMaintenanceToolBinaryData(QFileDevice *output, QFile *const input,
         const OperationList &performed, const BinaryLayout &layout);
 
     void runUndoOperations(const OperationList &undoOperations, double undoOperationProgressSize,
