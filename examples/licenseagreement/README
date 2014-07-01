@@ -1,0 +1,4 @@
+Shows how to ask interactively for a license agreement.
+
+binarycreator --offline-only -c config/config.xml -p packages installer
+
