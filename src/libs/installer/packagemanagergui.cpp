@@ -877,7 +877,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     QWidget *widget = new QWidget(this);
     QVBoxLayout *boxLayout = new QVBoxLayout(widget);
 
-    m_packageManager = new QRadioButton(tr("Package manager"), this);
+    m_packageManager = new QRadioButton(tr("Add or remove components"), this);
     m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
     boxLayout->addWidget(m_packageManager);
     m_packageManager->setChecked(core->isPackageManager());
