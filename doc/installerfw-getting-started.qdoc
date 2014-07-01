@@ -103,7 +103,7 @@
     We recommend that you use the following configuration options for OS X:
 
     \code
-    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-opengl -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
+    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -nomake examples -nomake tests -developer-build -skip qtquick1 -skip qtscript -skip qtlocation
     \endcode
 
     \section2 Setting up Qt Installer Framework
