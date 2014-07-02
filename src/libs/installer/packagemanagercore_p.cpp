@@ -1002,14 +1002,14 @@ Operation *PackageManagerCorePrivate::createPathOperation(const QFileInfo &fileI
 /*!
     This creates fake operations which remove stuff which was registered for uninstallation afterwards
 */
-void PackageManagerCorePrivate::registerPathesForUninstallation(
-    const QList<QPair<QString, bool> > &pathesForUninstallation, const QString &componentName)
+void PackageManagerCorePrivate::registerPathsForUninstallation(
+    const QList<QPair<QString, bool> > &pathsForUninstallation, const QString &componentName)
 {
-    if (pathesForUninstallation.isEmpty())
+    if (pathsForUninstallation.isEmpty())
         return;
 
     QList<QPair<QString, bool> >::const_iterator it;
-    for (it = pathesForUninstallation.begin(); it != pathesForUninstallation.end(); ++it) {
+    for (it = pathsForUninstallation.begin(); it != pathsForUninstallation.end(); ++it) {
         const bool wipe = it->second;
         const QString path = replaceVariables(it->first);
 
@@ -1931,7 +1931,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
             m_needsHardRestart = true;
     }
 
-    registerPathesForUninstallation(component->pathesForUninstallation(), component->name());
+    registerPathsForUninstallation(component->pathsForUninstallation(), component->name());
 
     if (!component->stopProcessForUpdateRequests().isEmpty()) {
         Operation *stopProcessForUpdatesOp = KDUpdater::UpdateOperationFactory::instance()

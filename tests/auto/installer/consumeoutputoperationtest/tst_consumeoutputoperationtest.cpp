@@ -83,7 +83,7 @@ private slots:
 
         QFile orgQmake(QUOTE(QMAKE_BINARY));
         // use lrelease filename which will be patched by the QtPatch operation, but it hides that this
-        // fake Qt contains a qmake which would be used to get the patch pathes (instead of using the qmake
+        // fake Qt contains a qmake which would be used to get the patch paths (instead of using the qmake
         // output we want to use our installer value)
         m_binaryInFakeQt = m_fakeQtPath + "bin" + QDir::separator() + "lrelease" + m_binSuffix;
 

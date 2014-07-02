@@ -62,7 +62,7 @@ private slots:
         m_testSettingsFilename = "test.ini";
         QSettings testSettings(QDir(m_testSettingsDirPath).filePath(m_testSettingsFilename),
             QSettings::IniFormat);
-        m_cleanupFilePathes << QDir(m_testSettingsDirPath).filePath(m_testSettingsFilename);
+        m_cleanupFilePaths << QDir(m_testSettingsDirPath).filePath(m_testSettingsFilename);
         testSettings.setValue("testkey", "testvalue");
         testSettings.setValue("testcategory/categorytestkey", "categorytestvalue");
         testSettings.setValue("testcategory/categoryarrayvalue1", QStringList() << "value1" <<
@@ -113,7 +113,7 @@ private slots:
     {
         const QString verifyFilePath = createFilePath(QTest::currentTestFunction());
         const QString testFilePath = createFilePath(QString("_") + QTest::currentTestFunction());
-        m_cleanupFilePathes << verifyFilePath << testFilePath;
+        m_cleanupFilePaths << verifyFilePath << testFilePath;
 
         const QString key = "category/key";
         const QString value = "value";
@@ -157,7 +157,7 @@ private slots:
         const QString testFilePath = createFilePath(QTest::currentTestFunction());
         QFile testFile(QDir(m_testSettingsDirPath).filePath(m_testSettingsFilename));
         QVERIFY2(testFile.copy(testFilePath), testFile.errorString().toLatin1());
-        m_cleanupFilePathes << testFilePath;
+        m_cleanupFilePaths << testFilePath;
 
         const QString key = "testkey";
         QString testValueString;
@@ -296,7 +296,7 @@ private slots:
     // called after all tests
     void cleanupTestCase()
     {
-        foreach (const QString &filePath, m_cleanupFilePathes)
+        foreach (const QString &filePath, m_cleanupFilePaths)
             QFile(filePath).remove();
     }
 private:
@@ -316,7 +316,7 @@ private:
 
     QString m_testSettingsFilename;
     QString m_testSettingsDirPath;
-    QStringList m_cleanupFilePathes;
+    QStringList m_cleanupFilePaths;
 };
 
 QTEST_MAIN(tst_settingsoperation)

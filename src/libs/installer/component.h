@@ -139,7 +139,7 @@ public:
     Q_INVOKABLE virtual void createOperationsForArchive(const QString &archive);
     Q_INVOKABLE virtual void createOperationsForPath(const QString &path);
 
-    Q_INVOKABLE QList<QPair<QString, bool> > pathesForUninstallation() const;
+    QList<QPair<QString, bool> > pathsForUninstallation() const;
     Q_INVOKABLE void registerPathForUninstallation(const QString &path, bool wipe = false);
 
     OperationList operations() const;

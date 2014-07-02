@@ -765,18 +765,16 @@ void Component::createOperations()
 */
 void Component::registerPathForUninstallation(const QString &path, bool wipe)
 {
-    d->m_pathesForUninstallation.append(qMakePair(path, wipe));
+    d->m_pathsForUninstallation.append(qMakePair(path, wipe));
 }
 
 /*!
-    \qmlmethod QList<QPair<string, boolean> > Component::pathesForUninstallation()
-
     Returns the list of paths previously registered for uninstallation with
     #registerPathForUninstallation.
 */
-QList<QPair<QString, bool> > Component::pathesForUninstallation() const
+QList<QPair<QString, bool> > Component::pathsForUninstallation() const
 {
-    return d->m_pathesForUninstallation;
+    return d->m_pathsForUninstallation;
 }
 
 /*!

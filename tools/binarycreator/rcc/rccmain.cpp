@@ -113,7 +113,7 @@ int createProject(const QString &outFileName)
     out << QLatin1String("<!DOCTYPE RCC><RCC version=\"1.0\">\n"
                          "<qresource>\n");
 
-    // use "." as dir to get relative file pathes
+    // use "." as dir to get relative file paths
     dumpRecursive(QDir(QLatin1String(".")), out);
 
     out << QLatin1String("</qresource>\n"
@@ -214,7 +214,7 @@ int runRcc(int argc, char *argv[])
     }
     QFile errorDevice;
     errorDevice.open(stderr, QIODevice::WriteOnly|QIODevice::Text);
-    
+
     if (library.verbose())
         errorDevice.write("Qt resource compiler\n");
 
@@ -249,7 +249,7 @@ int runRcc(int argc, char *argv[])
             out.write("\n");
         }
         return 0;
-    } 
+    }
 
     return library.output(out, errorDevice) ? 0 : 1;
 }

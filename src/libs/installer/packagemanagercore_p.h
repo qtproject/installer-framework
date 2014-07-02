@@ -177,7 +177,7 @@ public:
     Operation *takeOwnedOperation(Operation *operation);
 
     Operation *createPathOperation(const QFileInfo &fileInfo, const QString &componentName);
-    void registerPathesForUninstallation(const QList<QPair<QString, bool> > &pathesForUninstallation,
+    void registerPathsForUninstallation(const QList<QPair<QString, bool> > &pathsForUninstallation,
         const QString &componentName);
 
     void addPerformed(Operation *op) {

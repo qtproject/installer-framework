@@ -91,7 +91,7 @@ public:
 
     // < display name, < file name, file content > >
     QHash<QString, QPair<QString, QString> > m_licenses;
-    QList<QPair<QString, bool> > m_pathesForUninstallation;
+    QList<QPair<QString, bool> > m_pathsForUninstallation;
 };
 
 
