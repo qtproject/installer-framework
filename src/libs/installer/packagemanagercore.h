@@ -209,7 +209,6 @@ public:
     QString installReason(Component *component) const;
 
     QList<Component*> dependees(const Component *component) const;
-    QList<Component*> dependencies(const Component *component, QStringList &missingComponents) const;
 
     ComponentModel *defaultComponentModel() const;
     ComponentModel *updaterComponentModel() const;

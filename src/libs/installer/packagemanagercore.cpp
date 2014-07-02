@@ -1387,24 +1387,6 @@ QList<Component*> PackageManagerCore::dependees(const Component *_component) con
     return dependees;
 }
 
-/*!
-    Returns a list of dependencies for \a component. If there's a dependency which cannot be fulfilled,
-    \a missingComponents will contain the missing components. Note: Auto installed dependencies are not
-    resolved.
-*/
-QList<Component*> PackageManagerCore::dependencies(const Component *component, QStringList &missingComponents) const
-{
-    QList<Component*> result;
-    foreach (const QString &dependency, component->dependencies()) {
-        Component *component = componentByName(dependency);
-        if (component)
-            result.append(component);
-        else
-            missingComponents.append(dependency);
-    }
-    return result;
-}
-
 ComponentModel *PackageManagerCore::defaultComponentModel() const
 {
     QMutexLocker _(globalModelMutex());
