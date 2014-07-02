@@ -71,10 +71,10 @@
 
     \image ifw-user-flow-installing.png "Installation workflow"
 
-    This section uses the \e {Your Application Installer} example run on Windows
+    This section uses the \e {Your Application Installer} example run on OS X
     to illustrate the default workflow for end users. The installers have the
     native look and feel on each supported desktop platform, and therefore they
-    look and feel different when run on Linux and OS X.
+    look and feel different when run on Linux and Windows.
 
     The example files are stored in the \c{examples\tutorial} directory
     in the Qt Installer Framework repository. You can use the \c binarycreator
@@ -89,7 +89,7 @@
     You specify the name of the installer and the product to install in the
     \c config.xml configuration file.
 
-    When end users select \gui Next, the target directory selection page opens.
+    When end users select \gui Continue, the target directory selection page opens.
 
     \section1 Selecting Target Directory
 
@@ -98,7 +98,7 @@
 
     \image ifw-target-directory-page.png "Target directory selection page"
 
-    When end users select \gui Next, the component selection page opens.
+    When end users select \gui Continue, the component selection page opens.
 
     If the directory already contains files, a warning page opens:
 
@@ -121,7 +121,7 @@
     You can use a boolean operator or a script to specify whether a component is
     selected by default.
 
-    When end users select \gui Next, the license check page opens.
+    When end users select \gui Continue, the license check page opens.
 
     \section1 Accepting License Agreements
 

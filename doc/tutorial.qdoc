@@ -96,6 +96,27 @@
 
     \image ifw-tutorial-introduction-page.png "Introduction page"
 
+    The other settings are used to customize the behavior of the installer:
+
+    \list
+
+        \li The \c <Version> section specifies the version number of the
+            repository format, and must be set to \c 1.0.0.
+
+        \li The \c <Publisher> section specifies the publisher of the software
+            (as shown in the Windows Control Panel, for example).
+
+        \li The \c <StartMenuDir> section specifies the name of the default
+            program group for the product in the Windows \gui Start menu.
+
+        \li The \c <TargetDir> section specifies that the default target
+            directory displayed to users is \c InstallationDirectory in the home
+            directory of the current user (because the predefined variable
+            \c @HomeDir@ is used as a part of the value). For more information,
+            see \l{Predefined Variables}.
+
+    \endlist
+
     For more information about the configuration file format and the available
     settings, see \l{Configuration File}.
 
@@ -108,13 +129,15 @@
 
     \quotefile ../examples/tutorial/packages/com.vendor.product/meta/package.xml
 
+    The sections in the example file are described in more detail below.
+
     For more information about the package information file, see
     \l{Package Information File Syntax}.
 
     \section2 Specifying Component Information
 
-    The package information file specifies the following information that is
-    displayed on the component selection page:
+    The information from the following sections is displayed on the component
+    selection page:
 
     \list
 
@@ -140,21 +163,13 @@
 
     \image ifw-tutorial-license-check.png "License check page"
 
-    \note To create installers for multiple platforms, including Windows,
-    make sure that the line endings of the license file use the CRLF
-    format, as Windows does not apply Linux line endings correctly.
-
     \section2 Selecting Default Contents
 
     The \c Default section specifies whether the component is selected by
     default. The value \c true sets the component as selected. In this example,
     we use the value \c script to resolve the value during runtime. The
-    name of the script file, installscript.qs, is specified in the \c Script
-    section.
-
-    The script file should look as follows:
-
-    \quotefile ../examples/tutorial/packages/com.vendor.product/meta/installscript.qs
+    name of the JavaScript script file, installscript.qs, is specified in the
+    \c Script section.
 
     \section1 Creating Installer Content
 
@@ -170,7 +185,7 @@
     \section1 Creating the Installer Binary
 
     You are now ready to create your first installer. Switch to the
-    \a tutorial directory on the command line. To create an installer called
+    \c examples\tutorial directory on the command line. To create an installer called
     YourInstaller.exe that contains the packages identified by
     com.vendor.product, enter the following command:
 
