@@ -39,7 +39,7 @@
 
     \section1 Introduction Page
 
-    Call the \a IntroductionPageCallback function to construct the introduction
+    Call the \c IntroductionPageCallback function to construct the introduction
     page.
 
     Wizard buttons:
@@ -50,7 +50,7 @@
 
     \section1 License Check Page
 
-    Call the \a LicenseAgreementPageCallback function to construct the license
+    Call the \c LicenseAgreementPageCallback function to construct the license
     check page.
 
     Wizard buttons:
@@ -62,17 +62,17 @@
 
     Radio buttons:
     \list
-    \li \a acceptLicenseRB
+    \li \c acceptLicenseRB
 
        Accepts the license agreement. Not selected by default.
-    \li \a rejectLicenseRB
+    \li \c rejectLicenseRB
 
        Rejects the license agreement. Selected by default.
     \endlist
 
     \section1 Target Directory Selection Page
 
-    Call the \a TargetDirectoryPageCallback function to implement the target
+    Call the \c TargetDirectoryPageCallback function to implement the target
     directory selection page.
 
     Wizard buttons:
@@ -83,11 +83,11 @@
     \endlist
 
     To specify a default value for the target directory for installation, use
-    the \a targetDirectoryLE line edit widget.
+    the \c targetDirectoryLE line edit widget.
 
     \section1 Component Selection Page
 
-    Call the \a ComponentSelectionPageCallback function to implement the
+    Call the \c ComponentSelectionPageCallback function to implement the
     component selection page.
 
     Wizard buttons:
@@ -99,29 +99,29 @@
 
     Methods:
     \list
-        \li \a {selectComponent( id )}
+        \li \c {selectComponent( id )}
 
             Selects the component with \c id (string).
-        \li \a {deselectComponent( id )}
+        \li \c {deselectComponent( id )}
 
             Deselects the component with \c id (string).
     \endlist
 
     In uninstallation mode, additional radio buttons are available:
     \list
-        \li \a uninstallAllComponentsRB
+        \li \c uninstallAllComponentsRB
 
             Uninstalls all components. Default.
-        \li \a keepSelectedComponentsRB
+        \li \c keepSelectedComponentsRB
 
             Uninstalls only unselected components. Mark components selected
-            (\a selectComponent) or not selected (\a deselectComponent) to add
+            (\c selectComponent) or not selected (\c deselectComponent) to add
             and remove components.
     \endlist
 
     \section1 Ready for Installation Page
 
-    Call the \a ReadyForInstallationPageCallback function to implement the ready
+    Call the \c ReadyForInstallationPageCallback function to implement the ready
     for installation page.
 
     Wizard buttons:
@@ -133,10 +133,10 @@
 
     \section1 Perform Installation Page
 
-    Call the \a IntroductionPageCallback function to implement the perform
+    Call the \c IntroductionPageCallback function to implement the perform
     installation page.
 
-    To show or hide installation details, implement the \a details.button push
+    To show or hide installation details, implement the \c details.button push
     button widget.
 
     Wizard buttons:
@@ -146,7 +146,7 @@
 
     \section1 Installation Finished Page
 
-    Call the \a FinishedPageCallback function to implement the installation
+    Call the \c FinishedPageCallback function to implement the installation
     finished page.
 
     Wizard buttons:
@@ -156,9 +156,9 @@
 
     \section1 Custom Pages
 
-    Custom pages are registered as \a{Dynamic${ObjectName}}, where \a{${ObjectName}}
+    Custom pages are registered as \c{Dynamic${ObjectName}}, where \c{${ObjectName}}
     is the object name set in the UI file.
-    Thus, the \a{Dynamic${ObjectName}Callback()} function is called. Widgets can
+    Thus, the \c{Dynamic${ObjectName}Callback()} function is called. Widgets can
     be addressed using their object names (from the UI file):
     \code
     var page = gui.pageWidgetByObjectName( "DynamicSomePage" )
@@ -174,27 +174,27 @@
                       \li Possible Answers
                       \li Description
     \row
-                      \li \a cancelInstallation
+                      \li \c cancelInstallation
                       \li Yes, No
                       \li Confirmation for canceling the installation when end
                          users select \gui Cancel on the installer pages.
     \row
-                      \li \a overwriteTargetDirectory
+                      \li \c overwriteTargetDirectory
                       \li Yes, No
                       \li Confirmation for using an already existing directory as
                          the target directory for installation.
     \row
-                      \li \a installationError
+                      \li \c installationError
                       \li OK
                       \li A fatal error occurred while performing the
                          installation.
     \row
-                      \li \a installationErrorWithRetry
+                      \li \c installationErrorWithRetry
                       \li Retry, Ignore, Cancel
                       \li An error occurred while performing the installation.
                          End users can select \gui Retry to try again.
     \row
-                      \li \a metaInfoJobError
+                      \li \c metaInfoJobError
                       \li OK
                       \li An error occurred while retrieving meta information
                          when using an online installer.

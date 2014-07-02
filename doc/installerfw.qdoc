@@ -194,16 +194,16 @@
             \li Filename for a custom window icon in PNG format for the Installer application.
         \row
             \li Logo
-            \li Filename for a logo used as \a QWizard::LogoPixmap.
+            \li Filename for a logo used as \c QWizard::LogoPixmap.
         \row
             \li Watermark
-            \li Filename for a watermark used as \a QWizard::WatermarkPixmap.
+            \li Filename for a watermark used as \c QWizard::WatermarkPixmap.
         \row
             \li Banner
-            \li Filename for a banner used as \a QWizard::BannerPixmap (only used by ModernStyle).
+            \li Filename for a banner used as \c QWizard::BannerPixmap (only used by ModernStyle).
         \row
             \li Background
-            \li Filename for an image used as \a QWizard::BackgroundPixmap (only used by MacStyle).
+            \li Filename for an image used as \c QWizard::BackgroundPixmap (only used by MacStyle).
         \row
             \li WizardStyle
             \li Set the wizard style to be used ("Modern", "Mac", "Aero" or "Classic").
@@ -307,7 +307,7 @@
     A component can contain one or more user interface files, which are placed
     into the installer by a script. The installer automatically loads all user
     interface files listed in package.xml. You can access the loaded widgets
-    by calling \a QInstaller::Component::userInterface with the class name of
+    by calling \c QInstaller::Component::userInterface with the class name of
     the widget, as illustrated by the following code snippet:
 
     \code
@@ -315,9 +315,9 @@
     \endcode
 
     To add a new page to the installer, use
-    the \a QInstaller::Installer::addWizardPage method and specify the location
+    the \c QInstaller::Installer::addWizardPage method and specify the location
     of the new page. For example, the following code adds an instance of
-    \a MyPage before the ready for installation page:
+    \c MyPage before the ready for installation page:
 
     \code
     installer.addWizardPage( component, "MyPage", QInstaller.ReadyForInstallation );
@@ -329,8 +329,8 @@
     single widgets (such as a check box).
 
     To insert a single widget, use the
-    \a QInstaller::Installer::addWizardPageItem method.
-    For example, the following code snippet adds an instance of \a MyWidget to
+    \c QInstaller::Installer::addWizardPageItem method.
+    For example, the following code snippet adds an instance of \c MyWidget to
     the component selection page from within a script:
 
     \code
@@ -347,13 +347,13 @@
     matches the current system locale. For example, if the system locale is
     German, the de_de.qm file is loaded.
 
-    Use the \a {qsTr()} function for literal text within scripts. Additionally,
-    you can add the \a Component.prototype.retranslateUi method to the script.
+    Use the \c {qsTr()} function for literal text within scripts. Additionally,
+    you can add the \c Component.prototype.retranslateUi method to the script.
     It is called when the language of the installer changes and the translation
     file is loaded.
 
     The context being used for translation is the basename of the script file
-    when using \a qsTr or the class name of the UI file when translating a user
+    when using \c qsTr or the class name of the UI file when translating a user
     interface.
 
     \note The translation system can also be used to customize the UI. Use e.g.
@@ -602,7 +602,7 @@
     ###TODO insert link here.
 
     For information about how to implement data integration into the
-    installer binary, see \a QInstaller::BinaryContent ###TODO insert link here.
+    installer binary, see \c QInstaller::BinaryContent ###TODO insert link here.
 
     \note If you change this configuration, you must recompile the
     \c installerbase tool.
@@ -880,7 +880,7 @@
     are not available.
 
     Alternatively, you can create online installers that do not contain any data
-    and that fetch all the data from the web server. Use the \a{-n} parameter
+    and that fetch all the data from the web server. Use the \c{-n} parameter
     of the \c binarycreator tool and only add the root component to the
     installer. Usually the root component is empty and hence only adds the XML
     description of the root.
@@ -905,7 +905,7 @@
     does not allow end users to connect to web servers. The network
     administrator can set up a local update service within the network.
 
-    To create offline installers, use the \a{--offline-only} option of the
+    To create offline installers, use the \c{--offline-only} option of the
     \c binarycreator tool.
 
     To create an offline installer in Windows, enter the following command:
@@ -942,7 +942,7 @@
 
         \li Copy the updated content to the package directory.
 
-        \li Increase the value of the \a{Version} setting for the updated
+        \li Increase the value of the \c{Version} setting for the updated
             components in the package.xml file.
 
         \li Use the \c repogen tool to recreate the online repository with the
@@ -962,7 +962,7 @@
     the online version number in the file is greater than the local one, the
     installer displays it in the list of available updates.
 
-    Increase the value of the \a{Version} setting for the component in the
+    Increase the value of the \c{Version} setting for the component in the
     package.xml file.
 
     \section1 Recreating Repositories
@@ -985,10 +985,10 @@
     to verify the download of the archive and hence the SHA needs to match the
     7zip. As the SHAs are stored in the Updates.xml file you will be
     forced to upload the full repository. This can be circumvented by using the
-    \a{--update} option of repogen.
+    \c{--update} option of repogen.
 
     \section2 Creating Partial Updates
-    When recreating the online repository, use the \a{--update} parameter. It
+    When recreating the online repository, use the \c{--update} parameter. It
     takes an existing repository as input and only changes the components that
     are specified as additional parameters. Only those SHA sums are
     changed in the global configuration as well.
@@ -997,8 +997,8 @@
     Upload the following items to the web server:
     \list
     \li The component directory (usually something like
-    \a{com.vendor.product.updatedpart}).
-    \li The global \a{Updates.xml} stored in the root directory of the online
+    \c{com.vendor.product.updatedpart}).
+    \li The global \c{Updates.xml} stored in the root directory of the online
     repository.
     \endlist
 

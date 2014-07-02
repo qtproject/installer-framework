@@ -52,47 +52,47 @@
             \li Use
         \row
             \li Copy
-            \li "Copy" \a source \a target
-            \li Copies a file from \a source to \a target.
+            \li "Copy" \c source \c target
+            \li Copies a file from \c source to \c target.
         \row
             \li Move
-            \li "Move" \a source \a target
-            \li Moves a file from \a source to \a target.
+            \li "Move" \c source \c target
+            \li Moves a file from \c source to \c target.
         \row
             \li Delete
-            \li "Delete" \a filename
-            \li Deletes the file specified by \a filename.
+            \li "Delete" \c filename
+            \li Deletes the file specified by \c filename.
         \row
             \li Mkdir
-            \li "Mkdir" \a path
-            \li Creates the directory path \a path.
+            \li "Mkdir" \c path
+            \li Creates the directory path \c path.
         \row
             \li Rmdir
-            \li "Rmdir" \a path
-            \li Removes the directory path \a path.
+            \li "Rmdir" \c path
+            \li Removes the directory path \c path.
         \row
             \li AppendFile
-            \li "AppendFile" \a filename \a text
-            \li Appends \a text to the file specified by \a filename. \a text is
+            \li "AppendFile" \c filename \c text
+            \li Appends \c text to the file specified by \c filename. \c text is
                 treated as ASCII text.
         \row
             \li PrependFile
-            \li "PrependFile" \a filename \a text
-            \li Prepends \a text to the file specified by \a filename. \a text
+            \li "PrependFile" \c filename \c text
+            \li Prepends \c text to the file specified by \c filename. \c text
                 is treated as ASCII text.
         \row
             \li Replace
-            \li "Replace" \a file \a search \ replace
-            \li Opens \a file to find \a search string and replaces that with the \a replace string.
+            \li "Replace" \c file \c search \ replace
+            \li Opens \c file to find \c search string and replaces that with the \c replace string.
         \row
             \li LineReplace
-            \li "LineReplace" \a file \a search \ replace
-            \li Opens \a file to find lines that start with \a search string and
-                replaces that with the \a replace string.
+            \li "LineReplace" \c file \c search \ replace
+            \li Opens \c file to find lines that start with \c search string and
+                replaces that with the \c replace string.
         \row
             \li Execute
-            \li "Execute" [{\a exitcodes}] \a command [\a parameter1 [\a parameter... [\a parameter10]]]
-            \li Executes the command specified by \a command. Up to 10
+            \li "Execute" [{\c exitcodes}] \c command [\c parameter1 [\c parameter... [\c parameter10]]]
+            \li Executes the command specified by \c command. Up to 10
                 parameters can be passed. If that is not enough, you can use a JavaScript string array.
 
                 Optionally, you can pass a comma-separated list of exit codes
@@ -111,18 +111,18 @@
                 \endcode
         \row
             \li CreateShortcut
-            \li "CreateShortcut" \a filename \a linkname [\a arguments]
-            \li Creates a shortcut from the file specified by \a filename to
-                \a linkname.
+            \li "CreateShortcut" \c filename \c linkname [\c arguments]
+            \li Creates a shortcut from the file specified by \c filename to
+                \c linkname.
                 On Windows, this creates a .lnk file which can have
-                \a arguments. On Unix, this creates a symbolic link.
+                \c arguments. On Unix, this creates a symbolic link.
         \row
             \li CreateDesktopEntry
-            \li "CreateDesktopEntry" \a filename \a "key=value[\nkey2=value2[\nkey3=value3]]]"
+            \li "CreateDesktopEntry" \c filename \c "key=value[\nkey2=value2[\nkey3=value3]]]"
             \li Creates a .desktop initialization file, as specified by
                 freedesktop.org.
 
-                If \a filename is absolute, the desktop entry is stored there.
+                If \c filename is absolute, the desktop entry is stored there.
                 Otherwise, it is stored in the location specified in
                 \c{$XDG_DATA_DIRS/applications} or
                 \c{$XDG_DATA_HOME/applications}, including the default paths for
@@ -133,45 +133,45 @@
                 The file is set to use UTF-8 encoding.
         \row
             \li InstallIcons
-            \li "InstallIcons" \a directory \a [Vendorprefix]
-            \li Installs the contents of \a directory into a location, as
+            \li "InstallIcons" \c directory \c [Vendorprefix]
+            \li Installs the contents of \c directory into a location, as
                 specified by freedesktop.org. That is, into
                 \c {$XDG_DATA_DIRS/icons}, \c {/usr/share/icons}, or
                 \c {$HOME/.icons}. The files are removed from their initial
                 location. Make sure to add this operation after the operation
                 that extracts the files from the archive.
-                If you provide a \a Vendorprefix it replaces all characters up to the
+                If you provide a \c Vendorprefix it replaces all characters up to the
                 first dash (-) in the filename of the icon with this prefix.
         \row
             \li Extract
-            \li "Extract" \a archive \a targetdirectory
-            \li Extracts \a archive to \a targetdirectory.
+            \li "Extract" \c archive \c targetdirectory
+            \li Extracts \c archive to \c targetdirectory.
 
         \row
             \li GlobalConfig
-            \li "GlobalConfig" \a company \a application \a key \a value
+            \li "GlobalConfig" \c company \c application \c key \c value
 
                 or
 
-                "GlobalConfig" \a filename \a key \a value
-            \li Stores \a value for \a key in a configuration file. The
-                configuration file is specified either by \a filename
-                (using \a QSettings::NativeFormat, which might be the Windows
-                registry) or by \a application and \a company name.
+                "GlobalConfig" \c filename \c key \c value
+            \li Stores \c value for \c key in a configuration file. The
+                configuration file is specified either by \c filename
+                (using \c QSettings::NativeFormat, which might be the Windows
+                registry) or by \c application and \c company name.
         \row
             \li EnvironmentVariable
-            \li "EnvironmentVariable" \a key \a value [[\a persistent] \a system]
-            \li Sets the environment variable \a key to \a value. If
-                \a persistent is set to \c true, the variable is set
+            \li "EnvironmentVariable" \c key \c value [[\c persistent] \c system]
+            \li Sets the environment variable \c key to \c value. If
+                \c persistent is set to \c true, the variable is set
                 persistently. This is currently only supported on Windows.
-                If \a system is set to \c true, the persistent variable is set
+                If \c system is set to \c true, the persistent variable is set
                 system-wide, not only for the current user.
         \row
             \li RegisterFileType
-            \li "RegisterFileType" \a extension \a command [\a description [\a contentType [\a icon]]].
-            \li Registers the file type with \a extension to be opened via
-                \a command. Optionally, you can specify \a description,
-                \a contentType, and \a icon. This is currently only supported on
+            \li "RegisterFileType" \c extension \c command [\c description [\c contentType [\c icon]]].
+            \li Registers the file type with \c extension to be opened via
+                \c command. Optionally, you can specify \c description,
+                \c contentType, and \c icon. This is currently only supported on
                 Windows.
     \endtable
 

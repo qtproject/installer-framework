@@ -41,10 +41,10 @@
 
     The script has to contain a \c Component object that the installer creates
     when it loads the script. Therefore, the script must contain at
-    least the \a Component() function, which performs initialization, such as
+    least the \c Component() function, which performs initialization, such as
     putting pages in the correct places or connecting signals and slots.
 
-    The following code snippet places the \a ErrorPage (which is the class
+    The following code snippet places the \c ErrorPage (which is the class
     name of the user interface file loaded from errorpage.ui) in front of the
     ready for installation page and sets its completeness to \c false.
 
@@ -69,16 +69,16 @@
             \li Method
             \li Description
         \row
-            \li \a{Component.prototype.retranslateUi}
+            \li \c{Component.prototype.retranslateUi}
             \li Called when the language of the installer changes.
         \row
-            \li \a{Component.prototype.createOperations}
+            \li \c{Component.prototype.createOperations}
             \li See \l Component::createOperations.
         \row
-            \li \a{Component.prototype.createOperationsForArchive}
+            \li \c{Component.prototype.createOperationsForArchive}
             \li See \l Component::createOperationsForArchive.
         \row
-            \li \a{Component.prototype.createOperationsForPath}
+            \li \c{Component.prototype.createOperationsForPath}
             \li See \l Component::createOperationsForPath.
     \endtable
 
@@ -111,20 +111,20 @@
     \endlist
 
     For your convenience, the values for QMessageBox::StandardButton are made
-    available by using \a QMessageBox.Ok, \a QMessageBox.Open, and so on.
+    available by using \c QMessageBox.Ok, \c QMessageBox.Open, and so on.
 
     \section1 Adding Operations to Components
 
     You might want to add custom operations after extracting the content, when
     copying files or patching file content, for example. You can create and add
     update operations to the installation from within
-    a script using \a QInstaller::Component::addOperation.
+    a script using \c QInstaller::Component::addOperation.
     If you need to run an operation that requires administrative rights, use
-    \a QInstaller::Component::addElevatedOperation instead.
+    \c QInstaller::Component::addElevatedOperation instead.
 
     Each operation has a unique key used for identification and can take up to
     five parameters. In the parameter values, you can use variables as set in
-    \a QInstaller::Installer::setValue. For more information, see
+    \c QInstaller::Installer::setValue. For more information, see
     \l{Predefined Variables}.
 
     For a summary of all available operations, see \l{Operations}.
@@ -132,7 +132,7 @@
     \section1 Registering Custom Operations
 
     You can register custom installation operations in the installer by deriving
-    \a KDUpdater::UpdateOperation. The following code displays the methods that
+    \c KDUpdater::UpdateOperation. The following code displays the methods that
     you must implement:
 
   \code
