@@ -75,14 +75,14 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     TCHAR buffer[MAX_PATH + 1] = { 0 };
     SHGetFolderPath(0, CSIDL_PROGRAM_FILES, 0, 0, buffer);
     dir = QString::fromWCharArray(buffer);
-#elif defined (Q_OS_MAC)
+#elif defined (Q_OS_OSX)
     dir = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation).value(0);
 #endif
     m_variables.insert(QLatin1String("ApplicationsDir"), dir);
 
 #ifdef Q_OS_WIN
     m_variables.insert(QLatin1String("os"), QLatin1String("win"));
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_OSX)
     m_variables.insert(QLatin1String("os"), QLatin1String("mac"));
 #elif defined(Q_OS_LINUX)
     m_variables.insert(QLatin1String("os"), QLatin1String("x11"));

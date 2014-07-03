@@ -558,7 +558,7 @@ BinaryContent BinaryContent::readAndRegisterFromBinary(const QString &path)
 */
 BinaryContent BinaryContent::readFromApplicationFile()
 {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     // On Mac, data is always in a separate file so that the binary can be signed
     QDir dataPath(QCoreApplication::applicationDirPath());
     dataPath.cdUp();

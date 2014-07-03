@@ -241,7 +241,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
     setWindowFlags(windowFlags() &~ Qt::WindowContextHelpButtonHint);
 
-#ifndef Q_OS_MAC
+#ifndef Q_OS_OSX
     setWindowIcon(QIcon(m_core->settings().installerWindowIcon()));
 #else
     setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
@@ -1714,7 +1714,7 @@ bool TargetDirectoryPage::validatePage()
     const QFileInfo fi(targetDir);
     if (fi.isDir()) {
         QString fileName = packageManagerCore()->settings().uninstallerName();
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_OSX)
         if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
             fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
 #elif defined(Q_OS_WIN)
@@ -2283,7 +2283,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     m_msgLabel->setText(tr("Click Done to exit the %1 Wizard.").arg(productName()));
 #else
     m_msgLabel->setText(tr("Click Finish to exit the %1 Wizard.").arg(productName()));
@@ -2308,7 +2308,7 @@ void FinishedPage::entering()
 
     setCommitPage(true);
     if (packageManagerCore()->isUpdater() || packageManagerCore()->isPackageManager()) {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
         gui()->setOption(QWizard::NoCancelButton, false);
 #endif
         if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton)) {
@@ -2370,7 +2370,7 @@ void FinishedPage::entering()
 
 void FinishedPage::leaving()
 {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     gui()->setOption(QWizard::NoCancelButton, true);
 #endif
 

@@ -290,7 +290,7 @@ void QInstaller::removeSystemGeneratedFiles(const QString &path)
 {
     if (path.isEmpty())
         return;
-#if defined Q_OS_MAC
+#if defined Q_OS_OSX
     QFile::remove(path + QLatin1String("/.DS_Store"));
 #elif defined Q_OS_WIN
     QFile::remove(path + QLatin1String("/Thumbs.db"));

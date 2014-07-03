@@ -69,7 +69,7 @@ OperationRunner::OperationRunner()
     : m_core(0)
 {
     m_path = QCoreApplication::applicationFilePath();
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     QDir resourcePath(QFileInfo(m_path).dir());
     resourcePath.cdUp();
     resourcePath.cd(QLatin1String("Resources"));

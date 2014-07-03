@@ -136,7 +136,7 @@ bool SetQtCreatorValueOperation::undoOperation()
     }
 
     // default value is the old value to keep the possibility that old saved operations can run undo
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     QString qtCreatorInstallerSettingsFileName = core->value(scQtCreatorInstallerSettingsFile,
         QString::fromLatin1("%1/Qt Creator.app/Contents/Resources/QtProject/QtCreator.ini").arg(
         core->value(QLatin1String("TargetDir"))));

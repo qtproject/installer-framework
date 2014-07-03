@@ -600,7 +600,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
 #endif
 
     if (!m_core->isInstaller()) {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
         readMaintenanceConfigFiles(QCoreApplication::applicationDirPath() + QLatin1String("/../../.."));
 #else
         readMaintenanceConfigFiles(QCoreApplication::applicationDirPath());
@@ -736,7 +736,7 @@ Operation *PackageManagerCorePrivate::takeOwnedOperation(Operation *operation)
 QString PackageManagerCorePrivate::uninstallerName() const
 {
     QString filename = m_data.settings().uninstallerName();
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_OSX)
     if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
         filename += QLatin1String(".app/Contents/MacOS/") + filename;
 #elif defined(Q_OS_WIN)
@@ -1047,7 +1047,7 @@ void PackageManagerCorePrivate::writeUninstallerBinary(QFile *const input, qint6
 
     QInstaller::appendData(&out, input, size);
     if (writeBinaryLayout) {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
         QDir resourcePath(QFileInfo(uninstallerRenamedName).dir());
         if (!resourcePath.path().endsWith(QLatin1String("Contents/MacOS")))
             throw Error(tr("Uninstaller is not a bundle"));
@@ -1183,7 +1183,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
         performedOperations.append(takeOwnedOperation(op));
     }
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     // if it is a bundle, we need some stuff in it...
     const QString sourceAppDirPath = QCoreApplication::applicationDirPath();
     if (isInstaller() && QFileInfo(sourceAppDirPath + QLatin1String("/../..")).isBundle()) {
@@ -1334,7 +1334,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
             QInstaller::openForRead(&input);
             layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookieDat));
         } catch (const Error &/*error*/) {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
             // On Mac, data is always in a separate file so that the binary can be signed
             QString binaryName = isInstaller() ? installerBinaryPath() : uninstallerName();
             QDir dataPath(QFileInfo(binaryName).dir());
@@ -2004,7 +2004,7 @@ void PackageManagerCorePrivate::deleteUninstaller()
     // every other platform has no problem if we just delete ourselves now
     QFile uninstaller(QFileInfo(installerBinaryPath()).absoluteFilePath());
     uninstaller.remove();
-# ifdef Q_OS_MAC
+# ifdef Q_OS_OSX
     const QLatin1String cdUp("/../../..");
     if (QFileInfo(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath()).isBundle()) {
         removeDirectoryThreaded(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath());

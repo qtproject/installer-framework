@@ -372,7 +372,7 @@ QString Settings::installerWindowIcon() const
 
 QString Settings::systemIconSuffix() const
 {
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_OSX)
     return QLatin1String(".icns");
 #elif defined(Q_OS_WIN)
     return QLatin1String(".ico");

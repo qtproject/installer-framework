@@ -127,7 +127,7 @@ private slots:
         return;
 #if defined(Q_OS_WIN)
         QString patchType = "windows";
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_OSX)
         QString patchType = "mac";
 #else
         QString patchType = "linux";

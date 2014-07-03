@@ -67,9 +67,9 @@
 #include "setqtcreatorvalueoperation.h"
 #include "addqtcreatorarrayvalueoperation.h"
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
 #   include "macreplaceinstallnamesoperation.h"
-#endif // Q_OS_MAC
+#endif // Q_OS_OSX
 
 #include "utils.h"
 
@@ -237,8 +237,8 @@ void QInstaller::init()
 
     FileDownloaderFactory::setFollowRedirects(true);
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     factory.registerUpdateOperation<MacReplaceInstallNamesOperation>(QLatin1String("ReplaceInstallNames"));
-#endif // Q_OS_MAC
+#endif // Q_OS_OSX
    qInstallMessageHandler(messageHandler);
 }

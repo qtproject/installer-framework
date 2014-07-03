@@ -41,7 +41,7 @@
 
 #include "qtpatchoperation.h"
 #include "qtpatch.h"
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
 #include "macreplaceinstallnamesoperation.h"
 #endif
 
@@ -253,7 +253,7 @@ bool QtPatchOperation::performOperation()
         return false;
     }
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     // looking for /lib/Qt wasn't enough for all libs and frameworks,
     // at the Qt4 case we had for example: /lib/libQtCLucene* and /lib/phonon*
     // so now we find every possible replace string inside dynlib dependencies

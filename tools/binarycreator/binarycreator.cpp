@@ -116,7 +116,7 @@ static void chmod755(const QString &absolutFilePath)
 
 static int assemble(Input input, const QInstaller::Settings &settings)
 {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     if (QFileInfo(input.installerExePath).isBundle()) {
         const QString bundle = input.installerExePath;
         // if the input file was a bundle
@@ -240,7 +240,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
             setApplicationIcon(tempFile, settings.icon());
         }
     }
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_OSX)
     if (isBundle) {
         // no error handling as this is not fatal
         const QString copyscript = QDir::temp().absoluteFilePath(QLatin1String("copylibsintobundle.sh"));
@@ -257,7 +257,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
 
     QTemporaryFile out;
     QString targetName = input.outputPath;
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     QDir resourcePath(QFileInfo(input.outputPath).dir());
     resourcePath.cdUp();
     resourcePath.cd(QLatin1String("Resources"));
@@ -278,7 +278,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         QInstaller::openForWrite(&out);
         QFile exe(input.installerExePath);
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
         if (!exe.copy(input.outputPath)) {
             throw Error(QString::fromLatin1("Could not copy %1 to %2: %3").arg(exe.fileName(),
                 input.outputPath, exe.errorString()));
@@ -353,7 +353,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
 #endif
     QFile::remove(tempFile);
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     bundleBackup.release();
 
     if (createDMG) {
@@ -539,7 +539,7 @@ void copyConfigData(const QString &configFile, const QString &targetDir)
         QString targetFile;
         QFileInfo elementFileInfo;
         if (tagName == QLatin1String("Icon") || tagName == QLatin1String("InstallerApplicationIcon")) {
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_OSX)
             const QString suffix = QLatin1String(".icns");
 #elif defined(Q_OS_WIN)
             const QString suffix = QLatin1String(".ico");
@@ -746,7 +746,7 @@ int main(int argc, char **argv)
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
         }
 
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_OSX)
         // on mac, we enforce building a bundle
         if (!target.endsWith(QLatin1String(".app")) && !target.endsWith(QLatin1String(".dmg")))
             target += QLatin1String(".app");

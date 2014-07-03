@@ -104,7 +104,7 @@ static QStringList repositories(const QStringList &arguments, const int index)
 int main(int argc, char *argv[])
 {
 // increase maximum numbers of file descriptors
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_OSX)
     struct rlimit rl;
     getrlimit(RLIMIT_NOFILE, &rl);
     rl.rlim_cur = qMin((rlim_t)OPEN_MAX, rl.rlim_max);
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
     QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
 
 // hack to use cleanlooks if it is under Ubuntu
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
     std::string standardString;
     std::string cleanLooks ="-style=cleanlooks";
     std::ifstream input("/etc/os-release");
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
         }
 
         // Make sure we honor the system's proxy settings
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
         QUrl proxyUrl(QString::fromLatin1(qgetenv("http_proxy")));
         if (proxyUrl.isValid()) {
             QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxyUrl.host(), proxyUrl.port(),
@@ -298,7 +298,7 @@ int main(int argc, char *argv[])
             args.removeAll(QLatin1String("--binarydatafile"));
         }
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
         // Load the external binary resource if we got one passed, otherwise assume we are a bundle. In that
         // case we need to figure out the path into the bundles resources folder to get the binary data.
         if (index < 0) {
