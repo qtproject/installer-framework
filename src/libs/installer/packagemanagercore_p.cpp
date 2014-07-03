@@ -737,7 +737,7 @@ QString PackageManagerCorePrivate::uninstallerName() const
 {
     QString filename = m_data.settings().uninstallerName();
 #if defined(Q_OS_OSX)
-    if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
+    if (QInstaller::isInBundle(QCoreApplication::applicationDirPath()))
         filename += QLatin1String(".app/Contents/MacOS/") + filename;
 #elif defined(Q_OS_WIN)
     filename += QLatin1String(".exe");
@@ -1186,7 +1186,7 @@ void PackageManagerCorePrivate::writeUninstaller(OperationList performedOperatio
 #ifdef Q_OS_OSX
     // if it is a bundle, we need some stuff in it...
     const QString sourceAppDirPath = QCoreApplication::applicationDirPath();
-    if (isInstaller() && QFileInfo(sourceAppDirPath + QLatin1String("/../..")).isBundle()) {
+    if (isInstaller() && QInstaller::isInBundle(sourceAppDirPath)) {
         Operation *op = createOwnedOperation(QLatin1String("Copy"));
         op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../PkgInfo"))
             << (targetAppDirPath + QLatin1String("/../PkgInfo")));
@@ -2005,8 +2005,8 @@ void PackageManagerCorePrivate::deleteUninstaller()
     QFile uninstaller(QFileInfo(installerBinaryPath()).absoluteFilePath());
     uninstaller.remove();
 # ifdef Q_OS_OSX
-    const QLatin1String cdUp("/../../..");
-    if (QFileInfo(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath()).isBundle()) {
+    if (QInstaller::isInBundle(installerBinaryPath())) {
+        const QLatin1String cdUp("/../../..");
         removeDirectoryThreaded(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath());
         QFile::remove(QFileInfo(installerBinaryPath() + cdUp).absolutePath()
             + QLatin1String("/") + configurationFileName());

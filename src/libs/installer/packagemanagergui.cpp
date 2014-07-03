@@ -1715,7 +1715,7 @@ bool TargetDirectoryPage::validatePage()
     if (fi.isDir()) {
         QString fileName = packageManagerCore()->settings().uninstallerName();
 #if defined(Q_OS_OSX)
-        if (QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../..")).isBundle())
+        if (QInstaller::isInBundle(QCoreApplication::applicationDirPath()))
             fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
 #elif defined(Q_OS_WIN)
         fileName += QLatin1String(".exe");

@@ -657,9 +657,11 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
 
     if (magicMarker != MagicInstallerMarker) {
         // We are not an installer, so we need to read the data from the .dat file.
+
         QFileInfo fi(path);
-        if (QFileInfo(fi.absoluteFilePath() + QLatin1String("/../../..")).isBundle())
-            fi.setFile(fi.absoluteFilePath()); // On OSX it's not inside the bundle, deserves TODO.
+        QString bundlePath; // On OSX it's not inside the bundle, deserves TODO.
+        if (QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath))
+            fi.setFile(bundlePath);
 
         c.d->m_binaryDataFile.reset(new QFile(fi.absolutePath() + QLatin1Char('/') + fi.baseName()
             + QLatin1String(".dat")));

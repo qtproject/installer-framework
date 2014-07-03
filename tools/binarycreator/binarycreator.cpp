@@ -117,7 +117,7 @@ static void chmod755(const QString &absolutFilePath)
 static int assemble(Input input, const QInstaller::Settings &settings)
 {
 #ifdef Q_OS_OSX
-    if (QFileInfo(input.installerExePath).isBundle()) {
+    if (QInstaller::isInBundle(input.installerExePath)) {
         const QString bundle = input.installerExePath;
         // if the input file was a bundle
         const QSettings s(QString::fromLatin1("%1/Contents/Info.plist").arg(input.installerExePath),

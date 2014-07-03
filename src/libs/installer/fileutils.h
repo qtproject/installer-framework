@@ -105,6 +105,7 @@ private:
     void INSTALLER_EXPORT mkpath(const QString &path);
 
     quint64 INSTALLER_EXPORT fileSize(const QFileInfo &info);
+    bool INSTALLER_EXPORT isInBundle(const QString &path, QString *bundlePath = 0);
 
 #ifdef Q_OS_WIN
     QString INSTALLER_EXPORT getLongPathName(const QString &name);

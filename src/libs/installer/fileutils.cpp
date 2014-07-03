@@ -570,3 +570,22 @@ quint64 QInstaller::fileSize(const QFileInfo &info)
     return symlinkSizeWin(info.absoluteFilePath());
 #endif
 }
+
+bool QInstaller::isInBundle(const QString &path, QString *bundlePath)
+{
+#ifdef Q_OS_OSX
+    QFileInfo fi = QFileInfo(path).absoluteFilePath();
+    while (!fi.isRoot()) {
+        if (fi.isBundle()) {
+            if (bundlePath)
+                *bundlePath = fi.absoluteFilePath();
+            return true;
+        }
+        fi.setFile(fi.path());
+    }
+#else
+    Q_UNUSED(path)
+    Q_UNUSED(bundlePath)
+#endif
+    return false;
+}
