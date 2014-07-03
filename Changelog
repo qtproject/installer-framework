@@ -10,12 +10,14 @@
 - Added an example how to use dynamic pages.
 - Provided an API to get all wizard pages from java script. (QTIFW-477)
 - Made the installer binary paths available for scripts.  (QTIFW-424)
+- Fixed possible case of uninstalling all of Windows. (QTIFW-511)
+- Stopped trying to get admin rights on Windows if impossible.
 - Various bugs fixed.
 - Improved documentation.
 - Documentation fixes
 - Only support Qt 5 on documentation side as well.
 
-Thanks go to Sze Howe Koh for contributions.
+Thanks go to Sze Howe Koh, Ray Donnelly and Sascha Cunz for contributions.
 
 1.6.0
 - No longer requires Xcode command line tools on Mac. (QTBUG-38015)
