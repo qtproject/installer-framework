@@ -86,8 +86,6 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(QLatin1String("os"), QLatin1String("mac"));
 #elif defined(Q_OS_LINUX)
     m_variables.insert(QLatin1String("os"), QLatin1String("x11"));
-#elif defined(Q_OS_QWS)
-    m_variables.insert(QLatin1String("os"), QLatin1String("Qtopia"));
 #else
     // TODO: add more platforms as needed...
 #endif
