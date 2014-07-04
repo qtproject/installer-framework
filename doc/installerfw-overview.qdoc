@@ -49,32 +49,44 @@
     or by adding whole pages to provide users with additional options. You can
     create scripts to add operations to the installer.
 
-    You can create either \e offline or \e online installers. Offline installers
-    contain all the installable components and do not require network
-    connections during or after the installation.
-
-    Online installers download components from a repository on a Web server.
-    They enable users to install additional components from the server after the
-    initial setup, as well as to receive automatic updates to content as soon as
-    the updates are published on the server.
-
     \section1 Choosing Installer Type
 
-    You can provide end users with an offline or online installer, or both,
-    depending on your use cases.
+    You can provide end users with an \e offline or \e online installer, or
+    both, depending on your use cases.
+
+    \omit
+    \image ifw-overview.png
+    \endomit
+
+    Both installers install a \e {maintenance tool} that can later be used to
+    add, update, and remove components. Offline installers contain all the
+    installable components and do not require network connections during the
+    installation. Online installers only install the maintenance tool that then
+    downloads and installs components from an online repository on a web server.
+    Therefore, the size of an online installer binary is smaller and its
+    download time is shorter than that of an offline installer binary. The total
+    time spent downloading and running an online installer might also be shorter
+    than dowloading and running an offline installer if the end users do not
+    install all the available components.
+
+    End users can use the maintenance tool to install additional components from
+    the server after the initial installation, as well as to receive automatic
+    updates to content as soon as the updates are published on the server.
+    However, this works for an offline installation only if you specify a
+    repository address in the offline installer configuration or if end users
+    specify the repository address themselves in the maintenance tool settings.
 
     Create an offline installer to enable users to directly download the
     installation package on a media for installation on a computer later. You
     can also distribute the installation package on a CD-ROM or USB stick, for
     example.
 
-    Create an online installer if you expect the users to have reliable network
-    access, because it provides the users with automatic updates to installed
-    content and easy access to all content that is added later.
+    Create an online installer to enable users to always install the latest
+    versions of the content binaries.
 
     \section1 Promoting Updates
 
-    Create online installers to be able to promote updates to end users who
+    Make online repositories available to promote updates to end users who
     install your product. The easiest way to provide an update is to recreate
     the repository and upload it to the web server. For large repositories, you
     can update only the changed components.
