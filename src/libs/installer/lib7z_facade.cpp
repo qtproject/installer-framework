@@ -1076,8 +1076,7 @@ class Lib7z::UpdateCallbackImpl : public IUpdateCallbackUI2, public CMyUnknownIm
 {
 public:
     MY_UNKNOWN_IMP
-        explicit UpdateCallbackImpl(UpdateCallback* qq)
-        : q(qq)
+    UpdateCallbackImpl()
     {
     }
     virtual ~UpdateCallbackImpl()
@@ -1178,8 +1177,6 @@ public:
     }
 
 private:
-    UpdateCallback* const q;
-
     QIODevice* target;
     QStringList sourcePaths;
 };
@@ -1187,9 +1184,9 @@ private:
 class Lib7z::UpdateCallbackPrivate
 {
 public:
-    explicit UpdateCallbackPrivate(UpdateCallback* qq)
+    UpdateCallbackPrivate()
     {
-        m_impl = new UpdateCallbackImpl(qq);
+        m_impl = new UpdateCallbackImpl;
     }
 
     UpdateCallbackImpl* impl()
@@ -1202,7 +1199,7 @@ private:
 };
 
 UpdateCallback::UpdateCallback()
-    : d(new UpdateCallbackPrivate(this))
+    : d(new UpdateCallbackPrivate)
 {
 }
 

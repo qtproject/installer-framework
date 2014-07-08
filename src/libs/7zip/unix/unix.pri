@@ -68,7 +68,6 @@ SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/Common/MultiStream.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/Common/DummyOutStream.cpp
 
 #$(7Z_OBJS): ../../Archive/7z/$(*B).cpp
-SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/7z/7zCompressionMode.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/7z/7zDecode.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/7z/7zEncode.cpp
 SOURCES += $$7ZIP_BASE/CPP/7zip/Archive/7z/7zExtract.cpp

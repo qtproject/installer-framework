@@ -13,7 +13,6 @@ HEADERS += $$PWD/kdtoolsglobal.h \
     $$PWD/kdsysinfo.h
 
 SOURCES += $$PWD/kdjob.cpp \
-    $$PWD/kdgenericfactory.cpp \
     $$PWD/kdselfrestarter.cpp \
     $$PWD/kdrunoncechecker.cpp \
     $$PWD/kdlockfile.cpp \

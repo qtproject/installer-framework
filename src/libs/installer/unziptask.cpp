@@ -228,7 +228,6 @@ private:
 private:
     QString m_target;
     const CArc &m_arc;
-    UnzipTask *m_unzipTask;
     QFutureInterface<QString> *m_futureInterface;
 
     UInt32 m_currentIndex;

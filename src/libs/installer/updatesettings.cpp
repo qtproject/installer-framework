@@ -53,11 +53,7 @@ using namespace QInstaller;
 class UpdateSettings::Private
 {
 public:
-    Private(UpdateSettings* qq)
-        : q(qq) { }
-
-private:
-    UpdateSettings *const q;
+    Private() {}
 
 public:
     QSettings &settings()
@@ -81,7 +77,7 @@ QSettings *UpdateSettings::Private::externalSettings = 0;
 // -- UpdateSettings
 
 UpdateSettings::UpdateSettings()
-    : d(new Private(this))
+    : d(new Private)
 {
     d->settings().sync();
 }
