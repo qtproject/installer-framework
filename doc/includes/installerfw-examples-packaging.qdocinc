@@ -1,0 +1,15 @@
+    \section1 Creating the Example Package Information File
+
+    The installer package information file, package.xml, in the \c meta
+    directory specifies the components that are available for installation:
+
+    \list
+        \li The \c <DisplayName> section specifies the human-readable name of
+            the component.
+        \li The \c <Description> section specifies the human-readable
+            description of the component.
+        \li The \c <ReleaseDate> section specifies the date when this component
+            version was released.
+        \li The \c <Script> section specifies the file name of the JavaScript
+            file that is loaded.
+    \endlist

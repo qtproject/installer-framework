@@ -8,13 +8,14 @@ project     = "Qt Installer Framework"
 description = "Qt Installer Framework Manual"
 
 headerdirs = ../src/libs/installer
-sourcedirs = ../src/libs/installer
+sourcedirs = ../src/libs/installer \
+             includes
 
 imagedirs = $SRCDIR/images $SRCDIR/templates/images
 outputdir = $OUTDIR
-exampledirs = $SRCDIR $SRCDIR/examples
+exampledirs = $SRCDIR ../examples
 
-sources.fileextensions         = "*.qdoc *.cpp"
+sources.fileextensions         = "*.qdoc *.qdocinc *.cpp"
 
 indexes = $QT_INSTALL_DOCS/qtwidgets/qtwidgets.index
 

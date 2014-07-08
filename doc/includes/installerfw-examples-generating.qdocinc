@@ -1,0 +1,5 @@
+    \section1 Generating the Example Installer
+
+    \code
+    binarycreator --offline-only -c config/config.xml -p packages installer
+    \endcode

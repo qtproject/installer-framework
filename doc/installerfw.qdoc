@@ -66,6 +66,7 @@
             \li \l{Promoting Updates}
             \li \l{Customizing Installers}
         \endlist
+        \li \l{Qt Installer Framework Examples}
         \li \l{Reference}
         \list
             \li \l{Configuration File}

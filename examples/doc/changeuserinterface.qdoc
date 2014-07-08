@@ -1,0 +1,57 @@
+/****************************************************************************
+**
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example changeuserinterface
+    \ingroup qtifwexamples
+    \title Change Installer UI Example
+
+    \brief Changing the installer UI by using a component script.
+
+    \e {Change Installer UI} demonstrates how to add a license page to the
+    installer by using a component script.
+
+    \note Do not use component scripts for translations.
+
+    \include installerfw-examples-configuring.qdocinc
+
+    \quotefile changeuserinterface/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Version> section specifies the version number of the
+            component.
+        \li The \c <Licenses> section specifies the \c name of the license
+            agreement to be accepted by the end user and the filename of the
+            \c file that contains the license.
+    \endlist
+
+    \quotefile changeuserinterface/packages/org.qtproject.ifw.example.changeuserinterface/meta/package.xml
+
+    \include installerfw-examples-generating.qdocinc
+*/
