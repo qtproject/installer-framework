@@ -38,22 +38,18 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include "installerbase_p.h"
 
+#include "console.h"
 #include "installerbasecommons.h"
 #include "sdkapp.h"
 #include "tabcontroller.h"
 
 #include <binaryformat.h>
 #include <errors.h>
-#include <fileutils.h>
-#include <remoteserver.h>
 #include <init.h>
-#include <lib7z_facade.h>
-#include <operationrunner.h>
-#include <packagemanagercore.h>
-#include <packagemanagergui.h>
-#include <qinstallerglobal.h>
+#include <messageboxhandler.h>
+#include <productkeycheck.h>
+#include <remoteserver.h>
 #include <settings.h>
 #include <utils.h>
 #include <updater.h>
@@ -62,41 +58,31 @@
 #include <kdrunoncechecker.h>
 #include <kdupdaterfiledownloaderfactory.h>
 
-#include <productkeycheck.h>
-
+#include <QCommandLineParser>
 #include <QDirIterator>
-#include <QtCore/QTranslator>
-#include <QMessageBox>
-
-#include <QtNetwork/QNetworkProxyFactory>
+#include <QNetworkProxyFactory>
+#include <QTranslator>
 
 #include <iostream>
-#include <fstream>
-
-#include <string>
+#if defined(Q_OS_UNIX)
+# include <fstream>
+#endif
 
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
-#define VERSION "IFW Version: \"" QUOTE(IFW_VERSION) "\", Installer base SHA1: \"" QUOTE(_GIT_SHA1_) \
-    "\", Build date: " QUOTE(__DATE__) "."
+#define VERSION "IFW Version: \"" QUOTE(IFW_VERSION) "\""
+#define BUILDDATE "Build date: " QUOTE(__DATE__)
+#define SHA "Installer Framework SHA1: \"" QUOTE(_GIT_SHA1_) "\""
+static const char PLACEHOLDER[32] = "MY_InstallerCreateDateTime_MY";
 
 using namespace QInstaller;
-using namespace QInstallerCreator;
 
-static const char installer_create_datetime_placeholder [32] = "MY_InstallerCreateDateTime_MY";
-
-static QStringList repositories(const QStringList &arguments, const int index)
+static QStringList repositories(const QString &list)
 {
-    if (index < arguments.size()) {
-        QStringList items = arguments.at(index).split(QLatin1Char(','));
-        foreach (const QString &item, items) {
-            qDebug() << "Adding custom repository:" << item;
-        }
-        return items;
-    } else {
-        std::cerr << "No repository specified" << std::endl;
-    }
-    return QStringList();
+    const QStringList items = list.split(QLatin1Char(','), QString::SkipEmptyParts);
+    foreach (const QString &item, items)
+        qDebug() << "Adding custom repository:" << item;
+    return items;
 }
 
 // -- main
@@ -111,7 +97,10 @@ int main(int argc, char *argv[])
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
 
-    QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
+    // We need to start either a command line application or a GUI application. Since we
+    // fail doing so at least on Linux while parsing the argument using a core application
+    // object and later starting the GUI application, we now parse the arguments first.
+    const QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
 
 // hack to use cleanlooks if it is under Ubuntu
 #if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
@@ -140,241 +129,276 @@ int main(int argc, char *argv[])
     const KDSelfRestarter restarter(argc, argv);
     KDRunOnceChecker runCheck(QLatin1String("lockmyApp1234865.lock"));
 
+    QCommandLineParser parser;
+    QCommandLineOption help = parser.addHelpOption();
+
+    QCommandLineOption version(QLatin1String("version"),
+        QLatin1String("Displays version information."));
+    parser.addOption(version);
+
+    QCommandLineOption verbose(QStringList() << QLatin1String("v") << QLatin1String("verbose"),
+        QLatin1String("Verbose mode. Prints out more information."));
+    parser.addOption(verbose);
+
+    QCommandLineOption proxy(QLatin1String("proxy"),
+        QLatin1String("Use system proxy on Windows and OS X. This option has no effect on Linux."));
+    parser.addOption(proxy);
+
+    QCommandLineOption script(QLatin1String("script"),
+        QLatin1String("Execute the script given as argument."), QLatin1String("file"));
+    parser.addOption(script);
+
+    QCommandLineOption checkUpdates(QLatin1String("checkupdates"),
+        QLatin1String("Check for updates and return an XML description."));
+    parser.addOption(checkUpdates);
+
+    QCommandLineOption updater(QLatin1String("updater"),
+        QLatin1String("Start application in updater mode."));
+    parser.addOption(updater);
+
+    QCommandLineOption pkgManager(QLatin1String("manage-packages"),
+        QLatin1String("Start application in package manager mode."));
+    parser.addOption(pkgManager);
+
+    QCommandLineOption noForce(QLatin1String("no-force-installations"),
+        QLatin1String("Allow deselection of components that are marked as forced."));
+    parser.addOption(noForce);
+
+    QCommandLineOption showVirtuals(QLatin1String("show-virtual-components"),
+        QLatin1String("Show virtual components in installer and package manager."));
+    parser.addOption(showVirtuals);
+
+    QCommandLineOption offlineRepo(QLatin1String("create-offline-repository"), QLatin1String(
+        "Create a local repository inside the installation directory. This option has no effect "
+        "on online installer's"));
+    parser.addOption(offlineRepo);
+
+    QCommandLineOption addRepo(QLatin1String("addRepository"),
+        QLatin1String("Add a local or remote repository to the list of user defined repositories."),
+        QLatin1String("URI,..."));
+    parser.addOption(addRepo);
+
+    QCommandLineOption addTmpRepo(QLatin1String("addTempRepository"), QLatin1String(
+        "Add a local or remote repository to the list of temporary available repositories."),
+        QLatin1String("URI,..."));
+    parser.addOption(addTmpRepo);
+
+    QCommandLineOption setTmpRepo(QLatin1String("setTempRepository"),
+        QLatin1String("Set a local or remote repository as temporary repository, it is the only "
+        "one used during fetch.\nNote: URI must be prefixed with the protocol, i.e. file:///, "
+        "https://, http:// or ftp://."), QLatin1String("URI,..."));
+    parser.addOption(setTmpRepo);
+
+    QCommandLineOption startServer(QLatin1String("startserver"), QLatin1String("Starts the "
+        "application as headless process waiting for commands to execute."),
+        QLatin1String("port,key"));
+    parser.addOption(startServer);
+
+    parser.addPositionalArgument(QLatin1String("Key=Value"),
+        QLatin1String("Key Value pair to be set."));
+
+    parser.parse(args);
+
+    QStringList mutually;
+    if (parser.isSet(checkUpdates))
+        mutually << checkUpdates.names();
+    if (parser.isSet(updater))
+        mutually << updater.names();
+    if (parser.isSet(pkgManager))
+        mutually << pkgManager.names();
+
+    if (parser.isSet(help) || parser.isSet(version) || (mutually.count() > 1)) {
+        Console c;
+        QCoreApplication app(argc, argv);
+
+        if (parser.isSet(version)) {
+            std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;
+            const QDateTime dateTime = QDateTime::fromString(QLatin1String(PLACEHOLDER),
+                QLatin1String("yyyy-MM-dd - HH:mm:ss"));
+            if (dateTime.isValid())
+                std::cout << "Installer creation time: " << PLACEHOLDER << std::endl;
+            return EXIT_SUCCESS;
+        }
+
+        if (mutually.count() > 1) {
+            std::cerr << qPrintable(QString::fromLatin1("The following options are mutually "
+                "exclusive: %1.").arg(mutually.join(QLatin1String(", ")))) << std::endl;
+        }
+
+        std::cout << qPrintable(parser.helpText()) << std::endl;
+        return parser.isSet(help) ? EXIT_SUCCESS : EXIT_FAILURE;
+    }
+
+    if (parser.isSet(startServer)) {
+        const QString argument = parser.value(startServer);
+        const QString port = argument.section(QLatin1Char(','), 0, 0);
+        const QString key = argument.section(QLatin1Char(','), 1, 1);
+
+        QStringList missing;
+        if (port.isEmpty())
+            missing << QLatin1String("Port");
+        if (key.isEmpty())
+            missing << QLatin1String("Key");
+
+        SDKApp<QCoreApplication> app(argc, argv);
+        if (missing.count()) {
+            Console c;
+            std::cerr << qPrintable(QString::fromLatin1("Missing argument(s) for option "
+                "'startserver': %2").arg(missing.join(QLatin1String(", ")))) << std::endl;
+            std::cout << qPrintable(parser.helpText()) << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        RemoteServer *server = new RemoteServer;
+        QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
+        server->init(port.toInt(), QHostAddress::LocalHost, Protocol::Mode::Release);
+        server->setAuthorizationKey(key);
+        server->start();
+        return app.exec();
+    }
+
     try {
-        if (args.contains(QLatin1String("--help")) || args.contains(QLatin1String("-h"))) {
-            InstallerBase::showUsage();
-            return 0;
+        QScopedPointer<Console> console;
+        if (parser.isSet(verbose)) {
+            console.reset(new Console);
+            QInstaller::setVerbose(parser.isSet(verbose));
         }
 
-        if (args.contains(QLatin1String("--version"))) {
-            QString versionOutPut;
-            QDateTime dateTimeCheck = QDateTime::fromString(QLatin1String(
-                installer_create_datetime_placeholder), QLatin1String("yyyy-MM-dd - HH:mm:ss"));
-            if (dateTimeCheck.isValid()) {
-                versionOutPut.append(QLatin1String("Installer creation time: "));
-                versionOutPut.append(QLatin1String(installer_create_datetime_placeholder));
-                versionOutPut.append(QLatin1String("\n"));
-            }
-            versionOutPut.append(QLatin1String(VERSION));
-            InstallerBase::showVersion(versionOutPut);
-            return 0;
+        // On Windows we need the console window from above, we are a GUI application.
+        const QStringList unknownOptionNames = parser.unknownOptionNames();
+        if (!unknownOptionNames.isEmpty()) {
+            const QString options = unknownOptionNames.join(QLatin1String(", "));
+            std::cerr << "Unknown option: " << qPrintable(options) << std::endl;
         }
 
-        // this is the FSEngineServer as an admin rights process upon request:
-        if (args.count() >= 3 && args[1] == QLatin1String("--startserver")) {
-            SDKApp<QCoreApplication> app(argc, argv);
-            RemoteServer *const server = new RemoteServer();
-            QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
-            server->init(args[2].toInt(), QHostAddress::LocalHost, Protocol::Mode::Release);
-            if (args.count() >= 4)
-                server->setAuthorizationKey(args[3]);
-            server->start();
-            return app.exec();
-        }
-
-        // Make sure we honor the system's proxy settings
+        if (parser.isSet(proxy)) {
+            // Make sure we honor the system's proxy settings
 #if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
-        QUrl proxyUrl(QString::fromLatin1(qgetenv("http_proxy")));
-        if (proxyUrl.isValid()) {
-            QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxyUrl.host(), proxyUrl.port(),
-                proxyUrl.userName(), proxyUrl.password());
-            QNetworkProxy::setApplicationProxy(proxy);
-        }
+            QUrl proxyUrl(QString::fromLatin1(qgetenv("http_proxy")));
+            if (proxyUrl.isValid()) {
+                QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxyUrl.host(), proxyUrl.port(),
+                    proxyUrl.userName(), proxyUrl.password());
+                QNetworkProxy::setApplicationProxy(proxy);
+            }
 #else
-        if (args.contains(QLatin1String("--proxy")))
             QNetworkProxyFactory::setUseSystemConfiguration(true);
 #endif
+        }
 
-        if (args.contains(QLatin1String("--checkupdates"))) {
+        if (parser.isSet(checkUpdates)) {
             SDKApp<QCoreApplication> app(argc, argv);
             if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
-                return 0;
+                throw Error(QLatin1String("An instance is already checking for updates."));
 
             Updater u;
-            if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("-v"))) {
-                app.setVerbose();
-                u.setVerbose(true);
-            }
-            return u.checkForUpdates() ? 0 : 1;
+            u.setVerbose(parser.isSet(verbose));
+            return u.checkForUpdates() ? EXIT_SUCCESS : EXIT_FAILURE;
         }
 
-        if (args.contains(QLatin1String("--runoperation"))
-            || args.contains(QLatin1String("--undooperation"))) {
-            SDKApp<QCoreApplication> app(argc, argv);
-            OperationRunner o;
-            o.setVerbose(args.contains(QLatin1String("--verbose"))
-                         || args.contains(QLatin1String("-v")));
-            return o.runOperation(args);
-        }
-
-        if (args.contains(QLatin1String("--update-installerbase"))) {
-            SDKApp<QCoreApplication> app(argc, argv);
-            if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
-                return 0;
-            if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("-v")))
-                app.setVerbose();
-            return InstallerBase().replaceMaintenanceToolBinary(args);
-        }
-
-        if (args.contains(QLatin1String("--dump-binary-data"))) {
-            bool verbose = args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("-v"));
-
-            args = args.mid(args.indexOf(QLatin1String("--dump-binary-data")) + 1, 4);
-            // we expect at least -o and the output path
-            if (args.count() < 2 || !args.contains(QLatin1String("-o"))) {
-                InstallerBase::showUsage();
-                return EXIT_FAILURE;
-            }
-
-            // output path
-            const QString output = args.at(args.indexOf(QLatin1String("-o")) + 1);
-            if (output.isEmpty()) {
-                InstallerBase::showUsage();
-                return EXIT_FAILURE;
-            }
-
-            SDKApp<QCoreApplication> app(argc, argv);
-
-            // input, if not given use current app
-            QString input;
-            if (args.indexOf(QLatin1String("-i")) >= 0)
-                input = args.value(args.indexOf(QLatin1String("-i")) + 1);
-
-            if (input.isEmpty() || input == QLatin1String("-o") || input == output)
-                 input = QCoreApplication::applicationFilePath();
-
-            OperationRunner o(input);
-            o.setVerbose(verbose);
-            return o.runOperation(QStringList(QLatin1String("--runoperation"))
-                << QLatin1String("CreateLocalRepository") << input << output);
-        }
-
-        // from here, the "normal" installer binary is running
         SDKApp<QApplication> app(argc, argv);
-        args = app.arguments();
+        QInstaller::init(); // register custom operations
 
-        if (runCheck.isRunning(KDRunOnceChecker::ProcessList)) {
-            if (runCheck.isRunning(KDRunOnceChecker::Lockfile))
-                return 0;
-
-            while (runCheck.isRunning(KDRunOnceChecker::ProcessList))
-                Sleep::sleep(1);
-        }
-
-        if (args.contains(QLatin1String("--verbose")) || args.contains(QLatin1String("-v"))) {
-            app.setVerbose();
-            QInstaller::setVerbose(true);
+        if (runCheck.isRunning(KDRunOnceChecker::ProcessList)
+            || runCheck.isRunning(KDRunOnceChecker::Lockfile)) {
+                QInstaller::MessageBoxHandler::information(0, QLatin1String("AlreadyRunning"),
+                    QString::fromLatin1("Waiting for % 1").arg(qAppName()),
+                    QString::fromLatin1("Another %1 instance is already running. Wait "
+                    "until it finishes, close it, or restart your system.").arg(qAppName()));
+            return EXIT_FAILURE;
         }
 
         if (QInstaller::isVerbose()) {
             qDebug() << VERSION;
             qDebug() << "Arguments:" << args;
             qDebug() << "Resource tree before loading the in-binary resource:";
-            qDebug() << "Language: " << QLocale().uiLanguages().value(0, QLatin1String("No UI language set"));
+            qDebug() << "Language: " << QLocale().uiLanguages().value(0,
+                QLatin1String("No UI language set"));
 
-            QDirIterator it(QLatin1String(":/"), QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
+            QDirIterator it(QLatin1String(":/"),
+                QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
                 QDirIterator::Subdirectories);
             while (it.hasNext())
                 qDebug() << QString::fromLatin1("    %1").arg(it.next());
         }
 
-        // register custom operations before reading the binary content because they may be used in
-        // the maintenance tool for the recorded list or during the installation performed operations
-        QInstaller::init();
-
         QString binaryFile = QCoreApplication::applicationFilePath();
-        const int index = args.indexOf(QLatin1String("--binarydatafile"));
-        if (index >= 0) {
-            binaryFile = args.value(index + 1);
-            if (binaryFile.isEmpty()) {
-                std::cerr << QFileInfo(app.applicationFilePath()).fileName() << " --binarydatafile [missing "
-                    "argument]" << std::endl;
-                return PackageManagerCore::Failure;
-            }
-
-            // Consume the arguments to avoid "Unknown option" output. Also there's no need to check for a
-            // valid binary, will throw in readAndRegisterFromBinary(...) if the magic cookie can't be found.
-            args.removeAt(index + 1);
-            args.removeAll(QLatin1String("--binarydatafile"));
-        }
-
 #ifdef Q_OS_OSX
-        // Load the external binary resource if we got one passed, otherwise assume we are a bundle. In that
-        // case we need to figure out the path into the bundles resources folder to get the binary data.
-        if (index < 0) {
-            QDir resourcePath(QFileInfo(binaryFile).dir());
-            resourcePath.cdUp();
-            resourcePath.cd(QLatin1String("Resources"));
-            binaryFile = resourcePath.filePath(QLatin1String("installer.dat"));
-        }
+        // The installer binary on OSX does not contain the binary content, it's put
+        // into the resources folder as separate file. Adjust the actual binary path.
+        QDir resourcePath(QFileInfo(binaryFile).dir());
+        resourcePath.cdUp();
+        resourcePath.cd(QLatin1String("Resources"));
+        binaryFile = resourcePath.filePath(QLatin1String("installer.dat"));
 #endif
         BinaryContent content = BinaryContent::readAndRegisterFromBinary(binaryFile);
 
         // instantiate the installer we are actually going to use
-        QInstaller::PackageManagerCore core(content.magicMarker(), content.performedOperations());
+        PackageManagerCore core(content.magicMarker(), content.performedOperations());
         ProductKeyCheck::instance()->init(&core);
 
         QString controlScript;
-        QHash<QString, QString> params;
-        for (int i = 1; i < args.size(); ++i) {
-            const QString &argument = args.at(i);
-            if (argument.isEmpty())
-                continue;
+        if (parser.isSet(script)) {
+            controlScript = parser.value(script);
+            if (!QFileInfo(controlScript).exists())
+                throw Error(QLatin1String("Script file does not exist."));
+        }
 
+        if (parser.isSet(proxy)) {
+            core.settings().setProxyType(QInstaller::Settings::SystemProxy);
+            KDUpdater::FileDownloaderFactory::instance().setProxyFactory(core.proxyFactory());
+        }
+
+        if (parser.isSet(showVirtuals)) {
+            QFont f;
+            f.setItalic(true);
+            PackageManagerCore::setVirtualComponentsFont(f);
+            PackageManagerCore::setVirtualComponentsVisible(true);
+        }
+
+        if (parser.isSet(updater)) {
+            if (core.isInstaller())
+                throw Error(QLatin1String("Cannot start installer binary as updater."));
+            core.setUpdater();
+        }
+
+        if (parser.isSet(pkgManager)) {
+            if (core.isInstaller())
+                throw Error(QLatin1String("Cannot start installer binary as package manager."));
+            core.setPackageManager();
+        }
+
+        if (parser.isSet(addRepo)) {
+            const QStringList repoList = repositories(parser.value(addRepo));
+            if (repoList.isEmpty())
+                throw Error(QLatin1String("Empty repository list for option 'addRepository'."));
+            core.addUserRepositories(repoList);
+        }
+
+        if (parser.isSet(addTmpRepo)) {
+            const QStringList repoList = repositories(parser.value(addTmpRepo));
+            if (repoList.isEmpty())
+                throw Error(QLatin1String("Empty repository list for option 'addTempRepository'."));
+            core.setTemporaryRepositories(repoList, false);
+        }
+
+        if (parser.isSet(setTmpRepo)) {
+            const QStringList repoList = repositories(parser.value(setTmpRepo));
+            if (repoList.isEmpty())
+                throw Error(QLatin1String("Empty repository list for option 'setTempRepository'."));
+            core.setTemporaryRepositories(repoList, true);
+        }
+
+        PackageManagerCore::setNoForceInstallation(parser.isSet(noForce));
+        PackageManagerCore::setCreateLocalRepositoryFromBinary(parser.isSet(offlineRepo));
+
+        QHash<QString, QString> params;
+        const QStringList positionalArguments = parser.positionalArguments();
+        foreach (const QString &argument, positionalArguments) {
             if (argument.contains(QLatin1Char('='))) {
                 const QString name = argument.section(QLatin1Char('='), 0, 0);
                 const QString value = argument.section(QLatin1Char('='), 1, 1);
                 params.insert(name, value);
                 core.setValue(name, value);
-            } else if (argument == QLatin1String("--script") || argument == QLatin1String("Script")) {
-                ++i;
-                if (i < args.size()) {
-                    controlScript = args.at(i);
-                    if (!QFileInfo(controlScript).exists())
-                        return PackageManagerCore::Failure;
-                } else {
-                    return PackageManagerCore::Failure;
-                }
-             } else if (argument == QLatin1String("--verbose") || argument == QLatin1String("-v")) {
-                core.setVerbose(true);
-             } else if (argument == QLatin1String("--proxy")) {
-                    core.settings().setProxyType(QInstaller::Settings::SystemProxy);
-                    KDUpdater::FileDownloaderFactory::instance().setProxyFactory(core.proxyFactory());
-             } else if (argument == QLatin1String("--show-virtual-components")
-                 || argument == QLatin1String("ShowVirtualComponents")) {
-                     QFont f;
-                     f.setItalic(true);
-                     PackageManagerCore::setVirtualComponentsFont(f);
-                     PackageManagerCore::setVirtualComponentsVisible(true);
-            } else if ((argument == QLatin1String("--updater")
-                || argument == QLatin1String("Updater")) && core.isUninstaller()) {
-                    core.setUpdater();
-            } else if ((argument == QLatin1String("--manage-packages")
-                || argument == QLatin1String("ManagePackages")) && core.isUninstaller()) {
-                    core.setPackageManager();
-            } else if (argument == QLatin1String("--addTempRepository")
-                || argument == QLatin1String("--setTempRepository")) {
-                    ++i;
-                    QStringList repoList = repositories(args, i);
-                    if (repoList.isEmpty())
-                        return PackageManagerCore::Failure;
-
-                    // We cannot use setRemoteRepositories as that is a synchronous call which "
-                    // tries to get the data from server and this isn't what we want at this point
-                    const bool replace = (argument == QLatin1String("--setTempRepository"));
-                    core.setTemporaryRepositories(repoList, replace);
-            } else if (argument == QLatin1String("--addRepository")) {
-                ++i;
-                QStringList repoList = repositories(args, i);
-                if (repoList.isEmpty())
-                    return PackageManagerCore::Failure;
-                core.addUserRepositories(repoList);
-            } else if (argument == QLatin1String("--no-force-installations")) {
-                PackageManagerCore::setNoForceInstallation(true);
-            } else if (argument == QLatin1String("--create-offline-repository")) {
-                PackageManagerCore::setCreateLocalRepositoryFromBinary(true);
-            } else {
-                std::cerr << "Unknown option: " << argument << std::endl;
             }
         }
 
@@ -428,7 +452,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        // Create the wizard gui
+        //create the wizard GUI
         TabController controller(0);
         controller.setManager(&core);
         controller.setManagerParams(params);

@@ -228,12 +228,14 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_remoteFileEngineHandler(new RemoteFileEngineHandler)
 {
     // Creates and initializes a remote client, makes us get admin rights for QFile, QSettings
-    // and QProcess operations.
+    // and QProcess operations. Init needs to called before we can get the real authorization key.
     int port = 30000 + qrand() % 1000;
     RemoteClient::instance().init(port, QHostAddress::LocalHost, Protocol::Mode::Release);
     RemoteClient::instance().setStartServerCommand(QCoreApplication::applicationFilePath(),
-        QStringList() << QLatin1String("--startserver") << QString::number(port)
-        << RemoteClient::instance().authorizationKey(), Protocol::StartAs::SuperUser);
+        QStringList() << QLatin1String("--startserver") << QString::fromLatin1("%1,%2")
+            .arg(port)
+            .arg(RemoteClient::instance().authorizationKey()),
+        Protocol::StartAs::SuperUser);
 
     connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
     connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));

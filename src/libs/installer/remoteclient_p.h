@@ -175,7 +175,7 @@ public:
                     RemoteClient::tr("Could not get authorization."),
                     RemoteClient::tr("Could not get authorization that is needed for continuing "
                     "the installation.\n Either abort the installation or use the fallback "
-                    "solution by running\n%1\nas root and then clicking OK.").arg(fallback),
+                    "solution by running\n\n%1\n\nas root and then clicking OK.").arg(fallback),
                     QMessageBox::Abort | QMessageBox::Ok, QMessageBox::Ok);
 
                 if (res == QMessageBox::Ok)

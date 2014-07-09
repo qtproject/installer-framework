@@ -42,8 +42,6 @@
 #ifndef SDKAPP_H
 #define SDKAPP_H
 
-#include "console.h"
-
 #include <QApplication>
 
 template<class T>
@@ -52,22 +50,14 @@ class SDKApp : public T
 public:
     SDKApp(int& argc, char** argv)
         : T(argc, argv)
-        , m_console(0)
     {
     }
 
-    virtual ~SDKApp()
+    ~SDKApp()
     {
-        delete m_console;
     }
 
-    void setVerbose()
-    {
-        if (!m_console)
-            m_console = new Console;
-    }
-
-    virtual bool notify(QObject *receiver, QEvent *event)
+    bool notify(QObject *receiver, QEvent *event)
     {
         try {
             return T::notify(receiver, event);
@@ -76,9 +66,6 @@ public:
         }
         return false;
     }
-
-private:
-    Console *m_console;
 };
 
 #endif  // SDKAPP_H

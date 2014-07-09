@@ -106,7 +106,7 @@ exists($$LRELEASE) {
 }
 FORMS += settingsdialog.ui
 
-HEADERS += installerbase_p.h \
+HEADERS += \
            tabcontroller.h \
            installerbasecommons.h \
            settingsdialog.h \
@@ -114,7 +114,6 @@ HEADERS += installerbase_p.h \
            sdkapp.h
 
 SOURCES = installerbase.cpp \
-          installerbase_p.cpp \
           tabcontroller.cpp \
           installerbasecommons.cpp \
           settingsdialog.cpp
