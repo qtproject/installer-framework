@@ -8,8 +8,8 @@
             the component.
         \li The \c <Description> section specifies the human-readable
             description of the component.
+        \li The \c <Version> section specifies the version number of the
+            component.
         \li The \c <ReleaseDate> section specifies the date when this component
             version was released.
-        \li The \c <Script> section specifies the file name of the JavaScript
-            file that is loaded.
     \endlist

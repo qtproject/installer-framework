@@ -15,8 +15,8 @@
         \li The \c <StartMenuDir> section specifies the name of the default
             program group for the product in the Windows \gui Start menu.
         \li The \c <TargetDir> section specifies that the default target
-            directory displayed to users is \c InstallationDirectory in the home
-            directory of the current user (because the predefined variable
-            \c @HomeDir@ is used as a part of the value). For more information,
-            see \l{Predefined Variables}.
+            directory displayed to users is \c IfwExample in the home directory
+            of the current user (because the predefined variable\c @HomeDir@ is
+            used as a part of the value). For more information, see
+            \l{Predefined Variables}.
     \endlist

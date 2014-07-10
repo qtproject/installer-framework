@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>Change UI example</DisplayName>
-    <Description>Change license accept/reject labels text</Description>
-    <ReleaseDate>2013-01-01</ReleaseDate>
+    <DisplayName>Dummy Component</DisplayName>
+    <Description>This example does not install any components. It demonstrates
+    modifying the text on the next page.</Description>
     <Version>1.0.0-1</Version>
+    <ReleaseDate>2013-01-01</ReleaseDate>
     <Script>installscript.qs</Script>
     <Licenses>
         <License name="Beer Public License Agreement" file="license.txt" />

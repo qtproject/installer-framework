@@ -17,6 +17,8 @@ outputdir = $OUTDIR
 exampledirs = $SRCDIR ../examples
 
 sources.fileextensions         = "*.qdoc *.qdocinc *.cpp"
+examples.fileextensions        = "*.js *.qs *.txt *.xml"
+examples.imageextensions       = "*.png"
 
 indexes = $QT_INSTALL_DOCS/qtwidgets/qtwidgets.index
 

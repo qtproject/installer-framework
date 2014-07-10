@@ -32,10 +32,13 @@
 
     \brief Changing the installer UI by using a component script.
 
-    \e {Change Installer UI} demonstrates how to add a license page to the
-    installer by using a component script.
+    \image qtifw-examples-changeuserinterface.png
 
-    \note Do not use component scripts for translations.
+    \e {Change Installer UI} demonstrates how to use the \c Component() function
+    to modify the default text for the radio button labels on the
+    \l{License Check Page}{license check page}. This example does not install
+    any components, but we specify a dummy component in the package information
+    file, because installers without components are not allowed.
 
     \include installerfw-examples-configuring.qdocinc
 
@@ -44,14 +47,31 @@
     \include installerfw-examples-packaging.qdocinc
 
     \list
-        \li The \c <Version> section specifies the version number of the
-            component.
+        \li The \c <Script> section specifies the file name of the JavaScript
+            file that is loaded to perform operations.
         \li The \c <Licenses> section specifies the \c name of the license
             agreement to be accepted by the end user and the filename of the
             \c file that contains the license.
     \endlist
 
     \quotefile changeuserinterface/packages/org.qtproject.ifw.example.changeuserinterface/meta/package.xml
+
+    \section1 Modifying UI Text
+
+    In installscript.qs, we call the \c Component() function to add the license
+    check page and to connect to the \c changeLicenseLabels signal when end
+    users enter the page:
+
+    \quotefromfile changeuserinterface/packages/org.qtproject.ifw.example.changeuserinterface/meta/installscript.qs
+    \skipto Component()
+    \printuntil }
+
+    We use the \c changeLicenseLabels function to change the text labels for the
+    accept and reject license radio buttons on the page:
+
+    \printuntil }
+
+    \note Do not use the \c Component() function to add translations.
 
     \include installerfw-examples-generating.qdocinc
 */

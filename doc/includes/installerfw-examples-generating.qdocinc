@@ -1,5 +1,17 @@
     \section1 Generating the Example Installer
 
-    \code
-    binarycreator --offline-only -c config/config.xml -p packages installer
-    \endcode
+    To create the example installer, switch to the example source directory on
+    the command line and enter the following command:
+
+    \list
+        \li On Windows:
+            \code
+            ..\..\bin\binarycreator.exe -c config\config.xml -p packages installer.exe
+            \endcode
+        \li On Linux or OS X:
+            \code
+            ../../bin/binarycreator -c config/config.xml -p packages installer
+            \endcode
+    \endlist
+
+    The installer is created in the current directory.

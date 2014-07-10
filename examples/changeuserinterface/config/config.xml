@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
-    <Name>Change installer UI Example</Name>
+    <Name>Change Installer UI Example</Name>
     <Version>1.0.0</Version>
-    <Title>Change installer UI Example</Title>
+    <Title>Change Installer UI Example</Title>
     <Publisher>Qt-Project</Publisher>
-    <StartMenuDir>Change installer UI Example</StartMenuDir>
-    <TargetDir>@HomeDir@/IFWChangeInstallerUIExample</TargetDir>
+    <StartMenuDir>Qt IFW Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExample</TargetDir>
 </Installer>
