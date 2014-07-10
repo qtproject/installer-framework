@@ -1807,16 +1807,21 @@ QString TargetDirectoryPage::targetDirWarning() const
 
     // remove e.g. "c:"
     dir = dir.mid(2);
-#endif
 
-    QString ambiguousChars = QLatin1String("[~<>|?*!@#$%^&:,; ]");
+    QString ambiguousChars = QStringLiteral("[~<>|?*!@#$%^&:,; ]");
+#else // Q_OS_WIN
+    QString ambiguousChars = QStringLiteral("[~<>|?*!@#$%^&:,; \\\\]");
+#endif // Q_OS_WIN
+
     if (packageManagerCore()->settings().allowSpaceInPath())
         ambiguousChars.remove(QLatin1Char(' '));
 
+    static QRegularExpression ambCharRegEx(ambiguousChars);
     // check if there are not allowed characters in the target path
-    if (dir.contains(QRegExp(ambiguousChars))) {
-        return tr("The installation path must not contain %1, "
-            "please specify a valid folder.").arg(ambiguousChars);
+    QRegularExpressionMatch match = ambCharRegEx.match(dir);
+    if (match.hasMatch()) {
+        return tr("The installation path must not contain '%1', "
+            "please specify a valid folder.").arg(match.captured(0));
     }
 
     dir = targetDir();
