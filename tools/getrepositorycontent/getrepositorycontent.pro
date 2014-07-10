@@ -5,7 +5,7 @@ TARGET = getrepositorycontent
 include(../../installerfw.pri)
 
 QT -= gui
-QT += network
+QT += network xml
 
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH

@@ -445,7 +445,7 @@ int main(int argc, char *argv[])
                 QUrl downloadUrl((QStringList() << repositoryUrl << itComponentData.key() << itComponentData.value().m_version + sevenZString).join(QLatin1String("/")));
                 QString localRepositoryTarget = dataRepositoryPath + QLatin1Char('/') + itComponentData.value().m_version + sevenZString;
                 downloadFile(downloadUrl, localRepositoryTarget);
-                downloadFile(downloadUrl.toString() + QLatin1String(".sha1"), localRepositoryTarget + QLatin1String(".sha1"));
+                downloadFile(QUrl(downloadUrl.toString() + QLatin1String(".sha1")), localRepositoryTarget + QLatin1String(".sha1"));
                 QFile::copy(localRepositoryTarget, dataPackagesPath + QLatin1Char('/') + sevenZString);
             }
         }

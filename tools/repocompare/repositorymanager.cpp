@@ -40,14 +40,14 @@
 **************************************************************************/
 #include "repositorymanager.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QFile>
-#include <QtCore/QStringList>
-#include <QtCore/QUrl>
-#include <QtNetwork/QNetworkRequest>
-#include <QtNetwork/QNetworkReply>
-#include <QtXml/QXmlStreamReader>
-#include <QtGui/QMessageBox>
+#include <QDebug>
+#include <QFile>
+#include <QStringList>
+#include <QUrl>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QXmlStreamReader>
+#include <QMessageBox>
 
 namespace {
 qreal createVersionNumber(const QString &text)

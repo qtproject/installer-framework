@@ -38,7 +38,7 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QTimer>
 #include <QtCore>
 #include "mainwindow.h"

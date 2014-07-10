@@ -41,10 +41,10 @@
 #ifndef REPOSITORYMANAGER_H
 #define REPOSITORYMANAGER_H
 
-#include <QtCore/QObject>
-#include <QtCore/QMap>
-#include <QtCore/QDate>
-#include <QtNetwork/QNetworkAccessManager>
+#include <QObject>
+#include <QMap>
+#include <QDate>
+#include <QNetworkAccessManager>
 
 struct ComponentDescription {
     QString version;

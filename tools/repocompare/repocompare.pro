@@ -4,8 +4,7 @@ TARGET = repocompare
 
 include(../../installerfw.pri)
 
-QT += network
-DESTDIR = $$IFW_APP_PATH
+QT += widgets network
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -16,4 +15,4 @@ HEADERS += mainwindow.h \
 
 FORMS += mainwindow.ui
 
-macx:include(../../no_app_bundle.pri)
+osx:include(../../no_app_bundle.pri)

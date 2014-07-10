@@ -40,17 +40,17 @@
 **************************************************************************/
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QtCore/QFile>
-#include <QtCore/QTemporaryFile>
-#include <QtCore/QMapIterator>
-#include <QtCore/QTextStream>
-#include <QtCore/QUrl>
-#include <QtCore/QXmlStreamReader>
-#include <QtCore/QSettings>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkRequest>
+#include <QFile>
+#include <QTemporaryFile>
+#include <QMapIterator>
+#include <QTextStream>
+#include <QUrl>
+#include <QXmlStreamReader>
+#include <QSettings>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
 namespace {
 const QLatin1String productionIdentifier = QLatin1String("ProductionRepositories");

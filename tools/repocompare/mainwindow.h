@@ -42,13 +42,13 @@
 #define MAINWINDOW_H
 
 #include "repositorymanager.h"
-#include <QtCore/QTemporaryFile>
-#include <QtCore/QUrl>
-#include <QtCore/QDate>
-#include <QtCore/QString>
-#include <QtCore/QMap>
-#include <QtGui/QMainWindow>
-#include <QtNetwork/QNetworkAccessManager>
+#include <QTemporaryFile>
+#include <QUrl>
+#include <QDate>
+#include <QString>
+#include <QMap>
+#include <QMainWindow>
+#include <QNetworkAccessManager>
 
 namespace Ui {
     class MainWindow;
