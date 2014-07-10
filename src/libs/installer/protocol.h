@@ -166,6 +166,9 @@ const char QAbstractFileEngineSize[] = "QAbstractFileEngine::size";
 const char QAbstractFileEngineSupportsExtension[] = "QAbstractFileEngine::supportsExtension";
 const char QAbstractFileEngineExtension[] = "QAbstractFileEngine::extension";
 const char QAbstractFileEngineWrite[] = "QAbstractFileEngine::write";
+const char QAbstractFileEngineSyncToDisk[] = "QAbstractFileEngine::syncToDisk";
+const char QAbstractFileEngineRenameOverwrite[] = "QAbstractFileEngine::renameOverwrite";
+const char QAbstractFileEngineFileTime[] = "QAbstractFileEngine::fileTime";
 
 } // namespace Protocol
 } // namespace QInstaller

@@ -507,16 +507,23 @@ void RemoteServerConnection::handleQFSFileEngine(const QString &command, QDataSt
         sendData(stream, m_engine->setSize(size));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineSize)) {
         sendData(stream, m_engine->size());
-    } else if (command == QLatin1String(Protocol::QAbstractFileEngineSupportsExtension)) {
-            // Implemented client side
-    } else if (command == QLatin1String(Protocol::QAbstractFileEngineExtension)) {
-        qint32 extension;
-        data >>extension;
-        sendData(stream, m_engine->extension(static_cast<QAbstractFileEngine::Extension> (extension)));
+    } else if ((command == QLatin1String(Protocol::QAbstractFileEngineSupportsExtension))
+        || (command == QLatin1String(Protocol::QAbstractFileEngineExtension))) {
+            // Implemented client side.
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineWrite)) {
         QByteArray content;
         data >> content;
         sendData(stream, m_engine->write(content.data(), content.size()));
+    } else if (command == QLatin1String(Protocol::QAbstractFileEngineSyncToDisk)) {
+        sendData(stream, m_engine->syncToDisk());
+    } else if (command == QLatin1String(Protocol::QAbstractFileEngineRenameOverwrite)) {
+        QString newFilename;
+        data >> newFilename;
+        sendData(stream, m_engine->renameOverwrite(newFilename));
+    } else if (command == QLatin1String(Protocol::QAbstractFileEngineFileTime)) {
+        qint32 filetime;
+        data >> filetime;
+        sendData(stream, m_engine->fileTime(static_cast<QAbstractFileEngine::FileTime> (filetime)));
     } else if (!command.isEmpty()) {
         qDebug() << "Unknown QAbstractFileEngine command:" << command;
     }

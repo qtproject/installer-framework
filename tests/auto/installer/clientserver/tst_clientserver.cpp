@@ -317,12 +317,14 @@ private slots:
         file.open(QIODevice::ReadWrite);
         const QByteArray ba = file.readLine();
         file.seek(0);
+        QCOMPARE(file.atEnd(), false);
 
         QByteArray ba2(32 * 1024 * 1024, '\0');
         file.readLine(ba2.data(), ba2.size());
 
         file.resize(0);
         file.write(QProcess::systemEnvironment().join(QLatin1String("\n")).toLocal8Bit());
+        QCOMPARE(file.atEnd(), true);
     }
 };
 
