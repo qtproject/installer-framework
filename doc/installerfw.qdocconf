@@ -6,6 +6,7 @@ include($QT_INSTALL_DOCS/global/fileextensions.qdocconf)
 
 project     = "Qt Installer Framework"
 description = "Qt Installer Framework Manual"
+url         = http://qt-project.org/doc/qtinstallerframework/
 
 headerdirs = ../src/libs/installer
 sourcedirs = ../src/libs/installer \
@@ -47,3 +48,5 @@ macro.function                  = "\\fn"
 
 outputprefixes = QML
 outputprefixes.QML =
+
+navigation.homepage = "Qt Installer Framework Manual"
