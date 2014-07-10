@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -45,8 +45,9 @@
 
 const int INTERVAL = 20;
 
-LazyPlainTextEdit::LazyPlainTextEdit(QWidget *parent) :
-    QPlainTextEdit(parent), m_timerId(0)
+LazyPlainTextEdit::LazyPlainTextEdit(QWidget *parent)
+    : QPlainTextEdit(parent)
+    , m_timerId(0)
 {
 }
 
@@ -55,17 +56,17 @@ void LazyPlainTextEdit::timerEvent(QTimerEvent *event)
     if (event->timerId() == m_timerId) {
         killTimer(m_timerId);
         m_timerId = 0;
-        m_chachedOutput.chop(1); //removes the last \n
-        if (!m_chachedOutput.isEmpty())
-            appendPlainText(m_chachedOutput);
+        m_cachedOutput.chop(1); //removes the last \n
+        if (!m_cachedOutput.isEmpty())
+            appendPlainText(m_cachedOutput);
         horizontalScrollBar()->setValue( 0 );
-        m_chachedOutput.clear();
+        m_cachedOutput.clear();
     }
 }
 
 void LazyPlainTextEdit::append(const QString &text)
 {
-    m_chachedOutput.append(text + QLatin1String("\n"));
+    m_cachedOutput.append(text + QLatin1String("\n"));
     if (isVisible() && m_timerId == 0)
         m_timerId = startTimer(INTERVAL);
 }
@@ -75,7 +76,7 @@ void LazyPlainTextEdit::clear()
     if (m_timerId) {
         killTimer(m_timerId);
         m_timerId = 0;
-        m_chachedOutput.clear();
+        m_cachedOutput.clear();
     }
     QPlainTextEdit::clear();
 }
@@ -87,8 +88,9 @@ void LazyPlainTextEdit::setVisible(bool visible)
         killTimer(m_timerId);
         m_timerId = 0;
     }
-    if (visible) {
+
+    if (visible)
         m_timerId = startTimer(INTERVAL);
-    }
+
     QPlainTextEdit::setVisible(visible);
 }

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -57,8 +57,8 @@ public slots:
 protected:
     void timerEvent(QTimerEvent *event);
 private:
-    QString m_chachedOutput;
     int m_timerId;
+    QString m_cachedOutput;
 };
 
 #endif // LAZYPLAINTEXTEDIT_H
