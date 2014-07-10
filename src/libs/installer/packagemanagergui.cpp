@@ -1272,7 +1272,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
 void LicenseAgreementPage::entering()
 {
     m_licenseListWidget->clear();
-    m_textBrowser->setText(QString());
+    m_textBrowser->setHtml(QString());
     m_licenseListWidget->setVisible(false);
 
     packageManagerCore()->calculateComponentsToInstall();
