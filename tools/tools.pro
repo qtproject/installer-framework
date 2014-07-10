@@ -7,7 +7,6 @@ SUBDIRS += \
     repogen
 
 EXTRASUBDIRS = \
-    extractbinarydata \
     repocompare \
     getrepositorycontent
 
