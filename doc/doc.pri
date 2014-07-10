@@ -24,23 +24,10 @@ HELPGENERATOR = $$HELPGENERATOR -platform minimal
 QHP_FILE = $$OUT_PWD/doc/html/ifw.qhp
 QCH_FILE = $$OUT_PWD/doc/ifw.qch
 
-HELP_DEP_FILES = $$PWD/installerfw.qdoc \
-                 $$PWD/installerfw-getting-started.qdoc \
-                 $$PWD/installerfw-overview.qdoc \
-                 $$PWD/installerfw-reference.qdoc \
-                 $$PWD/installerfw-using.qdoc \
-                 $$PWD/noninteractive.qdoc \
-                 $$PWD/operations.qdoc \
-                 $$PWD/scripting.qdoc \
-                 $$PWD/tutorial.qdoc \
-                 $$PWD/installerfw.qdocconf
-
 html_docs.commands = $$QDOC $$PWD/installerfw.qdocconf
-html_docs.depends += $$HELP_DEP_FILES
 html_docs.files = $$QHP_FILE
 
 html_docs_online.commands = $$QDOC $$PWD/installerfw.qdocconf
-html_docs_online.depends += $$HELP_DEP_FILES
 html_docs_online.files = $$QHP_FILE
 
 qch_docs.commands = $$HELPGENERATOR -o $$QCH_FILE $$QHP_FILE
@@ -57,7 +44,7 @@ docs_online.depends = html_docs_online
 QMAKE_EXTRA_TARGETS += html_docs_online docs_online
 
 macx {
-    DOC_DIR = "$${OUT_PWD}/bin/Simulator.app/Contents/Resources/doc"
+    DOC_DIR = "$${OUT_PWD}/bin/Ifw.app/Contents/Resources/doc"
     cp_docs.commands = mkdir -p \"$${DOC_DIR}\" ; $${QMAKE_COPY} \"$${QCH_FILE}\" \"$${DOC_DIR}\"
     cp_docs.depends += qch_docs
     docs.depends = cp_docs
