@@ -64,9 +64,6 @@
 #include <QTranslator>
 
 #include <iostream>
-#if defined(Q_OS_UNIX)
-# include <fstream>
-#endif
 
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
@@ -101,29 +98,6 @@ int main(int argc, char *argv[])
     // fail doing so at least on Linux while parsing the argument using a core application
     // object and later starting the GUI application, we now parse the arguments first.
     const QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
-
-// hack to use cleanlooks if it is under Ubuntu
-#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
-    std::string standardString;
-    std::string cleanLooks ="-style=cleanlooks";
-    std::ifstream input("/etc/os-release");
-    bool isUbuntu = false;
-    while (std::getline(input, standardString)) {
-        if (standardString == "ID=ubuntu")
-            isUbuntu = true;
-    }
-
-    if (isUbuntu) {
-        argc++;
-        char **newArgv = new char* [argc];
-        newArgv[0] = argv[0];
-        newArgv[1] = const_cast<char*>(cleanLooks.data());
-        for (int i = 1; i < argc-1; ++i) {
-            newArgv[i+1] = argv[i];
-        }
-        argv = newArgv;
-    }
-#endif
 
     qsrand(QDateTime::currentDateTime().toTime_t());
     const KDSelfRestarter restarter(argc, argv);
