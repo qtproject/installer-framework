@@ -1669,7 +1669,7 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
 
 QString TargetDirectoryPage::targetDir() const
 {
-    return m_lineEdit->text();
+    return m_lineEdit->text().trimmed();
 }
 
 void TargetDirectoryPage::setTargetDir(const QString &dirName)
