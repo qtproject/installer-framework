@@ -68,10 +68,10 @@ int UpdateChecker::check(int argc, char *argv[])
 
         const QInstaller::BinaryContent content =
             QInstaller::BinaryContent::readAndRegisterFromBinary(app.binaryFile());
-        if (content.magicMarker() != QInstaller::MagicInstallerMarker)
+        if (content.magicMarker() != QInstaller::BinaryContent::MagicInstallerMarker)
             throw QInstaller::Error(QLatin1String("Installers cannot check for updates."));
 
-        QInstaller::PackageManagerCore core(QInstaller::MagicUpdaterMarker, content
+        QInstaller::PackageManagerCore core(QInstaller::BinaryContent::MagicUpdaterMarker, content
             .performedOperations());
         ProductKeyCheck::instance()->init(&core);
         QInstaller::PackageManagerCore::setVirtualComponentsVisible(true);

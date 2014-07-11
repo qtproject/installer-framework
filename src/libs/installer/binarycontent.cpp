@@ -52,6 +52,8 @@
 #include <QFile>
 #include <QResource>
 
+namespace QInstaller {
+
 /*!
     Search through 1MB, if smaller through the whole file. Note: QFile::map() does
     not change QFile::pos(). Fallback to read the file content in case we can't map it.
@@ -59,7 +61,7 @@
     Note: Failing to map the file can happen for example while having a remote connection
     established to the admin server process and we do not support map over the socket.
 */
-qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
+qint64 BinaryContent::findMagicCookie(QFile *in, quint64 magicCookie)
 {
     Q_ASSERT(in);
     Q_ASSERT(in->isOpen());
@@ -97,8 +99,6 @@ qint64 QInstaller::findMagicCookie(QFile *in, quint64 magicCookie)
 
     return -1; // never reached
 }
-
-namespace QInstaller {
 
 /*!
     \internal
@@ -304,7 +304,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
     // Try to read the binary layout of the calling application. We need to figure out
     // if we are in installer or an unistaller (maintenance, package manager, updater) binary.
     QInstaller::openForRead(c.d->m_appBinary.data());
-    quint64 cookiePos = findMagicCookie(c.d->m_appBinary.data(), QInstaller::MagicCookie);
+    quint64 cookiePos = findMagicCookie(c.d->m_appBinary.data(), BinaryContent::MagicCookie);
     if (!c.d->m_appBinary->seek(cookiePos - sizeof(qint64))) {   // seek to read the marker
         throw Error(QCoreApplication::translate("BinaryContent",
             "Could not seek to %1 to read the magic marker.").arg(cookiePos - sizeof(qint64)));
@@ -322,7 +322,7 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
         c.d->m_binaryDataFile.reset(new QFile(fi.absolutePath() + QLatin1Char('/') + fi.baseName()
             + QLatin1String(".dat")));
         QInstaller::openForRead(c.d->m_binaryDataFile.data());
-        cookiePos = findMagicCookie(c.d->m_binaryDataFile.data(), QInstaller::MagicCookieDat);
+        cookiePos = findMagicCookie(c.d->m_binaryDataFile.data(), BinaryContent::MagicCookieDat);
         readBinaryData(c, c.d->m_binaryDataFile, readBinaryLayout(c.d->m_binaryDataFile.data(),
             cookiePos));
     } else {

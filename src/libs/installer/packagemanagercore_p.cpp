@@ -668,22 +668,22 @@ QString PackageManagerCorePrivate::installerBinaryPath() const
 
 bool PackageManagerCorePrivate::isInstaller() const
 {
-    return m_magicBinaryMarker == MagicInstallerMarker;
+    return m_magicBinaryMarker == BinaryContent::MagicInstallerMarker;
 }
 
 bool PackageManagerCorePrivate::isUninstaller() const
 {
-    return m_magicBinaryMarker == MagicUninstallerMarker;
+    return m_magicBinaryMarker == BinaryContent::MagicUninstallerMarker;
 }
 
 bool PackageManagerCorePrivate::isUpdater() const
 {
-    return m_magicBinaryMarker == MagicUpdaterMarker;
+    return m_magicBinaryMarker == BinaryContent::MagicUpdaterMarker;
 }
 
 bool PackageManagerCorePrivate::isPackageManager() const
 {
-    return m_magicBinaryMarker == MagicPackageManagerMarker;
+    return m_magicBinaryMarker == BinaryContent::MagicPackageManagerMarker;
 }
 
 bool PackageManagerCorePrivate::statusCanceledOrFailed() const
@@ -1064,8 +1064,8 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         QInstaller::appendInt64(&dataOut, 0);   // operations end
         QInstaller::appendInt64(&dataOut, 0);   // resource count
         QInstaller::appendInt64(&dataOut, 4 * sizeof(qint64));   // data block size
-        QInstaller::appendInt64(&dataOut, QInstaller::MagicUninstallerMarker);
-        QInstaller::appendInt64(&dataOut, QInstaller::MagicCookie);
+        QInstaller::appendInt64(&dataOut, BinaryContent::MagicUninstallerMarker);
+        QInstaller::appendInt64(&dataOut, BinaryContent::MagicCookie);
         dataOut.setPermissions(dataOut.permissions() | QFile::WriteUser | QFile::ReadGroup
             | QFile::ReadOther);
         if (!dataOut.rename(resourcePath.filePath(QLatin1String("installer.dat")))) {
@@ -1078,8 +1078,8 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         QInstaller::appendInt64(&out, 0);   // operations end
         QInstaller::appendInt64(&out, 0);   // resource count
         QInstaller::appendInt64(&out, 4 * sizeof(qint64));   // data block size
-        QInstaller::appendInt64(&out, QInstaller::MagicUninstallerMarker);
-        QInstaller::appendInt64(&out, QInstaller::MagicCookie);
+        QInstaller::appendInt64(&out, BinaryContent::MagicUninstallerMarker);
+        QInstaller::appendInt64(&out, BinaryContent::MagicCookie);
 #endif
     }
 
@@ -1164,7 +1164,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *outp
     QInstaller::appendInt64(output, layout.resourceCount);
     // data block size, from end of .exe to end of file
     QInstaller::appendInt64(output, output->pos() + 3 * sizeof(qint64) -dataBlockStart);
-    QInstaller::appendInt64(output, MagicUninstallerMarker);
+    QInstaller::appendInt64(output, BinaryContent::MagicUninstallerMarker);
 }
 
 void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOperations)
@@ -1336,7 +1336,8 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             }
             input.setFileName(dataFile);
             QInstaller::openForRead(&input);
-            layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookieDat));
+            layout = BinaryContent::readBinaryLayout(&input, BinaryContent::findMagicCookie(&input,
+                BinaryContent::MagicCookieDat));
         } catch (const Error &/*error*/) {
 #ifdef Q_OS_OSX
             // On Mac, data is always in a separate file so that the binary can be signed
@@ -1347,7 +1348,8 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             input.setFileName(dataPath.filePath(QLatin1String("installer.dat")));
 
             QInstaller::openForRead(&input);
-            layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
+            layout = BinaryContent::readBinaryLayout(&input, BinaryContent::findMagicCookie(&input,
+                BinaryContent::MagicCookie));
 
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
@@ -1358,7 +1360,8 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
 #else
             input.setFileName(isInstaller() ? installerBinaryPath() : maintenanceToolName());
             QInstaller::openForRead(&input);
-            layout = BinaryContent::readBinaryLayout(&input, findMagicCookie(&input, MagicCookie));
+            layout = BinaryContent::readBinaryLayout(&input, BinaryContent::findMagicCookie(&input,
+                BinaryContent::MagicCookie));
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
                 writeMaintenanceToolBinary(&input, layout.endOfData - layout.dataBlockSize, true);
@@ -1374,7 +1377,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             QInstaller::openForWrite(&file);
 
             writeMaintenanceToolBinaryData(&file, &input, performedOperations, layout);
-            QInstaller::appendInt64(&file, MagicCookieDat);
+            QInstaller::appendInt64(&file, BinaryContent::MagicCookieDat);
             file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
                 | QFile::ReadOther);
 
@@ -1394,7 +1397,8 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                 newBinaryWritten = true;
                 QFile tmp(isInstaller() ? installerBinaryPath() : maintenanceToolName());
                 QInstaller::openForRead(&tmp);
-                BinaryLayout tmpLayout = BinaryContent::readBinaryLayout(&tmp, findMagicCookie(&tmp, MagicCookie));
+                BinaryLayout tmpLayout = BinaryContent::readBinaryLayout(&tmp,
+                    BinaryContent::findMagicCookie(&tmp, BinaryContent::MagicCookie));
                 writeMaintenanceToolBinary(&tmp, tmpLayout.endOfData - tmpLayout.dataBlockSize, false);
             }
 
@@ -1402,7 +1406,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             QInstaller::openForAppend(&file);
             file.seek(file.size());
             writeMaintenanceToolBinaryData(&file, &input, performedOperations, layout);
-            QInstaller::appendInt64(&file, MagicCookie);
+            QInstaller::appendInt64(&file, BinaryContent::MagicCookie);
         }
         input.close();
         writeMaintenanceConfigFiles();

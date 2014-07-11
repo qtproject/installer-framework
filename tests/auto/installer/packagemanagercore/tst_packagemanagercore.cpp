@@ -104,7 +104,7 @@ private slots:
 
         setIgnoreMessage(testDirectory);
 
-        PackageManagerCore core(MagicInstallerMarker);
+        PackageManagerCore core(QInstaller::BinaryContent::MagicInstallerMarker);
         // cancel the installer in error case
         core.autoRejectMessageBoxes();
         core.appendRootComponent(new DummyComponent(&core));
@@ -132,7 +132,7 @@ private slots:
 
         setIgnoreMessage(testDirectory);
 
-        PackageManagerCore core(MagicInstallerMarker);
+        PackageManagerCore core(QInstaller::BinaryContent::MagicInstallerMarker);
         // cancel the installer in error case
         core.autoRejectMessageBoxes();
         core.appendRootComponent(new DummyComponent(&core));

@@ -257,8 +257,8 @@ bool CreateLocalRepositoryOperation::performOperation()
         }
 
         // start to read the binary layout
-        BinaryLayout bl = BinaryContent::readBinaryLayout(file.data(), findMagicCookie(file.data(),
-            QInstaller::MagicCookie));
+        BinaryLayout bl = BinaryContent::readBinaryLayout(file.data(),
+            BinaryContent::findMagicCookie(file.data(), BinaryContent::MagicCookie));
 
         // calculate the offset of the component index start inside the binary
         const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);

@@ -62,9 +62,10 @@ private slots:
 
         try {
             QInstaller::blockingWrite(&file, QByteArray(scSmallSize, '1'));
-            QInstaller::appendInt64(&file, QInstaller::MagicCookie);
+            QInstaller::appendInt64(&file, QInstaller::BinaryContent::MagicCookie);
 
-            QCOMPARE(QInstaller::findMagicCookie(&file, QInstaller::MagicCookie), scSmallSize);
+            QCOMPARE(QInstaller::BinaryContent::findMagicCookie(&file,
+                QInstaller::BinaryContent::MagicCookie), scSmallSize);
         } catch (const QInstaller::Error &error) {
             QFAIL(qPrintable(error.message()));
         } catch (...) {
@@ -79,10 +80,11 @@ private slots:
 
         try {
             QInstaller::blockingWrite(&file, QByteArray(scLargeSize, '1'));
-            QInstaller::appendInt64(&file, QInstaller::MagicCookie);
+            QInstaller::appendInt64(&file, QInstaller::BinaryContent::MagicCookie);
             QInstaller::blockingWrite(&file, QByteArray(scTinySize, '2'));
 
-            QCOMPARE(QInstaller::findMagicCookie(&file, QInstaller::MagicCookie), scLargeSize);
+            QCOMPARE(QInstaller::BinaryContent::findMagicCookie(&file,
+                QInstaller::BinaryContent::MagicCookie), scLargeSize);
         } catch (const QInstaller::Error &error) {
             QFAIL(qPrintable(error.message()));
         } catch (...) {
@@ -101,7 +103,7 @@ private slots:
             QInstaller::blockingWrite(&file, QByteArray(scTinySize, '1'));
 
             // throws
-            QInstaller::findMagicCookie(&file, QInstaller::MagicCookie);
+            QInstaller::BinaryContent::findMagicCookie(&file, QInstaller::BinaryContent::MagicCookie);
         } catch (const QInstaller::Error &error) {
             QCOMPARE(qPrintable(error.message()), "No marker found, stopped after 71.00 KiB.");
         } catch (...) {

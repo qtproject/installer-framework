@@ -1966,7 +1966,7 @@ bool PackageManagerCore::isOfflineOnly() const
 */
 void PackageManagerCore::setUninstaller()
 {
-    d->m_magicBinaryMarker = QInstaller::MagicUninstallerMarker;
+    d->m_magicBinaryMarker = BinaryContent::MagicUninstallerMarker;
 }
 
 /*!
@@ -1990,7 +1990,7 @@ bool PackageManagerCore::isUninstaller() const
 */
 void PackageManagerCore::setUpdater()
 {
-    d->m_magicBinaryMarker = QInstaller::MagicUpdaterMarker;
+    d->m_magicBinaryMarker = BinaryContent::MagicUpdaterMarker;
 }
 
 /*!
@@ -2012,7 +2012,7 @@ bool PackageManagerCore::isUpdater() const
 */
 void PackageManagerCore::setPackageManager()
 {
-    d->m_magicBinaryMarker = QInstaller::MagicPackageManagerMarker;
+    d->m_magicBinaryMarker = BinaryContent::MagicPackageManagerMarker;
 }
 
 

@@ -332,8 +332,8 @@ static int assemble(Input input, const QInstaller::Settings &settings)
 
         //data block size, from end of .exe to end of file
         QInstaller::appendInt64(&out, out.pos() + 3 * sizeof(qint64) -dataBlockStart);
-        QInstaller::appendInt64(&out, QInstaller::MagicInstallerMarker);
-        QInstaller::appendInt64(&out, QInstaller::MagicCookie);
+        QInstaller::appendInt64(&out, BinaryContent::MagicInstallerMarker);
+        QInstaller::appendInt64(&out, BinaryContent::MagicCookie);
 
     } catch (const Error &e) {
         qCritical("Error occurred while assembling the installer: %s", qPrintable(e.message()));

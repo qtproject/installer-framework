@@ -106,17 +106,19 @@ int main(int argc, char *argv[])
     try {
         QFile *file = new QFile(path);
         QInstaller::openForRead(file);
-        qint64 pos = QInstaller::findMagicCookie(file, QInstaller::MagicCookie);
+        qint64 pos = QInstaller::BinaryContent::findMagicCookie(file,
+            QInstaller::BinaryContent::MagicCookie);
         QInstaller::BinaryLayout layout = QInstaller::BinaryContent::readBinaryLayout(file, pos);
 
-        if (layout.magicMarker == QInstaller::MagicUninstallerMarker) {
+        if (layout.magicMarker == QInstaller::BinaryContent::MagicUninstallerMarker) {
             QFileInfo fi(path);
             if (QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath))
                 fi.setFile(bundlePath);
             path = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat");
 
             file->setFileName(path);
-            pos = QInstaller::findMagicCookie(file, QInstaller::MagicCookie);
+            pos = QInstaller::BinaryContent::findMagicCookie(file,
+                QInstaller::BinaryContent::MagicCookie);
             layout = QInstaller::BinaryContent::readBinaryLayout(file, pos);
         }
 
@@ -181,7 +183,7 @@ int main(int argc, char *argv[])
 
         if (parser.isSet(dump)) {
             // To dump the content we do not need the binary format engine.
-            if (layout.magicMarker != QInstaller::MagicInstallerMarker)
+            if (layout.magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
                 throw QInstaller::Error(QLatin1String("Source file is not an installer."));
             BinaryDump bd;
             return bd.dump(index, parser.value(dump));

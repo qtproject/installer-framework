@@ -113,7 +113,7 @@ int BinaryReplace::replace(const QString &source, const QString &target)
             QInstaller::openForAppend(&installerBaseNew);
 
             installerBaseNew.seek(installerBaseNew.size());
-            if (m_binaryLayout.magicMarker == QInstaller::MagicInstallerMarker) {
+            if (m_binaryLayout.magicMarker == QInstaller::BinaryContent::MagicInstallerMarker) {
                 QInstaller::openForRead(&installerBaseOld);
                 installerBaseOld.seek(m_binaryLayout.metadataResourceSegments.first().start());
                 QInstaller::appendData(&installerBaseNew, &installerBaseOld, installerBaseOld
@@ -122,8 +122,10 @@ int BinaryReplace::replace(const QString &source, const QString &target)
             } else {
                 QInstaller::appendInt64(&installerBaseNew, 0);
                 QInstaller::appendInt64(&installerBaseNew, 4 * sizeof(qint64));
-                QInstaller::appendInt64(&installerBaseNew, QInstaller::MagicUninstallerMarker);
-                QInstaller::appendInt64(&installerBaseNew, QInstaller::MagicCookie);
+                QInstaller::appendInt64(&installerBaseNew,
+                    QInstaller::BinaryContent::MagicUninstallerMarker);
+                QInstaller::appendInt64(&installerBaseNew,
+                    QInstaller::BinaryContent::MagicCookie);
             }
             installerBaseNew.close();
 #else

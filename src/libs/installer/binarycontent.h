@@ -53,18 +53,6 @@ QT_END_NAMESPACE
 
 namespace QInstaller {
 
-static const qint64 MagicInstallerMarker = 0x12023233UL;
-static const qint64 MagicUninstallerMarker = 0x12023234UL;
-
-static const qint64 MagicUpdaterMarker = 0x12023235UL;
-static const qint64 MagicPackageManagerMarker = 0x12023236UL;
-
-// this cookie is put at the end of the file to determine whether we have data
-static const quint64 MagicCookie = 0xc2630a1c99d668f8LL;
-static const quint64 MagicCookieDat = 0xc2630a1c99d668f9LL;
-
-qint64 INSTALLER_EXPORT findMagicCookie(QFile *file, quint64 magicCookie = MagicCookie);
-
 struct BinaryLayout
 {
     QVector<Range<qint64> > metadataResourceSegments;
@@ -81,6 +69,16 @@ struct BinaryLayout
 class INSTALLER_EXPORT BinaryContent
 {
 public:
+    static const qint64 MagicInstallerMarker = 0x12023233UL;
+    static const qint64 MagicUninstallerMarker = 0x12023234UL;
+
+    static const qint64 MagicUpdaterMarker = 0x12023235UL;
+    static const qint64 MagicPackageManagerMarker = 0x12023236UL;
+
+    // the cookie put at the end of the file
+    static const quint64 MagicCookie = 0xc2630a1c99d668f8LL;  // binary
+    static const quint64 MagicCookieDat = 0xc2630a1c99d668f9LL; // data
+
     BinaryContent();
     ~BinaryContent();
 
@@ -90,6 +88,7 @@ public:
     static BinaryContent readFromBinary(const QString &path);
     static BinaryContent readAndRegisterFromBinary(const QString &path);
     static BinaryLayout readBinaryLayout(QFile *const file, qint64 cookiePos);
+    static qint64 findMagicCookie(QFile *file, quint64 magicCookie);
 
     int registerPerformedOperations();
     OperationList performedOperations() const;
