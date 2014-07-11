@@ -19,6 +19,7 @@
 - Renamed settings inside config.xml:
   - UninstallerName renamed to MaintenanceToolName (default value changed to "maintenancetool")
   - UninstallerIniFile renamed to MaintenanceToolIniFile
+- Windows: Re-use parent console for verbose output if possible
 
 Thanks go to Sze Howe Koh, Ray Donnelly and Sascha Cunz for contributions.
 

@@ -68,6 +68,10 @@ class Console
 public:
     Console()
     {
+        parentConsole = AttachConsole(ATTACH_PARENT_PROCESS);
+        if (parentConsole)
+            return;
+
         AllocConsole();
         HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
         if (handle != INVALID_HANDLE_VALUE) {
@@ -102,16 +106,20 @@ public:
 
     ~Console()
     {
-        system("PAUSE");
+        if (!parentConsole) {
+            system("PAUSE");
 
-        std::cin.rdbuf(m_oldCin);
-        std::cerr.rdbuf(m_oldCerr);
-        std::cout.rdbuf(m_oldCout);
+            std::cin.rdbuf(m_oldCin);
+            std::cerr.rdbuf(m_oldCerr);
+            std::cout.rdbuf(m_oldCout);
+        }
 
         FreeConsole();
     }
 
 private:
+    bool parentConsole;
+
     std::ifstream m_newCin;
     std::ofstream m_newCout;
     std::ofstream m_newCerr;
