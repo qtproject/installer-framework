@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -40,6 +40,7 @@
 **************************************************************************/
 #include "createlocalrepositoryoperation.h"
 
+#include "binarycontent.h"
 #include "binaryformat.h"
 #include "errors.h"
 #include "fileio.h"

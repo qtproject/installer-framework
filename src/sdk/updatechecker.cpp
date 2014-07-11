@@ -42,7 +42,7 @@
 #include "updatechecker.h"
 #include "sdkapp.h"
 
-#include <binaryformat.h>
+#include <binarycontent.h>
 #include <component.h>
 #include <constants.h>
 #include <errors.h>

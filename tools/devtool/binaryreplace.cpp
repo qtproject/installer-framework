@@ -48,6 +48,7 @@
 #include <fileutils.h>
 #include <lib7z_facade.h>
 
+#include <QDir>
 #include <QFutureWatcher>
 
 #include <iostream>

@@ -43,6 +43,7 @@
 #include "binaryreplace.h"
 #include "operationrunner.h"
 
+#include <binarycontent.h>
 #include <binaryformat.h>
 #include <binaryformatenginehandler.h>
 #include <errors.h>

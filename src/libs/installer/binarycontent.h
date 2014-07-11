@@ -39,21 +39,75 @@
 **
 **************************************************************************/
 
-#ifndef BINARYREPLACE_H
-#define BINARYREPLACE_H
+#ifndef BINARYCONTENT_H
+#define BINARYCONTENT_H
 
-#include <binarycontent.h>
+#include "range.h"
+#include "qinstallerglobal.h"
 
-class BinaryReplace
+#include <QVector>
+
+QT_BEGIN_NAMESPACE
+class QFile;
+QT_END_NAMESPACE
+
+namespace QInstaller {
+
+static const qint64 MagicInstallerMarker = 0x12023233UL;
+static const qint64 MagicUninstallerMarker = 0x12023234UL;
+
+static const qint64 MagicUpdaterMarker = 0x12023235UL;
+static const qint64 MagicPackageManagerMarker = 0x12023236UL;
+
+// this cookie is put at the end of the file to determine whether we have data
+static const quint64 MagicCookie = 0xc2630a1c99d668f8LL;
+static const quint64 MagicCookieDat = 0xc2630a1c99d668f9LL;
+
+qint64 INSTALLER_EXPORT findMagicCookie(QFile *file, quint64 magicCookie = MagicCookie);
+
+struct BinaryLayout
 {
-    Q_DISABLE_COPY(BinaryReplace)
-
-public:
-    BinaryReplace(const QInstaller::BinaryLayout &layout);
-    int replace(const QString &source, const QString &target);
-
-private:
-    QInstaller::BinaryLayout m_binaryLayout;
+    QVector<Range<qint64> > metadataResourceSegments;
+    qint64 operationsStart;
+    qint64 operationsEnd;
+    qint64 resourceCount;
+    qint64 dataBlockSize;
+    qint64 magicMarker;
+    quint64 magicCookie;
+    qint64 indexSize;
+    qint64 endOfData;
 };
 
-#endif // BINARYREPLACE_H
+class INSTALLER_EXPORT BinaryContent
+{
+public:
+    BinaryContent();
+    ~BinaryContent();
+
+    BinaryContent(const BinaryContent &rhs);
+    BinaryContent &operator=(const BinaryContent &rhs);
+
+    static BinaryContent readFromBinary(const QString &path);
+    static BinaryContent readAndRegisterFromBinary(const QString &path);
+    static BinaryLayout readBinaryLayout(QFile *const file, qint64 cookiePos);
+
+    int registerPerformedOperations();
+    OperationList performedOperations() const;
+
+    qint64 magicMarker() const;
+    int registerEmbeddedQResources();
+    void registerAsDefaultQResource(const QString &path);
+
+private:
+    explicit BinaryContent(const QString &path);
+    static void readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
+        const BinaryLayout &layout);
+
+private:
+    class Private;
+    QSharedDataPointer<Private> d;
+};
+
+} // namespace QInstaller
+
+#endif // BINARYCONTENT_H

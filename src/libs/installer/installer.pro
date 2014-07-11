@@ -117,7 +117,8 @@ HEADERS += packagemanagercore.h \
     remotefileengine.h \
     remoteserverconnection.h \
     remoteserverconnection_p.h \
-    fileio.h
+    fileio.h \
+    binarycontent.h
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -184,7 +185,8 @@ SOURCES += packagemanagercore.cpp \
     remoteserver.cpp \
     remotefileengine.cpp \
     remoteserverconnection.cpp \
-    fileio.cpp
+    fileio.cpp \
+    binarycontent.cpp
 
 RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc

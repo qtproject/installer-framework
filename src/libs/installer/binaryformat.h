@@ -42,13 +42,10 @@
 #ifndef BINARYFORMAT_H
 #define BINARYFORMAT_H
 
-#include "binaryformatenginehandler.h"
 #include "range.h"
 #include "qinstallerglobal.h"
 
 #include <QFile>
-#include <QHash>
-#include <QSharedPointer>
 #include <QVector>
 
 namespace QInstallerCreator {
@@ -129,86 +126,7 @@ public:
 private:
     QHash<QByteArray, Component> m_components;
 };
-}
 
-namespace QInstaller {
-
-static const qint64 MagicInstallerMarker = 0x12023233UL;
-static const qint64 MagicUninstallerMarker = 0x12023234UL;
-
-static const qint64 MagicUpdaterMarker = 0x12023235UL;
-static const qint64 MagicPackageManagerMarker = 0x12023236UL;
-
-// this cookie is put at the end of the file to determine whether we have data
-static const quint64 MagicCookie = 0xc2630a1c99d668f8LL;
-static const quint64 MagicCookieDat = 0xc2630a1c99d668f9LL;
-
-qint64 INSTALLER_EXPORT findMagicCookie(QFile *file, quint64 magicCookie = MagicCookie);
-
-struct BinaryLayout
-{
-    QVector<Range<qint64> > metadataResourceSegments;
-    qint64 operationsStart;
-    qint64 operationsEnd;
-    qint64 resourceCount;
-    qint64 dataBlockSize;
-    qint64 magicMarker;
-    quint64 magicCookie;
-    qint64 indexSize;
-    qint64 endOfData;
-};
-
-class INSTALLER_EXPORT BinaryContentPrivate : public QSharedData
-{
-public:
-    BinaryContentPrivate();
-    explicit BinaryContentPrivate(const QString &path);
-    BinaryContentPrivate(const BinaryContentPrivate &other);
-    ~BinaryContentPrivate();
-
-    qint64 m_magicMarker;
-    qint64 m_dataBlockStart;
-
-    QSharedPointer<QFile> m_appBinary;
-    QSharedPointer<QFile> m_binaryDataFile;
-
-    QList<Operation *> m_performedOperations;
-    QList<QPair<QString, QString> > m_performedOperationsData;
-
-    QVector<QByteArray> m_resourceMappings;
-    QVector<Range<qint64> > m_metadataResourceSegments;
-
-    QInstallerCreator::ComponentIndex m_componentIndex;
-    QInstallerCreator::BinaryFormatEngineHandler m_binaryFormatEngineHandler;
-};
-
-class INSTALLER_EXPORT BinaryContent
-{
-public:
-    BinaryContent();
-    BinaryContent(const BinaryContent &rhs);
-
-    static BinaryContent readFromBinary(const QString &path);
-    static BinaryContent readAndRegisterFromBinary(const QString &path);
-    static BinaryLayout readBinaryLayout(QFile *const file, qint64 cookiePos);
-
-    int registerPerformedOperations();
-    OperationList performedOperations() const;
-
-    qint64 magicMarker() const;
-    int registerEmbeddedQResources();
-    void registerAsDefaultQResource(const QString &path);
-    QInstallerCreator::ComponentIndex componentIndex() const;
-
-private:
-    explicit BinaryContent(const QString &path);
-    static void readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
-        const BinaryLayout &layout);
-
-private:
-    QSharedDataPointer<BinaryContentPrivate> d;
-};
-
-}
+} // namespace QInstallerCreator
 
 #endif // BINARYFORMAT_H

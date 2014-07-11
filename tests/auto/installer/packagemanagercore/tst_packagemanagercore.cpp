@@ -39,7 +39,7 @@
 **
 **************************************************************************/
 
-#include <binaryformat.h>
+#include <binarycontent.h>
 #include <component.h>
 #include <errors.h>
 #include <fileutils.h>

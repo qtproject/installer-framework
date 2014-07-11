@@ -41,7 +41,8 @@
 #include "packagemanagercore_p.h"
 
 #include "adminauthorization.h"
-#include "binaryformat.h"
+#include "binarycontent.h"
+#include "binaryformatenginehandler.h"
 #include "component.h"
 #include "scriptengine.h"
 #include "componentmodel.h"

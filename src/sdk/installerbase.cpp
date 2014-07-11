@@ -45,7 +45,7 @@
 #include "tabcontroller.h"
 #include "updatechecker.h"
 
-#include <binaryformat.h>
+#include <binarycontent.h>
 #include <errors.h>
 #include <init.h>
 #include <messageboxhandler.h>

@@ -39,7 +39,7 @@
 **
 **************************************************************************/
 
-#include <binaryformat.h>
+#include <binarycontent.h>
 #include <errors.h>
 #include <fileio.h>
 
