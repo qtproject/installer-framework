@@ -1081,8 +1081,6 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         QInstaller::appendInt64(&out, QInstaller::MagicCookie);
 #endif
     }
-    out.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
-        | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser);
 
     {
         QFile dummy(maintenanceToolRenamedName);
@@ -1097,6 +1095,9 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
             out.errorString()));
     }
     out.setAutoRemove(false);
+    out.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
+        | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser);
+
 }
 
 void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *output, QFile *const input,
