@@ -4,7 +4,8 @@ TEMPLATE = subdirs
 SUBDIRS += \
     archivegen \
     binarycreator \
-    repogen
+    repogen \
+    devtool
 
 EXTRASUBDIRS = \
     repocompare \

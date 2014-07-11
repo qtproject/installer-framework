@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -39,36 +39,18 @@
 **
 **************************************************************************/
 
-#ifndef OPERATIONRUNNER_H
-#define OPERATIONRUNNER_H
+#ifndef BINARYDUMP_H
+#define BINARYDUMP_H
 
-#include "binaryformat.h"
-#include "installer_global.h"
+#include <binaryformat.h>
 
-QT_FORWARD_DECLARE_CLASS(QStringList)
-
-namespace QInstaller {
-
-class PackageManagerCore;
-
-class INSTALLER_EXPORT OperationRunner
+class BinaryDump
 {
+    Q_DISABLE_COPY(BinaryDump)
+
 public:
-    OperationRunner();
-    explicit OperationRunner(const QString &path);
-    ~OperationRunner();
-
-    bool init();
-    void setVerbose(bool verbose);
-    int runOperation(const QStringList &arguments);
-
-private:
-    PackageManagerCore *m_core;
-
-    QString m_path;
-    BinaryContent m_bc;
+    BinaryDump() {}
+    int dump(const QInstallerCreator::ComponentIndex &index, const QString &target);
 };
 
-} // namespace QInstaller
-
-#endif
+#endif // BINARYDUMP_H
