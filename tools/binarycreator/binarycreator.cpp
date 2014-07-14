@@ -66,7 +66,7 @@ using namespace QInstallerCreator;
 struct Input {
     QString outputPath;
     QString installerExePath;
-    ComponentIndex components;
+    ComponentIndex componentIndex;
     QString binaryResourcePath;
     QStringList binaryResources;
 
@@ -308,17 +308,19 @@ static int assemble(Input input, const QInstaller::Settings &settings)
                 .moved(-dataBlockStart));
         }
 
-        // zero operations cause we are not the uninstaller
+        // zero operations cause we are not the maintenance tool
         const qint64 operationsStart = out.pos();
-        QInstaller::appendInt64(&out, 0);
-        QInstaller::appendInt64(&out, 0);
+        QInstaller::appendInt64(&out, 0);   // operation count
+        QInstaller::appendInt64(&out, 0);   // operation count
         input.operationsPos = Range<qint64>::fromStartAndEnd(operationsStart, out.pos())
             .moved(-dataBlockStart);
 
-        // component index:
-        input.components.writeComponentData(&out, -dataBlockStart);
+        // write out every components data
+        input.componentIndex.writeComponentData(&out, -dataBlockStart);
         const qint64 compIndexStart = out.pos() - dataBlockStart;
-        input.components.writeIndex(&out, -dataBlockStart);
+
+        // write out the component index
+        input.componentIndex.writeIndex(&out, -dataBlockStart);
         input.componentIndexSegment = Range<qint64>::fromStartAndEnd(compIndexStart, out.pos()
             - dataBlockStart);
 
@@ -773,7 +775,7 @@ int main(int argc, char **argv)
                         humanReadableSize(arch->size()));
                     comp.appendArchive(arch);
                 }
-                input.components.insertComponent(comp);
+                input.componentIndex.insertComponent(comp);
             }
 
             qDebug() << "Creating the binary";

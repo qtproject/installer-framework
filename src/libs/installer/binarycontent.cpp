@@ -234,66 +234,64 @@ BinaryContent BinaryContent::readAndRegisterFromBinary(const QString &path)
 * Explanation of the binary blob at the end of the installer or separate data file:
 *
 * \verbatim
-* Meta data segment 0
-* Meta data segment ...
-* Meta data segment n
-* ------------------------------------------------------
-* Component data segment 0
-* Component data segment ..
-* Component data segment n
-* ------------------------------------------------------
-* Component index segment
-* ------------------------------------------------------
-* quint64 offset of component index segment
-* quint64 length of component index segment
-* ------------------------------------------------------
-* qint64 offset of meta data segment 0
-* qint64 length of meta data segment 0
-* qint64 offset of meta data segment ..
-* qint64 length of meta data segment ..
-* qint64 offset of meta data segment n
-* qint64 length of meta data segment n
-* ------------------------------------------------------
-* operations start offest
-* operations end
-* quint64 embedded resource count
-* quint64 data block size
-* quint64 Magic marker
-* quint64 Magic cookie (0xc2 0x63 0x0a 0x1c 0x99 0xd6 0x68 0xf8)
-* <eof>
 *
-* All offsets are addresses relative to the end of the file.
-*
-* Meta data segments are stored as Qt resources, which must be "mounted"
-* via QResource::registerResource()
-*
-* Component index segment:
-* quint64 number of index entries
-* QString identifier of component 0
-* quint64 offset of component data segment 0
-* quint64 length of component data segment 0
-* QString identifier of component ..
-* quint64 offset of component data segment ..
-* quint64 length of component data segment ..
-* QString identifier of component n
-* quint64 offset of component data segment n
-* quint64 length of component data segment n
-* quint64 number of index entries
-*
-* Component data segment:
-* quint64 number of archives in this component
-* QString name of archive 0
-* quint64 offset of archive 0
-* quint64 length of archive 0
-* QString name of archive ..
-* quint64 offset of archive ..
-* quint64 length of archive ..
-* QString name of archive n
-* quint64 offset of archive n
-* quint64 length of archive n
-* Archive 0
-* Archive ..
-* Archive n
+* Meta data entry [1 ... n]
+* [Format]
+*     Plain data (QResource)
+* [Format]
+* ----------------------------------------------------------
+* Operation count (qint64)
+* Operation entry [1 ... n]
+* [Format]
+*     Name (qint64, QString)
+*     XML (qint64, QString)
+* [Format]
+* Operation count (qint64)
+* ----------------------------------------------------------
+* Component count
+* Component data entry [1 ... n]
+* [Format]
+*     Archive count (qint64),
+*     Name entry [1 ... n]
+*     [Format]
+*         Name (qint64, QByteArray),
+*         Offset (qint64),
+*         Length (qint64),
+*     [Format]
+*     Archive data entry [1 ... n]
+*     [Format]
+*         Plain data
+*     [Format]
+* [Format]
+* ----------------------------------------------------------
+* Component count (qint64)
+* Component index entry [1 ... n]
+* [Format]
+*     Name (qint64, QByteArray)
+*     Offset (qint64)
+*     Length (qint64)
+* [Format]
+* Component count (qint64)
+* ----------------------------------------------------------
+* Component index block [Offset (qint64)]
+* Component index block [Length (qint64)]
+* ----------------------------------------------------------
+* Resource segments [1 ... n]
+* [Format]
+*     Offset (qint64)
+*     Length (qint64)
+* [Format]
+* ----------------------------------------------------------
+* Operations information block [Offset (qint64)]
+* Operations information block [Length (qint64)]
+* ----------------------------------------------------------
+* Meta data count (qint64)
+* ----------------------------------------------------------
+* Binary content size [Including Marker and Cookie (qint64)]
+* ----------------------------------------------------------
+* Magic marker (qint64)
+* Magic cookie (qint64)
+
 * \endverbatim
 */
 
