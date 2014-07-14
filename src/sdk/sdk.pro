@@ -111,12 +111,14 @@ HEADERS += \
            installerbasecommons.h \
            settingsdialog.h \
            console.h \
-           sdkapp.h
+           sdkapp.h \
+           updatechecker.h
 
 SOURCES = installerbase.cpp \
           tabcontroller.cpp \
           installerbasecommons.cpp \
-          settingsdialog.cpp
+          settingsdialog.cpp \
+          updatechecker.cpp
 
 win32 {
     # Force to overwrite the default manifest file with our own extended version.

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -39,26 +39,14 @@
 **
 **************************************************************************/
 
-#ifndef UPDATER_H
-#define UPDATER_H
+#ifndef UPDATECHECKER_H
+#define UPDATECHECKER_H
 
-#include "installer_global.h"
-
-#include <QtCore/QObject>
-
-namespace QInstaller {
-
-class INSTALLER_EXPORT Updater : public QObject
+class UpdateChecker
 {
-    Q_OBJECT
-
 public:
-    explicit Updater();
-
-    bool checkForUpdates();
-    void setVerbose(bool verbose);
+    UpdateChecker() {}
+    int check(int argc, char *argv[]);
 };
 
-} // namespace QInstaller
-
-#endif
+#endif // UPDATECHECKER_H

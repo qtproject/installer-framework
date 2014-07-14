@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -530,18 +530,6 @@ BinaryContent::BinaryContent(const BinaryContent &rhs)
 }
 
 /*!
-    Reads binary content stored in the current application binary. Maps the embedded resources into memory
-    and instantiates performed operations if available.
-*/
-BinaryContent BinaryContent::readAndRegisterFromApplicationFile()
-{
-    BinaryContent c = BinaryContent::readFromApplicationFile();
-    c.registerEmbeddedQResources();
-    c.registerPerformedOperations();
-    return c;
-}
-
-/*!
     Reads binary content stored in the passed application binary. Maps the embedded resources into memory
     and instantiates performed operations if available.
 */
@@ -551,22 +539,6 @@ BinaryContent BinaryContent::readAndRegisterFromBinary(const QString &path)
     c.registerEmbeddedQResources();
     c.registerPerformedOperations();
     return c;
-}
-
-/*!
-    Reads binary content stored in the current application binary.
-*/
-BinaryContent BinaryContent::readFromApplicationFile()
-{
-#ifdef Q_OS_OSX
-    // On Mac, data is always in a separate file so that the binary can be signed
-    QDir dataPath(QCoreApplication::applicationDirPath());
-    dataPath.cdUp();
-    dataPath.cd(QLatin1String("Resources"));
-    return BinaryContent::readFromBinary(dataPath.filePath(QLatin1String("installer.dat")));
-#else
-    return BinaryContent::readFromBinary(QCoreApplication::applicationFilePath());
-#endif
 }
 
 /*!

@@ -70,7 +70,6 @@ HEADERS += packagemanagercore.h \
     settings.h \
     downloadarchivesjob.h \
     init.h \
-    updater.h \
     adminauthorization.h \
     elevatedexecuteoperation.h \
     fakestopprocessforupdateoperation.h \
@@ -151,7 +150,6 @@ SOURCES += packagemanagercore.cpp \
     selfrestartoperation.cpp \
     downloadarchivesjob.cpp \
     init.cpp \
-    updater.cpp \
     elevatedexecuteoperation.cpp \
     fakestopprocessforupdateoperation.cpp \
     lazyplaintextedit.cpp \

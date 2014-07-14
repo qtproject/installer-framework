@@ -43,6 +43,7 @@
 #include "installerbasecommons.h"
 #include "sdkapp.h"
 #include "tabcontroller.h"
+#include "updatechecker.h"
 
 #include <binaryformat.h>
 #include <errors.h>
@@ -52,7 +53,6 @@
 #include <remoteserver.h>
 #include <settings.h>
 #include <utils.h>
-#include <updater.h>
 
 #include <kdselfrestarter.h>
 #include <kdrunoncechecker.h>
@@ -95,8 +95,6 @@ int main(int argc, char *argv[])
 #endif
 
     qsrand(QDateTime::currentDateTime().toTime_t());
-    const KDSelfRestarter restarter(argc, argv);
-    KDRunOnceChecker runCheck(QLatin1String("lockmyApp1234865.lock"));
 
     QCommandLineParser parser;
     QCommandLineOption help = parser.addHelpOption();
@@ -257,18 +255,11 @@ int main(int argc, char *argv[])
 #endif
         }
 
-        if (parser.isSet(checkUpdates)) {
-            SDKApp<QCoreApplication> app(argc, argv);
-            if (runCheck.isRunning(KDRunOnceChecker::ProcessList))
-                throw Error(QLatin1String("An instance is already checking for updates."));
-
-            Updater u;
-            u.setVerbose(parser.isSet(verbose));
-            return u.checkForUpdates() ? EXIT_SUCCESS : EXIT_FAILURE;
-        }
+        if (parser.isSet(checkUpdates))
+            return UpdateChecker().check(argc, argv);
 
         SDKApp<QApplication> app(argc, argv);
-        QInstaller::init(); // register custom operations
+        KDRunOnceChecker runCheck(QLatin1String("lockmyApp1234865.lock"));
 
         if (runCheck.isRunning(KDRunOnceChecker::ProcessList)
             || runCheck.isRunning(KDRunOnceChecker::Lockfile)) {
@@ -278,6 +269,9 @@ int main(int argc, char *argv[])
                     "until it finishes, close it, or restart your system.").arg(qAppName()));
             return EXIT_FAILURE;
         }
+
+        const KDSelfRestarter restarter(argc, argv);
+        QInstaller::init(); // register custom operations
 
         if (QInstaller::isVerbose()) {
             qDebug() << VERSION;
@@ -293,16 +287,7 @@ int main(int argc, char *argv[])
                 qDebug() << QString::fromLatin1("    %1").arg(it.next());
         }
 
-        QString binaryFile = QCoreApplication::applicationFilePath();
-#ifdef Q_OS_OSX
-        // The installer binary on OSX does not contain the binary content, it's put
-        // into the resources folder as separate file. Adjust the actual binary path.
-        QDir resourcePath(QFileInfo(binaryFile).dir());
-        resourcePath.cdUp();
-        resourcePath.cd(QLatin1String("Resources"));
-        binaryFile = resourcePath.filePath(QLatin1String("installer.dat"));
-#endif
-        BinaryContent content = BinaryContent::readAndRegisterFromBinary(binaryFile);
+        BinaryContent content = BinaryContent::readAndRegisterFromBinary(app.binaryFile());
 
         // instantiate the installer we are actually going to use
         PackageManagerCore core(content.magicMarker(), content.performedOperations());

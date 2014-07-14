@@ -63,8 +63,25 @@ public:
             return T::notify(receiver, event);
         } catch (std::exception &e) {
             qFatal("Exception thrown: %s", e.what());
+        } catch (...) {
+            qFatal("Unknown exception caught.");
         }
         return false;
+    }
+
+    QString binaryFile() const
+    {
+        QString binaryFile = QCoreApplication::applicationFilePath();
+#ifdef Q_OS_OSX
+        // The installer binary on OSX does not contain the binary content, it's put into
+        // the resources folder as separate file. Adjust the actual binary path. No error
+        // checking here since we will fail later while reading the binary content.
+        QDir resourcePath(QFileInfo(binaryFile).dir());
+        resourcePath.cdUp();
+        resourcePath.cd(QLatin1String("Resources"));
+        binaryFile = resourcePath.filePath(QLatin1String("installer.dat"));
+#endif
+        return binaryFile;
     }
 };
 
