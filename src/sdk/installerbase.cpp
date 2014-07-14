@@ -94,11 +94,6 @@ int main(int argc, char *argv[])
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
 
-    // We need to start either a command line application or a GUI application. Since we
-    // fail doing so at least on Linux while parsing the argument using a core application
-    // object and later starting the GUI application, we now parse the arguments first.
-    const QStringList args = QInstaller::parseCommandLineArgs(argc, argv);
-
     qsrand(QDateTime::currentDateTime().toTime_t());
     const KDSelfRestarter restarter(argc, argv);
     KDRunOnceChecker runCheck(QLatin1String("lockmyApp1234865.lock"));
@@ -171,7 +166,10 @@ int main(int argc, char *argv[])
     parser.addPositionalArgument(QLatin1String("Key=Value"),
         QLatin1String("Key Value pair to be set."));
 
-    parser.parse(args);
+    // We need to start either a command line application or a GUI application. Since we
+    // fail doing so at least on Linux while parsing the argument using a core application
+    // object and later starting the GUI application, we now parse the arguments first.
+    parser.parse(QInstaller::parseCommandLineArgs(argc, argv));
 
     QStringList mutually;
     if (parser.isSet(checkUpdates))
@@ -283,7 +281,7 @@ int main(int argc, char *argv[])
 
         if (QInstaller::isVerbose()) {
             qDebug() << VERSION;
-            qDebug() << "Arguments:" << args;
+            qDebug() << "Arguments:" << app.arguments();
             qDebug() << "Resource tree before loading the in-binary resource:";
             qDebug() << "Language: " << QLocale().uiLanguages().value(0,
                 QLatin1String("No UI language set"));
