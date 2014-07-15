@@ -44,7 +44,7 @@ function Component()
     var error = true;
     if (error) {
         installer.setValue("component_errors", installer.value("component_errors") + ";;;"
-            + "error from component: " + component.name);
+            + "Error in component: " + component.name);
     }
     installer.setValue("ComponentError", true);
 }

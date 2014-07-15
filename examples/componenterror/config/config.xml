@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
-    <Name>Component Error Installer Example</Name>
+    <Name>Component Error Example</Name>
     <Version>1.0.0</Version>
-    <Title>Component Error Installer Example</Title>
+    <Title>Component Error Example</Title>
     <Publisher>Qt-Project</Publisher>
-    <StartMenuDir>Qt Installer Framework Example</StartMenuDir>
-    <TargetDir>@HomeDir@/IFWComponentErrorInstallerExample</TargetDir>
+    <StartMenuDir>Qt IFW Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExample</TargetDir>
 </Installer>

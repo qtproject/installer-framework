@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <Package>
-    <DisplayName>component1</DisplayName>
+    <DisplayName>Component 1</DisplayName>
+    <Description>This component contains an error that prevents it from being
+    installed.</Description>
     <Version>1.0.1</Version>
     <ReleaseDate>2013-08-21</ReleaseDate>
     <Script>installscript.js</Script>

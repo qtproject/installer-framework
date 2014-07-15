@@ -28,13 +28,66 @@
 /*!
     \example componenterror
     \ingroup qtifwexamples
-    \title Component Error Installer Example
+    \title Component Error Example
 
-    \brief Reacting to errors in components.
+    \brief Stopping the installation if the components cannot be installed.
+
+    \image qtifw-examples-componenterror.png
+
+    \e{Component Error} demonstrates how to stop the installation and display
+    error messages if one or several components cannot be installed.
 
     \include installerfw-examples-configuring.qdocinc
 
     \quotefile componenterror/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Script> section specifies the file name of the JavaScript
+            file that is loaded to perform operations.
+    \endlist
+
+    \quotefile componenterror/packages/root/meta/package.xml
+
+    This example attempts to install three components, so we create a
+    package.xml file in each component directory: \c root, \c root.component1,
+    and \c root.component2 and specify the component name and description in
+    each of them.
+
+    \section1 Stopping the Installation on Errors
+
+    In installscript.js in the \c root directory, we call the
+    \c abortInstaller() function to hide all the default installer pages and to
+    display an error message if the components contain errors:
+
+    \quotefromfile componenterror/packages/root/meta/installscript.js
+    \skipto abortInstaller()
+    \printuntil FinishedText
+    \printuntil }
+
+    We use the \c reactOnAbortInstallerChange() signal to stop the installation
+    if \c ComponentError is \c true:
+
+    \printuntil }
+
+    We use the \c Component() function to connect to the
+    \c reactOnAbortInstallerChange() signal when the list of new root
+    components has been updated:
+
+    \printuntil }
+
+    To open the page that displays the error message, we create fake errors by
+    setting \c ComponentError to \c true in installscript.js in the
+    \c root.component1 and \c root.component2 directories:
+
+    \quotefromfile componenterror/packages/root.component1/meta/installscript.js
+    \skipto Component()
+    \printuntil /^\}/
+
+    Each component adds a message to the \c component_errors variable. In your
+    app, the \c error variable should return the results of a real check for an
+    existing file or system feature.
 
     \include installerfw-examples-generating.qdocinc
 */
