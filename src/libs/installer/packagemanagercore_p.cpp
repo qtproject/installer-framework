@@ -1066,13 +1066,13 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         QInstaller::appendInt64(&dataOut, 4 * sizeof(qint64));   // data block size
         QInstaller::appendInt64(&dataOut, BinaryContent::MagicUninstallerMarker);
         QInstaller::appendInt64(&dataOut, BinaryContent::MagicCookie);
-        dataOut.setPermissions(dataOut.permissions() | QFile::WriteUser | QFile::ReadGroup
-            | QFile::ReadOther);
         if (!dataOut.rename(resourcePath.filePath(QLatin1String("installer.dat")))) {
             throw Error(tr("Could not write maintenance tool data to %1: %2").arg(out.fileName(),
                 out.errorString()));
         }
         dataOut.setAutoRemove(false);
+        dataOut.setPermissions(dataOut.permissions() | QFile::WriteUser | QFile::ReadGroup
+            | QFile::ReadOther);
 #else
         QInstaller::appendInt64(&out, 0);   // operations start
         QInstaller::appendInt64(&out, 0);   // operations end
@@ -1378,8 +1378,6 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
 
             writeMaintenanceToolBinaryData(&file, &input, performedOperations, layout);
             QInstaller::appendInt64(&file, BinaryContent::MagicCookieDat);
-            file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
-                | QFile::ReadOther);
 
             QFile dummy(dataFile + QLatin1String(".new"));
             if (dummy.exists() && !dummy.remove()) {
@@ -1392,6 +1390,8 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                     .arg(file.fileName(), file.errorString()));
             }
             file.setAutoRemove(false);
+            file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
+                | QFile::ReadOther);
         } catch (const Error &/*error*/) {
             if (!newBinaryWritten) {
                 newBinaryWritten = true;

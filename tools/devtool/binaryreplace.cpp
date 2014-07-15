@@ -134,8 +134,6 @@ int BinaryReplace::replace(const QString &source, const QString &target)
             QFile installerBaseOld(QDir(bundlePath).filePath(bundlePath
                 + QLatin1String("/Contents/MacOS/") + QFileInfo(bundlePath).completeBaseName()));
 #endif
-            installerBaseNew.setPermissions(installerBaseOld.permissions());
-
             QFile backup(installerBaseOld.fileName() + QLatin1String(".bak"));
             if (backup.exists() && (!backup.remove())) {
                 std::cerr << qPrintable(QString::fromLatin1("Could not delete '%1'. %2")
@@ -155,6 +153,7 @@ int BinaryReplace::replace(const QString &source, const QString &target)
                     << std::endl;
             } else {
                 result = EXIT_SUCCESS;
+                installerBaseNew.setPermissions(installerBaseOld.permissions());
             }
         } catch (const QInstaller::Error &error) {
             std::cerr << qPrintable(error.message()) << std::endl;
