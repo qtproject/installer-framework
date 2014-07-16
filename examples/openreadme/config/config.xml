@@ -5,5 +5,5 @@
     <Title>Qt Installer Framework -  Open Readme Example</Title>
     <Publisher>Qt-Project</Publisher>
     <StartMenuDir>Qt Installer Framework - 'Open ReadMe' Example</StartMenuDir>
-    <TargetDir>@homeDir@/IFWOpenReadMeExample</TargetDir>
+    <TargetDir>@HomeDir@/IFWOpenReadMeExample</TargetDir>
 </Installer>

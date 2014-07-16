@@ -32,7 +32,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.title(), QLatin1String("Your application Installer"));
     QCOMPARE(settings.publisher(), QLatin1String("Your vendor"));
     QCOMPARE(settings.startMenuDir(), QLatin1String("Super App"));
-    QCOMPARE(settings.targetDir(), QLatin1String("@rootDir@InstallationDirectory"));
+    QCOMPARE(settings.targetDir(), QLatin1String("@RootDir@InstallationDirectory"));
 
     // default values
     QCOMPARE(settings.logo(), QString());

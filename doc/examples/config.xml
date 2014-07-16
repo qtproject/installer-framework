@@ -17,9 +17,9 @@
     <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
     <Background>background.png</Background>
 
-    <!-- @homeDir@ and @rootDir@ are some of the supported vars -->
-    <TargetDir>@homeDir@/testinstall</TargetDir>
-    <AdminTargetDir>@rootDir@/testinstall</AdminTargetDir>
+    <!-- @HomeDir@ and @RootDir@ are some of the supported vars -->
+    <TargetDir>@HomeDir@/testinstall</TargetDir>
+    <AdminTargetDir>@RootDir@/testinstall</AdminTargetDir>
     <RemoteRepositories>
         <Repository>
             <Url>http://www.your-repo-location/packages/</Url>

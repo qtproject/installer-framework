@@ -9,5 +9,5 @@
     <UninstallerName>Uninstaller</UninstallerName>
 
     <!-- Tweaked for windows in installscript.qs -->
-    <TargetDir>@homeDir@/Qt/QtIFW-1.6.81</TargetDir>
+    <TargetDir>@HomeDir@/Qt/QtIFW-1.6.81</TargetDir>
 </Installer>

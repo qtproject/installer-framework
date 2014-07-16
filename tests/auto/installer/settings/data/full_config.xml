@@ -11,8 +11,8 @@ File should contain all elements we allow in a config.xml
     <Publisher>Your vendor</Publisher>
     <ProductUrl>Your vendor</ProductUrl>
 
-    <TargetDir>@homeDir@InstallationDirectory</TargetDir>
-    <AdminTargetDir>@rootDir@InstallationDirectory</AdminTargetDir>
+    <TargetDir>@HomeDir@InstallationDirectory</TargetDir>
+    <AdminTargetDir>@RootDir@InstallationDirectory</AdminTargetDir>
 
     <Icon>icon</Icon>
     <InstallerApplicationIcon>icon</InstallerApplicationIcon>
