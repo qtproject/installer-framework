@@ -264,7 +264,7 @@ int main(int argc, char *argv[])
         if (runCheck.isRunning(KDRunOnceChecker::ProcessList)
             || runCheck.isRunning(KDRunOnceChecker::Lockfile)) {
                 QInstaller::MessageBoxHandler::information(0, QLatin1String("AlreadyRunning"),
-                    QString::fromLatin1("Waiting for % 1").arg(qAppName()),
+                    QString::fromLatin1("Waiting for %1").arg(qAppName()),
                     QString::fromLatin1("Another %1 instance is already running. Wait "
                     "until it finishes, close it, or restart your system.").arg(qAppName()));
             return EXIT_FAILURE;
