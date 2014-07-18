@@ -232,7 +232,7 @@ void Component::writeIndexEntry(QFileDevice *out, qint64 positionOffset) const
 
 void Component::writeData(QFileDevice *out, qint64 offset) const
 {
-    const qint64 dataBegin = out->pos() + offset;
+    const qint64 dataBegin = out->pos();
 
     QInstaller::appendInt64(out, m_archives.count());
 
@@ -266,7 +266,7 @@ void Component::writeData(QFileDevice *out, qint64 offset) const
         archive->copyData(out);
     }
 
-    m_binarySegment = Range<qint64>::fromStartAndEnd(dataBegin, out->pos() + offset);
+    m_binarySegment = Range<qint64>::fromStartAndEnd(dataBegin, out->pos()).moved(offset);
 }
 
 void Component::readData(const QSharedPointer<QFile> &in, qint64 offset)
