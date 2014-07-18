@@ -133,44 +133,6 @@ bool QInstaller::isVerbose()
     return verb;
 }
 
-#ifdef Q_OS_WIN
-class debugstream : public std::ostream
-{
-    class buf : public std::stringbuf
-    {
-    public:
-        buf() {}
-
-        int sync()
-        {
-            std::string s = str();
-            if (s[s.length() - 1] == '\n' )
-                s[s.length() - 1] = '\0'; // remove \n
-            std::cout << s << std::endl;
-            str(std::string());
-            return 0;
-        }
-    };
-public:
-    debugstream() : std::ostream(&b) {}
-private:
-    buf b;
-};
-#endif
-
-std::ostream &QInstaller::stdverbose()
-{
-    static std::fstream null;
-#ifdef Q_OS_WIN
-    static debugstream stream;
-#else
-    static std::ostream& stream = std::cout;
-#endif
-    if (verb)
-        return stream;
-    return null;
-}
-
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
 {
     return os << qPrintable(string);
@@ -281,9 +243,9 @@ QInstaller::VerboseWriter *QInstaller::VerboseWriter::instance()
     return verboseWriter();
 }
 
-QInstaller::VerboseWriter &QInstaller::verbose()
+void QInstaller::VerboseWriter::appendLine(const QString &msg)
 {
-    return *verboseWriter();
+    stream << msg << endl;
 }
 
 #ifdef Q_OS_WIN

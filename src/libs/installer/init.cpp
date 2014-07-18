@@ -143,29 +143,29 @@ static void initResources()
 }
 #endif
 
-static QByteArray trimAndPrepend(QtMsgType type, const QByteArray &msg)
+static QString trimAndPrepend(QtMsgType type, const QString &msg)
 {
-    QByteArray ba(msg);
+    QString ba(msg);
     // last character is a space from qDebug
-    if (ba.endsWith(' '))
+    if (ba.endsWith(QLatin1Char(' ')))
         ba.chop(1);
 
     // remove quotes if the whole message is surrounded with them
-    if (ba.startsWith('"') && ba.endsWith('"'))
+    if (ba.startsWith(QLatin1Char('"')) && ba.endsWith(QLatin1Char('"')))
         ba = ba.mid(1, ba.length() - 2);
 
     // prepend the message type, skip QtDebugMsg
     switch (type) {
         case QtWarningMsg:
-            ba.prepend("Warning: ");
+            ba.prepend(QStringLiteral("Warning: "));
         break;
 
         case QtCriticalMsg:
-            ba.prepend("Critical: ");
+            ba.prepend(QStringLiteral("Critical: "));
         break;
 
         case QtFatalMsg:
-            ba.prepend("Fatal: ");
+            ba.prepend(QStringLiteral("Fatal: "));
         break;
 
         default:
@@ -179,19 +179,18 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
     // suppress warning from QPA minimal plugin
     if (msg.contains(QLatin1String("This plugin does not support propagateSizeHints")))
         return;
-    QByteArray ba = trimAndPrepend(type, msg.toLocal8Bit());
+    QString ba = trimAndPrepend(type, msg);
     if (type != QtDebugMsg) {
         ba += QString(QStringLiteral(" (%1:%2, %3)")).arg(
                     QString::fromLatin1(context.file)).arg(context.line).arg(
-                    QString::fromLatin1(context.function)).toLocal8Bit();
+                    QString::fromLatin1(context.function));
     }
 
-    if (!VerboseWriter::instance())
-        return;
+    if (VerboseWriter *log = VerboseWriter::instance())
+        log->appendLine(ba);
 
-    verbose() << ba.constData() << std::endl;
-    if (!isVerbose() && type != QtDebugMsg)
-        std::cout << ba.constData() << std::endl << std::endl;
+    if (type != QtDebugMsg || isVerbose())
+        std::cout << qPrintable(ba) << std::endl;
 
     if (type == QtFatalMsg) {
         QtMessageHandler oldMsgHandler = qInstallMessageHandler(0);

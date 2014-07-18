@@ -75,11 +75,8 @@ namespace QInstaller {
     void INSTALLER_EXPORT setVerbose(bool v);
     bool INSTALLER_EXPORT isVerbose();
 
-    INSTALLER_EXPORT std::ostream& stdverbose();
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
-    class VerboseWriter;
-    INSTALLER_EXPORT VerboseWriter &verbose();
 
     class INSTALLER_EXPORT VerboseWriter : public QObject
     {
@@ -90,8 +87,8 @@ namespace QInstaller {
 
         static VerboseWriter *instance();
 
-        inline VerboseWriter &operator<<(const char *t) { stdverbose() << t; stream << t; return *this; }
-        inline VerboseWriter &operator<<(std::ostream& (*f)(std::ostream &s)) { stdverbose() << *f; stream << "\n"; return *this; }
+        void appendLine(const QString &msg);
+
     public slots:
         void setOutputStream(const QString &fileName);
 
