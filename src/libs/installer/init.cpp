@@ -79,6 +79,7 @@
 #include "7zCrc.h"
 
 #include <QtPlugin>
+#include <QElapsedTimer>
 
 #include <iostream>
 
@@ -174,12 +175,23 @@ static QString trimAndPrepend(QtMsgType type, const QString &msg)
     return ba;
 }
 
+// start timer on construction (so we can use it as static member)
+class Uptime : public QElapsedTimer {
+public:
+    Uptime() { start(); }
+};
+
 void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     // suppress warning from QPA minimal plugin
     if (msg.contains(QLatin1String("This plugin does not support propagateSizeHints")))
         return;
-    QString ba = trimAndPrepend(type, msg);
+
+    static Uptime uptime;
+
+    QString ba = QLatin1Char('[') + QString::number(uptime.elapsed()) + QStringLiteral("] ")
+            + trimAndPrepend(type, msg);
+
     if (type != QtDebugMsg) {
         ba += QString(QStringLiteral(" (%1:%2, %3)")).arg(
                     QString::fromLatin1(context.file)).arg(context.line).arg(
