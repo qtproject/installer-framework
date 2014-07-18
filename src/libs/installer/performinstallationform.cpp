@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -149,10 +149,6 @@ void PerformInstallationForm::toggleDetails()
 {
     const bool willShow = !isShowingDetails();
     m_detailsButton->setText(willShow ? tr("&Hide Details") : tr("&Show Details"));
-
-    if (willShow)
-        scrollDetailsToTheEnd();
-
     m_detailsBrowser->setVisible(willShow);
     emit showDetailsChanged();
 }
@@ -188,8 +184,7 @@ void PerformInstallationForm::setDetailsButtonEnabled(bool enable)
 
 void PerformInstallationForm::scrollDetailsToTheEnd()
 {
-    m_detailsBrowser->horizontalScrollBar()->setValue(0);
-    m_detailsBrowser->verticalScrollBar()->setValue(m_detailsBrowser->verticalScrollBar()->maximum());
+    m_detailsBrowser->updateCursor(LazyPlainTextEdit::TextCursorPosition::ForceEnd);
 }
 
 bool PerformInstallationForm::isShowingDetails() const

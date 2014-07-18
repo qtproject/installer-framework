@@ -48,7 +48,12 @@ class LazyPlainTextEdit : public QPlainTextEdit
 {
     Q_OBJECT
 public:
+    enum struct TextCursorPosition {
+        Keep,
+        ForceEnd
+    };
     explicit LazyPlainTextEdit(QWidget *parent = 0);
+    void updateCursor(TextCursorPosition position);
 
 public slots:
     void append(const QString &text);

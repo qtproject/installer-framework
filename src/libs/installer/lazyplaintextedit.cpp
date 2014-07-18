@@ -57,10 +57,12 @@ void LazyPlainTextEdit::timerEvent(QTimerEvent *event)
         killTimer(m_timerId);
         m_timerId = 0;
         m_cachedOutput.chop(1); //removes the last \n
-        if (!m_cachedOutput.isEmpty())
+        if (!m_cachedOutput.isEmpty()) {
             appendPlainText(m_cachedOutput);
-        horizontalScrollBar()->setValue( 0 );
-        m_cachedOutput.clear();
+            updateCursor(TextCursorPosition::Keep);
+            horizontalScrollBar()->setValue(0);
+            m_cachedOutput.clear();
+        }
     }
 }
 
@@ -81,7 +83,6 @@ void LazyPlainTextEdit::clear()
     QPlainTextEdit::clear();
 }
 
-
 void LazyPlainTextEdit::setVisible(bool visible)
 {
     if (m_timerId) {
@@ -93,4 +94,21 @@ void LazyPlainTextEdit::setVisible(bool visible)
         m_timerId = startTimer(INTERVAL);
 
     QPlainTextEdit::setVisible(visible);
+    updateCursor(TextCursorPosition::Keep);
+}
+
+void LazyPlainTextEdit::updateCursor(TextCursorPosition position)
+{
+    QTextCursor cursor = textCursor();
+    if ((position == TextCursorPosition::ForceEnd) || cursor.atEnd()) {
+        // Workaround for height calculation issue if scrollbar is set to Qt::ScrollBarAsNeeded.
+        Qt::ScrollBarPolicy policy = horizontalScrollBarPolicy();
+        setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn); // enforce always on
+
+        cursor.movePosition(QTextCursor::End);
+        setTextCursor(cursor);
+        ensureCursorVisible();
+
+        setHorizontalScrollBarPolicy(policy); // but reset once we updated the cursor position
+    }
 }
