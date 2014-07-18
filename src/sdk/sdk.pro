@@ -124,6 +124,8 @@ win32 {
     # Force to overwrite the default manifest file with our own extended version.
     RC_FILE = installerbase_qt5.rc
     QMAKE_MANIFEST = installerbase.manifest
+
+    SOURCES += console_win.cpp
 }
 
 macx:include(../../no_app_bundle.pri)
