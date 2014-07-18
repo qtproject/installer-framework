@@ -57,54 +57,93 @@
 #  define ENABLE_EXTENDED_FLAGS 0x0080
 # endif
 
-
-Console::Console()
+static bool isRedirected(HANDLE stdHandle)
 {
-    parentConsole = AttachConsole(ATTACH_PARENT_PROCESS);
-    if (parentConsole)
-        return;
+    if (stdHandle == NULL) // launched from GUI
+        return false;
+    DWORD fileType = GetFileType(stdHandle);
+    if (fileType == FILE_TYPE_UNKNOWN) {
+        // launched from console, but no redirection
+        return false;
+    }
+    // redirected into file, pipe ...
+    return true;
+}
 
-    AllocConsole();
-    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (handle != INVALID_HANDLE_VALUE) {
-        COORD largestConsoleWindowSize = GetLargestConsoleWindowSize(handle);
-        largestConsoleWindowSize.X -= 3;
-        largestConsoleWindowSize.Y = 5000;
-        SetConsoleScreenBufferSize(handle, largestConsoleWindowSize);
+/**
+ * Redirects stdout, stderr output to console
+ *
+ * Console is a RAII class that ensures stdout, stderr output is visible
+ * for GUI applications on Windows.
+ *
+ * If the application is launched from the explorer, startup menu etc
+ * a new console window is created.
+ *
+ * If the application is launched from the console (cmd.exe), output is
+ * printed there.
+ *
+ * If the application is launched from the console, but stdout is redirected
+ * (e.g. into a file), Console does not interfere.
+ */
+Console::Console() :
+    m_oldCout(0),
+    m_oldCerr(0)
+{
+    bool isCoutRedirected = isRedirected(GetStdHandle(STD_OUTPUT_HANDLE));
+    bool isCerrRedirected = isRedirected(GetStdHandle(STD_ERROR_HANDLE));
+
+    if (!isCoutRedirected) { // verbose output only ends up in cout
+        // try to use parent console. else launch & set up new console
+        parentConsole = AttachConsole(ATTACH_PARENT_PROCESS);
+        if (!parentConsole) {
+            AllocConsole();
+            HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+            if (handle != INVALID_HANDLE_VALUE) {
+                COORD largestConsoleWindowSize = GetLargestConsoleWindowSize(handle);
+                largestConsoleWindowSize.X -= 3;
+                largestConsoleWindowSize.Y = 5000;
+                SetConsoleScreenBufferSize(handle, largestConsoleWindowSize);
+            }
+            handle = GetStdHandle(STD_INPUT_HANDLE);
+            if (handle != INVALID_HANDLE_VALUE)
+                SetConsoleMode(handle, ENABLE_INSERT_MODE | ENABLE_QUICK_EDIT_MODE
+                               | ENABLE_EXTENDED_FLAGS);
+# ifndef Q_CC_MINGW
+            HMENU systemMenu = GetSystemMenu(GetConsoleWindow(), FALSE);
+            if (systemMenu != NULL)
+                RemoveMenu(systemMenu, SC_CLOSE, MF_BYCOMMAND);
+            DrawMenuBar(GetConsoleWindow());
+# endif
+        }
     }
 
-    handle = GetStdHandle(STD_INPUT_HANDLE);
-    if (handle != INVALID_HANDLE_VALUE)
-        SetConsoleMode(handle, ENABLE_INSERT_MODE | ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS);
+    if (!isCoutRedirected) {
+        m_oldCout = std::cout.rdbuf();
+        m_newCout.open("CONOUT$");
+        std::cout.rdbuf(m_newCout.rdbuf());
+    }
 
-    m_oldCin = std::cin.rdbuf();
-    m_newCin.open("CONIN$");
-    std::cin.rdbuf(m_newCin.rdbuf());
-
-    m_oldCout = std::cout.rdbuf();
-    m_newCout.open("CONOUT$");
-    std::cout.rdbuf(m_newCout.rdbuf());
-
-    m_oldCerr = std::cerr.rdbuf();
-    m_newCerr.open("CONOUT$");
-    std::cerr.rdbuf(m_newCerr.rdbuf());
-# ifndef Q_CC_MINGW
-    HMENU systemMenu = GetSystemMenu(GetConsoleWindow(), FALSE);
-    if (systemMenu != NULL)
-        RemoveMenu(systemMenu, SC_CLOSE, MF_BYCOMMAND);
-    DrawMenuBar(GetConsoleWindow());
-# endif
+    if (!isCerrRedirected) {
+        m_oldCerr = std::cerr.rdbuf();
+        m_newCerr.open("CONOUT$");
+        std::cerr.rdbuf(m_newCerr.rdbuf());
+    }
 }
 
 Console::~Console()
 {
     if (!parentConsole) {
         system("PAUSE");
-
-        std::cin.rdbuf(m_oldCin);
-        std::cerr.rdbuf(m_oldCerr);
-        std::cout.rdbuf(m_oldCout);
+    } else {
+        // simulate enter key to switch to boot prompt
+        PostMessage(GetConsoleWindow(), WM_KEYDOWN, 0x0D, 0);
     }
 
-    FreeConsole();
+    if (m_oldCerr)
+        std::cerr.rdbuf(m_oldCerr);
+    if (m_oldCout)
+        std::cout.rdbuf(m_oldCout);
+
+    if (m_oldCout)
+        FreeConsole();
 }

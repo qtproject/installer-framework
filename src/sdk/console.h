@@ -58,11 +58,9 @@ public:
 private:
     bool parentConsole;
 
-    std::ifstream m_newCin;
     std::ofstream m_newCout;
     std::ofstream m_newCerr;
 
-    std::streambuf* m_oldCin;
     std::streambuf* m_oldCout;
     std::streambuf* m_oldCerr;
 };
