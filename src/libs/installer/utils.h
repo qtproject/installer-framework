@@ -78,19 +78,16 @@ namespace QInstaller {
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
 
-    class INSTALLER_EXPORT VerboseWriter : public QObject
+    class INSTALLER_EXPORT VerboseWriter
     {
-        Q_OBJECT
     public:
-        explicit VerboseWriter(QObject *parent = 0);
+        VerboseWriter();
         ~VerboseWriter();
 
         static VerboseWriter *instance();
 
         void appendLine(const QString &msg);
-
-    public slots:
-        void setOutputStream(const QString &fileName);
+        void setFileName(const QString &fileName);
 
     private:
         QTextStream stream;

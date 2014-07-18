@@ -764,7 +764,7 @@ PackageManagerCore::~PackageManagerCore()
         QDir targetDir(value(scTargetDir));
         QString logFileName = targetDir.absoluteFilePath(value(QLatin1String("LogFileName"),
             QLatin1String("InstallationLog.txt")));
-        QInstaller::VerboseWriter::instance()->setOutputStream(logFileName);
+        QInstaller::VerboseWriter::instance()->setFileName(logFileName);
     }
     delete d;
 

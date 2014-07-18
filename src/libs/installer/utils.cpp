@@ -201,7 +201,7 @@ QString QInstaller::replaceWindowsEnvironmentVariables(const QString &str)
     return res;
 }
 
-QInstaller::VerboseWriter::VerboseWriter(QObject *parent) : QObject(parent)
+QInstaller::VerboseWriter::VerboseWriter()
 {
     preFileBuffer.open(QIODevice::ReadWrite);
     stream.setDevice(&preFileBuffer);
@@ -230,7 +230,7 @@ QInstaller::VerboseWriter::~VerboseWriter()
     stream.setDevice(0);
 }
 
-void QInstaller::VerboseWriter::setOutputStream(const QString &fileName)
+void QInstaller::VerboseWriter::setFileName(const QString &fileName)
 {
     logFileName = fileName;
 }
