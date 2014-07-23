@@ -2081,6 +2081,10 @@ void ReadyForInstallationPage::entering()
             "space for installation, but there will be less than 100 MB available afterwards. %1")
             .arg(m_msgLabel->text()));
     }
+
+    m_msgLabel->setText(QString::fromLatin1("%1 %2").arg(m_msgLabel->text(),
+            tr("Installation will use %1 of disk space.").arg(humanReadableSize(required))));
+
     setCommitPage(true);
 }
 
