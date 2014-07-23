@@ -12,7 +12,11 @@
 - Made the installer binary paths available for scripts.  (QTIFW-424)
 - Fixed possible case of uninstalling all of Windows. (QTIFW-511)
 - Stopped trying to get admin rights on Windows if impossible.
-- Various bugs fixed.
+- Introduced developer tool.
+- Improved checking of Installationpath and better reporting to user. (QTIFW-468, QTIFW-512)
+- Fixed detailwindow not following content. (QTIFW-353)
+- Log messages are now prefixed with a timestamp. (QTIFW-496)
+- Various bugs fixed. (e.g. QTIFW-524)
 - Improved documentation.
 - Documentation fixes
 - Only support Qt 5 on documentation side as well.
