@@ -44,6 +44,11 @@
 
 #include <QApplication>
 
+#ifdef Q_OS_OSX
+#include <QDir>
+#include <QFileInfo>
+#endif
+
 template<class T>
 class SDKApp : public T
 {
