@@ -1939,13 +1939,6 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     topLayout->addWidget(m_msgLabel);
     baseLayout->addLayout(topLayout);
 
-    m_taskDetailsButton = new QPushButton(tr("&Show Details"), this);
-    m_taskDetailsButton->setFocusPolicy(Qt::NoFocus);
-    m_taskDetailsButton->setObjectName(QLatin1String("TaskDetailsButton"));
-    m_taskDetailsButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
-    connect(m_taskDetailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
-    topLayout->addWidget(m_taskDetailsButton);
-
     QVBoxLayout *bottomLayout = new QVBoxLayout();
     bottomLayout->setObjectName(QLatin1String("BottomLayout"));
     bottomLayout->addStretch();
@@ -1970,8 +1963,12 @@ void ReadyForInstallationPage::entering()
 {
     setCommitPage(false);
 
+    if (isVerbose())
+        m_taskDetailsBrowser->setVisible(true);
+    else
+        m_taskDetailsBrowser->setVisible(false);
+
     if (packageManagerCore()->isUninstaller()) {
-        m_taskDetailsButton->setVisible(false);
         m_taskDetailsBrowser->setVisible(false);
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setColoredTitle(tr("Ready to Uninstall"));
@@ -2103,8 +2100,6 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
             }
             htmlOutput.append(QLatin1String("</ul>"));
             m_taskDetailsBrowser->setHtml(htmlOutput);
-            if (!m_taskDetailsBrowser->isVisible())
-                toggleDetails();
             setCommitPage(false);
             return;
     }
@@ -2132,13 +2127,6 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
         htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
     }
     m_taskDetailsBrowser->setHtml(htmlOutput);
-}
-
-void ReadyForInstallationPage::toggleDetails()
-{
-    const bool visible = !m_taskDetailsBrowser->isVisible();
-    m_taskDetailsBrowser->setVisible(visible);
-    m_taskDetailsButton->setText(visible ? tr("&Hide Details") : tr("&Show Details"));
 }
 
 void ReadyForInstallationPage::leaving()
