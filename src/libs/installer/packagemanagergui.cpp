@@ -2214,6 +2214,9 @@ void PerformInstallationPage::entering()
 
     m_performInstallationForm->enableDetails();
     emit setAutomatedPageSwitchEnabled(true);
+
+    if (isVerbose())
+        m_performInstallationForm->toggleDetails();
 }
 
 void PerformInstallationPage::leaving()
