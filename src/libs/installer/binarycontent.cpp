@@ -146,8 +146,8 @@ public:
     QVector<QByteArray> m_resourceMappings;
     QVector<Range<qint64> > m_metadataResourceSegments;
 
-    QInstallerCreator::ComponentIndex m_componentIndex;
-    QInstallerCreator::BinaryFormatEngineHandler m_binaryFormatEngineHandler;
+    ResourceCollectionManager m_collectionManager;
+    BinaryFormatEngineHandler m_binaryFormatEngineHandler;
 };
 
 
@@ -156,7 +156,7 @@ BinaryContent::Private::Private()
     , m_dataBlockStart(Q_INT64_C(0))
     , m_appBinary(0)
     , m_binaryDataFile(0)
-    , m_binaryFormatEngineHandler(m_componentIndex)
+    , m_binaryFormatEngineHandler(m_collectionManager)
 {}
 
 BinaryContent::Private::Private(const QString &path)
@@ -164,7 +164,7 @@ BinaryContent::Private::Private(const QString &path)
     , m_dataBlockStart(Q_INT64_C(0))
     , m_appBinary(new QFile(path))
     , m_binaryDataFile(0)
-    , m_binaryFormatEngineHandler(m_componentIndex)
+    , m_binaryFormatEngineHandler(m_collectionManager)
 {}
 
 BinaryContent::Private::Private(const Private &other)
@@ -177,7 +177,7 @@ BinaryContent::Private::Private(const Private &other)
     , m_performedOperationsData(other.m_performedOperationsData)
     , m_resourceMappings(other.m_resourceMappings)
     , m_metadataResourceSegments(other.m_metadataResourceSegments)
-    , m_componentIndex(other.m_componentIndex)
+    , m_collectionManager(other.m_collectionManager)
     , m_binaryFormatEngineHandler(other.m_binaryFormatEngineHandler)
 {}
 
@@ -229,7 +229,7 @@ BinaryContent BinaryContent::readAndRegisterFromBinary(const QString &path)
 * \class QInstaller::BinaryContent
 *
 * BinaryContent handles binary information embedded into executables.
-* Qt resources as well as component information can be stored.
+* Qt resources as well as resource collections can be stored.
 *
 * Explanation of the binary blob at the end of the installer or separate data file:
 *
@@ -397,37 +397,41 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
         content.d->m_performedOperationsData.append(qMakePair(name, data));
     }
 
-    // seek to the position of the component index
+    // seek to the position of the resource collections segment info
     const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
     const qint64 resourceSectionSize = resourceOffsetAndLengtSize * layout.resourceCount;
-    const qint64 offset = layout.endOfData - layout.indexSize - resourceSectionSize
+    qint64 offset = layout.endOfData - layout.indexSize - resourceSectionSize
         - resourceOffsetAndLengtSize;
     if (!file->seek(offset)) {
         throw Error(QCoreApplication::translate("BinaryContent",
-            "Could not seek to component index information."));
+            "Could not seek to read the resource collection segment info."));
     }
-    const qint64 compIndexStart = QInstaller::retrieveInt64(file.data()) + dataBlockStart;
-    if (!file->seek(compIndexStart))
-        throw Error(QCoreApplication::translate("BinaryContent", "Could not seek to component index."));
 
-    content.d->m_componentIndex = QInstallerCreator::ComponentIndex::read(file, dataBlockStart);
-    content.d->m_binaryFormatEngineHandler.setComponentIndex(content.d->m_componentIndex);
+    offset = QInstaller::retrieveInt64(file.data()) + dataBlockStart;
+    if (!file->seek(offset)) {
+        throw Error(QCoreApplication::translate("BinaryContent", "Could not seek to start "
+            "position of resource collection block."));
+    }
 
-    if (QInstaller::isVerbose()) {
-        const QVector<QInstallerCreator::Component> components = content.d->m_componentIndex.components();
-        qDebug() << "Number of components loaded:" << components.count();
-        foreach (const QInstallerCreator::Component &component, components) {
-            const QVector<QSharedPointer<QInstallerCreator::Archive> > archives = component.archives();
-            qDebug() << component.name().data() << "loaded...";
-            QStringList archivesWithSize;
-            foreach (const QSharedPointer<QInstallerCreator::Archive> &archive, archives) {
-                archivesWithSize.append(QString::fromLatin1("%1 - %2")
-                    .arg(QString::fromUtf8(archive->name()), humanReadableSize(archive->size())));
-            }
-            if (!archivesWithSize.isEmpty()) {
-                qDebug() << " - " << archives.count() << "archives: "
-                    << qPrintable(archivesWithSize.join(QLatin1String("; ")));
-            }
+    content.d->m_collectionManager.read(file, dataBlockStart);
+    content.d->m_binaryFormatEngineHandler.setResourceCollectionManager(content.d->m_collectionManager);
+
+    if (!QInstaller::isVerbose())
+        return;
+
+    const QList<ResourceCollection> collections = content.d->m_collectionManager.collections();
+    qDebug() << "Number of resource collections loaded:" << collections.count();
+    foreach (const ResourceCollection &collection, collections) {
+        const QList<QSharedPointer<Resource> > resources = collection.resources();
+        qDebug() << collection.name().data() << "loaded...";
+        QStringList resourcesWithSize;
+        foreach (const QSharedPointer<Resource> &resource, resources) {
+            resourcesWithSize.append(QString::fromLatin1("%1 - %2")
+                .arg(QString::fromUtf8(resource->name()), humanReadableSize(resource->size())));
+        }
+        if (!resourcesWithSize.isEmpty()) {
+            qDebug() << " - " << resources.count() << "resources: "
+                << qPrintable(resourcesWithSize.join(QLatin1String("; ")));
         }
     }
 }

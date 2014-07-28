@@ -46,18 +46,26 @@
 #include "qinstallerglobal.h"
 
 #include <QFile>
-#include <QVector>
+#include <QList>
 
-namespace QInstallerCreator {
+namespace QInstaller {
 
-class INSTALLER_EXPORT Archive : public QIODevice
+class INSTALLER_EXPORT Resource : public QIODevice
 {
-public:
-    explicit Archive(const QString &path);
-    Archive(const QByteArray &name, const QSharedPointer<QFile> &device, const Range<qint64> &segment);
-    ~Archive();
+    Q_OBJECT
+    Q_DISABLE_COPY(Resource)
 
-    bool open(OpenMode mode);
+public:
+    explicit Resource(const QString &path);
+    Resource(const QByteArray &name, const QString &path);
+
+    explicit Resource(const QSharedPointer<QIODevice> &device);
+    Resource(const QSharedPointer<QIODevice> &device, const Range<qint64> &segment);
+    Resource(const QByteArray &name, const QSharedPointer<QIODevice> &device,
+        const Range<qint64> &segment);
+    ~Resource();
+
+    bool open();
     void close();
 
     bool seek(qint64 pos);
@@ -66,67 +74,81 @@ public:
     QByteArray name() const;
     void setName(const QByteArray &name);
 
+    Range<qint64> segment() const { return m_segment; }
+
     void copyData(QFileDevice *out) { copyData(this, out); }
-    static void copyData(Archive *archive, QFileDevice *out);
+    static void copyData(Resource *archive, QFileDevice *out);
 
 private:
     qint64 readData(char *data, qint64 maxSize);
     qint64 writeData(const char *data, qint64 maxSize);
+    bool open(OpenMode mode) { return QIODevice::open(mode); }
 
 private:
-    QSharedPointer<QFile> m_device;
-    const Range<qint64> m_segment;
+    QSharedPointer<QIODevice> m_device;
+    Range<qint64> m_segment;
     QFile m_inputFile;
     QByteArray m_name;
+    bool m_deviceOpened;
 };
 
-class INSTALLER_EXPORT Component
+
+class INSTALLER_EXPORT ResourceCollection
 {
-    Q_DECLARE_TR_FUNCTIONS(Component)
+    Q_DECLARE_TR_FUNCTIONS(ResourceCollection)
 
 public:
-    static Component readFromIndexEntry(const QSharedPointer<QFile> &dev, qint64 offset);
-
-    void writeIndexEntry(QFileDevice *dev, qint64 offset) const;
-
-    void writeData(QFileDevice *dev, qint64 positionOffset) const;
-    void readData(const QSharedPointer<QFile> &dev, qint64 offset);
+    ResourceCollection() {}
+    explicit ResourceCollection(const QByteArray &name);
 
     QByteArray name() const;
     void setName(const QByteArray &ba);
 
-    void appendArchive(const QSharedPointer<Archive> &archive);
-    QSharedPointer<Archive> archiveByName(const QByteArray &name) const;
-    QVector< QSharedPointer<Archive> > archives() const;
+    Range<qint64> segment() const { return m_segment; }
+    void setSegment(const Range<qint64> &segment) const { m_segment = segment; }
 
-    bool operator<(const Component &other) const;
-    bool operator==(const Component &other) const;
+    void write(QFileDevice *dev, qint64 positionOffset) const;
+    void read(const QSharedPointer<QFile> &dev, qint64 offset);
+
+    QList<QSharedPointer<Resource> > resources() const;
+    QSharedPointer<Resource> resourceByName(const QByteArray &name) const;
+
+    void appendResource(const QSharedPointer<Resource> &resource);
+    void appendResources(const QList<QSharedPointer<Resource> > &resources);
+
+    bool operator<(const ResourceCollection &other) const;
+    bool operator==(const ResourceCollection &other) const;
 
 private:
     QByteArray m_name;
-    QVector<QSharedPointer<Archive> > m_archives;
-    mutable Range<qint64> m_binarySegment;
-    QString m_dataDirectory;
+    mutable Range<qint64> m_segment;
+    QList<QSharedPointer<Resource> > m_resources;
 };
 
 
-class INSTALLER_EXPORT ComponentIndex
+class INSTALLER_EXPORT ResourceCollectionManager
 {
 public:
-    ComponentIndex();
-    static ComponentIndex read(const QSharedPointer<QFile> &dev, qint64 offset);
-    void writeIndex(QFileDevice *dev, qint64 offset) const;
-    void writeComponentData(QFileDevice *dev, qint64 offset) const;
-    Component componentByName(const QByteArray &name) const;
-    void insertComponent(const Component &name);
-    void removeComponent(const QByteArray &name);
-    QVector<Component> components() const;
-    int componentCount() const;
+    Range<qint64> write(QFileDevice *dev, qint64 offset) const;
+    void read(const QSharedPointer<QFile> &dev, qint64 offset);
+
+    void reset();
+    int collectionCount() const;
+
+    QList<ResourceCollection> collections() const;
+    ResourceCollection collectionByName(const QByteArray &name) const;
+
+    void removeCollection(const QByteArray &name);
+    void insertCollection(const ResourceCollection &collection);
 
 private:
-    QHash<QByteArray, Component> m_components;
+    void writeIndexEntry(const ResourceCollection &coll, QFileDevice *dev) const;
+    ResourceCollection readIndexEntry(const QSharedPointer<QFile> &dev, qint64 offset);
+
+private:
+    QHash<QByteArray, ResourceCollection> m_collections;
 };
 
-} // namespace QInstallerCreator
+} // namespace QInstaller
 
 #endif // BINARYFORMAT_H

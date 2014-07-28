@@ -50,7 +50,7 @@ class BinaryDump
 
 public:
     BinaryDump() {}
-    int dump(const QInstallerCreator::ComponentIndex &index, const QString &target);
+    int dump(const QInstaller::ResourceCollectionManager &manager, const QString &target);
 };
 
 #endif // BINARYDUMP_H

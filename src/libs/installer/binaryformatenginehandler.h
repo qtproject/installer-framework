@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -46,30 +46,30 @@
 
 #include <QtCore/private/qabstractfileengine_p.h>
 
-namespace QInstallerCreator {
+namespace QInstaller {
 
-class ComponentIndex;
+class ResourceCollectionManager;
 
 class INSTALLER_EXPORT BinaryFormatEngineHandler : public QAbstractFileEngineHandler
 {
 public:
-    explicit BinaryFormatEngineHandler(const ComponentIndex &index);
+    explicit BinaryFormatEngineHandler(const ResourceCollectionManager &manager);
     BinaryFormatEngineHandler(const BinaryFormatEngineHandler &other);
     ~BinaryFormatEngineHandler();
     QAbstractFileEngine *create(const QString &fileName) const;
 
-    void setComponentIndex(const ComponentIndex &index);
+    void setResourceCollectionManager(const ResourceCollectionManager &manager);
 
+    void reset();
     static BinaryFormatEngineHandler *instance();
 
-    void registerArchive(const QString &fileName, const QString &path);
-    void resetRegisteredArchives();
+    void registerResource(const QString &fileName, const QString &resourcePath);
 
 private:
     class Private;
     Private *const d;
 };
 
-}
+} // namespace QInstaller
 
-#endif
+#endif // BINARYFORMATENGINEHANDLER_H

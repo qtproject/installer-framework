@@ -393,8 +393,8 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 void PackageManagerCorePrivate::cleanUpComponentEnvironment()
 {
     // clean up already downloaded data, don't reset registered archives in offline installer case
-    if (QInstallerCreator::BinaryFormatEngineHandler::instance() && !m_core->isInstaller())
-        QInstallerCreator::BinaryFormatEngineHandler::instance()->resetRegisteredArchives();
+    if (BinaryFormatEngineHandler::instance() && !m_core->isInstaller())
+        BinaryFormatEngineHandler::instance()->reset();
 
     // there could be still some references to already deleted components,
     // so we need to remove the current component script engine

@@ -61,18 +61,17 @@
 #include <iostream>
 
 using namespace QInstaller;
-using namespace QInstallerCreator;
 
 struct Input {
     QString outputPath;
     QString installerExePath;
-    ComponentIndex componentIndex;
+    ResourceCollectionManager collectionManager;
     QString binaryResourcePath;
     QStringList binaryResources;
 
     Range<qint64> operationsPos;
     QVector<Range<qint64> > resourcePos;
-    Range<qint64> componentIndexSegment;
+    Range<qint64> resourceCollectionsSegment;
 };
 
 class BundleBackup
@@ -315,18 +314,13 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         input.operationsPos = Range<qint64>::fromStartAndEnd(operationsStart, out.pos())
             .moved(-dataBlockStart);
 
-        // write out every components data
-        input.componentIndex.writeComponentData(&out, -dataBlockStart);
-        const qint64 compIndexStart = out.pos() - dataBlockStart;
+        // write out every resource collections data and index
+        input.resourceCollectionsSegment = input.collectionManager.write(&out, -dataBlockStart)
+            .moved(-dataBlockStart);
 
-        // write out the component index
-        input.componentIndex.writeIndex(&out, -dataBlockStart);
-        input.componentIndexSegment = Range<qint64>::fromStartAndEnd(compIndexStart, out.pos()
-            - dataBlockStart);
-
-        qDebug("Component index: [%llu:%llu]", input.componentIndexSegment.start(),
-            input.componentIndexSegment.end());
-        QInstaller::appendInt64Range(&out, input.componentIndexSegment);
+        qDebug("Resource collections segment index: [%llu:%llu]", input.resourceCollectionsSegment
+            .start(), input.resourceCollectionsSegment.end());
+        QInstaller::appendInt64Range(&out, input.resourceCollectionsSegment);
         foreach (const Range<qint64> &range, input.resourcePos)
             QInstaller::appendInt64Range(&out, range);
         QInstaller::appendInt64Range(&out, input.operationsPos);
@@ -765,17 +759,17 @@ int main(int argc, char **argv)
 
             // now put the packages into the components section of the binary
             foreach (const QInstallerTools::PackageInfo &info, packages) {
-                Component comp;
-                comp.setName(info.name.toUtf8());
+                ResourceCollection collection;
+                collection.setName(info.name.toUtf8());
 
                 qDebug() << "Creating component info for" << info.name;
-                foreach (const QString &archive, info.copiedFiles) {
-                    const QSharedPointer<Archive> arch(new Archive(archive));
-                    qDebug() << QString::fromLatin1("Appending %1 (%2)").arg(archive,
-                        humanReadableSize(arch->size()));
-                    comp.appendArchive(arch);
+                foreach (const QString &file, info.copiedFiles) {
+                    const QSharedPointer<Resource> resource(new Resource(file));
+                    qDebug() << QString::fromLatin1("Appending %1 (%2)").arg(file,
+                        humanReadableSize(resource->size()));
+                    collection.appendResource(resource);
                 }
-                input.componentIndex.insertComponent(comp);
+                input.collectionManager.insertCollection(collection);
             }
 
             qDebug() << "Creating the binary";

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -240,7 +240,7 @@ void DownloadArchivesJob::registerFile()
         }
 
         const QPair<QString, QString> pair = m_archivesToDownload.takeFirst();
-        QInstallerCreator::BinaryFormatEngineHandler::instance()->registerArchive(pair.first,
+        BinaryFormatEngineHandler::instance()->registerResource(pair.first,
             m_downloader->downloadedFileName());
     }
     fetchNextArchiveHash();

@@ -46,12 +46,14 @@
 
 #include <QtCore/private/qfsfileengine_p.h>
 
-namespace QInstallerCreator {
+namespace QInstaller {
 
 class BinaryFormatEngine : public QAbstractFileEngine
 {
+    Q_DISABLE_COPY(BinaryFormatEngine)
+
 public:
-    BinaryFormatEngine(const ComponentIndex &index, const QString &fileName);
+    BinaryFormatEngine(const ResourceCollectionManager &manager, const QString &fileName);
     ~BinaryFormatEngine();
 
     void setFileName(const QString &file);
@@ -74,14 +76,14 @@ protected:
     void setArchive(const QString &file);
 
 private:
-    const ComponentIndex m_index;
-    bool m_hasComponent;
-    bool m_hasArchive;
-    Component m_component;
-    QSharedPointer<Archive> m_archive;
+    const ResourceCollectionManager m_manager;
+    bool m_hasCollection;
+    bool m_hasResource;
+    ResourceCollection m_collection;
+    QSharedPointer<Resource> m_resource;
     QString m_fileNamePath;
 };
 
-} // namespace QInstallerCreator
+} // namespace QInstaller
 
-#endif
+#endif // BINARYFORMATENGINE_H

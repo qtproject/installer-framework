@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -46,31 +46,31 @@
 #include <QDebug>
 #include <QFile>
 
-using namespace QInstallerCreator;
+namespace QInstaller {
 
 static BinaryFormatEngineHandler *s_instance = 0;
 
-    
+
 class BinaryFormatEngineHandler::Private
 {
 public:
-    Private(const ComponentIndex &i)
-        : index(i)
+    Private(const ResourceCollectionManager &i)
+        : manager(i)
     {
     }
 
-    ComponentIndex index;
+    ResourceCollectionManager manager;
 };
 
-BinaryFormatEngineHandler::BinaryFormatEngineHandler(const ComponentIndex &index)
-    : d(new Private(index))
+BinaryFormatEngineHandler::BinaryFormatEngineHandler(const ResourceCollectionManager &manager)
+    : d(new Private(manager))
 {
     s_instance = this;
 }
 
 BinaryFormatEngineHandler::BinaryFormatEngineHandler(const BinaryFormatEngineHandler &other)
     : QAbstractFileEngineHandler()
-    , d(new Private(other.d->index))
+    , d(new Private(other.d->manager))
 {
     s_instance = this;
 }
@@ -82,48 +82,50 @@ BinaryFormatEngineHandler::~BinaryFormatEngineHandler()
     delete d;
 }
 
-void BinaryFormatEngineHandler::setComponentIndex(const ComponentIndex &index)
+void BinaryFormatEngineHandler::setResourceCollectionManager(const ResourceCollectionManager &manager)
 {
-    d->index = index;
+    d->manager = manager;
 }
 
 QAbstractFileEngine *BinaryFormatEngineHandler::create(const QString &fileName) const
 {
-    return fileName.startsWith(QLatin1String("installer://"), Qt::CaseInsensitive ) ? new BinaryFormatEngine(d->index, fileName) : 0;
+    return fileName.startsWith(QLatin1String("installer://"), Qt::CaseInsensitive )
+        ? new BinaryFormatEngine(d->manager, fileName) : 0;
 }
-    
+
+void BinaryFormatEngineHandler::reset()
+{
+    d->manager.reset();
+}
+
 BinaryFormatEngineHandler *BinaryFormatEngineHandler::instance()
 {
     return s_instance;
 }
-   
-void BinaryFormatEngineHandler::registerArchive(const QString &pathName, const QString &archive)
+
+void
+BinaryFormatEngineHandler::registerResource(const QString &fileName, const QString &resourcePath)
 {
     static const QChar sep = QChar::fromLatin1('/');
     static const QString prefix = QString::fromLatin1("installer://");
-    Q_ASSERT(pathName.toLower().startsWith(prefix));
+    Q_ASSERT(fileName.toLower().startsWith(prefix));
 
     // cut the prefix
-    QString path = pathName.mid(prefix.length());
+    QString path = fileName.mid(prefix.length());
     while (path.endsWith(sep))
         path.chop(1);
 
-    const QString comp = path.section(sep, 0, 0);
-    const QString archiveName = path.section(sep, 1, 1);
-    
-    Component c = d->index.componentByName(comp.toUtf8());
+    const QString coll = path.section(sep, 0, 0);
+    const QString resourceName = path.section(sep, 1, 1);
+
+    ResourceCollection c = d->manager.collectionByName(coll.toUtf8());
     if (c.name().isEmpty())
-        c.setName(comp.toUtf8());
+        c.setName(coll.toUtf8());
 
-    QSharedPointer<Archive> newArchive(new Archive(archive));
-    newArchive->setName(archiveName.toUtf8());
-    c.appendArchive(newArchive);
-    d->index.insertComponent(c);
+    QSharedPointer<Resource> resource(new Resource(resourcePath));
+    resource->setName(resourceName.toUtf8());
+    c.appendResource(resource);
+    d->manager.insertCollection(c);
 }
 
-void BinaryFormatEngineHandler::resetRegisteredArchives()
-{
-    QVector<QInstallerCreator::Component> registeredComponents = d->index.components();
-    foreach (const QInstallerCreator::Component &component, registeredComponents)
-        d->index.removeComponent(component.name());
-}
+} // namespace QInstaller

@@ -60,8 +60,6 @@
 
 #include <iostream>
 
-using namespace QInstallerCreator;
-
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
@@ -165,33 +163,38 @@ int main(int argc, char *argv[])
             performedOperations.append(op.take());
         }
 
-        // seek to the position of the component index
+        // seek to the position of the resource collections segment info
         const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
         const qint64 resourceSectionSize = resourceOffsetAndLengtSize * layout.resourceCount;
-        const qint64 offset = layout.endOfData - layout.indexSize - resourceSectionSize
+        qint64 offset = layout.endOfData - layout.indexSize - resourceSectionSize
             - resourceOffsetAndLengtSize;
-        if (!file->seek(offset))
-            throw QInstaller::Error(QLatin1String("Could not seek to read component index info."));
+        if (!file->seek(offset)) {
+            throw QInstaller::Error(QLatin1String("Could not seek to read the resource collection "
+                "segment info."));
+        }
 
-        const qint64 compIndexStart = QInstaller::retrieveInt64(file) + dataBlockStart;
-        if (!file->seek(compIndexStart))
-            throw QInstaller::Error(QLatin1String("Could not seek to start of component index."));
+        offset = QInstaller::retrieveInt64(file) + dataBlockStart;
+        if (!file->seek(offset)) {
+            throw QInstaller::Error(QLatin1String("Could not seek to start position of resource "
+                "collection block."));
+        }
 
-        // setup the component index
+        // setup the collection manager
         QSharedPointer<QFile> data(file);
-        ComponentIndex index = ComponentIndex::read(data, dataBlockStart);
+        QInstaller::ResourceCollectionManager manager;
+        manager.read(data, dataBlockStart);
 
         if (parser.isSet(dump)) {
             // To dump the content we do not need the binary format engine.
             if (layout.magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
                 throw QInstaller::Error(QLatin1String("Source file is not an installer."));
             BinaryDump bd;
-            return bd.dump(index, parser.value(dump));
+            return bd.dump(manager, parser.value(dump));
         }
 
         // setup the binary format engine
-        QScopedPointer<BinaryFormatEngineHandler> binaryFormatEngineHandler;
-        binaryFormatEngineHandler.reset(new BinaryFormatEngineHandler(index));
+        QScopedPointer<QInstaller::BinaryFormatEngineHandler> binaryFormatEngineHandler;
+        binaryFormatEngineHandler.reset(new QInstaller::BinaryFormatEngineHandler(manager));
 
         if (parser.isSet(run)) {
             OperationRunner runner(layout.magicMarker, performedOperations);

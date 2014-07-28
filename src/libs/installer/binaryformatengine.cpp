@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -41,8 +41,6 @@
 
 #include "binaryformatengine.h"
 
-using namespace QInstallerCreator;
-
 namespace {
 
 class StringListIterator : public QAbstractFileEngineIterator
@@ -80,11 +78,14 @@ private:
 
 } // anon namespace
 
-BinaryFormatEngine::BinaryFormatEngine(const ComponentIndex &index, const QString &fileName)
-    : m_index(index)
-    , m_hasComponent(false)
-    , m_hasArchive(false)
-    , m_archive(0)
+namespace QInstaller {
+
+BinaryFormatEngine::BinaryFormatEngine(const ResourceCollectionManager &manager,
+        const QString &fileName)
+    : m_manager(manager)
+    , m_hasCollection(false)
+    , m_hasResource(false)
+    , m_resource(0)
 {
     setArchive(fileName);
 }
@@ -107,14 +108,14 @@ void BinaryFormatEngine::setArchive(const QString &file)
         path.chop(1);
 
     QString arch;
-    const QString comp = path.section(sep, 0, 0);
-    m_hasComponent = !comp.isEmpty();
-    m_hasArchive = path.contains(sep);
-    if (m_hasArchive)
+    const QString coll = path.section(sep, 0, 0);
+    m_hasCollection = !coll.isEmpty();
+    m_hasResource = path.contains(sep);
+    if (m_hasResource)
         arch = path.section(sep, 1, 1);
 
-    m_component = m_index.componentByName(comp.toUtf8());
-    m_archive = m_component.archiveByName(arch.toUtf8());
+    m_collection = m_manager.collectionByName(coll.toUtf8());
+    m_resource = m_collection.resourceByName(arch.toUtf8());
 }
 
 /**
@@ -130,20 +131,20 @@ void BinaryFormatEngine::setFileName(const QString &file)
  */
 bool BinaryFormatEngine::close()
 {
-    if (m_archive == 0)
+    if (m_resource == 0)
         return false;
 
-    const bool result = m_archive->isOpen();
-    m_archive->close();
+    const bool result = m_resource->isOpen();
+    m_resource->close();
     return result;
 }
 
 /**
  * \reimp
  */
-bool BinaryFormatEngine::open(QIODevice::OpenMode mode)
+bool BinaryFormatEngine::open(QIODevice::OpenMode /*mode*/)
 {
-    return m_archive == 0 ? false : m_archive->open(mode);
+    return m_resource == 0 ? false : m_resource->open();
 }
 
 /**
@@ -151,7 +152,7 @@ bool BinaryFormatEngine::open(QIODevice::OpenMode mode)
  */
 qint64 BinaryFormatEngine::pos() const
 {
-    return m_archive == 0 ? 0 : m_archive->pos();
+    return m_resource == 0 ? 0 : m_resource->pos();
 }
 
 /**
@@ -159,7 +160,7 @@ qint64 BinaryFormatEngine::pos() const
  */
 qint64 BinaryFormatEngine::read(char *data, qint64 maxlen)
 {
-    return m_archive == 0 ? -1 : m_archive->read(data, maxlen);
+    return m_resource == 0 ? -1 : m_resource->read(data, maxlen);
 }
 
 /**
@@ -167,7 +168,7 @@ qint64 BinaryFormatEngine::read(char *data, qint64 maxlen)
  */
 bool BinaryFormatEngine::seek(qint64 offset)
 {
-    return m_archive == 0 ? false : m_archive->seek(offset);
+    return m_resource == 0 ? false : m_resource->seek(offset);
 }
 
 /**
@@ -233,13 +234,13 @@ bool BinaryFormatEngine::copy(const QString &newName)
 QAbstractFileEngine::FileFlags BinaryFormatEngine::fileFlags(FileFlags type) const
 {
     FileFlags result;
-    if ((type & FileType) && m_archive != 0)
+    if ((type & FileType) && m_resource != 0)
         result |= FileType;
-    if ((type & DirectoryType) && !m_hasArchive)
+    if ((type & DirectoryType) && !m_hasResource)
         result |= DirectoryType;
-    if ((type & ExistsFlag) && m_hasArchive && m_archive != 0)
+    if ((type & ExistsFlag) && m_hasResource && m_resource != 0)
         result |= ExistsFlag;
-    if ((type & ExistsFlag) && !m_hasArchive && !m_component.name().isEmpty())
+    if ((type & ExistsFlag) && !m_hasResource && !m_collection.name().isEmpty())
         result |= ExistsFlag;
 
     return result;
@@ -259,20 +260,17 @@ QAbstractFileEngineIterator *BinaryFormatEngine::beginEntryList(QDir::Filters fi
  */
 QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringList &filterNames) const
 {
-    if (m_hasArchive)
+    if (m_hasResource)
         return QStringList();
-    
-    QStringList result;
 
-    if (m_hasComponent && (filters & QDir::Files)) {
-        const QVector< QSharedPointer<Archive> > archives = m_component.archives();
-        foreach (const QSharedPointer<Archive> &i, archives)
-            result.push_back(QString::fromUtf8(i->name()));
+    QStringList result;
+    if (m_hasCollection && (filters & QDir::Files)) {
+        foreach (const QSharedPointer<Resource> &resource, m_collection.resources())
+            result.push_back(QString::fromUtf8(resource->name()));
     }
-    else if (!m_hasComponent && (filters & QDir::Dirs)) {
-        const QVector<Component> components = m_index.components();
-        foreach (const Component &i, components)
-            result.push_back(QString::fromUtf8(i.name()));
+    else if (!m_hasCollection && (filters & QDir::Dirs)) {
+        foreach (const ResourceCollection &collection, m_manager.collections())
+            result.push_back(QString::fromUtf8(collection.name()));
     }
 
     if (filterNames.isEmpty())
@@ -296,11 +294,13 @@ QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringLi
 
     return entries;
 }
- 
+
 /**
  * \reimp
  */
 qint64 BinaryFormatEngine::size() const
 {
-    return m_archive == 0 ? 0 : m_archive->size();
+    return m_resource == 0 ? 0 : m_resource->size();
 }
+
+} // namespace QInstaller

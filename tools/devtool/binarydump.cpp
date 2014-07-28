@@ -50,7 +50,7 @@
 
 #include <iostream>
 
-int BinaryDump::dump(const QInstallerCreator::ComponentIndex &index, const QString &target)
+int BinaryDump::dump(const QInstaller::ResourceCollectionManager &manager, const QString &target)
 {
     QDir targetDir(QFileInfo(target).absoluteFilePath());
     if (targetDir.exists()) {
@@ -121,20 +121,18 @@ int BinaryDump::dump(const QInstallerCreator::ComponentIndex &index, const QStri
                 continue;
 
             const QString fileName = it.fileName();
-            QInstallerCreator::Component c = index.componentByName(fileName.toUtf8());
-            if (c.archives().count() <= 0)
+            const QInstaller::ResourceCollection c = manager.collectionByName(fileName.toUtf8());
+            if (c.resources().count() <= 0)
                 continue;
 
-            typedef QSharedPointer<QInstallerCreator::Archive> Archive;
-            QVector<Archive> archives = c.archives();
-            foreach (const Archive &archive, archives) {
-                if (!archive->open(QIODevice::ReadOnly))
+            foreach (const QSharedPointer<QInstaller::Resource> &resource, c.resources()) {
+                if (!resource->open())
                     continue;   // TODO: should we throw here?
 
                 QFile target(targetDir.filePath(fileName) + QDir::separator()
-                    + QString::fromUtf8(archive->name()));
+                    + QString::fromUtf8(resource->name()));
                 QInstaller::openForWrite(&target);
-                archive->copyData(&target); // copy the 7z files into the target directory
+                resource->copyData(&target); // copy the 7z files into the target directory
             }
         }
         result = EXIT_SUCCESS;

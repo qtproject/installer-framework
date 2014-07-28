@@ -267,8 +267,8 @@ bool CreateLocalRepositoryOperation::performOperation()
 
         const qint64 dataBlockStart = bl.endOfData - bl.dataBlockSize;
         file->seek(QInstaller::retrieveInt64(file.data()) + dataBlockStart);
-        QInstallerCreator::ComponentIndex componentIndex = QInstallerCreator::ComponentIndex::read(file,
-            dataBlockStart);
+        ResourceCollectionManager manager;
+        manager.read(file, dataBlockStart);
 
         QDirIterator it(repoPath, QDirIterator::Subdirectories);
         while (it.hasNext() && !it.next().isEmpty()) {
@@ -285,19 +285,17 @@ bool CreateLocalRepositoryOperation::performOperation()
                 }
 
                 // copy the 7z files that are inside the component index into the target
-                QInstallerCreator::Component c = componentIndex.componentByName(fileName.toUtf8());
-                if (c.archives().count()) {
-                    QVector<QSharedPointer<QInstallerCreator::Archive> > archives = c.archives();
-                    foreach (const QSharedPointer<QInstallerCreator::Archive> &a, archives) {
-                        if (!a->open(QIODevice::ReadOnly))
-                            continue;
+                const ResourceCollection collection = manager.collectionByName(fileName.toUtf8());
+                foreach (const QSharedPointer<Resource> &resource, collection.resources()) {
+                    if (!resource->open())
+                        continue;
 
-                        QFile target(absoluteTargetPath + QDir::separator() + QString::fromUtf8(a->name()));
-                        QInstaller::openForWrite(&target);
-                        a->copyData(&target);
-                        helper.m_files.prepend(target.fileName());
-                        emit outputTextChanged(helper.m_files.first());
-                    }
+                    QFile target(absoluteTargetPath + QDir::separator()
+                        + QString::fromUtf8(resource->name()));
+                    QInstaller::openForWrite(&target);
+                    resource->copyData(&target);
+                    helper.m_files.prepend(target.fileName());
+                    emit outputTextChanged(helper.m_files.first());
                 }
             }
         }

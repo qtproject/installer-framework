@@ -45,43 +45,93 @@
 #include "fileio.h"
 
 #include <QFileInfo>
+#include <QFlags>
+#include <QUuid>
 
-namespace QInstallerCreator {
+namespace QInstaller {
 
 /*!
-    \class Archive
-    \brief The Archive class provides an interface for reading from an underlying device.
+    \class Resource
+    \brief The Resource class provides an interface for reading from an underlying device.
 
-    Archive is an interface for reading inside a binary file, but is not supposed to write to
-    the binary it wraps. The Archive class is created by either passing a path to an already
-    zipped archive or by passing an identifier and segment inside an already existing binary,
-    passed as device.
+    Resource is an interface for reading inside a device, but is not supposed to write to the
+    the device it wraps. The resource class is created by either passing a path to an already
+    existing binary (e.g. a zipped archive, a Qt Resource file etc.) or by passing an name and
+    segment inside an already existing QIODevice, passed as device.
 
-    The archive name can be set at any time using setName(). The segment passed inside the
-    constructor represents the offset and size of the archive inside the binary file.
+    The resource name can be set at any time using setName(). The segment passed inside the
+    constructor represents the offset and size of the resource inside the device.
 */
 
 /*!
-    Creates an archive providing the data in \a path.
+    Creates a resource providing the data in \a path.
+
+    \sa open()
  */
-Archive::Archive(const QString &path)
+Resource::Resource(const QString &path)
     : m_device(0)
     , m_name(QFileInfo(path).fileName().toUtf8())
+    , m_deviceOpened(false)
 {
     m_inputFile.setFileName(path);
+    m_segment = Range<qint64>::fromStartAndLength(0, m_inputFile.size());
 }
 
 /*!
-    Creates an archive identified by \a identifier providing a data \a segment within a \a device.
- */
-Archive::Archive(const QByteArray &identifier, const QSharedPointer<QFile> &device, const Range<qint64> &segment)
+    Creates a resource identified by \a name providing the data in \a path.
+
+    \sa open()
+*/
+Resource::Resource(const QByteArray &name, const QString &path)
+    : m_device(0)
+    , m_name(name)
+    , m_deviceOpened(false)
+{
+    m_inputFile.setFileName(path);
+    m_segment = Range<qint64>::fromStartAndLength(0, m_inputFile.size());
+}
+
+/*!
+    Creates a resource providing the data in a \a device.
+
+    \sa open()
+*/
+Resource::Resource(const QSharedPointer<QIODevice> &device)
     : m_device(device)
-    , m_segment(segment)
-    , m_name(identifier)
+    , m_segment(Range<qint64>::fromStartAndLength(0, device->size()))
+    , m_name(QUuid::createUuid().toByteArray())
+    , m_deviceOpened(false)
 {
 }
 
-Archive::~Archive()
+/*!
+    Creates a resource providing a data \a segment within a \a device.
+
+    \sa open()
+*/
+Resource::Resource(const QSharedPointer<QIODevice> &device, const Range<qint64> &segment)
+    : m_device(device)
+    , m_segment(segment)
+    , m_name(QUuid::createUuid().toByteArray())
+    , m_deviceOpened(false)
+{
+}
+
+/*!
+    Creates a resource identified by \a  name providing a data \a segment within a \a device.
+
+    \sa open()
+ */
+Resource::Resource(const QByteArray &name, const QSharedPointer<QIODevice> &device,
+        const Range<qint64> &segment)
+    : m_device(device)
+    , m_segment(segment)
+    , m_name(name)
+    , m_deviceOpened(false)
+{
+}
+
+Resource::~Resource()
 {
     if (isOpen())
         close();
@@ -90,72 +140,80 @@ Archive::~Archive()
 /*!
     \reimp
  */
-bool Archive::seek(qint64 pos)
+bool Resource::seek(qint64 pos)
 {
     if (m_inputFile.isOpen())
         return m_inputFile.seek(pos) && QIODevice::seek(pos);
     return QIODevice::seek(pos);
 }
 
-QByteArray Archive::name() const
+QByteArray Resource::name() const
 {
     return m_name;
 }
 
-void Archive::setName(const QByteArray &name)
+void Resource::setName(const QByteArray &name)
 {
     m_name = name;
 }
 
 /*!
-    \reimpl
+    A Resource will always be opened in QIODevice::ReadOnly mode. The function will return true
+    if successful.
+*/
+bool Resource::open()
+{
+    if (isOpen())
+        return false;
+
+    if (m_device.isNull()) {
+        if (!m_inputFile.open(QIODevice::ReadOnly)) {
+            setErrorString(m_inputFile.errorString());
+            return false;
+        }
+        return open(QIODevice::ReadOnly);
+    }
+
+    if (m_device->isOpen()) {
+        if (!QFlags<QIODevice::OpenModeFlag>(m_device->openMode()).testFlag(QIODevice::ReadOnly)) {
+            setErrorString(tr("Could not open the underlying device. Already opened write only."));
+            return false;
+        }
+        return open(QIODevice::ReadOnly);
+    }
+
+    m_deviceOpened = m_device->open(QIODevice::ReadOnly);
+    if (!m_deviceOpened) {
+        setErrorString(m_device->errorString());
+        return false;
+    }
+    return open(QIODevice::ReadOnly);
+}
+/*!
+    \reimp
  */
-void Archive::close()
+void Resource::close()
 {
     m_inputFile.close();
+    if (!m_device.isNull() && m_deviceOpened) {
+        m_device->close();
+        m_deviceOpened = false;
+    }
     QIODevice::close();
 }
 
 /*!
     \reimp
  */
-bool Archive::open(OpenMode mode)
+qint64 Resource::size() const
 {
-    if (isOpen())
-        return false;
-
-    const bool writeOnly = (mode & QIODevice::WriteOnly) != QIODevice::NotOpen;
-    const bool append = (mode & QIODevice::Append) != QIODevice::NotOpen;
-
-    // no write support
-    if (writeOnly || append)
-        return false;
-
-    if (m_device != 0)
-        return QIODevice::open(mode);
-
-    if (!m_inputFile.open(mode)) {
-        setErrorString(m_inputFile.errorString());
-        return false;
-    }
-    setOpenMode(mode);
-    return true;
+    return m_segment.length();
 }
 
 /*!
     \reimp
  */
-qint64 Archive::size() const
-{
-    if (m_device != 0)
-        return m_segment.length();
-    return m_inputFile.size();
-}
-
-/*!
-    \reimp
- */
-qint64 Archive::readData(char* data, qint64 maxSize)
+qint64 Resource::readData(char* data, qint64 maxSize)
 {
     if (m_device == 0)
         return m_inputFile.read(data, maxSize);
@@ -170,7 +228,7 @@ qint64 Archive::readData(char* data, qint64 maxSize)
 /*!
     \reimp
  */
-qint64 Archive::writeData(const char* data, qint64 maxSize)
+qint64 Resource::writeData(const char* data, qint64 maxSize)
 {
     Q_UNUSED(data);
     Q_UNUSED(maxSize);
@@ -178,84 +236,79 @@ qint64 Archive::writeData(const char* data, qint64 maxSize)
     return -1;
 }
 
-void Archive::copyData(Archive *archive, QFileDevice *out)
+void Resource::copyData(Resource *resource, QFileDevice *out)
 {
-    qint64 left = archive->size();
+    qint64 left = resource->size();
     char data[4096];
     while (left > 0) {
         const qint64 len = qMin<qint64>(left, 4096);
-        const qint64 bytesRead = archive->read(data, len);
+        const qint64 bytesRead = resource->read(data, len);
         if (bytesRead != len) {
-            throw QInstaller::Error(tr("Read failed after % 1 bytes: % 2")
-                .arg(QString::number(archive->size() - left), archive->errorString()));
+            throw QInstaller::Error(tr("Read failed after %1 bytes: %2")
+                .arg(QString::number(resource->size() - left), resource->errorString()));
         }
         const qint64 bytesWritten = out->write(data, len);
         if (bytesWritten != len) {
-            throw QInstaller::Error(tr("Write failed after % 1 bytes: % 2")
-                .arg(QString::number(archive->size() - left), out->errorString()));
+            throw QInstaller::Error(tr("Write failed after %1 bytes: %2")
+                .arg(QString::number(resource->size() - left), out->errorString()));
         }
         left -= len;
     }
 }
 
 
-// -- Component
+/*!
+    \class ResourceCollection
+    \brief A Resource Collection is an abstraction that groups together a number of resources.
 
-QByteArray Component::name() const
+    The resources are supposed to be sequential, so the collection keeps them ordered once a new
+    resource is added.
+
+    The resources collection can be written to and read from a QFileDevice. The resource
+    collection name can be set at any time using setName().
+*/
+
+ResourceCollection::ResourceCollection(const QByteArray &name)
+    : m_name(name)
+{
+}
+
+QByteArray ResourceCollection::name() const
 {
     return m_name;
 }
 
-void Component::setName(const QByteArray &ba)
+void ResourceCollection::setName(const QByteArray &ba)
 {
     m_name = ba;
 }
 
-Component Component::readFromIndexEntry(const QSharedPointer<QFile> &in, qint64 offset)
-{
-    Component c;
-    c.m_name = QInstaller::retrieveByteArray(in.data());
-    c.m_binarySegment = QInstaller::retrieveInt64Range(in.data()).moved(offset);
-
-    c.readData(in, offset);
-
-    return c;
-}
-
-void Component::writeIndexEntry(QFileDevice *out, qint64 positionOffset) const
-{
-    QInstaller::appendByteArray(out, m_name);
-    m_binarySegment.moved(positionOffset);
-    QInstaller::appendInt64(out, m_binarySegment.start());
-    QInstaller::appendInt64(out, m_binarySegment.length());
-}
-
-void Component::writeData(QFileDevice *out, qint64 offset) const
+void ResourceCollection::write(QFileDevice *out, qint64 offset) const
 {
     const qint64 dataBegin = out->pos();
 
-    QInstaller::appendInt64(out, m_archives.count());
+    QInstaller::appendInt64(out, m_resources.count());
 
     qint64 start = out->pos() + offset;
 
     // Why 16 + 16? This is 24, not 32???
     const int foo = 3 * sizeof(qint64);
-    // add 16 + 16 + number of name characters for each archive (the size of the table)
-    foreach (const QSharedPointer<Archive> &archive, m_archives)
-        start += foo + archive->name().count();
+    // add 16 + 16 + number of name characters for each resource (the size of the table)
+    foreach (const QSharedPointer<Resource> &resource, m_resources)
+        start += foo + resource->name().count();
 
     QList<qint64> starts;
-    foreach (const QSharedPointer<Archive> &archive, m_archives) {
-        QInstaller::appendByteArray(out, archive->name());
+    foreach (const QSharedPointer<Resource> &resource, m_resources) {
+        QInstaller::appendByteArray(out, resource->name());
         starts.push_back(start);
-        QInstaller::appendInt64Range(out, Range<qint64>::fromStartAndLength(start, archive->size()));
-        start += archive->size();
+        QInstaller::appendInt64Range(out, Range<qint64>::fromStartAndLength(start, resource->size()));
+        start += resource->size();
     }
 
-    foreach (const QSharedPointer<Archive> &archive, m_archives) {
-        if (!archive->open(QIODevice::ReadOnly)) {
-            throw QInstaller::Error(tr("Could not open archive %1: %2")
-                .arg(QString::fromUtf8(archive->name()), archive->errorString()));
+    foreach (const QSharedPointer<Resource> &resource, m_resources) {
+        if (!resource->open()) {
+            throw QInstaller::Error(tr("Could not open resource %1: %2")
+                .arg(QString::fromUtf8(resource->name()), resource->errorString()));
         }
 
         const qint64 expectedStart = starts.takeFirst();
@@ -263,129 +316,157 @@ void Component::writeData(QFileDevice *out, qint64 offset) const
         Q_UNUSED(expectedStart);
         Q_UNUSED(actualStart);
         Q_ASSERT(expectedStart == actualStart);
-        archive->copyData(out);
+        resource->copyData(out);
     }
 
-    m_binarySegment = Range<qint64>::fromStartAndEnd(dataBegin, out->pos()).moved(offset);
+    m_segment = Range<qint64>::fromStartAndEnd(dataBegin, out->pos()).moved(offset);
 }
 
-void Component::readData(const QSharedPointer<QFile> &in, qint64 offset)
+void ResourceCollection::read(const QSharedPointer<QFile> &in, qint64 offset)
 {
     const qint64 pos = in->pos();
 
-    in->seek(m_binarySegment.start());
+    in->seek(m_segment.start());
     const qint64 count = QInstaller::retrieveInt64(in.data());
 
-    QVector<QByteArray> names;
-    QVector<Range<qint64> > ranges;
+    QList<QByteArray> names;
+    QList<Range<qint64> > ranges;
     for (int i = 0; i < count; ++i) {
         names.push_back(QInstaller::retrieveByteArray(in.data()));
         ranges.push_back(QInstaller::retrieveInt64Range(in.data()).moved(offset));
     }
 
     for (int i = 0; i < ranges.count(); ++i)
-        m_archives.append(QSharedPointer<Archive>(new Archive(names.at(i), in, ranges.at(i))));
+        m_resources.append(QSharedPointer<Resource>(new Resource(names.at(i), in, ranges.at(i))));
 
     in->seek(pos);
 }
 
-bool Component::operator<(const Component& other) const
+bool ResourceCollection::operator<(const ResourceCollection& other) const
 {
     if (m_name != other.name())
         return m_name < other.m_name;
-    return m_binarySegment < other.m_binarySegment;
+    return m_segment < other.m_segment;
 }
 
-bool Component::operator==(const Component& other) const
+bool ResourceCollection::operator==(const ResourceCollection& other) const
 {
-    return m_name == other.m_name && m_binarySegment == other.m_binarySegment;
-}
-
-/*!
-    Appends \a archive to this component. The component takes ownership of \a archive.
- */
-void Component::appendArchive(const QSharedPointer<Archive>& archive)
-{
-    Q_ASSERT(archive);
-    archive->setParent(0);
-    m_archives.push_back(archive);
+    return m_name == other.m_name && m_segment == other.m_segment;
 }
 
 /*!
-    Returns the archives associated with this component.
+    Appends \a resource to this collection. The collection takes ownership of \a resource.
  */
-QVector<QSharedPointer<Archive> > Component::archives() const
+void ResourceCollection::appendResource(const QSharedPointer<Resource>& resource)
 {
-    return m_archives;
+    Q_ASSERT(resource);
+    resource->setParent(0);
+    m_resources.push_back(resource);
 }
 
-QSharedPointer<Archive> Component::archiveByName(const QByteArray &name) const
+void ResourceCollection::appendResources(const QList<QSharedPointer<Resource> > &resources)
 {
-    foreach (const QSharedPointer<Archive>& i, m_archives) {
+    foreach (const QSharedPointer<Resource> &resource, resources)
+        appendResource(resource);
+}
+
+/*!
+    Returns the resources associated with this component.
+ */
+QList<QSharedPointer<Resource> > ResourceCollection::resources() const
+{
+    return m_resources;
+}
+
+QSharedPointer<Resource> ResourceCollection::resourceByName(const QByteArray &name) const
+{
+    foreach (const QSharedPointer<Resource>& i, m_resources) {
         if (i->name() == name)
             return i;
     }
-    return QSharedPointer<Archive>();
+    return QSharedPointer<Resource>();
 }
 
 
-// -- ComponentIndex
+/*!
+    \class ResourceCollectionManager
+    \brief A Resource Collection Manager is an abstraction that groups together a number of
+    resource collections.
 
-ComponentIndex::ComponentIndex()
-{
-}
+    The resources collections can be written to and read from a QFileDevice.
+*/
 
-ComponentIndex ComponentIndex::read(const QSharedPointer<QFile> &dev, qint64 offset)
+void  ResourceCollectionManager::read(const QSharedPointer<QFile> &dev, qint64 offset)
 {
-    ComponentIndex result;
     const qint64 size = QInstaller::retrieveInt64(dev.data());
     for (int i = 0; i < size; ++i)
-        result.insertComponent(Component::readFromIndexEntry(dev, offset));
+        insertCollection(readIndexEntry(dev, offset));
     QInstaller::retrieveInt64(dev.data());
-    return result;
 }
 
-void ComponentIndex::writeIndex(QFileDevice *out, qint64 offset) const
+Range<qint64> ResourceCollectionManager::write(QFileDevice *out, qint64 offset) const
 {
+    QInstaller::appendInt64(out, collectionCount());
+    foreach (const ResourceCollection &collection, m_collections)
+        collection.write(out, offset);
+
+    const qint64 start = out->pos();
+
     // Q: why do we write the size twice?
     // A: for us to be able to read it beginning from the end of the file as well
-    QInstaller::appendInt64(out, componentCount());
-    foreach (const Component& i, components())
-        i.writeIndexEntry(out, offset);
-    QInstaller::appendInt64(out, componentCount());
+    QInstaller::appendInt64(out, collectionCount());
+    foreach (const ResourceCollection &collection, m_collections)
+        writeIndexEntry(collection, out);
+    QInstaller::appendInt64(out, collectionCount());
+
+    return Range<qint64>::fromStartAndEnd(start, out->pos());
 }
 
-void ComponentIndex::writeComponentData(QFileDevice *out, qint64 offset) const
+ResourceCollection ResourceCollectionManager::collectionByName(const QByteArray &name) const
 {
-    QInstaller::appendInt64(out, componentCount());
-
-    foreach (const Component &component, m_components)
-        component.writeData(out, offset);
+    return m_collections.value(name);
 }
 
-Component ComponentIndex::componentByName(const QByteArray &id) const
+void ResourceCollectionManager::insertCollection(const ResourceCollection& collection)
 {
-    return m_components.value(id);
+    m_collections.insert(collection.name(), collection);
 }
 
-void ComponentIndex::insertComponent(const Component& c)
+void ResourceCollectionManager::removeCollection(const QByteArray &name)
 {
-    m_components.insert(c.name(), c);
+    m_collections.remove(name);
 }
 
-void ComponentIndex::removeComponent(const QByteArray &name)
+QList<ResourceCollection> ResourceCollectionManager::collections() const
 {
-    m_components.remove(name);
+    return m_collections.values();
 }
 
-QVector<Component> ComponentIndex::components() const
+void ResourceCollectionManager::reset()
 {
-    return m_components.values().toVector();
+    m_collections.clear();
 }
 
-int ComponentIndex::componentCount() const
+int ResourceCollectionManager::collectionCount() const
 {
-    return m_components.size();
+    return m_collections.size();
 }
 
-} // namespace QInstallerCreator
+void ResourceCollectionManager::writeIndexEntry(const ResourceCollection &collection,
+    QFileDevice *dev) const
+{
+    QInstaller::appendByteArray(dev, collection.name());
+    QInstaller::appendInt64Range(dev, collection.segment());
+}
+
+ResourceCollection ResourceCollectionManager::readIndexEntry(const QSharedPointer<QFile> &in,
+    qint64 offset)
+{
+    ResourceCollection c(QInstaller::retrieveByteArray(in.data()));
+    c.setSegment(QInstaller::retrieveInt64Range(in.data()).moved(offset));
+    c.read(in, offset);
+
+    return c;
+}
+
+} // namespace QInstaller
