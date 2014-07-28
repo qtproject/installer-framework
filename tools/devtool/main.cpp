@@ -192,9 +192,8 @@ int main(int argc, char *argv[])
             return bd.dump(manager, parser.value(dump));
         }
 
-        // setup the binary format engine
-        QInstaller::BinaryFormatEngineHandler binaryFormatEngineHandler;
-        binaryFormatEngineHandler.registerResources(manager.collections());
+        QInstaller::BinaryFormatEngineHandler::instance()->registerResources(manager
+            .collections());    // setup the binary format engine
 
         if (parser.isSet(run)) {
             OperationRunner runner(layout.magicMarker, performedOperations);

@@ -46,26 +46,6 @@
 
 namespace QInstaller {
 
-static BinaryFormatEngineHandler *s_instance = 0;
-
-BinaryFormatEngineHandler::BinaryFormatEngineHandler()
-{
-    s_instance = this;
-}
-
-BinaryFormatEngineHandler::BinaryFormatEngineHandler(const BinaryFormatEngineHandler &other)
-    : QAbstractFileEngineHandler()
-{
-    Q_UNUSED(other)
-    s_instance = this;
-}
-
-BinaryFormatEngineHandler::~BinaryFormatEngineHandler()
-{
-    if (s_instance == this)
-        s_instance = 0;
-}
-
 QAbstractFileEngine *BinaryFormatEngineHandler::create(const QString &fileName) const
 {
     return fileName.startsWith(QLatin1String("installer://"), Qt::CaseInsensitive )
@@ -79,7 +59,8 @@ void BinaryFormatEngineHandler::reset()
 
 BinaryFormatEngineHandler *BinaryFormatEngineHandler::instance()
 {
-    return s_instance;
+    static BinaryFormatEngineHandler instance;
+    return &instance;
 }
 
 void BinaryFormatEngineHandler::registerResources(const QList<ResourceCollection> &collections)

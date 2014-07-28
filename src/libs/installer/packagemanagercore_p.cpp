@@ -385,8 +385,8 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
 void PackageManagerCorePrivate::cleanUpComponentEnvironment()
 {
-    // clean up already downloaded data, don't reset registered archives in offline installer case
-    if (BinaryFormatEngineHandler::instance() && !m_core->isInstaller())
+    // clean up registered (downloaded) data
+    if (m_core->isUpdater() || m_core->isPackageManager())
         BinaryFormatEngineHandler::instance()->reset();
 
     // there could be still some references to already deleted components,

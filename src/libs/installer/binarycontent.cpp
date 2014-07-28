@@ -145,8 +145,6 @@ public:
 
     QVector<QByteArray> m_resourceMappings;
     QVector<Range<qint64> > m_metadataResourceSegments;
-
-    BinaryFormatEngineHandler m_binaryFormatEngineHandler;
 };
 
 
@@ -174,7 +172,6 @@ BinaryContent::Private::Private(const Private &other)
     , m_performedOperationsData(other.m_performedOperationsData)
     , m_resourceMappings(other.m_resourceMappings)
     , m_metadataResourceSegments(other.m_metadataResourceSegments)
-    , m_binaryFormatEngineHandler(other.m_binaryFormatEngineHandler)
 {}
 
 BinaryContent::Private::~Private()
@@ -411,7 +408,7 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
 
     ResourceCollectionManager collectionManager;
     collectionManager.read(file, dataBlockStart);
-    content.d->m_binaryFormatEngineHandler.registerResources(collectionManager.collections());
+    BinaryFormatEngineHandler::instance()->registerResources(collectionManager.collections());
 
     if (!QInstaller::isVerbose())
         return;

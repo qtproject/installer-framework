@@ -50,11 +50,9 @@ namespace QInstaller {
 
 class INSTALLER_EXPORT BinaryFormatEngineHandler : public QAbstractFileEngineHandler
 {
-public:
-    BinaryFormatEngineHandler();
-    BinaryFormatEngineHandler(const BinaryFormatEngineHandler &other);
-    ~BinaryFormatEngineHandler();
+    Q_DISABLE_COPY(BinaryFormatEngineHandler)
 
+public:
     QAbstractFileEngine *create(const QString &fileName) const;
 
     void reset();
@@ -62,6 +60,10 @@ public:
 
     void registerResources(const QList<ResourceCollection> &collections);
     void registerResource(const QString &fileName, const QString &resourcePath);
+
+private:
+    BinaryFormatEngineHandler() {}
+    ~BinaryFormatEngineHandler() {}
 
 private:
     QHash<QByteArray, ResourceCollection> m_resources;
