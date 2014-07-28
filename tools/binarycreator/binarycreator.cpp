@@ -65,13 +65,8 @@ using namespace QInstaller;
 struct Input {
     QString outputPath;
     QString installerExePath;
-    ResourceCollectionManager collectionManager;
-    QString binaryResourcePath;
-    QStringList binaryResources;
-
-    Range<qint64> operationsPos;
-    QVector<Range<qint64> > resourcePos;
-    Range<qint64> resourceCollectionsSegment;
+    QInstallerTools::PackageInfoVector packages;
+    QInstaller::ResourceCollection metaCollection;
 };
 
 class BundleBackup
@@ -220,8 +215,8 @@ static int assemble(Input input, const QInstaller::Settings &settings)
 
     QFile instExe(input.installerExePath);
     if (!instExe.copy(tempFile)) {
-        throw Error(QString::fromLatin1("Could not copy %1 to %2: %3").arg(instExe.fileName(), tempFile,
-            instExe.errorString()));
+        throw Error(QString::fromLatin1("Could not copy %1 to %2: %3").arg(instExe.fileName(),
+            tempFile, instExe.errorString()));
     }
 
     QtPatch::patchBinaryFile(tempFile, QByteArray("MY_InstallerCreateDateTime_MY"),
@@ -255,7 +250,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
     }
 #endif
 
-    QTemporaryFile out;
+    QSharedPointer<QTemporaryFile> out(new QTemporaryFile);
     QString targetName = input.outputPath;
 #ifdef Q_OS_OSX
     QDir resourcePath(QFileInfo(input.outputPath).dir());
@@ -275,7 +270,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
     }
 
     try {
-        QInstaller::openForWrite(&out);
+        QInstaller::openForWrite(out.data());
         QFile exe(input.installerExePath);
 
 #ifdef Q_OS_OSX
@@ -285,68 +280,43 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         }
 #else
         QInstaller::openForRead(&exe);
-        QInstaller::appendData(&out, &exe, exe.size());
+        QInstaller::appendData(out.data(), &exe, exe.size());
 #endif
 
-        const qint64 dataBlockStart = out.pos();
-        qDebug() << "Data block starts at" << dataBlockStart;
+        QInstaller::ResourceCollectionManager manager;
+        foreach (const QInstallerTools::PackageInfo &info, input.packages) {
+            QInstaller::ResourceCollection collection;
+            collection.setName(info.name.toUtf8());
 
-        // append our self created resource file
-        QFile res(input.binaryResourcePath);
-        QInstaller::openForRead(&res);
-        QInstaller::appendData(&out, &res, res.size());
-        input.resourcePos.append(Range<qint64>::fromStartAndEnd(out.pos() - res.size(), out.pos())
-            .moved(-dataBlockStart));
-
-        // append given resource files
-        foreach (const QString &resource, input.binaryResources) {
-            QFile res(resource);
-            QInstaller::openForRead(&res);
-            QInstaller::appendData(&out, &res, res.size());
-            input.resourcePos.append(Range<qint64>::fromStartAndEnd(out.pos() - res.size(), out.pos())
-                .moved(-dataBlockStart));
+            qDebug() << "Creating resource archive for" << info.name;
+            foreach (const QString &file, info.copiedFiles) {
+                const QSharedPointer<Resource> resource(new Resource(file));
+                qDebug() << QString::fromLatin1("Appending %1 (%2)").arg(file,
+                    humanReadableSize(resource->size()));
+                collection.appendResource(resource);
+            }
+            manager.insertCollection(collection);
         }
 
-        // zero operations cause we are not the maintenance tool
-        const qint64 operationsStart = out.pos();
-        QInstaller::appendInt64(&out, 0);   // operation count
-        QInstaller::appendInt64(&out, 0);   // operation count
-        input.operationsPos = Range<qint64>::fromStartAndEnd(operationsStart, out.pos())
-            .moved(-dataBlockStart);
-
-        // write out every resource collections data and index
-        input.resourceCollectionsSegment = input.collectionManager.write(&out, -dataBlockStart)
-            .moved(-dataBlockStart);
-
-        qDebug("Resource collections segment index: [%llu:%llu]", input.resourceCollectionsSegment
-            .start(), input.resourceCollectionsSegment.end());
-        QInstaller::appendInt64Range(&out, input.resourceCollectionsSegment);
-        foreach (const Range<qint64> &range, input.resourcePos)
-            QInstaller::appendInt64Range(&out, range);
-        QInstaller::appendInt64Range(&out, input.operationsPos);
-        QInstaller::appendInt64(&out, input.resourcePos.count());
-
-        //data block size, from end of .exe to end of file
-        QInstaller::appendInt64(&out, out.pos() + 3 * sizeof(qint64) -dataBlockStart);
-        QInstaller::appendInt64(&out, BinaryContent::MagicInstallerMarker);
-        QInstaller::appendInt64(&out, BinaryContent::MagicCookie);
-
+        const QList<QInstaller::OperationBlob> operations;
+        BinaryContent::writeBinaryContent(out, input.metaCollection, operations, manager,
+            BinaryContent::MagicInstallerMarker, BinaryContent::MagicCookie);
     } catch (const Error &e) {
         qCritical("Error occurred while assembling the installer: %s", qPrintable(e.message()));
         QFile::remove(tempFile);
         return EXIT_FAILURE;
     }
 
-    if (!out.rename(targetName)) {
+    if (!out->rename(targetName)) {
         qCritical("Could not write installer to %s: %s", targetName.toUtf8().constData(),
-            out.errorString().toUtf8().constData());
+            out->errorString().toUtf8().constData());
         QFile::remove(tempFile);
         return EXIT_FAILURE;
     }
-    out.setAutoRemove(false);
+    out->setAutoRemove(false);
 
 #ifndef Q_OS_WIN
-    chmod755(out.fileName());
+    chmod755(out->fileName());
 #endif
     QFile::remove(tempFile);
 
@@ -409,7 +379,8 @@ private:
     const QString oldPath;
 };
 
-static QString createBinaryResourceFile(const QString &directory, const QString &binaryName)
+static QSharedPointer<QInstaller::Resource> createDefaultResourceFile(const QString &directory,
+    const QString &binaryName)
 {
     QTemporaryFile projectFile(directory + QLatin1String("/rccprojectXXXXXX.qrc"));
     if (!projectFile.open())
@@ -431,12 +402,14 @@ static QString createBinaryResourceFile(const QString &directory, const QString 
             throw Error(QString::fromLatin1("Could not compile rcc project file."));
     }
 
-    return binaryName;
+    return QSharedPointer<QInstaller::Resource>(new QInstaller::Resource(binaryName.toUtf8(),
+        binaryName));
 }
 
-static QStringList createBinaryResourceFiles(const QStringList &resources)
+static
+QList<QSharedPointer<QInstaller::Resource> > createBinaryResourceFiles(const QStringList &resources)
 {
-    QStringList result;
+    QList<QSharedPointer<QInstaller::Resource> > result;
     foreach (const QString &resource, resources) {
         QFile file(resource);
         if (file.exists()) {
@@ -444,8 +417,11 @@ static QStringList createBinaryResourceFiles(const QStringList &resources)
             const QString fileName = QFileInfo(file.fileName()).absoluteFilePath();
             const int status = runRcc(QStringList() << QLatin1String("rcc")
                 << QLatin1String("-binary") << QLatin1String("-o") << binaryName << fileName);
-            if (status == EXIT_SUCCESS)
-                result.append(binaryName);
+            if (status != EXIT_SUCCESS)
+                continue;
+
+            result.append(QSharedPointer<QInstaller::Resource> (new QInstaller::Resource(binaryName
+                .toUtf8(), binaryName)));
         }
     }
     return result;
@@ -723,6 +699,7 @@ int main(int argc, char **argv)
 
     qDebug() << "Parsed arguments, ok.";
 
+    Input input;
     int exitCode = EXIT_FAILURE;
     QTemporaryDir tmp;
     tmp.setAutoRemove(false);
@@ -749,47 +726,33 @@ int main(int argc, char **argv)
             target += QLatin1String(".app");
 #endif
         if (!compileResource) {
-            Input input;
-            input.outputPath = target;
-            input.installerExePath = templateBinary;
-            input.binaryResourcePath = createBinaryResourceFile(tmpMetaDir, generateTemporaryFileName());
-            input.binaryResources = createBinaryResourceFiles(resources);
-
             QInstallerTools::copyComponentData(packagesDirectories, tmpMetaDir, &packages);
 
-            // now put the packages into the components section of the binary
-            foreach (const QInstallerTools::PackageInfo &info, packages) {
-                ResourceCollection collection;
-                collection.setName(info.name.toUtf8());
-
-                qDebug() << "Creating component info for" << info.name;
-                foreach (const QString &file, info.copiedFiles) {
-                    const QSharedPointer<Resource> resource(new Resource(file));
-                    qDebug() << QString::fromLatin1("Appending %1 (%2)").arg(file,
-                        humanReadableSize(resource->size()));
-                    collection.appendResource(resource);
-                }
-                input.collectionManager.insertCollection(collection);
-            }
+            input.packages = packages;
+            input.outputPath = target;
+            input.installerExePath = templateBinary;
+            input.metaCollection.appendResource(createDefaultResourceFile(tmpMetaDir,
+                generateTemporaryFileName()));
+            input.metaCollection.appendResources(createBinaryResourceFiles(resources));
 
             qDebug() << "Creating the binary";
             exitCode = assemble(input, settings);
-
-            // cleanup
-            qDebug() << "Cleaning up...";
-            QFile::remove(input.binaryResourcePath);
-            foreach (const QString &resource, input.binaryResources)
-                QFile::remove(resource);
         } else {
-            createBinaryResourceFile(tmpMetaDir, QDir::currentPath() + QLatin1String("/update.rcc"));
+            createDefaultResourceFile(tmpMetaDir, QDir::currentPath() + QLatin1String("/update.rcc"));
             exitCode = EXIT_SUCCESS;
         }
     } catch (const Error &e) {
+        QFile::remove(input.outputPath);
         std::cerr << "Caught exception: " << e.message() << std::endl;
     } catch (...) {
+        QFile::remove(input.outputPath);
         std::cerr << "Unknown exception caught" << std::endl;
     }
 
+    qDebug() << "Cleaning up...";
+    foreach (const QSharedPointer<QInstaller::Resource> &resource, input.metaCollection.resources())
+        QFile::remove(QString::fromUtf8(resource->name()));
     QInstaller::removeDirectory(tmpMetaDir, true);
+
     return exitCode;
 }
