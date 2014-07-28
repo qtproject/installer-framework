@@ -257,18 +257,8 @@ bool CreateLocalRepositoryOperation::performOperation()
         }
 
         // start to read the binary layout
-        BinaryLayout bl = BinaryContent::readBinaryLayout(file.data(),
-            BinaryContent::findMagicCookie(file.data(), BinaryContent::MagicCookie));
-
-        // calculate the offset of the component index start inside the binary
-        const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
-        const qint64 resourceSectionSize = resourceOffsetAndLengtSize * bl.resourceCount;
-        file->seek(bl.endOfData - bl.indexSize - resourceSectionSize - resourceOffsetAndLengtSize);
-
-        const qint64 dataBlockStart = bl.endOfData - bl.dataBlockSize;
-        file->seek(QInstaller::retrieveInt64(file.data()) + dataBlockStart);
         ResourceCollectionManager manager;
-        manager.read(file, dataBlockStart);
+        BinaryContent::readBinaryContent(file, 0, 0, &manager, 0, BinaryContent::MagicCookie);
 
         QDirIterator it(repoPath, QDirIterator::Subdirectories);
         while (it.hasNext() && !it.next().isEmpty()) {
