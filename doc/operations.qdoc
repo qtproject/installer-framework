@@ -160,7 +160,7 @@
                 registry) or by \c application and \c company name.
         \row
             \li EnvironmentVariable
-            \li "EnvironmentVariable" \c key \c value [[\c persistent] \c system]
+            \li "EnvironmentVariable" \c key \c value [\c persistent [\c system]]
             \li Sets the environment variable \c key to \c value. If
                 \c persistent is set to \c true, the variable is set
                 persistently. This is currently only supported on Windows.
