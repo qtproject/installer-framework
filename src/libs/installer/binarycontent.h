@@ -42,8 +42,8 @@
 #ifndef BINARYCONTENT_H
 #define BINARYCONTENT_H
 
+#include "binaryformat.h"
 #include "range.h"
-#include "qinstallerglobal.h"
 
 #include <QVector>
 
@@ -97,6 +97,19 @@ public:
     int registerEmbeddedQResources();
     void registerAsDefaultQResource(const QString &path);
 
+    static void readBinaryContent(const QSharedPointer<QFile> &in,
+                                ResourceCollection *metaResources,
+                                QList<OperationBlob> *operations,
+                                ResourceCollectionManager *manager,
+                                qint64 *magicMarker,
+                                quint64 magicCookie);
+
+    static void writeBinaryContent(const QSharedPointer<QFile> &out,
+                                const ResourceCollection &metaResources,
+                                const QList<OperationBlob> &operations,
+                                const ResourceCollectionManager &manager,
+                                qint64 magicMarker,
+                                quint64 magicCookie);
 private:
     explicit BinaryContent(const QString &path);
     static void readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,

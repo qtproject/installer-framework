@@ -50,6 +50,14 @@
 
 namespace QInstaller {
 
+struct OperationBlob {
+    OperationBlob(const QString &n, const QString &x)
+        : name(n), xml(x) {}
+    QString name;
+    QString xml;
+};
+
+
 class INSTALLER_EXPORT Resource : public QIODevice
 {
     Q_OBJECT
