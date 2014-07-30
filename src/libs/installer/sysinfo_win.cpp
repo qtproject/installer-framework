@@ -138,6 +138,9 @@ QList<VolumeInfo> localVolumeInfosFromMountPoints(PTCHAR volumeGUID)
 
 QList<VolumeInfo> mountedVolumes()
 {
+    // suppress message box shown while accessing possible unmounted devices
+    const UINT old = SetErrorMode(SEM_FAILCRITICALERRORS);
+
     QList<VolumeInfo> tmp;
     TCHAR volumeGUID[MAX_PATH + 1] = { 0 };
     HANDLE handle = FindFirstVolume(volumeGUID, MAX_PATH);
@@ -153,6 +156,8 @@ QList<VolumeInfo> mountedVolumes()
     QList<VolumeInfo> volumes;
     while (!tmp.isEmpty()) // update volume size information
         volumes.append(updateVolumeSizeInformation(tmp.takeFirst()));
+
+    SetErrorMode(old);  // reset error mode
     return volumes;
 }
 
