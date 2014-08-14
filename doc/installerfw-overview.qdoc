@@ -54,9 +54,7 @@
     You can provide end users with an \e offline or \e online installer, or
     both, depending on your use cases.
 
-    \omit
     \image ifw-overview.png
-    \endomit
 
     Both installers install a \e {maintenance tool} that can later be used to
     add, update, and remove components. Offline installers contain all the
