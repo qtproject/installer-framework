@@ -276,15 +276,8 @@ int main(int argc, char *argv[])
         if (QInstaller::isVerbose()) {
             qDebug() << VERSION;
             qDebug() << "Arguments:" << app.arguments();
-            qDebug() << "Resource tree before loading the in-binary resource:";
             qDebug() << "Language: " << QLocale().uiLanguages().value(0,
                 QLatin1String("No UI language set"));
-
-            QDirIterator it(QLatin1String(":/"),
-                QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
-                QDirIterator::Subdirectories);
-            while (it.hasNext())
-                qDebug() << QString::fromLatin1("    %1").arg(it.next());
         }
 
         BinaryContent content = BinaryContent::readAndRegisterFromBinary(app.binaryFile());
@@ -365,11 +358,17 @@ int main(int argc, char *argv[])
             content.registerAsDefaultQResource(newDefaultResource);
 
         if (QInstaller::isVerbose()) {
-            qDebug() << "Resource tree after loading the in-binary resource:";
+            qDebug() << "Resource tree:";
             QDirIterator it(QLatin1String(":/"), QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
                 QDirIterator::Subdirectories);
-            while (it.hasNext())
-                qDebug() << QString::fromLatin1("    %1").arg(it.next());
+            while (it.hasNext()) {
+                const QString path = it.next();
+                if (path.startsWith(QLatin1String(":/trolltech"))
+                        || path.startsWith(QLatin1String(":/qt-project.org"))) {
+                    continue;
+                }
+                qDebug() << "    " << it.next().toUtf8().constData();
+            }
         }
 
         const QString directory = QLatin1String(":/translations");
