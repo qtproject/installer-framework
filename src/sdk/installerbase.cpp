@@ -57,6 +57,7 @@
 #include <settings.h>
 #include <utils.h>
 #include <updater.h>
+#include <messageboxhandler.h>
 
 #include <kdselfrestarter.h>
 #include <kdrunoncechecker.h>
@@ -66,7 +67,6 @@
 
 #include <QDirIterator>
 #include <QtCore/QTranslator>
-#include <QMessageBox>
 
 #include <QtNetwork/QNetworkProxyFactory>
 
@@ -435,6 +435,34 @@ int main(int argc, char *argv[])
             controller.setGui(new InstallerGui(&core));
         } else {
             controller.setGui(new MaintenanceGui(&core));
+        }
+
+        //
+        // Sanity check to detect a broken installations with missing operations.
+        // Every installed package should have at least one MinimalProgress operation.
+        //
+        QSet<QString> installedPackages = core.localInstalledPackages().keys().toSet();
+        QSet<QString> operationPackages;
+        foreach (QInstaller::Operation *operation, content.performedOperations()) {
+            if (operation->hasValue(QLatin1String("component")))
+                operationPackages.insert(operation->value(QLatin1String("component")).toString());
+        }
+
+        QSet<QString> packagesWithoutOperation = installedPackages - operationPackages;
+        QSet<QString> orphanedOperations = operationPackages - installedPackages;
+        if (!packagesWithoutOperation.isEmpty() || !orphanedOperations.isEmpty())  {
+            qCritical() << "Operations missing for installed packages" << packagesWithoutOperation.toList();
+            qCritical() << "Orphaned operations" << orphanedOperations.toList();
+            MessageBoxHandler::critical(
+                        MessageBoxHandler::currentBestSuitParent(),
+                        QLatin1String("Corrupt_Installation_Error"),
+                        QCoreApplication::translate("QInstaller", "Corrupt installation"),
+                        QCoreApplication::translate("QInstaller",
+                                                    "Your installation seems to be corrupted. "
+                                                    "Please consider re-installing from scratch."
+                                                    ));
+        } else {
+            qDebug() << "Operations sanity check succeeded.";
         }
 
         PackageManagerCore::Status status = PackageManagerCore::Status(controller.init());
