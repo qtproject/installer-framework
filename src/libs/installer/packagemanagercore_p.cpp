@@ -550,7 +550,6 @@ bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
             errorMessage = errorMessage.arg(dependencyComponentName, component->name());
             qDebug() << qPrintable(errorMessage);
             m_componentsToInstallError.append(errorMessage);
-            Q_ASSERT_X(false, Q_FUNC_INFO, qPrintable(errorMessage));
             return false;
         }
 
