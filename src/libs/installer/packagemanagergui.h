@@ -400,7 +400,7 @@ protected:
     void leaving();
 
 private:
-    void refreshTaskDetailsBrowser();
+    bool calculateComponents(QString *displayString);
 
 private:
     QLabel *m_msgLabel;

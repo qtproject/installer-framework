@@ -1963,11 +1963,6 @@ void ReadyForInstallationPage::entering()
 {
     setCommitPage(false);
 
-    if (isVerbose())
-        m_taskDetailsBrowser->setVisible(true);
-    else
-        m_taskDetailsBrowser->setVisible(false);
-
     if (packageManagerCore()->isUninstaller()) {
         m_taskDetailsBrowser->setVisible(false);
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
@@ -1992,7 +1987,11 @@ void ReadyForInstallationPage::entering()
             .arg(productName()));
     }
 
-    refreshTaskDetailsBrowser();
+    QString htmlOutput;
+    bool componentsOk = calculateComponents(&htmlOutput);
+    m_taskDetailsBrowser->setHtml(htmlOutput);
+    m_taskDetailsBrowser->setVisible(!componentsOk || isVerbose());
+    setCommitPage(componentsOk);
 
     const VolumeInfo tempVolume = VolumeInfo::fromPath(QDir::tempPath());
     const VolumeInfo targetVolume = VolumeInfo::fromPath(packageManagerCore()->value(scTargetDir));
@@ -2005,7 +2004,6 @@ void ReadyForInstallationPage::entering()
         qDebug() << QString::fromLatin1("Could not determine available space on device. Volume "
             "descriptor: %1, Mount path: %2. Continue silently.").arg(targetVolume
             .volumeDescriptor(), targetVolume.mountPath());
-        setCommitPage(true);
         return;     // TODO: Shouldn't this also disable the "Next" button?
     }
 
@@ -2050,6 +2048,7 @@ void ReadyForInstallationPage::entering()
             "installation! Available space: %1, at least required %2.")
             .arg(humanReadableSize(installVolumeAvailableSize),
             humanReadableSize(required + tempRequired)));
+        setCommitPage(false);
         return;
     }
 
@@ -2057,6 +2056,7 @@ void ReadyForInstallationPage::entering()
         m_msgLabel->setText(tr("Not enough disk space to store all selected components! Available "
             "space: %1, at least required: %2.").arg(humanReadableSize(installVolumeAvailableSize),
             humanReadableSize(required)));
+        setCommitPage(false);
         return;
     }
 
@@ -2064,6 +2064,7 @@ void ReadyForInstallationPage::entering()
         m_msgLabel->setText(tr("Not enough disk space to store temporary files! Available space: "
             "%1, at least required: %2.").arg(humanReadableSize(tempVolumeAvailableSize),
             humanReadableSize(tempRequired)));
+        setCommitPage(false);
         return;
     }
 
@@ -2081,27 +2082,25 @@ void ReadyForInstallationPage::entering()
 
     m_msgLabel->setText(QString::fromLatin1("%1 %2").arg(m_msgLabel->text(),
             tr("Installation will use %1 of disk space.").arg(humanReadableSize(required))));
-
-    setCommitPage(true);
 }
 
-void ReadyForInstallationPage::refreshTaskDetailsBrowser()
+bool ReadyForInstallationPage::calculateComponents(QString *displayString)
 {
     QString htmlOutput;
     QString lastInstallReason;
     if (!packageManagerCore()->calculateComponentsToUninstall() ||
-        !packageManagerCore()->calculateComponentsToInstall()) {
-            htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font></h2><ul>")
-                .arg(tr("Can not resolve all dependencies!")));
-            //if we have a missing dependency or a recursion we can display it
-            if (!packageManagerCore()->componentsToInstallError().isEmpty()) {
-                htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(
-                    packageManagerCore()->componentsToInstallError()));
-            }
-            htmlOutput.append(QLatin1String("</ul>"));
-            m_taskDetailsBrowser->setHtml(htmlOutput);
-            setCommitPage(false);
-            return;
+            !packageManagerCore()->calculateComponentsToInstall()) {
+        htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font></h2><ul>")
+                          .arg(tr("Can not resolve all dependencies!")));
+        //if we have a missing dependency or a recursion we can display it
+        if (!packageManagerCore()->componentsToInstallError().isEmpty()) {
+            htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(
+                                  packageManagerCore()->componentsToInstallError()));
+        }
+        htmlOutput.append(QLatin1String("</ul>"));
+        if (displayString)
+            *displayString = htmlOutput;
+        return false;
     }
 
     // In case of updater mode we don't uninstall components.
@@ -2126,7 +2125,9 @@ void ReadyForInstallationPage::refreshTaskDetailsBrowser()
         }
         htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
     }
-    m_taskDetailsBrowser->setHtml(htmlOutput);
+    if (displayString)
+        *displayString = htmlOutput;
+    return true;
 }
 
 void ReadyForInstallationPage::leaving()
