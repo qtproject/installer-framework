@@ -54,11 +54,8 @@ class BinaryFormatEngine : public QAbstractFileEngine
 
 public:
     BinaryFormatEngine(const ResourceCollectionManager &manager, const QString &fileName);
-    ~BinaryFormatEngine();
 
     void setFileName(const QString &file);
-
-    Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames);
 
     bool copy(const QString &newName);
     bool close();
@@ -70,18 +67,17 @@ public:
 
     QString fileName(FileName file = DefaultName) const;
     FileFlags fileFlags(FileFlags type = FileInfoAll) const;
+
+    Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames);
     QStringList entryList(QDir::Filters filters, const QStringList &filterNames) const;
 
-protected:
-    void setArchive(const QString &file);
-
 private:
-    const ResourceCollectionManager m_manager;
-    bool m_hasCollection;
-    bool m_hasResource;
+    QString m_fileNamePath;
+
     ResourceCollection m_collection;
     QSharedPointer<Resource> m_resource;
-    QString m_fileNamePath;
+
+    const ResourceCollectionManager m_manager;
 };
 
 } // namespace QInstaller

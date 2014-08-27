@@ -82,19 +82,16 @@ namespace QInstaller {
 
 BinaryFormatEngine::BinaryFormatEngine(const ResourceCollectionManager &manager,
         const QString &fileName)
-    : m_manager(manager)
-    , m_hasCollection(false)
-    , m_hasResource(false)
-    , m_resource(0)
+    : m_resource(0)
+    , m_manager(manager)
 {
-    setArchive(fileName);
+    setFileName(fileName);
 }
 
-BinaryFormatEngine::~BinaryFormatEngine()
-{
-}
-
-void BinaryFormatEngine::setArchive(const QString &file)
+/*!
+    \reimp
+*/
+void BinaryFormatEngine::setFileName(const QString &file)
 {
     m_fileNamePath = file;
 
@@ -107,31 +104,16 @@ void BinaryFormatEngine::setArchive(const QString &file)
     while (path.endsWith(sep))
         path.chop(1);
 
-    QString arch;
-    const QString coll = path.section(sep, 0, 0);
-    m_hasCollection = !coll.isEmpty();
-    m_hasResource = path.contains(sep);
-    if (m_hasResource)
-        arch = path.section(sep, 1, 1);
-
-    m_collection = m_manager.collectionByName(coll.toUtf8());
-    m_resource = m_collection.resourceByName(arch.toUtf8());
+    m_collection = m_manager.collectionByName(path.section(sep, 0, 0).toUtf8());
+    m_resource = m_collection.resourceByName(path.section(sep, 1, 1).toUtf8());
 }
 
-/**
- * \reimp
- */
-void BinaryFormatEngine::setFileName(const QString &file)
-{
-    setArchive(file);
-}
-
-/**
- * \reimp
- */
+/*!
+    \reimp
+*/
 bool BinaryFormatEngine::close()
 {
-    if (m_resource == 0)
+    if (m_resource.isNull())
         return false;
 
     const bool result = m_resource->isOpen();
@@ -139,62 +121,63 @@ bool BinaryFormatEngine::close()
     return result;
 }
 
-/**
- * \reimp
- */
+/*!
+    \reimp
+*/
 bool BinaryFormatEngine::open(QIODevice::OpenMode /*mode*/)
 {
-    return m_resource == 0 ? false : m_resource->open();
+    return m_resource.isNull() ? false : m_resource->open();
 }
 
-/**
- * \reimp
- */
+/*!
+    \reimp
+*/
 qint64 BinaryFormatEngine::pos() const
 {
-    return m_resource == 0 ? 0 : m_resource->pos();
+    return m_resource.isNull() ? 0 : m_resource->pos();
 }
 
-/**
- * \reimp
- */
+/*!
+    \reimp
+*/
 qint64 BinaryFormatEngine::read(char *data, qint64 maxlen)
 {
-    return m_resource == 0 ? -1 : m_resource->read(data, maxlen);
+    return m_resource.isNull() ? -1 : m_resource->read(data, maxlen);
 }
 
-/**
- * \reimp
- */
+/*!
+    \reimp
+*/
 bool BinaryFormatEngine::seek(qint64 offset)
 {
-    return m_resource == 0 ? false : m_resource->seek(offset);
+    return m_resource.isNull() ? false : m_resource->seek(offset);
 }
 
-/**
- * \reimp
- */
+/*!
+    \reimp
+*/
 QString BinaryFormatEngine::fileName(FileName file) const
 {
+    static const QChar sep = QLatin1Char('/');
     switch(file) {
-    case BaseName:
-        return m_fileNamePath.section(QChar::fromLatin1('/'), -1, -1, QString::SectionSkipEmpty);
-    case PathName:
-    case AbsolutePathName:
-    case CanonicalPathName:
-        return m_fileNamePath.section(QChar::fromLatin1('/'), 0, -2, QString::SectionSkipEmpty);
-    case DefaultName:
-    case AbsoluteName:
-    case CanonicalName:
-        return m_fileNamePath;
-    default:
-        return QString();
+        case BaseName:
+            return m_fileNamePath.section(sep, -1, -1, QString::SectionSkipEmpty);
+        case PathName:
+        case AbsolutePathName:
+        case CanonicalPathName:
+            return m_fileNamePath.section(sep, 0, -2, QString::SectionSkipEmpty);
+        case DefaultName:
+        case AbsoluteName:
+        case CanonicalName:
+            return m_fileNamePath;
+        default:
+            return QString();
     }
 }
 
-/**
- * \reimp
- */
+/*!
+    \reimp
+*/
 bool BinaryFormatEngine::copy(const QString &newName)
 {
     if (QFile::exists(newName))
@@ -228,49 +211,48 @@ bool BinaryFormatEngine::copy(const QString &newName)
     return true;
 }
 
-/**
- * \reimp
- */
+/*!
+    \reimp
+*/
 QAbstractFileEngine::FileFlags BinaryFormatEngine::fileFlags(FileFlags type) const
 {
     FileFlags result;
-    if ((type & FileType) && m_resource != 0)
+    if ((type & FileType) && (!m_resource.isNull()))
         result |= FileType;
-    if ((type & DirectoryType) && !m_hasResource)
+    if ((type & DirectoryType) && m_resource.isNull())
         result |= DirectoryType;
-    if ((type & ExistsFlag) && m_hasResource && m_resource != 0)
+    if ((type & ExistsFlag) && (!m_resource.isNull()))
         result |= ExistsFlag;
-    if ((type & ExistsFlag) && !m_hasResource && !m_collection.name().isEmpty())
+    if ((type & ExistsFlag) && m_resource.isNull() && (!m_collection.name().isEmpty()))
         result |= ExistsFlag;
 
     return result;
 }
 
-/**
- * \reimp
- */
+/*!
+    \reimp
+*/
 QAbstractFileEngineIterator *BinaryFormatEngine::beginEntryList(QDir::Filters filters, const QStringList &filterNames)
 {
     const QStringList entries = entryList(filters, filterNames);
     return new StringListIterator(entries, filters, filterNames);
 }
 
-/**
- * \reimp
- */
+/*!
+    \reimp
+*/
 QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringList &filterNames) const
 {
-    if (m_hasResource)
+    if (!m_resource.isNull())
         return QStringList();
 
     QStringList result;
-    if (m_hasCollection && (filters & QDir::Files)) {
+    if ((!m_collection.name().isEmpty()) && (filters & QDir::Files)) {
         foreach (const QSharedPointer<Resource> &resource, m_collection.resources())
-            result.push_back(QString::fromUtf8(resource->name()));
-    }
-    else if (!m_hasCollection && (filters & QDir::Dirs)) {
+            result.append(QString::fromUtf8(resource->name()));
+    } else if (m_collection.name().isEmpty() && (filters & QDir::Dirs)) {
         foreach (const ResourceCollection &collection, m_manager.collections())
-            result.push_back(QString::fromUtf8(collection.name()));
+            result.append(QString::fromUtf8(collection.name()));
     }
 
     if (filterNames.isEmpty())
@@ -278,7 +260,7 @@ QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringLi
 
     QList<QRegExp> regexps;
     foreach (const QString &i, filterNames)
-        regexps.push_back(QRegExp(i, Qt::CaseInsensitive, QRegExp::Wildcard));
+        regexps.append(QRegExp(i, Qt::CaseInsensitive, QRegExp::Wildcard));
 
     QStringList entries;
     foreach (const QString &i, result) {
@@ -289,18 +271,18 @@ QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringLi
                 break;
         }
         if (matched)
-            entries.push_back(i);
+            entries.append(i);
     }
 
     return entries;
 }
 
-/**
- * \reimp
- */
+/*!
+    \reimp
+*/
 qint64 BinaryFormatEngine::size() const
 {
-    return m_resource == 0 ? 0 : m_resource->size();
+    return m_resource.isNull() ? 0 : m_resource->size();
 }
 
 } // namespace QInstaller
