@@ -1328,8 +1328,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             }
             input.setFileName(dataFile);
             QInstaller::openForRead(&input);
-            layout = BinaryContent::readBinaryLayout(&input, BinaryContent::findMagicCookie(&input,
-                BinaryContent::MagicCookieDat));
+            layout = BinaryContent::binaryLayout(&input, BinaryContent::MagicCookieDat);
         } catch (const Error &/*error*/) {
 #ifdef Q_OS_OSX
             // On Mac, data is always in a separate file so that the binary can be signed
@@ -1340,8 +1339,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             input.setFileName(dataPath.filePath(QLatin1String("installer.dat")));
 
             QInstaller::openForRead(&input);
-            layout = BinaryContent::readBinaryLayout(&input, BinaryContent::findMagicCookie(&input,
-                BinaryContent::MagicCookie));
+            layout = BinaryContent::binaryLayout(&input, BinaryContent::MagicCookie);
 
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
@@ -1352,8 +1350,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
 #else
             input.setFileName(isInstaller() ? installerBinaryPath() : maintenanceToolName());
             QInstaller::openForRead(&input);
-            layout = BinaryContent::readBinaryLayout(&input, BinaryContent::findMagicCookie(&input,
-                BinaryContent::MagicCookie));
+            layout = BinaryContent::binaryLayout(&input, BinaryContent::MagicCookie);
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
                 writeMaintenanceToolBinary(&input, layout.endOfData - layout.dataBlockSize, true);
@@ -1389,8 +1386,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                 newBinaryWritten = true;
                 QFile tmp(isInstaller() ? installerBinaryPath() : maintenanceToolName());
                 QInstaller::openForRead(&tmp);
-                BinaryLayout tmpLayout = BinaryContent::readBinaryLayout(&tmp,
-                    BinaryContent::findMagicCookie(&tmp, BinaryContent::MagicCookie));
+                BinaryLayout tmpLayout = BinaryContent::binaryLayout(&tmp, BinaryContent::MagicCookie);
                 writeMaintenanceToolBinary(&tmp, tmpLayout.endOfData - tmpLayout.dataBlockSize, false);
             }
 

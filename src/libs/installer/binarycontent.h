@@ -87,8 +87,8 @@ public:
 
     static BinaryContent readFromBinary(const QString &path);
     static BinaryContent readAndRegisterFromBinary(const QString &path);
-    static BinaryLayout readBinaryLayout(QFile *const file, qint64 cookiePos);
     static qint64 findMagicCookie(QFile *file, quint64 magicCookie);
+    static BinaryLayout binaryLayout(QFile *file, quint64 magicCookie);
 
     int registerPerformedOperations();
     OperationList performedOperations() const;

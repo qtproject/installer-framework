@@ -104,9 +104,9 @@ int main(int argc, char *argv[])
     try {
         QFile *file = new QFile(path);
         QInstaller::openForRead(file);
-        qint64 pos = QInstaller::BinaryContent::findMagicCookie(file,
+
+        QInstaller::BinaryLayout layout = QInstaller::BinaryContent::binaryLayout(file,
             QInstaller::BinaryContent::MagicCookie);
-        QInstaller::BinaryLayout layout = QInstaller::BinaryContent::readBinaryLayout(file, pos);
 
         if (layout.magicMarker == QInstaller::BinaryContent::MagicUninstallerMarker) {
             QFileInfo fi(path);
@@ -115,9 +115,8 @@ int main(int argc, char *argv[])
             path = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat");
 
             file->setFileName(path);
-            pos = QInstaller::BinaryContent::findMagicCookie(file,
+            layout = QInstaller::BinaryContent::binaryLayout(file,
                 QInstaller::BinaryContent::MagicCookie);
-            layout = QInstaller::BinaryContent::readBinaryLayout(file, pos);
         }
 
         if (parser.isSet(update)) {

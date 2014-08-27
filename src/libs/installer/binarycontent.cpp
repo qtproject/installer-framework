@@ -313,19 +313,20 @@ BinaryContent BinaryContent::readFromBinary(const QString &path)
         c.d->m_binaryDataFile.reset(new QFile(fi.absolutePath() + QLatin1Char('/') + fi.baseName()
             + QLatin1String(".dat")));
         QInstaller::openForRead(c.d->m_binaryDataFile.data());
-        cookiePos = findMagicCookie(c.d->m_binaryDataFile.data(), BinaryContent::MagicCookieDat);
-        readBinaryData(c, c.d->m_binaryDataFile, readBinaryLayout(c.d->m_binaryDataFile.data(),
-            cookiePos));
+        readBinaryData(c, c.d->m_binaryDataFile, binaryLayout(c.d->m_binaryDataFile.data(),
+            BinaryContent::MagicCookieDat));
     } else {
         // We are an installer, all data is appended to our binary itself.
-        readBinaryData(c, c.d->m_appBinary, readBinaryLayout(c.d->m_appBinary.data(), cookiePos));
+        readBinaryData(c, c.d->m_appBinary, binaryLayout(c.d->m_appBinary.data(),
+            BinaryContent::MagicCookie));
     }
     return c;
 }
 
 /* static */
-BinaryLayout BinaryContent::readBinaryLayout(QFile *const file, qint64 cookiePos)
+BinaryLayout BinaryContent::binaryLayout(QFile *file, quint64 magicCookie)
 {
+    const qint64 cookiePos = BinaryContent::findMagicCookie(file, magicCookie);
     const qint64 indexSize = 5 * sizeof(qint64);
     if (!file->seek(cookiePos - indexSize)) {
         throw Error(QCoreApplication::translate("BinaryContent",
