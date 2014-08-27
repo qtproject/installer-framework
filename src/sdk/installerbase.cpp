@@ -367,7 +367,7 @@ int main(int argc, char *argv[])
                         || path.startsWith(QLatin1String(":/qt-project.org"))) {
                     continue;
                 }
-                qDebug() << "    " << it.next().toUtf8().constData();
+                qDebug() << "    " << path.toUtf8().constData();
             }
         }
 
