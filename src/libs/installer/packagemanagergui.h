@@ -393,8 +393,6 @@ class INSTALLER_EXPORT ReadyForInstallationPage : public PackageManagerPage
 public:
     explicit ReadyForInstallationPage(PackageManagerCore *core);
 
-    bool isComplete() const;
-
 protected:
     void entering();
     void leaving();

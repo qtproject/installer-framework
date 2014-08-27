@@ -1952,6 +1952,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     bottomLayout->setStretch(1, 10);
     baseLayout->addLayout(bottomLayout);
 
+    setCommitPage(true);
     setLayout(baseLayout);
 }
 
@@ -1961,7 +1962,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
 */
 void ReadyForInstallationPage::entering()
 {
-    setCommitPage(false);
+    setComplete(false);
 
     if (packageManagerCore()->isUninstaller()) {
         m_taskDetailsBrowser->setVisible(false);
@@ -1973,7 +1974,7 @@ void ReadyForInstallationPage::entering()
             .arg(productName(),
                 QDir::toNativeSeparators(QDir(packageManagerCore()->value(scTargetDir))
             .absolutePath())));
-        setCommitPage(true);
+        setComplete(true);
         return;
     } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
         setButtonText(QWizard::CommitButton, tr("U&pdate"));
@@ -1991,7 +1992,7 @@ void ReadyForInstallationPage::entering()
     bool componentsOk = calculateComponents(&htmlOutput);
     m_taskDetailsBrowser->setHtml(htmlOutput);
     m_taskDetailsBrowser->setVisible(!componentsOk || isVerbose());
-    setCommitPage(componentsOk);
+    setComplete(componentsOk);
 
     const VolumeInfo tempVolume = VolumeInfo::fromPath(QDir::tempPath());
     const VolumeInfo targetVolume = VolumeInfo::fromPath(packageManagerCore()->value(scTargetDir));
@@ -2048,7 +2049,7 @@ void ReadyForInstallationPage::entering()
             "installation! Available space: %1, at least required %2.")
             .arg(humanReadableSize(installVolumeAvailableSize),
             humanReadableSize(required + tempRequired)));
-        setCommitPage(false);
+        setComplete(false);
         return;
     }
 
@@ -2056,7 +2057,7 @@ void ReadyForInstallationPage::entering()
         m_msgLabel->setText(tr("Not enough disk space to store all selected components! Available "
             "space: %1, at least required: %2.").arg(humanReadableSize(installVolumeAvailableSize),
             humanReadableSize(required)));
-        setCommitPage(false);
+        setComplete(false);
         return;
     }
 
@@ -2064,7 +2065,7 @@ void ReadyForInstallationPage::entering()
         m_msgLabel->setText(tr("Not enough disk space to store temporary files! Available space: "
             "%1, at least required: %2.").arg(humanReadableSize(tempVolumeAvailableSize),
             humanReadableSize(tempRequired)));
-        setCommitPage(false);
+        setComplete(false);
         return;
     }
 
@@ -2135,15 +2136,6 @@ void ReadyForInstallationPage::leaving()
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
 }
 
-/*!
-    \reimp
-*/
-bool ReadyForInstallationPage::isComplete() const
-{
-    return isCommitPage();
-}
-
-
 // -- PerformInstallationPage
 
 /*!
@@ -2177,6 +2169,8 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
         SIGNAL(setAutomatedPageSwitchEnabled(bool)));
 
     m_performInstallationForm->setDetailsWidgetVisible(true);
+
+    setCommitPage(true);
 }
 
 PerformInstallationPage::~PerformInstallationPage()
@@ -2194,7 +2188,6 @@ bool PerformInstallationPage::isAutoSwitching() const
 void PerformInstallationPage::entering()
 {
     setComplete(false);
-    setCommitPage(true);
 
     if (packageManagerCore()->isUninstaller()) {
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
@@ -2298,6 +2291,8 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     layout->addWidget(m_msgLabel);
     layout->addWidget(m_runItCheckBox);
     setLayout(layout);
+
+    setCommitPage(true);
 }
 
 void FinishedPage::entering()
@@ -2307,7 +2302,6 @@ void FinishedPage::entering()
         m_commitButton = 0;
     }
 
-    setCommitPage(true);
     if (packageManagerCore()->isUpdater() || packageManagerCore()->isPackageManager()) {
 #ifdef Q_OS_OSX
         gui()->setOption(QWizard::NoCancelButton, false);
@@ -2419,7 +2413,6 @@ RestartPage::RestartPage(PackageManagerCore *core)
     setColoredTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
 
     setFinalPage(false);
-    setCommitPage(false);
 }
 
 int RestartPage::nextId() const
