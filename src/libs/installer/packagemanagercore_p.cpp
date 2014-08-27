@@ -43,6 +43,7 @@
 #include "adminauthorization.h"
 #include "binarycontent.h"
 #include "binaryformatenginehandler.h"
+#include "binarylayout.h"
 #include "component.h"
 #include "scriptengine.h"
 #include "componentmodel.h"
@@ -1114,7 +1115,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *outp
     const qint64 dataBlockStart = output->pos();
 
     QVector<Range<qint64> >resourceSegments;
-    QVector<Range<qint64> >existingResourceSegments = layout.metadataResourceSegments;
+    QVector<Range<qint64> >existingResourceSegments = layout.metaResourceSegments;
 
     const QString newDefaultResource = m_core->value(QString::fromLatin1("DefaultResourceReplacement"));
     if (!newDefaultResource.isEmpty()) {
@@ -1168,7 +1169,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *outp
         QInstaller::appendInt64Range(output, segment.moved(-dataBlockStart));
     QInstaller::appendInt64Range(output, Range<qint64>::fromStartAndEnd(operationsStart, operationsEnd)
         .moved(-dataBlockStart));
-    QInstaller::appendInt64(output, layout.resourceCount);
+    QInstaller::appendInt64(output, layout.metaResourceSegments.count());
     // data block size, from end of .exe to end of file
     QInstaller::appendInt64(output, output->pos() + 3 * sizeof(qint64) -dataBlockStart);
     QInstaller::appendInt64(output, BinaryContent::MagicUninstallerMarker);
@@ -1368,7 +1369,8 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             layout = BinaryContent::binaryLayout(&input, BinaryContent::MagicCookie);
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
-                writeMaintenanceToolBinary(&input, layout.endOfData - layout.dataBlockSize, true);
+                writeMaintenanceToolBinary(&input, layout.endOfBinaryContent
+                    - layout.binaryContentSize, true);
             }
 #endif
         }
@@ -1402,7 +1404,8 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                 QFile tmp(isInstaller() ? installerBinaryPath() : maintenanceToolName());
                 QInstaller::openForRead(&tmp);
                 BinaryLayout tmpLayout = BinaryContent::binaryLayout(&tmp, BinaryContent::MagicCookie);
-                writeMaintenanceToolBinary(&tmp, tmpLayout.endOfData - tmpLayout.dataBlockSize, false);
+                writeMaintenanceToolBinary(&tmp, tmpLayout.endOfBinaryContent
+                    - tmpLayout.binaryContentSize, false);
             }
 
             QFile file(maintenanceToolName() + QLatin1String(".new"));

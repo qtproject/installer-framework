@@ -41,6 +41,7 @@
 
 #include "binaryreplace.h"
 
+#include <binarycontent.h>
 #include <copyfiletask.h>
 #include <downloadfiletask.h>
 #include <errors.h>
@@ -115,7 +116,7 @@ int BinaryReplace::replace(const QString &source, const QString &target)
             installerBaseNew.seek(installerBaseNew.size());
             if (m_binaryLayout.magicMarker == QInstaller::BinaryContent::MagicInstallerMarker) {
                 QInstaller::openForRead(&installerBaseOld);
-                installerBaseOld.seek(m_binaryLayout.metadataResourceSegments.first().start());
+                installerBaseOld.seek(m_binaryLayout.metaResourcesSegment.start());
                 QInstaller::appendData(&installerBaseNew, &installerBaseOld, installerBaseOld
                     .size() - installerBaseOld.pos());
                 installerBaseOld.close();

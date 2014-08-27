@@ -39,21 +39,32 @@
 **
 **************************************************************************/
 
-#ifndef BINARYREPLACE_H
-#define BINARYREPLACE_H
+#ifndef BINARYLAYOUT_H
+#define BINARYLAYOUT_H
 
-#include <binarylayout.h>
+#include "range.h"
 
-class BinaryReplace
+#include <QVector>
+
+namespace QInstaller {
+
+struct BinaryLayout
 {
-    Q_DISABLE_COPY(BinaryReplace)
+    qint64 endOfExectuable;
 
-public:
-    BinaryReplace(const QInstaller::BinaryLayout &layout);
-    int replace(const QString &source, const QString &target);
+    QVector<Range<qint64> > metaResourceSegments;
 
-private:
-    QInstaller::BinaryLayout m_binaryLayout;
+    Range<qint64> metaResourcesSegment;
+    Range<qint64> operationsSegment;
+    Range<qint64> resourceCollectionsSegment;
+
+    qint64 binaryContentSize;
+    qint64 magicMarker;
+    quint64 magicCookie;
+
+    qint64 endOfBinaryContent;
 };
 
-#endif // BINARYREPLACE_H
+} // namespace QInstaller
+
+#endif // BINARYLAYOUT

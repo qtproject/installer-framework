@@ -43,28 +43,13 @@
 #define BINARYCONTENT_H
 
 #include "binaryformat.h"
-#include "range.h"
-
-#include <QVector>
+#include "binarylayout.h"
 
 QT_BEGIN_NAMESPACE
 class QFile;
 QT_END_NAMESPACE
 
 namespace QInstaller {
-
-struct BinaryLayout
-{
-    QVector<Range<qint64> > metadataResourceSegments;
-    qint64 operationsStart;
-    qint64 operationsEnd;
-    qint64 resourceCount;
-    qint64 dataBlockSize;
-    qint64 magicMarker;
-    quint64 magicCookie;
-    qint64 indexSize;
-    qint64 endOfData;
-};
 
 class INSTALLER_EXPORT BinaryContent
 {

@@ -54,22 +54,11 @@ static const qint64 scLargeSize = 2097152LL;
 
 using namespace QInstaller;
 
-struct Layout
+struct Layout : public QInstaller::BinaryLayout
 {
-    Range<qint64> metaResourceSegment;
-    QVector<Range<qint64> > metaResourceSegments;
-
+    qint64 metaSegmentsCount;
     qint64 operationsCount;
-    Range<qint64> operationsSegment;
-
     qint64 collectionCount;
-    Range<qint64> resourceCollectionIndexSegment;
-
-    qint64 binaryContentSize;
-    qint64 magicMarker;
-    quint64 magicCookie;
-
-    qint64 endOfBinary;
 };
 
 class TestOperation : public KDUpdater::UpdateOperation
@@ -165,23 +154,22 @@ private slots:
         QInstaller::blockingWrite(&binary, QByteArray(scTinySize, '1'));
 
         Layout layout;
-        layout.endOfBinary = binary.pos();
+        layout.endOfExectuable = binary.pos();
         layout.magicMarker = BinaryContent::MagicInstallerMarker;
         layout.magicCookie = BinaryContent::MagicCookie;
 
         qint64 start = binary.pos();    // write default resource (fake)
         QInstaller::blockingWrite(&binary, QByteArray("Default resource data."));
         qint64 end = binary.pos();
-        layout.metaResourceSegments.append(Range<qint64>::fromStartAndEnd(start, end)
-            .moved(-layout.endOfBinary));
+        layout.metaResourceSegments.append(Range<qint64>::fromStartAndEnd(start, end));
 
         start = end;    // // write additional resource (fake)
         QInstaller::blockingWrite(&binary, QByteArray("Additional resource data."));
         end = binary.pos();
-        layout.metaResourceSegments.append(Range<qint64>::fromStartAndEnd(start, end)
-            .moved(-layout.endOfBinary));
-        layout.metaResourceSegment = Range<qint64>::fromStartAndEnd(layout.metaResourceSegments.first()
-            .start(), layout.metaResourceSegments.last().end());
+        layout.metaResourceSegments.append(Range<qint64>::fromStartAndEnd(start, end));
+        layout.metaResourcesSegment = Range<qint64>::fromStartAndEnd(layout.metaResourceSegments
+            .first().start(), layout.metaResourceSegments.last().end());
+        layout.metaSegmentsCount = layout.metaResourceSegments.count();
 
         start = end;
         layout.operationsCount = m_operations.count();
@@ -192,8 +180,7 @@ private slots:
         }
         QInstaller::appendInt64(&binary, layout.operationsCount);
         end = binary.pos();
-        layout.operationsSegment = Range<qint64>::fromStartAndEnd(start, end).moved(-layout
-            .endOfBinary);
+        layout.operationsSegment = Range<qint64>::fromStartAndEnd(start, end);
 
         QTemporaryFile data;
         QTemporaryFile data2;
@@ -227,24 +214,29 @@ private slots:
             manager.insertCollection(collection2);
 
             layout.collectionCount = manager.collectionCount();
-            layout.resourceCollectionIndexSegment = manager.write(&binary, -layout.endOfBinary)
-                .moved(-layout.endOfBinary);
+            layout.resourceCollectionsSegment = manager.write(&binary, -layout.endOfExectuable);
 
             resource->close();
             resource2->close();
         }
 
-        QInstaller::appendInt64Range(&binary, layout.resourceCollectionIndexSegment);
-        foreach (const Range<qint64> &segment, layout.metaResourceSegments)
-            QInstaller::appendInt64Range(&binary, segment);
-        QInstaller::appendInt64Range(&binary, layout.operationsSegment);
-        QInstaller::appendInt64(&binary, layout.metaResourceSegments.count());
+        QInstaller::appendInt64Range(&binary, layout.resourceCollectionsSegment.moved(-layout
+            .endOfExectuable));
 
-        layout.binaryContentSize = (binary.pos() + (3 * sizeof(qint64))) - layout.endOfBinary;
+        foreach (const Range<qint64> &segment, layout.metaResourceSegments)
+            QInstaller::appendInt64Range(&binary, segment.moved(-layout.endOfExectuable));
+
+        QInstaller::appendInt64Range(&binary, layout.operationsSegment.moved(-layout
+            .endOfExectuable));
+
+        QInstaller::appendInt64(&binary, layout.metaSegmentsCount);
+        layout.binaryContentSize = (binary.pos() + (3 * sizeof(qint64))) - layout.endOfExectuable;
 
         QInstaller::appendInt64(&binary, layout.binaryContentSize);
         QInstaller::appendInt64(&binary, layout.magicMarker);
         QInstaller::appendInt64(&binary, layout.magicCookie);
+
+        layout.endOfBinaryContent = binary.pos();
 
         binary.close();
         binary.setAutoRemove(false);
@@ -260,41 +252,48 @@ private slots:
         QCOMPARE(QInstaller::retrieveData(binary.data(), scTinySize), QByteArray(scTinySize, '1'));
 
         Layout layout;
-        layout.endOfBinary = binary->pos();
-        QCOMPARE(layout.endOfBinary, m_layout.endOfBinary);
+        layout.endOfExectuable = binary->pos();
+        QCOMPARE(layout.endOfExectuable, m_layout.endOfExectuable);
 
         const qint64 pos = BinaryContent::findMagicCookie(binary.data(), BinaryContent::MagicCookie);
-        const qint64 endOfBinaryContent = pos + sizeof(qint64);
+        layout.endOfBinaryContent = pos + sizeof(qint64);
+        QCOMPARE(layout.endOfBinaryContent, m_layout.endOfBinaryContent);
 
-        binary->seek(endOfBinaryContent - (4 * sizeof(qint64)));
+        binary->seek(layout.endOfBinaryContent - (4 * sizeof(qint64)));
 
-        qint64 metaSegmentsCount = QInstaller::retrieveInt64(binary.data());
-        QCOMPARE(metaSegmentsCount, m_layout.metaResourceSegments.count());
+        layout.metaSegmentsCount = QInstaller::retrieveInt64(binary.data());
+        QCOMPARE(layout.metaSegmentsCount, m_layout.metaSegmentsCount);
 
-        const qint64 offsetCollectionIndexSegments = endOfBinaryContent
-            - ((metaSegmentsCount * (2 * sizeof(qint64))) // minus the size of the meta segments
+        const qint64 offsetCollectionIndexSegments = layout.endOfBinaryContent
+            - ((layout.metaSegmentsCount * (2 * sizeof(qint64))) // minus size of the meta segments
             + (8 * sizeof(qint64))); // meta count, offset/length component index, marker, cookie...
 
         binary->seek(offsetCollectionIndexSegments);
 
-        layout.resourceCollectionIndexSegment = QInstaller::retrieveInt64Range(binary.data());
-        QCOMPARE(layout.resourceCollectionIndexSegment, m_layout.resourceCollectionIndexSegment);
+        layout.resourceCollectionsSegment = QInstaller::retrieveInt64Range(binary.data())
+            .moved(layout.endOfExectuable);
+        QCOMPARE(layout.resourceCollectionsSegment, m_layout.resourceCollectionsSegment);
 
-        for (int i = 0; i < metaSegmentsCount; ++i)
-            layout.metaResourceSegments.append(QInstaller::retrieveInt64Range(binary.data()));
-        layout.metaResourceSegment = Range<qint64>::fromStartAndEnd(layout.metaResourceSegments
+        for (int i = 0; i < layout.metaSegmentsCount; ++i) {
+            layout.metaResourceSegments.append(QInstaller::retrieveInt64Range(binary.data())
+                .moved(layout.endOfExectuable));
+        }
+        layout.metaResourcesSegment = Range<qint64>::fromStartAndEnd(layout.metaResourceSegments
             .first().start(), layout.metaResourceSegments.last().end());
-        QCOMPARE(layout.metaResourceSegment, m_layout.metaResourceSegment);
-        QCOMPARE(layout.metaResourceSegments, m_layout.metaResourceSegments);
 
-        layout.operationsSegment = QInstaller::retrieveInt64Range(binary.data());
+        QCOMPARE(layout.metaResourcesSegment, m_layout.metaResourcesSegment);
+        QCOMPARE(layout.metaResourceSegments.first(), m_layout.metaResourceSegments.first());
+        QCOMPARE(layout.metaResourceSegments.last(), m_layout.metaResourceSegments.last());
+
+        layout.operationsSegment = QInstaller::retrieveInt64Range(binary.data()).moved(layout
+            .endOfExectuable);
         QCOMPARE(layout.operationsSegment, m_layout.operationsSegment);
 
-        QCOMPARE(metaSegmentsCount, QInstaller::retrieveInt64(binary.data()));
+        QCOMPARE(layout.metaSegmentsCount, QInstaller::retrieveInt64(binary.data()));
 
         layout.binaryContentSize = QInstaller::retrieveInt64(binary.data());
         QCOMPARE(layout.binaryContentSize, m_layout.binaryContentSize);
-        QCOMPARE(layout.endOfBinary, endOfBinaryContent - layout.binaryContentSize);
+        QCOMPARE(layout.endOfExectuable, layout.endOfBinaryContent - layout.binaryContentSize);
 
         layout.magicMarker = QInstaller::retrieveInt64(binary.data());
         QCOMPARE(layout.magicMarker, m_layout.magicMarker);
@@ -302,7 +301,7 @@ private slots:
         layout.magicCookie = QInstaller::retrieveInt64(binary.data());
         QCOMPARE(layout.magicCookie, m_layout.magicCookie);
 
-        binary->seek(layout.endOfBinary + layout.operationsSegment.start());
+        binary->seek(layout.operationsSegment.start());
 
         layout.operationsCount = QInstaller::retrieveInt64(binary.data());
         QCOMPARE(layout.operationsCount, m_layout.operationsCount);
@@ -318,8 +317,8 @@ private slots:
         layout.collectionCount = QInstaller::retrieveInt64(binary.data());
         QCOMPARE(layout.collectionCount, m_layout.collectionCount);
 
-        binary->seek(layout.endOfBinary + layout.resourceCollectionIndexSegment.start());
-        m_manager.read(binary, layout.endOfBinary);
+        binary->seek(layout.resourceCollectionsSegment.start());
+        m_manager.read(binary, layout.endOfExectuable);
 
         const QList<ResourceCollection> components = m_manager.collections();
         QCOMPARE(components.count(), m_layout.collectionCount);
@@ -357,7 +356,7 @@ private slots:
         ResourceCollection resources;
         foreach (const Range<qint64> &segment, m_layout.metaResourceSegments) {
             resources.appendResource(QSharedPointer<Resource> (new Resource(existingBinary,
-                segment.moved(m_layout.endOfBinary))));
+                segment)));
         }
 
         QList<OperationBlob> operations;
@@ -388,10 +387,8 @@ private slots:
 
         QCOMPARE(magicMarker, m_layout.magicMarker);
         QCOMPARE(collection.resources().count(), m_layout.metaResourceSegments.count());
-        for (int i = 0; i < collection.resources().count(); ++i) {
-            QCOMPARE(collection.resources().at(i)->segment(), m_layout.metaResourceSegments.at(i)
-                .moved(m_layout.endOfBinary));
-        }
+        for (int i = 0; i < collection.resources().count(); ++i)
+            QCOMPARE(collection.resources().at(i)->segment(), m_layout.metaResourceSegments.at(i));
 
         QCOMPARE(operations.count(), m_operations.count());
         for (int i = 0; i < operations.count(); ++i) {

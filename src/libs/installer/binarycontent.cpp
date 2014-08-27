@@ -41,6 +41,7 @@
 
 #include "binarycontent.h"
 
+#include "binarylayout.h"
 #include "errors.h"
 #include "fileio.h"
 #include "fileutils.h"
@@ -93,119 +94,63 @@ qint64 BinaryContent::findMagicCookie(QFile *in, quint64 magicCookie)
     return -1; // never reached
 }
 
-/*!
-* \class QInstaller::BinaryContent
-*
-* BinaryContent handles binary information embedded into executables.
-* Qt resources as well as resource collections can be stored.
-*
-* Explanation of the binary blob at the end of the installer or separate data file:
-*
-* \verbatim
-*
-* Meta data entry [1 ... n]
-* [Format]
-*     Plain data (QResource)
-* [Format]
-* ----------------------------------------------------------
-* Operation count (qint64)
-* Operation entry [1 ... n]
-* [Format]
-*     Name (qint64, QString)
-*     XML (qint64, QString)
-* [Format]
-* Operation count (qint64)
-* ----------------------------------------------------------
-* Component count
-* Component data entry [1 ... n]
-* [Format]
-*     Archive count (qint64),
-*     Name entry [1 ... n]
-*     [Format]
-*         Name (qint64, QByteArray),
-*         Offset (qint64),
-*         Length (qint64),
-*     [Format]
-*     Archive data entry [1 ... n]
-*     [Format]
-*         Plain data
-*     [Format]
-* [Format]
-* ----------------------------------------------------------
-* Component count (qint64)
-* Component index entry [1 ... n]
-* [Format]
-*     Name (qint64, QByteArray)
-*     Offset (qint64)
-*     Length (qint64)
-* [Format]
-* Component count (qint64)
-* ----------------------------------------------------------
-* Component index block [Offset (qint64)]
-* Component index block [Length (qint64)]
-* ----------------------------------------------------------
-* Resource segments [1 ... n]
-* [Format]
-*     Offset (qint64)
-*     Length (qint64)
-* [Format]
-* ----------------------------------------------------------
-* Operations information block [Offset (qint64)]
-* Operations information block [Length (qint64)]
-* ----------------------------------------------------------
-* Meta data count (qint64)
-* ----------------------------------------------------------
-* Binary content size [Including Marker and Cookie (qint64)]
-* ----------------------------------------------------------
-* Magic marker (qint64)
-* Magic cookie (qint64)
-
-* \endverbatim
-*/
-
-/* static */
 BinaryLayout BinaryContent::binaryLayout(QFile *file, quint64 magicCookie)
 {
-    const qint64 cookiePos = BinaryContent::findMagicCookie(file, magicCookie);
-    const qint64 indexSize = 5 * sizeof(qint64);
-    if (!file->seek(cookiePos - indexSize)) {
-        throw Error(QCoreApplication::translate("BinaryContent",
-            "Could not seek to binary layout section."));
+    BinaryLayout layout;
+    layout.endOfBinaryContent = BinaryContent::findMagicCookie(file, magicCookie) + sizeof(qint64);
+
+    const qint64 posOfMetaDataCount = layout.endOfBinaryContent - (4 * sizeof(qint64));
+    if (!file->seek(posOfMetaDataCount)) {
+        throw QInstaller::Error(QCoreApplication::translate("BinaryLayout",
+            "Could not seek to %1 to read the embedded meta data count.").arg(posOfMetaDataCount));
     }
 
-    BinaryLayout layout;
-    layout.operationsStart = QInstaller::retrieveInt64(file);
-    layout.operationsEnd = QInstaller::retrieveInt64(file);
-    layout.resourceCount = QInstaller::retrieveInt64(file);
-    layout.dataBlockSize = QInstaller::retrieveInt64(file);
+    // read the meta resources count
+    const qint64 metaResourcesCount = QInstaller::retrieveInt64(file);
+
+    const qint64 posOfResourceCollectionsSegment = layout.endOfBinaryContent
+        - ((metaResourcesCount * (2 * sizeof(qint64))) // minus the size of the meta data segments
+        + (8 * sizeof(qint64))); // meta count, offset/length component index, marker, cookie...
+    if (!file->seek(posOfResourceCollectionsSegment)) {
+        throw Error(QCoreApplication::translate("BinaryLayout",
+            "Could not seek to %1 to read the resource collection segment.")
+            .arg(posOfResourceCollectionsSegment));
+    }
+
+    // read the resource collection index offset and length
+    layout.resourceCollectionsSegment = QInstaller::retrieveInt64Range(file);
+
+    // read the meta data resource segments
+    for (int i = 0; i < metaResourcesCount; ++i)
+        layout.metaResourceSegments.append(QInstaller::retrieveInt64Range(file));
+
+    if (metaResourcesCount != layout.metaResourceSegments.count()) {
+        throw Error(QCoreApplication::translate("BinaryLayout",
+            "Unexpected mismatch of meta resources. Read %1, expected: %2.")
+            .arg(layout.metaResourceSegments.count()).arg(metaResourcesCount));
+    }
+
+    // read the operations offset and length
+    layout.operationsSegment = QInstaller::retrieveInt64Range(file);
+
+    // resources count
+    Q_UNUSED(QInstaller::retrieveInt64(file)) // read it, but deliberately not used
+
+    // read the binary content size
+    layout.binaryContentSize = QInstaller::retrieveInt64(file);
+    layout.endOfExectuable = layout.endOfBinaryContent - layout.binaryContentSize;
+
     layout.magicMarker = QInstaller::retrieveInt64(file);
     layout.magicCookie = QInstaller::retrieveInt64(file);
-    layout.indexSize = indexSize + sizeof(qint64);
-    layout.endOfData = file->pos();
 
-    qDebug() << "Operations start:" << layout.operationsStart;
-    qDebug() << "Operations end:" << layout.operationsEnd;
-    qDebug() << "Resource count:" << layout.resourceCount;
-    qDebug() << "Data block size:" << layout.dataBlockSize;
-    qDebug() << "Magic marker:" << layout.magicMarker;
-    qDebug() << "Magic cookie:" << layout.magicCookie;
-    qDebug() << "Index size:" << layout.indexSize;
-    qDebug() << "End of data:" << layout.endOfData;
+    // adjust the offsets to match the actual binary
+    for (int i = 0; i < layout.metaResourceSegments.count(); ++i)
+        layout.metaResourceSegments[i].move(layout.endOfExectuable);
+    layout.metaResourcesSegment = Range<qint64>::fromStartAndEnd(layout.metaResourceSegments
+        .first().start(), layout.metaResourceSegments.last().end());
 
-    const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
-    const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
-    for (int i = 0; i < layout.resourceCount; ++i) {
-        const qint64 offset = layout.endOfData - layout.indexSize
-            - (resourceOffsetAndLengtSize * (i + 1));
-        if (!file->seek(offset)) {
-            throw Error(QCoreApplication::translate("BinaryContent",
-                "Could not seek to metadata index."));
-        }
-        const qint64 metadataResourceOffset = QInstaller::retrieveInt64(file);
-        const qint64 metadataResourceLength = QInstaller::retrieveInt64(file);
-        layout.metadataResourceSegments.append(Range<qint64>::fromStartAndLength(metadataResourceOffset
-            + dataBlockStart, metadataResourceLength));
-    }
+    layout.operationsSegment.move(layout.endOfExectuable);
+    layout.resourceCollectionsSegment.move(layout.endOfExectuable);
 
     return layout;
 }
@@ -214,93 +159,42 @@ void BinaryContent::readBinaryContent(const QSharedPointer<QFile> &in,
     ResourceCollection *metaResources, QList<OperationBlob> *operations,
     ResourceCollectionManager *manager, qint64 *magicMarker, quint64 magicCookie)
 {
-    const qint64 pos = BinaryContent::findMagicCookie(in.data(), magicCookie);
-    const qint64 endOfBinaryContent = pos + sizeof(qint64);
+    const BinaryLayout layout = BinaryContent::binaryLayout(in.data(), magicCookie);
 
-    const qint64 posOfMetaDataCount = endOfBinaryContent - (4 * sizeof(qint64));
-    if (!in->seek(posOfMetaDataCount)) {
-        throw Error(QCoreApplication::translate("BinaryContent",
-            "Could not seek to %1 to read the embedded meta data count.").arg(posOfMetaDataCount));
-    }
-    // read the meta resources count
-    const qint64 metaResourcesCount = QInstaller::retrieveInt64(in.data());
-
-    const qint64 posOfResourceCollectionsSegment = endOfBinaryContent
-        - ((metaResourcesCount * (2 * sizeof(qint64))) // minus the size of the meta data segments
-        + (8 * sizeof(qint64))); // meta count, offset/length component index, marker, cookie...
-    if (!in->seek(posOfResourceCollectionsSegment)) {
-        throw Error(QCoreApplication::translate("BinaryContent",
-            "Could not seek to %1 to read the resource collection segment.")
-            .arg(posOfResourceCollectionsSegment));
-    }
-    // read the resource collection index offset and length
-    const Range<qint64> resourceCollectionsSegment = QInstaller::retrieveInt64Range(in.data());
-
-    // read the meta data resource segments
-    QVector<Range<qint64> > metaDataResourceSegments;
-    for (int i = 0; i < metaResourcesCount; ++i)
-        metaDataResourceSegments.append(QInstaller::retrieveInt64Range(in.data()));
-
-    // read the operations offset and length
-    const Range<qint64> operationsSegment = QInstaller::retrieveInt64Range(in.data());
-
-    // resources count
-    Q_UNUSED(QInstaller::retrieveInt64(in.data())) // read it, but deliberately not used
-
-    // read the binary content size
-    const qint64 binaryContentSize = QInstaller::retrieveInt64(in.data());
-    const qint64 endOfBinary = endOfBinaryContent - binaryContentSize; // end of "compiled" binary
-
-    // read the marker
-    const qint64 marker = QInstaller::retrieveInt64(in.data());
-    if (magicMarker)
-        *magicMarker = marker;
-
-    // the cookie
-    Q_UNUSED(QInstaller::retrieveInt64(in.data())) // read it, but deliberately not used
-
-    // append the calculated resource segments
-    if (metaResources) {
-        foreach (const Range<qint64> &segment, metaDataResourceSegments) {
-            metaResources->appendResource(QSharedPointer<Resource>(new Resource(in,
-                segment.moved(endOfBinary))));
-        }
+    if (metaResources) {    // append the meta resources
+        foreach (const Range<qint64> &segment, layout.metaResourceSegments)
+            metaResources->appendResource(QSharedPointer<Resource>(new Resource(in, segment)));
     }
 
-    const qint64 posOfOperationsBlock = endOfBinary + operationsSegment.start();
-    if (!in->seek(posOfOperationsBlock)) {
-        throw Error(QCoreApplication::translate("BinaryContent",
-            "Could not seek to %1 to read the operation data.").arg(posOfOperationsBlock));
-    }
-    // read the operations count
-    qint64 operationsCount = QInstaller::retrieveInt64(in.data());
-    // read the operations
-    for (int i = 0; i < operationsCount; ++i) {
-        const QString name = QInstaller::retrieveString(in.data());
-        const QString xml = QInstaller::retrieveString(in.data());
-        if (operations)
-            operations->append(OperationBlob(name, xml));
-    }
-    // operations count
-    Q_UNUSED(QInstaller::retrieveInt64(in.data())) // read it, but deliberately not used
-
-    // read the resource collections count
-    const qint64 collectionCount = QInstaller::retrieveInt64(in.data());
-
-    const qint64 posOfResourceCollectionBlock = endOfBinary + resourceCollectionsSegment.start();
-    if (!in->seek(posOfResourceCollectionBlock)) {
-        throw Error(QCoreApplication::translate("BinaryContent",
-            "Could not seek to %1 to read the resource collection block.")
-            .arg(posOfResourceCollectionBlock));
-    }
-    if (manager) {    // read the component index and data
-        manager->read(in, endOfBinary);
-        if (manager->collectionCount() != collectionCount) {
+    if (operations) {
+        const qint64 posOfOperationsBlock = layout.operationsSegment.start();
+        if (!in->seek(posOfOperationsBlock)) {
             throw Error(QCoreApplication::translate("BinaryContent",
-                "Unexpected mismatch of resource collections. Read %1, expected: %2.")
-                .arg(manager->collectionCount()).arg(collectionCount));
+                "Could not seek to %1 to read the operation data.").arg(posOfOperationsBlock));
         }
+        // read the operations count
+        qint64 operationsCount = QInstaller::retrieveInt64(in.data());
+        // read the operations
+        for (int i = 0; i < operationsCount; ++i) {
+            const QString name = QInstaller::retrieveString(in.data());
+            const QString xml = QInstaller::retrieveString(in.data());
+            operations->append(OperationBlob(name, xml));
+        }
+        // operations count
+        Q_UNUSED(QInstaller::retrieveInt64(in.data())) // read it, but deliberately not used
     }
+
+    if (manager) {    // read the component index and data
+        const qint64 posOfResourceCollectionBlock = layout.resourceCollectionsSegment.start();
+        if (!in->seek(posOfResourceCollectionBlock)) {
+            throw Error(QCoreApplication::translate("BinaryContent", "Could not seek to %1 to "
+                "read the resource collection block.").arg(posOfResourceCollectionBlock));
+        }
+        manager->read(in, layout.endOfExectuable);
+    }
+
+    if (magicMarker)
+        *magicMarker = layout.magicMarker;
 }
 
 void BinaryContent::writeBinaryContent(const QSharedPointer<QFile> &out,

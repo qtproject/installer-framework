@@ -101,80 +101,58 @@ int main(int argc, char *argv[])
 
     int result = EXIT_FAILURE;
     QVector<QByteArray> resourceMappings;
+    quint64 cookie = QInstaller::BinaryContent::MagicCookie;
     try {
-        QFile *file = new QFile(path);
-        QInstaller::openForRead(file);
+        {
+            QFile tmp(path);
+            QInstaller::openForRead(&tmp);
 
-        QInstaller::BinaryLayout layout = QInstaller::BinaryContent::binaryLayout(file,
-            QInstaller::BinaryContent::MagicCookie);
+            QInstaller::BinaryLayout layout = QInstaller::BinaryContent::binaryLayout(&tmp,
+                cookie);
 
-        if (layout.magicMarker == QInstaller::BinaryContent::MagicUninstallerMarker) {
-            QFileInfo fi(path);
-            if (QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath))
-                fi.setFile(bundlePath);
-            path = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat");
+            if (layout.magicMarker == QInstaller::BinaryContent::MagicUninstallerMarker) {
+                QFileInfo fi(path);
+                if (QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath))
+                    fi.setFile(bundlePath);
+                path = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat");
 
-            file->setFileName(path);
-            layout = QInstaller::BinaryContent::binaryLayout(file,
-                QInstaller::BinaryContent::MagicCookie);
+                tmp.setFileName(path);
+                cookie = QInstaller::BinaryContent::MagicCookieDat;
+                layout = QInstaller::BinaryContent::binaryLayout(&tmp, cookie);
+            }
+            tmp.close();
+
+            if (parser.isSet(update)) {
+                // To update the binary we do not need any mapping.
+                BinaryReplace br(layout);
+                return br.replace(parser.value(update), path);
+            }
         }
 
-        if (parser.isSet(update)) {
-            // To update the binary we do not need any mapping.
-            BinaryReplace br(layout);
-            return br.replace(parser.value(update), path);
-        }
+        QSharedPointer<QFile> file(new QFile(path));
+        QInstaller::openForRead(file.data());
+
+        qint64 magicMarker;
+        QInstaller::ResourceCollection meta;
+        QList<QInstaller::OperationBlob> operations;
+        QInstaller::ResourceCollectionManager manager;
+        QInstaller::BinaryContent::readBinaryContent(file, &meta, &operations, &manager,
+            &magicMarker, cookie);
 
         // map the inbuilt resources
-        foreach (const Range<qint64> &segment, layout.metadataResourceSegments) {
-            if (segment.length() <= 0)
-                continue;
-            if (!file->seek(segment.start()))
-                throw QInstaller::Error(QLatin1String("Could not seek to segment position."));
-            const QByteArray ba = QInstaller::retrieveData(file, segment.length());
+        foreach (const QSharedPointer<QInstaller::Resource> &resource, meta.resources()) {
+            const bool opened = resource->open();
+            const QByteArray ba = resource->readAll();
             if (!QResource::registerResource((const uchar*) ba.data(), QLatin1String(":/metadata")))
                 throw QInstaller::Error(QLatin1String("Could not register in-binary resource."));
             resourceMappings.append(ba);
+            if (opened)
+                resource->close();
         }
-
-        // instantiate the operations we support
-        const qint64 dataBlockStart = layout.endOfData - layout.dataBlockSize;
-        const qint64 operationsStart = layout.operationsStart + dataBlockStart;
-        if (!file->seek(operationsStart))
-            throw QInstaller::Error(QLatin1String("Could not seek to operation list."));
-
-        QList<QInstaller::OperationBlob> performedOperations;
-        const qint64 operationsCount = QInstaller::retrieveInt64(file);
-        for (int i = 0; i < operationsCount; ++i) {
-            const QString name = QInstaller::retrieveString(file);
-            const QString data = QInstaller::retrieveString(file);
-            performedOperations.append(QInstaller::OperationBlob(name, data));
-        }
-
-        // seek to the position of the resource collections segment info
-        const qint64 resourceOffsetAndLengtSize = 2 * sizeof(qint64);
-        const qint64 resourceSectionSize = resourceOffsetAndLengtSize * layout.resourceCount;
-        qint64 offset = layout.endOfData - layout.indexSize - resourceSectionSize
-            - resourceOffsetAndLengtSize;
-        if (!file->seek(offset)) {
-            throw QInstaller::Error(QLatin1String("Could not seek to read the resource collection "
-                "segment info."));
-        }
-
-        offset = QInstaller::retrieveInt64(file) + dataBlockStart;
-        if (!file->seek(offset)) {
-            throw QInstaller::Error(QLatin1String("Could not seek to start position of resource "
-                "collection block."));
-        }
-
-        // setup the collection manager
-        QSharedPointer<QFile> data(file);
-        QInstaller::ResourceCollectionManager manager;
-        manager.read(data, dataBlockStart);
 
         if (parser.isSet(dump)) {
             // To dump the content we do not need the binary format engine.
-            if (layout.magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
+            if (magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
                 throw QInstaller::Error(QLatin1String("Source file is not an installer."));
             BinaryDump bd;
             return bd.dump(manager, parser.value(dump));
@@ -184,7 +162,7 @@ int main(int argc, char *argv[])
             .collections());    // setup the binary format engine
 
         if (parser.isSet(run)) {
-            OperationRunner runner(layout.magicMarker, performedOperations);
+            OperationRunner runner(magicMarker, operations);
             const QStringList arguments = parser.values(run);
             if (arguments.first() == QLatin1String("DO"))
                 result = runner.runOperation(arguments.mid(1), OperationRunner::RunMode::Do);
