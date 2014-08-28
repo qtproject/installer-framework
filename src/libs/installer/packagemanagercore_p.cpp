@@ -356,12 +356,13 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
                 m_core->appendRootComponent(component);
         }
 
-        // after everything is set up, load the scripts
-        foreach (QInstaller::Component *component, components) {
-            if (statusCanceledOrFailed())
-                return false;
-            if (loadScript)
-                component->loadComponentScript();
+        // after everything is set up, load the scripts if needed
+        if (loadScript) {
+            foreach (QInstaller::Component *component, components) {
+                if (statusCanceledOrFailed())
+                    return false;
+                 component->loadComponentScript();
+            }
         }
         // now we can preselect components in the tree
         foreach (QInstaller::Component *component, components) {
