@@ -332,12 +332,11 @@ QString PackageManagerCorePrivate::componentsXmlPath() const
 bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &components, bool loadScript)
 {
     try {
+        if (statusCanceledOrFailed())
+            return false;
         // append all components to their respective parents
         QHash<QString, Component*>::const_iterator it;
         for (it = components.begin(); it != components.end(); ++it) {
-            if (statusCanceledOrFailed())
-                return false;
-
             QString id = it.key();
             QInstaller::Component *component = it.value();
             while (!id.isEmpty() && component->parentComponent() == 0) {
@@ -349,26 +348,18 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
         // append all components w/o parent to the direct list
         foreach (QInstaller::Component *component, components) {
-            if (statusCanceledOrFailed())
-                return false;
-
             if (component->parentComponent() == 0)
                 m_core->appendRootComponent(component);
         }
 
         // after everything is set up, load the scripts if needed
         if (loadScript) {
-            foreach (QInstaller::Component *component, components) {
-                if (statusCanceledOrFailed())
-                    return false;
-                 component->loadComponentScript();
-            }
+            foreach (QInstaller::Component *component, components)
+                component->loadComponentScript();
         }
+
         // now we can preselect components in the tree
         foreach (QInstaller::Component *component, components) {
-            if (statusCanceledOrFailed())
-                return false;
-
             // set the checked state for all components without child (means without tristate)
             if (component->isCheckable() && !component->isTristate()) {
                 if (component->isDefault() && isInstaller())
@@ -377,6 +368,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
                     component->setCheckState(Qt::Checked);
             }
         }
+
         std::sort(m_rootComponents.begin(), m_rootComponents.end(), Component::SortingPriorityGreaterThan());
     } catch (const Error &error) {
         clearAllComponentLists();
