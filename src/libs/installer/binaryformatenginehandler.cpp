@@ -41,37 +41,22 @@
 
 #include "binaryformatenginehandler.h"
 #include "binaryformatengine.h"
-#include "binaryformat.h"
 
-#include <QDebug>
 #include <QFile>
 
 namespace QInstaller {
 
 static BinaryFormatEngineHandler *s_instance = 0;
 
-
-class BinaryFormatEngineHandler::Private
-{
-public:
-    Private(const ResourceCollectionManager &i)
-        : manager(i)
-    {
-    }
-
-    ResourceCollectionManager manager;
-};
-
-BinaryFormatEngineHandler::BinaryFormatEngineHandler(const ResourceCollectionManager &manager)
-    : d(new Private(manager))
+BinaryFormatEngineHandler::BinaryFormatEngineHandler()
 {
     s_instance = this;
 }
 
 BinaryFormatEngineHandler::BinaryFormatEngineHandler(const BinaryFormatEngineHandler &other)
     : QAbstractFileEngineHandler()
-    , d(new Private(other.d->manager))
 {
+    Q_UNUSED(other)
     s_instance = this;
 }
 
@@ -79,28 +64,28 @@ BinaryFormatEngineHandler::~BinaryFormatEngineHandler()
 {
     if (s_instance == this)
         s_instance = 0;
-    delete d;
-}
-
-void BinaryFormatEngineHandler::setResourceCollectionManager(const ResourceCollectionManager &manager)
-{
-    d->manager = manager;
 }
 
 QAbstractFileEngine *BinaryFormatEngineHandler::create(const QString &fileName) const
 {
     return fileName.startsWith(QLatin1String("installer://"), Qt::CaseInsensitive )
-        ? new BinaryFormatEngine(d->manager, fileName) : 0;
+        ? new BinaryFormatEngine(m_resources, fileName) : 0;
 }
 
 void BinaryFormatEngineHandler::reset()
 {
-    d->manager.reset();
+    m_resources.clear();
 }
 
 BinaryFormatEngineHandler *BinaryFormatEngineHandler::instance()
 {
     return s_instance;
+}
+
+void BinaryFormatEngineHandler::registerResources(const QList<ResourceCollection> &collections)
+{
+    foreach (const ResourceCollection &collection, collections)
+        m_resources.insert(collection.name(), collection);
 }
 
 void
@@ -115,17 +100,10 @@ BinaryFormatEngineHandler::registerResource(const QString &fileName, const QStri
     while (path.endsWith(sep))
         path.chop(1);
 
-    const QString coll = path.section(sep, 0, 0);
-    const QString resourceName = path.section(sep, 1, 1);
-
-    ResourceCollection c = d->manager.collectionByName(coll.toUtf8());
-    if (c.name().isEmpty())
-        c.setName(coll.toUtf8());
-
-    QSharedPointer<Resource> resource(new Resource(resourcePath));
-    resource->setName(resourceName.toUtf8());
-    c.appendResource(resource);
-    d->manager.insertCollection(c);
+    const QByteArray resourceName = path.section(sep, 1, 1).toUtf8();
+    const QByteArray collectionName = path.section(sep, 0, 0).toUtf8();
+    m_resources[collectionName].appendResource(QSharedPointer<Resource>(new Resource(resourceName,
+        resourcePath)));
 }
 
 } // namespace QInstaller

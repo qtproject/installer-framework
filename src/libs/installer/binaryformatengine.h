@@ -53,7 +53,8 @@ class BinaryFormatEngine : public QAbstractFileEngine
     Q_DISABLE_COPY(BinaryFormatEngine)
 
 public:
-    BinaryFormatEngine(const ResourceCollectionManager &manager, const QString &fileName);
+    BinaryFormatEngine(const QHash<QByteArray, ResourceCollection> &collections,
+        const QString &fileName);
 
     void setFileName(const QString &file);
 
@@ -77,7 +78,7 @@ private:
     ResourceCollection m_collection;
     QSharedPointer<Resource> m_resource;
 
-    const ResourceCollectionManager m_manager;
+    QHash<QByteArray, ResourceCollection> m_collections;
 };
 
 } // namespace QInstaller

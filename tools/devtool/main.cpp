@@ -193,8 +193,8 @@ int main(int argc, char *argv[])
         }
 
         // setup the binary format engine
-        QScopedPointer<QInstaller::BinaryFormatEngineHandler> binaryFormatEngineHandler;
-        binaryFormatEngineHandler.reset(new QInstaller::BinaryFormatEngineHandler(manager));
+        QInstaller::BinaryFormatEngineHandler binaryFormatEngineHandler;
+        binaryFormatEngineHandler.registerResources(manager.collections());
 
         if (parser.isSet(run)) {
             OperationRunner runner(layout.magicMarker, performedOperations);

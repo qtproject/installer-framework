@@ -80,10 +80,10 @@ private:
 
 namespace QInstaller {
 
-BinaryFormatEngine::BinaryFormatEngine(const ResourceCollectionManager &manager,
+BinaryFormatEngine::BinaryFormatEngine(const QHash<QByteArray, ResourceCollection> &collections,
         const QString &fileName)
     : m_resource(0)
-    , m_manager(manager)
+    , m_collections(collections)
 {
     setFileName(fileName);
 }
@@ -104,7 +104,7 @@ void BinaryFormatEngine::setFileName(const QString &file)
     while (path.endsWith(sep))
         path.chop(1);
 
-    m_collection = m_manager.collectionByName(path.section(sep, 0, 0).toUtf8());
+    m_collection = m_collections.value(path.section(sep, 0, 0).toUtf8());
     m_resource = m_collection.resourceByName(path.section(sep, 1, 1).toUtf8());
 }
 
@@ -251,7 +251,7 @@ QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringLi
         foreach (const QSharedPointer<Resource> &resource, m_collection.resources())
             result.append(QString::fromUtf8(resource->name()));
     } else if (m_collection.name().isEmpty() && (filters & QDir::Dirs)) {
-        foreach (const ResourceCollection &collection, m_manager.collections())
+        foreach (const ResourceCollection &collection, m_collections)
             result.append(QString::fromUtf8(collection.name()));
     }
 

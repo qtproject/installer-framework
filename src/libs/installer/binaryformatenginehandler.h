@@ -42,32 +42,29 @@
 #ifndef BINARYFORMATENGINEHANDLER_H
 #define BINARYFORMATENGINEHANDLER_H
 
-#include "installer_global.h"
+#include "binaryformat.h"
 
 #include <QtCore/private/qabstractfileengine_p.h>
 
 namespace QInstaller {
 
-class ResourceCollectionManager;
-
 class INSTALLER_EXPORT BinaryFormatEngineHandler : public QAbstractFileEngineHandler
 {
 public:
-    explicit BinaryFormatEngineHandler(const ResourceCollectionManager &manager);
+    BinaryFormatEngineHandler();
     BinaryFormatEngineHandler(const BinaryFormatEngineHandler &other);
     ~BinaryFormatEngineHandler();
-    QAbstractFileEngine *create(const QString &fileName) const;
 
-    void setResourceCollectionManager(const ResourceCollectionManager &manager);
+    QAbstractFileEngine *create(const QString &fileName) const;
 
     void reset();
     static BinaryFormatEngineHandler *instance();
 
+    void registerResources(const QList<ResourceCollection> &collections);
     void registerResource(const QString &fileName, const QString &resourcePath);
 
 private:
-    class Private;
-    Private *const d;
+    QHash<QByteArray, ResourceCollection> m_resources;
 };
 
 } // namespace QInstaller

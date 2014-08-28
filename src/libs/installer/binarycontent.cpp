@@ -146,7 +146,6 @@ public:
     QVector<QByteArray> m_resourceMappings;
     QVector<Range<qint64> > m_metadataResourceSegments;
 
-    ResourceCollectionManager m_collectionManager;
     BinaryFormatEngineHandler m_binaryFormatEngineHandler;
 };
 
@@ -156,7 +155,6 @@ BinaryContent::Private::Private()
     , m_dataBlockStart(Q_INT64_C(0))
     , m_appBinary(0)
     , m_binaryDataFile(0)
-    , m_binaryFormatEngineHandler(m_collectionManager)
 {}
 
 BinaryContent::Private::Private(const QString &path)
@@ -164,7 +162,6 @@ BinaryContent::Private::Private(const QString &path)
     , m_dataBlockStart(Q_INT64_C(0))
     , m_appBinary(new QFile(path))
     , m_binaryDataFile(0)
-    , m_binaryFormatEngineHandler(m_collectionManager)
 {}
 
 BinaryContent::Private::Private(const Private &other)
@@ -177,7 +174,6 @@ BinaryContent::Private::Private(const Private &other)
     , m_performedOperationsData(other.m_performedOperationsData)
     , m_resourceMappings(other.m_resourceMappings)
     , m_metadataResourceSegments(other.m_metadataResourceSegments)
-    , m_collectionManager(other.m_collectionManager)
     , m_binaryFormatEngineHandler(other.m_binaryFormatEngineHandler)
 {}
 
@@ -413,13 +409,14 @@ void BinaryContent::readBinaryData(BinaryContent &content, const QSharedPointer<
             "position of resource collection block."));
     }
 
-    content.d->m_collectionManager.read(file, dataBlockStart);
-    content.d->m_binaryFormatEngineHandler.setResourceCollectionManager(content.d->m_collectionManager);
+    ResourceCollectionManager collectionManager;
+    collectionManager.read(file, dataBlockStart);
+    content.d->m_binaryFormatEngineHandler.registerResources(collectionManager.collections());
 
     if (!QInstaller::isVerbose())
         return;
 
-    const QList<ResourceCollection> collections = content.d->m_collectionManager.collections();
+    const QList<ResourceCollection> collections = collectionManager.collections();
     qDebug() << "Number of resource collections loaded:" << collections.count();
     foreach (const ResourceCollection &collection, collections) {
         const QList<QSharedPointer<Resource> > resources = collection.resources();
