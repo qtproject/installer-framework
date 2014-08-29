@@ -1794,7 +1794,8 @@ QString TargetDirectoryPage::targetDirWarning() const
     QString dir = QDir::toNativeSeparators(targetDir());
 #ifdef Q_OS_WIN
     // folder length (set by user) + maintenance tool name length (no extension) + extra padding
-    if ((dir.length() + packageManagerCore()->settings().maintenanceToolName().length() + 20) >= MAX_PATH) {
+    if ((dir.length()
+        + packageManagerCore()->settings().maintenanceToolName().length() + 20) >= MAX_PATH) {
             return tr("The path you have entered is too long, please make sure to "
                 "specify a valid path.");
     }
@@ -1828,9 +1829,9 @@ QString TargetDirectoryPage::targetDirWarning() const
     if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
         for (int i = 0; i < dir.length(); ++i) {
             if (dir.at(i).unicode() & 0xff80) {
-                return tr("The path or installation directory contains non ASCII "
-                    "characters. This is currently not supported! Please choose a different path or "
-                    "installation directory.");
+                return tr("The path or installation directory contains non ASCII characters. This "
+                    "is currently not supported! Please choose a different path or installation "
+                    "directory.");
             }
         }
     }
