@@ -106,7 +106,7 @@ public:
 
     explicit PackageManagerCorePrivate(PackageManagerCore *core);
     explicit PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
-        const OperationList &performedOperations);
+        const QList<OperationBlob> &performedOperations);
     ~PackageManagerCorePrivate();
 
     static bool isProcessRunning(const QString &name, const QList<ProcessInfo> &processes);

@@ -749,8 +749,8 @@ PackageManagerCore::PackageManagerCore()
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
 }
 
-PackageManagerCore::PackageManagerCore(qint64 magicmaker, const OperationList &performedOperations)
-    : d(new PackageManagerCorePrivate(this, magicmaker, performedOperations))
+PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &operations)
+    : d(new PackageManagerCorePrivate(this, magicmaker, operations))
 {
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");

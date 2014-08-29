@@ -104,7 +104,8 @@ private slots:
 
         setIgnoreMessage(testDirectory);
 
-        PackageManagerCore core(QInstaller::BinaryContent::MagicInstallerMarker);
+        PackageManagerCore core(QInstaller::BinaryContent::MagicInstallerMarker,
+            QList<QInstaller::OperationBlob>());
         // cancel the installer in error case
         core.autoRejectMessageBoxes();
         core.appendRootComponent(new DummyComponent(&core));
@@ -132,7 +133,8 @@ private slots:
 
         setIgnoreMessage(testDirectory);
 
-        PackageManagerCore core(QInstaller::BinaryContent::MagicInstallerMarker);
+        PackageManagerCore core(QInstaller::BinaryContent::MagicInstallerMarker,
+            QList<QInstaller::OperationBlob>());
         // cancel the installer in error case
         core.autoRejectMessageBoxes();
         core.appendRootComponent(new DummyComponent(&core));

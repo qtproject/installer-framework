@@ -42,11 +42,16 @@
 #ifndef UPDATECHECKER_H
 #define UPDATECHECKER_H
 
-class UpdateChecker
+#include "sdkapp.h"
+
+class UpdateChecker : public SDKApp<QCoreApplication>
 {
+    Q_OBJECT
+    Q_DISABLE_COPY(UpdateChecker)
+
 public:
-    UpdateChecker() {}
-    int check(int argc, char *argv[]);
+    UpdateChecker(int &argc, char *argv[]);
+    int check();
 };
 
 #endif // UPDATECHECKER_H

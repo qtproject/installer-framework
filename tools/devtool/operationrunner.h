@@ -42,11 +42,12 @@
 #ifndef OPERATIONRUNNER_H
 #define OPERATIONRUNNER_H
 
-#include <qinstallerglobal.h>
+#include <binaryformat.h>
 
 #include <QObject>
 
 namespace QInstaller {
+    struct OperationBlob;
     class PackageManagerCore;
 }
 
@@ -61,7 +62,7 @@ public:
         Undo
     };
 
-    OperationRunner(qint64 magicMarker, const QInstaller::OperationList &oldOperations);
+    OperationRunner(qint64 magicMarker, const QList<QInstaller::OperationBlob> &oldOperations);
     ~OperationRunner();
     int runOperation(QStringList arguments, RunMode mode);
 

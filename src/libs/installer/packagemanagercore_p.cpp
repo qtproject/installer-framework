@@ -203,7 +203,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 }
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
-        const OperationList &performedOperations)
+        const QList<OperationBlob> &performedOperations)
     : m_updateFinder(0)
     , m_updaterApplication(new DummyConfigurationInterface)
     , m_status(PackageManagerCore::Unfinished)
@@ -212,7 +212,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_launchedAsRoot(AdminAuthorization::hasAdminRights())
     , m_completeUninstall(false)
     , m_needToWriteMaintenanceTool(false)
-    , m_performedOperationsOld(performedOperations)
     , m_dependsOnLocalInstallerBinary(false)
     , m_core(core)
     , m_updates(false)
@@ -228,6 +227,22 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_guiObject(0)
     , m_remoteFileEngineHandler(new RemoteFileEngineHandler)
 {
+    foreach (const OperationBlob &operation, performedOperations) {
+        QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
+            .create(operation.name));
+        if (op.isNull()) {
+            qWarning() << QString::fromLatin1("Failed to load unknown operation %1")
+                .arg(operation.name);
+            continue;
+        }
+
+        if (!op->fromXml(operation.xml)) {
+            qWarning() << "Failed to load XML for operation:" << operation.name;
+            continue;
+        }
+        m_performedOperationsOld.append(op.take());
+    }
+
     // Creates and initializes a remote client, makes us get admin rights for QFile, QSettings
     // and QProcess operations. Init needs to called before we can get the real authorization key.
     int port = 30000 + qrand() % 1000;

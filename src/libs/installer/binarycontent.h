@@ -69,6 +69,7 @@ struct BinaryLayout
 class INSTALLER_EXPORT BinaryContent
 {
 public:
+    // the marker to distinguish what kind of binary
     static const qint64 MagicInstallerMarker = 0x12023233UL;
     static const qint64 MagicUninstallerMarker = 0x12023234UL;
 
@@ -79,23 +80,8 @@ public:
     static const quint64 MagicCookie = 0xc2630a1c99d668f8LL;  // binary
     static const quint64 MagicCookieDat = 0xc2630a1c99d668f9LL; // data
 
-    BinaryContent();
-    ~BinaryContent();
-
-    BinaryContent(const BinaryContent &rhs);
-    BinaryContent &operator=(const BinaryContent &rhs);
-
-    static BinaryContent readFromBinary(const QString &path);
-    static BinaryContent readAndRegisterFromBinary(const QString &path);
     static qint64 findMagicCookie(QFile *file, quint64 magicCookie);
     static BinaryLayout binaryLayout(QFile *file, quint64 magicCookie);
-
-    int registerPerformedOperations();
-    OperationList performedOperations() const;
-
-    qint64 magicMarker() const;
-    int registerEmbeddedQResources();
-    void registerAsDefaultQResource(const QString &path);
 
     static void readBinaryContent(const QSharedPointer<QFile> &in,
                                 ResourceCollection *metaResources,
@@ -110,14 +96,6 @@ public:
                                 const ResourceCollectionManager &manager,
                                 qint64 magicMarker,
                                 quint64 magicCookie);
-private:
-    explicit BinaryContent(const QString &path);
-    static void readBinaryData(BinaryContent &content, const QSharedPointer<QFile> &file,
-        const BinaryLayout &layout);
-
-private:
-    class Private;
-    QSharedDataPointer<Private> d;
 };
 
 } // namespace QInstaller

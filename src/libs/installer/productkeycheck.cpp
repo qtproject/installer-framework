@@ -30,6 +30,8 @@
 #include "productkeycheck.h"
 #include "packagemanagercore.h"
 
+namespace QInstaller {
+
 class ProductKeyCheckPrivate
 {
 };
@@ -91,3 +93,5 @@ QList<int> ProductKeyCheck::registeredPages() const
 {
     return QList<int>();
 }
+
+} // namespace QInstaller

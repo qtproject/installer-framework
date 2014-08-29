@@ -49,7 +49,8 @@
 
 #include <iostream>
 
-OperationRunner::OperationRunner(qint64 magicMarker, const QInstaller::OperationList &oldOperations)
+OperationRunner::OperationRunner(qint64 magicMarker,
+        const QList<QInstaller::OperationBlob> &oldOperations)
     : m_core(new QInstaller::PackageManagerCore(magicMarker, oldOperations))
 {
     // We need a package manager core as some operations expect them to be available.

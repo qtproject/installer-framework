@@ -1,10 +1,11 @@
 /**************************************************************************
 **
-** Copyright (c) 2013-2014 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
-** This file is part of Installer Framework
+** This file is part of the Qt Installer Framework.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
@@ -25,50 +26,45 @@
 ** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
+**
+**
+** $QT_END_LICENSE$
+**
 **************************************************************************/
 
-#ifndef PRODUCTKEYCHECK_H
-#define PRODUCTKEYCHECK_H
+#ifndef INSTALLERBASE_H
+#define INSTALLERBASE_H
 
-#include "installer_global.h"
+#include "sdkapp.h"
 
-#include <QString>
+namespace QInstaller {
+    class PackageManagerCore;
+}
 
-namespace QInstaller{
-class PackageManagerCore;
-class ProductKeyCheckPrivate;
-class Repository;
-
-class INSTALLER_EXPORT ProductKeyCheck
+class InstallerBase : public SDKApp<QApplication>
 {
-    Q_DISABLE_COPY(ProductKeyCheck)
+    Q_OBJECT
+    Q_DISABLE_COPY(InstallerBase)
 
 public:
-    ~ProductKeyCheck();
-    static ProductKeyCheck *instance();
-    void init(PackageManagerCore *core);
+    InstallerBase(int &argc, char *argv[]);
+    ~InstallerBase();
 
-    // was validLicense
-    bool hasValidKey();
-    QString lastErrorString();
-    QString maintainanceToolDetailErrorNotice();
-
-    //is used in the generic ApplyProductKeyOperation, for example to patch things
-    bool applyKey(const QStringList &arguments);
-
-    // to filter none valid licenses
-    bool isValidLicenseTextFile(const QString &fileName);
-
-    // to filter repositories not matching the license
-    bool isValidRepository(const QInstaller::Repository &repository) const;
-
-    QList<int> registeredPages() const;
+    int run();
 
 private:
-    ProductKeyCheck();
-    ProductKeyCheckPrivate *const d;
+    void dumpResourceTree() const;
+    QStringList repositories(const QString &list) const;
+
+private:
+    QInstaller::PackageManagerCore *m_core;
 };
 
-} // namespace QInstaller
-
-#endif // PRODUCTKEYCHECK_H
+#endif // INSTALLERBASE_H

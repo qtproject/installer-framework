@@ -143,23 +143,12 @@ int main(int argc, char *argv[])
         if (!file->seek(operationsStart))
             throw QInstaller::Error(QLatin1String("Could not seek to operation list."));
 
-        QList<QInstaller::Operation *> performedOperations;
+        QList<QInstaller::OperationBlob> performedOperations;
         const qint64 operationsCount = QInstaller::retrieveInt64(file);
         for (int i = 0; i < operationsCount; ++i) {
             const QString name = QInstaller::retrieveString(file);
             const QString data = QInstaller::retrieveString(file);
-
-            QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
-                .create(name));
-            if (op.isNull()) {
-                throw QInstaller::Error(QString::fromLatin1("Could not load unknown operation %1")
-                    .arg(name));
-            }
-            if (!op->fromXml(data)) {
-                throw QInstaller::Error(QString::fromLatin1("Could not load XML for operation: %1")
-                    .arg(name));
-            }
-            performedOperations.append(op.take());
+            performedOperations.append(QInstaller::OperationBlob(name, data));
         }
 
         // seek to the position of the resource collections segment info

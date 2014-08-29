@@ -40,11 +40,9 @@
 **************************************************************************/
 
 #include "updatechecker.h"
-#include "sdkapp.h"
 
-#include <binarycontent.h>
+#include <binaryformatenginehandler.h>
 #include <component.h>
-#include <constants.h>
 #include <errors.h>
 #include <init.h>
 #include <kdrunoncechecker.h>
@@ -55,57 +53,65 @@
 
 #include <iostream>
 
-int UpdateChecker::check(int argc, char *argv[])
+UpdateChecker::UpdateChecker(int &argc, char *argv[])
+    : SDKApp<QCoreApplication>(argc, argv)
 {
-    try {
-        SDKApp<QCoreApplication> app(argc, argv);
+    QInstaller::init(); // register custom operations
+}
 
-        KDRunOnceChecker runCheck((QLatin1String("lockmyApp15021976.lock")));
-        if (runCheck.isRunning(KDRunOnceChecker::Lockfile))
-            throw QInstaller::Error(QLatin1String("An instance is already checking for updates."));
+int UpdateChecker::check()
+{
+    KDRunOnceChecker runCheck((QLatin1String("lockmyApp15021976.lock")));
+    if (runCheck.isRunning(KDRunOnceChecker::Lockfile))
+        throw QInstaller::Error(QLatin1String("An instance is already checking for updates."));
 
-        QInstaller::init(); // register custom operations
-
-        const QInstaller::BinaryContent content =
-            QInstaller::BinaryContent::readAndRegisterFromBinary(app.binaryFile());
-        if (content.magicMarker() != QInstaller::BinaryContent::MagicInstallerMarker)
-            throw QInstaller::Error(QLatin1String("Installers cannot check for updates."));
-
-        QInstaller::PackageManagerCore core(QInstaller::BinaryContent::MagicUpdaterMarker, content
-            .performedOperations());
-        ProductKeyCheck::instance()->init(&core);
-        QInstaller::PackageManagerCore::setVirtualComponentsVisible(true);
-
-        if (!core.fetchRemotePackagesTree())
-            throw QInstaller::Error(core.error());
-
-        const QList<QInstaller::Component *> components = core.updaterComponents();
-        if (components.isEmpty())
-            throw QInstaller::Error(QLatin1String("There are currently no updates available."));
-
-        QDomDocument doc;
-        QDomElement root = doc.createElement(QLatin1String("updates"));
-        doc.appendChild(root);
-
-        foreach (QInstaller::Component *component, components) {
-            QDomElement update = doc.createElement(QLatin1String("update"));
-            update.setAttribute(QLatin1String("name"),
-                component->value(QInstaller::scDisplayName));
-            update.setAttribute(QLatin1String("version"),
-                component->value(QInstaller::scRemoteVersion));
-            update.setAttribute(QLatin1String("size"),
-                component->value(QInstaller::scUncompressedSize));
-            root.appendChild(update);
-        }
-
-        std::cout << qPrintable(doc.toString(4)) << std::endl;
-        return EXIT_SUCCESS;
-    } catch (const QInstaller::Error &e) {
-        std::cerr << qPrintable(e.message()) << std::endl;
-    } catch (const std::exception &e) {
-        std::cerr << e.what() << std::endl;
-    } catch (...) {
-        std::cerr <<  "Unknown exception caught." << std::endl;
+    QString fileName = datFile(binaryFile());
+    quint64 cookie = QInstaller::BinaryContent::MagicCookieDat;
+    if (fileName.isEmpty()) {
+        fileName = binaryFile();
+        cookie = QInstaller::BinaryContent::MagicCookie;
     }
-    return EXIT_FAILURE;
+
+    QSharedPointer<QFile> binary(new QFile(fileName));
+    QInstaller::openForRead(binary.data());
+
+    qint64 magicMarker;
+    QInstaller::ResourceCollection resources;
+    QList<QInstaller::OperationBlob> operations;
+    QInstaller::ResourceCollectionManager manager;
+    QInstaller::BinaryContent::readBinaryContent(binary, &resources, &operations, &manager,
+        &magicMarker, cookie);
+
+    if (magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
+        throw QInstaller::Error(QLatin1String("Installers cannot check for updates."));
+
+    registerMetaResources(resources);   // the base class will unregister the resources
+
+    // instantiate the installer we are actually going to use
+    QInstaller::PackageManagerCore core(QInstaller::BinaryContent::MagicUpdaterMarker, operations);
+    QInstaller::BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
+    QInstaller::PackageManagerCore::setVirtualComponentsVisible(true);
+    QInstaller::ProductKeyCheck::instance()->init(&core);
+
+    if (!core.fetchRemotePackagesTree())
+        throw QInstaller::Error(core.error());
+
+    const QList<QInstaller::Component *> components = core.updaterComponents();
+    if (components.isEmpty())
+        throw QInstaller::Error(QLatin1String("There are currently no updates available."));
+
+    QDomDocument doc;
+    QDomElement root = doc.createElement(QLatin1String("updates"));
+    doc.appendChild(root);
+
+    foreach (QInstaller::Component *component, components) {
+        QDomElement update = doc.createElement(QLatin1String("update"));
+        update.setAttribute(QLatin1String("name"), component->value(QInstaller::scDisplayName));
+        update.setAttribute(QLatin1String("version"), component->value(QInstaller::scRemoteVersion));
+        update.setAttribute(QLatin1String("size"), component->value(QInstaller::scUncompressedSize));
+        root.appendChild(update);
+    }
+
+    std::cout << qPrintable(doc.toString(4)) << std::endl;
+    return EXIT_SUCCESS;
 }
