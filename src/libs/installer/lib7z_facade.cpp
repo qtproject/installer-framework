@@ -106,7 +106,6 @@ bool CreateHardLinkWrapper(const QString &dest, const QString &file)
 #include <sys/stat.h>
 #endif
 
-#include <iostream>
 #include <memory>
 
 #include <cassert>
@@ -1409,7 +1408,7 @@ void Lib7z::createArchive(QFileDevice* archive, const QStringList &sourcePaths, 
                 qPrintable(file.errorString()));
         }
     } catch (const char *err) {
-        std::cout << err << std::endl;
+        qDebug() << err;
         throw SevenZipException(err);
     } catch (const QInstaller::Error &err) {
         throw SevenZipException(err.message());

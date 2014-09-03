@@ -64,8 +64,6 @@
 #include <QTemporaryFile>
 #include <QTranslator>
 
-#include <iostream>
-
 InstallerBase::InstallerBase(int &argc, char *argv[])
     : SDKApp<QApplication>(argc, argv)
     , m_core(0)
@@ -108,10 +106,9 @@ int InstallerBase::run()
         &magicMarker, cookie);
 
     if (QInstaller::isVerbose()) {
-        using namespace std;
-        cout << "Language:" << QLocale().uiLanguages().value(0,
-            QLatin1String("No UI language set")).constData() << endl;
-        cout << "Arguments: " << arguments().join(QLatin1String(", ")).constData() << endl;
+        qDebug() << "Language:" << QLocale().uiLanguages().value(0,
+            QLatin1String("No UI language set")).toUtf8().constData();
+        qDebug() << "Arguments: " << arguments().join(QLatin1String(", ")).toUtf8().constData();
     }
 
     registerMetaResources(resources);   // the base class will unregister the resources
@@ -282,13 +279,13 @@ int InstallerBase::run()
 
 void InstallerBase::dumpResourceTree() const
 {
-    std::cout << "Resource tree:" << std::endl;
+    qDebug() << "Resource tree:";
     QDirIterator it(QLatin1String(":/"), QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
         QDirIterator::Subdirectories);
     while (it.hasNext()) {
         if (it.next().startsWith(QLatin1String(":/qt-project.org")))
             continue;
-        std::cout << "    " << it.filePath().constData() << std::endl;
+        qDebug() << "    " << it.filePath().toUtf8().constData();
     }
 }
 
@@ -296,6 +293,6 @@ QStringList InstallerBase::repositories(const QString &list) const
 {
     const QStringList items = list.split(QLatin1Char(','), QString::SkipEmptyParts);
     foreach (const QString &item, items)
-        std::cout << "Adding custom repository:" << item.constData() << std::endl;
+        qDebug() << "Adding custom repository:" << item.toUtf8().constData();
     return items;
 }
