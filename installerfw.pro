@@ -9,6 +9,10 @@ BUILD_TESTS = $$(BUILDTESTS)
 isEmpty(BUILD_TESTS):BUILD_TESTS=$${BUILDTESTS}
 !isEmpty(BUILD_TESTS):SUBDIRS += tests
 
+BUILD_EXAMPLES = $$(BUILDEXAMPLES)
+isEmpty(BUILD_EXAMPLES):BUILD_EXAMPLES=$${BUILDEXAMPLES}
+!isEmpty(BUILD_EXAMPLES):SUBDIRS += examples
+
 !minQtVersion(5, 3, 0) {
     message("Cannot build Qt Installer Framework with Qt version $${QT_VERSION}.")
     error("Use at least Qt 5.3.0.")
