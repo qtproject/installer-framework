@@ -124,8 +124,6 @@ public:
     void appendResource(const QSharedPointer<Resource> &resource);
     void appendResources(const QList<QSharedPointer<Resource> > &resources);
 
-    bool operator<(const ResourceCollection &other) const;
-    bool operator==(const ResourceCollection &other) const;
 
 private:
     QByteArray m_name;

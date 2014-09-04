@@ -342,18 +342,6 @@ void ResourceCollection::read(const QSharedPointer<QFile> &in, qint64 offset)
     in->seek(pos);
 }
 
-bool ResourceCollection::operator<(const ResourceCollection& other) const
-{
-    if (m_name != other.name())
-        return m_name < other.m_name;
-    return m_segment < other.m_segment;
-}
-
-bool ResourceCollection::operator==(const ResourceCollection& other) const
-{
-    return m_name == other.m_name && m_segment == other.m_segment;
-}
-
 /*!
     Appends \a resource to this collection. The collection takes ownership of \a resource.
  */
