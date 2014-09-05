@@ -20,6 +20,7 @@ private slots:
     void loadMalformedConfig();
     void loadUnknownElementConfigInStrictParseMode();
     void loadUnknownElementConfigInRelaxedParseMode();
+    void loadMinimalConfigTagDefaults();
 };
 
 void tst_Settings::loadTutorialConfig()
@@ -154,6 +155,18 @@ void tst_Settings::loadUnknownElementConfigInRelaxedParseMode()
     } catch (const Error &error) {
         QFAIL(qPrintable(QString::fromLatin1("Got an exception in TolerantParseMode: %1").arg(error.message())));
     }
+}
+
+void tst_Settings::loadMinimalConfigTagDefaults()
+{
+    Settings settings = Settings::fromFileAndPrefix(":///data/minimal_config_tag_defaults.xml",
+        ":///data");
+
+    // These tags are not mandatory, though need to be set to default values.
+    QCOMPARE(settings.configurationFileName(), QLatin1String("components.xml"));
+
+    QCOMPARE(settings.maintenanceToolName(), QLatin1String("maintenancetool"));
+    QCOMPARE(settings.maintenanceToolIniFile(), QLatin1String("maintenancetool.ini"));
 }
 
 QTEST_MAIN(tst_Settings)

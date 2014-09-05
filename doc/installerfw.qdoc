@@ -222,7 +222,8 @@
         \row
             \li RunProgramDescription
             \li Text shown next to the check box for running the program after
-                the installation. Defaults to \gui {Run <Name>}.
+                the installation. If \gui <RunProgram> is set but no description provided,
+                the UI will display \gui {Run <Name> now.} instead.
         \row
             \li StartMenuDir
             \li Name of the default program group for the product in the Windows

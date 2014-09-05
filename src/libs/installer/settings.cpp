@@ -281,17 +281,20 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         s.d->m_data.insert(scIcon, QLatin1String(":/installer"));
     if (!s.d->m_data.contains(scInstallerApplicationIcon))
         s.d->m_data.insert(scInstallerApplicationIcon, s.d->m_data.value(scIcon));
-    if (!s.d->m_data.contains(scInstallerWindowIcon))
+    if (!s.d->m_data.contains(scInstallerWindowIcon)) {
         s.d->m_data.insert(scInstallerWindowIcon,
                            QString(s.d->m_data.value(scIcon).toString() + s.systemIconSuffix()));
+    }
     if (!s.d->m_data.contains(scRemoveTargetDir))
         s.d->m_data.insert(scRemoveTargetDir, scTrue);
-    if (!s.d->m_data.contains(scMaintenanceToolName))
+    if (s.d->m_data.value(scMaintenanceToolName).toString().isEmpty())
         s.d->m_data.insert(scMaintenanceToolName, QLatin1String("maintenancetool"));
-    if (!s.d->m_data.contains(scTargetConfigurationFile))
+    if (s.d->m_data.value(scTargetConfigurationFile).toString().isEmpty())
         s.d->m_data.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
-    if (!s.d->m_data.contains(scMaintenanceToolIniFile))
-        s.d->m_data.insert(scMaintenanceToolIniFile, QString(s.maintenanceToolName() + QLatin1String(".ini")));
+    if (s.d->m_data.value(scMaintenanceToolIniFile).toString().isEmpty()) {
+        s.d->m_data.insert(scMaintenanceToolIniFile, QString(s.maintenanceToolName()
+            + QLatin1String(".ini")));
+    }
     if (!s.d->m_data.contains(scDependsOnLocalInstallerBinary))
         s.d->m_data.insert(scDependsOnLocalInstallerBinary, false);
     if (!s.d->m_data.contains(scRepositorySettingsPageVisible))

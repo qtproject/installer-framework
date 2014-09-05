@@ -6,5 +6,6 @@
         <file>data/minimal_config.xml</file>
         <file>data/tutorial_config.xml</file>
         <file>data/unknown_element_config.xml</file>
+        <file>data/minimal_config_tag_defaults.xml</file>
     </qresource>
 </RCC>
