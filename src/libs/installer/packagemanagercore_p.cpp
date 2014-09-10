@@ -497,6 +497,7 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component 
     if (isUpdater())
         relevantComponentForAutoDependOn = m_updaterComponents + m_updaterComponentsDeps;
     else {
+        relevantComponentForAutoDependOn = m_rootComponents;
         foreach (QInstaller::Component *component, m_rootComponents)
             relevantComponentForAutoDependOn += component->childComponents(Component::Descendants);
     }
