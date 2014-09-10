@@ -42,8 +42,9 @@
 namespace QInstaller {
 
 class PackageManagerCore;
-class ProductKeyCheckPrivate;
 class Repository;
+
+} // QInstaller
 
 class INSTALLER_EXPORT ProductKeyCheck
 {
@@ -52,7 +53,7 @@ class INSTALLER_EXPORT ProductKeyCheck
 public:
     ~ProductKeyCheck();
     static ProductKeyCheck *instance();
-    void init(PackageManagerCore *core);
+    void init(QInstaller::PackageManagerCore *core);
 
     // was validLicense
     bool hasValidKey();
@@ -75,9 +76,7 @@ public:
 
 private:
     ProductKeyCheck();
-    ProductKeyCheckPrivate *const d;
+    class ProductKeyCheckPrivate *const d;
 };
-
-} // namespace QInstaller
 
 #endif // PRODUCTKEYCHECK_H
