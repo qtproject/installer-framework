@@ -234,7 +234,7 @@ public:
 Q_SIGNALS:
     void packageManagerCoreTypeChanged();
 
-    private Q_SLOTS:
+private Q_SLOTS:
     void setUpdater(bool value);
     void setUninstaller(bool value);
     void setPackageManager(bool value);
