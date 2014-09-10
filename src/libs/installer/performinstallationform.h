@@ -50,6 +50,7 @@ class QProgressBar;
 class QPushButton;
 class QTimer;
 class QWidget;
+class QWinTaskbarButton;
 QT_END_NAMESPACE
 
 class LazyPlainTextEdit;
@@ -89,6 +90,10 @@ private:
     QPushButton *m_detailsButton;
     LazyPlainTextEdit *m_detailsBrowser;
     QTimer *m_updateTimer;
+
+#ifdef Q_OS_WIN
+    QWinTaskbarButton *m_taskButton;
+#endif
 };
 
 } // namespace QInstaller

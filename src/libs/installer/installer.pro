@@ -35,6 +35,7 @@ QT += \
     concurrent \
     widgets \
     core-private
+win32:QT += winextras
 
 HEADERS += packagemanagercore.h \
     packagemanagercore_p.h \

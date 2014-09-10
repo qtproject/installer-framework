@@ -61,6 +61,7 @@ class QListWidgetItem;
 class QProgressBar;
 class QRadioButton;
 class QTextBrowser;
+class QWinTaskbarButton;
 QT_END_NAMESPACE
 
 namespace QInstaller {
@@ -259,6 +260,10 @@ private:
     QRadioButton *m_packageManager;
     QRadioButton *m_updateComponents;
     QRadioButton *m_removeAllComponents;
+
+#ifdef Q_OS_WIN
+    QWinTaskbarButton *m_taskButton;
+#endif
 };
 
 

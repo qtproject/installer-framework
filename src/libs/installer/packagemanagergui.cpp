@@ -55,6 +55,8 @@
 
 #include "kdsysinfo.h"
 
+#include <QApplication>
+
 #include <QtCore/QDir>
 #include <QtCore/QPair>
 #include <QtCore/QProcess>
@@ -80,7 +82,9 @@
 #include <QShowEvent>
 
 #ifdef Q_OS_WIN
-#   include <qt_windows.h>
+# include <qt_windows.h>
+# include <QWinTaskbarButton>
+# include <QWinTaskbarProgress>
 #endif
 
 using namespace KDUpdater;
@@ -924,6 +928,11 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     connect(core, SIGNAL(coreNetworkSettingsChanged()), this, SLOT(onCoreNetworkSettingsChanged()));
 
     m_updateComponents->setEnabled(ProductKeyCheck::instance()->hasValidKey());
+
+#ifdef Q_OS_WIN
+    m_taskButton = new QWinTaskbarButton(this);
+    connect(core, SIGNAL(metaJobProgress(int)), m_taskButton->progress(), SLOT(setValue(int)));
+#endif
 }
 
 int IntroductionPage::nextId() const
@@ -958,6 +967,15 @@ bool IntroductionPage::validatePage()
     } else {
         showMetaInfoUdate();
     }
+
+#ifdef Q_OS_WIN
+    if (!m_taskButton->window())
+        m_taskButton->setWindow(QApplication::activeWindow()->windowHandle());
+
+    m_taskButton->progress()->reset();
+    m_taskButton->progress()->resume();
+    m_taskButton->progress()->setVisible(true);
+#endif
 
     // fetch updater packages
     if (core->isUpdater()) {
@@ -1012,6 +1030,9 @@ bool IntroductionPage::validatePage()
     }
     gui()->setSettingsButtonEnabled(true);
 
+#ifdef Q_OS_WIN
+    m_taskButton->progress()->setVisible(!isComplete());
+#endif
     return isComplete();
 }
 
@@ -1071,6 +1092,11 @@ void IntroductionPage::setErrorMessage(const QString &error)
 
     m_errorLabel->setText(error);
     m_errorLabel->setPalette(palette);
+
+#ifdef Q_OS_WIN
+    m_taskButton->progress()->stop();
+    m_taskButton->progress()->setValue(100);
+#endif
 }
 
 void IntroductionPage::callControlScript(const QString &callback)

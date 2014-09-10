@@ -44,7 +44,7 @@
 #include "lazyplaintextedit.h"
 #include "progresscoordinator.h"
 
-
+#include <QApplication>
 #include <QLabel>
 #include <QProgressBar>
 #include <QPushButton>
@@ -52,6 +52,11 @@
 #include <QVBoxLayout>
 
 #include <QtCore/QTimer>
+
+#ifdef Q_OS_WIN
+# include <QWinTaskbarButton>
+# include <QWinTaskbarProgress>
+#endif
 
 using namespace QInstaller;
 
@@ -65,6 +70,10 @@ PerformInstallationForm::PerformInstallationForm(QObject *parent)
     , m_detailsBrowser(0)
     , m_updateTimer(0)
 {
+#ifdef Q_OS_WIN
+    m_taskButton = new QWinTaskbarButton(this);
+    m_taskButton->progress()->setVisible(true);
+#endif
 }
 
 void PerformInstallationForm::setupUi(QWidget *widget)
@@ -136,6 +145,11 @@ void PerformInstallationForm::updateProgress()
     const int progressPercentage = progressCoordninator->progressInPercentage();
 
     m_progressBar->setValue(progressPercentage);
+#ifdef Q_OS_WIN
+    if (!m_taskButton->window())
+        m_taskButton->setWindow(QApplication::activeWindow()->windowHandle());
+    m_taskButton->progress()->setValue(progressPercentage);
+#endif
 
     static QString lastLabelText;
     if (lastLabelText == progressCoordninator->labelText())
