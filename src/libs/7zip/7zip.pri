@@ -2,6 +2,7 @@ win32 {
     7ZIP_BASE=$$PWD/win
     INCLUDEPATH += $$7ZIP_BASE/C $$7ZIP_BASE/CPP
     DEFINES += WIN_LONG_PATH _UNICODE _NO_CRYPTO
+    QMAKE_CXXFLAGS_RELEASE -= -Zc:strictStrings
 }
 
 unix {
