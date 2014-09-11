@@ -1283,7 +1283,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
 {
     emit aboutCalculateComponentsToInstall();
     if (!d->m_componentsToInstallCalculated) {
-        d->clearComponentsToInstall();
+        d->clearInstallerCalculator();
         QList<Component*> components;
         if (isUpdater()) {
             foreach (Component *component, updaterComponents()) {
@@ -1303,7 +1303,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
             }
         }
 
-        d->m_componentsToInstallCalculated = d->appendComponentsToInstall(components);
+        d->m_componentsToInstallCalculated = d->installerCalculator()->appendComponentsToInstall(components);
     }
     emit finishedCalculateComponentsToInstall();
     return d->m_componentsToInstallCalculated;
@@ -1314,7 +1314,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
 */
 QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 {
-    return d->m_orderedComponentsToInstall;
+    return d->installerCalculator()->orderedComponentsToInstall();
 }
 
 /*!
@@ -1331,7 +1331,7 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
     emit aboutCalculateComponentsToUninstall();
     if (!isUpdater()) {
         // hack to avoid removing needed dependencies
-        QSet<Component*>  componentsToInstall = d->m_orderedComponentsToInstall.toSet();
+        QSet<Component*>  componentsToInstall = d->installerCalculator()->orderedComponentsToInstall().toSet();
 
         QList<Component*> components;
         foreach (Component *component, availableComponents()) {
@@ -1356,7 +1356,7 @@ QList<Component *> PackageManagerCore::componentsToUninstall() const
 
 QString PackageManagerCore::componentsToInstallError() const
 {
-    return d->m_componentsToInstallError;
+    return d->installerCalculator()->componentsToInstallError();
 }
 
 /*!
@@ -1366,7 +1366,7 @@ QString PackageManagerCore::componentsToInstallError() const
 */
 QString PackageManagerCore::installReason(Component *component) const
 {
-    return d->installReason(component);
+    return d->installerCalculator()->installReason(component);
 }
 
 /*!

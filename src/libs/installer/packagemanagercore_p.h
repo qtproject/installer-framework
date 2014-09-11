@@ -69,6 +69,7 @@ class Component;
 class ScriptEngine;
 class ComponentModel;
 class TempDirDeleter;
+class InstallerCalculator;
 
 /*
     The default configuration interface implementation does call QSettings to save files for later deletion,
@@ -89,6 +90,35 @@ public:
         if (value.isNull())
             qDebug() << "DummyConfigurationInterface called with key:" << key << "and value:" << value;
     }
+};
+
+class InstallerCalculator
+{
+public:
+    InstallerCalculator(PackageManagerCore *publicManager, PackageManagerCorePrivate *privateManager);
+
+    QString installReason(Component *component) const;
+    QList<Component*> orderedComponentsToInstall() const;
+    QString componentsToInstallError() const;
+
+    bool appendComponentsToInstall(const QList<Component*> &components);
+
+private:
+    void insertInstallReason(Component *component, const QString &reason);
+    void realAppendToInstallComponents(Component *component);
+    bool appendComponentToInstall(Component *components);
+
+    PackageManagerCore *m_publicManager;
+    PackageManagerCorePrivate *m_privateManager;
+
+    QHash<Component*, QSet<Component*> > m_visitedComponents;
+    QSet<QString> m_toInstallComponentIds; //for faster lookups
+    QString m_componentsToInstallError;
+    //calculate installation order variables
+    QList<Component*> m_orderedComponentsToInstall;
+    //we can't use this reason hash as component id hash, because some reasons are ready before
+    //the component is added
+    QHash<QString, QString> m_toInstallComponentIdReasonHash;
 };
 
 class PackageManagerCorePrivate : public QObject
@@ -145,10 +175,8 @@ public:
     QList<Component*> &replacementDependencyComponents();
     QHash<QString, QPair<Component*, Component*> > &componentsToReplace();
 
-    void clearComponentsToInstall();
-    bool appendComponentsToInstall(const QList<Component*> &components);
-    bool appendComponentToInstall(Component *components);
-    QString installReason(Component *component);
+    void clearInstallerCalculator();
+    InstallerCalculator *installerCalculator() const;
 
     bool runInstaller();
     bool isInstaller() const;
@@ -256,8 +284,6 @@ private:
     LocalPackagesHash localInstalledPackages();
     bool fetchMetaInformationFromRepositories();
     bool addUpdateResourcesFromRepositories(bool parseChecksum);
-    void realAppendToInstallComponents(Component *component);
-    void insertInstallReason(Component *component, const QString &reason);
 
 private:
     PackageManagerCore *m_core;
@@ -275,18 +301,9 @@ private:
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceAllMode;
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceUpdaterMode;
 
-    //calculate installation order variables
-    QList<Component*> m_orderedComponentsToInstall;
-    QHash<Component*, QSet<Component*> > m_visitedComponents;
-
-    QSet<QString> m_toInstallComponentIds; //for faster lookups
-
-    //we can't use this reason hash as component id hash, because some reasons are ready before
-    //the component is added
-    QHash<QString, QString> m_toInstallComponentIdReasonHash;
+    InstallerCalculator *m_installerCalculator;
 
     QSet<Component*> m_componentsToUninstall;
-    QString m_componentsToInstallError;
     FileDownloaderProxyFactory *m_proxyFactory;
 
     ComponentModel *m_defaultModel;
@@ -295,11 +312,13 @@ private:
     QObject *m_guiObject;
     QScopedPointer<RemoteFileEngineHandler> m_remoteFileEngineHandler;
 
+public:
+    void setCheckedState(Component *component, Qt::CheckState state);
+
 private:
     // remove once we deprecate isSelected, setSelected etc...
     void resetComponentsToUserCheckedState();
     QHash<Component*, Qt::CheckState> m_coreCheckedHash;
-    void setCheckedState(Component *component, Qt::CheckState state);
 };
 
 } // namespace QInstaller

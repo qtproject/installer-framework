@@ -182,6 +182,148 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 #endif
 }
 
+InstallerCalculator::InstallerCalculator(PackageManagerCore *publicManager, PackageManagerCorePrivate *privateManager)
+    : m_publicManager(publicManager),
+      m_privateManager(privateManager)
+{
+
+}
+
+void InstallerCalculator::insertInstallReason(Component *component, const QString &reason)
+{
+    // keep the first reason
+    if (m_toInstallComponentIdReasonHash.value(component->name()).isEmpty())
+        m_toInstallComponentIdReasonHash.insert(component->name(), reason);
+}
+
+QString InstallerCalculator::installReason(Component *component) const
+{
+    const QString reason = m_toInstallComponentIdReasonHash.value(component->name());
+    if (reason.isEmpty())
+        return PackageManagerCorePrivate::tr("Selected Component(s) without Dependencies");
+    return reason;
+}
+
+QList<Component*> InstallerCalculator::orderedComponentsToInstall() const
+{
+    return m_orderedComponentsToInstall;
+}
+
+QString InstallerCalculator::componentsToInstallError() const
+{
+    return m_componentsToInstallError;
+}
+
+void InstallerCalculator::realAppendToInstallComponents(Component *component)
+{
+    if (!component->isInstalled() || component->updateRequested()) {
+        // remove the checkState method if we don't use selected in scripts
+        m_privateManager->setCheckedState(component, Qt::Checked);
+
+        m_orderedComponentsToInstall.append(component);
+        m_toInstallComponentIds.insert(component->name());
+    }
+}
+
+bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &components)
+{
+    if (components.isEmpty()) {
+        qDebug() << "components list is empty in" << Q_FUNC_INFO;
+        return true;
+    }
+
+    QList<Component*> notAppendedComponents; // for example components with unresolved dependencies
+    foreach (Component *component, components){
+        if (m_toInstallComponentIds.contains(component->name())) {
+            QString errorMessage = QString::fromLatin1("Recursion detected component(%1) already added with "
+                "reason: \"%2\"").arg(component->name(), installReason(component));
+            qDebug() << qPrintable(errorMessage);
+            m_componentsToInstallError.append(errorMessage);
+            Q_ASSERT_X(!m_toInstallComponentIds.contains(component->name()), Q_FUNC_INFO,
+                qPrintable(errorMessage));
+            return false;
+        }
+
+        if (component->dependencies().isEmpty())
+            realAppendToInstallComponents(component);
+        else
+            notAppendedComponents.append(component);
+    }
+
+    foreach (Component *component, notAppendedComponents) {
+        if (!appendComponentToInstall(component))
+            return false;
+    }
+
+    const QList<Component*> relevantComponentForAutoDependOn = m_publicManager->isUpdater()
+            ? m_privateManager->m_updaterComponents + m_privateManager->m_updaterComponentsDeps
+            : m_publicManager->rootAndChildComponents();
+
+    QList<Component *> foundAutoDependOnList;
+    // All regular dependencies are resolved. Now we are looking for auto depend on components.
+    foreach (Component *component, relevantComponentForAutoDependOn) {
+        // If a components is already installed or is scheduled for installation, no need to check for
+        // auto depend installation.
+        if ((!component->isInstalled() || component->updateRequested())
+            && !m_toInstallComponentIds.contains(component->name())) {
+            // If we figure out a component requests auto installation, keep it to resolve their deps as
+            // well.
+            if (component->isAutoDependOn(m_toInstallComponentIds)) {
+                foundAutoDependOnList.append(component);
+                insertInstallReason(component, PackageManagerCorePrivate::tr("Component(s) added as automatic dependencies"));
+            }
+        }
+    }
+
+    if (!foundAutoDependOnList.isEmpty())
+        return appendComponentsToInstall(foundAutoDependOnList);
+    return true;
+}
+
+bool InstallerCalculator::appendComponentToInstall(Component *component)
+{
+    QSet<QString> allDependencies = component->dependencies().toSet();
+
+    foreach (const QString &dependencyComponentName, allDependencies) {
+        //componentByName return 0 if dependencyComponentName contains a version which is not available
+        Component *dependencyComponent = m_publicManager->componentByName(dependencyComponentName);
+        if (dependencyComponent == 0) {
+            QString errorMessage;
+            if (!dependencyComponent)
+                errorMessage = QString::fromLatin1("Cannot find missing dependency (%1) for %2.");
+            errorMessage = errorMessage.arg(dependencyComponentName, component->name());
+            qDebug() << qPrintable(errorMessage);
+            m_componentsToInstallError.append(errorMessage);
+            return false;
+        }
+
+        if ((!dependencyComponent->isInstalled() || dependencyComponent->updateRequested())
+            && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
+                if (m_visitedComponents.value(component).contains(dependencyComponent)) {
+                    QString errorMessage = QString::fromLatin1("Recursion detected component (%1) already "
+                        "added with reason: \"%2\"").arg(component->name(), installReason(component));
+                    qDebug() << qPrintable(errorMessage);
+                    m_componentsToInstallError = errorMessage;
+                    Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent), Q_FUNC_INFO,
+                        qPrintable(errorMessage));
+                    return false;
+                }
+                m_visitedComponents[component].insert(dependencyComponent);
+
+                // add needed dependency components to the next run
+                insertInstallReason(dependencyComponent, PackageManagerCorePrivate::tr("Added as dependency for %1.").arg(component->name()));
+
+                if (!appendComponentToInstall(dependencyComponent))
+                    return false;
+        }
+    }
+
+    if (!m_toInstallComponentIds.contains(component->name())) {
+        realAppendToInstallComponents(component);
+        insertInstallReason(component, PackageManagerCorePrivate::tr("Component(s) that have resolved Dependencies"));
+    }
+    return true;
+}
 
 // -- PackageManagerCorePrivate
 
@@ -195,6 +337,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_componentsToInstallCalculated(false)
     , m_componentScriptEngine(0)
     , m_controlScriptEngine(0)
+    , m_installerCalculator(0)
     , m_proxyFactory(0)
     , m_defaultModel(0)
     , m_updaterModel(0)
@@ -222,6 +365,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_componentsToInstallCalculated(false)
     , m_componentScriptEngine(0)
     , m_controlScriptEngine(0)
+    , m_installerCalculator(0)
     , m_proxyFactory(0)
     , m_defaultModel(0)
     , m_updaterModel(0)
@@ -264,7 +408,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
 {
     clearAllComponentLists();
     clearUpdaterComponentLists();
-    clearComponentsToInstall();
+    clearInstallerCalculator();
 
     qDeleteAll(m_ownedOperations);
     qDeleteAll(m_performedOperationsOld);
@@ -477,123 +621,20 @@ QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::compo
     return (!isUpdater()) ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
 }
 
-void PackageManagerCorePrivate::clearComponentsToInstall()
+void PackageManagerCorePrivate::clearInstallerCalculator()
 {
-    m_visitedComponents.clear();
-    m_toInstallComponentIds.clear();
-    m_componentsToInstallError.clear();
-    m_orderedComponentsToInstall.clear();
-    m_toInstallComponentIdReasonHash.clear();
+    delete m_installerCalculator;
+    m_installerCalculator = 0;
 }
 
-bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component *> &components)
+InstallerCalculator *PackageManagerCorePrivate::installerCalculator() const
 {
-    if (components.isEmpty()) {
-        qDebug() << "components list is empty in" << Q_FUNC_INFO;
-        return true;
+    if (!m_installerCalculator) {
+        PackageManagerCorePrivate *that = (PackageManagerCorePrivate *)(this);
+        that->m_installerCalculator = new InstallerCalculator(m_core, that);
     }
-
-    QList<Component*> notAppendedComponents; // for example components with unresolved dependencies
-    foreach (Component *component, components){
-        if (m_toInstallComponentIds.contains(component->name())) {
-            QString errorMessage = QString::fromLatin1("Recursion detected component(%1) already added with "
-                "reason: \"%2\"").arg(component->name(), installReason(component));
-            qDebug() << qPrintable(errorMessage);
-            m_componentsToInstallError.append(errorMessage);
-            Q_ASSERT_X(!m_toInstallComponentIds.contains(component->name()), Q_FUNC_INFO,
-                qPrintable(errorMessage));
-            return false;
-        }
-
-        if (component->dependencies().isEmpty())
-            realAppendToInstallComponents(component);
-        else
-            notAppendedComponents.append(component);
-    }
-
-    foreach (Component *component, notAppendedComponents) {
-        if (!appendComponentToInstall(component))
-            return false;
-    }
-
-    const QList<Component*> relevantComponentForAutoDependOn = isUpdater()
-            ? m_updaterComponents + m_updaterComponentsDeps
-            : m_core->rootAndChildComponents();
-
-    QList<Component *> foundAutoDependOnList;
-    // All regular dependencies are resolved. Now we are looking for auto depend on components.
-    foreach (Component *component, relevantComponentForAutoDependOn) {
-        // If a components is already installed or is scheduled for installation, no need to check for
-        // auto depend installation.
-        if ((!component->isInstalled() || component->updateRequested())
-            && !m_toInstallComponentIds.contains(component->name())) {
-            // If we figure out a component requests auto installation, keep it to resolve their deps as
-            // well.
-            if (component->isAutoDependOn(m_toInstallComponentIds)) {
-                foundAutoDependOnList.append(component);
-                insertInstallReason(component, tr("Component(s) added as automatic dependencies"));
-            }
-        }
-    }
-
-    if (!foundAutoDependOnList.isEmpty())
-        return appendComponentsToInstall(foundAutoDependOnList);
-    return true;
+    return m_installerCalculator;
 }
-
-bool PackageManagerCorePrivate::appendComponentToInstall(Component *component)
-{
-    QSet<QString> allDependencies = component->dependencies().toSet();
-
-    foreach (const QString &dependencyComponentName, allDependencies) {
-        //componentByName return 0 if dependencyComponentName contains a version which is not available
-        Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
-        if (dependencyComponent == 0) {
-            QString errorMessage;
-            if (!dependencyComponent)
-                errorMessage = QString::fromLatin1("Cannot find missing dependency (%1) for %2.");
-            errorMessage = errorMessage.arg(dependencyComponentName, component->name());
-            qDebug() << qPrintable(errorMessage);
-            m_componentsToInstallError.append(errorMessage);
-            return false;
-        }
-
-        if ((!dependencyComponent->isInstalled() || dependencyComponent->updateRequested())
-            && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
-                if (m_visitedComponents.value(component).contains(dependencyComponent)) {
-                    QString errorMessage = QString::fromLatin1("Recursion detected component (%1) already "
-                        "added with reason: \"%2\"").arg(component->name(), installReason(component));
-                    qDebug() << qPrintable(errorMessage);
-                    m_componentsToInstallError = errorMessage;
-                    Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent), Q_FUNC_INFO,
-                        qPrintable(errorMessage));
-                    return false;
-                }
-                m_visitedComponents[component].insert(dependencyComponent);
-
-                // add needed dependency components to the next run
-                insertInstallReason(dependencyComponent, tr("Added as dependency for %1.").arg(component->name()));
-
-                if (!appendComponentToInstall(dependencyComponent))
-                    return false;
-        }
-    }
-
-    if (!m_toInstallComponentIds.contains(component->name())) {
-        realAppendToInstallComponents(component);
-        insertInstallReason(component, tr("Component(s) that have resolved Dependencies"));
-    }
-    return true;
-}
-
-QString PackageManagerCorePrivate::installReason(Component *component)
-{
-    const QString reason = m_toInstallComponentIdReasonHash.value(component->name());
-    if (reason.isEmpty())
-        return tr("Selected Component(s) without Dependencies");
-    return reason;
-}
-
 
 void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params)
 {
@@ -2274,24 +2315,6 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
 
     m_updateSourcesAdded = true;
     return m_updateSourcesAdded;
-}
-
-void PackageManagerCorePrivate::realAppendToInstallComponents(Component *component)
-{
-    if (!component->isInstalled() || component->updateRequested()) {
-        // remove the checkState method if we don't use selected in scripts
-        setCheckedState(component, Qt::Checked);
-
-        m_orderedComponentsToInstall.append(component);
-        m_toInstallComponentIds.insert(component->name());
-    }
-}
-
-void PackageManagerCorePrivate::insertInstallReason(Component *component, const QString &reason)
-{
-    // keep the first reason
-    if (m_toInstallComponentIdReasonHash.value(component->name()).isEmpty())
-        m_toInstallComponentIdReasonHash.insert(component->name(), reason);
 }
 
 bool PackageManagerCorePrivate::appendComponentToUninstall(Component *component)
