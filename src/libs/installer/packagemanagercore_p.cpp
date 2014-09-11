@@ -493,15 +493,6 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component 
         return true;
     }
 
-    QList<Component*> relevantComponentForAutoDependOn;
-    if (isUpdater())
-        relevantComponentForAutoDependOn = m_updaterComponents + m_updaterComponentsDeps;
-    else {
-        relevantComponentForAutoDependOn = m_rootComponents;
-        foreach (QInstaller::Component *component, m_rootComponents)
-            relevantComponentForAutoDependOn += component->childComponents(Component::Descendants);
-    }
-
     QList<Component*> notAppendedComponents; // for example components with unresolved dependencies
     foreach (Component *component, components){
         if (m_toInstallComponentIds.contains(component->name())) {
@@ -524,6 +515,10 @@ bool PackageManagerCorePrivate::appendComponentsToInstall(const QList<Component 
         if (!appendComponentToInstall(component))
             return false;
     }
+
+    const QList<Component*> relevantComponentForAutoDependOn = isUpdater()
+            ? m_updaterComponents + m_updaterComponentsDeps
+            : m_core->rootAndChildComponents();
 
     QList<Component *> foundAutoDependOnList;
     // All regular dependencies are resolved. Now we are looking for auto depend on components.

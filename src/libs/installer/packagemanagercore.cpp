@@ -1186,6 +1186,18 @@ void PackageManagerCore::appendRootComponent(Component *component)
 }
 
 /*!
+    Returns a list of root components and all of their descendant components if run in installer or package manager mode.
+    Might return an empty list in case the engine has only been run in updater mode or no components have been fetched.
+*/
+QList<Component*> PackageManagerCore::rootAndChildComponents() const
+{
+    QList<Component*> result = d->m_rootComponents;
+    foreach (QInstaller::Component *component, d->m_rootComponents)
+        result += component->childComponents(Component::Descendants);
+    return result;
+}
+
+/*!
     \qmlmethod int QInstaller::updaterComponentCount()
 
     Returns the number of components in the list for updater mode. Might return 0 in case the engine has only
@@ -1234,10 +1246,7 @@ QList<Component*> PackageManagerCore::availableComponents() const
     if (isUpdater())
         return d->m_updaterComponents + d->m_updaterComponentsDeps + d->m_updaterDependencyReplacements;
 
-    QList<Component*> result = d->m_rootComponents;
-    foreach (QInstaller::Component *component, d->m_rootComponents)
-        result += component->childComponents(Component::Descendants);
-    return result + d->m_rootDependencyReplacements;
+    return rootAndChildComponents() + d->m_rootDependencyReplacements;
 }
 
 /*!
@@ -1283,9 +1292,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
             }
         } else if (!isUpdater()) {
             // relevant means all components which are not replaced
-            QList<Component*> relevantComponents = rootComponents();
-            foreach (QInstaller::Component *component, rootComponents())
-                relevantComponents += component->childComponents(Component::Descendants);
+            const QList<Component*> relevantComponents = rootAndChildComponents();
             foreach (Component *component, relevantComponents) {
                 // ask for all components which will be installed to get all dependencies
                 // even dependencies which are changed without an increased version
