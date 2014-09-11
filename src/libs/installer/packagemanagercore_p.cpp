@@ -596,7 +596,7 @@ QString PackageManagerCorePrivate::installReason(Component *component)
     const QString reason = m_toInstallComponentIdReasonHash.value(component->name());
     if (reason.isEmpty())
         return tr("Selected Component(s) without Dependencies");
-    return m_toInstallComponentIdReasonHash.value(component->name());
+    return reason;
 }
 
 
