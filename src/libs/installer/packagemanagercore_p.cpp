@@ -310,13 +310,11 @@ bool InstallerCalculator::appendComponentToInstall(Component *component)
     QSet<QString> allDependencies = component->dependencies().toSet();
 
     foreach (const QString &dependencyComponentName, allDependencies) {
-        //componentByName return 0 if dependencyComponentName contains a version which is not available
+        //componentByName returns 0 if dependencyComponentName contains a version which is not available
         Component *dependencyComponent = m_publicManager->componentByName(dependencyComponentName);
-        if (dependencyComponent == 0) {
-            QString errorMessage;
-            if (!dependencyComponent)
-                errorMessage = QString::fromLatin1("Cannot find missing dependency (%1) for %2.");
-            errorMessage = errorMessage.arg(dependencyComponentName, component->name());
+        if (!dependencyComponent) {
+            const QString errorMessage = PackageManagerCorePrivate::tr("Cannot find missing dependency (%1) for %2.")
+                    .arg(dependencyComponentName, component->name());
             qDebug() << qPrintable(errorMessage);
             m_componentsToInstallError.append(errorMessage);
             return false;
