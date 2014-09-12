@@ -189,19 +189,39 @@ InstallerCalculator::InstallerCalculator(PackageManagerCore *publicManager, Pack
 
 }
 
-void InstallerCalculator::insertInstallReason(Component *component, const QString &reason)
+void InstallerCalculator::insertInstallReason(Component *component,
+                                              InstallReasonType installReason,
+                                              const QString &referencedComponentName)
 {
     // keep the first reason
-    if (m_toInstallComponentIdReasonHash.value(component->name()).isEmpty())
-        m_toInstallComponentIdReasonHash.insert(component->name(), reason);
+    if (m_toInstallComponentIdReasonHash.contains(component->name()))
+        return;
+    m_toInstallComponentIdReasonHash.insert(component->name(),
+                                            qMakePair(installReason, referencedComponentName));
+}
+
+InstallerCalculator::InstallReasonType InstallerCalculator::installReasonType(Component *component) const
+{
+    return m_toInstallComponentIdReasonHash.value(component->name(),
+                                                  qMakePair(InstallerCalculator::Selected, QString())).first;
+}
+
+QString InstallerCalculator::installReasonReferencedComponent(Component *component) const
+{
+    return m_toInstallComponentIdReasonHash.value(component->name(),
+                                                  qMakePair(InstallerCalculator::Selected, QString())).second;
 }
 
 QString InstallerCalculator::installReason(Component *component) const
 {
-    const QString reason = m_toInstallComponentIdReasonHash.value(component->name());
-    if (reason.isEmpty())
-        return PackageManagerCorePrivate::tr("Selected Component(s) without Dependencies");
-    return reason;
+    InstallerCalculator::InstallReasonType reason = installReasonType(component);
+    switch (reason) {
+    case Automatic: return PackageManagerCorePrivate::tr("Components added as automatic dependencies:");
+    case Dependent: return PackageManagerCorePrivate::tr("Components added as dependency for '%1':").arg(installReasonReferencedComponent(component));
+    case Resolved: return PackageManagerCorePrivate::tr("Components that have resolved dependencies:");
+    case Selected: return PackageManagerCorePrivate::tr("Selected components without dependencies:");
+    }
+    return QString();
 }
 
 QList<Component*> InstallerCalculator::orderedComponentsToInstall() const
@@ -270,7 +290,7 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
             // well.
             if (component->isAutoDependOn(m_toInstallComponentIds)) {
                 foundAutoDependOnList.append(component);
-                insertInstallReason(component, PackageManagerCorePrivate::tr("Component(s) added as automatic dependencies"));
+                insertInstallReason(component, InstallerCalculator::Automatic);
             }
         }
     }
@@ -311,7 +331,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component)
                 m_visitedComponents[component].insert(dependencyComponent);
 
                 // add needed dependency components to the next run
-                insertInstallReason(dependencyComponent, PackageManagerCorePrivate::tr("Added as dependency for %1.").arg(component->name()));
+                insertInstallReason(dependencyComponent, InstallerCalculator::Dependent, component->name());
 
                 if (!appendComponentToInstall(dependencyComponent))
                     return false;
@@ -320,7 +340,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component)
 
     if (!m_toInstallComponentIds.contains(component->name())) {
         realAppendToInstallComponents(component);
-        insertInstallReason(component, PackageManagerCorePrivate::tr("Component(s) that have resolved Dependencies"));
+        insertInstallReason(component, InstallerCalculator::Resolved);
     }
     return true;
 }

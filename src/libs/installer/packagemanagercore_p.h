@@ -97,6 +97,16 @@ class InstallerCalculator
 public:
     InstallerCalculator(PackageManagerCore *publicManager, PackageManagerCorePrivate *privateManager);
 
+    enum InstallReasonType
+    {
+        Automatic, // "Component(s) added as automatic dependencies"
+        Dependent, // "Added as dependency for %1."
+        Resolved,  // "Component(s) that have resolved Dependencies"
+        Selected   // "Selected Component(s) without Dependencies"
+    };
+
+    InstallReasonType installReasonType(Component *component) const;
+    QString installReasonReferencedComponent(Component *component) const;
     QString installReason(Component *component) const;
     QList<Component*> orderedComponentsToInstall() const;
     QString componentsToInstallError() const;
@@ -104,7 +114,9 @@ public:
     bool appendComponentsToInstall(const QList<Component*> &components);
 
 private:
-    void insertInstallReason(Component *component, const QString &reason);
+    void insertInstallReason(Component *component,
+                             InstallReasonType installReasonType,
+                             const QString &referencedComponentName = QString());
     void realAppendToInstallComponents(Component *component);
     bool appendComponentToInstall(Component *components);
 
@@ -118,7 +130,7 @@ private:
     QList<Component*> m_orderedComponentsToInstall;
     //we can't use this reason hash as component id hash, because some reasons are ready before
     //the component is added
-    QHash<QString, QString> m_toInstallComponentIdReasonHash;
+    QHash<QString, QPair<InstallReasonType, QString> > m_toInstallComponentIdReasonHash;
 };
 
 class PackageManagerCorePrivate : public QObject
