@@ -303,8 +303,8 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
 
                 const QString repoUrl = metadata.repository.url().toString();
                 FileTaskItem item(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, packageName,
-                    packageVersion), metadata.directory + QString::fromLatin1("/%1.meta.7z")
-                    .arg(packageName));
+                    packageVersion), metadata.directory + QString::fromLatin1("/%1-%2-meta.7z")
+                    .arg(packageName, packageVersion));
 
                 QAuthenticator authenticator;
                 authenticator.setUser(metadata.repository.username());
