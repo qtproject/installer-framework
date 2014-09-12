@@ -119,6 +119,7 @@ private:
                              const QString &referencedComponentName = QString());
     void realAppendToInstallComponents(Component *component);
     bool appendComponentToInstall(Component *components);
+    QString recursionError(Component *component);
 
     PackageManagerCore *m_publicManager;
     PackageManagerCorePrivate *m_privateManager;

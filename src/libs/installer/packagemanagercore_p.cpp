@@ -245,6 +245,12 @@ void InstallerCalculator::realAppendToInstallComponents(Component *component)
     }
 }
 
+QString InstallerCalculator::recursionError(Component *component)
+{
+    return QString::fromLatin1("Recursion detected component (%1) already added with "
+        "reason: \"%2\"").arg(component->name(), installReason(component));
+}
+
 bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &components)
 {
     if (components.isEmpty()) {
@@ -255,8 +261,7 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
     QList<Component*> notAppendedComponents; // for example components with unresolved dependencies
     foreach (Component *component, components){
         if (m_toInstallComponentIds.contains(component->name())) {
-            QString errorMessage = QString::fromLatin1("Recursion detected component(%1) already added with "
-                "reason: \"%2\"").arg(component->name(), installReason(component));
+            const QString errorMessage = recursionError(component);
             qDebug() << qPrintable(errorMessage);
             m_componentsToInstallError.append(errorMessage);
             Q_ASSERT_X(!m_toInstallComponentIds.contains(component->name()), Q_FUNC_INFO,
@@ -320,8 +325,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component)
         if ((!dependencyComponent->isInstalled() || dependencyComponent->updateRequested())
             && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
                 if (m_visitedComponents.value(component).contains(dependencyComponent)) {
-                    QString errorMessage = QString::fromLatin1("Recursion detected component (%1) already "
-                        "added with reason: \"%2\"").arg(component->name(), installReason(component));
+                    const QString errorMessage = recursionError(component);
                     qDebug() << qPrintable(errorMessage);
                     m_componentsToInstallError = errorMessage;
                     Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent), Q_FUNC_INFO,
