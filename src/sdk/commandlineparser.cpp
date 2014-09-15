@@ -82,7 +82,7 @@ CommandLineParser::CommandLineParser()
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::CreateOfflineRepository),
         QLatin1String("Create a local repository inside the installation directory. This option "
-        "has no effect on online installer's")));
+        "has no effect on online installers.")));
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::AddRepository),
         QLatin1String("Add a local or remote repository to the list of user defined repositories."),
