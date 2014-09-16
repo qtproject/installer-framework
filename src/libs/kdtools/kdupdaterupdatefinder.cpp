@@ -45,6 +45,7 @@
 #include "globals.h"
 
 #include <QCoreApplication>
+#include <QFileInfo>
 
 using namespace KDUpdater;
 
@@ -93,6 +94,12 @@ using namespace KDUpdater;
 class UpdateFinder::Private
 {
 public:
+    enum struct Resolution {
+        AddPackage,
+        KeepExisting,
+        RemoveExisting
+    };
+
     Private(UpdateFinder *qq)
         : q(qq)
         , application(0)
@@ -132,7 +139,7 @@ public:
 
     QList<UpdateInfo> applicableUpdates(UpdatesInfo *updatesInfo);
     void createUpdateObjects(const UpdateSourceInfo &sourceInfo, const QList<UpdateInfo> &updateInfoList);
-    bool checkPriorityAndVersion(const UpdateSourceInfo &sourceInfo, const QVariantHash &data);
+    Resolution checkPriorityAndVersion(const UpdateSourceInfo &sourceInfo, const QVariantHash &data) const;
     void slotDownloadDone();
 };
 
@@ -422,54 +429,58 @@ void UpdateFinder::Private::createUpdateObjects(const UpdateSourceInfo &sourceIn
     const QList<UpdateInfo> &updateInfoList)
 {
     foreach (const UpdateInfo &info, updateInfoList) {
-        if (!checkPriorityAndVersion(sourceInfo, info.data))
+        const Resolution value = checkPriorityAndVersion(sourceInfo, info.data);
+        if (value == Resolution::KeepExisting)
             continue;
 
+        const QString name = info.data.value(QLatin1String("Name")).toString();
+        if (value == Resolution::RemoveExisting)
+            delete updates.take(name);
+
         // Create and register the update
-        updates.insert(info.data.value(QLatin1String("Name")).toString(),
-            new Update(sourceInfo.priority, sourceInfo.url, info.data));
+        updates.insert(name, new Update(sourceInfo.priority, sourceInfo.url, info.data));
     }
 }
 
 /*
-    If another update of the same name exists, then use the update coming from a higher
-    priority. If the priority is equal or higher, use the update with the higher version.
-
-    TODO: Fix the case when the priority is less but the version is higher? Behavior change?
+    If a package of the same name exists, always use the one with the higher
+    version. If the new package has the same version but a higher
+    priority, use the new new package, otherwise keep the already existing package.
 */
-bool UpdateFinder::Private::checkPriorityAndVersion(const UpdateSourceInfo &sourceInfo,
-    const QVariantHash &data)
+UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion(
+    const UpdateSourceInfo &sourceInfo, const QVariantHash &newPackage) const
 {
-    const QString name = data.value(QLatin1String("Name")).toString();
-    if (Update *update = updates.value(name)) {
-        // Bingo, update was previously found elsewhere.
+    const QString name = newPackage.value(QLatin1String("Name")).toString();
+    if (Update *existingPackage = updates.value(name)) {
+        // Bingo, package was previously found elsewhere.
 
-        // If the existing update comes from a higher priority server, then cool :)
-        if (update->priority() > sourceInfo.priority) {
-            qDebug().nospace() << "Skipping Update \"" << name
-                << "\" from \"" << sourceInfo.name << "\"(\"" << sourceInfo.url.toString()
-                << "\") because an update with the same name was found from a higher priority "
-                "location";
-            return false;
+        const int match = compareVersion(newPackage.value(QLatin1String("Version")).toString(),
+            existingPackage->data(QLatin1String("Version")).toString());
+
+        if (match > 0) {
+            // new package has higher version, use
+            qDebug() << QString::fromLatin1("Remove Package 'Name: %1, Version: %2, Source: %3' "
+                "found a package with higher version 'Name: %4, Version: %5, Source: %6'")
+                .arg(name, existingPackage->data(QLatin1String("Version")).toString(),
+                    QFileInfo(existingPackage->sourceInfoUrl().toLocalFile()).fileName(),
+                    name, newPackage.value(QLatin1String("Version")).toString(),
+                    QFileInfo(sourceInfo.url.toLocalFile()).fileName());
+            return Resolution::RemoveExisting;
         }
 
-        // If the existing update has a higher version number, keep it
-        if (KDUpdater::compareVersion(update->data(QLatin1String("Version")).toString(), data
-            .value(QLatin1String("Version")).toString()) > 0) {
-                qDebug().nospace() << "Skipping Update \"" << name
-                    << "\" from \"" << sourceInfo.name << "\"(\"" << sourceInfo.url.toString()
-                    << "\") because an update with the same name but a higher version exists "
-                    "already";
-            return false;
+        if ((match == 0) && (sourceInfo.priority > existingPackage->priority())) {
+            // new package version equals but priority is higher, use
+            qDebug() << QString::fromLatin1("Remove Package 'Name: %1, Priority: %2, Source: %3' "
+                "found a package with higher priority 'Name: %4, Priority: %5, Source: %6'")
+                .arg(name, QString::number(existingPackage->priority()),
+                    QFileInfo(existingPackage->sourceInfoUrl().toLocalFile()).fileName(),
+                    name, QString::number(sourceInfo.priority),
+                    QFileInfo(sourceInfo.url.toLocalFile()).fileName());
+            return Resolution::RemoveExisting;
         }
-        // Otherwise the old update must be deleted.
-        delete updates.take(name);
-
-        return true;
+        return Resolution::KeepExisting; // otherwise keep existing
     }
-
-    // No update by that name was found, so what we have is a priority update.
-    return true;
+    return Resolution::AddPackage;
 }
 
 //
