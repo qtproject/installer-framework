@@ -116,7 +116,7 @@ public:
     };
     UpdateFinder *q;
     Application *application;
-    QList<Update *> updates;
+    QHash<QString, Update *> updates;
 
     // Temporary structure that notes down information about updates.
     bool cancel;
@@ -132,7 +132,7 @@ public:
 
     QList<UpdateInfo> applicableUpdates(UpdatesInfo *updatesInfo);
     void createUpdateObjects(const UpdateSourceInfo &sourceInfo, const QList<UpdateInfo> &updateInfoList);
-    bool checkForUpdatePriority(const UpdateSourceInfo &sourceInfo, const UpdateInfo &updateInfo);
+    bool checkPriorityAndVersion(const UpdateSourceInfo &sourceInfo, const QVariantHash &data);
     void slotDownloadDone();
 };
 
@@ -422,40 +422,48 @@ void UpdateFinder::Private::createUpdateObjects(const UpdateSourceInfo &sourceIn
     const QList<UpdateInfo> &updateInfoList)
 {
     foreach (const UpdateInfo &info, updateInfoList) {
-        // If another update of the same name exists, then use the update coming from a higher priority.
-        if (!checkForUpdatePriority(sourceInfo, info)) {
-            qDebug().nospace() << "Skipping Update \"" << info.data.value(QLatin1String("Name")).toString()
-                << "\" from \"" << sourceInfo.name << "\"(\"" << sourceInfo.url.toString()
-                << "\") because an update with the same name was found from a higher priority location";
+        if (!checkPriorityAndVersion(sourceInfo, info.data))
             continue;
-        }
 
         // Create and register the update
-        this->updates.append(new Update(sourceInfo.priority, sourceInfo.url, info.data));
+        updates.insert(info.data.value(QLatin1String("Name")).toString(),
+            new Update(sourceInfo.priority, sourceInfo.url, info.data));
     }
 }
 
-bool UpdateFinder::Private::checkForUpdatePriority(const UpdateSourceInfo &sourceInfo, const UpdateInfo &updateInfo)
-{
-    for (int i = 0; i < this->updates.count(); i++){
-        Update *update = this->updates.at(i);
-        if (update->data(QLatin1String("Name")).toString() != updateInfo.data.value(QLatin1String("Name")).toString())
-            continue;
+/*
+    If another update of the same name exists, then use the update coming from a higher
+    priority. If the priority is equal or higher, use the update with the higher version.
 
+    TODO: Fix the case when the priority is less but the version is higher? Behavior change?
+*/
+bool UpdateFinder::Private::checkPriorityAndVersion(const UpdateSourceInfo &sourceInfo,
+    const QVariantHash &data)
+{
+    const QString name = data.value(QLatin1String("Name")).toString();
+    if (Update *update = updates.value(name)) {
         // Bingo, update was previously found elsewhere.
 
         // If the existing update comes from a higher priority server, then cool :)
-        if (update->priority() > sourceInfo.priority)
+        if (update->priority() > sourceInfo.priority) {
+            qDebug().nospace() << "Skipping Update \"" << name
+                << "\" from \"" << sourceInfo.name << "\"(\"" << sourceInfo.url.toString()
+                << "\") because an update with the same name was found from a higher priority "
+                "location";
             return false;
+        }
 
         // If the existing update has a higher version number, keep it
-        if (KDUpdater::compareVersion(update->data(QLatin1String("Version")).toString(), updateInfo.data
+        if (KDUpdater::compareVersion(update->data(QLatin1String("Version")).toString(), data
             .value(QLatin1String("Version")).toString()) > 0) {
-                return false;
+                qDebug().nospace() << "Skipping Update \"" << name
+                    << "\" from \"" << sourceInfo.name << "\"(\"" << sourceInfo.url.toString()
+                    << "\") because an update with the same name but a higher version exists "
+                    "already";
+            return false;
         }
         // Otherwise the old update must be deleted.
-        this->updates.removeAll(update);
-        delete update;
+        delete updates.take(name);
 
         return true;
     }
@@ -492,7 +500,7 @@ UpdateFinder::~UpdateFinder()
 */
 QList<Update *> UpdateFinder::updates() const
 {
-    return d->updates;
+    return d->updates.values();
 }
 
 /*!
