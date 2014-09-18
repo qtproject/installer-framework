@@ -1798,19 +1798,69 @@ bool TargetDirectoryPage::isComplete() const
 
 QString TargetDirectoryPage::targetDirWarning() const
 {
-    if (targetDir().isEmpty()) {
-        return tr("The installation path cannot be empty, please specify a valid "
-            "folder.");
+    QString nativeTargetDir = QDir::toNativeSeparators(targetDir());
+    if (nativeTargetDir.isEmpty())
+        return tr("The installation path cannot be empty, please specify a valid folder.");
+
+#ifdef Q_OS_WIN
+    static QRegularExpression reg(QLatin1String(
+        "^(?<drive>[a-zA-Z]:\\\\)|"
+        "^(\\\\\\\\(?<path>\\w+)\\\\)|"
+        "^(\\\\\\\\(?<ip>\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\\\)"));
+    const QRegularExpressionMatch regMatch = reg.match(nativeTargetDir);
+
+    const QString ipMatch = regMatch.captured(QLatin1String("ip"));
+    const QString pathMatch = regMatch.captured(QLatin1String("path"));
+    const QString driveMatch = regMatch.captured(QLatin1String("drive"));
+
+    if (ipMatch.isEmpty() && pathMatch.isEmpty() && driveMatch.isEmpty()) {
+        return tr("The path you have entered is not valid, please make sure to "
+            "specify a valid target.");
     }
 
-    if (QDir(targetDir()).isRelative()) {
+    if (!driveMatch.isEmpty()) {
+        bool validDrive = false;
+        const QFileInfo drive(driveMatch);
+        foreach (const QFileInfo &driveInfo, QDir::drives()) {
+            if (drive == driveInfo) {
+                validDrive = true;
+                break;
+            }
+        }
+        if (!validDrive) {  // right now we can only verify local drives
+            return tr("The path you have entered is not valid, please make sure to "
+                "specify a valid drive.");
+        }
+        nativeTargetDir = nativeTargetDir.mid(2);
+    }
+
+    if (nativeTargetDir.endsWith(QLatin1Char('.')))
+        return tr("The installation path must not end with '.', please specify a valid folder.");
+
+    QString ambiguousChars = QLatin1String("[\"~<>|?*!@#$%^&:,; ]"
+        "|(\\\\CON)|(\\\\PRN)|(\\\\AUX)|(\\\\NUL)|(\\\\COM\\d)|(\\\\LPT\\d)");
+#else // Q_OS_WIN
+    QString ambiguousChars = QStringLiteral("[~<>|?*!@#$%^&:,; \\\\]");
+#endif // Q_OS_WIN
+
+    if (packageManagerCore()->settings().allowSpaceInPath())
+        ambiguousChars.remove(QLatin1Char(' '));
+
+    static QRegularExpression ambCharRegEx(ambiguousChars, QRegularExpression::CaseInsensitiveOption);
+    // check if there are not allowed characters in the target path
+    QRegularExpressionMatch match = ambCharRegEx.match(nativeTargetDir);
+    if (match.hasMatch()) {
+        return tr("The installation path must not contain '%1', "
+            "please specify a valid folder.").arg(match.captured(0));
+    }
+
+    QDir target(targetDir());
+    if (target.isRelative()) {
         return tr("The installation path cannot be relative, please specify an "
             "absolute path.");
     }
 
-    QDir target(targetDir());
     target = target.canonicalPath();
-
     if (target.isRoot()) {
         return tr("As the install directory is completely deleted, installing "
             "in %1 is forbidden.").arg(QDir::toNativeSeparators(QDir::rootPath()));
@@ -1821,7 +1871,7 @@ QString TargetDirectoryPage::targetDirWarning() const
             "in %1 is forbidden.").arg(QDir::toNativeSeparators(QDir::homePath()));
     }
 
-    QString dir = QDir::toNativeSeparators(targetDir());
+    const QString dir = target.path();
 #ifdef Q_OS_WIN
     // folder length (set by user) + maintenance tool name length (no extension) + extra padding
     if ((dir.length()
@@ -1829,33 +1879,8 @@ QString TargetDirectoryPage::targetDirWarning() const
             return tr("The path you have entered is too long, please make sure to "
                 "specify a valid path.");
     }
-
-    if (dir.count() >= 3 && dir.indexOf(QRegExp(QLatin1String("[a-zA-Z]:"))) == 0
-        && dir.at(2) != QLatin1Char('\\')) {
-            return tr("The path you have entered is not valid, please make sure to "
-                "specify a valid drive.");
-    }
-
-    // remove e.g. "c:"
-    dir = dir.mid(2);
-
-    QString ambiguousChars = QStringLiteral("[~<>|?*!@#$%^&:,; ]");
-#else // Q_OS_WIN
-    QString ambiguousChars = QStringLiteral("[~<>|?*!@#$%^&:,; \\\\]");
 #endif // Q_OS_WIN
 
-    if (packageManagerCore()->settings().allowSpaceInPath())
-        ambiguousChars.remove(QLatin1Char(' '));
-
-    static QRegularExpression ambCharRegEx(ambiguousChars);
-    // check if there are not allowed characters in the target path
-    QRegularExpressionMatch match = ambCharRegEx.match(dir);
-    if (match.hasMatch()) {
-        return tr("The installation path must not contain '%1', "
-            "please specify a valid folder.").arg(match.captured(0));
-    }
-
-    dir = targetDir();
     if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
         for (int i = 0; i < dir.length(); ++i) {
             if (dir.at(i).unicode() & 0xff80) {
