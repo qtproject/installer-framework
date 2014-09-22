@@ -377,38 +377,6 @@ static bool componentMatches(const Component *component, const QString &name,
     return PackageManagerCore::versionMatches(component->value(scVersion), version);
 }
 
-Component *PackageManagerCore::subComponentByName(const QInstaller::PackageManagerCore *installer,
-    const QString &name, const QString &version, Component *check)
-{
-    if (name.isEmpty())
-        return 0;
-
-    if (check != 0 && componentMatches(check, name, version))
-        return check;
-
-    if (!installer->isUpdater()) {
-        QList<Component*> rootComponents;
-        if (check == 0)
-            rootComponents = installer->rootComponents();
-        else
-            rootComponents = check->childComponents(Component::DirectChildrenOnly);
-
-        foreach (QInstaller::Component *component, rootComponents) {
-            Component *const result = subComponentByName(installer, name, version, component);
-            if (result != 0)
-                return result;
-        }
-    } else {
-        const QList<Component*> updaterComponents = installer->updaterComponents()
-            + installer->d->m_updaterComponentsDeps;
-        foreach (QInstaller::Component *component, updaterComponents) {
-            if (componentMatches(component, name, version))
-                return component;
-        }
-    }
-    return 0;
-}
-
 void PackageManagerCore::writeMaintenanceTool()
 {
     if (d->m_needToWriteMaintenanceTool) {
@@ -1262,13 +1230,24 @@ Component *PackageManagerCore::componentByName(const QString &name) const
     if (name.isEmpty())
         return 0;
 
+    QString fixedVersion;
+    QString fixedName = name;
     if (name.contains(QChar::fromLatin1('-'))) {
         // the last part is considered to be the version, then
-        const QString version = name.section(QLatin1Char('-'), 1);
-        return subComponentByName(this, name.section(QLatin1Char('-'), 0, 0), version);
+        fixedVersion = name.section(QLatin1Char('-'), 1);
+        fixedName = name.section(QLatin1Char('-'), 0, 0);
     }
 
-    return subComponentByName(this, name);
+    const QList<Component *> components = isUpdater()
+            ? updaterComponents() + d->m_updaterComponentsDeps
+            : rootAndChildComponents();
+
+    foreach (Component *component, components) {
+        if (componentMatches(component, fixedName, fixedVersion))
+            return component;
+    }
+
+    return 0;
 }
 
 /*!
