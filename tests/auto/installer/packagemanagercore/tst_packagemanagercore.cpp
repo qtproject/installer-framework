@@ -71,6 +71,22 @@ public:
     }
 };
 
+class NamedComponent : public Component
+{
+public:
+    NamedComponent(PackageManagerCore *core, const QString &name)
+        : NamedComponent(core, name, QLatin1String("1.0.0"))
+    {}
+
+    NamedComponent(PackageManagerCore *core, const QString &name, const QString &version)
+        : Component(core)
+    {
+        setValue(scName, name);
+        setValue(scVersion, version);
+    }
+
+};
+
 class tst_PackageManagerCore : public QObject
 {
     Q_OBJECT
@@ -146,6 +162,81 @@ private slots:
         core.runInstaller();
         QVERIFY(!QDir(testDirectory).exists());
         ProgressCoordinator::instance()->reset();
+    }
+
+    void testComponentSetterGetter()
+    {
+        {
+            PackageManagerCore core;
+            core.setPackageManager();
+
+            QCOMPARE(core.rootComponentCount(), 0);
+            QCOMPARE(core.updaterComponentCount(), 0);
+            QCOMPARE(core.availableComponents().count(), 0);
+
+            Component *root = new NamedComponent(&core, QLatin1String("root1"));
+            root->appendComponent(new NamedComponent(&core, QLatin1String("root1.foo"),
+                QLatin1String("1.0.1")));
+            root->appendComponent(new NamedComponent(&core, QLatin1String("root1.bar")));
+            core.appendRootComponent(root);
+
+            QCOMPARE(core.rootComponentCount(), 1);
+            QCOMPARE(core.updaterComponentCount(), 0);
+            QCOMPARE(core.availableComponents().count(), 3);
+
+            Component *foo = core.componentByName(QLatin1String("root1.foo-1.0.1"));
+            QVERIFY(foo != 0);
+            QCOMPARE(foo->name(), QLatin1String("root1.foo"));
+            QCOMPARE(foo->value(scVersion), QLatin1String("1.0.1"));
+
+            foo->appendComponent(new NamedComponent(&core, QLatin1String("root1.foo.child")));
+            Component *v = new NamedComponent(&core, QLatin1String("root1.foo.virtual.child"));
+            v->setValue(scVirtual, QLatin1String("true"));
+            foo->appendComponent(v);
+
+            QCOMPARE(core.rootComponentCount(), 1);
+            QCOMPARE(core.updaterComponentCount(), 0);
+            QCOMPARE(core.availableComponents().count(), 5);
+
+            core.appendRootComponent(new NamedComponent(&core, QLatin1String("root2")));
+
+            QCOMPARE(core.rootComponentCount(), 2);
+            QCOMPARE(core.updaterComponentCount(), 0);
+            QCOMPARE(core.availableComponents().count(), 6);
+        }
+
+        {
+            PackageManagerCore core;
+            core.setUpdater();
+
+            Component *root = new NamedComponent(&core, QLatin1String("root1"));
+            try {
+                QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Components cannot "
+                    "have children in updater mode.\" ");
+                root->appendComponent(new NamedComponent(&core, QLatin1String("root1.foo")));
+                QFAIL("Components cannot have children in updater mode.");
+            } catch (const QInstaller::Error &error) {
+                QCOMPARE(error.message(), QString("Components cannot have children in updater mode."));
+            }
+            core.appendUpdaterComponent(root);
+            core.appendUpdaterComponent(new NamedComponent(&core, QLatin1String("root2")));
+
+            Component *v = new NamedComponent(&core, QLatin1String("root3"), QLatin1String("2.0.1"));
+            v->setValue(scVirtual, QLatin1String("true"));
+            core.appendUpdaterComponent(v);
+
+            QCOMPARE(core.rootComponentCount(), 0);
+            QCOMPARE(core.updaterComponentCount(), 3);
+            QCOMPARE(core.availableComponents().count(), 3);
+
+            Component *root3 = core.componentByName(QLatin1String("root3->2.0.2"));
+            QVERIFY(root3 == 0);
+
+            root3 = core.componentByName(QLatin1String("root3->2.0.0"));
+            QVERIFY(root3 != 0);
+            QCOMPARE(root3->name(), QLatin1String("root3"));
+            QCOMPARE(root3->value(scVersion), QLatin1String("2.0.1"));
+        }
     }
 };
 

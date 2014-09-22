@@ -406,6 +406,9 @@ Component *Component::parentComponent() const
 */
 void Component::appendComponent(Component *component)
 {
+    if (d->m_core->isUpdater())
+        throw Error(tr("Components cannot have children in updater mode."));
+
     if (!component->isVirtual()) {
         d->m_childComponents.append(component);
         std::sort(d->m_childComponents.begin(), d->m_childComponents.end(), SortingPriorityGreaterThan());

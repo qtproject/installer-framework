@@ -1225,9 +1225,9 @@ void PackageManagerCore::appendUpdaterComponent(Component *component)
 }
 
 /*!
-    Returns a list of all available components found during a fetch. Note that depending on the run mode the
-    returned list might have different values. In case of updater mode, components scheduled for an
-    update as well as all possible dependencies are returned.
+    Returns a list of all available components found during a fetch. Depending on the run mode the
+    returned list might have different values. \note: This function will return all components and
+    possible replacement components as well.
 */
 QList<Component*> PackageManagerCore::availableComponents() const
 {
