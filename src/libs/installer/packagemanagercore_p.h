@@ -122,9 +122,9 @@ private:
     bool appendComponentToInstall(Component *components);
     QString recursionError(Component *component);
 
+    QList<Component*> m_allComponents;
     PackageManagerCorePrivate *m_privateManager;
 
-    QList<Component*> m_allComponents;
     QHash<Component*, QSet<Component*> > m_visitedComponents;
     QSet<QString> m_toInstallComponentIds; //for faster lookups
     QString m_componentsToInstallError;
