@@ -39,7 +39,10 @@
 **
 **************************************************************************/
 
-#include "graph.h"
+#include <component.h>
+#include <graph.h>
+#include <installercalculator.h>
+#include <packagemanagercore.h>
 
 #include <QTest>
 
@@ -63,6 +66,21 @@ inline uint qHash(const Data &data)
     return qHash(data.data());
 }
 
+class NamedComponent : public Component
+{
+public:
+    NamedComponent(PackageManagerCore *core, const QString &name)
+        : NamedComponent(core, name, QLatin1String("1.0.0"))
+    {}
+
+    NamedComponent(PackageManagerCore *core, const QString &name, const QString &version)
+        : Component(core)
+    {
+        setValue(scName, name);
+        setValue(scVersion, version);
+    }
+
+};
 
 class tst_Solver : public QObject
 {
@@ -126,6 +144,52 @@ private slots:
         qDebug("Found cycle: %s", graph.hasCycle() ? "true" : "false");
         qDebug("(%s) has a indirect dependency on (%s).", qPrintable(cycle.second.data()),
             qPrintable(cycle.first.data()));
+    }
+
+    void resolve_data()
+    {
+        QTest::addColumn<PackageManagerCore *>("core");
+        QTest::addColumn<QList<Component *> >("selectedComponents");
+        QTest::addColumn<QList<Component *> >("expectedResult");
+        QTest::addColumn<QList<int> >("installReason");
+
+        PackageManagerCore *core = new PackageManagerCore();
+        core->setPackageManager();
+        NamedComponent *componentA = new NamedComponent(core, QLatin1String("A"));
+        NamedComponent *componentAA = new NamedComponent(core, QLatin1String("A.A"));
+        NamedComponent *componentAB = new NamedComponent(core, QLatin1String("A.B"));
+        componentA->appendComponent(componentAA);
+        componentA->appendComponent(componentAB);
+        NamedComponent *componentB = new NamedComponent(core, QLatin1String("B"));
+        componentB->addDependency(QLatin1String("A.B"));
+        core->appendRootComponent(componentA);
+        core->appendRootComponent(componentB);
+
+        QTest::newRow("Simple resolved") << core
+                    << (QList<Component *>() << componentB)
+                    << (QList<Component *>() << componentAB << componentB)
+                    << (QList<int>()
+                        << InstallerCalculator::Dependent
+                        << InstallerCalculator::Resolved);
+    }
+
+    void resolve()
+    {
+        QFETCH(PackageManagerCore *, core);
+        QFETCH(QList<Component *> , selectedComponents);
+        QFETCH(QList<Component *> , expectedResult);
+        QFETCH(QList<int>, installReason);
+
+        InstallerCalculator calc(core->components(PackageManagerCore::ComponentType::AllNoReplacements));
+        calc.appendComponentsToInstall(selectedComponents);
+        QList<Component *> result = calc.orderedComponentsToInstall();
+
+        QCOMPARE(result.count(), expectedResult.count());
+        for (int i = 0; i < result.count(); i++) {
+            QCOMPARE(result.at(i), expectedResult.at(i));
+            QCOMPARE((int)calc.installReasonType(result.at(i)), installReason.at(i));
+        }
+        delete core;
     }
 };
 
