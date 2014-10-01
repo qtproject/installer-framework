@@ -1258,6 +1258,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
             }
         }
 
+        d->storeCheckState();
         d->m_componentsToInstallCalculated =
             d->installerCalculator()->appendComponentsToInstall(componentsToInstall);
     }
@@ -1296,6 +1297,7 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
         }
 
         d->m_componentsToUninstall.clear();
+        d->storeCheckState();
         result = d->appendComponentsToUninstall(componentsToUninstall);
     }
     emit finishedCalculateComponentsToUninstall();
@@ -2357,9 +2359,9 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     return true;
 }
 
-void PackageManagerCore::resetComponentsToUserCheckedState()
+void PackageManagerCore::restoreCheckState()
 {
-    d->resetComponentsToUserCheckedState();
+    d->restoreCheckState();
 }
 
 void PackageManagerCore::updateDisplayVersions(const QString &displayKey)

@@ -95,8 +95,7 @@ public:
 class InstallerCalculator
 {
 public:
-    InstallerCalculator(const QList<Component *> &allComponents,
-                        PackageManagerCorePrivate *privateManager);
+    InstallerCalculator(const QList<Component *> &allComponents);
 
     enum InstallReasonType
     {
@@ -123,8 +122,6 @@ private:
     QString recursionError(Component *component);
 
     QList<Component*> m_allComponents;
-    PackageManagerCorePrivate *m_privateManager;
-
     QHash<Component*, QSet<Component*> > m_visitedComponents;
     QSet<QString> m_toInstallComponentIds; //for faster lookups
     QString m_componentsToInstallError;
@@ -326,12 +323,10 @@ private:
     QObject *m_guiObject;
     QScopedPointer<RemoteFileEngineHandler> m_remoteFileEngineHandler;
 
-public:
-    void setCheckedState(Component *component, Qt::CheckState state);
-
 private:
     // remove once we deprecate isSelected, setSelected etc...
-    void resetComponentsToUserCheckedState();
+    void restoreCheckState();
+    void storeCheckState();
     QHash<Component*, Qt::CheckState> m_coreCheckedHash;
 };
 

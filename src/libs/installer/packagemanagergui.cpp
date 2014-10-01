@@ -1595,7 +1595,7 @@ void ComponentSelectionPage::showEvent(QShowEvent *event)
 {
     // remove once we deprecate isSelected, setSelected etc...
     if (!event->spontaneous())
-        packageManagerCore()->resetComponentsToUserCheckedState();
+        packageManagerCore()->restoreCheckState();
     QWizardPage::showEvent(event);
 }
 

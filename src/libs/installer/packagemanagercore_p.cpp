@@ -182,10 +182,8 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 #endif
 }
 
-InstallerCalculator::InstallerCalculator(const QList<Component *> &allComponents,
-        PackageManagerCorePrivate *privateManager)
+InstallerCalculator::InstallerCalculator(const QList<Component *> &allComponents)
     : m_allComponents(allComponents)
-    , m_privateManager(privateManager)
 {
 }
 
@@ -245,7 +243,7 @@ void InstallerCalculator::realAppendToInstallComponents(Component *component)
 {
     if (!component->isInstalled() || component->updateRequested()) {
         // remove the checkState method if we don't use selected in scripts
-        m_privateManager->setCheckedState(component, Qt::Checked);
+        component->setCheckState(Qt::Checked);
 
         m_orderedComponentsToInstall.append(component);
         m_toInstallComponentIds.insert(component->name());
@@ -660,8 +658,7 @@ InstallerCalculator *PackageManagerCorePrivate::installerCalculator() const
     if (!m_installerCalculator) {
         PackageManagerCorePrivate *const pmcp = const_cast<PackageManagerCorePrivate *> (this);
         pmcp->m_installerCalculator = new InstallerCalculator(
-            m_core->components(PackageManagerCore::ComponentType::AllNoReplacements),
-            pmcp);
+            m_core->components(PackageManagerCore::ComponentType::AllNoReplacements));
     }
     return m_installerCalculator;
 }
@@ -2352,7 +2349,7 @@ bool PackageManagerCorePrivate::appendComponentToUninstall(Component *component)
     // remove all already resolved dependees
     QSet<Component *> dependees = m_core->dependees(component).toSet().subtract(m_componentsToUninstall);
     if (dependees.isEmpty()) {
-        setCheckedState(component, Qt::Unchecked);
+        component->setCheckState(Qt::Unchecked);
         m_componentsToUninstall.insert(component);
         return true;
     }
@@ -2361,7 +2358,7 @@ bool PackageManagerCorePrivate::appendComponentToUninstall(Component *component)
     foreach (Component *dependee, dependees) {
         if (dependee->isInstalled()) {
             // keep them as already resolved
-            setCheckedState(dependee, Qt::Unchecked);
+            dependee->setCheckState(Qt::Unchecked);
             m_componentsToUninstall.insert(dependee);
             // gather possible dependees, keep them to resolve it later
             dependeesToResolve.unite(m_core->dependees(dependee).toSet());
@@ -2385,7 +2382,7 @@ bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Componen
     bool allResolved = true;
     foreach (Component *component, components) {
         if (component->isInstalled()) {
-            setCheckedState(component, Qt::Unchecked);
+            component->setCheckState(Qt::Unchecked);
             m_componentsToUninstall.insert(component);
             allResolved &= appendComponentToUninstall(component);
         }
@@ -2445,7 +2442,7 @@ bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Componen
     return allResolved;
 }
 
-void PackageManagerCorePrivate::resetComponentsToUserCheckedState()
+void PackageManagerCorePrivate::restoreCheckState()
 {
     if (m_coreCheckedHash.isEmpty())
         return;
@@ -2457,10 +2454,14 @@ void PackageManagerCorePrivate::resetComponentsToUserCheckedState()
     m_componentsToInstallCalculated = false;
 }
 
-void PackageManagerCorePrivate::setCheckedState(Component *component, Qt::CheckState state)
+void PackageManagerCorePrivate::storeCheckState()
 {
-    m_coreCheckedHash.insert(component, component->checkState());
-    component->setCheckState(state);
+    m_coreCheckedHash.clear();
+
+   const QList<Component *> components =
+       m_core->components(PackageManagerCore::ComponentType::AllNoReplacements);
+    foreach (Component *component, components)
+        m_coreCheckedHash.insert(component, component->checkState());
 }
 
 void PackageManagerCorePrivate::connectOperationCallMethodRequest(Operation *const operation)

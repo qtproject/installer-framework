@@ -342,7 +342,7 @@ private:
 private:
     // remove once we deprecate isSelected, setSelected etc...
     friend class ComponentSelectionPage;
-    void resetComponentsToUserCheckedState();
+    void restoreCheckState();
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(PackageManagerCore::ComponentTypes)
 
