@@ -56,6 +56,7 @@
 #include "remoteclient.h"
 #include "settings.h"
 #include "utils.h"
+#include "installercalculator.h"
 
 #include <productkeycheck.h>
 

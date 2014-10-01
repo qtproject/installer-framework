@@ -120,7 +120,8 @@ HEADERS += packagemanagercore.h \
     remoteserverconnection_p.h \
     fileio.h \
     binarycontent.h \
-    binarylayout.h
+    binarylayout.h \
+    installercalculator.h
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -189,7 +190,8 @@ SOURCES += packagemanagercore.cpp \
     remoteserverconnection.cpp \
     fileio.cpp \
     binarycontent.cpp \
-    binarylayout.cpp
+    binarylayout.cpp \
+    installercalculator.cpp
 
 RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc
