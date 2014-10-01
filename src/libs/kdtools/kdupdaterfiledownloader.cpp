@@ -673,10 +673,7 @@ KDUpdater::ResourceFileDownloader::~ResourceFileDownloader()
 
 bool KDUpdater::ResourceFileDownloader::canDownload() const
 {
-    QUrl url = this->url();
-    url.setScheme(QString::fromLatin1("file"));
-    QString localFile = QString::fromLatin1(":%1").arg(url.toLocalFile());
-    QFileInfo fi(localFile);
+    const QFileInfo fi(QInstaller::pathFromUrl(url()));
     return fi.exists() && fi.isReadable();
 }
 
