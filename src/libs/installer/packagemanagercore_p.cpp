@@ -182,9 +182,10 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 #endif
 }
 
-InstallerCalculator::InstallerCalculator(PackageManagerCore *publicManager, PackageManagerCorePrivate *privateManager)
-    : m_publicManager(publicManager),
-      m_privateManager(privateManager)
+InstallerCalculator::InstallerCalculator(const QList<Component *> &allComponents,
+                                         PackageManagerCorePrivate *privateManager)
+    : m_privateManager(privateManager),
+      m_allComponents(allComponents)
 {
 
 }
@@ -280,12 +281,9 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
             return false;
     }
 
-    const QList<Component*> relevantComponentForAutoDependOn =
-        m_publicManager->components(PackageManagerCore::ComponentType::AllNoReplacements);
-
     QList<Component *> foundAutoDependOnList;
     // All regular dependencies are resolved. Now we are looking for auto depend on components.
-    foreach (Component *component, relevantComponentForAutoDependOn) {
+    foreach (Component *component, m_allComponents) {
         // If a components is already installed or is scheduled for installation, no need to check for
         // auto depend installation.
         if ((!component->isInstalled() || component->updateRequested())
@@ -310,7 +308,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component)
 
     foreach (const QString &dependencyComponentName, allDependencies) {
         //componentByName returns 0 if dependencyComponentName contains a version which is not available
-        Component *dependencyComponent = m_publicManager->componentByName(dependencyComponentName);
+        Component *dependencyComponent = PackageManagerCore::componentByName(dependencyComponentName, m_allComponents);
         if (!dependencyComponent) {
             const QString errorMessage = PackageManagerCorePrivate::tr("Cannot find missing dependency (%1) for %2.")
                     .arg(dependencyComponentName, component->name());
@@ -651,8 +649,10 @@ void PackageManagerCorePrivate::clearInstallerCalculator()
 InstallerCalculator *PackageManagerCorePrivate::installerCalculator() const
 {
     if (!m_installerCalculator) {
-        PackageManagerCorePrivate *that = (PackageManagerCorePrivate *)(this);
-        that->m_installerCalculator = new InstallerCalculator(m_core, that);
+        PackageManagerCorePrivate *const pmcp = const_cast<PackageManagerCorePrivate *> (this);
+        pmcp->m_installerCalculator = new InstallerCalculator(
+            m_core->components(PackageManagerCore::ComponentType::AllNoReplacements),
+            pmcp);
     }
     return m_installerCalculator;
 }

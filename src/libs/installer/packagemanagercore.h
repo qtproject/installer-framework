@@ -123,6 +123,8 @@ public:
     static bool createLocalRepositoryFromBinary();
     static void setCreateLocalRepositoryFromBinary(bool create);
 
+    static Component *componentByName(const QString &name, const QList<Component *> &components);
+
     bool fetchLocalPackagesTree();
     LocalPackagesHash localInstalledPackages();
 

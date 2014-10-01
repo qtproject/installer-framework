@@ -1195,12 +1195,17 @@ void PackageManagerCore::appendUpdaterComponent(Component *component)
 /*!
     \qmlmethod Component QInstaller::componentByName(string name)
 
-    Returns a component matching \a name. \a name can also contains a version requirement.
-    E.g. "org.qt-project.sdk.qt" returns any component with that name, "org.qt-project.sdk.qt->=4.5" requires
-    the returned component to have at least version 4.5.
+    Returns a component matching \a name. \a name can also contain a version requirement.
+    For example "org.qt-project.sdk.qt" returns any component with that name,
+    "org.qt-project.sdk.qt->=4.5" requires the returned component to have at least version 4.5.
     If no component matches the requirement, 0 is returned.
 */
 Component *PackageManagerCore::componentByName(const QString &name) const
+{
+    return componentByName(name, components(ComponentType::AllNoReplacements));
+}
+
+Component *PackageManagerCore::componentByName(const QString &name, const QList<Component *> &components)
 {
     if (name.isEmpty())
         return 0;
@@ -1213,8 +1218,7 @@ Component *PackageManagerCore::componentByName(const QString &name) const
         fixedName = name.section(QLatin1Char('-'), 0, 0);
     }
 
-    const QList<Component *> list = components(ComponentType::AllNoReplacements);
-    foreach (Component *component, list) {
+    foreach (Component *component, components) {
         if (componentMatches(component, fixedName, fixedVersion))
             return component;
     }

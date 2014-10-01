@@ -95,7 +95,8 @@ public:
 class InstallerCalculator
 {
 public:
-    InstallerCalculator(PackageManagerCore *publicManager, PackageManagerCorePrivate *privateManager);
+    InstallerCalculator(const QList<Component *> &allComponents,
+                        PackageManagerCorePrivate *privateManager);
 
     enum InstallReasonType
     {
@@ -121,9 +122,9 @@ private:
     bool appendComponentToInstall(Component *components);
     QString recursionError(Component *component);
 
-    PackageManagerCore *m_publicManager;
     PackageManagerCorePrivate *m_privateManager;
 
+    QList<Component*> m_allComponents;
     QHash<Component*, QSet<Component*> > m_visitedComponents;
     QSet<QString> m_toInstallComponentIds; //for faster lookups
     QString m_componentsToInstallError;
