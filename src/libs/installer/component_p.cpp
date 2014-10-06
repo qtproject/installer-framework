@@ -90,7 +90,7 @@ ScriptEngine *ComponentPrivate::scriptEngine() const
 ComponentModelHelper::ComponentModelHelper()
 {
     setCheckState(Qt::Unchecked);
-    setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+    setFlags(Qt::ItemFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable));
 }
 
 /*!

@@ -96,7 +96,8 @@ int UpdateChecker::check()
     if (!core.fetchRemotePackagesTree())
         throw QInstaller::Error(core.error());
 
-    const QList<QInstaller::Component *> components = core.updaterComponents();
+    const QList<QInstaller::Component *> components =
+        core.components(QInstaller::PackageManagerCore::ComponentType::Root);
     if (components.isEmpty())
         throw QInstaller::Error(QLatin1String("There are currently no updates available."));
 

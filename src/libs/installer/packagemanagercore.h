@@ -101,6 +101,16 @@ public:
         End = 0xffff
     };
 
+    enum struct ComponentType {
+        Root = 0x1,
+        Descendants = 0x2,
+        Dependencies = 0x4,
+        Replacements = 0x8,
+        AllNoReplacements = (Root | Descendants | Dependencies),
+        All = (Root | Descendants | Dependencies | Replacements)
+    };
+    Q_DECLARE_FLAGS(ComponentTypes, ComponentType)
+
     static QFont virtualComponentsFont();
     static void setVirtualComponentsFont(const QFont &font);
 
@@ -187,19 +197,10 @@ public:
 
     // component handling
 
-    int rootComponentCount() const;
-    Component *rootComponent(int i) const;
-    QList<Component*> rootComponents() const;
     void appendRootComponent(Component *components);
-
-    QList<Component*> rootAndChildComponents() const;
-
-    Q_INVOKABLE int updaterComponentCount() const;
-    Component *updaterComponent(int i) const;
-    QList<Component*> updaterComponents() const;
     void appendUpdaterComponent(Component *components);
 
-    QList<Component*> availableComponents() const;
+    QList<Component *> components(ComponentTypes mask) const;
     Component *componentByName(const QString &identifier) const;
 
     Q_INVOKABLE bool calculateComponentsToInstall() const;
@@ -341,6 +342,7 @@ private:
     friend class ComponentSelectionPage;
     void resetComponentsToUserCheckedState();
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS(PackageManagerCore::ComponentTypes)
 
 }
 

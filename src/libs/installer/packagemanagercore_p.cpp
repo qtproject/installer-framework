@@ -280,9 +280,8 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
             return false;
     }
 
-    const QList<Component*> relevantComponentForAutoDependOn = m_publicManager->isUpdater()
-            ? m_privateManager->m_updaterComponents + m_privateManager->m_updaterComponentsDeps
-            : m_publicManager->rootAndChildComponents();
+    const QList<Component*> relevantComponentForAutoDependOn =
+        m_publicManager->components(PackageManagerCore::ComponentType::AllNoReplacements);
 
     QList<Component *> foundAutoDependOnList;
     // All regular dependencies are resolved. Now we are looking for auto depend on components.
@@ -2485,13 +2484,12 @@ OperationList PackageManagerCorePrivate::sortOperationsBasedOnComponentDependenc
         }
     }
 
-    // create the complete component graph
-    Graph<QString> componentGraph;
+    const QString empty;
     const QRegExp dash(QLatin1String("-.*"));
-    foreach (const Component* componentNode, m_core->availableComponents()) {
-        componentGraph.addNode(componentNode->name());
-        const QStringList dependencies = componentNode->dependencies().replaceInStrings(dash,QString());
-        componentGraph.addEdges(componentNode->name(), dependencies);
+    Graph<QString> componentGraph;  // create the complete component graph
+    foreach (const Component* node, m_core->components(PackageManagerCore::ComponentType::All)) {
+        componentGraph.addNode(node->name());
+        componentGraph.addEdges(node->name(), node->dependencies().replaceInStrings(dash, empty));
     }
 
     const QStringList resolvedComponents = componentGraph.sort();

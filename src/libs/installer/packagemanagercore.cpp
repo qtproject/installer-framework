@@ -518,7 +518,7 @@ quint64 PackageManagerCore::requiredDiskSpace() const
 {
     quint64 result = 0;
 
-    foreach (QInstaller::Component *component, rootComponents())
+    foreach (QInstaller::Component *component, components(ComponentType::Root))
         result += component->updateUncompressedSize();
 
     return result;
@@ -1116,33 +1116,6 @@ ScriptEngine *PackageManagerCore::controlScriptEngine() const
 }
 
 /*!
-    Returns the number of components in the list for installer and package manager mode. Might return 0 in
-    case the engine has only been run in updater mode or no components have been fetched.
-*/
-int PackageManagerCore::rootComponentCount() const
-{
-    return d->m_rootComponents.size();
-}
-
-/*!
-    Returns the component at index position \a i in the components list. \a i must be a valid index
-    position in the list (i.e., 0 <= i < rootComponentCount()).
-*/
-Component *PackageManagerCore::rootComponent(int i) const
-{
-    return d->m_rootComponents.value(i, 0);
-}
-
-/*!
-    Returns a list of root components if run in installer or package manager mode. Might return an empty list
-    in case the engine has only been run in updater mode or no components have been fetched.
-*/
-QList<Component*> PackageManagerCore::rootComponents() const
-{
-    return d->m_rootComponents;
-}
-
-/*!
     Appends a component as root component to the internal storage for installer or package manager components.
     To append a component as a child to an already existing component, use Component::appendComponent(). Emits
     the componentAdded() signal.
@@ -1154,44 +1127,59 @@ void PackageManagerCore::appendRootComponent(Component *component)
 }
 
 /*!
-    Returns a list of root components and all of their descendant components if run in installer or package manager mode.
-    Might return an empty list in case the engine has only been run in updater mode or no components have been fetched.
+    \enum ComponentType
+
+    This enum is used with components() to describe what type of \C Component list this function
+    should return.
+
+    \value Root
+        Return a list of root components.
+
+    \value Descendants
+        Return a list of all descendant components. \note In updater mode the list is empty,
+        because component updates cannot have children.
+
+    \value Dependencies
+        Return a list of all available dependencies when run as updater. \note In Installer,
+        package manager and uninstaller mode, this will always result in an empty list.
+
+    \value Replacements
+        Return a list of all available replacement components relevant to the run mode.
+
+    \value AllNoReplacements
+        Return a list of available components, including root, descendant and dependency
+        components relevant to the run mode.
+
+    \value All
+        Return a list of all available components, including root, descendant, dependency and
+        replacement components relevant to the run mode.
 */
-QList<Component*> PackageManagerCore::rootAndChildComponents() const
-{
-    QList<Component*> result = d->m_rootComponents;
-    foreach (QInstaller::Component *component, d->m_rootComponents)
-        result += component->childComponents(Component::Descendants);
-    return result;
-}
 
 /*!
-    \qmlmethod int QInstaller::updaterComponentCount()
-
-    Returns the number of components in the list for updater mode. Might return 0 in case the engine has only
-    been run in installer or package manager mode or no components have been fetched.
+    Returns a list of components depending on the component types passed in \a mask.
 */
-int PackageManagerCore::updaterComponentCount() const
+QList<Component *> PackageManagerCore::components(ComponentTypes mask) const
 {
-    return d->m_updaterComponents.size();
-}
+    QList<Component *> components;
 
-/*!
-    Returns the component at index position \a i in the updates component list. \a i must be a valid index
-    position in the list (i.e., 0 <= i < updaterComponentCount()).
-*/
-Component *PackageManagerCore::updaterComponent(int i) const
-{
-    return d->m_updaterComponents.value(i, 0);
-}
+    const bool updater = isUpdater();
+    if (mask.testFlag(ComponentType::Root))
+        components += updater ? d->m_updaterComponents : d->m_rootComponents;
+    if (mask.testFlag(ComponentType::Replacements))
+        components += updater ? d->m_updaterDependencyReplacements : d->m_rootDependencyReplacements;
 
-/*!
-    Returns a list of components if run in updater mode. Might return an empty list in case the engine has only
-    been run in installer or package manager mode or no components have been fetched.
-*/
-QList<Component*> PackageManagerCore::updaterComponents() const
-{
-    return d->m_updaterComponents;
+    if (!updater) {
+        if (mask.testFlag(ComponentType::Descendants)) {
+            foreach (QInstaller::Component *component, d->m_rootComponents)
+                components += component->childComponents(Component::Descendants);
+        }
+    } else {
+        if (mask.testFlag(ComponentType::Dependencies))
+            components.append(d->m_updaterComponentsDeps);
+        // No descendants here, updates are always a flat list and cannot have children!
+    }
+
+    return components;
 }
 
 /*!
@@ -1202,19 +1190,6 @@ void PackageManagerCore::appendUpdaterComponent(Component *component)
     component->setUpdateAvailable(true);
     d->m_updaterComponents.append(component);
     emit componentAdded(component);
-}
-
-/*!
-    Returns a list of all available components found during a fetch. Depending on the run mode the
-    returned list might have different values. \note: This function will return all components and
-    possible replacement components as well.
-*/
-QList<Component*> PackageManagerCore::availableComponents() const
-{
-    if (isUpdater())
-        return d->m_updaterComponents + d->m_updaterComponentsDeps + d->m_updaterDependencyReplacements;
-
-    return rootAndChildComponents() + d->m_rootDependencyReplacements;
 }
 
 /*!
@@ -1238,11 +1213,8 @@ Component *PackageManagerCore::componentByName(const QString &name) const
         fixedName = name.section(QLatin1Char('-'), 0, 0);
     }
 
-    const QList<Component *> components = isUpdater()
-            ? updaterComponents() + d->m_updaterComponentsDeps
-            : rootAndChildComponents();
-
-    foreach (Component *component, components) {
+    const QList<Component *> list = components(ComponentType::AllNoReplacements);
+    foreach (Component *component, list) {
         if (componentMatches(component, fixedName, fixedVersion))
             return component;
     }
@@ -1263,26 +1235,27 @@ bool PackageManagerCore::calculateComponentsToInstall() const
     emit aboutCalculateComponentsToInstall();
     if (!d->m_componentsToInstallCalculated) {
         d->clearInstallerCalculator();
-        QList<Component*> components;
+        QList<Component*> componentsToInstall;
+        const QList<Component*> relevant = components(ComponentType::Root | ComponentType::Descendants);
         if (isUpdater()) {
-            foreach (Component *component, updaterComponents()) {
+            foreach (Component *component, relevant) {
                 if (component->updateRequested())
-                    components.append(component);
+                    componentsToInstall.append(component);
             }
         } else if (!isUpdater()) {
             // relevant means all components which are not replaced
-            const QList<Component*> relevantComponents = rootAndChildComponents();
-            foreach (Component *component, relevantComponents) {
+            foreach (Component *component, relevant) {
                 // ask for all components which will be installed to get all dependencies
                 // even dependencies which are changed without an increased version
                 if (component->installationRequested() || (component->isInstalled()
                     && !component->uninstallationRequested())) {
-                        components.append(component);
+                    componentsToInstall.append(component);
                 }
             }
         }
 
-        d->m_componentsToInstallCalculated = d->installerCalculator()->appendComponentsToInstall(components);
+        d->m_componentsToInstallCalculated =
+            d->installerCalculator()->appendComponentsToInstall(componentsToInstall);
     }
     emit finishedCalculateComponentsToInstall();
     return d->m_componentsToInstallCalculated;
@@ -1312,14 +1285,14 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
         // hack to avoid removing needed dependencies
         QSet<Component*>  componentsToInstall = d->installerCalculator()->orderedComponentsToInstall().toSet();
 
-        QList<Component*> components;
-        foreach (Component *component, availableComponents()) {
+        QList<Component*> componentsToUninstall;
+        foreach (Component *component, components(ComponentType::All)) {
             if (component->uninstallationRequested() && !componentsToInstall.contains(component))
-                components.append(component);
+                componentsToUninstall.append(component);
         }
 
         d->m_componentsToUninstall.clear();
-        result = d->appendComponentsToUninstall(components);
+        result = d->appendComponentsToUninstall(componentsToUninstall);
     }
     emit finishedCalculateComponentsToUninstall();
     return result;
@@ -1354,13 +1327,16 @@ QString PackageManagerCore::installReason(Component *component) const
 */
 QList<Component*> PackageManagerCore::dependees(const Component *_component) const
 {
-    QList<Component*> dependees;
-    const QList<Component*> components = availableComponents();
-    if (!_component || components.isEmpty())
-        return dependees;
+    if (!_component)
+        return QList<Component *>();
+
+    const QList<QInstaller::Component *> availableComponents = components(ComponentType::All);
+    if (availableComponents.isEmpty())
+        return QList<Component *>();
 
     const QLatin1Char dash('-');
-    foreach (Component *component, components) {
+    QList<Component *> dependees;
+    foreach (Component *component, availableComponents) {
         const QStringList &dependencies = component->dependencies();
         foreach (const QString &dependency, dependencies) {
             // the last part is considered to be the version then
@@ -2050,7 +2026,7 @@ bool PackageManagerCore::runPackageUpdater()
 */
 void PackageManagerCore::languageChanged()
 {
-    foreach (Component *component, availableComponents())
+    foreach (Component *component, components(ComponentType::All))
         component->languageChanged();
 }
 
@@ -2384,25 +2360,25 @@ void PackageManagerCore::resetComponentsToUserCheckedState()
 
 void PackageManagerCore::updateDisplayVersions(const QString &displayKey)
 {
-    QHash<QString, QInstaller::Component *> components;
-    const QList<QInstaller::Component *> componentList = availableComponents();
-    foreach (QInstaller::Component *component, componentList)
-        components[component->name()] = component;
+    QHash<QString, QInstaller::Component *> componentsHash;
+    foreach (QInstaller::Component *component, components(ComponentType::All))
+        componentsHash[component->name()] = component;
 
     // set display version for all components in list
-    const QStringList &keys = components.keys();
+    const QStringList &keys = componentsHash.keys();
     foreach (const QString &key, keys) {
         QHash<QString, bool> visited;
-        if (components.value(key)->isInstalled()) {
-            components.value(key)->setValue(scDisplayVersion,
-                findDisplayVersion(key, components, scInstalledVersion, visited));
+        if (componentsHash.value(key)->isInstalled()) {
+            componentsHash.value(key)->setValue(scDisplayVersion,
+                findDisplayVersion(key, componentsHash, scInstalledVersion, visited));
         }
         visited.clear();
-        const QString displayVersionRemote = findDisplayVersion(key, components, scRemoteVersion, visited);
+        const QString displayVersionRemote = findDisplayVersion(key, componentsHash,
+            scRemoteVersion, visited);
         if (displayVersionRemote.isEmpty())
-            components.value(key)->setValue(displayKey, tr("invalid"));
+            componentsHash.value(key)->setValue(displayKey, tr("invalid"));
         else
-            components.value(key)->setValue(displayKey, displayVersionRemote);
+            componentsHash.value(key)->setValue(displayKey, displayVersionRemote);
     }
 
 }

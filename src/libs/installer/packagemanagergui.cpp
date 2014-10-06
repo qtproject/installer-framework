@@ -988,7 +988,7 @@ bool IntroductionPage::validatePage()
         callControlScript(QLatin1String("UpdaterSelectedCallback"));
 
         if (m_updatesFetched) {
-            if (core->updaterComponents().count() <= 0)
+            if (core->components(QInstaller::PackageManagerCore::ComponentType::Root).count() <= 0)
                 setErrorMessage(QString::fromLatin1("<b>%1</b>").arg(tr("No updates available.")));
             else
                 setComplete(true);

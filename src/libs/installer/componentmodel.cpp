@@ -416,11 +416,7 @@ void ComponentModel::slotModelReset()
 void ComponentModel::onVirtualStateChanged()
 {
     // If the virtual state of a component changes, force a reset of the component model.
-    // Make sure to pass the right components list depending on the package manager run mode.
-    if (m_core->isUpdater())
-        setRootComponents(m_core->updaterComponents());
-    else
-        setRootComponents(m_core->rootComponents());
+    setRootComponents(m_core->components(PackageManagerCore::ComponentType::Root));
 }
 
 

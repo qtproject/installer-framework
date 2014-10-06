@@ -170,9 +170,8 @@ private slots:
             PackageManagerCore core;
             core.setPackageManager();
 
-            QCOMPARE(core.rootComponentCount(), 0);
-            QCOMPARE(core.updaterComponentCount(), 0);
-            QCOMPARE(core.availableComponents().count(), 0);
+            QCOMPARE(core.components(PackageManagerCore::ComponentType::Root).count(), 0);
+            QCOMPARE(core.components(PackageManagerCore::ComponentType::All).count(), 0);
 
             Component *root = new NamedComponent(&core, QLatin1String("root1"));
             root->appendComponent(new NamedComponent(&core, QLatin1String("root1.foo"),
@@ -180,9 +179,8 @@ private slots:
             root->appendComponent(new NamedComponent(&core, QLatin1String("root1.bar")));
             core.appendRootComponent(root);
 
-            QCOMPARE(core.rootComponentCount(), 1);
-            QCOMPARE(core.updaterComponentCount(), 0);
-            QCOMPARE(core.availableComponents().count(), 3);
+            QCOMPARE(core.components(PackageManagerCore::ComponentType::Root).count(), 1);
+            QCOMPARE(core.components(PackageManagerCore::ComponentType::All).count(), 3);
 
             Component *foo = core.componentByName(QLatin1String("root1.foo-1.0.1"));
             QVERIFY(foo != 0);
@@ -194,15 +192,13 @@ private slots:
             v->setValue(scVirtual, QLatin1String("true"));
             foo->appendComponent(v);
 
-            QCOMPARE(core.rootComponentCount(), 1);
-            QCOMPARE(core.updaterComponentCount(), 0);
-            QCOMPARE(core.availableComponents().count(), 5);
+            QCOMPARE(core.components(PackageManagerCore::ComponentType::Root).count(), 1);
+            QCOMPARE(core.components(PackageManagerCore::ComponentType::All).count(), 5);
 
             core.appendRootComponent(new NamedComponent(&core, QLatin1String("root2")));
 
-            QCOMPARE(core.rootComponentCount(), 2);
-            QCOMPARE(core.updaterComponentCount(), 0);
-            QCOMPARE(core.availableComponents().count(), 6);
+            QCOMPARE(core.components(PackageManagerCore::ComponentType::Root).count(), 2);
+            QCOMPARE(core.components(PackageManagerCore::ComponentType::All).count(), 6);
         }
 
         {
@@ -225,9 +221,8 @@ private slots:
             v->setValue(scVirtual, QLatin1String("true"));
             core.appendUpdaterComponent(v);
 
-            QCOMPARE(core.rootComponentCount(), 0);
-            QCOMPARE(core.updaterComponentCount(), 3);
-            QCOMPARE(core.availableComponents().count(), 3);
+            QCOMPARE(core.components(PackageManagerCore::ComponentType::Root).count(), 3);
+            QCOMPARE(core.components(PackageManagerCore::ComponentType::All).count(), 3);
 
             Component *root3 = core.componentByName(QLatin1String("root3->2.0.2"));
             QVERIFY(root3 == 0);
