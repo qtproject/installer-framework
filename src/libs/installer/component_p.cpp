@@ -219,7 +219,7 @@ Qt::ItemFlags ComponentModelHelper::flags() const
 {
     QVariant variant = data(Qt::UserRole - 1);
     if (!variant.isValid())
-        return (Qt::ItemIsEnabled | Qt::ItemIsSelectable| Qt::ItemIsUserCheckable);
+        return Qt::ItemFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
     return Qt::ItemFlags(variant.toInt());
 }
 
