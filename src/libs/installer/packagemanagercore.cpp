@@ -57,6 +57,7 @@
 #include "settings.h"
 #include "utils.h"
 #include "installercalculator.h"
+#include "uninstallercalculator.h"
 
 #include <productkeycheck.h>
 
@@ -1269,9 +1270,9 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
                 componentsToUninstall.append(component);
         }
 
-        d->m_componentsToUninstall.clear();
+        d->clearUninstallerCalculator();
         d->storeCheckState();
-        result = d->appendComponentsToUninstall(componentsToUninstall);
+        result = d->uninstallerCalculator()->appendComponentsToUninstall(componentsToUninstall);
     }
     emit finishedCalculateComponentsToUninstall();
     return result;
@@ -1282,7 +1283,7 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
 */
 QList<Component *> PackageManagerCore::componentsToUninstall() const
 {
-    return d->m_componentsToUninstall.toList();
+    return d->uninstallerCalculator()->componentsToUninstall().toList();
 }
 
 QString PackageManagerCore::componentsToInstallError() const

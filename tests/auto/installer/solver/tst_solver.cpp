@@ -42,6 +42,7 @@
 #include <component.h>
 #include <graph.h>
 #include <installercalculator.h>
+#include <uninstallercalculator.h>
 #include <packagemanagercore.h>
 
 #include <QTest>
@@ -149,7 +150,7 @@ private slots:
             qPrintable(cycle.first.data()));
     }
 
-    void resolve_data()
+    void resolveInstaller_data()
     {
         QTest::addColumn<PackageManagerCore *>("core");
         QTest::addColumn<QList<Component *> >("selectedComponents");
@@ -168,7 +169,7 @@ private slots:
         core->appendRootComponent(componentA);
         core->appendRootComponent(componentB);
 
-        QTest::newRow("Simple resolved") << core
+        QTest::newRow("Installer resolved") << core
                     << (QList<Component *>() << componentB)
                     << (QList<Component *>() << componentAB << componentB)
                     << (QList<int>()
@@ -176,7 +177,7 @@ private slots:
                         << InstallerCalculator::Resolved);
     }
 
-    void resolve()
+    void resolveInstaller()
     {
         QFETCH(PackageManagerCore *, core);
         QFETCH(QList<Component *> , selectedComponents);
@@ -192,6 +193,51 @@ private slots:
             QCOMPARE(result.at(i), expectedResult.at(i));
             QCOMPARE((int)calc.installReasonType(result.at(i)), installReason.at(i));
         }
+        delete core;
+    }
+
+    void resolveUninstaller_data()
+    {
+        QTest::addColumn<PackageManagerCore *>("core");
+        QTest::addColumn<QList<Component *> >("selectedToUninstall");
+        QTest::addColumn<QList<Component *> >("installedComponents");
+        QTest::addColumn<QSet<Component *> >("expectedResult");
+
+        PackageManagerCore *core = new PackageManagerCore();
+        core->setPackageManager();
+        NamedComponent *componentA = new NamedComponent(core, QLatin1String("A"));
+        NamedComponent *componentAA = new NamedComponent(core, QLatin1String("A.A"));
+        NamedComponent *componentAB = new NamedComponent(core, QLatin1String("A.B"));
+        componentA->appendComponent(componentAA);
+        componentA->appendComponent(componentAB);
+        NamedComponent *componentB = new NamedComponent(core, QLatin1String("B"));
+        componentB->addDependency(QLatin1String("A.B"));
+        core->appendRootComponent(componentA);
+        core->appendRootComponent(componentB);
+
+        componentA->setInstalled();
+        componentB->setInstalled();
+        componentAB->setInstalled();
+
+        QTest::newRow("Uninstaller resolved") << core
+                    << (QList<Component *>() << componentAB)
+                    << (QList<Component *>() << componentA << componentB << componentAB)
+                    << (QSet<Component *>() << componentAB << componentB);
+    }
+
+    void resolveUninstaller()
+    {
+        QFETCH(PackageManagerCore *, core);
+        QFETCH(QList<Component *> , selectedToUninstall);
+        QFETCH(QList<Component *> , installedComponents);
+        QFETCH(QSet<Component *> , expectedResult);
+
+        UninstallerCalculator calc(installedComponents);
+        calc.appendComponentsToUninstall(selectedToUninstall);
+        QSet<Component *> result = calc.componentsToUninstall();
+
+        QCOMPARE(result.count(), expectedResult.count());
+        QCOMPARE(result, expectedResult);
         delete core;
     }
 };

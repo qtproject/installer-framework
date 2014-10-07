@@ -50,7 +50,6 @@
 #include "errors.h"
 #include "fileio.h"
 #include "remotefileengine.h"
-#include "globals.h"
 #include "graph.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
@@ -60,6 +59,7 @@
 #include "qsettingswrapper.h"
 #include "remoteclient.h"
 #include "installercalculator.h"
+#include "uninstallercalculator.h"
 
 #include "kdselfrestarter.h"
 #include "kdupdaterfiledownloaderfactory.h"
@@ -198,6 +198,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_componentScriptEngine(0)
     , m_controlScriptEngine(0)
     , m_installerCalculator(0)
+    , m_uninstallerCalculator(0)
     , m_proxyFactory(0)
     , m_defaultModel(0)
     , m_updaterModel(0)
@@ -226,6 +227,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_componentScriptEngine(0)
     , m_controlScriptEngine(0)
     , m_installerCalculator(0)
+    , m_uninstallerCalculator(0)
     , m_proxyFactory(0)
     , m_defaultModel(0)
     , m_updaterModel(0)
@@ -269,6 +271,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     clearAllComponentLists();
     clearUpdaterComponentLists();
     clearInstallerCalculator();
+    clearUninstallerCalculator();
 
     qDeleteAll(m_ownedOperations);
     qDeleteAll(m_performedOperationsOld);
@@ -495,6 +498,30 @@ InstallerCalculator *PackageManagerCorePrivate::installerCalculator() const
             m_core->components(PackageManagerCore::ComponentType::AllNoReplacements));
     }
     return m_installerCalculator;
+}
+
+void PackageManagerCorePrivate::clearUninstallerCalculator()
+{
+    delete m_uninstallerCalculator;
+    m_uninstallerCalculator = 0;
+}
+
+UninstallerCalculator *PackageManagerCorePrivate::uninstallerCalculator() const
+{
+    if (!m_uninstallerCalculator) {
+        PackageManagerCorePrivate *const pmcp = const_cast<PackageManagerCorePrivate *> (this);
+
+        QList<Component*> installedComponents;
+        foreach (const QString &name, pmcp->localInstalledPackages().keys()) {
+            if (Component *component = m_core->componentByName(name)) {
+                if (!component->uninstallationRequested())
+                    installedComponents.append(component);
+            }
+        }
+
+        pmcp->m_uninstallerCalculator = new UninstallerCalculator(installedComponents);
+    }
+    return m_uninstallerCalculator;
 }
 
 void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params)
@@ -2176,104 +2203,6 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
 
     m_updateSourcesAdded = true;
     return m_updateSourcesAdded;
-}
-
-bool PackageManagerCorePrivate::appendComponentToUninstall(Component *component)
-{
-    // remove all already resolved dependees
-    QSet<Component *> dependees = m_core->dependees(component).toSet().subtract(m_componentsToUninstall);
-    if (dependees.isEmpty()) {
-        component->setCheckState(Qt::Unchecked);
-        m_componentsToUninstall.insert(component);
-        return true;
-    }
-
-    QSet<Component *> dependeesToResolve;
-    foreach (Component *dependee, dependees) {
-        if (dependee->isInstalled()) {
-            // keep them as already resolved
-            dependee->setCheckState(Qt::Unchecked);
-            m_componentsToUninstall.insert(dependee);
-            // gather possible dependees, keep them to resolve it later
-            dependeesToResolve.unite(m_core->dependees(dependee).toSet());
-        }
-    }
-
-    bool allResolved = true;
-    foreach (Component *dependee, dependeesToResolve)
-        allResolved &= appendComponentToUninstall(dependee);
-
-    return allResolved;
-}
-
-bool PackageManagerCorePrivate::appendComponentsToUninstall(const QList<Component*> &components)
-{
-    if (components.isEmpty()) {
-        qDebug() << "components list is empty in" << Q_FUNC_INFO;
-        return true;
-    }
-
-    bool allResolved = true;
-    foreach (Component *component, components) {
-        if (component->isInstalled()) {
-            component->setCheckState(Qt::Unchecked);
-            m_componentsToUninstall.insert(component);
-            allResolved &= appendComponentToUninstall(component);
-        }
-    }
-
-    QSet<Component*> installedComponents;
-    foreach (const QString &name, localInstalledPackages().keys()) {
-        if (Component *component = m_core->componentByName(name)) {
-            if (!component->uninstallationRequested())
-                installedComponents.insert(component);
-        }
-    }
-
-    QList<Component*> autoDependOnList;
-    if (allResolved) {
-        // All regular dependees are resolved. Now we are looking for auto depend on components.
-        foreach (Component *component, installedComponents) {
-            // If a components is installed and not yet scheduled for un-installation, check for auto depend.
-            if (component->isInstalled() && !m_componentsToUninstall.contains(component)) {
-                QStringList autoDependencies = component->autoDependencies();
-                if (autoDependencies.isEmpty())
-                    continue;
-
-                // This code needs to be enabled once the scripts use isInstalled, installationRequested and
-                // uninstallationRequested...
-                if (autoDependencies.first().compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
-                    //QScriptValue valueFromScript;
-                    //try {
-                    //    valueFromScript = callScriptMethod(QLatin1String("isAutoDependOn"));
-                    //} catch (const Error &error) {
-                    //    // keep the component, should do no harm
-                    //    continue;
-                    //}
-
-                    //if (valueFromScript.isValid() && !valueFromScript.toBool())
-                    //    autoDependOnList.append(component);
-                    continue;
-                }
-
-                foreach (Component *c, installedComponents) {
-                    const QString replaces = c->value(scReplaces);
-                    const QStringList possibleNames = replaces.split(QInstaller::commaRegExp(),
-                        QString::SkipEmptyParts) << c->name();
-                    foreach (const QString &possibleName, possibleNames)
-                        autoDependencies.removeAll(possibleName);
-                }
-
-                // A component requested auto installation, keep it to resolve their dependencies as well.
-                if (!autoDependencies.isEmpty())
-                    autoDependOnList.append(component);
-            }
-        }
-    }
-
-    if (!autoDependOnList.isEmpty())
-        return appendComponentsToUninstall(autoDependOnList);
-    return allResolved;
 }
 
 void PackageManagerCorePrivate::restoreCheckState()

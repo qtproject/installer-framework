@@ -70,6 +70,7 @@ class ScriptEngine;
 class ComponentModel;
 class TempDirDeleter;
 class InstallerCalculator;
+class UninstallerCalculator;
 
 /*
     The default configuration interface implementation does call QSettings to save files for later deletion,
@@ -149,6 +150,9 @@ public:
     void clearInstallerCalculator();
     InstallerCalculator *installerCalculator() const;
 
+    void clearUninstallerCalculator();
+    UninstallerCalculator *uninstallerCalculator() const;
+
     bool runInstaller();
     bool isInstaller() const;
 
@@ -190,9 +194,6 @@ public:
 
     void installComponent(Component *component, double progressOperationSize,
         bool adminRightsGained = false);
-
-    bool appendComponentToUninstall(Component *component);
-    bool appendComponentsToUninstall(const QList<Component*> &components);
 
 signals:
     void installationStarted();
@@ -273,8 +274,8 @@ private:
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceUpdaterMode;
 
     InstallerCalculator *m_installerCalculator;
+    UninstallerCalculator *m_uninstallerCalculator;
 
-    QSet<Component*> m_componentsToUninstall;
     FileDownloaderProxyFactory *m_proxyFactory;
 
     ComponentModel *m_defaultModel;

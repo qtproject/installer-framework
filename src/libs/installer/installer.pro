@@ -121,7 +121,8 @@ HEADERS += packagemanagercore.h \
     fileio.h \
     binarycontent.h \
     binarylayout.h \
-    installercalculator.h
+    installercalculator.h \
+    uninstallercalculator.h
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -191,7 +192,8 @@ SOURCES += packagemanagercore.cpp \
     fileio.cpp \
     binarycontent.cpp \
     binarylayout.cpp \
-    installercalculator.cpp
+    installercalculator.cpp \
+    uninstallercalculator.cpp
 
 RESOURCES += resources/patch_file_lists.qrc \
              resources/installer.qrc
