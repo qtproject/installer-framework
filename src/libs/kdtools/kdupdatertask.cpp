@@ -44,7 +44,7 @@
 using namespace KDUpdater;
 
 /*!
-   \ingroup kdupdater
+   \inmodule kdupdater
    \class KDUpdater::Task kdupdatertask.h KDUpdaterTask
    \brief Base class for all task classes in KDUpdater
 

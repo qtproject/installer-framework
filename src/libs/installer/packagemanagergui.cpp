@@ -232,7 +232,9 @@ public:
 
 /*!
     \class QInstaller::PackageManagerGui
-    Is the "gui" object in a none interactive installation
+    \inmodule QtInstallerFramework
+    \brief The PackageManagerGui class provides the core functionality for non-interactive
+        installations.
 */
 PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     : QWizard(parent)
@@ -805,10 +807,11 @@ QWidget *PackageManagerPage::findWidget(const QString &objectName) const
 }
 
 /*!
-    \reimp
-    \Overwritten to support some kind of initializePage() in the case the wizard has been set
+    \internal
+
+    Used to support some kind of initializePage() in the case the wizard has been set
     to QWizard::IndependentPages. If that option has been set, initializePage() would be only
-    called once. So we provide entering() and leaving() based on this overwritten function.
+    called once. So we provide entering() and leaving() based on this reimplemented function.
 */
 void PackageManagerPage::setVisible(bool visible)
 {
@@ -1555,7 +1558,8 @@ public:
 
 /*!
     \class QInstaller::ComponentSelectionPage
-    On this page the user can select and deselect what he wants to be installed.
+    \inmodule QtInstallerFramework
+    \brief The ComponentSelectionPage class can be used to change the checked state of components.
 */
 ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
@@ -2167,7 +2171,8 @@ void ReadyForInstallationPage::leaving()
 
 /*!
     \class QInstaller::PerformInstallationPage
-    On this page the user can see on a progress bar how far the current installation is.
+    \inmodule QtInstallerFramework
+    \brief The PerformInstallationPage class shows progress information about the installation state.
 */
 PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     : PackageManagerPage(core)

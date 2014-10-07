@@ -51,8 +51,8 @@
     \qmltype QMessageBox
     \inqmlmodule scripting
 
-    \brief The QMessageBox type provides a modal dialog for informing the
-    user or asking the user a question and receiving an answer.
+    \brief The QMessageBox type provides a modal dialog for informing the user or asking the user
+        a question and receiving an answer.
 
 
     \code
@@ -91,10 +91,9 @@
     \section2 Scripted Installations
 
     Sometimes it is useful to automatically close message boxes, for example during a scripted
-    installation. This can be achieved by calling
-    Installer::setMessageBoxAutomaticAnswer, Installer::autoAcceptMessageBoxes,
-    Installer::autoRejectMessageBoxes. The \c identifier argument in the method calls
-    allows to identify specific message boxes for this purpose.
+    installation. This can be achieved by calling installer::setMessageBoxAutomaticAnswer,
+    installer::autoAcceptMessageBoxes or installer::autoRejectMessageBoxes. The \c identifier
+    argument in the method calls allows to identify specific message boxes for this purpose.
  */
 
 

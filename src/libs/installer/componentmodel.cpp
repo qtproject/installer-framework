@@ -47,18 +47,26 @@
 namespace QInstaller {
 
 /*!
-    \fn void checkStateChanged(const QModelIndex &index)
-
-    This signal is emitted whenever the check state of a component is changed. The \a index value indicates
-    the QModelIndex representation of the component as seen from the model.
+    \class QInstaller::ComponentModel
+    \inmodule QtInstallerFramework
+    \brief The ComponentModel class holds a data model for visual representation of available
+        components to install.
 */
 
 /*!
-    \fn void checkStateChanged(QInstaller::ComponentModel::ModelState state)
+    \fn void ComponentModel::checkStateChanged(const QModelIndex &index)
 
-    This signal is emitted whenever the check state of a model is changed after all check state
-    calculations have taken place. The \a state value indicates whether the model has its default checked
-    state, all components are checked/ unchecked or some individual components checked state has changed.
+    This signal is emitted whenever the check state of a component is changed. The \a index value
+    indicates the QModelIndex representation of the component as seen from the model.
+*/
+
+/*!
+    \fn void ComponentModel::checkStateChanged(QInstaller::ComponentModel::ModelState state)
+
+    This signal is emitted whenever the check state of a model is changed after all state
+    calculations have taken place. The \a state is a combination of \c ModelStateFlag values
+    indicating whether the model has its default checked state, all components are checked
+    or unchecked, or some individual component's checked state has changed.
 */
 
 
@@ -84,8 +92,8 @@ ComponentModel::~ComponentModel()
 /*!
     Returns the item flags for the given \a index.
 
-    The class implementation returns a combination of flags that enables the item (Qt::ItemIsEnabled), allows
-    it to be selected (Qt::ItemIsSelectable) and to be checked (Qt::ItemIsUserCheckable).
+    Returns a combination of flags that enables the item (Qt::ItemIsEnabled) and allows it to be
+    selected (Qt::ItemIsSelectable) and to be checked (Qt::ItemIsUserCheckable).
 */
 Qt::ItemFlags ComponentModel::flags(const QModelIndex &index) const
 {
@@ -99,8 +107,8 @@ Qt::ItemFlags ComponentModel::flags(const QModelIndex &index) const
 }
 
 /*!
-    Returns the number of items under the given \a parent. When the parent is valid it means that rowCount
-    is returning the number of items of parent.
+    Returns the number of items under the given \a parent. When the parent index is invalid the
+    returned value is the root item count.
 */
 int ComponentModel::rowCount(const QModelIndex &parent) const
 {
@@ -119,7 +127,7 @@ int ComponentModel::columnCount(const QModelIndex &parent) const
 }
 
 /*!
-    Returns the parent of the child item with the given \a child. If the item has no parent, an invalid
+    Returns the parent item of the given \a child. If the item has no parent, an invalid
     QModelIndex is returned.
 */
 QModelIndex ComponentModel::parent(const QModelIndex &child) const
@@ -135,7 +143,8 @@ QModelIndex ComponentModel::parent(const QModelIndex &child) const
 }
 
 /*!
-    Returns the index of the item in the model specified by the given \a row, \a column and \a parent index.
+    Returns the index of the item in the model specified by the given \a row, \a column, and
+    \a parent index.
 */
 QModelIndex ComponentModel::index(int row, int column, const QModelIndex &parent) const
 {
@@ -207,7 +216,8 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, in
 }
 
 /*!
-    Returns the data for the given \a role and \a section in the header with the specified \a orientation.
+    Returns the data for the given \a role and \a section in the header with the specified
+    \a orientation.
     An \e invalid QVariant is returned if \a section is out of bounds,
     \a orientation is not Qt::Horizontal
     or \a role is anything else than Qt::DisplayRole.
@@ -220,9 +230,10 @@ QVariant ComponentModel::headerData(int section, Qt::Orientation orientation, in
 }
 
 /*!
-    Sets the data for the given \a role and \a section in the header with the specified \a orientation to the
-    \a value supplied. Returns true if the header's data was updated; otherwise returns false. The
-    headerDataChanged() signal is emitted if the data was successfully set.
+    Sets the data for the given \a role and \a section in the header with the specified
+    \a orientation to the \a value supplied. Returns \c true if the header's data was updated;
+    otherwise returns \c false. The headerDataChanged() signal is emitted if the data was
+    successfully set.
 
     \note Only Qt::Horizontal orientation is supported.
 */
@@ -262,8 +273,8 @@ QSet<Component *> ComponentModel::unchecked() const
 }
 
 /*!
-    Returns a list of components whose check state can't be changed. If package manager core is run with no
-    forced installation argument, the list will always be empty.
+    Returns a list of components whose check state cannot be changed. If package manager
+    core is run with no forced installation argument, the list will always be empty.
 */
 QSet<Component *> ComponentModel::uncheckable() const
 {
@@ -287,8 +298,9 @@ ComponentModel::ModelState ComponentModel::checkedState() const
 }
 
 /*!
-    Translates between a given component \a name and its associated QModelIndex. Returns the QModelIndex
-    that represents the component or an invalid QModelIndex if the component does not exist in the model.
+    Translates between a given component \a name and its associated QModelIndex. Returns the
+    QModelIndex that represents the component or an invalid QModelIndex if the component does
+    not exist in the model.
 */
 QModelIndex ComponentModel::indexFromComponentName(const QString &name) const
 {
@@ -300,8 +312,8 @@ QModelIndex ComponentModel::indexFromComponentName(const QString &name) const
 }
 
 /*!
-    Translates between a given QModelIndex \a index and its associated Component. Returns the component if
-    the index is valid or 0 if an invalid QModelIndex is given.
+    Translates between a given QModelIndex \a index and its associated Component.
+    Returns the component if the index is valid or 0 if an invalid QModelIndex is given.
 */
 Component *ComponentModel::componentFromIndex(const QModelIndex &index) const
 {
@@ -316,9 +328,9 @@ Component *ComponentModel::componentFromIndex(const QModelIndex &index) const
 /*!
     Sets the passed \a rootComponents to be the list of currently shown components.
 
-    The model is repopulated and the individual component checked state is used to show the check mark in
-    front of the visual component representation. The modelAboutToBeReset() and modelReset() signals are
-    emitted.
+    The model is repopulated and the individual component checked state is used to show the check
+    mark in front of the visual component representation. The modelAboutToBeReset() and
+    modelReset() signals are emitted.
 */
 void ComponentModel::setRootComponents(QList<QInstaller::Component*> rootComponents)
 {
@@ -351,8 +363,9 @@ void ComponentModel::setRootComponents(QList<QInstaller::Component*> rootCompone
 /*!
     Sets the check state of every component in the model to be \a state.
 
-    The ComponentModel::PartiallyChecked flag is ignored by this function. Note that components are not
-    changed if they are not checkable. The dataChanged() and checkStateChanged() signals are emitted.
+    The ComponentModel::PartiallyChecked flag is ignored by this function. Note that components
+    are not changed if they are not checkable. The dataChanged() and checkStateChanged() signals
+    are emitted.
 */
 void ComponentModel::setCheckedState(QInstaller::ComponentModel::ModelStateFlag state)
 {

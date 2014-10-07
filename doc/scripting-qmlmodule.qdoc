@@ -27,12 +27,9 @@
 
 /*!
     \contentspage {index.html}{Qt Installer Framework}
-    \previouspage scripting-qmlmodule.html
-    \page ifw-cpp-classes.html
-    \nextpage ifw-knownissues.html
+    \previouspage ifw-tools.html
+    \nextpage ifw-cpp-classes.html
 
-    \title C++ Classes
-
-    \generatelist{classesbymodule QtInstallerFramework}
-    \generatelist{classesbymodule kdupdater}
+    \title Scripting
+    \qmlmodule scripting
 */

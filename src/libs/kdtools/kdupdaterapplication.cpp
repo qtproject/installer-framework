@@ -75,7 +75,7 @@ medium-to-large scale software systems.
 
 /*!
    \class KDUpdater::Application kdupdaterapplication.h KDUpdaterApplication
-   \ingroup kdupdater
+   \inmodule kdupdater
    \brief This class represents an application that can be updated.
 
    A KDUpdater application is an application that needs to interact with one or more update servers and

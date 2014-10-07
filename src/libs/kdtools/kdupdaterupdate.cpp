@@ -44,7 +44,7 @@
 using namespace KDUpdater;
 
 /*!
-   \ingroup kdupdater
+   \inmodule kdupdater
    \class KDUpdater::Update kdupdaterupdate.h KDUpdaterUpdate
    \brief Represents a single update
 

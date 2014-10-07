@@ -52,8 +52,206 @@
 namespace QInstaller {
 
 /*!
+    \qmltype console
+    \inqmlmodule scripting
+    \brief The console type provides methods for logging and debugging.
+*/
+
+/*!
+    \qmlmethod void console::log(string value)
+*/
+
+/*!
+    \qmltype QFileDialog
+    \inqmlmodule scripting
+*/
+
+/*!
+    \qmlmethod string QFileDialog::getExistingDirectory(string caption, string dir)
+*/
+
+/*!
+    \qmlmethod string QFileDialog::getOpenFileName(string caption, string dir, string filter)
+*/
+
+/*!
+    \qmltype print
+    \inqmlmodule scripting
+*/
+
+/*!
+    \qmltype buttons
+    \inqmlmodule scripting
+*/
+
+/*!
+    \qmlproperty enumeration buttons::QWizard
+
+    \list
+        \li buttons.BackButton
+        \li buttons.NextButton
+        \li buttons.CommitButton
+        \li buttons.FinishButton
+        \li buttons.CancelButton
+        \li buttons.HelpButton
+        \li buttons.CustomButton1
+        \li buttons.CustomButton2
+        \li buttons.CustomButton3
+    \endlist
+*/
+
+/*!
+    \qmltype QDesktopServices
+    \inqmlmodule scripting
+*/
+
+/*!
+    \qmlproperty enumeration QDesktopServices::QStandardPaths
+
+    \list
+        \li DesktopServices.DesktopLocation
+        \li DesktopServices.DocumentsLocation
+        \li DesktopServices.FontsLocation
+        \li DesktopServices.ApplicationsLocation
+        \li DesktopServices.MusicLocation
+        \li DesktopServices.MoviesLocation
+        \li DesktopServices.PicturesLocation
+        \li DesktopServices.TempLocation
+        \li DesktopServices.HomeLocation
+        \li DesktopServices.DataLocation
+        \li DesktopServices.CacheLocation
+        \li DesktopServices.GenericDataLocation
+        \li DesktopServices.RuntimeLocation
+        \li DesktopServices.ConfigLocation
+        \li DesktopServices.DownloadLocation
+        \li DesktopServices.GenericCacheLocation
+        \li DesktopServices.GenericConfigLocation
+    \endlist
+*/
+
+/*!
+    \qmlmethod boolean QDesktopServices::openUrl(string url)
+*/
+
+/*!
+    \qmlmethod string QDesktopServices::displayName(int location)
+*/
+
+/*!
+    \qmlmethod string QDesktopServices::storageLocation(int location)
+*/
+
+/*!
+    \qmltype QInstaller
+    \inqmlmodule scripting
+
+    \brief The QInstaller type provides access to the installer status and pages from Qt Script.
+*/
+
+/*!
+   \qmlproperty enumeration QInstaller::WizardPage
+
+    The installer has various pre-defined pages that can be used to for example insert pages
+    in a certain place:
+    \list
+        \li QInstaller.Introduction
+        \li QInstaller.TargetDirectory
+        \li QInstaller.ComponentSelection
+        \li QInstaller.LicenseCheck
+        \li QInstaller.StartMenuSelection
+        \li QInstaller.ReadyForInstallation
+        \li QInstaller.PerformInstallation
+        \li QInstaller.InstallationFinished
+        \li QInstaller.End
+    \endlist
+*/
+
+
+/*!
+    \qmlproperty enumeration QInstaller::status
+
+    Status of the installer.
+
+    Possible values are:
+    \list
+        \li QInstaller.Success (deprecated: QInstaller.InstallerSucceeded)
+        \li QInstaller.Failure (deprecated: QInstaller.InstallerFailed)
+        \li QInstaller.Running (deprecated: QInstaller.InstallerFailed)
+        \li QInstaller.Canceled (deprecated: QInstaller.CanceledByUser)
+        \li QInstaller.Unfinished (deprecated: QInstaller.InstallerUnfinished)
+        \li QInstaller.ForceUpdate
+    \endlist
+*/
+
+/*!
+    \qmltype gui
+    \inqmlmodule scripting
+*/
+
+/*!
+    \qmlmethod object gui::pageById(int id)
+*/
+
+/*!
+    \qmlmethod object gui::pageByObjectName(string name)
+*/
+
+/*!
+    \qmlmethod object gui::currentPageWidget()
+*/
+
+/*!
+    \qmlmethod object gui::pageWidgetByObjectName(string name)
+*/
+
+/*!
+    \qmlmethod string gui::defaultButtonText(int wizardButton)
+*/
+
+/*!
+    \qmlmethod void gui::clickButton(int wizardButton, int delayInMs)
+*/
+
+/*!
+    \qmlmethod boolean gui::isButtonEnabled(int wizardButton)
+*/
+
+/*!
+    \qmlmethod void gui::showSettingsButton(boolean show)
+*/
+
+/*!
+    \qmlmethod void gui::setSettingsButtonEnabled(boolean enable)
+*/
+
+/*!
+    \qmlsignal gui::interrupted()
+*/
+
+/*!
+    \qmlsignal gui::languageChanged()
+*/
+
+/*!
+    \qmlsignal gui::finishButtonClicked()
+*/
+
+/*!
+    \qmlsignal gui::gotRestarted()
+*/
+
+/*!
+    \qmlsignal gui::settingsButtonClicked();
+*/
+
+/*!
     \class QInstaller::ScriptEngine
-    prepare and run the component scripts
+    \inmodule QtInstallerFramework
+    \brief The ScriptEngine class is used to prepare and run the component scripts.
+*/
+
+/*!
+    Constructs a script engine with \a core as parent.
 */
 ScriptEngine::ScriptEngine(PackageManagerCore *core)
     : QObject(core)
@@ -126,7 +324,7 @@ void ScriptEngine::addQObjectChildren(QObject *root)
 
     The installer and all its components as well as other useful stuff are being exported into the
     script. Read \link componentscripting Component Scripting \endlink for details.
-    \throws Error when either the script at \a fileName couldn't be opened, or the QScriptEngine
+    Throws Error when either the script at \a fileName could not be opened, or the QScriptEngine
     couldn't evaluate the script.
 */
 QJSValue ScriptEngine::loadInContext(const QString &context, const QString &fileName,
@@ -230,6 +428,7 @@ QJSValue ScriptEngine::generateWizardButtonsObject()
 }
 
 /*!
+    \internal
     generates QMessageBox::StandardButton enum as an QScriptValue array
 */
 QJSValue ScriptEngine::generateMessageBoxObject()

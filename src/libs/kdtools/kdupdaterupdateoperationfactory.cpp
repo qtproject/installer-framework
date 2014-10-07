@@ -44,8 +44,10 @@
 
 #include <QHash>
 
+using namespace KDUpdater;
+
 /*!
-   \ingroup kdupdater
+   \inmodule kdupdater
    \class KDUpdater::UpdateOperationFactory kdupdaterupdateoperationfactory.h KDUpdaterUpdateOperationFactory
    \brief Factory for \ref KDUpdater::UpdateOperation
 
@@ -62,8 +64,6 @@
    Registers T as new UpdateOperation with \a name. When create() is called with that \a name,
    T is constructed using its default constructor.
 */
-
-using namespace KDUpdater;
 
 /*!
    Returns the UpdateOperationFactory instance. The instance is created if needed.

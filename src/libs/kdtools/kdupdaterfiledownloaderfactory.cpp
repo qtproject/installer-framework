@@ -44,9 +44,10 @@
 
 #include <QtNetwork/QSslSocket>
 
+using namespace KDUpdater;
+
 /*!
-   \internal
-   \ingroup kdupdater
+   \inmodule kdupdater
    \class KDUpdater::FileDownloaderFactory kdupdaterfiledownloaderfactory.h
    \brief Factory for \ref KDUpdater::FileDownloader
 
@@ -57,7 +58,6 @@
    be created and its reference can be fetched from the \ref instance() method.
 */
 
-using namespace KDUpdater;
 
 FileDownloaderFactory& FileDownloaderFactory::instance()
 {

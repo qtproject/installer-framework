@@ -71,11 +71,11 @@ static double calcProgress(qint64 done, qint64 total)
 // -- KDUpdater::FileDownloader
 
 /*!
-    \internal
-    \ingroup kdupdater
+    \inmodule kdupdater
     \class KDUpdater::FileDownloader kdupdaterfiledownloader.h
+    \brief The FileDownloader class is the base class for file downloaders used in KDUpdater.
 
-    Base class for file downloaders used in KDUpdater. File downloaders are used by
+    File downloaders are used by
     the KDUpdater::Update class to download update files. Each subclass of FileDownloader
     can download file from a specific category of sources (e.g. local, ftp, http etc).
 

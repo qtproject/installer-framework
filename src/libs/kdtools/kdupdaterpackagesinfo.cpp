@@ -50,7 +50,7 @@
 using namespace KDUpdater;
 
 /*!
-   \ingroup kdupdater
+   \inmodule kdupdater
    \class KDUpdater::PackagesInfo kdupdaterpackagesinfo.h KDUpdaterPackagesInfo
    \brief Provides access to information about packages installed on the application side.
 
@@ -528,7 +528,7 @@ void PackagesInfo::clearPackageInfoList()
 */
 
 /*!
-   \ingroup kdupdater
+   \inmodule kdupdater
    \struct KDUpdater::PackageInfo kdupdaterpackagesinfo.h KDUpdaterPackageInfo
    \brief Describes a single installed package in the application.
 

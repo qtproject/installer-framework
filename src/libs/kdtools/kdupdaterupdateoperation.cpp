@@ -48,8 +48,10 @@
 #include <QFileInfo>
 #include <QTemporaryFile>
 
+using namespace KDUpdater;
+
 /*!
-   \ingroup kdupdater
+   \inmodule kdupdater
    \class KDUpdater::UpdateOperation kdupdaterupdateoperation.h KDUpdaterUpdateOperation
    \brief Abstract base class for update operations.
 
@@ -75,8 +77,6 @@ static QString backupFileName(const QString &templateName)
     file.remove();
     return name;
 }
-
-using namespace KDUpdater;
 
 /*!
    Constructor

@@ -55,7 +55,7 @@
 using namespace KDUpdater;
 
 /*!
-   \ingroup kdupdater
+   \inmodule kdupdater
    \class KDUpdater::UpdateFinder kdupdaterupdatefinder KDUpdaterUpdateFinder
    \brief Finds updates applicable for a \ref KDUpdater::Application
 
@@ -531,7 +531,7 @@ void UpdateFinder::Private::slotDownloadDone()
 
 
 /*!
-   \ingroup kdupdater
+   \inmodule kdupdater
 
    This function compares two version strings \c v1 and \c v2 and returns
    -1, 0 or +1 based on the following rule

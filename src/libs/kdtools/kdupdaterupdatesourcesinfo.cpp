@@ -49,9 +49,10 @@
 #include <QFile>
 #include <QTextStream>
 
+using namespace KDUpdater;
 
 /*!
-   \ingroup kdupdater
+   \inmodule kdupdater
    \class KDUpdater::UpdateSourcesInfo kdupdaterupdatesourcesinfo.h KDUpdaterUpdateSourcesInfo
    \brief Provides access to information about the update sources set for the application.
 
@@ -102,7 +103,6 @@
  * Changes made to the object could be saved back to the source file
  */
 
-using namespace KDUpdater;
 
 struct UpdateSourceInfoPriorityHigherThan
 {
@@ -405,7 +405,7 @@ void UpdateSourcesInfo::UpdateSourcesInfoData::addChildElement(QDomDocument &doc
 }
 
 /*!
-   \ingroup kdupdater
+   \inmodule kdupdater
    \struct KDUpdater::UpdateSourceInfo kdupdaterupdatesourcesinfo.h KDUpdaterUpdateSourcesInfo
    \brief Describes a single update source
 

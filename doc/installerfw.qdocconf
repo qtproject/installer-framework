@@ -4,23 +4,30 @@ include($QT_INSTALL_DOCS/global/qt-cpp-defines.qdocconf)
 include($QT_INSTALL_DOCS/global/compat.qdocconf)
 include($QT_INSTALL_DOCS/global/fileextensions.qdocconf)
 
+language    = Cpp
 project     = "Qt Installer Framework"
 description = "Qt Installer Framework Manual"
 url         = http://qt-project.org/doc/qtinstallerframework/
 
-headerdirs = ../src/libs/installer
-sourcedirs = ../src/libs/installer \
-             includes
+sourcedirs += includes
+sourcedirs += ../src/libs/installer ../src/libs/kdtools
+headerdirs += ../src/libs/installer ../src/libs/kdtools
 
 imagedirs = $SRCDIR/images $SRCDIR/templates/images
 outputdir = $OUTDIR
 exampledirs = $SRCDIR ../examples
 
+headers.fileextensions         = "*.h"
 sources.fileextensions         = "*.qdoc *.qdocinc *.cpp"
 examples.fileextensions        = "*.js *.qs *.txt *.xml"
 examples.imageextensions       = "*.png"
 
-indexes = $QT_INSTALL_DOCS/qtwidgets/qtwidgets.index
+indexes += $QT_INSTALL_DOCS/qtcore/qtcore.index \
+           $QT_INSTALL_DOCS/qtwidgets/qtwidgets.index \
+           $QT_INSTALL_DOCS/qtqml/qtqml.index \
+           $QT_INSTALL_DOCS/qtxml/qtxml.index \
+           $QT_INSTALL_DOCS/qtconcurrent/qtconcurrent.index \
+           $QT_INSTALL_DOCS/qtnetwork/qtnetwork.index
 
 qhp.projects            = InstallerFramework
 qhp.InstallerFramework.file             = ifw.qhp
