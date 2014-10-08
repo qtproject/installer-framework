@@ -70,8 +70,11 @@ class NamedComponent : public Component
 {
 public:
     NamedComponent(PackageManagerCore *core, const QString &name)
-        : NamedComponent(core, name, QLatin1String("1.0.0"))
-    {}
+        : Component(core)
+    {
+        setValue(scName, name);
+        setValue(scVersion, QLatin1String("1.0.0"));
+    }
 
     NamedComponent(PackageManagerCore *core, const QString &name, const QString &version)
         : Component(core)
