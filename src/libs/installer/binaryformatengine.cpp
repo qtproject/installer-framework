@@ -105,6 +105,7 @@ void BinaryFormatEngine::setFileName(const QString &file)
         path.chop(1);
 
     m_collection = m_collections.value(path.section(sep, 0, 0).toUtf8());
+    m_collection.setName(path.section(sep, 0, 0).toUtf8());
     m_resource = m_collection.resourceByName(path.section(sep, 1, 1).toUtf8());
 }
 
@@ -254,6 +255,7 @@ QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringLi
         foreach (const ResourceCollection &collection, m_collections)
             result.append(QString::fromUtf8(collection.name()));
     }
+    result.removeAll(QString()); // Remove empty names, will crash while using directory iterator.
 
     if (filterNames.isEmpty())
         return result;

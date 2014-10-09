@@ -83,6 +83,8 @@ BinaryFormatEngineHandler::registerResource(const QString &fileName, const QStri
 
     const QByteArray resourceName = path.section(sep, 1, 1).toUtf8();
     const QByteArray collectionName = path.section(sep, 0, 0).toUtf8();
+
+    m_resources[collectionName].setName(collectionName);
     m_resources[collectionName].appendResource(QSharedPointer<Resource>(new Resource(resourceName,
         resourcePath)));
 }
