@@ -48,6 +48,7 @@
 #include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterupdatesinfo_p.h"
 
+#include "fileutils.h"
 #include "globals.h"
 
 #include <QCoreApplication>
@@ -93,7 +94,6 @@ using namespace KDUpdater;
 \endcode
 */
 
-
 //
 // Private
 //
@@ -101,15 +101,26 @@ class UpdateFinder::Private
 {
 public:
     Private(UpdateFinder *qq)
-        : q(qq), application(0) {}
+        : q(qq)
+        , application(0)
+        , downloadCompleteCount(0)
+        , m_downloadsToComplete(0)
+    {}
 
     ~Private()
     {
-        qDeleteAll(updates);
-        qDeleteAll(updatesInfoList);
-        qDeleteAll(updateXmlFDList);
+        clear();
     }
 
+    struct Data {
+        Data()
+            : downloader(0) {}
+        Data(const UpdateSourceInfo &i, FileDownloader *d = 0)
+            : info(i), downloader(d) {}
+
+        UpdateSourceInfo info;
+        FileDownloader *downloader;
+    };
     UpdateFinder *q;
     Application *application;
     QList<Update *> updates;
@@ -117,9 +128,8 @@ public:
     // Temporary structure that notes down information about updates.
     bool cancel;
     int downloadCompleteCount;
-    QList<UpdateSourceInfo> updateSourceInfoList;
-    QList<UpdatesInfo *> updatesInfoList;
-    QList<FileDownloader *> updateXmlFDList;
+    int m_downloadsToComplete;
+    QHash<UpdatesInfo *, Data> m_updatesInfoList;
 
     void clear();
     void computeUpdates();
@@ -153,12 +163,16 @@ void UpdateFinder::Private::clear()
 {
     qDeleteAll(updates);
     updates.clear();
-    qDeleteAll(updatesInfoList);
-    updatesInfoList.clear();
-    qDeleteAll(updateXmlFDList);
-    updateXmlFDList.clear();
-    updateSourceInfoList.clear();
+
+    const QList<Data> values = m_updatesInfoList.values();
+    foreach (const Data &data, values)
+        delete data.downloader;
+
+    qDeleteAll(m_updatesInfoList.keys());
+    m_updatesInfoList.clear();
+
     downloadCompleteCount = 0;
+    m_downloadsToComplete = 0;
 }
 
 /*!
@@ -246,9 +260,9 @@ void UpdateFinder::Private::cancelComputeUpdates()
 /*!
    \internal
 
-   This function downloads Updates.xml from all the update sources. A single application can potentially
-   have several update sources, hence we need to be asynchronous in downloading updates from different
-   sources.
+   This function downloads Updates.xml from all the update sources except local files.
+   A single application can potentially have several update sources, hence we need to be
+   asynchronous in downloading updates from different sources.
 
    The function basically does this for each update source:
    a) Create a KDUpdater::FileDownloader and KDUpdater::UpdatesInfo for each update
@@ -268,31 +282,39 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
     if (!updateSources )
         return false;
 
-    // Create FileDownloader and UpdatesInfo for each update
+    // create UpdatesInfo for each update source
     for (int i = 0; i < updateSources->updateSourceInfoCount(); i++) {
         const UpdateSourceInfo info = updateSources->updateSourceInfo(i);
-        const QUrl updateXmlUrl = QString::fromLatin1("%1/Updates.xml").arg(info.url.toString());
+        const QUrl url = QString::fromLatin1("%1/Updates.xml").arg(info.url.toString());
 
-        FileDownloader *downloader = FileDownloaderFactory::instance().create(updateXmlUrl.scheme(), q);
-        if (!downloader)
-            continue;
+        if (url.scheme() != QLatin1String("resource") && url.scheme() != QLatin1String("file")) {
+            // create FileDownloader (except for local files and resources)
+            FileDownloader *downloader = FileDownloaderFactory::instance().create(url.scheme(), q);
+            if (!downloader)
+                break;
 
-        downloader->setUrl(updateXmlUrl);
-        downloader->setAutoRemoveDownloadedFile(true);
-
-        updateSourceInfoList.append(info);
-        updateXmlFDList.append(downloader);
-        updatesInfoList.append(new UpdatesInfo);
-
-        connect(downloader, SIGNAL(downloadCompleted()), q, SLOT(slotDownloadDone()));
-        connect(downloader, SIGNAL(downloadCanceled()), q, SLOT(slotDownloadDone()));
-        connect(downloader, SIGNAL(downloadAborted(QString)), q, SLOT(slotDownloadDone()));
+            downloader->setUrl(url);
+            downloader->setAutoRemoveDownloadedFile(true);
+            connect(downloader, SIGNAL(downloadCanceled()), q, SLOT(slotDownloadDone()));
+            connect(downloader, SIGNAL(downloadCompleted()), q, SLOT(slotDownloadDone()));
+            connect(downloader, SIGNAL(downloadAborted(QString)), q, SLOT(slotDownloadDone()));
+            m_updatesInfoList.insert(new UpdatesInfo, Data(info, downloader));
+        } else {
+            UpdatesInfo *updatesInfo = new UpdatesInfo;
+            updatesInfo->setFileName(QInstaller::pathFromUrl(url));
+            m_updatesInfoList.insert(updatesInfo, Data(info));
+        }
     }
 
     // Trigger download of Updates.xml file
     downloadCompleteCount = 0;
-    foreach (FileDownloader *const downloader, updateXmlFDList)
-        downloader->download();
+    m_downloadsToComplete = 0;
+    foreach (const Data &data, m_updatesInfoList) {
+        if (data.downloader) {
+            m_downloadsToComplete++;
+            data.downloader->download();
+        }
+    }
 
     // Wait until all downloaders have completed their downloads.
     while (true) {
@@ -300,31 +322,39 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
         if (cancel)
             return false;
 
-        if (downloadCompleteCount == updateXmlFDList.count())
+        if (downloadCompleteCount == m_downloadsToComplete)
             break;
 
-        q->reportProgress(computePercent(downloadCompleteCount, updateXmlFDList.count()),
+        q->reportProgress(computePercent(downloadCompleteCount, m_downloadsToComplete),
             tr("Downloading Updates.xml from update sources."));
     }
 
-    for (int i = updateXmlFDList.count() - 1; i >= 0; --i) {
-        UpdatesInfo *const updatesInfo = updatesInfoList.at(i);
-        FileDownloader *const downloader = updateXmlFDList.takeAt(i);
-        if (downloader->isDownloaded()) {
-            updatesInfo->setFileName(downloader->downloadedFileName());
-            if (!updatesInfo->isValid()) {
-                q->reportError(updatesInfo->errorString());
-                delete updatesInfoList.takeAt(i);   // updates info
+    // Setup the update info objects with the files from download.
+    foreach (UpdatesInfo *updatesInfo, m_updatesInfoList.keys()) {
+        const Data data = m_updatesInfoList.value(updatesInfo);
+        if (data.downloader) {
+            if (!data.downloader->isDownloaded()) {
+                q->reportError(tr("Could not download update source %1 from ('%2')").arg(data.info
+                    .name, data.info.url.toString()));
+            } else {
+                updatesInfo->setFileName(data.downloader->downloadedFileName());
             }
-        } else {
-            delete updatesInfoList.takeAt(i);   // updates info
-            const UpdateSourceInfo info = updateSourceInfoList.takeAt(i);
-            q->reportError(tr("Could not download updates from %1 ('%2')").arg(info.name, info.url.toString()));
         }
-        delete downloader;
     }
 
-    if (updatesInfoList.isEmpty())
+    // Remove all invalid update info objects.
+    QMutableHashIterator<UpdatesInfo *, Data> it(m_updatesInfoList);
+    while (it.hasNext()) {
+        UpdatesInfo *info = it.next().key();
+        if (info->isValid())
+            continue;
+
+        q->reportError(info->errorString());
+        delete info;
+        it.remove();
+    }
+
+    if (m_updatesInfoList.isEmpty())
         return false;
 
     q->reportProgress(49, tr("Updates.xml file(s) downloaded from update sources."));
@@ -341,15 +371,16 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
 */
 bool UpdateFinder::Private::computeApplicableUpdates()
 {
-    for (int i = 0; i < updatesInfoList.count(); i++) {
+    int i = 0;
+    foreach (UpdatesInfo *updatesInfo, m_updatesInfoList.keys()) {
         // Fetch updates applicable to this application.
-        QList<UpdateInfo> updates = applicableUpdates(updatesInfoList.at(i));
+        QList<UpdateInfo> updates = applicableUpdates(updatesInfo);
         if (!updates.count())
             continue;
 
         if (cancel)
             return false;
-        const UpdateSourceInfo updateSource = updateSourceInfoList.at(i);
+        const UpdateSourceInfo updateSource = m_updatesInfoList.value(updatesInfo).info;
 
         // Create Update objects for updates that have a valid
         // UpdateFile
@@ -358,8 +389,9 @@ bool UpdateFinder::Private::computeApplicableUpdates()
             return false;
 
         // Report progress
-        q->reportProgress(computeProgressPercentage(51, 100, computePercent(i, updatesInfoList.count())),
-            tr("Computing applicable updates."));
+        q->reportProgress(computeProgressPercentage(51, 100, computePercent(i,
+            m_updatesInfoList.count())), tr("Computing applicable updates."));
+        ++i;
     }
 
     q->reportProgress(99, tr("Application updates computed."));
@@ -524,7 +556,7 @@ void UpdateFinder::Private::slotDownloadDone()
 {
     ++downloadCompleteCount;
 
-    int pc = computePercent(downloadCompleteCount, updateXmlFDList.count());
+    int pc = computePercent(downloadCompleteCount, m_downloadsToComplete);
     pc = computeProgressPercentage(0, 45, pc);
     q->reportProgress( pc, tr("Downloading Updates.xml from update sources.") );
 }
