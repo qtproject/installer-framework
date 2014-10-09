@@ -255,7 +255,7 @@
     </message>
     <message>
         <source>Could not create folder %1: Unknown error.</source>
-        <translation>フォルダー %1 を作成できませんでした: 未知のエラーです。</translation>
+        <translation>フォルダ %1 を作成できませんでした: 未知のエラーです。</translation>
     </message>
     <message>
         <source>Cannot remove directory %1: %2</source>
@@ -362,11 +362,11 @@
     </message>
     <message>
         <source>Could not remove folder %1: The folder does not exist.</source>
-        <translation>フォルダー %1 を削除できませんでした: フォルダーが存在しません。</translation>
+        <translation>フォルダ %1 を削除できませんでした: フォルダが存在しません。</translation>
     </message>
     <message>
         <source>Could not remove folder %1: %2</source>
-        <translation>フォルダー %1 を削除できませんでした: %2</translation>
+        <translation>フォルダ %1 を削除できませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot recreate directory %1: %2</source>
@@ -875,7 +875,7 @@
     </message>
     <message>
         <source>Could not create folder %1: %2.</source>
-        <translation>フォルダー %1 を作成できませんでした: %2</translation>
+        <translation>フォルダ %1 を作成できませんでした: %2</translation>
     </message>
     <message>
         <source>Could not create link %1: %2</source>
@@ -1905,7 +1905,7 @@ Qt のバイナリにパッチを適用しようとしましたが、Qt の他�
     </message>
     <message>
         <source>The install directory cannot be empty, please specify a valid folder.</source>
-        <translation>インストールディレクトリが殻にできません。有効なフォルダを指定してください。</translation>
+        <translation>インストールディレクトリが空にできません。有効なフォルダを指定してください。</translation>
     </message>
     <message>
         <source>As the install directory is completely deleted on uninstall, installing in %1 is forbidden.</source>
@@ -2034,11 +2034,11 @@ Qt のバイナリにパッチを適用しようとしましたが、Qt の他�
     </message>
     <message>
         <source>Could not remove folder %1: %2</source>
-        <translation>フォルダー %1 を削除できませんでした: %2</translation>
+        <translation>フォルダ %1 を削除できませんでした: %2</translation>
     </message>
     <message>
         <source>Could not create folder %1</source>
-        <translation>フォルダー %1 を作成できませんでした</translation>
+        <translation>フォルダ %1 を作成できませんでした</translation>
     </message>
     <message>
         <source>Could not copy file from %1 to %2: %3</source>
@@ -2050,7 +2050,7 @@ Qt のバイナリにパッチを適用しようとしましたが、Qt の他�
     </message>
     <message>
         <source>Could not create folder %1: %2</source>
-        <translation>フォルダー %1 を作成できませんでした: %2</translation>
+        <translation>フォルダ %1 を作成できませんでした: %2</translation>
     </message>
     <message>
         <source>Could not open temporary file: %1</source>
@@ -2078,11 +2078,11 @@ Qt のバイナリにパッチを適用しようとしましたが、Qt の他�
     </message>
     <message>
         <source>Path exists but is not a folder: %1</source>
-        <translation>パスが存在していますが、フォルダーではありません: %1</translation>
+        <translation>パスが存在していますが、フォルダではありません: %1</translation>
     </message>
     <message>
         <source>Could not create folder: %1</source>
-        <translation>フォルダーを作成できませんでした: %1</translation>
+        <translation>フォルダを作成できませんでした: %1</translation>
     </message>
     <message>
         <source>Could not create temporary file</source>
@@ -2242,7 +2242,7 @@ Qt のバイナリにパッチを適用しようとしましたが、Qt の他�
     </message>
     <message>
         <source>Could not create folder at %1: %2</source>
-        <translation>%1 にフォルダーを作成できませんでした: %2</translation>
+        <translation>%1 にフォルダを作成できませんでした: %2</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, %2 to %3 expected.</source>
