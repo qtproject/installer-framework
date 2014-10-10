@@ -108,8 +108,11 @@ int main(int argc, char *argv[])
             QFile tmp(path);
             QInstaller::openForRead(&tmp);
 
-            QInstaller::BinaryLayout layout = QInstaller::BinaryContent::binaryLayout(&tmp,
-                cookie);
+            if (!tmp.seek(QInstaller::BinaryContent::findMagicCookie(&tmp, cookie) - sizeof(qint64)))
+                throw QInstaller::Error(QLatin1String("Could not seek to read magic marker."));
+
+            QInstaller::BinaryLayout layout;
+            layout.magicMarker = QInstaller::retrieveInt64(&tmp);
 
             if (layout.magicMarker == QInstaller::BinaryContent::MagicUninstallerMarker) {
                 QFileInfo fi(path);
@@ -118,15 +121,17 @@ int main(int argc, char *argv[])
                 path = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat");
 
                 tmp.setFileName(path);
+                QInstaller::openForRead(&tmp);
+
                 cookie = QInstaller::BinaryContent::MagicCookieDat;
-                layout = QInstaller::BinaryContent::binaryLayout(&tmp, cookie);
             }
+            layout = QInstaller::BinaryContent::binaryLayout(&tmp, cookie);
             tmp.close();
 
             if (parser.isSet(update)) {
-                // To update the binary we do not need any mapping.
-                BinaryReplace br(layout);
-                return br.replace(parser.value(update), path);
+                BinaryReplace br(layout);   // To update the binary we do not need any mapping.
+                return br.replace(parser.value(update), QFileInfo(arguments.first())
+                    .absoluteFilePath());
             }
         }
 
