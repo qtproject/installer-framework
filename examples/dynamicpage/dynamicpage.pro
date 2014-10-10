@@ -1,11 +1,13 @@
 TEMPLATE = aux
 
+INSTALLER = offline
+
+INPUT = $$PWD/config/config.xml $$PWD/packages
+example.input = INPUT
+example.output = $$INSTALLER
+example.commands = ../../bin/binarycreator -c $$PWD/config/config.xml -p $$PWD/packages ${QMAKE_FILE_OUT}
+example.CONFIG += target_predeps no_link combine
+
+QMAKE_EXTRA_COMPILERS += example
+
 OTHER_FILES = README
-
-example.target = build_example
-example.commands = ../../bin/binarycreator -c $$PWD/config/config.xml -p $$PWD/packages -r $$PWD/resources/additional.qrc installer
-QMAKE_EXTRA_TARGETS += example
-
-default_target.target = first
-default_target.depends = example
-QMAKE_EXTRA_TARGETS += default_target
