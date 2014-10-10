@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
         QLatin1String("file"));
 
     QCommandLineParser parser;
+    parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption(verbose);
     parser.addOption(update);
