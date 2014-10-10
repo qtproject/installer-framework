@@ -431,7 +431,6 @@ public Q_SLOTS:
     void setTitleMessage(const QString& title);
 
 Q_SIGNALS:
-    void installationRequested();
     void setAutomatedPageSwitchEnabled(bool request);
 
 private Q_SLOTS:
