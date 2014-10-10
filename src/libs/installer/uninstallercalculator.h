@@ -52,11 +52,11 @@ public:
 
     QSet<Component*> componentsToUninstall() const;
 
-    bool appendComponentsToUninstall(const QList<Component*> &components);
+    void appendComponentsToUninstall(const QList<Component*> &components);
 
 private:
 
-    bool appendComponentToUninstall(Component *component);
+    void appendComponentToUninstall(Component *component);
 
     QList<Component *> m_installedComponents;
     QSet<Component *> m_componentsToUninstall;

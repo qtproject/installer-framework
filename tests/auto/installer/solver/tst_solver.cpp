@@ -247,9 +247,7 @@ private slots:
         calc.appendComponentsToUninstall(selectedToUninstall);
         QSet<Component *> result = calc.componentsToUninstall();
 
-        QEXPECT_FAIL("Cascade dependencies", "Will be fixed in upcomming commit", Continue);
         QCOMPARE(result.count(), expectedResult.count());
-        QEXPECT_FAIL("Cascade dependencies", "Will be fixed in upcomming commit", Continue);
         QCOMPARE(result, expectedResult);
         delete core;
     }

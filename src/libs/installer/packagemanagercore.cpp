@@ -1251,11 +1251,10 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
     Calculates a list of components to uninstall based on the current run mode. Auto installed
     dependencies are not yet resolved.  The aboutCalculateComponentsToUninstall() signal is emitted
     before the calculation starts, the finishedCalculateComponentsToUninstall() signal once all
-    calculations are done.
+    calculations are done. Returns always true.
 */
 bool PackageManagerCore::calculateComponentsToUninstall() const
 {
-    bool result = true;
     emit aboutCalculateComponentsToUninstall();
     if (!isUpdater()) {
         // hack to avoid removing needed dependencies
@@ -1269,10 +1268,10 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
 
         d->clearUninstallerCalculator();
         d->storeCheckState();
-        result = d->uninstallerCalculator()->appendComponentsToUninstall(componentsToUninstall);
+        d->uninstallerCalculator()->appendComponentsToUninstall(componentsToUninstall);
     }
     emit finishedCalculateComponentsToUninstall();
-    return result;
+    return true;
 }
 
 /*!
