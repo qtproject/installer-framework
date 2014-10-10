@@ -64,8 +64,8 @@ int BinaryReplace::replace(const QString &source, const QString &target)
     QFutureWatcher<QInstaller::FileTaskResult> taskWatcher;
     if (url.isRelative() || url.isLocalFile()) {
         taskWatcher.setFuture(QtConcurrent::run(&QInstaller::CopyFileTask::doTask,
-            new QInstaller::CopyFileTask(QInstaller::FileTaskItem(QFileInfo(source)
-            .absoluteFilePath()))));
+            new QInstaller::CopyFileTask(QInstaller::FileTaskItem(url.isRelative()
+            ? QFileInfo(source).absoluteFilePath() : url.toLocalFile()))));
     } else {
         taskWatcher.setFuture(QtConcurrent::run(&QInstaller::DownloadFileTask::doTask,
             new QInstaller::DownloadFileTask(QInstaller::FileTaskItem(url.toString()))));

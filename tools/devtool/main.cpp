@@ -120,6 +120,7 @@ int main(int argc, char *argv[])
                     fi.setFile(bundlePath);
                 path = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat");
 
+                tmp.close();
                 tmp.setFileName(path);
                 QInstaller::openForRead(&tmp);
 
