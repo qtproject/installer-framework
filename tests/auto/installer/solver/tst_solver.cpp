@@ -221,8 +221,26 @@ private slots:
 
         QTest::newRow("Uninstaller resolved") << core
                     << (QList<Component *>() << componentAB)
-                    << (QList<Component *>() << componentA << componentB << componentAB)
+                    << (QList<Component *>() << componentA << componentB)
                     << (QSet<Component *>() << componentAB << componentB);
+
+        core = new PackageManagerCore();
+        core->setPackageManager();
+        NamedComponent *compA = new NamedComponent(core, QLatin1String("A"));
+        NamedComponent *compB = new NamedComponent(core, QLatin1String("B"));
+        NamedComponent *compC = new NamedComponent(core, QLatin1String("C"));
+        compB->addDependency(QLatin1String("A"));
+        compC->addDependency(QLatin1String("B"));
+        core->appendRootComponent(compA);
+        core->appendRootComponent(compB);
+        core->appendRootComponent(compC);
+        compA->setInstalled();
+        compB->setInstalled();
+
+        QTest::newRow("Cascade dependencies") << core
+                    << (QList<Component *>() << compA)
+                    << (QList<Component *>() << compB)
+                    << (QSet<Component *>() << compA << compB);
     }
 
     void resolveUninstaller()
@@ -236,7 +254,9 @@ private slots:
         calc.appendComponentsToUninstall(selectedToUninstall);
         QSet<Component *> result = calc.componentsToUninstall();
 
+        QEXPECT_FAIL("Cascade dependencies", "Will be fixed in upcomming commit", Continue);
         QCOMPARE(result.count(), expectedResult.count());
+        QEXPECT_FAIL("Cascade dependencies", "Will be fixed in upcomming commit", Continue);
         QCOMPARE(result, expectedResult);
         delete core;
     }
