@@ -42,7 +42,7 @@
 #ifndef SCRIPTENGINE_H
 #define SCRIPTENGINE_H
 
-#include "qinstallerglobal.h"
+#include "installer_global.h"
 
 #include <QJSValue>
 #include <QJSEngine>

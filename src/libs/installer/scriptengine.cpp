@@ -52,6 +52,12 @@
 namespace QInstaller {
 
 /*!
+    \class QInstaller::ScriptEngine
+    \inmodule QtInstallerFramework
+    \brief The ScriptEngine class is used to prepare and run the component scripts.
+*/
+
+/*!
     \qmltype console
     \inqmlmodule scripting
     \brief The console type provides methods for logging and debugging.
@@ -242,12 +248,6 @@ namespace QInstaller {
 
 /*!
     \qmlsignal gui::settingsButtonClicked();
-*/
-
-/*!
-    \class QInstaller::ScriptEngine
-    \inmodule QtInstallerFramework
-    \brief The ScriptEngine class is used to prepare and run the component scripts.
 */
 
 /*!

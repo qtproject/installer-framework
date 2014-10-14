@@ -1105,20 +1105,20 @@ void PackageManagerCore::appendRootComponent(Component *component)
 }
 
 /*!
-    \enum PackageManagerCore::ComponentType
-
-    This enum is used with components() to describe what type of \C Component list this function
-    should return.
+    \class PackageManagerCore::ComponentType
+    \inmodule QtInstallerFramework
+    \brief The ComponentType class is used with components() to describe what type of \c Component
+        list this function should return.
 
     \value Root
         Return a list of root components.
 
     \value Descendants
-        Return a list of all descendant components. \note In updater mode the list is empty,
+        Return a list of all descendant components. \b Note: In updater mode the list is empty,
         because component updates cannot have children.
 
     \value Dependencies
-        Return a list of all available dependencies when run as updater. \note In Installer,
+        Return a list of all available dependencies when run as updater. \b Note: In Installer,
         package manager and uninstaller mode, this will always result in an empty list.
 
     \value Replacements

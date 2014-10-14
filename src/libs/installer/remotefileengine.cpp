@@ -79,42 +79,48 @@ public:
     RemoteFileEngineIterator(QDir::Filters filters, const QStringList &nameFilters,
             const QStringList &files)
         : QAbstractFileEngineIterator(filters, nameFilters)
-        , entries(files)
         , index(-1)
+        , entries(files)
     {
     }
 
-    /*!
-        \reimp
-    */
-    bool hasNext() const
-    {
-        return index < entries.size() - 1;
-    }
-
-    /*!
-        \reimp
-    */
-    QString next()
-    {
-       if (!hasNext())
-           return QString();
-       ++index;
-       return currentFilePath();
-    }
-
-    /*!
-        \reimp
-    */
-    QString currentFileName() const
-    {
-        return entries.at(index);
-    }
+    QString next();
+    bool hasNext() const;
+    QString currentFileName() const;
 
 private:
-    const QStringList entries;
     int index;
+    QStringList entries;
 };
+
+/*!
+    Advances the iterator to the next entry, and returns the current file path of this new
+    entry. If hasNext() returns \c false, the function does nothing and returns an empty QString.
+*/
+bool RemoteFileEngineIterator::hasNext() const
+{
+    return index < entries.size() - 1;
+}
+
+/*!
+    Returns \c true if there is at least one more entry in the directory, otherwise returns
+    \c false.
+*/
+QString RemoteFileEngineIterator::next()
+{
+    if (!hasNext())
+        return QString();
+    ++index;
+    return currentFilePath();
+}
+
+/*!
+    Returns the name of the current directory entry, excluding the path.
+*/
+QString RemoteFileEngineIterator::currentFileName() const
+{
+    return entries.at(index);
+}
 
 
 // -- RemoteFileEngine

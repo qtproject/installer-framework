@@ -570,7 +570,7 @@
     \contentspage index.html
     \previouspage operations.html
     \page ifw-tools.html
-    \nextpage ifw-cpp-classes.html
+    \nextpage Scripting
 
     \title Tools
 
@@ -1052,6 +1052,7 @@
     \contentspage index.html
     \previouspage ifw-cpp-classes.html
     \page ifw-knownissues.html
+    \nextpage index.html
 
     \title Known Issues
 

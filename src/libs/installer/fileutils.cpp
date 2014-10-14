@@ -238,9 +238,6 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
     }
 }
 
-/*!
- \internal
- */
 class RemoveDirectoryThread : public QThread
 {
 public:
