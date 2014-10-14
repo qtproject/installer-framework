@@ -69,8 +69,9 @@ package. It is part of KDAB's strategy to provide functionality missing in Qt th
 medium-to-large scale software systems.
 */
 
+
 /*!
-   \namespace KDUpdater
+    \namespace KDUpdater
 */
 
 /*!

@@ -82,6 +82,10 @@
 #include <QStandardPaths>
 
 /*!
+    \namespace QInstaller
+*/
+
+/*!
     \qmltype installer
     \inqmlmodule scripting
 
