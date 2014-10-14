@@ -48,7 +48,6 @@
 #include <fileutils.h>
 
 #include <QApplication>
-#include <QBuffer>
 #include <QDir>
 #include <QFileInfo>
 #include <QResource>
@@ -64,12 +63,8 @@ public:
 
     virtual ~SDKApp()
     {
-        using namespace QInstaller;
-        foreach (const QSharedPointer<Resource> &resource, resourceMappings.resources()) {
-            resource->open();   // ignore error here, either we opened it or it is opened
-            QResource::unregisterResource((const uchar *) resource->readAll().constData(),
-                QLatin1String(":/metadata"));
-        }
+        foreach (const QByteArray &ba, m_resourceMappings)
+            QResource::unregisterResource((const uchar*) ba.data(), QLatin1String(":/metadata"));
     }
 
     bool notify(QObject *receiver, QEvent *event)
@@ -132,14 +127,9 @@ public:
         return QString();
     }
 
-    QInstaller::ResourceCollection registeredMetaResources()
+    void registerMetaResources(const QInstaller::ResourceCollection &collection)
     {
-        return resourceMappings;
-    }
-
-    void registerMetaResources(const QInstaller::ResourceCollection &resources)
-    {
-        foreach (const QSharedPointer<QInstaller::Resource> &resource, resources.resources()) {
+        foreach (const QSharedPointer<QInstaller::Resource> &resource, collection.resources()) {
             const bool isOpen = resource->isOpen();
             if ((!isOpen) && (!resource->open()))
                 continue;
@@ -151,20 +141,16 @@ public:
             if (ba.isEmpty())
                 continue;
 
-            if (QResource::registerResource((const uchar*) ba.data(), QLatin1String(":/metadata"))) {
-                using namespace QInstaller;
-                QSharedPointer<QBuffer> buffer(new QBuffer);
-                buffer->setData(ba); // set the buffers internal data
-                resourceMappings.appendResource(QSharedPointer<Resource>(new Resource(buffer)));
-            }
+            if (QResource::registerResource((const uchar*) ba.data(), QLatin1String(":/metadata")))
+                m_resourceMappings.append(ba);
 
-        if (!isOpen) // If we reach that point, either the resource was opened already...
-            resource->close();           // or we did open it and have to close it again.
+            if (!isOpen) // If we reach that point, either the resource was opened already...
+                resource->close();           // or we did open it and have to close it again.
         }
     }
 
 private:
-    QInstaller::ResourceCollection resourceMappings;
+    QList<QByteArray> m_resourceMappings;
 };
 
 #endif  // SDKAPP_H

@@ -72,20 +72,19 @@ int UpdateChecker::check()
         cookie = QInstaller::BinaryContent::MagicCookie;
     }
 
-    QSharedPointer<QFile> binary(new QFile(fileName));
-    QInstaller::openForRead(binary.data());
+    QFile binary(fileName);
+    QInstaller::openForRead(&binary);
 
     qint64 magicMarker;
-    QInstaller::ResourceCollection resources;
     QList<QInstaller::OperationBlob> operations;
     QInstaller::ResourceCollectionManager manager;
-    QInstaller::BinaryContent::readBinaryContent(binary, &resources, &operations, &manager,
-        &magicMarker, cookie);
+    QInstaller::BinaryContent::readBinaryContent(&binary, &operations, &manager, &magicMarker,
+        cookie);
 
     if (magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
         throw QInstaller::Error(QLatin1String("Installers cannot check for updates."));
 
-    registerMetaResources(resources);   // the base class will unregister the resources
+    SDKApp::registerMetaResources(manager.collectionByName("QResources"));
 
     // instantiate the installer we are actually going to use
     QInstaller::PackageManagerCore core(QInstaller::BinaryContent::MagicUpdaterMarker, operations);

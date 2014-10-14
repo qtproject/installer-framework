@@ -41,11 +41,10 @@
 
 /*!
     \class QInstaller::BinaryLayout
+    \inmodule QtInstallerFramework
+    \brief The BinaryLayout class describes the binary content appended to a file.
 
-    BinaryLayout handles binary information embedded into executables.
-    Qt resources as well as resource collections can be stored.
-
-    Explanation of the binary blob at the end of the installer or separate data file:
+    Explanation of the binary content at the end of the installer or the separate data file:
 
     \code
 
@@ -62,8 +61,8 @@
     [Format]
     Operation count (qint64)
     ----------------------------------------------------------
-    Component count
-    Component data entry [1 ... n]
+    Collection count
+    Collection data entry [1 ... n]
     [Format]
         Archive count (qint64),
         Name entry [1 ... n]
@@ -78,17 +77,17 @@
         [Format]
     [Format]
     ----------------------------------------------------------
-    Component count (qint64)
-    Component index entry [1 ... n]
+    Collection count (qint64)
+    Collection index entry [1 ... n]
     [Format]
         Name (qint64, QByteArray)
         Offset (qint64)
         Length (qint64)
     [Format]
-    Component count (qint64)
+    Collection count (qint64)
     ----------------------------------------------------------
-    Component index block [Offset (qint64)]
-    Component index block [Length (qint64)]
+    Collection index block [Offset (qint64)]
+    Collection index block [Length (qint64)]
     ----------------------------------------------------------
     Resource segments [1 ... n]
     [Format]

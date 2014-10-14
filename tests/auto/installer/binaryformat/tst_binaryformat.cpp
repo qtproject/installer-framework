@@ -70,7 +70,7 @@ public:
     virtual bool performOperation() { return true; }
     virtual bool undoOperation() { return true; }
     virtual bool testOperation() { return true; }
-    virtual Operation *clone() const { return 0; }
+    virtual KDUpdater::UpdateOperation *clone() const { return 0; }
 };
 
 class tst_BinaryFormat : public QObject
@@ -183,42 +183,29 @@ private slots:
         layout.operationsSegment = Range<qint64>::fromStartAndEnd(start, end);
 
         QTemporaryFile data;
+        QInstaller::openForWrite(&data);
+        QInstaller::blockingWrite(&data, QByteArray("Collection 1, Resource 1."));
+        data.close();
+
+        QSharedPointer<Resource> resource(new Resource(data.fileName(), QByteArray("Resource 1")));
+        ResourceCollection collection(QByteArray("Collection 1"));
+        collection.appendResource(resource);
+
         QTemporaryFile data2;
-        { // put into the scope to make the temporary file auto remove feature work
+        QInstaller::openForWrite(&data2);
+        QInstaller::blockingWrite(&data2, QByteArray("Collection 2, Resource 2."));
+        data2.close();
 
-            ResourceCollectionManager manager;
+        QSharedPointer<Resource> resource2(new Resource(data2.fileName(), QByteArray("Resource 2")));
+        ResourceCollection collection2(QByteArray("Collection 2"));
+        collection2.appendResource(resource2);
 
-            QInstaller::openForWrite(&data);
-            QInstaller::blockingWrite(&data, QByteArray("Collection 1, Resource 1."));
-            data.close();
+        ResourceCollectionManager manager;
+        manager.insertCollection(collection);
+        manager.insertCollection(collection2);
 
-            ResourceCollection collection;
-            collection.setName(QByteArray("Collection 1"));
-
-            QSharedPointer<Resource> resource(new Resource(data.fileName()));
-            resource->setName("Resource 1");
-            collection.appendResource(resource);
-            manager.insertCollection(collection);
-
-            QInstaller::openForWrite(&data2);
-            QInstaller::blockingWrite(&data2, QByteArray("Collection 2, Resource 2."));
-            data2.close();
-
-            ResourceCollection collection2;
-            collection2.setName(QByteArray("Collection 2"));
-
-            QSharedPointer<Resource> resource2(new
-                Resource(data2.fileName()));
-            resource2->setName("Resource 2");
-            collection2.appendResource(resource2);
-            manager.insertCollection(collection2);
-
-            layout.collectionCount = manager.collectionCount();
-            layout.resourceCollectionsSegment = manager.write(&binary, -layout.endOfExectuable);
-
-            resource->close();
-            resource2->close();
-        }
+        layout.collectionCount = manager.collectionCount();
+        layout.resourceCollectionsSegment = manager.write(&binary, -layout.endOfExectuable);
 
         QInstaller::appendInt64Range(&binary, layout.resourceCollectionsSegment.moved(-layout
             .endOfExectuable));
@@ -247,35 +234,35 @@ private slots:
 
     void readBinaryContent()
     {
-        const QSharedPointer<QFile> binary(new QFile(m_binary));
-        QInstaller::openForRead(binary.data());
-        QCOMPARE(QInstaller::retrieveData(binary.data(), scTinySize), QByteArray(scTinySize, '1'));
+        QFile binary(m_binary);
+        QInstaller::openForRead(&binary);
+        QCOMPARE(QInstaller::retrieveData(&binary, scTinySize), QByteArray(scTinySize, '1'));
 
         Layout layout;
-        layout.endOfExectuable = binary->pos();
+        layout.endOfExectuable = binary.pos();
         QCOMPARE(layout.endOfExectuable, m_layout.endOfExectuable);
 
-        const qint64 pos = BinaryContent::findMagicCookie(binary.data(), BinaryContent::MagicCookie);
+        const qint64 pos = BinaryContent::findMagicCookie(&binary, BinaryContent::MagicCookie);
         layout.endOfBinaryContent = pos + sizeof(qint64);
         QCOMPARE(layout.endOfBinaryContent, m_layout.endOfBinaryContent);
 
-        binary->seek(layout.endOfBinaryContent - (4 * sizeof(qint64)));
+        binary.seek(layout.endOfBinaryContent - (4 * sizeof(qint64)));
 
-        layout.metaSegmentsCount = QInstaller::retrieveInt64(binary.data());
+        layout.metaSegmentsCount = QInstaller::retrieveInt64(&binary);
         QCOMPARE(layout.metaSegmentsCount, m_layout.metaSegmentsCount);
 
         const qint64 offsetCollectionIndexSegments = layout.endOfBinaryContent
             - ((layout.metaSegmentsCount * (2 * sizeof(qint64))) // minus size of the meta segments
-            + (8 * sizeof(qint64))); // meta count, offset/length component index, marker, cookie...
+            + (8 * sizeof(qint64))); // meta count, offset/length collection index, marker, cookie...
 
-        binary->seek(offsetCollectionIndexSegments);
+        binary.seek(offsetCollectionIndexSegments);
 
-        layout.resourceCollectionsSegment = QInstaller::retrieveInt64Range(binary.data())
+        layout.resourceCollectionsSegment = QInstaller::retrieveInt64Range(&binary)
             .moved(layout.endOfExectuable);
         QCOMPARE(layout.resourceCollectionsSegment, m_layout.resourceCollectionsSegment);
 
         for (int i = 0; i < layout.metaSegmentsCount; ++i) {
-            layout.metaResourceSegments.append(QInstaller::retrieveInt64Range(binary.data())
+            layout.metaResourceSegments.append(QInstaller::retrieveInt64Range(&binary)
                 .moved(layout.endOfExectuable));
         }
         layout.metaResourcesSegment = Range<qint64>::fromStartAndEnd(layout.metaResourceSegments
@@ -285,58 +272,58 @@ private slots:
         QCOMPARE(layout.metaResourceSegments.first(), m_layout.metaResourceSegments.first());
         QCOMPARE(layout.metaResourceSegments.last(), m_layout.metaResourceSegments.last());
 
-        layout.operationsSegment = QInstaller::retrieveInt64Range(binary.data()).moved(layout
+        layout.operationsSegment = QInstaller::retrieveInt64Range(&binary).moved(layout
             .endOfExectuable);
         QCOMPARE(layout.operationsSegment, m_layout.operationsSegment);
 
-        QCOMPARE(layout.metaSegmentsCount, QInstaller::retrieveInt64(binary.data()));
+        QCOMPARE(layout.metaSegmentsCount, QInstaller::retrieveInt64(&binary));
 
-        layout.binaryContentSize = QInstaller::retrieveInt64(binary.data());
+        layout.binaryContentSize = QInstaller::retrieveInt64(&binary);
         QCOMPARE(layout.binaryContentSize, m_layout.binaryContentSize);
         QCOMPARE(layout.endOfExectuable, layout.endOfBinaryContent - layout.binaryContentSize);
 
-        layout.magicMarker = QInstaller::retrieveInt64(binary.data());
+        layout.magicMarker = QInstaller::retrieveInt64(&binary);
         QCOMPARE(layout.magicMarker, m_layout.magicMarker);
 
-        layout.magicCookie = QInstaller::retrieveInt64(binary.data());
+        layout.magicCookie = QInstaller::retrieveInt64(&binary);
         QCOMPARE(layout.magicCookie, m_layout.magicCookie);
 
-        binary->seek(layout.operationsSegment.start());
+        binary.seek(layout.operationsSegment.start());
 
-        layout.operationsCount = QInstaller::retrieveInt64(binary.data());
+        layout.operationsCount = QInstaller::retrieveInt64(&binary);
         QCOMPARE(layout.operationsCount, m_layout.operationsCount);
 
         for (int i = 0; i < layout.operationsCount; ++i) {
-            QCOMPARE(m_operations.at(i).name, QInstaller::retrieveString(binary.data()));
-            QCOMPARE(m_operations.at(i).xml, QInstaller::retrieveString(binary.data()));
+            QCOMPARE(m_operations.at(i).name, QInstaller::retrieveString(&binary));
+            QCOMPARE(m_operations.at(i).xml, QInstaller::retrieveString(&binary));
         }
 
-        layout.operationsCount = QInstaller::retrieveInt64(binary.data());
+        layout.operationsCount = QInstaller::retrieveInt64(&binary);
         QCOMPARE(layout.operationsCount, m_layout.operationsCount);
 
-        layout.collectionCount = QInstaller::retrieveInt64(binary.data());
+        layout.collectionCount = QInstaller::retrieveInt64(&binary);
         QCOMPARE(layout.collectionCount, m_layout.collectionCount);
 
-        binary->seek(layout.resourceCollectionsSegment.start());
-        m_manager.read(binary, layout.endOfExectuable);
+        binary.seek(layout.resourceCollectionsSegment.start());
+        m_manager.read(&binary, layout.endOfExectuable);
 
-        const QList<ResourceCollection> components = m_manager.collections();
-        QCOMPARE(components.count(), m_layout.collectionCount);
+        const QList<ResourceCollection> collections = m_manager.collections();
+        QCOMPARE(collections.count(), m_layout.collectionCount);
 
-        ResourceCollection component = m_manager.collectionByName("Collection 1");
-        QCOMPARE(component.resources().count(), 1);
+        ResourceCollection collection = m_manager.collectionByName(QByteArray("Collection 1"));
+        QCOMPARE(collection.resources().count(), 1);
 
-        QSharedPointer<Resource> resource(component.resourceByName("Resource 1"));
+        QSharedPointer<Resource> resource(collection.resourceByName(QByteArray("Resource 1")));
         QCOMPARE(resource.isNull(), false);
         QCOMPARE(resource->isOpen(), false);
         QCOMPARE(resource->open(), true);
         QCOMPARE(resource->readAll(), QByteArray("Collection 1, Resource 1."));
         resource->close();
 
-        component = m_manager.collectionByName("Collection 2");
-        QCOMPARE(component.resources().count(), 1);
+        collection = m_manager.collectionByName(QByteArray("Collection 2"));
+        QCOMPARE(collection.resources().count(), 1);
 
-        resource = component.resourceByName("Resource 2");
+        resource = collection.resourceByName(QByteArray("Resource 2"));
         QCOMPARE(resource.isNull(), false);
         QCOMPARE(resource->isOpen(), false);
         QCOMPARE(resource->open(), true);
@@ -346,46 +333,45 @@ private slots:
 
     void testWriteBinaryContentFunction()
     {
-        QSharedPointer<QFile> existingBinary(new QFile(m_binary));
-        QInstaller::openForRead(existingBinary.data());
-
-        QSharedPointer<QFile> file(new QTemporaryFile);
-        QInstaller::openForWrite(file.data());
-        QInstaller::blockingWrite(file.data(), QByteArray(scTinySize, '1'));
-
-        ResourceCollection resources;
-        foreach (const Range<qint64> &segment, m_layout.metaResourceSegments) {
-            resources.appendResource(QSharedPointer<Resource> (new Resource(existingBinary,
-                segment)));
-        }
+        ResourceCollection collection(QByteArray("QResources"));
+        foreach (const Range<qint64> &segment, m_layout.metaResourceSegments)
+            collection.appendResource(QSharedPointer<Resource>(new Resource(m_binary, segment)));
+        m_manager.insertCollection(collection);
 
         QList<OperationBlob> operations;
         foreach (const OperationBlob &operation, m_operations)
             operations.append(operation);
 
-        BinaryContent::writeBinaryContent(file, resources, operations, m_manager,
-            m_layout.magicMarker, m_layout.magicCookie);
-        file->close();
-        existingBinary->close();
+        QTemporaryFile file;
+        QInstaller::openForWrite(&file);
 
-        QInstaller::openForRead(file.data());
-        QInstaller::openForRead(existingBinary.data());
-        QCOMPARE(file->readAll(), existingBinary->readAll());
+        QInstaller::blockingWrite(&file, QByteArray(scTinySize, '1'));
+        BinaryContent::writeBinaryContent(&file, operations, m_manager, m_layout.magicMarker,
+            m_layout.magicCookie);
+        file.close();
+
+        QFile existingBinary(m_binary);
+        QInstaller::openForRead(&existingBinary);
+
+        QInstaller::openForRead(&file);
+        QCOMPARE(file.readAll(), existingBinary.readAll());
     }
 
     void testReadBinaryContentFunction()
     {
-        QSharedPointer<QFile> file(new QFile(m_binary));
-        QInstaller::openForRead(file.data());
+        QFile file(m_binary);
+        QInstaller::openForRead(&file);
 
         qint64 magicMarker;
-        ResourceCollection collection;
         QList<OperationBlob> operations;
         ResourceCollectionManager manager;
-        BinaryContent::readBinaryContent(file, &collection, &operations, &manager, &magicMarker,
+        BinaryContent::readBinaryContent(&file, &operations, &manager, &magicMarker,
             m_layout.magicCookie);
+        file.close();
 
         QCOMPARE(magicMarker, m_layout.magicMarker);
+
+        ResourceCollection collection = manager.collectionByName("QResources");
         QCOMPARE(collection.resources().count(), m_layout.metaResourceSegments.count());
         for (int i = 0; i < collection.resources().count(); ++i)
             QCOMPARE(collection.resources().at(i)->segment(), m_layout.metaResourceSegments.at(i));
@@ -398,20 +384,20 @@ private slots:
 
         QCOMPARE(manager.collectionCount(), m_manager.collectionCount());
 
-        ResourceCollection component = manager.collectionByName("Collection 1");
-        QCOMPARE(component.resources().count(), 1);
+        collection = manager.collectionByName(QByteArray("Collection 1"));
+        QCOMPARE(collection.resources().count(), 1);
 
-        QSharedPointer<Resource> resource(component.resourceByName("Resource 1"));
+        QSharedPointer<Resource> resource(collection.resourceByName(QByteArray("Resource 1")));
         QCOMPARE(resource.isNull(), false);
         QCOMPARE(resource->isOpen(), false);
         QCOMPARE(resource->open(), true);
         QCOMPARE(resource->readAll(), QByteArray("Collection 1, Resource 1."));
         resource->close();
 
-        component = manager.collectionByName("Collection 2");
-        QCOMPARE(component.resources().count(), 1);
+        collection = manager.collectionByName(QByteArray("Collection 2"));
+        QCOMPARE(collection.resources().count(), 1);
 
-        resource = component.resourceByName("Resource 2");
+        resource = collection.resourceByName(QByteArray("Resource 2"));
         QCOMPARE(resource.isNull(), false);
         QCOMPARE(resource->isOpen(), false);
         QCOMPARE(resource->open(), true);
@@ -421,7 +407,7 @@ private slots:
 
     void cleanupTestCase()
     {
-        m_manager.reset();
+        m_manager.clear();
         QFile::remove(m_binary);
     }
 

@@ -410,7 +410,7 @@ void PackageManagerCorePrivate::cleanUpComponentEnvironment()
 {
     // clean up registered (downloaded) data
     if (m_core->isUpdater() || m_core->isPackageManager())
-        BinaryFormatEngineHandler::instance()->reset();
+        BinaryFormatEngineHandler::instance()->clear();
 
     // there could be still some references to already deleted components,
     // so we need to remove the current component script engine

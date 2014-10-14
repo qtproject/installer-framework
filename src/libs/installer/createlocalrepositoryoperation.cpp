@@ -250,15 +250,15 @@ bool CreateLocalRepositoryOperation::performOperation()
 
         emit progressChanged(0.50);
 
-        QSharedPointer<QFile> file(new QFile(binaryPath));
-        if (!file->open(QIODevice::ReadOnly)) {
-            throw QInstaller::Error(tr("Could not open file: %1. Error: %2").arg(file->fileName(),
-                file->errorString()));
+        QFile file(binaryPath);
+        if (!file.open(QIODevice::ReadOnly)) {
+            throw QInstaller::Error(tr("Could not open file: %1. Error: %2").arg(file.fileName(),
+                file.errorString()));
         }
 
         // start to read the binary layout
         ResourceCollectionManager manager;
-        BinaryContent::readBinaryContent(file, 0, 0, &manager, 0, BinaryContent::MagicCookie);
+        BinaryContent::readBinaryContent(&file, 0, &manager, 0, BinaryContent::MagicCookie);
 
         QDirIterator it(repoPath, QDirIterator::Subdirectories);
         while (it.hasNext() && !it.next().isEmpty()) {
@@ -277,7 +277,8 @@ bool CreateLocalRepositoryOperation::performOperation()
                 // copy the 7z files that are inside the component index into the target
                 const ResourceCollection collection = manager.collectionByName(fileName.toUtf8());
                 foreach (const QSharedPointer<Resource> &resource, collection.resources()) {
-                    if (!resource->open())
+                    const bool isOpen = resource->isOpen();
+                    if ((!isOpen) && (!resource->open()))
                         continue;
 
                     QFile target(absoluteTargetPath + QDir::separator()
@@ -286,6 +287,9 @@ bool CreateLocalRepositoryOperation::performOperation()
                     resource->copyData(&target);
                     helper.m_files.prepend(target.fileName());
                     emit outputTextChanged(helper.m_files.first());
+
+                    if (!isOpen) // If we reach that point, either the resource was opened already.
+                        resource->close();         // or we did open it and have to close it again.
                 }
             }
         }

@@ -68,15 +68,13 @@ public:
     static qint64 findMagicCookie(QFile *file, quint64 magicCookie);
     static BinaryLayout binaryLayout(QFile *file, quint64 magicCookie);
 
-    static void readBinaryContent(const QSharedPointer<QFile> &in,
-                                ResourceCollection *metaResources,
+    static void readBinaryContent(QFile *file,
                                 QList<OperationBlob> *operations,
                                 ResourceCollectionManager *manager,
                                 qint64 *magicMarker,
                                 quint64 magicCookie);
 
-    static void writeBinaryContent(const QSharedPointer<QFile> &out,
-                                const ResourceCollection &metaResources,
+    static void writeBinaryContent(QFile *out,
                                 const QList<OperationBlob> &operations,
                                 const ResourceCollectionManager &manager,
                                 qint64 magicMarker,

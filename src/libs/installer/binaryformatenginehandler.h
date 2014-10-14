@@ -55,7 +55,7 @@ class INSTALLER_EXPORT BinaryFormatEngineHandler : public QAbstractFileEngineHan
 public:
     QAbstractFileEngine *create(const QString &fileName) const;
 
-    void reset();
+    void clear();
     static BinaryFormatEngineHandler *instance();
 
     void registerResources(const QList<ResourceCollection> &collections);

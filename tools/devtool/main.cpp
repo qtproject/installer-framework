@@ -136,24 +136,27 @@ int main(int argc, char *argv[])
             }
         }
 
-        QSharedPointer<QFile> file(new QFile(path));
-        QInstaller::openForRead(file.data());
+        QFile file(path);
+        QInstaller::openForRead(&file);
 
         qint64 magicMarker;
-        QInstaller::ResourceCollection meta;
         QList<QInstaller::OperationBlob> operations;
         QInstaller::ResourceCollectionManager manager;
-        QInstaller::BinaryContent::readBinaryContent(file, &meta, &operations, &manager,
-            &magicMarker, cookie);
+        QInstaller::BinaryContent::readBinaryContent(&file, &operations, &manager, &magicMarker,
+            cookie);
 
         // map the inbuilt resources
+        const QInstaller::ResourceCollection meta = manager.collectionByName("QResources");
         foreach (const QSharedPointer<QInstaller::Resource> &resource, meta.resources()) {
-            const bool opened = resource->open();
+            const bool isOpen = resource->isOpen();
+            if ((!isOpen) && (!resource->open()))
+                continue;   // TODO: should we throw here?
+
             const QByteArray ba = resource->readAll();
             if (!QResource::registerResource((const uchar*) ba.data(), QLatin1String(":/metadata")))
                 throw QInstaller::Error(QLatin1String("Could not register in-binary resource."));
             resourceMappings.append(ba);
-            if (opened)
+            if (!isOpen)
                 resource->close();
         }
 

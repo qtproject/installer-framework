@@ -95,15 +95,14 @@ int InstallerBase::run()
         cookie = QInstaller::BinaryContent::MagicCookie;
     }
 
-    QSharedPointer<QFile> binary(new QFile(fileName));
-    QInstaller::openForRead(binary.data());
+    QFile binary(fileName);
+    QInstaller::openForRead(&binary);
 
     qint64 magicMarker;
-    QInstaller::ResourceCollection resources;
     QInstaller::ResourceCollectionManager manager;
     QList<QInstaller::OperationBlob> oldOperations;
-    QInstaller::BinaryContent::readBinaryContent(binary, &resources, &oldOperations, &manager,
-        &magicMarker, cookie);
+    QInstaller::BinaryContent::readBinaryContent(&binary, &oldOperations, &manager, &magicMarker,
+        cookie);
 
     if (QInstaller::isVerbose()) {
         qDebug() << "Language:" << QLocale().uiLanguages().value(0,
@@ -111,7 +110,7 @@ int InstallerBase::run()
         qDebug() << "Arguments: " << arguments().join(QLatin1String(", ")).toUtf8().constData();
     }
 
-    registerMetaResources(resources);   // the base class will unregister the resources
+    SDKApp::registerMetaResources(manager.collectionByName("QResources"));
     QInstaller::BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
 
     if (QInstaller::isVerbose())
@@ -120,11 +119,6 @@ int InstallerBase::run()
     // instantiate the installer we are actually going to use
     m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations);
     QInstaller::ProductKeyCheck::instance()->init(m_core);
-
-    // We can close the binary file if we are an online installer or no installer at all, cause no
-    // embedded archives exist inside the component index. Keeps the .dat file unlocked on Windows.
-    if ((!m_core->isInstaller()) || (!m_core->isOfflineOnly()))
-        binary->close();
 
     CommandLineParser parser;
     parser.parse(arguments());

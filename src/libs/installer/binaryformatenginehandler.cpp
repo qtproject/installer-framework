@@ -42,33 +42,60 @@
 #include "binaryformatenginehandler.h"
 #include "binaryformatengine.h"
 
-#include <QFile>
-
 namespace QInstaller {
 
+/*!
+    \class QInstaller::BinaryFormatEngineHandler
+    \inmodule QtInstallerFramework
+    \brief The BinaryFormatEngineHandler class provides a way to register resource collections and
+        resource files.
+*/
+
+/*!
+    Creates a file engine for the file specified by \a fileName. To be able to create a file
+    engine, the file name needs to be prefixed with \c {installer://}.
+
+    Returns 0 if the engine cannot handle \a fileName.
+*/
 QAbstractFileEngine *BinaryFormatEngineHandler::create(const QString &fileName) const
 {
     return fileName.startsWith(QLatin1String("installer://"), Qt::CaseInsensitive )
         ? new BinaryFormatEngine(m_resources, fileName) : 0;
 }
 
-void BinaryFormatEngineHandler::reset()
+/*!
+    Clears the contents of the binary format engine.
+*/
+void BinaryFormatEngineHandler::clear()
 {
     m_resources.clear();
 }
 
+/*!
+    Returns the active instance of the engine.
+*/
 BinaryFormatEngineHandler *BinaryFormatEngineHandler::instance()
 {
     static BinaryFormatEngineHandler instance;
     return &instance;
 }
 
+/*!
+    Registers the given resource collections \a collections in the engine.
+*/
 void BinaryFormatEngineHandler::registerResources(const QList<ResourceCollection> &collections)
 {
     foreach (const ResourceCollection &collection, collections)
         m_resources.insert(collection.name(), collection);
 }
 
+/*!
+    Registers the resource specified by \a resourcePath in a resource collection specified
+    by \a fileName. The file name \a fileName must be in the form of \c {installer://}, followed
+    by the collection name and resource name separated by a forward slash.
+
+    A valid file name looks like this: installer://collectionName/resourceName
+*/
 void
 BinaryFormatEngineHandler::registerResource(const QString &fileName, const QString &resourcePath)
 {
@@ -85,8 +112,8 @@ BinaryFormatEngineHandler::registerResource(const QString &fileName, const QStri
     const QByteArray collectionName = path.section(sep, 0, 0).toUtf8();
 
     m_resources[collectionName].setName(collectionName);
-    m_resources[collectionName].appendResource(QSharedPointer<Resource>(new Resource(resourceName,
-        resourcePath)));
+    m_resources[collectionName].appendResource(QSharedPointer<Resource>(new Resource(resourcePath,
+        resourceName)));
 }
 
 } // namespace QInstaller

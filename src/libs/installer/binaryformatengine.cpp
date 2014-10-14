@@ -80,6 +80,13 @@ private:
 
 namespace QInstaller {
 
+/*!
+    \class QInstaller::BinaryFormatEngine
+    \inmodule QtInstallerFramework
+    \brief The BinaryFormatEngine class is the default file engine for accessing resource
+        collections and resource files.
+*/
+
 BinaryFormatEngine::BinaryFormatEngine(const QHash<QByteArray, ResourceCollection> &collections,
         const QString &fileName)
     : m_resource(0)
@@ -89,7 +96,7 @@ BinaryFormatEngine::BinaryFormatEngine(const QHash<QByteArray, ResourceCollectio
 }
 
 /*!
-    \reimp
+    \internal
 */
 void BinaryFormatEngine::setFileName(const QString &file)
 {
@@ -110,7 +117,7 @@ void BinaryFormatEngine::setFileName(const QString &file)
 }
 
 /*!
-    \reimp
+    \internal
 */
 bool BinaryFormatEngine::close()
 {
@@ -123,15 +130,16 @@ bool BinaryFormatEngine::close()
 }
 
 /*!
-    \reimp
+    \internal
 */
-bool BinaryFormatEngine::open(QIODevice::OpenMode /*mode*/)
+bool BinaryFormatEngine::open(QIODevice::OpenMode mode)
 {
+    Q_UNUSED(mode)
     return m_resource.isNull() ? false : m_resource->open();
 }
 
 /*!
-    \reimp
+    \internal
 */
 qint64 BinaryFormatEngine::pos() const
 {
@@ -139,7 +147,7 @@ qint64 BinaryFormatEngine::pos() const
 }
 
 /*!
-    \reimp
+    \internal
 */
 qint64 BinaryFormatEngine::read(char *data, qint64 maxlen)
 {
@@ -147,7 +155,7 @@ qint64 BinaryFormatEngine::read(char *data, qint64 maxlen)
 }
 
 /*!
-    \reimp
+    \internal
 */
 bool BinaryFormatEngine::seek(qint64 offset)
 {
@@ -155,7 +163,7 @@ bool BinaryFormatEngine::seek(qint64 offset)
 }
 
 /*!
-    \reimp
+    \internal
 */
 QString BinaryFormatEngine::fileName(FileName file) const
 {
@@ -177,7 +185,7 @@ QString BinaryFormatEngine::fileName(FileName file) const
 }
 
 /*!
-    \reimp
+    \internal
 */
 bool BinaryFormatEngine::copy(const QString &newName)
 {
@@ -213,7 +221,7 @@ bool BinaryFormatEngine::copy(const QString &newName)
 }
 
 /*!
-    \reimp
+    \internal
 */
 QAbstractFileEngine::FileFlags BinaryFormatEngine::fileFlags(FileFlags type) const
 {
@@ -231,7 +239,7 @@ QAbstractFileEngine::FileFlags BinaryFormatEngine::fileFlags(FileFlags type) con
 }
 
 /*!
-    \reimp
+    \internal
 */
 QAbstractFileEngineIterator *BinaryFormatEngine::beginEntryList(QDir::Filters filters, const QStringList &filterNames)
 {
@@ -240,7 +248,7 @@ QAbstractFileEngineIterator *BinaryFormatEngine::beginEntryList(QDir::Filters fi
 }
 
 /*!
-    \reimp
+    \internal
 */
 QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringList &filterNames) const
 {
@@ -280,7 +288,7 @@ QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringLi
 }
 
 /*!
-    \reimp
+    \internal
 */
 qint64 BinaryFormatEngine::size() const
 {

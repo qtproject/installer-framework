@@ -52,10 +52,12 @@
 #include <settings.h>
 #include <utils.h>
 
-#include <QtCore/QDirIterator>
-#include <QtCore/QProcess>
-#include <QtCore/QSettings>
-#include <QtCore/QTemporaryFile>
+#include <QDateTime>
+#include <QDirIterator>
+#include <QDomDocument>
+#include <QProcess>
+#include <QSettings>
+#include <QTemporaryFile>
 #include <QTemporaryDir>
 
 #include <iostream>
@@ -66,7 +68,7 @@ struct Input {
     QString outputPath;
     QString installerExePath;
     QInstallerTools::PackageInfoVector packages;
-    QInstaller::ResourceCollection metaCollection;
+    QInstaller::ResourceCollectionManager manager;
 };
 
 class BundleBackup
@@ -250,7 +252,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
     }
 #endif
 
-    QSharedPointer<QTemporaryFile> out(new QTemporaryFile);
+    QTemporaryFile out;
     QString targetName = input.outputPath;
 #ifdef Q_OS_OSX
     QDir resourcePath(QFileInfo(input.outputPath).dir());
@@ -270,7 +272,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
     }
 
     try {
-        QInstaller::openForWrite(out.data());
+        QInstaller::openForWrite(&out);
         QFile exe(input.installerExePath);
 
 #ifdef Q_OS_OSX
@@ -280,10 +282,9 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         }
 #else
         QInstaller::openForRead(&exe);
-        QInstaller::appendData(out.data(), &exe, exe.size());
+        QInstaller::appendData(&out, &exe, exe.size());
 #endif
 
-        QInstaller::ResourceCollectionManager manager;
         foreach (const QInstallerTools::PackageInfo &info, input.packages) {
             QInstaller::ResourceCollection collection;
             collection.setName(info.name.toUtf8());
@@ -295,11 +296,11 @@ static int assemble(Input input, const QInstaller::Settings &settings)
                     humanReadableSize(resource->size()));
                 collection.appendResource(resource);
             }
-            manager.insertCollection(collection);
+            input.manager.insertCollection(collection);
         }
 
         const QList<QInstaller::OperationBlob> operations;
-        BinaryContent::writeBinaryContent(out, input.metaCollection, operations, manager,
+        BinaryContent::writeBinaryContent(&out, operations, input.manager,
             BinaryContent::MagicInstallerMarker, BinaryContent::MagicCookie);
     } catch (const Error &e) {
         qCritical("Error occurred while assembling the installer: %s", qPrintable(e.message()));
@@ -307,16 +308,16 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         return EXIT_FAILURE;
     }
 
-    if (!out->rename(targetName)) {
+    if (!out.rename(targetName)) {
         qCritical("Could not write installer to %s: %s", targetName.toUtf8().constData(),
-            out->errorString().toUtf8().constData());
+            out.errorString().toUtf8().constData());
         QFile::remove(tempFile);
         return EXIT_FAILURE;
     }
-    out->setAutoRemove(false);
+    out.setAutoRemove(false);
 
 #ifndef Q_OS_WIN
-    chmod755(out->fileName());
+    chmod755(out.fileName());
 #endif
     QFile::remove(tempFile);
 
@@ -402,8 +403,8 @@ static QSharedPointer<QInstaller::Resource> createDefaultResourceFile(const QStr
             throw Error(QString::fromLatin1("Could not compile rcc project file."));
     }
 
-    return QSharedPointer<QInstaller::Resource>(new QInstaller::Resource(binaryName.toUtf8(),
-        binaryName));
+    return QSharedPointer<QInstaller::Resource>(new QInstaller::Resource(binaryName, binaryName
+        .toUtf8()));
 }
 
 static
@@ -420,8 +421,8 @@ QList<QSharedPointer<QInstaller::Resource> > createBinaryResourceFiles(const QSt
             if (status != EXIT_SUCCESS)
                 continue;
 
-            result.append(QSharedPointer<QInstaller::Resource> (new QInstaller::Resource(binaryName
-                .toUtf8(), binaryName)));
+            result.append(QSharedPointer<QInstaller::Resource> (new QInstaller::Resource(binaryName,
+                binaryName.toUtf8())));
         }
     }
     return result;
@@ -731,9 +732,12 @@ int main(int argc, char **argv)
             input.packages = packages;
             input.outputPath = target;
             input.installerExePath = templateBinary;
-            input.metaCollection.appendResource(createDefaultResourceFile(tmpMetaDir,
+
+            QInstaller::ResourceCollection metaCollection("QResources");
+            metaCollection.appendResource(createDefaultResourceFile(tmpMetaDir,
                 generateTemporaryFileName()));
-            input.metaCollection.appendResources(createBinaryResourceFiles(resources));
+            metaCollection.appendResources(createBinaryResourceFiles(resources));
+            input.manager.insertCollection(metaCollection);
 
             qDebug() << "Creating the binary";
             exitCode = assemble(input, settings);
@@ -750,7 +754,8 @@ int main(int argc, char **argv)
     }
 
     qDebug() << "Cleaning up...";
-    foreach (const QSharedPointer<QInstaller::Resource> &resource, input.metaCollection.resources())
+    const QInstaller::ResourceCollection collection = input.manager.collectionByName("QResources");
+    foreach (const QSharedPointer<QInstaller::Resource> &resource, collection.resources())
         QFile::remove(QString::fromUtf8(resource->name()));
     QInstaller::removeDirectory(tmpMetaDir, true);
 
