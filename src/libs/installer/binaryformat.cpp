@@ -261,7 +261,7 @@ void Resource::copyData(Resource *resource, QFileDevice *out)
     unique name assigned using QUuid.
 */
 ResourceCollection::ResourceCollection()
-    : ResourceCollection(QUuid::createUuid().toByteArray())
+    : m_name(QUuid::createUuid().toByteArray())
 {
 }
 
