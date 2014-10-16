@@ -1,5 +1,6 @@
 2.0.0
 - Require Qt 5.3 as a minimal version, Qt 4 code removed.
+- Source code is now available also under LGPLv3.
 - Changed the default value of AllowSpaceInPath in config.xml to true.
 - Made cycles in component dependencies fatal.
 - Respect AllowSpaceInPath everywhere.
