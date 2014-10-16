@@ -37,6 +37,7 @@
 - Removed some deprecated things.
 - Improved documentation. (QTIFW-526)
 - Updated and improved translations.
+- Removed SetQtCreatorArrayValue, AddQtCreatorArrayValue operations.
 
 Thanks go to Christoph Vogtländer, Sze Howe Koh, Ray Donnelly, Tasuku Suzuki and Sascha Cunz for contributions.
 

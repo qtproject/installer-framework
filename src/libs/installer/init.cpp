@@ -57,8 +57,6 @@
 // QtSDK specific
 #include "qtpatchoperation.h"
 #include "consumeoutputoperation.h"
-#include "setqtcreatorvalueoperation.h"
-#include "addqtcreatorarrayvalueoperation.h"
 
 #ifdef Q_OS_OSX
 #   include "macreplaceinstallnamesoperation.h"
@@ -235,8 +233,6 @@ void QInstaller::init()
     factory.registerUpdateOperation<SettingsOperation>(QLatin1String("Settings"));
 
     // QtSDK specific
-    factory.registerUpdateOperation<SetQtCreatorValueOperation>(QLatin1String("SetQtCreatorValue"));
-    factory.registerUpdateOperation<AddQtCreatorArrayValueOperation>(QLatin1String("AddQtCreatorArrayValue"));
     factory.registerUpdateOperation<QtPatchOperation>(QLatin1String("QtPatch"));
 
     FileDownloaderFactory::setFollowRedirects(true);

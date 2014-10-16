@@ -55,8 +55,6 @@ HEADERS += packagemanagercore.h \
     consumeoutputoperation.h \
     replaceoperation.h \
     linereplaceoperation.h \
-    setqtcreatorvalueoperation.h \
-    addqtcreatorarrayvalueoperation.h \
     copydirectoryoperation.h \
     simplemovefileoperation.h \
     extractarchiveoperation.h \
@@ -81,7 +79,6 @@ HEADERS += packagemanagercore.h \
     messageboxhandler.h \
     licenseoperation.h \
     component_p.h \
-    qtcreator_constants.h \
     qprocesswrapper.h \
     qsettingswrapper.h \
     constants.h \
@@ -142,8 +139,6 @@ SOURCES += packagemanagercore.cpp \
     consumeoutputoperation.cpp \
     replaceoperation.cpp \
     linereplaceoperation.cpp \
-    setqtcreatorvalueoperation.cpp \
-    addqtcreatorarrayvalueoperation.cpp \
     copydirectoryoperation.cpp \
     simplemovefileoperation.cpp \
     extractarchiveoperation.cpp \
