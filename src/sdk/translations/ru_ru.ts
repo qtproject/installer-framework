@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>Component</name>
     <message>
@@ -29,6 +29,69 @@
     <message>
         <source>%1 at %2</source>
         <translation>%1 в %2</translation>
+    </message>
+</context>
+<context>
+    <name>GetRepositoryMetaInfoJob</name>
+    <message>
+        <source>Empty repository URL.</source>
+        <translation>Пустой URL хранилища.</translation>
+    </message>
+    <message>
+        <source>Invalid repository URL: %1</source>
+        <translation>Неверный URL хранилища: %1</translation>
+    </message>
+    <message>
+        <source>URL scheme not supported: %1 (%2)</source>
+        <translation>Схема URL не поддерживается: %1 (%2)</translation>
+    </message>
+    <message>
+        <source>Retrieving component meta information...</source>
+        <translation>Получение метаданных компонета...</translation>
+    </message>
+    <message>
+        <source>Could not open Updates.xml for reading. Error: %1</source>
+        <translation>Не удалось открыть Updates.xml для чтения: Ошибка: %1</translation>
+    </message>
+    <message>
+        <source>Could not fetch a valid version of Updates.xml from repository: %1. Error: %2</source>
+        <translation>Не удалось загрузить корректную версию Updates.xml из хранилища: %1. Ошибка: %2</translation>
+    </message>
+    <message>
+        <source>Download Error</source>
+        <translation>Ошибка загрузки</translation>
+    </message>
+    <message>
+        <source>Parsing component meta information...</source>
+        <translation>Разбор метаданных компонента...</translation>
+    </message>
+    <message>
+        <source>Repository updates received.</source>
+        <translation>Получены обновления хранилища.</translation>
+    </message>
+    <message>
+        <source>Could not move Updates.xml to target location. Error: %1</source>
+        <translation>Не удалось переместить Updates.xml. Ошибка: %1</translation>
+    </message>
+    <message>
+        <source>Finished updating component meta information.</source>
+        <translation>Завершена обработка метаданных компонента.</translation>
+    </message>
+    <message>
+        <source>Could not fetch Updates.xml from repository: %1. Error: %2</source>
+        <translation>Не удалось загрузить Updates.xml из хранилища: %1. Ошибка: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving component information from remote repository...</source>
+        <translation>Получение информации о компоненте из внешнего хранилища...</translation>
+    </message>
+    <message>
+        <source>Meta data download canceled.</source>
+        <translation>Загрузка метаданных отменена.</translation>
+    </message>
+    <message>
+        <source>Unknown exception.</source>
+        <translation>Неизвестное исключение.</translation>
     </message>
 </context>
 <context>
@@ -600,6 +663,14 @@
         <source>YiB</source>
         <translation>ИБ</translation>
     </message>
+    <message>
+        <source>Corrupt installation</source>
+        <translation>Установка повреждена</translation>
+    </message>
+    <message>
+        <source>Your installation seems to be corrupted. Please consider re-installing from scratch.</source>
+        <translation>Возможно, установленное приложение повреждено. Попробуйте его заново переустановить.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::AddQtCreatorArrayValueOperation</name>
@@ -964,12 +1035,8 @@ Error while loading %2</source>
 Ошибка в процессе загрузки %2</translation>
     </message>
     <message>
-        <source>Downloading archive hash for component: %1</source>
-        <translation>Загрузка хеша архива для компонента: %1</translation>
-    </message>
-    <message>
-        <source>Downloading archive for component: %1</source>
-        <translation>Загрузка архива для компонента: %1</translation>
+        <source>Downloading archive &apos;%1&apos; for component: %2</source>
+        <translation>Загрузка архива «%1» для компонента: %2</translation>
     </message>
     <message>
         <source>Scheme not supported: %1 (%2)</source>
@@ -1048,59 +1115,59 @@ Error while loading %2</source>
     <name>QInstaller::FileTaskObserver</name>
     <message>
         <source> of </source>
-        <translation type="obsolete"> из </translation>
+        <translation> из </translation>
     </message>
     <message>
         <source> received.</source>
-        <translation type="obsolete"> полученных.</translation>
+        <translation> полученных.</translation>
     </message>
     <message>
         <source>/sec</source>
-        <translation type="obsolete">/с</translation>
+        <translation>/с</translation>
     </message>
     <message>
         <source> day</source>
-        <translation type="obsolete"> день</translation>
+        <translation> день</translation>
     </message>
     <message>
         <source> days</source>
-        <translation type="obsolete"> дней</translation>
+        <translation> дней</translation>
     </message>
     <message>
         <source> hour</source>
-        <translation type="obsolete"> час</translation>
+        <translation> час</translation>
     </message>
     <message>
         <source> hours</source>
-        <translation type="obsolete"> часов</translation>
+        <translation> часов</translation>
     </message>
     <message>
         <source> minute</source>
-        <translation type="obsolete"> минута</translation>
+        <translation> минута</translation>
     </message>
     <message>
         <source> minutes</source>
-        <translation type="obsolete"> минут</translation>
+        <translation> минут</translation>
     </message>
     <message>
         <source> second</source>
-        <translation type="obsolete"> секунда</translation>
+        <translation> секунда</translation>
     </message>
     <message>
         <source> seconds</source>
-        <translation type="obsolete"> секунд</translation>
+        <translation> секунд</translation>
     </message>
     <message>
         <source> - </source>
-        <translation type="obsolete"> - </translation>
+        <translation> - </translation>
     </message>
     <message>
         <source> remaining.</source>
-        <translation type="obsolete"> осталось.</translation>
+        <translation> осталось.</translation>
     </message>
     <message>
         <source> - unknown time remaining.</source>
-        <translation type="obsolete"> - время окончания загрузки неизвестно.</translation>
+        <translation> - время окончания загрузки неизвестно.</translation>
     </message>
 </context>
 <context>
@@ -1128,92 +1195,6 @@ Error while loading %2</source>
     <message>
         <source>The %1 Wizard failed.</source>
         <translation>Установка %1 не удалась.</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::GetRepositoryMetaInfoJob</name>
-    <message>
-        <source>Empty repository URL.</source>
-        <translation>Пустой URL хранилища.</translation>
-    </message>
-    <message>
-        <source>Invalid repository URL: %1</source>
-        <translation>Неверный URL хранилища: %1</translation>
-    </message>
-    <message>
-        <source>URL scheme not supported: %1 (%2)</source>
-        <translation>Схема URL не поддерживается: %1 (%2)</translation>
-    </message>
-    <message>
-        <source>Retrieving component meta information...</source>
-        <translation>Получение метаданных компонета...</translation>
-    </message>
-    <message>
-        <source>Could not open Updates.xml for reading. Error: %1</source>
-        <translation>Не удалось открыть Updates.xml для чтения: Ошибка: %1</translation>
-    </message>
-    <message>
-        <source>Could not fetch a valid version of Updates.xml from repository: %1. Error: %2</source>
-        <translation>Не удалось загрузить корректную версию Updates.xml из хранилища: %1. Ошибка: %2</translation>
-    </message>
-    <message>
-        <source>Download Error</source>
-        <translation>Ошибка загрузки</translation>
-    </message>
-    <message>
-        <source>Parsing component meta information...</source>
-        <translation>Разбор метаданных компонента...</translation>
-    </message>
-    <message>
-        <source>Repository updates received.</source>
-        <translation>Получены обновления хранилища.</translation>
-    </message>
-    <message>
-        <source>Could not move Updates.xml to target location. Error: %1</source>
-        <translation>Не удалось переместить Updates.xml. Ошибка: %1</translation>
-    </message>
-    <message>
-        <source>Finished updating component meta information.</source>
-        <translation>Завершена обработка метаданных компонента.</translation>
-    </message>
-    <message>
-        <source>Could not fetch Updates.xml from repository: %1. Error: %2</source>
-        <translation>Не удалось загрузить Updates.xml из хранилища: %1. Ошибка: %2</translation>
-    </message>
-    <message>
-        <source>Retrieving component information from remote repository...</source>
-        <translation>Получение информации о компоненте из внешнего хранилища...</translation>
-    </message>
-    <message>
-        <source>Could not open meta info archive: %1. Error: %2</source>
-        <translation>Не удалось открыть архив метаданных: %1. Ошибка: %2</translation>
-    </message>
-    <message>
-        <source>The hash of one component does not match the expected one.</source>
-        <translation>Хэш одного компонента не соответствует ожидаемому.</translation>
-    </message>
-    <message>
-        <source>Bad hash.</source>
-        <translation>Неверный хэш.</translation>
-    </message>
-    <message>
-        <source>Could not download meta information for component: %1. Error: %2</source>
-        <translation>Не удалось загрузить метаданные компонента: %1. Ошибка: %2</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::GetRepositoryMetaInfoJob::ZipRunnable</name>
-    <message>
-        <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>Ошибка извлечения «%1»: %2</translation>
-    </message>
-    <message>
-        <source>Unknown exception caught while extracting %1.</source>
-        <translation>В процессе извлечения %1 возникло неизвестное исключение.</translation>
-    </message>
-    <message>
-        <source>Could not open %1 for reading. Error: %2</source>
-        <translation>Невозможно открыть файл %1 на чтение: %2</translation>
     </message>
 </context>
 <context>
@@ -1347,8 +1328,8 @@ Error while loading %2</source>
         <translation>Один из переданных параметров пустой. Параметр1=%1; Параметр2=%2; Параметр3=%3</translation>
     </message>
     <message>
-        <source>Cannot invoke otool. Is Xcode installed?</source>
-        <translation>Не удалось выполнить otool. Xcode установлен?</translation>
+        <source>Cannot run otool. Is Xcode installed?</source>
+        <translation>Не удалось запустить otool. Xcode установлен?</translation>
     </message>
     <message>
         <source>Cannot start process %0.</source>
@@ -1359,47 +1340,47 @@ Error while loading %2</source>
     <name>QInstaller::MetadataJob</name>
     <message>
         <source>Missing package manager core engine.</source>
-        <translation type="obsolete">Отсутствует менеджер пакетов.</translation>
+        <translation>Отсутствует менеджер пакетов.</translation>
     </message>
     <message>
         <source>Preparing meta information download...</source>
-        <translation type="obsolete">Подготовка к загрузке метаданных...</translation>
+        <translation>Подготовка к загрузке метаданных...</translation>
     </message>
     <message>
         <source>Meta data download canceled.</source>
-        <translation type="obsolete">Загрузка метаданных отменена.</translation>
+        <translation>Загрузка метаданных отменена.</translation>
     </message>
     <message>
         <source>Unknown exception during download.</source>
-        <translation type="obsolete">Возникло неизвестное исключение во время загрузки.</translation>
+        <translation>Возникло неизвестное исключение во время загрузки.</translation>
     </message>
     <message>
         <source>Retrieving meta information from remote repository...</source>
-        <translation type="obsolete">Получение метаданных из внешнего хранилища...</translation>
+        <translation>Получение метаданных из внешнего хранилища...</translation>
     </message>
     <message>
         <source>Failure to fetch repositories.</source>
-        <translation type="obsolete">Не удалось загрузить хранилища.</translation>
+        <translation>Не удалось загрузить хранилища.</translation>
     </message>
     <message>
         <source>Unknown exception during extracting.</source>
-        <translation type="obsolete">Возникло неизвестное исключение во время извлечения.</translation>
+        <translation>Возникло неизвестное исключение во время извлечения.</translation>
     </message>
     <message>
         <source>Extracting meta information...</source>
-        <translation type="obsolete">Извлечение метаданных...</translation>
+        <translation>Извлечение метаданных...</translation>
     </message>
     <message>
         <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation type="obsolete">Ошибка извлечения «%1»: %2</translation>
+        <translation>Ошибка извлечения «%1»: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting %1.</source>
-        <translation type="obsolete">В процессе извлечения %1 возникло неизвестное исключение.</translation>
+        <translation>В процессе извлечения %1 возникло неизвестное исключение.</translation>
     </message>
     <message>
         <source>Could not open %1 for reading. Error: %2</source>
-        <translation type="obsolete">Невозможно открыть файл %1 на чтение: %2</translation>
+        <translation>Невозможно открыть файл %1 на чтение: %2</translation>
     </message>
 </context>
 <context>
@@ -1665,6 +1646,10 @@ Installing component %1</source>
         <source>Could not find any update source information.</source>
         <translation>Невозможно найти информацию об источниках обновления.</translation>
     </message>
+    <message>
+        <source>Dependency cycle between components detected: &apos;%1&apos; and &apos;%2&apos;.</source>
+        <translation>Обнаружена циклическая зависимость компонентов «%1» и «%2».</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -1677,36 +1662,28 @@ Installing component %1</source>
         <translation>Сервисный режим %1</translation>
     </message>
     <message>
+        <source>Do you want to cancel the installation process?</source>
+        <translation>Отменить установку?</translation>
+    </message>
+    <message>
+        <source>Do you want to cancel the uninstallation process?</source>
+        <translation>Отменить удаление?</translation>
+    </message>
+    <message>
+        <source>Do you want to quit the installer application?</source>
+        <translation>Выйти из установщика?</translation>
+    </message>
+    <message>
+        <source>Do you want to quit the uninstaller application?</source>
+        <translation>Выйти из приложения удаления?</translation>
+    </message>
+    <message>
+        <source>Do you want to quit the maintenance application?</source>
+        <translation>Выйти из приложения обслуживания?</translation>
+    </message>
+    <message>
         <source>Question</source>
         <translation>Вопрос</translation>
-    </message>
-    <message>
-        <source>Do you want to abort the %1 process?</source>
-        <translation>Вы хотите прервать процесс %1?</translation>
-    </message>
-    <message>
-        <source>uninstallation</source>
-        <translation>удаления</translation>
-    </message>
-    <message>
-        <source>installation</source>
-        <translation>установка</translation>
-    </message>
-    <message>
-        <source>installer</source>
-        <translation>программы установки</translation>
-    </message>
-    <message>
-        <source>uninstaller</source>
-        <translation>программы удаления</translation>
-    </message>
-    <message>
-        <source>maintenance</source>
-        <translation>сервисного режима</translation>
-    </message>
-    <message>
-        <source>Do you want to quit the %1 application?</source>
-        <translation>Вы хотите выйти из %1?</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -2112,10 +2089,6 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
 </context>
 <context>
     <name>QInstallerCreator::Archive</name>
-    <message>
-        <source>Could not create %1: %2</source>
-        <translation>Невозможно создать %1: %2</translation>
-    </message>
     <message>
         <source>Could not open archive file %1 for reading.</source>
         <translation>Невозможно открыть архив %1 на чтение.</translation>
@@ -2647,6 +2620,10 @@ as root and then clicking ok.</source>
         <translation>Путь к каталогу установки не может быть относительным. Задайте абсолютный путь.</translation>
     </message>
     <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>Так как каталог установки полностью удалён, установка в %1 запрещена.</translation>
+    </message>
+    <message>
         <source>The path you have entered is too long, please make sure to specify a valid path.</source>
         <translation>Введённый путь слишком длинный, введите корректный путь.</translation>
     </message>
@@ -2673,10 +2650,6 @@ as root and then clicking ok.</source>
     <message>
         <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
         <translation>В строке пути или в имени каталога установки содержится символ, не относящийся к ASCII. В настоящее время такие символы не поддерживаются. Выберите другой путь или каталог установки.</translation>
-    </message>
-    <message>
-        <source>As the install directory is completely deleted installing in %1 is forbidden.</source>
-        <translation>Так как каталог установки полностью удалён, установка в %1 запрещена.</translation>
     </message>
     <message>
         <source>You have selected an existing, non-empty folder for installation.
