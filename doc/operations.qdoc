@@ -153,11 +153,16 @@
 
                 or
 
+                "GlobalConfig" \c scope \c company \c application \c key \c value
+
+                or
+
                 "GlobalConfig" \c filename \c key \c value
             \li Stores \c value for \c key in a configuration file. The
                 configuration file is specified either by \c filename
                 (using \c QSettings::NativeFormat, which might be the Windows
-                registry) or by \c application and \c company name.
+                registry) or by \c application and \c company name. Set \c scope
+                to "SystemScope" to create an entry in the system scope.
         \row
             \li EnvironmentVariable
             \li "EnvironmentVariable" \c key \c value [\c persistent [\c system]]

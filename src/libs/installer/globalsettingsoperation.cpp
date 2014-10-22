@@ -105,14 +105,23 @@ Operation *GlobalSettingsOperation::clone() const
 
 QSettingsWrapper *GlobalSettingsOperation::setup(QString *key, QString *value, const QStringList &arguments)
 {
-    if (arguments.count() != 3 && arguments.count() != 4) {
+    if (arguments.count() != 3 && arguments.count() != 4 && arguments.count() != 5) {
         setError(InvalidArguments);
         setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments.count()).arg(tr("3 or 4"), QLatin1String("")));
+            .arg(name()).arg(arguments.count()).arg(tr("3, 4 or 5"), QLatin1String("")));
         return 0;
     }
 
-    if (arguments.count() == 4) {
+    if (arguments.count() == 5) {
+        QSettingsWrapper::Scope scope = QSettingsWrapper::UserScope;
+        if (arguments.at(0) == QLatin1String("SystemScope"))
+          scope = QSettingsWrapper::SystemScope;
+        const QString &company = arguments.at(1);
+        const QString &application = arguments.at(2);
+        *key = arguments.at(3);
+        *value = arguments.at(4);
+        return new QSettingsWrapper(scope, company, application);
+    } else if (arguments.count() == 4) {
         const QString &company = arguments.at(0);
         const QString &application = arguments.at(1);
         *key = arguments.at(2);
