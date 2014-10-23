@@ -552,8 +552,8 @@ quint64 PackageManagerCore::requiredDiskSpace() const
 {
     quint64 result = 0;
 
-    foreach (QInstaller::Component *component, rootComponents())
-        result += component->updateUncompressedSize();
+    foreach (QInstaller::Component *component, orderedComponentsToInstall())
+        result += size(component, scUncompressedSize);
 
     return result;
 }
