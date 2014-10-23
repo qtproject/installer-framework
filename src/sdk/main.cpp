@@ -86,7 +86,10 @@ int main(int argc, char *argv[])
 
     const bool help = parser.isSet(QLatin1String(CommandLineOptions::HelpShort))
         || parser.isSet(QLatin1String(CommandLineOptions::HelpLong));
-    if (help || parser.isSet(QLatin1String(CommandLineOptions::Version)) || mutually.count()) {
+    if (help
+            || parser.isSet(QLatin1String(CommandLineOptions::Version))
+            || parser.isSet(QLatin1String(CommandLineOptions::FrameworkVersion))
+            || mutually.count()) {
         Console c;
         QCoreApplication app(argc, argv);
 
@@ -96,6 +99,11 @@ int main(int argc, char *argv[])
                 QLatin1String("yyyy-MM-dd - HH:mm:ss"));
             if (dateTime.isValid())
                 std::cout << "Installer creation time: " << PLACEHOLDER << std::endl;
+            return EXIT_SUCCESS;
+        }
+
+        if (parser.isSet(QLatin1String(CommandLineOptions::FrameworkVersion))) {
+            std::cout << QUOTE(IFW_VERSION) << std::endl;
             return EXIT_SUCCESS;
         }
 

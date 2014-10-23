@@ -40,6 +40,7 @@ namespace CommandLineOptions {
 const char HelpShort[] = "h";
 const char HelpLong[] = "help";
 const char Version[] = "version";
+const char FrameworkVersion[] = "framework-version";
 const char VerboseShort[] = "v";
 const char VerboseLong[] = "verbose";
 const char Proxy[] = "proxy";

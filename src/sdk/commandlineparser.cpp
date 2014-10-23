@@ -47,6 +47,9 @@ CommandLineParser::CommandLineParser()
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Version),
         QLatin1String("Displays version information.")));
 
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::FrameworkVersion),
+        QLatin1String("Displays the version of the Qt Installer Framework.")));
+
     m_parser.addOption(QCommandLineOption(QStringList()
         << QLatin1String(CommandLineOptions::VerboseShort)
         << QLatin1String(CommandLineOptions::VerboseLong),
