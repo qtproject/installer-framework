@@ -2,5 +2,5 @@ Shows how to quit an installer from script side.
 
 Generate installer with
 
-binarycreator --offline-only -c config/config.xml -p packages ask_to_quit_installer
+binarycreator --offline-only -c config/config.xml -p packages installer
 

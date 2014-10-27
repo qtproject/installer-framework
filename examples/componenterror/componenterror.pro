@@ -1,6 +1,6 @@
 TEMPLATE = aux
 
-INSTALLER = offline
+INSTALLER = installer
 
 INPUT = $$PWD/config/config.xml $$PWD/packages
 example.input = INPUT
