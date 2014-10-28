@@ -58,6 +58,8 @@ public:
         int lineNumber = 1);
 
     void addQObjectChildren(QObject *root);
+    void removeQObjectChildren(QObject *root);
+
     QJSValue loadInContext(const QString &context, const QString &fileName,
         const QString &scriptInjection = QString());
     QJSValue callScriptMethod(const QJSValue &context, const QString &methodName,

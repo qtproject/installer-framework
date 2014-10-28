@@ -507,6 +507,8 @@ void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
             continue;
         removePage(pageId);
         d->m_defaultPages.remove(pageId);
+        packageManagerCore()->controlScriptEngine()->removeQObjectChildren(dynamicPage);
+        packageManagerCore()->componentScriptEngine()->removeQObjectChildren(dynamicPage);
     }
 }
 
@@ -525,6 +527,8 @@ void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
 {
     Q_ASSERT(widget);
     widget->setParent(0);
+    packageManagerCore()->controlScriptEngine()->removeQObjectChildren(widget);
+    packageManagerCore()->componentScriptEngine()->removeQObjectChildren(widget);
 }
 
 void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)

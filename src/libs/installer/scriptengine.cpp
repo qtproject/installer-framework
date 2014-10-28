@@ -313,6 +313,20 @@ void ScriptEngine::addQObjectChildren(QObject *root)
     }
 }
 
+void ScriptEngine::removeQObjectChildren(QObject *root)
+{
+    if ((!root) || root->objectName().isEmpty())
+        return;
+
+    const QObjectList children = root->children();
+    m_engine.globalObject().deleteProperty(root->objectName());
+    foreach (QObject *const child, children) {
+        if (child->objectName().isEmpty())
+            continue;
+        m_engine.globalObject().deleteProperty(child->objectName());
+    }
+}
+
 /*!
     Loads a script into the given \a context at \a fileName inside the ScriptEngine.
 
