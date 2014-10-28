@@ -302,6 +302,7 @@ void ScriptEngine::addQObjectChildren(QObject *root)
 
     const QObjectList children = root->children();
     QJSValue jsParent = newQObject(root);
+    QQmlEngine::setObjectOwnership(root, QQmlEngine::CppOwnership);
     m_engine.globalObject().setProperty(root->objectName(), jsParent);
 
     foreach (QObject *const child, children) {

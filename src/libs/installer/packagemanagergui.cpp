@@ -87,6 +87,11 @@ using namespace QInstaller;
 class DynamicInstallerPage : public PackageManagerPage
 {
     Q_OBJECT
+    Q_DISABLE_COPY(DynamicInstallerPage)
+
+    Q_PROPERTY(bool final READ isFinal WRITE setFinal)
+    Q_PROPERTY(bool commit READ isCommit WRITE setCommit)
+    Q_PROPERTY(bool complete READ isComplete WRITE setComplete)
 
 public:
     explicit DynamicInstallerPage(QWidget *widget, PackageManagerCore *core = 0)
@@ -107,6 +112,9 @@ public:
         layout()->addWidget(widget);
         layout()->setContentsMargins(0, 0, 0, 0);
         layout()->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+        addPageAndProperties(packageManagerCore()->controlScriptEngine());
+        addPageAndProperties(packageManagerCore()->componentScriptEngine());
     }
 
     QWidget *widget() const
@@ -117,6 +125,30 @@ public:
     bool isComplete() const
     {
         return m_widget->property("complete").toBool();
+    }
+
+    void setFinal(bool final) {
+        if (isFinal() == final)
+            return;
+        m_widget->setProperty("final", final);
+    }
+    bool isFinal() const {
+        return m_widget->property("final").toBool();
+    }
+
+    void setCommit(bool commit) {
+        if (isCommit() == commit)
+            return;
+        m_widget->setProperty("commit", commit);
+    }
+    bool isCommit() const {
+        return m_widget->property("commit").toBool();
+    }
+
+    void setComplete(bool complete) {
+        if (isComplete() == complete)
+            return;
+        m_widget->setProperty("complete", complete);
     }
 
 protected:
@@ -143,9 +175,26 @@ protected:
         return PackageManagerPage::eventFilter(obj, event);
     }
 
+    void addPageAndProperties(ScriptEngine *engine)
+    {
+        engine->addQObjectChildren(this);
+
+        static auto properties = { QStringLiteral("final"), QStringLiteral("commit"),
+            QStringLiteral("complete") };
+        foreach (const QString &property, properties) {
+            engine->evaluate(QString::fromLatin1(
+                "Object.defineProperty(%1, \"%2\", {"
+                    "get : function() { return Dynamic%1.%2; },"
+                    "set: function(val) { Dynamic%1.%2 = val; }"
+                "});"
+            ).arg(m_widget->objectName(), property));
+        }
+    }
+
 private:
     QWidget *const m_widget;
 };
+Q_DECLARE_METATYPE(DynamicInstallerPage*)
 
 
 // -- PackageManagerGui::Private
@@ -445,10 +494,7 @@ void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
         --pageId;
 
     // add it
-    DynamicInstallerPage *dynamicPage = new DynamicInstallerPage(widget, m_core);
-    packageManagerCore()->controlScriptEngine()->addQObjectChildren(dynamicPage);
-    packageManagerCore()->componentScriptEngine()->addQObjectChildren(dynamicPage);
-    setPage(pageId, dynamicPage);
+    setPage(pageId, new DynamicInstallerPage(widget, m_core));
 }
 
 void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)

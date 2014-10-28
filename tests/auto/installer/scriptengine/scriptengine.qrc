@@ -4,5 +4,6 @@
         <file>data/component1.qs</file>
         <file>data/component2.qs</file>
         <file>data/broken_connect.qs</file>
+        <file>data/dynamicpage.qs</file>
     </qresource>
 </RCC>
