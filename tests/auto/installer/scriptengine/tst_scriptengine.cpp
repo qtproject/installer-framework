@@ -100,6 +100,9 @@ private slots:
         QCOMPARE(global.hasProperty(QLatin1String("buttons")), true);
         QCOMPARE(global.hasProperty(QLatin1String("QInstaller")), true);
         QCOMPARE(global.hasProperty(QLatin1String("QMessageBox")), true);
+
+        QCOMPARE(global.hasProperty(QLatin1String("gui")), true);
+        QCOMPARE(global.hasProperty(QLatin1String("qsTr")), true);
     }
 
     void testBrokenJSMethodConnect()
