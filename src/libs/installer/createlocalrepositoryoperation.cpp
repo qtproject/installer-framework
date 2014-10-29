@@ -42,6 +42,7 @@
 #include "copydirectoryoperation.h"
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
+#include "productkeycheck.h"
 
 #include "kdupdaterupdateoperations.h"
 
@@ -238,7 +239,8 @@ bool CreateLocalRepositoryOperation::performOperation()
                     else if (e.tagName() == QLatin1String("Version"))
                         version = e.text();
                 }
-                versionMap.insert(name, version);
+                if (ProductKeyCheck::instance()->isValidPackage(name))
+                    versionMap.insert(name, version);
             }
         }
 

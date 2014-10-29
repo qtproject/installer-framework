@@ -39,7 +39,8 @@
 
 #include <QString>
 
-namespace QInstaller{
+namespace QInstaller {
+
 class PackageManagerCore;
 class ProductKeyCheckPrivate;
 class Repository;
@@ -66,6 +67,9 @@ public:
 
     // to filter repositories not matching the license
     bool isValidRepository(const QInstaller::Repository &repository) const;
+
+    void addPackagesFromXml(const QString &xmlPath);
+    bool isValidPackage(const QString &packageName) const;
 
     QList<int> registeredPages() const;
 

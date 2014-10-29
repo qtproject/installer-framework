@@ -2186,6 +2186,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
         }
         m_updaterApplication.addUpdateSource(appName, appName, QString(),
             QUrl::fromLocalFile(data.directory), 1);
+        ProductKeyCheck::instance()->addPackagesFromXml(data.directory + QLatin1String("/Updates.xml"));
     }
     m_updaterApplication.updateSourcesInfo()->setModified(false);
 

@@ -94,6 +94,17 @@ bool ProductKeyCheck::isValidRepository(const QInstaller::Repository &repository
     return true;
 }
 
+void ProductKeyCheck::addPackagesFromXml(const QString &xmlPath)
+{
+    Q_UNUSED(xmlPath)
+}
+
+bool ProductKeyCheck::isValidPackage(const QString &packageName) const
+{
+    Q_UNUSED(packageName)
+    return true;
+}
+
 QList<int> ProductKeyCheck::registeredPages() const
 {
     return QList<int>();

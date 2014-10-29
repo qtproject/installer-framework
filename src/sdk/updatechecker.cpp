@@ -79,12 +79,14 @@ int UpdateChecker::check()
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
 
-    // instantiate the installer we are actually going to use
     QInstaller::PackageManagerCore core(QInstaller::BinaryContent::MagicUpdaterMarker, operations);
-    QInstaller::BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
     QInstaller::PackageManagerCore::setVirtualComponentsVisible(true);
-    QInstaller::ProductKeyCheck::instance()->init(&core);
-
+    {
+        using namespace QInstaller;
+        ProductKeyCheck::instance()->init(&core);
+        ProductKeyCheck::instance()->addPackagesFromXml(QLatin1String(":/metadata/Updates.xml"));
+        BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
+    }
     if (!core.fetchRemotePackagesTree())
         throw QInstaller::Error(core.error());
 

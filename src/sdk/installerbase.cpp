@@ -104,14 +104,15 @@ int InstallerBase::run()
     }
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
-    QInstaller::BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
-
+    m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations);
+    {
+        using namespace QInstaller;
+        ProductKeyCheck::instance()->init(m_core);
+        ProductKeyCheck::instance()->addPackagesFromXml(QLatin1String(":/metadata/Updates.xml"));
+        BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
+    }
     if (QInstaller::isVerbose())
         dumpResourceTree();
-
-    // instantiate the installer we are actually going to use
-    m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations);
-    QInstaller::ProductKeyCheck::instance()->init(m_core);
 
     CommandLineParser parser;
     parser.parse(arguments());

@@ -32,8 +32,9 @@
 **
 **************************************************************************/
 
-#include "binaryformatenginehandler.h"
 #include "binaryformatengine.h"
+#include "binaryformatenginehandler.h"
+#include "productkeycheck.h"
 
 namespace QInstaller {
 
@@ -78,8 +79,10 @@ BinaryFormatEngineHandler *BinaryFormatEngineHandler::instance()
 */
 void BinaryFormatEngineHandler::registerResources(const QList<ResourceCollection> &collections)
 {
-    foreach (const ResourceCollection &collection, collections)
-        m_resources.insert(collection.name(), collection);
+    foreach (const ResourceCollection &collection, collections) {
+        if (ProductKeyCheck::instance()->isValidPackage(QString::fromUtf8(collection.name())))
+            m_resources.insert(collection.name(), collection);
+    }
 }
 
 /*!
@@ -103,6 +106,9 @@ BinaryFormatEngineHandler::registerResource(const QString &fileName, const QStri
 
     const QByteArray resourceName = path.section(sep, 1, 1).toUtf8();
     const QByteArray collectionName = path.section(sep, 0, 0).toUtf8();
+
+    if (!ProductKeyCheck::instance()->isValidPackage(QString::fromUtf8(collectionName)))
+        return;
 
     m_resources[collectionName].setName(collectionName);
     m_resources[collectionName].appendResource(QSharedPointer<Resource>(new Resource(resourcePath,

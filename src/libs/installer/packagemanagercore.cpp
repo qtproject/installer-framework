@@ -2151,6 +2151,9 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
         if (d->statusCanceledOrFailed())
             return false;
 
+        if (!ProductKeyCheck::instance()->isValidPackage(package->data(scName).toString()))
+            continue;
+
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
         data.package = package;
         component->loadDataFromPackage(*package);
@@ -2196,6 +2199,9 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     foreach (Package *const update, remotes) {
         if (d->statusCanceledOrFailed())
             return false;
+
+        if (!ProductKeyCheck::instance()->isValidPackage(update->data(scName).toString()))
+            continue;
 
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
         data.package = update;
