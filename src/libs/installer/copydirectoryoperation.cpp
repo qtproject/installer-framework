@@ -51,9 +51,6 @@ public:
     CopyDirectoryOperation *m_op;
 };
 
-/*
-TRANSLATOR QInstaller::CopyDirectoryOperation
-*/
 
 CopyDirectoryOperation::CopyDirectoryOperation()
 {

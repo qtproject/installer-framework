@@ -46,10 +46,6 @@
 using namespace QInstaller;
 using namespace KDUpdater;
 
-/*
-TRANSLATOR QInstaller::EnvironmentVariablesOperation
-*/
-
 EnvironmentVariableOperation::EnvironmentVariableOperation()
 {
     setName(QLatin1String("EnvironmentVariable"));

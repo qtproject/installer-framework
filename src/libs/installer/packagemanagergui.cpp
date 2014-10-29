@@ -83,39 +83,6 @@
 using namespace KDUpdater;
 using namespace QInstaller;
 
-/*
-TRANSLATOR QInstaller::PackageManagerCore;
-*/
-/*
-TRANSLATOR QInstaller::PackageManagerGui
-*/
-/*
-TRANSLATOR QInstaller::PackageManagerPage
-*/
-/*
-TRANSLATOR QInstaller::IntroductionPage
-*/
-/*
-TRANSLATOR QInstaller::LicenseAgreementPage
-*/
-/*
-TRANSLATOR QInstaller::ComponentSelectionPage
-*/
-/*
-TRANSLATOR QInstaller::TargetDirectoryPage
-*/
-/*
-TRANSLATOR QInstaller::StartMenuDirectoryPage
-*/
-/*
-TRANSLATOR QInstaller::ReadyForInstallationPage
-*/
-/*
-TRANSLATOR QInstaller::PerformInstallationPage
-*/
-/*
-TRANSLATOR QInstaller::FinishedPage
-*/
 
 class DynamicInstallerPage : public PackageManagerPage
 {

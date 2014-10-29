@@ -39,10 +39,6 @@
 
 using namespace QInstaller;
 
-/*
-TRANSLATOR QInstaller::CreateLinkOperation
-*/
-
 CreateLinkOperation::CreateLinkOperation()
 {
     setName(QLatin1String("CreateLink"));
