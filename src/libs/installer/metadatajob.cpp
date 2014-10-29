@@ -84,9 +84,12 @@ void MetadataJob::doStart()
                 authenticator.setUser(repo.username());
                 authenticator.setPassword(repo.password());
 
-                // append a random string to avoid proxy caches
-                FileTaskItem item(repo.url().toString() + QString::fromLatin1("/Updates.xml?")
-                    .append(QString::number(qrand() * qrand())));
+                QString url = repo.url().toString() + QLatin1String("/Updates.xml?");
+                if (!m_core->value(QLatin1String("UrlQueryString")).isEmpty())
+                    url += m_core->value(QLatin1String("UrlQueryString")) + QLatin1Char('&');
+
+                // also append a random string to avoid proxy caches
+                FileTaskItem item(url.append(QString::number(qrand() * qrand())));
                 item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
                 item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                 items.append(item);
