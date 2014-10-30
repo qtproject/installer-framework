@@ -37,9 +37,6 @@
 
 #include "kdupdatertask.h"
 
-#include <QHash>
-#include <QUrl>
-
 namespace KDUpdater {
 
 class Application;
@@ -61,9 +58,6 @@ private:
     bool doStop();
     bool doPause();
     bool doResume();
-
-    Update *constructUpdate(int priority, const QUrl &sourceInfoUrl, const QHash<QString, QVariant> &data,
-        quint64 compressedSize, quint64 uncompressedSize) const;
 
 private:
     Private *d;
