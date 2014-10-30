@@ -42,12 +42,12 @@
 
 namespace QInstaller {
 
-class Error : public std::runtime_error
+class Error : public std::exception
 {
 public:
+    Error() {}
     explicit Error(const QString &message)
-        : std::runtime_error(message.toStdString())
-        , m_message (message)
+        : m_message(message)
     {
         qDebug() << "create Error-Exception:" << message;
     }

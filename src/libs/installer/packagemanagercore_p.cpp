@@ -1257,8 +1257,12 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             + QLatin1String(".dat");
         try {
             if (isInstaller()) {
-                throw Error(tr("Found a binary data file, but we are the installer and we should read the "
-                    "binary resource from our very own binary!"));
+                if (QFile::exists(dataFile)) {
+                    qWarning() << QString::fromLatin1("Found binary data file '%1' but "
+                        "deliberately not used. Running as installer requires to read the "
+                        "resources from the application binary.").arg(dataFile);
+                }
+                throw Error();
             }
             input.setFileName(dataFile);
             QInstaller::openForRead(&input);
