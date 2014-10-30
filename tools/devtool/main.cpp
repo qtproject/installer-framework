@@ -157,19 +157,19 @@ int main(int argc, char *argv[])
             if (magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
                 throw QInstaller::Error(QLatin1String("Source file is not an installer."));
             BinaryDump bd;
-            return bd.dump(manager, parser.value(dump));
-        }
+            result = bd.dump(manager, parser.value(dump));
+        } else if (parser.isSet(run)) {
+            QInstaller::BinaryFormatEngineHandler::instance()->registerResources(manager
+                .collections());    // setup the binary format engine
 
-        QInstaller::BinaryFormatEngineHandler::instance()->registerResources(manager
-            .collections());    // setup the binary format engine
-
-        if (parser.isSet(run)) {
             OperationRunner runner(magicMarker, operations);
-            const QStringList arguments = parser.values(run);
+            const QStringList arguments = parser.value(run).split(QLatin1Char(','));
             if (arguments.first() == QLatin1String("DO"))
                 result = runner.runOperation(arguments.mid(1), OperationRunner::RunMode::Do);
             else if (arguments.first() == QLatin1String("UNDO"))
                 result = runner.runOperation(arguments.mid(1), OperationRunner::RunMode::Undo);
+            else
+                std::cerr << "Malformed argument: " << qPrintable(parser.value(run)) << std::endl;
         }
     } catch (const QInstaller::Error &error) {
         std::cerr << qPrintable(error.message()) << std::endl;
