@@ -179,8 +179,8 @@ protected:
     {
         engine->addQObjectChildren(this);
 
-        static auto properties = { QStringLiteral("final"), QStringLiteral("commit"),
-            QStringLiteral("complete") };
+        static const QStringList properties = QStringList() << QStringLiteral("final")
+            << QStringLiteral("commit") << QStringLiteral("complete");
         foreach (const QString &property, properties) {
             engine->evaluate(QString::fromLatin1(
                 "Object.defineProperty(%1, \"%2\", {"
