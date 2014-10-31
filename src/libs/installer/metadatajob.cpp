@@ -35,6 +35,7 @@
 
 #include "metadatajob_p.h"
 #include "packagemanagercore.h"
+#include "packagemanagerproxyfactory.h"
 #include "productkeycheck.h"
 #include "settings.h"
 

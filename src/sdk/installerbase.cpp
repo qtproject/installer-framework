@@ -45,6 +45,7 @@
 #include <kdupdaterupdateoperations.h>
 #include <messageboxhandler.h>
 #include <packagemanagercore.h>
+#include <packagemanagerproxyfactory.h>
 #include <qprocesswrapper.h>
 #include <productkeycheck.h>
 #include <settings.h>

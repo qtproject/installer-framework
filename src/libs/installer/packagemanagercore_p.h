@@ -38,12 +38,12 @@
 #include "metadatajob.h"
 #include "packagemanagercore.h"
 #include "packagemanagercoredata.h"
+#include "packagemanagerproxyfactory.h"
 #include "qinstallerglobal.h"
 #include "remotefileengine.h"
 
 #include "kdsysinfo.h"
 #include "kdupdaterapplication.h"
-#include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterupdatefinder.h"
 
 #include <QObject>
@@ -269,7 +269,7 @@ private:
     InstallerCalculator *m_installerCalculator;
     UninstallerCalculator *m_uninstallerCalculator;
 
-    FileDownloaderProxyFactory *m_proxyFactory;
+    PackageManagerProxyFactory *m_proxyFactory;
 
     ComponentModel *m_defaultModel;
     ComponentModel *m_updaterModel;

@@ -856,14 +856,14 @@ void PackageManagerCore::networkSettingsChanged()
     emit coreNetworkSettingsChanged();
 }
 
-KDUpdater::FileDownloaderProxyFactory *PackageManagerCore::proxyFactory() const
+PackageManagerProxyFactory *PackageManagerCore::proxyFactory() const
 {
     if (d->m_proxyFactory)
         return d->m_proxyFactory->clone();
     return new PackageManagerProxyFactory(this);
 }
 
-void PackageManagerCore::setProxyFactory(KDUpdater::FileDownloaderProxyFactory *factory)
+void PackageManagerCore::setProxyFactory(PackageManagerProxyFactory *factory)
 {
     delete d->m_proxyFactory;
     d->m_proxyFactory = factory;
