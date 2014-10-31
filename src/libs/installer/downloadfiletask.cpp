@@ -112,8 +112,10 @@ void Downloader::onReadyRead()
 
     const Data &data = m_downloads[reply];
     if (!data.file->isOpen()) {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Target '%1' not "
-            "open for write. Error: %2.").arg(data.file->fileName(), data.file->errorString())));
+        //: %2 is a sentence describing the error.
+        m_futureInterface->reportException(
+                    FileTaskException(tr("Target '%1' not open for write. Error: %2.").arg(
+                                          data.file->fileName(), data.file->errorString())));
         return;
     }
 
@@ -129,9 +131,10 @@ void Downloader::onReadyRead()
         while (written < read) {
             const qint64 toWrite = data.file->write(buffer.constData() + written, read - written);
             if (toWrite < 0) {
-                m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Writing "
-                    "to target '%1' failed. Error: %2.").arg(data.file->fileName(),
-                    data.file->errorString())));
+                //: %2 is a sentence describing the error.
+                m_futureInterface->reportException(
+                            FileTaskException(tr("Writing to target '%1' failed. Error: %2.").arg(
+                                                  data.file->fileName(), data.file->errorString())));
                 return;
             }
             written += toWrite;
@@ -179,8 +182,8 @@ void Downloader::onFinished(QNetworkReply *reply)
                 reply->deleteLater();
                 return;
             } else {
-                m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Redirect"
-                    " loop detected '%1'.").arg(url.toString())));
+                m_futureInterface->reportException(
+                            FileTaskException(tr("Redirect loop detected '%1'.").arg(url.toString())));
                 return;
             }
         }
@@ -196,8 +199,9 @@ void Downloader::onFinished(QNetworkReply *reply)
     const QByteArray expectedCheckSum = data.taskItem.value(TaskRole::Checksum).toByteArray();
     if (!expectedCheckSum.isEmpty()) {
         if (expectedCheckSum != data.observer->checkSum().toHex()) {
-            m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Checksum"
-                " mismatch detected '%1'.").arg(reply->url().toString())));
+            m_futureInterface->reportException(
+                        FileTaskException(tr("Checksum mismatch detected '%1'.").arg(
+                                              reply->url().toString())));
         }
     }
     m_futureInterface->reportResult(FileTaskResult(filename, data.observer->checkSum(), data.taskItem));
@@ -222,15 +226,14 @@ void Downloader::onError(QNetworkReply::NetworkError error)
     QNetworkReply *const reply = qobject_cast<QNetworkReply *>(sender());
     if (reply) {
         const Data &data = m_downloads[reply];
+        //: %2 is a sentence describing the error
         m_futureInterface->reportException(
-                    FileTaskException(
-                        QString::fromLatin1("Network error while downloading '%1': %2.").arg(
-                            data.taskItem.source(), reply->errorString())));
+                    FileTaskException(tr("Network error while downloading '%1': %2.").arg(
+                                          data.taskItem.source(), reply->errorString())));
     } else {
+        //: %1 is a sentence describing the error
         m_futureInterface->reportException(
-                    FileTaskException(
-                        QString::fromLatin1("Unknown network error while downloading: %1.").arg(
-                            error)));
+                    FileTaskException(tr("Unknown network error while downloading: %1.").arg(error)));
     }
 }
 
@@ -266,9 +269,9 @@ void Downloader::onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *
         authenticator->setPassword(auth.password());
         item->insert(TaskRole::Authenticator, QVariant()); // clear so we fail on next call
     } else {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Could not "
-            "authenticate using the provided credentials. Source: '%1'.").arg(reply->url()
-            .toString())));
+        m_futureInterface->reportException(
+                    FileTaskException(tr("Could not authenticate using the provided credentials. "
+                                         "Source: '%1'.").arg(reply->url().toString())));
     }
 }
 
@@ -280,8 +283,8 @@ bool Downloader::testCanceled()
     // TODO: figure out how to implement pause and resume
     if (m_futureInterface->isPaused()) {
         m_futureInterface->togglePaused();  // Note: this will trigger cancel
-        m_futureInterface->reportException(FileTaskException(QLatin1String("Pause and resume not "
-            "supported by network transfers.")));
+        m_futureInterface->reportException(
+                    FileTaskException(tr("Pause and resume not supported by network transfers.")));
     }
     return m_futureInterface->isCanceled();
 }
@@ -290,8 +293,10 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
 {
     QUrl const source = item.source();
     if (!source.isValid()) {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Invalid source "
-            "'%1'. Error: %2.").arg(source.toString(), source.errorString())));
+        //: %2 is a sentence describing the error
+        m_futureInterface->reportException(
+                    FileTaskException(tr("Invalid source '%1'. Error: %2.").arg(
+                                          source.toString(), source.errorString())));
         return 0;
     }
 
@@ -306,14 +311,17 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
     }
 
     if (file->exists() && (!QFileInfo(file->fileName()).isFile())) {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Target file "
-            "'%1' already exists but is not a file.").arg(file->fileName())));
+        m_futureInterface->reportException(
+                    FileTaskException(tr("Target file '%1' already exists but is not a file.").arg(
+                                          file->fileName())));
         return 0;
     }
 
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Could not open "
-            "target '%1' for write. Error: %2.").arg(file->fileName(), file->errorString())));
+        //: %2 is a sentence describing the error
+        m_futureInterface->reportException(
+                    FileTaskException(tr("Could not open target '%1' for write. Error: %2.").arg(
+                                          file->fileName(), file->errorString())));
         return 0;
     }
 
