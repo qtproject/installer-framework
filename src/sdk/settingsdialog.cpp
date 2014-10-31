@@ -222,16 +222,10 @@ SettingsDialog::SettingsDialog(PackageManagerCore *core, QWidget *parent)
     const QNetworkProxy &ftpProxy = settings.ftpProxy();
     m_ui->m_ftpProxy->setText(ftpProxy.hostName());
     m_ui->m_ftpProxyPort->setValue(ftpProxy.port());
-    m_ui->m_ftpProxyUser->setText(ftpProxy.user());
-    m_ui->m_ftpProxyPass->setText(ftpProxy.password());
-    m_ui->m_ftpProxyNeedsAuth->setChecked(!ftpProxy.user().isEmpty() | !ftpProxy.password().isEmpty());
 
     const QNetworkProxy &httpProxy = settings.httpProxy();
     m_ui->m_httpProxy->setText(httpProxy.hostName());
     m_ui->m_httpProxyPort->setValue(httpProxy.port());
-    m_ui->m_httpProxyUser->setText(httpProxy.user());
-    m_ui->m_httpProxyPass->setText(httpProxy.password());
-    m_ui->m_httpProxyNeedsAuth->setChecked(!httpProxy.user().isEmpty() | !httpProxy.password().isEmpty());
 
     connect(m_ui->m_addRepository, SIGNAL(clicked()), this, SLOT(addRepository()));
     connect(m_ui->m_showPasswords, SIGNAL(clicked()), this, SLOT(updatePasswords()));
@@ -284,12 +278,12 @@ void SettingsDialog::accept()
     if (newSettings.proxyType() == Settings::UserDefinedProxy) {
         // update ftp proxy settings
         newSettings.setFtpProxy(QNetworkProxy(QNetworkProxy::HttpProxy, m_ui->m_ftpProxy->text(),
-            m_ui->m_ftpProxyPort->value(), m_ui->m_ftpProxyUser->text(), m_ui->m_ftpProxyPass->text()));
+            m_ui->m_ftpProxyPort->value()));
         settingsChanged |= (settings.ftpProxy() != newSettings.ftpProxy());
 
         // update http proxy settings
         newSettings.setHttpProxy(QNetworkProxy(QNetworkProxy::HttpProxy, m_ui->m_httpProxy->text(),
-            m_ui->m_httpProxyPort->value(), m_ui->m_httpProxyUser->text(), m_ui->m_httpProxyPass->text()));
+            m_ui->m_httpProxyPort->value()));
         settingsChanged |= (settings.httpProxy() != newSettings.httpProxy());
     }
 
