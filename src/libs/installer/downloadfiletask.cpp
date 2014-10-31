@@ -222,12 +222,15 @@ void Downloader::onError(QNetworkReply::NetworkError error)
     QNetworkReply *const reply = qobject_cast<QNetworkReply *>(sender());
     if (reply) {
         const Data &data = m_downloads[reply];
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Network error "
-            "while downloading target '%1'. Error: %2.").arg(data.file->fileName(),
-            reply->errorString())));
+        m_futureInterface->reportException(
+                    FileTaskException(
+                        QString::fromLatin1("Network error while downloading '%1': %2.").arg(
+                            data.taskItem.source(), reply->errorString())));
     } else {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Unknown network "
-            "error while downloading. Error: %1.").arg(error)));
+        m_futureInterface->reportException(
+                    FileTaskException(
+                        QString::fromLatin1("Unknown network error while downloading: %1.").arg(
+                            error)));
     }
 }
 
