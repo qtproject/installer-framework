@@ -53,9 +53,9 @@ class FileDownloader;
 
 class KDTOOLS_EXPORT FileDownloaderProxyFactory : public QNetworkProxyFactory
 {
-    public:
-        virtual ~FileDownloaderProxyFactory() {}
-        virtual FileDownloaderProxyFactory *clone() const = 0;
+public:
+    virtual ~FileDownloaderProxyFactory() {}
+    virtual FileDownloaderProxyFactory *clone() const = 0;
 };
 
 class KDTOOLS_EXPORT FileDownloaderFactory : public KDGenericFactory<FileDownloader>
