@@ -43,7 +43,6 @@
 #include <fileio.h>
 #include <fileutils.h>
 #include <init.h>
-#include <kdupdaterupdateoperationfactory.h>
 #include <utils.h>
 
 #include <QCoreApplication>
