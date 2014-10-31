@@ -2158,7 +2158,7 @@ bool ReadyForInstallationPage::calculateComponents(QString *displayString)
     if (!packageManagerCore()->calculateComponentsToUninstall() ||
             !packageManagerCore()->calculateComponentsToInstall()) {
         htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font></h2><ul>")
-                          .arg(tr("Can not resolve all dependencies!")));
+                          .arg(tr("Cannot resolve all dependencies.")));
         //if we have a missing dependency or a recursion we can display it
         if (!packageManagerCore()->componentsToInstallError().isEmpty()) {
             htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(

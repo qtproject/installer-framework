@@ -420,7 +420,7 @@ int main(int argc, char *argv[])
 
         QFile componentScriptFile(componentScript);
         if (!itComponentData.value().m_script.isEmpty() && !componentScriptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qDebug() << QString::fromLatin1("Can not read %1 %2").arg(componentScript, componentScriptFile.errorString());
+            qDebug() << QString::fromLatin1("Cannot read %1 %2").arg(componentScript, componentScriptFile.errorString());
             continue;
         }
 

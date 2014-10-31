@@ -125,7 +125,7 @@ bool QtPatch::patchBinaryFile(const QString &fileName,
 
     openFileForPatching(&file);
     if (!file.isOpen()) {
-        qDebug() << "qpatch: warning: file" << qPrintable(fileName) << "can not open.";
+        qDebug() << "qpatch: warning: file" << qPrintable(fileName) << "cannot open.";
         qDebug() << qPrintable(file.errorString());
         return false;
     }
@@ -200,7 +200,7 @@ bool QtPatch::patchTextFile(const QString &fileName,
 bool QtPatch::openFileForPatching(QFile *file)
 {
     if (file->openMode() == QIODevice::NotOpen) {
-        // in some cases the file can not open, because another process is blocking it(filewatcher ...)
+        // in some cases the file cannot be opened, because another process is blocking it (filewatcher ...)
         int waitCount = 0;
         while (!file->open(QFile::ReadWrite) && waitCount < 60) {
             ++waitCount;
@@ -209,7 +209,7 @@ bool QtPatch::openFileForPatching(QFile *file)
         }
         return file->openMode() == QFile::ReadWrite;
     }
-    qDebug() << QString::fromLatin1("qpatch: error: File '%1 is open, so it can not open it again.").arg(
+    qDebug() << QString::fromLatin1("qpatch: error: File '%1 is open, so it cannot be opened again.").arg(
         file->fileName());
     return false;
 }

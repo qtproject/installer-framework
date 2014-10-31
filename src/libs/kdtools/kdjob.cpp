@@ -189,7 +189,7 @@ void KDJob::cancel()
         }
         emitFinished();
     } else {
-        qDebug() << "The current job can not be canceled, missing \"Cancelable\" capability!";
+        qDebug() << "The current job cannot be canceled, missing \"Cancelable\" capability.";
     }
 }
 

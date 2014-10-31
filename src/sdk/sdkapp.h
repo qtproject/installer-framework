@@ -73,13 +73,13 @@ public:
     }
 
     /*!
-        Returns the installer/ maintenance tool binary. In case of an installer this will be the
+        Returns the installer / maintenance tool binary. In case of an installer this will be the
         installer binary itself, which contains the binary layout and the binary content. In case
         of an maintenance tool, it will return a binary that has just a binary layout append.
 
-        Note on OSX: For compatibility reason this function will return the a .dat file located
-        inside the resource folder in the application bundle, as on OSX the binary layout can not
-        be appended to the actual installer/ maintenance tool binary itself because of signing.
+        Note on OS X: For compatibility reason this function will return the a .dat file located
+        inside the resource folder in the application bundle, as on OS X the binary layout cannot
+        be appended to the actual installer / maintenance tool binary itself because of signing.
     */
     QString binaryFile() const
     {
@@ -97,7 +97,7 @@ public:
     }
 
     /*!
-        Returns the corresponding .dat file for a given installer/ maintenance tool binary or an
+        Returns the corresponding .dat file for a given installer / maintenance tool binary or an
         empty string if it fails to find one.
     */
     QString datFile(const QString &binaryFile) const

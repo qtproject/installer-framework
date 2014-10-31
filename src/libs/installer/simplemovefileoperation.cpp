@@ -73,7 +73,7 @@ bool SimpleMoveFileOperation::performOperation()
     if (file.exists()) {
         if (!file.remove()) {
             setError(UserDefinedError);
-            setErrorString(tr("Can not move source '%1' to target '%2', because target exists and is "
+            setErrorString(tr("Cannot move source '%1' to target '%2', because target exists and is "
                 "not removable.").arg(source, target));
             return false;
         }
@@ -82,7 +82,7 @@ bool SimpleMoveFileOperation::performOperation()
     file.setFileName(source);
     if (!file.rename(target)) {
         setError(UserDefinedError);
-        setErrorString(tr("Can not move source '%1' to target '%2': %3").arg(source, target,
+        setErrorString(tr("Cannot move source '%1' to target '%2': %3").arg(source, target,
             file.errorString()));
         return false;
     }
