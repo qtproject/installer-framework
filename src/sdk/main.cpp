@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     if (help
             || parser.isSet(QLatin1String(CommandLineOptions::Version))
             || parser.isSet(QLatin1String(CommandLineOptions::FrameworkVersion))
-            || mutually.count()) {
+            || mutually.count() > 1) {
         Console c;
         QCoreApplication app(argc, argv);
 
