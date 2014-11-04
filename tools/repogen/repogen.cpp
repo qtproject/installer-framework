@@ -250,7 +250,7 @@ int main(int argc, char** argv)
 
                 if (packages.isEmpty()) {
                     std::cout << QString::fromLatin1("Could not find new components to update '%1'.")
-                        .arg(repositoryDir);
+                        .arg(repositoryDir) << std::endl;
                     return EXIT_SUCCESS;
                 }
             }
