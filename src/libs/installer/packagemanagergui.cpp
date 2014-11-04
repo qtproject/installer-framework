@@ -721,9 +721,9 @@ PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     , m_core(core)
     , validatorComponent(0)
 {
-    if (!m_core->settings().titleColor().isEmpty())
+    if (!m_core->settings().titleColor().isEmpty()) {
         m_titleColor = m_core->settings().titleColor();
-    else {
+    } else {
         QColor defaultColor = style()->standardPalette().text().color();
         m_titleColor = defaultColor.name();
     }
