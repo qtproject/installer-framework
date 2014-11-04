@@ -6,5 +6,4 @@ SUBDIRS += \
     binarycreator \
     repogen \
     devtool \
-    repocompare \
-    getrepositorycontent
+    repocompare
