@@ -699,12 +699,20 @@ int main(int argc, char **argv)
     tmp.setAutoRemove(false);
     const QString tmpMetaDir = tmp.path();
     try {
-        const Settings settings = Settings::fromFileAndPrefix(configFile, QFileInfo(configFile).absolutePath());
-        QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectories,
-            &filteredPackages, ftype);
-        QInstallerTools::copyMetaData(tmpMetaDir, packagesDirectories.first(), packages, settings.applicationName(),
-            settings.applicationVersion());
+        const Settings settings = Settings::fromFileAndPrefix(configFile, QFileInfo(configFile)
+            .absolutePath());
 
+        // Note: there order here is important if we build offline only installers
+
+        // 1; create the list of available packages
+        QInstallerTools::PackageInfoVector packages =
+            QInstallerTools::createListOfPackages(packagesDirectories, &filteredPackages, ftype);
+
+        // 2; copy the meta data of the available packages
+        QInstallerTools::copyMetaData(tmpMetaDir, packagesDirectories.first(), packages, settings
+            .applicationName(), settings.applicationVersion());
+
+        // 3; copy the configuration file and and icons etc.
         copyConfigData(configFile, tmpMetaDir + QLatin1String("/installer-config"));
         {
             QSettings confInternal(tmpMetaDir + QLatin1String("/config/config-internal.ini")
@@ -720,17 +728,19 @@ int main(int argc, char **argv)
             target += QLatin1String(".app");
 #endif
         if (!compileResource) {
-            QInstallerTools::copyComponentData(packagesDirectories, tmpMetaDir, &packages);
-
-            input.packages = packages;
-            input.outputPath = target;
-            input.installerExePath = templateBinary;
-
+            // 4; put the copied resources into a resource file
             QInstaller::ResourceCollection metaCollection("QResources");
             metaCollection.appendResource(createDefaultResourceFile(tmpMetaDir,
                 generateTemporaryFileName()));
             metaCollection.appendResources(createBinaryResourceFiles(resources));
             input.manager.insertCollection(metaCollection);
+
+            // 5; copy the packages data and setup the packages vector with the files we copied
+            QInstallerTools::copyComponentData(packagesDirectories, tmpMetaDir, &packages);
+
+            input.packages = packages;
+            input.outputPath = target;
+            input.installerExePath = templateBinary;
 
             qDebug() << "Creating the binary";
             exitCode = assemble(input, settings);
