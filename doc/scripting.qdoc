@@ -35,7 +35,7 @@
 
     For each component, you can specify one script that prepares the operations
     to be performed by the installer. The script format has to be
-    compatible with QScriptEngine.
+    compatible with QJSEngine.
 
     \section1 Construction
 

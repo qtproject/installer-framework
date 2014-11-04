@@ -39,10 +39,11 @@
     \list
         \li \l{Configuration File}
         \li \l{Package Directory}
-        \li \l{Installer Pages}
-        \li \l{Tools}
+        \li \l{Controller Scripting}
         \li \l{Component Scripting}
         \li \l{Operations}
+        \li \l{Tools}
+        \li \l{Scripting}
         \li \l{C++ Classes}
     \endlist
 

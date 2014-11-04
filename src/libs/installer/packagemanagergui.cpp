@@ -917,18 +917,21 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
 
     m_label = new QLabel(this);
     m_label->setWordWrap(true);
+    m_label->setObjectName(QLatin1String("InformationLabel"));
     m_label->setText(tr("Retrieving information from remote installation sources..."));
     boxLayout->addWidget(m_label);
 
     m_progressBar = new QProgressBar(this);
     m_progressBar->setRange(0, 0);
     boxLayout->addWidget(m_progressBar);
+    m_progressBar->setObjectName(QLatin1String("InformationProgressBar"));
 
     boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     m_errorLabel = new QLabel(this);
     m_errorLabel->setWordWrap(true);
     boxLayout->addWidget(m_errorLabel);
+    m_errorLabel->setObjectName(QLatin1String("ErrorLabel"));
 
     layout->addWidget(m_msgLabel);
     layout->addWidget(widget);
@@ -1922,8 +1925,8 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
         "shortcuts. You can also enter a name to create a new folder."));
 
     m_lineEdit = new QLineEdit(this);
-    m_lineEdit->setObjectName(QLatin1String("LineEdit"));
     m_lineEdit->setText(core->value(scStartMenuDir, productName()));
+    m_lineEdit->setObjectName(QLatin1String("StartMenuPathLineEdit"));
 
     startMenuPath = core->value(QLatin1String("UserStartMenuProgramsPath"));
     QStringList dirs = QDir(startMenuPath).entryList(QDir::AllDirs | QDir::NoDotAndDotDot);

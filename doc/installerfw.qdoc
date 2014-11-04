@@ -71,7 +71,7 @@
         \list
             \li \l{Configuration File}
             \li \l{Package Directory}
-            \li \l{Installer Pages}
+            \li \l{Controller Scripting}
             \li \l{Component Scripting}
             \li \l{Operations}
             \li \l{Tools}
@@ -168,6 +168,7 @@
             \li Description
         \row
             \li Name
+            \target ProductNameTarget
             \li Name of the product being installed. This is mandatory.
         \row
             \li Version

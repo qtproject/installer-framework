@@ -164,7 +164,7 @@ public:
 
                 const QMessageBox::Button res =
                     MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                    RemoteClient::tr("Authorization Error"),
+                    QLatin1String("AuthorizationError"),
                     RemoteClient::tr("Could not get authorization."),
                     RemoteClient::tr("Could not get authorization that is needed for continuing "
                     "the installation.\n Either abort the installation or use the fallback "
