@@ -386,6 +386,21 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
         }
 
         std::sort(m_rootComponents.begin(), m_rootComponents.end(), Component::SortingPriorityGreaterThan());
+
+        storeCheckState();
+
+        foreach (QInstaller::Component *component, components)
+            component->setCheckState(Qt::Checked);
+
+        clearInstallerCalculator();
+        if (installerCalculator()->appendComponentsToInstall(components.values()) == false) {
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
+                tr("Unresolved dependencies"), installerCalculator()->componentsToInstallError());
+            return false;
+        }
+
+        restoreCheckState();
+
     } catch (const Error &error) {
         clearAllComponentLists();
         emit m_core->finishAllComponentsReset(QList<QInstaller::Component*>());
