@@ -62,6 +62,7 @@ namespace QInstaller {
     QStringList INSTALLER_EXPORT parseCommandLineArgs(int argc, char **argv);
 
 #ifdef Q_OS_WIN
+    QString windowsErrorString(int errorCode);
     QString createCommandline(const QString &program, const QStringList &arguments);
 #endif
 

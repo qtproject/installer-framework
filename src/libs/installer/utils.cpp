@@ -373,4 +373,30 @@ QString QInstaller::createCommandline(const QString &program, const QStringList 
 {
     return qt_create_commandline(program, arguments);
 }
+
+//copied from qsystemerror.cpp in Qt
+QString QInstaller::windowsErrorString(int errorCode)
+{
+    QString ret;
+    wchar_t *string = 0;
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+        NULL,
+        errorCode,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPWSTR) &string,
+        0,
+        NULL);
+    ret = QString::fromWCharArray(string);
+    LocalFree((HLOCAL) string);
+
+    if (ret.isEmpty() && errorCode == ERROR_MOD_NOT_FOUND)
+        ret = QCoreApplication::tr("QInstaller", "The specified module could not be found.");
+
+    ret.append(QLatin1String(" (0x"));
+    ret.append(QString::number(uint(errorCode), 16).rightJustified(8, QLatin1Char('0')));
+    ret.append(QLatin1String(")"));
+
+    return ret;
+}
+
 #endif
