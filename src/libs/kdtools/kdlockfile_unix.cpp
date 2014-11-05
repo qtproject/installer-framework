@@ -87,5 +87,7 @@ bool KDLockFile::Private::unlock()
     locked = flock(handle, LOCK_UN | LOCK_NB) == -1;
     if (locked)
         errorString = QObject::tr("Could not unlock lock file %1: %2").arg(filename, QLatin1String(strerror(errno)));
+    else
+        unlink(filename.toLatin1());
     return !locked;
 }
