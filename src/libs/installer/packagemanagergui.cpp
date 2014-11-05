@@ -165,7 +165,7 @@ protected:
                 if (m_widget->property("final").toBool() != isFinalPage())
                     setFinalPage(m_widget->property("final").toBool());
                 if (m_widget->property("commit").toBool() != isCommitPage())
-                    setFinalPage(m_widget->property("commit").toBool());
+                    setCommitPage(m_widget->property("commit").toBool());
                 break;
 
             default:
