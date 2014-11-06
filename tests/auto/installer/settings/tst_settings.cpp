@@ -45,15 +45,20 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.icon(), QLatin1String(":/installer.ico"));
     QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.ico"));
     QCOMPARE(settings.installerWindowIcon(), QLatin1String(":/installer.ico"));
+    QCOMPARE(settings.systemIconSuffix(), QLatin1String(".ico"));
 #elif defined(Q_OS_OSX)
     QCOMPARE(settings.icon(), QLatin1String(":/installer.icns"));
     QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.icns"));
     QCOMPARE(settings.installerWindowIcon(), QLatin1String(":/installer.icns"));
+    QCOMPARE(settings.systemIconSuffix(), QLatin1String(".icns"));
 #else
     QCOMPARE(settings.icon(), QLatin1String(":/installer.png"));
     QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.png"));
     QCOMPARE(settings.installerWindowIcon(), QLatin1String(":/installer.png"));
+    QCOMPARE(settings.systemIconSuffix(), QLatin1String(".png"));
 #endif
+    QCOMPARE(settings.wizardStyle(), QString());
+    QCOMPARE(settings.titleColor(), QString());
     QCOMPARE(settings.runProgram(), QString());
     QCOMPARE(settings.runProgramArguments(), QString());
     QCOMPARE(settings.runProgramDescription(), QString());
@@ -64,7 +69,6 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.configurationFileName(), QLatin1String("components.xml"));
     QCOMPARE(settings.dependsOnLocalInstallerBinary(), false);
     QCOMPARE(settings.repositorySettingsPageVisible(), true);
-    QCOMPARE(settings.hasReplacementRepos(), false);
     QCOMPARE(settings.allowSpaceInPath(), true);
     QCOMPARE(settings.allowNonAsciiCharacters(), false);
 
