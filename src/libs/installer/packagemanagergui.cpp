@@ -1808,11 +1808,38 @@ bool TargetDirectoryPage::isComplete() const
 
 QString TargetDirectoryPage::targetDirWarning() const
 {
-    QString nativeTargetDir = QDir::toNativeSeparators(targetDir());
-    if (nativeTargetDir.isEmpty())
+    if (targetDir().isEmpty())
         return tr("The installation path cannot be empty, please specify a valid folder.");
 
+    QDir target(targetDir());
+    if (target.isRelative())
+        return tr("The installation path cannot be relative, please specify an absolute path.");
+
+    QString nativeTargetDir = QDir::toNativeSeparators(target.absolutePath());
+    if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
+        for (int i = 0; i < nativeTargetDir.length(); ++i) {
+            if (nativeTargetDir.at(i).unicode() & 0xff80) {
+                return tr("The path or installation directory contains non ASCII characters. This "
+                    "is currently not supported! Please choose a different path or installation "
+                    "directory.");
+            }
+        }
+    }
+
+    target = target.canonicalPath();
+    if (target == QDir::root() || target == QDir::home()) {
+        return tr("As the install directory is completely deleted, installing in %1 is forbidden.")
+            .arg(QDir::toNativeSeparators(target.path()));
+    }
+
 #ifdef Q_OS_WIN
+    // folder length (set by user) + maintenance tool name length (no extension) + extra padding
+    if ((nativeTargetDir.length()
+        + packageManagerCore()->settings().maintenanceToolName().length() + 20) >= MAX_PATH) {
+        return tr("The path you have entered is too long, please make sure to "
+            "specify a valid path.");
+    }
+
     static QRegularExpression reg(QLatin1String(
         "^(?<drive>[a-zA-Z]:\\\\)|"
         "^(\\\\\\\\(?<path>\\w+)\\\\)|"
@@ -1862,43 +1889,6 @@ QString TargetDirectoryPage::targetDirWarning() const
     if (match.hasMatch()) {
         return tr("The installation path must not contain '%1', "
             "please specify a valid folder.").arg(match.captured(0));
-    }
-
-    QDir target(targetDir());
-    if (target.isRelative()) {
-        return tr("The installation path cannot be relative, please specify an "
-            "absolute path.");
-    }
-
-    target = target.canonicalPath();
-    if (target.isRoot()) {
-        return tr("As the install directory is completely deleted, installing "
-            "in %1 is forbidden.").arg(QDir::toNativeSeparators(QDir::rootPath()));
-    }
-
-    if (target == QDir::home()) {
-        return tr("As the install directory is completely deleted, installing "
-            "in %1 is forbidden.").arg(QDir::toNativeSeparators(QDir::homePath()));
-    }
-
-    const QString dir = target.path();
-#ifdef Q_OS_WIN
-    // folder length (set by user) + maintenance tool name length (no extension) + extra padding
-    if ((dir.length()
-        + packageManagerCore()->settings().maintenanceToolName().length() + 20) >= MAX_PATH) {
-            return tr("The path you have entered is too long, please make sure to "
-                "specify a valid path.");
-    }
-#endif // Q_OS_WIN
-
-    if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
-        for (int i = 0; i < dir.length(); ++i) {
-            if (dir.at(i).unicode() & 0xff80) {
-                return tr("The path or installation directory contains non ASCII characters. This "
-                    "is currently not supported! Please choose a different path or installation "
-                    "directory.");
-            }
-        }
     }
 
     return QString();
