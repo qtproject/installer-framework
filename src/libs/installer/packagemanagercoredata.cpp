@@ -123,8 +123,6 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
         m_variables.insert(scRunProgramDescription, description);
 
     m_variables.insert(scTargetDir, replaceVariables(m_settings.targetDir()));
-    m_variables.insert(scRunProgram, replaceVariables(m_settings.runProgram()));
-    m_variables.insert(scRunProgramArguments, replaceVariables(m_settings.runProgramArguments()));
     m_variables.insert(scRemoveTargetDir, replaceVariables(m_settings.removeTargetDir()));
 }
 
