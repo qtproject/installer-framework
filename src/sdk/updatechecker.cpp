@@ -54,9 +54,15 @@ UpdateChecker::UpdateChecker(int &argc, char *argv[])
 
 int UpdateChecker::check()
 {
-    KDRunOnceChecker runCheck((QLatin1String("lockmyApp15021976.lock")));
-    if (runCheck.isRunning(KDRunOnceChecker::ConditionFlag::Lockfile))
-        throw QInstaller::Error(QLatin1String("An instance is already checking for updates."));
+    KDRunOnceChecker runCheck(qApp->applicationDirPath() + QLatin1String("/lockmyApp15021976.lock"));
+    if (runCheck.isRunning(KDRunOnceChecker::ConditionFlag::Lockfile)) {
+        // It is possible to install an application and thus the maintenance tool into a
+        // directory that requires elevated permission to create a lock file. Since this
+        // cannot be done without requesting credentials from the user, we silently ignore
+        // the fact that we could not create the lock file and check the running processes.
+        if (runCheck.isRunning(KDRunOnceChecker::ConditionFlag::ProcessList))
+            throw QInstaller::Error(QLatin1String("An instance is already checking for updates."));
+    }
 
     QString fileName = datFile(binaryFile());
     quint64 cookie = QInstaller::BinaryContent::MagicCookieDat;
