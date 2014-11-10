@@ -34,15 +34,7 @@
 ****************************************************************************/
 
 #include "kdlockfile.h"
-
 #include "kdlockfile_p.h"
-
-KDLockFile::Private::Private(const QString &filename_)
-    : filename(filename_)
-    , handle(0)
-    , locked(false)
-{
-}
 
 KDLockFile::KDLockFile(const QString &name)
     : d(new Private(name))

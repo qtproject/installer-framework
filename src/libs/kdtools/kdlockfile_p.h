@@ -47,8 +47,12 @@
 class KDLockFile::Private
 {
 public:
-    explicit Private( const QString& filename );
-    ~Private();
+    explicit Private(const QString& name)
+        : filename(name)
+        , handle(0)
+        , locked(false)
+    {}
+
     bool lock();
     bool unlock();
 

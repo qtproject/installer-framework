@@ -39,11 +39,6 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 
-KDLockFile::Private::~Private()
-{
-    unlock();
-}
-
 bool KDLockFile::Private::lock()
 {
     const QFileInfo fi(filename);

@@ -41,11 +41,6 @@
 #include <sys/file.h>
 #include <unistd.h>
 
-KDLockFile::Private::~Private()
-{
-    unlock();
-}
-
 bool KDLockFile::Private::lock()
 {
     if (locked)
