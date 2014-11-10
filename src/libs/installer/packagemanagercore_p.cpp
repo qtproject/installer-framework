@@ -598,7 +598,7 @@ bool PackageManagerCorePrivate::isOfflineOnly() const
     if (!isInstaller())
         return false;
 
-    QSettingsWrapper confInternal(QLatin1String(":/config/config-internal.ini"), QSettingsWrapper::IniFormat);
+    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
     return confInternal.value(QLatin1String("offlineOnly"), false).toBool();
 }
 
