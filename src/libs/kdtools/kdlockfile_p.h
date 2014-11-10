@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,13 +33,15 @@
 **
 ****************************************************************************/
 
-#ifndef __KDTOOLSCORE_KDLOCKFILE_P_H__
-#define __KDTOOLSCORE_KDLOCKFILE_P_H__
+#ifndef KDLOCKFILE_P_H
+#define KDLOCKFILE_P_H
 
 #include "kdlockfile.h"
-#include <QtCore/QString>
+
+#include <QString>
+
 #ifdef Q_OS_WIN
-#include <windows.h>
+# include <qt_windows.h>
 #endif
 
 class KDLockFile::Private
@@ -61,4 +64,4 @@ private:
     bool locked;
 };
 
-#endif // LOCKFILE_P_H
+#endif // KDLOCKFILE_P_H

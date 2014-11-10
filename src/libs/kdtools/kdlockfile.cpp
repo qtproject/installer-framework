@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -44,7 +45,7 @@ KDLockFile::Private::Private(const QString &filename_)
 }
 
 KDLockFile::KDLockFile(const QString &name)
-    : d( new Private(name))
+    : d(new Private(name))
 {
 }
 

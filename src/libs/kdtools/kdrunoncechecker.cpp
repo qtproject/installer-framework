@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -36,10 +37,10 @@
 #include "kdlockfile.h"
 #include "kdsysinfo.h"
 
-#include <QtCore/QList>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
+#include <QCoreApplication>
+#include <QDir>
+#include <QFileInfo>
+#include <QList>
 
 #include <algorithm>
 

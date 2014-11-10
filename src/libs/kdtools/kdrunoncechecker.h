@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -41,6 +42,8 @@
 
 class KDTOOLS_EXPORT KDRunOnceChecker
 {
+    Q_DISABLE_COPY(KDRunOnceChecker)
+
 public:
     enum Dependencies { ProcessList, Lockfile, Both };
 
@@ -49,7 +52,6 @@ public:
     bool isRunning(Dependencies depends);
 
 private:
-    Q_DISABLE_COPY(KDRunOnceChecker)
     class Private;
     Private *d;
 };

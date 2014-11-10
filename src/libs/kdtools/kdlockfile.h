@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,13 +33,15 @@
 **
 ****************************************************************************/
 
-#ifndef KDTOOLS_KDLOCKFILE_H
-#define KDTOOLS_KDLOCKFILE_H
+#ifndef KDLOCKFILE_H
+#define KDLOCKFILE_H
 
 #include <kdtoolsglobal.h>
 
 class KDTOOLS_EXPORT KDLockFile
 {
+    Q_DISABLE_COPY(KDLockFile)
+
 public:
     explicit KDLockFile(const QString &name);
     ~KDLockFile();
@@ -49,9 +52,8 @@ public:
     bool unlock();
 
 private:
-    Q_DISABLE_COPY(KDLockFile)
     class Private;
     Private *d;
 };
 
-#endif // KDTOOLS_KDLOCKFILE_H
+#endif // KDLOCKFILE_H
