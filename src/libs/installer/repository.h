@@ -49,6 +49,7 @@ public:
     Repository(const Repository &other);
     explicit Repository(const QUrl &url, bool isDefault);
 
+    static void registerMetaType();
     static Repository fromUserInput(const QString &repositoryUrl);
 
     bool isValid() const;
@@ -77,9 +78,6 @@ public:
 
     friend INSTALLER_EXPORT QDataStream &operator>>(QDataStream &istream, Repository &repository);
     friend INSTALLER_EXPORT QDataStream &operator<<(QDataStream &ostream, const Repository &repository);
-
-private:
-    void registerMetaType();
 
 private:
     QUrl m_url;

@@ -33,7 +33,9 @@
 **************************************************************************/
 
 #include "remoteserver.h"
+
 #include "remoteserver_p.h"
+#include "repository.h"
 
 namespace QInstaller {
 
@@ -41,6 +43,7 @@ RemoteServer::RemoteServer(QObject *parent)
     : QObject(parent)
     , d_ptr(new RemoteServerPrivate(this))
 {
+    Repository::registerMetaType(); // register, cause we stream the type as QVariant
 }
 
 RemoteServer::~RemoteServer()

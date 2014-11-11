@@ -684,6 +684,7 @@ bool PackageManagerCore::fileExists(const QString &filePath) const
 PackageManagerCore::PackageManagerCore()
     : d(new PackageManagerCorePrivate(this))
 {
+    Repository::registerMetaType(); // register, cause we stream the type as QVariant
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
 }
@@ -691,6 +692,7 @@ PackageManagerCore::PackageManagerCore()
 PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &operations)
     : d(new PackageManagerCorePrivate(this, magicmaker, operations))
 {
+    Repository::registerMetaType(); // register, cause we stream the type as QVariant
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
 
