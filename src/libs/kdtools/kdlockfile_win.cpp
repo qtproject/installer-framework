@@ -36,41 +36,57 @@
 #include "kdlockfile.h"
 #include "kdlockfile_p.h"
 
+#include <utils.h>
+
 #include <QCoreApplication>
 #include <QFileInfo>
 
 bool KDLockFile::Private::lock()
 {
-    const QFileInfo fi(filename);
-    handle = CreateFile(filename.toStdWString().data(),
-                        GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
-                        NULL, fi.exists() ? OPEN_EXISTING : CREATE_NEW,
-                        FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL);
+    if (locked)
+        return locked;
 
-    if (!handle)
+    errorString.clear();
+    handle = CreateFile(filename.toStdWString().data(), GENERIC_READ | GENERIC_WRITE,
+        FILE_SHARE_READ, NULL, QFileInfo(filename).exists() ? OPEN_EXISTING : CREATE_NEW,
+        FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL);
+
+    if (handle == INVALID_HANDLE_VALUE) {
+        errorString = QCoreApplication::translate("KDLockFile", "Could not create lock file '%1': "
+            "%2").arg(filename, QInstaller::windowsErrorString(GetLastError()));
         return false;
-    QString pid = QString::number(qApp->applicationPid());
-    QByteArray data = pid.toLatin1();
+    }
+
     DWORD bytesWritten;
-    const bool wrotePid = WriteFile(handle, data.data(), data.size(), &bytesWritten, NULL);
-    if (!wrotePid)
+    const QByteArray pid = QString::number(QCoreApplication::applicationPid()).toLatin1();
+    if (!WriteFile(handle, pid.data(), pid.size(), &bytesWritten, NULL)) {
+        errorString = QCoreApplication::translate("KDLockFile", "Could not write PID to lock file "
+            "'%1': %2").arg(filename, QInstaller::windowsErrorString(GetLastError()));
         return false;
+    }
     FlushFileBuffers(handle);
 
-    const bool locked = LockFile(handle, 0, 0, fi.size(), 0);
-
-    this->locked = locked;
+    if (!LockFile(handle, 0, 0, QFileInfo(filename).size(), 0)) {
+        errorString = QCoreApplication::translate("KDLockFile", "Could not obtain the lock for "
+            "file' %1': %2").arg(filename, QInstaller::windowsErrorString(GetLastError()));
+    } else {
+        locked = true;
+    }
     return locked;
 }
 
 bool KDLockFile::Private::unlock()
 {
-    const QFileInfo fi(filename);
-    if (locked) {
-        const bool success = UnlockFile(handle, 0, 0, 0, fi.size());
-        this->locked = !success;
+    errorString.clear();
+    if (!locked)
+        return true;
+
+    if (!UnlockFile(handle, 0, 0, QFileInfo(filename).size(), 0)) {
+        errorString = QCoreApplication::translate("KDLockFile", "Could not release the lock for "
+            "file '%1': %2").arg(filename, QInstaller::windowsErrorString(GetLastError()));
+    } else {
+        locked = false;
         CloseHandle(handle);
-        return success;
     }
-    return true;
+    return !locked;
 }
