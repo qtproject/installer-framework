@@ -38,6 +38,7 @@
 #include "kdsysinfo.h"
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include <QFileInfo>
 #include <QList>
@@ -46,90 +47,64 @@
 
 using namespace KDUpdater;
 
-class KDRunOnceChecker::Private
-{
-public:
-    Private(const QString &filename);
-
-    KDLockFile m_lockfile;
-    bool m_hasLock;
-};
-
-KDRunOnceChecker::Private::Private(const QString &filename)
-    : m_lockfile(filename)
-    , m_hasLock(false)
-{}
-
 KDRunOnceChecker::KDRunOnceChecker(const QString &filename)
-    :d(new Private(filename))
-{}
+    : m_lockfile(filename)
+{
+}
 
 KDRunOnceChecker::~KDRunOnceChecker()
 {
-    delete d;
+    if (!m_lockfile.unlock())
+        qWarning() << m_lockfile.errorString().toUtf8().constData();
 }
 
 class ProcessnameEquals
 {
 public:
-    ProcessnameEquals(const QString &name): m_name(name) {}
+    ProcessnameEquals(const QString &name)
+#ifdef Q_OS_WIN
+        : m_name(name.toLower())
+#else
+        : m_name(name)
+#endif
+    {}
 
     bool operator()(const ProcessInfo &info)
     {
-#ifndef Q_OS_WIN
-        if (info.name == m_name)
+#ifdef Q_OS_WIN
+        const QString infoName = info.name.toLower();
+        if (infoName == QDir::toNativeSeparators(m_name))
             return true;
-        const QFileInfo fi(info.name);
+#else
+        const QString infoName = info.name;
+#endif
+        if (infoName == m_name)
+            return true;
+
+        const QFileInfo fi(infoName);
         if (fi.fileName() == m_name || fi.baseName() == m_name)
             return true;
         return false;
-#else
-        if (info.name.toLower() == m_name.toLower())
-            return true;
-        if (info.name.toLower() == QDir::toNativeSeparators(m_name.toLower()))
-            return true;
-        const QFileInfo fi(info.name);
-        if (fi.fileName().toLower() == m_name.toLower() || fi.baseName().toLower() == m_name.toLower())
-            return true;
-        return info.name == m_name;
-#endif
     }
 
 private:
     QString m_name;
 };
 
-bool KDRunOnceChecker::isRunning(Dependencies depends)
+bool KDRunOnceChecker::isRunning(KDRunOnceChecker::ConditionFlags flags)
 {
-    bool running = false;
-    switch (depends) {
-        case Lockfile: {
-            const bool locked = d->m_hasLock || d->m_lockfile.lock();
-            if (locked)
-                d->m_hasLock = true;
-            running = running || ! locked;
-        }
-        break;
-        case ProcessList: {
-            const QList<ProcessInfo> allProcesses = runningProcesses();
-            const QString appName = qApp->applicationFilePath();
-            //QList< ProcessInfo >::const_iterator it = std::find_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
-            const int count = std::count_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
-            running = running || /*it != allProcesses.constEnd()*/count > 1;
-        }
-        break;
-        case Both: {
-            const QList<ProcessInfo> allProcesses = runningProcesses();
-            const QString appName = qApp->applicationFilePath();
-            //QList<ProcessInfo>::const_iterator it = std::find_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
-            const int count = std::count_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
-            const bool locked = d->m_hasLock || d->m_lockfile.lock();
-            if (locked)
-                d->m_hasLock = true;
-            running = running || ( /*it != allProcesses.constEnd()*/count > 1 && !locked);
-        }
-        break;
+    if (flags.testFlag(ConditionFlag::ProcessList)) {
+        const QList<ProcessInfo> allProcesses = runningProcesses();
+        const int count = std::count_if(allProcesses.constBegin(), allProcesses.constEnd(),
+            ProcessnameEquals(QCoreApplication::applicationFilePath()));
+        return (count > 1);
     }
 
-    return running;
+    if (flags.testFlag(ConditionFlag::Lockfile)) {
+        const bool locked = m_lockfile.lock();
+        if (!locked)
+            qWarning() << m_lockfile.errorString().toUtf8().constData();
+        return !locked;
+    }
+    return false;
 }

@@ -36,7 +36,7 @@
 #ifndef KDTOOLS_RUNONCECHECKER_H
 #define KDTOOLS_RUNONCECHECKER_H
 
-#include <kdtoolsglobal.h>
+#include "kdlockfile.h"
 
 #include <QString>
 
@@ -45,15 +45,19 @@ class KDTOOLS_EXPORT KDRunOnceChecker
     Q_DISABLE_COPY(KDRunOnceChecker)
 
 public:
-    enum Dependencies { ProcessList, Lockfile, Both };
+    enum struct ConditionFlag {
+        Lockfile = 0x01,
+        ProcessList = 0x02
+    };
+    Q_DECLARE_FLAGS(ConditionFlags, ConditionFlag)
 
     explicit KDRunOnceChecker(const QString &filename = QString());
     ~KDRunOnceChecker();
-    bool isRunning(Dependencies depends);
+
+    bool isRunning(KDRunOnceChecker::ConditionFlags flags);
 
 private:
-    class Private;
-    Private *d;
+    KDLockFile m_lockfile;
 };
 
 #endif // KDTOOLS_RUNONCECHECKER_H

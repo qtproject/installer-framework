@@ -72,8 +72,8 @@ InstallerBase::~InstallerBase()
 int InstallerBase::run()
 {
     KDRunOnceChecker runCheck(QLatin1String("lockmyApp1234865.lock"));
-    if (runCheck.isRunning(KDRunOnceChecker::ProcessList)
-        || runCheck.isRunning(KDRunOnceChecker::Lockfile)) {
+    if (runCheck.isRunning(KDRunOnceChecker::ConditionFlag::ProcessList)
+        || runCheck.isRunning(KDRunOnceChecker::ConditionFlag::Lockfile)) {
         QInstaller::MessageBoxHandler::information(0, QLatin1String("AlreadyRunning"),
             QString::fromLatin1("Waiting for %1").arg(qAppName()),
             QString::fromLatin1("Another %1 instance is already running. Wait "

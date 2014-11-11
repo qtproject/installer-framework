@@ -55,7 +55,7 @@ UpdateChecker::UpdateChecker(int &argc, char *argv[])
 int UpdateChecker::check()
 {
     KDRunOnceChecker runCheck((QLatin1String("lockmyApp15021976.lock")));
-    if (runCheck.isRunning(KDRunOnceChecker::Lockfile))
+    if (runCheck.isRunning(KDRunOnceChecker::ConditionFlag::Lockfile))
         throw QInstaller::Error(QLatin1String("An instance is already checking for updates."));
 
     QString fileName = datFile(binaryFile());
