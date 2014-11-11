@@ -1726,6 +1726,19 @@ QString PackageManagerCore::value(const QString &key, const QString &defaultValu
 }
 
 /*!
+    \qmlmethod stringlist installer::values(string key, stringlist defaultValue = [])
+
+    Returns the installer value for \a key. If \a key is not known to the system, \a defaultValue is
+    returned. Additionally, on Windows, \a key can be a registry key.
+
+    \sa value
+*/
+QStringList PackageManagerCore::values(const QString &key, const QStringList &defaultValue) const
+{
+    return d->m_data.value(key, defaultValue).toStringList();
+}
+
+/*!
     \qmlmethod void installer::setValue(string key, string value)
 
     Sets the installer value for \a key to \a value.

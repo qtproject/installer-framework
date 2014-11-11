@@ -95,8 +95,10 @@ public:
     QString applicationVersion() const;
 
     QString runProgram() const;
-    QString runProgramArguments() const;
+    QStringList runProgramArguments() const;
+    void setRunProgramArguments(const QStringList &arguments);
     QString runProgramDescription() const;
+
     QString startMenuDir() const;
     QString targetDir() const;
     QString adminTargetDir() const;

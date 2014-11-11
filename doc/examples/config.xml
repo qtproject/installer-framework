@@ -10,7 +10,9 @@
     <Logo>logo.png</Logo>
     <Watermark>watermark.png</Watermark>
     <RunProgram></RunProgram>
-    <RunProgramArguments></RunProgramArguments>
+    <RunProgramArguments>
+        <Argument></Argument>
+    </RunProgramArguments>
     <RunProgramDescription></RunProgramDescription>
     <StartMenuDir>Some Application Entry Dir</StartMenuDir>
     <UninstallerName>SDKMaintenanceTool</UninstallerName>

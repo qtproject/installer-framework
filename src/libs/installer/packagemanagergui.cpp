@@ -2441,9 +2441,9 @@ void FinishedPage::handleFinishClicked()
 {
     const QString program =
         packageManagerCore()->replaceVariables(packageManagerCore()->value(scRunProgram));
-    const QStringList args = packageManagerCore()->replaceVariables(
-        packageManagerCore()->value(scRunProgramArguments)).split(QLatin1Char(' '),
-        QString::SkipEmptyParts);
+
+    const QStringList args = packageManagerCore()->replaceVariables(packageManagerCore()
+        ->values(scRunProgramArguments));
     if (!m_runItCheckBox->isChecked() || program.isEmpty())
         return;
 

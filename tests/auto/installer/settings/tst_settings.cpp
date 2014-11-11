@@ -21,6 +21,8 @@ private slots:
     void loadUnknownElementConfigInStrictParseMode();
     void loadUnknownElementConfigInRelaxedParseMode();
     void loadMinimalConfigTagDefaults();
+    void loadUnexpectedAttributeConfig();
+    void loadUnexpectedTagConfig();
 };
 
 void tst_Settings::loadTutorialConfig()
@@ -57,7 +59,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.wizardStyle(), QString());
     QCOMPARE(settings.titleColor(), QString());
     QCOMPARE(settings.runProgram(), QString());
-    QCOMPARE(settings.runProgramArguments(), QString());
+    QCOMPARE(settings.runProgramArguments(), QStringList());
     QCOMPARE(settings.runProgramDescription(), QString());
     QCOMPARE(settings.adminTargetDir(), QString());
     QCOMPARE(settings.removeTargetDir(), QLatin1String("true"));
@@ -168,6 +170,42 @@ void tst_Settings::loadMinimalConfigTagDefaults()
     QCOMPARE(settings.maintenanceToolName(), QLatin1String("maintenancetool"));
     QCOMPARE(settings.maintenanceToolIniFile(), QLatin1String("maintenancetool.ini"));
 }
+
+void tst_Settings::loadUnexpectedAttributeConfig()
+{
+    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in "
+        ":///data/unexpectedattribute_config.xml, line 6, column 27: Unexpected attribute "
+        "for element 'Argument'.\" ");
+
+    try {
+        Settings::fromFileAndPrefix(":///data/unexpectedattribute_config.xml", ":///data");
+    } catch (const Error &error) {
+        QCOMPARE(error.message(), QLatin1String("Error in :///data/unexpectedattribute_config.xml,"
+           " line 6, column 27: Unexpected attribute for element 'Argument'."));
+        return;
+    }
+    QFAIL("No exception thrown");
+
+    return;
+}
+
+void tst_Settings::loadUnexpectedTagConfig()
+{
+    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in "
+        ":///data/unexpectedtag_config.xml, line 6, column 12: Unexpected element 'Foo'.\" ");
+
+    try {
+        Settings::fromFileAndPrefix(":///data/unexpectedtag_config.xml", ":///data");
+    } catch (const Error &error) {
+        QCOMPARE(error.message(), QLatin1String("Error in :///data/unexpectedtag_config.xml,"
+           " line 6, column 12: Unexpected element 'Foo'."));
+        return;
+    }
+    QFAIL("No exception thrown");
+
+    return;
+}
+
 
 QTEST_MAIN(tst_Settings)
 

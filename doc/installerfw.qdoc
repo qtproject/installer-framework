@@ -220,7 +220,8 @@
                 the action.
         \row
             \li RunProgramArguments
-            \li Arguments passed to the program specified in RunProgram.
+            \li Arguments passed to the program specified in RunProgram. You can add several
+                \c Argument elements that each specify an argument to \c {RunProgram}.
         \row
             \li RunProgramDescription
             \li Text shown next to the check box for running the program after

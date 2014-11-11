@@ -40,6 +40,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QStringList>
 
+#include <QRegularExpression>
 #include <QXmlStreamReader>
 
 using namespace QInstaller;
@@ -90,23 +91,45 @@ static void raiseError(QXmlStreamReader &reader, const QString &error, Settings:
     }
 }
 
-static QStringList readTranslations(QXmlStreamReader &reader, Settings::ParseMode parseMode)
+static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::ParseMode parseMode,
+                                          const QString &tagName, bool lc = false)
 {
-    QStringList translations;
-    while (reader.readNextStartElement()) {
-        if (reader.name() == QLatin1String("Translation")) {
-            translations.append(reader.readElementText().toLower());
-        } else {
-            raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name().toString()),
-                parseMode);
-        }
+    QStringList arguments;
 
-        if (!reader.attributes().isEmpty()) {
-            raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.").arg(reader
-                .name().toString()), parseMode);
+    while (QXmlStreamReader::TokenType token = reader.readNext()) {
+        switch (token) {
+            case QXmlStreamReader::StartElement: {
+                if (!reader.attributes().isEmpty()) {
+                    raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.")
+                        .arg(reader.name().toString()), parseMode);
+                    return arguments;
+                } else {
+                    if (reader.name().toString() == tagName) {
+                        (lc) ? arguments.append(reader.readElementText().toLower()) :
+                               arguments.append(reader.readElementText());
+                    } else {
+                        raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name()
+                            .toString()), parseMode);
+                        return arguments;
+                    }
+                }
+            }
+            break;
+            case QXmlStreamReader::Characters: {
+                if (reader.isWhitespace())
+                    continue;
+                arguments.append(reader.text().toString().split(QRegularExpression(QLatin1String("\\s+")),
+                    QString::SkipEmptyParts));
+            }
+            break;
+            case QXmlStreamReader::EndElement: {
+                return arguments;
+            }
+            default:
+            break;
         }
     }
-    return translations;
+    return arguments;
 }
 
 static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode)
@@ -246,9 +269,11 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         if (s.d->m_data.contains(name))
             reader.raiseError(QString::fromLatin1("Element '%1' has been defined before.").arg(name));
 
-         if (name == scTranslations) {
-            s.setTranslations(readTranslations(reader, parseMode));
-         } else if (name == scRemoteRepositories) {
+        if (name == scTranslations) {
+            s.setTranslations(readArgumentAttributes(reader, parseMode, QLatin1String("Translation"), true));
+        } else if (name == scRunProgramArguments) {
+            s.setRunProgramArguments(readArgumentAttributes(reader, parseMode, QLatin1String("Argument")));
+        } else if (name == scRemoteRepositories) {
             s.addDefaultRepositories(readRepositories(reader, true, parseMode));
         } else {
             s.d->m_data.insert(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
@@ -386,10 +411,19 @@ QString Settings::runProgram() const
     return d->m_data.value(scRunProgram).toString();
 }
 
-QString Settings::runProgramArguments() const
+QStringList Settings::runProgramArguments() const
 {
-    return d->m_data.value(scRunProgramArguments).toString();
+    const QVariant variant = d->m_data.values(scRunProgramArguments);
+    if (variant.canConvert<QStringList>())
+        return variant.value<QStringList>();
+    return QStringList();
 }
+
+void Settings::setRunProgramArguments(const QStringList &arguments)
+{
+    d->m_data.insert(scRunProgramArguments, arguments);
+}
+
 
 QString Settings::runProgramDescription() const
 {
@@ -615,6 +649,5 @@ QStringList Settings::translations() const
 
 void Settings::setTranslations(const QStringList &translations)
 {
-    d->m_data.remove(scTranslations);
     d->m_data.insert(scTranslations, translations);
 }
