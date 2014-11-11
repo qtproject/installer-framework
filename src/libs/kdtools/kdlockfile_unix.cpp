@@ -50,7 +50,8 @@ bool KDLockFile::Private::lock()
     errno = 0;
     handle = open(filename.toLatin1().constData(), O_CREAT | O_RDWR | O_NONBLOCK, 0600);
     if (handle == -1) {
-        errorString = QObject::tr("Could not create lock file %1: %2").arg(filename, QLatin1String(strerror(errno)));
+        errorString = QCoreApplication::translate("KDLockFile", "Could not create lock file '%1': "
+            "%2").arg(filename, QString::fromLocal8Bit(strerror(errno)));
         return false;
     }
     const QString pid = QString::number(qApp->applicationPid());
@@ -60,15 +61,18 @@ bool KDLockFile::Private::lock()
     while (written < data.size()) {
         const qint64 n = write(handle, data.constData() + written, data.size() - written);
         if (n < 0) {
-            errorString = QObject::tr("Could not write PID to lock file %1: %2").arg( filename, QLatin1String( strerror( errno ) ) );
+            errorString = QCoreApplication::translate("KDLockFile", "Could not write PID to lock "
+                "file '%1': %2").arg(filename, QString::fromLocal8Bit(strerror(errno)));
             return false;
         }
         written += n;
     }
     errno = 0;
     locked = flock(handle, LOCK_NB | LOCK_EX) != -1;
-    if (!locked)
-        errorString = QObject::tr("Could not lock lock file %1: %2").arg(filename, QLatin1String(strerror(errno)));
+    if (!locked) {
+        errorString = QCoreApplication::translate("KDLockFile", "Could not obtain the lock for "
+            "file '%1': %2").arg(filename, QString::fromLocal8Bit(strerror(errno)));
+    }
     return locked;
 }
 
@@ -77,11 +81,14 @@ bool KDLockFile::Private::unlock()
     errorString.clear();
     if (!locked)
         return true;
+
     errno = 0;
     locked = flock(handle, LOCK_UN | LOCK_NB) == -1;
-    if (locked)
-        errorString = QObject::tr("Could not unlock lock file %1: %2").arg(filename, QLatin1String(strerror(errno)));
-    else
+    if (locked) {
+        errorString = QCoreApplication::translate("KDLockFile", "Could not release the lock for "
+            "file '%1': %2").arg(filename, QString::fromLocal8Bit(strerror(errno)));
+    } else {
         unlink(filename.toLatin1());
+    }
     return !locked;
 }
