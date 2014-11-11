@@ -172,7 +172,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         plistStream << QLatin1String("    <key>CFBundleGetInfoString</key>") << endl;
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
-        plistStream << QLatin1String("    <string>") << QLatin1String(QUOTE(IFW_VERSION)) << ("</string>")
+        plistStream << QLatin1String("    <string>") << QLatin1String(QUOTE(IFW_VERSION_STR)) << ("</string>")
             << endl;
 #undef QUOTE
 #undef QUOTE_

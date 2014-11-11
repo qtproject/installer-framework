@@ -53,7 +53,7 @@
 
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
-#define VERSION "IFW Version: \"" QUOTE(IFW_VERSION) "\""
+#define VERSION "IFW Version: \"" QUOTE(IFW_VERSION_STR) "\""
 #define BUILDDATE "Build date: " QUOTE(__DATE__)
 #define SHA "Installer Framework SHA1: \"" QUOTE(_GIT_SHA1_) "\""
 static const char PLACEHOLDER[32] = "MY_InstallerCreateDateTime_MY";
@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
         }
 
         if (parser.isSet(QLatin1String(CommandLineOptions::FrameworkVersion))) {
-            std::cout << QUOTE(IFW_VERSION) << std::endl;
+            std::cout << QUOTE(IFW_VERSION_STR) << std::endl;
             return EXIT_SUCCESS;
         }
 

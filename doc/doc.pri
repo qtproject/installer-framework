@@ -3,14 +3,14 @@
 QDOC_BIN = $$[QT_INSTALL_BINS]/qdoc
 win32:QDOC_BIN = $$replace(QDOC_BIN, "/", "\\")
 
-IFW_VERSION_TAG = $$replace(IFW_VERSION, "[-.]", )
+IFW_VERSION_TAG = $$replace(IFW_VERSION_STR, "[-.]", )
 
 defineReplace(cmdEnv) {
     !equals(QMAKE_DIR_SEP, /): 1 ~= s,^(.*)$,(set \\1) &&,g
     return("$$1")
 }
 
-QDOC = $$cmdEnv(SRCDIR=$$PWD OUTDIR=$$OUT_PWD/doc/html IFW_VERSION=$$IFW_VERSION IFW_VERSION_TAG=$$IFW_VERSION_TAG QT_INSTALL_DOCS=$$[QT_INSTALL_DOCS]) $$QDOC_BIN
+QDOC = $$cmdEnv(SRCDIR=$$PWD OUTDIR=$$OUT_PWD/doc/html IFW_VERSION=$$IFW_VERSION_STR IFW_VERSION_TAG=$$IFW_VERSION_TAG QT_INSTALL_DOCS=$$[QT_INSTALL_DOCS]) $$QDOC_BIN
 
 unix {
     HELPGENERATOR = $$[QT_INSTALL_BINS]/qhelpgenerator
