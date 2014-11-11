@@ -1748,8 +1748,9 @@ bool PackageManagerCorePrivate::runUninstaller()
     try {
         setStatus(PackageManagerCore::Running);
 
-        // check if we need administration rights and ask before the action happens
-        if (!QFileInfo(installerBinaryPath()).isWritable())
+        // check if we need to run elevated and ask before the action happens
+        QTemporaryFile tempAdminFile(targetDir() + QLatin1String("/adminrights"));
+        if (!tempAdminFile.open() || !tempAdminFile.isWritable())
             adminRightsGained = m_core->gainAdminRights();
 
         OperationList undoOperations = m_performedOperationsOld;
