@@ -1742,23 +1742,29 @@ bool PackageManagerCorePrivate::runPackageUpdater()
 
 bool PackageManagerCorePrivate::runUninstaller()
 {
+    emit uninstallationStarted();
     bool adminRightsGained = false;
+
     try {
         setStatus(PackageManagerCore::Running);
-        emit uninstallationStarted();
 
         // check if we need administration rights and ask before the action happens
         if (!QFileInfo(installerBinaryPath()).isWritable())
             adminRightsGained = m_core->gainAdminRights();
 
-        OperationList undoOperations;
+        OperationList undoOperations = m_performedOperationsOld;
+        std::reverse(undoOperations.begin(), undoOperations.end());
+
         bool updateAdminRights = false;
-        foreach (Operation *op, m_performedOperationsOld) {
-            undoOperations.prepend(op);
-            updateAdminRights |= op->value(QLatin1String("admin")).toBool();
+        if (!adminRightsGained) {
+            foreach (Operation *op, m_performedOperationsOld) {
+                updateAdminRights |= op->value(QLatin1String("admin")).toBool();
+                if (updateAdminRights)
+                    break;  // an operation needs elevation to be able to perform their undo
+            }
         }
 
-        // we did not request administration rights till we found out that a undo needs administration rights
+        // We did not yet request elevated permissions but they are required.
         if (updateAdminRights && !adminRightsGained) {
             m_core->gainAdminRights();
             m_core->dropAdminRights();
@@ -1770,48 +1776,36 @@ bool PackageManagerCorePrivate::runUninstaller()
         runUndoOperations(undoOperations, undoOperationProgressSize, adminRightsGained, false);
         // No operation delete here, as all old undo operations are deleted in the destructor.
 
-        // this will also delete the TargetDir on Windows
-        deleteMaintenanceTool();
+        deleteMaintenanceTool();    // this will also delete the TargetDir on Windows
 
-        if (QVariant(m_core->value(scRemoveTargetDir)).toBool()) {
-            // on !Windows, we need to remove TargetDir manually
-            qDebug() << "Complete uninstallation is chosen";
-            const QString target = targetDir();
-            if (!target.isEmpty()) {
-                if (updateAdminRights && !adminRightsGained) {
-                    // we were root at least once, so we remove the target dir as root
-                    m_core->gainAdminRights();
-                    removeDirectoryThreaded(target, true);
-                    m_core->dropAdminRights();
-                } else {
-                    removeDirectoryThreaded(target, true);
-                }
-            }
+        // If not on Windows, we need to remove TargetDir manually.
+        if (QVariant(m_core->value(scRemoveTargetDir)).toBool() && !targetDir().isEmpty()) {
+            if (updateAdminRights && !adminRightsGained)
+                adminRightsGained = m_core->gainAdminRights();
+            removeDirectoryThreaded(targetDir(), true);
+            qDebug() << "Complete uninstallation was chosen.";
         }
 
         unregisterMaintenanceTool();
         m_needToWriteMaintenanceTool = false;
-
         setStatus(PackageManagerCore::Success);
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(
-            tr("\nUninstallation completed successfully!"));
-        if (adminRightsGained)
-            m_core->dropAdminRights();
-        emit uninstallationFinished();
     } catch (const Error &err) {
         if (m_core->status() != PackageManagerCore::Canceled) {
             setStatus(PackageManagerCore::Failure);
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
         }
-
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUninstallation aborted!"));
-        if (adminRightsGained)
-            m_core->dropAdminRights();
-        emit uninstallationFinished();
-        return false;
     }
-    return true;
+
+    const bool success = (m_core->status() == PackageManagerCore::Success);
+    if (adminRightsGained)
+        m_core->dropAdminRights();
+
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QString::fromLatin1("\n%1").arg(
+        success ? tr("Uninstallation completed successfully.") : tr("Uninstallation aborted.")));
+
+    emit uninstallationFinished();
+    return success;
 }
 
 void PackageManagerCorePrivate::installComponent(Component *component, double progressOperationSize,
