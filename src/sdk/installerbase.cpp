@@ -197,7 +197,8 @@ int InstallerBase::run()
     QInstaller::PackageManagerCore::setNoForceInstallation(parser
         .isSet(QLatin1String(CommandLineOptions::NoForceInstallation)));
     QInstaller::PackageManagerCore::setCreateLocalRepositoryFromBinary(parser
-        .isSet(QLatin1String(CommandLineOptions::CreateOfflineRepository)));
+        .isSet(QLatin1String(CommandLineOptions::CreateOfflineRepository))
+        || m_core->settings().createOfflineRepository());
 
     QHash<QString, QString> params;
     const QStringList positionalArguments = parser.positionalArguments();

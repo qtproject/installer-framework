@@ -111,6 +111,8 @@ public:
 
     QString configurationFileName() const;
 
+    bool createOfflineRepository() const;
+
     bool dependsOnLocalInstallerBinary() const;
     bool hasReplacementRepos() const;
     QSet<Repository> repositories() const;

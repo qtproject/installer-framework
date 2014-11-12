@@ -72,6 +72,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.repositorySettingsPageVisible(), true);
     QCOMPARE(settings.allowSpaceInPath(), false);
     QCOMPARE(settings.allowNonAsciiCharacters(), false);
+    QCOMPARE(settings.createOfflineRepository(), false);
 
     QCOMPARE(settings.hasReplacementRepos(), false);
     QCOMPARE(settings.repositories(), QSet<Repository>());
