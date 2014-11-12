@@ -108,22 +108,22 @@ int BinaryDump::dump(const QInstaller::ResourceCollectionManager &manager, const
             }
         }
 
-        QDirIterator it(targetDir, QDirIterator::Subdirectories);
-        while (it.hasNext() && !it.next().isEmpty()) {
-            if (!it.fileInfo().isDir())
-                continue;
-
-            const QString fileName = it.fileName();
-            const QInstaller::ResourceCollection c = manager.collectionByName(fileName.toUtf8());
+        foreach (const QString &name, versionMap.keys()) {
+            const QInstaller::ResourceCollection c = manager.collectionByName(name.toUtf8());
             if (c.resources().count() <= 0)
                 continue;
+
+            if (!targetDir.mkpath(name)) {
+                throw QInstaller::Error(QString::fromLatin1("Could not create target dir: %1.")
+                    .arg(targetDir.filePath(name)));
+            }
 
             foreach (const QSharedPointer<QInstaller::Resource> &resource, c.resources()) {
                 const bool isOpen = resource->isOpen();
                 if ((!isOpen) && (!resource->open()))
                     continue;   // TODO: should we throw here?
 
-                QFile target(targetDir.filePath(fileName) + QDir::separator()
+                QFile target(targetDir.filePath(name) + QDir::separator()
                     + QString::fromUtf8(resource->name()));
                 QInstaller::openForWrite(&target);
                 resource->copyData(&target); // copy the 7z files into the target directory

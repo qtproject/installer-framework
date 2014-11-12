@@ -256,28 +256,29 @@ bool CreateLocalRepositoryOperation::performOperation()
         ResourceCollectionManager manager;
         BinaryContent::readBinaryContent(&file, 0, &manager, 0, BinaryContent::MagicCookie);
 
-        QDirIterator it(repoPath, QDirIterator::Subdirectories);
-        while (it.hasNext() && !it.next().isEmpty()) {
-            if (it.fileInfo().isDir()) {
-                const QString fileName = it.fileName();
-                const QString absoluteTargetPath = QDir(repoPath).absoluteFilePath(fileName);
+        emit progressChanged(0.75);
 
-                // zip the meta files that come with the offline installer
-                if (versionMap.contains(fileName)) {
-                    helper.m_files.prepend(Static::createArchive(repoPath, absoluteTargetPath,
-                        versionMap.value(fileName), &helper));
-                    versionMap.remove(fileName);
-                    emit outputTextChanged(helper.m_files.first());
+        QDir repo(repoPath);
+        if (!versionMap.isEmpty()) {
+            // extract meta and binary data
+            foreach (const QString &name, versionMap.keys()) {
+                if (!repo.mkpath(name)) {
+                    throw QInstaller::Error(tr("Could not create target dir: %1.")
+                        .arg(repo.filePath(name)));
                 }
+                // zip the meta files that come with the offline installer
+                helper.m_files.prepend(Static::createArchive(repoPath,
+                    repo.filePath(name), versionMap.value(name), &helper));
+                emit outputTextChanged(helper.m_files.first());
 
                 // copy the 7z files that are inside the component index into the target
-                const ResourceCollection collection = manager.collectionByName(fileName.toUtf8());
+                const ResourceCollection collection = manager.collectionByName(name.toUtf8());
                 foreach (const QSharedPointer<Resource> &resource, collection.resources()) {
                     const bool isOpen = resource->isOpen();
                     if ((!isOpen) && (!resource->open()))
                         continue;
 
-                    QFile target(absoluteTargetPath + QDir::separator()
+                    QFile target(repo.filePath(name) + QDir::separator()
                         + QString::fromUtf8(resource->name()));
                     QInstaller::openForWrite(&target);
                     resource->copyData(&target);
@@ -287,21 +288,6 @@ bool CreateLocalRepositoryOperation::performOperation()
                     if (!isOpen) // If we reach that point, either the resource was opened already.
                         resource->close();         // or we did open it and have to close it again.
                 }
-            }
-        }
-
-        emit progressChanged(0.75);
-
-        QDir repo(repoPath);
-        if (!versionMap.isEmpty()) {
-            // offline installers might miss possible old components
-            foreach (const QString &dir, versionMap.keys()) {
-                const QString missingDir = repoPath + dir;
-                if (!repo.mkpath(missingDir))
-                    throw QInstaller::Error(tr("Could not create target dir: %1.").arg(missingDir));
-                helper.m_files.prepend(Static::createArchive(repoPath, missingDir, versionMap.value(dir)
-                    , &helper));
-                emit outputTextChanged(helper.m_files.first());
             }
         }
 
