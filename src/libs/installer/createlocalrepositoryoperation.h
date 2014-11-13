@@ -41,12 +41,10 @@
 
 namespace QInstaller {
 
-class AutoHelper;
-
 class INSTALLER_EXPORT CreateLocalRepositoryOperation : public QObject, public Operation
 {
     Q_OBJECT
-    friend class AutoHelper;
+    friend struct AutoHelper;
 
 public:
     CreateLocalRepositoryOperation();

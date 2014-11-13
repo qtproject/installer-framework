@@ -56,7 +56,7 @@ namespace QInstaller {
 
 // -- AutoHelper
 
-class AutoHelper
+struct AutoHelper
 {
 public:
     AutoHelper(CreateLocalRepositoryOperation *op)
@@ -64,7 +64,7 @@ public:
     {
     }
 
-    virtual ~AutoHelper()
+    ~AutoHelper()
     {
         m_op->emitFullProgress();
         m_op->setValue(QLatin1String("files"), m_files);
