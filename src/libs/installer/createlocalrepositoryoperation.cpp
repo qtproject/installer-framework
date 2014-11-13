@@ -221,7 +221,7 @@ bool CreateLocalRepositoryOperation::performOperation()
             throw QInstaller::Error(tr("Could not read: %1. Error: %2").arg(updatesXml.fileName(), error));
 
         // build for each available package a name - version mapping
-        QHash<QString, QString> versionMap;
+        QHash<QString, QString> nameVersionHash;
         const QDomElement root = doc.documentElement();
         const QDomNodeList rootChildNodes = root.childNodes();
         for (int i = 0; i < rootChildNodes.count(); ++i) {
@@ -240,7 +240,7 @@ bool CreateLocalRepositoryOperation::performOperation()
                         version = e.text();
                 }
                 if (ProductKeyCheck::instance()->isValidPackage(name))
-                    versionMap.insert(name, version);
+                    nameVersionHash.insert(name, version);
             }
         }
 
@@ -256,19 +256,22 @@ bool CreateLocalRepositoryOperation::performOperation()
         ResourceCollectionManager manager;
         BinaryContent::readBinaryContent(&file, 0, &manager, 0, BinaryContent::MagicCookie);
 
-        emit progressChanged(0.75);
+        emit progressChanged(0.65);
 
         QDir repo(repoPath);
-        if (!versionMap.isEmpty()) {
+        if (!nameVersionHash.isEmpty()) {
             // extract meta and binary data
-            foreach (const QString &name, versionMap.keys()) {
+
+            const QStringList names = nameVersionHash.keys();
+            for (int i = 0; i < names.count(); ++i) {
+                const QString name = names.at(i);
                 if (!repo.mkpath(name)) {
                     throw QInstaller::Error(tr("Could not create target dir: %1.")
                         .arg(repo.filePath(name)));
                 }
                 // zip the meta files that come with the offline installer
                 helper.m_files.prepend(Static::createArchive(repoPath,
-                    repo.filePath(name), versionMap.value(name), &helper));
+                    repo.filePath(name), nameVersionHash.value(name), &helper));
                 emit outputTextChanged(helper.m_files.first());
 
                 // copy the 7z files that are inside the component index into the target
@@ -288,8 +291,11 @@ bool CreateLocalRepositoryOperation::performOperation()
                     if (!isOpen) // If we reach that point, either the resource was opened already.
                         resource->close();         // or we did open it and have to close it again.
                 }
+                emit progressChanged(.65f + ((double(i) / double(name.count())) * .25f));
             }
         }
+
+        emit progressChanged(0.95);
 
         try {
             // remove these, if we fail it doesn't hurt
