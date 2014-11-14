@@ -145,8 +145,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         if (QFile::exists(settings.installerApplicationIcon())) {
             iconFile = settings.installerApplicationIcon();
         } else {
-            iconFile = QFile::exists(settings.icon()) ? settings.icon()
-                : QString::fromLatin1(":/resources/default_icon_mac.icns");
+            iconFile = QString::fromLatin1(":/resources/default_icon_mac.icns");
         }
 
         const QString iconTargetFile = fi.completeBaseName() + QLatin1String(".icns");
@@ -225,10 +224,6 @@ static int assemble(Input input, const QInstaller::Settings &settings)
     if (QFile::exists(settings.installerApplicationIcon())) {
         // no error handling as this is not fatal
         setApplicationIcon(tempFile, settings.installerApplicationIcon());
-    } else {
-        if (QFile::exists(settings.icon())) {
-            setApplicationIcon(tempFile, settings.icon());
-        }
     }
 #elif defined(Q_OS_OSX)
     if (isBundle) {
