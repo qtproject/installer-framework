@@ -163,15 +163,6 @@ int main(int argc, char** argv)
 
                 packagesDirectories.append(args.first());
                 args.removeFirst();
-            } else if (args.first() == QLatin1String("-c") || args.first() == QLatin1String("--config")) {
-                args.removeFirst();
-                if (args.isEmpty()) {
-                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
-                        "Error: Config parameter missing argument"));
-                }
-
-                args.removeFirst();
-                std::cout << "Config file parameter is deprecated and ignored." << std::endl;
             } else if (args.first() == QLatin1String("--ignore-translations")
                 || args.first() == QLatin1String("--ignore-invalid-packages")) {
                     args.removeFirst();
