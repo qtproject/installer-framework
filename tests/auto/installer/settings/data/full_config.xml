@@ -14,7 +14,6 @@ File should contain all elements we allow in a config.xml
     <TargetDir>@HomeDir@InstallationDirectory</TargetDir>
     <AdminTargetDir>@RootDir@InstallationDirectory</AdminTargetDir>
 
-    <Icon>icon</Icon>
     <InstallerApplicationIcon>icon</InstallerApplicationIcon>
     <InstallerWindowIcon>icon</InstallerWindowIcon>
     <Logo>logo</Logo>

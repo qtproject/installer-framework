@@ -44,7 +44,6 @@
 
 using namespace QInstaller;
 
-static const QLatin1String scIcon("Icon");
 static const QLatin1String scInstallerApplicationIcon("InstallerApplicationIcon");
 static const QLatin1String scInstallerWindowIcon("InstallerWindowIcon");
 static const QLatin1String scLogo("Logo");
@@ -223,7 +222,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
     QStringList elementList;
     elementList << scName << scVersion << scTitle << scPublisher << scProductUrl
                 << scTargetDir << scAdminTargetDir
-                << scIcon << scInstallerApplicationIcon << scInstallerWindowIcon
+                << scInstallerApplicationIcon << scInstallerWindowIcon
                 << scLogo << scWatermark << scBanner << scBackground
                 << scStartMenuDir << scMaintenanceToolName << scMaintenanceToolIniFile << scRemoveTargetDir
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
@@ -243,9 +242,6 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
             raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.").arg(name),
                 parseMode);
         }
-
-        if (name == scIcon)
-            qWarning() << "Deprecated element 'Icon'.";
 
         if (s.d->m_data.contains(name))
             reader.raiseError(QString::fromLatin1("Element '%1' has been defined before.").arg(name));
@@ -270,13 +266,11 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         throw Error(QString::fromLatin1("Missing or empty <Version> tag in %1.").arg(file.fileName()));
 
     // Add some possible missing values
-    if (!s.d->m_data.contains(scIcon))
-        s.d->m_data.insert(scIcon, QLatin1String(":/installer"));
     if (!s.d->m_data.contains(scInstallerApplicationIcon))
-        s.d->m_data.insert(scInstallerApplicationIcon, s.d->m_data.value(scIcon));
+        s.d->m_data.insert(scInstallerApplicationIcon, QLatin1String(":/installer"));
     if (!s.d->m_data.contains(scInstallerWindowIcon)) {
         s.d->m_data.insert(scInstallerWindowIcon,
-                           QString(s.d->m_data.value(scIcon).toString() + s.systemIconSuffix()));
+                           QString(QLatin1String(":/installer") + s.systemIconSuffix()));
     }
     if (!s.d->m_data.contains(scRemoveTargetDir))
         s.d->m_data.insert(scRemoveTargetDir, scTrue);
@@ -339,11 +333,6 @@ QString Settings::banner() const
 QString Settings::background() const
 {
     return d->absolutePathFromKey(scBackground);
-}
-
-QString Settings::icon() const
-{
-    return d->absolutePathFromKey(scIcon, systemIconSuffix());
 }
 
 QString Settings::wizardStyle() const
