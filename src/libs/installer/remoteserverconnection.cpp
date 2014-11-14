@@ -67,7 +67,7 @@ void RemoteServerConnection::run()
     while (socket.state() == QAbstractSocket::ConnectedState) {
         // Use a polling approach here to kill the thread as soon as the connections
         // closes. This seems to be related to the fact that the keep alive thread connects
-        // every second and immediately throws away the socket and therefor the connection.
+        // every second and immediately throws away the socket and therefore the connection.
         if (!socket.bytesAvailable() && !socket.waitForReadyRead(250))
             continue;
 
