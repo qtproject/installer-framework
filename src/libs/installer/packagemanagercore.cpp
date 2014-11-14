@@ -137,12 +137,6 @@
 */
 
 /*!
-    \qmlsignal installer::componentsAboutToBeCleared()
-
-    Deprecated, and not emitted any more.
-*/
-
-/*!
     \qmlsignal installer::valueChanged(string key, string value)
 
     Emitted whenever a value changes.
