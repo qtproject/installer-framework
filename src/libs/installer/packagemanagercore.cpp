@@ -1770,10 +1770,13 @@ bool PackageManagerCore::containsValue(const QString &key) const
     Sets a shared flag with name \a key to \a value. This is one option
     to share information between scripts.
 
+    Deprecated since 2.0.0
+
     \sa sharedFlag
 */
 void PackageManagerCore::setSharedFlag(const QString &key, bool value)
 {
+    qDebug() << "sharedFlag is deprecated";
     d->m_sharedFlags.insert(key, value);
 }
 
@@ -1783,10 +1786,13 @@ void PackageManagerCore::setSharedFlag(const QString &key, bool value)
     Returns shared flag with name \a key. This is one option
     to share information between scripts.
 
+    Deprecated since 2.0.0
+
     \sa setSharedFlag
 */
 bool PackageManagerCore::sharedFlag(const QString &key) const
 {
+    qDebug() << "sharedFlag is deprecated";
     return d->m_sharedFlags.value(key, false);
 }
 

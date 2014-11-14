@@ -160,7 +160,8 @@ public:
     Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString()) const;
     Q_INVOKABLE QStringList values(const QString &key, const QStringList &defaultValue = QStringList()) const;
 
-    //a way to have global flags share able from a component script to another one
+    // a way to have global flags shareable from a component script to another one
+    // Deprecated since 2.0.0
     Q_INVOKABLE bool sharedFlag(const QString &key) const;
     Q_INVOKABLE void setSharedFlag(const QString &key, bool value = true);
 
