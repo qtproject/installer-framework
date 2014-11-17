@@ -60,7 +60,6 @@
 using namespace QInstaller;
 
 static const QLatin1String scScriptTag("Script");
-static const QLatin1String scDefault("Default");
 static const QLatin1String scAutoDependOn("AutoDependOn");
 static const QLatin1String scVirtual("Virtual");
 static const QLatin1String scInstalled("Installed");

@@ -118,6 +118,7 @@ HEADERS += packagemanagercore.h \
     binarylayout.h \
     installercalculator.h \
     uninstallercalculator.h \
+    componentchecker.h \
     proxycredentialsdialog.h \
     serverauthenticationdialog.h
 
@@ -187,6 +188,7 @@ SOURCES += packagemanagercore.cpp \
     binarylayout.cpp \
     installercalculator.cpp \
     uninstallercalculator.cpp \
+    componentchecker.cpp \
     proxycredentialsdialog.cpp \
     serverauthenticationdialog.cpp
 

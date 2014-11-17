@@ -36,11 +36,14 @@
 #include <graph.h>
 #include <installercalculator.h>
 #include <uninstallercalculator.h>
+#include <componentchecker.h>
 #include <packagemanagercore.h>
 
 #include <QTest>
 
 using namespace QInstaller;
+
+typedef QMap<Component *, QStringList> ComponentToStringList;
 
 class Data {
 public:
@@ -250,6 +253,42 @@ private slots:
         QCOMPARE(result.count(), expectedResult.count());
         QCOMPARE(result, expectedResult);
         delete core;
+    }
+
+
+    void checkComponent_data()
+    {
+        QTest::addColumn<QList<Component *> >("componentsToCheck");
+        QTest::addColumn<ComponentToStringList>("expectedResult");
+
+        PackageManagerCore *core = new PackageManagerCore();
+        core->setPackageManager();
+
+        NamedComponent *componentA = new NamedComponent(core, QLatin1String("A"));
+        NamedComponent *componentB = new NamedComponent(core, QLatin1String("B"));
+
+        componentB->setValue(QLatin1String("AutoDependOn"), QLatin1String("A"));
+        componentB->setValue(QLatin1String("Default"), QLatin1String("true"));
+
+        ComponentToStringList result;
+        result[componentB].append(QLatin1String("Component B specifies \"Default\" property "
+                                                "together with \"AutoDependOn\" list. This combination of states "
+                                                "may not work properly."));
+
+        QTest::newRow("AutoDepend and default")
+                << (QList<Component *>() << componentA << componentB)
+                << result;
+    }
+
+    void checkComponent()
+    {
+        QFETCH(QList<Component *>, componentsToCheck);
+        QFETCH(ComponentToStringList, expectedResult);
+
+        foreach (Component *component, componentsToCheck) {
+            const QStringList result = ComponentChecker::checkComponent(component);
+            QCOMPARE(result, expectedResult.value(component));
+        }
     }
 };
 

@@ -46,6 +46,7 @@ static const QLatin1String scScript("script");
 
 static const QLatin1String scName("Name");
 static const QLatin1String scVersion("Version");
+static const QLatin1String scDefault("Default");
 static const QLatin1String scRemoteVersion("Version");
 static const QLatin1String scDisplayVersion("DisplayVersion");
 static const QLatin1String scRemoteDisplayVersion("RemoteDisplayVersion");
