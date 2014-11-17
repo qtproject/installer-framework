@@ -319,7 +319,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             }
 
             const QString toLocation(QString::fromLatin1("%1/%2/%3").arg(targetDir, info.name, script));
-            copyWithException(scriptFile.fileName(), toLocation, QLatin1String("script"));
+            copyWithException(scriptFile.fileName(), toLocation, QInstaller::scScript);
         }
 
         // write DownloadableArchives tag if that is missed by the user

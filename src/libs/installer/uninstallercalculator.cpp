@@ -93,7 +93,7 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
 
             // This code needs to be enabled once the scripts use isInstalled, installationRequested and
             // uninstallationRequested...
-            if (autoDependencies.first().compare(QLatin1String("script"), Qt::CaseInsensitive) == 0) {
+            if (autoDependencies.first().compare(scScript, Qt::CaseInsensitive) == 0) {
                 //QScriptValue valueFromScript;
                 //try {
                 //    valueFromScript = callScriptMethod(QLatin1String("isAutoDependOn"));
