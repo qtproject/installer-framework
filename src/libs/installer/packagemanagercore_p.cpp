@@ -1032,14 +1032,18 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         }
     }
 
-    if (!out.rename(maintenanceToolRenamedName)) {
+    if (!out.copy(maintenanceToolRenamedName)) {
         throw Error(tr("Could not write maintenance tool to %1: %2").arg(maintenanceToolRenamedName,
             out.errorString()));
     }
-    out.setAutoRemove(false);
-    out.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
-        | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser);
 
+    QFile mt(maintenanceToolRenamedName);
+    if (mt.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
+                          | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser)) {
+        qDebug() << "Wrote permissions for maintenance tool.";
+    } else {
+        qDebug() << "Failed to write permissions for maintenance tool.";
+    }
 }
 
 void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *output, QFile *const input,
