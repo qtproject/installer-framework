@@ -1,5 +1,6 @@
 2.0.0
 - Require Qt 5.3 as a minimal version, Qt 4 code removed.
+- Only support Qt 5 on documentation side as well.
 - Source code is now available also under LGPLv3.
 - Changed the default value of AllowSpaceInPath in config.xml to true.
 - Made cycles in component dependencies fatal.
@@ -9,6 +10,7 @@
 - Introduced new classes for client-server communication.
 - Replaced qscript with js engine.
 - Added an example how to use dynamic pages.
+- Added an example how to ask for a license agreement.
 - Provided an API to get all wizard pages from java script. (QTIFW-477)
 - Made the installer binary paths available for scripts.  (QTIFW-424)
 - Fixed possible case of uninstalling all of Windows. (QTIFW-511)
@@ -17,16 +19,26 @@
 - Improved checking of Installationpath and better reporting to user. (QTIFW-468, QTIFW-512)
 - Fixed detailwindow not following content. (QTIFW-353)
 - Log messages are now prefixed with a timestamp. (QTIFW-496)
-- Various bugs fixed. (e.g. QTIFW-524)
-- Improved documentation.
-- Documentation fixes
-- Only support Qt 5 on documentation side as well.
 - Renamed settings inside config.xml:
   - UninstallerName renamed to MaintenanceToolName (default value changed to "maintenancetool")
   - UninstallerIniFile renamed to MaintenanceToolIniFile
 - Windows: Re-use parent console for verbose output if possible
+- Fixed disk space checking for updates. (QTIFW-434)
+- List disk space requirements prior to installation. (QTIFW-16)
+- Toggle details with verbose mode. (QTIFW-140)
+- Implemented progress indicator on taskbar on Windows. (QTIFW-15)
+- Added --framework-version argument.
+- Fixed the uninstaller calculator.
+- Fixed broken command line parsing.
+- Fixed binary data extraction. (QTIFW-574)
+- Fixed uninstall after installing into a target with elevated permissions. (QTIFW-447, QTIFW-479)
+- Allow spaces in RunProgramArguments. (QTIFW-227)
+- Various bugs fixed. (QTIFW-397, QTIFW-524, QTIFW-538, QTIFW-541, QTIFW-542, QTIFW-562, QTIFW-564, QTIFW-568, QTIFW-569)
+- Removed some deprecated things.
+- Improved documentation. (QTIFW-526)
+- Updated and improved translations.
 
-Thanks go to Sze Howe Koh, Ray Donnelly and Sascha Cunz for contributions.
+Thanks go to Christoph Vogtländer, Sze Howe Koh, Ray Donnelly, Tasuku Suzuki and Sascha Cunz for contributions.
 
 1.6.0
 - No longer requires Xcode command line tools on Mac. (QTBUG-38015)
