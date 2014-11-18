@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,39 +31,36 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+#ifndef PROXYCREDENTIALSDIALOG_H
+#define PROXYCREDENTIALSDIALOG_H
 
-#ifndef PACKAGEMANAGERPROXYFACTORY_H
-#define PACKAGEMANAGERPROXYFACTORY_H
+#include <QDialog>
 
-#include "kdupdaterfiledownloaderfactory.h"
+class QNetworkProxy;
 
 namespace QInstaller {
 
-class PackageManagerCore;
+namespace Ui {
+class ProxyCredentialsDialog;
+}
 
-struct ProxyCredential {
-    QString host;
-    QString user;
-    QString password;
-    int port;
-};
-
-class PackageManagerProxyFactory : public KDUpdater::FileDownloaderProxyFactory
+class ProxyCredentialsDialog : public QDialog
 {
+    Q_OBJECT
+
 public:
-    explicit PackageManagerProxyFactory(const PackageManagerCore *const core);
+    explicit ProxyCredentialsDialog(const QNetworkProxy &proxy, QWidget *parent = 0);
+    ~ProxyCredentialsDialog();
 
-    PackageManagerProxyFactory *clone() const;
-    QList<QNetworkProxy> queryProxy(const QNetworkProxyQuery &query = QNetworkProxyQuery());
-
-    void setProxyCredentials(const QNetworkProxy &proxy, const QString &user, const QString &password);
+    QString userName() const;
+    void setUserName(const QString &username);
+    QString password() const;
+    void setPassword(const QString &passwd);
 
 private:
-
-    QList<ProxyCredential> m_proxyCredentials;
-    const PackageManagerCore *const m_core;
+    Ui::ProxyCredentialsDialog *ui;
 };
 
-}   // QInstaller
+} // QInstaller
 
-#endif // PACKAGEMANAGERPROXYFACTORY_H
+#endif // PROXYCREDENTIALSDIALOG_H

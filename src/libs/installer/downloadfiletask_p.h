@@ -85,6 +85,7 @@ private slots:
     void onSslErrors(const QList<QSslError> &sslErrors);
     void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
+    void onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 
 
 private:

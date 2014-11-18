@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,39 +31,49 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+#include "proxycredentialsdialog.h"
+#include "ui_proxycredentialsdialog.h"
 
-#ifndef PACKAGEMANAGERPROXYFACTORY_H
-#define PACKAGEMANAGERPROXYFACTORY_H
-
-#include "kdupdaterfiledownloaderfactory.h"
+#include <QNetworkProxy>
 
 namespace QInstaller {
 
-class PackageManagerCore;
-
-struct ProxyCredential {
-    QString host;
-    QString user;
-    QString password;
-    int port;
-};
-
-class PackageManagerProxyFactory : public KDUpdater::FileDownloaderProxyFactory
+ProxyCredentialsDialog::ProxyCredentialsDialog(const QNetworkProxy &proxy, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::ProxyCredentialsDialog)
 {
-public:
-    explicit PackageManagerProxyFactory(const PackageManagerCore *const core);
+    ui->setupUi(this);
 
-    PackageManagerProxyFactory *clone() const;
-    QList<QNetworkProxy> queryProxy(const QNetworkProxyQuery &query = QNetworkProxyQuery());
+    setUserName(proxy.user());
+    setPassword(proxy.password());
 
-    void setProxyCredentials(const QNetworkProxy &proxy, const QString &user, const QString &password);
+    const QString proxyString = QString::fromLatin1("%1:%2").arg(proxy.hostName()).arg(proxy.port());
+    ui->infotext->setText(ui->infotext->text().arg(proxyString));
+}
 
-private:
+ProxyCredentialsDialog::~ProxyCredentialsDialog()
+{
+    delete ui;
+}
 
-    QList<ProxyCredential> m_proxyCredentials;
-    const PackageManagerCore *const m_core;
-};
+QString ProxyCredentialsDialog::userName() const
+{
+    return ui->usernameLineEdit->text();
+}
 
-}   // QInstaller
+void ProxyCredentialsDialog::setUserName(const QString &username)
+{
+    ui->usernameLineEdit->setText(username);
+}
 
-#endif // PACKAGEMANAGERPROXYFACTORY_H
+QString ProxyCredentialsDialog::password() const
+{
+    return ui->passwordLineEdit->text();
+}
+
+void ProxyCredentialsDialog::setPassword(const QString &passwd)
+{
+    ui->passwordLineEdit->setText(passwd);
+}
+
+} // namespace QInstaller

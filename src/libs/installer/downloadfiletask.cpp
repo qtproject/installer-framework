@@ -36,6 +36,7 @@
 #include "downloadfiletask_p.h"
 #include "observer.h"
 
+#include <QCoreApplication>
 #include <QEventLoop>
 #include <QFile>
 #include <QFileInfo>
@@ -45,6 +46,13 @@
 #include <QTimer>
 
 namespace QInstaller {
+
+ProxyAuthenticationRequiredException::ProxyAuthenticationRequiredException(const QNetworkProxy &proxy)
+    : FileTaskException(QCoreApplication::translate("ProxyAuthenticationRequiredException",
+                                                    "Proxy requires authentication.")),
+      m_proxy(proxy)
+{
+}
 
 Downloader::Downloader()
     : m_finished(0)
@@ -80,6 +88,8 @@ void Downloader::download(QFutureInterface<FileTaskResult> &fi, const QList<File
     m_nam.setProxyFactory(networkProxyFactory);
     connect(&m_nam, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)), this,
         SLOT(onAuthenticationRequired(QNetworkReply*, QAuthenticator*)));
+    connect(&m_nam, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this,
+            SLOT(onProxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
     QTimer::singleShot(0, this, SLOT(doDownload()));
 }
 
@@ -224,6 +234,12 @@ void Downloader::onFinished(QNetworkReply *reply)
 void Downloader::onError(QNetworkReply::NetworkError error)
 {
     QNetworkReply *const reply = qobject_cast<QNetworkReply *>(sender());
+
+    if (error == QNetworkReply::ProxyAuthenticationRequiredError) {
+        // already handled by onProxyAuthenticationRequired
+        return;
+    }
+
     if (reply) {
         const Data &data = m_downloads[reply];
         //: %2 is a sentence describing the error
@@ -273,6 +289,13 @@ void Downloader::onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *
                     FileTaskException(tr("Could not authenticate using the provided credentials. "
                                          "Source: '%1'.").arg(reply->url().toString())));
     }
+}
+
+void Downloader::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *)
+{
+    // Report to GUI thread.
+    // (MetadataJob will ask for username/password, and restart the download ...)
+    m_futureInterface->reportException(ProxyAuthenticationRequiredException(proxy));
 }
 
 

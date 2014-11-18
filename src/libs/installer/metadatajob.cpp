@@ -37,6 +37,7 @@
 #include "packagemanagercore.h"
 #include "packagemanagerproxyfactory.h"
 #include "productkeycheck.h"
+#include "proxycredentialsdialog.h"
 #include "settings.h"
 
 #include <QTemporaryDir>
@@ -116,6 +117,25 @@ void MetadataJob::xmlTaskFinished()
     try {
         m_xmlTask.waitForFinished();
         status = parseUpdatesXml(m_xmlTask.future().results());
+    } catch (const ProxyAuthenticationRequiredException &e) {
+        //! will be shown as title in the UI dialog
+
+        const QNetworkProxy proxy = e.proxy();
+        ProxyCredentialsDialog proxyCredentials(proxy);
+        qDebug() << e.message();
+
+        if (proxyCredentials.exec() == QDialog::Accepted) {
+            qDebug() << "Retrying with new credentials ...";
+            PackageManagerProxyFactory *factory = m_core->proxyFactory();
+
+            factory->setProxyCredentials(proxy, proxyCredentials.userName(),
+                                         proxyCredentials.password());
+            m_core->setProxyFactory(factory);
+            status = XmlDownloadRetry;
+        } else {
+            reset();
+            emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
+        }
     } catch (const FileTaskException &e) {
         reset();
         emitFinishedWithError(QInstaller::DownloadError, e.message());

@@ -50,6 +50,22 @@ enum
 };
 }
 
+class ProxyAuthenticationRequiredException : public FileTaskException
+{
+public:
+    ProxyAuthenticationRequiredException(const QNetworkProxy &proxy);
+    ~ProxyAuthenticationRequiredException() throw() {}
+
+    QNetworkProxy proxy() const { return m_proxy; }
+
+    void raise() const { throw *this; }
+    ProxyAuthenticationRequiredException *clone() const {
+        return new ProxyAuthenticationRequiredException(*this); }
+
+private:
+    QNetworkProxy m_proxy;
+};
+
 class INSTALLER_EXPORT DownloadFileTask : public AbstractFileTask
 {
     Q_OBJECT

@@ -37,6 +37,8 @@
 #include "packagemanagercore.h"
 #include "settings.h"
 
+#include <QNetworkProxy>
+
 namespace QInstaller {
 
 PackageManagerProxyFactory::PackageManagerProxyFactory(const PackageManagerCore *const core)
@@ -46,8 +48,19 @@ PackageManagerProxyFactory::PackageManagerProxyFactory(const PackageManagerCore 
 
 PackageManagerProxyFactory *PackageManagerProxyFactory::clone() const
 {
-    return new PackageManagerProxyFactory(m_core);
+    PackageManagerProxyFactory *factory = new PackageManagerProxyFactory(m_core);
+    factory->m_proxyCredentials = m_proxyCredentials;
+    return factory;
 }
+
+struct FindProxyCredential {
+    FindProxyCredential(const QString &host, int port) : host(host), port(port) {}
+
+    bool operator()(const ProxyCredential &c) { return c.host == host && c.port == port; }
+private:
+    QString host;
+    int port;
+};
 
 QList<QNetworkProxy> PackageManagerProxyFactory::queryProxy(const QNetworkProxyQuery &query)
 {
@@ -69,15 +82,44 @@ QList<QNetworkProxy> PackageManagerProxyFactory::queryProxy(const QNetworkProxyQ
         return list << QNetworkProxy(QNetworkProxy::NoProxy);
 
     if (query.queryType() == QNetworkProxyQuery::UrlRequest) {
-        if (query.url().scheme() == QLatin1String("ftp"))
-            return list << settings.ftpProxy();
-
-        if ((query.url().scheme() == QLatin1String("http"))
-                || (query.url().scheme() == QLatin1String("https"))) {
-            return list << settings.httpProxy();
+        QNetworkProxy proxy;
+        if (query.url().scheme() == QLatin1String("ftp")) {
+            proxy = settings.ftpProxy();
+        } else if (query.url().scheme() == QLatin1String("http")
+                 || query.url().scheme() == QLatin1String("https")) {
+            proxy = settings.httpProxy();
         }
+
+
+        auto p = std::find_if(m_proxyCredentials.constBegin(), m_proxyCredentials.constEnd(),
+                              FindProxyCredential(proxy.hostName(), proxy.port()));
+        if (p != m_proxyCredentials.constEnd()) {
+            proxy.setUser(p->user);
+            proxy.setPassword(p->password);
+        }
+        return list << proxy;
     }
     return list << QNetworkProxy(QNetworkProxy::DefaultProxy);
+}
+
+void PackageManagerProxyFactory::setProxyCredentials(const QNetworkProxy &proxy,
+                                                     const QString &user,
+                                                     const QString &password)
+{
+    auto p = std::find_if(m_proxyCredentials.begin(), m_proxyCredentials.end(),
+                          FindProxyCredential(proxy.hostName(), proxy.port()));
+
+    if (p == m_proxyCredentials.constEnd()) {
+        ProxyCredential proxyCredential;
+        proxyCredential.host = proxy.hostName();
+        proxyCredential.port = proxy.port();
+        proxyCredential.user = user;
+        proxyCredential.password = password;
+        m_proxyCredentials.append(proxyCredential);
+    } else {
+        p->user = user;
+        p->password = password;
+    }
 }
 
 }   // QInstaller
