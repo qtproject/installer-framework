@@ -693,21 +693,29 @@ int main(int argc, char **argv)
     QTemporaryDir tmp;
     tmp.setAutoRemove(false);
     const QString tmpMetaDir = tmp.path();
+    QTemporaryDir tmp2;
+    tmp2.setAutoRemove(false);
+    const QString tmpRepoDir = tmp2.path();
     try {
         const Settings settings = Settings::fromFileAndPrefix(configFile, QFileInfo(configFile)
             .absolutePath());
 
-        // Note: there order here is important if we build offline only installers
+        // Note: the order here is important
 
         // 1; create the list of available packages
         QInstallerTools::PackageInfoVector packages =
             QInstallerTools::createListOfPackages(packagesDirectories, &filteredPackages, ftype);
 
-        // 2; copy the meta data of the available packages
-        QInstallerTools::copyMetaData(tmpMetaDir, packagesDirectories.first(), packages, settings
+        // 2; copy the packages data and setup the packages vector with the files we copied,
+        //    must happen before copying meta data because files will be compressed if
+        //    needed and meta data generation relies on this
+        QInstallerTools::copyComponentData(packagesDirectories, tmpRepoDir, &packages);
+
+        // 3; copy the meta data of the available packages, generate Updates.xml
+        QInstallerTools::copyMetaData(tmpMetaDir, tmpRepoDir, packages, settings
             .applicationName(), settings.applicationVersion());
 
-        // 3; copy the configuration file and and icons etc.
+        // 4; copy the configuration file and and icons etc.
         copyConfigData(configFile, tmpMetaDir + QLatin1String("/installer-config"));
         {
             QSettings confInternal(tmpMetaDir + QLatin1String("/config/config-internal.ini")
@@ -723,15 +731,12 @@ int main(int argc, char **argv)
             target += QLatin1String(".app");
 #endif
         if (!compileResource) {
-            // 4; put the copied resources into a resource file
+            // 5; put the copied resources into a resource file
             QInstaller::ResourceCollection metaCollection("QResources");
             metaCollection.appendResource(createDefaultResourceFile(tmpMetaDir,
                 generateTemporaryFileName()));
             metaCollection.appendResources(createBinaryResourceFiles(resources));
             input.manager.insertCollection(metaCollection);
-
-            // 5; copy the packages data and setup the packages vector with the files we copied
-            QInstallerTools::copyComponentData(packagesDirectories, tmpMetaDir, &packages);
 
             input.packages = packages;
             input.outputPath = target;
@@ -756,6 +761,7 @@ int main(int argc, char **argv)
     foreach (const QSharedPointer<QInstaller::Resource> &resource, collection.resources())
         QFile::remove(QString::fromUtf8(resource->name()));
     QInstaller::removeDirectory(tmpMetaDir, true);
+    QInstaller::removeDirectory(tmpRepoDir, true);
 
     return exitCode;
 }
