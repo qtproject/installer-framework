@@ -229,6 +229,42 @@ private slots:
             QCOMPARE(root3->value(scVersion), QLatin1String("2.0.1"));
         }
     }
+
+    void testRequiredDiskSpace()
+    {
+        // test installer
+        PackageManagerCore core(MagicInstallerMarker);
+
+        DummyComponent *root = new DummyComponent(&core);
+        root->setValue(scName, "root");
+        root->setValue(scUncompressedSize, QString::number(1000));
+        core.appendRootComponent(root);
+
+        DummyComponent *child1 = new DummyComponent(&core);
+        child1->setValue(scName, "root.child1");
+        child1->setValue(scUncompressedSize, QString::number(1500));
+        root->appendComponent(child1);
+
+        DummyComponent *child2 = new DummyComponent(&core);
+        child2->setValue(scName, "root.child2");
+        child2->setValue(scUncompressedSize, QString::number(250));
+        root->appendComponent(child2);
+
+        // install root, child1 (child2 remains uninstalled)
+        root->setUninstalled();
+        child1->setUninstalled();
+        child2->setInstalled();
+        core.calculateComponentsToInstall();
+        QCOMPARE(core.requiredDiskSpace(), 2500ULL);
+
+        // additionally install child2
+        root->setInstalled();
+        child1->setInstalled();
+        child2->setUninstalled();
+        core.componentsToInstallNeedsRecalculation();
+        core.calculateComponentsToInstall();
+        QCOMPARE(core.requiredDiskSpace(), 250ULL);
+    }
 };
 
 
