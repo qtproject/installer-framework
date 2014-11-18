@@ -51,16 +51,9 @@
 #include "linereplaceoperation.h"
 #include "minimumprogressoperation.h"
 #include "licenseoperation.h"
-#include "applyproductkeyoperation.h"
 #include "settingsoperation.h"
-
-// QtSDK specific
-#include "qtpatchoperation.h"
 #include "consumeoutputoperation.h"
 
-#ifdef Q_OS_OSX
-#   include "macreplaceinstallnamesoperation.h"
-#endif // Q_OS_OSX
 
 #include "utils.h"
 
@@ -130,7 +123,6 @@ static void initArchives()
 #if defined(QT_STATIC)
 static void initResources()
 {
-    Q_INIT_RESOURCE(patch_file_lists);
     Q_INIT_RESOURCE(installer);
 }
 #endif
@@ -228,17 +220,10 @@ void QInstaller::init()
     factory.registerUpdateOperation<LineReplaceOperation>(QLatin1String("LineReplace"));
     factory.registerUpdateOperation<MinimumProgressOperation>(QLatin1String("MinimumProgress"));
     factory.registerUpdateOperation<LicenseOperation>(QLatin1String("License"));
-    factory.registerUpdateOperation<ApplyProductKeyOperation>(QLatin1String("ApplyProductKey"));
     factory.registerUpdateOperation<ConsumeOutputOperation>(QLatin1String("ConsumeOutput"));
     factory.registerUpdateOperation<SettingsOperation>(QLatin1String("Settings"));
 
-    // QtSDK specific
-    factory.registerUpdateOperation<QtPatchOperation>(QLatin1String("QtPatch"));
-
     FileDownloaderFactory::setFollowRedirects(true);
 
-#ifdef Q_OS_OSX
-    factory.registerUpdateOperation<MacReplaceInstallNamesOperation>(QLatin1String("ReplaceInstallNames"));
-#endif // Q_OS_OSX
    qInstallMessageHandler(messageHandler);
 }

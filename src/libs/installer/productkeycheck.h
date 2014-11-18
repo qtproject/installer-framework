@@ -60,7 +60,6 @@ public:
     QString lastErrorString();
     QString maintainanceToolDetailErrorNotice();
 
-    //is used in the generic ApplyProductKeyOperation, for example to patch things
     bool applyKey(const QStringList &arguments);
 
     // to filter none valid licenses

@@ -51,7 +51,6 @@ HEADERS += packagemanagercore.h \
     componentmodel.h \
     qinstallerglobal.h \
     qtpatch.h \
-    qtpatchoperation.h \
     consumeoutputoperation.h \
     replaceoperation.h \
     linereplaceoperation.h \
@@ -88,7 +87,6 @@ HEADERS += packagemanagercore.h \
     link.h \
     createlinkoperation.h \
     packagemanagercoredata.h \
-    applyproductkeyoperation.h \
     globals.h \
     graph.h \
     settingsoperation.h \
@@ -135,7 +133,6 @@ SOURCES += packagemanagercore.cpp \
     scriptengine.cpp \
     componentmodel.cpp \
     qtpatch.cpp \
-    qtpatchoperation.cpp  \
     consumeoutputoperation.cpp \
     replaceoperation.cpp \
     linereplaceoperation.cpp \
@@ -169,7 +166,6 @@ SOURCES += packagemanagercore.cpp \
     link.cpp \
     createlinkoperation.cpp \
     packagemanagercoredata.cpp \
-    applyproductkeyoperation.cpp \
     globals.cpp \
     settingsoperation.cpp \
     testrepository.cpp \
@@ -194,17 +190,12 @@ SOURCES += packagemanagercore.cpp \
 
 FORMS += proxycredentialsdialog.ui
 
-RESOURCES += resources/patch_file_lists.qrc \
-             resources/installer.qrc
+RESOURCES += resources/installer.qrc
 
-macx {
-    HEADERS += \
-               macreplaceinstallnamesoperation.h
-    SOURCES += adminauthorization_mac.cpp \
-               macreplaceinstallnamesoperation.cpp
+unix {
+    osx: SOURCES += adminauthorization_mac.cpp
+    else: SOURCES += adminauthorization_x11.cpp
 }
-
-unix:!macx:SOURCES += adminauthorization_x11.cpp
 
 LIBS += -l7z
 win32 {
