@@ -483,8 +483,8 @@ quint64 PackageManagerCore::requiredDiskSpace() const
 {
     quint64 result = 0;
 
-    foreach (QInstaller::Component *component, components(ComponentType::Root))
-        result += component->updateUncompressedSize();
+    foreach (QInstaller::Component *component, orderedComponentsToInstall())
+        result += size(component, scUncompressedSize);
 
     return result;
 }
@@ -691,6 +691,35 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
 
     d->initialize(QHash<QString, QString>());
+
+
+    //
+    // Sanity check to detect a broken installations with missing operations.
+    // Every installed package should have at least one MinimalProgress operation.
+    //
+    QSet<QString> installedPackages = d->m_core->localInstalledPackages().keys().toSet();
+    QSet<QString> operationPackages;
+    foreach (QInstaller::Operation *operation, d->m_performedOperationsOld) {
+        if (operation->hasValue(QLatin1String("component")))
+            operationPackages.insert(operation->value(QLatin1String("component")).toString());
+    }
+
+    QSet<QString> packagesWithoutOperation = installedPackages - operationPackages;
+    QSet<QString> orphanedOperations = operationPackages - installedPackages;
+    if (!packagesWithoutOperation.isEmpty() || !orphanedOperations.isEmpty())  {
+        qCritical() << "Operations missing for installed packages" << packagesWithoutOperation.toList();
+        qCritical() << "Orphaned operations" << orphanedOperations.toList();
+        MessageBoxHandler::critical(
+                    MessageBoxHandler::currentBestSuitParent(),
+                    QLatin1String("Corrupt_Installation_Error"),
+                    QCoreApplication::translate("QInstaller", "Corrupt installation"),
+                    QCoreApplication::translate("QInstaller",
+                                                "Your installation seems to be corrupted. "
+                                                "Please consider re-installing from scratch."
+                                                ));
+    } else {
+        qDebug() << "Operations sanity check succeeded.";
+    }
 }
 
 PackageManagerCore::~PackageManagerCore()

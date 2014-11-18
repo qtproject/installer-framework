@@ -50,7 +50,7 @@
 using namespace QInstaller;
 
 static QHash<QByteArray, QByteArray> generatePatchValueHash(const QByteArray &newQtPath,
-        const QHash<QString, QByteArray> &qmakeValueHash)
+        const QHash<QString, QByteArray> &qmakeValueHash, const QString &type)
 {
     QHash<QByteArray, QByteArray> replaceHash; //first == searchstring: second == replace string
     char nativeSeperator = QDir::separator().toLatin1();
@@ -77,8 +77,15 @@ static QHash<QByteArray, QByteArray> generatePatchValueHash(const QByteArray &ne
         QByteArray("qt_libspath=%1/lib").replace("%1/", newQtPath + nativeSeperator));
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_LIBEXECS"));
-    replaceHash.insert(QByteArray("qt_lbexpath=%1").replace("%1", oldValue),
-        QByteArray("qt_lbexpath=%1/libexec").replace("%1/", newQtPath + nativeSeperator));
+    if (type == QLatin1String("windows")) {
+        replaceHash.insert(QByteArray("qt_lbexpath=%1").replace("%1", oldValue),
+                           QByteArray("qt_lbexpath=%1/bin").replace("%1/",
+                                                                    newQtPath + nativeSeperator));
+    } else {
+        replaceHash.insert(QByteArray("qt_lbexpath=%1").replace("%1", oldValue),
+                           QByteArray("qt_lbexpath=%1/libexec").replace("%1/",
+                                                                        newQtPath + nativeSeperator));
+    }
 
     oldValue = qmakeValueHash.value(QLatin1String("QT_INSTALL_BINS"));
     replaceHash.insert(QByteArray("qt_binspath=%1").replace("%1", oldValue),
@@ -398,7 +405,7 @@ bool QtPatchOperation::performOperation()
         prefix += QLatin1Char('/');
 
 //BEGIN - patch binary files
-    QHash<QByteArray, QByteArray> patchValueHash = generatePatchValueHash(newQtPath, qmakeValueHash);
+    QHash<QByteArray, QByteArray> patchValueHash = generatePatchValueHash(newQtPath, qmakeValueHash, type);
 
     foreach (QString fileName, filesToPatch) {
         fileName.prepend(prefix);
