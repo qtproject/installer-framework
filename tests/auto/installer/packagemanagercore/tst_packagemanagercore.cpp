@@ -233,7 +233,8 @@ private slots:
     void testRequiredDiskSpace()
     {
         // test installer
-        PackageManagerCore core(MagicInstallerMarker);
+        PackageManagerCore core(QInstaller::BinaryContent::MagicInstallerMarker,
+            QList<QInstaller::OperationBlob>());
 
         DummyComponent *root = new DummyComponent(&core);
         root->setValue(scName, "root");
