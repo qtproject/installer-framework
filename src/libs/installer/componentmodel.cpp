@@ -470,15 +470,6 @@ void ComponentModel::collectComponents(Component *const component, const QModelI
 
 namespace ComponentModelPrivate {
 
-struct NameGreaterThan
-{
-    bool operator() (const Component *lhs, const Component *rhs) const
-    {
-        return lhs->name() > rhs->name();
-    }
-};
-
-// call it only for items with childern
 static Qt::CheckState verifyPartiallyChecked(Component *component)
 {
     bool anyChecked = false;
@@ -514,22 +505,19 @@ static Qt::CheckState verifyPartiallyChecked(Component *component)
 QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &components, Qt::CheckState state)
 {
     // get all parent nodes for the components we're going to update
-    ComponentSet nodes = components;
-    foreach (Component *const component, components) {
-        if (Component *parent = component->parentComponent()) {
-            nodes.insert(parent);
-            while (parent->parentComponent() != 0) {
-                parent = parent->parentComponent();
-                nodes.insert(parent);
-            }
+    QMap<QString, Component *> sortedNodesMap;
+    foreach (Component *component, components) {
+        while (component && !sortedNodesMap.values(component->name()).contains(component)) {
+            sortedNodesMap.insertMulti(component->name(), component);
+            component = component->parentComponent();
         }
     }
 
     QSet<QModelIndex> changed;
-    // sort the nodes, so we can start in descending order to check node and tri-state nodes properly
-    ComponentList sortedNodes = nodes.toList();
-    std::sort(sortedNodes.begin(), sortedNodes.end(), ComponentModelPrivate::NameGreaterThan());
-    foreach (Component *const node, sortedNodes) {
+    const ComponentList sortedNodes = sortedNodesMap.values();
+    // we can start in descending order to check node and tri-state nodes properly
+    for (int i = sortedNodes.count(); i > 0; i--) {
+        Component * const node = sortedNodes.at(i - 1);
         if (!node->isCheckable())
             continue;
 
