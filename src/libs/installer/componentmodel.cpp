@@ -194,7 +194,12 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, in
 
     if (role == Qt::CheckStateRole) {
         ComponentSet nodes = component->childItems().toSet();
-        QSet<QModelIndex> changed = updateCheckedState(nodes << component, Qt::CheckState(value.toInt()));
+        Qt::CheckState newValue = Qt::CheckState(value.toInt());
+        if (newValue == Qt::PartiallyChecked) {
+            const Qt::CheckState oldValue = component->checkState();
+            newValue = (oldValue == Qt::Checked) ? Qt::Unchecked : Qt::Checked;
+        }
+        QSet<QModelIndex> changed = updateCheckedState(nodes << component, newValue);
         foreach (const QModelIndex &index, changed) {
             emit dataChanged(index, index);
             emit checkStateChanged(index);
