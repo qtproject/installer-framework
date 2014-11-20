@@ -469,32 +469,35 @@ struct NameGreaterThan
     }
 };
 
+// call it only for items with childern
 static Qt::CheckState verifyPartiallyChecked(Component *component)
 {
-    int checked = 0;
-    int unchecked = 0;
+    bool anyChecked = false;
+    bool anyUnchecked = false;
 
     const int count = component->childCount();
     for (int i = 0; i < count; ++i) {
         switch (component->childAt(i)->checkState()) {
             case Qt::Checked: {
-                ++checked;
+                anyChecked = true;
             }   break;
             case Qt::Unchecked: {
-                ++unchecked;
+                anyUnchecked = true;
             }   break;
             default:
-                break;
+                return Qt::PartiallyChecked;
         }
+        if (anyChecked && anyUnchecked)
+            return Qt::PartiallyChecked;
     }
 
-    if (checked == count)
+    if (anyChecked)
         return Qt::Checked;
 
-    if (unchecked == count)
+    if (anyUnchecked)
         return Qt::Unchecked;
 
-    return Qt::PartiallyChecked;
+    return Qt::PartiallyChecked; // never hit here
 }
 
 }   // namespace ComponentModelPrivate
