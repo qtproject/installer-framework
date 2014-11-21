@@ -628,6 +628,14 @@ void PackageManagerCore::rollBackInstallation()
                 }
             }
 
+            packages.writeToDisk();
+            if (isInstaller()) {
+                if (packages.packageInfoCount() == 0) {
+                    QFile file(packages.fileName());
+                    file.remove();
+                }
+            }
+
             if (becameAdmin)
                 dropAdminRights();
         } catch (const Error &e) {
@@ -641,7 +649,6 @@ void PackageManagerCore::rollBackInstallation()
                 "error happened."));
         }
     }
-    packages.writeToDisk();
 }
 
 /*!
