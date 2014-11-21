@@ -40,7 +40,6 @@
 #include "packagemanagercoredata.h"
 #include "packagemanagerproxyfactory.h"
 #include "qinstallerglobal.h"
-#include "remotefileengine.h"
 
 #include "kdsysinfo.h"
 #include "kdupdaterapplication.h"
@@ -51,6 +50,7 @@
 class KDJob;
 
 QT_FORWARD_DECLARE_CLASS(QFile)
+QT_FORWARD_DECLARE_CLASS(QFileDevice)
 QT_FORWARD_DECLARE_CLASS(QFileInfo)
 
 using namespace KDUpdater;
@@ -64,6 +64,7 @@ class ComponentModel;
 class TempDirDeleter;
 class InstallerCalculator;
 class UninstallerCalculator;
+class RemoteFileEngineHandler;
 
 /*
     The default configuration interface implementation does call QSettings to save files for later deletion,

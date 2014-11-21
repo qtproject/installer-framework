@@ -177,7 +177,6 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 }
 
 
-
 // -- PackageManagerCorePrivate
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)

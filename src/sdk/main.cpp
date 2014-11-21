@@ -107,12 +107,11 @@ int main(int argc, char *argv[])
             return EXIT_SUCCESS;
         }
 
+        std::cout << qPrintable(parser.helpText()) << std::endl;
         if (mutually.count() > 1) {
             std::cerr << qPrintable(QString::fromLatin1("The following options are mutually "
                 "exclusive: %1.").arg(mutually.join(QLatin1String(", ")))) << std::endl;
         }
-
-        std::cout << qPrintable(parser.helpText()) << std::endl;
         return help ? EXIT_SUCCESS : EXIT_FAILURE;
     }
 

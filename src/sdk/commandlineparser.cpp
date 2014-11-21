@@ -71,7 +71,7 @@ CommandLineParser::CommandLineParser()
         QLatin1String("Start application in package manager mode.")));
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoForceInstallation),
-        QLatin1String("Allow deselection of components that are marked as forced.")));
+        QLatin1String("Allow deselecting components that are marked as forced.")));
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ShowVirtualComponents),
         QLatin1String("Show virtual components in installer and package manager.")));

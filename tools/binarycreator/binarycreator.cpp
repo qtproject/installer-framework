@@ -725,7 +725,7 @@ int main(int argc, char **argv)
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
         }
 
-#if defined(Q_OS_OSX)
+#ifdef Q_OS_OSX
         // on mac, we enforce building a bundle
         if (!target.endsWith(QLatin1String(".app")) && !target.endsWith(QLatin1String(".dmg")))
             target += QLatin1String(".app");
