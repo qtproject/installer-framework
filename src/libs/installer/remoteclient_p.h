@@ -45,7 +45,6 @@
 #include <QElapsedTimer>
 #include <QHostAddress>
 #include <QMutex>
-#include <QPointer>
 #include <QTcpSocket>
 #include <QThread>
 #include <QTimer>
@@ -53,50 +52,57 @@
 
 namespace QInstaller {
 
-class KeepAliveThread : public QThread
+class KeepAliveObject : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(KeepAliveThread)
+    Q_DISABLE_COPY(KeepAliveObject)
 
 public:
-    KeepAliveThread(RemoteClient *client)
+    KeepAliveObject()
         : m_timer(0)
-        , m_client(client)
+        , m_quit(false)
     {
     }
 
-    void run() Q_DECL_OVERRIDE
+public slots:
+    void start()
     {
         m_timer = new QTimer(this);
         connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
-        m_timer->start(1000);
-        exec();    // start the event loop to make the timer work
+        m_timer->start(5000);
+    }
+
+    void finish()
+    {
+        m_quit = true;
     }
 
 private slots:
     void onTimeout()
     {
         m_timer->stop();
-
-        if (!m_client) {
-            quit();
-            wait();
-            return;
-        }
-
         {
-            // Try to connect to the server. If we succeed the server side running watchdog gets
-            // restarted and the server keeps running for another 30 seconds.
+            // Try to connect to the privileged running server. If we succeed the server side
+            // watchdog gets restarted and the server keeps running for another 30 seconds.
             QTcpSocket socket;
-            m_client->connect(&socket);
-        }
+            socket.connectToHost(RemoteClient::instance().address(),
+                RemoteClient::instance().port());
 
-        m_timer->start(1000);
+            QElapsedTimer stopWatch;
+            stopWatch.start();
+            while ((socket.state() == QAbstractSocket::ConnectingState)
+                && (stopWatch.elapsed() < 10000) && (!m_quit)) {
+                    if ((stopWatch.elapsed() % 2500) == 0)
+                        QCoreApplication::processEvents();
+            }
+        }
+        if (!m_quit)
+            m_timer->start(5000);
     }
 
 private:
     QTimer *m_timer;
-    QPointer<RemoteClient> m_client;
+    volatile bool m_quit;
 };
 
 class RemoteClientPrivate
@@ -115,16 +121,25 @@ public:
         , m_serverStarting(false)
         , m_active(false)
         , m_key(QLatin1String(Protocol::DefaultAuthorizationKey))
-        , m_thread(new KeepAliveThread(parent))
         , m_mode(Protocol::Mode::Debug)
+        , m_object(0)
         , m_quit(false)
     {
-        m_thread->moveToThread(m_thread);
     }
 
     ~RemoteClientPrivate()
     {
-        QMetaObject::invokeMethod(m_thread, "quit", Qt::QueuedConnection);
+        shutdown();
+    }
+
+    void shutdown()
+    {
+        if (m_object)
+            m_object->finish();
+        m_object = 0;
+
+        m_thread.quit();
+        m_thread.wait();
     }
 
     void init(quint16 port, const QHostAddress &address, Protocol::Mode mode)
@@ -138,7 +153,15 @@ public:
             m_serverStarted = true;
         } else if (m_mode == Protocol::Mode::Release) {
             m_key = QUuid::createUuid().toString();
-            m_thread->start();
+            if (!m_object) {
+                m_object = new KeepAliveObject;
+                m_object->moveToThread(&m_thread);
+                QObject::connect(&m_thread, SIGNAL(started()), m_object, SLOT(start()));
+                QObject::connect(&m_thread, SIGNAL(finished()), m_object, SLOT(deleteLater()));
+                m_thread.start();
+            } else {
+                Q_ASSERT_X(false, Q_FUNC_INFO, "Keep alive thread already started.");
+            }
         } else {
             Q_ASSERT_X(false, Q_FUNC_INFO, "RemoteClient mode not set properly.");
         }
@@ -227,8 +250,9 @@ private:
     QString m_serverCommand;
     QStringList m_serverArguments;
     QString m_key;
-    QThread *m_thread;
+    QThread m_thread;
     Protocol::Mode m_mode;
+    KeepAliveObject *m_object;
     volatile bool m_quit;
 };
 

@@ -58,10 +58,13 @@ class INSTALLER_EXPORT RemoteClient : public QObject
 
 public:
     static RemoteClient &instance();
-
-    bool connect(QTcpSocket *socket) const;
     void init(quint16 port, const QHostAddress &address, Protocol::Mode mode);
 
+    void shutdown();
+    bool connect(QTcpSocket *socket) const;
+
+    quint16 port() const;
+    QHostAddress address() const;
     QString authorizationKey() const;
     void setAuthorizationKey(const QString &key);
 

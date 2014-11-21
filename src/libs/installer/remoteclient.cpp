@@ -63,6 +63,18 @@ RemoteClient &RemoteClient::instance()
     return gGuard->client;
 }
 
+quint16 RemoteClient::port() const
+{
+    Q_D(const RemoteClient);
+    return d->m_port;
+}
+
+QHostAddress RemoteClient::address() const
+{
+    Q_D(const RemoteClient);
+    return d->m_address;
+}
+
 QString RemoteClient::authorizationKey() const
 {
     Q_D(const RemoteClient);
@@ -81,6 +93,12 @@ void RemoteClient::init(quint16 port, const QHostAddress &address, Protocol::Mod
 {
     Q_D(RemoteClient);
     d->init(port, address, mode);
+}
+
+void RemoteClient::shutdown()
+{
+    Q_D(RemoteClient);
+    d->shutdown();
 }
 
 bool RemoteClient::connect(QTcpSocket *socket) const

@@ -270,8 +270,6 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     qDeleteAll(m_performedOperationsOld);
     qDeleteAll(m_performedOperationsCurrentSession);
 
-    RemoteClient::instance().setActive(false);
-
     delete m_updateFinder;
     delete m_proxyFactory;
 
