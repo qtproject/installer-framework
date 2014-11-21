@@ -578,12 +578,12 @@ void PackageManagerCore::rollBackInstallation()
 {
     emit titleMessageChanged(tr("Cancelling the Installer"));
 
-    //this unregisters all operation progressChanged connects
+    // this unregisters all operation progressChanged connected
     ProgressCoordinator::instance()->setUndoMode();
     const int progressOperationCount = d->countProgressOperations(d->m_performedOperationsCurrentSession);
     const double progressOperationSize = double(1) / progressOperationCount;
 
-    //re register all the undo operations with the new size to the ProgressCoordninator
+    // reregister all the undo operations with the new size to the ProgressCoordinator
     foreach (Operation *const operation, d->m_performedOperationsCurrentSession) {
         QObject *const operationObject = dynamic_cast<QObject*> (operation);
         if (operationObject != 0) {
@@ -602,17 +602,15 @@ void PackageManagerCore::rollBackInstallation()
             const bool becameAdmin = !RemoteClient::instance().isActive()
                 && operation->value(QLatin1String("admin")).toBool() && gainAdminRights();
 
-            if (operation->hasValue(QLatin1String("uninstall-only"))) {
+            if (operation->value(QLatin1String("uninstall-only")).toBool() &&
+                QVariant(value(scRemoveTargetDir)).toBool() &&
+                (operation->name() == QLatin1String("Mkdir"))) {
                 // We know the mkdir operation which is creating the target path. If we do a
                 // full uninstall, prevent a forced remove of the full install path including the
-                // target , instead try to remove the target only and only if it is empty,
-                // otherwise fail silently. Note: we will ever experience this only -if-
-                // RemoveTargetDir is set, otherwise the operation does not exist at all.
-                const bool isMkDir = (operation->name() == QLatin1String("Mkdir"));
-                const bool removeTargetDir = QVariant(value(scRemoveTargetDir)).toBool();
-                const bool uninstallOnly = operation->value(QLatin1String("uninstall-only")).toBool();
-                if (isMkDir && uninstallOnly && removeTargetDir)
-                    operation->setValue(QLatin1String("forceremoval"), false);
+                // target, instead try to remove the target only and only if it is empty,
+                // otherwise fail silently. Note: this can only happen if RemoveTargetDir is set,
+                // otherwise the operation does not exist at all.
+                operation->setValue(QLatin1String("forceremoval"), false);
             }
 
             PackageManagerCorePrivate::performOperationThreaded(operation, PackageManagerCorePrivate::Undo);
