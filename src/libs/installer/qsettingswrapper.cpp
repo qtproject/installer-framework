@@ -153,14 +153,14 @@ void QSettingsWrapper::beginGroup(const QString &param1)
 int QSettingsWrapper::beginReadArray(const QString &param1)
 {
     if (createSocket())
-        return callRemoteMethod<int>(QLatin1String(Protocol::QSettingsBeginReadArray), param1);
+        return callRemoteMethod<qint32>(QLatin1String(Protocol::QSettingsBeginReadArray), param1);
     return d->settings.beginReadArray(param1);
 }
 
 void QSettingsWrapper::beginWriteArray(const QString &param1, int param2)
 {
     if (createSocket())
-        callRemoteMethod(QLatin1String(Protocol::QSettingsBeginWriteArray), param1, param2);
+        callRemoteMethod(QLatin1String(Protocol::QSettingsBeginWriteArray), param1, qint32(param2));
     else
         d->settings.beginWriteArray(param1, param2);
 }
@@ -267,7 +267,7 @@ QSettingsWrapper::Scope QSettingsWrapper::scope() const
 void QSettingsWrapper::setArrayIndex(int param1)
 {
     if (createSocket())
-        callRemoteMethod(QLatin1String(Protocol::QSettingsSetArrayIndex), param1, dummy);
+        callRemoteMethod(QLatin1String(Protocol::QSettingsSetArrayIndex), qint32(param1), dummy);
     else
         d->settings.setArrayIndex(param1);
 }
@@ -292,7 +292,7 @@ QSettingsWrapper::Status QSettingsWrapper::status() const
 {
     if (createSocket()) {
         return static_cast<QSettingsWrapper::Status>
-            (callRemoteMethod<int>(QLatin1String(Protocol::QSettingsStatus)));
+            (callRemoteMethod<qint32>(QLatin1String(Protocol::QSettingsStatus)));
     }
     return static_cast<QSettingsWrapper::Status>(d->settings.status());
 }

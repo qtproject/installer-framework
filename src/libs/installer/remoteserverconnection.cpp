@@ -200,7 +200,7 @@ void RemoteServerConnection::handleQProcess(const QString &command, QDataStream 
     } else if (command == QLatin1String(Protocol::QProcessExitCode)) {
         sendData(stream, m_process->exitCode());
     } else if (command == QLatin1String(Protocol::QProcessExitStatus)) {
-        sendData(stream, static_cast<int> (m_process->exitStatus()));
+        sendData(stream, static_cast<qint32> (m_process->exitStatus()));
     } else if (command == QLatin1String(Protocol::QProcessKill)) {
         m_process->kill();
     } else if (command == QLatin1String(Protocol::QProcessReadAll)) {
@@ -233,27 +233,27 @@ void RemoteServerConnection::handleQProcess(const QString &command, QDataStream 
     } else if (command == QLatin1String(Protocol::QProcessStart3Arg)) {
         QString program;
         QStringList arguments;
-        int mode;
+        qint32 mode;
         data >> program;
         data >> arguments;
         data >> mode;
         m_process->start(program, arguments, static_cast<QIODevice::OpenMode> (mode));
     } else if (command == QLatin1String(Protocol::QProcessStart2Arg)) {
         QString program;
-        int mode;
+        qint32 mode;
         data >> program;
         data >> mode;
         m_process->start(program, static_cast<QIODevice::OpenMode> (mode));
     } else if (command == QLatin1String(Protocol::QProcessState)) {
-        sendData(stream, static_cast<int> (m_process->state()));
+        sendData(stream, static_cast<qint32> (m_process->state()));
     } else if (command == QLatin1String(Protocol::QProcessTerminate)) {
         m_process->terminate();
     } else if (command == QLatin1String(Protocol::QProcessWaitForFinished)) {
-        int msecs;
+        qint32 msecs;
         data >> msecs;
         sendData(stream, m_process->waitForFinished(msecs));
     } else if (command == QLatin1String(Protocol::QProcessWaitForStarted)) {
-        int msecs;
+        qint32 msecs;
         data >> msecs;
         sendData(stream, m_process->waitForStarted(msecs));
     } else if (command == QLatin1String(Protocol::QProcessWorkingDirectory)) {
@@ -261,9 +261,9 @@ void RemoteServerConnection::handleQProcess(const QString &command, QDataStream 
     } else if (command == QLatin1String(Protocol::QProcessErrorString)) {
         sendData(stream, m_process->errorString());
     } else if (command == QLatin1String(Protocol::QProcessReadChannel)) {
-        sendData(stream, static_cast<int> (m_process->readChannel()));
+        sendData(stream, static_cast<qint32> (m_process->readChannel()));
     } else if (command == QLatin1String(Protocol::QProcessSetReadChannel)) {
-        int processChannel;
+        qint32 processChannel;
         data >> processChannel;
         m_process->setReadChannel(static_cast<QProcess::ProcessChannel>(processChannel));
     } else if (command == QLatin1String(Protocol::QProcessWrite)) {
@@ -271,9 +271,9 @@ void RemoteServerConnection::handleQProcess(const QString &command, QDataStream 
         data >> byteArray;
         sendData(stream, m_process->write(byteArray));
     } else if (command == QLatin1String(Protocol::QProcessProcessChannelMode)) {
-        sendData(stream, static_cast<int> (m_process->processChannelMode()));
+        sendData(stream, static_cast<qint32> (m_process->processChannelMode()));
     } else if (command == QLatin1String(Protocol::QProcessSetProcessChannelMode)) {
-        int processChannel;
+        qint32 processChannel;
         data >> processChannel;
         m_process->setProcessChannelMode(static_cast<QProcess::ProcessChannelMode>(processChannel));
     }
@@ -314,7 +314,7 @@ void RemoteServerConnection::handleQSettings(const QString &command, QDataStream
     } else if (command == QLatin1String(Protocol::QSettingsBeginWriteArray)) {
         QString prefix;
         data >> prefix;
-        int size;
+        qint32 size;
         data >> size;
         m_settings->beginWriteArray(prefix, size);
     } else if (command == QLatin1String(Protocol::QSettingsBeginReadArray)) {
@@ -348,7 +348,7 @@ void RemoteServerConnection::handleQSettings(const QString &command, QDataStream
         data >> key;
         m_settings->remove(key);
     } else if (command == QLatin1String(Protocol::QSettingsSetArrayIndex)) {
-        int i;
+        qint32 i;
         data >> i;
         m_settings->setArrayIndex(i);
     } else if (command == QLatin1String(Protocol::QSettingsSetFallbacksEnabled)) {
@@ -407,23 +407,23 @@ void RemoteServerConnection::handleQFSFileEngine(const QString &command, QDataSt
         data >>newName;
         sendData(stream, m_engine->copy(newName));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineEntryList)) {
-        int filters;
+        qint32 filters;
         QStringList filterNames;
         data >>filters;
         data >>filterNames;
         sendData(stream, m_engine->entryList(static_cast<QDir::Filters> (filters), filterNames));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineError)) {
-        sendData(stream, static_cast<int> (m_engine->error()));
+        sendData(stream, static_cast<qint32> (m_engine->error()));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineErrorString)) {
         sendData(stream, m_engine->errorString());
     }
     else if (command == QLatin1String(Protocol::QAbstractFileEngineFileFlags)) {
-        int flags;
+        qint32 flags;
         data >>flags;
-        sendData(stream,
-            static_cast<int>(m_engine->fileFlags(static_cast<QAbstractFileEngine::FileFlags>(flags))));
+        flags = m_engine->fileFlags(static_cast<QAbstractFileEngine::FileFlags>(flags));
+        sendData(stream, static_cast<qint32>(flags));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineFileName)) {
-        int file;
+        qint32 file;
         data >>file;
         sendData(stream, m_engine->fileName(static_cast<QAbstractFileEngine::FileName> (file)));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineFlush)) {
@@ -445,15 +445,15 @@ void RemoteServerConnection::handleQFSFileEngine(const QString &command, QDataSt
         data >>createParentDirectories;
         sendData(stream, m_engine->mkdir(dirName, createParentDirectories));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineOpen)) {
-        int openMode;
+        qint32 openMode;
         data >>openMode;
         sendData(stream, m_engine->open(static_cast<QIODevice::OpenMode> (openMode)));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineOwner)) {
-        int owner;
+        qint32 owner;
         data >>owner;
         sendData(stream, m_engine->owner(static_cast<QAbstractFileEngine::FileOwner> (owner)));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineOwnerId)) {
-        int owner;
+        qint32 owner;
         data >>owner;
         sendData(stream, m_engine->ownerId(static_cast<QAbstractFileEngine::FileOwner> (owner)));
     } else if (command == QLatin1String(Protocol::QAbstractFileEnginePos)) {

@@ -179,7 +179,7 @@ bool QProcessWrapper::waitForFinished(int msecs)
     if (connectToServer()) {
         m_lock.lockForWrite();
         const bool value = callRemoteMethod<bool>(QLatin1String(Protocol::QProcessWaitForFinished),
-            msecs);
+            qint32(msecs));
         m_lock.unlock();
         return value;
     }
@@ -191,7 +191,7 @@ bool QProcessWrapper::waitForStarted(int msecs)
     if (connectToServer()) {
         m_lock.lockForWrite();
         const bool value = callRemoteMethod<bool>(QLatin1String(Protocol::QProcessWaitForStarted),
-            msecs);
+            qint32(msecs));
         m_lock.unlock();
         return value;
     }
@@ -228,7 +228,7 @@ int QProcessWrapper::exitCode() const
         m_lock.unlock();
         return value;
     }
-    return static_cast<int>(process.exitCode());
+    return process.exitCode();
 }
 
 QProcessWrapper::ExitStatus QProcessWrapper::exitStatus() const
