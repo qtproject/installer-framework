@@ -54,11 +54,10 @@ class INSTALLER_EXPORT RemoteClient : public QObject
     Q_OBJECT
     Q_DISABLE_COPY(RemoteClient)
     Q_DECLARE_PRIVATE(RemoteClient)
-    friend class RemoteClientGuard;
 
 public:
     static RemoteClient &instance();
-    void init(quint16 port, const QHostAddress &address, Protocol::Mode mode);
+    void init(quint16 port, const QString &key, Protocol::Mode mode, Protocol::StartAs startAs);
 
     void shutdown();
     bool connect(QTcpSocket *socket) const;
@@ -66,14 +65,9 @@ public:
     quint16 port() const;
     QHostAddress address() const;
     QString authorizationKey() const;
-    void setAuthorizationKey(const QString &key);
 
     bool isActive() const;
     void setActive(bool active);
-
-    void setStartServerCommand(const QString &command, Protocol::StartAs startAs);
-    void setStartServerCommand(const QString &command, const QStringList &arguments,
-        Protocol::StartAs start);
 
 private:
     RemoteClient();

@@ -48,7 +48,6 @@
 #include <QTcpSocket>
 #include <QThread>
 #include <QTimer>
-#include <QUuid>
 
 namespace QInstaller {
 
@@ -142,17 +141,21 @@ public:
         m_thread.wait();
     }
 
-    void init(quint16 port, const QHostAddress &address, Protocol::Mode mode)
+    void init(quint16 port, const QString &key, Protocol::Mode mode, Protocol::StartAs startAs)
     {
-        m_port = port;
         m_mode = mode;
-        m_address = address;
+        if (mode == Protocol::Mode::Production) {
+            m_key = key;
+            m_port = port;
+            m_mode = mode;
+            m_startServerAs = startAs;
+            m_serverCommand = QCoreApplication::applicationFilePath();
+            m_serverArguments = QStringList() << QLatin1String("--startserver")
+                << QString::fromLatin1("%1,%2,%3")
+                    .arg(QLatin1String(Protocol::ModeProduction))
+                    .arg(port)
+                    .arg(key);
 
-        if (mode == Protocol::Mode::Debug) {
-            m_active = true;
-            m_serverStarted = true;
-        } else if (m_mode == Protocol::Mode::Release) {
-            m_key = QUuid::createUuid().toString();
             if (!m_object) {
                 m_object = new KeepAliveObject;
                 m_object->moveToThread(&m_thread);
@@ -162,13 +165,17 @@ public:
             } else {
                 Q_ASSERT_X(false, Q_FUNC_INFO, "Keep alive thread already started.");
             }
-        } else {
-            Q_ASSERT_X(false, Q_FUNC_INFO, "RemoteClient mode not set properly.");
+        } else if (mode == Protocol::Mode::Debug) {
+            // To be able to debug the client-server connection start and stop the server manually,
+            // e.g. installer --startserver debug. The server is listening on localhost:39999 then.
         }
     }
 
     void maybeStartServer() {
-        if (m_serverStarted || m_serverCommand.isEmpty())
+        if (m_mode == Protocol::Mode::Debug)
+            m_serverStarted = true; // we expect the server to be started by the developer
+
+        if (m_serverStarted)
             return;
 
         const QMutexLocker ml(&m_mutex);
@@ -218,6 +225,9 @@ public:
 
     void maybeStopServer()
     {
+        if (m_mode == Protocol::Mode::Debug)
+            m_serverStarted = false; // we never started the server in debug mode
+
         if (!m_serverStarted)
             return;
 

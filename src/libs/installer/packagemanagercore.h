@@ -35,6 +35,7 @@
 #define PACKAGEMANAGERCORE_H
 
 #include "binaryformat.h"
+#include "protocol.h"
 #include "repository.h"
 #include "qinstallerglobal.h"
 
@@ -64,7 +65,10 @@ class INSTALLER_EXPORT PackageManagerCore : public QObject
 
 public:
     PackageManagerCore();
-    PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &ops);
+    PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &ops,
+        quint16 port = Protocol::DefaultPort,
+        const QString &key = QLatin1String(Protocol::DefaultAuthorizationKey),
+        Protocol::Mode mode = Protocol::Mode::Production);
     ~PackageManagerCore();
 
     // status

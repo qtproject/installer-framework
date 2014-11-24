@@ -39,14 +39,6 @@
 
 namespace QInstaller {
 
-class RemoteClientGuard
-{
-public:
-    RemoteClient client;
-};
-Q_GLOBAL_STATIC(RemoteClientGuard, remoteClientGuard);
-static RemoteClientGuard *gGuard = remoteClientGuard();
-
 RemoteClient::RemoteClient()
     : d_ptr(new RemoteClientPrivate(this))
 {
@@ -60,7 +52,8 @@ RemoteClient::~RemoteClient()
 
 RemoteClient &RemoteClient::instance()
 {
-    return gGuard->client;
+    static RemoteClient instance;
+    return instance;
 }
 
 quint16 RemoteClient::port() const
@@ -81,18 +74,15 @@ QString RemoteClient::authorizationKey() const
     return d->m_key;
 }
 
-void RemoteClient::setAuthorizationKey(const QString &key)
+/*!
+    Initializes the client with \a port, the port to write to, with \a key, the key the client
+    sends to authenticate with the server, \a mode and \a startAs.
+*/
+void RemoteClient::init(quint16 port, const QString &key, Protocol::Mode mode,
+    Protocol::StartAs startAs)
 {
     Q_D(RemoteClient);
-    if (d->m_serverStarted)
-        return;
-    d->m_key = key;
-}
-
-void RemoteClient::init(quint16 port, const QHostAddress &address, Protocol::Mode mode)
-{
-    Q_D(RemoteClient);
-    d->init(port, address, mode);
+    d->init(port, key, mode, startAs);
 }
 
 void RemoteClient::shutdown()
@@ -153,21 +143,6 @@ void RemoteClient::setActive(bool active)
         d->maybeStartServer();
         d->m_active = d->m_serverStarted;
     }
-}
-
-void RemoteClient::setStartServerCommand(const QString &command, Protocol::StartAs startAs)
-{
-    setStartServerCommand(command, QStringList(), startAs);
-}
-
-void RemoteClient::setStartServerCommand(const QString &command, const QStringList &arguments,
-    Protocol::StartAs startAs)
-{
-    Q_D(RemoteClient);
-    d->maybeStopServer();
-    d->m_serverCommand = command;
-    d->m_serverArguments = arguments;
-    d->m_startServerAs = startAs;
 }
 
 } // namespace QInstaller

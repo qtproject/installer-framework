@@ -116,30 +116,39 @@ int main(int argc, char *argv[])
     }
 
     if (parser.isSet(QLatin1String(CommandLineOptions::StartServer))) {
-        const QString argument = parser.value(QLatin1String(CommandLineOptions::StartServer));
-        const QString port = argument.section(QLatin1Char(','), 0, 0);
-        const QString key = argument.section(QLatin1Char(','), 1, 1);
+        const QStringList arguments = parser.value(QLatin1String(CommandLineOptions::StartServer))
+            .split(QLatin1Char(','), QString::SkipEmptyParts);
 
-        QStringList missing;
-        if (port.isEmpty())
-            missing << QLatin1String("Port");
-        if (key.isEmpty())
-            missing << QLatin1String("Key");
+        QString port, key;
+        const QString mode = arguments.value(0);
+        bool argumentsValid = (mode.compare(QLatin1String(QInstaller::Protocol::ModeDebug),
+            Qt::CaseInsensitive) == 0);
+        if (argumentsValid) {
+            port = arguments.value(1, QString::number(QInstaller::Protocol::DefaultPort));
+            key  = arguments.value(2, QLatin1String(QInstaller::Protocol::DefaultAuthorizationKey));
+        } else  {
+            port = arguments.value(1);
+            key =  arguments.value(2);
+        }
+
+        const bool production = (mode.compare(QLatin1String(QInstaller::Protocol::ModeProduction),
+            Qt::CaseInsensitive) == 0);
+        if (production)
+            argumentsValid = (!key.isEmpty()) && (!port.isEmpty());
 
         SDKApp<QCoreApplication> app(argc, argv);
-        if (missing.count()) {
+        if (!argumentsValid) {
             Console c;
-            std::cerr << qPrintable(QString::fromLatin1("Missing argument(s) for option "
-                "'startserver': %2").arg(missing.join(QLatin1String(", ")))) << std::endl;
             std::cout << qPrintable(parser.helpText()) << std::endl;
+            std::cerr << "Wrong argument(s) for option --startserver." << std::endl;
             return EXIT_FAILURE;
         }
 
         QInstaller::RemoteServer *server = new QInstaller::RemoteServer;
         QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
-        server->init(port.toInt(), QHostAddress(QLatin1String(QInstaller::Protocol
-            ::DefaultHostAddress)), QInstaller::Protocol::Mode::Release);
-        server->setAuthorizationKey(key);
+        server->init(port.toInt(), key, (production ? QInstaller::Protocol::Mode::Production
+            : QInstaller::Protocol::Mode::Debug));
+
         server->start();
         return app.exec();
     }

@@ -47,6 +47,7 @@
 #include <packagemanagercore.h>
 #include <packagemanagerproxyfactory.h>
 #include <qprocesswrapper.h>
+#include <protocol.h>
 #include <productkeycheck.h>
 #include <settings.h>
 #include <utils.h>
@@ -57,6 +58,7 @@
 #include <QDirIterator>
 #include <QTemporaryFile>
 #include <QTranslator>
+#include <QUuid>
 
 InstallerBase::InstallerBase(int &argc, char *argv[])
     : SDKApp<QApplication>(argc, argv)
@@ -109,8 +111,22 @@ int InstallerBase::run()
         qDebug() << "Arguments: " << arguments().join(QLatin1String(", ")).toUtf8().constData();
     }
 
+    CommandLineParser parser;
+    parser.parse(arguments());
+
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
-    m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations);
+    if (parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
+        const QStringList arguments = parser.value(QLatin1String(CommandLineOptions::StartServer))
+            .split(QLatin1Char(','), QString::SkipEmptyParts);
+        m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations, QString(arguments
+            .value(0, QString::number(QInstaller::Protocol::DefaultPort))).toInt(),
+            arguments.value(1, QLatin1String(QInstaller::Protocol::DefaultAuthorizationKey)),
+            QInstaller::Protocol::Mode::Debug);
+    } else {
+        m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations,
+            30000 + qrand() % 100, QUuid::createUuid().toString());
+    }
+
     {
         using namespace QInstaller;
         ProductKeyCheck::instance()->init(m_core);
@@ -119,9 +135,6 @@ int InstallerBase::run()
     }
     if (QInstaller::isVerbose())
         dumpResourceTree();
-
-    CommandLineParser parser;
-    parser.parse(arguments());
 
     QString controlScript;
     if (parser.isSet(QLatin1String(CommandLineOptions::Script))) {

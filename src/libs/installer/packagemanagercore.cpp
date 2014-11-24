@@ -690,15 +690,19 @@ PackageManagerCore::PackageManagerCore()
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
 }
 
-PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &operations)
+PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &operations,
+        quint16 port, const QString &key, Protocol::Mode mode)
     : d(new PackageManagerCorePrivate(this, magicmaker, operations))
 {
     Repository::registerMetaType(); // register, cause we stream the type as QVariant
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
 
-    d->initialize(QHash<QString, QString>());
+    // Creates and initializes a remote client, makes us get admin rights for QFile, QSettings
+    // and QProcess operations. Init needs to called to set the server side authorization key.
+    RemoteClient::instance().init(port, key, mode, Protocol::StartAs::SuperUser);
 
+    d->initialize(QHash<QString, QString>());
 
     //
     // Sanity check to detect a broken installations with missing operations.

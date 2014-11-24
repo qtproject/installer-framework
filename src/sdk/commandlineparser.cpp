@@ -94,7 +94,14 @@ CommandLineParser::CommandLineParser()
         "https://, http:// or ftp://."), QLatin1String("URI,...")));
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::StartServer),
-        QLatin1String("Starts the application as headless process waiting for commands to execute."),
+        QLatin1String("Starts the application as headless process waiting for commands to execute."
+        " Mode can be DEBUG or PRODUCTION. In DEBUG mode, the option values can be omitted."
+        "Note: The server will not shutdown on his own, you need to quit the process by hand."),
+        QLatin1String("mode,port,key")));
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::StartClient),
+        QString::fromLatin1("Starts the application to debug the client-server communication. If "
+        "a value is omitted, the client will use a default instead. Note: The server process is "
+        "not started by the client application in that case, you need to start it on your own."),
         QLatin1String("port,key")));
 
     m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::KeyValue),

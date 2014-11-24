@@ -40,8 +40,10 @@ namespace Protocol {
 
 enum struct Mode {
     Debug,
-    Release
+    Production
 };
+const char ModeDebug[] = "DEBUG";
+const char ModeProduction[] = "PRODUCTION";
 
 enum struct StartAs {
     User,

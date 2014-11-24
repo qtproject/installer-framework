@@ -39,6 +39,9 @@
 
 namespace QInstaller {
 
+/*!
+    Constructs an remote server object with \a parent.
+*/
 RemoteServer::RemoteServer(QObject *parent)
     : QObject(parent)
     , d_ptr(new RemoteServerPrivate(this))
@@ -46,6 +49,9 @@ RemoteServer::RemoteServer(QObject *parent)
     Repository::registerMetaType(); // register, cause we stream the type as QVariant
 }
 
+/*!
+    Destroys the remote server object.
+*/
 RemoteServer::~RemoteServer()
 {
     Q_D(RemoteServer);
@@ -54,8 +60,10 @@ RemoteServer::~RemoteServer()
 }
 
 /*!
-    Starts the server. If started in debug mode, the watchdog that kills the server after
-    30 seconds without usage is not started. The authorization key is set to "DebugMode".
+    Starts the server.
+
+    \note If running in debug mode, the timer that kills the server after 30 seconds without
+    usage is not started, so the server runs in an endless loop.
 */
 void RemoteServer::start()
 {
@@ -69,10 +77,31 @@ void RemoteServer::start()
     connect (d->m_tcpServer, SIGNAL(newIncomingConnection()), this, SLOT(restartWatchdog()));
     d->m_thread.start();
 
-    if (d->m_mode == Protocol::Mode::Release) {
+    if (d->m_mode == Protocol::Mode::Production) {
         connect(d->m_watchdog.data(), SIGNAL(timeout()), this, SLOT(deleteLater()));
         d->m_watchdog->start();
     }
+}
+
+/*!
+    Initializes the server with \a port, the port to listen on, with \a key, the key the client
+    needs to send to authenticate with the server, and \a mode.
+*/
+void RemoteServer::init(quint16 port, const QString &key, Protocol::Mode mode)
+{
+    Q_D(RemoteServer);
+    d->m_port = port;
+    d->m_key = key;
+    d->m_mode = mode;
+}
+
+/*!
+    Returns the port the server is listening on.
+*/
+quint16 RemoteServer::port() const
+{
+    Q_D(const RemoteServer);
+    return d->m_port;
 }
 
 /*!
@@ -82,23 +111,6 @@ QString RemoteServer::authorizationKey() const
 {
     Q_D(const RemoteServer);
     return d->m_key;
-}
-
-/*!
-    Sets the authorization key \a authorizationKey this server is asking the clients for.
-*/
-void RemoteServer::setAuthorizationKey(const QString &authorizationKey)
-{
-    Q_D(RemoteServer);
-    d->m_key = authorizationKey;
-}
-
-void RemoteServer::init(quint16 port, const QHostAddress &address, Protocol::Mode mode)
-{
-    Q_D(RemoteServer);
-    d->m_port = port;
-    d->m_address = address;
-    d->m_mode = mode;
 }
 
 /*!

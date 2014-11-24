@@ -53,32 +53,87 @@ class tst_ClientServer : public QObject
     Q_OBJECT
 
 private slots:
-    void testServerConnection()
+    void initTestCase()
     {
-        RemoteServer server;
-        server.init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
-        server.start();
-
-        QTcpSocket socket;
-        socket.connectToHost(QHostAddress::LocalHost, 39999);
-        QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
+        RemoteClient::instance().setActive(true);
     }
 
-    void testClientConnection()
+    void testServerConnectDebug()
     {
         RemoteServer server;
-        server.init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
+        server.init(Protocol::DefaultPort, QString(Protocol::DefaultAuthorizationKey),
+            Protocol::Mode::Debug);
         server.start();
 
         QTcpSocket socket;
-        RemoteClient::instance().init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
-        QVERIFY2(RemoteClient::instance().connect(&socket), "Could not connect to server.");
+        socket.connectToHost(QHostAddress(QLatin1String(Protocol::DefaultHostAddress)),
+            Protocol::DefaultPort);
+        QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
+        QCOMPARE(socket.state() == QAbstractSocket::ConnectedState, true);
+
+        QDataStream stream;
+        stream.setDevice(&socket);
+        stream << QString::fromLatin1(Protocol::Authorize) << QString(Protocol::DefaultAuthorizationKey);
+
+        socket.waitForBytesWritten(-1);
+        if (!socket.bytesAvailable())
+            socket.waitForReadyRead(-1);
+
+        quint32 size; stream >> size;
+        bool authorized;
+        stream >> authorized;
+        QCOMPARE(authorized, true);
+
+        socket.flush();
+        stream << QString::fromLatin1(Protocol::Authorize) << QString("SomeKey");
+        socket.waitForBytesWritten(-1);
+        if (!socket.bytesAvailable())
+            socket.waitForReadyRead(-1);
+
+        stream >> size;
+        stream >> authorized;
+        QCOMPARE(authorized, false);
+    }
+
+    void testServerConnectRelease()
+    {
+        RemoteServer server;
+        quint16 port = (30000 + qrand() % 100);
+        server.init(port, QString("SomeKey"), Protocol::Mode::Production);
+        server.start();
+
+        QTcpSocket socket;
+        socket.connectToHost(QHostAddress(QLatin1String(Protocol::DefaultHostAddress)), port);
+        QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
+        QCOMPARE(socket.state() == QAbstractSocket::ConnectedState, true);
+
+        QDataStream stream;
+        stream.setDevice(&socket);
+        stream << QString::fromLatin1(Protocol::Authorize) << QString("SomeKey");
+
+        socket.waitForBytesWritten(-1);
+        if (!socket.bytesAvailable())
+            socket.waitForReadyRead(-1);
+
+        quint32 size; stream >> size;
+        bool authorized;
+        stream >> authorized;
+        QCOMPARE(authorized, true);
+
+        socket.flush();
+        stream << QString::fromLatin1(Protocol::Authorize) << QString(Protocol::DefaultAuthorizationKey);
+        socket.waitForBytesWritten(-1);
+        if (!socket.bytesAvailable())
+            socket.waitForReadyRead(-1);
+
+        stream >> size;
+        stream >> authorized;
+        QCOMPARE(authorized, false);
     }
 
     void testQSettingsWrapper()
     {
         RemoteServer server;
-        server.init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
         server.start();
 
         QSettingsWrapper wrapper("digia", "clientserver");
@@ -194,7 +249,6 @@ private slots:
     void testQProcessWrapper()
     {
         RemoteServer server;
-        server.init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
         server.start();
 
         {
@@ -291,7 +345,6 @@ private slots:
     void testRemoteFileEngine()
     {
         RemoteServer server;
-        server.init(39999, QHostAddress::LocalHost, Protocol::Mode::Debug);
         server.start();
 
         QString filename;
@@ -318,6 +371,12 @@ private slots:
         file.resize(0);
         file.write(QProcess::systemEnvironment().join(QLatin1String("\n")).toLocal8Bit());
         QCOMPARE(file.atEnd(), true);
+    }
+
+    void cleanupTestCase()
+    {
+        RemoteClient::instance().setActive(false);
+        RemoteClient::instance().shutdown();
     }
 };
 
