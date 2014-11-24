@@ -104,7 +104,7 @@ void AbstractFileTask::registerMetaTypes()
 {
     qRegisterMetaType<QInstaller::FileTaskItem>();
     qRegisterMetaType<QInstaller::FileTaskResult>();
-    qRegisterMetaType<QInstaller::FileTaskException>();
+    qRegisterMetaType<QInstaller::TaskException>();
 }
 
 }   // namespace QInstaller

@@ -55,6 +55,23 @@ private:
 };
 inline AbstractTaskData::~AbstractTaskData() {}
 
+class TaskException : public QException
+{
+public:
+    TaskException() {}
+    ~TaskException() throw() {}
+    explicit TaskException(const QString &message)
+        : m_message(message)
+    {}
+
+    void raise() const { throw *this; }
+    QString message() const { return m_message; }
+    TaskException *clone() const { return new TaskException(*this); }
+
+private:
+    QString m_message;
+};
+
 template <typename T>
 class AbstractTask : public QObject
 {

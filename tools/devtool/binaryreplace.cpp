@@ -153,7 +153,7 @@ int BinaryReplace::replace(const QString &source, const QString &target)
         } catch (const QInstaller::Error &error) {
             std::cerr << qPrintable(error.message()) << std::endl;
         }
-    } catch (const QInstaller::FileTaskException &e) {
+    } catch (const QInstaller::TaskException &e) {
         std::cerr << qPrintable(e.message()) << std::endl;
     } catch (const QUnhandledException &e) {
         std::cerr << e.what() << std::endl;

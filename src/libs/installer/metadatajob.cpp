@@ -136,7 +136,7 @@ void MetadataJob::xmlTaskFinished()
             reset();
             emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
         }
-    } catch (const FileTaskException &e) {
+    } catch (const TaskException &e) {
         reset();
         emitFinishedWithError(QInstaller::DownloadError, e.message());
     } catch (const QUnhandledException &e) {
@@ -218,7 +218,7 @@ void MetadataJob::metadataTaskFinished()
         } else {
             emitFinished();
         }
-    } catch (const FileTaskException &e) {
+    } catch (const TaskException &e) {
         reset();
         emitFinishedWithError(QInstaller::DownloadError, e.message());
     } catch (const QUnhandledException &e) {

@@ -88,22 +88,6 @@ public:
     FileTaskItem taskItem() const { return value(TaskRole::TaskItem).value<FileTaskItem>(); }
 };
 
-class FileTaskException : public QException
-{
-public:
-    FileTaskException() {}
-    ~FileTaskException() throw() {}
-    explicit FileTaskException(const QString &message)
-        : m_message(message) {}
-
-    void raise() const { throw *this; }
-    QString message() const { return m_message; }
-    FileTaskException *clone() const { return new FileTaskException(*this); }
-
-private:
-    QString m_message;
-};
-
 class INSTALLER_EXPORT AbstractFileTask : public AbstractTask<FileTaskResult>
 {
     Q_OBJECT
@@ -138,6 +122,6 @@ private:
 
 Q_DECLARE_METATYPE(QInstaller::FileTaskItem)
 Q_DECLARE_METATYPE(QInstaller::FileTaskResult)
-Q_DECLARE_METATYPE(QInstaller::FileTaskException)
+Q_DECLARE_METATYPE(QInstaller::TaskException)
 
 #endif // ABSTRACTFILETASK_H

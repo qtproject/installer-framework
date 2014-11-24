@@ -60,7 +60,7 @@ void CopyFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
     fi.setExpectedResultCount(1);
 
     if (taskItems().isEmpty()) {
-        fi.reportException(FileTaskException(QLatin1String("Invalid task item count.")));
+        fi.reportException(TaskException(QLatin1String("Invalid task item count.")));
         fi.reportFinished(); return;    // error
     }
 
@@ -69,7 +69,7 @@ void CopyFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
 
     QFile source(item.source());
     if (!source.open(QIODevice::ReadOnly)) {
-        fi.reportException(FileTaskException(QString::fromLatin1("Could not open source '%1' "
+        fi.reportException(TaskException(QString::fromLatin1("Could not open source '%1' "
             "for read. Error: %2.").arg(source.fileName(), source.errorString())));
         fi.reportFinished(); return;    // error
     }
@@ -85,7 +85,7 @@ void CopyFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
         file.reset(new QFile(target));
     }
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        fi.reportException(FileTaskException(QString::fromLatin1("Could not open target '%1' "
+        fi.reportException(TaskException(QString::fromLatin1("Could not open target '%1' "
             "for write. Error: %2.").arg(file->fileName(), file->errorString())));
         fi.reportFinished(); return;    // error
     }
@@ -102,7 +102,7 @@ void CopyFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
         while (written < read) {
             const qint64 toWrite = file->write(buffer.constData() + written, read - written);
             if (toWrite < 0) {
-                fi.reportException(FileTaskException(QString::fromLatin1("Writing to target "
+                fi.reportException(TaskException(QString::fromLatin1("Writing to target "
                     "'%1' failed. Error: %2.").arg(file->fileName(), file->errorString())));
             }
             written += toWrite;

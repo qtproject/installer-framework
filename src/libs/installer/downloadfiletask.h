@@ -50,7 +50,7 @@ enum
 };
 }
 
-class ProxyAuthenticationRequiredException : public FileTaskException
+class ProxyAuthenticationRequiredException : public TaskException
 {
 public:
     ProxyAuthenticationRequiredException(const QNetworkProxy &proxy);
