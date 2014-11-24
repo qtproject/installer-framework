@@ -96,7 +96,7 @@ public:
         , m_tcpServer(0)
         , m_key(QLatin1String(Protocol::DefaultAuthorizationKey))
         , m_port(Protocol::DefaultPort)
-        , m_address(Protocol::DefaultHostAddress)
+        , m_address(QLatin1String(Protocol::DefaultHostAddress))
         , m_mode(Protocol::Mode::Debug)
         , m_watchdog(new QTimer)
     {

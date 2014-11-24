@@ -137,7 +137,8 @@ int main(int argc, char *argv[])
 
         QInstaller::RemoteServer *server = new QInstaller::RemoteServer;
         QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
-        server->init(port.toInt(), QHostAddress::LocalHost, QInstaller::Protocol::Mode::Release);
+        server->init(port.toInt(), QHostAddress(QLatin1String(QInstaller::Protocol
+            ::DefaultHostAddress)), QInstaller::Protocol::Mode::Release);
         server->setAuthorizationKey(key);
         server->start();
         return app.exec();

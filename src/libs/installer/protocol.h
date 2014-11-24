@@ -49,7 +49,7 @@ enum struct StartAs {
 };
 
 const unsigned short DefaultPort = 39999;
-const int DefaultHostAddress = 2; // QHostAddress::LocalHost
+const char DefaultHostAddress[] = "127.0.0.1";
 const char DefaultAuthorizationKey[] = "DefaultAuthorizationKey";
 
 const char Create[] = "Create";

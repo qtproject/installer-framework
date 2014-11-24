@@ -108,7 +108,7 @@ public:
     RemoteClientPrivate(RemoteClient *parent)
         : q_ptr(parent)
         , m_mutex(QMutex::Recursive)
-        , m_address(Protocol::DefaultHostAddress)
+        , m_address(QLatin1String(Protocol::DefaultHostAddress))
         , m_port(Protocol::DefaultPort)
         , m_startServerAs(Protocol::StartAs::User)
         , m_serverStarted(false)
