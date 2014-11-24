@@ -179,7 +179,6 @@ QString PackagesInfo::fileName() const
 void PackagesInfo::setApplicationName(const QString &name)
 {
     d->applicationName = name;
-    d->modified = true;
 }
 
 /*!
@@ -197,7 +196,6 @@ QString PackagesInfo::applicationName() const
 void PackagesInfo::setApplicationVersion(const QString &version)
 {
     d->applicationVersion = version;
-    d->modified = true;
 }
 
 /*!
