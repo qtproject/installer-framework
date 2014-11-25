@@ -141,6 +141,9 @@ int InstallerBase::run()
         controlScript = parser.value(QLatin1String(CommandLineOptions::Script));
         if (!QFileInfo(controlScript).exists())
             throw QInstaller::Error(QLatin1String("Script file does not exist."));
+    } else if (!m_core->settings().controlScript().isEmpty()) {
+        controlScript = QLatin1String(":/metadata/installer-config/")
+            + m_core->settings().controlScript();
     }
 
     if (parser.isSet(QLatin1String(CommandLineOptions::Proxy))) {

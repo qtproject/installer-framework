@@ -504,7 +504,7 @@ void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
 void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
 {
     foreach (int pageId, pageIds()) {
-        DynamicInstallerPage *const dynamicPage = dynamic_cast<DynamicInstallerPage*>(page(pageId));
+        DynamicInstallerPage *const dynamicPage = qobject_cast<DynamicInstallerPage*>(page(pageId));
         if (dynamicPage == 0)
             continue;
         if (dynamicPage->widget() != widget)
@@ -1007,8 +1007,6 @@ bool IntroductionPage::validatePage()
                 setErrorMessage(core->error());
         }
 
-        callControlScript(QLatin1String("UpdaterSelectedCallback"));
-
         if (m_updatesFetched) {
             if (core->components(QInstaller::PackageManagerCore::ComponentType::Root).count() <= 0)
                 setErrorMessage(QString::fromLatin1("<b>%1</b>").arg(tr("No updates available.")));
@@ -1037,8 +1035,6 @@ bool IntroductionPage::validatePage()
                 setErrorMessage(error);
             }
         }
-
-        callControlScript(QLatin1String("PackageManagerSelectedCallback"));
 
         if (m_allPackagesFetched || localPackagesTreeFetched)
             setComplete(true);
@@ -1119,14 +1115,6 @@ void IntroductionPage::setErrorMessage(const QString &error)
     m_taskButton->progress()->stop();
     m_taskButton->progress()->setValue(100);
 #endif
-}
-
-void IntroductionPage::callControlScript(const QString &callback)
-{
-    // Initialize the gui. Needs to be done after check repositories as only then the ui can handle
-    // hide of pages depending on the components.
-    gui()->init();
-    gui()->callControlScriptMethod(callback);
 }
 
 bool IntroductionPage::validRepositoriesAvailable() const

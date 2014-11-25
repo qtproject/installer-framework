@@ -121,9 +121,8 @@ int TabController::init()
         d->m_init = true;
         // this should called as early as possible, to handle error message boxes for example
         if (!d->m_controlScript.isEmpty()) {
-            qDebug() << "Non-interactive installation using script:" << d->m_controlScript;
-
             d->m_gui->loadControlScript(d->m_controlScript);
+            qDebug() << "Using control script:" << d->m_controlScript;
         }
 
         connect(d->m_gui, SIGNAL(currentIdChanged(int)), this, SLOT(onCurrentIdChanged(int)));

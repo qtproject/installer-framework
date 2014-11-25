@@ -66,6 +66,8 @@ static const QLatin1String scFtpProxy("FtpProxy");
 static const QLatin1String scHttpProxy("HttpProxy");
 static const QLatin1String scProxyType("ProxyType");
 
+const char scControlScript[] = "ControlScript";
+
 template <typename T>
 static QSet<T> variantListToSet(const QVariantList &list)
 {
@@ -253,7 +255,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scWizardStyle << scTitleColor
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
-                << scRemoteRepositories << scTranslations;
+                << scRemoteRepositories << scTranslations << QLatin1String(scControlScript);
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
@@ -682,4 +684,9 @@ QStringList Settings::translations() const
 void Settings::setTranslations(const QStringList &translations)
 {
     d->m_data.insert(scTranslations, translations);
+}
+
+QString Settings::controlScript() const
+{
+    return d->m_data.value(QLatin1String(scControlScript)).toString();
 }

@@ -151,6 +151,8 @@ public:
     QStringList translations() const;
     void setTranslations(const QStringList &translations);
 
+    QString controlScript() const;
+
 private:
     class Private;
     QSharedDataPointer<Private> d;

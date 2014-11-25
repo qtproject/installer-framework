@@ -72,8 +72,7 @@ class INSTALLER_EXPORT PackageManagerGui : public QWizard
 
 public:
     explicit PackageManagerGui(PackageManagerCore *core, QWidget *parent = 0);
-    virtual ~PackageManagerGui();
-    virtual void init() = 0;
+    virtual ~PackageManagerGui() = 0;
 
     void loadControlScript(const QString& scriptPath);
     void callControlScriptMethod(const QString& methodName);
@@ -219,7 +218,7 @@ public:
     void showMaintenanceTools();
     void setMaintenanceToolsEnabled(bool enable);
 
-    public Q_SLOTS:
+public Q_SLOTS:
     void onCoreNetworkSettingsChanged();
     void setMessage(const QString &msg);
     void onProgressChanged(int progress);
@@ -238,8 +237,6 @@ private:
     void leaving();
 
     void showWidgets(bool show);
-    void callControlScript(const QString &callback);
-
     bool validRepositoriesAvailable() const;
 
 private:

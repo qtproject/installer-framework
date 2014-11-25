@@ -84,6 +84,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.httpProxy(), QNetworkProxy());
 
     QCOMPARE(settings.translations(), QStringList());
+    QCOMPARE(settings.controlScript(), QString());
 }
 
 void tst_Settings::loadFullConfig()

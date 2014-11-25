@@ -290,7 +290,9 @@
             \li UrlQueryString
             \li This string needs to be in the form "key=value" and will be appended to archive download
                 requests. This can be used to transmit information to the webserver hosting the repository.
-
+        \row
+            \li ControlScript
+            \li Filename for a custom installer control script. See \l{Controller Scripting}.
     \endtable
 
 */

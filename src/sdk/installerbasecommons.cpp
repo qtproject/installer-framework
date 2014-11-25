@@ -64,10 +64,7 @@ InstallerGui::InstallerGui(PackageManagerCore *core)
     setPage(PackageManagerCore::ReadyForInstallation, new ReadyForInstallationPage(core));
     setPage(PackageManagerCore::PerformInstallation, new PerformInstallationPage(core));
     setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
-}
 
-void InstallerGui::init()
-{
     foreach (const int id, pageIds()) {
         packageManagerCore()->controlScriptEngine()->addQObjectChildren(page(id));
         packageManagerCore()->componentScriptEngine()->addQObjectChildren(page(id));
@@ -104,10 +101,7 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
 
     if (core->isUninstaller())
         wizardPageVisibilityChangeRequested(false, PackageManagerCore::InstallationFinished + 1);
-}
 
-void MaintenanceGui::init()
-{
     foreach (const int id, pageIds()) {
         packageManagerCore()->controlScriptEngine()->addQObjectChildren(page(id));
         packageManagerCore()->componentScriptEngine()->addQObjectChildren(page(id));

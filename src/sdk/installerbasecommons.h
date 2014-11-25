@@ -46,7 +46,7 @@ class InstallerGui : public QInstaller::PackageManagerGui
 
 public:
     explicit InstallerGui(QInstaller::PackageManagerCore *core);
-    virtual void init();
+    ~InstallerGui() {}
 };
 
 
@@ -58,7 +58,7 @@ class MaintenanceGui : public QInstaller::PackageManagerGui
 
 public:
     explicit MaintenanceGui(QInstaller::PackageManagerCore *core);
-    virtual void init();
+    ~MaintenanceGui() {}
 
 private Q_SLOTS:
     void updateRestartPage();
