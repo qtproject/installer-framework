@@ -118,7 +118,8 @@ HEADERS += packagemanagercore.h \
     binarylayout.h \
     installercalculator.h \
     uninstallercalculator.h \
-    proxycredentialsdialog.h
+    proxycredentialsdialog.h \
+    serverauthenticationdialog.h
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -186,9 +187,11 @@ SOURCES += packagemanagercore.cpp \
     binarylayout.cpp \
     installercalculator.cpp \
     uninstallercalculator.cpp \
-    proxycredentialsdialog.cpp
+    proxycredentialsdialog.cpp \
+    serverauthenticationdialog.cpp
 
-FORMS += proxycredentialsdialog.ui
+FORMS += proxycredentialsdialog.ui \
+    serverauthenticationdialog.ui
 
 RESOURCES += resources/installer.qrc
 

@@ -47,6 +47,7 @@
 
 namespace QInstaller {
 class Repository;
+typedef QHash<QString, QPair<Repository, Repository> > RepoHash;
 
 class INSTALLER_EXPORT Settings
 {
@@ -68,7 +69,6 @@ public:
         StrictParseMode,
         RelaxedParseMode
     };
-
     explicit Settings();
     ~Settings();
 
@@ -116,7 +116,7 @@ public:
     QSet<Repository> defaultRepositories() const;
     void setDefaultRepositories(const QSet<Repository> &repositories);
     void addDefaultRepositories(const QSet<Repository> &repositories);
-    Settings::Update updateDefaultRepositories(const QHash<QString, QPair<Repository, Repository> > &updates);
+    Settings::Update updateDefaultRepositories(const RepoHash &updates);
 
     QSet<Repository> temporaryRepositories() const;
     void setTemporaryRepositories(const QSet<Repository> &repositories, bool replace);
@@ -125,6 +125,7 @@ public:
     QSet<Repository> userRepositories() const;
     void setUserRepositories(const QSet<Repository> &repositories);
     void addUserRepositories(const QSet<Repository> &repositories);
+    Settings::Update updateUserRepositories(const RepoHash &updates);
 
     bool allowSpaceInPath() const;
     bool allowNonAsciiCharacters() const;

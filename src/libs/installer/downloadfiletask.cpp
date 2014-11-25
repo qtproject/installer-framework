@@ -47,10 +47,9 @@
 
 namespace QInstaller {
 
-ProxyAuthenticationRequiredException::ProxyAuthenticationRequiredException(const QNetworkProxy &proxy)
-    : TaskException(QCoreApplication::translate("ProxyAuthenticationRequiredException",
-                                                    "Proxy requires authentication.")),
-      m_proxy(proxy)
+AuthenticationRequiredException::AuthenticationRequiredException(Type type, const QString &message)
+    : TaskException(message)
+    , m_type(type)
 {
 }
 
@@ -86,8 +85,8 @@ void Downloader::download(QFutureInterface<FileTaskResult> &fi, const QList<File
     fi.setExpectedResultCount(items.count());
 
     m_nam.setProxyFactory(networkProxyFactory);
-    connect(&m_nam, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)), this,
-        SLOT(onAuthenticationRequired(QNetworkReply*, QAuthenticator*)));
+    connect(&m_nam, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), this,
+        SLOT(onAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
     connect(&m_nam, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this,
             SLOT(onProxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
     QTimer::singleShot(0, this, SLOT(doDownload()));
@@ -192,8 +191,8 @@ void Downloader::onFinished(QNetworkReply *reply)
                 reply->deleteLater();
                 return;
             } else {
-                m_futureInterface->reportException(
-                            TaskException(tr("Redirect loop detected '%1'.").arg(url.toString())));
+                m_futureInterface->reportException(TaskException(tr("Redirect loop detected '%1'.")
+                    .arg(url.toString())));
                 return;
             }
         }
@@ -209,9 +208,8 @@ void Downloader::onFinished(QNetworkReply *reply)
     const QByteArray expectedCheckSum = data.taskItem.value(TaskRole::Checksum).toByteArray();
     if (!expectedCheckSum.isEmpty()) {
         if (expectedCheckSum != data.observer->checkSum().toHex()) {
-            m_futureInterface->reportException(
-                        TaskException(tr("Checksum mismatch detected '%1'.").arg(
-                                              reply->url().toString())));
+            m_futureInterface->reportException(TaskException(tr("Checksum mismatch detected '%1'.")
+                .arg(reply->url().toString())));
         }
     }
     m_futureInterface->reportResult(FileTaskResult(filename, data.observer->checkSum(), data.taskItem));
@@ -235,10 +233,10 @@ void Downloader::onError(QNetworkReply::NetworkError error)
 {
     QNetworkReply *const reply = qobject_cast<QNetworkReply *>(sender());
 
-    if (error == QNetworkReply::ProxyAuthenticationRequiredError) {
-        // already handled by onProxyAuthenticationRequired
-        return;
-    }
+    if (error == QNetworkReply::ProxyAuthenticationRequiredError)
+        return; // already handled by onProxyAuthenticationRequired
+    if (error = QNetworkReply::AuthenticationRequiredError)
+        return; // already handled by onAuthenticationRequired
 
     if (reply) {
         const Data &data = m_downloads[reply];
@@ -280,14 +278,17 @@ void Downloader::onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *
 
     FileTaskItem *item = &m_downloads[reply].taskItem;
     const QAuthenticator auth = item->value(TaskRole::Authenticator).value<QAuthenticator>();
-    if (!auth.user().isEmpty()) {
+    if (auth.user().isEmpty()) {
+        AuthenticationRequiredException e(AuthenticationRequiredException::Type::Server,
+            QCoreApplication::translate("AuthenticationRequiredException", "%1 at %2")
+            .arg(authenticator->realm(), reply->url().host()));
+        item->insert(TaskRole::Authenticator, QVariant::fromValue(QAuthenticator(*authenticator)));
+        e.setFileTaskItem(*item);
+        m_futureInterface->reportException(e);
+    } else {
         authenticator->setUser(auth.user());
         authenticator->setPassword(auth.password());
         item->insert(TaskRole::Authenticator, QVariant()); // clear so we fail on next call
-    } else {
-        m_futureInterface->reportException(
-                    TaskException(tr("Could not authenticate using the provided credentials. "
-                                         "Source: '%1'.").arg(reply->url().toString())));
     }
 }
 
@@ -295,7 +296,11 @@ void Downloader::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuth
 {
     // Report to GUI thread.
     // (MetadataJob will ask for username/password, and restart the download ...)
-    m_futureInterface->reportException(ProxyAuthenticationRequiredException(proxy));
+    AuthenticationRequiredException e(AuthenticationRequiredException::Type::Proxy,
+        QCoreApplication::translate("AuthenticationRequiredException",
+        "Proxy requires authentication."));
+    e.setProxy(proxy);
+    m_futureInterface->reportException(e);
 }
 
 
@@ -317,9 +322,8 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
     QUrl const source = item.source();
     if (!source.isValid()) {
         //: %2 is a sentence describing the error
-        m_futureInterface->reportException(
-                    TaskException(tr("Invalid source '%1'. Error: %2.").arg(
-                                          source.toString(), source.errorString())));
+        m_futureInterface->reportException(TaskException(tr("Invalid source '%1'. Error: %2.")
+            .arg(source.toString(), source.errorString())));
         return 0;
     }
 

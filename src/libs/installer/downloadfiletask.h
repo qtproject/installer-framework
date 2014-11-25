@@ -50,20 +50,33 @@ enum
 };
 }
 
-class ProxyAuthenticationRequiredException : public TaskException
+class AuthenticationRequiredException : public TaskException
 {
 public:
-    ProxyAuthenticationRequiredException(const QNetworkProxy &proxy);
-    ~ProxyAuthenticationRequiredException() throw() {}
+    enum struct Type {
+        Proxy,
+        Server
+    };
+
+    explicit AuthenticationRequiredException(Type type, const QString &message);
+    ~AuthenticationRequiredException() throw() {}
+
+    Type type() const { return m_type; }
 
     QNetworkProxy proxy() const { return m_proxy; }
+    void setProxy(const QNetworkProxy &proxy) { m_proxy = proxy; }
+
+    FileTaskItem taskItem() const { return m_fileTaskItem; }
+    void setFileTaskItem(const FileTaskItem &item) { m_fileTaskItem = item; }
 
     void raise() const { throw *this; }
-    ProxyAuthenticationRequiredException *clone() const {
-        return new ProxyAuthenticationRequiredException(*this); }
+    AuthenticationRequiredException *clone() const {
+        return new AuthenticationRequiredException(*this); }
 
 private:
+    Type m_type;
     QNetworkProxy m_proxy;
+    FileTaskItem m_fileTaskItem;
 };
 
 class INSTALLER_EXPORT DownloadFileTask : public AbstractFileTask
