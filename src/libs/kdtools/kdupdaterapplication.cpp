@@ -43,44 +43,30 @@
 using namespace KDUpdater;
 
 /*!
-   \defgroup kdupdater KD Updater
-   \since_l 2.1
-
-   "KD Updater" is a library from KDAB that helps in enabling automatic updates for your applications.
-   All classes belonging to the "KD Updater" library are defined in the \ref KDUpdater namespace.
-
-   TODO: this comes from the former mainpage:
-KD Updater is a tool to automatically detect, retrieve, install and activate updates to software
-applications and libraries. It is intended to be used with Qt based applications, and developed
-against the Qt 4 series. It is a library that users link to their application. It uses only accepted
-standard protocols, and does not require any other 3rd party libraries that are not shipped with
-Qt.
-
-KD Updater is generic in that it is not developed for one specific application. The first version is
-experimental. If it proves successful and useful, it will be integrated into KDAB's KD Tools
-package. It is part of KDAB's strategy to provide functionality missing in Qt that is required for
-medium-to-large scale software systems.
-*/
-
-
-/*!
+    \inmodule kdupdater
     \namespace KDUpdater
+    \brief The KDUpdater classes where initially developed by KDAB to help provide automatic
+           updates for your applications. Now they are solely part of the Qt Installer Framework.
 */
 
 /*!
-   \class KDUpdater::Application kdupdaterapplication.h KDUpdaterApplication
-   \inmodule kdupdater
-   \brief This class represents an application that can be updated.
+    \class KDUpdater::Application
+    \inmodule kdupdater
+    \brief The \c Application class represents an application that can be updated.
 
-   A KDUpdater application is an application that needs to interact with one or more update servers and
-   downloads/installs updates This class helps in describing an application in terms of:
-   \li application Directory
-   \li packages XML file name and its corresponding KDUpdater::PackagesInfo object
-   \li update Sources XML file name and its corresponding KDUpdater::UpdateSourcesInfo object
+    A KDUpdater application is an application that interacts with one or more update servers and
+    downloads or installs updates. This class helps in describing an application in terms of:
+    \list
+        \li Application Directory
+        \li Packages XML file name and its corresponding KDUpdater::PackagesInfo object
+        \li Update sources XML file name and its corresponding KDUpdater::UpdateSourcesInfo object
+    \endlist
 
-   User can also retrieve some information from this class:
-   \li application name
-   \li application version
+    User can also retrieve some information from this class:
+    \list
+        \li Application name
+        \li Application version
+    \endlist
 */
 
 struct Application::ApplicationData
@@ -120,9 +106,8 @@ struct Application::ApplicationData
 Application *Application::ApplicationData::instance = 0;
 
 /*!
-   Constructor of the Application class. The class will be constructed and configured to
-   assume the application directory to be the directory in which the application exists. The
-   application name is assumed to be QCoreApplication::applicationName()
+    Constructs the \c Application class and configures it to assume the application directory to be
+    the directory in which the application exists.
 */
 Application::Application(ConfigurationInterface* config, QObject* p) : QObject(p)
 {
@@ -136,7 +121,7 @@ Application::Application(ConfigurationInterface* config, QObject* p) : QObject(p
 }
 
 /*!
-   Destructor
+    Destructor
 */
 Application::~Application()
 {
@@ -146,16 +131,16 @@ Application::~Application()
 }
 
 /*!
- Returns a previously created Application instance.
- */
+    Returns a previously created \c Application instance.
+*/
 Application *Application::instance()
 {
     return ApplicationData::instance;
 }
 
 /*!
-   Changes the applicationDirPath directory to \c dir. Packages.xml and UpdateSources.xml found in the new
-   application directory will be used.
+    Sets the application directory path directory to \a dir. The package XML and update sources
+    XML files found in the new application directory will be used.
 */
 void Application::setApplicationDirectory(const QString &dir)
 {
@@ -171,7 +156,7 @@ void Application::setApplicationDirectory(const QString &dir)
 }
 
 /*!
-   Returns path to the application directory.
+    Returns the path to the application directory.
 */
 QString Application::applicationDirectory() const
 {
@@ -179,7 +164,7 @@ QString Application::applicationDirectory() const
 }
 
 /*!
-   Returns the application name.
+    Returns the application name. By default, QCoreApplication::applicationName() is returned.
 */
 QString Application::applicationName() const
 {
@@ -190,7 +175,7 @@ QString Application::applicationName() const
 }
 
 /*!
-   Returns the application version.
+    Returns the application version.
 */
 QString Application::applicationVersion() const
 {
@@ -200,8 +185,14 @@ QString Application::applicationVersion() const
     return QString();
 }
 
+/*!
+    Adds update source info to this class.
+
+    \sa KDUpdater::UpdateSourceInfo
+    \sa KDUpdater::UpdateSourcesInfo
+*/
 void Application::addUpdateSource(const QString &name, const QString &title,
-                                  const QString &description, const QUrl &url, int priority)
+    const QString &description, const QUrl &url, int priority)
 {
     UpdateSourceInfo info;
     info.name = name;
@@ -214,8 +205,8 @@ void Application::addUpdateSource(const QString &name, const QString &title,
 
 
 /*!
-   Sets the file name of the Package XML file for this application. By default this is assumed to be
-   Packages.xml in the application directory.
+    Sets the file name of the package XML file for this application to \a fileName. By default,
+    this is assumed to be Packages.xml in the application directory.
 
    \sa KDUpdater::PackagesInfo::setFileName()
 */
@@ -225,7 +216,7 @@ void Application::setPackagesXMLFileName(const QString &fileName)
 }
 
 /*!
-   Returns the Package XML file name.
+    Returns the package XML file name.
 */
 QString Application::packagesXMLFileName() const
 {
@@ -233,7 +224,7 @@ QString Application::packagesXMLFileName() const
 }
 
 /*!
-   Returns the \ref PackagesInfo object associated with this application.
+    Returns the KDUpdater::PackagesInfo object associated with this application.
 */
 PackagesInfo* Application::packagesInfo() const
 {
@@ -241,8 +232,8 @@ PackagesInfo* Application::packagesInfo() const
 }
 
 /*!
-   Sets the file name of the Package XML file for this application. By default this is assumed to be
-   Packages.xml in the application directory.
+    Sets the file name of the update sources XML file for this application. By default, this is
+    assumed to be UpdateSources.xml in the application directory.
 
    \sa KDUpdater::UpdateSourcesInfo::setFileName()
 */
@@ -252,7 +243,7 @@ void Application::setUpdateSourcesXMLFileName(const QString &fileName)
 }
 
 /*!
-   Returns the Update Sources XML file name.
+    Returns the update sources XML file name.
 */
 QString Application::updateSourcesXMLFileName() const
 {
@@ -260,7 +251,7 @@ QString Application::updateSourcesXMLFileName() const
 }
 
 /*!
-   Returns the \ref UpdateSourcesInfo object associated with this application.
+    Returns the KDUpdater::UpdateSourcesInfo object associated with this application.
 */
 UpdateSourcesInfo* Application::updateSourcesInfo() const
 {

@@ -65,31 +65,20 @@ static double calcProgress(qint64 done, qint64 total)
 
 /*!
     \inmodule kdupdater
-    \class KDUpdater::FileDownloader kdupdaterfiledownloader.h
+    \class KDUpdater::FileDownloader
     \brief The FileDownloader class is the base class for file downloaders used in KDUpdater.
 
-    File downloaders are used by
-    the KDUpdater::Update class to download update files. Each subclass of FileDownloader
-    can download file from a specific category of sources (e.g. local, ftp, http etc).
+    File downloaders are used by the KDUpdater::Update class to download update files. Each
+    subclass of FileDownloader can download files from a specific category of sources (such as
+    local, ftp, http).
 
     This is an internal class, not a part of the public API. Currently we have three
     subclasses of FileDownloader
-    \li LocalFileDownloader - downloads from the local file system
-    \li FtpDownloader - downloads from a FTP site
-    \li HttpDownloader - downloads from a HTTP site
-
-    Usage
-
-    \code
-    KDUpdater::FileDownloader* downloader = new KDUpdater::(some subclass name)
-
-    downloader->setUrl(url);
-    downloader->download();
-
-    // wait for downloadCompleted() signal
-
-    QString downloadedFile = downloader->downloadedFileName();
-    \endcode
+    \list
+        \li Use the FtpDownloader to download files from an FTP site.
+        \li Use the HttpDownloader to download files from an HTTP site.
+        \li Use the LocalFileDownloader to download files from the local file system.
+    \endlist
 */
 
 struct KDUpdater::FileDownloader::Private

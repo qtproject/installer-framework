@@ -212,8 +212,8 @@ void KDJob::setTotalAmount(quint64 amount)
 }
 
 /*!
-    Returns the timeout in milliseconds before the jobs cancel slot gets triggered. A return value of -1
-    means there is currently no timeout used for the job.
+    Returns the timeout in milliseconds before the job's cancel slot gets triggered. A return value
+    of -1 means there is currently no timeout used for the job.
 */
 int KDJob::timeout() const
 {
@@ -221,10 +221,9 @@ int KDJob::timeout() const
 }
 
 /*!
-    Sets the timeout in \a milliseconds before the jobs cancel slot gets triggered. \note Only jobs that
-    have the \c KDJob::Cancelable capability can be canceled by a timeout. A
-    value of -1 will stop the
-    timeout mechanism.
+    Sets the timeout in \a milliseconds before the job's cancel slot gets triggered. \note Only jobs
+    that have the \c KDJob::Cancelable capability can be canceled by a timeout. A value of -1 will
+    stop the timeout mechanism.
 */
 void KDJob::setTimeout(int milliseconds)
 {

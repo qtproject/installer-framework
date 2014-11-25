@@ -44,7 +44,7 @@
 namespace QInstaller {
 
 namespace TaskRole {
-enum
+enum TaskRole
 {
     Checksum,
     TaskItem,

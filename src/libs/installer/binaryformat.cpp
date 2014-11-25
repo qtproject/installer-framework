@@ -89,7 +89,7 @@ namespace QInstaller {
 /*!
     \fn void Resource::setSegment(const Range<qint64> &segment)
 
-    Sets the range inside the file this resource represents.
+    Sets the range to the \a segment of the file that this resource represents.
 */
 
 /*!

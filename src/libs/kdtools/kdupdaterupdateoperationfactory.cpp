@@ -40,26 +40,37 @@
 using namespace KDUpdater;
 
 /*!
-   \inmodule kdupdater
-   \class KDUpdater::UpdateOperationFactory kdupdaterupdateoperationfactory.h KDUpdaterUpdateOperationFactory
-   \brief Factory for \ref KDUpdater::UpdateOperation
+    \inmodule kdupdater
+    \class KDUpdater::UpdateOperationFactory
+    \brief The UpdateOperationFactory class is used to create update operations based on their name.
 
-   This class acts as a factory for \ref KDUpdater::UpdateOperation. You can register
-   one or more update operations with this factory and query operations based on their name.
+    This class acts as a factory for \c KDUpdater::UpdateOperation. You can register one or more
+    update operations with this factory and query operations based on their name.
 
-   This class follows the singleton design pattern. Only one instance of this class can
-   be created and its reference can be fetched from the \ref instance() method.
+    This class follows the singleton design pattern. Only one instance of this class can be created
+    and its reference can be fetched from the instance() method.
+
+    The following operations are registered by default:
+    \list
+        \li Copy operation
+        \li Move operation
+        \li Delete operation
+        \li Mkdir operation
+        \li Rmdir operation
+        \li AppendFile operation
+        \li PrependFile operation
+    \endlist
 */
 
 /*!
-   \fn KDUpdater::UpdateOperationFactory::registerUpdateOperation( const QString& name )
+    \fn void KDUpdater::UpdateOperationFactory::registerUpdateOperation(const QString &name)
 
-   Registers T as new UpdateOperation with \a name. When create() is called with that \a name,
-   T is constructed using its default constructor.
+    Registers a new update operation with the factory based on \a name. When create() is called
+    with that \a name, the update operation is constructed using its default constructor.
 */
 
 /*!
-   Returns the UpdateOperationFactory instance. The instance is created if needed.
+    Returns the UpdateOperationFactory instance. The instance is created if needed.
 */
 UpdateOperationFactory &UpdateOperationFactory::instance()
 {
@@ -68,7 +79,7 @@ UpdateOperationFactory &UpdateOperationFactory::instance()
 }
 
 /*!
-   Constructor
+    Constructor
 */
 UpdateOperationFactory::UpdateOperationFactory()
 {

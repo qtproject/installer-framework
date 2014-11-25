@@ -50,42 +50,14 @@
 using namespace KDUpdater;
 
 /*!
-   \inmodule kdupdater
-   \class KDUpdater::UpdateFinder kdupdaterupdatefinder KDUpdaterUpdateFinder
-   \brief Finds updates applicable for a \ref KDUpdater::Application
+    \inmodule kdupdater
+    \class KDUpdater::UpdateFinder
+    \brief The UpdaterFinder class finds updates applicable for a KDUpdater::Application.
 
-   The KDUpdater::UpdateFinder class helps in searching for updates and installing them on the application. The
-   class basically processes the application's \ref KDUpdater::PackagesInfo and the UpdateXMLs it aggregates
-   from all the update sources described in KDUpdater::UpdateSourcesInfo and populates a list of
-   \ref KDUpdater::Update objects. This list can then be passed to \ref KDUpdater::UpdateInstaller for
-   actually downloading and installing the updates.
-
-
-   Usage:
-   \code
-   KDUpdater::UpdateFinder updateFinder( application );
-   QProgressDialog finderProgressDlg;
-
-   QObject::connect( &updateFinder, SIGNAL(progressValue(int)),
-   &finderProgressDlg, SLOT(setValue(int)));
-   QObject::connect( &updateFinder, SIGNAL(computeUpdatesCompleted()),
-   &finderProgressDlg, SLOT(accept()));
-   QObject::connect( &updateFinder, SIGNAL(computeUpdatesCanceled()),
-   &finderProgressDlg, SLOT(reject()));
-
-   QObject::connect( &finderProgressDlg, SIGNAL(canceled()),
-   &updateFinder, SLOT(cancelComputeUpdates()));
-
-   updateFinder.run();
-   finderProgressDlg.exec();
-
-   // Control comes here after update finding is done or canceled.
-
-   QList<KDUpdater::Update*> updates = updateFinder.updates();
-   KDUpdater::UpdateInstaller updateInstaller;
-   updateInstaller.installUpdates( updates );
-
-\endcode
+    The KDUpdater::UpdateFinder class helps in searching for updates and installing them on the
+    application. The class basically processes the application's KDUpdater::PackagesInfo and the
+    UpdateXMLs it aggregates from all the update sources described in KDUpdater::UpdateSourcesInfo
+    and populates a list of KDUpdater::Update objects.
 */
 
 //
@@ -179,17 +151,17 @@ void UpdateFinder::Private::clear()
    \internal
 
    This method computes the updates that can be applied on the application by
-   studying the application's \ref KDUpdater::PackagesInfo object and the UpdateXML files
-   from each of the update sources described in \ref KDUpdater::UpdateSourcesInfo.
+   studying the application's KDUpdater::PackagesInfo object and the UpdateXML files
+   from each of the update sources described in KDUpdater::UpdateSourcesInfo.
 
    This function can take a long time to complete. The following signals are emitted
    during the execution of this function
 
-   The function creates \ref KDUpdater::Update objects on the stack. All KDUpdater::Update objects
+   The function creates KDUpdater::Update objects on the stack. All KDUpdater::Update objects
    are made children of the application associated with this finder.
 
-   The update sources are fetched from the \ref KDUpdater::UpdateSourcesInfo object associated with
-   the application. Package information is extracted from the \ref KDUpdater::PackagesInfo object
+   The update sources are fetched from the KDUpdater::UpdateSourcesInfo object associated with
+   the application. Package information is extracted from the KDUpdater::PackagesInfo object
    associated with the application.
 
    \note Each time this function is called, all the previously computed updates are discarded
@@ -250,7 +222,7 @@ void UpdateFinder::Private::computeUpdates()
 
    Cancels the computation of updates.
 
-   \sa \ref computeUpdates()
+   \sa computeUpdates()
 */
 void UpdateFinder::Private::cancelComputeUpdates()
 {
@@ -488,7 +460,7 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
 //
 
 /*!
-   Constructs a update finder for a given \ref KDUpdater::Application.
+   Constructs an update finder for a given KDUpdater::Application.
 */
 UpdateFinder::UpdateFinder(Application *application)
     : Task(QLatin1String("UpdateFinder"), Stoppable, application),
@@ -507,7 +479,7 @@ UpdateFinder::~UpdateFinder()
 
 /*!
    Returns a list of KDUpdater::Update objects. The update objects returned in this list
-   are made children of the \ref KDUpdater::Application object associated with this class.
+   are made children of the KDUpdater::Application object associated with this class.
 */
 QList<Update *> UpdateFinder::updates() const
 {
@@ -517,7 +489,7 @@ QList<Update *> UpdateFinder::updates() const
 /*!
    \internal
 
-   Implemented from \ref KDUpdater::Task::doStart().
+   Implemented from KDUpdater::Task::doRun().
 */
 void UpdateFinder::doRun()
 {
@@ -527,7 +499,7 @@ void UpdateFinder::doRun()
 /*!
    \internal
 
-   Implemented form \ref KDUpdater::Task::doStop()
+   Implemented from KDUpdater::Task::doStop().
 */
 bool UpdateFinder::doStop()
 {
@@ -542,7 +514,7 @@ bool UpdateFinder::doStop()
 /*!
    \internal
 
-   Implemented form \ref KDUpdater::Task::doStop()
+   Implemented from KDUpdater::Task::doStop().
 */
 bool UpdateFinder::doPause()
 {
@@ -553,7 +525,7 @@ bool UpdateFinder::doPause()
 /*!
    \internal
 
-   Implemented form \ref KDUpdater::Task::doStop()
+   Implemented from KDUpdater::Task::doStop().
 */
 bool UpdateFinder::doResume()
 {
@@ -580,9 +552,11 @@ void UpdateFinder::Private::slotDownloadDone()
    This function compares two version strings \c v1 and \c v2 and returns
    -1, 0 or +1 based on the following rule
 
-   \li Returns 0 if v1 == v2
-   \li Returns -1 if v1 < v2
-   \li Returns +1 if v1 > v2
+    \list
+        \li Returns 0 if v1 == v2
+        \li Returns -1 if v1 < v2
+        \li Returns +1 if v1 > v2
+    \endlist
 
    The function is very similar to \c strcmp(), except that it works on version strings.
 

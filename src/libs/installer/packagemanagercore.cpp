@@ -76,6 +76,7 @@
 
 /*!
     \namespace QInstaller
+    \inmodule QtInstallerFramework
 */
 
 /*!

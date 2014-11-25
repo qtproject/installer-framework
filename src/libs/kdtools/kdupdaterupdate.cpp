@@ -38,7 +38,7 @@ using namespace KDUpdater;
 
 /*!
    \inmodule kdupdater
-   \class KDUpdater::Update kdupdaterupdate.h KDUpdaterUpdate
+   \class KDUpdater::Update
    \brief Represents a single update
 
    The KDUpdater::Update class contains information about an update. It is created by KDUpdater::UpdateFinder

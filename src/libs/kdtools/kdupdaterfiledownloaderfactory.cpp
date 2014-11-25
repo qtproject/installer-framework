@@ -41,14 +41,12 @@ using namespace KDUpdater;
 
 /*!
    \inmodule kdupdater
-   \class KDUpdater::FileDownloaderFactory kdupdaterfiledownloaderfactory.h
-   \brief Factory for \ref KDUpdater::FileDownloader
+   \class KDUpdater::FileDownloaderFactory
+   \brief The FileDownloaderFactory class acts as a factory for KDUpdater::FileDownloader.
 
-   This class acts as a factory for \ref KDUpdater::FileDownloader. You can register
-   one or more file downloaders with this factory and query them based on their scheme.
-
-   This class follows the singleton design pattern. Only one instance of this class can
-   be created and its reference can be fetched from the \ref instance() method.
+   You can register one or more file downloaders with this factory and query them based on their
+   scheme. The class follows the singleton design pattern. Only one instance of this class can
+   be created and its reference can be fetched from the instance() method.
 */
 
 
@@ -59,7 +57,7 @@ FileDownloaderFactory& FileDownloaderFactory::instance()
 }
 
 /*!
-   Constructor
+    Constructor
 */
 FileDownloaderFactory::FileDownloaderFactory()
     : d (new FileDownloaderFactoryData)
@@ -123,9 +121,10 @@ bool FileDownloaderFactory::isSupportedScheme(const QString &scheme)
 }
 
 /*!
-   Returns a new instance to the \ref KDUpdater::FileDownloader based whose scheme is equal to the string
-   passed as parameter to this function.
-   \note Ownership of this object remains to the programmer.
+     Returns a new instance of a KDUpdater::FileDownloader subclass. The subclass is instantiated
+     based on the communication protocol string stored in \a scheme.
+
+     \note Ownership of the created object remains with the programmer.
 */
 FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *parent) const
 {
@@ -142,7 +141,9 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *pa
 }
 
 /*!
-   KDUpdater::FileDownloaderFactory::registerFileDownlooader
-   Registers a new file downloader with the factory. If there is already a downloader with the same scheme,
-   the downloader is replaced. The ownership of the downloader is transferred to the factory.
+    \fn void KDUpdater::FileDownloaderFactory::registerFileDownloader(const QString &scheme)
+
+    Registers a new file downloader with the factory based on \a scheme. If there is already
+    a downloader with the same scheme, the downloader is replaced. When create() is called
+    with that \a scheme, the file downloader is constructed using its default constructor.
 */

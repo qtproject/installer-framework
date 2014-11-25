@@ -35,83 +35,99 @@
 #include "kdgenericfactory.h"
 
 /*!
+   \inmodule kdupdater
    \class KDGenericFactory
-   \ingroup core
-   \brief Template based generic factory implementation
-   \since_c 2.1
+   \brief The KDGenericFactory class implements a template-based generic factory.
 
-   (The exception safety of this class has not been evaluated yet.)
+   KDGenericFactory is an implementation of the factory pattern. It can be used to produce
+   instances of different classes having a common superclass \c T_Product. The user of the
+   factory registers those producible classes in the factory by using an identifier
+   \c T_Identifier. That identifier can then be used to produce as many instances of the
+   registered product as the user wants.
 
-   KDGenericFactory is an implemention of of the factory pattern. It can be used to
-   "produce" instances of different classes having a common superclass
-   T_Product. The user of the
-   factory registers those producable classes in the factory by using an identifier
-   (T_Identifier, defaulting to QString). That identifer can then be used to
-   produce as many instances of the registered product as he wants.
+   The advanced user can even choose the type of the class the factory is using to store its
+   FactoryFunctions by passing a \c T_Map template parameter. It defaults to QHash.
 
-   The advanced user can even choose the type of the map the factory is using to store its
-   FactoryFunctions by passing a T_Map template parameter. It defaults to QHash. KDGenericFactory
-   expects it to be a template class accepting T_Identifier and FactoryFunction as parameters.
-   Additionally it needs to provide:
+   KDGenericFactory expects the storage container to be a template class accepting \c T_Identifier
+   and \c FactoryFunction as parameters. Additionally it needs to provide:
 
-   \li\link QHash::const_iterator a nested %const_iterator \endlink typedef for an iterator type that when dereferenced has type ((const) reference to) FactoryFunction (Qt convention),
-   \li\link QHash::insert %insert( T_Identifier, FactoryFunction ) \endlink, which must overwrite any existing entries with the same identifier.
-   \li\link QHash::find %find( T_Identifier ) \endlink,
-   \li\link QHash::end %end() \endlink,
-   \li\link QHash::size %size() \endlink,
-   \li\link QHash::remove %remove( T_Identifier ) \endlink, and
-   \li\link QHash::keys %keys ) \endlink, returning a QList<T_Identifier>.
+    \table
+        \header
+            \li Method
+            \li Description
+        \row
+            \li \c {const_iterator}
+            \li A type that provides a random-access iterator that can read a const element and
+                when dereferenced has type \c {const &FactoryFunction}.
+        \row
+            \li \c {insert(T_Identifier, FactoryFunction)}
+            \li A function that inserts a new item with \c T_Identifier as key and \c FactoryFunction
+                as value. If there is already an item with \c T_Identifier as key, that item's value
+                must be replaced with \c FactoryFunction.
+        \row
+            \li \c {find(T_Identifier)}
+            \li A function returning an iterator pointing to the item with the key \c T_Identifier.
 
-   The only two class templates that currently match this concept are
-   QHash and QMap. QMultiHash and QMulitMap do not work, since they
-   violate the requirement on insert() above, and std::map and
-   std::unordered_map do not match because they don't have keys() and
-   because a dereferenced iterator has type
-   std::pair<const T_Identifier,FactoryFunction>
-   instead of just FactoryFunction.
+        \row
+            \li \c {end()}
+            \li A function returning an iterator pointing to the imaginary item after the last item.
 
-   \section general-use General Use
+        \row
+            \li \c {size()}
+            \li A function returning the number of items.
+        \row
+            \li \c {remove(T_Identifier)}
+            \li A function removing all items that have the key \c T_Identifier.
+        \row
+            \li \c {keys()}
+            \li A function returning a list of all the keys \c T_Identifier in an arbitrary order.
+    \endtable
+
+   The only two class templates that currently match this concept are QHash and QMap. QMultiHash
+   and QMultiMap do not work, because they violate the requirement on insert() above and std::map
+   and std::unordered_map do not match, because they do not have keys() and, because a dereferenced
+   iterator has type \c {std::pair<const T_Identifier, FactoryFunction>} instead of just
+   \c FactoryFunction.
 
    The following example shows how the general use case of KDGenericFactory looks like:
 
-   \code
+    \code
 
-   class Fruit
-   {
-   };
+    class Fruit
+    {
+    };
 
-   class Apple : public Fruit
-   {
-   };
+    class Apple : public Fruit
+    {
+    };
 
-   class Pear : public Fruit
-   {
-   };
+    class Pear : public Fruit
+    {
+    };
 
-   int main()
-   {
-       // creates a common fruit "factory"
-       KDGenericFactory< Fruit > fruitPlantation;
-       // registers the product "Apple"
-       fruitPlantation.registerProduct< Apple >( "Apple" );
-       // registers the product "Pear"
-       fruitPlantation.registerProduct< Pear >( "Pear" );
+    int main()
+    {
+        // creates a common fruit "factory"
+        KDGenericFactory< Fruit > fruitPlantation;
+        // registers the product "Apple"
+        fruitPlantation.registerProduct< Apple >( "Apple" );
+        // registers the product "Pear"
+        fruitPlantation.registerProduct< Pear >( "Pear" );
 
-       // lets create some stuff - here comes our tasty apple:
-       Fruit* myApple = fruitPlantation.create( "Apple" );
+        // lets create some stuff - here comes our tasty apple:
+        Fruit* myApple = fruitPlantation.create( "Apple" );
 
-       // and a pear, please:
-       Fruit* myPear = fruitPlantation.create( "Pear" );
+        // and a pear, please:
+        Fruit* myPear = fruitPlantation.create( "Pear" );
 
-       // ohh - that doesn't work, returns a null pointer:
-       Fruit* myCherry = fruitPlantation.create( "Cherry" );
-   }
-
-   \endcode
+        // ohh - that doesn't work, returns a null pointer:
+        Fruit* myCherry = fruitPlantation.create( "Cherry" );
+    }
+    \endcode
 */
 
 /*!
-   \fn KDGenericFactory::~KDGenericFactory
+   \fn KDGenericFactory::~KDGenericFactory()
 
    Destructor.
 */
@@ -133,35 +149,8 @@
 */
 
 /*!
-   \fn KDGenericFactory::unregisterProduct( const T_Identifier& name )
-
-   Unregisters the previously registered product identified by \a name from the factory.
-   If no such product is known, nothing is done.
-*/
-
-/*!
-   \fn KDGenericFactory::productCount() const
-
-   Returns the number of different products known to the factory.
-*/
-
-/*!
-   \fn KDGenericFactory::availableProducts() const
-
-   Returns the list of products known to the factory.
-*/
-
-/*!
    \fn KDGenericFactory::create( const T_Identifier& name ) const
 
    Creates and returns a product of the type identified by \a name.
    Ownership of the product is transferred to the caller.
-*/
-
-/*!
-   \fn KDGenericFactory::registerProductionFunction( const T_Identifier& name, FactoryFunction create )
-
-   Subclasses can use this method to register their own FactoryFunction \a create to create products of
-   type T, identified by \a name. When a product is registered via this method, it will be created
-   by calling create().
 */

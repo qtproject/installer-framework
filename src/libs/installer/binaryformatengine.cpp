@@ -80,6 +80,9 @@ namespace QInstaller {
         collections and resource files.
 */
 
+/*!
+    Constructs a new binary format engine with \a collections and \a fileName.
+*/
 BinaryFormatEngine::BinaryFormatEngine(const QHash<QByteArray, ResourceCollection> &collections,
         const QString &fileName)
     : m_resource(0)
@@ -90,6 +93,9 @@ BinaryFormatEngine::BinaryFormatEngine(const QHash<QByteArray, ResourceCollectio
 
 /*!
     \internal
+
+    Sets the file engine's file name to \a file. This is the file that the rest of the virtual
+    functions will operate on.
 */
 void BinaryFormatEngine::setFileName(const QString &file)
 {
@@ -97,10 +103,10 @@ void BinaryFormatEngine::setFileName(const QString &file)
 
     static const QChar sep = QLatin1Char('/');
     static const QString prefix = QLatin1String("installer://");
-    Q_ASSERT(file.toLower().startsWith(prefix));
+    Q_ASSERT(m_fileNamePath.toLower().startsWith(prefix));
 
     // cut the prefix
-    QString path = file.mid(prefix.length());
+    QString path = m_fileNamePath.mid(prefix.length());
     while (path.endsWith(sep))
         path.chop(1);
 

@@ -47,6 +47,15 @@ namespace QInstaller {
 */
 
 /*!
+    \enum ComponentModel::ModelStateFlag
+
+    \value AllChecked
+    \value AllUnchecked
+    \value DefaultChecked
+    \value PartiallyChecked
+*/
+
+/*!
     \fn void ComponentModel::checkStateChanged(const QModelIndex &index)
 
     This signal is emitted whenever the check state of a component is changed. The \a index value

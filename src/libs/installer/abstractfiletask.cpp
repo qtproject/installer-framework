@@ -35,35 +35,77 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::AbstractFileTask
+    \brief The AbstractFileTask class is the base class of file related tasks.
+
+    The class is not usable as a standalone class but provides common functionality when subclassed.
+*/
+
+/*!
+    \enum TaskRole::TaskRole
+
+    \value Checksum
+    \value TaskItem
+    \value SourceFile
+    \value TargetFile
+    \value UserRole     The first role that can be used for user-specific purposes.
+*/
+
+/*!
+    Constructs an empty abstract file task object.
+*/
 AbstractFileTask::AbstractFileTask()
 {
     registerMetaTypes();
 }
 
+/*!
+    \fn AbstractFileTask::~AbstractFileTask()
+
+    Destroys the abstract file task object.
+*/
+
+/*!
+    Constructs a new abstract file task object with \a source.
+*/
 AbstractFileTask::AbstractFileTask(const QString &source)
 {
     registerMetaTypes();
     setTaskItem(FileTaskItem(source));
 }
 
+/*!
+    Constructs a new abstract file task object with \a item.
+*/
 AbstractFileTask::AbstractFileTask(const FileTaskItem &item)
 {
     registerMetaTypes();
     setTaskItem(item);
 }
 
+/*!
+    Constructs a new abstract file task object with \a source and \a target.
+*/
 AbstractFileTask::AbstractFileTask(const QString &source, const QString &target)
 {
     registerMetaTypes();
     setTaskItem(FileTaskItem(source, target));
 }
 
+/*!
+    Returns a list of file task items this task is working on.
+*/
 QList<FileTaskItem> AbstractFileTask::taskItems() const
 {
     QReadLocker _(&m_lock);
     return m_items;
 }
 
+/*!
+    Sets a file task \a item this task is working on.
+*/
 void AbstractFileTask::setTaskItem(const FileTaskItem &item)
 {
     clearTaskItems();
@@ -73,24 +115,36 @@ void AbstractFileTask::setTaskItem(const FileTaskItem &item)
 
 // -- protected
 
+/*!
+    \internal
+*/
 void AbstractFileTask::clearTaskItems()
 {
     QWriteLocker _(&m_lock);
     m_items.clear();
 }
 
+/*!
+    \internal
+*/
 void AbstractFileTask::addTaskItem(const FileTaskItem &item)
 {
     QWriteLocker _(&m_lock);
     m_items.append(item);
 }
 
+/*!
+    \internal
+*/
 void AbstractFileTask::setTaskItems(const QList<FileTaskItem> &items)
 {
     clearTaskItems();
     addTaskItems(items);
 }
 
+/*!
+    \internal
+*/
 void AbstractFileTask::addTaskItems(const QList<FileTaskItem> &items)
 {
     QWriteLocker _(&m_lock);
@@ -100,6 +154,9 @@ void AbstractFileTask::addTaskItems(const QList<FileTaskItem> &items)
 
 // -- private
 
+/*!
+    \internal
+*/
 void AbstractFileTask::registerMetaTypes()
 {
     qRegisterMetaType<QInstaller::FileTaskItem>();

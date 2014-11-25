@@ -76,16 +76,35 @@ using namespace KDUpdater;
     Error codes related to retrieving update sources.
 
     \value NoError                     No error occurred.
-    \value NotYetReadError             The package information was not parsed yet from the XML file.
+    \value NotYetReadError             The update source information was not parsed yet from the
+                                       XML file.
     \value CouldNotReadSourceFileError The specified update source file could not be read
-        (does not exist or is not readable).
+                                       (does not exist or is not readable).
     \value InvalidXmlError             The source file contains invalid XML.
     \value InvalidContentError         The source file contains valid XML, but does not match the
-        expected format for source descriptions.
+                                       expected format for source descriptions.
     \value CouldNotSaveChangesError    Changes made to the object could not be saved back to the
-        source file.
+                                       source file.
 */
 
+/*!
+    \fn void UpdateSourcesInfo::reset()
+
+    This signal is emitted whenever the contents of this UpdateSourcesInfo are refreshed, usually
+    from within the refresh() slot.
+*/
+
+/*!
+    \fn void UpdateSourcesInfo::updateSourceInfoAdded(const UpdateSourceInfo &info)
+
+    This signal is emitted when \c UpdateSourceInfo \a info is added.
+*/
+
+/*!
+    \fn void UpdateSourcesInfo::updateSourceInfoRemoved(const UpdateSourceInfo &info)
+
+    This signal is emitted when \c UpdateSourceInfo \a info is removed.
+*/
 
 struct UpdateSourceInfoPriorityHigherThan
 {
@@ -148,7 +167,8 @@ UpdateSourcesInfo::~UpdateSourcesInfo()
 }
 
 /*!
-   \internal
+    Returns \c true if UpdateSourcesInfo is valid; otherwise returns \c false.
+    You can use the errorString() method to receive a descriptive error message.
 */
 bool UpdateSourcesInfo::isValid() const
 {
@@ -157,7 +177,7 @@ bool UpdateSourcesInfo::isValid() const
 
 /*!
     Returns a human-readable description of the last error that occurred.
- */
+*/
 QString UpdateSourcesInfo::errorString() const
 {
     return d->errorMessage;
@@ -166,25 +186,33 @@ QString UpdateSourcesInfo::errorString() const
 /*!
     Returns the error that was found during the processing of the update sources XML file. If no
     error was found, returns NoError.
- */
+*/
 UpdateSourcesInfo::Error UpdateSourcesInfo::error() const
 {
     return d->error;
 }
 
+/*!
+    Returns the modified state of this object. The modified state defines if there where
+    modifications done to the update-sources that need to be written to the updates XML file
+    that will restore the update-sources on the next run.
+*/
 bool UpdateSourcesInfo::isModified() const
 {
     return d->modified;
 }
 
+/*!
+    Sets the modified state of the object to \a modified.
+*/
 void UpdateSourcesInfo::setModified(bool modified)
 {
     d->modified = modified;
 }
 
 /*!
-   Sets the complete file name of the update sources XML file. The function also issues a call
-   to refresh() to reload package information from the XML file.
+   Sets the complete file name of the update sources XML file to \a fileName. The function also
+   issues a call to refresh() to reload update sources from the XML file.
 
    \sa KDUpdater::Application::setUpdateSourcesXMLFileName()
 */
@@ -198,7 +226,7 @@ void UpdateSourcesInfo::setFileName(const QString &fileName)
 }
 
 /*!
-   Returns the name of the update sources XML file that this class referred to.
+   Returns the name of the update sources XML file that this class refers to.
 */
 QString UpdateSourcesInfo::fileName() const
 {
@@ -226,8 +254,8 @@ UpdateSourceInfo UpdateSourcesInfo::updateSourceInfo(int index) const
 }
 
 /*!
-   Adds an update source info to this class. Upon successful addition, the class emits a
-   updateSourceInfoAdded() signal.
+   Adds the given update source info \a info to this class. Upon successful addition, the class
+   emits an updateSourceInfoAdded() signal.
 */
 void UpdateSourcesInfo::addUpdateSourceInfo(const UpdateSourceInfo &info)
 {
@@ -240,8 +268,8 @@ void UpdateSourcesInfo::addUpdateSourceInfo(const UpdateSourceInfo &info)
 }
 
 /*!
-   Removes an update source info from this class. Upon successful removal, the class emits a
-   updateSourceInfoRemoved() signal.
+   Removes the given update source info \a info from this class. Upon successful removal, the class
+   emits an updateSourceInfoRemoved() signal.
 */
 void UpdateSourcesInfo::removeUpdateSourceInfo(const UpdateSourceInfo &info)
 {
@@ -396,6 +424,13 @@ void UpdateSourcesInfo::UpdateSourcesInfoData::addChildElement(QDomDocument &doc
     An update source is a repository that contains updates applicable for the application.
     This structure describes a single update source in terms of name, title, description,
     url, and priority.
+*/
+
+/*!
+    \fn UpdateSourceInfo::UpdateSourceInfo()
+
+    Constructs an empty update source info object. The object's priority is set to -1. All other
+    class members are initialized using a \l{default-constructed value}.
 */
 
 /*!

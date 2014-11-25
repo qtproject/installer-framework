@@ -38,19 +38,29 @@ using namespace KDUpdater;
 
 /*!
    \inmodule kdupdater
-   \class KDUpdater::Task kdupdatertask.h KDUpdaterTask
-   \brief Base class for all task classes in KDUpdater
+   \class KDUpdater::Task
+   \brief The Task class is the base class for all tasks in KDUpdater.
 
    This class is the base class for all task classes in KDUpdater. Task is an activity that
    occupies certain amount of execution time. It can be started, stopped (or canceled), paused and
    resumed. Tasks can report progress and error messages which an application can show in any
    sort of UI. The KDUpdater::Task class provides a common interface for dealing with all kinds of
-   tasks in KDUpdater. The class diagram show in this class documentation will help in pointing out
-   the task classes in KDUpdater.
+   tasks in KDUpdater.
 
-   User should be carefull of these points:
-   \li Instances of this class cannot be created. Only instance of the subclasses can be created
-   \li Task classes can be started only once.
+   User should be careful of these points:
+   \list
+        \li Task classes can be started only once.
+        \li Instances of this class cannot be created. Only instance of the subclasses can.
+    \endlist
+*/
+
+/*!
+    \enum Task::Capability
+    Sets the capabilities of the task.
+
+    \value NoCapability
+    \value Pausable
+    \value Stoppable
 */
 
 /*!
@@ -85,16 +95,7 @@ QString Task::name() const
 }
 
 /*!
-   Returns the capabilities of the task. It is a combination of one or more
-   Capability flags. Defined as follows
-   \code
-   enum Task::Capability
-   {
-       NoCapability	= 0,
-       Pausable     = 1,
-       Stoppable    = 2
-   };
-   \endcode
+   Returns the capabilities of the task. It is a combination of one or more Capability flags.
 */
 int Task::capabilities() const
 {
@@ -194,7 +195,7 @@ void Task::run()
 }
 
 /*!
-   Stops the task, provided the task has \ref Stoppable capability.
+   Stops the task, provided the task has Stoppable capability.
 
    \note Once the task is stopped, it cannot be restarted.
 */
@@ -233,7 +234,7 @@ void Task::stop()
 }
 
 /*!
-   Paused the task, provided the task has \ref Pausable capability.
+   Pauses the task, provided the task has KDUpdater::Task::Pausable capability.
 */
 void Task::pause()
 {
@@ -367,7 +368,7 @@ void Task::setAutoDelete(bool autoDelete)
 }
 
 /*!
-   \fn virtual bool KDUpdater::Task::doStart() = 0;
+   \fn virtual bool KDUpdater::Task::doRun() = 0;
 */
 
 /*!
@@ -383,61 +384,54 @@ void Task::setAutoDelete(bool autoDelete)
 */
 
 /*!
-   \signal void KDUpdater::Task::error(int code, const QString& errorText)
+   \fn void Task::error(int code, const QString &errorText)
 
    This signal is emitted to notify an error during the execution of this task.
-   \param code Error code
-   \param errorText A string describing the error.
 
-   Error codes are just integers, there are however built in errors represented
-   by the KDUpdater::Error enumeration
-   \code
-   enum Error
-   {
-   ECannotStartTask,
-   ECannotPauseTask,
-   ECannotResumeTask,
-   ECannotStopTask,
-   EUnknown
-   };
-   \endcode
+   The \a code parameter indicates the error that was found during the execution of the
+   task, while the \a errorText is the human-readable description of the last error that occurred.
 */
 
 /*!
-   \signal void KDUpdater::Task::progress(int percent, const QString& progressText)
+    \fn void Task::progressValue(int percent)
 
-   This signal is emitted to nofity progress made by the task.
-
-   \param percent Percentage of progress made
-   \param progressText A string describing the progress made
+    This signal is emitted to report progress made by the task. The \a percent parameter gives
+    the progress made as a percentage.
 */
 
 /*!
-   \signal void KDUpdater::Task::started()
+    \fn void Task::progressText(const QString &progressText)
+
+    This signal is emitted to report the progress made by the task. The \a progressText parameter
+    represents the progress made in a human-readable form.
+*/
+
+/*!
+   \fn void Task::started()
 
    This signal is emitted when the task has started.
 */
 
 /*!
-   \signal void KDUpdater::Task::paused()
+   \fn void Task::paused()
 
    This signal is emitted when the task has paused.
 */
 
 /*!
-   \signal void KDUpdater::Task::resumed()
+   \fn void Task::resumed()
 
    This signal is emitted when the task has resumed.
 */
 
 /*!
-   \signal void KDUpdater::Task::stopped()
+   \fn void Task::stopped()
 
    This signal is emitted when the task has stopped (or canceled).
 */
 
 /*!
-   \signal void KDUpdater::Task::finished()
+   \fn void Task::finished()
 
    This signal is emitted when the task has finished.
 */
