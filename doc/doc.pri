@@ -27,7 +27,7 @@ QCH_FILE = $$OUT_PWD/doc/ifw.qch
 html_docs.commands = $$QDOC $$PWD/installerfw.qdocconf
 html_docs.files = $$QHP_FILE
 
-html_docs_online.commands = $$QDOC $$PWD/installerfw.qdocconf
+html_docs_online.commands = $$QDOC $$PWD/installerfw-online.qdocconf
 html_docs_online.files = $$QHP_FILE
 
 qch_docs.commands = $$HELPGENERATOR -o $$QCH_FILE $$QHP_FILE

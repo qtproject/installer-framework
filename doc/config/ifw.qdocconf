@@ -1,0 +1,60 @@
+include($QT_INSTALL_DOCS/global/macros.qdocconf)
+include($QT_INSTALL_DOCS/global/qt-cpp-defines.qdocconf)
+include($QT_INSTALL_DOCS/global/compat.qdocconf)
+include($QT_INSTALL_DOCS/global/fileextensions.qdocconf)
+
+language    = Cpp
+project     = "Qt Installer Framework"
+description = "Qt Installer Framework Manual"
+url         = http://qt-project.org/doc/qtinstallerframework/
+
+sourcedirs += includes
+sourcedirs += ../src/libs/installer ../src/libs/kdtools
+headerdirs += ../src/libs/installer ../src/libs/kdtools
+
+imagedirs = $SRCDIR/images $SRCDIR/templates/images
+outputdir = $OUTDIR
+exampledirs = $SRCDIR ../examples
+
+headers.fileextensions         = "*.h"
+sources.fileextensions         = "*.qdoc *.qdocinc *.cpp"
+examples.fileextensions        = "*.js *.qs *.txt *.xml"
+examples.imageextensions       = "*.png"
+
+indexes += $QT_INSTALL_DOCS/qtcore/qtcore.index \
+           $QT_INSTALL_DOCS/qtwidgets/qtwidgets.index \
+           $QT_INSTALL_DOCS/qtqml/qtqml.index \
+           $QT_INSTALL_DOCS/qtxml/qtxml.index \
+           $QT_INSTALL_DOCS/qtconcurrent/qtconcurrent.index \
+           $QT_INSTALL_DOCS/qtnetwork/qtnetwork.index
+
+qhp.projects            = InstallerFramework
+qhp.InstallerFramework.file             = ifw.qhp
+qhp.InstallerFramework.namespace        = org.qt-project.ifw.$IFW_VERSION_TAG
+qhp.InstallerFramework.virtualFolder    = doc
+qhp.InstallerFramework.indexTitle       = Qt Installer Framework Manual
+qhp.InstallerFramework.filterAttributes = ifw
+qhp.InstallerFramework.customFilters.InstallerFramework.name = Installer Framework
+qhp.InstallerFramework.customFilters.InstallerFramework.filterAttributes = ifw
+qhp.InstallerFramework.indexRoot        =
+
+qhp.InstallerFramework.subprojects = manual
+qhp.InstallerFramework.subprojects.manual.title = Qt Installer Framework Manual
+qhp.InstallerFramework.subprojects.manual.indexTitle = Qt Installer Framework Manual
+qhp.InstallerFramework.subprojects.manual.type = manual
+
+macro.ifwversion = $IFW_VERSION
+
+# Doxygen compatibility commands
+
+macro.see                       = "\\sa"
+macro.function                  = "\\fn"
+
+
+# We 'misuse' QML doc commands to generate JS documentation
+# (only works with qdoc from Qt 5)
+
+outputprefixes = QML
+outputprefixes.QML =
+
+navigation.homepage = "Qt Installer Framework Manual"
