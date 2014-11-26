@@ -51,38 +51,48 @@ class TcpServer : public QTcpServer
     Q_DISABLE_COPY(TcpServer)
 
 public:
-    TcpServer(quint16 port, const QHostAddress &address, RemoteServer *server)
+    TcpServer(quint16 port, const QString &key)
         : QTcpServer(0)
-        , m_port(port)
-        , m_address(address)
-        , m_server(server)
+        , m_key(key)
+        , m_shutdown(false)
     {
-        listen(m_address, m_port);
+        listen(QHostAddress(QLatin1String(Protocol::DefaultHostAddress)), port);
     }
 
     ~TcpServer() {
+        shutdown();
+    }
+
+signals:
+    void shutdownRequested();
+    void newIncomingConnection();
+
+private slots:
+    void shutdown() {
+        m_shutdown = true;
         const QList<QThread *> threads = findChildren<QThread *>();
         foreach (QThread *thread, threads) {
             thread->quit();
             thread->wait();
         }
+        emit shutdownRequested();
     }
-
-signals:
-    void newIncomingConnection();
 
 private:
     void incomingConnection(qintptr socketDescriptor) Q_DECL_OVERRIDE {
-        QThread *const thread = new RemoteServerConnection(socketDescriptor, m_server);
+        if (m_shutdown)
+            return;
+
+        QThread *const thread = new RemoteServerConnection(socketDescriptor, m_key);
         connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+        connect(thread, SIGNAL(shutdownRequested()), this, SLOT(shutdown()));
         thread->start();
         emit newIncomingConnection();
     }
 
 private:
-    quint16 m_port;
-    QHostAddress m_address;
-    QPointer<RemoteServer> m_server;
+    QString m_key;
+    bool m_shutdown;
 };
 
 class RemoteServerPrivate
@@ -96,7 +106,6 @@ public:
         , m_tcpServer(0)
         , m_key(QLatin1String(Protocol::DefaultAuthorizationKey))
         , m_port(Protocol::DefaultPort)
-        , m_address(QLatin1String(Protocol::DefaultHostAddress))
         , m_mode(Protocol::Mode::Debug)
         , m_watchdog(new QTimer)
     {
@@ -111,7 +120,6 @@ private:
     QString m_key;
     quint16 m_port;
     QThread m_thread;
-    QHostAddress m_address;
     Protocol::Mode m_mode;
     QScopedPointer<QTimer> m_watchdog;
 };

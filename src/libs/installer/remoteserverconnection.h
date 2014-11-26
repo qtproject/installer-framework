@@ -48,7 +48,6 @@ QT_END_NAMESPACE
 namespace QInstaller {
 
 class QProcessSignalReceiver;
-class RemoteServer;
 
 class RemoteServerConnection : public QThread
 {
@@ -56,9 +55,12 @@ class RemoteServerConnection : public QThread
     Q_DISABLE_COPY(RemoteServerConnection)
 
 public:
-    RemoteServerConnection(qintptr socketDescriptor, RemoteServer *parent);
+    RemoteServerConnection(qintptr socketDescriptor, const QString &authorizationKey);
 
     void run() Q_DECL_OVERRIDE;
+
+signals:
+    void shutdownRequested();
 
 private:
     template <typename T>
@@ -73,7 +75,7 @@ private:
     QProcess *m_process;
     QSettings *m_settings;
     QFSFileEngine *m_engine;
-    QPointer<RemoteServer> m_server;
+    QString m_authorizationKey;
     QProcessSignalReceiver *m_signalReceiver;
 };
 

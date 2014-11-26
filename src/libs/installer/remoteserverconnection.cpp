@@ -36,7 +36,6 @@
 
 #include "errors.h"
 #include "protocol.h"
-#include "remoteserver.h"
 #include "remoteserverconnection_p.h"
 #include "utils.h"
 
@@ -45,12 +44,12 @@
 
 namespace QInstaller {
 
-RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, RemoteServer *parent)
+RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, const QString &key)
     : m_socketDescriptor(socketDescriptor)
     , m_process(0)
     , m_settings(0)
     , m_engine(0)
-    , m_server(parent)
+    , m_authorizationKey(key)
     , m_signalReceiver(0)
 {
 }
@@ -77,13 +76,13 @@ void RemoteServerConnection::run()
         if (authorized && command == QLatin1String(Protocol::Shutdown)) {
             // this is a graceful shutdown
             socket.close();
-            if (m_server)
-                m_server->deleteLater();
+            authorized = false;
+            emit shutdownRequested();
             return;
         } else if (command == QLatin1String(Protocol::Authorize)) {
             QString key;
             stream >> key;
-            sendData(stream, (authorized = (m_server && (key == m_server->authorizationKey()))));
+            sendData(stream, (authorized = (key == m_authorizationKey)));
             if (!authorized)
                 socket.close();
         } else if (authorized) {
