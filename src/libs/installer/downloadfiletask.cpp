@@ -235,7 +235,7 @@ void Downloader::onError(QNetworkReply::NetworkError error)
 
     if (error == QNetworkReply::ProxyAuthenticationRequiredError)
         return; // already handled by onProxyAuthenticationRequired
-    if (error = QNetworkReply::AuthenticationRequiredError)
+    if (error == QNetworkReply::AuthenticationRequiredError)
         return; // already handled by onAuthenticationRequired
 
     if (reply) {
