@@ -66,7 +66,7 @@ void RemoteServer::start()
     d->m_tcpServer = new TcpServer(d->m_port, d->m_address, this);
     d->m_tcpServer->moveToThread(&d->m_thread);
     connect(&d->m_thread, SIGNAL(finished()), d->m_tcpServer, SLOT(deleteLater()));
-    connect (d->m_tcpServer, SIGNAL(newIncommingConnection()), this, SLOT(restartWatchdog()));
+    connect (d->m_tcpServer, SIGNAL(newIncomingConnection()), this, SLOT(restartWatchdog()));
     d->m_thread.start();
 
     if (d->m_mode == Protocol::Mode::Release) {

@@ -69,14 +69,14 @@ public:
     }
 
 signals:
-    void newIncommingConnection();
+    void newIncomingConnection();
 
 private:
     void incomingConnection(qintptr socketDescriptor) Q_DECL_OVERRIDE {
         QThread *const thread = new RemoteServerConnection(socketDescriptor, m_server);
         connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
         thread->start();
-        emit newIncommingConnection();
+        emit newIncomingConnection();
     }
 
 private:
