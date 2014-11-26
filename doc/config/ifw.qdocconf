@@ -9,12 +9,12 @@ description = "Qt Installer Framework Manual"
 url         = http://qt-project.org/doc/qtinstallerframework/
 
 sourcedirs += includes
-sourcedirs += ../src/libs/installer ../src/libs/kdtools
-headerdirs += ../src/libs/installer ../src/libs/kdtools
+sourcedirs += ../../src/libs/installer ../../src/libs/kdtools
+headerdirs += ../../src/libs/installer ../../src/libs/kdtools
 
 imagedirs = $SRCDIR/images $SRCDIR/templates/images
 outputdir = $OUTDIR
-exampledirs = $SRCDIR ../examples
+exampledirs = $SRCDIR ../../examples
 
 headers.fileextensions         = "*.h"
 sources.fileextensions         = "*.qdoc *.qdocinc *.cpp"
