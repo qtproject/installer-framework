@@ -74,15 +74,17 @@ void RemoteServerConnection::run()
         stream >> command;
 
         if (authorized && command == QLatin1String(Protocol::Shutdown)) {
-            // this is a graceful shutdown
-            socket.close();
             authorized = false;
+            sendData(stream, true);
+            socket.flush();
+            socket.close();
             emit shutdownRequested();
             return;
         } else if (command == QLatin1String(Protocol::Authorize)) {
             QString key;
             stream >> key;
             sendData(stream, (authorized = (key == m_authorizationKey)));
+            socket.flush();
             if (!authorized)
                 socket.close();
         } else if (authorized) {

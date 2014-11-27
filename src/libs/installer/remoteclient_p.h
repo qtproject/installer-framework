@@ -65,7 +65,6 @@ public:
         , m_port(Protocol::DefaultPort)
         , m_startServerAs(Protocol::StartAs::User)
         , m_serverStarted(false)
-        , m_serverStarting(false)
         , m_active(false)
         , m_key(QLatin1String(Protocol::DefaultAuthorizationKey))
         , m_mode(Protocol::Mode::Debug)
@@ -86,6 +85,7 @@ public:
 
         m_thread.quit();
         m_thread.wait();
+        maybeStopServer();
     }
 
     void init(quint16 port, const QString &key, Protocol::Mode mode, Protocol::StartAs startAs)
@@ -128,12 +128,13 @@ public:
         const QMutexLocker ml(&m_mutex);
         if (m_serverStarted)
             return;
+        m_serverStarted = false;
 
-        m_serverStarting = true;
+        bool started = false;
         if (m_startServerAs == Protocol::StartAs::SuperUser) {
-            m_serverStarted = AdminAuthorization::execute(0, m_serverCommand, m_serverArguments);
+            started = AdminAuthorization::execute(0, m_serverCommand, m_serverArguments);
 
-            if (!m_serverStarted) {
+            if (!started) {
                 // something went wrong with authorizing, either user pressed cancel or entered
                 // wrong password
                 const QString fallback = m_serverCommand + QLatin1String(" ") + m_serverArguments
@@ -150,23 +151,20 @@ public:
                     QMessageBox::Abort | QMessageBox::Ok, QMessageBox::Ok);
 
                 if (res == QMessageBox::Ok)
-                    m_serverStarted = true;
+                    started = true;
             }
         } else {
-            m_serverStarted = QInstaller::startDetached(m_serverCommand, m_serverArguments,
+            started = QInstaller::startDetached(m_serverCommand, m_serverArguments,
                 QCoreApplication::applicationDirPath());
         }
 
-        if (m_serverStarted) {
+        if (started) {
             QElapsedTimer t;
             t.start();
-             // 30 seconds ought to be enough for the app to start
-            while (m_serverStarting && m_serverStarted && t.elapsed() < 30000) {
-                if (authorize())
-                    m_serverStarting = false;
-            }
+            // 30 seconds waiting ought to be enough for the app to start
+            while ((!m_serverStarted) && (t.elapsed() < 30000))
+                m_serverStarted = authorize();
         }
-        m_serverStarting = false;
     }
 
     void maybeStopServer()
@@ -181,9 +179,9 @@ public:
         if (!m_serverStarted)
             return;
 
-        if (authorize())
-            callRemoteMethod(QString::fromLatin1(Protocol::Shutdown));
-        m_serverStarted = false;
+        if (!authorize())
+            return;
+        m_serverStarted = !callRemoteMethod<bool>(QString::fromLatin1(Protocol::Shutdown));
     }
 
 private:
@@ -191,10 +189,8 @@ private:
     QMutex m_mutex;
     QHostAddress m_address;
     quint16 m_port;
-    QString m_socket;
     Protocol::StartAs m_startServerAs;
     bool m_serverStarted;
-    bool m_serverStarting;
     bool m_active;
     QString m_serverCommand;
     QStringList m_serverArguments;
