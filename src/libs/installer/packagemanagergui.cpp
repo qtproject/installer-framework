@@ -1505,12 +1505,8 @@ void StartMenuDirectoryPage::leaving()
 
 void StartMenuDirectoryPage::currentItemChanged(QListWidgetItem *current)
 {
-    if (current) {
-        QString dir = current->data(Qt::DisplayRole).toString();
-        if (!dir.isEmpty())
-            dir += QDir::separator();
-        setStartMenuDir(dir + packageManagerCore()->value(scStartMenuDir));
-    }
+    if (current)
+        setStartMenuDir(current->data(Qt::DisplayRole).toString());
 }
 
 
