@@ -36,6 +36,7 @@
 #define REMOTECLIENT_P_H
 
 #include "adminauthorization.h"
+#include "keepaliveobject.h"
 #include "messageboxhandler.h"
 #include "protocol.h"
 #include "remoteclient.h"
@@ -50,59 +51,6 @@
 #include <QTimer>
 
 namespace QInstaller {
-
-class KeepAliveObject : public QObject
-{
-    Q_OBJECT
-    Q_DISABLE_COPY(KeepAliveObject)
-
-public:
-    KeepAliveObject()
-        : m_timer(0)
-        , m_quit(false)
-    {
-    }
-
-public slots:
-    void start()
-    {
-        m_timer = new QTimer(this);
-        connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
-        m_timer->start(5000);
-    }
-
-    void finish()
-    {
-        m_quit = true;
-    }
-
-private slots:
-    void onTimeout()
-    {
-        m_timer->stop();
-        {
-            // Try to connect to the privileged running server. If we succeed the server side
-            // watchdog gets restarted and the server keeps running for another 30 seconds.
-            QTcpSocket socket;
-            socket.connectToHost(RemoteClient::instance().address(),
-                RemoteClient::instance().port());
-
-            QElapsedTimer stopWatch;
-            stopWatch.start();
-            while ((socket.state() == QAbstractSocket::ConnectingState)
-                && (stopWatch.elapsed() < 10000) && (!m_quit)) {
-                    if ((stopWatch.elapsed() % 2500) == 0)
-                        QCoreApplication::processEvents();
-            }
-        }
-        if (!m_quit)
-            m_timer->start(5000);
-    }
-
-private:
-    QTimer *m_timer;
-    volatile bool m_quit;
-};
 
 class RemoteClientPrivate
 {

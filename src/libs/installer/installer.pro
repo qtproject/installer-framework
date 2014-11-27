@@ -120,7 +120,8 @@ HEADERS += packagemanagercore.h \
     uninstallercalculator.h \
     componentchecker.h \
     proxycredentialsdialog.h \
-    serverauthenticationdialog.h
+    serverauthenticationdialog.h \
+    keepaliveobject.h
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -190,7 +191,8 @@ SOURCES += packagemanagercore.cpp \
     uninstallercalculator.cpp \
     componentchecker.cpp \
     proxycredentialsdialog.cpp \
-    serverauthenticationdialog.cpp
+    serverauthenticationdialog.cpp \
+    keepaliveobject.cpp
 
 FORMS += proxycredentialsdialog.ui \
     serverauthenticationdialog.ui
