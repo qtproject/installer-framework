@@ -40,10 +40,6 @@
 
 #include <QObject>
 
-QT_BEGIN_NAMESPACE
-class QHostAddress;
-QT_END_NAMESPACE
-
 namespace QInstaller {
 
 class RemoteServerPrivate;

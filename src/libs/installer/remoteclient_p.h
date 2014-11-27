@@ -45,7 +45,6 @@
 
 #include <QCoreApplication>
 #include <QElapsedTimer>
-#include <QHostAddress>
 #include <QMutex>
 #include <QThread>
 
@@ -187,7 +186,7 @@ public:
 private:
     RemoteClient *q_ptr;
     QMutex m_mutex;
-    QHostAddress m_address;
+    QString m_address;
     quint16 m_port;
     Protocol::StartAs m_startServerAs;
     bool m_serverStarted;

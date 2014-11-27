@@ -58,7 +58,7 @@ quint16 RemoteClient::port() const
     return d->m_port;
 }
 
-QHostAddress RemoteClient::address() const
+QString RemoteClient::address() const
 {
     Q_D(const RemoteClient);
     return d->m_address;

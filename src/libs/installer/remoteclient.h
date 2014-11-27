@@ -40,11 +40,6 @@
 
 #include <QScopedPointer>
 
-QT_BEGIN_NAMESPACE
-class QHostAddress;
-class QStringList;
-QT_END_NAMESPACE
-
 namespace QInstaller {
 
 class RemoteClientPrivate;
@@ -59,10 +54,10 @@ public:
     void init(quint16 port, const QString &key, Protocol::Mode mode, Protocol::StartAs startAs);
 
     void shutdown();
-    void init(quint16 port, const QHostAddress &address, Protocol::Mode mode);
+    void init(quint16 port, const QString &address, Protocol::Mode mode);
 
     quint16 port() const;
-    QHostAddress address() const;
+    QString address() const;
     QString authorizationKey() const;
 
     bool isActive() const;

@@ -39,6 +39,7 @@
 #include "remoteserver.h"
 #include "remoteserverconnection.h"
 
+#include <QHostAddress>
 #include <QPointer>
 #include <QTcpServer>
 #include <QTimer>

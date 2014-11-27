@@ -39,7 +39,6 @@
 #include <remotefileengine.h>
 #include <remoteserver.h>
 
-#include <QHostAddress>
 #include <QSettings>
 #include <QTcpSocket>
 #include <QTemporaryFile>
@@ -66,8 +65,7 @@ private slots:
         server.start();
 
         QTcpSocket socket;
-        socket.connectToHost(QHostAddress(QLatin1String(Protocol::DefaultHostAddress)),
-            Protocol::DefaultPort);
+        socket.connectToHost(QLatin1String(Protocol::DefaultHostAddress), Protocol::DefaultPort);
         QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
         QCOMPARE(socket.state() == QAbstractSocket::ConnectedState, true);
 
@@ -103,7 +101,7 @@ private slots:
         server.start();
 
         QTcpSocket socket;
-        socket.connectToHost(QHostAddress(QLatin1String(Protocol::DefaultHostAddress)), port);
+        socket.connectToHost(QLatin1String(Protocol::DefaultHostAddress), port);
         QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
         QCOMPARE(socket.state() == QAbstractSocket::ConnectedState, true);
 
