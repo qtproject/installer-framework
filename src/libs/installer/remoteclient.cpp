@@ -35,8 +35,6 @@
 #include "remoteclient.h"
 #include "remoteclient_p.h"
 
-#include <QElapsedTimer>
-
 namespace QInstaller {
 
 RemoteClient::RemoteClient()
@@ -87,36 +85,6 @@ void RemoteClient::shutdown()
 {
     Q_D(RemoteClient);
     d->shutdown();
-}
-
-bool RemoteClient::connect(QTcpSocket *socket) const
-{
-    Q_D(const RemoteClient);
-    socket->connectToHost(d->m_address, d->m_port);
-
-    QElapsedTimer stopWatch;
-    stopWatch.start();
-    while ((socket->state() == QAbstractSocket::ConnectingState)
-        && (stopWatch.elapsed() < 30000)) {
-            if ((stopWatch.elapsed() % 2500) == 0)
-                QCoreApplication::processEvents();
-    }
-
-    if (socket->state() != QAbstractSocket::ConnectedState)
-        return false;
-
-    QDataStream stream;
-    stream.setDevice(socket);
-    stream << QString::fromLatin1(Protocol::Authorize) << authorizationKey();
-
-    socket->waitForBytesWritten(-1);
-    if (!socket->bytesAvailable())
-        socket->waitForReadyRead(-1);
-
-    quint32 size; stream >> size;
-    bool authorized = false;
-    stream >> authorized;
-    return authorized;
 }
 
 bool RemoteClient::isActive() const

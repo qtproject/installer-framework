@@ -108,6 +108,7 @@ public:
     }
 
 protected:
+    bool authorize();
     bool connectToServer(const QVariantList &arguments = QVariantList());
 
     // Use this structure to allow derived classes to manipulate the template

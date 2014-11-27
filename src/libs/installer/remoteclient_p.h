@@ -40,26 +40,26 @@
 #include "messageboxhandler.h"
 #include "protocol.h"
 #include "remoteclient.h"
+#include "remoteobject.h"
 #include "utils.h"
 
 #include <QCoreApplication>
 #include <QElapsedTimer>
 #include <QHostAddress>
 #include <QMutex>
-#include <QTcpSocket>
 #include <QThread>
-#include <QTimer>
 
 namespace QInstaller {
 
-class RemoteClientPrivate
+class RemoteClientPrivate : public RemoteObject
 {
     Q_DECLARE_PUBLIC(RemoteClient)
     Q_DISABLE_COPY(RemoteClientPrivate)
 
 public:
     RemoteClientPrivate(RemoteClient *parent)
-        : q_ptr(parent)
+        : RemoteObject(QLatin1String("RemoteClientPrivate"))
+        , q_ptr(parent)
         , m_mutex(QMutex::Recursive)
         , m_address(QLatin1String(Protocol::DefaultHostAddress))
         , m_port(Protocol::DefaultPort)
@@ -142,10 +142,11 @@ public:
                 const QMessageBox::Button res =
                     MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                     QLatin1String("AuthorizationError"),
-                    RemoteClient::tr("Could not get authorization."),
-                    RemoteClient::tr("Could not get authorization that is needed for continuing "
-                    "the installation.\n Either abort the installation or use the fallback "
-                    "solution by running\n\n%1\n\nas root and then clicking OK.").arg(fallback),
+                    QCoreApplication::translate("RemoteClient", "Could not get authorization."),
+                    QCoreApplication::translate("RemoteClient", "Could not get authorization that "
+                        "is needed for continuing the installation.\n Either abort the "
+                        "installation or use the fallback solution by running\n\n%1\n\nas root "
+                        "and then clicking OK.").arg(fallback),
                     QMessageBox::Abort | QMessageBox::Ok, QMessageBox::Ok);
 
                 if (res == QMessageBox::Ok)
@@ -161,9 +162,7 @@ public:
             t.start();
              // 30 seconds ought to be enough for the app to start
             while (m_serverStarting && m_serverStarted && t.elapsed() < 30000) {
-                Q_Q(RemoteClient);
-                QTcpSocket socket;
-                if (q->connect(&socket))
+                if (authorize())
                     m_serverStarting = false;
             }
         }
@@ -182,15 +181,8 @@ public:
         if (!m_serverStarted)
             return;
 
-        Q_Q(RemoteClient);
-        QTcpSocket socket;
-        if (q->connect(&socket)) {
-            QDataStream stream(&socket);
-            stream << QString::fromLatin1(Protocol::Authorize);
-            stream << m_key;
-            stream << QString::fromLatin1(Protocol::Shutdown);
-            socket.flush();
-        }
+        if (authorize())
+            callRemoteMethod(QString::fromLatin1(Protocol::Shutdown));
         m_serverStarted = false;
     }
 

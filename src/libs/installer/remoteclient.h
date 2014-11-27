@@ -38,20 +38,19 @@
 #include "installer_global.h"
 #include "protocol.h"
 
-#include <QObject>
+#include <QScopedPointer>
 
 QT_BEGIN_NAMESPACE
 class QHostAddress;
-class QTcpSocket;
+class QStringList;
 QT_END_NAMESPACE
 
 namespace QInstaller {
 
 class RemoteClientPrivate;
 
-class INSTALLER_EXPORT RemoteClient : public QObject
+class INSTALLER_EXPORT RemoteClient
 {
-    Q_OBJECT
     Q_DISABLE_COPY(RemoteClient)
     Q_DECLARE_PRIVATE(RemoteClient)
 
@@ -60,7 +59,7 @@ public:
     void init(quint16 port, const QString &key, Protocol::Mode mode, Protocol::StartAs startAs);
 
     void shutdown();
-    bool connect(QTcpSocket *socket) const;
+    void init(quint16 port, const QHostAddress &address, Protocol::Mode mode);
 
     quint16 port() const;
     QHostAddress address() const;

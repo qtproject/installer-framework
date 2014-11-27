@@ -37,6 +37,9 @@
 #include "protocol.h"
 #include "remoteclient.h"
 
+#include <QCoreApplication>
+#include <QElapsedTimer>
+#include <QHostAddress>
 #include <QThread>
 
 namespace QInstaller {
@@ -65,23 +68,58 @@ RemoteObject::~RemoteObject()
     }
 }
 
+bool RemoteObject::authorize()
+{
+    if (m_socket && (m_socket->state() == QAbstractSocket::ConnectedState))
+        return true;
+
+    if (m_socket)
+        delete m_socket;
+
+    QScopedPointer<QTcpSocket> socket(new QTcpSocket);
+    socket->connectToHost(RemoteClient::instance().address(), RemoteClient::instance().port());
+
+    QElapsedTimer stopWatch;
+    stopWatch.start();
+    while ((socket->state() == QAbstractSocket::ConnectingState)
+        && (stopWatch.elapsed() < 30000)) {
+        if ((stopWatch.elapsed() % 2500) == 0)
+            QCoreApplication::processEvents();
+    }
+
+    if (socket->state() == QAbstractSocket::ConnectedState) {
+        QDataStream stream;
+        stream.setDevice(socket.data());
+        stream << QString::fromLatin1(Protocol::Authorize) << RemoteClient::instance()
+            .authorizationKey();
+
+        socket->waitForBytesWritten(-1);
+        if (!socket->bytesAvailable())
+            socket->waitForReadyRead(-1);
+
+        quint32 size; stream >> size;
+        bool authorized = false;
+        stream >> authorized;
+        if (authorized) {
+            m_socket = socket.take();
+            m_stream.setDevice(m_socket);
+            return true;
+        }
+    }
+    return false;
+}
+
 bool RemoteObject::connectToServer(const QVariantList &arguments)
 {
     if (!RemoteClient::instance().isActive())
         return false;
 
-    if (m_socket && (m_socket->state() == QAbstractSocket::ConnectedState))
-        return true;
+     if (m_socket && (m_socket->state() == QAbstractSocket::ConnectedState))
+         return true;
 
-    if (m_socket)
-        m_socket->deleteLater();
-
-    QScopedPointer<QTcpSocket> socket(new QTcpSocket);
-    if (!RemoteClient::instance().connect(socket.data()))
+    if (!authorize())
         return false;
 
-    m_socket = socket.take();
-    m_stream.setDevice(m_socket);
     m_stream << QString::fromLatin1(Protocol::Create) << m_type;
     foreach (const QVariant &arg, arguments)
         m_stream << arg;
