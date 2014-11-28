@@ -109,7 +109,9 @@ CreateDesktopEntryOperation::~CreateDesktopEntryOperation()
 void CreateDesktopEntryOperation::backup()
 {
     const QString filename = absoluteFileName();
-    if (!QFile::exists(filename))
+    QFile file(filename);
+
+    if (!file.exists())
         return;
 
     try {
@@ -119,8 +121,8 @@ void CreateDesktopEntryOperation::backup()
         return;
     }
 
-    if (!QFile::copy(filename, value(QLatin1String("backupOfExistingDesktopEntry")).toString()))
-        setErrorString(tr("Could not backup file %1").arg(filename));
+    if (!file.copy(value(QLatin1String("backupOfExistingDesktopEntry")).toString()))
+        setErrorString(tr("Could not backup file %1: %2").arg(filename, file.errorString()));
 }
 
 bool CreateDesktopEntryOperation::performOperation()
@@ -136,13 +138,13 @@ bool CreateDesktopEntryOperation::performOperation()
     const QString filename = absoluteFileName();
     const QString &values = args[1];
 
-    if (QFile::exists(filename) && !deleteFileNowOrLater(filename)) {
+    QFile file(filename);
+    if (file.exists() && !file.remove()) {
         setError(UserDefinedError);
         setErrorString(tr("Failed to overwrite %1").arg(filename));
         return false;
     }
 
-    QFile file(filename);
     if(!file.open(QIODevice::WriteOnly)) {
         setError(UserDefinedError);
         setErrorString(tr("Could not write Desktop Entry at %1").arg(filename));
@@ -169,20 +171,27 @@ bool CreateDesktopEntryOperation::undoOperation()
     const QString filename = absoluteFileName();
 
     // first remove the link
-    if (!deleteFileNowOrLater(filename)) {
-        setErrorString(tr("Could not delete file %1").arg(filename));
-        return false;
+    QFile file(filename);
+    if (file.exists() && !file.remove()) {
+        qWarning() << "Could not delete file" << filename << file.errorString();
+        return true;
     }
 
     if (!hasValue(QLatin1String("backupOfExistingDesktopEntry")))
         return true;
 
-    const QString backupOfExistingDesktopEntry = value(QLatin1String("backupOfExistingDesktopEntry")).toString();
-    const bool success = QFile::copy(backupOfExistingDesktopEntry, filename)
-        && deleteFileNowOrLater(backupOfExistingDesktopEntry);
-    if (!success)
-        setErrorString(tr("Could not restore backup file into %1").arg(filename));
-    return success;
+    QFile backupFile(value(QLatin1String("backupOfExistingDesktopEntry")).toString());
+    if (!backupFile.exists()) {
+        // do not treat this as a real error: The backup file might have been just nuked by the user.
+        qWarning() << "Could not restore original desktop entry at" << filename
+                   << ": Backup file" << backupFile.fileName() << "does not exist anymore.";
+        return true;
+    }
+
+    if (!backupFile.rename(filename))
+        qWarning() << "Could not restore the file" << filename << ":" << backupFile.errorString();
+
+    return true;
 }
 
 bool CreateDesktopEntryOperation::testOperation()
