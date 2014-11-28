@@ -59,7 +59,7 @@
 
 using namespace QInstaller;
 
-static const QLatin1String scScript("Script");
+static const QLatin1String scScriptTag("Script");
 static const QLatin1String scDefault("Default");
 static const QLatin1String scAutoDependOn("AutoDependOn");
 static const QLatin1String scVirtual("Virtual");
@@ -309,7 +309,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scNewComponent, package.data(scNewComponent).toString());
     setValue(scRequiresAdminRights, package.data(scRequiresAdminRights).toString());
 
-    setValue(scScript, package.data(scScript).toString());
+    setValue(scScriptTag, package.data(scScriptTag).toString());
     setValue(scReplaces, package.data(scReplaces).toString());
     setValue(scReleaseDate, package.data(scReleaseDate).toString());
 
@@ -494,7 +494,7 @@ QString Component::displayName() const
 
 void Component::loadComponentScript()
 {
-    const QString script = d->m_vars.value(scScript);
+    const QString script = d->m_vars.value(scScriptTag);
     if (!localTempPath().isEmpty() && !script.isEmpty())
         loadComponentScript(QString::fromLatin1("%1/%2/%3").arg(localTempPath(), name(), script));
 }
@@ -1174,7 +1174,7 @@ QStringList Component::autoDependencies() const
 {
     QStringList autoDependencyStringList =
         d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
-    autoDependencyStringList.removeAll(scScript);
+    autoDependencyStringList.removeAll(scScriptTag);
     return autoDependencyStringList;
 }
 
@@ -1203,7 +1203,7 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
         return false;
 
     // The script can override this method and determines if the component needs to be installed.
-    if (autoDependOnList.first().compare(scScript, Qt::CaseInsensitive) == 0) {
+    if (autoDependOnList.first().compare(scScriptTag, Qt::CaseInsensitive) == 0) {
         QJSValue valueFromScript;
         try {
             valueFromScript = d->scriptEngine()->callScriptMethod(d->m_scriptContext,
@@ -1254,7 +1254,7 @@ bool Component::isDefault() const
          return false;
 
     // the script can override this method
-    if (d->m_vars.value(scDefault).compare(scScript, Qt::CaseInsensitive) == 0) {
+    if (d->m_vars.value(scDefault).compare(scScriptTag, Qt::CaseInsensitive) == 0) {
         QJSValue valueFromScript;
         try {
             valueFromScript = d->scriptEngine()->callScriptMethod(d->m_scriptContext,
