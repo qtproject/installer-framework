@@ -276,7 +276,7 @@ bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorSt
     QFile f(file);
     if (!f.rename(backup)) {
         if (errorString)
-            *errorString = f.errorString();
+            *errorString = tr("Renaming %1 into %2 failed with %3.").arg(file, backup, f.errorString());
         return false;
     }
     registerForDelayedDeletion(QStringList(backup));
