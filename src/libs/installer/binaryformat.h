@@ -39,7 +39,7 @@
 #include "range.h"
 
 #include <QCoreApplication>
-#include <QFile>
+#include <QtCore/private/qfsfileengine_p.h>
 #include <QList>
 #include <QSharedPointer>
 
@@ -87,7 +87,7 @@ private:
     void setOpenMode(OpenMode mode) { QIODevice::setOpenMode(mode); }
 
 private:
-    QFile m_file;
+    QFSFileEngine m_file;
     QByteArray m_name;
     Range<qint64> m_segment;
 };

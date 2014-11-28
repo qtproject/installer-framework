@@ -37,6 +37,8 @@
 #include "protocol.h"
 #include "remoteclient.h"
 
+#include <QThread>
+
 namespace QInstaller {
 
 RemoteObject::RemoteObject(const QString &wrappedType, QObject *parent)
@@ -52,8 +54,14 @@ RemoteObject::RemoteObject(const QString &wrappedType, QObject *parent)
 RemoteObject::~RemoteObject()
 {
     if (m_socket) {
-        m_stream << QString::fromLatin1(Protocol::Destroy) << m_type;
-        m_socket->waitForBytesWritten(-1);
+        if (QThread::currentThread() == m_socket->thread()) {
+            m_stream << QString::fromLatin1(Protocol::Destroy) << m_type;
+            m_socket->waitForBytesWritten(-1);
+        } else {
+            Q_ASSERT_X(false, Q_FUNC_INFO, "Socket running in a different Thread than this object.");
+        }
+        m_socket->deleteLater();
+        m_socket = 0;
     }
 }
 

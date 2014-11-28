@@ -46,8 +46,6 @@ RemoteClient::RemoteClient()
 
 RemoteClient::~RemoteClient()
 {
-    Q_D(RemoteClient);
-    d->m_quit = true;
 }
 
 RemoteClient &RemoteClient::instance()
@@ -94,39 +92,31 @@ void RemoteClient::shutdown()
 bool RemoteClient::connect(QTcpSocket *socket) const
 {
     Q_D(const RemoteClient);
-    if (d->m_quit)
+    socket->connectToHost(d->m_address, d->m_port);
+
+    QElapsedTimer stopWatch;
+    stopWatch.start();
+    while ((socket->state() == QAbstractSocket::ConnectingState)
+        && (stopWatch.elapsed() < 30000)) {
+            if ((stopWatch.elapsed() % 2500) == 0)
+                QCoreApplication::processEvents();
+    }
+
+    if (socket->state() != QAbstractSocket::ConnectedState)
         return false;
 
-    int tries = 3;
-    while ((tries > 0) && (!d->m_quit)) {
-        socket->connectToHost(d->m_address, d->m_port);
+    QDataStream stream;
+    stream.setDevice(socket);
+    stream << QString::fromLatin1(Protocol::Authorize) << authorizationKey();
 
-        QElapsedTimer stopWatch;
-        stopWatch.start();
-        while ((socket->state() == QAbstractSocket::ConnectingState)
-            && (stopWatch.elapsed() < 10000) && (!d->m_quit)) {
-                --tries;
-                if (!QCoreApplication::closingDown())
-                    qApp->processEvents();
-                continue;
-        }
-        if ((socket->state() != QAbstractSocket::ConnectedState) || d->m_quit)
-            return false;
+    socket->waitForBytesWritten(-1);
+    if (!socket->bytesAvailable())
+        socket->waitForReadyRead(-1);
 
-        QDataStream stream;
-        stream.setDevice(socket);
-        stream << QString::fromLatin1(Protocol::Authorize) << d->m_key;
-
-        socket->waitForBytesWritten(-1);
-        if (!socket->bytesAvailable())
-            socket->waitForReadyRead(-1);
-
-        quint32 size; stream >> size;
-        bool authorized; stream >> authorized;
-        if (authorized && (!d->m_quit))
-            return true;
-    }
-    return false;
+    quint32 size; stream >> size;
+    bool authorized = false;
+    stream >> authorized;
+    return authorized;
 }
 
 bool RemoteClient::isActive() const

@@ -197,9 +197,14 @@ qint64 Resource::size() const
  */
 qint64 Resource::readData(char* data, qint64 maxSize)
 {
+    // check if there is anything left to read
+    maxSize = qMin<quint64>(maxSize, m_segment.length() - pos());
+    if (maxSize <= 0)
+        return 0;
+
     const qint64 p = m_file.pos();
     m_file.seek(m_segment.start() + pos());
-    const qint64 amountRead = m_file.read(data, qMin<quint64>(maxSize, m_segment.length() - pos()));
+    const qint64 amountRead = m_file.read(data, maxSize);
     m_file.seek(p);
     return amountRead;
 }

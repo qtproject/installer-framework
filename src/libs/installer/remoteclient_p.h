@@ -122,7 +122,6 @@ public:
         , m_key(QLatin1String(Protocol::DefaultAuthorizationKey))
         , m_mode(Protocol::Mode::Debug)
         , m_object(0)
-        , m_quit(false)
     {
     }
 
@@ -263,7 +262,6 @@ private:
     QThread m_thread;
     Protocol::Mode m_mode;
     KeepAliveObject *m_object;
-    volatile bool m_quit;
 };
 
 } // namespace QInstaller
