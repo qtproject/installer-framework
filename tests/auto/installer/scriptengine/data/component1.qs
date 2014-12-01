@@ -35,12 +35,6 @@ Component.prototype.createOperations = function()
     component.createOperations();
 }
 
-Component.prototype.isAutoDependOn = function()
-{
-    print("isAutoDependOn - OK");
-    return false;
-}
-
 Component.prototype.isDefault = function()
 {
     print("isDefault - OK");

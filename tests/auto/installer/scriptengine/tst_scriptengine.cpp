@@ -114,7 +114,6 @@ private slots:
         // (it calls clearAllComponentLists which calls qDeleteAll(m_rootComponents);)
         m_core.appendRootComponent(m_component);
 
-        m_component->setValue("AutoDependOn", "Script");
         m_component->setValue("Default", "Script");
         m_component->setValue(scName, "component.test.name");
 
@@ -255,10 +254,6 @@ private slots:
 
             setExpectedScriptOutput("\"createOperations - OK\"");
             m_component->createOperations();
-
-            setExpectedScriptOutput("\"isAutoDependOn - OK\"");
-            bool returnIsAutoDependOn = m_component->isAutoDependOn(QSet<QString>());
-            QCOMPARE(returnIsAutoDependOn, false);
 
             setExpectedScriptOutput("\"isDefault - OK\"");
             bool returnIsDefault = m_component->isDefault();

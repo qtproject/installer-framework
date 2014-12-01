@@ -1171,10 +1171,13 @@ QStringList Component::dependencies() const
 
 QStringList Component::autoDependencies() const
 {
-    QStringList autoDependencyStringList =
+    const QStringList autoDependencyStringList =
         d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
-    autoDependencyStringList.removeAll(scScript);
-    return autoDependencyStringList;
+    QStringList withoutScriptValuesList;
+    foreach (const QString &string, autoDependencyStringList)
+        if (string.compare(scScript, Qt::CaseInsensitive))
+            withoutScriptValuesList.append(string);
+    return withoutScriptValuesList;
 }
 
 /*!
@@ -1200,26 +1203,6 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
     QStringList autoDependOnList = autoDependencies();
     if (autoDependOnList.isEmpty())
         return false;
-
-    // The script can override this method and determines if the component needs to be installed.
-    if (autoDependOnList.first().compare(scScript, Qt::CaseInsensitive) == 0) {
-        QJSValue valueFromScript;
-        try {
-            valueFromScript = d->scriptEngine()->callScriptMethod(d->m_scriptContext,
-                QLatin1String("isAutoDependOn"));
-        } catch (const Error &error) {
-            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("isAutoDependOnError"), tr("Cannot resolve isAutoDependOn in %1"
-                    ).arg(name()), error.message());
-            return false;
-        }
-
-        if (!valueFromScript.isError())
-            return valueFromScript.toBool();
-        qDebug() << "Value from script is not valid." << (valueFromScript.toString().isEmpty()
-            ? QString::fromLatin1("Unknown error.") : valueFromScript.toString());
-        return false;
-    }
 
     QSet<QString> components = componentsToInstall;
     const QStringList installedPackages = d->m_core->localInstalledPackages().keys();
