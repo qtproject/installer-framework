@@ -2,8 +2,9 @@
 <Package>
     <DisplayName>register a file extension</DisplayName>
     <Description>Register a random generated file extension to open with notepad.exe</Description>
-    <ReleaseDate>2013-01-01</ReleaseDate>
     <Version>1.0.0-1</Version>
+    <ReleaseDate>2013-01-01</ReleaseDate>
+    <Default>true</Default>
     <Script>installscript.qs</Script>
     <UserInterfaces>
         <UserInterface>registerfilecheckboxesform.ui</UserInterface>

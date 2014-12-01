@@ -47,6 +47,8 @@
     \include installerfw-examples-packaging.qdocinc
 
     \list
+        \li The \c <Default> section specifies whether the component is
+            preselected for installation in the user interface by default.
         \li The \c <Script> section specifies the file name of the JavaScript
             file that is loaded to perform operations.
         \li The \c <Licenses> section specifies the \c name of the license

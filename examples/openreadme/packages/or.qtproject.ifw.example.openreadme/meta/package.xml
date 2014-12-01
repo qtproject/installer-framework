@@ -2,8 +2,9 @@
 <Package>
     <DisplayName>Open readme</DisplayName>
     <Description>Show checkbox asking whether to open Readme at the end</Description>
-    <ReleaseDate>2013-01-01</ReleaseDate>
     <Version>1.0.0-1</Version>
+    <ReleaseDate>2013-01-01</ReleaseDate>
+    <Default>true</Default>
     <Script>installscript.qs</Script>
     <UserInterfaces>
         <UserInterface>readmecheckboxform.ui</UserInterface>
