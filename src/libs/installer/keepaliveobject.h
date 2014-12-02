@@ -60,7 +60,7 @@ private slots:
 
 private:
     QTimer *m_timer;
-    volatile bool m_quit;
+    QAtomicInt m_quit;
 };
 
 } // namespace QInstaller
