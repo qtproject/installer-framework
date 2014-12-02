@@ -985,8 +985,10 @@ bool IntroductionPage::validatePage()
     }
 
 #ifdef Q_OS_WIN
-    if (!m_taskButton->window())
-        m_taskButton->setWindow(QApplication::activeWindow()->windowHandle());
+    if (!m_taskButton->window()) {
+        if (QWidget *widget = QApplication::activeWindow())
+            m_taskButton->setWindow(widget->windowHandle());
+    }
 
     m_taskButton->progress()->reset();
     m_taskButton->progress()->resume();
