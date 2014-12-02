@@ -61,6 +61,7 @@ int main(int argc, char *argv[])
 {
     // increase maximum numbers of file descriptors
 #if defined (Q_OS_OSX)
+    QCoreApplication::setSetuidAllowed(true);
     struct rlimit rl;
     getrlimit(RLIMIT_NOFILE, &rl);
     rl.rlim_cur = qMin((rlim_t) OPEN_MAX, rl.rlim_max);
