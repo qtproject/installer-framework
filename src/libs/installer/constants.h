@@ -85,6 +85,8 @@ static const QLatin1String scRepositorySettingsPageVisible("RepositorySettingsPa
 static const QLatin1String scAllowSpaceInPath("AllowSpaceInPath");
 static const QLatin1String scWizardStyle("WizardStyle");
 static const QLatin1String scTitleColor("TitleColor");
+static const QLatin1String scWizardDefaultWidth("WizardDefaultWidth");
+static const QLatin1String scWizardDefaultHeight("WizardDefaultHeight");
 }
 
 #endif  // CONSTANTS_H

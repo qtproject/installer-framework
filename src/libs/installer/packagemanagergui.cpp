@@ -478,6 +478,10 @@ void PackageManagerGui::showEvent(QShowEvent *event)
             }
         }
         setMinimumSize(size());
+        if (minimumWidth() < m_core->settings().wizardDefaultWidth())
+            resize(m_core->settings().wizardDefaultWidth(), height());
+        if (minimumHeight() < m_core->settings().wizardDefaultHeight())
+            resize(width(), m_core->settings().wizardDefaultHeight());
     }
     QWizard::showEvent(event);
     QMetaObject::invokeMethod(this, "dependsOnLocalInstallerBinary", Qt::QueuedConnection);

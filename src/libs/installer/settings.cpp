@@ -251,6 +251,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scWizardStyle << scTitleColor
+                << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations;
 
@@ -368,6 +369,16 @@ QString Settings::wizardStyle() const
 QString Settings::titleColor() const
 {
     return d->m_data.value(scTitleColor).toString();
+}
+
+int Settings::wizardDefaultWidth() const
+{
+    return d->m_data.value(scWizardDefaultWidth).toInt();
+}
+
+int Settings::wizardDefaultHeight() const
+{
+    return d->m_data.value(scWizardDefaultHeight).toInt();
 }
 
 QString Settings::installerApplicationIcon() const

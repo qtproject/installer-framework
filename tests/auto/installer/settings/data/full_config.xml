@@ -21,6 +21,8 @@ File should contain all elements we allow in a config.xml
     <Banner>banner</Banner>
     <Background>background</Background>
     <WizardStyle>Modern</WizardStyle>
+    <WizardDefaultWidth>800</WizardDefaultWidth>
+    <WizardDefaultHeight>600</WizardDefaultHeight>
 
     <StartMenuDir>Super App</StartMenuDir>
 

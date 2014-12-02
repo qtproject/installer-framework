@@ -211,6 +211,14 @@
             \li WizardStyle
             \li Set the wizard style to be used ("Modern", "Mac", "Aero" or "Classic").
         \row
+            \li WizardDefaultWidth
+            \li Sets the default width of the wizard in pixels. Setting a banner image will
+                override this.
+        \row
+            \li WizardDefaultHeight
+            \li Sets the default height of the wizard in pixels. Setting a watermark image will
+                override this.
+        \row
             \li TitleColor
             \li Set the color of the titles and subtitles (takes an HTML color code,
                 such as "#88FF33").

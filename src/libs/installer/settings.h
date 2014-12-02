@@ -90,6 +90,8 @@ public:
     QString systemIconSuffix() const;
     QString wizardStyle() const;
     QString titleColor() const;
+    int wizardDefaultWidth() const;
+    int wizardDefaultHeight() const;
 
     QString applicationName() const;
     QString applicationVersion() const;
