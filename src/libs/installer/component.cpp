@@ -456,22 +456,19 @@ void Component::removeComponent(Component *component)
 }
 
 /*!
-    Returns a list of child components. If \a kind is set to DirectChildrenOnly, the returned list contains
-    only the direct children, if set to Descendants it will also include all descendants of the components
+    Returns a list of child components, including all descendants of the components
     children. Note: The returned list does include ALL children, non virtual components as well as virtual
     components.
 */
-QList<Component *> Component::childComponents(Kind kind) const
+QList<Component *> Component::descendantComponents() const
 {
     if (d->m_core->isUpdater())
         return QList<Component*>();
 
     QList<Component *> result = d->m_allChildComponents;
-    if (kind == DirectChildrenOnly)
-        return result;
 
     foreach (Component *component, d->m_allChildComponents)
-        result += component->childComponents(kind);
+        result += component->descendantComponents();
     return result;
 }
 

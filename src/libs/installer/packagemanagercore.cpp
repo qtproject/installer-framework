@@ -1180,7 +1180,7 @@ QList<Component *> PackageManagerCore::components(ComponentTypes mask) const
     if (!updater) {
         if (mask.testFlag(ComponentType::Descendants)) {
             foreach (QInstaller::Component *component, d->m_rootComponents)
-                components += component->childComponents(Component::Descendants);
+                components += component->descendantComponents();
         }
     } else {
         if (mask.testFlag(ComponentType::Dependencies))
