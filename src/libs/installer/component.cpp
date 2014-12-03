@@ -428,13 +428,14 @@ void Component::appendComponent(Component *component)
         throw Error(tr("Components cannot have children in updater mode."));
 
     if (!component->isVirtual()) {
+        const QList<Component *> virtualChildComponents = d->m_allChildComponents.mid(d->m_childComponents.count());
         d->m_childComponents.append(component);
         std::sort(d->m_childComponents.begin(), d->m_childComponents.end(), SortingPriorityGreaterThan());
+        d->m_allChildComponents = d->m_childComponents + virtualChildComponents;
     } else {
-        d->m_virtualChildComponents.append(component);
+        d->m_allChildComponents.append(component);
     }
 
-    d->m_allChildComponents = d->m_childComponents + d->m_virtualChildComponents;
     if (Component *parent = component->parentComponent())
         parent->removeComponent(component);
     component->d->m_parentComponent = this;
@@ -450,8 +451,7 @@ void Component::removeComponent(Component *component)
     if (component->parentComponent() == this) {
         component->d->m_parentComponent = 0;
         d->m_childComponents.removeAll(component);
-        d->m_virtualChildComponents.removeAll(component);
-        d->m_allChildComponents = d->m_childComponents + d->m_virtualChildComponents;
+        d->m_allChildComponents.removeAll(component);
     }
 }
 

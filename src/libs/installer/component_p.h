@@ -77,7 +77,6 @@ public:
     QHash<QString, QString> m_vars;
     QList<Component*> m_childComponents;
     QList<Component*> m_allChildComponents;
-    QList<Component*> m_virtualChildComponents;
     QStringList m_downloadableArchives;
     QStringList m_stopProcessForUpdateRequests;
     QHash<QString, QPointer<QWidget> > m_userInterfaces;
