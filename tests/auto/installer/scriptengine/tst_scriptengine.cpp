@@ -159,6 +159,19 @@ private slots:
 
         QCOMPARE(global.hasProperty(QLatin1String("gui")), true);
         QCOMPARE(global.hasProperty(QLatin1String("qsTr")), true);
+
+        QCOMPARE(global.hasProperty(QLatin1String("systemInfo")), true);
+        QJSValue sinfo = global.property(QLatin1String("systemInfo"));
+        QCOMPARE(sinfo.property(QLatin1String("currentCpuArchitecture")).toString(),
+                 QSysInfo::currentCpuArchitecture());
+        QCOMPARE(sinfo.property(QLatin1String("kernelType")).toString(), QSysInfo::kernelType());
+        QCOMPARE(sinfo.property(QLatin1String("kernelVersion")).toString(),
+                 QSysInfo::kernelVersion());
+        QCOMPARE(sinfo.property(QLatin1String("productType")).toString(), QSysInfo::productType());
+        QCOMPARE(sinfo.property(QLatin1String("productVersion")).toString(),
+                 QSysInfo::productVersion());
+        QCOMPARE(sinfo.property(QLatin1String("prettyProductName")).toString(),
+                 QSysInfo::prettyProductName());
     }
 
     void testBrokenJSMethodConnect()

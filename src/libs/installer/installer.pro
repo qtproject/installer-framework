@@ -121,7 +121,8 @@ HEADERS += packagemanagercore.h \
     componentchecker.h \
     proxycredentialsdialog.h \
     serverauthenticationdialog.h \
-    keepaliveobject.h
+    keepaliveobject.h \
+    systeminfo.h
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -192,7 +193,8 @@ SOURCES += packagemanagercore.cpp \
     componentchecker.cpp \
     proxycredentialsdialog.cpp \
     serverauthenticationdialog.cpp \
-    keepaliveobject.cpp
+    keepaliveobject.cpp \
+    systeminfo.cpp
 
 FORMS += proxycredentialsdialog.ui \
     serverauthenticationdialog.ui

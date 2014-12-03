@@ -1,0 +1,116 @@
+/****************************************************************************
+**
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example systeminfo
+    \ingroup qtifwexamples
+    \title System Information Example
+
+    \brief Checking operating system version and bitness in a script.
+
+    The \e{System Information Example} demonstrates how to use the \l{systemInfo} API to detect
+    details about the target operating system.
+
+    The example installer consists of three packages: \c root, \c root.i386 and \c root.x86_64.
+    The \c root.i386 and \c root.x86_64 packages are assumed to contain binaries specific to the
+    architecture. The \c root package contains logic to check for minimum operating system version.
+    It also hides either the \c root.i386 or \c root.x86_64 package, based on the operating system
+    architecture.
+
+    The logic to detect the operating system features is scripted in the
+    \c{root}'s \l{systeminfo/packages/root/meta/installscript.qs}{installscript.qs} file.
+
+    \quotefromfile systeminfo/packages/root/meta/installscript.qs
+
+    \section1 Helper Functions
+
+    The \l{systeminfo/packages/root/meta/installscript.qs}{installscript.qs} file first
+    declares two helper functions: \c cancelInstaller() and \c majorVersion().
+
+    \skipto cancelInstaller
+    \printuntil /^\}/
+
+    \c cancelInstaller() sets all except the last installer page to invisible, and shows an error
+    message on the last one. This is a technique also demonstrated in the \l{componenterror} and
+    \l{quit_installer} examples.
+
+    \skipto majorVersion
+
+    \printuntil /^\}/
+
+    \c majorVersion() takes a string of the format \c {<number>.<number>.<number>.[...]}.
+    It uses the built-in JavaScript functions \c string.split() and \c parseInt() to return the
+    first \c <number> as an integer.
+
+    \section1 Checking the Operating System Type
+
+    The actual checks are executed as soon as the package is loaded, in the \c Component constructor
+    function.
+
+    \skipto /function Component/
+    \printuntil /\{/
+
+    The function uses the built-in \l{systemInfo::kernelType}{systemInfo.kernelType},
+    \l{systemInfo::kernelVersion}{systemInfo.kernelVersion}, \l{systemInfo::productType},
+    and \l{systemInfo::productVersion}{systemInfo.productVersion} properties to check the minimum
+    system requirements.
+
+    \skipto validOs
+    \printto /\!validOs/
+
+    The script uses \l{systemInfo::productType}{systemInfo.productType} to differentiate
+    between Windows, OS X, and individual Linux distributions.
+
+    For OS X and Windows, the script checks the operating system kernel version.
+    For a mapping of kernel to operating system versions, see
+    \l{http://en.wikipedia.org/wiki/Darwin_%28operating_system%29}{Darwin} and
+    \l{http://en.wikipedia.org/wiki/Windows_NT}{Windows NT}.
+
+    In the case of Linux, it checks the distribution name and version. If it does not match
+    the specific distribution and version the binaries are presumably built for,
+    the installer shows a warning in a modal dialog, but allows installation.
+
+    If the Windows or OS X version is too old, though, the script calls the \c cancelInstaller()
+    helper function to prevent an actual installation:
+
+    \printuntil /\}/
+
+    \section1 Checking the Operating System Architecture
+
+    The next section demonstrates the use of
+    \l{systemInfo::currentCpuArchitecture}{systemInfo.currentCpuArchitecture} to choose
+    the appropriate sub-package for a particular architecture:
+
+    \skipto root.i386
+    \printuntil /^\}/
+
+    Depending on the operating system architecture, either the package \c root.i386 or
+    \c root.x86_64 is marked \c Virtual, hiding it from the user. For the package that matches
+    the local architecture, the \c Default property is set to check the package by default.
+
+    \include installerfw-examples-generating.qdocinc
+*/

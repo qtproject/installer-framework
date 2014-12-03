@@ -1,5 +1,5 @@
 2.0.0
-- Require Qt 5.3 as a minimal version, Qt 4 code removed.
+- Require Qt 5.4 as a minimal version, Qt 4 code removed.
 - Only support Qt 5 on documentation side as well.
 - Source code is now available also under LGPLv3.
 - Changed the default value of AllowSpaceInPath in config.xml to true.
@@ -39,6 +39,7 @@
 - Updated and improved translations.
 - Removed SetQtCreatorArrayValue, AddQtCreatorArrayValue operations.
 - Removed ApplyProductKey, ReplaceInstallNames, QtPatch operations.
+- Added systemInfo to the scripting API (QTIFW-592).
 
 Thanks go to Christoph Vogtländer, Sze Howe Koh, Ray Donnelly, Tasuku Suzuki and Sascha Cunz for contributions.
 

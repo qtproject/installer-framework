@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>i386 binaries</DisplayName>
+    <Description>Binaries that require a x86 CPU.</Description>
+    <Version>1.0.0-1</Version>
+    <ReleaseDate>2014-12-01</ReleaseDate>
+    <Default>false</Default>
+</Package>

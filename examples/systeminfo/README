@@ -1,0 +1,13 @@
+Shows how to use the systemInfo JS API.
+
+The installer rejects installations on Windows XP,
+and OS X 10.6 or older. It shows a warning if
+it is run on any Linux distribution other than openSUSE 13.2.
+
+It also shows only one of the two sub-packages, based on
+the CPU architecture: "i386" on an 32-bit system, and
+"x86_64" on an 64-bit system.
+
+Generate installer with
+
+binarycreator --offline-only -c config/config.xml -p packages installer

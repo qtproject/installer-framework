@@ -9,4 +9,5 @@ SUBDIRS += \
   openreadme \
   quit_installer \
   registerfileextension \
-  startmenu
+  startmenu \
+  systeminfo

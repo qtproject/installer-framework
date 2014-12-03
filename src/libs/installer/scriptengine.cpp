@@ -36,6 +36,7 @@
 #include "messageboxhandler.h"
 #include "errors.h"
 #include "scriptengine_p.h"
+#include "systeminfo.h"
 
 #include <QMetaEnum>
 #include <QQmlEngine>
@@ -262,6 +263,8 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core)
 #else
     m_engine.installTranslatorFunctions();
 #endif
+    global.setProperty(QLatin1String("systemInfo"), m_engine.newQObject(new SystemInfo));
+
     global.setProperty(QLatin1String("QInstaller"), generateQInstallerObject());
     global.setProperty(QLatin1String("buttons"), generateWizardButtonsObject());
     global.setProperty(QLatin1String("QMessageBox"), generateMessageBoxObject());

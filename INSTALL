@@ -15,7 +15,7 @@ http://qt.gitorious.org/installer-framework
 Build a static Qt
 ---------------------
 
-Building the Qt Installer Framework from sources requires Qt (version 5.3.0
+Building the Qt Installer Framework from sources requires Qt (version 5.4.0
 or newer). If you want to ship your installer as a single file you have to build
 Qt and the Qt Installer Framework statically.
 
