@@ -1168,13 +1168,7 @@ QStringList Component::dependencies() const
 
 QStringList Component::autoDependencies() const
 {
-    const QStringList autoDependencyStringList =
-        d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
-    QStringList withoutScriptValuesList;
-    foreach (const QString &string, autoDependencyStringList)
-        if (string.compare(scScript, Qt::CaseInsensitive))
-            withoutScriptValuesList.append(string);
-    return withoutScriptValuesList;
+    return d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
 }
 
 /*!
