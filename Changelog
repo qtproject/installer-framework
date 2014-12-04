@@ -40,6 +40,7 @@
 - Removed SetQtCreatorArrayValue, AddQtCreatorArrayValue operations.
 - Removed ApplyProductKey, ReplaceInstallNames, QtPatch operations.
 - Added systemInfo to the scripting API (QTIFW-592).
+- Changed default of 'AllowSpaceInPath' from false to true.
 
 Thanks go to Christoph Vogtländer, Sze Howe Koh, Ray Donnelly, Tasuku Suzuki and Sascha Cunz for contributions.
 

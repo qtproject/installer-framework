@@ -452,7 +452,7 @@ QString Settings::configurationFileName() const
 
 bool Settings::allowSpaceInPath() const
 {
-    return d->m_data.value(scAllowSpaceInPath, true).toBool();
+    return d->m_data.value(scAllowSpaceInPath, false).toBool();
 }
 
 bool Settings::allowNonAsciiCharacters() const

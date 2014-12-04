@@ -68,7 +68,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.configurationFileName(), QLatin1String("components.xml"));
     QCOMPARE(settings.dependsOnLocalInstallerBinary(), false);
     QCOMPARE(settings.repositorySettingsPageVisible(), true);
-    QCOMPARE(settings.allowSpaceInPath(), true);
+    QCOMPARE(settings.allowSpaceInPath(), false);
     QCOMPARE(settings.allowNonAsciiCharacters(), false);
 
     QCOMPARE(settings.hasReplacementRepos(), false);
