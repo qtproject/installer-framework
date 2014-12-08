@@ -40,9 +40,7 @@
     \section1 Supported Platforms
 
     You can use the Qt Installer Framework to create installers for all
-    platforms supported by
-    \l{http://qt-project.org/doc/qt-5.0/qtdoc/platform-details.html}
-    {desktop Qt}.
+    platforms supported by \l{Desktop Platforms}{desktop Qt}.
 
     The installers have been tested on the following platforms:
 

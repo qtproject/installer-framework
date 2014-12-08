@@ -26,7 +26,8 @@ indexes += $QT_INSTALL_DOCS/qtcore/qtcore.index \
            $QT_INSTALL_DOCS/qtqml/qtqml.index \
            $QT_INSTALL_DOCS/qtxml/qtxml.index \
            $QT_INSTALL_DOCS/qtconcurrent/qtconcurrent.index \
-           $QT_INSTALL_DOCS/qtnetwork/qtnetwork.index
+           $QT_INSTALL_DOCS/qtnetwork/qtnetwork.index \
+           $QT_INSTALL_DOCS/qtdoc/qtdoc.index
 
 qhp.projects            = InstallerFramework
 qhp.InstallerFramework.file             = ifw.qhp
