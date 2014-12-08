@@ -53,7 +53,7 @@ public:
     explicit ScriptEngine(PackageManagerCore *core = 0);
 
     QJSValue globalObject() const { return m_engine.globalObject(); }
-    QJSValue newQObject(QObject *object) { return m_engine.newQObject(object); }
+    QJSValue newQObject(QObject *object);
     QJSValue evaluate(const QString &program, const QString &fileName = QString(),
         int lineNumber = 1);
 

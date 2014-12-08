@@ -90,6 +90,9 @@ public:
     Q_INVOKABLE void showSettingsButton(bool show);
     Q_INVOKABLE void setSettingsButtonEnabled(bool enable);
 
+    Q_INVOKABLE QObject *findChild(QObject *parent, const QString &objectName);
+    Q_INVOKABLE QList<QObject*> findChildren(QObject *parent, const QString &objectName);
+
     void updateButtonLayout();
     static QWizard::WizardStyle getStyle(const QString &name);
 

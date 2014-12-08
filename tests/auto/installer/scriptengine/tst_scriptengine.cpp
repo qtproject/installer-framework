@@ -56,6 +56,11 @@ public:
         setPage(PackageManagerCore::Introduction, new IntroductionPage(core));
         setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
         setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
+
+        foreach (const int id, pageIds()) {
+            packageManagerCore()->controlScriptEngine()->addQObjectChildren(page(id));
+            packageManagerCore()->componentScriptEngine()->addQObjectChildren(page(id));
+        }
     }
 
     virtual void init() {}
@@ -306,8 +311,6 @@ private slots:
             testGui.loadControlScript(":///data/auto-install.qs");
             QCOMPARE(m_core.value("GuiTestValue"), QString("hello"));
 
-            // show event calls automatically the first callback which does not exist
-            setExpectedScriptOutput("Control script callback \"IntroductionPageCallback\" does not exist. ");
             testGui.show();
 
             // inside the auto-install script we are clicking the next button, with a not existing button

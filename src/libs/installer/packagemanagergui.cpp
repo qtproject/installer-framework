@@ -698,6 +698,26 @@ void PackageManagerGui::setSettingsButtonEnabled(bool enabled)
         btn->setEnabled(enabled);
 }
 
+/**
+   Returns the first descendant of \a parent that has \a objectName as name.
+
+   This method is meant to be invoked from script.
+ */
+QObject *PackageManagerGui::findChild(QObject *parent, const QString &objectName)
+{
+    return parent->findChild<QObject*>(objectName);
+}
+
+/**
+   Returns all descendants of \a parent that have \a objectName as name.
+
+   This method is meant to be invoked from script.
+ */
+QList<QObject *> PackageManagerGui::findChildren(QObject *parent, const QString &objectName)
+{
+    return parent->findChildren<QObject*>(objectName);
+}
+
 void PackageManagerGui::customButtonClicked(int which)
 {
     if (QWizard::WizardButton(which) == QWizard::CustomButton1 && d->m_showSettingsButton)

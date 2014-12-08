@@ -225,6 +225,22 @@ namespace QInstaller {
 */
 
 /*!
+    \qmlmethod object gui::findChild(object parent, string objectName)
+
+    Returns the first descendant of \a parent that has \a objectName as name.
+
+    \sa QObject::findChild
+*/
+
+/*!
+    \qmlmethod object[] gui::findChildren(object parent, string objectName)
+
+    Returns all descendants of \a parent that have \a objectName as name.
+
+    \sa QObject::findChildren
+*/
+
+/*!
     \qmlsignal gui::interrupted()
 */
 
@@ -291,6 +307,21 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core)
 
     global.property(QLatin1String("installer")).setProperty(QLatin1String("componentByName"),
         proxy.property(QLatin1String("componentByName")));
+}
+
+QJSValue ScriptEngine::newQObject(QObject *object)
+{
+    QJSValue obj = m_engine.newQObject(object);
+
+    // add findChild(), findChildren() methods known from QtScript
+    QJSValue findChild = m_engine.evaluate(
+                QLatin1String("(function() { return gui.findChild(this, arguments[0]); })"));
+    QJSValue findChildren = m_engine.evaluate(
+                QLatin1String("(function() { return gui.findChildren(this, arguments[0]); })"));
+    obj.setProperty(QLatin1String("findChild"), findChild);
+    obj.setProperty(QLatin1String("findChildren"), findChildren);
+
+    return obj;
 }
 
 QJSValue ScriptEngine::evaluate(const QString &program, const QString &fileName, int lineNumber)
