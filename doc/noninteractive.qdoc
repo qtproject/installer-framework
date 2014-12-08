@@ -195,7 +195,7 @@
 
     \table
         \header
-        \li Radio buttons
+        \li Radio Buttons
         \li Brief Description
 
         \row
@@ -313,7 +313,7 @@
     \table
         \header
         \li Widgets
-        \li Brief description
+        \li Brief Description
 
         \row
         \li \c StartMenuPathLineEdit
@@ -336,7 +336,7 @@
     \table
         \header
         \li Widgets
-        \li Brief description
+        \li Brief Description
 
         \row
         \li \c MessageLabel
@@ -374,7 +374,7 @@
     \table
         \header
         \li Widgets
-        \li Brief description
+        \li Brief Description
 
         \row
         \li \c MessageLabel
