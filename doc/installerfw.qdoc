@@ -217,7 +217,7 @@
         \row
             \li RunProgram
             \li Command executed after the installer is done if the user accepts
-                the action.
+                the action. Provide the full path to the application.
         \row
             \li RunProgramArguments
             \li Arguments passed to the program specified in RunProgram. You can add several

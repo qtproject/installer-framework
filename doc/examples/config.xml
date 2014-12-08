@@ -9,11 +9,12 @@
     <InstallerApplicationIcon>installericon</InstallerApplicationIcon>
     <Logo>logo.png</Logo>
     <Watermark>watermark.png</Watermark>
-    <RunProgram></RunProgram>
+    <RunProgram>@TargetDir@/YourAppToRun</RunProgram>
     <RunProgramArguments>
-        <Argument></Argument>
+        <Argument>Argument 1</Argument>
+        <Argument>Argument 2</Argument>
     </RunProgramArguments>
-    <RunProgramDescription></RunProgramDescription>
+    <RunProgramDescription>My nice application</RunProgramDescription>
     <StartMenuDir>Some Application Entry Dir</StartMenuDir>
     <UninstallerName>SDKMaintenanceTool</UninstallerName>
     <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
