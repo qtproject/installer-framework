@@ -264,7 +264,7 @@
 
         \row
             \li \c selectDefault()
-            \li Resets the checked state of available packages to there initial state.
+            \li Resets the checked state of available packages to their initial state.
 
         \row
             \li \c selectComponent(id)
@@ -273,6 +273,28 @@
         \row
             \li \c deselectComponent(id)
             \li Deselects the package with \c id (string).
+    \endtable
+
+    \table
+        \header
+        \li Push Buttons
+        \li Brief Description
+
+        \row
+            \li \c SelectAllComponentsButton
+            \li Selects all available packages if possible.
+
+        \row
+            \li \c DeselectAllComponentsButton
+            \li Deselects all available packages if possible.
+
+        \row
+            \li \c SelectDefaultComponentsButton
+            \li Resets the checked state of available packages to their initial state.
+
+        \row
+            \li \c ResetComponentsButton
+            \li Reset to already installed components.
     \endtable
 
 
