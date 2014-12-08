@@ -164,6 +164,11 @@ void TabController::restartWizard()
         d->m_core->networkSettingsChanged();
     }
 
+    // Make sure we are writing the .dat file with the list of uninstall operations already now.
+    // Otherwise we will write at the end of the next updater run, with a potentially
+    // empty component list (if no updates are found).
+    d->m_core->writeMaintenanceTool();
+
     // restart and switch back to intro page
     QTimer::singleShot(0, this, SLOT(init()));
 }
