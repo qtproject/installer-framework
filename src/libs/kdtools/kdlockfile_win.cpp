@@ -68,7 +68,7 @@ bool KDLockFile::Private::lock()
 
     if (!LockFile(handle, 0, 0, QFileInfo(filename).size(), 0)) {
         errorString = QCoreApplication::translate("KDLockFile", "Could not obtain the lock for "
-            "file' %1': %2").arg(filename, QInstaller::windowsErrorString(GetLastError()));
+            "file '%1': %2").arg(filename, QInstaller::windowsErrorString(GetLastError()));
     } else {
         locked = true;
     }
