@@ -980,12 +980,12 @@ bool IntroductionPage::validatePage()
     }
 
     gui()->setSettingsButtonEnabled(false);
-    const bool maintanence = core->isUpdater() || core->isPackageManager();
-    if (maintanence) {
+    const bool maintenance = core->isUpdater() || core->isPackageManager();
+    if (maintenance) {
         showAll();
         setMaintenanceToolsEnabled(false);
     } else {
-        showMetaInfoUdate();
+        showMetaInfoUpdate();
     }
 
 #ifdef Q_OS_WIN
@@ -1040,11 +1040,11 @@ bool IntroductionPage::validatePage()
 
         callControlScript(QLatin1String("PackageManagerSelectedCallback"));
 
-        if (m_allPackagesFetched | localPackagesTreeFetched)
+        if (m_allPackagesFetched || localPackagesTreeFetched)
             setComplete(true);
     }
 
-    if (maintanence) {
+    if (maintenance) {
         showMaintenanceTools();
         setMaintenanceToolsEnabled(true);
     } else {
@@ -1068,7 +1068,7 @@ void IntroductionPage::hideAll()
     showWidgets(false);
 }
 
-void IntroductionPage::showMetaInfoUdate()
+void IntroductionPage::showMetaInfoUpdate()
 {
     showWidgets(false);
     m_label->setVisible(true);

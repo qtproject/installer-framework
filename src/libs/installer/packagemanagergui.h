@@ -215,7 +215,7 @@ public:
 
     void showAll();
     void hideAll();
-    void showMetaInfoUdate();
+    void showMetaInfoUpdate();
     void showMaintenanceTools();
     void setMaintenanceToolsEnabled(bool enable);
 
