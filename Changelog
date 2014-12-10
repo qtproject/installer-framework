@@ -1,3 +1,5 @@
+2.1.0
+
 2.0.0
 - Require Qt 5.4 as a minimal version, Qt 4 code removed.
 - Only support Qt 5 on documentation side as well.

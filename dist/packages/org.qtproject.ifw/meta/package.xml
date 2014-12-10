@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>Qt Installer Framework</DisplayName>
     <Description>Installs the Qt Installer Framework.</Description>
-    <Version>1.6.81</Version>
+    <Version>2.0.81</Version>
     <ReleaseDate>2013-12-12</ReleaseDate>
     <Licenses>
         <License name="LGPL 2.1" file="LICENSE.LGPL" />
