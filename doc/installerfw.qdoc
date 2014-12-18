@@ -307,6 +307,11 @@
             \li Set to \c true if you want to create a local repository inside the installation directory.
                 This option has no effect on online installers. The repository will be automatically added
                 to the list of default repositories.
+        \row
+            \li InstallActionColumnVisible
+            \li Set to \c true if you want to add an extra column into component tree showing install actions.
+                This extra column indicates whether a component is going to be installed or uninstalled,
+                or just stay installed or uninstalled.
 
     \endtable
 

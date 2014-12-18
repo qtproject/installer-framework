@@ -1853,7 +1853,7 @@ public:
         m_treeView->setModel(m_currentModel);
         m_treeView->setExpanded(m_currentModel->index(0, 0), true);
 
-        const bool installActionColumnVisible = false;
+        const bool installActionColumnVisible = m_core->settings().installActionColumnVisible();
         if (!installActionColumnVisible)
             m_treeView->hideColumn(ComponentModelHelper::ActionColumn);
 

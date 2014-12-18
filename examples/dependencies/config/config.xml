@@ -7,4 +7,5 @@
     <StartMenuDir>Qt IFW Examples</StartMenuDir>
     <TargetDir>@HomeDir@/IfwExamples/dependencies</TargetDir>
     <CreateLocalRepository>true</CreateLocalRepository>
+    <InstallActionColumnVisible>true</InstallActionColumnVisible>
 </Installer>

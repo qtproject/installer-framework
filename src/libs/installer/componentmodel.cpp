@@ -83,6 +83,10 @@ class IconCache
 {
 public:
     IconCache() {
+        m_icons.insert(ComponentModelHelper::Install, QIcon(QLatin1String(":/install.png")));
+        m_icons.insert(ComponentModelHelper::Uninstall, QIcon(QLatin1String(":/uninstall.png")));
+        m_icons.insert(ComponentModelHelper::KeepInstalled, QIcon(QLatin1String(":/keepinstalled.png")));
+        m_icons.insert(ComponentModelHelper::KeepUninstalled, QIcon(QLatin1String(":/keepuninstalled.png")));
     }
 
     QIcon icon(ComponentModelHelper::InstallAction action) const {

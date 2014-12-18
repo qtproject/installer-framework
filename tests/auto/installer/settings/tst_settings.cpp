@@ -73,6 +73,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.allowSpaceInPath(), true);
     QCOMPARE(settings.allowNonAsciiCharacters(), false);
     QCOMPARE(settings.createLocalRepository(), false);
+    QCOMPARE(settings.installActionColumnVisible(), false);
 
     QCOMPARE(settings.hasReplacementRepos(), false);
     QCOMPARE(settings.repositories(), QSet<Repository>());

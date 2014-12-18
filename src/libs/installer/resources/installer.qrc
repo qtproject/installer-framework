@@ -3,5 +3,9 @@
         <file>installer.png</file>
         <file>installer.ico</file>
         <file>installer.icns</file>
+        <file>install.png</file>
+        <file>uninstall.png</file>
+        <file>keepinstalled.png</file>
+        <file>keepuninstalled.png</file>
     </qresource>
 </RCC>

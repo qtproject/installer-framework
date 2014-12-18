@@ -112,6 +112,7 @@ public:
     QString configurationFileName() const;
 
     bool createLocalRepository() const;
+    bool installActionColumnVisible() const;
 
     bool dependsOnLocalInstallerBinary() const;
     bool hasReplacementRepos() const;
