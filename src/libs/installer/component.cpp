@@ -277,7 +277,6 @@ void Component::loadDataFromPackage(const LocalPackage &package)
 
     setValue(scForcedInstallation, package.forcedInstallation ? scTrue : scFalse);
     if (package.forcedInstallation & !PackageManagerCore::noForceInstallation()) {
-        setEnabled(false);
         setCheckable(false);
         setCheckState(Qt::Checked);
     }
@@ -317,7 +316,6 @@ void Component::loadDataFromPackage(const Package &package)
         forced = scFalse;
     setValue(scForcedInstallation, forced);
     if (forced == scTrue) {
-        setEnabled(false);
         setCheckable(false);
         setCheckState(Qt::Checked);
     }
