@@ -342,8 +342,10 @@ quint64 Component::updateUncompressedSize()
 {
     quint64 size = 0;
 
-    if (isSelected())
+    if (installAction() == ComponentModelHelper::Install
+            || installAction() == ComponentModelHelper::KeepInstalled) {
         size = d->m_vars.value(scUncompressedSize).toLongLong();
+    }
 
     foreach (Component* comp, d->m_allChildComponents)
         size += comp->updateUncompressedSize();

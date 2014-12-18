@@ -1462,12 +1462,30 @@ public:
         m_treeView->setModel(m_currentModel);
         m_treeView->setExpanded(m_currentModel->index(0, 0), true);
 
+        const bool installActionColumnVisible = false;
+        if (!installActionColumnVisible)
+            m_treeView->hideColumn(ComponentModelHelper::ActionColumn);
+
         if (m_core->isInstaller()) {
             m_treeView->setHeaderHidden(true);
-            for (int i = 1; i < m_currentModel->columnCount(); ++i)
+            for (int i = ComponentModelHelper::InstalledVersionColumn; i < m_currentModel->columnCount(); ++i)
                 m_treeView->hideColumn(i);
+
+            if (installActionColumnVisible) {
+                m_treeView->header()->setStretchLastSection(false);
+                m_treeView->header()->setSectionResizeMode(
+                            ComponentModelHelper::NameColumn, QHeaderView::Stretch);
+                m_treeView->header()->setSectionResizeMode(
+                            ComponentModelHelper::ActionColumn, QHeaderView::ResizeToContents);
+            }
         } else {
             m_treeView->header()->setStretchLastSection(true);
+            if (installActionColumnVisible) {
+                m_treeView->header()->setSectionResizeMode(
+                            ComponentModelHelper::NameColumn, QHeaderView::Interactive);
+                m_treeView->header()->setSectionResizeMode(
+                            ComponentModelHelper::ActionColumn, QHeaderView::Interactive);
+            }
             for (int i = 0; i < m_currentModel->columnCount(); ++i)
                 m_treeView->resizeColumnToContents(i);
         }

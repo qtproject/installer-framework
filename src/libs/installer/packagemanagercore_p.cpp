@@ -1638,7 +1638,9 @@ bool PackageManagerCorePrivate::runPackageUpdater()
             } else if (isPackageManager()) {
                 // We found the component, the component is still checked and the dependency solver did not
                 // add the component as install dependency, keep it.
-                if (component && component->isSelected() && !componentsToInstall.contains(component)) {
+                if (component
+                        && component->installAction() == ComponentModelHelper::KeepInstalled
+                        && !componentsToInstall.contains(component)) {
                     nonRevertedOperations.append(operation);
                     continue;
                 }

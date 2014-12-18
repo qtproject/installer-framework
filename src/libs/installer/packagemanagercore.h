@@ -329,6 +329,7 @@ private:
     QString findDisplayVersion(const QString &componentName, const QHash<QString, QInstaller::Component*> &components,
                                const QString& versionKey, QHash<QString, bool> &visited);
     ComponentModel *componentModel(PackageManagerCore *core, const QString &objectName) const;
+    QList<Component *> componentsMarkedForInstallation() const;
 
 private:
     PackageManagerCorePrivate *const d;

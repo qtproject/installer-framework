@@ -101,9 +101,6 @@ QString InstallerCalculator::componentsToInstallError() const
 void InstallerCalculator::realAppendToInstallComponents(Component *component)
 {
     if (!component->isInstalled() || component->updateRequested()) {
-        // remove the checkState method if we don't use selected in scripts
-        component->setCheckState(Qt::Checked);
-
         m_orderedComponentsToInstall.append(component);
         m_toInstallComponentIds.insert(component->name());
     }

@@ -68,17 +68,11 @@ void UninstallerCalculator::appendComponentToUninstall(Component *component)
     foreach (Component *dependee, dependees)
         appendComponentToUninstall(dependee);
 
-    component->setCheckState(Qt::Unchecked);
     m_componentsToUninstall.insert(component);
 }
 
 void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> &components)
 {
-    if (components.isEmpty()) {
-        qDebug() << "components list is empty in" << Q_FUNC_INFO;
-        return;
-    }
-
     foreach (Component *component, components)
         appendComponentToUninstall(component);
 
