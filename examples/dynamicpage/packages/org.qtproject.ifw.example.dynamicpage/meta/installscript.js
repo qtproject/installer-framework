@@ -76,7 +76,7 @@ Component.prototype.installerLoaded = function () {
             widget.completeInstall.toggled.connect(this, Component.prototype.completeInstallToggled);
 
             widget.defaultInstall.checked = true;
-            widget.windowTitle = "Please select a installation type";
+            widget.windowTitle = "Select Installation Type";
         }
 
         if (installer.addWizardPage(component, "LicenseWidget", QInstaller.LicenseCheck)) {
