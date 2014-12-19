@@ -88,6 +88,30 @@ QStringList ComponentChecker::checkComponent(Component *component)
                     .arg(component->name());
             }
         }
+        if (component->childCount()) {
+            const QStringList autoDependencies = component->autoDependencies();
+            if (!autoDependencies.isEmpty()) {
+                checkResult << QString::fromLatin1("Component %1 auto depends on other components "
+                    "while having children components. This will not work properly.")
+                    .arg(component->name());
+            }
+
+            // TODO: search also for components which autodepend on "component"
+            // (something like core->autodependees(component))
+
+            if (!component->dependencies().isEmpty()) {
+                checkResult << QString::fromLatin1("Component %1 depends on other components "
+                    "while having children components. This will not work properly.")
+                    .arg(component->name());
+            }
+
+            PackageManagerCore *core = component->packageManagerCore();
+            if (!core->dependees(component).isEmpty()) {
+                checkResult << QString::fromLatin1("Other components depend on component %1 "
+                    "which has children components. This will not work properly.")
+                    .arg(component->name());
+            }
+        }
     }
     return checkResult;
 }
