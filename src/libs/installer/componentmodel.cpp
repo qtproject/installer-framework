@@ -216,8 +216,12 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
             if (role == Qt::EditRole || role == Qt::DisplayRole || role == Qt::ToolTipRole)
                 return component->data(Qt::UserRole + index.column());
         }
-        if (role == Qt::CheckStateRole && !component->isCheckable())
-            return QVariant();
+        if (role == Qt::CheckStateRole) {
+            if (!component->isCheckable())
+                return QVariant();
+            if (!component->autoDependencies().isEmpty())
+                return QVariant();
+        }
         return component->data(role);
     }
     return QVariant();

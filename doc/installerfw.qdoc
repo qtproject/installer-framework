@@ -563,8 +563,20 @@
                 \l{Component Dependencies}.
         \row
             \li AutoDependOn
-            \li Opposite of dependencies. Defines that this component should be
-                loaded if all of the specified components are loaded.
+            \li Comma-separated list of identifiers of components that
+                this component has an automatic dependency on.
+                The component is installed if and only if
+                all of the specified dependencies are fulfilled.
+                If a component has an automatic dependency on other components,
+                the check box will not be visible next to the component in the component tree.
+                The selection will be performed automatically.
+                If the component was not installed before, it will
+                be selected for installation only when all components
+                from this list are also selected for installation.
+                If the component was already installed, it will
+                be selected for uninstallation when at least one of the components
+                from this list is also selected for uninstallation.
+                For more information, see \l{Component Dependencies}.
         \row
             \li Virtual
             \li Set to \c true to hide the component from the installer.
