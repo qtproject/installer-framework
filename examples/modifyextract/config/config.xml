@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
-    <Name>Modify extract Installer Example</Name>
+    <Name>Modify Extract Installer Example</Name>
     <Version>1.0.0</Version>
-    <Title>Modify extract Installer Example</Title>
+    <Title>Modify Extract Installer Example</Title>
     <Publisher>Qt-Project</Publisher>
-    <StartMenuDir>Qt Installer Framework Example</StartMenuDir>
-    <TargetDir>@HomeDir@/IFWModifyExtractInstallerExample</TargetDir>
+    <StartMenuDir>Qt IFW Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExample</TargetDir>
 </Installer>
