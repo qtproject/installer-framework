@@ -229,7 +229,7 @@ int InstallerBase::run()
 
     translator.reset(new QTranslator(QCoreApplication::instance()));
     // install English translation as fallback so that correct license button text is used
-    if (translator->load(QLatin1String("en_us"), directory))
+    if (translator->load(QLatin1String("en"), directory))
         QCoreApplication::instance()->installTranslator(translator.take());
 
     if (translations.isEmpty()) {

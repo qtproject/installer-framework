@@ -534,8 +534,7 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 {
     QDirIterator it(directory.path(), qms, QDir::Files);
     const QStringList translations = d->m_core->settings().translations();
-    const QString uiLanguage = QLocale().uiLanguages().value(0, QLatin1String("en_us"))
-        .replace(QLatin1Char('-'), QLatin1Char('_'));
+    const QString uiLanguage = QLocale().uiLanguages().value(0, QLatin1String("en"));
     while (it.hasNext()) {
         const QString filename = it.next();
         const QString basename = QFileInfo(filename).baseName();

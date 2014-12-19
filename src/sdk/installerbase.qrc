@@ -1,10 +1,10 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="translations/de_DE.qm">translations/de_de.qm</file>
-        <file alias="translations/en_US.qm">translations/en_us.qm</file>
-        <file alias="translations/fr_FR.qm">translations/fr_fr.qm</file>
-        <file alias="translations/ja_JP.qm">translations/ja_jp.qm</file>
-        <file alias="translations/ru_RU.qm">translations/ru_ru.qm</file>
+        <file>translations/de.qm</file>
+        <file>translations/en.qm</file>
+        <file>translations/fr.qm</file>
+        <file>translations/ja.qm</file>
+        <file>translations/ru.qm</file>
         <file alias="translations/zh_CN.qm">translations/zh_cn.qm</file>
         <file>translations/qt_fr.qm</file>
         <file>translations/qt_de.qm</file>
