@@ -33,9 +33,55 @@
     \brief Adding a check box for opening the readme file to the final
     installer page.
 
+    \image qtifw-examples-openreadme.png
+
+    \e{Open ReadMe} illustrates how to use the \c Component() function to add a
+    check box to the installation finished page and to open the readme file if
+    end users select the check box.
+
     \include installerfw-examples-configuring.qdocinc
 
     \quotefile openreadme/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Default> section is set to \c true to preselect the
+            component in the installer.
+        \li The \c <Script> section specifies the file name of the JavaScript
+            file that is loaded to perform operations.
+        \li The \c <UserInterfaces> section specifies the file name of the
+            installer page (.ui file) to use.
+    \endlist
+
+    \quotefile openreadme/packages/or.qtproject.ifw.example.openreadme/meta/package.xml
+
+    \section1 Opening Files After Installation
+
+    In installscript.qs, we use the \c Component() function to connect to the
+    \c installationFinishedPageIsShown signal when the installation is complete
+    and to the \c installationFinished signal when the end users click
+    \uicontrol Finish (\uicontrol Done on OS X):
+
+    \quotefromfile openreadme/packages/or.qtproject.ifw.example.openreadme/meta/installscript.qs
+    \skipto Component()
+    \printuntil }
+
+    We call the component::createOperations() function to override the default
+    method for creating operations:
+
+    \printuntil }
+
+    If the installation is successful, we call the installer::addWizardPageItem()
+    function to replace the last installer page with a custom page that contains
+    the \uicontrol {OpenReadMe} check box:
+
+    \printuntil /^\}/
+
+    We set the \c readMeCheckBox to \c checked by default and use the
+    QDesktopServices::openURL() function to open the readme file:
+
+    \printuntil /^\}/
 
     \include installerfw-examples-generating.qdocinc
 */
