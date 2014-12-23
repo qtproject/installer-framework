@@ -5,6 +5,6 @@
     <Title>Start Menu Shortcut Example</Title>
     <Publisher>Qt-Project</Publisher>
     <!-- Directory name is used in component.xml -->
-    <StartMenuDir>Qt Installer Framework Example</StartMenuDir>
-    <TargetDir>@HomeDir@/IFWStartMenuExample</TargetDir>
+    <StartMenuDir>Qt Installer Framework Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExample</TargetDir>
 </Installer>
