@@ -34,10 +34,10 @@
 
 function Component()
 {
-    component.loaded.connect(this, my_componentLoaded);
-    installer.finishButtonClicked.connect(this, my_installationFinished);
-    installer.installationFinished.connect(this, my_installationFinishedPageIsShown);
-    component.unusalFileType = generateUnusualFileType(5)
+    component.loaded.connect(this, addRegisterFileCheckBox);
+    installer.installationFinished.connect(this, addOpenFileCheckBoxToFinishPage);
+    installer.finishButtonClicked.connect(this, openRegisteredFileIfChecked);
+    component.unusualFileType = generateUnusualFileType(5)
 }
 
 generateUnusualFileType = function(length)
@@ -51,24 +51,14 @@ generateUnusualFileType = function(length)
 }
 
 // called as soon as the component was loaded
-my_componentLoaded = function()
+addRegisterFileCheckBox = function()
 {
-    // don't show when updating / de-installing
+    // don't show when updating or uninstalling
     if (installer.isInstaller()) {
-        installer.addWizardPageItem(component, "RegisterFileCheckBoxesForm", QInstaller.TargetDirectory);
-        component.userInterface("RegisterFileCheckBoxesForm").RegisterFileCheckBox.text =
-            component.userInterface("RegisterFileCheckBoxesForm").RegisterFileCheckBox.text + component.unusalFileType;
+        installer.addWizardPageItem(component, "RegisterFileCheckBoxForm", QInstaller.TargetDirectory);
+        component.userInterface("RegisterFileCheckBoxForm").RegisterFileCheckBox.text =
+            component.userInterface("RegisterFileCheckBoxForm").RegisterFileCheckBox.text + component.unusualFileType;
     }
-}
-
-// called after everything is set up, but before any fie is written
-Component.prototype.beginInstallation = function()
-{
-    // call default implementation which is necessary for most hooks
-    // in beginInstallation case it makes nothing
-    component.beginInstallation();
-
-    component.registeredFile = installer.value("TargetDir") + "/registeredfile." + component.unusalFileType;
 }
 
 // here we are creating the operation chain which will be processed at the real installation part later
@@ -76,40 +66,41 @@ Component.prototype.createOperations = function()
 {
     // call default implementation to actually install the registeredfile
     component.createOperations();
-    var iconId = 0;
-    var notepadPath = installer.environmentVariable("SystemRoot") + "\\notepad.exe";
 
-    var isRegisterFileChecked = component.userInterface("RegisterFileCheckBoxesForm").RegisterFileCheckBox.checked;
+    var isRegisterFileChecked = component.userInterface("RegisterFileCheckBoxForm").RegisterFileCheckBox.checked;
     if (installer.value("os") === "win") {
+        var iconId = 0;
+        var notepadPath = installer.environmentVariable("SystemRoot") + "\\notepad.exe";
         component.addOperation("RegisterFileType",
-                               component.unusalFileType,
+                               component.unusualFileType,
                                notepadPath + " '%1'",
                                "QInstaller Framework example file type",
                                "text/plain",
                                notepadPath + "," + iconId,
-                               "ProgId=QtProject.QtInstallerFramework." + component.unusalFileType);
+                               "ProgId=QtProject.QtInstallerFramework." + component.unusualFileType);
     }
-    component.addOperation("Move", "@TargetDir@/registeredfile", component.registeredFile);
+    component.fileWithRegisteredType = installer.value("TargetDir") + "/registeredfile." + component.unusualFileType
+    component.addOperation("Move", "@TargetDir@/registeredfile", component.fileWithRegisteredType);
 }
 
-my_installationFinished = function()
+openRegisteredFileIfChecked = function()
 {
     if (!component.installed)
         return;
 
     if (installer.value("os") == "win" && installer.isInstaller() && installer.status == QInstaller.Success) {
-        var isOpenRegisteredFileChecked = component.userInterface("OpenFileCheckBoxesForm").OpenRegisteredFileCheckBox.checked;
+        var isOpenRegisteredFileChecked = component.userInterface("OpenFileCheckBoxForm").OpenRegisteredFileCheckBox.checked;
         if (isOpenRegisteredFileChecked) {
-            QDesktopServices.openUrl("file:///" + component.registeredFile);
+            QDesktopServices.openUrl("file:///" + component.fileWithRegisteredType);
         }
     }
 }
 
-my_installationFinishedPageIsShown = function()
+addOpenFileCheckBoxToFinishPage = function()
 {
     if (installer.isInstaller() && installer.status == QInstaller.Success) {
-        installer.addWizardPageItem(component, "OpenFileCheckBoxesForm", QInstaller.InstallationFinished);
-        component.userInterface("OpenFileCheckBoxesForm").OpenRegisteredFileCheckBox.text =
-            component.userInterface("OpenFileCheckBoxesForm").OpenRegisteredFileCheckBox.text + component.unusalFileType;
+        installer.addWizardPageItem(component, "OpenFileCheckBoxForm", QInstaller.InstallationFinished);
+        component.userInterface("OpenFileCheckBoxForm").OpenRegisteredFileCheckBox.text =
+            component.userInterface("OpenFileCheckBoxForm").OpenRegisteredFileCheckBox.text + component.unusualFileType;
     }
 }

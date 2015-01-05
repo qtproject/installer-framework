@@ -32,9 +32,79 @@
 
     \brief Registering a filename extension on Windows.
 
+    \image qtifw-examples-registerfileextension.png
+
+    \e{Register File Extension} illustrates how to register a file type on
+    Windows. We use the \c component.addOperation() function with the
+    \c RegisterFileType operation to register a randomly generated file type to
+    be opened with Notepad.
+
     \include installerfw-examples-configuring.qdocinc
 
     \quotefile registerfileextension/config/config.xml
 
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Default> section is set to \c true to preselect the
+            component in the installer.
+        \li The \c <Script> section specifies the file name of the JavaScript
+            file that is loaded to perform operations.
+        \li The \c <UserInterfaces> section specifies the file names of the
+            installer pages (.ui files) to use.
+    \endlist
+
+    \quotefile registerfileextension/packages/org.qtproject.ifw.example.registerfileextension/meta/package.xml
+
+    \section1 Registering File Extensions
+
+    In installscript.qs, we call the \c Component() function to connect to the
+    \c addRegisterFileCheckBox signal as soon as all components have been
+    loaded:
+
+    \quotefromfile registerfileextension/packages/org.qtproject.ifw.example.registerfileextension/meta/installscript.qs
+    \skipto Component()
+    \printuntil addRegisterFileCheckBox
+
+    We use the \c addRegisterFileCheckBox() function to display a check box for
+    registering the generated file type on the last page of the installer.
+    We hide the page when updating and uninstalling:
+
+    \skipto addRegisterFileCheckBox
+    \printuntil )
+    \skipto isInstaller()
+    \printuntil /^\}/
+
+    We connect to the \c openRegisteredFileIfChecked signal when end users
+    select \uicontrol Finish on the last installer page:
+
+    \quotefromfile registerfileextension/packages/org.qtproject.ifw.example.registerfileextension/meta/installscript.qs
+    \skipto openRegisteredFileIfChecked
+    \printuntil ;
+
+    We call the \c openRegisteredFileIfChecked function to check that the
+    file type was successfully registered:
+
+    \skipto openRegisteredFileIfChecked
+    \printuntil /^\}/
+
+    We bind the \c unusualFileType variable to the \c generateUnusualFileType()
+    function that randomly generates a file type with the specified length:
+
+    \quotefromfile registerfileextension/packages/org.qtproject.ifw.example.registerfileextension/meta/installscript.qs
+    \skipto generateUnusualFileType
+    \printuntil randomString
+    \printuntil }
+
+    We use the \c RegisterFileType operation to create a file of the
+    specified type and to specify the application to open the file with:
+
+    \quotefromfile registerfileextension/packages/org.qtproject.ifw.example.registerfileextension/meta/installscript.qs
+    \skipto component.createOperations()
+    \printuntil /^\}/
+
     \include installerfw-examples-generating.qdocinc
+
+    After running the installer, double-click the installed file,
+    \c registeredfile.<extension>, to open it in Notepad.
 */
