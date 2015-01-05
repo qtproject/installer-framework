@@ -66,8 +66,9 @@ InstallerGui::InstallerGui(PackageManagerCore *core)
     setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
 
     foreach (const int id, pageIds()) {
-        packageManagerCore()->controlScriptEngine()->addQObjectChildren(page(id));
-        packageManagerCore()->componentScriptEngine()->addQObjectChildren(page(id));
+        QWizardPage *wizardPage = page(id);
+        packageManagerCore()->controlScriptEngine()->addToGlobalObject(wizardPage);
+        packageManagerCore()->componentScriptEngine()->addToGlobalObject(wizardPage);
     }
 }
 
@@ -103,8 +104,9 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
         wizardPageVisibilityChangeRequested(false, PackageManagerCore::InstallationFinished + 1);
 
     foreach (const int id, pageIds()) {
-        packageManagerCore()->controlScriptEngine()->addQObjectChildren(page(id));
-        packageManagerCore()->componentScriptEngine()->addQObjectChildren(page(id));
+        QWizardPage *wizardPage = page(id);
+        packageManagerCore()->controlScriptEngine()->addToGlobalObject(wizardPage);
+        packageManagerCore()->componentScriptEngine()->addToGlobalObject(wizardPage);
     }
 }
 

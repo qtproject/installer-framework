@@ -177,7 +177,8 @@ protected:
 
     void addPageAndProperties(ScriptEngine *engine)
     {
-        engine->addQObjectChildren(this);
+        engine->addToGlobalObject(this);
+        engine->addToGlobalObject(widget());
 
         static const QStringList properties = QStringList() << QStringLiteral("final")
             << QStringLiteral("commit") << QStringLiteral("complete");
@@ -511,8 +512,8 @@ void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
             continue;
         removePage(pageId);
         d->m_defaultPages.remove(pageId);
-        packageManagerCore()->controlScriptEngine()->removeQObjectChildren(dynamicPage);
-        packageManagerCore()->componentScriptEngine()->removeQObjectChildren(dynamicPage);
+        packageManagerCore()->controlScriptEngine()->removeFromGlobalObject(dynamicPage);
+        packageManagerCore()->componentScriptEngine()->removeFromGlobalObject(dynamicPage);
     }
 }
 
@@ -522,8 +523,8 @@ void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
     Q_ASSERT(widget);
     if (QWizardPage *const p = QWizard::page(page)) {
         p->layout()->addWidget(widget);
-        packageManagerCore()->controlScriptEngine()->addQObjectChildren(p);
-        packageManagerCore()->componentScriptEngine()->addQObjectChildren(p);
+        packageManagerCore()->controlScriptEngine()->addToGlobalObject(p);
+        packageManagerCore()->componentScriptEngine()->addToGlobalObject(p);
     }
 }
 
@@ -531,8 +532,8 @@ void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
 {
     Q_ASSERT(widget);
     widget->setParent(0);
-    packageManagerCore()->controlScriptEngine()->removeQObjectChildren(widget);
-    packageManagerCore()->componentScriptEngine()->removeQObjectChildren(widget);
+    packageManagerCore()->controlScriptEngine()->removeFromGlobalObject(widget);
+    packageManagerCore()->componentScriptEngine()->removeFromGlobalObject(widget);
 }
 
 void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)

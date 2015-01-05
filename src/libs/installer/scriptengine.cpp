@@ -309,19 +309,39 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core)
         proxy.property(QLatin1String("componentByName")));
 }
 
+/*!
+    Creates a JavaScript object that wraps the given QObject \a object.
+
+    Signals and slots, properties and children of \a object are
+    available as properties of the created QJSValue. In addition some helper methods and properties
+    are added:
+
+    findChild(), findChildren() recursively search for child objects with the given object name.
+
+    Direct child objects are made accessible as properties under their respective object names.
+ */
 QJSValue ScriptEngine::newQObject(QObject *object)
 {
-    QJSValue obj = m_engine.newQObject(object);
+    QJSValue jsValue = m_engine.newQObject(object);
+    QQmlEngine::setObjectOwnership(object, QQmlEngine::CppOwnership);
 
     // add findChild(), findChildren() methods known from QtScript
     QJSValue findChild = m_engine.evaluate(
                 QLatin1String("(function() { return gui.findChild(this, arguments[0]); })"));
     QJSValue findChildren = m_engine.evaluate(
                 QLatin1String("(function() { return gui.findChildren(this, arguments[0]); })"));
-    obj.setProperty(QLatin1String("findChild"), findChild);
-    obj.setProperty(QLatin1String("findChildren"), findChildren);
+    jsValue.setProperty(QLatin1String("findChild"), findChild);
+    jsValue.setProperty(QLatin1String("findChildren"), findChildren);
 
-    return obj;
+    // add all named children as properties
+    foreach (QObject *const child, object->children()) {
+        if (child->objectName().isEmpty())
+            continue;
+        jsValue.setProperty(child->objectName(), m_engine.newQObject(child));
+        newQObject(child);
+    }
+
+    return jsValue;
 }
 
 QJSValue ScriptEngine::evaluate(const QString &program, const QString &fileName, int lineNumber)
@@ -329,37 +349,24 @@ QJSValue ScriptEngine::evaluate(const QString &program, const QString &fileName,
     return m_engine.evaluate(program, fileName, lineNumber);
 }
 
-void ScriptEngine::addQObjectChildren(QObject *root)
+/*!
+    Registers QObject \a object in the engine, and makes it globally accessible under its object name.
+ */
+void ScriptEngine::addToGlobalObject(QObject *object)
 {
-    if ((!root) || root->objectName().isEmpty())
+    if (!object || object->objectName().isEmpty())
         return;
 
-    const QObjectList children = root->children();
-    QJSValue jsParent = newQObject(root);
-    QQmlEngine::setObjectOwnership(root, QQmlEngine::CppOwnership);
-    m_engine.globalObject().setProperty(root->objectName(), jsParent);
-
-    foreach (QObject *const child, children) {
-        if (child->objectName().isEmpty())
-            continue;
-        QQmlEngine::setObjectOwnership(child, QQmlEngine::CppOwnership);
-        jsParent.setProperty(child->objectName(), m_engine.newQObject(child));
-        addQObjectChildren(child);
-    }
+    QJSValue value = newQObject(object);
+    globalObject().setProperty(object->objectName(), value);
 }
 
-void ScriptEngine::removeQObjectChildren(QObject *root)
+/*!
+    Removes the \a object name from the global object.
+ */
+void ScriptEngine::removeFromGlobalObject(QObject *object)
 {
-    if ((!root) || root->objectName().isEmpty())
-        return;
-
-    const QObjectList children = root->children();
-    m_engine.globalObject().deleteProperty(root->objectName());
-    foreach (QObject *const child, children) {
-        if (child->objectName().isEmpty())
-            continue;
-        m_engine.globalObject().deleteProperty(child->objectName());
-    }
+    globalObject().deleteProperty(object->objectName());
 }
 
 /*!

@@ -57,8 +57,8 @@ public:
     QJSValue evaluate(const QString &program, const QString &fileName = QString(),
         int lineNumber = 1);
 
-    void addQObjectChildren(QObject *root);
-    void removeQObjectChildren(QObject *root);
+    void addToGlobalObject(QObject *object);
+    void removeFromGlobalObject(QObject *object);
 
     QJSValue loadInContext(const QString &context, const QString &fileName,
         const QString &scriptInjection = QString());

@@ -58,8 +58,8 @@ public:
         setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
 
         foreach (const int id, pageIds()) {
-            packageManagerCore()->controlScriptEngine()->addQObjectChildren(page(id));
-            packageManagerCore()->componentScriptEngine()->addQObjectChildren(page(id));
+            packageManagerCore()->controlScriptEngine()->addToGlobalObject(page(id));
+            packageManagerCore()->componentScriptEngine()->addToGlobalObject(page(id));
         }
     }
 
