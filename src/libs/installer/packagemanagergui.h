@@ -77,21 +77,18 @@ public:
     void loadControlScript(const QString& scriptPath);
     void callControlScriptMethod(const QString& methodName);
 
-    Q_INVOKABLE QWidget *pageById(int id) const;
-    Q_INVOKABLE QWidget *pageByObjectName(const QString &name) const;
+    QWidget *pageById(int id) const;
+    QWidget *pageByObjectName(const QString &name) const;
 
-    Q_INVOKABLE QWidget* currentPageWidget() const;
-    Q_INVOKABLE QWidget* pageWidgetByObjectName(const QString &name) const;
+    QWidget *currentPageWidget() const;
+    QWidget *pageWidgetByObjectName(const QString &name) const;
 
-    Q_INVOKABLE QString defaultButtonText(int wizardButton) const;
-    Q_INVOKABLE void clickButton(int wizardButton, int delayInMs = 0);
-    Q_INVOKABLE bool isButtonEnabled(int wizardButton);
+    QString defaultButtonText(int wizardButton) const;
+    void clickButton(int wizardButton, int delayInMs = 0);
+    bool isButtonEnabled(int wizardButton);
 
-    Q_INVOKABLE void showSettingsButton(bool show);
-    Q_INVOKABLE void setSettingsButtonEnabled(bool enable);
-
-    Q_INVOKABLE QObject *findChild(QObject *parent, const QString &objectName);
-    Q_INVOKABLE QList<QObject*> findChildren(QObject *parent, const QString &objectName);
+    void showSettingsButton(bool show);
+    void setSettingsButtonEnabled(bool enable);
 
     void updateButtonLayout();
     static QWizard::WizardStyle getStyle(const QString &name);

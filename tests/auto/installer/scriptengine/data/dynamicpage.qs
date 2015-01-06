@@ -32,8 +32,18 @@
 **
 **************************************************************************/
 
+function assert(condition)
+{
+    if (!condition)
+        throw new Error("Assertion failed!");
+}
+
 function Controller()
 {
+    var widget = gui.pageWidgetByObjectName("DynamicWidget");
+    assert(typeof widget === 'object');
+    var button = widget.Button;
+    assert(typeof button === 'object');
 }
 
 Controller.prototype.ReadAndSetValues = function()

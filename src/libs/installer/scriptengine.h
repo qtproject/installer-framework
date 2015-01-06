@@ -43,6 +43,7 @@
 namespace QInstaller {
 
 class PackageManagerCore;
+class GuiProxy;
 
 class INSTALLER_EXPORT ScriptEngine : public QObject
 {
@@ -77,6 +78,7 @@ private:
 private:
     QJSEngine m_engine;
     QHash<QString, QStringList> m_callstack;
+    GuiProxy *m_guiProxy;
 };
 
 }

@@ -83,6 +83,8 @@ public:
     void init() {
         m_widget = new QWidget;
         m_widget->setObjectName("Widget");
+        QWidget *button = new QWidget(m_widget);
+        button->setObjectName("Button");
 
         packageManagerCore()->wizardPageInsertionRequested(m_widget,
             PackageManagerCore::Introduction);
