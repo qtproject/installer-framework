@@ -27,6 +27,9 @@
 
 /*!
     \group qtifwexamples
+    \previouspage ifw-customizing-installers.html
+    \nextpage ifw-reference.html
+
     \title Qt Installer Framework Examples
     \brief Illustrate how to customize installers.
 
