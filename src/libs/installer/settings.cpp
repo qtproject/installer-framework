@@ -61,7 +61,7 @@ static const QLatin1String scMaintenanceToolIniFile("MaintenanceToolIniFile");
 static const QLatin1String scRemoteRepositories("RemoteRepositories");
 static const QLatin1String scDependsOnLocalInstallerBinary("DependsOnLocalInstallerBinary");
 static const QLatin1String scTranslations("Translations");
-static const QLatin1String scCreateOfflineRepository("CreateOfflineRepository");
+static const QLatin1String scCreateLocalRepository("CreateLocalRepository");
 
 static const QLatin1String scFtpProxy("FtpProxy");
 static const QLatin1String scHttpProxy("HttpProxy");
@@ -257,7 +257,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations << QLatin1String(scControlScript)
-                << scCreateOfflineRepository;
+                << scCreateLocalRepository;
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
@@ -316,8 +316,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         s.d->m_data.insert(scDependsOnLocalInstallerBinary, false);
     if (!s.d->m_data.contains(scRepositorySettingsPageVisible))
         s.d->m_data.insert(scRepositorySettingsPageVisible, true);
-    if (!s.d->m_data.contains(scCreateOfflineRepository))
-        s.d->m_data.insert(scCreateOfflineRepository, false);
+    if (!s.d->m_data.contains(scCreateLocalRepository))
+        s.d->m_data.insert(scCreateLocalRepository, false);
 
     return s;
 }
@@ -467,9 +467,9 @@ QString Settings::configurationFileName() const
     return d->m_data.value(scTargetConfigurationFile).toString();
 }
 
-bool Settings::createOfflineRepository() const
+bool Settings::createLocalRepository() const
 {
-    return d->m_data.value(scCreateOfflineRepository).toBool();
+    return d->m_data.value(scCreateLocalRepository).toBool();
 }
 
 bool Settings::allowSpaceInPath() const

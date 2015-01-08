@@ -76,7 +76,7 @@ CommandLineParser::CommandLineParser()
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ShowVirtualComponents),
         QLatin1String("Show virtual components in installer and package manager.")));
 
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::CreateOfflineRepository),
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::CreateLocalRepository),
         QLatin1String("Create a local repository inside the installation directory. This option "
         "has no effect on online installers.")));
 

@@ -298,7 +298,7 @@
             \li ControlScript
             \li Filename for a custom installer control script. See \l{Controller Scripting}.
         \row
-            \li CreateOfflineRepository
+            \li CreateLocalRepository
             \li Set to \c true if you want to create a local repository inside the installation directory.
                 This option has no effect on online installers. The repository will be automatically added
                 to the list of default repositories.
