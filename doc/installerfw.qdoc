@@ -75,7 +75,7 @@
             \li \l{Component Scripting}
             \li \l{Operations}
             \li \l{Tools}
-            \li \l{Scripting}
+            \li \l{Scripting API}
             \li \l{C++ Classes}
         \endlist
         \li \l{Known Issues}
@@ -592,7 +592,7 @@
     \contentspage index.html
     \previouspage operations.html
     \page ifw-tools.html
-    \nextpage Scripting
+    \nextpage Scripting API
 
     \title Tools
 
