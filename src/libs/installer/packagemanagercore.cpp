@@ -966,7 +966,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
     Adds the widget with objectName() \a name registered by \a component as a new page
     into the installer's GUI wizard. The widget is added before \a page.
 
-    See \l{Wizard Pages} for the possible values of \a page.
+    See \l{Controller Scripting} for the possible values of \a page.
 
     Returns \c true if the operation succeeded.
 
@@ -1035,7 +1035,7 @@ void PackageManagerCore::setValidatorForCustomPage(Component *component, const Q
     Adds the widget with objectName() \a name registered by \a component as an GUI element
     into the installer's GUI wizard. The widget is added on \a page.
 
-    See \l{Wizard Pages} for the possible values of \a page.
+    See \l{Controller Scripting} for the possible values of \a page.
 
     \sa removeWizardPageItem, wizardWidgetInsertionRequested
 */
