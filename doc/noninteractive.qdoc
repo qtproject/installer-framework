@@ -441,84 +441,84 @@
             try again.
 
         \row
-        \li AuthorizationError
+        \li \c AuthorizationError
         \li Abort, OK
         \li Elevated permissions could not be acquired.
 
         \row
-        \li OperationDoesNotExistError
+        \li \c OperationDoesNotExistError
         \li Abort, Ignore
         \li An error occurred while trying to perform an operation, but the operation did not exist.
 
         \row
-        \li isAutoDependOnError
+        \li \c isAutoDependOnError
         \li OK
         \li An error occurred while calling a package script. It was not possible to evaluate
             if the package has a auto dependency on other packages.
 
         \row
-        \li isDefaultError
+        \li \c isDefaultError
         \li OK
         \li An error occurred while calling a package script. It was not possible to evaluate
             if the package will be installed by default.
 
         \row
-        \li DownloadError
+        \li \c DownloadError
         \li Retry, Cancel
         \li An error occurred while downloading a archive hash from a remote repository. End users
             can select \c Retry to try again.
 
         \row
-        \li archiveDownloadError
+        \li \c archiveDownloadError
         \li Retry, Cancel
         \li An error occurred while downloading a archive from a remote repository. End users can
             select \c Retry to try again.
 
         \row
-        \li WriteError
+        \li \c WriteError
         \li OK
         \li An error occurred while writing the maintenance tool.
 
         \row
-        \li ElevationError
+        \li \c ElevationError
         \li OK
         \li Elevated permissions could not be acquired.
 
         \row
-        \li unknown
+        \li \c unknown
         \li OK
         \li An unknown error occurred while removing a certain package.
 
         \row
-        \li Error
+        \li \c Error
         \li OK
         \li Generic error.
 
         \row
-        \li stopProcessesForUpdates
+        \li \c stopProcessesForUpdates
         \li Retry, Ignore, Cancel
         \li An error occurred while updating a package. Some running application or process needs
             to be quit before the update can be performed. End users can select \c Retry to try
             again once they have been stopped.
 
         \row
-        \li Installer_Needs_To_Be_Local_Error
+        \li \c Installer_Needs_To_Be_Local_Error
         \li OK
         \li The installer binary was started from a network location, but the installation over
             network is not supported.
 
         \row
-        \li TargetDirectoryInUse
+        \li \c TargetDirectoryInUse
         \li No
         \li The installation's target directory already contains an installation.
 
         \row
-        \li WrongTargetDirectory
+        \li \c WrongTargetDirectory
         \li OK
         \li The installation's target directory is a file or symlink.
 
         \row
-        \li AlreadyRunning
+        \li \c AlreadyRunning
         \li OK
         \li Another application instance is already running.
     \endtable
