@@ -44,7 +44,7 @@
     \qmltype QMessageBox
     \inqmlmodule scripting
 
-    \brief The QMessageBox type provides a modal dialog for informing the user or asking the user
+    \brief Provides a modal dialog for informing the user or asking the user
         a question and receiving an answer.
 
 

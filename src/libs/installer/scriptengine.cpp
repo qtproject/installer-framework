@@ -54,7 +54,7 @@ namespace QInstaller {
 /*!
     \qmltype console
     \inqmlmodule scripting
-    \brief The console type provides methods for logging and debugging.
+    \brief Provides methods for logging and debugging.
 */
 
 /*!
@@ -145,7 +145,7 @@ namespace QInstaller {
     \qmltype QInstaller
     \inqmlmodule scripting
 
-    \brief The QInstaller type provides access to the installer status and pages from Qt Script.
+    \brief Provides access to the installer status and pages from Qt Script.
 */
 
 /*!

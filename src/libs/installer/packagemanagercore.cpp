@@ -83,7 +83,7 @@
     \qmltype installer
     \inqmlmodule scripting
 
-    \brief The installer type provides access to core functionality of the Qt Installer Framework.
+    \brief Provides access to core functionality of the Qt Installer Framework.
 */
 
 /*!

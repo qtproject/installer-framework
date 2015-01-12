@@ -72,7 +72,7 @@ static const QLatin1String scForcedInstallation("ForcedInstallation");
     \qmltype component
     \inqmlmodule scripting
 
-    \brief The component type represents the current component that the Qt Script belongs to.
+    \brief Represents the current component that the Qt Script belongs to.
 
     A minimal valid script needs to contain a constructor, which can look like this:
 
