@@ -82,22 +82,37 @@ namespace QInstaller {
 /*!
     \qmltype buttons
     \inqmlmodule scripting
+
+    \brief Provides buttons that can be used on installer pages.
+
+    You can use a set of standard buttons and some custom buttons on the
+    installer pages. For more information about the buttons used by default on
+    each installer page, see \l {Controller Scripting}.
 */
 
 /*!
     \qmlproperty enumeration buttons::QWizard
 
-    \list
-        \li buttons.BackButton
-        \li buttons.NextButton
-        \li buttons.CommitButton
-        \li buttons.FinishButton
-        \li buttons.CancelButton
-        \li buttons.HelpButton
-        \li buttons.CustomButton1
-        \li buttons.CustomButton2
-        \li buttons.CustomButton3
-    \endlist
+    Specifies the buttons on an installer page.
+
+    \value  buttons.BackButton
+            The \uicontrol Back button (\uicontrol {Go Back} on OS X.)
+    \value  buttons.NextButton
+            The \uicontrol Next button (\uicontrol Continue on OS X.)
+    \value  buttons.CommitButton
+            The \uicontrol Commit button.
+    \value  buttons.FinishButton
+            The \uicontrol Finish button (\uicontrol Done on OS X.)
+    \value  buttons.CancelButton
+            The \uicontrol Cancel button.
+    \value  buttons.HelpButton
+            The \uicontrol Help button.
+    \value  buttons.CustomButton1
+            A custom button.
+    \value  buttons.CustomButton2
+            A custom button.
+    \value  buttons.CustomButton3
+            A custom button.
 */
 
 /*!
