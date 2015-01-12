@@ -5,7 +5,6 @@ INCLUDEPATH += . .. rcc ../common
 include(../../installerfw.pri)
 
 QT -= gui
-QTPLUGIN += qico
 QT += qml xml
 
 !minQtVersion(5,4,0): QTPLUGIN += qtaccessiblewidgets
