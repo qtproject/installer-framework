@@ -83,14 +83,46 @@ namespace QInstaller {
 /*!
     \qmltype QFileDialog
     \inqmlmodule scripting
+    \brief Provides a dialog that allows users to select files or directories.
+
+    Use the QFileDialog::getExistingDirectory() method to create a modal dialog
+    that displays an existing directory selected by the user. Use the
+    QFileDialog::getOpenFileName() method to create a dialog that displays
+    matching files in the directory selected by the user.
 */
 
 /*!
     \qmlmethod string QFileDialog::getExistingDirectory(string caption, string dir)
+
+    Returns an existing directory selected by the user.
+
+    The dialog's working directory is set to \a dir, and the caption is set to
+    \a caption. Either of these may be an empty string, in which case the
+    current directory and a default caption will be used, respectively.
 */
 
 /*!
     \qmlmethod string QFileDialog::getOpenFileName(string caption, string dir, string filter)
+
+    Returns an existing file selected by the user. If the user selects
+    \uicontrol Cancel, returns a null string.
+
+    The file dialog's caption is set to \a caption. If \c caption is not
+    specified, a default caption is used.
+
+    The file dialog's working directory is set to \a dir. If \c dir includes a
+    file name, the file will be selected. Only files that match the specified
+    \a filter are shown. Either of these may be an empty string.
+
+    To specify multiple filters, separate them with two semicolons (;;). For
+    example:
+
+    \code
+    "Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"
+    \endcode
+
+    On Windows, and OS X, this static function will use the native file dialog
+    and not a QFileDialog.
 */
 
 /*!
