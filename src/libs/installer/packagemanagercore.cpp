@@ -476,7 +476,7 @@ quint64 size(QInstaller::Component *component, const QString &value)
 /*!
    \qmlmethod float installer::requiredDiskSpace()
 
-   Returns the estimated amount of disk space in bytes required after installation.
+   Returns the additional estimated amount of disk space in bytes required after installation.
 
    \sa requiredTemporaryDiskSpace
  */

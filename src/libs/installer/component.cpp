@@ -342,7 +342,7 @@ quint64 Component::updateUncompressedSize()
 {
     quint64 size = 0;
 
-    if (installationRequested() || updateRequested())
+    if (isSelected())
         size = d->m_vars.value(scUncompressedSize).toLongLong();
 
     foreach (Component* comp, d->m_allChildComponents)
