@@ -45,7 +45,7 @@
     Windows, and OS X.
 
     \note Report bugs and suggestions for the Qt Installer Framework project
-    in the \l{https://bugreports.qt-project.org/browse/QTIFW}{Qt Bugtracker}.
+    in the \l{https://bugreports.qt.io/browse/QTIFW}{Qt Bugtracker}.
 
     \list
         \li \l{Overview of Qt Installer Framework}
@@ -1078,7 +1078,7 @@
 
     \title Known Issues
 
-    Check the \l{https://bugreports.qt-project.org/browse/QTIFW}{Qt Bugtracker}
+    Check the \l{https://bugreports.qt.io/browse/QTIFW}{Qt Bugtracker}
     for known issues in the Qt Installer Framework project. If you cannot find
     the issue there, create a bug report.
 */
