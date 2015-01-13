@@ -315,32 +315,67 @@
 
     \title Customizing Installers
 
-    The following sections describe how you can extend the predefined installer
-    by adding operations to the pages and by adding new pages and language
-    variants.
+    You can use scripting to customize installers by:
+
+    \list
+
+        \li Adding Qt Installer Framework \e operations that are prepared by the
+            scripts and performed by the installer.
+
+        \li Adding new pages that you specify in the package.xml file and place
+            in the \c packages directory.
+
+        \li Modifying existing pages by inserting custom user interface
+            elements into them as single widgets.
+
+        \li Adding language variants.
+
+    \endlist
+
+    You can use both \e {component scripts} and a \e {control script} to
+    customize installers. A component script is associated with a particular
+    component by specifying it in the \c Script element of the package.xml
+    file of the component. The script is loaded when the component's metadata is
+    fetched. For more information about component scripts, see
+    \l{Component Scripting}.
+
+    A control script is associated with the whole installer by specifying it
+    in the \c ControlScript element of the control.xml file of the installer.
+    Control scripts can be part of the installer resources or be passed on the
+    command line. They can be used to modify the installer pages that are
+    presented to users before components are loaded. Also, you can use them to
+    modify pages in the uninstaller. For more information, see
+    \l{Controller Scripting}.
+
+    For more information about the global JavaScript objects that can be used in
+    component and control scripts, see \l{Scripting API}.
 
     \section1 Adding Operations
 
-    Components can use the ECMAScript scripting language to perform additional
-    operations at any time during the installation process. Typically,
-    components manipulate files by moving, copying, or patching them.
+    You can use component scripts to perform Qt Installer Framework operations
+    during the installation process. Typically, operations manipulate files by
+    moving, copying, or patching them. Use the
+    QInstaller::Component::addOperation or
+    QInstaller::Component::addElevatedOperation function to add operations. For
+    more information, see \l {Adding Operations to Components}.
 
-    For more information about scripting, see \l{Component Scripting}.
+    In addition, you can implement methods to register custom installation
+    operations in the installer by deriving KDUpdater::UpdateOperation. For
+    more information, see \l {Registering Custom Operations}.
+
+    For a summary of available operations, see \l {Operations}.
 
     \section1 Adding Pages
 
     A component can contain one or more user interface files, which are placed
-    into the installer by a script. The installer automatically loads all user
-    interface files listed in package.xml. You can access the loaded widgets
-    by calling \c QInstaller::Component::userInterface with the class name of
-    the widget, as illustrated by the following code snippet:
+    into the installer by a component or control script. The installer
+    automatically loads all user interface files listed in the
+    \c UserInterfaces element of the package.xml file.
 
-    \code
-    component.userInterface( "MyPage" ).checkbox.checked = true;
-    \endcode
+    \section2 Using Component Scripts to Add Pages
 
     To add a new page to the installer, use
-    the \c QInstaller::Installer::addWizardPage method and specify the location
+    the installer::addWizardPage() method and specify the location
     of the new page. For example, the following code adds an instance of
     \c MyPage before the ready for installation page:
 
@@ -348,18 +383,63 @@
     installer.addWizardPage( component, "MyPage", QInstaller.ReadyForInstallation );
     \endcode
 
+    You can use component scripts to access the loaded widgets
+    by calling the \l component::userInterface() method with the class name of
+    the widget, as illustrated by the following code snippet:
+
+    \code
+    component.userInterface( "MyPage" ).checkbox.checked = true;
+    \endcode
+
+    \section2 Using Control Scripts to Add Pages
+
+    To register a custom page, use the installer::addWizardPage() method
+    and the object name set in the UI file (for example, \c "MyPage"). Then
+    call the \c{Dynamic${ObjectName}Callback()} function (for example,
+    \c {DynamicMyPageCallback()}):
+
+    \code
+    function Controller()
+    {
+        installer.addWizardPage(component, "MyPage", QInstaller.TargetDirectory)
+    }
+
+    Controller.prototype.DynamicMyPageCallback()
+    {
+        var page = gui.pageWidgetByObjectName("DynamicMyPage");
+        page.myButton.click,
+        page.myWidget.subWidget.setText("hello")
+    }
+    \endcode
+
+    You can access widgets by using their object names that are set in the UI
+    file. For example, \c myButton and \c myWidget are widget object names in
+    the code above.
+
     \section1 Adding Widgets
 
-    You can also insert custom user interface elements into the installer as
-    single widgets (such as a check box).
+    You can use component or control scripts to insert custom user interface
+    elements into the installer as single widgets (such as a check box).
 
-    To insert a single widget, use the
-    \c QInstaller::Installer::addWizardPageItem method.
+    To insert a single widget, use the installer::addWizardPageItem method.
     For example, the following code snippet adds an instance of \c MyWidget to
     the component selection page from within a script:
 
     \code
     installer.addWizardPageItem( component, "MyWidget", QInstaller.ComponentSelection );
+    \endcode
+
+    \section1 Interacting with Installer Functionality
+
+    You can use control scripts to execute installer functions automatically in
+    tests, for example. The following snippet illustrates how to automatically
+    click the \uicontrol Next button on the target directory selection page:
+
+    \code
+        Controller.prototype.TargetDirectoryPageCallback = function()
+        {
+            gui.clickButton(buttons.NextButton);
+        }
     \endcode
 
     \section1 Translating Pages
