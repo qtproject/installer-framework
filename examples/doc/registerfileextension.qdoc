@@ -30,7 +30,7 @@
     \ingroup qtifwexamples
     \title Register File Extension Example
 
-    \brief Registering a filename extension on Windows.
+    \brief Using a component script to register a filename extension on Windows.
 
     \image qtifw-examples-registerfileextension.png
 

@@ -32,7 +32,7 @@
 
     \image qtifw-examples-quit_installer.png
 
-    \brief Quitting an installer by using a script.
+    \brief Using a component script to quit an installer.
 
     \e{Quit Installer} illustrates how to use the \c Component() function to
     display a message box to end users for quitting the installation if some

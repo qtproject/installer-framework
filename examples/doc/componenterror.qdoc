@@ -30,7 +30,8 @@
     \ingroup qtifwexamples
     \title Component Error Example
 
-    \brief Stopping the installation if the components cannot be installed.
+    \brief Using a component script to stop the installation if the components
+    cannot be installed.
 
     \image qtifw-examples-componenterror.png
 

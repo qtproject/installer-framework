@@ -30,8 +30,8 @@
     \ingroup qtifwexamples
     \title Open ReadMe Example
 
-    \brief Adding a check box for opening the readme file to the final
-    installer page.
+    \brief Using a component script to add a check box for opening the readme
+    file to the final installer page.
 
     \image qtifw-examples-openreadme.png
 

@@ -30,7 +30,7 @@
     \ingroup qtifwexamples
     \title Dynamic Page Installer Example
 
-    \brief Building an installer by using a script and dynamic pages.
+    \brief Using a component script and dynamic pages to build an installer.
 
     \image qtifw-examples-dynamicpages.png
 

@@ -30,7 +30,7 @@
     \ingroup qtifwexamples
     \title Start Menu Shortcut Example
 
-    \brief Adding an entry to the Windows Start menu.
+    \brief Using a component script to add an entry to the Windows Start menu.
 
     \image qtifw-examples-startmenu.png
 

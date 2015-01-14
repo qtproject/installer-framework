@@ -33,4 +33,7 @@
     \title Qt Installer Framework Examples
     \brief Illustrate how to customize installers.
 
+    These examples illustrate how to use component scripts for customizing
+    installers.
+
 */

@@ -30,7 +30,8 @@
     \ingroup qtifwexamples
     \title System Information Example
 
-    \brief Checking operating system version and bitness in a script.
+    \brief Using the systemInfo API in a component script to check operating
+    system version and bitness.
 
     The \e{System Information Example} demonstrates how to use the \l{systemInfo} API to detect
     details about the target operating system.

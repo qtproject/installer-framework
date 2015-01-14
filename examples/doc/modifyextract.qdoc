@@ -30,7 +30,8 @@
     \ingroup qtifwexamples
     \title Modify Extract Installer Example
 
-    \brief Using the extract archive hook to modify the target path.
+    \brief Using the extract archive hook in a component script to modify the
+    target path.
 
     \image qtifw-examples-modifyextract.png
 
