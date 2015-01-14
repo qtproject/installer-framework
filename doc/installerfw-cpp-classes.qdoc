@@ -33,6 +33,14 @@
 
     \title C++ Classes
 
+    The class documentation is written for developers who develop the Qt
+    Installer Framework. It describes the internal API, so there is no
+    compatibility promise. Further, the documentation is a work in progress and
+    therefore parts of it are missing while other parts might be out of date.
+
+    To create customized installers, use the \l{Scripting API}, instead. For
+    more information, see \l {Customizing Installers}.
+
     \generatelist{classesbymodule QtInstallerFramework}
     \generatelist{classesbymodule kdupdater}
 */
