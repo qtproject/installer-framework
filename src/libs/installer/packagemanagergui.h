@@ -113,7 +113,6 @@ protected Q_SLOTS:
     void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardWidgetRemovalRequested(QWidget *widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
-    void executeControlScript(int pageId);
     void setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,
                                             const QString &callbackName);
 
@@ -123,11 +122,13 @@ private Q_SLOTS:
     void onLanguageChanged();
     void customButtonClicked(int which);
     void dependsOnLocalInstallerBinary();
+    void currentPageChanged(int newId);
 
 protected:
     bool event(QEvent *event);
     void showEvent(QShowEvent *event);
     PackageManagerCore *packageManagerCore() const { return m_core; }
+    void executeControlScript(int pageId);
 
 private:
     class Private;
@@ -179,22 +180,23 @@ protected:
     virtual void insertWidget(QWidget *widget, const QString &siblingName, int offset = 1);
     virtual QWidget *findWidget(const QString &objectName) const;
 
-    virtual void setVisible(bool visible); // reimp
     virtual int nextId() const; // reimp
 
+    // Used to support some kind of initializePage() in the case the wizard has been set
+    // to QWizard::IndependentPages. If that option has been set, initializePage() would be only
+    // called once. So we provide entering() and leaving() based on currentPageChanged() signal.
     virtual void entering() {} // called on entering
     virtual void leaving() {}  // called on leaving
 
-    bool isConstructing() const { return m_fresh; }
-
 private:
-    bool m_fresh;
     bool m_complete;
     QString m_titleColor;
     bool m_needsSettingsButton;
 
     PackageManagerCore *m_core;
     QInstaller::Component *validatorComponent;
+
+    friend class PackageManagerGui;
 };
 
 

@@ -204,7 +204,8 @@ class PackageManagerGui::Private
 {
 public:
     Private()
-        : m_modified(false)
+        : m_currentId(-1)
+        , m_modified(false)
         , m_autoSwitchPage(true)
         , m_showSettingsButton(false)
     {
@@ -226,7 +227,7 @@ public:
             QLatin1String("unknown button"));
     }
 
-
+    int m_currentId;
     bool m_modified;
     bool m_autoSwitchPage;
     bool m_showSettingsButton;
@@ -282,7 +283,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     connect(m_core, SIGNAL(uninstallationFinished()), this, SLOT(showFinishedPage()),
         Qt::QueuedConnection);
 
-    connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(executeControlScript(int)));
+    connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(currentPageChanged(int)));
     connect(this, SIGNAL(currentIdChanged(int)), m_core, SIGNAL(currentPageChanged(int)));
     connect(button(QWizard::FinishButton), SIGNAL(clicked()), this, SIGNAL(finishButtonClicked()));
     connect(button(QWizard::FinishButton), SIGNAL(clicked()), m_core, SIGNAL(finishButtonClicked()));
@@ -716,12 +717,29 @@ void PackageManagerGui::dependsOnLocalInstallerBinary()
     }
 }
 
+void PackageManagerGui::currentPageChanged(int newId)
+{
+    executeControlScript(newId);
+
+    PackageManagerPage *oldPage = qobject_cast<PackageManagerPage *>(page(d->m_currentId));
+    if (oldPage) {
+        oldPage->leaving();
+        emit oldPage->left();
+    }
+
+    d->m_currentId = newId;
+
+    PackageManagerPage *newPage = qobject_cast<PackageManagerPage *>(page(d->m_currentId));
+    if (newPage) {
+        newPage->entering();
+        emit newPage->entered();
+    }
+}
 
 // -- PackageManagerPage
 
 PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
-    : m_fresh(true)
-    , m_complete(true)
+    : m_complete(true)
     , m_needsSettingsButton(false)
     , m_core(core)
     , validatorComponent(0)
@@ -819,31 +837,6 @@ void PackageManagerPage::insertWidget(QWidget *widget, const QString &siblingNam
 QWidget *PackageManagerPage::findWidget(const QString &objectName) const
 {
     return findChild<QWidget*> (objectName);
-}
-
-/*!
-    \internal
-
-    Used to support some kind of initializePage() in the case the wizard has been set
-    to QWizard::IndependentPages. If that option has been set, initializePage() would be only
-    called once. So we provide entering() and leaving() based on this reimplemented function.
-*/
-void PackageManagerPage::setVisible(bool visible)
-{
-    QWizardPage::setVisible(visible);
-    if (m_fresh && !visible) {
-        // this is only hit once when the page gets added to the wizard
-        m_fresh = false;
-        return;
-    }
-
-    if (visible) {
-        entering();
-        emit entered();
-    } else {
-        leaving();
-        emit left();
-    }
 }
 
 int PackageManagerPage::nextId() const
@@ -1778,10 +1771,8 @@ bool TargetDirectoryPage::validatePage()
 
 void TargetDirectoryPage::entering()
 {
-    if (QPushButton *const b = qobject_cast<QPushButton *>(gui()->button(QWizard::NextButton))) {
+    if (QPushButton *const b = qobject_cast<QPushButton *>(gui()->button(QWizard::NextButton)))
         b->setDefault(true);
-        b->setFocus();
-    }
 }
 
 void TargetDirectoryPage::leaving()
@@ -2375,10 +2366,8 @@ void FinishedPage::entering()
     } else {
         if (packageManagerCore()->isInstaller()) {
             m_commitButton = wizard()->button(QWizard::FinishButton);
-            if (QPushButton *const b = qobject_cast<QPushButton *>(m_commitButton)) {
+            if (QPushButton *const b = qobject_cast<QPushButton *>(m_commitButton))
                 b->setDefault(true);
-                b->setFocus();
-            }
         }
 
         gui()->setOption(QWizard::NoCancelButton, true);
