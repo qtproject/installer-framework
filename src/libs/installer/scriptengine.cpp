@@ -169,10 +169,23 @@ namespace QInstaller {
 /*!
     \qmltype QDesktopServices
     \inqmlmodule scripting
-*/
 
-/*!
-    \qmlproperty enumeration QDesktopServices::QStandardPaths
+    \brief Provides methods for accessing common desktop services.
+
+    Many desktop environments provide services that can be used by applications
+    to perform common tasks, such as opening a file, in a way that is both
+    consistent and takes into account the user's application preferences.
+
+    This object contains methods that provide simple interfaces to these
+    services that indicate whether they succeeded or failed.
+
+    The openUrl() method is used to open files located at arbitrary URLs in
+    external applications. For URLs that correspond to resources on the local
+    filing system (where the URL scheme is "file"), a suitable application is
+    used to open the file.
+
+    The displayName() and storageLocation() methods take one of the following
+    enums as an argument:
 
     \list
         \li DesktopServices.DesktopLocation
@@ -193,18 +206,34 @@ namespace QInstaller {
         \li DesktopServices.GenericCacheLocation
         \li DesktopServices.GenericConfigLocation
     \endlist
+
+    The enum values correspond to the values of the
+    \l{QStandardPaths::StandardLocation} enum with the same names.
+*/
+
+/*!
+    \qmlproperty enumeration QDesktopServices::QStandardPaths
+    \internal
 */
 
 /*!
     \qmlmethod boolean QDesktopServices::openUrl(string url)
+
+    Uses the URL scheme \c file to open the specified \a url with a suitable
+    application.
 */
 
 /*!
     \qmlmethod string QDesktopServices::displayName(int location)
+
+    Returns a localized display name for the specified \a location or an empty
+    QString if no relevant location can be found.
 */
 
 /*!
     \qmlmethod string QDesktopServices::storageLocation(int location)
+
+    Returns the specified \a location.
 */
 
 /*!
