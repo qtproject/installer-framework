@@ -433,17 +433,20 @@ ScriptEngine *PackageManagerCorePrivate::controlScriptEngine() const
 
 void PackageManagerCorePrivate::clearAllComponentLists()
 {
-    qDeleteAll(m_rootComponents);
+    QList<QInstaller::Component*> toDelete;
+
+    toDelete << m_rootComponents;
     m_rootComponents.clear();
 
     m_rootDependencyReplacements.clear();
 
     const QList<QPair<Component*, Component*> > list = m_componentsToReplaceAllMode.values();
     for (int i = 0; i < list.count(); ++i)
-        delete list.at(i).second;
+        toDelete << list.at(i).second;
     m_componentsToReplaceAllMode.clear();
     m_componentsToInstallCalculated = false;
 
+    qDeleteAll(toDelete);
     cleanUpComponentEnvironment();
 }
 
@@ -460,8 +463,6 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
             usedComponents.insert(list.at(i).second);
     }
 
-    qDeleteAll(usedComponents);
-
     m_updaterComponents.clear();
     m_updaterComponentsDeps.clear();
 
@@ -470,6 +471,7 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
     m_componentsToReplaceUpdaterMode.clear();
     m_componentsToInstallCalculated = false;
 
+    qDeleteAll(usedComponents);
     cleanUpComponentEnvironment();
 }
 
