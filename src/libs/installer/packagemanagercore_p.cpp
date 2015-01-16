@@ -78,6 +78,9 @@
 #include <qt_windows.h>
 #endif
 
+#define QUOTE_(x) #x
+#define QUOTE(x) QUOTE_(x)
+
 namespace QInstaller {
 
 class OperationTracer
@@ -565,8 +568,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     }
 
     if (isInstaller() || packagesInfo.applicationVersion().isEmpty()) {
-        // TODO: this seems to be wrong, we should ask for ProductVersion defaulting to applicationVersion...
-        packagesInfo.setApplicationVersion(m_data.settings().applicationVersion());
+        packagesInfo.setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
     }
 
     if (isInstaller()) {
@@ -1477,11 +1479,10 @@ bool PackageManagerCorePrivate::runInstaller()
         info.setFileName(componentsXmlPath());
         // Clear the packages as we might install into an already existing installation folder.
         info.clearPackageInfoList();
-        // also update the application name and version, might be set from a script as well
+        // also update the application name, might be set from a script as well
         info.setApplicationName(m_data.value(QLatin1String("ProductName"),
             m_data.settings().applicationName()).toString());
-        info.setApplicationVersion(m_data.value(QLatin1String("ProductVersion"),
-            m_data.settings().applicationVersion()).toString());
+        info.setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
 
         const int progressOperationCount = countProgressOperations(componentsToInstall)
             // add one more operation as we support progress
@@ -2092,7 +2093,7 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
             if (packagesInfo.applicationName().isEmpty())
                 packagesInfo.setApplicationName(m_data.settings().applicationName());
             if (packagesInfo.applicationVersion().isEmpty())
-                packagesInfo.setApplicationVersion(m_data.settings().applicationVersion());
+                packagesInfo.setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
         }
 
         if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError)

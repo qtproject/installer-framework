@@ -100,8 +100,7 @@
 
     \list
 
-        \li The \c <Version> element specifies the version number of the
-            repository format, and must be set to \c 1.0.0.
+        \li The \c <Version> element specifies the application version number.
 
         \li The \c <Publisher> element specifies the publisher of the software
             (as shown in the Windows Control Panel, for example).

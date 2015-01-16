@@ -175,8 +175,9 @@
             \li Name of the product being installed. This is mandatory.
         \row
             \li Version
-            \li Version number of the repository format. This is mandatory and
-                must always be set to \c 1.0.0.
+            \li Version of the product being installed in the following format:
+                [0-9]+((\\.|-)[0-9]+)* such as 1-1; 1.2-2; 3.4.7. This is
+                mandatory.
         \row
             \li Title
             \li Name of the installer as displayed on the title bar.

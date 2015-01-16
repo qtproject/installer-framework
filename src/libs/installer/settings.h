@@ -94,7 +94,7 @@ public:
     int wizardDefaultHeight() const;
 
     QString applicationName() const;
-    QString applicationVersion() const;
+    QString version() const;
 
     QString runProgram() const;
     QStringList runProgramArguments() const;

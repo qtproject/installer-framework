@@ -337,7 +337,7 @@ QString Settings::applicationName() const
     return d->m_data.value(scName).toString();
 }
 
-QString Settings::applicationVersion() const
+QString Settings::version() const
 {
     return d->m_data.value(scVersion).toString();
 }

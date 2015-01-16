@@ -6,8 +6,7 @@
     \list
          \li The \c <Name> element specifies the application name that is added
              to the page name and introduction text.
-        \li The \c <Version> element specifies the version number of the
-            repository format, and must be set to \c 1.0.0.
+        \li The \c <Version> element specifies the application version number.
         \li The \c <Title> element specifies the installer name displayed on the
             title bar.
         \li The \c <Publisher> element specifies the publisher of the software
