@@ -305,6 +305,17 @@ private slots:
         }
     }
 
+    void loadComponentUserInterfaces()
+    {
+       try {
+            setExpectedScriptOutput("\"checked: false\"");
+            m_component->loadUserInterfaces(QDir(":///data"), QStringList() << QLatin1String("form.ui"));
+            m_component->loadComponentScript(":///data/userinterface.qs");
+        } catch (const Error &error) {
+            QFAIL(qPrintable(error.message()));
+        }
+    }
+
     void loadSimpleAutoRunScript()
     {
         try {

@@ -584,6 +584,7 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
             throw Error(tr("Could not load the requested UI file '%1'. Error: %2").arg(it.fileName(),
                 loader.errorString()));
         }
+        d->scriptEngine()->newQObject(widget);
         d->m_userInterfaces.insert(widget->objectName(), widget);
     }
 }
