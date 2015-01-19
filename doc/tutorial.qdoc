@@ -86,30 +86,30 @@
 
     \list
 
-        \li The \c Title section specifies the installer name displayed on the
+        \li The \c <Title> element specifies the installer name displayed on the
             title bar (1).
 
-        \li The \c Name section specifies the application name that is added to
+        \li The \c <Name> element specifies the application name that is added to
             the page name and introduction text (2).
 
     \endlist
 
     \image ifw-tutorial-introduction-page.png "Introduction page"
 
-    The other settings are used to customize the behavior of the installer:
+    The other elements are used to customize the behavior of the installer:
 
     \list
 
-        \li The \c <Version> section specifies the version number of the
+        \li The \c <Version> element specifies the version number of the
             repository format, and must be set to \c 1.0.0.
 
-        \li The \c <Publisher> section specifies the publisher of the software
+        \li The \c <Publisher> element specifies the publisher of the software
             (as shown in the Windows Control Panel, for example).
 
-        \li The \c <StartMenuDir> section specifies the name of the default
+        \li The \c <StartMenuDir> element specifies the name of the default
             program group for the product in the Windows \gui Start menu.
 
-        \li The \c <TargetDir> section specifies that the default target
+        \li The \c <TargetDir> element specifies that the default target
             directory displayed to users is \c InstallationDirectory in the home
             directory of the current user (because the predefined variable
             \c @HomeDir@ is used as a part of the value). For more information,
@@ -118,7 +118,7 @@
     \endlist
 
     For more information about the configuration file format and the available
-    settings, see \l{Configuration File}.
+    elements, see \l{Configuration File}.
 
     \section1 Creating a Package Information File
 
@@ -129,22 +129,22 @@
 
     \quotefile ../examples/tutorial/packages/com.vendor.product/meta/package.xml
 
-    The sections in the example file are described in more detail below.
+    The elements in the example file are described in more detail below.
 
     For more information about the package information file, see
     \l{Package Information File Syntax}.
 
     \section2 Specifying Component Information
 
-    The information from the following sections is displayed on the component
+    The information from the following elements is displayed on the component
     selection page:
 
     \list
 
-        \li The \c DisplayName section specifies the name of the component in
+        \li The \c <DisplayName> element specifies the name of the component in
             the list of components (1).
 
-        \li The \c Description section specifies the text that is displayed when
+        \li The \c <Description> element specifies the text that is displayed when
             the component is selected (2).
 
     \endlist
@@ -153,23 +153,23 @@
 
     \section2 Specifying Installer Version
 
-    The \c Version section enables you to promote updates to users when they
+    The \c <Version> element enables you to promote updates to users when they
     become available.
 
     \section2 Adding Licenses
 
-    The \c License section specifies the name of the file that contains the text
+    The \c <License> element specifies the name of the file that contains the text
     for the license agreement (1) that is displayed on the license check page:
 
     \image ifw-tutorial-license-check.png "License check page"
 
     \section2 Selecting Default Contents
 
-    The \c Default section specifies whether the component is selected by
+    The \c <Default> element specifies whether the component is selected by
     default. The value \c true sets the component as selected. In this example,
     we use the value \c script to resolve the value during runtime. The
     name of the JavaScript script file, installscript.qs, is specified in the
-    \c Script section.
+    \c <Script> element.
 
     \section1 Creating Installer Content
 

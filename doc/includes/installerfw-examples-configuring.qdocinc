@@ -4,17 +4,17 @@
     specifies the text and default values used in the installer:
 
     \list
-         \li The \c <Name> section specifies the application name that is added
+         \li The \c <Name> element specifies the application name that is added
              to the page name and introduction text.
-        \li The \c <Version> section specifies the version number of the
+        \li The \c <Version> element specifies the version number of the
             repository format, and must be set to \c 1.0.0.
-        \li The \c <Title> section specifies the installer name displayed on the
+        \li The \c <Title> element specifies the installer name displayed on the
             title bar.
-        \li The \c <Publisher> section specifies the publisher of the software
+        \li The \c <Publisher> element specifies the publisher of the software
             (as shown in the Windows Control Panel, for example).
-        \li The \c <StartMenuDir> section specifies the name of the default
+        \li The \c <StartMenuDir> element specifies the name of the default
             program group for the product in the Windows \gui Start menu.
-        \li The \c <TargetDir> section specifies that the default target
+        \li The \c <TargetDir> element specifies that the default target
             directory displayed to users is \c IfwExample in the home directory
             of the current user (because the predefined variable\c @HomeDir@ is
             used as a part of the value). For more information, see

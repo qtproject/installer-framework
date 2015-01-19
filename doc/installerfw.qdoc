@@ -153,9 +153,9 @@
 
     \quotefile examples/config.xml
 
-    \section1 Supported Configuration Settings
+    \section1 Summary of Configuration File Elements
 
-    The following table summarizes the settings in the configuration file.
+    The following table summarizes the elements in the configuration file.
 
     \note We recommend that you place all files that you refer to in the
     configuration file in the \c config directory. However, you can also use
@@ -163,11 +163,11 @@
     the config.xml file.
 
     You can use predefined variables (embedded in @ characters) as values of the
-    settings. For more information, see \l{Predefined Variables}.
+    elements. For more information, see \l{Predefined Variables}.
 
     \table
         \header
-            \li Setting
+            \li Element
             \li Description
         \row
             \li Name
@@ -191,7 +191,8 @@
             \li Icon
             \li Filename for a custom installer icon. The actual file is looked up by attaching
                 a '.icns' (OS X), '.ico' (Windows) or '.png' (Unix) suffix. Deprecated,
-                use InstallerApplicationIcon and / or InstallerWindowIcon instead.
+                use \c <InstallerApplicationIcon> or \c <InstallerWindowIcon>
+                instead.
         \row
             \li InstallerApplicationIcon
             \li Filename for a custom installer icon. The actual file is looked up by attaching
@@ -232,17 +233,18 @@
                 the action. Provide the full path to the application.
         \row
             \li RunProgramArguments
-            \li Arguments passed to the program specified in RunProgram. You can add several
-                \c Argument elements that each specify an argument to \c {RunProgram}.
+            \li Arguments passed to the program specified in \c <RunProgram>.
+                You can add several \c <Argument> child elements that each specify an
+                argument to \c <RunProgram>.
         \row
             \li RunProgramDescription
             \li Text shown next to the check box for running the program after
-                the installation. If \gui <RunProgram> is set but no description provided,
-                the UI will display \gui {Run <Name> now.} instead.
+                the installation. If \c <RunProgram> is set but no description provided,
+                the UI will display \uicontrol {Run <Name> now.} instead.
         \row
             \li StartMenuDir
             \li Name of the default program group for the product in the Windows
-                \gui Start menu.
+                \uicontrol Start menu.
         \row
             \li TargetDir
             \li Default target directory for installation.
@@ -252,9 +254,9 @@
                 rights.
         \row
             \li RemoteRepositories
-            \li List of remote repositories. You can add several \c Repository
-                sections that each specify the \c Url to access the repository.
-                For more information, see \l{Configuring Repositories}.
+            \li List of remote repositories. This element can contain several \c <Repository> child
+                elements that each contain the \c <Url> child element that specifies the URL to
+                access the repository. For more information,  see \l{Configuring Repositories}.
         \row
             \li MaintenanceToolName
             \li Filename of the generated maintenance tool. Defaults to
@@ -288,8 +290,8 @@
         \row
             \li Translations
             \li List of language codes to be used for translating the user interface. To add several language
-                variants, specify several Translation sections that each specify the name of a language
-                variant. Optional. For more information, see \l{Translating Pages}.
+                variants, specify several \c <Translation> child elements that each specify the name
+                of a language variant. Optional. For more information, see \l{Translating Pages}.
         \row
             \li UrlQueryString
             \li This string needs to be in the form "key=value" and will be appended to archive download
@@ -518,11 +520,11 @@
 
     \quotefile examples/package.xml
 
-    \section2 Summary of Package Information File Settings
+    \section2 Summary of Package Information File Elements
 
     \table
         \header
-            \li Setting
+            \li Element
             \li Description
         \row
             \li DisplayName
@@ -570,8 +572,8 @@
         \row
             \li Licenses
             \li List of license agreements to be accepted by the installing
-                user. To add several licenses, specify several \c License
-                sections that each specify the license \c name and \c file.
+                user. To add several licenses, add several \c <License> child
+                elements that each specify the license \c name and \c file.
                 If there are translations listed for this component, the installer
                 will also look for translated licenses. These need to have the
                 same name as the original license file but with an added
@@ -586,13 +588,13 @@
                 For more information, see \l{Adding Operations}.
         \row
             \li UserInterfaces
-            \li List of pages to load. To add several pages, specify several
-                \c UserInterface sections that each specify the filename of a
+            \li List of pages to load. To add several pages, add several
+                \c <UserInterface> child elements that each specify the filename of a
                 page. Optional. For more information, see \l{Adding Pages}.
         \row
             \li Translations
             \li List of translation files to load. To add several language
-                variants, specify several \c Translation sections that each
+                variants, specify several \c <Translation> child elements that each
                 specify the filename of a language variant. Optional. For more
                 information, see \l{Translating Pages}.
         \row
@@ -607,7 +609,7 @@
                 child components.
                 The boolean values are evaluated directly, while \c script is
                 resolved during runtime. Add the name of the script as a value
-                of the \c Script setting in this file. For an example script,
+                of the \c <Script> element in this file. For an example script,
                 see \l{Selecting Default Contents}.
         \row
             \li Essential
@@ -921,17 +923,19 @@
 
     \section1 Configuring Repositories
 
-    The \c RemoteRepositories setting in the installer configuration file
+    The \c <RemoteRepositories> element in the installer configuration file
     (config.xml) can contain a list of several repositories. Each of them can
     have the following settings:
 
     \list
 
-        \li URL, which points to a list of available components.
-        \li Enabled, with 0 disabling this repository.
-        \li Username, which is used as user on a protected repository.
-        \li Password, which sets the password to use on a protected repository.
-        \li DisplayName, which optionally sets a String to display instead of the URL.
+        \li \c <Url>, which points to a list of available components.
+        \li \c <Enabled>, with 0 disabling this repository.
+        \li \c <Username>, which is used as user on a protected repository.
+        \li \c <Password>, which sets the password to use on a protected
+            repository.
+        \li \c <DisplayName>, which optionally sets a string to display instead
+            of the URL.
 
     \endlist
 
@@ -1047,7 +1051,7 @@
 
         \li Copy the updated content to the package directory.
 
-        \li Increase the value of the \c{Version} setting for the updated
+        \li Increase the value of the \c <Version> element for the updated
             components in the package.xml file.
 
         \li Use the \c repogen tool to recreate the online repository with the
@@ -1067,7 +1071,7 @@
     the online version number in the file is greater than the local one, the
     installer displays it in the list of available updates.
 
-    Increase the value of the \c{Version} setting for the component in the
+    Increase the value of the \c <Version> element for the component in the
     package.xml file.
 
     \section1 Recreating Repositories
@@ -1126,7 +1130,8 @@
     \endcode
 
     \section2 Adding Repositories
-    To update a repository, add the following code to the RepositoryUpdate section:
+    To update a repository, add a \c <Repository> child element to the
+    \c <RepositoryUpdate> element with the following options:
 
     \code
     <Repository action="add" url="http://www.example.com/repository" name="user" password="password"
@@ -1134,14 +1139,16 @@
     \endcode
 
     \section2 Removing Repositories
-    To remove a repository, add the following code to the RepositoryUpdate section:
+    To remove a repository, add a \c <Repository> child element to the
+    \c <RepositoryUpdate> element with the following options:
 
     \code
     <Repository action="remove" url="http://www.example.com/repository" />
     \endcode
 
     \section2 Replacing repositories
-    To replace one repository with another, add the following code to the RepositoryUpdate section:
+    To replace one repository with another, add a \c <Repository> child element to the
+    \c <RepositoryUpdate> element with the following options:
 
     \code
     <Repository action="replace" oldurl="http://www.example.com/repository"
