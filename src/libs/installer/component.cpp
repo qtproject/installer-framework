@@ -156,7 +156,7 @@ static const QLatin1String scForcedInstallation("ForcedInstallation");
 /*!
     \qmlproperty stringlist component::autoDependencies
 
-    Returns the value of the \c <AutoDependsOn> tag in the package information file.
+    Returns the value of the \c <AutoDependOn> tag in the package information file.
 */
 
 /*!
