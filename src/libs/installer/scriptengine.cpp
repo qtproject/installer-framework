@@ -220,6 +220,7 @@ namespace QInstaller {
 /*!
     \qmltype gui
     \inqmlmodule scripting
+    \brief Enables interaction with the installer UI.
 */
 
 /*!
@@ -272,6 +273,9 @@ void GuiProxy::setPackageManagerGui(PackageManagerGui *gui)
 
 /*!
     \qmlmethod object gui::pageById(int id)
+
+    Returns the installer page specified by \a id. The values of \c id for the
+    available installer pages are provided by QInstaller::WizardPage.
 */
 QJSValue GuiProxy::pageById(int id) const
 {
@@ -282,6 +286,9 @@ QJSValue GuiProxy::pageById(int id) const
 
 /*!
     \qmlmethod object gui::pageByObjectName(string name)
+
+    Returns the installer page specified by \a name. The value of \c name is the
+    object name set in the UI file that defines the installer page.
 */
 QJSValue GuiProxy::pageByObjectName(const QString &name) const
 {
@@ -292,6 +299,8 @@ QJSValue GuiProxy::pageByObjectName(const QString &name) const
 
 /*!
     \qmlmethod object gui::currentPageWidget()
+
+    Returns the current wizard page.
 */
 QJSValue GuiProxy::currentPageWidget() const
 {
@@ -322,6 +331,9 @@ QString GuiProxy::defaultButtonText(int wizardButton) const
 
 /*!
     \qmlmethod void gui::clickButton(int wizardButton, int delayInMs)
+
+    Automatically clicks the button specified by \a wizardButton after a delay
+    in milliseconds specified by \a delayInMs.
 */
 void GuiProxy::clickButton(int wizardButton, int delayInMs)
 {
