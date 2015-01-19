@@ -6,7 +6,7 @@
     <Publisher>Qt Project</Publisher>
     <ProductUrl>http://qt-project.org</ProductUrl>
     <Watermark>watermark.png</Watermark>
-    <UninstallerName>Uninstaller</UninstallerName>
+    <MaintenanceToolName>Uninstaller</MaintenanceToolName>
 
     <!-- Tweaked for windows in installscript.qs -->
     <TargetDir>@HomeDir@/Qt/QtIFW2.0.0</TargetDir>
