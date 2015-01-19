@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2015 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -250,6 +250,8 @@
         \row
             \li os
             \li Current platform: \c "x11", \c "win", or \c "mac".
+
+                This variable is deprecated: Use \l systemInfo instead.
         \row
             \li RootDir
             \li Root directory of the filesystem.

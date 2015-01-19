@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2015 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -42,7 +42,7 @@ Component.prototype.createOperations = function()
     // call default implementation to actually install README.txt!
     component.createOperations();
 
-    if (installer.value("os") === "win") {
+    if (systemInfo.productType === "windows") {
         component.addOperation("CreateShortcut", "@TargetDir@/README.txt", "@StartMenuDir@/README.lnk",
             "workingDirectory=@TargetDir@", "iconPath=%SystemRoot%/system32/SHELL32.dll",
             "iconId=2");

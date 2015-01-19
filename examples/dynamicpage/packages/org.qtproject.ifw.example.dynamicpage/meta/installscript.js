@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2015 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -36,7 +36,7 @@ var ComponentSelectionPage = null;
 
 var Dir = new function () {
     this.toNativeSparator = function (path) {
-        if (installer.value("os") == "win")
+        if (systemInfo.productType === "windows")
             return path.replace(/\//g, '\\');
         return path;
     }
@@ -50,7 +50,7 @@ function Component() {
         installer.setDefaultPageVisible(QInstaller.TargetDirectory, false);
         installer.setDefaultPageVisible(QInstaller.ComponentSelection, false);
         installer.setDefaultPageVisible(QInstaller.LicenseCheck, false);
-        if (installer.value("os") == "win")
+        if (systemInfo.productType === "windows")
             installer.setDefaultPageVisible(QInstaller.StartMenuSelection, false);
         installer.setDefaultPageVisible(QInstaller.ReadyForInstallation, false);
     }
