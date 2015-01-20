@@ -55,10 +55,29 @@ namespace QInstaller {
     \qmltype console
     \inqmlmodule scripting
     \brief Provides methods for logging and debugging.
+
+    You can use the \c console object to print log information about installer
+    functions to the console. The following example uses the \c console object
+    \l{console::log()}{log} method and \l installer object
+    \l{installer::isUpdater()}, \l{installer::isUninstaller()}, and
+    \l{installer::isPackageManager()} methods to display a message that
+    indicates whether the maintenance tool is currently being used to update,
+    remove, or add components.
+
+    \code
+    onPackageManagerCoreTypeChanged = function()
+    {
+        console.log("Is Updater: " + installer.isUpdater());
+        console.log("Is Uninstaller: " + installer.isUninstaller());
+        console.log("Is Package Manager: " + installer.isPackageManager());
+    }
+    \endcode
 */
 
 /*!
     \qmlmethod void console::log(string value)
+
+    Prints the string specified by \a value to the console.
 */
 
 /*!
