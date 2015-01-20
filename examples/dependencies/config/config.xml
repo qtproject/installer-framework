@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Dependency Solving Example</Name>
+    <Version>1.0.0</Version>
+    <Title>Dependency Solving Example</Title>
+    <Publisher>Qt-Project</Publisher>
+    <StartMenuDir>Qt IFW Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwDependencySolvingExample</TargetDir>
+    <CreateLocalRepository>true</CreateLocalRepository>
+</Installer>

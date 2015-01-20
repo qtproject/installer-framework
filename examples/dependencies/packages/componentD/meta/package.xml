@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Component D (auto depends on A and B)</DisplayName>
+    <Description>This component has an automatic dependency on Component A and Component B. If both A and B are marked for installation, this component is also installed.</Description>
+    <AutoDependOn>componentA, componentB</AutoDependOn>
+    <Version>1.0.0</Version>
+    <ReleaseDate>2014-08-25</ReleaseDate>
+    <SortingPriority>70</SortingPriority>
+</Package>

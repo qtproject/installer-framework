@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Component C (depends on A and B)</DisplayName>
+    <Description>This component depends on Component A and Component B. Selecting this component for installation also marks Component A and Component B for installation, which in turn marks Component D, because it has an automatic dependency on Component A and Component B.</Description>
+    <Dependencies>componentA, componentB</Dependencies>
+    <Version>1.0.0</Version>
+    <ReleaseDate>2014-08-25</ReleaseDate>
+    <SortingPriority>80</SortingPriority>
+</Package>
