@@ -2093,7 +2093,7 @@ void ReadyForInstallationPage::entering()
 
     quint64 repositorySize = 0;
     const bool createLocalRepository = packageManagerCore()->createLocalRepositoryFromBinary();
-    if (createLocalRepository) {
+    if (createLocalRepository && packageManagerCore()->isInstaller()) {
         repositorySize = QFile(QCoreApplication::applicationFilePath()).size();
         // if we create a local repository, take that space into account as well
         required += repositorySize;
