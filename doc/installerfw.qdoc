@@ -556,8 +556,11 @@
             \li Comma-separated list of identifiers of components that this
                 component depends on. Optionally, you can specify version
                 numbers, separated by a dash (-). You can prefix version numbers
-                with a comparison operator (=, >, <, >= or  <=). Optional. For
-                more information, see \l{Component Dependencies}.
+                with a comparison operator (=, >, <, >= or  <=). Keep in mind
+                that you have to use the character reference "&lt;" to escape
+                the left angle bracket (use "&lt;" instead of "<" and "&lt;="
+                instead of "<="). Optional. For more information, see
+                \l{Component Dependencies}.
         \row
             \li AutoDependOn
             \li Opposite of dependencies. Defines that this component should be
@@ -644,8 +647,8 @@
     component version. Use a dash (-) to separate version numbers from
     identifiers.
 
-    You can prefix version numbers with a comparison operator (=, >, <, >= or
-    <=) to indicate that the version number of the package is compared to the
+    You can prefix version numbers with a comparison operator (=, >, &lt; (<), >= or
+    &lt;= (<=)) to indicate that the version number of the package is compared to the
     required version and has to be equal to, greater than, less than, greater
     than or equal to, or less than or equal to the version number specified in
     the dependency. If no comparison operator is given, it defaults to =.
