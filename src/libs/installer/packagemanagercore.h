@@ -228,6 +228,8 @@ public:
     Q_INVOKABLE void setPackageManager();
     Q_INVOKABLE bool isPackageManager() const;
 
+    bool isMaintainer() const;
+
     bool isVerbose() const;
     void setVerbose(bool on);
 

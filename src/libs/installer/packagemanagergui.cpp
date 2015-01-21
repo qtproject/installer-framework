@@ -605,7 +605,7 @@ void PackageManagerGui::cancelButtonClicked()
         question = tr("Do you want to quit the installer application?");
         if (m_core->isUninstaller())
             question = tr("Do you want to quit the uninstaller application?");
-        if (m_core->isUpdater() || m_core->isPackageManager())
+        if (m_core->isMaintainer())
             question = tr("Do you want to quit the maintenance application?");
     }
 
@@ -851,7 +851,7 @@ int PackageManagerPage::nextId() const
 
         core->calculateComponentsToInstall();
         foreach (Component* component, core->orderedComponentsToInstall()) {
-            if ((core->isPackageManager() || core->isUpdater()) && component->isInstalled())
+            if (core->isMaintainer() && component->isInstalled())
                 continue; // package manager or updater, hide as long as the component is installed
 
             // The component is about to be installed and provides a license, so the page needs to
@@ -954,7 +954,7 @@ int IntroductionPage::nextId() const
     if (packageManagerCore()->isUninstaller())
         return PackageManagerCore::ReadyForInstallation;
 
-    if (packageManagerCore()->isUpdater() || packageManagerCore()->isPackageManager())
+    if (packageManagerCore()->isMaintainer())
         return PackageManagerCore::ComponentSelection;
 
     return PackageManagerPage::nextId();
@@ -974,8 +974,7 @@ bool IntroductionPage::validatePage()
     }
 
     gui()->setSettingsButtonEnabled(false);
-    const bool maintenance = core->isUpdater() || core->isPackageManager();
-    if (maintenance) {
+    if (core->isMaintainer()) {
         showAll();
         setMaintenanceToolsEnabled(false);
     } else {
@@ -1034,7 +1033,7 @@ bool IntroductionPage::validatePage()
             setComplete(true);
     }
 
-    if (maintenance) {
+    if (core->isMaintainer()) {
         showMaintenanceTools();
         setMaintenanceToolsEnabled(true);
     } else {
@@ -1178,7 +1177,7 @@ void IntroductionPage::entering()
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
     PackageManagerCore *core = packageManagerCore();
-    if (core->isUninstaller() || core->isUpdater() || core->isPackageManager()) {
+    if (core->isUninstaller() || core->isMaintainer()) {
         showMaintenanceTools();
         setMaintenanceToolsEnabled(true);
     }
@@ -2035,7 +2034,7 @@ void ReadyForInstallationPage::entering()
             .absolutePath())));
         setComplete(true);
         return;
-    } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
+    } else if (packageManagerCore()->isMaintainer()) {
         setButtonText(QWizard::CommitButton, tr("U&pdate"));
         setColoredTitle(tr("Ready to Update Packages"));
         m_msgLabel->setText(tr("Setup is now ready to begin updating your installation."));
@@ -2254,7 +2253,7 @@ void PerformInstallationPage::entering()
         setColoredTitle(tr("Uninstalling %1").arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runUninstaller()));
-    } else if (packageManagerCore()->isPackageManager() || packageManagerCore()->isUpdater()) {
+    } else if (packageManagerCore()->isMaintainer()) {
         setButtonText(QWizard::CommitButton, tr("&Update"));
         setColoredTitle(tr("Updating components of %1").arg(productName()));
 
@@ -2362,7 +2361,7 @@ void FinishedPage::entering()
         m_commitButton = 0;
     }
 
-    if (packageManagerCore()->isUpdater() || packageManagerCore()->isPackageManager()) {
+    if (packageManagerCore()->isMaintainer()) {
 #ifdef Q_OS_OSX
         gui()->setOption(QWizard::NoCancelButton, false);
 #endif

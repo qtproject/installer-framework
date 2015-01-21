@@ -892,7 +892,7 @@ void PackageManagerCore::networkSettingsChanged()
     d->m_repoFetched = false;
     d->m_updateSourcesAdded = false;
 
-    if (d->isUpdater() || d->isPackageManager())
+    if (isMaintainer())
         d->writeMaintenanceConfigFiles();
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(proxyFactory());
 
@@ -2060,6 +2060,14 @@ bool PackageManagerCore::isPackageManager() const
 }
 
 /*!
+    Returns \c true if it is a package manager or an updater.
+*/
+bool PackageManagerCore::isMaintainer() const
+{
+    return isPackageManager() || isUpdater();
+}
+
+/*!
     \qmlmethod boolean installer::runInstaller()
 
     Runs the installer. Returns \c true on success, \c false otherwise.
@@ -2109,7 +2117,7 @@ bool PackageManagerCore::run()
         return d->runInstaller();
     else if (isUninstaller())
         return d->runUninstaller();
-    else if (isPackageManager() || isUpdater())
+    else if (isMaintainer())
         return d->runPackageUpdater();
     return false;
 }

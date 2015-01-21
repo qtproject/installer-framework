@@ -78,7 +78,7 @@ void MetadataJob::doStart()
 
     emit infoMessage(this, tr("Preparing meta information download..."));
     const bool onlineInstaller = m_core->isInstaller() && !m_core->isOfflineOnly();
-    if (onlineInstaller || (m_core->isUpdater() || m_core->isPackageManager())) {
+    if (onlineInstaller || m_core->isMaintainer()) {
         QList<FileTaskItem> items;
         const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
         foreach (const Repository &repo, m_core->settings().repositories()) {
@@ -158,7 +158,7 @@ void MetadataJob::xmlTaskFinished()
 
                     if (s.updateDefaultRepositories(update) == Settings::UpdatesApplied
                         || s.updateUserRepositories(update) == Settings::UpdatesApplied) {
-                            if (m_core->isUpdater() || m_core->isPackageManager())
+                            if (m_core->isMaintainer())
                                 m_core->writeMaintenanceConfigFiles();
                     }
                 }
@@ -438,7 +438,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     return XmlDownloadRetry;
                 }
             } else if (s.updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
-                if (m_core->isUpdater() || m_core->isPackageManager())
+                if (m_core->isMaintainer())
                     m_core->writeMaintenanceConfigFiles();
                 QFile::remove(result.target());
                 return XmlDownloadRetry;

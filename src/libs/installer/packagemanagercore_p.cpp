@@ -411,7 +411,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 void PackageManagerCorePrivate::cleanUpComponentEnvironment()
 {
     // clean up registered (downloaded) data
-    if (m_core->isUpdater() || m_core->isPackageManager())
+    if (m_core->isMaintainer())
         BinaryFormatEngineHandler::instance()->clear();
 
     // there could be still some references to already deleted components,
