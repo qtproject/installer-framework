@@ -496,7 +496,7 @@ void PackageManagerCore::setMessageBoxAutomaticAnswer(const QString &identifier,
         static_cast<QMessageBox::Button>(button));
 }
 
-quint64 size(QInstaller::Component *component, const QString &value)
+quint64 PackageManagerCore::size(QInstaller::Component *component, const QString &value) const
 {
     if (component->installAction() == ComponentModelHelper::Install)
         return component->value(value).toLongLong();

@@ -1986,7 +1986,23 @@ void PackageManagerCorePrivate::registerMaintenanceTool()
     settings.setValue(QLatin1String("UninstallString"), maintenanceTool);
     settings.setValue(QLatin1String("ModifyPath"), QString(maintenanceTool
         + QLatin1String(" --manage-packages")));
-    settings.setValue(QLatin1String("EstimatedSize"), QFileInfo(installerBinaryPath()).size());
+    // required disk space of the installed components
+    quint64 estimatedSizeKB = m_core->requiredDiskSpace() / 1024;
+    // add required space for the maintenance tool
+    estimatedSizeKB += QFileInfo(maintenanceTool).size() / 1024;
+    if (m_core->createLocalRepositoryFromBinary()) {
+        // add required space for a local repository
+        quint64 result(0);
+        foreach (QInstaller::Component *component,
+            m_core->components(PackageManagerCore::ComponentType::All)) {
+            result += m_core->size(component, scCompressedSize);
+        }
+        estimatedSizeKB += result / 1024;
+    }
+    // Windows can only handle 32bit REG_DWORD (max. recordable installation size is 4TiB)
+    const quint64 limit = std::numeric_limits<quint32>::max(); // maximum 32 bit value
+    if (estimatedSizeKB <= limit)
+        settings.setValue(QLatin1String("EstimatedSize"), static_cast<quint32>(estimatedSizeKB));
     settings.setValue(QLatin1String("NoModify"), 0);
     settings.setValue(QLatin1String("NoRepair"), 1);
 #endif
