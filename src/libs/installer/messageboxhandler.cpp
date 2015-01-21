@@ -56,7 +56,7 @@
     }
     \endcode
 
-    \section2 Buttons
+    \section2 Buttons in Message Boxes
 
     QMessageBox defines a list of common buttons:
     \list
