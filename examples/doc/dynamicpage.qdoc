@@ -49,11 +49,11 @@
     \include installerfw-examples-packaging.qdocinc
 
     \list
-        \li The \c <Script> section specifies the file name of the JavaScript
+        \li The \c <Script> element specifies the file name of the JavaScript
             file that is loaded to perform operations.
-        \li The \c <UserInterfaces> section specifies the file names of the
+        \li The \c <UserInterfaces> element specifies the file names of the
             installer pages (.ui files) to use.
-        \li The \c <Name> section provides domain-like identification for the
+        \li The \c <Name> element provides domain-like identification for the
             component.
     \endlist
 
