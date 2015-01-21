@@ -138,7 +138,7 @@ void RemoteServerConnection::run()
                     delete m_engine;
                     m_engine = 0;
                 }
-                continue;
+                return;
             }
 
             if (command == QLatin1String(Protocol::GetQProcessSignals)) {
