@@ -322,6 +322,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
 PackageManagerGui::~PackageManagerGui()
 {
+    m_core->setGuiObject(0);
     delete d;
 }
 
