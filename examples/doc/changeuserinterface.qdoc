@@ -36,7 +36,7 @@
 
     \e {Change Installer UI} demonstrates how to use the \c Component() function
     to modify the default text for the radio button labels on the
-    \l{License Check Page}{license check page}. This example does not install
+    \l{License Agreement Page}{license check page}. This example does not install
     any components, but we specify a dummy component in the package information
     file, because installers without components are not allowed.
 
