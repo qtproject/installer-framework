@@ -187,7 +187,7 @@ void RemoteServerConnection::handleQProcess(const QString &command, QDataStream 
     while (stream.device()->bytesAvailable() < size) {
         if (!stream.device()->waitForReadyRead(30000)) {
             throw Error(tr("Could not read all data after sending command: %1. "
-                "Bytes expected: %2, Bytes received: %3. Error: %3").arg(command).arg(size)
+                "Bytes expected: %2, Bytes received: %3. Error: %4").arg(command).arg(size)
                 .arg(stream.device()->bytesAvailable()).arg(stream.device()->errorString()));
         }
     }
@@ -297,7 +297,7 @@ void RemoteServerConnection::handleQSettings(const QString &command, QDataStream
     while (stream.device()->bytesAvailable() < size) {
         if (!stream.device()->waitForReadyRead(30000)) {
             throw Error(tr("Could not read all data after sending command: %1. "
-                "Bytes expected: %2, Bytes received: %3. Error: %3").arg(command).arg(size)
+                "Bytes expected: %2, Bytes received: %3. Error: %4").arg(command).arg(size)
                 .arg(stream.device()->bytesAvailable()).arg(stream.device()->errorString()));
         }
     }
@@ -388,7 +388,7 @@ void RemoteServerConnection::handleQFSFileEngine(const QString &command, QDataSt
     while (stream.device()->bytesAvailable() < size) {
         if (!stream.device()->waitForReadyRead(30000)) {
             throw Error(tr("Could not read all data after sending command: %1. "
-                "Bytes expected: %2, Bytes received: %3. Error: %3").arg(command).arg(size)
+                "Bytes expected: %2, Bytes received: %3. Error: %4").arg(command).arg(size)
                 .arg(stream.device()->bytesAvailable()).arg(stream.device()->errorString()));
         }
     }

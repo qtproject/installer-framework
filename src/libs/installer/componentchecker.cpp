@@ -48,51 +48,68 @@ QStringList ComponentChecker::checkComponent(Component *component)
     const bool defaultPropertyValue = component->variables().value(scDefault).compare(scTrue, Qt::CaseInsensitive) == 0;
     if (!component->autoDependencies().isEmpty()) {
         if (component->forcedInstallation()) {
-            checkResult << tr("Component %1 specifies \"ForcedInstallation\" property "
-                              "together with \"AutoDependOn\" list. This combination of states "
-                              "may not work properly."
-                              ).arg(component->name());
+            checkResult << QString::fromLatin1("Component %1 specifies \"ForcedInstallation\" property "
+                "together with \"AutoDependOn\" list. This combination of states may not work properly.")
+                .arg(component->name());
         }
         if (defaultPropertyScriptValue) {
-            checkResult << tr("Component %1 specifies script value for \"Default\" property "
-                              "together with \"AutoDependOn\" list. This combination of states "
-                              "may not work properly."
-                              ).arg(component->name());
+            checkResult << QString::fromLatin1("Component %1 specifies script value for \"Default\" "
+                "property together with \"AutoDependOn\" list. This combination of states may not "
+                "work properly.").arg(component->name());
         }
         if (defaultPropertyValue) {
-            checkResult << tr("Component %1 specifies \"Default\" property "
-                              "together with \"AutoDependOn\" list. This combination of states "
-                              "may not work properly."
-                              ).arg(component->name());
+            checkResult << QString::fromLatin1("Component %1 specifies \"Default\" property together "
+                "with \"AutoDependOn\" list. This combination of states may not work properly.")
+                .arg(component->name());
         }
     }
     if (component->packageManagerCore()->isInstaller()) {
         if (component->isTristate()) {
             if (defaultPropertyScriptValue) {
-                checkResult << tr("Component %1 specifies script value for \"Default\" property "
-                                  "while not being a leaf node. The \"Default\" property "
-                                  "will get a \"false\" value."
-                                  ).arg(component->name());
+                checkResult << QString::fromLatin1("Component %1 specifies script value for \"Default\" "
+                    "property while not being a leaf node. The \"Default\" property will get a "
+                    "\"false\" value.").arg(component->name());
             }
             if (defaultPropertyValue) {
-                checkResult << tr("Component %1 specifies \"Default\" property "
-                                  "while not being a leaf node. The \"Default\" property "
-                                  "will get a \"false\" value."
-                                  ).arg(component->name());
+                checkResult << QString::fromLatin1("Component %1 specifies \"Default\" property "
+                    "while not being a leaf node. The \"Default\" property will get a \"false\" value.")
+                    .arg(component->name());
             }
         }
         if (!component->isCheckable()) {
             if (defaultPropertyScriptValue) {
-                checkResult << tr("Component %1 specifies script value for \"Default\" property "
-                                  "while being not checkable. The \"Default\" property "
-                                  "will get a \"false\" value."
-                                  ).arg(component->name());
+                checkResult << QString::fromLatin1("Component %1 specifies script value for \"Default\" "
+                    "property while being not checkable. The \"Default\" property will get a \"false\" "
+                    "value.").arg(component->name());
             }
             if (defaultPropertyValue) {
-                checkResult << tr("Component %1 specifies \"Default\" property "
-                                  "while being not checkable. The \"Default\" property "
-                                  "will get a \"false\" value."
-                                  ).arg(component->name());
+                checkResult << QString::fromLatin1("Component %1 specifies \"Default\" property "
+                    "while being not checkable. The \"Default\" property will get a \"false\" value.")
+                    .arg(component->name());
+            }
+        }
+        if (component->childCount()) {
+            const QStringList autoDependencies = component->autoDependencies();
+            if (!autoDependencies.isEmpty()) {
+                checkResult << QString::fromLatin1("Component %1 auto depends on other components "
+                    "while having children components. This will not work properly.")
+                    .arg(component->name());
+            }
+
+            // TODO: search also for components which autodepend on "component"
+            // (something like core->autodependees(component))
+
+            if (!component->dependencies().isEmpty()) {
+                checkResult << QString::fromLatin1("Component %1 depends on other components "
+                    "while having children components. This will not work properly.")
+                    .arg(component->name());
+            }
+
+            PackageManagerCore *core = component->packageManagerCore();
+            if (!core->dependees(component).isEmpty()) {
+                checkResult << QString::fromLatin1("Other components depend on component %1 "
+                    "which has children components. This will not work properly.")
+                    .arg(component->name());
             }
         }
     }

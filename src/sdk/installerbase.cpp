@@ -197,7 +197,8 @@ int InstallerBase::run()
     QInstaller::PackageManagerCore::setNoForceInstallation(parser
         .isSet(QLatin1String(CommandLineOptions::NoForceInstallation)));
     QInstaller::PackageManagerCore::setCreateLocalRepositoryFromBinary(parser
-        .isSet(QLatin1String(CommandLineOptions::CreateOfflineRepository)));
+        .isSet(QLatin1String(CommandLineOptions::CreateLocalRepository))
+        || m_core->settings().createLocalRepository());
 
     QHash<QString, QString> params;
     const QStringList positionalArguments = parser.positionalArguments();
@@ -228,7 +229,7 @@ int InstallerBase::run()
 
     translator.reset(new QTranslator(QCoreApplication::instance()));
     // install English translation as fallback so that correct license button text is used
-    if (translator->load(QLatin1String("en_us"), directory))
+    if (translator->load(QLatin1String("en"), directory))
         QCoreApplication::instance()->installTranslator(translator.take());
 
     if (translations.isEmpty()) {

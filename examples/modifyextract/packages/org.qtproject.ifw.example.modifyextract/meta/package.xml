@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <Package>
-    <DisplayName>modify extract operation</DisplayName>
+    <DisplayName>Modify extract operation</DisplayName>
     <Description>A component that uses a hook to modify the extract operation.</Description>
     <Version>1.0.1</Version>
-    <ReleaseDate>2013-02-27</ReleaseDate>
+    <ReleaseDate>2014-12-19</ReleaseDate>
     <Default>true</Default>
     <Script>installscript.js</Script>
 </Package>

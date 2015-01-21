@@ -94,7 +94,7 @@ public:
     int wizardDefaultHeight() const;
 
     QString applicationName() const;
-    QString applicationVersion() const;
+    QString version() const;
 
     QString runProgram() const;
     QStringList runProgramArguments() const;
@@ -110,6 +110,8 @@ public:
     QString maintenanceToolIniFile() const;
 
     QString configurationFileName() const;
+
+    bool createLocalRepository() const;
 
     bool dependsOnLocalInstallerBinary() const;
     bool hasReplacementRepos() const;

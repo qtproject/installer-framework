@@ -30,6 +30,11 @@
     \previouspage ifw-tools.html
     \nextpage ifw-cpp-classes.html
 
-    \title Scripting
+    \title Scripting API
     \qmlmodule scripting
+
+    \brief Scripting API reference.
+
+    The following table summarizes the global JavaScript objects that you can
+    use in controller and component scripts.
 */

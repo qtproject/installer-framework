@@ -37,6 +37,7 @@
 
 #include "component.h"
 #include "packagemanagercore.h"
+#include "packagemanagergui.h"
 
 #include <QDebug>
 #include <QDesktopServices>
@@ -136,6 +137,50 @@ public slots:
     }
 };
 #endif
+
+class GuiProxy : public QObject
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(GuiProxy)
+
+public:
+    GuiProxy(ScriptEngine *engine, QObject *parent);
+    void setPackageManagerGui(PackageManagerGui *gui);
+
+    Q_INVOKABLE QJSValue pageById(int id) const;
+    Q_INVOKABLE QJSValue pageByObjectName(const QString &name) const;
+
+    Q_INVOKABLE QJSValue currentPageWidget() const;
+    Q_INVOKABLE QJSValue pageWidgetByObjectName(const QString &name) const;
+
+    Q_INVOKABLE QString defaultButtonText(int wizardButton) const;
+    Q_INVOKABLE void clickButton(int wizardButton, int delayInMs = 0);
+    Q_INVOKABLE bool isButtonEnabled(int wizardButton);
+
+    Q_INVOKABLE void showSettingsButton(bool show);
+    Q_INVOKABLE void setSettingsButtonEnabled(bool enable);
+
+    Q_INVOKABLE QJSValue findChild(QObject *parent, const QString &objectName);
+    Q_INVOKABLE QList<QJSValue> findChildren(QObject *parent, const QString &objectName);
+
+signals:
+    void interrupted();
+    void languageChanged();
+    void finishButtonClicked();
+    void gotRestarted();
+    void settingsButtonClicked();
+
+public slots:
+    void cancelButtonClicked();
+    void reject();
+    void rejectWithoutPrompt();
+    void showFinishedPage();
+    void setModified(bool value);
+
+private:
+    ScriptEngine *m_engine;
+    PackageManagerGui *m_gui;
+};
 
 } // namespace QInstaller
 

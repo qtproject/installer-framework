@@ -93,18 +93,28 @@ class INSTALLER_EXPORT ComponentModelHelper
 {
 public:
     enum Roles {
-        LocalDisplayVersion = Qt::UserRole + 1,
+        Action = Qt::UserRole + 1,
+        LocalDisplayVersion,
         RemoteDisplayVersion,
         ReleaseDate,
         UncompressedSize
     };
 
+    enum InstallAction {
+        Install,
+        Uninstall,
+        KeepInstalled,
+        KeepUninstalled
+    };
+
     enum Column {
         NameColumn = 0,
+        ActionColumn,
         InstalledVersionColumn,
         NewVersionColumn,
         ReleaseDateColumn,
-        UncompressedSizeColumn
+        UncompressedSizeColumn,
+        LastColumn
     };
 
     explicit ComponentModelHelper();
@@ -124,6 +134,9 @@ public:
 
     bool isSelectable() const;
     void setSelectable(bool selectable);
+
+    InstallAction installAction() const;
+    void setInstallAction(InstallAction action);
 
     Qt::ItemFlags flags() const;
     void setFlags(Qt::ItemFlags flags);
@@ -147,5 +160,7 @@ private:
 };
 
 } // namespace QInstaller
+
+Q_DECLARE_METATYPE(QInstaller::ComponentModelHelper::InstallAction)
 
 #endif  // COMPONENT_P_H

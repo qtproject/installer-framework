@@ -72,7 +72,7 @@ static const QLatin1String scForcedInstallation("ForcedInstallation");
     \qmltype component
     \inqmlmodule scripting
 
-    \brief The component type represents the current component that the Qt Script belongs to.
+    \brief Represents the current component that the Qt Script belongs to.
 
     A minimal valid script needs to contain a constructor, which can look like this:
 
@@ -156,7 +156,7 @@ static const QLatin1String scForcedInstallation("ForcedInstallation");
 /*!
     \qmlproperty stringlist component::autoDependencies
 
-    Returns the value of the \c <AutoDependsOn> tag in the package information file.
+    Returns the value of the \c <AutoDependOn> tag in the package information file.
 */
 
 /*!
@@ -342,8 +342,10 @@ quint64 Component::updateUncompressedSize()
 {
     quint64 size = 0;
 
-    if (installationRequested() || updateRequested())
+    if (installAction() == ComponentModelHelper::Install
+            || installAction() == ComponentModelHelper::KeepInstalled) {
         size = d->m_vars.value(scUncompressedSize).toLongLong();
+    }
 
     foreach (Component* comp, d->m_allChildComponents)
         size += comp->updateUncompressedSize();
@@ -534,8 +536,7 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 {
     QDirIterator it(directory.path(), qms, QDir::Files);
     const QStringList translations = d->m_core->settings().translations();
-    const QString uiLanguage = QLocale().uiLanguages().value(0, QLatin1String("en_us"))
-        .replace(QLatin1Char('-'), QLatin1Char('_'));
+    const QString uiLanguage = QLocale().uiLanguages().value(0, QLatin1String("en"));
     while (it.hasNext()) {
         const QString filename = it.next();
         const QString basename = QFileInfo(filename).baseName();
@@ -583,6 +584,7 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
             throw Error(tr("Could not load the requested UI file '%1'. Error: %2").arg(it.fileName(),
                 loader.errorString()));
         }
+        d->scriptEngine()->newQObject(widget);
         d->m_userInterfaces.insert(widget->objectName(), widget);
     }
 }

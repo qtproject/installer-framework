@@ -77,21 +77,18 @@ public:
     void loadControlScript(const QString& scriptPath);
     void callControlScriptMethod(const QString& methodName);
 
-    Q_INVOKABLE QWidget *pageById(int id) const;
-    Q_INVOKABLE QWidget *pageByObjectName(const QString &name) const;
+    QWidget *pageById(int id) const;
+    QWidget *pageByObjectName(const QString &name) const;
 
-    Q_INVOKABLE QWidget* currentPageWidget() const;
-    Q_INVOKABLE QWidget* pageWidgetByObjectName(const QString &name) const;
+    QWidget *currentPageWidget() const;
+    QWidget *pageWidgetByObjectName(const QString &name) const;
 
-    Q_INVOKABLE QString defaultButtonText(int wizardButton) const;
-    Q_INVOKABLE void clickButton(int wizardButton, int delayInMs = 0);
-    Q_INVOKABLE bool isButtonEnabled(int wizardButton);
+    QString defaultButtonText(int wizardButton) const;
+    void clickButton(int wizardButton, int delayInMs = 0);
+    bool isButtonEnabled(int wizardButton);
 
-    Q_INVOKABLE void showSettingsButton(bool show);
-    Q_INVOKABLE void setSettingsButtonEnabled(bool enable);
-
-    Q_INVOKABLE QObject *findChild(QObject *parent, const QString &objectName);
-    Q_INVOKABLE QList<QObject*> findChildren(QObject *parent, const QString &objectName);
+    void showSettingsButton(bool show);
+    void setSettingsButtonEnabled(bool enable);
 
     void updateButtonLayout();
     static QWizard::WizardStyle getStyle(const QString &name);
@@ -116,7 +113,6 @@ protected Q_SLOTS:
     void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardWidgetRemovalRequested(QWidget *widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
-    void executeControlScript(int pageId);
     void setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,
                                             const QString &callbackName);
 
@@ -126,11 +122,13 @@ private Q_SLOTS:
     void onLanguageChanged();
     void customButtonClicked(int which);
     void dependsOnLocalInstallerBinary();
+    void currentPageChanged(int newId);
 
 protected:
     bool event(QEvent *event);
     void showEvent(QShowEvent *event);
     PackageManagerCore *packageManagerCore() const { return m_core; }
+    void executeControlScript(int pageId);
 
 private:
     class Private;
@@ -182,22 +180,23 @@ protected:
     virtual void insertWidget(QWidget *widget, const QString &siblingName, int offset = 1);
     virtual QWidget *findWidget(const QString &objectName) const;
 
-    virtual void setVisible(bool visible); // reimp
     virtual int nextId() const; // reimp
 
+    // Used to support some kind of initializePage() in the case the wizard has been set
+    // to QWizard::IndependentPages. If that option has been set, initializePage() would be only
+    // called once. So we provide entering() and leaving() based on currentPageChanged() signal.
     virtual void entering() {} // called on entering
     virtual void leaving() {}  // called on leaving
 
-    bool isConstructing() const { return m_fresh; }
-
 private:
-    bool m_fresh;
     bool m_complete;
     QString m_titleColor;
     bool m_needsSettingsButton;
 
     PackageManagerCore *m_core;
     QInstaller::Component *validatorComponent;
+
+    friend class PackageManagerGui;
 };
 
 

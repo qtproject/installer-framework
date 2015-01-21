@@ -58,8 +58,8 @@ public:
         setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
 
         foreach (const int id, pageIds()) {
-            packageManagerCore()->controlScriptEngine()->addQObjectChildren(page(id));
-            packageManagerCore()->componentScriptEngine()->addQObjectChildren(page(id));
+            packageManagerCore()->controlScriptEngine()->addToGlobalObject(page(id));
+            packageManagerCore()->componentScriptEngine()->addToGlobalObject(page(id));
         }
     }
 
@@ -83,6 +83,8 @@ public:
     void init() {
         m_widget = new QWidget;
         m_widget->setObjectName("Widget");
+        QWidget *button = new QWidget(m_widget);
+        button->setObjectName("Button");
 
         packageManagerCore()->wizardPageInsertionRequested(m_widget,
             PackageManagerCore::Introduction);
@@ -300,6 +302,17 @@ private slots:
             testComponent->loadComponentScript(":///data/component2.qs");
         } catch (const Error &error) {
             QVERIFY2(debugMesssage.contains(error.message()), "(ReferenceError: broken is not defined)");
+        }
+    }
+
+    void loadComponentUserInterfaces()
+    {
+       try {
+            setExpectedScriptOutput("\"checked: false\"");
+            m_component->loadUserInterfaces(QDir(":///data"), QStringList() << QLatin1String("form.ui"));
+            m_component->loadComponentScript(":///data/userinterface.qs");
+        } catch (const Error &error) {
+            QFAIL(qPrintable(error.message()));
         }
     }
 

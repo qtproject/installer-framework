@@ -31,7 +31,7 @@ void tst_Settings::loadTutorialConfig()
 
     // specified values
     QCOMPARE(settings.applicationName(), QLatin1String("Your application"));
-    QCOMPARE(settings.applicationVersion(), QLatin1String("1.2.3"));
+    QCOMPARE(settings.version(), QLatin1String("1.2.3"));
     QCOMPARE(settings.title(), QLatin1String("Your application Installer"));
     QCOMPARE(settings.publisher(), QLatin1String("Your vendor"));
     QCOMPARE(settings.startMenuDir(), QLatin1String("Super App"));
@@ -72,6 +72,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.repositorySettingsPageVisible(), true);
     QCOMPARE(settings.allowSpaceInPath(), false);
     QCOMPARE(settings.allowNonAsciiCharacters(), false);
+    QCOMPARE(settings.createLocalRepository(), false);
 
     QCOMPARE(settings.hasReplacementRepos(), false);
     QCOMPARE(settings.repositories(), QSet<Repository>());

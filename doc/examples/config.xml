@@ -16,7 +16,7 @@
     </RunProgramArguments>
     <RunProgramDescription>My nice application</RunProgramDescription>
     <StartMenuDir>Some Application Entry Dir</StartMenuDir>
-    <UninstallerName>SDKMaintenanceTool</UninstallerName>
+    <MaintenanceToolName>SDKMaintenanceTool</MaintenanceToolName>
     <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
     <Background>background.png</Background>
 

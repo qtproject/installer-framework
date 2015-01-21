@@ -30,11 +30,84 @@
     \ingroup qtifwexamples
     \title Dynamic Page Installer Example
 
-    \brief Building an installer by using a script and dynamic pages.
+    \brief Using a component script and dynamic pages to build an installer.
+
+    \image qtifw-examples-dynamicpages.png
+
+    \e{Dynamic Page Installer} illustrates how to use the
+    \c component.loaded.connect() function to load custom installer pages (.ui)
+    instead of using the default installer pages and how to add functionality to
+    the pages.
+
+    The \uicontrol {Select Installation Type} page contains icons that are added
+    to a Qt resource file (.qrc) for delivery with the installer.
 
     \include installerfw-examples-configuring.qdocinc
 
     \quotefile dynamicpage/config/config.xml
 
-    \include installerfw-examples-generating.qdocinc
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Script> section specifies the file name of the JavaScript
+            file that is loaded to perform operations.
+        \li The \c <UserInterfaces> section specifies the file names of the
+            installer pages (.ui files) to use.
+        \li The \c <Name> section provides domain-like identification for the
+            component.
+    \endlist
+
+    \quotefile dynamicpage/packages/org.qtproject.ifw.example.dynamicpage/meta/package.xml
+
+    This installer contains three components that each have their own package
+    information file with slightly different contents.
+
+    \section1 Creating Dynamic Pages
+
+    In installscript.js, we create the installer pages and add functionality to
+    them.
+
+    Qt Installer Framework calls the constructors of all scripts. When all the
+    constructors are finished and all UI files are loaded, a \c loaded signal is
+    emitted for each component.
+
+    To create an installer page, we have to wait for the \c loaded signal that
+    tells us that the UI file has been loaded:
+
+    \quotefromfile dynamicpage/packages/org.qtproject.ifw.example.dynamicpage/meta/installscript.js
+    \skipto component.loaded
+    \printuntil ;
+
+    We hide the default pages by setting their visibility to \c false:
+
+    \skipto setDefaultPageVisible
+    \printuntil ReadyForInstallation
+
+    We use the \c loaded function that we connected earlier to add functionality
+    to the dynamic installer pages:
+
+    \skipto installerLoaded
+    \printuntil defaultInstall.checked
+    \printuntil }
+    \dots
+
+    \section1 Generating the Example Installer
+
+    To create the example installer, switch to the example source directory on
+    the command line and enter the following command:
+
+    \list
+        \li On Windows:
+            \code
+            ..\..\bin\binarycreator.exe -c config\config.xml -r resources/additional.qrc -p packages installer.exe
+            \endcode
+        \li On Linux or OS X:
+            \code
+            ../../bin/binarycreator -c config/config.xml -r resources/additional.qrc -p packages installer
+            \endcode
+    \endlist
+
+    Because the installer uses additional resources, you must give the
+    \c {-r} option and specify the path to the Qt resource file that contains
+    the resources. The installer is created in the current directory.
 */

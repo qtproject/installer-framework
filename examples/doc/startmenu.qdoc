@@ -30,11 +30,44 @@
     \ingroup qtifwexamples
     \title Start Menu Shortcut Example
 
-    \brief Adding an entry to the Windows Start menu.
+    \brief Using a component script to add an entry to the Windows Start menu.
+
+    \image qtifw-examples-startmenu.png
+
+    \e{Start Menu} illustrates how to use the \gui Component function to add an
+    entry for opening a README file to the Windows \uicontrol Start menu.
 
     \include installerfw-examples-configuring.qdocinc
 
     \quotefile startmenu/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Default> element is set to \c true to preselect the
+            component in the installer.
+        \li The \c <Script> element specifies the file name of the JavaScript
+            file that is loaded to perform operations.
+    \endlist
+
+    \quotefile startmenu/packages/org.qtproject.ifw.example/meta/package.xml
+
+    \section1 Adding Entries to Start Menu
+
+    In installscript.qs, we use the \c createOperations() function to call the
+    component::createOperations() function, which creates the \c Extract
+    operation by default:
+
+    \quotefromfile startmenu/packages/org.qtproject.ifw.example/meta/installscript.qs
+    \skipto createOperations
+    \printuntil {
+    \skipto createOperations
+    \printuntil ;
+
+    On Windows, we use the component::addOperation function to add a shortcut
+    to the \uicontrol Start menu for opening the readme file:
+
+    \printuntil /^\}/
 
     \include installerfw-examples-generating.qdocinc
 */

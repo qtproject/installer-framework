@@ -33,7 +33,7 @@
 
     \title Operations
 
-    The operations are prepared by component scripts and performed by the
+    The operations are prepared by component and controller scripts and performed by the
     installer.
     \note Operations are performed threaded.
 

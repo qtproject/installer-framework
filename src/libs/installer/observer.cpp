@@ -68,14 +68,15 @@ QString FileTaskObserver::progressText() const
         if (bytesReceived.endsWith(tmp))
             bytesReceived.chop(tmp.length());
 
-        progressText = bytesReceived + tr(" of ") + bytesToReceive;
+        progressText = tr("%1 of %2").arg(bytesReceived).arg(bytesToReceive);
     } else {
         if (m_bytesTransfered > 0)
-            progressText = QInstaller::humanReadableSize(m_bytesTransfered) + tr(" received.");
+            progressText = tr("%1 received.").arg(QInstaller::humanReadableSize(m_bytesTransfered));
     }
 
-    progressText += QLatin1String(" (") + QInstaller::humanReadableSize(m_bytesPerSecond) + tr("/sec")
-        + QLatin1Char(')');
+    if (!progressText.isEmpty())
+        progressText += QLatin1Char(' ');
+    progressText += tr("(%1/sec)").arg(QInstaller::humanReadableSize(m_bytesPerSecond));
     if (m_bytesToTransfer > 0 && m_bytesPerSecond > 0) {
         const qint64 time = (m_bytesToTransfer - m_bytesTransfered) / m_bytesPerSecond;
 
@@ -86,22 +87,22 @@ QString FileTaskObserver::progressText() const
 
         QString days;
         if (d > 0)
-            days = QString::number(d) + (d < 2 ? tr(" day") : tr(" days")) + QLatin1String(", ");
+            days = tr("%n day(s), ", "", d);
 
         QString hours;
         if (h > 0)
-            hours = QString::number(h) + (h < 2 ? tr(" hour") : tr(" hours")) + QLatin1String(", ");
+            hours = tr("%n hour(s), ", "", h);
 
         QString minutes;
         if (m > 0)
-            minutes = QString::number(m) + (m < 2 ? tr(" minute") : tr(" minutes"));
+            minutes = tr("%n minute(s)", "", m);
 
         QString seconds;
         if (s >= 0 && minutes.isEmpty()) {
             s = (s <= 0 ? 1 : s);
-            seconds = QString::number(s) + (s < 2 ? tr(" second") : tr(" seconds"));
+            seconds = tr("%n second(s)", "", s);
         }
-        progressText += tr(" - ") + days + hours + minutes + seconds + tr(" remaining.");
+        progressText += tr(" - %1%2%3%4 remaining.").arg(days).arg(hours).arg(minutes).arg(seconds);
     } else {
         progressText += tr(" - unknown time remaining.");
     }

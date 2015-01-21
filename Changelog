@@ -35,14 +35,16 @@
 - Fixed binary data extraction. (QTIFW-574)
 - Fixed uninstall after installing into a target with elevated permissions. (QTIFW-447, QTIFW-479)
 - Allow spaces in RunProgramArguments. (QTIFW-227)
-- Various bugs fixed. (QTIFW-397, QTIFW-524, QTIFW-538, QTIFW-541, QTIFW-542, QTIFW-562, QTIFW-564, QTIFW-568, QTIFW-569)
 - Removed some deprecated things.
-- Improved documentation. (QTIFW-526)
-- Updated and improved translations.
 - Removed SetQtCreatorArrayValue, AddQtCreatorArrayValue operations.
 - Removed ApplyProductKey, ReplaceInstallNames, QtPatch operations.
-- Added systemInfo to the scripting API (QTIFW-592).
+- Added systemInfo to the scripting API. (QTIFW-592)
 - Changed default of 'AllowSpaceInPath' from false to true.
+- Added possibility to specify a control script on installer creation. (QTIFW-166, QTIFW-495)
+- Introduced a setting for Wizard default height and width. (QTIFW-47)
+- Improved documentation. (QTIFW-526)
+- Updated and improved translations.
+- Fixed various bugs. (QTIFW-397, QTIFW-481, QTIFW-524, QTIFW-538, QTIFW-541, QTIFW-542, QTIFW-562, QTIFW-564, QTIFW-568, QTIFW-569, QTIFW-583, QTIFW-593, QTIFW-600)
 
 Thanks go to Christoph Vogtländer, Sze Howe Koh, Ray Donnelly, Tasuku Suzuki and Sascha Cunz for contributions.
 

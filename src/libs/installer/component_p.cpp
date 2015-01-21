@@ -204,6 +204,16 @@ void ComponentModelHelper::setSelectable(bool selectable)
     changeFlags(selectable, Qt::ItemIsSelectable);
 }
 
+ComponentModelHelper::InstallAction ComponentModelHelper::installAction() const
+{
+    return data(ComponentModelHelper::Action).value<ComponentModelHelper::InstallAction>();
+}
+
+void ComponentModelHelper::setInstallAction(ComponentModelHelper::InstallAction action)
+{
+    setData(QVariant::fromValue<ComponentModelHelper::InstallAction>(action), ComponentModelHelper::Action);
+}
+
 /*!
     Returns the item flags for the component. The item flags determine how the user can interact with the
     component.

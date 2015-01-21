@@ -15,8 +15,8 @@ QT += network qml xml widgets
 DESTDIR = $$IFW_APP_PATH
 
 exists($$LRELEASE) {
-    QT_LANGUAGES = qt_de qt_fr qt_ja qt_ru qt_zh_CN
-    IB_LANGUAGES = de_de en_us fr_fr ja_jp ru_ru zh_cn
+    QT_LANGUAGES = qtbase_de qt_fr qtbase_ja qtbase_ru qt_zh_CN
+    IB_LANGUAGES = de en fr ja ru zh_cn
     defineReplace(prependAll) {
         for(a,$$1):result += $$2$${a}$$3
         return($$result)

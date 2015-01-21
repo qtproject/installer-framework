@@ -18,7 +18,7 @@ exampledirs = $SRCDIR ../../examples
 
 headers.fileextensions         = "*.h"
 sources.fileextensions         = "*.qdoc *.qdocinc *.cpp"
-examples.fileextensions        = "*.js *.qs *.txt *.xml"
+examples.fileextensions        = "*.js *.qs *.txt *.xml *.ui"
 examples.imageextensions       = "*.png"
 
 indexes += $QT_INSTALL_DOCS/qtcore/qtcore.index \

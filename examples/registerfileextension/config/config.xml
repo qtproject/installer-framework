@@ -4,6 +4,6 @@
     <Version>1.0.0</Version>
     <Title>Register File Extension Example</Title>
     <Publisher>Qt-Project</Publisher>
-    <StartMenuDir>Register File Extension Example</StartMenuDir>
-    <TargetDir>@HomeDir@/IFWRegisterFileExtensionExample</TargetDir>
+    <StartMenuDir>Qt IFW Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExample</TargetDir>
 </Installer>

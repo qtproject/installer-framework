@@ -30,11 +30,41 @@
     \ingroup qtifwexamples
     \title Modify Extract Installer Example
 
-    \brief Using the extract archive hook to modify the target path.
+    \brief Using the extract archive hook in a component script to modify the
+    target path.
+
+    \image qtifw-examples-modifyextract.png
+
+    \e{Modify Extract Installer} illustrates how to overwrite the
+    \c{component.createOperationsForArchive()} function to be able to install a
+    component to a modified path.
 
     \include installerfw-examples-configuring.qdocinc
 
     \quotefile modifyextract/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Default> section is set to \c true to preselect the
+            component in the installer.
+        \li The \c <Script> section specifies the file name of the JavaScript
+            file that is loaded to perform operations.
+    \endlist
+
+    \quotefile modifyextract/packages/org.qtproject.ifw.example.modifyextract/meta/package.xml
+
+    \section1 Modifying Target Path
+
+    In installscript.js, we overwrite the default
+    \c{component.createOperationsForArchive()} implementation to be able to
+    register an \c Extract operation with a custom argument:
+
+    \quotefromfile modifyextract/packages/org.qtproject.ifw.example.modifyextract/meta/installscript.js
+    \skipto createOperationsForArchive
+    \printuntil {
+    \skipto component.addOperation
+    \printuntil }
 
     \include installerfw-examples-generating.qdocinc
 */

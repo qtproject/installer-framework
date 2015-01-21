@@ -36,6 +36,7 @@
 
 #include "component.h"
 #include "packagemanagercore.h"
+#include <QIcon>
 
 namespace QInstaller {
 
@@ -71,6 +72,20 @@ namespace QInstaller {
     or unchecked, or some individual component's checked state has changed.
 */
 
+class IconCache
+{
+public:
+    IconCache() {
+    }
+
+    QIcon icon(ComponentModelHelper::InstallAction action) const {
+        return m_icons.value(action);
+    }
+private:
+    QMap<ComponentModelHelper::InstallAction, QIcon> m_icons;
+};
+
+Q_GLOBAL_STATIC(IconCache, iconCache)
 
 /*!
     Constructs an component model with the given number of \a columns and \a core as parent.
@@ -179,6 +194,25 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
         if (index.column() > 0) {
             if (role == Qt::CheckStateRole)
                 return QVariant();
+            if (index.column() == ComponentModelHelper::ActionColumn) {
+                if (role == Qt::DecorationRole)
+                    return iconCache->icon(component->installAction());
+                if (role == Qt::ToolTipRole) {
+                    switch (component->installAction()) {
+                    case ComponentModelHelper::Install:
+                        return tr("Component is marked for installation.");
+                    case ComponentModelHelper::Uninstall:
+                        return tr("Component is marked for uninstallation.");
+                    case ComponentModelHelper::KeepInstalled:
+                        return tr("Component is installed.");
+                    case ComponentModelHelper::KeepUninstalled:
+                        return tr("Component is not installed.");
+                    default:
+                        return QString();
+                    }
+                }
+                return QVariant();
+            }
             if (role == Qt::EditRole || role == Qt::DisplayRole || role == Qt::ToolTipRole)
                 return component->data(Qt::UserRole + index.column());
         }
@@ -202,6 +236,8 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, in
         return false;
 
     if (role == Qt::CheckStateRole) {
+        if (index.column() != 0)
+            return false;
         ComponentSet nodes = component->childItems().toSet();
         Qt::CheckState newValue = Qt::CheckState(value.toInt());
         if (newValue == Qt::PartiallyChecked) {
@@ -459,6 +495,15 @@ void ComponentModel::updateAndEmitModelState()
     }
 
     emit checkStateChanged(m_modelState);
+
+    foreach (const Component *component, m_rootComponentList) {
+        emit dataChanged(indexFromComponentName(component->name()),
+                         indexFromComponentName(component->name()));
+        QList<Component *> children = component->childItems();
+        foreach (const Component *child, children)
+            emit dataChanged(indexFromComponentName(child->name()),
+                             indexFromComponentName(child->name()));
+    }
 }
 
 void ComponentModel::collectComponents(Component *const component, const QModelIndex &parent) const
@@ -470,15 +515,6 @@ void ComponentModel::collectComponents(Component *const component, const QModelI
 
 namespace ComponentModelPrivate {
 
-struct NameGreaterThan
-{
-    bool operator() (const Component *lhs, const Component *rhs) const
-    {
-        return lhs->name() > rhs->name();
-    }
-};
-
-// call it only for items with childern
 static Qt::CheckState verifyPartiallyChecked(Component *component)
 {
     bool anyChecked = false;
@@ -514,22 +550,19 @@ static Qt::CheckState verifyPartiallyChecked(Component *component)
 QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &components, Qt::CheckState state)
 {
     // get all parent nodes for the components we're going to update
-    ComponentSet nodes = components;
-    foreach (Component *const component, components) {
-        if (Component *parent = component->parentComponent()) {
-            nodes.insert(parent);
-            while (parent->parentComponent() != 0) {
-                parent = parent->parentComponent();
-                nodes.insert(parent);
-            }
+    QMap<QString, Component *> sortedNodesMap;
+    foreach (Component *component, components) {
+        while (component && !sortedNodesMap.values(component->name()).contains(component)) {
+            sortedNodesMap.insertMulti(component->name(), component);
+            component = component->parentComponent();
         }
     }
 
     QSet<QModelIndex> changed;
-    // sort the nodes, so we can start in descending order to check node and tri-state nodes properly
-    ComponentList sortedNodes = nodes.toList();
-    std::sort(sortedNodes.begin(), sortedNodes.end(), ComponentModelPrivate::NameGreaterThan());
-    foreach (Component *const node, sortedNodes) {
+    const ComponentList sortedNodes = sortedNodesMap.values();
+    // we can start in descending order to check node and tri-state nodes properly
+    for (int i = sortedNodes.count(); i > 0; i--) {
+        Component * const node = sortedNodes.at(i - 1);
         if (!node->isCheckable())
             continue;
 
@@ -559,10 +592,6 @@ QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compone
             break;
         }
     }
-
-    // update all nodes uncompressed size
-    foreach (Component *const node, m_rootComponentList)
-        node->updateUncompressedSize(); // this is a recursive call
     return changed;
 }
 

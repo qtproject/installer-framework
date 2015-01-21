@@ -291,7 +291,7 @@ bool CreateLocalRepositoryOperation::performOperation()
                     if (!isOpen) // If we reach that point, either the resource was opened already.
                         resource->close();         // or we did open it and have to close it again.
                 }
-                emit progressChanged(.65f + ((double(i) / double(name.count())) * .25f));
+                emit progressChanged(.65f + ((double(i) / double(names.count())) * .25f));
             }
         }
 

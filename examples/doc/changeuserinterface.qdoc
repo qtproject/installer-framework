@@ -30,7 +30,7 @@
     \ingroup qtifwexamples
     \title Change Installer UI Example
 
-    \brief Changing the installer UI by using a component script.
+    \brief Using a component script to modify the installer UI.
 
     \image qtifw-examples-changeuserinterface.png
 

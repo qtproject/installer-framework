@@ -78,6 +78,9 @@
 #include <qt_windows.h>
 #endif
 
+#define QUOTE_(x) #x
+#define QUOTE(x) QUOTE_(x)
+
 namespace QInstaller {
 
 class OperationTracer
@@ -433,17 +436,20 @@ ScriptEngine *PackageManagerCorePrivate::controlScriptEngine() const
 
 void PackageManagerCorePrivate::clearAllComponentLists()
 {
-    qDeleteAll(m_rootComponents);
+    QList<QInstaller::Component*> toDelete;
+
+    toDelete << m_rootComponents;
     m_rootComponents.clear();
 
     m_rootDependencyReplacements.clear();
 
     const QList<QPair<Component*, Component*> > list = m_componentsToReplaceAllMode.values();
     for (int i = 0; i < list.count(); ++i)
-        delete list.at(i).second;
+        toDelete << list.at(i).second;
     m_componentsToReplaceAllMode.clear();
     m_componentsToInstallCalculated = false;
 
+    qDeleteAll(toDelete);
     cleanUpComponentEnvironment();
 }
 
@@ -460,8 +466,6 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
             usedComponents.insert(list.at(i).second);
     }
 
-    qDeleteAll(usedComponents);
-
     m_updaterComponents.clear();
     m_updaterComponentsDeps.clear();
 
@@ -470,6 +474,7 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
     m_componentsToReplaceUpdaterMode.clear();
     m_componentsToInstallCalculated = false;
 
+    qDeleteAll(usedComponents);
     cleanUpComponentEnvironment();
 }
 
@@ -563,8 +568,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     }
 
     if (isInstaller() || packagesInfo.applicationVersion().isEmpty()) {
-        // TODO: this seems to be wrong, we should ask for ProductVersion defaulting to applicationVersion...
-        packagesInfo.setApplicationVersion(m_data.settings().applicationVersion());
+        packagesInfo.setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
     }
 
     if (isInstaller()) {
@@ -1475,11 +1479,10 @@ bool PackageManagerCorePrivate::runInstaller()
         info.setFileName(componentsXmlPath());
         // Clear the packages as we might install into an already existing installation folder.
         info.clearPackageInfoList();
-        // also update the application name and version, might be set from a script as well
+        // also update the application name, might be set from a script as well
         info.setApplicationName(m_data.value(QLatin1String("ProductName"),
             m_data.settings().applicationName()).toString());
-        info.setApplicationVersion(m_data.value(QLatin1String("ProductVersion"),
-            m_data.settings().applicationVersion()).toString());
+        info.setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
 
         const int progressOperationCount = countProgressOperations(componentsToInstall)
             // add one more operation as we support progress
@@ -1638,7 +1641,9 @@ bool PackageManagerCorePrivate::runPackageUpdater()
             } else if (isPackageManager()) {
                 // We found the component, the component is still checked and the dependency solver did not
                 // add the component as install dependency, keep it.
-                if (component && component->isSelected() && !componentsToInstall.contains(component)) {
+                if (component
+                        && component->installAction() == ComponentModelHelper::KeepInstalled
+                        && !componentsToInstall.contains(component)) {
                     nonRevertedOperations.append(operation);
                     continue;
                 }
@@ -2088,7 +2093,7 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
             if (packagesInfo.applicationName().isEmpty())
                 packagesInfo.setApplicationName(m_data.settings().applicationName());
             if (packagesInfo.applicationVersion().isEmpty())
-                packagesInfo.setApplicationVersion(m_data.settings().applicationVersion());
+                packagesInfo.setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
         }
 
         if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError)

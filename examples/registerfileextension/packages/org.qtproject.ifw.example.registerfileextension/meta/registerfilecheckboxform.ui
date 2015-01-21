@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>OpenFileCheckBoxesForm</class>
- <widget class="QWidget" name="OpenFileCheckBoxesForm">
+ <class>RegisterFileCheckBoxForm</class>
+ <widget class="QWidget" name="RegisterFileCheckBoxForm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -15,9 +15,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QCheckBox" name="OpenRegisteredFileCheckBox">
+    <widget class="QCheckBox" name="RegisterFileCheckBox">
      <property name="text">
-      <string>Open registered example file based on suffix: </string>
+      <string>Register example file extension: </string>
      </property>
      <property name="checked">
       <bool>true</bool>

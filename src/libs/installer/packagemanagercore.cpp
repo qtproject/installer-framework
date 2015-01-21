@@ -83,7 +83,7 @@
     \qmltype installer
     \inqmlmodule scripting
 
-    \brief The installer type provides access to core functionality of the Qt Installer Framework.
+    \brief Provides access to core functionality of the Qt Installer Framework.
 */
 
 /*!
@@ -424,7 +424,37 @@ void PackageManagerCore::cancelMetaInfoJob()
  */
 void PackageManagerCore::componentsToInstallNeedsRecalculation()
 {
-    d->m_componentsToInstallCalculated = false;
+    d->clearInstallerCalculator();
+    d->clearUninstallerCalculator();
+    QList<Component*> selectedComponentsToInstall = componentsMarkedForInstallation();
+
+    d->m_componentsToInstallCalculated =
+            d->installerCalculator()->appendComponentsToInstall(selectedComponentsToInstall);
+
+    QList<Component *> componentsToInstall = d->installerCalculator()->orderedComponentsToInstall();
+
+    QList<Component *> selectedComponentsToUninstall;
+    foreach (Component *component, components(ComponentType::All)) {
+        if (component->uninstallationRequested() && !selectedComponentsToInstall.contains(component))
+            selectedComponentsToUninstall.append(component);
+    }
+
+    d->uninstallerCalculator()->appendComponentsToUninstall(selectedComponentsToUninstall);
+
+    QSet<Component *> componentsToUninstall = d->uninstallerCalculator()->componentsToUninstall();
+
+    foreach (Component *component, components(ComponentType::Root | ComponentType::Descendants))
+        component->setInstallAction(component->isInstalled()
+                           ? ComponentModelHelper::KeepInstalled
+                           : ComponentModelHelper::KeepUninstalled);
+    foreach (Component *component, componentsToUninstall)
+        component->setInstallAction(ComponentModelHelper::Uninstall);
+    foreach (Component *component, componentsToInstall)
+        component->setInstallAction(ComponentModelHelper::Install);
+
+    // update all nodes uncompressed size
+    foreach (Component *const component, components(ComponentType::Root))
+        component->updateUncompressedSize(); // this is a recursive call
 }
 
 /*!
@@ -468,15 +498,15 @@ void PackageManagerCore::setMessageBoxAutomaticAnswer(const QString &identifier,
 
 quint64 size(QInstaller::Component *component, const QString &value)
 {
-    if (!component->isSelected() || component->isInstalled())
-        return quint64(0);
-    return component->value(value).toLongLong();
+    if (component->installAction() == ComponentModelHelper::Install)
+        return component->value(value).toLongLong();
+    return quint64(0);
 }
 
 /*!
    \qmlmethod float installer::requiredDiskSpace()
 
-   Returns the estimated amount of disk space in bytes required after installation.
+   Returns the additional estimated amount of disk space in bytes required after installation.
 
    \sa requiredTemporaryDiskSpace
  */
@@ -966,7 +996,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
     Adds the widget with objectName() \a name registered by \a component as a new page
     into the installer's GUI wizard. The widget is added before \a page.
 
-    See \l{Wizard Pages} for the possible values of \a page.
+    See \l{Controller Scripting} for the possible values of \a page.
 
     Returns \c true if the operation succeeded.
 
@@ -1035,7 +1065,7 @@ void PackageManagerCore::setValidatorForCustomPage(Component *component, const Q
     Adds the widget with objectName() \a name registered by \a component as an GUI element
     into the installer's GUI wizard. The widget is added on \a page.
 
-    See \l{Wizard Pages} for the possible values of \a page.
+    See \l{Controller Scripting} for the possible values of \a page.
 
     \sa removeWizardPageItem, wizardWidgetInsertionRequested
 */
@@ -1235,6 +1265,30 @@ Component *PackageManagerCore::componentByName(const QString &name, const QList<
     return 0;
 }
 
+QList<Component *> PackageManagerCore::componentsMarkedForInstallation() const
+{
+    QList<Component*> markedForInstallation;
+    const QList<Component*> relevant = components(ComponentType::Root | ComponentType::Descendants);
+    if (isUpdater()) {
+        foreach (Component *component, relevant) {
+            if (component->updateRequested())
+                markedForInstallation.append(component);
+        }
+    } else {
+        // relevant means all components which are not replaced
+        foreach (Component *component, relevant) {
+            // ask for all components which will be installed to get all dependencies
+            // even dependencies which are changed without an increased version
+            if (component->installationRequested()
+                    || (component->isInstalled()
+                    && !component->uninstallationRequested())) {
+                markedForInstallation.append(component);
+            }
+        }
+    }
+    return markedForInstallation;
+}
+
 /*!
     \qmlmethod boolean installer::calculateComponentsToInstall()
 
@@ -1248,28 +1302,11 @@ bool PackageManagerCore::calculateComponentsToInstall() const
     emit aboutCalculateComponentsToInstall();
     if (!d->m_componentsToInstallCalculated) {
         d->clearInstallerCalculator();
-        QList<Component*> componentsToInstall;
-        const QList<Component*> relevant = components(ComponentType::Root | ComponentType::Descendants);
-        if (isUpdater()) {
-            foreach (Component *component, relevant) {
-                if (component->updateRequested())
-                    componentsToInstall.append(component);
-            }
-        } else if (!isUpdater()) {
-            // relevant means all components which are not replaced
-            foreach (Component *component, relevant) {
-                // ask for all components which will be installed to get all dependencies
-                // even dependencies which are changed without an increased version
-                if (component->installationRequested() || (component->isInstalled()
-                    && !component->uninstallationRequested())) {
-                    componentsToInstall.append(component);
-                }
-            }
-        }
+        QList<Component*> selectedComponentsToInstall = componentsMarkedForInstallation();
 
         d->storeCheckState();
         d->m_componentsToInstallCalculated =
-            d->installerCalculator()->appendComponentsToInstall(componentsToInstall);
+            d->installerCalculator()->appendComponentsToInstall(selectedComponentsToInstall);
     }
     emit finishedCalculateComponentsToInstall();
     return d->m_componentsToInstallCalculated;
@@ -2441,11 +2478,13 @@ QString PackageManagerCore::findDisplayVersion(const QString &componentName,
 
 ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, const QString &objectName) const
 {
-    ComponentModel *model = new ComponentModel(5, core);
+    ComponentModel *model = new ComponentModel(ComponentModelHelper::LastColumn, core);
 
     model->setObjectName(objectName);
     model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal,
         ComponentModel::tr("Component Name"));
+    model->setHeaderData(ComponentModelHelper::ActionColumn, Qt::Horizontal,
+        ComponentModel::tr("Action"));
     model->setHeaderData(ComponentModelHelper::InstalledVersionColumn, Qt::Horizontal,
         ComponentModel::tr("Installed Version"));
     model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal,

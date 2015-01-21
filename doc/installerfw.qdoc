@@ -45,7 +45,7 @@
     Windows, and OS X.
 
     \note Report bugs and suggestions for the Qt Installer Framework project
-    in the \l{https://bugreports.qt-project.org/browse/QTIFW}{Qt Bugtracker}.
+    in the \l{https://bugreports.qt.io/browse/QTIFW}{Qt Bugtracker}.
 
     \list
         \li \l{Overview of Qt Installer Framework}
@@ -75,7 +75,7 @@
             \li \l{Component Scripting}
             \li \l{Operations}
             \li \l{Tools}
-            \li \l{Scripting}
+            \li \l{Scripting API}
             \li \l{C++ Classes}
         \endlist
         \li \l{Known Issues}
@@ -153,9 +153,9 @@
 
     \quotefile examples/config.xml
 
-    \section1 Supported Configuration Settings
+    \section1 Summary of Configuration File Elements
 
-    The following table summarizes the settings in the configuration file.
+    The following table summarizes the elements in the configuration file.
 
     \note We recommend that you place all files that you refer to in the
     configuration file in the \c config directory. However, you can also use
@@ -163,11 +163,11 @@
     the config.xml file.
 
     You can use predefined variables (embedded in @ characters) as values of the
-    settings. For more information, see \l{Predefined Variables}.
+    elements. For more information, see \l{Predefined Variables}.
 
     \table
         \header
-            \li Setting
+            \li Element
             \li Description
         \row
             \li Name
@@ -175,8 +175,9 @@
             \li Name of the product being installed. This is mandatory.
         \row
             \li Version
-            \li Version number of the repository format. This is mandatory and
-                must always be set to \c 1.0.0.
+            \li Version of the product being installed in the following format:
+                [0-9]+((\\.|-)[0-9]+)* such as 1-1; 1.2-2; 3.4.7. This is
+                mandatory.
         \row
             \li Title
             \li Name of the installer as displayed on the title bar.
@@ -191,7 +192,8 @@
             \li Icon
             \li Filename for a custom installer icon. The actual file is looked up by attaching
                 a '.icns' (OS X), '.ico' (Windows) or '.png' (Unix) suffix. Deprecated,
-                use InstallerApplicationIcon and / or InstallerWindowIcon instead.
+                use \c <InstallerApplicationIcon> or \c <InstallerWindowIcon>
+                instead.
         \row
             \li InstallerApplicationIcon
             \li Filename for a custom installer icon. The actual file is looked up by attaching
@@ -232,17 +234,18 @@
                 the action. Provide the full path to the application.
         \row
             \li RunProgramArguments
-            \li Arguments passed to the program specified in RunProgram. You can add several
-                \c Argument elements that each specify an argument to \c {RunProgram}.
+            \li Arguments passed to the program specified in \c <RunProgram>.
+                You can add several \c <Argument> child elements that each specify an
+                argument to \c <RunProgram>.
         \row
             \li RunProgramDescription
             \li Text shown next to the check box for running the program after
-                the installation. If \gui <RunProgram> is set but no description provided,
-                the UI will display \gui {Run <Name> now.} instead.
+                the installation. If \c <RunProgram> is set but no description provided,
+                the UI will display \uicontrol {Run <Name> now.} instead.
         \row
             \li StartMenuDir
             \li Name of the default program group for the product in the Windows
-                \gui Start menu.
+                \uicontrol Start menu.
         \row
             \li TargetDir
             \li Default target directory for installation.
@@ -252,9 +255,9 @@
                 rights.
         \row
             \li RemoteRepositories
-            \li List of remote repositories. You can add several \c Repository
-                sections that each specify the \c Url to access the repository.
-                For more information, see \l{Configuring Repositories}.
+            \li List of remote repositories. This element can contain several \c <Repository> child
+                elements that each contain the \c <Url> child element that specifies the URL to
+                access the repository. For more information,  see \l{Configuring Repositories}.
         \row
             \li MaintenanceToolName
             \li Filename of the generated maintenance tool. Defaults to
@@ -288,8 +291,8 @@
         \row
             \li Translations
             \li List of language codes to be used for translating the user interface. To add several language
-                variants, specify several Translation sections that each specify the name of a language
-                variant. Optional. For more information, see \l{Translating Pages}.
+                variants, specify several \c <Translation> child elements that each specify the name
+                of a language variant. Optional. For more information, see \l{Translating Pages}.
         \row
             \li UrlQueryString
             \li This string needs to be in the form "key=value" and will be appended to archive download
@@ -297,6 +300,12 @@
         \row
             \li ControlScript
             \li Filename for a custom installer control script. See \l{Controller Scripting}.
+        \row
+            \li CreateLocalRepository
+            \li Set to \c true if you want to create a local repository inside the installation directory.
+                This option has no effect on online installers. The repository will be automatically added
+                to the list of default repositories.
+
     \endtable
 
 */
@@ -305,36 +314,71 @@
     \contentspage index.html
     \previouspage ifw-updates.html
     \page ifw-customizing-installers.html
-    \nextpage ifw-reference.html
+    \nextpage Qt Installer Framework Examples
 
     \title Customizing Installers
 
-    The following sections describe how you can extend the predefined installer
-    by adding operations to the pages and by adding new pages and language
-    variants.
+    You can use scripting to customize installers by:
+
+    \list
+
+        \li Adding Qt Installer Framework \e operations that are prepared by the
+            scripts and performed by the installer.
+
+        \li Adding new pages that you specify in the package.xml file and place
+            in the \c packages directory.
+
+        \li Modifying existing pages by inserting custom user interface
+            elements into them as single widgets.
+
+        \li Adding language variants.
+
+    \endlist
+
+    You can use both \e {component scripts} and a \e {control script} to
+    customize installers. A component script is associated with a particular
+    component by specifying it in the \c Script element of the package.xml
+    file of the component. The script is loaded when the component's metadata is
+    fetched. For more information about component scripts, see
+    \l{Component Scripting}.
+
+    A control script is associated with the whole installer by specifying it
+    in the \c ControlScript element of the control.xml file of the installer.
+    Control scripts can be part of the installer resources or be passed on the
+    command line. They can be used to modify the installer pages that are
+    presented to users before components are loaded. Also, you can use them to
+    modify pages in the uninstaller. For more information, see
+    \l{Controller Scripting}.
+
+    For more information about the global JavaScript objects that can be used in
+    component and control scripts, see \l{Scripting API}.
 
     \section1 Adding Operations
 
-    Components can use the ECMAScript scripting language to perform additional
-    operations at any time during the installation process. Typically,
-    components manipulate files by moving, copying, or patching them.
+    You can use component scripts to perform Qt Installer Framework operations
+    during the installation process. Typically, operations manipulate files by
+    moving, copying, or patching them. Use the
+    QInstaller::Component::addOperation or
+    QInstaller::Component::addElevatedOperation function to add operations. For
+    more information, see \l {Adding Operations to Components}.
 
-    For more information about scripting, see \l{Component Scripting}.
+    In addition, you can implement methods to register custom installation
+    operations in the installer by deriving KDUpdater::UpdateOperation. For
+    more information, see \l {Registering Custom Operations}.
+
+    For a summary of available operations, see \l {Operations}.
 
     \section1 Adding Pages
 
     A component can contain one or more user interface files, which are placed
-    into the installer by a script. The installer automatically loads all user
-    interface files listed in package.xml. You can access the loaded widgets
-    by calling \c QInstaller::Component::userInterface with the class name of
-    the widget, as illustrated by the following code snippet:
+    into the installer by a component or control script. The installer
+    automatically loads all user interface files listed in the
+    \c UserInterfaces element of the package.xml file.
 
-    \code
-    component.userInterface( "MyPage" ).checkbox.checked = true;
-    \endcode
+    \section2 Using Component Scripts to Add Pages
 
     To add a new page to the installer, use
-    the \c QInstaller::Installer::addWizardPage method and specify the location
+    the installer::addWizardPage() method and specify the location
     of the new page. For example, the following code adds an instance of
     \c MyPage before the ready for installation page:
 
@@ -342,18 +386,63 @@
     installer.addWizardPage( component, "MyPage", QInstaller.ReadyForInstallation );
     \endcode
 
+    You can use component scripts to access the loaded widgets
+    by calling the \l component::userInterface() method with the class name of
+    the widget, as illustrated by the following code snippet:
+
+    \code
+    component.userInterface( "MyPage" ).checkbox.checked = true;
+    \endcode
+
+    \section2 Using Control Scripts to Add Pages
+
+    To register a custom page, use the installer::addWizardPage() method
+    and the object name set in the UI file (for example, \c "MyPage"). Then
+    call the \c{Dynamic${ObjectName}Callback()} function (for example,
+    \c {DynamicMyPageCallback()}):
+
+    \code
+    function Controller()
+    {
+        installer.addWizardPage(component, "MyPage", QInstaller.TargetDirectory)
+    }
+
+    Controller.prototype.DynamicMyPageCallback()
+    {
+        var page = gui.pageWidgetByObjectName("DynamicMyPage");
+        page.myButton.click,
+        page.myWidget.subWidget.setText("hello")
+    }
+    \endcode
+
+    You can access widgets by using their object names that are set in the UI
+    file. For example, \c myButton and \c myWidget are widget object names in
+    the code above.
+
     \section1 Adding Widgets
 
-    You can also insert custom user interface elements into the installer as
-    single widgets (such as a check box).
+    You can use component or control scripts to insert custom user interface
+    elements into the installer as single widgets (such as a check box).
 
-    To insert a single widget, use the
-    \c QInstaller::Installer::addWizardPageItem method.
+    To insert a single widget, use the installer::addWizardPageItem method.
     For example, the following code snippet adds an instance of \c MyWidget to
     the component selection page from within a script:
 
     \code
     installer.addWizardPageItem( component, "MyWidget", QInstaller.ComponentSelection );
+    \endcode
+
+    \section1 Interacting with Installer Functionality
+
+    You can use control scripts to execute installer functions automatically in
+    tests, for example. The following snippet illustrates how to automatically
+    click the \uicontrol Next button on the target directory selection page:
+
+    \code
+        Controller.prototype.TargetDirectoryPageCallback = function()
+        {
+            gui.clickButton(buttons.NextButton);
+        }
     \endcode
 
     \section1 Translating Pages
@@ -432,11 +521,11 @@
 
     \quotefile examples/package.xml
 
-    \section2 Summary of Package Information File Settings
+    \section2 Summary of Package Information File Elements
 
     \table
         \header
-            \li Setting
+            \li Element
             \li Description
         \row
             \li DisplayName
@@ -467,8 +556,11 @@
             \li Comma-separated list of identifiers of components that this
                 component depends on. Optionally, you can specify version
                 numbers, separated by a dash (-). You can prefix version numbers
-                with a comparison operator (=, >, <, >= or  <=). Optional. For
-                more information, see \l{Component Dependencies}.
+                with a comparison operator (=, >, <, >= or  <=). Keep in mind
+                that you have to use the character reference "&lt;" to escape
+                the left angle bracket (use "&lt;" instead of "<" and "&lt;="
+                instead of "<="). Optional. For more information, see
+                \l{Component Dependencies}.
         \row
             \li AutoDependOn
             \li Opposite of dependencies. Defines that this component should be
@@ -484,8 +576,8 @@
         \row
             \li Licenses
             \li List of license agreements to be accepted by the installing
-                user. To add several licenses, specify several \c License
-                sections that each specify the license \c name and \c file.
+                user. To add several licenses, add several \c <License> child
+                elements that each specify the license \c name and \c file.
                 If there are translations listed for this component, the installer
                 will also look for translated licenses. These need to have the
                 same name as the original license file but with an added
@@ -500,13 +592,13 @@
                 For more information, see \l{Adding Operations}.
         \row
             \li UserInterfaces
-            \li List of pages to load. To add several pages, specify several
-                \c UserInterface sections that each specify the filename of a
+            \li List of pages to load. To add several pages, add several
+                \c <UserInterface> child elements that each specify the filename of a
                 page. Optional. For more information, see \l{Adding Pages}.
         \row
             \li Translations
             \li List of translation files to load. To add several language
-                variants, specify several \c Translation sections that each
+                variants, specify several \c <Translation> child elements that each
                 specify the filename of a language variant. Optional. For more
                 information, see \l{Translating Pages}.
         \row
@@ -521,7 +613,7 @@
                 child components.
                 The boolean values are evaluated directly, while \c script is
                 resolved during runtime. Add the name of the script as a value
-                of the \c Script setting in this file. For an example script,
+                of the \c <Script> element in this file. For an example script,
                 see \l{Selecting Default Contents}.
         \row
             \li Essential
@@ -555,8 +647,8 @@
     component version. Use a dash (-) to separate version numbers from
     identifiers.
 
-    You can prefix version numbers with a comparison operator (=, >, <, >= or
-    <=) to indicate that the version number of the package is compared to the
+    You can prefix version numbers with a comparison operator (=, >, &lt; (<), >= or
+    &lt;= (<=)) to indicate that the version number of the package is compared to the
     required version and has to be equal to, greater than, less than, greater
     than or equal to, or less than or equal to the version number specified in
     the dependency. If no comparison operator is given, it defaults to =.
@@ -586,7 +678,7 @@
     \contentspage index.html
     \previouspage operations.html
     \page ifw-tools.html
-    \nextpage Scripting
+    \nextpage Scripting API
 
     \title Tools
 
@@ -835,17 +927,19 @@
 
     \section1 Configuring Repositories
 
-    The \c RemoteRepositories setting in the installer configuration file
+    The \c <RemoteRepositories> element in the installer configuration file
     (config.xml) can contain a list of several repositories. Each of them can
     have the following settings:
 
     \list
 
-        \li URL, which points to a list of available components.
-        \li Enabled, with 0 disabling this repository.
-        \li Username, which is used as user on a protected repository.
-        \li Password, which sets the password to use on a protected repository.
-        \li DisplayName, which optionally sets a String to display instead of the URL.
+        \li \c <Url>, which points to a list of available components.
+        \li \c <Enabled>, with 0 disabling this repository.
+        \li \c <Username>, which is used as user on a protected repository.
+        \li \c <Password>, which sets the password to use on a protected
+            repository.
+        \li \c <DisplayName>, which optionally sets a string to display instead
+            of the URL.
 
     \endlist
 
@@ -961,7 +1055,7 @@
 
         \li Copy the updated content to the package directory.
 
-        \li Increase the value of the \c{Version} setting for the updated
+        \li Increase the value of the \c <Version> element for the updated
             components in the package.xml file.
 
         \li Use the \c repogen tool to recreate the online repository with the
@@ -981,7 +1075,7 @@
     the online version number in the file is greater than the local one, the
     installer displays it in the list of available updates.
 
-    Increase the value of the \c{Version} setting for the component in the
+    Increase the value of the \c <Version> element for the component in the
     package.xml file.
 
     \section1 Recreating Repositories
@@ -1040,7 +1134,8 @@
     \endcode
 
     \section2 Adding Repositories
-    To update a repository, add the following code to the RepositoryUpdate section:
+    To update a repository, add a \c <Repository> child element to the
+    \c <RepositoryUpdate> element with the following options:
 
     \code
     <Repository action="add" url="http://www.example.com/repository" name="user" password="password"
@@ -1048,14 +1143,16 @@
     \endcode
 
     \section2 Removing Repositories
-    To remove a repository, add the following code to the RepositoryUpdate section:
+    To remove a repository, add a \c <Repository> child element to the
+    \c <RepositoryUpdate> element with the following options:
 
     \code
     <Repository action="remove" url="http://www.example.com/repository" />
     \endcode
 
     \section2 Replacing repositories
-    To replace one repository with another, add the following code to the RepositoryUpdate section:
+    To replace one repository with another, add a \c <Repository> child element to the
+    \c <RepositoryUpdate> element with the following options:
 
     \code
     <Repository action="replace" oldurl="http://www.example.com/repository"
@@ -1072,7 +1169,7 @@
 
     \title Known Issues
 
-    Check the \l{https://bugreports.qt-project.org/browse/QTIFW}{Qt Bugtracker}
+    Check the \l{https://bugreports.qt.io/browse/QTIFW}{Qt Bugtracker}
     for known issues in the Qt Installer Framework project. If you cannot find
     the issue there, create a bug report.
 */

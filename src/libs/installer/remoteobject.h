@@ -97,7 +97,7 @@ public:
         while (m_socket->bytesAvailable() < size) {
             if (!m_socket->waitForReadyRead(30000)) {
                 throw Error(tr("Could not read all data after sending command: %1. "
-                    "Bytes expected: %2, Bytes received: %3. Error: %3").arg(name).arg(size)
+                    "Bytes expected: %2, Bytes received: %3. Error: %4").arg(name).arg(size)
                     .arg(m_socket->bytesAvailable()).arg(m_socket->errorString()));
             }
         }

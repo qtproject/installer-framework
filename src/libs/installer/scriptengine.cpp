@@ -54,7 +54,7 @@ namespace QInstaller {
 /*!
     \qmltype console
     \inqmlmodule scripting
-    \brief The console type provides methods for logging and debugging.
+    \brief Provides methods for logging and debugging.
 */
 
 /*!
@@ -82,22 +82,37 @@ namespace QInstaller {
 /*!
     \qmltype buttons
     \inqmlmodule scripting
+
+    \brief Provides buttons that can be used on installer pages.
+
+    You can use a set of standard buttons and some custom buttons on the
+    installer pages. For more information about the buttons used by default on
+    each installer page, see \l {Controller Scripting}.
 */
 
 /*!
     \qmlproperty enumeration buttons::QWizard
 
-    \list
-        \li buttons.BackButton
-        \li buttons.NextButton
-        \li buttons.CommitButton
-        \li buttons.FinishButton
-        \li buttons.CancelButton
-        \li buttons.HelpButton
-        \li buttons.CustomButton1
-        \li buttons.CustomButton2
-        \li buttons.CustomButton3
-    \endlist
+    Specifies the buttons on an installer page.
+
+    \value  buttons.BackButton
+            The \uicontrol Back button (\uicontrol {Go Back} on OS X.)
+    \value  buttons.NextButton
+            The \uicontrol Next button (\uicontrol Continue on OS X.)
+    \value  buttons.CommitButton
+            The \uicontrol Commit button.
+    \value  buttons.FinishButton
+            The \uicontrol Finish button (\uicontrol Done on OS X.)
+    \value  buttons.CancelButton
+            The \uicontrol Cancel button.
+    \value  buttons.HelpButton
+            The \uicontrol Help button.
+    \value  buttons.CustomButton1
+            A custom button.
+    \value  buttons.CustomButton2
+            A custom button.
+    \value  buttons.CustomButton3
+            A custom button.
 */
 
 /*!
@@ -145,7 +160,7 @@ namespace QInstaller {
     \qmltype QInstaller
     \inqmlmodule scripting
 
-    \brief The QInstaller type provides access to the installer status and pages from Qt Script.
+    \brief Provides access to the installer status and pages from Qt Script.
 */
 
 /*!
@@ -189,58 +204,6 @@ namespace QInstaller {
 */
 
 /*!
-    \qmlmethod object gui::pageById(int id)
-*/
-
-/*!
-    \qmlmethod object gui::pageByObjectName(string name)
-*/
-
-/*!
-    \qmlmethod object gui::currentPageWidget()
-*/
-
-/*!
-    \qmlmethod object gui::pageWidgetByObjectName(string name)
-*/
-
-/*!
-    \qmlmethod string gui::defaultButtonText(int wizardButton)
-*/
-
-/*!
-    \qmlmethod void gui::clickButton(int wizardButton, int delayInMs)
-*/
-
-/*!
-    \qmlmethod boolean gui::isButtonEnabled(int wizardButton)
-*/
-
-/*!
-    \qmlmethod void gui::showSettingsButton(boolean show)
-*/
-
-/*!
-    \qmlmethod void gui::setSettingsButtonEnabled(boolean enable)
-*/
-
-/*!
-    \qmlmethod object gui::findChild(object parent, string objectName)
-
-    Returns the first descendant of \a parent that has \a objectName as name.
-
-    \sa QObject::findChild
-*/
-
-/*!
-    \qmlmethod object[] gui::findChildren(object parent, string objectName)
-
-    Returns all descendants of \a parent that have \a objectName as name.
-
-    \sa QObject::findChildren
-*/
-
-/*!
     \qmlsignal gui::interrupted()
 */
 
@@ -260,11 +223,200 @@ namespace QInstaller {
     \qmlsignal gui::settingsButtonClicked();
 */
 
+GuiProxy::GuiProxy(ScriptEngine *engine, QObject *parent) :
+    QObject(parent),
+    m_engine(engine),
+    m_gui(0)
+{
+}
+
+void GuiProxy::setPackageManagerGui(PackageManagerGui *gui)
+{
+    if (m_gui) {
+        disconnect(m_gui, &PackageManagerGui::interrupted, this, &GuiProxy::interrupted);
+        disconnect(m_gui, &PackageManagerGui::languageChanged, this, &GuiProxy::languageChanged);
+        disconnect(m_gui, &PackageManagerGui::finishButtonClicked, this, &GuiProxy::finishButtonClicked);
+        disconnect(m_gui, &PackageManagerGui::gotRestarted, this, &GuiProxy::gotRestarted);
+        disconnect(m_gui, &PackageManagerGui::settingsButtonClicked, this, &GuiProxy::settingsButtonClicked);
+    }
+
+    m_gui = gui;
+
+    if (m_gui) {
+        connect(m_gui, &PackageManagerGui::interrupted, this, &GuiProxy::interrupted);
+        connect(m_gui, &PackageManagerGui::languageChanged, this, &GuiProxy::languageChanged);
+        connect(m_gui, &PackageManagerGui::finishButtonClicked, this, &GuiProxy::finishButtonClicked);
+        connect(m_gui, &PackageManagerGui::gotRestarted, this, &GuiProxy::gotRestarted);
+        connect(m_gui, &PackageManagerGui::settingsButtonClicked, this, &GuiProxy::settingsButtonClicked);
+    }
+}
+
+/*!
+    \qmlmethod object gui::pageById(int id)
+*/
+QJSValue GuiProxy::pageById(int id) const
+{
+    if (!m_gui)
+        return QJSValue();
+    return m_engine->newQObject(m_gui->pageById(id));
+}
+
+/*!
+    \qmlmethod object gui::pageByObjectName(string name)
+*/
+QJSValue GuiProxy::pageByObjectName(const QString &name) const
+{
+    if (!m_gui)
+        return QJSValue();
+    return m_engine->newQObject(m_gui->pageByObjectName(name));
+}
+
+/*!
+    \qmlmethod object gui::currentPageWidget()
+*/
+QJSValue GuiProxy::currentPageWidget() const
+{
+    if (!m_gui)
+        return QJSValue();
+    return m_engine->newQObject(m_gui->currentPageWidget());
+}
+
+/*!
+    \qmlmethod object gui::pageWidgetByObjectName(string name)
+*/
+QJSValue GuiProxy::pageWidgetByObjectName(const QString &name) const
+{
+    if (!m_gui)
+        return QJSValue();
+    return m_engine->newQObject(m_gui->pageWidgetByObjectName(name));
+}
+
+/*!
+    \qmlmethod string gui::defaultButtonText(int wizardButton)
+*/
+QString GuiProxy::defaultButtonText(int wizardButton) const
+{
+    if (!m_gui)
+        return QString();
+    return m_gui->defaultButtonText(wizardButton);
+}
+
+/*!
+    \qmlmethod void gui::clickButton(int wizardButton, int delayInMs)
+*/
+void GuiProxy::clickButton(int wizardButton, int delayInMs)
+{
+    if (m_gui)
+        m_gui->clickButton(wizardButton, delayInMs);
+}
+
+/*!
+    \qmlmethod boolean gui::isButtonEnabled(int wizardButton)
+*/
+bool GuiProxy::isButtonEnabled(int wizardButton)
+{
+    if (!m_gui)
+        return false;
+    return m_gui->isButtonEnabled(wizardButton);
+}
+
+/*!
+    \qmlmethod void gui::showSettingsButton(boolean show)
+*/
+void GuiProxy::showSettingsButton(bool show)
+{
+    if (m_gui)
+        m_gui->showSettingsButton(show);
+}
+
+/*!
+    \qmlmethod void gui::setSettingsButtonEnabled(boolean enable)
+*/
+void GuiProxy::setSettingsButtonEnabled(bool enable)
+{
+    if (m_gui)
+        m_gui->setSettingsButtonEnabled(enable);
+}
+
+/*!
+    \qmlmethod object gui::findChild(object parent, string objectName)
+
+    Returns the first descendant of \a parent that has \a objectName as name.
+
+    \sa QObject::findChild
+*/
+QJSValue GuiProxy::findChild(QObject *parent, const QString &objectName)
+{
+    return m_engine->newQObject(parent->findChild<QObject*>(objectName));
+}
+
+/*!
+    \qmlmethod object[] gui::findChildren(object parent, string objectName)
+
+    Returns all descendants of \a parent that have \a objectName as name.
+
+    \sa QObject::findChildren
+*/
+QList<QJSValue> GuiProxy::findChildren(QObject *parent, const QString &objectName)
+{
+    QList<QJSValue> children;
+    foreach (QObject *child, parent->findChildren<QObject*>(objectName))
+        children.append(m_engine->newQObject(child));
+    return children;
+}
+
+/*!
+    \qmlmethod void gui::cancelButtonClicked()
+*/
+void GuiProxy::cancelButtonClicked()
+{
+    if (m_gui)
+        m_gui->cancelButtonClicked();
+}
+
+/*!
+    \qmlmethod void gui::reject()
+*/
+void GuiProxy::reject()
+{
+    if (m_gui)
+        m_gui->reject();
+}
+
+/*!
+    \qmlmethod void gui::rejectWithoutPrompt()
+*/
+void GuiProxy::rejectWithoutPrompt()
+{
+    if (m_gui)
+        m_gui->rejectWithoutPrompt();
+}
+
+/*!
+    \qmlmethod void gui::showFinishedPage()
+*/
+void GuiProxy::showFinishedPage()
+{
+    if (m_gui)
+        m_gui->showFinishedPage();
+}
+
+/*!
+    \qmlmethod void gui::setModified(boolean value)
+*/
+void GuiProxy::setModified(bool value)
+{
+    if (m_gui)
+        m_gui->setModified(value);
+}
+
+
 /*!
     Constructs a script engine with \a core as parent.
 */
-ScriptEngine::ScriptEngine(PackageManagerCore *core)
-    : QObject(core)
+ScriptEngine::ScriptEngine(PackageManagerCore *core) :
+    QObject(core),
+    m_guiProxy(new GuiProxy(this, this))
 {
     QJSValue global = m_engine.globalObject();
     global.setProperty(QLatin1String("console"), m_engine.newQObject(new ConsoleProxy));
@@ -304,24 +456,45 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core)
     } else {
         global.setProperty(QLatin1String("installer"), m_engine.newQObject(new QObject));
     }
+    global.setProperty(QLatin1String("gui"), m_engine.newQObject(m_guiProxy));
 
     global.property(QLatin1String("installer")).setProperty(QLatin1String("componentByName"),
         proxy.property(QLatin1String("componentByName")));
 }
 
+/*!
+    Creates a JavaScript object that wraps the given QObject \a object.
+
+    Signals and slots, properties and children of \a object are
+    available as properties of the created QJSValue. In addition some helper methods and properties
+    are added:
+
+    findChild(), findChildren() recursively search for child objects with the given object name.
+
+    Direct child objects are made accessible as properties under their respective object names.
+ */
 QJSValue ScriptEngine::newQObject(QObject *object)
 {
-    QJSValue obj = m_engine.newQObject(object);
+    QJSValue jsValue = m_engine.newQObject(object);
+    QQmlEngine::setObjectOwnership(object, QQmlEngine::CppOwnership);
 
     // add findChild(), findChildren() methods known from QtScript
     QJSValue findChild = m_engine.evaluate(
                 QLatin1String("(function() { return gui.findChild(this, arguments[0]); })"));
     QJSValue findChildren = m_engine.evaluate(
                 QLatin1String("(function() { return gui.findChildren(this, arguments[0]); })"));
-    obj.setProperty(QLatin1String("findChild"), findChild);
-    obj.setProperty(QLatin1String("findChildren"), findChildren);
+    jsValue.setProperty(QLatin1String("findChild"), findChild);
+    jsValue.setProperty(QLatin1String("findChildren"), findChildren);
 
-    return obj;
+    // add all named children as properties
+    foreach (QObject *const child, object->children()) {
+        if (child->objectName().isEmpty())
+            continue;
+        jsValue.setProperty(child->objectName(), m_engine.newQObject(child));
+        newQObject(child);
+    }
+
+    return jsValue;
 }
 
 QJSValue ScriptEngine::evaluate(const QString &program, const QString &fileName, int lineNumber)
@@ -329,37 +502,24 @@ QJSValue ScriptEngine::evaluate(const QString &program, const QString &fileName,
     return m_engine.evaluate(program, fileName, lineNumber);
 }
 
-void ScriptEngine::addQObjectChildren(QObject *root)
+/*!
+    Registers QObject \a object in the engine, and makes it globally accessible under its object name.
+ */
+void ScriptEngine::addToGlobalObject(QObject *object)
 {
-    if ((!root) || root->objectName().isEmpty())
+    if (!object || object->objectName().isEmpty())
         return;
 
-    const QObjectList children = root->children();
-    QJSValue jsParent = newQObject(root);
-    QQmlEngine::setObjectOwnership(root, QQmlEngine::CppOwnership);
-    m_engine.globalObject().setProperty(root->objectName(), jsParent);
-
-    foreach (QObject *const child, children) {
-        if (child->objectName().isEmpty())
-            continue;
-        QQmlEngine::setObjectOwnership(child, QQmlEngine::CppOwnership);
-        jsParent.setProperty(child->objectName(), m_engine.newQObject(child));
-        addQObjectChildren(child);
-    }
+    QJSValue value = newQObject(object);
+    globalObject().setProperty(object->objectName(), value);
 }
 
-void ScriptEngine::removeQObjectChildren(QObject *root)
+/*!
+    Removes the \a object name from the global object.
+ */
+void ScriptEngine::removeFromGlobalObject(QObject *object)
 {
-    if ((!root) || root->objectName().isEmpty())
-        return;
-
-    const QObjectList children = root->children();
-    m_engine.globalObject().deleteProperty(root->objectName());
-    foreach (QObject *const child, children) {
-        if (child->objectName().isEmpty())
-            continue;
-        m_engine.globalObject().deleteProperty(child->objectName());
-    }
+    globalObject().deleteProperty(object->objectName());
 }
 
 /*!
@@ -445,8 +605,7 @@ QJSValue ScriptEngine::callScriptMethod(const QJSValue &scriptContext, const QSt
 
 void ScriptEngine::setGuiQObject(QObject *guiQObject)
 {
-    QQmlEngine::setObjectOwnership(guiQObject, QQmlEngine::CppOwnership);
-    m_engine.globalObject().setProperty(QLatin1String("gui"), m_engine.newQObject(guiQObject));
+    m_guiProxy->setPackageManagerGui(qobject_cast<PackageManagerGui*>(guiQObject));
 }
 
 

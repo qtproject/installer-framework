@@ -30,11 +30,49 @@
     \ingroup qtifwexamples
     \title Quit Installer Example
 
-    \brief Quitting an installer by using a script.
+    \image qtifw-examples-quit_installer.png
+
+    \brief Using a component script to quit an installer.
+
+    \e{Quit Installer} illustrates how to use the \c Component() function to
+    display a message box to end users for quitting the installation if some
+    requirements for the installation are not met.
 
     \include installerfw-examples-configuring.qdocinc
 
     \quotefile quit_installer/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Default> element is set to \c true to preselect the
+            component in the installer.
+        \li The \c <Script> element specifies the file name of the JavaScript
+            file that is loaded to perform operations.
+    \endlist
+
+    \quotefile quit_installer/packages/org.qtproject.ifw.example.quitinstaller/meta/package.xml
+
+    \section1 Quitting the Installation
+
+    In installscript.js, we use the \c Component() function to display a
+    message box for quitting the installer to end users:
+
+    \quotefromfile quit_installer/packages/org.qtproject.ifw.example.quitinstaller/meta/installscript.js
+    \skipto Component()
+    \printuntil QMessageBox.Ok
+
+    If end users select \uicontrol OK, we use the \c installer::setValue()
+    function to display a message and the \c installer.setDefaultPageVisible()
+    function to hide the subsequent installer pages:
+
+    \printuntil NextButton
+
+    If end users select \uicontrol Cancel, we display the default installer
+    pages and use the \c installer::setValue() function to display another
+    message on the last installer page:
+
+    \printuntil /^\}/
 
     \include installerfw-examples-generating.qdocinc
 */
