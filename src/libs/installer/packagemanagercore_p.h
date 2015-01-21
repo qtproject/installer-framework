@@ -117,7 +117,7 @@ public:
     void setStatus(int status, const QString &error = QString());
 
     QString targetDir() const;
-    QString registerPath() const;
+    QString registerPath();
 
     QString maintenanceToolName() const;
     QString installerBinaryPath() const;

@@ -65,6 +65,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
+#include <QtCore/QUuid>
 #include <QtCore/QFuture>
 #include <QtCore/QFutureWatcher>
 #include <QtCore/QTemporaryFile>
@@ -1375,19 +1376,22 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
     m_needToWriteMaintenanceTool = false;
 }
 
-QString PackageManagerCorePrivate::registerPath() const
+QString PackageManagerCorePrivate::registerPath()
 {
 #ifdef Q_OS_WIN
-    const QString productName = m_data.value(QLatin1String("ProductName")).toString();
-    if (productName.isEmpty())
-        throw Error(tr("ProductName should be set"));
+    QString guid = m_data.value(scProductUUID).toString();
+    if (guid.isEmpty()) {
+        m_data.setValue(scProductUUID, QUuid::createUuid().toString());
+        guid = m_data.value(scProductUUID).toString();
+        writeMaintenanceConfigFiles(); // save uuid persistently
+    }
 
     QString path = QLatin1String("HKEY_CURRENT_USER");
     if (m_data.value(QLatin1String("AllUsers")).toString() == scTrue)
         path = QLatin1String("HKEY_LOCAL_MACHINE");
 
     return path + QLatin1String("\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\")
-        + productName;
+        + guid;
 #endif
     return QString();
 }
