@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2015 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -34,8 +34,8 @@
 #include "settingsoperation.h"
 #include "packagemanagercore.h"
 #include "kdupdaterupdateoperations.h"
+#include "qsettingswrapper.h"
 
-#include <QSettings>
 #include <QDir>
 #include <QDebug>
 
@@ -118,7 +118,7 @@ bool SettingsOperation::performOperation()
     }
     setValue(QLatin1String("createddir"), mkDirOperation.value(QLatin1String("createddir")));
 
-    QSettings settings(path, QSettings::IniFormat);
+    QSettingsWrapper settings(path, QSettingsWrapper::IniFormat);
     if (method == QLatin1String("set"))
         settings.setValue(key, aValue);
     else if (method == QLatin1String("remove"))
@@ -160,7 +160,7 @@ bool SettingsOperation::undoOperation()
 
     bool cleanUp = false;
     { // kill the scope to kill settings object, else remove file will not work
-        QSettings settings(path, QSettings::IniFormat);
+        QSettingsWrapper settings(path, QSettingsWrapper::IniFormat);
         if (method == QLatin1String("set")) {
             settings.remove(key);
         } else if (method == QLatin1String("add_array_value")) {
