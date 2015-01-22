@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2015 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,55 +31,18 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+#include "permissionsettings.h"
 
-#ifndef REMOTESERVERCONNECTION_H
-#define REMOTESERVERCONNECTION_H
+#include <QFile>
 
-#include <QPointer>
-#include <QThread>
+using namespace QInstaller;
 
-#include <QtCore/private/qfsfileengine_p.h>
-
-QT_BEGIN_NAMESPACE
-class QProcess;
-QT_END_NAMESPACE
-
-namespace QInstaller {
-
-class PermissionSettings;
-
-class QProcessSignalReceiver;
-
-class RemoteServerConnection : public QThread
+PermissionSettings::~PermissionSettings()
 {
-    Q_OBJECT
-    Q_DISABLE_COPY(RemoteServerConnection)
+    if (!fileName().isEmpty()) {
+        sync();
+        QFile file(fileName());
+        file.setPermissions(file.permissions() | QFile::ReadGroup | QFile::ReadOther);
+    }
+}
 
-public:
-    RemoteServerConnection(qintptr socketDescriptor, const QString &authorizationKey);
-
-    void run() Q_DECL_OVERRIDE;
-
-signals:
-    void shutdownRequested();
-
-private:
-    template <typename T>
-    void sendData(QDataStream &stream, const T &arg);
-    void handleQProcess(const QString &command, QDataStream &receivedStream);
-    void handleQSettings(const QString &command, QDataStream &receivedStream,
-                         PermissionSettings *settings);
-    void handleQFSFileEngine(const QString &command, QDataStream &receivedStream);
-
-private:
-    qintptr m_socketDescriptor;
-
-    QProcess *m_process;
-    QFSFileEngine *m_engine;
-    QString m_authorizationKey;
-    QProcessSignalReceiver *m_signalReceiver;
-};
-
-} // namespace QInstaller
-
-#endif // REMOTESERVERCONNECTION_H

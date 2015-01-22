@@ -33,8 +33,8 @@
 **************************************************************************/
 
 #include "qsettingswrapper.h"
+#include "permissionsettings.h"
 
-#include <QSettings>
 #include <QStringList>
 
 namespace QInstaller {
@@ -88,7 +88,7 @@ public:
     QString m_organization;
     QSettings::Scope m_scope;
     QSettings::Format m_format;
-    QSettings settings;
+    PermissionSettings settings;
 };
 
 
@@ -318,8 +318,8 @@ QVariant QSettingsWrapper::value(const QString &param1, const QVariant &param2) 
 bool QSettingsWrapper::createSocket() const
 {
     if ((d->m_format != QSettings::NativeFormat) && (d->m_format != QSettings::IniFormat)) {
-        Q_ASSERT_X(false, Q_FUNC_INFO, "Settings wrapper does not support any different format "
-            "then QSettingsWrapper::NativeFormat and QSettingsWrapper::IniFormat.");
+        Q_ASSERT_X(false, Q_FUNC_INFO, "Settings wrapper only supports QSettingsWrapper::NativeFormat"
+                   " and QSettingsWrapper::IniFormat.");
     }
     return (const_cast<QSettingsWrapper *>(this))->connectToServer(QVariantList()
         << d->m_application << d->m_organization << d->m_scope << d->m_format << d->m_filename);

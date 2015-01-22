@@ -38,8 +38,8 @@
 #include "protocol.h"
 #include "remoteserverconnection_p.h"
 #include "utils.h"
+#include "permissionsettings.h"
 
-#include <QSettings>
 #include <QTcpSocket>
 
 namespace QInstaller {
@@ -47,7 +47,6 @@ namespace QInstaller {
 RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, const QString &key)
     : m_socketDescriptor(socketDescriptor)
     , m_process(0)
-    , m_settings(0)
     , m_engine(0)
     , m_authorizationKey(key)
     , m_signalReceiver(0)
@@ -58,6 +57,7 @@ void RemoteServerConnection::run()
 {
     QTcpSocket socket;
     socket.setSocketDescriptor(m_socketDescriptor);
+    QScopedPointer<PermissionSettings> settings;
 
     QDataStream stream;
     stream.setDevice(&socket);
@@ -102,14 +102,12 @@ void RemoteServerConnection::run()
                     stream >> application; stream >> organization; stream >> scope; stream >> format;
                     stream >> fileName;
 
-                    if (m_settings)
-                        m_settings->deleteLater();
                     if (fileName.toString().isEmpty()) {
-                        m_settings = new QSettings(QSettings::Format(format.toInt()),
+                        settings.reset(new PermissionSettings(QSettings::Format(format.toInt()),
                             QSettings::Scope(scope.toInt()), organization.toString(), application
-                            .toString());
+                            .toString()));
                     } else {
-                        m_settings = new QSettings(fileName.toString(), QSettings::Format(format.toInt()));
+                        settings.reset(new PermissionSettings(fileName.toString(), QSettings::Format(format.toInt())));
                     }
                 } else if (type == QLatin1String(Protocol::QProcess)) {
                     if (m_process)
@@ -128,8 +126,7 @@ void RemoteServerConnection::run()
                 QString type;
                 stream >> type;
                 if (type == QLatin1String(Protocol::QSettings)) {
-                    m_settings->deleteLater();
-                    m_settings = 0;
+                    settings.reset();
                 } else if (command == QLatin1String(Protocol::QProcess)) {
                     m_signalReceiver->m_receivedSignals.clear();
                     m_process->deleteLater();
@@ -153,7 +150,7 @@ void RemoteServerConnection::run()
             if (command.startsWith(QLatin1String(Protocol::QProcess))) {
                 handleQProcess(command, stream);
             } else if (command.startsWith(QLatin1String(Protocol::QSettings))) {
-                handleQSettings(command, stream);
+                handleQSettings(command, stream, settings.data());
             } else if (command.startsWith(QLatin1String(Protocol::QAbstractFileEngine))) {
                 handleQFSFileEngine(command, stream);
             } else {
@@ -290,8 +287,12 @@ void RemoteServerConnection::handleQProcess(const QString &command, QDataStream 
     }
 }
 
-void RemoteServerConnection::handleQSettings(const QString &command, QDataStream &stream)
+void RemoteServerConnection::handleQSettings(const QString &command, QDataStream &stream,
+                                             PermissionSettings *settings)
 {
+    if (!settings)
+        return;
+
     quint32 size;
     stream >> size;
     while (stream.device()->bytesAvailable() < size) {
@@ -307,75 +308,75 @@ void RemoteServerConnection::handleQSettings(const QString &command, QDataStream
     QDataStream data(ba);
 
     if (command == QLatin1String(Protocol::QSettingsAllKeys)) {
-        sendData(stream, m_settings->allKeys());
+        sendData(stream, settings->allKeys());
     } else if (command == QLatin1String(Protocol::QSettingsBeginGroup)) {
         QString prefix;
         data >> prefix;
-        m_settings->beginGroup(prefix);
+        settings->beginGroup(prefix);
     } else if (command == QLatin1String(Protocol::QSettingsBeginWriteArray)) {
         QString prefix;
         data >> prefix;
         qint32 size;
         data >> size;
-        m_settings->beginWriteArray(prefix, size);
+        settings->beginWriteArray(prefix, size);
     } else if (command == QLatin1String(Protocol::QSettingsBeginReadArray)) {
         QString prefix;
         data >> prefix;
-        sendData(stream, m_settings->beginReadArray(prefix));
+        sendData(stream, settings->beginReadArray(prefix));
     } else if (command == QLatin1String(Protocol::QSettingsChildGroups)) {
-        sendData(stream, m_settings->childGroups());
+        sendData(stream, settings->childGroups());
     } else if (command == QLatin1String(Protocol::QSettingsChildKeys)) {
-        sendData(stream, m_settings->childKeys());
+        sendData(stream, settings->childKeys());
     } else if (command == QLatin1String(Protocol::QSettingsClear)) {
-        m_settings->clear();
+        settings->clear();
     } else if (command == QLatin1String(Protocol::QSettingsContains)) {
         QString key;
         data >> key;
-        sendData(stream, m_settings->contains(key));
+        sendData(stream, settings->contains(key));
     } else if (command == QLatin1String(Protocol::QSettingsEndArray)) {
-        m_settings->endArray();
+        settings->endArray();
     } else if (command == QLatin1String(Protocol::QSettingsEndGroup)) {
-        m_settings->endGroup();
+        settings->endGroup();
     } else if (command == QLatin1String(Protocol::QSettingsFallbacksEnabled)) {
-        sendData(stream, m_settings->fallbacksEnabled());
+        sendData(stream, settings->fallbacksEnabled());
     } else if (command == QLatin1String(Protocol::QSettingsFileName)) {
-        sendData(stream, m_settings->fileName());
+        sendData(stream, settings->fileName());
     } else if (command == QLatin1String(Protocol::QSettingsGroup)) {
-        sendData(stream, m_settings->group());
+        sendData(stream, settings->group());
     } else if (command == QLatin1String(Protocol::QSettingsIsWritable)) {
-        sendData(stream, m_settings->isWritable());
+        sendData(stream, settings->isWritable());
     } else if (command == QLatin1String(Protocol::QSettingsRemove)) {
         QString key;
         data >> key;
-        m_settings->remove(key);
+        settings->remove(key);
     } else if (command == QLatin1String(Protocol::QSettingsSetArrayIndex)) {
         qint32 i;
         data >> i;
-        m_settings->setArrayIndex(i);
+        settings->setArrayIndex(i);
     } else if (command == QLatin1String(Protocol::QSettingsSetFallbacksEnabled)) {
         bool b;
         data >> b;
-        m_settings->setFallbacksEnabled(b);
+        settings->setFallbacksEnabled(b);
     } else if (command == QLatin1String(Protocol::QSettingsStatus)) {
-        sendData(stream, m_settings->status());
+        sendData(stream, settings->status());
     } else if (command == QLatin1String(Protocol::QSettingsSync)) {
-        m_settings->sync();
+        settings->sync();
     } else if (command == QLatin1String(Protocol::QSettingsSetValue)) {
         QString key;
         QVariant value;
         data >> key;
         data >> value;
-        m_settings->setValue(key, value);
+        settings->setValue(key, value);
     } else if (command == QLatin1String(Protocol::QSettingsValue)) {
         QString key;
         QVariant defaultValue;
         data >> key;
         data >> defaultValue;
-        sendData(stream, m_settings->value(key, defaultValue));
+        sendData(stream, settings->value(key, defaultValue));
     } else if (command == QLatin1String(Protocol::QSettingsOrganizationName)) {
-        sendData(stream, m_settings->organizationName());
+        sendData(stream, settings->organizationName());
     } else if (command == QLatin1String(Protocol::QSettingsApplicationName)) {
-        sendData(stream, m_settings->applicationName());
+        sendData(stream, settings->applicationName());
     } else if (!command.isEmpty()) {
         qDebug() << "Unknown QSettings command:" << command;
     }

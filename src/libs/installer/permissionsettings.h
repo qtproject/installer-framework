@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2015 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,54 +32,30 @@
 **
 **************************************************************************/
 
-#ifndef REMOTESERVERCONNECTION_H
-#define REMOTESERVERCONNECTION_H
+#ifndef PERMISSIONSETTINGS_H
+#define PERMISSIONSETTINGS_H
 
-#include <QPointer>
-#include <QThread>
-
-#include <QtCore/private/qfsfileengine_p.h>
-
-QT_BEGIN_NAMESPACE
-class QProcess;
-QT_END_NAMESPACE
+#include <QSettings>
 
 namespace QInstaller {
 
-class PermissionSettings;
-
-class QProcessSignalReceiver;
-
-class RemoteServerConnection : public QThread
+class PermissionSettings : public QSettings
 {
-    Q_OBJECT
-    Q_DISABLE_COPY(RemoteServerConnection)
-
 public:
-    RemoteServerConnection(qintptr socketDescriptor, const QString &authorizationKey);
-
-    void run() Q_DECL_OVERRIDE;
-
-signals:
-    void shutdownRequested();
-
-private:
-    template <typename T>
-    void sendData(QDataStream &stream, const T &arg);
-    void handleQProcess(const QString &command, QDataStream &receivedStream);
-    void handleQSettings(const QString &command, QDataStream &receivedStream,
-                         PermissionSettings *settings);
-    void handleQFSFileEngine(const QString &command, QDataStream &receivedStream);
-
-private:
-    qintptr m_socketDescriptor;
-
-    QProcess *m_process;
-    QFSFileEngine *m_engine;
-    QString m_authorizationKey;
-    QProcessSignalReceiver *m_signalReceiver;
+    explicit PermissionSettings(const QString &organization,
+        const QString &application = QString(), QObject *parent = 0)
+        : QSettings(organization, application, parent) {}
+    PermissionSettings(Scope scope, const QString &organization,
+        const QString &application = QString(), QObject *parent = 0)
+        : QSettings(scope, organization, application, parent) {}
+    PermissionSettings(Format format, Scope scope, const QString &organization,
+        const QString &application = QString(), QObject *parent = 0)
+        : QSettings(format, scope, organization, application, parent) {}
+    PermissionSettings(const QString &fileName, Format format, QObject *parent = 0)
+        : QSettings(fileName, format, parent) {}
+    ~PermissionSettings();
 };
 
-} // namespace QInstaller
+}
 
-#endif // REMOTESERVERCONNECTION_H
+#endif  // PERMISSIONSETTINGS_H
