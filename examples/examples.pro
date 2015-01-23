@@ -7,6 +7,7 @@ SUBDIRS += \
   dynamicpage \
   licenseagreement \
   modifyextract \
+  online \
   openreadme \
   quit_installer \
   registerfileextension \
