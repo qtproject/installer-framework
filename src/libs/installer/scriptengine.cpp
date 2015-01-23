@@ -212,6 +212,13 @@ namespace QInstaller {
     \inqmlmodule scripting
 
     \brief Provides access to the installer status and pages from Qt Script.
+
+    For more information about using the \c QInstaller object in control
+    scripts, see \l{Controller Scripting}.
+
+    For examples of using the pages to support end user workflows, see
+    \l{End User Workflows}.
+
 */
 
 /*!
@@ -219,17 +226,25 @@ namespace QInstaller {
 
     The installer has various pre-defined pages that can be used to for example insert pages
     in a certain place:
-    \list
-        \li QInstaller.Introduction
-        \li QInstaller.TargetDirectory
-        \li QInstaller.ComponentSelection
-        \li QInstaller.LicenseCheck
-        \li QInstaller.StartMenuSelection
-        \li QInstaller.ReadyForInstallation
-        \li QInstaller.PerformInstallation
-        \li QInstaller.InstallationFinished
-        \li QInstaller.End
-    \endlist
+
+    \value  QInstaller.Introduction
+            \l{Introduction Page}
+    \value  QInstaller.TargetDirectory
+            \l{Target Directory Page}
+    \value  QInstaller.ComponentSelection
+            \l{Component Selection Page}
+    \value  QInstaller.LicenseCheck
+            \l{License Agreement Page}
+    \value  QInstaller.StartMenuSelection
+            \l{Start Menu Directory Page}
+    \value  QInstaller.ReadyForInstallation
+            \l{Ready for Installation Page}
+    \value  QInstaller.PerformInstallation
+            \l{Perform Installation Page}
+    \value  QInstaller.InstallationFinished
+            \l{Finished Page}
+
+    \omitvalue  QInstaller.End
 */
 
 
@@ -239,14 +254,18 @@ namespace QInstaller {
     Status of the installer.
 
     Possible values are:
-    \list
-        \li QInstaller.Success (deprecated: QInstaller.InstallerSucceeded)
-        \li QInstaller.Failure (deprecated: QInstaller.InstallerFailed)
-        \li QInstaller.Running (deprecated: QInstaller.InstallerFailed)
-        \li QInstaller.Canceled (deprecated: QInstaller.CanceledByUser)
-        \li QInstaller.Unfinished (deprecated: QInstaller.InstallerUnfinished)
-        \li QInstaller.ForceUpdate
-    \endlist
+
+    \value  QInstaller.Success
+            Installation was successful.
+    \value  QInstaller.Failure
+            Installation failed.
+    \value  QInstaller.Running
+            Installation is in progress.
+    \value  QInstaller.Canceled
+            Installation was canceled.
+    \value  QInstaller.Unfinished
+            Installation was not completed.
+    \value  QInstaller.ForceUpdate
 */
 
 /*!
