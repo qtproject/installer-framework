@@ -760,6 +760,26 @@
         <source>Release Date</source>
         <translation>リリース日</translation>
     </message>
+    <message>
+        <source>Component is marked for installation.</source>
+        <translation>コンポーネントはインストール対象です。</translation>
+    </message>
+    <message>
+        <source>Component is marked for uninstallation.</source>
+        <translation>コンポーネントはアンインストール対象です。</translation>
+    </message>
+    <message>
+        <source>Component is installed.</source>
+        <translation>コンポーネントはインストール済みです。</translation>
+    </message>
+    <message>
+        <source>Component is not installed.</source>
+        <translation>コンポーネントは未インストールです。</translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation>アクション</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
@@ -3479,12 +3499,20 @@ as root and then clicking OK.</source>
         <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %3</source>
         <translation>コマンドを送信した後、すべてのデータを読み込めませんでした: %1。想定バイト数: %2 、受信バイト数: %3。エラー: %3</translation>
     </message>
+    <message>
+        <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
+        <translation>コマンドを送信した後、すべてのデータを読み込めませんでした: %1。想定バイト数: %2 、受信バイト数: %3。エラー: %4</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::RemoteServerConnection</name>
     <message>
         <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %3</source>
         <translation>コマンドを送信した後、すべてのデータを読み込めませんでした: %1。想定バイト数: %2 、受信バイト数: %3。エラー: %3</translation>
+    </message>
+    <message>
+        <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
+        <translation>コマンドを送信した後、すべてのデータを読み込めませんでした: %1。想定バイト数: %2 、受信バイト数: %3。エラー: %4</translation>
     </message>
 </context>
 <context>
