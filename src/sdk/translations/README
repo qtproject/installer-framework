@@ -1,0 +1,17 @@
+You need to have a Qt translation for your new language,
+otherwise your language won't be loaded at runtime.
+
+To add a new language:
+1) Inside src/sdk/sdk.pro:
+   add your language into IB_LANGUAGES and QT_LANGUAGES.
+   QT_LANGUAGES contains base name of the Qt translation file.
+2) Add Installer Framework translation filename into:
+   src/src.pro
+3) Add Installer Framework and Qt messages (.qm) filenames into:
+   src/sdk/installerbase.qrc
+
+In order to provide an update to translations, according to changes done in sources, run:
+
+lupdate installerfw.pro
+
+in a root directory.
