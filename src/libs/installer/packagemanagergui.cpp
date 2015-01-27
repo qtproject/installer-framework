@@ -720,8 +720,6 @@ void PackageManagerGui::dependsOnLocalInstallerBinary()
 
 void PackageManagerGui::currentPageChanged(int newId)
 {
-    executeControlScript(newId);
-
     PackageManagerPage *oldPage = qobject_cast<PackageManagerPage *>(page(d->m_currentId));
     if (oldPage) {
         oldPage->leaving();
@@ -735,6 +733,8 @@ void PackageManagerGui::currentPageChanged(int newId)
         newPage->entering();
         emit newPage->entered();
     }
+
+    executeControlScript(newId);
 }
 
 // -- PackageManagerPage

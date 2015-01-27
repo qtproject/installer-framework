@@ -5,6 +5,7 @@
         <file>data/component2.qs</file>
         <file>data/broken_connect.qs</file>
         <file>data/dynamicpage.qs</file>
+        <file>data/enteringpage.qs</file>
         <file>data/form.ui</file>
         <file>data/userinterface.qs</file>
     </qresource>

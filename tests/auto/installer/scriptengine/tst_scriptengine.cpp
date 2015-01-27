@@ -96,6 +96,55 @@ private:
     QWidget *m_widget;
 };
 
+class EnteringPage : public PackageManagerPage
+{
+    Q_OBJECT
+    Q_PROPERTY(QStringList invocationOrder READ invocationOrder)
+public:
+    explicit EnteringPage(PackageManagerCore *core)
+        : PackageManagerPage(core)
+    {
+        setObjectName(QLatin1String("EnteringPage"));
+    }
+    QStringList invocationOrder() const {
+        return m_invocationOrder;
+    }
+public slots:
+    Q_INVOKABLE void enteringInvoked() {
+        m_invocationOrder << QLatin1String("Entering");
+    }
+    Q_INVOKABLE void callbackInvoked() {
+        m_invocationOrder << QLatin1String("Callback");
+    }
+
+protected:
+    void entering() {
+        enteringInvoked();
+    }
+private:
+    QStringList m_invocationOrder;
+};
+
+class EnteringGui : public PackageManagerGui
+{
+    Q_OBJECT
+public:
+    explicit EnteringGui(PackageManagerCore *core)
+        : PackageManagerGui(core)
+    {}
+
+    EnteringPage *enteringPage() const {
+        return m_enteringPage;
+    }
+
+    void init() {
+        m_enteringPage = new EnteringPage(packageManagerCore());
+        setPage(0, m_enteringPage);
+    }
+private:
+    EnteringPage *m_enteringPage;
+};
+
 class EmitSignalObject : public QObject
 {
     Q_OBJECT
@@ -375,6 +424,21 @@ private slots:
         QCOMPARE(gui.widget()->property("commit").toString(), QString("false"));
         QCOMPARE(m_core.value("DynamicWidget.complete"), QString("true"));
         QCOMPARE(gui.widget()->property("complete").toString(), QString("true"));
+    }
+
+    void checkEnteringCalledBeforePageCallback()
+    {
+        EnteringGui gui(&m_core);
+        gui.init();
+        setExpectedScriptOutput("Loaded control script \":///data/enteringpage.qs\" ");
+        gui.loadControlScript(":///data/enteringpage.qs");
+        gui.show();
+
+        EnteringPage *enteringPage = gui.enteringPage();
+
+        QStringList expectedOrder;
+        expectedOrder << QLatin1String("Entering") << QLatin1String("Callback");
+        QCOMPARE(enteringPage->invocationOrder(), expectedOrder);
     }
 
 private:
