@@ -69,6 +69,7 @@ public:
         , m_mode(Protocol::Mode::Debug)
         , m_object(0)
     {
+        m_thread.setObjectName(QLatin1String("KeepAlive"));
     }
 
     ~RemoteClientPrivate()

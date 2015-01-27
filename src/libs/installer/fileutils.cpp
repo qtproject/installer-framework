@@ -239,6 +239,7 @@ public:
         , p(path)
         , ignore(ignoreErrors)
     {
+        setObjectName(QLatin1String("RemoveDirectory"));
     }
 
     const QString &error() const

@@ -57,6 +57,7 @@ public:
         , m_files(files)
         , m_op(op)
     {
+        setObjectName(QLatin1String("ExtractArchive"));
     }
 
     void run()

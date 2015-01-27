@@ -53,6 +53,7 @@ RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, const Q
     , m_authorizationKey(key)
     , m_signalReceiver(0)
 {
+    setObjectName(QString::fromLatin1("RemoteServerConnection(%1)").arg(socketDescriptor));
 }
 
 void RemoteServerConnection::run()
