@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2015 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt Installer Framework.
@@ -42,7 +42,6 @@
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFileDialog>
-#include <QJSEngine>
 #include <QStandardPaths>
 
 namespace QInstaller {
@@ -65,18 +64,14 @@ class InstallerProxy : public QObject
     Q_DISABLE_COPY(InstallerProxy)
 
 public:
-    InstallerProxy(QJSEngine *engine, PackageManagerCore *core)
+    InstallerProxy(ScriptEngine *engine, PackageManagerCore *core)
         : m_engine(engine), m_core(core) {}
 
-public slots :
-    QJSValue componentByName(const QString &componentName) {
-        if (m_core)
-            return m_engine->newQObject(m_core->componentByName(componentName));
-        return QJSValue();
-    }
+public slots:
+    QJSValue componentByName(const QString &componentName);
 
 private:
-    QJSEngine *m_engine;
+    ScriptEngine *m_engine;
     PackageManagerCore *m_core;
 };
 

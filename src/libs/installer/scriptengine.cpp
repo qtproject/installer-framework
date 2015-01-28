@@ -294,6 +294,13 @@ namespace QInstaller {
     \qmlsignal gui::settingsButtonClicked();
 */
 
+QJSValue InstallerProxy::componentByName(const QString &componentName)
+{
+    if (m_core)
+        return m_engine->newQObject(m_core->componentByName(componentName));
+    return QJSValue();
+}
+
 GuiProxy::GuiProxy(ScriptEngine *engine, QObject *parent) :
     QObject(parent),
     m_engine(engine),
@@ -503,7 +510,7 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
     QJSValue global = m_engine.globalObject();
     global.setProperty(QLatin1String("console"), m_engine.newQObject(new ConsoleProxy));
     global.setProperty(QLatin1String("QFileDialog"), m_engine.newQObject(new QFileDialogProxy));
-    const QJSValue proxy = m_engine.newQObject(new InstallerProxy(&m_engine, core));
+    const QJSValue proxy = m_engine.newQObject(new InstallerProxy(this, core));
     global.setProperty(QLatin1String("InstallerProxy"), proxy);
     global.setProperty(QLatin1String("print"), m_engine.newQObject(new ConsoleProxy)
         .property(QLatin1String("log")));
@@ -558,6 +565,9 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
 QJSValue ScriptEngine::newQObject(QObject *object)
 {
     QJSValue jsValue = m_engine.newQObject(object);
+    if (!jsValue.isQObject())
+        return jsValue;
+
     QQmlEngine::setObjectOwnership(object, QQmlEngine::CppOwnership);
 
     // add findChild(), findChildren() methods known from QtScript
