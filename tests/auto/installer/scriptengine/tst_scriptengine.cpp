@@ -232,6 +232,9 @@ private slots:
 
     void testBrokenJSMethodConnect()
     {
+#if QT_VERSION <= 0x50400
+        QSKIP("Behavior changed from 5.4.1 onwards");
+#endif
         EmitSignalObject emiter;
         m_scriptEngine->globalObject().setProperty(QLatin1String("emiter"),
             m_scriptEngine->newQObject(&emiter));
@@ -248,11 +251,11 @@ private slots:
         // ignore Output from script
         setExpectedScriptOutput("\"function receive()\"");
 
+        QTest::ignoreMessage(QtWarningMsg, ":10: ReferenceError: foo is not defined");
         emiter.produceSignal();
 
         const QJSValue value = m_scriptEngine->evaluate("");
-        QCOMPARE(value.isError(), true);
-        QCOMPARE(value.toString(), QLatin1String("ReferenceError: foo is not defined"));
+        QCOMPARE(value.isError(), false);
     }
 
     void testScriptPrint()
