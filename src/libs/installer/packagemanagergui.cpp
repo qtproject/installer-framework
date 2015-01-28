@@ -417,7 +417,8 @@ void PackageManagerGui::setValidatorForCustomPageRequested(Component *component,
 
 /*!
     Loads a script to perform the installation non-interactively.
-    @throws QInstaller::Error if the script is not readable/cannot be parsed
+    Throws QInstaller::Error if the script is not readable or it cannot be
+    parsed.
 */
 void PackageManagerGui::loadControlScript(const QString &scriptPath)
 {
@@ -660,8 +661,8 @@ void PackageManagerGui::showSettingsButton(bool show)
 }
 
 /*!
-    Force an update of our own button layout, needs to be called whenever a button option has been
-    set.
+    Forces an update of our own button layout. Needs to be called whenever a
+    button option has been set.
 */
 void PackageManagerGui::updateButtonLayout()
 {
@@ -1640,7 +1641,7 @@ void ComponentSelectionPage::selectDefault()
 }
 
 /*!
-    Selects the component with /a id in the component tree.
+    Selects the component with \a id in the component tree.
 */
 void ComponentSelectionPage::selectComponent(const QString &id)
 {
@@ -1650,7 +1651,7 @@ void ComponentSelectionPage::selectComponent(const QString &id)
 }
 
 /*!
-    Deselects the component with /a id in the component tree.
+    Deselects the component with \a id in the component tree.
 */
 void ComponentSelectionPage::deselectComponent(const QString &id)
 {
