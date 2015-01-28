@@ -73,8 +73,8 @@ namespace QInstaller {
     \brief The Resource class is an interface for wrapping a file as read only device.
 
     Resource is an interface for reading inside a file, but is not supposed to write to the file it
-    wraps. The resource class is created by passing a path to an existing binary (such as a zipped
-    archive or a Qt resource file).
+    wraps. The \c Resource class is created by passing a path to an existing
+    binary (such as a zipped archive or a Qt resource file).
 
     The resource name can be set at any time using setName() or during construction. The segment
     supplied during construction represents the offset and size of the resource inside the file.
@@ -156,7 +156,7 @@ void Resource::setName(const QByteArray &name)
 }
 
 /*!
-    A Resource will always be opened in QIODevice::ReadOnly mode. The function will return true
+    Opens a resource in QIODevice::ReadOnly mode. The function returns \c true
     if successful.
 */
 bool Resource::open()
@@ -340,7 +340,7 @@ QSharedPointer<Resource> ResourceCollection::resourceByName(const QByteArray &na
     \brief The ResourceCollectionManager class is an abstraction that groups together a number of
         resource collections.
 
-    The resources collections it groups can be written to and read from a QFileDevice.
+    The resource collections it groups can be written to and read from a QFileDevice.
 */
 
 /*!
