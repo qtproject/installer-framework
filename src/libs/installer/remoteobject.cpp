@@ -62,8 +62,7 @@ RemoteObject::~RemoteObject()
         } else {
             Q_ASSERT_X(false, Q_FUNC_INFO, "Socket running in a different Thread than this object.");
         }
-        m_socket->deleteLater();
-        m_socket = 0;
+        delete m_socket;
     }
 }
 
