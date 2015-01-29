@@ -87,8 +87,10 @@ void RemoteServerConnection::run()
             stream >> key;
             sendData(stream, (authorized = (key == m_authorizationKey)));
             socket.flush();
-            if (!authorized)
+            if (!authorized) {
                 socket.close();
+                return;
+            }
         } else if (authorized) {
             if (command.isEmpty())
                 continue;
