@@ -71,6 +71,14 @@ void RemoteServer::start()
     if (d->m_tcpServer)
         return;
 
+#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
+    // avoid writing to stderr:
+    // the parent process has redirected stderr to a pipe to work with sudo,
+    // but is not reading anymore -> writing to stderr will block after a while.
+    if (d->m_mode == Protocol::Mode::Production)
+        fclose(stderr);
+#endif
+
     d->m_tcpServer = new TcpServer(d->m_port, d->m_key);
     d->m_tcpServer->moveToThread(&d->m_thread);
     connect(&d->m_thread, SIGNAL(finished()), d->m_tcpServer, SLOT(deleteLater()));
