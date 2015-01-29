@@ -284,6 +284,10 @@ void Component::loadDataFromPackage(const LocalPackage &package)
     setValue(scCurrentState, scInstalled);
 }
 
+/*!
+    Sets variables according to the values set in the package.xml file of \a package.
+    Also loads UI files, licenses and translations if they are referenced in the package.xml.
+*/
 void Component::loadDataFromPackage(const Package &package)
 {
     Q_ASSERT(&package);
@@ -603,9 +607,15 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
         QFileInfo fileInfo(fileName);
         QFile file(QString::fromLatin1("%1%2_%3.%4").arg(directory, fileInfo.baseName(),
             QLocale().name().toLower(), fileInfo.completeSuffix()));
+        if (!file.exists()) {
+            file.setFileName(QString::fromLatin1("%1%2_%3.%4").arg(directory, fileInfo.baseName(),
+                QLocale().name().left(2), fileInfo.completeSuffix()));
+        }
+
         if (!file.open(QIODevice::ReadOnly)) {
             // No translated license, use untranslated file
-            qDebug("Unable to open translated license file. Using untranslated fallback.");
+            qDebug().nospace() << "Unable to open translated license file" << file.fileName()
+                << ". Using untranslated fallback.";
             file.setFileName(directory + fileName);
             if (!file.open(QIODevice::ReadOnly)) {
                 throw Error(tr("Could not open the requested license file '%1'. Error: %2").arg(fileName,

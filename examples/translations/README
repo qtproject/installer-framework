@@ -1,0 +1,20 @@
+Shows how to translate the installer UI.
+
+You have to call lrelease on the included .ts file before building the installer.
+
+Generate installer with
+
+binarycreator --offline-only -c config/config.xml -p packages installer
+
+You can now run the installer in German.
+
+Linux:
+
+LANG=de ./installer
+
+Windows:
+
+set LANG=de
+installer.exe
+
+On OS X you need to adapt the system settings to set German as preferred language, and then start the installer.

@@ -453,7 +453,17 @@
     interfaces, create QTranslator files that the installation system loads
     along with the component. The installer loads the translation file that
     matches the current system locale. For example, if the system locale is
-    German, the de_de.qm file is loaded.
+    German, the de.qm file is loaded. In addition, a localized \c license_de.txt
+    is shown instead of the default \c license.txt if it is found.
+
+    Translations need to be added to the \c package.xml file to be activated for
+    a component:
+
+    \code
+        <Translations>
+            <Translation>de.qm</Translation>
+        </Translations>
+    \endcode
 
     Use the \c {qsTr()} function for literal text within scripts. Additionally,
     you can add the \c Component.prototype.retranslateUi method to the script.
@@ -462,10 +472,11 @@
 
     The context being used for translation is the basename of the script file
     when using \c qsTr or the class name of the UI file when translating a user
-    interface.
+    interface. For example, if the script file is called \c installscript.qs, the
+    context will be installscript.
 
     \note The translation system can also be used to customize the UI. Use e.g.
-    an \c en_en.ts file to replace any text in the installer with a custom English
+    an \c en.ts file to replace any text in the installer with a custom English
     version.
 */
 

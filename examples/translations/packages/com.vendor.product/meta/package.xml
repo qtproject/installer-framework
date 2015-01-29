@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>The root component</DisplayName>
+    <Description>This component contains a license and translations to German.</Description>
+    <Version>0.5.0-1</Version>
+    <ReleaseDate>2015-01-29</ReleaseDate>
+    <Licenses>
+        <License name="Beer Public License Agreement" file="license.txt" />
+    </Licenses>
+    <Default>true</Default>
+    <Script>installscript.qs</Script>
+    <UserInterfaces>
+        <UserInterface>page.ui</UserInterface>
+    </UserInterfaces>
+    <Translations>
+        <Translation>de.qm</Translation>
+        <Translation>pl.qm</Translation>
+    </Translations>
+</Package>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Translations Example</Name>
+    <Version>1.0.0</Version>
+    <Title>Package Translations Example</Title>
+    <Publisher>Qt Project</Publisher>
+    <StartMenuDir>Qt Installer Framework Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExample</TargetDir>
+</Installer>
