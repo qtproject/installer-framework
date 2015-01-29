@@ -58,12 +58,16 @@ using namespace KDUpdater;
 
 /*!
     \enum UpdateOperation::Error
-    Error codes related to operation arguments and operation runtime failures.
+    This enum code specifies error codes related to operation arguments and
+    operation runtime failures.
 
-    NoError             No error occurred.
-    InvalidArguments    Number of arguments does not match or an invalid argument was set.
-    UserDefinedError    An error occurred during operation run. Use UpdateOperation::errorString()
-                        to get the human-readable description of the error that occurred.
+    \value  NoError
+            No error occurred.
+    \value  InvalidArguments
+            Number of arguments does not match or an invalid argument was set.
+    \value  UserDefinedError
+            An error occurred during operation run. Use UpdateOperation::errorString()
+            to get the human-readable description of the error that occurred.
 */
 
 /*
