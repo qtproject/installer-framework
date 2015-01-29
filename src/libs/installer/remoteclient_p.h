@@ -89,11 +89,10 @@ public:
 
     void init(quint16 port, const QString &key, Protocol::Mode mode, Protocol::StartAs startAs)
     {
+        m_key = key;
+        m_port = port;
         m_mode = mode;
         if (mode == Protocol::Mode::Production) {
-            m_key = key;
-            m_port = port;
-            m_mode = mode;
             m_startServerAs = startAs;
             m_serverCommand = QCoreApplication::applicationFilePath();
             m_serverArguments = QStringList() << QLatin1String("--startserver")

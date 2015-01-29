@@ -116,7 +116,7 @@ int InstallerBase::run()
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
     if (parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
-        const QStringList arguments = parser.value(QLatin1String(CommandLineOptions::StartServer))
+        const QStringList arguments = parser.value(QLatin1String(CommandLineOptions::StartClient))
             .split(QLatin1Char(','), QString::SkipEmptyParts);
         m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations, QString(arguments
             .value(0, QString::number(QInstaller::Protocol::DefaultPort))).toInt(),
