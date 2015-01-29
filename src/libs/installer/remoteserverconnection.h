@@ -56,7 +56,8 @@ class RemoteServerConnection : public QThread
     Q_DISABLE_COPY(RemoteServerConnection)
 
 public:
-    RemoteServerConnection(qintptr socketDescriptor, const QString &authorizationKey);
+    RemoteServerConnection(qintptr socketDescriptor, const QString &authorizationKey,
+                           QObject *parent);
 
     void run() Q_DECL_OVERRIDE;
 

@@ -44,8 +44,10 @@
 
 namespace QInstaller {
 
-RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, const QString &key)
-    : m_socketDescriptor(socketDescriptor)
+RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, const QString &key,
+                                               QObject *parent)
+    : QThread(parent)
+    , m_socketDescriptor(socketDescriptor)
     , m_process(0)
     , m_engine(0)
     , m_authorizationKey(key)
