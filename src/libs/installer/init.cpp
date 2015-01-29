@@ -175,7 +175,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
     QString ba = QLatin1Char('[') + QString::number(uptime.elapsed()) + QStringLiteral("] ")
             + trimAndPrepend(type, msg);
 
-    if (type != QtDebugMsg) {
+    if (type != QtDebugMsg && context.file) {
         ba += QString(QStringLiteral(" (%1:%2, %3)")).arg(
                     QString::fromLatin1(context.file)).arg(context.line).arg(
                     QString::fromLatin1(context.function));
