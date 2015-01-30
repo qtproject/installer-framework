@@ -213,14 +213,14 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
 
     if (process->exitStatus() == QProcessWrapper::CrashExit) {
         q->setError(UserDefinedError);
-        q->setErrorString(tr("Execution failed(Crash): \"%1\"").arg(callstr));
+        q->setErrorString(tr("Execution failed (Crash): \"%1\"").arg(callstr));
         returnValue = false;
     }
 
     if (!allowedExitCodes.contains(process->exitCode())) {
         q->setError(UserDefinedError);
         if (customErrorMessage.isEmpty()) {
-            q->setErrorString(tr("Execution failed(Unexpected exit code: %1): \"%2\"")
+            q->setErrorString(tr("Execution failed (Unexpected exit code: %1): \"%2\"")
                 .arg(QString::number(process->exitCode()), callstr));
         } else {
             q->setErrorString(customErrorMessage);

@@ -842,7 +842,7 @@ public:
                 // do not follow symlinks, so we need to remove an existing one
                 if (fi.isSymLink() && (!QFile::remove(fi.absoluteFilePath()))) {
                     Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
-                        "Could not remove already existing symlink. %1").arg(fi.absoluteFilePath()));
+                        "Could not remove already existing symlink %1.").arg(fi.absoluteFilePath()));
                     return E_FAIL;
                 }
 #endif
@@ -850,7 +850,7 @@ public:
                     new QFile(fi.absoluteFilePath()), QIODeviceSequentialOutStream::CloseAndDeleteDevice);
                 if (!qOutStream->errorString().isEmpty()) {
                     Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
-                        "Could not open file: %1 (%2)").arg(fi.absoluteFilePath(),
+                        "Could not open file %1: %2.").arg(fi.absoluteFilePath(),
                         qOutStream->errorString()));
                     return E_FAIL;
                 }
@@ -882,7 +882,7 @@ public:
             UString s;
             if (arc->GetItemPath(currentIndex, s) != S_OK) {
                 Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
-                    "Could not retrieve path of archive item %1").arg(currentIndex));
+                    "Could not retrieve path of archive item %1.").arg(currentIndex));
                 return E_FAIL;
             }
             const QString path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
@@ -922,7 +922,7 @@ public:
                 QFile targetFile(QString::fromLatin1(symlinkTarget));
                 if (!targetFile.link(absFilePath)) {
                     Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
-                        "Could not create symlink at %1. %2").arg(absFilePath,
+                        "Could not create symlink at %1: %2.").arg(absFilePath,
                         targetFile.errorString()));
                     return E_FAIL;
                 }
