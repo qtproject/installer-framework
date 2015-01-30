@@ -1137,7 +1137,8 @@ bool PackageManagerCore::testChecksum() const
 }
 
 /*!
-    Defines if the downloader should try to download sha1 checksums for archives.
+    The \a test argument determines whether the downloader should try to
+    download SHA-1 checksums for archives.
 */
 void PackageManagerCore::setTestChecksum(bool test)
 {
@@ -1155,8 +1156,9 @@ ScriptEngine *PackageManagerCore::controlScriptEngine() const
 }
 
 /*!
-    Appends a component as root component to the internal storage for installer or package manager components.
-    To append a component as a child to an already existing component, use Component::appendComponent(). Emits
+    Appends \a component as the root component to the internal storage for
+    installer or package manager components. To append a component as a child to
+    an already existing component, use Component::appendComponent(). Emits
     the componentAdded() signal.
 */
 void PackageManagerCore::appendRootComponent(Component *component)
@@ -1222,7 +1224,8 @@ QList<Component *> PackageManagerCore::components(ComponentTypes mask) const
 }
 
 /*!
-    Appends a component to the internal storage for updater components. Emits the componentAdded() signal.
+    Appends \a component to the internal storage for updater components. Emits
+    the componentAdded() signal.
 */
 void PackageManagerCore::appendUpdaterComponent(Component *component)
 {
@@ -1363,9 +1366,13 @@ QString PackageManagerCore::componentsToInstallError() const
 }
 
 /*!
-    Returns the reason why the component needs to be installed. Reasons can be: The component was scheduled
-    for installation, the component was added as a dependency for an other component or added as an automatic
-    dependency.
+    Returns the reason why \a component needs to be installed:
+
+    \list
+        \li The component was scheduled for installation.
+        \li The component was added as a dependency for another component.
+        \li The component was added as an automatic dependency.
+    \endlist
 */
 QString PackageManagerCore::installReason(Component *component) const
 {
@@ -1373,8 +1380,10 @@ QString PackageManagerCore::installReason(Component *component) const
 }
 
 /*!
-    Returns a list of components that depend on \a component. The list can be empty. Note: Auto
-    installed dependencies are not resolved.
+    Returns a list of components that depend on \a _component. The list can be
+    empty.
+
+    \note Automatic dependencies are not resolved.
 */
 QList<Component*> PackageManagerCore::dependees(const Component *_component) const
 {

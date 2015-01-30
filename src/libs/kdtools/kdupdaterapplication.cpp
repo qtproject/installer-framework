@@ -186,7 +186,8 @@ QString Application::applicationVersion() const
 }
 
 /*!
-    Adds update source info to this class.
+    Adds the \a name, \a title, \a description, \a url, and \a priority of the
+    update source to this class.
 
     \sa KDUpdater::UpdateSourceInfo
     \sa KDUpdater::UpdateSourcesInfo
@@ -232,8 +233,9 @@ PackagesInfo* Application::packagesInfo() const
 }
 
 /*!
-    Sets the file name of the update sources XML file for this application. By default, this is
-    assumed to be UpdateSources.xml in the application directory.
+    Sets \a fileName as the file name of the update sources XML file for this
+    application. By default, this is assumed to be UpdateSources.xml in the
+    application directory.
 
    \sa KDUpdater::UpdateSourcesInfo::setFileName()
 */

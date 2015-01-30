@@ -460,7 +460,8 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
 //
 
 /*!
-   Constructs an update finder for a given KDUpdater::Application.
+   Constructs an update finder for the KDUpdater::Application specified by
+   \a application.
 */
 UpdateFinder::UpdateFinder(Application *application)
     : Task(QLatin1String("UpdateFinder"), Stoppable, application),

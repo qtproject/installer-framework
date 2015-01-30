@@ -60,7 +60,8 @@ Update::Update(int priority, const QUrl &sourceInfoUrl, const QHash<QString, QVa
 }
 
 /*!
-   Returns data whose name is given in parameter, or an invalid QVariant if the data doesn't exist.
+   Returns the data specified by \a name, or an invalid \a defaultValue if the
+   data does not exist.
 */
 QVariant Update::data(const QString &name, const QVariant &defaultValue) const
 {

@@ -416,7 +416,7 @@ void PackageManagerGui::setValidatorForCustomPageRequested(Component *component,
 }
 
 /*!
-    Loads a script to perform the installation non-interactively.
+    Loads the script specified by \a scriptPath to perform the installation non-interactively.
     Throws QInstaller::Error if the script is not readable or it cannot be
     parsed.
 */

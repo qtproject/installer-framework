@@ -193,6 +193,11 @@ struct StartsWith
     QString m_searchTerm;
 };
 
+/*!
+    Searches the arguments for the key specified by \a key. If it can find the
+    key, it returns the value set for it. Otherwise, it returns \a defaultValue.
+    Arguments are specified in the following form: \c{key=value}.
+*/
 
 QString UpdateOperation::argumentKeyValue(const QString &key, const QString &defaultValue) const
 {

@@ -682,12 +682,13 @@ QJSValue ScriptEngine::loadInContext(const QString &context, const QString &file
 }
 
 /*!
-    Tries to call the method with \a name within the script and returns the result. If the method
-    doesn't exist or is not callable, an undefined result is returned. If the call to the method
+    Tries to call the method specified by \a methodName with the arguments specified by
+    \a arguments within the script and returns the result. If the method does not exist or
+    is not callable, an undefined result is returned. If the call to the method
     succeeds and the return value is still undefined, a null value will be returned instead.
     If the method call has an exception, its string representation is thrown as an Error exception.
 
-    \note The method is not called, if the current script context is the same method, to avoid
+    \note The method is not called if \a scriptContext is the same method, to avoid
     infinite recursion.
 */
 QJSValue ScriptEngine::callScriptMethod(const QJSValue &scriptContext, const QString &methodName,

@@ -325,7 +325,11 @@ void PackagesInfo::refresh()
 }
 
 /*!
-    Marks the package with \a name and \a version as installed.
+    Marks the package specified by \a name as installed. Sets the values of
+    \a version, \a title, \a description, \a dependencies, \a forcedInstallation,
+    \a virtualComp, \a uncompressedSize, and \a inheritVersionFrom for the
+    package.
+
 */
 bool PackagesInfo::installPackage(const QString &name, const QString &version,
                                   const QString &title, const QString &description,
@@ -353,8 +357,10 @@ bool PackagesInfo::installPackage(const QString &name, const QString &version,
 }
 
 /*!
-    Updates the package and sets the package name to \a name, the version to \a version and the
-    last update date to \a date.
+    Updates the package specified by \a name and sets its version to \a version
+    and the last update date to \a date.
+
+    Returns \c false if the package is not found.
 */
 bool PackagesInfo::updatePackage(const QString &name, const QString &version, const QDate &date)
 {
@@ -370,7 +376,9 @@ bool PackagesInfo::updatePackage(const QString &name, const QString &version, co
 }
 
 /*!
-    Remove the package with \a name.
+    Removes the package specified by \a name.
+
+    Returns \c false if the package is not found.
 */
 bool PackagesInfo::removePackage(const QString &name)
 {

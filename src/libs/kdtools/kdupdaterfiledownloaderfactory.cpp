@@ -121,8 +121,9 @@ bool FileDownloaderFactory::isSupportedScheme(const QString &scheme)
 }
 
 /*!
-     Returns a new instance of a KDUpdater::FileDownloader subclass. The subclass is instantiated
-     based on the communication protocol string stored in \a scheme.
+     Returns a new instance of a KDUpdater::FileDownloader subclass. The
+     instantiation of a subclass depends on the communication protocol string
+     stored in \a scheme with the parent \a parent.
 
      \note Ownership of the created object remains with the programmer.
 */
