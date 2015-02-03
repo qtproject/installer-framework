@@ -1352,6 +1352,8 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             QInstaller::appendInt64(&file, BinaryContent::MagicCookie);
         }
         input.close();
+        if (m_core->isInstaller())
+            registerMaintenanceTool();
         writeMaintenanceConfigFiles();
         deferredRename(dataFile + QLatin1String(".new"), dataFile, false);
 
@@ -1381,13 +1383,13 @@ QString PackageManagerCorePrivate::registerPath()
 #ifdef Q_OS_WIN
     QString guid = m_data.value(scProductUUID).toString();
     if (guid.isEmpty()) {
-        m_data.setValue(scProductUUID, QUuid::createUuid().toString());
-        guid = m_data.value(scProductUUID).toString();
+        guid = QUuid::createUuid().toString();
+        m_data.setValue(scProductUUID, guid);
         writeMaintenanceConfigFiles(); // save uuid persistently
     }
 
     QString path = QLatin1String("HKEY_CURRENT_USER");
-    if (m_data.value(QLatin1String("AllUsers")).toString() == scTrue)
+    if (m_data.value(QLatin1String("AllUsers"), scFalse).toString() == scTrue)
         path = QLatin1String("HKEY_LOCAL_MACHINE");
 
     return path + QLatin1String("\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\")
@@ -1547,7 +1549,6 @@ bool PackageManagerCorePrivate::runInstaller()
         emit m_core->titleMessageChanged(tr("Creating Maintenance Tool"));
 
         writeMaintenanceTool(m_performedOperationsOld + m_performedOperationsCurrentSession);
-        registerMaintenanceTool();
 
         // fake a possible wrong value to show a full progress bar
         const int progress = ProgressCoordinator::instance()->progressInPercentage();
