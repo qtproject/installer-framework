@@ -1503,10 +1503,20 @@ bool PackageManagerCorePrivate::runInstaller()
 
             Operation *createRepo = createOwnedOperation(QLatin1String("CreateLocalRepository"));
             if (createRepo) {
+                QString binaryFile = QCoreApplication::applicationFilePath();
+#ifdef Q_OS_OSX
+                // The installer binary on OSX does not contain the binary content, it's put into
+                // the resources folder as separate file. Adjust the actual binary path. No error
+                // checking here since we will fail later while reading the binary content.
+                QDir resourcePath(QFileInfo(binaryFile).dir());
+                resourcePath.cdUp();
+                resourcePath.cd(QLatin1String("Resources"));
+                binaryFile = resourcePath.filePath(QLatin1String("installer.dat"));
+#endif
                 createRepo->setValue(QLatin1String("uninstall-only"), true);
                 createRepo->setValue(QLatin1String("installer"), QVariant::fromValue(m_core));
-                createRepo->setArguments(QStringList() << QCoreApplication::applicationFilePath()
-                    << target + QLatin1String("/repository"));
+                createRepo->setArguments(QStringList() << binaryFile << target
+                    + QLatin1String("/repository"));
 
                 connectOperationToInstaller(createRepo, progressOperationSize);
 
