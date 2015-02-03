@@ -474,7 +474,7 @@ bool Settings::createLocalRepository() const
 
 bool Settings::allowSpaceInPath() const
 {
-    return d->m_data.value(scAllowSpaceInPath, false).toBool();
+    return d->m_data.value(scAllowSpaceInPath, true).toBool();
 }
 
 bool Settings::allowNonAsciiCharacters() const
