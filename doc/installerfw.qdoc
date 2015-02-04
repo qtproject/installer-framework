@@ -698,11 +698,11 @@
 
     \list
 
-        \li \c installerbase
+        \li \l installerbase
 
-        \li \c binarycreator
+        \li \l binarycreator
 
-        \li \c repogen
+        \li \l repogen
 
     \endlist
 
