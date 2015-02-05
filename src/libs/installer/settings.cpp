@@ -304,13 +304,19 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
     }
     if (!s.d->m_data.contains(scRemoveTargetDir))
         s.d->m_data.insert(scRemoveTargetDir, scTrue);
-    if (s.d->m_data.value(scMaintenanceToolName).toString().isEmpty())
-        s.d->m_data.insert(scMaintenanceToolName, QLatin1String("maintenancetool"));
+    if (s.d->m_data.value(scMaintenanceToolName).toString().isEmpty()) {
+        s.d->m_data.insert(scMaintenanceToolName,
+            // TODO: Remove deprecated 'UninstallerName'.
+            s.d->m_data.value(QLatin1String("UninstallerName"), QLatin1String("maintenancetool"))
+            .toString());
+    }
     if (s.d->m_data.value(scTargetConfigurationFile).toString().isEmpty())
         s.d->m_data.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
     if (s.d->m_data.value(scMaintenanceToolIniFile).toString().isEmpty()) {
-        s.d->m_data.insert(scMaintenanceToolIniFile, QString(s.maintenanceToolName()
-            + QLatin1String(".ini")));
+        s.d->m_data.insert(scMaintenanceToolIniFile,
+            // TODO: Remove deprecated 'UninstallerIniFile'.
+            s.d->m_data.value(QLatin1String("UninstallerIniFile"), QString(s.maintenanceToolName()
+            + QLatin1String(".ini"))).toString());
     }
     if (!s.d->m_data.contains(scDependsOnLocalInstallerBinary))
         s.d->m_data.insert(scDependsOnLocalInstallerBinary, false);
