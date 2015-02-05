@@ -60,8 +60,8 @@ int main(int argc, char *argv[])
     QCommandLineOption verbose(QLatin1String("verbose"),
         QLatin1String("Verbose mode. Prints out more information."));
     QCommandLineOption dump(QLatin1String("dump"),
-        QLatin1String("Dumps the binary content attached to an installer into target."),
-        QLatin1String("folder"));
+        QLatin1String("Dumps the binary content that belongs to an installer or maintenance tool "
+        "into target."), QLatin1String("folder"));
     QCommandLineOption run(QLatin1String("operation"),
         QLatin1String("Executes an operation with a list of arguments. Mode can be DO or UNDO."),
         QLatin1String("mode,name,args,..."));
@@ -154,8 +154,6 @@ int main(int argc, char *argv[])
 
         if (parser.isSet(dump)) {
             // To dump the content we do not need the binary format engine.
-            if (magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
-                throw QInstaller::Error(QLatin1String("Source file is not an installer."));
             BinaryDump bd;
             result = bd.dump(manager, parser.value(dump));
         } else if (parser.isSet(run)) {
