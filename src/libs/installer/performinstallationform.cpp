@@ -55,6 +55,31 @@ using namespace QInstaller;
 
 // -- PerformInstallationForm
 
+/*!
+    \class QInstaller::PerformInstallationForm
+    \inmodule QtInstallerFramework
+    \brief The PerformInstallationForm class shows progress information about
+     the installation state.
+
+     A progress bar indicates the progress of the installation, update, or
+     uninstallation.
+
+     The page contains a button for showing or hiding detailed information
+     about the progress in an \e {details browser}. The text on the button
+     changes depending on whether the details browser is currently shown or
+     hidden.
+*/
+
+/*!
+    \fn PerformInstallationForm::showDetailsChanged()
+
+    This signal is emitted when the end users select the details button to show
+    or hide progress details.
+*/
+
+/*!
+    Constructs the perform installation UI with \a parent as parent.
+*/
 PerformInstallationForm::PerformInstallationForm(QObject *parent)
     : QObject(parent)
     , m_progressBar(0)
@@ -69,6 +94,9 @@ PerformInstallationForm::PerformInstallationForm(QObject *parent)
 #endif
 }
 
+/*!
+    Sets up the perform installation UI specified by \a widget.
+*/
 void PerformInstallationForm::setupUi(QWidget *widget)
 {
     QVBoxLayout *baseLayout = new QVBoxLayout(widget);
@@ -122,16 +150,26 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     m_progressBar->setRange(0, 100);
 }
 
+/*!
+    Shows the details button if \a visible is \c true.
+*/
 void PerformInstallationForm::setDetailsWidgetVisible(bool visible)
 {
     m_detailsButton->setVisible(visible);
 }
 
+/*!
+    Displays \a details about progress of the installation in the details
+    browser.
+*/
 void PerformInstallationForm::appendProgressDetails(const QString &details)
 {
     m_detailsBrowser->append(details);
 }
 
+/*!
+    Updates the progress of the installation on the progress bar.
+*/
 void PerformInstallationForm::updateProgress()
 {
     QInstaller::ProgressCoordinator *progressCoordninator = QInstaller::ProgressCoordinator::instance();
@@ -151,7 +189,11 @@ void PerformInstallationForm::updateProgress()
     m_progressLabel->setText(m_progressLabel->fontMetrics().elidedText(progressCoordninator->labelText(),
         Qt::ElideRight, m_progressLabel->width()));
 }
-
+/*!
+    Sets the text of the details button to \uicontrol {Hide Details} or
+    \uicontrol {Show Details} depending on whether the details are currently
+    shown or hidden. Emits the showDetailsChanged() signal.
+*/
 void PerformInstallationForm::toggleDetails()
 {
     const bool willShow = !isShowingDetails();
@@ -160,11 +202,18 @@ void PerformInstallationForm::toggleDetails()
     emit showDetailsChanged();
 }
 
+/*!
+    Clears the contents of the details browser.
+*/
 void PerformInstallationForm::clearDetailsBrowser()
 {
     m_detailsBrowser->clear();
 }
 
+/*!
+    Enables the details button with the text \uicontrol {Show Details} and hides
+    the details browser.
+*/
 void PerformInstallationForm::enableDetails()
 {
     m_detailsButton->setEnabled(true);
@@ -172,33 +221,52 @@ void PerformInstallationForm::enableDetails()
     m_detailsBrowser->setVisible(false);
 }
 
+/*!
+    Starts the update progress timer.
+*/
 void PerformInstallationForm::startUpdateProgress()
 {
     m_updateTimer->start();
     updateProgress();
 }
 
+/*!
+    Stops the update progress timer.
+*/
 void PerformInstallationForm::stopUpdateProgress()
 {
     m_updateTimer->stop();
     updateProgress();
 }
 
+/*!
+    Enables the details button if \a enable is \c true.
+*/
 void PerformInstallationForm::setDetailsButtonEnabled(bool enable)
 {
     m_detailsButton->setEnabled(enable);
 }
 
+/*!
+    Scrolls to the bottom of the details browser.
+*/
 void PerformInstallationForm::scrollDetailsToTheEnd()
 {
     m_detailsBrowser->updateCursor(LazyPlainTextEdit::TextCursorPosition::ForceEnd);
 }
 
+/*!
+    Returns \c true if the details browser is visible.
+*/
 bool PerformInstallationForm::isShowingDetails() const
 {
     return m_detailsBrowser->isVisible();
 }
 
+/*!
+    Changes the label text according to the changes in the download status
+    specified by \a status.
+*/
 void PerformInstallationForm::onDownloadStatusChanged(const QString &status)
 {
     m_downloadStatus->setText(m_downloadStatus->fontMetrics().elidedText(status, Qt::ElideRight,
