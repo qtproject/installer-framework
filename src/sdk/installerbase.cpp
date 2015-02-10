@@ -118,13 +118,14 @@ int InstallerBase::run()
     if (parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
         const QStringList arguments = parser.value(QLatin1String(CommandLineOptions::StartClient))
             .split(QLatin1Char(','), QString::SkipEmptyParts);
-        m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations, QString(arguments
-            .value(0, QString::number(QInstaller::Protocol::DefaultPort))).toInt(),
+        m_core = new QInstaller::PackageManagerCore(
+            magicMarker, oldOperations,
+            arguments.value(0, QLatin1String(QInstaller::Protocol::DefaultSocket)),
             arguments.value(1, QLatin1String(QInstaller::Protocol::DefaultAuthorizationKey)),
             QInstaller::Protocol::Mode::Debug);
     } else {
         m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations,
-            30000 + qrand() % 100, QUuid::createUuid().toString());
+            QUuid::createUuid().toString(), QUuid::createUuid().toString());
     }
 
     {

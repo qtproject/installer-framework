@@ -40,7 +40,7 @@
 
 #include <QDataStream>
 #include <QObject>
-#include <QTcpSocket>
+#include <QLocalSocket>
 
 namespace QInstaller {
 
@@ -151,7 +151,7 @@ private:
 
 private:
     QString m_type;
-    QTcpSocket *m_socket;
+    QLocalSocket *m_socket;
     mutable QDataStream m_stream;
 };
 

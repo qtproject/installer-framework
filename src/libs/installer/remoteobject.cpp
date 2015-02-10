@@ -68,24 +68,24 @@ RemoteObject::~RemoteObject()
 
 bool RemoteObject::authorize()
 {
-    if (m_socket && (m_socket->state() == QAbstractSocket::ConnectedState))
+    if (m_socket && (m_socket->state() == QLocalSocket::ConnectedState))
         return true;
 
     if (m_socket)
         delete m_socket;
 
-    QScopedPointer<QTcpSocket> socket(new QTcpSocket);
-    socket->connectToHost(RemoteClient::instance().address(), RemoteClient::instance().port());
+    QScopedPointer<QLocalSocket> socket(new QLocalSocket);
+    socket->connectToServer(RemoteClient::instance().socketName());
 
     QElapsedTimer stopWatch;
     stopWatch.start();
-    while ((socket->state() == QAbstractSocket::ConnectingState)
+    while ((socket->state() == QLocalSocket::ConnectingState)
         && (stopWatch.elapsed() < 30000)) {
         if ((stopWatch.elapsed() % 2500) == 0)
             QCoreApplication::processEvents();
     }
 
-    if (socket->state() == QAbstractSocket::ConnectedState) {
+    if (socket->state() == QLocalSocket::ConnectedState) {
         QDataStream stream;
         stream.setDevice(socket.data());
         stream << QString::fromLatin1(Protocol::Authorize) << RemoteClient::instance()
@@ -112,7 +112,7 @@ bool RemoteObject::connectToServer(const QVariantList &arguments)
     if (!RemoteClient::instance().isActive())
         return false;
 
-     if (m_socket && (m_socket->state() == QAbstractSocket::ConnectedState))
+     if (m_socket && (m_socket->state() == QLocalSocket::ConnectedState))
          return true;
 
     if (!authorize())
@@ -130,7 +130,7 @@ bool RemoteObject::isConnectedToServer() const
 {
     if ((!m_socket) || (!RemoteClient::instance().isActive()))
         return false;
-    if (m_socket && (m_socket->state() == QAbstractSocket::ConnectedState))
+    if (m_socket && (m_socket->state() == QLocalSocket::ConnectedState))
         return true;
     return false;
 }

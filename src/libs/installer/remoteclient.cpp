@@ -52,16 +52,10 @@ RemoteClient &RemoteClient::instance()
     return instance;
 }
 
-quint16 RemoteClient::port() const
+QString RemoteClient::socketName() const
 {
     Q_D(const RemoteClient);
-    return d->m_port;
-}
-
-QString RemoteClient::address() const
-{
-    Q_D(const RemoteClient);
-    return d->m_address;
+    return d->m_socketName;
 }
 
 QString RemoteClient::authorizationKey() const
@@ -71,14 +65,14 @@ QString RemoteClient::authorizationKey() const
 }
 
 /*!
-    Initializes the client with \a port, the port to write to, with \a key, the key the client
+    Initializes the client with \a socketName, with the \a key the client
     sends to authenticate with the server, \a mode and \a startAs.
 */
-void RemoteClient::init(quint16 port, const QString &key, Protocol::Mode mode,
+void RemoteClient::init(const QString &socketName, const QString &key, Protocol::Mode mode,
     Protocol::StartAs startAs)
 {
     Q_D(RemoteClient);
-    d->init(port, key, mode, startAs);
+    d->init(socketName, key, mode, startAs);
 }
 
 void RemoteClient::shutdown()

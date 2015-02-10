@@ -40,7 +40,7 @@
 #include "utils.h"
 #include "permissionsettings.h"
 
-#include <QTcpSocket>
+#include <QLocalSocket>
 
 namespace QInstaller {
 
@@ -58,7 +58,7 @@ RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, const Q
 
 void RemoteServerConnection::run()
 {
-    QTcpSocket socket;
+    QLocalSocket socket;
     socket.setSocketDescriptor(m_socketDescriptor);
     QScopedPointer<PermissionSettings> settings;
 
@@ -66,7 +66,7 @@ void RemoteServerConnection::run()
     stream.setDevice(&socket);
 
     bool authorized = false;
-    while (socket.state() == QAbstractSocket::ConnectedState) {
+    while (socket.state() == QLocalSocket::ConnectedState) {
         // Use a polling approach here to kill the thread as soon as the connections
         // closes. This seems to be related to the fact that the keep alive thread connects
         // every second and immediately throws away the socket and therefore the connection.

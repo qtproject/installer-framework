@@ -41,26 +41,27 @@
 
 #include <QHostAddress>
 #include <QPointer>
-#include <QTcpServer>
+#include <QLocalServer>
 #include <QTimer>
 
 namespace QInstaller {
 
-class TcpServer : public QTcpServer
+class LocalServer : public QLocalServer
 {
     Q_OBJECT
-    Q_DISABLE_COPY(TcpServer)
+    Q_DISABLE_COPY(LocalServer)
 
 public:
-    TcpServer(quint16 port, const QString &key)
-        : QTcpServer(0)
+    LocalServer(const QString &socketName, const QString &key)
+        : QLocalServer(0)
         , m_key(key)
         , m_shutdown(false)
     {
-        listen(QHostAddress(QLatin1String(Protocol::DefaultHostAddress)), port);
+        setSocketOptions(QLocalServer::WorldAccessOption);
+        listen(socketName);
     }
 
-    ~TcpServer() {
+    ~LocalServer() {
         shutdown();
     }
 
@@ -80,7 +81,7 @@ private slots:
     }
 
 private:
-    void incomingConnection(qintptr socketDescriptor) Q_DECL_OVERRIDE {
+    void incomingConnection(quintptr socketDescriptor) Q_DECL_OVERRIDE {
         if (m_shutdown)
             return;
 
@@ -104,9 +105,8 @@ class RemoteServerPrivate
 public:
     explicit RemoteServerPrivate(RemoteServer *server)
         : q_ptr(server)
-        , m_tcpServer(0)
+        , m_localServer(0)
         , m_key(QLatin1String(Protocol::DefaultAuthorizationKey))
-        , m_port(Protocol::DefaultPort)
         , m_mode(Protocol::Mode::Debug)
         , m_watchdog(new QTimer)
     {
@@ -116,10 +116,10 @@ public:
 
 private:
     RemoteServer *q_ptr;
-    TcpServer *m_tcpServer;
+    LocalServer *m_localServer;
 
     QString m_key;
-    quint16 m_port;
+    QString m_socketName;
     QThread m_thread;
     Protocol::Mode m_mode;
     QScopedPointer<QTimer> m_watchdog;

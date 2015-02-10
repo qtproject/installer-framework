@@ -68,7 +68,7 @@ RemoteServer::~RemoteServer()
 void RemoteServer::start()
 {
     Q_D(RemoteServer);
-    if (d->m_tcpServer)
+    if (d->m_localServer)
         return;
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
@@ -79,11 +79,11 @@ void RemoteServer::start()
         fclose(stderr);
 #endif
 
-    d->m_tcpServer = new TcpServer(d->m_port, d->m_key);
-    d->m_tcpServer->moveToThread(&d->m_thread);
-    connect(&d->m_thread, SIGNAL(finished()), d->m_tcpServer, SLOT(deleteLater()));
-    connect(d->m_tcpServer, SIGNAL(newIncomingConnection()), this, SLOT(restartWatchdog()));
-    connect(d->m_tcpServer, SIGNAL(shutdownRequested()), this, SLOT(deleteLater()));
+    d->m_localServer = new LocalServer(d->m_socketName, d->m_key);
+    d->m_localServer->moveToThread(&d->m_thread);
+    connect(&d->m_thread, SIGNAL(finished()), d->m_localServer, SLOT(deleteLater()));
+    connect(d->m_localServer, SIGNAL(newIncomingConnection()), this, SLOT(restartWatchdog()));
+    connect(d->m_localServer, SIGNAL(shutdownRequested()), this, SLOT(deleteLater()));
     d->m_thread.start();
 
     if (d->m_mode == Protocol::Mode::Production) {
@@ -93,24 +93,24 @@ void RemoteServer::start()
 }
 
 /*!
-    Initializes the server with \a port, the port to listen on, with \a key, the key the client
+    Initializes the server with \a socketName, with \a key, the key the client
     needs to send to authenticate with the server, and \a mode.
 */
-void RemoteServer::init(quint16 port, const QString &key, Protocol::Mode mode)
+void RemoteServer::init(const QString &socketName, const QString &key, Protocol::Mode mode)
 {
     Q_D(RemoteServer);
-    d->m_port = port;
+    d->m_socketName = socketName;
     d->m_key = key;
     d->m_mode = mode;
 }
 
 /*!
-    Returns the port the server is listening on.
+    Returns the socket name the server is listening on.
 */
-quint16 RemoteServer::port() const
+QString RemoteServer::socketName() const
 {
     Q_D(const RemoteServer);
-    return d->m_port;
+    return d->m_socketName;
 }
 
 /*!

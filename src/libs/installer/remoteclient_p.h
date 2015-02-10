@@ -60,8 +60,6 @@ public:
         : RemoteObject(QLatin1String("RemoteClientPrivate"))
         , q_ptr(parent)
         , m_mutex(QMutex::Recursive)
-        , m_address(QLatin1String(Protocol::DefaultHostAddress))
-        , m_port(Protocol::DefaultPort)
         , m_startServerAs(Protocol::StartAs::User)
         , m_serverStarted(false)
         , m_active(false)
@@ -88,10 +86,11 @@ public:
         maybeStopServer();
     }
 
-    void init(quint16 port, const QString &key, Protocol::Mode mode, Protocol::StartAs startAs)
+    void init(const QString &socketName, const QString &key, Protocol::Mode mode,
+              Protocol::StartAs startAs)
     {
+        m_socketName = socketName;
         m_key = key;
-        m_port = port;
         m_mode = mode;
         if (mode == Protocol::Mode::Production) {
             m_startServerAs = startAs;
@@ -99,7 +98,7 @@ public:
             m_serverArguments = QStringList() << QLatin1String("--startserver")
                 << QString::fromLatin1("%1,%2,%3")
                     .arg(QLatin1String(Protocol::ModeProduction))
-                    .arg(port)
+                    .arg(socketName)
                     .arg(key);
 
             if (!m_object) {
@@ -113,7 +112,7 @@ public:
             }
         } else if (mode == Protocol::Mode::Debug) {
             // To be able to debug the client-server connection start and stop the server manually,
-            // e.g. installer --startserver debug. The server is listening on localhost:39999 then.
+            // e.g. installer --startserver DEBUG.
         }
     }
 
@@ -186,8 +185,7 @@ public:
 private:
     RemoteClient *q_ptr;
     QMutex m_mutex;
-    QString m_address;
-    quint16 m_port;
+    QString m_socketName;
     Protocol::StartAs m_startServerAs;
     bool m_serverStarted;
     bool m_active;

@@ -50,8 +50,7 @@ enum struct StartAs {
     SuperUser
 };
 
-const unsigned short DefaultPort = 39999;
-const char DefaultHostAddress[] = "127.0.0.1";
+const char DefaultSocket[] = "ifw_srv";
 const char DefaultAuthorizationKey[] = "DefaultAuthorizationKey";
 
 const char Create[] = "Create";

@@ -38,7 +38,7 @@
 #include <QCoreApplication>
 #include <QElapsedTimer>
 #include <QHostAddress>
-#include <QTcpSocket>
+#include <QLocalSocket>
 #include <QTimer>
 
 namespace QInstaller {
@@ -67,12 +67,12 @@ void KeepAliveObject::onTimeout()
     {
         // Try to connect to the privileged running server. If we succeed the server side
         // watchdog gets restarted and the server keeps running for another 30 seconds.
-        QTcpSocket socket;
-        socket.connectToHost(RemoteClient::instance().address(), RemoteClient::instance().port());
+        QLocalSocket socket;
+        socket.connectToServer(RemoteClient::instance().socketName());
 
         QElapsedTimer stopWatch;
         stopWatch.start();
-        while ((socket.state() == QAbstractSocket::ConnectingState)
+        while ((socket.state() == QLocalSocket::ConnectingState)
             && (stopWatch.elapsed() < 10000) && (!m_quit)) {
             if ((stopWatch.elapsed() % 2500) == 0)
                 QCoreApplication::processEvents();

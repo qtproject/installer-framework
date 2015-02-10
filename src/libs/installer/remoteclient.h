@@ -51,13 +51,12 @@ class INSTALLER_EXPORT RemoteClient
 
 public:
     static RemoteClient &instance();
-    void init(quint16 port, const QString &key, Protocol::Mode mode, Protocol::StartAs startAs);
+    void init(const QString &socketName, const QString &key, Protocol::Mode mode,
+              Protocol::StartAs startAs);
 
     void shutdown();
-    void init(quint16 port, const QString &address, Protocol::Mode mode);
 
-    quint16 port() const;
-    QString address() const;
+    QString socketName() const;
     QString authorizationKey() const;
 
     bool isActive() const;

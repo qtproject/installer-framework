@@ -720,7 +720,7 @@ PackageManagerCore::PackageManagerCore()
 }
 
 PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &operations,
-        quint16 port, const QString &key, Protocol::Mode mode)
+        const QString &socketName, const QString &key, Protocol::Mode mode)
     : d(new PackageManagerCorePrivate(this, magicmaker, operations))
 {
     Repository::registerMetaType(); // register, cause we stream the type as QVariant
@@ -729,7 +729,7 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
 
     // Creates and initializes a remote client, makes us get admin rights for QFile, QSettings
     // and QProcess operations. Init needs to called to set the server side authorization key.
-    RemoteClient::instance().init(port, key, mode, Protocol::StartAs::SuperUser);
+    RemoteClient::instance().init(socketName, key, mode, Protocol::StartAs::SuperUser);
 
     d->initialize(QHash<QString, QString>());
 

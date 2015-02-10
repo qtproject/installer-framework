@@ -55,9 +55,9 @@ public:
     ~RemoteServer();
 
     void start();
-    void init(quint16 port, const QString &authorizationKey, Protocol::Mode mode);
+    void init(const QString &socketName, const QString &authorizationKey, Protocol::Mode mode);
 
-    quint16 port() const;
+    QString socketName() const;
     QString authorizationKey() const;
 
 private slots:

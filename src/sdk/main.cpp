@@ -119,22 +119,22 @@ int main(int argc, char *argv[])
         const QStringList arguments = parser.value(QLatin1String(CommandLineOptions::StartServer))
             .split(QLatin1Char(','), QString::SkipEmptyParts);
 
-        QString port, key;
+        QString socketName, key;
         const QString mode = arguments.value(0);
         bool argumentsValid = (mode.compare(QLatin1String(QInstaller::Protocol::ModeDebug),
             Qt::CaseInsensitive) == 0);
         if (argumentsValid) {
-            port = arguments.value(1, QString::number(QInstaller::Protocol::DefaultPort));
+            socketName = arguments.value(1, QLatin1String(QInstaller::Protocol::DefaultSocket));
             key  = arguments.value(2, QLatin1String(QInstaller::Protocol::DefaultAuthorizationKey));
         } else  {
-            port = arguments.value(1);
+            socketName = arguments.value(1);
             key =  arguments.value(2);
         }
 
         const bool production = (mode.compare(QLatin1String(QInstaller::Protocol::ModeProduction),
             Qt::CaseInsensitive) == 0);
         if (production)
-            argumentsValid = (!key.isEmpty()) && (!port.isEmpty());
+            argumentsValid = (!key.isEmpty()) && (!socketName.isEmpty());
 
         SDKApp<QCoreApplication> app(argc, argv);
         if (!argumentsValid) {
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
 
         QInstaller::RemoteServer *server = new QInstaller::RemoteServer;
         QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
-        server->init(port.toInt(), key, (production ? QInstaller::Protocol::Mode::Production
+        server->init(socketName, key, (production ? QInstaller::Protocol::Mode::Production
             : QInstaller::Protocol::Mode::Debug));
 
         server->start();

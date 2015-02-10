@@ -37,8 +37,6 @@
 #include "protocol.h"
 #include "remoteclient.h"
 
-#include <QTcpSocket>
-
 namespace QInstaller {
 
 

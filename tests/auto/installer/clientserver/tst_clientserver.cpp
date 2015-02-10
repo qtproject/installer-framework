@@ -40,10 +40,11 @@
 #include <remoteserver.h>
 
 #include <QSettings>
-#include <QTcpSocket>
-#include <QTemporaryFile>
+#include <QLocalSocket>
 #include <QTest>
 #include <QSignalSpy>
+#include <QTemporaryFile>
+#include <QUuid>
 
 using namespace QInstaller;
 
@@ -60,14 +61,16 @@ private slots:
     void testServerConnectDebug()
     {
         RemoteServer server;
-        server.init(Protocol::DefaultPort, QString(Protocol::DefaultAuthorizationKey),
+        QString socketName = QUuid::createUuid().toString();
+
+        server.init(socketName, QString(Protocol::DefaultAuthorizationKey),
             Protocol::Mode::Debug);
         server.start();
 
-        QTcpSocket socket;
-        socket.connectToHost(QLatin1String(Protocol::DefaultHostAddress), Protocol::DefaultPort);
+        QLocalSocket socket;
+        socket.connectToServer(socketName);
         QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
-        QCOMPARE(socket.state() == QAbstractSocket::ConnectedState, true);
+        QCOMPARE(socket.state() == QLocalSocket::ConnectedState, true);
 
         QDataStream stream;
         stream.setDevice(&socket);
@@ -96,14 +99,14 @@ private slots:
     void testServerConnectRelease()
     {
         RemoteServer server;
-        quint16 port = (30000 + qrand() % 100);
-        server.init(port, QString("SomeKey"), Protocol::Mode::Production);
+        QString socketName = QUuid::createUuid().toString();
+        server.init(socketName, QString("SomeKey"), Protocol::Mode::Production);
         server.start();
 
-        QTcpSocket socket;
-        socket.connectToHost(QLatin1String(Protocol::DefaultHostAddress), port);
+        QLocalSocket socket;
+        socket.connectToServer(socketName);
         QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
-        QCOMPARE(socket.state() == QAbstractSocket::ConnectedState, true);
+        QCOMPARE(socket.state() == QLocalSocket::ConnectedState, true);
 
         QDataStream stream;
         stream.setDevice(&socket);
@@ -132,7 +135,12 @@ private slots:
     void testQSettingsWrapper()
     {
         RemoteServer server;
+        QString socketName = QUuid::createUuid().toString();
+        server.init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Production);
         server.start();
+
+        RemoteClient::instance().init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Debug,
+                                      Protocol::StartAs::User);
 
         QSettingsWrapper wrapper("digia", "clientserver");
         QCOMPARE(wrapper.isConnectedToServer(), false);
@@ -247,8 +255,12 @@ private slots:
     void testQProcessWrapper()
     {
         RemoteServer server;
+        QString socketName = QUuid::createUuid().toString();
+        server.init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Production);
         server.start();
 
+        RemoteClient::instance().init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Debug,
+                                      Protocol::StartAs::User);
         {
             QProcess process;
             QProcessWrapper wrapper;
@@ -343,7 +355,12 @@ private slots:
     void testRemoteFileEngine()
     {
         RemoteServer server;
+        QString socketName = QUuid::createUuid().toString();
+        server.init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Production);
         server.start();
+
+        RemoteClient::instance().init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Debug,
+                                      Protocol::StartAs::User);
 
         QString filename;
         {
