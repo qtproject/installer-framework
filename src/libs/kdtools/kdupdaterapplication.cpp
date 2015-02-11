@@ -45,8 +45,12 @@ using namespace KDUpdater;
 /*!
     \inmodule kdupdater
     \namespace KDUpdater
-    \brief The KDUpdater classes where initially developed by KDAB to help provide automatic
-           updates for your applications. Now they are solely part of the Qt Installer Framework.
+    \brief The KDUpdater classes provide functions to automatically detect
+    updates to applications, to retrieve them from external repositories, and to
+    install them.
+
+    KDUpdater classes are a fork of KDAB's general
+    \l{http://docs.kdab.com/kdtools/2.2.2/group__kdupdater.html}{KDUpdater module}.
 */
 
 /*!

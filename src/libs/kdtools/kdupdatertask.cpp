@@ -119,7 +119,7 @@ QString Task::errorString() const
 }
 
 /*!
-   Returns whether the task has started and is running or not.
+   Returns whether the task has started and is running.
 */
 bool Task::isRunning() const
 {

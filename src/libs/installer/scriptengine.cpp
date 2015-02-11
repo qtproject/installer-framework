@@ -647,9 +647,9 @@ void ScriptEngine::removeFromGlobalObject(QObject *object)
     Loads a script into the given \a context at \a fileName inside the ScriptEngine.
 
     The installer and all its components as well as other useful stuff are being exported into the
-    script. Read \link componentscripting Component Scripting \endlink for details.
+    script. For more information, see \l {Component Scripting}.
     Throws Error when either the script at \a fileName could not be opened, or the QScriptEngine
-    couldn't evaluate the script.
+    could not evaluate the script.
 */
 QJSValue ScriptEngine::loadInContext(const QString &context, const QString &fileName,
     const QString &scriptInjection)
