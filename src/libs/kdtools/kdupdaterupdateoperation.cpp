@@ -50,7 +50,7 @@ using namespace KDUpdater;
 
    The KDUpdater::UpdateOperation is an abstract class that specifies an interface for
    update operations. Concrete implementations of this class must perform a single update
-   operation like copy, move, delete.
+   operation, such as copy, move, or delete.
 
    \note Two separate threads cannot be using a single instance of KDUpdater::UpdateOperation
    at the same time.
@@ -124,7 +124,7 @@ QString UpdateOperation::operationCommand() const
 }
 
 /*!
-    Returns \c true if there exists a value called \a name, otherwise returns \c false.
+    Returns \c true if a value called \a name exists, otherwise returns \c false.
 */
 bool UpdateOperation::hasValue(const QString &name) const
 {
@@ -140,7 +140,7 @@ void UpdateOperation::clearValue(const QString &name)
 }
 
 /*!
-    Returns the value of \a name. If the value does not exists, this returns an empty QVariant.
+    Returns the value of \a name. If the value does not exist, returns an empty QVariant.
 */
 QVariant UpdateOperation::value(const QString &name) const
 {
@@ -198,7 +198,6 @@ struct StartsWith
     key, it returns the value set for it. Otherwise, it returns \a defaultValue.
     Arguments are specified in the following form: \c{key=value}.
 */
-
 QString UpdateOperation::argumentKeyValue(const QString &key, const QString &defaultValue) const
 {
     const QString keySeparater(key + QLatin1String("="));
@@ -287,6 +286,9 @@ void UpdateOperation::registerForDelayedDeletion(const QStringList &files)
 
 /*!
     Tries to delete \a file. If \a file cannot be deleted, it is registered for delayed deletion.
+
+    If a backup copy of the file cannot be created, returns \c false and displays the error
+    message specified by \a errorString.
 */
 bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorString)
 {
@@ -317,18 +319,24 @@ bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorSt
     \fn virtual bool KDUpdater::UpdateOperation::performOperation() = 0;
 
     Subclasses must implement this function to perform the update operation.
+
+    Returns \c true if the operation is successful.
 */
 
 /*!
     \fn virtual bool KDUpdater::UpdateOperation::undoOperation() = 0;
 
     Subclasses must implement this function to perform the undo of the update operation.
+
+    Returns \c true if the operation is successful.
 */
 
 /*!
     \fn virtual bool KDUpdater::UpdateOperation::testOperation() = 0;
 
     Subclasses must implement this function to perform the test operation.
+
+    Returns \c true if the operation is successful.
 */
 
 /*!
@@ -338,7 +346,8 @@ bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorSt
 */
 
 /*!
-    Saves operation arguments and values as XML. You can override this method to store your
+    Saves operation arguments and values as an XML document and returns the
+    document. You can override this method to store your
     own extra-data. Extra-data can be any data that you need to store to perform or undo the
     operation. The default implementation is taking care of arguments and values set via
     UpdateOperation::setValue().
