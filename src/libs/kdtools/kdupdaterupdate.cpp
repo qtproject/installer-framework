@@ -68,11 +68,18 @@ QVariant Update::data(const QString &name, const QVariant &defaultValue) const
     return m_data.value(name, defaultValue);
 }
 
+/*!
+   Returns the priority of the update.
+*/
 int Update::priority() const
 {
     return m_priority;
 }
 
+/*!
+    Returns the URL of the update source. An update source is a repository that
+    contains an update for the application.
+*/
 QUrl Update::sourceInfoUrl() const
 {
     return m_sourceInfoUrl;
