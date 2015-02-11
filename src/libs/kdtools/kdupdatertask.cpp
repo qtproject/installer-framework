@@ -50,17 +50,20 @@ using namespace KDUpdater;
    User should be careful of these points:
    \list
         \li Task classes can be started only once.
-        \li Instances of this class cannot be created. Only instance of the subclasses can.
+        \li Instances of this class cannot be created. Only instances of the subclasses can.
     \endlist
 */
 
 /*!
     \enum Task::Capability
-    Sets the capabilities of the task.
+    This enum value sets the capabilities of the task.
 
     \value NoCapability
+           The task has no capabilities, so it cannot be paused or stopped.
     \value Pausable
+           The task can be paused.
     \value Stoppable
+           The task can be stopped.
 */
 
 /*!
@@ -95,7 +98,8 @@ QString Task::name() const
 }
 
 /*!
-   Returns the capabilities of the task. It is a combination of one or more Capability flags.
+   Returns the capabilities of the task. It is a combination of one or more
+   Task::Capability flags.
 */
 int Task::capabilities() const
 {
@@ -195,7 +199,7 @@ void Task::run()
 }
 
 /*!
-   Stops the task, provided the task has Stoppable capability.
+   Stops the task, provided the task has the Task::Stoppable capability.
 
    \note Once the task is stopped, it cannot be restarted.
 */
@@ -234,7 +238,7 @@ void Task::stop()
 }
 
 /*!
-   Pauses the task, provided the task has KDUpdater::Task::Pausable capability.
+   Pauses the task, provided the task has the Task::Pausable capability.
 */
 void Task::pause()
 {
@@ -357,30 +361,44 @@ void Task::reportDone()
         deleteLater();
 }
 
+/*!
+    Returns \c true if the task will be automatically deleted.
+*/
 bool Task::autoDelete() const
 {
     return m_autoDelete;
 }
 
+/*!
+    Automatically deletes the task if \a autoDelete is \c true.
+*/
 void Task::setAutoDelete(bool autoDelete)
 {
     m_autoDelete = autoDelete;
 }
 
 /*!
-   \fn virtual bool KDUpdater::Task::doRun() = 0;
+   \fn virtual void KDUpdater::Task::doRun() = 0;
+
+   Returns \c 0 if the task is run.
 */
 
 /*!
    \fn virtual bool KDUpdater::Task::doStop() = 0;
+
+   Returns \c true if the task is stopped.
 */
 
 /*!
    \fn virtual bool KDUpdater::Task::doPause() = 0;
+
+   Returns \c true if the task is paused.
 */
 
 /*!
    \fn virtual bool KDUpdater::Task::doResume() = 0;
+
+   Returns \c true if the task is resumed.
 */
 
 /*!
