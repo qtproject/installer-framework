@@ -49,7 +49,9 @@ using namespace KDUpdater;
    be created and its reference can be fetched from the instance() method.
 */
 
-
+/*!
+    Returns the file downloader factory instance.
+*/
 FileDownloaderFactory& FileDownloaderFactory::instance()
 {
     static KDUpdater::FileDownloaderFactory theFactory;
@@ -57,7 +59,7 @@ FileDownloaderFactory& FileDownloaderFactory::instance()
 }
 
 /*!
-    Constructor
+    Constructs a file downloader factory and registers the default file downloader set.
 */
 FileDownloaderFactory::FileDownloaderFactory()
     : d (new FileDownloaderFactoryData)
@@ -78,42 +80,66 @@ FileDownloaderFactory::FileDownloaderFactory()
     d->m_followRedirects = false;
 }
 
+/*!
+    Returns whether redirects should be followed.
+*/
 bool FileDownloaderFactory::followRedirects()
 {
     return FileDownloaderFactory::instance().d->m_followRedirects;
 }
 
+/*!
+    Determines that redirects should be followed if \a val is \c true.
+*/
 void FileDownloaderFactory::setFollowRedirects(bool val)
 {
     FileDownloaderFactory::instance().d->m_followRedirects = val;
 }
 
+/*!
+    Sets \a factory as the file downloader proxy factory.
+*/
 void FileDownloaderFactory::setProxyFactory(FileDownloaderProxyFactory *factory)
 {
     delete FileDownloaderFactory::instance().d->m_factory;
     FileDownloaderFactory::instance().d->m_factory = factory;
 }
 
+/*!
+    Returns \c true if SSL errors should be ignored.
+*/
 bool FileDownloaderFactory::ignoreSslErrors()
 {
     return FileDownloaderFactory::instance().d->m_ignoreSslErrors;
 }
 
+/*!
+    Determines that SSL errors should be ignored if \a ignore is \c true.
+*/
 void FileDownloaderFactory::setIgnoreSslErrors(bool ignore)
 {
     FileDownloaderFactory::instance().d->m_ignoreSslErrors = ignore;
 }
 
+/*!
+    Destroys the file downloader factory.
+*/
 FileDownloaderFactory::~FileDownloaderFactory()
 {
     delete d;
 }
 
+/*!
+    Returns a list of supported schemes.
+*/
 QStringList FileDownloaderFactory::supportedSchemes()
 {
     return FileDownloaderFactory::instance().d->m_supportedSchemes;
 }
 
+/*!
+    Returns \c true if \a scheme is a supported scheme.
+*/
 bool FileDownloaderFactory::isSupportedScheme(const QString &scheme)
 {
     return FileDownloaderFactory::instance().d->m_supportedSchemes.contains(scheme
@@ -147,4 +173,27 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *pa
     Registers a new file downloader with the factory based on \a scheme. If there is already
     a downloader with the same scheme, the downloader is replaced. When create() is called
     with that \a scheme, the file downloader is constructed using its default constructor.
+*/
+
+/*!
+    \inmodule kdupdater
+    \class KDUpdater::FileDownloaderProxyFactory
+    \brief The FileDownloaderProxyFactory class provides fine-grained proxy selection.
+
+    File downloader objects use a proxy factory to determine a more specific
+    list of proxies to be used for a given request, instead of trying to use the
+    same proxy value for all requests. This might only be of use for HTTP or FTP
+    requests.
+*/
+
+/*!
+    \fn FileDownloaderProxyFactory::~FileDownloaderProxyFactory()
+
+    Destroys the file downloader proxy factory.
+*/
+
+/*!
+    \fn FileDownloaderProxyFactory::clone() const
+
+    Clones a file downloader proxy factory.
 */
