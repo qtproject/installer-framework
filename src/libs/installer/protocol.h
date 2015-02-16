@@ -35,6 +35,10 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
+#include "installer_global.h"
+
+QT_FORWARD_DECLARE_CLASS(QIODevice)
+
 namespace QInstaller {
 namespace Protocol {
 
@@ -57,6 +61,7 @@ const char Create[] = "Create";
 const char Destroy[] = "Destroy";
 const char Shutdown[] = "Shutdown";
 const char Authorize[] = "Authorize";
+const char Reply[] = "Reply";
 
 // QProcessWrapper
 const char QProcess[] = "QProcess";
@@ -165,6 +170,10 @@ const char QAbstractFileEngineRenameOverwrite[] = "QAbstractFileEngine::renameOv
 const char QAbstractFileEngineFileTime[] = "QAbstractFileEngine::fileTime";
 
 } // namespace Protocol
+
+void INSTALLER_EXPORT sendPacket(QIODevice *device, const QByteArray &command, const QByteArray &data);
+bool INSTALLER_EXPORT receivePacket(QIODevice *device, QByteArray *command, QByteArray *data);
+
 } // namespace QInstaller
 
 #endif // PROTOCOL_H

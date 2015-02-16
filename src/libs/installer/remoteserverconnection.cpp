@@ -40,6 +40,7 @@
 #include "utils.h"
 #include "permissionsettings.h"
 
+#include <QCoreApplication>
 #include <QLocalSocket>
 
 namespace QInstaller {
@@ -56,29 +57,48 @@ RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, const Q
     setObjectName(QString::fromLatin1("RemoteServerConnection(%1)").arg(socketDescriptor));
 }
 
+// Helper RAII to ensure stream data was correctly (and completely) read
+struct StreamChecker {
+    StreamChecker(QDataStream *stream) : stream(stream) {}
+    ~StreamChecker() {
+        Q_ASSERT(stream->status() == QDataStream::Ok);
+        Q_ASSERT(stream->atEnd());
+    }
+private:
+    QDataStream *stream;
+};
+
 void RemoteServerConnection::run()
 {
     QLocalSocket socket;
     socket.setSocketDescriptor(m_socketDescriptor);
     QScopedPointer<PermissionSettings> settings;
 
-    QDataStream stream;
-    stream.setDevice(&socket);
-
     bool authorized = false;
     while (socket.state() == QLocalSocket::ConnectedState) {
-        // Use a polling approach here to kill the thread as soon as the connections
-        // closes. This seems to be related to the fact that the keep alive thread connects
-        // every second and immediately throws away the socket and therefore the connection.
-        if (!socket.bytesAvailable() && !socket.waitForReadyRead(250))
-            continue;
+        QByteArray cmd;
+        QByteArray data;
 
-        QString command;
-        stream >> command;
+        if (!receivePacket(&socket, &cmd, &data)) {
+            socket.waitForReadyRead(250);
+#if defined(Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(5,5,0)
+            // work around QTBUG-16688
+            QCoreApplication::processEvents();
+#endif
+            continue;
+        }
+
+        const QString command = QString::fromLatin1(cmd);
+        QBuffer buf;
+        buf.setBuffer(&data);
+        buf.open(QIODevice::ReadOnly);
+        QDataStream stream;
+        stream.setDevice(&buf);
+        StreamChecker streamChecker(&stream);
 
         if (authorized && command == QLatin1String(Protocol::Shutdown)) {
             authorized = false;
-            sendData(stream, true);
+            sendData(&socket, true);
             socket.flush();
             socket.close();
             emit shutdownRequested();
@@ -86,7 +106,7 @@ void RemoteServerConnection::run()
         } else if (command == QLatin1String(Protocol::Authorize)) {
             QString key;
             stream >> key;
-            sendData(stream, (authorized = (key == m_authorizationKey)));
+            sendData(&socket, (authorized = (key == m_authorizationKey)));
             socket.flush();
             if (!authorized) {
                 socket.close();
@@ -146,18 +166,18 @@ void RemoteServerConnection::run()
             if (command == QLatin1String(Protocol::GetQProcessSignals)) {
                 if (m_signalReceiver) {
                     QMutexLocker _(&m_signalReceiver->m_lock);
-                    sendData(stream, m_signalReceiver->m_receivedSignals);
+                    sendData(&socket, m_signalReceiver->m_receivedSignals);
                     m_signalReceiver->m_receivedSignals.clear();
                 }
                 continue;
             }
 
             if (command.startsWith(QLatin1String(Protocol::QProcess))) {
-                handleQProcess(command, stream);
+                handleQProcess(&socket, command, stream);
             } else if (command.startsWith(QLatin1String(Protocol::QSettings))) {
-                handleQSettings(command, stream, settings.data());
+                handleQSettings(&socket, command, stream, settings.data());
             } else if (command.startsWith(QLatin1String(Protocol::QAbstractFileEngine))) {
-                handleQFSFileEngine(command, stream);
+                handleQFSFileEngine(&socket, command, stream);
             } else {
                 qDebug() << "Unknown command:" << command;
             }
@@ -171,47 +191,31 @@ void RemoteServerConnection::run()
 }
 
 template <typename T>
-void RemoteServerConnection::sendData(QDataStream &stream, const T &data)
+void RemoteServerConnection::sendData(QIODevice *device, const T &data)
 {
     QByteArray result;
     QDataStream returnStream(&result, QIODevice::WriteOnly);
     returnStream << data;
 
-    stream << static_cast<quint32> (result.size());
-    if (!result.isEmpty())
-        stream.writeRawData(result.data(), result.size());
+    sendPacket(device, Protocol::Reply, result);
 }
 
-void RemoteServerConnection::handleQProcess(const QString &command, QDataStream &stream)
+void RemoteServerConnection::handleQProcess(QIODevice *socket, const QString &command, QDataStream &data)
 {
-    quint32 size;
-    stream >> size;
-    while (stream.device()->bytesAvailable() < size) {
-        if (!stream.device()->waitForReadyRead(30000)) {
-            throw Error(tr("Could not read all data after sending command: %1. "
-                "Bytes expected: %2, Bytes received: %3. Error: %4").arg(command).arg(size)
-                .arg(stream.device()->bytesAvailable()).arg(stream.device()->errorString()));
-        }
-    }
-
-    QByteArray ba;
-    stream >> ba;
-    QDataStream data(ba);
-
     if (command == QLatin1String(Protocol::QProcessCloseWriteChannel)) {
         m_process->closeWriteChannel();
     } else if (command == QLatin1String(Protocol::QProcessExitCode)) {
-        sendData(stream, m_process->exitCode());
+        sendData(socket, m_process->exitCode());
     } else if (command == QLatin1String(Protocol::QProcessExitStatus)) {
-        sendData(stream, static_cast<qint32> (m_process->exitStatus()));
+        sendData(socket, static_cast<qint32> (m_process->exitStatus()));
     } else if (command == QLatin1String(Protocol::QProcessKill)) {
         m_process->kill();
     } else if (command == QLatin1String(Protocol::QProcessReadAll)) {
-        sendData(stream, m_process->readAll());
+        sendData(socket, m_process->readAll());
     } else if (command == QLatin1String(Protocol::QProcessReadAllStandardOutput)) {
-        sendData(stream, m_process->readAllStandardOutput());
+        sendData(socket, m_process->readAllStandardOutput());
     } else if (command == QLatin1String(Protocol::QProcessReadAllStandardError)) {
-        sendData(stream, m_process->readAllStandardError());
+        sendData(socket, m_process->readAllStandardError());
     } else if (command == QLatin1String(Protocol::QProcessStartDetached)) {
         QString program;
         QStringList arguments;
@@ -222,7 +226,7 @@ void RemoteServerConnection::handleQProcess(const QString &command, QDataStream 
 
         qint64 pid = -1;
         bool success = QInstaller::startDetached(program, arguments, workingDirectory, &pid);
-        sendData(stream, qMakePair< bool, qint64>(success, pid));
+        sendData(socket, qMakePair< bool, qint64>(success, pid));
     } else if (command == QLatin1String(Protocol::QProcessSetWorkingDirectory)) {
         QString dir;
         data >> dir;
@@ -232,7 +236,7 @@ void RemoteServerConnection::handleQProcess(const QString &command, QDataStream 
         data >> env;
         m_process->setEnvironment(env);
     } else if (command == QLatin1String(Protocol::QProcessEnvironment)) {
-        sendData(stream, m_process->environment());
+        sendData(socket, m_process->environment());
     } else if (command == QLatin1String(Protocol::QProcessStart3Arg)) {
         QString program;
         QStringList arguments;
@@ -248,23 +252,23 @@ void RemoteServerConnection::handleQProcess(const QString &command, QDataStream 
         data >> mode;
         m_process->start(program, static_cast<QIODevice::OpenMode> (mode));
     } else if (command == QLatin1String(Protocol::QProcessState)) {
-        sendData(stream, static_cast<qint32> (m_process->state()));
+        sendData(socket, static_cast<qint32> (m_process->state()));
     } else if (command == QLatin1String(Protocol::QProcessTerminate)) {
         m_process->terminate();
     } else if (command == QLatin1String(Protocol::QProcessWaitForFinished)) {
         qint32 msecs;
         data >> msecs;
-        sendData(stream, m_process->waitForFinished(msecs));
+        sendData(socket, m_process->waitForFinished(msecs));
     } else if (command == QLatin1String(Protocol::QProcessWaitForStarted)) {
         qint32 msecs;
         data >> msecs;
-        sendData(stream, m_process->waitForStarted(msecs));
+        sendData(socket, m_process->waitForStarted(msecs));
     } else if (command == QLatin1String(Protocol::QProcessWorkingDirectory)) {
-        sendData(stream, m_process->workingDirectory());
+        sendData(socket, m_process->workingDirectory());
     } else if (command == QLatin1String(Protocol::QProcessErrorString)) {
-        sendData(stream, m_process->errorString());
+        sendData(socket, m_process->errorString());
     } else if (command == QLatin1String(Protocol::QProcessReadChannel)) {
-        sendData(stream, static_cast<qint32> (m_process->readChannel()));
+        sendData(socket, static_cast<qint32> (m_process->readChannel()));
     } else if (command == QLatin1String(Protocol::QProcessSetReadChannel)) {
         qint32 processChannel;
         data >> processChannel;
@@ -272,9 +276,9 @@ void RemoteServerConnection::handleQProcess(const QString &command, QDataStream 
     } else if (command == QLatin1String(Protocol::QProcessWrite)) {
         QByteArray byteArray;
         data >> byteArray;
-        sendData(stream, m_process->write(byteArray));
+        sendData(socket, m_process->write(byteArray));
     } else if (command == QLatin1String(Protocol::QProcessProcessChannelMode)) {
-        sendData(stream, static_cast<qint32> (m_process->processChannelMode()));
+        sendData(socket, static_cast<qint32> (m_process->processChannelMode()));
     } else if (command == QLatin1String(Protocol::QProcessSetProcessChannelMode)) {
         qint32 processChannel;
         data >> processChannel;
@@ -292,28 +296,14 @@ void RemoteServerConnection::handleQProcess(const QString &command, QDataStream 
     }
 }
 
-void RemoteServerConnection::handleQSettings(const QString &command, QDataStream &stream,
-                                             PermissionSettings *settings)
+void RemoteServerConnection::handleQSettings(QIODevice *socket, const QString &command,
+                                             QDataStream &data, PermissionSettings *settings)
 {
     if (!settings)
         return;
 
-    quint32 size;
-    stream >> size;
-    while (stream.device()->bytesAvailable() < size) {
-        if (!stream.device()->waitForReadyRead(30000)) {
-            throw Error(tr("Could not read all data after sending command: %1. "
-                "Bytes expected: %2, Bytes received: %3. Error: %4").arg(command).arg(size)
-                .arg(stream.device()->bytesAvailable()).arg(stream.device()->errorString()));
-        }
-    }
-
-    QByteArray ba;
-    stream >> ba;
-    QDataStream data(ba);
-
     if (command == QLatin1String(Protocol::QSettingsAllKeys)) {
-        sendData(stream, settings->allKeys());
+        sendData(socket, settings->allKeys());
     } else if (command == QLatin1String(Protocol::QSettingsBeginGroup)) {
         QString prefix;
         data >> prefix;
@@ -327,29 +317,29 @@ void RemoteServerConnection::handleQSettings(const QString &command, QDataStream
     } else if (command == QLatin1String(Protocol::QSettingsBeginReadArray)) {
         QString prefix;
         data >> prefix;
-        sendData(stream, settings->beginReadArray(prefix));
+        sendData(socket, settings->beginReadArray(prefix));
     } else if (command == QLatin1String(Protocol::QSettingsChildGroups)) {
-        sendData(stream, settings->childGroups());
+        sendData(socket, settings->childGroups());
     } else if (command == QLatin1String(Protocol::QSettingsChildKeys)) {
-        sendData(stream, settings->childKeys());
+        sendData(socket, settings->childKeys());
     } else if (command == QLatin1String(Protocol::QSettingsClear)) {
         settings->clear();
     } else if (command == QLatin1String(Protocol::QSettingsContains)) {
         QString key;
         data >> key;
-        sendData(stream, settings->contains(key));
+        sendData(socket, settings->contains(key));
     } else if (command == QLatin1String(Protocol::QSettingsEndArray)) {
         settings->endArray();
     } else if (command == QLatin1String(Protocol::QSettingsEndGroup)) {
         settings->endGroup();
     } else if (command == QLatin1String(Protocol::QSettingsFallbacksEnabled)) {
-        sendData(stream, settings->fallbacksEnabled());
+        sendData(socket, settings->fallbacksEnabled());
     } else if (command == QLatin1String(Protocol::QSettingsFileName)) {
-        sendData(stream, settings->fileName());
+        sendData(socket, settings->fileName());
     } else if (command == QLatin1String(Protocol::QSettingsGroup)) {
-        sendData(stream, settings->group());
+        sendData(socket, settings->group());
     } else if (command == QLatin1String(Protocol::QSettingsIsWritable)) {
-        sendData(stream, settings->isWritable());
+        sendData(socket, settings->isWritable());
     } else if (command == QLatin1String(Protocol::QSettingsRemove)) {
         QString key;
         data >> key;
@@ -363,7 +353,7 @@ void RemoteServerConnection::handleQSettings(const QString &command, QDataStream
         data >> b;
         settings->setFallbacksEnabled(b);
     } else if (command == QLatin1String(Protocol::QSettingsStatus)) {
-        sendData(stream, settings->status());
+        sendData(socket, settings->status());
     } else if (command == QLatin1String(Protocol::QSettingsSync)) {
         settings->sync();
     } else if (command == QLatin1String(Protocol::QSettingsSetValue)) {
@@ -377,122 +367,109 @@ void RemoteServerConnection::handleQSettings(const QString &command, QDataStream
         QVariant defaultValue;
         data >> key;
         data >> defaultValue;
-        sendData(stream, settings->value(key, defaultValue));
+        sendData(socket, settings->value(key, defaultValue));
     } else if (command == QLatin1String(Protocol::QSettingsOrganizationName)) {
-        sendData(stream, settings->organizationName());
+        sendData(socket, settings->organizationName());
     } else if (command == QLatin1String(Protocol::QSettingsApplicationName)) {
-        sendData(stream, settings->applicationName());
+        sendData(socket, settings->applicationName());
     } else if (!command.isEmpty()) {
         qDebug() << "Unknown QSettings command:" << command;
     }
 }
 
-void RemoteServerConnection::handleQFSFileEngine(const QString &command, QDataStream &stream)
+void RemoteServerConnection::handleQFSFileEngine(QIODevice *socket, const QString &command,
+                                                 QDataStream &data)
 {
-    quint32 size;
-    stream >> size;
-    while (stream.device()->bytesAvailable() < size) {
-        if (!stream.device()->waitForReadyRead(30000)) {
-            throw Error(tr("Could not read all data after sending command: %1. "
-                "Bytes expected: %2, Bytes received: %3. Error: %4").arg(command).arg(size)
-                .arg(stream.device()->bytesAvailable()).arg(stream.device()->errorString()));
-        }
-    }
-
-    QByteArray ba;
-    stream >> ba;
-    QDataStream data(ba);
-
     if (command == QLatin1String(Protocol::QAbstractFileEngineAtEnd)) {
-        sendData(stream, m_engine->atEnd());
+        sendData(socket, m_engine->atEnd());
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineCaseSensitive)) {
-        sendData(stream, m_engine->caseSensitive());
+        sendData(socket, m_engine->caseSensitive());
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineClose)) {
-        sendData(stream, m_engine->close());
+        sendData(socket, m_engine->close());
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineCopy)) {
         QString newName;
         data >>newName;
-        sendData(stream, m_engine->copy(newName));
+        sendData(socket, m_engine->copy(newName));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineEntryList)) {
         qint32 filters;
         QStringList filterNames;
         data >>filters;
         data >>filterNames;
-        sendData(stream, m_engine->entryList(static_cast<QDir::Filters> (filters), filterNames));
+        sendData(socket, m_engine->entryList(static_cast<QDir::Filters> (filters), filterNames));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineError)) {
-        sendData(stream, static_cast<qint32> (m_engine->error()));
+        sendData(socket, static_cast<qint32> (m_engine->error()));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineErrorString)) {
-        sendData(stream, m_engine->errorString());
+        sendData(socket, m_engine->errorString());
     }
     else if (command == QLatin1String(Protocol::QAbstractFileEngineFileFlags)) {
         qint32 flags;
         data >>flags;
         flags = m_engine->fileFlags(static_cast<QAbstractFileEngine::FileFlags>(flags));
-        sendData(stream, static_cast<qint32>(flags));
+        sendData(socket, static_cast<qint32>(flags));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineFileName)) {
         qint32 file;
         data >>file;
-        sendData(stream, m_engine->fileName(static_cast<QAbstractFileEngine::FileName> (file)));
+        sendData(socket, m_engine->fileName(static_cast<QAbstractFileEngine::FileName> (file)));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineFlush)) {
-        sendData(stream, m_engine->flush());
+        sendData(socket, m_engine->flush());
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineHandle)) {
-        sendData(stream, m_engine->handle());
+        sendData(socket, m_engine->handle());
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineIsRelativePath)) {
-        sendData(stream, m_engine->isRelativePath());
+        sendData(socket, m_engine->isRelativePath());
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineIsSequential)) {
-        sendData(stream, m_engine->isSequential());
+        sendData(socket, m_engine->isSequential());
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineLink)) {
         QString newName;
         data >>newName;
-        sendData(stream, m_engine->link(newName));
+        sendData(socket, m_engine->link(newName));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineMkdir)) {
         QString dirName;
         bool createParentDirectories;
         data >>dirName;
         data >>createParentDirectories;
-        sendData(stream, m_engine->mkdir(dirName, createParentDirectories));
+        sendData(socket, m_engine->mkdir(dirName, createParentDirectories));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineOpen)) {
         qint32 openMode;
         data >>openMode;
-        sendData(stream, m_engine->open(static_cast<QIODevice::OpenMode> (openMode)));
+        sendData(socket, m_engine->open(static_cast<QIODevice::OpenMode> (openMode)));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineOwner)) {
         qint32 owner;
         data >>owner;
-        sendData(stream, m_engine->owner(static_cast<QAbstractFileEngine::FileOwner> (owner)));
+        sendData(socket, m_engine->owner(static_cast<QAbstractFileEngine::FileOwner> (owner)));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineOwnerId)) {
         qint32 owner;
         data >>owner;
-        sendData(stream, m_engine->ownerId(static_cast<QAbstractFileEngine::FileOwner> (owner)));
+        sendData(socket, m_engine->ownerId(static_cast<QAbstractFileEngine::FileOwner> (owner)));
     } else if (command == QLatin1String(Protocol::QAbstractFileEnginePos)) {
-        sendData(stream, m_engine->pos());
+        sendData(socket, m_engine->pos());
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineRead)) {
         qint64 maxlen;
         data >> maxlen;
         QByteArray byteArray(maxlen, '\0');
         const qint64 r = m_engine->read(byteArray.data(), maxlen);
-        sendData(stream, qMakePair<qint64, QByteArray>(r, byteArray));
+        sendData(socket, qMakePair<qint64, QByteArray>(r, byteArray));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineReadLine)) {
         qint64 maxlen;
         data >> maxlen;
         QByteArray byteArray(maxlen, '\0');
         const qint64 r = m_engine->readLine(byteArray.data(), maxlen);
-        sendData(stream, qMakePair<qint64, QByteArray>(r, byteArray));
+        sendData(socket, qMakePair<qint64, QByteArray>(r, byteArray));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineRemove)) {
-        sendData(stream, m_engine->remove());
+        sendData(socket, m_engine->remove());
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineRename)) {
         QString newName;
         data >>newName;
-        sendData(stream, m_engine->rename(newName));
+        sendData(socket, m_engine->rename(newName));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineRmdir)) {
         QString dirName;
         bool recurseParentDirectories;
         data >>dirName;
         data >>recurseParentDirectories;
-        sendData(stream, m_engine->rmdir(dirName, recurseParentDirectories));
+        sendData(socket, m_engine->rmdir(dirName, recurseParentDirectories));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineSeek)) {
         quint64 offset;
         data >>offset;
-        sendData(stream, m_engine->seek(offset));
+        sendData(socket, m_engine->seek(offset));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineSetFileName)) {
         QString fileName;
         data >>fileName;
@@ -500,30 +477,30 @@ void RemoteServerConnection::handleQFSFileEngine(const QString &command, QDataSt
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineSetPermissions)) {
         uint perms;
         data >>perms;
-        sendData(stream, m_engine->setPermissions(perms));
+        sendData(socket, m_engine->setPermissions(perms));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineSetSize)) {
         qint64 size;
         data >>size;
-        sendData(stream, m_engine->setSize(size));
+        sendData(socket, m_engine->setSize(size));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineSize)) {
-        sendData(stream, m_engine->size());
+        sendData(socket, m_engine->size());
     } else if ((command == QLatin1String(Protocol::QAbstractFileEngineSupportsExtension))
         || (command == QLatin1String(Protocol::QAbstractFileEngineExtension))) {
             // Implemented client side.
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineWrite)) {
         QByteArray content;
         data >> content;
-        sendData(stream, m_engine->write(content.data(), content.size()));
+        sendData(socket, m_engine->write(content.data(), content.size()));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineSyncToDisk)) {
-        sendData(stream, m_engine->syncToDisk());
+        sendData(socket, m_engine->syncToDisk());
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineRenameOverwrite)) {
         QString newFilename;
         data >> newFilename;
-        sendData(stream, m_engine->renameOverwrite(newFilename));
+        sendData(socket, m_engine->renameOverwrite(newFilename));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineFileTime)) {
         qint32 filetime;
         data >> filetime;
-        sendData(stream, m_engine->fileTime(static_cast<QAbstractFileEngine::FileTime> (filetime)));
+        sendData(socket, m_engine->fileTime(static_cast<QAbstractFileEngine::FileTime> (filetime)));
     } else if (!command.isEmpty()) {
         qDebug() << "Unknown QAbstractFileEngine command:" << command;
     }

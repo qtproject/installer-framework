@@ -42,6 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 class QProcess;
+class QIODevice;
 QT_END_NAMESPACE
 
 namespace QInstaller {
@@ -66,11 +67,11 @@ signals:
 
 private:
     template <typename T>
-    void sendData(QDataStream &stream, const T &arg);
-    void handleQProcess(const QString &command, QDataStream &receivedStream);
-    void handleQSettings(const QString &command, QDataStream &receivedStream,
+    void sendData(QIODevice *device, const T &arg);
+    void handleQProcess(QIODevice *device, const QString &command, QDataStream &data);
+    void handleQSettings(QIODevice *device, const QString &command, QDataStream &data,
                          PermissionSettings *settings);
-    void handleQFSFileEngine(const QString &command, QDataStream &receivedStream);
+    void handleQFSFileEngine(QIODevice *device, const QString &command, QDataStream &data);
 
 private:
     qintptr m_socketDescriptor;

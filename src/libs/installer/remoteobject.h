@@ -37,7 +37,9 @@
 
 #include "errors.h"
 #include "installer_global.h"
+#include "protocol.h"
 
+#include <QCoreApplication>
 #include <QDataStream>
 #include <QObject>
 #include <QLocalSocket>
@@ -90,20 +92,29 @@ public:
     T callRemoteMethod(const QString &name, const T1 &arg, const T2 &arg2, const T3 &arg3) const
     {
         writeData(name, arg, arg2, arg3);
-        if (!m_socket->bytesAvailable())
-            m_socket->waitForReadyRead(-1);
 
-        quint32 size; m_stream >> size;
-        while (m_socket->bytesAvailable() < size) {
+        QByteArray command;
+        QByteArray data;
+        while (!receivePacket(m_socket, &command, &data)) {
             if (!m_socket->waitForReadyRead(30000)) {
                 throw Error(tr("Could not read all data after sending command: %1. "
-                    "Bytes expected: %2, Bytes received: %3. Error: %4").arg(name).arg(size)
+                    "Bytes expected: %2, Bytes received: %3. Error: %4").arg(name).arg(0)
                     .arg(m_socket->bytesAvailable()).arg(m_socket->errorString()));
             }
+#if defined Q_OS_WIN && QT_VERSION < QT_VERSION_CHECK(5,5,0)
+            // work around QTBUG-16688
+            QCoreApplication::processEvents();
+#endif
         }
 
+        Q_ASSERT(command == Protocol::Reply);
+
+        QDataStream stream(&data, QIODevice::ReadOnly);
+
         T result;
-        m_stream >> result;
+        stream >> result;
+        Q_ASSERT(stream.status() == QDataStream::Ok);
+        Q_ASSERT(stream.atEnd());
         return result;
     }
 
@@ -143,16 +154,12 @@ private:
         if (isValueType(arg3))
             out << arg3;
 
-        m_stream << name;
-        m_stream << quint32(data.size());
-        m_stream << data;
-        m_socket->waitForBytesWritten(-1);
+        sendPacket(m_socket, name.toLatin1(), data);
     }
 
 private:
     QString m_type;
     QLocalSocket *m_socket;
-    mutable QDataStream m_stream;
 };
 
 } // namespace QInstaller

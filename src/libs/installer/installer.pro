@@ -182,6 +182,7 @@ SOURCES += packagemanagercore.cpp \
     unziptask.cpp \
     observer.cpp \
     metadatajob.cpp \
+    protocol.cpp \
     remoteobject.cpp \
     remoteclient.cpp \
     remoteserver.cpp \
