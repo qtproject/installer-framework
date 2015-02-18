@@ -129,7 +129,7 @@
 /*!
    \fn KDGenericFactory::~KDGenericFactory()
 
-   Destructor.
+   Destroys the generic factory.
 */
 
 /*!
@@ -139,9 +139,26 @@
 */
 
 /*!
+    \typedef KDGenericFactory::FactoryFunctionWithArg
+
+    This typedef defines a factory function producing an object of type T_Product
+    with the arguments specified by \a arg.
+*/
+
+/*!
    \fn KDGenericFactory::registerProduct( const T_Identifier& name )
 
-   Registers a product of type T, identified by \a name in the factory.
+   Registers a product of the type T, identified by \a name in the factory.
+   Any type with the same name gets unregistered.
+
+   If a product was registered via this method, it will be created using its
+   default constructor.
+*/
+
+/*!
+   \fn KDGenericFactory::registerProductWithArg(const T_Identifier &name)
+
+   Registers a product of the type T, identified by \a name, with arguments.
    Any type with the same name gets unregistered.
 
    If a product was registered via this method, it will be created using its
@@ -151,6 +168,14 @@
 /*!
    \fn KDGenericFactory::create( const T_Identifier& name ) const
 
-   Creates and returns a product of the type identified by \a name.
+   Creates and returns a product of the type T identified by \a name.
+   Ownership of the product is transferred to the caller.
+*/
+
+/*!
+   \fn KDGenericFactory::createWithArg(const T_Identifier &name, const T_Argument &arg) const
+
+   Creates and returns a product of the type T identified by \a name with the
+   arguments specified by \a arg.
    Ownership of the product is transferred to the caller.
 */
