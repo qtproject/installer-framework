@@ -72,6 +72,18 @@ using namespace KDUpdater;
 */
 
 /*!
+    \fn KDUpdater::operator==(const UpdateSourceInfo &lhs, const UpdateSourceInfo &rhs)
+
+    Returns \c true if \a lhs and \a rhs are equal; otherwise returns \c false.
+*/
+
+/*!
+    \fn KDUpdater::operator!=(const UpdateSourceInfo &lhs, const UpdateSourceInfo &rhs)
+
+    Returns \c true if \a lhs and \a rhs are different; otherwise returns \c false.
+*/
+
+/*!
     \enum UpdateSourcesInfo::Error
     Error codes related to retrieving update sources.
 
