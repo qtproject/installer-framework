@@ -65,7 +65,6 @@ public:
         , m_active(false)
         , m_key(QLatin1String(Protocol::DefaultAuthorizationKey))
         , m_mode(Protocol::Mode::Debug)
-        , m_object(0)
     {
         m_thread.setObjectName(QLatin1String("KeepAlive"));
     }
@@ -77,10 +76,6 @@ public:
 
     void shutdown()
     {
-        if (m_object)
-            m_object->finish();
-        m_object = 0;
-
         m_thread.quit();
         m_thread.wait();
         maybeStopServer();
@@ -101,15 +96,11 @@ public:
                     .arg(socketName)
                     .arg(key);
 
-            if (!m_object) {
-                m_object = new KeepAliveObject;
-                m_object->moveToThread(&m_thread);
-                QObject::connect(&m_thread, SIGNAL(started()), m_object, SLOT(start()));
-                QObject::connect(&m_thread, SIGNAL(finished()), m_object, SLOT(deleteLater()));
-                m_thread.start();
-            } else {
-                Q_ASSERT_X(false, Q_FUNC_INFO, "Keep alive thread already started.");
-            }
+            KeepAliveObject *object = new KeepAliveObject;
+            object->moveToThread(&m_thread);
+            QObject::connect(&m_thread, &QThread::started, object, &KeepAliveObject::start);
+            QObject::connect(&m_thread, &QThread::finished, object, &QObject::deleteLater);
+            m_thread.start();
         } else if (mode == Protocol::Mode::Debug) {
             // To be able to debug the client-server connection start and stop the server manually,
             // e.g. installer --startserver DEBUG.
@@ -194,7 +185,6 @@ private:
     QString m_key;
     QThread m_thread;
     Protocol::Mode m_mode;
-    KeepAliveObject *m_object;
 };
 
 } // namespace QInstaller

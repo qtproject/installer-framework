@@ -39,6 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 class QTimer;
+class QLocalSocket;
 QT_END_NAMESPACE
 
 namespace QInstaller {
@@ -53,14 +54,10 @@ public:
 
 public slots:
     void start();
-    void finish();
-
-private slots:
-    void onTimeout();
 
 private:
     QTimer *m_timer;
-    QAtomicInt m_quit;
+    QLocalSocket *m_socket;
 };
 
 } // namespace QInstaller

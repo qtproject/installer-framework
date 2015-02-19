@@ -35,9 +35,6 @@
 #include "keepaliveobject.h"
 #include "remoteclient.h"
 
-#include <QCoreApplication>
-#include <QElapsedTimer>
-#include <QHostAddress>
 #include <QLocalSocket>
 #include <QTimer>
 
@@ -45,41 +42,27 @@ namespace QInstaller {
 
 KeepAliveObject::KeepAliveObject()
     : m_timer(0)
-    , m_quit(false)
+    , m_socket(0)
 {
 }
 
 void KeepAliveObject::start()
 {
     m_timer = new QTimer(this);
-    connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
-    m_timer->start(5000);
-}
+    m_socket = new QLocalSocket(this);
 
-void KeepAliveObject::finish()
-{
-    m_quit = true;
-}
+    connect(m_timer, &QTimer::timeout, [this]() {
+        if (m_socket->state() != QLocalSocket::UnconnectedState)
+            return;
+        m_socket->connectToServer(RemoteClient::instance().socketName());
+    });
 
-void KeepAliveObject::onTimeout()
-{
-    m_timer->stop();
-    {
-        // Try to connect to the privileged running server. If we succeed the server side
-        // watchdog gets restarted and the server keeps running for another 30 seconds.
-        QLocalSocket socket;
-        socket.connectToServer(RemoteClient::instance().socketName());
+    connect(m_socket, &QLocalSocket::connected, [this]() {
+        m_socket->close();
+    });
 
-        QElapsedTimer stopWatch;
-        stopWatch.start();
-        while ((socket.state() == QLocalSocket::ConnectingState)
-            && (stopWatch.elapsed() < 10000) && (!m_quit)) {
-            if ((stopWatch.elapsed() % 2500) == 0)
-                QCoreApplication::processEvents();
-        }
-    }
-    if (!m_quit)
-        m_timer->start(5000);
+    m_timer->setInterval(5000);
+    m_timer->start();
 }
 
 } // namespace QInstaller
