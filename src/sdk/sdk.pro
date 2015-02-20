@@ -12,6 +12,13 @@ QT += network qml xml widgets
     QTPLUGIN += qminimal
 }
 
+CONFIG(static, static|shared) {
+  # prevent qmake from automatically linking in imageformats, bearer, qmltooling plugins
+  QTPLUGIN.imageformats = -
+  QTPLUGIN.bearer = -
+  QTPLUGIN.qmltooling = -
+}
+
 DESTDIR = $$IFW_APP_PATH
 
 exists($$LRELEASE) {
