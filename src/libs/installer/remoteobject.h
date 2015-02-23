@@ -96,7 +96,7 @@ public:
         QByteArray command;
         QByteArray data;
         while (!receivePacket(m_socket, &command, &data)) {
-            if (!m_socket->waitForReadyRead(30000)) {
+            if (!m_socket->waitForReadyRead(-1)) {
                 throw Error(tr("Could not read all data after sending command: %1. "
                     "Bytes expected: %2, Bytes received: %3. Error: %4").arg(name).arg(0)
                     .arg(m_socket->bytesAvailable()).arg(m_socket->errorString()));
