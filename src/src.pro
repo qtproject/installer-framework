@@ -7,4 +7,5 @@ TRANSLATIONS += sdk/translations/de.ts \
     sdk/translations/ja.ts \
     sdk/translations/pl.ts \
     sdk/translations/ru.ts \
-    sdk/translations/zh_cn.ts
+    sdk/translations/zh_cn.ts \
+    sdk/translations/it.ts
