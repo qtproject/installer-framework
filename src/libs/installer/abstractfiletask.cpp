@@ -44,6 +44,12 @@ namespace QInstaller {
 */
 
 /*!
+    \inmodule QtInstallerFramework
+    \namespace TaskRole
+    \brief Contains identifiers for tasks.
+*/
+
+/*!
     \enum TaskRole::TaskRole
 
     \value Checksum
@@ -51,6 +57,80 @@ namespace QInstaller {
     \value SourceFile
     \value TargetFile
     \value UserRole     The first role that can be used for user-specific purposes.
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::FileTaskItem
+    \brief The FileTaskItem class represents an item in a file task object.
+*/
+
+/*!
+    \fn FileTaskItem::FileTaskItem()
+
+    Creates a file task item.
+*/
+
+/*!
+    \fn FileTaskItem::FileTaskItem(const QString &s)
+
+    Creates a file task item using the source specified by \a s.
+*/
+
+/*!
+    \fn FileTaskItem::FileTaskItem(const QString &s, const QString &t)
+
+    Creates a file task item using the source specified by \a s and target
+    specified by \a t.
+*/
+
+/*!
+    \fn FileTaskItem::source() const
+
+    Returns the source file of the file task item.
+*/
+
+/*!
+    \fn FileTaskItem::target() const
+
+    Returns the target file of the file task item.
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::FileTaskResult
+    \brief The FileTaskResult class represents the results of a file task.
+*/
+
+/*!
+    \fn FileTaskResult::FileTaskResult()
+
+    Creates file task results.
+*/
+
+/*!
+    \fn FileTaskResult::FileTaskResult(const QString &t, const QByteArray &c, const FileTaskItem &i)
+
+    Creates file task results using the target file specified by \a t, checksum
+    specified by \a c, and file task item specified by \a i.
+*/
+
+/*!
+    \fn FileTaskResult::target() const
+
+    Returns the target file of the task result.
+*/
+
+/*!
+    \fn FileTaskResult::checkSum() const
+
+    Returns the checksum of the task result.
+*/
+
+/*!
+    \fn FileTaskResult::taskItem() const
+
+    Returns file task items.
 */
 
 /*!
