@@ -52,6 +52,11 @@ namespace QInstaller {
 */
 
 /*!
+    \fn ScriptEngine::globalObject() const
+    Returns a global object.
+*/
+
+/*!
     \qmltype console
     \inqmlmodule scripting
     \brief Provides methods for logging and debugging.
@@ -587,9 +592,12 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
     available as properties of the created QJSValue. In addition some helper methods and properties
     are added:
 
-    findChild(), findChildren() recursively search for child objects with the given object name.
-
-    Direct child objects are made accessible as properties under their respective object names.
+    \list
+        \li findChild(), findChildren() recursively search for child objects with the given
+            object name.
+        \li Direct child objects are made accessible as properties under their respective object
+        names.
+    \endlist
  */
 QJSValue ScriptEngine::newQObject(QObject *object)
 {
@@ -618,6 +626,10 @@ QJSValue ScriptEngine::newQObject(QObject *object)
     return jsValue;
 }
 
+/*!
+    Evaluates \a program, using \a lineNumber as the base line number, and returns the results of
+    the evaluation. \a fileName is used for error reporting.
+*/
 QJSValue ScriptEngine::evaluate(const QString &program, const QString &fileName, int lineNumber)
 {
     return m_engine.evaluate(program, fileName, lineNumber);
@@ -650,6 +662,8 @@ void ScriptEngine::removeFromGlobalObject(QObject *object)
     script. For more information, see \l {Component Scripting}.
     Throws Error when either the script at \a fileName could not be opened, or the QScriptEngine
     could not evaluate the script.
+
+    TODO: document \a scriptInjection.
 */
 QJSValue ScriptEngine::loadInContext(const QString &context, const QString &fileName,
     const QString &scriptInjection)
