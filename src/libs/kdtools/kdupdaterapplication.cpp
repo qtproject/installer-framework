@@ -54,15 +54,38 @@ using namespace KDUpdater;
 */
 
 /*!
+    \class KDUpdater::ConfigurationInterface
+    \inmodule kdupdater
+    \brief The ConfigurationInterface class provides an interface for configuring
+    an application.
+*/
+
+/*!
+    \fn KDUpdater::ConfigurationInterface::~ConfigurationInterface()
+    Destroys the configuration interface.
+*/
+
+/*!
+    \fn KDUpdater::ConfigurationInterface::value(const QString &key) const
+    Returns the value of the key \a key.
+*/
+
+/*!
+    \fn KDUpdater::ConfigurationInterface::setValue(const QString &key, const QVariant &value)
+    Sets the value \a value for the key \a key.
+*/
+
+/*!
     \class KDUpdater::Application
     \inmodule kdupdater
-    \brief The \c Application class represents an application that can be updated.
+    \brief The Application class represents an application that can be updated.
 
     A KDUpdater application is an application that interacts with one or more update servers and
     downloads or installs updates. This class helps in describing an application in terms of:
     \list
         \li Application Directory
-        \li Packages XML file name and its corresponding KDUpdater::PackagesInfo object
+        \li Installation information XML file name and its corresponding
+            KDUpdater::PackagesInfo object
         \li Update sources XML file name and its corresponding KDUpdater::UpdateSourcesInfo object
     \endlist
 
@@ -110,8 +133,7 @@ struct Application::ApplicationData
 Application *Application::ApplicationData::instance = 0;
 
 /*!
-    Constructs the \c Application class and configures it to assume the application directory to be
-    the directory in which the application exists.
+    Constructs an application with the parent \a p and configuration class \a config.
 */
 Application::Application(ConfigurationInterface* config, QObject* p) : QObject(p)
 {
@@ -125,7 +147,7 @@ Application::Application(ConfigurationInterface* config, QObject* p) : QObject(p
 }
 
 /*!
-    Destructor
+    Destroys the application.
 */
 Application::~Application()
 {
@@ -135,7 +157,7 @@ Application::~Application()
 }
 
 /*!
-    Returns a previously created \c Application instance.
+    Returns a previously created application instance.
 */
 Application *Application::instance()
 {
@@ -143,8 +165,8 @@ Application *Application::instance()
 }
 
 /*!
-    Sets the application directory path directory to \a dir. The package XML and update sources
-    XML files found in the new application directory will be used.
+    Sets the application directory path directory to \a dir. The installation information and
+    update sources XML files found in the new application directory will be used.
 */
 void Application::setApplicationDirectory(const QString &dir)
 {
@@ -210,8 +232,8 @@ void Application::addUpdateSource(const QString &name, const QString &title,
 
 
 /*!
-    Sets the file name of the package XML file for this application to \a fileName. By default,
-    this is assumed to be Packages.xml in the application directory.
+    Sets the file name of the installation information XML file for this application to \a fileName.
+    By default, this is assumed to be Packages.xml in the application directory.
 
    \sa KDUpdater::PackagesInfo::setFileName()
 */
@@ -221,7 +243,7 @@ void Application::setPackagesXMLFileName(const QString &fileName)
 }
 
 /*!
-    Returns the package XML file name.
+    Returns the installation information XML file name.
 */
 QString Application::packagesXMLFileName() const
 {
@@ -264,16 +286,25 @@ UpdateSourcesInfo* Application::updateSourcesInfo() const
     return d->updateSourcesInfo;
 }
 
+/*!
+    Prints the error code \a errorCode and error message specified by \a error.
+*/
 void Application::printError(int errorCode, const QString &error)
 {
     qDebug() << errorCode << error;
 }
 
+/*!
+    Returns a list of files that are scheduled for delayed deletion.
+*/
 QStringList Application::filesForDelayedDeletion() const
 {
     return d->filesForDelayedDeletion;
 }
 
+/*!
+    Schedules \a files for delayed deletion.
+*/
 void Application::addFilesForDelayedDeletion(const QStringList &files)
 {
     d->filesForDelayedDeletion << files;
