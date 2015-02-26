@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Online Installer Example</Name>
+    <Version>1.0.0</Version>
+    <Title>Online Installer Example</Title>
+    <Publisher>The Qt Company</Publisher>
+    <!-- Directory name is used in component.xml -->
+    <StartMenuDir>Qt IFW Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExample</TargetDir>
+    <RemoteRepositories>
+        <Repository>
+            <Url>http://localhost/repository</Url>
+        </Repository>
+    </RemoteRepositories>
+</Installer>

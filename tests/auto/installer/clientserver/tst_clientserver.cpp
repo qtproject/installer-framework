@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -39,11 +39,14 @@
 #include <remotefileengine.h>
 #include <remoteserver.h>
 
+#include <QBuffer>
 #include <QSettings>
-#include <QTcpSocket>
-#include <QTemporaryFile>
+#include <QLocalSocket>
 #include <QTest>
 #include <QSignalSpy>
+#include <QTemporaryFile>
+#include <QUuid>
+#include <QLocalServer>
 
 using namespace QInstaller;
 
@@ -51,88 +54,231 @@ class tst_ClientServer : public QObject
 {
     Q_OBJECT
 
+private:
+    template<typename T>
+    void sendCommand(QIODevice *device, const QByteArray &cmd, T t)
+    {
+        QByteArray data;
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        stream << t;
+        sendPacket(device, cmd, data);
+    }
+
+    template<typename T>
+    void receiveCommand(QIODevice *device, QByteArray *cmd, T *t)
+    {
+        QByteArray data;
+        while (!receivePacket(device, cmd, &data))
+            device->waitForReadyRead(-1);
+        QDataStream stream(&data, QIODevice::ReadOnly);
+        stream >> *t;
+        QCOMPARE(stream.status(), QDataStream::Ok);
+        QVERIFY(stream.atEnd());
+    }
+
 private slots:
     void initTestCase()
     {
         RemoteClient::instance().setActive(true);
     }
 
+    void sendReceivePacket()
+    {
+        QByteArray validPackage;
+        typedef qint32 PackageSize;
+
+        // first try sendPacket ...
+        {
+            QBuffer device(&validPackage);
+            device.open(QBuffer::WriteOnly);
+
+            const QByteArray cmd = "say";
+            const QByteArray data = "hello" ;
+            QInstaller::sendPacket(&device, cmd, data);
+
+            // 1 is delimiter (\0)
+            QCOMPARE(device.buffer().size(), (int)sizeof(PackageSize) + cmd.size() + 1 + data.size());
+            QCOMPARE(device.buffer().right(data.size()), data);
+            QCOMPARE(device.buffer().mid(sizeof(PackageSize), cmd.size()), cmd);
+        }
+
+        // now try successful receivePacket ...
+        {
+            QBuffer device(&validPackage);
+            device.open(QBuffer::ReadOnly);
+
+            QByteArray cmd;
+            QByteArray data;
+            QCOMPARE(QInstaller::receivePacket(&device, &cmd, &data), true);
+
+            QCOMPARE(device.pos(), device.size());
+            QCOMPARE(cmd, QByteArray("say"));
+            QCOMPARE(data, QByteArray("hello"));
+        }
+
+
+        // now try read of incomplete packet ...
+        {
+            QByteArray incompletePackage = validPackage;
+            char toStrip = validPackage.at(validPackage.size() - 1);
+            incompletePackage.resize(incompletePackage.size() - 1);
+            QBuffer device(&incompletePackage);
+            device.open(QBuffer::ReadOnly);
+
+            QByteArray cmd;
+            QByteArray data;
+            QCOMPARE(QInstaller::receivePacket(&device, &cmd, &data), false);
+
+            QCOMPARE(device.pos(), 0);
+            QCOMPARE(cmd, QByteArray());
+            QCOMPARE(data, QByteArray());
+
+            // make packet complete again, retry
+            device.buffer().append(toStrip);
+            QCOMPARE(device.buffer(), validPackage);
+
+            QCOMPARE(QInstaller::receivePacket(&device, &cmd, &data), true);
+
+            QCOMPARE(device.pos(), device.size());
+            QCOMPARE(cmd, QByteArray("say"));
+            QCOMPARE(data, QByteArray("hello"));
+        }
+    }
+
+    void localSocket()
+    {
+        //
+        // test roundtrip of a (big) packet via QLocalSocket
+        //
+        const QString socketName(__FUNCTION__);
+        QLocalServer::removeServer(socketName);
+
+        QEventLoop loop;
+
+        const QByteArray command = "HELLO";
+        const QByteArray message(10905, '0');
+
+        QLocalServer server;
+        { // server
+            QLocalSocket *rcv = 0;
+            auto srvDataArrived = [&]() {
+                QByteArray command, message;
+                if (!receivePacket(rcv, &command, &message))
+                    return;
+                sendPacket(rcv, command, message);
+            };
+
+            connect(&server, &QLocalServer::newConnection, [&,srvDataArrived]() {
+                rcv = server.nextPendingConnection();
+                connect(rcv, &QLocalSocket::readyRead, srvDataArrived);
+            });
+
+            server.listen(socketName);
+        }
+
+
+        QLocalSocket snd;
+        { // client
+            auto clientDataArrived = [&]() {
+                QByteArray cmd, msg;
+                if (!receivePacket(&snd, &cmd, &msg))
+                    return;
+                QCOMPARE(cmd, command);
+                QCOMPARE(msg, message);
+                loop.exit();
+            };
+
+            connect(&snd, &QLocalSocket::readyRead, clientDataArrived);
+
+            QTimer::singleShot(0, [&]() {
+                snd.connect(&snd, &QLocalSocket::connected, [&](){
+                    sendPacket(&snd,  command, message);
+                });
+                snd.connectToServer(socketName);
+            });
+        }
+
+        loop.exec();
+    }
+
+
     void testServerConnectDebug()
     {
         RemoteServer server;
-        server.init(Protocol::DefaultPort, QString(Protocol::DefaultAuthorizationKey),
+        QString socketName = QUuid::createUuid().toString();
+
+        server.init(socketName, QString(Protocol::DefaultAuthorizationKey),
             Protocol::Mode::Debug);
         server.start();
 
-        QTcpSocket socket;
-        socket.connectToHost(QLatin1String(Protocol::DefaultHostAddress), Protocol::DefaultPort);
+        QLocalSocket socket;
+        socket.connectToServer(socketName);
         QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
-        QCOMPARE(socket.state() == QAbstractSocket::ConnectedState, true);
+        QCOMPARE(socket.state() == QLocalSocket::ConnectedState, true);
 
-        QDataStream stream;
-        stream.setDevice(&socket);
-        stream << QString::fromLatin1(Protocol::Authorize) << QString(Protocol::DefaultAuthorizationKey);
+        sendCommand(&socket, Protocol::Authorize, QString(Protocol::DefaultAuthorizationKey));
 
-        socket.waitForBytesWritten(-1);
-        if (!socket.bytesAvailable())
-            socket.waitForReadyRead(-1);
+        {
+            QByteArray command;
+            bool authorized;
+            receiveCommand(&socket, &command, &authorized);
+            QCOMPARE(command, QByteArray(Protocol::Reply));
+            QCOMPARE(authorized, true);
+        }
 
-        quint32 size; stream >> size;
-        bool authorized;
-        stream >> authorized;
-        QCOMPARE(authorized, true);
+        sendCommand(&socket, Protocol::Authorize, QString::fromLatin1("Some Key"));
 
-        socket.flush();
-        stream << QString::fromLatin1(Protocol::Authorize) << QString("SomeKey");
-        socket.waitForBytesWritten(-1);
-        if (!socket.bytesAvailable())
-            socket.waitForReadyRead(-1);
-
-        stream >> size;
-        stream >> authorized;
-        QCOMPARE(authorized, false);
+        {
+            QByteArray command;
+            bool authorized;
+            receiveCommand(&socket, &command, &authorized);
+            QCOMPARE(command, QByteArray(Protocol::Reply));
+            QCOMPARE(authorized, false);
+        }
     }
 
     void testServerConnectRelease()
     {
         RemoteServer server;
-        quint16 port = (30000 + qrand() % 100);
-        server.init(port, QString("SomeKey"), Protocol::Mode::Production);
+        QString socketName = QUuid::createUuid().toString();
+        server.init(socketName, QString("SomeKey"), Protocol::Mode::Production);
         server.start();
 
-        QTcpSocket socket;
-        socket.connectToHost(QLatin1String(Protocol::DefaultHostAddress), port);
+        QLocalSocket socket;
+        socket.connectToServer(socketName);
         QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
-        QCOMPARE(socket.state() == QAbstractSocket::ConnectedState, true);
+        QCOMPARE(socket.state() == QLocalSocket::ConnectedState, true);
 
-        QDataStream stream;
-        stream.setDevice(&socket);
-        stream << QString::fromLatin1(Protocol::Authorize) << QString("SomeKey");
+        sendCommand(&socket, Protocol::Authorize, QString::fromLatin1("SomeKey"));
 
-        socket.waitForBytesWritten(-1);
-        if (!socket.bytesAvailable())
-            socket.waitForReadyRead(-1);
+        {
+            QByteArray command;
+            bool authorized;
+            receiveCommand(&socket, &command, &authorized);
+            QCOMPARE(command, QByteArray(Protocol::Reply));
+            QCOMPARE(authorized, true);
+        }
 
-        quint32 size; stream >> size;
-        bool authorized;
-        stream >> authorized;
-        QCOMPARE(authorized, true);
+        sendCommand(&socket, Protocol::Authorize, QString::fromLatin1(Protocol::DefaultAuthorizationKey));
 
-        socket.flush();
-        stream << QString::fromLatin1(Protocol::Authorize) << QString(Protocol::DefaultAuthorizationKey);
-        socket.waitForBytesWritten(-1);
-        if (!socket.bytesAvailable())
-            socket.waitForReadyRead(-1);
-
-        stream >> size;
-        stream >> authorized;
-        QCOMPARE(authorized, false);
+        {
+            QByteArray command;
+            bool authorized;
+            receiveCommand(&socket, &command, &authorized);
+            QCOMPARE(command, QByteArray(Protocol::Reply));
+            QCOMPARE(authorized, false);
+        }
     }
 
     void testQSettingsWrapper()
     {
         RemoteServer server;
+        QString socketName = QUuid::createUuid().toString();
+        server.init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Production);
         server.start();
+
+        RemoteClient::instance().init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Debug,
+                                      Protocol::StartAs::User);
 
         QSettingsWrapper wrapper("digia", "clientserver");
         QCOMPARE(wrapper.isConnectedToServer(), false);
@@ -247,8 +393,12 @@ private slots:
     void testQProcessWrapper()
     {
         RemoteServer server;
+        QString socketName = QUuid::createUuid().toString();
+        server.init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Production);
         server.start();
 
+        RemoteClient::instance().init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Debug,
+                                      Protocol::StartAs::User);
         {
             QProcess process;
             QProcessWrapper wrapper;
@@ -343,7 +493,12 @@ private slots:
     void testRemoteFileEngine()
     {
         RemoteServer server;
+        QString socketName = QUuid::createUuid().toString();
+        server.init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Production);
         server.start();
+
+        RemoteClient::instance().init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Debug,
+                                      Protocol::StartAs::User);
 
         QString filename;
         {

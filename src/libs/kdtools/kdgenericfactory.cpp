@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt-project.org/legal
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -129,7 +129,7 @@
 /*!
    \fn KDGenericFactory::~KDGenericFactory()
 
-   Destructor.
+   Destroys the generic factory.
 */
 
 /*!
@@ -139,9 +139,26 @@
 */
 
 /*!
+    \typedef KDGenericFactory::FactoryFunctionWithArg
+
+    This typedef defines a factory function producing an object of type T_Product
+    with the arguments specified by \a arg.
+*/
+
+/*!
    \fn KDGenericFactory::registerProduct( const T_Identifier& name )
 
-   Registers a product of type T, identified by \a name in the factory.
+   Registers a product of the type T, identified by \a name in the factory.
+   Any type with the same name gets unregistered.
+
+   If a product was registered via this method, it will be created using its
+   default constructor.
+*/
+
+/*!
+   \fn KDGenericFactory::registerProductWithArg(const T_Identifier &name)
+
+   Registers a product of the type T, identified by \a name, with arguments.
    Any type with the same name gets unregistered.
 
    If a product was registered via this method, it will be created using its
@@ -151,6 +168,14 @@
 /*!
    \fn KDGenericFactory::create( const T_Identifier& name ) const
 
-   Creates and returns a product of the type identified by \a name.
+   Creates and returns a product of the type T identified by \a name.
+   Ownership of the product is transferred to the caller.
+*/
+
+/*!
+   \fn KDGenericFactory::createWithArg(const T_Identifier &name, const T_Argument &arg) const
+
+   Creates and returns a product of the type T identified by \a name with the
+   arguments specified by \a arg.
    Ownership of the product is transferred to the caller.
 */

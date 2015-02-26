@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -37,10 +37,12 @@
 
 #include "errors.h"
 #include "installer_global.h"
+#include "protocol.h"
 
+#include <QCoreApplication>
 #include <QDataStream>
 #include <QObject>
-#include <QTcpSocket>
+#include <QLocalSocket>
 
 namespace QInstaller {
 
@@ -90,20 +92,29 @@ public:
     T callRemoteMethod(const QString &name, const T1 &arg, const T2 &arg2, const T3 &arg3) const
     {
         writeData(name, arg, arg2, arg3);
-        if (!m_socket->bytesAvailable())
-            m_socket->waitForReadyRead(-1);
 
-        quint32 size; m_stream >> size;
-        while (m_socket->bytesAvailable() < size) {
-            if (!m_socket->waitForReadyRead(30000)) {
+        QByteArray command;
+        QByteArray data;
+        while (!receivePacket(m_socket, &command, &data)) {
+            if (!m_socket->waitForReadyRead(-1)) {
                 throw Error(tr("Could not read all data after sending command: %1. "
-                    "Bytes expected: %2, Bytes received: %3. Error: %4").arg(name).arg(size)
+                    "Bytes expected: %2, Bytes received: %3. Error: %4").arg(name).arg(0)
                     .arg(m_socket->bytesAvailable()).arg(m_socket->errorString()));
             }
+#if defined Q_OS_WIN && QT_VERSION < QT_VERSION_CHECK(5,5,0)
+            // work around QTBUG-16688
+            QCoreApplication::processEvents();
+#endif
         }
 
+        Q_ASSERT(command == Protocol::Reply);
+
+        QDataStream stream(&data, QIODevice::ReadOnly);
+
         T result;
-        m_stream >> result;
+        stream >> result;
+        Q_ASSERT(stream.status() == QDataStream::Ok);
+        Q_ASSERT(stream.atEnd());
         return result;
     }
 
@@ -143,16 +154,12 @@ private:
         if (isValueType(arg3))
             out << arg3;
 
-        m_stream << name;
-        m_stream << quint32(data.size());
-        m_stream << data;
-        m_socket->waitForBytesWritten(-1);
+        sendPacket(m_socket, name.toLatin1(), data);
     }
 
 private:
     QString m_type;
-    QTcpSocket *m_socket;
-    mutable QDataStream m_stream;
+    QLocalSocket *m_socket;
 };
 
 } // namespace QInstaller

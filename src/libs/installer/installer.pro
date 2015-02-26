@@ -66,6 +66,7 @@ HEADERS += packagemanagercore.h \
     installiconsoperation.h \
     selfrestartoperation.h \
     settings.h \
+    permissionsettings.h \
     downloadarchivesjob.h \
     init.h \
     adminauthorization.h \
@@ -164,6 +165,7 @@ SOURCES += packagemanagercore.cpp \
     qprocesswrapper.cpp \
     qsettingswrapper.cpp \
     settings.cpp \
+    permissionsettings.cpp \
     packagemanagerproxyfactory.cpp \
     createlocalrepositoryoperation.cpp \
     lib7z_facade.cpp \
@@ -180,6 +182,7 @@ SOURCES += packagemanagercore.cpp \
     unziptask.cpp \
     observer.cpp \
     metadatajob.cpp \
+    protocol.cpp \
     remoteobject.cpp \
     remoteclient.cpp \
     remoteserver.cpp \

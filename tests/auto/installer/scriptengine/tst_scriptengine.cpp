@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2013-2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -94,6 +94,55 @@ public:
 
 private:
     QWidget *m_widget;
+};
+
+class EnteringPage : public PackageManagerPage
+{
+    Q_OBJECT
+    Q_PROPERTY(QStringList invocationOrder READ invocationOrder)
+public:
+    explicit EnteringPage(PackageManagerCore *core)
+        : PackageManagerPage(core)
+    {
+        setObjectName(QLatin1String("EnteringPage"));
+    }
+    QStringList invocationOrder() const {
+        return m_invocationOrder;
+    }
+public slots:
+    Q_INVOKABLE void enteringInvoked() {
+        m_invocationOrder << QLatin1String("Entering");
+    }
+    Q_INVOKABLE void callbackInvoked() {
+        m_invocationOrder << QLatin1String("Callback");
+    }
+
+protected:
+    void entering() {
+        enteringInvoked();
+    }
+private:
+    QStringList m_invocationOrder;
+};
+
+class EnteringGui : public PackageManagerGui
+{
+    Q_OBJECT
+public:
+    explicit EnteringGui(PackageManagerCore *core)
+        : PackageManagerGui(core)
+    {}
+
+    EnteringPage *enteringPage() const {
+        return m_enteringPage;
+    }
+
+    void init() {
+        m_enteringPage = new EnteringPage(packageManagerCore());
+        setPage(0, m_enteringPage);
+    }
+private:
+    EnteringPage *m_enteringPage;
 };
 
 class EmitSignalObject : public QObject
@@ -183,6 +232,9 @@ private slots:
 
     void testBrokenJSMethodConnect()
     {
+#if QT_VERSION <= 0x50400
+        QSKIP("Behavior changed from 5.4.1 onwards");
+#endif
         EmitSignalObject emiter;
         m_scriptEngine->globalObject().setProperty(QLatin1String("emiter"),
             m_scriptEngine->newQObject(&emiter));
@@ -199,11 +251,11 @@ private slots:
         // ignore Output from script
         setExpectedScriptOutput("\"function receive()\"");
 
+        QTest::ignoreMessage(QtWarningMsg, ":10: ReferenceError: foo is not defined");
         emiter.produceSignal();
 
         const QJSValue value = m_scriptEngine->evaluate("");
-        QCOMPARE(value.isError(), true);
-        QCOMPARE(value.toString(), QLatin1String("ReferenceError: foo is not defined"));
+        QCOMPARE(value.isError(), false);
     }
 
     void testScriptPrint()
@@ -375,6 +427,21 @@ private slots:
         QCOMPARE(gui.widget()->property("commit").toString(), QString("false"));
         QCOMPARE(m_core.value("DynamicWidget.complete"), QString("true"));
         QCOMPARE(gui.widget()->property("complete").toString(), QString("true"));
+    }
+
+    void checkEnteringCalledBeforePageCallback()
+    {
+        EnteringGui gui(&m_core);
+        gui.init();
+        setExpectedScriptOutput("Loaded control script \":///data/enteringpage.qs\" ");
+        gui.loadControlScript(":///data/enteringpage.qs");
+        gui.show();
+
+        EnteringPage *enteringPage = gui.enteringPage();
+
+        QStringList expectedOrder;
+        expectedOrder << QLatin1String("Entering") << QLatin1String("Callback");
+        QCOMPARE(enteringPage->invocationOrder(), expectedOrder);
     }
 
 private:

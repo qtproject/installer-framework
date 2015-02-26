@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Free Documentation License Usage
 ** Alternatively, this file may be used under the terms of the GNU Free
@@ -453,7 +453,17 @@
     interfaces, create QTranslator files that the installation system loads
     along with the component. The installer loads the translation file that
     matches the current system locale. For example, if the system locale is
-    German, the de_de.qm file is loaded.
+    German, the de.qm file is loaded. In addition, a localized \c license_de.txt
+    is shown instead of the default \c license.txt if it is found.
+
+    Translations need to be added to the \c package.xml file to be activated for
+    a component:
+
+    \code
+        <Translations>
+            <Translation>de.qm</Translation>
+        </Translations>
+    \endcode
 
     Use the \c {qsTr()} function for literal text within scripts. Additionally,
     you can add the \c Component.prototype.retranslateUi method to the script.
@@ -462,10 +472,11 @@
 
     The context being used for translation is the basename of the script file
     when using \c qsTr or the class name of the UI file when translating a user
-    interface.
+    interface. For example, if the script file is called \c installscript.qs, the
+    context will be installscript.
 
     \note The translation system can also be used to customize the UI. Use e.g.
-    an \c en_en.ts file to replace any text in the installer with a custom English
+    an \c en.ts file to replace any text in the installer with a custom English
     version.
 */
 
@@ -563,8 +574,20 @@
                 \l{Component Dependencies}.
         \row
             \li AutoDependOn
-            \li Opposite of dependencies. Defines that this component should be
-                loaded if all of the specified components are loaded.
+            \li Comma-separated list of identifiers of components that
+                this component has an automatic dependency on.
+                The component is installed if and only if
+                all of the specified dependencies are fulfilled.
+                If a component has an automatic dependency on other components,
+                the check box will not be visible next to the component in the component tree.
+                The selection will be performed automatically.
+                If the component was not installed before, it will
+                be selected for installation only when all components
+                from this list are also selected for installation.
+                If the component was already installed, it will
+                be selected for uninstallation when at least one of the components
+                from this list is also selected for uninstallation.
+                For more information, see \l{Component Dependencies}.
         \row
             \li Virtual
             \li Set to \c true to hide the component from the installer.
@@ -686,11 +709,11 @@
 
     \list
 
-        \li \c installerbase
+        \li \l installerbase
 
-        \li \c binarycreator
+        \li \l binarycreator
 
-        \li \c repogen
+        \li \l repogen
 
     \endlist
 
@@ -1150,7 +1173,7 @@
     <Repository action="remove" url="http://www.example.com/repository" />
     \endcode
 
-    \section2 Replacing repositories
+    \section2 Replacing Repositories
     To replace one repository with another, add a \c <Repository> child element to the
     \c <RepositoryUpdate> element with the following options:
 

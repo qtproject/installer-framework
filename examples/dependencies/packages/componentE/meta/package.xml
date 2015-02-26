@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Component E (forced)</DisplayName>
+    <Description>This is a forced component that is always installed.</Description>
+    <ForcedInstallation>true</ForcedInstallation>
+    <Version>1.0.0</Version>
+    <ReleaseDate>2014-08-25</ReleaseDate>
+    <SortingPriority>60</SortingPriority>
+</Package>

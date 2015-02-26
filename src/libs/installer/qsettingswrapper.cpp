@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -33,8 +33,8 @@
 **************************************************************************/
 
 #include "qsettingswrapper.h"
+#include "permissionsettings.h"
 
-#include <QSettings>
 #include <QStringList>
 
 namespace QInstaller {
@@ -88,7 +88,7 @@ public:
     QString m_organization;
     QSettings::Scope m_scope;
     QSettings::Format m_format;
-    QSettings settings;
+    PermissionSettings settings;
 };
 
 
@@ -318,8 +318,8 @@ QVariant QSettingsWrapper::value(const QString &param1, const QVariant &param2) 
 bool QSettingsWrapper::createSocket() const
 {
     if ((d->m_format != QSettings::NativeFormat) && (d->m_format != QSettings::IniFormat)) {
-        Q_ASSERT_X(false, Q_FUNC_INFO, "Settings wrapper does not support any different format "
-            "then QSettingsWrapper::NativeFormat and QSettingsWrapper::IniFormat.");
+        Q_ASSERT_X(false, Q_FUNC_INFO, "Settings wrapper only supports QSettingsWrapper::NativeFormat"
+                   " and QSettingsWrapper::IniFormat.");
     }
     return (const_cast<QSettingsWrapper *>(this))->connectToServer(QVariantList()
         << d->m_application << d->m_organization << d->m_scope << d->m_format << d->m_filename);

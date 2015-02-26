@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -44,6 +44,12 @@ namespace QInstaller {
 */
 
 /*!
+    \inmodule QtInstallerFramework
+    \namespace TaskRole
+    \brief Contains identifiers for tasks.
+*/
+
+/*!
     \enum TaskRole::TaskRole
 
     \value Checksum
@@ -51,6 +57,80 @@ namespace QInstaller {
     \value SourceFile
     \value TargetFile
     \value UserRole     The first role that can be used for user-specific purposes.
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::FileTaskItem
+    \brief The FileTaskItem class represents an item in a file task object.
+*/
+
+/*!
+    \fn FileTaskItem::FileTaskItem()
+
+    Creates a file task item.
+*/
+
+/*!
+    \fn FileTaskItem::FileTaskItem(const QString &s)
+
+    Creates a file task item using the source specified by \a s.
+*/
+
+/*!
+    \fn FileTaskItem::FileTaskItem(const QString &s, const QString &t)
+
+    Creates a file task item using the source specified by \a s and target
+    specified by \a t.
+*/
+
+/*!
+    \fn FileTaskItem::source() const
+
+    Returns the source file of the file task item.
+*/
+
+/*!
+    \fn FileTaskItem::target() const
+
+    Returns the target file of the file task item.
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::FileTaskResult
+    \brief The FileTaskResult class represents the results of a file task.
+*/
+
+/*!
+    \fn FileTaskResult::FileTaskResult()
+
+    Creates file task results.
+*/
+
+/*!
+    \fn FileTaskResult::FileTaskResult(const QString &t, const QByteArray &c, const FileTaskItem &i)
+
+    Creates file task results using the target file specified by \a t, checksum
+    specified by \a c, and file task item specified by \a i.
+*/
+
+/*!
+    \fn FileTaskResult::target() const
+
+    Returns the target file of the task result.
+*/
+
+/*!
+    \fn FileTaskResult::checkSum() const
+
+    Returns the checksum of the task result.
+*/
+
+/*!
+    \fn FileTaskResult::taskItem() const
+
+    Returns file task items.
 */
 
 /*!

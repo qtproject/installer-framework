@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -52,26 +52,82 @@ namespace QInstaller {
 */
 
 /*!
+    \fn ScriptEngine::globalObject() const
+    Returns a global object.
+*/
+
+/*!
     \qmltype console
     \inqmlmodule scripting
     \brief Provides methods for logging and debugging.
+
+    You can use the \c console object to print log information about installer
+    functions to the console. The following example uses the \c console object
+    \l{console::log()}{log} method and \l installer object
+    \l{installer::isUpdater()}, \l{installer::isUninstaller()}, and
+    \l{installer::isPackageManager()} methods to display a message that
+    indicates whether the maintenance tool is currently being used to update,
+    remove, or add components.
+
+    \code
+    onPackageManagerCoreTypeChanged = function()
+    {
+        console.log("Is Updater: " + installer.isUpdater());
+        console.log("Is Uninstaller: " + installer.isUninstaller());
+        console.log("Is Package Manager: " + installer.isPackageManager());
+    }
+    \endcode
 */
 
 /*!
     \qmlmethod void console::log(string value)
+
+    Prints the string specified by \a value to the console.
 */
 
 /*!
     \qmltype QFileDialog
     \inqmlmodule scripting
+    \brief Provides a dialog that allows users to select files or directories.
+
+    Use the QFileDialog::getExistingDirectory() method to create a modal dialog
+    that displays an existing directory selected by the user. Use the
+    QFileDialog::getOpenFileName() method to create a dialog that displays
+    matching files in the directory selected by the user.
 */
 
 /*!
     \qmlmethod string QFileDialog::getExistingDirectory(string caption, string dir)
+
+    Returns an existing directory selected by the user.
+
+    The dialog's working directory is set to \a dir, and the caption is set to
+    \a caption. Either of these may be an empty string, in which case the
+    current directory and a default caption will be used, respectively.
 */
 
 /*!
     \qmlmethod string QFileDialog::getOpenFileName(string caption, string dir, string filter)
+
+    Returns an existing file selected by the user. If the user selects
+    \uicontrol Cancel, returns a null string.
+
+    The file dialog's caption is set to \a caption. If \c caption is not
+    specified, a default caption is used.
+
+    The file dialog's working directory is set to \a dir. If \c dir includes a
+    file name, the file will be selected. Only files that match the specified
+    \a filter are shown. Either of these may be an empty string.
+
+    To specify multiple filters, separate them with two semicolons (;;). For
+    example:
+
+    \code
+    "Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"
+    \endcode
+
+    On Windows, and OS X, this static function will use the native file dialog
+    and not a QFileDialog.
 */
 
 /*!
@@ -118,10 +174,23 @@ namespace QInstaller {
 /*!
     \qmltype QDesktopServices
     \inqmlmodule scripting
-*/
 
-/*!
-    \qmlproperty enumeration QDesktopServices::QStandardPaths
+    \brief Provides methods for accessing common desktop services.
+
+    Many desktop environments provide services that can be used by applications
+    to perform common tasks, such as opening a file, in a way that is both
+    consistent and takes into account the user's application preferences.
+
+    This object contains methods that provide simple interfaces to these
+    services that indicate whether they succeeded or failed.
+
+    The openUrl() method is used to open files located at arbitrary URLs in
+    external applications. For URLs that correspond to resources on the local
+    filing system (where the URL scheme is "file"), a suitable application is
+    used to open the file.
+
+    The displayName() and storageLocation() methods take one of the following
+    enums as an argument:
 
     \list
         \li DesktopServices.DesktopLocation
@@ -142,18 +211,34 @@ namespace QInstaller {
         \li DesktopServices.GenericCacheLocation
         \li DesktopServices.GenericConfigLocation
     \endlist
+
+    The enum values correspond to the values of the
+    \l{QStandardPaths::StandardLocation} enum with the same names.
+*/
+
+/*!
+    \qmlproperty enumeration QDesktopServices::QStandardPaths
+    \internal
 */
 
 /*!
     \qmlmethod boolean QDesktopServices::openUrl(string url)
+
+    Uses the URL scheme \c file to open the specified \a url with a suitable
+    application.
 */
 
 /*!
     \qmlmethod string QDesktopServices::displayName(int location)
+
+    Returns a localized display name for the specified \a location or an empty
+    QString if no relevant location can be found.
 */
 
 /*!
     \qmlmethod string QDesktopServices::storageLocation(int location)
+
+    Returns the specified \a location.
 */
 
 /*!
@@ -161,6 +246,13 @@ namespace QInstaller {
     \inqmlmodule scripting
 
     \brief Provides access to the installer status and pages from Qt Script.
+
+    For more information about using the \c QInstaller object in control
+    scripts, see \l{Controller Scripting}.
+
+    For examples of using the pages to support end user workflows, see
+    \l{End User Workflows}.
+
 */
 
 /*!
@@ -168,17 +260,25 @@ namespace QInstaller {
 
     The installer has various pre-defined pages that can be used to for example insert pages
     in a certain place:
-    \list
-        \li QInstaller.Introduction
-        \li QInstaller.TargetDirectory
-        \li QInstaller.ComponentSelection
-        \li QInstaller.LicenseCheck
-        \li QInstaller.StartMenuSelection
-        \li QInstaller.ReadyForInstallation
-        \li QInstaller.PerformInstallation
-        \li QInstaller.InstallationFinished
-        \li QInstaller.End
-    \endlist
+
+    \value  QInstaller.Introduction
+            \l{Introduction Page}
+    \value  QInstaller.TargetDirectory
+            \l{Target Directory Page}
+    \value  QInstaller.ComponentSelection
+            \l{Component Selection Page}
+    \value  QInstaller.LicenseCheck
+            \l{License Agreement Page}
+    \value  QInstaller.StartMenuSelection
+            \l{Start Menu Directory Page}
+    \value  QInstaller.ReadyForInstallation
+            \l{Ready for Installation Page}
+    \value  QInstaller.PerformInstallation
+            \l{Perform Installation Page}
+    \value  QInstaller.InstallationFinished
+            \l{Finished Page}
+
+    \omitvalue  QInstaller.End
 */
 
 
@@ -188,19 +288,24 @@ namespace QInstaller {
     Status of the installer.
 
     Possible values are:
-    \list
-        \li QInstaller.Success (deprecated: QInstaller.InstallerSucceeded)
-        \li QInstaller.Failure (deprecated: QInstaller.InstallerFailed)
-        \li QInstaller.Running (deprecated: QInstaller.InstallerFailed)
-        \li QInstaller.Canceled (deprecated: QInstaller.CanceledByUser)
-        \li QInstaller.Unfinished (deprecated: QInstaller.InstallerUnfinished)
-        \li QInstaller.ForceUpdate
-    \endlist
+
+    \value  QInstaller.Success
+            Installation was successful.
+    \value  QInstaller.Failure
+            Installation failed.
+    \value  QInstaller.Running
+            Installation is in progress.
+    \value  QInstaller.Canceled
+            Installation was canceled.
+    \value  QInstaller.Unfinished
+            Installation was not completed.
+    \value  QInstaller.ForceUpdate
 */
 
 /*!
     \qmltype gui
     \inqmlmodule scripting
+    \brief Enables interaction with the installer UI.
 */
 
 /*!
@@ -222,6 +327,13 @@ namespace QInstaller {
 /*!
     \qmlsignal gui::settingsButtonClicked();
 */
+
+QJSValue InstallerProxy::componentByName(const QString &componentName)
+{
+    if (m_core)
+        return m_engine->newQObject(m_core->componentByName(componentName));
+    return QJSValue();
+}
 
 GuiProxy::GuiProxy(ScriptEngine *engine, QObject *parent) :
     QObject(parent),
@@ -253,6 +365,9 @@ void GuiProxy::setPackageManagerGui(PackageManagerGui *gui)
 
 /*!
     \qmlmethod object gui::pageById(int id)
+
+    Returns the installer page specified by \a id. The values of \c id for the
+    available installer pages are provided by QInstaller::WizardPage.
 */
 QJSValue GuiProxy::pageById(int id) const
 {
@@ -263,6 +378,9 @@ QJSValue GuiProxy::pageById(int id) const
 
 /*!
     \qmlmethod object gui::pageByObjectName(string name)
+
+    Returns the installer page specified by \a name. The value of \c name is the
+    object name set in the UI file that defines the installer page.
 */
 QJSValue GuiProxy::pageByObjectName(const QString &name) const
 {
@@ -273,6 +391,8 @@ QJSValue GuiProxy::pageByObjectName(const QString &name) const
 
 /*!
     \qmlmethod object gui::currentPageWidget()
+
+    Returns the current wizard page.
 */
 QJSValue GuiProxy::currentPageWidget() const
 {
@@ -303,6 +423,9 @@ QString GuiProxy::defaultButtonText(int wizardButton) const
 
 /*!
     \qmlmethod void gui::clickButton(int wizardButton, int delayInMs)
+
+    Automatically clicks the button specified by \a wizardButton after a delay
+    in milliseconds specified by \a delayInMs.
 */
 void GuiProxy::clickButton(int wizardButton, int delayInMs)
 {
@@ -421,7 +544,7 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
     QJSValue global = m_engine.globalObject();
     global.setProperty(QLatin1String("console"), m_engine.newQObject(new ConsoleProxy));
     global.setProperty(QLatin1String("QFileDialog"), m_engine.newQObject(new QFileDialogProxy));
-    const QJSValue proxy = m_engine.newQObject(new InstallerProxy(&m_engine, core));
+    const QJSValue proxy = m_engine.newQObject(new InstallerProxy(this, core));
     global.setProperty(QLatin1String("InstallerProxy"), proxy);
     global.setProperty(QLatin1String("print"), m_engine.newQObject(new ConsoleProxy)
         .property(QLatin1String("log")));
@@ -469,13 +592,19 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
     available as properties of the created QJSValue. In addition some helper methods and properties
     are added:
 
-    findChild(), findChildren() recursively search for child objects with the given object name.
-
-    Direct child objects are made accessible as properties under their respective object names.
+    \list
+        \li findChild(), findChildren() recursively search for child objects with the given
+            object name.
+        \li Direct child objects are made accessible as properties under their respective object
+        names.
+    \endlist
  */
 QJSValue ScriptEngine::newQObject(QObject *object)
 {
     QJSValue jsValue = m_engine.newQObject(object);
+    if (!jsValue.isQObject())
+        return jsValue;
+
     QQmlEngine::setObjectOwnership(object, QQmlEngine::CppOwnership);
 
     // add findChild(), findChildren() methods known from QtScript
@@ -497,6 +626,10 @@ QJSValue ScriptEngine::newQObject(QObject *object)
     return jsValue;
 }
 
+/*!
+    Evaluates \a program, using \a lineNumber as the base line number, and returns the results of
+    the evaluation. \a fileName is used for error reporting.
+*/
 QJSValue ScriptEngine::evaluate(const QString &program, const QString &fileName, int lineNumber)
 {
     return m_engine.evaluate(program, fileName, lineNumber);
@@ -526,9 +659,11 @@ void ScriptEngine::removeFromGlobalObject(QObject *object)
     Loads a script into the given \a context at \a fileName inside the ScriptEngine.
 
     The installer and all its components as well as other useful stuff are being exported into the
-    script. Read \link componentscripting Component Scripting \endlink for details.
+    script. For more information, see \l {Component Scripting}.
     Throws Error when either the script at \a fileName could not be opened, or the QScriptEngine
-    couldn't evaluate the script.
+    could not evaluate the script.
+
+    TODO: document \a scriptInjection.
 */
 QJSValue ScriptEngine::loadInContext(const QString &context, const QString &fileName,
     const QString &scriptInjection)
@@ -561,12 +696,13 @@ QJSValue ScriptEngine::loadInContext(const QString &context, const QString &file
 }
 
 /*!
-    Tries to call the method with \a name within the script and returns the result. If the method
-    doesn't exist or is not callable, an undefined result is returned. If the call to the method
+    Tries to call the method specified by \a methodName with the arguments specified by
+    \a arguments within the script and returns the result. If the method does not exist or
+    is not callable, an undefined result is returned. If the call to the method
     succeeds and the return value is still undefined, a null value will be returned instead.
     If the method call has an exception, its string representation is thrown as an Error exception.
 
-    \note The method is not called, if the current script context is the same method, to avoid
+    \note The method is not called if \a scriptContext is the same method, to avoid
     infinite recursion.
 */
 QJSValue ScriptEngine::callScriptMethod(const QJSValue &scriptContext, const QString &methodName,

@@ -5,10 +5,12 @@
         <file>translations/fr.qm</file>
         <file>translations/ja.qm</file>
         <file>translations/ru.qm</file>
+        <file>translations/pl.qm</file>
         <file alias="translations/zh_CN.qm">translations/zh_cn.qm</file>
         <file>translations/qt_fr.qm</file>
         <file alias="translations/qt_de.qm">translations/qtbase_de.qm</file>
         <file alias="translations/qt_ja.qm">translations/qtbase_ja.qm</file>
+        <file>translations/qt_pl.qm</file>
         <file alias="translations/qt_ru.qm">translations/qtbase_ru.qm</file>
         <file>translations/qt_zh_CN.qm</file>
     </qresource>

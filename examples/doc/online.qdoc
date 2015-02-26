@@ -1,0 +1,160 @@
+/****************************************************************************
+**
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example online
+    \ingroup qtifwexamples
+    \title Online Installer Example
+
+    \brief Using the repogen tool and the configuration file to set up an
+    online installer.
+
+    \image qtifw-examples-online.png
+
+    \e{Online Installer} illustrates how to set up an online installer that
+    fetches the original packages and updates to them from a server.
+
+    \include installerfw-examples-configuring.qdocinc
+
+    \list
+        \li The \c <RemoteRepositories> element is specific to an online
+            installer. It can contain one or several \c <Repository> child
+            elements that specify a connection to an online repository. For more
+            information about the available options, see
+            \l{Configuring Repositories}.
+    \endlist
+
+    \quotefile online/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Default> element is set to \c true to preselect the
+            component in the installer.
+    \endlist
+
+    \quotefile online/packages/A/meta/package.xml
+
+    This installer contains two components, A and B, that each have their own
+    package information file with slightly different contents.
+
+    \section1 Generating the Online Repository
+
+    The packages need to be converted to a file structure that the installer can
+    fetch at runtime. To use the \c repogen tool to convert the packages, switch
+    to the example source directory on the command line and enter the following
+    command:
+
+    \list
+        \li On Windows:
+            \code
+            ..\..\bin\repogen.exe -p packages repository
+            \endcode
+        \li On Linux or OS X:
+            \code
+            ../../bin/repogen -p packages repository
+            \endcode
+    \endlist
+
+    The generated \c repository directory will now contain a full copy of the
+    package data and some additionally generated metadata, such as SHA
+    checksums.
+
+    The directory now needs to be made available at the URL set in
+    \c config.xml: \c{http://localhost/repository}. How this is done depends on
+    the platform and web server used. If you do not have a running web server
+    yet, but have Python available, you should be able to start a minimal web
+    server from the command line. Make sure you are in the example directory,
+    and then enter:
+
+    \code
+        python -m SimpleHTTPServer 80
+    \endcode
+
+    You should now be able to open and explore \l{http://localhost/repository}
+    in your web browser.
+
+    \note If you do not have enough permissions to set up a web server locally,
+    you can also specify an absolute \c{file:///} URL as the value of the \c URL
+    element in \c config.xml. For example,
+    \c file:///C:/Qt/QtIFW/examples/online/repository would be a valid URL on
+    Windows if \c repository is located in \c C:\Qt\QtIFW\examples\online.
+
+    \section1 Generating the Example Installer
+
+    To create the example installer, switch to the example source directory on
+    the command line and enter the following command:
+
+    \list
+        \li On Windows:
+            \code
+            ..\..\bin\binarycreator.exe --online-only -c config\config.xml -p packages installer.exe
+            \endcode
+        \li On Linux or OS X:
+            \code
+            ../../bin/binarycreator --online-only -c config/config.xml -p packages installer
+            \endcode
+    \endlist
+
+    You should now be able to run the installer and install from the repository.
+
+    \section1 Providing Updates
+
+    A benefit of using an online installer is that you can add new packages over
+    time or update the existing ones. During new installations, the new and
+    updated packages are automatically used, and existing installations can be
+    upgraded to use them.
+
+    To update a package, you need to increase its \c <Version> element in
+    \c package.xml. The \c packages_update directory in the example folder is
+    a copy of \c the package directory, with an updated component
+    A. To deploy an update, you again use \c{repogen}:
+
+    \list
+        \li On Windows:
+            \code
+            ..\..\bin\repogen.exe --update-new-components -p packages_update repository
+            \endcode
+        \li On Linux or OS X:
+            \code
+            ../../bin/repogen --update-new-components -p packages_update repository
+            \endcode
+    \endlist
+
+    \c {--update-new-components} lets \c {repogen} compare the version
+    numbers of components in the repository and the packages directory, and
+    only updates packages that are new, or have a higher version number.
+    See also the \l{Summary of repogen Parameters}.
+
+    If you then run the maintenance tool from the previous installation and
+    select \gui {Update Components}, you should see that an update of package
+    \c A is available.
+
+    For more information on providing updates, see \l {Promoting Updates}.
+
+    \image qtifw-examples-online-1.png
+*/

@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt-project.org/legal
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -45,20 +45,47 @@ using namespace KDUpdater;
 /*!
     \inmodule kdupdater
     \namespace KDUpdater
-    \brief The KDUpdater classes where initially developed by KDAB to help provide automatic
-           updates for your applications. Now they are solely part of the Qt Installer Framework.
+    \brief The KDUpdater classes provide functions to automatically detect
+    updates to applications, to retrieve them from external repositories, and to
+    install them.
+
+    KDUpdater classes are a fork of KDAB's general
+    \l{http://docs.kdab.com/kdtools/2.2.2/group__kdupdater.html}{KDUpdater module}.
+*/
+
+/*!
+    \class KDUpdater::ConfigurationInterface
+    \inmodule kdupdater
+    \brief The ConfigurationInterface class provides an interface for configuring
+    an application.
+*/
+
+/*!
+    \fn KDUpdater::ConfigurationInterface::~ConfigurationInterface()
+    Destroys the configuration interface.
+*/
+
+/*!
+    \fn KDUpdater::ConfigurationInterface::value(const QString &key) const
+    Returns the value of the key \a key.
+*/
+
+/*!
+    \fn KDUpdater::ConfigurationInterface::setValue(const QString &key, const QVariant &value)
+    Sets the value \a value for the key \a key.
 */
 
 /*!
     \class KDUpdater::Application
     \inmodule kdupdater
-    \brief The \c Application class represents an application that can be updated.
+    \brief The Application class represents an application that can be updated.
 
     A KDUpdater application is an application that interacts with one or more update servers and
     downloads or installs updates. This class helps in describing an application in terms of:
     \list
         \li Application Directory
-        \li Packages XML file name and its corresponding KDUpdater::PackagesInfo object
+        \li Installation information XML file name and its corresponding
+            KDUpdater::PackagesInfo object
         \li Update sources XML file name and its corresponding KDUpdater::UpdateSourcesInfo object
     \endlist
 
@@ -106,8 +133,7 @@ struct Application::ApplicationData
 Application *Application::ApplicationData::instance = 0;
 
 /*!
-    Constructs the \c Application class and configures it to assume the application directory to be
-    the directory in which the application exists.
+    Constructs an application with the parent \a p and configuration class \a config.
 */
 Application::Application(ConfigurationInterface* config, QObject* p) : QObject(p)
 {
@@ -121,7 +147,7 @@ Application::Application(ConfigurationInterface* config, QObject* p) : QObject(p
 }
 
 /*!
-    Destructor
+    Destroys the application.
 */
 Application::~Application()
 {
@@ -131,7 +157,7 @@ Application::~Application()
 }
 
 /*!
-    Returns a previously created \c Application instance.
+    Returns a previously created application instance.
 */
 Application *Application::instance()
 {
@@ -139,8 +165,8 @@ Application *Application::instance()
 }
 
 /*!
-    Sets the application directory path directory to \a dir. The package XML and update sources
-    XML files found in the new application directory will be used.
+    Sets the application directory path directory to \a dir. The installation information and
+    update sources XML files found in the new application directory will be used.
 */
 void Application::setApplicationDirectory(const QString &dir)
 {
@@ -186,7 +212,8 @@ QString Application::applicationVersion() const
 }
 
 /*!
-    Adds update source info to this class.
+    Adds the \a name, \a title, \a description, \a url, and \a priority of the
+    update source to this class.
 
     \sa KDUpdater::UpdateSourceInfo
     \sa KDUpdater::UpdateSourcesInfo
@@ -205,8 +232,8 @@ void Application::addUpdateSource(const QString &name, const QString &title,
 
 
 /*!
-    Sets the file name of the package XML file for this application to \a fileName. By default,
-    this is assumed to be Packages.xml in the application directory.
+    Sets the file name of the installation information XML file for this application to \a fileName.
+    By default, this is assumed to be Packages.xml in the application directory.
 
    \sa KDUpdater::PackagesInfo::setFileName()
 */
@@ -216,7 +243,7 @@ void Application::setPackagesXMLFileName(const QString &fileName)
 }
 
 /*!
-    Returns the package XML file name.
+    Returns the installation information XML file name.
 */
 QString Application::packagesXMLFileName() const
 {
@@ -232,8 +259,9 @@ PackagesInfo* Application::packagesInfo() const
 }
 
 /*!
-    Sets the file name of the update sources XML file for this application. By default, this is
-    assumed to be UpdateSources.xml in the application directory.
+    Sets \a fileName as the file name of the update sources XML file for this
+    application. By default, this is assumed to be UpdateSources.xml in the
+    application directory.
 
    \sa KDUpdater::UpdateSourcesInfo::setFileName()
 */
@@ -258,16 +286,25 @@ UpdateSourcesInfo* Application::updateSourcesInfo() const
     return d->updateSourcesInfo;
 }
 
+/*!
+    Prints the error code \a errorCode and error message specified by \a error.
+*/
 void Application::printError(int errorCode, const QString &error)
 {
     qDebug() << errorCode << error;
 }
 
+/*!
+    Returns a list of files that are scheduled for delayed deletion.
+*/
 QStringList Application::filesForDelayedDeletion() const
 {
     return d->filesForDelayedDeletion;
 }
 
+/*!
+    Schedules \a files for delayed deletion.
+*/
 void Application::addFilesForDelayedDeletion(const QStringList &files)
 {
     d->filesForDelayedDeletion << files;

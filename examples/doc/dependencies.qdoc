@@ -1,0 +1,118 @@
+/****************************************************************************
+**
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example dependencies
+    \ingroup qtifwexamples
+    \title Dependency Solving Example
+
+    \brief Using components' package.xml files to define dependencies and
+    automatic dependencies between components.
+
+    \image qtifw-examples-dependencies.png
+
+    \e{Dependency Solving} illustrates how to specify dependencies and automatic
+    dependencies between components in the package information files and how
+    that influences the installation and maintenance processes.
+
+    \include installerfw-examples-configuring.qdocinc
+
+    \list
+        \li The \c <CreateLocalRepository> element is set to \c true to create
+            a local repository. This enables end users to run the maintenance
+            tool after the initial installation to install additional components
+            or to uninstall components. The changes in the installation will
+            respect the dependencies defined in the example.
+    \endlist
+
+    \quotefile dependencies/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <SortingPriority> element specifies the location of the
+            component in the component tree. The tree is sorted from highest to
+            lowest priority, with the highest priority on the top.
+    \endlist
+
+    In this example, the package.xml files for the components contain additional
+    elements that specify the dependencies. The following sections illustrate
+    how the elements are used.
+
+    \section1 Specifying Dependencies on Other Components
+
+    We define a dependency for \e{Component C} on \e{Component A} and
+    \e{Component B}. Thus, if we select Component C for installation, both
+    Component A and Component B are installed as well. We define the
+    dependencies in the \c <Dependencies> element in Component C's package.xml
+    file as a comma-separated list of the identifiers of the components that
+    this component depends on:
+
+    \quotefile dependencies/packages/componentC/meta/package.xml
+
+    \section1 Specifying Automatic Dependencies on Other Components
+
+    We define an automatic dependency for \e{Component D} on Component A and
+    Component B. Thus, if Component A and Component B are both marked for
+    installation, Component D is automatically installed as well.
+    We define the automatic dependency in the \c <AutoDependOn> element in
+    Component D's package.xml file:
+
+    \quotefile dependencies/packages/componentD/meta/package.xml
+
+    \section1 Forcing the Installation of a Component
+
+    We define that \e{Component E} is always automatically installed and the end
+    user cannot deselect it. To define this, we set the \c <ForcedInstallation>
+    element to \c true in Component E's package.xml file:
+
+    \quotefile dependencies/packages/componentE/meta/package.xml
+
+    \section1 Installing Components by Default
+
+    We define a dependency for \e{Component G} on Component A, and we mark G as
+    a default component. Thus, Component G is marked for installation by
+    default, and so is Component A, because it is required by G. To define this,
+    we set the value of the \c <Default> element to \c true in Component G's
+    package.xml file:
+
+    \quotefile dependencies/packages/componentG/meta/package.xml
+
+    \section1 Solving the Dependencies
+
+    Selecting component C for installation also selects the following
+    components:
+
+    \list
+        \li Component A and Component B, because Component C requires them.
+        \li Component D, because both Component A and Component B are marked for
+            installation and thus the conditions for installing Component D are
+            met.
+    \endlist
+
+    \include installerfw-examples-generating.qdocinc
+*/

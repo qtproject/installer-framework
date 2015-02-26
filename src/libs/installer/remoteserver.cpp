@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -68,14 +68,22 @@ RemoteServer::~RemoteServer()
 void RemoteServer::start()
 {
     Q_D(RemoteServer);
-    if (d->m_tcpServer)
+    if (d->m_localServer)
         return;
 
-    d->m_tcpServer = new TcpServer(d->m_port, d->m_key);
-    d->m_tcpServer->moveToThread(&d->m_thread);
-    connect(&d->m_thread, SIGNAL(finished()), d->m_tcpServer, SLOT(deleteLater()));
-    connect(d->m_tcpServer, SIGNAL(newIncomingConnection()), this, SLOT(restartWatchdog()));
-    connect(d->m_tcpServer, SIGNAL(shutdownRequested()), this, SLOT(deleteLater()));
+#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
+    // avoid writing to stderr:
+    // the parent process has redirected stderr to a pipe to work with sudo,
+    // but is not reading anymore -> writing to stderr will block after a while.
+    if (d->m_mode == Protocol::Mode::Production)
+        fclose(stderr);
+#endif
+
+    d->m_localServer = new LocalServer(d->m_socketName, d->m_key);
+    d->m_localServer->moveToThread(&d->m_thread);
+    connect(&d->m_thread, SIGNAL(finished()), d->m_localServer, SLOT(deleteLater()));
+    connect(d->m_localServer, SIGNAL(newIncomingConnection()), this, SLOT(restartWatchdog()));
+    connect(d->m_localServer, SIGNAL(shutdownRequested()), this, SLOT(deleteLater()));
     d->m_thread.start();
 
     if (d->m_mode == Protocol::Mode::Production) {
@@ -85,24 +93,24 @@ void RemoteServer::start()
 }
 
 /*!
-    Initializes the server with \a port, the port to listen on, with \a key, the key the client
+    Initializes the server with \a socketName, with \a key, the key the client
     needs to send to authenticate with the server, and \a mode.
 */
-void RemoteServer::init(quint16 port, const QString &key, Protocol::Mode mode)
+void RemoteServer::init(const QString &socketName, const QString &key, Protocol::Mode mode)
 {
     Q_D(RemoteServer);
-    d->m_port = port;
+    d->m_socketName = socketName;
     d->m_key = key;
     d->m_mode = mode;
 }
 
 /*!
-    Returns the port the server is listening on.
+    Returns the socket name the server is listening on.
 */
-quint16 RemoteServer::port() const
+QString RemoteServer::socketName() const
 {
     Q_D(const RemoteServer);
-    return d->m_port;
+    return d->m_socketName;
 }
 
 /*!

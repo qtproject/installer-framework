@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -166,8 +166,8 @@
 /*!
     \qmlsignal installer::metaJobProgress(int progress)
 
-    Triggered with progress updates of the while communicating with a remote repository. Progress
-    ranges from 0 to 100.
+    Triggered with progress updates of the communication with a remote
+    repository. Progress ranges from 0 to 100.
 */
 
 /*!
@@ -496,7 +496,7 @@ void PackageManagerCore::setMessageBoxAutomaticAnswer(const QString &identifier,
         static_cast<QMessageBox::Button>(button));
 }
 
-quint64 size(QInstaller::Component *component, const QString &value)
+quint64 PackageManagerCore::size(QInstaller::Component *component, const QString &value) const
 {
     if (component->installAction() == ComponentModelHelper::Install)
         return component->value(value).toLongLong();
@@ -591,8 +591,8 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 }
 
 /*!
-    If a component marked as important was installed during update
-    process true is returned.
+    Returns \c true if a component marked as essential was installed during the
+    update process.
 */
 bool PackageManagerCore::needsHardRestart() const
 {
@@ -720,7 +720,7 @@ PackageManagerCore::PackageManagerCore()
 }
 
 PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &operations,
-        quint16 port, const QString &key, Protocol::Mode mode)
+        const QString &socketName, const QString &key, Protocol::Mode mode)
     : d(new PackageManagerCorePrivate(this, magicmaker, operations))
 {
     Repository::registerMetaType(); // register, cause we stream the type as QVariant
@@ -729,7 +729,7 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
 
     // Creates and initializes a remote client, makes us get admin rights for QFile, QSettings
     // and QProcess operations. Init needs to called to set the server side authorization key.
-    RemoteClient::instance().init(port, key, mode, Protocol::StartAs::SuperUser);
+    RemoteClient::instance().init(socketName, key, mode, Protocol::StartAs::SuperUser);
 
     d->initialize(QHash<QString, QString>());
 
@@ -1062,7 +1062,7 @@ void PackageManagerCore::setValidatorForCustomPage(Component *component, const Q
 /*!
     \qmlmethod boolean installer::addWizardPageItem(Component component, string name, int page)
 
-    Adds the widget with objectName() \a name registered by \a component as an GUI element
+    Adds the widget with objectName() \a name registered by \a component as a GUI element
     into the installer's GUI wizard. The widget is added on \a page.
 
     See \l{Controller Scripting} for the possible values of \a page.
@@ -1129,7 +1129,8 @@ void PackageManagerCore::setTemporaryRepositories(const QStringList &repositorie
 }
 
 /*!
-    Checks if the downloader should try to download sha1 checksums for archives.
+    Checks whether the downloader should try to download SHA-1 checksums for
+    archives.
 */
 bool PackageManagerCore::testChecksum() const
 {
@@ -1137,7 +1138,8 @@ bool PackageManagerCore::testChecksum() const
 }
 
 /*!
-    Defines if the downloader should try to download sha1 checksums for archives.
+    The \a test argument determines whether the downloader should try to
+    download SHA-1 checksums for archives.
 */
 void PackageManagerCore::setTestChecksum(bool test)
 {
@@ -1155,8 +1157,9 @@ ScriptEngine *PackageManagerCore::controlScriptEngine() const
 }
 
 /*!
-    Appends a component as root component to the internal storage for installer or package manager components.
-    To append a component as a child to an already existing component, use Component::appendComponent(). Emits
+    Appends \a component as the root component to the internal storage for
+    installer or package manager components. To append a component as a child to
+    an already existing component, use Component::appendComponent(). Emits
     the componentAdded() signal.
 */
 void PackageManagerCore::appendRootComponent(Component *component)
@@ -1222,7 +1225,8 @@ QList<Component *> PackageManagerCore::components(ComponentTypes mask) const
 }
 
 /*!
-    Appends a component to the internal storage for updater components. Emits the componentAdded() signal.
+    Appends \a component to the internal storage for updater components. Emits
+    the componentAdded() signal.
 */
 void PackageManagerCore::appendUpdaterComponent(Component *component)
 {
@@ -1326,7 +1330,7 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
     Calculates a list of components to uninstall based on the current run mode. Auto installed
     dependencies are not yet resolved.  The aboutCalculateComponentsToUninstall() signal is emitted
     before the calculation starts, the finishedCalculateComponentsToUninstall() signal once all
-    calculations are done. Returns always true.
+    calculations are done. Always returns \c true.
 */
 bool PackageManagerCore::calculateComponentsToUninstall() const
 {
@@ -1363,9 +1367,13 @@ QString PackageManagerCore::componentsToInstallError() const
 }
 
 /*!
-    Returns the reason why the component needs to be installed. Reasons can be: The component was scheduled
-    for installation, the component was added as a dependency for an other component or added as an automatic
-    dependency.
+    Returns the reason why \a component needs to be installed:
+
+    \list
+        \li The component was scheduled for installation.
+        \li The component was added as a dependency for another component.
+        \li The component was added as an automatic dependency.
+    \endlist
 */
 QString PackageManagerCore::installReason(Component *component) const
 {
@@ -1373,8 +1381,10 @@ QString PackageManagerCore::installReason(Component *component) const
 }
 
 /*!
-    Returns a list of components that depend on \a component. The list can be empty. Note: Auto
-    installed dependencies are not resolved.
+    Returns a list of components that depend on \a _component. The list can be
+    empty.
+
+    \note Automatic dependencies are not resolved.
 */
 QList<Component*> PackageManagerCore::dependees(const Component *_component) const
 {
@@ -1462,7 +1472,7 @@ void PackageManagerCore::dropAdminRights()
 /*!
     \qmlmethod boolean installer::isProcessRunning(string name)
 
-    Returns true, if a process with \a name is running. On Windows, the comparison
+    Returns \c true if a process with \a name is running. On Windows, the comparison
     is case-insensitive.
 */
 bool PackageManagerCore::isProcessRunning(const QString &name) const
@@ -1473,7 +1483,8 @@ bool PackageManagerCore::isProcessRunning(const QString &name) const
 /*!
     \qmlmethod boolean installer::killProcess(string absoluteFilePath)
 
-    Returns true, if a process with \a absoluteFilePath could be killed or isn't running
+    Returns \c true if a process with \a absoluteFilePath could be killed or is
+    not running.
 
     \note This is implemented in a semi blocking way (to keep the main thread to paint the UI).
 */
@@ -1624,7 +1635,7 @@ bool PackageManagerCore::executeDetached(const QString &program, const QStringLi
 /*!
     \qmlmethod string installer::environmentVariable(string name)
 
-    Returns content of an environment variable \a name. An empty string is returned if the
+    Returns the content of the environment variable \a name. An empty string is returned if the
     environment variable is not set.
 */
 QString PackageManagerCore::environmentVariable(const QString &name) const
@@ -1667,7 +1678,7 @@ bool PackageManagerCore::operationExists(const QString &name)
 /*!
     \qmlmethod boolean installer::performOperation(string name, stringlist arguments)
 
-    Instantly performs an operation \a name with \a arguments.
+    Instantly performs the operation \a name with \a arguments.
 */
 bool PackageManagerCore::performOperation(const QString &name, const QStringList &arguments)
 {
@@ -1688,7 +1699,7 @@ bool PackageManagerCore::performOperation(const QString &name, const QStringList
     \qmlmethod boolean installer::versionMatches(string version, string requirement)
 
     Returns \c true when \a version matches the \a requirement.
-    \a requirement can be a fixed version number or it can be prefix by the comparators '>', '>=',
+    \a requirement can be a fixed version number or it can be prefixed by the comparators '>', '>=',
     '<', '<=' and '='.
 */
 bool PackageManagerCore::versionMatches(const QString &version, const QString &requirement)
@@ -1784,7 +1795,8 @@ QString PackageManagerCore::findPath(const QString &name, const QStringList &pat
     Sets the "installerbase" binary to use when writing the maintenance tool.
     Set this if an update to installerbase is available.
 
-    If not set, the executable segment of the running un/installer will be used.
+    If not set, the executable segment of the running installer or uninstaller
+    will be used.
 */
 void PackageManagerCore::setInstallerBaseBinary(const QString &path)
 {
@@ -1896,8 +1908,8 @@ QString PackageManagerCore::error() const
 }
 
 /*!
-    Returns \c true if at least one complete installation/update was successful, even if the user cancelled the
-    newest installation process.
+    Returns \c true if at least one complete installation or update was
+    successful, even if the user cancelled the latest installation process.
 */
 bool PackageManagerCore::finishedWithSuccess() const
 {
@@ -1939,7 +1951,8 @@ QString PackageManagerCore::replaceVariables(const QString &str) const
 
 /*!
     \overload
-    Replaces all variables in any of \a str by their respective values and returns the results.
+    Replaces all variables in any instance of \a str by their respective values
+    and returns the results.
 */
 QStringList PackageManagerCore::replaceVariables(const QStringList &str) const
 {
@@ -2109,7 +2122,8 @@ void PackageManagerCore::languageChanged()
 }
 
 /*!
-    Runs the installer, un-installer, updater or package manager, depending on the type of this binary.
+    Runs the installer, uninstaller, updater, or package manager, depending on
+    the type of this binary.
 */
 bool PackageManagerCore::run()
 {

@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt-project.org/legal
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -49,7 +49,9 @@ using namespace KDUpdater;
    be created and its reference can be fetched from the instance() method.
 */
 
-
+/*!
+    Returns the file downloader factory instance.
+*/
 FileDownloaderFactory& FileDownloaderFactory::instance()
 {
     static KDUpdater::FileDownloaderFactory theFactory;
@@ -57,7 +59,7 @@ FileDownloaderFactory& FileDownloaderFactory::instance()
 }
 
 /*!
-    Constructor
+    Constructs a file downloader factory and registers the default file downloader set.
 */
 FileDownloaderFactory::FileDownloaderFactory()
     : d (new FileDownloaderFactoryData)
@@ -78,42 +80,66 @@ FileDownloaderFactory::FileDownloaderFactory()
     d->m_followRedirects = false;
 }
 
+/*!
+    Returns whether redirects should be followed.
+*/
 bool FileDownloaderFactory::followRedirects()
 {
     return FileDownloaderFactory::instance().d->m_followRedirects;
 }
 
+/*!
+    Determines that redirects should be followed if \a val is \c true.
+*/
 void FileDownloaderFactory::setFollowRedirects(bool val)
 {
     FileDownloaderFactory::instance().d->m_followRedirects = val;
 }
 
+/*!
+    Sets \a factory as the file downloader proxy factory.
+*/
 void FileDownloaderFactory::setProxyFactory(FileDownloaderProxyFactory *factory)
 {
     delete FileDownloaderFactory::instance().d->m_factory;
     FileDownloaderFactory::instance().d->m_factory = factory;
 }
 
+/*!
+    Returns \c true if SSL errors should be ignored.
+*/
 bool FileDownloaderFactory::ignoreSslErrors()
 {
     return FileDownloaderFactory::instance().d->m_ignoreSslErrors;
 }
 
+/*!
+    Determines that SSL errors should be ignored if \a ignore is \c true.
+*/
 void FileDownloaderFactory::setIgnoreSslErrors(bool ignore)
 {
     FileDownloaderFactory::instance().d->m_ignoreSslErrors = ignore;
 }
 
+/*!
+    Destroys the file downloader factory.
+*/
 FileDownloaderFactory::~FileDownloaderFactory()
 {
     delete d;
 }
 
+/*!
+    Returns a list of supported schemes.
+*/
 QStringList FileDownloaderFactory::supportedSchemes()
 {
     return FileDownloaderFactory::instance().d->m_supportedSchemes;
 }
 
+/*!
+    Returns \c true if \a scheme is a supported scheme.
+*/
 bool FileDownloaderFactory::isSupportedScheme(const QString &scheme)
 {
     return FileDownloaderFactory::instance().d->m_supportedSchemes.contains(scheme
@@ -121,8 +147,9 @@ bool FileDownloaderFactory::isSupportedScheme(const QString &scheme)
 }
 
 /*!
-     Returns a new instance of a KDUpdater::FileDownloader subclass. The subclass is instantiated
-     based on the communication protocol string stored in \a scheme.
+     Returns a new instance of a KDUpdater::FileDownloader subclass. The
+     instantiation of a subclass depends on the communication protocol string
+     stored in \a scheme with the parent \a parent.
 
      \note Ownership of the created object remains with the programmer.
 */
@@ -146,4 +173,27 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *pa
     Registers a new file downloader with the factory based on \a scheme. If there is already
     a downloader with the same scheme, the downloader is replaced. When create() is called
     with that \a scheme, the file downloader is constructed using its default constructor.
+*/
+
+/*!
+    \inmodule kdupdater
+    \class KDUpdater::FileDownloaderProxyFactory
+    \brief The FileDownloaderProxyFactory class provides fine-grained proxy selection.
+
+    File downloader objects use a proxy factory to determine a more specific
+    list of proxies to be used for a given request, instead of trying to use the
+    same proxy value for all requests. This might only be of use for HTTP or FTP
+    requests.
+*/
+
+/*!
+    \fn FileDownloaderProxyFactory::~FileDownloaderProxyFactory()
+
+    Destroys the file downloader proxy factory.
+*/
+
+/*!
+    \fn FileDownloaderProxyFactory::clone() const
+
+    Clones a file downloader proxy factory.
 */

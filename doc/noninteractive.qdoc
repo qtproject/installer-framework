@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Free Documentation License Usage
 ** Alternatively, this file may be used under the terms of the GNU Free
@@ -40,6 +40,8 @@
     It also gives an overview of installer pages and the widgets that are available on each
     page, such as push buttons, radio buttons, and line edits.
 
+    \section1 Writing Control Scripts
+
     A minimal valid script needs to contain at least a constructor, which can look like this:
     \code
         function Controller()
@@ -47,7 +49,11 @@
         }
     \endcode
 
-    A bit more advanced script is presented here:
+    The following example presents a more advanced script that uses the \l gui
+    JavaScript global object methods to set a new page title and welcome message
+    on the introduction page and to automatically click the \uicontrol Next
+    button on the target directory page:
+
     \code
         function Controller()
         {
@@ -68,8 +74,33 @@
         }
     \endcode
 
+    For more information about the JavaScript global objects that you can use
+    in control scripts, see \l{Scripting API}.
 
-    \section1 Introduction Page
+    \section1 Predefined Installer Pages
+
+    The QInstaller JavaScript object provides access to the following predefined
+    installer pages:
+
+    \list
+        \li \c Introduction
+        \li \c TargetDirectory
+        \li \c ComponentSelection
+        \li \c LicenseCheck
+        \li \c StartMenuSelection
+        \li \c ReadyForInstallation
+        \li \c PerformInstallation
+        \li \c InstallationFinished
+    \endlist
+
+    The \l buttons JavaScript object provides a set of buttons that can be used
+    on installer pages.
+
+    The following sections describe the functions that you can implement to
+    interact with installer pages and the widgets that are available on each
+    page.
+
+    \section2 Introduction Page
 
     Implement the \c Controller.prototype.IntroductionPageCallback() function to interact with
     widgets on the introduction page.
@@ -87,16 +118,16 @@
 
         \row
         \li \c ErrorLabel
-        \li Can be used to show an error message.
+        \li Displays an error message.
 
         \row
         \li \c MessageLabel
-        \li Can be used to show a message. By default, it shows the
+        \li Displays a message. By default, it displays the
             "Welcome to the \l{ProductNameTarget}{<Name>} Setup Wizard" message.
 
         \row
         \li \c InformationLabel
-        \li Label to show some progress information.
+        \li Displays progress information.
     \endtable
 
     \table
@@ -159,7 +190,7 @@
     \endcode
 
 
-    \section1 License Agreement Page
+    \section2 License Agreement Page
 
     Implement the \c Controller.prototype.LicenseAgreementPageCallback() function to interact with
     widgets on the license agreement page.
@@ -186,7 +217,7 @@
 
         \row
         \li \c AcceptLicenseLabel
-        \li Shows the text next to the accept radio license button.
+        \li Shows the text next to the accept license radio button.
 
         \row
         \li \c RejectLicenseLabel
@@ -207,16 +238,16 @@
         \li Rejects the license agreement. Selected by default.
     \endtable
 
-    \section1 Target Directory Page
+    \section2 Target Directory Page
 
     Implement the \c Controller.prototype.TargetDirectoryPageCallback() function to interact with
     widgets on the target directory selection page.
 
     Wizard buttons:
     \list
-        \li \c Next
-        \li \c Cancel
-        \li \c Back
+        \li \c NextButton
+        \li \c CancelButton
+        \li \c BackButton
     \endlist
 
     \table
@@ -226,18 +257,18 @@
 
         \row
         \li \c MessageLabel
-        \li Can be used to show a message.
+        \li Displays a message.
 
         \row
         \li \c TargetDirectoryLineEdit
-        \li Shows the value of the installation's target directory.
+        \li Displays the value of the installation's target directory.
 
         \row
         \li \c WarningLabel
-        \li Can be used to show a warning.
+        \li Displays a warning.
     \endtable
 
-    \section1 Component Selection Page
+    \section2 Component Selection Page
 
     Implement the \c Controller.prototype.ComponentSelectionPageCallback() function to interact
     with widgets on the component selection page.
@@ -294,11 +325,11 @@
 
         \row
             \li \c ResetComponentsButton
-            \li Reset to already installed components.
+            \li Resets to already installed components.
     \endtable
 
 
-    \section1 Start Menu Directory Page
+    \section2 Start Menu Directory Page
 
     Implement the \c Controller.prototype.StartMenuDirectoryPage() function to interact with
     widgets on the ready for installation page.
@@ -321,7 +352,7 @@
     \endtable
 
 
-    \section1 Ready for Installation Page
+    \section2 Ready for Installation Page
 
     Implement the \c Controller.prototype.ReadyForInstallationPageCallback() function to interact
     with widgets on the ready for installation page.
@@ -340,14 +371,14 @@
 
         \row
         \li \c MessageLabel
-        \li Can be used to show a message.
+        \li Displays a message.
 
         \row
         \li \c TaskDetailsBrowser
-        \li Shows some more detailed information about the installation.
+        \li Displays some more detailed information about the installation.
     \endtable
 
-    \section1 Perform Installation Page
+    \section2 Perform Installation Page
 
     Implement the \c Controller.prototype.PerformInstallationPageCallback() function to interact
     with widgets on the perform installation page.
@@ -359,7 +390,7 @@
     \endlist
 
 
-    \section1 Finished Page
+    \section2 Finished Page
 
     Implement the \c Controller.prototype.FinishedPageCallback() function to interact with widgets
     on the installation finished page.
@@ -378,11 +409,11 @@
 
         \row
         \li \c MessageLabel
-        \li Can be used to show a message.
+        \li Displays a message.
 
         \row
         \li \c RunItCheckBox
-        \li Text field to shows some information that the user can start an application after
+        \li Text field that informs users that they can start an application after
             the installation process has finished.
     \endtable
 
@@ -412,9 +443,10 @@
 
     \section1 Message Boxes
 
-    While executing for example the installer application, it might show some message boxes
-    about an error that occurred. This is OK while running the application on the end users
-    system, though it might break automated test suites. To overcome this issue, all message
+    While executing the installer application, for example, the application
+    might show some message boxes about an error that occurred. This is fine
+    while running the application on the end user's system, but it might break
+    automated test suites. To overcome this issue, all message
     boxes shown by the Qt Installer Framework are addressable by a specific identifier.
 
     \table
@@ -437,7 +469,8 @@
         \row
         \li \c installationErrorWithRetry
         \li Retry, Ignore, Cancel
-        \li An error occurred while performing the installation. End users can select \c Retry to
+        \li An error occurred while performing the installation. End users can
+            select \uicontrol Retry to
             try again.
 
         \row
@@ -465,14 +498,14 @@
         \row
         \li \c DownloadError
         \li Retry, Cancel
-        \li An error occurred while downloading a archive hash from a remote repository. End users
-            can select \c Retry to try again.
+        \li An error occurred while downloading an archive hash from a remote
+            repository. End users can select \uicontrol Retry to try again.
 
         \row
         \li \c archiveDownloadError
         \li Retry, Cancel
         \li An error occurred while downloading a archive from a remote repository. End users can
-            select \c Retry to try again.
+            select \uicontrol Retry to try again.
 
         \row
         \li \c WriteError
@@ -498,7 +531,8 @@
         \li \c stopProcessesForUpdates
         \li Retry, Ignore, Cancel
         \li An error occurred while updating a package. Some running application or process needs
-            to be quit before the update can be performed. End users can select \c Retry to try
+            to be quit before the update can be performed. End users can select
+            \uicontrol Retry to try
             again once they have been stopped.
 
         \row

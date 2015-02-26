@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt-project.org/legal
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -50,7 +50,7 @@ using namespace KDUpdater;
 
    The KDUpdater::UpdateOperation is an abstract class that specifies an interface for
    update operations. Concrete implementations of this class must perform a single update
-   operation like copy, move, delete.
+   operation, such as copy, move, or delete.
 
    \note Two separate threads cannot be using a single instance of KDUpdater::UpdateOperation
    at the same time.
@@ -58,12 +58,16 @@ using namespace KDUpdater;
 
 /*!
     \enum UpdateOperation::Error
-    Error codes related to operation arguments and operation runtime failures.
+    This enum code specifies error codes related to operation arguments and
+    operation runtime failures.
 
-    NoError             No error occurred.
-    InvalidArguments    Number of arguments does not match or an invalid argument was set.
-    UserDefinedError    An error occurred during operation run. Use UpdateOperation::errorString()
-                        to get the human-readable description of the error that occurred.
+    \value  NoError
+            No error occurred.
+    \value  InvalidArguments
+            Number of arguments does not match or an invalid argument was set.
+    \value  UserDefinedError
+            An error occurred during operation run. Use UpdateOperation::errorString()
+            to get the human-readable description of the error that occurred.
 */
 
 /*
@@ -120,7 +124,7 @@ QString UpdateOperation::operationCommand() const
 }
 
 /*!
-    Returns \c true if there exists a value called \a name, otherwise returns \c false.
+    Returns \c true if a value called \a name exists, otherwise returns \c false.
 */
 bool UpdateOperation::hasValue(const QString &name) const
 {
@@ -136,7 +140,7 @@ void UpdateOperation::clearValue(const QString &name)
 }
 
 /*!
-    Returns the value of \a name. If the value does not exists, this returns an empty QVariant.
+    Returns the value of \a name. If the value does not exist, returns an empty QVariant.
 */
 QVariant UpdateOperation::value(const QString &name) const
 {
@@ -189,7 +193,11 @@ struct StartsWith
     QString m_searchTerm;
 };
 
-
+/*!
+    Searches the arguments for the key specified by \a key. If it can find the
+    key, it returns the value set for it. Otherwise, it returns \a defaultValue.
+    Arguments are specified in the following form: \c{key=value}.
+*/
 QString UpdateOperation::argumentKeyValue(const QString &key, const QString &defaultValue) const
 {
     const QString keySeparater(key + QLatin1String("="));
@@ -278,6 +286,9 @@ void UpdateOperation::registerForDelayedDeletion(const QStringList &files)
 
 /*!
     Tries to delete \a file. If \a file cannot be deleted, it is registered for delayed deletion.
+
+    If a backup copy of the file cannot be created, returns \c false and displays the error
+    message specified by \a errorString.
 */
 bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorString)
 {
@@ -308,18 +319,24 @@ bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorSt
     \fn virtual bool KDUpdater::UpdateOperation::performOperation() = 0;
 
     Subclasses must implement this function to perform the update operation.
+
+    Returns \c true if the operation is successful.
 */
 
 /*!
     \fn virtual bool KDUpdater::UpdateOperation::undoOperation() = 0;
 
     Subclasses must implement this function to perform the undo of the update operation.
+
+    Returns \c true if the operation is successful.
 */
 
 /*!
     \fn virtual bool KDUpdater::UpdateOperation::testOperation() = 0;
 
     Subclasses must implement this function to perform the test operation.
+
+    Returns \c true if the operation is successful.
 */
 
 /*!
@@ -329,7 +346,8 @@ bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorSt
 */
 
 /*!
-    Saves operation arguments and values as XML. You can override this method to store your
+    Saves operation arguments and values as an XML document and returns the
+    document. You can override this method to store your
     own extra-data. Extra-data can be any data that you need to store to perform or undo the
     operation. The default implementation is taking care of arguments and values set via
     UpdateOperation::setValue().

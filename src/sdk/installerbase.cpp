@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -116,15 +116,16 @@ int InstallerBase::run()
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
     if (parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
-        const QStringList arguments = parser.value(QLatin1String(CommandLineOptions::StartServer))
+        const QStringList arguments = parser.value(QLatin1String(CommandLineOptions::StartClient))
             .split(QLatin1Char(','), QString::SkipEmptyParts);
-        m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations, QString(arguments
-            .value(0, QString::number(QInstaller::Protocol::DefaultPort))).toInt(),
+        m_core = new QInstaller::PackageManagerCore(
+            magicMarker, oldOperations,
+            arguments.value(0, QLatin1String(QInstaller::Protocol::DefaultSocket)),
             arguments.value(1, QLatin1String(QInstaller::Protocol::DefaultAuthorizationKey)),
             QInstaller::Protocol::Mode::Debug);
     } else {
         m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations,
-            30000 + qrand() % 100, QUuid::createUuid().toString());
+            QUuid::createUuid().toString(), QUuid::createUuid().toString());
     }
 
     {
@@ -214,35 +215,28 @@ int InstallerBase::run()
     const QString directory = QLatin1String(":/translations");
     const QStringList translations = m_core->settings().translations();
 
-    // install the default Qt translator
-    QScopedPointer<QTranslator> translator(new QTranslator(QCoreApplication::instance()));
-    foreach (const QLocale locale, QLocale().uiLanguages()) {
-        // As there is no qt_en.qm, we simply end the search when the next
-        // preferred language is English.
-        if (locale.language() == QLocale::English)
-            break;
-        if (translator->load(locale, QLatin1String("qt"), QString::fromLatin1("_"), directory)) {
-            QCoreApplication::instance()->installTranslator(translator.take());
-            break;
-        }
-    }
-
-    translator.reset(new QTranslator(QCoreApplication::instance()));
-    // install English translation as fallback so that correct license button text is used
-    if (translator->load(QLatin1String("en"), directory))
-        QCoreApplication::instance()->installTranslator(translator.take());
-
     if (translations.isEmpty()) {
-        translator.reset(new QTranslator(QCoreApplication::instance()));
         foreach (const QLocale locale, QLocale().uiLanguages()) {
-            if (translator->load(locale, QLatin1String(""), QLatin1String(""), directory)) {
-                QCoreApplication::instance()->installTranslator(translator.take());
+            QScopedPointer<QTranslator> qtTranslator(new QTranslator(QCoreApplication::instance()));
+            const bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
+                                              QLatin1String("_"), directory);
+
+            if (qtLoaded || locale.language() == QLocale::English) {
+                if (qtLoaded)
+                    QCoreApplication::instance()->installTranslator(qtTranslator.take());
+
+                QScopedPointer<QTranslator> ifwTranslator(new QTranslator(QCoreApplication::instance()));
+                if (ifwTranslator->load(locale, QString(), QString(), directory))
+                    QCoreApplication::instance()->installTranslator(ifwTranslator.take());
+
+                // To stop loading other translations it's sufficient that
+                // qt was loaded successfully or we hit English as system language
                 break;
             }
         }
     } else {
         foreach (const QString &translation, translations) {
-            translator.reset(new QTranslator(QCoreApplication::instance()));
+            QScopedPointer<QTranslator> translator(new QTranslator(QCoreApplication::instance()));
             if (translator->load(translation, QLatin1String(":/translations")))
                 QCoreApplication::instance()->installTranslator(translator.take());
         }

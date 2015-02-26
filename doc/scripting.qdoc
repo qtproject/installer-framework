@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Free Documentation License Usage
 ** Alternatively, this file may be used under the terms of the GNU Free
@@ -57,8 +57,8 @@
     }
     \endcode
 
-    For more information, see the documentation for \l QInstaller::addWizardPage and
-    \l Component::userInterface.
+    For more information, see the documentation for \l installer::addWizardPage() and
+    \l component::userInterface().
 
     \section1 Installer Hooks
 
@@ -73,13 +73,13 @@
             \li Called when the language of the installer changes.
         \row
             \li \c{Component.prototype.createOperations}
-            \li See \l Component::createOperations.
+            \li See \l component::createOperations().
         \row
             \li \c{Component.prototype.createOperationsForArchive}
-            \li See \l Component::createOperationsForArchive.
+            \li See \l component::createOperationsForArchive().
         \row
             \li \c{Component.prototype.createOperationsForPath}
-            \li See \l Component::createOperationsForPath.
+            \li See \l component::createOperationsForPath().
     \endtable
 
     \section1 Global Variables
@@ -117,23 +117,21 @@
 
     You might want to add custom operations after extracting the content, when
     copying files or patching file content, for example. You can create and add
-    update operations to the installation from within
-    a script using \c QInstaller::Component::addOperation.
-    If you need to run an operation that requires administrative rights, use
-    \c QInstaller::Component::addElevatedOperation instead.
+    update operations to the installation from within a script using
+    component::addOperation(). If you need to run an operation that requires
+    administrative rights, use component::addElevatedOperation() instead.
 
     Each operation has a unique key used for identification and can take up to
     five parameters. In the parameter values, you can use variables as set in
-    \c QInstaller::Installer::setValue. For more information, see
-    \l{Predefined Variables}.
+    installer::setValue(). For more information, see \l{Predefined Variables}.
 
     For a summary of all available operations, see \l{Operations}.
 
     \section1 Registering Custom Operations
 
     You can register custom installation operations in the installer by deriving
-    \c KDUpdater::UpdateOperation. The following code displays the methods that
-    you must implement:
+    the KDUpdater::UpdateOperation class. The following code displays the
+    methods that you must implement:
 
   \code
   #include <KDUpdater/UpdateOperation>
@@ -286,7 +284,7 @@
                 Only available on Windows.
     \endtable
 
-    The variables can be resolved by calls to \c installer.value(). If embedded
+    The variables can be resolved by calls to installer::value(). If embedded
     in '@' they can also be part of strings passed as arguments to installation
     operations:
 

@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -119,22 +119,22 @@ int main(int argc, char *argv[])
         const QStringList arguments = parser.value(QLatin1String(CommandLineOptions::StartServer))
             .split(QLatin1Char(','), QString::SkipEmptyParts);
 
-        QString port, key;
+        QString socketName, key;
         const QString mode = arguments.value(0);
         bool argumentsValid = (mode.compare(QLatin1String(QInstaller::Protocol::ModeDebug),
             Qt::CaseInsensitive) == 0);
         if (argumentsValid) {
-            port = arguments.value(1, QString::number(QInstaller::Protocol::DefaultPort));
+            socketName = arguments.value(1, QLatin1String(QInstaller::Protocol::DefaultSocket));
             key  = arguments.value(2, QLatin1String(QInstaller::Protocol::DefaultAuthorizationKey));
         } else  {
-            port = arguments.value(1);
+            socketName = arguments.value(1);
             key =  arguments.value(2);
         }
 
         const bool production = (mode.compare(QLatin1String(QInstaller::Protocol::ModeProduction),
             Qt::CaseInsensitive) == 0);
         if (production)
-            argumentsValid = (!key.isEmpty()) && (!port.isEmpty());
+            argumentsValid = (!key.isEmpty()) && (!socketName.isEmpty());
 
         SDKApp<QCoreApplication> app(argc, argv);
         if (!argumentsValid) {
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
 
         QInstaller::RemoteServer *server = new QInstaller::RemoteServer;
         QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
-        server->init(port.toInt(), key, (production ? QInstaller::Protocol::Mode::Production
+        server->init(socketName, key, (production ? QInstaller::Protocol::Mode::Production
             : QInstaller::Protocol::Mode::Debug));
 
         server->start();

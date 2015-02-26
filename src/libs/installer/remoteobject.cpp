@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -57,54 +57,41 @@ RemoteObject::~RemoteObject()
 {
     if (m_socket) {
         if (QThread::currentThread() == m_socket->thread()) {
-            m_stream << QString::fromLatin1(Protocol::Destroy) << m_type;
-            m_socket->waitForBytesWritten(-1);
+            writeData(QLatin1String(Protocol::Destroy), m_type, dummy, dummy);
         } else {
             Q_ASSERT_X(false, Q_FUNC_INFO, "Socket running in a different Thread than this object.");
         }
-        m_socket->deleteLater();
-        m_socket = 0;
+        delete m_socket;
     }
 }
 
 bool RemoteObject::authorize()
 {
-    if (m_socket && (m_socket->state() == QAbstractSocket::ConnectedState))
+    if (m_socket && (m_socket->state() == QLocalSocket::ConnectedState))
         return true;
 
     if (m_socket)
         delete m_socket;
 
-    QScopedPointer<QTcpSocket> socket(new QTcpSocket);
-    socket->connectToHost(RemoteClient::instance().address(), RemoteClient::instance().port());
+    m_socket = new QLocalSocket;
+    m_socket->connectToServer(RemoteClient::instance().socketName());
 
     QElapsedTimer stopWatch;
     stopWatch.start();
-    while ((socket->state() == QAbstractSocket::ConnectingState)
+    while ((m_socket->state() == QLocalSocket::ConnectingState)
         && (stopWatch.elapsed() < 30000)) {
         if ((stopWatch.elapsed() % 2500) == 0)
             QCoreApplication::processEvents();
     }
 
-    if (socket->state() == QAbstractSocket::ConnectedState) {
-        QDataStream stream;
-        stream.setDevice(socket.data());
-        stream << QString::fromLatin1(Protocol::Authorize) << RemoteClient::instance()
-            .authorizationKey();
-
-        socket->waitForBytesWritten(-1);
-        if (!socket->bytesAvailable())
-            socket->waitForReadyRead(-1);
-
-        quint32 size; stream >> size;
-        bool authorized = false;
-        stream >> authorized;
-        if (authorized) {
-            m_socket = socket.take();
-            m_stream.setDevice(m_socket);
+    if (m_socket->state() == QLocalSocket::ConnectedState) {
+        bool authorized = callRemoteMethod<bool>(QString::fromLatin1(Protocol::Authorize),
+                                                 RemoteClient::instance().authorizationKey());
+        if (authorized)
             return true;
-        }
     }
+    delete m_socket;
+    m_socket = 0;
     return false;
 }
 
@@ -113,16 +100,19 @@ bool RemoteObject::connectToServer(const QVariantList &arguments)
     if (!RemoteClient::instance().isActive())
         return false;
 
-     if (m_socket && (m_socket->state() == QAbstractSocket::ConnectedState))
+     if (m_socket && (m_socket->state() == QLocalSocket::ConnectedState))
          return true;
 
     if (!authorize())
         return false;
 
-    m_stream << QString::fromLatin1(Protocol::Create) << m_type;
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out << m_type;
     foreach (const QVariant &arg, arguments)
-        m_stream << arg;
-    m_socket->waitForBytesWritten(-1);
+        out << arg;
+
+    sendPacket(m_socket, Protocol::Create, data);
 
     return true;
 }
@@ -131,7 +121,7 @@ bool RemoteObject::isConnectedToServer() const
 {
     if ((!m_socket) || (!RemoteClient::instance().isActive()))
         return false;
-    if (m_socket && (m_socket->state() == QAbstractSocket::ConnectedState))
+    if (m_socket && (m_socket->state() == QLocalSocket::ConnectedState))
         return true;
     return false;
 }

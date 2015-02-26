@@ -6,6 +6,6 @@ function BrokenConnect()
 function receive()
 {
     print("function receive()");
-    // this should throw an exception, "foo" does not exist
+    // this will print an error.
     foo.bar = "test";
 }

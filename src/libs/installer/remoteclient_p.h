@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -60,8 +60,6 @@ public:
         : RemoteObject(QLatin1String("RemoteClientPrivate"))
         , q_ptr(parent)
         , m_mutex(QMutex::Recursive)
-        , m_address(QLatin1String(Protocol::DefaultHostAddress))
-        , m_port(Protocol::DefaultPort)
         , m_startServerAs(Protocol::StartAs::User)
         , m_serverStarted(false)
         , m_active(false)
@@ -69,6 +67,7 @@ public:
         , m_mode(Protocol::Mode::Debug)
         , m_object(0)
     {
+        m_thread.setObjectName(QLatin1String("KeepAlive"));
     }
 
     ~RemoteClientPrivate()
@@ -87,19 +86,19 @@ public:
         maybeStopServer();
     }
 
-    void init(quint16 port, const QString &key, Protocol::Mode mode, Protocol::StartAs startAs)
+    void init(const QString &socketName, const QString &key, Protocol::Mode mode,
+              Protocol::StartAs startAs)
     {
+        m_socketName = socketName;
+        m_key = key;
         m_mode = mode;
         if (mode == Protocol::Mode::Production) {
-            m_key = key;
-            m_port = port;
-            m_mode = mode;
             m_startServerAs = startAs;
             m_serverCommand = QCoreApplication::applicationFilePath();
             m_serverArguments = QStringList() << QLatin1String("--startserver")
                 << QString::fromLatin1("%1,%2,%3")
                     .arg(QLatin1String(Protocol::ModeProduction))
-                    .arg(port)
+                    .arg(socketName)
                     .arg(key);
 
             if (!m_object) {
@@ -113,7 +112,7 @@ public:
             }
         } else if (mode == Protocol::Mode::Debug) {
             // To be able to debug the client-server connection start and stop the server manually,
-            // e.g. installer --startserver debug. The server is listening on localhost:39999 then.
+            // e.g. installer --startserver DEBUG.
         }
     }
 
@@ -186,8 +185,7 @@ public:
 private:
     RemoteClient *q_ptr;
     QMutex m_mutex;
-    QString m_address;
-    quint16 m_port;
+    QString m_socketName;
     Protocol::StartAs m_startServerAs;
     bool m_serverStarted;
     bool m_active;

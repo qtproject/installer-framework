@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -97,12 +97,12 @@ CommandLineParser::CommandLineParser()
         QLatin1String("Starts the application as headless process waiting for commands to execute."
         " Mode can be DEBUG or PRODUCTION. In DEBUG mode, the option values can be omitted."
         "Note: The server will not shutdown on his own, you need to quit the process by hand."),
-        QLatin1String("mode,port,key")));
+        QLatin1String("mode,socketname,key")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::StartClient),
         QString::fromLatin1("Starts the application to debug the client-server communication. If "
         "a value is omitted, the client will use a default instead. Note: The server process is "
         "not started by the client application in that case, you need to start it on your own."),
-        QLatin1String("port,key")));
+        QLatin1String("socketname,key")));
 
     m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::KeyValue),
         QLatin1String("Key Value pair to be set."));

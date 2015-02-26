@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -65,6 +65,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
+#include <QtCore/QUuid>
 #include <QtCore/QFuture>
 #include <QtCore/QFutureWatcher>
 #include <QtCore/QTemporaryFile>
@@ -1351,6 +1352,8 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             QInstaller::appendInt64(&file, BinaryContent::MagicCookie);
         }
         input.close();
+        if (m_core->isInstaller())
+            registerMaintenanceTool();
         writeMaintenanceConfigFiles();
         deferredRename(dataFile + QLatin1String(".new"), dataFile, false);
 
@@ -1375,19 +1378,22 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
     m_needToWriteMaintenanceTool = false;
 }
 
-QString PackageManagerCorePrivate::registerPath() const
+QString PackageManagerCorePrivate::registerPath()
 {
 #ifdef Q_OS_WIN
-    const QString productName = m_data.value(QLatin1String("ProductName")).toString();
-    if (productName.isEmpty())
-        throw Error(tr("ProductName should be set"));
+    QString guid = m_data.value(scProductUUID).toString();
+    if (guid.isEmpty()) {
+        guid = QUuid::createUuid().toString();
+        m_data.setValue(scProductUUID, guid);
+        writeMaintenanceConfigFiles(); // save uuid persistently
+    }
 
     QString path = QLatin1String("HKEY_CURRENT_USER");
-    if (m_data.value(QLatin1String("AllUsers")).toString() == scTrue)
+    if (m_data.value(QLatin1String("AllUsers"), scFalse).toString() == scTrue)
         path = QLatin1String("HKEY_LOCAL_MACHINE");
 
     return path + QLatin1String("\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\")
-        + productName;
+        + guid;
 #endif
     return QString();
 }
@@ -1499,10 +1505,20 @@ bool PackageManagerCorePrivate::runInstaller()
 
             Operation *createRepo = createOwnedOperation(QLatin1String("CreateLocalRepository"));
             if (createRepo) {
+                QString binaryFile = QCoreApplication::applicationFilePath();
+#ifdef Q_OS_OSX
+                // The installer binary on OSX does not contain the binary content, it's put into
+                // the resources folder as separate file. Adjust the actual binary path. No error
+                // checking here since we will fail later while reading the binary content.
+                QDir resourcePath(QFileInfo(binaryFile).dir());
+                resourcePath.cdUp();
+                resourcePath.cd(QLatin1String("Resources"));
+                binaryFile = resourcePath.filePath(QLatin1String("installer.dat"));
+#endif
                 createRepo->setValue(QLatin1String("uninstall-only"), true);
                 createRepo->setValue(QLatin1String("installer"), QVariant::fromValue(m_core));
-                createRepo->setArguments(QStringList() << QCoreApplication::applicationFilePath()
-                    << target + QLatin1String("/repository"));
+                createRepo->setArguments(QStringList() << binaryFile << target
+                    + QLatin1String("/repository"));
 
                 connectOperationToInstaller(createRepo, progressOperationSize);
 
@@ -1533,7 +1549,6 @@ bool PackageManagerCorePrivate::runInstaller()
         emit m_core->titleMessageChanged(tr("Creating Maintenance Tool"));
 
         writeMaintenanceTool(m_performedOperationsOld + m_performedOperationsCurrentSession);
-        registerMaintenanceTool();
 
         // fake a possible wrong value to show a full progress bar
         const int progress = ProgressCoordinator::instance()->progressInPercentage();
@@ -1982,7 +1997,23 @@ void PackageManagerCorePrivate::registerMaintenanceTool()
     settings.setValue(QLatin1String("UninstallString"), maintenanceTool);
     settings.setValue(QLatin1String("ModifyPath"), QString(maintenanceTool
         + QLatin1String(" --manage-packages")));
-    settings.setValue(QLatin1String("EstimatedSize"), QFileInfo(installerBinaryPath()).size());
+    // required disk space of the installed components
+    quint64 estimatedSizeKB = m_core->requiredDiskSpace() / 1024;
+    // add required space for the maintenance tool
+    estimatedSizeKB += QFileInfo(maintenanceTool).size() / 1024;
+    if (m_core->createLocalRepositoryFromBinary()) {
+        // add required space for a local repository
+        quint64 result(0);
+        foreach (QInstaller::Component *component,
+            m_core->components(PackageManagerCore::ComponentType::All)) {
+            result += m_core->size(component, scCompressedSize);
+        }
+        estimatedSizeKB += result / 1024;
+    }
+    // Windows can only handle 32bit REG_DWORD (max. recordable installation size is 4TiB)
+    const quint64 limit = std::numeric_limits<quint32>::max(); // maximum 32 bit value
+    if (estimatedSizeKB <= limit)
+        settings.setValue(QLatin1String("EstimatedSize"), static_cast<quint32>(estimatedSizeKB));
     settings.setValue(QLatin1String("NoModify"), 0);
     settings.setValue(QLatin1String("NoRepair"), 1);
 #endif

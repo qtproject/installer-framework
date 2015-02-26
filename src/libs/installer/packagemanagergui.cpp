@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -247,6 +247,52 @@ public:
     \brief The PackageManagerGui class provides the core functionality for non-interactive
         installations.
 */
+
+/*!
+    \fn void PackageManagerGui::interrupted()
+    This signal is emitted when the end user chooses to cancel the installation
+    and quit the installer.
+*/
+
+/*!
+    \fn void PackageManagerGui::languageChanged()
+    This signal is emitted when the application language changes.
+*/
+
+/*!
+    \fn void PackageManagerGui::finishButtonClicked()
+    This signal is emitted when the \uicontrol Finish button is clicked.
+*/
+
+/*!
+    \fn void PackageManagerGui::gotRestarted()
+    This signal is emitted when the installer is restarted.
+*/
+
+/*!
+    \fn void PackageManagerGui::settingsButtonClicked()
+    This signal is emitted when the \uicontrol Settings button is clicked.
+*/
+
+/*!
+    \fn void PackageManagerGui::setValidatorForCustomPageRequested(QInstaller::Component *component,
+        const QString &name,
+        const QString &callbackName)
+
+    Sets a validator for the custom page specified by \a name and
+    \a callbackName requested by \a component.
+*/
+
+/*!
+    \fn void PackageManagerGui::packageManagerCore() const
+
+    Returns the package manager core.
+*/
+
+/*!
+    Constructs a package manager UI with package manager specified by \a core
+    and \a parent as parent.
+*/
 PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     : QWizard(parent)
     , d(new Private)
@@ -320,11 +366,25 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     m_core->setGuiObject(this);
 }
 
+/*!
+    Destructs a package manager UI.
+*/
 PackageManagerGui::~PackageManagerGui()
 {
+    m_core->setGuiObject(0);
     delete d;
 }
 
+/*!
+    Returns the style of the package manager UI depending on \a name:
+
+    \list
+        \li \c Classic - Classic UI style for Windows 7 and earlier.
+        \li \c Modern - Modern UI style for Windows 8.
+        \li \c Mac - UI style for OS X.
+        \li \c Aero - Aero Peek for Windows 7.
+    \endlist
+*/
 QWizard::WizardStyle PackageManagerGui::getStyle(const QString &name)
 {
     if (name == QLatin1String("Classic"))
@@ -341,11 +401,17 @@ QWizard::WizardStyle PackageManagerGui::getStyle(const QString &name)
     return QWizard::ModernStyle;
 }
 
+/*!
+    Enables automatic page switching when \a request is \c true.
+*/
 void PackageManagerGui::setAutomatedPageSwitchEnabled(bool request)
 {
     d->m_autoSwitchPage = request;
 }
 
+/*!
+    Returns the default text for the button specified by \a wizardButton.
+*/
 QString PackageManagerGui::defaultButtonText(int wizardButton) const
 {
     return d->m_defaultButtonText.value(wizardButton);
@@ -371,6 +437,9 @@ static bool swapFinishButton(PackageManagerCore *core, int currentId, int button
     return true;
 }
 
+/*!
+    Clicks the button specified by \a wb after the delay specified by \a delay.
+*/
 void PackageManagerGui::clickButton(int wb, int delay)
 {
     // We need to to swap here, cause scripts expect to call this function with FinishButton on the
@@ -384,6 +453,10 @@ void PackageManagerGui::clickButton(int wb, int delay)
         qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
 }
 
+/*!
+    Returns \c true if the button specified by \a wb is enabled. Returns \c false
+    if a button of the specified type is not found.
+*/
 bool PackageManagerGui::isButtonEnabled(int wb)
 {
     // We need to to swap here, cause scripts expect to call this function with FinishButton on the
@@ -398,6 +471,10 @@ bool PackageManagerGui::isButtonEnabled(int wb)
     return false;
 }
 
+/*!
+    Sets a validator for the custom page specified by \a name and
+    \a callbackName requested by \a component.
+*/
 void PackageManagerGui::setValidatorForCustomPageRequested(Component *component,
     const QString &name, const QString &callbackName)
 {
@@ -415,8 +492,9 @@ void PackageManagerGui::setValidatorForCustomPageRequested(Component *component,
 }
 
 /*!
-    Loads a script to perform the installation non-interactively.
-    @throws QInstaller::Error if the script is not readable/cannot be parsed
+    Loads the script specified by \a scriptPath to perform the installation non-interactively.
+    Throws QInstaller::Error if the script is not readable or it cannot be
+    parsed.
 */
 void PackageManagerGui::loadControlScript(const QString &scriptPath)
 {
@@ -425,6 +503,9 @@ void PackageManagerGui::loadControlScript(const QString &scriptPath)
     qDebug() << "Loaded control script" << scriptPath;
 }
 
+/*!
+    Calls the control script method specified by \a methodName.
+*/
 void PackageManagerGui::callControlScriptMethod(const QString &methodName)
 {
     if (d->m_controlScriptContext.isUndefined())
@@ -441,12 +522,19 @@ void PackageManagerGui::callControlScriptMethod(const QString &methodName)
     }
 }
 
+/*!
+    Executes the control script on the page specified by \a pageId.
+*/
 void PackageManagerGui::executeControlScript(int pageId)
 {
     if (PackageManagerPage *const p = qobject_cast<PackageManagerPage*> (page(pageId)))
         callControlScriptMethod(p->objectName() + QLatin1String("Callback"));
 }
 
+/*!
+    Replaces the default button text with translated text when the application
+    language changes.
+*/
 void PackageManagerGui::onLanguageChanged()
 {
     d->m_defaultButtonText.clear();
@@ -454,6 +542,9 @@ void PackageManagerGui::onLanguageChanged()
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
 }
 
+/*!
+    \reimp
+*/
 bool PackageManagerGui::event(QEvent *event)
 {
     switch(event->type()) {
@@ -466,6 +557,9 @@ bool PackageManagerGui::event(QEvent *event)
     return QWizard::event(event);
 }
 
+/*!
+    \reimp
+*/
 void PackageManagerGui::showEvent(QShowEvent *event)
 {
     if (!event->spontaneous()) {
@@ -489,6 +583,11 @@ void PackageManagerGui::showEvent(QShowEvent *event)
     QMetaObject::invokeMethod(this, "dependsOnLocalInstallerBinary", Qt::QueuedConnection);
 }
 
+/*!
+    Requests the insertion of the page specified by \a widget at the position specified by \a page.
+    If that position is already occupied by another page, the value is decremented until an empty
+    slot is found.
+*/
 void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
     QInstaller::PackageManagerCore::WizardPage page)
 {
@@ -503,6 +602,9 @@ void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
     setPage(pageId, new DynamicInstallerPage(widget, m_core));
 }
 
+/*!
+    Requests the removal of the page specified by \a widget.
+*/
 void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
 {
     foreach (int pageId, pageIds()) {
@@ -518,6 +620,9 @@ void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
     }
 }
 
+/*!
+    Requests the insertion of \a widget on \a page.
+*/
 void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
     QInstaller::PackageManagerCore::WizardPage page)
 {
@@ -529,6 +634,9 @@ void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
     }
 }
 
+/*!
+    Requests the removal of \a widget from installer pages.
+*/
 void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
 {
     Q_ASSERT(widget);
@@ -537,6 +645,10 @@ void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
     packageManagerCore()->componentScriptEngine()->removeFromGlobalObject(widget);
 }
 
+/*!
+    Requests changing the visibility of the page specified by \a p to
+    \a visible.
+*/
 void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
 {
     if (visible && page(p) == 0) {
@@ -547,11 +659,17 @@ void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
     }
 }
 
+/*!
+    Returns the page specified by \a id.
+*/
 QWidget *PackageManagerGui::pageById(int id) const
 {
     return page(id);
 }
 
+/*!
+    Returns the page specified by the object name \a name from a UI file.
+*/
 QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
 {
     const QList<int> ids = pageIds();
@@ -564,11 +682,18 @@ QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
     return 0;
 }
 
+/*!
+    Returns the current page.
+*/
 QWidget *PackageManagerGui::currentPageWidget() const
 {
     return currentPage();
 }
 
+/*!
+    For dynamic pages, returns the widget specified by \a name read from the UI
+    file.
+*/
 QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
 {
     QWidget *const widget = pageByObjectName(name);
@@ -583,6 +708,10 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
     return 0;
 }
 
+/*!
+    Asks end users whether they want to cancel the operation and quit the installer, uninstaller,
+    or package manager.
+*/
 void PackageManagerGui::cancelButtonClicked()
 {
     const int id = currentId();
@@ -622,21 +751,34 @@ void PackageManagerGui::cancelButtonClicked()
     }
 }
 
+/*!
+    Quits the installer, uninstaller, or package manager without asking end
+    users for confirmation.
+*/
 void PackageManagerGui::rejectWithoutPrompt()
 {
     QDialog::reject();
 }
 
+/*!
+    \reimp
+*/
 void PackageManagerGui::reject()
 {
     cancelButtonClicked();
 }
 
+/*!
+    \internal
+*/
 void PackageManagerGui::setModified(bool value)
 {
     d->m_modified = value;
 }
 
+/*!
+    Shows the next page.
+*/
 void PackageManagerGui::showFinishedPage()
 {
     qDebug() << "SHOW FINISHED PAGE";
@@ -646,6 +788,9 @@ void PackageManagerGui::showFinishedPage()
         qobject_cast<QPushButton*>(button(QWizard::CancelButton))->setEnabled(false);
 }
 
+/*!
+    Shows the \uicontrol Settings button if \a show is \c true.
+*/
 void PackageManagerGui::showSettingsButton(bool show)
 {
     if (d->m_showSettingsButton == show)
@@ -659,8 +804,8 @@ void PackageManagerGui::showSettingsButton(bool show)
 }
 
 /*!
-    Force an update of our own button layout, needs to be called whenever a button option has been
-    set.
+    Forces an update of our own button layout. Needs to be called whenever a
+    button option has been set.
 */
 void PackageManagerGui::updateButtonLayout()
 {
@@ -694,18 +839,29 @@ void PackageManagerGui::updateButtonLayout()
     setButtonLayout(buttons.toList());
 }
 
+/*!
+    Enables the \uicontrol Settings button by setting \a enabled to \c true.
+*/
 void PackageManagerGui::setSettingsButtonEnabled(bool enabled)
 {
     if (QAbstractButton *btn = button(QWizard::CustomButton1))
         btn->setEnabled(enabled);
 }
 
+/*!
+    Emits the settingsButtonClicked() signal when the custom button specified by \a which is
+    clicked if \a which is the \uicontrol Settings button.
+*/
 void PackageManagerGui::customButtonClicked(int which)
 {
     if (QWizard::WizardButton(which) == QWizard::CustomButton1 && d->m_showSettingsButton)
         emit settingsButtonClicked();
 }
 
+/*!
+    Prevents installation from a network location by determining that a local
+    installer binary must be used.
+*/
 void PackageManagerGui::dependsOnLocalInstallerBinary()
 {
     if (m_core->settings().dependsOnLocalInstallerBinary() && !m_core->localInstallerBinaryUsed()) {
@@ -717,10 +873,15 @@ void PackageManagerGui::dependsOnLocalInstallerBinary()
     }
 }
 
+/*!
+    Called when the current page changes to \a newId. Calls the leaving() method for the old page
+    and the entering() method for the new one. Also, executes the control script associated with the
+    new page by calling executeControlScript().
+
+    Emits the left() and entered() signals.
+*/
 void PackageManagerGui::currentPageChanged(int newId)
 {
-    executeControlScript(newId);
-
     PackageManagerPage *oldPage = qobject_cast<PackageManagerPage *>(page(d->m_currentId));
     if (oldPage) {
         oldPage->leaving();
@@ -734,10 +895,87 @@ void PackageManagerGui::currentPageChanged(int newId)
         newPage->entering();
         emit newPage->entered();
     }
+
+    executeControlScript(newId);
 }
 
 // -- PackageManagerPage
 
+/*!
+    \class QInstaller::PackageManagerPage
+    \inmodule QtInstallerFramework
+    \brief The PackageManagerPage class displays information about the product
+    to install.
+*/
+
+/*!
+    \fn PackageManagerPage::~PackageManagerPage()
+
+    Destructs a package manager page.
+*/
+
+/*!
+    \fn PackageManagerPage::gui() const
+
+    Returns the wizard this page belongs to.
+*/
+
+/*!
+    \fn PackageManagerPage::isInterruptible() const
+
+    Returns \c true if the installation can be interrupted.
+*/
+
+/*!
+    \fn PackageManagerPage::setValidatePageComponent(QInstaller::Component *component)
+
+    Sets \a component as the component that validates the page.
+*/
+
+/*!
+    \fn PackageManagerPage::settingsButtonRequested() const
+
+    Returns \c true if the page requests the wizard to show the \uicontrol Settings button.
+*/
+
+/*!
+    \fn PackageManagerPage::setSettingsButtonRequested(bool request)
+
+    Determines that the page should request the \uicontrol Settings button if \a request is \c true.
+*/
+
+/*!
+    \fn PackageManagerPage::entered()
+
+    This signal is called when a page is entered.
+*/
+
+/*!
+    \fn PackageManagerPage::left()
+
+    This signal is called when a page is left.
+*/
+
+/*!
+    \fn PackageManagerPage::entering()
+
+    Called when end users enter the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered. Supports the QWizardPage::​initializePage() function to ensure
+    that the page's fields are properly initialized based on fields from previous pages.
+    Otherwise, \c initializePage() would only be called once if the installer has been
+    set to QWizard::IndependentPages.
+*/
+
+/*!
+    \fn PackageManagerPage::leaving()
+
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+*/
+
+/*!
+    Constructs a package manager page with \a core as parent.
+*/
 PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     : m_complete(true)
     , m_needsSettingsButton(false)
@@ -755,46 +993,78 @@ PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     setPixmap(QWizard::LogoPixmap, logoPixmap());
 }
 
+/*!
+    Returns the package manager core.
+*/
 PackageManagerCore *PackageManagerPage::packageManagerCore() const
 {
     return m_core;
 }
 
+/*!
+    Returns the watermark pixmap specified in the \c <Watermark> element of the package information
+    file.
+*/
 QPixmap PackageManagerPage::watermarkPixmap() const
 {
     return QPixmap(m_core->value(QLatin1String("WatermarkPixmap")));
 }
 
+/*!
+    Returns the banner pixmap specified in the \c <Banner> element of the package information file.
+    Only used by the modern UI style.
+*/
 QPixmap PackageManagerPage::bannerPixmap() const
 {
     return QPixmap(m_core->value(QLatin1String("BannerPixmap")));
 }
 
+/*!
+    Returns the logo pixmap specified in the \c <Logo> element of the package information file.
+*/
 QPixmap PackageManagerPage::logoPixmap() const
 {
     return QPixmap(m_core->value(QLatin1String("LogoPixmap")));
 }
 
+/*!
+    Returns the product name of the application being installed.
+*/
 QString PackageManagerPage::productName() const
 {
     return m_core->value(QLatin1String("ProductName"));
 }
 
+/*!
+    Sets the font color of \a title. The title is specified in the \c <Title>
+    element of the package information file. It is the name of the installer as
+    displayed on the title bar.
+*/
 void PackageManagerPage::setColoredTitle(const QString &title)
 {
     setTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, title));
 }
 
+/*!
+    Sets the font color of \a subTitle.
+*/
 void PackageManagerPage::setColoredSubTitle(const QString &subTitle)
 {
     setSubTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, subTitle));
 }
 
+/*!
+    Returns \c true if the page is complete; otherwise, returns \c false.
+*/
 bool PackageManagerPage::isComplete() const
 {
     return m_complete;
 }
 
+/*!
+    Sets the package manager page to complete if \a complete is \c true. Emits
+    the completeChanged() signal.
+*/
 void PackageManagerPage::setComplete(bool complete)
 {
     m_complete = complete;
@@ -809,11 +1079,17 @@ void PackageManagerPage::setComplete(bool complete)
     emit completeChanged();
 }
 
+/*!
+    Sets the \a component that validates the page.
+*/
 void PackageManagerPage::setValidatePageComponent(Component *component)
 {
     validatorComponent = component;
 }
 
+/*!
+    Returns \c true if the end user has entered complete and valid information.
+*/
 bool PackageManagerPage::validatePage()
 {
     if (validatorComponent)
@@ -821,6 +1097,11 @@ bool PackageManagerPage::validatePage()
     return true;
 }
 
+/*!
+    Inserts \a widget at the position specified by \a offset in relation to
+    another widget specified by \a siblingName. The default position is directly
+    behind the sibling.
+*/
 void PackageManagerPage::insertWidget(QWidget *widget, const QString &siblingName, int offset)
 {
     QWidget *sibling = findChild<QWidget *>(siblingName);
@@ -834,11 +1115,21 @@ void PackageManagerPage::insertWidget(QWidget *widget, const QString &siblingNam
     }
 }
 
+/*!
+    Returns the widget specified by \a objectName.
+*/
 QWidget *PackageManagerPage::findWidget(const QString &objectName) const
 {
     return findChild<QWidget*> (objectName);
 }
 
+/*!
+    Determines which page should be shown next depending on whether the
+    application is being installed, updated, or uninstalled.
+
+    The license check page is shown only if a component that provides a license
+    is selected for installation. It is hidden during uninstallation and update.
+*/
 int PackageManagerPage::nextId() const
 {
     const int next = QWizardPage::nextId(); // the page to show next
@@ -866,6 +1157,22 @@ int PackageManagerPage::nextId() const
 
 // -- IntroductionPage
 
+/*!
+    \class QInstaller::IntroductionPage
+    \inmodule QtInstallerFramework
+    \brief The IntroductionPage class displays information about the product to
+    install.
+*/
+
+/*!
+    \fn IntroductionPage::packageManagerCoreTypeChanged()
+
+    This signal is emitted when the package manager core type changes.
+*/
+
+/*!
+    Constructs an introduction page with \a core as parent.
+*/
 IntroductionPage::IntroductionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , m_updatesFetched(false)
@@ -949,6 +1256,10 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
 #endif
 }
 
+/*!
+    Determines which page should be shown next depending on whether the
+    application is being installed, updated, or uninstalled.
+*/
 int IntroductionPage::nextId() const
 {
     if (packageManagerCore()->isUninstaller())
@@ -960,6 +1271,11 @@ int IntroductionPage::nextId() const
     return PackageManagerPage::nextId();
 }
 
+/*!
+    For an uninstaller, always returns \c true. For the package manager and updater, at least
+    one valid repository is required. For the online installer, package manager, and updater, valid
+    meta data has to be fetched successfully to return \c true.
+*/
 bool IntroductionPage::validatePage()
 {
     PackageManagerCore *core = packageManagerCore();
@@ -1047,16 +1363,25 @@ bool IntroductionPage::validatePage()
     return isComplete();
 }
 
+/*!
+    Shows all widgets on the page.
+*/
 void IntroductionPage::showAll()
 {
     showWidgets(true);
 }
 
+/*!
+    Hides all widgets on the page.
+*/
 void IntroductionPage::hideAll()
 {
     showWidgets(false);
 }
 
+/*!
+    Hides the widgets on the page except a text label and progress bar.
+*/
 void IntroductionPage::showMetaInfoUpdate()
 {
     showWidgets(false);
@@ -1064,6 +1389,9 @@ void IntroductionPage::showMetaInfoUpdate()
     m_progressBar->setVisible(true);
 }
 
+/*!
+    Shows the options to install, add, and unistall components on the page.
+*/
 void IntroductionPage::showMaintenanceTools()
 {
     showWidgets(true);
@@ -1071,6 +1399,10 @@ void IntroductionPage::showMaintenanceTools()
     m_progressBar->setVisible(false);
 }
 
+/*!
+    Sets \a enable to \c true to enable the options to install, add, and
+    uninstall components on the page.
+*/
 void IntroductionPage::setMaintenanceToolsEnabled(bool enable)
 {
     m_packageManager->setEnabled(enable);
@@ -1080,17 +1412,26 @@ void IntroductionPage::setMaintenanceToolsEnabled(bool enable)
 
 // -- public slots
 
+/*!
+    Displays the message \a msg on the page.
+*/
 void IntroductionPage::setMessage(const QString &msg)
 {
     m_label->setText(msg);
 }
 
+/*!
+    Updates the value of \a progress on the progress bar.
+*/
 void IntroductionPage::onProgressChanged(int progress)
 {
     m_progressBar->setRange(0, 100);
     m_progressBar->setValue(progress);
 }
 
+/*!
+    Displays the error message \a error on the page.
+*/
 void IntroductionPage::setErrorMessage(const QString &error)
 {
     QPalette palette;
@@ -1110,6 +1451,9 @@ void IntroductionPage::setErrorMessage(const QString &error)
 #endif
 }
 
+/*!
+    Returns \c true if at least one valid and enabled repository is available.
+*/
 bool IntroductionPage::validRepositoriesAvailable() const
 {
     const PackageManagerCore *const core = packageManagerCore();
@@ -1158,6 +1502,10 @@ void IntroductionPage::setPackageManager(bool value)
     }
 }
 
+/*!
+    Resets the internal page state, so that on clicking \uicontrol Next the metadata needs to be
+    fetched again.
+*/
 void IntroductionPage::onCoreNetworkSettingsChanged()
 {
     m_updatesFetched = false;
@@ -1166,6 +1514,9 @@ void IntroductionPage::onCoreNetworkSettingsChanged()
 
 // -- private
 
+/*!
+    Initializes the page's fields.
+*/
 void IntroductionPage::entering()
 {
     setComplete(true);
@@ -1184,6 +1535,10 @@ void IntroductionPage::entering()
     setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
 }
 
+/*!
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+*/
 void IntroductionPage::leaving()
 {
     m_progressBar->setValue(0);
@@ -1191,6 +1546,9 @@ void IntroductionPage::leaving()
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
 }
 
+/*!
+    Displays widgets on the page.
+*/
 void IntroductionPage::showWidgets(bool show)
 {
     m_label->setVisible(show);
@@ -1200,6 +1558,9 @@ void IntroductionPage::showWidgets(bool show)
     m_removeAllComponents->setVisible(show);
 }
 
+/*!
+    Displays the text \a text on the page.
+*/
 void IntroductionPage::setText(const QString &text)
 {
     m_msgLabel->setText(text);
@@ -1234,6 +1595,20 @@ private:
 
 // -- LicenseAgreementPage
 
+/*!
+    \class QInstaller::LicenseAgreementPage
+    \inmodule QtInstallerFramework
+    \brief The LicenseAgreementPage presents a license agreement to the end
+    users for acceptance.
+
+    The license check page is displayed if you specify a license file in the
+    package information file and copy the file to the meta directory. End users must
+    accept the terms of the license agreement for the installation to continue.
+*/
+
+/*!
+    Constructs a license check page with \a core as parent.
+*/
 LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
@@ -1298,6 +1673,10 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_rejectRadioButton->setChecked(true);
 }
 
+/*!
+    Initializes the page's fields based on values from fields on previous
+    pages.
+*/
 void LicenseAgreementPage::entering()
 {
     m_licenseListWidget->clear();
@@ -1317,6 +1696,10 @@ void LicenseAgreementPage::entering()
     updateUi();
 }
 
+/*!
+    Returns \c true if the accept license radio button is checked; otherwise,
+    returns \c false.
+*/
 bool LicenseAgreementPage::isComplete() const
 {
     return m_acceptRadioButton->isChecked();
@@ -1577,7 +1960,12 @@ public:
 /*!
     \class QInstaller::ComponentSelectionPage
     \inmodule QtInstallerFramework
-    \brief The ComponentSelectionPage class can be used to change the checked state of components.
+    \brief The ComponentSelectionPage class changes the checked state of
+    components.
+*/
+
+/*!
+    Constructs a component selection page with \a core as parent.
 */
 ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
@@ -1588,11 +1976,19 @@ ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
     setColoredTitle(tr("Select Components"));
 }
 
+/*!
+    Destructs a component selection page.
+*/
 ComponentSelectionPage::~ComponentSelectionPage()
 {
     delete d;
 }
 
+/*!
+    Initializes the page's fields based on values from fields on previous
+    pages. The text to display depends on whether the page is being used in an
+    installer, updater, or uninstaller.
+*/
 void ComponentSelectionPage::entering()
 {
     static const char *strings[] = {
@@ -1613,6 +2009,13 @@ void ComponentSelectionPage::entering()
     setModified(isComplete());
 }
 
+/*!
+    Called when the show event \a event occurs. Switching pages back and forth might restore or
+    remove the checked state of certain components the end users have checked or not checked,
+    because the dependencies are resolved and checked when clicking \uicontrol Next. So as not to
+    confuse the end users with newly checked components they did not check, the state they left the
+    page in is restored.
+*/
 void ComponentSelectionPage::showEvent(QShowEvent *event)
 {
     // remove once we deprecate isSelected, setSelected etc...
@@ -1621,16 +2024,26 @@ void ComponentSelectionPage::showEvent(QShowEvent *event)
     QWizardPage::showEvent(event);
 }
 
+/*!
+    Selects all components in the component tree.
+*/
 void ComponentSelectionPage::selectAll()
 {
     d->selectAll();
 }
 
+/*!
+    Deselects all components in the component tree.
+*/
 void ComponentSelectionPage::deselectAll()
 {
     d->deselectAll();
 }
 
+/*!
+    Selects the components that have the \c <Default> element set to \c true in
+    the package information file.
+*/
 void ComponentSelectionPage::selectDefault()
 {
     if (packageManagerCore()->isInstaller())
@@ -1638,7 +2051,7 @@ void ComponentSelectionPage::selectDefault()
 }
 
 /*!
-    Selects the component with /a id in the component tree.
+    Selects the component with \a id in the component tree.
 */
 void ComponentSelectionPage::selectComponent(const QString &id)
 {
@@ -1648,7 +2061,7 @@ void ComponentSelectionPage::selectComponent(const QString &id)
 }
 
 /*!
-    Deselects the component with /a id in the component tree.
+    Deselects the component with \a id in the component tree.
 */
 void ComponentSelectionPage::deselectComponent(const QString &id)
 {
@@ -1662,6 +2075,9 @@ void ComponentSelectionPage::setModified(bool modified)
     setComplete(modified);
 }
 
+/*!
+    Returns \c true if at least one component is checked on the page.
+*/
 bool ComponentSelectionPage::isComplete() const
 {
     if (packageManagerCore()->isInstaller() || packageManagerCore()->isUpdater())
@@ -1672,6 +2088,32 @@ bool ComponentSelectionPage::isComplete() const
 
 // -- TargetDirectoryPage
 
+/*!
+    \class QInstaller::TargetDirectoryPage
+    \inmodule QtInstallerFramework
+    \brief The TargetDirectoryPage class specifies the target directory for the
+    installation.
+
+    End users can leave the page to continue the installation only if certain criteria are
+    fulfilled. Some of them are checked in the validatePage() function, some in the
+    targetDirWarning() function:
+
+    \list
+        \li No empty path given as target.
+        \li No relative path given as target.
+        \li Only ASCII characters are allowed in the path if the <AllowNonAsciiCharacters> element
+            in the configuration file is set to \c false.
+        \li The following ambiguous characters are not allowed in the path: [\"~<>|?*!@#$%^&:,;]
+        \li No root or home directory given as target.
+        \li On Windows, path names must be less than 260 characters long.
+        \li No spaces in the path if the <AllowSpaceInPath> element in the configuration file is set
+            to \c false.
+    \endlist
+*/
+
+/*!
+    Constructs a target directory selection page with \a core as parent.
+*/
 TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
@@ -1715,16 +2157,26 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     setLayout(layout);
 }
 
+/*!
+    Returns the target directory for the installation.
+*/
 QString TargetDirectoryPage::targetDir() const
 {
     return m_lineEdit->text().trimmed();
 }
 
+/*!
+    Sets the directory specified by \a dirName as the target directory for the
+    installation.
+*/
 void TargetDirectoryPage::setTargetDir(const QString &dirName)
 {
     m_lineEdit->setText(dirName);
 }
 
+/*!
+    Initializes the page.
+*/
 void TargetDirectoryPage::initializePage()
 {
     QString targetDir = packageManagerCore()->value(scTargetDir);
@@ -1744,6 +2196,17 @@ void TargetDirectoryPage::initializePage()
     PackageManagerPage::initializePage();
 }
 
+/*!
+    Checks whether the target directory exists and has contents:
+
+    \list
+        \li Returns \c true if the directory exists and is empty.
+        \li Returns \c false if the directory already exists and contains an installation.
+        \li Returns \c false if the target is a file or a symbolic link.
+        \li Returns \c true or \c false if the directory exists but is not empty, depending on the
+            choice that the end users make in the displayed message box.
+    \endlist
+*/
 bool TargetDirectoryPage::validatePage()
 {
     if (!isVisible())
@@ -1786,12 +2249,20 @@ bool TargetDirectoryPage::validatePage()
     return true;
 }
 
+/*!
+    Initializes the page's fields based on values from fields on previous
+    pages.
+*/
 void TargetDirectoryPage::entering()
 {
     if (QPushButton *const b = qobject_cast<QPushButton *>(gui()->button(QWizard::NextButton)))
         b->setDefault(true);
 }
 
+/*!
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+*/
 void TargetDirectoryPage::leaving()
 {
     packageManagerCore()->setValue(scTargetDir, targetDir());
@@ -1806,12 +2277,22 @@ void TargetDirectoryPage::dirRequested()
     m_lineEdit->setText(QDir::toNativeSeparators(newDirName));
 }
 
+/*!
+    Requests a warning message to be shown to end users upon invalid input. If the input is valid,
+    the \uicontrol Next button is enabled.
+
+    Returns \c true if a valid path to the target directory is set; otherwise returns \c false.
+*/
 bool TargetDirectoryPage::isComplete() const
 {
     m_warningLabel->setText(targetDirWarning());
     return m_warningLabel->text().isEmpty();
 }
 
+/*!
+    Returns a warning if the path to the target directory is not set or if it
+    is invalid. Installation can continue only after a valid target path is given.
+*/
 QString TargetDirectoryPage::targetDirWarning() const
 {
     if (targetDir().isEmpty())
@@ -1900,6 +2381,10 @@ QString TargetDirectoryPage::targetDirWarning() const
     return QString();
 }
 
+/*!
+    Returns \c true if a warning message specified by \a message with the
+    identifier \a identifier is presented to end users for acknowledgment.
+*/
 bool TargetDirectoryPage::askQuestion(const QString &identifier, const QString &message)
 {
     QMessageBox::StandardButton bt =
@@ -1918,6 +2403,16 @@ bool TargetDirectoryPage::failWithError(const QString &identifier, const QString
 
 // -- StartMenuDirectoryPage
 
+/*!
+    \class QInstaller::StartMenuDirectoryPage
+    \inmodule QtInstallerFramework
+    \brief The StartMenuDirectoryPage class specifies the program group for the
+    product in the Windows Start menu.
+*/
+
+/*!
+    Constructs a Start menu directory selection page with \a core as parent.
+*/
 StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
@@ -1953,16 +2448,27 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
         SLOT(currentItemChanged(QListWidgetItem*)));
 }
 
+/*!
+    Returns the program group for the product in the Windows Start menu.
+*/
 QString StartMenuDirectoryPage::startMenuDir() const
 {
     return m_lineEdit->text().trimmed();
 }
 
+/*!
+    Sets \a startMenuDir as the program group for the product in the Windows
+    Start menu.
+*/
 void StartMenuDirectoryPage::setStartMenuDir(const QString &startMenuDir)
 {
     m_lineEdit->setText(startMenuDir.trimmed());
 }
 
+/*!
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+*/
 void StartMenuDirectoryPage::leaving()
 {
     packageManagerCore()->setValue(scStartMenuDir, startMenuPath + QDir::separator()
@@ -1978,6 +2484,16 @@ void StartMenuDirectoryPage::currentItemChanged(QListWidgetItem *current)
 
 // -- ReadyForInstallationPage
 
+/*!
+    \class QInstaller::ReadyForInstallationPage
+    \inmodule QtInstallerFramework
+    \brief The ReadyForInstallationPage class informs end users that the
+    installation can begin.
+*/
+
+/*!
+    Constructs a ready for installation page with \a core as parent.
+*/
 ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , m_msgLabel(new QLabel)
@@ -2014,9 +2530,10 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     setLayout(baseLayout);
 }
 
-
 /*!
-    \reimp
+    Initializes the page's fields based on values from fields on previous
+    pages. The text to display depends on whether the page is being used in an
+    installer, updater, or uninstaller.
 */
 void ReadyForInstallationPage::entering()
 {
@@ -2189,6 +2706,10 @@ bool ReadyForInstallationPage::calculateComponents(QString *displayString)
     return true;
 }
 
+/*!
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+*/
 void ReadyForInstallationPage::leaving()
 {
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
@@ -2200,6 +2721,26 @@ void ReadyForInstallationPage::leaving()
     \class QInstaller::PerformInstallationPage
     \inmodule QtInstallerFramework
     \brief The PerformInstallationPage class shows progress information about the installation state.
+
+    This class is a container for the PerformInstallationForm class, which
+    constructs the actual UI for the page.
+*/
+
+/*!
+    \fn PerformInstallationPage::isInterruptible() const
+
+    Returns \c true if the installation can be interrupted.
+*/
+
+/*!
+    \fn PerformInstallationPage::setAutomatedPageSwitchEnabled(bool request)
+
+    Enables automatic switching of pages when \a request is \c true.
+*/
+
+/*!
+    Constructs a perform installation page with \a core as parent. The page
+    contains a PerformInstallationForm that defines the UI for the page.
 */
 PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     : PackageManagerPage(core)
@@ -2232,11 +2773,17 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     setCommitPage(true);
 }
 
+/*!
+    Destructs a perform installation page.
+*/
 PerformInstallationPage::~PerformInstallationPage()
 {
     delete m_performInstallationForm;
 }
 
+/*!
+    Returns \c true if automatically switching to the page is requested.
+*/
 bool PerformInstallationPage::isAutoSwitching() const
 {
     return !m_performInstallationForm->isShowingDetails();
@@ -2244,6 +2791,11 @@ bool PerformInstallationPage::isAutoSwitching() const
 
 // -- protected
 
+/*!
+    Initializes the page's fields based on values from fields on previous
+    pages. The text to display depends on whether the page is being used in an
+    installer, updater, or uninstaller.
+*/
 void PerformInstallationPage::entering()
 {
     setComplete(false);
@@ -2272,6 +2824,10 @@ void PerformInstallationPage::entering()
         m_performInstallationForm->toggleDetails();
 }
 
+/*!
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+*/
 void PerformInstallationPage::leaving()
 {
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
@@ -2279,6 +2835,9 @@ void PerformInstallationPage::leaving()
 
 // -- public slots
 
+/*!
+    Sets \a title as the title of the perform installation page.
+*/
 void PerformInstallationPage::setTitleMessage(const QString &title)
 {
     setColoredTitle(title);
@@ -2325,6 +2884,17 @@ void PerformInstallationPage::toggleDetailsWereChanged()
 
 // -- FinishedPage
 
+/*!
+    \class QInstaller::FinishedPage
+    \inmodule QtInstallerFramework
+    \brief The FinishedPage class completes the installation wizard.
+
+    You can add the option to open the installed application to the page.
+*/
+
+/*!
+    Constructs an installation finished page with \a core as parent.
+*/
 FinishedPage::FinishedPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , m_commitButton(0)
@@ -2354,6 +2924,10 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     setCommitPage(true);
 }
 
+/*!
+    Initializes the page's fields based on values from fields on previous
+    pages.
+*/
 void FinishedPage::entering()
 {
     if (m_commitButton) {
@@ -2420,6 +2994,10 @@ void FinishedPage::entering()
     m_runItCheckBox->setChecked(false);
 }
 
+/*!
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+*/
 void FinishedPage::leaving()
 {
 #ifdef Q_OS_OSX
@@ -2434,6 +3012,10 @@ void FinishedPage::leaving()
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
 }
 
+/*!
+    Performs the necessary operations when end users select the \uicontrol Finish
+    button.
+*/
 void FinishedPage::handleFinishClicked()
 {
     const QString program =
@@ -2448,6 +3030,9 @@ void FinishedPage::handleFinishClicked()
     QProcess::startDetached(program, args);
 }
 
+/*!
+    Removes changed connects from the page.
+*/
 void FinishedPage::cleanupChangedConnects()
 {
     if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton)) {
@@ -2463,6 +3048,26 @@ void FinishedPage::cleanupChangedConnects()
 
 // -- RestartPage
 
+/*!
+    \class QInstaller::RestartPage
+    \inmodule QtInstallerFramework
+    \brief The RestartPage class enables restarting the installer.
+
+    The restart installation page enables end users to restart the wizard.
+    This is useful, for example, if the maintenance tool itself needs to be
+    updated before updating the application components. When updating is done,
+    end users can select \uicontrol Restart to start the maintenance tool.
+*/
+
+/*!
+    \fn RestartPage::restart()
+
+    This signal is emitted when the installer is restarted.
+*/
+
+/*!
+    Constructs a restart installation page with \a core as parent.
+*/
 RestartPage::RestartPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
@@ -2472,11 +3077,18 @@ RestartPage::RestartPage(PackageManagerCore *core)
     setFinalPage(false);
 }
 
+/*!
+    Returns the introduction page.
+*/
 int RestartPage::nextId() const
 {
     return PackageManagerCore::Introduction;
 }
 
+/*!
+    Initializes the page's fields based on values from fields on previous
+    pages.
+*/
 void RestartPage::entering()
 {
     if (!packageManagerCore()->needsHardRestart()) {
@@ -2488,6 +3100,10 @@ void RestartPage::entering()
     }
 }
 
+/*!
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+*/
 void RestartPage::leaving()
 {
 }

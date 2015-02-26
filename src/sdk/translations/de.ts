@@ -148,12 +148,12 @@
         <translation>Ausgewählte Komponenten ohne Abhängigkeiten:</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/installercalculator.cpp" line="114"/>
+        <location filename="../../libs/installer/installercalculator.cpp" line="111"/>
         <source>Recursion detected, component &apos;%1&apos; already added with reason: &apos;%2&apos;</source>
         <translation>Rekursion entdeckt, Komponente &apos;%1&apos; wurde bereits zugefügt aufgrund von: &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/installercalculator.cpp" line="176"/>
+        <location filename="../../libs/installer/installercalculator.cpp" line="173"/>
         <source>Cannot find missing dependency &apos;%1&apos; for &apos;%2&apos;.</source>
         <translation>Konnte fehlende Abhängigkeit &apos;%1&apos; für &apos;%2&apos; nicht finden.</translation>
     </message>
@@ -1032,12 +1032,12 @@
         <translation>Konnte die lokale Dateizeit nicht in die Systemzeit umwandeln.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="725"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="755"/>
         <source>Corrupt installation</source>
         <translation>Installation beschädigt</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="726"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="756"/>
         <source>Your installation seems to be corrupted. Please consider re-installing from scratch.</source>
         <translation>Ihre Installation scheint beschädigt zu sein. Komplette Neuinstallation empfohlen.</translation>
     </message>
@@ -1055,17 +1055,17 @@
         <translation>Komponenten können im Updater Modus keine Kinder haben.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="555"/>
+        <location filename="../../libs/installer/component.cpp" line="554"/>
         <source>Could not open the requested translation file &apos;%1&apos;.</source>
         <translation>Konnte angeforderte Übersetzungsdatei %1 nicht öffnen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="574"/>
+        <location filename="../../libs/installer/component.cpp" line="573"/>
         <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
         <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/component.cpp" line="583"/>
+        <location filename="../../libs/installer/component.cpp" line="582"/>
         <source>Could not load the requested UI file &apos;%1&apos;. Error: %2</source>
         <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht laden. Fehlermeldung: %2</translation>
     </message>
@@ -1098,104 +1098,129 @@
 <context>
     <name>QInstaller::ComponentModel</name>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="2448"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="2485"/>
         <source>Component Name</source>
         <translation>Komponentenname</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="2450"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="2487"/>
+        <source>Action</source>
+        <translation>Aktion</translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="2489"/>
         <source>Installed Version</source>
         <translation>Installierte Version</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="2452"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="2491"/>
         <source>New Version</source>
         <translation>Neue Version</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="2454"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="2493"/>
         <source>Release Date</source>
         <translation>Veröffentlichungsdatum</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="2456"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="2495"/>
         <source>Size</source>
         <translation>Grösse</translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/componentmodel.cpp" line="203"/>
+        <source>Component is marked for installation.</source>
+        <translation>Komponente wird installiert.</translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/componentmodel.cpp" line="205"/>
+        <source>Component is marked for uninstallation.</source>
+        <translation>Komponente wird deinstalliert.</translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/componentmodel.cpp" line="207"/>
+        <source>Component is installed.</source>
+        <translation>Komponente ist installiert.</translation>
+    </message>
+    <message>
+        <location filename="../../libs/installer/componentmodel.cpp" line="209"/>
+        <source>Component is not installed.</source>
+        <translation>Komponente ist nicht installiert.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1445"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1420"/>
         <source>Alt+A</source>
         <comment>select default components</comment>
         <translation>Alt+A</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1447"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1422"/>
         <source>Def&amp;ault</source>
         <translation>St&amp;andard</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1451"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1426"/>
         <source>Alt+R</source>
         <comment>reset to already installed components</comment>
         <translation>Alt+Z</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1453"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1428"/>
         <source>&amp;Reset</source>
         <translation>&amp;Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1462"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1437"/>
         <source>Alt+S</source>
         <comment>select all components</comment>
         <translation>Alt+S</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1464"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1439"/>
         <source>&amp;Select All</source>
         <translation>Alle au&amp;swählen</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1470"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1445"/>
         <source>Alt+D</source>
         <comment>deselect all components</comment>
         <translation>Alt+B</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1472"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1447"/>
         <source>&amp;Deselect All</source>
         <translation>Alle a&amp;bwählen</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1528"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1521"/>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
         <translation>Diese Komponente wird ungefähr %1 auf Ihrer Festplatte belegen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1597"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1590"/>
         <source>Select Components</source>
         <translation>Komponenten auswählen</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1608"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1601"/>
         <source>Please select the components you want to update.</source>
         <translation>Bitte wählen Sie die Komponenten aus, die Sie aktualisieren möchten.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1609"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1602"/>
         <source>Please select the components you want to install.</source>
         <translation>Bitte wählen Sie die Komponenten aus, die Sie installieren möchten.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1610"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1603"/>
         <source>Please select the components you want to uninstall.</source>
         <translation>Bitte wählen Sie die Komponenten aus, die Sie entfernen möchten.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1611"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1604"/>
         <source>Select the components to install. Deselect installed components to uninstall them.</source>
         <translation>Bitte wählen Sie die Komponenten aus, die Sie installieren möchten. Wählen Sie die Komponenten ab, die Sie entfernen möchten.</translation>
     </message>
@@ -1742,32 +1767,32 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2344"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2335"/>
         <source>Completing the %1 Wizard</source>
         <translation>Beende den %1 Assistenten.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2351"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2342"/>
         <source>Click Done to exit the %1 Wizard.</source>
         <translation>Klicken Sie &quot;Abschließen&quot;, um den %1 Assistenten zu beenden.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2353"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2344"/>
         <source>Click Finish to exit the %1 Wizard.</source>
         <translation>Klicken Sie &quot;Abschließen&quot;, um den %1 Assistenten zu beenden.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2392"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2383"/>
         <source>Restart</source>
         <translation>Neu starten</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2424"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2413"/>
         <source>Run %1 now.</source>
         <translation>Starte jetzt %1.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2429"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2418"/>
         <source>The %1 Wizard failed.</source>
         <translation>Der %1 Assistent ist fehlgeschlagen.</translation>
     </message>
@@ -1841,52 +1866,52 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::IntroductionPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="908"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="883"/>
         <source>Setup - %1</source>
         <translation>Einrichten - %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="916"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="891"/>
         <source>Welcome to the %1 Setup Wizard.</source>
         <translation>Willkommen zum %1 Einrichtungsassistenten.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="921"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="896"/>
         <source>Add or remove components</source>
         <translation>Komponenten hinzufügen oder entfernen</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="927"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="902"/>
         <source>Update components</source>
         <translation>Komponenten aktualisieren</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="933"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="908"/>
         <source>Remove all components</source>
         <translation>Alle Komponenten entfernen</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="945"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="920"/>
         <source>Retrieving information from remote installation sources...</source>
         <translation>Empfange Daten vom Installationsserver...</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="997"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="972"/>
         <source>At least one valid and enabled repository required for this action to succeed.</source>
         <translation>Mindestens ein gültiges und aktiviertes Repository wird benötigt, um diese Aktion erfolgreich abzuschliessen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1032"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1007"/>
         <source>No updates available.</source>
         <translation>Keine Aktualisierungen verfügbar.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1051"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1026"/>
         <source> Only local package management available.</source>
         <translation> Nur lokale Paketverwaltung verfügbar.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1202"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1177"/>
         <source>Quit</source>
         <translation>Beenden</translation>
     </message>
@@ -1894,49 +1919,49 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::LicenseAgreementPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1269"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1244"/>
         <source>License Agreement</source>
         <translation>Lizenzabkommen</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1293"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1268"/>
         <source>Alt+A</source>
         <comment>agree license</comment>
         <translatorcomment>Lizenz akzeptieren</translatorcomment>
         <translation>Alt+A</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1378"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1353"/>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
         <translation>Bitte lesen Sie das folgende Lizenzabkommen. Sie müssen die Bedingungen in diesem Abkommen akzeptieren, um die Installation fortsetzen zu können.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1380"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1355"/>
         <source>I accept the license.</source>
         <translation>Ich akzeptiere die Lizenzvereinbarung.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1381"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1356"/>
         <source>I do not accept the license.</source>
         <translation>Ich akzeptiere die Lizenzvereinbarung nicht.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1383"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1358"/>
         <source>Please read the following license agreements. You must accept the terms contained in these agreements before continuing with the installation.</source>
         <translation>Bitte lesen Sie die folgenden Lizenzabkommen. Sie müssen die Bedingungen in diesen Abkommen akzeptieren, um die Installation fortsetzen zu können.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1386"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1361"/>
         <source>I do not accept the licenses.</source>
         <translation>Ich akzeptiere die Lizenzvereinbarungen nicht.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1385"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1360"/>
         <source>I accept the licenses.</source>
         <translation>Ich akzeptiere die Lizenzvereinbarungen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1306"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1281"/>
         <source>Alt+D</source>
         <comment>do not agree license</comment>
         <translatorcomment>Der Lizenz nicht zustimmen</translatorcomment>
@@ -2061,29 +2086,29 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::PackageManagerCore</name>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="533"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="563"/>
         <source>
 Downloading packages...</source>
         <translation>
 Lade Pakete herunter...</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="556"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="586"/>
         <source>Installation canceled by user</source>
         <translation>Installation durch den Nutzer abgebrochen</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="558"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="588"/>
         <source>All downloads finished.</source>
         <translation>Alle Herunterladeprozesse abgeschlossen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="2387"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="2424"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="580"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="610"/>
         <source>Cancelling the Installer</source>
         <translation>Breche den Installationsvorgang ab</translation>
     </message>
@@ -2093,52 +2118,52 @@ Lade Pakete herunter...</translation>
         <translation>Fehler beim Schreiben des Verwaltungswerkzeugs</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="642"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="672"/>
         <source>Authentication Error</source>
         <translation>Autentifizierungsfehler</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="642"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="672"/>
         <source>Some components could not be removed completely because admin rights could not be acquired: %1.</source>
         <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil die nötigen Systemverwalterrechte nicht erlangt werden konnten. Fehlermeldung: %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="647"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="677"/>
         <source>Unknown error.</source>
         <translation>Unbekannter Fehler.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="647"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="677"/>
         <source>Some components could not be removed completely because an unknown error happened.</source>
         <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil ein unbekannter Fehler auftrat.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="812"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="842"/>
         <source>Application not running in Package Manager mode!</source>
         <translation>Die Anwendung ist nicht im Paketverwaltermodus!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="819"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="849"/>
         <source>No installed packages found.</source>
         <translation>Keine installierten Pakete gefunden.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="896"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="926"/>
         <source>Application running in Uninstaller mode!</source>
         <translation>Die Anwendung befindet sich im Deinstallierermodus!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="947"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="977"/>
         <source>There is an important update available, please run the updater first.</source>
         <translation>Es gibt eine wichtige Aktualisierung, bitte zuerst den Updater starten.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="1409"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="1446"/>
         <source>Error while elevating access rights.</source>
         <translation>Fehler beim Erlangen von Administratorrechten.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore.cpp" line="2418"/>
+        <location filename="../../libs/installer/packagemanagercore.cpp" line="2455"/>
         <source>invalid</source>
         <translation>ungültig</translation>
     </message>
@@ -2146,36 +2171,36 @@ Lade Pakete herunter...</translation>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="402"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1524"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1550"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1723"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1792"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="406"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1531"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1557"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1732"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1801"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="749"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="754"/>
         <source>Access error</source>
         <translation>Zugriffsfehler</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="750"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="755"/>
         <source>Format error</source>
         <translation>Formatfehler</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="751"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="756"/>
         <source>Could not write installer configuration to %1: %2</source>
         <translation>Konnte Einstellungen des Installers nicht nach %1 schreiben. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="867"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="872"/>
         <source>Stop Processes</source>
         <translation>Prozesse anhalten</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="867"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="872"/>
         <source>These processes should be stopped to continue:
 
 %1</source>
@@ -2184,204 +2209,199 @@ Lade Pakete herunter...</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="875"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1823"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2001"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="880"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1832"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2010"/>
         <source>Installation canceled by user</source>
         <translation>Installation durch den Nutzer abgebrochen</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1379"/>
-        <source>ProductName should be set</source>
-        <translation>ProductName muss gesetzt sein</translation>
-    </message>
-    <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1403"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1411"/>
         <source>Variable &apos;TargetDir&apos; not set.</source>
         <translation>TargetDir muss gesetzt sein.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1441"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1686"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1449"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1695"/>
         <source>Preparing the installation...</source>
         <translation>Bereite Installation vor...</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1451"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1459"/>
         <source>It is not possible to install from network location</source>
         <translation>Es ist nicht möglich, von einem Netzwerkort aus zu installieren</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1493"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1495"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1500"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1502"/>
         <source>Creating local repository</source>
         <translation>Erstelle lokale Quelle</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1540"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1547"/>
         <source>
 Installation finished!</source>
         <translation>
 Installation abgeschlossen!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1556"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1563"/>
         <source>
 Installation aborted!</source>
         <translation>
 Installation abgebrochen!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1590"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1597"/>
         <source>It is not possible to run that operation from a network location</source>
         <translation>Es ist nicht möglich, diese Oparation von einem Netzwerkort aus zu starten</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1692"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1701"/>
         <source>Removing deselected components...</source>
         <translation>Entferne abgewählte Komponenten...</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1713"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1722"/>
         <source>
 Update finished!</source>
         <translation>
 Aktualisierung beendet!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1729"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1738"/>
         <source>
 Update aborted!</source>
         <translation>
 Aktualisierung abgebrochen!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="389"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="393"/>
         <source>Unresolved dependencies</source>
         <translation>Nicht aufgelöste Abhängigkeiten</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="975"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="980"/>
         <source>Writing maintenance tool.</source>
         <translation>Schreiben des Verwaltungswerkzeugs.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="981"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="986"/>
         <source>Failed to seek in file %1: %2</source>
         <translation>Suchen in Datei %1 fehlgeschlagen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="988"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="993"/>
         <source>Maintenance tool is not a bundle</source>
         <translation>Verwaltungswerkzeug ist kein Bundle</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1002"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1007"/>
         <source>Could not write maintenance tool data to %1: %2</source>
         <translation>Konnte Daten des Verwaltungswerkzeugs nicht nach %1 schreiben. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1021"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1322"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1026"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1327"/>
         <source>Could not remove data file &apos;%1&apos;: %2</source>
         <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1027"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1032"/>
         <source>Could not write maintenance tool to %1: %2</source>
         <translation>Konnte Verwaltungswerkzeug nicht nach %1 schreiben: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1327"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1332"/>
         <source>Could not write maintenance tool binary data to %1: %2</source>
         <translation>Konnte Binäre Datei des Verwaltungswerkzeugs nicht nach %1 schreiben: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1530"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1703"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1537"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1712"/>
         <source>Creating Maintenance Tool</source>
         <translation>Erstelle Verwaltungswerkzeug</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1801"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1810"/>
         <source>Uninstallation completed successfully.</source>
         <translation>Deinstallation erfolgreich abgeschlossen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1801"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1810"/>
         <source>Uninstallation aborted.</source>
         <translation>Deinstallation abgebrochen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1817"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1826"/>
         <source>
 Installing component %1</source>
         <translation>
 Installiere Komponente %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1846"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2019"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1855"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2028"/>
         <source>Installer Error</source>
         <translation>Installationsfehler</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1847"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1856"/>
         <source>Error during installation process (%1):
 %2</source>
         <translation>Fehler beim Installieren von Komponente %1:
 %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1912"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1921"/>
         <source>Cannot prepare uninstall</source>
         <translation>Kann Deinstallation nicht vorbereiten</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1943"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="1952"/>
         <source>Cannot start uninstall</source>
         <translation>Kann Deinstallation nicht starten</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2020"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2029"/>
         <source>Error during uninstallation process:
 %1</source>
         <translation>Fehler bei der Deinstallation:
 %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2048"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2057"/>
         <source>Unknown error</source>
         <translation>Unbekannter Fehler</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2066"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2075"/>
         <source>Could not retrieve remote tree: %1.</source>
         <translation>Kann entfernten Baum nicht empfangen: %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2095"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2104"/>
         <source>Failure to read packages from: %1.</source>
         <translation>Fehler beim Lesen der Pakete von %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2120"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2129"/>
         <source>Could not retrieve meta information: %1</source>
         <translation>Konnte die Metainformationen nicht empfangen: %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2177"/>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2188"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2186"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2197"/>
         <source>Could not add temporary update source information.</source>
         <translation>Konnte Informationen zu temporären Aktualisierungsquellen nicht hinzufügen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2203"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2212"/>
         <source>Could not find any update source information.</source>
         <translation>Konnte keine Informationen zu Aktualisierungsquellen finden.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2273"/>
+        <location filename="../../libs/installer/packagemanagercore_p.cpp" line="2282"/>
         <source>Dependency cycle between components detected: &apos;%1&apos; and &apos;%2&apos;.</source>
         <translation>Zyklische Abhängigkeit zwischen Komponenten entdeckt: &apos;%1&apos; und &apos;%2&apos;.</translation>
     </message>
@@ -2389,57 +2409,57 @@ Installiere Komponente %1</translation>
 <context>
     <name>QInstaller::PackageManagerGui</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="254"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="256"/>
         <source>%1 Setup</source>
         <translation>%1 Einrichtung</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="256"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="258"/>
         <source>Maintain %1</source>
         <translation>%1 verwalten</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="599"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="602"/>
         <source>Do you want to cancel the installation process?</source>
         <translation>Möchten Sie den Installationsprozess abbrechen?</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="601"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="604"/>
         <source>Do you want to cancel the uninstallation process?</source>
         <translation>Möchten Sie den Deinstallationsprozess abbrechen?</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="603"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="606"/>
         <source>Do you want to quit the installer application?</source>
         <translation>Möchten Sie die Installationsanwendung beenden?</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="605"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="608"/>
         <source>Do you want to quit the uninstaller application?</source>
         <translation>Möchten Sie die Deinstallationsanwendung beenden?</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="607"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="610"/>
         <source>Do you want to quit the maintenance application?</source>
         <translation>Möchten Sie die Wartungsanwendung beenden?</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="612"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="615"/>
         <source>Question</source>
         <translation>Frage</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="654"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="657"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="731"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="714"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="732"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="715"/>
         <source>It is not possible to install from network location.
 Please copy the installer to a local drive</source>
         <translation>Es ist nicht möglich, von einem Netzwerkort aus zu installieren.
@@ -2464,32 +2484,32 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::PerformInstallationPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2263"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2254"/>
         <source>U&amp;ninstall</source>
         <translation>&amp;Deinstallieren</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2264"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2255"/>
         <source>Uninstalling %1</source>
         <translation>Deinstalliere %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2268"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2259"/>
         <source>&amp;Update</source>
         <translation>&amp;Aktualisieren</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2269"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2260"/>
         <source>Updating components of %1</source>
         <translation>Aktualisiere Komponenten des %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2273"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2264"/>
         <source>&amp;Install</source>
         <translation>&amp;Installieren</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2274"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2265"/>
         <source>Installing %1</source>
         <translation>Installiere %1</translation>
     </message>
@@ -2530,87 +2550,87 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::ReadyForInstallationPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2038"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2029"/>
         <source>U&amp;ninstall</source>
         <translation>&amp;Deinstallieren</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2039"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2030"/>
         <source>Ready to Uninstall</source>
         <translation>Bereit zum Deinstallieren</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2040"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2031"/>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 von Ihrem Computer zu entfernen. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Das Programmverzeichnis %2 wird vollständig gelöscht&lt;/font&gt;, inklusive allen Inhalten in diesem Ordner!</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2049"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2040"/>
         <source>U&amp;pdate</source>
         <translation>&amp;Aktualisieren</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2050"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2041"/>
         <source>Ready to Update Packages</source>
         <translation>Bereit zum Aktualisieren der Pakete</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2051"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2042"/>
         <source>Setup is now ready to begin updating your installation.</source>
         <translation>Das Einrichtungsprogramm ist jetzt bereit, Ihre Installation zu aktualisieren.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2054"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2045"/>
         <source>&amp;Install</source>
         <translation>&amp;Installieren</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2055"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2046"/>
         <source>Ready to Install</source>
         <translation>Bereit zum Installieren</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2056"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2047"/>
         <source>Setup is now ready to begin installing %1 on your computer.</source>
         <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 auf Ihrem Computer einzurichten.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2117"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2108"/>
         <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
         <translation>Nicht genügend Plattenplatz für temporäre Dateien und die Installation! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2126"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2117"/>
         <source>Not enough disk space to store all selected components! Available space: %1, at least required: %2.</source>
         <translation>Nicht genügend Plattenplatz für alle ausgewählten Komponenten! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2134"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2125"/>
         <source>Not enough disk space to store temporary files! Available space: %1, at least required: %2.</source>
         <translation>Nicht genügend Plattenplatz für temporäre Dateien! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2143"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2134"/>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
         <translation>Die für die Installation ausgewählte Partition scheint genügend Platz zu bieten, aber es werden anschließend weniger als 1% der Partitionsgröße verfügbar sein. %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2148"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2139"/>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
         <translation>Die für die Installation ausgewählte Partition scheint genügend Platz zu bieten, aber es werden anschließend weniger als 100 MiB verfügbar sein. %1</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2154"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2145"/>
         <source>Installation will use %1 of disk space.</source>
         <translation>Installation wird %1 Plattenplatz verwenden.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2164"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2155"/>
         <source>Cannot resolve all dependencies.</source>
         <translation>Konnte nicht alle Abhängigkeiten auflösen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2180"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2171"/>
         <source>Components about to be removed.</source>
         <translation>Komponenten, die entfernt werden.</translation>
     </message>
@@ -2650,9 +2670,9 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::RemoteServerConnection</name>
     <message>
-        <location filename="../../libs/installer/remoteserverconnection.cpp" line="189"/>
-        <location filename="../../libs/installer/remoteserverconnection.cpp" line="299"/>
-        <location filename="../../libs/installer/remoteserverconnection.cpp" line="390"/>
+        <location filename="../../libs/installer/remoteserverconnection.cpp" line="186"/>
+        <location filename="../../libs/installer/remoteserverconnection.cpp" line="300"/>
+        <location filename="../../libs/installer/remoteserverconnection.cpp" line="391"/>
         <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
         <translation>Konnte nicht alle Daten nach dem Senden des Kommandos &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
     </message>
@@ -2701,7 +2721,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="2483"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="2472"/>
         <source>Completing the %1 Setup Wizard</source>
         <translation>Vervollständige den %1 Assistenten</translation>
     </message>
@@ -2709,12 +2729,12 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::ScriptEngine</name>
     <message>
-        <location filename="../../libs/installer/scriptengine.cpp" line="378"/>
+        <location filename="../../libs/installer/scriptengine.cpp" line="620"/>
         <source>Could not open the requested script file at %1: %2.</source>
         <translation>Konnte angeforderte Skriptdatei &apos;%1&apos; nicht öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/scriptengine.cpp" line="396"/>
+        <location filename="../../libs/installer/scriptengine.cpp" line="638"/>
         <source>Exception while loading the component script &apos;%1&apos;. (%2)</source>
         <translation>Ausnahme beim Laden des Komponentenskripts &apos;%1&apos;. (%2)</translation>
     </message>
@@ -2815,12 +2835,12 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::StartMenuDirectoryPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1937"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1928"/>
         <source>Start Menu shortcuts</source>
         <translation>Verknüpfungen im Startmenü</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1938"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1929"/>
         <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new folder.</source>
         <translation>Wählen Sie den Ordner im Startmenü, in dem die Verknüpfungen zur Anwendung erstellt werden sollen. Sie können einen Namen angeben, um einen neuen Ordner anzulegen.</translation>
     </message>
@@ -2828,34 +2848,34 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::TargetDirectoryPage</name>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1689"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1682"/>
         <source>Installation Folder</source>
         <translation>Installationsverzeichnis</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1696"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1689"/>
         <source>Please specify the folder where %1 will be installed.</source>
         <translation>Bitte geben Sie den Ordner an, in dem %1 installiert werden soll.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1709"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1702"/>
         <source>Alt+R</source>
         <comment>browse file system to choose a file</comment>
         <translatorcomment>Dateisystem durchsuchen, um eine Datei auszuwählen</translatorcomment>
         <translation>Alt+D</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1710"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1703"/>
         <source>B&amp;rowse...</source>
         <translation>&amp;Durchsuchen...</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1783"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1776"/>
         <source>The folder you selected already exists and contains an installation. Choose a different target for installation.</source>
         <translation>Der ausgewählte Ordner existiert bereits und enthält eine Installation. Bitte ein anderes Zielverzeichnis auswählen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1788"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1781"/>
         <source>You have selected an existing, non-empty folder for installation.
 Note that it will be completely wiped on uninstallation of this application.
 It is not advisable to install into this folder as installation might fail.
@@ -2866,67 +2886,67 @@ Es wird nicht empfohlen, in diesen Ordner zu installieren.
 Möchten Sie trotzdem fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1792"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1785"/>
         <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
         <translation>Existierende Datei oder Symlink ausgewählt, bitte ein anderes Installationsziel auswählen.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1829"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1820"/>
         <source>The installation path cannot be empty, please specify a valid folder.</source>
         <translation>Der Installationspfad darf nicht leer sein. Bitte einen gültigen Ordner angeben.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1833"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1824"/>
         <source>The installation path cannot be relative, please specify an absolute path.</source>
         <translation>Der Installationspfad darf nicht relativ sein. Bitte einen absoluten Pfad angeben.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1839"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1830"/>
         <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
         <translation>Der Pfad zum Installationsverzeichnis enthält Zeichen ausserhalb des ASCII Zeichensatzes. Dies ist zur Zeit nicht unterstützt. Bitte wählen Sie einen anderen Pfad für das Installationsverzeichnis.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1856"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1847"/>
         <source>The path you have entered is too long, please make sure to specify a valid path.</source>
         <translation>Der von ihnen eingegebene Pfad ist zu lang, bitte geben sie einen gültigen Pfad ein.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1871"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1862"/>
         <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
         <translation>Der eingegebene Pfad ist ungültig, bitte ein gültiges Ziel angeben.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1885"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1876"/>
         <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
         <translation>Der von ihnen eingegebene Pfad ist ungültig, bitte geben sie ein gültiges Laufwerk an.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1892"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1883"/>
         <source>The installation path must not end with &apos;.&apos;, please specify a valid folder.</source>
         <translation>Der Installationspfad darf nicht auf &apos;.&apos; enden, bitte einen gültigen Ordner angeben.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1907"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1898"/>
         <source>The installation path must not contain &apos;%1&apos;, please specify a valid folder.</source>
         <translation>Der Installationspfad darf nicht %1 enthalten, bitte einen gültigen Ordner angeben.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1925"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1916"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1848"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1839"/>
         <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
         <translation>Da das Installationsverzeichnis komplett gelöscht wird, ist eine Installation nach %1 nicht zulässig.</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1918"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1909"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../libs/installer/packagemanagergui.cpp" line="1814"/>
+        <location filename="../../libs/installer/packagemanagergui.cpp" line="1805"/>
         <source>Select Installation Folder</source>
         <translation>Installationsverzeichnis auswählen.</translation>
     </message>

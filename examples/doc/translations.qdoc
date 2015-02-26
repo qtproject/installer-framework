@@ -1,0 +1,80 @@
+/****************************************************************************
+**
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example translations
+    \ingroup qtifwexamples
+    \title Translation Example
+
+    \brief Using translations to localize installer pages and licenses.
+
+    \image qtifw-examples-translations.png
+
+    \e{Translations} illustrates how to use translations to localize the output
+    of component scripts and component UI files into another language. It also shows
+    how to select the license according to the system language.
+
+    To add a new language, you first need to create a translation source (TS) file for
+    the package that contains all the translatable strings. Run the following command in
+    the package's meta directory:
+
+    \code
+       lupdate installscript.qs page.ui -ts <language>.ts
+    \endcode
+
+    Replace <language> with the two letter lowercase code for the language you want to
+    translate to. After finishing translating you need to use lrelease on that
+    TS file to generate the binary Qt messages (QM) file. Do not forget to include
+    that in the package.xml as shown below. Run the following command in
+    the package's meta directory:
+
+    \code
+       lrelase <language>.ts
+    \endcode
+
+
+    \include installerfw-examples-configuring.qdocinc
+
+    \quotefile translations/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Default> element is set to \c true to preselect the
+            component in the installer.
+        \li The \c <Script> element specifies the file name of the JavaScript
+            file that is loaded to perform operations.
+        \li The \c <License> element specifies the file name of the license file
+            that is shown when this component is selected for installation.
+        \li The \c <Translations> element specifies the file name of the QM
+            file containing translations for this compontent's UI and script files.
+    \endlist
+
+    \quotefile translations/packages/com.vendor.product/meta/package.xml
+
+    \include installerfw-examples-generating.qdocinc
+*/

@@ -1,7 +1,7 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
@@ -10,9 +10,9 @@
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -23,8 +23,8 @@
 ** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** In addition, as a special exception, Digia gives you certain additional
-** rights. These rights are described in the Digia Qt LGPL Exception
+** As a special exception, The Qt Company gives you certain additional
+** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 **
@@ -50,23 +50,30 @@ namespace QInstaller {
 /*!
     \enum ComponentModel::ModelStateFlag
 
+    This enum value holds the checked state of the components available for
+    installation.
+
     \value AllChecked
+           All components are checked.
     \value AllUnchecked
+           No components are checked.
     \value DefaultChecked
+           The components to be installed by default are checked.
     \value PartiallyChecked
+           Some components are checked.
 */
 
 /*!
     \fn void ComponentModel::checkStateChanged(const QModelIndex &index)
 
-    This signal is emitted whenever the check state of a component is changed. The \a index value
+    This signal is emitted whenever the checked state of a component is changed. The \a index value
     indicates the QModelIndex representation of the component as seen from the model.
 */
 
 /*!
     \fn void ComponentModel::checkStateChanged(QInstaller::ComponentModel::ModelState state)
 
-    This signal is emitted whenever the check state of a model is changed after all state
+    This signal is emitted whenever the checked state of a model is changed after all state
     calculations have taken place. The \a state is a combination of \c ModelStateFlag values
     indicating whether the model has its default checked state, all components are checked
     or unchecked, or some individual component's checked state has changed.
@@ -88,7 +95,7 @@ private:
 Q_GLOBAL_STATIC(IconCache, iconCache)
 
 /*!
-    Constructs an component model with the given number of \a columns and \a core as parent.
+    Constructs a component model with the given number of \a columns and \a core as parent.
 */
 ComponentModel::ComponentModel(int columns, PackageManagerCore *core)
     : QAbstractItemModel(core)
@@ -124,7 +131,7 @@ Qt::ItemFlags ComponentModel::flags(const QModelIndex &index) const
 }
 
 /*!
-    Returns the number of items under the given \a parent. When the parent index is invalid the
+    Returns the number of items under the given \a parent. When the parent index is invalid, the
     returned value is the root item count.
 */
 int ComponentModel::rowCount(const QModelIndex &parent) const
@@ -216,6 +223,12 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
             if (role == Qt::EditRole || role == Qt::DisplayRole || role == Qt::ToolTipRole)
                 return component->data(Qt::UserRole + index.column());
         }
+        if (role == Qt::CheckStateRole) {
+            if (!component->isCheckable())
+                return QVariant();
+            if (!component->autoDependencies().isEmpty())
+                return QVariant();
+        }
         return component->data(role);
     }
     return QVariant();
@@ -224,7 +237,7 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
 /*!
     Sets the \a role data for the item at \a index to \a value. Returns true if successful;
     otherwise returns false. The dataChanged() signal is emitted if the data was successfully set.
-    The checkStateChanged() signals are emitted in addition if the check state of the item is set.
+    The checkStateChanged() signals are emitted in addition if the checked state of the item is set.
 */
 bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -316,7 +329,7 @@ QSet<Component *> ComponentModel::unchecked() const
 }
 
 /*!
-    Returns a list of components whose check state cannot be changed. If package manager
+    Returns a list of components whose checked state cannot be changed. If package manager
     core is run with no forced installation argument, the list will always be empty.
 */
 QSet<Component *> ComponentModel::uncheckable() const
@@ -333,7 +346,7 @@ PackageManagerCore *ComponentModel::core() const
 }
 
 /*!
-    Returns the current state check state of the model.
+    Returns the current checked state of the model.
 */
 ComponentModel::ModelState ComponentModel::checkedState() const
 {
@@ -356,7 +369,8 @@ QModelIndex ComponentModel::indexFromComponentName(const QString &name) const
 
 /*!
     Translates between a given QModelIndex \a index and its associated Component.
-    Returns the component if the index is valid or 0 if an invalid QModelIndex is given.
+    Returns the component if the index is valid or \c 0 if an invalid
+    QModelIndex is given.
 */
 Component *ComponentModel::componentFromIndex(const QModelIndex &index) const
 {
@@ -369,9 +383,9 @@ Component *ComponentModel::componentFromIndex(const QModelIndex &index) const
 // -- public slots
 
 /*!
-    Sets the passed \a rootComponents to be the list of currently shown components.
+    Sets \a rootComponents to be the list of currently shown components.
 
-    The model is repopulated and the individual component checked state is used to show the check
+    The model is repopulated and the individual component's checked state is used to show the check
     mark in front of the visual component representation. The modelAboutToBeReset() and
     modelReset() signals are emitted.
 */
@@ -404,7 +418,7 @@ void ComponentModel::setRootComponents(QList<QInstaller::Component*> rootCompone
 }
 
 /*!
-    Sets the check state of every component in the model to be \a state.
+    Sets the checked state of every component in the model to be \a state.
 
     The ComponentModel::PartiallyChecked flag is ignored by this function. Note that components
     are not changed if they are not checkable. The dataChanged() and checkStateChanged() signals
