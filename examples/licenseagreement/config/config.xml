@@ -5,5 +5,5 @@
     <Title>License Agreement Example</Title>
     <Publisher>Qt-Project</Publisher>
     <StartMenuDir>Qt Installer Framework Example</StartMenuDir>
-    <TargetDir>@HomeDir@/IFWLicenseAgreementExample</TargetDir>
+    <TargetDir>@HomeDir@/IfwExamples/licenseagreement</TargetDir>
 </Installer>

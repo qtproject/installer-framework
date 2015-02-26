@@ -6,7 +6,7 @@
     <Publisher>The Qt Company</Publisher>
     <!-- Directory name is used in component.xml -->
     <StartMenuDir>Qt IFW Examples</StartMenuDir>
-    <TargetDir>@HomeDir@/IfwExample</TargetDir>
+    <TargetDir>@HomeDir@/IfwExamples/online</TargetDir>
     <RemoteRepositories>
         <Repository>
             <Url>http://localhost/repository</Url>
