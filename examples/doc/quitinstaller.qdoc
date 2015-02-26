@@ -26,11 +26,11 @@
 ****************************************************************************/
 
 /*!
-    \example quit_installer
+    \example quitinstaller
     \ingroup qtifwexamples
     \title Quit Installer Example
 
-    \image qtifw-examples-quit_installer.png
+    \image qtifw-examples-quitinstaller.png
 
     \brief Using a component script to quit an installer.
 
@@ -40,7 +40,7 @@
 
     \include installerfw-examples-configuring.qdocinc
 
-    \quotefile quit_installer/config/config.xml
+    \quotefile quitinstaller/config/config.xml
 
     \include installerfw-examples-packaging.qdocinc
 
@@ -51,14 +51,14 @@
             file that is loaded to perform operations.
     \endlist
 
-    \quotefile quit_installer/packages/org.qtproject.ifw.example.quitinstaller/meta/package.xml
+    \quotefile quitinstaller/packages/org.qtproject.ifw.example.quitinstaller/meta/package.xml
 
     \section1 Quitting the Installation
 
     In installscript.js, we use the \c Component() function to display a
     message box for quitting the installer to end users:
 
-    \quotefromfile quit_installer/packages/org.qtproject.ifw.example.quitinstaller/meta/installscript.js
+    \quotefromfile quitinstaller/packages/org.qtproject.ifw.example.quitinstaller/meta/installscript.js
     \skipto Component()
     \printuntil QMessageBox.Ok
 

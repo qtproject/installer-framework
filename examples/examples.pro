@@ -9,7 +9,7 @@ SUBDIRS += \
   modifyextract \
   online \
   openreadme \
-  quit_installer \
+  quitinstaller \
   registerfileextension \
   startmenu \
   systeminfo
