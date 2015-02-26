@@ -180,6 +180,42 @@ QStringList UpdateOperation::arguments() const
     return m_arguments;
 }
 
+bool UpdateOperation::checkArgumentCount(int minArgCount, int maxArgCount,
+                                         const QString &argDescription)
+{
+    const int argCount = arguments().count();
+    if (argCount < minArgCount || argCount > maxArgCount) {
+        setError(InvalidArguments);
+        QString countRange;
+        if (minArgCount == maxArgCount)
+            countRange = tr("exactly %1").arg(minArgCount);
+        else if (maxArgCount == INT_MAX)
+            countRange = tr("at least %1").arg(minArgCount);
+        else if (minArgCount == 0)
+            countRange = tr("not more than %1").arg(maxArgCount);
+        else if (minArgCount == maxArgCount - 1)
+            countRange = tr("%1 or %2").arg(minArgCount).arg(maxArgCount);
+        else
+            countRange = tr("%1 to %2").arg(minArgCount).arg(maxArgCount);
+
+        if (argDescription.isEmpty())
+            setErrorString(tr("Invalid arguments in %1: %n arguments given, "
+                              "%2 arguments expected.", 0, argCount)
+                           .arg(name(), countRange));
+        else
+            setErrorString(tr("Invalid arguments in %1: %n arguments given, "
+                              "%2 arguments expected in the form: %3.", 0, argCount)
+                           .arg(name(), countRange, argDescription));
+        return false;
+    }
+    return true;
+}
+
+bool UpdateOperation::checkArgumentCount(int argCount)
+{
+    return checkArgumentCount(argCount, argCount);
+}
+
 struct StartsWith
 {
     StartsWith(const QString &searchTerm)

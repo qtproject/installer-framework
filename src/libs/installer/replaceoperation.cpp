@@ -51,18 +51,14 @@ void ReplaceOperation::backup()
 
 bool ReplaceOperation::performOperation()
 {
-    const QStringList args = arguments();
-
     // Arguments:
     // 1. filename
     // 2. Source-String
     // 3. Replace-String
-    if (args.count() != 3) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("exactly 3"), QLatin1String("")));
+    if (!checkArgumentCount(3))
         return false;
-    }
+
+    const QStringList args = arguments();
     const QString fileName = args.at(0);
     const QString before = args.at(1);
     const QString after = args.at(2);

@@ -179,23 +179,18 @@ void CreateShortcutOperation::backup()
 
 bool CreateShortcutOperation::performOperation()
 {
+    if (!checkArgumentCount(2, 3, tr("(optional: \"workingDirectory=...\", \"iconPath=...\", \"iconId=...\")")))
+        return false;
+
     QStringList args = arguments();
 
     const QString iconId = takeArgument(QString::fromLatin1("iconId="), &args);
     const QString iconPath = takeArgument(QString::fromLatin1("iconPath="), &args);
     const QString workingDir = takeArgument(QString::fromLatin1("workingDirectory="), &args);
 
-    if (args.count() != 2 && args.count() != 3) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("2 or 3"),
-            tr(" (optional: 'workingDirectory=...', 'iconPath=...', 'iconId=...')")));
-        return false;
-    }
-
     const QString linkTarget = args.at(0);
     const QString linkLocation = args.at(1);
-    const QString targetArguments = args.value(2); //used value because it could be not existing
+    const QString targetArguments = args.value(2);  // value() used since it's optional
 
     const QString linkPath = QFileInfo(linkLocation).absolutePath().trimmed();
     const bool created = QDir(linkPath).exists() || QDir::root().mkpath(linkPath);

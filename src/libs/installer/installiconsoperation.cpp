@@ -109,16 +109,12 @@ void InstallIconsOperation::backup()
 
 bool InstallIconsOperation::performOperation()
 {
-    const QStringList args = arguments();
-    if ((args.count() != 1) && (args.count() != 2)) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("1 or 2"), tr(" (Sourcepath, [Vendorprefix])")));
+    if (!checkArgumentCount(1, 2, tr("(Sourcepath, [Vendorprefix])")))
         return false;
-    }
 
+    const QStringList args = arguments();
     const QString source = args.at(0);
-    const QString vendor = args.value(1);
+    const QString vendor = args.value(1); // value() used since it's optional
 
     if (source.isEmpty()) {
         setError(InvalidArguments);

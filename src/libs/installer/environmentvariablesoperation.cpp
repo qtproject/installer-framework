@@ -121,21 +121,16 @@ UpdateOperation::Error undoSetting(const QString &regPath,
 
 bool EnvironmentVariableOperation::performOperation()
 {
-    QStringList args = arguments();
-    if (args.count() < 2 || args.count() > 4) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("2 to 4"), QLatin1String("")));
+    if (!checkArgumentCount(2, 4))
         return false;
-    }
 
-    const QString name = arguments().at(0);
-    const QString value = arguments().at(1);
-    bool isPersistent = false;
+    const QStringList args = arguments();
+    const QString name = args.at(0);
+    const QString value = args.at(1);
 
 #ifdef Q_OS_WIN
-    isPersistent = arguments().count() >= 3 ? arguments().at(2) == QLatin1String("true") : true;
-    const bool isSystemWide = arguments().count() >= 4 ? arguments().at(3) == QLatin1String("true") : false;
+    const bool isPersistent = arguments().count() > 2 ? arguments().at(2) == QLatin1String("true") : true;
+    const bool isSystemWide = arguments().count() > 3 ? arguments().at(3) == QLatin1String("true") : false;
     QString oldvalue;
     if (isPersistent) {
         const QString regPath = isSystemWide ? QLatin1String("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet"
@@ -158,9 +153,8 @@ bool EnvironmentVariableOperation::performOperation()
         setValue(QLatin1String("oldvalue"), oldvalue);
         return true;
     }
-#endif
     Q_ASSERT(!isPersistent);
-    Q_UNUSED(isPersistent)
+#endif
 
     setValue(QLatin1String("oldvalue"), Environment::instance().value(name));
     Environment::instance().setTemporaryValue(name, value);

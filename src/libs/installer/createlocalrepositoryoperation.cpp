@@ -152,16 +152,12 @@ bool CreateLocalRepositoryOperation::performOperation()
     AutoHelper helper(this);
     emit progressChanged(0.0);
 
-    const QStringList args = arguments();
-
-    if (args.count() != 2) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("exactly 2"), QLatin1String("")));
+    if (!checkArgumentCount(2))
         return false;
-    }
 
     try {
+        const QStringList args = arguments();
+
         const QString binaryPath = QFileInfo(args.at(0)).absoluteFilePath();
         // Note the "/" at the end, important to make copy directory operation behave well
         const QString repoPath = QFileInfo(args.at(1)).absoluteFilePath() + QLatin1Char('/');

@@ -146,11 +146,8 @@ bool CopyOperation::performOperation()
 {
     // We need two args to complete the copy operation. First arg provides the complete file name of source
     // Second arg provides the complete file name of dest
-    if (arguments().count() != 2) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(arguments().count()));
+    if (!checkArgumentCount(2))
         return false;
-    }
 
     QString source = sourcePath();
     QString destination = destinationPath();
@@ -273,14 +270,11 @@ bool MoveOperation::performOperation()
 {
     // We need two args to complete the copy operation. // First arg provides the complete file name of
     // source, second arg provides the complete file name of dest
-    const QStringList args = this->arguments();
-    if (args.count() != 2) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(args.count()));
+    if (!checkArgumentCount(2))
         return false;
-    }
 
-    const QString dest = args.last();
+    const QStringList args = arguments();
+    const QString dest = args.at(1);
     // If destination file exists, then we cannot use QFile::copy() because it does not overwrite an existing
     // file. So we remove the destination file.
     if (QFile::exists(dest)) {
@@ -293,7 +287,7 @@ bool MoveOperation::performOperation()
     }
 
     // Copy source to destination.
-    QFile file(args.first());
+    QFile file(args.at(0));
     if (!file.copy(dest)) {
         setError(UserDefinedError);
         setErrorString(tr("Could not copy %1 to %2: %3").arg(file.fileName(), dest, file.errorString()));
@@ -372,13 +366,10 @@ void DeleteOperation::backup()
 bool DeleteOperation::performOperation()
 {
     // Requires only one parameter. That is the name of the file to remove.
-    const QStringList args = this->arguments();
-    if (args.count() != 1) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments: %1 arguments given, 1 expected.").arg(args.count()));
+    if (!checkArgumentCount(1))
         return false;
-    }
-    return deleteFileNowOrLater(args.first());
+
+    return deleteFileNowOrLater(arguments().at(0));
 }
 
 bool DeleteOperation::undoOperation()
@@ -459,14 +450,10 @@ void MkdirOperation::backup()
 bool MkdirOperation::performOperation()
 {
     // Requires only one parameter. That is the path which should be created
-    QStringList args = this->arguments();
-    if (args.count() != 1) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments: %1 arguments given, 1 expected.").arg(args.count()));
+    if (!checkArgumentCount(1))
         return false;
-    }
 
-    const QString dirName = args.first();
+    const QString dirName = arguments().at(0);
     const bool created = QDir::root().mkpath(dirName);
     if (!created) {
         setError(UserDefinedError);
@@ -538,26 +525,23 @@ void RmdirOperation::backup()
 bool RmdirOperation::performOperation()
 {
     // Requires only one parameter. That is the name of the file to remove.
-    const QStringList args = this->arguments();
-    if (args.count() != 1) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments: %1 arguments given, 1 expected.").arg(args.count()));
+    if (!checkArgumentCount(1))
         return false;
-    }
 
-    QDir dir(args.first());
+    const QString firstArg = arguments().at(0);
+    QDir dir(firstArg);
     if (!dir.exists()) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not remove folder %1: The folder does not exist.").arg(args.first()));
+        setErrorString(tr("Could not remove folder %1: The folder does not exist.").arg(firstArg));
         return false;
     }
 
     errno = 0;
-    const bool removed = dir.rmdir(args.first());
+    const bool removed = dir.rmdir(firstArg);
     setValue(QLatin1String("removed"), removed);
     if (!removed) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not remove folder %1: %2").arg(args.first(), errnoToQString(errno)));
+        setErrorString(tr("Could not remove folder %1: %2").arg(firstArg, errnoToQString(errno)));
     }
     return removed;
 }
@@ -616,15 +600,11 @@ bool AppendFileOperation::performOperation()
 {
     // This operation takes two arguments. First argument is the name of the file into which a text has to be
     // appended. Second argument is the text to append.
-    const QStringList args = this->arguments();
-    if (args.count() != 2) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("exactly 2"), QLatin1String("")));
+    if (!checkArgumentCount(2))
         return false;
-    }
 
-    const QString fName = args.first();
+    const QStringList args = this->arguments();
+    const QString fName = args.at(0);
     QFile file(fName);
     if (!file.open(QFile::Append)) {
         // first we rename the file, then we copy it to the real target and open the copy - the renamed original is then marked for deletion
@@ -653,7 +633,7 @@ bool AppendFileOperation::performOperation()
     }
 
     QTextStream ts(&file);
-    ts << args.last();
+    ts << args.at(1);
     file.close();
 
     return true;
@@ -727,14 +707,11 @@ bool PrependFileOperation::performOperation()
     // This operation takes two arguments. First argument is the name
     // of the file into which a text has to be appended. Second argument
     // is the text to append.
-    const QStringList args = this->arguments();
-    if (args.count() != 2) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments: %1 arguments given, 2 expected.").arg(args.count()));
+    if (!checkArgumentCount(2))
         return false;
-    }
 
-    const QString fName = args.first();
+    const QStringList args = this->arguments();
+    const QString fName = args.at(0);
     // Load the file first.
     QFile file(fName);
     if (!file.open(QFile::ReadOnly)) {
@@ -748,7 +725,7 @@ bool PrependFileOperation::performOperation()
     file.close();
 
     // Prepend text to the file text
-    fContents = args.last() + fContents;
+    fContents = args.at(1) + fContents;
 
     // Now re-open the file in write only mode.
     if (!file.open(QFile::WriteOnly)) {

@@ -80,12 +80,9 @@ bool ElevatedExecuteOperation::performOperation()
 {
     // This operation receives only one argument. It is the complete
     // command line of the external program to execute.
-    if (arguments().isEmpty()) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("at least 1"), QLatin1String("")));
+    if (!checkArgumentCount(1, INT_MAX))
         return false;
-    }
+
     QStringList args;
     foreach (const QString &argument, arguments()) {
         if (argument!=QLatin1String("UNDOEXECUTE"))

@@ -59,13 +59,10 @@ bool ConsumeOutputOperation::performOperation()
     // 2. executable path
     // 3. argument for the executable
     // 4. more arguments possible ...
-    if (arguments().count() < 3) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.").arg(name()).arg(
-            arguments().count()).arg(tr("at least 2"), QLatin1String("(<to be saved installer key name>, "
-            "<executable>, [argument1], [argument2], ...)")));
+
+    if (!checkArgumentCount(2, INT_MAX, tr("(<to be saved installer key name>, "
+                                      "<executable>, [argument1], [argument2], ...)")))
         return false;
-    }
 
     PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {

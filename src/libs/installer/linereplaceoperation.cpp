@@ -51,18 +51,14 @@ void LineReplaceOperation::backup()
 
 bool LineReplaceOperation::performOperation()
 {
-    const QStringList args = arguments();
-
     // Arguments:
     // 1. filename
     // 2. startsWith Search-String
     // 3. Replace-Line-String
-    if (args.count() != 3) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("exactly 3"), QLatin1String("")));
+    if (!checkArgumentCount(3))
         return false;
-    }
+
+    const QStringList args = arguments();
     const QString fileName = args.at(0);
     const QString searchString = args.at(1);
     const QString replaceString = args.at(2);

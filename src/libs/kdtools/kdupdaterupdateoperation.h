@@ -90,6 +90,8 @@ protected:
     void setError(int error, const QString &errorString = QString());
     void registerForDelayedDeletion(const QStringList &files);
     bool deleteFileNowOrLater(const QString &file, QString *errorString = 0);
+    bool checkArgumentCount(int minArgCount, int maxArgCount, const QString &argDescription = QString());
+    bool checkArgumentCount(int argCount);
 
 private:
     QString m_name;

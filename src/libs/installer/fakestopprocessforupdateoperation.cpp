@@ -57,11 +57,8 @@ bool FakeStopProcessForUpdateOperation::performOperation()
 bool FakeStopProcessForUpdateOperation::undoOperation()
 {
     setError(KDUpdater::UpdateOperation::NoError);
-    if (arguments().size() != 1) {
-        setError(KDUpdater::UpdateOperation::InvalidArguments, tr("Number of arguments does not "
-            "match: one is required"));
+    if (!checkArgumentCount(1))
         return false;
-    }
 
     PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {
