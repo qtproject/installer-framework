@@ -62,7 +62,6 @@ class INSTALLER_EXPORT Component : public QObject, public ComponentModelHelper
 
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QString displayName READ displayName)
-    Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
     Q_PROPERTY(bool autoCreateOperations READ autoCreateOperations WRITE setAutoCreateOperations)
     Q_PROPERTY(QStringList archives READ archives)
     Q_PROPERTY(QStringList userInterfaces READ userInterfaces)
@@ -203,7 +202,6 @@ public:
     bool validatePage();
 
 public Q_SLOTS:
-    void setSelected(bool selected);
     void setAutoCreateOperations(bool autoCreateOperations);
 
 Q_SIGNALS:

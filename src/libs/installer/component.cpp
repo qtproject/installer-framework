@@ -1136,18 +1136,6 @@ bool Component::validatePage()
     return true;
 }
 
-/*!
-    \qmlmethod void component::setSelected(boolean selected)
-
-    Marks the component for installation. Emits the selectedChanged() signal if the check state changes.
-
-    \note This method does not do anything and is deprecated since 1.3.
-*/
-void Component::setSelected(bool selected)
-{
-    Q_UNUSED(selected)
-    qDebug() << Q_FUNC_INFO << QString::fromLatin1("on '%1' is deprecated.").arg(d->m_componentName);
-}
 
 /*!
     \qmlmethod void component::addDependency(string newDependency)
