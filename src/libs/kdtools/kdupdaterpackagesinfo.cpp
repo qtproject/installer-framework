@@ -48,9 +48,8 @@ using namespace KDUpdater;
     \brief The PackagesInfo class provides access to information about packages installed on the
         application side.
 
-    This class parses the package information XML file specified via the setFileName() method and
-    provides access to the information defined within the package information file through an easy
-    to use API. You can:
+    This class parses the \e {installation information} XML file specified via the setFileName()
+    method and provides access to the information defined within the file through an API. You can:
     \list
         \li Get the application name via the applicationName() method.
         \li Get the application version via the applicationVersion() method.
@@ -65,15 +64,15 @@ using namespace KDUpdater;
 
 /*!
     \enum PackagesInfo::Error
-    Error codes related to retrieving package information.
+    Error codes related to retrieving information about installed packages:
 
     \value NoError                          No error occurred.
-    \value NotYetReadError                  The package information was not parsed yet from the XML
-                                            file.
-    \value CouldNotReadPackageFileError     The specified package information file could not be
+    \value NotYetReadError                  The installation information was not parsed yet from the
+                                            XML file.
+    \value CouldNotReadPackageFileError     The specified installation information file could not be
                                             read (does not exist or is not readable).
-    \value InvalidXmlError                  The package information file contains invalid XML.
-    \value InvalidContentError              The package information file contains valid XML, but
+    \value InvalidXmlError                  The installation information file contains invalid XML.
+    \value InvalidContentError              The installation information file contains valid XML, but
                                             does not match the expected format for package
                                             descriptions.
 */
@@ -141,8 +140,8 @@ QString PackagesInfo::errorString() const
 }
 
 /*!
-    Returns the error that was found during the processing of the package information XML file. If
-    no error was found, returns NoError.
+    Returns the error that was found during the processing of the installation information XML file.
+    If no error was found, returns NoError.
 */
 PackagesInfo::Error PackagesInfo::error() const
 {
@@ -150,8 +149,8 @@ PackagesInfo::Error PackagesInfo::error() const
 }
 
 /*!
-    Sets the complete file name of the package information XML file to \a fileName. The function
-    also issues a call to refresh() to reload package information from the XML file.
+    Sets the complete file name of the installation information XML file to \a fileName. The function
+    also issues a call to refresh() to reload installation information from the XML file.
 
     \sa KDUpdater::Application::setPackagesXMLFileName()
 */
@@ -165,7 +164,7 @@ void PackagesInfo::setFileName(const QString &fileName)
 }
 
 /*!
-    Returns the name of the package information XML file that this class refers to.
+    Returns the name of the installation information XML file that this class refers to.
 */
 QString PackagesInfo::fileName() const
 {
@@ -174,7 +173,7 @@ QString PackagesInfo::fileName() const
 
 /*!
     Sets the application name to \a name. By default, this is the name specified in the
-    ApplicationName XML element of the package information XML file.
+    \c <ApplicationName> element of the installation information XML file.
 */
 void PackagesInfo::setApplicationName(const QString &name)
 {
@@ -191,7 +190,7 @@ QString PackagesInfo::applicationName() const
 
 /*!
     Sets the application version to \a version. By default, this is the version specified in the
-    ApplicationVersion XML element of package information XML file.
+    \c <ApplicationVersion> element of the installation information XML file.
 */
 void PackagesInfo::setApplicationVersion(const QString &version)
 {
@@ -249,7 +248,7 @@ QVector<PackageInfo> PackagesInfo::packageInfos() const
 }
 
 /*!
-    Re-reads the package information XML file and updates itself. Changes to applicationName()
+    Re-reads the installation information XML file and updates itself. Changes to applicationName()
     and applicationVersion() are lost after this function returns. The function emits a reset()
     signal after completion.
 */
@@ -330,6 +329,8 @@ void PackagesInfo::refresh()
     \a virtualComp, \a uncompressedSize, and \a inheritVersionFrom for the
     package.
 
+    Returns \c true if the installation information was modified.
+
 */
 bool PackagesInfo::installPackage(const QString &name, const QString &version,
                                   const QString &title, const QString &description,
@@ -406,6 +407,9 @@ static void addTextChildHelper(QDomNode *node,
     node->appendChild(domElement);
 }
 
+/*!
+    Writes the installation information file to disk.
+*/
 void PackagesInfo::writeToDisk()
 {
     if (d->modified && (!d->packageInfoList.isEmpty() || QFile::exists(d->fileName))) {
@@ -528,8 +532,8 @@ void PackagesInfo::clearPackageInfoList()
     \brief The PackageInfo class describes a single installed package in the application.
 
     This class contains information about a single installed package in the application. The
-    information contained in this class corresponds to the information described by the Package
-    XML element in the package information XML file.
+    information contained in this class corresponds to the information described by the <Package>
+    XML element in the installation information XML file.
 */
 
 /*!
