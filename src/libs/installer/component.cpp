@@ -1263,6 +1263,11 @@ bool Component::isInstalled() const
 */
 bool Component::installationRequested() const
 {
+    return installAction() == Install;
+}
+
+bool Component::isSelectedForInstallation() const
+{
     return !isInstalled() && isSelected();
 }
 
@@ -1293,7 +1298,7 @@ bool Component::updateRequested()
 */
 bool Component::componentChangeRequested()
 {
-    return updateRequested() || installationRequested() || uninstallationRequested();
+    return updateRequested() || isSelectedForInstallation() || uninstallationRequested();
 }
 
 

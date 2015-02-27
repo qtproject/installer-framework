@@ -1283,7 +1283,7 @@ QList<Component *> PackageManagerCore::componentsMarkedForInstallation() const
         foreach (Component *component, relevant) {
             // ask for all components which will be installed to get all dependencies
             // even dependencies which are changed without an increased version
-            if (component->installationRequested()
+            if (component->isSelectedForInstallation()
                     || (component->isInstalled()
                     && !component->uninstallationRequested())) {
                 markedForInstallation.append(component);

@@ -180,6 +180,7 @@ public:
     Q_INVOKABLE void setInstalled();
     Q_INVOKABLE bool isInstalled() const;
     Q_INVOKABLE bool installationRequested() const;
+    bool isSelectedForInstallation() const;
 
     Q_INVOKABLE void setUninstalled();
     Q_INVOKABLE bool isUninstalled() const;
