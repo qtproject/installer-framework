@@ -1,11 +1,11 @@
-/**************************************************************************
+/****************************************************************************
 **
 ** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:FDL$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
@@ -14,75 +14,51 @@
 ** and conditions see http://qt.io/terms-conditions. For further
 ** information use the contact form at http://www.qt.io/contact-us.
 **
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 or version 3 as published by the Free
-** Software Foundation and appearing in the file LICENSE.LGPLv21 and
-** LICENSE.LGPLv3 included in the packaging of this file. Please review the
-** following information to ensure the GNU Lesser General Public License
-** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** As a special exception, The Qt Company gives you certain additional
-** rights. These rights are described in The Qt Company LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
-**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
 ** $QT_END_LICENSE$
 **
-**************************************************************************/
-
-#include "systeminfo.h"
-#include <QSysInfo>
-
-namespace QInstaller {
+****************************************************************************/
 
 /*!
-    \inmodule QtInstallerFramework
-    \class QInstaller::SystemInfo
+    \qmltype systemInfo
+    \inqmlmodule scripting
 
     \brief Provides information about the operating system.
 */
 
 /*!
-    Creates a system info object with the parent \a parent.
-*/
-SystemInfo::SystemInfo(QObject *parent) : QObject(parent)
-{
-}
-
-
-/*!
-    \property SystemInfo::currentCpuArchitecture
+    \qmlproperty string systemInfo::currentCpuArchitecture
 
     The architecture of the CPU that the application is running on, in text format.
 
-    Possible values include:
+    Possible values include
     \list
         \li "i386"
         \li "x86_64"
     \endlist
 
-    \note This function depends on what the OS will report and may not detect the actual CPU
+    Note that this function depends on what the OS will report and may not detect the actual CPU
     architecture if the OS hides that information or is unable to provide it. For example, a 32-bit
     OS running on a 64-bit CPU is usually unable to determine whether the CPU is actually capable
     of running 64-bit programs.
 
     \sa QSysInfo::currentCpuArchitecture()
 */
-QString SystemInfo::currentCpuArchitecture() const
-{
-    return QSysInfo::currentCpuArchitecture();
-}
 
 /*!
-    \property SystemInfo::kernelType
+    \qmlproperty string systemInfo::kernelType
 
     The type of the operating system kernel the installer was compiled for. It is also the
     kernel the installer is running on, unless the host operating system is running a form of
     compatibility or virtualization layer.
 
-    For Windows, Linux, and OS X this will return:
+    For Windows, Linux, and OS X this will return
     \list
         \li "winnt"
         \li "linux"
@@ -93,19 +69,11 @@ QString SystemInfo::currentCpuArchitecture() const
 
     \sa QSysInfo::kernelType()
 */
-QString SystemInfo::kernelType() const
-{
-    return QSysInfo::kernelType();
-}
 
 /*!
-    \property SystemInfo::kernelVersion
+    \qmlproperty string systemInfo::kernelVersion
 
-    The release version of the operating system kernel. On Windows, it returns the version of the
-    NT or CE kernel. On Unix systems, including OS X, it returns the same as the \c {uname -r}
-    command would return.
-
-    Example values are:
+    Example values are
 
     \list
         \li "6.1.7601" for Windows 7 with Service Pack 1
@@ -113,19 +81,19 @@ QString SystemInfo::kernelType() const
         \li "12.5.0" last release of OS X "Mountain Lion"
     \endlist
 
+    The release version of the operating system kernel. On Windows, it returns the version of the
+    NT or CE kernel. On Unix systems, including OS X, it returns the same as the \c {uname -r}
+    command would return.
+
     \sa QSysInfo::kernelVersion()
 */
-QString SystemInfo::kernelVersion() const
-{
-    return QSysInfo::kernelVersion();
-}
 
 /*!
-    \property SystemInfo::productType
+    \qmlproperty string systemInfo::productType
 
     The product name of the operating system this application is running in.
 
-    Example values are:
+    Example values are
 
     \list
         \li "windows"
@@ -135,18 +103,14 @@ QString SystemInfo::kernelVersion() const
 
     \sa QSysInfo::productType()
 */
-QString SystemInfo::productType() const
-{
-    return QSysInfo::productType();
-}
 
 /*!
-    \property SystemInfo::productVersion
+    \qmlproperty string systemInfo::productVersion
 
     The product version of the operating system in string form. If the version could not be
     determined, this function returns "unknown".
 
-    Example values are:
+    Example values are
 
     \list
         \li "7" for Windows 7
@@ -156,19 +120,15 @@ QString SystemInfo::productType() const
 
     \sa QSysInfo::productVersion()
 */
-QString SystemInfo::productVersion() const
-{
-    return QSysInfo::productVersion();
-}
 
 /*!
-    \property SystemInfo::prettyProductName
+    \qmlproperty string systemInfo::prettyProductName
 
-    A prettier form of SystemInfo::productType and SystemInfo::productVersion, containing other
+    A prettier form of systemInfo::productType and systemInfo::productVersion, containing other
     tokens like the operating system type, codenames and other information. The result of this
     function is suitable for displaying to the user.
 
-    Example values are:
+    Example values are
 
     \list
         \li "Windows 7"
@@ -179,9 +139,3 @@ QString SystemInfo::productVersion() const
 
     \sa QSysInfo::prettyProductName()
 */
-QString SystemInfo::prettyProductName() const
-{
-    return QSysInfo::prettyProductName();
-}
-
-} // namespace QInstaller

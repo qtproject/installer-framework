@@ -133,7 +133,6 @@ defines                 += ABSTRACTTASK_H \
                            SETTINGS_H \
                            SETTINGSOPERATION_H \
                            SIMPLEMOVEFILEOPERATION_H \
-                           SYSTEMINFO_H \
                            TESTREPOSITORY_H \
                            UI_PROXYCREDENTIALSDIALOG_H \
                            UI_SERVERAUTHENTICATIONDIALOG_H \
