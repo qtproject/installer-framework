@@ -213,7 +213,9 @@
         \row
             \li License
             \li "License" \c licenses
-            \li Copies the license files specified by \c licenses.
+            \li Copies the license files specified by \c licenses to a subfolder called \c Licenses
+                in the target directory. This operation is automatically added for packages
+                declaring \c <Licenses> in their package description file.
         \row
             \li MinimumProgress
             \li "MinimumProgress"
@@ -229,6 +231,10 @@
                 or registry located at \c path, depending on the value of
                 \c method: \c set, \c remove, \c add_array_value, and \c remove_array_value.
     \endtable
+
+    The Extract, License, and MinimumProgress operations are automatically added for matching
+    components that do not overwrite the component::createOperations() method. See also
+    component::autoCreateOperations.
 
     If errors occur, you can test operations manually on the uninstaller or
     installer. However, variables are not resolved, so you need to use absolute
