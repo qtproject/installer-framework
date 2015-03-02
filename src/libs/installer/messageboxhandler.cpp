@@ -41,14 +41,13 @@
 #include <QPushButton>
 
 /*!
-    \qmltype QMessageBox
-    \inqmlmodule scripting
+    \inmodule QtInstallerFramework
+    \class QInstaller::MessageBoxHandler
+    \brief The MessageBoxHandler class provides a modal dialog for informing the user or asking the
+    user a question and receiving an answer.
 
-    \brief Provides a modal dialog for informing the user or asking the user
-        a question and receiving an answer.
 
-
-    \code
+    \badcode
     var result = QMessageBox.question("quit.question", "Installer", "Do you want to quit the installer?",
                                       QMessageBox.Yes | QMessageBox.No);
     if (result == QMessageBox.Yes) {
@@ -58,73 +57,61 @@
 
     \section2 Buttons in Message Boxes
 
-    QMessageBox defines a list of common buttons:
+    \c QMessageBox defines a list of common buttons:
     \list
-    \li QMessageBox.Ok
-    \li QMessageBox.Open
-    \li QMessageBox.Save
-    \li QMessageBox.Cancel
-    \li QMessageBox.Close
-    \li QMessageBox.Discard
-    \li QMessageBox.Apply
-    \li QMessageBox.Reset
-    \li QMessageBox.RestoreDefaults
-    \li QMessageBox.Help
-    \li QMessageBox.SaveAll
-    \li QMessageBox.Yes
-    \li QMessageBox.YesToAll
-    \li QMessageBox.No
-    \li QMessageBox.NoToAll
-    \li QMessageBox.Abort
-    \li QMessageBox.Retry
-    \li QMessageBox.Ignore
-    \li QMessageBox.NoButton
+        \li \l{QMessageBox::Ok}{OK}
+        \li \l{QMessageBox::Open}{Open}
+        \li \l{QMessageBox::Save}{Save}
+        \li \l{QMessageBox::Cancel}{Cancel}
+        \li \l{QMessageBox::Close}{Close}
+        \li \l{QMessageBox::Discard}{Discard}
+        \li \l{QMessageBox::Apply}{Apply}
+        \li \l{QMessageBox::Reset}{Reset}
+        \li \l{QMessageBox::RestoreDefaults}{RestoreDefaults}
+        \li \l{QMessageBox::Help}{Help}
+        \li \l{QMessageBox::SaveAll}{SaveAll}
+        \li \l{QMessageBox::Yes}{Yes}
+        \li \l{QMessageBox::YesToAll}{YesToAll}
+        \li \l{QMessageBox::No}{No}
+        \li \l{QMessageBox::NoToAll}{NoToAll}
+        \li \l{QMessageBox::Abort}{Abort}
+        \li \l{QMessageBox::Retry}{Retry}
+        \li \l{QMessageBox::Ignore}{Ignore}
+        \li \l{QMessageBox::NoButton}{NoButton}
     \endlist
-
-    \section2 Scripted Installations
-
-    Sometimes it is useful to automatically close message boxes, for example during a scripted
-    installation. This can be achieved by calling installer::setMessageBoxAutomaticAnswer,
-    installer::autoAcceptMessageBoxes or installer::autoRejectMessageBoxes. The \c identifier
-    argument in the method calls allows to identify specific message boxes for this purpose.
- */
-
-
-/*!
-    \qmlmethod Button QMessageBox::critical(string identifier, string title, string text,
-    Buttons buttons = QMessageBox.Ok, Button button
-    = QMessageBox.NoButton)
-
-    Opens a critical message box with the given \a title and \a text.
-*/
-
-/*!
-    \qmlmethod Button QMessageBox::information(string identifier, string title, string text,
-    Buttons buttons = QMessageBox.Ok, Button button
-    = QMessageBox.NoButton)
-
-    Opens an information message box with the given \a title and \a text.
-*/
-
-/*!
-    \qmlmethod Button QMessageBox::question(string identifier, string title, string text,
-    Buttons buttons = QMessageBox.Yes | QMessageBox.No, Button button
-    = QMessageBox.NoButton)
-
-    Opens a question message box with the given \a title and \a text.
-*/
-
-/*!
-    \qmlmethod Button QMessageBox::warning(string identifier, string title, string text,
-    Buttons buttons = QMessageBox.Ok, Button button
-    = QMessageBox.NoButton)
-
-    Opens a warning message box with the given \a title and \a text.
 */
 
 using namespace QInstaller;
 
 // -- MessageBoxHandler
+
+/*!
+    \enum MessageBoxHandler::DefaultAction
+
+    This enum value holds the default action for the message box handler:
+
+    \value  AskUser
+            Ask the end user for confirmation.
+    \value  Accept
+            Accept the message box.
+    \value  Reject
+            Reject the message box.
+*/
+
+/*!
+    \enum MessageBoxHandler::MessageType
+
+    This enum value holds the severity level of the message displayed in the message box:
+
+    \value  criticalType
+            Reports critical errors.
+    \value  informationType
+            Reports information about normal operations.
+    \value  questionType
+            Asks a question during normal operations.
+    \value  warningType
+            Reports non-critical errors.
+*/
 
 MessageBoxHandler *MessageBoxHandler::m_instance = 0;
 
@@ -134,6 +121,9 @@ MessageBoxHandler::MessageBoxHandler(QObject *parent)
 {
 }
 
+/*!
+    Returns a message box handler instance.
+*/
 MessageBoxHandler *MessageBoxHandler::instance()
 {
     if (m_instance == 0)
@@ -141,6 +131,10 @@ MessageBoxHandler *MessageBoxHandler::instance()
     return m_instance;
 }
 
+/*!
+    Returns the widget or window that is most suitable to become the parent of the message box.
+    Returns \c 0 if an application cannot be found.
+*/
 QWidget *MessageBoxHandler::currentBestSuitParent()
 {
     if (qobject_cast<QApplication*> (qApp) == 0)
@@ -152,6 +146,9 @@ QWidget *MessageBoxHandler::currentBestSuitParent()
     return qApp->activeWindow();
 }
 
+/*!
+    Returns an ordered list of buttons to display in the message box.
+*/
 QList<QMessageBox::Button> MessageBoxHandler::orderedButtons()
 {
     static QList<QMessageBox::Button> buttons;
@@ -165,6 +162,9 @@ QList<QMessageBox::Button> MessageBoxHandler::orderedButtons()
     return buttons;
 }
 
+/*!
+    Sets the default action for the message box to \a defaultAction.
+*/
 void MessageBoxHandler::setDefaultAction(DefaultAction defaultAction)
 {
     if (m_defaultAction == defaultAction)
@@ -183,6 +183,11 @@ void MessageBoxHandler::setDefaultAction(DefaultAction defaultAction)
     }
 }
 
+/*!
+    Sets the button that is used as the default button and that is automatically invoked if a
+    message box is shown in automatic mode. The string \a identifier is used to identify the
+    message box that the default button \a answer is associated to.
+*/
 void MessageBoxHandler::setAutomaticAnswer(const QString &identifier, QMessageBox::StandardButton answer)
 {
     m_automaticAnswers.insert(identifier, answer);
@@ -190,6 +195,18 @@ void MessageBoxHandler::setAutomaticAnswer(const QString &identifier, QMessageBo
 
 // -- static
 
+/*!
+    Opens a critical message box with the parent \a parent, identifier \a identifier,
+    title \a title, and text \a text.
+
+    The standard buttons specified by \a buttons are added to the message box. \a button specifies
+    the button that is used when \key Enter is pressed. \a button must refer to a button that is
+    specified in \a buttons. If \a button is QMessageBox::NoButton, a suitable default is chosen
+    automatically.
+
+    Returns the identity of the standard button that was clicked. However, if \key Esc was pressed,
+    returns the escape button.
+*/
 QMessageBox::StandardButton MessageBoxHandler::critical(QWidget *parent, const QString &identifier,
     const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton button)
@@ -197,6 +214,18 @@ QMessageBox::StandardButton MessageBoxHandler::critical(QWidget *parent, const Q
     return instance()->showMessageBox(criticalType, parent, identifier, title, text, buttons, button);
 }
 
+/*!
+    Opens an information message box with the parent \a parent, identifier \a identifier,
+    title \a title, and text \a text.
+
+    The standard buttons specified by \a buttons are added to the message box. \a button specifies
+    the button that is used when \key Enter is pressed. \a button must refer to a button that is
+    specified in \a buttons. If \a button is QMessageBox::NoButton, a suitable default is chosen
+    automatically.
+
+    Returns the identity of the standard button that was clicked. However, if \key Esc was pressed,
+    returns the escape button.
+*/
 QMessageBox::StandardButton MessageBoxHandler::information(QWidget *parent, const QString &identifier,
     const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton button)
@@ -204,6 +233,18 @@ QMessageBox::StandardButton MessageBoxHandler::information(QWidget *parent, cons
     return instance()->showMessageBox(informationType, parent, identifier, title, text, buttons, button);
 }
 
+/*!
+    Opens a question message box with the parent \a parent, identifier \a identifier,
+    title \a title, and text \a text.
+
+    The standard buttons specified by \a buttons are added to the message box. \a button specifies
+    the button that is used when \key Enter is pressed. \a button must refer to a button that is
+    specified in \a buttons. If \a button is QMessageBox::NoButton, a suitable default is chosen
+    automatically.
+
+    Returns the identity of the standard button that was clicked. However, if \key Esc was pressed,
+    returns the escape button.
+*/
 QMessageBox::StandardButton MessageBoxHandler::question(QWidget *parent, const QString &identifier,
     const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton button)
@@ -211,6 +252,18 @@ QMessageBox::StandardButton MessageBoxHandler::question(QWidget *parent, const Q
     return instance()->showMessageBox(questionType, parent, identifier, title, text, buttons, button);
 }
 
+/*!
+    Opens a warning message box with the parent \a parent, identifier \a identifier,
+    title \a title, and text \a text.
+
+    The standard buttons specified by \a buttons are added to the message box. \a button specifies
+    the button that is used when \key Enter is pressed. \a button must refer to a button that is
+    specified in \a buttons. If \a button is QMessageBox::NoButton, a suitable default is chosen
+    automatically.
+
+    Returns the identity of the standard button that was clicked. However, if \key Esc was pressed,
+    returns the escape button.
+*/
 QMessageBox::StandardButton MessageBoxHandler::warning(QWidget *parent, const QString &identifier,
     const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton button)
@@ -220,6 +273,18 @@ QMessageBox::StandardButton MessageBoxHandler::warning(QWidget *parent, const QS
 
 // -- invokable
 
+/*!
+    Opens a critical message box with the identifier \a identifier, title \a title, and text
+    \a text.
+
+    The standard buttons specified by \a buttons are added to the message box. \a button specifies
+    the button that is used when \key Enter is pressed. \a button must refer to a button that is
+    specified in \a buttons. If \a button is QMessageBox::NoButton, a suitable default is chosen
+    automatically.
+
+    Returns the identity of the standard button that was clicked. However, if \key Esc was pressed,
+    returns the escape button.
+*/
 int MessageBoxHandler::critical(const QString &identifier, const QString &title,
     const QString &text, int buttons, int button) const
 {
@@ -227,6 +292,18 @@ int MessageBoxHandler::critical(const QString &identifier, const QString &title,
         QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
 }
 
+/*!
+    Opens an information message box with the identifier \a identifier, title \a title, and text
+    \a text.
+
+    The standard buttons specified by \a buttons are added to the message box. \a button specifies
+    the button that is used when \key Enter is pressed. \a button must refer to a button that is
+    specified in \a buttons. If \a button is QMessageBox::NoButton, a suitable default is chosen
+    automatically.
+
+    Returns the identity of the standard button that was clicked. However, if \key Esc was pressed,
+    returns the escape button.
+*/
 int MessageBoxHandler::information(const QString &identifier, const QString &title,
     const QString &text, int buttons, int button) const
 {
@@ -234,6 +311,18 @@ int MessageBoxHandler::information(const QString &identifier, const QString &tit
         QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
 }
 
+/*!
+    Opens a question message box with the identifier \a identifier, title \a title, and text
+    \a text.
+
+    The standard buttons specified by \a buttons are added to the message box. \a button specifies
+    the button that is used when \key Enter is pressed. \a button must refer to a button that is
+    specified in \a buttons. If \a button is QMessageBox::NoButton, a suitable default is chosen
+    automatically.
+
+    Returns the identity of the standard button that was clicked. However, if \key Esc was pressed,
+    returns the escape button.
+*/
 int MessageBoxHandler::question(const QString &identifier, const QString &title,
     const QString &text, int buttons, int button) const
 {
@@ -241,6 +330,17 @@ int MessageBoxHandler::question(const QString &identifier, const QString &title,
         QMessageBox::StandardButtons(buttons), QMessageBox::StandardButton(button));
 }
 
+/*!
+    Opens a warning message box with the identifier \a identifier, title \a title, and text \a text.
+
+    The standard buttons specified by \a buttons are added to the message box. \a button specifies
+    the button that is used when \key Enter is pressed. \a button must refer to a button that is
+    specified in \a buttons. If \a button is QMessageBox::NoButton, a suitable default is chosen
+    automatically.
+
+    Returns the identity of the standard button that was clicked. However, if \key Esc was pressed,
+    returns the escape button.
+*/
 int MessageBoxHandler::warning(const QString &identifier, const QString &title, const QString &text,
     int buttons, int button) const
 {

@@ -1,0 +1,104 @@
+/****************************************************************************
+**
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \qmltype QMessageBox
+    \inqmlmodule scripting
+
+    \brief Provides a modal dialog for informing the user or asking the user
+        a question and receiving an answer.
+
+
+    \code
+    var result = QMessageBox.question("quit.question", "Installer", "Do you want to quit the installer?",
+                                      QMessageBox.Yes | QMessageBox.No);
+    if (result == QMessageBox.Yes) {
+       // ...
+    }
+    \endcode
+
+    \section2 Buttons in Message Boxes
+
+    QMessageBox defines a list of common buttons:
+    \list
+    \li QMessageBox.Ok
+    \li QMessageBox.Open
+    \li QMessageBox.Save
+    \li QMessageBox.Cancel
+    \li QMessageBox.Close
+    \li QMessageBox.Discard
+    \li QMessageBox.Apply
+    \li QMessageBox.Reset
+    \li QMessageBox.RestoreDefaults
+    \li QMessageBox.Help
+    \li QMessageBox.SaveAll
+    \li QMessageBox.Yes
+    \li QMessageBox.YesToAll
+    \li QMessageBox.No
+    \li QMessageBox.NoToAll
+    \li QMessageBox.Abort
+    \li QMessageBox.Retry
+    \li QMessageBox.Ignore
+    \li QMessageBox.NoButton
+    \endlist
+
+    \section2 Scripted Installations
+
+    Sometimes it is useful to automatically close message boxes, for example during a scripted
+    installation. This can be achieved by calling installer::setMessageBoxAutomaticAnswer,
+    installer::autoAcceptMessageBoxes or installer::autoRejectMessageBoxes. The \c identifier
+    argument in the method calls allows to identify specific message boxes for this purpose.
+*/
+
+
+/*!
+    \qmlmethod Button QMessageBox::critical(string identifier, string title, string text,
+    Buttons buttons = QMessageBox.Ok, Button button = QMessageBox.NoButton)
+
+    Opens a critical message box with the given \a title and \a text.
+*/
+
+/*!
+    \qmlmethod Button QMessageBox::information(string identifier, string title, string text,
+    Buttons buttons = QMessageBox.Ok, Button button = QMessageBox.NoButton)
+
+    Opens an information message box with the given \a title and \a text.
+*/
+
+/*!
+    \qmlmethod Button QMessageBox::question(string identifier, string title, string text,
+    Buttons buttons = QMessageBox.Yes | QMessageBox.No, Button button = QMessageBox.NoButton)
+
+    Opens a question message box with the given \a title and \a text.
+*/
+
+/*!
+    \qmlmethod Button QMessageBox::warning(string identifier, string title, string text,
+    Buttons buttons = QMessageBox.Ok, Button button = QMessageBox.NoButton)
+
+    Opens a warning message box with the given \a title and \a text.
+*/

@@ -114,7 +114,6 @@ defines                 += ABSTRACTTASK_H \
                            QINSTALLER_FILEUTILS_H \
                            QINSTALLER_GLOBAL_H \
                            QINSTALLER_INIT_H \
-                           QINSTALLER_MESSAGEBOXHANDLER_H \
                            QINSTALLER_UTILS_H \
                            QPROCESSWRAPPER_H \
                            QSETTINGSWRAPPER_H \
