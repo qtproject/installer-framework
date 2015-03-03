@@ -79,6 +79,7 @@ void RemoteClient::shutdown()
 {
     Q_D(RemoteClient);
     d->shutdown();
+    d_ptr.reset();
 }
 
 bool RemoteClient::isActive() const
