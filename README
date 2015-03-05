@@ -1,26 +1,29 @@
 The Qt Installer Framework provides a set of tools and utilities to create
 installers for the supported desktop Qt platforms: Linux, Microsoft Windows, and
-Mac OS X.
+OS X.
 
 
 Documentation
 --------------------------
 
 The binary packages for the Qt Installer Framework include documentation in the
-doc directory. See http://qt-project.org/wiki/Qt-Installer-Framework for a link
-to online versions.
+doc directory. The documentation is also available online at
+    https://doc.qt.io/qtinstallerframework/index.html
 
 Notes
 --------------------------
-- To build an installer, it is advised to use a statically linked Qt (5.4 or newer).
-  See the documentation at
-  http://doc-snapshot.qt-project.org/qtifw-master/ifw-getting-started.html
+
+To build an installer, it is advised to use a statically linked Qt (5.4 or
+newer).
+
+See the documentation at
+    https://doc.qt.io/qtinstallerframework/ifw-getting-started.html
 
 Getting Help
 --------------------------
 
 If you think you found a bug, please report it to
 
-https://bugreports.qt-project.org/browse/QTIFW
+https://bugreports.qt.io/browse/QTIFW
 
 General questions are best asked on interest@qt-project.org.
