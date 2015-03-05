@@ -5,7 +5,8 @@
     <Version>2.0.0</Version>
     <ReleaseDate>2013-12-12</ReleaseDate>
     <Licenses>
-        <License name="LGPL 2.1" file="LICENSE.LGPL" />
+        <License name="LGPL 2.1" file="LICENSE.LGPLv21" />
+        <License name="LGPL 3" file="LICENSE.LGPLv3" />
         <License name="The Qt Company LGPL Exception 1.1" file="LGPL_EXCEPTION.txt" />
         <License name="Third Party Code Licenses" file="3RDPARTY" />
     </Licenses>
