@@ -57,7 +57,7 @@
 
     \c cancelInstaller() sets all except the last installer page to invisible, and shows an error
     message on the last one. This is a technique also demonstrated in the \l{componenterror} and
-    \l{quit_installer} examples.
+    \l{quitinstaller} examples.
 
     \skipto majorVersion
 
