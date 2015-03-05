@@ -84,7 +84,7 @@ def package():
     global package_dir
     print 'package ...'
     os.chdir(package_dir)
-    shutil.copytree(os.path.join(build_dir, 'bin'), os.path.join(package_dir, 'bin'), ignore = shutil.ignore_patterns("*.exe.manifest"))
+    shutil.copytree(os.path.join(build_dir, 'bin'), os.path.join(package_dir, 'bin'), ignore = shutil.ignore_patterns("*.exe.manifest","*.exp","*.lib"))
     shutil.copytree(os.path.join(build_dir, 'doc'), os.path.join(package_dir, 'doc'))
     shutil.copytree(os.path.join(src_dir, 'examples'), os.path.join(package_dir, 'examples'))
     shutil.copy(os.path.join(src_dir, 'README'), package_dir)
