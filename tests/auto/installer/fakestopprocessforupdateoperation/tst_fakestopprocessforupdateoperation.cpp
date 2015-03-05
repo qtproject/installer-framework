@@ -23,7 +23,8 @@ private slots:
         QVERIFY(!op.undoOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
-        QCOMPARE(op.errorString(), QString("Number of arguments does not match: one is required"));
+        QCOMPARE(op.errorString(), QString("Invalid arguments in FakeStopProcessForUpdate: "
+                                           "0 arguments given, exactly 1 arguments expected."));
     }
 
     void testMissingPackageManagerCore()

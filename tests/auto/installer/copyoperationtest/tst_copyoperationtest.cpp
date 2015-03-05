@@ -69,7 +69,8 @@ private slots:
         QVERIFY(!op.performOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
-        QCOMPARE(op.errorString(), QString("Invalid arguments: 0 arguments given, 2 expected."));
+        QCOMPARE(op.errorString(), QString("Invalid arguments in Copy: "
+                                           "0 arguments given, exactly 2 arguments expected."));
 
     }
 

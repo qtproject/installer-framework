@@ -61,7 +61,8 @@ private slots:
         //QVERIFY(!op.undoOperation());     Can't test for failure as we run into Q_ASSERT
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
-        QCOMPARE(op.errorString(), QString("Invalid arguments in Extract: 0 arguments given, exactly 2 expected."));
+        QCOMPARE(op.errorString(), QString("Invalid arguments in Extract: "
+                                           "0 arguments given, exactly 2 arguments expected."));
 
     }
 

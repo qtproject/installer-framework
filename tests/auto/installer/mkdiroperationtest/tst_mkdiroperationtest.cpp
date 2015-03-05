@@ -66,7 +66,8 @@ private slots:
         QVERIFY(!op.performOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
-        QCOMPARE(op.errorString(), QString("Invalid arguments: 0 arguments given, 1 expected."));
+        QCOMPARE(op.errorString(), QString("Invalid arguments in Mkdir: "
+                                           "0 arguments given, exactly 1 arguments expected."));
 
     }
 
