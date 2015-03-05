@@ -9,7 +9,7 @@ Get the sources
 
 Use Git to check out the Qt Installer Framework sources that are hosted at:
 
-http://qt.gitorious.org/installer-framework
+http://code.qt.io/cgit/installer-framework/installer-framework.git/
 
 
 Build a static Qt

@@ -110,7 +110,7 @@
     \list 1
 
         \li Clone the Qt Installer Framework source code from
-            \l{http://gitorious.org/installer-framework}
+            \l{http://code.qt.io/cgit/installer-framework/installer-framework.git/}
             to get the sources for the tools.
 
         \li Build the tools by running the "qmake" from the static Qt, followed by "make" or "nmake".
