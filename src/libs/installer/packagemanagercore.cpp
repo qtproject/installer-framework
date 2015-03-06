@@ -77,6 +77,11 @@
 /*!
     \namespace QInstaller
     \inmodule QtInstallerFramework
+
+    \keyword qinstaller-module
+
+    \brief Contains classes to implement the core functionality of the Qt
+    Installer Framework and the installer UI.
 */
 
 /*!
