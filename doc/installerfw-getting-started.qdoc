@@ -68,16 +68,13 @@
     runtime library. This can be done by changing the default mkspec of
     your compiler.
 
-    If you are using e.g. the Microsoft Visual Studio 2010 compiler, you edit
-    \c{mkspecs\win32-msvc2010\qmake.conf} and replace in the CFLAGS sections
-    '-MD' with '-MT'. Furthermore you should remove 'embed_manifest_dll'
-    and 'embed_manifest_exe' from CONFIG:
+    If you are using e.g. the Microsoft Visual Studio 2013 compiler, you edit
+    \c{mkspecs\win32-msvc2013\qmake.conf} and replace in the CFLAGS sections
+    '-MD' with '-MT':
 
     \code
-    CONFIG                  += qt warn_on release incremental flat link_prl precompile_header autogen_precompile_source copy_dir_files debug_and_release debug_and_release_target
-    # ..
-    QMAKE_CFLAGS_RELEASE    = -O2 -MT
-    QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO += -O2 -MT -Zi
+    QMAKE_CFLAGS_RELEASE    = -O2 -MT -Zc:strictStrings
+    QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO += -O2 -MT -Zi -Zc:strictStrings
     QMAKE_CFLAGS_DEBUG      = -Zi -MTd
     \endcode
 

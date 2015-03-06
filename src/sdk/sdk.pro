@@ -134,9 +134,9 @@ SOURCES = \
           commandlineparser.cpp
 
 win32 {
-    # Force to overwrite the default manifest file with our own extended version.
-    RC_FILE = installerbase_qt5.rc
-    QMAKE_MANIFEST = installerbase.manifest
+    # Use our own manifest file
+    CONFIG -= embed_manifest_exe
+    RC_FILE = installerbase.rc
 
     SOURCES += console_win.cpp
 }
