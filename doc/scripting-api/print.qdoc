@@ -28,4 +28,7 @@
 /*!
     \qmltype print
     \inqmlmodule scripting
+    \brief Provides compatibility with QtScript.
+
+    For new code, use the \l{console-object}{console} object instead.
 */

@@ -30,6 +30,8 @@
     \inqmlmodule scripting
     \brief Provides methods for logging and debugging.
 
+    \keyword console-object
+
     You can use the \c console object to print log information about installer
     functions to the console. The following example uses the \c console object
     \l{console::log()}{log} method and \l installer object
