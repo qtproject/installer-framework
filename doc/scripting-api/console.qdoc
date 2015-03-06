@@ -1,0 +1,55 @@
+/****************************************************************************
+**
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \qmltype console
+    \inqmlmodule scripting
+    \brief Provides methods for logging and debugging.
+
+    You can use the \c console object to print log information about installer
+    functions to the console. The following example uses the \c console object
+    \l{console::log()}{log} method and \l installer object
+    \l{installer::isUpdater()}, \l{installer::isUninstaller()}, and
+    \l{installer::isPackageManager()} methods to display a message that
+    indicates whether the maintenance tool is currently being used to update,
+    remove, or add components.
+
+    \code
+    onPackageManagerCoreTypeChanged = function()
+    {
+        console.log("Is Updater: " + installer.isUpdater());
+        console.log("Is Uninstaller: " + installer.isUninstaller());
+        console.log("Is Package Manager: " + installer.isPackageManager());
+    }
+    \endcode
+*/
+
+/*!
+    \qmlmethod void console::log(string value)
+
+    Prints the string specified by \a value to the console.
+*/

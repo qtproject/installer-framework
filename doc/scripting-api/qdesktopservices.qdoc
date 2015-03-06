@@ -1,0 +1,96 @@
+/****************************************************************************
+**
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \qmltype QDesktopServices
+    \inqmlmodule scripting
+
+    \brief Provides methods for accessing common desktop services.
+
+    Many desktop environments provide services that can be used by applications
+    to perform common tasks, such as opening a file, in a way that is both
+    consistent and takes into account the user's application preferences.
+
+    This object contains methods that provide simple interfaces to these
+    services that indicate whether they succeeded or failed.
+
+    The openUrl() method is used to open files located at arbitrary URLs in
+    external applications. For URLs that correspond to resources on the local
+    filing system (where the URL scheme is "file"), a suitable application is
+    used to open the file.
+
+    The displayName() and storageLocation() methods take one of the following
+    enums as an argument:
+
+    \list
+        \li DesktopServices.DesktopLocation
+        \li DesktopServices.DocumentsLocation
+        \li DesktopServices.FontsLocation
+        \li DesktopServices.ApplicationsLocation
+        \li DesktopServices.MusicLocation
+        \li DesktopServices.MoviesLocation
+        \li DesktopServices.PicturesLocation
+        \li DesktopServices.TempLocation
+        \li DesktopServices.HomeLocation
+        \li DesktopServices.DataLocation
+        \li DesktopServices.CacheLocation
+        \li DesktopServices.GenericDataLocation
+        \li DesktopServices.RuntimeLocation
+        \li DesktopServices.ConfigLocation
+        \li DesktopServices.DownloadLocation
+        \li DesktopServices.GenericCacheLocation
+        \li DesktopServices.GenericConfigLocation
+    \endlist
+
+    The enum values correspond to the values of the
+    \l{QStandardPaths::StandardLocation} enum with the same names.
+*/
+
+/*!
+    \qmlproperty enumeration QDesktopServices::QStandardPaths
+    \internal
+*/
+
+/*!
+    \qmlmethod boolean QDesktopServices::openUrl(string url)
+
+    Uses the URL scheme \c file to open the specified \a url with a suitable
+    application.
+*/
+
+/*!
+    \qmlmethod string QDesktopServices::displayName(int location)
+
+    Returns a localized display name for the specified \a location or an empty
+    QString if no relevant location can be found.
+*/
+
+/*!
+    \qmlmethod string QDesktopServices::storageLocation(int location)
+
+    Returns the specified \a location.
+*/
