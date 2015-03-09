@@ -62,7 +62,6 @@ navigation.homepage = "Qt Installer Framework Manual"
 
 defines                 += ABSTRACTTASK_H \
                            ADMINAUTHORIZATION_H \
-                           COMPONENT_H \
                            COMPONENT_P_H \
                            COMPONENTCHECKER_H \
                            CONSTANTS_H \
