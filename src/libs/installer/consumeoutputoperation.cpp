@@ -60,8 +60,8 @@ bool ConsumeOutputOperation::performOperation()
     // 3. argument for the executable
     // 4. more arguments possible ...
 
-    if (!checkArgumentCount(2, INT_MAX, tr("(<to be saved installer key name>, "
-                                      "<executable>, [argument1], [argument2], ...)")))
+    if (!checkArgumentCount(2, INT_MAX, tr("<to be saved installer key name> "
+                                           "<executable> [argument1] [argument2] [...]")))
         return false;
 
     PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();

@@ -63,7 +63,7 @@ void CopyDirectoryOperation::backup()
 
 bool CopyDirectoryOperation::performOperation()
 {
-    if (!checkArgumentCount(2, 3, tr(" (<source> <target> [forceOverwrite])")))
+    if (!checkArgumentCount(2, 3, tr("<source> <target> [\"forceOverwrite\"]")))
         return false;
 
     const QStringList args = arguments();

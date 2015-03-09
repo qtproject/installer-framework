@@ -159,12 +159,15 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
 // -- CreateShortcutOperation
 
 CreateShortcutOperation::CreateShortcutOperation()
+    : m_optionalArgumentsRead(false)
 {
     setName(QLatin1String("CreateShortcut"));
 }
 
 void CreateShortcutOperation::backup()
 {
+    ensureOptionalArgumentsRead();
+
     QDir linkPath(QFileInfo(arguments().at(1)).absolutePath());
 
     QStringList directoriesToCreate;
@@ -177,16 +180,32 @@ void CreateShortcutOperation::backup()
     setValue(QLatin1String("createddirs"), directoriesToCreate);
 }
 
-bool CreateShortcutOperation::performOperation()
+void CreateShortcutOperation::ensureOptionalArgumentsRead()
 {
-    if (!checkArgumentCount(2, 3, tr("(optional: \"workingDirectory=...\", \"iconPath=...\", \"iconId=...\")")))
-        return false;
+    if (m_optionalArgumentsRead)
+        return;
+
+    m_optionalArgumentsRead = true;
 
     QStringList args = arguments();
 
-    const QString iconId = takeArgument(QString::fromLatin1("iconId="), &args);
-    const QString iconPath = takeArgument(QString::fromLatin1("iconPath="), &args);
-    const QString workingDir = takeArgument(QString::fromLatin1("workingDirectory="), &args);
+    m_iconId = takeArgument(QString::fromLatin1("iconId="), &args);
+    m_iconPath = takeArgument(QString::fromLatin1("iconPath="), &args);
+    m_workingDir = takeArgument(QString::fromLatin1("workingDirectory="), &args);
+
+    setArguments(args);
+}
+
+bool CreateShortcutOperation::performOperation()
+{
+    ensureOptionalArgumentsRead();
+
+    if (!checkArgumentCount(2, 3, tr("<target> <link location> [target arguments] "
+                                     "[\"workingDirectory=...\"] [\"iconPath=...\"] [\"iconId=...\"]"))) {
+        return false;
+    }
+
+    QStringList args = arguments();
 
     const QString linkTarget = args.at(0);
     const QString linkLocation = args.at(1);
@@ -219,7 +238,7 @@ bool CreateShortcutOperation::performOperation()
         return false;
     }
 
-    const bool linked = createLink(linkTarget, linkLocation, workingDir, targetArguments, iconPath, iconId);
+    const bool linked = createLink(linkTarget, linkLocation, m_workingDir, targetArguments, m_iconPath, m_iconId);
     if (!linked) {
         setError(UserDefinedError);
         setErrorString(tr("Could not create link %1: %2").arg(QDir::toNativeSeparators(linkLocation),
@@ -231,6 +250,8 @@ bool CreateShortcutOperation::performOperation()
 
 bool CreateShortcutOperation::undoOperation()
 {
+    ensureOptionalArgumentsRead();
+
     const QString &linkLocation = arguments().at(1);
     if (!deleteFileNowOrLater(linkLocation) )
         qDebug() << "Cannot delete:" << linkLocation;

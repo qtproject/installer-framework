@@ -109,7 +109,7 @@ void InstallIconsOperation::backup()
 
 bool InstallIconsOperation::performOperation()
 {
-    if (!checkArgumentCount(1, 2, tr("(Sourcepath, [Vendorprefix])")))
+    if (!checkArgumentCount(1, 2, tr("<source path> [vendor prefix]")))
         return false;
 
     const QStringList args = arguments();

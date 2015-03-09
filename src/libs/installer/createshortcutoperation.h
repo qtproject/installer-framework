@@ -49,6 +49,13 @@ public:
     bool undoOperation();
     bool testOperation();
     Operation *clone() const;
+private:
+    void ensureOptionalArgumentsRead();
+
+    bool m_optionalArgumentsRead;
+    QString m_iconId;
+    QString m_iconPath;
+    QString m_workingDir;
 };
 
 }
