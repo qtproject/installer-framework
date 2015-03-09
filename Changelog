@@ -40,11 +40,27 @@
 - Changed default of 'AllowSpaceInPath' from false to true.
 - Added possibility to specify a control script on installer creation. (QTIFW-166, QTIFW-495)
 - Introduced a setting for Wizard default height and width. (QTIFW-47)
-- Improved documentation. (QTIFW-526)
+- Added CreateLocalRepository configuration option.
+- Simplified registration of objects into the script engine.
+- Made sure widgets from .ui files are properly registered to the engine.
+- No longer use Version as the repository format version.
+- Introduced InstallAction property for components.
+- Marked "os" variable as deprecated.
+- Show "Forced" component as enabled, but without checkbox. (QTIFW-491)
+- Fixed running out of sockets in server.
+- No longer show checkbox for autodependent components.
+- No longer defer deletion of sockets in RemoteObject.
+- Fixed loading of translations.
+- Set objectName for QThread.
+- Use local sockets for client-server communication. (QTIFW-228)
+- Fixed handling of incomplete messages in client-server communication.
+- Improved the examples and their documentation.
+- Added and improved documentation. (QTIFW-526)
+- Added translations: Polish, Italian
 - Updated and improved translations.
-- Fixed various bugs. (QTIFW-397, QTIFW-481, QTIFW-524, QTIFW-538, QTIFW-541, QTIFW-542, QTIFW-562, QTIFW-564, QTIFW-568, QTIFW-569, QTIFW-583, QTIFW-593, QTIFW-600)
+- Fixed various bugs. (QTIFW-397, QTIFW-469, QTIFW-481, QTIFW-524, QTIFW-538, QTIFW-541, QTIFW-542, QTIFW-562, QTIFW-564, QTIFW-568, QTIFW-569, QTIFW-583, QTIFW-589, QTIFW-593, QTIFW-600, QTIFW-602, QTIFW-605, QTIFW-612, QTIFW-615, QTIFW-616, QTIFW-618, QTIFW-620, QTIFW-621, QTIFW-622, QTIFW-625, QTBUG-633)
 
-Thanks go to Christoph Vogtländer, Sze Howe Koh, Ray Donnelly, Tasuku Suzuki and Sascha Cunz for contributions.
+Thanks go to Christoph Vogtländer, Sze Howe Koh, Ray Donnelly, Tasuku Suzuki, Takayuki Orito, Sascha Cunz and Cuoghi Massimiliano for contributions.
 
 1.6.0
 - No longer requires Xcode command line tools on Mac. (QTBUG-38015)
