@@ -42,6 +42,7 @@ namespace QInstaller {
 
 QStringList ComponentChecker::checkComponent(Component *component)
 {
+    PackageManagerCore *core = component->packageManagerCore();
     QStringList checkResult;
 
     const bool defaultPropertyScriptValue = component->variables().value(scDefault).compare(scScript, Qt::CaseInsensitive) == 0;
@@ -60,6 +61,11 @@ QStringList ComponentChecker::checkComponent(Component *component)
         if (defaultPropertyValue) {
             checkResult << QString::fromLatin1("Component %1 specifies \"Default\" property together "
                 "with \"AutoDependOn\" list. This combination of states may not work properly.")
+                .arg(component->name());
+        }
+        if (!core->dependees(component).isEmpty()) {
+            checkResult << QString::fromLatin1("Other components depend on auto dependent "
+                "component %1. This may not work properly.")
                 .arg(component->name());
         }
     }
@@ -105,7 +111,6 @@ QStringList ComponentChecker::checkComponent(Component *component)
                     .arg(component->name());
             }
 
-            PackageManagerCore *core = component->packageManagerCore();
             if (!core->dependees(component).isEmpty()) {
                 checkResult << QString::fromLatin1("Other components depend on component %1 "
                     "which has children components. This will not work properly.")
@@ -113,6 +118,7 @@ QStringList ComponentChecker::checkComponent(Component *component)
             }
         }
     }
+
     return checkResult;
 }
 

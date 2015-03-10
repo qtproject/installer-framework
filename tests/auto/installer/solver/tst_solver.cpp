@@ -269,15 +269,36 @@ private slots:
 
         componentB->setValue(QLatin1String("AutoDependOn"), QLatin1String("A"));
         componentB->setValue(QLatin1String("Default"), QLatin1String("true"));
+        core->appendRootComponent(componentA);
+        core->appendRootComponent(componentB);
 
         ComponentToStringList result;
         result[componentB].append(QLatin1String("Component B specifies \"Default\" property "
-                                                "together with \"AutoDependOn\" list. This combination of states "
-                                                "may not work properly."));
+            "together with \"AutoDependOn\" list. This combination of states "
+            "may not work properly."));
 
         QTest::newRow("AutoDepend and default")
                 << (QList<Component *>() << componentA << componentB)
                 << result;
+
+        NamedComponent *componentC = new NamedComponent(core, QLatin1String("C"));
+        NamedComponent *componentD = new NamedComponent(core, QLatin1String("D"));
+        NamedComponent *componentE = new NamedComponent(core, QLatin1String("E"));
+
+        componentD->setValue(QLatin1String("AutoDependOn"), QLatin1String("C"));
+        componentE->addDependency(QLatin1String("D"));
+        core->appendRootComponent(componentC);
+        core->appendRootComponent(componentD);
+        core->appendRootComponent(componentE);
+
+        result.clear();
+        result[componentD].append(QLatin1String("Other components depend on auto dependent "
+            "component D. This may not work properly."));
+
+        QTest::newRow("AutoDepend and dependency")
+                << (QList<Component *>() << componentC << componentD << componentE)
+                << result;
+
     }
 
     void checkComponent()
