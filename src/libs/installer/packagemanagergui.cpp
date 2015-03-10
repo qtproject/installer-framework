@@ -208,6 +208,7 @@ public:
         , m_modified(false)
         , m_autoSwitchPage(true)
         , m_showSettingsButton(false)
+        , m_silent(false)
     {
         m_wizardButtonTypes.insert(QWizard::BackButton, QLatin1String("QWizard::BackButton"));
         m_wizardButtonTypes.insert(QWizard::NextButton, QLatin1String("QWizard::NextButton"));
@@ -231,6 +232,7 @@ public:
     bool m_modified;
     bool m_autoSwitchPage;
     bool m_showSettingsButton;
+    bool m_silent;
     QHash<int, QWizardPage*> m_defaultPages;
     QHash<int, QString> m_defaultButtonText;
 
@@ -402,6 +404,23 @@ QWizard::WizardStyle PackageManagerGui::getStyle(const QString &name)
     if (name == QLatin1String("Aero"))
         return QWizard::AeroStyle;
     return QWizard::ModernStyle;
+}
+
+/*!
+   Hides the GUI when \a silent is \c true.
+*/
+void PackageManagerGui::setSilent(bool silent)
+{
+  d->m_silent = silent;
+  setVisible(!silent);
+}
+
+/*!
+    Returns the current silent state.
+*/
+bool PackageManagerGui::isSilent() const
+{
+  return d->m_silent;
 }
 
 /*!

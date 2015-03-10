@@ -159,6 +159,8 @@ public:
     Q_INVOKABLE QJSValue findChild(QObject *parent, const QString &objectName);
     Q_INVOKABLE QList<QJSValue> findChildren(QObject *parent, const QString &objectName);
 
+    Q_INVOKABLE void setSilent(bool silent);
+
 signals:
     void interrupted();
     void languageChanged();

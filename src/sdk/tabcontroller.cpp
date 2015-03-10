@@ -139,7 +139,7 @@ int TabController::init()
     }
 
     d->m_gui->restart();
-    d->m_gui->show();
+    d->m_gui->setVisible(!d->m_gui->isSilent());
 
     onCurrentIdChanged(d->m_gui->currentId());
     return PackageManagerCore::Success;

@@ -93,6 +93,9 @@ public:
     void updateButtonLayout();
     static QWizard::WizardStyle getStyle(const QString &name);
 
+    void setSilent(bool silent);
+    bool isSilent() const;
+
 Q_SIGNALS:
     void interrupted();
     void languageChanged();

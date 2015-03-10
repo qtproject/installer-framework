@@ -204,6 +204,15 @@ QList<QJSValue> GuiProxy::findChildren(QObject *parent, const QString &objectNam
     return children;
 }
 
+/*!
+    Hides the GUI when \a silent is \c true.
+*/
+void GuiProxy::setSilent(bool silent)
+{
+  if (m_gui)
+      m_gui->setSilent(silent);
+}
+
 void GuiProxy::cancelButtonClicked()
 {
     if (m_gui)
