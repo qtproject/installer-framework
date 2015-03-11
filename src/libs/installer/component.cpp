@@ -119,12 +119,6 @@ static const QLatin1String scForcedInstallation("ForcedInstallation");
 */
 
 /*!
-    \property Component::selected
-
-    \brief Whether the component is currently selected.
-*/
-
-/*!
     \property Component::autoCreateOperations
 
     \brief Whether some standard operations for the component should be
@@ -1104,6 +1098,9 @@ bool Component::isVirtual() const
     return d->m_vars.value(scVirtual, scFalse).toLower() == scTrue;
 }
 
+/*!
+   Returns whether the component is selected.
+*/
 bool Component::isSelected() const
 {
     return checkState() != Qt::Unchecked;
@@ -1240,6 +1237,9 @@ bool Component::installationRequested() const
     return installAction() == Install;
 }
 
+/*!
+   Returns whether the component is selected for installation.
+*/
 bool Component::isSelectedForInstallation() const
 {
     return !isInstalled() && isSelected();
