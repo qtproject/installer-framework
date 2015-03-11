@@ -56,6 +56,20 @@ namespace QInstaller {
     Returns a global object.
 */
 
+QJSValue InstallerProxy::components() const
+{
+    if (m_core) {
+        const QList<Component*> all = m_core->components(PackageManagerCore::ComponentType::All);
+        QJSValue scriptComponentsObject = m_engine->newArray(all.count());
+        for (int i = 0; i < all.count(); ++i) {
+            Component *const component = all.at(i);
+            QQmlEngine::setObjectOwnership(component, QQmlEngine::CppOwnership);
+            scriptComponentsObject.setProperty(i, m_engine->newQObject(component));
+        }
+        return scriptComponentsObject;
+    }
+    return m_engine->newArray();
+}
 
 QJSValue InstallerProxy::componentByName(const QString &componentName)
 {
@@ -253,21 +267,13 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
         QQmlEngine::setObjectOwnership(core, QQmlEngine::CppOwnership);
         global.setProperty(QLatin1String("installer"), m_engine.newQObject(core));
         connect(core, SIGNAL(guiObjectChanged(QObject*)), this, SLOT(setGuiQObject(QObject*)));
-
-        const QList<Component*> all = core->components(PackageManagerCore::ComponentType::All);
-        QJSValue scriptComponentsObject = m_engine.newArray(all.count());
-        for (int i = 0; i < all.count(); ++i) {
-            Component *const component = all.at(i);
-            QQmlEngine::setObjectOwnership(component, QQmlEngine::CppOwnership);
-            scriptComponentsObject.setProperty(i, newQObject(component));
-        }
-        global.property(QLatin1String("installer")).setProperty(QLatin1String("components"),
-            scriptComponentsObject);
     } else {
         global.setProperty(QLatin1String("installer"), m_engine.newQObject(new QObject));
     }
     global.setProperty(QLatin1String("gui"), m_engine.newQObject(m_guiProxy));
 
+    global.property(QLatin1String("installer")).setProperty(QLatin1String("components"),
+        proxy.property(QLatin1String("components")));
     global.property(QLatin1String("installer")).setProperty(QLatin1String("componentByName"),
         proxy.property(QLatin1String("componentByName")));
 }
@@ -311,6 +317,11 @@ QJSValue ScriptEngine::newQObject(QObject *object)
     }
 
     return jsValue;
+}
+
+QJSValue ScriptEngine::newArray(uint length)
+{
+  return m_engine.newArray(length);
 }
 
 /*!

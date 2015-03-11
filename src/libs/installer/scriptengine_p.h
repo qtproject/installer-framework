@@ -68,6 +68,7 @@ public:
         : m_engine(engine), m_core(core) {}
 
 public slots:
+    QJSValue components() const;
     QJSValue componentByName(const QString &componentName);
 
 private:

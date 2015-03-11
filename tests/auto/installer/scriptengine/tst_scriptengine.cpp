@@ -200,6 +200,8 @@ private slots:
         QCOMPARE(global.hasProperty(QLatin1String("InstallerProxy")), true);
         QCOMPARE(global.property(QLatin1String("InstallerProxy"))
             .hasProperty(QLatin1String("componentByName")), true);
+        QCOMPARE(global.property(QLatin1String("InstallerProxy"))
+                 .hasProperty(QLatin1String("components")), true);
 
         QCOMPARE(global.hasProperty(QLatin1String("QDesktopServices")), true);
         QCOMPARE(global.property(QLatin1String("QDesktopServices"))
@@ -300,6 +302,20 @@ private slots:
 
         const QJSValue value = m_scriptEngine->evaluate(script);
         QCOMPARE(value.isError(), true);
+    }
+
+    void testComponents()
+    {
+      const QString script = QString::fromLatin1("var components = installer.components();"
+                                                 "\n"
+                                                 "print(components[0].name);");
+
+      setExpectedScriptOutput("\"component.test.name\"");
+      const QJSValue value = m_scriptEngine->evaluate(script);
+      if (value.isError()) {
+        QFAIL(qPrintable(QString::fromLatin1("ScriptEngine error:\n %1").arg(
+                           value.toString())));
+      }
     }
 
     void loadSimpleComponentScript()
