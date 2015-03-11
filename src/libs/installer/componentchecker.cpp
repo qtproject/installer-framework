@@ -47,7 +47,8 @@ QStringList ComponentChecker::checkComponent(Component *component)
 
     const bool defaultPropertyScriptValue = component->variables().value(scDefault).compare(scScript, Qt::CaseInsensitive) == 0;
     const bool defaultPropertyValue = component->variables().value(scDefault).compare(scTrue, Qt::CaseInsensitive) == 0;
-    if (!component->autoDependencies().isEmpty()) {
+    const QStringList autoDependencies = component->autoDependencies();
+    if (!autoDependencies.isEmpty()) {
         if (component->forcedInstallation()) {
             checkResult << QString::fromLatin1("Component %1 specifies \"ForcedInstallation\" property "
                 "together with \"AutoDependOn\" list. This combination of states may not work properly.")
@@ -67,6 +68,17 @@ QStringList ComponentChecker::checkComponent(Component *component)
             checkResult << QString::fromLatin1("Other components depend on auto dependent "
                 "component %1. This may not work properly.")
                 .arg(component->name());
+        }
+        const QStringList dependencies = component->dependencies();
+        const QList<Component *> allComponents = core->components(PackageManagerCore::ComponentType::All);
+        foreach (const QString &dependency, dependencies) {
+            Component *dependencyComponent = PackageManagerCore::componentByName(
+                        dependency, allComponents);
+            if (autoDependencies.contains(dependencyComponent->name())) {
+                checkResult << QString::fromLatin1("Component %1 specifies both dependency "
+                    "and auto dependency on component %2. The dependency might be superfluous.")
+                    .arg(component->name(), dependencyComponent->name());
+            }
         }
     }
     if (component->packageManagerCore()->isInstaller()) {
