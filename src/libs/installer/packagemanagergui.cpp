@@ -2658,7 +2658,8 @@ void ReadyForInstallationPage::entering()
     }
 
     m_msgLabel->setText(QString::fromLatin1("%1 %2").arg(m_msgLabel->text(),
-            tr("Installation will use %1 of disk space.").arg(humanReadableSize(required))));
+            tr("Installation will use %1 of disk space.")
+            .arg(humanReadableSize(packageManagerCore()->requiredDiskSpace()))));
 }
 
 bool ReadyForInstallationPage::calculateComponents(QString *displayString)
