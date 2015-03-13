@@ -740,7 +740,7 @@ void PackageManagerGui::cancelButtonClicked()
 
     const QMessageBox::StandardButton button =
         MessageBoxHandler::question(MessageBoxHandler::currentBestSuitParent(),
-        QLatin1String("cancelInstallation"), tr("Question"), question,
+        QLatin1String("cancelInstallation"), tr("%1 Question").arg(m_core->value(scTitle)), question,
         QMessageBox::Yes | QMessageBox::No);
 
     if (button == QMessageBox::Yes) {
