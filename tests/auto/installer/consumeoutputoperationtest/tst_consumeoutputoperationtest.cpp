@@ -79,8 +79,8 @@ private slots:
         QCOMPARE(UpdateOperation::Error(operation.error()), UpdateOperation::InvalidArguments);
         //qDebug() << operation.errorString();
         QString compareString("Invalid arguments in ConsumeOutput: 0 arguments given, at least 2 "
-                              "arguments expected in the form: (<to be saved installer key name>, "
-                              "<executable>, [argument1], [argument2], ...).");
+                              "arguments expected in the form: <to be saved installer key name> "
+                              "<executable> [argument1] [argument2] [...].");
         //qDebug() << compareString;
         QCOMPARE(operation.errorString(), compareString);
     }
