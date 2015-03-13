@@ -96,7 +96,8 @@
             \li LineReplace
             \li "LineReplace" \c file \c search \c replace
             \li Opens \c file to find lines that start with \c search string and
-                replaces that with the \c replace string.
+                replaces that with the \c replace string. Lines are trimmed before
+                the search.
         \row
             \li Execute
             \li "Execute" [{\c exitcodes}] \c command [\c parameter1 [\c parameter... [\c parameter10]]]
