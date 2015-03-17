@@ -5,5 +5,5 @@
     <Title>Modify Extract Installer Example</Title>
     <Publisher>Qt-Project</Publisher>
     <StartMenuDir>Qt IFW Examples</StartMenuDir>
-    <TargetDir>@HomeDir@/IfwExample</TargetDir>
+    <TargetDir>@HomeDir@/IfwExamples/modifyextract</TargetDir>
 </Installer>

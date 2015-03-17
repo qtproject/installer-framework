@@ -56,277 +56,20 @@ namespace QInstaller {
     Returns a global object.
 */
 
-/*!
-    \qmltype console
-    \inqmlmodule scripting
-    \brief Provides methods for logging and debugging.
-
-    You can use the \c console object to print log information about installer
-    functions to the console. The following example uses the \c console object
-    \l{console::log()}{log} method and \l installer object
-    \l{installer::isUpdater()}, \l{installer::isUninstaller()}, and
-    \l{installer::isPackageManager()} methods to display a message that
-    indicates whether the maintenance tool is currently being used to update,
-    remove, or add components.
-
-    \code
-    onPackageManagerCoreTypeChanged = function()
-    {
-        console.log("Is Updater: " + installer.isUpdater());
-        console.log("Is Uninstaller: " + installer.isUninstaller());
-        console.log("Is Package Manager: " + installer.isPackageManager());
+QJSValue InstallerProxy::components() const
+{
+    if (m_core) {
+        const QList<Component*> all = m_core->components(PackageManagerCore::ComponentType::All);
+        QJSValue scriptComponentsObject = m_engine->newArray(all.count());
+        for (int i = 0; i < all.count(); ++i) {
+            Component *const component = all.at(i);
+            QQmlEngine::setObjectOwnership(component, QQmlEngine::CppOwnership);
+            scriptComponentsObject.setProperty(i, m_engine->newQObject(component));
+        }
+        return scriptComponentsObject;
     }
-    \endcode
-*/
-
-/*!
-    \qmlmethod void console::log(string value)
-
-    Prints the string specified by \a value to the console.
-*/
-
-/*!
-    \qmltype QFileDialog
-    \inqmlmodule scripting
-    \brief Provides a dialog that allows users to select files or directories.
-
-    Use the QFileDialog::getExistingDirectory() method to create a modal dialog
-    that displays an existing directory selected by the user. Use the
-    QFileDialog::getOpenFileName() method to create a dialog that displays
-    matching files in the directory selected by the user.
-*/
-
-/*!
-    \qmlmethod string QFileDialog::getExistingDirectory(string caption, string dir)
-
-    Returns an existing directory selected by the user.
-
-    The dialog's working directory is set to \a dir, and the caption is set to
-    \a caption. Either of these may be an empty string, in which case the
-    current directory and a default caption will be used, respectively.
-*/
-
-/*!
-    \qmlmethod string QFileDialog::getOpenFileName(string caption, string dir, string filter)
-
-    Returns an existing file selected by the user. If the user selects
-    \uicontrol Cancel, returns a null string.
-
-    The file dialog's caption is set to \a caption. If \c caption is not
-    specified, a default caption is used.
-
-    The file dialog's working directory is set to \a dir. If \c dir includes a
-    file name, the file will be selected. Only files that match the specified
-    \a filter are shown. Either of these may be an empty string.
-
-    To specify multiple filters, separate them with two semicolons (;;). For
-    example:
-
-    \code
-    "Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"
-    \endcode
-
-    On Windows, and OS X, this static function will use the native file dialog
-    and not a QFileDialog.
-*/
-
-/*!
-    \qmltype print
-    \inqmlmodule scripting
-*/
-
-/*!
-    \qmltype buttons
-    \inqmlmodule scripting
-
-    \brief Provides buttons that can be used on installer pages.
-
-    You can use a set of standard buttons and some custom buttons on the
-    installer pages. For more information about the buttons used by default on
-    each installer page, see \l {Controller Scripting}.
-*/
-
-/*!
-    \qmlproperty enumeration buttons::QWizard
-
-    Specifies the buttons on an installer page.
-
-    \value  buttons.BackButton
-            The \uicontrol Back button (\uicontrol {Go Back} on OS X.)
-    \value  buttons.NextButton
-            The \uicontrol Next button (\uicontrol Continue on OS X.)
-    \value  buttons.CommitButton
-            The \uicontrol Commit button.
-    \value  buttons.FinishButton
-            The \uicontrol Finish button (\uicontrol Done on OS X.)
-    \value  buttons.CancelButton
-            The \uicontrol Cancel button.
-    \value  buttons.HelpButton
-            The \uicontrol Help button.
-    \value  buttons.CustomButton1
-            A custom button.
-    \value  buttons.CustomButton2
-            A custom button.
-    \value  buttons.CustomButton3
-            A custom button.
-*/
-
-/*!
-    \qmltype QDesktopServices
-    \inqmlmodule scripting
-
-    \brief Provides methods for accessing common desktop services.
-
-    Many desktop environments provide services that can be used by applications
-    to perform common tasks, such as opening a file, in a way that is both
-    consistent and takes into account the user's application preferences.
-
-    This object contains methods that provide simple interfaces to these
-    services that indicate whether they succeeded or failed.
-
-    The openUrl() method is used to open files located at arbitrary URLs in
-    external applications. For URLs that correspond to resources on the local
-    filing system (where the URL scheme is "file"), a suitable application is
-    used to open the file.
-
-    The displayName() and storageLocation() methods take one of the following
-    enums as an argument:
-
-    \list
-        \li DesktopServices.DesktopLocation
-        \li DesktopServices.DocumentsLocation
-        \li DesktopServices.FontsLocation
-        \li DesktopServices.ApplicationsLocation
-        \li DesktopServices.MusicLocation
-        \li DesktopServices.MoviesLocation
-        \li DesktopServices.PicturesLocation
-        \li DesktopServices.TempLocation
-        \li DesktopServices.HomeLocation
-        \li DesktopServices.DataLocation
-        \li DesktopServices.CacheLocation
-        \li DesktopServices.GenericDataLocation
-        \li DesktopServices.RuntimeLocation
-        \li DesktopServices.ConfigLocation
-        \li DesktopServices.DownloadLocation
-        \li DesktopServices.GenericCacheLocation
-        \li DesktopServices.GenericConfigLocation
-    \endlist
-
-    The enum values correspond to the values of the
-    \l{QStandardPaths::StandardLocation} enum with the same names.
-*/
-
-/*!
-    \qmlproperty enumeration QDesktopServices::QStandardPaths
-    \internal
-*/
-
-/*!
-    \qmlmethod boolean QDesktopServices::openUrl(string url)
-
-    Uses the URL scheme \c file to open the specified \a url with a suitable
-    application.
-*/
-
-/*!
-    \qmlmethod string QDesktopServices::displayName(int location)
-
-    Returns a localized display name for the specified \a location or an empty
-    QString if no relevant location can be found.
-*/
-
-/*!
-    \qmlmethod string QDesktopServices::storageLocation(int location)
-
-    Returns the specified \a location.
-*/
-
-/*!
-    \qmltype QInstaller
-    \inqmlmodule scripting
-
-    \brief Provides access to the installer status and pages from Qt Script.
-
-    For more information about using the \c QInstaller object in control
-    scripts, see \l{Controller Scripting}.
-
-    For examples of using the pages to support end user workflows, see
-    \l{End User Workflows}.
-
-*/
-
-/*!
-   \qmlproperty enumeration QInstaller::WizardPage
-
-    The installer has various pre-defined pages that can be used to for example insert pages
-    in a certain place:
-
-    \value  QInstaller.Introduction
-            \l{Introduction Page}
-    \value  QInstaller.TargetDirectory
-            \l{Target Directory Page}
-    \value  QInstaller.ComponentSelection
-            \l{Component Selection Page}
-    \value  QInstaller.LicenseCheck
-            \l{License Agreement Page}
-    \value  QInstaller.StartMenuSelection
-            \l{Start Menu Directory Page}
-    \value  QInstaller.ReadyForInstallation
-            \l{Ready for Installation Page}
-    \value  QInstaller.PerformInstallation
-            \l{Perform Installation Page}
-    \value  QInstaller.InstallationFinished
-            \l{Finished Page}
-
-    \omitvalue  QInstaller.End
-*/
-
-
-/*!
-    \qmlproperty enumeration QInstaller::status
-
-    Status of the installer.
-
-    Possible values are:
-
-    \value  QInstaller.Success
-            Installation was successful.
-    \value  QInstaller.Failure
-            Installation failed.
-    \value  QInstaller.Running
-            Installation is in progress.
-    \value  QInstaller.Canceled
-            Installation was canceled.
-    \value  QInstaller.Unfinished
-            Installation was not completed.
-    \value  QInstaller.ForceUpdate
-*/
-
-/*!
-    \qmltype gui
-    \inqmlmodule scripting
-    \brief Enables interaction with the installer UI.
-*/
-
-/*!
-    \qmlsignal gui::interrupted()
-*/
-
-/*!
-    \qmlsignal gui::languageChanged()
-*/
-
-/*!
-    \qmlsignal gui::finishButtonClicked()
-*/
-
-/*!
-    \qmlsignal gui::gotRestarted()
-*/
-
-/*!
-    \qmlsignal gui::settingsButtonClicked();
-*/
+    return m_engine->newArray();
+}
 
 QJSValue InstallerProxy::componentByName(const QString &componentName)
 {
@@ -364,8 +107,6 @@ void GuiProxy::setPackageManagerGui(PackageManagerGui *gui)
 }
 
 /*!
-    \qmlmethod object gui::pageById(int id)
-
     Returns the installer page specified by \a id. The values of \c id for the
     available installer pages are provided by QInstaller::WizardPage.
 */
@@ -377,8 +118,6 @@ QJSValue GuiProxy::pageById(int id) const
 }
 
 /*!
-    \qmlmethod object gui::pageByObjectName(string name)
-
     Returns the installer page specified by \a name. The value of \c name is the
     object name set in the UI file that defines the installer page.
 */
@@ -390,8 +129,6 @@ QJSValue GuiProxy::pageByObjectName(const QString &name) const
 }
 
 /*!
-    \qmlmethod object gui::currentPageWidget()
-
     Returns the current wizard page.
 */
 QJSValue GuiProxy::currentPageWidget() const
@@ -401,9 +138,6 @@ QJSValue GuiProxy::currentPageWidget() const
     return m_engine->newQObject(m_gui->currentPageWidget());
 }
 
-/*!
-    \qmlmethod object gui::pageWidgetByObjectName(string name)
-*/
 QJSValue GuiProxy::pageWidgetByObjectName(const QString &name) const
 {
     if (!m_gui)
@@ -411,9 +145,6 @@ QJSValue GuiProxy::pageWidgetByObjectName(const QString &name) const
     return m_engine->newQObject(m_gui->pageWidgetByObjectName(name));
 }
 
-/*!
-    \qmlmethod string gui::defaultButtonText(int wizardButton)
-*/
 QString GuiProxy::defaultButtonText(int wizardButton) const
 {
     if (!m_gui)
@@ -422,8 +153,6 @@ QString GuiProxy::defaultButtonText(int wizardButton) const
 }
 
 /*!
-    \qmlmethod void gui::clickButton(int wizardButton, int delayInMs)
-
     Automatically clicks the button specified by \a wizardButton after a delay
     in milliseconds specified by \a delayInMs.
 */
@@ -433,9 +162,6 @@ void GuiProxy::clickButton(int wizardButton, int delayInMs)
         m_gui->clickButton(wizardButton, delayInMs);
 }
 
-/*!
-    \qmlmethod boolean gui::isButtonEnabled(int wizardButton)
-*/
 bool GuiProxy::isButtonEnabled(int wizardButton)
 {
     if (!m_gui)
@@ -443,18 +169,12 @@ bool GuiProxy::isButtonEnabled(int wizardButton)
     return m_gui->isButtonEnabled(wizardButton);
 }
 
-/*!
-    \qmlmethod void gui::showSettingsButton(boolean show)
-*/
 void GuiProxy::showSettingsButton(bool show)
 {
     if (m_gui)
         m_gui->showSettingsButton(show);
 }
 
-/*!
-    \qmlmethod void gui::setSettingsButtonEnabled(boolean enable)
-*/
 void GuiProxy::setSettingsButtonEnabled(bool enable)
 {
     if (m_gui)
@@ -462,8 +182,6 @@ void GuiProxy::setSettingsButtonEnabled(bool enable)
 }
 
 /*!
-    \qmlmethod object gui::findChild(object parent, string objectName)
-
     Returns the first descendant of \a parent that has \a objectName as name.
 
     \sa QObject::findChild
@@ -474,8 +192,6 @@ QJSValue GuiProxy::findChild(QObject *parent, const QString &objectName)
 }
 
 /*!
-    \qmlmethod object[] gui::findChildren(object parent, string objectName)
-
     Returns all descendants of \a parent that have \a objectName as name.
 
     \sa QObject::findChildren
@@ -488,45 +204,30 @@ QList<QJSValue> GuiProxy::findChildren(QObject *parent, const QString &objectNam
     return children;
 }
 
-/*!
-    \qmlmethod void gui::cancelButtonClicked()
-*/
 void GuiProxy::cancelButtonClicked()
 {
     if (m_gui)
         m_gui->cancelButtonClicked();
 }
 
-/*!
-    \qmlmethod void gui::reject()
-*/
 void GuiProxy::reject()
 {
     if (m_gui)
         m_gui->reject();
 }
 
-/*!
-    \qmlmethod void gui::rejectWithoutPrompt()
-*/
 void GuiProxy::rejectWithoutPrompt()
 {
     if (m_gui)
         m_gui->rejectWithoutPrompt();
 }
 
-/*!
-    \qmlmethod void gui::showFinishedPage()
-*/
 void GuiProxy::showFinishedPage()
 {
     if (m_gui)
         m_gui->showFinishedPage();
 }
 
-/*!
-    \qmlmethod void gui::setModified(boolean value)
-*/
 void GuiProxy::setModified(bool value)
 {
     if (m_gui)
@@ -566,21 +267,13 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
         QQmlEngine::setObjectOwnership(core, QQmlEngine::CppOwnership);
         global.setProperty(QLatin1String("installer"), m_engine.newQObject(core));
         connect(core, SIGNAL(guiObjectChanged(QObject*)), this, SLOT(setGuiQObject(QObject*)));
-
-        const QList<Component*> all = core->components(PackageManagerCore::ComponentType::All);
-        QJSValue scriptComponentsObject = m_engine.newArray(all.count());
-        for (int i = 0; i < all.count(); ++i) {
-            Component *const component = all.at(i);
-            QQmlEngine::setObjectOwnership(component, QQmlEngine::CppOwnership);
-            scriptComponentsObject.setProperty(i, newQObject(component));
-        }
-        global.property(QLatin1String("installer")).setProperty(QLatin1String("components"),
-            scriptComponentsObject);
     } else {
         global.setProperty(QLatin1String("installer"), m_engine.newQObject(new QObject));
     }
     global.setProperty(QLatin1String("gui"), m_engine.newQObject(m_guiProxy));
 
+    global.property(QLatin1String("installer")).setProperty(QLatin1String("components"),
+        proxy.property(QLatin1String("components")));
     global.property(QLatin1String("installer")).setProperty(QLatin1String("componentByName"),
         proxy.property(QLatin1String("componentByName")));
 }
@@ -624,6 +317,11 @@ QJSValue ScriptEngine::newQObject(QObject *object)
     }
 
     return jsValue;
+}
+
+QJSValue ScriptEngine::newArray(uint length)
+{
+  return m_engine.newArray(length);
 }
 
 /*!

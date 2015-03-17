@@ -8,7 +8,6 @@ QT -= gui
 QT += testlib
 
 CONFIG += console
-DESTDIR = $$IFW_APP_PATH
 
 HEADERS = environmentvariabletest.h 
 SOURCES = environmentvariabletest.cpp

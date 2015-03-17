@@ -40,7 +40,7 @@ namespace QInstaller {
 typedef qint32 PackageSize;
 
 /*!
-    Write a packet containing \a command and \data to \a device.
+    Write a packet containing \a command and \a data to \a device.
 
     \note Both client and server need to have the same endianness.
  */

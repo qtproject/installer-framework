@@ -5,5 +5,5 @@
     <Title>Component Error Example</Title>
     <Publisher>Qt-Project</Publisher>
     <StartMenuDir>Qt IFW Examples</StartMenuDir>
-    <TargetDir>@HomeDir@/IfwExample</TargetDir>
+    <TargetDir>@HomeDir@/IfwExamples/componenterror</TargetDir>
 </Installer>

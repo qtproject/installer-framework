@@ -1,0 +1,170 @@
+/****************************************************************************
+**
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \qmltype gui
+    \inqmlmodule scripting
+    \brief Enables interaction with the installer UI.
+*/
+
+/*!
+    \qmlsignal gui::interrupted()
+
+    This signal is emitted when the end user chooses to cancel the installation
+    and quit the installer.
+*/
+
+/*!
+    \qmlsignal gui::languageChanged()
+
+    This signal is emitted when the application language changes.
+*/
+
+/*!
+    \qmlsignal gui::finishButtonClicked()
+
+    This signal is emitted when the \uicontrol Finish button is clicked.
+
+*/
+
+/*!
+    \qmlsignal gui::gotRestarted()
+
+    This signal is emitted when the installer is restarted.
+*/
+
+/*!
+    \qmlsignal gui::settingsButtonClicked()
+
+    This signal is emitted when the \uicontrol Settings button is clicked.
+*/
+
+/*!
+    \qmlmethod object gui::pageById(int id)
+
+    Returns the installer page specified by \a id. The values of \c id for the
+    available installer pages are provided by QInstaller::WizardPage.
+*/
+
+/*!
+    \qmlmethod object gui::pageByObjectName(string name)
+
+    Returns the installer page specified by \a name. The value of \c name is the
+    object name set in the UI file that defines the installer page.
+*/
+
+/*!
+    \qmlmethod object gui::currentPageWidget()
+
+    Returns the current wizard page.
+*/
+
+/*!
+    \qmlmethod object gui::pageWidgetByObjectName(string name)
+
+    For dynamic pages, returns the widget specified by \a name read from the UI
+    file.
+*/
+
+/*!
+    \qmlmethod string gui::defaultButtonText(int wizardButton)
+
+    Returns the default text for the button specified by \a wizardButton.
+*/
+
+/*!
+    \qmlmethod void gui::clickButton(int wizardButton, int delayInMs)
+
+    Automatically clicks the button specified by \a wizardButton after a delay
+    in milliseconds specified by \a delayInMs.
+*/
+
+/*!
+    \qmlmethod boolean gui::isButtonEnabled(int wizardButton)
+
+    Returns \c true if the button specified by \a wizardButton is enabled.
+    Returns \c false if a button of the specified type is not found.
+
+*/
+
+/*!
+    \qmlmethod void gui::showSettingsButton(boolean show)
+
+    Shows the \uicontrol Settings button if \a show is \c true.
+*/
+
+/*!
+    \qmlmethod void gui::setSettingsButtonEnabled(boolean enable)
+
+    Enables the \uicontrol Settings button by setting \a enable to \c true.
+*/
+
+/*!
+    \qmlmethod object gui::findChild(object parent, string objectName)
+
+    Returns the first descendant of \a parent that has \a objectName as name.
+
+    \sa QObject::findChild
+*/
+
+/*!
+    \qmlmethod object[] gui::findChildren(object parent, string objectName)
+
+    Returns all descendants of \a parent that have \a objectName as name.
+
+    \sa QObject::findChildren
+*/
+
+/*!
+    \qmlmethod void gui::cancelButtonClicked()
+
+    Asks end users whether they want to cancel the operation and quit the
+    installer, uninstaller, or package manager.
+*/
+
+/*!
+    \qmlmethod void gui::reject()
+
+    Quits the installer, uninstaller, or package manager.
+*/
+
+/*!
+    \qmlmethod void gui::rejectWithoutPrompt()
+
+    Quits the installer, uninstaller, or package manager without asking end
+    users for confirmation.
+*/
+
+/*!
+    \qmlmethod void gui::showFinishedPage()
+
+    Shows the next page.
+*/
+
+/*!
+    \qmlmethod void gui::setModified(boolean value)
+*/

@@ -1,930 +1,930 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.1" language="it_IT">
 <context>
     <name>AuthenticationRequiredException</name>
     <message>
         <source>%1 at %2</source>
-        <translation>%1 auf %2</translation>
+        <translation>%1 a %2</translation>
     </message>
     <message>
         <source>Proxy requires authentication.</source>
-        <translation>Proxy verlangt Autentifizierung.</translation>
+        <translation>Il proxy richiede l&apos;autenticazione.</translation>
     </message>
 </context>
 <context>
     <name>BinaryContent</name>
     <message>
         <source>Could not seek to %1 to read the operation data.</source>
-        <translation>Konnte nicht bis zur Anweisungsliste an Position %1 springen.</translation>
+        <translation>Impossibile spostarsi alla posizione %1 per leggere i dati di funzionamento.</translation>
     </message>
     <message>
         <source>Could not seek to %1 to read the resource collection block.</source>
-        <translation>Konnte nicht bis zur Resourcensammlung an Position %1 suchen.</translation>
+        <translation>Impossibile spostarsi alla posizione %1 per leggere il blocco con le risorse.</translation>
     </message>
     <message>
         <source>Could not open meta resource. Error: %1</source>
-        <translation>Konnte Metainformationen nicht öffnen. Fehlermeldung: %1</translation>
+        <translation>Impossibile aprire i meta pacchetti.Errore: %1</translation>
     </message>
 </context>
 <context>
     <name>BinaryLayout</name>
     <message>
         <source>Could not seek to %1 to read the embedded meta data count.</source>
-        <translation>Konnte nicht bis %1 suchen, um die eingebettete Metadatenanzahl zu lesen.</translation>
+        <translation>Impossibile eseguire il seek a %1 per leggere il conteggio dei meta dati embedded.</translation>
     </message>
     <message>
         <source>Could not seek to %1 to read the resource collection segment.</source>
-        <translation>Konnte nicht bis %1 suchen, um die Resourcensammlung zu lesen.</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Unexpected mismatch of meta resources. Read %1, expected: %2.</source>
-        <translation>Unerwarteter Unterschied zwischen Metadaten. %1 gelesen, %2 erwartet.</translation>
+        <translation>Non corrispondenza dei meta dati. Letti %1, aspettati: %2.</translation>
     </message>
 </context>
 <context>
     <name>Dialog</name>
     <message>
         <source>Http authentication required</source>
-        <translation>HTTP Authentifizierung erforderlich</translation>
+        <translation>Richiesta autentificazione HTTP</translation>
     </message>
     <message>
         <source>You need to supply a Username and Password to access this site.</source>
-        <translation>Nutzername und Passwort für die Authentifizierung benötigt.</translation>
+        <translation>E&apos; necessario fornire un nome utente e una password per accedere a questo sito.</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation>Nutzername:</translation>
+        <translation>Nome Utente:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation>Passwort:</translation>
+        <translation></translation>
     </message>
     <message>
         <source>%1 at %2</source>
-        <translation>%1 auf %2</translation>
+        <translation>%1 a %2</translation>
     </message>
 </context>
 <context>
     <name>DirectoryGuard</name>
     <message>
         <source>Path exists but is not a folder: %1</source>
-        <translation>Pfad %1 existiert, aber ist kein Ordner.</translation>
+        <translation>Il percorso esiste ma non è una cartella: %1</translation>
     </message>
     <message>
         <source>Could not create folder: %1</source>
-        <translation>Konnte Ordner %1 nicht anlegen.</translation>
+        <translation>Impossibile creare la cartella: %1</translation>
     </message>
 </context>
 <context>
     <name>ExtractCallbackImpl</name>
     <message>
         <source>Could not retrieve path of archive item %1</source>
-        <translation>Konnte Pfad des Archivs %1 nicht feststellen.</translation>
+        <translation>Impossibile recuperare il path dell&apos;elemento dell&apos;archivio %1</translation>
     </message>
     <message>
         <source>Could not remove already existing symlink. %1</source>
-        <translation>Konnte existierende Verknüpfung (Symlink) %1 nicht entfernen.</translation>
+        <translation>Impossibile rimuovere il collegamento già esistente. %1</translation>
     </message>
     <message>
         <source>Could not open file: %1 (%2)</source>
-        <translation>Konnte Datei %1 nicht öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire il file: %1 (%2)</translation>
     </message>
     <message>
         <source>Could not create symlink at &apos;%1&apos;. Another one is already existing.</source>
-        <translation>Konnte Verknüpfung (Symlink) &apos;%1&apos; nicht erstellen. Es existiert bereits eine an dieser Stelle.</translation>
+        <translation>Impossibile creare il collegamento a &apos;%1&apos;. Un altro collegamento è già esistente.</translation>
     </message>
     <message>
         <source>Could not read symlink target from file &apos;%1&apos;.</source>
-        <translation>Konnte Ziel der Verknüpfung (Symlink) &apos;%1&apos; nicht lesen.</translation>
+        <translation>Impossibile leggere dal file %1 puntato dal collegamento.</translation>
     </message>
     <message>
         <source>Could not create symlink at %1. %2</source>
-        <translation>Konnte keine Dateisystemverknüpfung (Symlink) %1 anlegen. Fehlermeldung: %2</translation>
+        <translation>Impossibile creare il collegamento a %1. %2</translation>
     </message>
 </context>
 <context>
     <name>InstallerCalculator</name>
     <message>
         <source>Components added as automatic dependencies:</source>
-        <translation>Komponenten, die als automatische Abhängigkeiten zugefügt wurden:</translation>
+        <translation>Componenti aggiunti come dipendenze automatiche:</translation>
     </message>
     <message>
         <source>Components added as dependency for &apos;%1&apos;:</source>
-        <translation>Komponenten, die als Abhängigkeiten für &apos;%1&apos; zugefügt wurden:</translation>
+        <translation>Componenti aggiunti come dipendenza per &apos;%1&apos;:</translation>
     </message>
     <message>
         <source>Components that have resolved dependencies:</source>
-        <translation>Komponenten, die aufgelöste Abhängigkeiten besitzen:</translation>
+        <translation>Componenti che hanno le dipendenze risolte:</translation>
     </message>
     <message>
         <source>Selected components without dependencies:</source>
-        <translation>Ausgewählte Komponenten ohne Abhängigkeiten:</translation>
+        <translation>Componenti selezionati senza dipendenze:</translation>
     </message>
     <message>
         <source>Recursion detected, component &apos;%1&apos; already added with reason: &apos;%2&apos;</source>
-        <translation>Rekursion entdeckt, Komponente &apos;%1&apos; wurde bereits zugefügt aufgrund von: &apos;%2&apos;</translation>
+        <translation>Rilevata ricorsione, componente &apos;%1&apos; già aggiunto per questo motivo: &apos;%2&apos;</translation>
     </message>
     <message>
         <source>Cannot find missing dependency &apos;%1&apos; for &apos;%2&apos;.</source>
-        <translation>Konnte fehlende Abhängigkeit &apos;%1&apos; für &apos;%2&apos; nicht finden.</translation>
+        <translation>Impossibile trovare la dipendenza mancante &apos;%1&apos; per &apos;%2&apos;.</translation>
     </message>
 </context>
 <context>
     <name>KDJob</name>
     <message>
         <source>Canceled</source>
-        <translation>Abgebrochen</translation>
+        <translation>Annullato</translation>
     </message>
 </context>
 <context>
     <name>KDLockFile</name>
     <message>
         <source>Could not create lock file &apos;%1&apos;: %2</source>
-        <translation>Konnte keine Sperrdatei %1 anlegen. Fehlermeldung: %2</translation>
+        <translation>Impossibile creare il file &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <source>Could not write PID to lock file &apos;%1&apos;: %2</source>
-        <translation>Konnte PID nicht in die Sperrdatei %1 schreiben. Fehlermeldung: %2</translation>
+        <translation>Impossibile scrivere il PID nel file lockkato &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <source>Could not obtain the lock for file &apos;%1&apos;: %2</source>
-        <translation>Konnte Sperre für Datei &apos;%1&apos; nicht anlegen: &apos;%2&apos;</translation>
+        <translation>Impossibile ottenere il lock del file &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <source>Could not release the lock for file &apos;%1&apos;: %2</source>
-        <translation>Konnte Sperre für Datei &apos;%1&apos; nicht aufheben: &apos;%2&apos;</translation>
+        <translation>Impossibile rilasciare il lock del file &apos;%1&apos;: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::AppendFileOperation</name>
     <message>
         <source>Cannot backup file %1: %2</source>
-        <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
+        <translation>Impossibile eseguire il backup di %1: %2</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>genau 2</translation>
+        <translation>esattamente 2</translation>
     </message>
     <message>
         <source>Could not open file &apos;%1&apos; for writing: %2</source>
-        <translation>Konnte Datei &apos;%1&apos; nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire il file %1 in scrittura: %2</translation>
     </message>
     <message>
         <source>Cannot find backup file for %1.</source>
-        <translation>Konnte Sicherungsdatei für %1 nicht finden.</translation>
+        <translation>Impossibile trovare il file di backup per %1.</translation>
     </message>
     <message>
         <source>Could not restore backup file for %1.</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen.</translation>
+        <translation>Impossibile ripristinare il file di backup per %1.</translation>
     </message>
     <message>
         <source>Could not restore backup file for %1: %2</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
+        <translation>Impossibile ripristinare il file di backup per %1: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::CopyOperation</name>
     <message>
-        <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 2 erwartet.</translation>
+        <source>Could not backup file %1.</source>
+        <translation>Impossibile eseguire il backup del file %1.</translation>
     </message>
     <message>
-        <source>Could not backup file %1.</source>
-        <translation>Konnte Datei %1 nicht sichern.</translation>
+        <source>Invalid arguments: %1 arguments given, 2 expected.</source>
+        <translation>Argomenti invalidi: argomenti forniti %1, richiesti 2.</translation>
     </message>
     <message>
         <source>Could not copy a non-existent file: %1</source>
-        <translation>Konnte nicht existierende Datei nicht kopieren: %1</translation>
+        <translation>Impossibile copiare un file non esistente: %1</translation>
     </message>
     <message>
         <source>Could not remove destination file %1: %2</source>
-        <translation>Konnte Zieldatei %1 nicht entfernen. Fehlermeldung: %2</translation>
+        <translation>Impossibile rimuovere il file di destinazione %1: %2</translation>
     </message>
     <message>
         <source>Could not copy %1 to %2: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
+        <translation>Impossibile copiare %1 in %2: %3</translation>
     </message>
     <message>
         <source>Could not delete file %1: %2</source>
-        <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
+        <translation>Impossibile eliminare il file %1: %2</translation>
     </message>
     <message>
         <source>Could not restore backup file into %1: %2</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
+        <translation>Impossibile ripristinare il file di backup in %1: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::DeleteOperation</name>
     <message>
         <source>Cannot create backup of %1: %2</source>
-        <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
+        <translation>Impossibile creare il backup di %1: %2</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 1 erwartet.</translation>
+        <translation>Argomenti invalidi: argomenti forniti %1, richiesti 1.</translation>
     </message>
     <message>
         <source>Cannot restore backup file for %1: %2</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
+        <translation>Impossibile ripristinare il file di backup %1: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::FileDownloader</name>
     <message>
         <source>Download canceled.</source>
-        <translation>Herunterladen abgebrochen.</translation>
+        <translation>Download annullato.</translation>
     </message>
     <message>
         <source>Cryptographic hashes do not match.</source>
-        <translation>Prüfsummen stimmen nicht überein.</translation>
+        <translation>Cryptographic hashes non corrispondono.</translation>
     </message>
     <message>
         <source>Download finished.</source>
-        <translation>Heruntergeladen abgeschlossen.</translation>
+        <translation>Download finito.</translation>
     </message>
     <message>
         <source>%1 of %2</source>
-        <translation>%1 von %2</translation>
+        <translation>%1 di %2</translation>
     </message>
     <message>
         <source>%1 downloaded.</source>
-        <translation>%1 heruntergeladen.</translation>
+        <translation>%1 scaricati.</translation>
     </message>
     <message>
         <source>(%1/sec)</source>
-        <translation>(%1/s)</translation>
+        <translation></translation>
     </message>
     <message numerus="yes">
         <source>%n day(s), </source>
         <translation>
-            <numerusform>%n Tag, </numerusform>
-            <numerusform>%n Tage, </numerusform>
+            <numerusform>%n giorni, </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n hour(s), </source>
         <translation>
-            <numerusform>%n Stunde, </numerusform>
-            <numerusform>%n Stunden, </numerusform>
+            <numerusform>%n ore, </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n minute(s)</source>
         <translation>
-            <numerusform>%n Minute</numerusform>
-            <numerusform>%n Minuten</numerusform>
+            <numerusform>%n muniti</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n second(s)</source>
         <translation>
-            <numerusform>%n Sekunde</numerusform>
-            <numerusform>%n Sekunden</numerusform>
+            <numerusform>%n secondi</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
         <source> - %1%2%3%4 remaining.</source>
-        <translation> - %1%2%3%4 verbleibend.</translation>
+        <translation>- rimanenti %1%2%3%4.</translation>
     </message>
     <message>
         <source> - unknown time remaining.</source>
-        <translation> - verbleibende Zeit unbekannt.</translation>
+        <translation> - tempo rimanente sconosciuto.</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::HttpDownloader</name>
     <message>
         <source>Cannot download %1: Writing to file &apos;%2&apos; failed: %3</source>
-        <translation>Konnte %1 nicht herunterladen. Schreiben in Datei &apos;%2&apos; fehlgeschlagen. Fehlermeldung: %3</translation>
+        <translation>Impossibile scaricare %1: Scrittura nel file &apos;%2&apos; fallita: %3</translation>
     </message>
     <message>
         <source>Cannot download %1: Could not create %2: %3</source>
-        <translation>Konnte %1 nicht herunterladen. Erstellen der Datei %2 fehlgeschlagen. Fehlermeldung: %3</translation>
+        <translation>Impossibile scaricare %1: Impossibile creare %2: %3</translation>
     </message>
     <message>
         <source>%1 at %2</source>
-        <translation>%1 auf %2</translation>
+        <translation>%1 a %2</translation>
     </message>
     <message>
         <source>Authentication request canceled.</source>
-        <translation>Authentifizierung abgebrochen.</translation>
+        <translation>Richiesta di autenticazione annullata.</translation>
     </message>
     <message>
         <source>Secure Connection Failed</source>
-        <translation>Sichere Verbindung fehlgeschlagen</translation>
+        <translation>Connessione sicura non riuscita</translation>
     </message>
     <message>
         <source>There was an error during connection to: %1.</source>
-        <translation>Beim Aufbau der Verbindung zu &apos;%1&apos; ist ein Fehler aufgetreten.</translation>
+        <translation>Si è verificato un errore durante la connessione a: %1.</translation>
     </message>
     <message>
         <source>This could be a problem with the server&apos;s configuration, or it could be someone trying to impersonate the server.</source>
-        <translation>Dies kann ein Fehler in der Konfiguration sein oder es versucht jemand, diesen Server vorzutäuschen.</translation>
+        <translation>Questo potrebbe essere un problema con la configurazione del server, o qualcuno prova a spacciarsi per il server.</translation>
     </message>
     <message>
         <source>If you have connected to this server successfully in the past or trust this server, the error may be temporary and you can try again.</source>
-        <translation>Wenn frühere Verbindungen zu diesem Server erfolgreich waren, kann dieser Fehler temporär sein und bei einem erneuten Versuch verschwinden.</translation>
+        <translation>Se tu hai avuto una connessione con questo server nel passato o ti fidi del server, l&apos;errore potrebbe essere temporaneo e puoi provare ancora.</translation>
     </message>
     <message>
         <source>Try again</source>
-        <translation>Erneut versuchen</translation>
+        <translation>Prova ancora</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::LocalFileDownloader</name>
     <message>
         <source>Cannot open source file &apos;%1&apos; for reading.</source>
-        <translation>Konnte Ausgangsdatei &apos;%1&apos; nicht zum Lesen öffnen.</translation>
+        <translation>Impossibile aprire il file sorgente &apos;%1&apos; in lettura.</translation>
     </message>
     <message>
         <source>Cannot open destination file &apos;%1&apos; for writing.</source>
-        <translation>Konnte Zieldatei &apos;%1&apos; nicht zum Schreiben öffnen.</translation>
+        <translation>Impossibile aprire il file di destinazione &apos;%1&apos; in scrittura.</translation>
     </message>
     <message>
         <source>Writing to %1 failed: %2</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
+        <translation>Scrittura in %1 fallita: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::MkdirOperation</name>
     <message>
         <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 1 erwartet.</translation>
+        <translation>Argomenti invalidi: argomenti forniti %1, richiesti 1.</translation>
     </message>
     <message>
         <source>Could not create folder %1: Unknown error.</source>
-        <translation>Konnte Ordner %1 nicht anlegen. Unbekannter Fehler.</translation>
+        <translation>Impossibile creare la cartella %1: Errore sconosciuto.</translation>
     </message>
     <message>
         <source>Cannot remove directory %1: %2</source>
-        <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
+        <translation>Impossibile rimuovere la cartella %1: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::MoveOperation</name>
     <message>
         <source>Could not backup file %1.</source>
-        <translation>Konnte Datei %1 nicht sichern.</translation>
+        <translation>Impossibile eseguire il backup del file %1.</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 2 erwartet.</translation>
+        <translation>Argomenti invalidi: argomenti forniti %1, richiesti 2.</translation>
     </message>
     <message>
         <source>Could not remove destination file %1: %2</source>
-        <translation>Konnte Zieldatei %1 nicht entfernen. Fehlermeldung: %2</translation>
+        <translation>Impossibile rimuovere il file di destinazione %1: %2</translation>
     </message>
     <message>
         <source>Could not copy %1 to %2: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
-    </message>
-    <message>
-        <source>Cannot remove file %1.</source>
-        <translation>Konnte Datei %1 nicht löschen.</translation>
+        <translation>Impossibile copiare %1 in %2: %3</translation>
     </message>
     <message>
         <source>Cannot copy %1 to %2: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
+        <translation>Impossibile copiare %1 in %2: %3</translation>
+    </message>
+    <message>
+        <source>Cannot remove file %1.</source>
+        <translation>Impossibile rimuovere il file %1.</translation>
     </message>
     <message>
         <source>Cannot restore backup file for %1: %2</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
+        <translation>Impossibile ripristinare il file di backup %1: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::PackagesInfo</name>
     <message>
         <source>%1 contains invalid content: %2</source>
-        <translation>Inhalt von Datei %1 ungültig: %2</translation>
+        <translation>%1 contiene dati invalidi: %2</translation>
     </message>
     <message>
         <source>The file %1 does not exist.</source>
-        <translation>Datei %1 existiert nicht.</translation>
+        <translation>Il file %1 non esiste.</translation>
     </message>
     <message>
         <source>Could not open %1.</source>
-        <translation>Konnte Datei %1 nicht öffnen.</translation>
-    </message>
-    <message>
-        <source>Root element %1 unexpected, should be &apos;Packages&apos;.</source>
-        <translation>Unerwartetes Wurzelelement %1, erwartet wird &apos;Packages&apos;.</translation>
+        <translation>Impossibile aprire %1.</translation>
     </message>
     <message>
         <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Ungültiges XML in Datei %1, Zeile %2, Spalte %3. Fehlermeldung: %4</translation>
+        <translation>Errore durante il parse in %1 a %2, %3: %4</translation>
+    </message>
+    <message>
+        <source>Root element %1 unexpected, should be &apos;Packages&apos;.</source>
+        <translation>Elemento di root %1 inaspettato, dovrebbe essere &apos;Packages&apos;.</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::PrependFileOperation</name>
     <message>
         <source>Cannot backup file %1: %2</source>
-        <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
+        <translation>Impossibile eseguire il backup di %1: %2</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 2 erwartet.</translation>
+        <translation>Argomenti invalidi: argomenti forniti %1, richiesti 2.</translation>
     </message>
     <message>
         <source>Could not open file %1 for reading: %2</source>
-        <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire %1 in lettura: %2</translation>
     </message>
     <message>
         <source>Could not open file %1 for writing: %2</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire il file %1 in scrittura: %2</translation>
     </message>
     <message>
         <source>Cannot find backup file for %1.</source>
-        <translation>Konnte Sicherungsdatei für %1 nicht finden.</translation>
+        <translation>Impossibile trovare il file di backup per %1.</translation>
     </message>
     <message>
         <source>Cannot restore backup file for %1.</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen.</translation>
+        <translation>Impossibile ripristinare il file di backup per %1.</translation>
     </message>
     <message>
         <source>Cannot restore backup file for %1: %2</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
+        <translation>Impossibile ripristinare il file di backup per %1: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::ResourceFileDownloader</name>
     <message>
         <source>Could not read resource file &quot;%1&quot;. Reason:</source>
-        <translation>Konnte Ressourcendatei %1 nicht zum Lesen öffnen. Grund:</translation>
+        <translation>Impossibile leggere il file di risorse &quot;%1&quot;. Motivo:</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::RmdirOperation</name>
     <message>
         <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 1 erwartet.</translation>
+        <translation>Argomenti invalidi: argomenti forniti %1, richiesti 1.</translation>
     </message>
     <message>
         <source>Could not remove folder %1: The folder does not exist.</source>
-        <translation>Konnte Ordner %1 nicht entfernen. Der Ordner existiert nicht.</translation>
+        <translation>Impossibile rimuovere la cartella %1: La cartella non esiste.</translation>
     </message>
     <message>
         <source>Could not remove folder %1: %2</source>
-        <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
+        <translation>Impossibile rimuovere la cartella %1: %2</translation>
     </message>
     <message>
         <source>Cannot recreate directory %1: %2</source>
-        <translation>Konnte Ordner %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
+        <translation>Impossibile ricreare la cartella %1: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::Task</name>
     <message>
         <source>%1 started</source>
-        <translation>%1 gestartet</translation>
+        <translation>%1 iniziato</translation>
     </message>
     <message>
         <source>%1 cannot be stopped</source>
-        <translation>%1 kann nicht angehalten werden</translation>
+        <translation>%1 non può essere fermato</translation>
     </message>
     <message>
         <source>Cannot stop task %1</source>
-        <translation>%1 kann nicht angehalten werden</translation>
+        <translation>Impossibile fermare il task %1</translation>
     </message>
     <message>
         <source>%1 cannot be paused</source>
-        <translation>%1 kann nicht pausiert werden</translation>
+        <translation>%1 non può essere sospeso</translation>
     </message>
     <message>
         <source>Cannot pause task %1</source>
-        <translation>%1 kann nicht pausiert werden</translation>
+        <translation>Impossibile mettere in pausa il task %1</translation>
     </message>
     <message>
         <source>Cannot resume task %1</source>
-        <translation>%1 kann nicht wiederaufgenommen werden</translation>
+        <translation>Impossibile ripristinare il task %1</translation>
     </message>
     <message>
         <source>%1 done</source>
-        <translation>%1 abgeschlossen</translation>
+        <translation>%1 fatto</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::UpdateFinder</name>
     <message>
         <source>Could not access the package information of this application.</source>
-        <translation>Konnte nicht auf die Paketinformationen dieser Anwendung zugreifen.</translation>
+        <translation>Impossibile accedere alle informazioni del pacchetto si questa applicazione.</translation>
     </message>
     <message>
         <source>Could not access the update sources information of this application.</source>
-        <translation>Konnte nicht auf die Aktualisierungsinformationen dieser Anwendung zugreifen.</translation>
+        <translation>Impossibile accedere alle informazioni degli aggiornamenti di questa applicazione.</translation>
+    </message>
+    <message>
+        <source>Downloading Updates.xml from update sources.</source>
+        <translation>Downloading Updates.xml in corso.</translation>
     </message>
     <message numerus="yes">
         <source>%n update(s) found.</source>
         <translation>
-            <numerusform>%n Aktualisierung gefunden.</numerusform>
-            <numerusform>%n Aktualisierungen gefunden.</numerusform>
+            <numerusform>%n aggiornamento(i) trovati.</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
-        <source>Downloading Updates.xml from update sources.</source>
-        <translation>Lade Updates.xml von der Aktualisierungsquelle herunter.</translation>
-    </message>
-    <message>
         <source>Could not download update source %1 from (&apos;%2&apos;)</source>
-        <translation>Konnte Aktualisierungen nicht von %1 (&apos;%2&apos;) herunterladen.</translation>
+        <translation>Impossibile scaricare l&apos;aggiornamento %1 da (&apos;%2&apos;)</translation>
     </message>
     <message>
         <source>Updates.xml file(s) downloaded from update sources.</source>
-        <translation>Datei Updates.xml von der Aktualisierungsquelle heruntergeladen.</translation>
+        <translation>File Updates.xml scaricato dagli aggiornamenti.</translation>
     </message>
     <message>
         <source>Computing applicable updates.</source>
-        <translation>Berechne anwendbare Aktualisierungen.</translation>
+        <translation>Calcolo aggiornamenti applicabili.</translation>
     </message>
     <message>
         <source>Application updates computed.</source>
-        <translation>Anwendbare Aktualisierungen berechnet.</translation>
+        <translation>Aggiornamenti dell&apos;applicazione calcolati.</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::UpdateSourcesInfo</name>
     <message>
         <source>%1 contains invalid content: %2</source>
-        <translation>Datei %1 enthält ungültige Inhalte: %2</translation>
+        <translation>%1 contiene dati invalidi: %2</translation>
     </message>
     <message>
         <source>Could not read &quot;%1&quot;</source>
-        <translation>Konnte Datei &quot;%1&quot; nicht lesen.</translation>
+        <translation>Impossibile leggere &quot;%1&quot;</translation>
     </message>
     <message>
         <source>XML Parse error in %1 at %2, %3: %4</source>
-        <translation>Ungültiges XML in Datei %1, Zeile %2, Spalte %3. Fehlermeldung: %4</translation>
+        <translation>Errore durante il parse del file %1 in %2, %3: %4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;UpdateSources&quot;</source>
-        <translation>Unerwartetes Wurzelelement %1, erwartet wird &quot;UpdateSources&quot;.</translation>
+        <translation>Elemento di Root %1 inaspettato, dovrebbe essere &quot;UpdateSources&quot;</translation>
     </message>
     <message>
         <source>Could not save changes to &quot;%1&quot;: %2</source>
-        <translation>Konnte Änderungen nicht in Datei %1 speichern. Fehlermeldung: %2</translation>
+        <translation>Impossibile salvare i cambiamenti in &quot;%1&quot;: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::UpdatesInfoData</name>
     <message>
         <source>Could not read &quot;%1&quot;</source>
-        <translation>Konnte Datei &quot;%1&quot; nicht lesen.</translation>
+        <translation>Impossibile leggere &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Ungültiges XML in Datei %1, Zeile %2, Spalte %3. Fehlermeldung: %4</translation>
+        <translation>Errore durante il parse in %1 a %2, %3: %4</translation>
     </message>
     <message>
         <source>Updates.xml contains invalid content: %1</source>
-        <translation>Inhalt von Updates.xml ungültig: %1</translation>
+        <translation>Updates.xml contiene dati invalidi: %1</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
-        <translation>Unerwartetes Wurzelelement %1, erwartet wird &quot;Updates&quot;.</translation>
+        <translation>Elemento di root %1 inaspettato, dovrebbe essere &quot;Updates&quot;.</translation>
     </message>
     <message>
         <source>ApplicationName element is missing.</source>
-        <translation>Element ApplicationName fehlt.</translation>
+        <translation>L&apos;elemento ApplicationName è mancante.</translation>
     </message>
     <message>
         <source>ApplicationVersion element is missing.</source>
-        <translation>Element ApplicationVersion fehlt.</translation>
+        <translation>L&apos;elemento ApplicationVersion è mancante.</translation>
     </message>
     <message>
         <source>PackageUpdate element without Name</source>
-        <translation>Element &quot;PackageUpdate&quot; braucht ein Feld &quot;Name&quot;.</translation>
+        <translation>L&apos;elemento PackageUpdate è senza nome</translation>
     </message>
     <message>
         <source>PackageUpdate element without Version</source>
-        <translation>Element &quot;PackageUpdate&quot; braucht ein Feld &quot;Version&quot;.</translation>
+        <translation>L&apos;elemento PackageUpdate è senza versione</translation>
     </message>
     <message>
         <source>PackageUpdate element without ReleaseDate</source>
-        <translation>Element &quot;PackageUpdate&quot; braucht ein Feld &quot;ReleaseDate&quot;.</translation>
+        <translation>L&apos;elemento PackageUpdate è senza data di relascio</translation>
     </message>
 </context>
 <context>
     <name>Lib7z</name>
     <message>
         <source>Could not retrieve number of items in archive</source>
-        <translation>Konnte Anzahl Dateien im Archiv nicht feststellen.</translation>
+        <translation>Impossibile recuperare il numero di oggetti in archivio</translation>
     </message>
     <message>
         <source>Could not retrieve path of archive item %1</source>
-        <translation>Konnte Pfad des Archivs %1 nicht feststellen.</translation>
+        <translation>Impossibile recuperare il path dell&apos;oggetto in archivio %1</translation>
     </message>
     <message>
         <source>Unknown exception caught (%1)</source>
-        <translation>Unbekannte Ausnahmebedingung (%1).</translation>
+        <translation>Trovata un eccezzione sconosciuta (%1)</translation>
     </message>
     <message>
         <source>internal code: %1</source>
-        <translation>Interner Fehlercode: %1</translation>
+        <translation>codice interno: %1</translation>
     </message>
     <message>
         <source>not enough memory</source>
-        <translation>nicht genug Speicher</translation>
+        <translation>memoria insufficiente</translation>
     </message>
     <message>
         <source>Error: %1</source>
-        <translation>Fehler: %1</translation>
+        <translation>Errore: %1</translation>
     </message>
     <message>
         <source>Could not load codecs</source>
-        <translation>Konnte Codecs nicht laden.</translation>
+        <translation>Impossibile caricare i codec</translation>
     </message>
     <message>
         <source>Could not retrieve default format</source>
-        <translation>Konnte Standardformat nicht finden.</translation>
+        <translation>Impossibile recuperare il formato di default</translation>
     </message>
     <message>
         <source>Could not create archive %1. %2</source>
-        <translation>Konnte kein Archiv %1 anlegen. Fehlermeldung: %2</translation>
+        <translation>Impossibile creare l&apos;archivio %1. %2</translation>
     </message>
     <message>
         <source>CArc index %1 out of bounds [0, %2]</source>
-        <translation>CArc Index %1 ausserhalb der Grenzen [0, %2].</translation>
+        <translation>L&apos;indice CArc %1 è fuori dai limiti [0, %2]</translation>
     </message>
     <message>
         <source>Item index %1 out of bounds [0, %2]</source>
-        <translation>Itemindex %1 ausserhalb der Grenzen [0, %2].</translation>
+        <translation>L&apos;indice dell&apos;oggetto %1 è fuori dai limiti [0, %2]</translation>
     </message>
     <message>
         <source>Could not create output file for writing: %1</source>
-        <translation>Konnte Ausgabedatei nicht zum Schreiben öffnen. Fehlermeldung: %1</translation>
+        <translation>Impossibile creare il file di output aperto in scrittura: %1</translation>
     </message>
 </context>
 <context>
     <name>Lib7z::ExtractItemJob</name>
     <message>
         <source>Could not list archive: QIODevice not set or already destroyed.</source>
-        <translation>Kann Archiv nicht anzeigen: QIODevice ist nicht gesetzt oder bereits zerstört.</translation>
+        <translation>Impossibile accedere al contenuto dell&apos;archivio: QIODevice non configurato o già distrutto.</translation>
     </message>
     <message>
         <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>Fehler beim Auspacken von &apos;%1&apos;. Fehlermeldung: %2</translation>
+        <translation>Errore durante l&apos;estrazione &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught (%1)</source>
-        <translation>Unbekannte Ausnahmebedingung (%1).</translation>
+        <translation>Trovata un eccezzione sconosciuta (%1)</translation>
     </message>
     <message>
         <source>Failed</source>
-        <translation>Fehlgeschlagen</translation>
+        <translation>Fallito</translation>
     </message>
 </context>
 <context>
     <name>Lib7z::ListArchiveJob</name>
     <message>
         <source>Could not list archive: QIODevice already destroyed.</source>
-        <translation>Kann Archiv nicht anzeigen: QIODevice ist bereits zerstört.</translation>
+        <translation>Impossibile accedere all&apos;archivio: QIODevice già distrutto.</translation>
     </message>
     <message>
         <source>Unknown exception caught (%1)</source>
-        <translation>Unbekannte Ausnahmebedingung (%1).</translation>
+        <translation>Trovata un eccezzione sconosciuta (%1)</translation>
     </message>
     <message>
         <source>Failed</source>
-        <translation>Fehlgeschlagen</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>OpenArchiveInfo</name>
     <message>
         <source>Could not load codecs</source>
-        <translation>Konnte Codecs nicht laden.</translation>
+        <translation>Impossibile caricare i codec</translation>
     </message>
     <message>
         <source>Could not retrieve default format</source>
-        <translation>Konnte Standardformat nicht finden.</translation>
+        <translation>Impossibile recuperare il formato di default</translation>
     </message>
     <message>
         <source>Could not open archive</source>
-        <translation>Konnte Archiv nicht öffnen.</translation>
+        <translation>Impossibile aprire l&apos;archivio</translation>
     </message>
     <message>
         <source>No CArc found</source>
-        <translation>Keine CArc gefunden.</translation>
+        <translation>Nessun CArc trovato</translation>
     </message>
 </context>
 <context>
     <name>QIODeviceSequentialOutStream</name>
     <message>
         <source>No device set for output stream</source>
-        <translation>Kein Gerät für den Ausgabestrom gesetzt</translation>
+        <translation>Nessun dispositivo settato per lo stream di output</translation>
     </message>
 </context>
 <context>
     <name>QInstaller</name>
     <message>
-        <source>bytes</source>
-        <translation>Bytes</translation>
-    </message>
-    <message>
-        <source>KiB</source>
-        <translation>KiB</translation>
-    </message>
-    <message>
-        <source>MiB</source>
-        <translation>MiB</translation>
-    </message>
-    <message>
-        <source>GiB</source>
-        <translation>GiB</translation>
-    </message>
-    <message>
-        <source>TiB</source>
-        <translation>TiB</translation>
-    </message>
-    <message>
-        <source>PiB</source>
-        <translation>PiB</translation>
-    </message>
-    <message>
-        <source>EiB</source>
-        <translation>EiB</translation>
-    </message>
-    <message>
-        <source>ZiB</source>
-        <translation>ZiB</translation>
-    </message>
-    <message>
-        <source>YiB</source>
-        <translation>YiB</translation>
-    </message>
-    <message>
-        <source>Could not remove file %1: %2</source>
-        <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Could not remove folder %1: %2</source>
-        <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Could not create folder %1</source>
-        <translation>Konnte Ordner %1 nicht anlegen.</translation>
-    </message>
-    <message>
-        <source>Could not copy file from %1 to %2: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
-    </message>
-    <message>
-        <source>Could not move file from %1 to %2: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 verschieben. Fehlermeldung: %3</translation>
-    </message>
-    <message>
-        <source>Could not create folder %1: %2</source>
-        <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Could not open temporary file: %1</source>
-        <translation>Konnte temporäre Datei nicht öffnen. Fehlermeldung: %1</translation>
-    </message>
-    <message>
-        <source>Could not open temporary file for template %1: %2</source>
-        <translation>Konnte keine temporäre Datei für die Vorlage %1 öffnen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
         <source>No marker found, stopped after %1.</source>
-        <translation>Keine Markierung gefunden, abgebrochen nach %1.</translation>
+        <translation>Nessun marker trovato, stoppato dopo %1.</translation>
     </message>
     <message>
         <source>Cannot open file %1 for reading: %2</source>
-        <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire il file %1 in lettura: %2</translation>
     </message>
     <message>
         <source>Cannot open file %1 for writing: %2</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire il file %1 in scrittura: %2</translation>
     </message>
     <message>
         <source>Read failed after %1 bytes: %2</source>
-        <translation>Das Lesen ist nach %1 Bytes fehlgeschlagen. Fehlermeldung: %2</translation>
+        <translation>Lettura fallita dopo %1 bytes: %2</translation>
     </message>
     <message>
         <source>Copy failed. Error: %1</source>
-        <translation>Kopieren schlug fehl. Fehlermeldung: %1</translation>
+        <translation>Copia fallita. Errore: %1</translation>
     </message>
     <message>
         <source>Write failed after %1 bytes: %2</source>
-        <translation>Das Schreiben ist nach %1 Bytes fehlgeschlagen. Fehlermeldung: %2</translation>
+        <translation>Scrittura fallita dopo %1 bytes: %2</translation>
+    </message>
+    <message>
+        <source>bytes</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>KiB</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>MiB</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>GiB</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>TiB</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>PiB</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>EiB</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>ZiB</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>YiB</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Could not remove file %1: %2</source>
+        <translation>Impossibile rimuovere il file %1: %2</translation>
+    </message>
+    <message>
+        <source>Could not remove folder %1: %2</source>
+        <translation>Impossibile rimuovere la cartella %1: %2</translation>
+    </message>
+    <message>
+        <source>Could not create folder %1</source>
+        <translation>Impossibile creare la cartella %1</translation>
+    </message>
+    <message>
+        <source>Could not copy file from %1 to %2: %3</source>
+        <translation>Impossibile copiare il file da %1 a %2: %3</translation>
+    </message>
+    <message>
+        <source>Could not move file from %1 to %2: %3</source>
+        <translation>Impossibile muovere il file da %1 a %2: %3</translation>
+    </message>
+    <message>
+        <source>Could not create folder %1: %2</source>
+        <translation>Impossibile creare la cartella %1: %2</translation>
+    </message>
+    <message>
+        <source>Could not open temporary file: %1</source>
+        <translation>Impossibile aprire il file temporaneo: %1</translation>
+    </message>
+    <message>
+        <source>Could not open temporary file for template %1: %2</source>
+        <translation>Impossibile aprire il file temporaneo per template %1: %2</translation>
     </message>
     <message>
         <source>Could not create temporary file</source>
-        <translation>Konnte temporäre Datei nicht anlegen.</translation>
+        <translation>Impossibile creare il file temporaneo</translation>
     </message>
     <message>
         <source>Could not retrieve property %1 for item %2</source>
-        <translation>Konnte Eigenschaft %1 von %2 nicht erhalten.</translation>
+        <translation>Impossibile recuperare la proprietà %1 per l&apos;oggetto %2</translation>
     </message>
     <message>
         <source>Property %1 for item %2 not of type VT_FILETIME but %3</source>
-        <translation>Eigenschaft %1 von %2 ist nicht vom Typ VT_FILETIME, sondern vom Typ %3.</translation>
+        <translation>La propietà %1 per l&apos;oggetto %2 non è di tipo VT_FILETIME ma %3</translation>
     </message>
     <message>
         <source>Could not convert file time to local time</source>
-        <translation>Konnte die Dateizeit nicht in die lokale Zeit umwandeln.</translation>
+        <translation>Impossibile convertire l&apos;orario del file in ora locale</translation>
     </message>
     <message>
         <source>Could not convert local file time to system time</source>
-        <translation>Konnte die lokale Dateizeit nicht in die Systemzeit umwandeln.</translation>
+        <translation>Impossible convertire l&apos;ora del file in orario di sistema</translation>
     </message>
     <message>
         <source>Corrupt installation</source>
-        <translation>Installation beschädigt</translation>
+        <translation>Installazione corrotta</translation>
     </message>
     <message>
         <source>Your installation seems to be corrupted. Please consider re-installing from scratch.</source>
-        <translation>Ihre Installation scheint beschädigt zu sein. Komplette Neuinstallation empfohlen.</translation>
+        <translation>L&apos;installazione potrebbe esserre corrotta. Ti consigliamo di re-installare da zero.</translation>
     </message>
     <message>
         <source>The specified module could not be found.</source>
-        <translation>Das angegebene Modul konnte nicht gefunden werden.</translation>
+        <translation>Il modulo specificato non è stato trovato.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::Component</name>
     <message>
         <source>Components cannot have children in updater mode.</source>
-        <translation>Komponenten können im Updater Modus keine Kinder haben.</translation>
+        <translation>Componenti non possono avere figli nella modalità di aggiornamento.</translation>
     </message>
     <message>
         <source>Could not open the requested translation file &apos;%1&apos;.</source>
-        <translation>Konnte angeforderte Übersetzungsdatei %1 nicht öffnen.</translation>
+        <translation>Impossibile aprire il file di traduzioni richiesto &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
-        <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire il file UI &apos;%1&apos;. Errore: %2</translation>
     </message>
     <message>
         <source>Could not load the requested UI file &apos;%1&apos;. Error: %2</source>
-        <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht laden. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Could not open the requested license file &apos;%1&apos;. Error: %2</source>
-        <translation>Konnte angeforderte Lizenzdatei &apos;%1&apos; nicht öffnen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>Fehler</translation>
-    </message>
-    <message>
-        <source>Error: Operation %1 does not exist</source>
-        <translation>Fehler: Anweisung %1 existiert nicht.</translation>
+        <translation>Impossibile caricare il file UI &apos;%1&apos;. Errore: %2</translation>
     </message>
     <message>
         <source>Cannot resolve isDefault in %1</source>
-        <translation>Kann isDefault in %1 nicht auflösen.</translation>
+        <translation>Impossibile risolvere isDefault in %1</translation>
+    </message>
+    <message>
+        <source>Could not open the requested license file &apos;%1&apos;. Error: %2</source>
+        <translation>Impossibile aprire il file di licenza richiesto &apos;%1&apos;. Errore: %2</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Errore</translation>
+    </message>
+    <message>
+        <source>Error: Operation %1 does not exist</source>
+        <translation>Errore: L&apos;operazione %1 non esiste</translation>
     </message>
     <message>
         <source>Update Info: </source>
-        <translation>Aktualisierungsinformation: </translation>
+        <translation>Informazioni di aggiornamento: </translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ComponentModel</name>
     <message>
         <source>Component Name</source>
-        <translation>Komponentenname</translation>
+        <translation>Nome Componente</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation>Aktion</translation>
+        <translation>Azione</translation>
     </message>
     <message>
         <source>Installed Version</source>
-        <translation>Installierte Version</translation>
+        <translation>Versione Installata</translation>
     </message>
     <message>
         <source>New Version</source>
-        <translation>Neue Version</translation>
+        <translation>Nuova Versione</translation>
     </message>
     <message>
         <source>Release Date</source>
-        <translation>Veröffentlichungsdatum</translation>
+        <translation>Data Di Rilascio</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Grösse</translation>
+        <translation>Dimensione</translation>
     </message>
     <message>
         <source>Component is marked for installation.</source>
-        <translation>Komponente wird installiert.</translation>
+        <translation>Il componente è segnato per l&apos;installazione.</translation>
     </message>
     <message>
         <source>Component is marked for uninstallation.</source>
-        <translation>Komponente wird deinstalliert.</translation>
+        <translation>Il componente è segnato per la disinstallazione.</translation>
     </message>
     <message>
         <source>Component is installed.</source>
-        <translation>Komponente ist installiert.</translation>
+        <translation>Il componente è installato.</translation>
     </message>
     <message>
         <source>Component is not installed.</source>
-        <translation>Komponente ist nicht installiert.</translation>
+        <translation>Il componente non è installato.</translation>
     </message>
 </context>
 <context>
@@ -932,320 +932,320 @@
     <message>
         <source>Alt+A</source>
         <comment>select default components</comment>
-        <translation>Alt+A</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Def&amp;ault</source>
-        <translation>St&amp;andard</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Alt+R</source>
         <comment>reset to already installed components</comment>
-        <translation>Alt+Z</translation>
+        <translation></translation>
     </message>
     <message>
         <source>&amp;Reset</source>
-        <translation>&amp;Zurücksetzen</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Alt+S</source>
         <comment>select all components</comment>
-        <translation>Alt+S</translation>
+        <translation></translation>
     </message>
     <message>
         <source>&amp;Select All</source>
-        <translation>Alle au&amp;swählen</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Alt+D</source>
         <comment>deselect all components</comment>
-        <translation>Alt+B</translation>
+        <translation></translation>
     </message>
     <message>
         <source>&amp;Deselect All</source>
-        <translation>Alle a&amp;bwählen</translation>
+        <translation></translation>
     </message>
     <message>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>Diese Komponente wird ungefähr %1 auf Ihrer Festplatte belegen.</translation>
+        <translation>Questo componete occuperà circa %1 sul tuo hard disk.</translation>
     </message>
     <message>
         <source>Select Components</source>
-        <translation>Komponenten auswählen</translation>
+        <translation>Componenti selezionati</translation>
     </message>
     <message>
         <source>Please select the components you want to update.</source>
-        <translation>Bitte wählen Sie die Komponenten aus, die Sie aktualisieren möchten.</translation>
+        <translation>Selezionare i componenti che vuoi aggiornare.</translation>
     </message>
     <message>
         <source>Please select the components you want to install.</source>
-        <translation>Bitte wählen Sie die Komponenten aus, die Sie installieren möchten.</translation>
+        <translation>Selezionare i componenti che vuoi installare.</translation>
     </message>
     <message>
         <source>Please select the components you want to uninstall.</source>
-        <translation>Bitte wählen Sie die Komponenten aus, die Sie entfernen möchten.</translation>
+        <translation>Selezionare i componenti che vuoi disinstallare.</translation>
     </message>
     <message>
         <source>Select the components to install. Deselect installed components to uninstall them.</source>
-        <translation>Bitte wählen Sie die Komponenten aus, die Sie installieren möchten. Wählen Sie die Komponenten ab, die Sie entfernen möchten.</translation>
+        <translation>Selezionare i componenti da installare. Deselezionare i componenti installati per disinstallarli.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>at least 2</source>
-        <translation>mindestens 2</translation>
+        <translation>almeno 2</translation>
     </message>
     <message>
         <source>Needed installer object in %1 operation is empty.</source>
-        <translation>Das für die Anweisung %1 benötigte Installerobjekt ist leer.</translation>
+        <translation>Oggetto installer necessario in %1 l&apos;operazione è vuota.</translation>
     </message>
     <message>
         <source>Can not save the output of %1 to an empty installer key value.</source>
-        <translation>Konnte die Ausgabe von %1 nicht in einen leeren Schlüsselwert des Installers speichern.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>File &apos;%1&apos; does not exist or is not an executable binary.</source>
-        <translation>Datei &apos;%1&apos; existiert nicht oder ist keine ausführbare Binärdatei.</translation>
+        <translation>Il file &apos;%1&apos; non esiste o non è un eseguibile.</translation>
     </message>
     <message>
         <source>Running &apos;%1&apos; resulted in a crash.</source>
-        <translation>Ausführen von &apos;%1&apos; führte zu einem Absturz.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CopyDirectoryOperation</name>
     <message>
         <source>2 or 3</source>
-        <translation>2 oder 3</translation>
+        <translation>2 o 3</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source> (&lt;source&gt; &lt;target&gt; [forceOverwrite])</source>
-        <translation> (&lt;Quelle&gt; &lt;Ziel&gt; [forceOverwrite])</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Invalid argument in %0: Third argument needs to be forceOverwrite, if specified</source>
-        <translation>Ungültiges Argument in %0: Drittes Argument muss forceOverwrite sein, wenn es angegeben wird</translation>
+        <translation>Parametro invalido in %0; Terzo parametro deve essere forceOverwrite, se specificato</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: Directories are invalid: %1 %2</source>
-        <translation>Ungültige Argumentein %0: Ordner %1 und %2 ungültig.</translation>
+        <translation>Argomenti invalidi in %0: Le cartelle sono invalide: %1 %2</translation>
     </message>
     <message>
         <source>Could not create %0</source>
-        <translation>Konnte Ordner &quot;%1&quot; nicht anlegen.</translation>
+        <translation>Impossibile creare %0</translation>
     </message>
     <message>
         <source>Failed to overwrite %1</source>
-        <translation>Konnte Datei %1 nicht überschreiben</translation>
+        <translation>Impossibile sovrascrivere %1</translation>
     </message>
     <message>
         <source>Could not copy %0 to %1, error was: %3</source>
-        <translation>Konnte %0 nicht nach %1 kopieren. Fehlermeldung: %3</translation>
+        <translation>Impossibile copiare il file da %0 a %1, errore: %3</translation>
     </message>
     <message>
         <source>Could not remove %0</source>
-        <translation>Konnte Datei %0 nicht löschen.</translation>
+        <translation>Impossibile rimuovere %0</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CopyFileTask</name>
     <message>
         <source>Invalid task item count.</source>
-        <translation>Ungültige Anzahl task items.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not open source &apos;%1&apos; for read. Error: %2.</source>
-        <translation>Konnte Quelle &apos;%1&apos; nicht zum Lesen öffnen. Fehlermeldung: %2.</translation>
+        <translation>Impossibile aprire il file sorgente &apos;%1&apos; in lettura. Errore: %2.</translation>
     </message>
     <message>
         <source>Could not open target &apos;%1&apos; for write. Error: %2.</source>
-        <translation>Konnte Ziel &apos;%1&apos; nicht zum Schreiben öffnen. Fehlermeldung: %2.</translation>
+        <translation>Impossibile aprire il file di destinazione &apos;%1&apos; in scrittura. Errore: %2.</translation>
     </message>
     <message>
         <source>Writing to target &apos;%1&apos; failed. Error: %2.</source>
-        <translation>Konnte Datei &apos;%1&apos; nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
+        <translation>Scrittura nel target &apos;%1&apos; fallita. Errore: %2.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateDesktopEntryOperation</name>
     <message>
         <source>Could not backup file %1: %2</source>
-        <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
+        <translation>Impossibile eseguire il backup del file %1: %2</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>genau 2</translation>
+        <translation>esattamente 2</translation>
     </message>
     <message>
         <source>Failed to overwrite %1</source>
-        <translation>Konnte Datei %1 nicht überschreiben.</translation>
+        <translation>Impossibile sovrascrivere %1</translation>
     </message>
     <message>
         <source>Could not write Desktop Entry at %1</source>
-        <translation>Konnte keinen Eintrag %1 auf dem Arbeitsplatz anlegen.</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateLinkOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>genau 2</translation>
+        <translation>esattamente 2</translation>
     </message>
     <message>
         <source>Could not create link from %1 to %2.</source>
-        <translation>Konnte keinen Link von %1 nach %2 erstellen.</translation>
+        <translation>Impossibile creare il link per %1 a %2.</translation>
     </message>
     <message>
         <source>Could not remove link from %1 to %2.</source>
-        <translation>Konnte Link von %1 nach %2 nicht entfernen.</translation>
+        <translation>Impossibile rimuovere il link per %1 a %2.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateLocalRepositoryOperation</name>
     <message>
         <source>Could not set file permissions %1!</source>
-        <translation>Konnte Dateirechte auf Datei %1 nicht setzen!</translation>
+        <translation>Impossibile settare i permessi del file %1!</translation>
     </message>
     <message>
         <source>Could not remove file %1: %2</source>
-        <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
+        <translation>Impossibile rimuovere il file %1: %2</translation>
     </message>
     <message>
         <source>Could not move file %1 to %2. Error: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 verschieben. Fehlermeldung: %3</translation>
+        <translation>Impossibile muovere il file da %1 a %2: Errore %3</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>genau 2</translation>
+        <translation>esattamente 2</translation>
     </message>
     <message>
         <source>Installer needs to be an offline version: %1.</source>
-        <translation>Installer muss eine offline Version sein: %1.</translation>
+        <translation>Installer deve essere una versione offline: %1.</translation>
     </message>
     <message>
         <source>Could not open file: %1</source>
-        <translation>Konnte Datei %1 nicht öffnen.</translation>
+        <translation>Impossibile aprire il file: %1</translation>
     </message>
     <message>
         <source>Could not read: %1. Error: %2</source>
-        <translation>Konnte Datei %1 nicht lesen. Fehlermeldung: %2</translation>
+        <translation>Impossibile leggere: %1. Errore: %2</translation>
     </message>
     <message>
         <source>Could not open file: %1. Error: %2</source>
-        <translation>Konnte Datei %1 nicht öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire il file: %1. Errore %2</translation>
     </message>
     <message>
         <source>Could not create target dir: %1.</source>
-        <translation>Konnte Zielordner %1. nicht anlegen.</translation>
+        <translation>Impossibile creare la cartella di destinazione: %1.</translation>
     </message>
     <message>
         <source>Unknown exception caught: %1.</source>
-        <translation>Unbekannte Ausnahmebedingung: %1</translation>
+        <translation>Trovata un eccezzione sconosciuta (%1).</translation>
     </message>
     <message>
         <source>Removing file: %0</source>
-        <translation>Entferne Datei %0</translation>
+        <translation>Rimozione file: %0</translation>
     </message>
     <message>
         <source>Could not remove %0.</source>
-        <translation>Konnte Datei %0. nicht löschen.</translation>
+        <translation>Impossibile rimuovere %0.</translation>
     </message>
     <message>
         <source>Cannot remove directory %1: %2</source>
-        <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
+        <translation>Impossibile rimuovere la cartella %1: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>2 or 3</source>
-        <translation>2 oder 3</translation>
+        <translation>2 o 3</translation>
     </message>
     <message>
         <source> (optional: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;)</source>
-        <translation> (optional: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;)</translation>
+        <translation> (opzionale: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;)</translation>
     </message>
     <message>
         <source>Could not create folder %1: %2.</source>
-        <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
+        <translation>Impossibile creare la cartella %1: %2.</translation>
     </message>
     <message>
         <source>Failed to overwrite %1: %2</source>
-        <translation>Konnte Datei %1 nicht überschreiben. Fehlermeldung: %2</translation>
+        <translation>Impossibile sovrascrivere %1: %2</translation>
     </message>
     <message>
         <source>Could not create link %1: %2</source>
-        <translation>Konnte Verweis %1 nicht anlegen. Fehlermeldung: %2</translation>
+        <translation>Impossibile creare il link %1: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::DownloadArchivesJob</name>
     <message>
         <source>Canceled</source>
-        <translation>Abgebrochen</translation>
+        <translation>Annullato</translation>
     </message>
     <message>
         <source>Downloading hash signature failed.</source>
-        <translation>Herunterladen der Prüfsumme fehlgeschlagen.</translation>
+        <translation>Scaricamento firma hash fallito.</translation>
     </message>
     <message>
         <source>Download Error</source>
-        <translation>Fehler beim Herunterladen</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
-        <translation>Prüfsumme ungültig beim Herunterladen. Dies ist ein kurzzeitiger Fehler, bitte erneut versuchen.</translation>
+        <translation>Verifica Hash durante il download fallita. Questo è un errore temporaneo, riprovare.</translation>
     </message>
     <message>
         <source>Could not verify Hash</source>
-        <translation>Prüfsumme konnte nicht geprüft werden.</translation>
+        <translation>Impossibile verificare l&apos;hash</translation>
     </message>
     <message>
         <source>Could not download archive: %1 : %2</source>
-        <translation>Konnte Archiv %1 nicht herunterladen. Fehlermeldung: %2</translation>
+        <translation>Impossibile scaricare l&apos;archivio %1. %2</translation>
     </message>
     <message>
         <source>Could not fetch archives: %1
 Error while loading %2</source>
-        <translation>Konnte Archiv nicht laden. Fehler: %1
-Fehler beim Laden von %2</translation>
+        <translation>Impossibile eseguire il fetch dell&apos;archivio: %1
+Errore durante lo scaricamento %2</translation>
     </message>
     <message>
         <source>Downloading archive &apos;%1&apos; for component: %2</source>
-        <translation>Archiv &apos;%1&apos; für Komponente %2 wird heruntergeladen.</translation>
+        <translation>Scaricamento archivio &apos;%1&apos; per componente: %2</translation>
     </message>
     <message>
         <source>Scheme not supported: %1 (%2)</source>
-        <translation>Schema &quot;%1&quot; nicht unterstützt in &quot;%2&quot;.</translation>
+        <translation>Schema non supportato: %1 (%2)</translation>
     </message>
     <message>
         <source>Could not find component for: %1.</source>
-        <translation>Konnte keine Komponente für Datei %1 finden.</translation>
+        <translation>Impossibile trovare il componente per : %1.</translation>
     </message>
 </context>
 <context>
@@ -1253,442 +1253,440 @@ Fehler beim Laden von %2</translation>
     <message>
         <source>Target &apos;%1&apos; not open for write. Error: %2.</source>
         <extracomment>%2 is a sentence describing the error.</extracomment>
-        <translation>Ziel &apos;%1&apos; nicht zum Schreiben geöffnet. Fehlermeldung: %2.</translation>
+        <translation>Target &apos;%1&apos; non aperto in scrittura. Errore: %2.</translation>
     </message>
     <message>
         <source>Writing to target &apos;%1&apos; failed. Error: %2.</source>
         <extracomment>%2 is a sentence describing the error.</extracomment>
-        <translation>Schreiben in Datei &apos;%1&apos; fehlgeschlagen. Fehlermeldung: %2.</translation>
+        <translation>Scrittura nel target &apos;%1&apos; fallita. Errore: %2.</translation>
     </message>
     <message>
         <source>Redirect loop detected &apos;%1&apos;.</source>
-        <translation>Schleife in Umleitung erkannt &apos;%1&apos;.</translation>
+        <translation>Rilevato loop di reindirizzamento &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>Checksum mismatch detected &apos;%1&apos;.</source>
-        <translation>Checksumme stimmt nicht überein &apos;%1&apos;.</translation>
+        <translation>Rilevato checksum non corrispondente &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>Network error while downloading &apos;%1&apos;: %2.</source>
         <extracomment>%2 is a sentence describing the error</extracomment>
-        <translation>Netzwerkfehler beim Herunterladen von &apos;%1&apos;: %2.</translation>
+        <translation>Errore di rete durante lo scaricamento di &apos;%1&apos;: %2.</translation>
     </message>
     <message>
         <source>Unknown network error while downloading: %1.</source>
         <extracomment>%1 is a sentence describing the error</extracomment>
-        <translation>Unbekannter Netzwerkfehler beim Herunterladen: &apos;%1&apos;.</translation>
+        <translation>Errore di rete sconosciuto durante lo scaricamento: %1.</translation>
     </message>
     <message>
         <source>Pause and resume not supported by network transfers.</source>
-        <translation>Pause und Fortsetzen werden bei Netzwerkübertragungen nicht unterstützt.</translation>
+        <translation>Sospensione e ripristino non sono supportati dal trasferimento di rete.</translation>
     </message>
     <message>
         <source>Invalid source &apos;%1&apos;. Error: %2.</source>
         <extracomment>%2 is a sentence describing the error</extracomment>
-        <translation>Ungültige Quelle &apos;%1&apos;. Fehler: %2.</translation>
+        <translation>Sorgente invalida &apos;%1&apos;. Errore: %2.</translation>
     </message>
     <message>
         <source>Target file &apos;%1&apos; already exists but is not a file.</source>
-        <translation>Zieldatei &apos;%1&apos; existiert bereits aber ist keine Datei.</translation>
+        <translation>Il file di destinazione &apos;%1&apos; è gia esistente ma non è un file.</translation>
     </message>
     <message>
         <source>Could not open target &apos;%1&apos; for write. Error: %2.</source>
         <extracomment>%2 is a sentence describing the error</extracomment>
-        <translation>Konnte Ziel &apos;%1&apos; nicht zum Schreiben öffnen. Fehler: %2.</translation>
+        <translation>Impossibile aprire il file di destinazione &apos;%1&apos; in scrittura. Errore: %2.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ElevatedExecuteOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>at least 1</source>
-        <translation>mindestens 1</translation>
+        <translation>almeno 1</translation>
     </message>
     <message>
         <source>Execution failed: Could not start detached: &quot;%1&quot;</source>
-        <translation>Ausführung fehlgeschlagen: Konnte %1 nicht detached starten.</translation>
+        <translation>Esecuzione fallita:Impossibile iniziare: &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Execution failed: Could not start: &quot;%1&quot;(%2)</source>
-        <translation>Ausführung fehlgeschlagen: Konnte &apos;%1&apos; nicht starten. Fehlermeldung: %2</translation>
+        <translation>Esecuzione fallita:Impossibile iniziare: &quot;%1&quot;(%2)</translation>
     </message>
     <message>
         <source>Execution failed(Crash): &quot;%1&quot;</source>
-        <translation>Ausführung fehlgeschlagen (Absturz): &quot;%1&quot;</translation>
+        <translation>Esecuzione fallita(Crash): &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Execution failed(Unexpected exit code: %1): &quot;%2&quot;</source>
-        <translation>Ausführung fehlgeschlagen (Unerwarteter Fehlercode %1): &quot;%2&quot;</translation>
+        <translation>Esecuzione fallita(Codice di uscita inaspettato: %1): &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::EnvironmentVariableOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>2 to 4</source>
-        <translation>2 bis 4</translation>
+        <translation>da 2 a 4</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ExtractArchiveOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>genau 2</translation>
+        <translation>esattamente 2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ExtractArchiveOperation::Runnable</name>
     <message>
         <source>Could not open %1 for reading: %2.</source>
-        <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire %1 in lettura: %2.</translation>
     </message>
     <message>
         <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>Fehler beim Auspacken von &apos;%1&apos;. Fehlermeldung: %2</translation>
+        <translation>Errore durante l&apos;estrazione &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting %1.</source>
-        <translation>Beim Auspacken von %1 trat eine unbekannte Ausnahmebedingung auf.</translation>
+        <translation>Eccezzione sconosciuta durante l&apos;estrazione %1.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::FakeStopProcessForUpdateOperation</name>
     <message>
         <source>Number of arguments does not match: one is required</source>
-        <translation>Unpassende Anzahl Argumente: Genau eins wird verlangt</translation>
+        <translation>Il numero di argomenti non corrisponde: solo uno è richiesto</translation>
     </message>
     <message>
         <source>Could not get package manager core.</source>
-        <translation>Konnte PackageManagerCore nicht erhalten.</translation>
+        <translation>Impossibile prendere il cuore del gestore pacchetti.</translation>
     </message>
     <message>
         <source>This process should be stopped before continuing: %1</source>
-        <translation>Dieser Prozess sollte beendet werden, um fortsetzen zu können: %1</translation>
+        <translation>Questo processo dovrebbe essere fermato prima di continuare: %1</translation>
     </message>
     <message>
         <source>These processes should be stopped before continuing: %1</source>
-        <translation>Diese Prozesse sollten beendet werden, um fortsetzen zu können: %1</translation>
+        <translation>Questi processi dovrebbe essere fermato prima di continuare: %1</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::FileTaskObserver</name>
     <message>
         <source>%1 of %2</source>
-        <translation>%1 von %2</translation>
+        <translation>%1 di %2</translation>
     </message>
     <message>
         <source>%1 received.</source>
-        <translation>%1 empfangen.</translation>
+        <translation>ricevuti %1.</translation>
     </message>
     <message>
         <source>(%1/sec)</source>
-        <translation>(%1/s)</translation>
+        <translation></translation>
     </message>
     <message numerus="yes">
         <source>%n day(s), </source>
         <translation>
-            <numerusform>%n Tag, </numerusform>
-            <numerusform>%n Tage, </numerusform>
+            <numerusform>%n giorni, </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n hour(s), </source>
         <translation>
-            <numerusform>%n Stunde, </numerusform>
-            <numerusform>%n Stunden, </numerusform>
+            <numerusform>%n ore, </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n minute(s)</source>
         <translation>
-            <numerusform>%n Minute</numerusform>
-            <numerusform>%n Minuten</numerusform>
+            <numerusform>%n muniti</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n second(s)</source>
         <translation>
-            <numerusform>%n Sekunde</numerusform>
-            <numerusform>%n Sekunden</numerusform>
+            <numerusform>%n secondi</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
         <source> - %1%2%3%4 remaining.</source>
-        <translation> - %1%2%3%4 verbleibend.</translation>
+        <translation>- rimanenti %1%2%3%4.</translation>
     </message>
     <message>
         <source> - unknown time remaining.</source>
-        <translation> - verbleibende Zeit unbekannt.</translation>
+        <translation> - tempo rimanente sconosciuto.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
         <source>Completing the %1 Wizard</source>
-        <translation>Beende den %1 Assistenten.</translation>
+        <translation>Completata la procedura guidata per %1</translation>
     </message>
     <message>
         <source>Click Done to exit the %1 Wizard.</source>
-        <translation>Klicken Sie &quot;Abschließen&quot;, um den %1 Assistenten zu beenden.</translation>
+        <translation>Clicca Fatto per uscire dalla procedura guidatadi %1.</translation>
     </message>
     <message>
         <source>Click Finish to exit the %1 Wizard.</source>
-        <translation>Klicken Sie &quot;Abschließen&quot;, um den %1 Assistenten zu beenden.</translation>
+        <translation>Clicca Finito per uscire dalla procedura guidatadi %1.</translation>
     </message>
     <message>
         <source>Restart</source>
-        <translation>Neu starten</translation>
+        <translation>Riavvio</translation>
     </message>
     <message>
         <source>Run %1 now.</source>
-        <translation>Starte jetzt %1.</translation>
+        <translation>Inizia %1 ora.</translation>
     </message>
     <message>
         <source>The %1 Wizard failed.</source>
-        <translation>Der %1 Assistent ist fehlgeschlagen.</translation>
+        <translation>La procedura guidata di %1 è fallita.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::GlobalSettingsOperation</name>
     <message>
         <source>Settings are not writable</source>
-        <translation>Einstellungen konnten nicht geschrieben werden.</translation>
+        <translation>Le impostazioni non sono scrivibili</translation>
     </message>
     <message>
         <source>Failed to write settings</source>
-        <translation>Einstellungen konnten nicht geschrieben werden.</translation>
+        <translation>Fallita la scrittura della configurazione</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>3, 4 or 5</source>
-        <translation>3, 4 oder 5</translation>
+        <translation>3,4 o 5</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::InstallIconsOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>1 or 2</source>
-        <translation>1 oder 2</translation>
+        <translation>1 o 2</translation>
     </message>
     <message>
         <source> (Sourcepath, [Vendorprefix])</source>
-        <translation> (Quellpfad, [Vendorprefix])</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Invalid Argument: source folder must not be empty.</source>
-        <translation>Ungültiges Argument: Quellordner darf nicht leer sein.</translation>
+        <translation>Argomenti invalidi: la cartella sorgente non deve essere vuota.</translation>
     </message>
     <message>
         <source>Could not backup file %1: %2</source>
-        <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
+        <translation>Impossibile eseguire il backup del file %1: %2</translation>
     </message>
     <message>
         <source>Failed to overwrite %1: %2</source>
-        <translation>Konnte Datei %1 nicht überschreiben. Fehlermeldung: %2</translation>
+        <translation>Impossibile sovrascrivere %1: %2</translation>
     </message>
     <message>
         <source>Failed to copy file %1: %2</source>
-        <translation>Konnte Datei nicht nach %1 kopieren. Fehlermeldung: %2</translation>
+        <translation>Impossibile copiare %1: %2</translation>
     </message>
     <message>
         <source>Could not create folder at %1: %2</source>
-        <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
+        <translation>Impossibile creare la cartella %1: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::IntroductionPage</name>
     <message>
         <source>Setup - %1</source>
-        <translation>Einrichten - %1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup Wizard.</source>
-        <translation>Willkommen zum %1 Einrichtungsassistenten.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Add or remove components</source>
-        <translation>Komponenten hinzufügen oder entfernen</translation>
+        <translation>Aggiungere o rimuovere componenti</translation>
     </message>
     <message>
         <source>Update components</source>
-        <translation>Komponenten aktualisieren</translation>
+        <translation>Aggiornamento componenti</translation>
     </message>
     <message>
         <source>Remove all components</source>
-        <translation>Alle Komponenten entfernen</translation>
+        <translation>Rimozione di tutti i componenti</translation>
     </message>
     <message>
         <source>Retrieving information from remote installation sources...</source>
-        <translation>Empfange Daten vom Installationsserver...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>At least one valid and enabled repository required for this action to succeed.</source>
-        <translation>Mindestens ein gültiges und aktiviertes Repository wird benötigt, um diese Aktion erfolgreich abzuschliessen.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No updates available.</source>
-        <translation>Keine Aktualisierungen verfügbar.</translation>
+        <translation>Nessun aggiornamento disponibile.</translation>
     </message>
     <message>
         <source> Only local package management available.</source>
-        <translation> Nur lokale Paketverwaltung verfügbar.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Quit</source>
-        <translation>Beenden</translation>
+        <translation>Uscita</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::LicenseAgreementPage</name>
     <message>
         <source>License Agreement</source>
-        <translation>Lizenzabkommen</translation>
+        <translation>Contratto di licenza</translation>
     </message>
     <message>
         <source>Alt+A</source>
         <comment>agree license</comment>
-        <translatorcomment>Lizenz akzeptieren</translatorcomment>
-        <translation>Alt+A</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
-        <translation>Bitte lesen Sie das folgende Lizenzabkommen. Sie müssen die Bedingungen in diesem Abkommen akzeptieren, um die Installation fortsetzen zu können.</translation>
+        <translation>Leggere il seguente contratto di licenza. E&apos; necessario accettare i termini contenuti in questo contratto prima di continuare con l&apos;installazione.</translation>
     </message>
     <message>
         <source>I accept the license.</source>
-        <translation>Ich akzeptiere die Lizenzvereinbarung.</translation>
+        <translation>Accetto la licenza.</translation>
     </message>
     <message>
         <source>I do not accept the license.</source>
-        <translation>Ich akzeptiere die Lizenzvereinbarung nicht.</translation>
+        <translation>Non accetto la licenza.</translation>
     </message>
     <message>
         <source>Please read the following license agreements. You must accept the terms contained in these agreements before continuing with the installation.</source>
-        <translation>Bitte lesen Sie die folgenden Lizenzabkommen. Sie müssen die Bedingungen in diesen Abkommen akzeptieren, um die Installation fortsetzen zu können.</translation>
-    </message>
-    <message>
-        <source>I do not accept the licenses.</source>
-        <translation>Ich akzeptiere die Lizenzvereinbarungen nicht.</translation>
+        <translation>Leggere il seguente contratto di licenza. E&apos; necessario accettare i termini contenuti in questo contratto prima di continuare con l&apos;installazione.</translation>
     </message>
     <message>
         <source>I accept the licenses.</source>
-        <translation>Ich akzeptiere die Lizenzvereinbarungen.</translation>
+        <translation>Accetto le licenze.</translation>
+    </message>
+    <message>
+        <source>I do not accept the licenses.</source>
+        <translation>Non accetto le licenze.</translation>
     </message>
     <message>
         <source>Alt+D</source>
         <comment>do not agree license</comment>
-        <translatorcomment>Der Lizenz nicht zustimmen</translatorcomment>
-        <translation>Alt+N</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>QInstaller::LicenseOperation</name>
     <message>
         <source>No license files found to copy.</source>
-        <translation>Keine Lizenzdateien zum Kopieren gefunden.</translation>
+        <translation>Nessun file di licenza trovato da copiare.</translation>
     </message>
     <message>
         <source>Needed installer object in %1 operation is empty.</source>
-        <translation>Das für die Anweisung %1 benötigte Installerobjekt ist leer.</translation>
+        <translation>Oggetto installer necessario in %1 l&apos;operazione è vuota.</translation>
     </message>
     <message>
         <source>Can not write license file: %1.</source>
-        <translation>Konnte Lizenzdatei %1 nicht schreiben.</translation>
+        <translation>Impossibile scrivere il file di licenza: %1.</translation>
     </message>
     <message>
         <source>No license files found to delete.</source>
-        <translation>Keine Lizenzdateien zum Löschen gefunden.</translation>
+        <translation>Nessun file di licenza trovato da eliminare.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::LineReplaceOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>exactly 3</source>
-        <translation>genau 3</translation>
+        <translation>esattamente 3</translation>
     </message>
     <message>
         <source>Failed to open &apos;%1&apos; for reading.</source>
-        <translation>Konnte Datei &apos;%1&apos; nicht zum Lesen öffnen.</translation>
+        <translation>Fallita l&apos;apertura del file %1 in lettura.</translation>
     </message>
     <message>
         <source>Failed to open &apos;%1&apos; for writing.</source>
-        <translation>Konnte Datei &apos;%1&apos; nicht zum Schreiben öffnen.</translation>
+        <translation>Fallita l&apos;apertura del file %1 in scrittura.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::MetadataJob</name>
     <message>
         <source>Missing package manager core engine.</source>
-        <translation>Fehlende Paketmanager Kernkomponente.</translation>
+        <translation>Manca il motore per la gestione dei pacchetti.</translation>
     </message>
     <message>
         <source>Preparing meta information download...</source>
-        <translation>Bereite Herunterladen der Metainformationen vor...</translation>
+        <translation>Preparazione scaricamento metadati...</translation>
     </message>
     <message>
         <source>Meta data download canceled.</source>
-        <translation>Herunterladen der Metainformationen abgebrochen.</translation>
+        <translation>Scaricamento dei meta dati  annullato.</translation>
     </message>
     <message>
         <source>Missing proxy credentials.</source>
-        <translation>Fehlende Proxy Zugangsdaten.</translation>
+        <translation>Le credenziali del proxy sono mancanti.</translation>
     </message>
     <message>
         <source>Authentication failed.</source>
-        <translation>Authentifizierung fehlgeschlagen.</translation>
+        <translation>Autentificazione fallita.</translation>
     </message>
     <message>
         <source>Unknown exception during download.</source>
-        <translation>Beim Herunterladen trat eine unbekannte Ausnahmebedingung auf.</translation>
+        <translation>Eccezzione sconosciuta durante download.</translation>
     </message>
     <message>
         <source>Retrieving meta information from remote repository...</source>
-        <translation>Empfange Metainformationen vom Installationsserver...</translation>
+        <translation>Recupero metadati da repository remoto...</translation>
     </message>
     <message>
         <source>Failure to fetch repositories.</source>
-        <translation>Herunterladen von Paketquellen fehlgeschlagen.</translation>
+        <translation>Fallito il fetch del repository.</translation>
     </message>
     <message>
         <source>Unknown exception during extracting.</source>
-        <translation>Beim Auspacken trat eine unbekannte Ausnahmebedingung auf.</translation>
+        <translation>Eccezzione sconosciuta durante l&apos;estrazione.</translation>
     </message>
     <message>
         <source>Extracting meta information...</source>
-        <translation>Packe Metainformationen aus...</translation>
+        <translation>Estrazione metadati ...</translation>
     </message>
     <message>
         <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>Fehler beim Auspacken von &apos;%1&apos;. Fehlermeldung: %2</translation>
+        <translation>Errore durante l&apos;estrazione di &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting %1.</source>
-        <translation>Beim Auspacken von %1 trat eine unbekannte Ausnahmebedingung auf.</translation>
+        <translation>Eccezzione sconosciuta durante l&apos;estrazione %1.</translation>
     </message>
     <message>
         <source>Could not open %1 for reading. Error: %2</source>
-        <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire %1 in lettura. Errore: %2</translation>
     </message>
 </context>
 <context>
@@ -1697,745 +1695,743 @@ Fehler beim Laden von %2</translation>
         <source>
 Downloading packages...</source>
         <translation>
-Lade Pakete herunter...</translation>
+Scaricamento pacchetti...</translation>
     </message>
     <message>
         <source>Installation canceled by user</source>
-        <translation>Installation durch den Nutzer abgebrochen</translation>
+        <translation>Installazione cancellata dall&apos;utente</translation>
     </message>
     <message>
         <source>All downloads finished.</source>
-        <translation>Alle Herunterladeprozesse abgeschlossen.</translation>
+        <translation>Tutti i downloads sono finiti.</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Fehler</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <source>Cancelling the Installer</source>
-        <translation>Breche den Installationsvorgang ab</translation>
+        <translation>Annullamento del programma di installazione</translation>
     </message>
     <message>
         <source>Error writing Maintenance Tool</source>
-        <translation>Fehler beim Schreiben des Verwaltungswerkzeugs</translation>
+        <translation>Errore di scrittura Maintenance Tool</translation>
     </message>
     <message>
         <source>Authentication Error</source>
-        <translation>Autentifizierungsfehler</translation>
+        <translation>Errore di autentificazione</translation>
     </message>
     <message>
         <source>Some components could not be removed completely because admin rights could not be acquired: %1.</source>
-        <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil die nötigen Systemverwalterrechte nicht erlangt werden konnten. Fehlermeldung: %1</translation>
+        <translation>Alcuni componenti non sono stati rimossi completamente perchè i diritti di amministratore non sono stati acquisiti: %1.</translation>
     </message>
     <message>
         <source>Unknown error.</source>
-        <translation>Unbekannter Fehler.</translation>
+        <translation>Errore sconosciuto.</translation>
     </message>
     <message>
         <source>Some components could not be removed completely because an unknown error happened.</source>
-        <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil ein unbekannter Fehler auftrat.</translation>
+        <translation>Alcuni componenti non sono stati rimossi completamente perchè si è presentato un errore sconosciuto.</translation>
     </message>
     <message>
         <source>Application not running in Package Manager mode!</source>
-        <translation>Die Anwendung ist nicht im Paketverwaltermodus!</translation>
+        <translation>Applicazione non in esecuzione in modalità Package Manager!</translation>
     </message>
     <message>
         <source>No installed packages found.</source>
-        <translation>Keine installierten Pakete gefunden.</translation>
+        <translation>Nessun pacchetto di installazione trovato.</translation>
     </message>
     <message>
         <source>Application running in Uninstaller mode!</source>
-        <translation>Die Anwendung befindet sich im Deinstallierermodus!</translation>
+        <translation>Applicazione avviata in modalità di disinstallazione!</translation>
     </message>
     <message>
         <source>There is an important update available, please run the updater first.</source>
-        <translation>Es gibt eine wichtige Aktualisierung, bitte zuerst den Updater starten.</translation>
+        <translation>E&apos; disponibile un aggiornamento importante, eseguire l&apos;aggiornamento prima.</translation>
     </message>
     <message>
         <source>Error while elevating access rights.</source>
-        <translation>Fehler beim Erlangen von Administratorrechten.</translation>
+        <translation>Errore durante l&apos;elevazione dei diritti di accesso.</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation>ungültig</translation>
+        <translation>invalido</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
     <message>
         <source>Error</source>
-        <translation>Fehler</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <source>Access error</source>
-        <translation>Zugriffsfehler</translation>
+        <translation>Errore di accesso</translation>
     </message>
     <message>
         <source>Format error</source>
-        <translation>Formatfehler</translation>
+        <translation>Errore di formato</translation>
     </message>
     <message>
         <source>Could not write installer configuration to %1: %2</source>
-        <translation>Konnte Einstellungen des Installers nicht nach %1 schreiben. Fehlermeldung: %2</translation>
+        <translation>Impossibile scrivere la configurazione dell&apos;installer in %1: %2</translation>
     </message>
     <message>
         <source>Stop Processes</source>
-        <translation>Prozesse anhalten</translation>
+        <translation>Stop Processi</translation>
     </message>
     <message>
         <source>These processes should be stopped to continue:
 
 %1</source>
-        <translation>Diese Prozesse sollten beendet werden, um fortsetzen zu können:
+        <translation>Questi processi debbono essere fermati per continuare:
 
 %1</translation>
     </message>
     <message>
         <source>Installation canceled by user</source>
-        <translation>Installation durch den Nutzer abgebrochen</translation>
+        <translation>Installazione fermata dall&apos;utente</translation>
     </message>
     <message>
         <source>Variable &apos;TargetDir&apos; not set.</source>
-        <translation>TargetDir muss gesetzt sein.</translation>
+        <translation>Variabile &apos;TargetDir&apos; non impostata.</translation>
     </message>
     <message>
         <source>Preparing the installation...</source>
-        <translation>Bereite Installation vor...</translation>
+        <translation>Preparazione dell&apos;installazione...</translation>
     </message>
     <message>
         <source>It is not possible to install from network location</source>
-        <translation>Es ist nicht möglich, von einem Netzwerkort aus zu installieren</translation>
+        <translation>Impossibile installare dal percorso di rete</translation>
     </message>
     <message>
         <source>Creating local repository</source>
-        <translation>Erstelle lokale Quelle</translation>
+        <translation>Creazione repository locale</translation>
     </message>
     <message>
         <source>
 Installation finished!</source>
         <translation>
-Installation abgeschlossen!</translation>
+Installazione finita!</translation>
     </message>
     <message>
         <source>
 Installation aborted!</source>
         <translation>
-Installation abgebrochen!</translation>
+Installazione interrotta!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
-        <translation>Es ist nicht möglich, diese Oparation von einem Netzwerkort aus zu starten</translation>
+        <translation>Impossibile eseguire l&apos;operazione dal percorso di rete</translation>
     </message>
     <message>
         <source>Removing deselected components...</source>
-        <translation>Entferne abgewählte Komponenten...</translation>
+        <translation>Rimozione componenti deselezionati...</translation>
     </message>
     <message>
         <source>
 Update finished!</source>
         <translation>
-Aktualisierung beendet!</translation>
+Aggiornamento finito!</translation>
     </message>
     <message>
         <source>
 Update aborted!</source>
-        <translation>
-Aktualisierung abgebrochen!</translation>
+        <translation>Aggiornamento interrotto!</translation>
     </message>
     <message>
         <source>Unresolved dependencies</source>
-        <translation>Nicht aufgelöste Abhängigkeiten</translation>
+        <translation>Dipendenze non risolte</translation>
     </message>
     <message>
         <source>Writing maintenance tool.</source>
-        <translation>Schreiben des Verwaltungswerkzeugs.</translation>
+        <translation>Scrittura tool di mantenimento.</translation>
     </message>
     <message>
         <source>Failed to seek in file %1: %2</source>
-        <translation>Suchen in Datei %1 fehlgeschlagen. Fehlermeldung: %2</translation>
+        <translation>Fallito lo spostamento nel file %1: %2</translation>
     </message>
     <message>
         <source>Maintenance tool is not a bundle</source>
-        <translation>Verwaltungswerkzeug ist kein Bundle</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Could not write maintenance tool data to %1: %2</source>
-        <translation>Konnte Daten des Verwaltungswerkzeugs nicht nach %1 schreiben. Fehlermeldung: %2</translation>
+        <translation>Impossibile scrivere i dati del tool di mantenimento in %1: %2</translation>
     </message>
     <message>
         <source>Could not remove data file &apos;%1&apos;: %2</source>
-        <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
+        <translation>Impossibile rimuovere i dati del file &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <source>Could not write maintenance tool to %1: %2</source>
-        <translation>Konnte Verwaltungswerkzeug nicht nach %1 schreiben: %2</translation>
+        <translation>Impossibile scrivere il tool di mantenimento in %1: %2</translation>
     </message>
     <message>
         <source>Could not write maintenance tool binary data to %1: %2</source>
-        <translation>Konnte Binäre Datei des Verwaltungswerkzeugs nicht nach %1 schreiben: %2</translation>
+        <translation>Impossibile scrivere i dati del tool di mantenimento in %1: %2</translation>
     </message>
     <message>
         <source>Creating Maintenance Tool</source>
-        <translation>Erstelle Verwaltungswerkzeug</translation>
+        <translation>Creazione tool di mantenimento</translation>
     </message>
     <message>
         <source>Uninstallation completed successfully.</source>
-        <translation>Deinstallation erfolgreich abgeschlossen.</translation>
+        <translation>Disinstallazione completata con successo.</translation>
     </message>
     <message>
         <source>Uninstallation aborted.</source>
-        <translation>Deinstallation abgebrochen.</translation>
+        <translation>Disinstallazione interrotta.</translation>
     </message>
     <message>
         <source>
 Installing component %1</source>
         <translation>
-Installiere Komponente %1</translation>
+Installazione componenti %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
-        <translation>Installationsfehler</translation>
+        <translation>Errore Installer</translation>
     </message>
     <message>
         <source>Error during installation process (%1):
 %2</source>
-        <translation>Fehler beim Installieren von Komponente %1:
+        <translation>Errore durante il processo di installazione (%1)
 %2</translation>
     </message>
     <message>
         <source>Cannot prepare uninstall</source>
-        <translation>Kann Deinstallation nicht vorbereiten</translation>
+        <translation>Impossibile preparare la disinstallazione</translation>
     </message>
     <message>
         <source>Cannot start uninstall</source>
-        <translation>Kann Deinstallation nicht starten</translation>
+        <translation>Impossibile iniziare la disinstallazione</translation>
     </message>
     <message>
         <source>Error during uninstallation process:
 %1</source>
-        <translation>Fehler bei der Deinstallation:
+        <translation>Errore durante il processo di disinstallazione:
 %1</translation>
     </message>
     <message>
         <source>Unknown error</source>
-        <translation>Unbekannter Fehler</translation>
+        <translation>Errore sconosciuto</translation>
     </message>
     <message>
         <source>Could not retrieve remote tree: %1.</source>
-        <translation>Kann entfernten Baum nicht empfangen: %1</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Failure to read packages from: %1.</source>
-        <translation>Fehler beim Lesen der Pakete von %1</translation>
+        <translation>Fallita la lettura del pacchetto da: %1.</translation>
     </message>
     <message>
         <source>Could not retrieve meta information: %1</source>
-        <translation>Konnte die Metainformationen nicht empfangen: %1</translation>
+        <translation>Impossibile recuperare i meta dati: %1</translation>
     </message>
     <message>
         <source>Could not add temporary update source information.</source>
-        <translation>Konnte Informationen zu temporären Aktualisierungsquellen nicht hinzufügen.</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Could not find any update source information.</source>
-        <translation>Konnte keine Informationen zu Aktualisierungsquellen finden.</translation>
+        <translation>Impossibile trovare le informazioni per l&apos;aggiornamento.</translation>
     </message>
     <message>
         <source>Dependency cycle between components detected: &apos;%1&apos; and &apos;%2&apos;.</source>
-        <translation>Zyklische Abhängigkeit zwischen Komponenten entdeckt: &apos;%1&apos; und &apos;%2&apos;.</translation>
+        <translation>Rilevato ciclo di dipendenza tra i componenti: &apos;%1&apos; e &apos;%2&apos;.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
     <message>
         <source>%1 Setup</source>
-        <translation>%1 Einrichtung</translation>
+        <translation>Configurazione di %1</translation>
     </message>
     <message>
         <source>Maintain %1</source>
-        <translation>%1 verwalten</translation>
+        <translation>Mantenimento di %1</translation>
     </message>
     <message>
         <source>Do you want to cancel the installation process?</source>
-        <translation>Möchten Sie den Installationsprozess abbrechen?</translation>
+        <translation>Vuoi annullare il processo di installazione?</translation>
     </message>
     <message>
         <source>Do you want to cancel the uninstallation process?</source>
-        <translation>Möchten Sie den Deinstallationsprozess abbrechen?</translation>
+        <translation>Vuoi annullare il processo di disinstallazione?</translation>
     </message>
     <message>
         <source>Do you want to quit the installer application?</source>
-        <translation>Möchten Sie die Installationsanwendung beenden?</translation>
+        <translation>Vuoi uscire dall&apos;applicazione di installazione?</translation>
     </message>
     <message>
         <source>Do you want to quit the uninstaller application?</source>
-        <translation>Möchten Sie die Deinstallationsanwendung beenden?</translation>
+        <translation>Vuoi uscire dall&apos;applicazione di disinstallazione?</translation>
     </message>
     <message>
         <source>Do you want to quit the maintenance application?</source>
-        <translation>Möchten Sie die Wartungsanwendung beenden?</translation>
+        <translation>Vuoi uscire dall&apos;applicazione di mantenimento?</translation>
     </message>
     <message>
         <source>Question</source>
-        <translation>Frage</translation>
+        <translation>Domanda</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation>Einstellungen</translation>
+        <translation>Configurazioni</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Fehler</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <source>It is not possible to install from network location.
 Please copy the installer to a local drive</source>
-        <translation>Es ist nicht möglich, von einem Netzwerkort aus zu installieren.
-Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
+        <translation>E&apos; impossibile installare dal percorso di rete.
+Copiare l&apos;installer in locale</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::PerformInstallationForm</name>
     <message>
         <source>&amp;Show Details</source>
-        <translation>&amp;Zeige Details</translation>
+        <translation>&amp;Mostra Dettagli</translation>
     </message>
     <message>
         <source>&amp;Hide Details</source>
-        <translation>&amp;Verstecke Details</translation>
+        <translation>&amp;Nascondi Dettagli</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::PerformInstallationPage</name>
     <message>
         <source>U&amp;ninstall</source>
-        <translation>&amp;Deinstallieren</translation>
+        <translation>Disi&amp;nstalla</translation>
     </message>
     <message>
         <source>Uninstalling %1</source>
-        <translation>Deinstalliere %1</translation>
+        <translation>Disinstallazione %1</translation>
     </message>
     <message>
         <source>&amp;Update</source>
-        <translation>&amp;Aktualisieren</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Updating components of %1</source>
-        <translation>Aktualisiere Komponenten des %1</translation>
+        <translation>Aggiornamento componenti di %1</translation>
     </message>
     <message>
         <source>&amp;Install</source>
-        <translation>&amp;Installieren</translation>
+        <translation>&amp;Installa</translation>
     </message>
     <message>
         <source>Installing %1</source>
-        <translation>Installiere %1</translation>
+        <translation>Installazione %1</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ProxyCredentialsDialog</name>
     <message>
         <source>Dialog</source>
-        <translation>Dialog</translation>
+        <translation>Finestra</translation>
     </message>
     <message>
         <source>The proxy %1 requires a username and password.</source>
-        <translation>Der Proxy %1 benötigt einen Nutzernamen und Passwort.</translation>
+        <translation>Il proxy %1 richiede un nome utente e una password.</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation>Nutzername:</translation>
+        <translation>Nome Utente:</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation>Nutzername</translation>
+        <translation>Nome utente</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation>Passwort:</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Password</source>
-        <translation>Passwort</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ReadyForInstallationPage</name>
     <message>
         <source>U&amp;ninstall</source>
-        <translation>&amp;Deinstallieren</translation>
+        <translation>Disi&amp;nstalla</translation>
     </message>
     <message>
         <source>Ready to Uninstall</source>
-        <translation>Bereit zum Deinstallieren</translation>
+        <translation>Pronto per la disinstallazione</translation>
     </message>
     <message>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 von Ihrem Computer zu entfernen. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Das Programmverzeichnis %2 wird vollständig gelöscht&lt;/font&gt;, inklusive allen Inhalten in diesem Ordner!</translation>
+        <translation>Il programma adesso è pronto per iniziare a rimuovere %1 dal tuo computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;La cartella del programma %2 sarà completamente cancellata&lt;/font&gt; incluso tutto il suo contenuto!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
-        <translation>&amp;Aktualisieren</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ready to Update Packages</source>
-        <translation>Bereit zum Aktualisieren der Pakete</translation>
+        <translation>Pronto per aggiornare i pacchetti</translation>
     </message>
     <message>
         <source>Setup is now ready to begin updating your installation.</source>
-        <translation>Das Einrichtungsprogramm ist jetzt bereit, Ihre Installation zu aktualisieren.</translation>
+        <translation>Il programma adesso è pronto per iniziare l&apos;aggiornamento dell&apos;installazione.</translation>
     </message>
     <message>
         <source>&amp;Install</source>
-        <translation>&amp;Installieren</translation>
+        <translation>&amp;Installa</translation>
     </message>
     <message>
         <source>Ready to Install</source>
-        <translation>Bereit zum Installieren</translation>
+        <translation>Pronto per l&apos;installazione</translation>
     </message>
     <message>
         <source>Setup is now ready to begin installing %1 on your computer.</source>
-        <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 auf Ihrem Computer einzurichten.</translation>
+        <translation>Il programma adesso è pronto per iniziare l&apos;installazione di %1 sul tuo computer.</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
-        <translation>Nicht genügend Plattenplatz für temporäre Dateien und die Installation! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
+        <translation>Spazio su disco insufficiente per creare i file temporanei e per l&apos;installazione! Spazio disponibile: %1, minimo necessario %2.</translation>
     </message>
     <message>
         <source>Not enough disk space to store all selected components! Available space: %1, at least required: %2.</source>
-        <translation>Nicht genügend Plattenplatz für alle ausgewählten Komponenten! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
+        <translation>Spazio su disco insufficiente per installare tutti i pacchetti selezionati! Spazio disponibile: %1, minimo necessario %2.</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files! Available space: %1, at least required: %2.</source>
-        <translation>Nicht genügend Plattenplatz für temporäre Dateien! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
+        <translation>Spazio su disco insufficiente per archiviare i file temporanei! Spazio disponibile: %1, minimo necessario %2.</translation>
     </message>
     <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
-        <translation>Die für die Installation ausgewählte Partition scheint genügend Platz zu bieten, aber es werden anschließend weniger als 1% der Partitionsgröße verfügbar sein. %1</translation>
+        <translation>Il volume che hai selezionato per l&apos;installazione ha spazio sufficiente, ma dopo ci sarà meno dell 1% di spazio disponibile sul volume. %1</translation>
     </message>
     <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
-        <translation>Die für die Installation ausgewählte Partition scheint genügend Platz zu bieten, aber es werden anschließend weniger als 100 MiB verfügbar sein. %1</translation>
+        <translation>Il volume che hai selezionato per l&apos;installazione ha spazio sufficiente, ma dopo ci saranno meno di 100 MB disponibili. %1</translation>
     </message>
     <message>
         <source>Installation will use %1 of disk space.</source>
-        <translation>Installation wird %1 Plattenplatz verwenden.</translation>
+        <translation>L&apos;installazione userà %1 di spazio sul disco.</translation>
     </message>
     <message>
         <source>Cannot resolve all dependencies.</source>
-        <translation>Konnte nicht alle Abhängigkeiten auflösen.</translation>
+        <translation>Impossibile risolvere tutte le dipendenze.</translation>
     </message>
     <message>
         <source>Components about to be removed.</source>
-        <translation>Komponenten, die entfernt werden.</translation>
+        <translation>Compenenti da rimuovere.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RegisterFileTypeOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>2 to 5</source>
-        <translation>2 bis 5</translation>
+        <translation>da 2  a 5</translation>
     </message>
     <message>
         <source>Registering file types is only supported on Windows.</source>
-        <translation>Dateitypenregistrierung wird nur unter Windows unterstützt.</translation>
+        <translation>File di tipo registro sono supportati solo su WINDOWS.</translation>
     </message>
     <message>
         <source>Register File Type: Invalid arguments</source>
-        <translation>Register File Type: Ungültige Argumente</translation>
+        <translation>Tipi di file di registro: Argomenti invalidi</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RemoteObject</name>
     <message>
         <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation>Konnte nicht alle Daten nach dem Senden des Kommandos &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
+        <translation>Impossibile leggere tutti i dati dopo l&apos;invio del comando: %1. Bytes aspettati: %2, Bytes ricevuti: %3. Errori: %4</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RemoteServerConnection</name>
     <message>
         <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation>Konnte nicht alle Daten nach dem Senden des Kommandos &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
+        <translation type="vanished">Impossibile leggere tutti i dati dopo l&apos;invio del comando: %1. Bytes aspettati: %2, Bytes ricevuti: %3. Errori: %4</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ReplaceOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>exactly 3</source>
-        <translation>genau 3</translation>
+        <translation>esattamente 3</translation>
     </message>
     <message>
         <source>Failed to open %1 for reading</source>
-        <translation>Konnte Datei %1 nicht zum Lesen öffnen</translation>
+        <translation>Fallita l&apos;apertura del file %1 in lettura</translation>
     </message>
     <message>
         <source>Failed to open %1 for writing</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen</translation>
+        <translation>Fallita l&apos;apertura del file %1 in scrittura</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::Resource</name>
     <message>
         <source>Could not open Resource &apos;%1&apos; read-only.</source>
-        <translation>Konnte Ressourcendatei &apos;%1&apos; nicht zum Nur-Lesen öffnen.</translation>
+        <translation>Impossibile aprire la Risorsa &apos;%1&apos; in sola lettura.</translation>
     </message>
     <message>
         <source>Read failed after %1 bytes: %2</source>
-        <translation>Das Lesen ist nach %1 Bytes fehlgeschlagen: %2</translation>
+        <translation>Lettura fallita dopo %1 bytes: %2</translation>
     </message>
     <message>
         <source>Write failed after %1 bytes: %2</source>
-        <translation>Das Schreiben ist nach %1 Bytes fehlgeschlagen: %2</translation>
+        <translation>Scrittura fallita dopo %1 bytes: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
         <source>Completing the %1 Setup Wizard</source>
-        <translation>Vervollständige den %1 Assistenten</translation>
+        <translation>Completamento dell&apos;installazione guidata del %1</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ScriptEngine</name>
     <message>
         <source>Could not open the requested script file at %1: %2.</source>
-        <translation>Konnte angeforderte Skriptdatei &apos;%1&apos; nicht öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire lo script %1: %2.</translation>
     </message>
     <message>
         <source>Exception while loading the component script &apos;%1&apos;. (%2)</source>
-        <translation>Ausnahme beim Laden des Komponentenskripts &apos;%1&apos;. (%2)</translation>
+        <translation>Si è verificata un eccezzione durante il caricamento dei componenti dello script &apos;%1&apos;. (%2)</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SelfRestartOperation</name>
     <message>
         <source>Installer object needed in &apos;%1&apos; operation is empty.</source>
-        <translation>Das für die Anweisung &apos;%1&apos; benötigte Installerobjekt ist leer.</translation>
+        <translation>Oggetto installer necessario in %1 l&apos;operazione è vuota.</translation>
     </message>
     <message>
         <source>Self Restart: Only valid within updater or packagemanager mode.</source>
-        <translation>Self Restart: Nur im updater oder packagemanager Modus erlaubt.</translation>
+        <translation>Auto riavvio: Valido solo con aggiornamento o in modalità packagemanager.</translation>
     </message>
     <message>
         <source>Self Restart: Invalid arguments</source>
-        <translation>Self Restart: Ungültige Argumente</translation>
+        <translation>Riavvio automatico: Argomenti invalidi</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ServerAuthenticationDialog</name>
     <message>
         <source>Server Requires Authentication</source>
-        <translation>Server verlangt Authentifizierung</translation>
+        <translation>Il server richiede l&apos;autenticazione</translation>
     </message>
     <message>
         <source>You need to supply a username and password to access this site.</source>
-        <translation>Nutzername und Passwort für den Zugriff benötigt.</translation>
+        <translation>E&apos; necessario fornire un nome utente e una password per accedere a questo sito.</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation>Nutzername:</translation>
+        <translation>Nome Utente:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation>Passwort:</translation>
+        <translation></translation>
     </message>
     <message>
         <source>%1 at %2</source>
-        <translation>%1 auf %2</translation>
+        <translation>%1 a %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SettingsOperation</name>
     <message>
         <source>Missing argument(s) &apos;%1&apos; calling &apos;%2&apos; with arguments &apos;%3&apos;.</source>
-        <translation>Fehlende Argumente &apos;%1&apos; beim Aufruf von &apos;%2&apos; mit den Argumenten &apos;%3&apos;.</translation>
+        <translation>Argomenti mancanti &apos;%1&apos; con chiamata &apos;%2&apos; con argomenti &apos;%3&apos;.</translation>
     </message>
     <message>
         <source>Current method argument calling &apos;%1&apos; with arguments &apos;%2&apos; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
-        <translation>Aufruf von &apos;%1&apos; mit den Argumenten &apos;%2&apos; nicht unterstützt. Bitte &apos;set&apos;, &apos;remove&apos;, &apos;add_array_value&apos; oder &apos;remove_array_value&apos; verwenden.</translation>
+        <translation>Il corrente metodo di chiamata argomenti &apos;%1&apos; con argomenti &apos;%2&apos; non è supportato. Perfavore usare imposta, rimuovere, add_array_value o remove_array_value.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SimpleMoveFileOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <translation>Argomenti invalidi in %0: forniti %1, %2 richiesti %3.</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>genau 2</translation>
+        <translation>esattamente 2</translation>
     </message>
     <message>
         <source>None of the arguments can be empty: source &apos;%1&apos;, target &apos;%2&apos;.</source>
-        <translation>Keines der Argumente darf leer sein: Quelle &apos;%1&apos;, Ziel &apos;%2&apos;.</translation>
+        <translation>Nessuno degli argomenti può essere vuoto: sorgente &apos;%1&apos;, destinazione &apos;%2&apos;.</translation>
     </message>
     <message>
         <source>Cannot move source &apos;%1&apos; to target &apos;%2&apos;, because target exists and is not removable.</source>
-        <translation>Konnte Quelle &apos;%1&apos; nicht nach Ziel &apos;%2&apos; verschieben, weil das Ziel bereits existiert und nicht entfernt werden kann.</translation>
+        <translation>Impossibile muovere &apos;%1&apos; in &apos;%2&apos;, perchè il target esiste e non è eliminabile.</translation>
     </message>
     <message>
         <source>Cannot move source &apos;%1&apos; to target &apos;%2&apos;: %3</source>
-        <translation>Konnte Datei &apos;%1&apos; nicht nach &apos;%2&apos; verschieben: %3</translation>
+        <translation>Impossibile muovere il file da %1 a %2: %3</translation>
     </message>
     <message>
         <source>Move &apos;%1&apos; to &apos;%2&apos;.</source>
-        <translation>Verschiebe &apos;%1&apos; nach &apos;%2&apos;.</translation>
+        <translation>Muovi &apos;%1&apos; in &apos;%2&apos;.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::StartMenuDirectoryPage</name>
     <message>
         <source>Start Menu shortcuts</source>
-        <translation>Verknüpfungen im Startmenü</translation>
+        <translation>Collegamento al menu di Avvio</translation>
     </message>
     <message>
         <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new folder.</source>
-        <translation>Wählen Sie den Ordner im Startmenü, in dem die Verknüpfungen zur Anwendung erstellt werden sollen. Sie können einen Namen angeben, um einen neuen Ordner anzulegen.</translation>
+        <translation>Selezionare la voce del menu di avvio in cui si desidera creare il collegamento al programma. È anche possibile inserire un nome per creare una nuova cartella.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::TargetDirectoryPage</name>
     <message>
         <source>Installation Folder</source>
-        <translation>Installationsverzeichnis</translation>
+        <translation>Cartella di installazione</translation>
     </message>
     <message>
         <source>Please specify the folder where %1 will be installed.</source>
-        <translation>Bitte geben Sie den Ordner an, in dem %1 installiert werden soll.</translation>
+        <translation>Specificare la cartella dove %1 sarà installato.</translation>
     </message>
     <message>
         <source>Alt+R</source>
         <comment>browse file system to choose a file</comment>
-        <translatorcomment>Dateisystem durchsuchen, um eine Datei auszuwählen</translatorcomment>
-        <translation>Alt+D</translation>
+        <translation></translation>
     </message>
     <message>
         <source>B&amp;rowse...</source>
-        <translation>&amp;Durchsuchen...</translation>
+        <translation></translation>
     </message>
     <message>
         <source>The folder you selected already exists and contains an installation. Choose a different target for installation.</source>
-        <translation>Der ausgewählte Ordner existiert bereits und enthält eine Installation. Bitte ein anderes Zielverzeichnis auswählen.</translation>
+        <translation>La cartella selezionata è già esistente e contiene già un installazione. Scegliere una cartella diversa per l&apos;installazione.</translation>
     </message>
     <message>
         <source>You have selected an existing, non-empty folder for installation.
 Note that it will be completely wiped on uninstallation of this application.
 It is not advisable to install into this folder as installation might fail.
 Do you want to continue?</source>
-        <translation>Sie haben einen existierenden, nicht leeren Ordner für die Installation ausgewählt.
-Dieser wird bei der Deinstallation dieser Anwendung komplett gelöscht werden.
-Es wird nicht empfohlen, in diesen Ordner zu installieren.
-Möchten Sie trotzdem fortsetzen?</translation>
+        <translation>Hai selezionato una cartella esistente e non vuota per l&apos;installazione.
+Ricordati che sarà tutto cancellato durante la disinstallazione di questo programma.
+Non è consigliabile installare in questa cartella, l&apos;installazione potrebbe fallire.
+Vuoi continuare?</translation>
     </message>
     <message>
         <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
-        <translation>Existierende Datei oder Symlink ausgewählt, bitte ein anderes Installationsziel auswählen.</translation>
+        <translation>Hai selezionato un file o collegamento esistente, scegliere una cartella diversa per l&apos;installazione.</translation>
     </message>
     <message>
         <source>The installation path cannot be empty, please specify a valid folder.</source>
-        <translation>Der Installationspfad darf nicht leer sein. Bitte einen gültigen Ordner angeben.</translation>
+        <translation>Il percorso di installazione non può essere vuoto, specificare una cartella valida.</translation>
     </message>
     <message>
         <source>The installation path cannot be relative, please specify an absolute path.</source>
-        <translation>Der Installationspfad darf nicht relativ sein. Bitte einen absoluten Pfad angeben.</translation>
+        <translation>Il percorso di installazione non può essere relativo, specificare un percorso assoluto.</translation>
     </message>
     <message>
         <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
-        <translation>Der Pfad zum Installationsverzeichnis enthält Zeichen ausserhalb des ASCII Zeichensatzes. Dies ist zur Zeit nicht unterstützt. Bitte wählen Sie einen anderen Pfad für das Installationsverzeichnis.</translation>
-    </message>
-    <message>
-        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
-        <translation>Der von ihnen eingegebene Pfad ist zu lang, bitte geben sie einen gültigen Pfad ein.</translation>
-    </message>
-    <message>
-        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
-        <translation>Der eingegebene Pfad ist ungültig, bitte ein gültiges Ziel angeben.</translation>
-    </message>
-    <message>
-        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
-        <translation>Der von ihnen eingegebene Pfad ist ungültig, bitte geben sie ein gültiges Laufwerk an.</translation>
-    </message>
-    <message>
-        <source>The installation path must not end with &apos;.&apos;, please specify a valid folder.</source>
-        <translation>Der Installationspfad darf nicht auf &apos;.&apos; enden, bitte einen gültigen Ordner angeben.</translation>
-    </message>
-    <message>
-        <source>The installation path must not contain &apos;%1&apos;, please specify a valid folder.</source>
-        <translation>Der Installationspfad darf nicht %1 enthalten, bitte einen gültigen Ordner angeben.</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>Fehler</translation>
+        <translation>Il percorso o la cartella di installazione contengono caratteri non ASCII. Questo al momento non è supportato! Scegliere un percorso o una cartella differenti.</translation>
     </message>
     <message>
         <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
-        <translation>Da das Installationsverzeichnis komplett gelöscht wird, ist eine Installation nach %1 nicht zulässig.</translation>
+        <translation>Installare in %1 è vietato.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>Il percorso inserito è troppo lungo, assicurarsi di inserire un percorso valido.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>Il percorso inserito non è valido, assicurarsi di inserire una destinazione valida.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>Il percorso inserito non è valido, assicurarsi di inserire un drive valido.</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid folder.</source>
+        <translation>Il percorso di installazione non può finire con &apos;.&apos;, specificare una cartella valida.</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &apos;%1&apos;, please specify a valid folder.</source>
+        <translation>Il percorso di installazione non può contenere &apos;%1&apos;, specificare una cartella valida.</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Errore</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation>Warnung</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Select Installation Folder</source>
-        <translation>Installationsverzeichnis auswählen.</translation>
+        <translation>Selezionare la cartella di installazione</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::TestRepository</name>
     <message>
         <source>Empty repository URL.</source>
-        <translation>Leere Quelladresse.</translation>
+        <translation>URL repository vuoto.</translation>
     </message>
     <message>
         <source>URL scheme not supported: %1 (%2).</source>
-        <translation>Adressschema &apos;%1&apos; nicht unterstützt in Adresse &apos;%2&apos;.</translation>
+        <translation>Schema URL non supportato: %1 (%2).</translation>
     </message>
     <message>
         <source>Got a timeout while testing: &apos;%1&apos;</source>
-        <translation>Erhielt Timeout beim Testen von: &apos;%1&apos;</translation>
+        <translation>E&apos; scaduto un timeout durante il test: &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Could not parse Updates.xml! Error: %1.</source>
-        <translation>Ungültiges Format der Updates.xml. Fehlermeldung: %1.</translation>
+        <translation>Impossibile analizzare Updates.xml! Errore: %1.</translation>
     </message>
     <message>
         <source>Updates.xml could not be opened for reading!</source>
-        <translation>Konnte Updates.xml nicht zum Lesen öffnen.</translation>
+        <translation>Impossibile aprire Update.xml in lettura!</translation>
     </message>
     <message>
         <source>Updates.xml could not be found on server!</source>
-        <translation>Updates.xml konnte auf dem Server nicht gefunden werden.</translation>
+        <translation>Impossibile trovare Update.xml sul server!</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>Authorization required</source>
-        <translation>Autorisierung benötigt.</translation>
+        <translation>Richiesta autorizzazione</translation>
     </message>
     <message>
         <source>Enter your password to authorize for sudo:</source>
-        <translation>Geben Sie Ihr Passwort ein, um sich für sudo zu authentifizieren:</translation>
+        <translation>Inserisci la tua password di autorizzazione per sudo:</translation>
     </message>
     <message>
         <source>Error acquiring admin rights</source>
-        <translation>Fehler beim Erlangen von Administratorrechten.</translation>
+        <translation>Errore durante l&apos;acquisizione dei diritti di amministratore</translation>
     </message>
 </context>
 <context>
     <name>RemoteClient</name>
     <message>
         <source>Could not get authorization.</source>
-        <translation>Konnte Autorisierung nicht erhalten.</translation>
+        <translation>Impossibile ottenere l&apos;autorizzazione.</translation>
     </message>
     <message>
         <source>Could not get authorization that is needed for continuing the installation.
@@ -2444,158 +2440,160 @@ Möchten Sie trotzdem fortsetzen?</translation>
 %1
 
 as root and then clicking OK.</source>
-        <translation>Konnte die Autorisierung, die zum Fortsetzen der Installation nötig ist, nicht erhalten.
-Brechen sie entweder die Installation ab, oder verwenden sie die Fallback Lösung, indem sie
+        <translation>Impossibile ottenere l&apos;autorizzazione necessaria per continuare l&apos;installazione.
+Interrompere l&apos;installazione o eseguire
+
 %1
-als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
+
+come root e premere ok.</translation>
     </message>
 </context>
 <context>
     <name>ResourceCollectionManager</name>
     <message>
         <source>Could not open resource %1: %2</source>
-        <translation>Konnte Ressource %1 nicht öffnen: %2</translation>
+        <translation>Impossibile aprire la risorsa %1: %2</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
         <source>Could not open settings file %1 for reading: %2</source>
-        <translation>Konnte Einstellungsdatei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
+        <translation>Impossibile aprire il file di configurazione %1 in lettura: %2</translation>
     </message>
 </context>
 <context>
     <name>SettingsDialog</name>
     <message>
         <source>Settings</source>
-        <translation>Einstellungen</translation>
+        <translation>Configurazione</translation>
     </message>
     <message>
         <source>Network</source>
-        <translation>Netzwerk</translation>
+        <translation></translation>
     </message>
     <message>
         <source>No proxy</source>
-        <translation>Kein Proxy</translation>
+        <translation>Nessun proxy</translation>
     </message>
     <message>
         <source>System proxy settings</source>
-        <translation>Systemeinstellungen für Proxy</translation>
+        <translation>Configurazione proxy di sistema</translation>
     </message>
     <message>
         <source>Manual proxy configuration</source>
-        <translation>Manuelle Konfiguration des Proxy</translation>
+        <translation>Configurazione proxy manuale</translation>
     </message>
     <message>
         <source>HTTP proxy:</source>
-        <translation>HTTP Proxy:</translation>
+        <translation>Proxy HTTP:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation>Port:</translation>
+        <translation>Porta:</translation>
     </message>
     <message>
         <source>FTP proxy:</source>
-        <translation>FTP Proxy:</translation>
+        <translation>Proxy FTP:</translation>
     </message>
     <message>
         <source>Repositories</source>
-        <translation>Quellen</translation>
+        <translation>Repository</translation>
     </message>
     <message>
         <source>Add Username and Password for authentication if needed.</source>
-        <translation>Nutzername und Passwort für die Autentifizierung hinzufügen, falls benötigt.</translation>
+        <translation>Aggiungi il nome utente e la password per l&apos;autorizzazione se necessario.</translation>
     </message>
     <message>
         <source>Use temporary repositories only</source>
-        <translation>Verwende ausschließlich temporäre Quellen</translation>
+        <translation>Usa solo repository temporanei</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>Hinzufügen</translation>
+        <translation>Aggiungi</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation>Entfernen</translation>
+        <translation>Rimuovi</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation>Testen</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Show Passwords</source>
-        <translation>Zeige Passwörter</translation>
+        <translation>Mostra Password</translation>
     </message>
     <message>
         <source>Check this to use repository during fetch.</source>
-        <translation>Auswählen, um die Quelle zu verwenden.</translation>
+        <translation>Controlla questo per usare repository durante il fecth.</translation>
     </message>
     <message>
         <source>Add the username to authenticate on the server.</source>
-        <translation>Nutzernamen eintragen, um sich gegenüber der Quelle zu authentifizieren.</translation>
+        <translation>Aggiungere il nome utente per l&apos;autentificazione sul server.</translation>
     </message>
     <message>
         <source>Add the password to authenticate on the server.</source>
-        <translation>Passwort eintragen, um sich gegenüber der Quelle zu authentifizieren.</translation>
+        <translation>Aggiungere la password per l&apos;autenticazione sul server.</translation>
     </message>
     <message>
         <source>The servers URL that contains a valid repository.</source>
-        <translation>Adresse angeben, die auf eine gültige Quelle zeigt.</translation>
+        <translation>L&apos;URL del server che contiene un repository valido.</translation>
     </message>
     <message>
         <source>There was an error testing this repository.</source>
-        <translation>Beim testen des Repositories ist ein Fehler aufgetreten.</translation>
+        <translation>Si è verificato un errore durante il test di questo repository.</translation>
     </message>
     <message>
         <source>Do you want to disable the tested repository?</source>
-        <translation>Soll das getestete Repository ausgeschaltet werden?</translation>
+        <translation>Vuoi disabilitare il repository testato?</translation>
     </message>
     <message>
         <source>Hide Passwords</source>
-        <translation>Verstecke Passwörter</translation>
+        <translation>Nascondi Passwords</translation>
     </message>
     <message>
         <source>Use</source>
-        <translation>Nutze</translation>
+        <translation>Uso</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation>Nutzername</translation>
+        <translation>Nome utente</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation>Passwort</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation>Quelle</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Default repositories</source>
-        <translation>Standardquellen</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Temporary repositories</source>
-        <translation>Temporäre Quellen</translation>
+        <translation>Repository temporanei</translation>
     </message>
     <message>
         <source>User defined repositories</source>
-        <translation>Benutzerdefinierte Quellen</translation>
+        <translation>Repository edfiniti dall&apos;utente</translation>
     </message>
 </context>
 <context>
     <name>UpdateOperation</name>
     <message>
         <source>Registry path %1 is not writable</source>
-        <translation>Registrierungspfad %1 ist nicht beschreibbar</translation>
+        <translation>La chiave di registro %1 non può essere scritta</translation>
     </message>
     <message>
         <source>Could not write to registry path %1</source>
-        <translation>Konnte nicht in Registrierungspfad %1 schreiben</translation>
+        <translation>Impossibile scrivere la chiave di registro %1</translation>
     </message>
     <message>
         <source>Renaming %1 into %2 failed with %3.</source>
-        <translation>Umbenennung von %1 nach %2 schlug mit Meldung %3 fehl.</translation>
+        <translation>La rinominazione di %1 in %2 è fallita : %3.</translation>
     </message>
 </context>
 </TS>

@@ -62,7 +62,6 @@ class INSTALLER_EXPORT Component : public QObject, public ComponentModelHelper
 
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QString displayName READ displayName)
-    Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
     Q_PROPERTY(bool autoCreateOperations READ autoCreateOperations WRITE setAutoCreateOperations)
     Q_PROPERTY(QStringList archives READ archives)
     Q_PROPERTY(QStringList userInterfaces READ userInterfaces)
@@ -181,6 +180,7 @@ public:
     Q_INVOKABLE void setInstalled();
     Q_INVOKABLE bool isInstalled() const;
     Q_INVOKABLE bool installationRequested() const;
+    bool isSelectedForInstallation() const;
 
     Q_INVOKABLE void setUninstalled();
     Q_INVOKABLE bool isUninstalled() const;
@@ -203,7 +203,6 @@ public:
     bool validatePage();
 
 public Q_SLOTS:
-    void setSelected(bool selected);
     void setAutoCreateOperations(bool autoCreateOperations);
 
 Q_SIGNALS:

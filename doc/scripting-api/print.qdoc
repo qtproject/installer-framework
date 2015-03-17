@@ -26,25 +26,9 @@
 ****************************************************************************/
 
 /*!
-    \contentspage {index.html}{Qt Installer Framework}
-    \previouspage Qt Installer Framework Examples
-    \page ifw-reference.html
-    \nextpage ifw-globalconfig.html
+    \qmltype print
+    \inqmlmodule scripting
+    \brief Provides compatibility with QtScript.
 
-    \title Reference
-
-    The following sections contain detailed information about the Qt Installer
-    Framework:
-
-    \list
-        \li \l{Configuration File}
-        \li \l{Package Directory}
-        \li \l{Controller Scripting}
-        \li \l{Component Scripting}
-        \li \l{Operations}
-        \li \l{Tools}
-        \li \l{Scripting API}
-        \li \l{C++ API}
-    \endlist
-
+    For new code, use the \l{console-object}{console} object instead.
 */

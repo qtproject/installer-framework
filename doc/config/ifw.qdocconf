@@ -62,7 +62,6 @@ navigation.homepage = "Qt Installer Framework Manual"
 
 defines                 += ABSTRACTTASK_H \
                            ADMINAUTHORIZATION_H \
-                           COMPONENT_H \
                            COMPONENT_P_H \
                            COMPONENTCHECKER_H \
                            CONSTANTS_H \
@@ -114,7 +113,6 @@ defines                 += ABSTRACTTASK_H \
                            QINSTALLER_FILEUTILS_H \
                            QINSTALLER_GLOBAL_H \
                            QINSTALLER_INIT_H \
-                           QINSTALLER_MESSAGEBOXHANDLER_H \
                            QINSTALLER_UTILS_H \
                            QPROCESSWRAPPER_H \
                            QSETTINGSWRAPPER_H \
@@ -135,7 +133,6 @@ defines                 += ABSTRACTTASK_H \
                            SETTINGS_H \
                            SETTINGSOPERATION_H \
                            SIMPLEMOVEFILEOPERATION_H \
-                           SYSTEMINFO_H \
                            TESTREPOSITORY_H \
                            UI_PROXYCREDENTIALSDIALOG_H \
                            UI_SERVERAUTHENTICATIONDIALOG_H \

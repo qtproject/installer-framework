@@ -1665,7 +1665,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
 
                 // There is a replacement, but the replacement is not scheduled for update, keep it as well.
                 if (m_componentsToReplaceAllMode.contains(name)
-                    && !m_componentsToReplaceAllMode.value(name).first->installationRequested()) {
+                    && !m_componentsToReplaceAllMode.value(name).first->isSelectedForInstallation()) {
                         nonRevertedOperations.append(operation);
                         continue;
                 }

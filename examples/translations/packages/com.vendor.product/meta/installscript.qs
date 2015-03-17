@@ -45,7 +45,7 @@ Component.prototype.createOperations = function()
         // call the base create operations function
         component.createOperations();
     } catch (e) {
-        print(e);
+        console.log(e);
     }
 }
 

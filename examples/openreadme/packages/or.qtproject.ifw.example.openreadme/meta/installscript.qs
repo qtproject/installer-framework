@@ -50,7 +50,7 @@ Component.prototype.installationFinishedPageIsShown = function()
             installer.addWizardPageItem( component, "ReadMeCheckBoxForm", QInstaller.InstallationFinished );
         }
     } catch(e) {
-        print(e);
+        console.log(e);
     }
 }
 
@@ -64,7 +64,7 @@ Component.prototype.installationFinished = function()
             }
         }
     } catch(e) {
-        print(e);
+        console.log(e);
     }
 }
 

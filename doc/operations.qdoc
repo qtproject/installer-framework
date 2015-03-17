@@ -59,6 +59,10 @@
             \li "Move" \c source \c target
             \li Moves a file from \c source to \c target.
         \row
+            \li SimpleMoveFile
+            \li "SimpleMoveFile" \c source \c target
+            \li Moves a file from \c source to \c target.
+        \row
             \li Delete
             \li "Delete" \c filename
             \li Deletes the file specified by \c filename.
@@ -70,6 +74,10 @@
             \li Rmdir
             \li "Rmdir" \c path
             \li Removes the directory path \c path.
+        \row
+            \li CopyDirectory
+            \li "CopyDirectory" \c sourcePath \c targetPath
+            \li Copies a directory from \c sourcePath to \c targetPath.
         \row
             \li AppendFile
             \li "AppendFile" \c filename \c text
@@ -86,9 +94,10 @@
             \li Opens \c file to find \c search string and replaces that with the \c replace string.
         \row
             \li LineReplace
-            \li "LineReplace" \c file \c search \ replace
+            \li "LineReplace" \c file \c search \c replace
             \li Opens \c file to find lines that start with \c search string and
-                replaces that with the \c replace string.
+                replaces that with the \c replace string. Lines are trimmed before
+                the search.
         \row
             \li Execute
             \li "Execute" [{\c exitcodes}] \c command [\c parameter1 [\c parameter... [\c parameter10]]]
@@ -178,7 +187,55 @@
                 \c command. Optionally, you can specify \c description,
                 \c contentType, and \c icon. This is currently only supported on
                 Windows.
+        \row
+            \li ConsumeOutput
+            \li "ConsumeOutput" \c installerKeyName \c executablePath \c processArguments
+            \li Saves the output from running the executable located at
+                \c executablePath with the arguments \c processArguments to the
+                installer key specified by \c installerKeyName. Additional
+                arguments can be passed.
+        \row
+            \li CreateLink
+            \li "CreateLink" \c linkPath \c targetPath
+            \li Creates a link from the location specified by \c linkPath to
+                the location specified by \c targetPath.
+        \row
+            \li CreateLocalRepository
+            \li "CreateLocalRepository" \c binaryPath \c repoPath
+            \li Creates a local repository in the directory specified by
+                \c repoPath. For offline installers, stores binary data in the
+                directory specified by \c binaryPath.
+        \row
+            \li FakeStopProcessForUpdate
+            \li "FakeStopProcessForUpdate" \c processlist
+            \li Matches running processes against the comma-separated entries in \c processlist
+                during uninstallation. If matches are found, shows a messagebox asking the user
+                to stop those processes before continuing.
+        \row
+            \li License
+            \li "License" \c licenses
+            \li Copies the license files specified by \c licenses to a subfolder called \c Licenses
+                in the target directory. This operation is automatically added for packages
+                declaring \c <Licenses> in their package description file.
+        \row
+            \li MinimumProgress
+            \li "MinimumProgress"
+            \li Increases the progress value by one.
+        \row
+            \li SelfRestart
+            \li "SelfRestart" \c core
+            \li Restarts the updater or package manager specified by \c core.
+        \row
+            \li Settings
+            \li "Settings" \c path \c method \c key \c aValue
+            \li Sets or removes the value \c aValue of \c key in the settings file
+                or registry located at \c path, depending on the value of
+                \c method: \c set, \c remove, \c add_array_value, and \c remove_array_value.
     \endtable
+
+    The Extract, License, and MinimumProgress operations are automatically added for matching
+    components that do not overwrite the component::createOperations() method. See also
+    component::autoCreateOperations.
 
     If errors occur, you can test operations manually on the uninstaller or
     installer. However, variables are not resolved, so you need to use absolute

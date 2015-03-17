@@ -1,0 +1,85 @@
+/****************************************************************************
+**
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \qmltype QInstaller
+    \inqmlmodule scripting
+
+    \brief Provides access to the installer status and pages from Qt Script.
+
+    For more information about using the \c QInstaller object in control
+    scripts, see \l{Controller Scripting}.
+
+    For examples of using the pages to support end user workflows, see
+    \l{End User Workflows}.
+*/
+
+/*!
+   \qmlproperty enumeration QInstaller::WizardPage
+
+    The installer has various pre-defined pages that can be used to for example insert pages
+    in a certain place:
+
+    \value  QInstaller.Introduction
+            \l{Introduction Page}
+    \value  QInstaller.TargetDirectory
+            \l{Target Directory Page}
+    \value  QInstaller.ComponentSelection
+            \l{Component Selection Page}
+    \value  QInstaller.LicenseCheck
+            \l{License Agreement Page}
+    \value  QInstaller.StartMenuSelection
+            \l{Start Menu Directory Page}
+    \value  QInstaller.ReadyForInstallation
+            \l{Ready for Installation Page}
+    \value  QInstaller.PerformInstallation
+            \l{Perform Installation Page}
+    \value  QInstaller.InstallationFinished
+            \l{Finished Page}
+
+    \omitvalue  QInstaller.End
+*/
+
+/*!
+    \qmlproperty enumeration QInstaller::status
+
+    Status of the installer.
+
+    Possible values are:
+
+    \value  QInstaller.Success
+            Installation was successful.
+    \value  QInstaller.Failure
+            Installation failed.
+    \value  QInstaller.Running
+            Installation is in progress.
+    \value  QInstaller.Canceled
+            Installation was canceled.
+    \value  QInstaller.Unfinished
+            Installation was not completed.
+    \value  QInstaller.ForceUpdate
+*/

@@ -49,7 +49,7 @@ function abortInstaller()
     // ignore the first empty one
     for (var i = 0; i < error_list.length; ++i) {
         if (error_list[i] !== "") {
-            print(error_list[i]);
+            console.log(error_list[i]);
             abortText += "<li>" + error_list[i] + "</li>"
         }
     }

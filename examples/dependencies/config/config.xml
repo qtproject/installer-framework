@@ -5,6 +5,6 @@
     <Title>Dependency Solving Example</Title>
     <Publisher>Qt-Project</Publisher>
     <StartMenuDir>Qt IFW Examples</StartMenuDir>
-    <TargetDir>@HomeDir@/IfwDependencySolvingExample</TargetDir>
+    <TargetDir>@HomeDir@/IfwExamples/dependencies</TargetDir>
     <CreateLocalRepository>true</CreateLocalRepository>
 </Installer>

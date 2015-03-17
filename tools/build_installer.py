@@ -84,7 +84,13 @@ def package():
     global package_dir
     print 'package ...'
     os.chdir(package_dir)
-    shutil.copytree(os.path.join(build_dir, 'bin'), os.path.join(package_dir, 'bin'), ignore = shutil.ignore_patterns("*.exe.manifest"))
+    shutil.copytree(os.path.join(build_dir, 'bin'), os.path.join(package_dir, 'bin'), ignore = shutil.ignore_patterns("*.exe.manifest","*.exp","*.lib"))
+    if sys.platform == 'linux2':
+        run(('strip',os.path.join(package_dir, 'bin/archivegen')))
+        run(('strip',os.path.join(package_dir, 'bin/binarycreator')))
+        run(('strip',os.path.join(package_dir, 'bin/devtool')))
+        run(('strip',os.path.join(package_dir, 'bin/installerbase')))
+        run(('strip',os.path.join(package_dir, 'bin/repogen')))
     shutil.copytree(os.path.join(build_dir, 'doc'), os.path.join(package_dir, 'doc'))
     shutil.copytree(os.path.join(src_dir, 'examples'), os.path.join(package_dir, 'examples'))
     shutil.copy(os.path.join(src_dir, 'README'), package_dir)

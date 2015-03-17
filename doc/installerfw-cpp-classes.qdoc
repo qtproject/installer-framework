@@ -31,9 +31,9 @@
     \page ifw-cpp-classes.html
     \nextpage ifw-knownissues.html
 
-    \title C++ Classes
+    \title C++ API
 
-    The class documentation is written for developers who develop the Qt
+    The C++ API documentation is written for developers who develop the Qt
     Installer Framework. It describes the internal API, so there is no
     compatibility promise. Further, the documentation is a work in progress and
     therefore parts of it are missing while other parts might be out of date.
@@ -41,6 +41,30 @@
     To create customized installers, use the \l{Scripting API}, instead. For
     more information, see \l {Customizing Installers}.
 
+    \section1 Namespaces
+
+    \table
+    \header
+        \li Namespace
+        \li Description
+    \row
+        \li \l{qinstaller-module}{QInstaller}
+        \li Contains classes to implement the core functionality of the Qt
+            Installer Framework and the installer UI.
+    \row
+        \li \l{KDUpdater}
+        \li Contains classes to automatically detect updates to applications,
+            to retrieve them from external repositories, and to install them.
+            KDUpdater classes are a fork of KDAB's general
+            \l{http://docs.kdab.com/kdtools/2.2.2/group__kdupdater.html}
+            {KDUpdater module}.
+    \endtable
+
+    \section1 QInstaller C++ Classes
+
     \generatelist{classesbymodule QtInstallerFramework}
+
+    \section1 KDUpdater C++ Classes
+
     \generatelist{classesbymodule kdupdater}
 */

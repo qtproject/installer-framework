@@ -22,8 +22,8 @@ CONFIG(static, static|shared) {
 DESTDIR = $$IFW_APP_PATH
 
 exists($$LRELEASE) {
-    QT_LANGUAGES = qtbase_de qt_fr qtbase_ja qt_pl qtbase_ru qt_zh_CN
-    IB_LANGUAGES = de en fr ja pl ru zh_cn
+    QT_LANGUAGES = qtbase_de qt_fr qtbase_ja qt_pl qtbase_ru qt_zh_CN qtbase_it
+    IB_LANGUAGES = de en fr ja pl ru zh_cn it
     defineReplace(prependAll) {
         for(a,$$1):result += $$2$${a}$$3
         return($$result)
@@ -134,9 +134,9 @@ SOURCES = \
           commandlineparser.cpp
 
 win32 {
-    # Force to overwrite the default manifest file with our own extended version.
-    RC_FILE = installerbase_qt5.rc
-    QMAKE_MANIFEST = installerbase.manifest
+    # Use our own manifest file
+    CONFIG -= embed_manifest_exe
+    RC_FILE = installerbase.rc
 
     SOURCES += console_win.cpp
 }

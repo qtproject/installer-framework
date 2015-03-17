@@ -26,25 +26,32 @@
 ****************************************************************************/
 
 /*!
-    \contentspage {index.html}{Qt Installer Framework}
-    \previouspage Qt Installer Framework Examples
-    \page ifw-reference.html
-    \nextpage ifw-globalconfig.html
+    \qmltype console
+    \inqmlmodule scripting
+    \brief Provides methods for logging and debugging.
 
-    \title Reference
+    \keyword console-object
 
-    The following sections contain detailed information about the Qt Installer
-    Framework:
+    You can use the \c console object to print log information about installer
+    functions to the console. The following example uses the \c console object
+    \l{console::log()}{log} method and \l installer object
+    \l{installer::isUpdater()}, \l{installer::isUninstaller()}, and
+    \l{installer::isPackageManager()} methods to display a message that
+    indicates whether the maintenance tool is currently being used to update,
+    remove, or add components.
 
-    \list
-        \li \l{Configuration File}
-        \li \l{Package Directory}
-        \li \l{Controller Scripting}
-        \li \l{Component Scripting}
-        \li \l{Operations}
-        \li \l{Tools}
-        \li \l{Scripting API}
-        \li \l{C++ API}
-    \endlist
+    \code
+    onPackageManagerCoreTypeChanged = function()
+    {
+        console.log("Is Updater: " + installer.isUpdater());
+        console.log("Is Uninstaller: " + installer.isUninstaller());
+        console.log("Is Package Manager: " + installer.isPackageManager());
+    }
+    \endcode
+*/
 
+/*!
+    \qmlmethod void console::log(string value)
+
+    Prints the string specified by \a value to the console.
 */

@@ -76,7 +76,7 @@
             \li \l{Operations}
             \li \l{Tools}
             \li \l{Scripting API}
-            \li \l{C++ Classes}
+            \li \l{C++ API}
         \endlist
         \li \l{Known Issues}
     \endlist
@@ -678,23 +678,10 @@
 
     \section1 Data Directory
 
-    The \c data directory contains the content that is extracted during the
-    installation. The Qt Installer Framework uses the archivegen tool to extract
-    the files from a 7zip archive (.7z).
-
-    You have the following options:
-    \list
-        \li Copy the files to the \c data directory. Before the installer is
-            created, the files are packaged into a 7zip archive.
-        \li Use the archivegen tool to package the files as a 7zip archive and
-            copy it to the \c data directory.
-        \li Use some other tool to package the files as a 7zip compatible
-            archive and copy it to the \c data directory.
-    \endlist
-
-    \note Each of the above options has advantages and disadvantages. We
-    recommend that you use archivegen because it offers faster archive creation
-    and compatibility with 7zip.
+    The \c data directory contains the content that the installer extracts
+    during the installation. You must package the data as a 7zip archive (.7z).
+    You can use either the \l archivegen tool that is delivered with the Qt
+    Installer Framework or some other tool that generates 7zip archives.
 */
 
 /*!
@@ -714,6 +701,8 @@
         \li \l binarycreator
 
         \li \l repogen
+
+        \li \l archivegen
 
     \endlist
 
@@ -883,39 +872,58 @@
         \row
             \li -p or --packages directory
             \li Use \c directory as the \l{Package Directory Structure}
-                {package directory}.
-                Defaults to the current working directory.
+                {package directory}. This is mandatory.
         \row
             \li repository directory
-            \li Target directory to generate the repository. Must not yet exist.
-        \row
-            \li components
-            \li List of components to place into the repository. Includes
-                dependencies.
+            \li Target directory for the repository. During an initial installation, the directory
+                must not yet exist. When updating, the directory may exist and its contents may be
+                overwritten or removed. This is mandatory.
         \row
             \li -e or --exclude p1,...,pn
-            \li Comma-separated list of packages to be retrieved from an online
-                repository. The packages are not included in the installer
-                binary.
+            \li Comma-separated list of packages to be ignored from the set of
+                all packages in the packages directory.
+        \row
+            \li -i or --include p1,...,pn
+            \li Comma-separated list of packages to be used from the set of
+                all packages in the packages directory.
         \row
             \li --update
-            \li Place only the specified packages in the repository, without
-                their dependencies. Make sure to also add the Updates.xml from
-                the repository to update. This option adds the files that you list
-                in the \c {--include} parameter to the end of the Updates.xml file.
+            \li Update all packages in the packages directory. The list can be further
+                filtered with the \c {-i}, \c {-e} parameters.
+        \row
+            \li --update-new-packages
+            \li Update only packages that are new or have a newer version. The
+                list can be further filtered with the \c {-i}, \c{-e}
+                parameters.
+        \row
+            \li -r or --remove
+            \li Force removal of existing target directory before generating it again.
         \row
             \li -v or --verbose
             \li Display debug output.
     \endtable
-    \note We recommend that you use the \c {--update} parameter to update an
-          existing repository, especially if you have a content delivery system.
-          In combination with the \c {--include} parameter which gets only the components
-          with incremented version numbers it generates an update which contains
-          only new files.
-          This helps you avoid updating components that have not changed and
+    \note We recommend that you use the \c {--update-new-packages} parameter
+          to update an existing repository, especially if you have a content delivery
+          system. This helps you avoid updating components that have not changed and
           this makes it much easier for a content delivery system to distribute only
-          new files, because only the updated components are assigned new SHA checksums.
+          new files, because only the updated components are assigned new SHA
+          checksums.
 
+    \section1 archivegen
+
+    You can use \c archivegen to package files and directories into 7zip (.7z)
+    archives.
+
+    The \c archivegen tool expects the following parameters in the following
+    order:
+
+    \code
+    archivegen <name.7z> <data>
+    \endcode
+
+    Where \e <name.7z> is the path and file name of the archive to create and
+    \e <data> contains the paths and names of the files or directories to
+    package into the archive, separated by spaces.
 */
 
 /*!
