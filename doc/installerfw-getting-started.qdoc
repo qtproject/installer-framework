@@ -56,11 +56,18 @@
     yourself. You can skip this if you have downloaded a pre-built version
     of the framework.
 
+    \section2 Supported Compilers
+
+    The Qt Installer Framework can be compiled with Microsoft Visual Studio
+    2013 and newer, GCC 4.7 and newer, and Clang 3.1 and newer.
+
     \section2 Configuring Qt
 
     If you use a statically built Qt to build the Qt Installer Framework
     you do not have to deliver Qt libraries, which enables you to distribute
     installers as one file.
+
+    The minimum required Qt version is 5.4.0.
 
     \section3 Configuring Qt for Windows
 

@@ -16,7 +16,10 @@ Build a static Qt
 ---------------------
 
 Building the Qt Installer Framework from sources requires Qt (version 5.4.0
-or newer). If you want to ship your installer as a single file you have to build
+or newer). Supported compilers are MSVC 2013 or newer, GCC 4.7 or newer,
+and Clang 3.1 or newer.
+
+If you want to ship your installer as a single file you have to build
 Qt and the Qt Installer Framework statically.
 
 See the Qt documentation for the prerequisites and steps to build Qt from sources.
