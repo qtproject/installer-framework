@@ -343,7 +343,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
             return false;
         // append all components to their respective parents
         QHash<QString, Component*>::const_iterator it;
-        for (it = components.begin(); it != components.end(); ++it) {
+        for (it = components.constBegin(); it != components.constEnd(); ++it) {
             QString id = it.key();
             QInstaller::Component *component = it.value();
             while (!id.isEmpty() && component->parentComponent() == 0) {

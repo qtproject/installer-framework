@@ -394,7 +394,7 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
     QFileInfoList entries;
     foreach (const QString &packagesDirectory, packagesDirectories)
         entries.append(QDir(packagesDirectory).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot));
-    for (QFileInfoList::const_iterator it = entries.begin(); it != entries.end(); ++it) {
+    for (QFileInfoList::const_iterator it = entries.constBegin(); it != entries.constEnd(); ++it) {
         if (filterType == Exclude) {
             // Check for current file in exclude list, if found, skip it and remove it from exclude list
             if (packagesToFilter->contains(it->fileName())) {

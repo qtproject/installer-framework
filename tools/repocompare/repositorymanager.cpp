@@ -191,8 +191,8 @@ void RepositoryManager::writeUpdateFile(const QString &fileName)
     }
 
     QStringList items;
-    for (QMap<QString, ComponentDescription>::const_iterator it = updateMap.begin(); it != updateMap.end();
-        ++it) {
+    for (QMap<QString, ComponentDescription>::const_iterator it = updateMap.constBegin();
+         it != updateMap.constEnd(); ++it) {
             if (it.value().update)
                 items.append(it.key());
     }

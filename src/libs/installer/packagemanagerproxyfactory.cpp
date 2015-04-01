@@ -109,7 +109,7 @@ void PackageManagerProxyFactory::setProxyCredentials(const QNetworkProxy &proxy,
     auto p = std::find_if(m_proxyCredentials.begin(), m_proxyCredentials.end(),
                           FindProxyCredential(proxy.hostName(), proxy.port()));
 
-    if (p == m_proxyCredentials.constEnd()) {
+    if (p == m_proxyCredentials.end()) {
         ProxyCredential proxyCredential;
         proxyCredential.host = proxy.hostName();
         proxyCredential.port = proxy.port();

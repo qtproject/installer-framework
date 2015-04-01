@@ -75,7 +75,7 @@ bool LicenseOperation::performOperation()
     dir.mkpath(targetDir);
     setArguments(QStringList(targetDir));
 
-    for (QVariantMap::const_iterator it = licenses.begin(); it != licenses.end(); ++it) {
+    for (QVariantMap::const_iterator it = licenses.constBegin(); it != licenses.constEnd(); ++it) {
         QFile file(targetDir + QDir::separator() + it.key());
         if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
             setError(UserDefinedError);
@@ -93,7 +93,7 @@ bool LicenseOperation::performOperation()
 
 bool LicenseOperation::undoOperation()
 {
-    QVariantMap licenses = value(QLatin1String("licenses")).toMap();
+    const QVariantMap licenses = value(QLatin1String("licenses")).toMap();
     if (licenses.isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("No license files found to delete."));
