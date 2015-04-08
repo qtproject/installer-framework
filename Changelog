@@ -60,7 +60,7 @@
 - Updated and improved translations.
 - Fixed various bugs. (QTIFW-397, QTIFW-469, QTIFW-481, QTIFW-524, QTIFW-538, QTIFW-541, QTIFW-542, QTIFW-562, QTIFW-564, QTIFW-568, QTIFW-569, QTIFW-583, QTIFW-589, QTIFW-593, QTIFW-600, QTIFW-602, QTIFW-605, QTIFW-612, QTIFW-615, QTIFW-616, QTIFW-618, QTIFW-620, QTIFW-621, QTIFW-622, QTIFW-625, QTBUG-633)
 
-Thanks go to Christoph Vogtländer, Sze Howe Koh, Ray Donnelly, Tasuku Suzuki, Takayuki Orito, Sascha Cunz and Cuoghi Massimiliano for contributions.
+Thanks go to Christoph Vogtländer, Sze Howe Koh, Ray Donnelly, Tasuku Suzuki, Takayuki Orito, Sascha Cunz, Zhang Xingtao, Sergey Belyashov and Cuoghi Massimiliano for contributions.
 
 1.6.0
 - No longer requires Xcode command line tools on Mac. (QTBUG-38015)
