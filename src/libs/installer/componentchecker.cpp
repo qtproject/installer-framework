@@ -45,6 +45,12 @@ QStringList ComponentChecker::checkComponent(Component *component)
     PackageManagerCore *core = component->packageManagerCore();
     QStringList checkResult;
 
+    if (component->childCount() && !component->archives().isEmpty()) {
+        checkResult << QString::fromLatin1("Component %1 contains data to be installed "
+            "while having child components. This may not work properly.")
+            .arg(component->name());
+    }
+
     const bool defaultPropertyScriptValue = component->variables().value(scDefault).compare(scScript, Qt::CaseInsensitive) == 0;
     const bool defaultPropertyValue = component->variables().value(scDefault).compare(scTrue, Qt::CaseInsensitive) == 0;
     const QStringList autoDependencies = component->autoDependencies();
@@ -110,7 +116,7 @@ QStringList ComponentChecker::checkComponent(Component *component)
             const QStringList autoDependencies = component->autoDependencies();
             if (!autoDependencies.isEmpty()) {
                 checkResult << QString::fromLatin1("Component %1 auto depends on other components "
-                    "while having children components. This will not work properly.")
+                    "while having child components. This will not work properly.")
                     .arg(component->name());
             }
 
@@ -119,13 +125,13 @@ QStringList ComponentChecker::checkComponent(Component *component)
 
             if (!component->dependencies().isEmpty()) {
                 checkResult << QString::fromLatin1("Component %1 depends on other components "
-                    "while having children components. This will not work properly.")
+                    "while having child components. This will not work properly.")
                     .arg(component->name());
             }
 
             if (!core->dependees(component).isEmpty()) {
                 checkResult << QString::fromLatin1("Other components depend on component %1 "
-                    "which has children components. This will not work properly.")
+                    "which has child components. This will not work properly.")
                     .arg(component->name());
             }
         }
