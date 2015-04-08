@@ -44,7 +44,7 @@ def init():
     basename = os.path.basename(src_dir)
     build_dir = os.path.join(root_dir, basename + '_build')
     package_dir = os.path.join(root_dir, basename + '_pkg')
-    target_path = os.path.join(args.target_dir, 'ifw')
+    target_path = os.path.join(args.target_dir, 'Qt Installer Framework')
 
     print 'source dir: ' + src_dir
     print 'build dir: ' + build_dir

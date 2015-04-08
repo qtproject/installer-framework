@@ -46,8 +46,8 @@
 
     \list
         \li Microsoft Windows XP, and later
-        \li Ubuntu Linux 8.04, and later
-        \li OS X 10.6, and later
+        \li Ubuntu Linux 11.10, and later
+        \li OS X 10.7, and later
     \endlist
 
     \section1 Building from Sources
@@ -56,11 +56,18 @@
     yourself. You can skip this if you have downloaded a pre-built version
     of the framework.
 
+    \section2 Supported Compilers
+
+    The Qt Installer Framework can be compiled with Microsoft Visual Studio
+    2013 and newer, GCC 4.7 and newer, and Clang 3.1 and newer.
+
     \section2 Configuring Qt
 
     If you use a statically built Qt to build the Qt Installer Framework
     you do not have to deliver Qt libraries, which enables you to distribute
     installers as one file.
+
+    The minimum required Qt version is 5.4.0.
 
     \section3 Configuring Qt for Windows
 
@@ -91,7 +98,7 @@
     We recommend that you use the following configuration options for Linux:
 
     \code
-    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -qt-freetype -no-glib -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -no-egl -no-xinput -no-xinput2 -no-sm -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns
+    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -qt-freetype -no-glib -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -no-egl -no-xinput -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns
     \endcode
 
     \section3 Configuring Qt for OS X

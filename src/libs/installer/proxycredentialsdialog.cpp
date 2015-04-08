@@ -42,6 +42,9 @@ ProxyCredentialsDialog::ProxyCredentialsDialog(const QNetworkProxy &proxy, QWidg
     QDialog(parent),
     ui(new Ui::ProxyCredentialsDialog)
 {
+    setWindowTitle(tr("Proxy Credentials"));
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     ui->setupUi(this);
 
     setUserName(proxy.user());
