@@ -1,3 +1,6 @@
+2.0.1
+- Fix crash on exit for Windows XP, Vista (QTIFW-652)
+
 2.0.0
 - Require Qt 5.4 as a minimal version, Qt 4 code removed.
 - Only support Qt 5 on documentation side as well.

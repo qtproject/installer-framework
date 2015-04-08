@@ -1251,8 +1251,12 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     m_updateComponents->setEnabled(ProductKeyCheck::instance()->hasValidKey());
 
 #ifdef Q_OS_WIN
-    m_taskButton = new QWinTaskbarButton(this);
-    connect(core, SIGNAL(metaJobProgress(int)), m_taskButton->progress(), SLOT(setValue(int)));
+    if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
+        m_taskButton = new QWinTaskbarButton(this);
+        connect(core, SIGNAL(metaJobProgress(int)), m_taskButton->progress(), SLOT(setValue(int)));
+    } else {
+        m_taskButton = 0;
+    }
 #endif
 }
 
@@ -1299,14 +1303,16 @@ bool IntroductionPage::validatePage()
     }
 
 #ifdef Q_OS_WIN
-    if (!m_taskButton->window()) {
-        if (QWidget *widget = QApplication::activeWindow())
-            m_taskButton->setWindow(widget->windowHandle());
-    }
+    if (m_taskButton) {
+        if (!m_taskButton->window()) {
+            if (QWidget *widget = QApplication::activeWindow())
+                m_taskButton->setWindow(widget->windowHandle());
+        }
 
-    m_taskButton->progress()->reset();
-    m_taskButton->progress()->resume();
-    m_taskButton->progress()->setVisible(true);
+        m_taskButton->progress()->reset();
+        m_taskButton->progress()->resume();
+        m_taskButton->progress()->setVisible(true);
+    }
 #endif
 
     // fetch updater packages
@@ -1359,7 +1365,8 @@ bool IntroductionPage::validatePage()
     gui()->setSettingsButtonEnabled(true);
 
 #ifdef Q_OS_WIN
-    m_taskButton->progress()->setVisible(!isComplete());
+    if (m_taskButton)
+        m_taskButton->progress()->setVisible(!isComplete());
 #endif
     return isComplete();
 }
@@ -1447,8 +1454,10 @@ void IntroductionPage::setErrorMessage(const QString &error)
     m_errorLabel->setPalette(palette);
 
 #ifdef Q_OS_WIN
-    m_taskButton->progress()->stop();
-    m_taskButton->progress()->setValue(100);
+    if (m_taskButton) {
+        m_taskButton->progress()->stop();
+        m_taskButton->progress()->setValue(100);
+    }
 #endif
 }
 
