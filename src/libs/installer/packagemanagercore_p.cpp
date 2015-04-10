@@ -374,10 +374,6 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
                 else if (component->isInstalled())
                     component->setCheckState(Qt::Checked);
             }
-
-            const QStringList warnings = ComponentChecker::checkComponent(component);
-            foreach (const QString &warning, warnings)
-                qWarning() << warning;
         }
 
         std::sort(m_rootComponents.begin(), m_rootComponents.end(), Component::SortingPriorityGreaterThan());
@@ -396,6 +392,11 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
         restoreCheckState();
 
+        foreach (QInstaller::Component *component, components) {
+            const QStringList warnings = ComponentChecker::checkComponent(component);
+            foreach (const QString &warning, warnings)
+                qWarning() << warning;
+        }
     } catch (const Error &error) {
         clearAllComponentLists();
         emit m_core->finishAllComponentsReset(QList<QInstaller::Component*>());
