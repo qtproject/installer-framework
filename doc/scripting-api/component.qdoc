@@ -83,12 +83,6 @@
 */
 
 /*!
-    \qmlproperty boolean component::selected
-
-    Indicates whether the component is currently selected.
-*/
-
-/*!
     \qmlproperty boolean component::autoCreateOperations
 
     Specifies whether some standard operations for the component should be
