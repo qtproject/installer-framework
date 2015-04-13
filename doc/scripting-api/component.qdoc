@@ -171,6 +171,12 @@
 */
 
 /*!
+    \qmlsignal component::virtualStateChanged()
+
+    Emitted when the virtual state of the component changes.
+*/
+
+/*!
     \qmlmethod string component::value(string key, string value = "")
 
     Returns the value of variable name \a key. If \a key is not known yet, \a defaultValue is returned.
