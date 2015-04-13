@@ -41,6 +41,7 @@
 #include "permissionsettings.h"
 
 #include <QCoreApplication>
+#include <QDataStream>
 #include <QLocalSocket>
 
 namespace QInstaller {

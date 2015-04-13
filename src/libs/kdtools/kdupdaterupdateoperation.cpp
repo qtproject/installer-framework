@@ -36,6 +36,7 @@
 
 #include "kdupdaterapplication.h"
 
+#include <QDataStream>
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>

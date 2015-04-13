@@ -35,9 +35,10 @@
 #ifndef QINSTALLER_REPOSITORYGEN_H
 #define QINSTALLER_REPOSITORYGEN_H
 
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QVector>
+#include <QHash>
+#include <QString>
+#include <QStringList>
+#include <QVector>
 
 namespace QInstallerTools {
 
