@@ -248,11 +248,13 @@
                 \uicontrol Start menu.
         \row
             \li TargetDir
-            \li Default target directory for installation.
+            \li Default target directory for installation. On Linux, this is
+                usually the user's home directory.
         \row
             \li AdminTargetDir
             \li Default target directory for installation with administrator
-                rights.
+                rights. Only available on Linux, where you usually do not want
+                to install in the administrator user's home directory.
         \row
             \li RemoteRepositories
             \li List of remote repositories. This element can contain several \c <Repository> child
