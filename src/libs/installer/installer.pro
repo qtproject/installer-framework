@@ -123,7 +123,8 @@ HEADERS += packagemanagercore.h \
     proxycredentialsdialog.h \
     serverauthenticationdialog.h \
     keepaliveobject.h \
-    systeminfo.h
+    systeminfo.h \
+    localsocket.h
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \

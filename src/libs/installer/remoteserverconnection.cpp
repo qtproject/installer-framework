@@ -39,6 +39,7 @@
 #include "remoteserverconnection_p.h"
 #include "utils.h"
 #include "permissionsettings.h"
+#include "localsocket.h"
 
 #include <QCoreApplication>
 #include <QDataStream>
@@ -71,7 +72,7 @@ private:
 
 void RemoteServerConnection::run()
 {
-    QLocalSocket socket;
+    LocalSocket socket;
     socket.setSocketDescriptor(m_socketDescriptor);
     QScopedPointer<PermissionSettings> settings;
 
@@ -82,10 +83,6 @@ void RemoteServerConnection::run()
 
         if (!receivePacket(&socket, &cmd, &data)) {
             socket.waitForReadyRead(250);
-#if defined(Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(5,5,0)
-            // work around QTBUG-16688
-            QCoreApplication::processEvents();
-#endif
             continue;
         }
 
