@@ -172,6 +172,15 @@
                 (using \c QSettings::NativeFormat, which might be the Windows
                 registry) or by \c application and \c company name. Set \c scope
                 to "SystemScope" to create an entry in the system scope.
+
+                \note: The operation is using QSettings to store the key value pair. QSettings
+                always treats backslash as a special character and provides no API for reading
+                or writing such entries. Do not use slashes ('/' and '\') in section or key names;
+                the backslash character is used to separate sub keys. On windows, '\' are converted
+                by QSettings to '/', which makes them identical. Because the backslash character is
+                used by QSettings to separate sub keys, you cannot read or write windows registry
+                entries that contain slashes or backslashes. You should use a native windows API if
+                you need to do so.
         \row
             \li EnvironmentVariable
             \li "EnvironmentVariable" \c key \c value [\c persistent [\c system]]
