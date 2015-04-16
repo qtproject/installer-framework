@@ -67,7 +67,7 @@ private:
 
 #else
 
-using LocalSocket = QLocalSocket;
+typedef QLocalSocket LocalSocket;
 
 #endif
 
