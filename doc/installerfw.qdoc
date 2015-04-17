@@ -643,8 +643,7 @@
         \row
             \li Essential
             \li Marks the package as essential to force a restart of the
-                \c UpdateAgent or \c MaintenanceTool. This is relevant for
-                updates found with \c UpdateAgent. If there are updates available
+                \c MaintenanceTool. If there are updates available
                 for an essential component, the package manager stays disabled
                 until that component is updated. Newly introduced essential components
                 are automatically installed when running the updater.
