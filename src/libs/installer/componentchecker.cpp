@@ -115,6 +115,19 @@ QStringList ComponentChecker::checkComponent(Component *component)
         }
         if (component->childCount()) {
             if (!autoDependencies.isEmpty()) {
+                /* Use case:
+
+                A (depends on C)
+                A.B
+                C
+
+                Let's say we installed everything.
+                Running maintenance tool and unselecting C will mark A for uninstallation too,
+                while A.B stays marked as installed.
+                After running maintenance tool again, it will check A automatically
+                (since its child is selected), this will also mark C for installation (dependecy).
+                Moreover, the "Next" button will be disabled.
+                */
                 checkResult << QString::fromLatin1("Component %1 auto depends on other components "
                     "while having children components. This will not work properly.")
                     .arg(component->name());
@@ -127,6 +140,20 @@ QStringList ComponentChecker::checkComponent(Component *component)
             }
 
             if (!core->dependees(component).isEmpty()) {
+                /*
+                Use case:
+
+                A
+                A.B
+                C (depends on A)
+
+                Selecting C marks A for installation too, A.B is not marked for installation.
+                So after installation, A and C are installed, while A.B is not.
+                Maintenance tool will uncheck A automatically
+                (since none of its children are installed) this will also mark C
+                for uninstallation (dependency).
+                Moreover, the "Next" button will be disabled.
+                */
                 checkResult << QString::fromLatin1("Other components depend on component %1 "
                     "which has children components. This will not work properly.")
                     .arg(component->name());
