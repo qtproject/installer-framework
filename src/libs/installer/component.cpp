@@ -1341,8 +1341,9 @@ void Component::setLocalTempPath(const QString &tempLocalPath)
 void Component::updateModelData(const QString &key, const QString &data)
 {
     if (key == scVirtual) {
-        if (data.toLower() == scTrue)
-            setData(d->m_core->virtualComponentsFont(), Qt::FontRole);
+        setData(data.toLower() == scTrue
+                ? d->m_core->virtualComponentsFont()
+                : QFont(), Qt::FontRole);
         if (Component *const parent = parentComponent()) {
             parent->removeComponent(this);
             parent->appendComponent(this);
