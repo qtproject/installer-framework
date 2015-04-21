@@ -248,11 +248,13 @@
                 \uicontrol Start menu.
         \row
             \li TargetDir
-            \li Default target directory for installation.
+            \li Default target directory for installation. On Linux, this is
+                usually the user's home directory.
         \row
             \li AdminTargetDir
             \li Default target directory for installation with administrator
-                rights.
+                rights. Only available on Linux, where you usually do not want
+                to install in the administrator user's home directory.
         \row
             \li RemoteRepositories
             \li List of remote repositories. This element can contain several \c <Repository> child
@@ -641,8 +643,7 @@
         \row
             \li Essential
             \li Marks the package as essential to force a restart of the
-                \c UpdateAgent or \c MaintenanceTool. This is relevant for
-                updates found with \c UpdateAgent. If there are updates available
+                \c MaintenanceTool. If there are updates available
                 for an essential component, the package manager stays disabled
                 until that component is updated. Newly introduced essential components
                 are automatically installed when running the updater.

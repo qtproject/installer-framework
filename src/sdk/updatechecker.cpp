@@ -80,7 +80,7 @@ int UpdateChecker::check()
     QInstaller::BinaryContent::readBinaryContent(&binary, &operations, &manager, &magicMarker,
         cookie);
 
-    if (magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
+    if (magicMarker == QInstaller::BinaryContent::MagicInstallerMarker)
         throw QInstaller::Error(QLatin1String("Installers cannot check for updates."));
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));

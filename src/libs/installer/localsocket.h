@@ -32,37 +32,43 @@
 **
 **************************************************************************/
 
-#include "keepaliveobject.h"
-#include "remoteclient.h"
-#include "localsocket.h"
+#ifndef LOCALSOCKET_H
+#define LOCALSOCKET_H
 
-#include <QTimer>
+#include <QLocalSocket>
 
-namespace QInstaller {
+#if defined(Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(5,5,0)
 
-KeepAliveObject::KeepAliveObject()
-    : m_timer(0)
-    , m_socket(0)
+// This is a crude hack to work around QLocalSocket::waitForReadyRead returning instantly
+// if there are still bytes left in the buffer. This has been fixed in Qt 5.5.0 ...
+class LocalSocket : public QLocalSocket
 {
-}
+public:
+    LocalSocket(QObject *parent = 0) : QLocalSocket(parent), inReadyRead(false)
+    {
+    }
 
-void KeepAliveObject::start()
-{
-    m_timer = new QTimer(this);
-    m_socket = new LocalSocket(this);
+    qint64 bytesAvailable() const {
+        if (inReadyRead)
+            return 0;
+        return QLocalSocket::bytesAvailable();
+    }
 
-    connect(m_timer, &QTimer::timeout, [this]() {
-        if (m_socket->state() != QLocalSocket::UnconnectedState)
-            return;
-        m_socket->connectToServer(RemoteClient::instance().socketName());
-    });
+    bool waitForReadyRead(int msecs = 30000) {
+        inReadyRead = true;
+        bool result = QLocalSocket::waitForReadyRead(msecs);
+        inReadyRead = false;
+        return result;
+    }
 
-    connect(m_socket, &QLocalSocket::connected, [this]() {
-        m_socket->close();
-    });
+private:
+    bool inReadyRead;
+};
 
-    m_timer->setInterval(5000);
-    m_timer->start();
-}
+#else
 
-} // namespace QInstaller
+typedef QLocalSocket LocalSocket;
+
+#endif
+
+#endif // LOCALSOCKET_H

@@ -35,6 +35,7 @@
 #include "repository.h"
 #include "kdupdaterfiledownloaderfactory.h"
 
+#include <QDataStream>
 #include <QFileInfo>
 #include <QStringList>
 

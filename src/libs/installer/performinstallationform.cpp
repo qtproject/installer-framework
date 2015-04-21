@@ -89,8 +89,12 @@ PerformInstallationForm::PerformInstallationForm(QObject *parent)
     , m_updateTimer(0)
 {
 #ifdef Q_OS_WIN
-    m_taskButton = new QWinTaskbarButton(this);
-    m_taskButton->progress()->setVisible(true);
+    if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
+        m_taskButton = new QWinTaskbarButton(this);
+        m_taskButton->progress()->setVisible(true);
+    } else {
+        m_taskButton = 0;
+    }
 #endif
 }
 
@@ -177,9 +181,11 @@ void PerformInstallationForm::updateProgress()
 
     m_progressBar->setValue(progressPercentage);
 #ifdef Q_OS_WIN
-    if (!m_taskButton->window())
-        m_taskButton->setWindow(QApplication::activeWindow()->windowHandle());
-    m_taskButton->progress()->setValue(progressPercentage);
+    if (m_taskButton) {
+        if (!m_taskButton->window())
+            m_taskButton->setWindow(QApplication::activeWindow()->windowHandle());
+        m_taskButton->progress()->setValue(progressPercentage);
+    }
 #endif
 
     static QString lastLabelText;

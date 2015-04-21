@@ -42,8 +42,13 @@ namespace QInstaller {
 
 QStringList ComponentChecker::checkComponent(Component *component)
 {
-    PackageManagerCore *core = component->packageManagerCore();
     QStringList checkResult;
+    if (!component)
+        return checkResult;
+
+    PackageManagerCore *core = component->packageManagerCore();
+    if (!core)
+        return checkResult;
 
     if (component->childCount() && !component->archives().isEmpty()) {
         checkResult << QString::fromLatin1("Component %1 contains data to be installed "
@@ -80,7 +85,7 @@ QStringList ComponentChecker::checkComponent(Component *component)
         foreach (const QString &dependency, dependencies) {
             Component *dependencyComponent = PackageManagerCore::componentByName(
                         dependency, allComponents);
-            if (autoDependencies.contains(dependencyComponent->name())) {
+            if (dependencyComponent && autoDependencies.contains(dependencyComponent->name())) {
                 checkResult << QString::fromLatin1("Component %1 specifies both dependency "
                     "and auto dependency on component %2. The dependency might be superfluous.")
                     .arg(component->name(), dependencyComponent->name());

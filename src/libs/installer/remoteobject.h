@@ -101,10 +101,6 @@ public:
                     "Bytes expected: %2, Bytes received: %3. Error: %4").arg(name).arg(0)
                     .arg(m_socket->bytesAvailable()).arg(m_socket->errorString()));
             }
-#if defined Q_OS_WIN && QT_VERSION < QT_VERSION_CHECK(5,5,0)
-            // work around QTBUG-16688
-            QCoreApplication::processEvents();
-#endif
         }
 
         Q_ASSERT(command == Protocol::Reply);

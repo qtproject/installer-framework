@@ -557,9 +557,11 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
         }
 
         QScopedPointer<QTranslator> translator(new QTranslator(this));
-        if (!translator->load(filename))
-            throw Error(tr("Could not open the requested translation file '%1'.").arg(filename));
-        qApp->installTranslator(translator.take());
+        if (translator->load(filename)) {
+            // Do not throw if translator returns false as it may just be an intentionally
+            // empty file. See also QTBUG-31031
+            qApp->installTranslator(translator.take());
+        }
     }
 }
 
