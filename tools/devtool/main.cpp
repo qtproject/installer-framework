@@ -37,7 +37,6 @@
 #include "operationrunner.h"
 
 #include <binarycontent.h>
-#include <binaryformat.h>
 #include <binaryformatenginehandler.h>
 #include <errors.h>
 #include <fileio.h>
@@ -50,39 +49,122 @@
 #include <QFileInfo>
 #include <QResource>
 
+#include <iomanip>
 #include <iostream>
+
+struct Command
+{
+    char* command;
+    char* description;
+    qint32 argC;
+    char* arguments;
+    char* argDescription;
+} Commands[] = {
+    { "dump", "Dumps the binary content that belongs to an installer or maintenance tool into "
+        "target folder.", 2, "<binary> <targetfolder>", "The <binary> containing the data to "
+        "dump.\nThe <targetfolder> to dump the data in."
+    },
+
+    { "update", "Updates existing installer or maintenance tool with a new installer base.", 2,
+        "<binary> <installerbase>", "The <binary> to update.\nThe <installerbase> to use as update."
+    },
+
+    { "operation", "Executes an operation with with a given mode and a list of arguments. ", 2,
+        "<binary> <mode,name,args,...>", "The <binary> to run the operation with.\n"
+        "<mode,name,args,...> 'mode' can be DO or UNDO. 'name' of the operation. 'args,...' "
+        "used to run the operation."
+    }
+};
+
+#define DESCRITION_LENGTH 60
+#define SETW_ALIGNLEFT(X) std::setw(X) << std::setiosflags(std::ios::left)
+
+static int fail(const QString &message)
+{
+    std::cerr << qPrintable(message) << " See 'devtool --help'." << std::endl;
+    return EXIT_FAILURE;
+}
+
+static QStringList split(int index, const QString &description)
+{
+    QStringList result;
+    if (description.length() <= DESCRITION_LENGTH)
+        return result << description;
+
+    const int lastIndexOf = description.left(index + DESCRITION_LENGTH)
+        .lastIndexOf(QLatin1Char(' '));
+    result << description.left(lastIndexOf);
+    return result + split(lastIndexOf + 1, description.mid(lastIndexOf + 1));
+}
+
+// -- main
 
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
     app.setApplicationVersion(QLatin1String("1.0.0"));
 
-    QCommandLineOption verbose(QLatin1String("verbose"),
-        QLatin1String("Verbose mode. Prints out more information."));
-    QCommandLineOption dump(QLatin1String("dump"),
-        QLatin1String("Dumps the binary content that belongs to an installer or maintenance tool "
-        "into target."), QLatin1String("folder"));
-    QCommandLineOption run(QLatin1String("operation"),
-        QLatin1String("Executes an operation with a list of arguments. Mode can be DO or UNDO."),
-        QLatin1String("mode,name,args,..."));
-    QCommandLineOption update(QLatin1String("update"),
-        QLatin1String("Updates existing installer or maintenance tool with a new installer base."),
-        QLatin1String("file"));
-
     QCommandLineParser parser;
-    parser.addHelpOption();
-    parser.addVersionOption();
+    QCommandLineOption help = parser.addHelpOption();
+    QCommandLineOption version = parser.addVersionOption();
+    QCommandLineOption verbose(QLatin1String("verbose"), QLatin1String("Verbose mode. Prints out "
+        "more information."));
     parser.addOption(verbose);
-    parser.addOption(update);
-    parser.addOption(dump);
-    parser.addOption(run);
-    parser.addPositionalArgument(QLatin1String("binary"), QLatin1String("Existing installer or "
-        "maintenance tool."));
 
-    parser.process(app.arguments());
-    const QStringList arguments = parser.positionalArguments();
-    if (arguments.isEmpty() || (arguments.count() > 1))
-        parser.showHelp(EXIT_FAILURE);
+    parser.parse(app.arguments());
+    if (parser.isSet(version)) {
+        parser.showVersion();
+        return EXIT_SUCCESS;
+    }
+
+    if (parser.isSet(help)) {
+        const QString command = parser.positionalArguments().value(0);
+        if (!command.isEmpty()) {
+            for (const auto &c : Commands) {
+                if (QLatin1String(c.command) == command) {
+                    parser.clearPositionalArguments();
+                    parser.addPositionalArgument(QString::fromLatin1("%1 %2").arg(QLatin1String(c
+                        .command), QLatin1String(c.arguments)), QLatin1String(c.argDescription));
+                    parser.showHelp(EXIT_SUCCESS);
+                }
+            }
+            return fail(QString::fromLatin1("'%1' is not a devtool command.").arg(command));
+        }
+
+        QString helpText = parser.helpText();
+        helpText.insert(helpText.indexOf(QLatin1Char(']')) + 1, QLatin1String(" command <args>"));
+        std::cout << qPrintable(helpText) << std::endl;
+        std::cout << "Available commands (mutually exclusive):" << std::endl;
+        for (const auto &c : Commands) {
+            QStringList lines = split(0, QLatin1String(c.description));
+            std::cout << SETW_ALIGNLEFT(2) << "  " << SETW_ALIGNLEFT(16) << c.command
+                << SETW_ALIGNLEFT(DESCRITION_LENGTH) << qPrintable(lines.takeFirst()) << std::endl;
+            foreach (const QString &line, lines) {
+                std::cout << SETW_ALIGNLEFT(18) <<  QByteArray(18, ' ').constData()
+                    << qPrintable(line) << std::endl;
+            }
+        }
+        std::cout << std::endl << "Use 'devtool --help <command>' to read about a specific command."
+            << std::endl;
+        return EXIT_SUCCESS;
+    }
+
+    QStringList arguments = parser.positionalArguments();
+    if (arguments.isEmpty())
+        return fail(QLatin1String("Missing command."));
+
+    bool found = false;
+    const QString command = arguments.takeFirst();
+    for (const auto &c : Commands) {
+        if (found = (QLatin1String(c.command) == command)) {
+            if (arguments.count() != c.argC)
+                return fail(QString::fromLatin1("%1: wrong argument count.").arg(command));
+            break;
+        }
+    }
+
+    if (!found)
+        return fail(QString::fromLatin1("'%1' is not a devtool command.").arg(command));
 
     QInstaller::init();
     QInstaller::setVerbose(parser.isSet(verbose));
@@ -121,9 +203,9 @@ int main(int argc, char *argv[])
             layout = QInstaller::BinaryContent::binaryLayout(&tmp, cookie);
             tmp.close();
 
-            if (parser.isSet(update)) {
+            if (command == QLatin1String("update")) {
                 BinaryReplace br(layout);   // To update the binary we do not need any mapping.
-                return br.replace(parser.value(update), QFileInfo(arguments.first())
+                return br.replace(arguments.last(), QFileInfo(arguments.first())
                     .absoluteFilePath());
             }
         }
@@ -152,22 +234,23 @@ int main(int argc, char *argv[])
                 resource->close();
         }
 
-        if (parser.isSet(dump)) {
+        if (command == QLatin1String("dump")) {
             // To dump the content we do not need the binary format engine.
             BinaryDump bd;
-            result = bd.dump(manager, parser.value(dump));
-        } else if (parser.isSet(run)) {
+            result = bd.dump(manager, arguments.last());
+        } else if (command == QLatin1String("operation")) {
             QInstaller::BinaryFormatEngineHandler::instance()->registerResources(manager
                 .collections());    // setup the binary format engine
 
             OperationRunner runner(magicMarker, operations);
-            const QStringList arguments = parser.value(run).split(QLatin1Char(','));
+            const QStringList arguments = arguments.last().split(QLatin1Char(','));
             if (arguments.first() == QLatin1String("DO"))
                 result = runner.runOperation(arguments.mid(1), OperationRunner::RunMode::Do);
             else if (arguments.first() == QLatin1String("UNDO"))
                 result = runner.runOperation(arguments.mid(1), OperationRunner::RunMode::Undo);
             else
-                std::cerr << "Malformed argument: " << qPrintable(parser.value(run)) << std::endl;
+                std::cerr << "Malformed argument: " << qPrintable(arguments.last()) << std::endl;
+
         }
     } catch (const QInstaller::Error &error) {
         std::cerr << qPrintable(error.message()) << std::endl;
