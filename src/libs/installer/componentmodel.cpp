@@ -577,7 +577,7 @@ QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compone
     // we can start in descending order to check node and tri-state nodes properly
     for (int i = sortedNodes.count(); i > 0; i--) {
         Component * const node = sortedNodes.at(i - 1);
-        if (!node->isCheckable() || !node->isEnabled())
+        if (!node->isCheckable() || !node->isEnabled() || !node->autoDependencies().isEmpty())
             continue;
 
         Qt::CheckState newState = state;
