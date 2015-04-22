@@ -395,7 +395,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
         foreach (QInstaller::Component *component, components) {
             const QStringList warnings = ComponentChecker::checkComponent(component);
             foreach (const QString &warning, warnings)
-                qWarning() << warning;
+                qCWarning(componentChecker) << warning;
         }
     } catch (const Error &error) {
         clearAllComponentLists();

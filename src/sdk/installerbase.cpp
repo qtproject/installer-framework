@@ -59,6 +59,7 @@
 #include <QTemporaryFile>
 #include <QTranslator>
 #include <QUuid>
+#include <QLoggingCategory>
 
 InstallerBase::InstallerBase(int &argc, char *argv[])
     : SDKApp<QApplication>(argc, argv)
@@ -74,6 +75,8 @@ InstallerBase::~InstallerBase()
 
 int InstallerBase::run()
 {
+    QLoggingCategory::setFilterRules(QLatin1String("ifw.componentChecker = false"));
+
     KDRunOnceChecker runCheck(qApp->applicationDirPath() + QLatin1String("/lockmyApp1234865.lock"));
     if (runCheck.isRunning(KDRunOnceChecker::ConditionFlag::Lockfile)) {
         // It is possible to install an application and thus the maintenance tool into a

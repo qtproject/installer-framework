@@ -40,6 +40,8 @@
 
 namespace QInstaller {
 
+Q_LOGGING_CATEGORY(componentChecker, "ifw.componentChecker")
+
 QStringList ComponentChecker::checkComponent(Component *component)
 {
     QStringList checkResult;
