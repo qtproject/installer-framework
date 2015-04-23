@@ -35,6 +35,7 @@
 #include "commandlineparser.h"
 
 #include "constants.h"
+#include "globals.h"
 
 namespace CommandLineOptions {
 const char KeyValue[] = "Key=Value";
@@ -75,6 +76,15 @@ CommandLineParser::CommandLineParser()
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ShowVirtualComponents),
         QLatin1String("Show virtual components in installer and package manager.")));
+
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::LoggingRules),
+        QLatin1String("Enables logging according to passed rules. "
+        "Comma separated logging rules have the following syntax: "
+        "loggingCategory=true/false. "
+        "Passing empty logging rules enables all logging categories. "
+        "The following logging categories are available:\n")
+        + QInstaller::loggingCategories().join(QLatin1Char('\n')),
+        QLatin1String("rules")));
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::CreateLocalRepository),
         QLatin1String("Create a local repository inside the installation directory. This option "

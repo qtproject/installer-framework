@@ -33,8 +33,24 @@
 **************************************************************************/
 #include "globals.h"
 
+const char IFW_COMPONENT_CHECKER[] = "ifw.componentChecker";
+
+namespace QInstaller
+{
+
+Q_LOGGING_CATEGORY(lcComponentChecker, IFW_COMPONENT_CHECKER)
+
 Q_GLOBAL_STATIC_WITH_ARGS(QRegExp, staticCommaRegExp, (QLatin1String("\\b(,|, )\\b")));
-QRegExp QInstaller::commaRegExp()
+QRegExp commaRegExp()
 {
     return *staticCommaRegExp();
 }
+
+QStringList loggingCategories()
+{
+    static QStringList categories = QStringList() << QLatin1String(IFW_COMPONENT_CHECKER);
+    return categories;
+}
+
+} // namespace QInstaller
+

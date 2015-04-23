@@ -75,8 +75,6 @@ InstallerBase::~InstallerBase()
 
 int InstallerBase::run()
 {
-    QLoggingCategory::setFilterRules(QLatin1String("ifw.componentChecker = false"));
-
     KDRunOnceChecker runCheck(qApp->applicationDirPath() + QLatin1String("/lockmyApp1234865.lock"));
     if (runCheck.isRunning(KDRunOnceChecker::ConditionFlag::Lockfile)) {
         // It is possible to install an application and thus the maintenance tool into a
@@ -108,14 +106,23 @@ int InstallerBase::run()
     QInstaller::BinaryContent::readBinaryContent(&binary, &oldOperations, &manager, &magicMarker,
         cookie);
 
+    CommandLineParser parser;
+    parser.parse(arguments());
+
+    QString loggingRules(QLatin1String("ifw.* = false")); // disable all by default
     if (QInstaller::isVerbose()) {
         qDebug() << "Language:" << QLocale().uiLanguages().value(0,
             QLatin1String("No UI language set")).toUtf8().constData();
         qDebug() << "Arguments: " << arguments().join(QLatin1String(", ")).toUtf8().constData();
-    }
 
-    CommandLineParser parser;
-    parser.parse(arguments());
+        loggingRules = QString(); // enable all in verbose mode
+        if (parser.isSet(QLatin1String(CommandLineOptions::LoggingRules))) {
+            loggingRules = parser.value(QLatin1String(CommandLineOptions::LoggingRules))
+                           .split(QLatin1Char(','), QString::SkipEmptyParts)
+                           .join(QLatin1Char('\n')); // take rules from command line
+        }
+    }
+    QLoggingCategory::setFilterRules(loggingRules);
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
     if (parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {

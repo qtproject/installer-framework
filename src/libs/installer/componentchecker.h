@@ -37,11 +37,7 @@
 #include "installer_global.h"
 #include <QCoreApplication>
 
-#include <QLoggingCategory>
-
 namespace QInstaller {
-
-Q_DECLARE_LOGGING_CATEGORY(componentChecker)
 
 class Component;
 

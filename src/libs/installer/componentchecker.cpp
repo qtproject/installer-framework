@@ -37,10 +37,9 @@
 #include "component.h"
 #include "constants.h"
 #include "packagemanagercore.h"
+#include "globals.h"
 
 namespace QInstaller {
-
-Q_LOGGING_CATEGORY(componentChecker, "ifw.componentChecker")
 
 QStringList ComponentChecker::checkComponent(Component *component)
 {
