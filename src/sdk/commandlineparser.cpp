@@ -82,6 +82,8 @@ CommandLineParser::CommandLineParser()
         "Comma separated logging rules have the following syntax: "
         "loggingCategory=true/false. "
         "Passing empty logging rules enables all logging categories. "
+        "The following rules enable a single category: "
+        "ifw.*=false,ifw.category=true "
         "The following logging categories are available:\n")
         + QInstaller::loggingCategories().join(QLatin1Char('\n')),
         QLatin1String("rules")));

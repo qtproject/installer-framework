@@ -51,6 +51,7 @@
 #include <productkeycheck.h>
 #include <settings.h>
 #include <utils.h>
+#include <globals.h>
 
 #include <kdrunoncechecker.h>
 #include <kdupdaterfiledownloaderfactory.h>
@@ -111,10 +112,6 @@ int InstallerBase::run()
 
     QString loggingRules(QLatin1String("ifw.* = false")); // disable all by default
     if (QInstaller::isVerbose()) {
-        qDebug() << "Language:" << QLocale().uiLanguages().value(0,
-            QLatin1String("No UI language set")).toUtf8().constData();
-        qDebug() << "Arguments: " << arguments().join(QLatin1String(", ")).toUtf8().constData();
-
         loggingRules = QString(); // enable all in verbose mode
         if (parser.isSet(QLatin1String(CommandLineOptions::LoggingRules))) {
             loggingRules = parser.value(QLatin1String(CommandLineOptions::LoggingRules))
@@ -123,6 +120,10 @@ int InstallerBase::run()
         }
     }
     QLoggingCategory::setFilterRules(loggingRules);
+
+    qCDebug(QInstaller::lcTranslations) << "Language:" << QLocale().uiLanguages()
+        .value(0, QLatin1String("No UI language set")).toUtf8().constData();
+    qDebug() << "Arguments: " << arguments().join(QLatin1String(", ")).toUtf8().constData();
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
     if (parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
@@ -144,8 +145,8 @@ int InstallerBase::run()
         ProductKeyCheck::instance()->addPackagesFromXml(QLatin1String(":/metadata/Updates.xml"));
         BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
     }
-    if (QInstaller::isVerbose())
-        dumpResourceTree();
+
+    dumpResourceTree();
 
     QString controlScript;
     if (parser.isSet(QLatin1String(CommandLineOptions::Script))) {
@@ -294,13 +295,13 @@ int InstallerBase::run()
 
 void InstallerBase::dumpResourceTree() const
 {
-    qDebug() << "Resource tree:";
+    qCDebug(QInstaller::lcResources) << "Resource tree:";
     QDirIterator it(QLatin1String(":/"), QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
         QDirIterator::Subdirectories);
     while (it.hasNext()) {
         if (it.next().startsWith(QLatin1String(":/qt-project.org")))
             continue;
-        qDebug() << "    " << it.filePath().toUtf8().constData();
+        qCDebug(QInstaller::lcResources) << "    " << it.filePath().toUtf8().constData();
     }
 }
 

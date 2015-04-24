@@ -34,22 +34,29 @@
 #include "globals.h"
 
 const char IFW_COMPONENT_CHECKER[] = "ifw.componentChecker";
+const char IFW_RESOURCES[] = "ifw.resources";
+const char IFW_TRANSLATIONS[] = "ifw.translations";
 
 namespace QInstaller
 {
 
 Q_LOGGING_CATEGORY(lcComponentChecker, IFW_COMPONENT_CHECKER)
+Q_LOGGING_CATEGORY(lcResources, IFW_RESOURCES)
+Q_LOGGING_CATEGORY(lcTranslations, IFW_TRANSLATIONS)
+
+QStringList loggingCategories()
+{
+    static QStringList categories = QStringList()
+            << QLatin1String(IFW_COMPONENT_CHECKER)
+            << QLatin1String(IFW_RESOURCES)
+            << QLatin1String(IFW_TRANSLATIONS);
+    return categories;
+}
 
 Q_GLOBAL_STATIC_WITH_ARGS(QRegExp, staticCommaRegExp, (QLatin1String("\\b(,|, )\\b")));
 QRegExp commaRegExp()
 {
     return *staticCommaRegExp();
-}
-
-QStringList loggingCategories()
-{
-    static QStringList categories = QStringList() << QLatin1String(IFW_COMPONENT_CHECKER);
-    return categories;
 }
 
 } // namespace QInstaller

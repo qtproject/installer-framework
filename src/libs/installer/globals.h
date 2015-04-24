@@ -42,9 +42,12 @@
 namespace QInstaller {
 
 Q_DECLARE_LOGGING_CATEGORY(lcComponentChecker)
+Q_DECLARE_LOGGING_CATEGORY(lcResources)
+Q_DECLARE_LOGGING_CATEGORY(lcTranslations)
+
+QStringList INSTALLER_EXPORT loggingCategories();
 
 QRegExp INSTALLER_EXPORT commaRegExp();
-QStringList INSTALLER_EXPORT loggingCategories();
 
 }   // QInstaller
 
