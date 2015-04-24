@@ -77,15 +77,7 @@ bool RemoteObject::authorize()
     m_socket = new LocalSocket;
     m_socket->connectToServer(RemoteClient::instance().socketName());
 
-    QElapsedTimer stopWatch;
-    stopWatch.start();
-    while ((m_socket->state() == QLocalSocket::ConnectingState)
-        && (stopWatch.elapsed() < 30000)) {
-        if ((stopWatch.elapsed() % 2500) == 0)
-            QCoreApplication::processEvents();
-    }
-
-    if (m_socket->state() == QLocalSocket::ConnectedState) {
+    if (m_socket->waitForConnected()) {
         bool authorized = callRemoteMethod<bool>(QString::fromLatin1(Protocol::Authorize),
                                                  RemoteClient::instance().authorizationKey());
         if (authorized)
