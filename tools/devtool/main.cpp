@@ -54,11 +54,11 @@
 
 struct Command
 {
-    char* command;
-    char* description;
+    const char* command;
+    const char* description;
     qint32 argC;
-    char* arguments;
-    char* argDescription;
+    const char* arguments;
+    const char* argDescription;
 } Commands[] = {
     { "dump", "Dumps the binary content that belongs to an installer or maintenance tool into "
         "target folder.", 2, "<binary> <targetfolder>", "The <binary> containing the data to "
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
     bool found = false;
     const QString command = arguments.takeFirst();
     for (const auto &c : Commands) {
-        if (found = (QLatin1String(c.command) == command)) {
+        if ((found = (QLatin1String(c.command) == command))) {
             if (arguments.count() != c.argC)
                 return fail(QString::fromLatin1("%1: wrong argument count.").arg(command));
             break;
