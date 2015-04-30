@@ -940,11 +940,6 @@ void Component::addOperation(Operation *operation)
 */
 void Component::addElevatedOperation(Operation *operation)
 {
-    if (value(scRequiresAdminRights, scFalse) != scTrue) {
-        qWarning() << QString::fromLatin1("Component %1 uses addElevatedOperation in the script, "
-                                          "but it does not have the needed RequiresAdminRights tag"
-                                          ).arg(name());
-    }
     addOperation(operation);
     operation->setValue(QLatin1String("admin"), true);
 }
@@ -1341,8 +1336,9 @@ void Component::setLocalTempPath(const QString &tempLocalPath)
 void Component::updateModelData(const QString &key, const QString &data)
 {
     if (key == scVirtual) {
-        if (data.toLower() == scTrue)
-            setData(d->m_core->virtualComponentsFont(), Qt::FontRole);
+        setData(data.toLower() == scTrue
+                ? d->m_core->virtualComponentsFont()
+                : QFont(), Qt::FontRole);
         if (Component *const parent = parentComponent()) {
             parent->removeComponent(this);
             parent->appendComponent(this);

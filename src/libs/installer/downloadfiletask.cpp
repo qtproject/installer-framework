@@ -1,3 +1,4 @@
+
 /**************************************************************************
 **
 ** Copyright (C) 2015 The Qt Company Ltd.
@@ -34,11 +35,9 @@
 #include "downloadfiletask.h"
 
 #include "downloadfiletask_p.h"
-#include "observer.h"
 
 #include <QCoreApplication>
 #include <QEventLoop>
-#include <QFile>
 #include <QFileInfo>
 #include <QNetworkProxyFactory>
 #include <QSslError>
@@ -62,16 +61,10 @@ Downloader::Downloader()
 Downloader::~Downloader()
 {
     m_nam.disconnect();
-    foreach (QNetworkReply *const reply, m_downloads.keys()) {
-        reply->disconnect();
-        reply->abort();
-        reply->deleteLater();
-    }
-
-    foreach (const Data &data, m_downloads.values()) {
-        data.file->close();
-        delete data.file;
-        delete data.observer;
+    for (const auto &pair : m_downloads) {
+        pair.first->disconnect();
+        pair.first->abort();
+        pair.first->deleteLater();
     }
 }
 
@@ -119,7 +112,34 @@ void Downloader::onReadyRead()
     if (!reply)
         return;
 
-    const Data &data = m_downloads[reply];
+    Data &data = *m_downloads[reply];
+    if (!data.file) {
+        std::unique_ptr<QFile> file = Q_NULLPTR;
+        const QString target = data.taskItem.target();
+        if (target.isEmpty()) {
+            std::unique_ptr<QTemporaryFile> tmp(new QTemporaryFile);
+            tmp->setAutoRemove(false);
+            file = std::move(tmp);
+        } else {
+            std::unique_ptr<QFile> tmp(new QFile(target));
+            file = std::move(tmp);
+        }
+
+        if (file->exists() && (!QFileInfo(file->fileName()).isFile())) {
+            m_futureInterface->reportException(TaskException(tr("Target file '%1' already exists "
+                "but is not a file.").arg(file->fileName())));
+            return;
+        }
+
+        if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            //: %2 is a sentence describing the error
+            m_futureInterface->reportException(TaskException(tr("Could not open target '%1' for "
+                "write. Error: %2.").arg(file->fileName(), file->errorString())));
+            return;
+        }
+        data.file = std::move(file);
+    }
+
     if (!data.file->isOpen()) {
         //: %2 is a sentence describing the error.
         m_futureInterface->reportException(
@@ -154,8 +174,8 @@ void Downloader::onReadyRead()
         data.observer->addCheckSumData(buffer.data(), read);
 
         int progress = m_finished * 100;
-        foreach (const Data &data, m_downloads.values())
-            progress += data.observer->progressValue();
+        for (const auto &pair : m_downloads)
+            progress += pair.second->observer->progressValue();
         if (!reply->attribute(QNetworkRequest::RedirectionTargetAttribute).isValid()) {
             m_futureInterface->setProgressValueAndText(progress / m_items.count(),
                 data.observer->progressText());
@@ -165,18 +185,16 @@ void Downloader::onReadyRead()
 
 void Downloader::onFinished(QNetworkReply *reply)
 {
-    const Data &data = m_downloads[reply];
-    const QString filename = data.file->fileName();
+    Data &data = *m_downloads[reply];
+    const QString filename = data.file ? data.file->fileName() : QString();
     if (!m_futureInterface->isCanceled()) {
         if (reply->attribute(QNetworkRequest::RedirectionTargetAttribute).isValid()) {
             const QUrl url = reply->url()
                 .resolved(reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl());
             const QList<QUrl> redirects = m_redirects.values(reply);
             if (!redirects.contains(url)) {
-                data.file->close();
-                data.file->remove();
-                delete data.file;
-                delete data.observer;
+                if (data.file)
+                    data.file->remove();
 
                 FileTaskItem taskItem = data.taskItem;
                 taskItem.insert(TaskRole::SourceFile, url.toString());
@@ -186,7 +204,7 @@ void Downloader::onFinished(QNetworkReply *reply)
                     m_redirects.insertMulti(redirectReply, redirect);
                 m_redirects.insertMulti(redirectReply, url);
 
-                m_downloads.remove(reply);
+                m_downloads.erase(reply);
                 m_redirects.remove(reply);
                 reply->deleteLater();
                 return;
@@ -214,16 +232,12 @@ void Downloader::onFinished(QNetworkReply *reply)
     }
     m_futureInterface->reportResult(FileTaskResult(filename, data.observer->checkSum(), data.taskItem));
 
-    data.file->close();
-    delete data.file;
-    delete data.observer;
-
-    m_downloads.remove(reply);
+    m_downloads.erase(reply);
     m_redirects.remove(reply);
     reply->deleteLater();
 
     m_finished++;
-    if (m_downloads.isEmpty() || m_futureInterface->isCanceled()) {
+    if (m_downloads.empty() || m_futureInterface->isCanceled()) {
         m_futureInterface->reportFinished();
         emit finished();    // emit finished, so the event loop can shutdown
     }
@@ -239,7 +253,7 @@ void Downloader::onError(QNetworkReply::NetworkError error)
         return; // already handled by onAuthenticationRequired
 
     if (reply) {
-        const Data &data = m_downloads[reply];
+        const Data &data = *m_downloads[reply];
         //: %2 is a sentence describing the error
         m_futureInterface->reportException(
                     TaskException(tr("Network error while downloading '%1': %2.").arg(
@@ -266,17 +280,17 @@ void Downloader::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
     Q_UNUSED(bytesReceived)
     QNetworkReply *const reply = qobject_cast<QNetworkReply *>(sender());
     if (reply) {
-        const Data &data = m_downloads[reply];
+        const Data &data = *m_downloads[reply];
         data.observer->setBytesToTransfer(bytesTotal);
     }
 }
 
 void Downloader::onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
-    if (!authenticator || !reply || !m_downloads.contains(reply))
+    if (!authenticator || !reply || m_downloads.find(reply) == m_downloads.cend())
         return;
 
-    FileTaskItem *item = &m_downloads[reply].taskItem;
+    FileTaskItem *item = &m_downloads[reply]->taskItem;
     const QAuthenticator auth = item->value(TaskRole::Authenticator).value<QAuthenticator>();
     if (auth.user().isEmpty()) {
         AuthenticationRequiredException e(AuthenticationRequiredException::Type::Server,
@@ -327,33 +341,9 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
         return 0;
     }
 
-    QScopedPointer<QFile> file;
-    const QString target = item.target();
-    if (target.isEmpty()) {
-        QTemporaryFile *tmp = new QTemporaryFile;
-        tmp->setAutoRemove(false);
-        file.reset(tmp);
-    } else {
-        file.reset(new QFile(target));
-    }
-
-    if (file->exists() && (!QFileInfo(file->fileName()).isFile())) {
-        m_futureInterface->reportException(
-                    TaskException(tr("Target file '%1' already exists but is not a file.").arg(
-                                          file->fileName())));
-        return 0;
-    }
-
-    if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        //: %2 is a sentence describing the error
-        m_futureInterface->reportException(
-                    TaskException(tr("Could not open target '%1' for write. Error: %2.").arg(
-                                          file->fileName(), file->errorString())));
-        return 0;
-    }
-
     QNetworkReply *reply = m_nam.get(QNetworkRequest(source));
-    m_downloads.insert(reply, Data(file.take(), new FileTaskObserver(QCryptographicHash::Sha1), item));
+    std::unique_ptr<Data> data(new Data(item));
+    m_downloads[reply] = std::move(data);
 
     connect(reply, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,

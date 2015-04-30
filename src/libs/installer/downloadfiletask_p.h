@@ -36,30 +36,40 @@
 #define DOWNLOADFILETASK_P_H
 
 #include "downloadfiletask.h"
+#include <observer.h>
 
+#include <QFile>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 
+#include <memory>
+#include <unordered_map>
+
 QT_BEGIN_NAMESPACE
-class QFile;
 class QSslError;
 QT_END_NAMESPACE
 
 namespace QInstaller {
 
-class FileTaskObserver;
-
 struct Data
 {
+    Q_DISABLE_COPY(Data)
+
     Data()
-        : file(0), observer(0) {}
-    Data(QFile *f, FileTaskObserver *o, const FileTaskItem &fti)
-        : file(f), observer(o), taskItem(fti)
+        : file(Q_NULLPTR)
+        , observer(Q_NULLPTR)
     {}
-    QFile *file;
-    FileTaskObserver *observer;
+
+    Data(const FileTaskItem &fti)
+        : taskItem(fti)
+        , file(Q_NULLPTR)
+        , observer(new FileTaskObserver(QCryptographicHash::Sha1))
+    {}
+
     FileTaskItem taskItem;
+    std::unique_ptr<QFile> file;
+    std::unique_ptr<FileTaskObserver> observer;
 };
 
 class Downloader : public QObject
@@ -98,8 +108,8 @@ private:
     int m_finished;
     QNetworkAccessManager m_nam;
     QList<FileTaskItem> m_items;
-    QHash<QNetworkReply*, Data> m_downloads;
     QMultiHash<QNetworkReply*, QUrl> m_redirects;
+    std::unordered_map<QNetworkReply*, std::unique_ptr<Data>> m_downloads;
 };
 
 }   // namespace QInstaller

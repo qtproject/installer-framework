@@ -662,6 +662,11 @@
                 If there is some data inside the component and the package.xml
                 and/or the script has no DownloadableArchives value, the
                 repogen tool registers the found data automatically.
+
+        \row
+            \li RequiresAdminRights
+            \li Set to \c true if the package needs to be installed with elevated permissions.
+                Optional.
     \endtable
 
     \section2 Component Dependencies

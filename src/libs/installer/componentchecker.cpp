@@ -37,6 +37,7 @@
 #include "component.h"
 #include "constants.h"
 #include "packagemanagercore.h"
+#include "globals.h"
 
 namespace QInstaller {
 
@@ -59,6 +60,7 @@ QStringList ComponentChecker::checkComponent(Component *component)
     const bool defaultPropertyScriptValue = component->variables().value(scDefault).compare(scScript, Qt::CaseInsensitive) == 0;
     const bool defaultPropertyValue = component->variables().value(scDefault).compare(scTrue, Qt::CaseInsensitive) == 0;
     const QStringList autoDependencies = component->autoDependencies();
+    const QList<Component *> allComponents = core->components(PackageManagerCore::ComponentType::All);
     if (!autoDependencies.isEmpty()) {
         if (component->forcedInstallation()) {
             checkResult << QString::fromLatin1("Component %1 specifies \"ForcedInstallation\" property "
@@ -81,7 +83,6 @@ QStringList ComponentChecker::checkComponent(Component *component)
                 .arg(component->name());
         }
         const QStringList dependencies = component->dependencies();
-        const QList<Component *> allComponents = core->components(PackageManagerCore::ComponentType::All);
         foreach (const QString &dependency, dependencies) {
             Component *dependencyComponent = PackageManagerCore::componentByName(
                         dependency, allComponents);
@@ -118,15 +119,24 @@ QStringList ComponentChecker::checkComponent(Component *component)
             }
         }
         if (component->childCount()) {
-            const QStringList autoDependencies = component->autoDependencies();
             if (!autoDependencies.isEmpty()) {
+                /* Use case:
+
+                A (depends on C)
+                A.B
+                C
+
+                Let's say we installed everything.
+                Running maintenance tool and unselecting C will mark A for uninstallation too,
+                while A.B stays marked as installed.
+                After running maintenance tool again, it will check A automatically
+                (since its child is selected), this will also mark C for installation (dependecy).
+                Moreover, the "Next" button will be disabled.
+                */
                 checkResult << QString::fromLatin1("Component %1 auto depends on other components "
                     "while having child components. This will not work properly.")
                     .arg(component->name());
             }
-
-            // TODO: search also for components which autodepend on "component"
-            // (something like core->autodependees(component))
 
             if (!component->dependencies().isEmpty()) {
                 checkResult << QString::fromLatin1("Component %1 depends on other components "
@@ -135,9 +145,32 @@ QStringList ComponentChecker::checkComponent(Component *component)
             }
 
             if (!core->dependees(component).isEmpty()) {
+                /*
+                Use case:
+
+                A
+                A.B
+                C (depends on A)
+
+                Selecting C marks A for installation too, A.B is not marked for installation.
+                So after installation, A and C are installed, while A.B is not.
+                Maintenance tool will uncheck A automatically
+                (since none of its children are installed) this will also mark C
+                for uninstallation (dependency).
+                Moreover, the "Next" button will be disabled.
+                */
                 checkResult << QString::fromLatin1("Other components depend on component %1 "
                     "which has child components. This will not work properly.")
                     .arg(component->name());
+            }
+        }
+        foreach (const QString &autoDependency, autoDependencies) {
+            Component *autoDependencyComponent = PackageManagerCore::componentByName(
+                        autoDependency, allComponents);
+            if (autoDependencyComponent && autoDependencyComponent->childCount()) {
+                checkResult << QString::fromLatin1("Component %1 auto depends on component %2 "
+                    "which has children components. This will not work properly.")
+                    .arg(component->name(), autoDependencyComponent->name());
             }
         }
     }
