@@ -58,9 +58,15 @@ void sendPacket(QIODevice *device, const QByteArray &command, const QByteArray &
     packet.append('\0');
     packet.append(data);
 
-    qint64 written = device->write(packet);
-    Q_ASSERT(written == packet.size()); // we assume we can write it all at once
-    Q_UNUSED(written);
+    forever {
+        const int bytesWritten = device->write(packet);
+        Q_ASSERT(bytesWritten >= 0);
+        if (bytesWritten == packet.size())
+            break;
+        packet.remove(0, bytesWritten);
+    }
+    // needed for big packages over TCP on Windows
+    device->waitForBytesWritten(-1);
 }
 
 /*!

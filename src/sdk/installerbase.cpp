@@ -51,6 +51,7 @@
 #include <productkeycheck.h>
 #include <settings.h>
 #include <utils.h>
+#include <globals.h>
 
 #include <kdrunoncechecker.h>
 #include <kdupdaterfiledownloaderfactory.h>
@@ -59,6 +60,7 @@
 #include <QTemporaryFile>
 #include <QTranslator>
 #include <QUuid>
+#include <QLoggingCategory>
 
 InstallerBase::InstallerBase(int &argc, char *argv[])
     : SDKApp<QApplication>(argc, argv)
@@ -105,14 +107,23 @@ int InstallerBase::run()
     QInstaller::BinaryContent::readBinaryContent(&binary, &oldOperations, &manager, &magicMarker,
         cookie);
 
-    if (QInstaller::isVerbose()) {
-        qDebug() << "Language:" << QLocale().uiLanguages().value(0,
-            QLatin1String("No UI language set")).toUtf8().constData();
-        qDebug() << "Arguments: " << arguments().join(QLatin1String(", ")).toUtf8().constData();
-    }
-
     CommandLineParser parser;
     parser.parse(arguments());
+
+    QString loggingRules(QLatin1String("ifw.* = false")); // disable all by default
+    if (QInstaller::isVerbose()) {
+        loggingRules = QString(); // enable all in verbose mode
+        if (parser.isSet(QLatin1String(CommandLineOptions::LoggingRules))) {
+            loggingRules = parser.value(QLatin1String(CommandLineOptions::LoggingRules))
+                           .split(QLatin1Char(','), QString::SkipEmptyParts)
+                           .join(QLatin1Char('\n')); // take rules from command line
+        }
+    }
+    QLoggingCategory::setFilterRules(loggingRules);
+
+    qCDebug(QInstaller::lcTranslations) << "Language:" << QLocale().uiLanguages()
+        .value(0, QLatin1String("No UI language set")).toUtf8().constData();
+    qDebug() << "Arguments: " << arguments().join(QLatin1String(", ")).toUtf8().constData();
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
     if (parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
@@ -134,8 +145,8 @@ int InstallerBase::run()
         ProductKeyCheck::instance()->addPackagesFromXml(QLatin1String(":/metadata/Updates.xml"));
         BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
     }
-    if (QInstaller::isVerbose())
-        dumpResourceTree();
+
+    dumpResourceTree();
 
     QString controlScript;
     if (parser.isSet(QLatin1String(CommandLineOptions::Script))) {
@@ -284,13 +295,13 @@ int InstallerBase::run()
 
 void InstallerBase::dumpResourceTree() const
 {
-    qDebug() << "Resource tree:";
+    qCDebug(QInstaller::lcResources) << "Resource tree:";
     QDirIterator it(QLatin1String(":/"), QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
         QDirIterator::Subdirectories);
     while (it.hasNext()) {
         if (it.next().startsWith(QLatin1String(":/qt-project.org")))
             continue;
-        qDebug() << "    " << it.filePath().toUtf8().constData();
+        qCDebug(QInstaller::lcResources) << "    " << it.filePath().toUtf8().constData();
     }
 }
 

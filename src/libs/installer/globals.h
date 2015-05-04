@@ -37,8 +37,15 @@
 #include "installer_global.h"
 
 #include <QRegExp>
+#include <QLoggingCategory>
 
 namespace QInstaller {
+
+INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcComponentChecker)
+INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcResources)
+INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcTranslations)
+
+QStringList INSTALLER_EXPORT loggingCategories();
 
 QRegExp INSTALLER_EXPORT commaRegExp();
 

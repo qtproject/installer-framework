@@ -312,12 +312,6 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                     QString::fromLatin1("Unknown error.") : value.toString()));
             }
 
-            // add RequiresAdminRights tag to xml if addElevatedOperation is used somewhere
-            if (scriptContent.contains(QLatin1String("addElevatedOperation"))) {
-                QDomElement element = doc.createElement(QLatin1String("RequiresAdminRights"));
-                element.appendChild(doc.createTextNode(QLatin1String("true")));
-            }
-
             const QString toLocation(QString::fromLatin1("%1/%2/%3").arg(targetDir, info.name, script));
             copyWithException(scriptFile.fileName(), toLocation, QInstaller::scScript);
         }

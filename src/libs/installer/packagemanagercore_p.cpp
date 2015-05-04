@@ -53,6 +53,7 @@
 #include "installercalculator.h"
 #include "uninstallercalculator.h"
 #include "componentchecker.h"
+#include "globals.h"
 
 #include "kdselfrestarter.h"
 #include "kdupdaterfiledownloaderfactory.h"
@@ -395,7 +396,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
         foreach (QInstaller::Component *component, components) {
             const QStringList warnings = ComponentChecker::checkComponent(component);
             foreach (const QString &warning, warnings)
-                qWarning() << warning;
+                qCWarning(lcComponentChecker) << warning;
         }
     } catch (const Error &error) {
         clearAllComponentLists();
