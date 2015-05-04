@@ -20,7 +20,6 @@ SOURCES += $$PWD/kdjob.cpp \
 
 
 HEADERS += $$PWD/kdupdater.h \
-    $$PWD/kdupdaterapplication.h \
     $$PWD/kdupdaterfiledownloader.h \
     $$PWD/kdupdaterfiledownloader_p.h \
     $$PWD/kdupdaterfiledownloaderfactory.h \
@@ -36,8 +35,7 @@ HEADERS += $$PWD/kdupdater.h \
     $$PWD/environment.h \
     $$PWD/kdupdaterupdatesinfodata_p.h
 
-SOURCES += $$PWD/kdupdaterapplication.cpp \
-    $$PWD/kdupdaterfiledownloader.cpp \
+SOURCES += $$PWD/kdupdaterfiledownloader.cpp \
     $$PWD/kdupdaterfiledownloaderfactory.cpp \
     $$PWD/kdupdaterpackagesinfo.cpp \
     $$PWD/kdupdaterupdate.cpp \

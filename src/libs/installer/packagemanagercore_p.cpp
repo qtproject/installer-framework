@@ -62,6 +62,7 @@
 
 #include <productkeycheck.h>
 
+#include <QSettings>
 #include <QtConcurrentRun>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
@@ -186,7 +187,6 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     : m_updateFinder(0)
-    , m_updaterApplication(new DummyConfigurationInterface)
     , m_packagesInfo(std::make_shared<PackagesInfo>())
     , m_core(core)
     , m_updates(false)
@@ -208,7 +208,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<OperationBlob> &performedOperations)
     : m_updateFinder(0)
-    , m_updaterApplication(new DummyConfigurationInterface)
     , m_packagesInfo(std::make_shared<PackagesInfo>())
     , m_status(PackageManagerCore::Unfinished)
     , m_needsHardRestart(false)

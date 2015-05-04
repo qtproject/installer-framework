@@ -52,7 +52,7 @@ using namespace KDUpdater;
 /*!
     \inmodule kdupdater
     \class KDUpdater::UpdateFinder
-    \brief The UpdaterFinder class finds updates applicable for a KDUpdater::Application.
+    \brief The UpdaterFinder class finds updates applicable for installed packages.
 
     The KDUpdater::UpdateFinder class helps in searching for updates and installing them on the
     application. The class basically processes the application's KDUpdater::PackagesInfo and the
@@ -455,8 +455,7 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
 //
 
 /*!
-   Constructs an update finder for the KDUpdater::Application specified by
-   \a application.
+   Constructs an update finder.
 */
 UpdateFinder::UpdateFinder()
     : Task(QLatin1String("UpdateFinder"), Stoppable),
@@ -473,8 +472,7 @@ UpdateFinder::~UpdateFinder()
 }
 
 /*!
-   Returns a list of KDUpdater::Update objects. The update objects returned in this list
-   are made children of the KDUpdater::Application object associated with this class.
+   Returns a list of KDUpdater::Update objects.
 */
 QList<Update *> UpdateFinder::updates() const
 {

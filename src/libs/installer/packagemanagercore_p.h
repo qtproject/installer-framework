@@ -42,7 +42,6 @@
 #include "qinstallerglobal.h"
 
 #include "kdsysinfo.h"
-#include "kdupdaterapplication.h"
 #include "kdupdaterupdatefinder.h"
 #include "kdupdaterupdatesourcesinfo.h"
 
@@ -66,27 +65,6 @@ class TempDirDeleter;
 class InstallerCalculator;
 class UninstallerCalculator;
 class RemoteFileEngineHandler;
-
-/*
-    The default configuration interface implementation does call QSettings to save files for later deletion,
-    though according to QSettings there should nothing be written if QSettings is not setup properly (which
-    we do not in our case). Still, caused by a broken QSettings implementation at least on Linux we write an
-    empty config file which resulted in QTIFW-196. To workaround the issue we now use this empty dummy class.
-*/
-class DummyConfigurationInterface : public KDUpdater::ConfigurationInterface
-{
-public:
-    QVariant value(const QString &key) const
-    {
-        Q_UNUSED(key)
-        return QVariant();
-    }
-    void setValue(const QString &key, const QVariant &value)
-    {
-        if (value.isNull())
-            qDebug() << "DummyConfigurationInterface called with key:" << key << "and value:" << value;
-    }
-};
 
 class PackageManagerCorePrivate : public QObject
 {
@@ -198,7 +176,6 @@ signals:
 
 public:
     UpdateFinder *m_updateFinder;
-    Application m_updaterApplication;
     UpdateSourcesInfo m_updateSourcesInfo;
     std::shared_ptr<PackagesInfo> m_packagesInfo;
     QStringList m_filesForDelayedDeletion;
