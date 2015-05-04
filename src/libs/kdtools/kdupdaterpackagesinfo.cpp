@@ -321,7 +321,7 @@ void PackagesInfo::refresh()
     Returns \c true if the installation information was modified.
 
 */
-bool PackagesInfo::installPackage(const QString &name, const QString &version,
+bool PackagesInfo::addPackage(const QString &name, const QString &version,
                                   const QString &title, const QString &description,
                                   const QStringList &dependencies, bool forcedInstallation,
                                   bool virtualComp, quint64 uncompressedSize,

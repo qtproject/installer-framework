@@ -1908,7 +1908,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     }
 
     // now mark the component as installed
-    m_packagesInfo->installPackage(component->name(), component->value(scVersion),
+    m_packagesInfo->addPackage(component->name(), component->value(scVersion),
         component->value(scDisplayName),
         component->value(scDescription), component->dependencies(), component->forcedInstallation(),
         component->isVirtual(), component->value(scUncompressedSize).toULongLong(),

@@ -99,10 +99,10 @@ public:
     QVector<KDUpdater::PackageInfo> packageInfos() const;
     void writeToDisk();
 
-    bool installPackage(const QString &pkgName, const QString &version, const QString &title = QString(),
-                        const QString &description = QString(), const QStringList &dependencies = QStringList(),
-                        bool forcedInstallation = false, bool virtualComp = false, quint64 uncompressedSize = 0,
-                        const QString &inheritVersionFrom = QString());
+    bool addPackage(const QString &pkgName, const QString &version, const QString &title = QString(),
+        const QString &description = QString(), const QStringList &dependencies = QStringList(),
+        bool forcedInstallation = false, bool virtualComp = false, quint64 uncompressedSize = 0,
+        const QString &inheritVersionFrom = QString());
 
     bool updatePackage(const QString &pkgName, const QString &version, const QDate &date);
     bool removePackage(const QString &pkgName);
