@@ -560,13 +560,9 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     disconnect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
     connect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
 
-    // TODO: We should avoid this in case of installer.
-    m_packagesInfo->setFileName(componentsXmlPath());
+    if (!isInstaller())
+        m_packagesInfo->setFileName(componentsXmlPath());
 
-    // Note: force overwriting the application name and version in case we run as installer.
-    //       Both will be set to wrong initial values if we install into an already existing
-    //       installation. This can happen if the components.xml path has not been changed,
-    //       but name or version of the new installer.
     if (isInstaller() || m_packagesInfo->applicationName().isEmpty()) {
         // TODO: this seems to be wrong, we should ask for ProductName defaulting to applicationName...
         m_packagesInfo->setApplicationName(m_data.settings().applicationName());
@@ -2120,28 +2116,32 @@ PackagesList PackageManagerCorePrivate::remotePackages()
 */
 LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
 {
+    if (isInstaller())
+        return LocalPackagesHash();
+
     LocalPackagesHash installedPackages;
-
-    if (!isInstaller()) {
-        if (!m_packagesInfo->isValid()) {
+    if (m_packagesInfo->error() != PackagesInfo::NoError) {
+        if (m_packagesInfo->fileName().isEmpty())
             m_packagesInfo->setFileName(componentsXmlPath());
-            if (m_packagesInfo->applicationName().isEmpty())
-                m_packagesInfo->setApplicationName(m_data.settings().applicationName());
-            if (m_packagesInfo->applicationVersion().isEmpty())
-                m_packagesInfo->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
-        }
+        else
+            m_packagesInfo->refresh();
 
-        if (m_packagesInfo->error() != KDUpdater::PackagesInfo::NoError) {
-            setStatus(PackageManagerCore::Failure, tr("Failure to read packages from: %1.")
-                .arg(componentsXmlPath()));
-        }
+        if (m_packagesInfo->applicationName().isEmpty())
+            m_packagesInfo->setApplicationName(m_data.settings().applicationName());
+        if (m_packagesInfo->applicationVersion().isEmpty())
+            m_packagesInfo->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
+    }
 
-        foreach (const LocalPackage &package, m_packagesInfo->packageInfos()) {
-            if (statusCanceledOrFailed())
-                break;
-            installedPackages.insert(package.name, package);
-        }
-     }
+    if (m_packagesInfo->error() != PackagesInfo::NoError) {
+        setStatus(PackageManagerCore::Failure, tr("Failure to read packages from: %1.")
+            .arg(componentsXmlPath()));
+    }
+
+    foreach (const LocalPackage &package, m_packagesInfo->packageInfos()) {
+        if (statusCanceledOrFailed())
+            break;
+        installedPackages.insert(package.name, package);
+    }
 
     return installedPackages;
 }
