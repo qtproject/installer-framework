@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -42,7 +43,6 @@
 namespace KDUpdater {
 
 class PackagesInfo;
-class UpdateSourcesInfo;
 
 class ConfigurationInterface
 {
@@ -82,13 +82,6 @@ public:
     void setPackagesXMLFileName(const QString &fileName);
     QString packagesXMLFileName() const;
     PackagesInfo *packagesInfo() const;
-
-    void addUpdateSource(const QString &name, const QString &title,
-                         const QString &description, const QUrl &url, int priority = -1);
-
-    void setUpdateSourcesXMLFileName(const QString &fileName);
-    QString updateSourcesXMLFileName() const;
-    UpdateSourcesInfo *updateSourcesInfo() const;
 
     QStringList filesForDelayedDeletion() const;
     void addFilesForDelayedDeletion(const QStringList &files);

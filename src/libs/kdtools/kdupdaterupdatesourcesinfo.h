@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -37,8 +38,6 @@
 
 #include "kdtoolsglobal.h"
 
-#include <QObject>
-#include <QVariant>
 #include <QUrl>
 
 namespace KDUpdater {
@@ -61,58 +60,23 @@ inline bool operator!=(const UpdateSourceInfo &lhs, const UpdateSourceInfo &rhs)
     return !operator==(lhs, rhs);
 }
 
-class KDTOOLS_EXPORT UpdateSourcesInfo : public QObject
+class KDTOOLS_EXPORT UpdateSourcesInfo
 {
-    Q_OBJECT
-
 public:
-    ~UpdateSourcesInfo();
-
-    enum Error
-    {
-        NoError = 0,
-        NotYetReadError,
-        CouldNotReadSourceFileError,
-        InvalidXmlError,
-        InvalidContentError,
-        CouldNotSaveChangesError
-    };
-
-    bool isValid() const;
-    QString errorString() const;
-    Error error() const;
-
-    bool isModified() const;
-    void setModified(bool modified);
-
-    void setFileName(const QString &fileName);
-    QString fileName() const;
-
     int updateSourceInfoCount() const;
     UpdateSourceInfo updateSourceInfo(int index) const;
 
     void addUpdateSourceInfo(const UpdateSourceInfo &info);
+    void addUpdateSource(const QString &name, const QString &title,
+        const QString &description, const QUrl &url, int priority);
+
+    void clear();
     void removeUpdateSourceInfo(const UpdateSourceInfo &info);
 
-protected:
-    friend class Application;
-    explicit UpdateSourcesInfo(QObject *parent = 0);
-
-public Q_SLOTS:
-    void refresh();
-
-Q_SIGNALS:
-    void reset();
-    void updateSourceInfoAdded(const UpdateSourceInfo &info);
-    void updateSourceInfoRemoved(const UpdateSourceInfo &info);
-
 private:
-    struct UpdateSourcesInfoData;
-    QScopedPointer<UpdateSourcesInfoData> d;
+    QList<UpdateSourceInfo> m_updateSourceInfoList;
 };
 
 } // namespace KDUpdater
-
-Q_DECLARE_METATYPE(KDUpdater::UpdateSourceInfo)
 
 #endif // KD_UPDATER_UPDATE_SOURCES_INFO_H

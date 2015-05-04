@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -56,8 +57,8 @@ using namespace KDUpdater;
 
     The KDUpdater::UpdateFinder class helps in searching for updates and installing them on the
     application. The class basically processes the application's KDUpdater::PackagesInfo and the
-    UpdateXMLs it aggregates from all the update sources described in KDUpdater::UpdateSourcesInfo
-    and populates a list of KDUpdater::Update objects.
+    UpdateXMLs it aggregates from all the update sources and populates a list of KDUpdater::Update
+    objects.
 */
 
 //
@@ -113,6 +114,8 @@ public:
     void createUpdateObjects(const UpdateSourceInfo &sourceInfo, const QList<UpdateInfo> &updateInfoList);
     Resolution checkPriorityAndVersion(const UpdateSourceInfo &sourceInfo, const QVariantHash &data) const;
     void slotDownloadDone();
+
+    UpdateSourcesInfo m_updateSourcesInfo;
 };
 
 
@@ -188,13 +191,8 @@ void UpdateFinder::Private::computeUpdates()
     }
 
     // Now do some quick sanity checks on the update sources info
-    UpdateSourcesInfo *sources = application->updateSourcesInfo();
-    if (!sources) {
-        q->reportError(tr("Could not access the update sources information of this application."));
-        return;
-    }
-    if (!sources->isValid()) {
-        q->reportError(sources->errorString());
+    if (m_updateSourcesInfo.updateSourceInfoCount() <= 0) {
+        q->reportError(tr("No update sources information set for this application."));
         return;
     }
 
@@ -250,13 +248,12 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
     if (!application)
         return false;
 
-    UpdateSourcesInfo *updateSources = application->updateSourcesInfo();
-    if (!updateSources )
+    if (m_updateSourcesInfo.updateSourceInfoCount() <= 0)
         return false;
 
     // create UpdatesInfo for each update source
-    for (int i = 0; i < updateSources->updateSourceInfoCount(); i++) {
-        const UpdateSourceInfo info = updateSources->updateSourceInfo(i);
+    for (int i = 0; i < m_updateSourcesInfo.updateSourceInfoCount(); i++) {
+        const UpdateSourceInfo info = m_updateSourcesInfo.updateSourceInfo(i);
         const QUrl url = QString::fromLatin1("%1/Updates.xml").arg(info.url.toString());
 
         if (url.scheme() != QLatin1String("resource") && url.scheme() != QLatin1String("file")) {
@@ -485,6 +482,14 @@ UpdateFinder::~UpdateFinder()
 QList<Update *> UpdateFinder::updates() const
 {
     return d->updates.values();
+}
+
+/*!
+    Sets the update sources information to use when searching for updates.
+*/
+void UpdateFinder::setUpdateSourcesInfo(const UpdateSourcesInfo &sources)
+{
+    d->m_updateSourcesInfo = sources;
 }
 
 /*!

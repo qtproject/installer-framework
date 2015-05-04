@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -34,7 +35,6 @@
 
 #include "kdupdaterapplication.h"
 #include "kdupdaterpackagesinfo.h"
-#include "kdupdaterupdatesourcesinfo.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -86,7 +86,6 @@ using namespace KDUpdater;
         \li Application Directory
         \li Installation information XML file name and its corresponding
             KDUpdater::PackagesInfo object
-        \li Update sources XML file name and its corresponding KDUpdater::UpdateSourcesInfo object
     \endlist
 
     User can also retrieve some information from this class:
@@ -100,7 +99,6 @@ struct Application::ApplicationData
 {
     explicit ApplicationData(ConfigurationInterface *config) :
         packagesInfo(0),
-        updateSourcesInfo(0),
         configurationInterface(config ? config : new ConfigurationInterface)
     {
         const QStringList oldFiles = configurationInterface->value(QLatin1String("FilesForDelayedDeletion")).toStringList();
@@ -117,7 +115,6 @@ struct Application::ApplicationData
     ~ApplicationData()
     {
         delete packagesInfo;
-        delete updateSourcesInfo;
         delete configurationInterface;
     }
 
@@ -125,7 +122,6 @@ struct Application::ApplicationData
 
     QString applicationDirectory;
     PackagesInfo *packagesInfo;
-    UpdateSourcesInfo *updateSourcesInfo;
     QStringList filesForDelayedDeletion;
     ConfigurationInterface *configurationInterface;
 };
@@ -139,7 +135,6 @@ Application::Application(ConfigurationInterface* config, QObject* p) : QObject(p
 {
     d = new Application::ApplicationData( config );
     d->packagesInfo = new PackagesInfo(this);
-    d->updateSourcesInfo = new UpdateSourcesInfo(this);
 
     setApplicationDirectory( QCoreApplication::applicationDirPath() );
 
@@ -178,7 +173,6 @@ void Application::setApplicationDirectory(const QString &dir)
     // FIXME: Perhaps we should check whether dir exists on the local file system or not
     d->applicationDirectory = dirObj.absolutePath();
     setPackagesXMLFileName(QString::fromLatin1("%1/Packages.xml").arg(dir));
-    setUpdateSourcesXMLFileName(QString::fromLatin1("%1/UpdateSources.xml").arg(dir));
 }
 
 /*!
@@ -211,25 +205,6 @@ QString Application::applicationVersion() const
     return QString();
 }
 
-/*!
-    Adds the \a name, \a title, \a description, \a url, and \a priority of the
-    update source to this class.
-
-    \sa KDUpdater::UpdateSourceInfo
-    \sa KDUpdater::UpdateSourcesInfo
-*/
-void Application::addUpdateSource(const QString &name, const QString &title,
-    const QString &description, const QUrl &url, int priority)
-{
-    UpdateSourceInfo info;
-    info.name = name;
-    info.title = title;
-    info.description = description;
-    info.url = url;
-    info.priority = priority;
-    d->updateSourcesInfo->addUpdateSourceInfo(info);
-}
-
 
 /*!
     Sets the file name of the installation information XML file for this application to \a fileName.
@@ -256,34 +231,6 @@ QString Application::packagesXMLFileName() const
 PackagesInfo* Application::packagesInfo() const
 {
     return d->packagesInfo;
-}
-
-/*!
-    Sets \a fileName as the file name of the update sources XML file for this
-    application. By default, this is assumed to be UpdateSources.xml in the
-    application directory.
-
-   \sa KDUpdater::UpdateSourcesInfo::setFileName()
-*/
-void Application::setUpdateSourcesXMLFileName(const QString &fileName)
-{
-    d->updateSourcesInfo->setFileName(fileName);
-}
-
-/*!
-    Returns the update sources XML file name.
-*/
-QString Application::updateSourcesXMLFileName() const
-{
-    return d->updateSourcesInfo->fileName();
-}
-
-/*!
-    Returns the KDUpdater::UpdateSourcesInfo object associated with this application.
-*/
-UpdateSourcesInfo* Application::updateSourcesInfo() const
-{
-    return d->updateSourcesInfo;
 }
 
 /*!

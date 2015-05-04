@@ -44,6 +44,7 @@
 #include "kdsysinfo.h"
 #include "kdupdaterapplication.h"
 #include "kdupdaterupdatefinder.h"
+#include "kdupdaterupdatesourcesinfo.h"
 
 #include <QObject>
 
@@ -198,6 +199,7 @@ signals:
 public:
     UpdateFinder *m_updateFinder;
     Application m_updaterApplication;
+    UpdateSourcesInfo m_updateSourcesInfo;
 
     int m_status;
     QString m_error;

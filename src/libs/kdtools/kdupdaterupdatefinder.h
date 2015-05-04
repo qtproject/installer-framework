@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -41,6 +42,7 @@ namespace KDUpdater {
 
 class Application;
 class Update;
+class UpdateSourcesInfo;
 
 class KDTOOLS_EXPORT UpdateFinder : public Task
 {
@@ -52,6 +54,7 @@ public:
     ~UpdateFinder();
 
     QList<Update *> updates() const;
+    void setUpdateSourcesInfo(const UpdateSourcesInfo &sources);
 
 private:
     void doRun();
