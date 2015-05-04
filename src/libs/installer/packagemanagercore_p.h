@@ -201,6 +201,7 @@ public:
     Application m_updaterApplication;
     UpdateSourcesInfo m_updateSourcesInfo;
     std::shared_ptr<PackagesInfo> m_packagesInfo;
+    QStringList m_filesForDelayedDeletion;
 
     int m_status;
     QString m_error;
@@ -253,6 +254,7 @@ private:
     LocalPackagesHash localInstalledPackages();
     bool fetchMetaInformationFromRepositories();
     bool addUpdateResourcesFromRepositories(bool parseChecksum);
+    void processFilesForDelayedDeletion();
 
 private:
     PackageManagerCore *m_core;

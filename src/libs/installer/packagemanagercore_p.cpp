@@ -551,6 +551,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
         readMaintenanceConfigFiles(QCoreApplication::applicationDirPath());
 #endif
     }
+    processFilesForDelayedDeletion();
 
     foreach (Operation *currentOperation, m_performedOperationsOld)
         currentOperation->setValue(QLatin1String("installer"), QVariant::fromValue(m_core));
@@ -750,8 +751,9 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
     foreach (const Repository &repo, m_data.settings().defaultRepositories())
         repos.append(QVariant().fromValue(repo));
     cfg.setValue(QLatin1String("DefaultRepositories"), repos);
-    cfg.sync();
+    cfg.setValue(QLatin1String("FilesForDelayedDeletion"), m_filesForDelayedDeletion);
 
+    cfg.sync();
     if (cfg.status() != QSettingsWrapper::NoError) {
         const QString reason = cfg.status() == QSettingsWrapper::AccessError ? tr("Access error")
             : tr("Format error");
@@ -810,6 +812,8 @@ void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &target
         repos.insert(variant.value<Repository>());
     if (!repos.isEmpty())
         m_data.settings().setDefaultRepositories(repos);
+
+    m_filesForDelayedDeletion = cfg.value(QLatin1String("FilesForDelayedDeletion")).toStringList();
 
     QFile file(targetDir + QLatin1String("/network.xml"));
     if (!file.open(QIODevice::ReadOnly))
@@ -2319,6 +2323,22 @@ void PackageManagerCorePrivate::handleMethodInvocationRequest(const QString &inv
     QObject *obj = QObject::sender();
     if (obj != 0)
         QMetaObject::invokeMethod(obj, qPrintable(invokableMethodName));
+}
+
+void PackageManagerCorePrivate::processFilesForDelayedDeletion()
+{
+    if (m_filesForDelayedDeletion.isEmpty())
+        return;
+
+    const QStringList filesForDelayedDeletion = std::move(m_filesForDelayedDeletion);
+    foreach (const QString &i, filesForDelayedDeletion) {
+        QFile file(i);   //TODO: this should happen asnyc and report errors, I guess
+        if (file.exists() && !file.remove()) {
+            qWarning("Could not delete file %s: %s", qPrintable(i),
+                qPrintable(file.errorString()));
+            m_filesForDelayedDeletion << i; // try again next time
+        }
+    }
 }
 
 } // namespace QInstaller

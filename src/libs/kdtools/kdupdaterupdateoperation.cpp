@@ -34,7 +34,7 @@
 
 #include "kdupdaterupdateoperation.h"
 
-#include "kdupdaterapplication.h"
+#include "packagemanagercore.h"
 
 #include <QDataStream>
 #include <QDebug>
@@ -98,7 +98,8 @@ UpdateOperation::UpdateOperation()
 */
 UpdateOperation::~UpdateOperation()
 {
-    if (Application *app = Application::instance())
+    using namespace QInstaller;
+    if (PackageManagerCore *app = PackageManagerCore::instance())
         app->addFilesForDelayedDeletion(filesForDelayedDeletion());
 }
 
