@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -37,10 +38,8 @@
 
 #include "kdupdater.h"
 
-#include <QObject>
+#include <QCoreApplication>
 #include <QDate>
-#include <QString>
-#include <QStringList>
 #include <QVariant>
 
 namespace KDUpdater {
@@ -62,11 +61,13 @@ struct KDTOOLS_EXPORT PackageInfo
     quint64 uncompressedSize;
 };
 
-class KDTOOLS_EXPORT PackagesInfo : public QObject
+class KDTOOLS_EXPORT PackagesInfo
 {
-    Q_OBJECT
+    Q_DISABLE_COPY(PackagesInfo)
+    Q_DECLARE_TR_FUNCTIONS(PackagesInfo)
 
 public:
+    PackagesInfo();
     ~PackagesInfo();
 
     enum Error
@@ -106,15 +107,7 @@ public:
     bool updatePackage(const QString &pkgName, const QString &version, const QDate &date);
     bool removePackage(const QString &pkgName);
 
-public Q_SLOTS:
     void refresh();
-
-Q_SIGNALS:
-    void reset();
-
-protected:
-    friend class Application;
-    explicit PackagesInfo(QObject *parent = 0);
 
 private:
     struct PackagesInfoData;

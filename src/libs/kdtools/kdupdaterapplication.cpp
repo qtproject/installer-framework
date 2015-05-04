@@ -34,7 +34,6 @@
 ****************************************************************************/
 
 #include "kdupdaterapplication.h"
-#include "kdupdaterpackagesinfo.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -98,7 +97,6 @@ using namespace KDUpdater;
 struct Application::ApplicationData
 {
     explicit ApplicationData(ConfigurationInterface *config) :
-        packagesInfo(0),
         configurationInterface(config ? config : new ConfigurationInterface)
     {
         const QStringList oldFiles = configurationInterface->value(QLatin1String("FilesForDelayedDeletion")).toStringList();
@@ -114,14 +112,12 @@ struct Application::ApplicationData
 
     ~ApplicationData()
     {
-        delete packagesInfo;
         delete configurationInterface;
     }
 
     static Application *instance;
 
     QString applicationDirectory;
-    PackagesInfo *packagesInfo;
     QStringList filesForDelayedDeletion;
     ConfigurationInterface *configurationInterface;
 };
@@ -134,8 +130,6 @@ Application *Application::ApplicationData::instance = 0;
 Application::Application(ConfigurationInterface* config, QObject* p) : QObject(p)
 {
     d = new Application::ApplicationData( config );
-    d->packagesInfo = new PackagesInfo(this);
-
     setApplicationDirectory( QCoreApplication::applicationDirPath() );
 
     ApplicationData::instance = this;
@@ -172,7 +166,6 @@ void Application::setApplicationDirectory(const QString &dir)
 
     // FIXME: Perhaps we should check whether dir exists on the local file system or not
     d->applicationDirectory = dirObj.absolutePath();
-    setPackagesXMLFileName(QString::fromLatin1("%1/Packages.xml").arg(dir));
 }
 
 /*!
@@ -181,56 +174,6 @@ void Application::setApplicationDirectory(const QString &dir)
 QString Application::applicationDirectory() const
 {
     return d->applicationDirectory;
-}
-
-/*!
-    Returns the application name. By default, QCoreApplication::applicationName() is returned.
-*/
-QString Application::applicationName() const
-{
-    if (d->packagesInfo->isValid())
-        return d->packagesInfo->applicationName();
-
-    return QCoreApplication::applicationName();
-}
-
-/*!
-    Returns the application version.
-*/
-QString Application::applicationVersion() const
-{
-    if (d->packagesInfo->isValid())
-        return d->packagesInfo->applicationVersion();
-
-    return QString();
-}
-
-
-/*!
-    Sets the file name of the installation information XML file for this application to \a fileName.
-    By default, this is assumed to be Packages.xml in the application directory.
-
-   \sa KDUpdater::PackagesInfo::setFileName()
-*/
-void Application::setPackagesXMLFileName(const QString &fileName)
-{
-    d->packagesInfo->setFileName(fileName);
-}
-
-/*!
-    Returns the installation information XML file name.
-*/
-QString Application::packagesXMLFileName() const
-{
-    return d->packagesInfo->fileName();
-}
-
-/*!
-    Returns the KDUpdater::PackagesInfo object associated with this application.
-*/
-PackagesInfo* Application::packagesInfo() const
-{
-    return d->packagesInfo;
 }
 
 /*!

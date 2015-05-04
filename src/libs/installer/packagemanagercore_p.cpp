@@ -187,6 +187,7 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     : m_updateFinder(0)
     , m_updaterApplication(new DummyConfigurationInterface)
+    , m_packagesInfo(std::make_shared<PackagesInfo>())
     , m_core(core)
     , m_updates(false)
     , m_repoFetched(false)
@@ -208,6 +209,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
         const QList<OperationBlob> &performedOperations)
     : m_updateFinder(0)
     , m_updaterApplication(new DummyConfigurationInterface)
+    , m_packagesInfo(std::make_shared<PackagesInfo>())
     , m_status(PackageManagerCore::Unfinished)
     , m_needsHardRestart(false)
     , m_testChecksum(false)
@@ -558,20 +560,20 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     disconnect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
     connect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
 
-    KDUpdater::PackagesInfo &packagesInfo = *m_updaterApplication.packagesInfo();
-    packagesInfo.setFileName(componentsXmlPath());
+    // TODO: We should avoid this in case of installer.
+    m_packagesInfo->setFileName(componentsXmlPath());
 
-    // Note: force overwriting the application name and version in case we run as installer. Both will be
-    //       set to wrong initial values if we install into an already existing installation. This can happen
-    //       if the components.xml path has not been changed, but name or version of the new installer.
-    if (isInstaller() || packagesInfo.applicationName().isEmpty()) {
+    // Note: force overwriting the application name and version in case we run as installer.
+    //       Both will be set to wrong initial values if we install into an already existing
+    //       installation. This can happen if the components.xml path has not been changed,
+    //       but name or version of the new installer.
+    if (isInstaller() || m_packagesInfo->applicationName().isEmpty()) {
         // TODO: this seems to be wrong, we should ask for ProductName defaulting to applicationName...
-        packagesInfo.setApplicationName(m_data.settings().applicationName());
+        m_packagesInfo->setApplicationName(m_data.settings().applicationName());
     }
 
-    if (isInstaller() || packagesInfo.applicationVersion().isEmpty()) {
-        packagesInfo.setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
-    }
+    if (isInstaller() || m_packagesInfo->applicationVersion().isEmpty())
+        m_packagesInfo->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
 
     if (isInstaller()) {
         // TODO: this seems to be wrong, we should ask for ProductName defaulting to applicationName...
@@ -1481,14 +1483,13 @@ bool PackageManagerCorePrivate::runInstaller()
             componentsInstallPartProgressSize = double(1);
 
         // Force an update on the components xml as the install dir might have changed.
-        KDUpdater::PackagesInfo &info = *m_updaterApplication.packagesInfo();
-        info.setFileName(componentsXmlPath());
+        m_packagesInfo->setFileName(componentsXmlPath());
         // Clear the packages as we might install into an already existing installation folder.
-        info.clearPackageInfoList();
+        m_packagesInfo->clearPackageInfoList();
         // also update the application name, might be set from a script as well
-        info.setApplicationName(m_data.value(QLatin1String("ProductName"),
+        m_packagesInfo->setApplicationName(m_data.value(QLatin1String("ProductName"),
             m_data.settings().applicationName()).toString());
-        info.setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
+        m_packagesInfo->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
 
         const int progressOperationCount = countProgressOperations(componentsToInstall)
             // add one more operation as we support progress
@@ -1904,12 +1905,12 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     }
 
     // now mark the component as installed
-    KDUpdater::PackagesInfo &packages = *m_updaterApplication.packagesInfo();
-    packages.installPackage(component->name(), component->value(scVersion), component->value(scDisplayName),
+    m_packagesInfo->installPackage(component->name(), component->value(scVersion),
+        component->value(scDisplayName),
         component->value(scDescription), component->dependencies(), component->forcedInstallation(),
         component->isVirtual(), component->value(scUncompressedSize).toULongLong(),
         component->value(scInheritVersion));
-    packages.writeToDisk();
+    m_packagesInfo->writeToDisk();
 
     component->setInstalled();
     component->markAsPerformedInstallation();
@@ -2030,7 +2031,6 @@ void PackageManagerCorePrivate::unregisterMaintenanceTool()
 void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOperations, double progressSize,
     bool adminRightsGained, bool deleteOperation)
 {
-    KDUpdater::PackagesInfo &packages = *m_updaterApplication.packagesInfo();
     try {
         foreach (Operation *undoOperation, undoOperations) {
             if (statusCanceledOrFailed())
@@ -2066,7 +2066,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                     component = componentsToReplace().value(componentName).second;
                 if (component) {
                     component->setUninstalled();
-                    packages.removePackage(component->name());
+                    m_packagesInfo->removePackage(component->name());
                 }
             }
 
@@ -2077,13 +2077,13 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                 delete undoOperation;
         }
     } catch (const Error &error) {
-        packages.writeToDisk();
+        m_packagesInfo->writeToDisk();
         throw Error(error.message());
     } catch (...) {
-        packages.writeToDisk();
+        m_packagesInfo->writeToDisk();
         throw Error(tr("Unknown error"));
     }
-    packages.writeToDisk();
+    m_packagesInfo->writeToDisk();
 }
 
 PackagesList PackageManagerCorePrivate::remotePackages()
@@ -2094,8 +2094,9 @@ PackagesList PackageManagerCorePrivate::remotePackages()
     m_updates = false;
     delete m_updateFinder;
 
-    m_updateFinder = new KDUpdater::UpdateFinder(&m_updaterApplication);
+    m_updateFinder = new KDUpdater::UpdateFinder;
     m_updateFinder->setAutoDelete(false);
+    m_updateFinder->setPackagesInfo(m_packagesInfo);
     m_updateFinder->setUpdateSourcesInfo(m_updateSourcesInfo);
     m_updateFinder->run();
 
@@ -2119,19 +2120,20 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
     LocalPackagesHash installedPackages;
 
     if (!isInstaller()) {
-        KDUpdater::PackagesInfo &packagesInfo = *m_updaterApplication.packagesInfo();
-        if (!packagesInfo.isValid()) {
-            packagesInfo.setFileName(componentsXmlPath());
-            if (packagesInfo.applicationName().isEmpty())
-                packagesInfo.setApplicationName(m_data.settings().applicationName());
-            if (packagesInfo.applicationVersion().isEmpty())
-                packagesInfo.setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
+        if (!m_packagesInfo->isValid()) {
+            m_packagesInfo->setFileName(componentsXmlPath());
+            if (m_packagesInfo->applicationName().isEmpty())
+                m_packagesInfo->setApplicationName(m_data.settings().applicationName());
+            if (m_packagesInfo->applicationVersion().isEmpty())
+                m_packagesInfo->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
         }
 
-        if (packagesInfo.error() != KDUpdater::PackagesInfo::NoError)
-            setStatus(PackageManagerCore::Failure, tr("Failure to read packages from: %1.").arg(componentsXmlPath()));
+        if (m_packagesInfo->error() != KDUpdater::PackagesInfo::NoError) {
+            setStatus(PackageManagerCore::Failure, tr("Failure to read packages from: %1.")
+                .arg(componentsXmlPath()));
+        }
 
-        foreach (const LocalPackage &package, packagesInfo.packageInfos()) {
+        foreach (const LocalPackage &package, m_packagesInfo->packageInfos()) {
             if (statusCanceledOrFailed())
                 break;
             installedPackages.insert(package.name, package);

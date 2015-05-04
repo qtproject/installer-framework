@@ -361,7 +361,7 @@ void PackageManagerCore::writeMaintenanceTool()
                 gainAdminRights();
                 gainedAdminRights = true;
             }
-            d->m_updaterApplication.packagesInfo()->writeToDisk();
+            d->m_packagesInfo->writeToDisk();
             if (gainedAdminRights)
                 dropAdminRights();
             d->m_needToWriteMaintenanceTool = false;
@@ -631,7 +631,6 @@ void PackageManagerCore::rollBackInstallation()
         }
     }
 
-    KDUpdater::PackagesInfo &packages = *d->m_updaterApplication.packagesInfo();
     while (!d->m_performedOperationsCurrentSession.isEmpty()) {
         try {
             Operation *const operation = d->m_performedOperationsCurrentSession.takeLast();
@@ -658,14 +657,14 @@ void PackageManagerCore::rollBackInstallation()
                     component = d->componentsToReplace().value(componentName).second;
                 if (component) {
                     component->setUninstalled();
-                    packages.removePackage(component->name());
+                    d->m_packagesInfo->removePackage(component->name());
                 }
             }
 
-            packages.writeToDisk();
+            d->m_packagesInfo->writeToDisk();
             if (isInstaller()) {
-                if (packages.packageInfoCount() == 0) {
-                    QFile file(packages.fileName());
+                if (d->m_packagesInfo->packageInfoCount() == 0) {
+                    QFile file(d->m_packagesInfo->fileName());
                     file.remove();
                 }
             }

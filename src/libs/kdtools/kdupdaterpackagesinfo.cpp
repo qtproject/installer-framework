@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -56,10 +57,6 @@ using namespace KDUpdater;
         \li Get information about the number of packages installed and their meta-data via the
             packageInfoCount() and packageInfo() methods.
     \endlist
-
-    Instances of this class cannot be created. Each instance of KDUpdater::Application has one
-    instance of this class associated with it. You can fetch a pointer to an instance of this class
-    for an application via the KDUpdater::Application::packagesInfo() method.
 */
 
 /*!
@@ -105,9 +102,8 @@ void PackagesInfo::PackagesInfoData::setInvalidContentError(const QString &detai
 /*!
    \internal
 */
-PackagesInfo::PackagesInfo(QObject *parent)
-    : QObject(parent),
-      d(new PackagesInfoData())
+PackagesInfo::PackagesInfo()
+    : d(new PackagesInfoData())
 {
 }
 
@@ -151,8 +147,6 @@ PackagesInfo::Error PackagesInfo::error() const
 /*!
     Sets the complete file name of the installation information XML file to \a fileName. The function
     also issues a call to refresh() to reload installation information from the XML file.
-
-    \sa KDUpdater::Application::setPackagesXMLFileName()
 */
 void PackagesInfo::setFileName(const QString &fileName)
 {
@@ -266,7 +260,6 @@ void PackagesInfo::refresh()
     if (!file.exists()) {
         d->error = NotYetReadError;
         d->errorMessage = tr("The file %1 does not exist.").arg(d->fileName);
-        emit reset();
         return;
     }
 
@@ -274,7 +267,6 @@ void PackagesInfo::refresh()
     if (!file.open(QFile::ReadOnly)) {
         d->error = CouldNotReadPackageFileError;
         d->errorMessage = tr("Could not open %1.").arg(d->fileName);
-        emit reset();
         return;
     }
 
@@ -290,7 +282,6 @@ void PackagesInfo::refresh()
                                QString::number(parseErrorLine),
                                QString::number(parseErrorColumn),
                                parseErrorMessage);
-        emit reset();
         return;
     }
     file.close();
@@ -299,7 +290,6 @@ void PackagesInfo::refresh()
     QDomElement rootE = doc.documentElement();
     if (rootE.tagName() != QLatin1String("Packages")) {
         d->setInvalidContentError(tr("Root element %1 unexpected, should be 'Packages'.").arg(rootE.tagName()));
-        emit reset();
         return;
     }
 
@@ -320,7 +310,6 @@ void PackagesInfo::refresh()
 
     d->error = NoError;
     d->errorMessage.clear();
-    emit reset();
 }
 
 /*!
@@ -516,15 +505,7 @@ void PackagesInfo::clearPackageInfoList()
 {
     d->packageInfoList.clear();
     d->modified = true;
-    emit reset();
 }
-
-/*!
-    \fn void KDUpdater::PackagesInfo::reset()
-
-    This signal is emitted whenever the contents of this class are refreshed, usually from within
-    the refresh() slot.
-*/
 
 /*!
     \inmodule kdupdater

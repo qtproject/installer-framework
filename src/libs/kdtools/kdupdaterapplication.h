@@ -42,8 +42,6 @@
 
 namespace KDUpdater {
 
-class PackagesInfo;
-
 class ConfigurationInterface
 {
 public:
@@ -75,13 +73,6 @@ public:
 
     void setApplicationDirectory(const QString &dir);
     QString applicationDirectory() const;
-
-    QString applicationName() const;
-    QString applicationVersion() const;
-
-    void setPackagesXMLFileName(const QString &fileName);
-    QString packagesXMLFileName() const;
-    PackagesInfo *packagesInfo() const;
 
     QStringList filesForDelayedDeletion() const;
     void addFilesForDelayedDeletion(const QStringList &files);

@@ -38,9 +38,11 @@
 
 #include "kdupdatertask.h"
 
+#include <memory>
+
 namespace KDUpdater {
 
-class Application;
+class PackagesInfo;
 class Update;
 class UpdateSourcesInfo;
 
@@ -50,10 +52,12 @@ class KDTOOLS_EXPORT UpdateFinder : public Task
     class Private;
 
 public:
-    explicit UpdateFinder(Application *application);
+    UpdateFinder();
     ~UpdateFinder();
 
     QList<Update *> updates() const;
+
+    void setPackagesInfo(std::weak_ptr<PackagesInfo> info);
     void setUpdateSourcesInfo(const UpdateSourcesInfo &sources);
 
 private:

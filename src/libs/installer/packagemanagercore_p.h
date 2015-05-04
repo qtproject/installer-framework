@@ -200,6 +200,7 @@ public:
     UpdateFinder *m_updateFinder;
     Application m_updaterApplication;
     UpdateSourcesInfo m_updateSourcesInfo;
+    std::shared_ptr<PackagesInfo> m_packagesInfo;
 
     int m_status;
     QString m_error;

@@ -34,7 +34,6 @@
 ****************************************************************************/
 
 #include "kdupdaterupdatefinder.h"
-#include "kdupdaterapplication.h"
 #include "kdupdaterupdatesourcesinfo.h"
 #include "kdupdaterpackagesinfo.h"
 #include "kdupdaterupdate.h"
@@ -75,7 +74,6 @@ public:
 
     Private(UpdateFinder *qq)
         : q(qq)
-        , application(0)
         , downloadCompleteCount(0)
         , m_downloadsToComplete(0)
     {}
@@ -95,7 +93,6 @@ public:
         FileDownloader *downloader;
     };
     UpdateFinder *q;
-    Application *application;
     QHash<QString, Update *> updates;
 
     // Temporary structure that notes down information about updates.
@@ -116,6 +113,7 @@ public:
     void slotDownloadDone();
 
     UpdateSourcesInfo m_updateSourcesInfo;
+    std::weak_ptr<PackagesInfo> m_packagesInfo;
 };
 
 
@@ -180,11 +178,12 @@ void UpdateFinder::Private::computeUpdates()
     cancel = false;
 
     // First do some quick sanity checks on the packages info
-    PackagesInfo *packages = application->packagesInfo();
+    std::shared_ptr<PackagesInfo> packages = m_packagesInfo.lock();
     if (!packages) {
         q->reportError(tr("Could not access the package information of this application."));
         return;
     }
+
     if (!packages->isValid()) {
         q->reportError(packages->errorString());
         return;
@@ -245,9 +244,6 @@ void UpdateFinder::Private::cancelComputeUpdates()
 */
 bool UpdateFinder::Private::downloadUpdateXMLFiles()
 {
-    if (!application)
-        return false;
-
     if (m_updateSourcesInfo.updateSourceInfoCount() <= 0)
         return false;
 
@@ -373,7 +369,7 @@ QList<UpdateInfo> UpdateFinder::Private::applicableUpdates(UpdatesInfo *updatesI
     if (!updatesInfo || updatesInfo->updateInfoCount() == 0)
         return dummy;
 
-    PackagesInfo *packages = this->application->packagesInfo();
+    std::shared_ptr<PackagesInfo> packages = m_packagesInfo.lock();
     if (!packages)
         return dummy;
 
@@ -388,8 +384,10 @@ QList<UpdateInfo> UpdateFinder::Private::applicableUpdates(UpdatesInfo *updatesI
         // Catch hold of app names contained updatesInfo->applicationName()
         // If the application appName isn't one of the app names, then the updates are not applicable.
         const QStringList apps = appName.split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
-        if (apps.indexOf(this->application->applicationName()) < 0)
+        if (apps.indexOf([&packages] { return packages->isValid() ? packages->applicationName()
+                : QCoreApplication::applicationName(); } ()) < 0) {
             return dummy;
+        }
     }
     return updatesInfo->updatesInfo();
 }
@@ -460,11 +458,10 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
    Constructs an update finder for the KDUpdater::Application specified by
    \a application.
 */
-UpdateFinder::UpdateFinder(Application *application)
-    : Task(QLatin1String("UpdateFinder"), Stoppable, application),
+UpdateFinder::UpdateFinder()
+    : Task(QLatin1String("UpdateFinder"), Stoppable),
       d(new Private(this))
 {
-    d->application = application;
 }
 
 /*!
@@ -482,6 +479,11 @@ UpdateFinder::~UpdateFinder()
 QList<Update *> UpdateFinder::updates() const
 {
     return d->updates.values();
+}
+
+void UpdateFinder::setPackagesInfo(std::weak_ptr<PackagesInfo> info)
+{
+    d->m_packagesInfo = std::move(info);
 }
 
 /*!
