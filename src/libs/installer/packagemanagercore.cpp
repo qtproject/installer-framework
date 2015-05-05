@@ -963,7 +963,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
                     }
 
                     const LocalPackage localPackage = installedPackages.value(name);
-                    const QString updateVersion = update->data(scRemoteVersion).toString();
+                    const QString updateVersion = update->data(scVersion).toString();
                     if (KDUpdater::compareVersion(updateVersion, localPackage.version) <= 0)
                         break;  // remote version equals or is less than the installed maintenance tool
 
@@ -2355,7 +2355,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                 continue;   // Update for not installed package found, skip it.
 
             const LocalPackage &localPackage = locals.value(name);
-            const QString updateVersion = update->data(scRemoteVersion).toString();
+            const QString updateVersion = update->data(scVersion).toString();
             if (KDUpdater::compareVersion(updateVersion, localPackage.version) <= 0)
                 continue;
 
@@ -2476,7 +2476,7 @@ void PackageManagerCore::updateDisplayVersions(const QString &displayKey)
         }
         visited.clear();
         const QString displayVersionRemote = findDisplayVersion(key, componentsHash,
-            scRemoteVersion, visited);
+            scVersion, visited);
         if (displayVersionRemote.isEmpty())
             componentsHash.value(key)->setValue(displayKey, tr("invalid"));
         else

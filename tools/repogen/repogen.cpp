@@ -222,7 +222,7 @@ int main(int argc, char** argv)
                         for (int j = 0; j < c2.count(); ++j) {
                             if (c2.at(j).toElement().tagName() == scName)
                                 info.name = c2.at(j).toElement().text();
-                            else if (c2.at(j).toElement().tagName() == scRemoteVersion)
+                            else if (c2.at(j).toElement().tagName() == scVersion)
                                 info.version = c2.at(j).toElement().text();
                         }
                         hash.insert(info.name, info);

@@ -108,7 +108,7 @@ int UpdateChecker::check()
     foreach (QInstaller::Component *component, components) {
         QDomElement update = doc.createElement(QLatin1String("update"));
         update.setAttribute(QLatin1String("name"), component->value(QInstaller::scDisplayName));
-        update.setAttribute(QLatin1String("version"), component->value(QInstaller::scRemoteVersion));
+        update.setAttribute(QLatin1String("version"), component->value(QInstaller::scVersion));
         update.setAttribute(QLatin1String("size"), component->value(QInstaller::scUncompressedSize));
         root.appendChild(update);
     }

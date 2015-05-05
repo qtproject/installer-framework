@@ -291,7 +291,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scAutoDependOn, package.data(scAutoDependOn).toString());
     setValue(scCompressedSize, package.data(scCompressedSize).toString());
     setValue(scUncompressedSize, package.data(scUncompressedSize).toString());
-    setValue(scRemoteVersion, package.data(scRemoteVersion).toString());
+    setValue(scVersion, package.data(scVersion).toString());
     setValue(scInheritVersion, package.data(scInheritVersion).toString());
     setValue(scDependencies, package.data(scDependencies).toString());
     setValue(scDownloadableArchives, package.data(scDownloadableArchives).toString());
@@ -829,7 +829,7 @@ void Component::addDownloadableArchive(const QString &path)
     Q_ASSERT(isFromOnlineRepository());
 
     qDebug() << "addDownloadable" << path;
-    d->m_downloadableArchives.append(d->m_vars.value(scRemoteVersion) + path);
+    d->m_downloadableArchives.append(d->m_vars.value(scVersion) + path);
 }
 
 /*!

@@ -344,7 +344,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 for (int j = 0; j < c2.count(); ++j) {
                     if (c2.at(j).toElement().tagName() == scName)
                         packageName = c2.at(j).toElement().text();
-                    else if (c2.at(j).toElement().tagName() == scRemoteVersion)
+                    else if (c2.at(j).toElement().tagName() == scVersion)
                         packageVersion = (online ? c2.at(j).toElement().text() : QString());
                     else if ((c2.at(j).toElement().tagName() == QLatin1String("SHA1")) && testCheckSum)
                         packageHash = c2.at(j).toElement().text();
